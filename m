@@ -2,123 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A9632EF78
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D8232EF73
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbhCEP5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:57:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37384 "EHLO mx2.suse.de"
+        id S230177AbhCEP4I convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Mar 2021 10:56:08 -0500
+Received: from mga02.intel.com ([134.134.136.20]:8779 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229493AbhCEP5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:57:17 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614959836; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ZAnSSRKge8CGgRvv2YLRiVtc08HTPhe6n18APsSGUbY=;
-        b=HX3Qksmzf2Q8srPPs0FLbpS/eVzupFGGhfvemMNEiqqTiFDavIbM9KW3C+gHbWninFS8wS
-        JeacavLDx9DgtgXYG42ZC17DvXpYm4ZcnXMJAbJCjEXsiMyFgAx1y5Y9C4nln5DQVjy30i
-        itbIrAVxluamBBpsubkYLKNIcRDCBoU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6572EACBF;
-        Fri,  5 Mar 2021 15:57:16 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E6DA7DA79B; Fri,  5 Mar 2021 16:55:19 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.12-rc1, part 2
-Date:   Fri,  5 Mar 2021 16:55:17 +0100
-Message-Id: <cover.1614954547.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.29.2
+        id S229478AbhCEPzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 10:55:39 -0500
+IronPort-SDR: iHS4aYdZNb29tq78K+skSwAdpByp8f+BcjKPWwKMdkImdesIa3cr1h+CtT6XRAOksggPIczqxG
+ Wx8WJwoG9pKA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="174784783"
+X-IronPort-AV: E=Sophos;i="5.81,225,1610438400"; 
+   d="scan'208";a="174784783"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 07:55:38 -0800
+IronPort-SDR: g2IE4/xh26TdLdJLaJusSg3SlMhFGhFxYRqpXZJ7BtZvE/ty3iHHv7fKdLHTjnZ2xTGkVqR+J6
+ 4qC2bhF0d6LQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,225,1610438400"; 
+   d="scan'208";a="384953365"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga002.jf.intel.com with ESMTP; 05 Mar 2021 07:55:32 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 5 Mar 2021 07:55:26 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 5 Mar 2021 07:55:25 -0800
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
+ Fri, 5 Mar 2021 07:55:25 -0800
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Aili Yao <yaoaili@kingsoft.com>
+CC:     =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
+        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
+Subject: RE: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Thread-Topic: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Thread-Index: AQHXCnz5ja9ELypBUEatGW66U99st6pnoa2AgAEgN4CAAIHfAIAAAyEAgAAQXwD//9g7gIABDSmAgAALNoCAB2DqAIAAiu0AgABOzQD//+3L0IABObiAgAAiT4CAACi3AIAAmjmAgACgEACAAGnOwA==
+Date:   Fri, 5 Mar 2021 15:55:25 +0000
+Message-ID: <aee5176eafb54c88b19a5b2671d0a1fc@intel.com>
+References: <20210225181542.GA178925@agluck-desk2.amr.corp.intel.com>
+        <20210226021907.GA27861@hori.linux.bs1.fc.nec.co.jp>
+        <20210226105915.6cf7d2b8@alex-virtual-machine>
+        <20210303033953.GA205389@agluck-desk2.amr.corp.intel.com>
+        <20210303115710.2e9f8e23@alex-virtual-machine>
+        <20210303163912.3d508e0f@alex-virtual-machine>
+        <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
+        <20210304101653.546a9da1@alex-virtual-machine>
+        <20210304121941.667047c3@alex-virtual-machine>
+        <20210304144524.795872d7@alex-virtual-machine>
+        <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
+ <20210305093016.40c87375@alex-virtual-machine>
+In-Reply-To: <20210305093016.40c87375@alex-virtual-machine>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Sterba <dsterba@suse.cz>
+> From the walk, it seems we have got the virtual address, can we just send a SIGBUS with it?
 
-Hi,
+If the walk wins the race and the pte for the poisoned page is still valid, then yes.
 
-more regression fixes and stabilization. Please pull, thanks.
+But we could have:
 
-Regressions:
+CPU1                            CPU2
+memory_failure sets poison
+bit for struct page
 
-- zoned mode
-  - count zone sizes in wider int types
-  - fix space accounting for read-only block groups
 
-- subpage: fix page tail zeroing
+rmap finds page in task
+on CPU2 and sets PTE
+to not-valid-poison
 
-Fixes:
+                                memory_failure returns
+                                early because struct page
+                                already marked as poison
 
-- fix spurious warning when remounting with free space tree
+                                walk page tables looking
+                                for mapping - don't find it
 
-- fix warning when creating a directory with smack enabled
-
-- ioctl checks for qgroup inheritance when creating a snapshot
-
-- qgroup
-  - fix missing unlock on error path in zero range
-  - fix amount of released reservation on error
-  - fix flushing from unsafe context with open transaction, potentially
-    deadlocking
-
-- minor build warning fixes
-
-----------------------------------------------------------------
-The following changes since commit 6e37d245994189ba757df7dc2950a44d31421ac6:
-
-  btrfs: zoned: fix deadlock on log sync (2021-02-22 18:08:48 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.12-rc1-tag
-
-for you to fetch changes up to badae9c86979c459bd7d895d6d7ddc7a01131ff7:
-
-  btrfs: zoned: do not account freed region of read-only block group as zone_unusable (2021-03-04 16:16:58 +0100)
-
-----------------------------------------------------------------
-Boris Burkov (1):
-      btrfs: fix spurious free_space_tree remount warning
-
-Dan Carpenter (1):
-      btrfs: validate qgroup inherit for SNAP_CREATE_V2 ioctl
-
-Filipe Manana (1):
-      btrfs: fix warning when creating a directory with smack enabled
-
-Naohiro Aota (2):
-      btrfs: zoned: use sector_t for zone sectors
-      btrfs: zoned: do not account freed region of read-only block group as zone_unusable
-
-Nikolay Borisov (4):
-      btrfs: unlock extents in btrfs_zero_range in case of quota reservation errors
-      btrfs: free correct amount of space in btrfs_delayed_inode_reserve_metadata
-      btrfs: export and rename qgroup_reserve_meta
-      btrfs: don't flush from btrfs_delayed_inode_reserve_metadata
-
-Qu Wenruo (1):
-      btrfs: subpage: fix the false data csum mismatch error
-
-Randy Dunlap (1):
-      btrfs: ref-verify: use 'inline void' keyword ordering
-
- fs/btrfs/delayed-inode.c    |  5 +++--
- fs/btrfs/extent_io.c        | 21 ++++++++++++++++-----
- fs/btrfs/file.c             |  5 ++++-
- fs/btrfs/free-space-cache.c |  7 ++++++-
- fs/btrfs/inode.c            |  2 +-
- fs/btrfs/ioctl.c            | 19 ++++++++++++++++++-
- fs/btrfs/qgroup.c           |  8 ++++----
- fs/btrfs/qgroup.h           |  2 ++
- fs/btrfs/ref-verify.c       |  4 ++--
- fs/btrfs/super.c            |  4 ++--
- fs/btrfs/xattr.c            | 31 +++++++++++++++++++++++++++----
- fs/btrfs/zoned.c            |  4 ++--
- 12 files changed, 87 insertions(+), 25 deletions(-)
+-Tony
