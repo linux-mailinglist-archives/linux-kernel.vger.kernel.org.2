@@ -2,178 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C47432E4CC
+	by mail.lfdr.de (Postfix) with ESMTP id 8D01132E4CD
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbhCEJ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:28:19 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:35630 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhCEJ1y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:27:54 -0500
-Received: from [IPv6:2a01:e0a:4cb:a870:b9e2:e9f:d661:5a2f] (unknown [IPv6:2a01:e0a:4cb:a870:b9e2:e9f:d661:5a2f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9279D1F468C9;
-        Fri,  5 Mar 2021 09:27:47 +0000 (GMT)
-Subject: Re: [PATCH v4 05/11] media: hantro: Add a field to distinguish the
- hardware versions
-To:     Ezequiel Garcia <ezequiel@collabora.com>, p.zabel@pengutronix.de,
-        mchehab@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, peng.fan@nxp.com,
-        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <20210303113952.178519-1-benjamin.gaignard@collabora.com>
- <20210303113952.178519-6-benjamin.gaignard@collabora.com>
- <32899bc605ae7173c29b25a396e21d7fad32d4bf.camel@collabora.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <23f62276-237d-1161-259a-84748db7365b@collabora.com>
-Date:   Fri, 5 Mar 2021 10:27:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <32899bc605ae7173c29b25a396e21d7fad32d4bf.camel@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S229797AbhCEJ2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:28:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229464AbhCEJ2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:28:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09E6664FDF;
+        Fri,  5 Mar 2021 09:28:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614936491;
+        bh=PtXjMmtZqUD+84/a3yNKxDwmP+HeI1eftjVgrgaTTbs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XGHeC5WbCnj/NdH+Hyr2fx/z0PWpqzfPypJVmFaRXDNNCOvKTJ13kAhDtXokcq+69
+         v+TG2O65ktvyFEpAyV3vmcXGtRdE4pclJ1qB3fwTKgug6eYgf5NBvzjM+sx7ZTEoBy
+         GOg7ky0gqVK7sYueXCKmzLGBRpqcgZ5DeBWf5U1s6MW86KEMJFfhkzj09cqH61msSX
+         7tX0rzDjVtcZlISM+y6rFIVRyd+kI0yNsqYIUPEXK4gJPf/gY6lifMKtlTyILMGuoV
+         04vfMSNkZjyxsUN3wI6YGAkXMQHf3XzKiLREqL+Xrn9lmSnmWYdHIkMDjr+oKhfhc7
+         wEh0Z68C90baA==
+Date:   Fri, 5 Mar 2021 18:28:06 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     rostedt@goodmis.org, jpoimboe@redhat.com, kuba@kernel.org,
+        ast@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        x86@kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com, yhs@fb.com
+Subject: Re: [PATCH] x86: kprobes: orc: Fix ORC walks in kretprobes
+Message-Id: <20210305182806.df403dec398875c2c1b2c62d@kernel.org>
+In-Reply-To: <d72c62498ea0514e7b81a3eab5e8c1671137b9a0.1614902828.git.dxu@dxuuu.xyz>
+References: <d72c62498ea0514e7b81a3eab5e8c1671137b9a0.1614902828.git.dxu@dxuuu.xyz>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Daniel,
 
-Le 03/03/2021 à 23:05, Ezequiel Garcia a écrit :
-> On Wed, 2021-03-03 at 12:39 +0100, Benjamin Gaignard wrote:
->> Decoders hardware blocks could exist in multiple versions: add
->> a field to distinguish them at runtime.
->> G2 hardware block doesn't have postprocessor hantro_needs_postproc
->> function should always returns false in for this hardware.
->> hantro_needs_postproc function becoming to much complex to
->> stay inline in .h file move it to .c file.
->>
-> Note that I already questioned this patch before:
->
-> https://lkml.org/lkml/2021/2/17/722
->
-> I think it's better to rely on of_device_id.data for this
-> type of thing.
->
-> In particular, I was expecting that just using
-> hantro_variant.postproc_regs would be enough.
->
-> Can you try if that works and avoid reading swreg(0)
-> and probing the hardware core?
+On Thu,  4 Mar 2021 16:07:52 -0800
+Daniel Xu <dxu@dxuuu.xyz> wrote:
 
-I have found a way to remove this: if the variant doesn't define
-post processor formats, needs_postproc function will always returns
-false and that what the only useful usage of this version field.
+> Getting a stack trace from inside a kretprobe used to work with frame
+> pointer stack walks. After the default unwinder was switched to ORC,
+> stack traces broke because ORC did not know how to skip the
+> `kretprobe_trampoline` "frame".
+> 
+> Frame based stack walks used to work with kretprobes because
+> `kretprobe_trampoline` does not set up a new call frame. Thus, the frame
+> pointer based unwinder could walk directly to the kretprobe'd caller.
+> 
+> For example, this stack is walked incorrectly with ORC + kretprobe:
+> 
+>     # bpftrace -e 'kretprobe:do_nanosleep { @[kstack] = count() }'
+>     Attaching 1 probe...
+>     ^C
+> 
+>     @[
+>         kretprobe_trampoline+0
+>     ]: 1
+> 
+> After this patch, the stack is walked correctly:
+> 
+>     # bpftrace -e 'kretprobe:do_nanosleep { @[kstack] = count() }'
+>     Attaching 1 probe...
+>     ^C
+> 
+>     @[
+>         kretprobe_trampoline+0
+>         __x64_sys_nanosleep+150
+>         do_syscall_64+51
+>         entry_SYSCALL_64_after_hwframe+68
+>     ]: 12
+> 
+> Fixes: fc72ae40e303 ("x86/unwind: Make CONFIG_UNWINDER_ORC=y the default in kconfig for 64-bit")
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 
-Benjamin
+OK, basically good, but this is messy, and doing much more than fixing issue.
 
->
-> Thanks!
-> Ezequiel
->
->> Keep the default behavoir to be G1 hardware.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->>   drivers/staging/media/hantro/hantro.h          | 13 +++++++------
->>   drivers/staging/media/hantro/hantro_drv.c      |  2 ++
->>   drivers/staging/media/hantro/hantro_postproc.c | 17 +++++++++++++++++
->>   3 files changed, 26 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
->> index a76a0d79db9f..05876e426419 100644
->> --- a/drivers/staging/media/hantro/hantro.h
->> +++ b/drivers/staging/media/hantro/hantro.h
->> @@ -37,6 +37,9 @@ struct hantro_codec_ops;
->>   #define HANTRO_HEVC_DECODER    BIT(19)
->>   #define HANTRO_DECODERS                0xffff0000
->>   
->> +#define HANTRO_G1_REV          0x6731
->> +#define HANTRO_G2_REV          0x6732
->> +
->>   /**
->>    * struct hantro_irq - irq handler and name
->>    *
->> @@ -171,6 +174,7 @@ hantro_vdev_to_func(struct video_device *vdev)
->>    * @enc_base:          Mapped address of VPU encoder register for convenience.
->>    * @dec_base:          Mapped address of VPU decoder register for convenience.
->>    * @ctrl_base:         Mapped address of VPU control block.
->> + * @core_hw_dec_rev    Runtime detected HW decoder core revision
->>    * @vpu_mutex:         Mutex to synchronize V4L2 calls.
->>    * @irqlock:           Spinlock to synchronize access to data structures
->>    *                     shared with interrupt handlers.
->> @@ -190,6 +194,7 @@ struct hantro_dev {
->>          void __iomem *enc_base;
->>          void __iomem *dec_base;
->>          void __iomem *ctrl_base;
->> +       u32 core_hw_dec_rev;
->>   
->>          struct mutex vpu_mutex; /* video_device lock */
->>          spinlock_t irqlock;
->> @@ -412,12 +417,8 @@ hantro_get_dst_buf(struct hantro_ctx *ctx)
->>          return v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
->>   }
->>   
->> -static inline bool
->> -hantro_needs_postproc(const struct hantro_ctx *ctx,
->> -                     const struct hantro_fmt *fmt)
->> -{
->> -       return !ctx->is_encoder && fmt->fourcc != V4L2_PIX_FMT_NV12;
->> -}
->> +bool hantro_needs_postproc(const struct hantro_ctx *ctx,
->> +                          const struct hantro_fmt *fmt);
->>   
->>   static inline dma_addr_t
->>   hantro_get_dec_buf_addr(struct hantro_ctx *ctx, struct vb2_buffer *vb)
->> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
->> index f0b68e16fcc0..e3e6df28f470 100644
->> --- a/drivers/staging/media/hantro/hantro_drv.c
->> +++ b/drivers/staging/media/hantro/hantro_drv.c
->> @@ -836,6 +836,8 @@ static int hantro_probe(struct platform_device *pdev)
->>          }
->>          vpu->enc_base = vpu->reg_bases[0] + vpu->variant->enc_offset;
->>          vpu->dec_base = vpu->reg_bases[0] + vpu->variant->dec_offset;
->> +       /* by default decoder is G1 */
->> +       vpu->core_hw_dec_rev = HANTRO_G1_REV;
->>   
->>          ret = dma_set_coherent_mask(vpu->dev, DMA_BIT_MASK(32));
->>          if (ret) {
->> diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/drivers/staging/media/hantro/hantro_postproc.c
->> index 6d2a8f2a8f0b..050880f720d6 100644
->> --- a/drivers/staging/media/hantro/hantro_postproc.c
->> +++ b/drivers/staging/media/hantro/hantro_postproc.c
->> @@ -50,6 +50,23 @@ const struct hantro_postproc_regs hantro_g1_postproc_regs = {
->>          .display_width = {G1_REG_PP_DISPLAY_WIDTH, 0, 0xfff},
->>   };
->>   
->> +bool hantro_needs_postproc(const struct hantro_ctx *ctx,
->> +                          const struct hantro_fmt *fmt)
->> +{
->> +       struct hantro_dev *vpu = ctx->dev;
->> +
->> +       if (ctx->is_encoder)
->> +               return false;
->> +
->> +       if (vpu->core_hw_dec_rev == HANTRO_G1_REV):q
->> +               return fmt->fourcc != V4L2_PIX_FMT_NV12;
->> +
->> +       if (vpu->core_hw_dec_rev == HANTRO_G2_REV)
->> +               return false;
->> +
->> +       return false;
->> +}
->> +
->>   void hantro_postproc_enable(struct hantro_ctx *ctx)
->>   {
->>          struct hantro_dev *vpu = ctx->dev;
->
->
+> ---
+>  arch/x86/kernel/unwind_orc.c | 53 +++++++++++++++++++++++++++++++++++-
+>  kernel/kprobes.c             |  8 +++---
+>  2 files changed, 56 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+> index 2a1d47f47eee..1b88d75e2e9e 100644
+> --- a/arch/x86/kernel/unwind_orc.c
+> +++ b/arch/x86/kernel/unwind_orc.c
+> @@ -1,7 +1,9 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+> +#include <linux/kprobes.h>
+>  #include <linux/objtool.h>
+>  #include <linux/module.h>
+>  #include <linux/sort.h>
+> +#include <asm/kprobes.h>
+>  #include <asm/ptrace.h>
+>  #include <asm/stacktrace.h>
+>  #include <asm/unwind.h>
+> @@ -77,9 +79,11 @@ static struct orc_entry *orc_module_find(unsigned long ip)
+>  }
+>  #endif
+>  
+> -#ifdef CONFIG_DYNAMIC_FTRACE
+> +#if defined(CONFIG_DYNAMIC_FTRACE) || defined(CONFIG_KRETPROBES)
+>  static struct orc_entry *orc_find(unsigned long ip);
+> +#endif
+>  
+> +#ifdef CONFIG_DYNAMIC_FTRACE
+>  /*
+>   * Ftrace dynamic trampolines do not have orc entries of their own.
+>   * But they are copies of the ftrace entries that are static and
+> @@ -117,6 +121,43 @@ static struct orc_entry *orc_ftrace_find(unsigned long ip)
+>  }
+>  #endif
+>  
+> +#ifdef CONFIG_KRETPROBES
+> +static struct orc_entry *orc_kretprobe_find(void)
+> +{
+> +	kprobe_opcode_t *correct_ret_addr = NULL;
+> +	struct kretprobe_instance *ri = NULL;
+> +	struct llist_node *node;
+> +
+> +	node = current->kretprobe_instances.first;
+> +	while (node) {
+> +		ri = container_of(node, struct kretprobe_instance, llist);
+> +
+> +		if ((void *)ri->ret_addr != &kretprobe_trampoline) {
+> +			/*
+> +			 * This is the real return address. Any other
+> +			 * instances associated with this task are for
+> +			 * other calls deeper on the call stack
+> +			 */
+> +			correct_ret_addr = ri->ret_addr;
+> +			break;
+> +		}
+> +
+> +
+> +		node = node->next;
+> +	}
+> +
+> +	if (!correct_ret_addr)
+> +		return NULL;
+> +
+> +	return orc_find((unsigned long)correct_ret_addr);
+> +}
+> +#else
+> +static struct orc_entry *orc_kretprobe_find(void)
+> +{
+> +	return NULL;
+> +}
+> +#endif
+
+This code is too much depending on kretprobe internal implementation.
+This should should be provided by kretprobe.
+
+>  /*
+>   * If we crash with IP==0, the last successfully executed instruction
+>   * was probably an indirect function call with a NULL function pointer,
+> @@ -148,6 +189,16 @@ static struct orc_entry *orc_find(unsigned long ip)
+>  	if (ip == 0)
+>  		return &null_orc_entry;
+>  
+> +	/*
+> +	 * Kretprobe lookup -- must occur before vmlinux addresses as
+> +	 * kretprobe_trampoline is in the symbol table.
+> +	 */
+> +	if (ip == (unsigned long) &kretprobe_trampoline) {
+> +		orc = orc_kretprobe_find();
+> +		if (orc)
+> +			return orc;
+> +	}
+
+Here too. at least "ip == (unsigned long) &kretprobe_trampoline" should
+be hidden by an inline function...
+
+> +
+>  	/* For non-init vmlinux addresses, use the fast lookup table: */
+>  	if (ip >= LOOKUP_START_IP && ip < LOOKUP_STOP_IP) {
+>  		unsigned int idx, start, stop;
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index 745f08fdd7a6..334c23d33451 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -1895,10 +1895,6 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+>  	BUG_ON(1);
+>  
+>  found:
+> -	/* Unlink all nodes for this frame. */
+> -	current->kretprobe_instances.first = node->next;
+> -	node->next = NULL;
+> -
+>  	/* Run them..  */
+>  	while (first) {
+>  		ri = container_of(first, struct kretprobe_instance, llist);
+> @@ -1917,6 +1913,10 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+>  		recycle_rp_inst(ri);
+>  	}
+>  
+> +	/* Unlink all nodes for this frame. */
+> +	current->kretprobe_instances.first = node->next;
+> +	node->next = NULL;
+
+Nack, this is a bit dangerous. We should unlink the chunk of kretprobe instances and
+recycle it as I did in my patch, see below;
+
+https://lore.kernel.org/bpf/20210304221947.5a177ce2e1e94314e57c38a4@kernel.org/
+
+I would like to fix this issue in the generic part, not for x86 only.
+Let me refresh my series for fixing it.
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
