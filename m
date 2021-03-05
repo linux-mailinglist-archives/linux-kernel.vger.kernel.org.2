@@ -2,128 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE77D32DEA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B073C32DE9F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbhCEAwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 19:52:50 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8990 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231591AbhCEAwZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 19:52:25 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1250hLfI097337;
-        Thu, 4 Mar 2021 19:52:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=VtF4Yw7xrfj4MWr85/dNbECLCqQJ6pR1t+mfj8tqn0M=;
- b=q/1p6752gibSgXpWmQzNgNnHguCg+qM/05nwjUqQbnnGMoh2nvjuAehyiSF62aMeVBBV
- UBljInMmmIHa1o2Q84Abc2HFMikMaSidgv10U0nm1p00ntBJatFDY9JZKirnz5VE/Wz6
- e9/+zgC3k/HOxt7DYqol6xyYJ1JIEp0qDk9SOstR+a530IWBOQhm72A0NAMTuZEYmzK7
- KrUMKc55Pf2YRR+kQ72+NYByIlWGh/X+8c0aN9TlTR+zkCKvwdRIq0kp/5dl5usnKtiL
- t+iEjrwZ3YcrbKpOJrS8BZ2zlH8VJlA2JO/SCT9auDFz+gpjWumcuWRSPqO2yMurOtTy 5Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 373abpr62s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 19:52:16 -0500
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1250m8Ge119728;
-        Thu, 4 Mar 2021 19:52:15 -0500
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 373abpr62h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 19:52:15 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1250WomO025076;
-        Fri, 5 Mar 2021 00:52:15 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma03wdc.us.ibm.com with ESMTP id 37128gv1cy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 00:52:15 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1250qD6u13697470
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 5 Mar 2021 00:52:13 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BDD0FC605F;
-        Fri,  5 Mar 2021 00:52:13 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 29DA6C6055;
-        Fri,  5 Mar 2021 00:52:13 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri,  5 Mar 2021 00:52:13 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
-To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, herbert@gondor.apana.org.au,
-        dhowells@redhat.com, zohar@linux.ibm.com
-Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Saulo Alessandre <saulo.alessandre@tse.jus.br>,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v10 8/9] x509: Add OID for NIST P384 and extend parser for it
-Date:   Thu,  4 Mar 2021 19:52:02 -0500
-Message-Id: <20210305005203.3547587-9-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
-References: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
+        id S232000AbhCEAwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 19:52:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231712AbhCEAw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 19:52:28 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A53C16500E;
+        Fri,  5 Mar 2021 00:52:27 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1lHyhe-001sUH-F9; Thu, 04 Mar 2021 19:52:26 -0500
+Message-ID: <20210305005226.350410136@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Thu, 04 Mar 2021 19:52:02 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Subject: [for-linus][PATCH 1/3] tracing: Fix memory leak in __create_synth_event()
+References: <20210305005201.588505771@goodmis.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-04_09:2021-03-03,2021-03-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
- mlxscore=0 malwarescore=0 phishscore=0 adultscore=0 spamscore=0
- suspectscore=0 mlxlogscore=999 priorityscore=1501 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103050001
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saulo Alessandre <saulo.alessandre@tse.jus.br>
+From: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
 
-* crypto/asymmetric_keys/x509_cert_parser.c
-  - prepare x509 parser to load nist_secp384r1
+kmemleak report:
+unreferenced object 0xc5a6f708 (size 8):
+  comm "ftracetest", pid 1209, jiffies 4294911500 (age 6.816s)
+  hex dump (first 8 bytes):
+    00 c1 3d 60 14 83 1f 8a                          ..=`....
+  backtrace:
+    [<f0aa4ac4>] __kmalloc_track_caller+0x2a6/0x460
+    [<7d3d60a6>] kstrndup+0x37/0x70
+    [<45a0e739>] argv_split+0x1c/0x120
+    [<c17982f8>] __create_synth_event+0x192/0xb00
+    [<0708b8a3>] create_synth_event+0xbb/0x150
+    [<3d1941e1>] create_dyn_event+0x5c/0xb0
+    [<5cf8b9e3>] trace_parse_run_command+0xa7/0x140
+    [<04deb2ef>] dyn_event_write+0x10/0x20
+    [<8779ac95>] vfs_write+0xa9/0x3c0
+    [<ed93722a>] ksys_write+0x89/0xc0
+    [<b9ca0507>] __ia32_sys_write+0x15/0x20
+    [<7ce02d85>] __do_fast_syscall_32+0x45/0x80
+    [<cb0ecb35>] do_fast_syscall_32+0x29/0x60
+    [<2467454a>] do_SYSENTER_32+0x15/0x20
+    [<9beaa61d>] entry_SYSENTER_32+0xa9/0xfc
+unreferenced object 0xc5a6f078 (size 8):
+  comm "ftracetest", pid 1209, jiffies 4294911500 (age 6.816s)
+  hex dump (first 8 bytes):
+    08 f7 a6 c5 00 00 00 00                          ........
+  backtrace:
+    [<bbac096a>] __kmalloc+0x2b6/0x470
+    [<aa2624b4>] argv_split+0x82/0x120
+    [<c17982f8>] __create_synth_event+0x192/0xb00
+    [<0708b8a3>] create_synth_event+0xbb/0x150
+    [<3d1941e1>] create_dyn_event+0x5c/0xb0
+    [<5cf8b9e3>] trace_parse_run_command+0xa7/0x140
+    [<04deb2ef>] dyn_event_write+0x10/0x20
+    [<8779ac95>] vfs_write+0xa9/0x3c0
+    [<ed93722a>] ksys_write+0x89/0xc0
+    [<b9ca0507>] __ia32_sys_write+0x15/0x20
+    [<7ce02d85>] __do_fast_syscall_32+0x45/0x80
+    [<cb0ecb35>] do_fast_syscall_32+0x29/0x60
+    [<2467454a>] do_SYSENTER_32+0x15/0x20
+    [<9beaa61d>] entry_SYSENTER_32+0xa9/0xfc
 
-* include/linux/oid_registry.h
-  - add OID_id_secp384r1
+In __create_synth_event(), while iterating field/type arguments, the
+argv_split() will return array of atleast 2 elements even when zero
+arguments(argc=0) are passed. for e.g. when there is double delimiter
+or string ends with delimiter
 
-Signed-off-by: Saulo Alessandre <saulo.alessandre@tse.jus.br>
-Tested-by: Stefan Berger <stefanb@linux.ibm.com>
+To fix call argv_free() even when argc=0.
+
+Link: https://lkml.kernel.org/r/20210304094521.GA1826@cosmos
+
+Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- crypto/asymmetric_keys/x509_cert_parser.c | 3 +++
- include/linux/oid_registry.h              | 1 +
- 2 files changed, 4 insertions(+)
+ kernel/trace/trace_events_synth.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-index f5d547c6dfb5..526c6a407e07 100644
---- a/crypto/asymmetric_keys/x509_cert_parser.c
-+++ b/crypto/asymmetric_keys/x509_cert_parser.c
-@@ -510,6 +510,9 @@ int x509_extract_key_data(void *context, size_t hdrlen,
- 		case OID_id_prime256v1:
- 			ctx->cert->pub->pkey_algo = "ecdsa-nist-p256";
- 			break;
-+		case OID_id_secp384r1:
-+			ctx->cert->pub->pkey_algo = "ecdsa-nist-p384";
-+			break;
- 		default:
- 			return -ENOPKG;
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index 2979a96595b4..8d71e6c83f10 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -1225,8 +1225,10 @@ static int __create_synth_event(const char *name, const char *raw_fields)
+ 			goto err;
  		}
-diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-index 3583908cf1ca..d656450dfc66 100644
---- a/include/linux/oid_registry.h
-+++ b/include/linux/oid_registry.h
-@@ -64,6 +64,7 @@ enum OID {
  
- 	OID_certAuthInfoAccess,		/* 1.3.6.1.5.5.7.1.1 */
- 	OID_sha1,			/* 1.3.14.3.2.26 */
-+	OID_id_secp384r1,		/* 1.3.132.0.34 */
- 	OID_sha256,			/* 2.16.840.1.101.3.4.2.1 */
- 	OID_sha384,			/* 2.16.840.1.101.3.4.2.2 */
- 	OID_sha512,			/* 2.16.840.1.101.3.4.2.3 */
+-		if (!argc)
++		if (!argc) {
++			argv_free(argv);
+ 			continue;
++		}
+ 
+ 		n_fields_this_loop = 0;
+ 		consumed = 0;
 -- 
-2.29.2
+2.30.0
+
 
