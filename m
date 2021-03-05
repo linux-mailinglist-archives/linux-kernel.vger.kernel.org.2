@@ -2,223 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC8332F182
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA9A32F187
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhCERjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:39:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230491AbhCERjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:39:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAE85650B8;
-        Fri,  5 Mar 2021 17:39:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614965960;
-        bh=oz8CD8mvufDaXgeo9mikhjqwRzUNd/xTiJlDKiwqo+w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=E1TUctQLA3uKWLY+vhn7k0GJv2v8RrxaGt/HVE+BNEuZyHVMSEGgJp0JXacLRfEW7
-         ylRE5yuRqRQBJvWKQt/tEclnnbCm8OOc6JcTnsluGlDnd4HgvzkQpAo5RsS6Cnwh3t
-         yvyTAQg83o3eA/844YgMB7/HI24xQZEI0ol2sKjzaLrEWGQ8shLYy0WAx+940aXWW7
-         5sRXwFlASk1IpiI7caprYSJS9KxsSOJe30cucqIbdOlx/xemVzWzubWWnZx3Jz57h6
-         dMusKgQOIhqeST+Mp/7u3gf5cFCPx9JZNwQbynNNa6/M6DcLbiLEY2+weCMXL7Nahx
-         yq8vU11d1r9QA==
-Received: by mail-ej1-f50.google.com with SMTP id mj10so5056715ejb.5;
-        Fri, 05 Mar 2021 09:39:19 -0800 (PST)
-X-Gm-Message-State: AOAM530VKm3v0Qm2XflhDAR9+VL3gPYjyq7HfXjOvAsU0KCRKVY7VyAx
-        Z0mIK3L9PnmjYK6nA3lGHKx5MUYdA0ezAzVrbA==
-X-Google-Smtp-Source: ABdhPJzNB9E/zgO7udUBiscc4v/up3iTv8YfHuuMDmpq5J4Nv3xNBjZ0s4wgvMRYuy6Lh2LXgZIPKLpFMilMKPS8/Q8=
-X-Received: by 2002:a17:906:25c4:: with SMTP id n4mr3294522ejb.359.1614965958236;
- Fri, 05 Mar 2021 09:39:18 -0800 (PST)
+        id S229848AbhCERkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:40:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229978AbhCERjs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 12:39:48 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AD9C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 09:39:48 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id s16so1751173plr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 09:39:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0U/5k+q/HJ1YlYlyAATLdvdzgFw3Kh+iX+qoDNdFdc8=;
+        b=AYGddGvVV9JNaZ72VmtfGsuOKbRA/FCZWvlh7Z3BV10+vNHMqUrtA9h2RhaLtW3+80
+         GFTs756gi65p5PmZDecnyP8D9yJu1lz1sk7Os77rlIfpZUi60RAPHUEEsTWbuyn+5F7b
+         8S8rioR5X3rcx0s3pFQDnD/9CJd9fPg1CIsKSfMbLhljqfsa25USxt1V10bemt1Y3oyR
+         RSU2KDzfEtiNYNgpjbL3zz1HzMywgh8p4CQBVvNM6Zxx5bNIyDFG5hD7V1HKFcxx6MyA
+         c5ald3CQqVEsuXGJyBSuhlrVlxwoHX4Tiwn5hiKnbNc0xRLcI99GatlWWvxQX9W47e3r
+         bF5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0U/5k+q/HJ1YlYlyAATLdvdzgFw3Kh+iX+qoDNdFdc8=;
+        b=J0a28uviEuFyvzW+cnSYXGnnEN1Ra68p379Zs4dDxS8krv58rQZNnq/bSrSr3kS7c8
+         cSadT92jn2TFIKq0zZO3AG4TUvjfBbmZzkhRtft20DHRJzjvVEmDvfN3MqTmourxIVhu
+         DweRbIVlzpSCy5Ok92WmAcmxGN3pgMphkJbZIU0ZYl0EHzx80G7KUbXNwlMTEwFtESqu
+         OssOpZqb25tzc39HwY0Xmr8XWBehXWUkEdZM6hREjvEsKp8Uw/LiIwImmV7JW3ZX2OYK
+         s+dqekeBuX1APAFnXDzFODb7dGy6mts5yRpilUg6+Vnmm9Xm1rz4hrz1ojrRYNXEjeIR
+         T+KQ==
+X-Gm-Message-State: AOAM5307HlNXPG/9Q8dkV3hhPwi5VjChf8eV3SQsznHMLgMr0ST4Dhih
+        piRKqlaQjS65lsDm4dTMbMGDMQ==
+X-Google-Smtp-Source: ABdhPJzQuiVScsJZfLsQeeYPIMvlqkVTgipz2lTEd++UI4HjY8Nuw1xrqt+7oZEme9eA+6nAx101bg==
+X-Received: by 2002:a17:90a:540c:: with SMTP id z12mr11003937pjh.163.1614965987931;
+        Fri, 05 Mar 2021 09:39:47 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id d6sm2681398pjs.38.2021.03.05.09.39.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 09:39:47 -0800 (PST)
+Date:   Fri, 5 Mar 2021 10:39:45 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Andy Gross <agross@kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v5 15/16] rpmsg: char: no dynamic endpoint management for
+ the default one
+Message-ID: <20210305173945.GB3885132@xps15>
+References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
+ <20210219111501.14261-16-arnaud.pouliquen@foss.st.com>
+ <20210304184034.GA3854911@xps15>
+ <d5a451e1-3dac-f665-aabd-bd72afc88b75@foss.st.com>
 MIME-Version: 1.0
-References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-13-marcan@marcan.st>
-In-Reply-To: <20210304213902.83903-13-marcan@marcan.st>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 5 Mar 2021 11:39:06 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJF2Hz=4U7FR_GOSjCxqt3dpf-CAWFNfsSrDjDLpHqgCA@mail.gmail.com>
-Message-ID: <CAL_JsqJF2Hz=4U7FR_GOSjCxqt3dpf-CAWFNfsSrDjDLpHqgCA@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
- MMIO as non-posted
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d5a451e1-3dac-f665-aabd-bd72afc88b75@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 3:40 PM Hector Martin <marcan@marcan.st> wrote:
->
-> This implements the 'nonposted-mmio' and 'posted-mmio' boolean
-> properties. Placing these properties in a bus marks all child devices as
-> requiring non-posted or posted MMIO mappings. If no such properties are
-> found, the default is posted MMIO.
+On Fri, Mar 05, 2021 at 12:09:37PM +0100, Arnaud POULIQUEN wrote:
+> 
+> 
+> On 3/4/21 7:40 PM, Mathieu Poirier wrote:
+> > There has to be a capital letter at the start of the title:
+> > 
+> > rpmsg: char: No dynamic endpoint management for the default one
+> > 
+> > Please fix for all the patches.
+> 
+> Ok, I will update the subjects with capital letter in my next revision.
+> 
+> Just for my information, is it a new rule? kernel documentation [1] gives a
+> canonical subject and an example without capital letter.
 
-I'm still a little hesitant to add these properties and having some
-default. I worry about a similar situation as 'dma-coherent' where the
-assumed default on non-coherent on Arm doesn't work for PowerPC which
-defaults coherent. More below on this.
+I don't think it is a rule but in the past few years the trend has been to
+use a capital letter.  I was convinced the documentation had a capital letter
+but you have proven that it doesn't so you can ignore this part if you wish.
 
-> of_mmio_is_nonposted() performs the tree walking to determine if a given
-> device has requested non-posted MMIO.
->
-> of_address_to_resource() uses this to set the IORESOURCE_MEM_NONPOSTED
-> flag on resources that require non-posted MMIO.
->
-> of_iomap() and of_io_request_and_map() then use this flag to pick the
-> correct ioremap() variant.
->
-> This mechanism is currently restricted to Apple ARM platforms, as an
-> optimization.
->
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  drivers/of/address.c       | 72 ++++++++++++++++++++++++++++++++++++--
->  include/linux/of_address.h |  1 +
->  2 files changed, 71 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/of/address.c b/drivers/of/address.c
-> index 73ddf2540f3f..6114dceb1ba6 100644
-> --- a/drivers/of/address.c
-> +++ b/drivers/of/address.c
-> @@ -847,6 +847,9 @@ static int __of_address_to_resource(struct device_node *dev,
->                 return -EINVAL;
->         memset(r, 0, sizeof(struct resource));
->
-> +       if (of_mmio_is_nonposted(dev))
-> +               flags |= IORESOURCE_MEM_NONPOSTED;
-> +
->         r->start = taddr;
->         r->end = taddr + size - 1;
->         r->flags = flags;
-> @@ -896,7 +899,10 @@ void __iomem *of_iomap(struct device_node *np, int index)
->         if (of_address_to_resource(np, index, &res))
->                 return NULL;
->
-> -       return ioremap(res.start, resource_size(&res));
-> +       if (res.flags & IORESOURCE_MEM_NONPOSTED)
-> +               return ioremap_np(res.start, resource_size(&res));
-> +       else
-> +               return ioremap(res.start, resource_size(&res));
+> 
+> [1]
+> https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#the-canonical-patch-format
+> 
+> > 
+> > On Fri, Feb 19, 2021 at 12:15:00PM +0100, Arnaud Pouliquen wrote:
+> >> Do not dynamically manage the default endpoint. The ept address must
+> >> not change.
+> >> This update is needed to manage the RPMSG_CREATE_DEV_IOCTL. In this
+> >> case a default endpoint is used and it's address must not change or
+> >> been reused by another service.
+> > 
+> > The above is very difficult to understand.  I am not sure about introducing
+> > RPMSG_CREATE_DEV_IOCTL in this patchset.  More on that in an upcoming comment.
+> 
+> The purpose of this revision was mainly to provide a view of what we could do to
+> provide a more generic control interface.
+> 
+> To simplify the review I can remove the RPMSG_CREATE_DEV_IOCTL management and
+> send it as a next step, in a separate patchset.
 
-This and the devm variants all scream for a ioremap_extended()
-function. IOW, it would be better if the ioremap flavor was a
-parameter. Unless we could implement that just for arm64 first, that's
-a lot of refactoring...
+Yes, it would make this patchset quite simple.
 
->  }
->  EXPORT_SYMBOL(of_iomap);
->
-> @@ -928,7 +934,11 @@ void __iomem *of_io_request_and_map(struct device_node *np, int index,
->         if (!request_mem_region(res.start, resource_size(&res), name))
->                 return IOMEM_ERR_PTR(-EBUSY);
->
-> -       mem = ioremap(res.start, resource_size(&res));
-> +       if (res.flags & IORESOURCE_MEM_NONPOSTED)
-> +               mem = ioremap_np(res.start, resource_size(&res));
-> +       else
-> +               mem = ioremap(res.start, resource_size(&res));
-> +
->         if (!mem) {
->                 release_mem_region(res.start, resource_size(&res));
->                 return IOMEM_ERR_PTR(-ENOMEM);
-> @@ -1094,3 +1104,61 @@ bool of_dma_is_coherent(struct device_node *np)
->         return false;
->  }
->  EXPORT_SYMBOL_GPL(of_dma_is_coherent);
-> +
-> +static bool of_nonposted_mmio_quirk(void)
-> +{
-> +       if (IS_ENABLED(CONFIG_ARCH_APPLE)) {
-> +               /* To save cycles, we cache the result for global "Apple ARM" setting */
-> +               static int quirk_state = -1;
-> +
-> +               /* Make quirk cached */
-> +               if (quirk_state < 0)
-> +                       quirk_state = of_machine_is_compatible("apple,arm-platform");
-> +               return !!quirk_state;
-> +       }
-> +       return false;
-> +}
-> +
-> +/**
-> + * of_mmio_is_nonposted - Check if device uses non-posted MMIO
-> + * @np:        device node
-> + *
-> + * Returns true if the "nonposted-mmio" property was found for
-> + * the device's bus or a parent. "posted-mmio" has the opposite
-> + * effect, terminating recursion and overriding any
-> + * "nonposted-mmio" properties in parent buses.
-> + *
-> + * Recursion terminates if reach a non-translatable boundary
-> + * (a node without a 'ranges' property).
-> + *
-> + * This is currently only enabled on Apple ARM devices, as an
-> + * optimization.
-> + */
-> +bool of_mmio_is_nonposted(struct device_node *np)
-> +{
-> +       struct device_node *node;
-> +       struct device_node *parent;
-> +
-> +       if (!of_nonposted_mmio_quirk())
-> +               return false;
-> +
-> +       node = of_get_parent(np);
-> +
-> +       while (node) {
-> +               if (!of_property_read_bool(node, "ranges")) {
-> +                       break;
-> +               } else if (of_property_read_bool(node, "nonposted-mmio")) {
-> +                       of_node_put(node);
-> +                       return true;
-> +               } else if (of_property_read_bool(node, "posted-mmio")) {
-> +                       break;
-> +               }
-> +               parent = of_get_parent(node);
-> +               of_node_put(node);
-> +               node = parent;
-> +       }
-> +
-> +       of_node_put(node);
-> +       return false;
-
-What's the code path using these functions on the M1 where we need to
-return 'posted'? It's just downstream PCI mappings (PCI memory space),
-right? Those would never hit these paths because they don't have a DT
-node or if they do the memory space is not part of it. So can't the
-check just be:
-
-bool of_mmio_is_nonposted(struct device_node *np)
-{
-    return np && of_machine_is_compatible("apple,arm-platform");
-}
-
-Note in theory we could use 'assigned-addresses' with PCI, but that's
-pretty much never the case with FDT. If we did, we could detect the
-device node is a PCI device in that case.
-
-Rob
+> 
+> > 
+> >>
+> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> >> ---
+> >>  drivers/rpmsg/rpmsg_char.c | 28 +++++++++++++++++++++-------
+> >>  1 file changed, 21 insertions(+), 7 deletions(-)
+> >>
+> >> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> >> index c98b0e69679b..8d3f9d6c20ad 100644
+> >> --- a/drivers/rpmsg/rpmsg_char.c
+> >> +++ b/drivers/rpmsg/rpmsg_char.c
+> >> @@ -114,14 +114,23 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
+> >>  	struct rpmsg_endpoint *ept;
+> >>  	struct rpmsg_device *rpdev = eptdev->rpdev;
+> >>  	struct device *dev = &eptdev->dev;
+> >> +	u32 addr = eptdev->chinfo.src;
+> >>  
+> >>  	get_device(dev);
+> >>  
+> >> -	ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
+> >> -	if (!ept) {
+> >> -		dev_err(dev, "failed to open %s\n", eptdev->chinfo.name);
+> >> -		put_device(dev);
+> >> -		return -EINVAL;
+> >> +	/*
+> >> +	 * The RPMsg device can has been created by a ns announcement. In this
+> >> +	 * case a default endpoint has been created. Reuse it to avoid to manage
+> >> +	 * a new address on each open close.
+> >> +	 */
+> > 
+> > Here too it is very difficult to understand because the comment
+> > doesn't not describe what the code does.  The code creates an enpoint if it
+> > has not been created, which means /dev/rpmsgX was created from the ioctl. 
+> 
+> Right, not enough explicit
+> 
+> Thanks,
+> Arnaud
+> 
+> > 
+> >> +	ept = rpdev->ept;
+> >> +	if (!ept || addr != ept->addr) {
+> >> +		ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
+> >> +		if (!ept) {
+> >> +			dev_err(dev, "failed to open %s\n", eptdev->chinfo.name);
+> >> +			put_device(dev);
+> >> +			return -EINVAL;
+> >> +		}
+> >>  	}
+> >>  
+> >>  	eptdev->ept = ept;
+> >> @@ -133,12 +142,17 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
+> >>  static int rpmsg_eptdev_release(struct inode *inode, struct file *filp)
+> >>  {
+> >>  	struct rpmsg_eptdev *eptdev = cdev_to_eptdev(inode->i_cdev);
+> >> +	struct rpmsg_device *rpdev = eptdev->rpdev;
+> >>  	struct device *dev = &eptdev->dev;
+> >>  
+> >> -	/* Close the endpoint, if it's not already destroyed by the parent */
+> >> +	/*
+> >> +	 * Close the endpoint, if it's not already destroyed by the parent and it is not the
+> >> +	 * default one.
+> >> +	 */
+> >>  	mutex_lock(&eptdev->ept_lock);
+> >>  	if (eptdev->ept) {
+> >> -		rpmsg_destroy_ept(eptdev->ept);
+> >> +		if (eptdev->ept != rpdev->ept)
+> >> +			rpmsg_destroy_ept(eptdev->ept);
+> >>  		eptdev->ept = NULL;
+> >>  	}
+> >>  	mutex_unlock(&eptdev->ept_lock);
+> >> -- 
+> >> 2.17.1
+> >>
