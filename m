@@ -2,62 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFFF32ED0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 15:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8630532ED20
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 15:29:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231135AbhCEOYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 09:24:37 -0500
-Received: from www.zeus03.de ([194.117.254.33]:36786 "EHLO mail.zeus03.de"
+        id S231254AbhCEO3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 09:29:25 -0500
+Received: from m12-18.163.com ([220.181.12.18]:59793 "EHLO m12-18.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230385AbhCEOYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 09:24:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=k1; bh=Db2OqtDIcsIdYQMFBPuOR8jWP/j
-        2kyScFTv4LFMBMSw=; b=w9dYBbV50ODMyzmlsGJTsbCT0FUT6WpTWhK20N41I7e
-        N4RAwo6rw1dy8Kp85LbiWT4ylHSI/Hz4huhrfQzHb7rSnBZ0WQmXp5GzdQrgEMtp
-        zS2sXaDEimfC3Qq6DBQxwYw5NYD21YWBrwEnkEUUOaawJH6DoPmjHniSw5e/29fI
-        =
-Received: (qmail 2249510 invoked from network); 5 Mar 2021 15:24:02 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Mar 2021 15:24:02 +0100
-X-UD-Smtp-Session: l3s3148p1@nSLt1cq8XplN91Vm
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Subject: [PATCH] dt-bindings: timer: renesas,tmu: add r8a779a0 TMU support
-Date:   Fri,  5 Mar 2021 15:23:59 +0100
-Message-Id: <20210305142359.11992-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.29.2
+        id S229821AbhCEO3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 09:29:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=KzhyB
+        nsVYnUhSOfd6PhuhP5B+5Mmhp9jN22Vts2dIoY=; b=i5OeG022sIcyGrnl/RZuL
+        H0nHNHJY95dX0DTwVUO07Ur1TePg45EFfzRmEhqIN8ZEW4wsomd7+yvWOOXtt/Ej
+        IXrTlhFec9RANur2fWN+I9Sl0Y6w4o4BfAuhhklpLHKOu6Df5IwzkNfuMl3wjXKy
+        x+ocKuvhmFVugFpJsEkBuY=
+Received: from yangjunlin.ccdomain.com (unknown [119.137.55.151])
+        by smtp14 (Coremail) with SMTP id EsCowADn8hnAP0JgTzXQXA--.15144S2;
+        Fri, 05 Mar 2021 22:27:13 +0800 (CST)
+From:   angkery <angkery@163.com>
+To:     leoyang.li@nxp.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Junlin Yang <yangjunlin@yulong.com>
+Subject: [PATCH] ethernet: ucc_geth: Use kmemdup instead of kmalloc and memcpy
+Date:   Fri,  5 Mar 2021 22:27:11 +0800
+Message-Id: <20210305142711.3022-1-angkery@163.com>
+X-Mailer: git-send-email 2.24.0.windows.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EsCowADn8hnAP0JgTzXQXA--.15144S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZF1DGFyDKrW5GF4DGFyfJFb_yoWDAFcEkr
+        WfZrWYgr4jgFn2vw4a9w47Z340k3WkXrn5X3WSgFW5Ar9rZr15Wrs7Zr1fJwnxWF4I9FyD
+        Ar1xt34xA348tjkaLaAFLSUrUUUU0b8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUn3PEDUUUUU==
+X-Originating-IP: [119.137.55.151]
+X-CM-SenderInfo: 5dqjyvlu16il2tof0z/xtbBFAFMI1aD+lu31AAAst
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Junlin Yang <yangjunlin@yulong.com>
+
+Fixes coccicheck warnings:
+./drivers/net/ethernet/freescale/ucc_geth.c:3594:11-18:
+WARNING opportunity for kmemdup
+
+Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
 ---
+ drivers/net/ethernet/freescale/ucc_geth.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-This is the correct one. TMU passed the testsuite, CMT needs a second
-look.
-
- Documentation/devicetree/bindings/timer/renesas,tmu.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/timer/renesas,tmu.yaml b/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
-index c54188731a1b..20af9ce05ae5 100644
---- a/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
-+++ b/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
-@@ -30,6 +30,7 @@ properties:
-           - renesas,tmu-r8a7779  # R-Car H1
-           - renesas,tmu-r8a77970 # R-Car V3M
-           - renesas,tmu-r8a77980 # R-Car V3H
-+          - renesas,tmu-r8a779a0 # R-Car V3U
-       - const: renesas,tmu
+diff --git a/drivers/net/ethernet/freescale/ucc_geth.c b/drivers/net/ethernet/freescale/ucc_geth.c
+index ef4e2fe..2c079ad 100644
+--- a/drivers/net/ethernet/freescale/ucc_geth.c
++++ b/drivers/net/ethernet/freescale/ucc_geth.c
+@@ -3591,10 +3591,9 @@ static int ucc_geth_probe(struct platform_device* ofdev)
+ 	if ((ucc_num < 0) || (ucc_num > 7))
+ 		return -ENODEV;
  
-   reg:
+-	ug_info = kmalloc(sizeof(*ug_info), GFP_KERNEL);
++	ug_info = kmemdup(&ugeth_primary_info, sizeof(*ug_info), GFP_KERNEL);
+ 	if (ug_info == NULL)
+ 		return -ENOMEM;
+-	memcpy(ug_info, &ugeth_primary_info, sizeof(*ug_info));
+ 
+ 	ug_info->uf_info.ucc_num = ucc_num;
+ 
 -- 
-2.29.2
+1.9.1
+
 
