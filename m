@@ -2,128 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2529032E208
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 07:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B86132E212
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 07:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhCEGMl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Mar 2021 01:12:41 -0500
-Received: from mga18.intel.com ([134.134.136.126]:27758 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229448AbhCEGMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 01:12:40 -0500
-IronPort-SDR: FNxpkIOH3nFIXm6Og9i8PCbgx/HenRYa9xCs8PkE1KA06ApSoLQ0zQEvyXWLO70cwHIDpiLq9B
- mOFc/7kn8z4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="175209077"
-X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
-   d="scan'208";a="175209077"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 22:12:40 -0800
-IronPort-SDR: ZfcXcgfo3INW0TpmgzYUaWfSm95uw/OHtr75iij2tRkjF8VCavOOLEe8IwLGJ76uDPbCZXccPO
- v/dOkRGbtn1Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
-   d="scan'208";a="518942639"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by orsmga004.jf.intel.com with ESMTP; 04 Mar 2021 22:12:40 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 4 Mar 2021 22:12:39 -0800
-Received: from shsmsx605.ccr.corp.intel.com (10.109.6.215) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 4 Mar 2021 22:12:38 -0800
-Received: from shsmsx605.ccr.corp.intel.com ([10.109.6.215]) by
- SHSMSX605.ccr.corp.intel.com ([10.109.6.215]) with mapi id 15.01.2106.013;
- Fri, 5 Mar 2021 14:12:36 +0800
-From:   "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-CC:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC
- association
-Thread-Topic: [PATCH v3 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC
- association
-Thread-Index: AQHXCLh6LEG1CfkjwEO3CLgkzlZ+yap0+zLA
-Date:   Fri, 5 Mar 2021 06:12:36 +0000
-Message-ID: <bd90aee237e44aef9953a86c53b77dfc@intel.com>
-References: <4a0bf3a852ed47deb072890319fb39ec@intel.com>
- <20210222011717.43266-1-qiuxu.zhuo@intel.com>
-In-Reply-To: <20210222011717.43266-1-qiuxu.zhuo@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.239.127.36]
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: 8BIT
+        id S229489AbhCEGWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 01:22:38 -0500
+Received: from mail-eopbgr1310079.outbound.protection.outlook.com ([40.107.131.79]:10976
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229457AbhCEGWh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 01:22:37 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Hx7WsdlvMtOA/I/lgCAlB+yxFNE7DpJ8yybok6V3pYaOr9v3y7A3zpzHa0l59WA3Ys3A5oY/ZvKpLb1lShAHgstl6yUxWMTlEjTn9/emWIQtt31dQh9Rc2/iAUvetZipBN0hmQDRG3+Lt1F3pJ23gltqbxWMAWGskJDxjvTs0BLabO3Ps8ayiV8kvVeFh3Gpuc+qsJAK1lYwDIDLl2/cns2o8kHVQ+Rwy16P5/o+Eg1oToJORazfkQtX4byE/VEgNq2MPJu38UQ/8Gzer+eq/O59BeHQklwpoDCyCNnv4nxT4vsFnnT4KEvRIiUcaWjlOfDNoNxNVfWLL4JlbbQ1Mw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T2GXeD34rY5WDPoWJUbY8rd0SGK0tO+qg0oGbPnlwiE=;
+ b=kpmzLZJiRNIsVAVuJvp33bmEftCh0amDtCYB9dhxNkRhqq47btsiY9dh5A42EhzvhyUUT9VgZOHuz5UmUYoC5SZbLZ+fvn3Ujsedwm5/2nlfgCXUiYL6+JockB6fFNrKlrsjw344vfX7KmUe8HfbkfU31JbAIgWiQkSjhWK4/HrsFlP872IjQU0VLH92IiNofqEWx5TVfUMBOH1RtJ7D98bbaRvpkKWt/q/HFMJg5p7gl5SsrnYJnT6dmn02qIDYZ1CCNbLB8VmGAoydiz/ILwSMlV3/xERmj2tRO0j44vVVIpY0Ydw1oWI4Zi0Rq1D7dn/HoJsOfOJ25wVY2HRIqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T2GXeD34rY5WDPoWJUbY8rd0SGK0tO+qg0oGbPnlwiE=;
+ b=uNK37mECXi2zPh4fmfccqbuKmbog3AbsxfU+QnNzWGV/XOtPPVEwkso2EMXKmJiIfTR4IppvkohWgHpHBkV9z3hmyh4yalndsKwqmKJoD6sGDSR/JZsQHvS/lv34sDHM1FYwctDAnUQZ+fXrbUA+EJ4BZBZMbTLUR5DFw5HsQtk=
+Authentication-Results: lists.ozlabs.org; dkim=none (message not signed)
+ header.d=none;lists.ozlabs.org; dmarc=none action=none header.from=oppo.com;
+Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
+ SG2PR02MB4021.apcprd02.prod.outlook.com (2603:1096:4:80::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3890.20; Fri, 5 Mar 2021 06:22:33 +0000
+Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
+ ([fe80::1143:a7b7:6bd4:83b3]) by SG2PR02MB4108.apcprd02.prod.outlook.com
+ ([fe80::1143:a7b7:6bd4:83b3%7]) with mapi id 15.20.3890.032; Fri, 5 Mar 2021
+ 06:22:32 +0000
+From:   Huang Jianan <huangjianan@oppo.com>
+To:     linux-erofs@lists.ozlabs.org
+Cc:     huangjianan@oppo.com, guoweichao@oppo.com, zhangshiming@oppo.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] erofs: avoid memory allocation failure during rolling decompression
+Date:   Fri,  5 Mar 2021 14:22:18 +0800
+Message-Id: <20210305062219.557128-1-huangjianan@oppo.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [58.255.79.104]
+X-ClientProxiedBy: HKAPR04CA0018.apcprd04.prod.outlook.com
+ (2603:1096:203:d0::28) To SG2PR02MB4108.apcprd02.prod.outlook.com
+ (2603:1096:4:96::19)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (58.255.79.104) by HKAPR04CA0018.apcprd04.prod.outlook.com (2603:1096:203:d0::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 5 Mar 2021 06:22:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ce43fe43-776c-4384-9eee-08d8df9f0f1b
+X-MS-TrafficTypeDiagnostic: SG2PR02MB4021:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SG2PR02MB40218E7BE41D3F71A861DBB7C3969@SG2PR02MB4021.apcprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:597;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SqENOXfi9fm6jBxPb8wJ2Rx0T2uliSedf7YubLGUd5ylJdC99nA3YCUcIyzhoiWQVoLZDd08EalMsWfMDWHr0AVrulyhdHYF339OlnER62r4TrvM/lRbdIo/hmCG6QKnwnwllDw8jJ8AHlIVx9qS0Ar6/lD+6JN7lpAu/N5JXNcorLvVLJJYj17aNg9eJgX+iBl6V3wHkbPxaiw9sPzqT+DcEDKDfP0JigSw+fVMhrMjQ0mljcpGuvmMGxdaMwLSU3gvU/ijXuT15XO9Epap+/USkSegDdxtd2m1slx0b1olSO+ygZJC5t9vOCRCFvTc80/dkoC4PIjFU3eyuFrvD1axu8osPHTJW7t2FIMSAXZDEDljYorFlqlpMVr5+uQJ3yuiPElJkHyVUg6+24gMQ+iXabmYWFhIufBW01X5GFNnxoPDCeKHkvQgOUnMOUK2d4cWJH75GnZNofEvDRKQf+9dQUhHsMA4ZiqteSaFQrYGbkeq9Ehzr8PnovDyrvtOFUcRG8cTSgWVrf0ug+LuN91dbx7JLDYmjtmuLXcpHlXX5OuCSfvsC7+EeDWXeZ8oWlUXkMd8mH8SYso6CG2RX/QQ/9PQX41QtmPFOZ594/U=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(39860400002)(396003)(136003)(26005)(6512007)(4744005)(2906002)(86362001)(66476007)(1076003)(69590400012)(316002)(8676002)(2616005)(8936002)(6506007)(956004)(5660300002)(6666004)(186003)(16526019)(66946007)(36756003)(478600001)(6916009)(4326008)(6486002)(66556008)(83380400001)(52116002)(11606007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?/6QaFiAd2qPiFKxwQbJ0XieoY910o4vRE3yUhvv1yjevgSoB5NSpmF+ADvfY?=
+ =?us-ascii?Q?SEO2w2wHUI2OoitIc2Sum8ZtIEQJwy+85iS6gMQS4KSSQPMkyqdXaSdesNNU?=
+ =?us-ascii?Q?VDvEDUikgrwdq8prfe5idJtZZ8DlSTSqRNK5CwIPmitTiLvnsgDiMD1O00ws?=
+ =?us-ascii?Q?/cqUWxdjzFiUFW1G4NT1fenW/vvXTUFRUb55NDp1PURaN+Yqlvm4WpI439ng?=
+ =?us-ascii?Q?SAeQpmOMLh7a6EGJ669LztZjPwFg4Tj0AGihJqsjwD9Nwt1cg6bGllSwHFCs?=
+ =?us-ascii?Q?WUN8Hj8cPfWCOQyd78hVoDXMNuSE+4iwrc/uYgOqHtDxah1vAAKI0bHBB1iB?=
+ =?us-ascii?Q?34KNGVxMVFohWKppc9vWB0Kq3q6ZMwNWumTXOCOkGx7f/oicvSHcvueTa3Qp?=
+ =?us-ascii?Q?4i2817aEhe5oTM4BxpVtD7opz/qZVIg2EoYi9i9CQw3INNZxn3qrfUvaR4vy?=
+ =?us-ascii?Q?s/75EvCtgpjealHYIqABoCYNe5FyCXQo7JdlyzWgYbJJRy390iLQFquajnZS?=
+ =?us-ascii?Q?/6+Jnh6433P5W4aY7LZ3G8HK3i6Jl+iauPQoXXg84Xg6stpeMWgI0xOONi+j?=
+ =?us-ascii?Q?SQnjxTDB4dMwiVbOB9f0JY9f+LWNA1OIxg8Ai1NhKbnEGjIMcGbjEokHnCcY?=
+ =?us-ascii?Q?QBuvbFQidvjpfV1eTbZc1ezsOutWT8J7bg+EN+ljT8KXyp91CZmRKHWsXG9p?=
+ =?us-ascii?Q?aVoP6K0uqYKNHx071ndeSNOY3QOWtlHoV9jf5TOPaaZ223/fBdTplhrbsA2W?=
+ =?us-ascii?Q?au5zGIsvs2AlhF0kuxzczpXOUwUoSR3yb/pSYZAxIs2LpM5rnt8DO9Eq8a3v?=
+ =?us-ascii?Q?giIiHvl7N2kW982d0DnpIKax7idLSMeKykDKiWVMdF/s00OVNieHGKMl8Ng0?=
+ =?us-ascii?Q?NjnWfBgiTy/HpJczwoTAwIobS0QDkwsn0oMdq4YUhwjx/sfkpi9k2KwxucnZ?=
+ =?us-ascii?Q?mS35AT3C4biix+r1VR4Noufcm28MSj1CWWBOk7CXqc7kdqbKCVUEZag99wat?=
+ =?us-ascii?Q?hvtoN7ilRIFNeD4IsAg0GBquukI8AyPm1sWmR3HWymnn6jni6sJXTDJbDo2u?=
+ =?us-ascii?Q?IjgOSpK3/GClCy49/xX+MHYwSHNrk3BClBnW2vcLm0gZSsuQC8x0KTa+NaEJ?=
+ =?us-ascii?Q?FzHYGLPPvCk5hc321F4YcLV3lHSkLJ3c1lRJ5sY8Ic3ynN3UYMFaAr07mVRP?=
+ =?us-ascii?Q?8uHmlTlwMTRcjmJk42AgjXmCi6d9nG5m4ysongwdrqNcdjRa2vppZj2NRsSt?=
+ =?us-ascii?Q?DxsvrOY2LSCZMPFWEsYeM429CJvPR3DPZn8hMaZBza0fNEUbncINsRTGJsTX?=
+ =?us-ascii?Q?o1v223VvmTU7UCaJTjMfwFfU?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce43fe43-776c-4384-9eee-08d8df9f0f1b
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2021 06:22:32.4384
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: megKlWD5KlpkRQYimAurhCH/Pg1cPehBDdJDURyQrJlQ+Ea0HTsUz2X3x/mT3o6C4zGBALoGn13yDc9PtdsyLQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB4021
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+It should be better to ensure memory allocation during rolling
+decompression to avoid io error.
 
-Do you have any comments on this patch? If need any changes, please let me know. 
-Thanks!
+Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+---
+ fs/erofs/decompressor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--Qiuxu
-
-> -----Original Message-----
-> From: Zhuo, Qiuxu <qiuxu.zhuo@intel.com>
-> Sent: Monday, February 22, 2021 9:17 AM
-> To: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Zhuo, Qiuxu <qiuxu.zhuo@intel.com>; Lorenzo Pieralisi
-> <lorenzo.pieralisi@arm.com>; Krzysztof Wilczyñski <kw@linux.com>; Kelley,
-> Sean V <sean.v.kelley@intel.com>; Luck, Tony <tony.luck@intel.com>; Jin, Wen
-> <wen.jin@intel.com>; linux-pci@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: [PATCH v3 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC association
-> 
-> Function rcec_assoc_rciep() incorrectly used "rciep->devfn" (a single byte
-> encoding the device and function number) as the device number to check
-> whether the corresponding bit was set in the RCiEPBitmap of the RCEC (Root
-> Complex Event Collector) while enumerating over each bit of the RCiEPBitmap.
-> 
-> As per the PCI Express Base Specification, Revision 5.0, Version 1.0, Section
-> 7.9.10.2, "Association Bitmap for RCiEPs", p. 935, only needs to use a device
-> number to check whether the corresponding bit was set in the RCiEPBitmap.
-> 
-> Fix rcec_assoc_rciep() using the PCI_SLOT() macro and convert the value of
-> "rciep->devfn" to a device number to ensure that the RCiEP devices associated
-> with the RCEC are linked when the RCEC is enumerated.
-> 
-> Fixes: 507b460f8144 ("PCI/ERR: Add pcie_link_rcec() to associate RCiEPs")
-> Reported-and-tested-by: Wen Jin <wen.jin@intel.com>
-> Reviewed-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> ---
-> v2->v3:
->  Drop "[ Krzysztof: Update commit message. ]" from the commit message
-> 
->  drivers/pci/pcie/rcec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c index
-> 2c5c552994e4..d0bcd141ac9c 100644
-> --- a/drivers/pci/pcie/rcec.c
-> +++ b/drivers/pci/pcie/rcec.c
-> @@ -32,7 +32,7 @@ static bool rcec_assoc_rciep(struct pci_dev *rcec, struct
-> pci_dev *rciep)
-> 
->  	/* Same bus, so check bitmap */
->  	for_each_set_bit(devn, &bitmap, 32)
-> -		if (devn == rciep->devfn)
-> +		if (devn == PCI_SLOT(rciep->devfn))
->  			return true;
-> 
->  	return false;
-> --
-> 2.17.1
+diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+index 49347e681a53..fb0fa4e5b9ea 100644
+--- a/fs/erofs/decompressor.c
++++ b/fs/erofs/decompressor.c
+@@ -86,7 +86,7 @@ static int z_erofs_lz4_prepare_destpages(struct z_erofs_decompress_req *rq,
+ 			victim = availables[--top];
+ 			get_page(victim);
+ 		} else {
+-			victim = erofs_allocpage(pagepool, GFP_KERNEL);
++			victim = erofs_allocpage(pagepool, GFP_KERNEL | __GFP_NOFAIL);
+ 			if (!victim)
+ 				return -ENOMEM;
+ 			set_page_private(victim, Z_EROFS_SHORTLIVED_PAGE);
+-- 
+2.25.1
 
