@@ -2,235 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0131432E07D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:17:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B06532E081
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229465AbhCEERA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 23:17:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
+        id S229559AbhCEETP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 23:19:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhCEEQ7 (ORCPT
+        with ESMTP id S229437AbhCEETN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 23:16:59 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C41C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 20:16:57 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id j1so1108341oiw.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 20:16:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pLE6LrErkteEvjTyTX4HsuZriLBrcXFoYPG4nl9vr3s=;
-        b=h3eXsVpFCPATqpl0jsGZZDU7elotfdSPapSbAPxHyLDo7rvwUDwCHZVDm9WTqjU2GP
-         VAHhFHlu0T82rGaGrCqZe2ktAVHu+6z91QNxeFNbI8yzinisedYQuKewsM8UitbICSNb
-         YkyzlCaUrZKVS5fe37d0EcIM5RMIgAwtywxqs6Zmgj/LYFgVBD1tfZbjJgK+ZQLvEpvg
-         7FcoKJAz3XkrBHhGLd66oblWpyQNd0s2nsSomyHOR814q1hVjHHJWYZqQYXIBOb+Nc8C
-         IaquvD19PyWYgrE3o006a6SQc+Q7b0blxuwFx0POC6nnoAAdshrCnD+psz+tUOTWVywI
-         kklw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pLE6LrErkteEvjTyTX4HsuZriLBrcXFoYPG4nl9vr3s=;
-        b=sAwk8meZXvGdYL2xyzK3BTj/ZeDjMSqQzhz7U5YO0oK0FOv0JK/8Wl62V/ZYR98RZm
-         znPSNk/JANSQYde9oMBIAcKzVsD7V7Ui4QuQCN0ARlgvk3PoT9d6ayhxAV65kFdcbUve
-         E8SggdU+Vv4jGn+u/Dk//xlUseyvVfsuNocXmjK70PKg4rhQ1mLhLP5JGNKSHpv9RT4P
-         JLpPfDbtvAKQ9+8Fi5i7gsIuoFOUYsqtWtbA49eXJJH5sRK1hOV6lmgB5KeWbYLgmGHb
-         vqlkZPHwwJQ1gaWasSrZB5jka7NYuF2y6fJT/5xbFGiC85oKNFJp5a5LV0xh7HrI/pBy
-         i9GQ==
-X-Gm-Message-State: AOAM5313k/lDijA8OBzFjYsoCcyiCWkhSmmnT+vDCWXfuuDXylwrT4dv
-        rFg4OcAcb0AK9dv3RdJ0KR8L4g==
-X-Google-Smtp-Source: ABdhPJzPHR7yC6WXTaxS1OQmaUR/1OUHowqXfDyQOf1tnfWDDQXPHbv9kX0y5ajby72DNhds55JAHQ==
-X-Received: by 2002:a05:6808:aa6:: with SMTP id r6mr5617024oij.128.1614917817303;
-        Thu, 04 Mar 2021 20:16:57 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 7sm361716otd.46.2021.03.04.20.16.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 20:16:56 -0800 (PST)
-Date:   Thu, 4 Mar 2021 22:16:55 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     subashab@codeaurora.org, stranche@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org, sharathv@codeaurora.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 3/6] net: qualcomm: rmnet: kill
- RMNET_MAP_GET_*() accessor macros
-Message-ID: <YEGwt/or/Wuqqqtb@builder.lan>
-References: <20210304223431.15045-1-elder@linaro.org>
- <20210304223431.15045-4-elder@linaro.org>
+        Thu, 4 Mar 2021 23:19:13 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F757C061574;
+        Thu,  4 Mar 2021 20:19:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=ucXLMgTzg08rBCIow1BkGkrU1Nic7t09CCx8WIlO7ho=; b=IdiTs6R13Lps1O9R6PGCMM9W5d
+        vxsb2dkOrBTx+xytNZTT26v9LugaNHMoPOdAeRU6qfeiufLnaC7WGF0mUaE9RHsg1YC0u7ZdGzV8+
+        +RigOzond/E2bN27omKjaGcB0fAXTuiCbV750XzDN9O0GH0G1+M9Sqiq2bmjJLYuGIqgPvQ/GxpMk
+        PQ+o8u22mmPjY3xjYkDAh9wWDJUCC21Uy+xObWOXpMbZvC3ZowQot2nherhvBKhBy6nTeFxmRuhOv
+        kVGnlfHqIiWigq1OaFN0L7wv7n7VNE8zJGx3cbSm+DwbTCthhKynSYhGcAGk1kJaX3T5E45hKvNu5
+        VO+h9EmQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lI1vf-00A3SH-0m; Fri, 05 Mar 2021 04:19:07 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH v4 00/25] Page folios
+Date:   Fri,  5 Mar 2021 04:18:36 +0000
+Message-Id: <20210305041901.2396498-1-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304223431.15045-4-elder@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 04 Mar 16:34 CST 2021, Alex Elder wrote:
+Our type system does not currently distinguish between tail pages and
+head or single pages.  This is a problem because we call compound_head()
+multiple times (and the compiler cannot optimise it out), bloating the
+kernel.  It also makes programming hard as it is often unclear whether
+a function operates on an individual page, or an entire compound page.
 
-> The following macros, defined in "rmnet_map.h", assume a socket
-> buffer is provided as an argument without any real indication this
-> is the case.
->     RMNET_MAP_GET_MUX_ID()
->     RMNET_MAP_GET_CD_BIT()
->     RMNET_MAP_GET_PAD()
->     RMNET_MAP_GET_CMD_START()
->     RMNET_MAP_GET_LENGTH()
-> What they hide is pretty trivial accessing of fields in a structure,
-> and it's much clearer to see this if we do these accesses directly.
-> 
-> So rather than using these accessor macros, assign a local
-> variable of the map header pointer type to the socket buffer data
-> pointer, and derereference that pointer variable.
-> 
-> In "rmnet_map_data.c", use sizeof(object) rather than sizeof(type)
-> in one spot.  Also,there's no need to byte swap 0; it's all zeros
-> irrespective of endianness.
-> 
+This patch series introduces the struct folio, which is a type that
+represents an entire compound page.  This initial set reduces the kernel
+size by approximately 6kB, although its real purpose is adding
+infrastructure to enable further use of the folio.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+The big correctness proof that exists in this patch series is that we
+never lock or wait for writeback on a tail page.  This is important as
+we would miss wakeups due to being on the wrong page waitqueue if we
+ever did.
 
-Regards,
-Bjorn
+I analysed the text size reduction using a config based on Oracle UEK
+with all modules changed to built-in.  That's obviously not a kernel
+which makes sense to run, but it serves to compare the effects on (many
+common) filesystems & drivers, not just the core.
 
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> ---
->  drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c | 10 ++++++----
->  drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h      | 12 ------------
->  .../net/ethernet/qualcomm/rmnet/rmnet_map_command.c  | 11 ++++++++---
->  drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c |  4 ++--
->  4 files changed, 16 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
-> index 3d00b32323084..2a6b2a609884c 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
-> @@ -56,20 +56,22 @@ static void
->  __rmnet_map_ingress_handler(struct sk_buff *skb,
->  			    struct rmnet_port *port)
->  {
-> +	struct rmnet_map_header *map_header = (void *)skb->data;
->  	struct rmnet_endpoint *ep;
->  	u16 len, pad;
->  	u8 mux_id;
->  
-> -	if (RMNET_MAP_GET_CD_BIT(skb)) {
-> +	if (map_header->cd_bit) {
-> +		/* Packet contains a MAP command (not data) */
->  		if (port->data_format & RMNET_FLAGS_INGRESS_MAP_COMMANDS)
->  			return rmnet_map_command(skb, port);
->  
->  		goto free_skb;
->  	}
->  
-> -	mux_id = RMNET_MAP_GET_MUX_ID(skb);
-> -	pad = RMNET_MAP_GET_PAD(skb);
-> -	len = RMNET_MAP_GET_LENGTH(skb) - pad;
-> +	mux_id = map_header->mux_id;
-> +	pad = map_header->pad_len;
-> +	len = ntohs(map_header->pkt_len) - pad;
->  
->  	if (mux_id >= RMNET_MAX_LOGICAL_EP)
->  		goto free_skb;
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
-> index 576501db2a0bc..2aea153f42473 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
-> @@ -32,18 +32,6 @@ enum rmnet_map_commands {
->  	RMNET_MAP_COMMAND_ENUM_LENGTH
->  };
->  
-> -#define RMNET_MAP_GET_MUX_ID(Y) (((struct rmnet_map_header *) \
-> -				 (Y)->data)->mux_id)
-> -#define RMNET_MAP_GET_CD_BIT(Y) (((struct rmnet_map_header *) \
-> -				(Y)->data)->cd_bit)
-> -#define RMNET_MAP_GET_PAD(Y) (((struct rmnet_map_header *) \
-> -				(Y)->data)->pad_len)
-> -#define RMNET_MAP_GET_CMD_START(Y) ((struct rmnet_map_control_command *) \
-> -				    ((Y)->data + \
-> -				      sizeof(struct rmnet_map_header)))
-> -#define RMNET_MAP_GET_LENGTH(Y) (ntohs(((struct rmnet_map_header *) \
-> -					(Y)->data)->pkt_len))
-> -
->  #define RMNET_MAP_COMMAND_REQUEST     0
->  #define RMNET_MAP_COMMAND_ACK         1
->  #define RMNET_MAP_COMMAND_UNSUPPORTED 2
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_command.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_command.c
-> index beaee49621287..add0f5ade2e61 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_command.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_command.c
-> @@ -12,12 +12,13 @@ static u8 rmnet_map_do_flow_control(struct sk_buff *skb,
->  				    struct rmnet_port *port,
->  				    int enable)
->  {
-> +	struct rmnet_map_header *map_header = (void *)skb->data;
->  	struct rmnet_endpoint *ep;
->  	struct net_device *vnd;
->  	u8 mux_id;
->  	int r;
->  
-> -	mux_id = RMNET_MAP_GET_MUX_ID(skb);
-> +	mux_id = map_header->mux_id;
->  
->  	if (mux_id >= RMNET_MAX_LOGICAL_EP) {
->  		kfree_skb(skb);
-> @@ -49,6 +50,7 @@ static void rmnet_map_send_ack(struct sk_buff *skb,
->  			       unsigned char type,
->  			       struct rmnet_port *port)
->  {
-> +	struct rmnet_map_header *map_header = (void *)skb->data;
->  	struct rmnet_map_control_command *cmd;
->  	struct net_device *dev = skb->dev;
->  
-> @@ -58,7 +60,8 @@ static void rmnet_map_send_ack(struct sk_buff *skb,
->  
->  	skb->protocol = htons(ETH_P_MAP);
->  
-> -	cmd = RMNET_MAP_GET_CMD_START(skb);
-> +	/* Command data immediately follows the MAP header */
-> +	cmd = (struct rmnet_map_control_command *)(map_header + 1);
->  	cmd->cmd_type = type & 0x03;
->  
->  	netif_tx_lock(dev);
-> @@ -71,11 +74,13 @@ static void rmnet_map_send_ack(struct sk_buff *skb,
->   */
->  void rmnet_map_command(struct sk_buff *skb, struct rmnet_port *port)
->  {
-> +	struct rmnet_map_header *map_header = (void *)skb->data;
->  	struct rmnet_map_control_command *cmd;
->  	unsigned char command_name;
->  	unsigned char rc = 0;
->  
-> -	cmd = RMNET_MAP_GET_CMD_START(skb);
-> +	/* Command data immediately follows the MAP header */
-> +	cmd = (struct rmnet_map_control_command *)(map_header + 1);
->  	command_name = cmd->command_name;
->  
->  	switch (command_name) {
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> index bd1aa11c9ce59..fd55269c2ce3c 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> @@ -321,7 +321,7 @@ struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb,
->  		return NULL;
->  
->  	maph = (struct rmnet_map_header *)skb->data;
-> -	packet_len = ntohs(maph->pkt_len) + sizeof(struct rmnet_map_header);
-> +	packet_len = ntohs(maph->pkt_len) + sizeof(*maph);
->  
->  	if (port->data_format & RMNET_FLAGS_INGRESS_MAP_CKSUMV4)
->  		packet_len += sizeof(struct rmnet_map_dl_csum_trailer);
-> @@ -330,7 +330,7 @@ struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb,
->  		return NULL;
->  
->  	/* Some hardware can send us empty frames. Catch them */
-> -	if (ntohs(maph->pkt_len) == 0)
-> +	if (!maph->pkt_len)
->  		return NULL;
->  
->  	skbn = alloc_skb(packet_len + RMNET_MAP_DEAGGR_SPACING, GFP_ATOMIC);
-> -- 
-> 2.20.1
-> 
+add/remove: 33510/33499 grow/shrink: 1831/1898 up/down: 888762/-894719 (-5957)
+
+For a Debian config, just comparing vmlinux.o gives a reduction of 3828
+bytes of text and 72 bytes of data:
+
+   text    data     bss     dec     hex filename
+16125879        4421122 1846344 22393345        155b201 linus/vmlinux.o
+16122051        4421050 1846344 22389445        155a2c5 folio/vmlinux.o
+
+For nfs (a module I happened to notice was particularly affected), it's
+a reduction of 588 bytes of text and 16 bytes of data:
+ 257142	  59228	    408	 316778	  4d56a	linus/fs/nfs/nfs.o
+ 256554	  59212	    408	 316174	  4d30e	folio/fs/nfs/nfs.o
+
+Current tree at:
+https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/folio
+
+(contains another ~70 patches on top of this batch)
+
+v4:
+ - Rebase on current Linus tree (including swap fix)
+ - Analyse each patch in terms of its effects on kernel text size.
+   A few were modified to improve their effect.  In particular, where
+   pushing calls to page_folio() into the callers resulted in unacceptable
+   size increases, the wrapper was placed in mm/folio-compat.c.  This lets
+   us see all the places which are good targets for conversion to folios.
+ - Some of the patches were reordered, split or merged in order to make
+   more logical sense.
+ - Use nth_page() for folio_next() if we're using SPARSEMEM and not
+   VMEMMAP (Zi Yan)
+ - Increment and decrement page stats in units of pages instead of units
+   of folios (Zi Yan)
+v3:
+ - Rebase on next-20210127.  Two major sources of conflict, the
+   generic_file_buffered_read refactoring (in akpm tree) and the
+   fscache work (in dhowells tree).
+v2:
+ - Pare patch series back to just infrastructure and the page waiting
+   parts.
+
+Matthew Wilcox (Oracle) (25):
+  mm: Introduce struct folio
+  mm: Add folio_pgdat and folio_zone
+  mm/vmstat: Add functions to account folio statistics
+  mm/debug: Add VM_BUG_ON_FOLIO and VM_WARN_ON_ONCE_FOLIO
+  mm: Add put_folio
+  mm: Add get_folio
+  mm: Create FolioFlags
+  mm: Handle per-folio private data
+  mm: Add folio_index, folio_page and folio_contains
+  mm/util: Add folio_mapping and folio_file_mapping
+  mm/memcg: Add folio wrappers for various memcontrol functions
+  mm/filemap: Add unlock_folio
+  mm/filemap: Add lock_folio
+  mm/filemap: Add lock_folio_killable
+  mm/filemap: Convert lock_page_async to lock_folio_async
+  mm/filemap: Convert end_page_writeback to end_folio_writeback
+  mm/filemap: Add wait_on_folio_locked & wait_on_folio_locked_killable
+  mm/page-writeback: Add wait_on_folio_writeback
+  mm/page-writeback: Add wait_for_stable_folio
+  mm/filemap: Convert wait_on_page_bit to wait_on_folio_bit
+  mm/filemap: Add __lock_folio_or_retry
+  mm/filemap: Convert wake_up_page_bit to wake_up_folio_bit
+  mm/page-writeback: Convert test_clear_page_writeback to take a folio
+  mm/filemap: Convert page wait queues to be folios
+  cachefiles: Switch to wait_page_key
+
+ fs/afs/write.c             |  21 ++--
+ fs/cachefiles/rdwr.c       |  13 +--
+ fs/io_uring.c              |   2 +-
+ include/linux/fscache.h    |   5 +
+ include/linux/memcontrol.h |  30 +++++
+ include/linux/mm.h         |  88 ++++++++++-----
+ include/linux/mm_types.h   |  33 ++++++
+ include/linux/mmdebug.h    |  20 ++++
+ include/linux/page-flags.h | 106 ++++++++++++++----
+ include/linux/pagemap.h    | 197 +++++++++++++++++++++++----------
+ include/linux/vmstat.h     |  83 ++++++++++++++
+ mm/Makefile                |   2 +-
+ mm/filemap.c               | 218 ++++++++++++++++++-------------------
+ mm/folio-compat.c          |  37 +++++++
+ mm/memory.c                |   8 +-
+ mm/page-writeback.c        |  58 +++++-----
+ mm/swapfile.c              |   6 +-
+ mm/util.c                  |  20 ++--
+ 18 files changed, 666 insertions(+), 281 deletions(-)
+ create mode 100644 mm/folio-compat.c
+
+-- 
+2.30.0
+
