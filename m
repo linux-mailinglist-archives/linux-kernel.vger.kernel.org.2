@@ -2,80 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2732432F562
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AF332F570
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhCEVkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:40:46 -0500
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:44098 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbhCEVkp (ORCPT
+        id S229749AbhCEVoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 16:44:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229589AbhCEVnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 16:40:45 -0500
-Received: by mail-oi1-f179.google.com with SMTP id x20so4069159oie.11;
-        Fri, 05 Mar 2021 13:40:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FrtZD0Mxkh4WDaMKcW/EnbPtCK0COhu80YMa0TPWoyA=;
-        b=FgoqMBFzgHIFvfkVOwZZTgTsHpvF4OLxSJ3sRZ/OqMZWkX9R5we7lTR7o1b+yFEPI8
-         Cyfdd2ncg1lK9+r8kiODTRFpDIKQ2tSl2UmQmEEJEUAKsKJQt98nzkqw57co8/JSZQMW
-         eFp7YgZg+GF1DU9Z85oSKj67tmQcGjedIjFkAAtGa2uLYiv4xHwyZBIA1N6gV35eaQw6
-         rwnfgOq0OQEUE8izPBjx/KR/pxmt7WJCGYaWIhwwlWFMJUwMivzp3/512QvWIn3mJhyd
-         F+o6rt0cj3P0Bz6A5NS3snVqhBDcqYXl9BK/vJlQSWMDwHKjogtkvxvsD2VEipa3KtJ5
-         mcpg==
-X-Gm-Message-State: AOAM530eHr4eqAWraDn1MnCK7KTM9FIzL0mInVru11lskd8UPsr8SYZL
-        l6UYdOzZxHwJkmJ2BO2Z3g==
-X-Google-Smtp-Source: ABdhPJxVRhFgsIi1pRC4A6txSVjHyhjaQx3TFOQATWLDTcUHIF2Otv7xYVByzgR19ecgkbJMqxEqKA==
-X-Received: by 2002:a05:6808:93:: with SMTP id s19mr8641466oic.115.1614980444871;
-        Fri, 05 Mar 2021 13:40:44 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z14sm935904otk.30.2021.03.05.13.40.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 13:40:44 -0800 (PST)
-Received: (nullmailer pid 693277 invoked by uid 1000);
-        Fri, 05 Mar 2021 21:40:43 -0000
-Date:   Fri, 5 Mar 2021 15:40:43 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        linux-amarula@amarulasolutions.com,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
+        Fri, 5 Mar 2021 16:43:51 -0500
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2ABFC06175F;
+        Fri,  5 Mar 2021 13:43:50 -0800 (PST)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4Dsh7g59sjz1rwn0;
+        Fri,  5 Mar 2021 22:43:43 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4Dsh7g3fl1z1qr4d;
+        Fri,  5 Mar 2021 22:43:43 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id zA9oLoIZs84D; Fri,  5 Mar 2021 22:43:41 +0100 (CET)
+X-Auth-Info: GmqYrIyAYBzZBk9/Hy/h0siIg5F0MIUqR5KnsSVg2Bc=
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri,  5 Mar 2021 22:43:40 +0100 (CET)
 Subject: Re: [PATCH v3 1/2] dt-bindings: display: bridge: Add bindings for
- Chipone ICN6211
-Message-ID: <20210305214043.GA693229@robh.at.kernel.org>
-References: <20210214175211.105107-1-jagan@amarulasolutions.com>
+ SN65DSI83/84/85
+To:     Jagan Teki <jagan@amarulasolutions.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-amarula@amarulasolutions.com
+References: <20210214174453.104616-1-jagan@amarulasolutions.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <be0fdd57-507d-0f9b-89db-65891531908c@denx.de>
+Date:   Fri, 5 Mar 2021 22:43:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210214175211.105107-1-jagan@amarulasolutions.com>
+In-Reply-To: <20210214174453.104616-1-jagan@amarulasolutions.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 14 Feb 2021 23:22:10 +0530, Jagan Teki wrote:
-> ICN6211 is MIPI-DSI to RGB Convertor bridge from Chipone.
+On 2/14/21 6:44 PM, Jagan Teki wrote:
+> SN65DSI83/84/85 devices are MIPI DSI to LVDS based bridge
+> controller IC's from Texas Instruments.
 > 
-> It has a flexible configuration of MIPI DSI signal input and
-> produce RGB565, RGB666, RGB888 output format.
-> 
-> Add dt-bingings for it.
-> 
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
-> Changes for v3:
-> - updated to new dt-bindings style
-> 
->  .../display/bridge/chipone,icn6211.yaml       | 90 +++++++++++++++++++
->  1 file changed, 90 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml
-> 
+> SN65DSI83 - Single Channel DSI to Single-link LVDS bridge
+> SN65DSI84 - Single Channel DSI to Dual-link LVDS bridge
+> SN65DSI85 - Dual Channel DSI to Dual-link LVDS bridge
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+[...]
+
+> +description: |
+> +  SN65DSI83/84/85 devices are MIPI DSI to LVDS based bridge controller
+> +  IC's from Texas Instruments.
+> +
+> +  SN65DSI83 - Single Channel DSI to Single-link LVDS bridge
+> +  SN65DSI84 - Single Channel DSI to Dual-link LVDS bridge
+> +  SN65DSI85 - Dual Channel DSI to Dual-link LVDS bridge
+
+[...]
+
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,sn65dsi83
+> +      - ti,sn65dsi84
+
+DSI85 seems missing ?
+
+> +  reg:
+> +    const: 0x2c
+
+I have the DSI83 device at 0x2d, so this cannot be const 0x2c ?
+
+> +  enable-gpios:
+> +    maxItems: 1
+> +    description: GPIO specifier for bridge enable pin (active high).
+
+The bridge can work without this GPIO, so its optional.
+
+[...]
+
+Also, Doug reported that vcc and vcore regulators should likely be 
+listed, see feedback on:
+[PATCH 1/2] dt-bindings: drm/bridge: ti-sn65dsi83: Add TI SN65DSI83 bindings
