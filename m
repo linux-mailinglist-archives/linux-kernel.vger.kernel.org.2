@@ -2,131 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFB432F28E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B6F32F294
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhCESaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 13:30:07 -0500
-Received: from mail-oo1-f47.google.com ([209.85.161.47]:38609 "EHLO
-        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhCES3l (ORCPT
+        id S229758AbhCESbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 13:31:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229783AbhCESb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 13:29:41 -0500
-Received: by mail-oo1-f47.google.com with SMTP id z12so215111ooh.5;
-        Fri, 05 Mar 2021 10:29:41 -0800 (PST)
+        Fri, 5 Mar 2021 13:31:29 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69342C061756
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 10:31:29 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id q77so3404185ybq.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 10:31:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=ImkS2ZR1p3G/2SDQfJ8HrKEAKHalQx7zguwSD6QHvf4=;
+        b=YL0vcJHfRYSHkVgKACDQ3L9PjVHPp6sLUYoXm52dI16ZcNixwN16BIaqK2VTUebMrx
+         k9Ub3Qcdxi7iiVh09Oa/NA9pmYhmxbXDaAj9mILJLnRY9Bg3qsqb4QD/VvunbMITPzpK
+         RCOWh+TJ6fCcI0HSV2J9RmapDBoIV8L1E/29CyG9lBO73bw+/swuwfsTJCJgna0dbiCF
+         DDCbM8w0lxUuqT16PE5ypiiEn1nssV6QwBoZUmJhsxXsLAM8LPWsRJVt49Ki6TxkRo4N
+         NjlrP2GpOEkmp4ACxKyG26+Ycr3jci/eL3ROrETC6KesZLiu3CkZetIqGZCRTSKSG6BP
+         BAww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Q7C5srUMjqR7mTHLtb1KoH/0EwvHmEFAeiLqZIKcwu0=;
-        b=Vcl+davoyETZnqjslkSziPoMr5FAks7fskLe8cjXbgl4PYAND4NdhFj3TN9rcgPl62
-         TZx+BZ/GdX5v2CGgeg4R9R84AMhH+tQIRAL7NywBk/OSMudsoyOF/CQe3RaAWzbe6Vb6
-         MMxkJjmIhH7xNIrS+CXUn9fb+YdxVag+Bybb2mdeiiNEURlyDtNJitWPEYRz5/8DbWhD
-         6JZJYjd44ksJTO5BH+HL0+h3lbEQGeC51eUp3H7qE4ZU33+SvwbDnZ683xGvZzbhmCBz
-         +q7uEquLnLemsal0XwPJIF301MOmfsWXiMrCQEqeEEH+kNWI8UzH0+pJeGphxrgBr9Wl
-         4aNA==
-X-Gm-Message-State: AOAM533vCooEKxp+YqIbkAhSr0dBCnJ9RAo1DY9T/3qy3KZup9lPGNjC
-        7T5GGoB2TvRDLOnaxQlBfg==
-X-Google-Smtp-Source: ABdhPJyT1c951it0I+dEcjhFtGuostLapU+mgEJBGNONsUTb0jkyqE/bGOpWC/zWjA7Pl52aBS0wCg==
-X-Received: by 2002:a4a:6b44:: with SMTP id h4mr8817110oof.38.1614968981184;
-        Fri, 05 Mar 2021 10:29:41 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s73sm684339oih.36.2021.03.05.10.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 10:29:39 -0800 (PST)
-Received: (nullmailer pid 430979 invoked by uid 1000);
-        Fri, 05 Mar 2021 18:29:38 -0000
-Date:   Fri, 5 Mar 2021 12:29:38 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: Re: RFC: oftree based setup of composite board devices
-Message-ID: <20210305182938.GA399009@robh.at.kernel.org>
-References: <20210208222203.22335-1-info@metux.net>
- <CAL_JsqJ-bz35mUM3agYjq5x+Y+u9rL1RwesCaA-x=MW8uv5CrA@mail.gmail.com>
- <76bf0f7c-9477-f370-8fbd-ce8ef15188b1@gmail.com>
- <44b9b561-5e0d-6a1c-ca5d-4e9f6000884c@metux.net>
- <89086c87-c730-ff35-3865-4cf145883a95@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <89086c87-c730-ff35-3865-4cf145883a95@gmail.com>
+        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
+         :subject:from:to:cc;
+        bh=ImkS2ZR1p3G/2SDQfJ8HrKEAKHalQx7zguwSD6QHvf4=;
+        b=NYGn+WFmKqjwKl2dO3duovb4rTwaRjBDa1wK5/uAiieL2VJDBezNhkaxQzh7AkEPiD
+         PzBDE82ytnXVItaaOOolG6QZQFq56vYvK2mZ13rvuLeVsPSvtupXmk2bAit45L/Fiyfh
+         s/06UDMFSplNJ9y4AjhuH714FL7V2+YjKTFOQAhPyPs43zuL8z2EJ21csKgzj/aVZMGf
+         9r8aqWB3DBSWE8S7vxFWRHaMFhdow8KDpqdwlSsGmseoPu45EFV7SGwBOWMnyIO/hAh0
+         f1AkkBGWVNtZdsPa7grA3cJqxx1R2WrBChN4b66OOwfVK1DCoT5yOqrtvrO128QDeWgu
+         Lrvw==
+X-Gm-Message-State: AOAM532lV092RPjB1v3RS7iOVba/IL8oJBiFofrDJqGb2xEBOOa0lJao
+        suSmBJ/Okdj3ZNypRExaphuZ4Zg+1OI=
+X-Google-Smtp-Source: ABdhPJxkD12a1/MPoA7dPeZYo+wpri52SSaJlYIfFndPtwRa14t6bLCHd6V0p0YQqDRr1xe1rARfTwTbHf4=
+Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:9857:be95:97a2:e91c])
+ (user=seanjc job=sendgmr) by 2002:a25:aae2:: with SMTP id t89mr16583064ybi.63.1614969088683;
+ Fri, 05 Mar 2021 10:31:28 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri,  5 Mar 2021 10:31:12 -0800
+Message-Id: <20210305183123.3978098-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH v4 00/11] KVM: VMX: Clean up Hyper-V PV TLB flush
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 05:14:10PM -0600, Frank Rowand wrote:
-> On 2/24/21 7:00 AM, Enrico Weigelt, metux IT consult wrote:
-> > On 15.02.21 02:12, Frank Rowand wrote:
-> > 
-> >> Why not compile in ACPI data (tables?) instead of devicetree description?
-> > 
-> > The problem is a bit more complex than it might seem.
-> > 
-> > Let's take the APU2/37/4 boards as an example. They've got some aux
-> > devices, eg. some gpio controller, and some things (leds, keys, reset
-> > lines, etc) attached to it.
-> > 
-> > Now we've got lots of different bios versions in the field,
-> > enumerating only some of the devices. For example, older ones didn't
-> > even contain the gpio, later ones added just gpio, other ones just
-> > added LEDs (with different names than the Linux driver already mainlined
-> > and field-deployed at that time), but still other lines unhandled, etc, etc. etc.
-> > 
-> > A big mess :( And I can't ask everybody to do bios uprade on devices far
-> > out in the field (litterally open field, sometimes offshore, ...). So, I
-> > need a usable solution, that's also maintainable, w/o testing each
-> > single combination of board, bios, etc. IOW: without relying on bios
-> > (except for board identification)
-> > 
-> > OTOH, I'm also looking for a solution get rid writing those kind of
-> > relatively huge board drivers, that pretty are much like old fashioned
-> > board files from pre-DT times - just made up of lots of tables and
-> > a few trivial register-something calls. Sounds pretty much like the
-> > original use case of oftree.
-> > 
-> > The primary difference between classic oftree and this scanario:
-> > * this is additional to existing platform information, which is
-> >   incomplete or even incorrect (and that can't be fixed)
-> > * extra carrier boards that are detected by other means, but no
-> >   enumeration of the devices on it.
-> > 
-> >>> This is something I've wanted to see for a while. There's use cases
-> >>> for DT based systems too. The example I'd like to see supported are
-> >>> USB serial adapters with downstream serdev, GPIO, I2C, SPI, etc. Then
-> >>> plug more than one of those in.
-> >>
-> >> My understanding from the past is that the experts (those who understand both
-> >> devicetree and ACPI) regard trying to mix devicetree and ACPI in a single
-> >> running Linux kernel image is insanity, or at least likely to be confusing,
-> >> difficult, and problematic.
-> 
-> Since you have persisted, a more referenced and emphatic "no" to mixing ACPI
-> and devicetree:
-> 
->   https://elinux.org/Device_Tree_Linux#mixing_devicetree_and_ACPI
+Clean up KVM's PV TLB flushing when running with EPT on Hyper-V, i.e. as
+a nested VMM.  No real goal in mind other than the sole patch in v1, which
+is a minor change to avoid a future mixup when TDX also wants to define
+.remote_flush_tlb.  Everything else is opportunistic clean up.
 
-The 'no' is for mixing the 2. Despite the no, it's been happening 
-anyways. That's mostly been the reusing DT bindings in ACPI tables. I 
-won't review such bindings if I realize that's what they are, but 
-usually that's not evident.
+NOTE: Based on my NPT+SME bug fix series[*] due to multiple conflicts with
+      non-trivial resolutions.
 
-This is a bit different I think where both ACPI and DT are used, but 
-they are totally disjoint. I don't have any issue with that. Why would 
-we want to force 2 different firmware descriptions for something 
-otherwise independent of the base system's firmware. Maybe that's not 
-exactly the case here, but the same changes to the DT code are needed 
-(unless you have a better solution for my example than multiple roots). 
-If someone wants to implement the changes that align with what I want, 
-then I don't really care what their motivation is.
+[*] https://lkml.kernel.org/r/20210305011101.3597423-1-seanjc@google.com
 
-Rob
+
+Patch 1 legitimately tested on VMX and SVM (including i386).  Patches 2+
+smoke tested by hacking usage of the relevant flows without actually
+routing to the Hyper-V hypercalls (partial hack-a-patch below).
+
+-static inline int hv_remote_flush_root_ept(hpa_t root_ept,
++static inline int hv_remote_flush_root_ept(struct kvm *kvm, hpa_t root_ept,
+                                           struct kvm_tlb_range *range)
+ {
+-       if (range)
+-               return hyperv_flush_guest_mapping_range(root_ept,
+-                               kvm_fill_hv_flush_list_func, (void *)range);
+-       else
+-               return hyperv_flush_guest_mapping(root_ept);
++       if (range) {
++               kvm_make_all_cpus_request(kvm, KVM_REQ_TLB_FLUSH);
++               return 0;
++       }
++
++       return -ENOMEM;
+ }
+ 
+ static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
+@@ -7753,8 +7754,7 @@ static __init int hardware_setup(void)
+                vmx_x86_ops.update_cr8_intercept = NULL;
+ 
+ #if IS_ENABLED(CONFIG_HYPERV)
+-       if (ms_hyperv.nested_features & HV_X64_NESTED_GUEST_MAPPING_FLUSH
+-           && enable_ept) {
++       if (enable_ept) {
+                vmx_x86_ops.tlb_remote_flush = hv_remote_flush_tlb;
+                vmx_x86_ops.tlb_remote_flush_with_range =
+                                hv_remote_flush_tlb_with_range;
+
+v4: 
+  - Rebased to kvm/queue, commit fe5f0041c026 ("KVM/SVM: Move vmenter.S
+    exception fixups out of line"), plus the aforementioned series.
+  - Don't grab PCID for nested_cr3 (NPT). [Paolo]
+  - Collect reviews. [Vitaly]
+
+v3:
+  - https://lkml.kernel.org/r/20201027212346.23409-1-sean.j.christopherson@intel.com
+  - Add a patch to pass the root_hpa instead of pgd to vmx_load_mmu_pgd()
+    and retrieve the active PCID only when necessary.  [Vitaly]
+  - Selectively collects reviews (skipped a few due to changes). [Vitaly]
+  - Explicitly invalidate hv_tlb_eptp instead of leaving it valid when
+    the mismatch tracker "knows" it's invalid. [Vitaly]
+  - Change the last patch to use "hv_root_ept" instead of "hv_tlb_pgd"
+    to better reflect what is actually being tracked.
+
+v2:
+  - Rewrite everything.
+  - https://lkml.kernel.org/r/20201020215613.8972-1-sean.j.christopherson@intel.com
+
+v1: ???
+
+Sean Christopherson (11):
+  KVM: x86: Get active PCID only when writing a CR3 value
+  KVM: VMX: Track common EPTP for Hyper-V's paravirt TLB flush
+  KVM: VMX: Stash kvm_vmx in a local variable for Hyper-V paravirt TLB
+    flush
+  KVM: VMX: Fold Hyper-V EPTP checking into it's only caller
+  KVM: VMX: Do Hyper-V TLB flush iff vCPU's EPTP hasn't been flushed
+  KVM: VMX: Invalidate hv_tlb_eptp to denote an EPTP mismatch
+  KVM: VMX: Don't invalidate hv_tlb_eptp if the new EPTP matches
+  KVM: VMX: Explicitly check for hv_remote_flush_tlb when loading pgd
+  KVM: VMX: Define Hyper-V paravirt TLB flush fields iff Hyper-V is
+    enabled
+  KVM: VMX: Skip additional Hyper-V TLB EPTP flushes if one fails
+  KVM: VMX: Track root HPA instead of EPTP for paravirt Hyper-V TLB
+    flush
+
+ arch/x86/include/asm/kvm_host.h |   4 +-
+ arch/x86/kvm/mmu.h              |   4 +-
+ arch/x86/kvm/svm/svm.c          |  10 ++-
+ arch/x86/kvm/vmx/vmx.c          | 134 ++++++++++++++++++--------------
+ arch/x86/kvm/vmx/vmx.h          |  19 ++---
+ 5 files changed, 92 insertions(+), 79 deletions(-)
+
+-- 
+2.30.1.766.gb4fecdf3b7-goog
+
