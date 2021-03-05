@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70E132E8F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:30:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C65232E8F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhCEM3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:29:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38342 "EHLO mail.kernel.org"
+        id S230527AbhCEM3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:29:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230464AbhCEM3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:29:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDFCD65013;
-        Fri,  5 Mar 2021 12:29:08 +0000 (UTC)
+        id S232124AbhCEM3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:29:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03FBF65004;
+        Fri,  5 Mar 2021 12:29:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947349;
-        bh=ESZl0lMR52hfd5iJ4WVSFU7pMyLHt+qt4WgMIyOF3t4=;
+        s=korg; t=1614947352;
+        bh=uNPsiKjotprz8hABvgEZoEYJtZTtcm+14N1heKP7OFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oWMrRiPgdDrUFhxDC2QsSYlEW+7bem1fEoHwdtRe/PZ/vcilzhSBwp2FQeI9T/TpY
-         /nLI+bjeJbwLskXfxCR9Z8Ky3WrIuNph4PYbHmFQPzNZudTajoEB0jsauOXRpwpRhx
-         Z+KX/tfAsaC+LfQxIUuOI9+MafEnxUPfNav9Yfek=
+        b=c6JaQkCjkGxFcNLtaAWS5TEDGzQCMkXt66KQHahFaJZ3casE6yTQeUCoyylXOUWNU
+         HkcXd5rTR388KXe7v+t2M1B/4SznVTIQ2zrc5yu5RP8fLSK1mFJRcvizmom83cRe6C
+         yQt8SCIyQFzhBPhm5OkwVxuLvAZvLmXqP8ZYr2tw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh@kernel.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Rajat Jain <rajatja@google.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 5.10 033/102] dt-bindings: net: btusb: DT fix s/interrupt-name/interrupt-names/
-Date:   Fri,  5 Mar 2021 13:20:52 +0100
-Message-Id: <20210305120904.912906945@linuxfoundation.org>
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+        Srinivasa Rao <srivasam@codeaurora.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.10 034/102] ASoC: qcom: Remove useless debug print
+Date:   Fri,  5 Mar 2021 13:20:53 +0100
+Message-Id: <20210305120904.962473143@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
 References: <20210305120903.276489876@linuxfoundation.org>
@@ -43,33 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Stephen Boyd <swboyd@chromium.org>
 
-commit f288988930e93857e0375bdf88bb670c312b82eb upstream.
+commit 16117beb16f01a470d40339960ffae1e287c03be upstream.
 
-The standard DT property name is "interrupt-names".
+This looks like a left over debug print that tells us that HDMI is
+enabled. Let's remove it as that's definitely not an error to have HDMI
+enabled.
 
-Fixes: fd913ef7ce619467 ("Bluetooth: btusb: Add out-of-band wakeup support")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Brian Norris <briannorris@chromium.org>
-Acked-by: Rajat Jain <rajatja@google.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Cc: Srinivasa Rao <srivasam@codeaurora.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Cheng-Yi Chiang <cychiang@chromium.org>
+Fixes: 7cb37b7bd0d3 ("ASoC: qcom: Add support for lpass hdmi driver")
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20210115034327.617223-2-swboyd@chromium.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- Documentation/devicetree/bindings/net/btusb.txt |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/qcom/lpass-cpu.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/Documentation/devicetree/bindings/net/btusb.txt
-+++ b/Documentation/devicetree/bindings/net/btusb.txt
-@@ -38,7 +38,7 @@ Following example uses irq pin number 3
- 	compatible = "usb1286,204e";
- 	reg = <1>;
- 	interrupt-parent = <&gpio0>;
--	interrupt-name = "wakeup";
-+	interrupt-names = "wakeup";
- 	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
-     };
- };
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -743,7 +743,6 @@ static void of_lpass_cpu_parse_dai_data(
+ 		}
+ 		if (id == LPASS_DP_RX) {
+ 			data->hdmi_port_enable = 1;
+-			dev_err(dev, "HDMI Port is enabled: %d\n", id);
+ 		} else {
+ 			data->mi2s_playback_sd_mode[id] =
+ 				of_lpass_cpu_parse_sd_lines(dev, node,
 
 
