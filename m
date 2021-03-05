@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175E432EB0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C131232EAAC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:40:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233274AbhCEMls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:41:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57136 "EHLO mail.kernel.org"
+        id S232889AbhCEMjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:39:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231224AbhCEMlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:41:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E60165028;
-        Fri,  5 Mar 2021 12:41:12 +0000 (UTC)
+        id S232173AbhCEMjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:39:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5412F65036;
+        Fri,  5 Mar 2021 12:39:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948073;
-        bh=RoYlF1Lb9CGfOt8yQSmlkn0D6b5tIWoZTENISocE5D0=;
+        s=korg; t=1614947956;
+        bh=qsz5KHx9FNVq5F9ZnKwKyjXB7UmEbWzyQ4rF3vJMPBE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j/Zxf+qSSDRG2Cyy4Lz6s60EYrciBVVqvvTuljoUU8iAOu4r44s6vpK2spkWg8qNd
-         U7RMD3k8gtgZpMSF27Ep8nzr/bNz9Rd+iVxz9wbppnk4bV7IrHY7SexBTFdORaz4+v
-         k+/k+8W9cQHhQANVRhNO6Q9YecK21DejrUJeEj0s=
+        b=XlEnFpBSs18pSCzrBlnli/WB0zPWE2ctKuCb6ThWgMN/ZdiM0lxvc8GRCEWlXierZ
+         3YZ/yOSbFpl2BAEwMquT1Bj360mTZrPaW2kFwkOPO4/qQB4+xUcT6iJTVF0G3xsxIq
+         6SHszIWZa62nKV1T6o4fyP+zBEQgVDGhQef08sr0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        Lech Perczak <lech.perczak@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 08/41] net: usb: qmi_wwan: support ZTE P685M modem
-Date:   Fri,  5 Mar 2021 13:22:15 +0100
-Message-Id: <20210305120851.687282732@linuxfoundation.org>
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 17/39] net: bridge: use switchdev for port flags set through sysfs too
+Date:   Fri,  5 Mar 2021 13:22:16 +0100
+Message-Id: <20210305120852.634618568@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
-References: <20210305120851.255002428@linuxfoundation.org>
+In-Reply-To: <20210305120851.751937389@linuxfoundation.org>
+References: <20210305120851.751937389@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lech Perczak <lech.perczak@gmail.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-commit 88eee9b7b42e69fb622ddb3ff6f37e8e4347f5b2 upstream.
+commit 8043c845b63a2dd88daf2d2d268a33e1872800f0 upstream.
 
-Now that interface 3 in "option" driver is no longer mapped, add device
-ID matching it to qmi_wwan.
+Looking through patchwork I don't see that there was any consensus to
+use switchdev notifiers only in case of netlink provided port flags but
+not sysfs (as a sort of deprecation, punishment or anything like that),
+so we should probably keep the user interface consistent in terms of
+functionality.
 
-The modem is used inside ZTE MF283+ router and carriers identify it as
-such.
-Interface mapping is:
-0: QCDM, 1: AT (PCUI), 2: AT (Modem), 3: QMI, 4: ADB
+http://patchwork.ozlabs.org/project/netdev/patch/20170605092043.3523-3-jiri@resnulli.us/
+http://patchwork.ozlabs.org/project/netdev/patch/20170608064428.4785-3-jiri@resnulli.us/
 
-T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=480  MxCh= 0
-D:  Ver= 2.01 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=19d2 ProdID=1275 Rev=f0.00
-S:  Manufacturer=ZTE,Incorporated
-S:  Product=ZTE Technologies MSM
-S:  SerialNumber=P685M510ZTED0000CP&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&0
-C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
-E:  Ad=87(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
-E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=(none)
-E:  Ad=88(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-
-Acked-by: Bjørn Mork <bjorn@mork.no>
-Signed-off-by: Lech Perczak <lech.perczak@gmail.com>
-Link: https://lore.kernel.org/r/20210223183456.6377-1-lech.perczak@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 3922285d96e7 ("net: bridge: Add support for offloading port attributes")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/qmi_wwan.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/bridge/br_sysfs_if.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -881,6 +881,7 @@ static const struct usb_device_id produc
- 	{QMI_FIXED_INTF(0x19d2, 0x1255, 4)},
- 	{QMI_FIXED_INTF(0x19d2, 0x1256, 4)},
- 	{QMI_FIXED_INTF(0x19d2, 0x1270, 5)},	/* ZTE MF667 */
-+	{QMI_FIXED_INTF(0x19d2, 0x1275, 3)},	/* ZTE P685M */
- 	{QMI_FIXED_INTF(0x19d2, 0x1401, 2)},
- 	{QMI_FIXED_INTF(0x19d2, 0x1402, 2)},	/* ZTE MF60 */
- 	{QMI_FIXED_INTF(0x19d2, 0x1424, 2)},
+--- a/net/bridge/br_sysfs_if.c
++++ b/net/bridge/br_sysfs_if.c
+@@ -50,9 +50,8 @@ static BRPORT_ATTR(_name, S_IRUGO | S_IW
+ static int store_flag(struct net_bridge_port *p, unsigned long v,
+ 		      unsigned long mask)
+ {
+-	unsigned long flags;
+-
+-	flags = p->flags;
++	unsigned long flags = p->flags;
++	int err;
+ 
+ 	if (v)
+ 		flags |= mask;
+@@ -60,6 +59,10 @@ static int store_flag(struct net_bridge_
+ 		flags &= ~mask;
+ 
+ 	if (flags != p->flags) {
++		err = br_switchdev_set_port_flag(p, flags, mask);
++		if (err)
++			return err;
++
+ 		p->flags = flags;
+ 		br_port_flags_change(p, mask);
+ 	}
 
 
