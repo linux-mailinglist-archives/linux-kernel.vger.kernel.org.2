@@ -2,164 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9043232F1A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CEC732F1B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:50:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbhCERpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:45:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbhCERpV (ORCPT
+        id S229576AbhCERtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:49:52 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:23350 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhCERte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:45:21 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F55C061761
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 09:45:21 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id u18so3842357ljd.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 09:45:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fjmoW72/ku1lnLXMuAm6ZbrP9WWp23FQh9M1c5WKSl8=;
-        b=A9upIdY3NrsolQX2lFBy06Za+fmkomHdOwQcUyiHv6xHc7YqCQkQn8C6s0QHzCTaev
-         SPR5qphZ57qK3qBIyHtSjH7FuFLszlLhqzw1qfcJhyzvX40a4/NJhPfKIvpxqznGT893
-         DRtYpo3aDFSUVvdgLQxmy+u29XYt2x56ELWBlMwArbOh3mRWENcJlAdQXEzeRInYX4Dj
-         8eSHEoYHoj08rC2K0VG4xfUTeh8kxNYHZZVMA08IIc5dA/y4QPSpteJOU1GAgKZG4bCt
-         ryJoO/evucYsYRC1Tic8ime0iJWw/SzNmpqAA9Zadn9IUvBgXQcNW2l5TBAXTeQPZyL7
-         FDRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fjmoW72/ku1lnLXMuAm6ZbrP9WWp23FQh9M1c5WKSl8=;
-        b=SfjYzSbwxyd3YdhL5teG50XXd/4ZjZYd9RsfQjB/jzkHYA4Tj3YYtkOK1R0u9YJ90W
-         JfB8ifB4XlCSlA5G0mmwGG355OL6eCDtaZEybG41+1M2ZKtaA0/XXLWPmZWrDjgeLOMu
-         BUN4gwXCRGsefbssWYHicScwB6g3LLBNsBlicyN5npmYU/C0FrtAa4nMUkQa286dJRq4
-         q0kw7xOx0pYW5av5rH5NOeRr1fXmdXq/RvEPXPrAt77fHbkrwnARaNLfYFoKg5zGqMWu
-         m1A7P9BJCZRm82mIpBNA/T8nGidbiYLZBucFe6Nx4jxzkVNjwCo+NrNlUfPWKurrqQ+U
-         Otuw==
-X-Gm-Message-State: AOAM530CH6rqG6tqNIDka4TDgROM7FDR4Sq5nU+9PhMDRi9XIdBn8fmN
-        JchrZnOdub/R4Mj6FVqxDwZh1q862ytvxqGIDYcQ9w==
-X-Google-Smtp-Source: ABdhPJyK/dVc1k+/qBKUx8d5GEaTi/dVKzYSI4dp4RHRGb8oEpa+bUgfpktgJn4unjvrnTrj45o6DabtPYORirmP6Rw=
-X-Received: by 2002:a2e:9195:: with SMTP id f21mr5616413ljg.160.1614966319338;
- Fri, 05 Mar 2021 09:45:19 -0800 (PST)
+        Fri, 5 Mar 2021 12:49:34 -0500
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 125HnFsb006833;
+        Sat, 6 Mar 2021 02:49:16 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 125HnFsb006833
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614966556;
+        bh=DI8u8e1TEbrLh1CZv1Kyzr9RTXeXBW1AzUz2gmbqhyo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=1YVS7QEYohskHlOwp7+o7FHthB8r14uDOv1g0sm72+DR29D9uqtcrVtcOHX9G478h
+         tg5V3R7WShm5PExBMpm8QKlHzKBPqQil/teCiqGT0IHDOEfHXXve+3dWgVLsJSf1lt
+         64wsPUOSC9gKcv4KNe0XbULZeQQnqcqgNXeYskv3+Q+qmhj5t6mDgj+kY0Y8fHPXzh
+         RytkeYLz2Lzpri/mYSox952XgB6cjDO3YWh5vmI692gT6RYqWhq8Qxv5175z7crSnm
+         YcmE81H/Wm5GJLOTWtfUudhhFyy0kmIm9KLKsVgeuGNzq8e/Od/F21Lb2sztpk+4hK
+         d7SZgQAaR6ZJg==
+X-Nifty-SrcIP: [209.85.215.182]
+Received: by mail-pg1-f182.google.com with SMTP id x29so1878990pgk.6;
+        Fri, 05 Mar 2021 09:49:15 -0800 (PST)
+X-Gm-Message-State: AOAM5326iGbs62fZP2xscq4OEF+2aaaDX6+Mz7A/alisZpVZMAJ4Hfpt
+        btdqFhvHivyQPo6BAvKJff/rBk54qBmrxhYObp0=
+X-Google-Smtp-Source: ABdhPJz34ATK4+alZ3V7av9Cj3UhJTwtKVLjVZhg6TEmdmr3ycHNLyohUoWRW/op+EPpDHYyhc+iPnNpw9hQhY/uHW8=
+X-Received: by 2002:a65:41c6:: with SMTP id b6mr9512661pgq.7.1614966555142;
+ Fri, 05 Mar 2021 09:49:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20210303185807.2160264-1-surenb@google.com> <CALvZod73Uem8jzP3QQdQ6waXbx80UUOTJQS7WBwnmaCdq++8xw@mail.gmail.com>
- <CAJuCfpFgDRezmQMjCajXzBp86UbMLMJbqEaeo0_J+pneZ5XOgg@mail.gmail.com>
- <CALvZod4nZ6W05N-4ostUEz5EbCuEvuBpc4LRYfAFgwQU-wb9dQ@mail.gmail.com> <b45d9599-b917-10c3-6b86-6ecd8db16d43@redhat.com>
-In-Reply-To: <b45d9599-b917-10c3-6b86-6ecd8db16d43@redhat.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 5 Mar 2021 09:45:07 -0800
-Message-ID: <CALvZod6b8H-=N6WVrgMVLE3=pm-ELWerjAO5v5KHSH-ih337+g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        Linux MM <linux-mm@kvack.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
+References: <20210303183333.46543-1-masahiroy@kernel.org> <20210303183333.46543-3-masahiroy@kernel.org>
+ <CAKwvOdmdQvwDN6Bg2Kom1Nm+HrNfCqOqnDLYTYs+5sRSEuZsJg@mail.gmail.com>
+In-Reply-To: <CAKwvOdmdQvwDN6Bg2Kom1Nm+HrNfCqOqnDLYTYs+5sRSEuZsJg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 6 Mar 2021 02:48:38 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ7E52H+f+Ref6JYqMnG1v78Wo2p+W__=52dw7EP=b0Ww@mail.gmail.com>
+Message-ID: <CAK7LNAQ7E52H+f+Ref6JYqMnG1v78Wo2p+W__=52dw7EP=b0Ww@mail.gmail.com>
+Subject: Re: [PATCH 3/4] kbuild: check the minimum assembler version in Kconfig
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
+        Jian Cai <jiancai@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 9:37 AM David Hildenbrand <david@redhat.com> wrote:
+On Fri, Mar 5, 2021 at 10:26 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
 >
-> On 04.03.21 01:03, Shakeel Butt wrote:
-> > On Wed, Mar 3, 2021 at 3:34 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> >>
-> >> On Wed, Mar 3, 2021 at 3:17 PM Shakeel Butt <shakeelb@google.com> wrote:
-> >>>
-> >>> On Wed, Mar 3, 2021 at 10:58 AM Suren Baghdasaryan <surenb@google.com> wrote:
-> >>>>
-> >>>> process_madvise currently requires ptrace attach capability.
-> >>>> PTRACE_MODE_ATTACH gives one process complete control over another
-> >>>> process. It effectively removes the security boundary between the
-> >>>> two processes (in one direction). Granting ptrace attach capability
-> >>>> even to a system process is considered dangerous since it creates an
-> >>>> attack surface. This severely limits the usage of this API.
-> >>>> The operations process_madvise can perform do not affect the correctness
-> >>>> of the operation of the target process; they only affect where the data
-> >>>> is physically located (and therefore, how fast it can be accessed).
-> >>>> What we want is the ability for one process to influence another process
-> >>>> in order to optimize performance across the entire system while leaving
-> >>>> the security boundary intact.
-> >>>> Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
-> >>>> and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
-> >>>> and CAP_SYS_NICE for influencing process performance.
-> >>>>
-> >>>> Cc: stable@vger.kernel.org # 5.10+
-> >>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> >>>> Reviewed-by: Kees Cook <keescook@chromium.org>
-> >>>> Acked-by: Minchan Kim <minchan@kernel.org>
-> >>>> Acked-by: David Rientjes <rientjes@google.com>
-> >>>> ---
-> >>>> changes in v3
-> >>>> - Added Reviewed-by: Kees Cook <keescook@chromium.org>
-> >>>> - Created man page for process_madvise per Andrew's request: https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/commit/?id=a144f458bad476a3358e3a45023789cb7bb9f993
-> >>>> - cc'ed stable@vger.kernel.org # 5.10+ per Andrew's request
-> >>>> - cc'ed linux-security-module@vger.kernel.org per James Morris's request
-> >>>>
-> >>>>   mm/madvise.c | 13 ++++++++++++-
-> >>>>   1 file changed, 12 insertions(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git a/mm/madvise.c b/mm/madvise.c
-> >>>> index df692d2e35d4..01fef79ac761 100644
-> >>>> --- a/mm/madvise.c
-> >>>> +++ b/mm/madvise.c
-> >>>> @@ -1198,12 +1198,22 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
-> >>>>                  goto release_task;
-> >>>>          }
-> >>>>
-> >>>> -       mm = mm_access(task, PTRACE_MODE_ATTACH_FSCREDS);
-> >>>> +       /* Require PTRACE_MODE_READ to avoid leaking ASLR metadata. */
-> >>>> +       mm = mm_access(task, PTRACE_MODE_READ_FSCREDS);
-> >>>>          if (IS_ERR_OR_NULL(mm)) {
-> >>>>                  ret = IS_ERR(mm) ? PTR_ERR(mm) : -ESRCH;
-> >>>>                  goto release_task;
-> >>>>          }
-> >>>>
-> >>>> +       /*
-> >>>> +        * Require CAP_SYS_NICE for influencing process performance. Note that
-> >>>> +        * only non-destructive hints are currently supported.
-> >>>
-> >>> How is non-destructive defined? Is MADV_DONTNEED non-destructive?
-> >>
-> >> Non-destructive in this context means the data is not lost and can be
-> >> recovered. I follow the logic described in
-> >> https://lwn.net/Articles/794704/ where Minchan was introducing
-> >> MADV_COLD and MADV_PAGEOUT as non-destructive versions of MADV_FREE
-> >> and MADV_DONTNEED. Following that logic, MADV_FREE and MADV_DONTNEED
-> >> would be considered destructive hints.
-> >> Note that process_madvise_behavior_valid() allows only MADV_COLD and
-> >> MADV_PAGEOUT at the moment, which are both non-destructive.
-> >>
+> On Wed, Mar 3, 2021 at 10:34 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 > >
-> > There is a plan to support MADV_DONTNEED for this syscall. Do we need
-> > to change these access checks again with that support?
+> > Documentation/process/changes.rst defines the minimum assembler version
+> > (binutils version), but we have never checked it in the build time.
+> >
+> > Kbuild never invokes 'as' directly because all assembly files in the
+> > kernel tree are *.S, hence must be preprocessed. I do not expect
+> > raw assembly source files (*.s) would be added to the kernel tree.
+> >
+> > Therefore, we always use $(CC) as the assembler driver, and commit
+> > aa824e0c962b ("kbuild: remove AS variable") removed 'AS'. However,
+> > we are still interested in the version of the assembler sitting behind.
+> >
+> > As usual, the --version option prints the version string.
+> >
+> >   $ as --version | head -n 1
+> >   GNU assembler (GNU Binutils for Ubuntu) 2.35.1
+> >
+> > But, we do not have $(AS). So, we can add the -Wa prefix so that
+> > $(CC) passes --version down to the backing assembler.
+> >
+> >   $ gcc -Wa,--version | head -n 1
+> >   gcc: fatal error: no input files
+> >   compilation terminated.
+> >
+> > OK, we need to input something to satisfy gcc.
+> >
+> >   $ gcc -Wa,--version -c -x assembler /dev/null -o /dev/null | head -n 1
+> >   GNU assembler (GNU Binutils for Ubuntu) 2.35.1
+> >
+> > The combination of Clang and GNU assembler works in the same way:
+> >
+> >   $ clang -no-integrated-as -Wa,--version -c -x assembler /dev/null -o /dev/null | head -n 1
+> >   GNU assembler (GNU Binutils for Ubuntu) 2.35.1
+> >
+> > Clang with the integrated assembler fails like this:
+> >
+> >   $ clang -integrated-as -Wa,--version -c -x assembler /dev/null -o /dev/null | head -n 1
+> >   clang: error: unsupported argument '--version' to option 'Wa,'
 >
-> Eh, I absolutely don't think letting another process discard memory in
-> another process' address space is a good idea. The target process can
-> observe that easily and might even run into real issues.
+> Was this a feature request to "please implement -Wa,--version for clang?" :-P
+> https://github.com/ClangBuiltLinux/linux/issues/1320
 >
-> What's the use case?
+> >
+> > With all this in my mind, I implemented scripts/as-version.sh.
+> >
+> >   $ scripts/as-version.sh gcc
+> >   GNU 23501
+> >   $ scripts/as-version.sh clang -no-integrated-as
+> >   GNU 23501
+> >   $ scripts/as-version.sh clang -integrated-as
+> >   LLVM 0
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  arch/Kconfig            |  3 +-
+> >  init/Kconfig            | 12 +++++++
+> >  scripts/Kconfig.include |  6 ++++
+> >  scripts/as-version.sh   | 77 +++++++++++++++++++++++++++++++++++++++++
+> >  4 files changed, 96 insertions(+), 2 deletions(-)
+> >  create mode 100755 scripts/as-version.sh
+> >
+> > diff --git a/arch/Kconfig b/arch/Kconfig
+> > index 2af10ebe5ed0..d7214f4ae1f7 100644
+> > --- a/arch/Kconfig
+> > +++ b/arch/Kconfig
+> > @@ -631,8 +631,7 @@ config ARCH_SUPPORTS_LTO_CLANG_THIN
+> >  config HAS_LTO_CLANG
+> >         def_bool y
+> >         # Clang >= 11: https://github.com/ClangBuiltLinux/linux/issues/510
+> > -       depends on CC_IS_CLANG && CLANG_VERSION >= 110000 && LD_IS_LLD
+> > -       depends on $(success,test $(LLVM_IAS) -eq 1)
+> > +       depends on CC_IS_CLANG && CLANG_VERSION >= 110000 && LD_IS_LLD && AS_IS_LLVM
+> >         depends on $(success,$(NM) --help | head -n 1 | grep -qi llvm)
+> >         depends on $(success,$(AR) --help | head -n 1 | grep -qi llvm)
+> >         depends on ARCH_SUPPORTS_LTO_CLANG
+> > diff --git a/init/Kconfig b/init/Kconfig
+> > index 22946fe5ded9..f76e5a44e4fe 100644
+> > --- a/init/Kconfig
+> > +++ b/init/Kconfig
+> > @@ -41,6 +41,18 @@ config CLANG_VERSION
+> >         default $(cc-version) if CC_IS_CLANG
+> >         default 0
+> >
+> > +config AS_IS_GNU
+> > +       def_bool $(success,test "$(as-name)" = GNU)
+> > +
+> > +config AS_IS_LLVM
+> > +       def_bool $(success,test "$(as-name)" = LLVM)
+> > +
+> > +config AS_VERSION
+> > +       int
+> > +       # If it is integrated assembler, the version is the same as Clang's one.
+> > +       default CLANG_VERSION if AS_IS_LLVM
+> > +       default $(as-version)
+> > +
+> >  config LD_IS_BFD
+> >         def_bool $(success,test "$(ld-name)" = BFD)
+> >
+> > diff --git a/scripts/Kconfig.include b/scripts/Kconfig.include
+> > index 58fdb5308725..0496efd6e117 100644
+> > --- a/scripts/Kconfig.include
+> > +++ b/scripts/Kconfig.include
+> > @@ -45,6 +45,12 @@ $(error-if,$(success,test -z "$(cc-info)"),Sorry$(comma) this compiler is not su
+> >  cc-name := $(shell,set -- $(cc-info) && echo $1)
+> >  cc-version := $(shell,set -- $(cc-info) && echo $2)
+> >
+> > +# Get the assembler name, version, and error out if it is not supported.
+> > +as-info := $(shell,$(srctree)/scripts/as-version.sh $(CC) $(CLANG_FLAGS))
+> > +$(error-if,$(success,test -z "$(as-info)"),Sorry$(comma) this assembler is not supported.)
+> > +as-name := $(shell,set -- $(as-info) && echo $1)
+> > +as-version := $(shell,set -- $(as-info) && echo $2)
+> > +
+> >  # Get the linker name, version, and error out if it is not supported.
+> >  ld-info := $(shell,$(srctree)/scripts/ld-version.sh $(LD))
+> >  $(error-if,$(success,test -z "$(ld-info)"),Sorry$(comma) this linker is not supported.)
+> > diff --git a/scripts/as-version.sh b/scripts/as-version.sh
+> > new file mode 100755
+> > index 000000000000..205d8b9fc4d4
+> > --- /dev/null
+> > +++ b/scripts/as-version.sh
+> > @@ -0,0 +1,77 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0-only
+> > +#
+> > +# Print the assembler name and its version in a 5 or 6-digit form.
+> > +# Also, perform the minimum version check.
+> > +# (If it is the integrated assembler, return 0 as the version, and
+> > +# the version check is skipped.)
+> > +
+> > +set -e
+> > +
+> > +# Convert the version string x.y.z to a canonical 5 or 6-digit form.
+> > +get_canonical_version()
+> > +{
+> > +       IFS=.
+> > +       set -- $1
+> > +
+> > +       # If the 2nd or 3rd field is missing, fill it with a zero.
+> > +       #
+> > +       # The 4th field, if present, is ignored.
+> > +       # This occurs in development snapshots as in 2.35.1.20201116
+> > +       echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
+> > +}
+> > +
+> > +orig_args="$@"
+> > +
+> > +# Get the first line of the --version output.
+> > +IFS='
+> > +'
+> > +# Add 2>&1 to check both stdout and stderr.
+> > +# If the backing assembler is binutils, we get the version string in stdout.
+> > +# If it is clang's integrated assembler, we get the following error in stderr:
+> > +#   clang: error: unsupported argument '--version' to option 'Wa,'
+> > +# To avoid the error message affected by locale, set LC_MESSAGES=C just in case.
+> > +set -- $(LC_MESSAGES=C "$@" -Wno-unused-command-line-argument -Wa,--version -c -x assembler /dev/null -o /dev/null 2>&1)
+> > +line="$1"
+> > +
+> > +if [ "$line" = "clang: error: unsupported argument '--version' to option 'Wa,'" ]; then
 >
+> Checking the precise error message is too brittle; what if it changes?
+> Why not check the return code a la cc-option and friends?  Is checking
+> the return code of a subshell an issue here?
 
-Userspace oom reaper. Please look at
-https://lore.kernel.org/linux-api/20201014183943.GA1489464@google.com/T/
+As Nathan pointed out, this is fragile.
+
+I just tried my best to make this script work stand-alone.
+
+With the only exit code chec,
+
+ scripts/as-version.sh false
+
+would return LLVM, which is false-positive.
+Probably this is not a big deal
+since completely wrong input was blocked by
+scripts/cc-version.sh
+
+
+If we give up making this script stand-alone,
+another idea is to check LLVM_IAS=1, which
+is passed from the top Makefile.
+
+Yet another idea is to explicitly pass
+-integrated-as as CLANG_FLAGS.
+Then, this script can parse the presence
+of -integrated-as.
+
+
+BTW, is there any guarantee that the integrated assembler
+is always enabled by default? Or, is it dependent on
+the configuration?
+
+The top Makefile adds -no-integrated-as if LLVM_IAS != 1,
+but adds nothing if LLVM_IAS == 1.
+So, -integrated-as must be always default.
+
+
+
+
+
+
+
+>
+> > +       # For the intergrated assembler, we do not check the version here.
+>
+> s/intergrated/integrated/
+>
+> > +       # It is the same as the clang version, and it has been already checked
+> > +       # by scripts/cc-version.sh.
+> > +       echo LLVM 0
+> > +       exit 0
+> > +fi
+> > +
+> > +# Split the line on spaces.
+> > +IFS=' '
+> > +set -- $line
+> > +
+> > +tool_version=$(dirname $0)/tool-version.sh
+> > +
+> > +if [ "$1" = GNU -a "$2" = assembler ]; then
+> > +       shift $(($# - 1))
+> > +       version=$1
+> > +       min_version=$($tool_version binutils)
+> > +       name=GNU
+> > +else
+> > +       echo "$orig_args: unknown assembler invoked" >&2
+> > +       exit 1
+> > +fi
+> > +
+> > +# Some distributions append a package release number, as in 2.34-4.fc32
+> > +# Trim the hyphen and any characters that follow.
+> > +version=${version%-*}
+> > +
+> > +cversion=$(get_canonical_version $version)
+> > +min_cversion=$(get_canonical_version $min_version)
+> > +
+> > +if [ "$cversion" -lt "$min_cversion" ]; then
+> > +       echo >&2 "***"
+> > +       echo >&2 "*** Assembler is too old."
+> > +       echo >&2 "***   Your $name assembler version:    $version"
+> > +       echo >&2 "***   Minimum $name assembler version: $min_version"
+> > +       echo >&2 "***"
+> > +       exit 1
+> > +fi
+> > +
+> > +echo $name $cversion
+> > --
+> > 2.27.0
+> >
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
