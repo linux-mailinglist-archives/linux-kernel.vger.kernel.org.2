@@ -2,329 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2950E32EC62
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 692A132EC67
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbhCENja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:39:30 -0500
-Received: from foss.arm.com ([217.140.110.172]:54326 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230472AbhCENjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:39:23 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CB28931B;
-        Fri,  5 Mar 2021 05:39:22 -0800 (PST)
-Received: from [10.57.51.235] (unknown [10.57.51.235])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 520F93F73B;
-        Fri,  5 Mar 2021 05:39:20 -0800 (PST)
-Subject: Re: [PATCH v4 08/10] coresight: config: Add preloaded configurations
-To:     Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        mathieu.poirier@linaro.org, linux-doc@vger.kernel.org
-Cc:     yabinc@google.com, corbet@lwn.net, leo.yan@linaro.org,
-        alexander.shishkin@linux.intel.com, tingwei@codeaurora.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-References: <20210128170936.9222-1-mike.leach@linaro.org>
- <20210128170936.9222-9-mike.leach@linaro.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <e8609532-547f-b728-453c-c6e930c049f7@arm.com>
-Date:   Fri, 5 Mar 2021 13:39:17 +0000
+        id S230252AbhCENlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:41:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38106 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229551AbhCENkd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 08:40:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614951632;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Us44kK8almkKYV1H4wnmYxtlb2pEgbBYf7YjCuA7KUs=;
+        b=M0anrqweY3c20R2UOVnbVbrL/8khiHgnraQnwQwSVz0u4hZwHLarGjTvGh7/YLMAQPwhrg
+        y71OEXZHlxCpnkWR/epehRBDLmHY9eWpHb/Va62iXJUnMJYGIq1HYYIRLbI4+fnWK+rOvr
+        bocyrUd095QCzjMt7DFNgFszWsm9HCc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-292-dpmasTY_MeeuFUIuDoyzHg-1; Fri, 05 Mar 2021 08:40:28 -0500
+X-MC-Unique: dpmasTY_MeeuFUIuDoyzHg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C5EF108BD15;
+        Fri,  5 Mar 2021 13:40:26 +0000 (UTC)
+Received: from [10.36.112.194] (ovpn-112-194.ams2.redhat.com [10.36.112.194])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3DA0919934;
+        Fri,  5 Mar 2021 13:40:22 +0000 (UTC)
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        George Kennedy <george.kennedy@oracle.com>
+Cc:     Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@suse.com>
+References: <1614802160-29362-1-git-send-email-george.kennedy@oracle.com>
+ <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
+ <9c3bc1b2-bb8d-194d-6faf-e4d7d346dc9b@oracle.com>
+ <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
+Message-ID: <1ae44491-4404-6873-4ee6-6cf58c1ae6fb@redhat.com>
+Date:   Fri, 5 Mar 2021 14:40:21 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210128170936.9222-9-mike.leach@linaro.org>
+In-Reply-To: <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 5:09 PM, Mike Leach wrote:
-> Preload set of configurations.
+>> The ibft table, for example, is mapped in via acpi_map() and kmap(). The
+>> page for the ibft table is not reserved, so it can end up on the freelist.
 > 
-> This patch creates a small set of preloaded configurations and features
-> that are available immediately after coresight has been initialised.
+> You appear to be saying that it is not sufficient to kmap() a page in
+> order to use it safely.  It is also necessary to reserve it upfront,
+> for example with the help of memblock_reserve().  Is that correct?  If
+> so, is there an alternative way to reserve a page frame?
+
+If the memory is indicated by the BIOS/firmware as valid memory 
+(!reserved) but contains actual tables that have to remain untouched 
+what happens is:
+
+1) Memblock thinks the memory should be given to the buddy, because it
+    is valid memory and was not reserved by anyone (i.e., the bios, early
+    allocations).
+
+2) Memblock will expose the pages to the buddy, adding them to the free
+    page list.
+
+3) Anybody can allocate them, e.g., via alloc_pages().
+
+The root issue is that pages that should not get exposed to the buddy as 
+free pages get exposed to the buddy as free pages. We have to teach 
+memblock that these pages are not actually to be used, but instead, area 
+reserved.
+
 > 
-> The current set provides a strobing feature for ETMv4, that creates a
-> periodic sampling of trace by switching trace generation on and off
-> using counters in the ETM.
+>>>
+>>>> Use memblock_reserve() to reserve all the ACPI table pages.
+>>> How is this going to help?
+>> If the ibft table page is not reserved, it will end up on the freelist
+>> and potentially be allocated before ibft_init() is called.
+>>
+>> I believe this is the call that causes the ibft table page (in this case
+>> pfn=0xbe453) to end up on the freelist:
+>>
+>> memmap_init_range: size=bd49b, nid=0, zone=1, start_pfn=1000,
+>> zone_end_pfn=100000
 > 
-> A configuration called "autofdo" is also provided that uses the 'strobing'
-> feature and provides a couple of preset values, selectable on the perf
-> command line.
+> David, is commit 7fef431be9c9 related to this and if so, then how?
 > 
-> Signed-off-by: Mike Leach <mike.leach@linaro.org>
-> ---
->   drivers/hwtracing/coresight/Makefile          |   3 +-
->   .../hwtracing/coresight/coresight-cfg-afdo.c  | 154 ++++++++++++++++++
->   .../coresight/coresight-cfg-preload.c         |  25 +++
->   .../coresight/coresight-cfg-preload.h         |  11 ++
->   drivers/hwtracing/coresight/coresight-core.c  |   6 +
->   .../hwtracing/coresight/coresight-syscfg.h    |   1 +
->   6 files changed, 199 insertions(+), 1 deletion(-)
->   create mode 100644 drivers/hwtracing/coresight/coresight-cfg-afdo.c
->   create mode 100644 drivers/hwtracing/coresight/coresight-cfg-preload.c
->   create mode 100644 drivers/hwtracing/coresight/coresight-cfg-preload.h
-> 
-> diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
-> index ea544206204d..2707bfef1b76 100644
-> --- a/drivers/hwtracing/coresight/Makefile
-> +++ b/drivers/hwtracing/coresight/Makefile
-> @@ -4,7 +4,8 @@
->   #
->   obj-$(CONFIG_CORESIGHT) += coresight.o
->   coresight-y := coresight-core.o  coresight-etm-perf.o coresight-platform.o \
-> -		coresight-sysfs.o coresight-syscfg.o coresight-config.o
-> +		coresight-sysfs.o coresight-syscfg.o coresight-config.o \
-> +		coresight-cfg-preload.o coresight-cfg-afdo.o
->   obj-$(CONFIG_CORESIGHT_LINK_AND_SINK_TMC) += coresight-tmc.o
->   coresight-tmc-y := coresight-tmc-core.o coresight-tmc-etf.o \
->   		      coresight-tmc-etr.o
-> diff --git a/drivers/hwtracing/coresight/coresight-cfg-afdo.c b/drivers/hwtracing/coresight/coresight-cfg-afdo.c
-> new file mode 100644
-> index 000000000000..ff69fb3f4434
-> --- /dev/null
-> +++ b/drivers/hwtracing/coresight/coresight-cfg-afdo.c
-> @@ -0,0 +1,154 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright(C) 2020 Linaro Limited. All rights reserved.
-> + * Author: Mike Leach <mike.leach@linaro.org>
-> + */
-> +
-> +#include "coresight-config.h"
-> +#include "coresight-etm4x-cfg.h"
-> +
-> +/* preload configurations and features */
-> +
-> +/* preload in features for ETMv4 */
-> +
-> +/* strobe feature */
-> +static struct cscfg_parameter_desc strobe_params[] = {
-> +	{
-> +		.name = "window",
-> +		.value = 5000,
-> +	},
-> +	{
-> +		.name = "period",
-> +		.value = 10000,
-> +	},
-> +};
-> +
-> +static struct cscfg_regval_desc strobe_regs[] = {
-> +	/* resource selectors */
-> +	{
-> +		.type = CS_CFG_REG_TYPE_RESOURCE,
-> +		.offset = TRCRSCTLRn(2),
-> +		.hw_info = ETM4_CFG_RES_SEL,
-> +		.val32 = 0x20001,
-> +	},
-> +	{
-> +		.type = CS_CFG_REG_TYPE_RESOURCE,
-> +		.offset = TRCRSCTLRn(3),
-> +		.hw_info = ETM4_CFG_RES_SEQ,
-> +		.val32 = 0x20002,
-> +	},
-> +	/* strobe window counter 0 - reload from param 0 */
-> +	{
-> +		.type = CS_CFG_REG_TYPE_RESOURCE | CS_CFG_REG_TYPE_VAL_SAVE,
-> +		.offset = TRCCNTVRn(0),
-> +		.hw_info = ETM4_CFG_RES_CTR,
-> +	},
-> +	{
-> +		.type = CS_CFG_REG_TYPE_RESOURCE | CS_CFG_REG_TYPE_VAL_PARAM,
-> +		.offset = TRCCNTRLDVRn(0),
-> +		.hw_info = ETM4_CFG_RES_CTR,
-> +		.val32 = 0,
-> +	},
-> +	{
-> +		.type = CS_CFG_REG_TYPE_RESOURCE,
-> +		.offset = TRCCNTCTLRn(0),
-> +		.hw_info = ETM4_CFG_RES_CTR,
-> +		.val32 = 0x10001,
-> +	},
-> +	/* strobe period counter 1 - reload from param 1 */
-> +	{
-> +		.type = CS_CFG_REG_TYPE_RESOURCE | CS_CFG_REG_TYPE_VAL_SAVE,
-> +		.offset = TRCCNTVRn(1),
-> +		.hw_info = ETM4_CFG_RES_CTR,
-> +	},
-> +	{
-> +		.type = CS_CFG_REG_TYPE_RESOURCE | CS_CFG_REG_TYPE_VAL_PARAM,
-> +		.offset = TRCCNTRLDVRn(1),
-> +		.hw_info = ETM4_CFG_RES_CTR,
-> +		.val32 = 1,
-> +	},
-> +	{
-> +		.type = CS_CFG_REG_TYPE_RESOURCE,
-> +		.offset = TRCCNTCTLRn(1),
-> +		.hw_info = ETM4_CFG_RES_CTR,
-> +		.val32 = 0x8102,
-> +	},
-> +	/* sequencer */
-> +	{
-> +		.type = CS_CFG_REG_TYPE_RESOURCE,
-> +		.offset = TRCSEQEVRn(0),
-> +		.hw_info = ETM4_CFG_RES_SEQ,
-> +		.val32 = 0x0081,
-> +	},
-> +	{
-> +		.type = CS_CFG_REG_TYPE_RESOURCE,
-> +		.offset = TRCSEQEVRn(1),
-> +		.hw_info = ETM4_CFG_RES_SEQ,
-> +		.val32 = 0x0000,
-> +	},
-> +	/* view-inst */
-> +	{
-> +		.type = CS_CFG_REG_TYPE_STD | CS_CFG_REG_TYPE_VAL_MASK,
-> +		.offset = TRCVICTLR,
-> +		.val32 = 0x0003,
-> +		.mask32 = 0x0003,
-> +	},
-> +	/* end of regs */
-> +};
-> +
-> +struct cscfg_feature_desc strobe = {
-> +	.name = "strobing",
-> +	.brief = "Generate periodic trace capture windows.\n"
-> +	"parameter \'window\': a number of CPU cycles (W)\n"
-> +	"parameter \'period\': trace enabled for W cycles every period x W cycles\n",
 
-nit: Could we align the string as below:
+Memory gets allocated and used in a different order, which seems to have 
+exposed (yet another) latent BUG. The same could be reproduced via zone 
+shuffling with a little luck.
 
-	.brief = "Generate periodic trace capture windows.\n"
-		 "parameter \'window\': a number of CPU cycles (W)\n"
-		 "parameter \'period\': trace enabled for W cycles every period x W cycles\n",
+-- 
+Thanks,
 
-> +	.match_flags = CS_CFG_MATCH_CLASS_SRC_ETM4,
-> +	.nr_params = ARRAY_SIZE(strobe_params),
-> +	.params = strobe_params,
-> +	.nr_regs = ARRAY_SIZE(strobe_regs),
-> +	.regs = strobe_regs,
-> +};
-> +
-> +/* create an autofdo configuration */
-> +
-> +/* we will provide 9 sets of preset parameter values */
-> +#define AFDO_NR_PRESETS		9
-> +/* the total number of parameters in used features */
-> +#define AFDO_NR_PARAM_SUM	ARRAY_SIZE(strobe_params)
+David / dhildenb
 
-nit: alignment consistency. i.e 1 TAB vs 2 TABs (with AFDO_NR_PRESETS)
-
-minor nit : s/AFDO_NR_PARAM_SUM/AFDO_NR_TOTAL_PARAMS ? or even AFDO_NR_PARAMS
-
-> +
-> +#define AFDO_MATCH_STROBING (CS_CFG_MATCH_INST_ANY | CS_CFG_MATCH_CLASS_SRC_ETM4)
-> +
-> +static struct cscfg_config_feat_ref afdo_refs[] = {
-> +	{
-> +		.name = "strobing",
-> +		.match = {
-> +			.match_flags = AFDO_MATCH_STROBING,
-> +		},
-> +	},
-> +};
-> +
-> +/*
-> + * set of presets leaves strobing window constant while varying period to allow
-> + * experimentation with mark / space ratios for various workloads
-> + */
-> +static u64 afdo_presets[AFDO_NR_PRESETS][AFDO_NR_PARAM_SUM] = {
-> +	{ 5000, 2 },
-> +	{ 5000, 4 },
-> +	{ 5000, 8 },
-> +	{ 5000, 16 },
-> +	{ 5000, 64 },
-> +	{ 5000, 128 },
-> +	{ 5000, 512 },
-> +	{ 5000, 1024 },
-> +	{ 5000, 4096 },
-> +};
-> +
-> +struct cscfg_config_desc afdo = {
-> +	.name = "autofdo",
-> +	.brief = "Setup ETMs with strobing for autofdo\n"
-> +	"Supplied presets allow experimentation with mark-space ratio for various loads\n",
-
-Same alignment comments as above
-
-> +	.nr_refs = ARRAY_SIZE(afdo_refs),
-> +	.refs = afdo_refs,
-> +	.nr_presets = AFDO_NR_PRESETS,
-> +	.nr_total_params = AFDO_NR_PARAM_SUM,
-> +	.presets = &afdo_presets[0][0],
-> +};
-> diff --git a/drivers/hwtracing/coresight/coresight-cfg-preload.c b/drivers/hwtracing/coresight/coresight-cfg-preload.c
-> new file mode 100644
-> index 000000000000..c7ec5cbdd990
-> --- /dev/null
-> +++ b/drivers/hwtracing/coresight/coresight-cfg-preload.c
-> @@ -0,0 +1,25 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright(C) 2020 Linaro Limited. All rights reserved.
-> + * Author: Mike Leach <mike.leach@linaro.org>
-
-One line on the brief of the files purpose is helpful.
-
-> + */
-> +
-> +#include "coresight-cfg-preload.h"
-> +#include "coresight-config.h"
-> +#include "coresight-syscfg.h"
-> +
-> +static struct cscfg_feature_desc *preload_feats[] = {
-> +	&strobe,
-> +	0
-> +};
-> +
-> +static struct cscfg_config_desc *preload_cfgs[] = {
-> +	&afdo,
-> +	0
-> +};
-> +
-> +/* preload called with mutex locked */
-> +int cscfg_preload(void)
-> +{
-> +	return cscfg_load_config_sets(preload_cfgs, preload_feats);
-> +}
-> diff --git a/drivers/hwtracing/coresight/coresight-cfg-preload.h b/drivers/hwtracing/coresight/coresight-cfg-preload.h
-> new file mode 100644
-> index 000000000000..fc4ac7faa93d
-> --- /dev/null
-> +++ b/drivers/hwtracing/coresight/coresight-cfg-preload.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright(C) 2020 Linaro Limited. All rights reserved.
-> + * Author: Mike Leach <mike.leach@linaro.org>
-> + */
-> +
-> +/* declare preloaded configurations and features */
-> +
-> +/* from coresight-cfg-afdo.c */
-> +extern struct cscfg_feature_desc strobe;
-> +extern struct cscfg_config_desc afdo;
-> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> index 6bd41de46648..633ddcffc6c7 100644
-> --- a/drivers/hwtracing/coresight/coresight-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> @@ -1744,9 +1744,15 @@ static int __init coresight_init(void)
->   
->   	/* initialise the coresight syscfg API */
->   	ret = cscfg_init();
-> +	if (ret)
-> +		goto exit_perf_close;
-> +
-> +	/* preload builtin configurations */
-> +	ret = cscfg_preload();
->   	if (!ret)
->   		return 0;
-
-Could this be folded into cscfg_init() ?
-
-Otherwise looks fine to me
-
-Suzuki
