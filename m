@@ -2,100 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B022132E0A5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:23:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDCA32E057
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbhCEEW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 23:22:59 -0500
-Received: from smtp.h3c.com ([60.191.123.50]:4132 "EHLO h3cspam02-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229463AbhCEEW5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 23:22:57 -0500
-X-Greylist: delayed 4144 seconds by postgrey-1.27 at vger.kernel.org; Thu, 04 Mar 2021 23:22:56 EST
-Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam02-ex.h3c.com with ESMTP id 1253Dpjk075701;
-        Fri, 5 Mar 2021 11:13:51 +0800 (GMT-8)
-        (envelope-from deng.hongjie@h3c.com)
-Received: from DAG2EX05-BASE.srv.huawei-3com.com ([10.8.0.68])
-        by h3cspam02-ex.h3c.com with ESMTP id 1253D5Q3072525;
-        Fri, 5 Mar 2021 11:13:05 +0800 (GMT-8)
-        (envelope-from deng.hongjie@h3c.com)
-Received: from localhost.localdomain (10.114.40.30) by
- DAG2EX05-BASE.srv.huawei-3com.com (10.8.0.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 5 Mar 2021 11:13:06 +0800
-From:   HongJieDeng <deng.hongjie@h3c.com>
-To:     <tsbogend@alpha.franken.de>
-CC:     <paulburton@kernel.org>, <chenhc@lemote.com>,
-        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <liulichao@loongson.cn>, <denghongjie@h3c.com>,
-        Hongjie Deng <deng.hongjie@h3c.com>
-Subject: [PATCH] MIPS: Support large stack.
-Date:   Fri, 5 Mar 2021 11:12:57 +0800
-Message-ID: <20210305031257.14936-1-deng.hongjie@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S229516AbhCEECw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 23:02:52 -0500
+Received: from mail-eopbgr760084.outbound.protection.outlook.com ([40.107.76.84]:5606
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229458AbhCEECv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 23:02:51 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CiTnsIhMIUQ0MHWLbNCw/rLcjXgE+nFx/c8kAKkFSoYFFmBX43f35tOhk3M6wWY7TVVJtjcEXffAjmZIyEPFPeo6kQtSaHaz9GmDnxUL/z6q4Sy8FAN2aQ1Eapdl7RYuR8HW2bH5KWaHms7pExDxYfftvLq6Vie02sM9TgRCD0FVvlOnxz+RCpqCdMUSEE+HSWJ/J45GH+OatH+sIoWsenU+5RaTrypMVTWZYXKttzvt37tweNWUHCCm7BZCJSeu6YgcFj1unu5+xVsFlapC6dFKKAnx+rMD5y34Ot6c+6W9hTgIIPpdkDg+h+FwHMxrYdpBz+X4Y62CSPXYATiGvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KSJgwgh3f/FfDAFeJVLuET7litMQBoWm0aRpNo1FqxY=;
+ b=DVqtYwV0CJqK08EqFeZ9D0kN15OCf4ZQV/Y4Zx912qOQHrOMbp31cgtzm5H8hwHGfQCGsMK4k2EwIp8mrMNx/AWjbSNIFKZgSmC49MzKITfYuvQ1l7neMQfXQOYmpEzV/eIODKiFTQ7if2bm6mMWWgNaeQCVGD7IrmmYXaTvdcx9Viz9LXFjxYWny3CDjnhlDYkfdLT9l2/7EGvj8KKgRVwy5h2BamwhM+kVoKuqAhCc/R0DGEkqztTHzUE19HJLl3U5zaZirpa6GkjgXBwpfNmZfbHRYKOBAAY+2ipTSjwoW35yMAWK9PfGADdA4iYh0C4AWC7N2O5vJPIalEhBFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KSJgwgh3f/FfDAFeJVLuET7litMQBoWm0aRpNo1FqxY=;
+ b=3hofBiKgmKD6qrCBQGqJZRzk96cIFKE7YL7k3lJAXpgM0iCh1RQeThZMl4mjBazn4JVw9TolgkR8hl3dGa6WbwH+6gXaJ8xtzTaW+XYxv0xOMPj/kpvEyGtzIV5NZ7Bh9IoPrD8iB9vCa5DNLtNNGzdatEWYqGqSajPUAfUDbQw=
+Received: from DM6PR12MB2619.namprd12.prod.outlook.com (2603:10b6:5:45::18) by
+ DM6PR12MB4372.namprd12.prod.outlook.com (2603:10b6:5:2af::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3912.17; Fri, 5 Mar 2021 04:02:49 +0000
+Received: from DM6PR12MB2619.namprd12.prod.outlook.com
+ ([fe80::11e6:53ff:8e98:31f0]) by DM6PR12MB2619.namprd12.prod.outlook.com
+ ([fe80::11e6:53ff:8e98:31f0%3]) with mapi id 15.20.3890.034; Fri, 5 Mar 2021
+ 04:02:49 +0000
+From:   "Quan, Evan" <Evan.Quan@amd.com>
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "Zhang, Hawking" <Hawking.Zhang@amd.com>,
+        "Wang, Kevin(Yang)" <Kevin1.Wang@amd.com>,
+        "Gao, Likun" <Likun.Gao@amd.com>
+CC:     "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] gpu: drm: swsmu: fix error return code of
+ smu_v11_0_set_allowed_mask()
+Thread-Topic: [PATCH] gpu: drm: swsmu: fix error return code of
+ smu_v11_0_set_allowed_mask()
+Thread-Index: AQHXEXNJvR3M9lgw60GrVkb4BaohFKp0xcng
+Date:   Fri, 5 Mar 2021 04:02:49 +0000
+Message-ID: <DM6PR12MB26198FF9499CD3ADCCF93546E4969@DM6PR12MB2619.namprd12.prod.outlook.com>
+References: <20210305035428.6750-1-baijiaju1990@gmail.com>
+In-Reply-To: <20210305035428.6750-1-baijiaju1990@gmail.com>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Enabled=true;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SetDate=2021-03-05T04:02:47Z;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Method=Privileged;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Name=Public_0;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ActionId=40421f04-315a-41c1-95d3-f8793aa4e49e;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ContentBits=1
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [180.167.199.189]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 3317d69b-8294-434b-f5a2-08d8df8b8af8
+x-ms-traffictypediagnostic: DM6PR12MB4372:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR12MB437288E65CAFD99DAA037D9BE4969@DM6PR12MB4372.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:317;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: W/fPQfc7WH5lGy0uWiir8s3YgDcryGDNEmWXW88sQLQXOezoYvhxKn5jomCRAAwJBFXA1ZTgB2dQAHhLeVvJ9EaVLKRPjT1XpR1wJYZADsILDydnPzL6+z4t+UsRnH1u9m91hBg3vlfSjFp8RuQQpJQjxehMKBO0W1cSD0q7YytLalh6E5LPuQ8g3/y7psrOyTjx7L4bGwszW1MApQWjDgxRWX3osJYpUJyCj4KSLbqpid0nZ0Vt3xc+7+gbGeV0KLUkeEvyqPgy26R1fd8OWntikJZq38uChfd6mdrCkfgZjuJGMsOm6aw0HmZZ1N2JYrQUsLv0NcKbmA7zTMkSJ3dfg2tWTqkn7kIWkLW1YuIbpzn+uT+Um7pIJddLf1VacwmrMjrJ89qH52xR9X9nonzW+EgmABgGPGLLuZVIqYrTXNeVxLYWqBfmAC1YWgXqX2Tr2VERpEoO+wTtSfpDvJ4wie/6tUN1JJkVTv+uU6EGy4jqJJWx0wDZ5nDU90VQkrRMp9brG7II+tHfTpdEVGZ3sndUqxNsz3/DDflqPR30nwtvhYZ7YUVJb8Yv8mQg
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB2619.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(136003)(396003)(346002)(76116006)(71200400001)(52536014)(110136005)(53546011)(66946007)(66556008)(83380400001)(6506007)(66446008)(5660300002)(4326008)(54906003)(86362001)(66476007)(6636002)(64756008)(7696005)(478600001)(8936002)(2906002)(9686003)(8676002)(55016002)(186003)(921005)(316002)(33656002)(26005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?LZThGObk92uLLLMANI9E69YTajdL2zUVab5CFme9lJxDq/BFmF4zQAoxlvn2?=
+ =?us-ascii?Q?1n1uzl7ys/9MKpXg6GUqoVLQS0RsDablNqCudq2x84ahxvDYXvCbef43yqx/?=
+ =?us-ascii?Q?cD4e+v27ltZN7e49ez/BxCay3//EhGSsSB1h/jhvw97OTY8xz11YHnr3tgqN?=
+ =?us-ascii?Q?Aehw3i6fl2K2AH2Ku4HE0TwfB5esGRXXqKB5k1jOMKKAn9D6M0btOJNymkLf?=
+ =?us-ascii?Q?f53mf4nmdPn46SLNoCzadO8lKKvI/H2848dBLkWlLDBURyZIiycVQ/2KDpXI?=
+ =?us-ascii?Q?ih/DqrFvFn9gvZY+hKNbrJacrMZsQEH5n+uTq8UnB6U1xq0JCw8fsiz7ESBk?=
+ =?us-ascii?Q?lC1EjXHHfhdIT91rBMRyflRen2NaLlRAfXGmZY5IHxEZVuHYVdl/IyS7p1uz?=
+ =?us-ascii?Q?uv3mVgNHVPSh3aGbfHGhP/24MhmncrpRJgJLxDLRh3vE7gV15RXvUJz2HBv9?=
+ =?us-ascii?Q?T09Ss+9/W4gf0Ti+c7xsvvsRTWgcXaUODBk7tiYxNtbJw369GsMLmTS969CI?=
+ =?us-ascii?Q?WX2Rb/iOwRqpGqfEvd74QuJWVPljlwDGRai8NR4EsTSzTakr2Gz++3dNRsiD?=
+ =?us-ascii?Q?I+8PL1K6HvVPkFJ5YOu2i9wF9v92ztAFdMTkCeLVv3Qg4V/C8wB4alVkorBA?=
+ =?us-ascii?Q?J9pRN2IfQ9XZyCk2FnWCcS+EYzk8O6jCZmvu6iot8Et5x2aa55qChiDnS4fG?=
+ =?us-ascii?Q?GxD+3My4a255nHa31h7D3j4s00WHz/olLJgDA6/wmvZ163B3Xpn5jAh9FIc6?=
+ =?us-ascii?Q?aqSCs5fyqupxMaRarIMhaOe9HtqNMWIZYfDuobRl6U/CNGuosdEsTgYGcCBp?=
+ =?us-ascii?Q?FBvigb0RT9n50mreNJf5RB+DkiWceni5iD0yhkX/HyTEeZN/HwlRnPADYo6s?=
+ =?us-ascii?Q?OVZ52gC87LdT5SPNs4xbS7FHSHM3SrFb8JYSFKxjywEOPOabJa2JQxaLr55j?=
+ =?us-ascii?Q?CMi2a+WF8qfEldAXem6eRniT/SBQd/Ojge6sF+bNHLiZUnAk4C5rpMjXp4ks?=
+ =?us-ascii?Q?ehgl9vzIyqqC68pLRtnzA3lS0MU6nuVmssHm27/p2gwvwur2PfEcTSWpIehZ?=
+ =?us-ascii?Q?7Amjh4wnqS7oQqFGqJAqExXDIxL09dU+rwNFS0tRF10JL5H7DjOgzsA4YmXN?=
+ =?us-ascii?Q?pZQmYQi8CZj33e6HpMy1GSJf1k9wkMBO8EpusKNbVIbspZ1ORovWQD5DqI2X?=
+ =?us-ascii?Q?ssS1T4YySJsCwc2bJnYXrGzZtjkLFlMQMt8zuB6WquFnfXybJ/ZdjmSnxDpD?=
+ =?us-ascii?Q?8t0vZ8eOY/Itrnn9h+CfoXn+bf7zZoCHyar4T5oz09S3VhWKtD5U+Jfk65j1?=
+ =?us-ascii?Q?uN0wlP4tdDV5UlLNqs8WUwll?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.114.40.30]
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG2EX05-BASE.srv.huawei-3com.com (10.8.0.68)
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 1253D5Q3072525
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB2619.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3317d69b-8294-434b-f5a2-08d8df8b8af8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2021 04:02:49.6425
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6pgy/iWr0L0H1YnU+jvcn3C26G77KjLgbbgyjrjzMX4hmjCKOxAf4+ZImHEla03t
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4372
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hongjie Deng <deng.hongjie@h3c.com>
+[AMD Public Use]
 
-We need more stack space, xori/ori no longer apply when
- _THREAD_MASK exceeds 16 bits
+Thanks. Reviewed-by: Evan Quan <evan.quan@amd.com>
 
-Signed-off-by: Hongjie Deng <deng.hongjie@h3c.com>
+-----Original Message-----
+From: Jia-Ju Bai <baijiaju1990@gmail.com>=20
+Sent: Friday, March 5, 2021 11:54 AM
+To: Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian <Chri=
+stian.Koenig@amd.com>; airlied@linux.ie; daniel@ffwll.ch; Quan, Evan <Evan.=
+Quan@amd.com>; Zhang, Hawking <Hawking.Zhang@amd.com>; Wang, Kevin(Yang) <K=
+evin1.Wang@amd.com>; Gao, Likun <Likun.Gao@amd.com>
+Cc: amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux-k=
+ernel@vger.kernel.org; Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] gpu: drm: swsmu: fix error return code of smu_v11_0_set_al=
+lowed_mask()
+
+When bitmap_empty() or feature->feature_num triggers an error, no error ret=
+urn code of smu_v11_0_set_allowed_mask() is assigned.
+To fix this bug, ret is assigned with -EINVAL as error return code.
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 ---
- arch/mips/include/asm/stackframe.h | 8 ++++++++
- arch/mips/kernel/genex.S           | 6 ++++++
- 2 files changed, 14 insertions(+)
+ drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/stackframe.h b/arch/mips/include/asm/stackframe.h
-index aa430a6..6ebc39f 100644
---- a/arch/mips/include/asm/stackframe.h
-+++ b/arch/mips/include/asm/stackframe.h
-@@ -278,8 +278,16 @@
- 		sll	k0, 3		/* extract cu0 bit */
- 		bltz	k0, 9f
- 
-+#if    _THREAD_MASK  < (1 << 16 - 1)
- 		ori	$28, sp, _THREAD_MASK
- 		xori	$28, _THREAD_MASK
-+#else
-+		li      $28,   _THREAD_MASK
-+		or  $28,  sp,  $28
-+		li  $24, _THREAD_MASK
-+		xor   $28, $28, $24
-+#endif
-+
- #ifdef CONFIG_CPU_CAVIUM_OCTEON
- 		.set    mips64
- 		pref    0, 0($28)       /* Prefetch the current pointer */
-diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-index bcce32a..5ea4fe4 100644
---- a/arch/mips/kernel/genex.S
-+++ b/arch/mips/kernel/genex.S
-@@ -662,8 +662,14 @@ isrdhwr:
- #endif
- 	MTC0	k0, CP0_EPC
- 	/* I hope three instructions between MTC0 and ERET are enough... */
-+#if    _THREAD_MASK  < (1 << 16 - 1)
- 	ori	k1, _THREAD_MASK
- 	xori	k1, _THREAD_MASK
-+#else
-+	li  $24 ,_THREAD_MASK
-+	or   k1, k1, $24
-+	xor   k1, k1, $24
-+#endif
- 	LONG_L	v1, TI_TP_VALUE(k1)
- 	.set	push
- 	.set	arch=r4000
--- 
-1.8.3.1
-
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c b/drivers/gpu/d=
+rm/amd/pm/swsmu/smu11/smu_v11_0.c
+index 90585461a56e..82731a932308 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c
+@@ -747,8 +747,10 @@ int smu_v11_0_set_allowed_mask(struct smu_context *smu=
+)
+ 	int ret =3D 0;
+ 	uint32_t feature_mask[2];
+=20
+-	if (bitmap_empty(feature->allowed, SMU_FEATURE_MAX) || feature->feature_n=
+um < 64)
++	if (bitmap_empty(feature->allowed, SMU_FEATURE_MAX) || feature->feature_n=
+um < 64) {
++		ret =3D -EINVAL;
+ 		goto failed;
++	}
+=20
+ 	bitmap_copy((unsigned long *)feature_mask, feature->allowed, 64);
+=20
+--
+2.17.1
