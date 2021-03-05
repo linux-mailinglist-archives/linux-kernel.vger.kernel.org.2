@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DC932F6C1
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B274D32F6C0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhCEXpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 18:45:17 -0500
-Received: from smtpcmd02102.aruba.it ([62.149.158.102]:55336 "EHLO
+        id S230045AbhCEXpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 18:45:16 -0500
+Received: from smtpcmd02102.aruba.it ([62.149.158.102]:60185 "EHLO
         smtpcmd15177.aruba.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229592AbhCEXoj (ORCPT
+        with ESMTP id S229709AbhCEXok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 18:44:39 -0500
+        Fri, 5 Mar 2021 18:44:40 -0500
 Received: from ubuntu.localdomain ([146.241.168.111])
         by Aruba Outgoing Smtp  with ESMTPSA
-        id IK7Ql1dnx4WhhIK7aloTIZ; Sat, 06 Mar 2021 00:44:39 +0100
+        id IK7Ql1dnx4WhhIK7bloTJ6; Sat, 06 Mar 2021 00:44:39 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1614987879; bh=P2eDRpOPoLDBZphurFRNJe+CzBEnh2dDJ2gk+Ji/8O0=;
+        t=1614987879; bh=g/9Jp2oVczzvdKn+dGvl9Bn5g+LLkkEVjTF5RaMYZnk=;
         h=From:To:Subject:Date:MIME-Version;
-        b=EL0PnI4B/iNEayD5sP4LqScM9oCmHX7yQx4rBcDLqXX3PhiLT5O+NpC0KsAcqFUIm
-         1jD68RKredeIgfFq5P8UIZahQZbB24LSURwTBx0uACn5ODPTgxra6utBF7SVtIMKrj
-         0Hqgybww5ZwjBKg2vRnpfDO+aWYGASHiB8J7RcR9O+RyzeAth1agQQXcSE9zanl537
-         iojBysyZd96BlN4ZcnaQeRN0cacNTjaSDvfJQKQN40FgYGvqZL5LyhsZCsSJI2LhSb
-         og/t/uw9yKpCFbBAMOCVme9yaTJyNhGO3iuzln9D1PE7B/ZBvaqJ/GRnIgi4M3AjZI
-         Seke/alVk1foA==
+        b=csX9S3jMvFqpgRQanb1oiazdC/+MEqdLmaD3QeXL7/an5yGE0woUv9By4f+PhpzOz
+         reaVfzbxXwG7sZrMgW1sUv+EMf8HKRzYGAeay/8CS1iv1CAcCZ+/wbz0FjdS6Tad9t
+         Pnd/vuRJRr0UqTcoJIeHxs5uWkjduwYnrRPDHL6j0pvmkwJbWekxLTl+FB3aGqOUdt
+         KlmKR+FK4gNHSIAkbJ41j9HPSvUpEkAIUwrqXPVNNt1d3uWXb1WHre19pV3T81OqUD
+         c5m2QYGTEq9gfbUq5UbSyZdFHy1carLymGa1dO2tFaLWomroxtYHYPdh6OiuTMgIZb
+         R3DByX+k45XYA==
 From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
 To:     Rob Herring <robh+dt@kernel.org>
 Cc:     Thierry Reding <thierry.reding@gmail.com>,
@@ -39,9 +39,9 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Giulio Benetti <giulio.benetti@micronovasrl.com>
-Subject: [PATCH v2 3/9] dt-bindings: display/panel: add Jenson JT60248-01
-Date:   Sat,  6 Mar 2021 00:44:20 +0100
-Message-Id: <20210305234427.572114-4-giulio.benetti@benettiengineering.com>
+Subject: [PATCH v2 4/9] dt-bindings: display/panel: add Jenson JT60249-01
+Date:   Sat,  6 Mar 2021 00:44:21 +0100
+Message-Id: <20210305234427.572114-5-giulio.benetti@benettiengineering.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210305234427.572114-1-giulio.benetti@benettiengineering.com>
 References: <20210305225444.GA792026@robh.at.kernel.org>
@@ -61,7 +61,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Giulio Benetti <giulio.benetti@micronovasrl.com>
 
-Add DT binding for "jenson,jt60248-01".
+Add DT binding for "jenson,jt60249-01".
 
 Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
 ---
@@ -69,15 +69,15 @@ Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
  1 file changed, 2 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-index ce41a589a3f4..35c335aa085e 100644
+index 35c335aa085e..68eaa353be0d 100644
 --- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
 +++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-@@ -170,6 +170,8 @@ properties:
-       - innolux,zj070na-01p
-         # Jenson Display JT60245-01 7" (800x480) TFT LCD panel
+@@ -172,6 +172,8 @@ properties:
        - jenson,jt60245-01
-+        # Jenson Display JT60248-01 4,3" (480x272) TFT LCD panel
-+      - jenson,jt60248-01
+         # Jenson Display JT60248-01 4,3" (480x272) TFT LCD panel
+       - jenson,jt60248-01
++        # Jenson Display JT60249-01 5" (800x480) TFT LCD panel
++      - jenson,jt60249-01
          # King & Display KD116N21-30NV-A010 eDP TFT LCD panel
        - kingdisplay,kd116n21-30nv-a010
          # Kaohsiung Opto-Electronics Inc. 5.7" QVGA (320 x 240) TFT LCD panel
