@@ -2,193 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD32F32F479
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D36DF32F47E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhCEUJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 15:09:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51168 "EHLO
+        id S229629AbhCEULf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 15:11:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhCEUJJ (ORCPT
+        with ESMTP id S229589AbhCEULP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 15:09:09 -0500
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E451BC06175F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 12:09:08 -0800 (PST)
-Received: by mail-ua1-x92c.google.com with SMTP id 62so1162886uar.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 12:09:08 -0800 (PST)
+        Fri, 5 Mar 2021 15:11:15 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6191CC06175F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 12:11:15 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id t25so2104818pga.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 12:11:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=posk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OoEQcJMAXbKGiyGxQKoGUMRplynTrICw/5hDPty3yZg=;
-        b=VOVVw2fToUk/FFTb887ylcSaKHUDdOyUATvz5jwVACZgjcjagl7CPvAY+ly7mqfBaa
-         NosyHQ8VlJ5++M2+HST5/dlDTiVr9J3pKpmuPWHRczv2vvR8Qi3FL1EZTYNGdBAPuB2W
-         VS8sVIIzt+F1Kr4aUA0PtogNNejWAcspzSgzPHiH+ota8U2Pmfh5FT51YVVPeeCAxZLL
-         AR8EYtyEQOBb9pr/BQ06SEtTyoWcSuE9aCWyAAYSeSlDyQbpD5nC6RA97ymnLouy0Gt7
-         HyvWJedpZ2tHVnqFPD8yreTxGdFQFG0r6s0ryP32gKEgjbzy0BWbZErJigjgQEzRI9M5
-         SaYQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XpRWrCpvKq9nt1h78wFpc/rhz9Ju6DpPSZWvCQyczCw=;
+        b=i5inxvA0mUjOzQNjG7ciEg6oz8aIWcIRZsDlhjBbs/19w1v7F2XVzfzADNzTUz9DFI
+         0DATDju49awK+y15gl32BddzbO9uDs5x80mn7xvPdesARvf0Hw2/nQrDTboWADj7jCxo
+         afl7HId/BZeUxy2VwiuwgDoOSJj4LMSERIs5I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OoEQcJMAXbKGiyGxQKoGUMRplynTrICw/5hDPty3yZg=;
-        b=F1d6jzqLvJdlDTlWE9uesbBG0qRM6NVNj/Z79d064aw/T/sVtLzff/5H2ayd1qD1a1
-         3FZOsZWfcUCWjSFeVzHiPBo90T8CPeZ9meebrPfLvrBwfp2Oz7GgQUBUKjyg4k7cMMO7
-         5eeAnJuDuYoOqk3HuJpKwngsXDTESOYnLmoXCINwetbhSVhF502Qm5GhGokVPVjq1e2t
-         lxgS6MpAnhzk11uUHLN+zbIpvTZBU2sQpzYryXPYAsPwAfHFPT8z2FZS4Z1JEG8fWv3m
-         SBs4NwScxoFkK4pphSvHkhUKLSBJcQyV5DWa99A48aRmmeqmgchjYnnB5b4T7oW+iYBX
-         2MVw==
-X-Gm-Message-State: AOAM530URHa32oOW9fDqzOeuuq6xPAw1VHHHn3UmjzXQQyRACDRvkPd8
-        r0VTkIbBCtWuq39+i3XafPQli3yX5L0sRY1LZyYV6A==
-X-Google-Smtp-Source: ABdhPJxS5h1EWUlNojwKpAP6JsCTcU4eYmSz+ZPFdFA3w4oqj3bAZTccNG15l+jdS6okRPOdrUvinWVhN5F98cyCmjI=
-X-Received: by 2002:ab0:29d2:: with SMTP id i18mr7596987uaq.71.1614974947963;
- Fri, 05 Mar 2021 12:09:07 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XpRWrCpvKq9nt1h78wFpc/rhz9Ju6DpPSZWvCQyczCw=;
+        b=uJnIw9T3YHYYILYsCUfmAHCtGYp2KII1nevgVYTyCuLKTB8psiUUNbQTUldjJUpkDg
+         HGmNuh6VsG6MoljEAQ1EQZRBpi0cNv1BCpIWXJX51NhMd6k9IZwVOiGxFdesXAZ+LsnT
+         6C50elYeonqzXWqNKWyocSgBjchCMNCbWRsuzHOF5QhiBnPYn+7atrYiQzeEouwYNhEM
+         n/awvBA2xiT/qxQsJVa4kP9GfdVP6IqL2W8DvwR+MiUU2zOlfbYnTfuc51PWCZIIp/QB
+         vMgQKORIR4bkKuhbd9veBShAETyYHDA8p5WdZIeu5H6liiJAsZgoxYtAeIIxry9hESJF
+         ctow==
+X-Gm-Message-State: AOAM533ppV+mFlDCPvrY2lE2N51Pal8/WpxQfdwX4HWb/peaBi01KDm3
+        hhsjO92JMRXzoKX3J4gXpJhDcw==
+X-Google-Smtp-Source: ABdhPJzp+MS3v5CN7KWxUphZ2+tM3MVGymlJxG+hV9vMQn8t2v+QgGLYQanFrGOnwfplkbU3TPajHA==
+X-Received: by 2002:a63:ee4e:: with SMTP id n14mr10174615pgk.422.1614975074818;
+        Fri, 05 Mar 2021 12:11:14 -0800 (PST)
+Received: from localhost ([2620:15c:202:1:2878:25d1:94cb:a547])
+        by smtp.gmail.com with UTF8SMTPSA id x14sm29266pfn.162.2021.03.05.12.11.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 12:11:14 -0800 (PST)
+Date:   Fri, 5 Mar 2021 12:11:12 -0800
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] arm64: dts: qcom: sc7180: lazor: Simplify disabling
+ of charger thermal zone
+Message-ID: <YEKQYPIjisL+V1xH@google.com>
+References: <20210304180415.1531430-1-mka@chromium.org>
+ <20210304100341.1.I6d587e7ae72a5a47253bb95dfdc3158f8cc8a157@changeid>
+ <CAD=FV=XKpzSq2GqvoDieuZVZFrwmO0Q2prPaKeJRKXJmxPGWpg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210304004219.134051-1-andrealmeid@collabora.com>
- <CAFTs51XAr2b3DmcSM4=qeU5cNuh0mTxUbhG66U6bc63YYzkzYA@mail.gmail.com>
- <bc54423b-753f-44be-4e4f-4535e27ad35c@collabora.com> <CAFTs51VEj7hVfohcNNqOJtJYkDQ_pd76HAmJWWUFKbiMwsewAw@mail.gmail.com>
-In-Reply-To: <CAFTs51VEj7hVfohcNNqOJtJYkDQ_pd76HAmJWWUFKbiMwsewAw@mail.gmail.com>
-From:   Peter Oskolkov <posk@posk.io>
-Date:   Fri, 5 Mar 2021 12:08:54 -0800
-Message-ID: <CAFTs51XnZFRHcw9qgpD-ZoQJa=WRU9c0y1ZJB1-xk6=7TmMhNA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 00/13] Add futex2 syscall
-To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, krisman@collabora.com,
-        pgriffais@valvesoftware.com, z.figura12@gmail.com,
-        joel@joelfernandes.org, malteskarupke@fastmail.fm,
-        linux-api@vger.kernel.org, fweimer@redhat.com,
-        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, acme@kernel.org, Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=XKpzSq2GqvoDieuZVZFrwmO0Q2prPaKeJRKXJmxPGWpg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 12:03 PM Peter Oskolkov <posk@posk.io> wrote:
->
-> Hi Andr=C3=A9!
->
-> On Thu, Mar 4, 2021 at 10:58 AM Andr=C3=A9 Almeida <andrealmeid@collabora=
-.com> wrote:
+On Fri, Mar 05, 2021 at 10:36:49AM -0800, Doug Anderson wrote:
+> Hi,
+> 
+> On Thu, Mar 4, 2021 at 10:04 AM Matthias Kaehlcke <mka@chromium.org> wrote:
 > >
-> > Hi Peter,
+> > Commit f73558cc83d1 ("arm64: dts: qcom: sc7180: Disable charger
+> > thermal zone for lazor") disables the charger thermal zone for
+> > specific lazor revisions due to an unsupported thermistor type.
+> > The initial idea was to disable the thermal zone for older
+> > revisions and leave it enabled for newer ones that use a
+> > supported thermistor. Finally the thermistor won't be changed
+> > on newer revisions, hence the thermal zone should be disabled
+> > for all lazor (and limozeen) revisions. Instead of disabling
+> > it per revision do it once in the shared .dtsi for lazor.
 > >
-> > =C3=80s 02:44 de 04/03/21, Peter Oskolkov escreveu:
-> > > On Wed, Mar 3, 2021 at 5:22 PM Andr=C3=A9 Almeida <andrealmeid@collab=
-ora.com> wrote:
-> > >>
-> > >> Hi,
-> > >>
-> > >> This patch series introduces the futex2 syscalls.
-> > >>
-> > >> * FAQ
-> > >>
-> > >>   ** "And what's about FUTEX_64?"
-> > >>
-> > >>   By supporting 64 bit futexes, the kernel structure for futex would
-> > >>   need to have a 64 bit field for the value, and that could defeat o=
-ne of
-> > >>   the purposes of having different sized futexes in the first place:
-> > >>   supporting smaller ones to decrease memory usage. This might be
-> > >>   something that could be disabled for 32bit archs (and even for
-> > >>   CONFIG_BASE_SMALL).
-> > >>
-> > >>   Which use case would benefit for FUTEX_64? Does it worth the trade=
--offs?
-> > >
-> > > The ability to store a pointer value on 64bit platforms is an
-> > > important use case.
-> > > Imagine a simple producer/consumer scenario, with the producer updati=
-ng
-> > > some shared memory data and waking the consumer. Storing the pointer
-> > > in the futex makes it so that only one shared memory location needs t=
-o be
-> > > accessed "atomically", etc. With two atomics synchronization becomes
-> > > more involved (=3D slower).
-> > >
+> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> > ---
 > >
-> > So the idea is to, instead of doing this:
+> >  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts | 9 ---------
+> >  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts | 9 ---------
+> >  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dts | 9 ---------
+> >  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi   | 9 +++++++++
+> >  4 files changed, 9 insertions(+), 27 deletions(-)
 > >
-> > T1:
-> > atomic_set(&shm_addr, buffer_addr);
-> > atomic_set(&futex, 0);
-> > futex_wake(&futex, 1);
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
+> > index 5c997cd90069..30e3e769d2b4 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
+> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
+> > @@ -14,15 +14,6 @@ / {
+> >         compatible = "google,lazor-rev0", "qcom,sc7180";
+> >  };
 > >
-> > T2:
-> > consume(shm_addr);
+> > -/*
+> > - * Lazor is stuffed with a 47k NTC as charger thermistor which currently is
+> > - * not supported by the PM6150 ADC driver. Disable the charger thermal zone
+> > - * to avoid using bogus temperature values.
+> > - */
+> > -&charger_thermal {
+> > -       status = "disabled";
+> > -};
+> > -
+> >  &pp3300_hub {
+> >         /* pp3300_l7c is used to power the USB hub */
+> >         /delete-property/regulator-always-on;
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
+> > index d9fbcc7bc5bd..c2ef06367baf 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
+> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
+> > @@ -14,15 +14,6 @@ / {
+> >         compatible = "google,lazor-rev1", "google,lazor-rev2", "qcom,sc7180";
+> >  };
 > >
-> > To do that:
+> > -/*
+> > - * Lazor is stuffed with a 47k NTC as charger thermistor which currently is
+> > - * not supported by the PM6150 ADC driver. Disable the charger thermal zone
+> > - * to avoid using bogus temperature values.
+> > - */
+> > -&charger_thermal {
+> > -       status = "disabled";
+> > -};
+> > -
+> >  &pp3300_hub {
+> >         /* pp3300_l7c is used to power the USB hub */
+> >         /delete-property/regulator-always-on;
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dts
+> > index 19e69adb9e04..1b9d2f46359e 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dts
+> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dts
+> > @@ -13,12 +13,3 @@ / {
+> >         model = "Google Lazor (rev3+)";
+> >         compatible = "google,lazor", "qcom,sc7180";
+> >  };
+> > -
+> > -/*
+> > - * Lazor is stuffed with a 47k NTC as charger thermistor which currently is
+> > - * not supported by the PM6150 ADC driver. Disable the charger thermal zone
+> > - * to avoid using bogus temperature values.
+> > - */
+> > -&charger_thermal {
+> > -       status = "disabled";
+> > -};
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> > index 89e5cd29ec09..aa2c4a9098db 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> > @@ -58,6 +58,15 @@ ap_ts: touchscreen@10 {
+> >         };
+> >  };
 > >
-> > T1:
-> > atomic_set(&futex, buffer_addr);
-> > futex_wake(&futex, 1);
+> > +/*
+> > + * Lazor is stuffed with a 47k NTC as charger thermistor which currently is
+> > + * not supported by the PM6150 ADC driver. Disable the charger thermal zone
+> > + * to avoid using bogus temperature values.
+> > + */
+> > +&charger_thermal {
+> > +       status = "disabled";
+> > +};
+> > +
+> >  /* PINCTRL - modifications to sc7180-trogdor.dtsi */
 > >
-> > T2:
-> > consume(futex);
-> >
-> > Right?
->
-> More like this:
->
-> T1 (producer):
-> while (true) {
->     ptr =3D get_new_data();
->     atomic_set(&futex, ptr);
->     futex_wake(&futex, 1);
-> }
->
-> T1 (consumer):
-> some_data *prev =3D NULL;
-> while (true) {
->   futex_wait(&futex, prev);
->   some_data *next =3D atomic_get(&futex);
->   if (next =3D=3D prev) continue;  /* spurious wakeup */
->
->   consume_data(next);
->   prev =3D next;
-> }
+> >  &ts_reset_l {
+> 
+> The idea is right, but I'm having a hard time figuring out what tree
+> you posted your patch against. You said you did it atop my "v2" series
+> [1], right?  ...but the "sc7180-trogdor-lazor.dtsi" really doesn't
+> match. In my tree, for instance, right above the PINCTRL comment
+> should be:
+> 
+> &wifi {
+>   qcom,ath10k-calibration-variant = "GO_LAZOR";
+> };
+> 
+> ...but that's definitely not what's there in whatever your patch was
+> written against... It seems like you're also missing the panel and
+> trackpad nodes...
+> 
+> [1] https://patchwork.kernel.org/project/linux-arm-msm/list/?series=440315
 
-Or an even more complete example:
-
-T1 (producer):
-while (true) {
-    next =3D get_new_data();
-    atomic_set(&futex, next);
-    futex_wake(&futex, 1);
-
-   /* wait for the consumer */
-   prev =3D next;
-   do {
-     next =3D atomic_get(&futex);
-     futex_wait(&futex, prev);
-  } while (next !=3D NULL);
-
-}
-
-T2 (consumer):
-some_data *prev =3D NULL;
-while (true) {
-    futex_wait(&futex, prev);
-    some_data *next =3D atomic_get(&futex);
-    if (next =3D=3D prev) continue;  /* spurious wakeup */
-
-    consume_data(next);
-    prev =3D next;
-    atomic_set(&futex, NULL);
-    futex_wake(&futex, 1); /* signal we can consumer more */
-}
-
->
->
->
-> >
-> > I'll try to write a small test to see how the perf numbers looks like.
+You got me! I was too lazy to pick all 13 patches, since most of them are
+irrelevant for this series, but apparently I missed some that are. I guess
+I'll pick them all for v2 ...
