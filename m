@@ -2,166 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94C032E48D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0204332E48E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbhCEJQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:16:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbhCEJQX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:16:23 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29772C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 01:16:22 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id w9so1537778edt.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 01:16:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xIBDWNNi8cOFiM8+evn3aAlmPQp0YRKNZPxj0/XqUWQ=;
-        b=u4Jyn3Q8Pea4kIqitbrUxq9fdmX4drucuJlXzg8S7ph189frPo2kVhUymrtzX5OdAR
-         aAqHuyC22KmTKQUB/uHq6J2eeMU+s/E5bg87cjyv76PXYyxdQ0G7SJ3puqj6TBkwME7y
-         6EpZRyomx+Bc6A7vI4NUJeHN5rDeHXCbqJmS4xnDiJqZIeTJEY1cI+XrTvR7pypf7cnj
-         pNyFdrZrjjszeNDLuG9alPKk+c1tjMEfzjfhSqYvsaTC/RxuzjiKvQNq/lrfDqlAkQNT
-         jGyXKCLuEDbv0EQwlWUbZicRiYnh8fvsF/tLy2s3Hy9Y0tlf+MusWoVKJx7A9tjFrgoC
-         JNyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xIBDWNNi8cOFiM8+evn3aAlmPQp0YRKNZPxj0/XqUWQ=;
-        b=qLJ9iWfopOTZFwa4NvGuhdYT5/mpdb1FYiEN05FG/+iN6rbfMpTuldLoudi3O8cQqC
-         MrofdEf3UPNi95pp6mfanNtHctw/+RXIe8MqH1Vu1tsp+LbvsgyWir95OADYYhcYEjQc
-         nJ4yBCa6H2eThSIo0hYqnIyFkrF4zvxvnnh5AUiZf5FdKL/mi6FG3T0iS5xdZtzRyJeY
-         e3jiPDhsB+QazVI3ucw7gY7jbmEn3AgLGtzx5NpRMW4wGJa2LP3fSthiMlDzfiHjvzct
-         f7GtA00iY9NgRnc2Gn/JEOcYb60RPEADlLbUOXcA8mca4uQ6zNaPXx2eafBv/vfSpM24
-         fW3w==
-X-Gm-Message-State: AOAM530dxuon6UNeKE3bgpEow5g1foC03ynVBkS71uM5mXAMKAyMeVtE
-        /wONB/t9jQfSIwHkCFHUS+w82kBN853xM3Ga7zS5Ow==
-X-Google-Smtp-Source: ABdhPJzzmY/G5skM6ldbcpzc8Wq/WaJKmtsBErdrGkLrINycrkkGQm9shCbuidqUqILRCJUAQDgPCiqP7P86geeDyIA=
-X-Received: by 2002:a05:6402:17d6:: with SMTP id s22mr8257787edy.232.1614935780916;
- Fri, 05 Mar 2021 01:16:20 -0800 (PST)
+        id S229794AbhCEJQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:16:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229573AbhCEJQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:16:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16E8864F45;
+        Fri,  5 Mar 2021 09:16:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614935788;
+        bh=KEwMRCIZF4N4qvSPoe3DClNVeplmH4EkZWy7fg+Ty8M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a8ksPqQVEmCqAb+LBFF6xySukXRl2l7PWsjWkgGEnQkcfvNoAAJR9DY8Y4erLja8o
+         8jJ08I9P195p2aHynAEx+PlPZPgbn8S2g83bYnXGxOWy5vbzteVPvVOc+81YfsrDhY
+         H2oeI/ngitJ8V5rEpt95rIJ5rX3lqMNP0MKHXuaI=
+Date:   Fri, 5 Mar 2021 10:16:25 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Ikjoon Jang <ikjn@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Eddie Hung <eddie.hung@mediatek.com>
+Subject: Re: [PATCH 03/17] usb: xhci-mtk: get the microframe boundary for ESIT
+Message-ID: <YEH26UVlV/yWfk0S@kroah.com>
+References: <1614934975-15188-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1614934975-15188-3-git-send-email-chunfeng.yun@mediatek.com>
+ <cfa6dccb-d784-06fd-e5bc-0b53d105b7f6@gmail.com>
 MIME-Version: 1.0
-References: <20210304102452.21726-1-brgl@bgdev.pl> <20210304102452.21726-9-brgl@bgdev.pl>
- <CAMuHMdXRK5=w1-Z=EbM60Sf2bLY1EiVaxbZjMP+XyQ3g7nBpZw@mail.gmail.com>
- <YEHs3CxWnusWklME@kroah.com> <CAMRc=MddDb+nakgEM+Xeqm=rMMkkWO2EDekD36EoPJashYP88w@mail.gmail.com>
- <YEHyDUQ3V7Pl6+TU@kroah.com>
-In-Reply-To: <YEHyDUQ3V7Pl6+TU@kroah.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 5 Mar 2021 10:16:10 +0100
-Message-ID: <CAMRc=Md7FeQAd4Syh685+jyZAq2QStBNoo0ACQxrSB=4N6d3dg@mail.gmail.com>
-Subject: Re: [PATCH v2 08/12] drivers: export device_is_bound()
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>, Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cfa6dccb-d784-06fd-e5bc-0b53d105b7f6@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 9:55 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Mar 05, 2021 at 09:45:41AM +0100, Bartosz Golaszewski wrote:
-> > On Fri, Mar 5, 2021 at 9:34 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Fri, Mar 05, 2021 at 09:18:30AM +0100, Geert Uytterhoeven wrote:
-> > > > CC Greg
-> > > >
-> > > > On Thu, Mar 4, 2021 at 11:30 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> > > > >
-> > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > > >
-> > > > > Export the symbol for device_is_bound() so that we can use it in gpio-sim
-> > > > > to check if the simulated GPIO chip is bound before fetching its driver
-> > > > > data from configfs callbacks in order to retrieve the name of the GPIO
-> > > > > chip device.
-> > > > >
-> > > > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > > > ---
-> > > > >  drivers/base/dd.c | 1 +
-> > > > >  1 file changed, 1 insertion(+)
-> > > > >
-> > > > > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> > > > > index 9179825ff646..c62c02e3490a 100644
-> > > > > --- a/drivers/base/dd.c
-> > > > > +++ b/drivers/base/dd.c
-> > > > > @@ -353,6 +353,7 @@ bool device_is_bound(struct device *dev)
-> > > > >  {
-> > > > >         return dev->p && klist_node_attached(&dev->p->knode_driver);
-> > > > >  }
-> > > > > +EXPORT_SYMBOL_GPL(device_is_bound);
-> > >
-> > > No.  Please no.  Why is this needed?  Feels like someone is doing
-> > > something really wrong...
-> > >
-> > > NACK.
-> > >
-> >
-> > I should have Cc'ed you the entire series, my bad.
-> >
-> > This is the patch that uses this change - it's a new, improved testing
-> > module for GPIO using configfs & sysfs as you (I think) suggested a
-> > while ago:
-> >
-> > https://lkml.org/lkml/2021/3/4/355
-> >
-> > The story goes like this: committing the configfs item registers a
-> > platform device.
->
-> Ick, no, stop there, that's not a "real" device, please do not abuse
-> platform devices like that, you all know I hate this :(
->
-> Use the virtbus code instead perhaps?
->
+On Fri, Mar 05, 2021 at 12:13:33PM +0300, Sergei Shtylyov wrote:
+> Hello!
+> 
+> On 05.03.2021 12:02, Chunfeng Yun wrote:
+> 
+> > Tune the boundary for FS/LS ESIT due to CS:
+> > For ISOC out-ep, the controller starts transfer data after
+> > the first SS; for others, the data is already transfered
+> 
+>    Transferred.
+> 
+> > before the last CS.
+> > 
+> > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> > ---
+> >   drivers/usb/host/xhci-mtk-sch.c | 24 +++++++++++++++++++-----
+> >   1 file changed, 19 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
+> > index 8950d1f10a7f..e3b18dfca874 100644
+> > --- a/drivers/usb/host/xhci-mtk-sch.c
+> > +++ b/drivers/usb/host/xhci-mtk-sch.c
+> > @@ -513,22 +513,35 @@ static void update_sch_tt(struct usb_device *udev,
+> >   		list_del(&sch_ep->tt_endpoint);
+> >   }
+> > +static u32 get_esit_boundary(struct mu3h_sch_ep_info *sch_ep)
+> > +{
+> > +	u32 boundary = sch_ep->esit;
+> > +
+> > +	if (sch_ep->sch_tt) { /* LS/FS with TT */
+> > +		/* tune for CS */
+> > +		if (sch_ep->ep_type != ISOC_OUT_EP)
+> > +			boundary += 1;
+> 
+>    Why not:
+> 
+> 			boundary++;
+> 
+> > +		else if (boundary > 1) /* normally esit >= 8 for FS/LS */
+> > +			boundary -= 1;
+> 
+> 			boundary--;
 
-I have no idea what virtbus is and grepping for it only returns three
-hits in: ./drivers/pci/iov.c and it's a function argument.
+Doesn't matter either way, it's the author's choice.
 
-If it stands for virtual bus then for sure it sounds like the right
-thing but I need to find more info on this.
-
-> > As far as I understand - there's no guarantee that
-> > the device will be bound to a driver before the commit callback (or
-> > more specifically platform_device_register_full() in this case)
-> > returns so the user may try to retrieve the name of the device
-> > immediately (normally user-space should wait for the associated uevent
-> > but nobody can force that) by doing:
-> >
-> > mv /sys/kernel/config/gpio-sim/pending/foo /sys/kernel/config/gpio-sim/live/
-> > cat /sys/kernel/config/gpio-sim/live/foo/dev_name
-> >
-> > If the device is not bound at this point, we'll have a crash in the
-> > kernel as opposed to just returning -ENODEV.
->
-> How will the kernel crash?  What has created the dev_name sysfs file
-> before it is possible to be read from?  That feels like the root
-> problem.
->
-
-It's not sysfs - it's in configfs. Each chip has a read-only configfs
-attribute that returns the name of the device - I don't really have a
-better idea to map the configfs items to devices that committing
-creates.
-
-> > Please advise on how to handle it without device_is_bound().
->
-> Please do not create sysfs files before they can be read from :)
->
-
-Don't worry, I don't.
-
-Bartosz
+greg k-h
