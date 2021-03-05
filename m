@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C274532EAF4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 195D132EB05
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232328AbhCEMlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:41:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56182 "EHLO mail.kernel.org"
+        id S232801AbhCEMlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:41:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232244AbhCEMkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:40:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8E7C64E84;
-        Fri,  5 Mar 2021 12:40:44 +0000 (UTC)
+        id S231858AbhCEMk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:40:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B59AD65052;
+        Fri,  5 Mar 2021 12:40:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948045;
-        bh=SwcCi8I5s9Fk7jXCQKcNUAccniTQdcskiFZh/amYeSE=;
+        s=korg; t=1614948057;
+        bh=ILzcoFPW7HSAwWnGKJcbj7VopOx8TJ3yH6N2Cy6a01w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N8ie6ayh/af18zCePIRSTPs6biF4CLyaRqNeL54XMUSwlbcHG4jPEmNwo2pc6f2KH
-         GyqZ8GXvxp0vov2iBxnOmmvPOZK35fdmugwQSVxV8bRvd+ZSRzbFArCYW5NeA43JNm
-         +crRjyzJ9noygDGhxy1Fy6h9CUNeR02CUwIzjcmc=
+        b=KOGQSh/ttqfIRFuFhH61a6Us6UC4txtpjWbmqNBAHKcxCvssDrFgyTV3CokCh5eHH
+         f6eseCh1wLLxYqWWq3n1IjF6mia9pxIkNzVJ2ZU6FJ4GhsQ+zHl8KMRUs+Cg7YYSJh
+         K+wVAN4TlmETYFgesU00R0ViaJU7itMu/bE6AmWk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -29,15 +29,13 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         jdesfossez@efficios.com, dvhart@infradead.org, bristot@redhat.com,
         Thomas Gleixner <tglx@linutronix.de>,
         Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 4.9 01/41] futex: Cleanup variable names for futex_top_waiter()
-Date:   Fri,  5 Mar 2021 13:22:08 +0100
-Message-Id: <20210305120851.334085382@linuxfoundation.org>
+Subject: [PATCH 4.9 02/41] futex: Cleanup refcounting
+Date:   Fri,  5 Mar 2021 13:22:09 +0100
+Message-Id: <20210305120851.380582492@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
 References: <20210305120851.255002428@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -49,10 +47,10 @@ From: Ben Hutchings <ben@decadent.org.uk>
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-commit 499f5aca2cdd5e958b27e2655e7e7f82524f46b1 upstream.
+commit bf92cf3a5100f5a0d5f9834787b130159397cb22 upstream.
 
-futex_top_waiter() returns the top-waiter on the pi_mutex. Assinging
-this to a variable 'match' totally obscures the code.
+Add a put_pit_state() as counterpart for get_pi_state() so the refcounting
+becomes consistent.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Cc: juri.lelli@arm.com
@@ -63,101 +61,63 @@ Cc: mathieu.desnoyers@efficios.com
 Cc: jdesfossez@efficios.com
 Cc: dvhart@infradead.org
 Cc: bristot@redhat.com
-Link: http://lkml.kernel.org/r/20170322104151.554710645@infradead.org
+Link: http://lkml.kernel.org/r/20170322104151.801778516@infradead.org
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-[bwh: Backported to 4.9: adjust context]
 Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/futex.c |   28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ kernel/futex.c |   13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -1352,14 +1352,14 @@ static int lookup_pi_state(u32 __user *u
- 			   union futex_key *key, struct futex_pi_state **ps,
- 			   struct task_struct **exiting)
- {
--	struct futex_q *match = futex_top_waiter(hb, key);
-+	struct futex_q *top_waiter = futex_top_waiter(hb, key);
- 
- 	/*
- 	 * If there is a waiter on that futex, validate it and
- 	 * attach to the pi_state when the validation succeeds.
- 	 */
--	if (match)
--		return attach_to_pi_state(uaddr, uval, match->pi_state, ps);
-+	if (top_waiter)
-+		return attach_to_pi_state(uaddr, uval, top_waiter->pi_state, ps);
- 
- 	/*
- 	 * We are the first waiter - try to look up the owner based on
-@@ -1414,7 +1414,7 @@ static int futex_lock_pi_atomic(u32 __us
- 				int set_waiters)
- {
- 	u32 uval, newval, vpid = task_pid_vnr(task);
--	struct futex_q *match;
-+	struct futex_q *top_waiter;
- 	int ret;
- 
- 	/*
-@@ -1440,9 +1440,9 @@ static int futex_lock_pi_atomic(u32 __us
- 	 * Lookup existing state first. If it exists, try to attach to
- 	 * its pi_state.
- 	 */
--	match = futex_top_waiter(hb, key);
--	if (match)
--		return attach_to_pi_state(uaddr, uval, match->pi_state, ps);
-+	top_waiter = futex_top_waiter(hb, key);
-+	if (top_waiter)
-+		return attach_to_pi_state(uaddr, uval, top_waiter->pi_state, ps);
- 
- 	/*
- 	 * No waiter and user TID is 0. We are here because the
-@@ -1532,11 +1532,11 @@ static void mark_wake_futex(struct wake_
- 	q->lock_ptr = NULL;
+@@ -827,7 +827,7 @@ static int refill_pi_state_cache(void)
+ 	return 0;
  }
  
--static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_q *this,
-+static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_q *top_waiter,
- 			 struct futex_hash_bucket *hb)
+-static struct futex_pi_state * alloc_pi_state(void)
++static struct futex_pi_state *alloc_pi_state(void)
  {
- 	struct task_struct *new_owner;
--	struct futex_pi_state *pi_state = this->pi_state;
-+	struct futex_pi_state *pi_state = top_waiter->pi_state;
- 	u32 uninitialized_var(curval), newval;
- 	WAKE_Q(wake_q);
- 	bool deboost;
-@@ -1557,7 +1557,7 @@ static int wake_futex_pi(u32 __user *uad
+ 	struct futex_pi_state *pi_state = current->pi_state_cache;
  
- 	/*
- 	 * When we interleave with futex_lock_pi() where it does
--	 * rt_mutex_timed_futex_lock(), we might observe @this futex_q waiter,
-+	 * rt_mutex_timed_futex_lock(), we might observe @top_waiter futex_q waiter,
- 	 * but the rt_mutex's wait_list can be empty (either still, or again,
- 	 * depending on which side we land).
- 	 *
-@@ -2975,7 +2975,7 @@ static int futex_unlock_pi(u32 __user *u
- 	u32 uninitialized_var(curval), uval, vpid = task_pid_vnr(current);
- 	union futex_key key = FUTEX_KEY_INIT;
- 	struct futex_hash_bucket *hb;
--	struct futex_q *match;
-+	struct futex_q *top_waiter;
- 	int ret;
+@@ -860,6 +860,11 @@ static void pi_state_update_owner(struct
+ 	}
+ }
  
- retry:
-@@ -2999,9 +2999,9 @@ retry:
- 	 * all and we at least want to know if user space fiddled
- 	 * with the futex value instead of blindly unlocking.
- 	 */
--	match = futex_top_waiter(hb, &key);
--	if (match) {
--		ret = wake_futex_pi(uaddr, uval, match, hb);
-+	top_waiter = futex_top_waiter(hb, &key);
-+	if (top_waiter) {
-+		ret = wake_futex_pi(uaddr, uval, top_waiter, hb);
- 		/*
- 		 * In case of success wake_futex_pi dropped the hash
- 		 * bucket lock.
++static void get_pi_state(struct futex_pi_state *pi_state)
++{
++	WARN_ON_ONCE(!atomic_inc_not_zero(&pi_state->refcount));
++}
++
+ /*
+  * Drops a reference to the pi_state object and frees or caches it
+  * when the last reference is gone.
+@@ -901,7 +906,7 @@ static void put_pi_state(struct futex_pi
+  * Look up the task based on what TID userspace gave us.
+  * We dont trust it.
+  */
+-static struct task_struct * futex_find_get_task(pid_t pid)
++static struct task_struct *futex_find_get_task(pid_t pid)
+ {
+ 	struct task_struct *p;
+ 
+@@ -1149,7 +1154,7 @@ static int attach_to_pi_state(u32 __user
+ 		goto out_einval;
+ 
+ out_attach:
+-	atomic_inc(&pi_state->refcount);
++	get_pi_state(pi_state);
+ 	raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
+ 	*ps = pi_state;
+ 	return 0;
+@@ -2210,7 +2215,7 @@ retry_private:
+ 			 * refcount on the pi_state and store the pointer in
+ 			 * the futex_q object of the waiter.
+ 			 */
+-			atomic_inc(&pi_state->refcount);
++			get_pi_state(pi_state);
+ 			this->pi_state = pi_state;
+ 			ret = rt_mutex_start_proxy_lock(&pi_state->pi_mutex,
+ 							this->rt_waiter,
 
 
