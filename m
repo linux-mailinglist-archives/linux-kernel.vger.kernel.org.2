@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC6F32F3C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:24:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D7E32F3C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhCETX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 14:23:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbhCETXE (ORCPT
+        id S229582AbhCETZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 14:25:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30648 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229740AbhCETZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:23:04 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4DEC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 11:23:03 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id dm26so4102873edb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 11:23:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ArZhbmvqEdmzARCu90VggFIPvPrDP31aX8oRDa73ETo=;
-        b=Htyw/sFVHs/0xXtay5vW8sOmGYl9EHDXSo9vVE1XC9zXbFevZQkPknr/as1fXldzR6
-         a5se4Mim32VABFeSd8big3Mf2d+HvqR8ABGnr1jNGHqS1cZqe6UnY5a+3oDVxpUHc/5G
-         ZVqV8mKkkNRjsxy+oD9hUTtvUmILAUNC6IbVmeaXdfvR1zTxaUWcbkiP2Oa1ruG1Ng0N
-         Y338SqY30wtznddTPOSqVztxrbHRGqtogI+F/3F1QbjNfdWQjQjl9sWC7ZdlRaq+zCqL
-         iB++8tMySOi/Ynf5p/8guCEWb0X86NMzQa9zAwxVdXdRvf3swmVNqTk/sivgvRNdo1X5
-         IjYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ArZhbmvqEdmzARCu90VggFIPvPrDP31aX8oRDa73ETo=;
-        b=ZJ1U7m9TIK6R2xVrZqV9nxbVxLE1qDvs96loasU9uvR8DeJUcalpQ+EKd8SN/u3y5N
-         hDbuxgZXZEtXOqQZnKRLnAHzizkqGjVWHlWdm+OI4J76EZL3c6nQ4bdnVgWBolekli/y
-         QdLBN2GpHbd+zNwPIP2bFoSioBnQ3d2YVn9U1G14B++wN9UV+uMyhhw3B2na9DFxsEMB
-         1JHHwVYh2fDuGsTdsoeA/xjR626c8QWpuUtUy59hf9KjV+CRLqJcNFNuP2jsncp+sGXW
-         SL9nc9IK0GYBfs3vOWmSpR49t97KZgN5AUDnmkiTtrtHOi+RuVRaq1c0r5nzuJpPcatH
-         r3XQ==
-X-Gm-Message-State: AOAM533xlNN4Op/SkA9nXU055F5+xwx0BEKNu3yaxCMh4uF3osblqG4F
-        GUCbhAugAYjrgS0ebrSCPM5lM5RZB7tLNQOvg+y6
-X-Google-Smtp-Source: ABdhPJyVEvSo6YyUyhR5EpkOHk6Q5MkSe4+aUSesETw1433XvkjQOq4OuidXiDbyqSjArWY5CPpq3jGGM758dVF/GEc=
-X-Received: by 2002:aa7:c78e:: with SMTP id n14mr10517327eds.31.1614972181250;
- Fri, 05 Mar 2021 11:23:01 -0800 (PST)
+        Fri, 5 Mar 2021 14:25:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614972306;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BHhwSQdvm/AMR5+muTOUK1a1247C3GIQ6OGcuOywmzA=;
+        b=NY5m2Nf4m4RdVMZTM7Zm9Z7jvUNMxz8fdhlrGhVPXbr0KOIbkGApMJencqDYZ6jtzj4hy7
+        z/kUZxq1hKRRXUozRT8pBOd4DMxsLDZRnFUiPR33Rgt/i7eq4PvXtmejpiEwVNgkuuTVML
+        nG1dWuFes8QYUK+1Eib+1TkPeYevwLc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-387-fbbbPXyzMW6nCb7A7k5trQ-1; Fri, 05 Mar 2021 14:25:00 -0500
+X-MC-Unique: fbbbPXyzMW6nCb7A7k5trQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8E6C0800FF0;
+        Fri,  5 Mar 2021 19:24:58 +0000 (UTC)
+Received: from treble (ovpn-116-51.rdu2.redhat.com [10.10.116.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0C4C25D6B1;
+        Fri,  5 Mar 2021 19:24:53 +0000 (UTC)
+Date:   Fri, 5 Mar 2021 13:24:51 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        David Laight <David.Laight@aculab.com>,
+        Jessica Yu <jeyu@kernel.org>
+Subject: Re: [PATCH RFC] kbuild: Prevent compiler mismatch with external
+ modules
+Message-ID: <20210305192451.xx6bm7t24amutukg@treble>
+References: <CAHk-=wih0rLHsPXodpXJw_0F3bJqu=Pb_YNmPCSsYU_huoMwZA@mail.gmail.com>
+ <20210128205207.awdbh4bmx56pxxjl@treble>
+ <CAHk-=wgh4DaZvTcFfBcDMKc1QXkKjwny_Z0H5JfzdwMTNTBkSw@mail.gmail.com>
+ <CAHk-=wh+3PWi2NuoQ0hbSyLpOHjaBWKcgX6N7+PfPkXzNAfMwA@mail.gmail.com>
+ <20210128213409.qxnclchjyq6v23up@treble>
+ <CAHk-=wgjwhDy-y4mQh34L+2aF=n6BjzHdqAW2=8wri5x7O04pA@mail.gmail.com>
+ <20210128220803.fixcmuv4ceq5m7dy@treble>
+ <CAK7LNARE3KO-kqdsXAbt9d9+3EqqutYd6iNki_rU2-Q9GkakbA@mail.gmail.com>
+ <20210201211322.t2rxmvnrystc2ky7@treble>
+ <CAK7LNARHoTnZ3gAvHgnYB4n-wYuboxC10A6zURh1ODGhxWd2yA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210212163709.3139-1-nramas@linux.microsoft.com>
- <CAHC9VhSMz8FtK5HMPA1+FMeU0cs4vfCCaimxb-J+VDj_Dyk-nA@mail.gmail.com> <af0f2d60c6584b613172b08e4fcea4119e231e93.camel@HansenPartnership.com>
-In-Reply-To: <af0f2d60c6584b613172b08e4fcea4119e231e93.camel@HansenPartnership.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 5 Mar 2021 14:22:49 -0500
-Message-ID: <CAHC9VhRBdJ9Vh1ESezim129OEf1UJ-Mxm1g9FpxEJmt-PUSLjg@mail.gmail.com>
-Subject: Re: [PATCH v3] selinux: measure state and policy capabilities
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        zohar@linux.ibm.com,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        tusharsu@linux.microsoft.com, tyhicks@linux.microsoft.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, sashal@kernel.org,
-        James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAK7LNARHoTnZ3gAvHgnYB4n-wYuboxC10A6zURh1ODGhxWd2yA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 12:57 PM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> On Fri, 2021-03-05 at 12:52 -0500, Paul Moore wrote:
-> [...]
-> > This draft seems fine to me, but there is a small logistical blocker
-> > at the moment which means I can't merge this until -rc2 is released,
-> > which likely means this coming Monday.  The problem is that this
-> > patch relies on code that went upstream via in the last merge window
-> > via the IMA tree, not the SELinux tree; normally that wouldn't be a
-> > problem as I typically rebase the selinux/next to Linus' -rc1 tag
-> > once the merge window is closed, but in this particular case the -rc1
-> > tag is dangerously broken for some system configurations (the tag has
-> > since been renamed) so I'm not rebasing onto -rc1 this time around.
-> >
-> > Assuming that -rc2 fixes the swapfile/fs-corruption problem, early
-> > next week I'll rebase selinux/next to -rc2 and merge this patch.
-> > However, if the swapfile bug continues past -rc2 we can consider
-> > merging this via the IMA tree, but I'd assume not do that if possible
-> > due to merge conflict and testing reasons.
->
-> If it helps, we rebased the SCSI tree on top of the merge for the
-> swapfile fix which is this one, without waiting for -rc2:
+On Sat, Mar 06, 2021 at 01:28:22AM +0900, Masahiro Yamada wrote:
+> > +orig_name   := $(if $(CONFIG_CC_IS_GCC),GCC,CLANG)
+> > +orig_minor  := $(shell expr $(if $(CONFIG_CC_IS_GCC),$(CONFIG_GCC_VERSION),$(CONFIG_CLANG_VERSION)) / 100)
+> > +cur_namever := $(shell $(srctree)/scripts/cc-version.sh $(CC))
+> > +cur_name    := $(word 1,$(cur_namever))
+> > +cur_minor   := $(shell expr $(word 2,$(cur_namever)) / 100)
+> 
+> These are still calculated by 'make M=... clean' or 'make M=... help'.
+> Using '=' assignment solves it, but the code is still ugly.
+> 
+> 
+> I attached my alternative implementation.
 
-Considering that -rc2 is only two days away I'm not going to lose a
-lot of sleep over it.
+Thanks for the attached patch, yours looks much cleaner.  Looks like it
+warns on *any* mismatch, rather than just a major.minor mismatch.  But
+that's ok with me.
+
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
 -- 
-paul moore
-www.paul-moore.com
+Josh
+
