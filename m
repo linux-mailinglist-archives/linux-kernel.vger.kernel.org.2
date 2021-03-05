@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E33532E9D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C63D32E986
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhCEMfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:35:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45746 "EHLO mail.kernel.org"
+        id S232498AbhCEMdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:33:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231965AbhCEMeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:34:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBFDC65004;
-        Fri,  5 Mar 2021 12:34:20 +0000 (UTC)
+        id S231508AbhCEMcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:32:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8DF56501A;
+        Fri,  5 Mar 2021 12:32:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947661;
-        bh=PUTTA7UBEvU0HaT7S4PhHxjbYy29Y+6RCwlrVeYLfd4=;
+        s=korg; t=1614947565;
+        bh=7TDKmWeaGn7XLJ2yiG+Xc3Z/4UpCGKpkm5kqgBNubEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hj80xQkN8dRG3inszosWG1qeqJXyDhEC1bgsdmXXDACxXpDaES9K/HG7cmfW39qHj
-         KfPJ4vPTJ04HWIZ1QXOcXaZqzQIsnil1l8YYNghJh3tKWF3iHXSI4qlOEX5vShzFLk
-         OKID0TvqcJmdrCqk+V7DM36exR1gqOsFxQOrurg8=
+        b=r0wGxk1SCSU2auodEdTK54MiKJ5C0fWSJBJmdJ/J0JhIO9FRfae18H09CncWhugwv
+         eKJ9jjHKZVGVs868V87oMRy+Q3t4XP+o6ofAWpOTSQBoEQt8SQvoZudd511QhQHw+9
+         36yJLtM9zVDN8rDBZb/za9fOvzoB5O2UuvEiggXA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 39/72] brcmfmac: Add DMI nvram filename quirk for Predia Basic tablet
-Date:   Fri,  5 Mar 2021 13:21:41 +0100
-Message-Id: <20210305120859.256849780@linuxfoundation.org>
+        stable@vger.kernel.org, Adam Nichols <adam@grimm-co.com>,
+        Chris Leech <cleech@redhat.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        Lee Duncan <lduncan@suse.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.10 083/102] scsi: iscsi: Restrict sessions and handles to admin capabilities
+Date:   Fri,  5 Mar 2021 13:21:42 +0100
+Message-Id: <20210305120907.364742631@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
-References: <20210305120857.341630346@linuxfoundation.org>
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+References: <20210305120903.276489876@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Lee Duncan <lduncan@suse.com>
 
-[ Upstream commit af4b3a6f36d6c2fc5fca026bccf45e0fdcabddd9 ]
+commit 688e8128b7a92df982709a4137ea4588d16f24aa upstream.
 
-The Predia Basic tablet contains quite generic names in the sys_vendor and
-product_name DMI strings, without this patch brcmfmac will try to load:
-brcmfmac43340-sdio.Insyde-CherryTrail.txt as nvram file which is a bit
-too generic.
+Protect the iSCSI transport handle, available in sysfs, by requiring
+CAP_SYS_ADMIN to read it. Also protect the netlink socket by restricting
+reception of messages to ones sent with CAP_SYS_ADMIN. This disables
+normal users from being able to end arbitrary iSCSI sessions.
 
-Add a DMI quirk so that a unique and clearly identifiable nvram file name
-is used on the Predia Basic tablet.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210129171413.139880-1-hdegoede@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Reported-by: Adam Nichols <adam@grimm-co.com>
+Reviewed-by: Chris Leech <cleech@redhat.com>
+Reviewed-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Lee Duncan <lduncan@suse.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- .../net/wireless/broadcom/brcm80211/brcmfmac/dmi.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/scsi/scsi_transport_iscsi.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
-index 4aa2561934d7..824a79f24383 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
-@@ -40,6 +40,10 @@ static const struct brcmf_dmi_data pov_tab_p1006w_data = {
- 	BRCM_CC_43340_CHIP_ID, 2, "pov-tab-p1006w-data"
- };
- 
-+static const struct brcmf_dmi_data predia_basic_data = {
-+	BRCM_CC_43341_CHIP_ID, 2, "predia-basic"
-+};
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -132,6 +132,9 @@ show_transport_handle(struct device *dev
+ 		      char *buf)
+ {
+ 	struct iscsi_internal *priv = dev_to_iscsi_internal(dev);
 +
- static const struct dmi_system_id dmi_platform_data[] = {
- 	{
- 		/* ACEPC T8 Cherry Trail Z8350 mini PC */
-@@ -111,6 +115,16 @@ static const struct dmi_system_id dmi_platform_data[] = {
- 		},
- 		.driver_data = (void *)&pov_tab_p1006w_data,
- 	},
-+	{
-+		/* Predia Basic tablet (+ with keyboard dock) */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Insyde"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "CherryTrail"),
-+			/* Mx.WT107.KUBNGEA02 with the version-nr dropped */
-+			DMI_MATCH(DMI_BIOS_VERSION, "Mx.WT107.KUBNGEA"),
-+		},
-+		.driver_data = (void *)&predia_basic_data,
-+	},
- 	{}
- };
++	if (!capable(CAP_SYS_ADMIN))
++		return -EACCES;
+ 	return sprintf(buf, "%llu\n", (unsigned long long)iscsi_handle(priv->iscsi_transport));
+ }
+ static DEVICE_ATTR(handle, S_IRUGO, show_transport_handle, NULL);
+@@ -3624,6 +3627,9 @@ iscsi_if_recv_msg(struct sk_buff *skb, s
+ 	struct iscsi_cls_conn *conn;
+ 	struct iscsi_endpoint *ep = NULL;
  
--- 
-2.30.1
-
++	if (!netlink_capable(skb, CAP_SYS_ADMIN))
++		return -EPERM;
++
+ 	if (nlh->nlmsg_type == ISCSI_UEVENT_PATH_UPDATE)
+ 		*group = ISCSI_NL_GRP_UIP;
+ 	else
 
 
