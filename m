@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E522732E9F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1E232E939
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232725AbhCEMfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:35:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46166 "EHLO mail.kernel.org"
+        id S232364AbhCEMbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:31:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232285AbhCEMea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:34:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 258E965012;
-        Fri,  5 Mar 2021 12:34:29 +0000 (UTC)
+        id S230056AbhCEMas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:30:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 062816502E;
+        Fri,  5 Mar 2021 12:30:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947669;
-        bh=P+cUeh4MWr9XvlwwB5pVAtDPoya5pKSMT1ueVmTKsAQ=;
+        s=korg; t=1614947448;
+        bh=c1U40lbr3/+4zG08FGC8N3dIqsknAnAXKQeFitX+hNI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nKLZYBjf/UHh/iCDyzUdIZFTNmR31XPsOuvMdcPrrINCBn0N2/u+yBNLBs21KIQJc
-         Zo1g5zVPfS10Z7DYLJvILGdSz8WkidMQGT/HU4yAFvA6qMRTJSYVX8ToNVzYQF2hrr
-         2qT+W5WHdWne/r1JdHBl8ppTTbWDthyD8pffeL78=
+        b=bV6ker2WjRfGyMYUe3EOxbHq3Y2EYAW1I4j8BJjmmPetshEQhdz7DDfEQ7IVxx634
+         rSsTuSgncZPYfGUoOi2ZCpmFqheC0c56UP58uC1RJNw4EnBTxNo250x4mQQ/OtE061
+         hTaXLVAX3Qu639M77Ehc59b6qtINUUPXQbTUR/Ps=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Doug Horn <doughorn@google.com>
-Subject: [PATCH 5.4 24/72] drm/virtio: use kvmalloc for large allocations
-Date:   Fri,  5 Mar 2021 13:21:26 +0100
-Message-Id: <20210305120858.530070842@linuxfoundation.org>
+        stable@vger.kernel.org, Chao Leng <lengchao@huawei.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 068/102] nvme-core: add cancel tagset helpers
+Date:   Fri,  5 Mar 2021 13:21:27 +0100
+Message-Id: <20210305120906.625835516@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
-References: <20210305120857.341630346@linuxfoundation.org>
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+References: <20210305120903.276489876@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +39,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
+From: Chao Leng <lengchao@huawei.com>
 
-commit ea86f3defd55f141a44146e66cbf8ffb683d60da upstream.
+[ Upstream commit 2547906982e2e6a0d42f8957f55af5bb51a7e55f ]
 
-We observed that some of virtio_gpu_object_shmem_init() allocations
-can be rather costly - order 6 - which can be difficult to fulfill
-under memory pressure conditions. Switch to kvmalloc_array() in
-virtio_gpu_object_shmem_init() and let the kernel vmalloc the entries
-array.
+Add nvme_cancel_tagset and nvme_cancel_admin_tagset for tear down and
+reconnection error handling.
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-Link: http://patchwork.freedesktop.org/patch/msgid/20201105014744.1662226-1-senozhatsky@chromium.org
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-Signed-off-by: Doug Horn <doughorn@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Chao Leng <lengchao@huawei.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/virtio/virtgpu_vq.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/nvme/host/core.c | 20 ++++++++++++++++++++
+ drivers/nvme/host/nvme.h |  2 ++
+ 2 files changed, 22 insertions(+)
 
---- a/drivers/gpu/drm/virtio/virtgpu_vq.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_vq.c
-@@ -992,8 +992,9 @@ int virtio_gpu_object_attach(struct virt
- 	}
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 4ec5f05dabe1..e1e574ecf031 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -351,6 +351,26 @@ bool nvme_cancel_request(struct request *req, void *data, bool reserved)
+ }
+ EXPORT_SYMBOL_GPL(nvme_cancel_request);
  
- 	/* gets freed when the ring has consumed it */
--	ents = kmalloc_array(nents, sizeof(struct virtio_gpu_mem_entry),
--			     GFP_KERNEL);
-+	ents = kvmalloc_array(nents,
-+			      sizeof(struct virtio_gpu_mem_entry),
-+			      GFP_KERNEL);
- 	if (!ents) {
- 		DRM_ERROR("failed to allocate ent list\n");
- 		return -ENOMEM;
++void nvme_cancel_tagset(struct nvme_ctrl *ctrl)
++{
++	if (ctrl->tagset) {
++		blk_mq_tagset_busy_iter(ctrl->tagset,
++				nvme_cancel_request, ctrl);
++		blk_mq_tagset_wait_completed_request(ctrl->tagset);
++	}
++}
++EXPORT_SYMBOL_GPL(nvme_cancel_tagset);
++
++void nvme_cancel_admin_tagset(struct nvme_ctrl *ctrl)
++{
++	if (ctrl->admin_tagset) {
++		blk_mq_tagset_busy_iter(ctrl->admin_tagset,
++				nvme_cancel_request, ctrl);
++		blk_mq_tagset_wait_completed_request(ctrl->admin_tagset);
++	}
++}
++EXPORT_SYMBOL_GPL(nvme_cancel_admin_tagset);
++
+ bool nvme_change_ctrl_state(struct nvme_ctrl *ctrl,
+ 		enum nvme_ctrl_state new_state)
+ {
+diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
+index 567f7ad18a91..f843540cc238 100644
+--- a/drivers/nvme/host/nvme.h
++++ b/drivers/nvme/host/nvme.h
+@@ -571,6 +571,8 @@ static inline bool nvme_is_aen_req(u16 qid, __u16 command_id)
+ 
+ void nvme_complete_rq(struct request *req);
+ bool nvme_cancel_request(struct request *req, void *data, bool reserved);
++void nvme_cancel_tagset(struct nvme_ctrl *ctrl);
++void nvme_cancel_admin_tagset(struct nvme_ctrl *ctrl);
+ bool nvme_change_ctrl_state(struct nvme_ctrl *ctrl,
+ 		enum nvme_ctrl_state new_state);
+ bool nvme_wait_reset(struct nvme_ctrl *ctrl);
+-- 
+2.30.1
+
 
 
