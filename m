@@ -2,73 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8ED232F5E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:30:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 865DF32F5EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhCEW3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 17:29:51 -0500
-Received: from mail-oo1-f48.google.com ([209.85.161.48]:45324 "EHLO
-        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbhCEW3h (ORCPT
+        id S229965AbhCEWaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 17:30:22 -0500
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:34491 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhCEWaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 17:29:37 -0500
-Received: by mail-oo1-f48.google.com with SMTP id s23so808888oot.12;
-        Fri, 05 Mar 2021 14:29:37 -0800 (PST)
+        Fri, 5 Mar 2021 17:30:08 -0500
+Received: by mail-ot1-f47.google.com with SMTP id h10so3371395otm.1;
+        Fri, 05 Mar 2021 14:30:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=/2mEx7AzioSmhIvSqTtuS7sxxfYsuKN7rfPuyoPffZ0=;
-        b=o07u8uNLbRqvMfWtSsusg4QRUmN4tgKhoRXKx8tB9vy+UK9yu6fHoIvItauvaKIDOs
-         WSrCwR+Z19jr0MddrInFSbJSDVjeKTpAXjjXaoS6T/Xs+0ah2RdV/nicD92iyLq623y5
-         cTHo02Ii4ExAcyk/L/u4xFoej3ddu0fQ4+uKmNfZfdziki0vJSXHCD/QReMamOWRRxSB
-         w5aEAEPUCrR0x6ZwB4oRQB4O6c+tJE8/c6pOofvB1qaDkMW8N1bIVBhz8Fj9OL/ppbfK
-         s7w9TVr+tvwKLBu+wvDppXy9JcmLQ7HGid+RE8FNFwN2W641eQ9LhPtd3i9uUUjTaTMf
-         dB4A==
-X-Gm-Message-State: AOAM532ggJ0f841jyndO33yNyujfPvzpTHOO9mzAS5089evUh6zR9Ac8
-        Et10NQtJivnSdY980EghDQ==
-X-Google-Smtp-Source: ABdhPJz4imY34lBmh4FKpKVJoq/JUMsDHQ4pCGqDe+BfFp22cL+m+O/lgmEZ0U5u3CaWG5kbcAI32w==
-X-Received: by 2002:a4a:3012:: with SMTP id q18mr9559180oof.21.1614983374121;
-        Fri, 05 Mar 2021 14:29:34 -0800 (PST)
+        bh=EG3oJ5PRX0DYUjC6mcyCt0rOTflE0zkFNOBLyyJWSWY=;
+        b=tctDhVEV6VGJo8tMh7UuRUfIIMnl0X7XRiHSpKJ+nZqmA7pK+TPbeYZmSwzyd4n+qg
+         AYagum83Zf6Om2gDloT9iWH6xemv85MI3+MIMu23RofwI6d52JxTnooVVYVcuaI6pmuX
+         oXWaKzoLgHPEuoWlJsArnAOAIhrKnnGLRD2TW+9CF4pi9GtKZz/+FB4uChJGCdwp899Q
+         VQfN/5vgkpdKBlBEczXeFhtJBc6VIG0isdnheBb5CJHQ9uPK3QL0nbVT2+S/V2H4qbvb
+         baILNOQ1tVzGfzfX7Afj4yLqIk7JzN0oemM2J9eKvAdCvSB4JLPrvyrzOegDMl427/Yf
+         G6QA==
+X-Gm-Message-State: AOAM532gj1imZqlXJxGZK3viH82wR2LcXaK7bzcvQrRTZQqQKLqxD3n9
+        ztvQ51wx0sq+jwxss5d0Fg==
+X-Google-Smtp-Source: ABdhPJwbxmDpm+hfKjSxJ9aA3XJLGWVWCaIgXC53dtLMdkzCRvvoH+H1XbT7wXmprnO3BZe9Vj/z1w==
+X-Received: by 2002:a9d:400a:: with SMTP id m10mr9623177ote.33.1614983408268;
+        Fri, 05 Mar 2021 14:30:08 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p19sm914608otk.63.2021.03.05.14.29.14
+        by smtp.gmail.com with ESMTPSA id n11sm807413oij.51.2021.03.05.14.29.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 14:29:17 -0800 (PST)
-Received: (nullmailer pid 758589 invoked by uid 1000);
-        Fri, 05 Mar 2021 22:28:39 -0000
-Date:   Fri, 5 Mar 2021 16:28:39 -0600
+        Fri, 05 Mar 2021 14:29:49 -0800 (PST)
+Received: (nullmailer pid 760212 invoked by uid 1000);
+        Fri, 05 Mar 2021 22:29:47 -0000
+Date:   Fri, 5 Mar 2021 16:29:47 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     bcm-kernel-feedback-list@broadcom.com, Ray Jui <rjui@broadcom.com>,
-        devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        wahrenst@gmx.net, Scott Branden <sbranden@broadcom.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>, eric@anholt.net,
-        phil@raspberrypi.com, linux-arm-kernel@lists.infradead.org,
-        mripard@kernel.org
-Subject: Re: [PATCH v3 02/15] dt-bindings: soc: bcm: bcm2835-pm: Introduce
- reg-names
-Message-ID: <20210305222839.GA758527@robh.at.kernel.org>
-References: <20210217114811.22069-1-nsaenzjulienne@suse.de>
- <20210217114811.22069-3-nsaenzjulienne@suse.de>
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        mkorpershoek@baylibre.com, linux-kernel@vger.kernel.org,
+        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] dt-bindings: arm64: dts: mediatek: Add
+ mt8183-pumpkin board
+Message-ID: <20210305222947.GA760161@robh.at.kernel.org>
+References: <20210217205945.830006-1-fparent@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210217114811.22069-3-nsaenzjulienne@suse.de>
+In-Reply-To: <20210217205945.830006-1-fparent@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Feb 2021 12:47:57 +0100, Nicolas Saenz Julienne wrote:
-> Anticipating the introduction of BCM2711, of which we'll need to support
-> its new RPiVid ASB, introduce reg-names into bcm2835-pm's binding. This
-> will help to have a consistent mapping between resources and their
-> meaning.
+On Wed, 17 Feb 2021 21:59:43 +0100, Fabien Parent wrote:
+> Add binding documentation for the MT8183 Pumpkin board.
 > 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
 > ---
->  .../devicetree/bindings/soc/bcm/brcm,bcm2835-pm.yaml     | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
+>  Documentation/devicetree/bindings/arm/mediatek.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
