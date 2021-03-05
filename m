@@ -2,160 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2AB832EC8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8382232EC8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:53:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhCENw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:52:29 -0500
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:54337 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbhCENv4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:51:56 -0500
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 125Dpbvr002368;
-        Fri, 5 Mar 2021 22:51:37 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 125Dpbvr002368
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614952297;
-        bh=lKzscS/Tew+SOZceq8wryzAZUo4F0IRAiu21R0Zw2tk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FkUPTUifK2/enBoJblOoSIiXIuH17lqUr3FZsfwgp9pXAZ2szGrDBReoPS9klJK4W
-         ewnUPTYFYEj/5bdtuebZ2ZG6mNcSL9kF3X4YUmMeL7KuXv6rLQYmraQ6cYZ3Cuye74
-         H9/KxHtjg3AzQ1Nybh/XM5t2LLnsKcTk9Jc1bOJMJQAiR6skKkZc7XwzpYH0x4Ahil
-         QRNVWDQUA2z9j6YUUy0M3nVuefNskA4WrFkRP47Xit1nUChX0bfVtqHC9OritiCH1/
-         QxanelQCR/0L7a9YtSXK7EgckmtxLP58GtsQMwg55NdDBjupy4Z4ZUHevYrztqOAaE
-         WCScPq1YRNc4Q==
-X-Nifty-SrcIP: [209.85.214.176]
-Received: by mail-pl1-f176.google.com with SMTP id s7so1453426plg.5;
-        Fri, 05 Mar 2021 05:51:37 -0800 (PST)
-X-Gm-Message-State: AOAM532a6dQ75d+ZQDXC+cqgPNQhIEJKgfhQVPc1u0uhcSp4oOX+SFVR
-        tqiUoNxz3SO29iFeLcF38o38TeuS2MKsS5aO2pc=
-X-Google-Smtp-Source: ABdhPJy2kz6nDF/nFbtz7PFR8O81Nufbol2ZSAHzuLNCgTWy/JLY5F6pTzJ0iCmsyhW83m/3IxxHyZ/dggOnqtP/RLU=
-X-Received: by 2002:a17:90a:3b0e:: with SMTP id d14mr10698552pjc.198.1614952296694;
- Fri, 05 Mar 2021 05:51:36 -0800 (PST)
+        id S230507AbhCENxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:53:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:54536 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230112AbhCENwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 08:52:46 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CF59101E;
+        Fri,  5 Mar 2021 05:52:45 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C48453F73B;
+        Fri,  5 Mar 2021 05:52:43 -0800 (PST)
+Date:   Fri, 5 Mar 2021 13:52:41 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
+        joel@joelfernandes.org, valentin.schneider@arm.com,
+        fweisbec@gmail.com, tglx@linutronix.de
+Subject: Re: [PATCH 6/7 v4] sched/fair: trigger the update of blocked load on
+ newly idle cpu
+Message-ID: <20210305135241.ftnxhktb6ix5qkk5@e107158-lin.cambridge.arm.com>
+References: <20210224133007.28644-1-vincent.guittot@linaro.org>
+ <20210224133007.28644-7-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-References: <20210305100212.818562-1-linux@rasmusvillemoes.dk>
-In-Reply-To: <20210305100212.818562-1-linux@rasmusvillemoes.dk>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 5 Mar 2021 22:50:59 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAShZDMPBSv0tBgquiJRta4fFvDh3fnf9mk946PdFZyEoA@mail.gmail.com>
-Message-ID: <CAK7LNAShZDMPBSv0tBgquiJRta4fFvDh3fnf9mk946PdFZyEoA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: apply fixdep logic to link-vmlinux.sh
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210224133007.28644-7-vincent.guittot@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 7:02 PM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> The patch adding CONFIG_VMLINUX_MAP revealed a small defect in the
-> build system: link-vmlinux.sh takes decisions based on CONFIG_*
-> options, but changing one of those does not always lead to vmlinux
-> being linked again.
->
-> For most of the CONFIG_* knobs referenced previously, this has
-> probably been hidden by those knobs also affecting some object file,
-> hence indirectly also vmlinux.
->
-> But CONFIG_VMLINUX_MAP is only handled inside link-vmlinux.sh, and
-> changing CONFIG_VMLINUX_MAP=n to CONFIG_VMLINUX_MAP=y does not cause
-> the build system to re-link (and hence have vmlinux.map
-> emitted). Since that map file is mostly a debugging aid, this is
-> merely a nuisance which is easily worked around by just deleting
-> vmlinux and building again.
->
-> But one could imagine other (possibly future) CONFIG options that
-> actually do affect the vmlinux binary but which are not captured
-> through some object file dependency.
->
-> To fix this, make link-vmlinux.sh emit a .vmlinux.d file in the same
-> format as the dependency files generated by gcc, and apply the fixdep
-> logic to that. I've tested that this correctly works with both in-tree
-> and out-of-tree builds.
->
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> ---
+On 02/24/21 14:30, Vincent Guittot wrote:
+> +/*
+> + * Check if we need to run the ILB for updating blocked load before entering
+> + * idle state.
+> + */
+> +void nohz_run_idle_balance(int cpu)
+> +{
+> +	unsigned int flags;
+> +
+> +	flags = atomic_fetch_andnot(NOHZ_NEWILB_KICK, nohz_flags(cpu));
+> +
+> +	/*
+> +	 * Update the blocked load only if no SCHED_SOFTIRQ is about to happen
+> +	 * (ie NOHZ_STATS_KICK set) and will do the same.
+> +	 */
+> +	if ((flags == NOHZ_NEWILB_KICK) && !need_resched())
+> +		_nohz_idle_balance(cpu_rq(cpu), NOHZ_STATS_KICK, CPU_IDLE);
+> +}
 
+nit: need_resched() implies this_cpu, but the function signature implies you
+could operate on any CPU. Do need_resched() outside this function or make
+the function read smp_processor_id() itself without taking an arg?
 
-Another person finally noticed this long-standing bug!
-
-Actually, I had known about this bug some years before,
-and was wondering how to fix this,
-but your patch is much more elegant than my idea.
-
-
-My original idea was to grep (or sed) CONFIG_
-in scripts/link-vmlinux.sh, and
-surround the output by /* ... */ (or prefix //)
-into init/dummy.c so that fixdep handles this
-as a usual C code case.
-(But, I did not send a patch)
-
-But, you are right.
-There is no reason to restrict fixdep only to C source files.
-
-I did not come up with the idea to make fixdep scan
-this shell script directly.
-
-Applied to linux-kbuild. Thanks!
-
-
-
-
-
-
-
-
-
->  Makefile                | 2 +-
->  scripts/link-vmlinux.sh | 2 ++
->  2 files changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/Makefile b/Makefile
-> index b18dbc634690..19d2f7fd088a 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1192,7 +1192,7 @@ cmd_link-vmlinux =                                                 \
->         $(if $(ARCH_POSTLINK), $(MAKE) -f $(ARCH_POSTLINK) $@, true)
->
->  vmlinux: scripts/link-vmlinux.sh autoksyms_recursive $(vmlinux-deps) FORCE
-> -       +$(call if_changed,link-vmlinux)
-> +       +$(call if_changed_dep,link-vmlinux)
->
->  targets := vmlinux
->
-> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> index 855fd4e6f03e..7d4b7c6f01e8 100755
-> --- a/scripts/link-vmlinux.sh
-> +++ b/scripts/link-vmlinux.sh
-> @@ -312,6 +312,7 @@ cleanup()
->         rm -f vmlinux
->         rm -f vmlinux.map
->         rm -f vmlinux.o
-> +       rm -f .vmlinux.d
->  }
->
->  on_exit()
-> @@ -421,6 +422,7 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
->  fi
->
->  vmlinux_link vmlinux "${kallsymso}" ${btf_vmlinux_bin_o}
-> +echo "vmlinux: $0" > .vmlinux.d
->
->  # fill in BTF IDs
->  if [ -n "${CONFIG_DEBUG_INFO_BTF}" -a -n "${CONFIG_BPF}" ]; then
-> --
-> 2.29.2
->
-
+Thanks
 
 --
-Best Regards
-
-Masahiro Yamada
+Qais Yousef
