@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2873732E9ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A07432E95C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232704AbhCEMfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:35:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46346 "EHLO mail.kernel.org"
+        id S231527AbhCEMc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:32:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231985AbhCEMef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:34:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCD946501B;
-        Fri,  5 Mar 2021 12:34:34 +0000 (UTC)
+        id S231237AbhCEMbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:31:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A96865045;
+        Fri,  5 Mar 2021 12:31:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947675;
-        bh=pnklZ2Gn4N5w3TMfQHWAPPAhaWagdeWsD/2kAeMEny0=;
+        s=korg; t=1614947499;
+        bh=e/I7ecebu8lhCRwpzQcscC41Ud0NkyvmuWpdsP+3PBM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ndB4eckdfgUn0b2JNxGKBp0alPfeuCwGwedwYNsB2AV01iLbKk54jVhoYtgz6Yjua
-         KCM5cItpVScYCmb0QeKOqW/vzP0PSHX+HZ1Jw0wdrDs3msNSVOAn77bKZ10WfXsM0j
-         7C5U0pTiXujz1hZhy+sQikHP2okJfMojl7VYsKqM=
+        b=hi0M/OH8paFkWbtbT5LzfTdz1JKREMpkwkoehlrWOZagy6EahK1k9wNO/nrR8AgMS
+         ESSQAmwOTI9PSmXU0Kl+QY2k7915XkRctgrhQU5mCmcHq0NRcBG7pftmZhHP65Buwd
+         8rHgb4qGdZmKFjC31Nbulfc5Gih+h56RhORAS1Dk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Defang Bo <bodefang@126.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 43/72] drm/amdgpu: Add check to prevent IH overflow
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 5.10 086/102] Xen/gnttab: handle p2m update errors on a per-slot basis
 Date:   Fri,  5 Mar 2021 13:21:45 +0100
-Message-Id: <20210305120859.451394280@linuxfoundation.org>
+Message-Id: <20210305120907.515988100@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
-References: <20210305120857.341630346@linuxfoundation.org>
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+References: <20210305120903.276489876@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,174 +39,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Defang Bo <bodefang@126.com>
+From: Jan Beulich <jbeulich@suse.com>
 
-[ Upstream commit e4180c4253f3f2da09047f5139959227f5cf1173 ]
+commit 8310b77b48c5558c140e7a57a702e7819e62f04e upstream.
 
-Similar to commit <b82175750131>("drm/amdgpu: fix IH overflow on Vega10 v2").
-When an ring buffer overflow happens the appropriate bit is set in the WPTR
-register which is also written back to memory. But clearing the bit in the
-WPTR doesn't trigger another memory writeback.
+Bailing immediately from set_foreign_p2m_mapping() upon a p2m updating
+error leaves the full batch in an ambiguous state as far as the caller
+is concerned. Instead flags respective slots as bad, unmapping what
+was mapped there right away.
 
-So what can happen is that we end up processing the buffer overflow over and
-over again because the bit is never cleared. Resulting in a random system
-lockup because of an infinite loop in an interrupt handler.
+HYPERVISOR_grant_table_op()'s return value and the individual unmap
+slots' status fields get used only for a one-time - there's not much we
+can do in case of a failure.
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Defang Bo <bodefang@126.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Note that there's no GNTST_enomem or alike, so GNTST_general_error gets
+used.
+
+The map ops' handle fields get overwritten just to be on the safe side.
+
+This is part of XSA-367.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Link: https://lore.kernel.org/r/96cccf5d-e756-5f53-b91a-ea269bfb9be0@suse.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/cz_ih.c      | 37 ++++++++++++++++---------
- drivers/gpu/drm/amd/amdgpu/iceland_ih.c | 36 +++++++++++++++---------
- drivers/gpu/drm/amd/amdgpu/tonga_ih.c   | 37 ++++++++++++++++---------
- 3 files changed, 71 insertions(+), 39 deletions(-)
+ arch/arm/xen/p2m.c |   35 +++++++++++++++++++++++++++++++----
+ arch/x86/xen/p2m.c |   44 +++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 72 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/cz_ih.c b/drivers/gpu/drm/amd/amdgpu/cz_ih.c
-index 1dca0cabc326..13520d173296 100644
---- a/drivers/gpu/drm/amd/amdgpu/cz_ih.c
-+++ b/drivers/gpu/drm/amd/amdgpu/cz_ih.c
-@@ -193,19 +193,30 @@ static u32 cz_ih_get_wptr(struct amdgpu_device *adev,
+--- a/arch/arm/xen/p2m.c
++++ b/arch/arm/xen/p2m.c
+@@ -93,12 +93,39 @@ int set_foreign_p2m_mapping(struct gntta
+ 	int i;
  
- 	wptr = le32_to_cpu(*ih->wptr_cpu);
+ 	for (i = 0; i < count; i++) {
++		struct gnttab_unmap_grant_ref unmap;
++		int rc;
++
+ 		if (map_ops[i].status)
+ 			continue;
+-		if (unlikely(!set_phys_to_machine(map_ops[i].host_addr >> XEN_PAGE_SHIFT,
+-				    map_ops[i].dev_bus_addr >> XEN_PAGE_SHIFT))) {
+-			return -ENOMEM;
+-		}
++		if (likely(set_phys_to_machine(map_ops[i].host_addr >> XEN_PAGE_SHIFT,
++				    map_ops[i].dev_bus_addr >> XEN_PAGE_SHIFT)))
++			continue;
++
++		/*
++		 * Signal an error for this slot. This in turn requires
++		 * immediate unmapping.
++		 */
++		map_ops[i].status = GNTST_general_error;
++		unmap.host_addr = map_ops[i].host_addr,
++		unmap.handle = map_ops[i].handle;
++		map_ops[i].handle = ~0;
++		if (map_ops[i].flags & GNTMAP_device_map)
++			unmap.dev_bus_addr = map_ops[i].dev_bus_addr;
++		else
++			unmap.dev_bus_addr = 0;
++
++		/*
++		 * Pre-populate the status field, to be recognizable in
++		 * the log message below.
++		 */
++		unmap.status = 1;
++
++		rc = HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref,
++					       &unmap, 1);
++		if (rc || unmap.status != GNTST_okay)
++			pr_err_once("gnttab unmap failed: rc=%d st=%d\n",
++				    rc, unmap.status);
+ 	}
  
--	if (REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW)) {
--		wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
--		/* When a ring buffer overflow happen start parsing interrupt
--		 * from the last not overwritten vector (wptr + 16). Hopefully
--		 * this should allow us to catchup.
--		 */
--		dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
--			wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
--		ih->rptr = (wptr + 16) & ih->ptr_mask;
--		tmp = RREG32(mmIH_RB_CNTL);
--		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
--		WREG32(mmIH_RB_CNTL, tmp);
--	}
-+	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
-+		goto out;
-+
-+	/* Double check that the overflow wasn't already cleared. */
-+	wptr = RREG32(mmIH_RB_WPTR);
-+
-+	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
-+		goto out;
-+
-+	wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
-+
-+	/* When a ring buffer overflow happen start parsing interrupt
-+	 * from the last not overwritten vector (wptr + 16). Hopefully
-+	 * this should allow us to catchup.
-+	 */
-+	dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
-+		wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
-+	ih->rptr = (wptr + 16) & ih->ptr_mask;
-+	tmp = RREG32(mmIH_RB_CNTL);
-+	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
-+	WREG32(mmIH_RB_CNTL, tmp);
-+
-+
-+out:
- 	return (wptr & ih->ptr_mask);
- }
+ 	return 0;
+--- a/arch/x86/xen/p2m.c
++++ b/arch/x86/xen/p2m.c
+@@ -710,6 +710,8 @@ int set_foreign_p2m_mapping(struct gntta
  
-diff --git a/drivers/gpu/drm/amd/amdgpu/iceland_ih.c b/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
-index a13dd9a51149..7d165f024f07 100644
---- a/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
-+++ b/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
-@@ -193,19 +193,29 @@ static u32 iceland_ih_get_wptr(struct amdgpu_device *adev,
+ 	for (i = 0; i < count; i++) {
+ 		unsigned long mfn, pfn;
++		struct gnttab_unmap_grant_ref unmap[2];
++		int rc;
  
- 	wptr = le32_to_cpu(*ih->wptr_cpu);
+ 		/* Do not add to override if the map failed. */
+ 		if (map_ops[i].status != GNTST_okay ||
+@@ -727,10 +729,46 @@ int set_foreign_p2m_mapping(struct gntta
  
--	if (REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW)) {
--		wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
--		/* When a ring buffer overflow happen start parsing interrupt
--		 * from the last not overwritten vector (wptr + 16). Hopefully
--		 * this should allow us to catchup.
--		 */
--		dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
--			 wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
--		ih->rptr = (wptr + 16) & ih->ptr_mask;
--		tmp = RREG32(mmIH_RB_CNTL);
--		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
--		WREG32(mmIH_RB_CNTL, tmp);
--	}
-+	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
-+		goto out;
-+
-+	/* Double check that the overflow wasn't already cleared. */
-+	wptr = RREG32(mmIH_RB_WPTR);
-+
-+	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
-+		goto out;
-+
-+	wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
-+	/* When a ring buffer overflow happen start parsing interrupt
-+	 * from the last not overwritten vector (wptr + 16). Hopefully
-+	 * this should allow us to catchup.
-+	 */
-+	dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
-+		wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
-+	ih->rptr = (wptr + 16) & ih->ptr_mask;
-+	tmp = RREG32(mmIH_RB_CNTL);
-+	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
-+	WREG32(mmIH_RB_CNTL, tmp);
-+
-+
-+out:
- 	return (wptr & ih->ptr_mask);
- }
+ 		WARN(pfn_to_mfn(pfn) != INVALID_P2M_ENTRY, "page must be ballooned");
  
-diff --git a/drivers/gpu/drm/amd/amdgpu/tonga_ih.c b/drivers/gpu/drm/amd/amdgpu/tonga_ih.c
-index e40140bf6699..db0a3bda13fb 100644
---- a/drivers/gpu/drm/amd/amdgpu/tonga_ih.c
-+++ b/drivers/gpu/drm/amd/amdgpu/tonga_ih.c
-@@ -195,19 +195,30 @@ static u32 tonga_ih_get_wptr(struct amdgpu_device *adev,
+-		if (unlikely(!set_phys_to_machine(pfn, FOREIGN_FRAME(mfn)))) {
+-			ret = -ENOMEM;
+-			goto out;
++		if (likely(set_phys_to_machine(pfn, FOREIGN_FRAME(mfn))))
++			continue;
++
++		/*
++		 * Signal an error for this slot. This in turn requires
++		 * immediate unmapping.
++		 */
++		map_ops[i].status = GNTST_general_error;
++		unmap[0].host_addr = map_ops[i].host_addr,
++		unmap[0].handle = map_ops[i].handle;
++		map_ops[i].handle = ~0;
++		if (map_ops[i].flags & GNTMAP_device_map)
++			unmap[0].dev_bus_addr = map_ops[i].dev_bus_addr;
++		else
++			unmap[0].dev_bus_addr = 0;
++
++		if (kmap_ops) {
++			kmap_ops[i].status = GNTST_general_error;
++			unmap[1].host_addr = kmap_ops[i].host_addr,
++			unmap[1].handle = kmap_ops[i].handle;
++			kmap_ops[i].handle = ~0;
++			if (kmap_ops[i].flags & GNTMAP_device_map)
++				unmap[1].dev_bus_addr = kmap_ops[i].dev_bus_addr;
++			else
++				unmap[1].dev_bus_addr = 0;
+ 		}
++
++		/*
++		 * Pre-populate both status fields, to be recognizable in
++		 * the log message below.
++		 */
++		unmap[0].status = 1;
++		unmap[1].status = 1;
++
++		rc = HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref,
++					       unmap, 1 + !!kmap_ops);
++		if (rc || unmap[0].status != GNTST_okay ||
++		    unmap[1].status != GNTST_okay)
++			pr_err_once("gnttab unmap failed: rc=%d st0=%d st1=%d\n",
++				    rc, unmap[0].status, unmap[1].status);
+ 	}
  
- 	wptr = le32_to_cpu(*ih->wptr_cpu);
- 
--	if (REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW)) {
--		wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
--		/* When a ring buffer overflow happen start parsing interrupt
--		 * from the last not overwritten vector (wptr + 16). Hopefully
--		 * this should allow us to catchup.
--		 */
--		dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
--			 wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
--		ih->rptr = (wptr + 16) & ih->ptr_mask;
--		tmp = RREG32(mmIH_RB_CNTL);
--		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
--		WREG32(mmIH_RB_CNTL, tmp);
--	}
-+	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
-+		goto out;
-+
-+	/* Double check that the overflow wasn't already cleared. */
-+	wptr = RREG32(mmIH_RB_WPTR);
-+
-+	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
-+		goto out;
-+
-+	wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
-+
-+	/* When a ring buffer overflow happen start parsing interrupt
-+	 * from the last not overwritten vector (wptr + 16). Hopefully
-+	 * this should allow us to catchup.
-+	 */
-+
-+	dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
-+		wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
-+	ih->rptr = (wptr + 16) & ih->ptr_mask;
-+	tmp = RREG32(mmIH_RB_CNTL);
-+	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
-+	WREG32(mmIH_RB_CNTL, tmp);
-+
-+out:
- 	return (wptr & ih->ptr_mask);
- }
- 
--- 
-2.30.1
-
+ out:
 
 
