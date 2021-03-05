@@ -2,233 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7741632F073
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F5832F075
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:58:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhCEQ4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 11:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37602 "EHLO
+        id S231282AbhCEQ6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 11:58:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230287AbhCEQzy (ORCPT
+        with ESMTP id S229882AbhCEQ5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 11:55:54 -0500
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E33C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 08:55:54 -0800 (PST)
-Received: by mail-vs1-xe2b.google.com with SMTP id a12so1312511vsd.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 08:55:54 -0800 (PST)
+        Fri, 5 Mar 2021 11:57:44 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7279DC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 08:57:44 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id l22so2056355wme.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 08:57:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NKf5oBBu2KISuo5V0ahvjDLUwLWiqpHm4voeGNA9XVQ=;
-        b=MFc/EgDeUn5T82qMVlgRjQ8BfFaLSo8y39d7Tq6SwZJoyUiEUORWtASykVvNbxEIyF
-         FP1J8f+/4QHcuUIRn7KvRoG1BoNPrbI5TsXRA8ViSu6CusWjgPcQfCW+Xzu8vHu6LOYr
-         jOi/jbaJQlMBxQ8PPc1CaXyub0rqamP3K9ttcvy0W+UfRQ9XKeeqbvYX72/5dzAtnpr6
-         /7pMt32h3e5jH2DgdcjfdxCLx5DInK3o3UhTtsenKKiGCKFKfyzYTI8e/2jFriUSO6yL
-         40xvLUDycCVb4xx0SgkLpiYwK14bnT68fRLDitnsudT4vHsxFbW/obrkBY5ISbUWs5AE
-         2Arw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KCqXF6DhvLeATztmzz0XQr9+I4zPUB4uuBIegF8P6nE=;
+        b=IMmBhWIQWHQ9j6NO3Sxd6z737s2HBldvIlXMi5+KS0PAbALJQgLBT2dPVJPi6J3azO
+         1krAjPTgVoI+Idf1hYw93K98TIgxepR+ZJhFMEo5bKQy38ghn2VWqbQUl4BS0QyVlLfl
+         jgr+lAWxVH88y66NNvvrhMnPQ8x/b1R8VWbATAjH8eZ7TpyGKrgum2GRxqe3AHzdgkYi
+         /iBYSuC8o3NoD89iwtOf4O26Odv0Dpw7S0Lpip3sKdN+yKxnGb7ArIzJc3JKQzil3OSX
+         Q7GIQhTC/vWWTYYMbsDWunZzsAj+dHH2KezBwkKNX6E+OghPTb2Inq/7Zcja6ONlX4+l
+         yt7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NKf5oBBu2KISuo5V0ahvjDLUwLWiqpHm4voeGNA9XVQ=;
-        b=T8ki4etfZioubGmwOnnGDkywuI3eLqfHr/9n2XgCQ5Yh84wcLvI913c1LXP1iPSNnx
-         +TN7uq1ze00tf9QXLohuo49SUer83gC5+K+0Yy4lp/9alyDtLIrMaZNsZGisbic9MMt/
-         weJNASsH/LU+gKP8Bfd/Dqa6wDnCGXEVTJNqZ34nhmpmIY/RU68jwttai9LpMOh0YR57
-         sbX4dO+UCga3Sdd/dpujAOcJw6rfjuX1wXVr9W9bgsplcZpsmN/83RlQcACgnMG4z9Df
-         psA8acLHDNFU39FrS/q9Lu2Iuedlls9mz0QsTs3MN5yc1XPVq8arqTup4aL6xVZOAFIJ
-         cJYQ==
-X-Gm-Message-State: AOAM530ErhP8mwbl8T7RJkRKBhL1wgX5hoe6lX0Rrf4WjBKPY/ArLInJ
-        tswR/eg2gbt0/pB7hEnp7XhEAXU+fInkbNBGgWw6ew==
-X-Google-Smtp-Source: ABdhPJzpfWrcs5DxykHEI6KERA5BOBknmIj6EemM4VWPPImoQO4fG5rdh8rsez5jUuFficqkpwK3BC3QFLegheMWHTs=
-X-Received: by 2002:a67:ed4a:: with SMTP id m10mr7437760vsp.14.1614963353636;
- Fri, 05 Mar 2021 08:55:53 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KCqXF6DhvLeATztmzz0XQr9+I4zPUB4uuBIegF8P6nE=;
+        b=bheJ+SdCcp6YiFe6BjkU388lUrcBYIMs5hzfg+8RU7LYBB65y7PMjpSXAZVJNhdCM0
+         KEtty8MITya2m5JAT0F9fCre5xbfdVcFK5ClxB3Niy8VfBKevzrfHAG/bYqJZgUOxNXj
+         lB7oi6U42dizZTEG/cwGmjajZTPxbqAUTTY3ke4eE+J1WNLLGmYukASQ+Xm9iyX7bfdm
+         PO05lQgsGP7WrVHUuO7B7beC1J+YMxW8YCIpdaQ5xhOyPnCj0BHzbk35xZjZsHZRX6LV
+         ZMnUOwP75CZ29JXwW41Uv8p6FOiA3pRjTxAIMUbd/eJ8aF2jKp9Fwyj5eBDEa8gQJxNh
+         XhvA==
+X-Gm-Message-State: AOAM530kwO5koucQWz4+xqTuvZLaa7GymUYYmlIPYiOZcVjNk/S4mWh4
+        DmRkFCYko/UT+UJ5ZR0eHe4IvA==
+X-Google-Smtp-Source: ABdhPJydVHPdsB7IJQiJn5tz58VfcEp05KbBoQ+X6A9ge2JOOLS46OV37tlIyXxO7COzJkjS6SUg0A==
+X-Received: by 2002:a7b:cdf7:: with SMTP id p23mr9880933wmj.26.1614963463274;
+        Fri, 05 Mar 2021 08:57:43 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id l2sm5272464wrv.50.2021.03.05.08.57.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Mar 2021 08:57:42 -0800 (PST)
+Subject: Re: [PATCH 2/3] soundwire: qcom: add auto enumeration support
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        vkoul@kernel.org
+Cc:     sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
+ <20210226170250.9067-3-srinivas.kandagatla@linaro.org>
+ <0c551b23-7ed4-59d7-72c2-284bdf8584f1@linux.intel.com>
+ <4721dd27-c8ce-f988-3c10-794841390656@linaro.org>
+ <01e5ea33-1813-069a-1674-042141947323@linux.intel.com>
+ <601b585e-c3e3-4006-b078-d54c3fd36438@linaro.org>
+ <c5fe182d-1769-73ed-0268-5353fd030521@linux.intel.com>
+ <5b067c8d-0d90-1531-a1b1-118fa73c0078@linaro.org>
+ <46e297dc-487f-1959-1b84-22978fd9a19b@linux.intel.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <a9129fe5-c505-920f-d3d4-85282ce83120@linaro.org>
+Date:   Fri, 5 Mar 2021 16:57:41 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20210304184544.2014171-1-samitolvanen@google.com>
- <87k0qmzq5u.wl-maz@kernel.org> <CABCJKufmjMT8+hGEnL3aJM7-OSwhYSHiJA=i8e7dHSGDWXYtsg@mail.gmail.com>
- <878s72sgwt.wl-maz@kernel.org> <CABCJKud1EmXmmQj-YOUNCFhE3P1W6Uhqpwe1G0zcR5zw71ksJA@mail.gmail.com>
- <CABCJKudvzBggE7AZQERto5Wo_LoL0G2sNee7_1R7h2TnGhjq8A@mail.gmail.com>
- <87im65zvb9.wl-maz@kernel.org> <CAMj1kXEg2cwyJ4BnPq9nWKkG0rcBJhUZasTLThba4Fnt+3e9Vw@mail.gmail.com>
-In-Reply-To: <CAMj1kXEg2cwyJ4BnPq9nWKkG0rcBJhUZasTLThba4Fnt+3e9Vw@mail.gmail.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Fri, 5 Mar 2021 08:55:42 -0800
-Message-ID: <CABCJKud2eSr8ZfPxwa3XVTaJvAfYgydsWUu-AKo2gtNStQshFQ@mail.gmail.com>
-Subject: Re: [PATCH] KVM: arm64: Disable LTO in hyp
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>, Fangrui Song <maskray@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        James Morse <james.morse@arm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <46e297dc-487f-1959-1b84-22978fd9a19b@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 6:22 AM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Fri, 5 Mar 2021 at 12:38, Marc Zyngier <maz@kernel.org> wrote:
-> >
-> > On Fri, 05 Mar 2021 02:38:17 +0000,
-> > Sami Tolvanen <samitolvanen@google.com> wrote:
-> > >
-> > > On Thu, Mar 4, 2021 at 2:34 PM Sami Tolvanen <samitolvanen@google.com> wrote:
-> > > >
-> > > > On Thu, Mar 4, 2021 at 2:17 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > > >
-> > > > > On Thu, 04 Mar 2021 21:25:41 +0000,
-> > > > > Sami Tolvanen <samitolvanen@google.com> wrote:
-> >
-> > [...]
-> >
-> > > > > > I assume hyp_panic() ends up being placed too far from __guest_enter()
-> > > > > > when the kernel is large enough. Possibly something to do with LLVM
-> > > > > > always splitting functions into separate sections with LTO. I'm not
-> > > > > > sure why the linker cannot shuffle things around to make everyone
-> > > > > > happy in this case, but I confirmed that this patch also fixes the
-> > > > > > build issue for me:
-> > > > > >
-> > > > > > diff --git a/arch/arm64/kvm/hyp/vhe/switch.c b/arch/arm64/kvm/hyp/vhe/switch.c
-> > > > > > index af8e940d0f03..128197b7c794 100644
-> > > > > > --- a/arch/arm64/kvm/hyp/vhe/switch.c
-> > > > > > +++ b/arch/arm64/kvm/hyp/vhe/switch.c
-> > > > > > @@ -214,7 +214,7 @@ static void __hyp_call_panic(u64 spsr, u64 elr, u64 par)
-> > > > > >  }
-> > > > > >  NOKPROBE_SYMBOL(__hyp_call_panic);
-> > > > > >
-> > > > > > -void __noreturn hyp_panic(void)
-> > > > > > +void __noreturn hyp_panic(void) __section(".text")
-> > > > > >  {
-> > > > > >         u64 spsr = read_sysreg_el2(SYS_SPSR);
-> > > > > >         u64 elr = read_sysreg_el2(SYS_ELR);
-> > > > > >
-> > > > >
-> > > > > We're getting into black-magic territory here. Why wouldn't hyp_panic
-> > > > > be in the .text section already?
-> > > >
-> > > > It's not quite black magic. LLVM essentially flips on
-> > > > -ffunction-sections with LTO and therefore, hyp_panic() will be in
-> > > > .text.hyp_panic in vmlinux.o, while __guest_enter() will be in .text.
-> > > > Everything ends up in .text when we link vmlinux, of course.
-> > > >
-> > > > $ readelf --sections vmlinux.o | grep hyp_panic
-> > > >   [3936] .text.hyp_panic   PROGBITS         0000000000000000  004b56e4
-> > >
-> > > Note that disabling LTO here has essentially the same effect as using
-> > > __section(".text"). It stops the compiler from splitting these
-> > > functions into .text.* sections and makes it less likely that
-> > > hyp_panic() ends up too far away from __guest_enter().
-> > >
-> > > If neither of these workarounds sound appealing, I suppose we could
-> > > alternatively change hyp/entry.S to use adr_l for hyp_panic. Thoughts?
-> >
-> > That would be an actual fix instead of a workaround, as it would
-> > remove existing assumptions about the relative locations of the two
-> > objects. I guess you need to fix both instances with something such
-> > as:
-> >
-> > diff --git a/arch/arm64/kvm/hyp/entry.S b/arch/arm64/kvm/hyp/entry.S
-> > index b0afad7a99c6..a43e1f7ee354 100644
-> > --- a/arch/arm64/kvm/hyp/entry.S
-> > +++ b/arch/arm64/kvm/hyp/entry.S
-> > @@ -85,8 +85,10 @@ SYM_INNER_LABEL(__guest_exit_panic, SYM_L_GLOBAL)
-> >
-> >         // If the hyp context is loaded, go straight to hyp_panic
-> >         get_loaded_vcpu x0, x1
-> > -       cbz     x0, hyp_panic
-> > -
-> > +       cbnz    x0, 1f
-> > +       adr_l   x0, hyp_panic
-> > +       br      x0
-> > +1:
->
-> Agree with replacing the conditional branches that refer to external
-> symbols: the compiler never emits those, for the reason we are seeing
-> here, i.e., the range is simply insufficient.
->
-> But let's just use 'b hyp_panic' instead, no?
 
-Alright, this seems to work for me:
 
-diff --git a/arch/arm64/kvm/hyp/entry.S b/arch/arm64/kvm/hyp/entry.S
-index b0afad7a99c6..c62265951467 100644
---- a/arch/arm64/kvm/hyp/entry.S
-+++ b/arch/arm64/kvm/hyp/entry.S
-@@ -85,8 +85,10 @@ SYM_INNER_LABEL(__guest_exit_panic, SYM_L_GLOBAL)
+On 05/03/2021 16:19, Pierre-Louis Bossart wrote:
+>>>
+>>>
+>>> The question is: what happens if that device is NOT described in the 
+>>> Device Tree data? The loop over bus->slaves will not find this device 
+>>> by comparing with known devID values, so the set_bit(i, 
+>>> bus->assigned) will not happen.
+>>
+>> yes, that is true, There is no way we can assign a dev_number to the 
+>> device which is not enumerated on the bus!
+>>
+>> Am sure this is the same behavior with soundwire core too, atleast 
+>> form the code I can see it sets the assigned bit for only the devices 
+>> that are enumerated on the bus! Not all the devices specified in DT!
+>> Unless I missed something!
+> 
+> I am talking about the other way around, where a device is present and 
+> enumerated on the bus but not listed in DT. In that case the hardware 
+> did assign a device number but bus->assigned will not be set.
 
-        // If the hyp context is loaded, go straight to hyp_panic
-        get_loaded_vcpu x0, x1
--       cbz     x0, hyp_panic
-+       cbnz    x0, 1f
-+       b       hyp_panic
+thanks for your patience!
 
-+1:
-        // The hyp context is saved so make sure it is restored to allow
-        // hyp_panic to run at hyp and, subsequently, panic to run in the host.
-        // This makes use of __guest_exit to avoid duplication but sets the
-@@ -94,7 +96,7 @@ SYM_INNER_LABEL(__guest_exit_panic, SYM_L_GLOBAL)
-        // current state is saved to the guest context but it will only be
-        // accurate if the guest had been completely restored.
-        adr_this_cpu x0, kvm_hyp_ctxt, x1
--       adr     x1, hyp_panic
-+       adr_l   x1, hyp_panic
-        str     x1, [x0, #CPU_XREG_OFFSET(30)]
+Ah, I understand it now!, yes that part is missing!
 
-        get_vcpu_ptr    x1, x0
+adding Something like what core does in qcom driver should fix it!
 
-But when I say work, I mean this fixes the allmodconfig build with
-LTO, and my kernel boots at EL2. I don't actually have a way to
-properly test KVM on arm64. If nobody sees obvious issues here, I can
-send a proper patch a bit later.
+if (!found) {
+	sdw_slave_add(bus, &id, NULL);
+	dev_err(bus->dev, "Slave Entry not found\n");
+}
 
-> >         // The hyp context is saved so make sure it is restored to allow
-> >         // hyp_panic to run at hyp and, subsequently, panic to run in the host.
-> >         // This makes use of __guest_exit to avoid duplication but sets the
-> > @@ -94,7 +96,7 @@ SYM_INNER_LABEL(__guest_exit_panic, SYM_L_GLOBAL)
-> >         // current state is saved to the guest context but it will only be
-> >         // accurate if the guest had been completely restored.
-> >         adr_this_cpu x0, kvm_hyp_ctxt, x1
-> > -       adr     x1, hyp_panic
-> > +       adr_l   x1, hyp_panic
-> >         str     x1, [x0, #CPU_XREG_OFFSET(30)]
-> >
-> >         get_vcpu_ptr    x1, x0
-> >
-> > which is completely untested. I wouldn't be surprised if there were
-> > more of these somewhere.
-> >
->
-> A quick grep gives me
->
-> $ objdump -r vmlinux.o |grep BR19
-> 000000000005b6e0 R_AARCH64_CONDBR19  hyp_panic
-> 0000000000418e08 R_AARCH64_CONDBR19  __memcpy
-> 0000000000418e14 R_AARCH64_CONDBR19  __memcpy
-
-These two are in __memmove. This shouldn't be an issue, at least with LTO.
-
-> 0000000000003818 R_AARCH64_CONDBR19  __kvm_nvhe___guest_exit_panic
-> 0000000000003898 R_AARCH64_CONDBR19  __kvm_nvhe___guest_exit_panic
-> 0000000000003918 R_AARCH64_CONDBR19  __kvm_nvhe___guest_exit_panic
-> 0000000000003998 R_AARCH64_CONDBR19  __kvm_nvhe___guest_exit_panic
-> 0000000000003a18 R_AARCH64_CONDBR19  __kvm_nvhe___guest_exit_panic
-> 0000000000003a98 R_AARCH64_CONDBR19  __kvm_nvhe___guest_exit_panic
-> 0000000000003b18 R_AARCH64_CONDBR19  __kvm_nvhe___guest_exit_panic
-> 0000000000003b98 R_AARCH64_CONDBR19  __kvm_nvhe___guest_exit_panic
-> 0000000000003c10 R_AARCH64_CONDBR19  __kvm_nvhe___host_exit
-> 0000000000003c1c R_AARCH64_CONDBR19  __kvm_nvhe___host_exit
-> 00000000000064f0 R_AARCH64_CONDBR19  __kvm_nvhe_hyp_panic
-> 000000000000078c R_AARCH64_CONDBR19  __kvm_nvhe___kvm_handle_stub_hvc
-
-It looks like all the nvhe code is linked together into kvm_nvhe.o, so
-I don't think these will cause problems either.
-
-Sami
+--srini
