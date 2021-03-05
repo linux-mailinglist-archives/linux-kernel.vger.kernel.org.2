@@ -2,70 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6DC32E679
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E1932E680
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbhCEKba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:31:30 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:50166 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhCEKbF (ORCPT
+        id S229616AbhCEKeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:34:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229528AbhCEKdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:31:05 -0500
-Received: by mail-io1-f70.google.com with SMTP id d4so1509993ioc.16
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 02:31:05 -0800 (PST)
+        Fri, 5 Mar 2021 05:33:38 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FBDC06175F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 02:33:38 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id u14so1522512wri.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 02:33:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=e/f2HBL5HAx1NUma9mvmRmVDl3EiEhBl3GuuJNNNQY8=;
+        b=Ps57ex3qdSjN6SajeH2qheQ5Uuljya8Hy8/Ycu6qOMJj1gTIuVJxai8xYZUiVeVwzw
+         AuQpt1mGs74K7Gz7SLXAqT1ZCpyAAT8n6mISxvSuzKIqyddGdJAtDgt9BSI5vUTzWaUo
+         qz79tdXz6shT6kc4vqMhoOV53bYXDIEWWE+M6YemL6q8AnbzX6MsCvziHgSzusyAtevp
+         bX1bZOxbxL1Wd4dzXEJ/O/Sp2WFi4C8lHDU7tuVhQ6siwreNzJTuH01bQH8Znt1VxQDX
+         DwEx45cieHNDHDSoGN1afR8ACVb2B1aQvdU9t4rMSAT6nkDw9vlZRNKFywIgPvEI7hbe
+         1qCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=oqzdkBv+UMzfuq0wtY2lfwFYesZb5iOxkKEg/xMPFnU=;
-        b=ttgjfA+P8dlyAYH2/9VmQkemn7vC06n1WCkADisy4/SPfMgGZTxQ9VOD94PIq3qkt4
-         HUx6sRuoEcRZ7YQPpwAiGE2+VQA47lMImrJ0MBLjUp29Ujt2gHnjGPoYutLXkZ1luL+f
-         9Xr/J745BllS50EtPo5CgkIgm1Q25NoXRJgZIbFbn1NfiYmtOneiw+L61lCPdjltSzyM
-         7/i25ufZ7NS/kGhLXRrpLIPb/o9QGvQXmZcF61tsqJuOEq+K8JDSUNwy9ok4bdfeRNE6
-         JfqBLCPjmZ050ENQI7hpz18eAIzp8vdytvmoMCq5V1o81dBSpG2d+LoovF791zZB/Bhq
-         dIrA==
-X-Gm-Message-State: AOAM532+t1kLtKlXFXpeFT1f86zPxMMqiiPrgoDu4bLHVH/d/mgdltAZ
-        Ig3usA7NO3QZoBULAqa1NSPD8aV7VziFqAz4pKXmZQPRf3zK
-X-Google-Smtp-Source: ABdhPJy6kuvoqkE/AXYi6HdCtIbTSV2pqYeuGii4fFbf5Z+IKzuz2v+Q19CjPtHC1JjMEqCpSvFn4tiHu70E55tqnwO76f5lfrfu
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e/f2HBL5HAx1NUma9mvmRmVDl3EiEhBl3GuuJNNNQY8=;
+        b=A4gY50Lkvq4m0s/ZuyEgvcdGsxzJMEjTioVEqine0743iQ6wBYTqTp4OJdZc+Ai2w0
+         fFZYKGwuD18VmttAox2hDZ21okrJHFODQ089/vA3iMgfJamUE1cvA134qybr1Dvlpj0q
+         XLdIRHILYoJyAweHF4YiIXH+DZ6Vtqq/+VUALJN+VWWJZayjGEaTDwfhonKXHBvL/RPu
+         sKXlkmvvAWbssH9ldDOsFVP8Ze5zsEGRlUMRIvJZz2suFAjJrG/Se+NvvON6rHcbJ2Ez
+         vqjgDqrYORvT2rA6uNVN0H6tRmbEDesdacAV3mQpWZ3hFGVxQHxjx8Mx8lnmo6wnuPB/
+         sVZw==
+X-Gm-Message-State: AOAM533RLgeJol3toOUPGm6Ur/pEueNY4rCncxgXF29WLQ5xzOmeDgx+
+        NqUB44RIJXkL8zxbqQYSlrWrM4RB3Y53aw==
+X-Google-Smtp-Source: ABdhPJzkzTcQAx9qG/Sr55DSWp5FisqN0cMPXYb8CAL1I9wDHEa8kQ0XSjJTOBtJnVulk4nUetim9Q==
+X-Received: by 2002:a5d:6810:: with SMTP id w16mr8729907wru.333.1614940416762;
+        Fri, 05 Mar 2021 02:33:36 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id x6sm3975204wmj.32.2021.03.05.02.33.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Mar 2021 02:33:36 -0800 (PST)
+Subject: Re: [PATCH 2/2] nvmem: iomap: new driver exposing NVMEM accessible
+ using I/O mapping
+To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mips@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivek Unune <npcomplete13@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
+References: <20210304144132.24098-1-zajec5@gmail.com>
+ <20210304144132.24098-2-zajec5@gmail.com>
+ <047bced8-6c20-4a0a-c7ea-e0ad83318461@linaro.org>
+ <93708a21-3444-f68e-c834-a4f769a0acba@milecki.pl>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <35e498b6-3b2c-d154-db00-d755af339b60@linaro.org>
+Date:   Fri, 5 Mar 2021 10:33:35 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:7112:: with SMTP id q18mr7102109iog.174.1614940264923;
- Fri, 05 Mar 2021 02:31:04 -0800 (PST)
-Date:   Fri, 05 Mar 2021 02:31:04 -0800
-In-Reply-To: <0000000000001be3ac05ba42cef9@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d3088f05bcc7943d@google.com>
-Subject: Re: INFO: task hung in rsvp_delete_filter_work
-From:   syzbot <syzbot+a2ec7a7fb2331091aecf@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, dsahern@kernel.org, johannes@sipsolutions.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, vladbu@nvidia.com,
-        xiyou.wangcong@gmail.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <93708a21-3444-f68e-c834-a4f769a0acba@milecki.pl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
 
-commit 396d7f23adf9e8c436dd81a69488b5b6a865acf8
-Author: Vlad Buslov <vladbu@nvidia.com>
-Date:   Tue Feb 16 16:22:00 2021 +0000
 
-    net: sched: fix police ext initialization
+On 05/03/2021 10:24, Rafał Miłecki wrote:
+>>>
+>>> +static int iomap_read(void *context, unsigned int offset, void *val,
+>>> +              size_t bytes)
+>>> +{
+>>> +    struct iomap *priv = context;
+>>> +    u8 *src = priv->base + offset;
+>>> +    u8 *dst = val;
+>>> +    size_t tmp;
+>>> +
+>>> +    tmp = offset % 4;
+>>> +    memcpy_fromio(dst, src, tmp);
+>>> +    dst += tmp;
+>>> +    src += tmp;
+>>> +    bytes -= tmp;
+>>> +
+>>> +    tmp = rounddown(bytes, 4);
+>>> +    __ioread32_copy(dst, src, tmp / 4);
+>>> +    dst += tmp;
+>>> +    src += tmp;
+>>> +    bytes -= tmp;
+>>> +
+>>> +    memcpy_fromio(dst, src, bytes);
+>>> +
+>>
+>>
+>> You could just do this!
+>>
+>>      while (bytes--)
+>>          *val++ = readb(priv->base + offset + i++);
+> 
+> Do you mean that as replacement for "memcpy_fromio" or the whole
+> function code?
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13dc3caed00000
-start commit:   14e8e0f6 tcp: shrink inet_connection_sock icsk_mtup enable..
-git tree:       net-next
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ac6e76902c1abb76
-dashboard link: https://syzkaller.appspot.com/bug?extid=a2ec7a7fb2331091aecf
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=114d33d8d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12610ac4d00000
+Yes please!
 
-If the result looks correct, please mark the issue as fixed by replying with:
+> The reason for using __ioread32_copy() was to improve reading
+> performance (using aligned 32 bit access where possible). I'm not sure
+> if that really matters?
 
-#syz fix: net: sched: fix police ext initialization
+Just simple while loop is much readable than the previous code TBH!
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+
+> P.S.
+> Please don't yell at me in every sentence :( Makes me a bit sad :(
+Sorry!! I did not mean anything as such! :-)
+
+--srini
