@@ -2,289 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DED632E266
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 07:41:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B994632E261
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 07:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbhCEGlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 01:41:44 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:54740 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhCEGlo (ORCPT
+        id S229582AbhCEGld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 01:41:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38632 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229457AbhCEGlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 01:41:44 -0500
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 1256fUQo003195;
-        Fri, 5 Mar 2021 15:41:30 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 1256fUQo003195
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614926491;
-        bh=LVfCYtol43p9Sf9h1BSalfqHLYWpNpKQtYF3NpU1uso=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ib+jULPiYW3EfFWRDWPhxRyg5/v3E9+oTFZV/Tq3C/WJ4g+DNREoArPx7GZd7M2Vo
-         ZoWC/vj82Y1hGrOf9mbOBqiBp9I4LJWTytoRNzxQDmkub7Ct3l4AsEgsAjTWgE32GC
-         NJMusSoaE9s1gHW34f4yjJVKysBW55FciKsAXn5ccEnpjjiH0VNXiyti3binkvOeu/
-         b5xKAIs51/N7vIxaOIMKR15z3adE1DmZ6m+sZKc5lqgC3g+9OtRJbjb6kw8YG2X6Mp
-         aciRoixzcmBBk31JCICda1WGNwuFjJVC3EMp3drRKZXPT12a02ZD8KqkPwkO2qWWdB
-         8mrFp/Yu73lIg==
-X-Nifty-SrcIP: [209.85.210.173]
-Received: by mail-pf1-f173.google.com with SMTP id x24so1419715pfn.5;
-        Thu, 04 Mar 2021 22:41:30 -0800 (PST)
-X-Gm-Message-State: AOAM532YLaFB0ZYRWvUpHjEYi4yg1gFAz9KrLbm+nGXvfxdg9Kffkv9f
-        NT0pW4cRF2M+rb9PGkIJkkS3d4S1xPKgAXJT69U=
-X-Google-Smtp-Source: ABdhPJypo12SLP6afMXK+0qgRRADV3SD/m2D8FQPUNUTuTs8qwJ4PN1X4QDHfX8R9NCrwpLpg+R7+qMEU7ddV9iQx2c=
-X-Received: by 2002:aa7:956d:0:b029:1f1:5ba6:2a58 with SMTP id
- x13-20020aa7956d0000b02901f15ba62a58mr434567pfq.63.1614926489648; Thu, 04 Mar
- 2021 22:41:29 -0800 (PST)
+        Fri, 5 Mar 2021 01:41:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614926491;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JnmAd/cAWPZB1mz8gyad2diGqBlDPO14Y3hGtx+7soo=;
+        b=fOYiAyBBsNNINZ+dQhjbK9bclbweX55Gkly3do0t0GFSsNNmeswIkks6XC7H/VCiGDwF4F
+        /ekbUBJhC08zQ9XW9lK8ZJNyYDjie8/uTpcAYw9PHz46f3D9xdShtfg4Y8ersLG4dsQRb1
+        YB8vMbJi1gy7Za5rvRr56ySX+5phJbI=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-66-65aD7sb5NnKN1ICUU05nWA-1; Fri, 05 Mar 2021 01:41:29 -0500
+X-MC-Unique: 65aD7sb5NnKN1ICUU05nWA-1
+Received: by mail-pg1-f197.google.com with SMTP id f7so649523pgp.19
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 22:41:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JnmAd/cAWPZB1mz8gyad2diGqBlDPO14Y3hGtx+7soo=;
+        b=WCaS0l4WhFHEVNr+kimJixryuveK5g7E2nkZMGChhWnEKUzOPMahyTcC8e0cugpbK5
+         2YrEUvyxOwINKQZHXREFbKCFaD4XreUEHq8a5qwdbfEWz2qMS+mgIzaPzAKV+JDLDCWe
+         BITa0tnB4quZdbxRbHBTTKgIJ19sEvKKdt19n4wRaJQAFYzmh7lHjelxb0reIEjunYc0
+         7dXn+yn/NUp/XVG3gRfspF9Yv4pfe5Moudp1EZ0UDSsSLDV4pyvmIptoC9W1f0fcK9m3
+         CkfT2Giiuq2YhZwjkvTwsFmSQsAUpSYDMBo+nfgs9THDGVR+0hq5/KIVBR53qDOhOw0s
+         1c9g==
+X-Gm-Message-State: AOAM532/NMY31E7plOqzSaWuAr30oFR5fTxARY8TBSHVKjb+csSVgNdW
+        yorA5jpKZLRDL/XSyrvzHqYztOPyDOuO4gK8/GMWxafVNay21js6bRiq9FDlEnNSRLWy4rUGmCz
+        R8t2enJYmkR80N3fKE/Zx3DAc
+X-Received: by 2002:a65:6209:: with SMTP id d9mr6740461pgv.206.1614926488626;
+        Thu, 04 Mar 2021 22:41:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxC7frt3RFKJdsozBuny+luFPIDt4luub4tK+4JtOYyAspsCezfpvpM0F+OfJ9Kwgx/Xz3Gaw==
+X-Received: by 2002:a65:6209:: with SMTP id d9mr6740443pgv.206.1614926488308;
+        Thu, 04 Mar 2021 22:41:28 -0800 (PST)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 144sm1279435pgd.83.2021.03.04.22.41.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 22:41:28 -0800 (PST)
+Date:   Fri, 5 Mar 2021 14:41:17 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Huang Jianan <huangjianan@oppo.com>
+Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        guoweichao@oppo.com, zhangshiming@oppo.com
+Subject: Re: [PATCH 2/2] erofs: decompress in endio if possible
+Message-ID: <20210305064117.GA3093390@xiangao.remote.csb>
+References: <20210305062219.557128-1-huangjianan@oppo.com>
+ <20210305062219.557128-2-huangjianan@oppo.com>
 MIME-Version: 1.0
-References: <20210303183333.46543-1-masahiroy@kernel.org> <20210303183333.46543-2-masahiroy@kernel.org>
- <20210304001141.7lejurony2poqkid@archlinux-ax161>
-In-Reply-To: <20210304001141.7lejurony2poqkid@archlinux-ax161>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 5 Mar 2021 15:40:52 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASnGqdAtjhNfPmk0dKA-v5aC4FB8Si+fCAkcjDLK0kv-A@mail.gmail.com>
-Message-ID: <CAK7LNASnGqdAtjhNfPmk0dKA-v5aC4FB8Si+fCAkcjDLK0kv-A@mail.gmail.com>
-Subject: Re: [PATCH 2/4] kbuild: collect minimum tool versions into scripts/tool-version.sh
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210305062219.557128-2-huangjianan@oppo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 9:11 AM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On Thu, Mar 04, 2021 at 03:33:31AM +0900, Masahiro Yamada wrote:
-> > The kernel build uses various tools, many of which are provided by the
-> > same software suite, for example, LLVM and Binutils.
-> >
-> > When we raise the minimal version of Clang/LLVM, we need to update
-> > clang_min_version in scripts/cc-version.sh and also lld_min_version in
-> > scripts/ld-version.sh.
-> >
-> > In fact, Kbuild can handle CC=clang and LD=ld.lld independently, and we
-> > could manage their minimal version separately, but it does not make
-> > much sense.
-> >
-> > Make scripts/tool-version.sh a central place of minimum tool versions
-> > so that we do not need to touch multiple files.
-> >
-> > This script prints the minimal version of the given tool.
-> >
-> >   $ scripts/tool-version.sh gcc
-> >   4.9.0
-> >   $ scripts/tool-version.sh llvm
-> >   10.0.1
-> >   $ scripts/tool-version.sh binutils
-> >   2.23.0
-> >   $ scripts/tool-version.sh foo
-> >   foo: unknown tool
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
->
-> Two comments below.
->
-> > ---
-> >
-> >  scripts/cc-version.sh   | 20 +++++---------------
-> >  scripts/ld-version.sh   | 11 ++++-------
-> >  scripts/tool-version.sh | 27 +++++++++++++++++++++++++++
-> >  3 files changed, 36 insertions(+), 22 deletions(-)
-> >  create mode 100755 scripts/tool-version.sh
-> >
-> > diff --git a/scripts/cc-version.sh b/scripts/cc-version.sh
-> > index 3f2ee885b116..4772f1ef9cac 100755
-> > --- a/scripts/cc-version.sh
-> > +++ b/scripts/cc-version.sh
-> > @@ -6,18 +6,6 @@
-> >
-> >  set -e
-> >
-> > -# When you raise the minimum compiler version, please update
-> > -# Documentation/process/changes.rst as well.
-> > -gcc_min_version=4.9.0
-> > -clang_min_version=10.0.1
-> > -icc_min_version=16.0.3 # temporary
-> > -
-> > -# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
-> > -# https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
-> > -if [ "$SRCARCH" = arm64 ]; then
-> > -     gcc_min_version=5.1.0
-> > -fi
-> > -
-> >  # Print the compiler name and some version components.
-> >  get_compiler_info()
-> >  {
-> > @@ -48,18 +36,20 @@ set -- $(get_compiler_info "$@")
-> >
-> >  name=$1
-> >
-> > +tool_version=$(dirname $0)/tool-version.sh
->
-> I realize these scripts are currently called by their full path but is
-> it worth making this '$(dirname "$(readlink -f "$0")")' here and in
-> ld-version.sh just in case that does not happen?
+On Fri, Mar 05, 2021 at 02:22:19PM +0800, Huang Jianan via Linux-erofs wrote:
+> z_erofs_decompressqueue_endio may not be executed in the interrupt
+> context, for example, when dm-verity is turned on. In this scenario,
+> io should be decompressed directly to avoid additional scheduling
+> overhead. Also there is no need to wait for endio to execute
+> synchronous decompression.
 
-Not sure.
-A relative path still works.
-So, I did not do what I did not need to do.
+z_erofs_decompressqueue_endio may not be executed in the atomic
+context, for example, when dm-verity is turned on. In this scenario,
+data can be decompressed directly to get rid of additional kworker
+scheduling overhead. Also, it makes no sense to apply synchronous
+decompression for such case.
 
+> 
+> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+> Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+> ---
+>  fs/erofs/internal.h |   3 ++
+>  fs/erofs/super.c    |   1 +
+>  fs/erofs/zdata.c    | 102 ++++++++++++++++++++++++--------------------
+>  3 files changed, 60 insertions(+), 46 deletions(-)
+> 
+> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+> index 77965490dced..a19bcbb681fc 100644
+> --- a/fs/erofs/internal.h
+> +++ b/fs/erofs/internal.h
+> @@ -71,6 +71,9 @@ struct erofs_sb_info {
+>  	/* pseudo inode to manage cached pages */
+>  	struct inode *managed_cache;
+>  
+> +	/* decide whether to decompress synchronously */
+> +	bool sync_decompress;
 
+bool readahead_sync_decompress;
 
+> +
+>  	/* # of pages needed for EROFS lz4 rolling decompression */
+>  	u16 lz4_max_distance_pages;
+>  #endif	/* CONFIG_EROFS_FS_ZIP */
+> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+> index 37f1cc9d28cc..5b9a21d10a30 100644
+> --- a/fs/erofs/super.c
+> +++ b/fs/erofs/super.c
+> @@ -188,6 +188,7 @@ static int erofs_read_superblock(struct super_block *sb)
+>  		goto out;
+>  	}
+>  
+> +	sbi->sync_decompress = false;
 
-> >  case "$name" in
-> >  GCC)
-> >       version=$2.$3.$4
-> > -     min_version=$gcc_min_version
-> > +     min_version=$($tool_version gcc)
-> >       ;;
-> >  Clang)
-> >       version=$2.$3.$4
-> > -     min_version=$clang_min_version
-> > +     min_version=$($tool_version llvm)
-> >       ;;
-> >  ICC)
-> >       version=$(($2 / 100)).$(($2 % 100)).$3
-> > -     min_version=$icc_min_version
-> > +     min_version=$($tool_version icc)
-> >       ;;
-> >  *)
-> >       echo "$orig_args: unknown compiler" >&2
-> > diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
-> > index a463273509b5..e824f7675693 100755
-> > --- a/scripts/ld-version.sh
-> > +++ b/scripts/ld-version.sh
-> > @@ -6,11 +6,6 @@
-> >
-> >  set -e
-> >
-> > -# When you raise the minimum linker version, please update
-> > -# Documentation/process/changes.rst as well.
-> > -bfd_min_version=2.23.0
-> > -lld_min_version=10.0.1
-> > -
-> >  # Convert the version string x.y.z to a canonical 5 or 6-digit form.
-> >  get_canonical_version()
-> >  {
-> > @@ -35,10 +30,12 @@ set -- $("$@" --version)
-> >  IFS=' '
-> >  set -- $1
-> >
-> > +tool_version=$(dirname $0)/tool-version.sh
-> > +
-> >  if [ "$1" = GNU -a "$2" = ld ]; then
-> >       shift $(($# - 1))
-> >       version=$1
-> > -     min_version=$bfd_min_version
-> > +     min_version=$($tool_version binutils)
-> >       name=BFD
-> >       disp_name="GNU ld"
-> >  elif [ "$1" = GNU -a "$2" = gold ]; then
-> > @@ -46,7 +43,7 @@ elif [ "$1" = GNU -a "$2" = gold ]; then
-> >       exit 1
-> >  elif [ "$1" = LLD ]; then
-> >       version=$2
-> > -     min_version=$lld_min_version
-> > +     min_version=$($tool_version llvm)
-> >       name=LLD
-> >       disp_name=LLD
-> >  else
-> > diff --git a/scripts/tool-version.sh b/scripts/tool-version.sh
-> > new file mode 100755
-> > index 000000000000..b4aa27e2c3d3
-> > --- /dev/null
-> > +++ b/scripts/tool-version.sh
-> > @@ -0,0 +1,27 @@
-> > +#!/bin/sh
-> > +# SPDX-License-Identifier: GPL-2.0-only
-> > +#
-> > +# Print the minimum supported version of the given tool.
-> > +
-> > +set -e
-> > +
-> > +# When you raise the minimum version, please update
-> > +# Documentation/process/changes.rst as well.
-> > +gcc_min_version=4.9.0
-> > +llvm_min_version=10.0.1
-> > +icc_min_version=16.0.3 # temporary
-> > +binutils_min_version=2.23.0
-> > +
-> > +# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
-> > +# https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
-> > +if [ "$SRCARCH" = arm64 ]; then
-> > +     gcc_min_version=5.1.0
-> > +fi
-> > +
-> > +eval min_version="\$${1}_min_version"
-> > +if [ -z "$min_version" ]; then
-> > +     echo "$1: unknown tool" >&2
-> > +     exit 1
-> > +fi
-> > +
-> > +echo "$min_version"
-> > --
-> > 2.27.0
-> >
->
-> Would scripts/tool-version.sh be easier to read and interpret using a
-> case statement?
+Ah, could you rebase the patch on the top of 5.12-rc1
+rather than dev-test? since I've fold your
+"erofs: support adjust lz4 history window size"
+into a new patchset, see:
+https://git.kernel.org/pub/scm/linux/kernel/git/xiang/linux.git/log/?h=erofs/compr_cfgs
 
+>  	/* parse on-disk compression configurations */
+>  	z_erofs_load_lz4_config(sbi, dsb);
+>  	ret = 0;
+> diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+> index 6cb356c4217b..727dd01f55c1 100644
+> --- a/fs/erofs/zdata.c
+> +++ b/fs/erofs/zdata.c
+> @@ -706,56 +706,11 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+>  	goto out;
+>  }
+>  
+> -static void z_erofs_decompress_kickoff(struct z_erofs_decompressqueue *io,
+> -				       bool sync, int bios)
+> -{
+> -	/* wake up the caller thread for sync decompression */
+> -	if (sync) {
+> -		unsigned long flags;
+> -
+> -		spin_lock_irqsave(&io->u.wait.lock, flags);
+> -		if (!atomic_add_return(bios, &io->pending_bios))
+> -			wake_up_locked(&io->u.wait);
+> -		spin_unlock_irqrestore(&io->u.wait.lock, flags);
+> -		return;
+> -	}
+> -
+> -	if (!atomic_add_return(bios, &io->pending_bios))
+> -		queue_work(z_erofs_workqueue, &io->u.work);
+> -}
 
-Actually, I wrote code that way.
+Is it necessary to move the code snippet?
 
-But, I liked shorter code, and
-wanted to collect magic numbers
-to the top of this file.
+> -
+>  static bool z_erofs_page_is_invalidated(struct page *page)
+>  {
+>  	return !page->mapping && !z_erofs_is_shortlived_page(page);
+>  }
+>  
+> -static void z_erofs_decompressqueue_endio(struct bio *bio)
+> -{
+> -	tagptr1_t t = tagptr_init(tagptr1_t, bio->bi_private);
+> -	struct z_erofs_decompressqueue *q = tagptr_unfold_ptr(t);
+> -	blk_status_t err = bio->bi_status;
+> -	struct bio_vec *bvec;
+> -	struct bvec_iter_all iter_all;
+> -
+> -	bio_for_each_segment_all(bvec, bio, iter_all) {
+> -		struct page *page = bvec->bv_page;
+> -
+> -		DBG_BUGON(PageUptodate(page));
+> -		DBG_BUGON(z_erofs_page_is_invalidated(page));
+> -
+> -		if (err)
+> -			SetPageError(page);
+> -
+> -		if (erofs_page_is_managed(EROFS_SB(q->sb), page)) {
+> -			if (!err)
+> -				SetPageUptodate(page);
+> -			unlock_page(page);
+> -		}
+> -	}
+> -	z_erofs_decompress_kickoff(q, tagptr_unfold_tags(t), -1);
+> -	bio_put(bio);
+> -}
+> -
+>  static int z_erofs_decompress_pcluster(struct super_block *sb,
+>  				       struct z_erofs_pcluster *pcl,
+>  				       struct list_head *pagepool)
+> @@ -991,6 +946,60 @@ static void z_erofs_decompressqueue_work(struct work_struct *work)
+>  	kvfree(bgq);
+>  }
+>  
+> +static void z_erofs_decompress_kickoff(struct z_erofs_decompressqueue *io,
+> +				       bool sync, int bios)
+> +{
+> +	struct erofs_sb_info *const sbi = EROFS_SB(io->sb);
+> +
+> +	/* wake up the caller thread for sync decompression */
+> +	if (sync) {
+> +		unsigned long flags;
+> +
+> +		spin_lock_irqsave(&io->u.wait.lock, flags);
+> +		if (!atomic_add_return(bios, &io->pending_bios))
+> +			wake_up_locked(&io->u.wait);
+> +		spin_unlock_irqrestore(&io->u.wait.lock, flags);
+> +		return;
+> +	}
+> +
+> +	if (!atomic_add_return(bios, &io->pending_bios)) {
+> +		if (in_atomic() || irqs_disabled()) {
+> +			queue_work(z_erofs_workqueue, &io->u.work);
+> +			if (unlikely(!sbi->sync_decompress))
+> +				sbi->sync_decompress = true;
+> +		}
+> +		else
+> +			z_erofs_decompressqueue_work(&io->u.work);
 
-Only the tricky part is the 'eval' statement,
-but I hope it would not be too difficult to understand.
+Nit: coding style:
 
+if () {
+	...
+} else {	this arm is needed.
+	...
+}
 
+> +	}
+> +}
+> +
+> +static void z_erofs_decompressqueue_endio(struct bio *bio)
+> +{
+> +	tagptr1_t t = tagptr_init(tagptr1_t, bio->bi_private);
+> +	struct z_erofs_decompressqueue *q = tagptr_unfold_ptr(t);
+> +	blk_status_t err = bio->bi_status;
+> +	struct bio_vec *bvec;
+> +	struct bvec_iter_all iter_all;
+> +
+> +	bio_for_each_segment_all(bvec, bio, iter_all) {
+> +		struct page *page = bvec->bv_page;
+> +
+> +		DBG_BUGON(PageUptodate(page));
+> +		DBG_BUGON(z_erofs_page_is_invalidated(page));
+> +
+> +		if (err)
+> +			SetPageError(page);
+> +
+> +		if (erofs_page_is_managed(EROFS_SB(q->sb), page)) {
+> +			if (!err)
+> +				SetPageUptodate(page);
+> +			unlock_page(page);
+> +		}
+> +	}
+> +	z_erofs_decompress_kickoff(q, tagptr_unfold_tags(t), -1);
+> +	bio_put(bio);
+> +}
+> +
+>  static struct page *pickup_page_for_submission(struct z_erofs_pcluster *pcl,
+>  					       unsigned int nr,
+>  					       struct list_head *pagepool,
+> @@ -1333,7 +1342,8 @@ static void z_erofs_readahead(struct readahead_control *rac)
+>  	struct erofs_sb_info *const sbi = EROFS_I_SB(inode);
+>  
+>  	unsigned int nr_pages = readahead_count(rac);
+> -	bool sync = (nr_pages <= sbi->ctx.max_sync_decompress_pages);
+> +	bool sync = (nr_pages <= sbi->ctx.max_sync_decompress_pages) &
+> +			sbi->sync_decompress;
 
-> #!/bin/sh
-> # SPDX-License-Identifier: GPL-2.0-only
-> #
-> # Print the minimum supported version of the given tool.
-> # When you raise the minimum version, please update
-> # Documentation/process/changes.rst as well.
->
-> case "$1" in
-> binutils)
->     echo "2.23.0"
->     ;;
-> gcc)
->     # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
->     # https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
->     if [ "$SRCARCH" = arm64 ]; then
->         echo "5.1.0"
->     else
->         echo "4.9.0"
->     fi
->     ;;
-> icc)
->     # temporary
->     echo "16.0.3"
->     ;;
-> llvm)
->     echo "10.0.1"
->     ;;
-> *)
->     echo "$1: unknown tool" >&2
->     exit 1
->     ;;
-> esac
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210304001141.7lejurony2poqkid%40archlinux-ax161.
+it would be better written as:
 
+bool sync = (sbi->readahead_sync_decompress &&
+	     nr_pages <= sbi->ctx.max_sync_decompress_pages);
 
+Thanks,
+Gao Xiang
 
---
-Best Regards
-Masahiro Yamada
+>  	struct z_erofs_decompress_frontend f = DECOMPRESS_FRONTEND_INIT(inode);
+>  	struct page *page, *head = NULL;
+>  	LIST_HEAD(pagepool);
+> -- 
+> 2.25.1
+> 
+
