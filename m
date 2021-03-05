@@ -2,107 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D8232EF73
+	by mail.lfdr.de (Postfix) with ESMTP id A227832EF74
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhCEP4I convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Mar 2021 10:56:08 -0500
-Received: from mga02.intel.com ([134.134.136.20]:8779 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229478AbhCEPzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:55:39 -0500
-IronPort-SDR: iHS4aYdZNb29tq78K+skSwAdpByp8f+BcjKPWwKMdkImdesIa3cr1h+CtT6XRAOksggPIczqxG
- Wx8WJwoG9pKA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="174784783"
-X-IronPort-AV: E=Sophos;i="5.81,225,1610438400"; 
-   d="scan'208";a="174784783"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 07:55:38 -0800
-IronPort-SDR: g2IE4/xh26TdLdJLaJusSg3SlMhFGhFxYRqpXZJ7BtZvE/ty3iHHv7fKdLHTjnZ2xTGkVqR+J6
- 4qC2bhF0d6LQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,225,1610438400"; 
-   d="scan'208";a="384953365"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga002.jf.intel.com with ESMTP; 05 Mar 2021 07:55:32 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 5 Mar 2021 07:55:26 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 5 Mar 2021 07:55:25 -0800
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
- Fri, 5 Mar 2021 07:55:25 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Aili Yao <yaoaili@kingsoft.com>
-CC:     =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
-Subject: RE: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Thread-Topic: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Thread-Index: AQHXCnz5ja9ELypBUEatGW66U99st6pnoa2AgAEgN4CAAIHfAIAAAyEAgAAQXwD//9g7gIABDSmAgAALNoCAB2DqAIAAiu0AgABOzQD//+3L0IABObiAgAAiT4CAACi3AIAAmjmAgACgEACAAGnOwA==
-Date:   Fri, 5 Mar 2021 15:55:25 +0000
-Message-ID: <aee5176eafb54c88b19a5b2671d0a1fc@intel.com>
-References: <20210225181542.GA178925@agluck-desk2.amr.corp.intel.com>
-        <20210226021907.GA27861@hori.linux.bs1.fc.nec.co.jp>
-        <20210226105915.6cf7d2b8@alex-virtual-machine>
-        <20210303033953.GA205389@agluck-desk2.amr.corp.intel.com>
-        <20210303115710.2e9f8e23@alex-virtual-machine>
-        <20210303163912.3d508e0f@alex-virtual-machine>
-        <1a78e9abdc134e35a5efcbf6b2fd2263@intel.com>
-        <20210304101653.546a9da1@alex-virtual-machine>
-        <20210304121941.667047c3@alex-virtual-machine>
-        <20210304144524.795872d7@alex-virtual-machine>
-        <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
- <20210305093016.40c87375@alex-virtual-machine>
-In-Reply-To: <20210305093016.40c87375@alex-virtual-machine>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
+        id S230405AbhCEP4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:56:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229631AbhCEPzu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 10:55:50 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899A5C061574;
+        Fri,  5 Mar 2021 07:55:49 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 1F24142037;
+        Fri,  5 Mar 2021 15:55:40 +0000 (UTC)
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-13-marcan@marcan.st>
+ <CAHp75VdGYDDCRBRmd3O3Mt1opgDdwuRBoS1E=vaVc45h9eR-0w@mail.gmail.com>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
+ MMIO as non-posted
+Message-ID: <04ea35d6-cd7d-d6de-75ae-59b1e0c77f04@marcan.st>
+Date:   Sat, 6 Mar 2021 00:55:39 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <CAHp75VdGYDDCRBRmd3O3Mt1opgDdwuRBoS1E=vaVc45h9eR-0w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From the walk, it seems we have got the virtual address, can we just send a SIGBUS with it?
+On 06/03/2021 00.13, Andy Shevchenko wrote:
+>> @@ -896,7 +899,10 @@ void __iomem *of_iomap(struct device_node *np, int index)
+>>          if (of_address_to_resource(np, index, &res))
+>>                  return NULL;
+>>
+>> -       return ioremap(res.start, resource_size(&res));
+>> +       if (res.flags & IORESOURCE_MEM_NONPOSTED)
+>> +               return ioremap_np(res.start, resource_size(&res));
+>> +       else
+>> +               return ioremap(res.start, resource_size(&res));
+> 
+> This doesn't sound right. Why _np is so exceptional? Why don't we have
+> other flavours (it also rings a bell to my previous comment that the
+> flag in ioresource is not in the right place)?
 
-If the walk wins the race and the pte for the poisoned page is still valid, then yes.
+This is different from other variants, because until now *drivers* have 
+made the choice of what ioremap mode to use based on device requirements 
+(which means ioremap() 99% of the time, and then framebuffers and other 
+memory-ish things such use something else). Now we have a *SoC fabric* 
+that is calling the shots on what ioremap mode we have to use - and 
+*every* non-PCIe driver needs to use ioremap_np() on these SoCs, or they 
+break. So it seems a lot cleaner to make the choice for drivers here to 
+upgrade ioremap() to ioremap_np() for SoCs that need it.
 
-But we could have:
+If we don't do something like this here or in otherwise common code, 
+we'd have to have an open-coded "if apple then ioremap_np, else ioremap" 
+in every driver that runs on-die devices on these SoCs, even ones that 
+are otherwise standard and need few or no Apple-specific quirks.
 
-CPU1                            CPU2
-memory_failure sets poison
-bit for struct page
+We're still going to have to patch some drivers to use managed APIs that 
+can properly hit this conditional (like I did for samsung_tty) in cases 
+where they currently don't, but that's a lot cleaner than an open-coded 
+conditional, I think (and often comes with other benefits anyway).
 
+Note that wholesale making ioremap() behave like ioremap_np() at the 
+arch level as as SoC quirk is not an option - for extenal PCIe devices, 
+we still need to use ioremap(). We tried this approach initially but it 
+doesn't work. Hence we arrived at this solution which describes the 
+required mode in the devicetree, at the bus level (which makes sense, 
+since that represents the fabric), and then these wrappers can use that 
+information, carried over via the bit in struct device, to pick the 
+right ioremap mode.
 
-rmap finds page in task
-on CPU2 and sets PTE
-to not-valid-poison
+It doesn't really make sense to include the other variants here, because 
+_np is strictly stronger than the default. Downgrading ioremap to any 
+other variant would break most drivers, badly. However, upgrading to 
+ioremap_np() is always correct (if possibly slower), on platforms where 
+it is allowed by the bus. In fact, I bet that on many systems nGnRE 
+already behaves like nGnRnE anyway. I don't know why Apple didn't just 
+allow nGnRE mappings to work (behaving like nGnRnE) instead of making 
+them explode, which is the whole reason we have to do this.
 
-                                memory_failure returns
-                                early because struct page
-                                already marked as poison
+>> +       while (node) {
+>> +               if (!of_property_read_bool(node, "ranges")) {
+>> +                       break;
+>> +               } else if (of_property_read_bool(node, "nonposted-mmio")) {
+>> +                       of_node_put(node);
+>> +                       return true;
+>> +               } else if (of_property_read_bool(node, "posted-mmio")) {
+>> +                       break;
+>> +               }
+>> +               parent = of_get_parent(node);
+>> +               of_node_put(node);
+>> +               node = parent;
+>> +       }
+> 
+> I believe above can be slightly optimized. Don't we have helpers to
+> traverse to all parents?
 
-                                walk page tables looking
-                                for mapping - don't find it
+Keep in mind the logic here is that it stops on the first instance of 
+either property, and does not traverse non-translatable boundaries. Are 
+there helpers that can implement this kind of complex logic? It's not a 
+simple recursive property lookup.
 
--Tony
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
