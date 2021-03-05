@@ -2,113 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6DA32EF3C
+	by mail.lfdr.de (Postfix) with ESMTP id C6A5132EF3D
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:43:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230474AbhCEPnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:43:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
+        id S231140AbhCEPnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:43:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbhCEPmv (ORCPT
+        with ESMTP id S230238AbhCEPm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:42:51 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B793DC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 07:42:50 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id h9so2005923qtq.7
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 07:42:50 -0800 (PST)
+        Fri, 5 Mar 2021 10:42:59 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55F1C061574;
+        Fri,  5 Mar 2021 07:42:58 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id n10so1636638pgl.10;
+        Fri, 05 Mar 2021 07:42:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0yV7w8lFfqbTYmvCeqaDZrkMh+QKf4ua1fYumR1UcKc=;
-        b=F6SAI2tnULetz3th26nEFSei84A+5/Gay++NqJcsy0GFDLlWIIsqXy2OuBCr6X8SVj
-         h02R5IOAhuvDQDalhmwrws3iQJJy8gPPXxshlmBbcXT2B/ebFBdjA9NbXyyWfw7w0SMA
-         ZWTCuEb+r5LYLR8gJj/5R8u3QTTfBfmFq33iw=
+        bh=CSHLnWcInXS8d/+eWfNq/rovaytTvgGUCx8rTCABjwo=;
+        b=Q6cgOd9+PW95fgOSIwh3v6mB4AGEa0B6tlhZkhDOtd/OmNsg74KZspH7gvqeGDjYE9
+         MpVwE+QJANvJa7A2RIMrgJLHQj7vPjl6/GMuEi0dFXtC034wCS/XfYATmBeCbJHsfjbO
+         pRLf4eWX+sLzStsZc8F3EP1T70ekXpcltegkXp6+c9y4s0nU3GBRsHxGpbzEvr+gXRwP
+         VDrXEWyUty9q9b3RL7EG03thM0nn/fFfr6mCpz+zKwQIsO2/8zMSZB7DJg1MY1WWi8KR
+         x8kii1WcPZTw1TiusGkGz2WuFx19GZEDAVcm7GGTH54BoPf4cxuEjmfnKqTPUUwy4GLw
+         kWKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0yV7w8lFfqbTYmvCeqaDZrkMh+QKf4ua1fYumR1UcKc=;
-        b=BHupi0SdZ3K9lso0v37ASo2ZcM7m/fDAC3HQbg/IyeBLmUBotAP8bkOCUUNkLVbqpT
-         8SkpbFGogYXJKzmYQmn6HlQLLLUhR5lVfHK8OKRYGowXVnxQEx8ONVicZhgGpUDbxmu3
-         tvJbpt93vp+Hewm/in4B2lwRxUmxqU/Brmzi9CeNRF9thqWqD17VO2CBU5q1VpfgSH17
-         9uXZw98QsyAL7n3FhsUReEqqYINbHDy0zasS63pAnqmoqRXqCPxJohMYFjUBbcGtypdi
-         1R2manxnz9Gy6EeDSvH6OzRhfPz1n6LA+SFnG4qFyqs1iKeZqimwkR9lNavw2Ea8EydK
-         Gf5w==
-X-Gm-Message-State: AOAM530e6OIUipTmHjLHDtJQJg4sDwZwP4gI/EEe/ozZ8M5TVPDeYDc2
-        zH5MIv+Ixo9aUsagD2e4nGPjLd0TXhbI5g==
-X-Google-Smtp-Source: ABdhPJwnPsC2G+pJsezu1S39Bq9hiV0H/t5H0BlSFufRZJ1OmFZizFaQCpEFi9cIRhXw8GoTJY6poA==
-X-Received: by 2002:a05:622a:18c:: with SMTP id s12mr9628196qtw.131.1614958969589;
-        Fri, 05 Mar 2021 07:42:49 -0800 (PST)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id e21sm2070576qtw.63.2021.03.05.07.42.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 07:42:48 -0800 (PST)
-Received: by mail-yb1-f175.google.com with SMTP id n195so2370203ybg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 07:42:47 -0800 (PST)
-X-Received: by 2002:a25:ab54:: with SMTP id u78mr15215866ybi.276.1614958967269;
- Fri, 05 Mar 2021 07:42:47 -0800 (PST)
+        bh=CSHLnWcInXS8d/+eWfNq/rovaytTvgGUCx8rTCABjwo=;
+        b=X20yiKD3JdTZFwUkyQnrQCyxoWKkNpknHiCAJsQx7LKl3dMp9Znl3bFK7L5V9xaIUo
+         AINRTNQTOqziIcwSU/I28SHgztUmmxTp7D2a4oO/4sOJdtTFW1WvUviFYuV84EtMcG6P
+         pK3tHJdTq3kuuvccZwwFPKkmHjytUNI2GQFnmITvoTjVMpaA5mY8AgCC7qeVdanel8XV
+         ePmL/zPWb1feI/r5sEh5bHGcrbs6t6qO5v9kEmhoAn7AwNoi9pEYglwEU5IzRgUPX75p
+         xCNBOOSHZrYb242i7JFe7m0at7H5fZAV5ReXUh0X6fYwYubZNyI7tGroQEnuIjRYTseW
+         RCPQ==
+X-Gm-Message-State: AOAM531EFs+frRRxeab2xcIXl8q4gmoDOXdzh+ZWERh0QtmPVtYHohBG
+        anpyPI/0ULksZ3bVwy1Ee1pM73xJb2u+1qTQjAM=
+X-Google-Smtp-Source: ABdhPJzEvDuqfGXpMPv9yZMTt2z8O48JoGtdBK7b7CnHZg9VTPk5oEI/NHffyzF5Ll6hZdh+jgkY0GZ9mS9DzK3mPDo=
+X-Received: by 2002:a65:4c08:: with SMTP id u8mr9008742pgq.203.1614958978437;
+ Fri, 05 Mar 2021 07:42:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20210115224420.1635017-1-dianders@chromium.org>
-In-Reply-To: <20210115224420.1635017-1-dianders@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 5 Mar 2021 07:42:35 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=Vwgd0FeKThVRHQjne9npRjojAWpkY4O4nXr=_vDcEK9g@mail.gmail.com>
-Message-ID: <CAD=FV=Vwgd0FeKThVRHQjne9npRjojAWpkY4O4nXr=_vDcEK9g@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] drm/panel-simple: Patches for N116BCA-EA1
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210302163309.25528-1-henning.schild@siemens.com>
+ <20210302163309.25528-2-henning.schild@siemens.com> <CAHp75VfDDGxdhP0-yKOCJyJ_+Y2Zu3TmOdvUJmEZ0AvQnceV6A@mail.gmail.com>
+ <2fad304a-9e1e-c83d-7a9e-02b35ed22418@redhat.com>
+In-Reply-To: <2fad304a-9e1e-c83d-7a9e-02b35ed22418@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 5 Mar 2021 17:42:42 +0200
+Message-ID: <CAHp75VfB8v1n3Hav_oMqG0k4C31NBEUe082i8NrrOGUbSgoESw@mail.gmail.com>
+Subject: Re: [PATCH 1/4] platform/x86: simatic-ipc: add main driver for
+ Siemens devices
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Henning Schild <henning.schild@siemens.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Pavel Machek <pavel@ucw.cz>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks,
+On Thu, Mar 4, 2021 at 3:47 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> On 3/4/21 11:11 AM, Andy Shevchenko wrote:
+> > On Thu, Mar 4, 2021 at 8:36 AM Henning Schild
+> > <henning.schild@siemens.com> wrote:
 
-On Fri, Jan 15, 2021 at 2:44 PM Douglas Anderson <dianders@chromium.org> wrote:
->
-> This series is to get the N116BCA-EA1 panel working. Most of the
-> patches are simple, but on hardware I have in front of me the panel
-> sometimes doesn't come up. I'm still working with the hardware
-> manufacturer to get to the bottom of it, but I've got it working with
-> retries. Adding the retries doesn't seem like an insane thing to do
-> and makes some of the error handling more robust, so I've gone ahead
-> and included those patches here. Hopefully they look OK.
->
-> Changes in v2:
-> - Set the "unprepared_time" so if we retry we give the proper delay.
-> - ("drm/panel-simple: Don't wait longer for HPD...") new for v2.
-> - ("drm/panel-simple: Retry if we timeout waiting for HPD") new for v2.
-> - ("dt-bindings: dt-bindings: display: simple: Add N116BCA-EA1") new for v2.
-> - ("drm/panel-simple: Add N116BCA-EA1") new for v2.
->
-> Douglas Anderson (5):
->   drm/panel-simple: Undo enable if HPD never asserts
->   drm/panel-simple: Don't wait longer for HPD than hpd_absent_delay
->   drm/panel-simple: Retry if we timeout waiting for HPD
->   dt-bindings: dt-bindings: display: simple: Add N116BCA-EA1
->   drm/panel-simple: Add N116BCA-EA1
->
->  .../bindings/display/panel/panel-simple.yaml  |  2 +
->  drivers/gpu/drm/panel/panel-simple.c          | 84 +++++++++++++++++--
->  2 files changed, 80 insertions(+), 6 deletions(-)
+...
 
-While this isn't massively urgent, I'm hoping to get some confirmation
-that it's still in someone's queue to look at.  A quick "it's still in
-my queue" would be much appreciated!  :-)  If I don't hear anything
-then I guess next week I'll see if I can find other ways to poke folks
-or find a different route to land this series.  Thanks!
+> >> +u32 simatic_ipc_get_membase0(unsigned int p2sb)
+> >> +{
+> >> +       u32 bar0 = 0;
+> >
+> >> +#ifdef CONFIG_PCI
+> >
+> > It's ugly besides the fact that you have a dependency.
+> >
+> >> +       struct pci_bus *bus;
+> >
+> > Missed blank line.
+> >
+> >> +       /*
+> >> +        * The GPIO memory is bar0 of the hidden P2SB device. Unhide the device
+> >> +        * to have a quick look at it, before we hide it again.
+> >> +        * Also grab the pci rescan lock so that device does not get discovered
+> >> +        * and remapped while it is visible.
+> >> +        * This code is inspired by drivers/mfd/lpc_ich.c
+> >> +        */
+> >> +       bus = pci_find_bus(0, 0);
+> >> +       pci_lock_rescan_remove();
+> >> +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x0);
+> >> +       pci_bus_read_config_dword(bus, p2sb, PCI_BASE_ADDRESS_0, &bar0);
+> >> +
+> >> +       bar0 &= ~0xf;
+> >> +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x1);
+> >> +       pci_unlock_rescan_remove();
+> >> +#endif /* CONFIG_PCI */
+> >> +       return bar0;
+> >> +}
+> >> +EXPORT_SYMBOL(simatic_ipc_get_membase0);
+> >
+> > Oy vey! I know what this is and let's do it differently. I have some
+> > (relatively old) patch series I can send you privately for testing.
+>
+> This bit stood out the most to me too, it would be good if we can this fixed
+> in some cleaner work. So I'm curious how things will look with Andy's work
+> integrated.
+>
+> Also I don't think this should be exported. Instead this (or its replacement)
+> should be used to get the address for an IOMEM resource to add the platform
+> devices when they are instantiated. Then the platform-dev drivers can just
+> use the regular functions to get their resources instead of relying on this
+> module.
 
--Doug
+I have published a WIP branch [1]. I have no means to test (I don't
+know what hardware at hand I can use right now), but I made it compile
+after 4 years of gathering dust...
+Feel free to give any kind of comments or share your ideas on how it
+can be improved (the above idea on IOMEM resource is interesting, but
+devices are PCI, not sure how this can be done).
+
+[1]: https://gitlab.com/andy-shev/next/-/tree/p2sb
+
+-- 
+With Best Regards,
+Andy Shevchenko
