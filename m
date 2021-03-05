@@ -2,118 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB49132F6C6
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:45:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 086B932F6C7
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:48:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbhCEXpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 18:45:22 -0500
-Received: from smtpcmd02106.aruba.it ([62.149.158.106]:46398 "EHLO
-        smtpcmd15181.aruba.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229801AbhCEXoo (ORCPT
+        id S230192AbhCEXqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 18:46:17 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:33397 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230250AbhCEXqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 18:44:44 -0500
-Received: from ubuntu.localdomain ([146.241.168.111])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id IK7Ql1dnx4WhhIK7floTLO; Sat, 06 Mar 2021 00:44:43 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1614987883; bh=SIOYQ2xjUG3T56x4cQhDycFmuvk7vJhIG1eUTJlGBYE=;
-        h=From:To:Subject:Date:MIME-Version;
-        b=GCVkgstoZzsubT5ho/VjkvWZwYo9Ivh84bTeoMJ3ENB4Hd7bctw3R67VnH/SSmmCa
-         k2fa7SpobCSZLe4er6skts+I42HDHNuNfTJCXCoFxXH+Y9CgfxCz3ncWEjZrCzihCG
-         nW+kT8p7prssbQhOfAGYkGYcfYyQuSQYJJipp00gg5TWlZ/hBYCBr603VQsSBJZvYF
-         bmu4mqK7QNyl8juAPO5mArfpm8343tFp4nhKT/AwJHiRfX1jtnpYCo6d2bliZ/X2yc
-         4oIUUTAFto9+TLXVOkxP3EwRSU/wlPByS7AC6oyRURSUsS1wAJdR7jsNZLY63EsUJQ
-         HcVvfkTV9Mgpg==
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Daniel Palmer <daniel@0x0f.com>, allen <allen.chen@ite.com.tw>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Giulio Benetti <giulio.benetti@micronovasrl.com>
-Subject: [PATCH v2 9/9] drm/panel: simple: add Jenson JT60250-02
-Date:   Sat,  6 Mar 2021 00:44:26 +0100
-Message-Id: <20210305234427.572114-10-giulio.benetti@benettiengineering.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210305234427.572114-1-giulio.benetti@benettiengineering.com>
-References: <20210305225444.GA792026@robh.at.kernel.org>
- <20210305234427.572114-1-giulio.benetti@benettiengineering.com>
+        Fri, 5 Mar 2021 18:46:05 -0500
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 6C2BD22172;
+        Sat,  6 Mar 2021 00:46:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1614987964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=eN73zw785LDN9Maeb4EKVdz3vl/qy3K7dluHlBvPFMk=;
+        b=C21hvFv5AvHFAKzlLETGUAPy+zSKh7Gbr9wZeOEcMLzMI0wxnGDaurc3hoPxM5dvbsryi/
+        pR9HFxa9aBByDCZBvCIUMWvR+plslxrddbYSMwpBQ4Fypwd2QSlRwU3XapccSQWxyNWX9E
+        KY2TaCucxZXx0wP+pTp0CxN6rsXhNvU=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH] mtd: spi-nor: use is_power_of_2()
+Date:   Sat,  6 Mar 2021 00:45:52 +0100
+Message-Id: <20210305234552.19204-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfJJICPsYTIQqANHNAY9JioPU95qdZp7ybyeIBAmJIwL39BzuorocT3L2d748Dycpgo4ZvSTyxlkVU59j9Ba+GDLcT5p2is6Isq1NvY0Or0eSpQk6By6z
- bIIEWHcoV0wM/YJPNLs8nsh/MBAVH9OYQwBUnNAaS6/BXEVFUiiL85mtcYNqpvNQsQHUbdcqaCdzAFG63uCK56aZ6XtvZJrQUEPZPbijFmApBwSM1ReLAc6y
- 3AR7nkgm4bU4fCCo1re79tXxvpcwt0pbIskoyZgOW9TwPzvN7WWyXCCw7moY0P/7h3lmrTdX5lRfnRCd6G+wpJMVQtRskJZtPiiGnWHTmLogcp9No7bW0mrK
- 5aSV5YUy380MGnXd6bldc9RWGE/8Qb7JqegcF11RvqigMZ1yijoISIPJegMr2m4udG4IyIjSE/C6yw1gwMUpF20pZxIHIsgba+ASvxmSJj5Njr8HqYTibNVm
- QU2a0CTEYyoVsP4SmHW1wFkr60XdlwT8GfvFwxv5p8ytN24QcWWXGpU5waSuRDHCK++xb/9b8hu6WNvtIHd6CkvwFH+WsgEknzBTmt5AsA26x3EjGJ5UuTRm
- H8b9EiIKo4bwXG/S0OHoaAUfIpM3OM9zf5qeuWzR/qwWiZeQ4SIbszTFqqRbf/R4X1cW+/tRNGMvZKPBEEQ6+6cigGyNMMpZgn+BEEUp9HYjASjM+2587s1q
- YtUKEI/H0rLgG+Qy+fpvQWjCdG1t1j9rpWTk6WRB3mv9qh8ENGIxyg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giulio Benetti <giulio.benetti@micronovasrl.com>
+There is already a function to check if an integer is a power of 2. Use
+it.
 
-This patch adds support for Jenson JT60250-02 1024x600 10.1" panel to DRM
-simple panel driver.
-
-Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
+Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/gpu/drm/panel/panel-simple.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/mtd/spi-nor/core.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 1966ace764c3..2ebfe529e0c7 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -2604,6 +2604,30 @@ static const struct panel_desc jenson_jt60249_01 = {
- 	.bus_flags = DRM_BUS_FLAG_PIXDATA_SAMPLE_NEGEDGE,
- };
- 
-+static const struct drm_display_mode jenson_jt60250_02_mode = {
-+	.clock = 51000,
-+	.hdisplay = 1024,
-+	.hsync_start = 1024 + 160,
-+	.hsync_end = 1204 + 160 + 10,
-+	.htotal = 1024 + 160 + 10 + 160,
-+	.vdisplay = 600,
-+	.vsync_start = 600 + 12,
-+	.vsync_end = 600 + 12 + 70,
-+	.vtotal = 600 + 12 + 70 + 23,
-+	.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-+};
-+
-+static const struct panel_desc jenson_jt60250_02 = {
-+	.modes = &jenson_jt60250_02_mode,
-+	.num_modes = 1,
-+	.bpc = 8,
-+	.size = {
-+		.width = 223,
-+		.height = 125,
-+	},
-+	.bus_flags = DRM_BUS_FLAG_PIXDATA_SAMPLE_NEGEDGE,
-+};
-+
- static const struct drm_display_mode kingdisplay_kd116n21_30nv_a010_mode = {
- 	.clock = 81000,
- 	.hdisplay = 1366,
-@@ -4382,6 +4406,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "jenson,jt60249-01",
- 		.data = &jenson_jt60249_01,
-+	}, {
-+		.compatible = "jenson,jt60250-02",
-+		.data = &jenson_jt60250_02,
- 	}, {
- 		.compatible = "kingdisplay,kd116n21-30nv-a010",
- 		.data = &kingdisplay_kd116n21_30nv_a010,
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 0522304f52fa..4a315cb1c4db 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2336,11 +2336,8 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		 * If page_size is a power of two, the offset can be quickly
+ 		 * calculated with an AND operation. On the other cases we
+ 		 * need to do a modulus operation (more expensive).
+-		 * Power of two numbers have only one bit set and we can use
+-		 * the instruction hweight32 to detect if we need to do a
+-		 * modulus (do_div()) or not.
+ 		 */
+-		if (hweight32(nor->page_size) == 1) {
++		if (is_power_of_2(nor->page_size)) {
+ 			page_offset = addr & (nor->page_size - 1);
+ 		} else {
+ 			uint64_t aux = addr;
 -- 
-2.25.1
+2.20.1
 
