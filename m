@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FDC32EF84
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DCF32EFB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:10:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhCEQAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 11:00:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53067 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229517AbhCEQAU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 11:00:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614960019;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tMFDf9/VQqzgB3HMa/pgJ1GSD4Q0k9QkIQ3iQdoAib0=;
-        b=YpT4yT7v7tQxCEvqpJ4Eo00+95PgK+lZxmAM11ugBkchEryCFhSSIN8RBgJIMfeDWUyFlC
-        48ALPnT3+a743GBKfTM//5Vg2Mx9Pdvg6wvLUay11n/V4byhx9St0MBE2a7vlkDmnsBs2/
-        HJRNi7I+uNQ+J6s7M/5H3MmcuLvVANE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-459-PKFWD34XOImkvUENlYeWug-1; Fri, 05 Mar 2021 11:00:15 -0500
-X-MC-Unique: PKFWD34XOImkvUENlYeWug-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 213021005D4F;
-        Fri,  5 Mar 2021 16:00:12 +0000 (UTC)
-Received: from [10.10.112.212] (ovpn-112-212.rdu2.redhat.com [10.10.112.212])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EFD7218AD6;
-        Fri,  5 Mar 2021 16:00:10 +0000 (UTC)
-Subject: Re: [PATCH V2] docs: livepatch: Fix a typo and remove the unnecessary
- gaps in a sentence
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>, jpoimboe@redhat.com,
-        jikos@kernel.org, mbenes@suse.cz, pmladek@suse.com, corbet@lwn.net,
-        live-patching@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-References: <20210305100923.3731-1-unixbhaskar@gmail.com>
- <20210305125600.GM2723601@casper.infradead.org> <YEI0EcR5G53IoYzb@Gentoo>
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-Message-ID: <f8b10ee7-026c-1dc0-fb0c-2a887cd1e953@redhat.com>
-Date:   Fri, 5 Mar 2021 11:00:10 -0500
+        id S230191AbhCEQKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 11:10:07 -0500
+Received: from mga04.intel.com ([192.55.52.120]:13875 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230525AbhCEPmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 10:42:03 -0500
+IronPort-SDR: h+hvCEIS5InekBwwtEUf9sfVt7rSC2alLX0EG+1u7b2u2aHLYP4P8UX+Y+nudA2mZu0BAakgFI
+ PK0JbOFg5Cyw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="185262821"
+X-IronPort-AV: E=Sophos;i="5.81,225,1610438400"; 
+   d="scan'208";a="185262821"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 07:41:59 -0800
+IronPort-SDR: 2yGt/3QzPDUR/vFTYp9fAGjodIvlP+jFUdJ2O2BL4z7B2UaB1DFgd+rO17jcCnz0etf70GBbhR
+ FpRkAYw2GQkw==
+X-IronPort-AV: E=Sophos;i="5.81,225,1610438400"; 
+   d="scan'208";a="408343831"
+Received: from luetzenk-mobl.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.43.131])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 07:41:53 -0800
+Subject: Re: [PATCH] tools/memory-model: Fix smp_mb__after_spinlock() spelling
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+References: <20210305102823.415900-1-bjorn.topel@gmail.com>
+ <20210305153655.GC38200@rowland.harvard.edu>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <e90fee12-a29e-cddb-5db3-24d92d4e03f8@intel.com>
+Date:   Fri, 5 Mar 2021 16:41:49 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YEI0EcR5G53IoYzb@Gentoo>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20210305153655.GC38200@rowland.harvard.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/5/21 8:37 AM, Bhaskar Chowdhury wrote:
-> On 12:56 Fri 05 Mar 2021, Matthew Wilcox wrote:
->> On Fri, Mar 05, 2021 at 03:39:23PM +0530, Bhaskar Chowdhury wrote:
->>> s/varibles/variables/
->>>
->>> ...and remove leading spaces from a sentence.
+On 2021-03-05 16:36, Alan Stern wrote:
+> On Fri, Mar 05, 2021 at 11:28:23AM +0100, Björn Töpel wrote:
+>> From: Björn Töpel <bjorn.topel@intel.com>
 >>
->> What do you mean 'leading spaces'?  Separating two sentences with
->> one space or two is a matter of personal style, and we do not attempt
->> to enforce a particular style in the kernel.
->>
-> The spaces before the "In" .. nor I am imposing anything , it was peter caught
-> and told me that it is hanging ..move it to the next line ..so I did. ..
+>> A misspelled invokation of git-grep, revealed that
+> -------------------^
 > 
+> Smetimes my brain is a little slow...  Do you confirm that this is a
+> joke?
+>
 
-Initially I thought the same as Matthew, but after inspecting the diff I 
-realized it was just a line wrap.  Looks fine to me.
+I wish, Alan. I wish.
 
->>>   Sometimes it may not be convenient or possible to allocate shadow
->>>   variables alongside their parent objects.  Or a livepatch fix may
->>> -require shadow varibles to only a subset of parent object instances.  In
->>> +require shadow variables to only a subset of parent object instances.
->>
->> wrong preposition, s/to/for/    ..where???
+Looks like I can only spel function names correctly.
 
-Hi Bhaskar,
 
-Thanks for spotting, I'd be happy with v2 as is or a v3 if you want to 
-update s/shadow variables to only/shadow variables for only/  but 
-knowing me, I probably repeated the same phrasing elsewhere.  Up to you, 
-thanks.
+Have a nice weekend!
+Björn
 
-Acked-by: Joe Lawrence <joe.lawrence@redhat.com>
 
--- Joe
-
+> Alan
+> 
