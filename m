@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1431932E980
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABC332EA89
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhCEMdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:33:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43026 "EHLO mail.kernel.org"
+        id S233263AbhCEMjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:39:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231299AbhCEMc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:32:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB4EF6501A;
-        Fri,  5 Mar 2021 12:32:27 +0000 (UTC)
+        id S232830AbhCEMi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:38:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BFB46501D;
+        Fri,  5 Mar 2021 12:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947548;
-        bh=41gEd6++g7CldqoBzWI5DQiF/iGGyUIeaooAlXSFWlE=;
+        s=korg; t=1614947904;
+        bh=QKlhfge7VBouI/yVxkROOjTtlX5LpXm6OJM/jBXLAA0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v+KsOa+9ap8IzoUlcktGfxg059Z0KWwevyZdvlI0HH3iDqMFQzznuQ4oTx1daPo8H
-         5F5Y17PxmmXInM4UUh/pHWVnUeY0yGy6lckGMtNOvomXprsYul9CFQ2qAeo7aIzy4i
-         +S5XayiCYfsm3dAbPURVoJ/byI/XyFWwm/rpumxA=
+        b=cvOzxHzFRU8ZDK175lxuZ4Pit+61q9yrmG4/TU94huARtOtmt+WzABRk1KUmDeyFD
+         RXQLyQu8AwjII5gSzszUCYfLceqN4feZZk/LixK921eWqFcgQMH8a2ucdeBkm052L0
+         LCu7KEzaDJhRqLC/4zzkgJnEH2cPtwEkr0sxSCJk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 102/102] ALSA: hda/realtek: Apply dual codec quirks for MSI Godlike X570 board
+        stable@vger.kernel.org,
+        Christian Gromm <christian.gromm@microchip.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 30/52] staging: most: sound: add sanity check for function argument
 Date:   Fri,  5 Mar 2021 13:22:01 +0100
-Message-Id: <20210305120908.298719006@linuxfoundation.org>
+Message-Id: <20210305120855.157148641@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+References: <20210305120853.659441428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,32 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Christian Gromm <christian.gromm@microchip.com>
 
-commit 26af17722a07597d3e556eda92c6fce8d528bc9f upstream.
+[ Upstream commit 45b754ae5b82949dca2b6e74fa680313cefdc813 ]
 
-There is another MSI board (1462:cc34) that has dual Realtek codecs,
-and we need to apply the existing quirk for fixing the conflicts of
-Master control.
+This patch checks the function parameter 'bytes' before doing the
+subtraction to prevent memory corruption.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211743
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210303142346.28182-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Christian Gromm <christian.gromm@microchip.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/1612282865-21846-1-git-send-email-christian.gromm@microchip.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/staging/most/sound/sound.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2532,6 +2532,7 @@ static const struct snd_pci_quirk alc882
- 	SND_PCI_QUIRK(0x1462, 0x1276, "MSI-GL73", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1293, "MSI-GP65", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
-+	SND_PCI_QUIRK(0x1462, 0xcc34, "MSI Godlike X570", ALC1220_FIXUP_GB_DUAL_CODECS),
- 	SND_PCI_QUIRK(0x1462, 0xda57, "MSI Z270-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
- 	SND_PCI_QUIRK_VENDOR(0x1462, "MSI", ALC882_FIXUP_GPIO3),
- 	SND_PCI_QUIRK(0x147b, 0x107a, "Abit AW9D-MAX", ALC882_FIXUP_ABIT_AW9D_MAX),
+diff --git a/drivers/staging/most/sound/sound.c b/drivers/staging/most/sound/sound.c
+index 89b02fc305b8..fd9245d7eeb9 100644
+--- a/drivers/staging/most/sound/sound.c
++++ b/drivers/staging/most/sound/sound.c
+@@ -86,6 +86,8 @@ static void swap_copy24(u8 *dest, const u8 *source, unsigned int bytes)
+ {
+ 	unsigned int i = 0;
+ 
++	if (bytes < 2)
++		return;
+ 	while (i < bytes - 2) {
+ 		dest[i] = source[i + 2];
+ 		dest[i + 1] = source[i + 1];
+-- 
+2.30.1
+
 
 
