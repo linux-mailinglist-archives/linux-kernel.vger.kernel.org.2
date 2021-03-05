@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D54232EB6D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DEB32EB1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234056AbhCEMoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:44:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60896 "EHLO mail.kernel.org"
+        id S233573AbhCEMmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:42:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233876AbhCEMnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:43:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 698EA6506A;
-        Fri,  5 Mar 2021 12:43:31 +0000 (UTC)
+        id S231419AbhCEMld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:41:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD7176501F;
+        Fri,  5 Mar 2021 12:41:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948212;
-        bh=xVthJ8vh+TAIvwNo6q1w8ElAyel5+MWuPG+ohaC3WCk=;
+        s=korg; t=1614948093;
+        bh=THECPWbjLSGXouHoFpAS+LioW/esMkbcAromSz3Gjvs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d3nyhRjn9hrtnaY1rKa91C8lVixSj/HpwSgqf2HOK3hv4LoMznQVn0jivMqsrRAOr
-         z2kgh8z2SdHrocwKfuSLOFTk4EiqobafnHAbmogqY/jd/71ZJ3hbKHC5CXztPINabk
-         cFN/zyoQ1SWdI5dsHYU7EmqV4nSw8VL6Tb+u0q+g=
+        b=iWogRRtspOOEyVbhV0QvaZRVVvnUBqx1WHZY92sqYENo3s5ArFitruC5KG3ItPV0v
+         vKrzvIemQ2lH+Q4jiQL/YmOiyb1KrpdXEKj70JmV4pMD/5D1Nuzw5GUH0VVdtn2i3E
+         ZxP6AOg5ljMiH1ATmToymhjHqKFb/ZGuoaKmP9jY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Frank Li <Frank.Li@nxp.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4.4 04/30] mmc: sdhci-esdhc-imx: fix kernel panic when remove module
+        stable@vger.kernel.org, Raz Bouganim <r-bouganim@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 26/41] wlcore: Fix command execute failure 19 for wl12xx
 Date:   Fri,  5 Mar 2021 13:22:33 +0100
-Message-Id: <20210305120849.614162821@linuxfoundation.org>
+Message-Id: <20210305120852.573830300@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120849.381261651@linuxfoundation.org>
-References: <20210305120849.381261651@linuxfoundation.org>
+In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
+References: <20210305120851.255002428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,84 +41,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Li <Frank.Li@nxp.com>
+From: Tony Lindgren <tony@atomide.com>
 
-commit a56f44138a2c57047f1ea94ea121af31c595132b upstream.
+[ Upstream commit cb88d01b67383a095e3f7caeb4cdade5a6cf0417 ]
 
-In sdhci_esdhc_imx_remove() the SDHCI_INT_STATUS in read. Under some
-circumstances, this may be done while the device is runtime suspended,
-triggering the below splat.
+We can currently get a "command execute failure 19" error on beacon loss
+if the signal is weak:
 
-Fix the problem by adding a pm_runtime_get_sync(), before reading the
-register, which will turn on clocks etc making the device accessible again.
+wlcore: Beacon loss detected. roles:0xff
+wlcore: Connection loss work (role_id: 0).
+...
+wlcore: ERROR command execute failure 19
+...
+WARNING: CPU: 0 PID: 1552 at drivers/net/wireless/ti/wlcore/main.c:803
+...
+(wl12xx_queue_recovery_work.part.0 [wlcore])
+(wl12xx_cmd_role_start_sta [wlcore])
+(wl1271_op_bss_info_changed [wlcore])
+(ieee80211_prep_connection [mac80211])
 
-[ 1811.323148] mmc1: card aaaa removed
-[ 1811.347483] Internal error: synchronous external abort: 96000210 [#1] PREEMPT SMP
-[ 1811.354988] Modules linked in: sdhci_esdhc_imx(-) sdhci_pltfm sdhci cqhci mmc_block mmc_core [last unloaded: mmc_core]
-[ 1811.365726] CPU: 0 PID: 3464 Comm: rmmod Not tainted 5.10.1-sd-99871-g53835a2e8186 #5
-[ 1811.373559] Hardware name: Freescale i.MX8DXL EVK (DT)
-[ 1811.378705] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-[ 1811.384723] pc : sdhci_esdhc_imx_remove+0x28/0x15c [sdhci_esdhc_imx]
-[ 1811.391090] lr : platform_drv_remove+0x2c/0x50
-[ 1811.395536] sp : ffff800012c7bcb0
-[ 1811.398855] x29: ffff800012c7bcb0 x28: ffff00002c72b900
-[ 1811.404181] x27: 0000000000000000 x26: 0000000000000000
-[ 1811.409497] x25: 0000000000000000 x24: 0000000000000000
-[ 1811.414814] x23: ffff0000042b3890 x22: ffff800009127120
-[ 1811.420131] x21: ffff00002c4c9580 x20: ffff0000042d0810
-[ 1811.425456] x19: ffff0000042d0800 x18: 0000000000000020
-[ 1811.430773] x17: 0000000000000000 x16: 0000000000000000
-[ 1811.436089] x15: 0000000000000004 x14: ffff000004019c10
-[ 1811.441406] x13: 0000000000000000 x12: 0000000000000020
-[ 1811.446723] x11: 0101010101010101 x10: 7f7f7f7f7f7f7f7f
-[ 1811.452040] x9 : fefefeff6364626d x8 : 7f7f7f7f7f7f7f7f
-[ 1811.457356] x7 : 78725e6473607372 x6 : 0000000080808080
-[ 1811.462673] x5 : 0000000000000000 x4 : 0000000000000000
-[ 1811.467990] x3 : ffff800011ac1cb0 x2 : 0000000000000000
-[ 1811.473307] x1 : ffff8000091214d4 x0 : ffff8000133a0030
-[ 1811.478624] Call trace:
-[ 1811.481081]  sdhci_esdhc_imx_remove+0x28/0x15c [sdhci_esdhc_imx]
-[ 1811.487098]  platform_drv_remove+0x2c/0x50
-[ 1811.491198]  __device_release_driver+0x188/0x230
-[ 1811.495818]  driver_detach+0xc0/0x14c
-[ 1811.499487]  bus_remove_driver+0x5c/0xb0
-[ 1811.503413]  driver_unregister+0x30/0x60
-[ 1811.507341]  platform_driver_unregister+0x14/0x20
-[ 1811.512048]  sdhci_esdhc_imx_driver_exit+0x1c/0x3a8 [sdhci_esdhc_imx]
-[ 1811.518495]  __arm64_sys_delete_module+0x19c/0x230
-[ 1811.523291]  el0_svc_common.constprop.0+0x78/0x1a0
-[ 1811.528086]  do_el0_svc+0x24/0x90
-[ 1811.531405]  el0_svc+0x14/0x20
-[ 1811.534461]  el0_sync_handler+0x1a4/0x1b0
-[ 1811.538474]  el0_sync+0x174/0x180
-[ 1811.541801] Code: a9025bf5 f9403e95 f9400ea0 9100c000 (b9400000)
-[ 1811.547902] ---[ end trace 3fb1a3bd48ff7be5 ]---
+Error 19 is defined as CMD_STATUS_WRONG_NESTING from the wlcore firmware,
+and seems to mean that the firmware no longer wants to see the quirk
+handling for WLCORE_QUIRK_START_STA_FAILS done.
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
-Cc: stable@vger.kernel.org # v4.0+
-Link: https://lore.kernel.org/r/20210210181933.29263-1-Frank.Li@nxp.com
-[Ulf: Clarified the commit message a bit]
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-[iwamatsu: adjust context]
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This quirk got added with commit 18eab430700d ("wlcore: workaround
+start_sta problem in wl12xx fw"), and it seems that this already got fixed
+in the firmware long time ago back in 2012 as wl18xx never had this quirk
+in place to start with.
+
+As we no longer even support firmware that early, to me it seems that it's
+safe to just drop WLCORE_QUIRK_START_STA_FAILS to fix the error. Looks
+like earlier firmware got disabled back in 2013 with commit 0e284c074ef9
+("wl12xx: increase minimum singlerole firmware version required").
+
+If it turns out we still need WLCORE_QUIRK_START_STA_FAILS with any
+firmware that the driver works with, we can simply revert this patch and
+add extra checks for firmware version used.
+
+With this fix wlcore reconnects properly after a beacon loss.
+
+Cc: Raz Bouganim <r-bouganim@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210115065613.7731-1-tony@atomide.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-esdhc-imx.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ti/wl12xx/main.c   |  3 ---
+ drivers/net/wireless/ti/wlcore/main.c   | 15 +--------------
+ drivers/net/wireless/ti/wlcore/wlcore.h |  3 ---
+ 3 files changed, 1 insertion(+), 20 deletions(-)
 
---- a/drivers/mmc/host/sdhci-esdhc-imx.c
-+++ b/drivers/mmc/host/sdhci-esdhc-imx.c
-@@ -1240,9 +1240,10 @@ static int sdhci_esdhc_imx_remove(struct
- 	struct sdhci_host *host = platform_get_drvdata(pdev);
- 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
- 	struct pltfm_imx_data *imx_data = pltfm_host->priv;
--	int dead = (readl(host->ioaddr + SDHCI_INT_STATUS) == 0xffffffff);
-+	int dead;
+diff --git a/drivers/net/wireless/ti/wl12xx/main.c b/drivers/net/wireless/ti/wl12xx/main.c
+index 22009e14a8fc..9bd635ec7827 100644
+--- a/drivers/net/wireless/ti/wl12xx/main.c
++++ b/drivers/net/wireless/ti/wl12xx/main.c
+@@ -648,7 +648,6 @@ static int wl12xx_identify_chip(struct wl1271 *wl)
+ 		wl->quirks |= WLCORE_QUIRK_LEGACY_NVS |
+ 			      WLCORE_QUIRK_DUAL_PROBE_TMPL |
+ 			      WLCORE_QUIRK_TKIP_HEADER_SPACE |
+-			      WLCORE_QUIRK_START_STA_FAILS |
+ 			      WLCORE_QUIRK_AP_ZERO_SESSION_ID;
+ 		wl->sr_fw_name = WL127X_FW_NAME_SINGLE;
+ 		wl->mr_fw_name = WL127X_FW_NAME_MULTI;
+@@ -672,7 +671,6 @@ static int wl12xx_identify_chip(struct wl1271 *wl)
+ 		wl->quirks |= WLCORE_QUIRK_LEGACY_NVS |
+ 			      WLCORE_QUIRK_DUAL_PROBE_TMPL |
+ 			      WLCORE_QUIRK_TKIP_HEADER_SPACE |
+-			      WLCORE_QUIRK_START_STA_FAILS |
+ 			      WLCORE_QUIRK_AP_ZERO_SESSION_ID;
+ 		wl->plt_fw_name = WL127X_PLT_FW_NAME;
+ 		wl->sr_fw_name = WL127X_FW_NAME_SINGLE;
+@@ -701,7 +699,6 @@ static int wl12xx_identify_chip(struct wl1271 *wl)
+ 		wl->quirks |= WLCORE_QUIRK_TX_BLOCKSIZE_ALIGN |
+ 			      WLCORE_QUIRK_DUAL_PROBE_TMPL |
+ 			      WLCORE_QUIRK_TKIP_HEADER_SPACE |
+-			      WLCORE_QUIRK_START_STA_FAILS |
+ 			      WLCORE_QUIRK_AP_ZERO_SESSION_ID;
  
- 	pm_runtime_get_sync(&pdev->dev);
-+	dead = (readl(host->ioaddr + SDHCI_INT_STATUS) == 0xffffffff);
- 	pm_runtime_disable(&pdev->dev);
- 	pm_runtime_put_noidle(&pdev->dev);
+ 		wlcore_set_min_fw_ver(wl, WL128X_CHIP_VER,
+diff --git a/drivers/net/wireless/ti/wlcore/main.c b/drivers/net/wireless/ti/wlcore/main.c
+index 17d32ce5d16b..a973dac456be 100644
+--- a/drivers/net/wireless/ti/wlcore/main.c
++++ b/drivers/net/wireless/ti/wlcore/main.c
+@@ -2833,21 +2833,8 @@ static int wlcore_join(struct wl1271 *wl, struct wl12xx_vif *wlvif)
  
+ 	if (is_ibss)
+ 		ret = wl12xx_cmd_role_start_ibss(wl, wlvif);
+-	else {
+-		if (wl->quirks & WLCORE_QUIRK_START_STA_FAILS) {
+-			/*
+-			 * TODO: this is an ugly workaround for wl12xx fw
+-			 * bug - we are not able to tx/rx after the first
+-			 * start_sta, so make dummy start+stop calls,
+-			 * and then call start_sta again.
+-			 * this should be fixed in the fw.
+-			 */
+-			wl12xx_cmd_role_start_sta(wl, wlvif);
+-			wl12xx_cmd_role_stop_sta(wl, wlvif);
+-		}
+-
++	else
+ 		ret = wl12xx_cmd_role_start_sta(wl, wlvif);
+-	}
+ 
+ 	return ret;
+ }
+diff --git a/drivers/net/wireless/ti/wlcore/wlcore.h b/drivers/net/wireless/ti/wlcore/wlcore.h
+index 1827546ba807..34f0ba17fac9 100644
+--- a/drivers/net/wireless/ti/wlcore/wlcore.h
++++ b/drivers/net/wireless/ti/wlcore/wlcore.h
+@@ -557,9 +557,6 @@ wlcore_set_min_fw_ver(struct wl1271 *wl, unsigned int chip,
+ /* Each RX/TX transaction requires an end-of-transaction transfer */
+ #define WLCORE_QUIRK_END_OF_TRANSACTION		BIT(0)
+ 
+-/* the first start_role(sta) sometimes doesn't work on wl12xx */
+-#define WLCORE_QUIRK_START_STA_FAILS		BIT(1)
+-
+ /* wl127x and SPI don't support SDIO block size alignment */
+ #define WLCORE_QUIRK_TX_BLOCKSIZE_ALIGN		BIT(2)
+ 
+-- 
+2.30.1
+
 
 
