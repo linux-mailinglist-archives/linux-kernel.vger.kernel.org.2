@@ -2,126 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9D832F0B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CDA32F0BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbhCERGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:06:48 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:40391 "EHLO z11.mailgun.us"
+        id S229963AbhCERHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:07:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230084AbhCERGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:06:43 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614964003; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=4HBFW6C5oMy1oEMtYd0HgO+nbbIQ5m8OeFCam0RueeA=;
- b=kR1QsHpItRX9ALbPveI9Z+6pc0MGwIy4bHkUkXn9gUZUnDdoi/oXOcZKxUmU9BZzZMcYvRXe
- NHhCNaEfrUy798JMRH4NNNBB5bGtd+78HQV/ceHMzjCjB8ftydlRpsnt1CtemfUnJ7/tt4mP
- a7mZ4Z5bHF3RankjCVgYKY2k6Jk=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60426514c862e1b9fd3f0e81 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Mar 2021 17:06:28
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 225FAC433CA; Fri,  5 Mar 2021 17:06:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 62B50C433C6;
-        Fri,  5 Mar 2021 17:06:27 +0000 (UTC)
+        id S229573AbhCERHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 12:07:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A72066508C;
+        Fri,  5 Mar 2021 17:07:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614964054;
+        bh=lCtBJCye9mh10oZoiO4G45gkEauRRo7iSbdH3hsiTvE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tq0MHNrFP8a26ADUQtK0qa5oXiDV3ltq0FY7xD3MU0z78eE20P8nnNZGmzhXS/tvK
+         x490hCRmWv/djvW1LwE0gwyo5IBPWtN6r+pyVuoxH/CVP+ddVxzqptI+M8MWdeHg2E
+         NoMlQ0CTHy3s3L5ogd3RgbRdzTDJno5xxOhzRz5Hcn7rV64VEm3hEaYztvad3vNCSn
+         gKz+tCMUTjprXGmUrEbbIzGsPQmRa2Bsk2Xy1CKB36Gy0wgonbgm6GRiz3F4JSiTt+
+         UAn3Q6sDGyeVWvjIKwIhplqKBCUbNNkuuIpR+WamMem3RR/9gX2+pVlG+DRIINO2o0
+         JX3NFrD5zRhlA==
+Date:   Fri, 5 Mar 2021 19:07:13 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        dhowells@redhat.com, zohar@linux.ibm.com,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: Re: [PATCH v10 6/9] x509: Add support for parsing x509 certs with
+ ECDSA keys
+Message-ID: <YEJlQUC5pfIemTaI@kernel.org>
+References: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
+ <20210305005203.3547587-7-stefanb@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 05 Mar 2021 09:06:27 -0800
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Loic Poulain <loic.poulain@linaro.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Carl_Yin=28=E6=AE=B7?= =?UTF-8?Q?=E5=BC=A0=E6=88=90=29?= 
-        <carl.yin@quectel.com>, Naveen Kumar <naveen.kumar@quectel.com>
-Subject: Re: [PATCH v2] bus: mhi: core: Add missing checks for MMIO register
- entries
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <CAMZdPi88VXV=6BBz=8MRcTVDfpZhC4Cm22qu9H9M7yaKwyZosA@mail.gmail.com>
-References: <1614896049-15912-1-git-send-email-bbhatt@codeaurora.org>
- <CAMZdPi88VXV=6BBz=8MRcTVDfpZhC4Cm22qu9H9M7yaKwyZosA@mail.gmail.com>
-Message-ID: <13b24e06c99ab497ea1a1af0496b0b7a@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305005203.3547587-7-stefanb@linux.vnet.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-05 09:11 AM, Loic Poulain wrote:
-> On Thu, 4 Mar 2021 at 23:14, Bhaumik Bhatt <bbhatt@codeaurora.org> 
-> wrote:
->> 
->> As per documentation, fields marked as (required) in an MHI
->> controller structure need to be populated by the controller driver
->> before calling mhi_register_controller(). Ensure all required
->> pointers and non-zero fields are present in the controller before
->> proceeding with registration.
->> 
->> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> ---
->>  drivers/bus/mhi/core/init.c | 7 +++----
->>  1 file changed, 3 insertions(+), 4 deletions(-)
->> 
->> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
->> index 272f350..fed8a25 100644
->> --- a/drivers/bus/mhi/core/init.c
->> +++ b/drivers/bus/mhi/core/init.c
->> @@ -879,10 +879,9 @@ int mhi_register_controller(struct mhi_controller 
->> *mhi_cntrl,
->>         u32 soc_info;
->>         int ret, i;
->> 
->> -       if (!mhi_cntrl)
->> -               return -EINVAL;
->> -
->> -       if (!mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
->> +       if (!mhi_cntrl || !mhi_cntrl->cntrl_dev || !mhi_cntrl->regs ||
->> +           !mhi_cntrl->fw_image || !mhi_cntrl->irq ||
+On Thu, Mar 04, 2021 at 07:52:00PM -0500, Stefan Berger wrote:
+> From: Stefan Berger <stefanb@linux.ibm.com>
 > 
-> Can we make fw_image optional, not all MHI devices are flashless, some
-> directly boot into AMSS without firmware loading.
+> This patch adds support for parsing of x509 certificates that contain
+
+"Add support..." instead of "This patch adds"
+
+> ECDSA keys, such as NIST P256, that have been signed by a CA using any
+> of the current SHA hash algorithms.
 > 
-Haha. Just as I posted this, I thought of the same thing. I agree. v3 
-incoming.
+> Cc: David Howells <dhowells@redhat.com>
+> Cc: keyrings@vger.kernel.org
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
 
-Also, that patch will be a separate one so I can just remove FW image 
-from here
-and post the patch to make FW image optional.
->> +           !mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
->>             !mhi_cntrl->status_cb || !mhi_cntrl->read_reg ||
->>             !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs)
->>                 return -EINVAL;
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+/Jarkko
 
-Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+> 
+> ---
+> 
+> v7->v8:
+>  - do not detect key algo using parse_OID() in public_key.c but set
+>    pkey_algo to the key type 'ecdsa-nist-p192/256' when parsing cert
+> ---
+>  crypto/asymmetric_keys/public_key.c       |  4 ++-
+>  crypto/asymmetric_keys/x509_cert_parser.c | 34 ++++++++++++++++++++++-
+>  crypto/asymmetric_keys/x509_public_key.c  |  4 ++-
+>  include/linux/oid_registry.h              |  2 ++
+>  4 files changed, 41 insertions(+), 3 deletions(-)
+> 
+> diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
+> index 788a4ba1e2e7..4fefb219bfdc 100644
+> --- a/crypto/asymmetric_keys/public_key.c
+> +++ b/crypto/asymmetric_keys/public_key.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/seq_file.h>
+>  #include <linux/scatterlist.h>
+> +#include <linux/asn1.h>
+>  #include <keys/asymmetric-subtype.h>
+>  #include <crypto/public_key.h>
+>  #include <crypto/akcipher.h>
+> @@ -85,7 +86,8 @@ int software_key_determine_akcipher(const char *encoding,
+>  		return n >= CRYPTO_MAX_ALG_NAME ? -EINVAL : 0;
+>  	}
+>  
+> -	if (strcmp(encoding, "raw") == 0) {
+> +	if (strcmp(encoding, "raw") == 0 ||
+> +	    strcmp(encoding, "x962") == 0) {
+>  		strcpy(alg_name, pkey->pkey_algo);
+>  		return 0;
+>  	}
+> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+> index 1621ceaf5c95..f5d547c6dfb5 100644
+> --- a/crypto/asymmetric_keys/x509_cert_parser.c
+> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
+> @@ -227,6 +227,26 @@ int x509_note_pkey_algo(void *context, size_t hdrlen,
+>  		ctx->cert->sig->hash_algo = "sha224";
+>  		goto rsa_pkcs1;
+>  
+> +	case OID_id_ecdsa_with_sha1:
+> +		ctx->cert->sig->hash_algo = "sha1";
+> +		goto ecdsa;
+> +
+> +	case OID_id_ecdsa_with_sha224:
+> +		ctx->cert->sig->hash_algo = "sha224";
+> +		goto ecdsa;
+> +
+> +	case OID_id_ecdsa_with_sha256:
+> +		ctx->cert->sig->hash_algo = "sha256";
+> +		goto ecdsa;
+> +
+> +	case OID_id_ecdsa_with_sha384:
+> +		ctx->cert->sig->hash_algo = "sha384";
+> +		goto ecdsa;
+> +
+> +	case OID_id_ecdsa_with_sha512:
+> +		ctx->cert->sig->hash_algo = "sha512";
+> +		goto ecdsa;
+> +
+>  	case OID_gost2012Signature256:
+>  		ctx->cert->sig->hash_algo = "streebog256";
+>  		goto ecrdsa;
+> @@ -255,6 +275,11 @@ int x509_note_pkey_algo(void *context, size_t hdrlen,
+>  	ctx->cert->sig->encoding = "raw";
+>  	ctx->algo_oid = ctx->last_oid;
+>  	return 0;
+> +ecdsa:
+> +	ctx->cert->sig->pkey_algo = "ecdsa";
+> +	ctx->cert->sig->encoding = "x962";
+> +	ctx->algo_oid = ctx->last_oid;
+> +	return 0;
+>  }
+>  
+>  /*
+> @@ -276,7 +301,8 @@ int x509_note_signature(void *context, size_t hdrlen,
+>  
+>  	if (strcmp(ctx->cert->sig->pkey_algo, "rsa") == 0 ||
+>  	    strcmp(ctx->cert->sig->pkey_algo, "ecrdsa") == 0 ||
+> -	    strcmp(ctx->cert->sig->pkey_algo, "sm2") == 0) {
+> +	    strcmp(ctx->cert->sig->pkey_algo, "sm2") == 0 ||
+> +	    strcmp(ctx->cert->sig->pkey_algo, "ecdsa") == 0) {
+>  		/* Discard the BIT STRING metadata */
+>  		if (vlen < 1 || *(const u8 *)value != 0)
+>  			return -EBADMSG;
+> @@ -478,6 +504,12 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+>  		case OID_sm2:
+>  			ctx->cert->pub->pkey_algo = "sm2";
+>  			break;
+> +		case OID_id_prime192v1:
+> +			ctx->cert->pub->pkey_algo = "ecdsa-nist-p192";
+> +			break;
+> +		case OID_id_prime256v1:
+> +			ctx->cert->pub->pkey_algo = "ecdsa-nist-p256";
+> +			break;
+>  		default:
+>  			return -ENOPKG;
+>  		}
+> diff --git a/crypto/asymmetric_keys/x509_public_key.c b/crypto/asymmetric_keys/x509_public_key.c
+> index ae450eb8be14..3d45161b271a 100644
+> --- a/crypto/asymmetric_keys/x509_public_key.c
+> +++ b/crypto/asymmetric_keys/x509_public_key.c
+> @@ -129,7 +129,9 @@ int x509_check_for_self_signed(struct x509_certificate *cert)
+>  	}
+>  
+>  	ret = -EKEYREJECTED;
+> -	if (strcmp(cert->pub->pkey_algo, cert->sig->pkey_algo) != 0)
+> +	if (strcmp(cert->pub->pkey_algo, cert->sig->pkey_algo) != 0 &&
+> +	    (strncmp(cert->pub->pkey_algo, "ecdsa-", 6) != 0 ||
+> +	     strcmp(cert->sig->pkey_algo, "ecdsa") != 0))
+>  		goto out;
+>  
+>  	ret = public_key_verify_signature(cert->pub, cert->sig);
+> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
+> index f32d91895e4d..3583908cf1ca 100644
+> --- a/include/linux/oid_registry.h
+> +++ b/include/linux/oid_registry.h
+> @@ -20,6 +20,8 @@ enum OID {
+>  	OID_id_dsa_with_sha1,		/* 1.2.840.10030.4.3 */
+>  	OID_id_dsa,			/* 1.2.840.10040.4.1 */
+>  	OID_id_ecPublicKey,		/* 1.2.840.10045.2.1 */
+> +	OID_id_prime192v1,		/* 1.2.840.10045.3.1.1 */
+> +	OID_id_prime256v1,		/* 1.2.840.10045.3.1.7 */
+>  	OID_id_ecdsa_with_sha1,		/* 1.2.840.10045.4.1 */
+>  	OID_id_ecdsa_with_sha224,	/* 1.2.840.10045.4.3.1 */
+>  	OID_id_ecdsa_with_sha256,	/* 1.2.840.10045.4.3.2 */
+> -- 
+> 2.29.2
+> 
+> 
