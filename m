@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4062332EB57
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:44:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F32AC32EB5D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbhCEMnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:43:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59826 "EHLO mail.kernel.org"
+        id S233674AbhCEMnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:43:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233226AbhCEMmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:42:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A6096501E;
-        Fri,  5 Mar 2021 12:42:54 +0000 (UTC)
+        id S233357AbhCEMm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:42:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75E676501C;
+        Fri,  5 Mar 2021 12:42:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948175;
-        bh=tFkfdwxQSzBRUpSSD3kWovOB+FE2A9uvB/+Zzy2oG4s=;
+        s=korg; t=1614948178;
+        bh=A5kPyEozCf89njhAD53bqvQSBSSLGtEu2+SBhQ7bjH8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JupqNueuV8y8DqEsHD4xaSNfwhXxMy49Yq8VuT3ou1BuNJDknrr5GIT6uXiiZvHck
-         es32Qw4B3aHCqS0YF9L5ttORZtaYLgIGIyzDsAMU9V7tGsj2wEAiGnwSylDA1Jq90m
-         mWdCSCW+G5EQT4eFVJA2PoQjdXhicQxkH192krqA=
+        b=2E3lHS7IsYRx0RzwNI3oarQhFHkcRsGHQIErl75BWM5ebeaBJnSElDKyk/LKOKnms
+         JAH9J5SuEByuxIN0k1XKV4xuObQpsmKpQC2WcHlpYYK/CGyx9z3XSxJqcM0ZKm1cyH
+         ExGddwCuXTFS6pWrveweOx5rLCrpfkHfRNjZyl/M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 13/30] x86/reboot: Add Zotac ZBOX CI327 nano PCI reboot quirk
-Date:   Fri,  5 Mar 2021 13:22:42 +0100
-Message-Id: <20210305120850.050003627@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 14/30] vt/consolemap: do font sum unsigned
+Date:   Fri,  5 Mar 2021 13:22:43 +0100
+Message-Id: <20210305120850.101280831@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120849.381261651@linuxfoundation.org>
 References: <20210305120849.381261651@linuxfoundation.org>
@@ -39,50 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Jiri Slaby <jslaby@suse.cz>
 
-[ Upstream commit 4b2d8ca9208be636b30e924b1cbcb267b0740c93 ]
+[ Upstream commit 9777f8e60e718f7b022a94f2524f967d8def1931 ]
 
-On this system the M.2 PCIe WiFi card isn't detected after reboot, only
-after cold boot. reboot=pci fixes this behavior. In [0] the same issue
-is described, although on another system and with another Intel WiFi
-card. In case it's relevant, both systems have Celeron CPUs.
+The constant 20 makes the font sum computation signed which can lead to
+sign extensions and signed wraps. It's not much of a problem as we build
+with -fno-strict-overflow. But if we ever decide not to, be ready, so
+switch the constant to unsigned.
 
-Add a PCI reboot quirk on affected systems until a more generic fix is
-available.
-
-[0] https://bugzilla.kernel.org/show_bug.cgi?id=202399
-
- [ bp: Massage commit message. ]
-
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/1524eafd-f89c-cfa4-ed70-0bde9e45eec9@gmail.com
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Link: https://lore.kernel.org/r/20210105120239.28031-7-jslaby@suse.cz
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/reboot.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/tty/vt/consolemap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-index cbe14f7c2826..1c2451107e49 100644
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -418,6 +418,15 @@ static struct dmi_system_id __initdata reboot_dmi_table[] = {
- 		},
- 	},
+diff --git a/drivers/tty/vt/consolemap.c b/drivers/tty/vt/consolemap.c
+index c8c91f0476a2..e8301dcf4c84 100644
+--- a/drivers/tty/vt/consolemap.c
++++ b/drivers/tty/vt/consolemap.c
+@@ -494,7 +494,7 @@ con_insert_unipair(struct uni_pagedir *p, u_short unicode, u_short fontpos)
  
-+	{	/* PCIe Wifi card isn't detected after reboot otherwise */
-+		.callback = set_pci_reboot,
-+		.ident = "Zotac ZBOX CI327 nano",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "NA"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "ZBOX-CI327NANO-GS-01"),
-+		},
-+	},
-+
- 	/* Sony */
- 	{	/* Handle problems with rebooting on Sony VGN-Z540N */
- 		.callback = set_bios_reboot,
+ 	p2[unicode & 0x3f] = fontpos;
+ 	
+-	p->sum += (fontpos << 20) + unicode;
++	p->sum += (fontpos << 20U) + unicode;
+ 
+ 	return 0;
+ }
 -- 
 2.30.1
 
