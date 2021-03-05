@@ -2,235 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769BD32ECD9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 15:14:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F38AC32ECDD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 15:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230141AbhCEONj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 09:13:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57852 "EHLO mail.kernel.org"
+        id S229861AbhCEOOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 09:14:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230242AbhCEONQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 09:13:16 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6CF864F1D;
-        Fri,  5 Mar 2021 14:13:14 +0000 (UTC)
-Date:   Fri, 5 Mar 2021 09:13:13 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chen Jun <chenjun102@huawei.com>,
-        Rolf Eike Beer <eb@emlix.com>,
-        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
-        Yordan Karadzhov (VMware) <y.karadz@gmail.com>
-Subject: [GIT PULL] tracing: Fixes for 5.12-rc1
-Message-ID: <20210305091313.08f87d9d@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230514AbhCEOOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 09:14:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A0C06501A;
+        Fri,  5 Mar 2021 14:14:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614953676;
+        bh=nJW/qzlXmQLjEx5WtjuS7q3GToRzq3WGjVZX19qD8Jg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ujT6mUNrqJ6jlXFWAX1PRjYK0tftZpfJWLEY3DbgBEJ/3/vZY2zPlcu+MPfP/f/C9
+         gxcjtYUNWqGHyIP9Offdvt5GU/9lHxv8AgwSewkvn98xQOyhslh/E3TD+W51q56Nkz
+         1GR68fvhBdnD7bdTOneaZ/DzbB8Su8/p/5IaM1MNgwvXqLnxwLTlUs8qTw3was3Ut+
+         b/k34hD8fPTzR7sA4hcj9I/mvl3YS09wjbpjo7NPx0tNYggrK048TXf4Vg7CBpfgRI
+         RfPHFba9UWVx7rLCUvzU7IL0LBGymZCJZ8ZQ/J79ggYzOeK8B6xuw7wX6NOz2rFgiw
+         jNOB5eYbz/9Cg==
+Received: by mail-ej1-f54.google.com with SMTP id c10so3700009ejx.9;
+        Fri, 05 Mar 2021 06:14:36 -0800 (PST)
+X-Gm-Message-State: AOAM533JXMe/UOx97mPDBvOudoA4AmL2PsFIIbSr2XeiCQ25MrOFeMrp
+        1QwGe+ZQKF/lpLYpQbg9ajCo6yxvNRYRzDIgPw==
+X-Google-Smtp-Source: ABdhPJwNz6f1WnjfIEjnIlOIQSeFUxdiphznagy089tysI2uTGcdeuYk8oheFpgpAvN7aSri3oqhBTW4L9fuXdOWSes=
+X-Received: by 2002:a17:906:d153:: with SMTP id br19mr2329504ejb.360.1614953674952;
+ Fri, 05 Mar 2021 06:14:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <1614222604-27066-1-git-send-email-peng.fan@oss.nxp.com>
+ <1614222604-27066-5-git-send-email-peng.fan@oss.nxp.com> <AM6PR04MB4966041BFFDDAF1EF00BE1AD80969@AM6PR04MB4966.eurprd04.prod.outlook.com>
+In-Reply-To: <AM6PR04MB4966041BFFDDAF1EF00BE1AD80969@AM6PR04MB4966.eurprd04.prod.outlook.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 5 Mar 2021 08:14:23 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKK8t6XUqTuOKPzOviJbysqWqga_mdxWE0P0N4ejTgG=A@mail.gmail.com>
+Message-ID: <CAL_JsqKK8t6XUqTuOKPzOviJbysqWqga_mdxWE0P0N4ejTgG=A@mail.gmail.com>
+Subject: Re: [PATCH V3 4/5] dt-bindings: mmc: fsl-imx-esdhc: add clock bindings
+To:     Aisheng Dong <aisheng.dong@nxp.com>
+Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Peng Fan <peng.fan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 5, 2021 at 8:09 AM Aisheng Dong <aisheng.dong@nxp.com> wrote:
+>
+> Hi Rob,
+>
+> > From: Peng Fan (OSS) <peng.fan@oss.nxp.com>
+> > Sent: Thursday, February 25, 2021 11:10 AM
+> >
+> > From: Peng Fan <peng.fan@nxp.com>
+> >
+> > Add clock bindings for fsl-imx-esdhc yaml
+> >
+> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > ---
+> >  .../devicetree/bindings/mmc/fsl-imx-esdhc.yaml        | 11 +++++++++++
+> >  1 file changed, 11 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> > b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> > index a7fbd8cc1e38..369471814496 100644
+> > --- a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> > +++ b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> > @@ -103,6 +103,17 @@ properties:
+> >        Only eMMC HS400 mode need to take care of this property.
+> >      default: 0
+> >
+> > +  clocks:
+> > +    maxItems: 3
+> > +    description:
+> > +      Handle clocks for the sdhc controller.
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: ipg
+> > +      - const: ahb
+> > +      - const: per
+>
+> One question:
+> The side effect of this patch is that it imposes a forced order of clk names
+> In DT which actually was not needed.
+>
+> Do we really have to do that?
 
-Linus,
+Yes.
 
-Functional fixes:
+> Or any other better approach to allow a random order to match the DT
+> usage better?
 
- - Fix big endian conversion for arm64 in recordmcount processing
+Why do you need random order?
 
- - Fix timestamp corruption in ring buffer on discarding events
+We can not enforce the order, but we only do that when there's
+multiple optional entries.
 
- - Fix memory leak in __create_synth_event()
-
- - Skip selftests if tracing is disabled as it will cause them to fail.
-
-Non-functional fixes:
-
- - Fix help text in Kconfig
-
- - Remove duplicate prototype for trace_empty()
-
- - Fix stale comment about the trace_event_call flags.
-
-Self test update:
-
- - Add more information to the validation output of when a
-   corrupt timestamp is found in the ring buffer, and also
-   trigger a warning to make sure that tests catch it.
-
-
-Please pull the latest trace-v5.12-rc1 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.12-rc1
-
-Tag SHA1: 29d3fbc3471e6abaa12e03234bf9fd79ff452e9a
-Head SHA1: f9f344479d8b40b3b001c913fb992d85d19261d0
-
-
-Chen Jun (1):
-      ftrace: Have recordmcount use w8 to read relp->r_info in arm64_is_fake_mcount
-
-Rolf Eike Beer (1):
-      tracing: Fix help text of TRACEPOINT_BENCHMARK in Kconfig
-
-Steven Rostedt (VMware) (4):
-      ring-buffer: Force before_stamp and write_stamp to be different on discard
-      ring-buffer: Add a little more information and a WARN when time stamp going backwards is detected
-      tracing: Skip selftests if tracing is disabled
-      tracing: Fix comment about the trace_event_call flags
-
-Vamshi K Sthambamkadi (1):
-      tracing: Fix memory leak in __create_synth_event()
-
-Yordan Karadzhov (VMware) (1):
-      tracing: Remove duplicate declaration from trace.h
-
-----
- include/linux/trace_events.h      | 11 ++---------
- kernel/trace/Kconfig              |  2 +-
- kernel/trace/ring_buffer.c        | 21 ++++++++++++++++++---
- kernel/trace/trace.c              |  6 ++++++
- kernel/trace/trace.h              |  1 -
- kernel/trace/trace_events_synth.c |  4 +++-
- scripts/recordmcount.c            |  2 +-
- 7 files changed, 31 insertions(+), 16 deletions(-)
----------------------------
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index 7077fec653bb..28e7af1406f2 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -349,15 +349,8 @@ struct trace_event_call {
- 	struct event_filter	*filter;
- 	void			*mod;
- 	void			*data;
--	/*
--	 *   bit 0:		filter_active
--	 *   bit 1:		allow trace by non root (cap any)
--	 *   bit 2:		failed to apply filter
--	 *   bit 3:		trace internal event (do not enable)
--	 *   bit 4:		Event was enabled by module
--	 *   bit 5:		use call filter rather than file filter
--	 *   bit 6:		Event is a tracepoint
--	 */
-+
-+	/* See the TRACE_EVENT_FL_* flags above */
- 	int			flags; /* static flags of different events */
- 
- #ifdef CONFIG_PERF_EVENTS
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 9c266b93cbc0..7fa82778c3e6 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -694,7 +694,7 @@ config TRACEPOINT_BENCHMARK
- 	help
- 	 This option creates the tracepoint "benchmark:benchmark_event".
- 	 When the tracepoint is enabled, it kicks off a kernel thread that
--	 goes into an infinite loop (calling cond_sched() to let other tasks
-+	 goes into an infinite loop (calling cond_resched() to let other tasks
- 	 run), and calls the tracepoint. Each iteration will record the time
- 	 it took to write to the tracepoint and the next iteration that
- 	 data will be passed to the tracepoint itself. That is, the tracepoint
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index b9dad3500041..68744c51517e 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -2814,6 +2814,17 @@ rb_try_to_discard(struct ring_buffer_per_cpu *cpu_buffer,
- 				       write_stamp, write_stamp - delta))
- 			return 0;
- 
-+		/*
-+		 * It's possible that the event time delta is zero
-+		 * (has the same time stamp as the previous event)
-+		 * in which case write_stamp and before_stamp could
-+		 * be the same. In such a case, force before_stamp
-+		 * to be different than write_stamp. It doesn't
-+		 * matter what it is, as long as its different.
-+		 */
-+		if (!delta)
-+			rb_time_set(&cpu_buffer->before_stamp, 0);
-+
- 		/*
- 		 * If an event were to come in now, it would see that the
- 		 * write_stamp and the before_stamp are different, and assume
-@@ -3307,9 +3318,13 @@ static void check_buffer(struct ring_buffer_per_cpu *cpu_buffer,
- 			goto out;
- 		}
- 		atomic_inc(&cpu_buffer->record_disabled);
--		pr_warn("[CPU: %d]TIME DOES NOT MATCH expected:%lld actual:%lld delta:%lld after:%lld\n",
--		       cpu_buffer->cpu,
--		       ts + info->delta, info->ts, info->delta, info->after);
-+		/* There's some cases in boot up that this can happen */
-+		WARN_ON_ONCE(system_state != SYSTEM_BOOTING);
-+		pr_warn("[CPU: %d]TIME DOES NOT MATCH expected:%lld actual:%lld delta:%lld before:%lld after:%lld%s\n",
-+			cpu_buffer->cpu,
-+			ts + info->delta, info->ts, info->delta,
-+			info->before, info->after,
-+			full ? " (full)" : "");
- 		dump_buffer_page(bpage, info, tail);
- 		atomic_dec(&ts_dump);
- 		/* Do not re-enable checking */
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index e295c413580e..eccb4e1187cc 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -1929,6 +1929,12 @@ static int run_tracer_selftest(struct tracer *type)
- 	if (!selftests_can_run)
- 		return save_selftest(type);
- 
-+	if (!tracing_is_on()) {
-+		pr_warn("Selftest for tracer %s skipped due to tracing disabled\n",
-+			type->name);
-+		return 0;
-+	}
-+
- 	/*
- 	 * Run a selftest on this tracer.
- 	 * Here we reset the trace buffer, and set the current
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index dec13ff66077..a6446c03cfbc 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -605,7 +605,6 @@ void trace_graph_function(struct trace_array *tr,
- void trace_latency_header(struct seq_file *m);
- void trace_default_header(struct seq_file *m);
- void print_trace_header(struct seq_file *m, struct trace_iterator *iter);
--int trace_empty(struct trace_iterator *iter);
- 
- void trace_graph_return(struct ftrace_graph_ret *trace);
- int trace_graph_entry(struct ftrace_graph_ent *trace);
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index 2979a96595b4..8d71e6c83f10 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -1225,8 +1225,10 @@ static int __create_synth_event(const char *name, const char *raw_fields)
- 			goto err;
- 		}
- 
--		if (!argc)
-+		if (!argc) {
-+			argv_free(argv);
- 			continue;
-+		}
- 
- 		n_fields_this_loop = 0;
- 		consumed = 0;
-diff --git a/scripts/recordmcount.c b/scripts/recordmcount.c
-index b9c2ee7ab43f..cce12e1971d8 100644
---- a/scripts/recordmcount.c
-+++ b/scripts/recordmcount.c
-@@ -438,7 +438,7 @@ static int arm_is_fake_mcount(Elf32_Rel const *rp)
- 
- static int arm64_is_fake_mcount(Elf64_Rel const *rp)
- {
--	return ELF64_R_TYPE(w(rp->r_info)) != R_AARCH64_CALL26;
-+	return ELF64_R_TYPE(w8(rp->r_info)) != R_AARCH64_CALL26;
- }
- 
- /* 64-bit EM_MIPS has weird ELF64_Rela.r_info.
+Rob
