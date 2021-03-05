@@ -2,45 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B049C32F4D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B551A32F4D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhCEU4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 15:56:40 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:49166 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhCEU4U (ORCPT
+        id S229775AbhCEU5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 15:57:41 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:35396 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229783AbhCEU5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 15:56:20 -0500
-Received: by mail-il1-f197.google.com with SMTP id q3so2773227ilv.16
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 12:56:18 -0800 (PST)
+        Fri, 5 Mar 2021 15:57:17 -0500
+Received: by mail-io1-f72.google.com with SMTP id a1so2985730ios.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 12:57:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=bklPqc4/Z/Eg2dQa6cE1lCcq6hgo59I5Xa1oE+nr5tY=;
-        b=hmWAm5CNZtAJ7ySpDm3TkbY/9Ibt83OAupj/HICPsb7D7/ZX6dAv2lriLa+kedKBHH
-         LcFn2FuSGbM1WRnBMEtmSfQc8wU8eUk3nnQIMX5Nw0V8Dzm/E5I/QG3M0XbcPDZIokvE
-         cQts+HjMRYm8SQLDVcJWkEzGUewqf5q/V/MWdl0zG/I9PUysbd9G7jVkAkaW+7Ewyfzw
-         QL9ZoPrHa84BXA4eVemoyfo/TEIo+I0MO2UzPSRUvw0+XVCXFkkS+u20zuqAaXsBjumC
-         GKRwcFbCy+rlmdjIxVdCRr6Wc6v9MMkcwkA2KaSJbOnmwD9mSTwXNjevc+cGWGvID0UG
-         lH/Q==
-X-Gm-Message-State: AOAM531d1imLhnd5YSunG2YLd3f3vh3qk+duJjxIBAGzwgoZFRQoWJb3
-        hjY1MTtyg9tihS5n/u6sHSE/SPBs9MIbIEGAK5M3dammix77
-X-Google-Smtp-Source: ABdhPJxDKlnrHAnJAhLY3h9nokXkRtBnFKq1JjDjaV0eyGEq0wA4KKXXCYIOMVYWeo+UqCPjfAU/YHCRTq4XFZzh8vZJufsBxfaa
+        bh=N9h4PY940X2Vdb/yMG+r/6xuF1LLW6SS3G8crYPx4nQ=;
+        b=EWG+hjVJJgOqHxQvE/o8NYya/+RNhdlezxYiW6eHzuZhaT4ba/rZPT4z3MaGvl32m+
+         Vkq8ehjfTvx7CE6Hqfwe4sBbVTq7TSHCc7evn9NBASJFIDG4C/mjI73OIHs+8QgxHK3T
+         J8jDzv9bZFC2lU8oOVBNrnPOrPMGtQ/hMEE61DnrpxCtY4qi+nKuBnRfvVDbHfn7mqQN
+         y8I+AeMt7eCMbqH29BzqXt1LlfrK2MDqPNshx3bPcFbEbz2XOZpeby/oB1VzBou90FvH
+         Di0ojBxbfS9181A0Mtds+k9y4s34XtwN0kixaDEa8BCLU/KBHOnmyBXhLALG6Jx7zq5j
+         IuJw==
+X-Gm-Message-State: AOAM532i+MnUlEwHVTuszYRWWMSRKNoLjRW1fcI82nSEuiejHLOrxAdg
+        f8FzmGz74eJvpFVKdB3Igbf1Vc4z0UCjoJr/TFVGgDWbMo2A
+X-Google-Smtp-Source: ABdhPJwuPfs/RQ+MRBFmjs3ZlWf8iRxe2qD/yDBCuuDqxnHW2dbFPjBuFTqWJ1MOnaMyxO4SN5g9837J/6kjBjwPuIErJvtY5mtD
 MIME-Version: 1.0
-X-Received: by 2002:a02:289:: with SMTP id 131mr11691657jau.99.1614977778367;
- Fri, 05 Mar 2021 12:56:18 -0800 (PST)
-Date:   Fri, 05 Mar 2021 12:56:18 -0800
+X-Received: by 2002:a92:da48:: with SMTP id p8mr9941257ilq.137.1614977836989;
+ Fri, 05 Mar 2021 12:57:16 -0800 (PST)
+Date:   Fri, 05 Mar 2021 12:57:16 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ccbedd05bcd0504e@google.com>
-Subject: [syzbot] upstream boot error: WARNING in kvm_wait
-From:   syzbot <syzbot+a4c8bc1d1dc7b620630d@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, pbonzini@redhat.com, seanjc@google.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
+Message-ID: <0000000000004b43a605bcd0545c@google.com>
+Subject: [syzbot] net-next boot error: WARNING in kvm_wait
+From:   syzbot <syzbot+05a8c6cb8281f23c8915@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -50,35 +47,32 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    280d542f Merge tag 'drm-fixes-2021-03-05' of git://anongit..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=138c7a92d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dc4003509ab3fc78
-dashboard link: https://syzkaller.appspot.com/bug?extid=a4c8bc1d1dc7b620630d
+HEAD commit:    d310ec03 Merge tag 'perf-core-2021-02-17' of git://git.ker..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1532e4c6d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=66df2ca4f2dd3022
+dashboard link: https://syzkaller.appspot.com/bug?extid=05a8c6cb8281f23c8915
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a4c8bc1d1dc7b620630d@syzkaller.appspotmail.com
+Reported-by: syzbot+05a8c6cb8281f23c8915@syzkaller.appspotmail.com
 
 ------------[ cut here ]------------
 raw_local_irq_restore() called with IRQs enabled
-WARNING: CPU: 2 PID: 213 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
+WARNING: CPU: 0 PID: 4818 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
 Modules linked in:
-CPU: 2 PID: 213 Comm: kworker/u17:4 Not tainted 5.12.0-rc1-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Workqueue: events_unbound call_usermodehelper_exec_work
-
+CPU: 0 PID: 4818 Comm: selinux-autorel Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-Code: be ff cc cc cc cc cc cc cc cc cc cc cc 80 3d e4 38 af 04 00 74 01 c3 48 c7 c7 a0 8f 6b 89 c6 05 d3 38 af 04 01 e8 e7 b9 be ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
-RSP: 0000:ffffc90000fe7770 EFLAGS: 00010286
-
-RAX: 0000000000000000 RBX: ffffffff8c0e9c68 RCX: 0000000000000000
-RDX: ffff8880116bc3c0 RSI: ffffffff815c0cf5 RDI: fffff520001fcee0
+Code: bf ff cc cc cc cc cc cc cc cc cc cc cc 80 3d 8a 88 b1 04 00 74 01 c3 48 c7 c7 40 a2 6b 89 c6 05 79 88 b1 04 01 e8 b8 37 bf ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
+RSP: 0018:ffffc900015cfc40 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffffffff8be287a0 RCX: 0000000000000000
+RDX: ffff888022b31bc0 RSI: ffffffff815b6845 RDI: fffff520002b9f7a
 RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff815b9a5e R11: 0000000000000000 R12: 0000000000000003
-R13: fffffbfff181d38d R14: 0000000000000001 R15: ffff88802cc36000
-FS:  0000000000000000(0000) GS:ffff88802cc00000(0000) knlGS:0000000000000000
+R10: ffffffff815af71e R11: 0000000000000000 R12: 0000000000000003
+R13: fffffbfff17c50f4 R14: 0000000000000001 R15: ffff8880b9c35f40
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000000bc8e000 CR4: 0000000000150ee0
+CR2: 00007ff7c1ccab04 CR3: 000000000bc8e000 CR4: 00000000001506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
@@ -92,17 +86,22 @@ Call Trace:
  queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
  do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
  spin_lock include/linux/spinlock.h:354 [inline]
- copy_fs_struct+0x1c8/0x340 fs/fs_struct.c:123
- copy_fs kernel/fork.c:1443 [inline]
- copy_process+0x4dc2/0x6fd0 kernel/fork.c:2088
- kernel_clone+0xe7/0xab0 kernel/fork.c:2462
- kernel_thread+0xb5/0xf0 kernel/fork.c:2514
- call_usermodehelper_exec_work kernel/umh.c:172 [inline]
- call_usermodehelper_exec_work+0xcc/0x180 kernel/umh.c:158
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+ check_stack_usage kernel/exit.c:715 [inline]
+ do_exit+0x1d6a/0x2ae0 kernel/exit.c:868
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7ff7c19e9618
+Code: Unable to access opcode bytes at RIP 0x7ff7c19e95ee.
+RSP: 002b:00007fff88573528 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007ff7c19e9618
+RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
+RBP: 000055658b8146e0 R08: 00000000000000e7 R09: ffffffffffffff98
+R10: 000055658bead6c0 R11: 0000000000000246 R12: 000055658b8037a0
+R13: 00007fff88573810 R14: 0000000000000000 R15: 0000000000000000
 
 
 ---
