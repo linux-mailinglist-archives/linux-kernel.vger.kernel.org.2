@@ -2,73 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A498632F3B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:18:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF45B32F3B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhCETSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 14:18:20 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:45681 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbhCETSE (ORCPT
+        id S230052AbhCETSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 14:18:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37178 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229704AbhCETSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:18:04 -0500
-Received: by mail-ot1-f54.google.com with SMTP id d9so2824505ote.12;
-        Fri, 05 Mar 2021 11:18:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XoHLnRJYg9VMpQurrAdrPVpbRFct8dLdoanWvg6YdwY=;
-        b=E30Hy19HCtsMNt9dTNOqBSe9VXgZV/t3ZbUPEPgj2AerIV2FhpfNnHlDJTNI047HUo
-         PB85atOXojZVupkCYC08V3++Elpfc616caA3XivhL1yAOt66rOyBatIokddt6sN2kARj
-         /qgVrVx0ebsN/vUACpeuUe1myfoxhiXd7zgO4mUSDaDYm1xVkd9WE2HiOrPT1i5h4Hrp
-         MePY0MWqN6YwMUyPLD/qDaj3JS229hRa4nUksh7VOFmyI/9sbGDJhSq4tT1qwD/VU4LO
-         7h/6sy5tPc9FDPXa0ZTWmtUxo99hGMxSyctQgHAnfaE26peHypu67kyJFxcH9a1tbD4m
-         QDzQ==
-X-Gm-Message-State: AOAM5303Cmy9patPGcjsI+p+fogCIG2wtd3jmuV5rrCiSSaNCJHktUnG
-        w1r67SPBKd2jWKACnaOgmw==
-X-Google-Smtp-Source: ABdhPJw6M53q3mGjQpCyBIOsH6wRcH4MFB1SmVr210gqPgagVaLR+x/IX58B6WE3BVDZBl2RRqJ2OQ==
-X-Received: by 2002:a05:6830:118f:: with SMTP id u15mr9119859otq.43.1614971883915;
-        Fri, 05 Mar 2021 11:18:03 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m11sm698379oih.34.2021.03.05.11.18.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 11:18:03 -0800 (PST)
-Received: (nullmailer pid 500223 invoked by uid 1000);
-        Fri, 05 Mar 2021 19:18:02 -0000
-Date:   Fri, 5 Mar 2021 13:18:02 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Nava kishore Manne <nava.manne@xilinx.com>
-Cc:     trix@redhat.com, chinnikishore369@gmail.com,
-        linux-arm-kernel@lists.infradead.org, git@xilinx.com,
-        robh+dt@kernel.org, michal.simek@xilinx.com,
-        linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
-        mdf@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: fpga: Add compatible value for
- Xilinx DFX AXI shutdown manager
-Message-ID: <20210305191802.GA500189@robh.at.kernel.org>
-References: <20210211051148.16722-1-nava.manne@xilinx.com>
- <20210211051148.16722-2-nava.manne@xilinx.com>
+        Fri, 5 Mar 2021 14:18:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614971924;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wo3BPsLRoEcARqi/I2GE+yDj8s8Utt89EBG5Ym/er0o=;
+        b=FNWkDtKaIDeZedOig+LjwICewusz8YBlxUkqnImFuuCkyZ9HBDp600HHLx6MVvMtITGBXO
+        QVoE1OAUm36OnWeojNZhZAGUSx49zP+nONW1/yp+0grfyNuHImWGhyIUzED4ksCkVu1ig0
+        mSav5jFtk0YK0l+fSUsXTMV4bWxRaVQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-UJwHOQoCN-2BC7Rin_2KHg-1; Fri, 05 Mar 2021 14:18:42 -0500
+X-MC-Unique: UJwHOQoCN-2BC7Rin_2KHg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 08D4E800D53;
+        Fri,  5 Mar 2021 19:18:41 +0000 (UTC)
+Received: from treble (ovpn-116-51.rdu2.redhat.com [10.10.116.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3EE9A5D6B1;
+        Fri,  5 Mar 2021 19:18:38 +0000 (UTC)
+Date:   Fri, 5 Mar 2021 13:18:35 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Frank Eigler <fche@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
+ modules
+Message-ID: <20210305191835.4e54dei3dmslbo3a@treble>
+References: <CAHk-=whA6zru0BaNm4uu5KyZe+aQpRScOnmc9hdOpO3W+xN9Xw@mail.gmail.com>
+ <20210303202406.bxgdx5a25j6wc43b@treble>
+ <CAHk-=wi9J3mM8y+aH9e=HRo95giK4BRyyasayAimB0gdvbvDsQ@mail.gmail.com>
+ <20210303214534.guyoxcwrgxgcqzy4@treble>
+ <CAK7LNAQaAgg+mVSw_U3_FuuqcqJNnonyhVD1M-ezv71Y+dyAww@mail.gmail.com>
+ <20210304150812.rzya7ewmerwhe4m4@treble>
+ <CAK7LNAR0kNJ=DLuvRzRG+-rgMfcrSOZu8Mn6JBJ5do7TzJWLcA@mail.gmail.com>
+ <CAHk-=wiT3FGuKuqLniBN2T_PZwD0GH4kf3XNCzq2tfChqn0+SQ@mail.gmail.com>
+ <20210305024140.fv4i4ujreem2w7sw@treble>
+ <CAK7LNAR3FW8wQe6Zsbj86LQpY4=ASC7Zec-HN4D70FNZcQk0_Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210211051148.16722-2-nava.manne@xilinx.com>
+In-Reply-To: <CAK7LNAR3FW8wQe6Zsbj86LQpY4=ASC7Zec-HN4D70FNZcQk0_Q@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Feb 2021 10:41:47 +0530, Nava kishore Manne wrote:
-> This patch Adds compatible value for Xilinx Dynamic Function eXchnage(DFX)
-> AXI Shutdown manager IP.
+On Sat, Mar 06, 2021 at 01:03:32AM +0900, Masahiro Yamada wrote:
+> > Ok.  So it sounds like the best/easiest option is the original patch in
+> > this thread:  when building an external module with a GCC mismatch, just
+> > disable the GCC plugin, with a warning (or an error for randstruct).
 > 
-> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
-> ---
-> Changes for v2:
->                 -Modified the doc and added DFX axi shutdown manager node
->                  example node as suggested by Tom Rix.
+> Just for clarification,
+> I believe "the original patch" pointed to this one:
+> https://lore.kernel.org/lkml/efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com/
 > 
->  .../bindings/fpga/xilinx-pr-decoupler.txt     | 24 ++++++++++++++++++-
->  1 file changed, 23 insertions(+), 1 deletion(-)
-> 
+> This is dead. Please do not come back to this.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Sorry, no.  The patch may have been crap, but that doesn't make the
+problem I'm trying to solve any less valid.
+
+> See negative comments not only from me, but also from Greg, Peter,
+> Christoph.
+
+I responded to those.  Summarizing my replies once again...
+
+
+- "External modules aren't supported"
+
+  This doesn't even remotely match reality.  Are you honestly using this
+  "negative comment" as a reason to NAK the patch?
+
+
+- "External modules must be built with the same GCC version"
+
+  As has been stated repeatedly, by Linus and others, there's no
+  technical reason behind this claim.  It ignores the realities of how
+  distros release the kernel and compiler independently, with separate
+  cadences.  Minor variances in compiler version are ABI compatible.
+
+  Also, for features which are dependent on compiler version, many of
+  those are now enabled by kbuild.  As I suggested to you previously,
+  kbuild should warn when such features get disabled (which can happen
+  due to a compiler/toolchain change or due to a .config copied from
+  another system).
+
+-- 
+Josh
+
