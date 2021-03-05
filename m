@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A265632EAA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6DD32EA18
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233284AbhCEMjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:39:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53074 "EHLO mail.kernel.org"
+        id S232804AbhCEMgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:36:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233157AbhCEMjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:39:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2939564EDB;
-        Fri,  5 Mar 2021 12:39:03 +0000 (UTC)
+        id S232784AbhCEMft (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:35:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7DB965004;
+        Fri,  5 Mar 2021 12:35:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947943;
-        bh=h1z53uxqsHam5ZsBYZw50JLpUZtyU6R90jbtUyzn+VE=;
+        s=korg; t=1614947749;
+        bh=y711LrvMH/5W5cwwXm7Q8uZg4EK+DXbi3/Rm+Sc00IA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JkDJxLpXm+kbSai///pe6+a9iNNsyGgJ5LphEO5GKDwRz0Xf7YEiyjNp/RVkNi3vI
-         +AHx9D/cYjcUKGIwfVimpeS0wibTfVzBiLUYjg0lZxjyG96+QHFakAHJvyDSfhoYVe
-         HeMVnsIwNjEqDyfCOhHo2+ZYNlaE3awi8wHRZMtk=
+        b=gWkYCej6CqgjTQY0VlvkIVaWgCpgtQXzIUa9ZzJZs6u9jDIAYaVvNIEzZZUWezza1
+         UBh3h1ecfjv5BdKXxPrSXOgTVqrCv9L8jovhwwZoSgXhgG1Mo0UgG37O+T0Zg7Fd6A
+         KxtRdxQDjDhemVMZZ2DndoHuEXJY8eAo8Y0WloVA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com,
-        Sabyrzhan Tasbolatov <snovitoll@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Subject: [PATCH 4.14 14/39] smackfs: restrict bytes count in smackfs write functions
+        stable@vger.kernel.org, Eckhart Mohr <e.mohr@tuxedocomputers.com>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 71/72] ALSA: hda/realtek: Add quirk for Intel NUC 10
 Date:   Fri,  5 Mar 2021 13:22:13 +0100
-Message-Id: <20210305120852.480944991@linuxfoundation.org>
+Message-Id: <20210305120900.807844603@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120851.751937389@linuxfoundation.org>
-References: <20210305120851.751937389@linuxfoundation.org>
+In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
+References: <20210305120857.341630346@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,108 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+From: Werner Sembach <wse@tuxedocomputers.com>
 
-commit 7ef4c19d245f3dc233fd4be5acea436edd1d83d8 upstream.
+commit 73e7161eab5dee98114987239ec9c87fe8034ddb upstream.
 
-syzbot found WARNINGs in several smackfs write operations where
-bytes count is passed to memdup_user_nul which exceeds
-GFP MAX_ORDER. Check count size if bigger than PAGE_SIZE.
+This adds a new SND_PCI_QUIRK(...) and applies it to the Intel NUC 10
+devices. This fixes the issue of the devices not having audio input and
+output on the headset jack because the kernel does not recognize when
+something is plugged in.
 
-Per smackfs doc, smk_write_net4addr accepts any label or -CIPSO,
-smk_write_net6addr accepts any label or -DELETE. I couldn't find
-any general rule for other label lengths except SMK_LABELLEN,
-SMK_LONGLABEL, SMK_CIPSOMAX which are documented.
+The new quirk was inspired by the quirk for the Intel NUC 8 devices, but
+it turned out that the NUC 10 uses another pin. This information was
+acquired by black box testing likely pins.
 
-Let's constrain, in general, smackfs label lengths for PAGE_SIZE.
-Although fuzzer crashes write to smackfs/netlabel on 0x400000 length.
-
-Here is a quick way to reproduce the WARNING:
-python -c "print('A' * 0x400000)" > /sys/fs/smackfs/netlabel
-
-Reported-by: syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com
-Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+Co-developed-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210302180414.23194-1-wse@tuxedocomputers.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/smack/smackfs.c |   21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -1191,7 +1191,7 @@ static ssize_t smk_write_net4addr(struct
- 		return -EPERM;
- 	if (*ppos != 0)
- 		return -EINVAL;
--	if (count < SMK_NETLBLADDRMIN)
-+	if (count < SMK_NETLBLADDRMIN || count > PAGE_SIZE - 1)
- 		return -EINVAL;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6320,6 +6320,7 @@ enum {
+ 	ALC269_FIXUP_LEMOTE_A1802,
+ 	ALC269_FIXUP_LEMOTE_A190X,
+ 	ALC256_FIXUP_INTEL_NUC8_RUGGED,
++	ALC256_FIXUP_INTEL_NUC10,
+ 	ALC255_FIXUP_XIAOMI_HEADSET_MIC,
+ 	ALC274_FIXUP_HP_MIC,
+ 	ALC274_FIXUP_HP_HEADSET_MIC,
+@@ -7697,6 +7698,15 @@ static const struct hda_fixup alc269_fix
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MODE
+ 	},
++	[ALC256_FIXUP_INTEL_NUC10] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x19, 0x01a1913c }, /* use as headset mic, without its own jack detect */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MODE
++	},
+ 	[ALC255_FIXUP_XIAOMI_HEADSET_MIC] = {
+ 		.type = HDA_FIXUP_VERBS,
+ 		.v.verbs = (const struct hda_verb[]) {
+@@ -8096,6 +8106,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
+ 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
+ 	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
++	SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
  
- 	data = memdup_user_nul(buf, count);
-@@ -1451,7 +1451,7 @@ static ssize_t smk_write_net6addr(struct
- 		return -EPERM;
- 	if (*ppos != 0)
- 		return -EINVAL;
--	if (count < SMK_NETLBLADDRMIN)
-+	if (count < SMK_NETLBLADDRMIN || count > PAGE_SIZE - 1)
- 		return -EINVAL;
- 
- 	data = memdup_user_nul(buf, count);
-@@ -1858,6 +1858,10 @@ static ssize_t smk_write_ambient(struct
- 	if (!smack_privileged(CAP_MAC_ADMIN))
- 		return -EPERM;
- 
-+	/* Enough data must be present */
-+	if (count == 0 || count > PAGE_SIZE)
-+		return -EINVAL;
-+
- 	data = memdup_user_nul(buf, count);
- 	if (IS_ERR(data))
- 		return PTR_ERR(data);
-@@ -2029,6 +2033,9 @@ static ssize_t smk_write_onlycap(struct
- 	if (!smack_privileged(CAP_MAC_ADMIN))
- 		return -EPERM;
- 
-+	if (count > PAGE_SIZE)
-+		return -EINVAL;
-+
- 	data = memdup_user_nul(buf, count);
- 	if (IS_ERR(data))
- 		return PTR_ERR(data);
-@@ -2116,6 +2123,9 @@ static ssize_t smk_write_unconfined(stru
- 	if (!smack_privileged(CAP_MAC_ADMIN))
- 		return -EPERM;
- 
-+	if (count > PAGE_SIZE)
-+		return -EINVAL;
-+
- 	data = memdup_user_nul(buf, count);
- 	if (IS_ERR(data))
- 		return PTR_ERR(data);
-@@ -2669,6 +2679,10 @@ static ssize_t smk_write_syslog(struct f
- 	if (!smack_privileged(CAP_MAC_ADMIN))
- 		return -EPERM;
- 
-+	/* Enough data must be present */
-+	if (count == 0 || count > PAGE_SIZE)
-+		return -EINVAL;
-+
- 	data = memdup_user_nul(buf, count);
- 	if (IS_ERR(data))
- 		return PTR_ERR(data);
-@@ -2761,10 +2775,13 @@ static ssize_t smk_write_relabel_self(st
- 		return -EPERM;
- 
- 	/*
-+	 * No partial write.
- 	 * Enough data must be present.
- 	 */
- 	if (*ppos != 0)
- 		return -EINVAL;
-+	if (count == 0 || count > PAGE_SIZE)
-+		return -EINVAL;
- 
- 	data = memdup_user_nul(buf, count);
- 	if (IS_ERR(data))
+ #if 0
+ 	/* Below is a quirk table taken from the old code.
 
 
