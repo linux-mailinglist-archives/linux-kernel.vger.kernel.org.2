@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB9132EC94
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEACF32ECA2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233676AbhCEMmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:42:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58100 "EHLO mail.kernel.org"
+        id S231176AbhCEN40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:56:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231259AbhCEMlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:41:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A93956501F;
-        Fri,  5 Mar 2021 12:41:50 +0000 (UTC)
+        id S233702AbhCEMmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:42:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF07C6501E;
+        Fri,  5 Mar 2021 12:42:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948111;
-        bh=wWvdkD/gGDUfrBRjECaeEPcBEBLDlCHn/CODSAImjCc=;
+        s=korg; t=1614948139;
+        bh=WYcOdaPInSYEuY4UveYO3WT1u99GFyMsfnKr+Qa1lPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nxpvd6TN/Pn62KrnbVVK/dryAD6RA62Q2HEPitEEK8HSdmyDsXPqFQHCS/+r4tzy/
-         0So4jmJBpo0DJCP7dJ+13yXTL3QwwCEHp+7+QXMblaLitNzfoOnYyHZRIyJ3Xu3f2Q
-         wJdrhqYq5sYohl+cEMabBF0KrFr+ZflLMXHC/WFI=
+        b=uq+NA9e+FE+cszE4h0PLnHCLfZLPnXi8ywGcdO85LGVuv4d1BKaYUz86Pch09GaYV
+         8C6q9pIp8hHxteOgRgzeakOQNW4GPVE8eZMKf9rpUS4XWIER8SFzm0quWbgu27RHBM
+         pcVXM1FMAm3FO9xvYTjFKWc6uGvMhbmIUnh93YTk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 32/41] media: uvcvideo: Allow entities with no pads
-Date:   Fri,  5 Mar 2021 13:22:39 +0100
-Message-Id: <20210305120852.861820989@linuxfoundation.org>
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.9 41/41] media: v4l: ioctl: Fix memory leak in video_usercopy
+Date:   Fri,  5 Mar 2021 13:22:48 +0100
+Message-Id: <20210305120853.312724479@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
 References: <20210305120851.255002428@linuxfoundation.org>
@@ -41,48 +44,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricardo Ribalda <ribalda@chromium.org>
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-[ Upstream commit 7532dad6634031d083df7af606fac655b8d08b5c ]
+commit fb18802a338b36f675a388fc03d2aa504a0d0899 upstream.
 
-Avoid an underflow while calculating the number of inputs for entities
-with zero pads.
+When an IOCTL with argument size larger than 128 that also used array
+arguments were handled, two memory allocations were made but alas, only
+the latter one of them was released. This happened because there was only
+a single local variable to hold such a temporary allocation.
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Fix this by adding separate variables to hold the pointers to the
+temporary allocations.
+
+Reported-by: Arnd Bergmann <arnd@kernel.org>
+Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
+Fixes: d14e6d76ebf7 ("[media] v4l: Add multi-planar ioctl handling code")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/uvc/uvc_driver.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/media/v4l2-core/v4l2-ioctl.c |   19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 9803135f2e59..96e9c25926e1 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -869,7 +869,10 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
- 	unsigned int i;
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -2804,7 +2804,7 @@ video_usercopy(struct file *file, unsign
+ 	       v4l2_kioctl func)
+ {
+ 	char	sbuf[128];
+-	void    *mbuf = NULL;
++	void    *mbuf = NULL, *array_buf = NULL;
+ 	void	*parg = (void *)arg;
+ 	long	err  = -EINVAL;
+ 	bool	has_array_args;
+@@ -2859,20 +2859,14 @@ video_usercopy(struct file *file, unsign
+ 	has_array_args = err;
  
- 	extra_size = roundup(extra_size, sizeof(*entity->pads));
--	num_inputs = (type & UVC_TERM_OUTPUT) ? num_pads : num_pads - 1;
-+	if (num_pads)
-+		num_inputs = type & UVC_TERM_OUTPUT ? num_pads : num_pads - 1;
-+	else
-+		num_inputs = 0;
- 	size = sizeof(*entity) + extra_size + sizeof(*entity->pads) * num_pads
- 	     + num_inputs;
- 	entity = kzalloc(size, GFP_KERNEL);
-@@ -885,7 +888,7 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
+ 	if (has_array_args) {
+-		/*
+-		 * When adding new types of array args, make sure that the
+-		 * parent argument to ioctl (which contains the pointer to the
+-		 * array) fits into sbuf (so that mbuf will still remain
+-		 * unused up to here).
+-		 */
+-		mbuf = kmalloc(array_size, GFP_KERNEL);
++		array_buf = kmalloc(array_size, GFP_KERNEL);
+ 		err = -ENOMEM;
+-		if (NULL == mbuf)
++		if (array_buf == NULL)
+ 			goto out_array_args;
+ 		err = -EFAULT;
+-		if (copy_from_user(mbuf, user_ptr, array_size))
++		if (copy_from_user(array_buf, user_ptr, array_size))
+ 			goto out_array_args;
+-		*kernel_ptr = mbuf;
++		*kernel_ptr = array_buf;
+ 	}
  
- 	for (i = 0; i < num_inputs; ++i)
- 		entity->pads[i].flags = MEDIA_PAD_FL_SINK;
--	if (!UVC_ENTITY_IS_OTERM(entity))
-+	if (!UVC_ENTITY_IS_OTERM(entity) && num_pads)
- 		entity->pads[num_pads-1].flags = MEDIA_PAD_FL_SOURCE;
+ 	/* Handles IOCTL */
+@@ -2891,7 +2885,7 @@ video_usercopy(struct file *file, unsign
  
- 	entity->bNrInPins = num_inputs;
--- 
-2.30.1
-
+ 	if (has_array_args) {
+ 		*kernel_ptr = (void __force *)user_ptr;
+-		if (copy_to_user(user_ptr, mbuf, array_size))
++		if (copy_to_user(user_ptr, array_buf, array_size))
+ 			err = -EFAULT;
+ 		goto out_array_args;
+ 	}
+@@ -2911,6 +2905,7 @@ out_array_args:
+ 	}
+ 
+ out:
++	kfree(array_buf);
+ 	kfree(mbuf);
+ 	return err;
+ }
 
 
