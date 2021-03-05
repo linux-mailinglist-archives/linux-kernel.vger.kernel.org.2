@@ -2,108 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A5232E2CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 08:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E31E132E2C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 08:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbhCEHH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 02:07:57 -0500
-Received: from m12-15.163.com ([220.181.12.15]:36099 "EHLO m12-15.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229446AbhCEHH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 02:07:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=1CrzQ
-        K1FiZQ6UWshLPUj3+3c3rlvZ+x61jdocF6Jma8=; b=Inac1/PdOL9Oi2sDMH0WD
-        uOHyrLIK+aIUzdARMwf9vqeP7SOGpcj6EplN2U0F0JT65LhLE55uleZF+8CAywvh
-        Iqi86yjKeIZfuD4M/Ry+gs7+lsR+S/M6mSGbHEV72O9Zq3CQGwHRi+ON63cHLcVc
-        Fxa8dNZCQijfkmZuo3iibQ=
-Received: from localhost (unknown [119.137.55.151])
-        by smtp11 (Coremail) with SMTP id D8CowAC3vhKx10Fgj6uHDw--.63S2;
-        Fri, 05 Mar 2021 15:03:22 +0800 (CST)
-Date:   Fri, 5 Mar 2021 15:03:25 +0800
-From:   angkery <angkery@163.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        drt@linux.ibm.com, ljp@linux.ibm.com, sukadev@linux.ibm.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-Subject: Re: [PATCH] ibmvnic: remove excessive irqsave
-Message-ID: <20210305150325.0000286b.angkery@163.com>
-In-Reply-To: <67215668-0850-a0f3-06e1-49db590b8fcc@csgroup.eu>
-References: <20210305014350.1460-1-angkery@163.com>
-        <67215668-0850-a0f3-06e1-49db590b8fcc@csgroup.eu>
-Organization: yulong
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-w64-mingw32)
+        id S229516AbhCEHFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 02:05:44 -0500
+Received: from mail-db8eur05on2115.outbound.protection.outlook.com ([40.107.20.115]:39392
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229446AbhCEHFn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 02:05:43 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c+YCrNhuZOxQElJc6LwNcSGmB6eqedHHOQ4jBz0KpqY4iIq4AdPNFHRPZgkIhSsCR3VGxpIWLpMOL1Z9QxxS17RA1k+TGu3aN/XwWk0LHzfHZe0dDz+zaWJlPKzB/jqmf+ebgz9A1rIEL3R9zpv/FlI6JFVtHAf/OokZoofw2PLGUYoqJGyXK0qZZHGzyWoqk9Njffz95kV00gA1QGaSFJ8JyMuxzczsPDh4+MJ9KxiHHnibKT/AiUG1VcXdip6mxa2XfkuErIrdMLy4pRL3+vsisH4mywNqfq61Vir0a0HZZot9cIeiyMU2f+6QQOrCAkhjWVWi6YtiWZGDxeUJmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0PpDnolJJbe124umqt+lTcwY3h9VSxXbJK5EQ1As/1M=;
+ b=fUY8k/6xxRtwF89B26/iCzHo2ejPxnPTO4APNnv+/8ox4KbixYD1UjojQpGy7DbrGySu+LeRKANojoHfRNbS/5O3LV4omwqub1QMvX5j6/wtltIWSubp/VdovP4ZVof6fl3I8PxyieZAS+QEGeH+hEY+aSNZBJ/kmJb7twrYWGHzOAsmNsYwwTrz8DMkqBz8B7nZhERMrTdb6O8BBiEI2R5iv7CwRIyD/OsJGGWdEVCeHLVWmFNoF8Fd4H1aOdaAkRJnNg6Eg2JXYJm/Oa9InBwv4pahZfjYLRUEKHzwa+y/ETFWlMqokE5xZtZeByOVuLh0+5Y3mqnZkCTmq5uf8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 193.8.40.99) smtp.rcpttodomain=kernel.org
+ smtp.mailfrom=leica-geosystems.com.cn; dmarc=pass (p=quarantine sp=quarantine
+ pct=100) action=none header.from=leica-geosystems.com.cn; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=leica-geosystems.com.cn; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0PpDnolJJbe124umqt+lTcwY3h9VSxXbJK5EQ1As/1M=;
+ b=aLc97L3wEojcFvuzgRtLTqkE0ENh2n3pZbrpA52EuMiZZaVEfhrJ1Ln66DD2ClgZRJypW9pMp69mFeBs5CFZKxo8R9rusbJJ1XedfL0trOtFBNJgRaReil502ZfNW+5EmJUt+aZ6kyckYsmlTwpXcNKeu46Pc+Dmf0iNCbJMdnA=
+Received: from AS8PR04CA0130.eurprd04.prod.outlook.com (2603:10a6:20b:127::15)
+ by AM6PR06MB5000.eurprd06.prod.outlook.com (2603:10a6:20b:63::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.29; Fri, 5 Mar
+ 2021 07:05:41 +0000
+Received: from HE1EUR02FT025.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:20b:127:cafe::30) by AS8PR04CA0130.outlook.office365.com
+ (2603:10a6:20b:127::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
+ Transport; Fri, 5 Mar 2021 07:05:41 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 193.8.40.99)
+ smtp.mailfrom=leica-geosystems.com.cn; kernel.org; dkim=none (message not
+ signed) header.d=none;kernel.org; dmarc=pass action=none
+ header.from=leica-geosystems.com.cn;
+Received-SPF: Pass (protection.outlook.com: domain of leica-geosystems.com.cn
+ designates 193.8.40.99 as permitted sender) receiver=protection.outlook.com;
+ client-ip=193.8.40.99; helo=aherlnxbspsrv01.lgs-net.com;
+Received: from aherlnxbspsrv01.lgs-net.com (193.8.40.99) by
+ HE1EUR02FT025.mail.protection.outlook.com (10.152.10.79) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3912.17 via Frontend Transport; Fri, 5 Mar 2021 07:05:40 +0000
+From:   LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
+To:     jic23@kernel.org, lars@metafoo.de, pmeerw@pmeerw.net,
+        robh+dt@kernel.org, denis.ciocca@st.com, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     grygorii.tertychnyi@leica-geosystems.com,
+        andrey.zhizhikin@leica-geosystems.com,
+        LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
+Subject: [PATCH 1/2] dt-bindings: iio: st,st-sensors.yaml New iis2mdc bindings
+Date:   Fri,  5 Mar 2021 07:05:35 +0000
+Message-Id: <20210305070536.2880-1-Qing-wu.Li@leica-geosystems.com.cn>
+X-Mailer: git-send-email 2.17.1
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-Content-Type: text/plain; charset=GB18030
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: D8CowAC3vhKx10Fgj6uHDw--.63S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJryfXrW5Jr1DGrWxuw45ZFb_yoW8trWkpF
-        srWFy3C3Wvqr1jgwsrXw10yFsrC3yDtry8WrykC3Wfuas8Zr1Fqr1rKFy29FWDJ3yfKan0
-        yF15Z3s3ZFn8C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UzKZXUUUUU=
-X-Originating-IP: [119.137.55.151]
-X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbiLQFMI1SIlLiOnAABsg
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 11cda72c-936d-4c56-8ed1-08d8dfa51603
+X-MS-TrafficTypeDiagnostic: AM6PR06MB5000:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR06MB5000A5E3A70B067C9CF76421D7969@AM6PR06MB5000.eurprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aBMmWgCTRLX92go/012xhoDcCqCodIwM9ea08TsDgLDM2vmm3umUVwNavvtRSJ7Nwold0QTBaT1qQplJkDCZ7Is644BVRF6HVLjkwPs5AeZTTNXmVQ2T1Gsu5y9vzjZZ0CWCtnMSVEFdtN+SXgE+I67NX7vJ/KZdVG7a3nnwgIelCNk9XzLULBHeZTiw1Q9juD+Obb61iXCCHPUXXSByvLKqb0KR4bRP94gltUSjxRTQ35UQvQlOKvOfehyy4uDc2ORtobtOKYgkJ8o6/WFvcIICG4CIYOZ2YE0NoMjq3fwIFqyp/xFx/n4x9YSnpzJT/ML4ZNXUxb45dsDcjDVpajc2pFUSi1H/ro1GD0CAg9x9REhikzDMx3Puti19xxTgcqIBcpXjP2ytaD7Q1x0iW4AnGDwmv33ejJ8L7SxNekhtR2Aooyr1YQuDKd1iTh3PBpGfEa1rGIXD0jKSPG/7InB8Jf6VDML0pWb7itiKcaBMp6oMLQcozSdeGTUi+b82KnzIVZBz6puSkEXWKrSpX2AB6izDZvfKJ2owgVaILDg47ut9UlV0WCDScbhkmU3yzEmy9pdobuWurODe6+cjGzOpxdOvj9FSgwxdjuaSKVsetFwcMMCA83zkKnubKkYT9nu6i0hCv5p4czcnKltHZ26gTeWFVRrdt0QrVKGWlGRhmug4M3LUXD5jAuCOKP1e
+X-Forefront-Antispam-Report: CIP:193.8.40.99;CTRY:CH;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:aherlnxbspsrv01.lgs-net.com;PTR:ahersrvdom51.leica-geosystems.com;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(39850400004)(396003)(36840700001)(46966006)(316002)(6486002)(6506007)(8936002)(2616005)(70586007)(118246002)(478600001)(82310400003)(4744005)(336012)(70206006)(956004)(186003)(34020700004)(36756003)(81166007)(8676002)(82740400003)(4326008)(6666004)(356005)(5660300002)(6512007)(86362001)(47076005)(1076003)(26005)(107886003)(36736006)(2906002)(36860700001);DIR:OUT;SFP:1102;
+X-OriginatorOrg: leica-geosystems.com.cn
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2021 07:05:40.0027
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11cda72c-936d-4c56-8ed1-08d8dfa51603
+X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a;Ip=[193.8.40.99];Helo=[aherlnxbspsrv01.lgs-net.com]
+X-MS-Exchange-CrossTenant-AuthSource: HE1EUR02FT025.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR06MB5000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Mar 2021 06:49:14 +0100
-Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+Add support for ST magnetometer lsm303ah,sm303dac and iis2mdc.
+The patch tested with IIS2MDC instrument.
 
-> Le 05/03/2021 à 02:43, angkery a écrit :
-> > From: Junlin Yang <yangjunlin@yulong.com>
-> > 
-> > ibmvnic_remove locks multiple spinlocks while disabling interrupts:
-> > spin_lock_irqsave(&adapter->state_lock, flags);
-> > spin_lock_irqsave(&adapter->rwi_lock, flags);
-> > 
-> > there is no need for the second irqsave,since interrupts are
-> > disabled at that point, so remove the second irqsave:  
-> 
-> The problème is not that there is no need. The problem is a lot more
-> serious: As reported by coccinella, the second _irqsave() overwrites
-> the value saved in 'flags' by the first _irqsave, therefore when the
-> second _irqrestore comes, the value in 'flags' is not valid, the
-> value saved by the first _irqsave has been lost. This likely leads to
-> IRQs remaining disabled, which is _THE_ problem really.
-> 
+Signed-off-by: LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
+---
+ Documentation/devicetree/bindings/iio/st,st-sensors.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Thank you for explaining the real problem.
-I will update the commit information with your description.
-
-
-> > spin_lock_irqsave(&adapter->state_lock, flags);
-> > spin_lock(&adapter->rwi_lock);
-> > 
-> > Generated by: ./scripts/coccinelle/locks/flags.cocci
-> > ./drivers/net/ethernet/ibm/ibmvnic.c:5413:1-18:
-> > ERROR: nested lock+irqsave that reuses flags from line 5404.
-> > 
-> > Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
-> > ---
-> >   drivers/net/ethernet/ibm/ibmvnic.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/ibm/ibmvnic.c
-> > b/drivers/net/ethernet/ibm/ibmvnic.c index 2464c8a..a52668d 100644
-> > --- a/drivers/net/ethernet/ibm/ibmvnic.c
-> > +++ b/drivers/net/ethernet/ibm/ibmvnic.c
-> > @@ -5408,9 +5408,9 @@ static void ibmvnic_remove(struct vio_dev
-> > *dev)
-> >   	 * after setting state, so __ibmvnic_reset() which is
-> > called
-> >   	 * from the flush_work() below, can make progress.
-> >   	 */
-> > -	spin_lock_irqsave(&adapter->rwi_lock, flags);
-> > +	spin_lock(&adapter->rwi_lock);
-> >   	adapter->state = VNIC_REMOVING;
-> > -	spin_unlock_irqrestore(&adapter->rwi_lock, flags);
-> > +	spin_unlock(&adapter->rwi_lock);
-> >   
-> >   	spin_unlock_irqrestore(&adapter->state_lock, flags);
-> >   
-> >   
-
+diff --git a/Documentation/devicetree/bindings/iio/st,st-sensors.yaml b/Documentation/devicetree/bindings/iio/st,st-sensors.yaml
+index db291a9390b7..6fd61ffde72b 100644
+--- a/Documentation/devicetree/bindings/iio/st,st-sensors.yaml
++++ b/Documentation/devicetree/bindings/iio/st,st-sensors.yaml
+@@ -66,6 +66,11 @@ properties:
+       - st,lis3mdl-magn
+       - st,lis2mdl
+       - st,lsm9ds1-magn
++      - st,lsm303ah_magn
++      - st,ism303dac_magn
++      - st,iis2mdc_magn
++      - st,lsm303agr_magn
++      - st,lis2mdl_magn
+         # Pressure sensors
+       - st,lps001wp-press
+       - st,lps25h-press
+-- 
+2.17.1
 
