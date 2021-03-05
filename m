@@ -2,160 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9552D32F374
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D91332F37A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbhCETG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 14:06:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbhCETGZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:06:25 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A440AC061574;
-        Fri,  5 Mar 2021 11:06:25 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id z13so3121092iox.8;
-        Fri, 05 Mar 2021 11:06:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=ephVPlQPJmmPgwhZ2BDumy4J7FYaDt1vhPn9UDOeoJo=;
-        b=kojJFOK8wEx+Qt0aJW+eosn5VciYXvhfgX7yNDY76O61WB28CtLFCegC5mXJnPupea
-         4tC1hE5pd+2gzZ2O1oqu8C8KxO+BI8qRjqFtbhUvvk8/46XDZOW7BkcLw9VaKPzjYfju
-         jgJUbcYqFdZRQ8C5J/QrB6qT2/L+FPVkq9qR4vjcEt//m2dQW/ezz4jf18LOsOtgyb2P
-         yn4mLiUTdgWY7yCy/2LETIg1Cnt/xpRjp/t6ShJ+JahHSeWjCBfeHLjdj1+lZBQdLR6P
-         mAHBTpgbQzJN9rr2Aw2rEP851YTtQLXqOMHJXXB7fhiFF9+JvSKaXwWY7R0NSiy6fw1q
-         Qwiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=ephVPlQPJmmPgwhZ2BDumy4J7FYaDt1vhPn9UDOeoJo=;
-        b=V1rLD8DS1h4j+kb0RzLnzJEWGfu0tAOVis4hNLovW3XnOQoTd4EHW7qt9U9m3kPCTi
-         IkXnTVweMth7MH/vfHImXXmAOaqRRVGH/3lzecKb3XOIt1VBwDE5ywZ24jwas19lES1H
-         PW74M8Uw1LVHo7Gvt29TA8Bm2w8C787D9wmK3CZ5ND4Z82haCIZ8sjom9MQQW/GjY1M5
-         0GgZ2WHMbngWWXXeR84qqVgTle9pq5Zf0jIomea6S9VdyFIay86DHOKRQZTCOu1g/VK8
-         5S+iE/+ZjWCqWU/KDWzO8rXqc/axIxqtAuGK6PoVXfuvrbz6flzDZukPgEwQXWlQVZtS
-         DcKQ==
-X-Gm-Message-State: AOAM532GnkGMhkaxmBCzC8ni+ZYOhDv3zJsNzorOJA546shVhtNd5UgT
-        xGTyRn92hmvoU5G2hyIoa/kRp7AI1I5DFWhY1+L16+COB7nI7w==
-X-Google-Smtp-Source: ABdhPJzKdMf1mIFrNmr97CtuPmXnIqCEzovVEwqThK1uBKchst6MkQlpqyIFkZrOUZzZP5fVGWprg8vJpiXN5fFL/YU=
-X-Received: by 2002:a02:7822:: with SMTP id p34mr11371391jac.65.1614971185085;
- Fri, 05 Mar 2021 11:06:25 -0800 (PST)
+        id S229929AbhCETHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 14:07:33 -0500
+Received: from mga11.intel.com ([192.55.52.93]:64834 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229783AbhCETHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 14:07:19 -0500
+IronPort-SDR: Pz0z9ZgirN1XQJk90gy7MyR79bxjwSJwXvUUUz9MJb/4kWTIEXpgwcvuFU7dvt5V/nPt6tNhqM
+ jgJ2uIaWNtVA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="184338723"
+X-IronPort-AV: E=Sophos;i="5.81,226,1610438400"; 
+   d="scan'208";a="184338723"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 11:07:16 -0800
+IronPort-SDR: 6OrOR0E3cTy0QjhjPeFjufHi6tbE72inF3ZI1AHfVGI0mZRGq0n+HZA5CuXUNN4Qq7NzOYqLEE
+ eVKqPNatsk2A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,226,1610438400"; 
+   d="scan'208";a="508166776"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP; 05 Mar 2021 11:07:16 -0800
+Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
+        by linux.intel.com (Postfix) with ESMTP id EC20B580717;
+        Fri,  5 Mar 2021 11:07:15 -0800 (PST)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     irenic.rajneesh@gmail.com, hdegoede@redhat.com,
+        mgross@linux.intel.com, sasha.neftin@intel.com
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org
+Subject: [PATCH] platform/x86: intel_pmc: Ignore GBE LTR on Tiger Lake platforms
+Date:   Fri,  5 Mar 2021 11:06:08 -0800
+Message-Id: <20210305190608.1834164-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CA+icZUWJyPTefHkGEgQtDO9TOM4CN_b2qPJGQVF7NE=Q=fGAEQ@mail.gmail.com>
- <CA+icZUUzBvmi9SvJ4Bh8ER_+Rkm9vv9FkKwoS8ofmRsko_fJhg@mail.gmail.com>
- <CA+icZUXCgW0bPcqNf+DSubBciQeBMbNX5zbjkMXinqRdkE1PfA@mail.gmail.com>
- <20210301155321.GA1490228@rowland.harvard.edu> <CA+icZUVpQtsq8y=rjR3Ad_G1VXWpR4D4xao8DGUkRiuxoT+cPA@mail.gmail.com>
- <20210305160728.GE38200@rowland.harvard.edu>
-In-Reply-To: <20210305160728.GE38200@rowland.harvard.edu>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 5 Mar 2021 20:05:49 +0100
-Message-ID: <CA+icZUXnjDwyKEoX_7KOaVd=PpvEQhpJRvwZbW_xocDfXZpUzQ@mail.gmail.com>
-Subject: Re: [xhci] usb 4-1: reset SuperSpeed Gen 1 USB device number 2 using xhci_hcd
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 5:07 PM Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> On Fri, Mar 05, 2021 at 01:09:16PM +0100, Sedat Dilek wrote:
-> > On Mon, Mar 1, 2021 at 4:53 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> > [ ... ]
-> > > You can use usbmon on bus 4 to record the USB traffic.  It may indicate
-> > > why the resets occur.
-> > >
-> >
-> > Hi Alan,
-> >
-> > I followed the instructions in [1].
-> >
-> > root# modprobe -v usbmon
-> >
-> > root# ls /sys/kernel/debug/usb/usbmon
-> > 0s  0u  1s  1t  1u  2s  2t  2u  3s  3t  3u  4s  4t  4u
-> >
-> > root# cat /sys/kernel/debug/usb/usbmon/4u > /tmp/usbmon-log_4u.txt
-> > [ Ctrl+C ]
-> >
-> > I recorded 13:03 - 13:04 (one minute).
-> >
-> > So these xhci-resets should be included:
-> >
-> > [Fri Mar  5 13:03:07 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-> > number 2 using xhci_hcd
-> > [Fri Mar  5 13:03:07 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-> > number 2 using xhci_hcd
-> > [Fri Mar  5 13:03:27 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-> > number 2 using xhci_hcd
-> > [Fri Mar  5 13:03:27 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-> > number 2 using xhci_hcd
-> > [Fri Mar  5 13:03:27 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-> > number 2 using xhci_hcd
-> > [Fri Mar  5 13:03:28 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-> > number 2 using xhci_hcd
-> > [Fri Mar  5 13:03:28 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-> > number 2 using xhci_hcd
-> >
-> > The usbmon-log is attached.
-> >
-> > Unsure how to interpret the log - the kernel-doc says `raw data`.
-> > How can I bring this into a human-readable format?
-> > Can you give me a hand?
->
-> Don't worry about trying to decode the output.  To me it looks like the
-> drive crashes and needs to be reset at times when the computer sends it
-> an ATA command.  (Not all ATA commands, but some.)  You can prevent this
-> by setting the following module parameter for the usb-storage driver:
->
->         quirks=174c:55aa:t
->
-> where the two numbers are the Vendor and Product IDs for the external
-> drive, and the 't' is a quirks flag saying not to use any ATA commands.
-> If this module parameter fixes the problem, we can add a permanent quirk
-> setting to the kernel.
->
+Due to a HW limitation, the Latency Tolerance Reporting (LTR) value
+programmed in the Tiger Lake GBE controller is not large enough to allow
+the platform to enter Package C10, which in turn prevents the platform from
+achieving its low power target during suspend-to-idle.  Ignore the GBE LTR
+value on Tiger Lake. LTR ignore functionality is currently performed solely
+by a debugfs write call. Split out the LTR code into its own function that
+can be called by both the debugfs writer and by this work around.
 
-Thanks Alan.
+Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+Reviewed-by: Sasha Neftin <sasha.neftin@intel.com>
+Cc: intel-wired-lan@lists.osuosl.org
+---
+ drivers/platform/x86/intel_pmc_core.c | 55 ++++++++++++++++++++-------
+ 1 file changed, 42 insertions(+), 13 deletions(-)
 
-I did:
+diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
+index ee2f757515b0..ab31eb646a1a 100644
+--- a/drivers/platform/x86/intel_pmc_core.c
++++ b/drivers/platform/x86/intel_pmc_core.c
+@@ -863,34 +863,45 @@ static int pmc_core_pll_show(struct seq_file *s, void *unused)
+ }
+ DEFINE_SHOW_ATTRIBUTE(pmc_core_pll);
+ 
+-static ssize_t pmc_core_ltr_ignore_write(struct file *file,
+-					 const char __user *userbuf,
+-					 size_t count, loff_t *ppos)
++static int pmc_core_write_ltr_ignore(u32 value)
+ {
+ 	struct pmc_dev *pmcdev = &pmc;
+ 	const struct pmc_reg_map *map = pmcdev->map;
+-	u32 val, buf_size, fd;
+-	int err;
+-
+-	buf_size = count < 64 ? count : 64;
+-
+-	err = kstrtou32_from_user(userbuf, buf_size, 10, &val);
+-	if (err)
+-		return err;
++	u32 fd;
++	int err = 0;
+ 
+ 	mutex_lock(&pmcdev->lock);
+ 
+-	if (val > map->ltr_ignore_max) {
++	if (fls(value) > map->ltr_ignore_max) {
+ 		err = -EINVAL;
+ 		goto out_unlock;
+ 	}
+ 
+ 	fd = pmc_core_reg_read(pmcdev, map->ltr_ignore_offset);
+-	fd |= (1U << val);
++	fd |= value;
+ 	pmc_core_reg_write(pmcdev, map->ltr_ignore_offset, fd);
+ 
+ out_unlock:
+ 	mutex_unlock(&pmcdev->lock);
++
++	return err;
++}
++
++static ssize_t pmc_core_ltr_ignore_write(struct file *file,
++					 const char __user *userbuf,
++					 size_t count, loff_t *ppos)
++{
++	u32 buf_size, val;
++	int err;
++
++	buf_size = count < 64 ? count : 64;
++
++	err = kstrtou32_from_user(userbuf, buf_size, 10, &val);
++	if (err)
++		return err;
++
++	err = pmc_core_write_ltr_ignore(1U << val);
++
+ 	return err == 0 ? count : err;
+ }
+ 
+@@ -1189,6 +1200,15 @@ static int quirk_xtal_ignore(const struct dmi_system_id *id)
+ 	return 0;
+ }
+ 
++static int quirk_ltr_ignore(u32 val)
++{
++	int err;
++
++	err = pmc_core_write_ltr_ignore(val);
++
++	return err;
++}
++
+ static const struct dmi_system_id pmc_core_dmi_table[]  = {
+ 	{
+ 	.callback = quirk_xtal_ignore,
+@@ -1244,6 +1264,15 @@ static int pmc_core_probe(struct platform_device *pdev)
+ 	pmcdev->pmc_xram_read_bit = pmc_core_check_read_lock_bit();
+ 	dmi_check_system(pmc_core_dmi_table);
+ 
++	/*
++	 * On TGL, due to a hardware limitation, the GBE LTR blocks PC10 when
++	 * a cable is attached. Tell the PMC to ignore it.
++	 */
++	if (pmcdev->map == &tgl_reg_map) {
++		dev_dbg(&pdev->dev, "ignoring GBE LTR\n");
++		quirk_ltr_ignore(1U << 3);
++	}
++
+ 	pmc_core_dbgfs_register(pmcdev);
+ 
+ 	device_initialized = true;
+-- 
+2.25.1
 
-[ /etc/modules-load.d/usb-storage.conf ]
-
-# Add quirks for ATA commands for usb-storage devices connected to
-ASMedia M1042 USB-3.0 controller
-options usb-storage quirks=174c:55aa:t
-- EOF -
-
-It is:
-
-/lib/modules/5.12.0-rc1-11-amd64-clang13-cfi/kernel/drivers/usb/storage/usb-storage.ko
-
-But:
-
-root# lsmod | grep usb | grep storage
-usb_storage            90112  2 uas
-scsi_mod              307200  6 sd_mod,usb_storage,uas,libata,sg,sr_mod
-usbcore               385024  14
-usbserial,xhci_hcd,ehci_pci,usbnet,usbhid,usb_storage,usb_wwan,uvcvideo,ehci_hcd,btusb,xhci_pci,cdc_ether,uas,option
-
-I have not rebooted yet.
-
-Interferences with PowerTop?
-
-These xhci-resets happen every 10mins in a sequence of 4.
-
-I have here a powertop.service (systemd) with passing --auto-tune option.
-That was not a problem with previous Linux-kernels >= v5.12-rc1, so.
-
-Alan, what do you think?
-
-- Sedat -
