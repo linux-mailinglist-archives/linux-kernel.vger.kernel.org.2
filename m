@@ -2,76 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FDF32EF81
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FDC32EF84
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhCEP7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:59:52 -0500
-Received: from sibelius.xs4all.nl ([83.163.83.176]:62061 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhCEP7X (ORCPT
+        id S230175AbhCEQAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 11:00:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53067 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229517AbhCEQAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:59:23 -0500
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 5a33bfea;
-        Fri, 5 Mar 2021 16:59:15 +0100 (CET)
-Date:   Fri, 5 Mar 2021 16:59:15 +0100 (CET)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     krzysztof.kozlowski@canonical.com,
-        linux-arm-kernel@lists.infradead.org, maz@kernel.org,
-        robh@kernel.org, arnd@kernel.org, olof@lixom.net, tony@atomide.com,
-        mohamed.mediouni@caramail.com, stan@corellium.com, graf@amazon.com,
-        will@kernel.org, linus.walleij@linaro.org, mark.rutland@arm.com,
-        andy.shevchenko@gmail.com, gregkh@linuxfoundation.org,
-        corbet@lwn.net, catalin.marinas@arm.com, hch@infradead.org,
-        davem@davemloft.net, devicetree@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <2a4c461a-51d1-60b7-b698-edb3c0bfb243@marcan.st> (message from
-        Hector Martin on Fri, 5 Mar 2021 20:14:10 +0900)
-Subject: Re: [RFT PATCH v3 27/27] arm64: apple: Add initial Apple Mac mini
- (M1, 2020) devicetree
-References: <20210304213902.83903-1-marcan@marcan.st>
- <20210304213902.83903-28-marcan@marcan.st>
- <e45c15ae-ee81-139c-5da1-a6759e39fd71@canonical.com> <2a4c461a-51d1-60b7-b698-edb3c0bfb243@marcan.st>
-Message-ID: <c1bc827f65e47744@bloch.sibelius.xs4all.nl>
+        Fri, 5 Mar 2021 11:00:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614960019;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tMFDf9/VQqzgB3HMa/pgJ1GSD4Q0k9QkIQ3iQdoAib0=;
+        b=YpT4yT7v7tQxCEvqpJ4Eo00+95PgK+lZxmAM11ugBkchEryCFhSSIN8RBgJIMfeDWUyFlC
+        48ALPnT3+a743GBKfTM//5Vg2Mx9Pdvg6wvLUay11n/V4byhx9St0MBE2a7vlkDmnsBs2/
+        HJRNi7I+uNQ+J6s7M/5H3MmcuLvVANE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-459-PKFWD34XOImkvUENlYeWug-1; Fri, 05 Mar 2021 11:00:15 -0500
+X-MC-Unique: PKFWD34XOImkvUENlYeWug-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 213021005D4F;
+        Fri,  5 Mar 2021 16:00:12 +0000 (UTC)
+Received: from [10.10.112.212] (ovpn-112-212.rdu2.redhat.com [10.10.112.212])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EFD7218AD6;
+        Fri,  5 Mar 2021 16:00:10 +0000 (UTC)
+Subject: Re: [PATCH V2] docs: livepatch: Fix a typo and remove the unnecessary
+ gaps in a sentence
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>, jpoimboe@redhat.com,
+        jikos@kernel.org, mbenes@suse.cz, pmladek@suse.com, corbet@lwn.net,
+        live-patching@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+References: <20210305100923.3731-1-unixbhaskar@gmail.com>
+ <20210305125600.GM2723601@casper.infradead.org> <YEI0EcR5G53IoYzb@Gentoo>
+From:   Joe Lawrence <joe.lawrence@redhat.com>
+Message-ID: <f8b10ee7-026c-1dc0-fb0c-2a887cd1e953@redhat.com>
+Date:   Fri, 5 Mar 2021 11:00:10 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <YEI0EcR5G53IoYzb@Gentoo>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Hector Martin <marcan@marcan.st>
-> Date: Fri, 5 Mar 2021 20:14:10 +0900
+On 3/5/21 8:37 AM, Bhaskar Chowdhury wrote:
+> On 12:56 Fri 05 Mar 2021, Matthew Wilcox wrote:
+>> On Fri, Mar 05, 2021 at 03:39:23PM +0530, Bhaskar Chowdhury wrote:
+>>> s/varibles/variables/
+>>>
+>>> ...and remove leading spaces from a sentence.
+>>
+>> What do you mean 'leading spaces'?  Separating two sentences with
+>> one space or two is a matter of personal style, and we do not attempt
+>> to enforce a particular style in the kernel.
+>>
+> The spaces before the "In" .. nor I am imposing anything , it was peter caught
+> and told me that it is hanging ..move it to the next line ..so I did. ..
 > 
-> On 05/03/2021 20.03, Krzysztof Kozlowski wrote:
-> >> +	memory@800000000 {
-> >> +		device_type = "memory";
-> >> +		reg = <0x8 0 0x2 0>; /* To be filled by loader */
-> > 
-> > Shouldn't this be 0x800000000 with ~0x80000000 length (or whatever is
-> > more common)? Or did I miss some ranges?
-> 
-> The base model has 8GB of RAM, and RAM always starts at 0x800000000, 
-> hence that reg property.
-> 
-> It's not actually useful to try to boot Linux like this, because it'll 
-> step all over device carveouts on both ends and break, but since those 
-> are potentially dynamic it doesn't really make sense to use a more 
-> specific example for the dts.
-> 
-> E.g. on my system, with my current firmware version, this ends up 
-> getting patched to:
-> 
-> reg = <0x8 0x0134c000 0x1 0xda294000>
 
-It may be better to handle the memory reserved by the firmware using a
-"/reserved-memory" node.  I think the benefit of that could be that it
-communicates the entire range of physical memory to the kernel, which
-means it could use large mappings in the page tables.  Unless the
-"/reserved-memory" node defines a region that has the "no-map"
-property of course.
+Initially I thought the same as Matthew, but after inspecting the diff I 
+realized it was just a line wrap.  Looks fine to me.
 
-That doesn't really have an impact on this diff though.  The
-firmware/bootloader would still have to modify the property on 16GB
-models.
+>>>   Sometimes it may not be convenient or possible to allocate shadow
+>>>   variables alongside their parent objects.  Or a livepatch fix may
+>>> -require shadow varibles to only a subset of parent object instances.  In
+>>> +require shadow variables to only a subset of parent object instances.
+>>
+>> wrong preposition, s/to/for/    ..where???
+
+Hi Bhaskar,
+
+Thanks for spotting, I'd be happy with v2 as is or a v3 if you want to 
+update s/shadow variables to only/shadow variables for only/  but 
+knowing me, I probably repeated the same phrasing elsewhere.  Up to you, 
+thanks.
+
+Acked-by: Joe Lawrence <joe.lawrence@redhat.com>
+
+-- Joe
+
