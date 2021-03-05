@@ -2,86 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B9F32EC69
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B2032EC6C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:42:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhCENlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:41:04 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:46774 "EHLO z11.mailgun.us"
+        id S230503AbhCENlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:41:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229750AbhCENkq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:40:46 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614951644; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=DmIWVPazE1ZGWAakc7cfMkZrozZnhscQVMNNwhF/Zw0=; b=Uw2z5fGVPprFAguNDEL6Vm4WVGkIsYJS0GiZ+t5Fw+3Lq4dsykImXv+udyS2noMJxYetB9C8
- wBBo3FrqFP+q1k7NxBpg1KIs1lp+rQ9+1vp+Kx1ilF01+V6+fJ1YQIY21/OLPCWjrjJVwfLr
- eIMPpnXbnkoUK5gfXADPYm3rFK4=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 604234d62a5e6d1bfa490ca0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Mar 2021 13:40:38
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BCE50C43464; Fri,  5 Mar 2021 13:40:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1EADCC433CA;
-        Fri,  5 Mar 2021 13:40:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1EADCC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jes Sorensen <Jes.Sorensen@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH RESEND][next] rtl8xxxu: Fix fall-through warnings for Clang
-References: <20210305094850.GA141221@embeddedor>
-Date:   Fri, 05 Mar 2021 15:40:33 +0200
-In-Reply-To: <20210305094850.GA141221@embeddedor> (Gustavo A. R. Silva's
-        message of "Fri, 5 Mar 2021 03:48:50 -0600")
-Message-ID: <871rct67n2.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S230496AbhCENlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 08:41:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A14E64F56;
+        Fri,  5 Mar 2021 13:41:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614951674;
+        bh=i0NLPhRz+02cMwgaFc3X10zAS4gewkQVd7yIx1aEt8U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rnsUE1NbBrKb3MwcMkWgnYrEPyyn0l0mnxF9itAmjxoyjNlhMkTG4hq8ABFCqvFtu
+         YEAD7SUDWDuJ463mqTP2395AqpvN4Vxuslwh1XosrjVXkSSlkW2c4aBBySKWiPeW/r
+         8ejzkLoDeirhDi7YMGOIYkSSAw5g3kcjHUnN8PF4vCZOZHySW4XpmOmW7LAW5OLz/d
+         JZ/IO8Z+gge+Xqhum/FOp1q9IArt5RnqPRNuWLRrQWoc4gbO457S9Rdzht6LjN27Iu
+         3ed1v3m/qz8nisWnonQEjgF9MotC6BJpCFhg5rlCviu5dUZFovTjoxrFi6X8bDV0UY
+         5NxivGHL/9dxQ==
+Date:   Fri, 5 Mar 2021 14:41:11 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        tglx@linutronix.de, mingo@kernel.org
+Subject: Re: timer: Report ignored local enqueue in nohz mode?
+Message-ID: <20210305134111.GA142352@lothringen>
+References: <20210303194945.GA20866@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303194945.GA20866@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Gustavo A. R. Silva" <gustavoars@kernel.org> writes:
+On Wed, Mar 03, 2021 at 11:49:45AM -0800, Paul E. McKenney wrote:
+> Hello, Frederic!
+> 
+> I don't see the following commit in mainline, but figured I should
+> check with you guys to see if the problem got solved in some other way.
+> Unless I hear otherwise, I will continue to carry this patch in -rcu
+> and will send it along for the v5.13 merge window.
 
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix
-> multiple warnings by replacing /* fall through */ comments with
-> the new pseudo-keyword macro fallthrough; instead of letting the
-> code fall through to the next case.
->
-> Notice that Clang doesn't recognize /* fall through */ comments as
-> implicit fall-through markings.
->
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+I have it included in a nohz series I'm about to post but since RCU is the
+motivation behind doing this, it's fine if you carry it.
 
-It's not cool that you ignore the comments you got in [1], then after a
-while mark the patch as "RESEND" and not even include a changelog why it
-was resent.
+I've just modified it a bit after a review from Peter:
 
-[1] https://patchwork.kernel.org/project/linux-wireless/patch/d522f387b2d0dde774785c7169c1f25aa529989d.1605896060.git.gustavoars@kernel.org/
+---
+From 7876725b8631147967bb9e65158ef1cb2bb94372 Mon Sep 17 00:00:00 2001
+From: Frederic Weisbecker <frederic@kernel.org>
+Date: Fri, 8 Jan 2021 13:50:12 +0100
+Subject: [PATCH] timer: Report ignored local enqueue in nohz mode
 
+Enqueuing a local timer after the tick has been stopped will result in
+the timer being ignored until the next random interrupt.
+
+Perform sanity checks to report these situations.
+
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar<mingo@kernel.org>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ kernel/sched/core.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index ca2bb629595f..24552911f92b 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -674,6 +674,22 @@ int get_nohz_timer_target(void)
+ 	return cpu;
+ }
+ 
++/* Make sure the timer won't be ignored in dynticks-idle case */
++static void wake_idle_assert_possible(void)
++{
++#ifdef CONFIG_SCHED_DEBUG
++	/*
++	 * Timers are re-evaluated after idle IRQs. In case of softirq,
++	 * we assume IRQ tail. Ksoftirqd shouldn't reach here as the
++	 * timer base wouldn't be idle. And inline softirq processing
++	 * after a call to local_bh_enable() within idle loop sound too
++	 * fun to be considered here.
++	 */
++	WARN_ONCE(in_task(),
++		  "Late timer enqueue may be ignored\n");
++#endif
++}
++
+ /*
+  * When add_timer_on() enqueues a timer into the timer wheel of an
+  * idle CPU then this timer might expire before the next timer event
+@@ -688,8 +704,10 @@ static void wake_up_idle_cpu(int cpu)
+ {
+ 	struct rq *rq = cpu_rq(cpu);
+ 
+-	if (cpu == smp_processor_id())
++	if (cpu == smp_processor_id()) {
++		wake_idle_assert_possible();
+ 		return;
++	}
+ 
+ 	if (set_nr_and_not_polling(rq->idle))
+ 		smp_send_reschedule(cpu);
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+2.25.1
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
