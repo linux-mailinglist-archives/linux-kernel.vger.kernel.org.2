@@ -2,266 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91B832F43B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E7432F43D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbhCETs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 14:48:59 -0500
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:24530 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229737AbhCETsh (ORCPT
+        id S229716AbhCETtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 14:49:32 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:16062 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229582AbhCETtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:48:37 -0500
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125JhChG020503;
-        Fri, 5 Mar 2021 11:48:26 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=proofpoint;
- bh=ClwoIfsSdA1dV1qKKaaiCT5NG7gso2dNZolPNJTBEjw=;
- b=A0Fh+PXiDfab5HmN4RegPyV2pu2e4NOf9V6l/FcLFzo5zmBhN7Ik30j5PYFTIxeLNNa4
- kz0siP7WSp/Nq7WoSHCub7Ow54hiR6Rhxl43uUowKdTdiwUs7GN4tiDu+0YyQ5DSgPQa
- F24w98ViX2Fxw67hoNC0pZojlF9mCWGQMPHR4n3Ey/9LF8soqDi5HW2Y7ShvNoE/ctTL
- DSgI6513ZGgY7SRTS5s0dOcVZNHZTWJO6IqywSB28xk+/P9wDkOEIXXez6i2e+XSbdqI
- v5E1lVeUYnOUqKssHB+6xY+X6ydhEyMOjdf89LFcIVVCE8c0IUvKpdmsjUp8GqlxRvtg UQ== 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 372bvqs7fb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 11:48:26 -0800
+        Fri, 5 Mar 2021 14:49:04 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125JjWRt021101;
+        Fri, 5 Mar 2021 11:48:56 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=Sk4yZI7Bp+UP9Nlhv+6pVDu8yJ9U2GexzJCEuuBRHBY=;
+ b=k3gUSwY0gYCocNaxeXIF2drfJENWPBSb5zfxfM7CBp04LcB+Eo88/kdu4SHVKBpy0yH2
+ bJNAAdAsXgpXni3W3bs32aHyLvt3ZtUu9/u4sSxuOnWMi8fanVlXkzgoR/xeA2rKtBvt
+ DZ0RnZ7H0q9NIR+b4AWaOwmBuTm67zAIC4E= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 373ha4ub8x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 05 Mar 2021 11:48:56 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 5 Mar 2021 11:48:54 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PWTymlE8NMZF516p202wZZwiTm8FE10LAMORmARryuMlSv+AqaFk38AQsmh9Txcj6ydLI1RvPE3T74vMeZ/FTqhn2Tig7vaDKYLnCNreyzdXZ2bDpN1llKyA0jHpBdSqPX7xvNYOOxSisr1ZVngcPqfBgysbVlX3kZdj5+500q9p4ZKFGEUX8j/pGumfeB6SUSEChnSWNViqy70sRApXq+dSbIrxTffwo0gnNfnd/6LCSdOsobj6HNfK7xRFeLGw5+kxWCE0Y8e5Zv5ixUjLlptgH5TGsHOcspfalTPA80/EKTVOOlhxeoIPbw7eFQJXYpkRFaPQpnuiOOr8/eoE4Q==
+ b=FcBeLFxVosFMZ/wOs6DL96rcgv0RsBEyxyi2pc+nsQTG/MBM6v1nxTDxJV26mWmuH+hexujpnNkFmBX4b/gHuTNRcwsknrep/jGFgcsXIu9pEXlMZFetxnhEpXGL3aiV4NDnkJw/gTIzzQ7fqI7Bd4m3qCA8mfpp6e1zg7kaXrw6vaD06OzeOIIVQYBo4BRCrnoyfgYu+gSf3PRsl6biMjfw/9LO6hQBJcXS8hopOZUyXN1ZuI2oGGWofomwSWGVdcuoiq/yQcnJgcdWvnjINJ4BEN5rWL12ilKsXh+FzEs0YbYS+EW400o4NzoXfEd8jvx8O4S9JQPYMbNVjO4lUQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ClwoIfsSdA1dV1qKKaaiCT5NG7gso2dNZolPNJTBEjw=;
- b=YdkWbyi+tS52XSB6HlqWq5K5TU3nZNW92DMO5w4MEufkEk1VJWzYvuMOmGkc90UvarSzE2vd0+k8CrHk4HgB2+gHFYpF9QSsfGnNsAHdVvnHEO6uUf1WMDxaCLGh+/H/Udv5TA8+GkwTDIVcRNwj+ScU502O0frbEsKugilEhnCQ8KGjXJKnOydDLCtGpfepN1LuAGSn2zKPQxk7JLc8torvG76g4u3U43MET8Fc/tTrLSQobMxCpQIjgZWru3OGkO4mqZOuHzp7D+o2JEJl4AFWudZsEqc8S89F/c5l9jC19+sdYvQ9CW/p5yaBvb9OASFwpTwPaJvCOjmin7/zvw==
+ bh=Sk4yZI7Bp+UP9Nlhv+6pVDu8yJ9U2GexzJCEuuBRHBY=;
+ b=n2o5VZe0zjhoMYldB1f8wrRZzsu8suOMPg6eHb3WCDyhq9lqAlKRUgMhNryNBfurDNBGivxpbHf5QQBbkgvOtgi3NzFspbzaSr8+4QJnujGHyIaCOr3ztDh2rhFaDBB4uD2l6lPho18IKGEJcddCmTY7X4tZYDRsoPVw49oet1Qj5TwRaCezE2QojGPv0aqeBuqlfoE98W8uFhK7IqNVTqkKSp1X06pCk0SFRBKglwOpuMiAhOeXwfFoazPdYtbjE/52D/V7y1EjVevuCD9tlzWegrKRK/b7gKiWE7g4kiIil0Vp5tVFgee6wEKatdCdBKIgDDl15JWyESfYMS6aZQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
- dkim=pass header.d=cadence.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ClwoIfsSdA1dV1qKKaaiCT5NG7gso2dNZolPNJTBEjw=;
- b=ZYq1x3uoXL7ixC5thnvJ+gHbdygooqWUqW89rRrSKcUv/BDrekB5w/oojfYCqAkJpiYcXWoqTbkA9RvCp0YlF4uEO6+i3lkBwf8GMWViZix++VipHNMQ4GNYTWquDbeAKONtojG/eUN911xBaFm6IqeKAr9o1wEiqaR9ELb+8z8=
-Received: from MN2PR07MB6160.namprd07.prod.outlook.com (2603:10b6:208:11d::30)
- by MN2PR07MB5853.namprd07.prod.outlook.com (2603:10b6:208:102::19) with
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: bytedance.com; dkim=none (message not signed)
+ header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3351.namprd15.prod.outlook.com (2603:10b6:a03:10c::29) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Fri, 5 Mar
- 2021 19:48:23 +0000
-Received: from MN2PR07MB6160.namprd07.prod.outlook.com
- ([fe80::294b:4e83:24b:ce39]) by MN2PR07MB6160.namprd07.prod.outlook.com
- ([fe80::294b:4e83:24b:ce39%4]) with mapi id 15.20.3890.032; Fri, 5 Mar 2021
- 19:48:23 +0000
-From:   Swapnil Kashinath Jakhade <sjakhade@cadence.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-Subject: RE: [PATCH v4 13/13] phy: cadence: phy-cadence-sierra: Enable
- pll_cmnlc and pll_cmnlc1 clocks
-Thread-Topic: [PATCH v4 13/13] phy: cadence: phy-cadence-sierra: Enable
- pll_cmnlc and pll_cmnlc1 clocks
-Thread-Index: AQHXELDCQxY8aZaYPkqeZi4z0Bh0jqp1ykfA
-Date:   Fri, 5 Mar 2021 19:48:23 +0000
-Message-ID: <MN2PR07MB6160A69CC43D6AF9D9C6F6FAC5969@MN2PR07MB6160.namprd07.prod.outlook.com>
-References: <20210304044122.15166-1-kishon@ti.com>
- <20210304044122.15166-14-kishon@ti.com>
-In-Reply-To: <20210304044122.15166-14-kishon@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcc2pha2hhZGVcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy1iZDBlZTA1MC03ZGViLTExZWItODU0Ny1jOGY3NTA0NDIyZDhcYW1lLXRlc3RcYmQwZWUwNTEtN2RlYi0xMWViLTg1NDctYzhmNzUwNDQyMmQ4Ym9keS50eHQiIHN6PSIzOTA4IiB0PSIxMzI1OTQ0NzMwMTc5NTY0MzEiIGg9ImNGR3Awa0dGalplUGxEalAwaXpxQkhQNkVhUT0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
-x-dg-rorf: true
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=cadence.com;
-x-originating-ip: [59.145.174.78]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8c187ec5-0f1d-4263-c465-08d8e00fa321
-x-ms-traffictypediagnostic: MN2PR07MB5853:
-x-microsoft-antispam-prvs: <MN2PR07MB585382720982B9711B1511FDC5969@MN2PR07MB5853.namprd07.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:288;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: n4RtfH4V2K8GLbIfPixGI7KPqQgEP6WhAP9eXff/HmnQmUfonuaT6kePqXtt0FkTCui5VKxFbSoGkeFsutDbVXvtM3avi6czJiL5gT/XBhuzQfxSIMW+KeJMdeAjGUbW18bVY9UUxxJJ09bxe0xu8jhwQ8rsYVtqPcQoBKhBR2w8kqPQquUChY3MIDeU1HXunZbrHQPoraUsmg40AUgTN+IWYSL2OmLEl49Ayxon3iYAtmfdoGWqiJe+p1mYMVZ3uT9DthPUvt5YAlC7M8KyutGJQDk/+DG7WOkoXinMgB3cSh629hEu3K9dvkMib/H47NKl2trGgaX3qN2sI4y0iu32kgSvGBRXOy5OCZt1YgPVvi8FCG7C7ti4UA9pf2rlagGFwQx4H8LuMyFpVIUwFO40tajjoZc7sj6gmXnW1X7bkykJw/YTSXxQmwv5wlm9iXjsX92vReZfyr64dbj7cDeaQJ13FkRKz7swTnpuC7RwE306vVmSkNLbHsjxNUMCE6EGvOQGD/c8Cu/xB3wyFoY9SYTvkL54AgBDEk1Akw3Gow6AGoeCoJXVzAdikQc8o4HQx4w3Nru07xUAssI1vQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR07MB6160.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(376002)(366004)(39860400002)(36092001)(2906002)(5660300002)(26005)(6506007)(316002)(86362001)(478600001)(33656002)(55016002)(53546011)(186003)(8936002)(110136005)(71200400001)(52536014)(54906003)(7696005)(9686003)(4326008)(76116006)(66556008)(66446008)(66476007)(66946007)(83380400001)(64756008)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?jIfXBubHmWKGp8HFnDMBDfdFJCXKpX5qf+3cRWllmUP29+YxuyudsLc4VIhb?=
- =?us-ascii?Q?cfLF2RMvEgcUvvFnNFklZj4JsB67fElpXh2VlswzpKpefUv77BZ5jxgM4zId?=
- =?us-ascii?Q?BbivVsXCjobgm4igH1x59J5ZyYGu2h4uX69EwDHrtAwedoYCZMyPsYd3yTwV?=
- =?us-ascii?Q?39U4KwvDovxZBnzrgt5TCjUeCxtVn8NKHXBV4ZqHixubvaiynaVNDKegRupW?=
- =?us-ascii?Q?XJN1qM27s8lt/ACgbKv3ziE7yjrihrQzBh3mOyNQ/aFX4Oha7FODlKjxgUmk?=
- =?us-ascii?Q?Q9fw1Y+pFlqV0l+uC+VqQ9GRfOdNthI/3PPDNo6HtejVqWlOF1ilUIa0fSXx?=
- =?us-ascii?Q?hyyVvjRLrnCBnbzwG3p+v/EjK7N2ZJLZne9CQOT2tjA6rIoncH/f5IKki378?=
- =?us-ascii?Q?xT1Jmlmg1fdt4rgklswj+tZsb6gksjzZVrK8ccvWL4rXAG8GFBSsvGfZawdh?=
- =?us-ascii?Q?A0RYx/NT6wg/zTpwhNR6nVQa7opfta6/Nq3cL7XwWGRX55SYtfNTHB9GSEOT?=
- =?us-ascii?Q?/d+8nmmqcWTC8PTylwCJiLMGJvQk7auyYcd+92g8e7gejgwwlLsReitzJ8m6?=
- =?us-ascii?Q?L8bNKN6BfFiYvi3Hpp/yffxYFBsoTRI7A0F4rAchQVI/2LEUYGrdOg0V2Fyc?=
- =?us-ascii?Q?F9HUb38QJkGjoR5vJUucrHNYxObiGul2QU31FUGV85BZE7LLGZR+vVd8G04a?=
- =?us-ascii?Q?ASPzTCskH0pRbGoHcXkpW/GhGcuQhfsJ9WPuGc2ADK4AE1hjhiyNB8W4fCgH?=
- =?us-ascii?Q?GlpN+t0Pe9DuZs1HD9xsrb+YO/jiP8YJXSNrV1Vy8fxJX+13smWoGyEtI/Q4?=
- =?us-ascii?Q?5ci+2H3scPzjk1brhqi4X4/+Z6BQGuob6GY1X+JcfGY6R6CDz0s684PkcoTl?=
- =?us-ascii?Q?P4cT2Za9YupvT/R4JjVO7CE5B8DpYljeNAl/JV7KhXh4hVVeohh9gpATV98d?=
- =?us-ascii?Q?c5fZPk4i/nscQpXUBHpWaEGI49v+r+j1hmYHwuWdKRJ9nPR0s1TtDfRvKn9v?=
- =?us-ascii?Q?AIXb+7RMv+njHRMD0vPvNpvOZ/R66vo8zD+b88XrQpMMZfRYKE72zDR5FxAS?=
- =?us-ascii?Q?Xp+huS7kIIHyWlEgymEV/zujs52Mh8fCjcq/XHKo+sWkC/fzVS/H/zU+P75m?=
- =?us-ascii?Q?euMTbaLgZZjZ685fjZxqPNoRXmDm1t2BopoI/WyM3m32sy6HHnOt1eKxo5XQ?=
- =?us-ascii?Q?M5jrv25IjbhyE2orTZON6A7Ll783RfX1i52Qh8eRKHs4CmldKnWAblUZCh9c?=
- =?us-ascii?Q?A0apfPt+bwoa5VuHN0AJrksxP9mqGIcMfKk6myTTliA9TLuFkPp/YqbVpjct?=
- =?us-ascii?Q?t6Tx7fM/QV+2z6FA6UISXvLE?=
-x-ms-exchange-transport-forked: True
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Fri, 5 Mar
+ 2021 19:48:53 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3912.022; Fri, 5 Mar 2021
+ 19:48:53 +0000
+Date:   Fri, 5 Mar 2021 11:48:49 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <akpm@linux-foundation.org>, <shakeelb@google.com>,
+        <vdavydov.dev@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <duanxiongchun@bytedance.com>
+Subject: Re: [PATCH v2 4/5] mm: memcontrol: introduce remote objcg charging
+ API
+Message-ID: <YEKLIUcPfpKYtFLA@carbon.dhcp.thefacebook.com>
+References: <20210303055917.66054-1-songmuchun@bytedance.com>
+ <20210303055917.66054-5-songmuchun@bytedance.com>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+In-Reply-To: <20210303055917.66054-5-songmuchun@bytedance.com>
+X-Originating-IP: [2620:10d:c090:400::5:6f6c]
+X-ClientProxiedBy: MW4PR03CA0123.namprd03.prod.outlook.com
+ (2603:10b6:303:8c::8) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-X-OriginatorOrg: cadence.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:6f6c) by MW4PR03CA0123.namprd03.prod.outlook.com (2603:10b6:303:8c::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 5 Mar 2021 19:48:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: aee1dbf4-fbaf-4f5a-b39b-08d8e00fb4c2
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3351:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB33511F20B638268EBCB77DC6BE969@BYAPR15MB3351.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Z32abLsTomkdVT94GUPyRxIhkJ4Tvm2MNaJzpBIKYu2psuFrkdNEhcM9y3q5ZRKZNHMmqk+FM+mKpe4Kr8uoPrdlmnd2ubvUpc97c5qx8z2oz19mzKN7hJl+T8FKHoO84NOcj+yCCI+5qQgp0UAIafRaREwrRWBsqfaeEVE1F2qUQJ84D4MtmsS1acCI2fzXpOdJhao2UHqG261g/OoJuckE3QIdH5BRi1KoFQBoBXAEapShg0kMFAXBSeXQ70/vmcwooLWbXlJY8BBXIlTyBTBH7DQmd7BTFu3Qujm95Xr+F/8BJaJbF+wFKZNelCbpN6NUt+kmDnVR9JFXtBmqYoGVv2Cro4Potex6Iipstqx6spAPToef7/9JzbqsIN2+S0pqJh5OXZuSB9Iyx2evWgDM7AVHm9UAbk0eDyEcsJxVCr71ECBcG6Tr9T0o1r/684ekoSFgRusKg1sI8Cn2O/+Sy3xTrGp2uyIZnBhLrcRh4X8HIbpeyJuqKDE0mIWuo2V2k5wHw3GV+bf3DxT/MQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(39860400002)(396003)(136003)(346002)(4326008)(316002)(2906002)(9686003)(66946007)(55016002)(66476007)(6916009)(478600001)(83380400001)(52116002)(16526019)(86362001)(6666004)(5660300002)(7696005)(186003)(8676002)(8936002)(66556008)(6506007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PXkuPCesMXuvhZqnQmmYVgXscpll9I/u+4dx2HAoJLKA7r9mYOj9bV5I/LXR?=
+ =?us-ascii?Q?/8emT/LJrf3UxVMOaO1CQ4srodHpdOfcjSF37si7ckzXKQcaIWobYLF6ci2v?=
+ =?us-ascii?Q?Yxh0M5xg6MECOG6g3UokViMuE55T4eLyl+RyekZzCKeGY+0/79F8pBxVyErt?=
+ =?us-ascii?Q?ufLIYTne5lqtcqW6O8fK6aXVQeaqAdQ5eTccfhCxJlVNELTgnCv38aQfjNV5?=
+ =?us-ascii?Q?q6tDDS6wUZUU8P0ELNx/1TWl9EmtG9PSnIXtGJuz4uwI3fu//62Y+Uk6hXCq?=
+ =?us-ascii?Q?DtUhdcKCku3xqk97FFAsN51R9Es0QVM3DtF3LahTl2l1OxApvotyv8AVlzsm?=
+ =?us-ascii?Q?ELJD2pXL7FVe0uvxwVA06IIGe7PmQdpm7UbFj01eHyXg1MknxaZw4b9IOb8d?=
+ =?us-ascii?Q?nKMS8ZJxrfIyHxCf7Nrn69rg5dEnLhZM5S45VaR4uoDZ9uoc+cRGJMKW0YIx?=
+ =?us-ascii?Q?mv1CBd3+0rImGjoxK34U8TdpzPrsgM1jUgW0kT3W7qUWEC86U9vlzsABY9zx?=
+ =?us-ascii?Q?Vafoth6uqtbYqobUthz3cGdWdUDlCVD/3u+M2dGZvRiTJga6kwCneg/DmlQQ?=
+ =?us-ascii?Q?CdVpsUC+KxDLs/JjqpsOUxtS4zWrhuzSfPOASQvqaUnsiEa+pjGFyJvGPx4x?=
+ =?us-ascii?Q?5lMU5A81ElV5V9XC26p1hPyPTr+maSunDQNzTg31hG+I8ejzoWrPKgl0wxPG?=
+ =?us-ascii?Q?FnH+BGbA3PQBtbKPhpr31O3/w2pbzjM4p8YC3eOoDmLkZs3T4CT//YcLZBPG?=
+ =?us-ascii?Q?TenhJOVaXfHZlLr+3boKti8Y5U6YicKXakrbJ5xzsdjNMAqhHyDNtik3dxbH?=
+ =?us-ascii?Q?tXbsO1jGUWKK83MSMrqp9qjLh+Uw0KmHlqjELpnJC7BsRpl7JC0Ol3VuP9KJ?=
+ =?us-ascii?Q?BjRFOvIH+LOJNOC/p8FQj5JZv/FCh8Hvj7H0UZeQBHDxjH5YzBrpdYs6l9EP?=
+ =?us-ascii?Q?v3Khs8XPQhCsqGvD4Ei3febizEr2oJDRrRFqcWcQcvhTSkBxRmawKvJ3YqAR?=
+ =?us-ascii?Q?qRAIU5VRl0OjBQjeCL5Xn4UOO3CQrKEk/SipbfIIXOMl76vQy1Nkhg025QGa?=
+ =?us-ascii?Q?+zZgEaOsr7C5pEW6oR3nhxM+z0Lm0Cz2SLQA3p4MMHpAMDfPUuFzeEDXgtyv?=
+ =?us-ascii?Q?iFI9FVnwXy2SWnwJQ4tzeJBF6Birajy4lQ/B2HoBBX7x4bGZOkDmekIZNHFt?=
+ =?us-ascii?Q?vl1KLhPgB5XI16phrYTPb0uJ+bcOV6/FiuQ1foJYEBw+hHOt9PWTdrq+B8pW?=
+ =?us-ascii?Q?vDXLnUQkOucfHaPyfC33H/hUiKAIseOxTPJeW2eLOwoAfCKno5KSGHDZRsqA?=
+ =?us-ascii?Q?X+81kAWQKnfZC8NRFCixQ2cMTM/qGTMnHXVJG07f4OtQjg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: aee1dbf4-fbaf-4f5a-b39b-08d8e00fb4c2
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR07MB6160.namprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c187ec5-0f1d-4263-c465-08d8e00fa321
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2021 19:48:23.7696
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2021 19:48:53.6764
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: il2R21kPnL+cnmxVna4YZeest0RbgL/DD4uQcxARpBFn9txeCKv9Kxb4Ya3RCPvmAd+oDnqjjlX7P+WT/EpY99GDil1eYBt0nGd5VKXvgHE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR07MB5853
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: q8r/AZolFG+DTsF4ED4WnvlQRQ2wxw10mjbNm4bI5oKzM9fB8k4PQR0IoJ2F9bWZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3351
+X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-03-05_13:2021-03-03,2021-03-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0
- lowpriorityscore=0 impostorscore=0 mlxscore=0 suspectscore=0
- mlxlogscore=999 bulkscore=0 adultscore=0 phishscore=0 malwarescore=0
- spamscore=0 clxscore=1015 priorityscore=1501 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103050100
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ adultscore=0 spamscore=0 mlxscore=0 mlxlogscore=999 clxscore=1015
+ malwarescore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103050100
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
+On Wed, Mar 03, 2021 at 01:59:16PM +0800, Muchun Song wrote:
+> The remote memcg charing APIs is a mechanism to charge pages to a given
+> memcg. Since all kernel memory are charged by using obj_cgroup APIs.
+> Actually, we want to charge kernel memory to the remote object cgroup
+> instead of memory cgroup. So introduce remote objcg charging APIs to
+> charge the kmem pages by using objcg_cgroup APIs. And if remote memcg
+> and objcg are both set, objcg takes precedence over memcg to charge
+> the kmem pages.
+> 
+> In the later patch, we will use those API to charge kernel memory to
+> the remote objcg.
 
-> -----Original Message-----
-> From: Kishon Vijay Abraham I <kishon@ti.com>
-> Sent: Thursday, March 4, 2021 10:11 AM
-> To: Kishon Vijay Abraham I <kishon@ti.com>; Vinod Koul
-> <vkoul@kernel.org>; Rob Herring <robh+dt@kernel.org>; Philipp Zabel
-> <p.zabel@pengutronix.de>; Swapnil Kashinath Jakhade
-> <sjakhade@cadence.com>
-> Cc: linux-kernel@vger.kernel.org; devicetree@vger.kernel.org; Lokesh Vutl=
-a
-> <lokeshvutla@ti.com>
-> Subject: [PATCH v4 13/13] phy: cadence: phy-cadence-sierra: Enable
-> pll_cmnlc and pll_cmnlc1 clocks
->=20
-> EXTERNAL MAIL
->=20
->=20
-> Get pll_cmnlc and pll_cmnlc1 optional clocks and enable them.
-> This will enable REFRCV/1 in case the pll_cmnlc/1 takes input
-> from REFRCV/1 respectively.
->=20
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+I'd abandon/postpone the rest of the patchset (patches 4 and 5) as now.
+They add a lot of new code to solve a theoretical problem (please, fix
+me if I'm wrong), which is not a panic or data corruption, but
+a sub-optimal garbage collection behavior. I think we need a better
+motivation or/and an implementation which makes the code simpler
+and smaller.
+
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 > ---
->  drivers/phy/cadence/phy-cadence-sierra.c | 40 ++++++++++++++++++++++--
->  1 file changed, 37 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/phy/cadence/phy-cadence-sierra.c
-> b/drivers/phy/cadence/phy-cadence-sierra.c
-> index be2c91be4205..68d81f953f4f 100644
-> --- a/drivers/phy/cadence/phy-cadence-sierra.c
-> +++ b/drivers/phy/cadence/phy-cadence-sierra.c
-> @@ -768,6 +768,40 @@ static int cdns_sierra_phy_get_clocks(struct
-> cdns_sierra_phy *sp,
->  	return 0;
+>  include/linux/sched.h    |  4 ++++
+>  include/linux/sched/mm.h | 38 ++++++++++++++++++++++++++++++++++++++
+>  kernel/fork.c            |  3 +++
+>  mm/memcontrol.c          | 44 ++++++++++++++++++++++++++++++++++++++++----
+>  4 files changed, 85 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index ee46f5cab95b..8edcc71a0a1d 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1318,6 +1318,10 @@ struct task_struct {
+>  	/* Used by memcontrol for targeted memcg charge: */
+>  	struct mem_cgroup		*active_memcg;
+>  #endif
+> +#ifdef CONFIG_MEMCG_KMEM
+> +	/* Used by memcontrol for targeted objcg charge: */
+> +	struct obj_cgroup		*active_objcg;
+> +#endif
+>  
+>  #ifdef CONFIG_BLK_CGROUP
+>  	struct request_queue		*throttle_queue;
+> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+> index 1ae08b8462a4..be1189598b09 100644
+> --- a/include/linux/sched/mm.h
+> +++ b/include/linux/sched/mm.h
+> @@ -330,6 +330,44 @@ set_active_memcg(struct mem_cgroup *memcg)
 >  }
->=20
-> +static int cdns_sierra_phy_enable_clocks(struct cdns_sierra_phy *sp)
+>  #endif
+>  
+> +#ifdef CONFIG_MEMCG_KMEM
+> +DECLARE_PER_CPU(struct obj_cgroup *, int_active_objcg);
+> +
+> +/**
+> + * set_active_objcg - Starts the remote objcg kmem pages charging scope.
+> + * @objcg: objcg to charge.
+> + *
+> + * This function marks the beginning of the remote objcg charging scope. All the
+> + * __GFP_ACCOUNT kmem page allocations till the end of the scope will be charged
+> + * to the given objcg.
+> + *
+> + * NOTE: This function can nest. Users must save the return value and
+> + * reset the previous value after their own charging scope is over.
+> + *
+> + * If remote memcg and objcg are both set, objcg takes precedence over memcg
+> + * to charge the kmem pages.
+> + */
+> +static inline struct obj_cgroup *set_active_objcg(struct obj_cgroup *objcg)
 > +{
-> +	int ret;
+> +	struct obj_cgroup *old;
 > +
-> +	ret =3D clk_prepare_enable(sp->input_clks[PLL0_REFCLK]);
-
-Should be PHY_CLK instead of PLL0_REFCLK ?
-
-> +	if (ret)
-> +		return ret;
+> +	if (in_interrupt()) {
+> +		old = this_cpu_read(int_active_objcg);
+> +		this_cpu_write(int_active_objcg, objcg);
+> +	} else {
+> +		old = current->active_objcg;
+> +		current->active_objcg = objcg;
+> +	}
 > +
-> +	ret =3D clk_prepare_enable(sp-
-> >output_clks[CDNS_SIERRA_PLL_CMNLC]);
-> +	if (ret)
-> +		goto err_pll_cmnlc;
-> +
-> +	ret =3D clk_prepare_enable(sp-
-> >output_clks[CDNS_SIERRA_PLL_CMNLC1]);
-> +	if (ret)
-> +		goto err_pll_cmnlc1;
-> +
-> +	return 0;
-> +
-> +err_pll_cmnlc:
-> +	clk_disable_unprepare(sp->input_clks[PHY_CLK]);
-> +
-> +err_pll_cmnlc1:
-> +	clk_disable_unprepare(sp->output_clks[CDNS_SIERRA_PLL_CMNLC]);
-> +
-
-Error handling above looks incorrect.
-Also should this error path return ret instead of 0 ?
-
-> +	return 0;
+> +	return old;
 > +}
-> +
-> +static void cdns_sierra_phy_disable_clocks(struct cdns_sierra_phy *sp)
+> +#else
+> +static inline struct obj_cgroup *set_active_objcg(struct obj_cgroup *objcg)
 > +{
-> +	clk_disable_unprepare(sp-
-> >output_clks[CDNS_SIERRA_PLL_CMNLC1]);
-> +	clk_disable_unprepare(sp->output_clks[CDNS_SIERRA_PLL_CMNLC]);
-> +	clk_disable_unprepare(sp->input_clks[PHY_CLK]);
+> +	return NULL;
 > +}
+> +#endif
 > +
->  static int cdns_sierra_phy_get_resets(struct cdns_sierra_phy *sp,
->  				      struct device *dev)
+>  #ifdef CONFIG_MEMBARRIER
+>  enum {
+>  	MEMBARRIER_STATE_PRIVATE_EXPEDITED_READY		= (1U << 0),
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index d66cd1014211..b4b9dd5d122f 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -945,6 +945,9 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
+>  #ifdef CONFIG_MEMCG
+>  	tsk->active_memcg = NULL;
+>  #endif
+> +#ifdef CONFIG_MEMCG_KMEM
+> +	tsk->active_objcg = NULL;
+> +#endif
+>  	return tsk;
+>  
+>  free_stack:
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 0cf342d22547..e48d4ab0af76 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -79,6 +79,11 @@ struct mem_cgroup *root_mem_cgroup __read_mostly;
+>  /* Active memory cgroup to use from an interrupt context */
+>  DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
+>  
+> +#ifdef CONFIG_MEMCG_KMEM
+> +/* Active object cgroup to use from an interrupt context */
+> +DEFINE_PER_CPU(struct obj_cgroup *, int_active_objcg);
+> +#endif
+> +
+>  /* Socket memory accounting disabled? */
+>  static bool cgroup_memory_nosocket;
+>  
+> @@ -1076,7 +1081,7 @@ static __always_inline struct mem_cgroup *get_active_memcg(void)
+>  	return memcg;
+>  }
+>  
+> -static __always_inline bool memcg_kmem_bypass(void)
+> +static __always_inline bool memcg_charge_bypass(void)
 >  {
-> @@ -848,7 +882,7 @@ static int cdns_sierra_phy_probe(struct
-> platform_device *pdev)
->  	if (ret)
->  		goto unregister_clk;
->=20
-> -	ret =3D clk_prepare_enable(sp->input_clks[PHY_CLK]);
-> +	ret =3D cdns_sierra_phy_enable_clocks(sp);
->  	if (ret)
->  		goto unregister_clk;
->=20
-> @@ -925,7 +959,7 @@ static int cdns_sierra_phy_probe(struct
-> platform_device *pdev)
->  		reset_control_put(sp->phys[i].lnk_rst);
->  	of_node_put(child);
->  clk_disable:
-> -	clk_disable_unprepare(sp->input_clks[PHY_CLK]);
-> +	cdns_sierra_phy_disable_clocks(sp);
->  	reset_control_assert(sp->apb_rst);
->  unregister_clk:
->  	cdns_sierra_clk_register(sp);
-> @@ -941,6 +975,7 @@ static int cdns_sierra_phy_remove(struct
-> platform_device *pdev)
->  	reset_control_assert(phy->apb_rst);
->  	pm_runtime_disable(&pdev->dev);
->=20
-> +	cdns_sierra_phy_disable_clocks(phy);
->  	/*
->  	 * The device level resets will be put automatically.
->  	 * Need to put the subnode resets here though.
-> @@ -950,7 +985,6 @@ static int cdns_sierra_phy_remove(struct
-> platform_device *pdev)
->  		reset_control_put(phy->phys[i].lnk_rst);
+>  	/* Allow remote memcg charging from any context. */
+>  	if (unlikely(active_memcg()))
+> @@ -1094,7 +1099,7 @@ static __always_inline bool memcg_kmem_bypass(void)
+>   */
+>  static __always_inline struct mem_cgroup *get_mem_cgroup_from_current(void)
+>  {
+> -	if (memcg_kmem_bypass())
+> +	if (memcg_charge_bypass())
+>  		return NULL;
+>  
+>  	if (unlikely(active_memcg()))
+> @@ -1103,6 +1108,29 @@ static __always_inline struct mem_cgroup *get_mem_cgroup_from_current(void)
+>  	return get_mem_cgroup_from_mm(current->mm);
+>  }
+>  
+> +#ifdef CONFIG_MEMCG_KMEM
+> +static __always_inline struct obj_cgroup *active_objcg(void)
+> +{
+> +	if (in_interrupt())
+> +		return this_cpu_read(int_active_objcg);
+> +	else
+> +		return current->active_objcg;
+> +}
+> +
+> +static __always_inline bool kmem_charge_bypass(void)
+> +{
+> +	/* Allow remote charging from any context. */
+> +	if (unlikely(active_objcg() || active_memcg()))
+> +		return false;
+> +
+> +	/* Memcg to charge can't be determined. */
+> +	if (in_interrupt() || !current->mm || (current->flags & PF_KTHREAD))
+> +		return true;
+> +
+> +	return false;
+> +}
+> +#endif
+> +
+>  /**
+>   * mem_cgroup_iter - iterate over memory cgroup hierarchy
+>   * @root: hierarchy root
+> @@ -2997,13 +3025,20 @@ struct mem_cgroup *mem_cgroup_from_obj(void *p)
+>  
+>  __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+>  {
+> -	struct obj_cgroup *objcg = NULL;
+> +	struct obj_cgroup *objcg;
+>  	struct mem_cgroup *memcg;
+>  
+> -	if (memcg_kmem_bypass())
+> +	if (kmem_charge_bypass())
+>  		return NULL;
+>  
+>  	rcu_read_lock();
+> +	objcg = active_objcg();
+> +	if (unlikely(objcg)) {
+> +		/* remote object cgroup must hold a reference. */
+> +		obj_cgroup_get(objcg);
+> +		goto out;
+> +	}
+> +
+>  	if (unlikely(active_memcg()))
+>  		memcg = active_memcg();
+>  	else
+> @@ -3015,6 +3050,7 @@ __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+>  			break;
+>  		objcg = NULL;
 >  	}
->=20
-> -	clk_disable_unprepare(phy->input_clks[PHY_CLK]);
->  	cdns_sierra_clk_unregister(phy);
->=20
->  	return 0;
-> --
-> 2.17.1
-
-Thanks & regards,
-Swapnil
+> +out:
+>  	rcu_read_unlock();
+>  
+>  	return objcg;
+> -- 
+> 2.11.0
+> 
