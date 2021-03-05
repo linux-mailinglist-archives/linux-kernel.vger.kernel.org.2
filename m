@@ -2,185 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083B132F27A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FD432F27D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhCES05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229955AbhCES13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 13:27:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42223 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229813AbhCES05 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Mar 2021 13:26:57 -0500
-Received: from gecko.sbs.de ([194.138.37.40]:51579 "EHLO gecko.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229781AbhCES0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 13:26:23 -0500
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 125IPvDI013653
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 5 Mar 2021 19:25:57 +0100
-Received: from md1za8fc.ad001.siemens.net ([167.87.40.210])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 125IPu6r015789;
-        Fri, 5 Mar 2021 19:25:56 +0100
-Date:   Fri, 5 Mar 2021 19:25:55 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <platform-driver-x86@vger.kernel.org>,
-        <linux-watchdog@vger.kernel.org>,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Hans de Goede" <hdegoede@redhat.com>
-Subject: Re: [PATCH 2/4] leds: simatic-ipc-leds: add new driver for Siemens
- Industial PCs
-Message-ID: <20210305192555.34f7ea0f@md1za8fc.ad001.siemens.net>
-In-Reply-To: <20210303215615.64e45720@md1za8fc.ad001.siemens.net>
-References: <20210302163309.25528-1-henning.schild@siemens.com>
-        <20210302163309.25528-3-henning.schild@siemens.com>
-        <20210302205452.GA32573@duo.ucw.cz>
-        <20210303141052.30641e6b@md1za8fc.ad001.siemens.net>
-        <20210303193134.GB8720@amd>
-        <20210303214810.511ad65a@md1za8fc.ad001.siemens.net>
-        <20210303215615.64e45720@md1za8fc.ad001.siemens.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614968817;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TEPnFeg5EaQcMTzMLTO+/1iyn6ySAsFp6AQcgB5ZDLg=;
+        b=ZP0RhBnDTEdi7A3Kr9mdjX6+B9/Et+WNx7Pld/C5pOvIrzmz05fCbZWwmaC3gVCXLgxhdJ
+        a9RhrnuoSUKbuiUtxFdg8q04vFT4S7a25uLp/safU9zPRNLQUnj9UPCmi3qgY2gUxi74RX
+        LlRGkowtqWvAf6UpvajEnw5AGCeern4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-rOwcDg17PraTmR56KJSk6g-1; Fri, 05 Mar 2021 13:26:53 -0500
+X-MC-Unique: rOwcDg17PraTmR56KJSk6g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8962710082E8;
+        Fri,  5 Mar 2021 18:26:51 +0000 (UTC)
+Received: from [10.36.112.194] (ovpn-112-194.ams2.redhat.com [10.36.112.194])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6346160843;
+        Fri,  5 Mar 2021 18:26:48 +0000 (UTC)
+Subject: Re: [PATCH v4 3/3] x86/vmemmap: Handle unpopulated sub-pmd ranges
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210301083230.30924-1-osalvador@suse.de>
+ <20210301083230.30924-4-osalvador@suse.de>
+ <b1aff368-8321-0fa7-05ab-3d6c856c00f8@intel.com>
+ <3d49fdca-de12-aa7d-ffc4-b2a8c7d79bee@intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <57d317ff-8106-7447-f505-6cbd04254879@redhat.com>
+Date:   Fri, 5 Mar 2021 19:26:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <3d49fdca-de12-aa7d-ffc4-b2a8c7d79bee@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Wed, 3 Mar 2021 21:56:15 +0100
-schrieb Henning Schild <henning.schild@siemens.com>:
-
-> Am Wed, 3 Mar 2021 21:48:21 +0100
-> schrieb Henning Schild <henning.schild@siemens.com>:
+On 04.03.21 18:08, Dave Hansen wrote:
+> On 3/4/21 9:02 AM, Dave Hansen wrote:
+>>> +#define PAGE_UNUSED 0xFD
+>>> +/*
+>>> + * The unused vmemmap range, which was not yet memset(PAGE_UNUSED) ranges
+>>> + * from unused_pmd_start to next PMD_SIZE boundary.
+>>> + */
+>>> +static unsigned long unused_pmd_start __meminitdata;
+>> This whole 'unused_pmd_start' thing was unmentioned in the changelog.
 > 
-> > Am Wed, 3 Mar 2021 20:31:34 +0100
-> > schrieb Pavel Machek <pavel@ucw.cz>:
-> >   
-> > > Hi!
-> > >     
-> > > > > > +static struct simatic_ipc_led simatic_ipc_leds_io[] = {
-> > > > > > +	{1 << 15, "simatic-ipc:green:run-stop"},
-> > > > > > +	{1 << 7,  "simatic-ipc:yellow:run-stop"},
-> > > > > > +	{1 << 14, "simatic-ipc:red:error"},
-> > > > > > +	{1 << 6,  "simatic-ipc:yellow:error"},
-> > > > > > +	{1 << 13, "simatic-ipc:red:maint"},
-> > > > > > +	{1 << 5,  "simatic-ipc:yellow:maint"},
-> > > > > > +	{0, ""},
-> > > > > > +};        
-> > > > > 
-> > > > > Please use names consistent with other systems, this is user
-> > > > > visible. If you have two-color power led, it should be
-> > > > > :green:power... See include/dt-bindings/leds/common.h .      
-> > > > 
-> > > > Well we wanted to pick names that are printed on the devices and
-> > > > would like to stick to those. Has been a discussion ...
-> > > > Can we have symlinks to have multiple names per LED?      
-> > > 
-> > > No symlinks. We plan to have command line tool to manipulate LEDs,
-> > > aliases might be possible there.    
-> > 
-> > Sounds like a future plan. sysfs and "cat" "echo" are mighty tools
-> > and "everything is a file" is the best idea ever. So i would say any
-> > aliasing should live in the kernel, but that is just me. Tools will
-> > just get out of sync, be missing in busybox or a random yocto ... or
-> > whichever distro you like.
-> > On the other hand you have "complexity should be userland" ... i do
-> > not have the answer.  
+> One tiny suggestion: *Sometimes* for these optimizations, it's easiest
+> to write the code up without it in one patch, then add the optimization
+> in the next patch.
 > 
-> My personal horror would be systemd-ledd or some dracut snipet for
-> initrd. But that would be a generic led class discussion ... that
-> tool.
+> It makes it 100% clear what is part of the "core" algorithm and what is
+> pure optimization.
 > 
-> > > > How strong would you feel about us using our names?      
-> > > 
-> > > Strongly. :-)    
-> > 
-> > OK, will try to find a match where possible.   
+> I don't know if it will work here, but it might be worth taking a look.
 > 
-> Do we happen to have a description of the existing names, to find a
-> fit for ours? In the header you pointed out i only found names without
-> "meaning"
 
-I had a closer look at the several LED_FUNCTION_ while i could probably
-find a match for the names we had in mind ...
+For this reason the s390x part by me (see patch description) was two 
+separate patches. Maybe it also makes sense to split it up here.
 
--       {1 << 14, "simatic-ipc:red:error"},
-+       {1 << 14, "simatic-ipc:red:" LED_FUNCTION_FAULT },
+-- 
+Thanks,
 
-I still do not understand what those mean. Going over the kernel
-sources many have only one single grep-hit in the tree.
-LED_FUNCTION_ not having a single one in drivers/leds
-Others are found in one dts and in that header ... 2 hits in the tree,
-maybe i should add my favorite strings ;)
-
-LED_FUNCTION_FLASH vs LED_FUNCTION_TORCH ...? Sound like timing, not
-function.
-
-Let us say i match the three "error", "run-stop", "maint" to
-LED_FUNCTION_*
-
-I would have a really hard time finding matches for other LEDs i did
-not even propose. One example being disks ... many of them, would i be
-allowed to 
-
-LED_FUNCTION_DISK "0"
-LED_FUNCTION_DISK "1"
-...
-
-they would all have the same colors.
-
-Maybe you explain the idea behind choosing only from that namespace? My
-guess would be high-level software being able to toggle leds totally
-indep of the device it runs on. Such software would have to do some
-really nasty directory listing, name parsing, dealing with multiple
-hits. Does such generic software already exist, maybe that would help
-me understand my "mapping problems" ?
-
-The current class encodes, color, function and name into "name".
-
-Maybe i am all wrong and should go for
-
-{1 << 14, "simatic-ipc-error:red:" LED_FUNCTION_STATUS }
-{1 << 15, "simatic-ipc-run-stop:green:" LED_FUNCTION_STATUS}
-{...    , "simatic-ipc-hdd0:red:" LED_FUNCTION_DISK }
-{...    , "simatic-ipc-hdd1:red:" LED_FUNCTION_DISK }
-
-so appending my wanted name to the name before the first :, and use
-functions i "understand" after the second :
-
-regards,
-Henning
-
-
-> regards,
-> Henning
-> 
-> >   
-> > > Do you have a picture how the leds look like?    
-> > 
-> > I could even find chassis photos in our internal review but that
-> > would be too much.
-> > 
-> > Our idea is probably the same as yours. We want the same names
-> > across all devices. But we struggle with colors because on some
-> > boxes we have red+green, while other offer yellow ... implemented
-> > in HW and messing with red+green in some cases.
-> > 
-> > But so far we only looked at Siemens devices and thought we could
-> > get our own "namespace".
-> > 
-> > To be honest i could not even tell how our names map on the known
-> > ones, but we will do our best to find a match. They all are
-> > "high-level" so "power" and other basic things are not exposed.
-> > 
-> > regards,
-> > Henning
-> >    
-> > > Best regards,
-> > > 							Pavel    
-> >   
-> 
+David / dhildenb
 
