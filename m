@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A7832EC2F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5736D32EC41
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhCENaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:30:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30071 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230373AbhCENag (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:30:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614951036;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9OVHV4aIQmKNqeY5ezSY/nhnAn51P/hCc3Ft8x+FhLo=;
-        b=UrU4L3+jqyfBm4qaZaXMMQqBCT4NiDm03UVWL7dXUll6Ngq/luBdQEeyeP5O4R3ULdn5kS
-        ZJIr5+vwNX1pKCmyAr2FjMxjcbiqN+zptsHLaWEId1MoDY6obu+NC4Qmb1ZPYOUVBiarr2
-        +idtafNCTu7rCKD/oWFr8oGlw3T63dM=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-CIBran0bORSXkgIEpjnOUA-1; Fri, 05 Mar 2021 08:30:35 -0500
-X-MC-Unique: CIBran0bORSXkgIEpjnOUA-1
-Received: by mail-wm1-f69.google.com with SMTP id y9so403456wma.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 05:30:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9OVHV4aIQmKNqeY5ezSY/nhnAn51P/hCc3Ft8x+FhLo=;
-        b=F/mVivVLGHO4IKsRZ0ObLAIhgk7Ts5iNlWcBjAdd8uM5svEUqnIW4tHAgEIX3fid5Q
-         ks8FYikMYzJ4MqnTQ2Uc9V4+baxbQdX0L3Alos+OIMwEdMlEl8grT3iaC5fPNlzV89zh
-         n4UFjeSzDm/t6jZPf/nDxSEnN3VbaIyllVU1WaKEXfVCal7fY3snsBK24CoiM27e99yr
-         vATimeLW5dFVXVg4hInGDBqCHPhrWwB8kQdwkDkl0pk2u6JSsV2tLinKgsvA3QgFsSo2
-         K6zsc7+qB65MHQS0Uk+emRmU0GhteJJSK3PZDNiIAVWS6SSyWzvzmmv4doY2fA5X4NzM
-         +Uvg==
-X-Gm-Message-State: AOAM530zOiDAmySptQShfpSGCQnYIfXAqESmDD1tkAIzClIht9Rxn7Sq
-        XoINMZhNFfj80RPinenGZqqi1zVcrqpTfINWhqzdjzbySTGFWCl25JISpguNTvbFfJVq0MabDMQ
-        V3QUi1fQvj0cPcRTD4sVyiEf32lvKdpGqJV/iNbScoCHmxdqrA6G0YlA9bEsi+aaPS24I5aR+mY
-        QI
-X-Received: by 2002:adf:e60a:: with SMTP id p10mr9547403wrm.291.1614951033468;
-        Fri, 05 Mar 2021 05:30:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyfX3peT48F2IQbl9b6JeiTlNsj3AGM3VcOscIAYNSwLFSm2QijPFI0U/uwZeXwlo954oRwkQ==
-X-Received: by 2002:adf:e60a:: with SMTP id p10mr9547380wrm.291.1614951033305;
-        Fri, 05 Mar 2021 05:30:33 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j125sm4445967wmb.44.2021.03.05.05.30.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 05:30:32 -0800 (PST)
-Subject: Re: [PATCH] KVM: x86: Ensure deadline timer has truly expired before
- posting its IRQ
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210305021808.3769732-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <27bc885c-e257-3353-6146-15fdd40f5d4c@redhat.com>
-Date:   Fri, 5 Mar 2021 14:30:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230147AbhCENca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:32:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230214AbhCENcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 08:32:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9511E64FE1;
+        Fri,  5 Mar 2021 13:32:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614951129;
+        bh=55hgLVLRpKPexGnBCm48Hok+NXMns/a7aBDs5Q2HzgI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oSeA+bg03jj5FJKgyQZeHgtF/vk8ozEXBbVuHNyiRoWHtwsdnHahf5LnKPIkZfeFG
+         dzRsqqOktklLQKMs+aiqLZUJucPjeS/UP1X8XRlhlSWiesYUOFxgLUSGsEpkGKqKUU
+         GyUUQzxlR7/WORegymL22JHsFIuSbaBIamE1MmTSIVSIdVsD5olQYArmZZ7iSz4Yoy
+         dMPpbUDF/nKtgBnWzYPu0A3eVUSJ2XmE7GdEa/oXbz4FsiHwjXp/5piqx5N8NTCPPt
+         fdOFk5+GS752l1Xy6Xozz29lYY+vuD2mJ+VSgiQ+cmdR6Jzhh5fdUVjHL0vAioNc9k
+         PH6NVrqGw5rzw==
+Received: by mail-ot1-f49.google.com with SMTP id w3so1764782oti.8;
+        Fri, 05 Mar 2021 05:32:09 -0800 (PST)
+X-Gm-Message-State: AOAM531nNYRgjn/6dbh0uweBfPSsHWXVLTKTVw2fS4sBTyP7CMCZFkMB
+        H7T+lzq5Z1PtzNk4hmYWPsRZcbzaIkU96woFmDQ=
+X-Google-Smtp-Source: ABdhPJzuKOSq+MerxuJ8G6FDLwNzmS/nCm5HmW4JhwLACo+PPdrNvyg3oHdzwvcrJAR6srL3obIemOIjF9OfI8STYzQ=
+X-Received: by 2002:a9d:6b8b:: with SMTP id b11mr8029668otq.210.1614951128966;
+ Fri, 05 Mar 2021 05:32:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210305021808.3769732-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210222230519.73f3e239@sf> <cc658b61-530e-90bf-3858-36cc60468a24@kernel.dk>
+ <8decdd2e-a380-9951-3ebb-2bc3e48aa1c3@physik.fu-berlin.de>
+ <20210223083507.43b5a6dd@sf> <51cbf584-07ef-1e62-7a3b-81494a04faa6@physik.fu-berlin.de>
+ <9441757f-d4bc-a5b5-5fb0-967c9aaca693@physik.fu-berlin.de>
+ <20210223192743.0198d4a9@sf> <20210302222630.5056f243@sf> <25dfced0-88b2-b5b3-f1b6-8b8a9931bf90@physik.fu-berlin.de>
+ <20210303002236.2f4ec01f@sf> <20210303085533.505b1590@sf> <SN6PR11MB284885A5751845EEA290BFCFE1989@SN6PR11MB2848.namprd11.prod.outlook.com>
+ <CAMuHMdVLFfSoC-UYW+3sijeZhLf9xt3rqS=7LTYhzX_1RDxpYA@mail.gmail.com>
+In-Reply-To: <CAMuHMdVLFfSoC-UYW+3sijeZhLf9xt3rqS=7LTYhzX_1RDxpYA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 5 Mar 2021 14:31:52 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0EhxvQ3pP6iMwHdR3RwF3CcAaWvfodPnzPip2iW2wBgQ@mail.gmail.com>
+Message-ID: <CAK8P3a0EhxvQ3pP6iMwHdR3RwF3CcAaWvfodPnzPip2iW2wBgQ@mail.gmail.com>
+Subject: Re: [bisected] 5.12-rc1 hpsa regression: "scsi: hpsa: Correct dev
+ cmds outstanding for retried cmds" breaks hpsa P600
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Don.Brace@microchip.com, slyich@gmail.com,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        storagedev@microchip.com, scsi <linux-scsi@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        jszczype@redhat.com, Scott.Benesh@microchip.com,
+        Scott.Teel@microchip.com, thenzl@redhat.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/03/21 03:18, Sean Christopherson wrote:
-> When posting a deadline timer interrupt, open code the checks guarding
-> __kvm_wait_lapic_expire() in order to skip the lapic_timer_int_injected()
-> check in kvm_wait_lapic_expire().  The injection check will always fail
-> since the interrupt has not yet be injected.  Moving the call after
-> injection would also be wrong as that wouldn't actually delay delivery
-> of the IRQ if it is indeed sent via posted interrupt.
-> 
-> Fixes: 010fd37fddf6 ("KVM: LAPIC: Reduce world switch latency caused by timer_advance_ns")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/kvm/lapic.c | 11 ++++++++++-
->   1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 45d40bfacb7c..cb8ebfaccfb6 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -1642,7 +1642,16 @@ static void apic_timer_expired(struct kvm_lapic *apic, bool from_timer_fn)
->   	}
->   
->   	if (kvm_use_posted_timer_interrupt(apic->vcpu)) {
-> -		kvm_wait_lapic_expire(vcpu);
-> +		/*
-> +		 * Ensure the guest's timer has truly expired before posting an
-> +		 * interrupt.  Open code the relevant checks to avoid querying
-> +		 * lapic_timer_int_injected(), which will be false since the
-> +		 * interrupt isn't yet injected.  Waiting until after injecting
-> +		 * is not an option since that won't help a posted interrupt.
-> +		 */
-> +		if (vcpu->arch.apic->lapic_timer.expired_tscdeadline &&
-> +		    vcpu->arch.apic->lapic_timer.timer_advance_ns)
-> +			__kvm_wait_lapic_expire(vcpu);
->   		kvm_apic_inject_pending_timer_irqs(apic);
->   		return;
->   	}
-> 
+On Fri, Mar 5, 2021 at 10:24 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Fri, Mar 5, 2021 at 12:26 AM <Don.Brace@microchip.com> wrote:
+> > > > On 3/2/21 11:26 PM, Sergei Trofimovich wrote:
+> > struct CommandList {
+> >         struct CommandListHeader Header;                 /*     0    20 */
+> >         struct RequestBlock Request;                     /*    20    20 */
+> >         struct ErrDescriptor ErrDesc;                    /*    40    12 */
+> >         struct SGDescriptor SG[32];                      /*    52   512 */
+> >         /* --- cacheline 8 boundary (512 bytes) was 52 bytes ago --- */
+> >         u32                        busaddr;              /*   564     4 */
+> >         struct ErrorInfo *         err_info;             /*   568     8 */
+> >         /* --- cacheline 9 boundary (576 bytes) --- */
+> >         struct ctlr_info *         h;                    /*   576     8 */
+> >         int                        cmd_type;             /*   584     4 */
+> >         long int                   cmdindex;             /*   588     8 */
+> >         struct completion *        waiting;              /*   596     8 */
+> >         struct scsi_cmnd *         scsi_cmd;             /*   604     8 */
+> >         struct work_struct work;                         /*   612    32 */
+> >         /* --- cacheline 10 boundary (640 bytes) was 4 bytes ago --- */
+> >         struct hpsa_scsi_dev_t *   phys_disk;            /*   644     8 */
+> >         struct hpsa_scsi_dev_t *   device;               /*   652     8 */
+> >         bool                       retry_pending;        /*   660     1 */
+> >         atomic_t                   refcount;             /*   661     4 */
+>
+> How come this atomic_t is no longer aligned to its natural alignment?
 
-Queued, thanks.
+There is a
 
-Paolo
+#pragma pack(1)
 
+in linux 203 of this file!
+
+It looks like some of the members in struct raid_map_data
+and struct CommandListHeader need to be annotated as packed,
+but the file accidentally packs everything until the '#pragma pack()'
+in line 875, including the kernel-side CommandList data structure
+that clearly must not be packed.
+
+        Arnd
