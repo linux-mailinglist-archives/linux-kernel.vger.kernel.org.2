@@ -2,90 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7B132F6DD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6859F32F6FA
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbhCEXvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 18:51:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42184 "EHLO
+        id S229730AbhCEXyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 18:54:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhCEXvS (ORCPT
+        with ESMTP id S229616AbhCEXyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 18:51:18 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC846C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 15:51:18 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id v6so4267091ybk.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 15:51:18 -0800 (PST)
+        Fri, 5 Mar 2021 18:54:44 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C9AC06175F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 15:54:44 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id h13so118174pjt.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 15:54:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=pPq2GBjtEGTbACHirO3sey8ygX15UCpeGvoYm9Um0sk=;
-        b=PtRIbdn8JBaqxVShA+CtjFu88vBYubaAm1tFH89mUeHx65u8jfjdUEWOyhi3FioeLY
-         Kjfoceud2r4uoyWG+ZU767KGl2gnY0SwMl3d8l407sWSPHPlyUOiIfVEK/KRgzkpJU5P
-         Zqxd1J+3RUGiYAwPcIFKzvehnJQPgZlac+N37njsgBiDV+eA03pvIjcaDWMMs0iIbcOH
-         xJkF/quIBA8a8p/GxdVysovpFlPGiLGa4Eeul/sg+OIzEW3MG3BzStIPJyRo2IOTEwG+
-         oFgtdDX6SbKs+5x1YnoaBANAHJpAlHP+ayxmQ84vKMNGP8KqID2KCyRpoI1lt4C9R2E8
-         K3Sg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CNxGCp729OVTS5P6uQ6HNjJN45BugeibGn1RfeYppc4=;
+        b=wOuK4AFFOQnE05XJqSetLQLZi5EwCXJ8MYXXz0KDuThxN+q9glQ/S+mGR55NmaH3BD
+         xd9RGIGFImO+DqLtKHaqHCE9JHt/ny6mq2IzvpWiRs7QKX39AEdwOU13LIM4rCsjWmzK
+         rxjbhSDzmiB8O4Xso24fXEXLmsacztDMLjCaziXu8xbPvaGlIz6RszVHxyc94VgyvA0D
+         RLdhCFNbChqnCGNx/m5Qh3T5lAxc0qxAKndRcUULNvDiuZH9aYzHItbn/zFxjDXff4MF
+         POH3we+QmiIe76xD0WrlD4t2U/ebUx6qO8PM3CJRVIJcPmyhtYxyBMq6IT4ZLaaVDIiz
+         fztw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=pPq2GBjtEGTbACHirO3sey8ygX15UCpeGvoYm9Um0sk=;
-        b=NALrQR9T5R7zJ8Pb1h6l5md18e/3hFQYhXYcK/t6TMZenyiv4q34rMYZ4+uOwGwCAz
-         bdtJOLStD7ilEM4vbs/oxTPR9keNfW3/p9qbVEq21Lq/xNUXa1Oh4CLH4z1a2LqPxMqo
-         TY6tBZ4JmUgNAMWSL9aDvj3OH64Z3/BzQoFkHWy0Jc03F2SoRFr62lz6+BA7GFCV11Nq
-         kyP3keJwmUybZY4pTtCimEmuWD/VGlAU4+vHvcuTTBCBqlw/xExwxdbm5d7syOZv8RLI
-         BL1Q9XEzR5HjNaMbe3w0R9Qz7cCk0pdI7YdrvQQLAQsk1c0F30yHRpPIATy1p9ECaYCL
-         eNXA==
-X-Gm-Message-State: AOAM531kmoTTgKWXfcucI2Mpj5NE82J1eDj/T0OT1hDLGq+vCIz/Ig1b
-        SmoEhHAB89dUnc0NoEzpA5/RXzUTyulFeEiFmrk=
-X-Google-Smtp-Source: ABdhPJwcjcq2tS5DwOh+XNcqIbmdizHq1xlXoBKH5EIsFXWJYua8EhHBmi8EMhdFw1jp9L3SdHKITvL51kGbc87kavk=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:b008:4ea5:7b83:9aff])
- (user=ndesaulniers job=sendgmr) by 2002:a25:b46:: with SMTP id
- 67mr17897674ybl.50.1614988277967; Fri, 05 Mar 2021 15:51:17 -0800 (PST)
-Date:   Fri,  5 Mar 2021 15:51:02 -0800
-In-Reply-To: <20210303170932.1838634-1-jthierry@redhat.com>
-Message-Id: <20210305235102.384950-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <20210303170932.1838634-1-jthierry@redhat.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: Re: [RFC PATCH v2 00/13] objtool: add base support for arm64
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     jthierry@redhat.com
-Cc:     ardb@kernel.org, catalin.marinas@arm.com, jpoimboe@redhat.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, masahiroy@kernel.org, peterz@infradead.org,
-        will@kernel.org, ycote@redhat.com, maskray@google.com,
-        morbo@google.com, swine@google.com, yonghyun@google.com,
-        clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CNxGCp729OVTS5P6uQ6HNjJN45BugeibGn1RfeYppc4=;
+        b=oME1YS0TMOaR/yF0Ov0v6FQJMokk1/p361K1rCCCSGy44rxK7bY9cuoDumqoVadQkq
+         +zDIKEgDMw0aK9OLvn5iZm0GI2JNjZR/k4TxZ3QAtAZK43ApHN4MS7wperO+9dXyfJIR
+         T+Jc+y50oLjpq/kBkdgd3sUBWg0Jbon8mnMziDFA1eMjAaZ91ywSD0Kixx7mJVedQ57Z
+         Dxg/9J7BoGlfppHL2w8iToeN6kGuC9WEc/QaVN5KWzhroT7il+LLCd0AiXSQuNb8WCfh
+         PrTo9un0u4orNCqiJbdZb56lweBJ54gMcv1hAsn2JlxUVsF8hdAx44FKNBlXl1OEG2FM
+         y8vg==
+X-Gm-Message-State: AOAM533Ie7+qcYKWgmPCfXzSCS0r0g70IFNzZ3PT2HzolD/rhaBWrcMe
+        /TlVWaG7hNblDN5IGkyaMyoHFCOr3ohdv2mXKv7NUw==
+X-Google-Smtp-Source: ABdhPJypgUPjzeO58PREZy1WSBz6aEuSQMeRIjsjpF1lfpSHzvzN6zb0fGOwDaKN1ZXxg5kD0/v/8UMO3nnDPYpFM2o=
+X-Received: by 2002:a17:90b:350b:: with SMTP id ls11mr12605611pjb.166.1614988483675;
+ Fri, 05 Mar 2021 15:54:43 -0800 (PST)
+MIME-Version: 1.0
+References: <24cd7db274090f0e5bc3adcdc7399243668e3171.1614987311.git.andreyknvl@google.com>
+ <20210305154956.3bbfcedab3f549b708d5e2fa@linux-foundation.org>
+In-Reply-To: <20210305154956.3bbfcedab3f549b708d5e2fa@linux-foundation.org>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Sat, 6 Mar 2021 00:54:32 +0100
+Message-ID: <CAAeHK+yHf7p9H_EiPVfA9qadGU_6x0RrKwX-WjKrHEFz+xFEbg@mail.gmail.com>
+Subject: Re: [PATCH v2] kasan, mm: fix crash with HW_TAGS and DEBUG_PAGEALLOC
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(in response to
-https://lore.kernel.org/linux-arm-kernel/20210303170932.1838634-1-jthierry@redhat.com/
-from the command line)
+On Sat, Mar 6, 2021 at 12:50 AM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Sat,  6 Mar 2021 00:36:33 +0100 Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> > Currently, kasan_free_nondeferred_pages()->kasan_free_pages() is called
+> > after debug_pagealloc_unmap_pages(). This causes a crash when
+> > debug_pagealloc is enabled, as HW_TAGS KASAN can't set tags on an
+> > unmapped page.
+> >
+> > This patch puts kasan_free_nondeferred_pages() before
+> > debug_pagealloc_unmap_pages() and arch_free_page(), which can also make
+> > the page unavailable.
+> >
+> > ...
+> >
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -1304,6 +1304,12 @@ static __always_inline bool free_pages_prepare(struct page *page,
+> >
+> >       kernel_poison_pages(page, 1 << order);
+> >
+> > +     /*
+> > +      * With hardware tag-based KASAN, memory tags must be set before the
+> > +      * page becomes unavailable via debug_pagealloc or arch_free_page.
+> > +      */
+> > +     kasan_free_nondeferred_pages(page, order, fpi_flags);
+> > +
+> >       /*
+> >        * arch_free_page() can make the page's contents inaccessible.  s390
+> >        * does this.  So nothing which can access the page's contents should
+> > @@ -1313,8 +1319,6 @@ static __always_inline bool free_pages_prepare(struct page *page,
+> >
+> >       debug_pagealloc_unmap_pages(page, 1 << order);
+> >
+> > -     kasan_free_nondeferred_pages(page, order, fpi_flags);
+> > -
+> >       return true;
+> >  }
+>
+> kasan_free_nondeferred_pages() has only two args in current mainline.
 
-> Changes since v1[2]:
-> - Drop gcc plugin in favor of -fno-jump-tables
+Ah, yes, forgot to mention: this goes on top of:
 
-Thank you for this!  I built+booted(under emulation) arm64 defconfig and built
-arm64 allmodconfig with LLVM=1 with this series applied.
+kasan: initialize shadow to TAG_INVALID for SW_TAGS
+mm, kasan: don't poison boot memory with tag-based modes
 
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+> I fixed that in the obvious manner...
 
-One thing I noticed was a spew of warnings for allmodconfig, like:
-init/main.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
-init/main.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+Thanks!
 
-I assume those are from the KASAN constructors. See also:
-https://github.com/ClangBuiltLinux/linux/issues/1238
-
-Can we disable HAVE_STACK_PROTECTOR if CC_IS_CLANG and CONFIG_KASAN is set,
-until we can resolve the above issue?
+If you changed this patch, you'll also need to change the other one though.
