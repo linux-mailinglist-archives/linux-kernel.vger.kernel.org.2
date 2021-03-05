@@ -2,131 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF13032ED91
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029FD32ED8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 15:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhCEO7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 09:59:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40692 "EHLO
+        id S229836AbhCEO7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 09:59:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbhCEO7L (ORCPT
+        with ESMTP id S229901AbhCEO6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 09:59:11 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56966C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 06:59:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=R/OkZYQVM7XyISLc6jdwXi4U1aEK7k/C0FjZm3dELGM=; b=U6ndaEufEOfSAhtZyRCaH1C3gK
-        RtyLSTEArq5ZWQzUV238E1tmsJpPYg8lE3MJGTFzw8W0AElF3GboT6sX6NylBO1Ds5LIJab/vSASs
-        1PQTD85Q+I0FxFEblx0H67cWlf4YD/0AcjedzZs6IlpWsfmUalyxVCEfq/dQ2TsU9t7376+6YavUd
-        HUgL2FzCNUMLnMPr53o2fx6rc/xvaf7ARxtt/rwIsj17DZb5qLqO5PgfgCiKSCFJDHSjtMrblH5qH
-        A1v6nqQ9xKXtc2tn9zNKbUZhrRZ0L7H5A6uQVBo0trWSXpYXGdK16n/Z+fdgVX+vv/IpVri/oe/BV
-        kkoYbBCw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lIBtr-00Brah-Le; Fri, 05 Mar 2021 14:58:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AD93D30011C;
-        Fri,  5 Mar 2021 15:57:54 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A1373203D8A3F; Fri,  5 Mar 2021 15:57:54 +0100 (CET)
-Date:   Fri, 5 Mar 2021 15:57:54 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: "struct perf_sample_data" alignment
-Message-ID: <YEJG8v/sCxsG5Lsg@hirez.programming.kicks-ass.net>
-References: <CAHk-=wgQWHDUFjzmAazg8WN0BR7nOyHmduj-MV1GWWDUu+UKCQ@mail.gmail.com>
- <YEHtjioucovbxbRt@hirez.programming.kicks-ass.net>
+        Fri, 5 Mar 2021 09:58:52 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12841C061756
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 06:58:52 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id s15so1925544qtq.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 06:58:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qZ3AoTf6cXU1bu8uuC00ZxA2V46t8CB6SICrs+0qcjk=;
+        b=env4aw7KLR9Tgvix1pjweQF3uNic1np0s7qWnz+oha8p6xblltNMqVPfju4YQtlm8Z
+         QtN7owCUjlpIHROURmnrrtW2Z//xjCf2sQenGXPbG2wZVHyN8qCRT3zBPt7ZPD7g6aF+
+         eRdkkzy8HnTNrhl/SDbf0B+KnYg+TA3mUx7Go=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qZ3AoTf6cXU1bu8uuC00ZxA2V46t8CB6SICrs+0qcjk=;
+        b=Vp+WT5KI7GHHn+iN2TUChPpySxvKGX8VV646E8e9I67QxXMpbhdELZQ6TKr7dWfgqT
+         +vJJ5b+IFyEA+S6AcLTc57mSx9riOnUjbWSN20ys/NM52zaFggifYj5hm/oKZgH2qHz3
+         SUFfbl3L6A72m9DfwFiKbn+65JDpzfFZjK7c1np948RF5bPg8iX5lZ9MkuOX0lDe9/S5
+         4iYXHpSDj0VHKGEYYyzy5faOqaDmTkkg24gqkerTiWxDLRUa+IP0K0mu/TAeNRvJd8fe
+         8Yj934Z6krBVdecr3Q8JG4LyFBqgAlZsltMB8JZTcwBmAskHeP2w3Hnhi7leYF2ouqbQ
+         ZcLA==
+X-Gm-Message-State: AOAM531AQUrtUZK7r2WrE44UFr9wg/jhFkVwHlkzp/bRQynli/9tDHMc
+        fcqLCF5JRBYUCmGihxAtDHW5x5g1x9tsMA==
+X-Google-Smtp-Source: ABdhPJw/EEX0Ul8WvYZTlz+excaT4NjfLDxQ8yZEmG+SFh3VMH5wY6/euy7ArDb93UXjJuMYB5KJTw==
+X-Received: by 2002:a05:622a:d4:: with SMTP id p20mr9443550qtw.141.1614956330361;
+        Fri, 05 Mar 2021 06:58:50 -0800 (PST)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id 19sm1871108qkv.95.2021.03.05.06.58.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 06:58:49 -0800 (PST)
+Received: by mail-yb1-f181.google.com with SMTP id d9so2257274ybq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 06:58:49 -0800 (PST)
+X-Received: by 2002:a25:d3c5:: with SMTP id e188mr14732960ybf.345.1614956329260;
+ Fri, 05 Mar 2021 06:58:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEHtjioucovbxbRt@hirez.programming.kicks-ass.net>
+References: <20210227002603.3260599-1-dianders@chromium.org>
+ <20210226162521.2.I7c9190630cf9131b42d521aa1c5b97135012a734@changeid> <6537aec4-7f6e-ede9-12ea-e84bab738d7b@linaro.org>
+In-Reply-To: <6537aec4-7f6e-ede9-12ea-e84bab738d7b@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 5 Mar 2021 06:58:37 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=XnS82=62zSyOkn++kt0BD40Qp5EmZ0SWoW25Gs7nXi8g@mail.gmail.com>
+Message-ID: <CAD=FV=XnS82=62zSyOkn++kt0BD40Qp5EmZ0SWoW25Gs7nXi8g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] nvmem: core: Allow nvmem_cell_read_u16/32/64 to read
+ smaller cells
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Niklas Cassel <niklas.cassel@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 09:36:30AM +0100, Peter Zijlstra wrote:
-> On Thu, Mar 04, 2021 at 07:45:44PM -0800, Linus Torvalds wrote:
-> > That ____cacheline_aligned goes back many years, this is not new, it
-> > seems to come from back in 2014: commit 2565711fb7d7 ("perf: Improve
-> > the perf_sample_data struct layout").
-> 
-> long time ago...
-> 
-> > But it really seems entirely and utterly bogus. That cacheline
-> > alignment makes things *worse*, when the variables are on the local
-> > stack. The local stack is already going to be dirty and in the cache,
-> > and aligning those things isn't going to - and I quote from the code
-> > in that commend in that commit - "minimize the cachelines touched".
-> > 
-> > Quite the reverse. It's just going to make the stack frame use *more*
-> > memory, and make any cacheline usage _worse_.
-> 
-> IIRC there is more history here, but I can't seem to find references
-> just now.
-> 
-> What I remember is that since perf_sample_data is fairly large,
-> unconditionally initializing the whole thing is *slow* (and
-> -fauto-var-init=zero will hurt here).
-> 
-> So at some point I removed that full initialization and made sure we
-> only unconditionally touched the first few variables, which gave a
-> measurable speedup.
-> 
-> Then things got messy again and the commit 2565711fb7d7 referenced above
-> was cleanup, to get back to that initial state.
-> 
-> Now, you're right that __cacheline_aligned on on-stack (and this is
-> indeed mostly on-stack) is fairly tedious (there were a few patches
-> recently to reduce the amount of on-stack instances).
-> 
-> I'll put it on the todo list, along with that hotplug stuff (which I
-> tried to fix but ended up with an even bigger mess). I suppose we can
-> try and not have the alignment for the on-stack instances while
-> preserving it for the few off-stack ones.
-> 
-> Also; we're running on the NMI stack, and that's not typically hot.
+Hi,
 
-This seems to be it... (completely untested)
+On Fri, Mar 5, 2021 at 2:27 AM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+>
+>
+> On 27/02/2021 00:26, Douglas Anderson wrote:
+> > The current way that cell "length" is specified for nvmem cells is a
+> > little fuzzy. For instance, let's look at the gpu speed bin currently
+> > in sc7180.dtsi:
+> >
+> >    gpu_speed_bin: gpu_speed_bin@1d2 {
+> >      reg = <0x1d2 0x2>;
+> >      bits = <5 8>;
+> >    };
+> >
+> > This is an 8-bit value (as specified by the "bits" field). However,
+> > it has a "length" of 2 (bytes), presumably because the value spans
+> > across two bytes.
+> >
+> > When querying this value right now, it's hard for a client to know if
+> > they should be calling nvmem_cell_read_u16() or nvmem_cell_read_u8().
+> > Today they must call nvmem_cell_read_u16() because the "length" of the
+> > cell was 2 (bytes). However, if a later SoC ever came around and
+> > didn't span across 2 bytes it would be unclear.  If a later Soc
+> > specified, for instance:
+> >
+> >    gpu_speed_bin: gpu_speed_bin@100 {
+> >      reg = <0x100 0x1>;
+> >      bits = <0 8>;
+> >    };
+> >
+> > ...then the caller would need to change to try calling
+> > nvmem_cell_read_u8() because the u16 version would fail.
+> >
+>
+> If the consumer driver is expecting the sizes to span around byte to
+> many bytes
 
----
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 3f7f89ea5e51..918a296d2ca2 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1032,7 +1032,9 @@ struct perf_sample_data {
- 	u64				cgroup;
- 	u64				data_page_size;
- 	u64				code_page_size;
--} ____cacheline_aligned;
-+};
-+
-+typedef struct perf_sample_data perf_sample_data_t ____cacheline_aligned;
- 
- /* default value for data source */
- #define PERF_MEM_NA (PERF_MEM_S(OP, NA)   |\
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index b0c45d923f0f..f32c623abef6 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -923,7 +923,7 @@ __bpf_perf_event_output(struct pt_regs *regs, struct bpf_map *map,
-  * bpf_perf_event_output
-  */
- struct bpf_trace_sample_data {
--	struct perf_sample_data sds[3];
-+	perf_sample_data_t sds[3];
- };
- 
- static DEFINE_PER_CPU(struct bpf_trace_sample_data, bpf_trace_sds);
+I guess in my mind that's outside of the scope of what the consumer
+should need to know.  The consumer wants a number and they know it's
+stored in nvmem.  They shouldn't need to consider the bit packing
+within nvmem.  Imagine that have a structure definition:
+
+struct example {
+  int num1:6;
+  int num2:6;
+  int num3:6;
+  int num4:6;
+};
+struct example e;
+
+What I think you're saying is that you should need a different syntax
+for accessing "e.num1" and "e.num4" (because they happen not to span
+bytes) compared to accessing "e.num2" and "e.num3". As it is, C
+abstracts this out and allows you not to care. You can just do:
+
+e.num1 + e.num2 + e.num3 + e.num4
+
+...and it works fine even though some of those span bytes and some
+don't.  I want the same thing.
+
+
+> , then, Why not just call nvmem_cell_read() which should also
+> return you how many bytes it has read!
+
+See my response to patch #1. This requires open-coding a small but
+still non-trivial bit of code for all consumers. It should be in the
+core.
+
+
+> > Let's solve this by allowing clients to read a "larger" value. We'll
+> > just fill it in with 0.
+>
+> That is misleading the consumer! If the consumer is expecting a u16 or
+> u32, cell size should be of that size!!
+
+If you think it's confusing to change the behavior of the existing
+functions, would you be opposed to me adding a new function like
+nvmem_cell_read_le_u32_or_smaller() (or provide me a better name) that
+would be flexible like this?
+
+-Doug
