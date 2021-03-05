@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D6C32EA87
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C488C32EB12
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbhCEMjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:39:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51976 "EHLO mail.kernel.org"
+        id S232858AbhCEMlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:41:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229759AbhCEMiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:38:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DA5065030;
-        Fri,  5 Mar 2021 12:38:15 +0000 (UTC)
+        id S229768AbhCEMlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:41:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 779D36502E;
+        Fri,  5 Mar 2021 12:41:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947896;
-        bh=eRWpS8/FiFTXMIgt9svYfyM6K5IbWgyA7RW/iy/bypc=;
+        s=korg; t=1614948082;
+        bh=UWLIWfYD+prOzt22pde3LwfE441zn2YNFpURl7hefXw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NXz3exwDn39iZde5GE4899vvup3Ow47/ZSS4IioI0d3CbosUOckDSC1UfXvyEyoid
-         CQWt+DO6d9Q84Ry3khZtIZQcBJYdNcCvL5K7GwZmILTRDw9GG2X68Qe/LqTxevoXBf
-         VUNJh0GpBOwInBmoF63+kkHyeVIIsYxva71sdrPI=
+        b=x50rXlHjLozYN8VuJGc4Q/0EnpmGdBM914ZSUVFs3Xg5+9V0RJodjKk2i6VGVDiJE
+         LOZk+1b0L7hosfMdS40TyAYtxKZinXOQnKdRS3AIb8IUi8t4RQF1QVUNjYg0eMNvvq
+         BsEyv96RKUPoDQoSgiUeO4nUhVr/UX+xw5fqngaQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.19 50/52] media: v4l: ioctl: Fix memory leak in video_usercopy
+        stable@vger.kernel.org, Will Deacon <will.deacon@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCH 4.9 14/41] arm64: Remove redundant mov from LL/SC cmpxchg
 Date:   Fri,  5 Mar 2021 13:22:21 +0100
-Message-Id: <20210305120856.115599458@linuxfoundation.org>
+Message-Id: <20210305120851.988419372@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
-References: <20210305120853.659441428@linuxfoundation.org>
+In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
+References: <20210305120851.255002428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,84 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+From: Robin Murphy <robin.murphy@arm.com>
 
-commit fb18802a338b36f675a388fc03d2aa504a0d0899 upstream.
+commit 8df728e1ae614f592961e51f65d3e3212ede5a75 upstream.
 
-When an IOCTL with argument size larger than 128 that also used array
-arguments were handled, two memory allocations were made but alas, only
-the latter one of them was released. This happened because there was only
-a single local variable to hold such a temporary allocation.
+The cmpxchg implementation introduced by commit c342f78217e8 ("arm64:
+cmpxchg: patch in lse instructions when supported by the CPU") performs
+an apparently redundant register move of [old] to [oldval] in the
+success case - it always uses the same register width as [oldval] was
+originally loaded with, and is only executed when [old] and [oldval] are
+known to be equal anyway.
 
-Fix this by adding separate variables to hold the pointers to the
-temporary allocations.
+The only effect it seemingly does have is to take up a surprising amount
+of space in the kernel text, as removing it reveals:
 
-Reported-by: Arnd Bergmann <arnd@kernel.org>
-Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
-Fixes: d14e6d76ebf7 ("[media] v4l: Add multi-planar ioctl handling code")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+   text	   data	    bss	    dec	    hex	filename
+12426658	1348614	4499749	18275021	116dacd	vmlinux.o.new
+12429238	1348614	4499749	18277601	116e4e1	vmlinux.o.old
+
+Reviewed-by: Will Deacon <will.deacon@arm.com>
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/v4l2-core/v4l2-ioctl.c |   19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ arch/arm64/include/asm/atomic_ll_sc.h |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -2939,7 +2939,7 @@ video_usercopy(struct file *file, unsign
- 	       v4l2_kioctl func)
- {
- 	char	sbuf[128];
--	void    *mbuf = NULL;
-+	void    *mbuf = NULL, *array_buf = NULL;
- 	void	*parg = (void *)arg;
- 	long	err  = -EINVAL;
- 	bool	has_array_args;
-@@ -2998,20 +2998,14 @@ video_usercopy(struct file *file, unsign
- 	has_array_args = err;
- 
- 	if (has_array_args) {
--		/*
--		 * When adding new types of array args, make sure that the
--		 * parent argument to ioctl (which contains the pointer to the
--		 * array) fits into sbuf (so that mbuf will still remain
--		 * unused up to here).
--		 */
--		mbuf = kvmalloc(array_size, GFP_KERNEL);
-+		array_buf = kvmalloc(array_size, GFP_KERNEL);
- 		err = -ENOMEM;
--		if (NULL == mbuf)
-+		if (array_buf == NULL)
- 			goto out_array_args;
- 		err = -EFAULT;
--		if (copy_from_user(mbuf, user_ptr, array_size))
-+		if (copy_from_user(array_buf, user_ptr, array_size))
- 			goto out_array_args;
--		*kernel_ptr = mbuf;
-+		*kernel_ptr = array_buf;
- 	}
- 
- 	/* Handles IOCTL */
-@@ -3030,7 +3024,7 @@ video_usercopy(struct file *file, unsign
- 
- 	if (has_array_args) {
- 		*kernel_ptr = (void __force *)user_ptr;
--		if (copy_to_user(user_ptr, mbuf, array_size))
-+		if (copy_to_user(user_ptr, array_buf, array_size))
- 			err = -EFAULT;
- 		goto out_array_args;
- 	}
-@@ -3052,6 +3046,7 @@ out_array_args:
- 	}
- 
- out:
-+	kvfree(array_buf);
- 	kvfree(mbuf);
- 	return err;
- }
+--- a/arch/arm64/include/asm/atomic_ll_sc.h
++++ b/arch/arm64/include/asm/atomic_ll_sc.h
+@@ -264,7 +264,6 @@ __LL_SC_PREFIX(__cmpxchg_case_##name(vol
+ 	"	st" #rel "xr" #sz "\t%w[tmp], %" #w "[new], %[v]\n"	\
+ 	"	cbnz	%w[tmp], 1b\n"					\
+ 	"	" #mb "\n"						\
+-	"	mov	%" #w "[oldval], %" #w "[old]\n"		\
+ 	"2:"								\
+ 	: [tmp] "=&r" (tmp), [oldval] "=&r" (oldval),			\
+ 	  [v] "+Q" (*(unsigned long *)ptr)				\
 
 
