@@ -2,72 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87F832E357
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A6632E35D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:08:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbhCEIHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:07:40 -0500
-Received: from lucky1.263xmail.com ([211.157.147.135]:33948 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhCEIH3 (ORCPT
+        id S229648AbhCEIIM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Mar 2021 03:08:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229631AbhCEIIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:07:29 -0500
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id A17E9A8047;
-        Fri,  5 Mar 2021 16:07:00 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P19729T140185094313728S1614931620063598_;
-        Fri, 05 Mar 2021 16:07:01 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <dee109ebc5adcaa58bd83e5eced281a7>
-X-RL-SENDER: jay.xu@rock-chips.com
-X-SENDER: xjq@rock-chips.com
-X-LOGIN-NAME: jay.xu@rock-chips.com
-X-FST-TO: tglx@linutronix.de
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jianqun Xu <jay.xu@rock-chips.com>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, linus.walleij@linaro.org,
-        heiko@sntech.de, linux-rockchip@lists.infradead.org,
-        Jianqun Xu <jay.xu@rock-chips.com>
-Subject: [PATCH] kernel/irq: export irq_gc_set_wake
-Date:   Fri,  5 Mar 2021 16:06:58 +0800
-Message-Id: <20210305080658.2422114-1-jay.xu@rock-chips.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 5 Mar 2021 03:08:10 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1C7C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 00:08:09 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lI5Ux-0004nt-Hu; Fri, 05 Mar 2021 09:07:47 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1lI5Uj-0003Ld-FI; Fri, 05 Mar 2021 09:07:33 +0100
+Message-ID: <22817e0d7f266ebf2d8e6b28495736cdb9c6d6f3.camel@pengutronix.de>
+Subject: Re: [PATCH v6 3/3] hwrng: bcm2835: add reset support
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     =?ISO-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Lee Jones <lee.jones@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Fri, 05 Mar 2021 09:07:33 +0100
+In-Reply-To: <20210305070132.2986-4-noltari@gmail.com>
+References: <20210305070132.2986-1-noltari@gmail.com>
+         <20210305070132.2986-4-noltari@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Module driver may use irq_gc_set_wake.
+On Fri, 2021-03-05 at 08:01 +0100, Álvaro Fernández Rojas wrote:
+> BCM6368 devices need to reset the IPSEC controller in order to generate true
+> random numbers.
+> 
+> This is what BCM6368 produces without a reset:
+> root@OpenWrt:/# cat /dev/hwrng | rngtest -c 1000
+> rngtest 6.10
+> Copyright (c) 2004 by Henrique de Moraes Holschuh
+> This is free software; see the source for copying conditions.  There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> 
+> rngtest: starting FIPS tests...
+> rngtest: bits received from input: 20000032
+> rngtest: FIPS 140-2 successes: 0
+> rngtest: FIPS 140-2 failures: 1000
+> rngtest: FIPS 140-2(2001-10-10) Monobit: 2
+> rngtest: FIPS 140-2(2001-10-10) Poker: 1000
+> rngtest: FIPS 140-2(2001-10-10) Runs: 1000
+> rngtest: FIPS 140-2(2001-10-10) Long run: 30
+> rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
+> rngtest: input channel speed: (min=37.253; avg=320.827; max=635.783)Mibits/s
+> rngtest: FIPS tests speed: (min=12.141; avg=15.034; max=16.428)Mibits/s
+> rngtest: Program run time: 1336176 microseconds
+> 
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
----
- kernel/irq/generic-chip.c | 1 +
- 1 file changed, 1 insertion(+)
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 
-diff --git a/kernel/irq/generic-chip.c b/kernel/irq/generic-chip.c
-index a23ac2bbf433..f8f23af6ab0d 100644
---- a/kernel/irq/generic-chip.c
-+++ b/kernel/irq/generic-chip.c
-@@ -200,6 +200,7 @@ int irq_gc_set_wake(struct irq_data *d, unsigned int on)
- 	irq_gc_unlock(gc);
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(irq_gc_set_wake);
- 
- static u32 irq_readl_be(void __iomem *addr)
- {
--- 
-2.25.1
+regards
+Philipp
 
-
-
+> ---
+>  v6: fix commit description.
+>  v5: remove reset_control_rearm().
+>  v4: add reset_control_rearm().
+>  v3: no changes.
+>  v2: no changes.
+> 
+>  drivers/char/hw_random/bcm2835-rng.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/char/hw_random/bcm2835-rng.c b/drivers/char/hw_random/bcm2835-rng.c
+> index be5be395b341..e7dd457e9b22 100644
+> --- a/drivers/char/hw_random/bcm2835-rng.c
+> +++ b/drivers/char/hw_random/bcm2835-rng.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/printk.h>
+>  #include <linux/clk.h>
+> +#include <linux/reset.h>
+>  
+>  #define RNG_CTRL	0x0
+>  #define RNG_STATUS	0x4
+> @@ -32,6 +33,7 @@ struct bcm2835_rng_priv {
+>  	void __iomem *base;
+>  	bool mask_interrupts;
+>  	struct clk *clk;
+> +	struct reset_control *reset;
+>  };
+>  
+>  static inline struct bcm2835_rng_priv *to_rng_priv(struct hwrng *rng)
+> @@ -92,6 +94,10 @@ static int bcm2835_rng_init(struct hwrng *rng)
+>  	if (ret)
+>  		return ret;
+>  
+> +	ret = reset_control_reset(priv->reset);
+> +	if (ret)
+> +		return ret;
+> +
+>  	if (priv->mask_interrupts) {
+>  		/* mask the interrupt */
+>  		val = rng_readl(priv, RNG_INT_MASK);
+> @@ -156,6 +162,10 @@ static int bcm2835_rng_probe(struct platform_device *pdev)
+>  	if (IS_ERR(priv->clk))
+>  		return PTR_ERR(priv->clk);
+>  
+> +	priv->reset = devm_reset_control_get_optional_exclusive(dev, NULL);
+> +	if (IS_ERR(priv->reset))
+> +		return PTR_ERR(priv->reset);
+> +
+>  	priv->rng.name = pdev->name;
+>  	priv->rng.init = bcm2835_rng_init;
+>  	priv->rng.read = bcm2835_rng_read;
