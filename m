@@ -2,156 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B45F32EF27
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1F032EF21
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhCEPkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:40:09 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:49326 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230514AbhCEPjo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:39:44 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 125FdcRU046476;
-        Fri, 5 Mar 2021 09:39:38 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614958778;
-        bh=aLcgj4nL3lE7eSI6161xnfJ05tCLPEjq9+d5+FBKkS8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=NcTRUjY+83IN31BDhHYbGvnv9BOSf+oEsukXBwy0jJXU5ikKZR619SmEWweDURBlF
-         V/3zOjn6ivKVltmvr5qK38pbspsQGIeHlvUnMOBO4ig86/tgURVXTLwMNqX0xO121x
-         BwXMzDyVOoE+8bp29ATPQNNGeNy0GYuu35NrrIsw=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 125FdcNH082023
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 5 Mar 2021 09:39:38 -0600
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 5 Mar
- 2021 09:39:37 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 5 Mar 2021 09:39:37 -0600
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 125FdQBZ081046;
-        Fri, 5 Mar 2021 09:39:35 -0600
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH v2 3/3] arm64: dts: ti: k3-j7200-som-p0: Add nodes for OSPI0
-Date:   Fri, 5 Mar 2021 21:09:26 +0530
-Message-ID: <20210305153926.3479-4-p.yadav@ti.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210305153926.3479-1-p.yadav@ti.com>
-References: <20210305153926.3479-1-p.yadav@ti.com>
+        id S230506AbhCEPkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:40:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230488AbhCEPjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 10:39:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA66064F04;
+        Fri,  5 Mar 2021 15:39:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614958775;
+        bh=dTobh6trwYvRU3m/FchJ2aReiOsxErYWezmMKxDKQ8Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=FQ3+nUDvYVnwvOvI1XL1u8wE+1pHSBNY7avcoVpzWcAOM9o9gXXekD0rey99lA4pe
+         uxajllcvNRXu6uZ/6eo66ooiTJHqBsVVv8IXoDHKhgvOZzfTQyfauauaLUgw17zrUO
+         WyOi3q8/dYAdVksPioqLbYbdhZYMafz4dq5zNd3GaBHWLRBoB7YhmVwMZWUI5wxyvm
+         ghnHRNUIE0EKl2QRGgJpT1GrxEIThNbzTZkfromOCmPyVnx2ROXMTu1QIdIvy369V7
+         bIcB93JFihvrr3zPBTACQDfG2jiELeIn/t0FsuLN2CayVRLGqRFC9mrOD6FeFYMptP
+         TjKSxY+Hag91A==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com
+Subject: [PATCH -tip 3/5] kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
+Date:   Sat,  6 Mar 2021 00:39:30 +0900
+Message-Id: <161495876994.346821.11468535974887762132.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <161495873696.346821.10161501768906432924.stgit@devnote2>
+References: <161495873696.346821.10161501768906432924.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TI J7200 has the Cadence OSPI controller for interfacing with OSPI
-flashes. Add its node to allow using SPI flashes.
+Remove trampoline_address from kretprobe_trampoline_handler().
+Instead of passing the address, kretprobe_trampoline_handler()
+can use new kretprobe_trampoline_addr().
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
+ arch/arc/kernel/kprobes.c          |    2 +-
+ arch/arm/probes/kprobes/core.c     |    3 +--
+ arch/arm64/kernel/probes/kprobes.c |    3 +--
+ arch/csky/kernel/probes/kprobes.c  |    2 +-
+ arch/ia64/kernel/kprobes.c         |    5 ++---
+ arch/mips/kernel/kprobes.c         |    3 +--
+ arch/parisc/kernel/kprobes.c       |    4 ++--
+ arch/powerpc/kernel/kprobes.c      |    2 +-
+ arch/riscv/kernel/probes/kprobes.c |    2 +-
+ arch/s390/kernel/kprobes.c         |    2 +-
+ arch/sh/kernel/kprobes.c           |    2 +-
+ arch/sparc/kernel/kprobes.c        |    2 +-
+ arch/x86/kernel/kprobes/core.c     |    2 +-
+ include/linux/kprobes.h            |   18 +++++++++++++-----
+ kernel/kprobes.c                   |    3 +--
+ 15 files changed, 29 insertions(+), 26 deletions(-)
 
-Notes:
-    Changes in v2:
-    - Do not force a pulldown on the DQS line because it already has a
-      pulldown resistor.
-
- .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 17 +++++++++
- arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi   | 36 +++++++++++++++++++
- 2 files changed, 53 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-index 359e3e8a8cd0..5408ec815d58 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-@@ -269,6 +269,23 @@ hbmc: hyperbus@47034000 {
- 			#size-cells = <1>;
- 			mux-controls = <&hbmc_mux 0>;
- 		};
-+
-+		ospi0: spi@47040000 {
-+			compatible = "ti,am654-ospi";
-+			reg = <0x0 0x47040000 0x0 0x100>,
-+			      <0x5 0x00000000 0x1 0x0000000>;
-+			interrupts = <GIC_SPI 840 IRQ_TYPE_LEVEL_HIGH>;
-+			cdns,fifo-depth = <256>;
-+			cdns,fifo-width = <4>;
-+			cdns,trigger-address = <0x0>;
-+			clocks = <&k3_clks 103 0>;
-+			assigned-clocks = <&k3_clks 103 0>;
-+			assigned-clock-parents = <&k3_clks 103 2>;
-+			assigned-clock-rates = <166666666>;
-+			power-domains = <&k3_pds 103 TI_SCI_PD_EXCLUSIVE>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+		};
- 	};
+diff --git a/arch/arc/kernel/kprobes.c b/arch/arc/kernel/kprobes.c
+index cabef45f11df..3ae01bb5820c 100644
+--- a/arch/arc/kernel/kprobes.c
++++ b/arch/arc/kernel/kprobes.c
+@@ -397,7 +397,7 @@ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+ static int __kprobes trampoline_probe_handler(struct kprobe *p,
+ 					      struct pt_regs *regs)
+ {
+-	regs->ret = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
++	regs->ret = __kretprobe_trampoline_handler(regs, NULL);
  
- 	tscadc0: tscadc@40200000 {
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
-index a988e2ab2ba1..34724440171a 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
-@@ -100,6 +100,22 @@ J721E_WKUP_IOPAD(0x24, PIN_INPUT, 1) /* (A8) MCU_OSPI0_D6.MCU_HYPERBUS0_DQ6 */
- 			J721E_WKUP_IOPAD(0x28, PIN_INPUT, 1) /* (A7) MCU_OSPI0_D7.MCU_HYPERBUS0_DQ7 */
- 		>;
- 	};
-+
-+	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-pins-default {
-+		pinctrl-single,pins = <
-+			J721E_WKUP_IOPAD(0x0000, PIN_OUTPUT, 0) /* MCU_OSPI0_CLK */
-+			J721E_WKUP_IOPAD(0x002c, PIN_OUTPUT, 0) /* MCU_OSPI0_CSn0 */
-+			J721E_WKUP_IOPAD(0x000c, PIN_INPUT, 0)  /* MCU_OSPI0_D0 */
-+			J721E_WKUP_IOPAD(0x0010, PIN_INPUT, 0)  /* MCU_OSPI0_D1 */
-+			J721E_WKUP_IOPAD(0x0014, PIN_INPUT, 0)  /* MCU_OSPI0_D2 */
-+			J721E_WKUP_IOPAD(0x0018, PIN_INPUT, 0)  /* MCU_OSPI0_D3 */
-+			J721E_WKUP_IOPAD(0x001c, PIN_INPUT, 0)  /* MCU_OSPI0_D4 */
-+			J721E_WKUP_IOPAD(0x0020, PIN_INPUT, 0)  /* MCU_OSPI0_D5 */
-+			J721E_WKUP_IOPAD(0x0024, PIN_INPUT, 0)  /* MCU_OSPI0_D6 */
-+			J721E_WKUP_IOPAD(0x0028, PIN_INPUT, 0)  /* MCU_OSPI0_D7 */
-+			J721E_WKUP_IOPAD(0x0008, PIN_INPUT, 0)  /* MCU_OSPI0_DQS */
-+		>;
-+	};
- };
+ 	/* By returning a non zero value, we are telling the kprobe handler
+ 	 * that we don't want the post_handler to run
+diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
+index a9653117ca0d..1782b41df095 100644
+--- a/arch/arm/probes/kprobes/core.c
++++ b/arch/arm/probes/kprobes/core.c
+@@ -413,8 +413,7 @@ void __naked __kprobes kretprobe_trampoline(void)
+ /* Called from kretprobe_trampoline */
+ static __used __kprobes void *trampoline_handler(struct pt_regs *regs)
+ {
+-	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline,
+-						    (void *)regs->ARM_fp);
++	return (void *)kretprobe_trampoline_handler(regs, (void *)regs->ARM_fp);
+ }
  
- &main_pmx0 {
-@@ -235,3 +251,23 @@ exp_som: gpio@21 {
- 				  "GPIO_LIN_EN", "CAN_STB";
- 	};
- };
+ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
+index 66aac2881ba8..fce681fdfce6 100644
+--- a/arch/arm64/kernel/probes/kprobes.c
++++ b/arch/arm64/kernel/probes/kprobes.c
+@@ -412,8 +412,7 @@ int __init arch_populate_kprobe_blacklist(void)
+ 
+ void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
+ {
+-	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline,
+-					(void *)kernel_stack_pointer(regs));
++	return (void *)kretprobe_trampoline_handler(regs, (void *)kernel_stack_pointer(regs));
+ }
+ 
+ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+diff --git a/arch/csky/kernel/probes/kprobes.c b/arch/csky/kernel/probes/kprobes.c
+index 589f090f48b9..cc589bc11904 100644
+--- a/arch/csky/kernel/probes/kprobes.c
++++ b/arch/csky/kernel/probes/kprobes.c
+@@ -404,7 +404,7 @@ int __init arch_populate_kprobe_blacklist(void)
+ 
+ void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
+ {
+-	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
++	return (void *)kretprobe_trampoline_handler(regs, NULL);
+ }
+ 
+ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+diff --git a/arch/ia64/kernel/kprobes.c b/arch/ia64/kernel/kprobes.c
+index 15871eb170c0..a008df8e7203 100644
+--- a/arch/ia64/kernel/kprobes.c
++++ b/arch/ia64/kernel/kprobes.c
+@@ -392,14 +392,13 @@ static void __kprobes set_current_kprobe(struct kprobe *p,
+ 	__this_cpu_write(current_kprobe, p);
+ }
+ 
+-static void kretprobe_trampoline(void)
++void kretprobe_trampoline(void)
+ {
+ }
+ 
+ int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
+ {
+-	regs->cr_iip = __kretprobe_trampoline_handler(regs,
+-		dereference_function_descriptor(kretprobe_trampoline), NULL);
++	regs->cr_iip = __kretprobe_trampoline_handler(regs, NULL);
+ 	/*
+ 	 * By returning a non-zero value, we are telling
+ 	 * kprobe_handler() that we don't want the post_handler
+diff --git a/arch/mips/kernel/kprobes.c b/arch/mips/kernel/kprobes.c
+index 54dfba8fa77c..001a2f07ef44 100644
+--- a/arch/mips/kernel/kprobes.c
++++ b/arch/mips/kernel/kprobes.c
+@@ -489,8 +489,7 @@ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+ static int __kprobes trampoline_probe_handler(struct kprobe *p,
+ 						struct pt_regs *regs)
+ {
+-	instruction_pointer(regs) = __kretprobe_trampoline_handler(regs,
+-						kretprobe_trampoline, NULL);
++	instruction_pointer(regs) = __kretprobe_trampoline_handler(regs, NULL);
+ 	/*
+ 	 * By returning a non-zero value, we are telling
+ 	 * kprobe_handler() that we don't want the post_handler
+diff --git a/arch/parisc/kernel/kprobes.c b/arch/parisc/kernel/kprobes.c
+index 6d21a515eea5..4a35ac6e2ca2 100644
+--- a/arch/parisc/kernel/kprobes.c
++++ b/arch/parisc/kernel/kprobes.c
+@@ -175,7 +175,7 @@ int __kprobes parisc_kprobe_ss_handler(struct pt_regs *regs)
+ 	return 1;
+ }
+ 
+-static inline void kretprobe_trampoline(void)
++void kretprobe_trampoline(void)
+ {
+ 	asm volatile("nop");
+ 	asm volatile("nop");
+@@ -193,7 +193,7 @@ static int __kprobes trampoline_probe_handler(struct kprobe *p,
+ {
+ 	unsigned long orig_ret_address;
+ 
+-	orig_ret_address = __kretprobe_trampoline_handler(regs, trampoline_p.addr, NULL);
++	orig_ret_address = __kretprobe_trampoline_handler(regs, NULL);
+ 	instruction_pointer_set(regs, orig_ret_address);
+ 
+ 	return 1;
+diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
+index eb0460949e1b..dfd532c43525 100644
+--- a/arch/powerpc/kernel/kprobes.c
++++ b/arch/powerpc/kernel/kprobes.c
+@@ -399,7 +399,7 @@ static int trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
+ {
+ 	unsigned long orig_ret_address;
+ 
+-	orig_ret_address = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
++	orig_ret_address = __kretprobe_trampoline_handler(regs, NULL);
+ 	/*
+ 	 * We get here through one of two paths:
+ 	 * 1. by taking a trap -> kprobe_handler() -> here
+diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
+index a2ec18662fee..619339f1d3ba 100644
+--- a/arch/riscv/kernel/probes/kprobes.c
++++ b/arch/riscv/kernel/probes/kprobes.c
+@@ -376,7 +376,7 @@ int __init arch_populate_kprobe_blacklist(void)
+ 
+ void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
+ {
+-	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
++	return (void *)kretprobe_trampoline_handler(regs, NULL);
+ }
+ 
+ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+diff --git a/arch/s390/kernel/kprobes.c b/arch/s390/kernel/kprobes.c
+index aae24dc75df6..b149e9169709 100644
+--- a/arch/s390/kernel/kprobes.c
++++ b/arch/s390/kernel/kprobes.c
+@@ -351,7 +351,7 @@ static void __used kretprobe_trampoline_holder(void)
+  */
+ static int trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
+ {
+-	regs->psw.addr = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
++	regs->psw.addr = __kretprobe_trampoline_handler(regs, NULL);
+ 	/*
+ 	 * By returning a non-zero value, we are telling
+ 	 * kprobe_handler() that we don't want the post_handler
+diff --git a/arch/sh/kernel/kprobes.c b/arch/sh/kernel/kprobes.c
+index 756100b01e84..48356e81836a 100644
+--- a/arch/sh/kernel/kprobes.c
++++ b/arch/sh/kernel/kprobes.c
+@@ -303,7 +303,7 @@ static void __used kretprobe_trampoline_holder(void)
+  */
+ int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
+ {
+-	regs->pc = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
++	regs->pc = __kretprobe_trampoline_handler(regs, NULL);
+ 
+ 	return 1;
+ }
+diff --git a/arch/sparc/kernel/kprobes.c b/arch/sparc/kernel/kprobes.c
+index 217c21a6986a..fa30f9dadff8 100644
+--- a/arch/sparc/kernel/kprobes.c
++++ b/arch/sparc/kernel/kprobes.c
+@@ -468,7 +468,7 @@ static int __kprobes trampoline_probe_handler(struct kprobe *p,
+ {
+ 	unsigned long orig_ret_address = 0;
+ 
+-	orig_ret_address = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
++	orig_ret_address = __kretprobe_trampoline_handler(regs, NULL);
+ 	regs->tpc = orig_ret_address;
+ 	regs->tnpc = orig_ret_address + 4;
+ 
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 1f58e89eeccd..3c00b773fe2e 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -1062,7 +1062,7 @@ __used __visible void *trampoline_handler(struct pt_regs *regs)
+ 	regs->ip = (unsigned long)&kretprobe_trampoline;
+ 	regs->orig_ax = ~0UL;
+ 
+-	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline, &regs->sp);
++	return (void *)kretprobe_trampoline_handler(regs, &regs->sp);
+ }
+ NOKPROBE_SYMBOL(trampoline_handler);
+ 
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index d65c041b5c22..9596b6b15bd0 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -205,15 +205,23 @@ extern void arch_prepare_kretprobe(struct kretprobe_instance *ri,
+ 				   struct pt_regs *regs);
+ extern int arch_trampoline_kprobe(struct kprobe *p);
+ 
++void kretprobe_trampoline(void);
++/*
++ * Since some architecture uses structured function pointer,
++ * use arch_deref_entry_point() to get real function address.
++ */
++static nokprobe_inline void *kretprobe_trampoline_addr(void)
++{
++	return dereference_function_descriptor(kretprobe_trampoline);
++}
 +
-+&ospi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
-+
-+	flash@0{
-+		compatible = "jedec,spi-nor";
-+		reg = <0x0>;
-+		spi-tx-bus-width = <8>;
-+		spi-rx-bus-width = <8>;
-+		spi-max-frequency = <25000000>;
-+		cdns,tshsl-ns = <60>;
-+		cdns,tsd2d-ns = <60>;
-+		cdns,tchsh-ns = <60>;
-+		cdns,tslch-ns = <60>;
-+		cdns,read-delay = <4>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+	};
-+};
--- 
-2.30.0
+ /* If the trampoline handler called from a kprobe, use this version */
+ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+-				void *trampoline_address,
+-				void *frame_pointer);
++					     void *frame_pointer);
+ 
+ static nokprobe_inline
+ unsigned long kretprobe_trampoline_handler(struct pt_regs *regs,
+-				void *trampoline_address,
+-				void *frame_pointer)
++					   void *frame_pointer)
+ {
+ 	unsigned long ret;
+ 	/*
+@@ -222,7 +230,7 @@ unsigned long kretprobe_trampoline_handler(struct pt_regs *regs,
+ 	 * be running at this point.
+ 	 */
+ 	kprobe_busy_begin();
+-	ret = __kretprobe_trampoline_handler(regs, trampoline_address, frame_pointer);
++	ret = __kretprobe_trampoline_handler(regs, frame_pointer);
+ 	kprobe_busy_end();
+ 
+ 	return ret;
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 2913de07f4a3..75c0a58c19c2 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1859,7 +1859,6 @@ static struct notifier_block kprobe_exceptions_nb = {
+ #ifdef CONFIG_KRETPROBES
+ 
+ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+-					     void *trampoline_address,
+ 					     void *frame_pointer)
+ {
+ 	kprobe_opcode_t *correct_ret_addr = NULL;
+@@ -1874,7 +1873,7 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+ 
+ 		BUG_ON(ri->fp != frame_pointer);
+ 
+-		if (ri->ret_addr != trampoline_address) {
++		if (ri->ret_addr != kretprobe_trampoline_addr()) {
+ 			correct_ret_addr = ri->ret_addr;
+ 			/*
+ 			 * This is the real return address. Any other
 
