@@ -2,87 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD56D32F5E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:28:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE0232F5E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbhCEW2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 17:28:13 -0500
-Received: from mga03.intel.com ([134.134.136.65]:17442 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229493AbhCEW16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 17:27:58 -0500
-IronPort-SDR: ZMys+L0MIczsPNZ5878mMY5yscugJ9YIYU///cEcqRyJWZeS5SbgUoMmKPGC+hJuzCWzL7KoMu
- vk2nMlOYQW6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="187795258"
-X-IronPort-AV: E=Sophos;i="5.81,226,1610438400"; 
-   d="scan'208";a="187795258"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 14:27:57 -0800
-IronPort-SDR: 92OmTRiUUZKOY9LdNXkXV2ihqbtzwhCjJE6qOHbCDD67txo2lZxzYIt4HVv113pBaf152Dsa0R
- wJWXDy13vZVQ==
-X-IronPort-AV: E=Sophos;i="5.81,226,1610438400"; 
-   d="scan'208";a="508213011"
-Received: from bfrahm-mobl2.amr.corp.intel.com (HELO vcostago-mobl2.amr.corp.intel.com) ([10.212.101.47])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 14:27:57 -0800
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+aa7d098bd6fa788fae8e@syzkaller.appspotmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        =?utf-8?B?SmnFmcOtIFDDrXJrbw==?= <jiri@resnulli.us>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Subject: Re: INFO: rcu detected stall in corrupted (4)
-In-Reply-To: <CACT4Y+Z1MD2VyjDbz5h7UhPqihSBCnOUjA0E5_DoJqAZEHciAg@mail.gmail.com>
-References: <000000000000cedbc405ae81531f@google.com>
- <CACT4Y+Z1MD2VyjDbz5h7UhPqihSBCnOUjA0E5_DoJqAZEHciAg@mail.gmail.com>
-Date:   Fri, 05 Mar 2021 14:27:55 -0800
-Message-ID: <87ft19nslw.fsf@vcostago-mobl2.amr.corp.intel.com>
+        id S229865AbhCEW3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 17:29:17 -0500
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:39008 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229837AbhCEW3O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 17:29:14 -0500
+Received: by mail-oi1-f171.google.com with SMTP id z126so4223556oiz.6;
+        Fri, 05 Mar 2021 14:29:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=L8tLi7VYLiIzROIrBSzUwyPtWKAzZzpCEIfH10Dw2mg=;
+        b=Dc3+fJJ6dUXfXkE99Jde+MMgoUQBm9CGwcQU2K07Ejgn598DlKK+EAoy8OffBEDoFl
+         9l/QDF+XwEmpfeLCwsjmgfAH1YXAh1xJtCxzOk8FIiDLkkqOlzFcS+xb7vEos7D3KrG9
+         3Qxxp8SwTDD8BsABvcvoC8kGm1+0fcJhUPGXgonUI+S200RqiIB4jx6c5zqDISDjQu5e
+         R/xv4KWNogAWsKRrEnvGk7HmwjaYmeVdCIpQ+G8rpTQL0Xak0Ga0akgnc+CHKFSraFc6
+         TdGIFbq0W2fFB77zYyQlLieqHqzPsX6/vjLrgJgaB4fHyWMoSjr6eV3jWHw7ibOIgHN7
+         x+lQ==
+X-Gm-Message-State: AOAM530lpGHnX2fhSjUMcOeyubrh+9ssgD0qndH4QQoYEAeC/I6EzXqY
+        7kLvC+2gNoMlwTgXPtxEsQ==
+X-Google-Smtp-Source: ABdhPJxUS5H3RDgRiDRd9ZHr+vpecCH1SPBWWbrfekHR6gdcttpt+v38J9DDZtl2wyp2nXY41ZHn4g==
+X-Received: by 2002:aca:f388:: with SMTP id r130mr8968623oih.55.1614983354126;
+        Fri, 05 Mar 2021 14:29:14 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r81sm833977oie.2.2021.03.05.14.28.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 14:28:03 -0800 (PST)
+Received: (nullmailer pid 757659 invoked by uid 1000);
+        Fri, 05 Mar 2021 22:28:00 -0000
+Date:   Fri, 5 Mar 2021 16:28:00 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, phil@raspberrypi.com,
+        linux-rpi-kernel@lists.infradead.org, mripard@kernel.org,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Scott Branden <sbranden@broadcom.com>,
+        devicetree@vger.kernel.org, wahrenst@gmx.net,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        linux-arm-kernel@lists.infradead.org, eric@anholt.net
+Subject: Re: [PATCH v3 01/15] dt-bindings: soc: bcm: bcm2835-pm: Convert
+ bindings to DT schema
+Message-ID: <20210305222800.GA757608@robh.at.kernel.org>
+References: <20210217114811.22069-1-nsaenzjulienne@suse.de>
+ <20210217114811.22069-2-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217114811.22069-2-nsaenzjulienne@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dmitry Vyukov <dvyukov@google.com> writes:
+On Wed, 17 Feb 2021 12:47:56 +0100, Nicolas Saenz Julienne wrote:
+> This converts the brcm,bcm2835-pm bindings from text to proper schema.
+> 
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> 
+> ---
+> 
+> Changes since v2:
+>  - Slightly change things to make it less dependent on next commits
+> 
+>  .../bindings/soc/bcm/brcm,bcm2835-pm.txt      | 46 -----------
+>  .../bindings/soc/bcm/brcm,bcm2835-pm.yaml     | 79 +++++++++++++++++++
+>  2 files changed, 79 insertions(+), 46 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.txt
+>  create mode 100644 Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.yaml
+> 
 
-> On Fri, Sep 4, 2020 at 8:49 PM syzbot
-> <syzbot+aa7d098bd6fa788fae8e@syzkaller.appspotmail.com> wrote:
->>
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    0f091e43 netlabel: remove unused param from audit_log_form..
->> git tree:       net-next
->> console output: https://syzkaller.appspot.com/x/log.txt?x=14551a71900000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=61025c6fd3261bb1
->> dashboard link: https://syzkaller.appspot.com/bug?extid=aa7d098bd6fa788fae8e
->> compiler:       gcc (GCC) 10.1.0-syz 20200507
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14eeda25900000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=161472f5900000
->>
->> The issue was bisected to:
->>
->> commit 5a781ccbd19e4664babcbe4b4ead7aa2b9283d22
->> Author: Vinicius Costa Gomes <vinicius.gomes@intel.com>
->> Date:   Sat Sep 29 00:59:43 2018 +0000
->>
->>     tc: Add support for configuring the taprio scheduler
->
-> This still happens. The bisection and repro look correct, the repro
-> also sets up taprio scheduler;
-> https://syzkaller.appspot.com/bug?id=7349616606afa3c986c377792f7ccbf9daae1142
->
-> Vinicius, could you please take a look? Thanks
-
-Ugh.
-
-Sure. Taking a look.
-
-
-Cheers,
--- 
-Vinicius
+Reviewed-by: Rob Herring <robh@kernel.org>
