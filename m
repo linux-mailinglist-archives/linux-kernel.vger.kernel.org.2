@@ -2,137 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4664C32E8DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2806D32E9E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbhCEM3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:29:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28546 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232142AbhCEM2u (ORCPT
+        id S232579AbhCEMfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:35:08 -0500
+Received: from 5.mo7.mail-out.ovh.net ([178.32.120.239]:44560 "EHLO
+        5.mo7.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232533AbhCEMe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:28:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614947329;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SIZLbtAZFPSHx5KKUsWXi2GN4jMwh5B3FLo1HVp/XuA=;
-        b=ARrl+A4NacEJoQDWXFN/jTOax3EpcP22OuWcRHEBIWfDrrG+Wr/GiVIgjqcAn7TbGM9mD8
-        u/59lfYb6O52NRW/vnzgIkwT0uPrVBPvRuaVVPj7gWjU/NGtsGstM9o54XRkt1nLLmNKbI
-        J8eSPvHe2LiO8bFHbbbouJKTK3uZdvs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-258-wSKFs8qaPzSDUFBiJ11oCQ-1; Fri, 05 Mar 2021 07:28:47 -0500
-X-MC-Unique: wSKFs8qaPzSDUFBiJ11oCQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 916B283DD20;
-        Fri,  5 Mar 2021 12:28:45 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 67AED10013D6;
-        Fri,  5 Mar 2021 12:28:45 +0000 (UTC)
-Received: from zmail19.collab.prod.int.phx2.redhat.com (zmail19.collab.prod.int.phx2.redhat.com [10.5.83.22])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 129654BB40;
-        Fri,  5 Mar 2021 12:28:42 +0000 (UTC)
-Date:   Fri, 5 Mar 2021 07:28:40 -0500 (EST)
-From:   Veronika Kabatova <vkabatov@redhat.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Message-ID: <2001895867.30197818.1614947320141.JavaMail.zimbra@redhat.com>
-In-Reply-To: <d7470949-0d9d-0863-f5d1-9391134a5e5e@arm.com>
-References: <1614921898-4099-1-git-send-email-anshuman.khandual@arm.com> <d7470949-0d9d-0863-f5d1-9391134a5e5e@arm.com>
-Subject: Re: [PATCH V3 0/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based
- memory
+        Fri, 5 Mar 2021 07:34:27 -0500
+X-Greylist: delayed 2240 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Mar 2021 07:34:27 EST
+Received: from player770.ha.ovh.net (unknown [10.108.57.141])
+        by mo7.mail-out.ovh.net (Postfix) with ESMTP id 77971197937
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 12:57:05 +0100 (CET)
+Received: from milecki.pl (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
+        (Authenticated sender: rafal@milecki.pl)
+        by player770.ha.ovh.net (Postfix) with ESMTPSA id A22C81BD061BF;
+        Fri,  5 Mar 2021 11:56:56 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-106R006577b0174-6f62-420a-bf23-b30c47fa0076,
+                    4F7D11A3904BD8E553EC742B87CBB6774FEDAA0F) smtp.auth=rafal@milecki.pl
+X-OVh-ClientIp: 194.187.74.233
+Subject: Re: [PATCH V2 mips/linux.git] firmware: bcm47xx_nvram: refactor
+ finding & reading NVRAM
+To:     =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>
+Cc:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivek Unune <npcomplete13@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+References: <20210304072357.31108-1-zajec5@gmail.com>
+ <20210305055501.13099-1-zajec5@gmail.com>
+ <CAAdtpL7iWiumiOwMOH1xiBZvyOB0HB7W-9MMHoPPxkb3Srme=w@mail.gmail.com>
+ <f4045af5-4866-6fc9-f34a-d789a7febb77@milecki.pl>
+ <CAAdtpL5CMTaB6qCR=nZj+1MoGC97_BVd-r30E2RRYOhiktOiZQ@mail.gmail.com>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Message-ID: <c66d6d99-affd-f833-1689-32394bc6a548@milecki.pl>
+Date:   Fri, 5 Mar 2021 12:56:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [10.36.114.98, 10.4.195.5]
-Thread-Topic: arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
-Thread-Index: HYYsJ7UKXk8vnHFKJgWVD82gr9EAgQ==
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <CAAdtpL5CMTaB6qCR=nZj+1MoGC97_BVd-r30E2RRYOhiktOiZQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 2058426506957786736
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtiedgfeefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepkeduheejheffudefhffghfegjeejleetkeevueelveegkefhhfffieehleelgfevnecukfhppedtrddtrddtrddtpdduleegrddukeejrdejgedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejjedtrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprhgrfhgrlhesmhhilhgvtghkihdrphhlpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05.03.2021 12:47, Philippe Mathieu-Daudé wrote:
+> On Fri, Mar 5, 2021 at 11:16 AM Rafał Miłecki <rafal@milecki.pl> wrote:
+>> On 05.03.2021 10:58, Philippe Mathieu-Daudé wrote:
+>>> On Fri, Mar 5, 2021 at 6:55 AM Rafał Miłecki <zajec5@gmail.com> wrote:
+>>>>
+>>>> From: Rafał Miłecki <rafal@milecki.pl>
+>>>>
+>>>> 1. Use meaningful variable names (e.g. "flash_start", "res_size" instead
+>>>>      of e.g. "iobase", "end")
+>>>> 2. Always operate on "offset" instead of mix of start, end, size, etc.
+>>>
+>>> "instead of a mix"
+>>>
+>>>> 3. Add helper checking for NVRAM to avoid duplicating code
+>>>> 4. Use "found" variable instead of goto
+>>>> 5. Use simpler checking of offsets and sizes (2 nested loops with
+>>>>      trivial check instead of extra function)
+>>>
+>>> This could be a series of trivial patches, why did you choose to make a mixed
+>>> bag harder to review?
+>>
+>> It's a subjective thing and often a matter of maintainer taste. I can
+>> say that after contributing to various Linux subsystems. If you split a
+>> similar patch for MTD subsystem you'll get complains about making
+>> changes too small & too hard to review (sic!).
+> 
+> Fine. MTD subsystem developers are probably smarter than I'm :)
+> 
+>> This isn't a bomb really: 63 insertions(+), 48 deletions(-)
+> 
+> Too many changes at once for my brain stack doesn't mean others are
+> willing to review it. But to me that means each time I'll have to pass over
+> it while bisecting or reviewing git history I'll suffer the same overflow.
+> Anyway, matter of taste as you said.
 
+If I hear another voice for splitting this change into smaller patches
+I'm 100% happy to do so. Honestly!
 
------ Original Message -----
-> From: "Anshuman Khandual" <anshuman.khandual@arm.com>
-> To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, l=
-inux-mm@kvack.org
-> Cc: "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon" <will@kern=
-el.org>, "Ard Biesheuvel" <ardb@kernel.org>,
-> "Mark Rutland" <mark.rutland@arm.com>, "James Morse" <james.morse@arm.com=
->, "Robin Murphy" <robin.murphy@arm.com>,
-> "J=C3=A9r=C3=B4me Glisse" <jglisse@redhat.com>, "Dan Williams" <dan.j.wil=
-liams@intel.com>, "David Hildenbrand"
-> <david@redhat.com>, "Mike Rapoport" <rppt@linux.ibm.com>, "Veronika Kabat=
-ova" <vkabatov@redhat.com>
-> Sent: Friday, March 5, 2021 6:38:14 AM
-> Subject: Re: [PATCH V3 0/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE bas=
-ed memory
->=20
->=20
-> On 3/5/21 10:54 AM, Anshuman Khandual wrote:
-> > This series fixes pfn_valid() for ZONE_DEVICE based memory and also
-> > improves
-> > its performance for normal hotplug memory. While here, it also reorgani=
-zes
-> > pfn_valid() on CONFIG_SPARSEMEM. This series is based on v5.12-rc1.
-> >=20
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Ard Biesheuvel <ardb@kernel.org>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: James Morse <james.morse@arm.com>
-> > Cc: Robin Murphy <robin.murphy@arm.com>
-> > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> > Cc: Dan Williams <dan.j.williams@intel.com>
-> > Cc: David Hildenbrand <david@redhat.com>
-> > Cc: Mike Rapoport <rppt@linux.ibm.com>
-> > Cc: Veronika Kabatova <vkabatov@redhat.com>
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-kernel@vger.kernel.org
-> >=20
-> > Changes in V3:
-> >=20
-> > - Validate the pfn before fetching mem_section with __pfn_to_section() =
-in
-> > [PATCH 2/2]
->=20
-> Hello Veronica,
->=20
-> Could you please help recreate the earlier failure [1] but with this
-> series applies on v5.12-rc1. Thank you.
->=20
+I just don't know if by splitting I won't annoy other people by making
+changes too small.
 
-Hello Anshuman,
-
-the machine in question is currently loaned to a developer. I'll reach
-out to them and will let you know once I have any results.
-
-
-Veronika
-
-> [1]
-> https://lore.kernel.org/linux-arm-kernel/cki.8D1CB60FEC.K6NJMEFQPV@redhat=
-.com/
->=20
-> - Anshuman
->=20
->=20
+Please speak up! :)
 
