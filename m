@@ -2,103 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C2032ED0D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 15:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC18132ECB3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 15:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhCEOZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 09:25:09 -0500
-Received: from 9.mo7.mail-out.ovh.net ([46.105.60.248]:58018 "EHLO
-        9.mo7.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbhCEOYk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 09:24:40 -0500
-X-Greylist: delayed 8918 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Mar 2021 09:24:40 EST
-Received: from player691.ha.ovh.net (unknown [10.110.208.22])
-        by mo7.mail-out.ovh.net (Postfix) with ESMTP id 90B0E19785D
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 12:55:57 +0100 (CET)
-Received: from etezian.org (213-243-141-64.bb.dnainternet.fi [213.243.141.64])
-        (Authenticated sender: andi@etezian.org)
-        by player691.ha.ovh.net (Postfix) with ESMTPSA id 1E23A1BCE06D7;
-        Fri,  5 Mar 2021 11:55:50 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-104R0055e4a7d2d-f7ba-4b7b-8661-49069e8a18d8,
-                    8BB957472A3FEC517196918F6D0E8FFF2983C800) smtp.auth=andi@etezian.org
-X-OVh-ClientIp: 213.243.141.64
-Date:   Fri, 5 Mar 2021 13:55:48 +0200
-From:   Andi Shyti <andi@etezian.org>
-To:     Caleb Connolly <caleb@connolly.tech>
-Cc:     Andi Shyti <andi@etezian.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] input: s6sy761: fix coordinate read bit shift
-Message-ID: <YEIcRBjVSrAIaB+c@jack.zhora.eu>
-References: <20210305020310.550527-1-caleb@connolly.tech>
+        id S230417AbhCEOBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 09:01:09 -0500
+Received: from www.zeus03.de ([194.117.254.33]:54632 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229740AbhCEOA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 09:00:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=SedvOmZ/4Nj6S/FF98vAzoVhHMZ3
+        GhtoPjB7FcPqxtw=; b=hZremNIilIBx1d8gn4coGWRwOwnYYHj2y9cH+deotMaT
+        8c3SX0VBXwhcsa/jSQYmJ+OsQwQUtNqegJPqm0N7xAcMWbQM6AlIhiXXeZbR4ru2
+        JUDglHiD9Wg9U+z2+1ed0Geum1pEnk6Lv0Io050/q990FN52QzrdfVLTsiYEs2o=
+Received: (qmail 2243062 invoked from network); 5 Mar 2021 15:00:58 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Mar 2021 15:00:58 +0100
+X-UD-Smtp-Session: l3s3148p1@SOlrg8q8UJlN91Vm
+Date:   Fri, 5 Mar 2021 15:00:57 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
+Subject: Re: [PATCH] dt-bindings: timer: renesas,cmt: add r8a779a0 CMT support
+Message-ID: <20210305140057.GA1312@kunai>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
+References: <20210305135603.1227-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="BXVAT5kNtrzKuDFl"
 Content-Disposition: inline
-In-Reply-To: <20210305020310.550527-1-caleb@connolly.tech>
-X-Ovh-Tracer-Id: 2039286209993949911
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtiedgfeefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeetnhguihcuufhhhihtihcuoegrnhguihesvghtvgiiihgrnhdrohhrgheqnecuggftrfgrthhtvghrnheptdfgudduhfefueeujeefieehtdeftefggeevhefgueellefhudetgeeikeduieefnecukfhppedtrddtrddtrddtpddvudefrddvgeefrddugedurdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheiledurdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprghnughisegvthgviihirghnrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+In-Reply-To: <20210305135603.1227-1-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Caleb,
 
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA256
+--BXVAT5kNtrzKuDFl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Please clean up the commit message.
+On Fri, Mar 05, 2021 at 02:56:03PM +0100, Wolfram Sang wrote:
+> CMT passed the testsuite fine, so let's add it.
 
-> The touch coordinates are read by shifting a value left by 3,
-> this is incorrect and effectively causes the coordinates to
-> be half of the correct value.
-> 
-> Shift by 4 bits instead to report the correct value.
-> 
-> This matches downstream examples, and has been confirmed on my
-> device (OnePlus 7 Pro).
+Eeks, I mixed something up. It was TMU which passed the suite. Sorry for
+the noise!
 
-The real reason is that from the register we get:
 
-       byte 3             byte 2             byte 1
-+--------+--------+ +-----------------+ +-----------------+
-|        |        | |                 | |                 |
-| X[3:0] | Y[3:0] | |     Y[11:4]     | |     X[11:4]     |
-|        |        | |                 | |                 |
-+--------+--------+ +-----------------+ +-----------------+
+--BXVAT5kNtrzKuDFl
+Content-Type: application/pgp-signature; name="signature.asc"
 
-and the 12 bit values have to fit in a 16bit variable.
+-----BEGIN PGP SIGNATURE-----
 
-The upper 8 bits (in event[2] and event[1] need to be shifted
-left by '4' and not by '3' in order to leave space to the lower
-4 bits (in event[3]).
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBCOZUACgkQFA3kzBSg
+KbZ2vA/+N6ouGxyWbnxO2odDVWoz1ZuF7orXdQHiEatA7fsQ80d+eW1BFDjhjVSI
+nl62YF6Pdef/m7eUCDzrS/vcBpt1HuzSqHjdnLSr7ExZXrO7F27LS4coWg4CVf1G
+xdYV+CGBLLW1mlhrxZ5Elb8rYNaAMvIrPhEVcYT00VhgJDDK4kFJzr4gG7ySaPOK
+V0agiy5kMTGbjO/aq3UeC2TKinmZmhw25C3ip9miU9z/7435udNLhHhTOAkobc9D
+eaAoH0McfJgI1E73r9Pf1YKdvjUwzIYOS6N6aMhP8VhA6yXV9VzasjQoFq5KoEgh
+B7DtxBJITFvtdIQVmpwXSbqSzJeGReQdB9vra+RxEmli7Ea3Sj7ahbdbYZG7LFz9
+jQ0nivnw4avCJmcfwXGua9WiQ+rRxuXDR4JjVvX8ILBQAbaFgv48pPEFHKe1tZg/
+JPCgtPRq5mkQNH4Gk4k/WGIDmALVVuhDuOJ9omizdb0bdiQdFzzZ0zAHlJT6z+Uh
+do7aLjGPlMXkfWG0ZVJ4DQQpSmaqRZ3DDONot744NEthiEscYEvalj/CepC0GxHJ
+9kFg62zEjOnAAgqV73zSNBpiyw5w8L72eRpypiefJZwsRjHqdWnbgf33Lva477Df
++D4Nglot/QIX+uHK457LvQc2CUTFeLyXP/665WmMI6kyovEPhxo=
+=BL0s
+-----END PGP SIGNATURE-----
 
-> 
-> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
-> ---
->  drivers/input/touchscreen/s6sy761.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/input/touchscreen/s6sy761.c b/drivers/input/touchscreen/s6sy761.c
-> index b63d7fdf0cd2..85a1f465c097 100644
-> --- a/drivers/input/touchscreen/s6sy761.c
-> +++ b/drivers/input/touchscreen/s6sy761.c
-> @@ -145,8 +145,8 @@ static void s6sy761_report_coordinates(struct s6sy761_data *sdata,
->  	u8 major = event[4];
->  	u8 minor = event[5];
->  	u8 z = event[6] & S6SY761_MASK_Z;
-> -	u16 x = (event[1] << 3) | ((event[3] & S6SY761_MASK_X) >> 4);
-> -	u16 y = (event[2] << 3) | (event[3] & S6SY761_MASK_Y);
-> +	u16 x = (event[1] << 4) | ((event[3] & S6SY761_MASK_X) >> 4);
-> +	u16 y = (event[2] << 4) | (event[3] & S6SY761_MASK_Y);
-
-the devil knows how that '3' has ended up there :)
-
-Thanks for catching it!
-
-Reviewed-by: Andi Shyti <andi@etezian.org>
-
-Andi
+--BXVAT5kNtrzKuDFl--
