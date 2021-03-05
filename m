@@ -2,67 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E6732E30D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 08:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB99832E311
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 08:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229528AbhCEHiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 02:38:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229446AbhCEHix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 02:38:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25CDB64F44;
-        Fri,  5 Mar 2021 07:38:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614929933;
-        bh=coqHJVKiOdwTzRmKkjxvxe6gkSwn9w9KuwMwJB7cM4I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=BWPxntnfh0GNr3bekp1S375DyL4W920aZWKwkmjaopN0LYS3GzjCx23uQpKN82r3R
-         MD+1acFWAJLYZespAlhbki5hhMqHBpANr140XNkYxBdwZHl/IactW17wBYXOxhzw35
-         iQa8hNx8oYoCCMO8ely+nSw6HlnXqPYNq9N7BNvemrJmxxSObPkio+uKxniHX7jlgt
-         eKTQ2p27WOauM7td4l0bWU+9axY1j1pKhY//sJ3DK4g+wkL5nsGbPq59pRYbZL0upS
-         BudxDPEGsr8cmN+Rf+MVKF7yi2LQbei21ZRHQNZwMfCmprfI9LW5dEsS+qjszoWRZw
-         fL2eutjHee89Q==
-Date:   Fri, 5 Mar 2021 01:38:49 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-decnet-user@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] decnet: Fix fall-through warnings for Clang
-Message-ID: <20210305073849.GA122638@embeddedor>
+        id S229580AbhCEHjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 02:39:12 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:55838 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229446AbhCEHjL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 02:39:11 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UQWlSZB_1614929947;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UQWlSZB_1614929947)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 05 Mar 2021 15:39:08 +0800
+Subject: Re: [PATCH v10 5/9] x509: Detect sm2 keys by their parameters OID
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        dhowells@redhat.com, zohar@linux.ibm.com
+Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Stefan Berger <stefanb@linux.ibm.com>
+References: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
+ <20210305005203.3547587-6-stefanb@linux.vnet.ibm.com>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <ea02d751-ec82-8df6-475b-bd3e7ded3e0e@linux.alibaba.com>
+Date:   Fri, 5 Mar 2021 15:39:07 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210305005203.3547587-6-stefanb@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-by explicitly adding a break statement instead of letting the code fall
-through to the next case.
+Hi,
 
-Link: https://github.com/KSPP/linux/issues/115
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- net/decnet/dn_route.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 3/5/21 8:51 AM, Stefan Berger wrote:
+> From: Stefan Berger <stefanb@linux.ibm.com>
+> 
+> Detect whether a key is an sm2 type of key by its OID in the parameters
+> array rather than assuming that everything under OID_id_ecPublicKey
+> is sm2, which is not the case.
+> 
+> Cc: David Howells <dhowells@redhat.com>
+> Cc: keyrings@vger.kernel.org
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> ---
+>   crypto/asymmetric_keys/x509_cert_parser.c | 12 +++++++++++-
+>   include/linux/oid_registry.h              |  1 +
+>   lib/oid_registry.c                        | 13 +++++++++++++
+>   3 files changed, 25 insertions(+), 1 deletion(-)
+> 
+> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+> index 52c9b455fc7d..1621ceaf5c95 100644
+> --- a/crypto/asymmetric_keys/x509_cert_parser.c
+> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
+> @@ -459,6 +459,7 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+>   			  const void *value, size_t vlen)
+>   {
+>   	struct x509_parse_context *ctx = context;
+> +	enum OID oid;
+>   
+>   	ctx->key_algo = ctx->last_oid;
+>   	switch (ctx->last_oid) {
+> @@ -470,7 +471,16 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+>   		ctx->cert->pub->pkey_algo = "ecrdsa";
+>   		break;
+>   	case OID_id_ecPublicKey:
+> -		ctx->cert->pub->pkey_algo = "sm2";
+> +		if (parse_OID(ctx->params, ctx->params_size, &oid) != 0)
+> +			return -EBADMSG;
+> +
+> +		switch (oid) {
+> +		case OID_sm2:
+> +			ctx->cert->pub->pkey_algo = "sm2";
+> +			break;
+> +		default:
+> +			return -ENOPKG;
+> +		}
+>   		break;
+>   	default:
+>   		return -ENOPKG;
+> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
+> index b504e2f36b25..f32d91895e4d 100644
+> --- a/include/linux/oid_registry.h
+> +++ b/include/linux/oid_registry.h
+> @@ -121,6 +121,7 @@ enum OID {
+>   };
+>   
+>   extern enum OID look_up_OID(const void *data, size_t datasize);
+> +extern int parse_OID(const void *data, size_t datasize, enum OID *oid);
+>   extern int sprint_oid(const void *, size_t, char *, size_t);
+>   extern int sprint_OID(enum OID, char *, size_t);
+>   
+> diff --git a/lib/oid_registry.c b/lib/oid_registry.c
+> index f7ad43f28579..508e0b34b5f0 100644
+> --- a/lib/oid_registry.c
+> +++ b/lib/oid_registry.c
+> @@ -11,6 +11,7 @@
+>   #include <linux/kernel.h>
+>   #include <linux/errno.h>
+>   #include <linux/bug.h>
+> +#include <linux/asn1.h>
+>   #include "oid_registry_data.c"
+>   
+>   MODULE_DESCRIPTION("OID Registry");
+> @@ -92,6 +93,18 @@ enum OID look_up_OID(const void *data, size_t datasize)
+>   }
+>   EXPORT_SYMBOL_GPL(look_up_OID);
+>   
+> +int parse_OID(const void *data, size_t datasize, enum OID *oid)
+> +{
+> +	const unsigned char *v = data;
+> +
+> +	if (datasize < 2 || v[0] != ASN1_OID || v[1] != datasize - 2)
+> +		return -EBADMSG;
+> +
+> +	*oid = look_up_OID(data + 2, datasize - 2);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(parse_OID);
+> +
+>   /*
+>    * sprint_OID - Print an Object Identifier into a buffer
+>    * @data: The encoded OID to print
+> 
 
-diff --git a/net/decnet/dn_route.c b/net/decnet/dn_route.c
-index 2193ae529e75..37c90c1fdc93 100644
---- a/net/decnet/dn_route.c
-+++ b/net/decnet/dn_route.c
-@@ -1407,7 +1407,7 @@ static int dn_route_input_slow(struct sk_buff *skb)
- 			flags |= RTCF_DOREDIRECT;
- 
- 		local_src = DN_FIB_RES_PREFSRC(res);
--
-+		break;
- 	case RTN_BLACKHOLE:
- 	case RTN_UNREACHABLE:
- 		break;
--- 
-2.27.0
+Tested-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
+Best regards,
+Tianjia
