@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6E332E949
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2D832EA01
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232430AbhCEMbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:31:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41008 "EHLO mail.kernel.org"
+        id S232820AbhCEMfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:35:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231408AbhCEMbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:31:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37E9265004;
-        Fri,  5 Mar 2021 12:31:05 +0000 (UTC)
+        id S232777AbhCEMfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:35:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CDA365014;
+        Fri,  5 Mar 2021 12:35:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947465;
-        bh=TWUGPPqkvfvv2STr0XUL61LS7LnmzHwOXo9++uh+lrU=;
+        s=korg; t=1614947722;
+        bh=PW2fa8qYx353il6tXa/TNNcw3cuoqbRPun42E3U8Gj0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AOCvHZMFyNdU75WK0uWAjQdsZ7ILPuHk3dEpjH4/OxzMLn3yPf/0lYOTsLvPBkNqn
-         AEuaHx3UfeevjFStpo4x7cU1TkJpCt0WRfr/ThGomxJyLY996EFkZqe3McVYVaxQLk
-         ggDl2MykRoqsIzMCwlRQyXFYO9bDGHrzWJN6aJxI=
+        b=OqKd3ZXP4c5IAPlBc3oXCm6NFn8YrITWSuxB5JPOdGn35Mzp17mfdiqOx+DIacWbt
+         2I+xdMXsj+TErf+bU9yOKDsI/FCO74Abq03RRsIdN+xypqE3RaEucB8+wMpDAMMVZi
+         VUoWVQBOw9GEir+TNxFih4UTIvJ/SIxM9aklo7uE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nirmoy Das <nirmoy.das@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 073/102] drm/amdgpu: enable only one high prio compute queue
+Subject: [PATCH 5.4 30/72] vt/consolemap: do font sum unsigned
 Date:   Fri,  5 Mar 2021 13:21:32 +0100
-Message-Id: <20210305120906.868368544@linuxfoundation.org>
+Message-Id: <20210305120858.813352606@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
+References: <20210305120857.341630346@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,143 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nirmoy Das <nirmoy.das@amd.com>
+From: Jiri Slaby <jslaby@suse.cz>
 
-[ Upstream commit 8c0225d79273968a65e73a4204fba023ae02714d ]
+[ Upstream commit 9777f8e60e718f7b022a94f2524f967d8def1931 ]
 
-For high priority compute to work properly we need to enable
-wave limiting on gfx pipe. Wave limiting is done through writing
-into mmSPI_WCL_PIPE_PERCENT_GFX register. Enable only one high
-priority compute queue to avoid race condition between multiple
-high priority compute queues writing that register simultaneously.
+The constant 20 makes the font sum computation signed which can lead to
+sign extensions and signed wraps. It's not much of a problem as we build
+with -fno-strict-overflow. But if we ever decide not to, be ready, so
+switch the constant to unsigned.
 
-Signed-off-by: Nirmoy Das <nirmoy.das@amd.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Link: https://lore.kernel.org/r/20210105120239.28031-7-jslaby@suse.cz
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c | 15 ++++++++-------
- drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.h |  2 +-
- drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c  |  6 ++----
- drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c   |  6 ++----
- drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c   |  7 ++-----
- 5 files changed, 15 insertions(+), 21 deletions(-)
+ drivers/tty/vt/consolemap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c
-index c485ec86804e..034a0f3b4c66 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c
-@@ -193,15 +193,16 @@ static bool amdgpu_gfx_is_multipipe_capable(struct amdgpu_device *adev)
+diff --git a/drivers/tty/vt/consolemap.c b/drivers/tty/vt/consolemap.c
+index b28aa0d289f8..251c02af1fc3 100644
+--- a/drivers/tty/vt/consolemap.c
++++ b/drivers/tty/vt/consolemap.c
+@@ -495,7 +495,7 @@ con_insert_unipair(struct uni_pagedir *p, u_short unicode, u_short fontpos)
+ 
+ 	p2[unicode & 0x3f] = fontpos;
+ 	
+-	p->sum += (fontpos << 20) + unicode;
++	p->sum += (fontpos << 20U) + unicode;
+ 
+ 	return 0;
  }
- 
- bool amdgpu_gfx_is_high_priority_compute_queue(struct amdgpu_device *adev,
--					       int pipe, int queue)
-+					       struct amdgpu_ring *ring)
- {
--	bool multipipe_policy = amdgpu_gfx_is_multipipe_capable(adev);
--	int cond;
--	/* Policy: alternate between normal and high priority */
--	cond = multipipe_policy ? pipe : queue;
--
--	return ((cond % 2) != 0);
-+	/* Policy: use 1st queue as high priority compute queue if we
-+	 * have more than one compute queue.
-+	 */
-+	if (adev->gfx.num_compute_rings > 1 &&
-+	    ring == &adev->gfx.compute_ring[0])
-+		return true;
- 
-+	return false;
- }
- 
- void amdgpu_gfx_compute_queue_acquire(struct amdgpu_device *adev)
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.h
-index f353a5b71804..6e0cba6f4bdc 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.h
-@@ -373,7 +373,7 @@ void amdgpu_queue_mask_bit_to_mec_queue(struct amdgpu_device *adev, int bit,
- bool amdgpu_gfx_is_mec_queue_enabled(struct amdgpu_device *adev, int mec,
- 				     int pipe, int queue);
- bool amdgpu_gfx_is_high_priority_compute_queue(struct amdgpu_device *adev,
--					       int pipe, int queue);
-+					       struct amdgpu_ring *ring);
- int amdgpu_gfx_me_queue_to_bit(struct amdgpu_device *adev, int me,
- 			       int pipe, int queue);
- void amdgpu_gfx_bit_to_me_queue(struct amdgpu_device *adev, int bit,
-diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
-index 4ebb43e09099..4cc83b399b66 100644
---- a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
-@@ -4334,8 +4334,7 @@ static int gfx_v10_0_compute_ring_init(struct amdgpu_device *adev, int ring_id,
- 	irq_type = AMDGPU_CP_IRQ_COMPUTE_MEC1_PIPE0_EOP
- 		+ ((ring->me - 1) * adev->gfx.mec.num_pipe_per_mec)
- 		+ ring->pipe;
--	hw_prio = amdgpu_gfx_is_high_priority_compute_queue(adev, ring->pipe,
--							    ring->queue) ?
-+	hw_prio = amdgpu_gfx_is_high_priority_compute_queue(adev, ring) ?
- 			AMDGPU_GFX_PIPE_PRIO_HIGH : AMDGPU_GFX_PIPE_PRIO_NORMAL;
- 	/* type-2 packets are deprecated on MEC, use type-3 instead */
- 	r = amdgpu_ring_init(adev, ring, 1024,
-@@ -6361,8 +6360,7 @@ static void gfx_v10_0_compute_mqd_set_priority(struct amdgpu_ring *ring, struct
- 	struct amdgpu_device *adev = ring->adev;
- 
- 	if (ring->funcs->type == AMDGPU_RING_TYPE_COMPUTE) {
--		if (amdgpu_gfx_is_high_priority_compute_queue(adev, ring->pipe,
--							      ring->queue)) {
-+		if (amdgpu_gfx_is_high_priority_compute_queue(adev, ring)) {
- 			mqd->cp_hqd_pipe_priority = AMDGPU_GFX_PIPE_PRIO_HIGH;
- 			mqd->cp_hqd_queue_priority =
- 				AMDGPU_GFX_QUEUE_PRIORITY_MAXIMUM;
-diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c
-index c36258d56b44..f2f603fa0288 100644
---- a/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c
-@@ -1915,8 +1915,7 @@ static int gfx_v8_0_compute_ring_init(struct amdgpu_device *adev, int ring_id,
- 		+ ((ring->me - 1) * adev->gfx.mec.num_pipe_per_mec)
- 		+ ring->pipe;
- 
--	hw_prio = amdgpu_gfx_is_high_priority_compute_queue(adev, ring->pipe,
--							    ring->queue) ?
-+	hw_prio = amdgpu_gfx_is_high_priority_compute_queue(adev, ring) ?
- 			AMDGPU_GFX_PIPE_PRIO_HIGH : AMDGPU_RING_PRIO_DEFAULT;
- 	/* type-2 packets are deprecated on MEC, use type-3 instead */
- 	r = amdgpu_ring_init(adev, ring, 1024,
-@@ -4434,8 +4433,7 @@ static void gfx_v8_0_mqd_set_priority(struct amdgpu_ring *ring, struct vi_mqd *m
- 	struct amdgpu_device *adev = ring->adev;
- 
- 	if (ring->funcs->type == AMDGPU_RING_TYPE_COMPUTE) {
--		if (amdgpu_gfx_is_high_priority_compute_queue(adev, ring->pipe,
--							      ring->queue)) {
-+		if (amdgpu_gfx_is_high_priority_compute_queue(adev, ring)) {
- 			mqd->cp_hqd_pipe_priority = AMDGPU_GFX_PIPE_PRIO_HIGH;
- 			mqd->cp_hqd_queue_priority =
- 				AMDGPU_GFX_QUEUE_PRIORITY_MAXIMUM;
-diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-index 957c12b72767..fa843bda70ba 100644
---- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-@@ -2228,8 +2228,7 @@ static int gfx_v9_0_compute_ring_init(struct amdgpu_device *adev, int ring_id,
- 	irq_type = AMDGPU_CP_IRQ_COMPUTE_MEC1_PIPE0_EOP
- 		+ ((ring->me - 1) * adev->gfx.mec.num_pipe_per_mec)
- 		+ ring->pipe;
--	hw_prio = amdgpu_gfx_is_high_priority_compute_queue(adev, ring->pipe,
--							    ring->queue) ?
-+	hw_prio = amdgpu_gfx_is_high_priority_compute_queue(adev, ring) ?
- 			AMDGPU_GFX_PIPE_PRIO_HIGH : AMDGPU_GFX_PIPE_PRIO_NORMAL;
- 	/* type-2 packets are deprecated on MEC, use type-3 instead */
- 	return amdgpu_ring_init(adev, ring, 1024,
-@@ -3384,9 +3383,7 @@ static void gfx_v9_0_mqd_set_priority(struct amdgpu_ring *ring, struct v9_mqd *m
- 	struct amdgpu_device *adev = ring->adev;
- 
- 	if (ring->funcs->type == AMDGPU_RING_TYPE_COMPUTE) {
--		if (amdgpu_gfx_is_high_priority_compute_queue(adev,
--							      ring->pipe,
--							      ring->queue)) {
-+		if (amdgpu_gfx_is_high_priority_compute_queue(adev, ring)) {
- 			mqd->cp_hqd_pipe_priority = AMDGPU_GFX_PIPE_PRIO_HIGH;
- 			mqd->cp_hqd_queue_priority =
- 				AMDGPU_GFX_QUEUE_PRIORITY_MAXIMUM;
 -- 
 2.30.1
 
