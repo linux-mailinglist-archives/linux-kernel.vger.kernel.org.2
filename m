@@ -2,138 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22D532F000
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CB732F006
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhCEQZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 11:25:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59360 "EHLO
+        id S230148AbhCEQ2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 11:28:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbhCEQZm (ORCPT
+        with ESMTP id S229631AbhCEQ2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 11:25:42 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C153C061574;
-        Fri,  5 Mar 2021 08:25:42 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id t25so1721689pga.2;
-        Fri, 05 Mar 2021 08:25:42 -0800 (PST)
+        Fri, 5 Mar 2021 11:28:12 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADE5C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 08:28:11 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id g8so2347969otk.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 08:28:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=upifgrQ9E4kGN/e2cx0WwVgQ4xC6hqDkjNV0N6jUaXs=;
-        b=EVswQ0A62WtNDXdelqzM85RAfmpnjRjyTyWA0hHM5/pYo+QTjSExG2dQ5Q6F4DUwXz
-         BaK506t3dzRO7RRJQf0hTm+wtxX0lQsvGrBSNeGLAcQChlauOAF+PGb4bSCArqHonCsW
-         dM4PIxYJGoQUfu2HLGDMpVlfmQgN62syRH31SSzU2A1LORU7mIMO/9bPEJ2v/0Jx019D
-         jZ7iuyYNAQiUFHX5BRzMC5T2O5NPJid8PI3nsJnR5A3A6TtEoDmakzuW6X/C7E1KU+sN
-         /oN2gSDc+kAWW9/qQGYinjiBkvl9Ub2tdg4HId/NkYT2D1WpWCfujgiHQKzUrYqbZntK
-         c72g==
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lUGxFCa19Qge6BfZF3XEo9svsUoPl+tPT1E5xfKUypY=;
+        b=b3Vc9HVFsH7dG2dvFFlT+2vCVZUi7IfBDZcZfHVskNF1zOcUp/LI21gf+lQCon71Nt
+         lR3KFZJU5GWX2izLs9UwdZdRa/PRr+L6MgJX35i7kVhYSveq4Slkip/+9so/RvPt0mkb
+         DUAM//Pnq9zntP6B57Eb2CfDfiwV2eUQnPUOaEcvWLeZJMdeTnbf15AWYEXEyT2/jwgk
+         BKCJ1IE1h90e1OUer9I+ONvYOUD0kqxfE087DDPN7Kxb2BxzaiZL2x0xw38++N96WuQe
+         PHxdtB5opwuNlHjvPw0+iMSW+kQaD5w64Yz1l0+FWi3i+/0qSQqS+gyi+nr4WJ7kZdTg
+         KlvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=upifgrQ9E4kGN/e2cx0WwVgQ4xC6hqDkjNV0N6jUaXs=;
-        b=O1OEPTG8k5c4aWzLSdjUaTkd6sX5DS0XUijrk+3MEn0s+TWQp72dvoe9Sb+y15+4Rz
-         XEH440vjfkrLKbX+EoOagzAo8rQYTdbyZ7/p0KIiAIZ4WOZOAIdd5VloAiT87NnVwYo8
-         AgUIbGQpu2bgex3HJdpvF8YHj5YDn6lKMwyqYZpSyBs4xcsqNb+KFmpgyjdf3CyJpgwg
-         es5DoLM7Qh7wwOHL4iNk25ArZiho3jRFyUUbxRw5gDWn9ZW0WVABJuILSUPFex/8QLia
-         7//aUlBtNi5ypsMeJ8KpO7nM/Wg/i0MbgzxtqXnZDdr1BrNJjfbDrTJMaPP/yryOBcds
-         qp1Q==
-X-Gm-Message-State: AOAM532od/CGzW6Ye23qn75f2uDs3oIGfeJUAP4P8dtYODG4foz9Lu4j
-        lSxn3BYKV36LxGSNW7b7oAmIWXhiK7i2fKjmm/E=
-X-Google-Smtp-Source: ABdhPJy6AcaKIHSM7Kt43me4BYef8AzeOlGX7rsRuRoK82gnKJTqp/dN3jLlPuh3Czjr3w2F3tOQI1ap1OtQ/gWHHLM=
-X-Received: by 2002:a65:4c08:: with SMTP id u8mr9189837pgq.203.1614961541653;
- Fri, 05 Mar 2021 08:25:41 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to;
+        bh=lUGxFCa19Qge6BfZF3XEo9svsUoPl+tPT1E5xfKUypY=;
+        b=HeLshYycVLxYdhzysJiOb4nOTgZuOCHaEmTfBN3WtUlXz3HVOjT1mP7rXq6SHlieqO
+         2t1ZnklF0ZPBYhXDHNR070MdadOz4ZP+nVcD5f2QXDD/dK2wcejtZq7w7nBWk8pzh2QD
+         hGE5pIYw/qo4W3TMr0iuTnOYZo1rR3ffT0FdVmSGBloT3FTXqGRqrSMUVyj+1DmZt1Sx
+         f9KU1OYAg7LqZpFTwYpKFwVCnJZpRXPm3BxUS3W7bK10/dL3pBwScUrfDHg0X9UVhu5T
+         vPvHtUzJSLlx7lBz/P+zNHAzOy5Bs71StgK78VmGIF2BBuhYLpQA/0zUUxDhAl6zO7kH
+         FleA==
+X-Gm-Message-State: AOAM532SP8vg3tjDm5lbkJfn+0ChFQnEDOf5yjg7IYDrhNxstcdEXLXV
+        WJ2cP1nZNLdu2tIUDTJ4DQ==
+X-Google-Smtp-Source: ABdhPJz/azMRQuiZWWGE6OYIMFqa2yvThlz0NtS0KSJiiK70pYeeIwBjKw1D6ZZP0/rAMMTrw6DFmA==
+X-Received: by 2002:a9d:4004:: with SMTP id m4mr8790449ote.63.1614961691127;
+        Fri, 05 Mar 2021 08:28:11 -0800 (PST)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id b133sm606409oia.17.2021.03.05.08.28.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 08:28:10 -0800 (PST)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:6dff:5584:10ea:8fa1])
+        by serve.minyard.net (Postfix) with ESMTPSA id 779B0180053;
+        Fri,  5 Mar 2021 16:28:09 +0000 (UTC)
+Date:   Fri, 5 Mar 2021 10:28:08 -0600
+From:   Corey Minyard <minyard@acm.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ipmi: Handle device properties with software node API
+Message-ID: <20210305162808.GW507977@minyard.net>
+Reply-To: minyard@acm.org
+References: <20210304090312.26827-1-heikki.krogerus@linux.intel.com>
 MIME-Version: 1.0
-References: <20210302163309.25528-1-henning.schild@siemens.com>
- <20210302163309.25528-2-henning.schild@siemens.com> <CAHp75VfDDGxdhP0-yKOCJyJ_+Y2Zu3TmOdvUJmEZ0AvQnceV6A@mail.gmail.com>
- <2fad304a-9e1e-c83d-7a9e-02b35ed22418@redhat.com> <CAHp75VfB8v1n3Hav_oMqG0k4C31NBEUe082i8NrrOGUbSgoESw@mail.gmail.com>
- <ec54b2ba-3eb2-0981-e409-4d8f9d3e45c1@redhat.com>
-In-Reply-To: <ec54b2ba-3eb2-0981-e409-4d8f9d3e45c1@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 5 Mar 2021 18:25:25 +0200
-Message-ID: <CAHp75Vd+mXRw0gKi4TzCPDn1XqJkTjHNWCLht0674=BpMjjg+g@mail.gmail.com>
-Subject: Re: [PATCH 1/4] platform/x86: simatic-ipc: add main driver for
- Siemens devices
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Henning Schild <henning.schild@siemens.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304090312.26827-1-heikki.krogerus@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 6:14 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> On 3/5/21 4:42 PM, Andy Shevchenko wrote:
-> > On Thu, Mar 4, 2021 at 3:47 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> >> On 3/4/21 11:11 AM, Andy Shevchenko wrote:
-> >>> On Thu, Mar 4, 2021 at 8:36 AM Henning Schild
-> >>> <henning.schild@siemens.com> wrote:
+On Thu, Mar 04, 2021 at 12:03:12PM +0300, Heikki Krogerus wrote:
+> The old device property API is going to be removed.
+> Replacing the device_add_properties() call with the software
+> node API equivalent, device_create_managed_software_node().
 
-...
+Ok, this has been queued for next release.
 
-> >>> Oy vey! I know what this is and let's do it differently. I have some
-> >>> (relatively old) patch series I can send you privately for testing.
-> >>
-> >> This bit stood out the most to me too, it would be good if we can this fixed
-> >> in some cleaner work. So I'm curious how things will look with Andy's work
-> >> integrated.
-> >>
-> >> Also I don't think this should be exported. Instead this (or its replacement)
-> >> should be used to get the address for an IOMEM resource to add the platform
-> >> devices when they are instantiated. Then the platform-dev drivers can just
-> >> use the regular functions to get their resources instead of relying on this
-> >> module.
-> >
-> > I have published a WIP branch [1]. I have no means to test (I don't
-> > know what hardware at hand I can use right now), but I made it compile
-> > after 4 years of gathering dust...
->
-> So I took a quick look at the following 2 commits:
+Thanks,
 
-(One of the latter commits moves the code to drivers/pci/pci-p2sb.c,
-do you think it's better like that? The idea is to deduplicate
-__pci_bus_read_base() call)
+-corey
 
-> "platform/x86: p2sb: New Primary to Sideband bridge support library"
-> "mfd: lpc_ich: Switch to generic p2sb_bar()"
->
-> And this looks good to me, although compared to the code from this
-> patch-set you are missing the pci_lock_rescan_remove(); and
-> pci_unlock_rescan_remove(); calls.
-
-Oh, indeed.
-
-> > Feel free to give any kind of comments or share your ideas on how it
-> > can be improved (the above idea on IOMEM resource is interesting, but
-> > devices are PCI, not sure how this can be done).
->
-> The code added by this patch introduces a register_platform_devices()
-> function which creates a bunch of platform-devices; and then the
-> device-drivers for those call simatic_ipc_get_membase0() to get their
-> base-address.
-
-Sounds like an MFD approach...
-
-> My suggestion was to instead put the  simatic_ipc_get_membase0() call
-> inside the code instantiating the platform devices and to add the
-> base-address for that pdev as IOMEM resource to the instantiated
-> platform-devices.
->
-> I hope this helps to clarify what I was trying to say.
-
-Yes, thanks!
-
--- 
-With Best Regards,
-Andy Shevchenko
+> 
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> ---
+>  drivers/char/ipmi/ipmi_plat_data.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/char/ipmi/ipmi_plat_data.c b/drivers/char/ipmi/ipmi_plat_data.c
+> index 28471ff2a3a3e..747b51ae01a80 100644
+> --- a/drivers/char/ipmi/ipmi_plat_data.c
+> +++ b/drivers/char/ipmi/ipmi_plat_data.c
+> @@ -102,7 +102,7 @@ struct platform_device *ipmi_platform_add(const char *name, unsigned int inst,
+>  		goto err;
+>  	}
+>   add_properties:
+> -	rv = platform_device_add_properties(pdev, pr);
+> +	rv = device_create_managed_software_node(&pdev->dev, pr, NULL);
+>  	if (rv) {
+>  		dev_err(&pdev->dev,
+>  			"Unable to add hard-code properties: %d\n", rv);
+> -- 
+> 2.30.1
+> 
