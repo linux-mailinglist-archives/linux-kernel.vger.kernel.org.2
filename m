@@ -2,114 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2D232F37E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC5C32F38C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhCETIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 14:08:04 -0500
-Received: from mga11.intel.com ([192.55.52.93]:64879 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229791AbhCETIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:08:00 -0500
-IronPort-SDR: k5s6LlXd0vtwLQfRm5qS3KLczx+4fbA4PYBCzGONWsF1330Morp1/GX9j3qW4drO4aRHH6MG2I
- ZxT2HVX+XJHw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="184338888"
-X-IronPort-AV: E=Sophos;i="5.81,226,1610438400"; 
-   d="scan'208";a="184338888"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 11:08:00 -0800
-IronPort-SDR: hHPr2NOdMM3kwVF0lCWTAa3OSE3EVPljoLuM7c8D8zhnq6pEaijfvn/l6lZ9dBLkVNRvJayJj6
- T/ZhnlnY+VaA==
-X-IronPort-AV: E=Sophos;i="5.81,226,1610438400"; 
-   d="scan'208";a="368694013"
-Received: from schen9-mobl.amr.corp.intel.com ([10.251.16.203])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 11:08:00 -0800
-Subject: Re: [PATCH v2 1/3] mm: Fix dropped memcg from mem cgroup soft limit
- tree
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
- <YC68Xo9+R2msn/ul@dhcp22.suse.cz>
- <72cb8618-73af-ce08-d5d5-30cab30755a3@linux.intel.com>
- <YEH1xF8xm9MCsQ+q@dhcp22.suse.cz>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <087bed0e-5b5f-0e25-c247-7fcb34de1513@linux.intel.com>
-Date:   Fri, 5 Mar 2021 11:07:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S229904AbhCETKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 14:10:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229562AbhCETKC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 14:10:02 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F692C061574;
+        Fri,  5 Mar 2021 11:10:02 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id j8so2862311otc.0;
+        Fri, 05 Mar 2021 11:10:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iXzxwkzjLPM7KiJlrDFoXaEopVztroSTDc/T8EMHkyA=;
+        b=MHFhF1jy/arRNMe+nRyOQC57EQvTOsY6xXLgEOXZBFd9dqdRZIVlBWIC3S97NIQwtQ
+         iDuxd2SYi6D5XyPg6ecwKwFK4V7+/3FnqrNOtHmvpAkgcbm3Tmeap4lZh4OLtlEFugHi
+         Y8xiHkhEjmUq9D9igDgXhvovqcXUTS25i0s39z0sYCvqDJzfvHoiJlbs3Ag9RHvyh1s5
+         RvidPRO0ZNshH3OQQ9y+t6prDNk4K7SWqtf5+UpJa91klgQIrIx45TZqHL8+KGNc9Tnt
+         6J2EYeav9hkbRjCUmC0MQuq5T5MqzH6ELwBol9e12fXYY1/x42Can0cE348oscPRuDGw
+         zdow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iXzxwkzjLPM7KiJlrDFoXaEopVztroSTDc/T8EMHkyA=;
+        b=dBd5IRzcVF18KP8Yo/mION5z4cbMHaqns9fOi3DttltOfl2tvZ31TCYBhbPRBJgYok
+         hQ8/nzj2/7JM3B/olMmUt701Vk95C49qUxgD99fSD6tJh4uHLEPRJ5fBm7yxiNf8Y/nF
+         RgBq4lUY1avX/HWwnbzkDiIrO6T7wYrJrfhqgdgYPoiYv0h3Kd5rR2yzi/q1x2vfi8+t
+         bUIeMB/wMM82a6FKNcEcZHiSR9HAo4IWjOHODQx+yMO7d0UbWVPDGbFfGT7zTQzn1Nxt
+         Fhk2IKTAXG0eVRxyfvMK+48zhBK8m+b9fGwaXbKffRyoDuO6iz34VL/RTAhtJZt8GP41
+         xsAA==
+X-Gm-Message-State: AOAM530a09shdz3+RIWCCZbIIw8alT4Gddw0u+e8K8ph4IXtV0zRxe/j
+        1ncCErFOvIYLHhZIaO9PlmLs/Mc+gpdexTGw0dM=
+X-Google-Smtp-Source: ABdhPJx2hSgeK+Yqg7IMRFfwiaPsKVqALRblWQSXFF33Bri5Jv38Yca6XaIqX4fmYVUvCMVExpkjIb4XO50ayw6IDFg=
+X-Received: by 2002:a9d:20c3:: with SMTP id x61mr9318715ota.311.1614971401734;
+ Fri, 05 Mar 2021 11:10:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YEH1xF8xm9MCsQ+q@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210303132510.66904-1-colin.king@canonical.com>
+In-Reply-To: <20210303132510.66904-1-colin.king@canonical.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 5 Mar 2021 14:09:50 -0500
+Message-ID: <CADnq5_Pqd0J_VpSkK_hAd9mUg2YgBLcZCEo3u7pXADPAW0_Zkg@mail.gmail.com>
+Subject: Re: [PATCH][next] drm/amdgpu/display: remove redundant continue statement
+To:     Colin King <colin.king@canonical.com>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Applied.  thanks.
 
+Alex
 
-On 3/5/21 1:11 AM, Michal Hocko wrote:
-> On Thu 04-03-21 09:35:08, Tim Chen wrote:
->>
->>
->> On 2/18/21 11:13 AM, Michal Hocko wrote:
->>
->>>
->>> Fixes: 4e41695356fb ("memory controller: soft limit reclaim on contention")
->>> Acked-by: Michal Hocko <mhocko@suse.com>
->>>
->>> Thanks!
->>>> ---
->>>>  mm/memcontrol.c | 6 +++++-
->>>>  1 file changed, 5 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>>> index ed5cc78a8dbf..a51bf90732cb 100644
->>>> --- a/mm/memcontrol.c
->>>> +++ b/mm/memcontrol.c
->>>> @@ -3505,8 +3505,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
->>>>  			loop > MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS))
->>>>  			break;
->>>>  	} while (!nr_reclaimed);
->>>> -	if (next_mz)
->>>> +	if (next_mz) {
->>>> +		spin_lock_irq(&mctz->lock);
->>>> +		__mem_cgroup_insert_exceeded(next_mz, mctz, excess);
->>>> +		spin_unlock_irq(&mctz->lock);
->>>>  		css_put(&next_mz->memcg->css);
->>>> +	}
->>>>  	return nr_reclaimed;
->>>>  }
->>>>  
->>>> -- 
->>>> 2.20.1
->>>
->>
->> Mel,
->>
->> Reviewing this patch a bit more, I realize that there is a chance that the removed
->> next_mz could be inserted back to the tree from a memcg_check_events
->> that happen in between.  So we need to make sure that the next_mz
->> is indeed off the tree and update the excess value before adding it
->> back.  Update the patch to the patch below.
-> 
-> This scenario is certainly possible but it shouldn't really matter much
-> as __mem_cgroup_insert_exceeded bails out when the node is on the tree
-> already.
-> 
-
-Makes sense. We should still update the excess value with
-
-+		excess = soft_limit_excess(next_mz->memcg);
-+		__mem_cgroup_insert_exceeded(next_mz, mctz, excess);
-
-before doing insertion.  The excess value was recorded from previous
-mz in the loop and needs to be updated to that of next_mz.
-
-Tim
+On Wed, Mar 3, 2021 at 8:25 AM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The continue statement in a for-loop is redudant and can be removed.
+> Clean up the code to address this.
+>
+> Addresses-Coverity: ("Continue as no effect")
+> Fixes: b6f91fc183f7 ("drm/amdgpu/display: buffer INTERRUPT_LOW_IRQ_CONTEXT interrupt work")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c
+> index 8ce10d0973c5..d3c687d07ee6 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c
+> @@ -520,9 +520,7 @@ static void amdgpu_dm_irq_schedule_work(struct amdgpu_device *adev,
+>                 return;
+>
+>         list_for_each_entry (handler_data, handler_list, list) {
+> -               if (!queue_work(system_highpri_wq, &handler_data->work)) {
+> -                       continue;
+> -               } else {
+> +               if (queue_work(system_highpri_wq, &handler_data->work)) {
+>                         work_queued = true;
+>                         break;
+>                 }
+> --
+> 2.30.0
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
