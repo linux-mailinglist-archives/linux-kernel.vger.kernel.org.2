@@ -2,192 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187B232E701
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8E932E705
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhCELGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 06:06:37 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:51215 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbhCELGL (ORCPT
+        id S229608AbhCELJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 06:09:21 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2621 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229597AbhCELI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 06:06:11 -0500
-Received: from mail-wm1-f69.google.com ([209.85.128.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lI8Es-0001ef-6v
-        for linux-kernel@vger.kernel.org; Fri, 05 Mar 2021 11:03:22 +0000
-Received: by mail-wm1-f69.google.com with SMTP id f9so630094wml.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 03:03:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eplRf97wsAW/dlILq0xIA0M8/hRdFRbfndY572sUQ3w=;
-        b=J9lTevFqFafZtcXmuXjPKvqLVWemsXrRGzoHZM6fuOyAtwJGu17VvoAro8GfUcFqsb
-         na45wI0KUdWXdWyFLqtRXmcwkbEWx2LvRPwriFzq0Ta5yBn/9WNFZEkYLh8OR2knNPrK
-         yA1KNk6yvnkOnvC8/t8lcn3dl3yDVS/f67Te1JxQ187OUWYc/6aR4sFqaQunwH7XRlkp
-         d77ryvbwleOaB1mYwXI5VXN8xibsWsCjik1ccHJxU3Cj7AaAiH4g7iZS92rIVHEoGb5Z
-         FaFk4KUqvmylceMQ0Jlvk/x7Jru0Mj76yp5y0IlnO7lTZe/vDKYzpBNMX/nW+ajDEdim
-         MuIA==
-X-Gm-Message-State: AOAM533dM8scu0ULrg9m4z1elC+95UAQi08Q/VR+O62rYe64QaJNY/7d
-        4bLfMYrT3X8lUaWShoGUbMLtwQpJZHCJOxoIWGjbZShd2wQWkzEmbihIy6gib5s+ax+3RY0tGsU
-        lu8KsgBqq/TnR+bmLEqDJVS+qeHxKp8wSwO8mYKbwiQ==
-X-Received: by 2002:a5d:658d:: with SMTP id q13mr8756127wru.388.1614942201482;
-        Fri, 05 Mar 2021 03:03:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxnftLtCGeuBhGnFb1pHZJs39fFWG0ruOT9/IIDb0iq2tGSJ/FRqtMfWfVPM8GomI6b040CLQ==
-X-Received: by 2002:a5d:658d:: with SMTP id q13mr8756098wru.388.1614942201250;
-        Fri, 05 Mar 2021 03:03:21 -0800 (PST)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id 9sm2163207wmf.13.2021.03.05.03.03.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 03:03:20 -0800 (PST)
-Subject: Re: [RFT PATCH v3 27/27] arm64: apple: Add initial Apple Mac mini
- (M1, 2020) devicetree
-To:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210304213902.83903-1-marcan@marcan.st>
- <20210304213902.83903-28-marcan@marcan.st>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <e45c15ae-ee81-139c-5da1-a6759e39fd71@canonical.com>
-Date:   Fri, 5 Mar 2021 12:03:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 5 Mar 2021 06:08:59 -0500
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DsPtF5QC2z67jpW;
+        Fri,  5 Mar 2021 19:01:09 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 5 Mar 2021 12:08:57 +0100
+Received: from [10.47.8.182] (10.47.8.182) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 5 Mar 2021
+ 11:08:55 +0000
+From:   John Garry <john.garry@huawei.com>
+Subject: Re: [PATCH 1/5] perf metricgroup: Support printing metrics for arm64
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     <will@kernel.org>, <mathieu.poirier@linaro.org>,
+        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
+        <irogers@google.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>,
+        <zhangshaokun@hisilicon.com>, <qiangqing.zhang@nxp.com>,
+        <kjain@linux.ibm.com>
+References: <1614784938-27080-1-git-send-email-john.garry@huawei.com>
+ <1614784938-27080-2-git-send-email-john.garry@huawei.com>
+ <YEE9oInI38txHWmo@krava>
+Message-ID: <95205463-4c80-4e8a-a7c0-c2a4e4553838@huawei.com>
+Date:   Fri, 5 Mar 2021 11:06:58 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20210304213902.83903-28-marcan@marcan.st>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YEE9oInI38txHWmo@krava>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.8.182]
+X-ClientProxiedBy: lhreml713-chm.china.huawei.com (10.201.108.64) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/03/2021 22:39, Hector Martin wrote:
-> This currently supports:
-> 
-> * SMP (via spin-tables)
-> * AIC IRQs
-> * Serial (with earlycon)
-> * Framebuffer
-> 
-> A number of properties are dynamic, and based on system firmware
-> decisions that vary from version to version. These are expected
-> to be filled in by the loader.
-> 
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  MAINTAINERS                              |   1 +
->  arch/arm64/boot/dts/Makefile             |   1 +
->  arch/arm64/boot/dts/apple/Makefile       |   2 +
->  arch/arm64/boot/dts/apple/t8103-j274.dts |  45 ++++++++
->  arch/arm64/boot/dts/apple/t8103.dtsi     | 135 +++++++++++++++++++++++
->  5 files changed, 184 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/apple/Makefile
->  create mode 100644 arch/arm64/boot/dts/apple/t8103-j274.dts
->  create mode 100644 arch/arm64/boot/dts/apple/t8103.dtsi
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 28bd46f4f7a7..d5e4d93a536a 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1647,6 +1647,7 @@ C:	irc://chat.freenode.net/asahi-dev
->  T:	git https://github.com/AsahiLinux/linux.git
->  F:	Documentation/devicetree/bindings/arm/apple.yaml
->  F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
-> +F:	arch/arm64/boot/dts/apple/
->  F:	arch/arm64/include/asm/sysreg_apple.h
->  F:	drivers/irqchip/irq-apple-aic.c
->  F:	include/dt-bindings/interrupt-controller/apple-aic.h
-> diff --git a/arch/arm64/boot/dts/Makefile b/arch/arm64/boot/dts/Makefile
-> index f1173cd93594..639e01a4d855 100644
-> --- a/arch/arm64/boot/dts/Makefile
-> +++ b/arch/arm64/boot/dts/Makefile
-> @@ -6,6 +6,7 @@ subdir-y += amazon
->  subdir-y += amd
->  subdir-y += amlogic
->  subdir-y += apm
-> +subdir-y += apple
->  subdir-y += arm
->  subdir-y += bitmain
->  subdir-y += broadcom
-> diff --git a/arch/arm64/boot/dts/apple/Makefile b/arch/arm64/boot/dts/apple/Makefile
-> new file mode 100644
-> index 000000000000..cbbd701ebf05
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/apple/Makefile
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +dtb-$(CONFIG_ARCH_APPLE) += t8103-j274.dtb
-> diff --git a/arch/arm64/boot/dts/apple/t8103-j274.dts b/arch/arm64/boot/dts/apple/t8103-j274.dts
-> new file mode 100644
-> index 000000000000..8afc2ed70361
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/apple/t8103-j274.dts
-> @@ -0,0 +1,45 @@
-> +// SPDX-License-Identifier: GPL-2.0+ OR MIT
-> +/*
-> + * Apple Mac mini (M1, 2020)
-> + *
-> + * target-type: J174
-> + *
-> + * Copyright The Asahi Linux Contributors
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "t8103.dtsi"
-> +
-> +/ {
-> +	compatible = "apple,j274", "apple,t8103", "apple,arm-platform";
-> +	model = "Apple Mac mini (M1, 2020)";
-> +
-> +	aliases {
-> +		serial0 = &serial0;
-> +	};
-> +
-> +	chosen {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		stdout-path = "serial0";
-> +
-> +		framebuffer0: framebuffer@0 {
-> +			compatible = "apple,simple-framebuffer", "simple-framebuffer";
-> +			reg = <0 0 0 0>; /* To be filled by loader */
-> +			/* Format properties will be added by loader */
-> +			status = "disabled";
-> +		};
-> +	};
-> +
-> +	memory@800000000 {
-> +		device_type = "memory";
-> +		reg = <0x8 0 0x2 0>; /* To be filled by loader */
 
-Shouldn't this be 0x800000000 with ~0x80000000 length (or whatever is
-more common)? Or did I miss some ranges?
+Hi Jirka,
 
-Best regards,
-Krzysztof
+>> -	struct pmu_events_map *map = perf_pmu__find_map(NULL);
+>> +	struct pmu_events_map *map = find_cpumap();
+> so this is just for arm at the moment right?
+> 
+
+Yes - but to be more accurate, arm64.
+
+At the moment, from the archs which use pmu-events, only arm64 and nds32 
+have versions of get_cpuid_str() which require a non-NULL pmu argument.
+
+But then apparently nds32 only supports a single CPU, so this issue of 
+heterogeneous CPUs should not be a concern there :)
+
+> could we rather make this arch specific code, so we don't need
+> to do the scanning on archs where this is not needed?
+> 
+> like marking perf_pmu__find_map as __weak and add arm specific
+> version?
+
+Well I was thinking that this code should not be in metricgroup.c anyway.
+
+So there is code which is common in current perf_pmu__find_map() for all 
+archs.
+
+I could factor that out into a common function, below. Just a bit 
+worried about perf_pmu__find_map() and perf_pmu__find_pmu_map() being 
+confused.
+
+Here's how that would look:
+
++++ b/tools/perf/arch/arm64/util/pmu.c
+
+#include "../../util/cpumap.h"
+#include "../../util/pmu.h"
+
+struct pmu_events_map *perf_pmu__find_map(void)
+{
+	struct perf_pmu *pmu = perf_pmu__find("armv8_pmuv3_0");
+
+	if (!pmu || !pmu->cpus || pmu->cpus->nr != cpu__max_cpu())
+		return NULL;
+
+	return perf_pmu__find_pmu_map(pmu);
+}
+
+And:
+
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index 26c990e32378..312164ce9299 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -618,7 +618,7 @@ static int metricgroup__print_sys_event_iter(struct 
+pmu_event *pe, void *data)
+  void metricgroup__print(bool metrics, bool metricgroups, char *filter,
+  			bool raw, bool details)
+  {
+-	struct pmu_events_map *map = perf_pmu__find_map(NULL);
++	struct pmu_events_map *map = perf_pmu__find_map();
+  	struct pmu_event *pe;
+  	int i;
+  	struct rblist groups;
+@@ -1253,8 +1253,7 @@ int metricgroup__parse_groups(const struct option 
+*opt,
+  			      struct rblist *metric_events)
+  {
+  	struct evlist *perf_evlist = *(struct evlist **)opt->value;
+-	struct pmu_events_map *map = perf_pmu__find_map(NULL);
+-
++	struct pmu_events_map *map = perf_pmu__find_map();
+
+  	return parse_groups(perf_evlist, str, metric_no_group,
+  			    metric_no_merge, NULL, metric_events, map);
+@@ -1273,7 +1272,7 @@ int metricgroup__parse_groups_test(struct evlist 
+*evlist,
+
+  bool metricgroup__has_metric(const char *metric)
+  {
+-	struct pmu_events_map *map = perf_pmu__find_map(NULL);
++	struct pmu_events_map *map = perf_pmu__find_map();
+  	struct pmu_event *pe;
+  	int i;
+
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 44ef28302fc7..d49bf20b6058 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -690,7 +690,7 @@ static char *perf_pmu__getcpuid(struct perf_pmu *pmu)
+  	return cpuid;
+  }
+
+-struct pmu_events_map *perf_pmu__find_map(struct perf_pmu *pmu)
++struct pmu_events_map *perf_pmu__find_pmu_map(struct perf_pmu *pmu)
+  {
+  	struct pmu_events_map *map;
+  	char *cpuid = perf_pmu__getcpuid(pmu);
+@@ -717,6 +717,11 @@ struct pmu_events_map *perf_pmu__find_map(struct 
+perf_pmu *pmu)
+  	return map;
+  }
+
++struct pmu_events_map *__weak perf_pmu__find_map(void)
++{
++	return perf_pmu__find_pmu_map(NULL);
++}
++
+  bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
+  {
+  	char *tmp = NULL, *tok, *str;
+@@ -805,7 +810,7 @@ static void pmu_add_cpu_aliases(struct list_head 
+*head, struct perf_pmu *pmu)
+  {
+  	struct pmu_events_map *map;
+
+-	map = perf_pmu__find_map(pmu);
++	map = perf_pmu__find_pmu_map(pmu);
+  	if (!map)
+  		return;
+
+
+Thoughts?
+
+Thanks!
