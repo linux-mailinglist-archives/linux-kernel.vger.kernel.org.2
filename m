@@ -2,123 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C668232F6C9
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2D632F6CB
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:49:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhCEXrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 18:47:21 -0500
-Received: from mail.micronovasrl.com ([212.103.203.10]:56292 "EHLO
-        mail.micronovasrl.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhCEXrN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 18:47:13 -0500
-Received: from mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1])
-        by mail.micronovasrl.com (Postfix) with ESMTP id 137CEB049B3
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 00:47:12 +0100 (CET)
-Authentication-Results: mail.micronovasrl.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=micronovasrl.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=micronovasrl.com;
-         h=content-transfer-encoding:content-language:content-type
-        :content-type:in-reply-to:mime-version:user-agent:date:date
-        :message-id:from:from:references:to:subject:subject; s=dkim; t=
-        1614988031; x=1615852032; bh=ZkXoD99BmHsbR1hrl64a63EOD1CUA4i6MBW
-        iJn8lTPo=; b=SnT8nMBrh7O0wFyq4kYGlK+Djiv3TbcaYkcom1gqk0Rr3mqJUxt
-        4ITdmhYq+efKbjV9CWGwizP/FPwOlYu5L45oRUJHtllfXkKveWGzeqxSSMVLGuyG
-        PZTJkjc01RfJJFtt0Vkd7IptkazCCzyN9t8A9NA4U6shS0qsc4Nb1BR4=
-X-Virus-Scanned: Debian amavisd-new at mail.micronovasrl.com
-X-Spam-Flag: NO
-X-Spam-Score: -2.9
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 tagged_above=-10 required=4.5
-        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, LOTS_OF_MONEY=0.001,
-        NICE_REPLY_A=-0.001] autolearn=unavailable autolearn_force=no
-Received: from mail.micronovasrl.com ([127.0.0.1])
-        by mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id fM0_6VyU5aq9 for <linux-kernel@vger.kernel.org>;
-        Sat,  6 Mar 2021 00:47:11 +0100 (CET)
-Received: from [192.168.50.85] (146-241-168-111.dyn.eolo.it [146.241.168.111])
-        by mail.micronovasrl.com (Postfix) with ESMTPSA id D0FEBB04710;
-        Sat,  6 Mar 2021 00:47:09 +0100 (CET)
-Subject: Re: [PATCH 4/9] dt-bindings: display/panel: add Jenson JT60245-01
-To:     Rob Herring <robh@kernel.org>,
-        Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Lubomir Rintel <lkundrak@v3.sk>, allen <allen.chen@ite.com.tw>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Max Merchel <Max.Merchel@tq-group.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210218225458.823773-1-giulio.benetti@benettiengineering.com>
- <20210218225458.823773-5-giulio.benetti@benettiengineering.com>
- <20210305225444.GA792026@robh.at.kernel.org>
-From:   Giulio Benetti <giulio.benetti@micronovasrl.com>
-Message-ID: <bf765112-4f69-1054-d70f-c5fd831d7995@micronovasrl.com>
-Date:   Sat, 6 Mar 2021 00:47:10 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229950AbhCEXsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 18:48:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229818AbhCEXsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 18:48:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8809F650A1;
+        Fri,  5 Mar 2021 23:48:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614988086;
+        bh=VPGxS7+wg8uWi3LiT2LzPvYVeiCOBQQnkwZ8HwkSlc0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=HtNiJOZkNbYV3zjG03tyL3+IQuWya3hxSw1enZ2KlY1LlwZO4FmWL8OMQqmvxtHUv
+         uOujviPOkWvQECpqsNhVEWcw9cN8KvkGCrCZXYtwrClwPUubu2Pr27l/IJoKxCsS9U
+         jS1cOoIQ1nk7gvS5RvkdKmUnSurr+bzVxCkthUjqtYVpSs1QTllw60klva6Kb8s7ma
+         3KADXacKxAbI0Ey5xceTZmiJjTqfLFvSMClHxr/pJFF4UGfcKEUZ0npYGpY9YW8l8v
+         gVrSqI7BhaOFy/lGYLOfp6wCUradiMFRPpBo0Yew4hVC98XmtfA/KZEFCw4vM2SZgA
+         NVjwaTb5syC/A==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 59FE835237A1; Fri,  5 Mar 2021 15:48:06 -0800 (PST)
+Date:   Fri, 5 Mar 2021 15:48:06 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        tglx@linutronix.de, mingo@kernel.org
+Subject: Re: timer: Report ignored local enqueue in nohz mode?
+Message-ID: <20210305234806.GH2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210303194945.GA20866@paulmck-ThinkPad-P72>
+ <20210305134111.GA142352@lothringen>
 MIME-Version: 1.0
-In-Reply-To: <20210305225444.GA792026@robh.at.kernel.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: it
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305134111.GA142352@lothringen>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-Il 05/03/2021 23:54, Rob Herring ha scritto:
-> On Thu, Feb 18, 2021 at 11:54:52PM +0100, Giulio Benetti wrote:
->> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
->>
->> Add DT binding for "jenson,jt60245-01".
->>
->> Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
->> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
->> ---
->>   .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
->> index 08afd6501094..fd0d2a573350 100644
->> --- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
->> +++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
->> @@ -169,6 +169,8 @@ properties:
->>         - jenson,jt60248-01
->>           # Jenson Display JT60249-01 5" (800x480) TFT LCD panel
->>         - jenson,jt60249-01
->> +        # Jenson Display JT60245-01 7" (800x480) TFT LCD panel
->> +      - jenson,jt60245-01
+On Fri, Mar 05, 2021 at 02:41:11PM +0100, Frederic Weisbecker wrote:
+> On Wed, Mar 03, 2021 at 11:49:45AM -0800, Paul E. McKenney wrote:
+> > Hello, Frederic!
+> > 
+> > I don't see the following commit in mainline, but figured I should
+> > check with you guys to see if the problem got solved in some other way.
+> > Unless I hear otherwise, I will continue to carry this patch in -rcu
+> > and will send it along for the v5.13 merge window.
 > 
-> It was going so well. Alpha-numeric order please.
+> I have it included in a nohz series I'm about to post but since RCU is the
+> motivation behind doing this, it's fine if you carry it.
 
-I've sent v2 patchset, but I didn't add your "Acked-by:" since
-alphabetical order was wrong.
+Actually, please feel free to run this up the normal nohz path.
+I will remove my version once yours hits mainline, as I did with
+the others.
 
-Best regards
--- 
-Giulio Benetti
-CTO
+I was just curious.  ;-)
 
-MICRONOVA SRL
-Sede: Via A. Niedda 3 - 35010 Vigonza (PD)
-Tel. 049/8931563 - Fax 049/8931346
-Cod.Fiscale - P.IVA 02663420285
-Capitale Sociale ¤ 26.000 i.v.
-Iscritta al Reg. Imprese di Padova N. 02663420285
-Numero R.E.A. 258642
+							Thanx, Paul
 
->>           # King & Display KD116N21-30NV-A010 eDP TFT LCD panel
->>         - kingdisplay,kd116n21-30nv-a010
->>           # Kaohsiung Opto-Electronics Inc. 5.7" QVGA (320 x 240) TFT LCD panel
->> -- 
->> 2.25.1
->>
-
+> I've just modified it a bit after a review from Peter:
+> 
+> ---
+> >From 7876725b8631147967bb9e65158ef1cb2bb94372 Mon Sep 17 00:00:00 2001
+> From: Frederic Weisbecker <frederic@kernel.org>
+> Date: Fri, 8 Jan 2021 13:50:12 +0100
+> Subject: [PATCH] timer: Report ignored local enqueue in nohz mode
+> 
+> Enqueuing a local timer after the tick has been stopped will result in
+> the timer being ignored until the next random interrupt.
+> 
+> Perform sanity checks to report these situations.
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar<mingo@kernel.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>  kernel/sched/core.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index ca2bb629595f..24552911f92b 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -674,6 +674,22 @@ int get_nohz_timer_target(void)
+>  	return cpu;
+>  }
+>  
+> +/* Make sure the timer won't be ignored in dynticks-idle case */
+> +static void wake_idle_assert_possible(void)
+> +{
+> +#ifdef CONFIG_SCHED_DEBUG
+> +	/*
+> +	 * Timers are re-evaluated after idle IRQs. In case of softirq,
+> +	 * we assume IRQ tail. Ksoftirqd shouldn't reach here as the
+> +	 * timer base wouldn't be idle. And inline softirq processing
+> +	 * after a call to local_bh_enable() within idle loop sound too
+> +	 * fun to be considered here.
+> +	 */
+> +	WARN_ONCE(in_task(),
+> +		  "Late timer enqueue may be ignored\n");
+> +#endif
+> +}
+> +
+>  /*
+>   * When add_timer_on() enqueues a timer into the timer wheel of an
+>   * idle CPU then this timer might expire before the next timer event
+> @@ -688,8 +704,10 @@ static void wake_up_idle_cpu(int cpu)
+>  {
+>  	struct rq *rq = cpu_rq(cpu);
+>  
+> -	if (cpu == smp_processor_id())
+> +	if (cpu == smp_processor_id()) {
+> +		wake_idle_assert_possible();
+>  		return;
+> +	}
+>  
+>  	if (set_nr_and_not_polling(rq->idle))
+>  		smp_send_reschedule(cpu);
+> -- 
+> 2.25.1
+> 
