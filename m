@@ -2,145 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE6D32F499
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 031D332F49A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhCEU0X convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Mar 2021 15:26:23 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2915 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhCEU0D (ORCPT
+        id S229750AbhCEU0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 15:26:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229589AbhCEU0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 15:26:03 -0500
-Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4DsfMP5kfwz5YF0;
-        Sat,  6 Mar 2021 04:23:45 +0800 (CST)
-Received: from dggemi760-chm.china.huawei.com (10.1.198.146) by
- DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Sat, 6 Mar 2021 04:25:56 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi760-chm.china.huawei.com (10.1.198.146) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Sat, 6 Mar 2021 04:25:55 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Sat, 6 Mar 2021 04:25:55 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: RE: [PATCH] sched/topology: remove redundant cpumask_and in
- init_overlap_sched_group
-Thread-Topic: [PATCH] sched/topology: remove redundant cpumask_and in
- init_overlap_sched_group
-Thread-Index: AQHXEUbFwdk9gqF8eUOp23ZOsJR2kap0wmWAgAETGfA=
-Date:   Fri, 5 Mar 2021 20:25:55 +0000
-Message-ID: <27e60cb105e040deb16af774399db15e@hisilicon.com>
-References: <20210304222944.32504-1-song.bao.hua@hisilicon.com>
- <jhjeegt7rdg.mognet@arm.com>
-In-Reply-To: <jhjeegt7rdg.mognet@arm.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.103]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 5 Mar 2021 15:26:15 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5426EC06175F;
+        Fri,  5 Mar 2021 12:26:15 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id u11so1963737plg.13;
+        Fri, 05 Mar 2021 12:26:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dNGmj86mFeRkOoBt/AbK+6NZzyM9+XeKwiG9SmwabaA=;
+        b=NpHTAtpodPt1vaJ1SvWGGj0+4cLHTqpaSNcKeA967cncTMTZmCx3+44vMoJBvQjy3D
+         ZL2781KzRviiwFPwpiCrq9CgXSdV1Kmgs7W0mxQT2dKVViHJ9MxOZEJT7SNjCPt1Mdfd
+         Mj9Tg8LxeDSoHBGwWP5wcKGObXFhq+Twj1qfXfHIGsCHjWC0txfLpC5ZgXt73sDpaEKk
+         n1uiTZAL6S5LLJKQNflmxCsWKOZEfS7tVuE2iH39aaXsTr2bjdwKSxMsMGrmxCdettsE
+         QzSmVvX69Bl+++C9f6DR19P4x59eNangZgUw2HQjKxEZ03CXM3gv+qTZkp6PF+Npm/l8
+         ERyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=dNGmj86mFeRkOoBt/AbK+6NZzyM9+XeKwiG9SmwabaA=;
+        b=lvpqFqoBLDCvxcK1PhgTaCkE3orNDflWjrxyCJ9tvXh3vUktbMCBVRP37OznhVbao8
+         xlJE3y+iJWoeEiKFZ9le1VHSSU15s1H9LSZ/kZQT4ai1TfOlCM4jEnN2XuNM0zhLKTJI
+         Vojqy1OoRyFr+njmS2uXNQ6za2w3qlbsRN5ozLUn3tuF/gaGx9G74Ycw0cx2mBjRrkMo
+         YvHST3wrKOmfa2dQpHKBz+6FKMCH6qKaWNu/nsGCvhYmfBjKUUgbRU3+p0wLrXLKdu04
+         h0izV95udOt+uvuEItvPtOltvt13mOUP7oYFsrSDitYnABX4HkKhF7zq+f/WGS+U5LO1
+         qEbg==
+X-Gm-Message-State: AOAM533RSsV6GM8+/yPMAxDaUxOzHJtZxt6k5FUhgAbOS8GXFAinnnrh
+        BDT166gsRYiI6p7Od9HlF7g=
+X-Google-Smtp-Source: ABdhPJzqUgSGCScxhDoo2nN4iiTLIVlk230TnxX0TjAWahTL3fkMweSC0QyTPYeIzrPozM5e/oARJQ==
+X-Received: by 2002:a17:90a:3ec3:: with SMTP id k61mr11772694pjc.125.1614975974792;
+        Fri, 05 Mar 2021 12:26:14 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:9db6:fc32:1046:dd86])
+        by smtp.gmail.com with ESMTPSA id s28sm3269115pfd.155.2021.03.05.12.26.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 12:26:13 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Fri, 5 Mar 2021 12:26:11 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
+        surenb@google.com, cgoldswo@codeaurora.org, willy@infradead.org,
+        david@redhat.com, vbabka@suse.cz, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: disable LRU pagevec during the migration
+ temporarily
+Message-ID: <YEKT4+4nLjGaAHCx@google.com>
+References: <20210302210949.2440120-1-minchan@kernel.org>
+ <YD+F4LgPH0zMBDGW@dhcp22.suse.cz>
+ <YD/wOq3lf9I5HK85@google.com>
+ <YEJW+dzF9/BNIiqn@dhcp22.suse.cz>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEJW+dzF9/BNIiqn@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Valentin Schneider [mailto:valentin.schneider@arm.com]
-> Sent: Saturday, March 6, 2021 12:49 AM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
-> vincent.guittot@linaro.org; mingo@redhat.com; peterz@infradead.org;
-> juri.lelli@redhat.com; dietmar.eggemann@arm.com; rostedt@goodmis.org;
-> bsegall@google.com; mgorman@suse.de
-> Cc: linux-kernel@vger.kernel.org; linuxarm@openeuler.org; Song Bao Hua (Barry
-> Song) <song.bao.hua@hisilicon.com>
-> Subject: Re: [PATCH] sched/topology: remove redundant cpumask_and in
-> init_overlap_sched_group
+On Fri, Mar 05, 2021 at 05:06:17PM +0100, Michal Hocko wrote:
+> On Wed 03-03-21 12:23:22, Minchan Kim wrote:
+> > On Wed, Mar 03, 2021 at 01:49:36PM +0100, Michal Hocko wrote:
+> > > On Tue 02-03-21 13:09:48, Minchan Kim wrote:
+> > > > LRU pagevec holds refcount of pages until the pagevec are drained.
+> > > > It could prevent migration since the refcount of the page is greater
+> > > > than the expection in migration logic. To mitigate the issue,
+> > > > callers of migrate_pages drains LRU pagevec via migrate_prep or
+> > > > lru_add_drain_all before migrate_pages call.
+> > > > 
+> > > > However, it's not enough because pages coming into pagevec after the
+> > > > draining call still could stay at the pagevec so it could keep
+> > > > preventing page migration. Since some callers of migrate_pages have
+> > > > retrial logic with LRU draining, the page would migrate at next trail
+> > > > but it is still fragile in that it doesn't close the fundamental race
+> > > > between upcoming LRU pages into pagvec and migration so the migration
+> > > > failure could cause contiguous memory allocation failure in the end.
+> > > > 
+> > > > To close the race, this patch disables lru caches(i.e, pagevec)
+> > > > during ongoing migration until migrate is done.
+> > > > 
+> > > > Since it's really hard to reproduce, I measured how many times
+> > > > migrate_pages retried with force mode below debug code.
+> > > > 
+> > > > int migrate_pages(struct list_head *from, new_page_t get_new_page,
+> > > > 			..
+> > > > 			..
+> > > > 
+> > > > if (rc && reason == MR_CONTIG_RANGE && pass > 2) {
+> > > >        printk(KERN_ERR, "pfn 0x%lx reason %d\n", page_to_pfn(page), rc);
+> > > >        dump_page(page, "fail to migrate");
+> > > > }
+> > > > 
+> > > > The test was repeating android apps launching with cma allocation
+> > > > in background every five seconds. Total cma allocation count was
+> > > > about 500 during the testing. With this patch, the dump_page count
+> > > > was reduced from 400 to 30.
+> > > 
+> > > Have you seen any improvement on the CMA allocation success rate?
+> > 
+> > Unfortunately, the cma alloc failure rate with reasonable margin
+> > of error is really hard to reproduce under real workload.
+> > That's why I measured the soft metric instead of direct cma fail
+> > under real workload(I don't want to make some adhoc artificial
+> > benchmark and keep tunes system knobs until it could show 
+> > extremly exaggerated result to convice patch effect).
+> > 
+> > Please say if you belive this work is pointless unless there is
+> > stable data under reproducible scenario. I am happy to drop it.
 > 
-> On 05/03/21 11:29, Barry Song wrote:
-> > mask is built in build_balance_mask() by for_each_cpu(i, sg_span), so
-> > it must be a subset of sched_group_span(sg).
-> 
-> So we should indeed have
-> 
->   cpumask_subset(sched_group_span(sg), mask)
-> 
-> but that doesn't imply
-> 
->   cpumask_first(sched_group_span(sg)) == cpumask_first(mask)
-> 
-> does it? I'm thinking if in your topology of N CPUs, CPUs 0 and N-1 are the
-> furthest away, you will most likely hit
+> Well, I am not saying that this is pointless. In the end the resulting
+> change is relatively small and it provides a useful functionality for
+> other users (e.g. hotplug). That should be a sufficient justification.
 
-It is true:
-cpumask_first(sched_group_span(sg)) != cpumask_first(mask)
-
-but 
-
-cpumask_first_and(sched_group_span(sg), mask) = cpumask_first(mask)
-
-since mask is always subset of sched_group_span(sg).
-
-/**
- * cpumask_first_and - return the first cpu from *srcp1 & *srcp2
- * @src1p: the first input
- * @src2p: the second input
- *
- * Returns >= nr_cpu_ids if no cpus set in both.  See also cpumask_next_and().
- */
-
-*srcp2 is subset of *srcp1, so  *srcp1 & *srcp2 = *srcp2
+Yub, that was my impression to worth upstreaming rather than keeping
+downstream tree so made divergent.
 
 > 
->   !cpumask_equal(sg_pan, sched_domain_span(sibling->child))
->                  ^^^^^^                    ^^^^^^^^^^^^^
->                  CPUN-1                        CPU0
-> 
-> which should be the case on your Kunpeng920 system.
-> 
-> > Though cpumask_first_and
-> > doesn't lead to a wrong result of balance cpu, it is pointless to do
-> > cpumask_and again.
-> >
-> > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> > ---
-> >  kernel/sched/topology.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> > index 12f8058..45f3db2 100644
-> > --- a/kernel/sched/topology.c
-> > +++ b/kernel/sched/topology.c
-> > @@ -934,7 +934,7 @@ static void init_overlap_sched_group(struct sched_domain
-> *sd,
-> >  	int cpu;
-> >
-> >  	build_balance_mask(sd, sg, mask);
-> > -	cpu = cpumask_first_and(sched_group_span(sg), mask);
-> > +	cpu = cpumask_first(mask);
-> >
-> >  	sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
-> >  	if (atomic_inc_return(&sg->sgc->ref) == 1)
-> > --
-> > 1.8.3.1
+> I was asking about CMA allocation success rate because that is a much
+> more reasonable metric than how many times something has retried because
+> retries can help to increase success rate and the patch doesn't really
+> remove those. If you want to use number of retries as a metric then the
+> average allocation latency would be more meaningful.
 
-Thanks
-Barry
+I believe the allocation latency would be pretty big and retrial part
+would be marginal so doubt it's meaningful.
 
+Let me send next revision with as-is descripion once I fix places
+you pointed out.
+
+Thanks.
