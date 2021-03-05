@@ -2,119 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D71932E21D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 07:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481F132E22B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 07:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229488AbhCEG0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 01:26:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhCEG0d (ORCPT
+        id S229574AbhCEGao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 01:30:44 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:14893 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhCEGan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 01:26:33 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF37AC061574;
-        Thu,  4 Mar 2021 22:26:32 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id o2so417148wme.5;
-        Thu, 04 Mar 2021 22:26:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=NNNoVrG5d7tOM41mvwYb60m8dYDHF6mZjSC7fCCIN1A=;
-        b=Dm/OS2p4akwEji3N23M8kqsSx89IRPazBAgfT1S8RhLIGtWAGCRGwXPjPp2bB4hPYx
-         AQKRV92rdvMIRXFGCQPw/HMlORVGbMVKjTRCVFaXJ7h71q6xqdjRvF59tKNUtSfWkIPh
-         1vZ+l8ZLX24504HMOeTPFfh9vgNJNfHnL1wmqt+QizK0oOyLIE3RCHO93LEXWEFfmYGA
-         UCoV9wZ8pGtXKXYyI/m3pErwsypP/5VbRXs4ho6m4On1upzL3Y30pDgRocAy45b1bTr0
-         WJnIAY+gIEf84+r1ZU7AzyS6e1fz9XHv+G4VKXT3qmtUFZQK/TJq+DLJei95Ji04ohBF
-         4J/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=NNNoVrG5d7tOM41mvwYb60m8dYDHF6mZjSC7fCCIN1A=;
-        b=Hq5XnIa0tY+Uq47JsbQ3h24U3ZQ93mer34TmNmzSKxgsjFZMrYYk+QGMQEsCgnDidZ
-         E5P65pFtvsHrxQOHxP+jVbSle2c2W/9P/d5Mt4qO9uiwMKH5/YPN7hIf3Pg4QQUTjPgv
-         r8w+X9vwRW/8n+CwFBTC+pMlVjzIrmOw7jlnqzyGO79Bibjn1+9jIKucwAe+xXYiRWDl
-         wn18+1lsUr+S1u1gpRC0WmqZkclMv4xuPOzJhGzjknXMbcMS43V6BCHwnWBz3QB1ppgu
-         BLjUMTfj4hsJtbVoC6uYAhowUB5jNHb3z4Lwgb97RzqkOKcITfwq4qoffG96g5ULLprM
-         uVdg==
-X-Gm-Message-State: AOAM53008aLbUtleQHpBVrMWojFrKDpes7Pr6GkkQW0kOYvZ846cINTA
-        haX6nSCL3d72D0Tp1zFiP9g=
-X-Google-Smtp-Source: ABdhPJxPzDs6HeUpfqwXJ7krgAyG4WR5WyH9O4SZwe4iqskvtgG5yPgiivWaJBtlfdCHuau9C4UDrg==
-X-Received: by 2002:a1c:df8a:: with SMTP id w132mr7112323wmg.53.1614925591409;
-        Thu, 04 Mar 2021 22:26:31 -0800 (PST)
-Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id f126sm2796782wmf.17.2021.03.04.22.26.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Mar 2021 22:26:31 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH] hwrng: bcm2835: set quality to 1000
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-In-Reply-To: <b0cf1be0-4c7c-57ee-fea5-789fe215b85d@gmail.com>
-Date:   Fri, 5 Mar 2021 07:26:29 +0100
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Andrew Lunn <andrew@lunn.ch>, Matt Mackall <mpm@selenic.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        linux-crypto@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Stijn Tintel <stijn@linux-ipv6.be>, ynezz@true.cz
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <6D1459DF-A7E1-422C-AA05-655156AEBA23@gmail.com>
-References: <20210220174741.23665-1-noltari@gmail.com>
- <YDFeao/bOxvoXI9D@lunn.ch> <9b86c773-7153-1e18-472a-f66b01c83173@gmail.com>
- <20210303092019.GB8134@gondor.apana.org.au>
- <66AED5A4-3227-47CA-A4A2-B5AD6A571AAC@gmail.com>
- <c76c82668142710ba5a7a8454759c9aa2423d72f.camel@suse.de>
- <b0cf1be0-4c7c-57ee-fea5-789fe215b85d@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Fri, 5 Mar 2021 01:30:43 -0500
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 04 Mar 2021 22:30:43 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 Mar 2021 22:30:40 -0800
+X-QCInternal: smtphost
+Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 05 Mar 2021 12:00:16 +0530
+Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
+        id 898CE3C33; Fri,  5 Mar 2021 12:00:14 +0530 (IST)
+From:   satya priya <skakit@codeaurora.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     kgunda@codeaurora.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, satya priya <skakit@codeaurora.org>
+Subject: [PATCH 0/3] Add GPIO support for the PM7325, PM8350c, PMK8350 and PMR735A
+Date:   Fri,  5 Mar 2021 11:59:56 +0530
+Message-Id: <1614925799-3172-1-git-send-email-skakit@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+satya priya (3):
+  pinctrl: qcom: spmi-gpio: Add support for four variants
+  dt-bindings: pinctrl: qcom-pmic-gpio: Convert pmic gpio bindings to
+    YAML
+  dt-bindings: pinctrl: qcom-pmic-gpio: Add pmic gpio support
 
-> El 4 mar 2021, a las 23:28, Florian Fainelli <f.fainelli@gmail.com> =
-escribi=C3=B3:
->=20
-> On 3/4/21 7:11 AM, Nicolas Saenz Julienne wrote:
->> On Wed, 2021-03-03 at 10:29 +0100, =C3=81lvaro Fern=C3=A1ndez Rojas =
-wrote:
->>> Hi Herbert,
->>>=20
->>>> El 3 mar 2021, a las 10:20, Herbert Xu =
-<herbert@gondor.apana.org.au> escribi=C3=B3:
->>>>=20
->>>> On Sat, Feb 20, 2021 at 08:12:45PM +0100, =C3=81lvaro Fern=C3=A1ndez =
-Rojas wrote:
->>>>>=20
->>>>> I ran rngtest and this is what I got:
->>>>=20
->>>> This is meaningless except for sources that have not been whitened.
->>>>=20
->>>> Your justification needs to be based on what the hardware does or
->>>> is documented to do.
->>>=20
->>> Ok, so I guess that we=E2=80=99re never setting that value to =
-anything since there=E2=80=99s
->>> no public documentation about that =C2=AF\_(=E3=83=84)_/=C2=AF.
->>=20
->> @Florian, is there a way you might be able to get the official value?
->=20
-> I will be looking into the documentation this weekend and let you know
-> whether we can change the driver's quality accordingly.
+ .../devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 272 --------------------
+ .../bindings/pinctrl/qcom,pmic-gpio.yaml           | 281 +++++++++++++++++++++
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c           |   4 +
+ 3 files changed, 285 insertions(+), 272 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
 
-Could you do that for iproc-rng200.c too?
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
-> --=20
-> Florian
-
-Best regards,
-=C3=81lvaro.=
