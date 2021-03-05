@@ -2,73 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014F132EC8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C2032ED0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 15:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbhCENxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:53:06 -0500
-Received: from mail-lj1-f177.google.com ([209.85.208.177]:42531 "EHLO
-        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbhCENwx (ORCPT
+        id S231154AbhCEOZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 09:25:09 -0500
+Received: from 9.mo7.mail-out.ovh.net ([46.105.60.248]:58018 "EHLO
+        9.mo7.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhCEOYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:52:53 -0500
-Received: by mail-lj1-f177.google.com with SMTP id k12so2810788ljg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 05:52:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sNai2Yw7gKaekPw4n0fAnGfRJ1e7puAzt8Afq4+GVMI=;
-        b=kxh+0rUi2URoZycTzoTJy4H6QEVhbZmcejnNOpwO6AqocwK4K2X5ceDlpWFd2ggkao
-         O49W38lENVa3Twq4wuF5/K0II5ofjA60gr24DQz6Dp+K6Dz8jHBnLsTUUQSGhChHbx6g
-         iYPB76aYr/benMyPVXN992rFzY0zIG6sBMTUAgufJHiaYOFjKX9xiKaVGtXJtud8C7Uw
-         ctac1YNDHXbFs9hfccsINFD90tE08t10w0EFVLPMt8E7D+K5MrZuRUg6N6J3wsTOMINH
-         If16RX8PFdNvbKbWfJVzPdHoVmgWKkYkFWFp6WUQ7gF/UrhLVwc7QLgGhhbKr0zFyX9Y
-         Gq9g==
-X-Gm-Message-State: AOAM530NT19TG2fpqVo3IgviJFwOMjAMz84NgHTdiYs+cOlTq7wwG/el
-        p3W6i8ncqOLj7nweIY7DyBM=
-X-Google-Smtp-Source: ABdhPJxA2WqKRv/N/qROZsN2LbIesf98LuIyDjtZm6YjkmWP2ir1FxmBwdYk2FnRQx+Pz5Nzsw46Zw==
-X-Received: by 2002:a2e:2f0c:: with SMTP id v12mr4951981ljv.367.1614952372673;
-        Fri, 05 Mar 2021 05:52:52 -0800 (PST)
-Received: from localhost.. (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.googlemail.com with ESMTPSA id p9sm319517ljn.16.2021.03.05.05.52.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 05:52:52 -0800 (PST)
-From:   Denis Efremov <efremov@linux.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Denis Efremov <efremov@linux.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8723bs: remove duplicate pstat->hwaddr check
-Date:   Fri,  5 Mar 2021 18:50:01 +0300
-Message-Id: <20210305155001.61951-1-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 5 Mar 2021 09:24:40 -0500
+X-Greylist: delayed 8918 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Mar 2021 09:24:40 EST
+Received: from player691.ha.ovh.net (unknown [10.110.208.22])
+        by mo7.mail-out.ovh.net (Postfix) with ESMTP id 90B0E19785D
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 12:55:57 +0100 (CET)
+Received: from etezian.org (213-243-141-64.bb.dnainternet.fi [213.243.141.64])
+        (Authenticated sender: andi@etezian.org)
+        by player691.ha.ovh.net (Postfix) with ESMTPSA id 1E23A1BCE06D7;
+        Fri,  5 Mar 2021 11:55:50 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-104R0055e4a7d2d-f7ba-4b7b-8661-49069e8a18d8,
+                    8BB957472A3FEC517196918F6D0E8FFF2983C800) smtp.auth=andi@etezian.org
+X-OVh-ClientIp: 213.243.141.64
+Date:   Fri, 5 Mar 2021 13:55:48 +0200
+From:   Andi Shyti <andi@etezian.org>
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     Andi Shyti <andi@etezian.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] input: s6sy761: fix coordinate read bit shift
+Message-ID: <YEIcRBjVSrAIaB+c@jack.zhora.eu>
+References: <20210305020310.550527-1-caleb@connolly.tech>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305020310.550527-1-caleb@connolly.tech>
+X-Ovh-Tracer-Id: 2039286209993949911
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtiedgfeefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeetnhguihcuufhhhihtihcuoegrnhguihesvghtvgiiihgrnhdrohhrgheqnecuggftrfgrthhtvghrnheptdfgudduhfefueeujeefieehtdeftefggeevhefgueellefhudetgeeikeduieefnecukfhppedtrddtrddtrddtpddvudefrddvgeefrddugedurdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheiledurdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprghnughisegvthgviihirghnrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IS_MCAST(pstat->hwaddr) checked twice in a row in
-odm_RefreshRateAdaptiveMaskCE(). Remove the second check.
+Hi Caleb,
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
- drivers/staging/rtl8723bs/hal/odm.c | 2 --
- 1 file changed, 2 deletions(-)
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA256
 
-diff --git a/drivers/staging/rtl8723bs/hal/odm.c b/drivers/staging/rtl8723bs/hal/odm.c
-index f2a9e95a1563..5e432f1bc150 100644
---- a/drivers/staging/rtl8723bs/hal/odm.c
-+++ b/drivers/staging/rtl8723bs/hal/odm.c
-@@ -1114,8 +1114,6 @@ void odm_RefreshRateAdaptiveMaskCE(PDM_ODM_T pDM_Odm)
- 		if (IS_STA_VALID(pstat)) {
- 			if (IS_MCAST(pstat->hwaddr))  /* if (psta->mac_id == 1) */
- 				continue;
--			if (IS_MCAST(pstat->hwaddr))
--				continue;
- 
- 			if (true == ODM_RAStateCheck(pDM_Odm, pstat->rssi_stat.UndecoratedSmoothedPWDB, false, &pstat->rssi_level)) {
- 				ODM_RT_TRACE(pDM_Odm, ODM_COMP_RA_MASK, ODM_DBG_LOUD, ("RSSI:%d, RSSI_LEVEL:%d\n", pstat->rssi_stat.UndecoratedSmoothedPWDB, pstat->rssi_level));
--- 
-2.26.2
+Please clean up the commit message.
 
+> The touch coordinates are read by shifting a value left by 3,
+> this is incorrect and effectively causes the coordinates to
+> be half of the correct value.
+> 
+> Shift by 4 bits instead to report the correct value.
+> 
+> This matches downstream examples, and has been confirmed on my
+> device (OnePlus 7 Pro).
+
+The real reason is that from the register we get:
+
+       byte 3             byte 2             byte 1
++--------+--------+ +-----------------+ +-----------------+
+|        |        | |                 | |                 |
+| X[3:0] | Y[3:0] | |     Y[11:4]     | |     X[11:4]     |
+|        |        | |                 | |                 |
++--------+--------+ +-----------------+ +-----------------+
+
+and the 12 bit values have to fit in a 16bit variable.
+
+The upper 8 bits (in event[2] and event[1] need to be shifted
+left by '4' and not by '3' in order to leave space to the lower
+4 bits (in event[3]).
+
+> 
+> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> ---
+>  drivers/input/touchscreen/s6sy761.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/s6sy761.c b/drivers/input/touchscreen/s6sy761.c
+> index b63d7fdf0cd2..85a1f465c097 100644
+> --- a/drivers/input/touchscreen/s6sy761.c
+> +++ b/drivers/input/touchscreen/s6sy761.c
+> @@ -145,8 +145,8 @@ static void s6sy761_report_coordinates(struct s6sy761_data *sdata,
+>  	u8 major = event[4];
+>  	u8 minor = event[5];
+>  	u8 z = event[6] & S6SY761_MASK_Z;
+> -	u16 x = (event[1] << 3) | ((event[3] & S6SY761_MASK_X) >> 4);
+> -	u16 y = (event[2] << 3) | (event[3] & S6SY761_MASK_Y);
+> +	u16 x = (event[1] << 4) | ((event[3] & S6SY761_MASK_X) >> 4);
+> +	u16 y = (event[2] << 4) | (event[3] & S6SY761_MASK_Y);
+
+the devil knows how that '3' has ended up there :)
+
+Thanks for catching it!
+
+Reviewed-by: Andi Shyti <andi@etezian.org>
+
+Andi
