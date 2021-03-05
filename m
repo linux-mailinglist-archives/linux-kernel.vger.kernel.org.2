@@ -2,97 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3275332E1EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 07:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E312932E1F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 07:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229446AbhCEGAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 01:00:14 -0500
-Received: from mga12.intel.com ([192.55.52.136]:52969 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229448AbhCEGAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 01:00:13 -0500
-IronPort-SDR: tFjsg5ywm2PWUC2g0BmxXPrd5KVRbNk0XKV/+pIvNRFcVmiZqnvJBATtBat44H94C75XYUBxtD
- XB9Ovkd/uqFg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="166839613"
-X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
-   d="scan'208";a="166839613"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 21:59:58 -0800
-IronPort-SDR: ANx896jTZnol9NShHHlG8T26dd6BJwkia3SoveHuqZ5XeuE2WkjoA9bR77wkVGT0e3FeydaAVN
- 9PN7Q75pceuA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
-   d="scan'208";a="507877765"
-Received: from glass.png.intel.com ([10.158.65.59])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Mar 2021 21:59:55 -0800
-From:   Ong Boon Leong <boon.leong.ong@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Subject: [PATCH net 1/1] stmmac: intel: Fixes clock registration error seen for multiple interfaces
-Date:   Fri,  5 Mar 2021 14:03:42 +0800
-Message-Id: <20210305060342.23503-1-boon.leong.ong@intel.com>
-X-Mailer: git-send-email 2.17.0
+        id S229597AbhCEGAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 01:00:24 -0500
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:48628 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229448AbhCEGAW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 01:00:22 -0500
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 125605Ox002584;
+        Fri, 5 Mar 2021 15:00:05 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 125605Ox002584
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614924006;
+        bh=8j+Joi2P3uXrOj9ujoo+ykWpnsA3cqH4DLBOMX+P6Qk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tFSMsKK+FeCi6TtSglrHBgWf4EDpf0dJV2yuFdI/IowUYzS3/SiOlf94RAZV9Tx3S
+         JHvW2UPlTiOAlIxWopcoZGwhEYO0+SulkJTBgpjTfhsS5keyYm5MVY1qHm4WeSDwmJ
+         q64c+is4VpJBipB3d2T6zzvYxKu2Ap+BFzgl7D62Smg3j5iaHzIoCSEocrJjdnufdt
+         1gwJBMS06bTCpI1YJfHp6Du6BhnQ9lsNA7FMmWE7Z82DVM9sumJEBoEcW62Gh9b2Rp
+         xh1ZcpQNV22H6UGssEFF7SVInsLoNAvo5UdCJ6A54aL0b0qj36kES8cs1LdJR6Im14
+         gb5VFP840BQYA==
+X-Nifty-SrcIP: [209.85.216.42]
+Received: by mail-pj1-f42.google.com with SMTP id i14so1196416pjz.4;
+        Thu, 04 Mar 2021 22:00:05 -0800 (PST)
+X-Gm-Message-State: AOAM531gqB5TPCztnSYu2Xck4H/XIrJeoAQx29j7xJHgQEPGwSxcI8wk
+        3vJOgzTBkNyafmtjyG4TnPyF2pUIE7yFlBqvk9M=
+X-Google-Smtp-Source: ABdhPJyeDYP67T+HLQkv+caNyXm14Vo3nBuF2Gdb7qRitrAc9YMbOQ1+JXI6gxPV4mFgHClGVxq09GuyNpm1L1+Aft4=
+X-Received: by 2002:a17:902:c48c:b029:e4:c093:593a with SMTP id
+ n12-20020a170902c48cb02900e4c093593amr7216851plx.1.1614924004952; Thu, 04 Mar
+ 2021 22:00:04 -0800 (PST)
+MIME-Version: 1.0
+References: <20210224105256.1939169-1-linux@rasmusvillemoes.dk>
+In-Reply-To: <20210224105256.1939169-1-linux@rasmusvillemoes.dk>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 5 Mar 2021 14:59:28 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ_CuUOH7mY8Rf3kxLxXKm0oxBsK=XgAS9ScMaW-55OuQ@mail.gmail.com>
+Message-ID: <CAK7LNAQ_CuUOH7mY8Rf3kxLxXKm0oxBsK=XgAS9ScMaW-55OuQ@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: add CONFIG_VMLINUX_MAP expert option
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wong Vee Khee <vee.khee.wong@intel.com>
+On Wed, Feb 24, 2021 at 7:53 PM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> It can be quite useful to have ld emit a link map file, in order to
+> debug or verify that special sections end up where they are supposed
+> to, and to see what LD_DEAD_CODE_DATA_ELIMINATION manages to get rid
+> of.
+>
+> The only reason I'm not just adding this unconditionally is that the
+> .map file can be rather large (several MB), and that's a waste of
+> space when one isn't interested in these things. Also hide the prompt
+> behind CONFIG_EXPERT.
+>
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> ---
+>  .gitignore              | 1 +
+>  Makefile                | 3 ++-
+>  lib/Kconfig.debug       | 9 +++++++++
+>  scripts/link-vmlinux.sh | 9 +++++++++
+>  4 files changed, 21 insertions(+), 1 deletion(-)
+>
+> diff --git a/.gitignore b/.gitignore
+> index 3af66272d6f1..d3038aff4485 100644
+> --- a/.gitignore
+> +++ b/.gitignore
+> @@ -58,6 +58,7 @@ modules.order
+>  /TAGS
+>  /linux
+>  /vmlinux
+> +/vmlinux.map
 
-Issue seen when enumerating multiple Intel mGbE interfaces in EHL.
+Could you move this one line below
+so that vmlinux.map is placed between
+vmlinux.32 and vmlinux.symvers ?
 
-[    6.898141] intel-eth-pci 0000:00:1d.2: enabling device (0000 -> 0002)
-[    6.900971] intel-eth-pci 0000:00:1d.2: Fail to register stmmac-clk
-[    6.906434] intel-eth-pci 0000:00:1d.2: User ID: 0x51, Synopsys ID: 0x52
+I know this list is not sorted...
 
-We fix it by making the clock name to be unique following the format
-of stmmac-pci_name(pci_dev) so that we can differentiate the clock for
-these Intel mGbE interfaces in EHL platform as follow:
 
-  /sys/kernel/debug/clk/stmmac-0000:00:1d.1
-  /sys/kernel/debug/clk/stmmac-0000:00:1d.2
-  /sys/kernel/debug/clk/stmmac-0000:00:1e.4
 
-Fixes: 58da0cfa6cf1 ("net: stmmac: create dwmac-intel.c to contain all Intel platform")
-Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
-Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
-Co-developed-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index f2896872a86c..0b64f7710d17 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -233,6 +233,7 @@ static void common_default_data(struct plat_stmmacenet_data *plat)
- static int intel_mgbe_common_data(struct pci_dev *pdev,
- 				  struct plat_stmmacenet_data *plat)
- {
-+	char clk_name[20];
- 	int ret;
- 	int i;
- 
-@@ -301,8 +302,10 @@ static int intel_mgbe_common_data(struct pci_dev *pdev,
- 	plat->eee_usecs_rate = plat->clk_ptp_rate;
- 
- 	/* Set system clock */
-+	sprintf(clk_name, "%s-%s", "stmmac", pci_name(pdev));
-+
- 	plat->stmmac_clk = clk_register_fixed_rate(&pdev->dev,
--						   "stmmac-clk", NULL, 0,
-+						   clk_name, NULL, 0,
- 						   plat->clk_ptp_rate);
- 
- 	if (IS_ERR(plat->stmmac_clk)) {
+>  /vmlinux.32
+>  /vmlinux.symvers
+>  /vmlinux-gdb.py
+
+
+Please add this to Documentation/dontdiff as well.
+
+
+
+
+> diff --git a/Makefile b/Makefile
+> index b18dbc634690..be6fbd99a214 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1501,7 +1501,8 @@ endif # CONFIG_MODULES
+>  # Directories & files removed with 'make clean'
+>  CLEAN_FILES += include/ksym vmlinux.symvers \
+>                modules.builtin modules.builtin.modinfo modules.nsdeps \
+> -              compile_commands.json
+> +              compile_commands.json \
+> +              vmlinux.map
+
+
+Do you need this ?
+
+You already added this to cleanup() of scripts/link-vmlinux.sh,
+which is invoked from 'make clean'.
+
+
+
+
+
+>  # Directories & files removed with 'make mrproper'
+>  MRPROPER_FILES += include/config include/generated          \
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 5ea0c1773b0a..d6af084c11ae 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -412,6 +412,15 @@ config VMLINUX_VALIDATION
+>         depends on STACK_VALIDATION && DEBUG_ENTRY && !PARAVIRT
+>         default y
+>
+> +config VMLINUX_MAP
+> +       bool "Generate vmlinux.map file when linking" if EXPERT
+
+
+Please use depends on EXPERT
+because VMLINUX_MAP is not select or implied by anyone.
+
+
+
+
+> +       help
+> +         Selecting this option will pass "-Map=vmlinux.map" to ld
+> +         when linking vmlinux. That file can be useful for verifying
+> +         and debugging magic section games, and for seeing which
+> +         pieces of code get eliminated with
+> +         CONFIG_LD_DEAD_CODE_DATA_ELIMINATION.
+> +
+>  config DEBUG_FORCE_WEAK_PER_CPU
+>         bool "Force weak per-cpu definitions"
+>         depends on DEBUG_KERNEL
+> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> index 3b261b0f74f0..bba58839db40 100755
+> --- a/scripts/link-vmlinux.sh
+> +++ b/scripts/link-vmlinux.sh
+> @@ -166,6 +166,12 @@ vmlinux_link()
+>                 strip_debug=-Wl,--strip-debug
+>         fi
+>
+> +       if [ -n "${CONFIG_VMLINUX_MAP}" ]; then
+> +               map_option="-Map=${output}.map"
+> +       else
+> +               map_option=""
+> +       fi
+> +
+
+
+For consistency, please do like strip_debug, that is,
+define this as a local variable, and
+set the value of  the 'if' case.
+
+
+
+>         if [ "${SRCARCH}" != "um" ]; then
+>                 if [ -n "${CONFIG_LTO_CLANG}" ]; then
+>                         # Use vmlinux.o instead of performing the slow LTO
+> @@ -187,6 +193,7 @@ vmlinux_link()
+>                 ${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux}      \
+>                         ${strip_debug#-Wl,}                     \
+>                         -o ${output}                            \
+> +                       ${map_option}                           \
+>                         -T ${lds} ${objects}
+>         else
+>                 objects="-Wl,--whole-archive                    \
+> @@ -200,6 +207,7 @@ vmlinux_link()
+>                 ${CC} ${CFLAGS_vmlinux}                         \
+>                         ${strip_debug}                          \
+>                         -o ${output}                            \
+> +                       ${map_option:+-Wl,${map_option}}        \
+>                         -Wl,-T,${lds}                           \
+>                         ${objects}                              \
+>                         -lutil -lrt -lpthread
+> @@ -303,6 +311,7 @@ cleanup()
+>         rm -f .tmp_vmlinux*
+>         rm -f System.map
+>         rm -f vmlinux
+> +       rm -f vmlinux.map
+>         rm -f vmlinux.o
+>  }
+>
+> --
+> 2.29.2
+>
+
+
 -- 
-2.17.0
-
+Best Regards
+Masahiro Yamada
