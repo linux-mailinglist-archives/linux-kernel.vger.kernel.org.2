@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B13B32EB73
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5761932EB1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232900AbhCEMoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:44:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60660 "EHLO mail.kernel.org"
+        id S233532AbhCEMmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:42:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233382AbhCEMna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:43:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC4BE65026;
-        Fri,  5 Mar 2021 12:43:28 +0000 (UTC)
+        id S229965AbhCEMlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:41:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A9E06501E;
+        Fri,  5 Mar 2021 12:41:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948209;
-        bh=N14Qc9jfN2xuPVXoiMUJk/bJHPTJ7/tNd3xsGH09Pus=;
+        s=korg; t=1614948090;
+        bh=9SEVdsGAQbIDSULhNzl85xsCstGS8Ri2wlCrwBbVIY0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wa/VUeMvx4wswWfAtmJ7eDmaMgaoIW1RimRG1iGUa+m0pr8sV4MCSTo1/5VBhHM1Z
-         OD6xN6lTnLaSpJ3BWp7U22ZeVKnuyrPI0NdkzLYCmLcnEg36QroEFO7mHgugT/pExy
-         V0hFb6UEXU2OTIV2BrzGy0rwA6Txqq7jfnAVLwEQ=
+        b=XM8qulTg1AA9onntieHwpEvxZ+9RPrpGROsnGG7cpi8d69mJ6UwloYoqBXjnxXWWS
+         bggNWvKppvWgp1jv0jFZQauSsHXPAd5abtWNcj9Ahg4mBLbHEQM7zKlKmdB0ozermr
+         /Ie0y3D/KblR7aq16c2HY1uhvROyEBDTnd1VlqHI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>,
-        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4.4 03/30] iwlwifi: pcie: fix to correct null check
+        stable@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 25/41] vt/consolemap: do font sum unsigned
 Date:   Fri,  5 Mar 2021 13:22:32 +0100
-Message-Id: <20210305120849.563727119@linuxfoundation.org>
+Message-Id: <20210305120852.531554357@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120849.381261651@linuxfoundation.org>
-References: <20210305120849.381261651@linuxfoundation.org>
+In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
+References: <20210305120851.255002428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+From: Jiri Slaby <jslaby@suse.cz>
 
-The fixes made in commit: 4ae5798004d8 ("iwlwifi: pcie: add a NULL check in
-iwl_pcie_txq_unmap") is not enough in 4.4.y tree.. This still have problems
-with null references. This provides the correct fix.
-Also, this is a problem only in 4.4.y. This patch has been applied to other
-LTS trees, but with the correct fixes.
+[ Upstream commit 9777f8e60e718f7b022a94f2524f967d8def1931 ]
 
-Fixes: 4ae5798004d8 ("iwlwifi: pcie: add a NULL check in iwl_pcie_txq_unmap")
-Cc: stable@vger.kernel.org
-Cc: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
-Cc: Luca Coelho <luciano.coelho@intel.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
+The constant 20 makes the font sum computation signed which can lead to
+sign extensions and signed wraps. It's not much of a problem as we build
+with -fno-strict-overflow. But if we ever decide not to, be ready, so
+switch the constant to unsigned.
+
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Link: https://lore.kernel.org/r/20210105120239.28031-7-jslaby@suse.cz
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/iwlwifi/pcie/tx.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/tty/vt/consolemap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/wireless/iwlwifi/pcie/tx.c
-+++ b/drivers/net/wireless/iwlwifi/pcie/tx.c
-@@ -583,13 +583,15 @@ static void iwl_pcie_txq_unmap(struct iw
- {
- 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
- 	struct iwl_txq *txq = &trans_pcie->txq[txq_id];
--	struct iwl_queue *q = &txq->q;
-+	struct iwl_queue *q;
+diff --git a/drivers/tty/vt/consolemap.c b/drivers/tty/vt/consolemap.c
+index 9d7ab7b66a8a..3e668d7c4b57 100644
+--- a/drivers/tty/vt/consolemap.c
++++ b/drivers/tty/vt/consolemap.c
+@@ -494,7 +494,7 @@ con_insert_unipair(struct uni_pagedir *p, u_short unicode, u_short fontpos)
  
- 	if (!txq) {
- 		IWL_ERR(trans, "Trying to free a queue that wasn't allocated?\n");
- 		return;
- 	}
+ 	p2[unicode & 0x3f] = fontpos;
+ 	
+-	p->sum += (fontpos << 20) + unicode;
++	p->sum += (fontpos << 20U) + unicode;
  
-+	q = &txq->q;
-+
- 	spin_lock_bh(&txq->lock);
- 	while (q->write_ptr != q->read_ptr) {
- 		IWL_DEBUG_TX_REPLY(trans, "Q %d Free %d\n",
+ 	return 0;
+ }
+-- 
+2.30.1
+
 
 
