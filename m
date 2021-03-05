@@ -2,168 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1126832DFCF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE8E32DFDB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhCEC5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 21:57:12 -0500
-Received: from mga09.intel.com ([134.134.136.24]:45036 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229436AbhCEC5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 21:57:11 -0500
-IronPort-SDR: oiHZ1NRm8YLjBLpLhbMmqkb9LPXxMt8aZkGowG1pJ5dYIS3cKJDwXCgE/lDbosS9gi2G6LbOfs
- suBKgWVU6oAw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="187661418"
-X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
-   d="scan'208";a="187661418"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 18:57:10 -0800
-IronPort-SDR: 6FIjyMdCIQvChNHVmNPv7mGl1/6toRLn0YhGofCH+GsVdnd/XPwfb8pgBVA6JP9Rdr3uJHojNO
- 9YymqerobBEA==
-X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
-   d="scan'208";a="401103565"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 18:57:07 -0800
-Subject: Re: [PATCH v3 9/9] KVM: x86: Add XSAVE Support for Architectural LBRs
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, wei.w.wang@intel.com,
-        kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>
-References: <20210303135756.1546253-1-like.xu@linux.intel.com>
- <20210303135756.1546253-10-like.xu@linux.intel.com>
- <YD/PYp0DtZaw2HYh@google.com>
- <b6b3476b-3278-9a40-33a9-0014fed9bbfb@linux.intel.com>
- <YEELZUP3BjStSvHq@google.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <860c429d-c0d8-fae6-955d-dd8560f2f9c5@intel.com>
-Date:   Fri, 5 Mar 2021 10:57:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229837AbhCEC7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 21:59:25 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:45160 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhCEC7Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 21:59:24 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1252xIXF026556;
+        Thu, 4 Mar 2021 20:59:18 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614913158;
+        bh=4ahj61Ka0+iqhWERh7yRL39qOUve4QTofA7lhdzVP6M=;
+        h=From:To:CC:Subject:Date;
+        b=atLib6IfCvdhxB2qqxzMrqn582vEurvNRni4xyzQuAkfXOra5h8suuBnrBcC1c7rm
+         lCxSZQg2+eMzFjYbEptSnJG1wTNZDfLxVk+PJvoDf6sfZRYbYv9STrk4EOII4GU0XV
+         pEUqNUYaXxqSWO3yZNbyu1PTj4ha0VYMUG/khIjI=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1252xI3c051045
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 4 Mar 2021 20:59:18 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Mar
+ 2021 20:59:18 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 4 Mar 2021 20:59:18 -0600
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1252xDqN121008;
+        Thu, 4 Mar 2021 20:59:14 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: [PATCH] PCI: designware-ep: Fix NULL pointer dereference error
+Date:   Fri, 5 Mar 2021 08:29:10 +0530
+Message-ID: <20210305025910.9652-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <YEELZUP3BjStSvHq@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/5 0:31, Sean Christopherson wrote:
-> Paolo, any thoughts on how to keep supported_xss aligned with support_xcr0,
-> without spreading the logic around too much?
+commit 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows") detected
+the number of inbound and outbound windows dynamically at runtime in
+dw_pcie_setup(). However pcie-designware-ep.c accessed the variables
+holding the number of inbound and outbound windows even before
+dw_pcie_setup() was invoked. Fix the sequence here.
 
- From 58be4152ced441395dfc439f446c5ad53bd48576 Mon Sep 17 00:00:00 2001
-From: Like Xu <like.xu@linux.intel.com>
-Date: Thu, 4 Mar 2021 13:21:38 +0800
-Subject: [PATCH] KVM: x86: Refine the matching and clearing logic for 
-supported_xss
-
-"The existing clearing of supported_xss here is pointless".
-Let's refine the code path in this way: initialize the supported_xss
-with the filter of KVM_SUPPORTED_XSS mask and update its value in
-a bit clear manner (rather than bit setting).
-
-Before:
-(1) kvm_arch_hardware_setup
-     if (boot_cpu_has(X86_FEATURE_XSAVES))
-         rdmsrl(MSR_IA32_XSS, host_xss);
-     if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
-         supported_xss = 0;
-     else supported_xss &= host_xss;
-(2) vmx_set_cpu_caps
-     supported_xss = 0;
-     if (!cpu_has_vmx_xsaves())
-         kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
-     else set available bits to supported_xss
-
-After:
-(1) kvm_arch_init
-     if (boot_cpu_has(X86_FEATURE_XSAVES))
-         rdmsrl(MSR_IA32_XSS, host_xss);
-         supported_xss = host_xss & KVM_SUPPORTED_XSS;
-(2) vmx_set_cpu_caps
-     if (!cpu_has_vmx_xsaves())
-         kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
-         supported_xss = 0;
-     else clear un-available bits for supported_xss
-
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Original-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
+Fixes: 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows")
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 ---
-  arch/x86/kvm/vmx/vmx.c |  5 +++--
-  arch/x86/kvm/x86.c     | 13 +++++++------
-  2 files changed, 10 insertions(+), 8 deletions(-)
+ .../pci/controller/dwc/pcie-designware-ep.c   | 44 ++++++++++---------
+ 1 file changed, 23 insertions(+), 21 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 4bc4bb49aaa9..8706323547c4 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7288,9 +7288,10 @@ static __init void vmx_set_cpu_caps(void)
-          kvm_cpu_cap_set(X86_FEATURE_UMIP);
-
-      /* CPUID 0xD.1 */
--    supported_xss = 0;
--    if (!cpu_has_vmx_xsaves())
-+    if (!cpu_has_vmx_xsaves()) {
-          kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
-+        supported_xss = 0;
-+    }
-
-      /* CPUID 0x80000001 */
-      if (!cpu_has_vmx_rdtscp())
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index d773836ceb7a..99cb62035bb2 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -205,6 +205,8 @@ static struct kvm_user_return_msrs __percpu 
-*user_return_msrs;
-                  | XFEATURE_MASK_BNDCSR | XFEATURE_MASK_AVX512 \
-                  | XFEATURE_MASK_PKRU)
-
-+#define KVM_SUPPORTED_XSS     0
+diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+index 1c25d8337151..2c0f837af458 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-ep.c
++++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+@@ -636,9 +636,11 @@ static unsigned int dw_pcie_ep_find_ext_capability(struct dw_pcie *pci, int cap)
+ int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
+ {
+ 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
++	struct device *dev = pci->dev;
+ 	unsigned int offset;
+ 	unsigned int nbars;
+ 	u8 hdr_type;
++	void *addr;
+ 	u32 reg;
+ 	int i;
+ 
+@@ -665,6 +667,27 @@ int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
+ 	}
+ 
+ 	dw_pcie_setup(pci);
 +
-  u64 __read_mostly host_efer;
-  EXPORT_SYMBOL_GPL(host_efer);
-
-@@ -8046,6 +8048,11 @@ int kvm_arch_init(void *opaque)
-          supported_xcr0 = host_xcr0 & KVM_SUPPORTED_XCR0;
-      }
-
-+    if (boot_cpu_has(X86_FEATURE_XSAVES)) {
-+        rdmsrl(MSR_IA32_XSS, host_xss);
-+        supported_xss = host_xss & KVM_SUPPORTED_XSS;
-+    }
++	ep->ib_window_map = devm_kcalloc(dev,
++					 BITS_TO_LONGS(pci->num_ib_windows),
++					 sizeof(long),
++					 GFP_KERNEL);
++	if (!ep->ib_window_map)
++		return -ENOMEM;
 +
-      if (pi_inject_timer == -1)
-          pi_inject_timer = housekeeping_enabled(HK_FLAG_TIMER);
-  #ifdef CONFIG_X86_64
-@@ -10421,9 +10428,6 @@ int kvm_arch_hardware_setup(void *opaque)
-
-      rdmsrl_safe(MSR_EFER, &host_efer);
-
--    if (boot_cpu_has(X86_FEATURE_XSAVES))
--        rdmsrl(MSR_IA32_XSS, host_xss);
++	ep->ob_window_map = devm_kcalloc(dev,
++					 BITS_TO_LONGS(pci->num_ob_windows),
++					 sizeof(long),
++					 GFP_KERNEL);
++	if (!ep->ob_window_map)
++		return -ENOMEM;
++
++	addr = devm_kcalloc(dev, pci->num_ob_windows, sizeof(phys_addr_t),
++			    GFP_KERNEL);
++	if (!addr)
++		return -ENOMEM;
++	ep->outbound_addr = addr;
++
+ 	dw_pcie_dbi_ro_wr_dis(pci);
+ 
+ 	return 0;
+@@ -674,7 +697,6 @@ EXPORT_SYMBOL_GPL(dw_pcie_ep_init_complete);
+ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+ {
+ 	int ret;
+-	void *addr;
+ 	u8 func_no;
+ 	struct resource *res;
+ 	struct pci_epc *epc;
+@@ -712,26 +734,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+ 	ep->phys_base = res->start;
+ 	ep->addr_size = resource_size(res);
+ 
+-	ep->ib_window_map = devm_kcalloc(dev,
+-					 BITS_TO_LONGS(pci->num_ib_windows),
+-					 sizeof(long),
+-					 GFP_KERNEL);
+-	if (!ep->ib_window_map)
+-		return -ENOMEM;
 -
-      r = ops->hardware_setup();
-      if (r != 0)
-          return r;
-@@ -10431,9 +10435,6 @@ int kvm_arch_hardware_setup(void *opaque)
-      memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
-      kvm_ops_static_call_update();
-
--    if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
--        supported_xss = 0;
+-	ep->ob_window_map = devm_kcalloc(dev,
+-					 BITS_TO_LONGS(pci->num_ob_windows),
+-					 sizeof(long),
+-					 GFP_KERNEL);
+-	if (!ep->ob_window_map)
+-		return -ENOMEM;
 -
-  #define __kvm_cpu_cap_has(UNUSED_, f) kvm_cpu_cap_has(f)
-      cr4_reserved_bits = __cr4_reserved_bits(__kvm_cpu_cap_has, UNUSED_);
-  #undef __kvm_cpu_cap_has
+-	addr = devm_kcalloc(dev, pci->num_ob_windows, sizeof(phys_addr_t),
+-			    GFP_KERNEL);
+-	if (!addr)
+-		return -ENOMEM;
+-	ep->outbound_addr = addr;
+-
+ 	if (pci->link_gen < 1)
+ 		pci->link_gen = of_pci_get_max_link_speed(np);
+ 
 -- 
-2.29.2
-
+2.17.1
 
