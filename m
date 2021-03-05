@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917DE32E958
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2470132EA65
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhCEMcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:32:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41524 "EHLO mail.kernel.org"
+        id S232627AbhCEMiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:38:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230214AbhCEMbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:31:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFE036501A;
-        Fri,  5 Mar 2021 12:31:31 +0000 (UTC)
+        id S233084AbhCEMhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:37:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B966F65012;
+        Fri,  5 Mar 2021 12:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947492;
-        bh=RXbyjtAOyXiMC8bIraWZO7C8vXtNmPjjN1rkD8x2pg0=;
+        s=korg; t=1614947835;
+        bh=+j8l7Edd1zPoeE+8qyLoZbAA7u7w/qB7pgWC9sc0568=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JIvb0IekjP1Ix8LNx/XwQvyFfTJ6q5wtG4+S6Ch7/95pIgvQE0chbBOvQ816Msnuc
-         EzIjKQ45tayOHnVoDyBWkugyBq9QE20hGHYmJ9ugaRPbUVBuBuI100IFtLe2Vh7uYY
-         iTdQnKyEhs2wx/FTZ85Q1uDZHETw/SEwZLoj3Jb0=
+        b=L/nfna1/qCHLssFDw3UinYOVevTbT14LK/qbsqomLeNBIWES3ULUBLVob0YDtDIAV
+         rNIqX6jtE46kSIz8Ox4gwYmGMGI3Y/Z2zEVQK8NqHrWEVKBJUNzcQlzhzi38IM8Xxy
+         SLFH341TCqj+mjydgStl/qydxTs9sLku4kfIwGDk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bard Liao <bard.liao@intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 076/102] ASoC: Intel: sof_sdw: detect DMIC number based on mach params
+        stable@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 4.19 04/52] virtio/s390: implement virtio-ccw revision 2 correctly
 Date:   Fri,  5 Mar 2021 13:21:35 +0100
-Message-Id: <20210305120907.017649813@linuxfoundation.org>
+Message-Id: <20210305120853.878276639@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+References: <20210305120853.659441428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rander Wang <rander.wang@intel.com>
+From: Cornelia Huck <cohuck@redhat.com>
 
-[ Upstream commit f88dcb9b98d3f86ead04d2453475267910448bb8 ]
+commit 182f709c5cff683e6732d04c78e328de0532284f upstream.
 
-Current driver create DMIC dai based on quirk for each platforms,
-so we need to add quirk for new platforms. Now driver reports DMIC
-number to machine driver and machine driver can create DMIC dai based
-on this information. The old check is reserved for some platforms
-may be failed to set the DMIC number in BIOS.
+CCW_CMD_READ_STATUS was introduced with revision 2 of virtio-ccw,
+and drivers should only rely on it being implemented when they
+negotiated at least that revision with the device.
 
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Signed-off-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210208233336.59449-6-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+However, virtio_ccw_get_status() issued READ_STATUS for any
+device operating at least at revision 1. If the device accepts
+READ_STATUS regardless of the negotiated revision (which some
+implementations like QEMU do, even though the spec currently does
+not allow it), everything works as intended. While a device
+rejecting the command should also be handled gracefully, we will
+not be able to see any changes the device makes to the status,
+such as setting NEEDS_RESET or setting the status to zero after
+a completed reset.
+
+We negotiated the revision to at most 1, as we never bumped the
+maximum revision; let's do that now and properly send READ_STATUS
+only if we are operating at least at revision 2.
+
+Cc: stable@vger.kernel.org
+Fixes: 7d3ce5ab9430 ("virtio/s390: support READ_STATUS command for virtio-ccw")
+Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+Signed-off-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Link: https://lore.kernel.org/r/20210216110645.1087321-1-cohuck@redhat.com
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/soc/intel/boards/sof_sdw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/s390/virtio/virtio_ccw.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index d441ef324c06..0f1d845a0cca 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -925,7 +925,7 @@ static int sof_card_dai_links_create(struct device *dev,
- 		ctx->idisp_codec = true;
+--- a/drivers/s390/virtio/virtio_ccw.c
++++ b/drivers/s390/virtio/virtio_ccw.c
+@@ -103,7 +103,7 @@ struct virtio_rev_info {
+ };
  
- 	/* enable dmic01 & dmic16k */
--	dmic_num = (sof_sdw_quirk & SOF_SDW_PCH_DMIC) ? 2 : 0;
-+	dmic_num = (sof_sdw_quirk & SOF_SDW_PCH_DMIC || mach_params->dmic_num) ? 2 : 0;
- 	comp_num += dmic_num;
+ /* the highest virtio-ccw revision we support */
+-#define VIRTIO_CCW_REV_MAX 1
++#define VIRTIO_CCW_REV_MAX 2
  
- 	dev_dbg(dev, "sdw %d, ssp %d, dmic %d, hdmi %d", sdw_be_num, ssp_num,
--- 
-2.30.1
-
+ struct virtio_ccw_vq_info {
+ 	struct virtqueue *vq;
+@@ -911,7 +911,7 @@ static u8 virtio_ccw_get_status(struct v
+ 	u8 old_status = *vcdev->status;
+ 	struct ccw1 *ccw;
+ 
+-	if (vcdev->revision < 1)
++	if (vcdev->revision < 2)
+ 		return *vcdev->status;
+ 
+ 	ccw = kzalloc(sizeof(*ccw), GFP_DMA | GFP_KERNEL);
 
 
