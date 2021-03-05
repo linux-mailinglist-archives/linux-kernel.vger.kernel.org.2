@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C488C32EB12
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 973EF32EAE8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:41:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232858AbhCEMlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:41:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57268 "EHLO mail.kernel.org"
+        id S232022AbhCEMk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:40:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229768AbhCEMlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:41:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 779D36502E;
-        Fri,  5 Mar 2021 12:41:21 +0000 (UTC)
+        id S231858AbhCEMkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:40:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62BBF6502A;
+        Fri,  5 Mar 2021 12:40:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948082;
-        bh=UWLIWfYD+prOzt22pde3LwfE441zn2YNFpURl7hefXw=;
+        s=korg; t=1614948019;
+        bh=drxMbElXbKylGnwkqnEgVdK7h30LmcEJRPvitXl20rQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x50rXlHjLozYN8VuJGc4Q/0EnpmGdBM914ZSUVFs3Xg5+9V0RJodjKk2i6VGVDiJE
-         LOZk+1b0L7hosfMdS40TyAYtxKZinXOQnKdRS3AIb8IUi8t4RQF1QVUNjYg0eMNvvq
-         BsEyv96RKUPoDQoSgiUeO4nUhVr/UX+xw5fqngaQ=
+        b=jLxBj7kCkmbmrdBpVAUcpXljsgaaPlR/Usq08a4iVwGnst33Xnv2taWpYyDB/xzMh
+         3OLad35bKKCzLid+Rmp9Vj9XQiMb6ypU6vMrQqd768h/Z2IN14xR78C2ruj289W+np
+         xkvpUm5QOkNB7TwTZW82XCHbh3mcE175gl9k99yc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Will Deacon <will.deacon@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 4.9 14/41] arm64: Remove redundant mov from LL/SC cmpxchg
-Date:   Fri,  5 Mar 2021 13:22:21 +0100
-Message-Id: <20210305120851.988419372@linuxfoundation.org>
+        stable@vger.kernel.org, Di Zhu <zhudi21@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 23/39] pktgen: fix misuse of BUG_ON() in pktgen_thread_worker()
+Date:   Fri,  5 Mar 2021 13:22:22 +0100
+Message-Id: <20210305120852.934850247@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
-References: <20210305120851.255002428@linuxfoundation.org>
+In-Reply-To: <20210305120851.751937389@linuxfoundation.org>
+References: <20210305120851.751937389@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Murphy <robin.murphy@arm.com>
+From: Di Zhu <zhudi21@huawei.com>
 
-commit 8df728e1ae614f592961e51f65d3e3212ede5a75 upstream.
+[ Upstream commit 275b1e88cabb34dbcbe99756b67e9939d34a99b6 ]
 
-The cmpxchg implementation introduced by commit c342f78217e8 ("arm64:
-cmpxchg: patch in lse instructions when supported by the CPU") performs
-an apparently redundant register move of [old] to [oldval] in the
-success case - it always uses the same register width as [oldval] was
-originally loaded with, and is only executed when [old] and [oldval] are
-known to be equal anyway.
+pktgen create threads for all online cpus and bond these threads to
+relevant cpu repecivtily. when this thread firstly be woken up, it
+will compare cpu currently running with the cpu specified at the time
+of creation and if the two cpus are not equal, BUG_ON() will take effect
+causing panic on the system.
+Notice that these threads could be migrated to other cpus before start
+running because of the cpu hotplug after these threads have created. so the
+BUG_ON() used here seems unreasonable and we can replace it with WARN_ON()
+to just printf a warning other than panic the system.
 
-The only effect it seemingly does have is to take up a surprising amount
-of space in the kernel text, as removing it reveals:
-
-   text	   data	    bss	    dec	    hex	filename
-12426658	1348614	4499749	18275021	116dacd	vmlinux.o.new
-12429238	1348614	4499749	18277601	116e4e1	vmlinux.o.old
-
-Reviewed-by: Will Deacon <will.deacon@arm.com>
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Di Zhu <zhudi21@huawei.com>
+Link: https://lore.kernel.org/r/20210125124229.19334-1-zhudi21@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/atomic_ll_sc.h |    1 -
- 1 file changed, 1 deletion(-)
+ net/core/pktgen.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm64/include/asm/atomic_ll_sc.h
-+++ b/arch/arm64/include/asm/atomic_ll_sc.h
-@@ -264,7 +264,6 @@ __LL_SC_PREFIX(__cmpxchg_case_##name(vol
- 	"	st" #rel "xr" #sz "\t%w[tmp], %" #w "[new], %[v]\n"	\
- 	"	cbnz	%w[tmp], 1b\n"					\
- 	"	" #mb "\n"						\
--	"	mov	%" #w "[oldval], %" #w "[old]\n"		\
- 	"2:"								\
- 	: [tmp] "=&r" (tmp), [oldval] "=&r" (oldval),			\
- 	  [v] "+Q" (*(unsigned long *)ptr)				\
+diff --git a/net/core/pktgen.c b/net/core/pktgen.c
+index 884afb8e9fc4..b3132f11afeb 100644
+--- a/net/core/pktgen.c
++++ b/net/core/pktgen.c
+@@ -3555,7 +3555,7 @@ static int pktgen_thread_worker(void *arg)
+ 	struct pktgen_dev *pkt_dev = NULL;
+ 	int cpu = t->cpu;
+ 
+-	BUG_ON(smp_processor_id() != cpu);
++	WARN_ON(smp_processor_id() != cpu);
+ 
+ 	init_waitqueue_head(&t->queue);
+ 	complete(&t->start_done);
+-- 
+2.30.1
+
 
 
