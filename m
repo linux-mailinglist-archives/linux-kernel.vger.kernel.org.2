@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2BAE32EB7A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1DB32EB21
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhCEMo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:44:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60954 "EHLO mail.kernel.org"
+        id S233613AbhCEMmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:42:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232332AbhCEMni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:43:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17BA265027;
-        Fri,  5 Mar 2021 12:43:36 +0000 (UTC)
+        id S233420AbhCEMlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:41:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D93AC6501F;
+        Fri,  5 Mar 2021 12:41:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948217;
-        bh=uagZ98ZKMYU9+CBthWXRtBD5o1t+vO/J7CFB6GNBFDo=;
+        s=korg; t=1614948102;
+        bh=8zJdZtJg0qbmSCXFdmVK8HdV/Cr+5LKq0nYHurY4/hM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SPIziOEthjP6lNi6pcG7wBF19/BCOaIgEYpKMkkG54VBrDF2dopN/VfbCbhVClaWI
-         rwZK/yl0fvgHqqd38xZNzNAcZP9bgQ75zcMFxXzuN7uqNJMoZwJFtiM1p8oxfnRDST
-         P92rN8pP7Moyv+pYU6fa56WGOIONP1fP1ZIAXGIk=
+        b=rZc5IhJMm2im+EiVn3MefgG4rj0Vpv6CdnAq+rQh//Xl9C4RZbrHDYGDdRGVzDeKV
+         504gA9wFkbsYDXa/0c9Z4I6SJwdVwpwJDf1mbBZIUHm/hVW6BPamx0P62aVASOt/qb
+         abZfvYqu3Y5VXf5zfQY6+io4gnP6RoCmWuSdqsyM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rolf Eike Beer <eb@emlix.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 4.4 06/30] scripts: set proper OpenSSL include dir also for  sign-file
-Date:   Fri,  5 Mar 2021 13:22:35 +0100
-Message-Id: <20210305120849.715327622@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Fangrui Song <maskray@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 29/41] x86/build: Treat R_386_PLT32 relocation as R_386_PC32
+Date:   Fri,  5 Mar 2021 13:22:36 +0100
+Message-Id: <20210305120852.717062558@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120849.381261651@linuxfoundation.org>
-References: <20210305120849.381261651@linuxfoundation.org>
+In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
+References: <20210305120851.255002428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,27 +44,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rolf Eike Beer <eb@emlix.com>
+From: Fangrui Song <maskray@google.com>
 
-commit fe968c41ac4f4ec9ffe3c4cf16b72285f5e9674f upstream.
+[ Upstream commit bb73d07148c405c293e576b40af37737faf23a6a ]
 
-Fixes: 2cea4a7a1885 ("scripts: use pkg-config to locate libcrypto")
-Signed-off-by: Rolf Eike Beer <eb@emlix.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This is similar to commit
+
+  b21ebf2fb4cd ("x86: Treat R_X86_64_PLT32 as R_X86_64_PC32")
+
+but for i386. As far as the kernel is concerned, R_386_PLT32 can be
+treated the same as R_386_PC32.
+
+R_386_PLT32/R_X86_64_PLT32 are PC-relative relocation types which
+can only be used by branches. If the referenced symbol is defined
+externally, a PLT will be used.
+
+R_386_PC32/R_X86_64_PC32 are PC-relative relocation types which can be
+used by address taking operations and branches. If the referenced symbol
+is defined externally, a copy relocation/canonical PLT entry will be
+created in the executable.
+
+On x86-64, there is no PIC vs non-PIC PLT distinction and an
+R_X86_64_PLT32 relocation is produced for both `call/jmp foo` and
+`call/jmp foo@PLT` with newer (2018) GNU as/LLVM integrated assembler.
+This avoids canonical PLT entries (st_shndx=0, st_value!=0).
+
+On i386, there are 2 types of PLTs, PIC and non-PIC. Currently,
+the GCC/GNU as convention is to use R_386_PC32 for non-PIC PLT and
+R_386_PLT32 for PIC PLT. Copy relocations/canonical PLT entries
+are possible ABI issues but GCC/GNU as will likely keep the status
+quo because (1) the ABI is legacy (2) the change will drop a GNU
+ld diagnostic for non-default visibility ifunc in shared objects.
+
+clang-12 -fno-pic (since [1]) can emit R_386_PLT32 for compiler
+generated function declarations, because preventing canonical PLT
+entries is weighed over the rare ifunc diagnostic.
+
+Further info for the more interested:
+
+  https://github.com/ClangBuiltLinux/linux/issues/1210
+  https://sourceware.org/bugzilla/show_bug.cgi?id=27169
+  https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6 [1]
+
+ [ bp: Massage commit message. ]
+
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Fangrui Song <maskray@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Link: https://lkml.kernel.org/r/20210127205600.1227437-1-maskray@google.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/Makefile |    1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kernel/module.c |  1 +
+ arch/x86/tools/relocs.c  | 12 ++++++++----
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
---- a/scripts/Makefile
-+++ b/scripts/Makefile
-@@ -25,6 +25,7 @@ hostprogs-$(CONFIG_SYSTEM_TRUSTED_KEYRIN
+diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
+index 19977d2f97fb..3c09ca384199 100644
+--- a/arch/x86/kernel/module.c
++++ b/arch/x86/kernel/module.c
+@@ -125,6 +125,7 @@ int apply_relocate(Elf32_Shdr *sechdrs,
+ 			*location += sym->st_value;
+ 			break;
+ 		case R_386_PC32:
++		case R_386_PLT32:
+ 			/* Add the value, subtract its position */
+ 			*location += sym->st_value - (uint32_t)location;
+ 			break;
+diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
+index 5b6c8486a0be..d1c3f82c7882 100644
+--- a/arch/x86/tools/relocs.c
++++ b/arch/x86/tools/relocs.c
+@@ -839,9 +839,11 @@ static int do_reloc32(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
+ 	case R_386_PC32:
+ 	case R_386_PC16:
+ 	case R_386_PC8:
++	case R_386_PLT32:
+ 		/*
+-		 * NONE can be ignored and PC relative relocations don't
+-		 * need to be adjusted.
++		 * NONE can be ignored and PC relative relocations don't need
++		 * to be adjusted. Because sym must be defined, R_386_PLT32 can
++		 * be treated the same way as R_386_PC32.
+ 		 */
+ 		break;
  
- HOSTCFLAGS_sortextable.o = -I$(srctree)/tools/include
- HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
-+HOSTCFLAGS_sign-file.o = $(CRYPTO_CFLAGS)
- HOSTLOADLIBES_sign-file = $(CRYPTO_LIBS)
- HOSTCFLAGS_extract-cert.o = $(CRYPTO_CFLAGS)
- HOSTLOADLIBES_extract-cert = $(CRYPTO_LIBS)
+@@ -882,9 +884,11 @@ static int do_reloc_real(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
+ 	case R_386_PC32:
+ 	case R_386_PC16:
+ 	case R_386_PC8:
++	case R_386_PLT32:
+ 		/*
+-		 * NONE can be ignored and PC relative relocations don't
+-		 * need to be adjusted.
++		 * NONE can be ignored and PC relative relocations don't need
++		 * to be adjusted. Because sym must be defined, R_386_PLT32 can
++		 * be treated the same way as R_386_PC32.
+ 		 */
+ 		break;
+ 
+-- 
+2.30.1
+
 
 
