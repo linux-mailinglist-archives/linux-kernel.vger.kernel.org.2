@@ -2,140 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676D932DE77
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 067CD32DE8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhCEAwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 19:52:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhCEAwQ (ORCPT
+        id S231616AbhCEAwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 19:52:24 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50582 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231308AbhCEAwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 19:52:16 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E911C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 16:52:16 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id f124so415537qkj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 16:52:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cgOQi/vVU6ZZA3ZTTPU47X1SZKTsVoK9deRtexYnDh0=;
-        b=cTpqXglB2XTwF2LgJ/l2DHTGzF2gQGj7D/nJUkOvhpdAd+2h1jPY3p4tCfZNj5yY+e
-         7zOrCbBN6lt9lhLX06eLXdrqYwSeDO5mPPLt2LzT01lMbwAR8m3y3YZ5o883v5JLqoZN
-         0bq0/PaKCVK5rbc03Ru3/h4s6uGkw2gHP/rts200u3N1T241DDe7EJJrBOVtZzB5xUMV
-         VYReP5acG+DYkUszKAHC1XyKLSG6N4FvkHlnFxbvppb5M/MqkQDZy4/6udaf/7DubcBR
-         NaJvudSE/73zC+d6Pr7NQO4ywzjgm9c/6rC3w5q97DzxXlx/BH2EE+27XtG+kxmKL+aw
-         dDmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cgOQi/vVU6ZZA3ZTTPU47X1SZKTsVoK9deRtexYnDh0=;
-        b=OAE1iWFg8oG0+U5DbQLR0F943dNGpqUtt5oROJ3+88nEzX2LOypxnosqGaQp74795j
-         h3iwpcid4lbga1pgYqesZeMsKBW+mpl//HeNRu3LXRQISllQ2FuM3BjjWKj7ceD7utyz
-         FRhorydD+JwdBwfDp05GBwd/BY5z9pytgOK4r+BI1nVGfOQvaUYuyNZJhzz8ydc7zlaF
-         a8dHJ4IujXo6CiEm/ZqCH7DUmxWngHyz3r6Rr2oDXiCGctDJTjAPXkHqnh4Z/tM8f76a
-         4gRV93h+x2Puv+mQbrP45j9bUbPJjlKBenAYyo7BgtPSqktQEmQ7bNpxdSdb3gk7kM8B
-         XIcA==
-X-Gm-Message-State: AOAM532p4MLNko8rdAeqQMYgZ3T7TRpRGZQ6bFu9qR61VlG38YDIk8IJ
-        eYfq98L2Jc0Kg+Kwm5LC1KTMOg==
-X-Google-Smtp-Source: ABdhPJwV2DQk5G1xaNKIxBVw8PIYkhGkjDXsi5yohmD/k0nUgCRzjx31VeKi18H2T/lLHZqWiSqxgQ==
-X-Received: by 2002:a05:620a:799:: with SMTP id 25mr7288891qka.182.1614905535831;
-        Thu, 04 Mar 2021 16:52:15 -0800 (PST)
-Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id n67sm754456qkb.35.2021.03.04.16.52.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 16:52:15 -0800 (PST)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org (moderated list:QCOM AUDIO (ASoC) DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] ASoC: codecs: lpass-wsa-macro: fix RX MIX input controls
-Date:   Thu,  4 Mar 2021 19:50:48 -0500
-Message-Id: <20210305005049.24726-1-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
+        Thu, 4 Mar 2021 19:52:20 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1250YAJZ078488;
+        Thu, 4 Mar 2021 19:52:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Q4kCcvynNJuYhKW5Wc+LtHw7qxjK+Mew3Q/SxGZOcsw=;
+ b=Y971tgW1ye5t+7JuS0e3coqumzcsWUn7Cq2gqq945IkIBrVxrZfpgpa23IYh9nL3DMan
+ ycwHqGR7FdqUF6FUN88qoyNeCWl0lUoIsrpB8Rpf7J98q/g8W0vOSF0yCnTezpxWz6db
+ nky/ctU0uz2eUstxg8Yhg4luTYCONwAopKBnHYT8VVa5X+F7BENlmDZmpux3iuKK8lnc
+ KjB4jk/M6PoQLBomlei8LCQnrbOPMZw/COgm+mLH71tp3pSy5VeLK0T3YfKtVBL+n9tr
+ /x5+zMW4Z0S0MmkBP61/BIXZ1mGgjyNq9hWpXume79GiG55i3QE88CAWJ+pjhZEgOsG6 kg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373a2crk75-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 19:52:10 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1250YuOJ083590;
+        Thu, 4 Mar 2021 19:52:09 -0500
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373a2crk6w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 19:52:09 -0500
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1250WUt2009505;
+        Fri, 5 Mar 2021 00:52:09 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma05wdc.us.ibm.com with ESMTP id 371b01gnev-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 00:52:09 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1250q7a010879542
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 5 Mar 2021 00:52:08 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DD9FFC6057;
+        Fri,  5 Mar 2021 00:52:07 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 56883C6055;
+        Fri,  5 Mar 2021 00:52:07 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri,  5 Mar 2021 00:52:07 +0000 (GMT)
+From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
+To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        dhowells@redhat.com, zohar@linux.ibm.com
+Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v10 0/9] Add support for x509 certs with NIST P384/256/192 keys
+Date:   Thu,  4 Mar 2021 19:51:54 -0500
+Message-Id: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-04_09:2021-03-03,2021-03-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 lowpriorityscore=0 adultscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 suspectscore=0 mlxscore=0 clxscore=1015
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103050001
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attempting to use the RX MIX path at 48kHz plays at 96kHz, because these
-controls are incorrectly toggling the first bit of the register, which
-is part of the FS_RATE field.
+From: Stefan Berger <stefanb@linux.ibm.com>
 
-Fix the problem by using the same method used by the "WSA RX_MIX EC0_MUX"
-control, which is to use SND_SOC_NOPM as the register and use an enum in
-the shift field instead.
+This series of patches adds support for x509 certificates signed by a CA
+that uses NIST P384, P256 or P192 keys for signing. It also adds support for
+certificates where the public key is one of this type of a key. The math
+for ECDSA signature verification is also added as well as the math for fast
+mmod operation for NIST P384.
 
-Fixes: 2c4066e5d428 ("ASoC: codecs: lpass-wsa-macro: add dapm widgets and route")
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
- sound/soc/codecs/lpass-wsa-macro.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+Since self-signed certificates are verified upon loading, the following
+script can be used for testing of NIST P256 keys:
 
-diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index f399f4dff5511..bd2561f9fb9fa 100644
---- a/sound/soc/codecs/lpass-wsa-macro.c
-+++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -1211,14 +1211,16 @@ static int wsa_macro_enable_mix_path(struct snd_soc_dapm_widget *w,
- 				     struct snd_kcontrol *kcontrol, int event)
- {
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
--	u16 gain_reg;
-+	u16 path_reg, gain_reg;
- 	int val;
- 
--	switch (w->reg) {
--	case CDC_WSA_RX0_RX_PATH_MIX_CTL:
-+	switch (w->shift) {
-+	case WSA_MACRO_RX_MIX0:
-+		path_reg = CDC_WSA_RX0_RX_PATH_MIX_CTL;
- 		gain_reg = CDC_WSA_RX0_RX_VOL_MIX_CTL;
- 		break;
--	case CDC_WSA_RX1_RX_PATH_MIX_CTL:
-+	case WSA_MACRO_RX_MIX1:
-+		path_reg = CDC_WSA_RX1_RX_PATH_MIX_CTL;
- 		gain_reg = CDC_WSA_RX1_RX_VOL_MIX_CTL;
- 		break;
- 	default:
-@@ -1231,7 +1233,7 @@ static int wsa_macro_enable_mix_path(struct snd_soc_dapm_widget *w,
- 		snd_soc_component_write(component, gain_reg, val);
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
--		snd_soc_component_update_bits(component, w->reg,
-+		snd_soc_component_update_bits(component, path_reg,
- 					      CDC_WSA_RX_PATH_MIX_CLK_EN_MASK,
- 					      CDC_WSA_RX_PATH_MIX_CLK_DISABLE);
- 		break;
-@@ -2068,14 +2070,14 @@ static const struct snd_soc_dapm_widget wsa_macro_dapm_widgets[] = {
- 	SND_SOC_DAPM_MUX("WSA_RX0 INP0", SND_SOC_NOPM, 0, 0, &rx0_prim_inp0_mux),
- 	SND_SOC_DAPM_MUX("WSA_RX0 INP1", SND_SOC_NOPM, 0, 0, &rx0_prim_inp1_mux),
- 	SND_SOC_DAPM_MUX("WSA_RX0 INP2", SND_SOC_NOPM, 0, 0, &rx0_prim_inp2_mux),
--	SND_SOC_DAPM_MUX_E("WSA_RX0 MIX INP", CDC_WSA_RX0_RX_PATH_MIX_CTL,
--			   0, 0, &rx0_mix_mux, wsa_macro_enable_mix_path,
-+	SND_SOC_DAPM_MUX_E("WSA_RX0 MIX INP", SND_SOC_NOPM, WSA_MACRO_RX_MIX0,
-+			   0, &rx0_mix_mux, wsa_macro_enable_mix_path,
- 			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_MUX("WSA_RX1 INP0", SND_SOC_NOPM, 0, 0, &rx1_prim_inp0_mux),
- 	SND_SOC_DAPM_MUX("WSA_RX1 INP1", SND_SOC_NOPM, 0, 0, &rx1_prim_inp1_mux),
- 	SND_SOC_DAPM_MUX("WSA_RX1 INP2", SND_SOC_NOPM, 0, 0, &rx1_prim_inp2_mux),
--	SND_SOC_DAPM_MUX_E("WSA_RX1 MIX INP", CDC_WSA_RX1_RX_PATH_MIX_CTL,
--			   0, 0, &rx1_mix_mux, wsa_macro_enable_mix_path,
-+	SND_SOC_DAPM_MUX_E("WSA_RX1 MIX INP", SND_SOC_NOPM, WSA_MACRO_RX_MIX1,
-+			   0, &rx1_mix_mux, wsa_macro_enable_mix_path,
- 			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- 
- 	SND_SOC_DAPM_MIXER_E("WSA_RX INT0 MIX", SND_SOC_NOPM, 0, 0, NULL, 0,
+k=$(keyctl newring test @u)
+
+while :; do
+	for hash in sha1 sha224 sha256 sha384 sha512; do
+		openssl req \
+			-x509 \
+			-${hash} \
+			-newkey ec \
+			-pkeyopt ec_paramgen_curve:prime256v1 \
+			-keyout key.pem \
+			-days 365 \
+			-subj '/CN=test' \
+			-nodes \
+			-outform der \
+			-out cert.der
+		keyctl padd asymmetric testkey $k < cert.der
+		if [ $? -ne 0 ]; then
+			echo "ERROR"
+			exit 1
+		fi
+	done
+done
+
+Ecdsa support also works with restricted keyrings where an RSA key is used
+to sign a NIST P384/256/192 key. Scripts for testing are here:
+
+https://github.com/stefanberger/eckey-testing
+
+The ECDSA signature verification will be used by IMA Appraisal where ECDSA
+file signatures stored in RPM packages will use substantially less space
+than if RSA signatures were to be used.
+
+Further, a patch is added that allows kernel modules to be signed with a NIST
+p384 key.
+
+   Stefan and Saulo
+
+v9->v10:
+  - rearranged order of patches to have crypto patches first
+  - moved hunk from patch 3 to patch 2 to avoid compilation warning due to
+    unused symbol
+
+v8->v9:
+  - Appended Saulo's patches
+  - Appended patch to support kernel modules signed with NIST p384 key. This
+    patch requires Nayna's series here: https://lkml.org/lkml/2021/2/18/856
+
+v7->v8:
+  - patch 3/4: Do not determine key algo using parse_OID in public_key.c
+    but do this when parsing the certificate. This addresses an issue
+    with certain build configurations where OID_REGISTRY is not available
+    as 'Reported-by: kernel test robot <lkp@intel.com>'.
+
+v6->v7:
+  - Moved some OID defintions to patch 1 for bisectability
+  - Applied R-b's
+  
+v5->v6:
+  - moved ecdsa code into its own module ecdsa_generic built from ecdsa.c
+  - added script-generated test vectors for NIST P256 & P192 and all hashes
+  - parsing of OID that contain header with new parse_oid()
+
+v4->v5:
+  - registering crypto support under names ecdsa-nist-p256/p192 following
+    Hubert Xu's suggestion in other thread
+  - appended IMA ECDSA support patch
+
+v3->v4:
+  - split off of ecdsa crypto part; registering akcipher as "ecdsa" and
+    deriving used curve from digits in parsed key
+
+v2->v3:
+  - patch 2 now includes linux/scatterlist.h
+
+v1->v2:
+  - using faster vli_sub rather than newly added vli_mod_fast to 'reduce'
+    result
+  - rearranged switch statements to follow after RSA
+  - 3rd patch from 1st posting is now 1st patch
+
+
+Saulo Alessandre (4):
+  crypto: Add NIST P384 curve parameters
+  crypto: Add math to support fast NIST P384
+  ecdsa: Register NIST P384 and extend test suite
+  x509: Add OID for NIST P384 and extend parser for it
+
+Stefan Berger (5):
+  crypto: Add support for ECDSA signature verification
+  x509: Detect sm2 keys by their parameters OID
+  x509: Add support for parsing x509 certs with ECDSA keys
+  ima: Support EC keys for signature verification
+  certs: Add support for using elliptic curve keys for signing modules
+
+ certs/Kconfig                             |  22 ++
+ certs/Makefile                            |  14 +
+ crypto/Kconfig                            |  10 +
+ crypto/Makefile                           |   6 +
+ crypto/asymmetric_keys/pkcs7_parser.c     |   4 +
+ crypto/asymmetric_keys/public_key.c       |   4 +-
+ crypto/asymmetric_keys/x509_cert_parser.c |  49 ++-
+ crypto/asymmetric_keys/x509_public_key.c  |   4 +-
+ crypto/ecc.c                              | 281 +++++++++-----
+ crypto/ecc.h                              |  31 +-
+ crypto/ecc_curve_defs.h                   |  32 ++
+ crypto/ecdsa.c                            | 400 ++++++++++++++++++++
+ crypto/ecdsasignature.asn1                |   4 +
+ crypto/testmgr.c                          |  18 +
+ crypto/testmgr.h                          | 424 ++++++++++++++++++++++
+ include/crypto/ecdh.h                     |   1 +
+ include/keys/asymmetric-type.h            |   6 +
+ include/linux/oid_registry.h              |  10 +-
+ lib/oid_registry.c                        |  13 +
+ security/integrity/digsig_asymmetric.c    |  30 +-
+ 20 files changed, 1256 insertions(+), 107 deletions(-)
+ create mode 100644 crypto/ecdsa.c
+ create mode 100644 crypto/ecdsasignature.asn1
+
 -- 
-2.26.1
+2.29.2
 
