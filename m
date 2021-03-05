@@ -2,104 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B5432F3CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCA632F3D2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhCETZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 14:25:45 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:43341 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S229597AbhCETZa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:25:30 -0500
-Received: (qmail 49699 invoked by uid 1000); 5 Mar 2021 14:25:29 -0500
-Date:   Fri, 5 Mar 2021 14:25:29 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [xhci] usb 4-1: reset SuperSpeed Gen 1 USB device number 2 using
- xhci_hcd
-Message-ID: <20210305192529.GD48113@rowland.harvard.edu>
-References: <CA+icZUWJyPTefHkGEgQtDO9TOM4CN_b2qPJGQVF7NE=Q=fGAEQ@mail.gmail.com>
- <CA+icZUUzBvmi9SvJ4Bh8ER_+Rkm9vv9FkKwoS8ofmRsko_fJhg@mail.gmail.com>
- <CA+icZUXCgW0bPcqNf+DSubBciQeBMbNX5zbjkMXinqRdkE1PfA@mail.gmail.com>
- <20210301155321.GA1490228@rowland.harvard.edu>
- <CA+icZUVpQtsq8y=rjR3Ad_G1VXWpR4D4xao8DGUkRiuxoT+cPA@mail.gmail.com>
- <20210305160728.GE38200@rowland.harvard.edu>
- <CA+icZUXnjDwyKEoX_7KOaVd=PpvEQhpJRvwZbW_xocDfXZpUzQ@mail.gmail.com>
+        id S229701AbhCET0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 14:26:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229562AbhCET0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 14:26:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AACEB64EE1;
+        Fri,  5 Mar 2021 19:26:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614972380;
+        bh=kzXYKMiq9Kkvuj6hwxwweKjjTNV2kJilH9HJ4zHWnII=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mhjy/umtZMGPHhww/Toccm83mrAVBcsEC6FjiUGG8RyIGnrlIpxIG2lDDjtPap7T2
+         xHray4YZm9AXCC9ISMPa7+arUPGPB52+IZyMYQAj/k2bg3iU6m3BmFfRCT5OuuF725
+         EWTA6MdhMWh/e+OZBIUaeUOcq9zvINyKyOugSMkslEnqr8wwd1L9ttRkuaUCeg2Ywp
+         6o844vPD9q7Ow8b6cIWVtUbg2z0sw9ppKigy9BZMwPYPcv/r6hMlSwcN6eFn+qlWX+
+         7ooRMGVipKLvZ4/A7mVIqIXkV/L5+r7YIdyhlH1Vw7CorhDfX9e8q32LE6kjXrvFt2
+         KAqToyS7hzrIw==
+Date:   Fri, 5 Mar 2021 13:26:17 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-hardening@vger.kernel.org,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][next] drm/radeon/si_dpm: Replace one-element array with
+ flexible-array in struct SISLANDS_SMC_SWSTATE
+Message-ID: <20210305192617.GA152661@embeddedor>
+References: <20210303190458.GA16321@embeddedor>
+ <CADnq5_M3dSMnKQMRv3SVaK6-w5ebJxX6w2-oy8v7+2muw3S3vg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+icZUXnjDwyKEoX_7KOaVd=PpvEQhpJRvwZbW_xocDfXZpUzQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CADnq5_M3dSMnKQMRv3SVaK6-w5ebJxX6w2-oy8v7+2muw3S3vg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 08:05:49PM +0100, Sedat Dilek wrote:
-> On Fri, Mar 5, 2021 at 5:07 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+On Fri, Mar 05, 2021 at 02:10:44PM -0500, Alex Deucher wrote:
+> Applied.  Thanks!
 
-> > Don't worry about trying to decode the output.  To me it looks like the
-> > drive crashes and needs to be reset at times when the computer sends it
-> > an ATA command.  (Not all ATA commands, but some.)  You can prevent this
-> > by setting the following module parameter for the usb-storage driver:
-> >
-> >         quirks=174c:55aa:t
-> >
-> > where the two numbers are the Vendor and Product IDs for the external
-> > drive, and the 't' is a quirks flag saying not to use any ATA commands.
-> > If this module parameter fixes the problem, we can add a permanent quirk
-> > setting to the kernel.
-> >
-> 
-> Thanks Alan.
-> 
-> I did:
-> 
-> [ /etc/modules-load.d/usb-storage.conf ]
-> 
-> # Add quirks for ATA commands for usb-storage devices connected to
-> ASMedia M1042 USB-3.0 controller
-> options usb-storage quirks=174c:55aa:t
-> - EOF -
-> 
-> It is:
-> 
-> /lib/modules/5.12.0-rc1-11-amd64-clang13-cfi/kernel/drivers/usb/storage/usb-storage.ko
-> 
-> But:
-> 
-> root# lsmod | grep usb | grep storage
-> usb_storage            90112  2 uas
-> scsi_mod              307200  6 sd_mod,usb_storage,uas,libata,sg,sr_mod
-> usbcore               385024  14
-> usbserial,xhci_hcd,ehci_pci,usbnet,usbhid,usb_storage,usb_wwan,uvcvideo,ehci_hcd,btusb,xhci_pci,cdc_ether,uas,option
+Awesome. :)
 
-I don't understand.  What is the point of this listing?
-
-> I have not rebooted yet.
-
-Depending on how your system is set up, the new usb-storage.conf file 
-might need to be copied into the initramfs image.
-
-However, you don't need to reload the driver module or reboot.  To make 
-the new quirk take effect, all you have to do is write 174c:55aa:t to
-/sys/module/usb_storage/parameters/quirks.
-
-> Interferences with PowerTop?
-
-Maybe.  It's entirely possible that PowerTop or some other program is 
-issuing the troublesome ATA commands.
-
-> These xhci-resets happen every 10mins in a sequence of 4.
-> 
-> I have here a powertop.service (systemd) with passing --auto-tune option.
-> That was not a problem with previous Linux-kernels >= v5.12-rc1, so.
-> 
-> Alan, what do you think?
-
-Try turning the service off and see if that makes any difference.
-
-Alan Stern
+Thanks, Alex.
+--
+Gustavo
