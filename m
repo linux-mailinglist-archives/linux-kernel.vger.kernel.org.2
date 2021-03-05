@@ -2,111 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2D132E70A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41EB632E708
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:10:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhCELLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 06:11:34 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2622 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhCELLU (ORCPT
+        id S229688AbhCELJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 06:09:57 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:1845 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229637AbhCELJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 06:11:20 -0500
-Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DsQ125bBNz67jwS;
-        Fri,  5 Mar 2021 19:07:02 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 5 Mar 2021 12:11:19 +0100
-Received: from [10.47.8.182] (10.47.8.182) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 5 Mar 2021
- 11:11:17 +0000
-Subject: Re: [PATCH v8 3/3] perf vendor events arm64: Add "_" to the event
- name, which starts with a number
-To:     Shunsuke Nakamura <nakamura.shun@fujitsu.com>, <will@kernel.org>,
-        <mathieu.poirier@linaro.org>, <leo.yan@linaro.org>,
-        <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210305101841.3133721-1-nakamura.shun@fujitsu.com>
- <20210305101841.3133721-4-nakamura.shun@fujitsu.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <b140182c-3250-8c28-c28a-9dc3cefc89a2@huawei.com>
-Date:   Fri, 5 Mar 2021 11:09:20 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Fri, 5 Mar 2021 06:09:44 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125B2LbZ026897;
+        Fri, 5 Mar 2021 12:09:39 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=I9/kaJnfjfj1AU6P3K82WCYMuyiaZJhwaAIyQRNbJYA=;
+ b=qsIr0VUr8Rv0rpa+5eYHsAi5k4r50zcRY1O0PDBuVUaPYWw2yNUTzA2Mwz7DtCTlQsSW
+ CTu7yGv/6c8JxTM2TIqHuvhQQ9+N7XFnXuxnUa2TEowgl6IlzjZqibS+zf9eGd/P8f9I
+ avFo13qFqhgfzO3I5u8Vqam/P8jVK/a9qPoXTPvpyP+HCsZDJaQ4RqfR/XVWGo2Uwdck
+ RRTx/lnHhqCKb9++GuGV+58LfdHmHAr7hxgGzZjg4PgaMHK3d9y0IaeoP2PvhXKQXTSs
+ 2UPWZBxPxd/4y8VbIPZwAPHDp1bUviw0mE/JgzKBdnEjaQwroy+4WNbB4puO4dOTl3Cj vw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36yfdynt7s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 12:09:39 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BD77110002A;
+        Fri,  5 Mar 2021 12:09:38 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A8DB624A0AD;
+        Fri,  5 Mar 2021 12:09:38 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Mar
+ 2021 12:09:38 +0100
+Subject: Re: [PATCH v5 15/16] rpmsg: char: no dynamic endpoint management for
+ the default one
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Andy Gross <agross@kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
+ <20210219111501.14261-16-arnaud.pouliquen@foss.st.com>
+ <20210304184034.GA3854911@xps15>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <d5a451e1-3dac-f665-aabd-bd72afc88b75@foss.st.com>
+Date:   Fri, 5 Mar 2021 12:09:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210305101841.3133721-4-nakamura.shun@fujitsu.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210304184034.GA3854911@xps15>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.8.182]
-X-ClientProxiedBy: lhreml713-chm.china.huawei.com (10.201.108.64) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-05_05:2021-03-03,2021-03-05 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/03/2021 10:18, Shunsuke Nakamura wrote:
-> The perf parser does not support event names that start with a number.
-> This patch adds "_" to the event name, which starts with a number.
+
+
+On 3/4/21 7:40 PM, Mathieu Poirier wrote:
+> There has to be a capital letter at the start of the title:
 > 
-> Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
-
-I think that this can be folded into patch 2/3, and my reveiwed-by tag 
-still stands for patch 2/3.
-
-Thanks
-
-> ---
->   .../pmu-events/arch/arm64/fujitsu/a64fx/other.json     | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
+> rpmsg: char: No dynamic endpoint management for the default one
 > 
-> diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
-> index 68b8e46d6140..10c823ac26cc 100644
-> --- a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
-> +++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
-> @@ -98,31 +98,31 @@
->     {
->       "PublicDescription": "This event counts every cycle that no instruction was committed, but counts at the time when commits MOVPRFX only.",
->       "EventCode": "0x190",
-> -    "EventName": "0INST_COMMIT",
-> +    "EventName": "_0INST_COMMIT",
->       "BriefDescription": "This event counts every cycle that no instruction was committed, but counts at the time when commits MOVPRFX only."
->     },
->     {
->       "PublicDescription": "This event counts every cycle that one instruction is committed.",
->       "EventCode": "0x191",
-> -    "EventName": "1INST_COMMIT",
-> +    "EventName": "_1INST_COMMIT",
->       "BriefDescription": "This event counts every cycle that one instruction is committed."
->     },
->     {
->       "PublicDescription": "This event counts every cycle that two instructions are committed.",
->       "EventCode": "0x192",
-> -    "EventName": "2INST_COMMIT",
-> +    "EventName": "_2INST_COMMIT",
->       "BriefDescription": "This event counts every cycle that two instructions are committed."
->     },
->     {
->       "PublicDescription": "This event counts every cycle that three instructions are committed.",
->       "EventCode": "0x193",
-> -    "EventName": "3INST_COMMIT",
-> +    "EventName": "_3INST_COMMIT",
->       "BriefDescription": "This event counts every cycle that three instructions are committed."
->     },
->     {
->       "PublicDescription": "This event counts every cycle that four instructions are committed.",
->       "EventCode": "0x194",
-> -    "EventName": "4INST_COMMIT",
-> +    "EventName": "_4INST_COMMIT",
->       "BriefDescription": "This event counts every cycle that four instructions are committed."
->     },
->     {
-> 
+> Please fix for all the patches.
 
+Ok, I will update the subjects with capital letter in my next revision.
+
+Just for my information, is it a new rule? kernel documentation [1] gives a
+canonical subject and an example without capital letter.
+
+[1]
+https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#the-canonical-patch-format
+
+> 
+> On Fri, Feb 19, 2021 at 12:15:00PM +0100, Arnaud Pouliquen wrote:
+>> Do not dynamically manage the default endpoint. The ept address must
+>> not change.
+>> This update is needed to manage the RPMSG_CREATE_DEV_IOCTL. In this
+>> case a default endpoint is used and it's address must not change or
+>> been reused by another service.
+> 
+> The above is very difficult to understand.  I am not sure about introducing
+> RPMSG_CREATE_DEV_IOCTL in this patchset.  More on that in an upcoming comment.
+
+The purpose of this revision was mainly to provide a view of what we could do to
+provide a more generic control interface.
+
+To simplify the review I can remove the RPMSG_CREATE_DEV_IOCTL management and
+send it as a next step, in a separate patchset.
+
+> 
+>>
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>> ---
+>>  drivers/rpmsg/rpmsg_char.c | 28 +++++++++++++++++++++-------
+>>  1 file changed, 21 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+>> index c98b0e69679b..8d3f9d6c20ad 100644
+>> --- a/drivers/rpmsg/rpmsg_char.c
+>> +++ b/drivers/rpmsg/rpmsg_char.c
+>> @@ -114,14 +114,23 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
+>>  	struct rpmsg_endpoint *ept;
+>>  	struct rpmsg_device *rpdev = eptdev->rpdev;
+>>  	struct device *dev = &eptdev->dev;
+>> +	u32 addr = eptdev->chinfo.src;
+>>  
+>>  	get_device(dev);
+>>  
+>> -	ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
+>> -	if (!ept) {
+>> -		dev_err(dev, "failed to open %s\n", eptdev->chinfo.name);
+>> -		put_device(dev);
+>> -		return -EINVAL;
+>> +	/*
+>> +	 * The RPMsg device can has been created by a ns announcement. In this
+>> +	 * case a default endpoint has been created. Reuse it to avoid to manage
+>> +	 * a new address on each open close.
+>> +	 */
+> 
+> Here too it is very difficult to understand because the comment
+> doesn't not describe what the code does.  The code creates an enpoint if it
+> has not been created, which means /dev/rpmsgX was created from the ioctl. 
+
+Right, not enough explicit
+
+Thanks,
+Arnaud
+
+> 
+>> +	ept = rpdev->ept;
+>> +	if (!ept || addr != ept->addr) {
+>> +		ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
+>> +		if (!ept) {
+>> +			dev_err(dev, "failed to open %s\n", eptdev->chinfo.name);
+>> +			put_device(dev);
+>> +			return -EINVAL;
+>> +		}
+>>  	}
+>>  
+>>  	eptdev->ept = ept;
+>> @@ -133,12 +142,17 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
+>>  static int rpmsg_eptdev_release(struct inode *inode, struct file *filp)
+>>  {
+>>  	struct rpmsg_eptdev *eptdev = cdev_to_eptdev(inode->i_cdev);
+>> +	struct rpmsg_device *rpdev = eptdev->rpdev;
+>>  	struct device *dev = &eptdev->dev;
+>>  
+>> -	/* Close the endpoint, if it's not already destroyed by the parent */
+>> +	/*
+>> +	 * Close the endpoint, if it's not already destroyed by the parent and it is not the
+>> +	 * default one.
+>> +	 */
+>>  	mutex_lock(&eptdev->ept_lock);
+>>  	if (eptdev->ept) {
+>> -		rpmsg_destroy_ept(eptdev->ept);
+>> +		if (eptdev->ept != rpdev->ept)
+>> +			rpmsg_destroy_ept(eptdev->ept);
+>>  		eptdev->ept = NULL;
+>>  	}
+>>  	mutex_unlock(&eptdev->ept_lock);
+>> -- 
+>> 2.17.1
+>>
