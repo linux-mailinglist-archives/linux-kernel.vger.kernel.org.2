@@ -2,169 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904D832E3B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCC832E3B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbhCEIbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:31:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhCEIbN (ORCPT
+        id S229494AbhCEIeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:34:23 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:12060 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229642AbhCEIdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:31:13 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11678C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 00:31:12 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id u16so1135686wrt.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 00:31:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XWbZV1xuaSmzet0/YcZif2T8HeoxQ88xDpPUR5wIaRM=;
-        b=WDBYUW0qE+cgv+jlzpk/LkkEv5rrFExd/rNVN6CPNPszS2oiEe6l8WDOoPwMpJbJ9g
-         ifcqD6jPV1lLiR4Yi/mjqfHszxBdJMcLo3KXRTXr9C02Sobabk+4owE0Z41bxe8ob0sf
-         TXbIB7FE2gA0+Sjn4it3R8bHCBwJgU43j8xHmxrRaiGMOzXVU8OS4NipVF5fqrdwQXA2
-         IIaotAllyZPnmz7mAt2JSTHTtIeJjXlLVUCSIhhKMkEA1E/BRRB28/j/UfjP/wIKBQS/
-         GOSaXt0wygQ1kOygpUpLV5Q/GAhYxDax8i6p2F354NInZNYmwDxkG0X/3YVqPpdEXq1x
-         imog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XWbZV1xuaSmzet0/YcZif2T8HeoxQ88xDpPUR5wIaRM=;
-        b=CnqW5XNpg8IUc1iOruNtRhtett7DfV4BhCFlwYmbiWW1cakDtJsEVsDDUG9+k3pwZg
-         q+dNYBzp01qo8w3+ZI1AmPBps4qqlrE+m4dukL3UF9fK/DsPihLnczgjlAIbYWT9dDkR
-         nVaORascxc9w60LujpI8f8JNbWZ2P9WTfkIN/6QMB7DfpbsYqdA4dCSpyioOzGuY0UXb
-         EJWOPxquBLanztMKmcf5003EPKgPA3N65nEZ0rrjisCdilwP0Ekqot2jZvOEl1Oz1v9U
-         SJp4Qmc8lHntE3dyw2E0ppJ7Y8/rJirOGPv/9Cw0fAsZVAtksF+FnNJH0WJLv6bOgpFA
-         YhrQ==
-X-Gm-Message-State: AOAM533f7Rn57VZRiSaMJEnnlkETpeiBuyR2cbfQVdxvjRwW5th/pKUh
-        LDPwNQAAuy2B8xfDiuLRudFYcg==
-X-Google-Smtp-Source: ABdhPJzCbiuywdjtJ3FXU0Unm3zTVBYkDhWcAaYi2hSBAzjPryfkwbpNyTtMVd+8AZFWxtio6jLxmw==
-X-Received: by 2002:adf:ded1:: with SMTP id i17mr8168897wrn.349.1614933070664;
-        Fri, 05 Mar 2021 00:31:10 -0800 (PST)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id w25sm3254177wmc.42.2021.03.05.00.31.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 00:31:10 -0800 (PST)
-Date:   Fri, 5 Mar 2021 09:30:49 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
-Subject: Re: [RFC PATCH 15/18] cgroup: Introduce ioasids controller
-Message-ID: <YEHsOR/XjDxQapE6@myrica>
-References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1614463286-97618-16-git-send-email-jacob.jun.pan@linux.intel.com>
- <YD+u3CXhwOi2LC+4@slm.duckdns.org>
- <20210303131726.7a8cb169@jacob-builder>
- <20210303160205.151d114e@jacob-builder>
- <YECtMZNqSgh7jkGP@myrica>
- <20210304094603.4ab6c1c4@jacob-builder>
+        Fri, 5 Mar 2021 03:33:51 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1258WELI002930;
+        Fri, 5 Mar 2021 09:33:27 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=J/LswseSQK9Z1SiYQbprQ/CvYEnximafUDZppa60bLA=;
+ b=a7IgNkFBnfH3c0FFQlgVlU9jBFAfoPzqmiD6+hprrnke+Rz7f7UVMG2vFF0sjI0fAnwD
+ 7M57o8DZxa6NinC5kNTuFgU92weFrlTeD3m5YSBxgJq9wACHnVAflub7fMdNowGpc0pv
+ T5ZJrgm9dZd+IuJnVJvYGPwRk1lpLkI27O8XsiswOal32eYBSqyokZVcWIlSYB5a1wo9
+ 4t4MKi+UOozimEhm6+QxKwSgFYZz0kt00KvbbwaIBOvk5owujv3V0kFPhW6hPpSAoZ30
+ x1cdVu/FE0A9gNR/Zb3AGKieNn0WTyHfKNVUOAtkp1aas+Rq3EiQBr9g5/kbY2A75O0p /g== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36yfdymtra-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 09:33:27 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 53B2B10002A;
+        Fri,  5 Mar 2021 09:33:26 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 31BBF22B9BC;
+        Fri,  5 Mar 2021 09:33:26 +0100 (CET)
+Received: from [10.48.0.224] (10.75.127.49) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Mar
+ 2021 09:33:25 +0100
+Subject: Re: [Linux-stm32] [PATCH v2][next] mtd: rawnand: stm32_fmc2: Fix
+ fall-through warnings for Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        "Vignesh Raghavendra" <vigneshr@ti.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <linux-hardening@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210305080905.GA135306@embeddedor>
+From:   Christophe Kerello <christophe.kerello@foss.st.com>
+Message-ID: <35bc7c3d-885a-f723-3849-45c0e46a8ef7@foss.st.com>
+Date:   Fri, 5 Mar 2021 09:33:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304094603.4ab6c1c4@jacob-builder>
+In-Reply-To: <20210305080905.GA135306@embeddedor>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-05_04:2021-03-03,2021-03-05 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 09:46:03AM -0800, Jacob Pan wrote:
-> Hi Jean-Philippe,
-> 
-> On Thu, 4 Mar 2021 10:49:37 +0100, Jean-Philippe Brucker
-> <jean-philippe@linaro.org> wrote:
-> 
-> > On Wed, Mar 03, 2021 at 04:02:05PM -0800, Jacob Pan wrote:
-> > > Hi Jacob,
-> > > 
-> > > On Wed, 3 Mar 2021 13:17:26 -0800, Jacob Pan
-> > > <jacob.jun.pan@linux.intel.com> wrote:
-> > >   
-> > > > Hi Tejun,
-> > > > 
-> > > > On Wed, 3 Mar 2021 10:44:28 -0500, Tejun Heo <tj@kernel.org> wrote:
-> > > >   
-> > > > > On Sat, Feb 27, 2021 at 02:01:23PM -0800, Jacob Pan wrote:    
-> > > > > > IOASIDs are used to associate DMA requests with virtual address
-> > > > > > spaces. They are a system-wide limited resource made available to
-> > > > > > the userspace applications. Let it be VMs or user-space device
-> > > > > > drivers.
-> > > > > > 
-> > > > > > This RFC patch introduces a cgroup controller to address the
-> > > > > > following problems:
-> > > > > > 1. Some user applications exhaust all the available IOASIDs thus
-> > > > > > depriving others of the same host.
-> > > > > > 2. System admins need to provision VMs based on their needs for
-> > > > > > IOASIDs, e.g. the number of VMs with assigned devices that perform
-> > > > > > DMA requests with PASID.      
-> > > > > 
-> > > > > Please take a look at the proposed misc controller:
-> > > > > 
-> > > > >  http://lkml.kernel.org/r/20210302081705.1990283-2-vipinsh@google.com
-> > > > > 
-> > > > > Would that fit your bill?    
-> > > > The interface definitely can be reused. But IOASID has a different
-> > > > behavior in terms of migration and ownership checking. I guess SEV key
-> > > > IDs are not tied to a process whereas IOASIDs are. Perhaps this can be
-> > > > solved by adding
-> > > > +	.can_attach	= ioasids_can_attach,
-> > > > +	.cancel_attach	= ioasids_cancel_attach,
-> > > > Let me give it a try and come back.
-> > > >   
-> > > While I am trying to fit the IOASIDs cgroup in to the misc cgroup
-> > > proposal. I'd like to have a direction check on whether this idea of
-> > > using cgroup for IOASID/PASID resource management is viable.  
-> > 
-> > Yes, even for host SVA it would be good to have a cgroup. Currently the
-> > number of shared address spaces is naturally limited by number of
-> > processes, which can be controlled with rlimit and cgroup. But on Arm the
-> > hardware limit on shared address spaces is 64k (number of ASIDs), easily
-> > exhausted with the default PASID and PID limits. So a cgroup for managing
-> > this resource is more than welcome.
-> > 
-> > It looks like your current implementation is very dependent on
-> > IOASID_SET_TYPE_MM?  I'll need to do more reading about cgroup to see how
-> > easily it can be adapted to host SVA which uses IOASID_SET_TYPE_NULL.
-> > 
-> Right, I was assuming have three use cases of IOASIDs:
-> 1. host supervisor SVA (not a concern, just one init_mm to bind)
-> 2. host user SVA, either one IOASID per process or perhaps some private
-> IOASID for private address space
-> 3. VM use for guest SVA, each IOASID is bound to a guest process
-> 
-> My current cgroup proposal applies to #3 with IOASID_SET_TYPE_MM, which is
-> allocated by the new /dev/ioasid interface.
-> 
-> For #2, I was thinking you can limit the host process via PIDs cgroup? i.e.
-> limit fork.
+Hi Gustavo,
 
-That works but isn't perfect, because the hardware resource of shared
-address spaces can be much lower that PID limit - 16k ASIDs on Arm. To
-allow an admin to fairly distribute that resource we could introduce
-another cgroup just to limit the number of shared address spaces, but
-limiting the number of IOASIDs does the trick.
+On 3/5/21 9:09 AM, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a couple
+> of warnings by explicitly adding a couple of fallthrough pseudo-keywords
+> instead of letting the code fall through to the next case.
+> 
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+> Changes in v2:
+>   Make use of a break statement instead of fallthrough for consistency.
+>   Link: https://lore.kernel.org/lkml/20201123093347.719a77cf@xps13/
+> 
+>   drivers/mtd/nand/raw/stm32_fmc2_nand.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+> index 550bda4d1415..1c277fbb91f2 100644
+> --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+> +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+> @@ -531,6 +531,7 @@ static int stm32_fmc2_nfc_ham_correct(struct nand_chip *chip, u8 *dat,
+>   		switch (b % 4) {
+>   		case 2:
+>   			bit_position += shifting;
+> +			break;
+>   		case 1:
+>   			break;
+>   		default:
+> @@ -546,6 +547,7 @@ static int stm32_fmc2_nfc_ham_correct(struct nand_chip *chip, u8 *dat,
+>   		switch (b % 4) {
+>   		case 2:
+>   			byte_addr += shifting;
+> +			break;
+>   		case 1:
+>   			break;
+>   		default:
+> 
 
-> So the host IOASIDs are currently allocated from the system pool
-> with quota of chosen by iommu_sva_init() in my patch, 0 means unlimited use
-> whatever is available. https://lkml.org/lkml/2021/2/28/18
+Reviewed-by: Christophe Kerello <christophe.kerello@foss.st.com>
 
-Yes that's sensible, but it would be good to plan the cgroup user
-interface to work for #2 as well, even if we don't implement it right
-away.
-
-Thanks,
-Jean
+Regards,
+Christophe Kerello.
