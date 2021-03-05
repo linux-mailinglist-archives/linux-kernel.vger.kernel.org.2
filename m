@@ -2,102 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB10232F3EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C7032F3F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbhCETcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 14:32:42 -0500
-Received: from smtpweb146.aruba.it ([62.149.158.146]:36890 "EHLO
-        smtpweb146.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbhCETcQ (ORCPT
+        id S230127AbhCETcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 14:32:43 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:44843 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229768AbhCETcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:32:16 -0500
-Received: from [192.168.126.129] ([146.241.168.111])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id IGBKlk06d1jmzIGBKlEDoe; Fri, 05 Mar 2021 20:32:15 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1614972735; bh=aWcSdCyOdN8bFj+KL9uggJlcu9J1GAlTZV/p6mAPXfQ=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=PmSPrya+P5IFvlbZR4LOvV24OWPq/aZF36OpmG4lAcx6NOznd6oBLk50DY2fnRuHa
-         DkF7dyC9V1/nlfWwbuQabM+GmA26c/m91X0BvF07frSWvYXFGNqCd9sZfJ32OJYGgn
-         SpUjWljcTfs7nSGK3DIptRnqrM2N5lR2WNQwNKknQPHSWgayEkd3rzykITTrAFFowV
-         RbIRB2Zcu2w4Tjglr/4r1wQxvo4FBGo92YxD/78SDjRRQx9lY7rYfn2fKGWiY1VpK8
-         7tWLDKVl+fvEmFp5k688X1N4DvvkwAgVude4IW4SqdbJZb17SLm5EWwNtXZSLHNEnh
-         hnH2u8pI8YV4w==
-Subject: Re: [PATCH 1/3] dt-bindings: Add Hycon Technology vendor prefix
-To:     Giulio Benetti <giulio.benetti@micronovasrl.com>,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.ne@posteo.net>
-Cc:     Rob Herring <robh+dt@kernel.org>, Rob Herring <robh@kernel.org>,
+        Fri, 5 Mar 2021 14:32:21 -0500
+Received: by mail-oi1-f169.google.com with SMTP id x20so3689283oie.11;
+        Fri, 05 Mar 2021 11:32:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XaS2sNj3AaDvFNYBjMZ96z/1bD+wKa0y2e10rT1bRbo=;
+        b=DBJ+dOmakxUa3Whvpz5LdGaiC5P7s5uAFWVqSy/fV4xPp6WWVxIp8FCPzfBqpVshrl
+         HLkhU1QlDxrkZfgPAoOyKf/p8XGxpMtVEl57wRZqlfGEelXhzJ1CgwM3SL1kkr/y+UZ3
+         fyXAuITl5mr86eUdlASReaYjav3A4gXdkKXtAOPboFHHAM3YhuiWJ8a6aIod6AXoCrJF
+         aJrQPLYSBp4eiPOPDjSE4pRrk3HHinwzkD4m78vLCxt577Gnt0jyrvhkFxzAY9sc0QOY
+         G+ghCS/OyHeSF9Ht7FrbQkGGmcul2vDrldYvEC+kLMOXclFkjRyQcpoTpWdoulE/ow3S
+         yIiQ==
+X-Gm-Message-State: AOAM533Qie9RwdJRzBx1UtrUWY2wqeYHyDYDQrDnt0XGK0dw0zkfqK9F
+        ICIUMs5acGtKlS3R30Ditqgk9X4VXw==
+X-Google-Smtp-Source: ABdhPJzeJ22aG7OHIMAzQMrvP4kx0nmrnZrAZfCRF/bSzz2qFHlNgD/X+8eCHp1qdTXD3YrzIsQb9A==
+X-Received: by 2002:aca:da83:: with SMTP id r125mr8319982oig.127.1614972740680;
+        Fri, 05 Mar 2021 11:32:20 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p66sm710872oib.53.2021.03.05.11.32.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 11:32:19 -0800 (PST)
+Received: (nullmailer pid 518985 invoked by uid 1000);
+        Fri, 05 Mar 2021 19:32:18 -0000
+Date:   Fri, 5 Mar 2021 13:32:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     elder@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
+        davem@davemloft.net, kuba@kernel.org,
+        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-References: <20210305163834.70924-1-giulio.benetti@benettiengineering.com>
- <20210305163834.70924-2-giulio.benetti@benettiengineering.com>
- <YEJpogUgOHHPFUQ+@latitude>
- <f1c78d68-5e84-ab52-3de6-44a9312f2afa@micronovasrl.com>
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-Message-ID: <5f2b2d8f-40a5-1a2c-2491-273c371241f5@benettiengineering.com>
-Date:   Fri, 5 Mar 2021 20:32:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        phone-devel@vger.kernel.org
+Subject: Re: [PATCH v1 6/7] dt-bindings: net: qcom-ipa: Document
+ qcom,sc7180-ipa compatible
+Message-ID: <20210305193218.GA517246@robh.at.kernel.org>
+References: <20210211175015.200772-1-angelogioacchino.delregno@somainline.org>
+ <20210211175015.200772-7-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-In-Reply-To: <f1c78d68-5e84-ab52-3de6-44a9312f2afa@micronovasrl.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfHyp0t4xqITEPZZGaawoHXLASJ1gdUXaoJP3ueZzXWcDGKJYSAog/IykCiSteU7LLc3sUKuGQOOCIJLKHBb6oiTTMMID3Jxvaov41bdnopumhqLNmJd3
- OkXo2DlCDnLAbztS7sylIwbROc3Z3fcsYukAYT4pxvo1NthwY+KmaqBKHXbYlmuZjZNIBFd4Bwmjfh3+WVD8efDLjJRbIn9sb6iX13cwgwJU/sHtOnLhNmZP
- JA01q+HcQ4N+M5LW4ApNLSaIW1ho9KTMxvGidhm0ABwklCMsP53T8oT1jmii7M72YHYz2ksW0ZMJAaDdNtg7OfyvR2b73gSu4Rmh7KvCSEY7RMZp7MAyUExm
- dgoYS/4HuLG0QlHCuAzfVQeygGMdRMExlsZP3CL8lEdg4C08XRLT0F9+CP4n3cMmEKHxBFxM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211175015.200772-7-angelogioacchino.delregno@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc Dmitry
+On Thu, Feb 11, 2021 at 06:50:14PM +0100, AngeloGioacchino Del Regno wrote:
+> The driver supports SC7180, but the binding was not documented.
+> Just add it.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>  Documentation/devicetree/bindings/net/qcom,ipa.yaml | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> index 8a2d12644675..b063c6c1077a 100644
+> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> @@ -43,7 +43,11 @@ description:
+>  
+>  properties:
+>    compatible:
+> -    const: "qcom,sdm845-ipa"
+> +    oneOf:
+> +      - items:
+> +          - enum:
 
-On 3/5/21 6:33 PM, Giulio Benetti wrote:
-> Hi Jonathan,
-> 
-> Il 05/03/2021 18:25, Jonathan Neuschäfer ha scritto:
->> Hello,
->>
->> On Fri, Mar 05, 2021 at 05:38:32PM +0100, Giulio Benetti wrote:
->>> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
->>>
->>> Update Documentation/devicetree/bindings/vendor-prefixes.yaml to
->>> include "hycon" as a vendor prefix for "Hycon Technology".
->>> Company website: http://www.hycontek.com/
->>
->> As far as I can see, https would be possible here.
-> 
-> +1
-> 
->>> Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
->>> ---
->>>    Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->>>    1 file changed, 2 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
->>> index a1312637d6ff..51b00aa96dff 100644
->>> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
->>> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
->>> @@ -488,6 +488,8 @@ patternProperties:
->>>      "^hugsun,.*":
->>>        description: Shenzhen Hugsun Technology Co. Ltd.
->>>      "^hwacom,.*":
->>> +    description: Hycon Technology Corp.
->>> +  "^hycon,.*":
->>>        description: HwaCom Systems Inc.
->>
->> This is the wrong way around. You declared "hwacom," to mean "Hycon
->> Technology Corp.", and "hycon," to mean "HwaCom Systems Inc.".
->>
-> 
-> Thank you, I've modified it and I'll send a v2 with the rest of
-> patchset.
-> 
-> Best regards
-> 
+Just enum, you don't need oneOf when only 1. And items is implied when 
+only 1 entry.
 
--- 
-Giulio Benetti
-Benetti Engineering sas
+> +              - "qcom,sdm845-ipa"
+> +              - "qcom,sc7180-ipa"
+>  
+>    reg:
+>      items:
+> -- 
+> 2.30.0
+> 
