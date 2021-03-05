@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB4B32E9F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A44CA32E970
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232526AbhCEMfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:35:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47086 "EHLO mail.kernel.org"
+        id S231659AbhCEMcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:32:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231734AbhCEMfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:35:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FF8265027;
-        Fri,  5 Mar 2021 12:35:02 +0000 (UTC)
+        id S232661AbhCEMcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:32:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51B926501A;
+        Fri,  5 Mar 2021 12:32:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947702;
-        bh=nSLBRJkae14o4LfdVlB4deNlZUPcM16v7v/jx3/r8UU=;
+        s=korg; t=1614947528;
+        bh=CdyjO0DzAQYcvYBXpXgGcTDehYI93C8q/0VzfnTXLR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dZ2ksjTBrXdoBXh46mMD+n5MgIQ3Qi469PxeJKUfPav53GJNh93C33TCTPLsCGLtY
-         mrVLdA+B+dH17JA84maERGJN95rQlqDqQz7nKkCqV/4Kr+O7nyzneC4pUVAwCGp98h
-         UQBgzPgzP4p16xq1wErKs00Ea/o8eciBjzNwV3X0=
+        b=DQKS21QyqPRstfONgCXGrk6aQWPpIOd0xA6IbP/yiC0lfRpafGnWWPVaTm2LrNXLy
+         yeJS+TgldQyyBd+2yr2bhGIUozNb3dIIflPK1jKbipnx6QPLWvxqFTaXELuGi1P/QK
+         qMXHkip8BqwMEGDGMwCGHVtI21OdShzhg+WqD/fE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 52/72] ASoC: Intel: Add DMI quirk table to soc_intel_is_byt_cr()
+        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 095/102] tty: fix up hung_up_tty_read() conversion
 Date:   Fri,  5 Mar 2021 13:21:54 +0100
-Message-Id: <20210305120859.883539724@linuxfoundation.org>
+Message-Id: <20210305120907.951364140@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
-References: <20210305120857.341630346@linuxfoundation.org>
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+References: <20210305120903.276489876@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,82 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 8ade6d8b02b1ead741bd4f6c42921035caab6560 ]
+commit ddc5fda7456178e2cbc87675b370920d98360daf upstream.
 
-Some Bay Trail systems:
-1. Use a non CR version of the Bay Trail SoC
-2. Contain at least 6 interrupt resources so that the
-   platform_get_resource(pdev, IORESOURCE_IRQ, 5) check to workaround
-   non CR systems which list their IPC IRQ at index 0 despite being
-   non CR does not work
-3. Despite 1. and 2. still have their IPC IRQ at index 0 rather then 5
+In commit "tty: implement read_iter", I left the read_iter conversion of
+the hung up tty case alone, because I incorrectly thought it didn't
+matter.
 
-Add a DMI quirk table to check for the few known models with this issue,
-so that the right IPC IRQ index is used on these systems.
+Jiri showed me the errors of my ways, and pointed out the problems with
+that incomplete conversion.  Fix it all up.
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210120214957.140232-5-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Link: https://lore.kernel.org/r/CAHk-=wh+-rGsa=xruEWdg_fJViFG8rN9bpLrfLz=_yBYh2tBhA@mail.gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/intel/common/soc-intel-quirks.h | 25 +++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ drivers/tty/tty_io.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-intel-quirks.h b/sound/soc/intel/common/soc-intel-quirks.h
-index 863a477d3405..645baf0ed3dd 100644
---- a/sound/soc/intel/common/soc-intel-quirks.h
-+++ b/sound/soc/intel/common/soc-intel-quirks.h
-@@ -11,6 +11,7 @@
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -429,8 +429,7 @@ struct tty_driver *tty_find_polling_driv
+ EXPORT_SYMBOL_GPL(tty_find_polling_driver);
+ #endif
  
- #if IS_ENABLED(CONFIG_X86)
- 
-+#include <linux/dmi.h>
- #include <asm/cpu_device_id.h>
- #include <asm/intel-family.h>
- #include <asm/iosf_mbi.h>
-@@ -40,12 +41,36 @@ SOC_INTEL_IS_CPU(cml, INTEL_FAM6_KABYLAKE_L);
- 
- static inline bool soc_intel_is_byt_cr(struct platform_device *pdev)
+-static ssize_t hung_up_tty_read(struct file *file, char __user *buf,
+-				size_t count, loff_t *ppos)
++static ssize_t hung_up_tty_read(struct kiocb *iocb, struct iov_iter *to)
  {
-+	/*
-+	 * List of systems which:
-+	 * 1. Use a non CR version of the Bay Trail SoC
-+	 * 2. Contain at least 6 interrupt resources so that the
-+	 *    platform_get_resource(pdev, IORESOURCE_IRQ, 5) check below
-+	 *    succeeds
-+	 * 3. Despite 1. and 2. still have their IPC IRQ at index 0 rather then 5
-+	 *
-+	 * This needs to be here so that it can be shared between the SST and
-+	 * SOF drivers. We rely on the compiler to optimize this out in files
-+	 * where soc_intel_is_byt_cr is not used.
-+	 */
-+	static const struct dmi_system_id force_bytcr_table[] = {
-+		{	/* Lenovo Yoga Tablet 2 series */
-+			.matches = {
-+				DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+				DMI_MATCH(DMI_PRODUCT_FAMILY, "YOGATablet2"),
-+			},
-+		},
-+		{}
-+	};
- 	struct device *dev = &pdev->dev;
- 	int status = 0;
+ 	return 0;
+ }
+@@ -502,7 +501,7 @@ static const struct file_operations cons
  
- 	if (!soc_intel_is_byt())
- 		return false;
+ static const struct file_operations hung_up_tty_fops = {
+ 	.llseek		= no_llseek,
+-	.read		= hung_up_tty_read,
++	.read_iter	= hung_up_tty_read,
+ 	.write_iter	= hung_up_tty_write,
+ 	.poll		= hung_up_tty_poll,
+ 	.unlocked_ioctl	= hung_up_tty_ioctl,
+@@ -929,8 +928,10 @@ static ssize_t tty_read(struct kiocb *io
+ 	/* We want to wait for the line discipline to sort out in this
+ 	   situation */
+ 	ld = tty_ldisc_ref_wait(tty);
++	if (!ld)
++		return hung_up_tty_read(iocb, to);
+ 	i = -EIO;
+-	if (ld && ld->ops->read)
++	if (ld->ops->read)
+ 		i = iterate_tty_read(ld, tty, file, to);
+ 	tty_ldisc_deref(ld);
  
-+	if (dmi_check_system(force_bytcr_table))
-+		return true;
-+
- 	if (iosf_mbi_available()) {
- 		u32 bios_status;
- 
--- 
-2.30.1
-
 
 
