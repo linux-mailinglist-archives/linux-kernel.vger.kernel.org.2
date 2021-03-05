@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEACF32ECA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A7832EC2F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhCEN40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:56:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233702AbhCEMmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:42:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF07C6501E;
-        Fri,  5 Mar 2021 12:42:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948139;
-        bh=WYcOdaPInSYEuY4UveYO3WT1u99GFyMsfnKr+Qa1lPg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uq+NA9e+FE+cszE4h0PLnHCLfZLPnXi8ywGcdO85LGVuv4d1BKaYUz86Pch09GaYV
-         8C6q9pIp8hHxteOgRgzeakOQNW4GPVE8eZMKf9rpUS4XWIER8SFzm0quWbgu27RHBM
-         pcVXM1FMAm3FO9xvYTjFKWc6uGvMhbmIUnh93YTk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.9 41/41] media: v4l: ioctl: Fix memory leak in video_usercopy
-Date:   Fri,  5 Mar 2021 13:22:48 +0100
-Message-Id: <20210305120853.312724479@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
-References: <20210305120851.255002428@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S230416AbhCENaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:30:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30071 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230373AbhCENag (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 08:30:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614951036;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9OVHV4aIQmKNqeY5ezSY/nhnAn51P/hCc3Ft8x+FhLo=;
+        b=UrU4L3+jqyfBm4qaZaXMMQqBCT4NiDm03UVWL7dXUll6Ngq/luBdQEeyeP5O4R3ULdn5kS
+        ZJIr5+vwNX1pKCmyAr2FjMxjcbiqN+zptsHLaWEId1MoDY6obu+NC4Qmb1ZPYOUVBiarr2
+        +idtafNCTu7rCKD/oWFr8oGlw3T63dM=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-214-CIBran0bORSXkgIEpjnOUA-1; Fri, 05 Mar 2021 08:30:35 -0500
+X-MC-Unique: CIBran0bORSXkgIEpjnOUA-1
+Received: by mail-wm1-f69.google.com with SMTP id y9so403456wma.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 05:30:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9OVHV4aIQmKNqeY5ezSY/nhnAn51P/hCc3Ft8x+FhLo=;
+        b=F/mVivVLGHO4IKsRZ0ObLAIhgk7Ts5iNlWcBjAdd8uM5svEUqnIW4tHAgEIX3fid5Q
+         ks8FYikMYzJ4MqnTQ2Uc9V4+baxbQdX0L3Alos+OIMwEdMlEl8grT3iaC5fPNlzV89zh
+         n4UFjeSzDm/t6jZPf/nDxSEnN3VbaIyllVU1WaKEXfVCal7fY3snsBK24CoiM27e99yr
+         vATimeLW5dFVXVg4hInGDBqCHPhrWwB8kQdwkDkl0pk2u6JSsV2tLinKgsvA3QgFsSo2
+         K6zsc7+qB65MHQS0Uk+emRmU0GhteJJSK3PZDNiIAVWS6SSyWzvzmmv4doY2fA5X4NzM
+         +Uvg==
+X-Gm-Message-State: AOAM530zOiDAmySptQShfpSGCQnYIfXAqESmDD1tkAIzClIht9Rxn7Sq
+        XoINMZhNFfj80RPinenGZqqi1zVcrqpTfINWhqzdjzbySTGFWCl25JISpguNTvbFfJVq0MabDMQ
+        V3QUi1fQvj0cPcRTD4sVyiEf32lvKdpGqJV/iNbScoCHmxdqrA6G0YlA9bEsi+aaPS24I5aR+mY
+        QI
+X-Received: by 2002:adf:e60a:: with SMTP id p10mr9547403wrm.291.1614951033468;
+        Fri, 05 Mar 2021 05:30:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyfX3peT48F2IQbl9b6JeiTlNsj3AGM3VcOscIAYNSwLFSm2QijPFI0U/uwZeXwlo954oRwkQ==
+X-Received: by 2002:adf:e60a:: with SMTP id p10mr9547380wrm.291.1614951033305;
+        Fri, 05 Mar 2021 05:30:33 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j125sm4445967wmb.44.2021.03.05.05.30.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 05:30:32 -0800 (PST)
+Subject: Re: [PATCH] KVM: x86: Ensure deadline timer has truly expired before
+ posting its IRQ
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210305021808.3769732-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <27bc885c-e257-3353-6146-15fdd40f5d4c@redhat.com>
+Date:   Fri, 5 Mar 2021 14:30:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210305021808.3769732-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+On 05/03/21 03:18, Sean Christopherson wrote:
+> When posting a deadline timer interrupt, open code the checks guarding
+> __kvm_wait_lapic_expire() in order to skip the lapic_timer_int_injected()
+> check in kvm_wait_lapic_expire().  The injection check will always fail
+> since the interrupt has not yet be injected.  Moving the call after
+> injection would also be wrong as that wouldn't actually delay delivery
+> of the IRQ if it is indeed sent via posted interrupt.
+> 
+> Fixes: 010fd37fddf6 ("KVM: LAPIC: Reduce world switch latency caused by timer_advance_ns")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/lapic.c | 11 ++++++++++-
+>   1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index 45d40bfacb7c..cb8ebfaccfb6 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -1642,7 +1642,16 @@ static void apic_timer_expired(struct kvm_lapic *apic, bool from_timer_fn)
+>   	}
+>   
+>   	if (kvm_use_posted_timer_interrupt(apic->vcpu)) {
+> -		kvm_wait_lapic_expire(vcpu);
+> +		/*
+> +		 * Ensure the guest's timer has truly expired before posting an
+> +		 * interrupt.  Open code the relevant checks to avoid querying
+> +		 * lapic_timer_int_injected(), which will be false since the
+> +		 * interrupt isn't yet injected.  Waiting until after injecting
+> +		 * is not an option since that won't help a posted interrupt.
+> +		 */
+> +		if (vcpu->arch.apic->lapic_timer.expired_tscdeadline &&
+> +		    vcpu->arch.apic->lapic_timer.timer_advance_ns)
+> +			__kvm_wait_lapic_expire(vcpu);
+>   		kvm_apic_inject_pending_timer_irqs(apic);
+>   		return;
+>   	}
+> 
 
-commit fb18802a338b36f675a388fc03d2aa504a0d0899 upstream.
+Queued, thanks.
 
-When an IOCTL with argument size larger than 128 that also used array
-arguments were handled, two memory allocations were made but alas, only
-the latter one of them was released. This happened because there was only
-a single local variable to hold such a temporary allocation.
-
-Fix this by adding separate variables to hold the pointers to the
-temporary allocations.
-
-Reported-by: Arnd Bergmann <arnd@kernel.org>
-Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
-Fixes: d14e6d76ebf7 ("[media] v4l: Add multi-planar ioctl handling code")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/media/v4l2-core/v4l2-ioctl.c |   19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
-
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -2804,7 +2804,7 @@ video_usercopy(struct file *file, unsign
- 	       v4l2_kioctl func)
- {
- 	char	sbuf[128];
--	void    *mbuf = NULL;
-+	void    *mbuf = NULL, *array_buf = NULL;
- 	void	*parg = (void *)arg;
- 	long	err  = -EINVAL;
- 	bool	has_array_args;
-@@ -2859,20 +2859,14 @@ video_usercopy(struct file *file, unsign
- 	has_array_args = err;
- 
- 	if (has_array_args) {
--		/*
--		 * When adding new types of array args, make sure that the
--		 * parent argument to ioctl (which contains the pointer to the
--		 * array) fits into sbuf (so that mbuf will still remain
--		 * unused up to here).
--		 */
--		mbuf = kmalloc(array_size, GFP_KERNEL);
-+		array_buf = kmalloc(array_size, GFP_KERNEL);
- 		err = -ENOMEM;
--		if (NULL == mbuf)
-+		if (array_buf == NULL)
- 			goto out_array_args;
- 		err = -EFAULT;
--		if (copy_from_user(mbuf, user_ptr, array_size))
-+		if (copy_from_user(array_buf, user_ptr, array_size))
- 			goto out_array_args;
--		*kernel_ptr = mbuf;
-+		*kernel_ptr = array_buf;
- 	}
- 
- 	/* Handles IOCTL */
-@@ -2891,7 +2885,7 @@ video_usercopy(struct file *file, unsign
- 
- 	if (has_array_args) {
- 		*kernel_ptr = (void __force *)user_ptr;
--		if (copy_to_user(user_ptr, mbuf, array_size))
-+		if (copy_to_user(user_ptr, array_buf, array_size))
- 			err = -EFAULT;
- 		goto out_array_args;
- 	}
-@@ -2911,6 +2905,7 @@ out_array_args:
- 	}
- 
- out:
-+	kfree(array_buf);
- 	kfree(mbuf);
- 	return err;
- }
-
+Paolo
 
