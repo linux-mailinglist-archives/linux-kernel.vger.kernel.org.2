@@ -2,144 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CE232F1E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CFC32F1DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhCERxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:53:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbhCERwv (ORCPT
+        id S229759AbhCERxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:53:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58992 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229788AbhCERwu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:52:51 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97AFC061760
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 09:52:50 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id x9so3806776edd.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 09:52:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9cy6NY2NneFUb+ai21Mer/bJAl+1fOEOH5Xn9JUNG4w=;
-        b=M9iU8Hx8FsBg3SEJvJ/21kHhWBt5rp2CgMqle7NuC5OBFVe2oGQ9SQasL3gILMCMA2
-         uD3OxosJLHMAEeYUlK2woG20Ck5JkBv1jdv2LNDWyOJJEp9NAgKajeSjXQnIGur7zrPI
-         DHFKH+DwiTEZOtzsA2WF0yW4HKrGiGXqAevdSlryAMyuQyb45w7H6W8ZD+hjqAITLJrq
-         tgNhi21v+U2FbLu4WMDpHXXLnaijE1rBsR2W1SwPWFmuMLd34ZH6GdrEK9ltgtqrqu4y
-         u1xBnTnWTM3879W8b7j6MLhih0uRFIg2StKV+DwicGMnw7wSqm+dcs8AV9qsLKSZSqT/
-         ZkQg==
+        Fri, 5 Mar 2021 12:52:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614966769;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iwTUMCcDk00xNetkHK1hGOt7MdI+EmpsAycWvHQG5xE=;
+        b=R7ZxebugkABt1ONG23MHUByX6t7Z3jAwhijo/0eI5p+5EWoTxettUU22Q0Zd3DAbGFTRke
+        H5sxuc6Gw0Imec+fJtFjnSuyHI2bzPinJyzb1ePosQRoJ1LvIzS/8AaE8bNMvfmOxlrT4/
+        oth9K38dhlmVtwLMFoBRGzQs3Y+yZ6k=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-562-dALTlOhbPu6EaeAOMPWziQ-1; Fri, 05 Mar 2021 12:52:48 -0500
+X-MC-Unique: dALTlOhbPu6EaeAOMPWziQ-1
+Received: by mail-wr1-f71.google.com with SMTP id i5so1368950wrp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 09:52:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9cy6NY2NneFUb+ai21Mer/bJAl+1fOEOH5Xn9JUNG4w=;
-        b=TSfAF+Fd+b+EoXh3sMfLvB8KRYRgpVEs4EtcHihveoMjNMLlCI4yY85HeWwXnFOeS4
-         BkBZiNqrCI1LST4yCXBqPvXcZkAZcE3Zd3VKxq3XYnVr+IVRmlnvK627dDvinp1SkUgG
-         0qd1V5LDndPNA9hGecnSmUS/9GZbKyoZmgYzw2+NVdWujVdkoazO4vEEipMub1oRaKI7
-         s7ydzIf/IvMRAKe0mTr3Hq7BQ+Yo1XQhrDa0XaHrdpHDBpl4k/0DT5G3G4XxbNiM2GkQ
-         7tCnp9erUTMGUcejWer2qbuCM4bsLYUh5m7z4nmq+XsOEH4WiP0UCw992ie19McDuXVS
-         CsYg==
-X-Gm-Message-State: AOAM533sCNh2kJXHNSv/2kA8rDzyX28SFShDhumAV9vi+YMD9ZrG9GXp
-        TFwAk1phhVSTBewqtCsF+FSIs/prHKAEvDAD3Fr8
-X-Google-Smtp-Source: ABdhPJwOI0lS36GAS0Qm3uPRAj87oRmnPCRoE0yZWekW+QEZ0i+1DFUufde+BDoBg2RYBnPYm4uJRenmSYQP12YxeUE=
-X-Received: by 2002:aa7:db4f:: with SMTP id n15mr10224074edt.12.1614966769368;
- Fri, 05 Mar 2021 09:52:49 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iwTUMCcDk00xNetkHK1hGOt7MdI+EmpsAycWvHQG5xE=;
+        b=WccyLrxoQ5LpBNCRkeAEQ7IcpFl0ahhsqALcVBbkItYAJYx4qtoWGOedzdjHo7Ibq4
+         mbSGzxmAALcGPoHyhpJiM4AEJ37IhJWZ2cq/6ZP6UWisoG1Tamh/GKzkecBLSR9akuJL
+         BsFiQFJ4fh1c1XZBAnMoByRRqZWW5GEZeQnn5eMoqZUcR43RqPZO23kGcHn58+T6VoG+
+         XmTspOrrcPUTAw9P1IlEpGfJTfDcYdDF4QTvLBQS2hlK43FlYEjdAvVyaWzmRniIkWfb
+         eUZbXYeVzx05801RXvuHjbP/Oc/FYPUWf8QPFVV4pqXciaPp8nspKmmHe6ugeVPcdvys
+         NQrA==
+X-Gm-Message-State: AOAM530uaWUub8HDE4Ce3onFhGdcWPOaxHZ0lowW8+Jw+yS/EJDwuM2E
+        svcCXKR2rjvckYi+Osu8KHiSwdOMpVY3IlQngf+o4QObKk3nf/JORyykX14QuMTizXeT5lv/zPS
+        hTlUiWdBUMS9ZxuG6/dohvXF7
+X-Received: by 2002:adf:e412:: with SMTP id g18mr10832927wrm.159.1614966766374;
+        Fri, 05 Mar 2021 09:52:46 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJztT0w4Di9/TF3GU88h8n5kTz6vIOB4/z08cfkSJ5CRd8Qk58FwubiiaShGjTbCmT7i5nN8EA==
+X-Received: by 2002:adf:e412:: with SMTP id g18mr10832908wrm.159.1614966766186;
+        Fri, 05 Mar 2021 09:52:46 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id c26sm5938195wrb.87.2021.03.05.09.52.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 09:52:45 -0800 (PST)
+Subject: Re: [PATCH v2 09/17] KVM: x86/mmu: Use '0' as the one and only value
+ for an invalid PAE root
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <20210305011101.3597423-1-seanjc@google.com>
+ <20210305011101.3597423-10-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <63d2a610-f897-805c-23a7-488a65485f36@redhat.com>
+Date:   Fri, 5 Mar 2021 18:52:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210212163709.3139-1-nramas@linux.microsoft.com>
-In-Reply-To: <20210212163709.3139-1-nramas@linux.microsoft.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 5 Mar 2021 12:52:38 -0500
-Message-ID: <CAHC9VhSMz8FtK5HMPA1+FMeU0cs4vfCCaimxb-J+VDj_Dyk-nA@mail.gmail.com>
-Subject: Re: [PATCH v3] selinux: measure state and policy capabilities
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        tusharsu@linux.microsoft.com, tyhicks@linux.microsoft.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, sashal@kernel.org,
-        James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210305011101.3597423-10-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 11:37 AM Lakshmi Ramasubramanian
-<nramas@linux.microsoft.com> wrote:
->
-> SELinux stores the configuration state and the policy capabilities
-> in kernel memory.  Changes to this data at runtime would have an impact
-> on the security guarantees provided by SELinux.  Measuring this data
-> through IMA subsystem provides a tamper-resistant way for
-> an attestation service to remotely validate it at runtime.
->
-> Measure the configuration state and policy capabilities by calling
-> the IMA hook ima_measure_critical_data().
->
-> To enable SELinux data measurement, the following steps are required:
->
->  1, Add "ima_policy=critical_data" to the kernel command line arguments
->     to enable measuring SELinux data at boot time.
->     For example,
->       BOOT_IMAGE=/boot/vmlinuz-5.11.0-rc3+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
->
->  2, Add the following rule to /etc/ima/ima-policy
->        measure func=CRITICAL_DATA label=selinux
->
-> Sample measurement of SELinux state and policy capabilities:
->
-> 10 2122...65d8 ima-buf sha256:13c2...1292 selinux-state 696e...303b
->
-> Execute the following command to extract the measured data
-> from the IMA's runtime measurements list:
->
->   grep "selinux-state" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6 | xxd -r -p
->
-> The output should be a list of key-value pairs. For example,
->  initialized=1;enforcing=0;checkreqprot=1;network_peer_controls=1;open_perms=1;extended_socket_class=1;always_check_network=0;cgroup_seclabel=1;nnp_nosuid_transition=1;genfs_seclabel_symlinks=0;
->
-> To verify the measurement is consistent with the current SELinux state
-> reported on the system, compare the integer values in the following
-> files with those set in the IMA measurement (using the following commands):
->
->  - cat /sys/fs/selinux/enforce
->  - cat /sys/fs/selinux/checkreqprot
->  - cat /sys/fs/selinux/policy_capabilities/[capability_file]
->
-> Note that the actual verification would be against an expected state
-> and done on a separate system (likely an attestation server) requiring
-> "initialized=1;enforcing=1;checkreqprot=0;"
-> for a secure state and then whatever policy capabilities are actually
-> set in the expected policy (which can be extracted from the policy
-> itself via seinfo, for example).
->
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-> Suggested-by: Paul Moore <paul@paul-moore.com>
-> ---
->  security/selinux/ima.c         | 87 ++++++++++++++++++++++++++++++++--
->  security/selinux/include/ima.h |  6 +++
->  security/selinux/selinuxfs.c   |  6 +++
->  security/selinux/ss/services.c |  2 +-
->  4 files changed, 96 insertions(+), 5 deletions(-)
+On 05/03/21 02:10, Sean Christopherson wrote:
+> Use '0' to denote an invalid pae_root instead of '0' or INVALID_PAGE.
+> Unlike root_hpa, the pae_roots hold permission bits and thus are
+> guaranteed to be non-zero.  Having to deal with both values leads to
+> bugs, e.g. failing to set back to INVALID_PAGE, warning on the wrong
+> value, etc...
 
-This draft seems fine to me, but there is a small logistical blocker
-at the moment which means I can't merge this until -rc2 is released,
-which likely means this coming Monday.  The problem is that this patch
-relies on code that went upstream via in the last merge window via the
-IMA tree, not the SELinux tree; normally that wouldn't be a problem as
-I typically rebase the selinux/next to Linus' -rc1 tag once the merge
-window is closed, but in this particular case the -rc1 tag is
-dangerously broken for some system configurations (the tag has since
-been renamed) so I'm not rebasing onto -rc1 this time around.
+I don't dispute this is a good idea, but it deserves one or more comments.
 
-Assuming that -rc2 fixes the swapfile/fs-corruption problem, early
-next week I'll rebase selinux/next to -rc2 and merge this patch.
-However, if the swapfile bug continues past -rc2 we can consider
-merging this via the IMA tree, but I'd assume not do that if possible
-due to merge conflict and testing reasons.
+Paolo
 
--- 
-paul moore
-www.paul-moore.com
