@@ -2,84 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB2232EB6C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF8732EB97
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233751AbhCEMoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:44:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233535AbhCEMnX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:43:23 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FFAC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 04:43:21 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id f12so1920053wrx.8
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 04:43:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QmF+mvS+MLxLt6q3dQkoY40EhjIBy/NHIII8iIh6APQ=;
-        b=bHjAZhufUbVM2E/Px0qJ/imHzNvX1/O2wSS2s49c1PdMwr1NmNHqMaRuXPcczu75l9
-         cW/D3D1RXj7tRr/0BCgFgr3wTTOPAG+xNNlvxNQrqXzIGNK+SZWuaXTSoSUiBIWa+S75
-         yb22bkzeZebfMKeo2Qggt9fImoNaTxorpFA2uz/VeoQ+vIUp3UtPiz6rUM3A1LkqT9k1
-         AWe2V923LfTkrqUKrKNUr7LGNGhG3MbtYhwzxDLBGyXliY7mzZj2xN9grbtA4+WIAhcn
-         5hAAqGcR5kAZbirU0GnDm82xIOnBXGY4GcPxKby2cJu2M601j3KI8S9FT+DOdPbMr0Ep
-         S5Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QmF+mvS+MLxLt6q3dQkoY40EhjIBy/NHIII8iIh6APQ=;
-        b=pZY8I8Di1jqtZJy7qGd911ISxMHiblakW1HR4e5iuGo/hJySHAffzOc7aScYYkDgjG
-         nRv4NVyejl1urAyZ9S4AUVKQLBwLN4AArwg4DodiK5w7mHSc3ZhhT9nL/W9lm0lz0TCx
-         zuNyupp1ADEHn1bkFvgCvinjqgpGLvR+vv54u1lTzeXJAXam8Qk8Bt1pLKyZPRgVt4My
-         0Ajvzo2aRT6yHPRFSJvF4HI/r3WIToAuDsEopWs6PV+4lhMkFhd7nOaOg1CXdMhqx9PZ
-         xiXjTXiajLIijD5PawsLSskA23jTqbvXY47pUBRjMbCT5wdNxp7eQE/0ZMT6Y4IiLzjK
-         lXaA==
-X-Gm-Message-State: AOAM531JMpUB0ZQyPfKfGWuANMVAnZNr+ZoWRwD1B4t4pruIpLlg8N6F
-        dIGuFMOMQcWKOggg5DG8eoCHDG+GPIdD634UqS0=
-X-Google-Smtp-Source: ABdhPJwXjMQOM5nzdg/7g/bbUofDP/d6h+41pogdgtczYu3CsbmEQu+kYS+mJ/MZKSwvcgtaRzjf4pLIUt6BcHQLzpU=
-X-Received: by 2002:adf:d84d:: with SMTP id k13mr9527969wrl.164.1614948200745;
- Fri, 05 Mar 2021 04:43:20 -0800 (PST)
+        id S229980AbhCEMtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:49:47 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:16416 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229737AbhCEMtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:49:14 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DsSGm00BQz9tyKH;
+        Fri,  5 Mar 2021 13:49:03 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id X6AkLw5kGVzF; Fri,  5 Mar 2021 13:49:03 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DsSGl5zSdz9tyKG;
+        Fri,  5 Mar 2021 13:49:03 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3D85B8B827;
+        Fri,  5 Mar 2021 13:49:05 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id FCMvPv1BqI8E; Fri,  5 Mar 2021 13:49:05 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 84AB68B826;
+        Fri,  5 Mar 2021 13:49:04 +0100 (CET)
+Subject: Re: [PATCH v2 1/7] cmdline: Add generic function to build command
+ line.
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Will Deacon <will@kernel.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, danielwa@cisco.com,
+        robh@kernel.org, daniel@gimpelevich.san-francisco.ca.us,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arch@vger.kernel.org, devicetree@vger.kernel.org
+References: <cover.1614705851.git.christophe.leroy@csgroup.eu>
+ <d8cf7979ad986de45301b39a757c268d9df19f35.1614705851.git.christophe.leroy@csgroup.eu>
+ <20210303172810.GA19713@willie-the-truck>
+ <a0cfef11-efba-2e5c-6f58-ed63a2c3bfa0@csgroup.eu>
+ <20210303174627.GC19713@willie-the-truck>
+ <dc6576ac-44ff-7db4-d718-7565b83f50b8@csgroup.eu>
+ <20210303181651.GE19713@willie-the-truck> <87sg59rewl.fsf@mpe.ellerman.id.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <11d7af27-28cb-0eed-0f33-6669cbf7f1bb@csgroup.eu>
+Date:   Fri, 5 Mar 2021 13:49:03 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <1614770488-12861-1-git-send-email-shengjiu.wang@nxp.com>
-In-Reply-To: <1614770488-12861-1-git-send-email-shengjiu.wang@nxp.com>
-From:   Daniel Baluta <daniel.baluta@gmail.com>
-Date:   Fri, 5 Mar 2021 14:43:08 +0200
-Message-ID: <CAEnQRZCvYe6n_8MFwfz_MyanJLqH2VAqkgcZ7K9NJkqBPg=r1A@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: wm8962: Relax bit clock divider searching
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, ckeepax@opensource.cirrus.com,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>, gustavoars@kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        patches@opensource.cirrus.com,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87sg59rewl.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 1:15 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
->
-> With S20_3LE format case, the sysclk = rate * 384,
-> the bclk = rate * 20 * 2, there is no proper bclk divider
-> for 384 / 40, because current condition needs exact match.
-> So driver fails to configure the clocking:
->
-> wm8962 3-001a: Unsupported BCLK ratio 9
->
-> Fix this by relaxing bitclk divider searching, so that when
-> no exact value can be derived from sysclk pick the closest
-> value greater than expected bitclk.
->
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+
+Le 05/03/2021 à 12:58, Michael Ellerman a écrit :
+> Will Deacon <will@kernel.org> writes:
+>> On Wed, Mar 03, 2021 at 06:57:09PM +0100, Christophe Leroy wrote:
+>>> Le 03/03/2021 à 18:46, Will Deacon a écrit :
+>>>> On Wed, Mar 03, 2021 at 06:38:16PM +0100, Christophe Leroy wrote:
+>>>>> Le 03/03/2021 à 18:28, Will Deacon a écrit :
+>>>>>> On Tue, Mar 02, 2021 at 05:25:17PM +0000, Christophe Leroy wrote:
+>>>>>>> This code provides architectures with a way to build command line
+>>>>>>> based on what is built in the kernel and what is handed over by the
+>>>>>>> bootloader, based on selected compile-time options.
+>>>>>>>
+>>>>>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>>>>>> ---
+>>>>>>>     include/linux/cmdline.h | 62 +++++++++++++++++++++++++++++++++++++++++
+>>>>>>>     1 file changed, 62 insertions(+)
+>>>>>>>     create mode 100644 include/linux/cmdline.h
+>>>>>>>
+>>>>>>> diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
+>>>>>>> new file mode 100644
+>>>>>>> index 000000000000..ae3610bb0ee2
+>>>>>>> --- /dev/null
+>>>>>>> +++ b/include/linux/cmdline.h
+>>>>>>> @@ -0,0 +1,62 @@
+>>>>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>>>>> +#ifndef _LINUX_CMDLINE_H
+>>>>>>> +#define _LINUX_CMDLINE_H
+>>>>>>> +
+>>>>>>> +static __always_inline size_t cmdline_strlen(const char *s)
+>>>>>>> +{
+>>>>>>> +	const char *sc;
+>>>>>>> +
+>>>>>>> +	for (sc = s; *sc != '\0'; ++sc)
+>>>>>>> +		; /* nothing */
+>>>>>>> +	return sc - s;
+>>>>>>> +}
+>>>>>>> +
+>>>>>>> +static __always_inline size_t cmdline_strlcat(char *dest, const char *src, size_t count)
+>>>>>>> +{
+>>>>>>> +	size_t dsize = cmdline_strlen(dest);
+>>>>>>> +	size_t len = cmdline_strlen(src);
+>>>>>>> +	size_t res = dsize + len;
+>>>>>>> +
+>>>>>>> +	/* This would be a bug */
+>>>>>>> +	if (dsize >= count)
+>>>>>>> +		return count;
+>>>>>>> +
+>>>>>>> +	dest += dsize;
+>>>>>>> +	count -= dsize;
+>>>>>>> +	if (len >= count)
+>>>>>>> +		len = count - 1;
+>>>>>>> +	memcpy(dest, src, len);
+>>>>>>> +	dest[len] = 0;
+>>>>>>> +	return res;
+>>>>>>> +}
+>>>>>>
+>>>>>> Why are these needed instead of using strlen and strlcat directly?
+>>>>>
+>>>>> Because on powerpc (at least), it will be used in prom_init, it is very
+>>>>> early in the boot and KASAN shadow memory is not set up yet so calling
+>>>>> generic string functions would crash the board.
+>>>>
+>>>> Hmm. We deliberately setup a _really_ early shadow on arm64 for this, can
+>>>> you not do something similar? Failing that, I think it would be better to
+>>>> offer the option for an arch to implement cmdline_*, but have then point to
+>>>> the normal library routines by default.
+>>>
+>>> I don't think it is possible to setup an earlier early shadow.
+>>>
+>>> At the point we are in prom_init, the code is not yet relocated at the
+>>> address it was linked for, and it is running with the MMU set by the
+>>> bootloader, I can't imagine being able to setup MMU entries for the early
+>>> shadow KASAN yet without breaking everything.
+>>
+>> That's very similar to us; we're not relocated, although we are at least
+>> in control of the MMU (which is using a temporary set of page-tables).
+> 
+> prom_init runs as an OF client, with the MMU off (except on some Apple
+> machines), and we don't own the MMU. So there's really nothing we can do :)
+> 
+> Though now that I look at it, I don't think we should be doing this
+> level of commandline handling in prom_init. It should just grab the
+> value from firmware and pass it to the kernel proper, and then all the
+> prepend/append/force etc. logic should happen there.
+
+But then, how do you handle the command line parameters that are needed by prom_init ?
+
+For instance, prom_init_mem() use 'prom_memory_limit', which comes from the "mem=" option in the 
+command line.
+
+Christophe
