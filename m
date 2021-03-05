@@ -2,98 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE2C32ECAB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 014F132EC8F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhCEN5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:57:55 -0500
-Received: from mail-vs1-f47.google.com ([209.85.217.47]:44872 "EHLO
-        mail-vs1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbhCEN5m (ORCPT
+        id S230521AbhCENxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:53:06 -0500
+Received: from mail-lj1-f177.google.com ([209.85.208.177]:42531 "EHLO
+        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230449AbhCENwx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:57:42 -0500
-Received: by mail-vs1-f47.google.com with SMTP id d25so980988vsr.11;
-        Fri, 05 Mar 2021 05:57:42 -0800 (PST)
+        Fri, 5 Mar 2021 08:52:53 -0500
+Received: by mail-lj1-f177.google.com with SMTP id k12so2810788ljg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 05:52:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wlv2raXctHckbeXP1zL3FcneicW28YXK69//DrBPOK4=;
-        b=tdtJrAcUbrToxEtM2TRpna6tv9k49Qr/0H9WtkYttdTOYj6CN3dp+UB5Ucetd1bKjk
-         GXFaYQbbqecZdU35Dvyqv+LmI7fTJVAkFOfUANigRmecnyEsfWelVRKHJheGjYf55dOX
-         PyhZ0s2eztf8hwARqLMvAyzOJwMKVw9d+UeNl0bAJaMH217Mu8QL1Z6LABbyY0+T8aiY
-         wB+1mN1OaM9tuHaeQPCPbcd8r5DV1yoZyJMDPc6K3Ur7RRZJo6LdqDrgtrubJYN4URE7
-         N5LN6zMn26rUYmWpZR/EU8yd5XaIp5Ps1YuFEKL16DvjjxDF6PgeanHcgjoon848MmXo
-         DARw==
-X-Gm-Message-State: AOAM5308ati/nniXK1f5EIDApuzGNIPgI61n2jMqKf2iZwqWjw3ugosi
-        heaaV7AZObceHa+BJl9aotSWN254ZcoSUi933V8=
-X-Google-Smtp-Source: ABdhPJw0V2g02eK+sAULP8zrVz/fuz3tVVUfaWr3omUwlkrp6fuCKZw8yaHGFawnjKLWZ05hjvKPz2X/m7/k7/1fOYg=
-X-Received: by 2002:a05:6102:2403:: with SMTP id j3mr5822400vsi.40.1614952661682;
- Fri, 05 Mar 2021 05:57:41 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sNai2Yw7gKaekPw4n0fAnGfRJ1e7puAzt8Afq4+GVMI=;
+        b=kxh+0rUi2URoZycTzoTJy4H6QEVhbZmcejnNOpwO6AqocwK4K2X5ceDlpWFd2ggkao
+         O49W38lENVa3Twq4wuF5/K0II5ofjA60gr24DQz6Dp+K6Dz8jHBnLsTUUQSGhChHbx6g
+         iYPB76aYr/benMyPVXN992rFzY0zIG6sBMTUAgufJHiaYOFjKX9xiKaVGtXJtud8C7Uw
+         ctac1YNDHXbFs9hfccsINFD90tE08t10w0EFVLPMt8E7D+K5MrZuRUg6N6J3wsTOMINH
+         If16RX8PFdNvbKbWfJVzPdHoVmgWKkYkFWFp6WUQ7gF/UrhLVwc7QLgGhhbKr0zFyX9Y
+         Gq9g==
+X-Gm-Message-State: AOAM530NT19TG2fpqVo3IgviJFwOMjAMz84NgHTdiYs+cOlTq7wwG/el
+        p3W6i8ncqOLj7nweIY7DyBM=
+X-Google-Smtp-Source: ABdhPJxA2WqKRv/N/qROZsN2LbIesf98LuIyDjtZm6YjkmWP2ir1FxmBwdYk2FnRQx+Pz5Nzsw46Zw==
+X-Received: by 2002:a2e:2f0c:: with SMTP id v12mr4951981ljv.367.1614952372673;
+        Fri, 05 Mar 2021 05:52:52 -0800 (PST)
+Received: from localhost.. (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.googlemail.com with ESMTPSA id p9sm319517ljn.16.2021.03.05.05.52.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 05:52:52 -0800 (PST)
+From:   Denis Efremov <efremov@linux.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Denis Efremov <efremov@linux.com>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8723bs: remove duplicate pstat->hwaddr check
+Date:   Fri,  5 Mar 2021 18:50:01 +0300
+Message-Id: <20210305155001.61951-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-2-brad@pensando.io>
-In-Reply-To: <20210304034141.7062-2-brad@pensando.io>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 5 Mar 2021 14:57:30 +0100
-Message-ID: <CAMuHMdUsFb-qpssVXkxv0gV8qpi6mUNx+3o+ZUhc5UMCKppzrQ@mail.gmail.com>
-Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
-To:     Brad Larson <brad@pensando.io>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Brad,
+IS_MCAST(pstat->hwaddr) checked twice in a row in
+odm_RefreshRateAdaptiveMaskCE(). Remove the second check.
 
-On Thu, Mar 4, 2021 at 4:59 AM Brad Larson <brad@pensando.io> wrote:
-> This GPIO driver is for the Pensando Elba SoC which
-> provides control of four chip selects on two SPI busses.
->
-> Signed-off-by: Brad Larson <brad@pensando.io>
+Signed-off-by: Denis Efremov <efremov@linux.com>
+---
+ drivers/staging/rtl8723bs/hal/odm.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Thanks for your patch!
-
-> --- a/drivers/gpio/Kconfig
-> +++ b/drivers/gpio/Kconfig
-> @@ -241,6 +241,12 @@ config GPIO_EIC_SPRD
->         help
->           Say yes here to support Spreadtrum EIC device.
->
-> +config GPIO_ELBA_SPICS
-> +       bool "Pensando Elba SPI chip-select"
-> +       depends on ARCH_PENSANDO_ELBA_SOC
-
-Any specific reason this can't be "... || COMPILE_TEST"?
-
-> +       help
-> +         Say yes here to support the Pensndo Elba SoC SPI chip-select driver
-> +
->  config GPIO_EM
->         tristate "Emma Mobile GPIO"
->         depends on (ARCH_EMEV2 || COMPILE_TEST) && OF_GPIO
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/staging/rtl8723bs/hal/odm.c b/drivers/staging/rtl8723bs/hal/odm.c
+index f2a9e95a1563..5e432f1bc150 100644
+--- a/drivers/staging/rtl8723bs/hal/odm.c
++++ b/drivers/staging/rtl8723bs/hal/odm.c
+@@ -1114,8 +1114,6 @@ void odm_RefreshRateAdaptiveMaskCE(PDM_ODM_T pDM_Odm)
+ 		if (IS_STA_VALID(pstat)) {
+ 			if (IS_MCAST(pstat->hwaddr))  /* if (psta->mac_id == 1) */
+ 				continue;
+-			if (IS_MCAST(pstat->hwaddr))
+-				continue;
+ 
+ 			if (true == ODM_RAStateCheck(pDM_Odm, pstat->rssi_stat.UndecoratedSmoothedPWDB, false, &pstat->rssi_level)) {
+ 				ODM_RT_TRACE(pDM_Odm, ODM_COMP_RA_MASK, ODM_DBG_LOUD, ("RSSI:%d, RSSI_LEVEL:%d\n", pstat->rssi_stat.UndecoratedSmoothedPWDB, pstat->rssi_level));
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.26.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
