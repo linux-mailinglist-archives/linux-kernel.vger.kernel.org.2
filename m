@@ -2,91 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7B032E55A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:54:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E0A32E55C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhCEJyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229818AbhCEJyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 5 Mar 2021 04:54:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhCEJxl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:53:41 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C22C061574;
-        Fri,  5 Mar 2021 01:53:41 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id e6so1011331pgk.5;
-        Fri, 05 Mar 2021 01:53:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=7FJN1yXD2KjrfWNVdxSrjDvC3rk3uoWzc3xW08We2sw=;
-        b=tBZYKNB6GYpMpsryJpUZamtR1miRrhHykgxsJ03o3q6HDO8Rlap9lypSyPP7nin3+C
-         ls1DS18EzmG1HF/0e9SAuiY84D5cwx8BHujP6Jr9rKTec9I9NAEHoPiouLu4YCY50z8i
-         lvgMCysUSLgbrOBIa4RTeBpWwDQKkc+ehiezCIN4Fyb8vF7Kaq6e17caWdYapp32L4Um
-         NkCuKrLtyB0v5I+T96taF5YsHa3kWmTy93kgZA2Z0P7A7WmWCNAyU8ozyaXIy6O4PQ/q
-         rQ0BCxHrLVoYfLo4A32gvZ36bMJSl9gGnn4RUcLHuSJheyfrUxH6FlVex/hN1BbpHm/t
-         dHbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=7FJN1yXD2KjrfWNVdxSrjDvC3rk3uoWzc3xW08We2sw=;
-        b=Wup1zvpA1Qu8wK1YEKkRVfdM9Og8R3Iyca9h6o9TJ4FsAAS3LQurkRd9drKqKEb+Tx
-         z/oPfjujy4Z6ahVG3PMC5R/oQPeY9uURz6qDn3Tw6R+np07bXEizzb+tw9L3AKn641gJ
-         FtfGS5ncztppZX73jOg0i0KplTEx2VSAsL1kL+tt6OKUFAzvSMDSpmmgx77m2kqis+mV
-         GmblvxptalNbkSkJPr8VBe0d5smC5bWsjTI+HNyqxLXU3FAnZ2VbnUAYaJPDeTDDzkFP
-         4Dk0vuwaKZMCiAY7L0OHX+U4MJgn5JlrLVeRUPzC3wCr+F2/ASWcrJnsQI9T3mPt1cWr
-         /qJA==
-X-Gm-Message-State: AOAM53179iykDzaPUJ0is5MirngdkBKiVkWXnqV897QNgxD2BMezBCTu
-        YTOo/iDhXIXtDtJ3Ll54RpM=
-X-Google-Smtp-Source: ABdhPJwlSkRDrqWX8SDeiossCefcEuBYXiq47R2L2JXY0eTu0R6EW49NOjOhwEJeEdHD05NwCaMbBA==
-X-Received: by 2002:a65:6641:: with SMTP id z1mr7608100pgv.399.1614938021232;
-        Fri, 05 Mar 2021 01:53:41 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.129])
-        by smtp.gmail.com with ESMTPSA id c6sm2018154pfc.94.2021.03.05.01.53.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 01:53:40 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        cang@codeaurora.org, beanhuo@micron.com, jaegeuk@kernel.org,
-        asutoshd@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] scsi: ufs: fix error return code of ufshcd_init_clocks()
-Date:   Fri,  5 Mar 2021 01:53:32 -0800
-Message-Id: <20210305095332.13928-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+Received: from mail.kernel.org ([198.145.29.99]:43708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229591AbhCEJyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:54:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E48464E6B;
+        Fri,  5 Mar 2021 09:54:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614938042;
+        bh=EDWczzYjws+UwHiOw+guGGb5YTRT6q0FhhbiEi73sYA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WGEdAGRuk3ErvLHIAPXCtcYFC26hvLh2O2woRcKq7laRLWLheeQQQas/Y0rbYZT4j
+         R9kgxYxXoQ/Vhsc28b27KsHNe76XAN6zGpfzOWxKBJNkYj7ROymtWiS5Z/4AGfVkMX
+         cHtf94XdV9JBnSlgbtuDhunZaz5DEHRsYDkmhIofIgxYUISL3g+3CdyFJMiTVGIAKJ
+         v20pQo2iwr+isLhatOsFgYoB1tEuM+lf71eDNi46zQicbxK+O3kOn4TnaRE7QVLprJ
+         P4BA6/3qIKG2BdKatpAoqNFYP8PXjP25Du1nTkp3hUa0mJ3uFlLeWAsUuFlBtdqv12
+         eA91agR2Tl7ww==
+Date:   Fri, 5 Mar 2021 03:53:59 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Marius Zachmann <mail@mariuszachmann.de>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH RESEND][next] hwmon: (corsair-cpro) Fix fall-through warnings
+ for Clang
+Message-ID: <20210305095359.GA141682@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the list of head is empty, no error return code of
-ufshcd_init_clocks() is assigned.
-To fix this bug, ret is assigned with -ENOENT as error return code.
+In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+by explicitly adding a break statement instead of letting the code fall
+through to the next case.
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Link: https://github.com/KSPP/linux/issues/115
+Acked-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/hwmon/corsair-cpro.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 77161750c9fb..6a3e47d8f98f 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -8273,8 +8273,10 @@ static int ufshcd_init_clocks(struct ufs_hba *hba)
- 	struct device *dev = hba->dev;
- 	struct list_head *head = &hba->clk_list_head;
- 
--	if (list_empty(head))
-+	if (list_empty(head)) {
-+		ret = -ENOENT;
- 		goto out;
-+	}
- 
- 	list_for_each_entry(clki, head, list) {
- 		if (!clki->name)
+diff --git a/drivers/hwmon/corsair-cpro.c b/drivers/hwmon/corsair-cpro.c
+index 591929ec217a..fa6aa4fc8b52 100644
+--- a/drivers/hwmon/corsair-cpro.c
++++ b/drivers/hwmon/corsair-cpro.c
+@@ -310,6 +310,7 @@ static int ccp_write(struct device *dev, enum hwmon_sensor_types type,
+ 		default:
+ 			break;
+ 		}
++		break;
+ 	default:
+ 		break;
+ 	}
 -- 
-2.17.1
+2.27.0
 
