@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04ED932F355
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE37F32F358
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:00:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229488AbhCES6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 13:58:48 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:37503 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhCES6V (ORCPT
+        id S229687AbhCES7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 13:59:52 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:53419 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229682AbhCES7Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 13:58:21 -0500
-Date:   Fri, 05 Mar 2021 18:58:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1614970699;
-        bh=m3ZqDNA+mvjIH0KFFoNe9jlttB2rSnvubz0lZ/kEE/s=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=RraqwqbLum2w/1CU4IyPVMd0syvzK4qTXKMEYMjH7BY4Qz+GyBOuEfQvjrZ7OFWEv
-         AU+J1BY/WPE+B7vy5mgnXD3CgUKbGXp4XuMuQv2iFjyTtdRIvwkU3P+WzYiMeFkSI8
-         mvFGANSJDXmP2va9mh6DA7pw0ZePzuhhVosscm2Q=
-To:     caleb@connolly.tech, andi@etezian.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh@kernel.org>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: [PATCH v2] input: s6sy761: fix coordinate read bit shift
-Message-ID: <20210305185710.225168-1-caleb@connolly.tech>
+        Fri, 5 Mar 2021 13:59:25 -0500
+Received: (qmail 48402 invoked by uid 1000); 5 Mar 2021 13:59:24 -0500
+Date:   Fri, 5 Mar 2021 13:59:24 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH] tools/memory-model: Fix smp_mb__after_spinlock() spelling
+Message-ID: <20210305185924.GA48113@rowland.harvard.edu>
+References: <20210305102823.415900-1-bjorn.topel@gmail.com>
+ <20210305153655.GC38200@rowland.harvard.edu>
+ <e90fee12-a29e-cddb-5db3-24d92d4e03f8@intel.com>
+ <20210305182650.GA2713@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210305182650.GA2713@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The touch coordinate register contains the following:
+On Fri, Mar 05, 2021 at 10:26:50AM -0800, Paul E. McKenney wrote:
+> On Fri, Mar 05, 2021 at 04:41:49PM +0100, Björn Töpel wrote:
+> > On 2021-03-05 16:36, Alan Stern wrote:
+> > > On Fri, Mar 05, 2021 at 11:28:23AM +0100, Björn Töpel wrote:
+> > > > From: Björn Töpel <bjorn.topel@intel.com>
+> > > > 
+> > > > A misspelled invokation of git-grep, revealed that
+> > > -------------------^
+> > > 
+> > > Smetimes my brain is a little slow...  Do you confirm that this is a
+> > > joke?
+> > > 
+> > 
+> > I wish, Alan. I wish.
+> > 
+> > Looks like I can only spel function names correctly.
+> 
+> Heh!  I missed that one completely.  Please see below for a wortschmied
+> commit.
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit 1c737ce34715db9431f6b034f92dbf09d954126d
+> Author: Björn Töpel <bjorn.topel@intel.com>
+> Date:   Fri Mar 5 11:28:23 2021 +0100
+> 
+>     tools/memory-model: Fix smp_mb__after_spinlock() spelling
+>     
+>     A misspelled git-grep regex revealed that smp_mb__after_spinlock()
+>     was misspelled in explanation.txt.
+>     
+>     This commit adds the missing "_" to smp_mb__after_spinlock().
 
-        byte 3             byte 2             byte 1
-+--------+--------+ +-----------------+ +-----------------+
-|        |        | |                 | |                 |
-| X[3:0] | Y[3:0] | |     Y[11:4]     | |     X[11:4]     |
-|        |        | |                 | |                 |
-+--------+--------+ +-----------------+ +-----------------+
+Strictly speaking, the commit adds a missing "_" to 
+smp_mb_after_spinlock().  If it added anything to 
+smp_mb__after_spinlock(), the result would be incorrect.
 
-Bytes 2 and 1 need to be shifted left by 4 bits, the least significant
-nibble of each is stored in byte 3. Currently they are only
-being shifted by 3 causing the reported coordinates to be incorrect.
+How about just:
 
-This matches downstream examples, and has been confirmed on my
-device (OnePlus 7 Pro).
+    A misspelled git-grep regex revealed that smp_mb__after_spinlock()
+    was misspelled in explanation.txt.  This commit adds the missing "_".
 
-Fixes: 0145a7141e59 ("Input: add support for the Samsung S6SY761
-touchscreen")
-Signed-off-by: Caleb Connolly <caleb@connolly.tech>
----
-Changes since v1:
- * Use Andi's explanation in the commit message
- * Add Fixes: tag
-
-drivers/input/touchscreen/s6sy761.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/input/touchscreen/s6sy761.c b/drivers/input/touchscree=
-n/s6sy761.c
-index b63d7fdf0cd2..85a1f465c097 100644
---- a/drivers/input/touchscreen/s6sy761.c
-+++ b/drivers/input/touchscreen/s6sy761.c
-@@ -145,8 +145,8 @@ static void s6sy761_report_coordinates(struct s6sy761_d=
-ata *sdata,
- =09u8 major =3D event[4];
- =09u8 minor =3D event[5];
- =09u8 z =3D event[6] & S6SY761_MASK_Z;
--=09u16 x =3D (event[1] << 3) | ((event[3] & S6SY761_MASK_X) >> 4);
--=09u16 y =3D (event[2] << 3) | (event[3] & S6SY761_MASK_Y);
-+=09u16 x =3D (event[1] << 4) | ((event[3] & S6SY761_MASK_X) >> 4);
-+=09u16 y =3D (event[2] << 4) | (event[3] & S6SY761_MASK_Y);
-=20
- =09input_mt_slot(sdata->input, tid);
-=20
---=20
-2.29.2
-
-
+Alan
