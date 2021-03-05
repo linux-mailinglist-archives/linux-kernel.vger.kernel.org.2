@@ -2,150 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F248C32E55F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C328A32E565
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhCEJzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:55:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52513 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229528AbhCEJyo (ORCPT
+        id S229718AbhCEJzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:55:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhCEJzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:54:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614938083;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1z7klFmmHzPLRgES+7HbIKqkMYY/KuZ6OJTH2OpsjrA=;
-        b=LzEs2hUjFmAEkxZQyvtCVzg0TrF98nk4x3LG1RntdYrkjz8BVyv1Xs85HTTMg19YQXiDux
-        Td8z1qE9CwHnN0NsjpUVOpzKCzAfgMZ78YovrP4CWLDNoJX71LdP4d+3fjeIT8MJFAkAKt
-        D2krEwjXk7ET8ZLisZVYSvBAM848CpA=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-229-YwC9bKlTOFKG4s-3mIwWDA-1; Fri, 05 Mar 2021 04:54:41 -0500
-X-MC-Unique: YwC9bKlTOFKG4s-3mIwWDA-1
-Received: by mail-ej1-f69.google.com with SMTP id h14so632809ejg.7
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 01:54:41 -0800 (PST)
+        Fri, 5 Mar 2021 04:55:21 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B073C061574;
+        Fri,  5 Mar 2021 01:55:21 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id a9so1314940qkn.13;
+        Fri, 05 Mar 2021 01:55:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lRZq59jloSR0H3CstziAfSpbEkp52wDU2F/G5BYOIS0=;
+        b=d6RUsFIexVOG1YsqT1TgIjOJjv9GvyIQqpf67Xl9NpS6xBW4w8ujuf2FWsBPliYByY
+         o+ZirYLjsht7Fth7XxBUGBkExXSVS/DQdmmSmHqIK4BX6nQO3IdlzP+peO9kboVkTx0E
+         qOeTnqBGCB4GsVE1vEbiCVPnus8vXtaU9H1C0Ea02BU3pKR6d5HTxGuq3kT7FvBBQT9D
+         /XVoePP3t8kSQ/W2Cpu3kLjwaPVZSplx3W4Ov2y1vxYRwNQbmd3WuWLbJVYxk7smLBfb
+         snYLIhoR82BFI+UBKybKzV3l8VJrUPVBlsHt+xWG6ZMoGdPRfXIf/IHRmDbvLNGvMKpu
+         +SuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=1z7klFmmHzPLRgES+7HbIKqkMYY/KuZ6OJTH2OpsjrA=;
-        b=kpW6nyX1h/j4NzZsJ9HxAYQO6V3Aj3AIS7FZJX1dEB0VGKKRsHmsifZl7BspcPQPDD
-         YguNyaQH60dmwGO7i1fw/mVV2HNWKveOjkTFpZOGlZiISdHJFHdji3Adc162ud1wW77g
-         bWRg5jQG9BBuxtn3yx8CSTBYiqgcWsk5mfu+tJ6J5leH9RVRYdDLgLiX22jMoHhA/OwV
-         r2YMVHSkCe1/u7wlui/vno7UPe6bKsyBI9V+aVk0+xqUcwFCeVR061OI+kz2UKnxTnn8
-         yBPPBw6Lj/Y49CnTjet8tF5HPUvraFwt9z7lsMylNtZnEPkfKdHhLnBUd/oeA6Yqws/2
-         QLpQ==
-X-Gm-Message-State: AOAM531AxYnEPCmEef2P0CqsaVBsKLTD3VEDfW7N4eim3Ir7aHwdhhcr
-        0U1OHtDwET3upuJ6His+djmv8vhW+OCClc2DEiyC4OyA+q1skRkC+yeaYx4P07odDupun+MdTTQ
-        yS+WVJBobgjDhQYzs1Am9gULw
-X-Received: by 2002:aa7:c353:: with SMTP id j19mr6204600edr.263.1614938080772;
-        Fri, 05 Mar 2021 01:54:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxiSfq13AMhpBD2/+qGr5OlpDwzLfRA+xsimqQ48qctBnseqSfTIIfSt5a0AuS3tcaiSX3zbQ==
-X-Received: by 2002:aa7:c353:: with SMTP id j19mr6204591edr.263.1614938080579;
-        Fri, 05 Mar 2021 01:54:40 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id d19sm1268752edr.45.2021.03.05.01.54.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=lRZq59jloSR0H3CstziAfSpbEkp52wDU2F/G5BYOIS0=;
+        b=nMKs1OMUZY/fn0E36zhurCCIb2PIXpKd0QYpQAwrfSEPGdUaUizwJevjQN9574Oqmx
+         3/lNDXB//VfL71CHZanqxXytg8TctpvnM5tHm1jmSwA5ZxTVgMY+cBJmFtAXb0rhVDVO
+         WWs2W90QvOyH0bplDo5s+15ixkFMv4LSbRe9trpOvcXIQxXWDEwLHO3wpsJoXzhjRnOu
+         LZ44GHCxtIGWe+BG7UwPw7/3FpWKQjXugk20qSxv8qVDPThUSklTf9GoGosElhph4zxb
+         RLuoHKlXb9f83SUvYvWj5tu/ymbu6GZJhGnuiptXbePlBbH+atzgtCth1fPDNc5Rep3a
+         P/qA==
+X-Gm-Message-State: AOAM533ws1dhx+sYWRwRNHXdDNZdMFV7oYQ3wb43FeE70B6ml1A0P0M4
+        9tRsU/V2KBjQmLc+kYZc0Po=
+X-Google-Smtp-Source: ABdhPJwmaPf2wqrtZyzSz9LSRSntX3/RTjpfVnpDEuhVpmt/bXRwEAFUCz0phm672U7TWPoCBbmG9Q==
+X-Received: by 2002:a37:a416:: with SMTP id n22mr8233273qke.259.1614938120544;
+        Fri, 05 Mar 2021 01:55:20 -0800 (PST)
+Received: from debian ([156.146.54.164])
+        by smtp.gmail.com with ESMTPSA id e132sm1449102qkb.15.2021.03.05.01.55.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 01:54:40 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH] KVM: SVM: Connect 'npt' module param to KVM's internal
- 'npt_enabled'
-In-Reply-To: <20210305021637.3768573-1-seanjc@google.com>
-References: <20210305021637.3768573-1-seanjc@google.com>
-Date:   Fri, 05 Mar 2021 10:54:39 +0100
-Message-ID: <878s72c4dc.fsf@vitty.brq.redhat.com>
+        Fri, 05 Mar 2021 01:55:20 -0800 (PST)
+Date:   Fri, 5 Mar 2021 15:25:10 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     jpoimboe@redhat.com, jikos@kernel.org, mbenes@suse.cz,
+        joe.lawrence@redhat.com, corbet@lwn.net,
+        live-patching@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] docs: livepatch: Fix a typo in the file shadow-vars.rst
+Message-ID: <20210305095508.GA7689@debian>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Petr Mladek <pmladek@suse.com>, jpoimboe@redhat.com,
+        jikos@kernel.org, mbenes@suse.cz, joe.lawrence@redhat.com,
+        corbet@lwn.net, live-patching@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210305021720.21874-1-unixbhaskar@gmail.com>
+ <YEHzevqbmZg8kZ+7@alley>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3V7upXqbjpZ4EhLz"
+Content-Disposition: inline
+In-Reply-To: <YEHzevqbmZg8kZ+7@alley>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
 
-> Directly connect the 'npt' param to the 'npt_enabled' variable so that
-> runtime adjustments to npt_enabled are reflected in sysfs.  Move the
-> !PAE restriction to a runtime check to ensure NPT is forced off if the
-> host is using 2-level paging, and add a comment explicitly stating why
-> NPT requires a 64-bit kernel or a kernel with PAE enabled.
+--3V7upXqbjpZ4EhLz
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+
+On 10:01 Fri 05 Mar 2021, Petr Mladek wrote:
+>On Fri 2021-03-05 07:47:20, Bhaskar Chowdhury wrote:
+>>
+>> s/ varibles/variables/
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>  Documentation/livepatch/shadow-vars.rst | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/livepatch/shadow-vars.rst b/Documentation/livepatch/shadow-vars.rst
+>> index c05715aeafa4..8464866d18ba 100644
+>> --- a/Documentation/livepatch/shadow-vars.rst
+>> +++ b/Documentation/livepatch/shadow-vars.rst
+>> @@ -165,7 +165,7 @@ In-flight parent objects
+>>
+>>  Sometimes it may not be convenient or possible to allocate shadow
+>>  variables alongside their parent objects.  Or a livepatch fix may
+>> -require shadow varibles to only a subset of parent object instances.  In
+>> +require shadow variables to only a subset of parent object instances.  In
+>>  these cases, the klp_shadow_get_or_alloc() call can be used to attach
+>>  shadow variables to parents already in-flight.
 >
-> Opportunistically switch the param to octal permissions.
+>It might make sense to move the "In" to the next line. It sticks out
+>even more now.
 >
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/svm/svm.c | 27 ++++++++++++++-------------
->  1 file changed, 14 insertions(+), 13 deletions(-)
+>Eitherway:
+
+Thanks, your wish will get fulfilled in V2 ...will send your way :)
+
+~Bhaskar
+
+>Reviewed-by: Petr Mladek <pmladek@suse.com>
 >
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 54610270f66a..0ee74321461e 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -115,13 +115,6 @@ static const struct svm_direct_access_msrs {
->  	{ .index = MSR_INVALID,				.always = false },
->  };
->  
-> -/* enable NPT for AMD64 and X86 with PAE */
-> -#if defined(CONFIG_X86_64) || defined(CONFIG_X86_PAE)
-> -bool npt_enabled = true;
-> -#else
-> -bool npt_enabled;
-> -#endif
-> -
->  /*
->   * These 2 parameters are used to config the controls for Pause-Loop Exiting:
->   * pause_filter_count: On processors that support Pause filtering(indicated
-> @@ -170,9 +163,12 @@ module_param(pause_filter_count_shrink, ushort, 0444);
->  static unsigned short pause_filter_count_max = KVM_SVM_DEFAULT_PLE_WINDOW_MAX;
->  module_param(pause_filter_count_max, ushort, 0444);
->  
-> -/* allow nested paging (virtualized MMU) for all guests */
-> -static int npt = true;
-> -module_param(npt, int, S_IRUGO);
-> +/*
-> + * Use nested page tables by default.  Note, NPT may get forced off by
-> + * svm_hardware_setup() if it's unsupported by hardware or the host kernel.
-> + */
-> +bool npt_enabled = true;
-> +module_param_named(npt, npt_enabled, bool, 0444);
->  
->  /* allow nested virtualization in KVM/SVM */
->  static int nested = true;
-> @@ -988,12 +984,17 @@ static __init int svm_hardware_setup(void)
->  			goto err;
->  	}
->  
-> +	/*
-> +	 * KVM's MMU doesn't support using 2-level paging for itself, and thus
-> +	 * NPT isn't supported if the host is using 2-level paging since host
-> +	 * CR4 is unchanged on VMRUN.
-> +	 */
-> +	if (!IS_ENABLED(CONFIG_X86_64) && !IS_ENABLED(CONFIG_X86_PAE))
-> +		npt_enabled = false;
-> +
->  	if (!boot_cpu_has(X86_FEATURE_NPT))
->  		npt_enabled = false;
->  
-> -	if (npt_enabled && !npt)
-> -		npt_enabled = false;
-> -
+>Best Regards,
+>Petr
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+--3V7upXqbjpZ4EhLz
+Content-Type: application/pgp-signature; name="signature.asc"
 
->  	kvm_configure_mmu(npt_enabled, get_max_npt_level(), PG_LEVEL_1G);
->  	pr_info("kvm: Nested Paging %sabled\n", npt_enabled ? "en" : "dis");
+-----BEGIN PGP SIGNATURE-----
 
-(unrelated to your patch but) I'd suggest we demote this pr_info() to
-pr_debug() or keep it but print the message only when NPT is disabled as
-in the overwhelming majority of cases it is enabled. Also, we don't seem
-to print EPT status when kvm-intel is loaded.
+iQEzBAABCgAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBB//UACgkQsjqdtxFL
+KRU21QgAmGy8p+LYb1CXU08y5uT/TpkD+DMETr2LpdmJ8YWV0wqRTJRODPDsnga1
+ltAjt3wLvUdWlsXV0RyF6a2KdCV6hGAkMaqCqNmkbd3PGAEwc97p2aXuK6v5vrHE
+NHcupELFl1hI8K8yeoNXtXBWIHwvhiQo7p8xQryAfWpX2MESXPs5HHPL3EjOHc90
+exvKfGo0ZgBvEXHpka+5JAhWBhVnJ6thumUNLBi63CdFDEVAUCdOl50MW0v5ddcL
+szjxI+Pz5ddBR5JNF26kE8jBpfwIuid3GlsDyoGz9nSQTKerPnKiYXZtf8x1gL42
+kszv2tHjRL1vTyfg2X1sh7wsTkZmrg==
+=nPla
+-----END PGP SIGNATURE-----
 
--- 
-Vitaly
-
+--3V7upXqbjpZ4EhLz--
