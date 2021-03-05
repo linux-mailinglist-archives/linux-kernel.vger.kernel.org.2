@@ -2,124 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D87532E674
+	by mail.lfdr.de (Postfix) with ESMTP id F294432E675
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhCEKa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:30:58 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57662 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229690AbhCEKa0 (ORCPT
+        id S229851AbhCEKbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:31:02 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:50042 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229773AbhCEKac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:30:26 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125ATGfM002168;
-        Fri, 5 Mar 2021 05:30:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=4UbJnKh/rNouiIUUWZr3ZpULnYtu8wIcqi44QhFm7VQ=;
- b=cIManWSHycp6SdCZ1FadOLerR/MlP2K2WmPMGZqOEPQdpBCRT4vz3I9I+BZ48RZqdqls
- H8Tn11W9vC3fxm4ZMQgLzsMtb2G0EAlutXhwOxq51CBEF0sLuBEAqUFKTUYOU2PpXmDJ
- zG0f0m45HbwfCDk2yOHlmV1qv3r1S/A2MxAwUMZC7dCcq+ZWpClqDJ5ZUn8as8t8GkRe
- horv+n3OlO8e/dTrmRHxkotO9wADDUBlw1PoBPJGhn66hPW9vqKwC6qXPoSwdiG/MET+
- HQqrwFkDzIwoA+luD+7jxK4loDdtcgL5JTyM9Qop/uQWqeJn5g24oslKGaaNrzS2jwrK 3w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 373jxdr13u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 05:30:24 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 125AUMqv012206;
-        Fri, 5 Mar 2021 05:30:23 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 373jxdr12e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 05:30:22 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 125AREnQ002959;
-        Fri, 5 Mar 2021 10:30:20 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 37293fswbt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 10:30:20 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 125AUIdc37683680
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 5 Mar 2021 10:30:18 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EE74CA406F;
-        Fri,  5 Mar 2021 10:30:17 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 94C70A4053;
-        Fri,  5 Mar 2021 10:30:17 +0000 (GMT)
-Received: from [9.171.51.82] (unknown [9.171.51.82])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  5 Mar 2021 10:30:17 +0000 (GMT)
-Subject: Re: [PATCH] net: smc: fix error return code of smc_diag_dump_proto()
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210305101351.14683-1-baijiaju1990@gmail.com>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-Message-ID: <d1d50e39-e496-1060-2c71-2338c0572c55@linux.ibm.com>
-Date:   Fri, 5 Mar 2021 11:30:20 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Fri, 5 Mar 2021 05:30:32 -0500
+Received: from mail-wr1-f69.google.com ([209.85.221.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lI7j5-0007C4-4o
+        for linux-kernel@vger.kernel.org; Fri, 05 Mar 2021 10:30:31 +0000
+Received: by mail-wr1-f69.google.com with SMTP id g5so851274wrd.22
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 02:30:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kJu6iNTkK4wSmf0pqRfj82yyDdC0OqRkZT1hSBnQXr8=;
+        b=fgzwmgOAEGjDDO+v9okvFxQnvVGHYjZeLXWYsuIGU75PUISci0ykGgkVZyhcHWo4+K
+         VoYCANtXwlNn6iM/MBZkiFedsqJiSAfK7Jl76X797+KFvSm041Tr5O27e9mg8xVRQUkt
+         kzHa5eoKBke7vQkSbTgIGBhO7/OUVd0LSKU0ktV6PHtvMS9Qx6SZlcBQwGQLwNrcOxNW
+         8M5ngfCAN9SpQitdIaDxUVRhz7/qlH0AiBZNihZiuc2DXhxJcLdQ/DrEMlhw909gv4Ac
+         wBK5sruKB3z7OlrEd645oE5YzMvGUKAQKt5WPwtlsNeTkXZzKye6K3hew7MLPo5YjGrk
+         q2Zw==
+X-Gm-Message-State: AOAM530qxXijanSDqD2WEePOa5WecagjdZRzDre8opoeU9XNGdTeFADJ
+        RakwT2V3sclBwIZt1UUT34kB0QkT1172/oTeLKXoyL/R5OPx9YbflMhKHsgrjGpJqM/rAFBTotb
+        E6rSRM9SHcbrDSVv/RYArSVPGj1gOewRtMklCFipJag==
+X-Received: by 2002:a1c:7714:: with SMTP id t20mr7981750wmi.107.1614940230676;
+        Fri, 05 Mar 2021 02:30:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy800OFDrvV/rynegL9gdp5sOoCnfFTAFviFAiUlwZkphbdPaIzFS7W/py4nWV80SKpjFhzmQ==
+X-Received: by 2002:a1c:7714:: with SMTP id t20mr7981727wmi.107.1614940230567;
+        Fri, 05 Mar 2021 02:30:30 -0800 (PST)
+Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.gmail.com with ESMTPSA id 1sm3878530wmj.2.2021.03.05.02.30.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 02:30:30 -0800 (PST)
+Subject: Re: [RFT PATCH v3 18/27] tty: serial: samsung_tty: Separate S3C64XX
+ ops structure
+To:     Hector Martin <marcan@marcan.st>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-19-marcan@marcan.st>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <cf61a889-b84d-f788-52f2-9b68bcc83d52@canonical.com>
+Date:   Fri, 5 Mar 2021 11:30:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210305101351.14683-1-baijiaju1990@gmail.com>
+In-Reply-To: <20210304213902.83903-19-marcan@marcan.st>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-05_05:2021-03-03,2021-03-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- spamscore=0 clxscore=1011 bulkscore=0 mlxlogscore=999 malwarescore=0
- lowpriorityscore=0 adultscore=0 phishscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103050048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/03/2021 11:13, Jia-Ju Bai wrote:
-> When the list of head is empty, no error return code of
-> smc_diag_dump_proto() is assigned.
-> To fix this bug, rc is assigned with -ENOENT as error return code.
-
-Your change would break smc_diag_dump().
-When there are no IPv4 sockets (SMCPROTO_SMC) in the list and -ENOENT 
-is returned then smc_diag_dump() will not try to dump any IPv6 sockets
-(SMCPROTO_SMC6). Returning zero is correct here.
-
+On 04/03/2021 22:38, Hector Martin wrote:
+> Instead of patching a single global ops structure depending on the port
+> type, use a separate s3c64xx_serial_ops for the S3C64XX type. This
+> allows us to mark the structures as const.
 > 
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> Also split out s3c64xx_serial_shutdown into a separate function now that
+> we have a separate ops structure; this avoids excessive branching
+> control flow and mirrors s3c64xx_serial_startup. tx_claimed and
+> rx_claimed are only used in the S3C24XX functions.
+> 
+> Signed-off-by: Hector Martin <marcan@marcan.st>
 > ---
->  net/smc/smc_diag.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/smc/smc_diag.c b/net/smc/smc_diag.c
-> index c952986a6aca..a90889482842 100644
-> --- a/net/smc/smc_diag.c
-> +++ b/net/smc/smc_diag.c
-> @@ -201,8 +201,10 @@ static int smc_diag_dump_proto(struct proto *prot, struct sk_buff *skb,
->  
->  	read_lock(&prot->h.smc_hash->lock);
->  	head = &prot->h.smc_hash->ht;
-> -	if (hlist_empty(head))
-> +	if (hlist_empty(head)) {
-> +		rc = -ENOENT;
->  		goto out;
-> +	}
->  
->  	sk_for_each(sk, head) {
->  		if (!net_eq(sock_net(sk), net))
-> 
+>  drivers/tty/serial/samsung_tty.c | 71 ++++++++++++++++++++++++--------
+>  1 file changed, 54 insertions(+), 17 deletions(-)
 
--- 
-Karsten
 
-(I'm a dude)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Tested-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
+Best regards,
+Krzysztof
