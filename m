@@ -2,90 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B4A32E773
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B44332E776
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229773AbhCELxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 06:53:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45618 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229729AbhCELwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 06:52:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614945173; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IGTdulojVqDfD4uEHxN4sJQiQBIBDS74gP8QP9Wo5Ac=;
-        b=mbsYFZ8bGlG0dPGdUPBHfoJUs5T9hVelb/uXsxSKMr/eWuZOxCWQ+1EEPjGTV+06u1eZwA
-        QcUMjWuLjUGnf0VBWwn+PtZKUmZqfyTUIfTrzrYKPcHyml5zD534VQcvMzWKAKSGT9dBJ7
-        GNCG6jSSQGVjQkPL/iqaiWvjSduoOl8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0CAEBAC54;
-        Fri,  5 Mar 2021 11:52:53 +0000 (UTC)
-Date:   Fri, 5 Mar 2021 12:52:52 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Zhou Guanghui <zhouguanghui1@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, hannes@cmpxchg.org, hughd@google.com,
-        kirill.shutemov@linux.intel.com, npiggin@gmail.com, ziy@nvidia.com,
-        wangkefeng.wang@huawei.com, guohanjun@huawei.com,
-        dingtianhong@huawei.com, chenweilong@huawei.com,
-        rui.xiang@huawei.com
-Subject: Re: [PATCH v2 2/2] mm/memcg: set memcg when split page
-Message-ID: <YEIblNv0BMITFzYO@dhcp22.suse.cz>
-References: <20210304074053.65527-1-zhouguanghui1@huawei.com>
- <20210304074053.65527-3-zhouguanghui1@huawei.com>
+        id S229558AbhCELzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 06:55:50 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20788 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229493AbhCELzq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 06:55:46 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125BXdcS012986;
+        Fri, 5 Mar 2021 06:54:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=tThMMiURIYel2tcEV6/s2VlXRYF5FWm2p5ebEVtrexM=;
+ b=LUYjC8cHEyyiFRiSzq78oKOfa2CQHAAaR9ibE2taXdpa4O8y/t8nbVM3Q3jc1+O/4n+J
+ bkZ4dWxqJCpxD8whJ24L/8wVd9jMCRR7jgFhe5mSSld7SamyjOW1yewXC0deKQKsFWkM
+ pVPnrl4lM44NMfTAVdopkDtdmmqfz+xYn4AS789aA9ck1pC1XWuZPUNSPIQWMkpNljGL
+ +YHtfewk33fsk+z2A27x/87I7vOCB/SpwhjtN2iTtcvcSH8hynXe/p0JvWNZsUUnI6BU
+ Cz/j1muApuenl2iArsTcrz3LKmq4MYvVXoWXcOZWsPeY7KewU9oyD9omW3E5t3GOk8ck zw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373kk9ry2n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 06:54:57 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 125BXgA1013171;
+        Fri, 5 Mar 2021 06:54:56 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373kk9ry1w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 06:54:56 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 125BreLC030755;
+        Fri, 5 Mar 2021 11:54:54 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 37293fsycm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 11:54:53 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 125Bspes45875634
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 5 Mar 2021 11:54:51 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0FCB8AE04D;
+        Fri,  5 Mar 2021 11:54:51 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9F29DAE045;
+        Fri,  5 Mar 2021 11:54:48 +0000 (GMT)
+Received: from bangoria.ibmuc.com (unknown [9.199.43.205])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  5 Mar 2021 11:54:48 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+To:     mpe@ellerman.id.au
+Cc:     ravi.bangoria@linux.ibm.com, oleg@redhat.com, rostedt@goodmis.org,
+        paulus@samba.org, jniethe5@gmail.com, naveen.n.rao@linux.ibm.com,
+        sandipan@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, christophe.leroy@csgroup.eu
+Subject: [PATCH v4] powerpc/uprobes: Validation for prefixed instruction
+Date:   Fri,  5 Mar 2021 17:24:33 +0530
+Message-Id: <20210305115433.140769-1-ravi.bangoria@linux.ibm.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304074053.65527-3-zhouguanghui1@huawei.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-05_05:2021-03-03,2021-03-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 mlxlogscore=999 priorityscore=1501 lowpriorityscore=0
+ clxscore=1015 spamscore=0 bulkscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103050058
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 04-03-21 07:40:53, Zhou Guanghui wrote:
-> As described in the split_page function comment, for the non-compound
-> high order page, the sub-pages must be freed individually. If the
-> memcg of the fisrt page is valid, the tail pages cannot be uncharged
-> when be freed.
-> 
-> For example, when alloc_pages_exact is used to allocate 1MB continuous
-> physical memory, 2MB is charged(kmemcg is enabled and __GFP_ACCOUNT is
-> set). When make_alloc_exact free the unused 1MB and free_pages_exact
-> free the applied 1MB, actually, only 4KB(one page) is uncharged.
-> 
-> Therefore, the memcg of the tail page needs to be set when split page.
-> 
+As per ISA 3.1, prefixed instruction should not cross 64-byte
+boundary. So don't allow Uprobe on such prefixed instruction.
 
-As already mentioned there are at least two explicit users of
-__GFP_ACCOUNT with alloc_exact_pages added recently. It would be good to
-mention that explicitly and maybe even mention 7efe8ef274024 resp.
-c419621873713 so that it is clear this is not just a theoretical issue.
+There are two ways probed instruction is changed in mapped pages.
+First, when Uprobe is activated, it searches for all the relevant
+pages and replace instruction in them. In this case, if that probe
+is on the 64-byte unaligned prefixed instruction, error out
+directly. Second, when Uprobe is already active and user maps a
+relevant page via mmap(), instruction is replaced via mmap() code
+path. But because Uprobe is invalid, entire mmap() operation can
+not be stopped. In this case just print an error and continue.
 
-> Signed-off-by: Zhou Guanghui <zhouguanghui1@huawei.com>
+Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Acked-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+---
+v3: https://lore.kernel.org/r/20210304050529.59391-1-ravi.bangoria@linux.ibm.com
+v3->v4:
+  - CONFIG_PPC64 check was not required, remove it.
+  - Use SZ_ macros instead of hardcoded numbers.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
-> ---
->  mm/page_alloc.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 3e4b29ee2b1e..3ed783e25c3c 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -3310,6 +3310,7 @@ void split_page(struct page *page, unsigned int order)
->  	for (i = 1; i < (1 << order); i++)
->  		set_page_refcounted(page + i);
->  	split_page_owner(page, 1 << order);
-> +	split_page_memcg(page, 1 << order);
->  }
->  EXPORT_SYMBOL_GPL(split_page);
->  
-> -- 
-> 2.25.0
-> 
+ arch/powerpc/kernel/uprobes.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
+diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
+index e8a63713e655..4cbfff6e94a3 100644
+--- a/arch/powerpc/kernel/uprobes.c
++++ b/arch/powerpc/kernel/uprobes.c
+@@ -41,6 +41,13 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe,
+ 	if (addr & 0x03)
+ 		return -EINVAL;
+ 
++	if (cpu_has_feature(CPU_FTR_ARCH_31) &&
++	    ppc_inst_prefixed(auprobe->insn) &&
++	    (addr & (SZ_64 - 4)) == SZ_64 - 4) {
++		pr_info_ratelimited("Cannot register a uprobe on 64 byte unaligned prefixed instruction\n");
++		return -EINVAL;
++	}
++
+ 	return 0;
+ }
+ 
 -- 
-Michal Hocko
-SUSE Labs
+2.27.0
+
