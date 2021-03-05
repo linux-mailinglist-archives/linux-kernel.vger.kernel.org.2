@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB7E32E382
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9677932E37F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbhCEITG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:19:06 -0500
-Received: from mail-vs1-f49.google.com ([209.85.217.49]:42196 "EHLO
-        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhCEISm (ORCPT
+        id S229563AbhCEIR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:17:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhCEIRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:18:42 -0500
-Received: by mail-vs1-f49.google.com with SMTP id v123so516912vsv.9;
-        Fri, 05 Mar 2021 00:18:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=frr7Psk12tIGcsSy5WyVmhf8hp/xoH8Q3T4PKTXrUQk=;
-        b=dVCfmAUxzYomVehH2FxWJEVX2HU4QlG/U6/kfsOwLiH89A9BnWy2q2gSBOqTmMltwp
-         7m+ijDL9Z6AB4Lr3ROeKeay3te/W5KRjF8fODrx582onNnq/SBwGUWMOcZEyPgG/xkFY
-         ILNn6r6+rEjgQCnkQBTaDk51VOl6ELKdGu7KlcqxkRTxaNrTFWsLMIHEzEO/qgP/4f0h
-         ZumdMLg1Ga75uXD62jItVfIejvfg5Tz8ZFMCj//XjqwBKaBYeuatualAHQgDDFBa1epW
-         Li3ppCIY7DX7ljHCtCvb9trhGkdvheEedr2FMun3piMpNjn6pUmXilrry8ktCrETWssg
-         ofEg==
-X-Gm-Message-State: AOAM531k0zQjfl5jOxdjCMWptqHUSnr+U55Td6zRrT41FdunK6ZV/f85
-        9AOI9+VTXt1b0wcMMnfJNdEsZPAqWlJ7NVXt1Bs=
-X-Google-Smtp-Source: ABdhPJwKfU7R7aWmEg3CAwHGuD6dBu+OYpEsCFW5WA2UBAw++9ZFIh1wyqQcV4Pr8HpON5jmfjjdulJRUJODYW45Ih4=
-X-Received: by 2002:a05:6102:2403:: with SMTP id j3mr5023007vsi.40.1614932321174;
- Fri, 05 Mar 2021 00:18:41 -0800 (PST)
+        Fri, 5 Mar 2021 03:17:11 -0500
+Received: from forwardcorp1j.mail.yandex.net (forwardcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1E0C061574;
+        Fri,  5 Mar 2021 00:17:10 -0800 (PST)
+Received: from vla1-fdfb804fb3f3.qloud-c.yandex.net (vla1-fdfb804fb3f3.qloud-c.yandex.net [IPv6:2a02:6b8:c0d:3199:0:640:fdfb:804f])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 31CED2E15BA;
+        Fri,  5 Mar 2021 11:17:06 +0300 (MSK)
+Received: from vla5-d6d5ce7a4718.qloud-c.yandex.net (vla5-d6d5ce7a4718.qloud-c.yandex.net [2a02:6b8:c18:341e:0:640:d6d5:ce7a])
+        by vla1-fdfb804fb3f3.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id nBUJYgG9mP-H504YqKo;
+        Fri, 05 Mar 2021 11:17:06 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.com; s=default;
+        t=1614932226; bh=ikw0NZHqJgFqyaFCRWbjp7lWwmWwPcvXaMhsrOZJ7u0=;
+        h=In-Reply-To:References:Date:Message-ID:From:To:Subject:Cc;
+        b=g7V+jCO9XOBzYLR0mvS0cct1Ktx8BVoGBuc0crJqmqQtZ4FTPm7DaScDEfSMgT8zC
+         9OBp5iIVfCwU3yC9+GCFlc8ENlzofOeeHIxJSCKzb8+eMLqsBYFZF78ULUu8xknjIN
+         p41IsEpZgZKuUmcENCnWG0PXH8qBhm8SK/J6Ymw8=
+Authentication-Results: vla1-fdfb804fb3f3.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.com
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b080:8217::1:2])
+        by vla5-d6d5ce7a4718.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id Q79TVul5mw-H5n0O6mP;
+        Fri, 05 Mar 2021 11:17:05 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH] iommu/amd: Fix sleeping in atomic in
+ increase_address_space()
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Qian Cai <cai@lca.pw>,
+        valesini@yandex-team.ru, stable@vger.kernel.org
+References: <20210217143004.19165-1-arbn@yandex-team.com>
+ <20210217181002.GC4304@willie-the-truck> <20210304121941.GB26414@8bytes.org>
+From:   Andrey Ryabinin <arbn@yandex-team.com>
+Message-ID: <298d9f1e-39b7-ee1c-86f6-9f9780356942@yandex-team.com>
+Date:   Fri, 5 Mar 2021 11:18:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210304102452.21726-1-brgl@bgdev.pl> <20210304102452.21726-9-brgl@bgdev.pl>
-In-Reply-To: <20210304102452.21726-9-brgl@bgdev.pl>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 5 Mar 2021 09:18:30 +0100
-Message-ID: <CAMuHMdXRK5=w1-Z=EbM60Sf2bLY1EiVaxbZjMP+XyQ3g7nBpZw@mail.gmail.com>
-Subject: Re: [PATCH v2 08/12] drivers: export device_is_bound()
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210304121941.GB26414@8bytes.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CC Greg
 
-On Thu, Mar 4, 2021 at 11:30 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->
-> Export the symbol for device_is_bound() so that we can use it in gpio-sim
-> to check if the simulated GPIO chip is bound before fetching its driver
-> data from configfs callbacks in order to retrieve the name of the GPIO
-> chip device.
->
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> ---
->  drivers/base/dd.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 9179825ff646..c62c02e3490a 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -353,6 +353,7 @@ bool device_is_bound(struct device *dev)
->  {
->         return dev->p && klist_node_attached(&dev->p->knode_driver);
->  }
-> +EXPORT_SYMBOL_GPL(device_is_bound);
->
->  static void driver_bound(struct device *dev)
->  {
-> --
-> 2.29.1
+
+On 3/4/21 3:19 PM, Joerg Roedel wrote:
+> On Wed, Feb 17, 2021 at 06:10:02PM +0000, Will Deacon wrote:
+>>>  drivers/iommu/amd/iommu.c | 10 ++++++----
+>>>  1 file changed, 6 insertions(+), 4 deletions(-)
+>>
+>> Acked-by: Will Deacon <will@kernel.org>
+> 
+> Applied for v5.12, thanks.
+> 
+> There were some conflicts which I resolved, can you please check the
+> result, Andrey? The updated patch is attached.
+> 
+
+Thanks, looks good to me.
