@@ -2,116 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B2032EC6C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC9032EC74
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230503AbhCENlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:41:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230496AbhCENlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:41:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A14E64F56;
-        Fri,  5 Mar 2021 13:41:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614951674;
-        bh=i0NLPhRz+02cMwgaFc3X10zAS4gewkQVd7yIx1aEt8U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rnsUE1NbBrKb3MwcMkWgnYrEPyyn0l0mnxF9itAmjxoyjNlhMkTG4hq8ABFCqvFtu
-         YEAD7SUDWDuJ463mqTP2395AqpvN4Vxuslwh1XosrjVXkSSlkW2c4aBBySKWiPeW/r
-         8ejzkLoDeirhDi7YMGOIYkSSAw5g3kcjHUnN8PF4vCZOZHySW4XpmOmW7LAW5OLz/d
-         JZ/IO8Z+gge+Xqhum/FOp1q9IArt5RnqPRNuWLRrQWoc4gbO457S9Rdzht6LjN27Iu
-         3ed1v3m/qz8nisWnonQEjgF9MotC6BJpCFhg5rlCviu5dUZFovTjoxrFi6X8bDV0UY
-         5NxivGHL/9dxQ==
-Date:   Fri, 5 Mar 2021 14:41:11 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, mingo@kernel.org
-Subject: Re: timer: Report ignored local enqueue in nohz mode?
-Message-ID: <20210305134111.GA142352@lothringen>
-References: <20210303194945.GA20866@paulmck-ThinkPad-P72>
+        id S229688AbhCENrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:47:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230144AbhCENrL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 08:47:11 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD3DC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 05:47:10 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id a13so2588259oid.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 05:47:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SInNMXqsGtA9/hulueI4v7s5Z4FGO7USmnkW6ykDyNk=;
+        b=DhVOTTeNEWGP7nvs0N/96ctaUuIi3XAgBRwWEtcDF9LYjBWCG9/iF2Z2IeAfgY9gSk
+         EuxxAQT4/gGX6oWuIsL6s1QIwBjSRsL2dc7lgry22R6oLBArIyQwgw2T1gFk3S+cGX+q
+         Hx7usAEK/x12IwalJNVxcV6vyfULFvH09nCkI8BKgJ2tE+n1rlu0+POxAoWC/QLasjmI
+         LGeYlSTK5JxCH23E0aZKYzbMAlfwLAkH8DVqxUtkJDTwZlLL1f4UaDgFPUbxJtmdX3ao
+         m8DaAsVeHxyL9TdQxZTB0Rg+TiMf5JfAQsFOB+islX108CeCvfwMT1fIi6W4EdAyn7hF
+         qODg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SInNMXqsGtA9/hulueI4v7s5Z4FGO7USmnkW6ykDyNk=;
+        b=e/KksqQ2pc8bZSTk+cPMVktZPlpafbgbXApZQcxKCePWOFUN2FzFm0Zf7qVfydtAUV
+         /bvbCrWIumspH5x5zWGk/iIwctCKfXyaCftlAfJoVtcfedHquxPllaCxLC3Jb38HI4ow
+         q9HwKAQ+3z5y1BYhpn8STH4c/nVEaTiOoWOvYxuz/09CekN7Y6WPB1YH3BUPkdnJ3MnP
+         ivkmHCwMWUicT6zGJZ9UfcaLd/Vaw0jYrEv8AExMyaiZlc/34/7ZCdy68GqdICvZ2vjI
+         COX80HgLzdZx+C4zmLx/3Oj2gBeg+QYXX7g2viQWBL6aCTq4PmtqViehEVAUOSVFwZZm
+         VYjQ==
+X-Gm-Message-State: AOAM532DjdnWEMdNaq6a/n/EfOLdIdQxb5Hv8VjMRZnZBGc5hPlKM+B0
+        f2MuC5x8PJtf1k0564XmmWzOrMNZDuYODmlucCCS5g==
+X-Google-Smtp-Source: ABdhPJzSLALcuCZpE3cEHOvqGJGgFlt2enFY7q4Ev6KGRAIV11AF0b9dUVgfJK1I9YZPXDk6vk12D8KHVvIvf6hKa6U=
+X-Received: by 2002:a05:6808:10d3:: with SMTP id s19mr7309520ois.70.1614952029845;
+ Fri, 05 Mar 2021 05:47:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303194945.GA20866@paulmck-ThinkPad-P72>
+References: <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
+ <08a96c5d-4ae7-03b4-208f-956226dee6bb@csgroup.eu> <CANpmjNPYEmLtQEu5G=zJLUzOBaGoqNKwLyipDCxvytdKDKb7mg@mail.gmail.com>
+ <ad61cb3a-2b4a-3754-5761-832a1dd0c34e@csgroup.eu> <CANpmjNOnVzei7frKcMzMHxaDXh5NvTA-Wpa29C2YC1GUxyKfhQ@mail.gmail.com>
+ <f036c53d-7e81-763c-47f4-6024c6c5f058@csgroup.eu> <CANpmjNMn_CUrgeSqBgiKx4+J8a+XcxkaLPWoDMUvUEXk8+-jxg@mail.gmail.com>
+ <7270e1cc-bb6b-99ee-0043-08a027b8d83a@csgroup.eu> <YEDXJ5JNkgvDFehc@elver.google.com>
+ <874khqry78.fsf@mpe.ellerman.id.au> <YEHiq1ALdPn2crvP@elver.google.com>
+ <f6e47f4f-6953-6584-f023-8b9c22d6974e@csgroup.eu> <CANpmjNM9o1s4O4v2T9HUohPdCDJzWcaC5KDrt_7BSVdTUQWagw@mail.gmail.com>
+ <87tupprfan.fsf@mpe.ellerman.id.au>
+In-Reply-To: <87tupprfan.fsf@mpe.ellerman.id.au>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 5 Mar 2021 14:46:58 +0100
+Message-ID: <CANpmjNMzY-Jmd9v9MHYqeQ934V91D25vtj85HwJkYuXS2a+4Yg@mail.gmail.com>
+Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Alexander Potapenko <glider@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 11:49:45AM -0800, Paul E. McKenney wrote:
-> Hello, Frederic!
-> 
-> I don't see the following commit in mainline, but figured I should
-> check with you guys to see if the problem got solved in some other way.
-> Unless I hear otherwise, I will continue to carry this patch in -rcu
-> and will send it along for the v5.13 merge window.
+On Fri, 5 Mar 2021 at 12:49, Michael Ellerman <mpe@ellerman.id.au> wrote:
+> Marco Elver <elver@google.com> writes:
+> ...
+> >
+> > The choice is between:
+> >
+> > 1. ARCH_FUNC_PREFIX (as a matter of fact, the ARCH_FUNC_PREFIX patch
+> > is already in -mm). Perhaps we could optimize it further, by checking
+> > ARCH_FUNC_PREFIX in buf, and advancing buf like you propose, but I'm
+> > not sure it's worth worrying about.
+> >
+> > 2. The dynamic solution that I proposed that does not use a hard-coded
+> > '.' (or some variation thereof).
+> >
+> > Please tell me which solution you prefer, 1 or 2 -- I'd like to stop
+> > bikeshedding here. If there's a compelling argument for hard-coding
+> > the '.' in non-arch code, please clarify, but otherwise I'd like to
+> > keep arch-specific things out of generic code.
+>
+> It's your choice, I was just trying to minimise the size of the wart you
+> have to carry in kfence code to deal with it.
+>
+> The ARCH_FUNC_PREFIX solution is fine by me.
 
-I have it included in a nohz series I'm about to post but since RCU is the
-motivation behind doing this, it's fine if you carry it.
+Thank you -- the ARCH_FUNC_PREFIX version is already in -mm, so let's
+keep it. It's purely static vs the other options. Should another
+debugging tool need something similar we can revisit whether to change
+or move it.
 
-I've just modified it a bit after a review from Peter:
-
----
-From 7876725b8631147967bb9e65158ef1cb2bb94372 Mon Sep 17 00:00:00 2001
-From: Frederic Weisbecker <frederic@kernel.org>
-Date: Fri, 8 Jan 2021 13:50:12 +0100
-Subject: [PATCH] timer: Report ignored local enqueue in nohz mode
-
-Enqueuing a local timer after the tick has been stopped will result in
-the timer being ignored until the next random interrupt.
-
-Perform sanity checks to report these situations.
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar<mingo@kernel.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- kernel/sched/core.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index ca2bb629595f..24552911f92b 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -674,6 +674,22 @@ int get_nohz_timer_target(void)
- 	return cpu;
- }
- 
-+/* Make sure the timer won't be ignored in dynticks-idle case */
-+static void wake_idle_assert_possible(void)
-+{
-+#ifdef CONFIG_SCHED_DEBUG
-+	/*
-+	 * Timers are re-evaluated after idle IRQs. In case of softirq,
-+	 * we assume IRQ tail. Ksoftirqd shouldn't reach here as the
-+	 * timer base wouldn't be idle. And inline softirq processing
-+	 * after a call to local_bh_enable() within idle loop sound too
-+	 * fun to be considered here.
-+	 */
-+	WARN_ONCE(in_task(),
-+		  "Late timer enqueue may be ignored\n");
-+#endif
-+}
-+
- /*
-  * When add_timer_on() enqueues a timer into the timer wheel of an
-  * idle CPU then this timer might expire before the next timer event
-@@ -688,8 +704,10 @@ static void wake_up_idle_cpu(int cpu)
- {
- 	struct rq *rq = cpu_rq(cpu);
- 
--	if (cpu == smp_processor_id())
-+	if (cpu == smp_processor_id()) {
-+		wake_idle_assert_possible();
- 		return;
-+	}
- 
- 	if (set_nr_and_not_polling(rq->idle))
- 		smp_send_reschedule(cpu);
--- 
-2.25.1
-
+Thanks,
+-- Marco
