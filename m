@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B9132E478
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2D832E470
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbhCEJOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:14:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhCEJOF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:14:05 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913BDC061574;
-        Fri,  5 Mar 2021 01:14:05 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id j12so1548544pfj.12;
-        Fri, 05 Mar 2021 01:14:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4zEE7rqrK3goJLrxJadwawdflEcIk4A0CqTQec6iyds=;
-        b=Kx4x3Cc3LsPrKyHpdcTnHmDMM1eHkVYfQnKItph3uxOwNmd6qVQgw651IpyCCk6bJD
-         GVfzi5DFVZpJcE/9lvNN4I9vpgecFoDU6U/aILIJsFC8Rp3DOZ570QjE7mEkuRf+swyJ
-         brqcwgZAxuHqqzZycGhDQAmv/v250lpLQNb8dVgx8/Xae0o7nAr63Zo3c66UkhTPPjBo
-         BM5fMoA5zuOTQIvVBGbCJw8g46mkja1dsu5wJYK/eYKRCumY4AL46Q/RHDd4O6/uXqb5
-         WjwHq7g5iMH4FMPOajkFY9uV0XYSd8B7etynSSVjLETforv9hVCe5uc5cW3g167+Wl9Q
-         mxZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4zEE7rqrK3goJLrxJadwawdflEcIk4A0CqTQec6iyds=;
-        b=Awn29SW7McLaDeeWzuOuBzXnuxhEOCAcZZypv3rb1mT7h5GWPOC5ZepEinfinUVAX0
-         fIesvO//1wZtGjC6u2UVTq2wAa/BEVoLUqbIKa2E3pMMn45GGWDtxbvv7BoDVUokaTmX
-         tpJEdTy3cpjtZdDNLVdSm1kKzPMo2REfo662VVLjyTo5oZgSap+Pm57IqqYSdpBHIfzj
-         2b4NOf9ElzypOhUhkmFosOTlGFbNy0vB9ucglBqridd8SUpSVp719ofv77HDFtbFeokQ
-         VGwgXf44elydZFoaQpjU6pSurtnXyImhMR0HFkVApu2wn4yuMs2doxD0DZPpPRpdnL8o
-         KCtw==
-X-Gm-Message-State: AOAM533kc8qW5QGmYqVmKnE8Jk1lVRbm2NpHt+CMVE1Tov+19a5/+zPC
-        0ct5Gz586y6NU5fdcjh2/K0=
-X-Google-Smtp-Source: ABdhPJwEBq+wJr2WgZsr2R5XNMcQXCEmmZcnKDrXvixiB7fslPTCQ7eG/vQrapqM2CuZRGi+IYll8w==
-X-Received: by 2002:a62:1997:0:b029:1ed:5de5:5f1c with SMTP id 145-20020a6219970000b02901ed5de55f1cmr7984327pfz.14.1614935645227;
-        Fri, 05 Mar 2021 01:14:05 -0800 (PST)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id gz12sm1717617pjb.33.2021.03.05.01.14.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 01:14:04 -0800 (PST)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     martin.petersen@oracle.com, jejb@linux.ibm.com,
-        linux-scsi@vger.kernel.org
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        stanley.chu@mediatek.com, cang@codeaurora.org, beanhuo@micron.com,
-        jaegeuk@kernel.org, asutoshd@codeaurora.org,
-        linux-kernel@vger.kernel.org, huyue2@yulong.com,
-        zhangwen@yulong.com, zbestahu@163.com
-Subject: [PATCH] scsi: ufs: Remove redundant WB enabling check in ufshcd_wb_toggle_flush()
-Date:   Fri,  5 Mar 2021 17:12:53 +0800
-Message-Id: <20210305091253.314-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229616AbhCEJNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:13:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49284 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhCEJMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:12:55 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0F1ACAFC1;
+        Fri,  5 Mar 2021 09:12:54 +0000 (UTC)
+Date:   Fri, 05 Mar 2021 10:12:53 +0100
+Message-ID: <s5hh7lq7ylm.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/4] ALSA: hda/cirrus: Add support for CS8409 HDA bridge and CS42L42 companion codec
+In-Reply-To: <20210304190241.5363-1-vitalyr@opensource.cirrus.com>
+References: <20210304190241.5363-1-vitalyr@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+On Thu, 04 Mar 2021 20:02:37 +0100,
+Vitaly Rodionov wrote:
+> 
+> Dell's laptops Inspiron 3500, Inspiron 3501, Inspiron 3505 are using
+> Cirrus Logic CS8409 HDA bridge with CS42L42 companion codec.
+> 
+> The CS8409 is a multichannel HD audio routing controller.
+> CS8409 includes support for four channels of digital
+> microphone data and two bidirectional ASPs for up to 32
+> channels of TDM data or 4 channels of I2S data. The CS8409 is
+> intended to be used with a remote companion codec that implements
+> high performance analog functions in close physical
+> proximity to the end-equipment audio port or speaker driver.
+> 
+> The CS42L42 is a low-power audio codec with integrated MIPI
+> SoundWire interface or I2C/I2S/TDM interfaces designed
+> for portable applications. It provides a high-dynamic range,
+> stereo DAC for audio playback and a mono high-dynamic-range
+> ADC for audio capture
+> 
+> Changes since version 1:
+> 
+> ALSA: hda/cirrus: Increase AUTO_CFG_MAX_INS from 8 to 18
+> * No change
+> 
+> ALSA: hda/cirrus: Add support for CS8409 HDA bridge and CS42L42
+> companion codec.
+> * Removed redundant fields in fixup table
+> * Handle gpio via spec->gpio_dir, spec->gpio_data and spec->gpio_mask
+> * Moved cs8409_cs42l42_init() from patch 2, to handle resume correctly
+> 
+> ALSA: hda/cirrus: Add jack detect interrupt support from CS42L42
+> companion codec.
+> * Run scripts/checkpatch.pl, fixed new warnings
+> 
+> ALSA: hda/cirrus: Add Headphone and Headset MIC Volume Control
+> * Moved control values to cache to avoid i2c read at each time.
+> 
+> Stefan Binding (1):
+>   ALSA: hda/cirrus: Add Headphone and Headset MIC Volume Control
+> 
+> Vitaly Rodionov (3):
+>   ALSA: hda/cirrus: Increase AUTO_CFG_MAX_INS from 8 to 18
+>   ALSA: hda/cirrus: Add support for CS8409 HDA bridge and CS42L42
+>     companion codec.
+>   ALSA: hda/cirrus: Add jack detect interrupt support from CS42L42
+>     companion codec.
 
-Note that ufshcd_wb_toggle_flush() will be called only in
-ufshcd_wb_config() which have already checked if WB is allowed.
+It seems that 0-day bot caught a few issues.  I'll wait for the next
+respin :)
 
-Signed-off-by: Yue Hu <huyue2@yulong.com>
----
- drivers/scsi/ufs/ufshcd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 721f55d..2c49344 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -5484,8 +5484,7 @@ static inline int ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool enable)
- 	u8 index;
- 	enum query_opcode opcode;
- 
--	if (!ufshcd_is_wb_allowed(hba) ||
--	    hba->dev_info.wb_buf_flush_enabled == enable)
-+	if (hba->dev_info.wb_buf_flush_enabled == enable)
- 		return 0;
- 
- 	if (enable)
--- 
-1.9.1
+thanks,
 
+Takashi
