@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70AD032EB40
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCEF32EAF1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:41:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233308AbhCEMnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:43:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59110 "EHLO mail.kernel.org"
+        id S233418AbhCEMlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:41:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233875AbhCEMma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:42:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2E2A6501E;
-        Fri,  5 Mar 2021 12:42:29 +0000 (UTC)
+        id S231224AbhCEMkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:40:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EED6464E84;
+        Fri,  5 Mar 2021 12:40:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948150;
-        bh=aoE5J0PWrctxcKeIz3yU39Ecvb3NOa4u+eeGm84Eg3U=;
+        s=korg; t=1614948033;
+        bh=UGV5qd3w4UPGJb4DeqXeTXxebdQ7BrsB1t7JvviE3ug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SCsD+wsiezA/MhifRXoFtOeRNmSegQ17cU6vqwK19V7uF0wXXn4/LE7hQbVM2Vs1A
-         cto/D2mS1jDq5Gr12Ziy1FwNMSHJUo/MoATJMEFzdMfVhRHE8wjyOS4kvefEYuTGZU
-         FBVcSFGoI2NiJwJhitOwKPQ+qnas+ChfeWQYOvpc=
+        b=Arsh7XMTx+pUNnjQImm95G/AglGhv8J2FDIMw6kvUtSpccZ4P6LGeFE6fh8tvFbqo
+         5a2XtvqMt4scoy+Q6ilFPntW0R0V0w7Nzr5bkjwFFMChutWCwFL8ssMGmdC1+5S/uP
+         AC1uThmzbWHFUAHltSG4FXHgZv/5R0bw0wfgnP6o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yumei Huang <yuhuang@redhat.com>,
-        Brian Foster <bfoster@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Subject: [PATCH 4.9 19/41] xfs: Fix assert failure in xfs_setattr_size()
-Date:   Fri,  5 Mar 2021 13:22:26 +0100
-Message-Id: <20210305120852.237865767@linuxfoundation.org>
+        stable@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 28/39] media: uvcvideo: Allow entities with no pads
+Date:   Fri,  5 Mar 2021 13:22:27 +0100
+Message-Id: <20210305120853.185626410@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
-References: <20210305120851.255002428@linuxfoundation.org>
+In-Reply-To: <20210305120851.751937389@linuxfoundation.org>
+References: <20210305120851.751937389@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yumei Huang <yuhuang@redhat.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
 
-commit 88a9e03beef22cc5fabea344f54b9a0dfe63de08 upstream.
+[ Upstream commit 7532dad6634031d083df7af606fac655b8d08b5c ]
 
-An assert failure is triggered by syzkaller test due to
-ATTR_KILL_PRIV is not cleared before xfs_setattr_size.
-As ATTR_KILL_PRIV is not checked/used by xfs_setattr_size,
-just remove it from the assert.
+Avoid an underflow while calculating the number of inputs for entities
+with zero pads.
 
-Signed-off-by: Yumei Huang <yuhuang@redhat.com>
-Reviewed-by: Brian Foster <bfoster@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_iops.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/usb/uvc/uvc_driver.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/fs/xfs/xfs_iops.c
-+++ b/fs/xfs/xfs_iops.c
-@@ -820,7 +820,7 @@ xfs_setattr_size(
- 	ASSERT(xfs_isilocked(ip, XFS_MMAPLOCK_EXCL));
- 	ASSERT(S_ISREG(inode->i_mode));
- 	ASSERT((iattr->ia_valid & (ATTR_UID|ATTR_GID|ATTR_ATIME|ATTR_ATIME_SET|
--		ATTR_MTIME_SET|ATTR_KILL_PRIV|ATTR_TIMES_SET)) == 0);
-+		ATTR_MTIME_SET|ATTR_TIMES_SET)) == 0);
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 5899593dabaf..aaaee039fb30 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -904,7 +904,10 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
+ 	unsigned int i;
  
- 	oldsize = inode->i_size;
- 	newsize = iattr->ia_size;
+ 	extra_size = roundup(extra_size, sizeof(*entity->pads));
+-	num_inputs = (type & UVC_TERM_OUTPUT) ? num_pads : num_pads - 1;
++	if (num_pads)
++		num_inputs = type & UVC_TERM_OUTPUT ? num_pads : num_pads - 1;
++	else
++		num_inputs = 0;
+ 	size = sizeof(*entity) + extra_size + sizeof(*entity->pads) * num_pads
+ 	     + num_inputs;
+ 	entity = kzalloc(size, GFP_KERNEL);
+@@ -920,7 +923,7 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
+ 
+ 	for (i = 0; i < num_inputs; ++i)
+ 		entity->pads[i].flags = MEDIA_PAD_FL_SINK;
+-	if (!UVC_ENTITY_IS_OTERM(entity))
++	if (!UVC_ENTITY_IS_OTERM(entity) && num_pads)
+ 		entity->pads[num_pads-1].flags = MEDIA_PAD_FL_SOURCE;
+ 
+ 	entity->bNrInPins = num_inputs;
+-- 
+2.30.1
+
 
 
