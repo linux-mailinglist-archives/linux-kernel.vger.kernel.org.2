@@ -2,156 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4EE32F09E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4832632F0A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhCEREN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:04:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231382AbhCEREA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:04:00 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D3BC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 09:04:00 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id a18so2820351wrc.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 09:04:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ahYwzRQmSJrX4v8ks57+n/tweaGVoFJT9QTc8vhlUHg=;
-        b=swIYYukmXBPaja9sOQciBRpjvLCS+zDwCEO0LYBBETH1USSmuqSzF0c5EQfiCG2Wo2
-         GLUPdq8UftrXP9o9q2Eu3qYe6zVzpqQIbQPM3uClUG5+DcyhsuBHBe+fsv5Qrs5K5EfX
-         oNfWy6b3fFjbQ6xAo4gIYcM9qYdOUwz3NJk84Bk3TbBXf8p7dSkL0pBOSDclsPQzWJ1z
-         XM6+6xA4ghBTSuC6vRQ3m60/51XI68pU/kbjgztoQqNuUg7aWcj0EDDJFfl/Dp6W7Rvo
-         2iireZy5lAjM/nLHQ13lB3v80mBbVi2Ka4GHqjgQl87pIk4q0ChWX7Q/P3tHGPNuzOfP
-         2l1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ahYwzRQmSJrX4v8ks57+n/tweaGVoFJT9QTc8vhlUHg=;
-        b=RJRvw5bBBIdG7jG97VXWV12q03SYOMulR0Vo/Sc5SbYb7IajHX7OAN0OG6pryKKslb
-         hV63AyYfLtknYvFkrTpJ5yEAuPB1nNVWKbwutIYtkIQ7jogYjdvASvYIInnkBOshClwB
-         eY4w4+QX6D0Czg3TSHJRJNtr9oISvPhFIlR7wmv2cFqs9VfHpBlarh8SXTtCC5V/xBSm
-         Ei986SKJnCEyLIAjXJxwbjwG/3UWKj5ie1F993nRA3z4AyS06JS8NSCzbDAdjt84EGnZ
-         jRM3BNP8s4yTIq7dArnf+ev7e/xpmEnQpWFMG2logfrcgmCZMzkeFPRIPS3Ys0U8ARVN
-         BC/w==
-X-Gm-Message-State: AOAM530/nnXGET43w/G5LN0KmQOC493uspoJMCURgvlU9ieax6RET23L
-        BriDzbe7oEFe9v+JGJ80luqIyw==
-X-Google-Smtp-Source: ABdhPJy7Len8gQJ8kSf2MO/PaGZMBla5J7H3YzDlCMYsreVJGMZXypBM7ZvREdzhXmXw5/qQmz+p0A==
-X-Received: by 2002:a5d:6b0a:: with SMTP id v10mr10296497wrw.183.1614963835502;
-        Fri, 05 Mar 2021 09:03:55 -0800 (PST)
-Received: from localhost.localdomain (lns-bzn-59-82-252-141-80.adsl.proxad.net. [82.252.141.80])
-        by smtp.gmail.com with ESMTPSA id p17sm4760934wmq.47.2021.03.05.09.03.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 09:03:55 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     cwchoi00@gmail.com
-Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, steven.price@arm.com,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org (open list:ARM MALI PANFROST DRM DRIVER)
-Subject: [PATCH v2 4/4] devfreq/drivers/panfrost: Use devfreq cooling device registration
-Date:   Fri,  5 Mar 2021 18:03:37 +0100
-Message-Id: <20210305170338.13647-4-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210305170338.13647-1-daniel.lezcano@linaro.org>
-References: <20210305170338.13647-1-daniel.lezcano@linaro.org>
+        id S231411AbhCEREm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:04:42 -0500
+Received: from marcansoft.com ([212.63.210.85]:57614 "EHLO mail.marcansoft.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231426AbhCERE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 12:04:29 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 583A83FA1B;
+        Fri,  5 Mar 2021 17:04:20 +0000 (UTC)
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-25-marcan@marcan.st>
+ <CAHp75VdFTHPfvdNUZEsn-qUCozASEGXeTDkTTUfOTqZ2TMsfiA@mail.gmail.com>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [RFT PATCH v3 24/27] tty: serial: samsung_tty: Add support for
+ Apple UARTs
+Message-ID: <2ed7523f-5c11-976f-ac11-f756d7510400@marcan.st>
+Date:   Sat, 6 Mar 2021 02:04:18 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <CAHp75VdFTHPfvdNUZEsn-qUCozASEGXeTDkTTUfOTqZ2TMsfiA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The devfreq core code is able to register the devfreq device as a
-cooling device if the 'is_cooling_device' flag is set in the profile.
+On 06/03/2021 00.28, Andy Shevchenko wrote:
+>> +       case TYPE_APPLE_S5L:
+>> +               WARN_ON(1); // No DMA
+> 
+> Oh, no, please use the ONCE variant.
 
-Use this flag and remove the cooling device registering code.
+Thanks, changing this for v4.
 
-Tested on rock960.
+> 
+> ...
+> 
+>> +       /* Apple types use these bits for IRQ masks */
+>> +       if (ourport->info->type != TYPE_APPLE_S5L) {
+>> +               ucon &= ~(S3C64XX_UCON_TIMEOUT_MASK |
+>> +                               S3C64XX_UCON_EMPTYINT_EN |
+>> +                               S3C64XX_UCON_DMASUS_EN |
+>> +                               S3C64XX_UCON_TIMEOUT_EN);
+>> +               ucon |= 0xf << S3C64XX_UCON_TIMEOUT_SHIFT |
+> 
+> Can you spell 0xf with named constant(s), please?
+> 
+> In case they are repetitive via the code, introduce either a temporary
+> variable (in case it scoped to one function only), or define it as a
+> constant.
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/gpu/drm/panfrost/panfrost_devfreq.c | 14 +-------------
- drivers/gpu/drm/panfrost/panfrost_devfreq.h |  3 ---
- 2 files changed, 1 insertion(+), 16 deletions(-)
+I'm just moving this code; as far as I can tell this is a timeout value 
+(so just an integer), but I don't know if there is any special meaning 
+to 0xf here. Note that this codepath is for *non-Apple* chips, as the 
+Apple ones don't even have this field (at least not here).
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-index 56b3f5935703..4d96edf1bc54 100644
---- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-@@ -3,7 +3,6 @@
- 
- #include <linux/clk.h>
- #include <linux/devfreq.h>
--#include <linux/devfreq_cooling.h>
- #include <linux/platform_device.h>
- #include <linux/pm_opp.h>
- 
-@@ -80,6 +79,7 @@ static struct devfreq_dev_profile panfrost_devfreq_profile = {
- 	.polling_ms = 50, /* ~3 frames */
- 	.target = panfrost_devfreq_target,
- 	.get_dev_status = panfrost_devfreq_get_dev_status,
-+	.is_cooling_device = true,
- };
- 
- int panfrost_devfreq_init(struct panfrost_device *pfdev)
-@@ -90,7 +90,6 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
- 	struct device *dev = &pfdev->pdev->dev;
- 	struct devfreq *devfreq;
- 	struct opp_table *opp_table;
--	struct thermal_cooling_device *cooling;
- 	struct panfrost_devfreq *pfdevfreq = &pfdev->pfdevfreq;
- 
- 	opp_table = dev_pm_opp_set_regulators(dev, pfdev->comp->supply_names,
-@@ -139,12 +138,6 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
- 	}
- 	pfdevfreq->devfreq = devfreq;
- 
--	cooling = devfreq_cooling_em_register(devfreq, NULL);
--	if (IS_ERR(cooling))
--		DRM_DEV_INFO(dev, "Failed to register cooling device\n");
--	else
--		pfdevfreq->cooling = cooling;
--
- 	return 0;
- 
- err_fini:
-@@ -156,11 +149,6 @@ void panfrost_devfreq_fini(struct panfrost_device *pfdev)
- {
- 	struct panfrost_devfreq *pfdevfreq = &pfdev->pfdevfreq;
- 
--	if (pfdevfreq->cooling) {
--		devfreq_cooling_unregister(pfdevfreq->cooling);
--		pfdevfreq->cooling = NULL;
--	}
--
- 	if (pfdevfreq->opp_of_table_added) {
- 		dev_pm_opp_of_remove_table(&pfdev->pdev->dev);
- 		pfdevfreq->opp_of_table_added = false;
-diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.h b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-index db6ea48e21f9..470f5c974703 100644
---- a/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-+++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-@@ -9,14 +9,11 @@
- 
- struct devfreq;
- struct opp_table;
--struct thermal_cooling_device;
--
- struct panfrost_device;
- 
- struct panfrost_devfreq {
- 	struct devfreq *devfreq;
- 	struct opp_table *regulators_opp_table;
--	struct thermal_cooling_device *cooling;
- 	bool opp_of_table_added;
- 
- 	ktime_t busy_time;
+>> +       irqreturn_t ret = IRQ_NONE;
+> 
+> Redundant. You may return directly.
+
+What if both interrupts are pending?
+
+> No IO serialization?
+
+There is no DMA on the Apple variants (as far as I know; it's not 
+implemented anyway), so there is no need for serializing IO with DMA. In 
+any case, dealing with that is the DMA code's job, the interrupt handler 
+shouldn't need to care.
+
+If you mean serializing IO with the IRQ: CPU-wise, I would hope that's 
+the irqchip's job (AIC does this with a readl on the event). If you mean 
+ensuring all writes are complete (i.e. posted write issue), on the Apple 
+chips everything is non-posted as explained in the previous patches.
+
+> Extra blank line (check your entire series for a such)
+
+Thanks, noted. I'll check the declaration blocks in other patches.
+
+>> +       ourport->rx_enabled = 1;
+>> +       ourport->tx_enabled = 0;
+> 
+> How are these protected against race?
+
+The serial core should be holding the port mutex for pretty much every 
+call into the driver, as far as I can tell.
+
+> 
+> ...
+> 
+>> +               case TYPE_APPLE_S5L: {
+>> +                       unsigned int ucon;
+>> +                       int ret;
+>> +
+>> +                       ret = clk_prepare_enable(ourport->clk);
+>> +                       if (ret) {
+>> +                               dev_err(dev, "clk_enable clk failed: %d\n", ret);
+>> +                               return ret;
+>> +                       }
+>> +                       if (!IS_ERR(ourport->baudclk)) {
+>> +                               ret = clk_prepare_enable(ourport->baudclk);
+>> +                               if (ret) {
+>> +                                       dev_err(dev, "clk_enable baudclk failed: %d\n", ret);
+>> +                                       clk_disable_unprepare(ourport->clk);
+>> +                                       return ret;
+>> +                               }
+>> +                       }
+> 
+> Wouldn't it be better to use CLK bulk API?
+
+Ah, I guess that could save a line or two of code here, even though it 
+requires setting up the array. I'll give it a shot.
+
+>> +#ifdef CONFIG_ARCH_APPLE
+> 
+> Why? Wouldn't you like the one kernel to work on many SoCs?
+
+This *adds* Apple support, it is not mutually exclusive with all the 
+other SoCs. You can enable all of those options and get a driver that 
+works on all of them. This is the same pattern used throughout the 
+driver for all the other Samsung variants. There is no reason to have 
+Apple SoC support in the samsung driver if the rest of the kernel 
+doesn't have Apple SoC support either, of course.
+
+>> +#define APPLE_S5L_UCON_RXTO_ENA_MSK    (1 << APPLE_S5L_UCON_RXTO_ENA)
+>> +#define APPLE_S5L_UCON_RXTHRESH_ENA_MSK        (1 << APPLE_S5L_UCON_RXTHRESH_ENA)
+>> +#define APPLE_S5L_UCON_TXTHRESH_ENA_MSK        (1 << APPLE_S5L_UCON_TXTHRESH_ENA)
+> 
+> BIT() ?
+
+I'm trying to keep the style of the rest of the file here, which doesn't 
+use BIT() anywhere. I agree this header could use some work though... I 
+wonder if I've met my required quota of cleanups to this driver for this 
+patchset ;-)
+
+>> +#define APPLE_S5L_UCON_DEFAULT         (S3C2410_UCON_TXIRQMODE | \
+>> +                                        S3C2410_UCON_RXIRQMODE | \
+>> +                                        S3C2410_UCON_RXFIFO_TOI)
+> 
+> Indentation level is too high. Hint: start a value of the definition
+> on the new line.
+
+Is it that bad? It's within 80 cols, putting one bit per line is more 
+readable than several on one line, and this is how the rest of the 
+header is written. Is it really better to do
+
+#define APPLE_S5L_UCON_DEFAULT \
+	(S3C2410_UCON_TXIRQMODE | S3C2410_UCON_RXIRQMODE | \
+	 S3C2410_UCON_RXFIFO_TOI)
+
+or
+
+#define APPLE_S5L_UCON_DEFAULT \
+		(S3C2410_UCON_TXIRQMODE | \
+		 S3C2410_UCON_RXIRQMODE | \
+		 S3C2410_UCON_RXFIFO_TOI)
+
+here? Those don't look like an obvious improvement to me, I'd even say 
+overlapping the bits and the macro name in the same columns makes it 
+less readable to my eyes.
+
+>> +#define APPLE_S5L_UTRSTAT_RXTHRESH     (1<<4)
+>> +#define APPLE_S5L_UTRSTAT_TXTHRESH     (1<<5)
+>> +#define APPLE_S5L_UTRSTAT_RXTO         (1<<9)
+>> +#define APPLE_S5L_UTRSTAT_ALL_FLAGS    (0x3f0)
+> 
+> BIT() ?
+
+See above.
+
 -- 
-2.17.1
-
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
