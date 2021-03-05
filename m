@@ -2,152 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE8E32DFDB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7718F32DFDD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbhCEC7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 21:59:25 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:45160 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhCEC7Y (ORCPT
+        id S229463AbhCEDBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 22:01:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30866 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229436AbhCEDBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 21:59:24 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1252xIXF026556;
-        Thu, 4 Mar 2021 20:59:18 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614913158;
-        bh=4ahj61Ka0+iqhWERh7yRL39qOUve4QTofA7lhdzVP6M=;
-        h=From:To:CC:Subject:Date;
-        b=atLib6IfCvdhxB2qqxzMrqn582vEurvNRni4xyzQuAkfXOra5h8suuBnrBcC1c7rm
-         lCxSZQg2+eMzFjYbEptSnJG1wTNZDfLxVk+PJvoDf6sfZRYbYv9STrk4EOII4GU0XV
-         pEUqNUYaXxqSWO3yZNbyu1PTj4ha0VYMUG/khIjI=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1252xI3c051045
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 4 Mar 2021 20:59:18 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Mar
- 2021 20:59:18 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 4 Mar 2021 20:59:18 -0600
-Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1252xDqN121008;
-        Thu, 4 Mar 2021 20:59:14 -0600
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-Subject: [PATCH] PCI: designware-ep: Fix NULL pointer dereference error
-Date:   Fri, 5 Mar 2021 08:29:10 +0530
-Message-ID: <20210305025910.9652-1-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 4 Mar 2021 22:01:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614913296;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rbQG59Qwdexi2ZwJvCmGmQtYONrZ9WmAK6AGbLvhncs=;
+        b=OaeQlmdUA1im4f7DXgeju0kR9X8cNHDr7lm7TWEeqayxnqhGOhjNgEfXPVpIzpxXYpoWxX
+        0BL4kh0EhyIdpkPYU92bDdT7dx+5UGIhQ1dUC5dRLnVAM5awAXfVSBQLEYPQD79tDKPIUr
+        7bq5ljvN+4Xnmz9n10mP61q1q/bjTa8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-340-73ev7NdUMN2VLu5qmYoVzg-1; Thu, 04 Mar 2021 22:01:34 -0500
+X-MC-Unique: 73ev7NdUMN2VLu5qmYoVzg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F43C80006E;
+        Fri,  5 Mar 2021 03:01:33 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-196.pek2.redhat.com [10.72.13.196])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4C9CD19D61;
+        Fri,  5 Mar 2021 03:01:30 +0000 (UTC)
+Subject: Re: [virtio-dev] Re: [PATCH] vdpa/mlx5: set_features should allow
+ reset to zero
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        virtio-dev@lists.oasis-open.org
+References: <20210223041740-mutt-send-email-mst@kernel.org>
+ <788a0880-0a68-20b7-5bdf-f8150b08276a@redhat.com>
+ <20210223110430.2f098bc0.cohuck@redhat.com>
+ <bbb0a09e-17e1-a397-1b64-6ce9afe18e44@redhat.com>
+ <20210223115833.732d809c.cohuck@redhat.com>
+ <8355f9b3-4cda-cd2e-98df-fed020193008@redhat.com>
+ <20210224121234.0127ae4b.cohuck@redhat.com>
+ <be6713d3-ac98-bbbf-1dc1-a003ed06a156@redhat.com>
+ <20210225135229-mutt-send-email-mst@kernel.org>
+ <0f8eb381-cc98-9e05-0e35-ccdb1cbd6119@redhat.com>
+ <20210228162306-mutt-send-email-mst@kernel.org>
+ <cdd72199-ac7b-cc8d-2c40-81e43162c532@redhat.com>
+ <20210302130812.6227f176.cohuck@redhat.com>
+ <5f6972fe-7246-b622-958d-9cab8dd98e21@redhat.com>
+ <20210303092905.677eb66c.cohuck@redhat.com>
+ <1b5b3f9b-41d7-795c-c677-c45f1d5a774e@redhat.com>
+ <20210304145000.149706ae.cohuck@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <71fd3f74-00ba-f085-27e9-6a0d21c9a93f@redhat.com>
+Date:   Fri, 5 Mar 2021 11:01:28 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210304145000.149706ae.cohuck@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows") detected
-the number of inbound and outbound windows dynamically at runtime in
-dw_pcie_setup(). However pcie-designware-ep.c accessed the variables
-holding the number of inbound and outbound windows even before
-dw_pcie_setup() was invoked. Fix the sequence here.
 
-Fixes: 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows")
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- .../pci/controller/dwc/pcie-designware-ep.c   | 44 ++++++++++---------
- 1 file changed, 23 insertions(+), 21 deletions(-)
+On 2021/3/4 9:50 下午, Cornelia Huck wrote:
+> On Thu, 4 Mar 2021 16:24:16 +0800
+> Jason Wang <jasowang@redhat.com> wrote:
+>
+>> On 2021/3/3 4:29 下午, Cornelia Huck wrote:
+>>> On Wed, 3 Mar 2021 12:01:01 +0800
+>>> Jason Wang <jasowang@redhat.com> wrote:
+>>>   
+>>>> On 2021/3/2 8:08 下午, Cornelia Huck wrote:
+>>>>> On Mon, 1 Mar 2021 11:51:08 +0800
+>>>>> Jason Wang <jasowang@redhat.com> wrote:
+>>>>>      
+>>>>>> On 2021/3/1 5:25 上午, Michael S. Tsirkin wrote:
+>>>>>>> On Fri, Feb 26, 2021 at 04:19:16PM +0800, Jason Wang wrote:
+>>>>>>>> On 2021/2/26 2:53 上午, Michael S. Tsirkin wrote:
+>>>>>>>>> Confused. What is wrong with the above? It never reads the
+>>>>>>>>> field unless the feature has been offered by device.
+>>>>>>>> So the spec said:
+>>>>>>>>
+>>>>>>>> "
+>>>>>>>>
+>>>>>>>> The following driver-read-only field, max_virtqueue_pairs only exists if
+>>>>>>>> VIRTIO_NET_F_MQ is set.
+>>>>>>>>
+>>>>>>>> "
+>>>>>>>>
+>>>>>>>> If I read this correctly, there will be no max_virtqueue_pairs field if the
+>>>>>>>> VIRTIO_NET_F_MQ is not offered by device? If yes the offsetof() violates
+>>>>>>>> what spec said.
+>>>>>>>>
+>>>>>>>> Thanks
+>>>>>>> I think that's a misunderstanding. This text was never intended to
+>>>>>>> imply that field offsets change beased on feature bits.
+>>>>>>> We had this pain with legacy and we never wanted to go back there.
+>>>>>>>
+>>>>>>> This merely implies that without VIRTIO_NET_F_MQ the field
+>>>>>>> should not be accessed. Exists in the sense "is accessible to driver".
+>>>>>>>
+>>>>>>> Let's just clarify that in the spec, job done.
+>>>>>> Ok, agree. That will make things more eaiser.
+>>>>> Yes, that makes much more sense.
+>>>>>
+>>>>> What about adding the following to the "Basic Facilities of a Virtio
+>>>>> Device/Device Configuration Space" section of the spec:
+>>>>>
+>>>>> "If an optional configuration field does not exist, the corresponding
+>>>>> space is still present, but reserved."
+>>>> This became interesting after re-reading some of the qemu codes.
+>>>>
+>>>> E.g in virtio-net.c we had:
+>>>>
+>>>> *static VirtIOFeature feature_sizes[] = {
+>>>>        {.flags = 1ULL << VIRTIO_NET_F_MAC,
+>>>>         .end = endof(struct virtio_net_config, mac)},
+>>>>        {.flags = 1ULL << VIRTIO_NET_F_STATUS,
+>>>>         .end = endof(struct virtio_net_config, status)},
+>>>>        {.flags = 1ULL << VIRTIO_NET_F_MQ,
+>>>>         .end = endof(struct virtio_net_config, max_virtqueue_pairs)},
+>>>>        {.flags = 1ULL << VIRTIO_NET_F_MTU,
+>>>>         .end = endof(struct virtio_net_config, mtu)},
+>>>>        {.flags = 1ULL << VIRTIO_NET_F_SPEED_DUPLEX,
+>>>>         .end = endof(struct virtio_net_config, duplex)},
+>>>>        {.flags = (1ULL << VIRTIO_NET_F_RSS) | (1ULL <<
+>>>> VIRTIO_NET_F_HASH_REPORT),
+>>>>         .end = endof(struct virtio_net_config, supported_hash_types)},
+>>>>        {}
+>>>> };*
+>>>>
+>>>> *It has a implict dependency chain. E.g MTU doesn't presnet if
+>>>> DUPLEX/RSS is not offered ...
+>>>> *
+>>> But I think it covers everything up to the relevant field, no? So MTU
+>>> is included if we have the feature bit, even if we don't have
+>>> DUPLEX/RSS.
+>>>
+>>> Given that a config space may be shorter (but must not collapse
+>>> non-existing fields), maybe a better wording would be:
+>>>
+>>> "If an optional configuration field does not exist, the corresponding
+>>> space will still be present if it is not at the end of the
+>>> configuration space (i.e., further configuration fields exist.)
+>>
+>> This should work but I think we need to define the end of configuration
+>> space first?
+> What about sidestepping this:
+>
+> "...the corresponding space will still be present, unless no further
+> configuration fields exist."
+>
+> ?
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-index 1c25d8337151..2c0f837af458 100644
---- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-@@ -636,9 +636,11 @@ static unsigned int dw_pcie_ep_find_ext_capability(struct dw_pcie *pci, int cap)
- int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
- {
- 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-+	struct device *dev = pci->dev;
- 	unsigned int offset;
- 	unsigned int nbars;
- 	u8 hdr_type;
-+	void *addr;
- 	u32 reg;
- 	int i;
- 
-@@ -665,6 +667,27 @@ int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
- 	}
- 
- 	dw_pcie_setup(pci);
-+
-+	ep->ib_window_map = devm_kcalloc(dev,
-+					 BITS_TO_LONGS(pci->num_ib_windows),
-+					 sizeof(long),
-+					 GFP_KERNEL);
-+	if (!ep->ib_window_map)
-+		return -ENOMEM;
-+
-+	ep->ob_window_map = devm_kcalloc(dev,
-+					 BITS_TO_LONGS(pci->num_ob_windows),
-+					 sizeof(long),
-+					 GFP_KERNEL);
-+	if (!ep->ob_window_map)
-+		return -ENOMEM;
-+
-+	addr = devm_kcalloc(dev, pci->num_ob_windows, sizeof(phys_addr_t),
-+			    GFP_KERNEL);
-+	if (!addr)
-+		return -ENOMEM;
-+	ep->outbound_addr = addr;
-+
- 	dw_pcie_dbi_ro_wr_dis(pci);
- 
- 	return 0;
-@@ -674,7 +697,6 @@ EXPORT_SYMBOL_GPL(dw_pcie_ep_init_complete);
- int dw_pcie_ep_init(struct dw_pcie_ep *ep)
- {
- 	int ret;
--	void *addr;
- 	u8 func_no;
- 	struct resource *res;
- 	struct pci_epc *epc;
-@@ -712,26 +734,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
- 	ep->phys_base = res->start;
- 	ep->addr_size = resource_size(res);
- 
--	ep->ib_window_map = devm_kcalloc(dev,
--					 BITS_TO_LONGS(pci->num_ib_windows),
--					 sizeof(long),
--					 GFP_KERNEL);
--	if (!ep->ib_window_map)
--		return -ENOMEM;
--
--	ep->ob_window_map = devm_kcalloc(dev,
--					 BITS_TO_LONGS(pci->num_ob_windows),
--					 sizeof(long),
--					 GFP_KERNEL);
--	if (!ep->ob_window_map)
--		return -ENOMEM;
--
--	addr = devm_kcalloc(dev, pci->num_ob_windows, sizeof(phys_addr_t),
--			    GFP_KERNEL);
--	if (!addr)
--		return -ENOMEM;
--	ep->outbound_addr = addr;
--
- 	if (pci->link_gen < 1)
- 		pci->link_gen = of_pci_get_max_link_speed(np);
- 
--- 
-2.17.1
+
+It might work. (I wonder maybe we can give some example in the spec).
+
+Thanks
+
+
+>
+>>> This
+>>> implies that a given field, if it exists, is always at the same offset
+>>> from the beginning of the configuration space."
 
