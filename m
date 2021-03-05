@@ -2,206 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A9632E1E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 06:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71EA332E1E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 06:55:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbhCEFxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 00:53:32 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33976 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229446AbhCEFxa (ORCPT
+        id S229552AbhCEFzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 00:55:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhCEFzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 00:53:30 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1255XoZ8175849;
-        Fri, 5 Mar 2021 00:52:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to; s=pp1;
- bh=c39ttEjLsLZEOdSgQosfwIEsd54cIco0DQ43D7yu7fA=;
- b=rL2XB81kQCupmXd0iTWZsadMJdeqdC+m7A4PVFgUaNjN12lapL7J0VjfxB+q1flXVfiY
- et2U89+wzYPzFjgAyg6OSTfGxwmEeyXA+QXfpFZfNeT6p1vl79qXDlZ1CAaSUKFtMmqg
- so+MUTMOzJ8b1Y+SmZyugq3q5SMGtWab5m7AGl4X3PM/I6pFNAeMTbFnUHBWoNZuaawE
- IcNruiHp3Otcw6GoP/f7Gq91LWP+JONwggQ1cn6/Gxa/cigYQ0J0EJCizAucyamZ7PWq
- Jt38gqrwP6fbdWlPnQmJR7mLfDChbdl0jl7PT/jjwa8SyWCKnDdEupIDQFjrAlX2X+i6 wg== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 373dvk1fme-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 00:52:39 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1255mtDM002201;
-        Fri, 5 Mar 2021 05:52:38 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 37293fspwq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 05:52:38 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1255qZ6U38666590
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 5 Mar 2021 05:52:36 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B6703A4040;
-        Fri,  5 Mar 2021 05:52:35 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5EF91A4057;
-        Fri,  5 Mar 2021 05:52:34 +0000 (GMT)
-Received: from [9.195.33.8] (unknown [9.195.33.8])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri,  5 Mar 2021 05:52:34 +0000 (GMT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] powerpc/perf: prevent mixed EBB and non-EBB events
-From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-In-Reply-To: <20210224122116.221120-1-cascardo@canonical.com>
-Date:   Fri, 5 Mar 2021 11:20:25 +0530
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F791C89D-E644-43D3-8229-3618AF7DE2C2@linux.vnet.ibm.com>
-References: <20210224122116.221120-1-cascardo@canonical.com>
-To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-05_03:2021-03-03,2021-03-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- mlxscore=0 bulkscore=0 mlxlogscore=999 priorityscore=1501 phishscore=0
- lowpriorityscore=0 impostorscore=0 malwarescore=0 spamscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103050026
+        Fri, 5 Mar 2021 00:55:14 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E2BC061574;
+        Thu,  4 Mar 2021 21:55:13 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id f1so1668429lfu.3;
+        Thu, 04 Mar 2021 21:55:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=6TzVgj4PvcBDxRYDeTfxKKMjDEjys98FzpUIgGLGweA=;
+        b=bpgVzM0j4Sb9ENi/7TVXAr/2Gr7KwkPbnAin4m5za60Twwffq1lmkSYhKcLreb4+hY
+         SK2Azf3t058U213/+zlDvFY6sXoIaWQxS4tiEq1CWcBrV2MrSxhvKmu7IQyiyV04EDT3
+         KCsUOot+l9i1BFCmcMXGD+40kk4UFX5bC0fRZnQsUdcMYTEmIOAnSGEDQJ9pcJKa9BHL
+         UuAlclRhyIhdaptJNABYjCxmsa2CTEDJKxtD8egm8qQCrV6EGWbT/lOHKViTLMxsA5u6
+         fJaOgqgiPmQvdrzkhI8rX4Pv1T/e5v6LF8QpEnziGgWrwbzM9KE3pa3mvxGj5k80aGzK
+         COfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=6TzVgj4PvcBDxRYDeTfxKKMjDEjys98FzpUIgGLGweA=;
+        b=fsyTRS/GVNew0mJzqujDtWlbLmgrN2cULnfxtEzZDTF+QQQdnCWwRLUBj/TlVGdIPL
+         IDSe4FjzdxDjxRNwTevW+BpmiOq2mPfxkHR/abz74yS+JNRZgVnsKTDpfgiEAvVeTgB2
+         DB9Vr1khb7V9Gt4ZcKOR8xjpH/8JkUfi+N2Fj48AkkMJEiF1f0X7HjZyXWomgEy9p5Dm
+         d0TPlGn1jaIyx4Va3CjerIKKSaFAbkpRTp9rmF3VQGurRQ8eb1Dvc4y7XJzuzB4+vtga
+         5NrDbLGxD9bHk/5CqUcR51jaPRAXhyeRxslUovGV3SgKVNzjM17eXQiFmGUEs01f2DI8
+         /epw==
+X-Gm-Message-State: AOAM533ccCfmNYuHcuZN0d4V2oq/fK3pvtUb6q8ZK/0hf7svscL1Ltzx
+        NZ5IDbhAnG59X2/pp2AXp/k=
+X-Google-Smtp-Source: ABdhPJyuKOi81mrmA7tPZDQDZq0M7//zcbIhwoiRVcVYVLUVDRNJbpTAdsrPAUe0Tt6qXKj2oOdqcw==
+X-Received: by 2002:a05:6512:38c6:: with SMTP id p6mr4417434lft.658.1614923712406;
+        Thu, 04 Mar 2021 21:55:12 -0800 (PST)
+Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.gmail.com with ESMTPSA id k13sm167327lfg.192.2021.03.04.21.55.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 21:55:11 -0800 (PST)
+From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivek Unune <npcomplete13@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH V2 mips/linux.git] firmware: bcm47xx_nvram: refactor finding & reading NVRAM
+Date:   Fri,  5 Mar 2021 06:55:01 +0100
+Message-Id: <20210305055501.13099-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210304072357.31108-1-zajec5@gmail.com>
+References: <20210304072357.31108-1-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rafał Miłecki <rafal@milecki.pl>
 
+1. Use meaningful variable names (e.g. "flash_start", "res_size" instead
+   of e.g. "iobase", "end")
+2. Always operate on "offset" instead of mix of start, end, size, etc.
+3. Add helper checking for NVRAM to avoid duplicating code
+4. Use "found" variable instead of goto
+5. Use simpler checking of offsets and sizes (2 nested loops with
+   trivial check instead of extra function)
 
-> On 24-Feb-2021, at 5:51 PM, Thadeu Lima de Souza Cascardo =
-<cascardo@canonical.com> wrote:
->=20
-> EBB events must be under exclusive groups, so there is no mix of EBB =
-and
-> non-EBB events on the same PMU. This requirement worked fine as perf =
-core
-> would not allow other pinned events to be scheduled together with =
-exclusive
-> events.
->=20
-> This assumption was broken by commit 1908dc911792 ("perf: Tweak
-> perf_event_attr::exclusive semantics").
->=20
-> After that, the test cpu_event_pinned_vs_ebb_test started succeeding =
-after
-> read_events, but worse, the task would not have given access to PMC1, =
-so
-> when it tried to write to it, it was killed with "illegal =
-instruction".
->=20
-> Preventing mixed EBB and non-EBB events from being add to the same PMU =
-will
-> just revert to the previous behavior and the test will succeed.
+This change has been tested on BCM4706. Updated code checks the same
+offsets as before. Driver still finds & copies NVRAM content.
 
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+V2: Fix comment to match actual function name
+Reported-by: kernel test robot <lkp@intel.com>
+---
+ drivers/firmware/broadcom/bcm47xx_nvram.c | 111 ++++++++++++----------
+ 1 file changed, 63 insertions(+), 48 deletions(-)
 
-Hi,
-
-Thanks for checking this. I checked your patch which is fixing =
-=E2=80=9Ccheck_excludes=E2=80=9D to make
-sure all events must agree on EBB. But in the PMU group constraints, we =
-already have check for
-EBB events. This is in arch/powerpc/perf/isa207-common.c ( =
-isa207_get_constraint function ).
-
-<<>>
-mask  |=3D CNST_EBB_VAL(ebb);
-value |=3D CNST_EBB_MASK;
-<<>>
-
-But the above setting for mask and value is interchanged. We actually =
-need to fix here.
-
-Below patch should fix this:
-
-diff --git a/arch/powerpc/perf/isa207-common.c =
-b/arch/powerpc/perf/isa207-common.c
-index e4f577da33d8..8b5eeb6fb2fb 100644
---- a/arch/powerpc/perf/isa207-common.c
-+++ b/arch/powerpc/perf/isa207-common.c
-@@ -447,8 +447,8 @@ int isa207_get_constraint(u64 event, unsigned long =
-*maskp, unsigned long *valp,
-         * EBB events are pinned & exclusive, so this should never =
-actually
-         * hit, but we leave it as a fallback in case.
-         */
--       mask  |=3D CNST_EBB_VAL(ebb);
--       value |=3D CNST_EBB_MASK;
-+       mask  |=3D CNST_EBB_MASK;
-+       value |=3D CNST_EBB_VAL(ebb);
-=20
-        *maskp =3D mask;
-        *valp =3D value;
-
-
-Can you please try with this patch.
-
-Thanks
-Athira
-
-
->=20
-> Fixes: 1908dc911792 (perf: Tweak perf_event_attr::exclusive semantics)
-> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> ---
-> arch/powerpc/perf/core-book3s.c | 20 ++++++++++++++++----
-> 1 file changed, 16 insertions(+), 4 deletions(-)
->=20
-> diff --git a/arch/powerpc/perf/core-book3s.c =
-b/arch/powerpc/perf/core-book3s.c
-> index 43599e671d38..d767f7944f85 100644
-> --- a/arch/powerpc/perf/core-book3s.c
-> +++ b/arch/powerpc/perf/core-book3s.c
-> @@ -1010,9 +1010,25 @@ static int check_excludes(struct perf_event =
-**ctrs, unsigned int cflags[],
-> 			  int n_prev, int n_new)
-> {
-> 	int eu =3D 0, ek =3D 0, eh =3D 0;
-> +	bool ebb =3D false;
-> 	int i, n, first;
-> 	struct perf_event *event;
->=20
-> +	n =3D n_prev + n_new;
-> +	if (n <=3D 1)
-> +		return 0;
-> +
-> +	first =3D 1;
-> +	for (i =3D 0; i < n; ++i) {
-> +		event =3D ctrs[i];
-> +		if (first) {
-> +			ebb =3D is_ebb_event(event);
-> +			first =3D 0;
-> +		} else if (is_ebb_event(event) !=3D ebb) {
-> +			return -EAGAIN;
-> +		}
-> +	}
-> +
-> 	/*
-> 	 * If the PMU we're on supports per event exclude settings then =
-we
-> 	 * don't need to do any of this logic. NB. This assumes no PMU =
-has both
-> @@ -1021,10 +1037,6 @@ static int check_excludes(struct perf_event =
-**ctrs, unsigned int cflags[],
-> 	if (ppmu->flags & PPMU_ARCH_207S)
-> 		return 0;
->=20
-> -	n =3D n_prev + n_new;
-> -	if (n <=3D 1)
-> -		return 0;
-> -
-> 	first =3D 1;
-> 	for (i =3D 0; i < n; ++i) {
-> 		if (cflags[i] & PPMU_LIMITED_PMC_OK) {
-> --=20
-> 2.27.0
->=20
+diff --git a/drivers/firmware/broadcom/bcm47xx_nvram.c b/drivers/firmware/broadcom/bcm47xx_nvram.c
+index 835ece9c00f1..b47c80a79358 100644
+--- a/drivers/firmware/broadcom/bcm47xx_nvram.c
++++ b/drivers/firmware/broadcom/bcm47xx_nvram.c
+@@ -34,26 +34,47 @@ static char nvram_buf[NVRAM_SPACE];
+ static size_t nvram_len;
+ static const u32 nvram_sizes[] = {0x6000, 0x8000, 0xF000, 0x10000};
+ 
+-static u32 find_nvram_size(void __iomem *end)
++/**
++ * bcm47xx_nvram_is_valid - check for a valid NVRAM at specified memory
++ */
++static bool bcm47xx_nvram_is_valid(void __iomem *nvram)
+ {
+-	struct nvram_header __iomem *header;
+-	int i;
++	return ((struct nvram_header *)nvram)->magic == NVRAM_MAGIC;
++}
+ 
+-	for (i = 0; i < ARRAY_SIZE(nvram_sizes); i++) {
+-		header = (struct nvram_header *)(end - nvram_sizes[i]);
+-		if (header->magic == NVRAM_MAGIC)
+-			return nvram_sizes[i];
++/**
++ * bcm47xx_nvram_copy - copy NVRAM to internal buffer
++ */
++static void bcm47xx_nvram_copy(void __iomem *nvram_start, size_t res_size)
++{
++	struct nvram_header __iomem *header = nvram_start;
++	size_t copy_size;
++
++	copy_size = header->len;
++	if (copy_size > res_size) {
++		pr_err("The nvram size according to the header seems to be bigger than the partition on flash\n");
++		copy_size = res_size;
++	}
++	if (copy_size >= NVRAM_SPACE) {
++		pr_err("nvram on flash (%zu bytes) is bigger than the reserved space in memory, will just copy the first %i bytes\n",
++		       copy_size, NVRAM_SPACE - 1);
++		copy_size = NVRAM_SPACE - 1;
+ 	}
+ 
+-	return 0;
++	__ioread32_copy(nvram_buf, nvram_start, DIV_ROUND_UP(copy_size, 4));
++	nvram_buf[NVRAM_SPACE - 1] = '\0';
++	nvram_len = copy_size;
+ }
+ 
+-/* Probe for NVRAM header */
+-static int nvram_find_and_copy(void __iomem *iobase, u32 lim)
++/**
++ * bcm47xx_nvram_find_and_copy - find NVRAM on flash mapping & copy it
++ */
++static int bcm47xx_nvram_find_and_copy(void __iomem *flash_start, size_t res_size)
+ {
+-	struct nvram_header __iomem *header;
+-	u32 off;
+-	u32 size;
++	size_t flash_size;
++	size_t offset;
++	bool found;
++	int i;
+ 
+ 	if (nvram_len) {
+ 		pr_warn("nvram already initialized\n");
+@@ -61,49 +82,43 @@ static int nvram_find_and_copy(void __iomem *iobase, u32 lim)
+ 	}
+ 
+ 	/* TODO: when nvram is on nand flash check for bad blocks first. */
+-	off = FLASH_MIN;
+-	while (off <= lim) {
+-		/* Windowed flash access */
+-		size = find_nvram_size(iobase + off);
+-		if (size) {
+-			header = (struct nvram_header *)(iobase + off - size);
+-			goto found;
++
++	found = false;
++
++	/* Try every possible flash size and check for NVRAM at its end */
++	for (flash_size = FLASH_MIN; flash_size <= res_size; flash_size <<= 1) {
++		for (i = 0; i < ARRAY_SIZE(nvram_sizes); i++) {
++			offset = flash_size - nvram_sizes[i];
++			if (bcm47xx_nvram_is_valid(flash_start + offset)) {
++				found = true;
++				break;
++			}
+ 		}
+-		off <<= 1;
++
++		if (found)
++			break;
+ 	}
+ 
+ 	/* Try embedded NVRAM at 4 KB and 1 KB as last resorts */
+-	header = (struct nvram_header *)(iobase + 4096);
+-	if (header->magic == NVRAM_MAGIC) {
+-		size = NVRAM_SPACE;
+-		goto found;
+-	}
+ 
+-	header = (struct nvram_header *)(iobase + 1024);
+-	if (header->magic == NVRAM_MAGIC) {
+-		size = NVRAM_SPACE;
+-		goto found;
++	if (!found) {
++		offset = 4096;
++		if (bcm47xx_nvram_is_valid(flash_start + offset))
++			found = true;
+ 	}
+ 
+-	pr_err("no nvram found\n");
+-	return -ENXIO;
+-
+-found:
+-	__ioread32_copy(nvram_buf, header, sizeof(*header) / 4);
+-	nvram_len = ((struct nvram_header *)(nvram_buf))->len;
+-	if (nvram_len > size) {
+-		pr_err("The nvram size according to the header seems to be bigger than the partition on flash\n");
+-		nvram_len = size;
++	if (!found) {
++		offset = 1024;
++		if (bcm47xx_nvram_is_valid(flash_start + offset))
++			found = true;
+ 	}
+-	if (nvram_len >= NVRAM_SPACE) {
+-		pr_err("nvram on flash (%zu bytes) is bigger than the reserved space in memory, will just copy the first %i bytes\n",
+-		       nvram_len, NVRAM_SPACE - 1);
+-		nvram_len = NVRAM_SPACE - 1;
++
++	if (!found) {
++		pr_err("no nvram found\n");
++		return -ENXIO;
+ 	}
+-	/* proceed reading data after header */
+-	__ioread32_copy(nvram_buf + sizeof(*header), header + 1,
+-			DIV_ROUND_UP(nvram_len, 4));
+-	nvram_buf[NVRAM_SPACE - 1] = '\0';
++
++	bcm47xx_nvram_copy(flash_start + offset, res_size - offset);
+ 
+ 	return 0;
+ }
+@@ -124,7 +139,7 @@ int bcm47xx_nvram_init_from_mem(u32 base, u32 lim)
+ 	if (!iobase)
+ 		return -ENOMEM;
+ 
+-	err = nvram_find_and_copy(iobase, lim);
++	err = bcm47xx_nvram_find_and_copy(iobase, lim);
+ 
+ 	iounmap(iobase);
+ 
+-- 
+2.26.2
 
