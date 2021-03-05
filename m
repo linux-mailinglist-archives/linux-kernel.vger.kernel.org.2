@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF0F32F145
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:35:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A47B832F156
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhCERes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:34:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55775 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229642AbhCERe2 (ORCPT
+        id S229965AbhCERfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:35:52 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:47670 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230266AbhCERff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:34:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614965668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AwcvmNyd8TJhEYQ41B0ZqMwHc4Pit4/K/RZB9QMn9JY=;
-        b=AwEuTblvex72WQgN/VnczZmYZgIPr+ondntoQZSuNwS4SjKXkWZ/Bjy4/Ktg+EFWopEPpv
-        4raSXkdxwcnsLDUlFDKbXVAlFFg/QlAq0uMz/rudb0pm82pQKeQ3uq7/O9xDEVmAMEHaX7
-        oFv2MxJSEAoG73y0+AFzqeXFSpdhydY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-316-1MddPx2zPPynHjd_OBjOlA-1; Fri, 05 Mar 2021 12:34:26 -0500
-X-MC-Unique: 1MddPx2zPPynHjd_OBjOlA-1
-Received: by mail-wm1-f70.google.com with SMTP id i14so1095278wmq.7
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 09:34:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AwcvmNyd8TJhEYQ41B0ZqMwHc4Pit4/K/RZB9QMn9JY=;
-        b=XssPkvNqI4aIynj8jKuZglOmegAcSCEENQ5acnOgLKAY3VsTL0rHx9tepg/GZnpEJo
-         MP8vaq69QQPs5mhcpldvEDRckGaDpkW75LPNXMMwUe4iX4dxJinxZwrvNb+vQHNxhjHe
-         vRN2MICouRJVJSJUkn3EJkXRGNDYinyDC2loHrFmVdFxhvr4Zq6htoGtqy0UyAR6dGFx
-         taLcypoztjVdIEs+ZtI+DeyVMjZPLdbEknSMIXGymbyHtYVrKq2kR/3PIr1psnFPzARJ
-         3XDwy5hBLT/h3tHG1FvJCEa2epvaPDCP5074xDl7aCwSpLR3IvErOdjjVBtgS8BHHhcZ
-         otTg==
-X-Gm-Message-State: AOAM530B812ztCjqYCLaRHDiD3E4uddN/4xNrt1qNdy+7Gbnq60/xdqM
-        neai4t4c//Bb7a7gHIDu6cEN3dFg5MFI9y1M0dSKfFX2PhL7znLztFauqn6LbNVpDx9d10pfGZ5
-        cTq2I4GZoV4iCTCx9bp5d9I1m
-X-Received: by 2002:a1c:e389:: with SMTP id a131mr10091512wmh.78.1614965665497;
-        Fri, 05 Mar 2021 09:34:25 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyAtzQnqLYpKTx9k1+dfEF1yqaMxFSbQIjreB352fD+qUw+PsXpTW/EesxQZDcxOd7ID8tORQ==
-X-Received: by 2002:a1c:e389:: with SMTP id a131mr10091493wmh.78.1614965665338;
-        Fri, 05 Mar 2021 09:34:25 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id o2sm5741952wme.16.2021.03.05.09.34.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 09:34:24 -0800 (PST)
-Subject: Re: [PATCH v2 05/17] KVM: x86/mmu: Allocate pae_root and lm_root
- pages in dedicated helper
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-References: <20210305011101.3597423-1-seanjc@google.com>
- <20210305011101.3597423-6-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <2ef5e563-8d7d-3d5a-6a19-d7daaf5c0881@redhat.com>
-Date:   Fri, 5 Mar 2021 18:34:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 5 Mar 2021 12:35:35 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125HUg0g001824;
+        Fri, 5 Mar 2021 11:34:46 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=nl/f7YsupROlT4gR/2BgaN1s/yaHZufWmFTh8kroQeM=;
+ b=Hy9MJ+TP5iu8iqkvPhwgQ3d7CWwqxOB8gVLMdwN7xFr53bElHLLB1MD1qfwg/ce0DRss
+ BWUqqw19LIemlqYybxZWgB3fGySCZRPGK3rrZt/XRLwd3fSoWLigyDxbNS3jmxj5MxHn
+ nASMj4Fb6mvRMHLe9ZK4OuUu19BcokfZ0kJH7QLR8qZ9TooFxHa54NvJDDNjbSGNu/u3
+ AdnbDEOmtr+/OdjuAlhQCAjzjIWQqv7Xvr27h3YRFiwfmAwyWp3IGW8rlhZmg/GH/1MZ
+ tQjutR1RgYbegaURgr7bdeOJ8Kzr3sFaO67MNYSDVYsrHWMkTAnAZYeYfwNBL29yrPOY aA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 36ykctraxk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 05 Mar 2021 11:34:46 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 5 Mar 2021
+ 17:34:45 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Fri, 5 Mar 2021 17:34:45 +0000
+Received: from mail1.cirrus.com (unknown [198.61.64.35])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B380111CB;
+        Fri,  5 Mar 2021 17:34:44 +0000 (UTC)
+From:   Lucas Tanure <tanureal@opensource.cirrus.com>
+To:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC:     Richard Fitzgerald <rf@opensource.cirrus.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Lucas Tanure <tanureal@opensource.cirrus.com>
+Subject: [PATCH v2 00/15] Report jack and button detection + Capture Support
+Date:   Fri, 5 Mar 2021 17:34:27 +0000
+Message-ID: <20210305173442.195740-1-tanureal@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <20210305011101.3597423-6-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 clxscore=1011
+ malwarescore=0 priorityscore=1501 suspectscore=0 spamscore=0 phishscore=0
+ mlxscore=0 impostorscore=0 mlxlogscore=971 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103050090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/03/21 02:10, Sean Christopherson wrote:
-> +	/*
-> +	 * This mess only works with 4-level paging and needs to be updated to
-> +	 * work with 5-level paging.
-> +	 */
+Hi All,
 
-Planning for this, it's probably a good idea to rename lm_root to 
-pml4_root.  Can be done on top.
+Here is a patch series for reporting to user space jack and button events and
+add the support for Capture. With some cleanups and fixes along the way.
 
-Paolo
+Regards,
+
+Lucas Tanure
+
+Lucas Tanure (12):
+  ASoC: cs42l42: Fix Bitclock polarity inversion
+  ASoC: cs42l42: Fix channel width support
+  ASoC: cs42l42: Fix mixer volume control
+  ASoC: cs42l42: Don't enable/disable regulator at Bias Level
+  ASoC: cs42l42: Always wait at least 3ms after reset
+  ASoC: cs42l42: Remove power if the driver is being removed
+  ASoC: cs42l42: Disable regulators if probe fails
+  ASoC: cs42l42: Provide finer control on playback path
+  ASoC: cs42l42: Set clock source for both ways of stream
+  ASoC: cs42l42: Add Capture Support
+  ASoC: cs42l42: Report jack and button detection
+  ASoC: cs42l42: Use bclk from hw_params if set_sysclk was not called
+
+Richard Fitzgerald (3):
+  ASoC: cs42l42: Wait at least 150us after writing SCLK_PRESENT
+  ASoC: cs42l42: Only start PLL if it is needed
+  ASoC: cs42l42: Wait for PLL to lock before switching to it
+
+ sound/soc/codecs/cs42l42.c | 437 +++++++++++++++++++++----------------
+ sound/soc/codecs/cs42l42.h |  41 +++-
+ 2 files changed, 282 insertions(+), 196 deletions(-)
+
+-- 
+2.30.1
 
