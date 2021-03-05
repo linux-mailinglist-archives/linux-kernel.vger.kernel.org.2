@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C4A32EB54
+	by mail.lfdr.de (Postfix) with ESMTP id AED3E32EB55
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbhCEMnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:43:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59340 "EHLO mail.kernel.org"
+        id S231532AbhCEMnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:43:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229759AbhCEMmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:42:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 110A46501F;
-        Fri,  5 Mar 2021 12:42:45 +0000 (UTC)
+        id S232349AbhCEMmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:42:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8BEB6501C;
+        Fri,  5 Mar 2021 12:42:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948166;
-        bh=Z9qREOSIzMhQPTuqF3NRq5oBloErHn22rIbf1nsD0kY=;
+        s=korg; t=1614948169;
+        bh=sA2HQpu4II2WiiQXaMZdJ8NIRIgTSkJLrqeByqHct6s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SlcuAxHkC7xelKMaFrx+SZhIZyLrHvHfu00ZWO0pok63t4EdZLY83yG9UbK10fSoU
-         kG693+zxNi5RlqZ6T28X2W1lhXA4em+PkDVAqH+sOlGN3OAnj4yh3Y9bFz7pj9tX/8
-         AbbBP0mTihFQtXYR8QOcP/XJNP/tMpker1Zl0ez8=
+        b=v5bv6gmA9UdZYQzaRcGy+Fn5nUPlCjdPhYfb5CyFoWFOXI2NE3J+rJknis84mKsNw
+         uMPdLB8OzWEhXDweag+8ypyv0TCURFNn1X9uCbXjGEkt+UWb4kaix9e6YxhKmBqX4s
+         80z+zw8j/ndxmqsHkqy72IaJvhXsUoJA85w4N8Qs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com,
-        Eric Dumazet <edumazet@google.com>,
-        Marco Elver <elver@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 10/30] net: fix up truesize of cloned skb in skb_prepare_for_shift()
-Date:   Fri,  5 Mar 2021 13:22:39 +0100
-Message-Id: <20210305120849.909910163@linuxfoundation.org>
+        stable@vger.kernel.org, Li Xinhai <lixinhai.lxh@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 11/30] mm/hugetlb.c: fix unnecessary address expansion of pmd sharing
+Date:   Fri,  5 Mar 2021 13:22:40 +0100
+Message-Id: <20210305120849.954206708@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120849.381261651@linuxfoundation.org>
 References: <20210305120849.381261651@linuxfoundation.org>
@@ -42,54 +42,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Elver <elver@google.com>
+From: Li Xinhai <lixinhai.lxh@gmail.com>
 
-commit 097b9146c0e26aabaa6ff3e5ea536a53f5254a79 upstream.
+commit a1ba9da8f0f9a37d900ff7eff66482cf7de8015e upstream.
 
-Avoid the assumption that ksize(kmalloc(S)) == ksize(kmalloc(S)): when
-cloning an skb, save and restore truesize after pskb_expand_head(). This
-can occur if the allocator decides to service an allocation of the same
-size differently (e.g. use a different size class, or pass the
-allocation on to KFENCE).
+The current code would unnecessarily expand the address range.  Consider
+one example, (start, end) = (1G-2M, 3G+2M), and (vm_start, vm_end) =
+(1G-4M, 3G+4M), the expected adjustment should be keep (1G-2M, 3G+2M)
+without expand.  But the current result will be (1G-4M, 3G+4M).  Actually,
+the range (1G-4M, 1G) and (3G, 3G+4M) would never been involved in pmd
+sharing.
 
-Because truesize is used for bookkeeping (such as sk_wmem_queued), a
-modified truesize of a cloned skb may result in corrupt bookkeeping and
-relevant warnings (such as in sk_stream_kill_queues()).
+After this patch, we will check that the vma span at least one PUD aligned
+size and the start,end range overlap the aligned range of vma.
 
-Link: https://lkml.kernel.org/r/X9JR/J6dMMOy1obu@elver.google.com
-Reported-by: syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com
-Suggested-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Marco Elver <elver@google.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20210201160420.2826895-1-elver@google.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+With above example, the aligned vma range is (1G, 3G), so if (start, end)
+range is within (1G-4M, 1G), or within (3G, 3G+4M), then no adjustment to
+both start and end.  Otherwise, we will have chance to adjust start
+downwards or end upwards without exceeding (vm_start, vm_end).
+
+Mike:
+
+: The 'adjusted range' is used for calls to mmu notifiers and cache(tlb)
+: flushing.  Since the current code unnecessarily expands the range in some
+: cases, more entries than necessary would be flushed.  This would/could
+: result in performance degradation.  However, this is highly dependent on
+: the user runtime.  Is there a combination of vma layout and calls to
+: actually hit this issue?  If the issue is hit, will those entries
+: unnecessarily flushed be used again and need to be unnecessarily reloaded?
+
+Link: https://lkml.kernel.org/r/20210104081631.2921415-1-lixinhai.lxh@gmail.com
+Fixes: 75802ca66354 ("mm/hugetlb: fix calculation of adjust_range_if_pmd_sharing_possible")
+Signed-off-by: Li Xinhai <lixinhai.lxh@gmail.com>
+Suggested-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Peter Xu <peterx@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/core/skbuff.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ mm/hugetlb.c |   22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -2628,7 +2628,19 @@ EXPORT_SYMBOL(skb_split);
-  */
- static int skb_prepare_for_shift(struct sk_buff *skb)
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4322,21 +4322,23 @@ static bool vma_shareable(struct vm_area
+ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
+ 				unsigned long *start, unsigned long *end)
  {
--	return skb_cloned(skb) && pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
-+	int ret = 0;
-+
-+	if (skb_cloned(skb)) {
-+		/* Save and restore truesize: pskb_expand_head() may reallocate
-+		 * memory where ksize(kmalloc(S)) != ksize(kmalloc(S)), but we
-+		 * cannot change truesize at this point.
-+		 */
-+		unsigned int save_truesize = skb->truesize;
-+
-+		ret = pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
-+		skb->truesize = save_truesize;
-+	}
-+	return ret;
+-	unsigned long a_start, a_end;
++	unsigned long v_start = ALIGN(vma->vm_start, PUD_SIZE),
++		v_end = ALIGN_DOWN(vma->vm_end, PUD_SIZE);
+ 
+-	if (!(vma->vm_flags & VM_MAYSHARE))
++	/*
++	 * vma need span at least one aligned PUD size and the start,end range
++	 * must at least partialy within it.
++	 */
++	if (!(vma->vm_flags & VM_MAYSHARE) || !(v_end > v_start) ||
++		(*end <= v_start) || (*start >= v_end))
+ 		return;
+ 
+ 	/* Extend the range to be PUD aligned for a worst case scenario */
+-	a_start = ALIGN_DOWN(*start, PUD_SIZE);
+-	a_end = ALIGN(*end, PUD_SIZE);
++	if (*start > v_start)
++		*start = ALIGN_DOWN(*start, PUD_SIZE);
+ 
+-	/*
+-	 * Intersect the range with the vma range, since pmd sharing won't be
+-	 * across vma after all
+-	 */
+-	*start = max(vma->vm_start, a_start);
+-	*end = min(vma->vm_end, a_end);
++	if (*end < v_end)
++		*end = ALIGN(*end, PUD_SIZE);
  }
  
- /**
+ /*
 
 
