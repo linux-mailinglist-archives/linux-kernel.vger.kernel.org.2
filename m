@@ -2,90 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814DC32F2F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD7A32F2F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhCESkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 13:40:23 -0500
-Received: from mga05.intel.com ([192.55.52.43]:37580 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230269AbhCESkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 13:40:02 -0500
-IronPort-SDR: n3Cp1u/za9n4ZJCwMldIZq9eUNBNPoFzLYz6huS9QHXzIXBCqEoTrQIsYu1pGFhHRCRviAlPMa
- VRg9QwyS6Vcg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="272715775"
-X-IronPort-AV: E=Sophos;i="5.81,226,1610438400"; 
-   d="scan'208";a="272715775"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 10:40:01 -0800
-IronPort-SDR: zkxbpHsFyJwZVkSR/xlj1BUO0klvYJqhJesQcjjaw3i4SkMt1Xy5PuHjfxJk9aoU9ufyI/imsj
- RKtpPGMBEdXA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,226,1610438400"; 
-   d="scan'208";a="370304005"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 05 Mar 2021 10:40:00 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 5C719132; Fri,  5 Mar 2021 20:40:00 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Borislav Petkov <bp@suse.de>, linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] scripts/decodecode: Decode 32-bit code correctly on x86_64
-Date:   Fri,  5 Mar 2021 20:39:48 +0200
-Message-Id: <20210305183948.37738-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
+        id S230320AbhCESkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 13:40:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230139AbhCESkQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 13:40:16 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A00FC061574;
+        Fri,  5 Mar 2021 10:40:16 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id jx13so2382652pjb.1;
+        Fri, 05 Mar 2021 10:40:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KAn7IcP2wLfc+akl77eTt5ni2ix91KV3jvCUmvRttdw=;
+        b=ovNl/ylQEb9S5DRy2VWhYWJv7y2A9DJWaQVUCQhpHGF+oJ6t/L5zZg0jomRAHpFnEo
+         WBpmjDWO23CRV4fZF+JIqmVd6kjoC3XeV/0Qj4+wDdre22zKcjixQLDaUm3jtz+oXIJK
+         SbvJMxoOKrx4mvXPIWKKMK47dhp72GVCZkfhurqM5I+ROu21HR3pUhzaUdb30TV4HuMl
+         JF/W4WSmdHpY7e+ivrf1ZqN5yeybgmheZqTX9/ywd2szcDHv8eRpPEt59tlyXz8nDCW4
+         0ZLk4wsvpgnQrF4cjvvQIgip5uWF04FAMc/OqcSgNfd15BenRBFwbOqXv1PmquaabOa4
+         3Lkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KAn7IcP2wLfc+akl77eTt5ni2ix91KV3jvCUmvRttdw=;
+        b=UcUNCca2cpV7EoszojYClakU5xqm9nOqYvyBQP6ayar+/ANxTp05E6q2q2b0dCz0IK
+         IR6rZpqstAqW0yRsXsCaDWG84xwzEdUXGTtzijdXS+bFOq9/+6KjszvtSmM4wVMwhD+P
+         wj85BmuRuOE0M7UC6wWVdCPBJVBz1VryM+4jW9Q2LOHLuLIXsExkLDG4TbcYKr9fjMR9
+         kPnt8Ru5VtA9ZPjHqmaXEpOToqR+DTpEw68fvirhBUmW7nhLDoYNe6OTUSdUMCCtTx9/
+         xgfSKUStuSNNsboycZTUtfZLessAsF92n895lzzdviDLg6E6xud2LEZOqKOH6vvfrVBu
+         Uvxw==
+X-Gm-Message-State: AOAM530btBO9mcRYa7C9oaVIFfk3FKR1wOla8by+xTzAB3XI8x6la65X
+        zqLyD5PO19OOsKjE/puLtOA=
+X-Google-Smtp-Source: ABdhPJzvqTm/Nm+PXsUnnonj+hzAsHmMdgpH7qNTqe31VqH8Zr4W2/qHhdoBYRuZskxms5q7j/WZ0A==
+X-Received: by 2002:a17:90a:16d7:: with SMTP id y23mr12154054pje.227.1614969615790;
+        Fri, 05 Mar 2021 10:40:15 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:70ea:1e11:c25c:35fe])
+        by smtp.gmail.com with ESMTPSA id c15sm3338094pfj.170.2021.03.05.10.40.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 10:40:15 -0800 (PST)
+Date:   Fri, 5 Mar 2021 10:40:12 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     od@zcrc.me, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] input: gpio-keys: Remove extra call to input_sync
+Message-ID: <YEJ7DD3rLAh3Twdl@google.com>
+References: <20210305170111.214782-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305170111.214782-1-paul@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On x86_64 host the objdump uses current architecture which is 64-bit
-and hence decodecode shows wrong instructions.
+On Fri, Mar 05, 2021 at 05:01:09PM +0000, Paul Cercueil wrote:
+> The input_sync() function will already be called within
+> gpio_keys_gpio_report_event(), so there's no need to call it again after
+> the loop in gpio_keys_report_state().
 
-Fix it by supplying '-M i386' in case of ARCH i?86 or x86.
+I'd probably go other way around and remove the sync from
+gpio_keys_report_state() and add one to gpio_keys_gpio_work_func() so
+that we do not have to send bunch of input_sync() when there are several
+keys/buttons.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- scripts/decodecode | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+Thanks.
 
-diff --git a/scripts/decodecode b/scripts/decodecode
-index 31d884e35f2f..020a84982249 100755
---- a/scripts/decodecode
-+++ b/scripts/decodecode
-@@ -75,21 +75,25 @@ disas() {
- 
- 	${CROSS_COMPILE}as $AFLAGS -o $t.o $t.s > /dev/null 2>&1
- 
--	if [ "$ARCH" = "arm" ]; then
-+	case "$ARCH" in
-+	arm)
- 		if [ $width -eq 2 ]; then
- 			OBJDUMPFLAGS="-M force-thumb"
- 		fi
- 
- 		${CROSS_COMPILE}strip $t.o
--	fi
--
--	if [ "$ARCH" = "arm64" ]; then
-+		;;
-+	arm64)
- 		if [ $width -eq 4 ]; then
- 			type=inst
- 		fi
- 
- 		${CROSS_COMPILE}strip $t.o
--	fi
-+		;;
-+	i?86|x86)
-+			OBJDUMPFLAGS="-M i386"
-+		;;
-+	esac
- 
- 	if [ $pc_sub -ne 0 ]; then
- 		if [ $PC ]; then
 -- 
-2.30.1
-
+Dmitry
