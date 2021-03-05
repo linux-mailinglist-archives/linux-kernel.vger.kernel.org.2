@@ -2,170 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D94A132E754
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C885932E757
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbhCELmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 06:42:46 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:46726 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229494AbhCELmp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 06:42:45 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125BgFCj016426;
-        Fri, 5 Mar 2021 12:42:39 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=ayap1z4ytk+f58IuXbxbKEhdT2MiFhxsxYLzw+aUaUU=;
- b=M5qQWPFaJ/+ecOybKEIVTyq8sLJ36eyGPTsbCz7GmwPN4EJCW1N0/aONz9qThZKOiMj+
- ck0HJT1B9TWqf3AJQr5fygf2ehv5qbZXq8TUokWzboPfmlynhdB8D1gkfQ5DaRAFXNde
- 3x0CUdNZcW5yO9hC+PfycbLOudcUlfIfEBhSW58Cskmz7ZhvqgUzNSeweU5h6KOx5Tri
- XyGo7WCE1xbLq3IidEMUG2jt/PlI4+b8DRI0DmPC93Xmm7JhVrIMGUCz5ZK7at5nlQ2s
- kSkVSEHnGNT0IoY/m+me59nKmhr6YqVnE6LLbY59IpgxIIXmGbbnM8YA4jJR0siJQWsg lA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 373cb5tt2b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 12:42:39 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CB06710002A;
-        Fri,  5 Mar 2021 12:42:37 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B7D1E24EE26;
-        Fri,  5 Mar 2021 12:42:37 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Mar
- 2021 12:42:37 +0100
-Subject: Re: [PATCH v5 13/16] rpmsg: char: introduce
- __rpmsg_chrdev_create_eptdev function
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
- <20210219111501.14261-14-arnaud.pouliquen@foss.st.com>
- <20210304190553.GD3854911@xps15>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <b22e9ab4-f278-d20c-628b-13676a83b232@foss.st.com>
-Date:   Fri, 5 Mar 2021 12:42:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229608AbhCELo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 06:44:29 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:53017 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229464AbhCELoE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 06:44:04 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DsQqj0TBXz9sWL;
+        Fri,  5 Mar 2021 22:44:00 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1614944641;
+        bh=SFTN3pvD7WygrPK8345qUzj/Yiy79Aui/vKNcyYo1LU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=YCW3yOV5cOUSmUMmyms3tOismZLI9sjylaqzifzV7Obbez3s6noEcH1EItlJ2FtO7
+         59C5rksyJB2tF5TxHrCeVwR8sDItttmQ+vwXfUo2EBjMAJNqa2D3Dr1ObN0CX3OaVX
+         R7fZ0V8FR3GxSu/Z3ANBcrAqYCB20hRGyz/4U2Fm4QsYjOqg0ET5d1JUHnKHYSaNqX
+         bvOaCyI1He1BYYs77/73rQC0lGKR8zYVbO2i13A3523xx7JIDPT67CfVjmeoThqijf
+         p9Kv0JPRNTY5M2mFPqTeyffX9ycAsHZv8vFr2loJywXoMbrtnUoX05eCh/zNHwp7su
+         IloIeuJoxDwLQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Laurent Dufour <ldufour@linux.ibm.com>, benh@kernel.crashing.org,
+        paulus@samba.org, linuxppc-dev@lists.ozlabs.org
+Cc:     nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/pseries: export LPAR security flavor in lparcfg
+In-Reply-To: <2c67c119-c1ec-b079-da54-0bf2f316c734@linux.ibm.com>
+References: <20210304114240.54112-1-ldufour@linux.ibm.com>
+ <871rcuruee.fsf@mpe.ellerman.id.au>
+ <2c67c119-c1ec-b079-da54-0bf2f316c734@linux.ibm.com>
+Date:   Fri, 05 Mar 2021 22:43:55 +1100
+Message-ID: <87wnulrfk4.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <20210304190553.GD3854911@xps15>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-05_05:2021-03-03,2021-03-05 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu
+Laurent Dufour <ldufour@linux.ibm.com> writes:
+> Le 05/03/2021 =C3=A0 07:23, Michael Ellerman a =C3=A9crit=C2=A0:
+>> Laurent Dufour <ldufour@linux.ibm.com> writes:
+>>> This is helpful to read the security flavor from inside the LPAR.
+>>=20
+>> We already have /sys/kernel/debug/powerpc/security_features.
+>>=20
+>> Is that not sufficient?
+>
+> Not really, it only reports that security mitigation are on or off but no=
+t the=20
+> level set through the ASMI menu. Furthermore, reporting it through
+> /proc/powerpc/lparcfg allows an easy processing by the lparstat command (=
+see below).
+>
+>>=20
+>>> Export it like this in /proc/powerpc/lparcfg:
+>>>
+>>> $ grep security_flavor /proc/powerpc/lparcfg
+>>> security_flavor=3D1
+>>>
+>>> Value means:
+>>> 0 Speculative execution fully enabled
+>>> 1 Speculative execution controls to mitigate user-to-kernel attacks
+>>> 2 Speculative execution controls to mitigate user-to-kernel and
+>>>    user-to-user side-channel attacks
+>>=20
+>> Those strings come from the FSP help, but we have no guarantee it won't
+>> mean something different in future.
+>
+> I think this is nailed down, those strings came from:
+> https://www.ibm.com/support/pages/node/715841
+>
+> Where it is written (regarding AIX):
+>
+> On an LPAR, one can use lparstat -x to display the current mitigation mod=
+e:
+> 0 =3D Speculative execution fully enabled
+> 1 =3D Speculative execution controls to mitigate user-to-kernel side-chan=
+nel attacks
+> 2 =3D Speculative execution controls to mitigate user-to-kernel and user-=
+to-user=20
+> side-channel attacks
+>
+> We have been requested to provide almost the same, which I proposed in=20
+> powerpc-utils:
+> https://groups.google.com/g/powerpc-utils-devel/c/NaKXvdyl_UI/m/wa2stpIDA=
+QAJ
 
-On 3/4/21 8:05 PM, Mathieu Poirier wrote:
-> On Fri, Feb 19, 2021 at 12:14:58PM +0100, Arnaud Pouliquen wrote:
->> Introduce the __rpmsg_chrdev_create_eptdev internal function that returns
->> the rpmsg_eptdev context structure.
-> 
-> Add newlines between paragraphs.
-> 
->> This patch prepares the introduction of a RPMsg device for the
->> char device. the RPMsg device will need a reference to the context.
-> 
-> s/the/The
-> 
-> s/RPMsg/RPMSG - throughout the patchset.
-> 
-> As a general note please be mindful of patch changelogs.  I often find myself
-> having to decipher the ideas being conveyed.
+OK. Do you mind sending a v2 with all those details incorporated into
+the change log?
 
-Sure, i will rewrite changelogs and comments to make them more explicit.
-
-> 
-> I am done reviewing this set.  There are things I will want to come back to but
-> the general goals behind the patchset are being achieved.
-
-Thanks for the review! So I'm going to move forward with this approach.
-
-For the next revision I would propose, to simplify the review, to remove patches
-related to the RPMSG_CREATE_DEV_IOCTL.
-
-Thanks,
-Arnaud
-
-> 
-> Thanks,
-> Mathieu
-> 
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->> ---
->>  drivers/rpmsg/rpmsg_char.c | 23 ++++++++++++++++++-----
->>  1 file changed, 18 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
->> index 09ae1304837c..66dcb8845d6c 100644
->> --- a/drivers/rpmsg/rpmsg_char.c
->> +++ b/drivers/rpmsg/rpmsg_char.c
->> @@ -328,8 +328,9 @@ int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data)
->>  }
->>  EXPORT_SYMBOL(rpmsg_chrdev_eptdev_destroy);
->>  
->> -int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
->> -			       struct rpmsg_channel_info chinfo)
->> +static struct rpmsg_eptdev *__rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev,
->> +							 struct device *parent,
->> +							 struct rpmsg_channel_info chinfo)
->>  {
->>  	struct rpmsg_eptdev *eptdev;
->>  	struct device *dev;
->> @@ -337,7 +338,7 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
->>  
->>  	eptdev = kzalloc(sizeof(*eptdev), GFP_KERNEL);
->>  	if (!eptdev)
->> -		return -ENOMEM;
->> +		return ERR_PTR(-ENOMEM);
->>  
->>  	dev = &eptdev->dev;
->>  	eptdev->rpdev = rpdev;
->> @@ -381,7 +382,7 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
->>  		put_device(dev);
->>  	}
->>  
->> -	return ret;
->> +	return eptdev;
->>  
->>  free_ept_ida:
->>  	ida_simple_remove(&rpmsg_ept_ida, dev->id);
->> @@ -391,7 +392,19 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
->>  	put_device(dev);
->>  	kfree(eptdev);
->>  
->> -	return ret;
->> +	return ERR_PTR(ret);
->> +}
->> +
->> +int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
->> +			       struct rpmsg_channel_info chinfo)
->> +{
->> +	struct rpmsg_eptdev *eptdev;
->> +
->> +	eptdev = __rpmsg_chrdev_create_eptdev(rpdev, &rpdev->dev, chinfo);
->> +	if (IS_ERR(eptdev))
->> +		return PTR_ERR(eptdev);
->> +
->> +	return 0;
->>  }
->>  EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
->>  
->> -- 
->> 2.17.1
->>
+cheers
