@@ -2,158 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D91332F37A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7256432F377
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhCETHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 14:07:33 -0500
-Received: from mga11.intel.com ([192.55.52.93]:64834 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229783AbhCETHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:07:19 -0500
-IronPort-SDR: Pz0z9ZgirN1XQJk90gy7MyR79bxjwSJwXvUUUz9MJb/4kWTIEXpgwcvuFU7dvt5V/nPt6tNhqM
- jgJ2uIaWNtVA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="184338723"
-X-IronPort-AV: E=Sophos;i="5.81,226,1610438400"; 
-   d="scan'208";a="184338723"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 11:07:16 -0800
-IronPort-SDR: 6OrOR0E3cTy0QjhjPeFjufHi6tbE72inF3ZI1AHfVGI0mZRGq0n+HZA5CuXUNN4Qq7NzOYqLEE
- eVKqPNatsk2A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,226,1610438400"; 
-   d="scan'208";a="508166776"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga001.fm.intel.com with ESMTP; 05 Mar 2021 11:07:16 -0800
-Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
-        by linux.intel.com (Postfix) with ESMTP id EC20B580717;
-        Fri,  5 Mar 2021 11:07:15 -0800 (PST)
-From:   "David E. Box" <david.e.box@linux.intel.com>
-To:     irenic.rajneesh@gmail.com, hdegoede@redhat.com,
-        mgross@linux.intel.com, sasha.neftin@intel.com
-Cc:     "David E. Box" <david.e.box@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org
-Subject: [PATCH] platform/x86: intel_pmc: Ignore GBE LTR on Tiger Lake platforms
-Date:   Fri,  5 Mar 2021 11:06:08 -0800
-Message-Id: <20210305190608.1834164-1-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S229631AbhCETHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 14:07:31 -0500
+Received: from p3plsmtpa12-01.prod.phx3.secureserver.net ([68.178.252.230]:37553
+        "EHLO p3plsmtpa12-01.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229669AbhCETHL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 14:07:11 -0500
+Received: from chrisHP110 ([76.103.216.188])
+        by :SMTPAUTH: with ESMTPA
+        id IFn2lgGNiU8CmIFn4lgJac; Fri, 05 Mar 2021 12:07:10 -0700
+X-CMAE-Analysis: v=2.4 cv=Y+Y9DjSN c=1 sm=1 tr=0 ts=6042815e
+ a=ZkbE6z54K4jjswx6VoHRvg==:117 a=ZkbE6z54K4jjswx6VoHRvg==:17
+ a=kj9zAlcOel0A:10 a=Q5wZSigpbg05Vq6hFFoA:9 a=CjuIK1q_8ugA:10
+X-SECURESERVER-ACCT: don@thebollingers.org
+From:   "Don Bollinger" <don@thebollingers.org>
+To:     "'Andrew Lunn'" <andrew@lunn.ch>
+Cc:     <arndb@arndb.de>, <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <brandon_chuang@edge-core.com>,
+        <wally_wang@accton.com>, <aken_liu@edge-core.com>,
+        <gulv@microsoft.com>, <jolevequ@microsoft.com>,
+        <xinxliu@microsoft.com>, "'netdev'" <netdev@vger.kernel.org>,
+        "'Moshe Shemesh'" <moshe@nvidia.com>, <don@thebollingers.org>
+References: <20210215193821.3345-1-don@thebollingers.org> <YDl3f8MNWdZWeOBh@lunn.ch> <000901d70cb2$b2848420$178d8c60$@thebollingers.org> <004f01d70ed5$8bb64480$a322cd80$@thebollingers.org> <YD1ScQ+w8+1H//Y+@lunn.ch>
+In-Reply-To: <YD1ScQ+w8+1H//Y+@lunn.ch>
+Subject: RE: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS EEPROMS
+Date:   Fri, 5 Mar 2021 11:07:08 -0800
+Message-ID: <003901d711f2$be2f55d0$3a8e0170$@thebollingers.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQKX2ThEytgxSBCv+zte4L/P7xUGAgJF1IfoAfArhLgBgnHheQD1wSRRqL6viIA=
+Content-Language: en-us
+X-CMAE-Envelope: MS4xfJguuAmuQnkPThJUpad+hujYXnRFL1pxw7HU3AbZbVXS185IF5ZGxysc22ky8+grtpUf7ckzSNxfLvLOu0F9wIhC30MRSRYpTqfa5dIYnmbqswpmAuTr
+ IeuMIK0PYA51Bqel7rdaxThnVgAcbgFq74TkKEy0eRxQn2vWSgYapLA9rHoAPEHYabdP2XKTrUM0jS3ucnYmajwE1mvOfr7b4nY1iPzJMEaI6QgNEPH3HI6w
+ mQOHcpfJlJ71HK22WWjewxsvyntW83b1VeR4T7QCaglgQR5v8tRRqhDwahPYNSpjCa+XNCpI/CVNtVseNV6pStVvK28X6A3NNMERVEZ5z1DOx1a1S5hiRmCj
+ 6q3CcbJnodQuuvkdcBu+tmqD2cJ/rSgetCzr8NJkX5xvZ/LNxruH7fIwBY9vmECPQc2la1ginOPa726cd4ZWs7eblxIo3zstPBI2F2WuQt9WIkVvvK7NeZWO
+ czfN9tJ+eeKuQHVaadDN7tDiqUsKTvpaV94F1kwERw47pBLD0NDEFGnTsFgWIen40HfXjeUUGHAD4eU+PP7qVfHvKfXQuM7TSiC+93eYaEdkvRCMLuirxaRG
+ crY=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to a HW limitation, the Latency Tolerance Reporting (LTR) value
-programmed in the Tiger Lake GBE controller is not large enough to allow
-the platform to enter Package C10, which in turn prevents the platform from
-achieving its low power target during suspend-to-idle.  Ignore the GBE LTR
-value on Tiger Lake. LTR ignore functionality is currently performed solely
-by a debugfs write call. Split out the LTR code into its own function that
-can be called by both the debugfs writer and by this work around.
+On Mon, Mar 1, 2021 at 12:46 PM-0800, Andrew Lunn wrote:
+> > To be more specific, optoe is only replacing the functionality of
+> > drivers/net/phy/sfp.c, the functions of sfp_i2c_read() and
+sfp_i2c_write().
+> > These are the routines at the very bottom of the ethtool stack that
+> > actually execute the i2c calls to get the data.  The existing routines
+> > are very limited, in that they don't handle pages at all.  Hence they
+> > can only reach
+> > 256 bytes of QSFP EEPROM data and 512 bytes of SFP EEPROM data.  I can
+> > propose a shorter cleaner replacement for each of those routines which
+> > will provide access to the rest of the data on those devices.
+> 
+> drivers/net/phy/sfp.c is not the only code making use of this KAPI.
+> Any MAC driver can implement the ethtool op calls for reading SFP memory.
+> The MAC driver can either directly reply because it has the SFP hidden
+> behind firmware, or it can call into the sfp.c code, because Linux is
+driving the
+> SFP.
 
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-Reviewed-by: Sasha Neftin <sasha.neftin@intel.com>
-Cc: intel-wired-lan@lists.osuosl.org
----
- drivers/platform/x86/intel_pmc_core.c | 55 ++++++++++++++++++++-------
- 1 file changed, 42 insertions(+), 13 deletions(-)
+OK, I have checked with my partners, including NOS vendors and switch
+platform vendors.  They are not using the netdev framework, they are
+basically not using kernel networking for managing the networking through
+tens to over a hundred network ports at 10G to 400G speeds.  The kernel is
+not the source of truth regarding the state of network devices.  I know
+netdev *could* manage these systems, and that you are working toward that
+goal, that is not the approach they are taking nor the direction they are
+heading.  I am not disparaging netdev, I respect and value the contribution
+to linux networking.  It's all good.  It just isn't the direction my
+partners are going at this time.
 
-diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
-index ee2f757515b0..ab31eb646a1a 100644
---- a/drivers/platform/x86/intel_pmc_core.c
-+++ b/drivers/platform/x86/intel_pmc_core.c
-@@ -863,34 +863,45 @@ static int pmc_core_pll_show(struct seq_file *s, void *unused)
- }
- DEFINE_SHOW_ATTRIBUTE(pmc_core_pll);
- 
--static ssize_t pmc_core_ltr_ignore_write(struct file *file,
--					 const char __user *userbuf,
--					 size_t count, loff_t *ppos)
-+static int pmc_core_write_ltr_ignore(u32 value)
- {
- 	struct pmc_dev *pmcdev = &pmc;
- 	const struct pmc_reg_map *map = pmcdev->map;
--	u32 val, buf_size, fd;
--	int err;
--
--	buf_size = count < 64 ? count : 64;
--
--	err = kstrtou32_from_user(userbuf, buf_size, 10, &val);
--	if (err)
--		return err;
-+	u32 fd;
-+	int err = 0;
- 
- 	mutex_lock(&pmcdev->lock);
- 
--	if (val > map->ltr_ignore_max) {
-+	if (fls(value) > map->ltr_ignore_max) {
- 		err = -EINVAL;
- 		goto out_unlock;
- 	}
- 
- 	fd = pmc_core_reg_read(pmcdev, map->ltr_ignore_offset);
--	fd |= (1U << val);
-+	fd |= value;
- 	pmc_core_reg_write(pmcdev, map->ltr_ignore_offset, fd);
- 
- out_unlock:
- 	mutex_unlock(&pmcdev->lock);
-+
-+	return err;
-+}
-+
-+static ssize_t pmc_core_ltr_ignore_write(struct file *file,
-+					 const char __user *userbuf,
-+					 size_t count, loff_t *ppos)
-+{
-+	u32 buf_size, val;
-+	int err;
-+
-+	buf_size = count < 64 ? count : 64;
-+
-+	err = kstrtou32_from_user(userbuf, buf_size, 10, &val);
-+	if (err)
-+		return err;
-+
-+	err = pmc_core_write_ltr_ignore(1U << val);
-+
- 	return err == 0 ? count : err;
- }
- 
-@@ -1189,6 +1200,15 @@ static int quirk_xtal_ignore(const struct dmi_system_id *id)
- 	return 0;
- }
- 
-+static int quirk_ltr_ignore(u32 val)
-+{
-+	int err;
-+
-+	err = pmc_core_write_ltr_ignore(val);
-+
-+	return err;
-+}
-+
- static const struct dmi_system_id pmc_core_dmi_table[]  = {
- 	{
- 	.callback = quirk_xtal_ignore,
-@@ -1244,6 +1264,15 @@ static int pmc_core_probe(struct platform_device *pdev)
- 	pmcdev->pmc_xram_read_bit = pmc_core_check_read_lock_bit();
- 	dmi_check_system(pmc_core_dmi_table);
- 
-+	/*
-+	 * On TGL, due to a hardware limitation, the GBE LTR blocks PC10 when
-+	 * a cable is attached. Tell the PMC to ignore it.
-+	 */
-+	if (pmcdev->map == &tgl_reg_map) {
-+		dev_dbg(&pdev->dev, "ignoring GBE LTR\n");
-+		quirk_ltr_ignore(1U << 3);
-+	}
-+
- 	pmc_core_dbgfs_register(pmcdev);
- 
- 	device_initialized = true;
--- 
-2.25.1
+You have described this architecture in the past as a 'bootloader'.  In fact
+Linux is the operating system running on those switches.  It is not
+temporary (eg loading the real OS and going away).  It is allocating memory,
+dispatching processes and threads, handling interrupts, hosting docker
+containers, and running the proprietary network APIs that manage the
+networks.  In this architecture, the optical modules are managed by the OS,
+through drivers.  The network APIs interact through these drivers.  For much
+of the configuration data, there are configuration files that match up
+device hardware (e.g. Low Power Mode GPIO lines and Tx disable lines) and
+i2c buses (through layers of i2c muxes) with switch ports as seen by the
+switch silicon.  Network management software (user space apps) is
+responsible for enabling, configuring and monitoring optical modules to
+match the config files.  Kernel drivers provide the access to the GPIO lines
+and the EEPROM control registers.
+
+Notably, in this architecture, there are actually NO kernel consumers of the
+module EEPROM data.  The version of optoe that is in production in these NOS
+and switch environments does not even have an entry point callable by the
+kernel.  All of the consumers are accessing the data via the sysfs file in
+/sys/bus/i2c/devices/*.   I have closely modeled the updated version of
+optoe on the at24 driver (drivers/misc/eeprom/at24.c).  Thus, the KAPI is
+actually the same as used by other eeprom drivers.  It is an eeprom, it is
+accessed by the nvmem interfaces, in both kernel and user space.
+
+My primary motivation for creating optoe is to consolidate a bunch of
+different implementations by different vendors, to add page support which
+most implementations lacked, to extend the reach to all of the architected
+pages (the standards describe them as proprietary, not forbidden), to
+provide write access, and to enable CMIS devices.  Those goals apply to the
+netdev/netlink environment as well.  I added the kernel access via nvmem to
+facilitate adoption in your network stack, to achieve the same goals
+(standardization and improvement of access to module EEPROMs).
+
+> 
+> Moshe is working on the Mellonox MAC drivers. As you say, the current
+sfp.c
+
+I love Moshe's KAPI, and am reviewing and commenting on it to ensure its
+success.
+
+> code is very limited. But once Moshe code is merged, i will do the work
+> needed to extend sfp.c to fully support the KAPI. It will then work for
+many
+> more MAC drivers, those using phylink.
+
+One piece of that work could be to replace the contents of
+drivers/net/phy/sfp.c, functions sfp_i2c_read() and sfp_i2c_write() with
+nvmem calls to optoe.  That would be an easy change, and provide all of the
+features of optoe (pages, access to all of the EEPROM, write support, CMIS),
+without writing and maintaining that i2c access code.  The actual i2c calls
+would be handled by the same code that is supporting at24.
+
+It is plausible that platform vendors would choose not to implement their
+own version of these functions if the generic sfp_i2c_read/write worked for
+them.   Fewer implementations of the same code, with more capability in the
+common implementation, is obviously beneficial.
+
+> For me, the KAPI is the important thing, and less so how the
+implementation
+> underneath works. Ideally, we want one KAPI for accessing SFP EEPROMs.
+> Up until now, that KAPI is the ethtool IOCTL.
+> But that KAPI is now showing its age, and it causing us problems. So we
+need
+> to replace that KAPI. ethtool has recently moved to using netlink
+messages.
+> So any replacement should be based on netlink. The whole network stack is
+> pretty much controlled via netlink. So you will find it very difficult to
+argue for
+> any other form of KAPI within the netdev community. Since optoe's KAPI is
+> not netlink based, it is very unlikely to be accepted.
+> 
+> But netlink is much more flexible than the older IOCTL interface.
+> Please work with us to ensure this new KAPI can work with your use cases.
+
+I accept all your points from the netdev/netlink perspective.  To that end,
+I offer optoe as an upgrade to the default implementation of
+sfp_i2c_read/write.
+
+I also have partners using a different architecture, for whom a
+netdev/netlink based solution would not be useful.  These partners have been
+using a sysfs based approach to module EEPROMs and have no motivation to
+change that.  This version of optoe is using the standard eeprom access
+method (nvmem) to provide this access.
+
+Acknowledging your objections, I nonetheless request that optoe be accepted
+into upstream as an eeprom driver in drivers/misc/eeprom.  It is a
+legitimate driver, with a legitimate user community, which deserves the
+benefits of being managed as a legitimate part of the linux kernel.
+
+> 
+>      Andrew
+
+Don
 
