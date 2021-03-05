@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCCA32EA2E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9608432E984
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232933AbhCEMgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:36:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49210 "EHLO mail.kernel.org"
+        id S232465AbhCEMdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:33:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232853AbhCEMgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:36:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 716A865014;
-        Fri,  5 Mar 2021 12:36:22 +0000 (UTC)
+        id S231338AbhCEMcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:32:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9D3F65013;
+        Fri,  5 Mar 2021 12:32:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947783;
-        bh=Mqw/Xi4CtknF9CnDt+xfZR2WJq/GQJJN7ERbesdt2Zo=;
+        s=korg; t=1614947562;
+        bh=mnFawbuCu/ciSuXbklagVh6TjIlkZjb5a2D/wefHXEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KCj4p1XKqiB4kadLH0Q0mwmrvDT2pCoiMMf8RZrZ1y3E2S2ohtABaJBVFyhYjTcDz
-         k+dAbARx8EIKGFjGODtrWXhnZRldhPEaUEsx00qv+oOb5aKYRbhKeb7iiIXURfhV08
-         f9jPQohVYiPzfTQNbsaw5yzY8NWOMXXjbBJliJhM=
+        b=murQ7UWN58UK5QSvXceo9FHOCyWZM9WXm7d8nv24TosVgHkYGjZ+f+H2JOKOTUGMS
+         FRHzKzNACFGy1XvIuC97ISfv/QdESzlRMuGCmJ5pFZt7KQ7HdgmGKf7cVjX/RlIpTO
+         fHWacPYvWGjVSLV/9mnXb75KBd1BZBpcNvkYdQlY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+36315852ece4132ec193@syzkaller.appspotmail.com,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>,
-        jfs-discussion@lists.sourceforge.net,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH 4.19 10/52] JFS: more checks for invalid superblock
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 082/102] ASoC: Intel: bytcr_rt5640: Add quirk for the Acer One S1002 tablet
 Date:   Fri,  5 Mar 2021 13:21:41 +0100
-Message-Id: <20210305120854.169806432@linuxfoundation.org>
+Message-Id: <20210305120907.315428040@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
-References: <20210305120853.659441428@linuxfoundation.org>
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+References: <20210305120903.276489876@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,82 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 3bef198f1b17d1bb89260bad947ef084c0a2d1a6 upstream.
+[ Upstream commit c58947af08aedbdee0fce5ea6e6bf3e488ae0e2c ]
 
-syzbot is feeding invalid superblock data to JFS for mount testing.
-JFS does not check several of the fields -- just assumes that they
-are good since the JFS_MAGIC and version fields are good.
+The Acer One S1002 tablet is using an analog mic on IN1 and has
+its jack-detect connected to JD2_IN4N, instead of using the default
+IN3 for its internal mic and JD1_IN4P for jack-detect.
 
-In this case (syzbot reproducer), we have s_l2bsize == 0xda0c,
-pad == 0xf045, and s_state == 0x50, all of which are invalid IMO.
-Having s_l2bsize == 0xda0c causes this UBSAN warning:
-  UBSAN: shift-out-of-bounds in fs/jfs/jfs_mount.c:373:25
-  shift exponent -9716 is negative
+Note it is also using AIF2 instead of AIF1 which is somewhat unusual,
+this is correctly advertised in the ACPI CHAN package, so the speakers
+do work without the quirk.
 
-s_l2bsize can be tested for correctness. pad can be tested for non-0
-and punted. s_state can be tested for its valid values and punted.
+Add a quirk for the mic and jack-detect settings.
 
-Do those 3 tests and if any of them fails, report the superblock as
-invalid/corrupt and let fsck handle it.
-
-With this patch, chkSuper() says this when JFS_DEBUG is enabled:
-  jfs_mount: Mount Failure: superblock is corrupt!
-  Mount JFS Failure: -22
-  jfs_mount failed w/return code = -22
-
-The obvious problem with this method is that next week there could
-be another syzbot test that uses different fields for invalid values,
-this making this like a game of whack-a-mole.
-
-syzkaller link: https://syzkaller.appspot.com/bug?extid=36315852ece4132ec193
-
-Reported-by: syzbot+36315852ece4132ec193@syzkaller.appspotmail.com
-Reported-by: kernel test robot <lkp@intel.com> # v2
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc: jfs-discussion@lists.sourceforge.net
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210216213555.36555-5-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_filsys.h |    1 +
- fs/jfs/jfs_mount.c  |   10 ++++++++++
- 2 files changed, 11 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
---- a/fs/jfs/jfs_filsys.h
-+++ b/fs/jfs/jfs_filsys.h
-@@ -281,5 +281,6 @@
- 				 * fsck() must be run to repair
- 				 */
- #define	FM_EXTENDFS 0x00000008	/* file system extendfs() in progress */
-+#define	FM_STATE_MAX 0x0000000f	/* max value of s_state */
- 
- #endif				/* _H_JFS_FILSYS */
---- a/fs/jfs/jfs_mount.c
-+++ b/fs/jfs/jfs_mount.c
-@@ -49,6 +49,7 @@
- 
- #include <linux/fs.h>
- #include <linux/buffer_head.h>
-+#include <linux/log2.h>
- 
- #include "jfs_incore.h"
- #include "jfs_filsys.h"
-@@ -378,6 +379,15 @@ static int chkSuper(struct super_block *
- 	sbi->bsize = bsize;
- 	sbi->l2bsize = le16_to_cpu(j_sb->s_l2bsize);
- 
-+	/* check some fields for possible corruption */
-+	if (sbi->l2bsize != ilog2((u32)bsize) ||
-+	    j_sb->pad != 0 ||
-+	    le32_to_cpu(j_sb->s_state) > FM_STATE_MAX) {
-+		rc = -EINVAL;
-+		jfs_err("jfs_mount: Mount Failure: superblock is corrupt!");
-+		goto out;
-+	}
-+
- 	/*
- 	 * For now, ignore s_pbsize, l2bfactor.  All I/O going through buffer
- 	 * cache.
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 626677fa1b5c..3af4cb87032c 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -402,6 +402,19 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{	/* Acer One 10 S1002 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "One S1002"),
++		},
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_JD_SRC_JD2_IN4N |
++					BYT_RT5640_OVCD_TH_2000UA |
++					BYT_RT5640_OVCD_SF_0P75 |
++					BYT_RT5640_DIFF_MIC |
++					BYT_RT5640_SSP0_AIF2 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
+-- 
+2.30.1
+
 
 
