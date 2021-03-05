@@ -2,194 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9760532DFEB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7D332DFEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhCEDJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 22:09:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58040 "EHLO
+        id S229861AbhCEDKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 22:10:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbhCEDJW (ORCPT
+        with ESMTP id S229494AbhCEDKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 22:09:22 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336C5C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 19:09:22 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id s23so1049072pji.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 19:09:22 -0800 (PST)
+        Thu, 4 Mar 2021 22:10:18 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0AFC061574;
+        Thu,  4 Mar 2021 19:10:18 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id l2so383877pgb.1;
+        Thu, 04 Mar 2021 19:10:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kAsZWz7burJ9bPC37LxsIcNkEVa66bzvNmsosUZUHfs=;
-        b=Swl+WPzAtNfGJSBs9xkI+jLQNZ+p1GomJvqEamdmWfhcEJ+w/7AkcH02QOneAWsE2R
-         ooEv0wh9dmayaX/tzcUbOXypseGh3AqoFgKrFSVJjMJQquFZosBB8XRVsQ4IlDBBmncv
-         6M4ZsxI8PoxIHMYtTpcX8/dVlPyQebYs2iIwrrGX8Tzwm1IuNH9bj6s0oyMU1ahv+LJw
-         Hh+LfNqUK1xvG1nLJqOf/9S6hBIo4B6dkCWhZ+B0fpu1sTdZoy+3VmvchpYu3Cw+oziG
-         PDxYPG14KMGZxXShdq0Pl/YCkmM8LxYmF6REXUp4Femc04SGbDPVoANFbOvVxGBdOB3O
-         h7Ng==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=s/06w5QgrfcMPtzUsdqEmwK0JlC5zZBUGgXhBq3TD64=;
+        b=kGo37IFXZYumoVwQb3oAseOH7lw4OlGNqzdR6jwpJACgIljfSdjXqSM/AYoZFpxSjK
+         LRXDj8ny61n0kBGNu3zJ8poETfpKZNaOWLMD9LMcbr6Bll4ESU9UPxMiPYG0fDhp2Obz
+         h8ywDyEt1v1htnK8da0Wa/xF4c1EpPvOeNVxlUm1AnoR8BP/9PFa4+KfEDD3ST453chV
+         egxGRDiliEzoG5aOkYCAThQ8tuNmQ3ZyKr4Hk8O/qFJfPGoGqGmUvxsyhvJgqczgt1Q6
+         mbXY3pYohslqamKxEHttVnrhDwbir0SEOEtFh532Ilb0b9/faNgDBP7XcER9eZZW0qXi
+         vXQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kAsZWz7burJ9bPC37LxsIcNkEVa66bzvNmsosUZUHfs=;
-        b=Z3SEwcysO/AmK4G3zaOHk5lCbWTNpTYiGVvE8bcY3ZWylLykWcMopPwVQj9wP580Kg
-         gXpgIw7aT5I9B9aYlfX9nOn/F1dyK/MSXpejzmx2P8iwlSo2dVdygOzjq3uF1Wm1yQCi
-         So+myKxQQMJ2v8YFN56SC98kPjwY78fELeOS5SrqJa0vRCYNhHE/DnovZ9fvU/T/8aSm
-         v1fZwxhAfdqK9B8yu2EOU1R2s2gOZSd9Sq36aY58v1tWctLqS3lQpwDjKn69pTCYTnfX
-         nw9PVfZi15klRIy1Jpv6AjVgeigdwQkhi92q7o0ZcXbsfxVa9j0GubxSKZuv4UTobPAE
-         gWFw==
-X-Gm-Message-State: AOAM532w914M0ABwX8f3maaqLUolFUzxRKjsxIVpSuBKaXtGPdZIi4oa
-        YeDNg5OpTDoEZaRKJzGaXLm3kQ==
-X-Google-Smtp-Source: ABdhPJx5kHj0IvZMfgdLtG0xpOd2u0TRycOWG40Fo58M8I4gVdsSCyeb2pH1f46f7//vPd3q8FdiVw==
-X-Received: by 2002:a17:90a:7f89:: with SMTP id m9mr7541847pjl.115.1614913761655;
-        Thu, 04 Mar 2021 19:09:21 -0800 (PST)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id x190sm672623pfx.60.2021.03.04.19.09.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Mar 2021 19:09:20 -0800 (PST)
-Date:   Fri, 5 Mar 2021 08:39:16 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
-        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [PATCH v6] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210305030916.trb35i53rzwf6kyn@vireshk-i7>
-References: <9a2086f37c0a62069b67c39a3f75941b78a0039c.1614749417.git.jie.deng@intel.com>
- <20210304060638.7qes424vvdmptz5c@vireshk-i7>
- <f3f4aaf8-521c-3e9e-4757-97f2e33e44f6@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f3f4aaf8-521c-3e9e-4757-97f2e33e44f6@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=s/06w5QgrfcMPtzUsdqEmwK0JlC5zZBUGgXhBq3TD64=;
+        b=YBl8uAartBGpKwolVDTbwJ7sBfyESk5SDe8Y0mCxi+tBWbOwGRRkX6lxNDgi38ruMz
+         4CiCg1GMy/RwIFskiyAnHO8E6qum/IAsR6npYA0A/U/jSadXmyi0fV1k9OEd9D8qi0hH
+         Bt+UI1sLBeIQmdZN8hMEVOfSGD+XvkBTJh6yqpsBJwhbSN5qzDE6YYkCaHprXNJp5NmY
+         f3ge5NvrranywWwOhTyzyep+zkypDD9FaqisaJ0iJqPCxuosrncMyE7Nu8j3LUdwVqc8
+         hq/LXtTcVO38RgfhuUbF4vLNkqWqLvEGPYd14tgzCcg3kSAkbdIZwdIyt1tvgvldpvIB
+         m/HQ==
+X-Gm-Message-State: AOAM532jqnEsFhwNyZlRMpkci8rf1oiwa4I1YksXumsjxeqQdDRcGqqR
+        i+A4zBuq39W6iQmnM1DF1GU=
+X-Google-Smtp-Source: ABdhPJxJroc+YD7f8mRyciCHP8r3jc3N5NIQ6PbIRzQqkEN8zgiK9Eqt6sXv1Xj5ZTbry5MVdj4W7A==
+X-Received: by 2002:aa7:91cf:0:b029:1cb:1c6f:b77d with SMTP id z15-20020aa791cf0000b02901cb1c6fb77dmr7007696pfa.74.1614913817878;
+        Thu, 04 Mar 2021 19:10:17 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.129])
+        by smtp.gmail.com with ESMTPSA id 14sm682122pfo.141.2021.03.04.19.10.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 19:10:17 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] net: intel: iavf: fix error return code of iavf_init_get_resources()
+Date:   Thu,  4 Mar 2021 19:10:10 -0800
+Message-Id: <20210305031010.5396-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-03-21, 09:46, Jie Deng wrote:
-> On 2021/3/4 14:06, Viresh Kumar wrote:
-> > depends on I2C as well ?
-> No need that. The dependency of I2C is included in the Kconfig in its parent
-> directory.
+When iavf_process_config() fails, no error return code of
+iavf_init_get_resources() is assigned.
+To fix this bug, err is assigned with the return value of 
+iavf_process_config(), and then err is checked.
 
-Sorry about that, I must have figured that out myself.
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/net/ethernet/intel/iavf/iavf_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-(Though a note on the way we reply to messages, please leave an empty line
-before and after your messages, it gets difficult to find the inline replies
-otherwise. )
-
-> > > +		if (!(req && req == &reqs[i])) {
-> > I find this less readable compared to:
-> > 		if (!req || req != &reqs[i]) {
-> 
-> Different people may have different tastes.
-> 
-> Please check Andy's comment in this link.
-> 
-> https://lists.linuxfoundation.org/pipermail/virtualization/2020-September/049933.html
-
-Heh, everyone wants you to do it differently :)
-
-If we leave compilers optimizations aside (because it will generate the exact
-same code for both the cases, I tested it as well to be doubly sure), The
-original statement used in this patch has 3 conditional statements in it and the
-way I suggested has only two.
-
-Andy, thoughts ?
-
-And anyway, this isn't biggest of my worries, just that I had to notice it
-somehow :)
-
-> > For all the above errors where you simply break out, you still need to free the
-> > memory for buf, right ?
-> Will try to use reqs[i].buf = msgs[i].buf to avoid allocation.
-
-I think it would be better to have all such deallocations done at a single
-place, i.e. after the completion callback is finished.. Trying to solve this
-everywhere is going to make this more messy.
-
-> > > +	mutex_lock(&vi->i2c_lock);
-> > I have never worked with i2c stuff earlier, but I don't think you need a lock
-> > here. The transactions seem to be serialized by the i2c-core by itself (look at
-> > i2c_transfer() in i2c-core-base.c), though there is another exported version
-> > __i2c_transfer() but the comment over it says the callers must take adapter lock
-> > before calling it.
-> Lock is needed since no "lock_ops" is registered in this i2c_adapter.
-
-drivers/i2c/i2c-core-base.c:
-
-static int i2c_register_adapter(struct i2c_adapter *adap)
-{
-        ...
-
-        if (!adap->lock_ops)
-                adap->lock_ops = &i2c_adapter_lock_ops;
-
-        ...
-}
-
-This should take care of it ?
-
-> > 
-> > > +
-> > > +	ret = virtio_i2c_send_reqs(vq, reqs, msgs, num);
-> > > +	if (ret == 0)
-> > > +		goto err_unlock_free;
-> > > +
-> > > +	nr = ret;
-> > > +
-> > > +	virtqueue_kick(vq);
-> > > +
-> > > +	time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
-> > > +	if (!time_left) {
-> > > +		dev_err(&adap->dev, "virtio i2c backend timeout.\n");
-> > > +		ret = -ETIMEDOUT;
-> > You need to free bufs of the requests here as well..
-
-Just want to make sure you didn't miss this comment.
-
-> > > +static struct i2c_adapter virtio_adapter = {
-> > > +	.owner = THIS_MODULE,
-> > > +	.name = "Virtio I2C Adapter",
-> > > +	.class = I2C_CLASS_DEPRECATED,
-> > Why are we using something that is deprecated here ?
-> Warn users that the adapter doesn't support classes anymore.
-
-So this is the right thing to do? Or this is what we expect from new drivers?
-Sorry, I am just new to this stuff and so...
-
-> > > +struct virtio_i2c_out_hdr {
-> > > +	__le16 addr;
-> > > +	__le16 padding;
-> > > +	__le32 flags;
-> > > +};
-> > It might be worth setting __packed for the structures here, even when we have
-> > taken care of padding ourselves, for both the structures..
-> Please check Michael's comment https://lkml.org/lkml/2020/9/3/339.
-> I agreed to remove "__packed" .
-
-When Michael commented the structure looked like this:
-
-Actually it can be ignored as the compiler isn't going to add any padding by
-itself in this case (since you already took care of it) as the structure will be
-aligned to the size of the biggest element here. I generally consider it to be a
-good coding-style to make sure we don't add any unwanted stuff in there by
-mistake.
-
-Anyway, we can see it in future if this is going to be required or not, if and
-when we add new fields here.
-
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
+index 0a867d64d467..dc5b3c06d1e0 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_main.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+@@ -1776,7 +1776,8 @@ static int iavf_init_get_resources(struct iavf_adapter *adapter)
+ 		goto err_alloc;
+ 	}
+ 
+-	if (iavf_process_config(adapter))
++	err = iavf_process_config(adapter);
++	if (err)
+ 		goto err_alloc;
+ 	adapter->current_op = VIRTCHNL_OP_UNKNOWN;
+ 
 -- 
-viresh
+2.17.1
+
