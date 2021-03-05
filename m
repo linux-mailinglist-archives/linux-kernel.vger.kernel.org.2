@@ -2,91 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E260732F26F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69EEC32F23E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhCESYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 13:24:16 -0500
-Received: from gate.crashing.org ([63.228.1.57]:54749 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229631AbhCESYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 13:24:06 -0500
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 125IGTa8026099;
-        Fri, 5 Mar 2021 12:16:29 -0600
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 125IGS7W026098;
-        Fri, 5 Mar 2021 12:16:28 -0600
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Fri, 5 Mar 2021 12:16:28 -0600
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        id S229672AbhCESRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 13:17:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33672 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229465AbhCESQh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 13:16:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614968196;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xSmCXVggNB/CHBO3Bg4UxMkncMMlhKiVJCaV9LoD9Ks=;
+        b=LxXoB4j2VMWMSIhfPsf10+cOap3COPHzKJ+NkrcsfNCm3aSRGtJ8+rQE4BsOxcGytMnpTf
+        YkhxA6zNFYEcAxX/e9tUVjPEJ3BBlbpKTQZzu8KFHSBc3G3BkwQ3bnb53ELVLWzyOiXw6F
+        j81VpI0vFtBqA/pFIHrWSbTprPjXDR8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-306-j6jDLvrLOQGnIWgPki6p7w-1; Fri, 05 Mar 2021 13:16:34 -0500
+X-MC-Unique: j6jDLvrLOQGnIWgPki6p7w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75EC01018F64;
+        Fri,  5 Mar 2021 18:16:32 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 68F1F19CB0;
+        Fri,  5 Mar 2021 18:16:32 +0000 (UTC)
+Received: from zmail19.collab.prod.int.phx2.redhat.com (zmail19.collab.prod.int.phx2.redhat.com [10.5.83.22])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id E213C4BB40;
+        Fri,  5 Mar 2021 18:16:31 +0000 (UTC)
+Date:   Fri, 5 Mar 2021 13:16:28 -0500 (EST)
+From:   Veronika Kabatova <vkabatov@redhat.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Marco Elver <elver@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-toolchains@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v1] powerpc: Include running function as first entry in save_stack_trace() and friends
-Message-ID: <20210305181628.GW29191@gate.crashing.org>
-References: <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com> <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu> <YD+o5QkCZN97mH8/@elver.google.com> <20210304145730.GC54534@C02TD0UTHF1T.local> <CANpmjNOSpFbbDaH9hNucXrpzG=HpsoQpk5w-24x8sU_G-6cz0Q@mail.gmail.com> <20210304165923.GA60457@C02TD0UTHF1T.local> <YEEYDSJeLPvqRAHZ@elver.google.com> <CAKwvOd=wBArMwvtDC8zV-QjQa5UuwWoxksQ8j+hUCZzbEAn+Fw@mail.gmail.com> <20210304192447.GT29191@gate.crashing.org> <ed3c08d2-04ba-217e-9924-28cab7750234@csgroup.eu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ed3c08d2-04ba-217e-9924-28cab7750234@csgroup.eu>
-User-Agent: Mutt/1.4.2.3i
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Message-ID: <1890909388.30244858.1614968188922.JavaMail.zimbra@redhat.com>
+In-Reply-To: <2001895867.30197818.1614947320141.JavaMail.zimbra@redhat.com>
+References: <1614921898-4099-1-git-send-email-anshuman.khandual@arm.com> <d7470949-0d9d-0863-f5d1-9391134a5e5e@arm.com> <2001895867.30197818.1614947320141.JavaMail.zimbra@redhat.com>
+Subject: Re: [PATCH V3 0/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based
+ memory
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.36.114.98, 10.4.195.10]
+Thread-Topic: arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
+Thread-Index: HYYsJ7UKXk8vnHFKJgWVD82gr9EAgcl6WMNp
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 07:38:25AM +0100, Christophe Leroy wrote:
-> Le 04/03/2021 à 20:24, Segher Boessenkool a écrit :
-> https://github.com/linuxppc/linux/commit/a9a3ed1eff36
-> 
-> >
-> >That is much heavier than needed (an mb()).  You can just put an empty
-> >inline asm after a call before a return, and that call cannot be
-> >optimised to a sibling call: (the end of a function is an implicit
-> >return:)
-
-> In the commit mentionned at the top, it is said:
-> 
-> The next attempt to prevent compilers from tail-call optimizing
-> the last function call cpu_startup_entry(), ... , was to add an empty 
-> asm("").
-> 
-> This current solution was short and sweet, and reportedly, is supported
-> by both compilers but we didn't get very far this time: future (LTO?)
-> optimization passes could potentially eliminate this,
-
-This is simply not true.  A volatile inline asm (like this is, all
-asm without outputs are) is always run on the reel machine exactly like
-on the abstract machine.  LTO can not eliminate it, not more than any
-other optimisation can.  The compiler makes no assumption about the
-constents of the template of an asm, empty or not.
-
-If you are really scared the compiler violates the rules of GCC inline
-asm and thinks it knows what "" means, you can write
-  asm(";#");
-(that is a comment on all supported archs).
-
-> which leads us
-> to the third attempt: having an actual memory barrier there which the
-> compiler cannot ignore or move around etc.
-
-Why would it not be allowed to delete this, and delete some other asm?
-
-And the compiler *can* move around asm like this.  But the point is,
-it has to stay in order with other side effects, so there cannot be a
-sibling call here, the call has to remain: any call contains a sequence
-point, so side effects cannot be reordered over it, so the call (being
-before the asm) cannot be transformed to a tail call.
 
 
-Segher
+----- Original Message -----
+> From: "Veronika Kabatova" <vkabatov@redhat.com>
+> To: "Anshuman Khandual" <anshuman.khandual@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, l=
+inux-mm@kvack.org, "Catalin Marinas"
+> <catalin.marinas@arm.com>, "Will Deacon" <will@kernel.org>, "Ard Biesheuv=
+el" <ardb@kernel.org>, "Mark Rutland"
+> <mark.rutland@arm.com>, "James Morse" <james.morse@arm.com>, "Robin Murph=
+y" <robin.murphy@arm.com>, "J=C3=A9r=C3=B4me Glisse"
+> <jglisse@redhat.com>, "Dan Williams" <dan.j.williams@intel.com>, "David H=
+ildenbrand" <david@redhat.com>, "Mike
+> Rapoport" <rppt@linux.ibm.com>
+> Sent: Friday, March 5, 2021 1:28:40 PM
+> Subject: Re: [PATCH V3 0/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE bas=
+ed memory
+>=20
+>=20
+>=20
+> ----- Original Message -----
+> > From: "Anshuman Khandual" <anshuman.khandual@arm.com>
+> > To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+> > linux-mm@kvack.org
+> > Cc: "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon"
+> > <will@kernel.org>, "Ard Biesheuvel" <ardb@kernel.org>,
+> > "Mark Rutland" <mark.rutland@arm.com>, "James Morse" <james.morse@arm.c=
+om>,
+> > "Robin Murphy" <robin.murphy@arm.com>,
+> > "J=C3=A9r=C3=B4me Glisse" <jglisse@redhat.com>, "Dan Williams"
+> > <dan.j.williams@intel.com>, "David Hildenbrand"
+> > <david@redhat.com>, "Mike Rapoport" <rppt@linux.ibm.com>, "Veronika
+> > Kabatova" <vkabatov@redhat.com>
+> > Sent: Friday, March 5, 2021 6:38:14 AM
+> > Subject: Re: [PATCH V3 0/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE b=
+ased
+> > memory
+> >=20
+> >=20
+> > On 3/5/21 10:54 AM, Anshuman Khandual wrote:
+> > > This series fixes pfn_valid() for ZONE_DEVICE based memory and also
+> > > improves
+> > > its performance for normal hotplug memory. While here, it also
+> > > reorganizes
+> > > pfn_valid() on CONFIG_SPARSEMEM. This series is based on v5.12-rc1.
+> > >=20
+> > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > Cc: Will Deacon <will@kernel.org>
+> > > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > Cc: James Morse <james.morse@arm.com>
+> > > Cc: Robin Murphy <robin.murphy@arm.com>
+> > > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > Cc: David Hildenbrand <david@redhat.com>
+> > > Cc: Mike Rapoport <rppt@linux.ibm.com>
+> > > Cc: Veronika Kabatova <vkabatov@redhat.com>
+> > > Cc: linux-arm-kernel@lists.infradead.org
+> > > Cc: linux-mm@kvack.org
+> > > Cc: linux-kernel@vger.kernel.org
+> > >=20
+> > > Changes in V3:
+> > >=20
+> > > - Validate the pfn before fetching mem_section with __pfn_to_section(=
+) in
+> > > [PATCH 2/2]
+> >=20
+> > Hello Veronica,
+> >=20
+> > Could you please help recreate the earlier failure [1] but with this
+> > series applies on v5.12-rc1. Thank you.
+> >=20
+>=20
+> Hello Anshuman,
+>=20
+> the machine in question is currently loaned to a developer. I'll reach
+> out to them and will let you know once I have any results.
+>=20
+
+Hi,
+
+I'm happy to report the kernel boots with these new patches. I used the
+5.12.0-rc1 kernel (commit 280d542f6ffac0) as a base. The full console log
+from the boot process is available at
+
+https://gitlab.com/-/snippets/2086833
+
+in case you want to take a look. Note that there are some call traces
+starting around line 3220, but they are NOT introduced by these two
+patches and are also present with the base mainline kernel.
+
+
+Veronika
+
+>=20
+> Veronika
+>=20
+> > [1]
+> > https://lore.kernel.org/linux-arm-kernel/cki.8D1CB60FEC.K6NJMEFQPV@redh=
+at.com/
+> >=20
+> > - Anshuman
+> >=20
+> >=20
+>=20
+
