@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B92F32EEA5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B9832EEB2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhCEPWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:22:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45764 "EHLO
+        id S229615AbhCEPXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:23:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbhCEPWV (ORCPT
+        with ESMTP id S229697AbhCEPXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:22:21 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8743AC061756
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 07:22:21 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id h13so2244041pjt.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 07:22:21 -0800 (PST)
+        Fri, 5 Mar 2021 10:23:23 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A02C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 07:23:23 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id 18so2354798pfo.6
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 07:23:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Wxoa0yK9hiaUs30uaCIrzcYi8kY+19xmjNAI3OUqgyg=;
-        b=c75le3XEPFcaZsVxGM3XsBqhWjLvTlNKBzxbjjFdzHpTqSV+KWCcxT2bVCNFk+GFZ6
-         urTe715ydlT8zINgnoPrAYD8TlU3dMsHt9eIVazFtO+I6Jg0wu6E0+tEtVJhkLRi8ARy
-         Ve/CJk1MOYjD27mhwxBhCpMjfY9cB+XKhWjWPcIRuhFS4tU7EkDv7FrmJ4U/lq4Xdclm
-         Zkdx2YP4xODMnTxJsG7XYZ9s4wmwg7MvUjR/iDLo2/dy7mCOGAq0w13I8NWbVCvdK+cC
-         2Wzz/0xRJOFqWI7mD5fS+8K2QpotzkCQWXEJ2uZO8dGpJgzG+gEvBMNIPotvWxX5CAmI
-         5fvw==
+        bh=Pp062KYeaR4WdsQXRbsz4rfCGOxQmDJuQ9W1VEyK3XQ=;
+        b=XHY3umtG6cjNXchXwqhPDXV4lVZUK0S5fW9GSsxoucPUht3GHSVNb1wK4JW20COpge
+         Kqz7MFoCSZWVO/+bG0amcRbQtJqnKA/SxEu8dnIcS3ppxsfYeL0fYGNDyQn7X5OtC32f
+         zqomNiWePsioBMvBJenPU/IDPJj5cifKY1PW7uFeuPe1Jwh6rVr/UYue7Fga3n8+q62d
+         mm8jiMOa7hhFQw4yR2KDm2nHVXOF4Lc1l7MM0nR0PW2di4BF4UQDqczyCxesi10S5osZ
+         SubotUmlI16dsQX4yxKzuccjEk1PLXzTI+H6FJD4fNTm/ok+c9zb91nzZsh+Qj76i/iB
+         85xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Wxoa0yK9hiaUs30uaCIrzcYi8kY+19xmjNAI3OUqgyg=;
-        b=TkgUvJh4Zn83rSl84BltD5hLA2ZTZU/WyabcsLtmcWPsqa4DmpL34SRYzbm0KfQDew
-         wwP2lUgZ7M91TkP7oVR62Jn7STeRU1U1pw7C/N2XXUO37dDOOj97FnEwBdgN3hEOzzmU
-         l7NSlSS9RMGBE4urL5R9Mi77GPT49mqHnyZ03mWRM+eQ0EEVfHpRxfXW/owwXcBe1hlf
-         cOAUYJkeG5oNuUh3c9UoUQLj404Gu6hWAaZJfRGKh6xqWbDS2zY/SzipOKROrSz8+P9a
-         z9QuhlOkMDNayo2pUlZKdPFIpDOVugMkW7IAmret2KisgAFqfpdn5p9ZBtJrD3tZJ6nh
-         qgpQ==
-X-Gm-Message-State: AOAM531/uQYP8Le7VILvQ3qpiQsDSjybAqjdSXA/heliCOSKB5Al4mtB
-        cIPuTrMzR+mftHw8GXLMkoutWVdPMRsxuJR3CxuxXQ==
-X-Google-Smtp-Source: ABdhPJw5ZAsqywVtH0BwssTWluIZq8MEdOUKOr5IiQoU7/DNBPrVI23nRNbeFLpq6wTLR3mk95fmV9ZUlyvgaQ8X+wE=
-X-Received: by 2002:a17:902:d707:b029:e5:c9ce:cb33 with SMTP id
- w7-20020a170902d707b02900e5c9cecb33mr9156791ply.32.1614957741057; Fri, 05 Mar
- 2021 07:22:21 -0800 (PST)
+        bh=Pp062KYeaR4WdsQXRbsz4rfCGOxQmDJuQ9W1VEyK3XQ=;
+        b=kWaQNGFXUCAy2IevvtEqrhObOF6rCcLHBYdc2UQqkFbEeu9QavdHSJve+zE/Icl6yR
+         sNw8sL7dVveNl4BcjBizcEhKEgH2copFl2WIEwL22UAW97BXr9uHr+Smur6kBh26a4UO
+         C/Mq/Uw6V2U57kQfEZD9PUSglMfb9fdOLZS+/5HvRa2X3PrhekC1+V2hmELJfwzghftT
+         vYuF6OkVn9EfArxW05CkoZcvKbfznlW7TtIdbNf6gZTR9qG6Bmi/v2c3GaqEomDJJ4ds
+         tSMSwtT0XeHA6gYQIKiy6Psf5iOf46nVxTeiYQaNDVy+8lPcuMN3Mb9JmHAeYALLQJCU
+         eDsg==
+X-Gm-Message-State: AOAM531OCzrnhXCvf6s4lAf52knu2uTcKuTZXu8nspUaZxqY3B7Is0N7
+        PD2O6ro3yULqD6b5Lg+u1lGOsvDG09ELYIdLgh46vQ==
+X-Google-Smtp-Source: ABdhPJz46wOWIASXT1kKWJyR4O8v/oxVpCevy3CODCbaD5IF1jfHipEWWaLk5dNiOtwqfdCpLhba8i7dJT+6NMfE55A=
+X-Received: by 2002:aa7:9843:0:b029:1ed:cc86:fa0 with SMTP id
+ n3-20020aa798430000b02901edcc860fa0mr9324771pfq.39.1614957803176; Fri, 05 Mar
+ 2021 07:23:23 -0800 (PST)
 MIME-Version: 1.0
-References: <1607651182-12307-1-git-send-email-victor.liu@nxp.com> <a89d5c08c9f0793acfb9d056d5748e4a3cf16c2f.camel@nxp.com>
-In-Reply-To: <a89d5c08c9f0793acfb9d056d5748e4a3cf16c2f.camel@nxp.com>
+References: <1607651182-12307-1-git-send-email-victor.liu@nxp.com>
+ <1607651182-12307-3-git-send-email-victor.liu@nxp.com> <CAG3jFyvJZkVRs4NnDmPmGk-Qkr0voyvf3JNvKFAKDyxcCNR3Cw@mail.gmail.com>
+In-Reply-To: <CAG3jFyvJZkVRs4NnDmPmGk-Qkr0voyvf3JNvKFAKDyxcCNR3Cw@mail.gmail.com>
 From:   Robert Foss <robert.foss@linaro.org>
-Date:   Fri, 5 Mar 2021 16:22:10 +0100
-Message-ID: <CAG3jFyvWZV_WVeR1+EvvH0C47CqCtPDMULiOVKzR51ukzFMJwA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/5] phy: phy-fsl-imx8-mipi-dphy: Add i.MX8qxp LVDS PHY
- mode support
+Date:   Fri, 5 Mar 2021 16:23:12 +0100
+Message-ID: <CAG3jFyuSBadaoTP+j8O9cDOCrS+SohGP1GqWdv-018gTZz_yAg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] phy: Add LVDS configuration options
 To:     Liu Ying <victor.liu@nxp.com>
 Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
@@ -77,81 +77,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Liu,
+On Fri, 5 Mar 2021 at 16:03, Robert Foss <robert.foss@linaro.org> wrote:
+>
+> Hey Liu,
+>
+> This patch seems to be included in both this series and the "Add some
+> DRM bridge drivers support for i.MX8qm/qxp SoCs" series. Instead of
+> having the two series have a conflict I would suggest either merging
+> them (if that makes sense) or removing this patch from one of them and
+> explicitly stating that there is a dependency on the other series.
+>
+> (the patch itself still looks good though :) )
 
-Looking at this series[1], all but patch#2 has been reviewed, and #2
-looks good to me. So I think this series is ready to have v4 re-spun
-and and all of the r-bs from v3 added to the relevant patches.
+After having looked through the rest of the series, and seeing it is
+pretty much ready to be merged. Feel free to add my r-b to this patch.
 
-[1] https://patchwork.kernel.org/project/dri-devel/cover/1607651182-12307-1-git-send-email-victor.liu@nxp.com/
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
 
-On Fri, 19 Feb 2021 at 10:22, Liu Ying <victor.liu@nxp.com> wrote:
 >
-> A gentle ping.
->
-> Vinod, Kishon, it would be nice if you may help review this.
->
-> Thanks,
-> Liu Ying
->
-> On Fri, 2020-12-11 at 09:46 +0800, Liu Ying wrote:
-> > Hi,
+> On Fri, 11 Dec 2020 at 02:56, Liu Ying <victor.liu@nxp.com> wrote:
 > >
-> > This series adds i.MX8qxp LVDS PHY mode support for the Mixel PHY in the
-> > Freescale i.MX8qxp SoC.
+> > This patch allows LVDS PHYs to be configured through
+> > the generic functions and through a custom structure
+> > added to the generic union.
 > >
-> > The Mixel PHY is MIPI DPHY + LVDS PHY combo, which can works in either
-> > MIPI DPHY mode or LVDS PHY mode.  The PHY mode is controlled by i.MX8qxp
-> > SCU firmware.  The PHY driver would call a SCU function to configure the
-> > mode.
+> > The parameters added here are based on common LVDS PHY
+> > implementation practices.  The set of parameters
+> > should cover all potential users.
 > >
-> > The PHY driver is already supporting the Mixel MIPI DPHY in i.MX8mq SoC,
-> > where it appears to be a single MIPI DPHY.
-> >
-> >
-> > Patch 1/5 sets PHY mode in the Northwest Logic MIPI DSI host controller
-> > bridge driver, since i.MX8qxp SoC embeds this controller IP to support
-> > MIPI DSI displays together with the Mixel PHY.
-> >
-> > Patch 2/5 allows LVDS PHYs to be configured through the generic PHY functions
-> > and through a custom structure added to the generic PHY configuration union.
-> >
-> > Patch 3/5 converts mixel,mipi-dsi-phy plain text dt binding to json-schema.
-> >
-> > Patch 4/5 adds dt binding support for the Mixel combo PHY in i.MX8qxp SoC.
-> >
-> > Patch 5/5 adds the i.MX8qxp LVDS PHY mode support in the Mixel PHY driver.
-> >
-> >
-> > Welcome comments, thanks.
-> >
+> > Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Cc: NXP Linux Team <linux-imx@nxp.com>
+> > Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> > ---
 > > v2->v3:
-> > * Improve readability of mixel_dphy_set_mode() in the Mixel PHY driver. (Guido)
-> > * Improve the 'clock-names' property in the PHY dt binding.
+> > * No change.
 > >
 > > v1->v2:
-> > * Convert mixel,mipi-dsi-phy plain text dt binding to json-schema. (Guido)
-> > * Print invalid PHY mode in dmesg from the Mixel PHY driver. (Guido)
-> > * Add Guido's R-b tag on the patch for the nwl-dsi drm bridge driver.
+> > * No change.
 > >
-> > Liu Ying (5):
-> >   drm/bridge: nwl-dsi: Set PHY mode in nwl_dsi_enable()
-> >   phy: Add LVDS configuration options
-> >   dt-bindings: phy: Convert mixel,mipi-dsi-phy to json-schema
-> >   dt-bindings: phy: mixel: mipi-dsi-phy: Add Mixel combo PHY support for
-> >     i.MX8qxp
-> >   phy: freescale: phy-fsl-imx8-mipi-dphy: Add i.MX8qxp LVDS PHY mode
-> >     support
-> >
-> >  .../devicetree/bindings/phy/mixel,mipi-dsi-phy.txt |  29 ---
-> >  .../bindings/phy/mixel,mipi-dsi-phy.yaml           | 107 ++++++++
-> >  drivers/gpu/drm/bridge/nwl-dsi.c                   |   6 +
-> >  drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c     | 269 ++++++++++++++++++++-
-> >  include/linux/phy/phy-lvds.h                       |  48 ++++
-> >  include/linux/phy/phy.h                            |   4 +
-> >  6 files changed, 423 insertions(+), 40 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.txt
-> >  create mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml
+> >  include/linux/phy/phy-lvds.h | 48 ++++++++++++++++++++++++++++++++++++++++++++
+> >  include/linux/phy/phy.h      |  4 ++++
+> >  2 files changed, 52 insertions(+)
 > >  create mode 100644 include/linux/phy/phy-lvds.h
 > >
->
+> > diff --git a/include/linux/phy/phy-lvds.h b/include/linux/phy/phy-lvds.h
+> > new file mode 100644
+> > index 00000000..1b5b9d6
+> > --- /dev/null
+> > +++ b/include/linux/phy/phy-lvds.h
+> > @@ -0,0 +1,48 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright 2020 NXP
+> > + */
+> > +
+> > +#ifndef __PHY_LVDS_H_
+> > +#define __PHY_LVDS_H_
+> > +
+> > +/**
+> > + * struct phy_configure_opts_lvds - LVDS configuration set
+> > + *
+> > + * This structure is used to represent the configuration state of a
+> > + * LVDS phy.
+> > + */
+> > +struct phy_configure_opts_lvds {
+> > +       /**
+> > +        * @bits_per_lane_and_dclk_cycle:
+> > +        *
+> > +        * Number of bits per data lane and differential clock cycle.
+> > +        */
+> > +       unsigned int bits_per_lane_and_dclk_cycle;
+> > +
+> > +       /**
+> > +        * @differential_clk_rate:
+> > +        *
+> > +        * Clock rate, in Hertz, of the LVDS differential clock.
+> > +        */
+> > +       unsigned long differential_clk_rate;
+> > +
+> > +       /**
+> > +        * @lanes:
+> > +        *
+> > +        * Number of active, consecutive, data lanes, starting from
+> > +        * lane 0, used for the transmissions.
+> > +        */
+> > +       unsigned int lanes;
+> > +
+> > +       /**
+> > +        * @is_slave:
+> > +        *
+> > +        * Boolean, true if the phy is a slave which works together
+> > +        * with a master phy to support dual link transmission,
+> > +        * otherwise a regular phy or a master phy.
+> > +        */
+> > +       bool is_slave;
+> > +};
+> > +
+> > +#endif /* __PHY_LVDS_H_ */
+> > diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+> > index e435bdb..d450b44 100644
+> > --- a/include/linux/phy/phy.h
+> > +++ b/include/linux/phy/phy.h
+> > @@ -17,6 +17,7 @@
+> >  #include <linux/regulator/consumer.h>
+> >
+> >  #include <linux/phy/phy-dp.h>
+> > +#include <linux/phy/phy-lvds.h>
+> >  #include <linux/phy/phy-mipi-dphy.h>
+> >
+> >  struct phy;
+> > @@ -51,10 +52,13 @@ enum phy_mode {
+> >   *             the MIPI_DPHY phy mode.
+> >   * @dp:                Configuration set applicable for phys supporting
+> >   *             the DisplayPort protocol.
+> > + * @lvds:      Configuration set applicable for phys supporting
+> > + *             the LVDS phy mode.
+> >   */
+> >  union phy_configure_opts {
+> >         struct phy_configure_opts_mipi_dphy     mipi_dphy;
+> >         struct phy_configure_opts_dp            dp;
+> > +       struct phy_configure_opts_lvds          lvds;
+> >  };
+> >
+> >  /**
+> > --
+> > 2.7.4
+> >
