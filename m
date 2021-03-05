@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C1F32E96B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E0C32EA57
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhCEMcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:32:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42292 "EHLO mail.kernel.org"
+        id S232979AbhCEMiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:38:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232523AbhCEMcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:32:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CD5B65029;
-        Fri,  5 Mar 2021 12:32:00 +0000 (UTC)
+        id S232532AbhCEMg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:36:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00C2E6501B;
+        Fri,  5 Mar 2021 12:36:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947520;
-        bh=PJyvEExXLhKyW+Mwpwkr7mvrqXgOQxMqBnjn9yIbJHU=;
+        s=korg; t=1614947819;
+        bh=5jGaORRjLwfbn7w26dKd/8CU0voAt/GVBMAr90VeoSE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gjTQ/8qH28z8jjZtIpZr1uNlAsjsUvuGB4u7Do0uRcE2N42DRqFMVf+/OE73aNANH
-         tcAF3i0Bh7PuZR28nfffrrO9cyYvNSyC4qdG1wpk0umUosk8w3LwlzZhd9uPtlxBwr
-         5mCWEp86OSaNMS/lNHxgw3AXvyPUoMUCOy0gfDZE=
+        b=L4s0Y5CgOfmlxy2eBXbyNvWUXnB+SR4qoTOHyo6R6WwpJrOQJd5VV1t5f6fMdAO1O
+         O+LJ79mC9MDPsOsLWDDAc1ctle9KrDGH7gaMUUh9FGw4ywMKsWdeefCzVJ26+rfZhm
+         PR2913KGdgag1wBKOz3kKH9qvAiY027KIpfZyAWQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>
-Subject: [PATCH 5.10 093/102] powerpc/sstep: Fix incorrect return from analyze_instr()
-Date:   Fri,  5 Mar 2021 13:21:52 +0100
-Message-Id: <20210305120907.855387479@linuxfoundation.org>
+        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 22/52] x86/reboot: Add Zotac ZBOX CI327 nano PCI reboot quirk
+Date:   Fri,  5 Mar 2021 13:21:53 +0100
+Message-Id: <20210305120854.771299063@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+References: <20210305120853.659441428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ananth N Mavinakayanahalli <ananth@linux.ibm.com>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-commit 718aae916fa6619c57c348beaedd675835cf1aa1 upstream.
+[ Upstream commit 4b2d8ca9208be636b30e924b1cbcb267b0740c93 ]
 
-We currently just percolate the return value from analyze_instr()
-to the caller of emulate_step(), especially if it is a -1.
+On this system the M.2 PCIe WiFi card isn't detected after reboot, only
+after cold boot. reboot=pci fixes this behavior. In [0] the same issue
+is described, although on another system and with another Intel WiFi
+card. In case it's relevant, both systems have Celeron CPUs.
 
-For one particular case (opcode = 4) for instructions that aren't
-currently emulated, we are returning 'should not be single-stepped'
-while we should have returned 0 which says 'did not emulate, may
-have to single-step'.
+Add a PCI reboot quirk on affected systems until a more generic fix is
+available.
 
-Fixes: 930d6288a26787 ("powerpc: sstep: Add support for maddhd, maddhdu, maddld instructions")
-Signed-off-by: Ananth N Mavinakayanahalli <ananth@linux.ibm.com>
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Tested-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Reviewed-by: Sandipan Das <sandipan@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/161157999039.64773.14950289716779364766.stgit@thinktux.local
-Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[0] https://bugzilla.kernel.org/show_bug.cgi?id=202399
+
+ [ bp: Massage commit message. ]
+
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/1524eafd-f89c-cfa4-ed70-0bde9e45eec9@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/lib/sstep.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/x86/kernel/reboot.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/arch/powerpc/lib/sstep.c
-+++ b/arch/powerpc/lib/sstep.c
-@@ -1382,6 +1382,11 @@ int analyse_instr(struct instruction_op
+diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+index a19706bee687..6489cc19ed06 100644
+--- a/arch/x86/kernel/reboot.c
++++ b/arch/x86/kernel/reboot.c
+@@ -477,6 +477,15 @@ static const struct dmi_system_id reboot_dmi_table[] __initconst = {
+ 		},
+ 	},
  
- #ifdef __powerpc64__
- 	case 4:
-+		/*
-+		 * There are very many instructions with this primary opcode
-+		 * introduced in the ISA as early as v2.03. However, the ones
-+		 * we currently emulate were all introduced with ISA 3.0
-+		 */
- 		if (!cpu_has_feature(CPU_FTR_ARCH_300))
- 			goto unknown_opcode;
- 
-@@ -1409,7 +1414,7 @@ int analyse_instr(struct instruction_op
- 		 * There are other instructions from ISA 3.0 with the same
- 		 * primary opcode which do not have emulation support yet.
- 		 */
--		return -1;
-+		goto unknown_opcode;
- #endif
- 
- 	case 7:		/* mulli */
++	{	/* PCIe Wifi card isn't detected after reboot otherwise */
++		.callback = set_pci_reboot,
++		.ident = "Zotac ZBOX CI327 nano",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "NA"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "ZBOX-CI327NANO-GS-01"),
++		},
++	},
++
+ 	/* Sony */
+ 	{	/* Handle problems with rebooting on Sony VGN-Z540N */
+ 		.callback = set_bios_reboot,
+-- 
+2.30.1
+
 
 
