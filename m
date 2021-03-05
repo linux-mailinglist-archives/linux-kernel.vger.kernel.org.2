@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A51832EA58
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F8732E9F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233030AbhCEMiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:38:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50162 "EHLO mail.kernel.org"
+        id S232421AbhCEMfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:35:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232983AbhCEMhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:37:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E81F6501B;
-        Fri,  5 Mar 2021 12:37:03 +0000 (UTC)
+        id S232408AbhCEMfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:35:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62DAC6501B;
+        Fri,  5 Mar 2021 12:35:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947824;
-        bh=vm4x03zdaHIA6yzvsowAcQxl7bJGw00nP27qGvCNIJk=;
+        s=korg; t=1614947705;
+        bh=SsHM8gnfyiPi6w7aBNlOUyHc1ZqiIC34oM/z13+FFKQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ELAgYkIQvYCjIXAHRwdWUjUT4SY1SGcrCUicClEj5bQ1xMC/kjlHK+0fOxEEPwG6e
-         tKrAPHIzlmIU2SEVOwIol7HJMFH/09ZPKmxhOOEWxkGwtKJmDIp+QarU00qGSG8bH/
-         4djeTDrR3bw+cqTrHQEgMcp/JoZZrUy92/1XMlN8=
+        b=fBTJ2vXPHlVyXDipm5UizSLfwElNRk9lIvX/Y23bJk3rfDR5Zs4ARvQ6jCs36yElM
+         2rGFI3D/+ndoEazCFNZspqFjbYJLEO2czTSRAYpGeWXYDNYvTEJALqYRWrKb83g0wK
+         WN7Bt2YyKZcnjlKer8ilQ/5h8wWhXOStO8GpO6iE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Raz Bouganim <r-bouganim@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 24/52] wlcore: Fix command execute failure 19 for wl12xx
+Subject: [PATCH 5.4 53/72] btrfs: fix error handling in commit_fs_roots
 Date:   Fri,  5 Mar 2021 13:21:55 +0100
-Message-Id: <20210305120854.861443521@linuxfoundation.org>
+Message-Id: <20210305120859.932894484@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
-References: <20210305120853.659441428@linuxfoundation.org>
+In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
+References: <20210305120857.341630346@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,125 +40,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit cb88d01b67383a095e3f7caeb4cdade5a6cf0417 ]
+[ Upstream commit 4f4317c13a40194940acf4a71670179c4faca2b5 ]
 
-We can currently get a "command execute failure 19" error on beacon loss
-if the signal is weak:
+While doing error injection I would sometimes get a corrupt file system.
+This is because I was injecting errors at btrfs_search_slot, but would
+only do it one time per stack.  This uncovered a problem in
+commit_fs_roots, where if we get an error we would just break.  However
+we're in a nested loop, the first loop being a loop to find all the
+dirty fs roots, and then subsequent root updates would succeed clearing
+the error value.
 
-wlcore: Beacon loss detected. roles:0xff
-wlcore: Connection loss work (role_id: 0).
-...
-wlcore: ERROR command execute failure 19
-...
-WARNING: CPU: 0 PID: 1552 at drivers/net/wireless/ti/wlcore/main.c:803
-...
-(wl12xx_queue_recovery_work.part.0 [wlcore])
-(wl12xx_cmd_role_start_sta [wlcore])
-(wl1271_op_bss_info_changed [wlcore])
-(ieee80211_prep_connection [mac80211])
+This isn't likely to happen in real scenarios, however we could
+potentially get a random ENOMEM once and then not again, and we'd end up
+with a corrupted file system.  Fix this by moving the error checking
+around a bit to the main loop, as this is the only place where something
+will fail, and return the error as soon as it occurs.
 
-Error 19 is defined as CMD_STATUS_WRONG_NESTING from the wlcore firmware,
-and seems to mean that the firmware no longer wants to see the quirk
-handling for WLCORE_QUIRK_START_STA_FAILS done.
+With this patch my reproducer no longer corrupts the file system.
 
-This quirk got added with commit 18eab430700d ("wlcore: workaround
-start_sta problem in wl12xx fw"), and it seems that this already got fixed
-in the firmware long time ago back in 2012 as wl18xx never had this quirk
-in place to start with.
-
-As we no longer even support firmware that early, to me it seems that it's
-safe to just drop WLCORE_QUIRK_START_STA_FAILS to fix the error. Looks
-like earlier firmware got disabled back in 2013 with commit 0e284c074ef9
-("wl12xx: increase minimum singlerole firmware version required").
-
-If it turns out we still need WLCORE_QUIRK_START_STA_FAILS with any
-firmware that the driver works with, we can simply revert this patch and
-add extra checks for firmware version used.
-
-With this fix wlcore reconnects properly after a beacon loss.
-
-Cc: Raz Bouganim <r-bouganim@ti.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210115065613.7731-1-tony@atomide.com
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ti/wl12xx/main.c   |  3 ---
- drivers/net/wireless/ti/wlcore/main.c   | 15 +--------------
- drivers/net/wireless/ti/wlcore/wlcore.h |  3 ---
- 3 files changed, 1 insertion(+), 20 deletions(-)
+ fs/btrfs/transaction.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/ti/wl12xx/main.c b/drivers/net/wireless/ti/wl12xx/main.c
-index 4a4f797bb10f..e10fff42751e 100644
---- a/drivers/net/wireless/ti/wl12xx/main.c
-+++ b/drivers/net/wireless/ti/wl12xx/main.c
-@@ -649,7 +649,6 @@ static int wl12xx_identify_chip(struct wl1271 *wl)
- 		wl->quirks |= WLCORE_QUIRK_LEGACY_NVS |
- 			      WLCORE_QUIRK_DUAL_PROBE_TMPL |
- 			      WLCORE_QUIRK_TKIP_HEADER_SPACE |
--			      WLCORE_QUIRK_START_STA_FAILS |
- 			      WLCORE_QUIRK_AP_ZERO_SESSION_ID;
- 		wl->sr_fw_name = WL127X_FW_NAME_SINGLE;
- 		wl->mr_fw_name = WL127X_FW_NAME_MULTI;
-@@ -673,7 +672,6 @@ static int wl12xx_identify_chip(struct wl1271 *wl)
- 		wl->quirks |= WLCORE_QUIRK_LEGACY_NVS |
- 			      WLCORE_QUIRK_DUAL_PROBE_TMPL |
- 			      WLCORE_QUIRK_TKIP_HEADER_SPACE |
--			      WLCORE_QUIRK_START_STA_FAILS |
- 			      WLCORE_QUIRK_AP_ZERO_SESSION_ID;
- 		wl->plt_fw_name = WL127X_PLT_FW_NAME;
- 		wl->sr_fw_name = WL127X_FW_NAME_SINGLE;
-@@ -702,7 +700,6 @@ static int wl12xx_identify_chip(struct wl1271 *wl)
- 		wl->quirks |= WLCORE_QUIRK_TX_BLOCKSIZE_ALIGN |
- 			      WLCORE_QUIRK_DUAL_PROBE_TMPL |
- 			      WLCORE_QUIRK_TKIP_HEADER_SPACE |
--			      WLCORE_QUIRK_START_STA_FAILS |
- 			      WLCORE_QUIRK_AP_ZERO_SESSION_ID;
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index c346ee7ec18d..aca6c467d776 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1212,7 +1212,6 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
+ 	struct btrfs_root *gang[8];
+ 	int i;
+ 	int ret;
+-	int err = 0;
  
- 		wlcore_set_min_fw_ver(wl, WL128X_CHIP_VER,
-diff --git a/drivers/net/wireless/ti/wlcore/main.c b/drivers/net/wireless/ti/wlcore/main.c
-index 43c7b37dec0c..e24ffdff5bdc 100644
---- a/drivers/net/wireless/ti/wlcore/main.c
-+++ b/drivers/net/wireless/ti/wlcore/main.c
-@@ -2875,21 +2875,8 @@ static int wlcore_join(struct wl1271 *wl, struct wl12xx_vif *wlvif)
+ 	spin_lock(&fs_info->fs_roots_radix_lock);
+ 	while (1) {
+@@ -1224,6 +1223,8 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
+ 			break;
+ 		for (i = 0; i < ret; i++) {
+ 			struct btrfs_root *root = gang[i];
++			int ret2;
++
+ 			radix_tree_tag_clear(&fs_info->fs_roots_radix,
+ 					(unsigned long)root->root_key.objectid,
+ 					BTRFS_ROOT_TRANS_TAG);
+@@ -1245,17 +1246,17 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
+ 						    root->node);
+ 			}
  
- 	if (is_ibss)
- 		ret = wl12xx_cmd_role_start_ibss(wl, wlvif);
--	else {
--		if (wl->quirks & WLCORE_QUIRK_START_STA_FAILS) {
--			/*
--			 * TODO: this is an ugly workaround for wl12xx fw
--			 * bug - we are not able to tx/rx after the first
--			 * start_sta, so make dummy start+stop calls,
--			 * and then call start_sta again.
--			 * this should be fixed in the fw.
--			 */
--			wl12xx_cmd_role_start_sta(wl, wlvif);
--			wl12xx_cmd_role_stop_sta(wl, wlvif);
--		}
--
-+	else
- 		ret = wl12xx_cmd_role_start_sta(wl, wlvif);
--	}
- 
- 	return ret;
+-			err = btrfs_update_root(trans, fs_info->tree_root,
++			ret2 = btrfs_update_root(trans, fs_info->tree_root,
+ 						&root->root_key,
+ 						&root->root_item);
++			if (ret2)
++				return ret2;
+ 			spin_lock(&fs_info->fs_roots_radix_lock);
+-			if (err)
+-				break;
+ 			btrfs_qgroup_free_meta_all_pertrans(root);
+ 		}
+ 	}
+ 	spin_unlock(&fs_info->fs_roots_radix_lock);
+-	return err;
++	return 0;
  }
-diff --git a/drivers/net/wireless/ti/wlcore/wlcore.h b/drivers/net/wireless/ti/wlcore/wlcore.h
-index d4b1f66ef457..af7cf70b3832 100644
---- a/drivers/net/wireless/ti/wlcore/wlcore.h
-+++ b/drivers/net/wireless/ti/wlcore/wlcore.h
-@@ -559,9 +559,6 @@ wlcore_set_min_fw_ver(struct wl1271 *wl, unsigned int chip,
- /* Each RX/TX transaction requires an end-of-transaction transfer */
- #define WLCORE_QUIRK_END_OF_TRANSACTION		BIT(0)
  
--/* the first start_role(sta) sometimes doesn't work on wl12xx */
--#define WLCORE_QUIRK_START_STA_FAILS		BIT(1)
--
- /* wl127x and SPI don't support SDIO block size alignment */
- #define WLCORE_QUIRK_TX_BLOCKSIZE_ALIGN		BIT(2)
- 
+ /*
 -- 
 2.30.1
 
