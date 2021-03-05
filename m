@@ -2,122 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B848232EFD3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4332632EFDA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhCEQPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 11:15:31 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:46505 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S231238AbhCEQPS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 11:15:18 -0500
-Received: (qmail 41907 invoked by uid 1000); 5 Mar 2021 11:15:17 -0500
-Date:   Fri, 5 Mar 2021 11:15:17 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: XDP socket rings, and LKMM litmus tests
-Message-ID: <20210305161517.GF38200@rowland.harvard.edu>
-References: <20210302211446.GA1541641@rowland.harvard.edu>
- <20210302235019.GT2696@paulmck-ThinkPad-P72>
- <20210303171221.GA1574518@rowland.harvard.edu>
- <20210303174022.GD2696@paulmck-ThinkPad-P72>
- <20210303202246.GC1582185@rowland.harvard.edu>
- <YEA3RwYixQPt6gul@boqun-archlinux>
- <20210304031322.GA1594980@rowland.harvard.edu>
- <YEB/PGHs94W2l6hA@boqun-archlinux>
- <20210304161142.GB1612307@rowland.harvard.edu>
- <YEGFfjmOYfbuir9o@boqun-archlinux>
+        id S230116AbhCEQRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 11:17:06 -0500
+Received: from marcansoft.com ([212.63.210.85]:45302 "EHLO mail.marcansoft.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230372AbhCEQQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 11:16:54 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id A3A373FA1B;
+        Fri,  5 Mar 2021 16:16:45 +0000 (UTC)
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-22-marcan@marcan.st>
+ <CAHp75Vc+t9_FNHZ0xYNaJ1+Ny+FFeZKA79abxV2NAsZvpBh3Bg@mail.gmail.com>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [RFT PATCH v3 21/27] tty: serial: samsung_tty: IRQ rework
+Message-ID: <535ff48e-160e-4ba4-23ac-54e478a2f3ee@marcan.st>
+Date:   Sat, 6 Mar 2021 01:16:43 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <CAHp75Vc+t9_FNHZ0xYNaJ1+Ny+FFeZKA79abxV2NAsZvpBh3Bg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YEGFfjmOYfbuir9o@boqun-archlinux>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 09:12:30AM +0800, Boqun Feng wrote:
-> On Thu, Mar 04, 2021 at 11:11:42AM -0500, Alan Stern wrote:
+On 06/03/2021 00.17, Andy Shevchenko wrote:
+> Add a separate change that removes flags from the spin lock in the IRQ handler.
 
-> > Forget about local variables for the time being and just consider
-> > 
-> > 	dep ; [Plain] ; rfi
-> > 
-> > For example:
-> > 
-> > 	A: r1 = READ_ONCE(x);
-> > 	   y = r1;
-> > 	B: r2 = READ_ONCE(y);
-> > 
-> > Should B be ordered after A?  I don't see how any CPU could hope to 
-> > excute B before A, but maybe I'm missing something.
-> > 
-> 
-> Agreed.
-> 
-> > There's another twist, connected with the fact that herd7 can't detect 
-> > control dependencies caused by unexecuted code.  If we have:
-> > 
-> > 	A: r1 = READ_ONCE(x);
-> > 	if (r1)
-> > 		WRITE_ONCE(y, 5);
-> > 	r2 = READ_ONCE(y);
-> > 	B: WRITE_ONCE(z, r2);
-> > 
-> > then in executions where x == 0, herd7 doesn't see any control 
-> > dependency.  But CPUs do see control dependencies whenever there is a 
-> > conditional branch, whether the branch is taken or not, and so they will 
-> > never reorder B before A.
-> > 
-> 
-> Right, because B in this example is a write, what if B is a read that
-> depends on r2, like in my example? Let y be a pointer to a memory
-> location, and initialized as a valid value (pointing to a valid memory
-> location) you example changed to:
-> 
-> 	A: r1 = READ_ONCE(x);
-> 	if (r1)
-> 		WRITE_ONCE(y, 5);
-> 	C: r2 = READ_ONCE(y);
-> 	B: r3 = READ_ONCE(*r2);
-> 
-> , then A don't have the control dependency to B, because A and B is
-> read+read. So B can be ordered before A, right?
+This commit should have no functional changes; I am just splitting an 
+existing function into two, where one takes the lock and the other does 
+the work. Do you mean using a different locking function? I'm not 
+entirely sure what you're suggesting.
 
-Yes, I think that's right: Both C and B can be executed before A.
-
-> > One last thing to think about: My original assessment or Björn's problem 
-> > wasn't right, because the dep in (dep ; rfi) doesn't include control 
-> > dependencies.  Only data and address.  So I believe that the LKMM 
-> 
-> Ah, right. I was mising that part (ctrl is not in dep). So I guess my
-> example is pointless for the question we are discussing here ;-(
-> 
-> > wouldn't consider A to be ordered before B in this example even if x 
-> > was nonzero.
-> 
-> Yes, and similar to my example (changing B to a read).
-> 
-> I did try to run my example with herd, and got confused no matter I make
-> dep; [Plain]; rfi as to-r (I got the same result telling me a reorder
-> can happen). Now the reason is clear, because this is a ctrl; rfi not a
-> dep; rfi.
-> 
-> Thanks so much for walking with me on this ;-)
-
-You're welcome.  At this point, it looks like the only remaining 
-question is whether to include (dep ; [Plain] ; rfi) in to-r.  This 
-doesn't seem to be an urgent question.
-
-Alan
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
