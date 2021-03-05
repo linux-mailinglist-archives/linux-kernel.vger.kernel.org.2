@@ -2,199 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C475C32E3B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:33:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 904D832E3B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:32:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbhCEIco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:32:44 -0500
-Received: from mga14.intel.com ([192.55.52.115]:41303 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229505AbhCEIca (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:32:30 -0500
-IronPort-SDR: Q4jKOMW5Bi3MdDAC3fHswiUB/4acWIXALLHaDB52uPq46q8TxYIqu1Vi2PihtkeM3KwCtMjMT+
- i2XGceFTivMA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="186956984"
-X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
-   d="scan'208";a="186956984"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 00:32:30 -0800
-IronPort-SDR: 00qOALUjoLTOqdjXVWdJRTGIMWA+dwUDEgQRsojsMz5T55r9IaowTXh3AVojjA01XpuyHP3tGV
- aGJogQcIgDJQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
-   d="scan'208";a="507921193"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 05 Mar 2021 00:32:22 -0800
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2] perf pmu: Validate raw event with sysfs exported format bits
-Date:   Fri,  5 Mar 2021 08:56:25 +0800
-Message-Id: <20210305005625.14987-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S229597AbhCEIbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:31:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhCEIbN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 03:31:13 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11678C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 00:31:12 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id u16so1135686wrt.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 00:31:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XWbZV1xuaSmzet0/YcZif2T8HeoxQ88xDpPUR5wIaRM=;
+        b=WDBYUW0qE+cgv+jlzpk/LkkEv5rrFExd/rNVN6CPNPszS2oiEe6l8WDOoPwMpJbJ9g
+         ifcqD6jPV1lLiR4Yi/mjqfHszxBdJMcLo3KXRTXr9C02Sobabk+4owE0Z41bxe8ob0sf
+         TXbIB7FE2gA0+Sjn4it3R8bHCBwJgU43j8xHmxrRaiGMOzXVU8OS4NipVF5fqrdwQXA2
+         IIaotAllyZPnmz7mAt2JSTHTtIeJjXlLVUCSIhhKMkEA1E/BRRB28/j/UfjP/wIKBQS/
+         GOSaXt0wygQ1kOygpUpLV5Q/GAhYxDax8i6p2F354NInZNYmwDxkG0X/3YVqPpdEXq1x
+         imog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XWbZV1xuaSmzet0/YcZif2T8HeoxQ88xDpPUR5wIaRM=;
+        b=CnqW5XNpg8IUc1iOruNtRhtett7DfV4BhCFlwYmbiWW1cakDtJsEVsDDUG9+k3pwZg
+         q+dNYBzp01qo8w3+ZI1AmPBps4qqlrE+m4dukL3UF9fK/DsPihLnczgjlAIbYWT9dDkR
+         nVaORascxc9w60LujpI8f8JNbWZ2P9WTfkIN/6QMB7DfpbsYqdA4dCSpyioOzGuY0UXb
+         EJWOPxquBLanztMKmcf5003EPKgPA3N65nEZ0rrjisCdilwP0Ekqot2jZvOEl1Oz1v9U
+         SJp4Qmc8lHntE3dyw2E0ppJ7Y8/rJirOGPv/9Cw0fAsZVAtksF+FnNJH0WJLv6bOgpFA
+         YhrQ==
+X-Gm-Message-State: AOAM533f7Rn57VZRiSaMJEnnlkETpeiBuyR2cbfQVdxvjRwW5th/pKUh
+        LDPwNQAAuy2B8xfDiuLRudFYcg==
+X-Google-Smtp-Source: ABdhPJzCbiuywdjtJ3FXU0Unm3zTVBYkDhWcAaYi2hSBAzjPryfkwbpNyTtMVd+8AZFWxtio6jLxmw==
+X-Received: by 2002:adf:ded1:: with SMTP id i17mr8168897wrn.349.1614933070664;
+        Fri, 05 Mar 2021 00:31:10 -0800 (PST)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id w25sm3254177wmc.42.2021.03.05.00.31.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 00:31:10 -0800 (PST)
+Date:   Fri, 5 Mar 2021 09:30:49 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
+Subject: Re: [RFC PATCH 15/18] cgroup: Introduce ioasids controller
+Message-ID: <YEHsOR/XjDxQapE6@myrica>
+References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1614463286-97618-16-git-send-email-jacob.jun.pan@linux.intel.com>
+ <YD+u3CXhwOi2LC+4@slm.duckdns.org>
+ <20210303131726.7a8cb169@jacob-builder>
+ <20210303160205.151d114e@jacob-builder>
+ <YECtMZNqSgh7jkGP@myrica>
+ <20210304094603.4ab6c1c4@jacob-builder>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304094603.4ab6c1c4@jacob-builder>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A raw PMU event (eventsel+umask) in the form of rNNN is supported
-by perf but lacks of checking for the validity of raw encoding.
+On Thu, Mar 04, 2021 at 09:46:03AM -0800, Jacob Pan wrote:
+> Hi Jean-Philippe,
+> 
+> On Thu, 4 Mar 2021 10:49:37 +0100, Jean-Philippe Brucker
+> <jean-philippe@linaro.org> wrote:
+> 
+> > On Wed, Mar 03, 2021 at 04:02:05PM -0800, Jacob Pan wrote:
+> > > Hi Jacob,
+> > > 
+> > > On Wed, 3 Mar 2021 13:17:26 -0800, Jacob Pan
+> > > <jacob.jun.pan@linux.intel.com> wrote:
+> > >   
+> > > > Hi Tejun,
+> > > > 
+> > > > On Wed, 3 Mar 2021 10:44:28 -0500, Tejun Heo <tj@kernel.org> wrote:
+> > > >   
+> > > > > On Sat, Feb 27, 2021 at 02:01:23PM -0800, Jacob Pan wrote:    
+> > > > > > IOASIDs are used to associate DMA requests with virtual address
+> > > > > > spaces. They are a system-wide limited resource made available to
+> > > > > > the userspace applications. Let it be VMs or user-space device
+> > > > > > drivers.
+> > > > > > 
+> > > > > > This RFC patch introduces a cgroup controller to address the
+> > > > > > following problems:
+> > > > > > 1. Some user applications exhaust all the available IOASIDs thus
+> > > > > > depriving others of the same host.
+> > > > > > 2. System admins need to provision VMs based on their needs for
+> > > > > > IOASIDs, e.g. the number of VMs with assigned devices that perform
+> > > > > > DMA requests with PASID.      
+> > > > > 
+> > > > > Please take a look at the proposed misc controller:
+> > > > > 
+> > > > >  http://lkml.kernel.org/r/20210302081705.1990283-2-vipinsh@google.com
+> > > > > 
+> > > > > Would that fit your bill?    
+> > > > The interface definitely can be reused. But IOASID has a different
+> > > > behavior in terms of migration and ownership checking. I guess SEV key
+> > > > IDs are not tied to a process whereas IOASIDs are. Perhaps this can be
+> > > > solved by adding
+> > > > +	.can_attach	= ioasids_can_attach,
+> > > > +	.cancel_attach	= ioasids_cancel_attach,
+> > > > Let me give it a try and come back.
+> > > >   
+> > > While I am trying to fit the IOASIDs cgroup in to the misc cgroup
+> > > proposal. I'd like to have a direction check on whether this idea of
+> > > using cgroup for IOASID/PASID resource management is viable.  
+> > 
+> > Yes, even for host SVA it would be good to have a cgroup. Currently the
+> > number of shared address spaces is naturally limited by number of
+> > processes, which can be controlled with rlimit and cgroup. But on Arm the
+> > hardware limit on shared address spaces is 64k (number of ASIDs), easily
+> > exhausted with the default PASID and PID limits. So a cgroup for managing
+> > this resource is more than welcome.
+> > 
+> > It looks like your current implementation is very dependent on
+> > IOASID_SET_TYPE_MM?  I'll need to do more reading about cgroup to see how
+> > easily it can be adapted to host SVA which uses IOASID_SET_TYPE_NULL.
+> > 
+> Right, I was assuming have three use cases of IOASIDs:
+> 1. host supervisor SVA (not a concern, just one init_mm to bind)
+> 2. host user SVA, either one IOASID per process or perhaps some private
+> IOASID for private address space
+> 3. VM use for guest SVA, each IOASID is bound to a guest process
+> 
+> My current cgroup proposal applies to #3 with IOASID_SET_TYPE_MM, which is
+> allocated by the new /dev/ioasid interface.
+> 
+> For #2, I was thinking you can limit the host process via PIDs cgroup? i.e.
+> limit fork.
 
-For example, bit 16 and bit 17 are not valid on KBL but perf doesn't
-report warning when encoding with these bits.
+That works but isn't perfect, because the hardware resource of shared
+address spaces can be much lower that PID limit - 16k ASIDs on Arm. To
+allow an admin to fairly distribute that resource we could introduce
+another cgroup just to limit the number of shared address spaces, but
+limiting the number of IOASIDs does the trick.
 
-Before:
+> So the host IOASIDs are currently allocated from the system pool
+> with quota of chosen by iommu_sva_init() in my patch, 0 means unlimited use
+> whatever is available. https://lkml.org/lkml/2021/2/28/18
 
-  # ./perf stat -e cpu/r031234/ -a -- sleep 1
+Yes that's sensible, but it would be good to plan the cgroup user
+interface to work for #2 as well, even if we don't implement it right
+away.
 
-   Performance counter stats for 'system wide':
-
-                   0      cpu/r031234/
-
-         1.003798924 seconds time elapsed
-
-It may silently measure the wrong event!
-
-The kernel supported bits have been exported through
-/sys/devices/<pmu>/format/. Perf collects the information to
-'struct perf_pmu_format' and links it to 'pmu->format' list.
-
-The 'struct perf_pmu_format' has a bitmap which records the
-valid bits for this format. For example,
-
-  root@kbl-ppc:/sys/devices/cpu/format# cat umask
-  config:8-15
-
-bit8-bit15 are recorded in bitmap of format 'umask'.
-
-We collect total valid bits of all formats, save to a local variable
-'masks' and reverse it. Now '~masks' represents total invalid bits.
-
-bits = config & ~masks;
-
-The set bits in 'bits' indicate the invalid bits used in config.
-Finally use strbuf to report the invalid bits.
-
-Some architectures may not export supported bits through sysfs,
-so if masks is 0, perf_pmu__warn_invalid_config directly returns.
-
-After:
-
-Single event without name:
-
-  # ./perf stat -e cpu/r031234/ -a -- sleep 1
-  WARNING: event not valid (bits 16 17 of config '31234' not supported by kernel)!
-
-   Performance counter stats for 'system wide':
-
-                   0      cpu/r031234/
-
-         1.001414935 seconds time elapsed
-
-Multiple events with names:
-
-  # ./perf stat -e cpu/rf01234,name=aaa/,cpu/r031234,name=bbb/ -a -- sleep 1
-  WARNING: event 'aaa' not valid (bits 20 22 of config 'f01234' not supported by kernel)!
-  WARNING: event 'bbb' not valid (bits 16 17 of config '31234' not supported by kernel)!
-
-   Performance counter stats for 'system wide':
-
-                   0      aaa
-                  36      bbb
-
-         1.001565999 seconds time elapsed
-
-Warning is reported for invalid bits.
-
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/util/parse-events.c |  3 +++
- tools/perf/util/pmu.c          | 46 ++++++++++++++++++++++++++++++++++
- tools/perf/util/pmu.h          |  3 +++
- 3 files changed, 52 insertions(+)
-
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 42c84adeb2fb..c0c0fab22cb8 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -356,6 +356,9 @@ __add_event(struct list_head *list, int *idx,
- 	struct perf_cpu_map *cpus = pmu ? perf_cpu_map__get(pmu->cpus) :
- 			       cpu_list ? perf_cpu_map__new(cpu_list) : NULL;
- 
-+	if (pmu && attr->type == PERF_TYPE_RAW)
-+		perf_pmu__warn_invalid_config(pmu, attr->config, name);
-+
- 	if (init_attr)
- 		event_attr_init(attr);
- 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 44ef28302fc7..31e975b75766 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1812,3 +1812,49 @@ int perf_pmu__caps_parse(struct perf_pmu *pmu)
- 
- 	return nr_caps;
- }
-+
-+void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
-+				   char *name)
-+{
-+	struct perf_pmu_format *format;
-+	__u64 masks = 0, bits;
-+	struct strbuf buf = STRBUF_INIT;
-+	unsigned int i;
-+
-+	list_for_each_entry(format, &pmu->format, list)	{
-+		/*
-+		 * Skip extra configs such as config1/config2.
-+		 */
-+		if (format->value > 0)
-+			continue;
-+
-+		for_each_set_bit(i, format->bits, PERF_PMU_FORMAT_BITS)
-+			masks |= 1ULL << i;
-+	}
-+
-+	/*
-+	 * Kernel doesn't export any valid format bits.
-+	 */
-+	if (masks == 0)
-+		goto out;
-+
-+	bits = config & ~masks;
-+	if (bits == 0)
-+		goto out;
-+
-+	for_each_set_bit(i, (unsigned long *)&bits, sizeof(bits) * 8)
-+		strbuf_addf(&buf, " %d", i);
-+
-+	if (name) {
-+		pr_warning("WARNING: event '%s' not valid (bits%s of config "
-+			   "'%llx' not supported by kernel)!\n",
-+			   name, buf.buf, config);
-+	} else {
-+		pr_warning("WARNING: event not valid (bits%s of config "
-+			   "'%llx' not supported by kernel)!\n",
-+			   buf.buf, config);
-+	}
-+
-+out:
-+	strbuf_release(&buf);
-+}
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 8164388478c6..160b0f561771 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -123,4 +123,7 @@ int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
- 
- int perf_pmu__caps_parse(struct perf_pmu *pmu);
- 
-+void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
-+				   char *name);
-+
- #endif /* __PMU_H */
--- 
-2.17.1
-
+Thanks,
+Jean
