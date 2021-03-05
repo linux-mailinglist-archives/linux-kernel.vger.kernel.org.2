@@ -2,79 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9296532DE33
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6510632DE35
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231472AbhCEAES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 19:04:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhCEAEL (ORCPT
+        id S231757AbhCEAEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 19:04:21 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:53071 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231521AbhCEAET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 19:04:11 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13AEAC061574;
-        Thu,  4 Mar 2021 16:04:11 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ds7J370Jjz9sSC;
-        Fri,  5 Mar 2021 11:04:03 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614902649;
-        bh=AN30twrd6tkzHV6B93awH18ER6sEDLxGk8NgrJ4M9lU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GHJVRkJ6JUrqeclg1VPUkrqRqURJAyM08cLMo4cRPebbxHTwNRzOA9d3DTLF3PcpU
-         g8j6I3DFoBctN+mKn2byWrxoDmqp8uQaMWyhusZjnxnefYy7u34+Fum5UsWsWuanTX
-         t/NCgrVWhwVYuzW+0/yCCzR9OldMEimPJ5PG1cZ2YvXbNUyeHqjxnqxsGHfjVcCUDz
-         u0A9lxQ0JjhgK/4AP/obaA792pBItves5hcqU7/UvYr0WLQjWa3I8vavkx9eXE1KGu
-         qAPXh2VAitjyZdjQQ6MA8a1obUwjLgyesOH82FWh3O1RrwJBUj5EaEG+YIx9vcl0LP
-         WUpphUvXqEqhA==
-Date:   Fri, 5 Mar 2021 11:04:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: rebase of the scsi-mkp tree
-Message-ID: <20210305110402.70ff1080@canb.auug.org.au>
+        Thu, 4 Mar 2021 19:04:19 -0500
+Received: by mail-il1-f200.google.com with SMTP id e16so148250ile.19
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 16:04:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=bqLq8lEZAr3udvWoJ5bAlwyE7Hbzc7Aau7j02WMMyZQ=;
+        b=rVBAPq64hVYuz0GwxAPESOuggqE4idRtJoVD0JoiZvnw6FwZzkFSQBZhpyUNEh1VyX
+         aA4C5WSloFeFClYvMHY3O9SIEkSeqW3RbW6X8sH1PpYAcEJ0TLnW8yZXdj0j/nRHI8O9
+         /ST9BJNZnjpvxRRaGclFgapHv/tTc4TudGkcX17GRvJuCKeZHIGFrdoG2nLN2NZqNvbV
+         fT02KIe/n8QYPL1rpYZFcDTYnrTJt62s5QY8mvWEdusqQ6rKxq+8SsctodmG1AFmKkNS
+         gILmHRl39KS1E2UgUXTVIq8yk2nAKEkBj9U0vgUJogbgCTFFaMVw3GbdQ2fNcUMWb+9J
+         ZZag==
+X-Gm-Message-State: AOAM5337wzy5r85XncPx3DxEtyFUeg3cZxJ650r3O2Py6xaLQnV2ZBaY
+        eQrUrTOeb+4BbC4UD83EkuV+zBuabouGa1IayIbOGFO53lNT
+X-Google-Smtp-Source: ABdhPJyZ7X1PN5WYLX+tIw1Zbs+iVyIUGLXs1ez5SRC8FYFFL2+T/5vm5avVf1e1dadgDVcjILLDvy61otGySSFxz5gWtMQsnXWC
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/KuIQu.YyvGTpyb.Qj2aB3._";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Received: by 2002:a5e:980e:: with SMTP id s14mr3880359ioj.63.1614902658921;
+ Thu, 04 Mar 2021 16:04:18 -0800 (PST)
+Date:   Thu, 04 Mar 2021 16:04:18 -0800
+In-Reply-To: <0000000000009b387305bc00fda6@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000054fbc005bcbed38f@google.com>
+Subject: Re: WARNING in ieee802154_get_llsec_params
+From:   syzbot <syzbot+cde43a581a8e5f317bc2@syzkaller.appspotmail.com>
+To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org, stefan@datenfreihafen.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/KuIQu.YyvGTpyb.Qj2aB3._
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+syzbot has found a reproducer for the following issue on:
 
-Hi Martin,
+HEAD commit:    f5427c24 Add linux-next specific files for 20210304
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12bb4ff2d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a7876f68bf0bea99
+dashboard link: https://syzkaller.appspot.com/bug?extid=cde43a581a8e5f317bc2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=124c7b46d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1276f5b0d00000
 
-I notice that you have rebased the scsi-mkp tree.  Unfotunately James has
-already merged part of the old version of the scsi-mkp tree int the scsi
-tree so that commits f69d02e37a85..39ae3edda325 in the scsi-mkp tree are
-the same patches as commits fe07bfda2fb9..100d21c4ff29 in the scsi tree.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cde43a581a8e5f317bc2@syzkaller.appspotmail.com
 
---=20
-Cheers,
-Stephen Rothwell
+------------[ cut here ]------------
+DEBUG_LOCKS_WARN_ON(lock->magic != lock)
+WARNING: CPU: 1 PID: 8406 at kernel/locking/mutex.c:928 __mutex_lock_common kernel/locking/mutex.c:928 [inline]
+WARNING: CPU: 1 PID: 8406 at kernel/locking/mutex.c:928 __mutex_lock+0xc0b/0x1120 kernel/locking/mutex.c:1093
+Modules linked in:
+CPU: 1 PID: 8406 Comm: syz-executor446 Not tainted 5.12.0-rc1-next-20210304-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__mutex_lock_common kernel/locking/mutex.c:928 [inline]
+RIP: 0010:__mutex_lock+0xc0b/0x1120 kernel/locking/mutex.c:1093
+Code: 08 84 d2 0f 85 a3 04 00 00 8b 05 98 77 c0 04 85 c0 0f 85 12 f5 ff ff 48 c7 c6 00 85 6b 89 48 c7 c7 c0 82 6b 89 e8 ed be bc ff <0f> 0b e9 f8 f4 ff ff 65 48 8b 1c 25 00 f0 01 00 be 08 00 00 00 48
+RSP: 0018:ffffc9000163f258 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88801e509c00 RSI: ffffffff815bc1b5 RDI: fffff520002c7e3d
+RBP: ffff8880220e0c90 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815b528e R11: 0000000000000000 R12: 0000000000000000
+R13: dffffc0000000000 R14: ffffffff8a8a8200 R15: 0000000000000000
+FS:  0000000001676300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffc942cffac CR3: 0000000020f9b000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ieee802154_get_llsec_params+0x3f/0x70 net/mac802154/cfg.c:321
+ rdev_get_llsec_params net/ieee802154/rdev-ops.h:241 [inline]
+ nl802154_get_llsec_params+0xce/0x390 net/ieee802154/nl802154.c:745
+ nl802154_send_iface+0x7cf/0xa70 net/ieee802154/nl802154.c:823
+ nl802154_get_interface+0xeb/0x230 net/ieee802154/nl802154.c:889
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x440899
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe18370df8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000000107cf RCX: 0000000000440899
+RDX: 0000000000000000 RSI: 0000000020000300 RDI: 0000000000000005
+RBP: 0000000000000000 R08: 00007ffe18370f98 R09: 00007ffe18370f98
+R10: 00007ffe18370f98 R11: 0000000000000246 R12: 00007ffe18370e0c
+R13: 431bde82d7b634db R14: 00000000004ae018 R15: 00000000004004a0
 
---Sig_/KuIQu.YyvGTpyb.Qj2aB3._
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBBdXIACgkQAVBC80lX
-0GyIMAgAgV1g54gqI/uaoe6OziKF9w/37WE4kKeAcGusE0y9QabWxF12hdlMMwLD
-FLx+U3HUzIHw+08ScoGSPRRO5ggA1SfXd2cHqa5EWT01bVQfjwcmOCzJgDR3yICP
-Tq4TZ15yOPDcBk+nP4pOP29kjh74uOoY95FclIK4rCtqsX1TvLAbHJnEli6N0gq1
-O0MsqeEy3yyDzyvT22eSYPJ4laLj3BUZ4WlCGvezCopqVfE8D6Zao9Y6g3bzrTwr
-BpalpZ5ARIUd95TPOopxcKGZcyiXh+aHnx4xcNDXndyEZrpkCLahGKxCZBzesns5
-XDi4+iLjcrj6zU4+mQuuOTeeXlInuw==
-=DAb4
------END PGP SIGNATURE-----
-
---Sig_/KuIQu.YyvGTpyb.Qj2aB3._--
