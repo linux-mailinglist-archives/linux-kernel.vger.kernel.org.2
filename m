@@ -2,159 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E943B32DF91
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:19:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9C932DF93
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbhCECTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 21:19:35 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13059 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhCECTe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 21:19:34 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DsBFt356lzMjHn;
-        Fri,  5 Mar 2021 10:17:22 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 5 Mar 2021
- 10:19:31 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: expose # of overprivision segments
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <kernel-team@android.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20210302054233.3886681-1-jaegeuk@kernel.org>
- <920469a9-45d3-68e3-1f8d-a436bdd60cfe@huawei.com>
- <YD5wQRX+HnltBvEM@google.com> <YD6HjZG7QMS6Z3Tb@google.com>
- <05b43d3e-d735-ae34-5a4f-3d81a4fc8a9b@huawei.com>
- <YEEd1q5nz9EYGy8H@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <ee90aac8-bc84-0a85-e1b8-f51c40c77535@huawei.com>
-Date:   Fri, 5 Mar 2021 10:19:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S229642AbhCECVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 21:21:35 -0500
+Received: from mga17.intel.com ([192.55.52.151]:15710 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229523AbhCECVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 21:21:34 -0500
+IronPort-SDR: 0SwaPSXD4v3u8I/MbhJxdduLSEhUHl1TkNQ84h0+yceLHZnTHm3qhmjyHoObd5dfsOoBQUUVwW
+ 24Lhl/vRidOg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="167446370"
+X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
+   d="scan'208";a="167446370"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 18:21:27 -0800
+IronPort-SDR: mvh8AuzZGQ8jGtK6aR008QyOmhqP4HI5sVJHzqbx60ezQUE4aI7QPtdUXpYE2HwcyOTcR/uJzm
+ cNsxrrQQ+slw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
+   d="scan'208";a="401047505"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.165])
+  by fmsmga008.fm.intel.com with ESMTP; 04 Mar 2021 18:21:23 -0800
+Date:   Fri, 5 Mar 2021 10:21:22 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        Andi leen <ak@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>
+Subject: Re: [PATCH v3 RFC 14/14] mm: speedup page alloc for
+ MPOL_PREFERRED_MANY by adding a NO_SLOWPATH gfp bit
+Message-ID: <20210305022122.GA17707@shbuild999.sh.intel.com>
+References: <20210303121833.GB16736@shbuild999.sh.intel.com>
+ <YD+BvvM/388AVnmm@dhcp22.suse.cz>
+ <20210303131832.GB78458@shbuild999.sh.intel.com>
+ <20210303134644.GC78458@shbuild999.sh.intel.com>
+ <YD+WR5cpuWhybm2L@dhcp22.suse.cz>
+ <20210303163141.v5wu2sfo2zj2qqsw@intel.com>
+ <YD/D9hckPOA+41+D@dhcp22.suse.cz>
+ <20210303172250.wbp47skyuf6r37wi@intel.com>
+ <20210304081414.GC43191@shbuild999.sh.intel.com>
+ <YEDZvKdurj+zCXEL@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <YEEd1q5nz9EYGy8H@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEDZvKdurj+zCXEL@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/5 1:50, Jaegeuk Kim wrote:
-> On 03/04, Chao Yu wrote:
->> On 2021/3/3 2:44, Jaegeuk Kim wrote:
->>> On 03/02, Jaegeuk Kim wrote:
->>>> On 03/02, Chao Yu wrote:
->>>>> On 2021/3/2 13:42, Jaegeuk Kim wrote:
->>>>>> This is useful when checking conditions during checkpoint=disable in Android.
->>>>>
->>>>> This sysfs entry is readonly, how about putting this at
->>>>> /sys/fs/f2fs/<disk>/stat/?
->>>>
->>>> Urg.. "stat" is a bit confused. I'll take a look a better ones.
->>
->> Oh, I mean put it into "stat" directory, not "stat" entry, something like this:
->>
->> /sys/fs/f2fs/<disk>/stat/ovp_segments
+On Thu, Mar 04, 2021 at 01:59:40PM +0100, Michal Hocko wrote:
+> On Thu 04-03-21 16:14:14, Feng Tang wrote:
+> > On Wed, Mar 03, 2021 at 09:22:50AM -0800, Ben Widawsky wrote:
+> > > On 21-03-03 18:14:30, Michal Hocko wrote:
+> > > > On Wed 03-03-21 08:31:41, Ben Widawsky wrote:
+> > > > > On 21-03-03 14:59:35, Michal Hocko wrote:
+> > > > > > On Wed 03-03-21 21:46:44, Feng Tang wrote:
+> > > > > > > On Wed, Mar 03, 2021 at 09:18:32PM +0800, Tang, Feng wrote:
+> > > > > > > > On Wed, Mar 03, 2021 at 01:32:11PM +0100, Michal Hocko wrote:
+> > > > > > > > > On Wed 03-03-21 20:18:33, Feng Tang wrote:
+> > > > > > [...]
+> > > > > > > > > > One thing I tried which can fix the slowness is:
+> > > > > > > > > > 
+> > > > > > > > > > +	gfp_mask &= ~(__GFP_DIRECT_RECLAIM | __GFP_KSWAPD_RECLAIM);
+> > > > > > > > > > 
+> > > > > > > > > > which explicitly clears the 2 kinds of reclaim. And I thought it's too
+> > > > > > > > > > hacky and didn't mention it in the commit log.
+> > > > > > > > > 
+> > > > > > > > > Clearing __GFP_DIRECT_RECLAIM would be the right way to achieve
+> > > > > > > > > GFP_NOWAIT semantic. Why would you want to exclude kswapd as well? 
+> > > > > > > > 
+> > > > > > > > When I tried gfp_mask &= ~__GFP_DIRECT_RECLAIM, the slowness couldn't
+> > > > > > > > be fixed.
+> > > > > > > 
+> > > > > > > I just double checked by rerun the test, 'gfp_mask &= ~__GFP_DIRECT_RECLAIM'
+> > > > > > > can also accelerate the allocation much! though is still a little slower than
+> > > > > > > this patch. Seems I've messed some of the tries, and sorry for the confusion!
+> > > > > > > 
+> > > > > > > Could this be used as the solution? or the adding another fallback_nodemask way?
+> > > > > > > but the latter will change the current API quite a bit.
+> > > > > > 
+> > > > > > I haven't got to the whole series yet. The real question is whether the
+> > > > > > first attempt to enforce the preferred mask is a general win. I would
+> > > > > > argue that it resembles the existing single node preferred memory policy
+> > > > > > because that one doesn't push heavily on the preferred node either. So
+> > > > > > dropping just the direct reclaim mode makes some sense to me.
+> > > > > > 
+> > > > > > IIRC this is something I was recommending in an early proposal of the
+> > > > > > feature.
+> > > > > 
+> > > > > My assumption [FWIW] is that the usecases we've outlined for multi-preferred
+> > > > > would want more heavy pushing on the preference mask. However, maybe the uapi
+> > > > > could dictate how hard to try/not try.
+> > > > 
+> > > > What does that mean and what is the expectation from the kernel to be
+> > > > more or less cast in stone?
+> > > > 
+> > > 
+> > > (I'm not positive I've understood your question, so correct me if I
+> > > misunderstood)
+> > > 
+> > > I'm not sure there is a stone-cast way to define it nor should we. At the very
+> > > least though, something in uapi that has a general mapping to GFP flags
+> > > (specifically around reclaim) for the first round of allocation could make
+> > > sense.
+> > > 
+> > > In my head there are 3 levels of request possible for multiple nodes:
+> > > 1. BIND: Those nodes or die.
+> > > 2. Preferred hard: Those nodes and I'm willing to wait. Fallback if impossible.
+> > > 3. Preferred soft: Those nodes but I don't want to wait.
+> > > 
+> > > Current UAPI in the series doesn't define a distinction between 2, and 3. As I
+> > > understand the change, Feng is defining the behavior to be #3, which makes #2
+> > > not an option. I sort of punted on defining it entirely, in the beginning.
+> > 
+> > As discussed earlier in the thread, one less hacky solution is to clear
+> > __GFP_DIRECT_RECLAIM bit so that it won't go into direct reclaim, but still
+> > wakeup the kswapd of target nodes and retry, which sits now between 'Preferred hard'
+> > and 'Preferred soft' :)
 > 
-> I meant that too. Why is it like stat, since it's a geomerty?
-
-Hmm.. I feel a little bit weired to treat ovp_segments as 'stat' class, one reason
-is ovp_segments is readonly and is matching the readonly attribute of a stat.
-
+> Yes that is what I've had in mind when talking about a lightweight
+> attempt.
 > 
->>
->>>
->>> Taking a look at other entries using in Android, I feel that this one can't be
->>> in stat or whatever other location, since I worry about the consistency with
->>> similar dirty/free segments. It seems it's not easy to clean up the existing
->>> ones anymore.
->>
->> Well, actually, the entry number are still increasing continuously, the result is
->> that it becomes more and more slower and harder for me to find target entry name
->> from that directory.
->>
->> IMO, once new readonly entry was added to "<disk>" directory, there is no chance
->> to reloacate it due to interface compatibility. So I think this is the only
->> chance to put it to the appropriate place at this time.
+> > For current MPOL_PREFERRED, its semantic is also 'Preferred hard', that it
 > 
-> I know, but this will diverge those info into different places. I don't have
-> big concern when finding a specific entry with this tho, how about making
-> symlinks to create a dir structure for your easy access? Or, using a script
-> would be alternative way.
+> Did you mean to say prefer soft? Because the direct reclaim is attempted
+> only when node reclaim is enabled.
+> 
+> > will check free memory of other nodes before entering slowpath waiting.
+> 
+> Yes, hence "soft" semantic.
 
-Yes, there should be some alternative ways to help to access f2fs sysfs
-interface, but from a point view of user, I'm not sure he can figure out those
-ways.
-
-For those fs meta stat, why not adding a single entry to include all info you
-need rather than adding them one by one? e.g.
-
-/proc/fs/f2fs/<disk>/super_block
-/proc/fs/f2fs/<disk>/checkpoint
-/proc/fs/f2fs/<disk>/nat_table
-/proc/fs/f2fs/<disk>/sit_table
-...
+Yes, it's the #3 item: 'Preferred soft' 
 
 Thanks,
+Feng
 
-> 
->>
->> Thanks,
->>
->>>
->>>>
->>>>>
->>>>>>
->>>>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->>>>>> ---
->>>>>>     fs/f2fs/sysfs.c | 8 ++++++++
->>>>>>     1 file changed, 8 insertions(+)
->>>>>>
->>>>>> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
->>>>>> index e38a7f6921dd..254b6fa17406 100644
->>>>>> --- a/fs/f2fs/sysfs.c
->>>>>> +++ b/fs/f2fs/sysfs.c
->>>>>> @@ -91,6 +91,13 @@ static ssize_t free_segments_show(struct f2fs_attr *a,
->>>>>>     			(unsigned long long)(free_segments(sbi)));
->>>>>>     }
->>>>>> +static ssize_t ovp_segments_show(struct f2fs_attr *a,
->>>>>> +		struct f2fs_sb_info *sbi, char *buf)
->>>>>> +{
->>>>>> +	return sprintf(buf, "%llu\n",
->>>>>> +			(unsigned long long)(overprovision_segments(sbi)));
->>>>>> +}
->>>>>> +
->>>>>>     static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
->>>>>>     		struct f2fs_sb_info *sbi, char *buf)
->>>>>>     {
->>>>>> @@ -629,6 +636,7 @@ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, node_io_flag, node_io_flag);
->>>>>>     F2FS_RW_ATTR(CPRC_INFO, ckpt_req_control, ckpt_thread_ioprio, ckpt_thread_ioprio);
->>>>>>     F2FS_GENERAL_RO_ATTR(dirty_segments);
->>>>>>     F2FS_GENERAL_RO_ATTR(free_segments);
->>>>>> +F2FS_GENERAL_RO_ATTR(ovp_segments);
->>>>>
->>>>> Missed to add document entry in Documentation/ABI/testing/sysfs-fs-f2fs?
->>>>
->>>> Yeah, thanks.
->>>>
->>>>>
->>>>> Thanks,
->>>>>
->>>>>>     F2FS_GENERAL_RO_ATTR(lifetime_write_kbytes);
->>>>>>     F2FS_GENERAL_RO_ATTR(features);
->>>>>>     F2FS_GENERAL_RO_ATTR(current_reserved_blocks);
->>>>>>
->>>>
->>>>
->>>> _______________________________________________
->>>> Linux-f2fs-devel mailing list
->>>> Linux-f2fs-devel@lists.sourceforge.net
->>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
->>> .
->>>
-> .
-> 
+> -- 
+> Michal Hocko
+> SUSE Labs
