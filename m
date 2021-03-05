@@ -2,67 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724A032E15B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 06:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F48832E15F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 06:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229528AbhCEFVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 00:21:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38400 "EHLO mail.kernel.org"
+        id S229465AbhCEFYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 00:24:38 -0500
+Received: from foss.arm.com ([217.140.110.172]:47950 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229446AbhCEFVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 00:21:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FBF465015;
-        Fri,  5 Mar 2021 05:21:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614921664;
-        bh=AJg1FGKznu9BtYd76Gqv/R51O41xFt8MvX0qOxmPt4k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mste6ltr1wOLT1aouWjZN0lLBH7fxUaOtbK4v3UAttUy2K6NhaX+8vYnWAFevWZQd
-         2i3zEaU6D+HNKjci3QrbaduXfWwJwzPKBzSCba25vuRdLPNc/xnt6CzjLYer/BZ2OZ
-         E/P6Wc1oDx94pa8GVA4UoEhWb/FzK1CRMCOpvQ53mKGbkiS9C9DfV5x/M5p6J4XsYT
-         k43xe/7dp1jb0QUbrZrRtglsiXg49rxINXEvI0JG0WMVf0JBPtb+wLRQV6rKh97vDJ
-         AF0wIF74zGv7v1Lr5kAJB5EbSFFao+XH8Sb6zZWtPgG1h0VL5z2K5qhODXEC/aCXqY
-         v7mBQf2nyK11g==
-Date:   Thu, 4 Mar 2021 23:21:02 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 057/141] watchdog: Fix fall-through warnings for Clang
-Message-ID: <20210305052102.GA113683@embeddedor>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <713aa26be06d50dd3bb582a3cb71f04787ad5d5b.1605896059.git.gustavoars@kernel.org>
- <20210304230406.GA106291@embeddedor>
- <20210305041512.GA154288@roeck-us.net>
+        id S229446AbhCEFYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 00:24:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA5E131B;
+        Thu,  4 Mar 2021 21:24:36 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.68.69])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 791283F73B;
+        Thu,  4 Mar 2021 21:24:30 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Veronika Kabatova <vkabatov@redhat.com>
+Subject: [PATCH V3 0/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
+Date:   Fri,  5 Mar 2021 10:54:56 +0530
+Message-Id: <1614921898-4099-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305041512.GA154288@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 08:15:12PM -0800, Guenter Roeck wrote:
-> On Thu, Mar 04, 2021 at 05:04:06PM -0600, Gustavo A. R. Silva wrote:
-> > Hi all,
-> > 
-> > It's been more than 3 months; who can take this, please? :)
-> > 
-> 
-> I am not in favor of cosmetic patches for old drivers,
+This series fixes pfn_valid() for ZONE_DEVICE based memory and also improves
+its performance for normal hotplug memory. While here, it also reorganizes
+pfn_valid() on CONFIG_SPARSEMEM. This series is based on v5.12-rc1.
 
-Me either. However, this is not a cosmetic patch[1].
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: James Morse <james.morse@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Jérôme Glisse <jglisse@redhat.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Veronika Kabatova <vkabatov@redhat.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
 
-> and I am not going to provide tags for them anymore.
-> The driver should be converted to use the watchdog core,
-> or it should be dropped.
+Changes in V3:
 
-Is it OK with you if I carry this in my tree for a future pull-request
-to Linus?
+- Validate the pfn before fetching mem_section with __pfn_to_section() in [PATCH 2/2]
 
-Thanks!
---
-Gustavo
+Changes in V2:
 
-[1] https://github.com/KSPP/linux/issues/115
+https://lore.kernel.org/linux-mm/1612239114-28428-1-git-send-email-anshuman.khandual@arm.com/
+
+- Dropped pfn_valid() bifurcation based on CONFIG_SPARSEMEM
+- Used PFN_PHYS() and PHYS_PFN() instead of __pfn_to_phys() and __phys_to_pfn()
+- Moved __pfn_to_section() inside #ifdef CONFIG_SPARSEMEM with a { } construct
+
+Changes in V1:
+
+https://lore.kernel.org/linux-mm/1611905986-20155-1-git-send-email-anshuman.khandual@arm.com/
+
+- Test pfn_section_valid() for non boot memory
+
+Changes in RFC:
+
+https://lore.kernel.org/linux-arm-kernel/1608621144-4001-1-git-send-email-anshuman.khandual@arm.com/
+
+Anshuman Khandual (2):
+  arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
+  arm64/mm: Reorganize pfn_valid()
+
+ arch/arm64/mm/init.c | 29 ++++++++++++++++++++++++++---
+ 1 file changed, 26 insertions(+), 3 deletions(-)
+
+-- 
+2.20.1
+
