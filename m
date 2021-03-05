@@ -2,103 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109EA32F58B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F87A32F58E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhCEVvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:51:22 -0500
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:42065 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbhCEVvL (ORCPT
+        id S229901AbhCEVvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 16:51:52 -0500
+Received: from mail-out.m-online.net ([212.18.0.10]:58373 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229723AbhCEVvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 16:51:11 -0500
-Received: by mail-oi1-f178.google.com with SMTP id l64so4102002oig.9;
-        Fri, 05 Mar 2021 13:51:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=100p8Xn1S8lQaA67XMytTR1G/xqh893KhvDbFefC3fY=;
-        b=S1eSdb7o/BOjeHGrEwrSZl1H8xzxLyiXaW19pnSeSnMvVhPcIEg8+6i07Z2Zv1gZe3
-         D+ne9N3PJqo41a8KHa2KYHjiY1lBPgGE4uWFEjaveHACh5rDXB87ZJYZVwH4GxVHV/Fn
-         fqArgls9nUfDHKNMez0HVcKlrg0F2izLLLrZL3R16jagna/1rb7Ar2vPBFiTTBHylf23
-         0o7fAGX2IQd/fqlwoj+Adn+heVvhABYO0UXv1Y2QgQyK6Rnb0wiKz2EmTlOuwyxKhmFN
-         jmbmu/vd1CZxvLJKd6Vz72MBaD32zKRPi4EWyZvKSR/1kF6I7LmM/irSdX5OYdmMyPQj
-         FgNw==
-X-Gm-Message-State: AOAM530tktwoNkV/tRnCGmBVx6ihXgPSjUPX+P59mkzCbqJlXtSCycIt
-        9Nmhoyy7y20h9hMciBVo2w==
-X-Google-Smtp-Source: ABdhPJxDMb5VFAsGsbj45mslaiDPjYFAeCxvMBiHvuBEQ8OMB/cfUCoEcbiWcTAYSdtp93c0qu0mJA==
-X-Received: by 2002:a05:6808:4:: with SMTP id u4mr8755306oic.28.1614981070758;
-        Fri, 05 Mar 2021 13:51:10 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p67sm797339oih.21.2021.03.05.13.51.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 13:51:10 -0800 (PST)
-Received: (nullmailer pid 707923 invoked by uid 1000);
-        Fri, 05 Mar 2021 21:51:09 -0000
-Date:   Fri, 5 Mar 2021 15:51:09 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] dt-bindings: media: max9286: Describe gpio-hog
-Message-ID: <20210305215109.GA703883@robh.at.kernel.org>
-References: <20210215172447.2026514-1-jacopo+renesas@jmondi.org>
- <20210215172447.2026514-2-jacopo+renesas@jmondi.org>
+        Fri, 5 Mar 2021 16:51:48 -0500
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4DshJy076tz1rwtx;
+        Fri,  5 Mar 2021 22:51:46 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4DshJx5sTLz1qr4f;
+        Fri,  5 Mar 2021 22:51:45 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id 6X9gwMVB49vc; Fri,  5 Mar 2021 22:51:43 +0100 (CET)
+X-Auth-Info: qhpkLmOj9S85Ko1ZTaGma9HfMQrER1CXafE6q9cZuKo=
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri,  5 Mar 2021 22:51:43 +0100 (CET)
+Subject: Re: [PATCH v3 2/2] drm: bridge: Add TI SN65DSI83/84/85 DSI to LVDS
+ bridge
+To:     Jagan Teki <jagan@amarulasolutions.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-amarula@amarulasolutions.com
+References: <20210214174453.104616-1-jagan@amarulasolutions.com>
+ <20210214174453.104616-2-jagan@amarulasolutions.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <3fe11764-7eee-50ec-2da2-cbf24b268016@denx.de>
+Date:   Fri, 5 Mar 2021 22:51:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210215172447.2026514-2-jacopo+renesas@jmondi.org>
+In-Reply-To: <20210214174453.104616-2-jagan@amarulasolutions.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 06:24:44PM +0100, Jacopo Mondi wrote:
-> The MAX9286 GMSL deserializer features gpio controller capabilities,
-> as it provides 2 GPIO lines.
-> 
-> As establishing a regulator that uses one of the GPIO lines and
-> enabling/disabling it at run-time in the max9286 won't work due to
-> a circular dependency on the gpio-controller/regulator creation, allow
-> the usage of a gpio-hog for that purpose.
-> 
-> The usage of the gpio-hog is required in designs where the MAX9286
-> GPIO lines control the remote cameras power.
-> 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  .../devicetree/bindings/media/i2c/maxim,max9286.yaml     | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> index ee16102fdfe7..9d5ecfd2397c 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> @@ -50,6 +50,15 @@ properties:
->    '#gpio-cells':
->      const: 2
->  
-> +  camvdd_en:
+On 2/14/21 6:44 PM, Jagan Teki wrote:
 
-I don't think we want to document all the GPIO hogs, but rather have a 
-pattern we can check. IOW, having node name pattern we match on. I think 
-the core schemas has this now.
+[...]
 
-> +    type: object
-> +    properties:
-> +      gpio-hog: true
-> +      gpios: true
-> +      output-low: true
-> +      line-name:
-> +        const: "CAMVDD_EN"
+> +static const struct regmap_config sn65dsi_regmap_config = {
+> +	.reg_bits = 8,
+> +	.val_bits = 8,
+> +	.max_register = SN65DSI_CHA_ERR,
+> +	.name = "sn65dsi",
+> +	.cache_type = REGCACHE_RBTREE,
+> +};
+
+You might want to look at the driver I posted one more time, it defines 
+the regmap precisely and limits each register access, see:
+[PATCH 2/2] drm/bridge: ti-sn65dsi83: Add TI SN65DSI83 driver
+that way it can be dumped via debugfs and the regmap does not cache 
+registers which do not exist, like it does here.
+
+[...]
+
+> +static int sn65dsi_get_clk_range(int min, int max, unsigned long clock,
+> +				 unsigned long start, unsigned long diff)
+> +{
+> +	unsigned long next;
+> +	int i;
 > +
->    maxim,reverse-channel-microvolt:
->      minimum: 30000
->      maximum: 200000
-> -- 
-> 2.30.0
-> 
+> +	for (i = min; i <= max; i++) {
+> +		next = start + diff;
+> +		if (start <= clock && clock < next)
+> +			return i;
+> +
+> +		start += diff;
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+
+The clock rates can be calculated in linear time, see the driver above, 
+it is implemented there.
+
+> +static void sn65dsi_enable(struct drm_bridge *bridge)
+> +{
+> +	struct sn65dsi *sn = bridge_to_sn65dsi(bridge);
+> +	struct drm_display_mode *mode = bridge_to_mode(bridge);
+> +	int bpp = mipi_dsi_pixel_format_to_bpp(sn->dsi->format);
+> +	unsigned int lanes = sn->dsi->lanes;
+> +	unsigned int pixel_clk = mode->clock * 1000;
+> +	unsigned int dsi_clk = pixel_clk * bpp / (lanes * 2);
+> +	unsigned int val;
+> +
+> +	/* reset SOFT_RESET bit */
+> +	regmap_write(sn->regmap, SN65DSI_SOFT_RESET, 0x0);
+> +
+> +	msleep(10);
+
+Why is there msleep(10) all over the place ?
+I don't see such a requirement listed anywhere in the DSI83 datasheet.
+
+> +	/* reset PLL_EN bit */
+> +	regmap_write(sn->regmap, SN65DSI_CLK_PLL, 0x0);
+> +
+> +	msleep(10);
+
+Here too.
+
+[...]
+
+You also want to check the feedback on the driver I posted, it deals 
+with polling for the PLL to be ready, which seems to be missing here. 
+That should remove most of the msleep() calls.
