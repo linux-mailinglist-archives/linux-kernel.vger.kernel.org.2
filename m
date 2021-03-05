@@ -2,113 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C93732E4B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA3A32E4BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhCEJZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:25:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhCEJYq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:24:46 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44AFAC061574;
-        Fri,  5 Mar 2021 01:24:46 -0800 (PST)
-Received: from [IPv6:2a01:e0a:4cb:a870:b9e2:e9f:d661:5a2f] (unknown [IPv6:2a01:e0a:4cb:a870:b9e2:e9f:d661:5a2f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 1417F1F46840;
-        Fri,  5 Mar 2021 09:24:40 +0000 (GMT)
-Subject: Re: [PATCH v4 03/11] media: hantro: change hantro_codec_ops run
- prototype to return errors
-To:     Ezequiel Garcia <ezequiel@collabora.com>, p.zabel@pengutronix.de,
-        mchehab@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, peng.fan@nxp.com,
-        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <20210303113952.178519-1-benjamin.gaignard@collabora.com>
- <20210303113952.178519-4-benjamin.gaignard@collabora.com>
- <22a8ea464f4c7dcb7a90889f53d85f003b7c739a.camel@collabora.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <236d0327-61d3-8e25-fc37-c8aa5563f9c8@collabora.com>
-Date:   Fri, 5 Mar 2021 10:24:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229674AbhCEJZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:25:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229562AbhCEJZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:25:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11CF964FCF;
+        Fri,  5 Mar 2021 09:25:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614936306;
+        bh=6vV6T20UPqGW4+XtmqeHrshu/Vv3GHspJmUqpSLTC1U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=SKdnK52VeE68l+tvp/7qjXvMEOvgV6ZdC8u1yt23P7d91ArMA3pO9oMxLFdxS7iH9
+         nXKcZ9WCVF0xfycTCnqg0/Lqc6wnlnpmFnlXnfHqRKb5H8eZaMhtflB1co3QFANTsX
+         k/PNJnv/k9TaMe0dShRA4VlMMNWzpGUssFioRf4P6QbIwr3Htn/4Cs2Q0IWCwAt92v
+         Aw70nzpu+NTN/gYKYTi5+8DnMCgujnNBCCrA8mGBPtwCJiSpYociGMZIApqrAVjia6
+         4d9QLLXSQjSOP90USy0YfSKwSTVF8X45CAL0YoDIhsGr8Zjb6pjpUauarmOpmwLGlf
+         2qoASeRXGxPpQ==
+Date:   Fri, 5 Mar 2021 03:25:04 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jon Maloy <jmaloy@redhat.com>, Ying Xue <ying.xue@windriver.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH RESEND][next] tipc: Fix fall-through warnings for Clang
+Message-ID: <20210305092504.GA140204@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <22a8ea464f4c7dcb7a90889f53d85f003b7c739a.camel@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+by explicitly adding a break statement instead of letting the code fall
+through to the next case.
 
-Le 03/03/2021 à 22:56, Ezequiel Garcia a écrit :
-> On Wed, 2021-03-03 at 12:39 +0100, Benjamin Gaignard wrote:
->> Change hantro_codec_ops run prototype from 'void' to 'int'.
->> This allow to cancel the job if an error occur while configuring
->> the hardware.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->>   drivers/staging/media/hantro/hantro_drv.c     |  4 +++-
->>   .../staging/media/hantro/hantro_g1_h264_dec.c |  6 ++++--
->>   .../media/hantro/hantro_g1_mpeg2_dec.c        |  4 +++-
->>   .../staging/media/hantro/hantro_g1_vp8_dec.c  |  6 ++++--
->>   .../staging/media/hantro/hantro_h1_jpeg_enc.c |  4 +++-
->>   drivers/staging/media/hantro/hantro_hw.h      | 19 ++++++++++---------
->>   .../media/hantro/rk3399_vpu_hw_jpeg_enc.c     |  4 +++-
->>   .../media/hantro/rk3399_vpu_hw_mpeg2_dec.c    |  4 +++-
->>   .../media/hantro/rk3399_vpu_hw_vp8_dec.c      |  6 ++++--
->>   9 files changed, 37 insertions(+), 20 deletions(-)
->>
->> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
->> index e5f200e64993..ac1429f00b33 100644
->> --- a/drivers/staging/media/hantro/hantro_drv.c
->> +++ b/drivers/staging/media/hantro/hantro_drv.c
->> @@ -161,7 +161,9 @@ static void device_run(void *priv)
->>   
->>          v4l2_m2m_buf_copy_metadata(src, dst, true);
->>   
->> -       ctx->codec_ops->run(ctx);
->> +       if (ctx->codec_ops->run(ctx))
->> +               goto err_cancel_job;
->> +
->>          return;
->>   
->>   err_cancel_job:
->> diff --git a/drivers/staging/media/hantro/hantro_g1_h264_dec.c b/drivers/staging/media/hantro/hantro_g1_h264_dec.c
->> index 845bef73d218..fcd4db13c9fe 100644
->> --- a/drivers/staging/media/hantro/hantro_g1_h264_dec.c
->> +++ b/drivers/staging/media/hantro/hantro_g1_h264_dec.c
->> @@ -273,13 +273,13 @@ static void set_buffers(struct hantro_ctx *ctx)
->>          vdpu_write_relaxed(vpu, ctx->h264_dec.priv.dma, G1_REG_ADDR_QTABLE);
->>   }
->>   
->> -void hantro_g1_h264_dec_run(struct hantro_ctx *ctx)
->> +int hantro_g1_h264_dec_run(struct hantro_ctx *ctx)
->>   {
->>          struct hantro_dev *vpu = ctx->dev;
->>   
->>          /* Prepare the H264 decoder context. */
->>          if (hantro_h264_dec_prepare_run(ctx))
->> -               return;
->> +               return -EINVAL;
-> This should be returning the value from hantro_h264_dec_prepare_run.
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ net/tipc/link.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-That will be fixed in the next version, thanks
+diff --git a/net/tipc/link.c b/net/tipc/link.c
+index 115109259430..bcc426e16725 100644
+--- a/net/tipc/link.c
++++ b/net/tipc/link.c
+@@ -649,6 +649,7 @@ int tipc_link_fsm_evt(struct tipc_link *l, int evt)
+ 			break;
+ 		case LINK_FAILOVER_BEGIN_EVT:
+ 			l->state = LINK_FAILINGOVER;
++			break;
+ 		case LINK_FAILURE_EVT:
+ 		case LINK_RESET_EVT:
+ 		case LINK_ESTABLISH_EVT:
+-- 
+2.27.0
 
-Benjamin
-
->
-> Thanks!
-> Ezequiel
->
