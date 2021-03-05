@@ -2,134 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1F532E3BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFF432E3CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhCEIez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:34:55 -0500
-Received: from mail-eopbgr80081.outbound.protection.outlook.com ([40.107.8.81]:50147
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229497AbhCEIe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:34:27 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R44kC5duUcQdhGj7NfVRq1Hh2ofuflBw6MOGtGd+XaIU8lzv/hhAk3G9ED4MheXpp/jZ9tL0Qriay1dPTOjRSGeUcdm2AeHPicKmXzMl6XbAWLdGtSos88ek2yxd+BSLfXOf4PrhcjLNOCbkWj2S+aSr9g0D92YJOKZmSqsGjaTq2l6p0fvZB8ezjiUy9w+IVo49OnUB+3ZbZenCGDNnlNwAiWz0S3kfMAid3if4INo6jwFX0S6BvA3uoQ94BGOTsF73pimJOGZvq+hU9XDEat9NgT8jo8uqtAqIcp/Ew6/eA7pNVA+6hK5gHlImrCvzsLX5aCD6yHONG7vn398Krg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jCSedFIDIkHRsWQfpwuBI4tP/8nDYr+XIFOwWgteIrc=;
- b=j0wE0JAVdsf7eWWV8jOrZGVkL2rlDGYHJGFGKO/yxUCZZOMsLOjqpsvK3/OAs3OMT7KxWv3s6+rK0GTuAyi6d3duEwrDB0Vmp/puTfqEnwKIG6Lix8k1In4e6tRdrzgNQT/DWqN2NrtvoTi7USN64rVu7J+2q3MjoQ2HtPx8DbeQayAZFUlxQLEObg678pGe051f2p7cDerJ4MqL9t0yWPEZ5RFnXB5u2jkDkobG7Mwni24QRqlcI7r3apigDIUQ/fGTf5/q10DrDRP1w6L8yF4s5xQ/ovG2X+Y73XnNvaw8lxJzU7FxncwSIgC3K5Jj1xCe6X4m1WUa5aqPcS6bWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jCSedFIDIkHRsWQfpwuBI4tP/8nDYr+XIFOwWgteIrc=;
- b=CYZ4FzyYBEEOile2rvsVb560jK96VvX+KXbiALJdh/WNjWYVGd/h4mJBE3WF4ZwqfDUWCx6gOacN/TuV7rqJ1Xr/9uvVL8a3xcEJ5tepd/mj0Ms015cDWLO+wiAQEYvCrti+L+EIrm1owKqFAswKrPOUKiqnOsqgHMz/1gDQOuQ=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-Received: from DB7PR04MB5322.eurprd04.prod.outlook.com (2603:10a6:10:1f::15)
- by DB8PR04MB6940.eurprd04.prod.outlook.com (2603:10a6:10:11a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Fri, 5 Mar
- 2021 08:34:24 +0000
-Received: from DB7PR04MB5322.eurprd04.prod.outlook.com
- ([fe80::7c4b:7e9d:a414:d34]) by DB7PR04MB5322.eurprd04.prod.outlook.com
- ([fe80::7c4b:7e9d:a414:d34%3]) with mapi id 15.20.3890.029; Fri, 5 Mar 2021
- 08:34:24 +0000
-From:   Sahil Malhotra <sahil.malhotra@oss.nxp.com>
-To:     shawnguo@kernel.org
-Cc:     sahil.malhotra@oss.nxp.com,
-        Sahil Malhotra <sahil.malhotra@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/FREESCALE
-        LAYERSCAPE ARM ARCHITECTURE),
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] arm64: dts: ls1028a: enable optee node
-Date:   Fri,  5 Mar 2021 14:03:51 +0530
-Message-Id: <20210305083351.13598-1-sahil.malhotra@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [14.142.151.118]
-X-ClientProxiedBy: MA1PR0101CA0041.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:22::27) To DB7PR04MB5322.eurprd04.prod.outlook.com
- (2603:10a6:10:1f::15)
+        id S229552AbhCEIhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:37:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhCEIgs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 03:36:48 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F83CC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 00:36:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4o8nFaUqdE3XidEkNAZS9FXz8f1fPatJYS1B5VPdZWg=; b=vx3tzdqHWopV7m2mf3R2uMIZLz
+        jyvOHTaQlnsPaIBaxI17YADAwkSgwZcbR/oSX1fOOuLiNqnXyixRHA7+CgHqMh0nu3hckW5Y6Px9G
+        +Rsd9okcPpiCUH/QOhlCjvmypAjSIch7EWzPkx5eJ5kMCBficpUVXtE2DRHE9OOTLqkKNaik/8zxR
+        Vi/XuQZh0cNoyiYOMV23g96+huqGeImyGPUOHYoOFFtkBWjWuF+k0DO+ntqbzdnsexDNUhPq+TQUt
+        pBAHbApsVLEqJo7Y9BcD+p7VYeRlvSpoLmr/zklVcB8ZxY5y1Oke80NcPvpfZlli5P6bKKN89B88V
+        quIuRi0A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lI5wn-00ArwV-Ca; Fri, 05 Mar 2021 08:36:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 991113011E6;
+        Fri,  5 Mar 2021 09:36:30 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7E0202BA960C6; Fri,  5 Mar 2021 09:36:30 +0100 (CET)
+Date:   Fri, 5 Mar 2021 09:36:30 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: "struct perf_sample_data" alignment
+Message-ID: <YEHtjioucovbxbRt@hirez.programming.kicks-ass.net>
+References: <CAHk-=wgQWHDUFjzmAazg8WN0BR7nOyHmduj-MV1GWWDUu+UKCQ@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03303.swis.in-blr01.nxp.com (14.142.151.118) by MA1PR0101CA0041.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:22::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 5 Mar 2021 08:34:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: aa6a1914-f1f4-4b37-2fb7-08d8dfb17abf
-X-MS-TrafficTypeDiagnostic: DB8PR04MB6940:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR04MB6940B67C37FAC041EBFC201FC3969@DB8PR04MB6940.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1850;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: j3JltZBELjW9fao6g8pLiV2Ec1K6JgLe/t+vXZwOzN2WqMfGAlmkWXJbMdzEikB9MFvJ1cMIYKQJPZtRdU34TdF04I+3wUm4FSWMQGWz6TWN9DPiFSRDPiYeC4Etotqk1bxLnM8wGHJT7wDQv/PYg4MU+8W01GC+uYijZD+wPvV/lKgzugip97elyvgFrSJAomCJQbhPPIiDFjxIxnQbRIVyo9bBRqiq2XGpF0wKPAyXjBqcPkXcthljFVwl6l/5BboxwfMXKFGU6S78VB4CUO6DoWIELVeOYvI0oWP70F6pLVHvN3d/tHrPgh/yQINvlQhBApZkc26KtEjjL306UpZBjAcyVKeiwOg3cQ2bxvZU1zUi4LhOKOVGe7oXVRzwqkt2e0NynPaeliZVf4Pr+cpwO/nbQ1yoadVG52KtjfRP/Qv8PUgI/LTRBUpaOHByPpugLjdQrLg3Q/CsPAJ7Cokndl9QeSDkuYqN8Gwfm+4ZahlqXz//WChHfjVLWDd++FpF9rxdbDa6VOj3TmNFLSpye5kaTYAPkoxooX0vGn5hY73ITEHEDhaHLzuHsdlsvGN+hrABFTc1Ooa4otinyw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB5322.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(136003)(396003)(346002)(66556008)(86362001)(66946007)(83380400001)(5660300002)(54906003)(6506007)(4326008)(66476007)(6666004)(1006002)(4744005)(8936002)(2906002)(52116002)(6916009)(478600001)(55236004)(26005)(16526019)(2616005)(956004)(44832011)(6486002)(8676002)(1076003)(6512007)(186003)(316002)(110426009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?AzutoYRCioaE5mXgUjnAqGsVR2bNLVOHb3djcQqFeviBzyyibZD7ks36HRD5?=
- =?us-ascii?Q?OB2N/kIP2VkEWb+YUWwZHwKpu0V3Ma37Iaj2iyndB8rFYOyoIM6FGfhfe0t2?=
- =?us-ascii?Q?q9NUETP6JqW0pkfTOUBAyvh8V2syljohxENmSuR4CA67EpZsCDiWc9sABLYT?=
- =?us-ascii?Q?HF5Hp4w2KtQTMGXYY7+XJm7OEUEsFh46Hhe1NlEeN6h+TFhVIqolH6u7OhJc?=
- =?us-ascii?Q?1aCSTeVPHkG0Y0hjJD0q3vzDk1tuqEUFMmdjOzX35od8fw8IrKl/UGdaF7UQ?=
- =?us-ascii?Q?M7gsaU8u/tdcAvkUdFI16DVt6UZKSjCOfG5/YxyxzALn4lPELdrcYiSY7wua?=
- =?us-ascii?Q?Piv/Btpgo51g9+KJdeBJIro6p1oGpLet1B3UrFQantqrZRNssWoEpeCZZn9e?=
- =?us-ascii?Q?5vrMexHj4FWUee3VwA0mbynDnpr4O/WXyDs6gZ5nW3L2XFdi4RrBSO4qYjJ1?=
- =?us-ascii?Q?vWbklOvvAtoOrWXkPPGq6etEn7a7HQdyrlf0rg/HbBR63by54z4qLuL+dKm/?=
- =?us-ascii?Q?x08X3Y5G2chQHdaTbvOqraohQvmEDXm/Ut0AvgUT/zKAvN1oJ7+xgK7BJ8fR?=
- =?us-ascii?Q?HF7ciBw29UCCiv+qvF1DfJtqlQbSFMoOVxlj4EIOrwyJF596tKL41o9IZOiw?=
- =?us-ascii?Q?ArXShVey6VwK498PkVcAk28Rq9jik0Rx29tp7iBfX/FUqQ3KwYAGpReHAXpp?=
- =?us-ascii?Q?wuxR/CZ5K6N/h4yI2PbEd192OacDf6vgEWxKJd5jzVN52rSkuwknBzGkK7al?=
- =?us-ascii?Q?LmMtYlfYU5y/gP97d8RSiK2MH6BbN/rpHeQ14+yAIDWVx0yL/QU6w8y8Vv1S?=
- =?us-ascii?Q?jHIzVTT7/TcTXWKrGp2ooEQBjypz4U2E9yt/lglvKjnYAYDds7oqcuEZM11G?=
- =?us-ascii?Q?ZBAPo6IhUKkiokAHb7R2oZLhVSqbhTdZcmVBMBtQX1jP/gFWlrT3lQNo6jkK?=
- =?us-ascii?Q?mFVBz9wwnnO4+0Csl6f+FFixGUdWJJPWGkuAZKn3GAQjFix5eR6W2QrtM9z+?=
- =?us-ascii?Q?PvXkHLNdftMSh93mwqTEZiFiNWYTt/uyMtCJSv/CCyw4sKgYf1yUdZUedHRp?=
- =?us-ascii?Q?QgTOvYdbBikyZ+241Goxt+Cy8VZIcri6ltEsfrIQJqs8WCcxFZY0qQA1v2dF?=
- =?us-ascii?Q?0Pwiy25onWfSxFPvN7q8wIxfy9CZPiMGYT+XoRPx8PppkUW9GMMS6XY7mY9p?=
- =?us-ascii?Q?bGvscEErq/7Y5olmKktBghemKReBuBRj+BacLxdgiJa6GmiLK/TfTb0ZGo/P?=
- =?us-ascii?Q?LU+W/5LteLBG0FDEhpx9zQuHkPYIxA9vEmP9IZfI2sgeD22pHC+xa9XoRe/b?=
- =?us-ascii?Q?plnriFcsGE4xx3pNWzL7CsNR?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa6a1914-f1f4-4b37-2fb7-08d8dfb17abf
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB5322.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2021 08:34:24.8072
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LA4VEdk1S1mQ0tTeN+jdLl2e6OXKlHuVhX+qMbZZ73loAFFPBeq05eQnOrSwyiJC5f+Nx1AF9G222vIiM8Nbgg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6940
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgQWHDUFjzmAazg8WN0BR7nOyHmduj-MV1GWWDUu+UKCQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sahil Malhotra <sahil.malhotra@nxp.com>
+On Thu, Mar 04, 2021 at 07:45:44PM -0800, Linus Torvalds wrote:
+> That ____cacheline_aligned goes back many years, this is not new, it
+> seems to come from back in 2014: commit 2565711fb7d7 ("perf: Improve
+> the perf_sample_data struct layout").
 
-optee node was disabled in ls1028a.dtsi, enabling it by default.
+long time ago...
 
-Signed-off-by: Sahil Malhotra <sahil.malhotra@nxp.com>
----
- arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+> But it really seems entirely and utterly bogus. That cacheline
+> alignment makes things *worse*, when the variables are on the local
+> stack. The local stack is already going to be dirty and in the cache,
+> and aligning those things isn't going to - and I quote from the code
+> in that commend in that commit - "minimize the cachelines touched".
+> 
+> Quite the reverse. It's just going to make the stack frame use *more*
+> memory, and make any cacheline usage _worse_.
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-index 262fbad8f0ec..762fbccaf586 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-@@ -95,7 +95,6 @@
- 		optee {
- 			compatible = "linaro,optee-tz";
- 			method = "smc";
--			status = "disabled";
- 		};
- 	};
- 
--- 
-2.17.1
+IIRC there is more history here, but I can't seem to find references
+just now.
 
+What I remember is that since perf_sample_data is fairly large,
+unconditionally initializing the whole thing is *slow* (and
+-fauto-var-init=zero will hurt here).
+
+So at some point I removed that full initialization and made sure we
+only unconditionally touched the first few variables, which gave a
+measurable speedup.
+
+Then things got messy again and the commit 2565711fb7d7 referenced above
+was cleanup, to get back to that initial state.
+
+Now, you're right that __cacheline_aligned on on-stack (and this is
+indeed mostly on-stack) is fairly tedious (there were a few patches
+recently to reduce the amount of on-stack instances).
+
+I'll put it on the todo list, along with that hotplug stuff (which I
+tried to fix but ended up with an even bigger mess). I suppose we can
+try and not have the alignment for the on-stack instances while
+preserving it for the few off-stack ones.
+
+Also; we're running on the NMI stack, and that's not typically hot.
