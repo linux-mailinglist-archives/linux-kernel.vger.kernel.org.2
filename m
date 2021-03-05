@@ -2,123 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8044932F478
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4CE32F453
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbhCEUJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 15:09:28 -0500
-Received: from gateway36.websitewelcome.com ([192.185.184.18]:37838 "EHLO
-        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229488AbhCEUI6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 15:08:58 -0500
-X-Greylist: delayed 1502 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Mar 2021 15:08:58 EST
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway36.websitewelcome.com (Postfix) with ESMTP id B91934014FDF4
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 13:22:12 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id IG1clLYro5rKQIG1clfpEk; Fri, 05 Mar 2021 13:22:12 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=C72aJTZFqzs0Z+9XAwu1hW3tRHeE2ae9+7AYTQcn1o0=; b=fVD+ItGkq/K/5cbMt/WshLVAtP
-        vlV8T0GV/IEtMx7Bm0IwxeWohx8w1qQvIY05oQRJwHmoupjK1Y4BDDXOXwAdAty7h5fjDGmy8e2L5
-        PTMSfGTA/CBAFU38Ckdzk1TUxkcXY9J4cjiEFSSUn+f1pGNVdpFHFqYZEkLkmAtjk91AQD0YuzClQ
-        +K46YjNj0z5MZN5z7oGVIB2vz3HDTCDdhzaEdLk3HwphmNnXoExhuyCJOpKOAJnw6LEbfkkNqNHqa
-        1QSkSY9k+yKHhSkmT3+nkV+6GvTKMAVa5uLpgljd0+oJHh8aQtIfsb0SYG5eGAlo2IOeWiyF7wDiX
-        zu1jW6yw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:43058 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lIG1c-000M4i-0N; Fri, 05 Mar 2021 13:22:12 -0600
-Subject: Re: [PATCH 045/141] net: mscc: ocelot: Fix fall-through warnings for
- Clang
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <a36175068f59c804403ec36a303cf1b72473a5a5.1605896059.git.gustavoars@kernel.org>
- <20210304225318.GC105908@embeddedor> <20210304230108.3govsjrwwmfcw72e@skbuf>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <62a27ed0-60af-5de8-cd7c-1d68b9a1a975@embeddedor.com>
-Date:   Fri, 5 Mar 2021 13:22:11 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229446AbhCEUBE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Mar 2021 15:01:04 -0500
+Received: from aposti.net ([89.234.176.197]:58206 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229488AbhCEUA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 15:00:56 -0500
+Date:   Fri, 05 Mar 2021 20:00:43 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 3/3] input: gpio-keys: Use hrtimer for software debounce
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     od@zcrc.me, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-Id: <79IIPQ.DQ7JNXZ0OI5Q2@crapouillou.net>
+In-Reply-To: <YEJ57PuEyYknR3MF@google.com>
+References: <20210305170111.214782-1-paul@crapouillou.net>
+        <20210305170111.214782-3-paul@crapouillou.net> <YEJ57PuEyYknR3MF@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210304230108.3govsjrwwmfcw72e@skbuf>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lIG1c-000M4i-0N
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:43058
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 9
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
+Hi Dmitry,
 
-On 3/4/21 17:01, Vladimir Oltean wrote:
-> Hi Gustavo,
+Le ven. 5 mars 2021 à 10:35, Dmitry Torokhov 
+<dmitry.torokhov@gmail.com> a écrit :
+> Hi Paul,
 > 
-> On Thu, Mar 04, 2021 at 04:53:18PM -0600, Gustavo A. R. Silva wrote:
->> Hi all,
->>
->> It's been more than 3 months; who can take this, please? :)
->>
->> Thanks
->> --
->> Gustavo
->>
->> On Fri, Nov 20, 2020 at 12:31:13PM -0600, Gustavo A. R. Silva wrote:
->>> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
->>> by explicitly adding a break statement instead of just letting the code
->>> fall through to the next case.
->>>
->>> Link: https://github.com/KSPP/linux/issues/115
->>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>> ---
+> On Fri, Mar 05, 2021 at 05:01:11PM +0000, Paul Cercueil wrote:
+>>  -static void gpio_keys_gpio_work_func(struct work_struct *work)
+>>  +static enum hrtimer_restart gpio_keys_debounce_timer(struct 
+>> hrtimer *t)
+>>   {
+>>  -	struct gpio_button_data *bdata =
+>>  -		container_of(work, struct gpio_button_data, work.work);
+>>  +	struct gpio_button_data *bdata = container_of(t,
+>>  +						      struct gpio_button_data,
+>>  +						      debounce_timer);
+>> 
+>>   	gpio_keys_gpio_report_event(bdata);
 > 
-> You'd obviously need to resend. But when you do please add my:
-> 
-> Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> 
-> And by the way, I think the netdev maintainers might want to take the
-> patches on network drivers to avoid conflicts, but on the other hand
-> they might not be too keen on cherry-picking bits and pieces of your 141
-> patch series. Would you mind creating a bundle of patches only for
-> netdev? I see there's definitely more than just one patch, they would
-> certainly get in a lot quicker that way.
+> I am not sure how this works. As far as I know, even
+> HRTIMER_MODE_REL_SOFT do not allow sleeping in the timer handlers, and
+> gpio_keys_gpio_report_event() use sleeping variant of GPIOD API (and
+> that is not going to change).
 
-Thanks for your feedback. I already sent those patches again. I hope they
-are applied this time. :)
+Quoting <linux/hrtimers.h>, the "timer callback will be executed in 
+soft irq context", so sleeping should be possible.
 
---
-Gustavo
+But I guess in this case I can use HRTIMER_MODE_REL.
+
+> It seems to me that if you want to use software debounce in gpio keys
+> driver you need to set up sufficiently high HZ for your system. Maybe 
+> we
+> could thrown a warning when we see low debounce delay and low HZ to
+> alert system developer.
+
+This is exactly what we should not do. I certainly don't want to have 
+250+ timer interrupts per second just so that input events aren't lost, 
+to work around a sucky debounce implementation. Besides, if you 
+consider the hrtimers doc (Documentation/timers/hrtimers.rst), hrtimers 
+really are what should be used here.
+
+-Paul
+
+
