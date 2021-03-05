@@ -2,153 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3111C32F0F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8963B32F0EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhCERRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:17:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47280 "EHLO mail.kernel.org"
+        id S229512AbhCERQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:16:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229589AbhCERQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:16:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1892650AB;
-        Fri,  5 Mar 2021 17:16:37 +0000 (UTC)
+        id S229616AbhCERQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 12:16:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38B3F65051;
+        Fri,  5 Mar 2021 17:16:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614964598;
-        bh=+Gb5g3MfCrcc26NGCLLuspANACPs6Pfj+Bgg/wKdCaU=;
+        s=k20201202; t=1614964587;
+        bh=/ltV4TybMsf7MDvvcwuffVYwQgFEEIM5tPdvWRCYeC8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c3txESaI2URJuTTYiOXCVfTZrxV3UQRRMBcXGvhOyaNq2DnTGfMoc/T22N42OTYVR
-         ytclvmmC0BM8inW7blAA/QGVGqNprQqUeYIdS0lF70eJr/ZipjM9YLSUmWTOAsDZlu
-         djccdDBiXXX6fqFdqXehcpzKO1ZhuKMn0s1T1NIOQLrWNNPC1kO5Bomo+ZDQG9GW3h
-         IrYFDQl7E5B4gXAT5/Xw1fb0exIKhY4Dw5oO/0wJxG9vrCRaDhYXufTrqboyIAMpar
-         bAx/4iQZykVd5vSXfaE4qDj5ktgA14MM8KKxy4oDn89UktREi9g9OlzNMCgVB4Ae53
-         7CHVIdmiYLJUw==
-Date:   Fri, 5 Mar 2021 19:16:16 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, herbert@gondor.apana.org.au,
-        dhowells@redhat.com, zohar@linux.ibm.com,
-        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: Re: [PATCH v10 5/9] x509: Detect sm2 keys by their parameters OID
-Message-ID: <YEJnYOvFnWr7YcJK@kernel.org>
-References: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
- <20210305005203.3547587-6-stefanb@linux.vnet.ibm.com>
+        b=MS3VOelF40Y31R0Y19cdZw9H5NADPXMXD2TJNQX01N8VpEDl+oh0iMbDdKJb3t6NW
+         O1roDkbe8y+Gx2hVWECPjFzb/xsYr0NqyTYSbFFRAo7nry1Iwl9qMB0Myu6yRCTf1d
+         FH2MdsCq7gCciRRxBrC+o9y8AkPP+3hKkJdKnaRrC0gbjdLNuKOnsb+WXRrJP9RQeG
+         JfOX9nFlUzBelbOiYTxKFaAe6MSLsXehRXpZV+nWC68unOJA+bkfyVnd3L79S0KK4D
+         B7HPKwj7dZDxuVahhUm1ycaYw0olZ/eaRJ4tFBRzrYMz/y7EHqdk0nG0iV9UQsWLR+
+         9lU2SuslGoHyA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id DB86640647; Fri,  5 Mar 2021 14:16:24 -0300 (-03)
+Date:   Fri, 5 Mar 2021 14:16:24 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Michael Petlan <mpetlan@redhat.com>
+Cc:     acme@redhat.com, linux-perf-users@vger.kernel.org,
+        jolsa@redhat.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf trace: Fix race in signal handling
+Message-ID: <YEJnaMzH2ctp3PPx@kernel.org>
+References: <20210302144120.17362-1-mpetlan@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210305005203.3547587-6-stefanb@linux.vnet.ibm.com>
+In-Reply-To: <20210302144120.17362-1-mpetlan@redhat.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 07:51:59PM -0500, Stefan Berger wrote:
-> From: Stefan Berger <stefanb@linux.ibm.com>
+Em Tue, Mar 02, 2021 at 03:41:20PM +0100, Michael Petlan escreveu:
+> Since a lot of stuff happens before the SIGINT signal handler is registered
+> (scanning /proc/*, etc.), on bigger systems, such as Cavium Sabre CN99xx,
+> it may happen that first interrupt signal is lost and perf isn't correctly
+> terminated.
 > 
-> Detect whether a key is an sm2 type of key by its OID in the parameters
-> array rather than assuming that everything under OID_id_ecPublicKey
-> is sm2, which is not the case.
+> The reproduction code might look like the following:
 > 
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: keyrings@vger.kernel.org
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+>     perf trace -a &
+>     PERF_PID=$!
+>     sleep 4
+>     kill -INT $PERF_PID
+> 
+> The issue has been found on a CN99xx machine with RHEL-8 and the patch fixes
+> it by registering the signal handlers earlier in the init stage.
+
+Thanks, applied.
+
+- Arnaldo
+
+ 
+> Suggested-by: Jiri Olsa <jolsa@redhat.com>
+> Signed-off-by: Michael Petlan <mpetlan@redhat.com>
+> Tested-by: Michael Petlan <mpetlan@redhat.com>
 > ---
->  crypto/asymmetric_keys/x509_cert_parser.c | 12 +++++++++++-
->  include/linux/oid_registry.h              |  1 +
->  lib/oid_registry.c                        | 13 +++++++++++++
->  3 files changed, 25 insertions(+), 1 deletion(-)
+>  tools/perf/builtin-trace.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-> index 52c9b455fc7d..1621ceaf5c95 100644
-> --- a/crypto/asymmetric_keys/x509_cert_parser.c
-> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
-> @@ -459,6 +459,7 @@ int x509_extract_key_data(void *context, size_t hdrlen,
->  			  const void *value, size_t vlen)
->  {
->  	struct x509_parse_context *ctx = context;
-> +	enum OID oid;
-
-enum is not a real type, and it is hard to recall how much it allocates
-from stack. I would replace this with plain int.
-
+> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+> index 85b6a46e85b6..7ec18ff57fc4 100644
+> --- a/tools/perf/builtin-trace.c
+> +++ b/tools/perf/builtin-trace.c
+> @@ -3964,9 +3964,6 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
 >  
->  	ctx->key_algo = ctx->last_oid;
->  	switch (ctx->last_oid) {
-> @@ -470,7 +471,16 @@ int x509_extract_key_data(void *context, size_t hdrlen,
->  		ctx->cert->pub->pkey_algo = "ecrdsa";
->  		break;
->  	case OID_id_ecPublicKey:
-> -		ctx->cert->pub->pkey_algo = "sm2";
-> +		if (parse_OID(ctx->params, ctx->params_size, &oid) != 0)
-> +			return -EBADMSG;
-> +
-> +		switch (oid) {
-> +		case OID_sm2:
-> +			ctx->cert->pub->pkey_algo = "sm2";
-> +			break;
-> +		default:
-> +			return -ENOPKG;
-> +		}
->  		break;
->  	default:
->  		return -ENOPKG;
-> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-> index b504e2f36b25..f32d91895e4d 100644
-> --- a/include/linux/oid_registry.h
-> +++ b/include/linux/oid_registry.h
-> @@ -121,6 +121,7 @@ enum OID {
->  };
+>  	evlist__config(evlist, &trace->opts, &callchain_param);
 >  
->  extern enum OID look_up_OID(const void *data, size_t datasize);
-> +extern int parse_OID(const void *data, size_t datasize, enum OID *oid);
->  extern int sprint_oid(const void *, size_t, char *, size_t);
->  extern int sprint_OID(enum OID, char *, size_t);
+> -	signal(SIGCHLD, sig_handler);
+> -	signal(SIGINT, sig_handler);
+> -
+>  	if (forks) {
+>  		err = evlist__prepare_workload(evlist, &trace->opts.target, argv, false, NULL);
+>  		if (err < 0) {
+> @@ -4827,6 +4824,8 @@ int cmd_trace(int argc, const char **argv)
 >  
-> diff --git a/lib/oid_registry.c b/lib/oid_registry.c
-> index f7ad43f28579..508e0b34b5f0 100644
-> --- a/lib/oid_registry.c
-> +++ b/lib/oid_registry.c
-> @@ -11,6 +11,7 @@
->  #include <linux/kernel.h>
->  #include <linux/errno.h>
->  #include <linux/bug.h>
-> +#include <linux/asn1.h>
->  #include "oid_registry_data.c"
+>  	signal(SIGSEGV, sighandler_dump_stack);
+>  	signal(SIGFPE, sighandler_dump_stack);
+> +	signal(SIGCHLD, sig_handler);
+> +	signal(SIGINT, sig_handler);
 >  
->  MODULE_DESCRIPTION("OID Registry");
-> @@ -92,6 +93,18 @@ enum OID look_up_OID(const void *data, size_t datasize)
->  }
->  EXPORT_SYMBOL_GPL(look_up_OID);
->  
-> +int parse_OID(const void *data, size_t datasize, enum OID *oid)
-
-An exported function without kdoc.
-
-> +{
-> +	const unsigned char *v = data;
-> +
-> +	if (datasize < 2 || v[0] != ASN1_OID || v[1] != datasize - 2)
-> +		return -EBADMSG;
-
-'1' and '2' are magic numbers unless you either have constants defining
-them, or at least an inline comment with explanation.
-
-> +
-> +	*oid = look_up_OID(data + 2, datasize - 2);
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(parse_OID);
-> +
->  /*
->   * sprint_OID - Print an Object Identifier into a buffer
->   * @data: The encoded OID to print
+>  	trace.evlist = evlist__new();
+>  	trace.sctbl = syscalltbl__new();
 > -- 
-> 2.29.2
-> 
+> 2.18.4
 > 
 
-/Jarkko
+-- 
+
+- Arnaldo
