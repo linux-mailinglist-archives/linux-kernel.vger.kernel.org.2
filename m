@@ -2,170 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDCA32E057
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:03:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C12432E058
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbhCEECw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 23:02:52 -0500
-Received: from mail-eopbgr760084.outbound.protection.outlook.com ([40.107.76.84]:5606
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229458AbhCEECv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 23:02:51 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CiTnsIhMIUQ0MHWLbNCw/rLcjXgE+nFx/c8kAKkFSoYFFmBX43f35tOhk3M6wWY7TVVJtjcEXffAjmZIyEPFPeo6kQtSaHaz9GmDnxUL/z6q4Sy8FAN2aQ1Eapdl7RYuR8HW2bH5KWaHms7pExDxYfftvLq6Vie02sM9TgRCD0FVvlOnxz+RCpqCdMUSEE+HSWJ/J45GH+OatH+sIoWsenU+5RaTrypMVTWZYXKttzvt37tweNWUHCCm7BZCJSeu6YgcFj1unu5+xVsFlapC6dFKKAnx+rMD5y34Ot6c+6W9hTgIIPpdkDg+h+FwHMxrYdpBz+X4Y62CSPXYATiGvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KSJgwgh3f/FfDAFeJVLuET7litMQBoWm0aRpNo1FqxY=;
- b=DVqtYwV0CJqK08EqFeZ9D0kN15OCf4ZQV/Y4Zx912qOQHrOMbp31cgtzm5H8hwHGfQCGsMK4k2EwIp8mrMNx/AWjbSNIFKZgSmC49MzKITfYuvQ1l7neMQfXQOYmpEzV/eIODKiFTQ7if2bm6mMWWgNaeQCVGD7IrmmYXaTvdcx9Viz9LXFjxYWny3CDjnhlDYkfdLT9l2/7EGvj8KKgRVwy5h2BamwhM+kVoKuqAhCc/R0DGEkqztTHzUE19HJLl3U5zaZirpa6GkjgXBwpfNmZfbHRYKOBAAY+2ipTSjwoW35yMAWK9PfGADdA4iYh0C4AWC7N2O5vJPIalEhBFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KSJgwgh3f/FfDAFeJVLuET7litMQBoWm0aRpNo1FqxY=;
- b=3hofBiKgmKD6qrCBQGqJZRzk96cIFKE7YL7k3lJAXpgM0iCh1RQeThZMl4mjBazn4JVw9TolgkR8hl3dGa6WbwH+6gXaJ8xtzTaW+XYxv0xOMPj/kpvEyGtzIV5NZ7Bh9IoPrD8iB9vCa5DNLtNNGzdatEWYqGqSajPUAfUDbQw=
-Received: from DM6PR12MB2619.namprd12.prod.outlook.com (2603:10b6:5:45::18) by
- DM6PR12MB4372.namprd12.prod.outlook.com (2603:10b6:5:2af::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3912.17; Fri, 5 Mar 2021 04:02:49 +0000
-Received: from DM6PR12MB2619.namprd12.prod.outlook.com
- ([fe80::11e6:53ff:8e98:31f0]) by DM6PR12MB2619.namprd12.prod.outlook.com
- ([fe80::11e6:53ff:8e98:31f0%3]) with mapi id 15.20.3890.034; Fri, 5 Mar 2021
- 04:02:49 +0000
-From:   "Quan, Evan" <Evan.Quan@amd.com>
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "Zhang, Hawking" <Hawking.Zhang@amd.com>,
-        "Wang, Kevin(Yang)" <Kevin1.Wang@amd.com>,
-        "Gao, Likun" <Likun.Gao@amd.com>
-CC:     "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] gpu: drm: swsmu: fix error return code of
- smu_v11_0_set_allowed_mask()
-Thread-Topic: [PATCH] gpu: drm: swsmu: fix error return code of
- smu_v11_0_set_allowed_mask()
-Thread-Index: AQHXEXNJvR3M9lgw60GrVkb4BaohFKp0xcng
-Date:   Fri, 5 Mar 2021 04:02:49 +0000
-Message-ID: <DM6PR12MB26198FF9499CD3ADCCF93546E4969@DM6PR12MB2619.namprd12.prod.outlook.com>
-References: <20210305035428.6750-1-baijiaju1990@gmail.com>
-In-Reply-To: <20210305035428.6750-1-baijiaju1990@gmail.com>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Enabled=true;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SetDate=2021-03-05T04:02:47Z;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Method=Privileged;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Name=Public_0;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ActionId=40421f04-315a-41c1-95d3-f8793aa4e49e;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ContentBits=1
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [180.167.199.189]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3317d69b-8294-434b-f5a2-08d8df8b8af8
-x-ms-traffictypediagnostic: DM6PR12MB4372:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR12MB437288E65CAFD99DAA037D9BE4969@DM6PR12MB4372.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:317;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: W/fPQfc7WH5lGy0uWiir8s3YgDcryGDNEmWXW88sQLQXOezoYvhxKn5jomCRAAwJBFXA1ZTgB2dQAHhLeVvJ9EaVLKRPjT1XpR1wJYZADsILDydnPzL6+z4t+UsRnH1u9m91hBg3vlfSjFp8RuQQpJQjxehMKBO0W1cSD0q7YytLalh6E5LPuQ8g3/y7psrOyTjx7L4bGwszW1MApQWjDgxRWX3osJYpUJyCj4KSLbqpid0nZ0Vt3xc+7+gbGeV0KLUkeEvyqPgy26R1fd8OWntikJZq38uChfd6mdrCkfgZjuJGMsOm6aw0HmZZ1N2JYrQUsLv0NcKbmA7zTMkSJ3dfg2tWTqkn7kIWkLW1YuIbpzn+uT+Um7pIJddLf1VacwmrMjrJ89qH52xR9X9nonzW+EgmABgGPGLLuZVIqYrTXNeVxLYWqBfmAC1YWgXqX2Tr2VERpEoO+wTtSfpDvJ4wie/6tUN1JJkVTv+uU6EGy4jqJJWx0wDZ5nDU90VQkrRMp9brG7II+tHfTpdEVGZ3sndUqxNsz3/DDflqPR30nwtvhYZ7YUVJb8Yv8mQg
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB2619.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(136003)(396003)(346002)(76116006)(71200400001)(52536014)(110136005)(53546011)(66946007)(66556008)(83380400001)(6506007)(66446008)(5660300002)(4326008)(54906003)(86362001)(66476007)(6636002)(64756008)(7696005)(478600001)(8936002)(2906002)(9686003)(8676002)(55016002)(186003)(921005)(316002)(33656002)(26005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?LZThGObk92uLLLMANI9E69YTajdL2zUVab5CFme9lJxDq/BFmF4zQAoxlvn2?=
- =?us-ascii?Q?1n1uzl7ys/9MKpXg6GUqoVLQS0RsDablNqCudq2x84ahxvDYXvCbef43yqx/?=
- =?us-ascii?Q?cD4e+v27ltZN7e49ez/BxCay3//EhGSsSB1h/jhvw97OTY8xz11YHnr3tgqN?=
- =?us-ascii?Q?Aehw3i6fl2K2AH2Ku4HE0TwfB5esGRXXqKB5k1jOMKKAn9D6M0btOJNymkLf?=
- =?us-ascii?Q?f53mf4nmdPn46SLNoCzadO8lKKvI/H2848dBLkWlLDBURyZIiycVQ/2KDpXI?=
- =?us-ascii?Q?ih/DqrFvFn9gvZY+hKNbrJacrMZsQEH5n+uTq8UnB6U1xq0JCw8fsiz7ESBk?=
- =?us-ascii?Q?lC1EjXHHfhdIT91rBMRyflRen2NaLlRAfXGmZY5IHxEZVuHYVdl/IyS7p1uz?=
- =?us-ascii?Q?uv3mVgNHVPSh3aGbfHGhP/24MhmncrpRJgJLxDLRh3vE7gV15RXvUJz2HBv9?=
- =?us-ascii?Q?T09Ss+9/W4gf0Ti+c7xsvvsRTWgcXaUODBk7tiYxNtbJw369GsMLmTS969CI?=
- =?us-ascii?Q?WX2Rb/iOwRqpGqfEvd74QuJWVPljlwDGRai8NR4EsTSzTakr2Gz++3dNRsiD?=
- =?us-ascii?Q?I+8PL1K6HvVPkFJ5YOu2i9wF9v92ztAFdMTkCeLVv3Qg4V/C8wB4alVkorBA?=
- =?us-ascii?Q?J9pRN2IfQ9XZyCk2FnWCcS+EYzk8O6jCZmvu6iot8Et5x2aa55qChiDnS4fG?=
- =?us-ascii?Q?GxD+3My4a255nHa31h7D3j4s00WHz/olLJgDA6/wmvZ163B3Xpn5jAh9FIc6?=
- =?us-ascii?Q?aqSCs5fyqupxMaRarIMhaOe9HtqNMWIZYfDuobRl6U/CNGuosdEsTgYGcCBp?=
- =?us-ascii?Q?FBvigb0RT9n50mreNJf5RB+DkiWceni5iD0yhkX/HyTEeZN/HwlRnPADYo6s?=
- =?us-ascii?Q?OVZ52gC87LdT5SPNs4xbS7FHSHM3SrFb8JYSFKxjywEOPOabJa2JQxaLr55j?=
- =?us-ascii?Q?CMi2a+WF8qfEldAXem6eRniT/SBQd/Ojge6sF+bNHLiZUnAk4C5rpMjXp4ks?=
- =?us-ascii?Q?ehgl9vzIyqqC68pLRtnzA3lS0MU6nuVmssHm27/p2gwvwur2PfEcTSWpIehZ?=
- =?us-ascii?Q?7Amjh4wnqS7oQqFGqJAqExXDIxL09dU+rwNFS0tRF10JL5H7DjOgzsA4YmXN?=
- =?us-ascii?Q?pZQmYQi8CZj33e6HpMy1GSJf1k9wkMBO8EpusKNbVIbspZ1ORovWQD5DqI2X?=
- =?us-ascii?Q?ssS1T4YySJsCwc2bJnYXrGzZtjkLFlMQMt8zuB6WquFnfXybJ/ZdjmSnxDpD?=
- =?us-ascii?Q?8t0vZ8eOY/Itrnn9h+CfoXn+bf7zZoCHyar4T5oz09S3VhWKtD5U+Jfk65j1?=
- =?us-ascii?Q?uN0wlP4tdDV5UlLNqs8WUwll?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S229576AbhCEEDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 23:03:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229458AbhCEEDw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 23:03:52 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D1D2C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 20:03:52 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id o3so1051126oic.8
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 20:03:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qy+49UERUnQgX3OFYzgPC3L0DOPLQ08jf6F1tpFsi8g=;
+        b=dz+z4DIR0CdXh5nz4aXv6kigpxoTFAb67Y5G2TXeINWTt4n7/eUU9iODqeW0NgD7Aw
+         wXGgZmxnC0AS/4ZO62HWGJG9wjq2t5nDoWS7PBTbWJDY5yMn4NXGANIFnaN9QF74HlUW
+         1ZLwzs5Njv4sy7FLClE1VnJLW1fJK0pAtZwODcEjQeIOGpSq6/SAp2lMNCRTCOOi4+ww
+         luEOcgFi1HxZqJCCioSF/m/BxCAdyBR8jxm5UQdWKAqZvKti91OsgSoOWq06+jDcGiGq
+         vURBLSst+aJZNTDOUDKHzrOMk2Gv8OKvcDkB63sFIBlnw1iMxuxzhOlkkeUDnq2UPtTl
+         s7cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qy+49UERUnQgX3OFYzgPC3L0DOPLQ08jf6F1tpFsi8g=;
+        b=IYf9YMQk/Q2bw+qXJhSLV4BdB1oUtXXyxQDSS8/6c5kdXk0A5lz2OCvfx9u8rHN5zS
+         SPOvh6riSqZvAvvdekiD9LleKyxgXTLOOKuXBYKwOfc9y21n9HUYjF2l9ukrz+VJHD9H
+         JxAHQkMiVHYuJER2TSHoUSdZbMdL5Z5tVKumtIM3Ft6zZ1k117yOkFGl32Ig9hP75Hz1
+         KOb2SBNMhSIv8MdiGp+jtC3e3KtWclAHFr47oN6/xwqK3xk51vFtAMfLTpZ5sylXOCWF
+         fv+LMO2xkrws7CGOtCoWFtX8bJJ2uBc61zq3bhRsWJzpTDQ6WIasaeOnGDsyn/ADb3wr
+         hOEw==
+X-Gm-Message-State: AOAM530ddsF4OAMEo7mkV85bUSFmoiv7NYhyPT1S3ecxJyeHHUTuKiI4
+        5G3zsq/gM+HEvI9a+Fu8XsaF4A==
+X-Google-Smtp-Source: ABdhPJxRQFMzR/Euq/TWa8ATlfsRU6jAFLI1bRsK4pHICaxnwbSE69cxqeZl4+bmU+Htd/VBqrwLzw==
+X-Received: by 2002:aca:3a42:: with SMTP id h63mr5569017oia.101.1614917031367;
+        Thu, 04 Mar 2021 20:03:51 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w23sm313159oow.25.2021.03.04.20.03.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 20:03:51 -0800 (PST)
+Date:   Thu, 4 Mar 2021 22:03:49 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     subashab@codeaurora.org, stranche@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org, sharathv@codeaurora.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/6] net: qualcomm: rmnet: mark trailer field
+ endianness
+Message-ID: <YEGtpapsfaAaGu95@builder.lan>
+References: <20210304223431.15045-1-elder@linaro.org>
+ <20210304223431.15045-2-elder@linaro.org>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB2619.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3317d69b-8294-434b-f5a2-08d8df8b8af8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2021 04:02:49.6425
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6pgy/iWr0L0H1YnU+jvcn3C26G77KjLgbbgyjrjzMX4hmjCKOxAf4+ZImHEla03t
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4372
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304223431.15045-2-elder@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Public Use]
+On Thu 04 Mar 16:34 CST 2021, Alex Elder wrote:
 
-Thanks. Reviewed-by: Evan Quan <evan.quan@amd.com>
+> The fields in the checksum trailer structure used for QMAP protocol
+> RX packets are all big-endian format, so define them that way.
+> 
+> It turns out these fields are never actually used by the RMNet code.
+> The start offset is always assumed to be zero, and the length is
+> taken from the other packet headers.  So making these fields
+> explicitly big endian has no effect on the behavior of the code.
+> 
+> Signed-off-by: Alex Elder <elder@linaro.org>
 
------Original Message-----
-From: Jia-Ju Bai <baijiaju1990@gmail.com>=20
-Sent: Friday, March 5, 2021 11:54 AM
-To: Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian <Chri=
-stian.Koenig@amd.com>; airlied@linux.ie; daniel@ffwll.ch; Quan, Evan <Evan.=
-Quan@amd.com>; Zhang, Hawking <Hawking.Zhang@amd.com>; Wang, Kevin(Yang) <K=
-evin1.Wang@amd.com>; Gao, Likun <Likun.Gao@amd.com>
-Cc: amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux-k=
-ernel@vger.kernel.org; Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] gpu: drm: swsmu: fix error return code of smu_v11_0_set_al=
-lowed_mask()
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-When bitmap_empty() or feature->feature_num triggers an error, no error ret=
-urn code of smu_v11_0_set_allowed_mask() is assigned.
-To fix this bug, ret is assigned with -EINVAL as error return code.
+Regards,
+Bjorn
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c b/drivers/gpu/d=
-rm/amd/pm/swsmu/smu11/smu_v11_0.c
-index 90585461a56e..82731a932308 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c
-@@ -747,8 +747,10 @@ int smu_v11_0_set_allowed_mask(struct smu_context *smu=
-)
- 	int ret =3D 0;
- 	uint32_t feature_mask[2];
-=20
--	if (bitmap_empty(feature->allowed, SMU_FEATURE_MAX) || feature->feature_n=
-um < 64)
-+	if (bitmap_empty(feature->allowed, SMU_FEATURE_MAX) || feature->feature_n=
-um < 64) {
-+		ret =3D -EINVAL;
- 		goto failed;
-+	}
-=20
- 	bitmap_copy((unsigned long *)feature_mask, feature->allowed, 64);
-=20
---
-2.17.1
+> ---
+>  include/linux/if_rmnet.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/if_rmnet.h b/include/linux/if_rmnet.h
+> index 9661416a9bb47..8c7845baf3837 100644
+> --- a/include/linux/if_rmnet.h
+> +++ b/include/linux/if_rmnet.h
+> @@ -32,8 +32,8 @@ struct rmnet_map_dl_csum_trailer {
+>  #else
+>  #error	"Please fix <asm/byteorder.h>"
+>  #endif
+> -	u16 csum_start_offset;
+> -	u16 csum_length;
+> +	__be16 csum_start_offset;
+> +	__be16 csum_length;
+>  	__be16 csum_value;
+>  } __aligned(1);
+>  
+> -- 
+> 2.20.1
+> 
