@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1DD32DEEA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 02:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 547E832DEEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 02:12:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhCEBLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 20:11:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60920 "EHLO
+        id S230475AbhCEBLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 20:11:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbhCEBLh (ORCPT
+        with ESMTP id S230198AbhCEBLj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 20:11:37 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264B3C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 17:11:37 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id s187so642632ybs.22
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 17:11:37 -0800 (PST)
+        Thu, 4 Mar 2021 20:11:39 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AE5C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 17:11:39 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id b127so664459ybc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 17:11:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=VvZxbsS7usA2XSAkfRC0sbz46vD+BnH1u7vFisa6mO0=;
-        b=nMfaIQkshHHKWY0t0z5Ecf0LwmQDb3vkLOcg63u2GoT2PIEretoYxOXCZf+9FF7GlZ
-         7kTHcuZcVSW2Z4KberUEU3h23143dvkVliNEiDyWM7WPVSnsL13dD5VdqR0vZ/ETa5O4
-         q58pcSLGtOmPvm3GHVQm1A+riTm4dGRm7Tmx2ubupST/1OVPnlUpZNWEn6bFX5LL50/1
-         Ops1kjitD+ibIpCNvgQ19rSDstyn8vOF8SINmUh+Vx9d8wMBMcKiYx8nvXgIBh3twMSe
-         AHQNrus4nuyAEFXFsNP8vb61fRTS1ezF187ezh+bekDkDgPys57rMH1JgyxDpHe6FblT
-         NIZA==
+        bh=hUIu7sVBeZPHOKAKqkQEBvI6/Cyva1cSCDUAiAjyS7A=;
+        b=q44fMswbrj4G/uOTNQh4DPWIDZUCkPsS8SfokrIsEzd0Sh05bH4+ukcQa7cf2hczmN
+         C/MB7qk27lN9hdkKAbP9QsSqjdRsL5EsW5YiYEO9JBT5zrJPm+ncTeqILqU4mY5OAqiA
+         Z1QZjc0Y4/+T/PYnn2Psx8raSFMpDjxblzN0LlSvniDL993Ft2sUPyzEn/5S8JcImmO5
+         GZSHCTH425OhbVAN9Pymg0/JOSZ6f7l3ACzTUqeZvEQnGcP0mD+ONHuYhCn2Oc9plOr+
+         rlUEOxEiaSA/PSvGWwNVYZWTsHxyT8ktjyCSccwvtWx9AMhzcrqMecN00hy+i3TwDTFw
+         z/1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=VvZxbsS7usA2XSAkfRC0sbz46vD+BnH1u7vFisa6mO0=;
-        b=rjrGuoLTWX68bjkCFelsEnHN//sZ+5AitvY5sgiE0EKpEIO0AKvcD3x0OM1ENDjLXO
-         swXJVr/ls+DciG0ArH28ew0rW0UCJWRN8LZrXnxcx+04er3O58DQCydDBtbPQDhqVTTY
-         yfMNmmd331A7awL2AHvwRkOf6nu2W7raUokLt9ISkZm1RJ+pNCRYS4fT6cxMHbzRavJ9
-         Ps5vqrQqaTBWY3WUZtJdRHYpWN0D+/b9SuIXMGpgOo5Oll1c/ZmBFTY97KI1rFdNJQd0
-         5vKu4/1qWTDoVZDp4ocXOBizJyjhtWUaVn3JoMfuRaAIBtarE8qR1OXupSIMkIVte6RX
-         bHWw==
-X-Gm-Message-State: AOAM532c4vIZaSarKYuJiuA193/Ncz0cxjsN7AuQcvu61dCLBhEbZS15
-        J6suxBz1byChnU7ROEMi/qtC5G2LVRw=
-X-Google-Smtp-Source: ABdhPJykw1/ckd3FliB/mVuq8j3h7IPXNCBb73BP/3oSB+2xOvmPUxIAHC/BgV4nProD+JMarALm7rCuAsc=
+        bh=hUIu7sVBeZPHOKAKqkQEBvI6/Cyva1cSCDUAiAjyS7A=;
+        b=L+vOTEXLlCbOVkwExNj/6W/Ey89XnQZlJ5RY/aCFYuqep5QwQz7F2JkGZqQlFwKATT
+         Fvxp6g38bMtc9Ov3KFN/RKYO8zPE2sHxBuI1O46beTAtoQOiXDbvCA6kFipyZ9JuZWvV
+         Wi60Cb6UXQJY7xCYGc45Y+Vi3sc84Q5mVDtw4+cXPJe7gPe59FXmtIC8+sldqn9KLVIJ
+         BKSWy8kTy0oVvC9Y4/kO/GnCSTF9ioJYkgx3jblLNppIdbHQwnCtL0mMWYNSeucqTMnO
+         ybbcVRKqOfQdhuiqhVtK5rM2r2a8X3H8h59hH6Je8IdBozQvQ740pjg4JrcziIVakhZX
+         SkGg==
+X-Gm-Message-State: AOAM530EhGyrqEp49KArVT0mSQ6Cr1hq3aohVgy1wLnVfc49a/ZjegDQ
+        rCAa/RFQIOpM22O6fs66AVqHdUpNxzE=
+X-Google-Smtp-Source: ABdhPJxKz/X1UR84yOmR5Dk4kEeRWgaX6x8vaKIwjASikS9HDq95CD7YKEeHICZbOpRMX3tDki/GnFoYwnw=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:9857:be95:97a2:e91c])
- (user=seanjc job=sendgmr) by 2002:a25:7645:: with SMTP id r66mr10406291ybc.331.1614906696451;
- Thu, 04 Mar 2021 17:11:36 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:254a:: with SMTP id l71mr10220487ybl.125.1614906698911;
+ Thu, 04 Mar 2021 17:11:38 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  4 Mar 2021 17:10:57 -0800
+Date:   Thu,  4 Mar 2021 17:10:58 -0800
 In-Reply-To: <20210305011101.3597423-1-seanjc@google.com>
-Message-Id: <20210305011101.3597423-14-seanjc@google.com>
+Message-Id: <20210305011101.3597423-15-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210305011101.3597423-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v2 13/17] KVM: nVMX: Defer the MMU reload to the normal path
- on an EPTP switch
+Subject: [PATCH v2 14/17] KVM: x86: Defer the MMU unload to the normal path on
+ an global INVPCID
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -70,43 +70,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Defer reloading the MMU after a EPTP successful EPTP switch.  The VMFUNC
-instruction itself is executed in the previous EPTP context, any side
-effects, e.g. updating RIP, should occur in the old context.  Practically
-speaking, this bug is benign as VMX doesn't touch the MMU when skipping
-an emulated instruction, nor does queuing a single-step #DB.  No other
-post-switch side effects exist.
+Defer unloading the MMU after a INVPCID until the instruction emulation
+has completed, i.e. until after RIP has been updated.
 
-Fixes: 41ab93727467 ("KVM: nVMX: Emulate EPTP switching for the L1 hypervisor")
+On VMX, this is a benign bug as VMX doesn't touch the MMU when skipping
+an emulated instruction.  However, on SVM, if nrip is disabled, the
+emulator is used to skip an instruction, which would lead to fireworks
+if the emulator were invoked without a valid MMU.
+
+Fixes: eb4b248e152d ("kvm: vmx: Support INVPCID in shadow paging mode")
 Cc: stable@vger.kernel.org
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/nested.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ arch/x86/kvm/x86.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index fdd80dd8e781..81f609886c8b 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5473,16 +5473,11 @@ static int nested_vmx_eptp_switching(struct kvm_vcpu *vcpu,
- 		if (!nested_vmx_check_eptp(vcpu, new_eptp))
- 			return 1;
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 828de7d65074..7b0adebec1ef 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11531,7 +11531,7 @@ int kvm_handle_invpcid(struct kvm_vcpu *vcpu, unsigned long type, gva_t gva)
  
+ 		fallthrough;
+ 	case INVPCID_TYPE_ALL_INCL_GLOBAL:
 -		kvm_mmu_unload(vcpu);
- 		mmu->ept_ad = accessed_dirty;
- 		mmu->mmu_role.base.ad_disabled = !accessed_dirty;
- 		vmcs12->ept_pointer = new_eptp;
--		/*
--		 * TODO: Check what's the correct approach in case
--		 * mmu reload fails. Currently, we just let the next
--		 * reload potentially fail
--		 */
--		kvm_mmu_reload(vcpu);
-+
 +		kvm_make_request(KVM_REQ_MMU_RELOAD, vcpu);
- 	}
+ 		return kvm_skip_emulated_instruction(vcpu);
  
- 	return 0;
+ 	default:
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
