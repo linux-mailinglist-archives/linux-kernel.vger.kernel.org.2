@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E9F32E97D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DAE932EA9F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhCEMdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:33:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42528 "EHLO mail.kernel.org"
+        id S233072AbhCEMj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:39:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230300AbhCEMcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:32:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A85C65037;
-        Fri,  5 Mar 2021 12:32:19 +0000 (UTC)
+        id S232005AbhCEMip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:38:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6E576503A;
+        Fri,  5 Mar 2021 12:38:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947540;
-        bh=AEx0p7UX4vAPrJHwHQQ5Ry3hubmd2flfvHu0bZDv/Yg=;
+        s=korg; t=1614947925;
+        bh=d+q80kQSMRpcRLO1N4ipTPIJYZsU/cjDy/rQFHpnJHE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CX1YEhtbAaIWU490IM2AgYUqdQOhffeNCb+2/eU5ADRzj8vPOa5kO+oYlNkCLCC3F
-         fUvBf7KsQ0duduHx2uFTqjtmAzAQlco7pPVupFyiGkL0VAZ+ZvMlcTl3/Jl9Jd3zIG
-         xqxc7gZ973Mf7wZrer7srFLOxjSSFL2PdNkTxRrU=
+        b=u7fJRoqBWm6JMtE5dOy16YMcJYdOZBge+BCZ6MjEZLvykJxL+j0nPkBU5gmTE6lFC
+         8oMsE+I3NN8tDlLOEmkrHIZG3fB3pufP6cMBo7jP23a2VSEv1wr7rJdglJH6FKNF4g
+         Mp+T2iKeiYyw/9tls5kuN8wUexncBDtOLyoTemCk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.10 099/102] media: v4l: ioctl: Fix memory leak in video_usercopy
+        stable@vger.kernel.org, Miaoqing Pan <miaoqing@codeaurora.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 27/52] ath10k: fix wmi mgmt tx queue full due to race condition
 Date:   Fri,  5 Mar 2021 13:21:58 +0100
-Message-Id: <20210305120908.151280996@linuxfoundation.org>
+Message-Id: <20210305120855.008497719@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+References: <20210305120853.659441428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,84 +41,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+From: Miaoqing Pan <miaoqing@codeaurora.org>
 
-commit fb18802a338b36f675a388fc03d2aa504a0d0899 upstream.
+[ Upstream commit b55379e343a3472c35f4a1245906db5158cab453 ]
 
-When an IOCTL with argument size larger than 128 that also used array
-arguments were handled, two memory allocations were made but alas, only
-the latter one of them was released. This happened because there was only
-a single local variable to hold such a temporary allocation.
+Failed to transmit wmi management frames:
 
-Fix this by adding separate variables to hold the pointers to the
-temporary allocations.
+[84977.840894] ath10k_snoc a000000.wifi: wmi mgmt tx queue is full
+[84977.840913] ath10k_snoc a000000.wifi: failed to transmit packet, dropping: -28
+[84977.840924] ath10k_snoc a000000.wifi: failed to submit frame: -28
+[84977.840932] ath10k_snoc a000000.wifi: failed to transmit frame: -28
 
-Reported-by: Arnd Bergmann <arnd@kernel.org>
-Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
-Fixes: d14e6d76ebf7 ("[media] v4l: Add multi-planar ioctl handling code")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This issue is caused by race condition between skb_dequeue and
+__skb_queue_tail. The queue of ‘wmi_mgmt_tx_queue’ is protected by a
+different lock: ar->data_lock vs list->lock, the result is no protection.
+So when ath10k_mgmt_over_wmi_tx_work() and ath10k_mac_tx_wmi_mgmt()
+running concurrently on different CPUs, there appear to be a rare corner
+cases when the queue length is 1,
+
+  CPUx (skb_deuque)			CPUy (__skb_queue_tail)
+					next=list
+					prev=list
+  struct sk_buff *skb = skb_peek(list);	WRITE_ONCE(newsk->next, next);
+  WRITE_ONCE(list->qlen, list->qlen - 1);WRITE_ONCE(newsk->prev, prev);
+  next       = skb->next;		WRITE_ONCE(next->prev, newsk);
+  prev       = skb->prev;		WRITE_ONCE(prev->next, newsk);
+  skb->next  = skb->prev = NULL;	list->qlen++;
+  WRITE_ONCE(next->prev, prev);
+  WRITE_ONCE(prev->next, next);
+
+If the instruction ‘next = skb->next’ is executed before
+‘WRITE_ONCE(prev->next, newsk)’, newsk will be lost, as CPUx get the
+old ‘next’ pointer, but the length is still added by one. The final
+result is the length of the queue will reach the maximum value but
+the queue is empty.
+
+So remove ar->data_lock, and use 'skb_queue_tail' instead of
+'__skb_queue_tail' to prevent the potential race condition. Also switch
+to use skb_queue_len_lockless, in case we queue a few SKBs simultaneously.
+
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1.c2-00033-QCAHLSWMTPLZ-1
+
+Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1608618887-8857-1-git-send-email-miaoqing@codeaurora.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/v4l2-core/v4l2-ioctl.c |   19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -3251,7 +3251,7 @@ video_usercopy(struct file *file, unsign
- 	       v4l2_kioctl func)
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index faaca7fe9ad1..f32d35e03708 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3567,23 +3567,16 @@ bool ath10k_mac_tx_frm_has_freq(struct ath10k *ar)
+ static int ath10k_mac_tx_wmi_mgmt(struct ath10k *ar, struct sk_buff *skb)
  {
- 	char	sbuf[128];
--	void    *mbuf = NULL;
-+	void    *mbuf = NULL, *array_buf = NULL;
- 	void	*parg = (void *)arg;
- 	long	err  = -EINVAL;
- 	bool	has_array_args;
-@@ -3286,20 +3286,14 @@ video_usercopy(struct file *file, unsign
- 	has_array_args = err;
+ 	struct sk_buff_head *q = &ar->wmi_mgmt_tx_queue;
+-	int ret = 0;
+-
+-	spin_lock_bh(&ar->data_lock);
  
- 	if (has_array_args) {
--		/*
--		 * When adding new types of array args, make sure that the
--		 * parent argument to ioctl (which contains the pointer to the
--		 * array) fits into sbuf (so that mbuf will still remain
--		 * unused up to here).
--		 */
--		mbuf = kvmalloc(array_size, GFP_KERNEL);
-+		array_buf = kvmalloc(array_size, GFP_KERNEL);
- 		err = -ENOMEM;
--		if (NULL == mbuf)
-+		if (array_buf == NULL)
- 			goto out_array_args;
- 		err = -EFAULT;
--		if (copy_from_user(mbuf, user_ptr, array_size))
-+		if (copy_from_user(array_buf, user_ptr, array_size))
- 			goto out_array_args;
--		*kernel_ptr = mbuf;
-+		*kernel_ptr = array_buf;
+-	if (skb_queue_len(q) == ATH10K_MAX_NUM_MGMT_PENDING) {
++	if (skb_queue_len_lockless(q) >= ATH10K_MAX_NUM_MGMT_PENDING) {
+ 		ath10k_warn(ar, "wmi mgmt tx queue is full\n");
+-		ret = -ENOSPC;
+-		goto unlock;
++		return -ENOSPC;
  	}
  
- 	/* Handles IOCTL */
-@@ -3318,7 +3312,7 @@ video_usercopy(struct file *file, unsign
+-	__skb_queue_tail(q, skb);
++	skb_queue_tail(q, skb);
+ 	ieee80211_queue_work(ar->hw, &ar->wmi_mgmt_tx_work);
  
- 	if (has_array_args) {
- 		*kernel_ptr = (void __force *)user_ptr;
--		if (copy_to_user(user_ptr, mbuf, array_size))
-+		if (copy_to_user(user_ptr, array_buf, array_size))
- 			err = -EFAULT;
- 		goto out_array_args;
- 	}
-@@ -3333,6 +3327,7 @@ out_array_args:
- 	if (video_put_user((void __user *)arg, parg, orig_cmd))
- 		err = -EFAULT;
- out:
-+	kvfree(array_buf);
- 	kvfree(mbuf);
- 	return err;
+-unlock:
+-	spin_unlock_bh(&ar->data_lock);
+-
+-	return ret;
++	return 0;
  }
+ 
+ static enum ath10k_mac_tx_path
+-- 
+2.30.1
+
 
 
