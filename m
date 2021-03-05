@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1166332DF3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 02:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD87632DF41
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 02:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbhCEBuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 20:50:40 -0500
-Received: from emcscan.emc.com.tw ([192.72.220.5]:53453 "EHLO
-        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhCEBuk (ORCPT
+        id S229650AbhCEBxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 20:53:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47482 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229478AbhCEBw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 20:50:40 -0500
-X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
-   d="scan'208";a="39659207"
-Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
-  by emcscan.emc.com.tw with ESMTP; 05 Mar 2021 09:50:38 +0800
-Received: from 192.168.10.23
-        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(2833:0:AUTH_RELAY)
-        (envelope-from <jingle.wu@emc.com.tw>); Fri, 05 Mar 2021 09:50:37 +0800 (CST)
-Received: from 192.168.33.11
-        by webmail.emc.com.tw with Mail2000 ESMTP Server V7.00(2480:2:AUTH_RELAY)
-        (envelope-from <jingle.wu@emc.com.tw>); Fri, 05 Mar 2021 09:50:35 +0800 (CST)
-From:   "jingle" <jingle.wu@emc.com.tw>
-To:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>
-Cc:     "'linux-kernel'" <linux-kernel@vger.kernel.org>,
-        "'linux-input'" <linux-input@vger.kernel.org>,
-        "'phoenix'" <phoenix@emc.com.tw>,
-        "'dave.wang'" <dave.wang@emc.com.tw>,
-        "'josh.chen'" <josh.chen@emc.com.tw>
-References: <20210226073537.4926-1-jingle.wu@emc.com.tw> <YDx8M4Rhdi8hW4EO@google.com> <1614647097.9201.jingle.wu@emc.com.tw> <YEGBeWHRfL4gN9pX@google.com> <004f01d7115e$3ba005e0$b2e011a0$@emc.com.tw> <YEGJ7z479pqyBW1w@google.com>
-In-Reply-To: <YEGJ7z479pqyBW1w@google.com>
-Subject: RE: [PATCH] Input: elan_i2c - Reduce the resume time for new dev ices
-Date:   Fri, 5 Mar 2021 09:50:35 +0800
-Message-ID: <005401d71161$ef9b20e0$ced162a0$@emc.com.tw>
+        Thu, 4 Mar 2021 20:52:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614909178;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1PouAGyaEAojf3ovTLFX1yOmiU99mhHbemhpq78aaTo=;
+        b=fTiapm5qm/coo+vtDgKpiclSo6I5ELEFVdKDmCUKOKwMuQf+xdKRw7XGf76Vmct8PPyQGi
+        IPsNSu7RnIZrXG8YL/7p4YcvdkW/VDaTSLr21FtxNmnVLo/CxQYuAzlOv0SZbNwEpM6zzY
+        tg+7RG76c53HrvThOkL5Ok+C++krqEw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-21-aoH0ADXoPxG-HWKJhQM3Yw-1; Thu, 04 Mar 2021 20:52:56 -0500
+X-MC-Unique: aoH0ADXoPxG-HWKJhQM3Yw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 56E2F1842142;
+        Fri,  5 Mar 2021 01:52:54 +0000 (UTC)
+Received: from Whitewolf.lyude.net (ovpn-113-27.rdu2.redhat.com [10.10.113.27])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9FCD52BFEB;
+        Fri,  5 Mar 2021 01:52:52 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     nouveau@lists.freedesktop.org
+Cc:     stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        James Jones <jajones@nvidia.com>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
+        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/nouveau/kms/nve4-nv108: Limit cursors to 128x128
+Date:   Thu,  4 Mar 2021 20:52:41 -0500
+Message-Id: <20210305015242.740590-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 14.0
-Thread-Index: AQGs01cKeSW+WSlGkCw6sJc3Mb/pawH5MxoQAdwxvXACK2QSBAIRtt8MAkDeqHiqdoFO8A==
-Content-Language: zh-tw
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcMDYwMTFcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy0yZDM3MjQ2Ni03ZDU1LTExZWItOGUwZi1mMDc5NTk2OWU3NWVcYW1lLXRlc3RcMmQzNzI0NjgtN2Q1NS0xMWViLThlMGYtZjA3OTU5NjllNzVlYm9keS50eHQiIHN6PSIxNDMxIiB0PSIxMzI1OTM4MjYzNTkzNjg3NzQiIGg9IjBnbUVkenFod3UvUndLN003TVhReUxmVXVraz0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
-x-dg-rorf: true
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Dmitry:
+While Kepler does technically support 256x256 cursors, it turns out that
+Kepler actually has some additional requirements for scanout surfaces that
+we're not enforcing correctly, which aren't present on Maxwell and later.
+Cursor surfaces must always use small pages (4K), and overlay surfaces must
+always use large pages (128K).
 
-1. You mean to let all devices ignore skipping reset/sleep part of device
-initialization?
-2. The test team found that some old firmware will have errors (invalid
-report etc...), so ELAN can only ensure that the new device can meet the
-newer parts.
+Fixing this correctly though will take a bit more work: as we'll need to
+add some code in prepare_fb() to move cursor FBs in large pages to small
+pages, and vice-versa for overlay FBs. So until we have the time to do
+that, just limit cursor surfaces to 128x128 - a size small enough to always
+default to small pages.
 
-Thanks
-jingle
+This means small ovlys are still broken on Kepler, but it is extremely
+unlikely anyone cares about those anyway :).
 
------Original Message-----
-From: 'Dmitry Torokhov' [mailto:dmitry.torokhov@gmail.com] 
-Sent: Friday, March 05, 2021 9:31 AM
-To: jingle
-Cc: 'linux-kernel'; 'linux-input'; 'phoenix'; 'dave.wang'; 'josh.chen'
-Subject: Re: [PATCH] Input: elan_i2c - Reduce the resume time for new dev
-ices
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Fixes: d3b2f0f7921c ("drm/nouveau/kms/nv50-: Report max cursor size to userspace")
+Cc: <stable@vger.kernel.org> # v5.11+
+---
+ drivers/gpu/drm/nouveau/dispnv50/disp.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-Hi Jingle,
-
-On Fri, Mar 05, 2021 at 09:24:05AM +0800, jingle wrote:
-> HI Dmitry:
-> 
-> In this case (in the newer parts behavior regarding need to reset 
-> after powering them on), it is consistent with the original driver 
-> behavior with any new or old device (be called 
-> data->ops->initialize(client) : usleep(100) , etc.. , because this 
-> times "data->quirks" is equal 0 at probe state.)
-
-You misunderstood my question. I was asking what specifically, if anything,
-was changed in the firmware to allow skipping reset/sleep part of device
-initialization on newer parts during resume process. Because of there were
-no specific changes I would say let's not do a quirk and change the driver
-to skip reset on resume.
-
-Thanks.
-
---
-Dmitry
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+index 196612addfd6..1c9c0cdf85db 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+@@ -2693,9 +2693,20 @@ nv50_display_create(struct drm_device *dev)
+ 	else
+ 		nouveau_display(dev)->format_modifiers = disp50xx_modifiers;
+ 
+-	if (disp->disp->object.oclass >= GK104_DISP) {
++	/* FIXME: 256x256 cursors are supported on Kepler, however unlike Maxwell and later
++	 * generations Kepler requires that we use small pages (4K) for cursor scanout surfaces. The
++	 * proper fix for this is to teach nouveau to migrate fbs being used for the cursor plane to
++	 * small page allocations in prepare_fb(). When this is implemented, we should also force
++	 * large pages (128K) for ovly fbs in order to fix Kepler ovlys.
++	 * But until then, just limit cursors to 128x128 - which is small enough to avoid ever using
++	 * large pages.
++	 */
++	if (disp->disp->object.oclass >= GM107_DISP) {
+ 		dev->mode_config.cursor_width = 256;
+ 		dev->mode_config.cursor_height = 256;
++	} else if (disp->disp->object.oclass >= GK104_DISP) {
++		dev->mode_config.cursor_width = 128;
++		dev->mode_config.cursor_height = 128;
+ 	} else {
+ 		dev->mode_config.cursor_width = 64;
+ 		dev->mode_config.cursor_height = 64;
+-- 
+2.29.2
 
