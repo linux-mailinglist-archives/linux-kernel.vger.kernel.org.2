@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CA732EAA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A584632EB06
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233206AbhCEMjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:39:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53024 "EHLO mail.kernel.org"
+        id S233118AbhCEMlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:41:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232041AbhCEMi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:38:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3774664FF0;
-        Fri,  5 Mar 2021 12:38:57 +0000 (UTC)
+        id S231852AbhCEMlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:41:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BE2264F44;
+        Fri,  5 Mar 2021 12:41:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947937;
-        bh=ten8VZA0HMjTVB4OJBxb18K57bDdXHdD+HdxiunCSFI=;
+        s=korg; t=1614948063;
+        bh=Ua8uMB+3J2yuKK65fDFSM/1F0CTq/Uj2iq29WEfOcho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j7uIw1N5eZSzNip37Nug+Fuqq4AfZy3Q8rpYLU1N0dKHh3bUZR0OD4B3sTkssRY1x
-         VoSkUYYhCbdfV5+BGut2AzO85HKaveHdy0xMCUzf6Xs9AV6OTWHDZ097y+3Ifk+nnm
-         p+mbGsLlNZ82UcuP/QR43leOFw7zSUPJHrv/V9qo=
+        b=oV5d2bcHcskUZNJWt4klchT+lkB8PgLKTWc/NKCCbVh0ArlDG/kuzNHCjxQQl08LH
+         4i0Y74H2cL0cbglMwn7edyYTYx6zT5J5opqKg6B75dRk4tobY72aMfH9w0vlVc6Ahp
+         GSSX/9nz7t+G6IefIXoucs9JKUkXueNOqKcL43WE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+6d31bf169a8265204b8d@syzkaller.appspotmail.com,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.14 12/39] media: mceusb: sanity check for prescaler value
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        juri.lelli@arm.com, bigeasy@linutronix.de, xlpang@redhat.com,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jdesfossez@efficios.com, dvhart@infradead.org, bristot@redhat.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCH 4.9 04/41] futex: Futex_unlock_pi() determinism
 Date:   Fri,  5 Mar 2021 13:22:11 +0100
-Message-Id: <20210305120852.379092766@linuxfoundation.org>
+Message-Id: <20210305120851.486188046@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120851.751937389@linuxfoundation.org>
-References: <20210305120851.751937389@linuxfoundation.org>
+In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
+References: <20210305120851.255002428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +43,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: Ben Hutchings <ben@decadent.org.uk>
 
-commit 9dec0f48a75e0dadca498002d25ef4e143e60194 upstream.
+From: Peter Zijlstra <peterz@infradead.org>
 
-prescaler larger than 8 would mean the carrier is at most 152Hz,
-which does not make sense for IR carriers.
+commit bebe5b514345f09be2c15e414d076b02ecb9cce8 upstream.
 
-Reported-by: syzbot+6d31bf169a8265204b8d@syzkaller.appspotmail.com
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+The problem with returning -EAGAIN when the waiter state mismatches is that
+it becomes very hard to proof a bounded execution time on the
+operation. And seeing that this is a RT operation, this is somewhat
+important.
+
+While in practise; given the previous patch; it will be very unlikely to
+ever really take more than one or two rounds, proving so becomes rather
+hard.
+
+However, now that modifying wait_list is done while holding both hb->lock
+and wait_lock, the scenario can be avoided entirely by acquiring wait_lock
+while still holding hb-lock. Doing a hand-over, without leaving a hole.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: juri.lelli@arm.com
+Cc: bigeasy@linutronix.de
+Cc: xlpang@redhat.com
+Cc: rostedt@goodmis.org
+Cc: mathieu.desnoyers@efficios.com
+Cc: jdesfossez@efficios.com
+Cc: dvhart@infradead.org
+Cc: bristot@redhat.com
+Link: http://lkml.kernel.org/r/20170322104152.112378812@infradead.org
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/rc/mceusb.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ kernel/futex.c |   24 +++++++++++-------------
+ 1 file changed, 11 insertions(+), 13 deletions(-)
 
---- a/drivers/media/rc/mceusb.c
-+++ b/drivers/media/rc/mceusb.c
-@@ -630,11 +630,18 @@ static void mceusb_dev_printdata(struct
- 				data[0], data[1]);
- 			break;
- 		case MCE_RSP_EQIRCFS:
-+			if (!data[0] && !data[1]) {
-+				dev_dbg(dev, "%s: no carrier", inout);
-+				break;
-+			}
-+			// prescaler should make sense
-+			if (data[0] > 8)
-+				break;
- 			period = DIV_ROUND_CLOSEST((1U << data[0] * 2) *
- 						   (data[1] + 1), 10);
- 			if (!period)
- 				break;
--			carrier = (1000 * 1000) / period;
-+			carrier = USEC_PER_SEC / period;
- 			dev_dbg(dev, "%s carrier of %u Hz (period %uus)",
- 				 inout, carrier, period);
- 			break;
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1555,15 +1555,10 @@ static int wake_futex_pi(u32 __user *uad
+ 	WAKE_Q(wake_q);
+ 	int ret = 0;
+ 
+-	raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
+ 	new_owner = rt_mutex_next_owner(&pi_state->pi_mutex);
+-	if (!new_owner) {
++	if (WARN_ON_ONCE(!new_owner)) {
+ 		/*
+-		 * Since we held neither hb->lock nor wait_lock when coming
+-		 * into this function, we could have raced with futex_lock_pi()
+-		 * such that we might observe @this futex_q waiter, but the
+-		 * rt_mutex's wait_list can be empty (either still, or again,
+-		 * depending on which side we land).
++		 * As per the comment in futex_unlock_pi() this should not happen.
+ 		 *
+ 		 * When this happens, give up our locks and try again, giving
+ 		 * the futex_lock_pi() instance time to complete, either by
+@@ -3018,15 +3013,18 @@ retry:
+ 		if (pi_state->owner != current)
+ 			goto out_unlock;
+ 
++		get_pi_state(pi_state);
+ 		/*
+-		 * Grab a reference on the pi_state and drop hb->lock.
++		 * Since modifying the wait_list is done while holding both
++		 * hb->lock and wait_lock, holding either is sufficient to
++		 * observe it.
+ 		 *
+-		 * The reference ensures pi_state lives, dropping the hb->lock
+-		 * is tricky.. wake_futex_pi() will take rt_mutex::wait_lock to
+-		 * close the races against futex_lock_pi(), but in case of
+-		 * _any_ fail we'll abort and retry the whole deal.
++		 * By taking wait_lock while still holding hb->lock, we ensure
++		 * there is no point where we hold neither; and therefore
++		 * wake_futex_pi() must observe a state consistent with what we
++		 * observed.
+ 		 */
+-		get_pi_state(pi_state);
++		raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
+ 		spin_unlock(&hb->lock);
+ 
+ 		ret = wake_futex_pi(uaddr, uval, pi_state);
 
 
