@@ -2,246 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F6832EF50
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA2E32EEF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhCEPra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:47:30 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:18204 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231175AbhCEPrG (ORCPT
+        id S229693AbhCEPfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:35:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35172 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229465AbhCEPfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:47:06 -0500
-X-Greylist: delayed 773 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Mar 2021 10:47:06 EST
-ARC-Seal: i=1; a=rsa-sha256; t=1614958502; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=HK1lxSsdLOm075IrxIGbikrKJHDditB6u4lg5bgGppEy1oI+ql7gqBvlh+OhKC1xll
-    8jHtkxsoIk2aEUyqnEhCripTVE0ojOEY6mxcPIS0BkLsP7C92OdrhExfZ37F+l6vH9Hk
-    6HjbBB7kEgEas8R/JMlyV4268EEQJ5BT4tE0h4qNRHbZKMBTTrtr21WTUe+dhupSEivH
-    IBjNnmeRpY6b+hPz79WcFjFWoqFFgiOzeUmuX8JJ1MCZiiKyDapMFZvBp8U7Mgqp8Eah
-    LwoA1uyEZC28i+lDxlVKXXdkZfCyGOzA2DJKWeL4dmSE2T//3Fk8Xiw0pwCFAbiYKD1N
-    z/DQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1614958502;
-    s=strato-dkim-0002; d=strato.com;
-    h=Message-Id:Date:Subject:To:From:Cc:Date:From:Subject:Sender;
-    bh=392W9m5uWNqrnGCVUyCi/oBDLr+ZyRZkpu52DA4S2y8=;
-    b=MsNBSzwhU/c/1Wd2YV0lmpcEBUf7PYkSXtrcG0iUZhBFz8yWdrM3qSINr/yT0HmVIT
-    P1jFIcaVJKFWi9ZGdoKs1ofiq+iresN1NCseJtvBQka8M1FIVZBmvf6s9Vw6Zgcej9Dt
-    tsvRpbJDjgz0pVf5QYeeASYj1ZlU741vJOkfVeWeF0z2KJPKDiA5hxDeKS+6wIR+OvpB
-    Z1C4XamDtkF+XBa+IGCwngLz0CgfXNZ/syU3rMM345pw5B3AYrPzYt0R4Kx1sXUlD1Ef
-    x7zK3o99LaQbO3P//ChQX4C+VPfspIgoOuvLCCv0BSB22gc+UbCULS0g+7s7mpVoY+9W
-    jlmw==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1614958502;
-    s=strato-dkim-0002; d=schoebel-theuer.de;
-    h=Message-Id:Date:Subject:To:From:Cc:Date:From:Subject:Sender;
-    bh=392W9m5uWNqrnGCVUyCi/oBDLr+ZyRZkpu52DA4S2y8=;
-    b=skQJMHhYs9sWjr9PDVJcElWW9Hc6qYFwBqrWgn6G+f4h8ALzqga7PYBZweIV+yJLSn
-    Ua6vV1YhUBBWmAEPEnNZ628gW7fyjL1KcP4pcm83FKnjPq1NbuFWC8Dmf+9tLqcw8ICA
-    mNqhTukCt45DdPNoZQFXc0merYRUAGqmKixkRxdhDUWXh8taZr/1z4DX8iYDsyvpefTm
-    xy7B3TwDmA9+dg9oOjG3RxnH6rx4L1Zj9aoj1MwIQgtW0ilf5fXbCFltHTRefpK2POne
-    lGIj7kzHP/g/8BorPI/YyT8JgCCw13lPwYdCYrBwvre+IJjVqJx5e6LnQDgVdbuNIchI
-    I36A==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":OH8QVVOrc/CP6za/qRmbF3BWedPGA1vjs2e0bDjfg8SjapJoMy/ngEsCKWYHf7tw4FryMmnohon9SYQ="
-X-RZG-CLASS-ID: mo00
-Received: from localhost.localdomain
-    by smtp.strato.de (RZmta 47.20.3 DYNA|AUTH)
-    with ESMTPSA id 6007d4x25FZ25X0
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 5 Mar 2021 16:35:02 +0100 (CET)
-From:   Thomas Schoebel-Theuer <tst@schoebel-theuer.de>
-To:     tst@schoebel-theuer.de,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Schoebel-Theuer <tst@1und1.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH STABLE 4.4] futex: fix irq self-deadlock and satisfy assertion
-Date:   Fri,  5 Mar 2021 16:34:48 +0100
-Message-Id: <20210305153448.25329-1-tst@schoebel-theuer.de>
-X-Mailer: git-send-email 2.26.2
+        Fri, 5 Mar 2021 10:35:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614958516;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T1T9qTxRJ5XtudGRa/OMLDwpqFc2WRKErn3/668/V68=;
+        b=Af+MlQXi7upCjfOawkHTOt2mEfD8lLzonahL4qeyHFau1IQWkmuNb+DDK2IkI6uWjWqlmE
+        Ppgf9YquRMulp3O1z2rcrW9baj2SIVo1dR2ru1CiPVeizbxegWH181BPIAlaksPJ1gTDJ/
+        IkAUotHU8FQpu9+cuousO53k+2bSafI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-276-iSbw_ui6P9mNAozTlVgZSA-1; Fri, 05 Mar 2021 10:35:12 -0500
+X-MC-Unique: iSbw_ui6P9mNAozTlVgZSA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1510A80006E;
+        Fri,  5 Mar 2021 15:35:11 +0000 (UTC)
+Received: from [10.36.112.194] (ovpn-112-194.ams2.redhat.com [10.36.112.194])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E9A1100164C;
+        Fri,  5 Mar 2021 15:35:09 +0000 (UTC)
+Subject: Re: [PATCH v3 3/5] mm,memory_hotplug: Add kernel boot option to
+ enable memmap_on_memory
+To:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210304100002.7740-1-osalvador@suse.de>
+ <20210304100002.7740-4-osalvador@suse.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <b139d4fe-fdef-b5d9-4fdf-2f79cb00a24a@redhat.com>
+Date:   Fri, 5 Mar 2021 16:35:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210304100002.7740-4-osalvador@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Schoebel-Theuer <tst@1und1.de>
+On 04.03.21 11:00, Oscar Salvador wrote:
+> Self stored memmap leads to a sparse memory situation which is unsuitable
+> for workloads that requires large contiguous memory chunks, so make this
+> an opt-in which needs to be explicitly enabled.
+> 
+> To control this, let memory_hotplug have its own memory space, as suggested
+> by David, so we can add memory_hotplug.memmap_on_memory parameter.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> ---
+>   Documentation/admin-guide/kernel-parameters.txt | 14 ++++++++++++++
+>   mm/Makefile                                     |  5 ++++-
+>   mm/memory_hotplug.c                             |  8 +++++++-
+>   3 files changed, 25 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 04545725f187..e626dab39c60 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -2794,6 +2794,20 @@
+>   			seconds.  Use this parameter to check at some
+>   			other rate.  0 disables periodic checking.
+>   
+> +	memory_hotplug.memmap_on_memory
+> +			[KNL,X86,ARM] Boolean flag to enable this feature.
 
-Since v4.4.257 when CONFIG_PROVE_LOCKING=y
-the following triggers right after reboot of our pre-life systems
-which equal our production setup:
+Right now it can be set on any arch with memory hotplug, right? It's 
+simply not effective.
 
-Mar 03 11:27:33 icpu-test-bap10 kernel: =================================
-Mar 03 11:27:33 icpu-test-bap10 kernel: [ INFO: inconsistent lock state ]
-Mar 03 11:27:33 icpu-test-bap10 kernel: 4.4.259-rc1-grsec+ #730 Not tainted
-Mar 03 11:27:33 icpu-test-bap10 kernel: ---------------------------------
-Mar 03 11:27:33 icpu-test-bap10 kernel: inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
-Mar 03 11:27:33 icpu-test-bap10 kernel: apache2-ssl/9310 [HC0[0]:SC0[0]:HE1:SE1] takes:
-Mar 03 11:27:33 icpu-test-bap10 kernel:  (&p->pi_lock){?.-.-.}, at: [<ffffffff810abb68>] pi_state_update_owner+0x51/0xd7
-Mar 03 11:27:33 icpu-test-bap10 kernel: {IN-HARDIRQ-W} state was registered at:
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff81088c4a>] __lock_acquire+0x3a7/0xe4a
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff81089b01>] lock_acquire+0x18d/0x1bc
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff8170151c>] _raw_spin_lock_irqsave+0x3e/0x50
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff810719a5>] try_to_wake_up+0x2c/0x210
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff81071bf3>] default_wake_function+0xd/0xf
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff81083588>] autoremove_wake_function+0x11/0x35
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff810830b2>] __wake_up_common+0x48/0x7c
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff8108311a>] __wake_up+0x34/0x46
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff814c2a23>] megasas_complete_int_cmd+0x31/0x33
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff814c60a0>] megasas_complete_cmd+0x570/0x57b
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff814d05bc>] complete_cmd_fusion+0x23e/0x33d
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff814d0768>] megasas_isr_fusion+0x67/0x74
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff81091ae5>] handle_irq_event_percpu+0x134/0x311
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff81091cf5>] handle_irq_event+0x33/0x51
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff810948b9>] handle_edge_irq+0xa3/0xc2
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff81005f7b>] handle_irq+0xf9/0x101
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff81005700>] do_IRQ+0x80/0xf5
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff81702228>] ret_from_intr+0x0/0x20
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff8100cab0>] arch_cpu_idle+0xa/0xc
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff81083a5a>] default_idle_call+0x1e/0x20
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff81083b9d>] cpu_startup_entry+0x141/0x22f
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff816fb853>] rest_init+0x135/0x13b
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff81d5ce99>] start_kernel+0x3fa/0x40a
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff81d5c2af>] x86_64_start_reservations+0x2a/0x2c
-Mar 03 11:27:33 icpu-test-bap10 kernel:   [<ffffffff81d5c3d0>] x86_64_start_kernel+0x11f/0x12c
-Mar 03 11:27:33 icpu-test-bap10 kernel: irq event stamp: 1457
-Mar 03 11:27:33 icpu-test-bap10 kernel: hardirqs last  enabled at (1457): [<ffffffff81042a69>] get_user_pages_fast+0xeb/0x14f
-Mar 03 11:27:33 icpu-test-bap10 kernel: hardirqs last disabled at (1456): [<ffffffff810429dd>] get_user_pages_fast+0x5f/0x14f
-Mar 03 11:27:33 icpu-test-bap10 kernel: softirqs last  enabled at (1446): [<ffffffff815e127d>] release_sock+0x142/0x14d
-Mar 03 11:27:33 icpu-test-bap10 kernel: softirqs last disabled at (1444): [<ffffffff815e116f>] release_sock+0x34/0x14d
-Mar 03 11:27:33 icpu-test-bap10 kernel:
-                                        other info that might help us debug this:
-Mar 03 11:27:33 icpu-test-bap10 kernel:  Possible unsafe locking scenario:
-Mar 03 11:27:33 icpu-test-bap10 kernel:        CPU0
-Mar 03 11:27:33 icpu-test-bap10 kernel:        ----
-Mar 03 11:27:33 icpu-test-bap10 kernel:   lock(&p->pi_lock);
-Mar 03 11:27:33 icpu-test-bap10 kernel:   <Interrupt>
-Mar 03 11:27:33 icpu-test-bap10 kernel:     lock(&p->pi_lock);
-Mar 03 11:27:33 icpu-test-bap10 kernel:
-                                         *** DEADLOCK ***
-Mar 03 11:27:33 icpu-test-bap10 kernel: 2 locks held by apache2-ssl/9310:
-Mar 03 11:27:33 icpu-test-bap10 kernel:  #0:  (&(&(__futex_data.queues)[i].lock)->rlock){+.+...}, at: [<ffffffff810ae4e6>] do
-Mar 03 11:27:33 icpu-test-bap10 kernel:  #1:  (&lock->wait_lock){+.+...}, at: [<ffffffff810ae53a>] do_futex+0x639/0x809
-Mar 03 11:27:33 icpu-test-bap10 kernel:
-                                        stack backtrace:
-Mar 03 11:27:33 icpu-test-bap10 kernel: CPU: 13 PID: 9310 UID: 99 Comm: apache2-ssl Not tainted 4.4.259-rc1-grsec+ #730
-Mar 03 11:27:33 icpu-test-bap10 kernel: Hardware name: Dell Inc. PowerEdge R630/02C2CP, BIOS 2.11.0 11/02/2019
-Mar 03 11:27:33 icpu-test-bap10 kernel:  0000000000000000 ffff883fb79bfc00 ffffffff816f8fc2 ffff883ffa66d300
-Mar 03 11:27:33 icpu-test-bap10 kernel:  ffffffff8eaa71f0 ffff883fb79bfc50 ffffffff81088484 0000000000000000
-Mar 03 11:27:33 icpu-test-bap10 kernel:  0000000000000001 0000000000000001 0000000000000002 ffff883ffa66db58
-Mar 03 11:27:33 icpu-test-bap10 kernel: Call Trace:
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff816f8fc2>] dump_stack+0x94/0xca
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff81088484>] print_usage_bug+0x1bc/0x1d1
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff81087d76>] ? check_usage_forwards+0x98/0x98
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff810885a5>] mark_lock+0x10c/0x203
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff81088cb9>] __lock_acquire+0x416/0xe4a
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff810abb68>] ? pi_state_update_owner+0x51/0xd7
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff81089b01>] lock_acquire+0x18d/0x1bc
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff81089b01>] ? lock_acquire+0x18d/0x1bc
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff810abb68>] ? pi_state_update_owner+0x51/0xd7
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff81700d12>] _raw_spin_lock+0x2a/0x39
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff810abb68>] ? pi_state_update_owner+0x51/0xd7
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff810abb68>] pi_state_update_owner+0x51/0xd7
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff810ae5af>] do_futex+0x6ae/0x809
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff810ae83d>] SyS_futex+0x133/0x143
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff8100158a>] ? syscall_trace_enter_phase2+0x1a2/0x1bb
-Mar 03 11:27:33 icpu-test-bap10 kernel:  [<ffffffff81701848>] tracesys_phase2+0x90/0x95
+> +			Format: {on | off (default)}
+> +			When enabled, memory to build the pages tables for the
+> +			memmap array describing the hot-added range will be taken
+> +			from the range itself, so the memmap page tables will be
+> +			self-hosted.
+> +			Since only single memory device ranges are supported at
+> +			the moment, this option is disabled by default because
+> +			it might have an impact on workloads that needs large
+> +			contiguous memory chunks.
+> +			The state of the flag can be read in
+> +			/sys/module/memory_hotplug/parameters/memmap_on_memory.
 
-Bisecting detects 47e452fcf2f
-in the above specific scenario using apache-ssl,
-but apparently the missing *_irq() was introduced in
-34c8e1c2c02.
+Maybe want to add that even if enabled, there are cases where it is not 
+effective?
 
-However, just reverting the old _irq() variants to a similar status
-than before 34c8e1c2c02
-would not really help. The fundamental problem is the following
-violation of the assertion in pi_state_update_owner():
+> +
+>   	memtest=	[KNL,X86,ARM,PPC] Enable memtest
+>   			Format: <integer>
+>   			default : 0 <disable>
+> diff --git a/mm/Makefile b/mm/Makefile
+> index 72227b24a616..82ae9482f5e3 100644
+> --- a/mm/Makefile
+> +++ b/mm/Makefile
+> @@ -58,9 +58,13 @@ obj-y			:= filemap.o mempool.o oom_kill.o fadvise.o \
+>   page-alloc-y := page_alloc.o
+>   page-alloc-$(CONFIG_SHUFFLE_PAGE_ALLOCATOR) += shuffle.o
+>   
+> +# Give 'memory_hotplug' its own module-parameter namespace
+> +memory-hotplug-$(CONFIG_MEMORY_HOTPLUG) += memory_hotplug.o
+> +
+>   obj-y += page-alloc.o
+>   obj-y += init-mm.o
+>   obj-y += memblock.o
+> +obj-y += $(memory-hotplug-y)
+>   
+>   ifdef CONFIG_MMU
+>   	obj-$(CONFIG_ADVISE_SYSCALLS)	+= madvise.o
+> @@ -83,7 +87,6 @@ obj-$(CONFIG_SLUB) += slub.o
+>   obj-$(CONFIG_KASAN)	+= kasan/
+>   obj-$(CONFIG_KFENCE) += kfence/
+>   obj-$(CONFIG_FAILSLAB) += failslab.o
+> -obj-$(CONFIG_MEMORY_HOTPLUG) += memory_hotplug.o
+>   obj-$(CONFIG_MEMTEST)		+= memtest.o
+>   obj-$(CONFIG_MIGRATION) += migrate.o
+>   obj-$(CONFIG_TRANSPARENT_HUGEPAGE) += huge_memory.o khugepaged.o
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 63e5a0e9a6f3..94b0ec3d2ff2 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -42,7 +42,13 @@
+>   #include "internal.h"
+>   #include "shuffle.h"
+>   
+> -static bool memmap_on_memory;
+> +
+> +/*
+> + * memory_hotplug.memmap_on_memory parameter
+> + */
+> +static bool memmap_on_memory __ro_after_init;
+> +module_param(memmap_on_memory, bool, 0444);
+> +MODULE_PARM_DESC(memmap_on_memory, "Enable memmap on memory for memory hotplug");
+>   
 
-Mar 03 12:50:03 icpu-test-bap10 kernel: ------------[ cut here ]------------
-Mar 03 12:50:03 icpu-test-bap10 kernel: WARNING: CPU: 37 PID: 8488 at kernel/futex.c:844 pi_state_update_owner+0x3d/0xd7()
-Mar 03 12:50:03 icpu-test-bap10 kernel: Modules linked in: xt_time xt_connlimit xt_connmark xt_NFLOG xt_limit xt_hashlimit veth ip_set_bitmap_port xt_DSCP xt_multiport ip_set_hash_ip xt_owner xt_set ip_set_hash_net xt_state xt_conntrack nf_conntrack_ftp mars lz4_decompress lz4_compress ipmi_devintf x86_pkg_temp_thermal coretemp crct10dif_pclmul crc32_pclmul hed ipmi_si ipmi_msghandler processor crc32c_intel ehci_pci ehci_hcd usbcore i40e usb_common
-Mar 03 12:50:03 icpu-test-bap10 kernel: CPU: 37 PID: 8488 UID: 99 Comm: apache2-ssl Not tainted 4.4.259-rc1-grsec+ #737
-Mar 03 12:50:03 icpu-test-bap10 kernel: Hardware name: Dell Inc. PowerEdge R630/02C2CP, BIOS 2.11.0 11/02/2019
-Mar 03 12:50:03 icpu-test-bap10 kernel:  0000000000000000 ffff883f863f7c70 ffffffff816f9002 0000000000000000
-Mar 03 12:50:03 icpu-test-bap10 kernel:  0000000000000009 ffff883f863f7ca8 ffffffff8104cda2 ffffffff810abac7
-Mar 03 12:50:03 icpu-test-bap10 kernel:  ffff883ffbfe5e80 0000000000000000 ffff883f82ed4bc0 00007fc01c9bf000
-Mar 03 12:50:03 icpu-test-bap10 kernel: Call Trace:
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff816f9002>] dump_stack+0x94/0xca
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff8104cda2>] warn_slowpath_common+0x94/0xad
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff810abac7>] ? pi_state_update_owner+0x3d/0xd7
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff8104ce5f>] warn_slowpath_null+0x15/0x17
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff810abac7>] pi_state_update_owner+0x3d/0xd7
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff810abea8>] free_pi_state+0x2d/0x73
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff810abf0b>] unqueue_me_pi+0x1d/0x31
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff810ad735>] futex_lock_pi+0x27a/0x2e8
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff81088bca>] ? __lock_acquire+0x327/0xe4a
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff810ae6a9>] do_futex+0x784/0x809
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff810cfa9a>] ? seccomp_phase1+0xde/0x1e7
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff810a4503>] ? current_kernel_time64+0xb/0x31
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff810d23c3>] ? current_kernel_time+0xb/0xf
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff810ae861>] SyS_futex+0x133/0x143
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff8100158a>] ? syscall_trace_enter_phase2+0x1a2/0x1bb
-Mar 03 12:50:03 icpu-test-bap10 kernel:  [<ffffffff81701888>] tracesys_phase2+0x90/0x95
-Mar 03 12:50:03 icpu-test-bap10 kernel: ---[ end trace 968f95a458dea951 ]---
+Wondering if this makes sense getting wrapped in
 
-In order to both (1) prevent the self-deadlock, and (2) to satisfy the assertion
-at pi_state_update_owner(), some locking with irq disable is needed,
-at least in the specific call stack.
+#ifdef CONFIG MHP_MEMMAP_ON_MEMORY
 
-Interestingly, there existed a suchalike locking just before
-f08a4af5ccb.
+just a thought.
 
-This is just a quick hotfix, resurrecting some previous
-locks at the old places, but now using ->wait_lock in place
-of the previous ->pi_lock (which was in place before
-f08a4af5ccb).
+LGTM
 
-The ->pi_lock is now also taken, by the new code
-which had been introduced in
-34c8e1c2c02.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-When this patch is applied, both the above splats are
-no longer triggering at my prelife machines.
-
-I have not yet tested other call paths, since I am under
-time pressure for security reasons.
-
-Probably some more systematic testing with CONFIG_PROVE_LOCKING
-(and probably some more options) should be invested
-in order to make the 4.4 LTS series really "stable" again.
-
-Signed-off-by: Thomas Schoebel-Theuer <tst@1und1.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Fixes: f08a4af5ccb
-Fixes: 34c8e1c2c02
----
- kernel/futex.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/kernel/futex.c b/kernel/futex.c
-index 4a707bc7cceb..0c42d2313660 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -874,7 +874,9 @@ static void free_pi_state(struct futex_pi_state *pi_state)
- 	 * and has cleaned up the pi_state already
- 	 */
- 	if (pi_state->owner) {
-+		raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
- 		pi_state_update_owner(pi_state, NULL);
-+		raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
- 		rt_mutex_proxy_unlock(&pi_state->pi_mutex);
- 	}
- 
 -- 
-2.26.2
+Thanks,
+
+David / dhildenb
 
