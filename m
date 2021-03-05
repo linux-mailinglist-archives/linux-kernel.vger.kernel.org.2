@@ -2,57 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA9732EEDB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB32532EEE2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbhCEPbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:31:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229651AbhCEPbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:31:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E71FA65015;
-        Fri,  5 Mar 2021 15:31:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614958265;
-        bh=ZQzwJu/bYmNTEwTZkUYIuu/Lr0Odt6abjBFclZMt0fE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SRd9EGlUdUnVu/uG/yIv7e4JawZAUCJFL9sX25G3E3y4QF+D4SZe6KbKFwxJKE2g/
-         0Y7/8Uv5PNudgrfGF5/k7CdRmFvyK4Tff2MoJRhFf8t8WrFHNnvZU5A3sbp9IGA+6A
-         KBSsNyQURnhM5ibeRvhtHUtwK5E1perAI5VF6um9mN0/PX1FPLhJYcD4xcScYHyoVE
-         9+EJTihnjsijMP0t8539u7ag5vCZzrWFiD62OeH1ZsaluJ4WXiY9ofnA4PQ1vWRj1o
-         BxZE7XN9ZUkPnZpm1gtXtH0DevDCa7j2LK/EUyP4DDVkWQFWImZXoxGfbxLGBC1Msv
-         YIYyqY63798qg==
-Date:   Fri, 5 Mar 2021 10:31:03 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc:     "Koenig, Christian" <Christian.Koenig@amd.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Das, Nirmoy" <Nirmoy.Das@amd.com>
-Subject: Re: [PATCH 5.11 079/104] drm/amdgpu: enable only one high prio
- compute queue
-Message-ID: <YEJOt6KXCzNb5y+x@sashalap>
-References: <20210305120903.166929741@linuxfoundation.org>
- <20210305120907.039431314@linuxfoundation.org>
- <23197f54-020a-691c-5733-45ce7e624fec@amd.com>
- <MW3PR12MB44918AD858505706809367F3F7969@MW3PR12MB4491.namprd12.prod.outlook.com>
- <9f12d4c6-35c8-7466-f1bc-bee31957e11b@amd.com>
- <MW3PR12MB4491E72712027DCBB8486E59F7969@MW3PR12MB4491.namprd12.prod.outlook.com>
+        id S229938AbhCEPdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:33:01 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:60571 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhCEPcd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 10:32:33 -0500
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 125FWErB020473;
+        Sat, 6 Mar 2021 00:32:14 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 125FWErB020473
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614958335;
+        bh=5HGUtSQp4zdfofgIfM14OVxH7gKujR8p0/j9RGJsnCE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=EEiLqv6/y6o9ESbPto9zaOSNh1jjfx+NqK2WAcdewLH79v9Ld+TLvr6wcCKqz69Xn
+         E7eAQLaLxTEWMumF47EOCjRp+xJey01AsLL0MtAj5Y+YQ+/XILme1Ji6Q2D9Z/r70L
+         4iaW6R5pIYLCVVYBXjKGDRYwRfsZJ/Y0aUG2gfFEnyNIcUjYSyFX4TzgwwdI0wxnRL
+         ORt31NfFyfBNEHfL1JRzAlQtkNvKBzdoLX7rVDWeCRIdA7JtlEIea+X/Ou+OXU4YFq
+         vdIXoGHlXKtwDaxB0siL3oIqCFfl9bVtSb15U/eFi1WJHjz+5Ha01RSzzsf+RmDTX+
+         19xAcmMqJTEpw==
+X-Nifty-SrcIP: [209.85.216.48]
+Received: by mail-pj1-f48.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so2274967pjb.1;
+        Fri, 05 Mar 2021 07:32:14 -0800 (PST)
+X-Gm-Message-State: AOAM53073at6tA+RRMxRv7JZn78KxQdf4vbzQJy7eDK42trXzuMCTl8O
+        gjBYwy3J5ZAJPXd3t2WAL1Q1JhwsOjTAasdxXNY=
+X-Google-Smtp-Source: ABdhPJxd+afZFPuXcwj0Tgmr4EKvTdwpPx2qhvoB1lpDpulv2q24xPM4wTn9c8WXyx0hMPDemrWFKElw/P1kq+aEyoQ=
+X-Received: by 2002:a17:90a:dc08:: with SMTP id i8mr10423104pjv.153.1614958333959;
+ Fri, 05 Mar 2021 07:32:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <MW3PR12MB4491E72712027DCBB8486E59F7969@MW3PR12MB4491.namprd12.prod.outlook.com>
+References: <20210302232649.y2tutffhxsblwqlb@treble> <CAK7LNAReuB5zUq_7S8ZG25+tdQowECDOK1rApYvkPCpHhPjK5w@mail.gmail.com>
+ <20210303191516.6ksxmng4pis7ue4p@treble> <CAHk-=wjR0CyaKU=6mXW9W+65L8h8DQuBdA2ZY2CfrPe6qurz3A@mail.gmail.com>
+ <20210303193806.oovupl4ubtkkyiih@treble> <CAHk-=whA6zru0BaNm4uu5KyZe+aQpRScOnmc9hdOpO3W+xN9Xw@mail.gmail.com>
+ <20210303202406.bxgdx5a25j6wc43b@treble> <CAHk-=wi9J3mM8y+aH9e=HRo95giK4BRyyasayAimB0gdvbvDsQ@mail.gmail.com>
+ <20210303214534.guyoxcwrgxgcqzy4@treble> <CAK7LNAQaAgg+mVSw_U3_FuuqcqJNnonyhVD1M-ezv71Y+dyAww@mail.gmail.com>
+ <20210304150812.rzya7ewmerwhe4m4@treble> <CAK7LNAR0kNJ=DLuvRzRG+-rgMfcrSOZu8Mn6JBJ5do7TzJWLcA@mail.gmail.com>
+ <CAHk-=wiT3FGuKuqLniBN2T_PZwD0GH4kf3XNCzq2tfChqn0+SQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wiT3FGuKuqLniBN2T_PZwD0GH4kf3XNCzq2tfChqn0+SQ@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 6 Mar 2021 00:31:36 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARDEwyjDj3u=8Y176TehU9FD548LFTrqi3AmBR6jrnA_Q@mail.gmail.com>
+Message-ID: <CAK7LNARDEwyjDj3u=8Y176TehU9FD548LFTrqi3AmBR6jrnA_Q@mail.gmail.com>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT modules
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Frank Eigler <fche@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 03:27:00PM +0000, Deucher, Alexander wrote:
->Not sure if Sasha picked that up or not.  Would need to check that.  If it's not, this patch should be dropped.
+On Fri, Mar 5, 2021 at 4:13 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Thu, Mar 4, 2021 at 7:36 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > All the kernel-space objects are rebuilt
+> > when the compiler is upgraded.
+>
+> I very much NAK'ed that one. Why did that go in?
 
-Yes, it went in via autosel. I can drop it if it's not needed.
+
+When the compiler is upgraded, all objects
+should be rebuilt by the new compiler,
+- this keeps Kbuild deterministic,
+irrespective of whether it is a fresh build,
+or incremental build.
+
+
+If we do not force the full rebuild,
+the banner at boot time is no point.
+
+[    0.000000] Linux version 5.8.0-44-generic (buildd@lgw01-amd64-039)
+(gcc (Ubuntu 10.2.0-13ubuntu1) 10.2.0, GNU ld (GNU Binutils for
+Ubuntu) 2.35.1) #50-Ubuntu SMP Tue Feb 9 06:29:41 UTC 2021 (Ubuntu
+5.8.0-44.50-generic 5.8.18)
+
+
+It claims it was built by
+gcc (Ubuntu 10.2.0-13ubuntu1) 10.2.0
+but we would never know if it is true
+for whole objects.
+Some of them might have been compiled by
+an older compiler.
+
+
+
+
+> Or maybe I NAK'ed another version of it (I think the one I NAK'ed was
+> from Josh), and didn't realize that there were multiple ones.
+>
+> > Linus complaint about GCC plugins not being rebuilt.
+>
+> Yes, and that was a separate complaint and not at all tied to the other objects.
+>
+> Gcc plugins aren't kernel object files at all. They are very much like
+> dynamically loadable libraries to gcc itself.
+>
+>                Linus
+
+
 
 -- 
-Thanks,
-Sasha
+Best Regards
+Masahiro Yamada
