@@ -2,67 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B098432E4A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D082B32E4A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbhCEJTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:19:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229642AbhCEJTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:19:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78C1A64F45;
-        Fri,  5 Mar 2021 09:19:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614935943;
-        bh=1VhZoKuJ8VHh/7hh2GHHwmVS9zTteDOhYb7TJcdeSHU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=auG1DoTD/MypavfGPZ2jDyz5qqb+eNle3bhPX7/bzV4nG9GB6/r9RaYY9NNOlEdUX
-         PevrncE9YKW+EALG6i/9Vb0Mo/BQW3xjPqaHV82cG1L7PTbpikt73B4qMBSAYoAU53
-         Wms9gW5SPWJ6T+d3YC5+G8zyKXBGioCH4Miu0Vxlw12v6LE11bxgB3TZk3BvIJ9YBd
-         MtdUZahDfFTG151epjTMxKwyHRLCsclcPPqRHrNZYvcWDsBI2ZNmFwlArN9rMUIq+Z
-         FfxQlQgORXxKjhN9iVcSL6ZJaOdFBlB64y9AnFk8SmM0o9a3bi/L4mC8fAezB3Y8fW
-         s3MdX7L3X08bA==
-Date:   Fri, 5 Mar 2021 03:19:00 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     David Howells <dhowells@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-afs@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH RESEND][next] rxrpc: Fix fall-through warnings for Clang
-Message-ID: <20210305091900.GA139713@embeddedor>
+        id S229788AbhCEJUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:20:08 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:30690 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229648AbhCEJTs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:19:48 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-241-o-O4hVraMoOIN9IEJ4mUjA-1; Fri, 05 Mar 2021 09:19:44 +0000
+X-MC-Unique: o-O4hVraMoOIN9IEJ4mUjA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 5 Mar 2021 09:19:42 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 5 Mar 2021 09:19:42 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>
+CC:     Tom Tromey <tom@tromey.com>, Alexey Dobriyan <adobriyan@gmail.com>,
+        "Luc Van Oostenryck" <luc.vanoostenryck@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+Subject: RE: [PATCH 00/11] pragma once: treewide conversion
+Thread-Topic: [PATCH 00/11] pragma once: treewide conversion
+Thread-Index: AQHXEGou8CaNkZlisESRa9kfHm2udapz2QHwgABsngCAANnZIA==
+Date:   Fri, 5 Mar 2021 09:19:42 +0000
+Message-ID: <44a0cc9cb5344add8ee4d91bffbf958f@AcuMS.aculab.com>
+References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
+ <CAHk-=wjFWZMVWTbvUMVxQqGKvGMC_BNrahCtTkpEjxoC0k-T=A@mail.gmail.com>
+ <YDvwVlG/fqVxVYlQ@localhost.localdomain>
+ <CAHk-=wi54DEScexxpMrO+Q2Nag_Tup+Y5YBHc_9_xGLeRfP8pA@mail.gmail.com>
+ <877dmo10m3.fsf@tromey.com>
+ <CAHk-=wi13+FLcRo4zmnRUmmY=AAns-Yd5NR_mVdcAd6ZrPq2fA@mail.gmail.com>
+ <4835ec1d2ecc40b285596288a0df4f47@AcuMS.aculab.com>
+ <CAHk-=wh8PptzH-=ak1D7C5Zp6EJ8eurYqVqGdQauupAFaNuG4g@mail.gmail.com>
+In-Reply-To: <CAHk-=wh8PptzH-=ak1D7C5Zp6EJ8eurYqVqGdQauupAFaNuG4g@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-by explicitly adding a break statement instead of letting the code fall
-through to the next case.
-
-Link: https://github.com/KSPP/linux/issues/115
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- net/rxrpc/af_rxrpc.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/net/rxrpc/af_rxrpc.c b/net/rxrpc/af_rxrpc.c
-index 41671af6b33f..2b5f89713e36 100644
---- a/net/rxrpc/af_rxrpc.c
-+++ b/net/rxrpc/af_rxrpc.c
-@@ -471,6 +471,7 @@ static int rxrpc_connect(struct socket *sock, struct sockaddr *addr,
- 	switch (rx->sk.sk_state) {
- 	case RXRPC_UNBOUND:
- 		rx->sk.sk_state = RXRPC_CLIENT_UNBOUND;
-+		break;
- 	case RXRPC_CLIENT_UNBOUND:
- 	case RXRPC_CLIENT_BOUND:
- 		break;
--- 
-2.27.0
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMDQgTWFyY2ggMjAyMSAyMDoxNg0KPiANCj4g
+T24gVGh1LCBNYXIgNCwgMjAyMSBhdCA1OjU1IEFNIERhdmlkIExhaWdodCA8RGF2aWQuTGFpZ2h0
+QGFjdWxhYi5jb20+IHdyb3RlOg0KPiA+DQo+ID4gPiAgKGEpIHRoZSB0cmFkaXRpb25hbCBpbmNs
+dWRlIGd1YXJkIG9wdGltaXphdGlvbiBIQVMgTk8gSElEREVOIFNFTUFOVElDDQo+ID4gPiBNRUFO
+SU5HLiBJdCdzIGEgcHVyZSBvcHRpbWl6YXRpb24gdGhhdCBkb2Vzbid0IGFjdHVhbGx5IGNoYW5n
+ZQ0KPiA+ID4gYW55dGhpbmcgZWxzZS4gSWYgeW91IGRvbid0IGRvIHRoZSBvcHRpbWl6YXRpb24s
+IGFic29sdXRlbHkgbm90aGluZw0KPiA+ID4gY2hhbmdlcy4NCj4gPg0KPiA+IEFuZCBpZiB0aGUg
+cGFyc2VyIGlzIHdlbGwgd3JpdHRlbiB0aGUgb3B0aW1pc2F0aW9uIGlzIHByb2JhYmx5DQo+ID4g
+aXJyZWxldmFudCBjb21wYXJlZCB0byB0aGUgY29tcGlsZSB0aW1lLg0KPiANCj4gVGhhdCdzIGFj
+dHVhbGx5IHN1cnByaXNpbmdseSBub3QgZXZlbiByZW1vdGVseSB0cnVlLg0KDQpUaGUgcG9pbnQg
+aXMgdGhhdCB5b3UgY2FuIHNraXAgdGhlIHVud2FudGVkIHBhcnRzIG9mDQojaWYgd2l0aG91dCBo
+YXZpbmcgdG8gcGFyc2UgdGhlIGZpbGUgYXQgYWxsLg0KWW91IGp1c3QgbmVlZCB0byBkZXRlY3Qg
+dGhlIGxpbmUgYnJlYWtzLg0KDQpTbyB5ZXMsIHlvdSBuZWVkIHRvIHJlYWQgdGhlIGZpbGUgYW5k
+IGxvb2sgYXQgZXZlcnkgYnl0ZS4NCkJ1dCB5b3UgZG9uJ3QgbmVlZCB0byBldmVuIHN0YXJ0IHRv
+a2VuaXNpbmcgaXQuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUs
+IEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJl
+Z2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
