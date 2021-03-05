@@ -2,195 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CDA32F0BB
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8B432F0BA
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhCERHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:07:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45620 "EHLO mail.kernel.org"
+        id S231400AbhCERHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:07:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhCERHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:07:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A72066508C;
-        Fri,  5 Mar 2021 17:07:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614964054;
-        bh=lCtBJCye9mh10oZoiO4G45gkEauRRo7iSbdH3hsiTvE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tq0MHNrFP8a26ADUQtK0qa5oXiDV3ltq0FY7xD3MU0z78eE20P8nnNZGmzhXS/tvK
-         x490hCRmWv/djvW1LwE0gwyo5IBPWtN6r+pyVuoxH/CVP+ddVxzqptI+M8MWdeHg2E
-         NoMlQ0CTHy3s3L5ogd3RgbRdzTDJno5xxOhzRz5Hcn7rV64VEm3hEaYztvad3vNCSn
-         gKz+tCMUTjprXGmUrEbbIzGsPQmRa2Bsk2Xy1CKB36Gy0wgonbgm6GRiz3F4JSiTt+
-         UAn3Q6sDGyeVWvjIKwIhplqKBCUbNNkuuIpR+WamMem3RR/9gX2+pVlG+DRIINO2o0
-         JX3NFrD5zRhlA==
-Date:   Fri, 5 Mar 2021 19:07:13 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, herbert@gondor.apana.org.au,
-        dhowells@redhat.com, zohar@linux.ibm.com,
-        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: Re: [PATCH v10 6/9] x509: Add support for parsing x509 certs with
- ECDSA keys
-Message-ID: <YEJlQUC5pfIemTaI@kernel.org>
-References: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
- <20210305005203.3547587-7-stefanb@linux.vnet.ibm.com>
+        id S231387AbhCERH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 12:07:27 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DBEE46508B;
+        Fri,  5 Mar 2021 17:07:26 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lIDvA-00HXB9-HO; Fri, 05 Mar 2021 17:07:24 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305005203.3547587-7-stefanb@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 05 Mar 2021 17:07:24 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        James Morse <james.morse@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] KVM: arm64: Disable LTO in hyp
+In-Reply-To: <CABCJKud2eSr8ZfPxwa3XVTaJvAfYgydsWUu-AKo2gtNStQshFQ@mail.gmail.com>
+References: <20210304184544.2014171-1-samitolvanen@google.com>
+ <87k0qmzq5u.wl-maz@kernel.org>
+ <CABCJKufmjMT8+hGEnL3aJM7-OSwhYSHiJA=i8e7dHSGDWXYtsg@mail.gmail.com>
+ <878s72sgwt.wl-maz@kernel.org>
+ <CABCJKud1EmXmmQj-YOUNCFhE3P1W6Uhqpwe1G0zcR5zw71ksJA@mail.gmail.com>
+ <CABCJKudvzBggE7AZQERto5Wo_LoL0G2sNee7_1R7h2TnGhjq8A@mail.gmail.com>
+ <87im65zvb9.wl-maz@kernel.org>
+ <CAMj1kXEg2cwyJ4BnPq9nWKkG0rcBJhUZasTLThba4Fnt+3e9Vw@mail.gmail.com>
+ <CABCJKud2eSr8ZfPxwa3XVTaJvAfYgydsWUu-AKo2gtNStQshFQ@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <fc8359f03d939e6aaa9b81e4c29138ba@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: samitolvanen@google.com, ardb@kernel.org, maskray@google.com, ndesaulniers@google.com, james.morse@arm.com, nathan@kernel.org, keescook@chromium.org, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 07:52:00PM -0500, Stefan Berger wrote:
-> From: Stefan Berger <stefanb@linux.ibm.com>
+On 2021-03-05 16:55, Sami Tolvanen wrote:
+> On Fri, Mar 5, 2021 at 6:22 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+>> 
+>> On Fri, 5 Mar 2021 at 12:38, Marc Zyngier <maz@kernel.org> wrote:
+>> >
+>> > On Fri, 05 Mar 2021 02:38:17 +0000,
+>> > Sami Tolvanen <samitolvanen@google.com> wrote:
+>> > >
+>> > > On Thu, Mar 4, 2021 at 2:34 PM Sami Tolvanen <samitolvanen@google.com> wrote:
+>> > > >
+>> > > > On Thu, Mar 4, 2021 at 2:17 PM Marc Zyngier <maz@kernel.org> wrote:
+>> > > > >
+>> > > > > On Thu, 04 Mar 2021 21:25:41 +0000,
+>> > > > > Sami Tolvanen <samitolvanen@google.com> wrote:
+>> >
+>> > [...]
+>> >
+>> > > > > > I assume hyp_panic() ends up being placed too far from __guest_enter()
+>> > > > > > when the kernel is large enough. Possibly something to do with LLVM
+>> > > > > > always splitting functions into separate sections with LTO. I'm not
+>> > > > > > sure why the linker cannot shuffle things around to make everyone
+>> > > > > > happy in this case, but I confirmed that this patch also fixes the
+>> > > > > > build issue for me:
+>> > > > > >
+>> > > > > > diff --git a/arch/arm64/kvm/hyp/vhe/switch.c b/arch/arm64/kvm/hyp/vhe/switch.c
+>> > > > > > index af8e940d0f03..128197b7c794 100644
+>> > > > > > --- a/arch/arm64/kvm/hyp/vhe/switch.c
+>> > > > > > +++ b/arch/arm64/kvm/hyp/vhe/switch.c
+>> > > > > > @@ -214,7 +214,7 @@ static void __hyp_call_panic(u64 spsr, u64 elr, u64 par)
+>> > > > > >  }
+>> > > > > >  NOKPROBE_SYMBOL(__hyp_call_panic);
+>> > > > > >
+>> > > > > > -void __noreturn hyp_panic(void)
+>> > > > > > +void __noreturn hyp_panic(void) __section(".text")
+>> > > > > >  {
+>> > > > > >         u64 spsr = read_sysreg_el2(SYS_SPSR);
+>> > > > > >         u64 elr = read_sysreg_el2(SYS_ELR);
+>> > > > > >
+>> > > > >
+>> > > > > We're getting into black-magic territory here. Why wouldn't hyp_panic
+>> > > > > be in the .text section already?
+>> > > >
+>> > > > It's not quite black magic. LLVM essentially flips on
+>> > > > -ffunction-sections with LTO and therefore, hyp_panic() will be in
+>> > > > .text.hyp_panic in vmlinux.o, while __guest_enter() will be in .text.
+>> > > > Everything ends up in .text when we link vmlinux, of course.
+>> > > >
+>> > > > $ readelf --sections vmlinux.o | grep hyp_panic
+>> > > >   [3936] .text.hyp_panic   PROGBITS         0000000000000000  004b56e4
+>> > >
+>> > > Note that disabling LTO here has essentially the same effect as using
+>> > > __section(".text"). It stops the compiler from splitting these
+>> > > functions into .text.* sections and makes it less likely that
+>> > > hyp_panic() ends up too far away from __guest_enter().
+>> > >
+>> > > If neither of these workarounds sound appealing, I suppose we could
+>> > > alternatively change hyp/entry.S to use adr_l for hyp_panic. Thoughts?
+>> >
+>> > That would be an actual fix instead of a workaround, as it would
+>> > remove existing assumptions about the relative locations of the two
+>> > objects. I guess you need to fix both instances with something such
+>> > as:
+>> >
+>> > diff --git a/arch/arm64/kvm/hyp/entry.S b/arch/arm64/kvm/hyp/entry.S
+>> > index b0afad7a99c6..a43e1f7ee354 100644
+>> > --- a/arch/arm64/kvm/hyp/entry.S
+>> > +++ b/arch/arm64/kvm/hyp/entry.S
+>> > @@ -85,8 +85,10 @@ SYM_INNER_LABEL(__guest_exit_panic, SYM_L_GLOBAL)
+>> >
+>> >         // If the hyp context is loaded, go straight to hyp_panic
+>> >         get_loaded_vcpu x0, x1
+>> > -       cbz     x0, hyp_panic
+>> > -
+>> > +       cbnz    x0, 1f
+>> > +       adr_l   x0, hyp_panic
+>> > +       br      x0
+>> > +1:
+>> 
+>> Agree with replacing the conditional branches that refer to external
+>> symbols: the compiler never emits those, for the reason we are seeing
+>> here, i.e., the range is simply insufficient.
+>> 
+>> But let's just use 'b hyp_panic' instead, no?
 > 
-> This patch adds support for parsing of x509 certificates that contain
+> Alright, this seems to work for me:
+> 
+> diff --git a/arch/arm64/kvm/hyp/entry.S b/arch/arm64/kvm/hyp/entry.S
+> index b0afad7a99c6..c62265951467 100644
+> --- a/arch/arm64/kvm/hyp/entry.S
+> +++ b/arch/arm64/kvm/hyp/entry.S
+> @@ -85,8 +85,10 @@ SYM_INNER_LABEL(__guest_exit_panic, SYM_L_GLOBAL)
+> 
+>         // If the hyp context is loaded, go straight to hyp_panic
+>         get_loaded_vcpu x0, x1
+> -       cbz     x0, hyp_panic
+> +       cbnz    x0, 1f
+> +       b       hyp_panic
+> 
+> +1:
+>         // The hyp context is saved so make sure it is restored to 
+> allow
+>         // hyp_panic to run at hyp and, subsequently, panic to run in 
+> the host.
+>         // This makes use of __guest_exit to avoid duplication but sets 
+> the
+> @@ -94,7 +96,7 @@ SYM_INNER_LABEL(__guest_exit_panic, SYM_L_GLOBAL)
+>         // current state is saved to the guest context but it will only 
+> be
+>         // accurate if the guest had been completely restored.
+>         adr_this_cpu x0, kvm_hyp_ctxt, x1
+> -       adr     x1, hyp_panic
+> +       adr_l   x1, hyp_panic
+>         str     x1, [x0, #CPU_XREG_OFFSET(30)]
+> 
+>         get_vcpu_ptr    x1, x0
+> 
+> But when I say work, I mean this fixes the allmodconfig build with
+> LTO, and my kernel boots at EL2. I don't actually have a way to
+> properly test KVM on arm64. If nobody sees obvious issues here, I can
+> send a proper patch a bit later.
 
-"Add support..." instead of "This patch adds"
+Please do, it is "obviously correct"! ;-)
 
-> ECDSA keys, such as NIST P256, that have been signed by a CA using any
-> of the current SHA hash algorithms.
-> 
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: keyrings@vger.kernel.org
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+Thanks,
 
-/Jarkko
-
-> 
-> ---
-> 
-> v7->v8:
->  - do not detect key algo using parse_OID() in public_key.c but set
->    pkey_algo to the key type 'ecdsa-nist-p192/256' when parsing cert
-> ---
->  crypto/asymmetric_keys/public_key.c       |  4 ++-
->  crypto/asymmetric_keys/x509_cert_parser.c | 34 ++++++++++++++++++++++-
->  crypto/asymmetric_keys/x509_public_key.c  |  4 ++-
->  include/linux/oid_registry.h              |  2 ++
->  4 files changed, 41 insertions(+), 3 deletions(-)
-> 
-> diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
-> index 788a4ba1e2e7..4fefb219bfdc 100644
-> --- a/crypto/asymmetric_keys/public_key.c
-> +++ b/crypto/asymmetric_keys/public_key.c
-> @@ -14,6 +14,7 @@
->  #include <linux/slab.h>
->  #include <linux/seq_file.h>
->  #include <linux/scatterlist.h>
-> +#include <linux/asn1.h>
->  #include <keys/asymmetric-subtype.h>
->  #include <crypto/public_key.h>
->  #include <crypto/akcipher.h>
-> @@ -85,7 +86,8 @@ int software_key_determine_akcipher(const char *encoding,
->  		return n >= CRYPTO_MAX_ALG_NAME ? -EINVAL : 0;
->  	}
->  
-> -	if (strcmp(encoding, "raw") == 0) {
-> +	if (strcmp(encoding, "raw") == 0 ||
-> +	    strcmp(encoding, "x962") == 0) {
->  		strcpy(alg_name, pkey->pkey_algo);
->  		return 0;
->  	}
-> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-> index 1621ceaf5c95..f5d547c6dfb5 100644
-> --- a/crypto/asymmetric_keys/x509_cert_parser.c
-> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
-> @@ -227,6 +227,26 @@ int x509_note_pkey_algo(void *context, size_t hdrlen,
->  		ctx->cert->sig->hash_algo = "sha224";
->  		goto rsa_pkcs1;
->  
-> +	case OID_id_ecdsa_with_sha1:
-> +		ctx->cert->sig->hash_algo = "sha1";
-> +		goto ecdsa;
-> +
-> +	case OID_id_ecdsa_with_sha224:
-> +		ctx->cert->sig->hash_algo = "sha224";
-> +		goto ecdsa;
-> +
-> +	case OID_id_ecdsa_with_sha256:
-> +		ctx->cert->sig->hash_algo = "sha256";
-> +		goto ecdsa;
-> +
-> +	case OID_id_ecdsa_with_sha384:
-> +		ctx->cert->sig->hash_algo = "sha384";
-> +		goto ecdsa;
-> +
-> +	case OID_id_ecdsa_with_sha512:
-> +		ctx->cert->sig->hash_algo = "sha512";
-> +		goto ecdsa;
-> +
->  	case OID_gost2012Signature256:
->  		ctx->cert->sig->hash_algo = "streebog256";
->  		goto ecrdsa;
-> @@ -255,6 +275,11 @@ int x509_note_pkey_algo(void *context, size_t hdrlen,
->  	ctx->cert->sig->encoding = "raw";
->  	ctx->algo_oid = ctx->last_oid;
->  	return 0;
-> +ecdsa:
-> +	ctx->cert->sig->pkey_algo = "ecdsa";
-> +	ctx->cert->sig->encoding = "x962";
-> +	ctx->algo_oid = ctx->last_oid;
-> +	return 0;
->  }
->  
->  /*
-> @@ -276,7 +301,8 @@ int x509_note_signature(void *context, size_t hdrlen,
->  
->  	if (strcmp(ctx->cert->sig->pkey_algo, "rsa") == 0 ||
->  	    strcmp(ctx->cert->sig->pkey_algo, "ecrdsa") == 0 ||
-> -	    strcmp(ctx->cert->sig->pkey_algo, "sm2") == 0) {
-> +	    strcmp(ctx->cert->sig->pkey_algo, "sm2") == 0 ||
-> +	    strcmp(ctx->cert->sig->pkey_algo, "ecdsa") == 0) {
->  		/* Discard the BIT STRING metadata */
->  		if (vlen < 1 || *(const u8 *)value != 0)
->  			return -EBADMSG;
-> @@ -478,6 +504,12 @@ int x509_extract_key_data(void *context, size_t hdrlen,
->  		case OID_sm2:
->  			ctx->cert->pub->pkey_algo = "sm2";
->  			break;
-> +		case OID_id_prime192v1:
-> +			ctx->cert->pub->pkey_algo = "ecdsa-nist-p192";
-> +			break;
-> +		case OID_id_prime256v1:
-> +			ctx->cert->pub->pkey_algo = "ecdsa-nist-p256";
-> +			break;
->  		default:
->  			return -ENOPKG;
->  		}
-> diff --git a/crypto/asymmetric_keys/x509_public_key.c b/crypto/asymmetric_keys/x509_public_key.c
-> index ae450eb8be14..3d45161b271a 100644
-> --- a/crypto/asymmetric_keys/x509_public_key.c
-> +++ b/crypto/asymmetric_keys/x509_public_key.c
-> @@ -129,7 +129,9 @@ int x509_check_for_self_signed(struct x509_certificate *cert)
->  	}
->  
->  	ret = -EKEYREJECTED;
-> -	if (strcmp(cert->pub->pkey_algo, cert->sig->pkey_algo) != 0)
-> +	if (strcmp(cert->pub->pkey_algo, cert->sig->pkey_algo) != 0 &&
-> +	    (strncmp(cert->pub->pkey_algo, "ecdsa-", 6) != 0 ||
-> +	     strcmp(cert->sig->pkey_algo, "ecdsa") != 0))
->  		goto out;
->  
->  	ret = public_key_verify_signature(cert->pub, cert->sig);
-> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-> index f32d91895e4d..3583908cf1ca 100644
-> --- a/include/linux/oid_registry.h
-> +++ b/include/linux/oid_registry.h
-> @@ -20,6 +20,8 @@ enum OID {
->  	OID_id_dsa_with_sha1,		/* 1.2.840.10030.4.3 */
->  	OID_id_dsa,			/* 1.2.840.10040.4.1 */
->  	OID_id_ecPublicKey,		/* 1.2.840.10045.2.1 */
-> +	OID_id_prime192v1,		/* 1.2.840.10045.3.1.1 */
-> +	OID_id_prime256v1,		/* 1.2.840.10045.3.1.7 */
->  	OID_id_ecdsa_with_sha1,		/* 1.2.840.10045.4.1 */
->  	OID_id_ecdsa_with_sha224,	/* 1.2.840.10045.4.3.1 */
->  	OID_id_ecdsa_with_sha256,	/* 1.2.840.10045.4.3.2 */
-> -- 
-> 2.29.2
-> 
-> 
+         M.
+-- 
+Jazz is not dead. It just smells funny...
