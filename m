@@ -2,259 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C59432DEA7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3253D32DEAC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231814AbhCEAxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 19:53:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbhCEAxb (ORCPT
+        id S231916AbhCEAy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 19:54:29 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:24458 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229813AbhCEAy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 19:53:31 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9644C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 16:53:31 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id q77so642620ybq.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 16:53:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:cc;
-        bh=s0a03NeiimEs02gcpf/77HytMIb3TLvi/V8gs4T53vU=;
-        b=lUvKcrArmDzU4hhIn19yXnWghv4IeaePzhyeh1iVUFnn/5/6O2BI7BsDD1MHKJyRs2
-         RAyPCJER4zhqlgnJg79GENfvVkc3l7EIrWxnr8ZLsAopDB1IaGqDAtZH10NJTQdm3nrW
-         2gleXvBpVAgSlTZpvZGXP7IGzILkvt8qlYMV56Vqooc0W03LZrnCDWlJq/gw1aDBT6NC
-         8fE2L8E3/ExcgFRNXzNgiMsd8IN7+eFhZ5OtXFE2nljCmJsSPSbmyspdd7xUb81P7RFt
-         AXVjG6GTxA71nZEbGSKt0V9FTkLssNeeHm9mcd9LZsE/8yUEe5AUPCwgSTSSxZHsKhX+
-         VQsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=s0a03NeiimEs02gcpf/77HytMIb3TLvi/V8gs4T53vU=;
-        b=LR+8rFCynv31SvN2XTcWhR319MTuFTaFXHbGKRefYXGrbYkgUNLgQh26218vmkyqxQ
-         3+52mNDuwJeO8GfMilBAUjDQ/98tmSMCLW4hS9zKJFJtl6vMoaO0JYLO9ArDaa0oE+C5
-         muZ3vAGzOtClSrzKxOTrOzFfVFeHs5Fh3mqgMScxD+C1NKdO9MP2zK/g0FwOXprec9kv
-         3kS4Xb9AA6zrPW1vUaub/pQVzyHLxNl/Cyjlz0UpY7xqj3vIhKfQ1UTjgsR3UYY13ygG
-         hsJ2rnJCA1x2U/YO17rfBcxMp5QIOMltgntakoujqOP/ltHTSHnA+YgpMb8nFCyxJspX
-         Wl3g==
-X-Gm-Message-State: AOAM531I5d/1F2Eigcbt92+RnRjyUpADx/B/3FqjMw3pXBFCYni2EKw6
-        cWPw4F/zZTmrcN29qzK1rHJEaOUS5ywS
-X-Google-Smtp-Source: ABdhPJzNifQecS1ELfAGb8xMfod28CcY5fmiWPIkutWHFymb9agAnhUArzpzU6/YksGQ0r5lKWYUKmIrz7kj
-Sender: "jiancai via sendgmr" <jiancai@jiancai.svl.corp.google.com>
-X-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:1164:dbaf:a707:265d])
- (user=jiancai job=sendgmr) by 2002:a25:d8d1:: with SMTP id
- p200mr10331970ybg.14.1614905610829; Thu, 04 Mar 2021 16:53:30 -0800 (PST)
-Date:   Thu,  4 Mar 2021 16:53:18 -0800
-In-Reply-To: <20210223023542.2287529-1-jiancai@google.com>
-Message-Id: <20210305005327.405365-1-jiancai@google.com>
-Mime-Version: 1.0
-References: <20210223023542.2287529-1-jiancai@google.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v6] ARM: Implement SLS mitigation
-From:   Jian Cai <jiancai@google.com>
-Cc:     ndesaulniers@google.com, manojgupta@google.com, llozano@google.com,
-        clang-built-linux@googlegroups.com, Jian Cai <jiancai@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "=?UTF-8?q?Andreas=20F=C3=A4rber?=" <afaerber@suse.de>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        "=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=" 
-        <u.kleine-koenig@pengutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Joey Gouly <joey.gouly@arm.com>,
-        James Morse <james.morse@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        Thu, 4 Mar 2021 19:54:28 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1250XV2Q074732;
+        Thu, 4 Mar 2021 19:53:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=QjoT81Wn3yRWvpjwuWUjGZfM3Z0jFdVtPmyURAKHe10=;
+ b=VErkfFtf9aclGVqzlDva4eZv+B4cbxn/3kqIoNnBt1zUcP8mGjaoo+scKS8JsEawkwdF
+ 5d74qEnisv48YmT4TS9rpyYseyl+3FkTRiwoJJaSVFTgrkpyabIjbUPZ3NdbsgBwHgkA
+ qKRH4oiBIuCCOTpX+9O+6i+p7bP2LDnJZvofGRMl9a34eT1ncdOj0UPpfu6vjnSyXDww
+ xt/OpZvDNuo82B39OVIb8MKsd4e/w5Ezw9f31uZBpfjlhh2PGJQby66ZA6Hka1srq3O4
+ ZOISYyUQyrOegh4ntwumKMCJxWpm9B/fPZjIgx/2b5+SIuPZhVv+mJIB5WiL2KLGdcG8 YQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373a2crk4t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 19:53:51 -0500
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1250XWdO074898;
+        Thu, 4 Mar 2021 19:53:50 -0500
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373a2crk4k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 19:53:50 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1250ql4L027558;
+        Fri, 5 Mar 2021 00:53:49 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma04dal.us.ibm.com with ESMTP id 36ydq9xrta-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 00:53:49 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1250rme528115448
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 5 Mar 2021 00:53:48 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D9272AE062;
+        Fri,  5 Mar 2021 00:53:48 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C6051AE05F;
+        Fri,  5 Mar 2021 00:53:48 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri,  5 Mar 2021 00:53:48 +0000 (GMT)
+Subject: Re: [PATCH v10 0/9] Add support for x509 certs with NIST P384/256/192
+ keys
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        dhowells@redhat.com, zohar@linux.ibm.com,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org
+References: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <11bd603d-56ca-b974-98e1-bc51238ea4af@linux.ibm.com>
+Date:   Thu, 4 Mar 2021 19:53:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-04_09:2021-03-03,2021-03-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ adultscore=0 spamscore=0 clxscore=1015 mlxlogscore=999 phishscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103050001
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
--mharden-sls=all, which mitigates the straight-line speculation
-vulnerability, speculative execution of the instruction following some
-unconditional jumps. Notice -mharden-sls= has other options as below,
-and this config turns on the strongest option.
+Herbert,
 
-all: enable all mitigations against Straight Line Speculation that are implemented.
-none: disable all mitigations against Straight Line Speculation.
-retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
-blr: enable the mitigation against Straight Line Speculation for BLR instructions.
+    you can take patches 1-8. 9 will not apply without Nayna's series as 
+mentioned in the patch.
 
-Links:
-https://reviews.llvm.org/D93221
-https://reviews.llvm.org/D81404
-https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/downloads/straight-line-speculation
-https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/frequently-asked-questions#SLS2
-
-Suggested-by: Manoj Gupta <manojgupta@google.com>
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Suggested-by: Nathan Chancellor <nathan@kernel.org>
-Suggested-by: David Laight <David.Laight@aculab.com>
-Suggested-by: Will Deacon <will@kernel.org>
-Suggested-by: Russell King <rmk+kernel@armlinux.org.uk>
-Suggested-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Jian Cai <jiancai@google.com>
----
-
-Changes v1 -> v2:
- Update the description and patch based on Nathan and David's comments.
-
-Changes v2 -> v3:
-  Modify linker scripts as Nick suggested to address boot failure
-  (verified with qemu). Added more details in Kconfig.hardening
-  description. Disable the config by default.
-
-Changes v3 -> v4:
-  Address Nathan's comment and replace def_bool with depends on in
-  HARDEN_SLS_ALL.
-
-Changes v4 -> v5:
-  Removed "default n" and made the description target indepdent in
-  Kconfig.hardening.
-
-Changes v5 -> v6:
-  Add select HARDEN_SLS_ALL under config HARDEN_BRANCH_PREDICTOR. This
-  turns on HARDEN_SLS_ALL by default where applicable.
+Regards,
+    Stefan
 
 
- arch/arm/Makefile                  | 4 ++++
- arch/arm/include/asm/vmlinux.lds.h | 4 ++++
- arch/arm/kernel/vmlinux.lds.S      | 1 +
- arch/arm/mm/Kconfig                | 1 +
- arch/arm64/Makefile                | 4 ++++
- arch/arm64/kernel/vmlinux.lds.S    | 5 +++++
- security/Kconfig.hardening         | 8 ++++++++
- 7 files changed, 27 insertions(+)
-
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index dad5502ecc28..54f9b5ff9682 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -48,6 +48,10 @@ CHECKFLAGS	+= -D__ARMEL__
- KBUILD_LDFLAGS	+= -EL
- endif
- 
-+ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
-+KBUILD_CFLAGS  += -mharden-sls=all
-+endif
-+
- #
- # The Scalar Replacement of Aggregates (SRA) optimization pass in GCC 4.9 and
- # later may result in code being generated that handles signed short and signed
-diff --git a/arch/arm/include/asm/vmlinux.lds.h b/arch/arm/include/asm/vmlinux.lds.h
-index 4a91428c324d..c7f9717511ca 100644
---- a/arch/arm/include/asm/vmlinux.lds.h
-+++ b/arch/arm/include/asm/vmlinux.lds.h
-@@ -145,3 +145,7 @@
- 		__edtcm_data = .;					\
- 	}								\
- 	. = __dtcm_start + SIZEOF(.data_dtcm);
-+
-+#define SLS_TEXT							\
-+		ALIGN_FUNCTION();					\
-+		*(.text.__llvm_slsblr_thunk_*)
-diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
-index f7f4620d59c3..e71f2bc97bae 100644
---- a/arch/arm/kernel/vmlinux.lds.S
-+++ b/arch/arm/kernel/vmlinux.lds.S
-@@ -63,6 +63,7 @@ SECTIONS
- 	.text : {			/* Real text segment		*/
- 		_stext = .;		/* Text and read-only data	*/
- 		ARM_TEXT
-+		SLS_TEXT
- 	}
- 
- #ifdef CONFIG_DEBUG_ALIGN_RODATA
-diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
-index 35f43d0aa056..bdb63e7b1bec 100644
---- a/arch/arm/mm/Kconfig
-+++ b/arch/arm/mm/Kconfig
-@@ -837,6 +837,7 @@ config HARDEN_BRANCH_PREDICTOR
- 	bool "Harden the branch predictor against aliasing attacks" if EXPERT
- 	depends on CPU_SPECTRE
- 	default y
-+	select HARDEN_SLS_ALL
- 	help
- 	   Speculation attacks against some high-performance processors rely
- 	   on being able to manipulate the branch predictor for a victim
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 5b84aec31ed3..e233bfbdb1c2 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -34,6 +34,10 @@ $(warning LSE atomics not supported by binutils)
-   endif
- endif
- 
-+ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
-+KBUILD_CFLAGS  += -mharden-sls=all
-+endif
-+
- cc_has_k_constraint := $(call try-run,echo				\
- 	'int main(void) {						\
- 		asm volatile("and w0, w0, %w0" :: "K" (4294967295));	\
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 7eea7888bb02..d5c892605862 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -103,6 +103,10 @@ jiffies = jiffies_64;
- #define TRAMP_TEXT
- #endif
- 
-+#define SLS_TEXT					\
-+	ALIGN_FUNCTION();				\
-+	*(.text.__llvm_slsblr_thunk_*)
-+
- /*
-  * The size of the PE/COFF section that covers the kernel image, which
-  * runs from _stext to _edata, must be a round multiple of the PE/COFF
-@@ -154,6 +158,7 @@ SECTIONS
- 			HIBERNATE_TEXT
- 			TRAMP_TEXT
- 			*(.fixup)
-+			SLS_TEXT
- 			*(.gnu.warning)
- 		. = ALIGN(16);
- 		*(.got)			/* Global offset table		*/
-diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
-index 269967c4fc1b..db76ad732c14 100644
---- a/security/Kconfig.hardening
-+++ b/security/Kconfig.hardening
-@@ -121,6 +121,14 @@ choice
- 
- endchoice
- 
-+config HARDEN_SLS_ALL
-+	bool "enable SLS vulnerability hardening"
-+	depends on $(cc-option,-mharden-sls=all)
-+	help
-+	  Enables straight-line speculation vulnerability hardening. This inserts
-+	  speculation barrier instruction sequences after certain unconditional jumps
-+	  to prevent speculative execution past those barriers.
-+
- config GCC_PLUGIN_STRUCTLEAK_VERBOSE
- 	bool "Report forcefully initialized variables"
- 	depends on GCC_PLUGIN_STRUCTLEAK
--- 
-2.30.1.766.gb4fecdf3b7-goog
+On 3/4/21 7:51 PM, Stefan Berger wrote:
+> From: Stefan Berger <stefanb@linux.ibm.com>
+>
+> This series of patches adds support for x509 certificates signed by a CA
+> that uses NIST P384, P256 or P192 keys for signing. It also adds support for
+> certificates where the public key is one of this type of a key. The math
+> for ECDSA signature verification is also added as well as the math for fast
+> mmod operation for NIST P384.
+>
+> Since self-signed certificates are verified upon loading, the following
+> script can be used for testing of NIST P256 keys:
+>
+> k=$(keyctl newring test @u)
+>
+> while :; do
+> 	for hash in sha1 sha224 sha256 sha384 sha512; do
+> 		openssl req \
+> 			-x509 \
+> 			-${hash} \
+> 			-newkey ec \
+> 			-pkeyopt ec_paramgen_curve:prime256v1 \
+> 			-keyout key.pem \
+> 			-days 365 \
+> 			-subj '/CN=test' \
+> 			-nodes \
+> 			-outform der \
+> 			-out cert.der
+> 		keyctl padd asymmetric testkey $k < cert.der
+> 		if [ $? -ne 0 ]; then
+> 			echo "ERROR"
+> 			exit 1
+> 		fi
+> 	done
+> done
+>
+> Ecdsa support also works with restricted keyrings where an RSA key is used
+> to sign a NIST P384/256/192 key. Scripts for testing are here:
+>
+> https://github.com/stefanberger/eckey-testing
+>
+> The ECDSA signature verification will be used by IMA Appraisal where ECDSA
+> file signatures stored in RPM packages will use substantially less space
+> than if RSA signatures were to be used.
+>
+> Further, a patch is added that allows kernel modules to be signed with a NIST
+> p384 key.
+>
+>     Stefan and Saulo
+>
+> v9->v10:
+>    - rearranged order of patches to have crypto patches first
+>    - moved hunk from patch 3 to patch 2 to avoid compilation warning due to
+>      unused symbol
+>
+> v8->v9:
+>    - Appended Saulo's patches
+>    - Appended patch to support kernel modules signed with NIST p384 key. This
+>      patch requires Nayna's series here: https://lkml.org/lkml/2021/2/18/856
+>
+> v7->v8:
+>    - patch 3/4: Do not determine key algo using parse_OID in public_key.c
+>      but do this when parsing the certificate. This addresses an issue
+>      with certain build configurations where OID_REGISTRY is not available
+>      as 'Reported-by: kernel test robot <lkp@intel.com>'.
+>
+> v6->v7:
+>    - Moved some OID defintions to patch 1 for bisectability
+>    - Applied R-b's
+>    
+> v5->v6:
+>    - moved ecdsa code into its own module ecdsa_generic built from ecdsa.c
+>    - added script-generated test vectors for NIST P256 & P192 and all hashes
+>    - parsing of OID that contain header with new parse_oid()
+>
+> v4->v5:
+>    - registering crypto support under names ecdsa-nist-p256/p192 following
+>      Hubert Xu's suggestion in other thread
+>    - appended IMA ECDSA support patch
+>
+> v3->v4:
+>    - split off of ecdsa crypto part; registering akcipher as "ecdsa" and
+>      deriving used curve from digits in parsed key
+>
+> v2->v3:
+>    - patch 2 now includes linux/scatterlist.h
+>
+> v1->v2:
+>    - using faster vli_sub rather than newly added vli_mod_fast to 'reduce'
+>      result
+>    - rearranged switch statements to follow after RSA
+>    - 3rd patch from 1st posting is now 1st patch
+>
+>
+> Saulo Alessandre (4):
+>    crypto: Add NIST P384 curve parameters
+>    crypto: Add math to support fast NIST P384
+>    ecdsa: Register NIST P384 and extend test suite
+>    x509: Add OID for NIST P384 and extend parser for it
+>
+> Stefan Berger (5):
+>    crypto: Add support for ECDSA signature verification
+>    x509: Detect sm2 keys by their parameters OID
+>    x509: Add support for parsing x509 certs with ECDSA keys
+>    ima: Support EC keys for signature verification
+>    certs: Add support for using elliptic curve keys for signing modules
+>
+>   certs/Kconfig                             |  22 ++
+>   certs/Makefile                            |  14 +
+>   crypto/Kconfig                            |  10 +
+>   crypto/Makefile                           |   6 +
+>   crypto/asymmetric_keys/pkcs7_parser.c     |   4 +
+>   crypto/asymmetric_keys/public_key.c       |   4 +-
+>   crypto/asymmetric_keys/x509_cert_parser.c |  49 ++-
+>   crypto/asymmetric_keys/x509_public_key.c  |   4 +-
+>   crypto/ecc.c                              | 281 +++++++++-----
+>   crypto/ecc.h                              |  31 +-
+>   crypto/ecc_curve_defs.h                   |  32 ++
+>   crypto/ecdsa.c                            | 400 ++++++++++++++++++++
+>   crypto/ecdsasignature.asn1                |   4 +
+>   crypto/testmgr.c                          |  18 +
+>   crypto/testmgr.h                          | 424 ++++++++++++++++++++++
+>   include/crypto/ecdh.h                     |   1 +
+>   include/keys/asymmetric-type.h            |   6 +
+>   include/linux/oid_registry.h              |  10 +-
+>   lib/oid_registry.c                        |  13 +
+>   security/integrity/digsig_asymmetric.c    |  30 +-
+>   20 files changed, 1256 insertions(+), 107 deletions(-)
+>   create mode 100644 crypto/ecdsa.c
+>   create mode 100644 crypto/ecdsasignature.asn1
+>
 
