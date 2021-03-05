@@ -2,154 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6FB32F534
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A11BA32F53C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhCEVMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:12:12 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:38437 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbhCEVLs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 16:11:48 -0500
-Received: by mail-ot1-f50.google.com with SMTP id a17so3170155oto.5;
-        Fri, 05 Mar 2021 13:11:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uKjq62oG1M+UJlNb/42Jphmibl02E1oJqMtrd1v/u3w=;
-        b=GJnKo210zk4FqCLsjeThdGl8lzOTRD9COaczddImJV9xMZlL4PlPaWOibb2QH3k0YZ
-         n2SE0Zh7AhMbMSZNPOApLtmwMEqmFIMCVecsE7/2QlUXnz7P80OiZHpJBxcVodTrHPE+
-         XgfV4kPa5N7qhvlahVwi9G6IFpGL/QabJ5EeLzt0xMh1etQSYNRohwVybd7GaiBqfxhg
-         0pB1LsYVxn7SydpIzPKViHckPD9blybWJPJthWsCaD2w3YLJma1Wd33gAICqPDPn+OF7
-         3t2z+WVd5CEMCHaSQ3T6h5op5dptp5vVXEsIwOpvnA4XE5YcvD1X5d7U8MieL7QNiHrz
-         8vKw==
-X-Gm-Message-State: AOAM531uaW+8Ix16y7a1xbvUXPT1YORl8iMF9KAPXJuY3JlKUDZxYi+7
-        2fqUo++MeVH8wtUFuLkWMg==
-X-Google-Smtp-Source: ABdhPJymfTGlaTKStCYTTPEvB0kmVfiZiofdZtu33DKklWoBVzTryzlQTlge+HaRSguivy9uI3pd5w==
-X-Received: by 2002:a9d:7512:: with SMTP id r18mr9752602otk.90.1614978708188;
-        Fri, 05 Mar 2021 13:11:48 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l69sm859482otc.23.2021.03.05.13.11.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 13:11:46 -0800 (PST)
-Received: (nullmailer pid 654717 invoked by uid 1000);
-        Fri, 05 Mar 2021 21:11:45 -0000
-Date:   Fri, 5 Mar 2021 15:11:45 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     mgross@linux.intel.com
-Cc:     markgross@kernel.org, arnd@arndb.de, bp@suse.de,
-        damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        peng.fan@nxp.com, shawnguo@kernel.org, jassisinghbrar@gmail.com,
-        linux-kernel@vger.kernel.org,
-        Seamus Kelly <seamus.kelly@intel.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 17/34] xlink-ipc: Add xlink ipc device tree bindings
-Message-ID: <20210305211145.GA649830@robh.at.kernel.org>
-References: <20210212222304.110194-1-mgross@linux.intel.com>
- <20210212222304.110194-18-mgross@linux.intel.com>
+        id S229948AbhCEVRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 16:17:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229716AbhCEVRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 16:17:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD21A650A3;
+        Fri,  5 Mar 2021 21:17:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614979050;
+        bh=Uq2IgJr9kfuVZlHKajDc//q6GSI/XAvfSiCyKzo1V8Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lRdKSARLHY86Mf+trKqlx5nDF6gUxXjau8jUulM0OvPHJnGHI+M8ySKktY8XXjiyh
+         gPgeYM/hOkWA4pMjlJBG1uE3K67vpVrBNMG/PLuFLxreBluK7TN771IUBPk0n+Q+8m
+         5aB2L2Fm24Sb5y0llCK3eB4e9semIXGj8Gk5B9jGiSxqIgHAk5WWHM5WV9BqyYS7ka
+         U5jPmZBMU21t0Kk5r//0EHI6e0rxIvN2x05/oinlGGebESgDGGUGa8aU+z8zYR8O/G
+         eYaEoUL45CG6w7DeJ8XM1Orfk3FuygeAiRz8Fm/I6OvluvPaW88PVV95UXoj8xQ6ER
+         XAa1IhBeRCPng==
+Received: by mail-oi1-f174.google.com with SMTP id j1so4052533oiw.3;
+        Fri, 05 Mar 2021 13:17:30 -0800 (PST)
+X-Gm-Message-State: AOAM530dA6UOr9jnM5OrYtXqtNf0U7+CGMl5YFfkHAHPYsXgeWGLrxmR
+        5dY6TKh2vJd1VFqHzAZCHCRd/KqEHL3/rlrzzOs=
+X-Google-Smtp-Source: ABdhPJxuxTnyW6QlTJAPT3FkZfYcbHpraEjPrLMerJHage2MvI0443wfkGa8phS23+Oq983m1NS18jdBnjhB5h3CRcA=
+X-Received: by 2002:aca:5e85:: with SMTP id s127mr8198762oib.67.1614979049957;
+ Fri, 05 Mar 2021 13:17:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212222304.110194-18-mgross@linux.intel.com>
+References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-13-marcan@marcan.st>
+ <CAL_JsqJF2Hz=4U7FR_GOSjCxqt3dpf-CAWFNfsSrDjDLpHqgCA@mail.gmail.com> <6e4880b3-1fb6-0cbf-c1a5-7a46fd9ccf62@marcan.st>
+In-Reply-To: <6e4880b3-1fb6-0cbf-c1a5-7a46fd9ccf62@marcan.st>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 5 Mar 2021 22:17:13 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0Hmwt-ywzS-2eEmqyQ0v2SxLsLxFwfTUoWwbzCrBNhsQ@mail.gmail.com>
+Message-ID: <CAK8P3a0Hmwt-ywzS-2eEmqyQ0v2SxLsLxFwfTUoWwbzCrBNhsQ@mail.gmail.com>
+Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
+ MMIO as non-posted
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Rob Herring <robh@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        DTML <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 02:22:47PM -0800, mgross@linux.intel.com wrote:
-> From: Seamus Kelly <seamus.kelly@intel.com>
+On Fri, Mar 5, 2021 at 7:18 PM Hector Martin <marcan@marcan.st> wrote:
+>
+> On 06/03/2021 02.39, Rob Herring wrote:
+> >> -       return ioremap(res.start, resource_size(&res));
+> >> +       if (res.flags & IORESOURCE_MEM_NONPOSTED)
+> >> +               return ioremap_np(res.start, resource_size(&res));
+> >> +       else
+> >> +               return ioremap(res.start, resource_size(&res));
+> >
+> > This and the devm variants all scream for a ioremap_extended()
+> > function. IOW, it would be better if the ioremap flavor was a
+> > parameter. Unless we could implement that just for arm64 first, that's
+> > a lot of refactoring...
+>
+> I agree, but yeah... that's one big refactor to try to do now...
 
-Please make the subjects consistent.
+FWIW, there is ioremap_prot() that Christoph introduced in 2019
+for a few architectures.  I suppose it would be nice to lift
+that out architecture specific code and completely replace the
+unusual variants, leaving only ioremap(), ioremap_prot() and
+memremap() but dropping the _nc, _cached, _wc, _wt and _np
+versions in favor of an extensible set of flags.
 
-> 
-> Add device tree bindings for the xLink IPC driver which enables xLink to
-> control and communicate with the VPU IP present on the Intel Keem Bay
-> SoC.
-> 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> Signed-off-by: Mark Gross <mgross@linux.intel.com>
-> Signed-off-by: Seamus Kelly <seamus.kelly@intel.com>
-> ---
->  .../misc/intel,keembay-xlink-ipc.yaml         | 51 +++++++++++++++++++
->  1 file changed, 51 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml b/Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
-> new file mode 100644
-> index 000000000000..70a3061d024d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
-> @@ -0,0 +1,51 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright (c) Intel Corporation. All rights reserved.
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/misc/intel,keembay-xlink-ipc.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Intel Keem Bay xlink IPC
-> +
-> +maintainers:
-> +  - Kelly Seamus <seamus.kelly@intel.com>
+Then again, I would not make that a prerequisite for the merge
+of the M1 support.
 
-Name doesn't match the author.
+> > What's the code path using these functions on the M1 where we need to
+> > return 'posted'? It's just downstream PCI mappings (PCI memory space),
+> > right? Those would never hit these paths because they don't have a DT
+> > node or if they do the memory space is not part of it. So can't the
+> > check just be:
+> >
+> > bool of_mmio_is_nonposted(struct device_node *np)
+> > {
+> >      return np && of_machine_is_compatible("apple,arm-platform");
+> > }
+>
+> Yes; the implementation was trying to be generic, but AIUI we don't need
+> this on M1 because the PCI mappings don't go through this codepath, and
+> nothing else needs posted mode. My first hack was something not too
+> unlike this, then I was going to get rid of apple,arm-platform and just
+> have this be a generic mechanism with the properties, but then we added
+> the optimization to not do the lookups on other platforms, and now we're
+> coming full circle... :-)
 
-> +
-> +description: |
-> +  The Keem Bay xlink IPC driver enables the communication/control sub-system
-> +  for internal IPC communications within the Intel Keem Bay SoC.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: intel,keembay-xlink-ipc
+I never liked the idea of having a list of platforms that need a
+special hack, please let's not go back to that.
 
-Don't need oneOf nor items, just const.
-
-> +
-> +  memory-region:
-> +    items:
-> +      - description: reference to the CSS xlink IPC reserved memory region.
-> +      - description: reference to the MSS xlink IPC reserved memory region.
-> +
-> +  intel,keembay-vpu-ipc-id:
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    description: The numeric ID identifying the VPU within the xLink stack.
-> +
-> +  intel,keembay-vpu-ipc-name:
-> +    $ref: "/schemas/types.yaml#/definitions/string"
-> +    description: User-friendly name for the VPU within the xLink stack.
-> +
-> +  intel,keembay-vpu-ipc:
-> +    $ref: "/schemas/types.yaml#/definitions/phandle"
-> +    description: reference to the corresponding intel,keembay-vpu-ipc node.
-
-Is there more than one?
-
-> +
-> +additionalProperties: False
-> +
-> +examples:
-> +  - |
-> +    xlink-ipc {
-> +        compatible = "intel,keembay-xlink-ipc";
-> +        memory-region = <&css_xlink_reserved>,
-> +                        <&mss_xlink_reserved>;
-> +        intel,keembay-vpu-ipc-id = <0x0>;
-> +        intel,keembay-vpu-ipc-name = "vpu-slice-0";
-
-I assume the 0 id is the same as the 0 here? If so, there's not really 
-any reason to put this into DT. You can generate the string if needed in 
-the driver.
-
-> +        intel,keembay-vpu-ipc = <&vpuipc>;
-> +    };
-> -- 
-> 2.17.1
-> 
+         Arnd
