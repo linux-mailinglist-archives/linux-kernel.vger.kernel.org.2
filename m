@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B2C32F32A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2D132F349
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbhCESul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 13:50:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbhCESu0 (ORCPT
+        id S230023AbhCESx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 13:53:58 -0500
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:39766 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhCESxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 13:50:26 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DBEC06175F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 10:50:26 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id x10so2990173qkm.8
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 10:50:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yI8iOjteMFKoGk4zeandGRXPKmEeCoKU9NReC9R1TlA=;
-        b=jdju3sRLxCIuGglN0bDwsdRLQdMI4wUI/YgyLBKCoHdX8rOcCNBbvbJ0KpYRlazEOS
-         N8wzuqpxZw4XfkZ3K5SyaQAjQE7iuNrvt0rMFrrv8kLjDxbdETjbAvUm7Gnc4FEp3hQf
-         B5eOseLz2ziLyCmSG5lckZi2t+qaMMTyCzF4o=
+        Fri, 5 Mar 2021 13:53:51 -0500
+Received: by mail-ot1-f53.google.com with SMTP id h22so2782597otr.6;
+        Fri, 05 Mar 2021 10:53:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yI8iOjteMFKoGk4zeandGRXPKmEeCoKU9NReC9R1TlA=;
-        b=IQVwPJxThIyEwVV0zGEMXs+N186tUV7AFnzfUz0ArOgASd4mifppTMKDZvbDlwYKMU
-         eJD2j3Z3/WVPoaYJB2Smu6vKh31+Ih2qfkL7Z5J8f4D4BDFYa5PfoARsisA0J/TeC7Tc
-         G1Zb+6CgsQYahpDTQFYQHm6209qvIN7u6DnjqOc6bO6cAgbKjb0YTDl/BiQ2bKczYg4B
-         08BFNSLXsVQEy2JaBxe6ege7EzVJMZ4DlXgHJ9/6CwXfYYY/VwaKWiNLfJV5IHDW+MkJ
-         bQ5xAh3lXJhtd5eT6Fuw8+Qk5O+LlwwAVKvWKrSJfdoYW6QDZIIpqeiiFjMSkor1dVgh
-         piJw==
-X-Gm-Message-State: AOAM530oDymnLHy/tIdpLbAtSU4OTL65Td3SDJhrbkZbPFtsokgGv9bO
-        BEcWpts+G4dyGxv4lnjypXNkLZ4mNFmu3g==
-X-Google-Smtp-Source: ABdhPJyWn5nwyOF6QNkvE4BFjarZ3G1s+QzcbppGoM5I9HaMfPMYHGRcuUNkaifELOAfQK63Vl/RHg==
-X-Received: by 2002:a37:a28e:: with SMTP id l136mr10460672qke.172.1614970225140;
-        Fri, 05 Mar 2021 10:50:25 -0800 (PST)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id z5sm2575581qtc.42.2021.03.05.10.50.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 10:50:24 -0800 (PST)
-Received: by mail-yb1-f171.google.com with SMTP id x19so3026371ybe.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 10:50:24 -0800 (PST)
-X-Received: by 2002:a25:cf88:: with SMTP id f130mr15532432ybg.476.1614970224174;
- Fri, 05 Mar 2021 10:50:24 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fneTq2063McDFfTPtwQtaMOm7W8A1xMYIqx5C0mAJsk=;
+        b=LHFk0fOiOzO4eQl17wFViJkzaZtB4b4EDWnB9cTpSrZ2hT9g7MpQ72nhmGJ8TlDmj8
+         8Mfqd/9WuI4m516rHg/HpBT4FwDkfTwPiyBP/IZkbgfzCnLEKSonY7JJNQoeu8KxQea5
+         1igol/OwEDO53xhzcSxoVogY4KORblYMOzzc8p+7sK2X/yCH2LWSmSAlybyTBuV+G6zy
+         8YbaeK2mLi6w0RNIxyAi7i+Gu4jhftKUSLoMvNLFele5tIa6OO3VRlgmjrCb662iif5P
+         mDjzOdGrSdDGWFwvlEWsGdUEJnBYrmwbJ+l+ufTMwWD852HBzWkxxLD7iIqRHGEDJRKw
+         mMpA==
+X-Gm-Message-State: AOAM531TqLvtb0mH9lFIDHqZq7Nvp364ClyzJ+qqgTy4Q8KICCPiM81p
+        6OV5MDucqQURkqlVsnpjH/0LLvq7ag==
+X-Google-Smtp-Source: ABdhPJx2eP3/GWFcePScRRMJu4lNsYmW8oQimLQi+5KHkY5RbcmejQsXuc9T1SCDS/k9iNKR7cLyrA==
+X-Received: by 2002:a9d:73ce:: with SMTP id m14mr8673721otk.57.1614970430386;
+        Fri, 05 Mar 2021 10:53:50 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h20sm765795otr.2.2021.03.05.10.53.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 10:53:49 -0800 (PST)
+Received: (nullmailer pid 468180 invoked by uid 1000);
+        Fri, 05 Mar 2021 18:53:47 -0000
+Date:   Fri, 5 Mar 2021 12:53:47 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Valentin Caron <valentin.caron@foss.st.com>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Erwan Le Ray <erwan.leray@foss.st.com>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: serial: stm32: add examples
+Message-ID: <20210305185347.GA466473@robh.at.kernel.org>
+References: <20210209095948.15889-1-valentin.caron@foss.st.com>
 MIME-Version: 1.0
-References: <20210304180415.1531430-1-mka@chromium.org> <20210304100341.4.I95b8a63103b77cab6a7cf9c150f0541db57fda98@changeid>
-In-Reply-To: <20210304100341.4.I95b8a63103b77cab6a7cf9c150f0541db57fda98@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 5 Mar 2021 10:50:12 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=UQoXsPYqv8a25Kn+=z1pZu4YUKK7VZSm4rq_i9KpD3rQ@mail.gmail.com>
-Message-ID: <CAD=FV=UQoXsPYqv8a25Kn+=z1pZu4YUKK7VZSm4rq_i9KpD3rQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] arm64: dts: qcom: sc7180: Disable charger thermal
- zone for coachz rev1 and rev2
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209095948.15889-1-valentin.caron@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Feb 09, 2021 at 10:59:48AM +0100, Valentin Caron wrote:
+> From: Valentin Caron <valentin.caron@st.com>
+> 
+> Add examples to show more use cases :
+>  - uart2 with hardware flow control
+>  - uart4 without flow control
 
-On Thu, Mar 4, 2021 at 10:04 AM Matthias Kaehlcke <mka@chromium.org> wrote:
->
-> CoachZ rev1 and rev2 are stuffed with a 47k NTC as thermistor for the
-> charger temperature which currently isn't supported by the PM6150 ADC
-> driver. Disable the charger thermal zone to avoid the use of bogus
-> temperature values.
->
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Why do I need these? I can go read your dts files if I need more 
+examples.
+
+> 
+> Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
 > ---
->
->  arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts | 9 +++++++++
->  arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2.dts | 9 +++++++++
->  2 files changed, 18 insertions(+)
-
-I guess this patch is written with the assumption that eventually
-we'll create a "-r3" or "-r4" that has a proper thermistor stuffed but
-maybe we're not sure which one?  Right now you're disabling it for
-both -r1 and -r2+ which is all revisions, so this could go in the
-coachz.dtsi file...
-
--Doug
+>  .../bindings/serial/st,stm32-uart.yaml        | 20 +++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+> index 06d5f251ec88..3a4aab5d1862 100644
+> --- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+> +++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+> @@ -82,6 +82,26 @@ additionalProperties: false
+>  examples:
+>    - |
+>      #include <dt-bindings/clock/stm32mp1-clks.h>
+> +
+> +    usart4: serial@40004c00 {
+> +      compatible = "st,stm32-uart";
+> +      reg = <0x40004c00 0x400>;
+> +      interrupts = <52>;
+> +      clocks = <&clk_pclk1>;
+> +      pinctrl-names = "default";
+> +      pinctrl-0 = <&pinctrl_usart4>;
+> +    };
+> +
+> +    usart2: serial@40004400 {
+> +      compatible = "st,stm32-uart";
+> +      reg = <0x40004400 0x400>;
+> +      interrupts = <38>;
+> +      clocks = <&clk_pclk1>;
+> +      st,hw-flow-ctrl;
+> +      pinctrl-names = "default";
+> +      pinctrl-0 = <&pinctrl_usart2 &pinctrl_usart2_rtscts>;
+> +    };
+> +
+>      usart1: serial@40011000 {
+>        compatible = "st,stm32-uart";
+>        reg = <0x40011000 0x400>;
+> -- 
+> 2.17.1
+> 
