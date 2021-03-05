@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F20B832E966
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B20C32EA3D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhCEMch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:32:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42136 "EHLO mail.kernel.org"
+        id S232004AbhCEMho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:37:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232394AbhCEMbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:31:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 366E465004;
-        Fri,  5 Mar 2021 12:31:41 +0000 (UTC)
+        id S232712AbhCEMgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:36:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B326B65025;
+        Fri,  5 Mar 2021 12:36:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947502;
-        bh=bVPc3stHIVaoZf9qqH88UfOnJvWhRwEQYftfzWoenDQ=;
+        s=korg; t=1614947797;
+        bh=2nCRMjKsYL6eKlEOtLJhe7YR1eQJU5eu2wfd7sx7BA8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wtt6hWV6OWEj88MxwR+HexHbRvWRekhy61JNvGU8l9vBdEmMmpJmWNM5SvmVTfm1u
-         eKIRotGhoGqk33umsnBSqFi+vfg9ggwOqzZWEmzILtNpBl2uJlZ5oBfbDJobcRLDSp
-         i41a7EVAaLLxb00f+paH1JMwTSC652n17xDSWi84=
+        b=DEehKAUKRh18FcoK33V5+1X5S9xq7dlMeIw+hnhmxDBS1DsxckRIu6VrsMvgHUyxl
+         zg74svrA4Pd0yypmol+01oRp49BLaYJlwjna+JFdpJf9ge3A39VC179CwqaLG/U8tt
+         xU6t7yyRH3cUk9LzrJChOoR+cy0I74o1+QMxbg5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Jan Beulich <jbeulich@suse.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 5.10 087/102] xen-netback: respect gnttab_map_refs()s return value
+        stable@vger.kernel.org,
+        syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com,
+        Eric Dumazet <edumazet@google.com>,
+        Marco Elver <elver@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 15/52] net: fix up truesize of cloned skb in skb_prepare_for_shift()
 Date:   Fri,  5 Mar 2021 13:21:46 +0100
-Message-Id: <20210305120907.564802186@linuxfoundation.org>
+Message-Id: <20210305120854.417082701@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+References: <20210305120853.659441428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Marco Elver <elver@google.com>
 
-commit 2991397d23ec597405b116d96de3813420bdcbc3 upstream.
+commit 097b9146c0e26aabaa6ff3e5ea536a53f5254a79 upstream.
 
-Commit 3194a1746e8a ("xen-netback: don't "handle" error by BUG()")
-dropped respective a BUG_ON() without noticing that with this the
-variable's value wouldn't be consumed anymore. With gnttab_set_map_op()
-setting all status fields to a non-zero value, in case of an error no
-slot should have a status of GNTST_okay (zero).
+Avoid the assumption that ksize(kmalloc(S)) == ksize(kmalloc(S)): when
+cloning an skb, save and restore truesize after pskb_expand_head(). This
+can occur if the allocator decides to service an allocation of the same
+size differently (e.g. use a different size class, or pass the
+allocation on to KFENCE).
 
-This is part of XSA-367.
+Because truesize is used for bookkeeping (such as sk_wmem_queued), a
+modified truesize of a cloned skb may result in corrupt bookkeeping and
+relevant warnings (such as in sk_stream_kill_queues()).
 
-Cc: <stable@vger.kernel.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Link: https://lore.kernel.org/r/d933f495-619a-0086-5fb4-1ec3cf81a8fc@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Link: https://lkml.kernel.org/r/X9JR/J6dMMOy1obu@elver.google.com
+Reported-by: syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/r/20210201160420.2826895-1-elver@google.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/xen-netback/netback.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ net/core/skbuff.c |   14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -1342,11 +1342,21 @@ int xenvif_tx_action(struct xenvif_queue
- 		return 0;
- 
- 	gnttab_batch_copy(queue->tx_copy_ops, nr_cops);
--	if (nr_mops != 0)
-+	if (nr_mops != 0) {
- 		ret = gnttab_map_refs(queue->tx_map_ops,
- 				      NULL,
- 				      queue->pages_to_map,
- 				      nr_mops);
-+		if (ret) {
-+			unsigned int i;
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -3092,7 +3092,19 @@ EXPORT_SYMBOL(skb_split);
+  */
+ static int skb_prepare_for_shift(struct sk_buff *skb)
+ {
+-	return skb_cloned(skb) && pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
++	int ret = 0;
 +
-+			netdev_err(queue->vif->dev, "Map fail: nr %u ret %d\n",
-+				   nr_mops, ret);
-+			for (i = 0; i < nr_mops; ++i)
-+				WARN_ON_ONCE(queue->tx_map_ops[i].status ==
-+				             GNTST_okay);
-+		}
++	if (skb_cloned(skb)) {
++		/* Save and restore truesize: pskb_expand_head() may reallocate
++		 * memory where ksize(kmalloc(S)) != ksize(kmalloc(S)), but we
++		 * cannot change truesize at this point.
++		 */
++		unsigned int save_truesize = skb->truesize;
++
++		ret = pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
++		skb->truesize = save_truesize;
 +	}
++	return ret;
+ }
  
- 	work_done = xenvif_tx_submit(queue);
- 
+ /**
 
 
