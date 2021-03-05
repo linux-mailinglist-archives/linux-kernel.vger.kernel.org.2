@@ -2,71 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9705132E1AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 06:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A1A32E1B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 06:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbhCEFjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 00:39:36 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:54592 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhCEFje (ORCPT
+        id S229668AbhCEFkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 00:40:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229494AbhCEFkE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 00:39:34 -0500
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 04 Mar 2021 21:39:33 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 Mar 2021 21:39:32 -0800
-X-QCInternal: smtphost
-Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 05 Mar 2021 11:09:12 +0530
-Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
-        id 0BF083C33; Fri,  5 Mar 2021 11:09:10 +0530 (IST)
-From:   satya priya <skakit@codeaurora.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        satya priya <skakit@codeaurora.org>
-Subject: [PATCH 3/3] dt-bindings: input: pm8941-pwrkey: Add pmk8350 compatible strings
-Date:   Fri,  5 Mar 2021 11:08:41 +0530
-Message-Id: <1614922721-1390-4-git-send-email-skakit@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614922721-1390-1-git-send-email-skakit@codeaurora.org>
-References: <1614922721-1390-1-git-send-email-skakit@codeaurora.org>
+        Fri, 5 Mar 2021 00:40:04 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE08AC061574;
+        Thu,  4 Mar 2021 21:40:03 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id b7so923650edz.8;
+        Thu, 04 Mar 2021 21:40:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lBCWGdO9ttBa6bwSQbn6+grvew9hSstcWY182hlBYEM=;
+        b=rJQXYGimR08jN/gQDfES8jfSvwKcM0pia534mWsfkeY46w1w3Ns96ld7txEzSa4Tp7
+         m8xbaH5WMDyWwWnu9++GSiUhFFMx8y9jlrujXEZJk+XMNKtzMKR+CgG2xTPiAHKlZbTN
+         cbKrjY2rgsjs66hPNlFHETHTpAzjIj9w1hBZ9wuRb3+FVHe0sMNV/NcwypoU8UWGSbJy
+         WLu9RDf7f5FIfwOgBbHLdOHndQcEJxVcxxShvY3zMswgeSoaUkU45SOtYYGZ9p8snaXz
+         FgXkPNSkrKSqk9k7mi+2C2OqtRMEkVrAHjqB0xe4OJFV48q00//6gte9HM/fgxKd0w5U
+         XFdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lBCWGdO9ttBa6bwSQbn6+grvew9hSstcWY182hlBYEM=;
+        b=gchJ42pu7qWg3oEadxmQyLJ/xb04OtqFqlev8T/XPqgg3VTof/YyuwfReURxdy5uJe
+         NL5Lw3+AtGlUJkAZnF7hnTqizTF+6n63JN3ejnoT2XngyYkMFNAZR3KiA96/vJd+8O2y
+         PoWfHLD73amUtnT6EeT1t+yssEyP3EIDmP7nBHBVH3AM2vlsTqvfTlGWyDtgUPceyOxD
+         AoC4vxFlkw0xaxCColTJwnjEYXFlT32e6LKwkNNnD87pwpBBRWVkeZg/GMtUJ7EBegeR
+         o7UEDqShxY/W2F12Z8777UfTVpjPujoDxZtpLy2FTMvVRmOSyT1TKWk9adUK9PWv90Rf
+         lYYg==
+X-Gm-Message-State: AOAM533fNj40DcBsiC74AWTNmbIVk88H3oB5KD8ECH2M9yN4s7Ukxcbl
+        4lL+lhkCB0eaRJxKHfs076jVLSiwAd7Lk85JJ4yJnphSiGs/MA==
+X-Google-Smtp-Source: ABdhPJwRYPqV/WwnWo7oMVkuV/nG6sJ/y9vzbn1Nm9xklW0+3v+eQWia67FEOL3YXyt3hmuJKCns0CIPbYxLeZv/mXE=
+X-Received: by 2002:a05:6402:5244:: with SMTP id t4mr6521852edd.87.1614922802651;
+ Thu, 04 Mar 2021 21:40:02 -0800 (PST)
+MIME-Version: 1.0
+References: <CAHk-=wjnzdLSP3oDxhf9eMTYo7GF-QjaNLBUH1Zk3c4A7X75YA@mail.gmail.com>
+ <YEFIXFyP5tWrPDMw@localhost>
+In-Reply-To: <YEFIXFyP5tWrPDMw@localhost>
+From:   Christian Couder <christian.couder@gmail.com>
+Date:   Fri, 5 Mar 2021 06:39:51 +0100
+Message-ID: <CAP8UFD07ezNOXU5Q3RZAHOJGMjuaJY-R=x=hhQcQvYOAKzKF2g@mail.gmail.com>
+Subject: Re: A note on the 5.12-rc1 tag
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, git <git@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Collins <collinsd@codeaurora.org>
+On Fri, Mar 5, 2021 at 1:58 AM Josh Triplett <josh@joshtriplett.org> wrote:
+> On Wed, Mar 03, 2021 at 12:53:18PM -0800, Linus Torvalds wrote:
 
-Add power key and resin compatible strings for the PMK8350 PMIC.
-These are needed to distinguish key PON_HLOS register differences
-between PMK8350 and previous PMIC PON modules.
+> > One additional reason for this note is that I want to not just warn
+> > people to not run this if you have a swapfile - even if you are
+> > personally not impacted (like I am, and probably most people are -
+> > swap partitions all around) - I want to make sure that nobody starts
+> > new topic branches using that 5.12-rc1 tag. I know a few developers
+> > tend to go "Ok, rc1 is out, I got all my development work into this
+> > merge window, I will now fast-forward to rc1 and use that as a base
+> > for the next release". Don't do it this time. It may work perfectly
+> > well for you because you have the common partition setup, but it can
+> > end up being a horrible base for anybody else that might end up
+> > bisecting into that area.
+>
+> Even if people avoid basing their topic branches on 5.12-rc1, it's still
+> possible for a future bisect to end up wandering to one of the existing
+> dangerous commits, if someone's trying to find a historical bug and git
+> happens to choose that as a halfway point. And if they happen to be
+> using a swap file, they could end up with serious data loss, years from
+> now when "5.12-rc1 is broken" isn't on the top of their mind or even
+> something they heard about originally.
+>
+> Would it make sense to add a feature to git that allows defining a
+> "dangerous" region for bisect? Rough sketch:
+> - Add a `/.git-bisect-dangerous` file to the repository, containing a
+>   list of of commit range expressions (contains commit X, doesn't
+>   contain commit Y) and associated messages ("Do not use these kernels
+>   if you have a swap file; if you need to bisect into here, disable swap
+>   files first").
+> - git-bisect, as it navigates commits, always checks that file for any
+>   commit it processes, and adds any new entries it sees into
+>   `.git/bisect-dangerous`; it never removes entries from there.
 
-Signed-off-by: David Collins <collinsd@codeaurora.org>
-Signed-off-by: satya priya <skakit@codeaurora.org>
----
- Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+The `git bisect skip` machinery uses `refs/bisect/skip-<commit>` refs
+instead of such a file, so I wonder if such a file is needed. It could
+be used to store a map between skipped commits and the associated
+messages though. Or git notes could be used for that purpose.
 
-diff --git a/Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.yaml b/Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.yaml
-index 302866d..32ac762 100644
---- a/Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.yaml
-+++ b/Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.yaml
-@@ -15,6 +15,8 @@ properties:
-     enum:
-       - qcom,pm8941-pwrkey
-       - qcom,pm8941-resin
-+      - qcom,pmk8350-pwrkey
-+      - qcom,pmk8350-resin
- 
-   interrupts:
-     description: |
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+By the way I wonder what should happen if a commit is associated with
+a message by a `/.git-bisect-dangerous` file, but in another branch
+such file associates it with a different message. I guess all the
+different messages should be stored, and then displayed.
 
+> - git-bisect avoids choosing bisection points anywhere in that range
+>   until it absolutely has to (because it's narrowed an issue to that
+>   range). This can use something similar to the existing `git bisect
+>   skip` machinery. Manual bisections print the message at that point.
+>   Automated bisections (`git bisect run`) stop and print the range
+>   without narrowing further, unless the user passes something like
+>   `--dangerous-ok=commit-range`.
+
+Yeah, using the `git bisect skip` machinery looks like a good idea.
+Instead of `/.git-bisect-dangerous`, the file could actually be called
+`/.git-bisect-skip` and could also store ranges where the code doesn't
+compile, or completely misbehave, without necessarily being dangerous.
+The dangerous status would only be conveyed by the associated messages
+then.
+
+Another way could be to directly share some special refs similar to
+the existing `refs/bisect/skip-<commit>` refs, instead of a
+`/.git-bisect-dangerous` file. This would likely raise some issues
+about how to create and share these refs and the associated messages
+though.
+
+> (git notes would be nice for this, but they're hard to share reliably;
+> the above mechanism to accumulate entries from a file in the repo seems
+> simpler. I can imagine other possibilities.)
+
+If the notes are created automatically from the `/.git-bisect-skip`
+files and stored in `refs/notes/skip`, then they might not need to be
+shared. If people already share notes, they would just need to stop
+sharing those in `refs/notes/skip`.
+
+> Does something like this seem potentially reasonable, and worth doing to
+> help people avoid future catastrophic data loss?
+
+It seems reasonable as part of the skip mechanism.
