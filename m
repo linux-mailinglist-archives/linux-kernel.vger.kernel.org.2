@@ -2,147 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDE932F616
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF99E32F61D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhCEWsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 17:48:13 -0500
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:36585 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbhCEWr6 (ORCPT
+        id S229679AbhCEWxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 17:53:09 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:37871 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229493AbhCEWwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 17:47:58 -0500
-Received: by mail-oi1-f177.google.com with SMTP id j1so4289751oiw.3;
-        Fri, 05 Mar 2021 14:47:58 -0800 (PST)
+        Fri, 5 Mar 2021 17:52:37 -0500
+Received: by mail-ot1-f51.google.com with SMTP id 75so123039otn.4;
+        Fri, 05 Mar 2021 14:52:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=3PmDH/3Q7mXi/NObz8TJWT61R8BEoKRpXo3ei3eRvmA=;
-        b=ClHwpWS2y3XmZ0lh5LDvBreh5FT6dE8zzO/2vOxKU4gpyyServR7s08VKQ3flFAkR5
-         i8DV0f5u5HuFEBjD4+eqyaBGhfmrxrOzO8MhX2S4iT7zVfscjBV5dCoU9SvI6qF5ZYUP
-         p+hZNnl6EI9GHpD9D8OsfhiySz5gtP7DhjIC0RqOxRpe7OhggONnI/x0g61Uv9kB54+y
-         o5zqLdGlDhmUTTO5oUbt/wS8s1E6Cd9KFUavJ0r5LTO3tPDrFndRemgZwrnIr87QSYCD
-         UyB3txAHwo4Szh7g8odE0qbt6tbHD8jy5tF5WTK25+s3fC8CehLYLi1Llr+hSPqIe+/Z
-         Kqjw==
-X-Gm-Message-State: AOAM53377WzXryj7b1eBc0xbxbThfZa6CheoKeurzqS3568jVQlM20rF
-        vQEMb/QrdOEqCnpt5A5tgQ==
-X-Google-Smtp-Source: ABdhPJzomuI9sDgyHbhIt5jV1MXkZ7U7EFJoQTpae3ngwH/RvlkfOIyLVNgz7qXsVpfAgk13hlzUBg==
-X-Received: by 2002:aca:4d55:: with SMTP id a82mr8749226oib.23.1614984478279;
-        Fri, 05 Mar 2021 14:47:58 -0800 (PST)
+        bh=fUZFQaxs9RK/nivefXJKnBUxIyLdj8Lj9lxBmJxd9y8=;
+        b=ibiunizmizbd1JCiVCiOUHRH5N55da89jXdEz9o/jfyFpevCgy6PK++7EpWF1hCud0
+         GHYFgtqtYoyhwU6RVI7+Y/YZwrIGK31u4sT9Djj7NKU/ArVyRZDhhiMWBoqicEy4tmtD
+         fNkcmA9C41D7uYroD4iGALK+fN/TPtdJIhdOJBSlb/t9rJci349jyTvxgbRUOmVrdilR
+         sFuXGYMiYT08gYmVApr82OiDHLAXGfVP8or1i0u0BcRFl0/hA5NIoh78+SUi0a4hE8xi
+         Ogc2+WvOMYEj0tiEoIrKwQZad9gihDKcY6RX0HzIyZQAfPAZ1e3l49x78AIdazCmtnOH
+         Tz3Q==
+X-Gm-Message-State: AOAM533tKFNMAs134Uu3gEIIlp4K221UdZqc+Q8+ueksNLc6eIkZjpf8
+        qxt4fGGvHmN681wrQQMjFQ==
+X-Google-Smtp-Source: ABdhPJwlh+CUnCHrztqC0i3YQRWh8hWwtwlWL3hesELWhTlIBXv8/e94LdBUBtiOVgIXc/QuyRjaNw==
+X-Received: by 2002:a9d:67c2:: with SMTP id c2mr10005348otn.343.1614984757122;
+        Fri, 05 Mar 2021 14:52:37 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t145sm842835oie.10.2021.03.05.14.47.57
+        by smtp.gmail.com with ESMTPSA id g11sm835060oif.9.2021.03.05.14.52.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 14:47:57 -0800 (PST)
-Received: (nullmailer pid 784017 invoked by uid 1000);
-        Fri, 05 Mar 2021 22:47:56 -0000
-Date:   Fri, 5 Mar 2021 16:47:56 -0600
+        Fri, 05 Mar 2021 14:52:35 -0800 (PST)
+Received: (nullmailer pid 790202 invoked by uid 1000);
+        Fri, 05 Mar 2021 22:52:34 -0000
+Date:   Fri, 5 Mar 2021 16:52:34 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     sboyd@kernel.org, john@phrozen.org, tsbogend@alpha.franken.de,
-        gregkh@linuxfoundation.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        devel@driverdev.osuosl.org, neil@brown.name,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 2/6] dt: bindings: add mt7621-clk device tree binding
- documentation
-Message-ID: <20210305224756.GA777984@robh.at.kernel.org>
-References: <20210218070709.11932-1-sergio.paracuellos@gmail.com>
- <20210218070709.11932-3-sergio.paracuellos@gmail.com>
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     David Airlie <airlied@linux.ie>, Lubomir Rintel <lkundrak@v3.sk>,
+        Rob Herring <robh+dt@kernel.org>,
+        allen <allen.chen@ite.com.tw>, Shawn Guo <shawnguo@kernel.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Max Merchel <Max.Merchel@tq-group.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Giulio Benetti <giulio.benetti@micronovasrl.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH 1/9] dt-bindings: Add Jenson Display vendor prefix
+Message-ID: <20210305225234.GA790152@robh.at.kernel.org>
+References: <20210218225458.823773-1-giulio.benetti@benettiengineering.com>
+ <20210218225458.823773-2-giulio.benetti@benettiengineering.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218070709.11932-3-sergio.paracuellos@gmail.com>
+In-Reply-To: <20210218225458.823773-2-giulio.benetti@benettiengineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 08:07:05AM +0100, Sergio Paracuellos wrote:
-> Adds device tree binding documentation for clocks in the
-> MT7621 SOC.
+On Thu, 18 Feb 2021 23:54:49 +0100, Giulio Benetti wrote:
+> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
 > 
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> Update Documentation/devicetree/bindings/vendor-prefixes.yaml to
+> include "jenson" as a vendor prefix for "Jenson Display".
+> Company website: http://www.jensondisplay.com/
+> 
+> Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
+> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
 > ---
->  .../bindings/clock/mediatek,mt7621-clk.yaml   | 66 +++++++++++++++++++
->  1 file changed, 66 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-> new file mode 100644
-> index 000000000000..842a0f2c9d40
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-> @@ -0,0 +1,66 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/mediatek,mt7621-clk.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MT7621 Clock Device Tree Bindings
-> +
-> +maintainers:
-> +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> +
-> +description: |
-> +  The MT7621 has a PLL controller from where the cpu clock is provided
-> +  as well as derived clocks for the bus and the peripherals. It also
-> +  can gate SoC device clocks.
-> +
-> +  Each clock is assigned an identifier and client nodes use this identifier
-> +  to specify the clock which they consume.
-> +
-> +  All these identifiers could be found in:
-> +  [1]: <include/dt-bindings/clock/mt7621-clk.h>.
-> +
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt7621-clk
-> +
-> +  "#clock-cells":
-> +    description:
-> +      The first cell indicates the clock number, see [1] for available
-> +      clocks.
-> +    const: 1
-> +
-> +  ralink,sysctl:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      phandle of syscon used to control system registers
-> +
-> +  ralink,memctl:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      phandle of syscon used to control memory registers
 
-I assume one of these phandles are the main registers for the clocks? 
-Make this a child node and drop that phandle.
-
-> +
-> +  clock-output-names:
-> +    maxItems: 8
-> +
-> +required:
-> +  - compatible
-> +  - '#clock-cells'
-> +  - ralink,sysctl
-> +  - ralink,memctl
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/mt7621-clk.h>
-> +
-> +    pll {
-> +      compatible = "mediatek,mt7621-clk";
-> +      #clock-cells = <1>;
-> +      ralink,sysctl = <&sysc>;
-> +      ralink,memctl = <&memc>;
-> +      clock-output-names = "xtal", "cpu", "bus",
-> +                           "50m", "125m", "150m",
-> +                           "250m", "270m";
-> +    };
-> -- 
-> 2.25.1
-> 
+Acked-by: Rob Herring <robh@kernel.org>
