@@ -2,95 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A7732E766
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4DD32E765
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbhCELsM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Mar 2021 06:48:12 -0500
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:33130 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhCELsK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 06:48:10 -0500
-Received: by mail-oi1-f174.google.com with SMTP id a13so2226355oid.0;
-        Fri, 05 Mar 2021 03:48:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Zh7xbs9vIY0JSC9Lpiym+twb4/acDRoEmPattmUqLm4=;
-        b=DERdALh3P/MrLZEhh+cwZ+I17JQs1CnQoLfYBUyuuNtipQ4l5zmxCKhCHntom4KERr
-         /e5uxIDIL25Z4dN0V5HFnrzWKCU3szJV+di34ghGl/B6ucOKesxa9ryDGsyra2nalXj7
-         JnSheZ457b22l5h8biAl7vLJouNyLopsrH4kj7dF0kItV8hC8/VK8ynmwFBnLTx4Y0Ao
-         Bna8Smwq+HwRsfpXYA87IDyGRCdrkNLGpJzsIvrAhUM5eRQ0TE/4T0C5c7pNHZCaRKE9
-         xC1Z/8hqag3Hd00W9EIdRirwEnD8uz/KA8x8PKTzz0kODm/NA4lEtDPO8JfrkoeopN6s
-         j6mw==
-X-Gm-Message-State: AOAM531F0g4o3g7qjwJJ0ptVW6ZdNORtFRgU1jnP8dX2nZtxersUO3QT
-        QaMrprWJWyzzPj9QXNfORdx8pVKmeXHryC6MC1mW2eMo
-X-Google-Smtp-Source: ABdhPJwAo3yzfepN+DDmg+7CJ9v8WeZGk+kDpExi8VrK+eRW8wVD+s6fRrnlJA5TXIBsCJaCD4qsWfchUQa34nefAk4=
-X-Received: by 2002:a05:6808:989:: with SMTP id a9mr6811113oic.175.1614944890362;
- Fri, 05 Mar 2021 03:48:10 -0800 (PST)
+        id S229759AbhCELsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 06:48:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38366 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229591AbhCELsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 06:48:03 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614944882; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6WeC3+MgZVHAE3bpKTnOSw5jwR/M940LyaOSeo03HC4=;
+        b=qtH+XHRf5FIZiV19w3D+9pUe6TJ52SfBcVbFfFU5eO0+gKQJ6uYkyJY2QCUSWcvXFvbg6K
+        DbNZeAwZ4IMiuPbxOCUmvN3tOC0Nz2IU/Z+BGzRZhkU0jMLUfuLNTs92OhL/MJ6msyiLHA
+        8HKN9sr1/GtRgMs2/DfxkXigJ6h1gpI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 35CE0AC54;
+        Fri,  5 Mar 2021 11:48:02 +0000 (UTC)
+Date:   Fri, 5 Mar 2021 12:48:00 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Zhou Guanghui <zhouguanghui1@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, hannes@cmpxchg.org, hughd@google.com,
+        kirill.shutemov@linux.intel.com, npiggin@gmail.com, ziy@nvidia.com,
+        wangkefeng.wang@huawei.com, guohanjun@huawei.com,
+        dingtianhong@huawei.com, chenweilong@huawei.com,
+        rui.xiang@huawei.com
+Subject: Re: [PATCH v2 1/2] mm/memcg: rename mem_cgroup_split_huge_fixup to
+ split_page_memcg
+Message-ID: <YEIacHQNSwgSjrCT@dhcp22.suse.cz>
+References: <20210304074053.65527-1-zhouguanghui1@huawei.com>
+ <20210304074053.65527-2-zhouguanghui1@huawei.com>
 MIME-Version: 1.0
-References: <20210304072357.31108-1-zajec5@gmail.com> <20210305055501.13099-1-zajec5@gmail.com>
- <CAAdtpL7iWiumiOwMOH1xiBZvyOB0HB7W-9MMHoPPxkb3Srme=w@mail.gmail.com> <f4045af5-4866-6fc9-f34a-d789a7febb77@milecki.pl>
-In-Reply-To: <f4045af5-4866-6fc9-f34a-d789a7febb77@milecki.pl>
-From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
-Date:   Fri, 5 Mar 2021 12:47:59 +0100
-Message-ID: <CAAdtpL5CMTaB6qCR=nZj+1MoGC97_BVd-r30E2RRYOhiktOiZQ@mail.gmail.com>
-Subject: Re: [PATCH V2 mips/linux.git] firmware: bcm47xx_nvram: refactor
- finding & reading NVRAM
-To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Cc:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivek Unune <npcomplete13@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304074053.65527-2-zhouguanghui1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 11:16 AM Rafał Miłecki <rafal@milecki.pl> wrote:
->
-> Hi,
->
-> On 05.03.2021 10:58, Philippe Mathieu-Daudé wrote:
-> > On Fri, Mar 5, 2021 at 6:55 AM Rafał Miłecki <zajec5@gmail.com> wrote:
-> >>
-> >> From: Rafał Miłecki <rafal@milecki.pl>
-> >>
-> >> 1. Use meaningful variable names (e.g. "flash_start", "res_size" instead
-> >>     of e.g. "iobase", "end")
-> >> 2. Always operate on "offset" instead of mix of start, end, size, etc.
-> >
-> > "instead of a mix"
-> >
-> >> 3. Add helper checking for NVRAM to avoid duplicating code
-> >> 4. Use "found" variable instead of goto
-> >> 5. Use simpler checking of offsets and sizes (2 nested loops with
-> >>     trivial check instead of extra function)
-> >
-> > This could be a series of trivial patches, why did you choose to make a mixed
-> > bag harder to review?
->
-> It's a subjective thing and often a matter of maintainer taste. I can
-> say that after contributing to various Linux subsystems. If you split a
-> similar patch for MTD subsystem you'll get complains about making
-> changes too small & too hard to review (sic!).
+On Thu 04-03-21 07:40:52, Zhou Guanghui wrote:
+> Rename mem_cgroup_split_huge_fixup to split_page_memcg and explicitly
+> pass in page number argument.
+> 
+> In this way, the interface name is more common and can be used by
+> potential users. In addition, the complete info(memcg and flag) of
+> the memcg needs to be set to the tail pages.
 
-Fine. MTD subsystem developers are probably smarter than I'm :)
+I think it is good to call out the css_get -> css_get_many as a
+microptimization explicitly. Even though I do not expect this to be
+easily visible it makes sense to save rcu section for each of the tail
+page in general.
 
-> This isn't a bomb really: 63 insertions(+), 48 deletions(-)
+> Signed-off-by: Zhou Guanghui <zhouguanghui1@huawei.com>
 
-Too many changes at once for my brain stack doesn't mean others are
-willing to review it. But to me that means each time I'll have to pass over
-it while bisecting or reviewing git history I'll suffer the same overflow.
-Anyway, matter of taste as you said.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
->
-> That said I admit I don't know MIPS tree habits. Thomas: do you prefer
-> smaller patches in case like this?
+> ---
+>  include/linux/memcontrol.h |  6 ++----
+>  mm/huge_memory.c           |  2 +-
+>  mm/memcontrol.c            | 15 ++++++---------
+>  3 files changed, 9 insertions(+), 14 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index e6dc793d587d..0c04d39a7967 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1061,9 +1061,7 @@ static inline void memcg_memory_event_mm(struct mm_struct *mm,
+>  	rcu_read_unlock();
+>  }
+>  
+> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -void mem_cgroup_split_huge_fixup(struct page *head);
+> -#endif
+> +void split_page_memcg(struct page *head, unsigned int nr);
+>  
+>  #else /* CONFIG_MEMCG */
+>  
+> @@ -1400,7 +1398,7 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+>  	return 0;
+>  }
+>  
+> -static inline void mem_cgroup_split_huge_fixup(struct page *head)
+> +static inline void split_page_memcg(struct page *head, unsigned int nr)
+>  {
+>  }
+>  
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 395c75111d33..e7f29308ebc8 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2471,7 +2471,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>  	int i;
+>  
+>  	/* complete memcg works before add pages to LRU */
+> -	mem_cgroup_split_huge_fixup(head);
+> +	split_page_memcg(head, nr);
+>  
+>  	if (PageAnon(head) && PageSwapCache(head)) {
+>  		swp_entry_t entry = { .val = page_private(head) };
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 845eec01ef9d..e064ac0d850a 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3287,24 +3287,21 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
+>  
+>  #endif /* CONFIG_MEMCG_KMEM */
+>  
+> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  /*
+> - * Because page_memcg(head) is not set on compound tails, set it now.
+> + * Because page_memcg(head) is not set on tails, set it now.
+>   */
+> -void mem_cgroup_split_huge_fixup(struct page *head)
+> +void split_page_memcg(struct page *head, unsigned int nr)
+>  {
+>  	struct mem_cgroup *memcg = page_memcg(head);
+>  	int i;
+>  
+> -	if (mem_cgroup_disabled())
+> +	if (mem_cgroup_disabled() || !memcg)
+>  		return;
+>  
+> -	for (i = 1; i < HPAGE_PMD_NR; i++) {
+> -		css_get(&memcg->css);
+> -		head[i].memcg_data = (unsigned long)memcg;
+> -	}
+> +	for (i = 1; i < nr; i++)
+> +		head[i].memcg_data = head->memcg_data;
+> +	css_get_many(&memcg->css, nr - 1);
+>  }
+> -#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>  
+>  #ifdef CONFIG_MEMCG_SWAP
+>  /**
+> -- 
+> 2.25.0
+> 
+
+-- 
+Michal Hocko
+SUSE Labs
