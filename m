@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161AF32E46D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B9132E478
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbhCEJMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:12:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47222 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229469AbhCEJLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:11:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614935493; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EzbUJaQzdHyWQWYArhmveTTGFRarGR/POWGz43IcYds=;
-        b=WRAaCcQBvs+ROf3f9UYV/D5gQd6QjIR+GA8FQRtJa9yLj8pNsiAOX+ib91QiwXx0hYx4RR
-        mn/4s+tYkhD/511Jt70xhn81DN9x2VKzKHKpFTYjldQOsPKUbcNBryoZvo3dIj3w0LXlXm
-        RMeKmKWNxJzpK7WkhmjVLRsp90kFNSs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DC864AF24;
-        Fri,  5 Mar 2021 09:11:32 +0000 (UTC)
-Date:   Fri, 5 Mar 2021 10:11:32 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] mm: Fix dropped memcg from mem cgroup soft limit
- tree
-Message-ID: <YEH1xF8xm9MCsQ+q@dhcp22.suse.cz>
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
- <YC68Xo9+R2msn/ul@dhcp22.suse.cz>
- <72cb8618-73af-ce08-d5d5-30cab30755a3@linux.intel.com>
+        id S229660AbhCEJOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:14:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229520AbhCEJOF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:14:05 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913BDC061574;
+        Fri,  5 Mar 2021 01:14:05 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id j12so1548544pfj.12;
+        Fri, 05 Mar 2021 01:14:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4zEE7rqrK3goJLrxJadwawdflEcIk4A0CqTQec6iyds=;
+        b=Kx4x3Cc3LsPrKyHpdcTnHmDMM1eHkVYfQnKItph3uxOwNmd6qVQgw651IpyCCk6bJD
+         GVfzi5DFVZpJcE/9lvNN4I9vpgecFoDU6U/aILIJsFC8Rp3DOZ570QjE7mEkuRf+swyJ
+         brqcwgZAxuHqqzZycGhDQAmv/v250lpLQNb8dVgx8/Xae0o7nAr63Zo3c66UkhTPPjBo
+         BM5fMoA5zuOTQIvVBGbCJw8g46mkja1dsu5wJYK/eYKRCumY4AL46Q/RHDd4O6/uXqb5
+         WjwHq7g5iMH4FMPOajkFY9uV0XYSd8B7etynSSVjLETforv9hVCe5uc5cW3g167+Wl9Q
+         mxZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4zEE7rqrK3goJLrxJadwawdflEcIk4A0CqTQec6iyds=;
+        b=Awn29SW7McLaDeeWzuOuBzXnuxhEOCAcZZypv3rb1mT7h5GWPOC5ZepEinfinUVAX0
+         fIesvO//1wZtGjC6u2UVTq2wAa/BEVoLUqbIKa2E3pMMn45GGWDtxbvv7BoDVUokaTmX
+         tpJEdTy3cpjtZdDNLVdSm1kKzPMo2REfo662VVLjyTo5oZgSap+Pm57IqqYSdpBHIfzj
+         2b4NOf9ElzypOhUhkmFosOTlGFbNy0vB9ucglBqridd8SUpSVp719ofv77HDFtbFeokQ
+         VGwgXf44elydZFoaQpjU6pSurtnXyImhMR0HFkVApu2wn4yuMs2doxD0DZPpPRpdnL8o
+         KCtw==
+X-Gm-Message-State: AOAM533kc8qW5QGmYqVmKnE8Jk1lVRbm2NpHt+CMVE1Tov+19a5/+zPC
+        0ct5Gz586y6NU5fdcjh2/K0=
+X-Google-Smtp-Source: ABdhPJwEBq+wJr2WgZsr2R5XNMcQXCEmmZcnKDrXvixiB7fslPTCQ7eG/vQrapqM2CuZRGi+IYll8w==
+X-Received: by 2002:a62:1997:0:b029:1ed:5de5:5f1c with SMTP id 145-20020a6219970000b02901ed5de55f1cmr7984327pfz.14.1614935645227;
+        Fri, 05 Mar 2021 01:14:05 -0800 (PST)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id gz12sm1717617pjb.33.2021.03.05.01.14.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 01:14:04 -0800 (PST)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     martin.petersen@oracle.com, jejb@linux.ibm.com,
+        linux-scsi@vger.kernel.org
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        stanley.chu@mediatek.com, cang@codeaurora.org, beanhuo@micron.com,
+        jaegeuk@kernel.org, asutoshd@codeaurora.org,
+        linux-kernel@vger.kernel.org, huyue2@yulong.com,
+        zhangwen@yulong.com, zbestahu@163.com
+Subject: [PATCH] scsi: ufs: Remove redundant WB enabling check in ufshcd_wb_toggle_flush()
+Date:   Fri,  5 Mar 2021 17:12:53 +0800
+Message-Id: <20210305091253.314-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <72cb8618-73af-ce08-d5d5-30cab30755a3@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 04-03-21 09:35:08, Tim Chen wrote:
-> 
-> 
-> On 2/18/21 11:13 AM, Michal Hocko wrote:
-> 
-> > 
-> > Fixes: 4e41695356fb ("memory controller: soft limit reclaim on contention")
-> > Acked-by: Michal Hocko <mhocko@suse.com>
-> > 
-> > Thanks!
-> >> ---
-> >>  mm/memcontrol.c | 6 +++++-
-> >>  1 file changed, 5 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> >> index ed5cc78a8dbf..a51bf90732cb 100644
-> >> --- a/mm/memcontrol.c
-> >> +++ b/mm/memcontrol.c
-> >> @@ -3505,8 +3505,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
-> >>  			loop > MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS))
-> >>  			break;
-> >>  	} while (!nr_reclaimed);
-> >> -	if (next_mz)
-> >> +	if (next_mz) {
-> >> +		spin_lock_irq(&mctz->lock);
-> >> +		__mem_cgroup_insert_exceeded(next_mz, mctz, excess);
-> >> +		spin_unlock_irq(&mctz->lock);
-> >>  		css_put(&next_mz->memcg->css);
-> >> +	}
-> >>  	return nr_reclaimed;
-> >>  }
-> >>  
-> >> -- 
-> >> 2.20.1
-> > 
-> 
-> Mel,
-> 
-> Reviewing this patch a bit more, I realize that there is a chance that the removed
-> next_mz could be inserted back to the tree from a memcg_check_events
-> that happen in between.  So we need to make sure that the next_mz
-> is indeed off the tree and update the excess value before adding it
-> back.  Update the patch to the patch below.
+From: Yue Hu <huyue2@yulong.com>
 
-This scenario is certainly possible but it shouldn't really matter much
-as __mem_cgroup_insert_exceeded bails out when the node is on the tree
-already.
+Note that ufshcd_wb_toggle_flush() will be called only in
+ufshcd_wb_config() which have already checked if WB is allowed.
+
+Signed-off-by: Yue Hu <huyue2@yulong.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 721f55d..2c49344 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -5484,8 +5484,7 @@ static inline int ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool enable)
+ 	u8 index;
+ 	enum query_opcode opcode;
+ 
+-	if (!ufshcd_is_wb_allowed(hba) ||
+-	    hba->dev_info.wb_buf_flush_enabled == enable)
++	if (hba->dev_info.wb_buf_flush_enabled == enable)
+ 		return 0;
+ 
+ 	if (enable)
 -- 
-Michal Hocko
-SUSE Labs
+1.9.1
+
