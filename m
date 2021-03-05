@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA8832E8F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:30:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8196D32E82C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:25:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhCEM3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:29:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37922 "EHLO mail.kernel.org"
+        id S230489AbhCEMZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:25:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231959AbhCEM3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:29:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69D4A6503C;
-        Fri,  5 Mar 2021 12:29:00 +0000 (UTC)
+        id S230405AbhCEMYv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:24:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80FBD6501D;
+        Fri,  5 Mar 2021 12:24:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947341;
-        bh=mFSrD1wneVhbIU/DX/3UfO3ldbpjEGrofRg/SJrcfFA=;
+        s=korg; t=1614947091;
+        bh=/m9csJFacHPuZim9ofhYapu01vcHuY+CZuxXvdqizww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nPrQtjxdnHJ7T1UO5qkAd8Y7oPbs3NXpVc3xcXfoyIuqJ1wVGgrvneLIpv+AqtiLn
-         Y93J76J4LEA6jh6Vqo3Qm1a0jAToIuPJUoJyV2F6YwPP0Zs7uj4VX885nlz/apm+56
-         vsd3MbJGwpnW50G61OPmuW6VT87jD2jYtaBCfj+Q=
+        b=GeDuZMsq9LefxZVObLo3HBUN0znLSKxFPvywY97/4yNHNY1M+KVkIA/LNcOvM39Z+
+         1lfBFWPXYzWKOcf5JqkEHzDREnUi+QmMFq1fxIyiqalEcpGEwmENXJRctLDbtDT0wb
+         Zm4kG4nODWHvvuaIrUL80vDjBaeRv9jnXaL+cPGg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yotam Gigi <yotam.gi@gmail.com>,
-        Ido Schimmel <idosch@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-        Chris Mi <cmi@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 030/102] net: psample: Fix netlink skb length with tunnel info
+        stable@vger.kernel.org, Claire Chang <tientzu@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 044/104] Bluetooth: hci_h5: Set HCI_QUIRK_SIMULTANEOUS_DISCOVERY for btrtl
 Date:   Fri,  5 Mar 2021 13:20:49 +0100
-Message-Id: <20210305120904.762036214@linuxfoundation.org>
+Message-Id: <20210305120905.331494419@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120903.166929741@linuxfoundation.org>
+References: <20210305120903.166929741@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Mi <cmi@nvidia.com>
+From: Claire Chang <tientzu@chromium.org>
 
-commit a93dcaada2ddb58dbc72652b42548adedd646d7a upstream.
+[ Upstream commit 7f9f2c3f7d99b8ae773459c74ac5e99a0dd46db9 ]
 
-Currently, the psample netlink skb is allocated with a size that does
-not account for the nested 'PSAMPLE_ATTR_TUNNEL' attribute and the
-padding required for the 64-bit attribute 'PSAMPLE_TUNNEL_KEY_ATTR_ID'.
-This can result in failure to add attributes to the netlink skb due
-to insufficient tail room. The following error message is printed to
-the kernel log: "Could not create psample log message".
+Realtek Bluetooth controllers can do both LE scan and BR/EDR inquiry
+at once, need to set HCI_QUIRK_SIMULTANEOUS_DISCOVERY quirk.
 
-Fix this by adjusting the allocation size to take into account the
-nested attribute and the padding.
-
-Fixes: d8bed686ab96 ("net: psample: Add tunnel support")
-CC: Yotam Gigi <yotam.gi@gmail.com>
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Signed-off-by: Chris Mi <cmi@nvidia.com>
-Link: https://lore.kernel.org/r/20210225075145.184314-1-cmi@nvidia.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Claire Chang <tientzu@chromium.org>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/psample/psample.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/bluetooth/hci_h5.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/net/psample/psample.c
-+++ b/net/psample/psample.c
-@@ -309,10 +309,10 @@ static int psample_tunnel_meta_len(struc
- 	unsigned short tun_proto = ip_tunnel_info_af(tun_info);
- 	const struct ip_tunnel_key *tun_key = &tun_info->key;
- 	int tun_opts_len = tun_info->options_len;
--	int sum = 0;
-+	int sum = nla_total_size(0);	/* PSAMPLE_ATTR_TUNNEL */
+diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+index 7be16a7f653b..95ecd30e6619 100644
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -906,6 +906,11 @@ static int h5_btrtl_setup(struct h5 *h5)
+ 	/* Give the device some time before the hci-core sends it a reset */
+ 	usleep_range(10000, 20000);
  
- 	if (tun_key->tun_flags & TUNNEL_KEY)
--		sum += nla_total_size(sizeof(u64));
-+		sum += nla_total_size_64bit(sizeof(u64));
++	/* Enable controller to do both LE scan and BR/EDR inquiry
++	 * simultaneously.
++	 */
++	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
++
+ out_free:
+ 	btrtl_free(btrtl_dev);
  
- 	if (tun_info->mode & IP_TUNNEL_INFO_BRIDGE)
- 		sum += nla_total_size(0);
+-- 
+2.30.1
+
 
 
