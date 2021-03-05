@@ -2,174 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69EEC32F23E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB56F32F242
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbhCESRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 13:17:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33672 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229465AbhCESQh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 13:16:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614968196;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xSmCXVggNB/CHBO3Bg4UxMkncMMlhKiVJCaV9LoD9Ks=;
-        b=LxXoB4j2VMWMSIhfPsf10+cOap3COPHzKJ+NkrcsfNCm3aSRGtJ8+rQE4BsOxcGytMnpTf
-        YkhxA6zNFYEcAxX/e9tUVjPEJ3BBlbpKTQZzu8KFHSBc3G3BkwQ3bnb53ELVLWzyOiXw6F
-        j81VpI0vFtBqA/pFIHrWSbTprPjXDR8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-306-j6jDLvrLOQGnIWgPki6p7w-1; Fri, 05 Mar 2021 13:16:34 -0500
-X-MC-Unique: j6jDLvrLOQGnIWgPki6p7w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S229646AbhCESSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 13:18:13 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:49433 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229690AbhCESSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 13:18:13 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614968292; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=xsGVThSVpDisnzMOrebDFquS2YIq6W6BzeX6M5wfiLA=; b=YmQlydA9rmA8u2xY+GPjAjEmt+9F2gvzsl4EQ9OzXDEgm0QihQMlFJfCA62zGl26qIO7V+dB
+ p9O25gXdPVRGTNBOJsourmh4vzeqc0D6Kg1AD0Fbbv0W9EkOAW4Dadrg6IKjqNmXJ7j8RZvf
+ g92uzxp90r1tWAznctJCxpAVKK0=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 604275e47b648e2436086875 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Mar 2021 18:18:12
+ GMT
+Sender: eberman=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8833CC43463; Fri,  5 Mar 2021 18:18:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.70] (cpe-76-167-231-33.san.res.rr.com [76.167.231.33])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75EC01018F64;
-        Fri,  5 Mar 2021 18:16:32 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 68F1F19CB0;
-        Fri,  5 Mar 2021 18:16:32 +0000 (UTC)
-Received: from zmail19.collab.prod.int.phx2.redhat.com (zmail19.collab.prod.int.phx2.redhat.com [10.5.83.22])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id E213C4BB40;
-        Fri,  5 Mar 2021 18:16:31 +0000 (UTC)
-Date:   Fri, 5 Mar 2021 13:16:28 -0500 (EST)
-From:   Veronika Kabatova <vkabatov@redhat.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Message-ID: <1890909388.30244858.1614968188922.JavaMail.zimbra@redhat.com>
-In-Reply-To: <2001895867.30197818.1614947320141.JavaMail.zimbra@redhat.com>
-References: <1614921898-4099-1-git-send-email-anshuman.khandual@arm.com> <d7470949-0d9d-0863-f5d1-9391134a5e5e@arm.com> <2001895867.30197818.1614947320141.JavaMail.zimbra@redhat.com>
-Subject: Re: [PATCH V3 0/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based
- memory
+        (Authenticated sender: eberman)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 275E5C433CA;
+        Fri,  5 Mar 2021 18:18:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 275E5C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=eberman@codeaurora.org
+Subject: Re: [PATCH 6/6] firmware: qcom_scm: Only compile legacy calls on ARM
+To:     Stephen Boyd <swboyd@chromium.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Brian Masney <masneyb@onstation.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+References: <20210223214539.1336155-1-swboyd@chromium.org>
+ <20210223214539.1336155-7-swboyd@chromium.org>
+ <b9174acc-9826-eb82-b399-ed95f7e83085@codeaurora.org>
+ <161483844056.1478170.8701629037531614722@swboyd.mtv.corp.google.com>
+From:   Elliot Berman <eberman@codeaurora.org>
+Message-ID: <5ac262bf-a70a-4ca3-01a8-d1432732d26f@codeaurora.org>
+Date:   Fri, 5 Mar 2021 10:18:09 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [10.36.114.98, 10.4.195.10]
-Thread-Topic: arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
-Thread-Index: HYYsJ7UKXk8vnHFKJgWVD82gr9EAgcl6WMNp
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <161483844056.1478170.8701629037531614722@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/3/2021 10:14 PM, Stephen Boyd wrote:
+> Quoting Elliot Berman (2021-03-03 19:35:08)
+>>
+>> On 2/23/2021 1:45 PM, Stephen Boyd wrote:
+>>> These scm calls are never used outside of legacy ARMv7 based platforms.
+>>> That's because PSCI, mandated on arm64, implements them for modern SoCs
+>>> via the PSCI spec. Let's move them to the legacy file and only compile
+>>> the legacy file into the kernel when CONFIG_ARM=y. Otherwise provide
+>>> stubs and fail the calls. This saves a little bit of space in an
+>>> arm64 allmodconfig >
+>>>    $ ./scripts/bloat-o-meter vmlinux.before vmlinux.after
+>>>    add/remove: 0/8 grow/shrink: 5/7 up/down: 509/-4405 (-3896)
+>>>    Function                                     old     new   delta
+>>>    __qcom_scm_set_dload_mode.constprop          312     452    +140
+>>>    qcom_scm_qsmmu500_wait_safe_toggle           288     416    +128
+>>>    qcom_scm_io_writel                           288     408    +120
+>>>    qcom_scm_io_readl                            376     492    +116
+>>>    __param_str_download_mode                     23      28      +5
+>>>    __warned                                    4327    4326      -1
+>>>    qcom_iommu_init                              272     268      -4
+>>>    e843419@0b3f_00010432_324                      8       -      -8
+>>>    qcom_scm_call                                228     208     -20
+>>>    CSWTCH                                      5925    5877     -48
+>>>    _sub_I_65535_1                            163100  163040     -60
+>>>    _sub_D_65535_0                            163100  163040     -60
+>>>    qcom_scm_wb                                   64       -     -64
+>>>    qcom_scm_lock                                320     160    -160
+>>>    qcom_scm_call_atomic                         212       -    -212
+>>>    qcom_scm_cpu_power_down                      308       -    -308
+>>>    scm_legacy_call_atomic                       520       -    -520
+>>>    qcom_scm_set_warm_boot_addr                  720       -    -720
+>>>    qcom_scm_set_cold_boot_addr                  728       -    -728
+>>>    scm_legacy_call                             1492       -   -1492
+>>>    Total: Before=66737642, After=66733746, chg -0.01%
+>>>
+>>> Commit 9a434cee773a ("firmware: qcom_scm: Dynamically support SMCCC and
+>>> legacy conventions") didn't mention any motivating factors for keeping
+>>> the legacy code around on arm64 kernels, i.e. presumably that commit
+>>> wasn't trying to support these legacy APIs on arm64 kernels.
+>>
+>> There are arm targets which support SMCCC convention and use some of
+>> these removed functions. Can these functions be kept in qcom-scm.c and
+>> wrapped with #if IS_ENABLED(CONFIG_ARM)?
+>>
+> 
+> It can be wrapped in qcom-scm.c, but why? It's all the same object file
+> so I'm lost why it matters. I suppose it would make it so the struct
+> doesn't have to be moved around and declared in the header? Any other
+> reason? I moved it to the legacy file so that it was very obvious that
+> the API wasn't to be used except for "legacy" platforms that don't use
+> PSCI.
+> 
 
+There are "legacy" arm platforms that use the SMCCC (scm_smc_call) and 
+use the qcom_scm_set_{warm,cold}_boot_addr and qcom_scm_cpu_power_down 
+functions.
 
------ Original Message -----
-> From: "Veronika Kabatova" <vkabatov@redhat.com>
-> To: "Anshuman Khandual" <anshuman.khandual@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, l=
-inux-mm@kvack.org, "Catalin Marinas"
-> <catalin.marinas@arm.com>, "Will Deacon" <will@kernel.org>, "Ard Biesheuv=
-el" <ardb@kernel.org>, "Mark Rutland"
-> <mark.rutland@arm.com>, "James Morse" <james.morse@arm.com>, "Robin Murph=
-y" <robin.murphy@arm.com>, "J=C3=A9r=C3=B4me Glisse"
-> <jglisse@redhat.com>, "Dan Williams" <dan.j.williams@intel.com>, "David H=
-ildenbrand" <david@redhat.com>, "Mike
-> Rapoport" <rppt@linux.ibm.com>
-> Sent: Friday, March 5, 2021 1:28:40 PM
-> Subject: Re: [PATCH V3 0/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE bas=
-ed memory
->=20
->=20
->=20
-> ----- Original Message -----
-> > From: "Anshuman Khandual" <anshuman.khandual@arm.com>
-> > To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-> > linux-mm@kvack.org
-> > Cc: "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon"
-> > <will@kernel.org>, "Ard Biesheuvel" <ardb@kernel.org>,
-> > "Mark Rutland" <mark.rutland@arm.com>, "James Morse" <james.morse@arm.c=
-om>,
-> > "Robin Murphy" <robin.murphy@arm.com>,
-> > "J=C3=A9r=C3=B4me Glisse" <jglisse@redhat.com>, "Dan Williams"
-> > <dan.j.williams@intel.com>, "David Hildenbrand"
-> > <david@redhat.com>, "Mike Rapoport" <rppt@linux.ibm.com>, "Veronika
-> > Kabatova" <vkabatov@redhat.com>
-> > Sent: Friday, March 5, 2021 6:38:14 AM
-> > Subject: Re: [PATCH V3 0/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE b=
-ased
-> > memory
-> >=20
-> >=20
-> > On 3/5/21 10:54 AM, Anshuman Khandual wrote:
-> > > This series fixes pfn_valid() for ZONE_DEVICE based memory and also
-> > > improves
-> > > its performance for normal hotplug memory. While here, it also
-> > > reorganizes
-> > > pfn_valid() on CONFIG_SPARSEMEM. This series is based on v5.12-rc1.
-> > >=20
-> > > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > > Cc: Will Deacon <will@kernel.org>
-> > > Cc: Ard Biesheuvel <ardb@kernel.org>
-> > > Cc: Mark Rutland <mark.rutland@arm.com>
-> > > Cc: James Morse <james.morse@arm.com>
-> > > Cc: Robin Murphy <robin.murphy@arm.com>
-> > > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> > > Cc: Dan Williams <dan.j.williams@intel.com>
-> > > Cc: David Hildenbrand <david@redhat.com>
-> > > Cc: Mike Rapoport <rppt@linux.ibm.com>
-> > > Cc: Veronika Kabatova <vkabatov@redhat.com>
-> > > Cc: linux-arm-kernel@lists.infradead.org
-> > > Cc: linux-mm@kvack.org
-> > > Cc: linux-kernel@vger.kernel.org
-> > >=20
-> > > Changes in V3:
-> > >=20
-> > > - Validate the pfn before fetching mem_section with __pfn_to_section(=
-) in
-> > > [PATCH 2/2]
-> >=20
-> > Hello Veronica,
-> >=20
-> > Could you please help recreate the earlier failure [1] but with this
-> > series applies on v5.12-rc1. Thank you.
-> >=20
->=20
-> Hello Anshuman,
->=20
-> the machine in question is currently loaned to a developer. I'll reach
-> out to them and will let you know once I have any results.
->=20
+ > +	desc.args[0] = flags;
+ > +	desc.args[1] = virt_to_phys(entry);
+ > +
+ > +	return scm_legacy_call_atomic(NULL, &desc, NULL);
+ > +}
+ > +EXPORT_SYMBOL(qcom_scm_set_cold_boot_addr);
 
-Hi,
-
-I'm happy to report the kernel boots with these new patches. I used the
-5.12.0-rc1 kernel (commit 280d542f6ffac0) as a base. The full console log
-from the boot process is available at
-
-https://gitlab.com/-/snippets/2086833
-
-in case you want to take a look. Note that there are some call traces
-starting around line 3220, but they are NOT introduced by these two
-patches and are also present with the base mainline kernel.
-
-
-Veronika
-
->=20
-> Veronika
->=20
-> > [1]
-> > https://lore.kernel.org/linux-arm-kernel/cki.8D1CB60FEC.K6NJMEFQPV@redh=
-at.com/
-> >=20
-> > - Anshuman
-> >=20
-> >=20
->=20
-
+This should still be qcom_scm_call.
