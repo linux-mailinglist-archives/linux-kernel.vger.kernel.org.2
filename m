@@ -2,179 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CF332E738
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A227332E739
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:29:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhCEL1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 06:27:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229528AbhCEL1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 06:27:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D1D965017;
-        Fri,  5 Mar 2021 11:27:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614943630;
-        bh=77Pg83kkKq0rgcbztkK8cfZjKohLNoPhQhi/tRCM988=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RR3SljNqCIxku6BbPGUvFiUEaSeLEiwX3XDL9u8u7B0a/LzwudUh9DZhFL4ZZqPOo
-         pf13q2D2yF0Exf/If8vIyla9YEo5nsP23REQ/M9/XAKQS7ZXBWaMDP2kMJ/H7USzVW
-         RKyDre5oECSuzAbIC+Syg9yBtiwzmAB6hZrIDdNk=
-Date:   Fri, 5 Mar 2021 12:27:07 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>, Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 08/12] drivers: export device_is_bound()
-Message-ID: <YEIVi8aDSEukrK7E@kroah.com>
-References: <20210304102452.21726-1-brgl@bgdev.pl>
- <20210304102452.21726-9-brgl@bgdev.pl>
- <CAMuHMdXRK5=w1-Z=EbM60Sf2bLY1EiVaxbZjMP+XyQ3g7nBpZw@mail.gmail.com>
- <YEHs3CxWnusWklME@kroah.com>
- <CAMRc=MddDb+nakgEM+Xeqm=rMMkkWO2EDekD36EoPJashYP88w@mail.gmail.com>
- <YEHyDUQ3V7Pl6+TU@kroah.com>
- <CAMRc=Md7FeQAd4Syh685+jyZAq2QStBNoo0ACQxrSB=4N6d3dg@mail.gmail.com>
- <YEIG0u8Vg3e6ZBhz@kroah.com>
- <CAMRc=Meznt=5m_4OnSRf04xHsUy39hH7S7_8ftZaHq6GD-taEw@mail.gmail.com>
+        id S229674AbhCEL23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 06:28:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229562AbhCEL2W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 06:28:22 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C04C061574;
+        Fri,  5 Mar 2021 03:28:21 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id a9so1512289qkn.13;
+        Fri, 05 Mar 2021 03:28:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=9aYdjFgWqnMMd/pegg29j6uoQFfPwGg5bdGoORGW97k=;
+        b=GB8gzeWVGTCxgMSwAIRreiwDrXXiauC4nUTGJm2zsrW++vmdSifqeH6UA3A8sYxw7a
+         qwNzgyRKiRnT7CdsjLl1sdhEDbDbsmR45oAc3W3v9bzzGGeS1RoVE1wZTTdgM3x77Rur
+         Hn4KfV8Ud/cE/rB7e21Hjzs9eC1xlWAV0mZ/+idwqrO/QboY5aKOOLJbO2OHYWRBRt7g
+         oQTotQ6l/CjJzQG6zcjD9YCsU/jdEAXxHokTrRw5x89qX0aVyvwi1WcKNTh57C8Ms3H8
+         AznwQje+lwNYAc/O8cx1l6Enl768bqB6dczCL2WWxuWVrMzCgUQGB1m9D+TyjNYFWM1Y
+         nC0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=9aYdjFgWqnMMd/pegg29j6uoQFfPwGg5bdGoORGW97k=;
+        b=mpSuH4jwF2AuRzH+sk49+j4nfKC7X+We7I56C1UfqRy+VEGqujdT9yVqmTR+yloQX5
+         siUZpFutjXdg6RSES1cEtG8fCpmMC1yGtNEJHsxPLZFRXb4qDM87FGJLOzt8Rf/+OFBr
+         ceyPmNWQykfyhPywZsIgVOEtxcNbIvy73exIHHE8ycXhwd6yMwK8fnGR/10qePyUdoLD
+         mmtilRGxm/6RHpOnkqVWcOqxt+pWFGnHX7FSRsp3dcNOxORmk9e5cE3N+BFDkNSHe2Fh
+         wrSE+qxIBHP/MMqMb4OQweAnUV0mdFdD31vfNNrVd9Jiygd2DdT6Cs47dhOfTmycKpr5
+         soVw==
+X-Gm-Message-State: AOAM5307iUTNm05pRo+H+XfsPaokotv2/8mUflLMkCpjr5USMt+Rc9I2
+        rBTrqNCFxL9F07oRJIsW7K2r7dBgUGIkSaYaMuBaMC4nmjgKAw==
+X-Google-Smtp-Source: ABdhPJxQTgXHpK4IuluipdptQkn5JS9gYe5j4hl+eUGYMddrXm+KfLDh1JFV+PJhfe5ALK13m90Do8d4CW0aKMUFBuo=
+X-Received: by 2002:a37:ab0f:: with SMTP id u15mr8698366qke.438.1614943701024;
+ Fri, 05 Mar 2021 03:28:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMRc=Meznt=5m_4OnSRf04xHsUy39hH7S7_8ftZaHq6GD-taEw@mail.gmail.com>
+References: <20210305094353.13511-1-baijiaju1990@gmail.com>
+In-Reply-To: <20210305094353.13511-1-baijiaju1990@gmail.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Fri, 5 Mar 2021 11:28:10 +0000
+Message-ID: <CAL3q7H62btgspnDRUvRp7Xv17TPdzUae7JzrHLvaLYpR-N43hA@mail.gmail.com>
+Subject: Re: [PATCH] fs: btrfs: fix error return code of btrfs_recover_relocation()
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 11:58:18AM +0100, Bartosz Golaszewski wrote:
-> On Fri, Mar 5, 2021 at 11:24 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Fri, Mar 05, 2021 at 10:16:10AM +0100, Bartosz Golaszewski wrote:
-> > > On Fri, Mar 5, 2021 at 9:55 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Fri, Mar 05, 2021 at 09:45:41AM +0100, Bartosz Golaszewski wrote:
-> > > > > On Fri, Mar 5, 2021 at 9:34 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > > >
-> > > > > > On Fri, Mar 05, 2021 at 09:18:30AM +0100, Geert Uytterhoeven wrote:
-> > > > > > > CC Greg
-> > > > > > >
-> > > > > > > On Thu, Mar 4, 2021 at 11:30 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> > > > > > > >
-> > > > > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > > > > > >
-> > > > > > > > Export the symbol for device_is_bound() so that we can use it in gpio-sim
-> > > > > > > > to check if the simulated GPIO chip is bound before fetching its driver
-> > > > > > > > data from configfs callbacks in order to retrieve the name of the GPIO
-> > > > > > > > chip device.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > > > > > > ---
-> > > > > > > >  drivers/base/dd.c | 1 +
-> > > > > > > >  1 file changed, 1 insertion(+)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> > > > > > > > index 9179825ff646..c62c02e3490a 100644
-> > > > > > > > --- a/drivers/base/dd.c
-> > > > > > > > +++ b/drivers/base/dd.c
-> > > > > > > > @@ -353,6 +353,7 @@ bool device_is_bound(struct device *dev)
-> > > > > > > >  {
-> > > > > > > >         return dev->p && klist_node_attached(&dev->p->knode_driver);
-> > > > > > > >  }
-> > > > > > > > +EXPORT_SYMBOL_GPL(device_is_bound);
-> > > > > >
-> > > > > > No.  Please no.  Why is this needed?  Feels like someone is doing
-> > > > > > something really wrong...
-> > > > > >
-> > > > > > NACK.
-> > > > > >
-> > > > >
-> > > > > I should have Cc'ed you the entire series, my bad.
-> > > > >
-> > > > > This is the patch that uses this change - it's a new, improved testing
-> > > > > module for GPIO using configfs & sysfs as you (I think) suggested a
-> > > > > while ago:
-> > > > >
-> > > > > https://lkml.org/lkml/2021/3/4/355
-> > > > >
-> > > > > The story goes like this: committing the configfs item registers a
-> > > > > platform device.
-> > > >
-> > > > Ick, no, stop there, that's not a "real" device, please do not abuse
-> > > > platform devices like that, you all know I hate this :(
-> > > >
-> > > > Use the virtbus code instead perhaps?
-> > > >
-> > >
-> > > I have no idea what virtbus is and grepping for it only returns three
-> > > hits in: ./drivers/pci/iov.c and it's a function argument.
-> > >
-> > > If it stands for virtual bus then for sure it sounds like the right
-> > > thing but I need to find more info on this.
-> >
-> > Sorry, wrong name, see Documentation/driver-api/auxiliary_bus.rst for
-> > the details.  "virtbus" was what I think about it as that was my
-> > original name for it, but it eventually got merged with a different
-> > name.
-> >
-> > > > > As far as I understand - there's no guarantee that
-> > > > > the device will be bound to a driver before the commit callback (or
-> > > > > more specifically platform_device_register_full() in this case)
-> > > > > returns so the user may try to retrieve the name of the device
-> > > > > immediately (normally user-space should wait for the associated uevent
-> > > > > but nobody can force that) by doing:
-> > > > >
-> > > > > mv /sys/kernel/config/gpio-sim/pending/foo /sys/kernel/config/gpio-sim/live/
-> > > > > cat /sys/kernel/config/gpio-sim/live/foo/dev_name
-> > > > >
-> > > > > If the device is not bound at this point, we'll have a crash in the
-> > > > > kernel as opposed to just returning -ENODEV.
-> > > >
-> > > > How will the kernel crash?  What has created the dev_name sysfs file
-> > > > before it is possible to be read from?  That feels like the root
-> > > > problem.
-> > > >
-> > >
-> > > It's not sysfs - it's in configfs. Each chip has a read-only configfs
-> > > attribute that returns the name of the device - I don't really have a
-> > > better idea to map the configfs items to devices that committing
-> > > creates.
-> >
-> > Same question, why are you exporting a configfs attribute that can not
-> > be read from?  Only export it when your driver is bound to the device.
-> >
-> 
-> The device doesn't know anything about configfs. Why would it? The
-> configuration of a GPIO chip can't be changed after it's instantiated,
-> this is why we have committable items.
-> 
-> We export a directory in configfs: gpio-sim -> user creates a new
-> directory (item) in gpio-sim/pending/foo and it's not tied to any
-> device yet but exports attributes which we use to configure the device
-> (label, number of lines, line names etc.), then we mv
-> gpio-sim/pending/foo gpio-sim/live and this is when the device gets
-> created and registered with the subsystem. We take all the configured
-> attributes and put them into device properties for both the driver and
-> gpiolib core (for standard properties) to read - just like we would
-> with a regular GPIO driver because this is the goal: test the core
-> code.
+On Fri, Mar 5, 2021 at 9:46 AM Jia-Ju Bai <baijiaju1990@gmail.com> wrote:
+>
+> When the list of reloc_roots is empty, no error return code of
+> btrfs_recover_relocation() is assigned.
+> To fix this bug, err is assigned with -ENOENT as error return code.
 
-Ok, but they why are you trying to have dev_name be an exported thing?
-I don't understand an attribute here that is visable but can not be read
-from.
+No, there isn't any such bug.
 
-And why not just use the default device name function: dev_name(), which
-will always return a string that will work no matter if the device is
-bound to a driver or not.
+If there are no reloc roots, it means there's no relocation to resume,
+in which case err is already 0 and we therefore return 0.
+By setting err to -ENOENT, that will cause a mount failure on any fs
+that does not have relocation to resume.
 
-thanks,
+You could have tested this simply by doing:
 
-greg k-h
+$ mkfs.btrfs -f /dev/sdc
+$ mount /dev/sdc /mnt/sdc
+mount: /mnt/sdc: mount(2) system call failed: No such file or directory.
+
+It's always a good idea to test patches, even if we are very
+comfortable with the code they are touching...
+
+Thanks.
+
+
+>
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> ---
+>  fs/btrfs/relocation.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index 232d5da7b7be..631b672a852f 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -3817,8 +3817,10 @@ int btrfs_recover_relocation(struct btrfs_root *ro=
+ot)
+>         }
+>         btrfs_release_path(path);
+>
+> -       if (list_empty(&reloc_roots))
+> +       if (list_empty(&reloc_roots)) {
+> +               err =3D -ENOENT;
+>                 goto out;
+> +       }
+>
+>         rc =3D alloc_reloc_control(fs_info);
+>         if (!rc) {
+> --
+> 2.17.1
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
