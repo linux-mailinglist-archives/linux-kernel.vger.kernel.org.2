@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0347F32E01C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:31:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 920A632E01E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbhCEDbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 22:31:11 -0500
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:43903 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhCEDbK (ORCPT
+        id S229688AbhCEDbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 22:31:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229485AbhCEDba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 22:31:10 -0500
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 54835891AE;
-        Fri,  5 Mar 2021 16:31:08 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1614915068;
-        bh=KD1juPyXNCgiool63yGexf0dRtNlatc2uFIxPsMc+Xk=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=v1Vam4TOnkrX079zzIV8KehQMJy0kMy2wJpRjdG5hX7yWu28s77ZDfdzcmdKxFdEA
-         AQF8Au8N4klze+h1a5pAGubiMBGrmfSxYH7qaUya2rD+KK6jW+zbYt5FqEcoOcxbtu
-         kB57vQW9VTmZO6DNP1QVhOysiPag6h5r9vCIkABGPGLslsZOG8l0uZoWjpEIweDLQS
-         s9GpLchVWvECXwat6SQpDcpVQ7phrUAGRZQ/BSCtCoOwas9YubGl8boBBQHEWUsX/l
-         7L8bEvzXy47myorTaj4vAmU9dyX86tAemshBFAFJps2dxluQmgpSdkg9qIcaIq52iI
-         AIuXDOk55VORQ==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B6041a5d90000>; Fri, 05 Mar 2021 16:30:33 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Fri, 5 Mar 2021 16:30:31 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.012; Fri, 5 Mar 2021 16:30:31 +1300
-From:   Mark Tomlinson <Mark.Tomlinson@alliedtelesis.co.nz>
-To:     "fw@strlen.de" <fw@strlen.de>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pablo@netfilter.org" <pablo@netfilter.org>,
-        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
-        "kadlec@netfilter.org" <kadlec@netfilter.org>
-Subject: Re: [PATCH 3/3] netfilter: x_tables: Use correct memory barriers.
-Thread-Topic: [PATCH 3/3] netfilter: x_tables: Use correct memory barriers.
-Thread-Index: AQHXEJYqSIGupJItGUut6XOWJvc4xKpymfUAgAFKuQA=
-Date:   Fri, 5 Mar 2021 03:30:30 +0000
-Message-ID: <631d774f41a564b28d40a5639a58f1ab0d7f6e03.camel@alliedtelesis.co.nz>
-References: <20210304013116.8420-1-mark.tomlinson@alliedtelesis.co.nz>
-         <20210304013116.8420-4-mark.tomlinson@alliedtelesis.co.nz>
-         <20210304074648.GJ17911@breakpoint.cc>
-In-Reply-To: <20210304074648.GJ17911@breakpoint.cc>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [2001:df5:b000:23:2d77:907a:1462:3c65]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4016757BD182D84D86CB42E80B012C05@atlnz.lc>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=j5wOGto6lCVxjVACX6YA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+        Thu, 4 Mar 2021 22:31:30 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CD1C061574;
+        Thu,  4 Mar 2021 19:31:29 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id l18so1070913pji.3;
+        Thu, 04 Mar 2021 19:31:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=3DJxHAaaivZloDKJkg7BmraW1QxR1uQyEaZvyq60QtM=;
+        b=G90QU+ixdE7gddy1nulVOaRcMw5p33BJcRUNVZMYb2MsNAi3VN83E2lcBSYX49Iv68
+         nX0x2GMyT35CXiXj/M7HW1LScfqTCR2jqvXr2Rfmbga/oKVr7h5l/ECiaIxU8a1skvkY
+         0huaucMpQzbTNownRDYDSvGKuGBsgxkNQ4wHtk2F0tFvofKy8H/8YmOKVC+osZpbwxB8
+         IVgRTwgoti8HsIB+omRnQtl8W1VkOCJMJ+VtQ+ExjuzZWv7A6615IyVWM3ILVSRKfgd3
+         lHdVL7jODYkT5moFiEtHhN0SD/E1H0Ufms2om4vG4VUfnxZb0x4uu3Esn7vBpGrrti8M
+         V78Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3DJxHAaaivZloDKJkg7BmraW1QxR1uQyEaZvyq60QtM=;
+        b=l9pfUYZkS0N/oCYjotjRCQMRqZUuctfz7hT69TcWlMkTyxl6XLMenapkIgaxYh6YfY
+         3k7hOt0Ujdf+sOpzUAiV+wh3r2PC+1TmFc5dDFzZZ8F1J64J4Sb9W7kispBy8OOSU/bt
+         rx5qR36TolmvAYfuK79G5FxgI5iew3qLwHTk/PeaEOpqiZuyDmS3S69kh3b/t2jMT22z
+         zr5sh27HBhgb6K50XLDmiztBkZQEclpfVcMoMNlAruOmsRA/d2NcSVp8XoS+Furp2wN4
+         ME9r08Tka3Df0svb5dwV3VKMfynqkePGrUiyFZuytA2oK0pnRFrqCFoQQLKkkR4KRHpp
+         Xqhw==
+X-Gm-Message-State: AOAM530MTdCpdjmvq3JHnYFcxHzeEHNSW/2PicIqRB4EYOxaRD6Thj6n
+        rIEyL+64yTec57yMo1qtP3E=
+X-Google-Smtp-Source: ABdhPJzwhnyVa8A94pkpvh6czEX/mrz9sKQ2e8ru0ba4B1YycIkFNeP6RSRTg+rbceFq8xjGizT9Kg==
+X-Received: by 2002:a17:902:6b45:b029:e0:7a3:a8c with SMTP id g5-20020a1709026b45b02900e007a30a8cmr6885503plt.1.1614915089101;
+        Thu, 04 Mar 2021 19:31:29 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.129])
+        by smtp.gmail.com with ESMTPSA id i66sm712567pfe.31.2021.03.04.19.31.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 19:31:28 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        lee.jones@linaro.org, colin.king@canonical.com
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] marvell: libertas_tf: fix error return code of if_usb_prog_firmware()
+Date:   Thu,  4 Mar 2021 19:31:15 -0800
+Message-Id: <20210305033115.6015-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTAzLTA0IGF0IDA4OjQ2ICswMTAwLCBGbG9yaWFuIFdlc3RwaGFsIHdyb3Rl
-Og0KPiBNYXJrIFRvbWxpbnNvbiA8bWFyay50b21saW5zb25AYWxsaWVkdGVsZXNpcy5jby5uej4g
-d3JvdGU6DQo+ID4gQ2hhbmdpbmcgdG8gdXNpbmcgc21wX21iKCkgaW5zdGVhZCBvZiBzbXBfd21i
-KCkgZml4ZXMgdGhlIGtlcm5lbCBwYW5pYw0KPiA+IHJlcG9ydGVkIGluIGNjMDBiY2FhNTg5OSwN
-Cj4gDQo+IENhbiB5b3UgcmVwcm9kdWNlIHRoZSBjcmFzaGVzIHdpdGhvdXQgdGhpcyBjaGFuZ2U/
-DQoNClllcy4gSW4gb3VyIHRlc3QgZW52aXJvbm1lbnQgd2Ugd2VyZSBzZWVpbmcgYSBrZXJuZWwg
-cGFuaWMgYXBwcm94LiB0d2ljZQ0KYSBkYXksIHdpdGggYSBzaW1pbGFyIG91dHB1dCB0byB0aGF0
-IHNob3duIGluIFN1YmFzaCdzIHBhdGNoIChjYzAwYmNhYTU4OTkpLg0KV2l0aCB0aGlzIHBhdGNo
-IHdlIGFyZSBub3Qgc2VlaW5nIGFueSBpc3N1ZS4gVGhlIENQVSBpcyBhIGR1YWwtY29yZSBBUk0N
-CkNvcnRleC1BOS4NCg0KPiA+IEhvdyBtdWNoIG9mIGFuIGltcGFjdCBpcyB0aGUgTUIgY2hhbmdl
-IG9uIHRoZSBwYWNrZXQgcGF0aD8NCg0KSSB3aWxsIHJ1biBvdXIgdGhyb3VnaHB1dCB0ZXN0cyBh
-bmQgZ2V0IHRoZXNlIHJlc3VsdHMuDQoNCkkgaGF2ZSBhIHNjcmlwdCB3aGljaCBtYWtlcyBhcm91
-bmQgMjAwIGNhbGxzIHRvIGlwdGFibGVzLiBUaGlzIHdhcyB0YWtpbmcNCjExLjU5cyBhbmQgbm93
-IGlzIGJhY2sgdG8gMS4xNnMuDQoNCg==
+When check_fwfile_format() fails, no error return code of
+if_usb_prog_firmware() is assigned.
+To fix this bug, ret is assigned with -EINVAL as error return code.
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/net/wireless/marvell/libertas_tf/if_usb.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/marvell/libertas_tf/if_usb.c b/drivers/net/wireless/marvell/libertas_tf/if_usb.c
+index a92916dc81a9..ceca22da5a29 100644
+--- a/drivers/net/wireless/marvell/libertas_tf/if_usb.c
++++ b/drivers/net/wireless/marvell/libertas_tf/if_usb.c
+@@ -825,8 +825,10 @@ static int if_usb_prog_firmware(struct lbtf_private *priv)
+ 	}
+ 	kernel_param_unlock(THIS_MODULE);
+ 
+-	if (check_fwfile_format(cardp->fw->data, cardp->fw->size))
++	if (check_fwfile_format(cardp->fw->data, cardp->fw->size)) {
++		ret = -EINVAL;
+ 		goto release_fw;
++	}
+ 
+ restart:
+ 	if (if_usb_submit_rx_urb_fwload(cardp) < 0) {
+-- 
+2.17.1
+
