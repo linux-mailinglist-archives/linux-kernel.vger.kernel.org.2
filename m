@@ -2,115 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38AC32ECDD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 15:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 964DF32ECE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 15:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbhCEOOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 09:14:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230514AbhCEOOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 09:14:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A0C06501A;
-        Fri,  5 Mar 2021 14:14:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614953676;
-        bh=nJW/qzlXmQLjEx5WtjuS7q3GToRzq3WGjVZX19qD8Jg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ujT6mUNrqJ6jlXFWAX1PRjYK0tftZpfJWLEY3DbgBEJ/3/vZY2zPlcu+MPfP/f/C9
-         gxcjtYUNWqGHyIP9Offdvt5GU/9lHxv8AgwSewkvn98xQOyhslh/E3TD+W51q56Nkz
-         1GR68fvhBdnD7bdTOneaZ/DzbB8Su8/p/5IaM1MNgwvXqLnxwLTlUs8qTw3was3Ut+
-         b/k34hD8fPTzR7sA4hcj9I/mvl3YS09wjbpjo7NPx0tNYggrK048TXf4Vg7CBpfgRI
-         RfPHFba9UWVx7rLCUvzU7IL0LBGymZCJZ8ZQ/J79ggYzOeK8B6xuw7wX6NOz2rFgiw
-         jNOB5eYbz/9Cg==
-Received: by mail-ej1-f54.google.com with SMTP id c10so3700009ejx.9;
-        Fri, 05 Mar 2021 06:14:36 -0800 (PST)
-X-Gm-Message-State: AOAM533JXMe/UOx97mPDBvOudoA4AmL2PsFIIbSr2XeiCQ25MrOFeMrp
-        1QwGe+ZQKF/lpLYpQbg9ajCo6yxvNRYRzDIgPw==
-X-Google-Smtp-Source: ABdhPJwNz6f1WnjfIEjnIlOIQSeFUxdiphznagy089tysI2uTGcdeuYk8oheFpgpAvN7aSri3oqhBTW4L9fuXdOWSes=
-X-Received: by 2002:a17:906:d153:: with SMTP id br19mr2329504ejb.360.1614953674952;
- Fri, 05 Mar 2021 06:14:34 -0800 (PST)
+        id S230344AbhCEOPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 09:15:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230415AbhCEOPM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 09:15:12 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338DCC061574;
+        Fri,  5 Mar 2021 06:15:12 -0800 (PST)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 94F8FCC;
+        Fri,  5 Mar 2021 15:15:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1614953710;
+        bh=Cbw6099cw1FB1FobLkAEAw3yWtepurQfxncP/jwuB7I=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=cSxv4MLvux3c+IsjnZe5QMAE+kF+28lDaW5MJjRvIoUc0Yw+7PiPhmMI0poF8+Ao8
+         OwbLoWJeIyLT2C2C73DeAuOWtSQDapLTtsrZ8y4WRYrrh/E7bpzXIOlov3F8UYO/Ui
+         JpJ2VGeArrebF/kvS0KHDE+PMO0Jbrry0+lGKEfE=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH] arm64: dts: renesas: falcon: Add GP LEDs
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210304165300.295952-1-kieran.bingham+renesas@ideasonboard.com>
+ <CAMuHMdWRe0HVzQD9U_8+35_HTaK28Ayb+9tsb8q5+3VNpYniHg@mail.gmail.com>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <17ee8b80-8522-7fb5-508d-6be18dea36d8@ideasonboard.com>
+Date:   Fri, 5 Mar 2021 14:15:08 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1614222604-27066-1-git-send-email-peng.fan@oss.nxp.com>
- <1614222604-27066-5-git-send-email-peng.fan@oss.nxp.com> <AM6PR04MB4966041BFFDDAF1EF00BE1AD80969@AM6PR04MB4966.eurprd04.prod.outlook.com>
-In-Reply-To: <AM6PR04MB4966041BFFDDAF1EF00BE1AD80969@AM6PR04MB4966.eurprd04.prod.outlook.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 5 Mar 2021 08:14:23 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKK8t6XUqTuOKPzOviJbysqWqga_mdxWE0P0N4ejTgG=A@mail.gmail.com>
-Message-ID: <CAL_JsqKK8t6XUqTuOKPzOviJbysqWqga_mdxWE0P0N4ejTgG=A@mail.gmail.com>
-Subject: Re: [PATCH V3 4/5] dt-bindings: mmc: fsl-imx-esdhc: add clock bindings
-To:     Aisheng Dong <aisheng.dong@nxp.com>
-Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMuHMdWRe0HVzQD9U_8+35_HTaK28Ayb+9tsb8q5+3VNpYniHg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 8:09 AM Aisheng Dong <aisheng.dong@nxp.com> wrote:
->
-> Hi Rob,
->
-> > From: Peng Fan (OSS) <peng.fan@oss.nxp.com>
-> > Sent: Thursday, February 25, 2021 11:10 AM
-> >
-> > From: Peng Fan <peng.fan@nxp.com>
-> >
-> > Add clock bindings for fsl-imx-esdhc yaml
-> >
-> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > ---
-> >  .../devicetree/bindings/mmc/fsl-imx-esdhc.yaml        | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
-> > b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
-> > index a7fbd8cc1e38..369471814496 100644
-> > --- a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
-> > +++ b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
-> > @@ -103,6 +103,17 @@ properties:
-> >        Only eMMC HS400 mode need to take care of this property.
-> >      default: 0
-> >
-> > +  clocks:
-> > +    maxItems: 3
-> > +    description:
-> > +      Handle clocks for the sdhc controller.
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: ipg
-> > +      - const: ahb
-> > +      - const: per
->
-> One question:
-> The side effect of this patch is that it imposes a forced order of clk names
-> In DT which actually was not needed.
->
-> Do we really have to do that?
+On 05/03/2021 14:10, Geert Uytterhoeven wrote:
+> Hi Kieran,
+> 
+> On Thu, Mar 4, 2021 at 5:53 PM Kieran Bingham
+> <kieran.bingham+renesas@ideasonboard.com> wrote:
+>> Three general purpose LEDs are provided on the Falcon CPU board.
+>>
+>> Connect GP_LED1, GP_LED2, and GP_LED3 to the gpio-leds frameworks.
+>> These LEDs are arranged in a block of four LEDs on the board itself, but
+>> the fourth LED is as yet unidentified.
+>>
+>> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> 
+> Thanks for your patch!
+> 
+>> --- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
+>> +++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
+> 
+> I believe the LEDs are on the CPU board, so they belong in
+> r8a779a0-falcon-cpu.dtsi instead?
 
-Yes.
+Yes, I hadn't quite grasped the layouts of this new board yet.
 
-> Or any other better approach to allow a random order to match the DT
-> usage better?
+Sorry - I'll move it.
 
-Why do you need random order?
 
-We can not enforce the order, but we only do that when there's
-multiple optional entries.
+> 
+>> @@ -20,6 +20,20 @@ aliases {
+>>         chosen {
+>>                 stdout-path = "serial0:115200n8";
+>>         };
+>> +
+>> +       leds {
+>> +               compatible = "gpio-leds";
+>> +
+>> +               led1 {
+>> +                       gpios = <&gpio4 18 GPIO_ACTIVE_HIGH>;
+> 
+> Any need for other properties from
+> Documentation/devicetree/bindings/leds/common.yaml, like
+> color = <LED_COLOR_ID_GREEN>?
 
-Rob
+Oh, I wasn't aware of those. But indeed the LED is green, so it seems
+appropriate.
+
+I'll test it out, and see if I can make it glow red (jokes).
+
+
+> 
+>> +               };
+>> +               led2 {
+>> +                       gpios = <&gpio4 19 GPIO_ACTIVE_HIGH>;
+>> +               };
+>> +               led3 {
+>> +                       gpios = <&gpio4 20 GPIO_ACTIVE_HIGH>;
+>> +               };
+>> +       };
+>>  };
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+
