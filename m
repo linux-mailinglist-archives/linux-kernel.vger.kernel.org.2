@@ -2,128 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA1532E36C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:12:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A3532E366
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:09:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbhCEIMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:12:01 -0500
-Received: from foss.arm.com ([217.140.110.172]:49198 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229464AbhCEILl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:11:41 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BCEC9D6E;
-        Fri,  5 Mar 2021 00:11:40 -0800 (PST)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 212A63F73B;
-        Fri,  5 Mar 2021 00:11:37 -0800 (PST)
-Subject: Re: [PATCH] devfreq: Register devfreq as a cooling device
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, cwchoi00@gmail.com,
-        kyungmin.park@samsung.com, myungjoo.ham@samsung.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        "open list:DRM DRIVERS FOR LIMA" <dri-devel@lists.freedesktop.org>,
-        "moderated list:DRM DRIVERS FOR LIMA" <lima@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>
-References: <20210304125034.28404-1-daniel.lezcano@linaro.org>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <23db1b13-9418-91f5-4871-f45b983f6e3c@arm.com>
-Date:   Fri, 5 Mar 2021 08:12:21 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229651AbhCEIJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:09:49 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2646 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhCEIJs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 03:09:48 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6041e74c0003>; Fri, 05 Mar 2021 00:09:48 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 5 Mar
+ 2021 08:09:39 +0000
+Received: from manikanta-pc.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 5 Mar 2021 08:09:34 +0000
+From:   Om Prakash Singh <omp@nvidia.com>
+To:     <vidyas@nvidia.com>, <jingoohan1@gmail.com>,
+        <gustavo.pimentel@synopsys.com>, <lorenzo.pieralisi@arm.com>,
+        <amurray@thegoodpenguin.co.uk>, <bhelgaas@google.com>,
+        <kishon@ti.com>, <thierry.reding@gmail.com>
+CC:     <Jisheng.Zhang@synaptics.com>, <jonathanh@nvidia.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>,
+        <oop.singh@gmail.com>, "Om Prakash Singh" <omp@nvidia.com>
+Subject: [PATCH] PCI: tegra: Disable PTM capabilities for EP mode
+Date:   Fri, 5 Mar 2021 13:42:34 +0530
+Message-ID: <1614931954-11741-1-git-send-email-omp@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20210304125034.28404-1-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614931788; bh=d4EIMKRedldEKkQ/KZr/xWANUlctCCQOqNOtF0VKLJ8=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         Content-Type;
+        b=M9BzLutSQk9xsvOQG1z1pZPmqn7yPBj4yS22qjEZXH1ZG/noUU8/x6RUQZFmWt59p
+         gtWTfKjV15wRwCUyXt9ZwdUwZOyXGwL1fTqRJDpAhsiAGgs80Tw+grevyNfDUGzpv5
+         8FyGTigqs+c3zZmCa7Nr2l3aKoAbc8W/R5hDU4E57YgRe0c1hLvWhlS2J6lVzi16FZ
+         zy+wkPXwJNMATTD0nwonK2sM7MmafXIK4xJh9gNGLYmFr5i7UwZd3EkWlZwdr2HOIO
+         F17zErC3Fz4XRklQJ2x1h/H0OOLfN4ibw0yqVBJqRS07le/5RBhNdEMcsBKJudsQRI
+         puZU6vvmtfLXA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/03/2021 12:50, Daniel Lezcano wrote:
-> Currently the default behavior is to manually having the devfreq
-> backend to register themselves as a devfreq cooling device.
-> 
-> There are no so many and actually it makes more sense to register the
-> devfreq device when adding it.
-> 
-> Consequently, every devfreq becomes a cooling device like cpufreq is.
-> 
-> Having a devfreq being registered as a cooling device can not mitigate
-> a thermal zone if it is not bound to this one. Thus, the current
-> configurations are not impacted by this change.
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->   drivers/devfreq/devfreq.c                   |  8 ++++++++
->   drivers/gpu/drm/lima/lima_devfreq.c         | 13 -------------
->   drivers/gpu/drm/lima/lima_devfreq.h         |  2 --
->   drivers/gpu/drm/msm/msm_gpu.c               | 11 -----------
->   drivers/gpu/drm/msm/msm_gpu.h               |  2 --
->   drivers/gpu/drm/panfrost/panfrost_devfreq.c | 13 -------------
->   include/linux/devfreq.h                     |  3 +++
->   7 files changed, 11 insertions(+), 41 deletions(-)
-> 
-[...]
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> index 56b3f5935703..2cb6300de1f1 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> @@ -3,7 +3,6 @@
->   
->   #include <linux/clk.h>
->   #include <linux/devfreq.h>
-> -#include <linux/devfreq_cooling.h>
->   #include <linux/platform_device.h>
->   #include <linux/pm_opp.h>
->   
-> @@ -90,7 +89,6 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
->   	struct device *dev = &pfdev->pdev->dev;
->   	struct devfreq *devfreq;
->   	struct opp_table *opp_table;
-> -	struct thermal_cooling_device *cooling;
->   	struct panfrost_devfreq *pfdevfreq = &pfdev->pfdevfreq;
->   
->   	opp_table = dev_pm_opp_set_regulators(dev, pfdev->comp->supply_names,
-> @@ -139,12 +137,6 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
->   	}
->   	pfdevfreq->devfreq = devfreq;
->   
-> -	cooling = devfreq_cooling_em_register(devfreq, NULL);
-> -	if (IS_ERR(cooling))
-> -		DRM_DEV_INFO(dev, "Failed to register cooling device\n");
-> -	else
-> -		pfdevfreq->cooling = cooling;
-> -
->   	return 0;
->   
->   err_fini:
-> @@ -156,11 +148,6 @@ void panfrost_devfreq_fini(struct panfrost_device *pfdev)
->   {
->   	struct panfrost_devfreq *pfdevfreq = &pfdev->pfdevfreq;
->   
-> -	if (pfdevfreq->cooling) {
-> -		devfreq_cooling_unregister(pfdevfreq->cooling);
-> -		pfdevfreq->cooling = NULL;
-> -	}
-> -
->   	if (pfdevfreq->opp_of_table_added) {
->   		dev_pm_opp_of_remove_table(&pfdev->pdev->dev);
->   		pfdevfreq->opp_of_table_added = false;
+PCIe EP compliance expect PTM capabilities (ROOT_CAPABLE, RES_CAPABLE,
+CLK_GRAN) to be disabled.
 
-You've removed all references to pfdevfreq->cooling, so please also 
-remove the member from struct panfrost_devfreq (as already done with 
-lima and msm).
+Signed-off-by: Om Prakash Singh <omp@nvidia.com>
+---
+ drivers/pci/controller/dwc/pcie-tegra194.c | 17 ++++++++++++++++-
+ include/uapi/linux/pci_regs.h              |  1 +
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
-Thanks,
+diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+index 6fa216e..a588312 100644
+--- a/drivers/pci/controller/dwc/pcie-tegra194.c
++++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+@@ -1639,7 +1639,7 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
+ 	struct dw_pcie *pci = &pcie->pci;
+ 	struct dw_pcie_ep *ep = &pci->ep;
+ 	struct device *dev = pcie->dev;
+-	u32 val;
++	u32 val, ptm_cap_base = 0;
+ 	int ret;
+ 
+ 	if (pcie->ep_state == EP_STATE_ENABLED)
+@@ -1760,6 +1760,21 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
+ 						      PCI_CAP_ID_EXP);
+ 	clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
+ 
++	/* Disable PTM root and responder capability */
++	ptm_cap_base = dw_pcie_find_ext_capability(&pcie->pci,
++						   PCI_EXT_CAP_ID_PTM);
++	if (ptm_cap_base) {
++		dw_pcie_dbi_ro_wr_en(pci);
++		val = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
++		val &= ~PCI_PTM_CAP_ROOT;
++		dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, val);
++
++		val = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
++		val &= ~(PCI_PTM_CAP_RES | PCI_PTM_GRANULARITY_MASK);
++		dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, val);
++		dw_pcie_dbi_ro_wr_dis(pci);
++	}
++
+ 	val = (ep->msi_mem_phys & MSIX_ADDR_MATCH_LOW_OFF_MASK);
+ 	val |= MSIX_ADDR_MATCH_LOW_OFF_EN;
+ 	dw_pcie_writel_dbi(pci, MSIX_ADDR_MATCH_LOW_OFF, val);
+diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+index e709ae8..9dd6f8d 100644
+--- a/include/uapi/linux/pci_regs.h
++++ b/include/uapi/linux/pci_regs.h
+@@ -1050,6 +1050,7 @@
+ /* Precision Time Measurement */
+ #define PCI_PTM_CAP			0x04	    /* PTM Capability */
+ #define  PCI_PTM_CAP_REQ		0x00000001  /* Requester capable */
++#define  PCI_PTM_CAP_RES		0x00000002  /* Responder capable */
+ #define  PCI_PTM_CAP_ROOT		0x00000004  /* Root capable */
+ #define  PCI_PTM_GRANULARITY_MASK	0x0000FF00  /* Clock granularity */
+ #define PCI_PTM_CTRL			0x08	    /* PTM Control */
+-- 
+2.7.4
 
-Steve
