@@ -2,123 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C9332F05B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA55E32F045
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhCEQsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 11:48:24 -0500
-Received: from lizzard.sbs.de ([194.138.37.39]:47406 "EHLO lizzard.sbs.de"
+        id S231300AbhCEQoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 11:44:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231329AbhCEQrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 11:47:51 -0500
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 125GlO4Z017045
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 5 Mar 2021 17:47:24 +0100
-Received: from md1za8fc.ad001.siemens.net ([167.87.40.210])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 125GgNrS002611;
-        Fri, 5 Mar 2021 17:42:24 +0100
-Date:   Fri, 5 Mar 2021 17:42:23 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH 1/4] platform/x86: simatic-ipc: add main driver for
- Siemens devices
-Message-ID: <20210305174223.11537d42@md1za8fc.ad001.siemens.net>
-In-Reply-To: <CAHp75VfB8v1n3Hav_oMqG0k4C31NBEUe082i8NrrOGUbSgoESw@mail.gmail.com>
-References: <20210302163309.25528-1-henning.schild@siemens.com>
-        <20210302163309.25528-2-henning.schild@siemens.com>
-        <CAHp75VfDDGxdhP0-yKOCJyJ_+Y2Zu3TmOdvUJmEZ0AvQnceV6A@mail.gmail.com>
-        <2fad304a-9e1e-c83d-7a9e-02b35ed22418@redhat.com>
-        <CAHp75VfB8v1n3Hav_oMqG0k4C31NBEUe082i8NrrOGUbSgoESw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231282AbhCEQno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 11:43:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41F6E6508B;
+        Fri,  5 Mar 2021 16:43:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614962624;
+        bh=LU9abYarido7jBUFI+h2VPbi2pDJZpL4e6lVWkDvYEs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AOuCgeOm68/J35XdVGCCO8ObjBJTPneMFSBUISgLzKiwKQ3i4kgD18HMxT2Iw48vM
+         qWAAZJfmamD3N/ZAm48YBZWXiUtRjKCfaEjQ+WVQ2AC5Dm2duScHddzPa+Ei7Vyhim
+         XuiZKe/AaiFmlxHLirNqcoqlJ0GemxUGXpcMzUW+RVHE57OzkYY52LWsPt9tZLD1Dm
+         2hUCGHpuB1IUu5ad30iHnFh/3RWUwdxsyM9XFG9QISrzDcEfASyqBuQoD7G2ZQVjen
+         9mf2Zy9zKpqINWBxzS4c0m7OqjATJEO0sceAo57Ti8Y0MJDJSpmI2kX0hC3EzzmkDL
+         hX7bVP3Md+WDg==
+Received: by mail-ot1-f43.google.com with SMTP id g8so2397197otk.4;
+        Fri, 05 Mar 2021 08:43:44 -0800 (PST)
+X-Gm-Message-State: AOAM533jyLqcasg0cL/+vKaSF5K5buniGM4xfrYNXyWShX0H/8s6Fw5b
+        elwl3fXgUuBpUzN74kXCxnDQBngn8CCWfT0YQhA=
+X-Google-Smtp-Source: ABdhPJwz5Ow9XqsCCIrLLR9sMDo1pxHzHSiQz3uG5gZVUFQzrpgBZzCWoAerPcV8PVcXgONzd+LKsBQ6Gbx962ZNWVY=
+X-Received: by 2002:a9d:12e1:: with SMTP id g88mr5425358otg.305.1614962623492;
+ Fri, 05 Mar 2021 08:43:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-13-marcan@marcan.st>
+ <CAHp75VdGYDDCRBRmd3O3Mt1opgDdwuRBoS1E=vaVc45h9eR-0w@mail.gmail.com>
+ <04ea35d6-cd7d-d6de-75ae-59b1e0c77f04@marcan.st> <CAHp75Vd6adVM94G1vCrQcZoegQFWHbK14YRRuBTQZwrM5CV2jQ@mail.gmail.com>
+In-Reply-To: <CAHp75Vd6adVM94G1vCrQcZoegQFWHbK14YRRuBTQZwrM5CV2jQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 5 Mar 2021 17:43:27 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1X4DyWdeBM1Vx+QMXU7+VhJrLHFLVzwAE4a4mb_xuqMQ@mail.gmail.com>
+Message-ID: <CAK8P3a1X4DyWdeBM1Vx+QMXU7+VhJrLHFLVzwAE4a4mb_xuqMQ@mail.gmail.com>
+Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
+ MMIO as non-posted
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Hector Martin <marcan@marcan.st>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Fri, 5 Mar 2021 17:42:42 +0200
-schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
-
-> On Thu, Mar 4, 2021 at 3:47 PM Hans de Goede <hdegoede@redhat.com>
-> wrote:
-> > On 3/4/21 11:11 AM, Andy Shevchenko wrote:  
-> > > On Thu, Mar 4, 2021 at 8:36 AM Henning Schild
-> > > <henning.schild@siemens.com> wrote:  
-> 
+On Fri, Mar 5, 2021 at 5:08 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Fri, Mar 5, 2021 at 5:55 PM Hector Martin <marcan@marcan.st> wrote:
+> > On 06/03/2021 00.13, Andy Shevchenko wrote:
+>
 > ...
-> 
-> > >> +u32 simatic_ipc_get_membase0(unsigned int p2sb)
-> > >> +{
-> > >> +       u32 bar0 = 0;  
-> > >  
-> > >> +#ifdef CONFIG_PCI  
+>
+> > >> -       return ioremap(res.start, resource_size(&res));
+> > >> +       if (res.flags & IORESOURCE_MEM_NONPOSTED)
+> > >> +               return ioremap_np(res.start, resource_size(&res));
+> > >> +       else
+> > >> +               return ioremap(res.start, resource_size(&res));
 > > >
-> > > It's ugly besides the fact that you have a dependency.
-> > >  
-> > >> +       struct pci_bus *bus;  
-> > >
-> > > Missed blank line.
-> > >  
-> > >> +       /*
-> > >> +        * The GPIO memory is bar0 of the hidden P2SB device.
-> > >> Unhide the device
-> > >> +        * to have a quick look at it, before we hide it again.
-> > >> +        * Also grab the pci rescan lock so that device does not
-> > >> get discovered
-> > >> +        * and remapped while it is visible.
-> > >> +        * This code is inspired by drivers/mfd/lpc_ich.c
-> > >> +        */
-> > >> +       bus = pci_find_bus(0, 0);
-> > >> +       pci_lock_rescan_remove();
-> > >> +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x0);
-> > >> +       pci_bus_read_config_dword(bus, p2sb, PCI_BASE_ADDRESS_0,
-> > >> &bar0); +
-> > >> +       bar0 &= ~0xf;
-> > >> +       pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x1);
-> > >> +       pci_unlock_rescan_remove();
-> > >> +#endif /* CONFIG_PCI */
-> > >> +       return bar0;
-> > >> +}
-> > >> +EXPORT_SYMBOL(simatic_ipc_get_membase0);  
-> > >
-> > > Oy vey! I know what this is and let's do it differently. I have
-> > > some (relatively old) patch series I can send you privately for
-> > > testing.  
+> > > This doesn't sound right. Why _np is so exceptional? Why don't we have
+> > > other flavours (it also rings a bell to my previous comment that the
+> > > flag in ioresource is not in the right place)?
 > >
-> > This bit stood out the most to me too, it would be good if we can
-> > this fixed in some cleaner work. So I'm curious how things will
-> > look with Andy's work integrated.
-> >
-> > Also I don't think this should be exported. Instead this (or its
-> > replacement) should be used to get the address for an IOMEM
-> > resource to add the platform devices when they are instantiated.
-> > Then the platform-dev drivers can just use the regular functions to
-> > get their resources instead of relying on this module.  
-> 
-> I have published a WIP branch [1]. I have no means to test (I don't
-> know what hardware at hand I can use right now), but I made it compile
-> after 4 years of gathering dust...
-> Feel free to give any kind of comments or share your ideas on how it
-> can be improved (the above idea on IOMEM resource is interesting, but
-> devices are PCI, not sure how this can be done).
-> 
-> [1]: https://gitlab.com/andy-shev/next/-/tree/p2sb
+> > This is different from other variants, because until now *drivers* have
+> > made the choice of what ioremap mode to use based on device requirements
+> > (which means ioremap() 99% of the time, and then framebuffers and other
+> > memory-ish things such use something else). Now we have a *SoC fabric*
+> > that is calling the shots on what ioremap mode we have to use - and
+> > *every* non-PCIe driver needs to use ioremap_np() on these SoCs, or they
+> > break. So it seems a lot cleaner to make the choice for drivers here to
+> > upgrade ioremap() to ioremap_np() for SoCs that need it.
+>
+> Yes, that is a good idea. Once we discussed x86 and _uc cases and
+> actually on x86 it makes a lot of sense to have ioremap() ==
+> ioremap_uc(). Can't be this a similar case here?
 
-That is a little weird, might be a good idea to RFC reply to the cover
-letter of this one. To allow review and discussion in a central place.
+The difference is that ioremap() should be ioremap_uc() on /all/
+architectures, it's just that x86 and ia64 for a long time were the
+exception and defined ioremap() as 'do whatever the mtrr says'.
 
-Henning
+> Arnd, what do you think of actually providing an ioremap() as some
+> kind of "best for the architecture the code is running on"?
+
+Linus has been pretty clear about wanting all the default functions
+to have similar behavior across architectures and be at least as
+strict as x86. In case of ioremap() that usually means that writes
+are posted, because they are that way on PCI buses on x86.
+
+There are definitely some advantages of making all writes non-posted
+by default on Arm because that would be a simpler model, but there
+are some important downsides:
+
+- non-posted writes can be much slower than posted ones, depending
+  on the specific hardware
+
+- it would change the behavior of all Arm platforms, with no easy
+  way to validate it
+
+- setting ioremap() on PCI buses non-posted only makes them
+  only slower but not more reliable, because the non-posted flag
+  on the bus is discarded by the PCI host bridge.
+
+> Otherwise if the same driver happens to be needed on different
+> architectures, oops, ifdeffery or simple conditionals over the code is
+> really not the best way to solve it.
+
+The behavior of devm_platform_ioremap_resource() is now to
+do the right thing automatically, and I think that is good enough. For
+all I can tell, we can use that in all drivers without conditional
+compilation.
+
+> > If we don't do something like this here or in otherwise common code,
+> > we'd have to have an open-coded "if apple then ioremap_np, else ioremap"
+> > in every driver that runs on-die devices on these SoCs, even ones that
+> > are otherwise standard and need few or no Apple-specific quirks.
+>
+> Exactly! But what about architectures where _uc is that one? So, why
+> does your patch only take part of _np case?
+> (Hint we have x86 Device Tree based platforms)
+
+Usually, the driver knows the requirements, and they are independent
+of the platform. If a driver wants _wc or _wt mappings, it will want that
+on all machines, and should be able to deal with platforms that implement
+that through a stricter mapping.
+
+The two drivers that need to override ioremap() to ioremap_uc()
+in order to override the mtrr already have that logic. You are right
+that these are a bit like the _np() case in that the device needs
+something stricter than the default mapping, but the difference is
+that for x86 ioremap_uc() this is needed to work around broken
+firmware, while for the apple ioremap_np() case we trust the firmware
+to tell us what to do.
+
+> Yep, and why not to make ioremap() == ioremap_nc() on architecture
+> that requires it?
+> Can it be detected at run time?
+
+I think doing this requires auditing a lot of legacy driver code,
+especially drivers/video/fbdev. Once all drivers that need write-combining
+mappings explicitly ask for them, the default ioremap can be changed
+over to act like ioremap_nc() on the remaining two architectures that
+don't do that yet.
+
+There has been a lot of work toward that goal, but the problem
+is knowing exactly which drivers need it.
+
+       Arnd
