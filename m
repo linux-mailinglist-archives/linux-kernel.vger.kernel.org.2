@@ -2,91 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2028F32DFB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:41:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDA032DFBA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbhCEClt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 21:41:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26170 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229436AbhCEClt (ORCPT
+        id S229704AbhCECpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 21:45:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhCECpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 21:41:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614912108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pn33AdVmvC3/0IQYEhPgzHpY70aPmcFl05zItmBqzEA=;
-        b=hAarekMo2bAEOkt8ibSdy2pXYfttXLBjwcOnWM7sl0/FTxlBjsonhtAyjEHkArUIkMerzX
-        krGMidD8dWPDnPNEbXFBlKGDRtYmvQAl8ypsif/APUx8DgD9VTWz54ESYPve+7iEaQB8ez
-        vGnyrhYNHBietrqU72TH6Zl9iXLRCEA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-RZYz0z8bNPuQCSne957cWg-1; Thu, 04 Mar 2021 21:41:46 -0500
-X-MC-Unique: RZYz0z8bNPuQCSne957cWg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7AFBD57;
-        Fri,  5 Mar 2021 02:41:45 +0000 (UTC)
-Received: from treble (ovpn-113-161.rdu2.redhat.com [10.10.113.161])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2FC8D5C1A1;
-        Fri,  5 Mar 2021 02:41:43 +0000 (UTC)
-Date:   Thu, 4 Mar 2021 20:41:40 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Frank Eigler <fche@redhat.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Message-ID: <20210305024140.fv4i4ujreem2w7sw@treble>
-References: <CAHk-=wjR0CyaKU=6mXW9W+65L8h8DQuBdA2ZY2CfrPe6qurz3A@mail.gmail.com>
- <20210303193806.oovupl4ubtkkyiih@treble>
- <CAHk-=whA6zru0BaNm4uu5KyZe+aQpRScOnmc9hdOpO3W+xN9Xw@mail.gmail.com>
- <20210303202406.bxgdx5a25j6wc43b@treble>
- <CAHk-=wi9J3mM8y+aH9e=HRo95giK4BRyyasayAimB0gdvbvDsQ@mail.gmail.com>
- <20210303214534.guyoxcwrgxgcqzy4@treble>
- <CAK7LNAQaAgg+mVSw_U3_FuuqcqJNnonyhVD1M-ezv71Y+dyAww@mail.gmail.com>
- <20210304150812.rzya7ewmerwhe4m4@treble>
- <CAK7LNAR0kNJ=DLuvRzRG+-rgMfcrSOZu8Mn6JBJ5do7TzJWLcA@mail.gmail.com>
- <CAHk-=wiT3FGuKuqLniBN2T_PZwD0GH4kf3XNCzq2tfChqn0+SQ@mail.gmail.com>
+        Thu, 4 Mar 2021 21:45:18 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7351C061574;
+        Thu,  4 Mar 2021 18:45:17 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id x29so345797pgk.6;
+        Thu, 04 Mar 2021 18:45:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=g8rt34v65SckAVlod9EbZTGyuMV5+kTvsDcnd8tRjgU=;
+        b=tOemYn6Yb4bld6DjuW0vMzlqxYaUizndWbIcYBb/i9wtLz22AMCFPMi6VASNcCbTLT
+         djhSjuYkK6SxyUAOlakqOcGyr/Y4uuUXtwHjuAFryWoBPLZtuYGSQSLpy36zFrIT62qi
+         d9UKcGPKe37PjLI5O/tT6qOfmfIhUD7q00Cc3u4/kboGzWxQo1ZCt3r3X1Kaiwe/A+Pj
+         daIeO5erPaKyD9pB2hrBhnPl0fUiZUYGuLa7s4+Q4x7c2g/QK4/wE225pfOX7ot7dvlG
+         S/onVoVwDswsVvU1xXi/tom1RU27CMw94gntedyodgPLk+e/lw1v5aDVJYT9H9tCGbRa
+         uinw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=g8rt34v65SckAVlod9EbZTGyuMV5+kTvsDcnd8tRjgU=;
+        b=UqjRrFC62mZlfws1mHKrmTn4J8SHZ8L1MEeZ+4eGCTkPJ4NVsbCcMfjQiR3VZaaUPb
+         WTJ6JTeysHM0clYA+34VV8ckjBm39LJX3JaMXnTkwrt3YMwUBJ/kxxx/I/Zltit3Lpv3
+         4zULyIPp/BXegfIArkqVhvW+26iAR7GeWi3b6vpJBGaGJEodA9OLQYZpcoIDZfq/UJlz
+         h3eG+ZHwakyXPsE1gAxpuFC+tLPAq/EHfmv2rjhajtHxK0TjGLL+XKjrXub3YeK9g3Zv
+         p8+gz0j8GM7q8MPoyYPTOedYQaQ80ENWL30DsjsIh5hsqVMSBrADUu2UK3I3965oSD6E
+         0rbQ==
+X-Gm-Message-State: AOAM533XfQwqQd/M8SdgXdvOSbR5frgnzEuQPsHqPhrUaukjZ5VMg21b
+        sRDC9XcM7AS4ht+pTYLURYEaVTgQipLRlg==
+X-Google-Smtp-Source: ABdhPJyzuSiepiyrAihIqm11oXX8OfcNt4IGL8LC8G8ZjylM0HbjejgsrEC4Df0WrYmJcjDUwB0C2Q==
+X-Received: by 2002:a63:4a1a:: with SMTP id x26mr6692573pga.260.1614912316994;
+        Thu, 04 Mar 2021 18:45:16 -0800 (PST)
+Received: from [10.69.0.62] ([45.135.186.129])
+        by smtp.gmail.com with ESMTPSA id h6sm616095pfv.84.2021.03.04.18.45.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 18:45:16 -0800 (PST)
+To:     maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org,
+        trix@redhat.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [BUG] memstick: core: missing error return code in msb_resume()
+Message-ID: <473ecf21-f0d3-9024-161e-72093004971f@gmail.com>
+Date:   Fri, 5 Mar 2021 10:45:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiT3FGuKuqLniBN2T_PZwD0GH4kf3XNCzq2tfChqn0+SQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 11:12:42AM -0800, Linus Torvalds wrote:
-> On Thu, Mar 4, 2021 at 7:36 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > All the kernel-space objects are rebuilt
-> > when the compiler is upgraded.
-> 
-> I very much NAK'ed that one. Why did that go in?
-> 
-> Or maybe I NAK'ed another version of it (I think the one I NAK'ed was
-> from Josh), and didn't realize that there were multiple ones.
+My static analysis tool reports that no error return code is assigned in 
+error handling code of msb_resume().
+However, many other drivers assign error return code in xxx_resume(), 
+such as sky2_resume() and e1000_resume().
+I wonder whether this is intentional?
 
-This thread is making me dizzy, but I think the patch you NAK'ed from me
-was different.  It just added an error on GCC mismatch with external
-modules:
 
-  https://lkml.kernel.org/r/fff056a7c9e6050c2d60910f70b6d99602f3bec4.1611863075.git.jpoimboe@redhat.com
-
-though I think you were ok with downgrading it to a warning.
-
--- 
-Josh
-
+Best wishes,
+Jia-Ju Bai
