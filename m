@@ -2,230 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D28632E334
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 08:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE6C32E338
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 08:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbhCEHuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 02:50:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
+        id S229512AbhCEHvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 02:51:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhCEHuL (ORCPT
+        with ESMTP id S229469AbhCEHvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 02:50:11 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4052C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 23:50:10 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id n22so568004wmc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 23:50:10 -0800 (PST)
+        Fri, 5 Mar 2021 02:51:37 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6610FC061756
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 23:51:35 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id hs11so1646935ejc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 23:51:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to
          :user-agent;
-        bh=34MO9BuNF7F2D8p7lT8uAN48AKZC5qU22L/kUK0Cseg=;
-        b=UCpKUlDdbkld20jWtwrwVCl7fvEY6WPGRRsN1CB24w6SrACDyLQeF+0KpUwSufp3YT
-         9WoPwpgISjPcPWvxBrM/6ytz9usiqT9m9TNExzwzd6nr1L8djRj9A7nx/xwhgRxHUru8
-         331l6SF/BAAoZipJvjb+HiJvAmf8BUOFFu8FdLH9S4vq75xt3FJh1LvDvMgj+bceMpgA
-         gZLSQwAgLZxUkwNupmgyOLrkiLglh9Mb+8Ldgtu2hHlagbXcSUfZ4gPam78CQmA5ew33
-         LiUS8oIvQkdFjSBhOGONOwzlROvD6aHu0UPCI9Oe1EgN9t7irTEu7mzMmB4xrVjNqFbK
-         H9oA==
+        bh=cKVGTa6ju/LsREjFD7gnw/RP1YjlyJ1xmIXcDe5uO2Q=;
+        b=Zh06eYHcY8hTJFgnQm43ngFpY1VdFU7XH/rX9h9CDzvHCJDt78jMLLhoB4pYSKr35m
+         OpJKt6P+BL+8/Iz+9LeT4jx8oYAi8tdd0u5jDQFswMWxsob7Ko1AkxoYsdcCH4XdNAKu
+         ujcTLn0DF/oTurrWkf52u0TFGu2nZia+eqTZNpp3FB/uZpjq4fpA8gi9BRdXM7v7N1A5
+         rrADZKzB7t3bb3bxFnE1kOIuBCZ2Vn61Pp4hDI44+/qDl/weOCkQVskqugNDR+7REKBW
+         M1fggiwWZAatHscXciMBsjt6C53L2tLZMIgUgfJvQQWJ2CELTGmvswHaEopVfTo2wXFY
+         7FXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to:user-agent;
-        bh=34MO9BuNF7F2D8p7lT8uAN48AKZC5qU22L/kUK0Cseg=;
-        b=rfrgFSlW5NY+GHGI5vvAgS5+uWZg+CfdaR1IX3+uGu/g8+V0QljDOurOTiyzATVD4L
-         RYr21v9LqnbQ8ursuSN9mlH9i3yGNW9xLaGk6WXWxn54ZkCLu8f1ivimxQLEoCDm2Ene
-         3JP+64Qc3ADpo+mIChJJJke0J6G1jQvewx/erZFaU9U4YTAV8oLsv885HOzJsirl3xTu
-         JMKNEH/cNRLaxFoQcgybgaCKsTi22KWHR6N9bGSnZlfEUyyJlAmU0XVNU1P2qtWQRP1H
-         XoLdJ7aDhqCgw6LlluN6AGIXwwmJ+CG4nlMglrZaLYR9Gowfk+WxMt0DkFW8/2YVM4Ic
-         U4mg==
-X-Gm-Message-State: AOAM532j8j3vekNGQeGAqV6e/ZNbxmt3e/5P6ZIjmPmPdx7NnUNp4mM8
-        hPq1U98GzRT+JzAWfQ/t1KfBcA==
-X-Google-Smtp-Source: ABdhPJyPb8+35mv6yBH4gRG7/7g7KebfRs2DVmGhcMB86J4Quui2MrYV40cVB5G7wkw/KCGpk5iRFA==
-X-Received: by 2002:a1c:195:: with SMTP id 143mr7514538wmb.147.1614930609184;
-        Thu, 04 Mar 2021 23:50:09 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:adef:40fb:49ed:5ab6])
-        by smtp.gmail.com with ESMTPSA id j26sm3009633wrh.57.2021.03.04.23.50.08
+        bh=cKVGTa6ju/LsREjFD7gnw/RP1YjlyJ1xmIXcDe5uO2Q=;
+        b=q5guYTr7Hy1lUwbuGarv1QUCT7NnA0G5zHoZM7mnxMVgI1siA3YOrKr4KHkzZcm6Sg
+         mZcR0P119iOHmZm/bTKZuIoa1JN9tqFdU4KedG2W9cXaZYqy+74pmGPWxFkcNAEMTmrH
+         I5Ug1/Byvws4uZD8NKyDDsXjXJgMjeTQwxhJHYJzSKRwZ/2+DVuFBW/NctM3T3dmjJDz
+         OOe14LrPvTBqGPFMxD95ROwTWAnrUEfp8LgIrPRSf7uiWcgLR2Q6VwX8aPgrHZTWvLeC
+         cqjXJxJHEhx8LYL1IYQIOd/47WMhJCDM7dkfNdI/J+fGpydG1GgA8/dVb5AJkfZ/NYoJ
+         2lZw==
+X-Gm-Message-State: AOAM532m3IDGP2HoQR3+2IUUeaDGQokRcO5qKQ9/BFYzkdDFgrYv0X/L
+        en0BIx9u4nUl7vDt+JamvnjHyA==
+X-Google-Smtp-Source: ABdhPJzJyKW6gvVHpeMLZSWCIv+GoQQYb17WsbWJkkvmT+3hnDQcSK0OW77fFBTCRV0flB0vEY8CPA==
+X-Received: by 2002:a17:906:7e12:: with SMTP id e18mr1273626ejr.316.1614930694041;
+        Thu, 04 Mar 2021 23:51:34 -0800 (PST)
+Received: from goby (81-231-61-187-no276.tbcn.telia.com. [81.231.61.187])
+        by smtp.gmail.com with ESMTPSA id de17sm1031396ejc.16.2021.03.04.23.51.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 23:50:08 -0800 (PST)
-Date:   Fri, 5 Mar 2021 08:50:03 +0100
-From:   Marco Elver <elver@google.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Alexander Potapenko <glider@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
-Message-ID: <YEHiq1ALdPn2crvP@elver.google.com>
-References: <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
- <08a96c5d-4ae7-03b4-208f-956226dee6bb@csgroup.eu>
- <CANpmjNPYEmLtQEu5G=zJLUzOBaGoqNKwLyipDCxvytdKDKb7mg@mail.gmail.com>
- <ad61cb3a-2b4a-3754-5761-832a1dd0c34e@csgroup.eu>
- <CANpmjNOnVzei7frKcMzMHxaDXh5NvTA-Wpa29C2YC1GUxyKfhQ@mail.gmail.com>
- <f036c53d-7e81-763c-47f4-6024c6c5f058@csgroup.eu>
- <CANpmjNMn_CUrgeSqBgiKx4+J8a+XcxkaLPWoDMUvUEXk8+-jxg@mail.gmail.com>
- <7270e1cc-bb6b-99ee-0043-08a027b8d83a@csgroup.eu>
- <YEDXJ5JNkgvDFehc@elver.google.com>
- <874khqry78.fsf@mpe.ellerman.id.au>
+        Thu, 04 Mar 2021 23:51:33 -0800 (PST)
+Date:   Fri, 5 Mar 2021 08:51:31 +0100
+From:   Joakim Bech <joakim.bech@linaro.org>
+To:     Arnd Bergmann <arnd@linaro.org>
+Cc:     Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        ruchika.gupta@linaro.org,
+        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
+        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
+        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>
+Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB)
+ subsystem
+Message-ID: <20210305075131.GA15940@goby>
+References: <20210303135500.24673-1-alex.bennee@linaro.org>
+ <20210303135500.24673-2-alex.bennee@linaro.org>
+ <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <874khqry78.fsf@mpe.ellerman.id.au>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 04:01PM +1100, Michael Ellerman wrote:
-> Marco Elver <elver@google.com> writes:
-> > On Thu, Mar 04, 2021 at 12:48PM +0100, Christophe Leroy wrote:
-> >> Le 04/03/2021 ‡ 12:31, Marco Elver a Ècrit†:
-> >> > On Thu, 4 Mar 2021 at 12:23, Christophe Leroy
-> >> > <christophe.leroy@csgroup.eu> wrote:
-> >> > > Le 03/03/2021 ‡ 11:56, Marco Elver a Ècrit :
-> >> > > > 
-> >> > > > Somewhat tangentially, I also note that e.g. show_regs(regs) (which
-> >> > > > was printed along the KFENCE report above) didn't include the top
-> >> > > > frame in the "Call Trace", so this assumption is definitely not
-> >> > > > isolated to KFENCE.
-> >> > > > 
-> >> > > 
-> >> > > Now, I have tested PPC64 (with the patch I sent yesterday to modify save_stack_trace_regs()
-> >> > > applied), and I get many failures. Any idea ?
-> >> > > 
-> >> > > [   17.653751][   T58] ==================================================================
-> >> > > [   17.654379][   T58] BUG: KFENCE: invalid free in .kfence_guarded_free+0x2e4/0x530
-> >> > > [   17.654379][   T58]
-> >> > > [   17.654831][   T58] Invalid free of 0xc00000003c9c0000 (in kfence-#77):
-> >> > > [   17.655358][   T58]  .kfence_guarded_free+0x2e4/0x530
-> >> > > [   17.655775][   T58]  .__slab_free+0x320/0x5a0
-> >> > > [   17.656039][   T58]  .test_double_free+0xe0/0x198
-> >> > > [   17.656308][   T58]  .kunit_try_run_case+0x80/0x110
-> >> > > [   17.656523][   T58]  .kunit_generic_run_threadfn_adapter+0x38/0x50
-> >> > > [   17.657161][   T58]  .kthread+0x18c/0x1a0
-> >> > > [   17.659148][   T58]  .ret_from_kernel_thread+0x58/0x70
-> >> > > [   17.659869][   T58]
-> > [...]
-> >> > 
-> >> > Looks like something is prepending '.' to function names. We expect
-> >> > the function name to appear as-is, e.g. "kfence_guarded_free",
-> >> > "test_double_free", etc.
-> >> > 
-> >> > Is there something special on ppc64, where the '.' is some convention?
-> >> > 
-> >> 
-> >> I think so, see https://refspecs.linuxfoundation.org/ELF/ppc64/PPC-elf64abi.html#FUNC-DES
-> >> 
-> >> Also see commit https://github.com/linuxppc/linux/commit/02424d896
+On Thu, Mar 04, 2021 at 09:56:24PM +0100, Arnd Bergmann wrote:
+> On Wed, Mar 3, 2021 at 2:54 PM Alex Benn√©e <alex.bennee@linaro.org> wrote:
 > >
-> > Thanks -- could you try the below patch? You'll need to define
-> > ARCH_FUNC_PREFIX accordingly.
+> > A number of storage technologies support a specialised hardware
+> > partition designed to be resistant to replay attacks. The underlying
+> > HW protocols differ but the operations are common. The RPMB partition
+> > cannot be accessed via standard block layer, but by a set of specific
+> > commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
+> > partition provides authenticated and replay protected access, hence
+> > suitable as a secure storage.
 > >
-> > We think, since there are only very few architectures that add a prefix,
-> > requiring <asm/kfence.h> to define something like ARCH_FUNC_PREFIX is
-> > the simplest option. Let me know if this works for you.
+> > The RPMB layer aims to provide in-kernel API for Trusted Execution
+> > Environment (TEE) devices that are capable to securely compute block
+> > frame signature. In case a TEE device wishes to store a replay
+> > protected data, requests the storage device via RPMB layer to store
+> > the data.
 > >
-> > There an alternative option, which is to dynamically figure out the
-> > prefix, but if this simpler option is fine with you, we'd prefer it.
+> > A TEE device driver can claim the RPMB interface, for example, via
+> > class_interface_register(). The RPMB layer provides a series of
+> > operations for interacting with the device.
+> >
+> >   * program_key - a one time operation for setting up a new device
+> >   * get_capacity - introspect the device capacity
+> >   * get_write_count - check the write counter
+> >   * write_blocks - write a series of blocks to the RPMB device
+> >   * read_blocks - read a series of blocks from the RPMB device
 > 
-> We have rediscovered this problem in basically every tracing / debugging
-> feature added in the last 20 years :)
+> Based on the discussion we had today in a meeting, it seems the
+> main change that is needed is to get back to the original model
+> of passing the encrypted data to the kernel instead of cleartext
+> data, as the main use case we know of is to have the key inside of
+> the TEE device and not available to the kernel or user space.
 > 
-> I think the simplest solution is the one tools/perf/util/symbol.c uses,
-> which is to just skip a leading '.'.
+Yes, for OP-TEE we have to encrypt all data going to RPMB, since the
+information goes via non-secure world. We get the integrity by applying
+the HMAC with the key that is being discussed in this thread. The TEE
+owns and is responsible for programming the key (and that should be
+something that is achieved as part of the manufacturing process).
+
+> This is also required to be able to forward the encrypted data
+> through the same interface on a KVM host, when the guest
+> uses virtio-rpmb, and the host forwards the data into an mmc or
+> ufs device.
 > 
-> Does that work?
+> That said, I can also imagine use cases where we do want to
+> store the key in the kernel's keyring, so maybe we end up needing
+> both.
 > 
-> diff --git a/mm/kfence/report.c b/mm/kfence/report.c
-> index ab83d5a59bb1..67b49dc54b38 100644
-> --- a/mm/kfence/report.c
-> +++ b/mm/kfence/report.c
-> @@ -67,6 +67,9 @@ static int get_stack_skipnr(const unsigned long stack_entries[], int num_entries
->  	for (skipnr = 0; skipnr < num_entries; skipnr++) {
->  		int len = scnprintf(buf, sizeof(buf), "%ps", (void *)stack_entries[skipnr]);
->  
-> +		if (buf[0] == '.')
-> +			buf++;
-> +
+The concern I have in those cases is that you need to share the RPMB key
+in some way if you need to access the RPMB device from secure side as
+well as from the non-secure side. Technically doable I guess, but in
+practice and in terms of security it doesn't seem like a good approach.
 
-Unfortunately this does not work, since buf is an array. We'd need an
-offset, and it should be determined outside the loop. I had a solution
-like this, but it turned out quite complex (see below). And since most
-architectures do not require this, decided that the safest option is to
-use the macro approach with ARCH_FUNC_PREFIX, for which Christophe
-already prepared a patch and tested:
-https://lore.kernel.org/linux-mm/20210304144000.1148590-1-elver@google.com/
-https://lkml.kernel.org/r/afaec81a551ef15345cb7d7563b3fac3d7041c3a.1614868445.git.christophe.leroy@csgroup.eu
+In a shared environment like that you also have the problem that you
+need to agree on how to actually store files on the RPMB device. OP-TEE
+has it's own "FAT-look-a-like" implementation when using RPMB. But if
+you need mutual access, then you need to get into agreement on where to
+actually store the files in the RPMB.
 
-Since KFENCE requires <asm/kfence.h> anyway, we'd prefer this approach
-(vs.  dynamically detecting).
+However, if secure side for some reason doesn't use RPMB at all, then
+kernel could of course take control of it and use it.
 
-Thanks,
--- Marco
+I would probably not spend too much time on taking that use case into
+account until we actually see a real need for it.
 
------- >8 ------
+> > The detailed operation of implementing the access is left to the TEE
+> > device driver itself.
+> >
+> > [This is based-on Thomas Winkler's proposed API from:
+> >
+> >   https://lore.kernel.org/linux-mmc/1478548394-8184-2-git-send-email-tomas.winkler@intel.com/
+> >
+> > The principle difference is the framing details and HW specific
+> > bits (JDEC vs NVME frames) are left to the lower level TEE driver to
+> > worry about. The eventual userspace ioctl interface will aim to be
+> > similarly generic. This is an RFC to follow up on:
+> >
+> >   Subject: RPMB user space ABI
+> >   Date: Thu, 11 Feb 2021 14:07:00 +0000
+> >   Message-ID: <87mtwashi4.fsf@linaro.org>]
+> >
+> > Signed-off-by: Alex Benn√©e <alex.bennee@linaro.org>
+> > Cc: Tomas Winkler <tomas.winkler@intel.com>
+> > Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> > Cc: Linus  Walleij <linus.walleij@linaro.org>
+> > Cc: Arnd Bergmann <arnd.bergmann@linaro.org>
+> > Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> > ---
+> >  MAINTAINERS                |   7 +
+> >  drivers/char/Kconfig       |   2 +
+> >  drivers/char/Makefile      |   1 +
+> >  drivers/char/rpmb/Kconfig  |  11 +
+> >  drivers/char/rpmb/Makefile |   7 +
+> >  drivers/char/rpmb/core.c   | 429 +++++++++++++++++++++++++++++++++++++
+> >  include/linux/rpmb.h       | 163 ++++++++++++++
+> 
+> 
+> My feeling is that it should be a top-level subsystem, in drivers/rpmb
+> rather than drivers/char/rpmb, as you implement an abstraction layer
+> that other drivers can plug into, rather than a simple driver.
+> 
+>        Arnd
 
-diff --git a/mm/kfence/report.c b/mm/kfence/report.c
-index 519f037720f5..b0590199b039 100644
---- a/mm/kfence/report.c
-+++ b/mm/kfence/report.c
-@@ -43,8 +43,8 @@ static void seq_con_printf(struct seq_file *seq, const char *fmt, ...)
- static int get_stack_skipnr(const unsigned long stack_entries[], int num_entries,
- 			    const enum kfence_error_type *type)
- {
-+	int skipnr, fallback = 0, fprefix_chars = 0;
- 	char buf[64];
--	int skipnr, fallback = 0;
- 
- 	if (type) {
- 		/* Depending on error type, find different stack entries. */
-@@ -64,11 +64,24 @@ static int get_stack_skipnr(const unsigned long stack_entries[], int num_entries
- 		}
- 	}
- 
-+	if (scnprintf(buf, sizeof(buf), "%ps", (void *)kfree)) {
-+		/*
-+		 * Some architectures (e.g. ppc64) add a constant prefix to
-+		 * function names. Determine if such a prefix exists.
-+		 */
-+		const char *str = strstr(buf, "kfree");
-+
-+		if (str)
-+			fprefix_chars = str - buf;
-+	}
-+
- 	for (skipnr = 0; skipnr < num_entries; skipnr++) {
--		int len = scnprintf(buf, sizeof(buf), "%ps", (void *)stack_entries[skipnr]);
-+		int len = scnprintf(buf, sizeof(buf), "%ps", (void *)stack_entries[skipnr]) -
-+			  fprefix_chars;
- 
--		if (str_has_prefix(buf, "kfence_") || str_has_prefix(buf, "__kfence_") ||
--		    !strncmp(buf, "__slab_free", len)) {
-+		if (str_has_prefix(buf + fprefix_chars, "kfence_") ||
-+		    str_has_prefix(buf + fprefix_chars, "__kfence_") ||
-+		    !strncmp(buf + fprefix_chars, "__slab_free", len)) {
- 			/*
- 			 * In case of tail calls from any of the below
- 			 * to any of the above.
-@@ -77,10 +90,10 @@ static int get_stack_skipnr(const unsigned long stack_entries[], int num_entries
- 		}
- 
- 		/* Also the *_bulk() variants by only checking prefixes. */
--		if (str_has_prefix(buf, "kfree") ||
--		    str_has_prefix(buf, "kmem_cache_free") ||
--		    str_has_prefix(buf, "__kmalloc") ||
--		    str_has_prefix(buf, "kmem_cache_alloc"))
-+		if (str_has_prefix(buf + fprefix_chars, "kfree") ||
-+		    str_has_prefix(buf + fprefix_chars, "kmem_cache_free") ||
-+		    str_has_prefix(buf + fprefix_chars, "__kmalloc") ||
-+		    str_has_prefix(buf + fprefix_chars, "kmem_cache_alloc"))
- 			goto found;
- 	}
- 	if (fallback < num_entries)
+-- 
+Regards,
+Joakim
