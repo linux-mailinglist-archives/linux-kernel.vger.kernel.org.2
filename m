@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F8332F14E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0EBD32F153
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhCERfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:35:24 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:55478 "EHLO
+        id S230231AbhCERf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:35:29 -0500
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:13432 "EHLO
         mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229848AbhCERfJ (ORCPT
+        by vger.kernel.org with ESMTP id S229875AbhCERfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:35:09 -0500
+        Fri, 5 Mar 2021 12:35:12 -0500
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125HWLWd005729;
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125HWLWe005729;
         Fri, 5 Mar 2021 11:34:51 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=gzlzn/tFGqAHE4cuR79qKhda+aJsVeXIbF0XxJZZB0k=;
- b=Mza9Gnj+zcbwmFPdBexDlWIAzD0fAogGh7HsfPMx7oz9TDT/TIOSF66GzTM+FJ61VJ5G
- Mc/9nXVF2cShVkR5HMLN80VXW+mEkzLXSrzlY1qRiMmAYCw3ktNVnqFKBxLG0Y4J0sBE
- QavF0FC2SPqkLRz3kfrhcfe06chpgKVBKf/ggHPxLh02TDl9DHCjTLVFV+aC3irOwg0t
- q3f78Jv1mFAB4c6oPQcuw5N0Pu4KYA/r5UZTMMuH24MaObsrQVKjDQQAyz838/ikZN33
- bMDwYBtck7qKt+UL5ZeXiCpioQCKl9gTdtpZitkSjV/ABqH4uyj9Zo2cO3itF1dJC+fI MQ== 
+ bh=M2+N2yfj7KJ/9KkUfuDtF5GUf9Pnf+67Qk0IZmBxmhM=;
+ b=izwOjrpWQdzUehnfbq/lOezYjaG3Oc0aTB2XM3CceLwMCYsdygfkXO+rX/pe1Lt2/DWC
+ 0FHkthx2WBihXU04C04ADCdz+V6Msimh5ouEN9XYUf/v7e3Sza9u/79PfBB1c0SbHJwV
+ j26/D/gGoTMo7jLd8CZ3V7vWF+hQk3qmeFk4soV75gy30v7Va5iPpE0cVb/MCvyO/iHN
+ rSQXqXA0gkv1y1HAZSW62jtlFBYiwIjIfAOO+fRd7Yue3OYGX8IuqkOSDsayAlIU3WzJ
+ T43M9jIad3ptfEyblPRx9qe5rgO+kUhXmDiBskk2EErBOGaEbnKtroMqF/mpmAsjRQIv fg== 
 Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 36ymc70eyn-6
+        by mx0a-001ae601.pphosted.com with ESMTP id 36ymc70eyn-7
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
         Fri, 05 Mar 2021 11:34:51 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
@@ -36,7 +36,7 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
  Transport; Fri, 5 Mar 2021 17:34:48 +0000
 Received: from mail1.cirrus.com (unknown [198.61.64.35])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 23BAD11D6;
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6F84711D7;
         Fri,  5 Mar 2021 17:34:48 +0000 (UTC)
 From:   Lucas Tanure <tanureal@opensource.cirrus.com>
 To:     James Schulman <james.schulman@cirrus.com>,
@@ -48,9 +48,9 @@ CC:     Richard Fitzgerald <rf@opensource.cirrus.com>,
         <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
         <linux-kernel@vger.kernel.org>,
         Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: [PATCH v2 10/15] ASoC: cs42l42: Add Capture Support
-Date:   Fri, 5 Mar 2021 17:34:37 +0000
-Message-ID: <20210305173442.195740-11-tanureal@opensource.cirrus.com>
+Subject: [PATCH v2 11/15] ASoC: cs42l42: Report jack and button detection
+Date:   Fri, 5 Mar 2021 17:34:38 +0000
+Message-ID: <20210305173442.195740-12-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305173442.195740-1-tanureal@opensource.cirrus.com>
 References: <20210305173442.195740-1-tanureal@opensource.cirrus.com>
@@ -66,112 +66,188 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for capture path on headseat pins
+Report the Jack events to the user space through ALSA.
+Also moves request_threaded_irq() to component_probe so it don't get
+interrupts before the initialization the struct snd_soc_jack.
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
 Changes in v2:
-- No changes
+- Don't move the code around
+- Removed rename component
+- Request IRQ moved back to main probe
+- cs42l42_component_remove removed as is not needed anymore
 
- sound/soc/codecs/cs42l42.c | 39 ++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/cs42l42.h | 12 ++++++++++++
- 2 files changed, 51 insertions(+)
+ sound/soc/codecs/cs42l42.c | 70 ++++++++++++++++++++++++++++++--------
+ sound/soc/codecs/cs42l42.h |  3 ++
+ 2 files changed, 59 insertions(+), 14 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 774d81a1de1d8..54dd942f3731e 100644
+index 54dd942f3731e..db8c8f0121d12 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -472,6 +472,18 @@ static const struct snd_soc_dapm_widget cs42l42_dapm_widgets[] = {
- 
- 	/* Playback Requirements */
- 	SND_SOC_DAPM_SUPPLY("ASP DAI0", CS42L42_PWR_CTL1, CS42L42_ASP_DAI_PDN_SHIFT, 1, NULL, 0),
-+
-+	/* Capture Path */
-+	SND_SOC_DAPM_INPUT("HS"),
-+	SND_SOC_DAPM_ADC("ADC", NULL, CS42L42_PWR_CTL1, CS42L42_ADC_PDN_SHIFT, 1),
-+	SND_SOC_DAPM_AIF_OUT("SDOUT1", NULL, 0, CS42L42_ASP_TX_CH_EN, CS42L42_ASP_TX0_CH1_SHIFT, 0),
-+	SND_SOC_DAPM_AIF_OUT("SDOUT2", NULL, 1, CS42L42_ASP_TX_CH_EN, CS42L42_ASP_TX0_CH2_SHIFT, 0),
-+
-+	/* Capture Requirements */
-+	SND_SOC_DAPM_SUPPLY("ASP DAO0", CS42L42_PWR_CTL1, CS42L42_ASP_DAO_PDN_SHIFT, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ASP TX EN", CS42L42_ASP_TX_SZ_EN, CS42L42_ASP_TX_EN_SHIFT, 0, NULL, 0),
-+
-+	/* Playback/Capture Requirements */
- 	SND_SOC_DAPM_SUPPLY("SCLK", CS42L42_ASP_CLK_CFG, CS42L42_ASP_SCLK_EN_SHIFT, 0, NULL, 0),
- };
- 
-@@ -489,6 +501,21 @@ static const struct snd_soc_dapm_route cs42l42_audio_map[] = {
- 	{"SDIN2", NULL, "ASP DAI0"},
- 	{"SDIN1", NULL, "SCLK"},
- 	{"SDIN2", NULL, "SCLK"},
-+
-+	/* Capture Path */
-+	{"ADC", NULL, "HS"},
-+	{ "SDOUT1", NULL, "ADC" },
-+	{ "SDOUT2", NULL, "ADC" },
-+	{ "Capture", NULL, "SDOUT1" },
-+	{ "Capture", NULL, "SDOUT2" },
-+
-+	/* Capture Requirements */
-+	{ "SDOUT1", NULL, "ASP DAO0" },
-+	{ "SDOUT2", NULL, "ASP DAO0" },
-+	{ "SDOUT1", NULL, "SCLK" },
-+	{ "SDOUT2", NULL, "SCLK" },
-+	{ "SDOUT1", NULL, "ASP TX EN" },
-+	{ "SDOUT2", NULL, "ASP TX EN" },
- };
- 
- static int cs42l42_component_probe(struct snd_soc_component *component)
-@@ -748,12 +775,24 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+@@ -522,10 +522,18 @@ static int cs42l42_component_probe(struct snd_soc_component *component)
  {
- 	struct snd_soc_component *component = dai->component;
- 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
-+	unsigned int channels = params_channels(params);
- 	unsigned int width = (params_width(params) / 8) - 1;
- 	unsigned int val = 0;
+ 	struct cs42l42_private *cs42l42 =
+ 		(struct cs42l42_private *)snd_soc_component_get_drvdata(component);
++	struct snd_soc_card *crd = component->card;
++	int ret = 0;
  
- 	cs42l42->srate = params_rate(params);
+ 	cs42l42->component = component;
  
- 	switch(substream->stream) {
-+	case SNDRV_PCM_STREAM_CAPTURE:
-+		if (channels == 2) {
-+			val |= CS42L42_ASP_TX_CH2_AP_MASK;
-+			val |= width << CS42L42_ASP_TX_CH2_RES_SHIFT;
-+		}
-+		val |= width << CS42L42_ASP_TX_CH1_RES_SHIFT;
+-	return 0;
++	ret = snd_soc_card_jack_new(crd, "CS42L42 Headset", SND_JACK_HEADSET | SND_JACK_BTN_0 |
++				    SND_JACK_BTN_1 | SND_JACK_BTN_2 | SND_JACK_BTN_3,
++				    &cs42l42->jack, NULL, 0);
++	if (ret < 0)
++		dev_err(component->dev, "Cannot create CS42L42 Headset: %d\n", ret);
 +
-+		snd_soc_component_update_bits(component, CS42L42_ASP_TX_CH_AP_RES,
-+				CS42L42_ASP_TX_CH1_AP_MASK | CS42L42_ASP_TX_CH2_AP_MASK |
-+				CS42L42_ASP_TX_CH2_RES_MASK | CS42L42_ASP_TX_CH1_RES_MASK, val);
++	return ret;
+ }
+ 
+ static const struct snd_soc_component_driver soc_component_dev_cs42l42 = {
+@@ -1198,7 +1206,7 @@ static void cs42l42_cancel_hs_type_detect(struct cs42l42_private *cs42l42)
+ 				(3 << CS42L42_HSDET_AUTO_TIME_SHIFT));
+ }
+ 
+-static void cs42l42_handle_button_press(struct cs42l42_private *cs42l42)
++static int cs42l42_handle_button_press(struct cs42l42_private *cs42l42)
+ {
+ 	int bias_level;
+ 	unsigned int detect_status;
+@@ -1241,17 +1249,24 @@ static void cs42l42_handle_button_press(struct cs42l42_private *cs42l42)
+ 
+ 	switch (bias_level) {
+ 	case 1: /* Function C button press */
++		bias_level = SND_JACK_BTN_2;
+ 		dev_dbg(cs42l42->component->dev, "Function C button press\n");
+ 		break;
+ 	case 2: /* Function B button press */
++		bias_level = SND_JACK_BTN_1;
+ 		dev_dbg(cs42l42->component->dev, "Function B button press\n");
+ 		break;
+ 	case 3: /* Function D button press */
++		bias_level = SND_JACK_BTN_3;
+ 		dev_dbg(cs42l42->component->dev, "Function D button press\n");
+ 		break;
+ 	case 4: /* Function A button press */
++		bias_level = SND_JACK_BTN_0;
+ 		dev_dbg(cs42l42->component->dev, "Function A button press\n");
+ 		break;
++	default:
++		bias_level = 0;
 +		break;
- 	case SNDRV_PCM_STREAM_PLAYBACK:
- 		val |= width << CS42L42_ASP_RX_CH_RES_SHIFT;
- 		/* channel 1 on low LRCLK */
+ 	}
+ 
+ 	/* Set button detect level sensitivity back to default */
+@@ -1281,6 +1296,8 @@ static void cs42l42_handle_button_press(struct cs42l42_private *cs42l42)
+ 		(0 << CS42L42_M_HSBIAS_HIZ_SHIFT) |
+ 		(1 << CS42L42_M_SHORT_RLS_SHIFT) |
+ 		(1 << CS42L42_M_SHORT_DET_SHIFT));
++
++	return bias_level;
+ }
+ 
+ struct cs42l42_irq_params {
+@@ -1325,6 +1342,8 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+ 	unsigned int current_plug_status;
+ 	unsigned int current_button_status;
+ 	unsigned int i;
++	int report = 0;
++
+ 
+ 	/* Read sticky registers to clear interurpt */
+ 	for (i = 0; i < ARRAY_SIZE(stickies); i++) {
+@@ -1351,9 +1370,20 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+ 	if ((~masks[5]) & irq_params_table[5].mask) {
+ 		if (stickies[5] & CS42L42_HSDET_AUTO_DONE_MASK) {
+ 			cs42l42_process_hs_type_detect(cs42l42);
+-			dev_dbg(component->dev,
+-				"Auto detect done (%d)\n",
+-				cs42l42->hs_type);
++			switch(cs42l42->hs_type){
++			case CS42L42_PLUG_CTIA:
++			case CS42L42_PLUG_OMTP:
++				snd_soc_jack_report(&cs42l42->jack, SND_JACK_HEADSET,
++						    SND_JACK_HEADSET);
++				break;
++			case CS42L42_PLUG_HEADPHONE:
++				snd_soc_jack_report(&cs42l42->jack, SND_JACK_HEADPHONE,
++						    SND_JACK_HEADPHONE);
++				break;
++			default:
++				break;
++			}
++			dev_dbg(component->dev, "Auto detect done (%d)\n", cs42l42->hs_type);
+ 		}
+ 	}
+ 
+@@ -1371,8 +1401,19 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+ 			if (cs42l42->plug_state != CS42L42_TS_UNPLUG) {
+ 				cs42l42->plug_state = CS42L42_TS_UNPLUG;
+ 				cs42l42_cancel_hs_type_detect(cs42l42);
+-				dev_dbg(component->dev,
+-					"Unplug event\n");
++
++				switch(cs42l42->hs_type){
++				case CS42L42_PLUG_CTIA:
++				case CS42L42_PLUG_OMTP:
++					snd_soc_jack_report(&cs42l42->jack, 0, SND_JACK_HEADSET);
++					break;
++				case CS42L42_PLUG_HEADPHONE:
++					snd_soc_jack_report(&cs42l42->jack, 0, SND_JACK_HEADPHONE);
++					break;
++				default:
++					break;
++				}
++				dev_dbg(component->dev, "Unplug event\n");
+ 			}
+ 			break;
+ 
+@@ -1387,14 +1428,15 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+ 		if (!(current_button_status &
+ 			CS42L42_M_HSBIAS_HIZ_MASK)) {
+ 
+-			if (current_button_status &
+-				CS42L42_M_DETECT_TF_MASK) {
+-				dev_dbg(component->dev,
+-					"Button released\n");
+-			} else if (current_button_status &
+-				CS42L42_M_DETECT_FT_MASK) {
+-				cs42l42_handle_button_press(cs42l42);
++			if (current_button_status & CS42L42_M_DETECT_TF_MASK) {
++				dev_dbg(component->dev, "Button released\n");
++				report = 0;
++			} else if (current_button_status & CS42L42_M_DETECT_FT_MASK) {
++				report = cs42l42_handle_button_press(cs42l42);
++
+ 			}
++			snd_soc_jack_report(&cs42l42->jack, report, SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++								   SND_JACK_BTN_2 | SND_JACK_BTN_3);
+ 		}
+ 	}
+ 
 diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 3dcbfebc53b0f..c373259ed46f7 100644
+index c373259ed46f7..e12828877a20d 100644
 --- a/sound/soc/codecs/cs42l42.h
 +++ b/sound/soc/codecs/cs42l42.h
-@@ -683,8 +683,20 @@
+@@ -12,6 +12,8 @@
+ #ifndef __CS42L42_H__
+ #define __CS42L42_H__
  
- /* Page 0x29 Serial Port TX Registers */
- #define CS42L42_ASP_TX_SZ_EN		(CS42L42_PAGE_29 + 0x01)
-+#define CS42L42_ASP_TX_EN_SHIFT		0
- #define CS42L42_ASP_TX_CH_EN		(CS42L42_PAGE_29 + 0x02)
-+#define CS42L42_ASP_TX0_CH2_SHIFT	1
-+#define CS42L42_ASP_TX0_CH1_SHIFT	0
++#include <sound/jack.h>
 +
- #define CS42L42_ASP_TX_CH_AP_RES	(CS42L42_PAGE_29 + 0x03)
-+#define CS42L42_ASP_TX_CH1_AP_SHIFT	7
-+#define CS42L42_ASP_TX_CH1_AP_MASK	(1 << CS42L42_ASP_TX_CH1_AP_SHIFT)
-+#define CS42L42_ASP_TX_CH2_AP_SHIFT	6
-+#define CS42L42_ASP_TX_CH2_AP_MASK	(1 << CS42L42_ASP_TX_CH2_AP_SHIFT)
-+#define CS42L42_ASP_TX_CH2_RES_SHIFT	2
-+#define CS42L42_ASP_TX_CH2_RES_MASK	(3 << CS42L42_ASP_TX_CH2_RES_SHIFT)
-+#define CS42L42_ASP_TX_CH1_RES_SHIFT	0
-+#define CS42L42_ASP_TX_CH1_RES_MASK	(3 << CS42L42_ASP_TX_CH1_RES_SHIFT)
- #define CS42L42_ASP_TX_CH1_BIT_MSB	(CS42L42_PAGE_29 + 0x04)
- #define CS42L42_ASP_TX_CH1_BIT_LSB	(CS42L42_PAGE_29 + 0x05)
- #define CS42L42_ASP_TX_HIZ_DLY_CFG	(CS42L42_PAGE_29 + 0x06)
+ #define CS42L42_PAGE_REGISTER	0x00	/* Page Select Register */
+ #define CS42L42_WIN_START	0x00
+ #define CS42L42_WIN_LEN		0x100
+@@ -768,6 +770,7 @@ struct  cs42l42_private {
+ 	struct regulator_bulk_data supplies[CS42L42_NUM_SUPPLIES];
+ 	struct gpio_desc *reset_gpio;
+ 	struct completion pdn_done;
++	struct snd_soc_jack jack;
+ 	u32 sclk;
+ 	u32 srate;
+ 	u8 plug_state;
 -- 
 2.30.1
 
