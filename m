@@ -2,73 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4CE32F453
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:01:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5958D32F460
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229446AbhCEUBE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Mar 2021 15:01:04 -0500
-Received: from aposti.net ([89.234.176.197]:58206 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229488AbhCEUA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 15:00:56 -0500
-Date:   Fri, 05 Mar 2021 20:00:43 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 3/3] input: gpio-keys: Use hrtimer for software debounce
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     od@zcrc.me, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Message-Id: <79IIPQ.DQ7JNXZ0OI5Q2@crapouillou.net>
-In-Reply-To: <YEJ57PuEyYknR3MF@google.com>
-References: <20210305170111.214782-1-paul@crapouillou.net>
-        <20210305170111.214782-3-paul@crapouillou.net> <YEJ57PuEyYknR3MF@google.com>
+        id S229693AbhCEUDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 15:03:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229493AbhCEUDq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 15:03:46 -0500
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCF8C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 12:03:46 -0800 (PST)
+Received: by mail-vk1-xa2c.google.com with SMTP id e25so773137vkd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 12:03:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=posk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kiHawXjZWgAjYt2/PWHI9qp4OqUqrMh9Xa8nm6q2QIw=;
+        b=MFbpEEPmoFG2NoP7tSwO8q7FKQ0YRUcWQXFKn/uuMGP7rcKL0MOuyM+K+Usrv6Ha0L
+         rxzZLQ28Vxp/7vOPOvwEmzliXAAWqL4YRUhor2REng2qYvSJB1jQbSgayaF8VE9ViAFw
+         kcfNc/R+zStIAn4fUmx5YOkvyiNM4YVSgyUPaM17qk9BNjQuXX3aOGMJUHka5JMQxSQl
+         OgGfeMYBgfnDVN8tYCPBJmvwH7cSnSxhOIO2ZBrVnESZqvqBbedh30Uefo2hcbH6h/ZA
+         Ml/5PaD9pQ2ut21mbMwJd9BppCPXyoYA0kf/UIfaBiMTpdzGG1wmy/sFN3vSu4FylzvD
+         lK0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kiHawXjZWgAjYt2/PWHI9qp4OqUqrMh9Xa8nm6q2QIw=;
+        b=AP/geHBmwVb0gCNeI4K/reWSIr52ikcmcjhReNEUKpKRgRtNEELkmUEnN2YS0fw98M
+         bqrsdb91sZhBePRbu2UEvf3fiybqSk9lwBAQ+p5GNnxaZuNWzowlknfZIVNQeARGtoz2
+         V29DgMfQAQRnRj+jw9YvGjaBPlyBJNJMpzGfHUFslkS7zQPjF8YplrS8FbGHMkIgbt3x
+         WiUFigw1aqUfP2RfXmMBhlhOhx4mjerkOi28X9pexSRhAS3o8LA2sO9wHPKA6hKnro90
+         fWLFWnLdlf/rC3m70sgP29FoZSknRNt7u3shDZ0udrC6iR7JWmU1JcTJysEOf1khcBq7
+         wHPA==
+X-Gm-Message-State: AOAM531KhpPAg/FDq6c602/x6gHcN5HVdM7eq9G8Z/5Vu8GfW9SOGzP5
+        /dcEdJW/+ofZi/8VindoC24BUUUmgZTT9r3V5mpRVA==
+X-Google-Smtp-Source: ABdhPJz60xVl1ZYaln9nyviiEi9780obcM8gamG9sdIRw5IwIWKNZJrRjnclEsxetkOreKb/2zy6F8jn/4eF3lsgcTI=
+X-Received: by 2002:a05:6122:80e:: with SMTP id 14mr8245587vkj.17.1614974625319;
+ Fri, 05 Mar 2021 12:03:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <20210304004219.134051-1-andrealmeid@collabora.com>
+ <CAFTs51XAr2b3DmcSM4=qeU5cNuh0mTxUbhG66U6bc63YYzkzYA@mail.gmail.com> <bc54423b-753f-44be-4e4f-4535e27ad35c@collabora.com>
+In-Reply-To: <bc54423b-753f-44be-4e4f-4535e27ad35c@collabora.com>
+From:   Peter Oskolkov <posk@posk.io>
+Date:   Fri, 5 Mar 2021 12:03:34 -0800
+Message-ID: <CAFTs51VEj7hVfohcNNqOJtJYkDQ_pd76HAmJWWUFKbiMwsewAw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 00/13] Add futex2 syscall
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        kernel@collabora.com, krisman@collabora.com,
+        pgriffais@valvesoftware.com, z.figura12@gmail.com,
+        joel@joelfernandes.org, malteskarupke@fastmail.fm,
+        linux-api@vger.kernel.org, fweimer@redhat.com,
+        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, acme@kernel.org, Jonathan Corbet <corbet@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+Hi Andr=C3=A9!
 
-Le ven. 5 mars 2021 à 10:35, Dmitry Torokhov 
-<dmitry.torokhov@gmail.com> a écrit :
-> Hi Paul,
-> 
-> On Fri, Mar 05, 2021 at 05:01:11PM +0000, Paul Cercueil wrote:
->>  -static void gpio_keys_gpio_work_func(struct work_struct *work)
->>  +static enum hrtimer_restart gpio_keys_debounce_timer(struct 
->> hrtimer *t)
->>   {
->>  -	struct gpio_button_data *bdata =
->>  -		container_of(work, struct gpio_button_data, work.work);
->>  +	struct gpio_button_data *bdata = container_of(t,
->>  +						      struct gpio_button_data,
->>  +						      debounce_timer);
->> 
->>   	gpio_keys_gpio_report_event(bdata);
-> 
-> I am not sure how this works. As far as I know, even
-> HRTIMER_MODE_REL_SOFT do not allow sleeping in the timer handlers, and
-> gpio_keys_gpio_report_event() use sleeping variant of GPIOD API (and
-> that is not going to change).
+On Thu, Mar 4, 2021 at 10:58 AM Andr=C3=A9 Almeida <andrealmeid@collabora.c=
+om> wrote:
+>
+> Hi Peter,
+>
+> =C3=80s 02:44 de 04/03/21, Peter Oskolkov escreveu:
+> > On Wed, Mar 3, 2021 at 5:22 PM Andr=C3=A9 Almeida <andrealmeid@collabor=
+a.com> wrote:
+> >>
+> >> Hi,
+> >>
+> >> This patch series introduces the futex2 syscalls.
+> >>
+> >> * FAQ
+> >>
+> >>   ** "And what's about FUTEX_64?"
+> >>
+> >>   By supporting 64 bit futexes, the kernel structure for futex would
+> >>   need to have a 64 bit field for the value, and that could defeat one=
+ of
+> >>   the purposes of having different sized futexes in the first place:
+> >>   supporting smaller ones to decrease memory usage. This might be
+> >>   something that could be disabled for 32bit archs (and even for
+> >>   CONFIG_BASE_SMALL).
+> >>
+> >>   Which use case would benefit for FUTEX_64? Does it worth the trade-o=
+ffs?
+> >
+> > The ability to store a pointer value on 64bit platforms is an
+> > important use case.
+> > Imagine a simple producer/consumer scenario, with the producer updating
+> > some shared memory data and waking the consumer. Storing the pointer
+> > in the futex makes it so that only one shared memory location needs to =
+be
+> > accessed "atomically", etc. With two atomics synchronization becomes
+> > more involved (=3D slower).
+> >
+>
+> So the idea is to, instead of doing this:
+>
+> T1:
+> atomic_set(&shm_addr, buffer_addr);
+> atomic_set(&futex, 0);
+> futex_wake(&futex, 1);
+>
+> T2:
+> consume(shm_addr);
+>
+> To do that:
+>
+> T1:
+> atomic_set(&futex, buffer_addr);
+> futex_wake(&futex, 1);
+>
+> T2:
+> consume(futex);
+>
+> Right?
 
-Quoting <linux/hrtimers.h>, the "timer callback will be executed in 
-soft irq context", so sleeping should be possible.
+More like this:
 
-But I guess in this case I can use HRTIMER_MODE_REL.
+T1 (producer):
+while (true) {
+    ptr =3D get_new_data();
+    atomic_set(&futex, ptr);
+    futex_wake(&futex, 1);
+}
 
-> It seems to me that if you want to use software debounce in gpio keys
-> driver you need to set up sufficiently high HZ for your system. Maybe 
-> we
-> could thrown a warning when we see low debounce delay and low HZ to
-> alert system developer.
+T1 (consumer):
+some_data *prev =3D NULL;
+while (true) {
+  futex_wait(&futex, prev);
+  some_data *next =3D atomic_get(&futex);
+  if (next =3D=3D prev) continue;  /* spurious wakeup */
 
-This is exactly what we should not do. I certainly don't want to have 
-250+ timer interrupts per second just so that input events aren't lost, 
-to work around a sucky debounce implementation. Besides, if you 
-consider the hrtimers doc (Documentation/timers/hrtimers.rst), hrtimers 
-really are what should be used here.
-
--Paul
+  consume_data(next);
+  prev =3D next;
+}
 
 
+
+>
+> I'll try to write a small test to see how the perf numbers looks like.
