@@ -2,108 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F72432E5FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE84C32E603
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhCEKQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:16:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36526 "EHLO
+        id S229904AbhCEKQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:16:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhCEKQT (ORCPT
+        with ESMTP id S229861AbhCEKQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:16:19 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B0CC061574;
-        Fri,  5 Mar 2021 02:16:19 -0800 (PST)
-Date:   Fri, 05 Mar 2021 10:16:15 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614939376;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=04a0H18vqlVyjuYMpzIQ3AUdAEbsDZ3RETQN/UKYFIs=;
-        b=SaAiazyP7Dr21NPycWSv+FO2vziRF3n/93uJXdZoaDZgjWs2W3Ta2Y9Tt3dSozxdOjZPQ9
-        RjfYacSwkVCl/ENFjQ/veO+v4A2OvCbKPjHrNhJg9LVurVRXhMc5M8jaqzNWkukAgiB9wP
-        fU+U37TcBpV5gj2zZQC64OogYrh1oZZ0iaWXZIUslTuUU220MrjceoisJ5yZPA0nvVGrou
-        zVF5ZprHC0fiOWwGg3T6lE3pUa4mUCj0bhN4vV0pwHTKQnRqRsdGdLt1Undq/cKZFDI9AG
-        McceutUGCYPDOaJeT0l3XHtBeFxLqF2Y4yA4zz8HkMm5gy2L0EMx7WnAM0+cig==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614939376;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=04a0H18vqlVyjuYMpzIQ3AUdAEbsDZ3RETQN/UKYFIs=;
-        b=YQOb34SeftEK6dssbdyJq3YlthyYu33kM38rQ5XHjGWt8i6Zcrt1TkgRGp1hr8WGQUttoW
-        7Sza71QrH6+YKUAA==
-From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/entry: Fix entry/exit mismatch on failed fast
- 32-bit syscalls
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <8c82296ddf803b91f8d1e5eac89e5803ba54ab0e.1614884673.git.luto@kernel.org>
-References: <8c82296ddf803b91f8d1e5eac89e5803ba54ab0e.1614884673.git.luto@kernel.org>
+        Fri, 5 Mar 2021 05:16:40 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1EEC061761
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 02:16:40 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id k12so2035214ljg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 02:16:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qbH2XnLnL+zeqgwenkERgBp6OdMalagNgmjddUY2upo=;
+        b=oosQD1k0ihuNWvZd/OBh3mc8nkdjesc2ilrBKyxU54uLyH7RvMV3qxaKGuxGmyTP9w
+         7caTG2bAlHb4RIuwWBoXXdwLHI1wuF1UhzSYqvKKVuPJo2A4M4tpwRjXeJj+xZVUonDX
+         UdSpwPE1UpnxNlqFw+lq4Gu6zhZBXm/vANy7gThzJHkn3fTMng4OD0VcMKLNGAbJ8n7Z
+         W0DkubhzB0Y3TdGjmmV7fLpOP0x3K5jmP4uOJi8LKa53fUQqinUuitoq9vPbc6ObUogr
+         0YzEgMGg0uCnBgL74LwDVEecmp+20X7oEJNr4U+Q+ONNvPT2dwJ+XUWBfEzrflscGCAS
+         3YRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qbH2XnLnL+zeqgwenkERgBp6OdMalagNgmjddUY2upo=;
+        b=cglAWyAsJ9uAdSqle+1KO0DTNKkFQDlx5vf91gEeouaL1XLusuz4OhQz+z/IPW7SnX
+         AMgE46hrYDILBAEe9uK8xX03R1mwLc9N8/tUm6fVaGM79NLq6MI2typxtu0YA2LOOGXZ
+         4Dl6EvxKLZ8JQbqJyAzj50xFrmTkqoqgY8UyRsMm2RcGlagxCFtSrfUkmH7zsvUuGWd5
+         zUjyRhRAgSHkjU35vIdvvC1GoH3SdJbDzDC42vReMwD7fLdSMDyczFPf9GQrwDcL1AMI
+         /5MgKV7GJIzcoLheQZ+H6C3h+ySGIVjvr9yp7CokX3X26UfK56JTN8uZWt7wd7NxOsZK
+         1Ljw==
+X-Gm-Message-State: AOAM532e+SR2narRmhLaDeCXO76A023xcH6WhEAFDa5uxbmDXxwbpU5S
+        rJF7cTLRO+nJeHZx1gHCfCVFBtagXGCKz+eITTgyKA==
+X-Google-Smtp-Source: ABdhPJxEx/lpierUGPxwT0L2+ZEtm4VbumUeVdUGn8v87RY30yCJpt4gIIgfdrlbQP0GGfAVxM0ky6MFjfiSwQhsyRg=
+X-Received: by 2002:a2e:1649:: with SMTP id 9mr4991292ljw.74.1614939398241;
+ Fri, 05 Mar 2021 02:16:38 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <161493937508.398.8936209544992148886.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-4-marcan@marcan.st>
+In-Reply-To: <20210304213902.83903-4-marcan@marcan.st>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 5 Mar 2021 11:16:26 +0100
+Message-ID: <CACRpkdbrEch04BFE+suqmmUHtgHrRBoUtS4_cv8gackqbDYoQQ@mail.gmail.com>
+Subject: Re: [RFT PATCH v3 03/27] dt-bindings: arm: apple: Add bindings for
+ Apple ARM platforms
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Thu, Mar 4, 2021 at 10:39 PM Hector Martin <marcan@marcan.st> wrote:
 
-Commit-ID:     dabf017539988a9bfc40a38dbafd35c501bacc44
-Gitweb:        https://git.kernel.org/tip/dabf017539988a9bfc40a38dbafd35c501bacc44
-Author:        Andy Lutomirski <luto@kernel.org>
-AuthorDate:    Thu, 04 Mar 2021 11:05:54 -08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 05 Mar 2021 11:10:13 +01:00
+> This introduces bindings for all three 2020 Apple M1 devices:
+>
+> * apple,j274 - Mac mini (M1, 2020)
+> * apple,j293 - MacBook Pro (13-inch, M1, 2020)
+> * apple,j313 - MacBook Air (M1, 2020)
+>
+> Signed-off-by: Hector Martin <marcan@marcan.st>
 
-x86/entry: Fix entry/exit mismatch on failed fast 32-bit syscalls
+This way of specifying the SoC makes sense to me.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-On a 32-bit fast syscall that fails to read its arguments from user
-memory, the kernel currently does syscall exit work but not
-syscall entry work.  This confuses audit and ptrace.  For example:
-
-    $ ./tools/testing/selftests/x86/syscall_arg_fault_32
-    ...
-    strace: pid 264258: entering, ptrace_syscall_info.op == 2
-    ...
-
-This is a minimal fix intended for ease of backporting.  A more
-complete cleanup is coming.
-
-Fixes: 0b085e68f407 ("x86/entry: Consolidate 32/64 bit syscall entry")
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/8c82296ddf803b91f8d1e5eac89e5803ba54ab0e.1614884673.git.luto@kernel.org
-
----
- arch/x86/entry/common.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index a2433ae..4efd39a 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -128,7 +128,8 @@ static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
- 		regs->ax = -EFAULT;
- 
- 		instrumentation_end();
--		syscall_exit_to_user_mode(regs);
-+		local_irq_disable();
-+		irqentry_exit_to_user_mode(regs);
- 		return false;
- 	}
- 
+Yours,
+Linus Walleij
