@@ -2,140 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A7232F50C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:02:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F9332F50E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229737AbhCEVCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:02:00 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:36576 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbhCEVBn (ORCPT
+        id S229704AbhCEVDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 16:03:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229935AbhCEVC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 16:01:43 -0500
-Received: by mail-ot1-f50.google.com with SMTP id t16so3135145ott.3;
-        Fri, 05 Mar 2021 13:01:43 -0800 (PST)
+        Fri, 5 Mar 2021 16:02:58 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0BAC061760
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 13:02:58 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id k2so3275940ili.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 13:02:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KDZZjAmqxj3nBD/QR2JR4FDldbeTt04JdeJXJxPd6S8=;
+        b=XTH+opjF0lun0/BAu4EyV3ZJ3Lsqf7XiX/1rYoibwaP/F3bXcL4IlX4TdPRqoqoHye
+         ++d4PzoH3qJZRxxRtwFzkkKpK/M4KGw9Mol9qW8269QqGlkw5EbaXydgP7ukM3iZD2b8
+         kdpWXWGqe9u1A9W+eA32UK1wbw2n+xgzWU834=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tCTsWhSOl0VSvNM9dJzSETj+napvS3H1QXFbSSLzpV0=;
-        b=Nj1pWHd49J1Sg5sEE5xvSOM5cAF4vDA4rQbRxCR8IkzhgcvPpQwi9hUwvOI2Y7Yi+A
-         Q/ShyMMwAnsIw2iS8pAkEEFPoeqqpCp1joA9STHkwjXzoIaR8N1yzspeaW956/DyuhfE
-         DLspNK/GJaA1u0ucsx+UvAuQSI0tV9vFITLWPQLQyw1zFWDA8x0w8ilZ60qatrzH1RlC
-         d/NkhIEARTF7ooFzuSllcuLN3PtxBrCBfn/zSzACcZ2j1c3p6NHoxsgHEQPBoAoWTcvA
-         8xEXuVjzrAppqPca5lJOxVv+AKYgQMiMlKpxG55hQ5iA9GbhWdXm0fbh3fve+/1uo2Xg
-         kH6Q==
-X-Gm-Message-State: AOAM533en4uP1mooSBTXjgY4GSOU52bw6/vpACE5Vri/rpQuLNdCIvuf
-        b2ofEYISn8YsTknCsShAIg==
-X-Google-Smtp-Source: ABdhPJxZev2D1I4Q9LzV3e74lC2o5oxAXT6c99TN3OZNkH26a4it0BFlXTgREs3ZAlErkNfA0Mur3A==
-X-Received: by 2002:a9d:7c3:: with SMTP id 61mr9704874oto.349.1614978102375;
-        Fri, 05 Mar 2021 13:01:42 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r3sm746186oif.5.2021.03.05.13.01.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 13:01:41 -0800 (PST)
-Received: (nullmailer pid 636697 invoked by uid 1000);
-        Fri, 05 Mar 2021 21:01:40 -0000
-Date:   Fri, 5 Mar 2021 15:01:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     mgross@linux.intel.com
-Cc:     markgross@kernel.org, arnd@arndb.de, bp@suse.de,
-        damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        peng.fan@nxp.com, shawnguo@kernel.org, jassisinghbrar@gmail.com,
-        linux-kernel@vger.kernel.org,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 04/34] dt-bindings: Add bindings for Keem Bay IPC
- driver
-Message-ID: <20210305210140.GA622142@robh.at.kernel.org>
-References: <20210212222304.110194-1-mgross@linux.intel.com>
- <20210212222304.110194-5-mgross@linux.intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KDZZjAmqxj3nBD/QR2JR4FDldbeTt04JdeJXJxPd6S8=;
+        b=d+dfHirTIYBTbzNIFqWTTWKHHMabMuvo48woZm6ZbF2CRkql6QPik6FWLMbePLEGca
+         8fzyStsfiS6yRutkpjw6Ry25enQE9uGdtadxg4+dsuW6YlfYX7OUOGzBzqxJJQ5VaWdf
+         vw/W2eU6LgubACOjHY5kUanlH+NKDKWsTfQjLbwQQzSE6W5jGP1fQkpOgMvF8Oxpa8N0
+         UouwrA+Ux385khqDLVCRp0gMgYJcALIWVg0k9ENwpZPgmlRfZFxx7zeLxcGv0tZCCh1C
+         tyI3KFVFQWFmDcjWehqV1qCOjdgt5c077fOJrx3MGB0Hr1DBLfzx33Z4ZnEVkwTWRML2
+         7Yog==
+X-Gm-Message-State: AOAM531b/NuchiB9Dmr2g4FTqjrY9udi1Feg7eiBpb2dzX3MhUfKtjwA
+        tTnGa6WFVvr0OF0V+NPS0HnHhpfikDjueQ==
+X-Google-Smtp-Source: ABdhPJzpMsfXkVcnyFEnz/Jq0GyWKgp/9xROXsc/dvUpGUaLODsc2ftI/xVcjxwRG7yL91yQ+G2t1w==
+X-Received: by 2002:a05:6e02:b27:: with SMTP id e7mr10539153ilu.253.1614978177492;
+        Fri, 05 Mar 2021 13:02:57 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id k3sm1808484ioj.35.2021.03.05.13.02.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 13:02:56 -0800 (PST)
+Subject: Re: [PATCH net-next 2/6] net: qualcomm: rmnet: simplify some byte
+ order logic
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alex Elder <elder@linaro.org>
+Cc:     subashab@codeaurora.org, stranche@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org, sharathv@codeaurora.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210304223431.15045-1-elder@linaro.org>
+ <20210304223431.15045-3-elder@linaro.org> <YEGucXIUQ59UcLrJ@builder.lan>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <9f1fb37b-90cb-a855-cfa0-3c0e6a234b48@ieee.org>
+Date:   Fri, 5 Mar 2021 15:02:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212222304.110194-5-mgross@linux.intel.com>
+In-Reply-To: <YEGucXIUQ59UcLrJ@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 02:22:34PM -0800, mgross@linux.intel.com wrote:
-> From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+On 3/4/21 10:07 PM, Bjorn Andersson wrote:
+> On Thu 04 Mar 16:34 CST 2021, Alex Elder wrote:
 > 
-> Add DT binding documentation for the Intel Keem Bay IPC driver, which
+>> In rmnet_map_ipv4_ul_csum_header() and rmnet_map_ipv6_ul_csum_header()
+>> the offset within a packet at which checksumming should commence is
+>> calculated.  This calculation involves byte swapping and a forced type
+>> conversion that makes it hard to understand.
+>>
+>> Simplify this by computing the offset in host byte order, then
+>> converting the result when assigning it into the header field.
+>>
+>> Signed-off-by: Alex Elder <elder@linaro.org>
+>> ---
+>>   .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 22 ++++++++++---------
+>>   1 file changed, 12 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+>> index 21d38167f9618..bd1aa11c9ce59 100644
+>> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+>> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+>> @@ -197,12 +197,13 @@ rmnet_map_ipv4_ul_csum_header(void *iphdr,
+>>   			      struct rmnet_map_ul_csum_header *ul_header,
+>>   			      struct sk_buff *skb)
+>>   {
+>> -	struct iphdr *ip4h = (struct iphdr *)iphdr;
+>> -	__be16 *hdr = (__be16 *)ul_header, offset;
+>> +	__be16 *hdr = (__be16 *)ul_header;
+>> +	struct iphdr *ip4h = iphdr;
+>> +	u16 offset;
+>> +
+>> +	offset = skb_transport_header(skb) - (unsigned char *)iphdr;
+>> +	ul_header->csum_start_offset = htons(offset);
+>>   
+>> -	offset = htons((__force u16)(skb_transport_header(skb) -
+> 
+> Just curious, why does this require a __force, or even a cast?
 
-Bindings are for h/w blocks, not drivers. From a binding perspective, I 
-don't really care what the driver architecture for some OS looks like. I 
-continue to not understand what this h/w looks like. A block diagram 
-would help as would understanding what blocks have multiple clients 
-(mailboxes and xlink in particular).
+The argument to htons() has type __u16.  In this case it
+is passed the difference between pointers, which will
+have type ptrdiff_t, which is certainly bigger than
+16 bits.  I don't think the __force is needed, but the
+cast to u16 might just be making the conversion to the
+smaller type explicit.  Here too though, I don't think
+it's necessary.
 
-> enables communication between the Computing Sub-System (CSS) and the
-> Multimedia Sub-System (MSS) of the Intel Movidius SoC code named Keem
-> Bay.
+					-Alex
+
+> Regardless, your proposed way of writing it is easier to read.
 > 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-> Signed-off-by: Mark Gross <mgross@linux.intel.com>
-> ---
->  .../bindings/soc/intel/intel,keembay-ipc.yaml | 45 +++++++++++++++++++
->  1 file changed, 45 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > 
-> diff --git a/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
-> new file mode 100644
-> index 000000000000..586fe73f4cd4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
-> @@ -0,0 +1,45 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2020 Intel Corporation
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/soc/intel/intel,keembay-ipc.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Keem Bay IPC
-> +
-> +maintainers:
-> +  - Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-> +
-> +description:
-> +  The Keem Bay IPC driver enables Inter-Processor Communication (IPC) with the
-> +  Visual Processor Unit (VPU) embedded in the Intel Movidius SoC code named
-> +  Keem Bay.
-> +
-> +properties:
-> +  compatible:
-> +    const: intel,keembay-ipc
-> +
-> +  memory-region:
-> +    items:
-> +      - description:
-> +          Reserved memory region used by the CPU to allocate IPC packets.
-> +      - description:
-> +          Reserved memory region used by the VPU to allocate IPC packets.
-> +
-> +  mboxes:
-> +    description: VPU IPC Mailbox.
-> +
-> +required:
-> +  - compatible
-> +  - memory-region
-> +  - mboxes
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    ipc {
-> +          compatible = "intel,keembay-ipc";
-> +          memory-region = <&ipc_cpu_reserved>, <&ipc_vpu_reserved>;
-> +          mboxes = <&vpu_ipc_mbox 0>;
-> +    };
-> -- 
-> 2.17.1
+> Regards,
+> Bjorn
 > 
+>> -				     (unsigned char *)iphdr));
+>> -	ul_header->csum_start_offset = offset;
+>>   	ul_header->csum_insert_offset = skb->csum_offset;
+>>   	ul_header->csum_enabled = 1;
+>>   	if (ip4h->protocol == IPPROTO_UDP)
+>> @@ -239,12 +240,13 @@ rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
+>>   			      struct rmnet_map_ul_csum_header *ul_header,
+>>   			      struct sk_buff *skb)
+>>   {
+>> -	struct ipv6hdr *ip6h = (struct ipv6hdr *)ip6hdr;
+>> -	__be16 *hdr = (__be16 *)ul_header, offset;
+>> +	__be16 *hdr = (__be16 *)ul_header;
+>> +	struct ipv6hdr *ip6h = ip6hdr;
+>> +	u16 offset;
+>> +
+>> +	offset = skb_transport_header(skb) - (unsigned char *)ip6hdr;
+>> +	ul_header->csum_start_offset = htons(offset);
+>>   
+>> -	offset = htons((__force u16)(skb_transport_header(skb) -
+>> -				     (unsigned char *)ip6hdr));
+>> -	ul_header->csum_start_offset = offset;
+>>   	ul_header->csum_insert_offset = skb->csum_offset;
+>>   	ul_header->csum_enabled = 1;
+>>   
+>> -- 
+>> 2.20.1
+>>
+
