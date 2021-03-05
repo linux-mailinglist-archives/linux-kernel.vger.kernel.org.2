@@ -2,134 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB56F32F242
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:18:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D99A32F24A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhCESSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 13:18:13 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:49433 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229690AbhCESSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 13:18:13 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614968292; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=xsGVThSVpDisnzMOrebDFquS2YIq6W6BzeX6M5wfiLA=; b=YmQlydA9rmA8u2xY+GPjAjEmt+9F2gvzsl4EQ9OzXDEgm0QihQMlFJfCA62zGl26qIO7V+dB
- p9O25gXdPVRGTNBOJsourmh4vzeqc0D6Kg1AD0Fbbv0W9EkOAW4Dadrg6IKjqNmXJ7j8RZvf
- g92uzxp90r1tWAznctJCxpAVKK0=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 604275e47b648e2436086875 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Mar 2021 18:18:12
- GMT
-Sender: eberman=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8833CC43463; Fri,  5 Mar 2021 18:18:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.70] (cpe-76-167-231-33.san.res.rr.com [76.167.231.33])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S229815AbhCESSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 13:18:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229693AbhCESS2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 13:18:28 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF153C061574;
+        Fri,  5 Mar 2021 10:18:27 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: eberman)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 275E5C433CA;
-        Fri,  5 Mar 2021 18:18:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 275E5C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=eberman@codeaurora.org
-Subject: Re: [PATCH 6/6] firmware: qcom_scm: Only compile legacy calls on ARM
-To:     Stephen Boyd <swboyd@chromium.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Brian Masney <masneyb@onstation.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>
-References: <20210223214539.1336155-1-swboyd@chromium.org>
- <20210223214539.1336155-7-swboyd@chromium.org>
- <b9174acc-9826-eb82-b399-ed95f7e83085@codeaurora.org>
- <161483844056.1478170.8701629037531614722@swboyd.mtv.corp.google.com>
-From:   Elliot Berman <eberman@codeaurora.org>
-Message-ID: <5ac262bf-a70a-4ca3-01a8-d1432732d26f@codeaurora.org>
-Date:   Fri, 5 Mar 2021 10:18:09 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 44CF842037;
+        Fri,  5 Mar 2021 18:18:18 +0000 (UTC)
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-13-marcan@marcan.st>
+ <CAL_JsqJF2Hz=4U7FR_GOSjCxqt3dpf-CAWFNfsSrDjDLpHqgCA@mail.gmail.com>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
+ MMIO as non-posted
+Message-ID: <6e4880b3-1fb6-0cbf-c1a5-7a46fd9ccf62@marcan.st>
+Date:   Sat, 6 Mar 2021 03:18:16 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <161483844056.1478170.8701629037531614722@swboyd.mtv.corp.google.com>
+In-Reply-To: <CAL_JsqJF2Hz=4U7FR_GOSjCxqt3dpf-CAWFNfsSrDjDLpHqgCA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/3/2021 10:14 PM, Stephen Boyd wrote:
-> Quoting Elliot Berman (2021-03-03 19:35:08)
->>
->> On 2/23/2021 1:45 PM, Stephen Boyd wrote:
->>> These scm calls are never used outside of legacy ARMv7 based platforms.
->>> That's because PSCI, mandated on arm64, implements them for modern SoCs
->>> via the PSCI spec. Let's move them to the legacy file and only compile
->>> the legacy file into the kernel when CONFIG_ARM=y. Otherwise provide
->>> stubs and fail the calls. This saves a little bit of space in an
->>> arm64 allmodconfig >
->>>    $ ./scripts/bloat-o-meter vmlinux.before vmlinux.after
->>>    add/remove: 0/8 grow/shrink: 5/7 up/down: 509/-4405 (-3896)
->>>    Function                                     old     new   delta
->>>    __qcom_scm_set_dload_mode.constprop          312     452    +140
->>>    qcom_scm_qsmmu500_wait_safe_toggle           288     416    +128
->>>    qcom_scm_io_writel                           288     408    +120
->>>    qcom_scm_io_readl                            376     492    +116
->>>    __param_str_download_mode                     23      28      +5
->>>    __warned                                    4327    4326      -1
->>>    qcom_iommu_init                              272     268      -4
->>>    e843419@0b3f_00010432_324                      8       -      -8
->>>    qcom_scm_call                                228     208     -20
->>>    CSWTCH                                      5925    5877     -48
->>>    _sub_I_65535_1                            163100  163040     -60
->>>    _sub_D_65535_0                            163100  163040     -60
->>>    qcom_scm_wb                                   64       -     -64
->>>    qcom_scm_lock                                320     160    -160
->>>    qcom_scm_call_atomic                         212       -    -212
->>>    qcom_scm_cpu_power_down                      308       -    -308
->>>    scm_legacy_call_atomic                       520       -    -520
->>>    qcom_scm_set_warm_boot_addr                  720       -    -720
->>>    qcom_scm_set_cold_boot_addr                  728       -    -728
->>>    scm_legacy_call                             1492       -   -1492
->>>    Total: Before=66737642, After=66733746, chg -0.01%
->>>
->>> Commit 9a434cee773a ("firmware: qcom_scm: Dynamically support SMCCC and
->>> legacy conventions") didn't mention any motivating factors for keeping
->>> the legacy code around on arm64 kernels, i.e. presumably that commit
->>> wasn't trying to support these legacy APIs on arm64 kernels.
->>
->> There are arm targets which support SMCCC convention and use some of
->> these removed functions. Can these functions be kept in qcom-scm.c and
->> wrapped with #if IS_ENABLED(CONFIG_ARM)?
->>
+On 06/03/2021 02.39, Rob Herring wrote:
+> I'm still a little hesitant to add these properties and having some
+> default. I worry about a similar situation as 'dma-coherent' where the
+> assumed default on non-coherent on Arm doesn't work for PowerPC which
+> defaults coherent. More below on this.
+
+The intent of the default here is that it matches what ioremap() does on 
+other platforms already (where it does not make any claims of being 
+posted, though it could be on some platforms). It could be per-platform 
+what that means... but either way it should be what drivers get today 
+without asking for anything special.
+
+>> -       return ioremap(res.start, resource_size(&res));
+>> +       if (res.flags & IORESOURCE_MEM_NONPOSTED)
+>> +               return ioremap_np(res.start, resource_size(&res));
+>> +       else
+>> +               return ioremap(res.start, resource_size(&res));
 > 
-> It can be wrapped in qcom-scm.c, but why? It's all the same object file
-> so I'm lost why it matters. I suppose it would make it so the struct
-> doesn't have to be moved around and declared in the header? Any other
-> reason? I moved it to the legacy file so that it was very obvious that
-> the API wasn't to be used except for "legacy" platforms that don't use
-> PSCI.
+> This and the devm variants all scream for a ioremap_extended()
+> function. IOW, it would be better if the ioremap flavor was a
+> parameter. Unless we could implement that just for arm64 first, that's
+> a lot of refactoring...
+
+I agree, but yeah... that's one big refactor to try to do now...
+
+> What's the code path using these functions on the M1 where we need to
+> return 'posted'? It's just downstream PCI mappings (PCI memory space),
+> right? Those would never hit these paths because they don't have a DT
+> node or if they do the memory space is not part of it. So can't the
+> check just be:
 > 
+> bool of_mmio_is_nonposted(struct device_node *np)
+> {
+>      return np && of_machine_is_compatible("apple,arm-platform");
+> }
 
-There are "legacy" arm platforms that use the SMCCC (scm_smc_call) and 
-use the qcom_scm_set_{warm,cold}_boot_addr and qcom_scm_cpu_power_down 
-functions.
+Yes; the implementation was trying to be generic, but AIUI we don't need 
+this on M1 because the PCI mappings don't go through this codepath, and 
+nothing else needs posted mode. My first hack was something not too 
+unlike this, then I was going to get rid of apple,arm-platform and just 
+have this be a generic mechanism with the properties, but then we added 
+the optimization to not do the lookups on other platforms, and now we're 
+coming full circle... :-)
 
- > +	desc.args[0] = flags;
- > +	desc.args[1] = virt_to_phys(entry);
- > +
- > +	return scm_legacy_call_atomic(NULL, &desc, NULL);
- > +}
- > +EXPORT_SYMBOL(qcom_scm_set_cold_boot_addr);
+If you prefer to handle it this way for now I can do it like this. I 
+think we should still have the DT bindings and properties though (even 
+if not used), as they do describe the hardware properly, and in the 
+future we might want to use them instead of having a quirk.
 
-This should still be qcom_scm_call.
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
