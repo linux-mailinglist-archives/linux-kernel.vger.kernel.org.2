@@ -2,72 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9677932E37F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C116E32E384
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbhCEIR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:17:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhCEIRL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:17:11 -0500
-Received: from forwardcorp1j.mail.yandex.net (forwardcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1E0C061574;
-        Fri,  5 Mar 2021 00:17:10 -0800 (PST)
-Received: from vla1-fdfb804fb3f3.qloud-c.yandex.net (vla1-fdfb804fb3f3.qloud-c.yandex.net [IPv6:2a02:6b8:c0d:3199:0:640:fdfb:804f])
-        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 31CED2E15BA;
-        Fri,  5 Mar 2021 11:17:06 +0300 (MSK)
-Received: from vla5-d6d5ce7a4718.qloud-c.yandex.net (vla5-d6d5ce7a4718.qloud-c.yandex.net [2a02:6b8:c18:341e:0:640:d6d5:ce7a])
-        by vla1-fdfb804fb3f3.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id nBUJYgG9mP-H504YqKo;
-        Fri, 05 Mar 2021 11:17:06 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.com; s=default;
-        t=1614932226; bh=ikw0NZHqJgFqyaFCRWbjp7lWwmWwPcvXaMhsrOZJ7u0=;
-        h=In-Reply-To:References:Date:Message-ID:From:To:Subject:Cc;
-        b=g7V+jCO9XOBzYLR0mvS0cct1Ktx8BVoGBuc0crJqmqQtZ4FTPm7DaScDEfSMgT8zC
-         9OBp5iIVfCwU3yC9+GCFlc8ENlzofOeeHIxJSCKzb8+eMLqsBYFZF78ULUu8xknjIN
-         p41IsEpZgZKuUmcENCnWG0PXH8qBhm8SK/J6Ymw8=
-Authentication-Results: vla1-fdfb804fb3f3.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.com
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b080:8217::1:2])
-        by vla5-d6d5ce7a4718.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id Q79TVul5mw-H5n0O6mP;
-        Fri, 05 Mar 2021 11:17:05 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH] iommu/amd: Fix sleeping in atomic in
- increase_address_space()
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        valesini@yandex-team.ru, stable@vger.kernel.org
-References: <20210217143004.19165-1-arbn@yandex-team.com>
- <20210217181002.GC4304@willie-the-truck> <20210304121941.GB26414@8bytes.org>
-From:   Andrey Ryabinin <arbn@yandex-team.com>
-Message-ID: <298d9f1e-39b7-ee1c-86f6-9f9780356942@yandex-team.com>
-Date:   Fri, 5 Mar 2021 11:18:43 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229597AbhCEITi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:19:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229528AbhCEITg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 03:19:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B37C65014;
+        Fri,  5 Mar 2021 08:19:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614932376;
+        bh=4tcQynLBYFF8R4IvD4h1vdRVG+jt6uczJrx4L0hagCI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UL1XdNh8CUWSnSJzvCohlPYrnTV2wTDEEz5riKz7vCZcMZhoHhPrasqPxFyDjg3cU
+         VK3X8zdKPp+d6Zk/nELeHn3TdaXZvTdkcbbsIVD+MmI3vzKv//uEq+eVtS2hdpZdNN
+         xZ5xjHI8v6xqaOQZEQsouGP7wWjwNscQRO5TwulHRw0Bc0sS7HokMjDTdjYqhzl/Zz
+         s0cXYpl4dk9JRtuX9zkAcJvruvjzGIDAaaweqIRuQM9PBbkElCBsFm9IDgye534BsA
+         chc/GrUygzOBW79bv/OyG62NhhnpMGkcRf2zgnsdtAKGkLjM0oe7+UBr0sMDkpYkyq
+         JNtCkBJU8gq0g==
+Date:   Fri, 5 Mar 2021 02:19:33 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH RESEND][next] mtd: cfi: Fix fall-through warnings for Clang
+Message-ID: <20210305081933.GA137147@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20210304121941.GB26414@8bytes.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+warnings by explicitly adding multiple break statements and a return
+instead of letting the code fall through to the next case.
 
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/mtd/chips/cfi_cmdset_0001.c | 1 +
+ drivers/mtd/chips/cfi_cmdset_0002.c | 2 ++
+ drivers/mtd/chips/cfi_cmdset_0020.c | 2 ++
+ 3 files changed, 5 insertions(+)
 
-On 3/4/21 3:19 PM, Joerg Roedel wrote:
-> On Wed, Feb 17, 2021 at 06:10:02PM +0000, Will Deacon wrote:
->>>  drivers/iommu/amd/iommu.c | 10 ++++++----
->>>  1 file changed, 6 insertions(+), 4 deletions(-)
->>
->> Acked-by: Will Deacon <will@kernel.org>
-> 
-> Applied for v5.12, thanks.
-> 
-> There were some conflicts which I resolved, can you please check the
-> result, Andrey? The updated patch is attached.
-> 
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 42001c49833b..b7f5e7977dcd 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -2549,6 +2549,7 @@ static int cfi_intelext_suspend(struct mtd_info *mtd)
+ 			   anyway? The latter for now. */
+ 			printk(KERN_NOTICE "Flash device refused suspend due to active operation (state %d)\n", chip->state);
+ 			ret = -EAGAIN;
++			break;
+ 		case FL_PM_SUSPENDED:
+ 			break;
+ 		}
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index a1f3e1031c3d..6f6b0265c22d 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -902,6 +902,7 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
+ 			/* Someone else might have been playing with it. */
+ 			goto retry;
+ 		}
++		return 0;
+ 
+ 	case FL_READY:
+ 	case FL_CFI_QUERY:
+@@ -2994,6 +2995,7 @@ static int cfi_amdstd_suspend(struct mtd_info *mtd)
+ 			 * as the whole point is that nobody can do anything
+ 			 * with the chip now anyway.
+ 			 */
++			break;
+ 		case FL_PM_SUSPENDED:
+ 			break;
+ 
+diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
+index 270322bca221..d35df526e0a6 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0020.c
++++ b/drivers/mtd/chips/cfi_cmdset_0020.c
+@@ -1332,6 +1332,8 @@ static int cfi_staa_suspend(struct mtd_info *mtd)
+ 			 * as the whole point is that nobody can do anything
+ 			 * with the chip now anyway.
+ 			 */
++			break;
++
+ 		case FL_PM_SUSPENDED:
+ 			break;
+ 
+-- 
+2.27.0
 
-Thanks, looks good to me.
