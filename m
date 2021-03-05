@@ -2,40 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E3632EA53
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E5D32EA5C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232708AbhCEMh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:37:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50030 "EHLO mail.kernel.org"
+        id S231169AbhCEMiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:38:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232941AbhCEMgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:36:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC51B65014;
-        Fri,  5 Mar 2021 12:36:50 +0000 (UTC)
+        id S233054AbhCEMhM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:37:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD3076501B;
+        Fri,  5 Mar 2021 12:37:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947811;
-        bh=JtaYzPNlDI7tqDNphEOdtbx2Ac0hDe4hPbGR1bbhcj4=;
+        s=korg; t=1614947832;
+        bh=3NGzFDKrJXS4I/2GBiL2uOxZfuT4lRQRB1jdRqdvHGk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xnDknYLGHHeOY19YeSR6+ws9kiGAcf9dLd6CqhQXnjt8chAkL4NcarOM/OFMNmGBE
-         nPv5xNpLAyNtUP47nYubRqYLyBVV4zsVCEBhutm/sA7GgpiEaCD6zma++hkpS4iZxv
-         EKDYwYGY+XNJu0DDpl3E7fyy4mbWwQSv5tNpC0Mg=
+        b=vdEgkhzna7bLO4qauOFaC0Qc+3/zBAGe7kMzHleZ01dHtC6yf5T9rp3PJdZnFQg0V
+         aIYaoXAW0BEz3FPFk2YZ+zP/YbB4Sy3zMbjZJPluxBKmcb8pQI3CBhLH6SsLHaUMdf
+         sVxqxrJBl4FY+7VGn4lPPAX2ZT1xCCLvPdYBBKJ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zi Yan <ziy@nvidia.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 02/52] hugetlb: fix update_and_free_page contig page struct assumption
-Date:   Fri,  5 Mar 2021 13:21:33 +0100
-Message-Id: <20210305120853.778850487@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Doug Horn <doughorn@google.com>
+Subject: [PATCH 4.19 03/52] drm/virtio: use kvmalloc for large allocations
+Date:   Fri,  5 Mar 2021 13:21:34 +0100
+Message-Id: <20210305120853.828809591@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
 References: <20210305120853.659441428@linuxfoundation.org>
@@ -47,66 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Kravetz <mike.kravetz@oracle.com>
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-commit dbfee5aee7e54f83d96ceb8e3e80717fac62ad63 upstream.
+commit ea86f3defd55f141a44146e66cbf8ffb683d60da upstream.
 
-page structs are not guaranteed to be contiguous for gigantic pages.  The
-routine update_and_free_page can encounter a gigantic page, yet it assumes
-page structs are contiguous when setting page flags in subpages.
+We observed that some of virtio_gpu_object_shmem_init() allocations
+can be rather costly - order 6 - which can be difficult to fulfill
+under memory pressure conditions. Switch to kvmalloc_array() in
+virtio_gpu_object_shmem_init() and let the kernel vmalloc the entries
+array.
 
-If update_and_free_page encounters non-contiguous page structs, we can see
-“BUG: Bad page state in process …” errors.
-
-Non-contiguous page structs are generally not an issue.  However, they can
-exist with a specific kernel configuration and hotplug operations.  For
-example: Configure the kernel with CONFIG_SPARSEMEM and
-!CONFIG_SPARSEMEM_VMEMMAP.  Then, hotplug add memory for the area where
-the gigantic page will be allocated.  Zi Yan outlined steps to reproduce
-here [1].
-
-[1] https://lore.kernel.org/linux-mm/16F7C58B-4D79-41C5-9B64-A1A1628F4AF2@nvidia.com/
-
-Link: https://lkml.kernel.org/r/20210217184926.33567-1-mike.kravetz@oracle.com
-Fixes: 944d9fec8d7a ("hugetlb: add support for gigantic page allocation at runtime")
-Signed-off-by: Zi Yan <ziy@nvidia.com>
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Zi Yan <ziy@nvidia.com>
-Cc: Davidlohr Bueso <dbueso@suse.de>
-Cc: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Joao Martins <joao.m.martins@oracle.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Link: http://patchwork.freedesktop.org/patch/msgid/20201105014744.1662226-1-senozhatsky@chromium.org
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+Signed-off-by: Doug Horn <doughorn@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 ---
- mm/hugetlb.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/virtio/virtgpu_vq.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1171,14 +1171,16 @@ static inline void destroy_compound_giga
- static void update_and_free_page(struct hstate *h, struct page *page)
- {
- 	int i;
-+	struct page *subpage = page;
+--- a/drivers/gpu/drm/virtio/virtgpu_vq.c
++++ b/drivers/gpu/drm/virtio/virtgpu_vq.c
+@@ -868,9 +868,9 @@ int virtio_gpu_object_attach(struct virt
+ 	}
  
- 	if (hstate_is_gigantic(h) && !gigantic_page_supported())
- 		return;
- 
- 	h->nr_huge_pages--;
- 	h->nr_huge_pages_node[page_to_nid(page)]--;
--	for (i = 0; i < pages_per_huge_page(h); i++) {
--		page[i].flags &= ~(1 << PG_locked | 1 << PG_error |
-+	for (i = 0; i < pages_per_huge_page(h);
-+	     i++, subpage = mem_map_next(subpage, page, i)) {
-+		subpage->flags &= ~(1 << PG_locked | 1 << PG_error |
- 				1 << PG_referenced | 1 << PG_dirty |
- 				1 << PG_active | 1 << PG_private |
- 				1 << PG_writeback);
+ 	/* gets freed when the ring has consumed it */
+-	ents = kmalloc_array(obj->pages->nents,
+-			     sizeof(struct virtio_gpu_mem_entry),
+-			     GFP_KERNEL);
++	ents = kvmalloc_array(obj->pages->nents,
++			      sizeof(struct virtio_gpu_mem_entry),
++			      GFP_KERNEL);
+ 	if (!ents) {
+ 		DRM_ERROR("failed to allocate ent list\n");
+ 		return -ENOMEM;
 
 
