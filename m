@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F8732E9F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D992532EA59
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232421AbhCEMfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:35:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47318 "EHLO mail.kernel.org"
+        id S232995AbhCEMiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:38:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232408AbhCEMfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:35:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62DAC6501B;
-        Fri,  5 Mar 2021 12:35:05 +0000 (UTC)
+        id S233043AbhCEMhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:37:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD8B165004;
+        Fri,  5 Mar 2021 12:37:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947705;
-        bh=SsHM8gnfyiPi6w7aBNlOUyHc1ZqiIC34oM/z13+FFKQ=;
+        s=korg; t=1614947827;
+        bh=qMvQs+Lpjk0Dwq5+CLfg1m7yJAQUyrZyagoHKjCZbj8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fBTJ2vXPHlVyXDipm5UizSLfwElNRk9lIvX/Y23bJk3rfDR5Zs4ARvQ6jCs36yElM
-         2rGFI3D/+ndoEazCFNZspqFjbYJLEO2czTSRAYpGeWXYDNYvTEJALqYRWrKb83g0wK
-         WN7Bt2YyKZcnjlKer8ilQ/5h8wWhXOStO8GpO6iE=
+        b=ajzZL4MpWKVmT2MaHLEt7QkiYzg0vWzyy/p2Kw1sYAa+7q+L5hEQN1u4nJpXXucWL
+         cIs/EfHB7uMHc4y2AlReZXFf8SPu3czQeMvOsSX6rek/iHZJCK2YLqYieLZthRMKaR
+         EAPSWT+U1LjlJA/gOXolLmny8CYPaBBPXarGTkQc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Claire Chang <tientzu@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 53/72] btrfs: fix error handling in commit_fs_roots
-Date:   Fri,  5 Mar 2021 13:21:55 +0100
-Message-Id: <20210305120859.932894484@linuxfoundation.org>
+Subject: [PATCH 4.19 25/52] Bluetooth: hci_h5: Set HCI_QUIRK_SIMULTANEOUS_DISCOVERY for btrtl
+Date:   Fri,  5 Mar 2021 13:21:56 +0100
+Message-Id: <20210305120854.911683081@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
-References: <20210305120857.341630346@linuxfoundation.org>
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+References: <20210305120853.659441428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,77 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Claire Chang <tientzu@chromium.org>
 
-[ Upstream commit 4f4317c13a40194940acf4a71670179c4faca2b5 ]
+[ Upstream commit 7f9f2c3f7d99b8ae773459c74ac5e99a0dd46db9 ]
 
-While doing error injection I would sometimes get a corrupt file system.
-This is because I was injecting errors at btrfs_search_slot, but would
-only do it one time per stack.  This uncovered a problem in
-commit_fs_roots, where if we get an error we would just break.  However
-we're in a nested loop, the first loop being a loop to find all the
-dirty fs roots, and then subsequent root updates would succeed clearing
-the error value.
+Realtek Bluetooth controllers can do both LE scan and BR/EDR inquiry
+at once, need to set HCI_QUIRK_SIMULTANEOUS_DISCOVERY quirk.
 
-This isn't likely to happen in real scenarios, however we could
-potentially get a random ENOMEM once and then not again, and we'd end up
-with a corrupted file system.  Fix this by moving the error checking
-around a bit to the main loop, as this is the only place where something
-will fail, and return the error as soon as it occurs.
-
-With this patch my reproducer no longer corrupts the file system.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Claire Chang <tientzu@chromium.org>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/transaction.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/bluetooth/hci_h5.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index c346ee7ec18d..aca6c467d776 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1212,7 +1212,6 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
- 	struct btrfs_root *gang[8];
- 	int i;
- 	int ret;
--	int err = 0;
+diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+index 7ffeb37e8f20..79b96251de80 100644
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -885,6 +885,11 @@ static int h5_btrtl_setup(struct h5 *h5)
+ 	/* Give the device some time before the hci-core sends it a reset */
+ 	usleep_range(10000, 20000);
  
- 	spin_lock(&fs_info->fs_roots_radix_lock);
- 	while (1) {
-@@ -1224,6 +1223,8 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
- 			break;
- 		for (i = 0; i < ret; i++) {
- 			struct btrfs_root *root = gang[i];
-+			int ret2;
++	/* Enable controller to do both LE scan and BR/EDR inquiry
++	 * simultaneously.
++	 */
++	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
 +
- 			radix_tree_tag_clear(&fs_info->fs_roots_radix,
- 					(unsigned long)root->root_key.objectid,
- 					BTRFS_ROOT_TRANS_TAG);
-@@ -1245,17 +1246,17 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
- 						    root->node);
- 			}
+ out_free:
+ 	btrtl_free(btrtl_dev);
  
--			err = btrfs_update_root(trans, fs_info->tree_root,
-+			ret2 = btrfs_update_root(trans, fs_info->tree_root,
- 						&root->root_key,
- 						&root->root_item);
-+			if (ret2)
-+				return ret2;
- 			spin_lock(&fs_info->fs_roots_radix_lock);
--			if (err)
--				break;
- 			btrfs_qgroup_free_meta_all_pertrans(root);
- 		}
- 	}
- 	spin_unlock(&fs_info->fs_roots_radix_lock);
--	return err;
-+	return 0;
- }
- 
- /*
 -- 
 2.30.1
 
