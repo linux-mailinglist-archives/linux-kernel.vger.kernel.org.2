@@ -2,223 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A214432EE42
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:19:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD15532EE3C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhCEPS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:18:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhCEPSL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:18:11 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E258AC061574;
-        Fri,  5 Mar 2021 07:18:10 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id t29so2233875pfg.11;
-        Fri, 05 Mar 2021 07:18:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GXgybONIV8Un/qYPL7SKvbrjGoX85mO1+G2xJKWHF3E=;
-        b=sD7+gFdq32Xgi82kLRFU8pXvDETXmXWFq5ktrjMXiKtsFmc3tkBTGl9OPNcRVS5S1b
-         IQ8Qy9pw5yhF+GRTj/D4QgtyP/q4b3ystH7neC7qz6vtSMyvO6BSxV7KiAUQcNTr4UTi
-         5KzToosJ1xdv0MJzEJ4ZWNTmXIdCIvacx//eXGz1ybbrCC2aMRzLyvynSO6siknF4F2D
-         NCPyOWqq6NtQjMtp/YeP3aFWj3ZOoB+dz1yNVlYk9dPrEnwszpngqSI+Hp8GP8mYfmOS
-         mKVoPJc3PEXRPc3oJnF3AMEg+DsH7/RF4pfDcZAGq/vKTIQf/GubK/io8czwxLxuvav4
-         sBPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GXgybONIV8Un/qYPL7SKvbrjGoX85mO1+G2xJKWHF3E=;
-        b=WvRFsvYVU2u5jPxosEObfUKDPza5H9fyj2Qp4OqJPq8rmd78J0Cq+NaOZYBynZwFli
-         QQIPZOPkOMrRLxsvzBz14bwA84RvG+MpagVR8ozFcY20ZWy4D2lwakfQOVwYHRUZMHrt
-         54f7Q5O+Z9Bd0/OuARim1Z7VlOIzd4Ef9Pe9XDBjssEfpqmlOusGTHhrR0PEBQcaKCRA
-         dbN088QBKxfKljeXUoYgRAQ00gp/hN/ARDM0bqzEWHFwcTMaMwSRDZpdNsBaHmF2gcf4
-         o1R0+8DoDhACzweY16hmFI9flmTxX8c/gCmr0DG8KUNjX3MTIkPBjok78/4kIXgFN1jr
-         ezgA==
-X-Gm-Message-State: AOAM5321AoS/If88BiOw0o0ln9HeyG4mNTR14y7/W3PEJJmBTj7rZoY6
-        Gfw9OKuWwS/9YrPUcmoPOJBo+CvurSLVACHHx3Y=
-X-Google-Smtp-Source: ABdhPJyUU6I/nYiB5+xIlT+woCy/dtsvBTSu8eJVmQJh5/G5wQS/XU/eYDIMbG6chJU3ZJn8dUFbp5bYBMEgzydMDww=
-X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
- q20-20020a056a000854b02901b762330c5fmr9460771pfk.73.1614957490271; Fri, 05
- Mar 2021 07:18:10 -0800 (PST)
-MIME-Version: 1.0
-References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-22-marcan@marcan.st>
-In-Reply-To: <20210304213902.83903-22-marcan@marcan.st>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 5 Mar 2021 17:17:54 +0200
-Message-ID: <CAHp75Vc+t9_FNHZ0xYNaJ1+Ny+FFeZKA79abxV2NAsZvpBh3Bg@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 21/27] tty: serial: samsung_tty: IRQ rework
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        id S229687AbhCEPS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:18:28 -0500
+Received: from mail-bn8nam12on2066.outbound.protection.outlook.com ([40.107.237.66]:36576
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229517AbhCEPSI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 10:18:08 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QxrbVcqw1lEMFvL/nu0pH7MLZ9uAukVM/VMIXBLS6E8Z5tT8zVDiFTh5S2oMURNh9ojMFZgteXOFMJH7TDzwXA+tDT7MLwQxrXYozOYXdVlTkCmnqPprifpZkDYoGCYUAfgZTv5vCFd/DEUrl4njJ+d9rosFgpfunVQaxkYcLLXPHAwGoB7TL1K2XXo+hgUxYqjapU2+RlE4QySqbrw0DB38CSpNFtETF3eBIR2sMGWkF+ZM0+CrDHHb/gGDDEmGOi9DIUwB7ZwRdvA6LqTn4sOtorAxU8UPzLgqLBxpshJ5+JU+9BXqGKtbglG0uvFOU5/5l1cCvuHxyd5UP9em8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xl2VytWn23t98n1JWJtkhCegNPPSkA/LTLR4d5w+gDs=;
+ b=RHwmZP+2Bpl/QtwERsfsJLAXjNPEncJtaZnd0B1wXPFY6Lnp7cuKzbIPc+BzKQA0Yyq0lX3jXxYLl+yl4/GKhK2uzNMI61E/ng/FdZb6U71VGtVEAUNa20H4XhoMWQXVkBH6MDeaEVziwhomR9v4udT16N33xDPp0Afix8elKuH9AcL4e8MpvnbineQufWknjZI+3owpflFidgwtngCLm5VdSMgoafFofmgAvpoPbenPPc/3kX86M34DlvtrQx0bZsNtLxmE/luhupiZLDDcoWvhyObbmoQr75Axrmp25Mtq78iwziBt/INMDQ2NGkdXhSzOofJ79yScRbRY3S9pTQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xl2VytWn23t98n1JWJtkhCegNPPSkA/LTLR4d5w+gDs=;
+ b=xgy/R2Debt2RLDwINPOI44A44azqCfzW1zLIyLWwrSj6h6sx05f2cqKyqTj1o7MWGmanQmYM5KIC72wXfPEbD5pWwtTo8GYB8k17X0f/tbFtRf1BmrWYg59RybNXGasro0z6rXl1TvRAIM2pJ6fqypy/yLcGTODP6rBkzEPhegU=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4848.namprd12.prod.outlook.com (2603:10b6:208:1be::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Fri, 5 Mar
+ 2021 15:18:06 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3912.023; Fri, 5 Mar 2021
+ 15:18:05 +0000
+Subject: Re: [PATCH 5.11 079/104] drm/amdgpu: enable only one high prio
+ compute queue
+To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "Das, Nirmoy" <Nirmoy.Das@amd.com>, Sasha Levin <sashal@kernel.org>
+References: <20210305120903.166929741@linuxfoundation.org>
+ <20210305120907.039431314@linuxfoundation.org>
+ <23197f54-020a-691c-5733-45ce7e624fec@amd.com>
+ <MW3PR12MB44918AD858505706809367F3F7969@MW3PR12MB4491.namprd12.prod.outlook.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <9f12d4c6-35c8-7466-f1bc-bee31957e11b@amd.com>
+Date:   Fri, 5 Mar 2021 16:18:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <MW3PR12MB44918AD858505706809367F3F7969@MW3PR12MB4491.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:ee4e:e545:33e0:7359]
+X-ClientProxiedBy: AM0PR10CA0015.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:17c::25) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:ee4e:e545:33e0:7359] (2a02:908:1252:fb60:ee4e:e545:33e0:7359) by AM0PR10CA0015.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:17c::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 5 Mar 2021 15:18:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 31d79fee-dd7d-4d6b-28c6-08d8dfe9e041
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4848:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4848779A372A8187234186F083969@MN2PR12MB4848.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:565;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: o/yn5E7labMhwtx5ASw3VAUnefjRWhJjksUgxnWXiQMJp1gUbZZpyIrnHMTRB9BCe6uDSikW+4mmOeJ4MVj+81NddXKArG56m7+5AErRkW4zaEa/Pa5tmzkStBWgDTkl4/zMjk/8jx9JxXbfMjuGzRNglnDSPNH661A8mP9CiwQiqO8L6MVsE3FIdzQoApZPTYZiJmHv66VlbdqL1pGShqdbkEz5DiMIkn9bTcP6G7y2np6HncGNC06xYs/ch/bwleqDz0BMU59w8Hk6iOZweIwpgPdDkU2HKWXJf+mfEyUc64LhkWBIKOR35eU4x8U01YmrfQeDq1TPZIU3NYTwfRCwxGIYYTgGIPA/oBz97D/cQ2Z9e5lpleJL+N7u/HQKrc4Ma4sGUG1diEwhXGCjrq8B5aZitYJ9YY+nvfR2sJXCrRi8oKNtMLl/JG60XAeoufXs5QUlO+IAtDnw3WncsWWFm6kMGg08t8v2L/7PCG2F5hPHwdik7L/Ut27wUt1ml0SpnZL1Lt1uMv0zRCIPotGvSITIHcRlBT5VLEBsbGLInD4o3G1ift1I7itBooQ8x3o/io2Sbom8VU9k+9uYl4096DAG1N6KrNHD60KH2N0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(136003)(376002)(396003)(346002)(83380400001)(53546011)(31686004)(4326008)(2906002)(478600001)(2616005)(8936002)(6666004)(31696002)(186003)(66946007)(16526019)(8676002)(86362001)(5660300002)(66476007)(66556008)(36756003)(6486002)(54906003)(316002)(110136005)(52116002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?d2x5QTR1T3YwODgrTUJzOTNWMjU0ajJ2OGFhWGluWXhXTGR2RVZVQzBuN0FF?=
+ =?utf-8?B?Vkk2Y1JIeXF4clZaYWJyRkxVU3dEQXFBRzFVSzBZMDdxckhnTkUxYU9WZEF2?=
+ =?utf-8?B?OEN3YVplQkd6NUt0UDlMb2ZYTlRRUk95ZGhvdWM2Q0tsK2g3ellwRXBQaXRn?=
+ =?utf-8?B?aURwY0I1bUdjODZZcW00WGlmK2hHZjVSTktHZDk0NERQMDVnc2JLejFHMXN1?=
+ =?utf-8?B?akV3Y2ljUmx6dVczNExCUXNycWM2Tm5HcFJLeGxwQ0Q2UXpSTTFwWnRnREdQ?=
+ =?utf-8?B?MGNUTHMxVk92N2l3b012a3FZQ2gwcmg5ZHlLdDVXOHdFbUlpelpObUlTalJR?=
+ =?utf-8?B?SU1pYXBQVU1HRXRMVVBoM0ZKSzZua3kydXJQM0RpKzViT0hIWk40OXVBbEIx?=
+ =?utf-8?B?R3RCR2c2K3FGNDBuNGt3bXM0azFqdlVlZWF0a1lCN3NOQmNRcE1pakFpWCts?=
+ =?utf-8?B?Nkt4RjZiQ0V6MDRGTHFsSzNpQjg4NFZ3ZktZbVp0QnVwQmpDb25DNkZKalE4?=
+ =?utf-8?B?MFlvb0JrOWdzU1pNV1J6VHZrN2xPWm1lU09oWml1elV2ZXdLUVROQlFQUSt3?=
+ =?utf-8?B?Q2htaEkzeExWV1pTNTBKN0VMS0daOTJGZm1jR2I4bUI5VVJTUmFrUXVqMkp4?=
+ =?utf-8?B?Ni9aZFNNL29IRGlFdDl3ZU5xV3ZROU4vOEhKc3hPUzJPRWFqSmk0SEJMcEVS?=
+ =?utf-8?B?M1RHR1hzZ096Mk1kVE9wRHZKUGRuQ2JiQ2RrZGtHOFg1M3dTNVBic2tjSWFP?=
+ =?utf-8?B?b2NkdVkrV0puRnBudlNsaExEaEUyZlFhMFQwNXE5Q3B4V0JLNnNXUDFDdnNQ?=
+ =?utf-8?B?VnpOQU5EeG56WEE5TGFqNDhqUEFvZ3NjOGJSUWM4STk0S0ZIc0lwYThmY1lo?=
+ =?utf-8?B?ZjdVWWh4azhXSWNQcGRXcEdFWTcwMHN6dlhzcHRLekM4T2UyU0VFMjdsZWtp?=
+ =?utf-8?B?RUZpT1ovS3UyUHJOajdTVjczN3NMMkppcC9XZFFFaGk1cWpjenpVcUhVVkVY?=
+ =?utf-8?B?dHMyN0V5NlRaeEFUc3p6cjUyVGdOT0E0LyszUEFSd0preTN0cm9UQXZwZitV?=
+ =?utf-8?B?YVpUREtxUXJXSGhGcmpBN3BGNDQ1citRbmtKZnc2akE2UFlQOXhHeHdITDN3?=
+ =?utf-8?B?Nm50S3h1a3hHVlFNMmhMemtLQU96WG5TTU1rcVQybjhPTjhha3E5M2wySk5y?=
+ =?utf-8?B?cnZaT2hNMmVlUkdpRmhod2FRcXZNZWxIZ0EzbjRnSlh4MkVhVmg5N3NKYTVH?=
+ =?utf-8?B?WWpiTnRtRmxHUkRpTjhGaFNYajR6WmdOM05FZUNXSUw0QzBtRzMrTFNLSEFz?=
+ =?utf-8?B?V29Ha2laWDNCb2k2bC9ySkVRRXM4STRuekhlTHo0TTlpWWRTRHNnclRlZzl6?=
+ =?utf-8?B?YnJNYzJBZGtSRVQvMmxBN000Z3YzWEwreVN4bWtpWUNKOGswcjIxR2J3KzFO?=
+ =?utf-8?B?YmtaTHV0RzNwdmU1K0wrdzJNNXA4SCtmZkQxa0R0aUhqOWw4UVN2TFZzYVc0?=
+ =?utf-8?B?ZXBSaXRBSHo4Yjc0SmxBVCtCZkU1VnVNNEtMZXVGK1JoaU1NbCtueHhKWXQ1?=
+ =?utf-8?B?WTZwNXN6TzJ4Lyt1MkxJcUJLN0xlQ2RYaGNNdWcwWVdPUUxUcFBySklSdDk1?=
+ =?utf-8?B?U3ZPa1ljbVVFQVI4VE9RWWxacDFIUnp3bnpqbUlTM0t0dyszQmVCcFhKcHlQ?=
+ =?utf-8?B?UEgyY2xwNTJZcldGWWlGNitSNDRFSzdEUHZEaVJac3Y5ZDN3S1JRcndNUHZ6?=
+ =?utf-8?B?RGcwUURRVXFvUjJLQnYvL3hjR3RYQW5DcTAyT3cvQ1g5KzQ0bk1DeEltVTUv?=
+ =?utf-8?B?VkdhbC90dGJvb3AxdWtjeXhwZjlXM1VDd1p0OEpBcGM4cVc1YWFhVEV1bzJq?=
+ =?utf-8?Q?nO+bKjBd5QfuX?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31d79fee-dd7d-4d6b-28c6-08d8dfe9e041
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2021 15:18:05.8674
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PGs75bybuqwt8mHCuQ/ZQEy3s1flOBesH+uzS8lS8kM8EZNUFoTUst53IJwruBGw
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4848
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 11:41 PM Hector Martin <marcan@marcan.st> wrote:
+Am 05.03.21 um 15:48 schrieb Deucher, Alexander:
+> [AMD Public Use]
 >
-> * Split out s3c24xx_serial_tx_chars from s3c24xx_serial_tx_irq,
->   where only the latter acquires the port lock. This will be necessary
->   on platforms which have edge-triggered IRQs, as we need to call
->   s3c24xx_serial_tx_chars to kick off transmission from outside IRQ
->   context, with the port lock held.
->
-> * Rename s3c24xx_serial_rx_chars to s3c24xx_serial_rx_irq for
->   consistency with the above. All it does now is call two other
->   functions anyway.
->
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  drivers/tty/serial/samsung_tty.c | 34 +++++++++++++++++++-------------
->  1 file changed, 20 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-> index 39b2eb165bdc..7106eb238d8c 100644
-> --- a/drivers/tty/serial/samsung_tty.c
-> +++ b/drivers/tty/serial/samsung_tty.c
-> @@ -827,7 +827,7 @@ static irqreturn_t s3c24xx_serial_rx_chars_pio(void *dev_id)
->         return IRQ_HANDLED;
->  }
->
-> -static irqreturn_t s3c24xx_serial_rx_chars(int irq, void *dev_id)
-> +static irqreturn_t s3c24xx_serial_rx_irq(int irq, void *dev_id)
->  {
->         struct s3c24xx_uart_port *ourport = dev_id;
->
-> @@ -836,16 +836,12 @@ static irqreturn_t s3c24xx_serial_rx_chars(int irq, void *dev_id)
->         return s3c24xx_serial_rx_chars_pio(dev_id);
->  }
->
-> -static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
-> +static void s3c24xx_serial_tx_chars(struct s3c24xx_uart_port *ourport)
->  {
-> -       struct s3c24xx_uart_port *ourport = id;
->         struct uart_port *port = &ourport->port;
->         struct circ_buf *xmit = &port->state->xmit;
-> -       unsigned long flags;
->         int count, dma_count = 0;
->
-> -       spin_lock_irqsave(&port->lock, flags);
-> -
->         count = CIRC_CNT_TO_END(xmit->head, xmit->tail, UART_XMIT_SIZE);
->
->         if (ourport->dma && ourport->dma->tx_chan &&
-> @@ -862,7 +858,7 @@ static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
->                 wr_reg(port, S3C2410_UTXH, port->x_char);
->                 port->icount.tx++;
->                 port->x_char = 0;
-> -               goto out;
-> +               return;
->         }
->
->         /* if there isn't anything more to transmit, or the uart is now
-> @@ -871,7 +867,7 @@ static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
->
->         if (uart_circ_empty(xmit) || uart_tx_stopped(port)) {
->                 s3c24xx_serial_stop_tx(port);
-> -               goto out;
-> +               return;
->         }
->
->         /* try and drain the buffer... */
-> @@ -893,7 +889,7 @@ static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
->
->         if (!count && dma_count) {
->                 s3c24xx_serial_start_tx_dma(ourport, dma_count);
-> -               goto out;
-> +               return;
->         }
->
->         if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS) {
-> @@ -904,8 +900,18 @@ static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
->
->         if (uart_circ_empty(xmit))
->                 s3c24xx_serial_stop_tx(port);
-> +}
-> +
-> +static irqreturn_t s3c24xx_serial_tx_irq(int irq, void *id)
-> +{
-> +       struct s3c24xx_uart_port *ourport = id;
-> +       struct uart_port *port = &ourport->port;
-> +       unsigned long flags;
-> +
+>> -----Original Message-----
+>> From: Koenig, Christian <Christian.Koenig@amd.com>
+>> Sent: Friday, March 5, 2021 8:03 AM
+>> To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; linux-
+>> kernel@vger.kernel.org
+>> Cc: stable@vger.kernel.org; Das, Nirmoy <Nirmoy.Das@amd.com>; Deucher,
+>> Alexander <Alexander.Deucher@amd.com>; Sasha Levin
+>> <sashal@kernel.org>
+>> Subject: Re: [PATCH 5.11 079/104] drm/amdgpu: enable only one high prio
+>> compute queue
+>>
+>> Mhm, I'm not sure this one needs to be backported.
+>>
+>> Why did you pick it up Greg?
+> It was picked up by Sasha's fixes checker.
 
+Well the change who needs this isn't in any earlier kernel, isn't it?
 
-> +       spin_lock_irqsave(&port->lock, flags);
-> +
-> +       s3c24xx_serial_tx_chars(ourport);
->
-> -out:
->         spin_unlock_irqrestore(&port->lock, flags);
+Christian.
 
-Add a separate change that removes flags from the spin lock in the IRQ handler.
+>
+> Alex
+>
+>
+>> Thanks,
+>> Christian.
+>>
+>> Am 05.03.21 um 13:21 schrieb Greg Kroah-Hartman:
+>>> From: Nirmoy Das <nirmoy.das@amd.com>
+>>>
+>>> [ Upstream commit 8c0225d79273968a65e73a4204fba023ae02714d ]
+>>>
+>>> For high priority compute to work properly we need to enable wave
+>>> limiting on gfx pipe. Wave limiting is done through writing into
+>>> mmSPI_WCL_PIPE_PERCENT_GFX register. Enable only one high priority
+>>> compute queue to avoid race condition between multiple high priority
+>>> compute queues writing that register simultaneously.
+>>>
+>>> Signed-off-by: Nirmoy Das <nirmoy.das@amd.com>
+>>> Acked-by: Christian König <christian.koenig@amd.com>
+>>> Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+>>> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+>>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>>> ---
+>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c | 15 ++++++++-------
+>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.h |  2 +-
+>>>    drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c  |  6 ++----
+>>>    drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c   |  6 ++----
+>>>    drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c   |  7 ++-----
+>>>    5 files changed, 15 insertions(+), 21 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c
+>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c
+>>> index cd2c676a2797..8e0a6c62322e 100644
+>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c
+>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c
+>>> @@ -193,15 +193,16 @@ static bool
+>> amdgpu_gfx_is_multipipe_capable(struct amdgpu_device *adev)
+>>>    }
+>>>
+>>>    bool amdgpu_gfx_is_high_priority_compute_queue(struct
+>> amdgpu_device *adev,
+>>> -					       int pipe, int queue)
+>>> +					       struct amdgpu_ring *ring)
+>>>    {
+>>> -	bool multipipe_policy = amdgpu_gfx_is_multipipe_capable(adev);
+>>> -	int cond;
+>>> -	/* Policy: alternate between normal and high priority */
+>>> -	cond = multipipe_policy ? pipe : queue;
+>>> -
+>>> -	return ((cond % 2) != 0);
+>>> +	/* Policy: use 1st queue as high priority compute queue if we
+>>> +	 * have more than one compute queue.
+>>> +	 */
+>>> +	if (adev->gfx.num_compute_rings > 1 &&
+>>> +	    ring == &adev->gfx.compute_ring[0])
+>>> +		return true;
+>>>
+>>> +	return false;
+>>>    }
+>>>
+>>>    void amdgpu_gfx_compute_queue_acquire(struct amdgpu_device
+>> *adev)
+>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.h
+>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.h
+>>> index 6b5a8f4642cc..72dbcd2bc6a6 100644
+>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.h
+>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.h
+>>> @@ -380,7 +380,7 @@ void
+>> amdgpu_queue_mask_bit_to_mec_queue(struct amdgpu_device *adev, int
+>> bit,
+>>>    bool amdgpu_gfx_is_mec_queue_enabled(struct amdgpu_device *adev,
+>> int mec,
+>>>    				     int pipe, int queue);
+>>>    bool amdgpu_gfx_is_high_priority_compute_queue(struct
+>> amdgpu_device *adev,
+>>> -					       int pipe, int queue);
+>>> +					       struct amdgpu_ring *ring);
+>>>    int amdgpu_gfx_me_queue_to_bit(struct amdgpu_device *adev, int me,
+>>>    			       int pipe, int queue);
+>>>    void amdgpu_gfx_bit_to_me_queue(struct amdgpu_device *adev, int
+>> bit,
+>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+>>> b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+>>> index e7d6da05011f..3a291befcddc 100644
+>>> --- a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+>>> +++ b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+>>> @@ -4495,8 +4495,7 @@ static int gfx_v10_0_compute_ring_init(struct
+>> amdgpu_device *adev, int ring_id,
+>>>    	irq_type = AMDGPU_CP_IRQ_COMPUTE_MEC1_PIPE0_EOP
+>>>    		+ ((ring->me - 1) * adev->gfx.mec.num_pipe_per_mec)
+>>>    		+ ring->pipe;
+>>> -	hw_prio = amdgpu_gfx_is_high_priority_compute_queue(adev,
+>> ring->pipe,
+>>> -							    ring->queue) ?
+>>> +	hw_prio = amdgpu_gfx_is_high_priority_compute_queue(adev,
+>> ring) ?
+>>>    			AMDGPU_GFX_PIPE_PRIO_HIGH :
+>> AMDGPU_GFX_PIPE_PRIO_NORMAL;
+>>>    	/* type-2 packets are deprecated on MEC, use type-3 instead */
+>>>    	r = amdgpu_ring_init(adev, ring, 1024, @@ -6545,8 +6544,7 @@ static
+>>> void gfx_v10_0_compute_mqd_set_priority(struct amdgpu_ring *ring,
+>> struct
+>>>    	struct amdgpu_device *adev = ring->adev;
+>>>
+>>>    	if (ring->funcs->type == AMDGPU_RING_TYPE_COMPUTE) {
+>>> -		if (amdgpu_gfx_is_high_priority_compute_queue(adev,
+>> ring->pipe,
+>>> -							      ring->queue)) {
+>>> +		if (amdgpu_gfx_is_high_priority_compute_queue(adev,
+>> ring)) {
+>>>    			mqd->cp_hqd_pipe_priority =
+>> AMDGPU_GFX_PIPE_PRIO_HIGH;
+>>>    			mqd->cp_hqd_queue_priority =
+>>>
+>> 	AMDGPU_GFX_QUEUE_PRIORITY_MAXIMUM;
+>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c
+>>> b/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c
+>>> index 37639214cbbb..b0284c4659ba 100644
+>>> --- a/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c
+>>> +++ b/drivers/gpu/drm/amd/amdgpu/gfx_v8_0.c
+>>> @@ -1923,8 +1923,7 @@ static int gfx_v8_0_compute_ring_init(struct
+>> amdgpu_device *adev, int ring_id,
+>>>    		+ ((ring->me - 1) * adev->gfx.mec.num_pipe_per_mec)
+>>>    		+ ring->pipe;
+>>>
+>>> -	hw_prio = amdgpu_gfx_is_high_priority_compute_queue(adev,
+>> ring->pipe,
+>>> -							    ring->queue) ?
+>>> +	hw_prio = amdgpu_gfx_is_high_priority_compute_queue(adev,
+>> ring) ?
+>>>    			AMDGPU_GFX_PIPE_PRIO_HIGH :
+>> AMDGPU_RING_PRIO_DEFAULT;
+>>>    	/* type-2 packets are deprecated on MEC, use type-3 instead */
+>>>    	r = amdgpu_ring_init(adev, ring, 1024, @@ -4442,8 +4441,7 @@ static
+>>> void gfx_v8_0_mqd_set_priority(struct amdgpu_ring *ring, struct vi_mqd
+>> *m
+>>>    	struct amdgpu_device *adev = ring->adev;
+>>>
+>>>    	if (ring->funcs->type == AMDGPU_RING_TYPE_COMPUTE) {
+>>> -		if (amdgpu_gfx_is_high_priority_compute_queue(adev,
+>> ring->pipe,
+>>> -							      ring->queue)) {
+>>> +		if (amdgpu_gfx_is_high_priority_compute_queue(adev,
+>> ring)) {
+>>>    			mqd->cp_hqd_pipe_priority =
+>> AMDGPU_GFX_PIPE_PRIO_HIGH;
+>>>    			mqd->cp_hqd_queue_priority =
+>>>
+>> 	AMDGPU_GFX_QUEUE_PRIORITY_MAXIMUM;
+>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+>>> b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+>>> index 5f4805e4d04a..3e800193a604 100644
+>>> --- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+>>> +++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+>>> @@ -2228,8 +2228,7 @@ static int gfx_v9_0_compute_ring_init(struct
+>> amdgpu_device *adev, int ring_id,
+>>>    	irq_type = AMDGPU_CP_IRQ_COMPUTE_MEC1_PIPE0_EOP
+>>>    		+ ((ring->me - 1) * adev->gfx.mec.num_pipe_per_mec)
+>>>    		+ ring->pipe;
+>>> -	hw_prio = amdgpu_gfx_is_high_priority_compute_queue(adev,
+>> ring->pipe,
+>>> -							    ring->queue) ?
+>>> +	hw_prio = amdgpu_gfx_is_high_priority_compute_queue(adev,
+>> ring) ?
+>>>    			AMDGPU_GFX_PIPE_PRIO_HIGH :
+>> AMDGPU_GFX_PIPE_PRIO_NORMAL;
+>>>    	/* type-2 packets are deprecated on MEC, use type-3 instead */
+>>>    	return amdgpu_ring_init(adev, ring, 1024, @@ -3391,9 +3390,7 @@
+>>> static void gfx_v9_0_mqd_set_priority(struct amdgpu_ring *ring, struct
+>> v9_mqd *m
+>>>    	struct amdgpu_device *adev = ring->adev;
+>>>
+>>>    	if (ring->funcs->type == AMDGPU_RING_TYPE_COMPUTE) {
+>>> -		if (amdgpu_gfx_is_high_priority_compute_queue(adev,
+>>> -							      ring->pipe,
+>>> -							      ring->queue)) {
+>>> +		if (amdgpu_gfx_is_high_priority_compute_queue(adev,
+>> ring)) {
+>>>    			mqd->cp_hqd_pipe_priority =
+>> AMDGPU_GFX_PIPE_PRIO_HIGH;
+>>>    			mqd->cp_hqd_queue_priority =
+>>>
+>> 	AMDGPU_GFX_QUEUE_PRIORITY_MAXIMUM;
 
->         return IRQ_HANDLED;
->  }
-> @@ -919,11 +925,11 @@ static irqreturn_t s3c64xx_serial_handle_irq(int irq, void *id)
->         irqreturn_t ret = IRQ_HANDLED;
->
->         if (pend & S3C64XX_UINTM_RXD_MSK) {
-> -               ret = s3c24xx_serial_rx_chars(irq, id);
-> +               ret = s3c24xx_serial_rx_irq(irq, id);
->                 wr_regl(port, S3C64XX_UINTP, S3C64XX_UINTM_RXD_MSK);
->         }
->         if (pend & S3C64XX_UINTM_TXD_MSK) {
-> -               ret = s3c24xx_serial_tx_chars(irq, id);
-> +               ret = s3c24xx_serial_tx_irq(irq, id);
->                 wr_regl(port, S3C64XX_UINTP, S3C64XX_UINTM_TXD_MSK);
->         }
->         return ret;
-> @@ -1155,7 +1161,7 @@ static int s3c24xx_serial_startup(struct uart_port *port)
->
->         ourport->rx_enabled = 1;
->
-> -       ret = request_irq(ourport->rx_irq, s3c24xx_serial_rx_chars, 0,
-> +       ret = request_irq(ourport->rx_irq, s3c24xx_serial_rx_irq, 0,
->                           s3c24xx_serial_portname(port), ourport);
->
->         if (ret != 0) {
-> @@ -1169,7 +1175,7 @@ static int s3c24xx_serial_startup(struct uart_port *port)
->
->         ourport->tx_enabled = 1;
->
-> -       ret = request_irq(ourport->tx_irq, s3c24xx_serial_tx_chars, 0,
-> +       ret = request_irq(ourport->tx_irq, s3c24xx_serial_tx_irq, 0,
->                           s3c24xx_serial_portname(port), ourport);
->
->         if (ret) {
-> --
-> 2.30.0
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
