@@ -2,96 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD7F32E7BB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E0332E7C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbhCEMMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:12:52 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:45505 "EHLO ozlabs.org"
+        id S229650AbhCEMTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:19:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229493AbhCEMMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:12:25 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DsRSN3xc3z9sWL;
-        Fri,  5 Mar 2021 23:12:20 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1614946342;
-        bh=aHL61nbJ14YVMtmcKw3QkQlg65ehKSOR2fQhnK5ASNM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=RFYtcy26f5gmzrJqSk1tcWhWWPFLaSE81tlUXQAhECBh8eMXEYNMO5tZ9x4rlR8jh
-         aNvIJrxJ/KmdEYHZknj6TSuxKWmFcA5Ahn5HuXY6RKlHn0zLhKnT3RXI/3y38ia5MS
-         JkNgJS5vB2TLrVgU75ml8aRn1avbmPb42hmMFoIyONZ0zH2RQ66HoBu5hckN36yYSX
-         c6IsYOwVt0tKTVEy8CRxFy0qXSx2/aGRzvp/C0J5lSsB+Qj6mO71whKVsYAjDwlnEr
-         ADmQCjQyL7/fhfJQsTxKjOIZ/Fp8LwqKPrnZuuqyFhzKrTE5Anp2GVIzL4dN/VvP3R
-         QdNjEwMOMox4A==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3] mm: Generalize HUGETLB_PAGE_SIZE_VARIABLE
-In-Reply-To: <1614914928-22039-1-git-send-email-anshuman.khandual@arm.com>
-References: <1614914928-22039-1-git-send-email-anshuman.khandual@arm.com>
-Date:   Fri, 05 Mar 2021 23:12:17 +1100
-Message-ID: <87pn0dre8u.fsf@mpe.ellerman.id.au>
+        id S229616AbhCEMTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:19:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D733064F23;
+        Fri,  5 Mar 2021 12:19:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614946776;
+        bh=GBl51kueNYD0/cSM2pjdnOh+zc+HvLIDgj3UGRTVzyU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=ih2PqElWDEWswVfujhjf/JWrSgkIcOglXY+6CPjZfgHD73y6n98zeoAup6L1vi4SU
+         NJ6qkuaONdPcqbxRY8xOd3iubIBNlyMUY3jRDBa1klFTeOxX6m25AE5vSIwOKWbLxN
+         Ww9kgVqqLN98XkxxiUOsjiFjQP0itFUAq10CdID6fu/i58h2Bp20918aVoBNfAP2Y7
+         mhwNgkt+sPMA/ObYIfC0K9u9v8y1rQ4RbWwZl4YvCIr6En+693E2jmh185B/afMiXS
+         Vleac7IzFnV/BsyissTpTFVEWsteWRQOhRvRuo3HF0j9HGFQdRGl80+CYdPcCm5M5M
+         3FCNDi2WIuYiA==
+Date:   Fri, 5 Mar 2021 06:19:34 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Om Prakash Singh <omp@nvidia.com>
+Cc:     vidyas@nvidia.com, jingoohan1@gmail.com,
+        gustavo.pimentel@synopsys.com, lorenzo.pieralisi@arm.com,
+        amurray@thegoodpenguin.co.uk, bhelgaas@google.com, kishon@ti.com,
+        thierry.reding@gmail.com, Jisheng.Zhang@synaptics.com,
+        jonathanh@nvidia.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kthota@nvidia.com,
+        mmaddireddy@nvidia.com, oop.singh@gmail.com
+Subject: Re: [PATCH] PCI: tegra: Disable PTM capabilities for EP mode
+Message-ID: <20210305121934.GA1067436@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614931954-11741-1-git-send-email-omp@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Anshuman Khandual <anshuman.khandual@arm.com> writes:
-> HUGETLB_PAGE_SIZE_VARIABLE need not be defined for each individual
-> platform subscribing it. Instead just make it generic.
->
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: linux-ia64@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Suggested-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+On Fri, Mar 05, 2021 at 01:42:34PM +0530, Om Prakash Singh wrote:
+> PCIe EP compliance expect PTM capabilities (ROOT_CAPABLE, RES_CAPABLE,
+> CLK_GRAN) to be disabled.
+
+I guess this is just enforcing the PCIe spec requirements that only
+Root Ports, RCRBs, and Switches are allowed to set the PTM Responder
+Capable bit, and that the Local Clock Granularity is RsvdP if PTM Root
+Capable is zero?  (PCIe r5.0, sec 7.9.16.2)
+
+Should this be done more generally somewhere in the dwc code as
+opposed to in the tegra code?
+
+> Signed-off-by: Om Prakash Singh <omp@nvidia.com>
 > ---
-> This change was originally suggested in an earilier discussion. This
-> applies on v5.12-rc1 and has been build tested on all applicable
-> platforms i.e ia64 and powerpc.
->
-> https://patchwork.kernel.org/project/linux-mm/patch/1613024531-19040-3-git-send-email-anshuman.khandual@arm.com/
->
-> Changes in V3:
->
-> - Dropped the bool desciption that enabled user selection
-> - Dropped the dependency on HUGETLB_PAGE for HUGETLB_PAGE_SIZE_VARIABLE
->
-> Changes in V2:
->
-> https://patchwork.kernel.org/project/linux-mm/patch/1614661987-23881-1-git-send-email-anshuman.khandual@arm.com/
->
-> - Added a description for HUGETLB_PAGE_SIZE_VARIABLE
-> - Added HUGETLB_PAGE dependency while selecting HUGETLB_PAGE_SIZE_VARIABLE
->
-> Changes in V1:
->
-> https://patchwork.kernel.org/project/linux-mm/patch/1614577853-7452-1-git-send-email-anshuman.khandual@arm.com/
->
->  arch/ia64/Kconfig    | 6 +-----
->  arch/powerpc/Kconfig | 6 +-----
+>  drivers/pci/controller/dwc/pcie-tegra194.c | 17 ++++++++++++++++-
+>  include/uapi/linux/pci_regs.h              |  1 +
+>  2 files changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+> index 6fa216e..a588312 100644
+> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
+> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+> @@ -1639,7 +1639,7 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
+>  	struct dw_pcie *pci = &pcie->pci;
+>  	struct dw_pcie_ep *ep = &pci->ep;
+>  	struct device *dev = pcie->dev;
+> -	u32 val;
+> +	u32 val, ptm_cap_base = 0;
 
-LGTM.
+Unnecessary init.
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
-
-cheers
+>  	int ret;
+>  
+>  	if (pcie->ep_state == EP_STATE_ENABLED)
+> @@ -1760,6 +1760,21 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
+>  						      PCI_CAP_ID_EXP);
+>  	clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
+>  
+> +	/* Disable PTM root and responder capability */
+> +	ptm_cap_base = dw_pcie_find_ext_capability(&pcie->pci,
+> +						   PCI_EXT_CAP_ID_PTM);
+> +	if (ptm_cap_base) {
+> +		dw_pcie_dbi_ro_wr_en(pci);
+> +		val = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
+> +		val &= ~PCI_PTM_CAP_ROOT;
+> +		dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, val);
+> +
+> +		val = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
+> +		val &= ~(PCI_PTM_CAP_RES | PCI_PTM_GRANULARITY_MASK);
+> +		dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, val);
+> +		dw_pcie_dbi_ro_wr_dis(pci);
+> +	}
+> +
+>  	val = (ep->msi_mem_phys & MSIX_ADDR_MATCH_LOW_OFF_MASK);
+>  	val |= MSIX_ADDR_MATCH_LOW_OFF_EN;
+>  	dw_pcie_writel_dbi(pci, MSIX_ADDR_MATCH_LOW_OFF, val);
+> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+> index e709ae8..9dd6f8d 100644
+> --- a/include/uapi/linux/pci_regs.h
+> +++ b/include/uapi/linux/pci_regs.h
+> @@ -1050,6 +1050,7 @@
+>  /* Precision Time Measurement */
+>  #define PCI_PTM_CAP			0x04	    /* PTM Capability */
+>  #define  PCI_PTM_CAP_REQ		0x00000001  /* Requester capable */
+> +#define  PCI_PTM_CAP_RES		0x00000002  /* Responder capable */
+>  #define  PCI_PTM_CAP_ROOT		0x00000004  /* Root capable */
+>  #define  PCI_PTM_GRANULARITY_MASK	0x0000FF00  /* Clock granularity */
+>  #define PCI_PTM_CTRL			0x08	    /* PTM Control */
+> -- 
+> 2.7.4
+> 
