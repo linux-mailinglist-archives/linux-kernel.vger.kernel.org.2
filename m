@@ -2,96 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650E132DF0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 02:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E4832DF11
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 02:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbhCEBYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 20:24:10 -0500
-Received: from emcscan.emc.com.tw ([192.72.220.5]:24208 "EHLO
-        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhCEBYJ (ORCPT
+        id S229582AbhCEB0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 20:26:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229463AbhCEB0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 20:24:09 -0500
-X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
-   d="scan'208";a="39657530"
-Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
-  by emcscan.emc.com.tw with ESMTP; 05 Mar 2021 09:24:08 +0800
-Received: from 192.168.10.23
-        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(2828:0:AUTH_RELAY)
-        (envelope-from <jingle.wu@emc.com.tw>); Fri, 05 Mar 2021 09:24:05 +0800 (CST)
-Received: from 192.168.33.11
-        by webmail.emc.com.tw with Mail2000 ESMTP Server V7.00(2474:1:AUTH_RELAY)
-        (envelope-from <jingle.wu@emc.com.tw>); Fri, 05 Mar 2021 09:24:05 +0800 (CST)
-From:   "jingle" <jingle.wu@emc.com.tw>
-To:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>
-Cc:     "'linux-kernel'" <linux-kernel@vger.kernel.org>,
-        "'linux-input'" <linux-input@vger.kernel.org>,
-        "'phoenix'" <phoenix@emc.com.tw>,
-        "'dave.wang'" <dave.wang@emc.com.tw>,
-        "'josh.chen'" <josh.chen@emc.com.tw>
-References: <20210226073537.4926-1-jingle.wu@emc.com.tw> <YDx8M4Rhdi8hW4EO@google.com> <1614647097.9201.jingle.wu@emc.com.tw> <YEGBeWHRfL4gN9pX@google.com>
-In-Reply-To: <YEGBeWHRfL4gN9pX@google.com>
-Subject: RE: [PATCH] Input: elan_i2c - Reduce the resume time for new dev ices
-Date:   Fri, 5 Mar 2021 09:24:05 +0800
-Message-ID: <004f01d7115e$3ba005e0$b2e011a0$@emc.com.tw>
+        Thu, 4 Mar 2021 20:26:07 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE571C061756
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 17:26:05 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id r25so489242ljk.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 17:26:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gCdvi4EBYLylFbGen12vcA3G3U87RxCMkiKYpd8th7E=;
+        b=ooOhIrVcKvNt9mDlWlDCKRugZV2dg9/ICb43HokG0FTM7/lKfeOPEF2+v6vrkX6VWL
+         M5HVAXZQeiPo12Xwyh19iCfXz3eAB89UEOjY2xiya1fgt/vzz5K5yPFUiRutMtZ/fcHi
+         S3sleyA//OQSeK5CFhgttgwioQybCSynAElpe9HPbQmoUSgEzsO5NFBz6cUFb+Vl0OmG
+         8k/7NPc47wP+Rk/WB135gEyiwzwJ9kUO/rQnzTDKORaKPKTvXsrQBK/7Pmkl76MCxCEZ
+         ji0OY7WQXduluSdPW3SyybTl1zsagUDNsYWaQVQgMaoQ6v6r7DYNEKQ2wp6O/ROKIPBG
+         e48g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gCdvi4EBYLylFbGen12vcA3G3U87RxCMkiKYpd8th7E=;
+        b=DtE3VuxUbqlSSEwATazu3m2mmsyCw0KI22axbzE7wsL6OeOsU9BJb8ulCUuRl2WIcq
+         /D1VTS59YtD4pA++vf+Hj8AGTf+zbvJBrynTVLn54L8UJsPm0PsWtszHvxUwo6wK+Bfk
+         8ckWbUXREuf6yNX8SFpBSouqvsfJTkI2CdxNO6hQacNMedzRCtyVsDALOFMFieCWIJD5
+         DeCc8MYOJBOe6AdnQKjp/Au0Xr8gei03Cyg6/eklaBq/FP40DXrbuCYsBHt6AJTx3MqU
+         Gswlw5FA+ZCcCFlwZe3GbE7hkjCsGQeIFmM+9incyeyWwcWZniLDvQJ+wKzT9EIE3p7M
+         il8w==
+X-Gm-Message-State: AOAM531ekCj+CqV0Coxh6CKjJjJBdY+THwSU5IrzwwQHIbA3S6wF4g6L
+        odVAEMeb5PdsNd8wKrtzaUajFTCVJGKZWT/3zvJkq9cMvy0dYA==
+X-Google-Smtp-Source: ABdhPJykfaeNWejnWlzbrHaxTgVacfivKo9k4qwm7pW06pbwgySzC5z80mJa2mL9WstwKpyfXjB4tAs76jeQIwtJdjM=
+X-Received: by 2002:a19:5055:: with SMTP id z21mr3966267lfj.297.1614907563747;
+ Thu, 04 Mar 2021 17:26:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 14.0
-Thread-Index: AQGs01cKeSW+WSlGkCw6sJc3Mb/pawH5MxoQAdwxvXACK2QSBKqZDPmQ
-Content-Language: zh-tw
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcMDYwMTFcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy03OTJkN2ViZS03ZDUxLTExZWItOGUwZi1mMDc5NTk2OWU3NWVcYW1lLXRlc3RcNzkyZDdlYzAtN2Q1MS0xMWViLThlMGYtZjA3OTU5NjllNzVlYm9keS50eHQiIHN6PSIxNjgwIiB0PSIxMzI1OTM4MTA0NTM5MzU3NzQiIGg9ImlvQnd0Wnp3K3BFWTdYWDBiaTc1YkdJSVQycz0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
-x-dg-rorf: true
+References: <20210303183333.46543-1-masahiroy@kernel.org> <20210303183333.46543-3-masahiroy@kernel.org>
+In-Reply-To: <20210303183333.46543-3-masahiroy@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 4 Mar 2021 17:25:52 -0800
+Message-ID: <CAKwvOdmdQvwDN6Bg2Kom1Nm+HrNfCqOqnDLYTYs+5sRSEuZsJg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] kbuild: check the minimum assembler version in Kconfig
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jian Cai <jiancai@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Dmitry:
+On Wed, Mar 3, 2021 at 10:34 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Documentation/process/changes.rst defines the minimum assembler version
+> (binutils version), but we have never checked it in the build time.
+>
+> Kbuild never invokes 'as' directly because all assembly files in the
+> kernel tree are *.S, hence must be preprocessed. I do not expect
+> raw assembly source files (*.s) would be added to the kernel tree.
+>
+> Therefore, we always use $(CC) as the assembler driver, and commit
+> aa824e0c962b ("kbuild: remove AS variable") removed 'AS'. However,
+> we are still interested in the version of the assembler sitting behind.
+>
+> As usual, the --version option prints the version string.
+>
+>   $ as --version | head -n 1
+>   GNU assembler (GNU Binutils for Ubuntu) 2.35.1
+>
+> But, we do not have $(AS). So, we can add the -Wa prefix so that
+> $(CC) passes --version down to the backing assembler.
+>
+>   $ gcc -Wa,--version | head -n 1
+>   gcc: fatal error: no input files
+>   compilation terminated.
+>
+> OK, we need to input something to satisfy gcc.
+>
+>   $ gcc -Wa,--version -c -x assembler /dev/null -o /dev/null | head -n 1
+>   GNU assembler (GNU Binutils for Ubuntu) 2.35.1
+>
+> The combination of Clang and GNU assembler works in the same way:
+>
+>   $ clang -no-integrated-as -Wa,--version -c -x assembler /dev/null -o /dev/null | head -n 1
+>   GNU assembler (GNU Binutils for Ubuntu) 2.35.1
+>
+> Clang with the integrated assembler fails like this:
+>
+>   $ clang -integrated-as -Wa,--version -c -x assembler /dev/null -o /dev/null | head -n 1
+>   clang: error: unsupported argument '--version' to option 'Wa,'
 
-In this case (in the newer parts behavior regarding need to reset after
-powering them on), it is consistent with the original driver behavior with
-any new or old device
-(be called data->ops->initialize(client) : usleep(100) , etc.. , because
-this times "data->quirks" is equal 0 at probe state.) 
+Was this a feature request to "please implement -Wa,--version for clang?" :-P
+https://github.com/ClangBuiltLinux/linux/issues/1320
 
-THANKS
-JINGLE
+>
+> With all this in my mind, I implemented scripts/as-version.sh.
+>
+>   $ scripts/as-version.sh gcc
+>   GNU 23501
+>   $ scripts/as-version.sh clang -no-integrated-as
+>   GNU 23501
+>   $ scripts/as-version.sh clang -integrated-as
+>   LLVM 0
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  arch/Kconfig            |  3 +-
+>  init/Kconfig            | 12 +++++++
+>  scripts/Kconfig.include |  6 ++++
+>  scripts/as-version.sh   | 77 +++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 96 insertions(+), 2 deletions(-)
+>  create mode 100755 scripts/as-version.sh
+>
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 2af10ebe5ed0..d7214f4ae1f7 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -631,8 +631,7 @@ config ARCH_SUPPORTS_LTO_CLANG_THIN
+>  config HAS_LTO_CLANG
+>         def_bool y
+>         # Clang >= 11: https://github.com/ClangBuiltLinux/linux/issues/510
+> -       depends on CC_IS_CLANG && CLANG_VERSION >= 110000 && LD_IS_LLD
+> -       depends on $(success,test $(LLVM_IAS) -eq 1)
+> +       depends on CC_IS_CLANG && CLANG_VERSION >= 110000 && LD_IS_LLD && AS_IS_LLVM
+>         depends on $(success,$(NM) --help | head -n 1 | grep -qi llvm)
+>         depends on $(success,$(AR) --help | head -n 1 | grep -qi llvm)
+>         depends on ARCH_SUPPORTS_LTO_CLANG
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 22946fe5ded9..f76e5a44e4fe 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -41,6 +41,18 @@ config CLANG_VERSION
+>         default $(cc-version) if CC_IS_CLANG
+>         default 0
+>
+> +config AS_IS_GNU
+> +       def_bool $(success,test "$(as-name)" = GNU)
+> +
+> +config AS_IS_LLVM
+> +       def_bool $(success,test "$(as-name)" = LLVM)
+> +
+> +config AS_VERSION
+> +       int
+> +       # If it is integrated assembler, the version is the same as Clang's one.
+> +       default CLANG_VERSION if AS_IS_LLVM
+> +       default $(as-version)
+> +
+>  config LD_IS_BFD
+>         def_bool $(success,test "$(ld-name)" = BFD)
+>
+> diff --git a/scripts/Kconfig.include b/scripts/Kconfig.include
+> index 58fdb5308725..0496efd6e117 100644
+> --- a/scripts/Kconfig.include
+> +++ b/scripts/Kconfig.include
+> @@ -45,6 +45,12 @@ $(error-if,$(success,test -z "$(cc-info)"),Sorry$(comma) this compiler is not su
+>  cc-name := $(shell,set -- $(cc-info) && echo $1)
+>  cc-version := $(shell,set -- $(cc-info) && echo $2)
+>
+> +# Get the assembler name, version, and error out if it is not supported.
+> +as-info := $(shell,$(srctree)/scripts/as-version.sh $(CC) $(CLANG_FLAGS))
+> +$(error-if,$(success,test -z "$(as-info)"),Sorry$(comma) this assembler is not supported.)
+> +as-name := $(shell,set -- $(as-info) && echo $1)
+> +as-version := $(shell,set -- $(as-info) && echo $2)
+> +
+>  # Get the linker name, version, and error out if it is not supported.
+>  ld-info := $(shell,$(srctree)/scripts/ld-version.sh $(LD))
+>  $(error-if,$(success,test -z "$(ld-info)"),Sorry$(comma) this linker is not supported.)
+> diff --git a/scripts/as-version.sh b/scripts/as-version.sh
+> new file mode 100755
+> index 000000000000..205d8b9fc4d4
+> --- /dev/null
+> +++ b/scripts/as-version.sh
+> @@ -0,0 +1,77 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# Print the assembler name and its version in a 5 or 6-digit form.
+> +# Also, perform the minimum version check.
+> +# (If it is the integrated assembler, return 0 as the version, and
+> +# the version check is skipped.)
+> +
+> +set -e
+> +
+> +# Convert the version string x.y.z to a canonical 5 or 6-digit form.
+> +get_canonical_version()
+> +{
+> +       IFS=.
+> +       set -- $1
+> +
+> +       # If the 2nd or 3rd field is missing, fill it with a zero.
+> +       #
+> +       # The 4th field, if present, is ignored.
+> +       # This occurs in development snapshots as in 2.35.1.20201116
+> +       echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
+> +}
+> +
+> +orig_args="$@"
+> +
+> +# Get the first line of the --version output.
+> +IFS='
+> +'
+> +# Add 2>&1 to check both stdout and stderr.
+> +# If the backing assembler is binutils, we get the version string in stdout.
+> +# If it is clang's integrated assembler, we get the following error in stderr:
+> +#   clang: error: unsupported argument '--version' to option 'Wa,'
+> +# To avoid the error message affected by locale, set LC_MESSAGES=C just in case.
+> +set -- $(LC_MESSAGES=C "$@" -Wno-unused-command-line-argument -Wa,--version -c -x assembler /dev/null -o /dev/null 2>&1)
+> +line="$1"
+> +
+> +if [ "$line" = "clang: error: unsupported argument '--version' to option 'Wa,'" ]; then
 
------Original Message-----
-From: Dmitry Torokhov [mailto:dmitry.torokhov@gmail.com] 
-Sent: Friday, March 05, 2021 8:55 AM
-To: jingle.wu
-Cc: linux-kernel; linux-input; phoenix; dave.wang; josh.chen
-Subject: Re: [PATCH] Input: elan_i2c - Reduce the resume time for new dev
-ices
+Checking the precise error message is too brittle; what if it changes?
+Why not check the return code a la cc-option and friends?  Is checking
+the return code of a subshell an issue here?
 
-Hi Jingle,
+> +       # For the intergrated assembler, we do not check the version here.
 
-On Tue, Mar 02, 2021 at 09:04:57AM +0800, jingle.wu wrote:
-> HI Dmitry:
-> 
-> So data->ops->initialize(client) essentially performs reset of the 
-> controller (we may want to rename it even) and as far as I understand 
-> you would want to avoid resetting the controller on newer devices, 
-> right?
-> 
-> -> YES
-> 
-> My question is how behavior of older devices differ from the new ones 
-> (are they stay in "undefined" state at power up) and whether it is 
-> possible to determine if controller is in operating mode. For example, 
-> what would happen on older devices if we call elan_query_product() 
-> below without resetting the controller?
-> 
-> -> But there may be other problems, because ELAN can't test all the 
-> -> older devices , so use quirk to divide this part.
+s/intergrated/integrated/
 
-OK, but could you please tell me what exactly was changed in the newer parts
-behavior regarding need to reset after powering them on?
+> +       # It is the same as the clang version, and it has been already checked
+> +       # by scripts/cc-version.sh.
+> +       echo LLVM 0
+> +       exit 0
+> +fi
+> +
+> +# Split the line on spaces.
+> +IFS=' '
+> +set -- $line
+> +
+> +tool_version=$(dirname $0)/tool-version.sh
+> +
+> +if [ "$1" = GNU -a "$2" = assembler ]; then
+> +       shift $(($# - 1))
+> +       version=$1
+> +       min_version=$($tool_version binutils)
+> +       name=GNU
+> +else
+> +       echo "$orig_args: unknown assembler invoked" >&2
+> +       exit 1
+> +fi
+> +
+> +# Some distributions append a package release number, as in 2.34-4.fc32
+> +# Trim the hyphen and any characters that follow.
+> +version=${version%-*}
+> +
+> +cversion=$(get_canonical_version $version)
+> +min_cversion=$(get_canonical_version $min_version)
+> +
+> +if [ "$cversion" -lt "$min_cversion" ]; then
+> +       echo >&2 "***"
+> +       echo >&2 "*** Assembler is too old."
+> +       echo >&2 "***   Your $name assembler version:    $version"
+> +       echo >&2 "***   Minimum $name assembler version: $min_version"
+> +       echo >&2 "***"
+> +       exit 1
+> +fi
+> +
+> +echo $name $cversion
+> --
+> 2.27.0
+>
 
-Thanks.
 
---
-Dmitry
-
+-- 
+Thanks,
+~Nick Desaulniers
