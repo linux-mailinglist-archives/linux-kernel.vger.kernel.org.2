@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D7032EA82
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E05332E97E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233101AbhCEMi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:38:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51150 "EHLO mail.kernel.org"
+        id S232330AbhCEMdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:33:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232984AbhCEMiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:38:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F40165004;
-        Fri,  5 Mar 2021 12:38:03 +0000 (UTC)
+        id S231496AbhCEMc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:32:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0902665004;
+        Fri,  5 Mar 2021 12:32:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947884;
-        bh=Geub5W0qjDejt7n5V49PH7B06lWTQwWGnYyqByd3hrI=;
+        s=korg; t=1614947545;
+        bh=FOv0BkdzHo7D7naV05D1f11aF3sOdywnbWq1ZbmM3GQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QeS1Atm4ctU9JXxCRA3r6xFxTMJvh0OhRfXgwPhaP107P+QXuC7ok8b/2ET0QBb/A
-         TeqBSlcuYA+lGqnNVvGbHY5dILRobi6RdmHVTadwojp9ZpWcnbAhgcklsd00k5Aos0
-         xdvZDuyBTpnDBEtJ5ZrPMXtcTfonDfDMspfNwG6I=
+        b=DLp/eFVrRhUVi0CLhq3+eMpWAMw8ZIEfsdO9U8TSHCxfepfkH+rzE/zDv9iOcd9Y5
+         /C6PBPA3c431lHfXb9G3Fam4Q20NI/UnCoz369HrtZbcdlrGftcKpdZKsZQGcqD2Nk
+         vkJwsoISl8EPQGzKfzAiAavRz1brHjnsjNXb+X+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gopal Tiwari <gtiwari@redhat.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 29/52] Bluetooth: Fix null pointer dereference in amp_read_loc_assoc_final_data
+        stable@vger.kernel.org, Eckhart Mohr <e.mohr@tuxedocomputers.com>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 101/102] ALSA: hda/realtek: Add quirk for Intel NUC 10
 Date:   Fri,  5 Mar 2021 13:22:00 +0100
-Message-Id: <20210305120855.108407395@linuxfoundation.org>
+Message-Id: <20210305120908.249587892@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
-References: <20210305120853.659441428@linuxfoundation.org>
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+References: <20210305120903.276489876@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gopal Tiwari <gtiwari@redhat.com>
+From: Werner Sembach <wse@tuxedocomputers.com>
 
-[ Upstream commit e8bd76ede155fd54d8c41d045dda43cd3174d506 ]
+commit 73e7161eab5dee98114987239ec9c87fe8034ddb upstream.
 
-kernel panic trace looks like:
+This adds a new SND_PCI_QUIRK(...) and applies it to the Intel NUC 10
+devices. This fixes the issue of the devices not having audio input and
+output on the headset jack because the kernel does not recognize when
+something is plugged in.
 
- #5 [ffffb9e08698fc80] do_page_fault at ffffffffb666e0d7
- #6 [ffffb9e08698fcb0] page_fault at ffffffffb70010fe
-    [exception RIP: amp_read_loc_assoc_final_data+63]
-    RIP: ffffffffc06ab54f  RSP: ffffb9e08698fd68  RFLAGS: 00010246
-    RAX: 0000000000000000  RBX: ffff8c8845a5a000  RCX: 0000000000000004
-    RDX: 0000000000000000  RSI: ffff8c8b9153d000  RDI: ffff8c8845a5a000
-    RBP: ffffb9e08698fe40   R8: 00000000000330e0   R9: ffffffffc0675c94
-    R10: ffffb9e08698fe58  R11: 0000000000000001  R12: ffff8c8b9cbf6200
-    R13: 0000000000000000  R14: 0000000000000000  R15: ffff8c8b2026da0b
-    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
- #7 [ffffb9e08698fda8] hci_event_packet at ffffffffc0676904 [bluetooth]
- #8 [ffffb9e08698fe50] hci_rx_work at ffffffffc06629ac [bluetooth]
- #9 [ffffb9e08698fe98] process_one_work at ffffffffb66f95e7
+The new quirk was inspired by the quirk for the Intel NUC 8 devices, but
+it turned out that the NUC 10 uses another pin. This information was
+acquired by black box testing likely pins.
 
-hcon->amp_mgr seems NULL triggered kernel panic in following line inside
-function amp_read_loc_assoc_final_data
-
-        set_bit(READ_LOC_AMP_ASSOC_FINAL, &mgr->state);
-
-Fixed by checking NULL for mgr.
-
-Signed-off-by: Gopal Tiwari <gtiwari@redhat.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Co-developed-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210302180414.23194-1-wse@tuxedocomputers.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bluetooth/amp.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/pci/hda/patch_realtek.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/net/bluetooth/amp.c b/net/bluetooth/amp.c
-index 78bec8df8525..72ef967c5663 100644
---- a/net/bluetooth/amp.c
-+++ b/net/bluetooth/amp.c
-@@ -305,6 +305,9 @@ void amp_read_loc_assoc_final_data(struct hci_dev *hdev,
- 	struct hci_request req;
- 	int err;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6396,6 +6396,7 @@ enum {
+ 	ALC269_FIXUP_LEMOTE_A1802,
+ 	ALC269_FIXUP_LEMOTE_A190X,
+ 	ALC256_FIXUP_INTEL_NUC8_RUGGED,
++	ALC256_FIXUP_INTEL_NUC10,
+ 	ALC255_FIXUP_XIAOMI_HEADSET_MIC,
+ 	ALC274_FIXUP_HP_MIC,
+ 	ALC274_FIXUP_HP_HEADSET_MIC,
+@@ -7782,6 +7783,15 @@ static const struct hda_fixup alc269_fix
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MODE
+ 	},
++	[ALC256_FIXUP_INTEL_NUC10] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x19, 0x01a1913c }, /* use as headset mic, without its own jack detect */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MODE
++	},
+ 	[ALC255_FIXUP_XIAOMI_HEADSET_MIC] = {
+ 		.type = HDA_FIXUP_VERBS,
+ 		.v.verbs = (const struct hda_verb[]) {
+@@ -8223,6 +8233,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
+ 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
+ 	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
++	SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
  
-+	if (!mgr)
-+		return;
-+
- 	cp.phy_handle = hcon->handle;
- 	cp.len_so_far = cpu_to_le16(0);
- 	cp.max_len = cpu_to_le16(hdev->amp_assoc_size);
--- 
-2.30.1
-
+ #if 0
+ 	/* Below is a quirk table taken from the old code.
 
 
