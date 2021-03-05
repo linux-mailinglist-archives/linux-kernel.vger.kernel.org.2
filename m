@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B819332E8C2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 164B132E8C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232048AbhCEM2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:28:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36702 "EHLO mail.kernel.org"
+        id S232062AbhCEM2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:28:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231931AbhCEM2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:28:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E239D65035;
-        Fri,  5 Mar 2021 12:28:06 +0000 (UTC)
+        id S231958AbhCEM2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:28:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC0365029;
+        Fri,  5 Mar 2021 12:28:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947287;
-        bh=Xgy4NCA67+GfBymP3+F3xB7Abwlcvf9yCQhokQ4A9Lw=;
+        s=korg; t=1614947290;
+        bh=H80drgz2QjWFLzCaXPaW80pTjIGTtPm5BOLLnJQx5gs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tNef2fT3hRlLJDqahq1/RUCWZ9l80NXeUcgq78ji508TX4c6EppzlyhBNz+NctwOd
-         TlbZW5X+JZUxHrtVjqgJqdHGyS067CPexJOBWhhB217tw1yXc/D6sEyTUfwofniJRz
-         nNNGcl6K4+5lByEh7nXOhzqtGcoEIntwKCmlA/lk=
+        b=OKKSiRI2ngB04VRQSih3nihzwKsxu6NDEd5zoH2r4k1yKBhDlJ3N5PUcS+KxREyz0
+         E3kPLFui6NFgjzuEiFc++xGaGFJDwHiGY7mN4xqPu8ScMWN+Ba8yKuOYVcK84QnLpr
+         VrSAKyGTNJElMeMt1NF28+Fi/P0K9hcSqHkku0Cg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Doug Horn <doughorn@google.com>
-Subject: [PATCH 5.10 004/102] drm/virtio: use kvmalloc for large allocations
-Date:   Fri,  5 Mar 2021 13:20:23 +0100
-Message-Id: <20210305120903.495591839@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Fangrui Song <maskray@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: [PATCH 5.10 005/102] x86/build: Treat R_386_PLT32 relocation as R_386_PC32
+Date:   Fri,  5 Mar 2021 13:20:24 +0100
+Message-Id: <20210305120903.544895650@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
 References: <20210305120903.276489876@linuxfoundation.org>
@@ -41,38 +43,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
+From: Fangrui Song <maskray@google.com>
 
-commit ea86f3defd55f141a44146e66cbf8ffb683d60da upstream.
+commit bb73d07148c405c293e576b40af37737faf23a6a upstream.
 
-We observed that some of virtio_gpu_object_shmem_init() allocations
-can be rather costly - order 6 - which can be difficult to fulfill
-under memory pressure conditions. Switch to kvmalloc_array() in
-virtio_gpu_object_shmem_init() and let the kernel vmalloc the entries
-array.
+This is similar to commit
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-Link: http://patchwork.freedesktop.org/patch/msgid/20201105014744.1662226-1-senozhatsky@chromium.org
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-Signed-off-by: Doug Horn <doughorn@google.com>
+  b21ebf2fb4cd ("x86: Treat R_X86_64_PLT32 as R_X86_64_PC32")
+
+but for i386. As far as the kernel is concerned, R_386_PLT32 can be
+treated the same as R_386_PC32.
+
+R_386_PLT32/R_X86_64_PLT32 are PC-relative relocation types which
+can only be used by branches. If the referenced symbol is defined
+externally, a PLT will be used.
+
+R_386_PC32/R_X86_64_PC32 are PC-relative relocation types which can be
+used by address taking operations and branches. If the referenced symbol
+is defined externally, a copy relocation/canonical PLT entry will be
+created in the executable.
+
+On x86-64, there is no PIC vs non-PIC PLT distinction and an
+R_X86_64_PLT32 relocation is produced for both `call/jmp foo` and
+`call/jmp foo@PLT` with newer (2018) GNU as/LLVM integrated assembler.
+This avoids canonical PLT entries (st_shndx=0, st_value!=0).
+
+On i386, there are 2 types of PLTs, PIC and non-PIC. Currently,
+the GCC/GNU as convention is to use R_386_PC32 for non-PIC PLT and
+R_386_PLT32 for PIC PLT. Copy relocations/canonical PLT entries
+are possible ABI issues but GCC/GNU as will likely keep the status
+quo because (1) the ABI is legacy (2) the change will drop a GNU
+ld diagnostic for non-default visibility ifunc in shared objects.
+
+clang-12 -fno-pic (since [1]) can emit R_386_PLT32 for compiler
+generated function declarations, because preventing canonical PLT
+entries is weighed over the rare ifunc diagnostic.
+
+Further info for the more interested:
+
+  https://github.com/ClangBuiltLinux/linux/issues/1210
+  https://sourceware.org/bugzilla/show_bug.cgi?id=27169
+  https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6 [1]
+
+ [ bp: Massage commit message. ]
+
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Fangrui Song <maskray@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Link: https://lkml.kernel.org/r/20210127205600.1227437-1-maskray@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/virtio/virtgpu_object.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/x86/kernel/module.c |    1 +
+ arch/x86/tools/relocs.c  |   12 ++++++++----
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/virtio/virtgpu_object.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_object.c
-@@ -172,8 +172,9 @@ static int virtio_gpu_object_shmem_init(
- 		*nents = shmem->pages->orig_nents;
- 	}
+--- a/arch/x86/kernel/module.c
++++ b/arch/x86/kernel/module.c
+@@ -114,6 +114,7 @@ int apply_relocate(Elf32_Shdr *sechdrs,
+ 			*location += sym->st_value;
+ 			break;
+ 		case R_386_PC32:
++		case R_386_PLT32:
+ 			/* Add the value, subtract its position */
+ 			*location += sym->st_value - (uint32_t)location;
+ 			break;
+--- a/arch/x86/tools/relocs.c
++++ b/arch/x86/tools/relocs.c
+@@ -867,9 +867,11 @@ static int do_reloc32(struct section *se
+ 	case R_386_PC32:
+ 	case R_386_PC16:
+ 	case R_386_PC8:
++	case R_386_PLT32:
+ 		/*
+-		 * NONE can be ignored and PC relative relocations don't
+-		 * need to be adjusted.
++		 * NONE can be ignored and PC relative relocations don't need
++		 * to be adjusted. Because sym must be defined, R_386_PLT32 can
++		 * be treated the same way as R_386_PC32.
+ 		 */
+ 		break;
  
--	*ents = kmalloc_array(*nents, sizeof(struct virtio_gpu_mem_entry),
--			      GFP_KERNEL);
-+	*ents = kvmalloc_array(*nents,
-+			       sizeof(struct virtio_gpu_mem_entry),
-+			       GFP_KERNEL);
- 	if (!(*ents)) {
- 		DRM_ERROR("failed to allocate ent list\n");
- 		return -ENOMEM;
+@@ -910,9 +912,11 @@ static int do_reloc_real(struct section
+ 	case R_386_PC32:
+ 	case R_386_PC16:
+ 	case R_386_PC8:
++	case R_386_PLT32:
+ 		/*
+-		 * NONE can be ignored and PC relative relocations don't
+-		 * need to be adjusted.
++		 * NONE can be ignored and PC relative relocations don't need
++		 * to be adjusted. Because sym must be defined, R_386_PLT32 can
++		 * be treated the same way as R_386_PC32.
+ 		 */
+ 		break;
+ 
 
 
