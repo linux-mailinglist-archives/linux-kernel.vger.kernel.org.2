@@ -2,166 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E526432E121
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 06:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C14EE32E123
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 06:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbhCEFGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 00:06:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhCEFGd (ORCPT
+        id S229494AbhCEFLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 00:11:25 -0500
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:50106 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229446AbhCEFLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 00:06:33 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9EDC061574;
-        Thu,  4 Mar 2021 21:06:33 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id u4so1199211ljh.6;
-        Thu, 04 Mar 2021 21:06:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=dvv4d17v0wrR1rzGcjfj08i43oOgXa86g/87JIiyQeg=;
-        b=btxQoDBYRV7tvJzdxbrtQcgMR4/xu2Aqn0/vBIdEy3yu1meaK/ykwSVYpK4VwqAdmG
-         Vc3ASsZK9zc2zhrQ4WA04RZVkH1cHtDx2H2NAijG/NTcRA7tVr0d8dXpET7VoDsrllkg
-         MAPCITTmzh+2+ddicVgFxLSJGetlQiiFg2xzRLCtIdmqZyUNMTZznBcpIU5a70cHxhxr
-         aavy0oc4WjLI7TRlbX5p2jiHhb6u1fJXatgoQ2SaxUv9wHaUCe38hK3gGroM0kWXnKNz
-         AqWdhwrCuO6m2eZfIW8vvyva6n1d/w9dG/jaN1u7M6mbaO3gpIb31nJKE7RynutdVLN8
-         LVnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=dvv4d17v0wrR1rzGcjfj08i43oOgXa86g/87JIiyQeg=;
-        b=dXQN+lPfjY3ynwym9FHlQP/Rp7EYS4g52D3uBQJx8wI84jA04L24BWp/ZioiVQwj0b
-         XWmxPyUOyevHYxrtyBkZxCZp0stBOHorY3+ul31nABLRm83l1ymS/Az3nsOHRaYIxjM9
-         nJum8CAiyVViPMWEZW/vamA1mlwergv5P7jC9fZPjqrO6qwKOjuHF4hJ8yMIl8o4Dgb/
-         MDr+YOaWjkvW9IgRg/gXmW8IluGf1jxFLk9Rp8/SEDwUEABOanMszFLInHH0XETkhD60
-         Y8HURuiJy1HAz2WRNE3qcNV0gM25nnqJDUvIFtLGEAR6SNZT7t4NDJVi1HnMgUSJpozW
-         8gZA==
-X-Gm-Message-State: AOAM533spUG7JjcIHvb3IR4gu3nv2VR4h1EFOeNQw1suh9fWHbGE/fJ+
-        t0AErsibF7V9RViUspL29IZofNo5Yo1rDR/FYEhXICI63N9IEA==
-X-Google-Smtp-Source: ABdhPJzvTu7kL4B0kk10FHafsBuYKwVu5Fp0vJ2qEm1apRzvHewEQ+fcpanoLvD+nEBlTx0ji/a0ycM3uOOJC/t3lMI=
-X-Received: by 2002:a2e:9195:: with SMTP id f21mr4095339ljg.340.1614920791278;
- Thu, 04 Mar 2021 21:06:31 -0800 (PST)
+        Fri, 5 Mar 2021 00:11:23 -0500
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125536IM018992;
+        Thu, 4 Mar 2021 21:11:21 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=MhRYpAqN37kztJ4LW/ZOnXAODaQTKYQMouHaujVcppk=;
+ b=X90biaOBKbwLqPx4XQGy+j0FUiGpv42gRl4+TGmcmwxj9l3o+Lhvg61V3ee7GsKvLBvX
+ YY164IXQTzWPpltopvW8gtGGQQ/SsP54a0UwPtn7E+rrdS+p2nf8HUYttbgH1osZJUbc
+ y+OC2WrN92VmBAeYxtfU4G1W0VgSQIIBp8VTE8U+zPMI9Fp5OFBW0YYE9T8BtFmVpLUj
+ q1B0AF9T0g//v+ZYA52CCCB0qGWxQMoU/EeBJUg0G9dJVbq0bJPGSMdbPx9ciBbCwzLw
+ Ag9pec6gwtUbjw1UAXhNK6qwetRI9GQqjggJzGDphzb3z+3v0yy7G+ZRypNYkyC5C8Va 7w== 
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2173.outbound.protection.outlook.com [104.47.73.173])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 372bvqpvqn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Mar 2021 21:11:21 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mXDPxNBRuN7TP96RZFEnSBxs+UF6XzJSgREno5lSPeaGTG64Aw87f00mu598BMMG5gDNrxibApCNV2QjGBNw99fe8+t6NrMpWOTmFc7sfiGN0Ys6XXRNxERTanXcMAZTXbk9mpzl2pW+iYIJ6gSya+qhw7zEdwKrZ0TeaLf0YTtdOujiYLQsrX3kqL533sN3TpwZILWI0o40GuSm5psyaJANIQAHwe5rInN73ASj3NwXiN+1zPFYOfpl0OWmDSikZebkRzhQJAdlyj4zvXihPCx7M9q51vop1sF+E8I04jbbxhA1p2XL2wqAvhEwr+DhPHuIuz23X9fpUQzt085uTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MhRYpAqN37kztJ4LW/ZOnXAODaQTKYQMouHaujVcppk=;
+ b=mygLvw8gp50tY7OahzvQ0p8v2fdjaPkvQux9gH+I+kp/Xi5eIZL1K1PQjVbV858Ajr765+7uz5kBxJ8/C/ZsSlpDebVBrePd3kIWjAtvQjdY2GxlbuAMHv6NAVcc1CzEUxz++k69Ax7MSR1D17nKLpieUTttdYP6rsRaioe6VzDXGNZQpr+Hejc7jVNVc4W1rlCTpJcHEgS/wcWf8ocEbd2b8knBFcZAi85ASNJqijlLEANleeLlnbJihmW4xqv8qt8vfKu0zNxcvKpNwV2t0pm33aZCUSNA9o6ZgzoS4PmnrQpg9dhC46RHGcAx0vgJN4tkCFXsjNSUHyvnLUZzqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 158.140.1.148) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=cadence.com; dmarc=pass (p=none sp=none pct=100) action=none
+ header.from=cadence.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MhRYpAqN37kztJ4LW/ZOnXAODaQTKYQMouHaujVcppk=;
+ b=J6F6IL/QNH7BIpXgtjBkDSOQBrfWN8aXJ2g9YO1PRs08YCePFoq2Yp+jPQxAKUWJ9wUrrDethzUpi2sK4BFaqfjEFYnxdK8EccNyb7Q60qzPIOBWbH1YzetoRl1oYJRNTgLh7H8u/zIBbhpiorwktFzYddaknVkwfjXG2pB/lic=
+Received: from DM5PR20CA0010.namprd20.prod.outlook.com (2603:10b6:3:93::20) by
+ BL0PR07MB8113.namprd07.prod.outlook.com (2603:10b6:208:1c7::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Fri, 5 Mar
+ 2021 05:11:19 +0000
+Received: from DM6NAM12FT025.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:3:93:cafe::f0) by DM5PR20CA0010.outlook.office365.com
+ (2603:10b6:3:93::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
+ Transport; Fri, 5 Mar 2021 05:11:19 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.148)
+ smtp.mailfrom=cadence.com; linuxfoundation.org; dkim=none (message not
+ signed) header.d=none;linuxfoundation.org; dmarc=pass action=none
+ header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 158.140.1.148 as permitted sender) receiver=protection.outlook.com;
+ client-ip=158.140.1.148; helo=sjmaillnx2.cadence.com;
+Received: from sjmaillnx2.cadence.com (158.140.1.148) by
+ DM6NAM12FT025.mail.protection.outlook.com (10.13.179.217) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3912.9 via Frontend Transport; Fri, 5 Mar 2021 05:11:18 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by sjmaillnx2.cadence.com (8.14.4/8.14.4) with ESMTP id 1255BGhp031009
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Mar 2021 21:11:17 -0800
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3; Fri, 5 Mar 2021 06:11:16 +0100
+Received: from gli-login.cadence.com (10.187.128.100) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Fri, 5 Mar 2021 06:11:15 +0100
+Received: from gli-login.cadence.com (localhost [127.0.0.1])
+        by gli-login.cadence.com (8.14.4/8.14.4) with ESMTP id 1255BFtF032405;
+        Fri, 5 Mar 2021 06:11:15 +0100
+Received: (from pawell@localhost)
+        by gli-login.cadence.com (8.14.4/8.14.4/Submit) id 1255BFck032404;
+        Fri, 5 Mar 2021 06:11:15 +0100
+From:   Pawel Laszczak <pawell@cadence.com>
+To:     <peter.chen@kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kurahul@cadence.com>,
+        <sparmar@cadence.com>, Pawel Laszczak <pawell@cadence.com>
+Subject: [PATCH] usb: cdnsp: Fixes incorrect value in ISOC TRB
+Date:   Fri, 5 Mar 2021 06:10:59 +0100
+Message-ID: <20210305051059.31623-1-pawell@gli-login.cadence.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-From:   Palash Oswal <oswalpalash@gmail.com>
-Date:   Fri, 5 Mar 2021 10:36:19 +0530
-Message-ID: <CAGyP=7eHKPdST4sVEKQZ9fZEhoT5MOMH2FZjzXVb6_SzSwGaAg@mail.gmail.com>
-Subject: BUG: soft lockup in corrupted
-To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        axboe@kernel.dk, Hillf Danton <hdanton@sina.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a7ae45be-99e6-4073-209a-08d8df951c4a
+X-MS-TrafficTypeDiagnostic: BL0PR07MB8113:
+X-Microsoft-Antispam-PRVS: <BL0PR07MB811375A8C45155C3D51C7953DD969@BL0PR07MB8113.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:469;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TlbYI0Y04B4HH+hftRGZE1KAgvC1YDgDEoVMvOD4ztBr1NKs3JGTQFQVE1uxyOtLXHrdXOZVzzxTZ0HQcgPEyOUnuUxH52Tfi9obLkRWL9nvI0mA1vsl4UveePSh65GNhhEVZf2FXhwdV1AfORJ2YOHrcZ27rIuM91HBZIzQVL3721vKWWStWX2ng4Yn0sZHOk8h3CImM+rOTqdiP45yE2VWi5HzKJlDaXXyEL9CCiJTadGW5kstHapRI8lrIfilTGEeKIXGFNpWVPGQ0wiDq0fCPKgOAz2glJI+m7KxBS+6/O70CcoAGgYrPh3LFxMsy/pVOsXMxxgyFF0OazKD8yE+Cdwl4YusS63J8J8JXnKUEfnUOQ8w3zhqG9MB25kemtvGA6NaQYUugd6fvw8puIE9Rm/a7WO7Jc5p/KCbq1+ECKLPC6izEJ/pKjCNiEF3bZ6bxHJTggLScUrNewwLqDaDpI7kNFijsOeJKyXRE1FROg+sgWsWcKGnin/tb3cw2irzpuDic5blAm8++DqUPABK2yemCmWxG7YKMm/h6ls1SP9YrcTiwiClJ0iKx5SNnTjj/MXRr/0R6TWWuMRwUfBytb7qIc1RWLqxjkj1VMq2j1BjegRzLy953demElW+RbR6X+yTLTNNcnvNj3b3U7DVEwWH07rWbIJrZ5mcoB2CLYxYPwF69joUqKacHJhg
+X-Forefront-Antispam-Report: CIP:158.140.1.148;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx2.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(376002)(346002)(36092001)(36840700001)(46966006)(86362001)(316002)(42186006)(1076003)(107886003)(8676002)(426003)(336012)(83380400001)(356005)(5660300002)(7636003)(186003)(36906005)(36860700001)(82740400003)(70206006)(4326008)(70586007)(6666004)(54906003)(8936002)(82310400003)(26005)(2906002)(47076005)(6916009)(478600001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2021 05:11:18.9587
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7ae45be-99e6-4073-209a-08d8df951c4a
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.148];Helo=[sjmaillnx2.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT025.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR07MB8113
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-05_03:2021-03-03,2021-03-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0
+ lowpriorityscore=0 impostorscore=0 mlxscore=0 suspectscore=0
+ mlxlogscore=690 bulkscore=0 adultscore=1 phishscore=0 malwarescore=0
+ spamscore=0 clxscore=1015 priorityscore=1501 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103050023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Pawel Laszczak <pawell@cadence.com>
 
-I was running syzkaller and I found the following issue :
-Head Commit : 27e543cca13fab05689b2d0d61d200a83cfb00b6 ( v5.11.2 )
-Git Tree : stable
+The value "start_cycle ? 0 : 1" in assignment caused
+implicit truncation whole value to 1 byte.
+To fix the issue, an explicit casting has been added.
 
-Console logs:
-watchdog: BUG: soft lockup - CPU#0 stuck for 23s! [syz-executor497:423]
-Modules linked in:
-CPU: 0 PID: 423 Comm: syz-executor497 Not tainted 5.11.2 #13
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
-RIP: 0010:__io_cqring_events fs/io_uring.c:1732 [inline]
-RIP: 0010:io_cqring_events fs/io_uring.c:2399 [inline]
-RIP: 0010:io_should_wake fs/io_uring.c:7190 [inline]
-RIP: 0010:io_cqring_wait fs/io_uring.c:7283 [inline]
-RIP: 0010:__do_sys_io_uring_enter+0x6b9/0x1040 fs/io_uring.c:9389
-Code: 00 00 e8 ea 9a cd ff 31 ff 44 89 e6 e8 30 9d cd ff 45 85 e4 0f
-85 5c 08 00 00 e8 d2 9a cd ff 48 8b 5d c0 48 8b 83 c0 00 00 00 <8b> 88
-80 00 00 00 8b 83 00 02 00 00 29 c8 8b 4d c8 89 c7 89 85 78
-watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [syz-executor497:416]
-RSP: 0018:ffffc900001efe58 EFLAGS: 00000293
-Modules linked in:
+Fixes: commit 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence USBSSP DRD Driver")
+Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+---
+ drivers/usb/cdns3/cdnsp-ring.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/usb/cdns3/cdnsp-ring.c b/drivers/usb/cdns3/cdnsp-ring.c
+index f9170d177a89..d35bc4490216 100644
+--- a/drivers/usb/cdns3/cdnsp-ring.c
++++ b/drivers/usb/cdns3/cdnsp-ring.c
+@@ -2197,7 +2197,7 @@ static int cdnsp_queue_isoc_tx(struct cdnsp_device *pdev,
+ 	 * inverted in the first TDs isoc TRB.
+ 	 */
+ 	field = TRB_TYPE(TRB_ISOC) | TRB_TLBPC(last_burst_pkt) |
+-		start_cycle ? 0 : 1 | TRB_SIA | TRB_TBC(burst_count);
++		(u32)(start_cycle ? 0 : 1) | TRB_SIA | TRB_TBC(burst_count);
+ 
+ 	/* Fill the rest of the TRB fields, and remaining normal TRBs. */
+ 	for (i = 0; i < trbs_per_td; i++) {
+-- 
+2.25.1
 
-CPU: 1 PID: 416 Comm: syz-executor497 Not tainted 5.11.2 #13
-RAX: ffff888006d3e000 RBX: ffff8880059cb400 RCX: 0000000000000000
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
-RDX: ffff888006da98c0 RSI: ffffffff81543cde RDI: 0000000000000003
-RIP: 0010:__sanitizer_cov_trace_const_cmp8+0x78/0x90 kernel/kcov.c:293
-RBP: ffffc900001eff18 R08: ffff8880059cb680 R09: 0000000000002cc0
-Code: 0c fd 28 00 00 00 48 39 ce 72 1f 48 83 c2 01 4c 89 64 08 e8 48
-c7 44 08 e0 07 00 00 00 48 89 5c 08 f0 4c 89 74 f8 20 48 89 10 <5b> 41
-5c 41 5d 41 5e 5d c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
-RSP: 0018:ffffc900009f7e08 EFLAGS: 00000246
-R13: ffff888005a68700 R14: ffff8880059cb400 R15: ffff8880059cb6a0
-
-FS:  00000000015ed380(0000) GS:ffff88803ec00000(0000) knlGS:0000000000000000
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-RDX: 0000000000000000 RSI: ffff888007e98000 RDI: 0000000000000003
-CR2: 00000000004bc0f0 CR3: 0000000007cd6003 CR4: 0000000000370ef0
-RBP: ffffc900009f7e28 R08: ffff888006f39a80 R09: 0000000000002cc0
-Call Trace:
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff888007e98000 R14: ffffffff8152e286 R15: ffff888006f39aa0
-FS:  00000000015ed380(0000) GS:ffff88803ed00000(0000) knlGS:0000000000000000
- __se_sys_io_uring_enter fs/io_uring.c:9306 [inline]
- __x64_sys_io_uring_enter+0x2f/0x40 fs/io_uring.c:9306
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- do_syscall_64+0x38/0x90 arch/x86/entry/common.c:46
-CR2: 00000000004bc0f0 CR3: 0000000006c12006 CR4: 0000000000370ee0
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-Call Trace:
-RIP: 0033:0x44508d
- signal_pending include/linux/sched/signal.h:369 [inline]
- io_run_task_work_sig+0x66/0x110 fs/io_uring.c:7213
-Code: 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
- io_cqring_wait fs/io_uring.c:7276 [inline]
- __do_sys_io_uring_enter+0x67b/0x1040 fs/io_uring.c:9389
-RSP: 002b:00007ffff7178208 EFLAGS: 00000246
- ORIG_RAX: 00000000000001aa
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000044508d
- __se_sys_io_uring_enter fs/io_uring.c:9306 [inline]
- __x64_sys_io_uring_enter+0x2f/0x40 fs/io_uring.c:9306
-RDX: 0000000000000001 RSI: 0000000000000001 RDI: 0000000000000003
- do_syscall_64+0x38/0x90 arch/x86/entry/common.c:46
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-R10: 0000000000000001 R11: 0000000000000246 R12: 00000000004040c0
-RIP: 0033:0x44508d
-R13: 0000000000000000 R14: 00007ffff7178240 R15: 00007ffff7178230
-Code: 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffff7178208 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000044508d
-RDX: 0000000000000001 RSI: 0000000000000001 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000246 R12: 00000000004040c0
-R13: 0000000000000000 R14: 00007ffff7178240 R15: 00007ffff7178230
-
-
-Syzkaller Reproducer :
-# {Threaded:false Collide:false Repeat:true RepeatTimes:0 Procs:8
-Slowdown:1 Sandbox: Fault:false FaultCall:-1 FaultNth:0 Leak:false
-NetInjection:false NetDevices:false NetReset:false Cgroups:false
-BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false USB:false
-VhciInjection:false Wifi:false IEEE802154:false Sysctl:false
-UseTmpDir:false HandleSegv:false Repro:false Trace:false}
-r0 = syz_io_uring_setup(0x1, &(0x7f0000000080)={0x0, 0x0, 0x0, 0x0,
-0x0, 0x0, 0x0}, &(0x7f00000a0000)=nil, &(0x7f00000b0000)=nil,
-&(0x7f0000000100)=<r1=>0x0, &(0x7f0000000140)=<r2=>0x0)
-syz_io_uring_submit(r1, r2,
-&(0x7f00000001c0)=@IORING_OP_OPENAT2={0x1c, 0x0, 0x0,
-0xffffffffffffff9c, 0x0, 0x0, 0x0, 0x0, 0x12345}, 0x0)
-syz_memcpy_off$IO_URING_METADATA_GENERIC(r1, 0x10c, &(0x7f0000000000), 0x0, 0x4)
-io_uring_enter(r0, 0x1, 0x1, 0x1, 0x0, 0x0)
-
-
-C Reproducer:
-https://gist.github.com/oswalpalash/238a9956cee11f61449fc9a1f33da8c5
-gcc -pthread repro.c -o repro
-./repro
-
-Kernel Build Config:
-https://gist.github.com/oswalpalash/18e847d6e24e3452bc811526fd6f76bb
