@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83A832E9EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EFB32EA32
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhCEMfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:35:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46310 "EHLO mail.kernel.org"
+        id S231295AbhCEMhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:37:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232307AbhCEMed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:34:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E09E065004;
-        Fri,  5 Mar 2021 12:34:31 +0000 (UTC)
+        id S232874AbhCEMgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:36:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18D6064FF0;
+        Fri,  5 Mar 2021 12:36:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947672;
-        bh=Scuye+uoxLKv2DqRj/lc/fzbmMBI6/dPqc5wKKBwEII=;
+        s=korg; t=1614947791;
+        bh=dHBiady+nPQsgDZOwSCSLTuR0o3FMSr4Ja4MvMhNnqU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OOaUBZfQ1kx6PZGRu2zw4vwhbQatrOrP/4V94zr5LDABmsQDFl+m6zECge6LQbDPx
-         Z6vLH5+qWyMzAJASUf7Pc9Dp3UQVJPPVV0jSZ0PTmMxu2WA6OJfxicCJdoGeui8QGN
-         Bw5vaat3DiBL3e5MPeM0EofT4ixYBtwxwsSWZKx0=
+        b=m8PRxErPiKvJLZtLDe8yFt+bO+fVSLnV1sN3AnUYBNBOQbhjIAkuIv6Rytnp2msHs
+         UGJFNMpynRWzVkOK7eR8j+K6IipKA0wCdWfGp4CRPRt4qXZeT+z2Z3O429qREPibRr
+         WUZoG/YR+1o2WWYB6AIrabZPXdSimZyHGnVosR9k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 42/72] crypto: tcrypt - avoid signed overflow in byte count
+        stable@vger.kernel.org, Yumei Huang <yuhuang@redhat.com>,
+        Brian Foster <bfoster@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: [PATCH 4.19 13/52] xfs: Fix assert failure in xfs_setattr_size()
 Date:   Fri,  5 Mar 2021 13:21:44 +0100
-Message-Id: <20210305120859.404856531@linuxfoundation.org>
+Message-Id: <20210305120854.317695150@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
-References: <20210305120857.341630346@linuxfoundation.org>
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+References: <20210305120853.659441428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,86 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Yumei Huang <yuhuang@redhat.com>
 
-[ Upstream commit 303fd3e1c771077e32e96e5788817f025f0067e2 ]
+commit 88a9e03beef22cc5fabea344f54b9a0dfe63de08 upstream.
 
-The signed long type used for printing the number of bytes processed in
-tcrypt benchmarks limits the range to -/+ 2 GiB, which is not sufficient
-to cover the performance of common accelerated ciphers such as AES-NI
-when benchmarked with sec=1. So switch to u64 instead.
+An assert failure is triggered by syzkaller test due to
+ATTR_KILL_PRIV is not cleared before xfs_setattr_size.
+As ATTR_KILL_PRIV is not checked/used by xfs_setattr_size,
+just remove it from the assert.
 
-While at it, fix up a missing printk->pr_cont conversion in the AEAD
-benchmark.
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Yumei Huang <yuhuang@redhat.com>
+Reviewed-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- crypto/tcrypt.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ fs/xfs/xfs_iops.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-index 83ad0b1fab30..0cece1f883eb 100644
---- a/crypto/tcrypt.c
-+++ b/crypto/tcrypt.c
-@@ -198,8 +198,8 @@ static int test_mb_aead_jiffies(struct test_mb_aead_data *data, int enc,
- 			goto out;
- 	}
+--- a/fs/xfs/xfs_iops.c
++++ b/fs/xfs/xfs_iops.c
+@@ -849,7 +849,7 @@ xfs_setattr_size(
+ 	ASSERT(xfs_isilocked(ip, XFS_MMAPLOCK_EXCL));
+ 	ASSERT(S_ISREG(inode->i_mode));
+ 	ASSERT((iattr->ia_valid & (ATTR_UID|ATTR_GID|ATTR_ATIME|ATTR_ATIME_SET|
+-		ATTR_MTIME_SET|ATTR_KILL_PRIV|ATTR_TIMES_SET)) == 0);
++		ATTR_MTIME_SET|ATTR_TIMES_SET)) == 0);
  
--	pr_cont("%d operations in %d seconds (%ld bytes)\n",
--		bcount * num_mb, secs, (long)bcount * blen * num_mb);
-+	pr_cont("%d operations in %d seconds (%llu bytes)\n",
-+		bcount * num_mb, secs, (u64)bcount * blen * num_mb);
- 
- out:
- 	kfree(rc);
-@@ -468,8 +468,8 @@ static int test_aead_jiffies(struct aead_request *req, int enc,
- 			return ret;
- 	}
- 
--	printk("%d operations in %d seconds (%ld bytes)\n",
--	       bcount, secs, (long)bcount * blen);
-+	pr_cont("%d operations in %d seconds (%llu bytes)\n",
-+	        bcount, secs, (u64)bcount * blen);
- 	return 0;
- }
- 
-@@ -759,8 +759,8 @@ static int test_mb_ahash_jiffies(struct test_mb_ahash_data *data, int blen,
- 			goto out;
- 	}
- 
--	pr_cont("%d operations in %d seconds (%ld bytes)\n",
--		bcount * num_mb, secs, (long)bcount * blen * num_mb);
-+	pr_cont("%d operations in %d seconds (%llu bytes)\n",
-+		bcount * num_mb, secs, (u64)bcount * blen * num_mb);
- 
- out:
- 	kfree(rc);
-@@ -1196,8 +1196,8 @@ static int test_mb_acipher_jiffies(struct test_mb_skcipher_data *data, int enc,
- 			goto out;
- 	}
- 
--	pr_cont("%d operations in %d seconds (%ld bytes)\n",
--		bcount * num_mb, secs, (long)bcount * blen * num_mb);
-+	pr_cont("%d operations in %d seconds (%llu bytes)\n",
-+		bcount * num_mb, secs, (u64)bcount * blen * num_mb);
- 
- out:
- 	kfree(rc);
-@@ -1434,8 +1434,8 @@ static int test_acipher_jiffies(struct skcipher_request *req, int enc,
- 			return ret;
- 	}
- 
--	pr_cont("%d operations in %d seconds (%ld bytes)\n",
--		bcount, secs, (long)bcount * blen);
-+	pr_cont("%d operations in %d seconds (%llu bytes)\n",
-+		bcount, secs, (u64)bcount * blen);
- 	return 0;
- }
- 
--- 
-2.30.1
-
+ 	oldsize = inode->i_size;
+ 	newsize = iattr->ia_size;
 
 
