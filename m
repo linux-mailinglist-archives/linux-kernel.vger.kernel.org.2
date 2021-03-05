@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BFE32ECC9
+	by mail.lfdr.de (Postfix) with ESMTP id EA6C932ECCC
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 15:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhCEOLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 09:11:25 -0500
-Received: from mail-vs1-f48.google.com ([209.85.217.48]:33645 "EHLO
-        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbhCEOK4 (ORCPT
+        id S231201AbhCEOL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 09:11:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230508AbhCEOLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 09:10:56 -0500
-Received: by mail-vs1-f48.google.com with SMTP id b189so1030265vsd.0;
-        Fri, 05 Mar 2021 06:10:56 -0800 (PST)
+        Fri, 5 Mar 2021 09:11:18 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC836C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 06:11:18 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id f10so2092454ilq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 06:11:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=l6IgK3ij/YjTNmmcEwyfRQ1upb35j4vL73l5Wo3XyTo=;
+        b=air1o57k6XY5FgslA8r0maE5x9dm7J/LFHlDA1WEJRvWIoZqZJ3fWHOJQcW0Eo8WEU
+         5/HqZ84JS+9Jg1VC8cpLVcwC/VLhBFYDK26CJKbmcDHyNoATnAGJYWGY64MWDMB0oLh0
+         C+/wgD2MUZTqtJsr0dPKwWmVoIkEknbTGHQg3elNISKUZ61nlxNZZL5bFVI8Wyopkw/w
+         U5AAD+G4kLtLnKHd9fxnCNh8ZoS4Bo4y9Hz8LoUsjj0wpzo8b5U+V5iSwQwsX1Ty1tEn
+         sSB5WQOhjPvlEBGHL+68Yuj2UTTwUFFSW483k92G/Zl1oTVHrtz/oau5JEeTiz+lJU+a
+         wmEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OmgaCqzYZtdNpJ3SZEq/xbrWUa3xhPvp+tDi/EiuDcU=;
-        b=XPQe7WMYhKkiLTpkkWqi2nU8OI5GdrtB+lCG4jTsmhxXwU0rBmTlvxy1fddOLhTM0j
-         w3Fz/X3PRFsQjO+3Ujwo4+PG9ZHJVliDGodZwAmqXr4wkT9843kAj2tVKbkKZowhPInL
-         W5M0eHcyA9+dIcyzu5i4pO7PaYFYgpJhzDgcZr7AAh8Al/vTRBGYSf1eEEJle41PJfch
-         tCq8Pq8eIDwLVKxzjMYzL0rAT5BvJRg9kenLVRwAI0J57LHp4GeXNq3FUMHCCHkxWr48
-         Io8F8+MBsUW4nDM2OymeKHDEdwgBpoUgpkZrzjPcQGxDDk82mzr/GQmq8M6rBE18r/iE
-         lyNA==
-X-Gm-Message-State: AOAM5309dn5XBDsoxJbkKlAQgLVYo5wEoDNrornz3+t+teexvtjvYBm2
-        zZ9TeKuG5DkS0dNGHGbUX7LjfQcTPjbVvah0gW7Rwat0fCw=
-X-Google-Smtp-Source: ABdhPJzhouCjSuRHOWoYAl/WPpvPMyCVObRioJ++SqBI/oXwTZQvjf8/PMpTFbhnqDJYoqBS7MjNJHsDgxc6xVUV68E=
-X-Received: by 2002:a67:2245:: with SMTP id i66mr7055441vsi.18.1614953453536;
- Fri, 05 Mar 2021 06:10:53 -0800 (PST)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=l6IgK3ij/YjTNmmcEwyfRQ1upb35j4vL73l5Wo3XyTo=;
+        b=HS4R2BSfPmurp7E3vlHgNnDSOWwyZV04iZzrrkyRcfuvSseF1/+3NuUOz+DRqSjsuF
+         mPGupINMHmTkPbrqx3+DCrDRmpLV4VH5QbA9XWJxkE6vjIoNaT2ympnsR+q626SFA3oA
+         Ji/Vs8UHalHISDoH47j+Ir1Lz8Fd/DzeqCfQC+h3cFmwsUpNtOPuWNqwBaqx5YpHIgAt
+         zOwd+57EK5UPMpPWmFd1nrGyuWidNEAZGxm0DmJKbP6LZqWxTmAgCznLkaOtrZsjvQ0i
+         1iK76gb5f17vgfijNZDaZ0MIMgxSlxANjhkca//X7fj6ZtEJrlOTfOxduvf88h7akfNb
+         N6Kg==
+X-Gm-Message-State: AOAM530ayHfj/Jd56yFb8Xb48z+DZRSj1+2MTO9tuNLQoM5ioyUbUXMN
+        XX7NFpJ93yJsJMkpkRkgD4YNOQ==
+X-Google-Smtp-Source: ABdhPJx1jHAyAAVkrSYkKfQUk8fYUr60wo0yZNlweVSgSYTVLm0o+aREwH8rNuFbNkSYkmy7E8ApRQ==
+X-Received: by 2002:a92:b003:: with SMTP id x3mr9569044ilh.15.1614953478153;
+        Fri, 05 Mar 2021 06:11:18 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id u14sm1363894ilv.0.2021.03.05.06.11.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 06:11:17 -0800 (PST)
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: Re: BUG: soft lockup in corrupted
+To:     Palash Oswal <oswalpalash@gmail.com>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hillf Danton <hdanton@sina.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        syzkaller-bugs@googlegroups.com
+References: <CAGyP=7eHKPdST4sVEKQZ9fZEhoT5MOMH2FZjzXVb6_SzSwGaAg@mail.gmail.com>
+Message-ID: <dfa85777-758e-96b9-4859-e22e92a1d5a7@kernel.dk>
+Date:   Fri, 5 Mar 2021 07:11:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210304165300.295952-1-kieran.bingham+renesas@ideasonboard.com>
-In-Reply-To: <20210304165300.295952-1-kieran.bingham+renesas@ideasonboard.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 5 Mar 2021 15:10:42 +0100
-Message-ID: <CAMuHMdWRe0HVzQD9U_8+35_HTaK28Ayb+9tsb8q5+3VNpYniHg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: renesas: falcon: Add GP LEDs
-To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAGyP=7eHKPdST4sVEKQZ9fZEhoT5MOMH2FZjzXVb6_SzSwGaAg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
-
-On Thu, Mar 4, 2021 at 5:53 PM Kieran Bingham
-<kieran.bingham+renesas@ideasonboard.com> wrote:
-> Three general purpose LEDs are provided on the Falcon CPU board.
+On Mar 4, 2021, at 10:06 PM, Palash Oswal <oswalpalash@gmail.com> wrote:
 >
-> Connect GP_LED1, GP_LED2, and GP_LED3 to the gpio-leds frameworks.
-> These LEDs are arranged in a block of four LEDs on the board itself, but
-> the fourth LED is as yet unidentified.
+> ﻿Hello,
 >
-> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> I was running syzkaller and I found the following issue :
+> Head Commit : 27e543cca13fab05689b2d0d61d200a83cfb00b6 ( v5.11.2 )
+> Git Tree : stable
+>
+> Console logs:
+> watchdog: BUG: soft lockup - CPU#0 stuck for 23s! [syz-executor497:423]
+> Modules linked in:
+> CPU: 0 PID: 423 Comm: syz-executor497 Not tainted 5.11.2 #13
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
+> RIP: 0010:__io_cqring_events fs/io_uring.c:1732 [inline]
+> RIP: 0010:io_cqring_events fs/io_uring.c:2399 [inline]
+> RIP: 0010:io_should_wake fs/io_uring.c:7190 [inline]
+> RIP: 0010:io_cqring_wait fs/io_uring.c:7283 [inline]
+> RIP: 0010:__do_sys_io_uring_enter+0x6b9/0x1040 fs/io_uring.c:9389
+> Code: 00 00 e8 ea 9a cd ff 31 ff 44 89 e6 e8 30 9d cd ff 45 85 e4 0f
+> 85 5c 08 00 00 e8 d2 9a cd ff 48 8b 5d c0 48 8b 83 c0 00 00 00 <8b> 88
+> 80 00 00 00 8b 83 00 02 00 00 29 c8 8b 4d c8 89 c7 89 85 78
+> watchdog: BUG: soft lockup - CPU#1 stuck for 23s! [syz-executor497:416]
+> RSP: 0018:ffffc900001efe58 EFLAGS: 00000293
 
-Thanks for your patch!
+https://git.kernel.dk/cgit/linux-block/commit/?h=io_uring-5.12&id=701b8b187525e3b90cbcab4dbc073f42dbcc4059
 
-> --- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-> +++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
+— 
+Jens Axboe
 
-I believe the LEDs are on the CPU board, so they belong in
-r8a779a0-falcon-cpu.dtsi instead?
-
-> @@ -20,6 +20,20 @@ aliases {
->         chosen {
->                 stdout-path = "serial0:115200n8";
->         };
-> +
-> +       leds {
-> +               compatible = "gpio-leds";
-> +
-> +               led1 {
-> +                       gpios = <&gpio4 18 GPIO_ACTIVE_HIGH>;
-
-Any need for other properties from
-Documentation/devicetree/bindings/leds/common.yaml, like
-color = <LED_COLOR_ID_GREEN>?
-
-> +               };
-> +               led2 {
-> +                       gpios = <&gpio4 19 GPIO_ACTIVE_HIGH>;
-> +               };
-> +               led3 {
-> +                       gpios = <&gpio4 20 GPIO_ACTIVE_HIGH>;
-> +               };
-> +       };
->  };
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
