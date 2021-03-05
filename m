@@ -2,205 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3ADE32F58A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:51:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 109EA32F58B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhCEVvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:51:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhCEVu6 (ORCPT
+        id S229898AbhCEVvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 16:51:22 -0500
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:42065 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229601AbhCEVvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 16:50:58 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF9DC06175F;
-        Fri,  5 Mar 2021 13:50:57 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id b1so6094437lfb.7;
-        Fri, 05 Mar 2021 13:50:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/NFlc8/2M/Pmm6oLgkw8VYwZK7FquOGJoZ7lGyC1UMY=;
-        b=jj1EUJo2oT1asageCMml/fbLjInZ6rXRjKa69vXHraNGp+4PE1zJZ96QqLGqCZmyj/
-         yPiMjHd6TzxPdbjEAsczkOTJczq4mSRiRynKjYEy+TYzy1xgdE1zIJXy2/9vYGoApqn5
-         bABzq6Qw62DWUeozayarTw2nwoXVqF+ECzSjEGxQ19hVouAYlfvOm/mbatC11WTgZPid
-         waG+oHukmK/adJCtFcV14MeWk+LC+4tXhZ4BBSLYNESQvNqjzWH9WeCqwnmcVVP8a0RM
-         NWVcLJ9IOf6o0T8NJBUZpD6Ent+/d52Mgq0FGPsjY6bVTWmIDm8xJGDVbXGQdYhHETiS
-         kBaw==
+        Fri, 5 Mar 2021 16:51:11 -0500
+Received: by mail-oi1-f178.google.com with SMTP id l64so4102002oig.9;
+        Fri, 05 Mar 2021 13:51:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/NFlc8/2M/Pmm6oLgkw8VYwZK7FquOGJoZ7lGyC1UMY=;
-        b=qnpu+6eRnruy+H9FTO0tWHb3tfF2/zbLIKzcOA/q+57l08dFKh4GZabeQ6Z359R6lz
-         jXgmly8e3V2b4GfB9vbvrQiBchyxb83cS3oajlH/O+jkgAb7bilJuCtdgaizjzAfKYun
-         wJAMFsqCUFVkd6nR5s7Mw5jG8alIqeKrXTn/YYMmCV6RD/+UYD0dnHQwaY4RmwumdUWP
-         8wao+J4ypapg7ZvgPmcDGnJ5BRDEaMgDgVBurHyBttq4oP9nxCt32e1swtMgaaETBAX5
-         wwmtplClIgunHnAZVpzHdymzyTvCimlcrr5Cqp6RzDNyxPQ+vk9Ittdr6koqEBQVCNpI
-         ws3A==
-X-Gm-Message-State: AOAM533TKP+b7UwSblcAFNvcFf7EYOoMiUE6sixj50nckj3gAVWpvyeW
-        0ddRPxwOwyTdInTRs1f2GvnNuAn5hyg=
-X-Google-Smtp-Source: ABdhPJx2okS7vGuY+JHDmmtBWWo/D8Ff1S26GQi4ZheX0au4RVJZJ/kTLvS/GDIdoKRhRfmsXDYUUw==
-X-Received: by 2002:ac2:4151:: with SMTP id c17mr6475369lfi.416.1614981056391;
-        Fri, 05 Mar 2021 13:50:56 -0800 (PST)
-Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id y10sm464796lfl.240.2021.03.05.13.50.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 13:50:55 -0800 (PST)
-Subject: Re: [PATCH 3/3] phy: bcm-ns-usb2: support updated single CRU reg DT
- binding
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivek Unune <npcomplete13@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        linux-phy@lists.infradead.org
-References: <20210226114501.31086-1-zajec5@gmail.com>
- <20210226114501.31086-3-zajec5@gmail.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <068064d6-23f6-e02e-9bc9-5b5970a0744e@gmail.com>
-Date:   Fri, 5 Mar 2021 22:50:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=100p8Xn1S8lQaA67XMytTR1G/xqh893KhvDbFefC3fY=;
+        b=S1eSdb7o/BOjeHGrEwrSZl1H8xzxLyiXaW19pnSeSnMvVhPcIEg8+6i07Z2Zv1gZe3
+         D+ne9N3PJqo41a8KHa2KYHjiY1lBPgGE4uWFEjaveHACh5rDXB87ZJYZVwH4GxVHV/Fn
+         fqArgls9nUfDHKNMez0HVcKlrg0F2izLLLrZL3R16jagna/1rb7Ar2vPBFiTTBHylf23
+         0o7fAGX2IQd/fqlwoj+Adn+heVvhABYO0UXv1Y2QgQyK6Rnb0wiKz2EmTlOuwyxKhmFN
+         jmbmu/vd1CZxvLJKd6Vz72MBaD32zKRPi4EWyZvKSR/1kF6I7LmM/irSdX5OYdmMyPQj
+         FgNw==
+X-Gm-Message-State: AOAM530tktwoNkV/tRnCGmBVx6ihXgPSjUPX+P59mkzCbqJlXtSCycIt
+        9Nmhoyy7y20h9hMciBVo2w==
+X-Google-Smtp-Source: ABdhPJxDMb5VFAsGsbj45mslaiDPjYFAeCxvMBiHvuBEQ8OMB/cfUCoEcbiWcTAYSdtp93c0qu0mJA==
+X-Received: by 2002:a05:6808:4:: with SMTP id u4mr8755306oic.28.1614981070758;
+        Fri, 05 Mar 2021 13:51:10 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p67sm797339oih.21.2021.03.05.13.51.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 13:51:10 -0800 (PST)
+Received: (nullmailer pid 707923 invoked by uid 1000);
+        Fri, 05 Mar 2021 21:51:09 -0000
+Date:   Fri, 5 Mar 2021 15:51:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: media: max9286: Describe gpio-hog
+Message-ID: <20210305215109.GA703883@robh.at.kernel.org>
+References: <20210215172447.2026514-1-jacopo+renesas@jmondi.org>
+ <20210215172447.2026514-2-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-In-Reply-To: <20210226114501.31086-3-zajec5@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215172447.2026514-2-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc linux-phy@ again (after fixing recipients ML limit)
+On Mon, Feb 15, 2021 at 06:24:44PM +0100, Jacopo Mondi wrote:
+> The MAX9286 GMSL deserializer features gpio controller capabilities,
+> as it provides 2 GPIO lines.
+> 
+> As establishing a regulator that uses one of the GPIO lines and
+> enabling/disabling it at run-time in the max9286 won't work due to
+> a circular dependency on the gpio-controller/regulator creation, allow
+> the usage of a gpio-hog for that purpose.
+> 
+> The usage of the gpio-hog is required in designs where the MAX9286
+> GPIO lines control the remote cameras power.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  .../devicetree/bindings/media/i2c/maxim,max9286.yaml     | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> index ee16102fdfe7..9d5ecfd2397c 100644
+> --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> @@ -50,6 +50,15 @@ properties:
+>    '#gpio-cells':
+>      const: 2
+>  
+> +  camvdd_en:
 
-On 26.02.2021 12:45, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> Updated DT binding maps a single CRU register that is directly used for
-> the PHY control. Accessing common CRU reg is handled using syscon &
-> regmap.
-> 
-> The old binding has been deprecated and stays as a fallback method.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
-> It's a reworked version of my abonded 2019 patch:
-> [PATCH V2 2/2] phy: bcm-ns-usb2: support updated DT binding with the CRU syscon
-> https://lore.kernel.org/patchwork/patch/1029863/
-> ---
->   drivers/phy/broadcom/phy-bcm-ns-usb2.c | 52 +++++++++++++++++++++-----
->   1 file changed, 43 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/phy/broadcom/phy-bcm-ns-usb2.c b/drivers/phy/broadcom/phy-bcm-ns-usb2.c
-> index 4b015b8a71c3..98d32729a45d 100644
-> --- a/drivers/phy/broadcom/phy-bcm-ns-usb2.c
-> +++ b/drivers/phy/broadcom/phy-bcm-ns-usb2.c
-> @@ -9,17 +9,23 @@
->   #include <linux/clk.h>
->   #include <linux/delay.h>
->   #include <linux/err.h>
-> +#include <linux/mfd/syscon.h>
->   #include <linux/module.h>
->   #include <linux/of_address.h>
->   #include <linux/of_platform.h>
->   #include <linux/phy/phy.h>
->   #include <linux/platform_device.h>
-> +#include <linux/regmap.h>
->   #include <linux/slab.h>
->   
->   struct bcm_ns_usb2 {
->   	struct device *dev;
->   	struct clk *ref_clk;
->   	struct phy *phy;
-> +	struct regmap *clkset;
-> +	void __iomem *base;
+I don't think we want to document all the GPIO hogs, but rather have a 
+pattern we can check. IOW, having node name pattern we match on. I think 
+the core schemas has this now.
+
+> +    type: object
+> +    properties:
+> +      gpio-hog: true
+> +      gpios: true
+> +      output-low: true
+> +      line-name:
+> +        const: "CAMVDD_EN"
 > +
-> +	/* Deprecated binding */
->   	void __iomem *dmu;
->   };
->   
-> @@ -27,7 +33,6 @@ static int bcm_ns_usb2_phy_init(struct phy *phy)
->   {
->   	struct bcm_ns_usb2 *usb2 = phy_get_drvdata(phy);
->   	struct device *dev = usb2->dev;
-> -	void __iomem *dmu = usb2->dmu;
->   	u32 ref_clk_rate, usb2ctl, usb_pll_ndiv, usb_pll_pdiv;
->   	int err = 0;
->   
-> @@ -44,7 +49,10 @@ static int bcm_ns_usb2_phy_init(struct phy *phy)
->   		goto err_clk_off;
->   	}
->   
-> -	usb2ctl = readl(dmu + BCMA_DMU_CRU_USB2_CONTROL);
-> +	if (usb2->base)
-> +		usb2ctl = readl(usb2->base);
-> +	else
-> +		usb2ctl = readl(usb2->dmu + BCMA_DMU_CRU_USB2_CONTROL);
->   
->   	if (usb2ctl & BCMA_DMU_CRU_USB2_CONTROL_USB_PLL_PDIV_MASK) {
->   		usb_pll_pdiv = usb2ctl;
-> @@ -58,15 +66,24 @@ static int bcm_ns_usb2_phy_init(struct phy *phy)
->   	usb_pll_ndiv = (1920000000 * usb_pll_pdiv) / ref_clk_rate;
->   
->   	/* Unlock DMU PLL settings with some magic value */
-> -	writel(0x0000ea68, dmu + BCMA_DMU_CRU_CLKSET_KEY);
-> +	if (usb2->clkset)
-> +		regmap_write(usb2->clkset, 0, 0x0000ea68);
-> +	else
-> +		writel(0x0000ea68, usb2->dmu + BCMA_DMU_CRU_CLKSET_KEY);
->   
->   	/* Write USB 2.0 PLL control setting */
->   	usb2ctl &= ~BCMA_DMU_CRU_USB2_CONTROL_USB_PLL_NDIV_MASK;
->   	usb2ctl |= usb_pll_ndiv << BCMA_DMU_CRU_USB2_CONTROL_USB_PLL_NDIV_SHIFT;
-> -	writel(usb2ctl, dmu + BCMA_DMU_CRU_USB2_CONTROL);
-> +	if (usb2->base)
-> +		writel(usb2ctl, usb2->base);
-> +	else
-> +		writel(usb2ctl, usb2->dmu + BCMA_DMU_CRU_USB2_CONTROL);
->   
->   	/* Lock DMU PLL settings */
-> -	writel(0x00000000, dmu + BCMA_DMU_CRU_CLKSET_KEY);
-> +	if (usb2->clkset)
-> +		regmap_write(usb2->clkset, 0, 0x00000000);
-> +	else
-> +		writel(0x00000000, usb2->dmu + BCMA_DMU_CRU_CLKSET_KEY);
->   
->   err_clk_off:
->   	clk_disable_unprepare(usb2->ref_clk);
-> @@ -90,10 +107,27 @@ static int bcm_ns_usb2_probe(struct platform_device *pdev)
->   		return -ENOMEM;
->   	usb2->dev = dev;
->   
-> -	usb2->dmu = devm_platform_ioremap_resource_byname(pdev, "dmu");
-> -	if (IS_ERR(usb2->dmu)) {
-> -		dev_err(dev, "Failed to map DMU regs\n");
-> -		return PTR_ERR(usb2->dmu);
-> +	if (of_find_property(dev->of_node, "brcm,syscon-clkset", NULL)) {
-> +		usb2->base = devm_platform_ioremap_resource(pdev, 0);
-> +		if (IS_ERR(usb2->base)) {
-> +			dev_err(dev, "Failed to map control reg\n");
-> +			return PTR_ERR(usb2->base);
-> +		}
-> +
-> +		usb2->clkset = syscon_regmap_lookup_by_phandle(dev->of_node,
-> +							       "brcm,syscon-clkset");
-> +		if (IS_ERR(usb2->clkset)) {
-> +			dev_err(dev, "Failed to lookup clkset regmap\n");
-> +			return PTR_ERR(usb2->clkset);
-> +		}
-> +	} else {
-> +		usb2->dmu = devm_platform_ioremap_resource_byname(pdev, "dmu");
-> +		if (IS_ERR(usb2->dmu)) {
-> +			dev_err(dev, "Failed to map DMU regs\n");
-> +			return PTR_ERR(usb2->dmu);
-> +		}
-> +
-> +		dev_warn(dev, "using deprecated DT binding\n");
->   	}
->   
->   	usb2->ref_clk = devm_clk_get(dev, "phy-ref-clk");
+>    maxim,reverse-channel-microvolt:
+>      minimum: 30000
+>      maximum: 200000
+> -- 
+> 2.30.0
 > 
