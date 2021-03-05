@@ -2,109 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A3532E366
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B9132E370
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:13:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbhCEIJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:09:49 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2646 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhCEIJs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:09:48 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6041e74c0003>; Fri, 05 Mar 2021 00:09:48 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 5 Mar
- 2021 08:09:39 +0000
-Received: from manikanta-pc.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 5 Mar 2021 08:09:34 +0000
-From:   Om Prakash Singh <omp@nvidia.com>
-To:     <vidyas@nvidia.com>, <jingoohan1@gmail.com>,
-        <gustavo.pimentel@synopsys.com>, <lorenzo.pieralisi@arm.com>,
-        <amurray@thegoodpenguin.co.uk>, <bhelgaas@google.com>,
-        <kishon@ti.com>, <thierry.reding@gmail.com>
-CC:     <Jisheng.Zhang@synaptics.com>, <jonathanh@nvidia.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>,
-        <oop.singh@gmail.com>, "Om Prakash Singh" <omp@nvidia.com>
-Subject: [PATCH] PCI: tegra: Disable PTM capabilities for EP mode
-Date:   Fri, 5 Mar 2021 13:42:34 +0530
-Message-ID: <1614931954-11741-1-git-send-email-omp@nvidia.com>
-X-Mailer: git-send-email 2.7.4
+        id S229464AbhCEINF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:13:05 -0500
+Received: from mga12.intel.com ([192.55.52.136]:13733 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229517AbhCEIMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 03:12:51 -0500
+IronPort-SDR: xIjIGXCsTMqPQY8M22lwwS81msckS/WRZDrwpP9oL7mUfrEIJMaB/QsxHcJZlK4O56u8o8ef/2
+ S2ay84/H83MQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="166863983"
+X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
+   d="scan'208";a="166863983"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 00:12:51 -0800
+IronPort-SDR: gOM/RV1MGFF6djhiCzZwd71anEmVTMnJCG2twRD5Am2DSoCo9aEygW3cGFIEUahEX4KzpyYu8z
+ HmXiSROUba8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
+   d="scan'208";a="597700002"
+Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
+  by fmsmga006.fm.intel.com with ESMTP; 05 Mar 2021 00:12:45 -0800
+Subject: Re: [PATCH v6] i2c: virtio: add a virtio i2c frontend driver
+To:     Jason Wang <jasowang@redhat.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     mst@redhat.com, wsa@kernel.org, wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org,
+        stefanha@redhat.com, pbonzini@redhat.com
+References: <9a2086f37c0a62069b67c39a3f75941b78a0039c.1614749417.git.jie.deng@intel.com>
+ <43b0842b-8b0f-1979-ed07-d6124e3a6b79@redhat.com>
+ <76554717-fc77-1c63-58d2-58aa04f7af9b@intel.com>
+ <7aa23b71-01eb-5824-b1db-892ede690fce@redhat.com>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <b1b66c2a-beec-c864-77a0-3bd0c6842e2e@intel.com>
+Date:   Fri, 5 Mar 2021 16:12:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614931788; bh=d4EIMKRedldEKkQ/KZr/xWANUlctCCQOqNOtF0VKLJ8=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         Content-Type;
-        b=M9BzLutSQk9xsvOQG1z1pZPmqn7yPBj4yS22qjEZXH1ZG/noUU8/x6RUQZFmWt59p
-         gtWTfKjV15wRwCUyXt9ZwdUwZOyXGwL1fTqRJDpAhsiAGgs80Tw+grevyNfDUGzpv5
-         8FyGTigqs+c3zZmCa7Nr2l3aKoAbc8W/R5hDU4E57YgRe0c1hLvWhlS2J6lVzi16FZ
-         zy+wkPXwJNMATTD0nwonK2sM7MmafXIK4xJh9gNGLYmFr5i7UwZd3EkWlZwdr2HOIO
-         F17zErC3Fz4XRklQJ2x1h/H0OOLfN4ibw0yqVBJqRS07le/5RBhNdEMcsBKJudsQRI
-         puZU6vvmtfLXA==
+In-Reply-To: <7aa23b71-01eb-5824-b1db-892ede690fce@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCIe EP compliance expect PTM capabilities (ROOT_CAPABLE, RES_CAPABLE,
-CLK_GRAN) to be disabled.
+On 2021/3/5 15:23, Jason Wang wrote:
 
-Signed-off-by: Om Prakash Singh <omp@nvidia.com>
----
- drivers/pci/controller/dwc/pcie-tegra194.c | 17 ++++++++++++++++-
- include/uapi/linux/pci_regs.h              |  1 +
- 2 files changed, 17 insertions(+), 1 deletion(-)
+>
+>>>> +    virtqueue_kick(vq);
+>>>> +
+>>>> +    time_left = wait_for_completion_timeout(&vi->completion, 
+>>>> adap->timeout);
+>>>> +    if (!time_left) {
+>>>> +        dev_err(&adap->dev, "virtio i2c backend timeout.\n");
+>>>> +        ret = -ETIMEDOUT;
+>>>> +        goto err_unlock_free;
+>>>
+>>>
+>>> So if the request is finished after the timerout, all the following 
+>>> request will fail, is this expected?
+>>>
+>>>
+>> This is an expected behavior. If timeout happens, we don't need to 
+>> care about the requests whether
+>> really completed by "HW" or not. Just return error and let the i2c 
+>> core to decide whether to resend.
+>
+>
+> So you need at least reinit the completion at least?
+>
 
-diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-index 6fa216e..a588312 100644
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -1639,7 +1639,7 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
- 	struct dw_pcie *pci = &pcie->pci;
- 	struct dw_pcie_ep *ep = &pci->ep;
- 	struct device *dev = pcie->dev;
--	u32 val;
-+	u32 val, ptm_cap_base = 0;
- 	int ret;
- 
- 	if (pcie->ep_state == EP_STATE_ENABLED)
-@@ -1760,6 +1760,21 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
- 						      PCI_CAP_ID_EXP);
- 	clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
- 
-+	/* Disable PTM root and responder capability */
-+	ptm_cap_base = dw_pcie_find_ext_capability(&pcie->pci,
-+						   PCI_EXT_CAP_ID_PTM);
-+	if (ptm_cap_base) {
-+		dw_pcie_dbi_ro_wr_en(pci);
-+		val = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
-+		val &= ~PCI_PTM_CAP_ROOT;
-+		dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, val);
-+
-+		val = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
-+		val &= ~(PCI_PTM_CAP_RES | PCI_PTM_GRANULARITY_MASK);
-+		dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, val);
-+		dw_pcie_dbi_ro_wr_dis(pci);
-+	}
-+
- 	val = (ep->msi_mem_phys & MSIX_ADDR_MATCH_LOW_OFF_MASK);
- 	val |= MSIX_ADDR_MATCH_LOW_OFF_EN;
- 	dw_pcie_writel_dbi(pci, MSIX_ADDR_MATCH_LOW_OFF, val);
-diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-index e709ae8..9dd6f8d 100644
---- a/include/uapi/linux/pci_regs.h
-+++ b/include/uapi/linux/pci_regs.h
-@@ -1050,6 +1050,7 @@
- /* Precision Time Measurement */
- #define PCI_PTM_CAP			0x04	    /* PTM Capability */
- #define  PCI_PTM_CAP_REQ		0x00000001  /* Requester capable */
-+#define  PCI_PTM_CAP_RES		0x00000002  /* Responder capable */
- #define  PCI_PTM_CAP_ROOT		0x00000004  /* Root capable */
- #define  PCI_PTM_GRANULARITY_MASK	0x0000FF00  /* Clock granularity */
- #define PCI_PTM_CTRL			0x08	    /* PTM Control */
--- 
-2.7.4
+Right. Will fix it. Thank you.
 
+
+>
+>>>> +    }
+>>>> +
+>>>> +    ret = virtio_i2c_complete_reqs(vq, reqs, msgs, nr);
+>>>
+>>>
+>>> So consider driver queue N requests, can device raise interrupt if 
+>>> it completes the first request? If yes, the code break, if not it 
+>>> need to be clarified in the spec.
+>> The device can raise interrupt when some requests are still not 
+>> completed though this is not a good operation.
+>
+>
+> Then you need forbid this in the spec.
+>
+
+Yeah, but I think we can add some description to explain this clearly 
+instead of forbid it directly.
+
+
+>
+>> In this case, the remaining requests in the vq will be ignored and 
+>> the i2c_algorithm. master_xfer will return 1 for
+>> your example. And let the i2c core to decide whether to resend.
+>>>
+>>> Acaultly I remember there's no VIRTIO_I2C_FLAGS_FAIL_NEXT in 
+>>> previous versions, and after reading the spec I still don't get the 
+>>> motivation for that (it may complicates both driver and device 
+>>> actually).
+>>>
+>> This flag is introduced by Stefan. Please check following link for 
+>> the details
+>> https://lists.oasis-open.org/archives/virtio-comment/202012/msg00075.html. 
+>>
+>
+>
+> > We just need to make sure that once the driver adds some requests to 
+> the
+> > virtqueue,
+> > it should complete them (either success or fail) before adding new 
+> requests.
+> > I think this
+> > is a behavior of physical I2C adapter drivers and we can follow.
+>
+>
+> Is this a driver requirement or device? If it's the driver, the code 
+> have already did something like this. E.g you wait for the completion 
+> of the request and forbid new request via i2c_lock.
+>
+> Thanks
+>
+
+The driver.  VIRTIO_I2C_FLAGS_FAIL_NEXT doesn't help in Linux driver. 
+But I agree with Stefan that
+VIRTIO is not specific to Linux so the specs design should avoid the 
+limitations of the current
+Linux driver behavior.
+
+
+>
+>>
+>
