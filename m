@@ -2,80 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6223932F62F
+	by mail.lfdr.de (Postfix) with ESMTP id D3C0332F630
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:56:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhCEWza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 17:55:30 -0500
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:41737 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbhCEWzS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 17:55:18 -0500
-Received: by mail-ot1-f49.google.com with SMTP id w3so3377561oti.8;
-        Fri, 05 Mar 2021 14:55:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3LvO/pXvRIOKjKpXkJTQlwURSVtLYQ3uX1kCxtEQMd4=;
-        b=ns83OqMOwxbsfJehwiBy1St7nwhB+h+a/zG0F42nvKynYZLFFL41j+m9pdONifPxZB
-         4sPw4k3MOoAyBXSnBs/efNR8XZvELAhguAe7yMvzUogfVvj0SR7GlCZDpZcSabagMRj9
-         TiSp8nYCTWZj30GZkJsPJMCNmR6MY8192Zf6+Tu0y7eaidXpMyuD83n1vtwewAC+IqSM
-         IuuOe4K1cR4hTwPpGot1JuaZtwa3rQN/8WREDP6dvqVA7cuNUcyE0f8g4Mw2rnvG7R25
-         wrhw40vyvx5hzhQP/hVc7txw6eW9m5QjGuY6zYPK03YKC6yjL8wP1a8fB3ubZ+1rgMzM
-         NLwQ==
-X-Gm-Message-State: AOAM533HZ1UKyuA/FuDAyhaYfmghh2ixCLkcuG3QsYEdQBLfTlnyKCjg
-        uWsxe63rH2wa1baBexsTRw==
-X-Google-Smtp-Source: ABdhPJxfJBjhLPRwDXPm3FVxlkMZT61cTRJ2+/ZaWzPtwZvm0JFTwdGdR8BnqBZHjEsiGVwt1MSddg==
-X-Received: by 2002:a9d:788:: with SMTP id 8mr4984590oto.197.1614984917483;
-        Fri, 05 Mar 2021 14:55:17 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b14sm828586ooj.26.2021.03.05.14.55.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 14:55:16 -0800 (PST)
-Received: (nullmailer pid 794144 invoked by uid 1000);
-        Fri, 05 Mar 2021 22:55:15 -0000
-Date:   Fri, 5 Mar 2021 16:55:15 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     Daniel Palmer <daniel@0x0f.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, Max Merchel <Max.Merchel@tq-group.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        allen <allen.chen@ite.com.tw>,
-        Giulio Benetti <giulio.benetti@micronovasrl.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 5/9] dt-bindings: display/panel: add Jenson JT60250-02
-Message-ID: <20210305225515.GA794098@robh.at.kernel.org>
-References: <20210218225458.823773-1-giulio.benetti@benettiengineering.com>
- <20210218225458.823773-6-giulio.benetti@benettiengineering.com>
+        id S230089AbhCEWzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 17:55:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230035AbhCEWzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 17:55:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8D1564F11;
+        Fri,  5 Mar 2021 22:55:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614984919;
+        bh=1CrTjEZoV5A6twTZemcbfp0/ikfp7xshxhN94nII4HE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XRapI5bpZ/1gK1LK9S7TSPUmza0m/ryBvnmYdNmJMrQYclcI3aKjGqvdIf7P3gBsr
+         sIx/uR24OOOKgZO/njQqR8wwiTfBpYVyJrU42CAXPmTpYAuVXXClrBY/Pl4KCC/PZE
+         JuebKxzrNx1UJE2KZ/taEaCZ5fNZfYd22tMCW+KpFAMs5niNTLXgSSBEHbcq5ghDXp
+         UB4HEicHVpdZGvCJ4NrgCgBmPaHtWmhze3EtVG82tsBm9qUeBS7lu5k2cRjpo//j3b
+         rmg7JcY8mDcm1D8RKS0Jr1t0qeDrvyv2qRa4vxKQ3qSsvP93CIuwXVIuRyAcVgNwnk
+         L8Z7SkIs4tXHQ==
+Date:   Fri, 5 Mar 2021 14:55:18 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     "Don Bollinger" <don@thebollingers.org>
+Cc:     "'Andrew Lunn'" <andrew@lunn.ch>, <arndb@arndb.de>,
+        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
+        <brandon_chuang@edge-core.com>, <wally_wang@accton.com>,
+        <aken_liu@edge-core.com>, <gulv@microsoft.com>,
+        <jolevequ@microsoft.com>, <xinxliu@microsoft.com>,
+        "'netdev'" <netdev@vger.kernel.org>,
+        "'Moshe Shemesh'" <moshe@nvidia.com>
+Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
+ EEPROMS
+Message-ID: <20210305145518.57a765bc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <003901d711f2$be2f55d0$3a8e0170$@thebollingers.org>
+References: <20210215193821.3345-1-don@thebollingers.org>
+        <YDl3f8MNWdZWeOBh@lunn.ch>
+        <000901d70cb2$b2848420$178d8c60$@thebollingers.org>
+        <004f01d70ed5$8bb64480$a322cd80$@thebollingers.org>
+        <YD1ScQ+w8+1H//Y+@lunn.ch>
+        <003901d711f2$be2f55d0$3a8e0170$@thebollingers.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218225458.823773-6-giulio.benetti@benettiengineering.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Feb 2021 23:54:53 +0100, Giulio Benetti wrote:
-> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
-> 
-> Add DT binding for "jenson,jt60250-02".
-> 
-> Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
-> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
-> ---
->  .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+On Fri, 5 Mar 2021 11:07:08 -0800 Don Bollinger wrote:
+> Acknowledging your objections, I nonetheless request that optoe be accepted
+> into upstream as an eeprom driver in drivers/misc/eeprom.  It is a
+> legitimate driver, with a legitimate user community, which deserves the
+> benefits of being managed as a legitimate part of the linux kernel.
 
-Acked-by: Rob Herring <robh@kernel.org>
+It's in the best interest of the community to standardize on how 
+we expect things to operate. You're free to do whatever you want
+in your proprietary systems but please don't expect us to accept
+a parallel, in now way superior method of accessing SFPs. 
