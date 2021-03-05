@@ -2,47 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0613432F526
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DFD32F529
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhCEVKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:10:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51430 "EHLO mail.kernel.org"
+        id S230027AbhCEVKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 16:10:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229465AbhCEVKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229493AbhCEVKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Mar 2021 16:10:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 25C1E6509B;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3313E650A5;
         Fri,  5 Mar 2021 21:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614978609;
-        bh=tfYUmsXc+cYJmMT4lfQnI5zjXJDKfH7cTJiFLPkrU5g=;
+        bh=/pJj/nB535Qu0F9dhwEEv/JkP20imH0yiCmcAAmvo6U=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uf2VRjGwjoay2V7SkPiABDzdEtcFOMNCCMuvpJELf/WRu5t8EgZ8+QEUuGw+cYR98
-         2kHuVrmpo+CHTV1K+U2iAq300SdCo788eztwPYoeo0ztDIDHCGU2o9Wvau75C5OlAX
-         UXNvFo4lF1Q2rjS7iksZNsWA2Fhw46k17q4WteGEzZkj1CQEBfq6HLS0rIdLS9hLMT
-         sZWngUX5lZVC5OPaGMbp534Tq2gmt2VT4WTy4sryHsXm6rmuUb5Emb/QrxhPyewWcE
-         8MyuK0yFm0blf9RApay+rV3Gz15eTHIEUO2gFcgXqj9iGnqcYhU0pPrpzkTNK4PBxq
-         b98i1Ge69UWXQ==
+        b=eau6n5wEUdwCMIXk0EhStLu5mRpuvWpK/+v+u0MsnXxlQJLa7Vs72MgGSAeXQ8tKF
+         u7Ztto4jyaVhAjip3mMdYAOX58snN1Qy57i5/wMA4frtMI7KmWdXv6poH+7M7EjK38
+         vdBvcMkq0+rTkLTP7qnf+ir5e7VL0EqQbJ60BZVjD8tM4MYJQKG8JGWyNG3q/m5q7b
+         gD89BYah1EQGyrGdax6MPZIGoODbEy7fIV3Aiagn/3hmO7OHoBMjQzva9TO1HgCATI
+         bMSNqaADqjKpB9wafIaF0JTAqgjtDAMo8peSbrrJa/R3E3qnjafbKcONA3yRRu7lq5
+         cw6S/xOHs8y0Q==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1C57B609D4;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 25C3160A22;
         Fri,  5 Mar 2021 21:10:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 1/1] net: stmmac: Fix VLAN filter delete timeout issue in
- Intel mGBE SGMII
+Subject: Re: [PATCH v1] ibmvnic: remove excessive irqsave
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161497860911.24588.15607170379509206328.git-patchwork-notify@kernel.org>
+Message-Id: <161497860915.24588.2102886207868627115.git-patchwork-notify@kernel.org>
 Date:   Fri, 05 Mar 2021 21:10:09 +0000
-References: <20210305054930.7434-1-boon.leong.ong@intel.com>
-In-Reply-To: <20210305054930.7434-1-boon.leong.ong@intel.com>
-To:     Ong Boon Leong <boon.leong.ong@intel.com>
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        weifeng.voon@intel.com
+References: <20210305084839.2405-1-angkery@163.com>
+In-Reply-To: <20210305084839.2405-1-angkery@163.com>
+To:     angkery <angkery@163.com>
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        drt@linux.ibm.com, ljp@linux.ibm.com, sukadev@linux.ibm.com,
+        davem@davemloft.net, kuba@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yangjunlin@yulong.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -51,22 +49,27 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Fri,  5 Mar 2021 13:49:30 +0800 you wrote:
-> For Intel mGbE controller, MAC VLAN filter delete operation will time-out
-> if serdes power-down sequence happened first during driver remove() with
-> below message.
+On Fri,  5 Mar 2021 16:48:39 +0800 you wrote:
+> From: Junlin Yang <yangjunlin@yulong.com>
 > 
-> [82294.764958] intel-eth-pci 0000:00:1e.4 eth2: stmmac_dvr_remove: removing driver
-> [82294.778677] intel-eth-pci 0000:00:1e.4 eth2: Timeout accessing MAC_VLAN_Tag_Filter
-> [82294.779997] intel-eth-pci 0000:00:1e.4 eth2: failed to kill vid 0081/0
-> [82294.947053] intel-eth-pci 0000:00:1d.2 eth1: stmmac_dvr_remove: removing driver
-> [82295.002091] intel-eth-pci 0000:00:1d.1 eth0: stmmac_dvr_remove: removing driver
+> ibmvnic_remove locks multiple spinlocks while disabling interrupts:
+> spin_lock_irqsave(&adapter->state_lock, flags);
+> spin_lock_irqsave(&adapter->rwi_lock, flags);
+> 
+> As reported by coccinelle, the second _irqsave() overwrites the value
+> saved in 'flags' by the first _irqsave(),   therefore when the second
+> _irqrestore() comes,the value in 'flags' is not valid,the value saved
+> by the first _irqsave() has been lost.
+> This likely leads to IRQs remaining disabled. So remove the second
+> _irqsave():
+> spin_lock_irqsave(&adapter->state_lock, flags);
+> spin_lock(&adapter->rwi_lock);
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,1/1] net: stmmac: Fix VLAN filter delete timeout issue in Intel mGBE SGMII
-    https://git.kernel.org/netdev/net/c/9a7b3950c7e1
+  - [v1] ibmvnic: remove excessive irqsave
+    https://git.kernel.org/netdev/net/c/69cdb7947adb
 
 You are awesome, thank you!
 --
