@@ -2,133 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68C232E7A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CDE32E7C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbhCEMI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:08:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
+        id S229608AbhCEMSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:18:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhCEMH6 (ORCPT
+        with ESMTP id S229493AbhCEMSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:07:58 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FE1C061574;
-        Fri,  5 Mar 2021 04:07:58 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id 18so1981995pfo.6;
-        Fri, 05 Mar 2021 04:07:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0T4sYjk3wRZzjG/QHAIvuP6rKIH4m6dqz5ONCAsok4U=;
-        b=X9aYOJ2QUP2xz10GjaNI2tVnTar2w3YTbJkB56nhZ43TCzh4a0g4Kb7e8XS9lECzRG
-         5BaePC2mMQk+/MQRKX0PGp2vpm3tkiA22y8AwJYIjs3X5Cb4tNKARktq6vkbAHcZpEGN
-         Yzk5DU2q50UwaF4xlEagNR7sQDl2vsDpaI8MGk1LmIkxSUhGnzkBfiJdIPSD9YjZnyNa
-         z1YfGjVkMVdCuwArFbDgpglD2TbV+2yMdfo6kvoEVGfKh5rKlrEnJMFxbOfCvicuiisY
-         RNMr4au0QQrZJcaf6eXQcZQnCjd/vxDr+cnEu0ELaz6rMPx2rCf8B1ya358Qg+QSuTmv
-         x0iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0T4sYjk3wRZzjG/QHAIvuP6rKIH4m6dqz5ONCAsok4U=;
-        b=TCto31YS7EouOtTyaWmRb/iuEU2nWAU08BaO+DE+yXb0BRGAyn2CippMV51mMot/sO
-         kDEZvJONg/qwXLJZHCE4P/Cv95X8qIyyr0Aag8vHveDE4BdzqBn3Sq4RdUMAsXTTSS0j
-         64oM9NcP0s9BgPqi+RJPu6wmyPyLwZPiw2oX381zFoaxNoxa/AbyjvkFJKvRDqiNLQxc
-         YloSSxnECuVXcMtPReDHt92qByZCWwBZw7WjrZXMygX8/h46zqV4y6u3l4fW2Fj8+qVp
-         dGs0sWCIeOyu7dlG5h3FYkb81YDlIOasebj8LvrC21oTpmDuDuRnh78ypy//LAUqya1t
-         d6tQ==
-X-Gm-Message-State: AOAM530CDL6FJxKh+8Vk/FQNKaSZFbkf2pg2fXjtutmqUcNu/wIrDJCq
-        WkmzaJqI7eKHhFpF6Ix1R+9UGZ5e26nqxgmwk3I=
-X-Google-Smtp-Source: ABdhPJwjqsfLw9ru8YkR/RGYr2KWgaGsQwQO4QmzMmJdg8R1OETnAH+U7oEtzJZBjg7l8BXUO4IWnv00awnX5hCZTkU=
-X-Received: by 2002:a63:1906:: with SMTP id z6mr8464802pgl.292.1614946078278;
- Fri, 05 Mar 2021 04:07:58 -0800 (PST)
+        Fri, 5 Mar 2021 07:18:36 -0500
+X-Greylist: delayed 605 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 05 Mar 2021 04:18:36 PST
+Received: from office2.cesnet.cz (office2.cesnet.cz [IPv6:2001:718:1:101::144:244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD1EC061574;
+        Fri,  5 Mar 2021 04:18:36 -0800 (PST)
+Received: from localhost (ip-94-112-197-160.net.upcbroadband.cz [94.112.197.160])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by office2.cesnet.cz (Postfix) with ESMTPSA id A7734400064;
+        Fri,  5 Mar 2021 13:08:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cesnet.cz;
+        s=office2-2020; t=1614946108;
+        bh=PrDtuf4GNCuIf4buOVLl6wJYuOH+X5xKlXypeeu9GN4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=jgMNm3hO/+H22rHcWQrHZDE5HcGXkdemAE/4whSzhI9xjMwYTSkINWYN89nyItky4
+         OzxeArZsGPHPWOg/XhpUtCsHX4Vy7uPsLVANoUwsmtoRbdBhgU8xp766Kj8387QpVo
+         gKvKYTNpYTT+uuhECJuAjZYZMoAJ3dyhvgjiR1hcO18yTQ10mmqJfKjMZij/iyMhPx
+         roMUNtx5JCMcmsV3SyMYi2ChexAPKT6PilPTXQTkDASgAHH98p1ecD1YSHZqwgCbQ/
+         JqDZPGNN2A/R7UEAJuJuRf9q914i1Lf740OWM1D7z9jZ5EcYM8H5qxhKxQ63XKKCmk
+         rEZV7l2wo6gdQ==
+From:   =?iso-8859-1?Q?Jan_Kundr=E1t?= <jan.kundrat@cesnet.cz>
+To:     =?iso-8859-1?Q?V=E1clav_Kubern=E1t?= <kubernat@cesnet.cz>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        <linux-hwmon@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/7] hwmon: (max31790) Allow setting pulses
+Date:   Fri, 05 Mar 2021 13:08:26 +0100
 MIME-Version: 1.0
-References: <20210305092534.13121-1-baijiaju1990@gmail.com>
-In-Reply-To: <20210305092534.13121-1-baijiaju1990@gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Fri, 5 Mar 2021 13:07:47 +0100
-Message-ID: <CAJ8uoz3dkGsnMQ5wnFmyyFVfkMrz8Z2pqPZ+frFXj=Sy72xpcw@mail.gmail.com>
-Subject: Re: [PATCH] net: xdp: fix error return code of xsk_generic_xmit()
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <ad1c3054-e9a2-4299-aeed-94e36d6d3d12@cesnet.cz>
+In-Reply-To: <20210304105830.507176-3-kubernat@cesnet.cz>
+References: <20210304105830.507176-1-kubernat@cesnet.cz>
+ <20210304105830.507176-3-kubernat@cesnet.cz>
+Organization: CESNET
+User-Agent: Trojita/unstable-2020-07-06; Qt/5.15.2; xcb; Linux; 
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 10:28 AM Jia-Ju Bai <baijiaju1990@gmail.com> wrote:
->
-> When err is zero but xskq_prod_reserve() fails, no error return code of
-> xsk_generic_xmit() is assigned.
-> To fix this bug, err is assigned with the return value of
-> xskq_prod_reserve(), and then err is checked.
+> @@ -285,6 +295,9 @@ static int max31790_write_fan(struct device=20
+> *dev, u32 attr, int channel,
+>  =09=09=09=09   MAX31790_REG_FAN_CONFIG(channel),
+>  =09=09=09=09   data->fan_config[channel]);
+>  =09=09break;
+> +=09case hwmon_fan_pulses:
+> +=09=09data->pulses[channel] =3D val;
+> +=09=09break;
 
-This error is ignored by design. This so that the zero-copy path and
-the copy/skb path will return the same value (success in this case)
-when the completion ring does not have a spare entry we can put the
-future completion in. The problem lies with the zero-copy path that is
-asynchronous, in contrast to the skb path that is synchronous. The
-zero-copy path cannot return an error when this happens as this
-reservation in the completion ring is performed by the driver that
-might concurrently run on another core without any way to feed this
-back to the syscall that does not wait for the driver to execute in
-any case. Introducing a return value for this condition right now for
-the skb case, might break existing applications.
+This needs input validation, otherwise it's possible to write 0 in there=20
+and you get a division-by-zero in the kernel context:
 
-Though it would be really good if you could submit a small patch to
-bpf-next that adds a comment explaining this to avoid any future
-confusion. Something along the lines of: /* The error code of
-xskq_prod_reserve is ignored so that skb mode will mimic the same
-behavior as zero-copy mode that does not signal an error in this case
-as it cannot. */. You could put it right after the if statement.
+[102109.999968] Division by zero in kernel.
+[102110.003917] CPU: 1 PID: 27590 Comm: cat Not tainted 5.9.3-cla-cfb #42
+[102110.010462] Hardware name: Marvell Armada 380/385 (Device Tree)
+[102110.016497] [<c010f16c>] (unwind_backtrace) from [<c010ae40>]=20
+(show_stack+0x10/0x14)
+[102110.024355] [<c010ae40>] (show_stack) from [<c083ba30>]=20
+(dump_stack+0x94/0xa8)
+[102110.031689] [<c083ba30>] (dump_stack) from [<c083a3fc>]=20
+(Ldiv0+0x8/0x2c)
+[102110.038499] [<c083a3fc>] (Ldiv0) from [<c064c1ac>]=20
+(max31790_read+0x174/0x204)
+[102110.045836] [<c064c1ac>] (max31790_read) from [<c0646fdc>]=20
+(hwmon_attr_show+0x44/0x138)
+...
 
-Thank you: Magnus
+A similar error can also happen when setting the fan speed to 0 RPM.=20
+That's, however, not an error caused by this patch series AFAIK. I *think*=20=
 
-> The spinlock is only used to protect the call to xskq_prod_reserve().
->
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-> ---
->  net/xdp/xsk.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 4faabd1ecfd1..f1c1db07dd07 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -484,8 +484,14 @@ static int xsk_generic_xmit(struct sock *sk)
->                  * if there is space in it. This avoids having to implement
->                  * any buffering in the Tx path.
->                  */
-> +               if (unlikely(err)) {
-> +                       kfree_skb(skb);
-> +                       goto out;
-> +               }
-> +
->                 spin_lock_irqsave(&xs->pool->cq_lock, flags);
-> -               if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-> +               err = xskq_prod_reserve(xs->pool->cq);
-> +               if (unlikely(err)) {
->                         spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
->                         kfree_skb(skb);
->                         goto out;
-> --
-> 2.17.1
->
+that RPM_TO_REG should be changed to check if `rpm` is 0, and if so, set=20
+the register directly to the maximal value of 0x7ff (in another patch).
+
+With kind regards,
+Jan
