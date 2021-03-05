@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D15A32E9C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0AE32E93B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232443AbhCEMes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:34:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45548 "EHLO mail.kernel.org"
+        id S231229AbhCEMbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:31:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232173AbhCEMd7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:33:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FFA964F23;
-        Fri,  5 Mar 2021 12:33:58 +0000 (UTC)
+        id S231236AbhCEMar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:30:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 180F16501A;
+        Fri,  5 Mar 2021 12:30:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947639;
-        bh=FTAW4QqHvb29GyAjqVidyQcYMxSOuWoKsmGr0LTjH3g=;
+        s=korg; t=1614947445;
+        bh=vumdEg40jaxtu1i+KleP9ubml8EcMJp+xN6aCQY3sl4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gGgH44xV6yfgcOAWf6dJaFm+QA5mz5TPkCMe0eV8pK4TQiKQoeJCOMgHXuRvclPOx
-         p9p9jdO1xC5KrMUTwmoftMFC9gzLlNy6IXEFtSoyw+oP/y+Rc1DXcRQhgNysd+yNwk
-         aYJN/b2JO7j6StDgCaiXTbHqrEjJhK1AljQNfnEo=
+        b=hU0OVHzXzL2IU8znWaUTyDKS/5GqOUKs93bt2b0XGmDCTpmMSY4mPS+zPpfyuOtX8
+         cGFzHY0LOo1lXlvAfHVKw1aHkt61IgzaaOJOE5bsoX25g9+Vuv1zTINSYU5JeNcAWD
+         4E8+W8aKsOju25msTmde0LQgt/Y1eu/h0PXb3BQg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Burton <paul.burton@mips.com>,
-        Alexander Lobakin <alobakin@dlink.ru>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        linux-mips@vger.kernel.org, Florian Westphal <fw@strlen.de>
-Subject: [PATCH 5.4 23/72] MIPS: Drop 32-bit asm string functions
-Date:   Fri,  5 Mar 2021 13:21:25 +0100
-Message-Id: <20210305120858.481470995@linuxfoundation.org>
+        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 067/102] f2fs: fix to set/clear I_LINKABLE under i_lock
+Date:   Fri,  5 Mar 2021 13:21:26 +0100
+Message-Id: <20210305120906.576659924@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
-References: <20210305120857.341630346@linuxfoundation.org>
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+References: <20210305120903.276489876@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,174 +40,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Burton <paul.burton@mips.com>
+From: Chao Yu <yuchao0@huawei.com>
 
-commit 3c0be5849259b729580c23549330973a2dd513a2 upstream.
+[ Upstream commit 46085f37fc9e12d5c3539fb768b5ad7951e72acf ]
 
-We have assembly implementations of strcpy(), strncpy(), strcmp() &
-strncmp() which:
+fsstress + fault injection test case reports a warning message as
+below:
 
- - Are simple byte-at-a-time loops with no particular optimizations. As
-   a comment in the code describes, they're "rather naive".
+WARNING: CPU: 13 PID: 6226 at fs/inode.c:361 inc_nlink+0x32/0x40
+Call Trace:
+ f2fs_init_inode_metadata+0x25c/0x4a0 [f2fs]
+ f2fs_add_inline_entry+0x153/0x3b0 [f2fs]
+ f2fs_add_dentry+0x75/0x80 [f2fs]
+ f2fs_do_add_link+0x108/0x160 [f2fs]
+ f2fs_rename2+0x6ab/0x14f0 [f2fs]
+ vfs_rename+0x70c/0x940
+ do_renameat2+0x4d8/0x4f0
+ __x64_sys_renameat2+0x4b/0x60
+ do_syscall_64+0x33/0x80
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
- - Offer no clear performance advantage over the generic C
-   implementations - in microbenchmarks performed by Alexander Lobakin
-   the asm functions sometimes win & sometimes lose, but generally not
-   by large margins in either direction.
+Following race case can cause this:
+Thread A				Kworker
+- f2fs_rename
+ - f2fs_create_whiteout
+  - __f2fs_tmpfile
+   - f2fs_i_links_write
+    - f2fs_mark_inode_dirty_sync
+     - mark_inode_dirty_sync
+					- writeback_single_inode
+					 - __writeback_single_inode
+					  - spin_lock(&inode->i_lock)
+   - inode->i_state |= I_LINKABLE
+					  - inode->i_state &= ~dirty
+					  - spin_unlock(&inode->i_lock)
+ - f2fs_add_link
+  - f2fs_do_add_link
+   - f2fs_add_dentry
+    - f2fs_add_inline_entry
+     - f2fs_init_inode_metadata
+      - f2fs_i_links_write
+       - inc_nlink
+        - WARN_ON(!(inode->i_state & I_LINKABLE))
 
- - Don't support 64-bit kernels, where we already make use of the
-   generic C implementations.
+Fix to add i_lock to avoid i_state update race condition.
 
- - Tend to bloat kernel code size due to inlining.
-
- - Don't support CONFIG_FORTIFY_SOURCE.
-
- - Won't support nanoMIPS without rework.
-
-For all of these reasons, delete the asm implementations & make use of
-the generic C implementations for 32-bit kernels just like we already do
-for 64-bit kernels.
-
-Signed-off-by: Paul Burton <paul.burton@mips.com>
-URL: https://lore.kernel.org/linux-mips/a2a35f1cf58d6db19eb4af9b4ae21e35@dlink.ru/
-Cc: Alexander Lobakin <alobakin@dlink.ru>
-Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
-Cc: linux-mips@vger.kernel.org
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/string.h |  121 -----------------------------------------
- 1 file changed, 121 deletions(-)
+ fs/f2fs/namei.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/arch/mips/include/asm/string.h
-+++ b/arch/mips/include/asm/string.h
-@@ -10,127 +10,6 @@
- #ifndef _ASM_STRING_H
- #define _ASM_STRING_H
+diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
+index 8fa37d1434de..5f7ab4f11322 100644
+--- a/fs/f2fs/namei.c
++++ b/fs/f2fs/namei.c
+@@ -854,7 +854,11 @@ static int __f2fs_tmpfile(struct inode *dir, struct dentry *dentry,
  
--
--/*
-- * Most of the inline functions are rather naive implementations so I just
-- * didn't bother updating them for 64-bit ...
-- */
--#ifdef CONFIG_32BIT
--
--#ifndef IN_STRING_C
--
--#define __HAVE_ARCH_STRCPY
--static __inline__ char *strcpy(char *__dest, __const__ char *__src)
--{
--  char *__xdest = __dest;
--
--  __asm__ __volatile__(
--	".set\tnoreorder\n\t"
--	".set\tnoat\n"
--	"1:\tlbu\t$1,(%1)\n\t"
--	"addiu\t%1,1\n\t"
--	"sb\t$1,(%0)\n\t"
--	"bnez\t$1,1b\n\t"
--	"addiu\t%0,1\n\t"
--	".set\tat\n\t"
--	".set\treorder"
--	: "=r" (__dest), "=r" (__src)
--	: "0" (__dest), "1" (__src)
--	: "memory");
--
--  return __xdest;
--}
--
--#define __HAVE_ARCH_STRNCPY
--static __inline__ char *strncpy(char *__dest, __const__ char *__src, size_t __n)
--{
--  char *__xdest = __dest;
--
--  if (__n == 0)
--    return __xdest;
--
--  __asm__ __volatile__(
--	".set\tnoreorder\n\t"
--	".set\tnoat\n"
--	"1:\tlbu\t$1,(%1)\n\t"
--	"subu\t%2,1\n\t"
--	"sb\t$1,(%0)\n\t"
--	"beqz\t$1,2f\n\t"
--	"addiu\t%0,1\n\t"
--	"bnez\t%2,1b\n\t"
--	"addiu\t%1,1\n"
--	"2:\n\t"
--	".set\tat\n\t"
--	".set\treorder"
--	: "=r" (__dest), "=r" (__src), "=r" (__n)
--	: "0" (__dest), "1" (__src), "2" (__n)
--	: "memory");
--
--  return __xdest;
--}
--
--#define __HAVE_ARCH_STRCMP
--static __inline__ int strcmp(__const__ char *__cs, __const__ char *__ct)
--{
--  int __res;
--
--  __asm__ __volatile__(
--	".set\tnoreorder\n\t"
--	".set\tnoat\n\t"
--	"lbu\t%2,(%0)\n"
--	"1:\tlbu\t$1,(%1)\n\t"
--	"addiu\t%0,1\n\t"
--	"bne\t$1,%2,2f\n\t"
--	"addiu\t%1,1\n\t"
--	"bnez\t%2,1b\n\t"
--	"lbu\t%2,(%0)\n\t"
--#if defined(CONFIG_CPU_R3000)
--	"nop\n\t"
--#endif
--	"move\t%2,$1\n"
--	"2:\tsubu\t%2,$1\n"
--	"3:\t.set\tat\n\t"
--	".set\treorder"
--	: "=r" (__cs), "=r" (__ct), "=r" (__res)
--	: "0" (__cs), "1" (__ct));
--
--  return __res;
--}
--
--#endif /* !defined(IN_STRING_C) */
--
--#define __HAVE_ARCH_STRNCMP
--static __inline__ int
--strncmp(__const__ char *__cs, __const__ char *__ct, size_t __count)
--{
--	int __res;
--
--	__asm__ __volatile__(
--	".set\tnoreorder\n\t"
--	".set\tnoat\n"
--	"1:\tlbu\t%3,(%0)\n\t"
--	"beqz\t%2,2f\n\t"
--	"lbu\t$1,(%1)\n\t"
--	"subu\t%2,1\n\t"
--	"bne\t$1,%3,3f\n\t"
--	"addiu\t%0,1\n\t"
--	"bnez\t%3,1b\n\t"
--	"addiu\t%1,1\n"
--	"2:\n\t"
--#if defined(CONFIG_CPU_R3000)
--	"nop\n\t"
--#endif
--	"move\t%3,$1\n"
--	"3:\tsubu\t%3,$1\n\t"
--	".set\tat\n\t"
--	".set\treorder"
--	: "=r" (__cs), "=r" (__ct), "=r" (__count), "=r" (__res)
--	: "0" (__cs), "1" (__ct), "2" (__count));
--
--	return __res;
--}
--#endif /* CONFIG_32BIT */
--
- #define __HAVE_ARCH_MEMSET
- extern void *memset(void *__s, int __c, size_t __count);
+ 	if (whiteout) {
+ 		f2fs_i_links_write(inode, false);
++
++		spin_lock(&inode->i_lock);
+ 		inode->i_state |= I_LINKABLE;
++		spin_unlock(&inode->i_lock);
++
+ 		*whiteout = inode;
+ 	} else {
+ 		d_tmpfile(dentry, inode);
+@@ -1040,7 +1044,11 @@ static int f2fs_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		err = f2fs_add_link(old_dentry, whiteout);
+ 		if (err)
+ 			goto put_out_dir;
++
++		spin_lock(&whiteout->i_lock);
+ 		whiteout->i_state &= ~I_LINKABLE;
++		spin_unlock(&whiteout->i_lock);
++
+ 		iput(whiteout);
+ 	}
  
+-- 
+2.30.1
+
 
 
