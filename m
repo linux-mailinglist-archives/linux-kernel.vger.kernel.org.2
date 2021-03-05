@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D596132E928
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B8332E9A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232270AbhCEMbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:31:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40164 "EHLO mail.kernel.org"
+        id S232517AbhCEMd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:33:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232338AbhCEMaZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:30:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CB0565019;
-        Fri,  5 Mar 2021 12:30:24 +0000 (UTC)
+        id S230179AbhCEMd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:33:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F96065019;
+        Fri,  5 Mar 2021 12:33:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947425;
-        bh=eelxws8hbfqV/gwBklBaCsvhGq5UNaAxyDz5SlAMgiI=;
+        s=korg; t=1614947607;
+        bh=m39mysxsa2SYNUolR9F15/RBNbBT5Uvi7xeXUQJ2ziA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e6fHgio0cys65b5zIWgsfE4wDNC/WqsKh+U0VcLI5Eb3sb4uJgSTXYIp9nZ0wsWMJ
-         IDfKjITNqs1jF+Rd956MgcHNkXcTqGFw/PDSzjTcJ4tBqLx7t9GbKNf/lux9OnJPAv
-         LpfbvSvdt9D6+QS00+TJMoWywNnIu3jrqnzXG1KE=
+        b=aSknfi/Ydrfj0AygcqkNsDRmUK8+vNOu+ycLtGoGkt/c6PsmRXNnCBNw0ngKFihnc
+         FXGYDYq+uh5ISlYVVjdwmx6zGM5b4SJw6FOroHo3FqreEYvs1zSbBKLgU5+DIWV0dg
+         flZFrUyHqcvXXk5FjQQCPi3k0FHDHlOFaZXMS94E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Nirmoy Das <nirmoy.das@amd.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 061/102] PCI: Add a REBAR size quirk for Sapphire RX 5600 XT Pulse
-Date:   Fri,  5 Mar 2021 13:21:20 +0100
-Message-Id: <20210305120906.282629128@linuxfoundation.org>
+        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 19/72] net: ag71xx: remove unnecessary MTU reservation
+Date:   Fri,  5 Mar 2021 13:21:21 +0100
+Message-Id: <20210305120858.282010478@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
+References: <20210305120857.341630346@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nirmoy Das <nirmoy.das@amd.com>
+From: DENG Qingfang <dqfext@gmail.com>
 
-[ Upstream commit 907830b0fc9e374d00f3c83de5e426157b482c01 ]
+commit 04b385f325080157ab1b5f8ce1b1de07ce0d9e27 upstream.
 
-RX 5600 XT Pulse advertises support for BAR 0 being 256MB, 512MB,
-or 1GB, but it also supports 2GB, 4GB, and 8GB. Add a rebar
-size quirk so that the BAR 0 is big enough to cover complete VARM.
+2 bytes of the MTU are reserved for Atheros DSA tag, but DSA core
+has already handled that since commit dc0fe7d47f9f.
+Remove the unnecessary reservation.
 
-Signed-off-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Nirmoy Das <nirmoy.das@amd.com>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-Link: https://patchwork.kernel.org/project/dri-devel/patch/20210107175017.15893-5-nirmoy.das@amd.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: d51b6ce441d3 ("net: ethernet: add ag71xx driver")
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Link: https://lore.kernel.org/r/20210218034514.3421-1-dqfext@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/pci.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/atheros/ag71xx.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 6427cbd0a5be..5c9345072510 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -3577,7 +3577,14 @@ u32 pci_rebar_get_possible_sizes(struct pci_dev *pdev, int bar)
- 		return 0;
+--- a/drivers/net/ethernet/atheros/ag71xx.c
++++ b/drivers/net/ethernet/atheros/ag71xx.c
+@@ -222,8 +222,6 @@
+ #define AG71XX_REG_RX_SM	0x01b0
+ #define AG71XX_REG_TX_SM	0x01b4
  
- 	pci_read_config_dword(pdev, pos + PCI_REBAR_CAP, &cap);
--	return (cap & PCI_REBAR_CAP_SIZES) >> 4;
-+	cap &= PCI_REBAR_CAP_SIZES;
-+
-+	/* Sapphire RX 5600 XT Pulse has an invalid cap dword for BAR 0 */
-+	if (pdev->vendor == PCI_VENDOR_ID_ATI && pdev->device == 0x731f &&
-+	    bar == 0 && cap == 0x7000)
-+		cap = 0x3f000;
-+
-+	return cap >> 4;
+-#define ETH_SWITCH_HEADER_LEN	2
+-
+ #define AG71XX_DEFAULT_MSG_ENABLE	\
+ 	(NETIF_MSG_DRV			\
+ 	| NETIF_MSG_PROBE		\
+@@ -784,7 +782,7 @@ static void ag71xx_hw_setup(struct ag71x
+ 
+ static unsigned int ag71xx_max_frame_len(unsigned int mtu)
+ {
+-	return ETH_SWITCH_HEADER_LEN + ETH_HLEN + VLAN_HLEN + mtu + ETH_FCS_LEN;
++	return ETH_HLEN + VLAN_HLEN + mtu + ETH_FCS_LEN;
  }
  
- /**
--- 
-2.30.1
-
+ static void ag71xx_hw_set_macaddr(struct ag71xx *ag, unsigned char *mac)
 
 
