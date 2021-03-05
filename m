@@ -2,90 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A593532E7B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD7F32E7BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbhCEMLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:11:49 -0500
-Received: from mail-out.m-online.net ([212.18.0.10]:51067 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhCEMLm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:11:42 -0500
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4DsRRd3SXnz1rwvQ;
-        Fri,  5 Mar 2021 13:11:41 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4DsRRd2cq4z1t6p7;
-        Fri,  5 Mar 2021 13:11:41 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id hsGGW03H61Os; Fri,  5 Mar 2021 13:11:40 +0100 (CET)
-X-Auth-Info: 2XhycVN/LrOWsQxHHY+VGHxDI8i0UnrgNytFXzBWN/A=
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S229679AbhCEMMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:12:52 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:45505 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229493AbhCEMMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:12:25 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Fri,  5 Mar 2021 13:11:39 +0100 (CET)
-Subject: Re: [PATCH v1 1/1] gpiolib: Read "gpio-line-names" from a firmware
- node
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Roman Guskov <rguskov@dh-electronics.com>
-References: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <506c1e48-c648-69d4-8e4f-b42fe02156f7@denx.de>
-Date:   Fri, 5 Mar 2021 13:11:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DsRSN3xc3z9sWL;
+        Fri,  5 Mar 2021 23:12:20 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1614946342;
+        bh=aHL61nbJ14YVMtmcKw3QkQlg65ehKSOR2fQhnK5ASNM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=RFYtcy26f5gmzrJqSk1tcWhWWPFLaSE81tlUXQAhECBh8eMXEYNMO5tZ9x4rlR8jh
+         aNvIJrxJ/KmdEYHZknj6TSuxKWmFcA5Ahn5HuXY6RKlHn0zLhKnT3RXI/3y38ia5MS
+         JkNgJS5vB2TLrVgU75ml8aRn1avbmPb42hmMFoIyONZ0zH2RQ66HoBu5hckN36yYSX
+         c6IsYOwVt0tKTVEy8CRxFy0qXSx2/aGRzvp/C0J5lSsB+Qj6mO71whKVsYAjDwlnEr
+         ADmQCjQyL7/fhfJQsTxKjOIZ/Fp8LwqKPrnZuuqyFhzKrTE5Anp2GVIzL4dN/VvP3R
+         QdNjEwMOMox4A==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3] mm: Generalize HUGETLB_PAGE_SIZE_VARIABLE
+In-Reply-To: <1614914928-22039-1-git-send-email-anshuman.khandual@arm.com>
+References: <1614914928-22039-1-git-send-email-anshuman.khandual@arm.com>
+Date:   Fri, 05 Mar 2021 23:12:17 +1100
+Message-ID: <87pn0dre8u.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/5/21 1:02 PM, Andy Shevchenko wrote:
-> On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
-> see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
-> pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
-> and iterates over all of its DT subnodes when registering each GPIO
-> bank gpiochip. Each gpiochip has:
-> 
->    - gpio_chip.parent = dev,
->      where dev is the device node of the pin controller
->    - gpio_chip.of_node = np,
->      which is the OF node of the GPIO bank
-> 
-> Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
-> i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
-> 
-> The original code behaved correctly, as it extracted the "gpio-line-names"
-> from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
-> 
-> To achieve the same behaviour, read property from the firmware node.
-> 
-> Fixes: 7cba1a4d5e162 ("gpiolib: generalize devprop_gpiochip_set_names() for device properties")
-> Reported-by: Marek Vasut <marex@denx.de>
-> Reported-by: Roman Guskov <rguskov@dh-electronics.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Anshuman Khandual <anshuman.khandual@arm.com> writes:
+> HUGETLB_PAGE_SIZE_VARIABLE need not be defined for each individual
+> platform subscribing it. Instead just make it generic.
+>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: linux-ia64@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Suggested-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> This change was originally suggested in an earilier discussion. This
+> applies on v5.12-rc1 and has been build tested on all applicable
+> platforms i.e ia64 and powerpc.
+>
+> https://patchwork.kernel.org/project/linux-mm/patch/1613024531-19040-3-git-send-email-anshuman.khandual@arm.com/
+>
+> Changes in V3:
+>
+> - Dropped the bool desciption that enabled user selection
+> - Dropped the dependency on HUGETLB_PAGE for HUGETLB_PAGE_SIZE_VARIABLE
+>
+> Changes in V2:
+>
+> https://patchwork.kernel.org/project/linux-mm/patch/1614661987-23881-1-git-send-email-anshuman.khandual@arm.com/
+>
+> - Added a description for HUGETLB_PAGE_SIZE_VARIABLE
+> - Added HUGETLB_PAGE dependency while selecting HUGETLB_PAGE_SIZE_VARIABLE
+>
+> Changes in V1:
+>
+> https://patchwork.kernel.org/project/linux-mm/patch/1614577853-7452-1-git-send-email-anshuman.khandual@arm.com/
+>
+>  arch/ia64/Kconfig    | 6 +-----
+>  arch/powerpc/Kconfig | 6 +-----
 
-Tested-by: Marek Vasut <marex@denx.de>
-Reviewed-by: Marek Vasut <marex@denx.de>
+LGTM.
 
-Thanks
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 
->   static int devprop_gpiochip_set_names(struct gpio_chip *chip)
->   {
->   	struct gpio_device *gdev = chip->gpiodev;
-> -	struct device *dev = chip->parent;
-> +	struct fwnode_handle *fwnode = dev_fwnode(&gdev->dev);
-
-You could make the order here a reverse xmas tree, but that's a nitpick.
-
-[...]
+cheers
