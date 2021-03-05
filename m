@@ -2,65 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A9232F473
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:09:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD32F32F479
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbhCEUIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 15:08:55 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:43503 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhCEUIn (ORCPT
+        id S229805AbhCEUJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 15:09:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229729AbhCEUJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 15:08:43 -0500
-Received: by mail-ot1-f45.google.com with SMTP id v12so2982938ott.10;
-        Fri, 05 Mar 2021 12:08:43 -0800 (PST)
+        Fri, 5 Mar 2021 15:09:09 -0500
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E451BC06175F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 12:09:08 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id 62so1162886uar.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 12:09:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=posk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OoEQcJMAXbKGiyGxQKoGUMRplynTrICw/5hDPty3yZg=;
+        b=VOVVw2fToUk/FFTb887ylcSaKHUDdOyUATvz5jwVACZgjcjagl7CPvAY+ly7mqfBaa
+         NosyHQ8VlJ5++M2+HST5/dlDTiVr9J3pKpmuPWHRczv2vvR8Qi3FL1EZTYNGdBAPuB2W
+         VS8sVIIzt+F1Kr4aUA0PtogNNejWAcspzSgzPHiH+ota8U2Pmfh5FT51YVVPeeCAxZLL
+         AR8EYtyEQOBb9pr/BQ06SEtTyoWcSuE9aCWyAAYSeSlDyQbpD5nC6RA97ymnLouy0Gt7
+         HyvWJedpZ2tHVnqFPD8yreTxGdFQFG0r6s0ryP32gKEgjbzy0BWbZErJigjgQEzRI9M5
+         SaYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1VkpyMwu7TaCcYJvn0nbhtT6vs+pfITfuVaHyqtsg9k=;
-        b=pKTIR6waYJdcm2bkaL4qt/q5BLkb5hiJEFuQJojoqYOYRuvLSKZAcDypyJX6lvyInh
-         h0+1NXL7YxUZlds1/lM0UzyTrZFfgmJc7xA9lS1NFrhi7wnfsRsfU0yD2goibuDZ5z9A
-         4eAMywvW8i3pA/NfdERGCajNXG2nhyzzHFLqOAyrd84DEPg/G70i9uHKRKOlCT1yBI9+
-         gf9HgwQLQS5Z6o2Cy8+tSq2Y0Zb7uJUfSAr2qWbJer8Q4n1kHoCeLK4siDZ8pOppHFn5
-         TwU/YspDR/FQAwZCXlS9KU/nVimFeYoXilC6Hqkw3nRFa079MNvrsq5WEhj2ozejsutP
-         23vA==
-X-Gm-Message-State: AOAM530Ra/ysg1OE5sljTV4MgsRqvX4uuHLlfJLgIv2rtNG+0NlrYVQb
-        9LN4KLpjmAXj0o3Aq1qnhg==
-X-Google-Smtp-Source: ABdhPJymgBHpsJ5WIb9ih+wSBcL0CZncUV4NscumkU8TTxyZiONGrdMRwFRsrtj35wSMzi5PrPFb6A==
-X-Received: by 2002:a05:6830:1e14:: with SMTP id s20mr4210656otr.199.1614974923199;
-        Fri, 05 Mar 2021 12:08:43 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e13sm812769otj.64.2021.03.05.12.08.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 12:08:42 -0800 (PST)
-Received: (nullmailer pid 566781 invoked by uid 1000);
-        Fri, 05 Mar 2021 20:08:41 -0000
-Date:   Fri, 5 Mar 2021 14:08:41 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     devicetree@vger.kernel.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Subject: Re: [PATCH 02/13] dt-bindings: firmware: scm: Add SC7280 support
-Message-ID: <20210305200841.GA566727@robh.at.kernel.org>
-References: <1613114930-1661-1-git-send-email-rnayak@codeaurora.org>
- <1613114930-1661-3-git-send-email-rnayak@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OoEQcJMAXbKGiyGxQKoGUMRplynTrICw/5hDPty3yZg=;
+        b=F1d6jzqLvJdlDTlWE9uesbBG0qRM6NVNj/Z79d064aw/T/sVtLzff/5H2ayd1qD1a1
+         3FZOsZWfcUCWjSFeVzHiPBo90T8CPeZ9meebrPfLvrBwfp2Oz7GgQUBUKjyg4k7cMMO7
+         5eeAnJuDuYoOqk3HuJpKwngsXDTESOYnLmoXCINwetbhSVhF502Qm5GhGokVPVjq1e2t
+         lxgS6MpAnhzk11uUHLN+zbIpvTZBU2sQpzYryXPYAsPwAfHFPT8z2FZS4Z1JEG8fWv3m
+         SBs4NwScxoFkK4pphSvHkhUKLSBJcQyV5DWa99A48aRmmeqmgchjYnnB5b4T7oW+iYBX
+         2MVw==
+X-Gm-Message-State: AOAM530URHa32oOW9fDqzOeuuq6xPAw1VHHHn3UmjzXQQyRACDRvkPd8
+        r0VTkIbBCtWuq39+i3XafPQli3yX5L0sRY1LZyYV6A==
+X-Google-Smtp-Source: ABdhPJxS5h1EWUlNojwKpAP6JsCTcU4eYmSz+ZPFdFA3w4oqj3bAZTccNG15l+jdS6okRPOdrUvinWVhN5F98cyCmjI=
+X-Received: by 2002:ab0:29d2:: with SMTP id i18mr7596987uaq.71.1614974947963;
+ Fri, 05 Mar 2021 12:09:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1613114930-1661-3-git-send-email-rnayak@codeaurora.org>
+References: <20210304004219.134051-1-andrealmeid@collabora.com>
+ <CAFTs51XAr2b3DmcSM4=qeU5cNuh0mTxUbhG66U6bc63YYzkzYA@mail.gmail.com>
+ <bc54423b-753f-44be-4e4f-4535e27ad35c@collabora.com> <CAFTs51VEj7hVfohcNNqOJtJYkDQ_pd76HAmJWWUFKbiMwsewAw@mail.gmail.com>
+In-Reply-To: <CAFTs51VEj7hVfohcNNqOJtJYkDQ_pd76HAmJWWUFKbiMwsewAw@mail.gmail.com>
+From:   Peter Oskolkov <posk@posk.io>
+Date:   Fri, 5 Mar 2021 12:08:54 -0800
+Message-ID: <CAFTs51XnZFRHcw9qgpD-ZoQJa=WRU9c0y1ZJB1-xk6=7TmMhNA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 00/13] Add futex2 syscall
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        kernel@collabora.com, krisman@collabora.com,
+        pgriffais@valvesoftware.com, z.figura12@gmail.com,
+        joel@joelfernandes.org, malteskarupke@fastmail.fm,
+        linux-api@vger.kernel.org, fweimer@redhat.com,
+        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, acme@kernel.org, Jonathan Corbet <corbet@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Feb 2021 12:58:39 +0530, Rajendra Nayak wrote:
-> Add compatible for SC7280 SoC
-> 
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/firmware/qcom,scm.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Fri, Mar 5, 2021 at 12:03 PM Peter Oskolkov <posk@posk.io> wrote:
+>
+> Hi Andr=C3=A9!
+>
+> On Thu, Mar 4, 2021 at 10:58 AM Andr=C3=A9 Almeida <andrealmeid@collabora=
+.com> wrote:
+> >
+> > Hi Peter,
+> >
+> > =C3=80s 02:44 de 04/03/21, Peter Oskolkov escreveu:
+> > > On Wed, Mar 3, 2021 at 5:22 PM Andr=C3=A9 Almeida <andrealmeid@collab=
+ora.com> wrote:
+> > >>
+> > >> Hi,
+> > >>
+> > >> This patch series introduces the futex2 syscalls.
+> > >>
+> > >> * FAQ
+> > >>
+> > >>   ** "And what's about FUTEX_64?"
+> > >>
+> > >>   By supporting 64 bit futexes, the kernel structure for futex would
+> > >>   need to have a 64 bit field for the value, and that could defeat o=
+ne of
+> > >>   the purposes of having different sized futexes in the first place:
+> > >>   supporting smaller ones to decrease memory usage. This might be
+> > >>   something that could be disabled for 32bit archs (and even for
+> > >>   CONFIG_BASE_SMALL).
+> > >>
+> > >>   Which use case would benefit for FUTEX_64? Does it worth the trade=
+-offs?
+> > >
+> > > The ability to store a pointer value on 64bit platforms is an
+> > > important use case.
+> > > Imagine a simple producer/consumer scenario, with the producer updati=
+ng
+> > > some shared memory data and waking the consumer. Storing the pointer
+> > > in the futex makes it so that only one shared memory location needs t=
+o be
+> > > accessed "atomically", etc. With two atomics synchronization becomes
+> > > more involved (=3D slower).
+> > >
+> >
+> > So the idea is to, instead of doing this:
+> >
+> > T1:
+> > atomic_set(&shm_addr, buffer_addr);
+> > atomic_set(&futex, 0);
+> > futex_wake(&futex, 1);
+> >
+> > T2:
+> > consume(shm_addr);
+> >
+> > To do that:
+> >
+> > T1:
+> > atomic_set(&futex, buffer_addr);
+> > futex_wake(&futex, 1);
+> >
+> > T2:
+> > consume(futex);
+> >
+> > Right?
+>
+> More like this:
+>
+> T1 (producer):
+> while (true) {
+>     ptr =3D get_new_data();
+>     atomic_set(&futex, ptr);
+>     futex_wake(&futex, 1);
+> }
+>
+> T1 (consumer):
+> some_data *prev =3D NULL;
+> while (true) {
+>   futex_wait(&futex, prev);
+>   some_data *next =3D atomic_get(&futex);
+>   if (next =3D=3D prev) continue;  /* spurious wakeup */
+>
+>   consume_data(next);
+>   prev =3D next;
+> }
 
-Acked-by: Rob Herring <robh@kernel.org>
+Or an even more complete example:
+
+T1 (producer):
+while (true) {
+    next =3D get_new_data();
+    atomic_set(&futex, next);
+    futex_wake(&futex, 1);
+
+   /* wait for the consumer */
+   prev =3D next;
+   do {
+     next =3D atomic_get(&futex);
+     futex_wait(&futex, prev);
+  } while (next !=3D NULL);
+
+}
+
+T2 (consumer):
+some_data *prev =3D NULL;
+while (true) {
+    futex_wait(&futex, prev);
+    some_data *next =3D atomic_get(&futex);
+    if (next =3D=3D prev) continue;  /* spurious wakeup */
+
+    consume_data(next);
+    prev =3D next;
+    atomic_set(&futex, NULL);
+    futex_wake(&futex, 1); /* signal we can consumer more */
+}
+
+>
+>
+>
+> >
+> > I'll try to write a small test to see how the perf numbers looks like.
