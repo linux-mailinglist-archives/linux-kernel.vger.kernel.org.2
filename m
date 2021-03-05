@@ -2,40 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6DD32E32C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 08:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C9D32E330
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 08:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbhCEHqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 02:46:32 -0500
-Received: from verein.lst.de ([213.95.11.211]:45108 "EHLO verein.lst.de"
+        id S229563AbhCEHru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 02:47:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229446AbhCEHqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 02:46:32 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 923F068B05; Fri,  5 Mar 2021 08:46:29 +0100 (CET)
-Date:   Fri, 5 Mar 2021 08:46:29 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Wagner <dwagner@suse.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the block tree
-Message-ID: <20210305074629.GB17414@lst.de>
-References: <20210305105239.377577b5@canb.auug.org.au> <726a90e9-7139-8d0c-6e05-fcf8c15ac6ca@kernel.dk>
+        id S229446AbhCEHrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 02:47:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FF9F64F44;
+        Fri,  5 Mar 2021 07:47:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614930468;
+        bh=gPpw/+5gKNXGYC0+/mLghLRkjHCwJI+DcYIlmUFX/PI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CbK2NZ8NKgicNyfTUCiMZN7uzNIuigKDK+fLQQfWlKBhURQ/9Zq0jW72owYyeCYsQ
+         ZPOShx4m2CJ+dY/gDRvWkK6azf6JQS9T/ylpaOp0/KKpjzp3nx9mydhcZg6H6WiKr4
+         Tg7cgQnFtAXRVKYX0T7rBJrEA8su9Ika3rSPnm76fcfxv4g2Yx8PqOs/TxMVDhZd0u
+         ebDpVDGw5chAlLwkeda9riunp0jehi63zsAWvwUOOPn9nyplybAish22GmJb0K1UiP
+         KjvY0JeXwrTt+juFxKW/hh9iMQIEA5S5rUvz3/MxrV5kMCdGMfrWezITgXBoiuDkX+
+         nbL4KAZ/nm2wQ==
+Date:   Fri, 5 Mar 2021 01:47:45 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] net: plip: Fix fall-through warnings for Clang
+Message-ID: <20210305074745.GA123523@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <726a90e9-7139-8d0c-6e05-fcf8c15ac6ca@kernel.dk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 05:26:42PM -0700, Jens Axboe wrote:
-> Christoph, since there's multiple commits with issues, mind resending
-> a fixed branch? Then I'll drop the one I pulled today.
+In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+warnings by explicitly adding multiple break statements instead of
+letting the code fall through to the next case.
 
-I've fixed the commit id and dropped the patch without the author
-signoff, but your branch still has the current patches.
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/plip/plip.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/plip/plip.c b/drivers/net/plip/plip.c
+index 4406b353123e..e26cf91bdec2 100644
+--- a/drivers/net/plip/plip.c
++++ b/drivers/net/plip/plip.c
+@@ -516,6 +516,7 @@ plip_receive(unsigned short nibble_timeout, struct net_device *dev,
+ 		*data_p |= (c0 << 1) & 0xf0;
+ 		write_data (dev, 0x00); /* send ACK */
+ 		*ns_p = PLIP_NB_BEGIN;
++		break;
+ 	case PLIP_NB_2:
+ 		break;
+ 	}
+@@ -808,6 +809,7 @@ plip_send_packet(struct net_device *dev, struct net_local *nl,
+ 				return HS_TIMEOUT;
+ 			}
+ 		}
++		break;
+ 
+ 	case PLIP_PK_LENGTH_LSB:
+ 		if (plip_send(nibble_timeout, dev,
+-- 
+2.27.0
+
