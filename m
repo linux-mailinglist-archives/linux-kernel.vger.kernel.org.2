@@ -2,72 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D60D32E5A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C185F32E5AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbhCEKDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:03:55 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:51317 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhCEKDe (ORCPT
+        id S230043AbhCEKD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:03:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229701AbhCEKDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:03:34 -0500
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 1C9E8E000C;
-        Fri,  5 Mar 2021 10:03:30 +0000 (UTC)
-Date:   Fri, 5 Mar 2021 11:03:30 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     =?utf-8?Q?Przemys=C5=82aw?= Gaj <pgaj@cadence.com>,
-        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH RESEND][next] i3c: master: cdns: Fix fall-through
- warnings for Clang
-Message-ID: <YEIB8rhVBkYxmA+4@piout.net>
-References: <20210305100123.GA142484@embeddedor>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305100123.GA142484@embeddedor>
+        Fri, 5 Mar 2021 05:03:51 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A7AC061574;
+        Fri,  5 Mar 2021 02:03:51 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id w18so1690288pfu.9;
+        Fri, 05 Mar 2021 02:03:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=hVEmTxN1/mqLbJZhppTs1tBr9kKu33Faj7BxFWSzlek=;
+        b=N+rGjt01Tn1WTdwZpzph0jO9N5UCT0sCWUKQWqRZy8aQq+5CNTKTLkR8VDduBwgDsL
+         6b1FBDK5gYpiyYRHWYVW0KVWT2tNF5sfTeYVcePwclq8nQ7HNVB6adEMkjt4443mE5Eu
+         DK3jmf03Ph4vueHWPyo2BspEgINGALJdHE1Zqry6ZIjvfHK1f4D//BKjOwRnc4km3dBJ
+         iuyRalT/pj1hvBz23OfTQ6/lYXn7gi+fhEN0EoZhD+VNxKPf2cqzC4QkddJd8X/DTudG
+         hobXR+bD3XNEAzNPplqfJPfDfNFMutWuZjcAusf1BF+ZMAW111L5pEo4fzvPV5V6A3Tf
+         vGZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=hVEmTxN1/mqLbJZhppTs1tBr9kKu33Faj7BxFWSzlek=;
+        b=uiMAWWx4938bURD96mDQsMvoy/5/6sS3J7opi+2LHhCSxnsOzDsjFoZYSmirwKEiKc
+         1gip9VkFzNptbBNHUOvMCQ0+C198qW7CRKSkoYogwxmgupLmb5DU8ac2fUbcSmpjpTso
+         94j6GpN+brie2e38f2LTqTPgFLn1Nz3fgDL/yD3E0WqF2YTEDZ33JrZoJNu2Z3/9Avcl
+         qBPzoKp4pAyMaZfFUacmSUc6ZcSk1elwm3LgSO6QdWtP4REudSaeqXXfrAeGbrSShqvw
+         KlcpAbem9rlaTbQZMlnNIhT3RcO2xMfmSs7uKRbqz6wACu/j2X2T489mjI039ehHxwsQ
+         TL1Q==
+X-Gm-Message-State: AOAM533VJiFaHuSVKtV+9iDCzCVrLTcLC9jU/0IylzCo7L7p2IjM4D8b
+        eiodndFay7XdvMmp5qoRl+A+nqJoR0O36j+J
+X-Google-Smtp-Source: ABdhPJzo/tq44YXAVV3Je4T7SeOQMl6BhPMjup2b758SP37zBidxhkOyoG4VHDde242grVWAJL7CXg==
+X-Received: by 2002:a63:ce15:: with SMTP id y21mr7886969pgf.4.1614938631331;
+        Fri, 05 Mar 2021 02:03:51 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.129])
+        by smtp.gmail.com with ESMTPSA id e1sm1829137pjm.12.2021.03.05.02.03.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 02:03:50 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        cang@codeaurora.org, beanhuo@micron.com, jaegeuk@kernel.org,
+        asutoshd@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] scsi: ufs: fix error return code of ufshcd_set_clk_freq()
+Date:   Fri,  5 Mar 2021 02:03:43 -0800
+Message-Id: <20210305100343.14304-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/03/2021 04:01:23-0600, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> by explicitly adding a break statement instead of letting the code fall
-> through to the next case.
-> 
+When the list of head is empty, no error return code of
+ufshcd_set_clk_freq() is assigned.
+To fix this bug, ret is assigned with -ENOENT as error return code.
 
-I though Clang would be fixed to stop warning in that case, can't you
-push a patch there ?
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/i3c/master/i3c-master-cdns.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/i3c/master/i3c-master-cdns.c b/drivers/i3c/master/i3c-master-cdns.c
-> index 3f2226928fe0..5b37ffe5ad5b 100644
-> --- a/drivers/i3c/master/i3c-master-cdns.c
-> +++ b/drivers/i3c/master/i3c-master-cdns.c
-> @@ -1379,6 +1379,8 @@ static void cnds_i3c_master_demux_ibis(struct cdns_i3c_master *master)
->  
->  		case IBIR_TYPE_MR:
->  			WARN_ON(IBIR_XFER_BYTES(ibir) || (ibir & IBIR_ERROR));
-> +			break;
-> +
->  		default:
->  			break;
->  		}
-> -- 
-> 2.27.0
-> 
-
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 77161750c9fb..79899acb3ef6 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -970,8 +970,10 @@ static int ufshcd_set_clk_freq(struct ufs_hba *hba, bool scale_up)
+ 	struct ufs_clk_info *clki;
+ 	struct list_head *head = &hba->clk_list_head;
+ 
+-	if (list_empty(head))
++	if (list_empty(head)) {
++		ret = -ENOENT;
+ 		goto out;
++	}
+ 
+ 	list_for_each_entry(clki, head, list) {
+ 		if (!IS_ERR_OR_NULL(clki->clk)) {
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.17.1
+
