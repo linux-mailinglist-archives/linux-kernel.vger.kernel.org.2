@@ -2,216 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE0132F50B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A7232F50C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbhCEVB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:01:58 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:35106 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229851AbhCEVBh (ORCPT
+        id S229737AbhCEVCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 16:02:00 -0500
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:36576 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230213AbhCEVBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 16:01:37 -0500
-Received: from [10.0.0.178] (c-67-168-106-253.hsd1.wa.comcast.net [67.168.106.253])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 2204D20B83EA;
-        Fri,  5 Mar 2021 13:01:37 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2204D20B83EA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1614978097;
-        bh=5IxUztsfBcIEdkt3OwxV347fI4KVp1/nTWkd9i9MPjY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=UMNXVugEceMZymafNYwUNaNmiKFHiVCkaatsj/z5UCZN7+3Str5918/PGActoIveh
-         cqHuzdTPIvNhkHlumgKSeYfIo4s8cMv8BJATpYPgdqcytl+vkftpjfXvSXXlTaMwUd
-         jASUqo/ykA2ZAF7c2e+hwcIdUZdyGKPUURrPuZI0=
-Subject: Re: [RFC PATCH 07/18] virt/mshv: withdraw memory hypercall
-To:     Michael Kelley <mikelley@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Cc:     "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Lillian Grassin-Drake <Lillian.GrassinDrake@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>
-References: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1605918637-12192-8-git-send-email-nunodasneves@linux.microsoft.com>
- <MWHPR21MB159305DE956E80D2B45ABA85D78F9@MWHPR21MB1593.namprd21.prod.outlook.com>
-From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Message-ID: <0044d83d-e207-50d4-ce71-00d605c6ea7c@linux.microsoft.com>
-Date:   Fri, 5 Mar 2021 13:01:36 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 5 Mar 2021 16:01:43 -0500
+Received: by mail-ot1-f50.google.com with SMTP id t16so3135145ott.3;
+        Fri, 05 Mar 2021 13:01:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tCTsWhSOl0VSvNM9dJzSETj+napvS3H1QXFbSSLzpV0=;
+        b=Nj1pWHd49J1Sg5sEE5xvSOM5cAF4vDA4rQbRxCR8IkzhgcvPpQwi9hUwvOI2Y7Yi+A
+         Q/ShyMMwAnsIw2iS8pAkEEFPoeqqpCp1joA9STHkwjXzoIaR8N1yzspeaW956/DyuhfE
+         DLspNK/GJaA1u0ucsx+UvAuQSI0tV9vFITLWPQLQyw1zFWDA8x0w8ilZ60qatrzH1RlC
+         d/NkhIEARTF7ooFzuSllcuLN3PtxBrCBfn/zSzACcZ2j1c3p6NHoxsgHEQPBoAoWTcvA
+         8xEXuVjzrAppqPca5lJOxVv+AKYgQMiMlKpxG55hQ5iA9GbhWdXm0fbh3fve+/1uo2Xg
+         kH6Q==
+X-Gm-Message-State: AOAM533en4uP1mooSBTXjgY4GSOU52bw6/vpACE5Vri/rpQuLNdCIvuf
+        b2ofEYISn8YsTknCsShAIg==
+X-Google-Smtp-Source: ABdhPJxZev2D1I4Q9LzV3e74lC2o5oxAXT6c99TN3OZNkH26a4it0BFlXTgREs3ZAlErkNfA0Mur3A==
+X-Received: by 2002:a9d:7c3:: with SMTP id 61mr9704874oto.349.1614978102375;
+        Fri, 05 Mar 2021 13:01:42 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r3sm746186oif.5.2021.03.05.13.01.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 13:01:41 -0800 (PST)
+Received: (nullmailer pid 636697 invoked by uid 1000);
+        Fri, 05 Mar 2021 21:01:40 -0000
+Date:   Fri, 5 Mar 2021 15:01:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     mgross@linux.intel.com
+Cc:     markgross@kernel.org, arnd@arndb.de, bp@suse.de,
+        damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        peng.fan@nxp.com, shawnguo@kernel.org, jassisinghbrar@gmail.com,
+        linux-kernel@vger.kernel.org,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 04/34] dt-bindings: Add bindings for Keem Bay IPC
+ driver
+Message-ID: <20210305210140.GA622142@robh.at.kernel.org>
+References: <20210212222304.110194-1-mgross@linux.intel.com>
+ <20210212222304.110194-5-mgross@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <MWHPR21MB159305DE956E80D2B45ABA85D78F9@MWHPR21MB1593.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212222304.110194-5-mgross@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/2021 11:44 AM, Michael Kelley wrote:
-> From: Nuno Das Neves <nunodasneves@linux.microsoft.com> Sent: Friday, November 20, 2020 4:30 PM
->>
->> Withdraw the memory from a finalized partition and free the pages.
->> The partition is now cleaned up correctly when the fd is released.
->>
->> Co-developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
->> Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
->> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
->> ---
->>  include/asm-generic/hyperv-tlfs.h | 10 ++++++
->>  virt/mshv/mshv_main.c             | 54 ++++++++++++++++++++++++++++++-
->>  2 files changed, 63 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
->> index ab6ae6c164f5..2a49503b7396 100644
->> --- a/include/asm-generic/hyperv-tlfs.h
->> +++ b/include/asm-generic/hyperv-tlfs.h
->> @@ -148,6 +148,7 @@ struct ms_hyperv_tsc_page {
->>  #define HVCALL_DELETE_PARTITION			0x0043
->>  #define HVCALL_GET_PARTITION_ID			0x0046
->>  #define HVCALL_DEPOSIT_MEMORY			0x0048
->> +#define HVCALL_WITHDRAW_MEMORY			0x0049
->>  #define HVCALL_CREATE_VP			0x004e
->>  #define HVCALL_GET_VP_REGISTERS			0x0050
->>  #define HVCALL_SET_VP_REGISTERS			0x0051
->> @@ -472,6 +473,15 @@ union hv_proximity_domain_info {
->>  	u64 as_uint64;
->>  };
->>
->> +struct hv_withdraw_memory_in {
->> +	u64 partition_id;
->> +	union hv_proximity_domain_info proximity_domain_info;
->> +};
->> +
->> +struct hv_withdraw_memory_out {
->> +	u64 gpa_page_list[0];
+On Fri, Feb 12, 2021 at 02:22:34PM -0800, mgross@linux.intel.com wrote:
+> From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 > 
-> For a variable size array, the Linux kernel community has an effort
-> underway to replace occurrences of [0] and [1] with just [].  I think
-> [] can be used here.
+> Add DT binding documentation for the Intel Keem Bay IPC driver, which
+
+Bindings are for h/w blocks, not drivers. From a binding perspective, I 
+don't really care what the driver architecture for some OS looks like. I 
+continue to not understand what this h/w looks like. A block diagram 
+would help as would understanding what blocks have multiple clients 
+(mailboxes and xlink in particular).
+
+> enables communication between the Computing Sub-System (CSS) and the
+> Multimedia Sub-System (MSS) of the Intel Movidius SoC code named Keem
+> Bay.
 > 
-
-It seems the compiler doesn't like that, because there's no other members in the struct?
-
-./include/asm-generic/hyperv-tlfs.h:452:6: error: flexible array member in a struct with no named members
-  452 |  u64 gpa_page_list[];
-
-I'll add a comment explaining that it's a hack to work around the compiler.
-
->> +};
->> +
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> Reviewed-by: Mark Gross <mgross@linux.intel.com>
+> Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> Signed-off-by: Mark Gross <mgross@linux.intel.com>
+> ---
+>  .../bindings/soc/intel/intel,keembay-ipc.yaml | 45 +++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
 > 
-> Add __packed to the above two structs.
+> diff --git a/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+> new file mode 100644
+> index 000000000000..586fe73f4cd4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+> @@ -0,0 +1,45 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2020 Intel Corporation
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/soc/intel/intel,keembay-ipc.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Keem Bay IPC
+> +
+> +maintainers:
+> +  - Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> +
+> +description:
+> +  The Keem Bay IPC driver enables Inter-Processor Communication (IPC) with the
+> +  Visual Processor Unit (VPU) embedded in the Intel Movidius SoC code named
+> +  Keem Bay.
+> +
+> +properties:
+> +  compatible:
+> +    const: intel,keembay-ipc
+> +
+> +  memory-region:
+> +    items:
+> +      - description:
+> +          Reserved memory region used by the CPU to allocate IPC packets.
+> +      - description:
+> +          Reserved memory region used by the VPU to allocate IPC packets.
+> +
+> +  mboxes:
+> +    description: VPU IPC Mailbox.
+> +
+> +required:
+> +  - compatible
+> +  - memory-region
+> +  - mboxes
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    ipc {
+> +          compatible = "intel,keembay-ipc";
+> +          memory-region = <&ipc_cpu_reserved>, <&ipc_vpu_reserved>;
+> +          mboxes = <&vpu_ipc_mbox 0>;
+> +    };
+> -- 
+> 2.17.1
 > 
-
-Will do.
-
->>  struct hv_lp_startup_status {
->>  	u64 hv_status;
->>  	u64 substatus1;
->> diff --git a/virt/mshv/mshv_main.c b/virt/mshv/mshv_main.c
->> index c4130a6508e5..162a1bb42a4a 100644
->> --- a/virt/mshv/mshv_main.c
->> +++ b/virt/mshv/mshv_main.c
->> @@ -14,6 +14,7 @@
->>  #include <linux/slab.h>
->>  #include <linux/file.h>
->>  #include <linux/anon_inodes.h>
->> +#include <linux/mm.h>
->>  #include <linux/mshv.h>
->>  #include <asm/mshyperv.h>
->>
->> @@ -57,8 +58,58 @@ static struct miscdevice mshv_dev = {
->>  	.mode = 600,
->>  };
->>
->> +#define HV_WITHDRAW_BATCH_SIZE	(PAGE_SIZE / sizeof(u64))
-> 
-> Use HV_HYP_PAGE_SIZE so that we're explicit that the dependency
-> is on the page size used by Hyper-V, which might be different from the
-> guest page size (at least on architectures like ARM64).
-> 
-
-Yes, will do.
-
->>  #define HV_INIT_PARTITION_DEPOSIT_PAGES 208
->>
->> +static int
->> +hv_call_withdraw_memory(u64 count, int node, u64 partition_id)
->> +{
->> +	struct hv_withdraw_memory_in *input_page;
->> +	struct hv_withdraw_memory_out *output_page;
->> +	u16 completed;
->> +	u64 hypercall_status;
->> +	unsigned long remaining = count;
->> +	int status;
->> +	int i;
->> +	unsigned long flags;
->> +
->> +	while (remaining) {
->> +		local_irq_save(flags);
->> +
->> +		input_page = (struct hv_withdraw_memory_in *)(*this_cpu_ptr(
->> +			hyperv_pcpu_input_arg));
->> +		output_page = (struct hv_withdraw_memory_out *)(*this_cpu_ptr(
->> +			hyperv_pcpu_output_arg));
->> +
->> +		input_page->partition_id = partition_id;
->> +		input_page->proximity_domain_info.as_uint64 = 0;
->> +		hypercall_status = hv_do_rep_hypercall(
->> +			HVCALL_WITHDRAW_MEMORY,
->> +			min(remaining, HV_WITHDRAW_BATCH_SIZE), 0, input_page,
->> +			output_page);
->> +
->> +		completed = (hypercall_status & HV_HYPERCALL_REP_COMP_MASK) >>
->> +			    HV_HYPERCALL_REP_COMP_OFFSET;
->> +
->> +		for (i = 0; i < completed; i++)
->> +			__free_page(pfn_to_page(output_page->gpa_page_list[i]));
->> +
->> +		local_irq_restore(flags);
-> 
-> Seems like there's some risk that we have interrupts disabled for too long.
-> We could be calling __free_page() up to 512 times.  It might be better for this
-> function to allocate its own page to be used as the output page, so that interrupts
-> can be enabled immediately after the hypercall completes.  Then the __free_page()
-> loop can execute with interrupts enabled.   We have the per-cpu input and output
-> pages to avoid the overhead of allocating/freeing pages for each hypercall, but in this
-> case a private output page might be warranted.
-> 
-
-Good idea, I'll do that.
-
->> +
->> +		status = hypercall_status & HV_HYPERCALL_RESULT_MASK;
->> +		if (status != HV_STATUS_SUCCESS) {
->> +			if (status != HV_STATUS_NO_RESOURCES)
->> +				pr_err("%s: %s\n", __func__,
->> +				       hv_status_to_string(status));
->> +			break;
->> +		}
->> +
->> +		remaining -= completed;
->> +	}
->> +
->> +	return -hv_status_to_errno(status);
->> +}
->> +
->>  static int
->>  hv_call_create_partition(
->>  		u64 flags,
->> @@ -230,7 +281,8 @@ destroy_partition(struct mshv_partition *partition)
->>
->>  	/* Deallocates and unmaps everything including vcpus, GPA mappings etc */
->>  	hv_call_finalize_partition(partition->id);
->> -	/* TODO: Withdraw and free all pages we deposited */
->> +	/* Withdraw and free all pages we deposited */
->> +	hv_call_withdraw_memory(U64_MAX, NUMA_NO_NODE, partition->id);
->>
->>  	hv_call_delete_partition(partition->id);
->>
->> --
->> 2.25.1
