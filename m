@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E2632E9AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0B232E94D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbhCEMeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:34:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44932 "EHLO mail.kernel.org"
+        id S232495AbhCEMb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:31:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232397AbhCEMdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:33:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7EFE65012;
-        Fri,  5 Mar 2021 12:33:42 +0000 (UTC)
+        id S231652AbhCEMb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:31:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E589065029;
+        Fri,  5 Mar 2021 12:31:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947623;
-        bh=grZjtHtZpJBxYVyZyTtT1ZRu+/zKKO77g4aT/2nIiIw=;
+        s=korg; t=1614947477;
+        bh=sGC019GjoYdCKhwocjintjheJqDKpiJDxeOOV4WVGxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ENkzONjC0VfWYjhN4t7ZJAKi6NsCZAEkaYNmJtVryxDa5WpyyOKC+MSn3eJQCF7hS
-         DdwZ+Px7lfnvM9pYAx4qIAvGnXciFrZx40FxyBaBp9y1jyMM9lzWbtw0jYkQDk6MEv
-         ce+gyNk7Oqygaq56TKiqi6TMV+x8AHqPdgaLSvys=
+        b=E2P3mLO8w0bi5zawyBiwpYry1uMWFvFlQw/gpokzXy4LvrMrcDMyg2tl5dGxgmGdd
+         3Ttaz2p7UtqWbbhYGK7n7n6MFjfLwoq6mp31alhN6ePyWw32qV3YwBvi4Mvlb2ygJS
+         ztkXe1IkvJo3rT6ehIXHRnrFWNn8SD+EzkqghDnw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Frank van der Linden <fllinden@amazon.com>,
-        Shaoying Xu <shaoyi@amazon.com>, Will Deacon <will@kernel.org>
-Subject: [PATCH 5.4 05/72] arm64 module: set plt* section addresses to 0x0
-Date:   Fri,  5 Mar 2021 13:21:07 +0100
-Message-Id: <20210305120857.616467227@linuxfoundation.org>
+        stable@vger.kernel.org, Miaoqing Pan <miaoqing@codeaurora.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 049/102] ath10k: fix wmi mgmt tx queue full due to race condition
+Date:   Fri,  5 Mar 2021 13:21:08 +0100
+Message-Id: <20210305120905.702963220@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
-References: <20210305120857.341630346@linuxfoundation.org>
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+References: <20210305120903.276489876@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +41,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shaoying Xu <shaoyi@amazon.com>
+From: Miaoqing Pan <miaoqing@codeaurora.org>
 
-commit f5c6d0fcf90ce07ee0d686d465b19b247ebd5ed7 upstream.
+[ Upstream commit b55379e343a3472c35f4a1245906db5158cab453 ]
 
-These plt* and .text.ftrace_trampoline sections specified for arm64 have
-non-zero addressses. Non-zero section addresses in a relocatable ELF would
-confuse GDB when it tries to compute the section offsets and it ends up
-printing wrong symbol addresses. Therefore, set them to zero, which mirrors
-the change in commit 5d8591bc0fba ("module: set ksymtab/kcrctab* section
-addresses to 0x0").
+Failed to transmit wmi management frames:
 
-Reported-by: Frank van der Linden <fllinden@amazon.com>
-Signed-off-by: Shaoying Xu <shaoyi@amazon.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210216183234.GA23876@amazon.com
-Signed-off-by: Will Deacon <will@kernel.org>
-[shaoyi@amazon.com: made same changes in arch/arm64/kernel/module.lds for 5.4]
-Signed-off-by: Shaoying Xu <shaoyi@amazon.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[84977.840894] ath10k_snoc a000000.wifi: wmi mgmt tx queue is full
+[84977.840913] ath10k_snoc a000000.wifi: failed to transmit packet, dropping: -28
+[84977.840924] ath10k_snoc a000000.wifi: failed to submit frame: -28
+[84977.840932] ath10k_snoc a000000.wifi: failed to transmit frame: -28
+
+This issue is caused by race condition between skb_dequeue and
+__skb_queue_tail. The queue of ‘wmi_mgmt_tx_queue’ is protected by a
+different lock: ar->data_lock vs list->lock, the result is no protection.
+So when ath10k_mgmt_over_wmi_tx_work() and ath10k_mac_tx_wmi_mgmt()
+running concurrently on different CPUs, there appear to be a rare corner
+cases when the queue length is 1,
+
+  CPUx (skb_deuque)			CPUy (__skb_queue_tail)
+					next=list
+					prev=list
+  struct sk_buff *skb = skb_peek(list);	WRITE_ONCE(newsk->next, next);
+  WRITE_ONCE(list->qlen, list->qlen - 1);WRITE_ONCE(newsk->prev, prev);
+  next       = skb->next;		WRITE_ONCE(next->prev, newsk);
+  prev       = skb->prev;		WRITE_ONCE(prev->next, newsk);
+  skb->next  = skb->prev = NULL;	list->qlen++;
+  WRITE_ONCE(next->prev, prev);
+  WRITE_ONCE(prev->next, next);
+
+If the instruction ‘next = skb->next’ is executed before
+‘WRITE_ONCE(prev->next, newsk)’, newsk will be lost, as CPUx get the
+old ‘next’ pointer, but the length is still added by one. The final
+result is the length of the queue will reach the maximum value but
+the queue is empty.
+
+So remove ar->data_lock, and use 'skb_queue_tail' instead of
+'__skb_queue_tail' to prevent the potential race condition. Also switch
+to use skb_queue_len_lockless, in case we queue a few SKBs simultaneously.
+
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1.c2-00033-QCAHLSWMTPLZ-1
+
+Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1608618887-8857-1-git-send-email-miaoqing@codeaurora.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/module.lds |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
---- a/arch/arm64/kernel/module.lds
-+++ b/arch/arm64/kernel/module.lds
-@@ -1,5 +1,5 @@
- SECTIONS {
--	.plt (NOLOAD) : { BYTE(0) }
--	.init.plt (NOLOAD) : { BYTE(0) }
--	.text.ftrace_trampoline (NOLOAD) : { BYTE(0) }
-+	.plt 0 (NOLOAD) : { BYTE(0) }
-+	.init.plt 0 (NOLOAD) : { BYTE(0) }
-+	.text.ftrace_trampoline 0 (NOLOAD) : { BYTE(0) }
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 4bc84cc5e824..f5c0f9bac840 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3763,23 +3763,16 @@ bool ath10k_mac_tx_frm_has_freq(struct ath10k *ar)
+ static int ath10k_mac_tx_wmi_mgmt(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct sk_buff_head *q = &ar->wmi_mgmt_tx_queue;
+-	int ret = 0;
+-
+-	spin_lock_bh(&ar->data_lock);
+ 
+-	if (skb_queue_len(q) == ATH10K_MAX_NUM_MGMT_PENDING) {
++	if (skb_queue_len_lockless(q) >= ATH10K_MAX_NUM_MGMT_PENDING) {
+ 		ath10k_warn(ar, "wmi mgmt tx queue is full\n");
+-		ret = -ENOSPC;
+-		goto unlock;
++		return -ENOSPC;
+ 	}
+ 
+-	__skb_queue_tail(q, skb);
++	skb_queue_tail(q, skb);
+ 	ieee80211_queue_work(ar->hw, &ar->wmi_mgmt_tx_work);
+ 
+-unlock:
+-	spin_unlock_bh(&ar->data_lock);
+-
+-	return ret;
++	return 0;
  }
+ 
+ static enum ath10k_mac_tx_path
+-- 
+2.30.1
+
 
 
