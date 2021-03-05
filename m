@@ -2,321 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90AF32E3FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB34032E3FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhCEIyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:54:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:49588 "EHLO foss.arm.com"
+        id S229611AbhCEIys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:54:48 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:52688 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229666AbhCEIyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:54:10 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 601E6D6E;
-        Fri,  5 Mar 2021 00:54:10 -0800 (PST)
-Received: from [10.57.46.156] (unknown [10.57.46.156])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6AAD3F7D7;
-        Fri,  5 Mar 2021 00:54:05 -0800 (PST)
-Subject: Re: [PATCH RESEND WITH CCs v3 4/4] perf tools: determine if LR is the
- return address
-To:     Alexandre Truong <alexandre.truong@arm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Cc:     John Garry <john.garry@huawei.com>, Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kemeng Shi <shikemeng@huawei.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Al Grant <al.grant@arm.com>,
-        Wilco Dijkstra <wilco.dijkstra@arm.com>
-References: <20210304163255.10363-1-alexandre.truong@arm.com>
- <20210304163255.10363-4-alexandre.truong@arm.com>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <57fdc0c9-ea72-5cd0-405a-c7bff0daf9d6@arm.com>
-Date:   Fri, 5 Mar 2021 10:54:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229493AbhCEIy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 03:54:27 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DsM406713z9twsP;
+        Fri,  5 Mar 2021 09:54:24 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id T8CJAndR9POI; Fri,  5 Mar 2021 09:54:24 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DsM405JP6z9twsN;
+        Fri,  5 Mar 2021 09:54:24 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B77808B78B;
+        Fri,  5 Mar 2021 09:54:25 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ODY3hqu1EVFa; Fri,  5 Mar 2021 09:54:25 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4D8ED8B818;
+        Fri,  5 Mar 2021 09:54:25 +0100 (CET)
+Subject: Re: [PATCH v5 05/22] powerpc/irq: Add helper to set regs->softe
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+ <5f37d1177a751fdbca79df461d283850ca3a34a2.1612796617.git.christophe.leroy@csgroup.eu>
+ <1612832745.vhjk6358hf.astroid@bobo.none>
+ <5987787e-ee80-ed0e-0c34-9884f6aad3c5@csgroup.eu>
+ <1612856863.0x6ebz3hce.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <d243672c-ea47-2d0c-bfe4-e6eed5460868@csgroup.eu>
+Date:   Fri, 5 Mar 2021 09:54:24 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210304163255.10363-4-alexandre.truong@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1612856863.0x6ebz3hce.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've tested this patchset on a few different applications and have seen it significantly improve
-quality of frame pointer stacks on aarch64. For example with GDB 10 and default build options,
-'bfd_calc_gnu_debuglink_crc32' is a leaf function, and its caller 'gdb_bfd_crc' is ommitted,
-but with the patchset it is included. I've also confirmed that this is correct from looking at
-the source code.
 
-Before:
 
-        # Children      Self  Command          Shared Object               Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-        # ........  ........  ...............  ..........................  ...........
-        #
-            34.55%     0.00%  gdb-100          gdb-100                     [.] _start
-                   0.78%
-                        _start
-                        __libc_start_main
-                        main
-                        gdb_main
-                        captured_command_loop
-                        gdb_do_one_event
-                        check_async_event_handlers
-                        fetch_inferior_event
-                        inferior_event_handler
-                        do_all_inferior_continuations
-                        attach_post_wait
-                        post_create_inferior
-                        svr4_solib_create_inferior_hook
-                        solib_add
-                        solib_read_symbols
-                        symbol_file_add_with_addrs
-                        read_symbols
-                        elf_symfile_read
-                        find_separate_debug_file_by_debuglink[abi:cxx11]
-                        find_separate_debug_file
-                        separate_debug_file_exists
-                        gdb_bfd_crc
-                        bfd_calc_gnu_debuglink_crc32
+Le 09/02/2021 à 08:49, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of February 9, 2021 4:18 pm:
+>>
+>>
+>> Le 09/02/2021 à 02:11, Nicholas Piggin a écrit :
+>>> Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
+>>>> regs->softe doesn't exist on PPC32.
+>>>>
+>>>> Add irq_soft_mask_regs_set_state() helper to set regs->softe.
+>>>> This helper will void on PPC32.
+>>>>
+>>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>>> ---
+>>>
+>>> You could do the same with the kuap_ functions to change some ifdefs
+>>> to IS_ENABLED.
+>>>
+>>> That's just my preference but if you prefer this way I guess that's
+>>> okay.
+>>>
+>>
+>>
+>> That's also my preference on the long term.
+>>
+>> Here it is ephemeral, I have a follow up series implementing interrupt exit/entry in C and getting
+>> rid of all the assembly kuap hence getting rid of those ifdefs.
+> 
+> I thought it might have been because you hate ifdef more tha most :)
+>   
+>> The issue I see when using IS_ENABLED() is that you have to indent to the right, then you interfere
+>> with the file history and 'git blame'
+> 
+> Valid point if it's just going to indent back the other way in your next
+> series.
+> 
+>> Thanks for reviewing my series and looking forward to your feedback on my series on the interrupt
+>> entry/exit that I will likely release later today.
+> 
+> Cool, I'm eager to see them.
+> 
 
-After:
+Hi Nick, have you been able to look at it ?
 
-        # Children      Self  Command          Shared Object               Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-        # ........  ........  ...............  ..........................  ...........
-        #
-            34.55%     0.00%  gdb-100          gdb-100                     [.] _start
-                   0.78%
-                        _start
-                        __libc_start_main
-                        main
-                        gdb_main
-                        captured_command_loop
-                        gdb_do_one_event
-                        check_async_event_handlers
-                        fetch_inferior_event
-                        inferior_event_handler
-                        do_all_inferior_continuations
-                        attach_post_wait
-                        post_create_inferior
-                        svr4_solib_create_inferior_hook
-                        solib_add
-                        solib_read_symbols
-                        symbol_file_add_with_addrs
-                        read_symbols
-                        elf_symfile_read
-                        find_separate_debug_file_by_debuglink[abi:cxx11]
-                        find_separate_debug_file
-                        separate_debug_file_exists
-                        get_file_crc   <--------------------- leaf frame caller added
-                        bfd_calc_gnu_debuglink_crc32
+https://patchwork.ozlabs.org/project/linuxppc-dev/cover/cover.1612864003.git.christophe.leroy@csgroup.eu/
 
-There is a question about whether the overhead of recording all the registers is acceptable, for
-filesize and time. We could make it a manual step, at the cost of not showing better frame pointer
-stacks by default.
-
-Tested-by: James Clark <james.clark@arm.com>
-
-On 04/03/2021 18:32, Alexandre Truong wrote:
-> On arm64 and frame pointer mode (e.g: perf record --callgraph fp),
-> use dwarf unwind info to check if the link register is the return
-> address in order to inject it to the frame pointer stack.
-> 
-> Write the following application:
-> 
-> 	int a = 10;
-> 
-> 	void f2(void)
-> 	{
-> 		for (int i = 0; i < 1000000; i++)
-> 			a *= a;
-> 	}
-> 
-> 	void f1()
-> 	{
-> 		for (int i = 0; i < 10; i++)
-> 			f2();
-> 	}
-> 
-> 	int main (void)
-> 	{
-> 		f1();
-> 		return 0;
-> 	}
-> 
-> with the following compilation flags:
-> 	gcc -fno-omit-frame-pointer -fno-inline -O2
-> 
-> The compiler omits the frame pointer for f2 on arm. This is a problem
-> with any leaf call, for example an application with many different
-> calls to malloc() would always omit the calling frame, even if it
-> can be determined.
-> 
-> 	./perf record --call-graph fp ./a.out
-> 	./perf report
-> 
-> currently gives the following stack:
-> 
-> 0xffffea52f361
-> _start
-> __libc_start_main
-> main
-> f2
-> 
-> After this change, perf report correctly shows f1() calling f2(),
-> even though it was missing from the frame pointer unwind:
-> 
-> 	./perf report
-> 
-> 0xffffea52f361
-> _start
-> __libc_start_main
-> main
-> f1
-> f2
-> 
-> Signed-off-by: Alexandre Truong <alexandre.truong@arm.com>
-> Cc: John Garry <john.garry@huawei.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Kemeng Shi <shikemeng@huawei.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Kan Liang <kan.liang@linux.intel.com>
-> Cc: Jin Yao <yao.jin@linux.intel.com>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Al Grant <al.grant@arm.com>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: Wilco Dijkstra <wilco.dijkstra@arm.com>
-> ---
->  tools/perf/util/Build                         |  1 +
->  .../util/arm-frame-pointer-unwind-support.c   | 44 +++++++++++++++++++
->  .../util/arm-frame-pointer-unwind-support.h   |  7 +++
->  tools/perf/util/machine.c                     |  9 ++--
->  4 files changed, 58 insertions(+), 3 deletions(-)
->  create mode 100644 tools/perf/util/arm-frame-pointer-unwind-support.c
->  create mode 100644 tools/perf/util/arm-frame-pointer-unwind-support.h
-> 
-> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> index 188521f34347..3b82cb992bce 100644
-> --- a/tools/perf/util/Build
-> +++ b/tools/perf/util/Build
-> @@ -1,3 +1,4 @@
-> +perf-y += arm-frame-pointer-unwind-support.o
->  perf-y += annotate.o
->  perf-y += block-info.o
->  perf-y += block-range.o
-> diff --git a/tools/perf/util/arm-frame-pointer-unwind-support.c b/tools/perf/util/arm-frame-pointer-unwind-support.c
-> new file mode 100644
-> index 000000000000..964efd08e72e
-> --- /dev/null
-> +++ b/tools/perf/util/arm-frame-pointer-unwind-support.c
-> @@ -0,0 +1,44 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include "../arch/arm64/include/uapi/asm/perf_regs.h"
-> +#include "arch/arm64/include/perf_regs.h"
-> +#include "event.h"
-> +#include "arm-frame-pointer-unwind-support.h"
-> +#include "callchain.h"
-> +#include "unwind.h"
-> +
-> +struct entries {
-> +	u64 stack[2];
-> +	size_t length;
-> +};
-> +
-> +static bool get_leaf_frame_caller_enabled(struct perf_sample *sample)
-> +{
-> +	return callchain_param.record_mode == CALLCHAIN_FP && sample->user_regs.regs
-> +		&& sample->user_regs.mask == PERF_REGS_MASK;
-> +}
-> +
-> +static int add_entry(struct unwind_entry *entry, void *arg)
-> +{
-> +	struct entries *entries = arg;
-> +
-> +	entries->stack[entries->length++] = entry->ip;
-> +	return 0;
-> +}
-> +
-> +u64 get_leaf_frame_caller_aarch64(struct perf_sample *sample, struct thread *thread)
-> +{
-> +	int ret;
-> +
-> +	struct entries entries = {{0, 0}, 0};
-> +
-> +	if (!get_leaf_frame_caller_enabled(sample))
-> +		return 0;
-> +
-> +	ret = unwind__get_entries(add_entry, &entries, thread, sample, 2);
-> +
-> +	if (ret || entries.length != 2)
-> +		return ret;
-> +
-> +	return callchain_param.order == ORDER_CALLER ?
-> +		entries.stack[0] : entries.stack[1];
-> +}
-> diff --git a/tools/perf/util/arm-frame-pointer-unwind-support.h b/tools/perf/util/arm-frame-pointer-unwind-support.h
-> new file mode 100644
-> index 000000000000..16dc03fa9abe
-> --- /dev/null
-> +++ b/tools/perf/util/arm-frame-pointer-unwind-support.h
-> @@ -0,0 +1,7 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H
-> +#define __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H
-> +
-> +u64 get_leaf_frame_caller_aarch64(struct perf_sample *sample, struct thread *thread);
-> +
-> +#endif /* __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H */
-> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> index 7f03ffa016b0..dfb72dbc0e2d 100644
-> --- a/tools/perf/util/machine.c
-> +++ b/tools/perf/util/machine.c
-> @@ -34,6 +34,7 @@
->  #include "bpf-event.h"
->  #include <internal/lib.h> // page_size
->  #include "cgroup.h"
-> +#include "arm-frame-pointer-unwind-support.h"
->  
->  #include <linux/ctype.h>
->  #include <symbol/kallsyms.h>
-> @@ -2671,10 +2672,12 @@ static int find_prev_cpumode(struct ip_callchain *chain, struct thread *thread,
->  	return err;
->  }
->  
-> -static u64 get_leaf_frame_caller(struct perf_sample *sample __maybe_unused,
-> -		struct thread *thread __maybe_unused)
-> +static u64 get_leaf_frame_caller(struct perf_sample *sample, struct thread *thread)
->  {
-> -	return 0;
-> +	if (strncmp(thread->maps->machine->env->arch, "aarch64", 7) == 0)
-> +		return get_leaf_frame_caller_aarch64(sample, thread);
-> +	else
-> +		return 0;
->  }
->  
->  static int thread__resolve_callchain_sample(struct thread *thread,
-> 
+Thanks
+Christophe
