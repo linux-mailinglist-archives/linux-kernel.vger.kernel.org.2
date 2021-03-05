@@ -2,98 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17F432F497
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE6D32F499
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:26:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbhCEUXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 15:23:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhCEUWi (ORCPT
+        id S229690AbhCEU0X convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Mar 2021 15:26:23 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2915 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhCEU0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 15:22:38 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A91C06175F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 12:22:38 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id a24so1964231plm.11
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 12:22:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MgB9sUnmB+HDbU7JAxGibZcjoX4E3ntVPdJMz4KOYFw=;
-        b=dLCXmMukcPtwoQkxr3n8IjcWmQ6q7PKDS4dt108Ep+Hg6xtKufWiaRfiYb+CxHR/HC
-         qWKMfkrxZAMSD6QL8O9MUCKoSmwG/ZECasfaVxsuaSX2kBnGlXgijqIIG4MipL0UlkuP
-         PEl4XvNYWvLojiZggWkziHss50vlyhTXkcdGY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MgB9sUnmB+HDbU7JAxGibZcjoX4E3ntVPdJMz4KOYFw=;
-        b=iiKFUkJ18cVyw44gyFwIjaEYeCwl1gOgmmqIsdedgcXBNbMqGNHPLq7MjJdmk3ylIw
-         4n3Eq/hpvgLx2hfNycCN/wxlAC+zrhb+OzFQXE9rKEbLtm3i+D9XakfTCmIkznRhwzP0
-         xxDP+npS3S0KzlvQIBsJdn3K34/RpOjDLZV7eBz5mgED9PN3WQ7r4V7gbxzDL7skk0iA
-         KU/cH2zDJ/i5DkLt9FfxTjCRAyJCr/Z//h+k6ku140JFcHq66uU+dKNCqkGzBYVZYtIp
-         jYlnutamhYqwDouQhpSsFvBhud/g3N1zaOx06L5uwt4CcQS5p7EaVyMiYQa7HKRAuBVM
-         fLHw==
-X-Gm-Message-State: AOAM531etpO7rh5tyRsLKOjaipN9a7VteOcrY4yklLfmptwpFpmIhZ4A
-        8FJ5xzwRLlAomrU8+0ZpqNKYhQ==
-X-Google-Smtp-Source: ABdhPJz904H54bOFu7Tm3S02OXvw0Agtoa0McJF8goVZOFxdTDl2+pz3qI79jeBp+mKHGDstYs9PXQ==
-X-Received: by 2002:a17:902:ee06:b029:e4:ba18:3726 with SMTP id z6-20020a170902ee06b02900e4ba183726mr10198402plb.17.1614975758196;
-        Fri, 05 Mar 2021 12:22:38 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 63sm3854163pfg.187.2021.03.05.12.22.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 12:22:37 -0800 (PST)
-Date:   Fri, 5 Mar 2021 12:22:36 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: arm64: Don't use cbz/adr with external symbols
-Message-ID: <202103051222.1E08D7D31@keescook>
-References: <20210305202124.3768527-1-samitolvanen@google.com>
+        Fri, 5 Mar 2021 15:26:03 -0500
+Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4DsfMP5kfwz5YF0;
+        Sat,  6 Mar 2021 04:23:45 +0800 (CST)
+Received: from dggemi760-chm.china.huawei.com (10.1.198.146) by
+ DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Sat, 6 Mar 2021 04:25:56 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi760-chm.china.huawei.com (10.1.198.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Sat, 6 Mar 2021 04:25:55 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Sat, 6 Mar 2021 04:25:55 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: RE: [PATCH] sched/topology: remove redundant cpumask_and in
+ init_overlap_sched_group
+Thread-Topic: [PATCH] sched/topology: remove redundant cpumask_and in
+ init_overlap_sched_group
+Thread-Index: AQHXEUbFwdk9gqF8eUOp23ZOsJR2kap0wmWAgAETGfA=
+Date:   Fri, 5 Mar 2021 20:25:55 +0000
+Message-ID: <27e60cb105e040deb16af774399db15e@hisilicon.com>
+References: <20210304222944.32504-1-song.bao.hua@hisilicon.com>
+ <jhjeegt7rdg.mognet@arm.com>
+In-Reply-To: <jhjeegt7rdg.mognet@arm.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.103]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305202124.3768527-1-samitolvanen@google.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 12:21:24PM -0800, Sami Tolvanen wrote:
-> allmodconfig + CONFIG_LTO_CLANG_THIN=y fails to build due to following
-> linker errors:
-> 
->   ld.lld: error: irqbypass.c:(function __guest_enter: .text+0x21CC):
->   relocation R_AARCH64_CONDBR19 out of range: 2031220 is not in
->   [-1048576, 1048575]; references hyp_panic
->   >>> defined in vmlinux.o
-> 
->   ld.lld: error: irqbypass.c:(function __guest_enter: .text+0x21E0):
->   relocation R_AARCH64_ADR_PREL_LO21 out of range: 2031200 is not in
->   [-1048576, 1048575]; references hyp_panic
->   >>> defined in vmlinux.o
-> 
-> This is because with LTO, the compiler ends up placing hyp_panic()
-> more than 1MB away from __guest_enter(). Use an unconditional branch
-> and adr_l instead to fix the issue.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1317
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> Suggested-by: Marc Zyngier <maz@kernel.org>
-> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
 
--- 
-Kees Cook
+> -----Original Message-----
+> From: Valentin Schneider [mailto:valentin.schneider@arm.com]
+> Sent: Saturday, March 6, 2021 12:49 AM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
+> vincent.guittot@linaro.org; mingo@redhat.com; peterz@infradead.org;
+> juri.lelli@redhat.com; dietmar.eggemann@arm.com; rostedt@goodmis.org;
+> bsegall@google.com; mgorman@suse.de
+> Cc: linux-kernel@vger.kernel.org; linuxarm@openeuler.org; Song Bao Hua (Barry
+> Song) <song.bao.hua@hisilicon.com>
+> Subject: Re: [PATCH] sched/topology: remove redundant cpumask_and in
+> init_overlap_sched_group
+> 
+> On 05/03/21 11:29, Barry Song wrote:
+> > mask is built in build_balance_mask() by for_each_cpu(i, sg_span), so
+> > it must be a subset of sched_group_span(sg).
+> 
+> So we should indeed have
+> 
+>   cpumask_subset(sched_group_span(sg), mask)
+> 
+> but that doesn't imply
+> 
+>   cpumask_first(sched_group_span(sg)) == cpumask_first(mask)
+> 
+> does it? I'm thinking if in your topology of N CPUs, CPUs 0 and N-1 are the
+> furthest away, you will most likely hit
+
+It is true:
+cpumask_first(sched_group_span(sg)) != cpumask_first(mask)
+
+but 
+
+cpumask_first_and(sched_group_span(sg), mask) = cpumask_first(mask)
+
+since mask is always subset of sched_group_span(sg).
+
+/**
+ * cpumask_first_and - return the first cpu from *srcp1 & *srcp2
+ * @src1p: the first input
+ * @src2p: the second input
+ *
+ * Returns >= nr_cpu_ids if no cpus set in both.  See also cpumask_next_and().
+ */
+
+*srcp2 is subset of *srcp1, so  *srcp1 & *srcp2 = *srcp2
+
+> 
+>   !cpumask_equal(sg_pan, sched_domain_span(sibling->child))
+>                  ^^^^^^                    ^^^^^^^^^^^^^
+>                  CPUN-1                        CPU0
+> 
+> which should be the case on your Kunpeng920 system.
+> 
+> > Though cpumask_first_and
+> > doesn't lead to a wrong result of balance cpu, it is pointless to do
+> > cpumask_and again.
+> >
+> > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> > ---
+> >  kernel/sched/topology.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> > index 12f8058..45f3db2 100644
+> > --- a/kernel/sched/topology.c
+> > +++ b/kernel/sched/topology.c
+> > @@ -934,7 +934,7 @@ static void init_overlap_sched_group(struct sched_domain
+> *sd,
+> >  	int cpu;
+> >
+> >  	build_balance_mask(sd, sg, mask);
+> > -	cpu = cpumask_first_and(sched_group_span(sg), mask);
+> > +	cpu = cpumask_first(mask);
+> >
+> >  	sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
+> >  	if (atomic_inc_return(&sg->sgc->ref) == 1)
+> > --
+> > 1.8.3.1
+
+Thanks
+Barry
+
