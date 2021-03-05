@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A8B32EAC1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:40:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C45432EA8F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233355AbhCEMkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:40:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54110 "EHLO mail.kernel.org"
+        id S233279AbhCEMjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:39:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229950AbhCEMjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:39:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41AE864F44;
-        Fri,  5 Mar 2021 12:39:35 +0000 (UTC)
+        id S230462AbhCEMie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:38:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B70A165012;
+        Fri,  5 Mar 2021 12:38:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947975;
-        bh=TdtoEh6p1SmB8tRJe6fnMmOp9l/pQ/zzA2PAkGW870Q=;
+        s=korg; t=1614947913;
+        bh=1JkpQNtZ3SdC0LsOZyLxa+V3Yxg6V5nE2CLt/WhrWlU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JwDwaWDLVSSnPZzEBUUwrdzc5oxS+xTNV1GmTP9RL5ViKksavUCJpL5m94tB6R5rX
-         FwDfoKlg2n1XffQ1A6bPIwd6c6zHehnWb2Zxi2uNWHfJl/QCDywup+xUJuk3ntvOut
-         TMCj7UXLBhRpqk5J7ZYn3fOBOUVM1UfgjLESMCh0=
+        b=NlffRs5WanOdsHrYi5UPlekxdNNwvcG16iJzEenrF1hBoovU07nqW49N/XsPfhCBb
+         MNEICVB4xS19WS8NjNNVLKD743TEeAtMzksWIRF++RPwlaad0k8hzfT+yGad5gXZ+d
+         kkPz3oHyKogHZgunW9qRP4WJmGMq8f6rbWYs83Eg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Doug Horn <doughorn@google.com>
-Subject: [PATCH 4.14 05/39] drm/virtio: use kvmalloc for large allocations
+        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Eric Yang <eric.yang2@amd.com>,
+        Anson Jacob <anson.jacob@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 33/52] drm/amd/display: Guard against NULL pointer deref when get_i2c_info fails
 Date:   Fri,  5 Mar 2021 13:22:04 +0100
-Message-Id: <20210305120852.026335422@linuxfoundation.org>
+Message-Id: <20210305120855.298573239@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120851.751937389@linuxfoundation.org>
-References: <20210305120851.751937389@linuxfoundation.org>
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+References: <20210305120853.659441428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
+From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
 
-commit ea86f3defd55f141a44146e66cbf8ffb683d60da upstream.
+[ Upstream commit 44a09e3d95bd2b7b0c224100f78f335859c4e193 ]
 
-We observed that some of virtio_gpu_object_shmem_init() allocations
-can be rather costly - order 6 - which can be difficult to fulfill
-under memory pressure conditions. Switch to kvmalloc_array() in
-virtio_gpu_object_shmem_init() and let the kernel vmalloc the entries
-array.
+[Why]
+If the BIOS table is invalid or corrupt then get_i2c_info can fail
+and we dereference a NULL pointer.
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-Link: http://patchwork.freedesktop.org/patch/msgid/20201105014744.1662226-1-senozhatsky@chromium.org
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-Signed-off-by: Doug Horn <doughorn@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[How]
+Check that ddc_pin is not NULL before using it and log an error if it
+is because this is unexpected.
+
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Reviewed-by: Eric Yang <eric.yang2@amd.com>
+Acked-by: Anson Jacob <anson.jacob@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/virtio/virtgpu_vq.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_link.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/gpu/drm/virtio/virtgpu_vq.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_vq.c
-@@ -865,9 +865,9 @@ int virtio_gpu_object_attach(struct virt
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+index fa0e6c8e2447..e3bedf4cc9c0 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+@@ -1124,6 +1124,11 @@ static bool construct(
+ 		goto ddc_create_fail;
  	}
  
- 	/* gets freed when the ring has consumed it */
--	ents = kmalloc_array(obj->pages->nents,
--			     sizeof(struct virtio_gpu_mem_entry),
--			     GFP_KERNEL);
-+	ents = kvmalloc_array(obj->pages->nents,
-+			      sizeof(struct virtio_gpu_mem_entry),
-+			      GFP_KERNEL);
- 	if (!ents) {
- 		DRM_ERROR("failed to allocate ent list\n");
- 		return -ENOMEM;
++	if (!link->ddc->ddc_pin) {
++		DC_ERROR("Failed to get I2C info for connector!\n");
++		goto ddc_create_fail;
++	}
++
+ 	link->ddc_hw_inst =
+ 		dal_ddc_get_line(
+ 			dal_ddc_service_get_ddc_pin(link->ddc));
+-- 
+2.30.1
+
 
 
