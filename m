@@ -2,96 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A416932E742
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8833F32E74A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbhCELc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 06:32:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbhCELc3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 06:32:29 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96D0C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 03:32:28 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lI8gk-0004qL-UY; Fri, 05 Mar 2021 12:32:10 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lI8gi-0002hy-Gg; Fri, 05 Mar 2021 12:32:08 +0100
-Date:   Fri, 5 Mar 2021 12:32:08 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] can: c_can: move runtime PM enable/disable to
- c_can_platform
-Message-ID: <20210305113208.3wm6fvqeunut2yci@pengutronix.de>
-References: <20210301150840.mqngl7og46o3nxjb@pengutronix.de>
- <20210302025542.987600-1-ztong0001@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tedc23qcg7ntrk2r"
-Content-Disposition: inline
-In-Reply-To: <20210302025542.987600-1-ztong0001@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        id S229576AbhCELhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 06:37:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229494AbhCELgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 06:36:33 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A99F64EEE;
+        Fri,  5 Mar 2021 11:36:32 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lI8kw-00HSUa-2N; Fri, 05 Mar 2021 11:36:30 +0000
+Date:   Fri, 05 Mar 2021 11:36:26 +0000
+Message-ID: <87im65zvb9.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Fangrui Song <maskray@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        James Morse <james.morse@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        kvmarm@lists.cs.columbia.edu, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] KVM: arm64: Disable LTO in hyp
+In-Reply-To: <CABCJKudvzBggE7AZQERto5Wo_LoL0G2sNee7_1R7h2TnGhjq8A@mail.gmail.com>
+References: <20210304184544.2014171-1-samitolvanen@google.com>
+        <87k0qmzq5u.wl-maz@kernel.org>
+        <CABCJKufmjMT8+hGEnL3aJM7-OSwhYSHiJA=i8e7dHSGDWXYtsg@mail.gmail.com>
+        <878s72sgwt.wl-maz@kernel.org>
+        <CABCJKud1EmXmmQj-YOUNCFhE3P1W6Uhqpwe1G0zcR5zw71ksJA@mail.gmail.com>
+        <CABCJKudvzBggE7AZQERto5Wo_LoL0G2sNee7_1R7h2TnGhjq8A@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: samitolvanen@google.com, maskray@google.com, ndesaulniers@google.com, james.morse@arm.com, nathan@kernel.org, keescook@chromium.org, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 05 Mar 2021 02:38:17 +0000,
+Sami Tolvanen <samitolvanen@google.com> wrote:
+> 
+> On Thu, Mar 4, 2021 at 2:34 PM Sami Tolvanen <samitolvanen@google.com> wrote:
+> >
+> > On Thu, Mar 4, 2021 at 2:17 PM Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > On Thu, 04 Mar 2021 21:25:41 +0000,
+> > > Sami Tolvanen <samitolvanen@google.com> wrote:
 
---tedc23qcg7ntrk2r
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[...]
 
-On Mon, Mar 01, 2021 at 09:55:40PM -0500, Tong Zhang wrote:
-> Currently doing modprobe c_can_pci will make kernel complain
-> "Unbalanced pm_runtime_enable!", this is caused by pm_runtime_enable()
-> called before pm is initialized.
-> This fix is similar to 227619c3ff7c, move those pm_enable/disable code to
-> c_can_platform.
+> > > > I assume hyp_panic() ends up being placed too far from __guest_enter()
+> > > > when the kernel is large enough. Possibly something to do with LLVM
+> > > > always splitting functions into separate sections with LTO. I'm not
+> > > > sure why the linker cannot shuffle things around to make everyone
+> > > > happy in this case, but I confirmed that this patch also fixes the
+> > > > build issue for me:
+> > > >
+> > > > diff --git a/arch/arm64/kvm/hyp/vhe/switch.c b/arch/arm64/kvm/hyp/vhe/switch.c
+> > > > index af8e940d0f03..128197b7c794 100644
+> > > > --- a/arch/arm64/kvm/hyp/vhe/switch.c
+> > > > +++ b/arch/arm64/kvm/hyp/vhe/switch.c
+> > > > @@ -214,7 +214,7 @@ static void __hyp_call_panic(u64 spsr, u64 elr, u64 par)
+> > > >  }
+> > > >  NOKPROBE_SYMBOL(__hyp_call_panic);
+> > > >
+> > > > -void __noreturn hyp_panic(void)
+> > > > +void __noreturn hyp_panic(void) __section(".text")
+> > > >  {
+> > > >         u64 spsr = read_sysreg_el2(SYS_SPSR);
+> > > >         u64 elr = read_sysreg_el2(SYS_ELR);
+> > > >
+> > >
+> > > We're getting into black-magic territory here. Why wouldn't hyp_panic
+> > > be in the .text section already?
+> >
+> > It's not quite black magic. LLVM essentially flips on
+> > -ffunction-sections with LTO and therefore, hyp_panic() will be in
+> > .text.hyp_panic in vmlinux.o, while __guest_enter() will be in .text.
+> > Everything ends up in .text when we link vmlinux, of course.
+> >
+> > $ readelf --sections vmlinux.o | grep hyp_panic
+> >   [3936] .text.hyp_panic   PROGBITS         0000000000000000  004b56e4
+> 
+> Note that disabling LTO here has essentially the same effect as using
+> __section(".text"). It stops the compiler from splitting these
+> functions into .text.* sections and makes it less likely that
+> hyp_panic() ends up too far away from __guest_enter().
+> 
+> If neither of these workarounds sound appealing, I suppose we could
+> alternatively change hyp/entry.S to use adr_l for hyp_panic. Thoughts?
 
-I can confirm this makes the warning go away on a Congatec Atom board. I
-didn't do any further runtime tests.
+That would be an actual fix instead of a workaround, as it would
+remove existing assumptions about the relative locations of the two
+objects. I guess you need to fix both instances with something such
+as:
 
-Tested-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+diff --git a/arch/arm64/kvm/hyp/entry.S b/arch/arm64/kvm/hyp/entry.S
+index b0afad7a99c6..a43e1f7ee354 100644
+--- a/arch/arm64/kvm/hyp/entry.S
++++ b/arch/arm64/kvm/hyp/entry.S
+@@ -85,8 +85,10 @@ SYM_INNER_LABEL(__guest_exit_panic, SYM_L_GLOBAL)
+ 
+ 	// If the hyp context is loaded, go straight to hyp_panic
+ 	get_loaded_vcpu x0, x1
+-	cbz	x0, hyp_panic
+-
++	cbnz	x0, 1f
++	adr_l	x0, hyp_panic
++	br	x0
++1:
+ 	// The hyp context is saved so make sure it is restored to allow
+ 	// hyp_panic to run at hyp and, subsequently, panic to run in the host.
+ 	// This makes use of __guest_exit to avoid duplication but sets the
+@@ -94,7 +96,7 @@ SYM_INNER_LABEL(__guest_exit_panic, SYM_L_GLOBAL)
+ 	// current state is saved to the guest context but it will only be
+ 	// accurate if the guest had been completely restored.
+ 	adr_this_cpu x0, kvm_hyp_ctxt, x1
+-	adr	x1, hyp_panic
++	adr_l	x1, hyp_panic
+ 	str	x1, [x0, #CPU_XREG_OFFSET(30)]
+ 
+ 	get_vcpu_ptr	x1, x0
 
-Thanks
-Uwe
+which is completely untested. I wouldn't be surprised if there were
+more of these somewhere.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Thanks,
 
---tedc23qcg7ntrk2r
-Content-Type: application/pgp-signature; name="signature.asc"
+	M.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBCFrUACgkQwfwUeK3K
-7AkanQf9G3uCIVa8WjFfyEnHR5Odw85asNQY6UqEntHOLnR5zslZrVtjknyTXj4I
-O5tWJ1mB4l5n4Aqje5lHIHKTrkW8bx4kGBfAl94YxfPK6hjDlLivmL/SjHJB1C+t
-UUBuVLAu23ay580qX7YRcOIh3PTK+URXQcZwQCu3TlVe4s3SUl+fMKU8CeKVpvEr
-q03UFaTgoM5rVKqg54zI9V+NkHJHcABw/fCxsXo204ZLSeCJckjxHvNWSG1uPlvZ
-9BaGRMYn87+bMOdMOAEFtz85WagHS9fKl/BW2FeOCY/1q+dcJJSKUkr5RWr2qyHD
-Wb/nFrcn1fgjNYASlbFEO3glnLiBWw==
-=yGiz
------END PGP SIGNATURE-----
-
---tedc23qcg7ntrk2r--
+-- 
+Without deviation from the norm, progress is not possible.
