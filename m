@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9914332EEFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C92F32EF04
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbhCEPgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:36:16 -0500
-Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:39583 "EHLO
-        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbhCEPf4 (ORCPT
+        id S230227AbhCEPgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:36:49 -0500
+Received: from mail-oo1-f41.google.com ([209.85.161.41]:38590 "EHLO
+        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230244AbhCEPgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:35:56 -0500
-Received: from [192.168.111.113] (p4fd97aad.dip0.t-ipconnect.de [79.217.122.173])
-        (authenticated bits=0)
-        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 125FZmBZ001461
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
-        Fri, 5 Mar 2021 16:35:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
-        s=unimail; t=1614958549;
-        bh=d6p0+N+Br3mUr1EhlB2lPjwz95lJMYCofM7C8HA6eHw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=oH+gAJPRzzu1/K9HBFVvJx+DBSSmqoZSuRnSsedcFSqjqEaNbO90EbYVfwxLLtj/2
-         uGhTgfh7OKQleIP/CEMTZbMpkWdWNVrZ4VJENJJ6V6vuT1R1GhLjBGU+ufS5LF5ydz
-         6SOcJXJGMWfJSfFcAsTQ3pJ8IyC2LS+ukguQ70sU=
-Subject: Re: [RFC] inode.i_opflags - Usage of two different locking schemes
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <f63dd495-defb-adc4-aa91-6aacd7f441c7@tu-dortmund.de>
- <a4709bc4-ee62-2cdc-0628-32e8fa73e8f9@tu-dortmund.de>
- <YEJLuP6+Zy8/dq+D@mit.edu>
-From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-Message-ID: <667b3ec3-a522-05a9-31e8-87d8bfaa7adb@tu-dortmund.de>
-Date:   Fri, 5 Mar 2021 16:35:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 5 Mar 2021 10:36:20 -0500
+Received: by mail-oo1-f41.google.com with SMTP id z12so76427ooh.5;
+        Fri, 05 Mar 2021 07:36:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=g0o6eQ87KIdf1+D3jUpOGRpp3kvL6eKc0GpPfwwZS8U=;
+        b=XyXBzRQGzK4K1bV3R7+RhgUyj2kl8vTTdU/6GYOyarmJchC+WwLUpqaa6LmRqwxRNl
+         iUqe/zpBgFhMAUhvUDh3dVdAyQKdN14QSpI6dSYEbZ2VGhslnGkvXNOw7q0jXthdqG9G
+         Ipy64wWPSdsG3ugKVtDFt6zUL6odmpqOGB7j44SMywBXVVyUhQKWffr7YgPiktlsap6R
+         0JWuF6YdZL/abcjcu4v2B/az6thKSUEjJrGNoPo1imAmD9urv7XFOKu79JNt+DYJllAB
+         YH/+8kKx4jqqHyVnH+10aJWLHdV0RVBmd1j7ngAzlGJVC1jUZoQAUqZuPgMOlaozZ33f
+         bcJQ==
+X-Gm-Message-State: AOAM530IQjjfS9gMithjAfEpPF82gBv6NJhOKeSJlNNf91FenJc/FZm3
+        ZFWZt2wBLca4BSFSxg6Rug==
+X-Google-Smtp-Source: ABdhPJxTSYMGULmDAauZLCztHx9WYn8h7yEZJQLHRXX5u52cCx+YWs5IDU8IT/awxKlz6IlmpyAPkg==
+X-Received: by 2002:a4a:88ee:: with SMTP id q43mr8290467ooh.61.1614958579778;
+        Fri, 05 Mar 2021 07:36:19 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u110sm655002otb.32.2021.03.05.07.36.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 07:36:18 -0800 (PST)
+Received: (nullmailer pid 200830 invoked by uid 1000);
+        Fri, 05 Mar 2021 15:36:17 -0000
+Date:   Fri, 5 Mar 2021 09:36:17 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>
+Subject: [GIT PULL] Devicetree fixes for v5.12
+Message-ID: <20210305153617.GA198234@robh.at.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YEJLuP6+Zy8/dq+D@mit.edu>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="pg4Tc08beKHQUhmaa9jbDOOBarYm7CmHr"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---pg4Tc08beKHQUhmaa9jbDOOBarYm7CmHr
-Content-Type: multipart/mixed; boundary="sq9ts7eumJ1CwXQJOkfsR3ADT0IGvtnph";
- protected-headers="v1"
-From: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
- Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>,
- linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <667b3ec3-a522-05a9-31e8-87d8bfaa7adb@tu-dortmund.de>
-Subject: Re: [RFC] inode.i_opflags - Usage of two different locking schemes
-References: <f63dd495-defb-adc4-aa91-6aacd7f441c7@tu-dortmund.de>
- <a4709bc4-ee62-2cdc-0628-32e8fa73e8f9@tu-dortmund.de>
- <YEJLuP6+Zy8/dq+D@mit.edu>
-In-Reply-To: <YEJLuP6+Zy8/dq+D@mit.edu>
+Linus,
 
---sq9ts7eumJ1CwXQJOkfsR3ADT0IGvtnph
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Please pull a couple of DT fixes.
+
+Rob
 
 
+The following changes since commit 3b9cdafb5358eb9f3790de2f728f765fef100731:
 
-On 05.03.21 16:18, Theodore Ts'o wrote:
-> 1)  I don't see where i_opflags is being read in ipc/mqueue.c at all,
-> either with or without i_rwsem.
->=20
-It is read in fs/dcache.c
-> 2)  I'm not sure what this has to do with ext4?
->=20
->          	    	      	       	  - Ted
->=20
-Yeah. You're right. That was my fault. Sry.
-I should have sent it to linux-kernel@... only.
+  Merge tag 'pinctrl-v5.12-1' of git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl (2021-02-22 18:39:11 -0800)
 
-- Alex
+are available in the Git repository at:
 
---=20
-Technische Universit=C3=A4t Dortmund
-Alexander Lochmann                PGP key: 0xBC3EF6FD
-Otto-Hahn-Str. 16                 phone:  +49.231.7556141
-D-44227 Dortmund                  fax:    +49.231.7556116
-http://ess.cs.tu-dortmund.de/Staff/al
+  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.12-1
 
+for you to fetch changes up to b5a95bb1883e2bac1009cc88e65c71cff6f931e6:
 
---sq9ts7eumJ1CwXQJOkfsR3ADT0IGvtnph--
+  dt-bindings: media: Use graph and video-interfaces schemas, round 2 (2021-03-01 11:30:21 -0600)
 
---pg4Tc08beKHQUhmaa9jbDOOBarYm7CmHr
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+----------------------------------------------------------------
+Devicetree fixes for v5.12-rc:
 
------BEGIN PGP SIGNATURE-----
+- Another batch of graph and video-interfaces schema conversions
 
-wsF5BAABCAAjFiEElhZsUHzVP0dbkjCRWT7tBbw+9v0FAmBCT9QFAwAAAAAACgkQWT7tBbw+9v3Q
-qw//ep75+yIDVG2+Q6bmfQmmnvnrfhRkJ1XCq07AF4HYAcbMHw0ELMw4rj4fCEpHVtMkehgDxxCT
-/QexI0TPGoWgfMUVPfjndyfRmuuqQuqDuvO9Wvi4eId3sDddoRYnA9c7vlP6x8kDEFjvbLbVVkYu
-t6psHUxN6Hkyy2akr1pjXvOmY3BhoZGy/T/PpIKgfwPmgZRxRBh8Gisri6Pl6JlkMnnr4wjjbriR
-qbvYqapEJJttPVHmOBKScWjIme5+TDjLUkbu56jkhM124THPNzrNrmLGBS+sYEzzRLQVXbhGvvne
-mbF8sq5yXTAJ+n8hIhYQd3sEgxjASSp5RoiRs+HN7k14KwLNcD5BjklDnRrMHWOsPLT+QLKKqyFJ
-gX0EJUQpNTojxNNaSC0Hydq4Eo5EsC4eHcbQ2DQsWH5No/t6P1OvxeyBBRePnubxGs/TM14HuzBR
-1ofglKQywpDMobObtbit+eSkvkwHOl3h1TnwtwCHE6uxOjdGtxigtC+W0sw5pFy4J7eUP9c+uPHO
-f70vera66yeTybme8Ecrtlolz2u8+Jdem4ESpIS8HStMxtj2tf74CO1zBNB06IPaTr7pLkK701Fu
-9s53LmKxVhwyCRuzz3jt2RA525SEOjK0ZT2xWPKOy5K9bKzuwMg3/XwIJb/1UMo6mJkAOsLK0cYI
-XWU=
-=FfwE
------END PGP SIGNATURE-----
+- Drop DT header symlink for dropped C6X arch
 
---pg4Tc08beKHQUhmaa9jbDOOBarYm7CmHr--
+- Fix bcm2711-hdmi schema error
+
+----------------------------------------------------------------
+Maxime Ripard (1):
+      dt-bindings: bcm2711-hdmi: Fix broken schema
+
+Michal Kubecek (1):
+      dts: drop dangling c6x symlink
+
+Rob Herring (1):
+      dt-bindings: media: Use graph and video-interfaces schemas, round 2
+
+ .../devicetree/bindings/display/brcm,bcm2711-hdmi.yaml   |  2 +-
+ Documentation/devicetree/bindings/media/i2c/imx258.yaml  | 14 +++++++-------
+ .../devicetree/bindings/media/i2c/ovti,ov5647.yaml       |  5 ++---
+ .../devicetree/bindings/media/i2c/ovti,ov5648.yaml       | 16 +++++-----------
+ .../devicetree/bindings/media/i2c/ovti,ov8865.yaml       | 16 +++++-----------
+ .../devicetree/bindings/media/i2c/sony,imx334.yaml       | 11 +++++------
+ scripts/dtc/include-prefixes/c6x                         |  1 -
+ 7 files changed, 25 insertions(+), 40 deletions(-)
+ delete mode 120000 scripts/dtc/include-prefixes/c6x
