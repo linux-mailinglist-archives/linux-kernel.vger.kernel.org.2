@@ -2,223 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C0132ECC1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 15:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9FD32ECC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 15:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhCEOHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 09:07:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbhCEOHV (ORCPT
+        id S230519AbhCEOJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 09:09:18 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:40610 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229737AbhCEOJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 09:07:21 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36C1C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 06:07:21 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id ba1so1488411plb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 06:07:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PT9PK36ObrQr9//SU0lxgY9J+kF6C3dPo2qmCBBOlVk=;
-        b=uNPHX/l6xQbnXouz0S4XfU5LMli0cqwBipfoJGcWIiM0DgcC9n+2TXW5yeftKuAtt7
-         dSoc9pGSt1fyNYGdRMY/V3vnsBSGUUWrXjxfeGs6Ualtgw6sBjVwrMCDujWHcHqG/pWO
-         rDcWNFuwJA+ATb9kxD+0+w/2gt7U0anELN5GgvrKnu7U86azgEShRHwekQqAFUb5aYOv
-         rct3q3o60R5lk8uziXejkx5wS4zMa4dlll5b5+CSYMklQqTUVVrFf+TkvhozLSdrEHGk
-         nirXyNdWFaxuNj7oI8QJBKRPlJeuRG1AKR3VDEh5Aym+FwSjLEokiiye3i/p4PzrKkuq
-         T3gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PT9PK36ObrQr9//SU0lxgY9J+kF6C3dPo2qmCBBOlVk=;
-        b=ml54OGn0XJYqWyau0G0LXRwqX2mhoAL6PdBFZEoTxZji42ovGk2xrMLYGMH84rahgx
-         KoPZPfpPQLc8YwlItQjSM7T3nF7NXHeRixMcP+/5KaHseltWfmmv3uyRgbbl8YRhXZf2
-         p3JYq/5UmofzSClvRZgUhKpsZg434XpUK4bY9dyC/DKWN023tcPBIUaWkVyF5YRpC6RF
-         BfxSCVrOVhZKK8JOm4hTIsPgY7QUs3jMUuiHAAGpSqdL5TL7WmMtx+exH04DHGLBsyvB
-         /UOVBDYFTNuW1qRSks7mU24+F2QpXjKoR3vQiIKcm4gNul3YDW+8qEdscVXiuX0Zt89z
-         6Dqg==
-X-Gm-Message-State: AOAM5321YCTq/esvKwCD1TBK7KeObFnQ7J7aPx6iZ+ykoqneo07hrJ4E
-        rxE5G7uRRAaNFQlHOiS9fngqVw==
-X-Google-Smtp-Source: ABdhPJy5//VO/8Vfs/NB2ARUfpki8M8a4onatEXzJRKkH/yd5M7BoQU8IL3MJ6ddXmFZpNIpJ6ti+Q==
-X-Received: by 2002:a17:90b:4b0e:: with SMTP id lx14mr10299701pjb.147.1614953241253;
-        Fri, 05 Mar 2021 06:07:21 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([103.136.125.226])
-        by smtp.gmail.com with ESMTPSA id p20sm2694925pgb.62.2021.03.05.06.07.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 06:07:20 -0800 (PST)
-Date:   Fri, 5 Mar 2021 22:07:14 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Alexandre Truong <alexandre.truong@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kemeng Shi <shikemeng@huawei.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Al Grant <al.grant@arm.com>, James Clark <james.clark@arm.com>,
-        Wilco Dijkstra <wilco.dijkstra@arm.com>
-Subject: Re: [PATCH RESEND WITH CCs v3 3/4] perf tools: enable
- dwarf_callchain_users on aarch64
-Message-ID: <20210305140714.GB5478@leoy-ThinkPad-X240s>
-References: <20210304163255.10363-1-alexandre.truong@arm.com>
- <20210304163255.10363-3-alexandre.truong@arm.com>
- <20210305115120.GA5478@leoy-ThinkPad-X240s>
+        Fri, 5 Mar 2021 09:09:13 -0500
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 125E8hRh007163;
+        Fri, 5 Mar 2021 23:08:44 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 125E8hRh007163
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614953324;
+        bh=YisVUCmZTC9e2VVOu2yqZImKgFhtwkVtxj+3MTIBfxc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dJ2unGbGIFCfGxCzt7OE7S7x593Ip03sDfRHJb06fQiorDTrxXrTDxuAovbjcW5bB
+         4r1VXBCw5A9j5v1/9cedj0gX5lUzKVhxXEyNWxJF/iFHmTV1dtdOgEDyOi4j9NibYA
+         wUzT+osFnrFP6GNKfCbe159RBl8SKYXYRe53jYUMTXnZw2AZiiZwpBgDHyon0ZEbc5
+         /7jw9vsKLi7HNmg214Cjl2G8FDuV9RYkbmhuZC53HRSxhk4bn/6JEPT0WmrqyI1fHs
+         abEhH3Ar5TBEr/OcQ8ndS8C3JZVG6cwTephRnR3hl6N7AVzE8FldvB7HH121z3zuU1
+         tNvCH1qyBs1wg==
+X-Nifty-SrcIP: [209.85.216.46]
+Received: by mail-pj1-f46.google.com with SMTP id bj7so2092092pjb.2;
+        Fri, 05 Mar 2021 06:08:44 -0800 (PST)
+X-Gm-Message-State: AOAM530mgqsZAnDVb7aDtTxxebKfLx0kG7PJkRxlX58QQ2u2LIFhZUbA
+        PSceqdJIhEprACUruhbs33ODKuFZH7wbf1ciutQ=
+X-Google-Smtp-Source: ABdhPJxJE09nHeJJkwK3c9x4Dl5BwI/W8ItE8ezvbMbbpurVMEldXW2RG8Sh+Mofpz3FAy7DHUSDDJj0GkjMzkmcmvQ=
+X-Received: by 2002:a17:90a:dc08:: with SMTP id i8mr10071823pjv.153.1614953323469;
+ Fri, 05 Mar 2021 06:08:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305115120.GA5478@leoy-ThinkPad-X240s>
+References: <20210305100212.818562-1-linux@rasmusvillemoes.dk> <CAK7LNAShZDMPBSv0tBgquiJRta4fFvDh3fnf9mk946PdFZyEoA@mail.gmail.com>
+In-Reply-To: <CAK7LNAShZDMPBSv0tBgquiJRta4fFvDh3fnf9mk946PdFZyEoA@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 5 Mar 2021 23:08:06 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR9FTny0Kdvwa-TMhR25BztdiyY4XGH5hU2=ShdtnjskQ@mail.gmail.com>
+Message-ID: <CAK7LNAR9FTny0Kdvwa-TMhR25BztdiyY4XGH5hU2=ShdtnjskQ@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: apply fixdep logic to link-vmlinux.sh
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 07:51:20PM +0800, Leo Yan wrote:
+On Fri, Mar 5, 2021 at 10:50 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Fri, Mar 5, 2021 at 7:02 PM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
+> >
+> > The patch adding CONFIG_VMLINUX_MAP revealed a small defect in the
+> > build system: link-vmlinux.sh takes decisions based on CONFIG_*
+> > options, but changing one of those does not always lead to vmlinux
+> > being linked again.
+> >
+> > For most of the CONFIG_* knobs referenced previously, this has
+> > probably been hidden by those knobs also affecting some object file,
+> > hence indirectly also vmlinux.
+> >
+> > But CONFIG_VMLINUX_MAP is only handled inside link-vmlinux.sh, and
+> > changing CONFIG_VMLINUX_MAP=n to CONFIG_VMLINUX_MAP=y does not cause
+> > the build system to re-link (and hence have vmlinux.map
+> > emitted). Since that map file is mostly a debugging aid, this is
+> > merely a nuisance which is easily worked around by just deleting
+> > vmlinux and building again.
+> >
+> > But one could imagine other (possibly future) CONFIG options that
+> > actually do affect the vmlinux binary but which are not captured
+> > through some object file dependency.
+> >
+> > To fix this, make link-vmlinux.sh emit a .vmlinux.d file in the same
+> > format as the dependency files generated by gcc, and apply the fixdep
+> > logic to that. I've tested that this correctly works with both in-tree
+> > and out-of-tree builds.
+> >
+> > Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> > ---
+>
 
-[...]
-
-> > diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-> > index 2a845d6cac09..93661a3eaeb1 100644
-> > --- a/tools/perf/builtin-report.c
-> > +++ b/tools/perf/builtin-report.c
-> > @@ -405,6 +405,10 @@ static int report__setup_sample_type(struct report *rep)
-> >  
-> >  	callchain_param_setup(sample_type);
-> >  
-> > +	if (callchain_param.record_mode == CALLCHAIN_FP &&
-> > +			strncmp(rep->session->header.env.arch, "aarch64", 7) == 0)
-> > +		dwarf_callchain_users = true;
-> > +
-> 
-> I don't have knowledge for dwarf or FP.
-> 
-> This patch is suspicious for me that since it only fixes the issue for
-> "perf report" command, but it cannot support "perf script".
-> 
-> I did a quick testing for "perf script" command with the test code from
-> patch 04, seems to me it cannot fix the fp omitting issue for
-> "perf script" command:
-> 
->   arm64_fp_test 11211  2282.355095:     176307 cycles: 
->               aaaac2e40740 f2+0x10 (/root/arm64_fp_test)
->               aaaac2e4061c main+0xc (/root/arm64_fp_test)
->               ffff961fbd24 __libc_start_main+0xe4 (/usr/lib/aarch64-linux-gnu/libc-2.28.so)
->               aaaac2e4065c _start+0x34 (/root/arm64_fp_test)
-> 
-> Could you check for this?  Thanks!
-
-Maybe we can consolidate the setting for the global variable
-"dwarf_callchain_users" with below change; this can help us to cover
-the tools for most cases.  I used the below change to replact patch
-03, "perf report" and "perf script" both can work well with it.
-
-Please note, if you want to move forward with this way, it's better to
-use a saperate patch for firstly refactoring the function
-script__setup_sample_type() by using the general API
-callchain_param_setup() to replace the duplicate code pieces for
-callchain parameter setting up.
-
-After that, you could apply the reset change for adding new parameter
-"arch" for the function script__setup_sample_type().
+I moved the code to the last line of scripts/link-vmlinux.sh,
+and added a comment, otherwise, the intent is obscure.
 
 
-diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index 2a845d6cac09..ca2e8c9096ea 100644
---- a/tools/perf/builtin-report.c
-+++ b/tools/perf/builtin-report.c
-@@ -1090,7 +1090,8 @@ static int process_attr(struct perf_tool *tool __maybe_unused,
- 	 * on events sample_type.
- 	 */
- 	sample_type = evlist__combined_sample_type(*pevlist);
--	callchain_param_setup(sample_type);
-+	callchain_param_setup(sample_type,
-+			      perf_env__arch((*pevlist)->env));
- 	return 0;
- }
- 
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index 5915f19cee55..c49212c135b2 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -2250,7 +2250,8 @@ static int process_attr(struct perf_tool *tool, union perf_event *event,
- 	 * on events sample_type.
- 	 */
- 	sample_type = evlist__combined_sample_type(evlist);
--	callchain_param_setup(sample_type);
-+	callchain_param_setup(sample_type,
-+			      perf_env__arch((*pevlist)->env));
- 
- 	/* Enable fields for callchain entries */
- 	if (symbol_conf.use_callchain &&
-@@ -3309,16 +3310,8 @@ static void script__setup_sample_type(struct perf_script *script)
- 	struct perf_session *session = script->session;
- 	u64 sample_type = evlist__combined_sample_type(session->evlist);
- 
--	if (symbol_conf.use_callchain || symbol_conf.cumulate_callchain) {
--		if ((sample_type & PERF_SAMPLE_REGS_USER) &&
--		    (sample_type & PERF_SAMPLE_STACK_USER)) {
--			callchain_param.record_mode = CALLCHAIN_DWARF;
--			dwarf_callchain_users = true;
--		} else if (sample_type & PERF_SAMPLE_BRANCH_STACK)
--			callchain_param.record_mode = CALLCHAIN_LBR;
--		else
--			callchain_param.record_mode = CALLCHAIN_FP;
--	}
-+	callchain_param_setup(sample_type,
-+			      perf_env__arch(session->machines.host.env));
- 
- 	if (script->stitch_lbr && (callchain_param.record_mode != CALLCHAIN_LBR)) {
- 		pr_warning("Can't find LBR callchain. Switch off --stitch-lbr.\n"
-diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
-index 1b60985690bb..d9766b54cd1a 100644
---- a/tools/perf/util/callchain.c
-+++ b/tools/perf/util/callchain.c
-@@ -1600,7 +1600,7 @@ void callchain_cursor_reset(struct callchain_cursor *cursor)
- 		map__zput(node->ms.map);
- }
- 
--void callchain_param_setup(u64 sample_type)
-+void callchain_param_setup(u64 sample_type, const char *arch)
- {
- 	if (symbol_conf.use_callchain || symbol_conf.cumulate_callchain) {
- 		if ((sample_type & PERF_SAMPLE_REGS_USER) &&
-@@ -1612,6 +1612,14 @@ void callchain_param_setup(u64 sample_type)
- 		else
- 			callchain_param.record_mode = CALLCHAIN_FP;
- 	}
+
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 7d4b7c6f01e8..e9516bdfcc6f 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -422,7 +422,6 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
+ fi
+
+ vmlinux_link vmlinux "${kallsymso}" ${btf_vmlinux_bin_o}
+-echo "vmlinux: $0" > .vmlinux.d
+
+ # fill in BTF IDs
+ if [ -n "${CONFIG_DEBUG_INFO_BTF}" -a -n "${CONFIG_BPF}" ]; then
+@@ -451,3 +450,6 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
+                exit 1
+        fi
+ fi
 +
-+	/*
-+	 * Fixup for arm64 due to the frame pointer was omitted for the
-+	 * caller of the leaf frame.
-+	 */
-+	if (callchain_param.record_mode == CALLCHAIN_FP &&
-+	    strncmp(arch, "arm64", 6) == 0)
-+		dwarf_callchain_users = true;
- }
- 
- static bool chain_match(struct callchain_list *base_chain,
-diff --git a/tools/perf/util/callchain.h b/tools/perf/util/callchain.h
-index 77fba053c677..d95615daed73 100644
---- a/tools/perf/util/callchain.h
-+++ b/tools/perf/util/callchain.h
-@@ -300,7 +300,7 @@ int callchain_branch_counts(struct callchain_root *root,
- 			    u64 *branch_count, u64 *predicted_count,
- 			    u64 *abort_count, u64 *cycles_count);
- 
--void callchain_param_setup(u64 sample_type);
-+void callchain_param_setup(u64 sample_type, const char *arch);
- 
- bool callchain_cnode_matched(struct callchain_node *base_cnode,
- 			     struct callchain_node *pair_cnode);
++# For fixdep
++echo "vmlinux: $0" > .vmlinux.d
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
