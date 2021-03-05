@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD7432F522
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C6932F51E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhCEVKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:10:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51448 "EHLO mail.kernel.org"
+        id S229723AbhCEVKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 16:10:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229562AbhCEVKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229576AbhCEVKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Mar 2021 16:10:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3BF83650A0;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 42D3F650A6;
         Fri,  5 Mar 2021 21:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614978609;
-        bh=mdg/PC0DMiK48dveOcYJjv586g3ib5adhGlG23rjx8s=;
+        bh=84JF+vVfdvF1N8LWacyv0vyL+mYsB4E2DY1afPPhINs=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=CkGjQpP8kaU1SPZ1a+VAADE+/gGPLGQBiM+WNnTXEJAo8blNthO/U8Q5hX5P0hEYx
-         gYrzWAMf5nlSAIXLM+cU4lcmq7FQmqeRDRezNicGlIOPTvWZYApgDpFAGzzeO8taoY
-         TYzT93xSM6MXa/xb8JCh7JH0I4wH0McHNRlef4UvO/xqhWmOJqxZz9ldxO08Rgqgim
-         cBqsupW/1ULeN3ElVdycki612MI5nmaUpD107twDeR2RLoF797YXPapbOMiG354lWd
-         bCYQWefAxwKmS0nOzdJRgGGRbXLc7me7up3r/gtBmp9fM5rMXuuwJ9UW7We8xyySmB
-         OuqgWrcONbWRA==
+        b=a+Mq/BCsHyC7visKMuwf6taQXKhpfKnHe9y4wSUPW68BqtrBmz6MOqn9SQCJfSPgc
+         GZ7haXGtWWGEbfInB1FpVWWw4nBqsGB1unnYNDCknNg/ASBI1Sw+FrDObw3KpRlU+8
+         EDh4yoYJ8PTe7oJnkhcsFoVJR91dozsIJv7FICQieqZy263T9ts4W1kZ/Jo8k0qJ5c
+         FoZLm6aVWgvtPT1WgpuZKp8ZcjS3XTCekfbKpykwrY3PwHSXPg/gwlrN7AFxPYqmD4
+         61vYVhlx4W4FTAK0Z67BmOjQkbCNNz8+Qv6FBFUyU20mqyw1vT9XHd/TtAdzKcxWDX
+         ZFTuL5INTWMMA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3003E609EA;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 38FB060A13;
         Fri,  5 Mar 2021 21:10:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] sun/niu: fix wrong RXMAC_BC_FRM_CNT_COUNT count
+Subject: Re: [PATCH] net: tehuti: fix error return code in bdx_probe()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161497860919.24588.1162341745662570326.git-patchwork-notify@kernel.org>
+Message-Id: <161497860922.24588.8387534315192369257.git-patchwork-notify@kernel.org>
 Date:   Fri, 05 Mar 2021 21:10:09 +0000
-References: <20210305170212.146135-1-efremov@linux.com>
-In-Reply-To: <20210305170212.146135-1-efremov@linux.com>
-To:     Denis Efremov <efremov@linux.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20210305020648.3202-1-baijiaju1990@gmail.com>
+In-Reply-To: <20210305020648.3202-1-baijiaju1990@gmail.com>
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc:     andy@greyhouse.net, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -46,21 +46,19 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Fri,  5 Mar 2021 20:02:12 +0300 you wrote:
-> RXMAC_BC_FRM_CNT_COUNT added to mp->rx_bcasts twice in a row
-> in niu_xmac_interrupt(). Remove the second addition.
+On Thu,  4 Mar 2021 18:06:48 -0800 you wrote:
+> When bdx_read_mac() fails, no error return code of bdx_probe()
+> is assigned.
+> To fix this bug, err is assigned with -EFAULT as error return code.
 > 
-> Signed-off-by: Denis Efremov <efremov@linux.com>
-> ---
-> I don't know the code of the dirver, but this looks like a real bug.
-> Otherwise, it's more readable as:
->    mp->rx_bcasts += RXMAC_BC_FRM_CNT_COUNT * 2;
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - sun/niu: fix wrong RXMAC_BC_FRM_CNT_COUNT count
-    https://git.kernel.org/netdev/net/c/155b23e6e534
+  - net: tehuti: fix error return code in bdx_probe()
+    https://git.kernel.org/netdev/net/c/38c26ff3048a
 
 You are awesome, thank you!
 --
