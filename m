@@ -2,44 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC5132E8F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A6632E834
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232225AbhCEM3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:29:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38400 "EHLO mail.kernel.org"
+        id S231325AbhCEMZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:25:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230471AbhCEM3P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:29:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 666A76502E;
-        Fri,  5 Mar 2021 12:29:14 +0000 (UTC)
+        id S231234AbhCEMZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:25:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D504A6502C;
+        Fri,  5 Mar 2021 12:25:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947355;
-        bh=Q9sqOn5SFdE7TY4jACsKI5QfiMy8+Bl0jgzQDcuKQIA=;
+        s=korg; t=1614947107;
+        bh=YHDk2iRxztJFktovtWbIV/GNVERkuxbGj95paEZEPmA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ckg3OTFYFRglEYmhrcTYQFiKtvvBGnS6Kv5/xN0ZucsrWAjyAfp1jxg36Vy2wn+HE
-         xaRAWdsrfZOEABzZ8tAlaCkXIVyFate/Hg7kzdz70c8jvF2+95O70CwF1f/wu4f7YJ
-         ETk+tEO+PodLsVHZda7KcXn4o1u1DsWQw4ioLfps=
+        b=yXSejd+EksGLB9IqCcAMgu3TNmsr/gRAhqjpU8BibtRlcatKLXblJI4/kClMGbAii
+         /XmWYjFpMEHHgYUcN+uRbiaBlm/YDuFV8fTZlzO69oyDCmELS16tZlDpPTfSqzgf0+
+         V1KhiwSe+fnJZoRbKuBgzCLd4w7MmvYZn0gcO9cc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Angus Ainslie <angus@akkea.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Miaoqing Pan <miaoqing@codeaurora.org>,
+        Brian Norris <briannorris@chromium.org>,
         Kalle Valo <kvalo@codeaurora.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Martin Kepplinger <martink@posteo.de>,
-        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
-        Siva Rebbagondla <siva8118@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 035/102] rsi: Fix TX EAPOL packet handling against iwlwifi AP
-Date:   Fri,  5 Mar 2021 13:20:54 +0100
-Message-Id: <20210305120905.012086821@linuxfoundation.org>
+Subject: [PATCH 5.11 050/104] ath10k: fix wmi mgmt tx queue full due to race condition
+Date:   Fri,  5 Mar 2021 13:20:55 +0100
+Message-Id: <20210305120905.621488556@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120903.166929741@linuxfoundation.org>
+References: <20210305120903.166929741@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,69 +41,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Miaoqing Pan <miaoqing@codeaurora.org>
 
-[ Upstream commit 65277100caa2f2c62b6f3c4648b90d6f0435f3bc ]
+[ Upstream commit b55379e343a3472c35f4a1245906db5158cab453 ]
 
-In case RSI9116 SDIO WiFi operates in STA mode against Intel 9260 in AP mode,
-the association fails. The former is using wpa_supplicant during association,
-the later is set up using hostapd:
+Failed to transmit wmi management frames:
 
-iwl$ cat hostapd.conf
-interface=wlp1s0
-ssid=test
-country_code=DE
-hw_mode=g
-channel=1
-wpa=2
-wpa_passphrase=test
-wpa_key_mgmt=WPA-PSK
-iwl$ hostapd -d hostapd.conf
+[84977.840894] ath10k_snoc a000000.wifi: wmi mgmt tx queue is full
+[84977.840913] ath10k_snoc a000000.wifi: failed to transmit packet, dropping: -28
+[84977.840924] ath10k_snoc a000000.wifi: failed to submit frame: -28
+[84977.840932] ath10k_snoc a000000.wifi: failed to transmit frame: -28
 
-rsi$ wpa_supplicant -i wlan0 -c <(wpa_passphrase test test)
+This issue is caused by race condition between skb_dequeue and
+__skb_queue_tail. The queue of ‘wmi_mgmt_tx_queue’ is protected by a
+different lock: ar->data_lock vs list->lock, the result is no protection.
+So when ath10k_mgmt_over_wmi_tx_work() and ath10k_mac_tx_wmi_mgmt()
+running concurrently on different CPUs, there appear to be a rare corner
+cases when the queue length is 1,
 
-The problem is that the TX EAPOL data descriptor RSI_DESC_REQUIRE_CFM_TO_HOST
-flag and extended descriptor EAPOL4_CONFIRM frame type are not set in case the
-AP is iwlwifi, because in that case the TX EAPOL packet is 2 bytes shorter.
+  CPUx (skb_deuque)			CPUy (__skb_queue_tail)
+					next=list
+					prev=list
+  struct sk_buff *skb = skb_peek(list);	WRITE_ONCE(newsk->next, next);
+  WRITE_ONCE(list->qlen, list->qlen - 1);WRITE_ONCE(newsk->prev, prev);
+  next       = skb->next;		WRITE_ONCE(next->prev, newsk);
+  prev       = skb->prev;		WRITE_ONCE(prev->next, newsk);
+  skb->next  = skb->prev = NULL;	list->qlen++;
+  WRITE_ONCE(next->prev, prev);
+  WRITE_ONCE(prev->next, next);
 
-The downstream vendor driver has this change in place already [1], however
-there is no explanation for it, neither is there any commit history from which
-such explanation could be obtained.
+If the instruction ‘next = skb->next’ is executed before
+‘WRITE_ONCE(prev->next, newsk)’, newsk will be lost, as CPUx get the
+old ‘next’ pointer, but the length is still added by one. The final
+result is the length of the queue will reach the maximum value but
+the queue is empty.
 
-[1] https://github.com/SiliconLabs/RS911X-nLink-OSD/blob/master/rsi/rsi_91x_hal.c#L238
+So remove ar->data_lock, and use 'skb_queue_tail' instead of
+'__skb_queue_tail' to prevent the potential race condition. Also switch
+to use skb_queue_len_lockless, in case we queue a few SKBs simultaneously.
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Angus Ainslie <angus@akkea.ca>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Martin Kepplinger <martink@posteo.de>
-Cc: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
-Cc: Siva Rebbagondla <siva8118@gmail.com>
-Cc: linux-wireless@vger.kernel.org
-Cc: netdev@vger.kernel.org
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1.c2-00033-QCAHLSWMTPLZ-1
+
+Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20201015111616.429220-1-marex@denx.de
+Link: https://lore.kernel.org/r/1608618887-8857-1-git-send-email-miaoqing@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/rsi/rsi_91x_hal.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_hal.c b/drivers/net/wireless/rsi/rsi_91x_hal.c
-index 3f7e3cfb6f00..ce9892152f4d 100644
---- a/drivers/net/wireless/rsi/rsi_91x_hal.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_hal.c
-@@ -248,7 +248,8 @@ int rsi_prepare_data_desc(struct rsi_common *common, struct sk_buff *skb)
- 			rsi_set_len_qno(&data_desc->len_qno,
- 					(skb->len - FRAME_DESC_SZ),
- 					RSI_WIFI_MGMT_Q);
--		if ((skb->len - header_size) == EAPOL4_PACKET_LEN) {
-+		if (((skb->len - header_size) == EAPOL4_PACKET_LEN) ||
-+		    ((skb->len - header_size) == EAPOL4_PACKET_LEN - 2)) {
- 			data_desc->misc_flags |=
- 				RSI_DESC_REQUIRE_CFM_TO_HOST;
- 			xtend_desc->confirm_frame_type = EAPOL4_CONFIRM;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index e815aab412d7..9a56a0a5f85d 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3763,23 +3763,16 @@ bool ath10k_mac_tx_frm_has_freq(struct ath10k *ar)
+ static int ath10k_mac_tx_wmi_mgmt(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct sk_buff_head *q = &ar->wmi_mgmt_tx_queue;
+-	int ret = 0;
+-
+-	spin_lock_bh(&ar->data_lock);
+ 
+-	if (skb_queue_len(q) == ATH10K_MAX_NUM_MGMT_PENDING) {
++	if (skb_queue_len_lockless(q) >= ATH10K_MAX_NUM_MGMT_PENDING) {
+ 		ath10k_warn(ar, "wmi mgmt tx queue is full\n");
+-		ret = -ENOSPC;
+-		goto unlock;
++		return -ENOSPC;
+ 	}
+ 
+-	__skb_queue_tail(q, skb);
++	skb_queue_tail(q, skb);
+ 	ieee80211_queue_work(ar->hw, &ar->wmi_mgmt_tx_work);
+ 
+-unlock:
+-	spin_unlock_bh(&ar->data_lock);
+-
+-	return ret;
++	return 0;
+ }
+ 
+ static enum ath10k_mac_tx_path
 -- 
 2.30.1
 
