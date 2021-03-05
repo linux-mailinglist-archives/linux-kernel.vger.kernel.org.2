@@ -2,169 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B2232F306
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:45:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C799132F324
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhCESoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 13:44:38 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:45674 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhCESoe (ORCPT
+        id S229651AbhCEStA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 13:49:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhCESsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 13:44:34 -0500
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 0.83.537)
- id bbf02adda70a6deb; Fri, 5 Mar 2021 19:44:32 +0100
-Received: from kreacher.localnet (89-64-81-9.dynamic.chello.pl [89.64.81.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id B8C91663EA1;
-        Fri,  5 Mar 2021 19:44:30 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Subject: [PATCH v1 4/4] hwmon: acpi_power_meter: Get rid of ACPICA message printing
-Date:   Fri, 05 Mar 2021 19:43:54 +0100
-Message-ID: <1890478.AxU35vj7Mz@kreacher>
-In-Reply-To: <2775419.haJ69vZeI0@kreacher>
-References: <2775419.haJ69vZeI0@kreacher>
+        Fri, 5 Mar 2021 13:48:30 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4F2C061756
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 10:48:30 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id o1so2492144qta.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 10:48:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+lW0O727rhlk3/EmX1NxZE3NA/fIKhpZMCBiUvxp/JM=;
+        b=X2eizvrPuMXNHR9aaeDDlQSEk/VqDe+9QFlhTPm1n5ug8099MCdnK57mRh2NWtZdel
+         09GnXXoBZWzt4cvd/Iyb5bbh+AjX5LT0UGhtewuNMbdZAlfHKlwkGvytXnaFLaE9YxGV
+         /jHqz4Q6Wb5c/BO1508xAEmJQik5n8tURj08A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+lW0O727rhlk3/EmX1NxZE3NA/fIKhpZMCBiUvxp/JM=;
+        b=kOAIAs4WxFZMDz2wUM3EhYb8duYNsWXG8IdOOcAoYp8GGt4UXvG4izA7Jfa6gCMeX4
+         XAYP2ENeYB8bBThE9HQzEITLkbDBJzNl0jyftFLuzpmn2A43Bx8kayeNnv105DVJ7vkK
+         5fdzYBRrzJsClmMwbyTIAjhWV42gdORgXGw07G8tHFnQkcRE/RJ88L1PAZWRVlYLkx6C
+         CxA8EJ7jqq/z0P53Ir6oXFpr0aZHNUu5RMnRKkywxvFiaHeDwovm3onVLhvJswmHZyu0
+         6RCltAUkPV2EVfH3XvHP+fPbErKXyUB4RY8YYvmPsJJVC5NpPhf6lr39YjCGo8iARAhh
+         6PTw==
+X-Gm-Message-State: AOAM533R4Xnpi0I3v0oQayW1CnOTrLEJ72x2g+I8g5auJ6vGY1dr4qf4
+        NbkysWVXJCV4IDqlfgcVEL2wpjtMOqpMoQ==
+X-Google-Smtp-Source: ABdhPJywVNWRvRkF8NyebfSuPaU4ZuxSH5T1s4m0wJArCM1tDb7CL2+CfoY6gGTUyLjJ1eQd105/ww==
+X-Received: by 2002:ac8:4a91:: with SMTP id l17mr10231199qtq.80.1614970109517;
+        Fri, 05 Mar 2021 10:48:29 -0800 (PST)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id z24sm2288799qkz.65.2021.03.05.10.48.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 10:48:28 -0800 (PST)
+Received: by mail-yb1-f170.google.com with SMTP id m9so2972634ybk.8
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 10:48:28 -0800 (PST)
+X-Received: by 2002:a25:d3c5:: with SMTP id e188mr16284311ybf.345.1614970108212;
+ Fri, 05 Mar 2021 10:48:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtiedguddtjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttddvnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgfelheffhfetffelhfelteejffetteetgfetkeejvdfhfeeftdeufeevgeevieevnecukfhppeekledrieegrdekuddrleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekuddrledphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepjhhitgdvfeeskhgvrhhnvghlrdhorhhgpdhrtghp
- thhtoheplhgrrhhssehmvghtrghfohhordguvgdprhgtphhtthhopehpmhgvvghrfiesphhmvggvrhifrdhnvghtpdhrtghpthhtoheplhhinhhugidqihhiohesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehjuggvlhhvrghrvgesshhushgvrdgtohhmpdhrtghpthhtoheplhhinhhugiesrhhovggtkhdquhhsrdhnvghtpdhrtghpthhtoheplhhinhhugidqhhifmhhonhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=11 Fuz1=11 Fuz2=11
+References: <20210304180415.1531430-1-mka@chromium.org> <20210304100341.2.I7fef1a0e82bd2f3c1bc35501f8652e027aae4fcc@changeid>
+In-Reply-To: <20210304100341.2.I7fef1a0e82bd2f3c1bc35501f8652e027aae4fcc@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 5 Mar 2021 10:48:16 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WwWPJNqZoUPU+opAPLgTAOT5RMJoWx0xg=FTyoaW3_Gg@mail.gmail.com>
+Message-ID: <CAD=FV=WwWPJNqZoUPU+opAPLgTAOT5RMJoWx0xg=FTyoaW3_Gg@mail.gmail.com>
+Subject: Re: [PATCH 2/4] arm64: dts: qcom: sc7180: Add pompom rev3
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Hi,
 
-Use acpi_evaluation_failure_warn() introduced previously instead of
-the ACPICA-specific ACPI_EXCEPTION() macro to log warning messages
-regarding ACPI object evaluation failures and use dev_err() instead
-of ACPI_EXCEPTION() to log _PMC package parsing failures, which is
-consistent with the other messages printed by the code in question.
+On Thu, Mar 4, 2021 at 10:04 AM Matthias Kaehlcke <mka@chromium.org> wrote:
+>
+> The only kernel visible change with respect to rev2 is that pompom
+> rev3 changed the charger thermistor from a 47k to a 100k NTC to use
+> a thermistor which is supported by the PM6150 ADC driver.
+>
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
+>
+>  .../dts/qcom/sc7180-trogdor-pompom-r2-lte.dts |  4 +-
+>  .../dts/qcom/sc7180-trogdor-pompom-r2.dts     |  4 +-
+>  .../dts/qcom/sc7180-trogdor-pompom-r3-lte.dts | 14 ++++++
+>  .../dts/qcom/sc7180-trogdor-pompom-r3.dts     | 46 +++++++++++++++++++
+>  4 files changed, 64 insertions(+), 4 deletions(-)
+>  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dts
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2-lte.dts
+> index 791d496ad046..00e187c08eb9 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2-lte.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2-lte.dts
+> @@ -9,6 +9,6 @@
+>  #include "sc7180-trogdor-lte-sku.dtsi"
+>
+>  / {
+> -       model = "Google Pompom (rev2+) with LTE";
+> -       compatible = "google,pompom-sku0", "qcom,sc7180";
+> +       model = "Google Pompom (rev2) with LTE";
+> +       compatible = "google,pompom-rev2-sku0", "qcom,sc7180";
+>  };
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dts
+> index 984d7337da78..2b2bd906321d 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dts
+> @@ -10,8 +10,8 @@
+>  #include "sc7180-trogdor-pompom.dtsi"
+>
+>  / {
+> -       model = "Google Pompom (rev2+)";
+> -       compatible = "google,pompom", "qcom,sc7180";
+> +       model = "Google Pompom (rev2)";
+> +       compatible = "google,pompom-rev2", "qcom,sc7180";
+>  };
+>
+>  &keyboard_controller {
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dts
+> new file mode 100644
+> index 000000000000..067cb75a011e
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3-lte.dts
+> @@ -0,0 +1,14 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Google Pompom board device tree source
+> + *
+> + * Copyright 2020 Google LLC.
+> + */
+> +
+> +#include "sc7180-trogdor-pompom-r3.dts"
+> +#include "sc7180-trogdor-lte-sku.dtsi"
+> +
+> +/ {
+> +       model = "Google Pompom (rev3+) with LTE";
+> +       compatible = "google,pompom-sku0", "qcom,sc7180";
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dts
+> new file mode 100644
+> index 000000000000..12d2d1e8e9e1
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r3.dts
+> @@ -0,0 +1,46 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Google Pompom board device tree source
+> + *
+> + * Copyright 2021 Google LLC.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "sc7180-trogdor-pompom.dtsi"
+> +
+> +/ {
+> +       model = "Google Pompom (rev3+)";
+> +       compatible = "google,pompom", "qcom,sc7180";
+> +};
+> +
+> +&keyboard_controller {
+> +       function-row-physmap = <
+> +               MATRIX_KEY(0x00, 0x02, 0)       /* T1 */
+> +               MATRIX_KEY(0x03, 0x02, 0)       /* T2 */
+> +               MATRIX_KEY(0x02, 0x02, 0)       /* T3 */
+> +               MATRIX_KEY(0x01, 0x02, 0)       /* T4 */
+> +               MATRIX_KEY(0x03, 0x04, 0)       /* T5 */
+> +               MATRIX_KEY(0x02, 0x04, 0)       /* T6 */
+> +               MATRIX_KEY(0x01, 0x04, 0)       /* T7 */
+> +               MATRIX_KEY(0x02, 0x09, 0)       /* T8 */
+> +               MATRIX_KEY(0x01, 0x09, 0)       /* T9 */
+> +               MATRIX_KEY(0x00, 0x04, 0)       /* T10 */
+> +       >;
+> +       linux,keymap = <
+> +               MATRIX_KEY(0x00, 0x02, KEY_BACK)
+> +               MATRIX_KEY(0x03, 0x02, KEY_REFRESH)
+> +               MATRIX_KEY(0x02, 0x02, KEY_ZOOM)
+> +               MATRIX_KEY(0x01, 0x02, KEY_SCALE)
+> +               MATRIX_KEY(0x03, 0x04, KEY_SYSRQ)
+> +               MATRIX_KEY(0x02, 0x04, KEY_BRIGHTNESSDOWN)
+> +               MATRIX_KEY(0x01, 0x04, KEY_BRIGHTNESSUP)
+> +               MATRIX_KEY(0x02, 0x09, KEY_MUTE)
+> +               MATRIX_KEY(0x01, 0x09, KEY_VOLUMEDOWN)
+> +               MATRIX_KEY(0x00, 0x04, KEY_VOLUMEUP)
+> +
+> +               MATRIX_KEY(0x03, 0x09, KEY_SLEEP)       /* LOCK key */
+> +
+> +               CROS_STD_MAIN_KEYMAP
+> +       >;
+> +};
 
-Next, drop the ACPI_MODULE_NAME() definition only used by the ACPICA
-message printing macro.
+I don't love copying all this keymap stuff.  Options I can think of:
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/hwmon/acpi_power_meter.c |   29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+1. Just put it in "-rev3".  Have the "-rev2" dts just include the
+"-rev3" dts and then override the model/compatible and disable the
+charger_thermal.
 
-Index: linux-pm/drivers/hwmon/acpi_power_meter.c
-===================================================================
---- linux-pm.orig/drivers/hwmon/acpi_power_meter.c
-+++ linux-pm/drivers/hwmon/acpi_power_meter.c
-@@ -20,7 +20,6 @@
- #include <linux/acpi.h>
- 
- #define ACPI_POWER_METER_NAME		"power_meter"
--ACPI_MODULE_NAME(ACPI_POWER_METER_NAME);
- #define ACPI_POWER_METER_DEVICE_NAME	"Power Meter"
- #define ACPI_POWER_METER_CLASS		"pwr_meter_resource"
- 
-@@ -114,7 +113,8 @@ static int update_avg_interval(struct ac
- 	status = acpi_evaluate_integer(resource->acpi_dev->handle, "_GAI",
- 				       NULL, &data);
- 	if (ACPI_FAILURE(status)) {
--		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _GAI"));
-+		acpi_evaluation_failure_warn(resource->acpi_dev->handle, "_GAI",
-+					     status);
- 		return -ENODEV;
- 	}
- 
-@@ -166,7 +166,8 @@ static ssize_t set_avg_interval(struct d
- 	mutex_unlock(&resource->lock);
- 
- 	if (ACPI_FAILURE(status)) {
--		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _PAI"));
-+		acpi_evaluation_failure_warn(resource->acpi_dev->handle, "_PAI",
-+					     status);
- 		return -EINVAL;
- 	}
- 
-@@ -186,7 +187,8 @@ static int update_cap(struct acpi_power_
- 	status = acpi_evaluate_integer(resource->acpi_dev->handle, "_GHL",
- 				       NULL, &data);
- 	if (ACPI_FAILURE(status)) {
--		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _GHL"));
-+		acpi_evaluation_failure_warn(resource->acpi_dev->handle, "_GHL",
-+					     status);
- 		return -ENODEV;
- 	}
- 
-@@ -237,7 +239,8 @@ static ssize_t set_cap(struct device *de
- 	mutex_unlock(&resource->lock);
- 
- 	if (ACPI_FAILURE(status)) {
--		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _SHL"));
-+		acpi_evaluation_failure_warn(resource->acpi_dev->handle, "_SHL",
-+					     status);
- 		return -EINVAL;
- 	}
- 
-@@ -270,7 +273,8 @@ static int set_acpi_trip(struct acpi_pow
- 	status = acpi_evaluate_integer(resource->acpi_dev->handle, "_PTP",
- 				       &args, &data);
- 	if (ACPI_FAILURE(status)) {
--		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _PTP"));
-+		acpi_evaluation_failure_warn(resource->acpi_dev->handle, "_PTP",
-+					     status);
- 		return -EINVAL;
- 	}
- 
-@@ -322,7 +326,8 @@ static int update_meter(struct acpi_powe
- 	status = acpi_evaluate_integer(resource->acpi_dev->handle, "_PMM",
- 				       NULL, &data);
- 	if (ACPI_FAILURE(status)) {
--		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _PMM"));
-+		acpi_evaluation_failure_warn(resource->acpi_dev->handle, "_PMM",
-+					     status);
- 		return -ENODEV;
- 	}
- 
-@@ -549,7 +554,8 @@ static int read_domain_devices(struct ac
- 	status = acpi_evaluate_object(resource->acpi_dev->handle, "_PMD", NULL,
- 				      &buffer);
- 	if (ACPI_FAILURE(status)) {
--		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _PMD"));
-+		acpi_evaluation_failure_warn(resource->acpi_dev->handle, "_PMD",
-+					     status);
- 		return -ENODEV;
- 	}
- 
-@@ -745,7 +751,8 @@ static int read_capabilities(struct acpi
- 	status = acpi_evaluate_object(resource->acpi_dev->handle, "_PMC", NULL,
- 				      &buffer);
- 	if (ACPI_FAILURE(status)) {
--		ACPI_EXCEPTION((AE_INFO, status, "Evaluating _PMC"));
-+		acpi_evaluation_failure_warn(resource->acpi_dev->handle, "_PMC",
-+					     status);
- 		return -ENODEV;
- 	}
- 
-@@ -765,7 +772,9 @@ static int read_capabilities(struct acpi
- 
- 	status = acpi_extract_package(pss, &format, &state);
- 	if (ACPI_FAILURE(status)) {
--		ACPI_EXCEPTION((AE_INFO, status, "Invalid data"));
-+		dev_err(&resource->acpi_dev->dev, ACPI_POWER_METER_NAME
-+			"_PMC package parsing failed: %s\n",
-+			acpi_format_exception(status));
- 		res = -EFAULT;
- 		goto end;
- 	}
+2. Put the keyboard stuff in the "dtsi" file and then "-rev1" can have
+something like:
 
+/delete-node/ keyboard_controller;
+#include <arm/cros-ec-keyboard.dtsi>
 
+In general the preference is that the ugly device trees should get
+pushed down to earlier revs since (eventually) they can just be
+dropped.
 
+I'll also mention that I don't see a huge benefit in this being a
+separate patch from the next one--I'd just squash them together...
+
+-Doug
