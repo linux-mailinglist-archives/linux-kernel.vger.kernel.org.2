@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C8132EB07
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B8B32EA15
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232855AbhCEMll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:41:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56940 "EHLO mail.kernel.org"
+        id S231736AbhCEMgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:36:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232106AbhCEMlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:41:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B66864EE8;
-        Fri,  5 Mar 2021 12:40:59 +0000 (UTC)
+        id S232533AbhCEMfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:35:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FC316501C;
+        Fri,  5 Mar 2021 12:35:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948060;
-        bh=mBDVqmsvG4vZLWTS5hDgyIwKWVE+/2SIuuN6klc0nw8=;
+        s=korg; t=1614947744;
+        bh=eXuvVLsIoJTtBSrllPg+LbvP5hevaIXkGvrpXESizSw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n7roa6apEhO7Jm0sppAgVxKuS3fJmSnJ+oRwP2CUCxnwvAHJBjsOy1VJmvk2DqE1y
-         BqNTJvSlmuvG224HvO7IttUM8LsfPnVWJB5mfDn3fRrKb+9xJBqPSIgeJH/7q8yU62
-         v6cBWfYTsJDDhvOSwtabHLG1mxfDBsaqmHjqTAek=
+        b=Yu8Cm7TQEJH9yua9hSts/KClk42Ya+a3bP2vJZYMk9pzBlli1I+JzZc3J6h4xL1sb
+         yhVefsC99/Z3lC6o1uLbE9usFkr+kgVBqX41pcd6X/wPUNuez/4B2pKHOosmZKeNAw
+         OFK7XvGDSRXnzXQMAxKUCP4QvFKVZGrCLQFhCiu0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        juri.lelli@arm.com, bigeasy@linutronix.de, xlpang@redhat.com,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jdesfossez@efficios.com, dvhart@infradead.org, bristot@redhat.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 4.9 03/41] futex: Pull rt_mutex_futex_unlock() out from under hb->lock
-Date:   Fri,  5 Mar 2021 13:22:10 +0100
-Message-Id: <20210305120851.434265124@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.4 69/72] media: v4l: ioctl: Fix memory leak in video_usercopy
+Date:   Fri,  5 Mar 2021 13:22:11 +0100
+Message-Id: <20210305120900.714856623@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
-References: <20210305120851.255002428@linuxfoundation.org>
+In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
+References: <20210305120857.341630346@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,256 +44,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Hutchings <ben@decadent.org.uk>
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-From: Peter Zijlstra <peterz@infradead.org>
+commit fb18802a338b36f675a388fc03d2aa504a0d0899 upstream.
 
-commit 16ffa12d742534d4ff73e8b3a4e81c1de39196f0 upstream.
+When an IOCTL with argument size larger than 128 that also used array
+arguments were handled, two memory allocations were made but alas, only
+the latter one of them was released. This happened because there was only
+a single local variable to hold such a temporary allocation.
 
-There's a number of 'interesting' problems, all caused by holding
-hb->lock while doing the rt_mutex_unlock() equivalient.
+Fix this by adding separate variables to hold the pointers to the
+temporary allocations.
 
-Notably:
-
- - a PI inversion on hb->lock; and,
-
- - a SCHED_DEADLINE crash because of pointer instability.
-
-The previous changes:
-
- - changed the locking rules to cover {uval,pi_state} with wait_lock.
-
- - allow to do rt_mutex_futex_unlock() without dropping wait_lock; which in
-   turn allows to rely on wait_lock atomicity completely.
-
- - simplified the waiter conundrum.
-
-It's now sufficient to hold rtmutex::wait_lock and a reference on the
-pi_state to protect the state consistency, so hb->lock can be dropped
-before calling rt_mutex_futex_unlock().
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: juri.lelli@arm.com
-Cc: bigeasy@linutronix.de
-Cc: xlpang@redhat.com
-Cc: rostedt@goodmis.org
-Cc: mathieu.desnoyers@efficios.com
-Cc: jdesfossez@efficios.com
-Cc: dvhart@infradead.org
-Cc: bristot@redhat.com
-Link: http://lkml.kernel.org/r/20170322104151.900002056@infradead.org
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-[bwh: Backported to 4.9: adjust context]
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Reported-by: Arnd Bergmann <arnd@kernel.org>
+Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
+Fixes: d14e6d76ebf7 ("[media] v4l: Add multi-planar ioctl handling code")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/futex.c |  111 ++++++++++++++++++++++++++++++++++-----------------------
- 1 file changed, 68 insertions(+), 43 deletions(-)
+ drivers/media/v4l2-core/v4l2-ioctl.c |   19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -966,10 +966,12 @@ static void exit_pi_state_list(struct ta
- 		pi_state->owner = NULL;
- 		raw_spin_unlock_irq(&curr->pi_lock);
- 
--		rt_mutex_futex_unlock(&pi_state->pi_mutex);
--
-+		get_pi_state(pi_state);
- 		spin_unlock(&hb->lock);
- 
-+		rt_mutex_futex_unlock(&pi_state->pi_mutex);
-+		put_pi_state(pi_state);
-+
- 		raw_spin_lock_irq(&curr->pi_lock);
- 	}
- 	raw_spin_unlock_irq(&curr->pi_lock);
-@@ -1083,6 +1085,11 @@ static int attach_to_pi_state(u32 __user
- 	 * has dropped the hb->lock in between queue_me() and unqueue_me_pi(),
- 	 * which in turn means that futex_lock_pi() still has a reference on
- 	 * our pi_state.
-+	 *
-+	 * The waiter holding a reference on @pi_state also protects against
-+	 * the unlocked put_pi_state() in futex_unlock_pi(), futex_lock_pi()
-+	 * and futex_wait_requeue_pi() as it cannot go to 0 and consequently
-+	 * free pi_state before we can take a reference ourselves.
- 	 */
- 	WARN_ON(!atomic_read(&pi_state->refcount));
- 
-@@ -1537,48 +1544,40 @@ static void mark_wake_futex(struct wake_
- 	q->lock_ptr = NULL;
- }
- 
--static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_q *top_waiter,
--			 struct futex_hash_bucket *hb)
-+/*
-+ * Caller must hold a reference on @pi_state.
-+ */
-+static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_pi_state *pi_state)
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -3016,7 +3016,7 @@ video_usercopy(struct file *file, unsign
+ 	       v4l2_kioctl func)
  {
--	struct task_struct *new_owner;
--	struct futex_pi_state *pi_state = top_waiter->pi_state;
- 	u32 uninitialized_var(curval), newval;
-+	struct task_struct *new_owner;
-+	bool deboost = false;
- 	WAKE_Q(wake_q);
--	bool deboost;
- 	int ret = 0;
+ 	char	sbuf[128];
+-	void    *mbuf = NULL;
++	void    *mbuf = NULL, *array_buf = NULL;
+ 	void	*parg = (void *)arg;
+ 	long	err  = -EINVAL;
+ 	bool	has_array_args;
+@@ -3075,20 +3075,14 @@ video_usercopy(struct file *file, unsign
+ 	has_array_args = err;
  
--	if (!pi_state)
--		return -EINVAL;
--
--	/*
--	 * If current does not own the pi_state then the futex is
--	 * inconsistent and user space fiddled with the futex value.
--	 */
--	if (pi_state->owner != current)
--		return -EINVAL;
--
- 	raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
- 	new_owner = rt_mutex_next_owner(&pi_state->pi_mutex);
--
--	/*
--	 * When we interleave with futex_lock_pi() where it does
--	 * rt_mutex_timed_futex_lock(), we might observe @top_waiter futex_q waiter,
--	 * but the rt_mutex's wait_list can be empty (either still, or again,
--	 * depending on which side we land).
--	 *
--	 * When this happens, give up our locks and try again, giving the
--	 * futex_lock_pi() instance time to complete, either by waiting on the
--	 * rtmutex or removing itself from the futex queue.
--	 */
- 	if (!new_owner) {
--		raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
--		return -EAGAIN;
-+		/*
-+		 * Since we held neither hb->lock nor wait_lock when coming
-+		 * into this function, we could have raced with futex_lock_pi()
-+		 * such that we might observe @this futex_q waiter, but the
-+		 * rt_mutex's wait_list can be empty (either still, or again,
-+		 * depending on which side we land).
-+		 *
-+		 * When this happens, give up our locks and try again, giving
-+		 * the futex_lock_pi() instance time to complete, either by
-+		 * waiting on the rtmutex or removing itself from the futex
-+		 * queue.
-+		 */
-+		ret = -EAGAIN;
-+		goto out_unlock;
+ 	if (has_array_args) {
+-		/*
+-		 * When adding new types of array args, make sure that the
+-		 * parent argument to ioctl (which contains the pointer to the
+-		 * array) fits into sbuf (so that mbuf will still remain
+-		 * unused up to here).
+-		 */
+-		mbuf = kvmalloc(array_size, GFP_KERNEL);
++		array_buf = kvmalloc(array_size, GFP_KERNEL);
+ 		err = -ENOMEM;
+-		if (NULL == mbuf)
++		if (array_buf == NULL)
+ 			goto out_array_args;
+ 		err = -EFAULT;
+-		if (copy_from_user(mbuf, user_ptr, array_size))
++		if (copy_from_user(array_buf, user_ptr, array_size))
+ 			goto out_array_args;
+-		*kernel_ptr = mbuf;
++		*kernel_ptr = array_buf;
  	}
  
- 	/*
--	 * We pass it to the next owner. The WAITERS bit is always
--	 * kept enabled while there is PI state around. We cleanup the
--	 * owner died bit, because we are the owner.
-+	 * We pass it to the next owner. The WAITERS bit is always kept
-+	 * enabled while there is PI state around. We cleanup the owner
-+	 * died bit, because we are the owner.
- 	 */
- 	newval = FUTEX_WAITERS | task_pid_vnr(new_owner);
+ 	/* Handles IOCTL */
+@@ -3107,7 +3101,7 @@ video_usercopy(struct file *file, unsign
  
-@@ -1611,15 +1610,15 @@ static int wake_futex_pi(u32 __user *uad
- 		deboost = __rt_mutex_futex_unlock(&pi_state->pi_mutex, &wake_q);
+ 	if (has_array_args) {
+ 		*kernel_ptr = (void __force *)user_ptr;
+-		if (copy_to_user(user_ptr, mbuf, array_size))
++		if (copy_to_user(user_ptr, array_buf, array_size))
+ 			err = -EFAULT;
+ 		goto out_array_args;
+ 	}
+@@ -3129,6 +3123,7 @@ out_array_args:
  	}
  
-+out_unlock:
- 	raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
--	spin_unlock(&hb->lock);
- 
- 	if (deboost) {
- 		wake_up_q(&wake_q);
- 		rt_mutex_adjust_prio(current);
- 	}
- 
--	return 0;
-+	return ret;
+ out:
++	kvfree(array_buf);
+ 	kvfree(mbuf);
+ 	return err;
  }
- 
- /*
-@@ -2493,7 +2492,7 @@ retry:
- 	if (get_futex_value_locked(&uval, uaddr))
- 		goto handle_fault;
- 
--	while (1) {
-+	for (;;) {
- 		newval = (uval & FUTEX_OWNER_DIED) | newtid;
- 
- 		if (cmpxchg_futex_value_locked(&curval, uaddr, uval, newval))
-@@ -3006,10 +3005,36 @@ retry:
- 	 */
- 	top_waiter = futex_top_waiter(hb, &key);
- 	if (top_waiter) {
--		ret = wake_futex_pi(uaddr, uval, top_waiter, hb);
-+		struct futex_pi_state *pi_state = top_waiter->pi_state;
-+
-+		ret = -EINVAL;
-+		if (!pi_state)
-+			goto out_unlock;
-+
- 		/*
--		 * In case of success wake_futex_pi dropped the hash
--		 * bucket lock.
-+		 * If current does not own the pi_state then the futex is
-+		 * inconsistent and user space fiddled with the futex value.
-+		 */
-+		if (pi_state->owner != current)
-+			goto out_unlock;
-+
-+		/*
-+		 * Grab a reference on the pi_state and drop hb->lock.
-+		 *
-+		 * The reference ensures pi_state lives, dropping the hb->lock
-+		 * is tricky.. wake_futex_pi() will take rt_mutex::wait_lock to
-+		 * close the races against futex_lock_pi(), but in case of
-+		 * _any_ fail we'll abort and retry the whole deal.
-+		 */
-+		get_pi_state(pi_state);
-+		spin_unlock(&hb->lock);
-+
-+		ret = wake_futex_pi(uaddr, uval, pi_state);
-+
-+		put_pi_state(pi_state);
-+
-+		/*
-+		 * Success, we're done! No tricky corner cases.
- 		 */
- 		if (!ret)
- 			goto out_putkey;
-@@ -3024,7 +3049,6 @@ retry:
- 		 * setting the FUTEX_WAITERS bit. Try again.
- 		 */
- 		if (ret == -EAGAIN) {
--			spin_unlock(&hb->lock);
- 			put_futex_key(&key);
- 			goto retry;
- 		}
-@@ -3032,7 +3056,7 @@ retry:
- 		 * wake_futex_pi has detected invalid state. Tell user
- 		 * space.
- 		 */
--		goto out_unlock;
-+		goto out_putkey;
- 	}
- 
- 	/*
-@@ -3042,8 +3066,10 @@ retry:
- 	 * preserve the WAITERS bit not the OWNER_DIED one. We are the
- 	 * owner.
- 	 */
--	if (cmpxchg_futex_value_locked(&curval, uaddr, uval, 0))
-+	if (cmpxchg_futex_value_locked(&curval, uaddr, uval, 0)) {
-+		spin_unlock(&hb->lock);
- 		goto pi_faulted;
-+	}
- 
- 	/*
- 	 * If uval has changed, let user space handle it.
-@@ -3057,7 +3083,6 @@ out_putkey:
- 	return ret;
- 
- pi_faulted:
--	spin_unlock(&hb->lock);
- 	put_futex_key(&key);
- 
- 	ret = fault_in_user_writeable(uaddr);
 
 
