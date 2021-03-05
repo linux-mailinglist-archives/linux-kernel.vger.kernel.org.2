@@ -2,223 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0F732F4BB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B91132F4BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhCEUqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 15:46:05 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:3111 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhCEUpf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 15:45:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1614977135; x=1646513135;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=eE/bBaEwWTcMACXI22pD0G8g+PbIt8chw/U7BVSgwj0=;
-  b=Yis4j9+xFTIVGecvCpPdoLb27wX3lppLl7CivdaO/p1CeSDQhkWFimav
-   LgPSusEHlVL/XMoCwcv8SKzGKriQ6w8+DUEf+lQuj9yzU/OOefB72diNl
-   EIOAic4e+YvWdnQVQL6KeQB0s9YpTJmPfk85wxWgO/skNB6iMAU+kxJ2C
-   vaRSAJZ7GZhtyLDmGHQ92vDV0ROPCWe72UBVh/fYh5+f14PESTHGTgTzU
-   O9GO+3bqKK2Cw3QVFsDC1RY4lDjaM65TND+21RLM3XInhyHEndozsULV2
-   DQXT/4QaZm94ID2zIqGzThLabZK8QXwpBgEAjmJ//O/vbRBRvcsZDkr8s
-   A==;
-IronPort-SDR: i5Av7fjGda0r2RboiDvQYGhfKdcUuKSaWHPzOXSMsLzJvZtndM/DCaE74I76ak9k8rK0M//RZs
- kmFJ0ewlv+6an058hm9PSSG5D0cbghPUYJvVcj1OeGPiU5CfLkSr4i9GgaV9mcCPg4umYZNp/m
- bIzi5LhkCA4bizmP+00+m9D2QP11Zy+NEHPbUmsuYZmU2BsGBy1kAxSUM890YoQzwOHE4p1U1N
- exJCkojJoVr2/RaUW5msmbrK/ppcNRNypIzXkOuvPrtFxzvKposhh7IBsGEKrH8jzP/XGo9AQD
- eDk=
-X-IronPort-AV: E=Sophos;i="5.81,226,1610434800"; 
-   d="scan'208";a="46467953"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Mar 2021 13:45:32 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+        id S229851AbhCEUqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 15:46:42 -0500
+Received: from mga14.intel.com ([192.55.52.115]:42296 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229597AbhCEUqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 15:46:17 -0500
+IronPort-SDR: hOBbZk55vsP5gJ1PLESAXl3oNe85AqvLR1feJph/+WEfdTRZk7Md/l/IbFSS92hj1H9P3YAfLJ
+ Y2LnmU1prCxg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="187079867"
+X-IronPort-AV: E=Sophos;i="5.81,226,1610438400"; 
+   d="scan'208";a="187079867"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 12:46:17 -0800
+IronPort-SDR: FSDOPU+Ecb9oaYcAWEbIaVgeWbR9jcCfWi18O3LYCo9o3VpphuII71P0Uh0PILWTq1n2Bo0w5R
+ m83440OOYS6g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,226,1610438400"; 
+   d="scan'208";a="429529858"
+Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
+  by fmsmga004.fm.intel.com with ESMTP; 05 Mar 2021 12:46:16 -0800
+Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
+ ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 5 Mar 2021 13:45:31 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2 via Frontend
- Transport; Fri, 5 Mar 2021 13:45:31 -0700
+ 15.1.2106.2; Fri, 5 Mar 2021 12:46:16 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Fri, 5 Mar 2021 12:46:16 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.47) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Fri, 5 Mar 2021 12:46:16 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WvD7YkWiKGXJdHTAybFO/e5uwNTZNdk5aTL7wkYI7ASZnN33p5muWTWZgZieEUYQA1RYvSQWF2vwQQ10Ri63077XNAYNm3mhiaaAoJ70mqMy6IxkiRn4t0W/LVBMYUQ0L/3NGMkh+nf3JIQqaKQRo5C8EbQqBO9uPktlWFTuHSYWS9W31+r+zoDx+LS321N9TXVMTJmxYsguEaYYMPCpH6rNXc2XvM6SKNNau6F6XPu7F1qWnK2SUj53OpahlVnPdX1jzb/TvB6467bOs1mYw/cziKNCjeVkLHZiYe3ZDi0HzQTzAqNIqlkue66seBIxihvhIBXu+G5srHu5VublNw==
+ b=Qxaf0vQ9lsrN3uTHxu8wDXKuootf4rKUfGpA7gZViAvCvMdXGDclM5iqiGZfDSFm66O7kA7+7Gq1bYvwUCrXhlMi54sdwh6MP70L3RKSoTpEN67YI8ncVp29FTcFxWPaS3UZIX2hjdIKHb5SFNCgJCq8rNoYgmR/sTK6oa15vfRI41+7wesI/6zsWwhdqH9kJ4YeIaJ6GFcKbR6td+wJzEJryrpuvligCC47Mu04ftRTy0/v/Vvwc9Nqs1EyCs/wQch6rXFCUBkaNPzhWlJWKlrhrax+nyXgnIPDoEg7jddcTnYB/5xqJo9qpVOa7vopW9PMyzq+VxauyLdF0sWeyQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eE/bBaEwWTcMACXI22pD0G8g+PbIt8chw/U7BVSgwj0=;
- b=Jl7Qg9BepCC9ueO8Mjdm6bOPrt81jEnRlBpfDayq1hX+ROio9jYD3mH2QK4/Gy975Sp4iALGKQycS7kLi34cgryiq+MemxO2B6aAGm220EANc3b061jUghBiwZM1hZYtb7RPNTHLaAwDNe5MSchKs3F8+wG8ErV0ngYAPf78wMJmeORYjFEvMifa3GaWecJuNRmJr/dZF9H5JuEUvK/2aOm6Q3/WdgQLd15cSvEwXT6KdbqczWuiGH4dP15KcF9TcKuDJh6smX+JmtpRGR2qTZn0r+UoeFqIb06y9hqJFySSlYdxPi7BkrYPE8Y3YIbMt05ZOzMHQLPWCCjxM/0E6g==
+ bh=7G+s+8STzCXDwvFjW5Zcbxok/JszllK5zlrfejVz4v8=;
+ b=Otz73CzmfPvBasKdXKht8iwD17a8xXIOJ2o6BCk6Naxwvik7du2I2MuDgQFRVXNrfvhd/D+QAuCqC8HhypSUK/G/mz598vz3Y6hMJZUAb/dZ/tS8Kj/DWYanpxRJL/IZvDk0ij4ME4TUMww+Ex0oDrapv4HTMMMsevo5G2faLig8emhxTxAGdVYDQ176vfPDXx0VPoGQnIjUdVHT5SoHFt5Q+x4BI/0JHYYIGLESzQhzPRqslfE2XVYEIYnv2aZ8kykxWME6Io1pTN8XSXpgod5NHz0R+tyoUkI/y5EZEWxESnV3erhz0ydWESLjTZwwdPD0iZ5DqvYotTTyUYfghA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eE/bBaEwWTcMACXI22pD0G8g+PbIt8chw/U7BVSgwj0=;
- b=W+/olUNifZruESYWgr+ebXU4tu6I0pPOtkTKPhi8VsaKJMQyp2N6taqVZqwBvAvYvvP8tiRbESPhCmb+uffuDM8LkDhcn2t4hXNhehWgZ5hltfqe6UKDeVFfBVAj2/WEuH8p3IwgwHU0dKDniBK3t7eHB6YsVU1j7CqgGwLdAfo=
-Received: from BYAPR11MB2837.namprd11.prod.outlook.com (2603:10b6:a02:c6::17)
- by BYAPR11MB3815.namprd11.prod.outlook.com (2603:10b6:a03:fa::27) with
+ bh=7G+s+8STzCXDwvFjW5Zcbxok/JszllK5zlrfejVz4v8=;
+ b=B2RwdoHjNc5JM8qweKzUWq8+oEXQsF5MTEg69bb1uIMhG+9B+fbX7pwEsIrqsIShRgckk1Y7Y0PyFbENisDYuRKUYSDV6KHi2sFjGaoHLThzl4Xf81z4WG8UUghecIw1nzKv33BtZpNKA6fl/vrnE3LmeA+o0mrOrffQXxxZRE8=
+Received: from BYAPR11MB3256.namprd11.prod.outlook.com (2603:10b6:a03:76::19)
+ by BYAPR11MB3608.namprd11.prod.outlook.com (2603:10b6:a03:b1::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Fri, 5 Mar
- 2021 20:45:29 +0000
-Received: from BYAPR11MB2837.namprd11.prod.outlook.com
- ([fe80::5480:4244:dea1:8108]) by BYAPR11MB2837.namprd11.prod.outlook.com
- ([fe80::5480:4244:dea1:8108%4]) with mapi id 15.20.3890.035; Fri, 5 Mar 2021
- 20:45:28 +0000
-From:   <Don.Brace@microchip.com>
-To:     <arnd@kernel.org>, <geert@linux-m68k.org>
-CC:     <slyich@gmail.com>, <glaubitz@physik.fu-berlin.de>,
-        <storagedev@microchip.com>, <linux-scsi@vger.kernel.org>,
-        <linux-ia64@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jszczype@redhat.com>, <Scott.Benesh@microchip.com>,
-        <Scott.Teel@microchip.com>, <thenzl@redhat.com>,
-        <martin.petersen@oracle.com>
-Subject: RE: [bisected] 5.12-rc1 hpsa regression: "scsi: hpsa: Correct dev
- cmds outstanding for retried cmds" breaks hpsa P600
-Thread-Topic: [bisected] 5.12-rc1 hpsa regression: "scsi: hpsa: Correct dev
- cmds outstanding for retried cmds" breaks hpsa P600
-Thread-Index: AQHXD8NYByGFLRaE+E6Jw8YXZ2Cxsqpx9mmAgAB7hnCAArCfAIAARbkAgAA7DVA=
-Date:   Fri, 5 Mar 2021 20:45:28 +0000
-Message-ID: <BYAPR11MB283776005C6D41BAE51F91BBE1969@BYAPR11MB2837.namprd11.prod.outlook.com>
-References: <20210222230519.73f3e239@sf>
- <cc658b61-530e-90bf-3858-36cc60468a24@kernel.dk>
- <8decdd2e-a380-9951-3ebb-2bc3e48aa1c3@physik.fu-berlin.de>
- <20210223083507.43b5a6dd@sf>
- <51cbf584-07ef-1e62-7a3b-81494a04faa6@physik.fu-berlin.de>
- <9441757f-d4bc-a5b5-5fb0-967c9aaca693@physik.fu-berlin.de>
- <20210223192743.0198d4a9@sf> <20210302222630.5056f243@sf>
- <25dfced0-88b2-b5b3-f1b6-8b8a9931bf90@physik.fu-berlin.de>
- <20210303002236.2f4ec01f@sf> <20210303085533.505b1590@sf>
- <SN6PR11MB284885A5751845EEA290BFCFE1989@SN6PR11MB2848.namprd11.prod.outlook.com>
- <CAMuHMdVLFfSoC-UYW+3sijeZhLf9xt3rqS=7LTYhzX_1RDxpYA@mail.gmail.com>
- <CAK8P3a0EhxvQ3pP6iMwHdR3RwF3CcAaWvfodPnzPip2iW2wBgQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a0EhxvQ3pP6iMwHdR3RwF3CcAaWvfodPnzPip2iW2wBgQ@mail.gmail.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.21; Fri, 5 Mar
+ 2021 20:46:14 +0000
+Received: from BYAPR11MB3256.namprd11.prod.outlook.com
+ ([fe80::ac1e:2d22:3f90:4dc]) by BYAPR11MB3256.namprd11.prod.outlook.com
+ ([fe80::ac1e:2d22:3f90:4dc%7]) with mapi id 15.20.3890.032; Fri, 5 Mar 2021
+ 20:46:14 +0000
+From:   "Moore, Robert" <robert.moore@intel.com>
+To:     "Moore, Robert" <robert.moore@intel.com>,
+        "weidongcui@gmail.com" <weidongcui@gmail.com>
+CC:     "Kaneda, Erik" <erik.kaneda@intel.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        Xinyang Ge <aegiryy@gmail.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "devel@acpica.org" <devel@acpica.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in
+ acpi_gbl_default_address_spaces only when ACPI_PCI_CONFIGURED is defined
+Thread-Topic: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in
+ acpi_gbl_default_address_spaces only when ACPI_PCI_CONFIGURED is defined
+Thread-Index: AQHW/pI3ruT7cwkxjEOUSsZ8OrOy5apyuR4AgAF306CAAANRAIAABwjQgAHIQiA=
+Date:   Fri, 5 Mar 2021 20:46:14 +0000
+Message-ID: <BYAPR11MB3256B80EC10AF4965083CCD087969@BYAPR11MB3256.namprd11.prod.outlook.com>
+References: <20210209031744.26474-1-weidongcui@gmail.com>
+ <MWHPR11MB1599D81078925FFD128E954EF0989@MWHPR11MB1599.namprd11.prod.outlook.com>
+ <BYAPR11MB325658379DB73F6EEDD6C76F87979@BYAPR11MB3256.namprd11.prod.outlook.com>
+ <CADFYyO73g8LkgwZv4m5N2bXq0XcZru4m9+K0uudCLmcp7yewpQ@mail.gmail.com>
+ <BYAPR11MB3256FD804E3F3CE584B6D3B387979@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: <BYAPR11MB3256FD804E3F3CE584B6D3B387979@BYAPR11MB3256.namprd11.prod.outlook.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [76.30.208.15]
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [134.134.136.194]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 24c5a2c0-1935-4c4d-664d-08d8e0179c90
-x-ms-traffictypediagnostic: BYAPR11MB3815:
+x-ms-office365-filtering-correlation-id: 890d839d-8cdf-4014-a31a-08d8e017b7ae
+x-ms-traffictypediagnostic: BYAPR11MB3608:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB3815C72E4744F654C5CB7884E1969@BYAPR11MB3815.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-microsoft-antispam-prvs: <BYAPR11MB3608E878E81A3328DC0ABCF387969@BYAPR11MB3608.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1303;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pvoHL7Z5qyxbL4+dbuW34c66BNEXGKvUjlciao+Y+ISDh2OB1nff8t3ElQAddgO6cm8LZJkptflGCG29wn91EA8sYbKSCiAEKA7qCtDfiOGpKk5xAcFwmL1lkX3l3XiJc5bc8Rvetx973jZS47eLt4YDjQATlSeKKASBqPjDBbwqmhuwBftCJ7vLrF4ORxfN0lu4FzxGK0igkAfJnQd7C1P6q7sDyPnQhUHDlBbMnUBEv3Szxoqd/khXixNK15GdTwObcBnTEpXWa5yqXDtAe9EptYyk5ouK/SCWOoOBgjUXJopxCmYsUWLDe8+944s9mkLpaB/XXPrQ80SkptJXWo92+y2HqMzy4nduCs09RIfqC8TOBsScALOGJk6ieyU9/vuTjvSd5Fv8Tec4+tGfDaEyPY96aQ1wcjnONMzEpfUJ7dp54t892Kjx2uIfg4ZfhvY9hvD0n5lXsSMhsCEwAn3gubn015s6t6Z6pJ3qUalrnSOnKtyP43uzRtdhLaFmtCoz6fg7MdGAE18+QJqyjA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2837.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(366004)(376002)(396003)(346002)(2906002)(9686003)(83380400001)(8936002)(316002)(53546011)(7416002)(110136005)(66556008)(478600001)(5660300002)(4326008)(64756008)(54906003)(6506007)(52536014)(186003)(7696005)(66446008)(55016002)(66946007)(71200400001)(76116006)(66476007)(33656002)(26005)(8676002)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?WG45V01KWW5qQ2I2cnVCK1FMMjl6UjhTT0QxVUNla2VSRGp1TGcvZlg4ZGZZ?=
- =?utf-8?B?ZjRjeEpmOE5WcEtyaVIyMXpkZzBoczhhT1BGZjBhUS83MEE4cnk2MWprN1px?=
- =?utf-8?B?SXMyTEJUQjZIcGdDdkJxVGNpekk3a1lEVEl2ckZRWUp6MDBBSDNHZ3Z0QUs1?=
- =?utf-8?B?Z1hJcnU1MThFOU1zNExuSW1vSFhYL3l2L3NPUU5aNWlsRFZwbTV1YUc1cGtj?=
- =?utf-8?B?VXFnOHRKbVNQNVM2dEZHM2JYNGErOWNyZU9yKy9ZSy9xU1lsUGh0ZndDSTVk?=
- =?utf-8?B?SE9uVElXMVZyUWJoS3Z4b2MzTktISElDeDBQUlA5dG1jNjFES09aQkJlUmE4?=
- =?utf-8?B?UUFVZnJ0eW9FM25XSFpLc1kyQ3RmR2duQU9ncWxjeTBZZlhYMDZBUmdiWWpG?=
- =?utf-8?B?STdWaTg4eUduL2JZcm9CTmlicDdXQlFjM3pmVE13SnFwaWNkNGhkUW90M2cr?=
- =?utf-8?B?TlkwZUhVcGxQelFqdk42Wk1xdm03R092VUpTdis3TXR1SDNhUTNndTdEUmV0?=
- =?utf-8?B?bWgrUG9odTFiSFlpWXJCcStpNGhHOXFCVVdMZGh2dHVWV21VdFUrV1BzSi85?=
- =?utf-8?B?NExnT01EY1B6UDFncC9Zc3gra1I2aHU0SnVrS2kyR1ZKLzZNZzRnTlhFbGVj?=
- =?utf-8?B?RmFiNXdDUTV0SXRmMjhXMHh5N3VTZXhnZjhvdmZSNmtBNDg4UE9jVmVQeWZF?=
- =?utf-8?B?eVVEMW1FWnpEZ0oyWVM4SnFhV2ZTb252QlAzNUV4UUI5TjVDcGxqdG5KejFU?=
- =?utf-8?B?WkJNeWZ2THl1VEt1Z1dUM1Q4bkxRRE8zdU9zMGpuVklpV3NpMzZ3T1V1R0RK?=
- =?utf-8?B?UFFoWVY0TU5rV1l1bjdhTnduK0ZBOC9BSnVQK3FLU2pUamltTjZURlNIeXl4?=
- =?utf-8?B?QjhkYVF5RldGaCtCNlk4V1V2dHlCOWxleDJPVUxqQnp5UDI3V2FZRjlEMUl5?=
- =?utf-8?B?YzlxTTdJMnlEcGFVRnNuSXVqbGxxZTNHaFFLWW52WDBuZzkvTjF5ZjJWUlRu?=
- =?utf-8?B?WlNtaWdvZ0Q4SHNXakZSRUN4WGw0U3paTkxBZXNCRkRxT2RvWjVQS3hBa2hN?=
- =?utf-8?B?OFZUdkh1ZXpWaTVjOW9YVktMOGcvaDhwNlhRaDlSaEQxTUJrdU1vNEdKNCtE?=
- =?utf-8?B?MDVrNFU3b1pXLzdUNUo0Ym9LQ0J5dzgrdUZkMmduT1FnTzlPdHVGWStxdThs?=
- =?utf-8?B?dDNNVGR5U3Q5Tk5XSmo1WGtrRjNTcUl6amp5N1lBK2g2TjhmamFWOHQyQ3c2?=
- =?utf-8?B?eXlUZ1g0ai82dHJ2ZHlwNmZ2MTJldEJxRkRlT200a2FORGhRM3BXL3A3U1lm?=
- =?utf-8?B?aEkxS2xXOWVrZDhuSk5xSXBON3dVTVJPNXBVOTJFL24weHZXL3lKdit2cXpu?=
- =?utf-8?B?MXBXOWVZOVVPKzg3OWFiTEVabFFGM0ZCVTVPUXRtYk8zL0tuTHo4L3d0THlp?=
- =?utf-8?B?U0pobG9lcy85N2hXUzZGMDRuQ0RFWkRaSUtoVkRnS0JmTDdIaUdsdkIxeG9F?=
- =?utf-8?B?UTU5S3htQjFyWHJienFWaVlLMzhnT0VQd0crdVBoRGJyS0lIYUZ0TXBIQSsx?=
- =?utf-8?B?NjkrdURsNGQ4UXVLUklkQmFYQytIL3NCWUI0NnMxSk9UL1RsRzZNZkNaVmtS?=
- =?utf-8?B?V25wd2ZiTUtHNEwyZFdyNU8wYksrUkptbkIrVGJBME1hZzdld0trYTFybkFM?=
- =?utf-8?B?WWJsWDc2Umh1czQ0eHRPK0hkKzBpc0VsMXBwYUxiQVR5VmdNTHJUQVZ3T1gz?=
- =?utf-8?Q?iZqqu2j/F1irX5wI6c=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+x-microsoft-antispam-message-info: PLXcau5YDA+uOlkmjXr9Y3dMJ1KuvyW7J8adNIRZezZ0PLBA4IEkAUGLiYbKdtbR4nOM/igNNjzWfUKI+Zm7yjUo/pfJcfYO+0qgNQNyXOic61BFddCR/HYmteTAx7F3uq6IazChn99/7qIckDMI95axDvToMKvND1dj5VtuBZHYgNQnVaOC5CHxAsL3fJa5KdDcR89ogIB+J5Qm6NkcLPziM4CD7g6XTW1gAben34rnz5ElxYwbJavdyTNb7S48qE3QuVMu0aBB81KpcVsYxteV9fTjWs0DlaMgEF+6S61HHjEPizs0Z5kq4dgeXkKrwkf8xoEFgZfnipA4V7Tvq80+Mpk28RcNGYJLsB8UeRIT6m1ngxYWwo82ThAl+uiRGq6PyZiiTCH19l584/QQei2D8TpMqoGGYHu/ltbquBWOWbWcYc2XT5jBlpKUH8635MV3aBPIh1n2QxJdQnN7RfkGR7icExQyCsXgS0NnHPIG61i+kpAkJouDtQ/iuRCTw7mBiDkpw1wO1mGustq8cQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3256.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(376002)(396003)(39860400002)(136003)(186003)(33656002)(8676002)(5660300002)(26005)(83380400001)(4326008)(6506007)(76116006)(8936002)(86362001)(66556008)(64756008)(66476007)(66946007)(71200400001)(66446008)(110136005)(316002)(2906002)(53546011)(54906003)(7696005)(52536014)(478600001)(55016002)(9686003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Wyy2UlXir79RGYukGul6zS8kJ5aCjuNLDa4PWu51HRK6EpH16ZqyUryQk2pe?=
+ =?us-ascii?Q?gYOWec2BYey8gDNqnMksbym/SoHLDeErBRELJqvft+TcwGZNH8EFwYBtZe2O?=
+ =?us-ascii?Q?Grmxlr+7IcQ1+GVg/fd07gkmBE6jMZ2Pk4JiFy4yXMm/+A3lcAhFaAh7gCCg?=
+ =?us-ascii?Q?W/F/YSAO2iG/FqnH/2nxxucGc7ILTJL4LeG/qRBXkWf64ZixWe1ciGDRSfLK?=
+ =?us-ascii?Q?ov7MDa4ONQnburzBsVf+yzvDbARz2trK2nx26YotGtHG5582mygUAYLKnWkg?=
+ =?us-ascii?Q?pXm27mRBC+TKwiQ4y4XOT+DjOB7MHl53y8IG+IPut/fjlHL6UzAVDCufjwdU?=
+ =?us-ascii?Q?3vpC5v7rWGOAG9iiLn058zLMVwZHCJCDn6Q0q8M8B/r05Pc3Puay2cGdIQxU?=
+ =?us-ascii?Q?IpFqCCm1a8H0McTrHXrJ6UM/p++w5/LWebz20GW7Z/mRbwpcQNWzlHX0ZZqB?=
+ =?us-ascii?Q?mRxzQV6oVaNg63SVKj6+qp7FwGWoZJdCXSqlM/jS7B1JlkqAiuy8HCcIDlE7?=
+ =?us-ascii?Q?ml4BsbbC/9/5Vi+YlDfB8R/zgU1Ai9IO1jjUHz+rSDNCAY66f6ALg+SlndQl?=
+ =?us-ascii?Q?2nwXXSYeEsH6G/T4qZXVpRnRh6XYGwYuLzJmRsWwclUX9k1bfWwgANV53cTk?=
+ =?us-ascii?Q?efUULz/7i4SqIswhA0Emdnj5dwGB85VN9W9vO6GPKejkXd+WkfhEeQeet41n?=
+ =?us-ascii?Q?rPuTngfwqWgQfva/g6/Z0r88BAi9VtaJvlDd78/KPJWUuz0E2TKLcYtt1hcU?=
+ =?us-ascii?Q?rykNIy1fN0QLx6YXpIFpD2xRvfidCaJ7DVRDuh76q6CJEOH3CE7qhiLLh7qB?=
+ =?us-ascii?Q?Enxd8bcSPlfh8it3iezcQFUp+RsK++hk18rId5oiM79A9YMLHQ9rEwhxKaYi?=
+ =?us-ascii?Q?qpIcNtuA1TTywq13pep1K+ORrQemGIiNe5e8XA81fMaM7eQyWhxJm45+cmw6?=
+ =?us-ascii?Q?VaRB8CPxx91DH3xoJ4IAxfyHgQKlSJUksVhazNw29jP7WAAIyPQsJOiRQSpM?=
+ =?us-ascii?Q?3NJq2JkccdO9vXSXXTOqgwEH8ExKwFZMgucaA22H6AeLvNTF9+ytXNZCgpsN?=
+ =?us-ascii?Q?zwkWqNKrlIUQWkLjuHJg9ogcQDOVRarwHA43YFBL3OnO8vubiipa1GhjTuSY?=
+ =?us-ascii?Q?7MTuhMNjdBJrmf6e5GRPutRL5W8PfAbtLlnFBKGDx3fjtDxYhvyjrK/mARbz?=
+ =?us-ascii?Q?S/Ly0qpvUlypN0ziYkwznAVBX11nHEb6v3NPb0UMqSQ1ZjhVQ9M8TLxEJDNX?=
+ =?us-ascii?Q?G5I3T6PcALaUlivde6aH93DBkjRkLoyU3HuWiNkCpaOb80/JYzekL+dw5Drr?=
+ =?us-ascii?Q?AiZPxEgV5LjA5YeZKTRNdv1D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2837.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 24c5a2c0-1935-4c4d-664d-08d8e0179c90
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2021 20:45:28.7244
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3256.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 890d839d-8cdf-4014-a31a-08d8e017b7ae
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2021 20:46:14.2191
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Df43aG/wio8XpK5RHk/5KUzwSP6gURtgFN1JYZe+P29fvuEKpu1cTycA4Vut913ySM4KeF5A9hwCxSGhl7s/DA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3815
+X-MS-Exchange-CrossTenant-userprincipalname: YWYAU3XCGtNNG02WyTqsEMAGhgqZCpUQcmAbKFokrBBe41yBsuEm0EhqQXXaQhV3L6rnPhSoxSpsPLWt06ARBQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3608
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEFybmQgQmVyZ21hbm4gW21haWx0bzph
-cm5kQGtlcm5lbC5vcmddIA0KU2VudDogRnJpZGF5LCBNYXJjaCA1LCAyMDIxIDc6MzIgQU0NClN1
-YmplY3Q6IFJlOiBbYmlzZWN0ZWRdIDUuMTItcmMxIGhwc2EgcmVncmVzc2lvbjogInNjc2k6IGhw
-c2E6IENvcnJlY3QgZGV2IGNtZHMgb3V0c3RhbmRpbmcgZm9yIHJldHJpZWQgY21kcyIgYnJlYWtz
-IGhwc2EgUDYwMA0KDQpPbiBGcmksIE1hciA1LCAyMDIxIGF0IDEwOjI0IEFNIEdlZXJ0IFV5dHRl
-cmhvZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+IHdyb3RlOg0KPiBPbiBGcmksIE1hciA1LCAy
-MDIxIGF0IDEyOjI2IEFNIDxEb24uQnJhY2VAbWljcm9jaGlwLmNvbT4gd3JvdGU6DQo+ID4gPiA+
-IE9uIDMvMi8yMSAxMToyNiBQTSwgU2VyZ2VpIFRyb2ZpbW92aWNoIHdyb3RlOg0KPiA+IHN0cnVj
-dCBDb21tYW5kTGlzdCB7DQo+ID4gICAgICAgICBzdHJ1Y3QgQ29tbWFuZExpc3RIZWFkZXIgSGVh
-ZGVyOyAgICAgICAgICAgICAgICAgLyogICAgIDAgICAgMjAgKi8NCj4gPiAgICAgICAgIHN0cnVj
-dCBSZXF1ZXN0QmxvY2sgUmVxdWVzdDsgICAgICAgICAgICAgICAgICAgICAvKiAgICAyMCAgICAy
-MCAqLw0KPiA+ICAgICAgICAgc3RydWN0IEVyckRlc2NyaXB0b3IgRXJyRGVzYzsgICAgICAgICAg
-ICAgICAgICAgIC8qICAgIDQwICAgIDEyICovDQo+ID4gICAgICAgICBzdHJ1Y3QgU0dEZXNjcmlw
-dG9yIFNHWzMyXTsgICAgICAgICAgICAgICAgICAgICAgLyogICAgNTIgICA1MTIgKi8NCj4gPiAg
-ICAgICAgIC8qIC0tLSBjYWNoZWxpbmUgOCBib3VuZGFyeSAoNTEyIGJ5dGVzKSB3YXMgNTIgYnl0
-ZXMgYWdvIC0tLSAqLw0KPiA+ICAgICAgICAgdTMyICAgICAgICAgICAgICAgICAgICAgICAgYnVz
-YWRkcjsgICAgICAgICAgICAgIC8qICAgNTY0ICAgICA0ICovDQo+ID4gICAgICAgICBzdHJ1Y3Qg
-RXJyb3JJbmZvICogICAgICAgICBlcnJfaW5mbzsgICAgICAgICAgICAgLyogICA1NjggICAgIDgg
-Ki8NCj4gPiAgICAgICAgIC8qIC0tLSBjYWNoZWxpbmUgOSBib3VuZGFyeSAoNTc2IGJ5dGVzKSAt
-LS0gKi8NCj4gPiAgICAgICAgIHN0cnVjdCBjdGxyX2luZm8gKiAgICAgICAgIGg7ICAgICAgICAg
-ICAgICAgICAgICAvKiAgIDU3NiAgICAgOCAqLw0KPiA+ICAgICAgICAgaW50ICAgICAgICAgICAg
-ICAgICAgICAgICAgY21kX3R5cGU7ICAgICAgICAgICAgIC8qICAgNTg0ICAgICA0ICovDQo+ID4g
-ICAgICAgICBsb25nIGludCAgICAgICAgICAgICAgICAgICBjbWRpbmRleDsgICAgICAgICAgICAg
-LyogICA1ODggICAgIDggKi8NCj4gPiAgICAgICAgIHN0cnVjdCBjb21wbGV0aW9uICogICAgICAg
-IHdhaXRpbmc7ICAgICAgICAgICAgICAvKiAgIDU5NiAgICAgOCAqLw0KPiA+ICAgICAgICAgc3Ry
-dWN0IHNjc2lfY21uZCAqICAgICAgICAgc2NzaV9jbWQ7ICAgICAgICAgICAgIC8qICAgNjA0ICAg
-ICA4ICovDQo+ID4gICAgICAgICBzdHJ1Y3Qgd29ya19zdHJ1Y3Qgd29yazsgICAgICAgICAgICAg
-ICAgICAgICAgICAgLyogICA2MTIgICAgMzIgKi8NCj4gPiAgICAgICAgIC8qIC0tLSBjYWNoZWxp
-bmUgMTAgYm91bmRhcnkgKDY0MCBieXRlcykgd2FzIDQgYnl0ZXMgYWdvIC0tLSAqLw0KPiA+ICAg
-ICAgICAgc3RydWN0IGhwc2Ffc2NzaV9kZXZfdCAqICAgcGh5c19kaXNrOyAgICAgICAgICAgIC8q
-ICAgNjQ0ICAgICA4ICovDQo+ID4gICAgICAgICBzdHJ1Y3QgaHBzYV9zY3NpX2Rldl90ICogICBk
-ZXZpY2U7ICAgICAgICAgICAgICAgLyogICA2NTIgICAgIDggKi8NCj4gPiAgICAgICAgIGJvb2wg
-ICAgICAgICAgICAgICAgICAgICAgIHJldHJ5X3BlbmRpbmc7ICAgICAgICAvKiAgIDY2MCAgICAg
-MSAqLw0KPiA+ICAgICAgICAgYXRvbWljX3QgICAgICAgICAgICAgICAgICAgcmVmY291bnQ7ICAg
-ICAgICAgICAgIC8qICAgNjYxICAgICA0ICovDQo+DQo+IEhvdyBjb21lIHRoaXMgYXRvbWljX3Qg
-aXMgbm8gbG9uZ2VyIGFsaWduZWQgdG8gaXRzIG5hdHVyYWwgYWxpZ25tZW50Pw0KDQpUaGVyZSBp
-cyBhDQoNCiNwcmFnbWEgcGFjaygxKQ0KDQppbiBsaW51eCAyMDMgb2YgdGhpcyBmaWxlIQ0KDQpJ
-dCBsb29rcyBsaWtlIHNvbWUgb2YgdGhlIG1lbWJlcnMgaW4gc3RydWN0IHJhaWRfbWFwX2RhdGEg
-YW5kIHN0cnVjdCBDb21tYW5kTGlzdEhlYWRlciBuZWVkIHRvIGJlIGFubm90YXRlZCBhcyBwYWNr
-ZWQsIGJ1dCB0aGUgZmlsZSBhY2NpZGVudGFsbHkgcGFja3MgZXZlcnl0aGluZyB1bnRpbCB0aGUg
-JyNwcmFnbWEgcGFjaygpJw0KaW4gbGluZSA4NzUsIGluY2x1ZGluZyB0aGUga2VybmVsLXNpZGUg
-Q29tbWFuZExpc3QgZGF0YSBzdHJ1Y3R1cmUgdGhhdCBjbGVhcmx5IG11c3Qgbm90IGJlIHBhY2tl
-ZC4NCg0KICAgICAgICBBcm5kDQotLS0NCkRvbjoNClRoYW5rcyBmb3IgeW91ciBpbnB1dC4gSXQg
-aGVscHMgYSBsb3QuDQoNClRoZSBwcmFnbWEgc2V0dGluZyBwcmVkYXRlcyBteSB0YWtpbmcgb3Zl
-ciB0aGUgZHJpdmVyLg0KDQpJdCdzIHRydWUgdGhhdCB0aGVyZSBpcyBhIHNlY3Rpb24gb2YgZWFj
-aCBjb21tYW5kIGVudHJ5IHRoYXQgaXMgRE1BZWQgZnJvbSB0aGUgY29udHJvbGxlciAoZnJvbSBz
-dGFydCBvZiB0aGUgQ29tbWFuZExpc3QgdXAgdG8gYnVzYWRkcikgYW5kIHRoZSByZXN0IGlzIGRy
-aXZlciBob3VzZWtlZXBpbmcgaW5mb3JtYXRpb24uIFRoZSB1bnN1cHBvcnRlZCBjb250cm9sbGVy
-cyBzZWVtIHRvIGJlIHVuYWJsZSB0byBoYW5kbGUgdGhlIGNoYW5nZWQgYWxpZ25tZW50LiANCg0K
-SSBoYXZlIGEgcGF0Y2ggSSdsbCBzZW5kIHVwIHNvb24gdG8gY2hhbmdlIHRoZSBhbGlnbm1lbnQg
-YmFjay4uLg0KICAgICAgICBpbnQgICAgICAgICAgICAgICAgICAgICAgICByZXRyeV9wZW5kaW5n
-OyAgICAgICAgLyogICA2NTIgICAgIDQgKi8NCiAgICAgICAgc3RydWN0IGhwc2Ffc2NzaV9kZXZf
-dCAqICAgZGV2aWNlOyAgICAgICAgICAgICAgIC8qICAgNjU2ICAgICA4ICovDQogICAgICAgIGF0
-b21pY190ICAgICAgICAgICAgICAgICAgIHJlZmNvdW50OyAgICAgICAgICAgICAvKiAgIDY2NCAg
-ICAgNCAqLw0KDQogICAgICAgIC8qIHNpemU6IDc2OCwgY2FjaGVsaW5lczogMTIsIG1lbWJlcnM6
-IDE2ICovDQogICAgICAgIC8qIHBhZGRpbmc6IDEwMCAqLw0KfSBfX2F0dHJpYnV0ZV9fKChfX2Fs
-aWduZWRfXygxMjgpKSk7DQoNClNpbmNlIHRoaXMgaXMgYSBtYWludGVuYW5jZSBkcml2ZXIsIEkg
-d291bGQgcmF0aGVyIG5vdCBkbyB0b28gbXVjaCBzdXJnZXJ5IGFuZCBpbnZva2UgcmVncmVzc2lv
-biB0ZXN0cyAoYW5kIHdlIG5vIGxvbmdlciBzdXBwb3J0IHRoZXNlIGNvbnRyb2xsZXJzKS4gSSdk
-IHJhdGhlciBqdXN0IHNlbmQgdXAgYSBwYXRjaCB0byBjb3JyZWN0IHRoZSBpc3N1ZSBvbiB0aGVz
-ZSBsZWdhY3kgY29udHJvbGxlcnMuIEkgaGF2ZSBvbmUgcmVhZHkgdG8gc2VuZCB1cC4NCg0KVGhh
-bmtzIGZvciB5b3VyIG9ic2VydmF0aW9uIGFuZCB5b3VyIGF0dGVudGlvbi4NCkknbGwgc2VuZCB1
-cCB0aGUgcGF0Y2ggc29vbi4NCg0KRG9uDQoNCg0KDQoNCg==
+After giving this some thought, I think we can #define ACPI_PCI_CONFIGURED =
+in the global configuration file (I think it is acconfig.h) - and document =
+why and when it should be removed.
+Bob
+
+
+-----Original Message-----
+From: Moore, Robert <robert.moore@intel.com>=20
+Sent: Thursday, March 04, 2021 9:37 AM
+To: weidongcui@gmail.com
+Cc: Kaneda, Erik <erik.kaneda@intel.com>; Wysocki, Rafael J <rafael.j.wysoc=
+ki@intel.com>; Xinyang Ge <aegiryy@gmail.com>; linux-acpi@vger.kernel.org; =
+devel@acpica.org; linux-kernel@vger.kernel.org
+Subject: [Devel] Re: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in acpi_gbl_d=
+efault_address_spaces only when ACPI_PCI_CONFIGURED is defined
+
+
+
+-----Original Message-----
+From: Weidong Cui <weidongcui@gmail.com>
+Sent: Thursday, March 04, 2021 9:06 AM
+To: Moore, Robert <robert.moore@intel.com>
+Cc: Kaneda, Erik <erik.kaneda@intel.com>; Wysocki, Rafael J <rafael.j.wysoc=
+ki@intel.com>; Xinyang Ge <aegiryy@gmail.com>; linux-acpi@vger.kernel.org; =
+devel@acpica.org; linux-kernel@vger.kernel.org; Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in acpi_gbl_default_a=
+ddress_spaces only when ACPI_PCI_CONFIGURED is defined
+
+> Well, I don't like the fact that PCI_CONFIGURED would have to be defined =
+by each current host:
+>
+> > +#ifdef ACPI_PCI_CONFIGURED
+>
+> I would rather the logic be reversed:
+>
+> > +#ifdef ACPI_PCI_NOT_CONFIGURED
+
+Thank you for the comments, Erik and Bob!
+
+ACPI_PCI_CONFIGURED is defined in aclinux.h (see below) and used in several=
+ places in evhandler.c and exregion.c.
+I'm not sure why we want to introduce ACPI_PCI_NOT_CONFIGURED.  Bob, I don'=
+t understand your concerns about "have to be defined by each current host".=
+  Can you please shed some light on it?
+
+It is required in aclinux.h, and thus it is required in every host-dependen=
+t configuration file (acfreebsd.h, acmacosx.h, acnetbsd.h, achaiku.h, etc.)=
+ I would rather not force these host-specific header files to change.
+Bob
+
+
+#ifdef CONFIG_PCI
+#define ACPI_PCI_CONFIGURED
+#endif
+
+> -----Original Message-----
+> From: Kaneda, Erik <erik.kaneda@intel.com>
+> Sent: Wednesday, March 03, 2021 10:29 AM
+> To: Weidong Cui <weidongcui@gmail.com>; Moore, Robert=20
+> <robert.moore@intel.com>; Wysocki, Rafael J=20
+> <rafael.j.wysocki@intel.com>
+> Cc: Xinyang Ge <aegiryy@gmail.com>; linux-acpi@vger.kernel.org;=20
+> devel@acpica.org; linux-kernel@vger.kernel.org; Len Brown=20
+> <lenb@kernel.org>
+> Subject: RE: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in=20
+> acpi_gbl_default_address_spaces only when ACPI_PCI_CONFIGURED is=20
+> defined
+>
+> This looks good to me. Bob, do you have any comments?
+>
+> Erik
+>
+> > -----Original Message-----
+> > From: Weidong Cui <weidongcui@gmail.com>
+> > Sent: Monday, February 8, 2021 7:18 PM
+> > To: Moore, Robert <robert.moore@intel.com>; Kaneda, Erik=20
+> > <erik.kaneda@intel.com>; Wysocki, Rafael J=20
+> > <rafael.j.wysocki@intel.com>; Len Brown <lenb@kernel.org>
+> > Cc: Weidong Cui <weidongcui@gmail.com>; Xinyang Ge=20
+> > <aegiryy@gmail.com>; linux-acpi@vger.kernel.org; devel@acpica.org;
+> > linux- kernel@vger.kernel.org
+> > Subject: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in=20
+> > acpi_gbl_default_address_spaces only when ACPI_PCI_CONFIGURED is=20
+> > defined
+> >
+> > Signed-off-by: Weidong Cui <weidongcui@gmail.com>
+> > Signed-off-by: Xinyang Ge <aegiryy@gmail.com>
+> > ---
+> >  drivers/acpi/acpica/evhandler.c | 2 ++
+> >  include/acpi/acconfig.h         | 4 ++++
+> >  2 files changed, 6 insertions(+)
+> >
+> > diff --git a/drivers/acpi/acpica/evhandler.c=20
+> > b/drivers/acpi/acpica/evhandler.c index 5884eba04..4c25ad433 100644
+> > --- a/drivers/acpi/acpica/evhandler.c
+> > +++ b/drivers/acpi/acpica/evhandler.c
+> > @@ -26,7 +26,9 @@ acpi_ev_install_handler(acpi_handle obj_handle,
+> >  u8 acpi_gbl_default_address_spaces[ACPI_NUM_DEFAULT_SPACES] =3D {
+> >       ACPI_ADR_SPACE_SYSTEM_MEMORY,
+> >       ACPI_ADR_SPACE_SYSTEM_IO,
+> > +#ifdef ACPI_PCI_CONFIGURED
+> >       ACPI_ADR_SPACE_PCI_CONFIG,
+> > +#endif
+> >       ACPI_ADR_SPACE_DATA_TABLE
+> >  };
+> >
+> > diff --git a/include/acpi/acconfig.h b/include/acpi/acconfig.h index
+> > a225eff49..790999028 100644
+> > --- a/include/acpi/acconfig.h
+> > +++ b/include/acpi/acconfig.h
+> > @@ -162,7 +162,11 @@
+> >  /* Maximum space_ids for Operation Regions */
+> >
+> >  #define ACPI_MAX_ADDRESS_SPACE          255
+> > +#ifdef ACPI_PCI_CONFIGURED
+> >  #define ACPI_NUM_DEFAULT_SPACES         4
+> > +#else
+> > +#define ACPI_NUM_DEFAULT_SPACES         3
+> > +#endif
+> >
+> >  /* Array sizes.  Used for range checking also */
+> >
+> > --
+> > 2.24.3 (Apple Git-128)
+>
+_______________________________________________
+Devel mailing list -- devel@acpica.org
+To unsubscribe send an email to devel-leave@acpica.org %(web_page_url)slist=
+info%(cgiext)s/%(_internal_name)s
