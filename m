@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E9832EB39
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB2A32EB3B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233352AbhCEMm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:42:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58886 "EHLO mail.kernel.org"
+        id S233885AbhCEMnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:43:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233558AbhCEMmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:42:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E65E26501C;
-        Fri,  5 Mar 2021 12:42:09 +0000 (UTC)
+        id S233591AbhCEMmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:42:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D27C665023;
+        Fri,  5 Mar 2021 12:42:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948130;
-        bh=hlEnXVV2ikeQ7dVGnJ4SgXa7G/kxCFzM7kTwFPgIv8c=;
+        s=korg; t=1614948133;
+        bh=6rjbFeLyD/T5rOXwDI7Sr5AgnsUDF+kJZhL7CYW4dm0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HPtudkmmUMA8DllSxabuCYXBRjFSj5Y0JlmMi/DnoxjuA1hDXLpxvKU7eZwJyov3M
-         2IzqJKZzWnZfH975oycI5BVwKOFFYzfpxVJMGm5wx0iIRK/iJtXQtGhzPbI4wlUAkC
-         KDljuHdZNzsMGTyQtQ2KJQw/a9H0snD0Or4eops0=
+        b=Xt915akTiKV5yuRCL9ErJBHsBpV9q/mAyIqHty/lT/WfmCh3AjARwQ2z4IiQjjCDh
+         +4Tiy/Xg8AQtrJO05DFcw5+/6P5wwEBvIjxEqE2R1h3PpwYrjcndOatnskzwir712y
+         hlSGM4lKUqgMvObXUwRw2Y6PTx6NAvkgXFveN8BI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Jan Beulich <jbeulich@suse.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.9 38/41] xen-netback: respect gnttab_map_refs()s return value
-Date:   Fri,  5 Mar 2021 13:22:45 +0100
-Message-Id: <20210305120853.159228139@linuxfoundation.org>
+        stable@vger.kernel.org, Rokudo Yan <wu-yan@tcl.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 39/41] zsmalloc: account the number of compacted pages correctly
+Date:   Fri,  5 Mar 2021 13:22:46 +0100
+Message-Id: <20210305120853.211236990@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
 References: <20210305120851.255002428@linuxfoundation.org>
@@ -40,53 +42,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Rokudo Yan <wu-yan@tcl.com>
 
-commit 2991397d23ec597405b116d96de3813420bdcbc3 upstream.
+commit 2395928158059b8f9858365fce7713ce7fef62e4 upstream.
 
-Commit 3194a1746e8a ("xen-netback: don't "handle" error by BUG()")
-dropped respective a BUG_ON() without noticing that with this the
-variable's value wouldn't be consumed anymore. With gnttab_set_map_op()
-setting all status fields to a non-zero value, in case of an error no
-slot should have a status of GNTST_okay (zero).
+There exists multiple path may do zram compaction concurrently.
+1. auto-compaction triggered during memory reclaim
+2. userspace utils write zram<id>/compaction node
 
-This is part of XSA-367.
+So, multiple threads may call zs_shrinker_scan/zs_compact concurrently.
+But pages_compacted is a per zsmalloc pool variable and modification
+of the variable is not serialized(through under class->lock).
+There are two issues here:
+1. the pages_compacted may not equal to total number of pages
+freed(due to concurrently add).
+2. zs_shrinker_scan may not return the correct number of pages
+freed(issued by current shrinker).
 
+The fix is simple:
+1. account the number of pages freed in zs_compact locally.
+2. use actomic variable pages_compacted to accumulate total number.
+
+Link: https://lkml.kernel.org/r/20210202122235.26885-1-wu-yan@tcl.com
+Fixes: 860c707dca155a56 ("zsmalloc: account the number of compacted pages")
+Signed-off-by: Rokudo Yan <wu-yan@tcl.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 Cc: <stable@vger.kernel.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Link: https://lore.kernel.org/r/d933f495-619a-0086-5fb4-1ec3cf81a8fc@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/xen-netback/netback.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/block/zram/zram_drv.c |    2 +-
+ include/linux/zsmalloc.h      |    2 +-
+ mm/zsmalloc.c                 |   17 +++++++++++------
+ 3 files changed, 13 insertions(+), 8 deletions(-)
 
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -1328,11 +1328,21 @@ int xenvif_tx_action(struct xenvif_queue
- 		return 0;
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -440,7 +440,7 @@ static ssize_t mm_stat_show(struct devic
+ 			zram->limit_pages << PAGE_SHIFT,
+ 			max_used << PAGE_SHIFT,
+ 			(u64)atomic64_read(&zram->stats.zero_pages),
+-			pool_stats.pages_compacted);
++			atomic_long_read(&pool_stats.pages_compacted));
+ 	up_read(&zram->init_lock);
  
- 	gnttab_batch_copy(queue->tx_copy_ops, nr_cops);
--	if (nr_mops != 0)
-+	if (nr_mops != 0) {
- 		ret = gnttab_map_refs(queue->tx_map_ops,
- 				      NULL,
- 				      queue->pages_to_map,
- 				      nr_mops);
-+		if (ret) {
-+			unsigned int i;
+ 	return ret;
+--- a/include/linux/zsmalloc.h
++++ b/include/linux/zsmalloc.h
+@@ -36,7 +36,7 @@ enum zs_mapmode {
+ 
+ struct zs_pool_stats {
+ 	/* How many pages were migrated (freed) */
+-	unsigned long pages_compacted;
++	atomic_long_t pages_compacted;
+ };
+ 
+ struct zs_pool;
+--- a/mm/zsmalloc.c
++++ b/mm/zsmalloc.c
+@@ -2332,11 +2332,13 @@ static unsigned long zs_can_compact(stru
+ 	return obj_wasted * class->pages_per_zspage;
+ }
+ 
+-static void __zs_compact(struct zs_pool *pool, struct size_class *class)
++static unsigned long __zs_compact(struct zs_pool *pool,
++				  struct size_class *class)
+ {
+ 	struct zs_compact_control cc;
+ 	struct zspage *src_zspage;
+ 	struct zspage *dst_zspage = NULL;
++	unsigned long pages_freed = 0;
+ 
+ 	spin_lock(&class->lock);
+ 	while ((src_zspage = isolate_zspage(class, true))) {
+@@ -2366,7 +2368,7 @@ static void __zs_compact(struct zs_pool
+ 		putback_zspage(class, dst_zspage);
+ 		if (putback_zspage(class, src_zspage) == ZS_EMPTY) {
+ 			free_zspage(pool, class, src_zspage);
+-			pool->stats.pages_compacted += class->pages_per_zspage;
++			pages_freed += class->pages_per_zspage;
+ 		}
+ 		spin_unlock(&class->lock);
+ 		cond_resched();
+@@ -2377,12 +2379,15 @@ static void __zs_compact(struct zs_pool
+ 		putback_zspage(class, src_zspage);
+ 
+ 	spin_unlock(&class->lock);
 +
-+			netdev_err(queue->vif->dev, "Map fail: nr %u ret %d\n",
-+				   nr_mops, ret);
-+			for (i = 0; i < nr_mops; ++i)
-+				WARN_ON_ONCE(queue->tx_map_ops[i].status ==
-+				             GNTST_okay);
-+		}
-+	}
++	return pages_freed;
+ }
  
- 	work_done = xenvif_tx_submit(queue);
+ unsigned long zs_compact(struct zs_pool *pool)
+ {
+ 	int i;
+ 	struct size_class *class;
++	unsigned long pages_freed = 0;
  
+ 	for (i = zs_size_classes - 1; i >= 0; i--) {
+ 		class = pool->size_class[i];
+@@ -2390,10 +2395,11 @@ unsigned long zs_compact(struct zs_pool
+ 			continue;
+ 		if (class->index != i)
+ 			continue;
+-		__zs_compact(pool, class);
++		pages_freed += __zs_compact(pool, class);
+ 	}
++	atomic_long_add(pages_freed, &pool->stats.pages_compacted);
+ 
+-	return pool->stats.pages_compacted;
++	return pages_freed;
+ }
+ EXPORT_SYMBOL_GPL(zs_compact);
+ 
+@@ -2410,13 +2416,12 @@ static unsigned long zs_shrinker_scan(st
+ 	struct zs_pool *pool = container_of(shrinker, struct zs_pool,
+ 			shrinker);
+ 
+-	pages_freed = pool->stats.pages_compacted;
+ 	/*
+ 	 * Compact classes and calculate compaction delta.
+ 	 * Can run concurrently with a manually triggered
+ 	 * (by user) compaction.
+ 	 */
+-	pages_freed = zs_compact(pool) - pages_freed;
++	pages_freed = zs_compact(pool);
+ 
+ 	return pages_freed ? pages_freed : SHRINK_STOP;
+ }
 
 
