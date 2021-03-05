@@ -2,114 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF2A32E4FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A45E432E50C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:41:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229497AbhCEJgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:36:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhCEJfv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:35:51 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60197C061574;
-        Fri,  5 Mar 2021 01:35:51 -0800 (PST)
-Received: from [IPv6:2a01:e0a:4cb:a870:b9e2:e9f:d661:5a2f] (unknown [IPv6:2a01:e0a:4cb:a870:b9e2:e9f:d661:5a2f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 79EF21F468C5;
-        Fri,  5 Mar 2021 09:35:47 +0000 (GMT)
-Subject: Re: [PATCH v3 0/5] Reset driver for IMX8MQ VPU hardware block
-To:     Philipp Zabel <p.zabel@pengutronix.de>, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        ezequiel@collabora.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com
-References: <20210301151754.104749-1-benjamin.gaignard@collabora.com>
- <e6f8537d2a1f34d0a424b68e056c0ae556c93efd.camel@pengutronix.de>
- <2d55ad69-9b93-ab0e-04af-cd775cc9248b@collabora.com>
- <c12d84b955b0265dbcf89f2d7fc4d5c28bc74756.camel@pengutronix.de>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <f6cbb1e4-f288-36d0-a188-041093821f66@collabora.com>
-Date:   Fri, 5 Mar 2021 10:35:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <c12d84b955b0265dbcf89f2d7fc4d5c28bc74756.camel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S229637AbhCEJko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:40:44 -0500
+Received: from smtp23.cstnet.cn ([159.226.251.23]:51436 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229582AbhCEJke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:40:34 -0500
+Received: from localhost.localdomain (unknown [124.16.141.241])
+        by APP-03 (Coremail) with SMTP id rQCowAAH6k53_EFgyLRtAQ--.62207S2;
+        Fri, 05 Mar 2021 17:40:08 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     rostedt@goodmis.org, Viktor.Rosendahl@bmw.de,
+        colin.king@canonical.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] tracing/tools: Remove unneeded semicolon
+Date:   Fri,  5 Mar 2021 09:40:05 +0000
+Message-Id: <20210305094005.1724-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowAAH6k53_EFgyLRtAQ--.62207S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtF4UGFW3ZrW3urWUuF17Wrg_yoW3CwcEyw
+        15ta17tas8KrZ3Kws3tFWfZry8Wa17XF4xGanrtwsrXF18Jr98JFy5Z34Dur17XrZFk3Wj
+        k3ZxCw1rAr17ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2kYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4fMxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8Jrc3UUUUU==
+X-Originating-IP: [124.16.141.241]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCgoLA1z4jaEWoAABs3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+fix semicolon.cocci warning:
+tools/tracing/latency/latency-collector.c:1021:2-3: Unneeded semicolon
 
-Le 03/03/2021 à 17:25, Philipp Zabel a écrit :
-> On Wed, 2021-03-03 at 16:20 +0100, Benjamin Gaignard wrote:
->> Le 03/03/2021 à 15:17, Philipp Zabel a écrit :
->>> Hi Benjamin,
->>>
->>> On Mon, 2021-03-01 at 16:17 +0100, Benjamin Gaignard wrote:
->>>> The two VPUs inside IMX8MQ share the same control block which can be see
->>>> as a reset hardware block.
->>> This isn't a reset controller though. The control block also contains
->>> clock gates of some sort and a filter register for the featureset fuses.
->>> Those shouldn't be manipulated via the reset API.
->> They are all part of the control block and of the reset process for this
->> hardware that why I put them here. I guess it is border line :-)
-> I'm pushing back to keep the reset control framework focused on
-> controlling reset lines. Every side effect (such as the asymmetric clock
-> ungating) in a random driver makes it harder to reason about behaviour
-> at the API level, and to review patches for hardware I am not familiar
-> with.
->
->>>> In order to be able to add the second VPU (for HECV decoding) it will be
->>>> more handy if the both VPU drivers instance don't have to share the
->>>> control block registers. This lead to implement it as an independ reset
->>>> driver and to change the VPU driver to use it.
->>> Why not switch to a syscon regmap for the control block? That should
->>> also allow to keep backwards compatibility with the old binding with
->>> minimal effort.
->> I will give a try in this direction.
-> Thank you.
->
->>>> Please note that this series break the compatibility between the DTB and
->>>> kernel. This break is limited to IMX8MQ SoC and is done when the driver
->>>> is still in staging directory.
->>> I know in this case we are pretty sure there are no users of this
->>> binding except for a staging driver, but it would still be nice to keep
->>> support for the deprecated binding, to avoid the requirement of updating
->>> kernel and DT in lock-step.
->> If I want to use a syscon (or a reset) the driver must not ioremap the "ctrl"
->> registers. It means that "ctrl" has to be removed from the driver requested
->> reg-names (imx8mq_reg_names[]). Doing that break the kernel/DT compatibility.
->> Somehow syscon and "ctrl" are exclusive.
-> The way the driver is set up currently, yes. You could add a bit of
-> platform specific probe code, though, that would set up the regmap
-> either by calling
-> 	syscon_regmap_lookup_by_phandle();
-> for the new binding, or, if the phandle is not available, fall back to
-> 	platform_get_resource_byname(..., "ctrl");
-> 	devm_ioremap_resource();
-> 	devm_regmap_init_mmio();
-> for the old binding.
-> The actual codec .reset and variant .runtime_resume ops could be
-> identical then.
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ tools/tracing/latency/latency-collector.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I made it works with syscon and your proposal.
-The next version of the patches will be without reset and won't break
-DT compatibility.
+diff --git a/tools/tracing/latency/latency-collector.c b/tools/tracing/latency/latency-collector.c
+index b69de9263ee6..129fb00b70c2 100644
+--- a/tools/tracing/latency/latency-collector.c
++++ b/tools/tracing/latency/latency-collector.c
+@@ -1018,7 +1018,7 @@ static long go_to_sleep(const struct entry *req)
+ 		cond_timedwait(&printstate.cond, &printstate.mutex, &future);
+ 		if (time_has_passed(&future))
+ 			break;
+-	};
++	}
+ 
+ 	if (printstate_has_new_req_arrived(req))
+ 		delay = -1;
+-- 
+2.17.1
 
-Thanks for your help,
-Benjamin
-
->
-> regards
-> Philipp
->
