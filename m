@@ -2,141 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00D032F393
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 180CD32F396
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhCETLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 14:11:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbhCETLb (ORCPT
+        id S229709AbhCETMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 14:12:21 -0500
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:34960 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230054AbhCETMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:11:31 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F26C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 11:11:31 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id h10so4102860edl.6
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 11:11:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=IrbPr2dxqhk1LIshWckizJrjWuDkNE3QCmnBYka+BEI=;
-        b=IiS41fasXdQwaDOHMZSyrA6ibGAJNX+B+j6PCVlFBzpuFru8pT8e+Txn2xZiK4H8HK
-         0KhdvxzWcty6y9XpMeJgewQlJtwVkzLfsnVeZjZPbYY1W576h0f4I8SytVfcCCfkwsDL
-         nI0YUTo1qcsiapbFjpWtH9nSgxIZCECRxaOzQQmYRsBA6xLRYFwYlU24gAOnkM1vR/gB
-         8E6KMZVT3Vx/CIcM0RJQ97RA8sX7gFJmV9dMuKIGvQQR+lGA7SNKWFd6rZjk7ZKy/EqF
-         djxPpgem1IneOQQm3BC04pACjKVMlfRGG6kD/+0dINoYkrCq3xoK/1192v1VBIGLeqsK
-         FD9g==
+        Fri, 5 Mar 2021 14:12:15 -0500
+Received: by mail-ot1-f49.google.com with SMTP id r19so2859332otk.2;
+        Fri, 05 Mar 2021 11:12:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=IrbPr2dxqhk1LIshWckizJrjWuDkNE3QCmnBYka+BEI=;
-        b=oIkawZsaOMBwOQXBl3hnQ4yl61BLxbpsiykbr/0xMOLDTlJuW0yOt7R5tkE32ZQc7Y
-         oLTBzAZtf8PLYnCof+dP7HSXTEMY62komeN633U10jN7csy2w0mE1IDAz7kinYmmgoDM
-         WUwnHqyMZcs9uW8iw28uaZxUFqosv/C49TFMtmeaza3w0/MoJNswFFAfw/cR5JRj/O8h
-         M/o0IEnaDK4mkuLkrPsRZIq5up+k8hEZ+S0+m88ZAPAglKhTrKmCdsZx5Da1zxSx/jTb
-         VTWdW0KCIGfikneM6pM6IrSXWC2bsuWa9WO9u8Gi+HXc417kWcAbo6Yim65Rw/73ANqi
-         D15A==
-X-Gm-Message-State: AOAM531HtB8pEbn1YiBXMbCvNg6K4XmZSiqRPRdGHrnjN6hDKWwYb1JW
-        fGQmt3dXnVRDGjEsv5slWAI=
-X-Google-Smtp-Source: ABdhPJyEncuNScBLMIBXfjNQ1HGMuNCBiziSthU5xntMW0yw9BwiB9d7763rjwregyBESusRYm3+KQ==
-X-Received: by 2002:a05:6402:5:: with SMTP id d5mr10659194edu.121.1614971490101;
-        Fri, 05 Mar 2021 11:11:30 -0800 (PST)
-Received: from LEGION ([27.255.58.138])
-        by smtp.gmail.com with ESMTPSA id bm21sm1952508ejb.100.2021.03.05.11.11.26
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Hh1lgm+3X+xcZoIbWmctCaInPlm9cGat4sZJtILyV4E=;
+        b=O6IV5ly/PRO3aSS5GnG1vM/1Eh6RYs23K75bFRdyxyFu+hJP7+2ziyfw0Wtw0IkqW6
+         bDlIBR9bs06X23Lfvrkt6ovptC8zyMr//v6ri9dw74QSnXsoHv0XPTS0taxMtVgUxU1b
+         Ef4k7O7hcgf3kBWCEgz4rolI/YjCvJWYYgF2XsTXcPJ2t08C3JFnOBHA4KEswL5/bilO
+         Fwfou+FwThcB+HGqD2TG0/AbZ0tdsrvJqf8gTtaOMD4s1JmgpHitD68hy9uWeo2zXPDE
+         e29nMrRZZPSb+Hg9Oymi+Og5b4XPIcdw0OMugGiPu1AL6q/3HMdkWwO8MsaA7z6y8Ppn
+         IdzQ==
+X-Gm-Message-State: AOAM531JHN/lsmFeqkCQttDP675rWEbS8vr0We3o4xlUt9hzS+df5Xjf
+        iga+pzPxXu8MeM7UyayCtw==
+X-Google-Smtp-Source: ABdhPJw9BOxLYJaN/x1BquaNXXo2E55iCwbUiwzmzcGnUMkWGT4uVBRTxUi6M+fWbolN0xnF9GZHjg==
+X-Received: by 2002:a05:6830:60d:: with SMTP id w13mr9457501oti.257.1614971535189;
+        Fri, 05 Mar 2021 11:12:15 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f197sm766722oob.38.2021.03.05.11.12.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 11:11:29 -0800 (PST)
-Date:   Sat, 6 Mar 2021 00:11:23 +0500
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Cc:     musamaanjum@gmail.com
-Subject: [PATCH] kvm: x86: annotate RCU pointers
-Message-ID: <20210305191123.GA497469@LEGION>
+        Fri, 05 Mar 2021 11:12:14 -0800 (PST)
+Received: (nullmailer pid 492269 invoked by uid 1000);
+        Fri, 05 Mar 2021 19:12:13 -0000
+Date:   Fri, 5 Mar 2021 13:12:13 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] soc: qcom: rpmhpd: Add SM8350 power domains
+Message-ID: <20210305191213.GA491047@robh.at.kernel.org>
+References: <20210210104257.339462-1-vkoul@kernel.org>
+ <20210210104257.339462-2-vkoul@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210210104257.339462-2-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the annotation to fix the following sparse errors:
-arch/x86/kvm//x86.c:8147:15: error: incompatible types in comparison expression (different address spaces):
-arch/x86/kvm//x86.c:8147:15:    struct kvm_apic_map [noderef] __rcu *
-arch/x86/kvm//x86.c:8147:15:    struct kvm_apic_map *
-arch/x86/kvm//x86.c:10628:16: error: incompatible types in comparison expression (different address spaces):
-arch/x86/kvm//x86.c:10628:16:    struct kvm_apic_map [noderef] __rcu *
-arch/x86/kvm//x86.c:10628:16:    struct kvm_apic_map *
-arch/x86/kvm//x86.c:10629:15: error: incompatible types in comparison expression (different address spaces):
-arch/x86/kvm//x86.c:10629:15:    struct kvm_pmu_event_filter [noderef] __rcu *
-arch/x86/kvm//x86.c:10629:15:    struct kvm_pmu_event_filter *
-arch/x86/kvm//lapic.c:267:15: error: incompatible types in comparison expression (different address spaces):
-arch/x86/kvm//lapic.c:267:15:    struct kvm_apic_map [noderef] __rcu *
-arch/x86/kvm//lapic.c:267:15:    struct kvm_apic_map *
-arch/x86/kvm//lapic.c:269:9: error: incompatible types in comparison expression (different address spaces):
-arch/x86/kvm//lapic.c:269:9:    struct kvm_apic_map [noderef] __rcu *
-arch/x86/kvm//lapic.c:269:9:    struct kvm_apic_map *
-arch/x86/kvm//lapic.c:637:15: error: incompatible types in comparison expression (different address spaces):
-arch/x86/kvm//lapic.c:637:15:    struct kvm_apic_map [noderef] __rcu *
-arch/x86/kvm//lapic.c:637:15:    struct kvm_apic_map *
-arch/x86/kvm//lapic.c:994:15: error: incompatible types in comparison expression (different address spaces):
-arch/x86/kvm//lapic.c:994:15:    struct kvm_apic_map [noderef] __rcu *
-arch/x86/kvm//lapic.c:994:15:    struct kvm_apic_map *
-arch/x86/kvm//lapic.c:1036:15: error: incompatible types in comparison expression (different address spaces):
-arch/x86/kvm//lapic.c:1036:15:    struct kvm_apic_map [noderef] __rcu *
-arch/x86/kvm//lapic.c:1036:15:    struct kvm_apic_map *
-arch/x86/kvm//lapic.c:1173:15: error: incompatible types in comparison expression (different address spaces):
-arch/x86/kvm//lapic.c:1173:15:    struct kvm_apic_map [noderef] __rcu *
-arch/x86/kvm//lapic.c:1173:15:    struct kvm_apic_map *
-arch/x86/kvm//pmu.c:190:18: error: incompatible types in comparison expression (different address spaces):
-arch/x86/kvm//pmu.c:190:18:    struct kvm_pmu_event_filter [noderef] __rcu *
-arch/x86/kvm//pmu.c:190:18:    struct kvm_pmu_event_filter *
-arch/x86/kvm//pmu.c:251:18: error: incompatible types in comparison expression (different address spaces):
-arch/x86/kvm//pmu.c:251:18:    struct kvm_pmu_event_filter [noderef] __rcu *
-arch/x86/kvm//pmu.c:251:18:    struct kvm_pmu_event_filter *
-arch/x86/kvm//pmu.c:522:18: error: incompatible types in comparison expression (different address spaces):
-arch/x86/kvm//pmu.c:522:18:    struct kvm_pmu_event_filter [noderef] __rcu *
-arch/x86/kvm//pmu.c:522:18:    struct kvm_pmu_event_filter *
-arch/x86/kvm//pmu.c:522:18: error: incompatible types in comparison expression (different address spaces):
-arch/x86/kvm//pmu.c:522:18:    struct kvm_pmu_event_filter [noderef] __rcu *
-arch/x86/kvm//pmu.c:522:18:    struct kvm_pmu_event_filter *
+On Wed, Feb 10, 2021 at 04:12:57PM +0530, Vinod Koul wrote:
+> This adds the power domains found in SM8350 SoC.
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/soc/qcom/rpmhpd.c              | 37 ++++++++++++++++++++++++++
+>  include/dt-bindings/power/qcom-rpmpd.h | 15 +++++++++++
 
-Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
----
- arch/x86/include/asm/kvm_host.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The header is part of the binding and goes in the binding patch, but 
+don't respin just for that.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 84499aad01a4..ad675c8c05e7 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -958,7 +958,7 @@ struct kvm_arch {
- 	struct kvm_pit *vpit;
- 	atomic_t vapics_in_nmi_mode;
- 	struct mutex apic_map_lock;
--	struct kvm_apic_map *apic_map;
-+	struct kvm_apic_map __rcu *apic_map;
- 	atomic_t apic_map_dirty;
- 
- 	bool apic_access_page_done;
-@@ -1030,7 +1030,7 @@ struct kvm_arch {
- 
- 	bool bus_lock_detection_enabled;
- 
--	struct kvm_pmu_event_filter *pmu_event_filter;
-+	struct kvm_pmu_event_filter __rcu *pmu_event_filter;
- 	struct task_struct *nx_lpage_recovery_thread;
- 
- #ifdef CONFIG_X86_64
--- 
-2.25.1
-
+>  2 files changed, 52 insertions(+)
+> 
+> diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
+> index 7ce06356d24c..1bd191d5824f 100644
+> --- a/drivers/soc/qcom/rpmhpd.c
+> +++ b/drivers/soc/qcom/rpmhpd.c
+> @@ -200,6 +200,42 @@ static const struct rpmhpd_desc sm8250_desc = {
+>  	.num_pds = ARRAY_SIZE(sm8250_rpmhpds),
+>  };
+>  
+> +/* SM8350 Power domains */
+> +static struct rpmhpd sm8350_mxc_ao;
+> +static struct rpmhpd sm8350_mxc = {
+> +	.pd = { .name = "mxc", },
+> +	.peer = &sm8150_mmcx_ao,
+> +	.res_name = "mxc.lvl",
+> +};
+> +
+> +static struct rpmhpd sm8350_mxc_ao = {
+> +	.pd = { .name = "mxc_ao", },
+> +	.active_only = true,
+> +	.peer = &sm8350_mxc,
+> +	.res_name = "mxc.lvl",
+> +};
+> +
+> +static struct rpmhpd *sm8350_rpmhpds[] = {
+> +	[SM8350_CX] = &sdm845_cx,
+> +	[SM8350_CX_AO] = &sdm845_cx_ao,
+> +	[SM8350_EBI] = &sdm845_ebi,
+> +	[SM8350_GFX] = &sdm845_gfx,
+> +	[SM8350_LCX] = &sdm845_lcx,
+> +	[SM8350_LMX] = &sdm845_lmx,
+> +	[SM8350_MMCX] = &sm8150_mmcx,
+> +	[SM8350_MMCX_AO] = &sm8150_mmcx_ao,
+> +	[SM8350_MX] = &sdm845_mx,
+> +	[SM8350_MX_AO] = &sdm845_mx_ao,
+> +	[SM8350_MXC] = &sm8350_mxc,
+> +	[SM8350_MXC_AO] = &sm8350_mxc_ao,
+> +	[SM8350_MSS] = &sdm845_mss,
+> +};
+> +
+> +static const struct rpmhpd_desc sm8350_desc = {
+> +	.rpmhpds = sm8350_rpmhpds,
+> +	.num_pds = ARRAY_SIZE(sm8350_rpmhpds),
+> +};
+> +
+>  /* SC7180 RPMH powerdomains */
+>  static struct rpmhpd *sc7180_rpmhpds[] = {
+>  	[SC7180_CX] = &sdm845_cx,
+> @@ -223,6 +259,7 @@ static const struct of_device_id rpmhpd_match_table[] = {
+>  	{ .compatible = "qcom,sdx55-rpmhpd", .data = &sdx55_desc},
+>  	{ .compatible = "qcom,sm8150-rpmhpd", .data = &sm8150_desc },
+>  	{ .compatible = "qcom,sm8250-rpmhpd", .data = &sm8250_desc },
+> +	{ .compatible = "qcom,sm8350-rpmhpd", .data = &sm8350_desc },
+>  	{ }
+>  };
+>  MODULE_DEVICE_TABLE(of, rpmhpd_match_table);
+> diff --git a/include/dt-bindings/power/qcom-rpmpd.h b/include/dt-bindings/power/qcom-rpmpd.h
+> index 7714487ac76b..64043a2a4411 100644
+> --- a/include/dt-bindings/power/qcom-rpmpd.h
+> +++ b/include/dt-bindings/power/qcom-rpmpd.h
+> @@ -45,6 +45,21 @@
+>  #define SM8250_MX	8
+>  #define SM8250_MX_AO	9
+>  
+> +/* SM8350 Power Domain Indexes */
+> +#define SM8350_CX	0
+> +#define SM8350_CX_AO	1
+> +#define SM8350_EBI	2
+> +#define SM8350_GFX	3
+> +#define SM8350_LCX	4
+> +#define SM8350_LMX	5
+> +#define SM8350_MMCX	6
+> +#define SM8350_MMCX_AO	7
+> +#define SM8350_MX	8
+> +#define SM8350_MX_AO	9
+> +#define SM8350_MXC	10
+> +#define SM8350_MXC_AO	11
+> +#define SM8350_MSS	12
+> +
+>  /* SC7180 Power Domain Indexes */
+>  #define SC7180_CX	0
+>  #define SC7180_CX_AO	1
+> -- 
+> 2.26.2
+> 
