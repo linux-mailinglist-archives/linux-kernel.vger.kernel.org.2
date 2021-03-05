@@ -2,112 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98BB32E661
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E3932E686
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbhCEK3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:29:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbhCEK2u (ORCPT
+        id S229690AbhCEKfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:35:23 -0500
+Received: from 16.mo1.mail-out.ovh.net ([178.33.104.224]:36416 "EHLO
+        16.mo1.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229597AbhCEKfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:28:50 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F844C061756
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 02:28:50 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id q25so2739154lfc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 02:28:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lo7hHCf2xoJPHW7HnDCyEwaSFaM7Keg2AX2jZ4uVfBI=;
-        b=W50MxM+40GpkXjVUgQZ+hglkhIatQ62en1ksXZx59zKvAOfcZtgwWtdXoYBHbG7Q23
-         AqbI/7ojmTDD4QGv0lw8kRBK/x1R3M7p046e8wJ9yk0jYBxUiHfx2gNulxd5b2VkSfEn
-         FQpet8cbJgwx+ZAH1E58hlDWyP2/BJOZ8MPWCf0sXMFllAX98uCZ3wbY5ayGxbMs4OXY
-         0ELSFzLEg/Oig2lds2PIkXAjDMUnftrtBWKSIEXKfQzpOgXgiPiHqw6il4Rg8bh1JzBm
-         Ely81fAir1FA+I23NIFzQHAxRDDpkYyqM2YyJJ9hcyu3flk6I1hwaOVux6oKkJYSxbzh
-         KMTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lo7hHCf2xoJPHW7HnDCyEwaSFaM7Keg2AX2jZ4uVfBI=;
-        b=d3dvEb4YDFVTWXgL+xLzNhAKxVBl4V4GSF4IpwooEz/JAHqVfen1Fbw+xgb/Q5Si1I
-         cpLVRzqdR2aluSQzCT9ma7Y+xSr1rDjASO51OvJgMFm9IBltI1rLUqgFfeIkdRxLTuMm
-         C1bP2WfLM6easEI2wU/0mVZTenq04+Et5ZRx/cacX32oGRzNpulZ8w6KkW5rkGjBZ1wc
-         zNfUDHW5qZdDnIPmxgG7T2QK2HJPvaWlm9QRKhiEmI1WRMR728X/rxagucE5yKnYXxRh
-         45/WYrlraMY4bdQ/VWU2PrgQiq7nYtNzU6s1kOS1CMWQnYgLYTJuE3jW6lGe8xSzaFEH
-         4twg==
-X-Gm-Message-State: AOAM532pornAekloAuhBOWy/nw4iMvUVN2aqrSua5wBy7pHx2OzYMazC
-        bDEmVuM7E5oKltEowmEYZm2z/Dqu0i5kLK+HhPwWkw==
-X-Google-Smtp-Source: ABdhPJxqboRmk7GaUgHUNxF2rciULSS6Cfp4YQ2azcCXSVJPJxIT8FGFZd/sqZPKGLsQ+vg8Pkh7I/AkoigHnc7uIX0=
-X-Received: by 2002:a05:6512:74a:: with SMTP id c10mr5124313lfs.586.1614940128739;
- Fri, 05 Mar 2021 02:28:48 -0800 (PST)
+        Fri, 5 Mar 2021 05:35:13 -0500
+Received: from player728.ha.ovh.net (unknown [10.108.57.150])
+        by mo1.mail-out.ovh.net (Postfix) with ESMTP id AD0E11F7747
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 11:16:50 +0100 (CET)
+Received: from milecki.pl (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
+        (Authenticated sender: rafal@milecki.pl)
+        by player728.ha.ovh.net (Postfix) with ESMTPSA id B27BF1BA2AFF5;
+        Fri,  5 Mar 2021 10:16:41 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-104R0053d2b67e1-52e4-4304-9239-db9d36a7935d,
+                    4F7D11A3904BD8E553EC742B87CBB6774FEDAA0F) smtp.auth=rafal@milecki.pl
+X-OVh-ClientIp: 194.187.74.233
+Subject: Re: [PATCH V2 mips/linux.git] firmware: bcm47xx_nvram: refactor
+ finding & reading NVRAM
+To:     =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivek Unune <npcomplete13@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+References: <20210304072357.31108-1-zajec5@gmail.com>
+ <20210305055501.13099-1-zajec5@gmail.com>
+ <CAAdtpL7iWiumiOwMOH1xiBZvyOB0HB7W-9MMHoPPxkb3Srme=w@mail.gmail.com>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Message-ID: <f4045af5-4866-6fc9-f34a-d789a7febb77@milecki.pl>
+Date:   Fri, 5 Mar 2021 11:16:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-13-marcan@marcan.st>
-In-Reply-To: <20210304213902.83903-13-marcan@marcan.st>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 5 Mar 2021 11:28:37 +0100
-Message-ID: <CACRpkdZHpqF1f2rSmgb90d8v_7NDe=Bqk4M1YbRJpOMFZmod4w@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
- MMIO as non-posted
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAAdtpL7iWiumiOwMOH1xiBZvyOB0HB7W-9MMHoPPxkb3Srme=w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 365354524052524656
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtiedgudefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepkeduheejheffudefhffghfegjeejleetkeevueelveegkefhhfffieehleelgfevnecukfhppedtrddtrddtrddtpdduleegrddukeejrdejgedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejvdekrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprhgrfhgrlhesmhhilhgvtghkihdrphhlpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 10:40 PM Hector Martin <marcan@marcan.st> wrote:
+Hi,
 
-> This implements the 'nonposted-mmio' and 'posted-mmio' boolean
-> properties. Placing these properties in a bus marks all child devices as
-> requiring non-posted or posted MMIO mappings. If no such properties are
-> found, the default is posted MMIO.
->
-> of_mmio_is_nonposted() performs the tree walking to determine if a given
-> device has requested non-posted MMIO.
->
-> of_address_to_resource() uses this to set the IORESOURCE_MEM_NONPOSTED
-> flag on resources that require non-posted MMIO.
->
-> of_iomap() and of_io_request_and_map() then use this flag to pick the
-> correct ioremap() variant.
->
-> This mechanism is currently restricted to Apple ARM platforms, as an
-> optimization.
->
-> Signed-off-by: Hector Martin <marcan@marcan.st>
+On 05.03.2021 10:58, Philippe Mathieu-Daudé wrote:
+> On Fri, Mar 5, 2021 at 6:55 AM Rafał Miłecki <zajec5@gmail.com> wrote:
+>>
+>> From: Rafał Miłecki <rafal@milecki.pl>
+>>
+>> 1. Use meaningful variable names (e.g. "flash_start", "res_size" instead
+>>     of e.g. "iobase", "end")
+>> 2. Always operate on "offset" instead of mix of start, end, size, etc.
+> 
+> "instead of a mix"
+> 
+>> 3. Add helper checking for NVRAM to avoid duplicating code
+>> 4. Use "found" variable instead of goto
+>> 5. Use simpler checking of offsets and sizes (2 nested loops with
+>>     trivial check instead of extra function)
+> 
+> This could be a series of trivial patches, why did you choose to make a mixed
+> bag harder to review?
 
-This is fine with me atleast given that the nonposted IO is acceptable.
-Caching the quirk state in a static local is maybe a bit overoptimized
-but if the compiler can't see it but we can, why not.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+It's a subjective thing and often a matter of maintainer taste. I can
+say that after contributing to various Linux subsystems. If you split a
+similar patch for MTD subsystem you'll get complains about making
+changes too small & too hard to review (sic!).
 
-Yours,
-Linus Walleij
+This isn't a bomb really: 63 insertions(+), 48 deletions(-)
+
+That said I admit I don't know MIPS tree habits. Thomas: do you prefer
+smaller patches in case like this?
