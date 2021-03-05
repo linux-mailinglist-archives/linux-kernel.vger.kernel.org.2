@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345A932EAEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70AD032EB40
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233385AbhCEMlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:41:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56040 "EHLO mail.kernel.org"
+        id S233308AbhCEMnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:43:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233386AbhCEMka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:40:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC36364EE8;
-        Fri,  5 Mar 2021 12:40:29 +0000 (UTC)
+        id S233875AbhCEMma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:42:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2E2A6501E;
+        Fri,  5 Mar 2021 12:42:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948030;
-        bh=5D/oe9p2HEYs9BSK4ZbRzw/WvDx4brx0dIqWPydmd3A=;
+        s=korg; t=1614948150;
+        bh=aoE5J0PWrctxcKeIz3yU39Ecvb3NOa4u+eeGm84Eg3U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y2YcNAuARkYZprVIv5ZsCNtL+WjFSaSDH69j/QYrBgzLZ3hJngGI3I4/U6oWzqPE5
-         xcoGNPorBRQk/OBq7IXCUFJtvCh9e9Gc8JMqTZEcmoLMDFtyPnMTf8IQ0NaWcdYoYS
-         93RE/i0pI9QKdrVrnTnQ73yCXBdc2xgAIkWWUm/8=
+        b=SCsD+wsiezA/MhifRXoFtOeRNmSegQ17cU6vqwK19V7uF0wXXn4/LE7hQbVM2Vs1A
+         cto/D2mS1jDq5Gr12Ziy1FwNMSHJUo/MoATJMEFzdMfVhRHE8wjyOS4kvefEYuTGZU
+         FBVcSFGoI2NiJwJhitOwKPQ+qnas+ChfeWQYOvpc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christian Gromm <christian.gromm@microchip.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 27/39] staging: most: sound: add sanity check for function argument
+        stable@vger.kernel.org, Yumei Huang <yuhuang@redhat.com>,
+        Brian Foster <bfoster@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: [PATCH 4.9 19/41] xfs: Fix assert failure in xfs_setattr_size()
 Date:   Fri,  5 Mar 2021 13:22:26 +0100
-Message-Id: <20210305120853.135395910@linuxfoundation.org>
+Message-Id: <20210305120852.237865767@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120851.751937389@linuxfoundation.org>
-References: <20210305120851.751937389@linuxfoundation.org>
+In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
+References: <20210305120851.255002428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Gromm <christian.gromm@microchip.com>
+From: Yumei Huang <yuhuang@redhat.com>
 
-[ Upstream commit 45b754ae5b82949dca2b6e74fa680313cefdc813 ]
+commit 88a9e03beef22cc5fabea344f54b9a0dfe63de08 upstream.
 
-This patch checks the function parameter 'bytes' before doing the
-subtraction to prevent memory corruption.
+An assert failure is triggered by syzkaller test due to
+ATTR_KILL_PRIV is not cleared before xfs_setattr_size.
+As ATTR_KILL_PRIV is not checked/used by xfs_setattr_size,
+just remove it from the assert.
 
-Signed-off-by: Christian Gromm <christian.gromm@microchip.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/1612282865-21846-1-git-send-email-christian.gromm@microchip.com
+Signed-off-by: Yumei Huang <yuhuang@redhat.com>
+Reviewed-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Signed-off-by: Darrick J. Wong <djwong@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/most/aim-sound/sound.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/xfs/xfs_iops.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/most/aim-sound/sound.c b/drivers/staging/most/aim-sound/sound.c
-index ea1366a44008..e259bf4956ab 100644
---- a/drivers/staging/most/aim-sound/sound.c
-+++ b/drivers/staging/most/aim-sound/sound.c
-@@ -92,6 +92,8 @@ static void swap_copy24(u8 *dest, const u8 *source, unsigned int bytes)
- {
- 	unsigned int i = 0;
+--- a/fs/xfs/xfs_iops.c
++++ b/fs/xfs/xfs_iops.c
+@@ -820,7 +820,7 @@ xfs_setattr_size(
+ 	ASSERT(xfs_isilocked(ip, XFS_MMAPLOCK_EXCL));
+ 	ASSERT(S_ISREG(inode->i_mode));
+ 	ASSERT((iattr->ia_valid & (ATTR_UID|ATTR_GID|ATTR_ATIME|ATTR_ATIME_SET|
+-		ATTR_MTIME_SET|ATTR_KILL_PRIV|ATTR_TIMES_SET)) == 0);
++		ATTR_MTIME_SET|ATTR_TIMES_SET)) == 0);
  
-+	if (bytes < 2)
-+		return;
- 	while (i < bytes - 2) {
- 		dest[i] = source[i + 2];
- 		dest[i + 1] = source[i + 1];
--- 
-2.30.1
-
+ 	oldsize = inode->i_size;
+ 	newsize = iattr->ia_size;
 
 
