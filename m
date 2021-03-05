@@ -2,126 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECDA32F491
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:22:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB72D32F495
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhCEUVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 15:21:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhCEUV2 (ORCPT
+        id S229829AbhCEUWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 15:22:34 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:38387 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229792AbhCEUW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 15:21:28 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78EA1C06175F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 12:21:28 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id s187so3687404ybs.22
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 12:21:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=ulCKWwAgru14Pv0YBVciE6nHg3ZbaOajNEmz/MDhZ0E=;
-        b=sUy/MKxPm0e0JaDZ61ZMVYmchygwUzsxZVRFhQ7ZB6rmk6BwKXl14SNbFoDUTOKgFa
-         0ZKz2GEdT6lCTv01QXUfs5j8jrrEPZnjznZ5fha2ou4kuOABBQfjF8z70CrDys7tlVir
-         3gH/EzvBcog9XTOaiVntPn9TJh0HdgKMRTYaEO86WDpFDX0uwo5S3c/KCefXmBFLTzLm
-         i5NmOaBz7F/XIIWrZsaxhcpEb/dhSAGbBDiZYbh8quMAQGNavxnkkzMF+sGatxLHj9AC
-         qKVBGb0/X80WMyGrAzKqxERNLhvZyx7tJI0leqSAdxwM+FfRUXZZ5xYLZX+NP18/qMl1
-         yNyQ==
+        Fri, 5 Mar 2021 15:22:27 -0500
+Received: by mail-oi1-f182.google.com with SMTP id q203so3887184oih.5;
+        Fri, 05 Mar 2021 12:22:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=ulCKWwAgru14Pv0YBVciE6nHg3ZbaOajNEmz/MDhZ0E=;
-        b=EBVhs2tmme67JKMxmAE6WH11HoszqZ7ny5d1RCNIwnMcxQReXpCGYRg9+60XQmkqVj
-         bKmTXP8LO61Nz5ukiYBaREMwRTcnkldFTreaGaggEv7LCU1jARrAMr4i3CpUpWmX6IXJ
-         MlA8H7gYcxsetRDxgS8BBjLXcqGH0jlAvUM3Gbf5K1vFwk4FHH0rVQ1famf2jcFmGk9p
-         ylHW1Sps/dQq1JFKIN9uWupDLI+1VXy1YnVqj2YSzh6KPQwBr/IwxOuuysCymVwWhPM5
-         Rqz3gTZKqkstlw+70s/fr+nY6OfJHf7hwPRFpyMQgTCNev4MlKz8HHewegR5NmRIHZPF
-         +1EQ==
-X-Gm-Message-State: AOAM531KrSfScMqWPEyYsEU/CWlnCdELAryH+ylB8PItnjguP94FI7XY
-        FapFTu9uJnYcOE+4/4lA71eZl/QUKS74IzcpINc=
-X-Google-Smtp-Source: ABdhPJzugclOPUcMl5rWpXYbl208BWEimx+fJTo5zFfMCx70e7i5TD/OVFvRhSrWZ4lMnOshHJ+EWZ1oZ8vlNNhorTs=
-Sender: "samitolvanen via sendgmr" 
-        <samitolvanen@samitolvanen1.mtv.corp.google.com>
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:1d29:d678:6e3a:704d])
- (user=samitolvanen job=sendgmr) by 2002:a25:8706:: with SMTP id
- a6mr15467374ybl.158.1614975687742; Fri, 05 Mar 2021 12:21:27 -0800 (PST)
-Date:   Fri,  5 Mar 2021 12:21:24 -0800
-Message-Id: <20210305202124.3768527-1-samitolvanen@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH] KVM: arm64: Don't use cbz/adr with external symbols
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=L6fiDRHOBx6wicwHAlBdQghdJU9EkaCoXvCSV20utCg=;
+        b=sLCLWqLc2UY0S6i3//fHbUEom6YsAk3ECj1+M4Ia05gqpWYLEPKqDaKkOC0Ms/N0EW
+         m5g0fQwl/QoSTpnUClwVl3G+Vl8LwaX7v81hNJRnXusz10mSdxxMdOamIxW3XmUPUKY1
+         2k6muMeyZ0AMTmyMKfltbIXrN1EyNuiigJn/YIu/d7QYmZxiQSBgCGrxNRO45XnCwNPX
+         Y03JyRDHYcCKTosDiXHwwxwQG97eANkOBu9dNufK9zShcDQmnq9CKi18nhju5by7NzB7
+         BT0Pgu/mIIhfTEVHR7zqvvUv7Odo97Bm+IfskUydNOKrP6/2aRJ4araFOcseiYXpbpFw
+         fXhA==
+X-Gm-Message-State: AOAM533ADv/aze7SFPxA1ZVYYmJwhkUkgAz/leK2nVUwGC9j9BOcKJ8c
+        OgvDNuppN9IQBoIIaVSDsQ==
+X-Google-Smtp-Source: ABdhPJy127zX+LiOlwWsk56ZjC471+NVclR9wt3yY/+htyALJl7O+I5jJhN+5AyB5SSnbsjwEj6ywQ==
+X-Received: by 2002:aca:90c:: with SMTP id 12mr1369336oij.21.1614975746678;
+        Fri, 05 Mar 2021 12:22:26 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id b9sm749249ooa.47.2021.03.05.12.22.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 12:22:25 -0800 (PST)
+Received: (nullmailer pid 584975 invoked by uid 1000);
+        Fri, 05 Mar 2021 20:22:24 -0000
+Date:   Fri, 5 Mar 2021 14:22:24 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: pwm: Add bindings for Toshiba
+ Visconti PWM Controller
+Message-ID: <20210305202224.GA583007@robh.at.kernel.org>
+References: <20210212131910.557581-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210212131910.557581-2-nobuhiro1.iwamatsu@toshiba.co.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212131910.557581-2-nobuhiro1.iwamatsu@toshiba.co.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-allmodconfig + CONFIG_LTO_CLANG_THIN=y fails to build due to following
-linker errors:
+On Fri, Feb 12, 2021 at 10:19:09PM +0900, Nobuhiro Iwamatsu wrote:
+> Add bindings for the Toshiba Visconti PWM Controller.
+> 
+> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> ---
+>  .../bindings/pwm/toshiba,pwm-visconti.yaml    | 43 +++++++++++++++++++
+>  1 file changed, 43 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pwm/toshiba,pwm-visconti.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pwm/toshiba,pwm-visconti.yaml b/Documentation/devicetree/bindings/pwm/toshiba,pwm-visconti.yaml
+> new file mode 100644
+> index 000000000000..f11558cdc32f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pwm/toshiba,pwm-visconti.yaml
+> @@ -0,0 +1,43 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pwm/toshiba,pwm-visconti.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Toshiba Visconti PWM Controller
+> +
+> +maintainers:
+> +  - Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: toshiba,pwm-visconti
 
-  ld.lld: error: irqbypass.c:(function __guest_enter: .text+0x21CC):
-  relocation R_AARCH64_CONDBR19 out of range: 2031220 is not in
-  [-1048576, 1048575]; references hyp_panic
-  >>> defined in vmlinux.o
+The 'normal' order is: toshiba,visconti-pwm
 
-  ld.lld: error: irqbypass.c:(function __guest_enter: .text+0x21E0):
-  relocation R_AARCH64_ADR_PREL_LO21 out of range: 2031200 is not in
-  [-1048576, 1048575]; references hyp_panic
-  >>> defined in vmlinux.o
+Otherwise,
 
-This is because with LTO, the compiler ends up placing hyp_panic()
-more than 1MB away from __guest_enter(). Use an unconditional branch
-and adr_l instead to fix the issue.
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1317
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Suggested-by: Marc Zyngier <maz@kernel.org>
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
----
- arch/arm64/kvm/hyp/entry.S | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/kvm/hyp/entry.S b/arch/arm64/kvm/hyp/entry.S
-index b0afad7a99c6..c62265951467 100644
---- a/arch/arm64/kvm/hyp/entry.S
-+++ b/arch/arm64/kvm/hyp/entry.S
-@@ -85,8 +85,10 @@ SYM_INNER_LABEL(__guest_exit_panic, SYM_L_GLOBAL)
- 
- 	// If the hyp context is loaded, go straight to hyp_panic
- 	get_loaded_vcpu x0, x1
--	cbz	x0, hyp_panic
-+	cbnz	x0, 1f
-+	b	hyp_panic
- 
-+1:
- 	// The hyp context is saved so make sure it is restored to allow
- 	// hyp_panic to run at hyp and, subsequently, panic to run in the host.
- 	// This makes use of __guest_exit to avoid duplication but sets the
-@@ -94,7 +96,7 @@ SYM_INNER_LABEL(__guest_exit_panic, SYM_L_GLOBAL)
- 	// current state is saved to the guest context but it will only be
- 	// accurate if the guest had been completely restored.
- 	adr_this_cpu x0, kvm_hyp_ctxt, x1
--	adr	x1, hyp_panic
-+	adr_l	x1, hyp_panic
- 	str	x1, [x0, #CPU_XREG_OFFSET(30)]
- 
- 	get_vcpu_ptr	x1, x0
-
-base-commit: 280d542f6ffac0e6d65dc267f92191d509b13b64
--- 
-2.30.1.766.gb4fecdf3b7-goog
-
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#pwm-cells':
+> +    const: 2
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#pwm-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        pwm: pwm@241c0000 {
+> +            compatible = "toshiba,pwm-visconti";
+> +            reg = <0 0x241c0000 0 0x1000>;
+> +            pinctrl-names = "default";
+> +            pinctrl-0 = <&pwm_mux>;
+> +            #pwm-cells = <2>;
+> +        };
+> +    };
+> -- 
+> 2.30.0.rc2
+> 
