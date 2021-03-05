@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46DFD32F529
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E6D32F52E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhCEVKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:10:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51436 "EHLO mail.kernel.org"
+        id S230147AbhCEVKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 16:10:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229493AbhCEVKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229601AbhCEVKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Mar 2021 16:10:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3313E650A5;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6A076650B0;
         Fri,  5 Mar 2021 21:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614978609;
-        bh=/pJj/nB535Qu0F9dhwEEv/JkP20imH0yiCmcAAmvo6U=;
+        bh=HImJ3ds2JUI8CXhpIYg07+5NVQogfm4xzRM1yFy+rfw=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=eau6n5wEUdwCMIXk0EhStLu5mRpuvWpK/+v+u0MsnXxlQJLa7Vs72MgGSAeXQ8tKF
-         u7Ztto4jyaVhAjip3mMdYAOX58snN1Qy57i5/wMA4frtMI7KmWdXv6poH+7M7EjK38
-         vdBvcMkq0+rTkLTP7qnf+ir5e7VL0EqQbJ60BZVjD8tM4MYJQKG8JGWyNG3q/m5q7b
-         gD89BYah1EQGyrGdax6MPZIGoODbEy7fIV3Aiagn/3hmO7OHoBMjQzva9TO1HgCATI
-         bMSNqaADqjKpB9wafIaF0JTAqgjtDAMo8peSbrrJa/R3E3qnjafbKcONA3yRRu7lq5
-         cw6S/xOHs8y0Q==
+        b=Ed1kD4Syj4zMhtynJl5nJFqbxeG8Tvt8YNTgd1GHJ7d8e/KMTMg7xC5T2eHDXdTCq
+         3xKlMsrO+7DAr2k1V2yHye/TN8hMjn3L2GlUZd4pDniCQYuWuslNUXaRHoj9qzILak
+         W/sz7vVHBlJTAslgzzi99i8spcQVOoOr7EC+jEQgPIGKMqykni3Ygz/kwFAfEhaW0A
+         BjiPcSP73msvfeBsqLz2Bj/VxmY52xiAIhQGa2QT7CMSldHljK/ZE511/4DX6OTrZp
+         xjwhqCiRIuO6LC0VijIBkjl7XCQofzFb31fChjePunQgOm3VB5SFuepRZ352uvYgii
+         yLUoX9ZWa1tug==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 25C3160A22;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 60844609EA;
         Fri,  5 Mar 2021 21:10:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v1] ibmvnic: remove excessive irqsave
+Subject: Re: [PATCH] selftest/net/ipsec.c: Remove unneeded semicolon
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161497860915.24588.2102886207868627115.git-patchwork-notify@kernel.org>
+Message-Id: <161497860938.24588.3460986732299054232.git-patchwork-notify@kernel.org>
 Date:   Fri, 05 Mar 2021 21:10:09 +0000
-References: <20210305084839.2405-1-angkery@163.com>
-In-Reply-To: <20210305084839.2405-1-angkery@163.com>
-To:     angkery <angkery@163.com>
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        drt@linux.ibm.com, ljp@linux.ibm.com, sukadev@linux.ibm.com,
-        davem@davemloft.net, kuba@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yangjunlin@yulong.com
+References: <20210305093306.1403-1-vulab@iscas.ac.cn>
+In-Reply-To: <20210305093306.1403-1-vulab@iscas.ac.cn>
+To:     Xu Wang <vulab@iscas.ac.cn>
+Cc:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -49,27 +48,18 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Fri,  5 Mar 2021 16:48:39 +0800 you wrote:
-> From: Junlin Yang <yangjunlin@yulong.com>
+On Fri,  5 Mar 2021 09:33:06 +0000 you wrote:
+> fix semicolon.cocci warning:
+> tools/testing/selftests/net/ipsec.c:1788:2-3: Unneeded semicolon
 > 
-> ibmvnic_remove locks multiple spinlocks while disabling interrupts:
-> spin_lock_irqsave(&adapter->state_lock, flags);
-> spin_lock_irqsave(&adapter->rwi_lock, flags);
-> 
-> As reported by coccinelle, the second _irqsave() overwrites the value
-> saved in 'flags' by the first _irqsave(),   therefore when the second
-> _irqrestore() comes,the value in 'flags' is not valid,the value saved
-> by the first _irqsave() has been lost.
-> This likely leads to IRQs remaining disabled. So remove the second
-> _irqsave():
-> spin_lock_irqsave(&adapter->state_lock, flags);
-> spin_lock(&adapter->rwi_lock);
-> 
-> [...]
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+> ---
+>  tools/testing/selftests/net/ipsec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - [v1] ibmvnic: remove excessive irqsave
-    https://git.kernel.org/netdev/net/c/69cdb7947adb
+  - selftest/net/ipsec.c: Remove unneeded semicolon
+    https://git.kernel.org/netdev/net/c/0a7e0c3b5702
 
 You are awesome, thank you!
 --
