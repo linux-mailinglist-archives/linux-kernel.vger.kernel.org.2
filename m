@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9DC432F52D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:11:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B613132F52F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhCEVKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:10:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51478 "EHLO mail.kernel.org"
+        id S230176AbhCEVKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 16:10:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229589AbhCEVKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229592AbhCEVKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Mar 2021 16:10:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4B4A5650A7;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 62BCB650B1;
         Fri,  5 Mar 2021 21:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614978609;
-        bh=veQ4ILkrPHLFTfmoLEqDHAbtpI3dGAAq/kWkHq6kMyI=;
+        bh=MhaNOUG9C8mNaglH6NiBaYfSD1D026SBkCEvk86ZE4w=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=iTAZrzugtx7iTB6GT6M2LOWMb8QrlYI8cxe4ZOUTokyX1/RaDx8nPkW+DL1H1mERc
-         NfyOwY8NmFVtj6IPQAi8eiXAPt/0PvtHX1AFhxn+LmxgWDzj+Ez2AbWWOuwyM2hhpk
-         AAB8E281yw94VSNmG/IeNCUNB+BbPBX0CKSslBjtiJsYva0MZ9QSZv7UbjiS1IFLnc
-         iZZeqhyVkW90EhMzFaONZI3TM1luJaxlRGsS+aD6Guun+foZReTUiWWcNSJy8AkXcc
-         P/5cz9oRk0YosH+YLKT+uN+hNm4wNpbfAaDe3kTPU4i+xiPdXaeJhI9m4CD1/B0k7h
-         nXOm3r0ZDp8hQ==
+        b=tO7X0rTMg0D2avoUDTt2mTUHPwJ9I9x1PGU/IRCBFsuO3M++XsR4PtXWLhuLpneWk
+         I5usBcsihTB2NckvsKqcfXzgdLKI2RON1wr6MYSPbRXKHpMzZXlOM2+T3xEX42/wFi
+         qpmQP4PeqNKyw6wGgC7khCit7CJChB8p5NwUSDwAxjDJMXSzefyhMZ3lSiQNevBSzu
+         Eii6Vt6ZGs/KfDuRECTeCamOxOdFAWW0AbQ+Kycxn4rDgSrf6ueeUjhi54M+DKaCIZ
+         SLNp7U3Zkzh1MVyU5VF9STWFLadmMj+3kCFlM3a39v4LMu591xtpZWMAPZEZtwqsyO
+         cYolyPDr50iIg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 41FE360A4C;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 55C6A60A22;
         Fri,  5 Mar 2021 21:10:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] r8169: fix r8168fp_adjust_ocp_cmd function
+Subject: Re: [PATCH] net/hamradio/6pack: remove redundant check in sp_encaps()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161497860926.24588.13459099357965666033.git-patchwork-notify@kernel.org>
+Message-Id: <161497860934.24588.18272207864656241633.git-patchwork-notify@kernel.org>
 Date:   Fri, 05 Mar 2021 21:10:09 +0000
-References: <1394712342-15778-348-Taiwan-albertk@realtek.com>
-In-Reply-To: <1394712342-15778-348-Taiwan-albertk@realtek.com>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     netdev@vger.kernel.org, nic_swsd@realtek.com,
-        linux-kernel@vger.kernel.org, hkallweit1@gmail.com
+References: <20210305162622.67993-1-efremov@linux.com>
+In-Reply-To: <20210305162622.67993-1-efremov@linux.com>
+To:     Denis Efremov <efremov@linux.com>
+Cc:     ajk@comnets.uni-bremen.de, davem@davemloft.net, kuba@kernel.org,
+        linux-hams@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -46,18 +47,18 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Fri, 5 Mar 2021 17:34:41 +0800 you wrote:
-> The (0xBAF70000 & 0x00FFF000) << 6 should be (0xf70 << 18).
+On Fri,  5 Mar 2021 19:26:22 +0300 you wrote:
+> "len > sp->mtu" checked twice in a row in sp_encaps().
+> Remove the second check.
 > 
-> Fixes: 561535b0f239 ("r8169: fix OCP access on RTL8117")
-> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+> Signed-off-by: Denis Efremov <efremov@linux.com>
 > ---
->  drivers/net/ethernet/realtek/r8169_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/net/hamradio/6pack.c | 5 -----
+>  1 file changed, 5 deletions(-)
 
 Here is the summary with links:
-  - [net] r8169: fix r8168fp_adjust_ocp_cmd function
-    https://git.kernel.org/netdev/net/c/abbf9a0ef884
+  - net/hamradio/6pack: remove redundant check in sp_encaps()
+    https://git.kernel.org/netdev/net/c/85554bcd123e
 
 You are awesome, thank you!
 --
