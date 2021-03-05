@@ -2,129 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2EB432EB58
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:44:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB2232EB6C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:44:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233891AbhCEMno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:43:44 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:37744 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233191AbhCEMm4 (ORCPT
+        id S233751AbhCEMoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:44:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233535AbhCEMnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:42:56 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id D6A701F40EA4
-Received: by earth.universe (Postfix, from userid 1000)
-        id CDD143C0C96; Fri,  5 Mar 2021 13:42:52 +0100 (CET)
-Date:   Fri, 5 Mar 2021 13:42:52 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>, Ian Ray <ian.ray@ge.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCHv4] serial: imx: Add DMA buffer configuration via sysfs
-Message-ID: <20210305124252.c3ffgca6wjqpkn45@earth.universe>
-References: <20210305115058.92284-1-sebastian.reichel@collabora.com>
- <YEIetFdcuYZU98s/@kroah.com>
+        Fri, 5 Mar 2021 07:43:23 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FFAC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 04:43:21 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id f12so1920053wrx.8
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 04:43:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QmF+mvS+MLxLt6q3dQkoY40EhjIBy/NHIII8iIh6APQ=;
+        b=bHjAZhufUbVM2E/Px0qJ/imHzNvX1/O2wSS2s49c1PdMwr1NmNHqMaRuXPcczu75l9
+         cW/D3D1RXj7tRr/0BCgFgr3wTTOPAG+xNNlvxNQrqXzIGNK+SZWuaXTSoSUiBIWa+S75
+         yb22bkzeZebfMKeo2Qggt9fImoNaTxorpFA2uz/VeoQ+vIUp3UtPiz6rUM3A1LkqT9k1
+         AWe2V923LfTkrqUKrKNUr7LGNGhG3MbtYhwzxDLBGyXliY7mzZj2xN9grbtA4+WIAhcn
+         5hAAqGcR5kAZbirU0GnDm82xIOnBXGY4GcPxKby2cJu2M601j3KI8S9FT+DOdPbMr0Ep
+         S5Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QmF+mvS+MLxLt6q3dQkoY40EhjIBy/NHIII8iIh6APQ=;
+        b=pZY8I8Di1jqtZJy7qGd911ISxMHiblakW1HR4e5iuGo/hJySHAffzOc7aScYYkDgjG
+         nRv4NVyejl1urAyZ9S4AUVKQLBwLN4AArwg4DodiK5w7mHSc3ZhhT9nL/W9lm0lz0TCx
+         zuNyupp1ADEHn1bkFvgCvinjqgpGLvR+vv54u1lTzeXJAXam8Qk8Bt1pLKyZPRgVt4My
+         0Ajvzo2aRT6yHPRFSJvF4HI/r3WIToAuDsEopWs6PV+4lhMkFhd7nOaOg1CXdMhqx9PZ
+         xiXjTXiajLIijD5PawsLSskA23jTqbvXY47pUBRjMbCT5wdNxp7eQE/0ZMT6Y4IiLzjK
+         lXaA==
+X-Gm-Message-State: AOAM531JMpUB0ZQyPfKfGWuANMVAnZNr+ZoWRwD1B4t4pruIpLlg8N6F
+        dIGuFMOMQcWKOggg5DG8eoCHDG+GPIdD634UqS0=
+X-Google-Smtp-Source: ABdhPJwXjMQOM5nzdg/7g/bbUofDP/d6h+41pogdgtczYu3CsbmEQu+kYS+mJ/MZKSwvcgtaRzjf4pLIUt6BcHQLzpU=
+X-Received: by 2002:adf:d84d:: with SMTP id k13mr9527969wrl.164.1614948200745;
+ Fri, 05 Mar 2021 04:43:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="66fnbwp2soxqs2g5"
-Content-Disposition: inline
-In-Reply-To: <YEIetFdcuYZU98s/@kroah.com>
+References: <1614770488-12861-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1614770488-12861-1-git-send-email-shengjiu.wang@nxp.com>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Fri, 5 Mar 2021 14:43:08 +0200
+Message-ID: <CAEnQRZCvYe6n_8MFwfz_MyanJLqH2VAqkgcZ7K9NJkqBPg=r1A@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: wm8962: Relax bit clock divider searching
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, ckeepax@opensource.cirrus.com,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>, gustavoars@kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        patches@opensource.cirrus.com,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 5, 2021 at 1:15 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
+>
+> With S20_3LE format case, the sysclk = rate * 384,
+> the bclk = rate * 20 * 2, there is no proper bclk divider
+> for 384 / 40, because current condition needs exact match.
+> So driver fails to configure the clocking:
+>
+> wm8962 3-001a: Unsupported BCLK ratio 9
+>
+> Fix this by relaxing bitclk divider searching, so that when
+> no exact value can be derived from sysclk pick the closest
+> value greater than expected bitclk.
+>
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
---66fnbwp2soxqs2g5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Greg,
-
-On Fri, Mar 05, 2021 at 01:06:12PM +0100, Greg Kroah-Hartman wrote:
-> On Fri, Mar 05, 2021 at 12:50:58PM +0100, Sebastian Reichel wrote:
-> > From: Fabien Lahoudere <fabien.lahoudere@collabora.com>
-> >=20
-> > In order to optimize serial communication (performance/throughput VS
-> > latency), we may need to tweak DMA period number and size. This adds
-> > sysfs attributes to configure those values before initialising DMA.
-> > The defaults will stay the same as before (16 buffers with a size of
-> > 1024 bytes). Afterwards the values can be read/write with the
-> > following sysfs files:
-> >=20
-> > /sys/class/tty/ttymxc*/dma_buffer_size
-> > /sys/class/tty/ttymxc*/dma_buffer_count
->=20
-> Ick no.  Custom sysfs attributes for things like serial ports are crazy.
->=20
-> > This is mainly needed for GEHC CS ONE (arch/arm/boot/dts/imx53-ppd.dts),
-> > which has multiple microcontrollers connected via UART controlling. One
-> > of the UARTs is connected to an on-board microcontroller at 19200 baud,
-> > which constantly pushes critical data (so aging character detect
-> > interrupt will never trigger). This data must be processed at 50-200 Hz,
-> > so UART should return data in less than 5-20ms. With 1024 byte DMA
-> > buffer (and a constant data stream) the read operation instead needs
-> > 1024 byte / 19200 baud =3D 53.333ms, which is way too long (note: Worst
-> > Case would be remote processor sending data with short pauses <=3D 7
-> > characters, which would further increase this number). The current
-> > downstream kernel instead configures 24 bytes resulting in 1.25ms,
-> > but that is obviously not sensible for normal UART use cases and cannot
-> > be used as new default.
->=20
-> Why can't this be a device tree attribute? Why does this have to be a
-> sysfs thing that no one will know how to tune and set over time.  This
-> hardware should not force a user to manually tune it to get it to work
-> properly, this isn't the 1990's anymore :(
->=20
-> Please never force a user to choose stuff like this, they never will
-> know what to do.
-
-This used to be a DT attribute in PATCHv1. It has been moved over to
-sysfs since PATCHv2, since it does not describe the hardware, but
-configuration. Unfortunately lore.kernel.org does not have the full
-thread, but this is the discussion:
-
-https://lore.kernel.org/linux-serial/20170629182618.jpahpmuq364ldcv2@pengut=
-ronix.de/
-
-=46rom downstream POV this can be done either by adding a DT property
-to the UART node, or by adding a udev rule.
-
-=46rom my POV there is not a huge difference. In both cases we will
-be bound by an ABI afterwards, in both cases people will usually
-stick to the default value and in both cases people that do deviate
-=66rom the default probably ran into problems and started to look
-for a solution.
-
-Thanks,
-
--- Sebastian
-
---66fnbwp2soxqs2g5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBCJ0QACgkQ2O7X88g7
-+prIHg/7BN/DGiQXMineQuVl0TvfhROTkESg7Wf58yyWPCWWZVCyVHf4Mcebebq7
-+0umIHr8gf5d2K78CdfCuflLpl36JCdP2lhYPR1qXnMBOPlN182JdUqtqyLX88z8
-0yTfO20adwNIxld0Bpucc8cquwS2RPP4jWDyrdhU8H2RJEk+pUaQD4TsXRTSwcvd
-sIyKTBCDVgfmKwrDJ97iHJhKLddF7ys0z4qF8W/oZIVCJTCljsuLKNx+sxrjhO87
-vKxuGM/9LOhaIyfRo2byMeqfNiwEGQGXXSyPPRz0PvBLj5Ftz/SkLuCD+nOxpWLk
-KjU6qs0tb9y7X2IYnx3G2Xocep6FxuKGifmMtVJyBpxMdLnSDm6VjCXSouhLaQIi
-caVHBa97kJbbfPKihFQvgMNRE+beqN5+z11REtUPH10c68OBdU3RieTK7lxz+gGb
-+4tBSKmpkaHCwWf1tjonc4QBfPi3H1vc2ZxafXiHsYAvFgjuupy1Ddfk2Wzt6aFu
-rQrGCrHOfKXFA2vPF29wva2q/i5f7SHiOmSliwYL7+Zsu3CoIBHzbMxOtdg60Txs
-JLw/JV7Ac/38Xnic7DMBC/W1z9LxyoAoNyje/PRVPQmDgDKMX3Zjh6tKmcNnCgV6
-hYFWmQgjptGQctxYHMJTVx9Y6qoO2dTz246QWY/x7/OZdC2+igs=
-=vMr7
------END PGP SIGNATURE-----
-
---66fnbwp2soxqs2g5--
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
