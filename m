@@ -2,165 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A74B32DE5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4FD32DE63
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhCEAgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 19:36:47 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:15873 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhCEAgq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 19:36:46 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60417d1d0003>; Thu, 04 Mar 2021 16:36:45 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 5 Mar
- 2021 00:36:45 +0000
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.58) by
- HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Fri, 5 Mar 2021 00:36:45 +0000
+        id S231378AbhCEAi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 19:38:27 -0500
+Received: from mail-db8eur05on2044.outbound.protection.outlook.com ([40.107.20.44]:55782
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229465AbhCEAiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 19:38:25 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RGmyDLMTCmyLM7RnVutLJizWiA3Qz6McpKN+g9Ja1FPiUSK5fTKTTvFcVeB57oMUes7fJIFT6wtCbrJLViYnQG9mCDTc7gdvOwPZGNZOk91L3JsCprwYLrRDGx7Y+MU47VhvO4KWYtWXGNkctikVY1HmDmNCZaCX5/PkCKbAjtOFIj+DP2JxMq/t+YQYXIxAcS6ASjKH83jMDcPPNzgfoLqJqIJwRT1GPaVh+p+QwS5PRPL2MfkynupB2KHZVSNybL/Abxs0OzleDm8sqlQQ9XIYGTW7UsIpOSuGQcXVCfWZe9wgbJ96IvzJL44PUzJvHoXnUZNPxKG2XOOfkqvp2A==
+ b=QDFT2KIIBicX6wbOZ/DmTx/C+dBl8XqaLbr5kTEUkzVMjF/mWWcV27NDns9I3Tdt0WkReT2dCv1bQ62eb4gROwdCe8/j1hYPUDo95+5IyfaHvyKoRKAhGrT/cfstyiDkGrzNjC+3opwAtmhXlnazc5lvOnSUE0uVzRq+s0J66AaiQHXw4Q3DjOBluZgy7FPntk4SWLc4RIy384skccnm3lHb+LTcrY7fuhabCzi44BrP4qdlJa5tq23vtV68BZd955iCp1xZJGtcCbBTx5+yoO9gc2s12wWE+fAP5ppVnGBvqSHIfjFrC69BLxADvdavlNglCIhRx71acEusXv864A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vyh9LWTDJIo2GFCbfvqALL248gDhDJRdUGVTiIZxeHw=;
- b=BevzVPaA1KMthBvjGmlDGePxkTObzvsiFBlV89xd2lmmy71luOJaIGRB5VX3vVD8RBRnENGuYM7EcqzWGN/ypqAmV3fkXhvUM7XxFkTjg8PU0jGWf6SrCaWnvHTG85hE8WIuvmgdbmRC9t0YMad7Ziyh4ezKfgId0MxlFhZ8xk8AceKay0I/q+st9GKsLg+QwRmeMR1oE9ronk5t3lmhwEXWevoddfH6WmaitOSYG+zmpMfIWYAs1DYadFvylXj20EvcAqbwExaVQF/ED8yrHy9yBN9p+Zzho3vqvA1Qop71UZFSLLTleHDIiePqxLUZrvUiKkulEyH6ahjXiReCNA==
+ bh=sjko22WxTYdpl0dj2jlAfbiHkL9/jc9/UQXpSUcIenw=;
+ b=YwkDMnMTsdnGhobcVjZ+KWnCuvjrQr/PYu76vL/8vEnwqyIQijkwsNMfrPC8CQpVW4lB+HYoCF2r/653xGIaAQV7Xy/FYnN2hhtCQUs0iBSiVLHZfQCJ5youU2uBsCcH4QC3tXrgFX4pMhUplFKi5jRULXGw/sVS0jt25YF0XvgP46adFsweWOBtc/5tjZ7LII3x1zKTjvaI9L43jYtb+jBC+V4b0/zEkcNonYwkyLugXugMR0HZSc5hteHtvzCll9BJ+CF9BoLoFLLY8Y2UNczcDg80/EpcggSDcI47YkpHs+P6+KgwLWd7FTKN1C4EPnrYhYF/Gx9P4oFqDEJu4Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4266.namprd12.prod.outlook.com (2603:10b6:5:21a::22) with
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sjko22WxTYdpl0dj2jlAfbiHkL9/jc9/UQXpSUcIenw=;
+ b=N93cWXrdhcsFaJvzWtzxsm6vyA8bnn2+UftNgaA+ox3pskIwk/2NBvLzAdaz2VDU1r0DETtgQfNNoD3fE8v2ARDnqVkfyuhQh14VIcs36CNpdrK4yleHqX0xIdMCcsEILCiMWDjjjR2UEW0Cl+ywlWkPS6kKR52mREkRrE4iZKg=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB7PR04MB5243.eurprd04.prod.outlook.com (2603:10a6:10:17::31) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Fri, 5 Mar
- 2021 00:36:43 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3912.017; Fri, 5 Mar 2021
- 00:36:43 +0000
-Date:   Thu, 4 Mar 2021 20:36:42 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
-Subject: Re: [RFC PATCH 05/10] vfio: Create a vfio_device from vma lookup
-Message-ID: <20210305003642.GR4247@nvidia.com>
-References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
- <161401268537.16443.2329805617992345365.stgit@gimli.home>
- <20210222172913.GP4247@nvidia.com>
- <20210224145506.48f6e0b4@omen.home.shazbot.org>
- <20210225000610.GP4247@nvidia.com>
- <20210225152113.3e083b4a@omen.home.shazbot.org>
- <20210225234949.GV4247@nvidia.com>
- <20210304143757.1ca42cfc@omen.home.shazbot.org>
- <20210304231633.GP4247@nvidia.com>
- <20210304170731.72039a23@omen.home.shazbot.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210304170731.72039a23@omen.home.shazbot.org>
-X-ClientProxiedBy: MN2PR16CA0021.namprd16.prod.outlook.com
- (2603:10b6:208:134::34) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.31; Fri, 5 Mar
+ 2021 00:38:22 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d58c:d479:d094:43d0]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d58c:d479:d094:43d0%9]) with mapi id 15.20.3846.049; Fri, 5 Mar 2021
+ 00:38:21 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+CC:     Stephen Boyd <sboyd@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>
+Subject: RE: [PATCH V3 4/5] dt-bindings: mmc: fsl-imx-esdhc: add clock
+ bindings
+Thread-Topic: [PATCH V3 4/5] dt-bindings: mmc: fsl-imx-esdhc: add clock
+ bindings
+Thread-Index: AQHXCyWBw7rdwKHv8EyTisodgYlu9qp0er8AgAAeXgA=
+Date:   Fri, 5 Mar 2021 00:38:21 +0000
+Message-ID: <DB6PR0402MB2760DE61170314280DE56F6388969@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <1614222604-27066-1-git-send-email-peng.fan@oss.nxp.com>
+ <1614222604-27066-5-git-send-email-peng.fan@oss.nxp.com>
+ <CAL_JsqKAOUKnVLvu-VNeDVg0ShXPy56wxhCQv38+rO2k961v+g@mail.gmail.com>
+In-Reply-To: <CAL_JsqKAOUKnVLvu-VNeDVg0ShXPy56wxhCQv38+rO2k961v+g@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [58.208.155.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 6e6e8f75-48a6-4c4a-4fae-08d8df6efaca
+x-ms-traffictypediagnostic: DB7PR04MB5243:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR04MB52434ED51428F82EF85C879988969@DB7PR04MB5243.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: rWhWaBooUhvr7xSRRXJ8PVdnX60x/rcKNVEUE2IG3r/Gk8ednWXHfLM4KoQkm41fFLWpv8mSW+5L+G5uFFhAGuA8yytDxuZoKib400W9GOgRbNgj3G7f6U/UgTt9R+lEf8aSr9Kql/CyvWWoFMXSXj3G4Rpej4zYqwZTGKXN69zVfj3beHSWpIMWCWOYNeFYcSJSVsBgT/Mo+MQ9fXlcmwTgiODPxZpHfuJOz36h3NRAy0HIHgwfoDVwYPDraR8cwwxx9osQMkAIFUBgnXb9Rgk7O1nN5C/QhLtj8hxQD48Ldo5442klDeqi+urYSpQU6XljWpr7esUVXh+zDRpsEkolRlKNhcgt47lN5A2aPWFjyBABOJvhc0ujwE59LPEO0QEGq0zPkGUmbqAU6+ChQLgh1Os2ICBYk+PgXCiANPC3PsT2FCMImkKO1AkxalSgRIAQMLzJ/WjASjPnR8/CfvAOrBT5pVYN06EjpGuwupxlhJmiVLRQHFEZXdv0Fx0fGt0kTj5wBZ8CCcF5oGEQ5g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(366004)(346002)(396003)(55016002)(7696005)(186003)(9686003)(4326008)(26005)(8676002)(66476007)(76116006)(52536014)(71200400001)(7416002)(2906002)(33656002)(66556008)(64756008)(6506007)(53546011)(110136005)(478600001)(66446008)(66946007)(54906003)(44832011)(5660300002)(86362001)(83380400001)(8936002)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?WklkdjBUdkE1ZWNBV0pNWGFVUWJhWXUrNEx5Umx3dW5Jd083M0tGL2tKeE5q?=
+ =?utf-8?B?OGlldjNjeVVVTmYvWDRSNFljc1FOSjA3eUVOSDRtVk1tUkNTajZGNGhNMjNL?=
+ =?utf-8?B?ZFFXbEd0a0VVSUljUHFENU8wRFE3c0VXV2JRVnpRMmo4VWtZQmRXbHVlTkd0?=
+ =?utf-8?B?UEJEQ0VzSE1DdEFCajgzMUFSdE85dkxTbEtVZndoMzBnRGRmRkhOZ3YwYTJQ?=
+ =?utf-8?B?cm13YVF6T1BNWE1kSUQzRGVRcVg2eGY2Q2xzMWVid1JGVlZZbmtxUldzSHpF?=
+ =?utf-8?B?Mk04RC8vUzJMYXViZkxjQjZzWk5XclRUMzZLc0JNMlhWUHNBelVkRTYzUGU2?=
+ =?utf-8?B?b2ZxcnNGMUVQTzlYNm9UWHJsUDNOZXJQNHdHelBITkV2K3V1VE4wOFcwMU12?=
+ =?utf-8?B?U1F5Z3oyUXpab21GRDhuRk5reDZoSUpCZHdPbHBLRzNta1pFYjhSRjBtQ1pF?=
+ =?utf-8?B?cnRZalZVOUg5U1hJSTNTcjBYMnZZRmdKWk44bDZTTzRGREhWdHBkYkYwZW9T?=
+ =?utf-8?B?SWxYck9Pay9ieUxJaTZNRXNCdmNlWjA2SUF1a2VWUUpETEZELytqVDlUdzlK?=
+ =?utf-8?B?RzR3WmRQSFUzU081QnVXSk9GYmpaU2IzeklRZzhaTWFVV29NMlIyQmQrNkx6?=
+ =?utf-8?B?anRwb2tOdDc3SWN1V1dmN1V2dEg3eERWeFRoMlhlYTREaHZCMGdJRjR2Y2VP?=
+ =?utf-8?B?dTlsMkVuS1AzN2tGeVpDbFpja0ROUXlQdlVScUdNcUkzUWlka2JxUFBDTldp?=
+ =?utf-8?B?YVpvaVkyQlNKUWlZdXhFV2todWJZYkNMR2UyL2lBZ2FHMmtBMWhvVjExekYz?=
+ =?utf-8?B?dkI5ZkJrYVBmV0FzaXpzTHlBWWY0NjBhNFp1SENERTJVaVN6K0Q2eGpHckgw?=
+ =?utf-8?B?SHZvVDhCWS9TQk1seG5ZSW9aM2dRZHgrTUNveXpxZ3BjZHVRUGtyTlU4SGc1?=
+ =?utf-8?B?ZHg1b2VUZExJbnhZTzlETUxpK29sbDhpSFFpbDYzT1MxUjY4QkIxSENyWW5t?=
+ =?utf-8?B?eVR4VlVXaktaTVZHVld2dVZWa2U4bEtKdU1NRlRWUU50UDZoR250U0ZjQ3dk?=
+ =?utf-8?B?SzJJRWtmcE00YTNCT3VuL1hqZG9vM2RhNG9ZeTZjcnVUS21zU25nVHYzS0R2?=
+ =?utf-8?B?djhEN1pKOW82dTZBa2NweStXUlJGcjNneFAzZkdQd1pZUVhCWWRXelcrdXV0?=
+ =?utf-8?B?OVc4OUxNTXV4bDNPY2RFTmJtZyt4ZVNMZHhkalU3U3ZxaGJQYTZLVUZDYld0?=
+ =?utf-8?B?bkZ3b3NIaCtCY1IrK3l5a3h1RnF4VXAvY3o3eFo1Z3djVXVrT1pVSnVYYjlV?=
+ =?utf-8?B?RHJ4eDB1OWF0bHJsbkwxaE92c0ZJdWQvc3A5Wnc2bGFHL0dtNFJpKzRxS2NN?=
+ =?utf-8?B?WFM3VTFJZUJYYXR0eEJtM0w5dEpJUVRFK1lOUjRHWHB6R1NRUWdPVmowTGdS?=
+ =?utf-8?B?RjNpZThvdHhiWEpWQVB2WkR0S242a0lrOTF5Q2JaZnZhWENWODBQOGMwMzRu?=
+ =?utf-8?B?ZGxQT2Zpbytxb215WmdFTnlaZmdmZER4VWpoL2Q1OUJQYmRNRDFMZWx6QWJy?=
+ =?utf-8?B?QjVnSzdpcXFKOUdreCtGeTRNWHpER3dWbG1oNUhQZ1lIaEVSOFc4aVFhK2Zo?=
+ =?utf-8?B?bnZQWm9XYTdZZGlGM3ZmY2dibE9lUlVFS1RNcnRKUmxCaGpweDJxaE9VcEVj?=
+ =?utf-8?B?ekRYSGtId29aQjY3Qk1GeVBpTERlSjNlRlVoWFMvbk14T2FSMGt6YVYrYWxy?=
+ =?utf-8?Q?3f1THkbLKYSfU6v/Y8=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR16CA0021.namprd16.prod.outlook.com (2603:10b6:208:134::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 5 Mar 2021 00:36:43 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lHySQ-007ZPP-A2; Thu, 04 Mar 2021 20:36:42 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614904605; bh=Vyh9LWTDJIo2GFCbfvqALL248gDhDJRdUGVTiIZxeHw=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=CiJ64o7VuJgoYZdSz1m4Z3eSG1tDZrlhFP2vzTg8mvYGzyoqbEwk6HjS2AwuXsa+l
-         FLHnxAs3vlzW76edJX/P8HByyDr5bUmmxbyw6Ws0uuvy1qTBDzWz8vKrMunCIMPRQr
-         TdcXDYwJ3ZUrNJz0BB7YzqdRt39Pmnh6tpWKbaDepTkC5/wtJYsi3dc/6j3ELvKOkW
-         6pNk6trSgbgVdJoV7pFRQlawfQUYuTf9MW50M0cwIzzeA38+NQFbEElxKEmTAYz7/f
-         nK37j86aWjHO97XxzAqe4Jl7FrDvyQGSathpvkk7PrfnRPynTiKrW2ebINWaGUzFpg
-         d9e64b6JTdzlQ==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e6e8f75-48a6-4c4a-4fae-08d8df6efaca
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2021 00:38:21.8974
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mkOMlldYBBHr7Djree05V2kvmpiNBYQejojOmVT5La92XmuOHjrg86sSpHBHNTGluXmi8fdnUDtc3rUkBCGzzA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5243
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 05:07:31PM -0700, Alex Williamson wrote:
-> On Thu, 4 Mar 2021 19:16:33 -0400
-> Jason Gunthorpe <jgg@nvidia.com> wrote:
-> 
-> > On Thu, Mar 04, 2021 at 02:37:57PM -0700, Alex Williamson wrote:
-> > 
-> > > Therefore unless a bus driver opts-out by replacing vm_private_data, we
-> > > can identify participating vmas by the vm_ops and have flags indicating
-> > > if the vma maps device memory such that vfio_get_device_from_vma()
-> > > should produce a device reference.  The vfio IOMMU backends would also
-> > > consume this, ie. if they get a valid vfio_device from the vma, use the
-> > > pfn_base field directly.  vfio_vm_ops would wrap the bus driver
-> > > callbacks and provide reference counting on open/close to release this
-> > > object.  
-> > 
-> > > I'm not thrilled with a vfio_device_ops callback plumbed through
-> > > vfio-core to do vma-to-pfn translation, so I thought this might be a
-> > > better alternative.  Thanks,  
-> > 
-> > Maybe you could explain why, because I'm looking at this idea and
-> > thinking it looks very complicated compared to a simple driver op
-> > callback?
-> 
-> vfio-core needs to export a vfio_vma_to_pfn() which I think assumes the
-> caller has already used vfio_device_get_from_vma(), but should still
-> validate the vma is one from a vfio device before calling this new
-> vfio_device_ops callback.
-
-Huh? Validate? Why?
-
-Something like this in the IOMMU stuff:
-
-   struct vfio_device *vfio = vfio_device_get_from_vma(vma)
-
-   if (!vfio->vma_to_pfn)
-        return -EINVAL;
-   vfio->ops->vma_to_pfn(vfio, vma, offset_from_vma_start)
-
-Is fine, why do we need to over complicate?
-
-I don't need to check that the vma belongs to the vfio because it is
-the API contract that the caller will guarantee that.
-
-This is the kernel, I can (and do!) check these sorts of things by
-code inspection when working on stuff - I can look at every
-implementation and every call site to prove these things.
-
-IMHO doing an expensive check like that is a style of defensive
-programming the kernel community frowns upon.
-
-> vfio-pci needs to validate the vm_pgoff value falls within a BAR
-> region, mask off the index and get the pci_resource_start() for the
-> BAR index.
-
-It needs to do the same thing fault() already does, which is currently
-one line..
-
-> Then we need a solution for how vfio_device_get_from_vma() determines
-> whether to grant a device reference for a given vma, where that vma may
-> map something other than device memory. Are you imagining that we hand
-> out device references independently and vfio_vma_to_pfn() would return
-> an errno for vm_pgoff values that don't map device memory and the IOMMU
-> driver would release the reference?
-
-That seems a reasonable place to start
-
-> prevent using unmmap_mapping_range().  The IOMMU backend, once it has a
-> vfio_device via vfio_device_get_from_vma() can know the format of
-> vm_private_data, cast it as a vfio_vma_private_data and directly use
-> base_pfn, accomplishing the big point.  They're all operating in the
-> agreed upon vm_private_data format.  Thanks,
-
-If we force all drivers into a mandatory (!) vm_private_data format
-then every driver has to be audited and updated before the new pfn
-code can be done. If any driver in the future makes a mistake here
-(and omitting the unique vm_private_data magics is a very easy mistake
-to make) then it will cause a kernel crash in an obscure scenario.
-
-It is the "design the API to be hard to use wrong" philosophy.
-
-Jason
+SGkgUm9iLA0KDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggVjMgNC81XSBkdC1iaW5kaW5nczogbW1j
+OiBmc2wtaW14LWVzZGhjOiBhZGQgY2xvY2sNCj4gYmluZGluZ3MNCj4gDQo+IE9uIFdlZCwgRmVi
+IDI0LCAyMDIxIGF0IDk6MjMgUE0gPHBlbmcuZmFuQG9zcy5ueHAuY29tPiB3cm90ZToNCj4gPg0K
+PiA+IEZyb206IFBlbmcgRmFuIDxwZW5nLmZhbkBueHAuY29tPg0KPiA+DQo+ID4gQWRkIGNsb2Nr
+IGJpbmRpbmdzIGZvciBmc2wtaW14LWVzZGhjIHlhbWwNCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6
+IFBlbmcgRmFuIDxwZW5nLmZhbkBueHAuY29tPg0KPiA+IC0tLQ0KPiA+ICAuLi4vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9tbWMvZnNsLWlteC1lc2RoYy55YW1sICAgICAgICB8IDExDQo+ICsrKysrKysr
+KysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxMSBpbnNlcnRpb25zKCspDQo+IA0KPiBMb29rcyBs
+aWtlIHRoaXMgbGFuZGVkIGluIGxpbnV4LW5leHQgYW5kIGludHJvZHVjZXMgd2FybmluZ3M6DQoN
+ClBhdGNoIDIsMyBoYXMgbm90IGJlZW4gcGlja2VkIGJ5IFNoYXduLiBBZnRlciBwYXRjaCAyLCAz
+IHBpY2tlZCB1cCwNCnRoZXJlIHdpbGwgYmUgbm8gd2FybmluZ3MuDQoNClRoYW5rcywNClBlbmcu
+DQoNCj4gDQo+IC9idWlsZHMvcm9iaGVycmluZy9saW51eC1kdC1iaW5kaW5ncy9Eb2N1bWVudGF0
+aW9uL2RldmljZXRyZWUvYmluZGluZ3MvY2xvDQo+IGNrL2lteDhxeHAtbHBjZy5leGFtcGxlLmR0
+LnlhbWw6DQo+IG1tY0A1YjAxMDAwMDogY2xvY2stbmFtZXM6MTogJ2FoYicgd2FzIGV4cGVjdGVk
+ICBGcm9tIHNjaGVtYToNCj4gL2J1aWxkcy9yb2JoZXJyaW5nL2xpbnV4LWR0LWJpbmRpbmdzL0Rv
+Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tDQo+IG1jL2ZzbC1pbXgtZXNkaGMueWFt
+bA0KPiAvYnVpbGRzL3JvYmhlcnJpbmcvbGludXgtZHQtYmluZGluZ3MvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL2Nsbw0KPiBjay9pbXg4cXhwLWxwY2cuZXhhbXBsZS5kdC55YW1s
+Og0KPiBtbWNANWIwMTAwMDA6IGNsb2NrLW5hbWVzOjI6ICdwZXInIHdhcyBleHBlY3RlZCAgRnJv
+bSBzY2hlbWE6DQo+IC9idWlsZHMvcm9iaGVycmluZy9saW51eC1kdC1iaW5kaW5ncy9Eb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbQ0KPiBtYy9mc2wtaW14LWVzZGhjLnlhbWwNCg==
