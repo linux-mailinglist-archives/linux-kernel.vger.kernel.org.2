@@ -2,122 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9057732E34E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9760D32E354
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbhCEIFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:05:32 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44894 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229464AbhCEIFa (ORCPT
+        id S229589AbhCEIGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:06:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229489AbhCEIGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:05:30 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12584V5K125028;
-        Fri, 5 Mar 2021 03:05:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Ojgh08nhkBozW5mZ5COh3+R5k4wHeCmdvIA4CCCBqwU=;
- b=BRvj/LURCy5hzUub6nHFOdbDnAsdNtDXa2F5lNFNFQ5Ru3Yg1FidPVOFIr0FdcvynzI6
- pyX0/LR37J7oC6X7Mx+UfkPywnAzok0TCizOJZE4xOKCPJTOOOhi9juLtJ1Zg+dKVEBs
- MNMSNb3K8Fs+4pPfoCMnIQgdazR2L9YQXFpt6B/b1gRBcRLw8jFVDHLZYZnB/IwIz1UO
- kNE12QlolR0QOxU5zdthmKj/BlBqarGnccmc9IXanrQwrMAb+E1P+5gBN8Uqim3EIPMK
- WO4ZDBSX5XmPU2m/hIIOlcdRd39C+XsRx5nFppoO1V0lATZ9GgMNvK9XLzI21Oq4tUPG LQ== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 373dh6nd8r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 03:05:06 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 12581jWw030752;
-        Fri, 5 Mar 2021 08:04:24 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06fra.de.ibm.com with ESMTP id 3713s9stma-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 08:04:24 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12584LAE53346648
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 5 Mar 2021 08:04:21 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A467442047;
-        Fri,  5 Mar 2021 08:04:21 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5902D42041;
-        Fri,  5 Mar 2021 08:04:21 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.58.197])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  5 Mar 2021 08:04:21 +0000 (GMT)
-Subject: Re: [PATCH] powerpc/pseries: export LPAR security flavor in lparcfg
-To:     Michael Ellerman <mpe@ellerman.id.au>, benh@kernel.crashing.org,
-        paulus@samba.org, linuxppc-dev@lists.ozlabs.org
-Cc:     nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        Fri, 5 Mar 2021 03:06:47 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0082BC061756
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 00:06:46 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id b8so992401oti.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 00:06:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=6Ntm9TYj9xnK5FJwNfSHccWZk0cH/kRpY9uFJXEGdp4=;
+        b=JtDs5SGsyGwpKyZGB+UWCFD0bUCHtF++4j4LEkMR3zxnUbR7upuo3bGIoFiSGBtExy
+         Xlu/idUZ+1LErYPG3Cd+Eej2W0DQW2t7bP3RcQmpj9eZu4zrngwcstsiZFWkh71eDLt/
+         +nuDyIl5YfMHCEMynjwMtQeeO6PCpHLId8kJOUlmRAn8t86VTxSa7bVNI5eCWjXFbzhI
+         KCpyR8GReEwx6f8/TqrakkXvX+xSDklxWlzkQs7H9jr7uriW6UvyRmVeN1EPjJMszwh4
+         sar5jzloP5Iz83AbJ/YuFjSfDDuDnnZOE9T5EQ1HK2xhxG5tmJUpTCiIjgvl02WDu9W+
+         adnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=6Ntm9TYj9xnK5FJwNfSHccWZk0cH/kRpY9uFJXEGdp4=;
+        b=eHmGIYZc+/PO69dfq8kBNdvXKh1cB9cf9yVvWw7eE5FCzAy/2FGZJNXDYV95AAi+sn
+         g/8SK7oPTFXz07mYXFPL2PQAJfbPFjjN3t4RsxK9d6+Z/+n42YUzpnF0S3fH8j4t8hAS
+         EIXZMl7kEV6tEAeMDg9cssN92Dpadp1ZcQ/oHUT9puR244A5tLhUIGIykfz8JNZ/r/Dj
+         xzTO2dZhFmn06blyezNln6Mzt5zR8FTPSTNzzWSgyIenvvYH63+3PTZAvcRKupGWEoQX
+         IQ+r+ibGmZ3hvUvyaT5X8PCjm3R8Misfpdgp4cEIZWQn0SFBGvhRAglPo2mPfQETYAw4
+         lYow==
+X-Gm-Message-State: AOAM533mDegagH+d6Tei3rDCZGjc+6Be21dQ7tfcGEhuVpBaCOVeNb4q
+        de3KAicRpk2Ejm1dApCBrfLZrOZQUOOCNA==
+X-Google-Smtp-Source: ABdhPJxThJ5wrHrPS0uUauUNUFu56eKAS9O2j6jzhAW+ts6AM6FgX1hw/FEjfEL4rW3W5UQs8HgcbA==
+X-Received: by 2002:a9d:701e:: with SMTP id k30mr6969214otj.157.1614931606122;
+        Fri, 05 Mar 2021 00:06:46 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id d21sm376885oic.54.2021.03.05.00.06.44
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Fri, 05 Mar 2021 00:06:45 -0800 (PST)
+Date:   Fri, 5 Mar 2021 00:06:31 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Shakeel Butt <shakeelb@google.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-References: <20210304114240.54112-1-ldufour@linux.ibm.com>
- <871rcuruee.fsf@mpe.ellerman.id.au>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <2c67c119-c1ec-b079-da54-0bf2f316c734@linux.ibm.com>
-Date:   Fri, 5 Mar 2021 09:04:20 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
+Subject: Re: [PATCH v3] memcg: charge before adding to swapcache on swapin
+In-Reply-To: <20210304014229.521351-1-shakeelb@google.com>
+Message-ID: <alpine.LSU.2.11.2103042248590.18572@eggly.anvils>
+References: <20210304014229.521351-1-shakeelb@google.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-In-Reply-To: <871rcuruee.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-05_04:2021-03-03,2021-03-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=999 bulkscore=0 priorityscore=1501 mlxscore=0
- clxscore=1015 phishscore=0 malwarescore=0 spamscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103050038
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 05/03/2021 à 07:23, Michael Ellerman a écrit :
-> Laurent Dufour <ldufour@linux.ibm.com> writes:
->> This is helpful to read the security flavor from inside the LPAR.
+On Wed, 3 Mar 2021, Shakeel Butt wrote:
+
+> Currently the kernel adds the page, allocated for swapin, to the
+> swapcache before charging the page. This is fine but now we want a
+> per-memcg swapcache stat which is essential for folks who wants to
+> transparently migrate from cgroup v1's memsw to cgroup v2's memory and
+> swap counters. In addition charging a page before exposing it to other
+> parts of the kernel is a step in the right direction.
 > 
-> We already have /sys/kernel/debug/powerpc/security_features.
+> To correctly maintain the per-memcg swapcache stat, this patch has
+> adopted to charge the page before adding it to swapcache. One
+> challenge in this option is the failure case of add_to_swap_cache() on
+> which we need to undo the mem_cgroup_charge(). Specifically undoing
+> mem_cgroup_uncharge_swap() is not simple.
 > 
-> Is that not sufficient?
-
-Not really, it only reports that security mitigation are on or off but not the 
-level set through the ASMI menu. Furthermore, reporting it through
-/proc/powerpc/lparcfg allows an easy processing by the lparstat command (see below).
-
+> To resolve the issue, this patch introduces transaction like interface
+> to charge a page for swapin. The function mem_cgroup_charge_swapin_page()
+> initiates the charging of the page and mem_cgroup_finish_swapin_page()
+> completes the charging process. So, the kernel starts the charging
+> process of the page for swapin with mem_cgroup_charge_swapin_page(),
+> adds the page to the swapcache and on success completes the charging
+> process with mem_cgroup_finish_swapin_page().
 > 
->> Export it like this in /proc/powerpc/lparcfg:
->>
->> $ grep security_flavor /proc/powerpc/lparcfg
->> security_flavor=1
->>
->> Value means:
->> 0 Speculative execution fully enabled
->> 1 Speculative execution controls to mitigate user-to-kernel attacks
->> 2 Speculative execution controls to mitigate user-to-kernel and
->>    user-to-user side-channel attacks
-> 
-> Those strings come from the FSP help, but we have no guarantee it won't
-> mean something different in future.
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 
-I think this is nailed down, those strings came from:
-https://www.ibm.com/support/pages/node/715841
+Quite apart from helping with the stat you want, what you've ended
+up with here is a nice cleanup in several different ways (and I'm
+glad Johannes talked you out of __GFP_NOFAIL: much better like this).
+I'll say
 
-Where it is written (regarding AIX):
+Acked-by: Hugh Dickins <hughd@google.com>
 
-On an LPAR, one can use lparstat -x to display the current mitigation mode:
-0 = Speculative execution fully enabled
-1 = Speculative execution controls to mitigate user-to-kernel side-channel attacks
-2 = Speculative execution controls to mitigate user-to-kernel and user-to-user 
-side-channel attacks
+but I am quite unhappy with the name mem_cgroup_finish_swapin_page():
+it doesn't finish the swapin, it doesn't finish the page, and I'm
+not persuaded by your paragraph above that there's any "transaction"
+here (if there were, I'd suggest "commit" instead of "finish"'; and
+I'd get worried by the css_put before it's called - but no, that's
+fine, it's independent).
 
-We have been requested to provide almost the same, which I proposed in 
-powerpc-utils:
-https://groups.google.com/g/powerpc-utils-devel/c/NaKXvdyl_UI/m/wa2stpIDAQAJ
+How about complementing mem_cgroup_charge_swapin_page() with
+mem_cgroup_uncharge_swapin_swap()?  I think that describes well
+what it does, at least in the do_memsw_account() case, and I hope
+we can overlook that it does nothing at all in the other case.
 
-Thanks,
-Laurent.
+And it really doesn't need a page argument: both places it's called
+have just allocated an order-0 page, there's no chance of a THP here;
+but you might have some idea of future expansion, or matching
+put_swap_page() - I won't object if you prefer to pass in the page.
+
+But more interesting, though off-topic, comments on it below...
+
+> +/*
+> + * mem_cgroup_finish_swapin_page - complete the swapin page charge transaction
+> + * @page: page charged for swapin
+> + * @entry: swap entry for which the page is charged
+> + *
+> + * This function completes the transaction of charging the page allocated for
+> + * swapin.
+> + */
+> +void mem_cgroup_finish_swapin_page(struct page *page, swp_entry_t entry)
+> +{
+>  	/*
+>  	 * Cgroup1's unified memory+swap counter has been charged with the
+>  	 * new swapcache page, finish the transfer by uncharging the swap
+> @@ -6760,20 +6796,14 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+>  	 * correspond 1:1 to page and swap slot lifetimes: we charge the
+>  	 * page to memory here, and uncharge swap when the slot is freed.
+>  	 */
+> -	if (do_memsw_account() && PageSwapCache(page)) {
+> -		swp_entry_t entry = { .val = page_private(page) };
+> +	if (!mem_cgroup_disabled() && do_memsw_account()) {
+
+I understand why you put that !mem_cgroup_disabled() check in there,
+but I have a series of observations on that.
+
+First I was going to say that it would be better left to
+mem_cgroup_uncharge_swap() itself.
+
+Then I was going to say that I think it's already covered here
+by the cgroup_memory_noswap check inside do_memsw_account().
+
+Then, going back to mem_cgroup_uncharge_swap(), I realized that 5.8's
+2d1c498072de ("mm: memcontrol: make swap tracking an integral part of
+memory control") removed the do_swap_account or cgroup_memory_noswap
+checks from mem_cgroup_uncharge_swap() and swap_cgroup_swapon() and
+swap_cgroup_swapoff() - so since then we have been allocating totally
+unnecessary swap_cgroup arrays when mem_cgroup_disabled() (and
+mem_cgroup_uncharge_swap() has worked by reading the zalloced array).
+
+I think, or am I confused? If I'm right on that, one of us ought to
+send another patch putting back, either cgroup_memory_noswap checks
+or mem_cgroup_disabled() checks in those three places - I suspect the
+static key mem_cgroup_disabled() is preferable, but I'm getting dozy.
+
+Whatever we do with that - and it's really not any business for this
+patch - I think you can drop the mem_cgroup_disabled() check from
+mem_cgroup_uncharge_swapin_swap().
+
+>  		/*
+>  		 * The swap entry might not get freed for a long time,
+>  		 * let's not wait for it.  The page already received a
+>  		 * memory+swap charge, drop the swap entry duplicate.
+>  		 */
+> -		mem_cgroup_uncharge_swap(entry, nr_pages);
+> +		mem_cgroup_uncharge_swap(entry, thp_nr_pages(page));
+>  	}
+> -
+> -out_put:
+> -	css_put(&memcg->css);
+> -out:
+> -	return ret;
+>  }
