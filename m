@@ -2,110 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9716032EC7C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D08932EC8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:53:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhCENuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:50:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbhCENuR (ORCPT
+        id S230486AbhCENwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:52:30 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:61423 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230399AbhCENwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:50:17 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0CF5C061574;
-        Fri,  5 Mar 2021 05:50:16 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id m22so3720283lfg.5;
-        Fri, 05 Mar 2021 05:50:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=U3/LzMi4cTeDMrdSeL631gD2B3Wxm74dgKy4oke52fE=;
-        b=BOgHL0AfORkOjoLV8he8vecZq9ujYLtvaINn6F9xely/VjWyMFPbb/gZjTU8JlNxtW
-         RFsoPb2F6TpOUiarg4VoF9HFrh/XiaESVcYFhqI2h0vXthjrviBU0gAWNWD8/mB/nOob
-         ERUVYzbZKgtiFvIkiECoDd5nL5Z0HPQ6tI9zNFH8Bg5L4Wc9bL5RisYH5n+yFZPEBjR6
-         KF7egtTnnk0MD6IYiUmbweM05mRIte9rYHe3zuHQyslxpCVm/8xNgCUdwaGJzuD3IncU
-         bL2+8U1ccK5c19KbBGClLbkxpyJAPohEoar7WYE1d2r+gtFe8QYtXN4TrYp8XV88/t68
-         NmLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=U3/LzMi4cTeDMrdSeL631gD2B3Wxm74dgKy4oke52fE=;
-        b=f6mHWhSJQM02haXE0AP968JARunpU3TpX4Q2CUZGEfrQxlcPRtwPEWywqTretLgROD
-         M7zRjGFDy3b9hnA8JO5xqDola3UYuYjCOiDl7YsSwYAnjfrg8T1hoRHC3Xn9uuwdg0YE
-         qYAKDzev+5E7LBW+4E24Acdfn60hY1jgmROdP3GZivJh9p5/+pMR/BTc+zY6ygrmm9ya
-         wOFA+K9uk0AQvIbsriMVP+VsIdVApKD238Il0J2wcBgvs4Qj0NXN9g1F2OmT7djlepId
-         5JBaXuxJxq9vDvycOqCJAEXdWA6yz1wXr5FJgqNF9xzSRFsK2IRhtCmRYpx2QTM2F4cV
-         PvNQ==
-X-Gm-Message-State: AOAM530nqrRj4oLHhfBBN8zLQ+Fm/8XbzaW5b950N3df2zPNtMouJnwu
-        iaVHsCKMPg66YLX/cgJ3JW7UZSqpXNs=
-X-Google-Smtp-Source: ABdhPJzR0j7vWsubcx5lrf2dXUXNtSLHcXub9dikmJVfNwk3YZaZX1Mw8MmtnG65X34gpNwi3fzJfA==
-X-Received: by 2002:a05:6512:224c:: with SMTP id i12mr5921725lfu.520.1614952215063;
-        Fri, 05 Mar 2021 05:50:15 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id y16sm319148ljk.34.2021.03.05.05.50.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 05:50:14 -0800 (PST)
-Subject: Re: [PATCH v1 4/5] cpuidle: Add Tegra194 cpuidle driver
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        daniel.lezcano@linaro.org, robh+dt@kernel.org
-Cc:     ksitaraman@nvidia.com, sanjayc@nvidia.com,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org
-References: <1614838092-30398-1-git-send-email-skomatineni@nvidia.com>
- <1614838092-30398-5-git-send-email-skomatineni@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <7c21e0cc-d266-87db-b92d-663561924537@gmail.com>
-Date:   Fri, 5 Mar 2021 16:50:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Fri, 5 Mar 2021 08:52:03 -0500
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 125DpRxZ009590;
+        Fri, 5 Mar 2021 22:51:27 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 125DpRxZ009590
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614952288;
+        bh=gorpGuAhtEpGkHjUmP5bgqI3IOdhshyc5dAFbcNCONc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BnZKt7MUMSs13+J/je9z+lkmhYhSyhyFPKASu9/bT58+zQ+NodOft1gJLwBl2bJJf
+         nhHpLRF+PtvVCJDsv2i7temB/Pqm7zr7/8yfQKeXWBoiB4h3MWIqR8XHrjYQoDGZg/
+         bRANLS/yp5IaiLr9Vm4Z2WjTlHdqzdAVYS+xM5bCwGB3Sw5wbM5zwWYtGt/hg1g1y0
+         m9FaMaS+fAB9C861fs4SAH/NBJJtWmEqsV8OgkSo7eJjp3FLJviNzP7sMyuCFEDUEw
+         E1Vob0jU+CpBCbIM45sy4EJNi7fCXNeoNs7GevfXZCW6/0E2ARcqAxmQ795WYFxQEB
+         txVSXcsWzPPyA==
+X-Nifty-SrcIP: [209.85.210.175]
+Received: by mail-pf1-f175.google.com with SMTP id w18so2101604pfu.9;
+        Fri, 05 Mar 2021 05:51:27 -0800 (PST)
+X-Gm-Message-State: AOAM530BfW4dE6ZCKdF5rcMS/Y8gdOqqt22uDJ3ZddRo8p+4MpbqYDs5
+        VJkBNtmtaEWDOauciLDr+st2s0MXpSSulzwnpA4=
+X-Google-Smtp-Source: ABdhPJw0v5OmNJJRTYxc0T7EIOOpLecdIIY6KABEFw40ODJyJe8gKx+THVoP1YARGX6sLNFQZ0SOri1zyjZIMC9DBUQ=
+X-Received: by 2002:a63:dd49:: with SMTP id g9mr8934181pgj.175.1614952286939;
+ Fri, 05 Mar 2021 05:51:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1614838092-30398-5-git-send-email-skomatineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAK7LNAQ_CuUOH7mY8Rf3kxLxXKm0oxBsK=XgAS9ScMaW-55OuQ@mail.gmail.com>
+ <20210305092707.740539-1-linux@rasmusvillemoes.dk>
+In-Reply-To: <20210305092707.740539-1-linux@rasmusvillemoes.dk>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 5 Mar 2021 22:50:49 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATD3M4YCnWB=70cUaV+GsCX0MibtKof6yCYw_N2XotLPA@mail.gmail.com>
+Message-ID: <CAK7LNATD3M4YCnWB=70cUaV+GsCX0MibtKof6yCYw_N2XotLPA@mail.gmail.com>
+Subject: Re: [PATCH v2] kbuild: add CONFIG_VMLINUX_MAP expert option
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-04.03.2021 09:08, Sowjanya Komatineni пишет:
-...
-> +static int __init tegra194_cpuidle_probe(struct platform_device *pdev)
-> +{
-> +	struct cpumask *cpumask;
-> +	int cpu, ret;
+On Fri, Mar 5, 2021 at 6:27 PM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> It can be quite useful to have ld emit a link map file, in order to
+> debug or verify that special sections end up where they are supposed
+> to, and to see what LD_DEAD_CODE_DATA_ELIMINATION manages to get rid
+> of.
+>
+> The only reason I'm not just adding this unconditionally is that the
+> .map file can be rather large (several MB), and that's a waste of
+> space when one isn't interested in these things. Also make it depend
+> on CONFIG_EXPERT.
+>
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> ---
+
+Applied to linux-kbuild.
+Thanks.
+
+
+
+
+>  .gitignore              |  1 +
+>  Documentation/dontdiff  |  1 +
+>  lib/Kconfig.debug       | 10 ++++++++++
+>  scripts/link-vmlinux.sh |  8 ++++++++
+>  4 files changed, 20 insertions(+)
+>
+> diff --git a/.gitignore b/.gitignore
+> index 3af66272d6f1..3adea59847ce 100644
+> --- a/.gitignore
+> +++ b/.gitignore
+> @@ -59,6 +59,7 @@ modules.order
+>  /linux
+>  /vmlinux
+>  /vmlinux.32
+> +/vmlinux.map
+>  /vmlinux.symvers
+>  /vmlinux-gdb.py
+>  /vmlinuz
+> diff --git a/Documentation/dontdiff b/Documentation/dontdiff
+> index e361fc95ca29..ac42ad8d430d 100644
+> --- a/Documentation/dontdiff
+> +++ b/Documentation/dontdiff
+> @@ -252,6 +252,7 @@ vmlinux-*
+>  vmlinux.aout
+>  vmlinux.bin.all
+>  vmlinux.lds
+> +vmlinux.map
+>  vmlinux.symvers
+>  vmlinuz
+>  voffset.h
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 5ea0c1773b0a..663c1cd5018c 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -412,6 +412,16 @@ config VMLINUX_VALIDATION
+>         depends on STACK_VALIDATION && DEBUG_ENTRY && !PARAVIRT
+>         default y
+>
+> +config VMLINUX_MAP
+> +       bool "Generate vmlinux.map file when linking"
+> +       depends on EXPERT
+> +       help
+> +         Selecting this option will pass "-Map=vmlinux.map" to ld
+> +         when linking vmlinux. That file can be useful for verifying
+> +         and debugging magic section games, and for seeing which
+> +         pieces of code get eliminated with
+> +         CONFIG_LD_DEAD_CODE_DATA_ELIMINATION.
 > +
-> +	if (!check_mce_version()) {
-> +		pr_err("cpuidle: incompatible MCE version, cannot register driver\n");
-
-Should be dev_err() everywhere.
-
-> +		return -ENODEV;
-> +	}
+>  config DEBUG_FORCE_WEAK_PER_CPU
+>         bool "Force weak per-cpu definitions"
+>         depends on DEBUG_KERNEL
+> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> index 3b261b0f74f0..855fd4e6f03e 100755
+> --- a/scripts/link-vmlinux.sh
+> +++ b/scripts/link-vmlinux.sh
+> @@ -155,6 +155,7 @@ vmlinux_link()
+>         local output=${1}
+>         local objects
+>         local strip_debug
+> +       local map_option
+>
+>         info LD ${output}
+>
+> @@ -166,6 +167,10 @@ vmlinux_link()
+>                 strip_debug=-Wl,--strip-debug
+>         fi
+>
+> +       if [ -n "${CONFIG_VMLINUX_MAP}" ]; then
+> +               map_option="-Map=${output}.map"
+> +       fi
 > +
-> +	tsc_per_usec = arch_timer_get_cntfrq() / 1000000;
-> +
-> +	cpumask = devm_kzalloc(&pdev->dev, cpumask_size(), GFP_KERNEL);
-> +	for_each_online_cpu(cpu)
-> +		cpumask_set_cpu(cpu, cpumask);
+>         if [ "${SRCARCH}" != "um" ]; then
+>                 if [ -n "${CONFIG_LTO_CLANG}" ]; then
+>                         # Use vmlinux.o instead of performing the slow LTO
+> @@ -187,6 +192,7 @@ vmlinux_link()
+>                 ${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux}      \
+>                         ${strip_debug#-Wl,}                     \
+>                         -o ${output}                            \
+> +                       ${map_option}                           \
+>                         -T ${lds} ${objects}
+>         else
+>                 objects="-Wl,--whole-archive                    \
+> @@ -200,6 +206,7 @@ vmlinux_link()
+>                 ${CC} ${CFLAGS_vmlinux}                         \
+>                         ${strip_debug}                          \
+>                         -o ${output}                            \
+> +                       ${map_option:+-Wl,${map_option}}        \
+>                         -Wl,-T,${lds}                           \
+>                         ${objects}                              \
+>                         -lutil -lrt -lpthread
+> @@ -303,6 +310,7 @@ cleanup()
+>         rm -f .tmp_vmlinux*
+>         rm -f System.map
+>         rm -f vmlinux
+> +       rm -f vmlinux.map
+>         rm -f vmlinux.o
+>  }
+>
+> --
+> 2.29.2
+>
 
-cpumask_copy(..)?
 
-> +	t194_cpu_idle_driver.cpumask = cpumask;
-
-Depending on 'online' mask instead of the 'present' mask looks odd. Is
-this really intended to be so?
-
-...
-> +static int tegra194_cpuidle_remove(struct platform_device *pdev)
-> +{
-> +	unregister_pm_notifier(&suspend_notifier);
-> +	cpuhp_remove_state(hp_state);
-> +	cpuidle_unregister(&t194_cpu_idle_driver);
-> +	kfree(t194_cpu_idle_driver.cpumask);
-
-kfree() of a managed resource.
+--
+Best Regards
+Masahiro Yamada
