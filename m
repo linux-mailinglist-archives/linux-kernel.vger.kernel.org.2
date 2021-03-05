@@ -2,122 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC35332E046
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BBD32E048
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:46:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbhCEDpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 22:45:07 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:11369 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229599AbhCEDpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 22:45:06 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614915906; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=1XgWcuO8RRXhkwmZaJ1yekuLrhAw4v2umUDxFObNRXA=;
- b=drbHpk5I+CHlyFTTv0smePbFP34evQVKF6gWtN2GDvOU/Np5nEbXxBnqO8UEXLaBiNQOcSpM
- HCDE6F2vaUJdN/iWZO6NDWCEZH1zIR6rMxvPDfV0ndjngKt6Xu0XdU9qy3be1YEfRZnU6rMY
- BU8qV6r5OFvfsLpj4omP2aMtkcQ=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 6041a939cb774affa936063e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Mar 2021 03:44:57
- GMT
-Sender: subashab=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BD744C433ED; Fri,  5 Mar 2021 03:44:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: subashab)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E129BC433C6;
-        Fri,  5 Mar 2021 03:44:54 +0000 (UTC)
+        id S229701AbhCEDqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 22:46:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhCEDqD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 22:46:03 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58356C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 19:46:03 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id v9so1308073lfa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 19:46:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=ArP2QxXhXsHO9IYd6aC5W/1+S3Xa68nFulFY4QAnoPg=;
+        b=QZP9EkYpO17zYsV+TvkIUeoVUSJyZUFFb1m5jW2oabK0SXMjeevcPfXDmM5XIY9tDL
+         EvPjAmXmExNYa33iA332ymuaMJXoFzoxskHi0In3XeSGUKAMJLBVUNqgDjarmbEAyetM
+         Kt3PrmCZ0np4JIFA0NXYspvBy1rNWRgQiN56s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=ArP2QxXhXsHO9IYd6aC5W/1+S3Xa68nFulFY4QAnoPg=;
+        b=nonV2YF2wtGimXe0nI+28g3LRvNiNZSLCxK36G9z92PVFx3WTgVrnbVR7zg2ja/OD/
+         LdfChDqG39NRyrZSia4GYP4OejwzQTdTPBLPjtGfm0XXUk5E/CAsPTw378l5gD45z8xQ
+         kNtdWbfkOYJugFg70ZsVgr3p3xkQU6h2xLDqGBvGgIWpaJyy5YH5CYCUmj2PmaxIWYpt
+         C3iIifaXVhgMgaU0k+ea1t2yMPvAWsABTmOF9FFlOC/AVTlbMbXJ8Dse7p+g6+jXO8mu
+         Y1KwV6btOKaCh7WCH02LWSNroEMTtRF7/BhO61+AqOey8MhRfXrFwbQHoDMtH8utiCJC
+         f+rg==
+X-Gm-Message-State: AOAM5317lJSk7qufD0M/16q45IivyKMSKZodRxTpM2VXyyh5PYHzGDxC
+        GifBEa3abw2hVhuCa11RaWfLpi6kO+7Npg==
+X-Google-Smtp-Source: ABdhPJz6wd8WkcaKnB+2WnrLro7gwWlzZVvyPgWbmWZCiPaz6nWbq+HiDHr0HSfN5o/mI/NteCRD9g==
+X-Received: by 2002:a19:8c13:: with SMTP id o19mr4008296lfd.225.1614915961477;
+        Thu, 04 Mar 2021 19:46:01 -0800 (PST)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id h10sm143364ljb.101.2021.03.04.19.46.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 19:46:01 -0800 (PST)
+Received: by mail-lf1-f49.google.com with SMTP id n16so1277004lfb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 19:46:00 -0800 (PST)
+X-Received: by 2002:ac2:58fc:: with SMTP id v28mr4015090lfo.201.1614915960446;
+ Thu, 04 Mar 2021 19:46:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 04 Mar 2021 20:44:54 -0700
-From:   subashab@codeaurora.org
-To:     Alex Elder <elder@linaro.org>
-Cc:     stranche@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        sharathv@codeaurora.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 0/6] net: qualcomm: rmnet: stop using C
- bit-fields
-In-Reply-To: <20210304223431.15045-1-elder@linaro.org>
-References: <20210304223431.15045-1-elder@linaro.org>
-Message-ID: <3a4a4c26494c12f9961c50e2d4b83c99@codeaurora.org>
-X-Sender: subashab@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 4 Mar 2021 19:45:44 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgQWHDUFjzmAazg8WN0BR7nOyHmduj-MV1GWWDUu+UKCQ@mail.gmail.com>
+Message-ID: <CAHk-=wgQWHDUFjzmAazg8WN0BR7nOyHmduj-MV1GWWDUu+UKCQ@mail.gmail.com>
+Subject: "struct perf_sample_data" alignment
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-04 15:34, Alex Elder wrote:
-> This series converts data structures defined in <linux/if_rmnet.h>
-> so they use integral field values with bitfield masks rather than
-> rely on C bit-fields.
-> 
-> I first proposed doing something like this long ago when my confusion
-> about this code (and the memory layout it was supposed to represent)
-> led me to believe it was erroneous:
->   
-> https://lore.kernel.org/netdev/20190520135354.18628-1-elder@linaro.org/
-> 
-> It came up again recently, when Sharath Chandra Vurukala proposed
-> a new structure in "if_rmnet.h", again using C bit-fields.  I asked
-> whether the new structure could use field masks, and Jakub requested
-> that this be done.
-> 
-> https://lore.kernel.org/netdev/1613079324-20166-1-git-send-email-sharathv@
-> codeaurora.org/
-> I volunteered to convert the existing RMNet code to use bitfield
-> masks, and that is what I'm doing here.
-> 
-> The first three patches are more or less preparation work for the
-> last three.
->   - The first marks two fields in an existing structure explicitly
->     big endian.  They are unused by current code, so this should
->     have no impact.
->   - The second simplifies some code that computes the value of a
->     field in a header in a somewhat obfuscated way.
->   - The third eliminates some trivial accessor macros, open-coding
->     them instead.  I believe the accessors actually do more harm
->     than good.
->   - The last three convert the structures defined in "if_rmnet.h"
->     so they are defined only with integral fields, each having
->     well-defined byte order.  Where sub-fields are needed, field
->     masks are defined so they can be encoded or extracted using
->     functions like be16_get_bits() or u8_encode_bits(), defined
->     in <linux/bitfield.h>.  The three structures converted are,
->     in order:  rmnet_map_header, rmnet_map_dl_csum_trailer, and
->     rmnet_map_ul_csum_header.
-> 
-> 					-Alex
-> 
-> Alex Elder (6):
->   net: qualcomm: rmnet: mark trailer field endianness
->   net: qualcomm: rmnet: simplify some byte order logic
->   net: qualcomm: rmnet: kill RMNET_MAP_GET_*() accessor macros
->   net: qualcomm: rmnet: use field masks instead of C bit-fields
->   net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum 
-> trailer
->   net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum header
-> 
->  .../ethernet/qualcomm/rmnet/rmnet_handlers.c  | 11 ++--
->  .../net/ethernet/qualcomm/rmnet/rmnet_map.h   | 12 ----
->  .../qualcomm/rmnet/rmnet_map_command.c        | 11 +++-
->  .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 60 ++++++++---------
->  include/linux/if_rmnet.h                      | 65 +++++++++----------
->  5 files changed, 70 insertions(+), 89 deletions(-)
+Sp there's a note about new warnings in 5.12-rc1 that I looked at, and
+many of the warnings made me go "Whaaa?". They were all of the type
 
-Can you share what all tests have been done with these patches
+   warning: 'perf_event_aux_event' uses dynamic stack allocation
+
+and then when I go look, I see nothing that looks like a dynamic stack
+allocation at all.
+
+But you know what? The warning is kind of misleading, but at the same
+time it's true in a sense. The problem is that the function (and a lot
+of other functions) has a local variable like this:
+
+        struct perf_sample_data sample;
+
+and the definition of that "struct perf_sample_data" has
+____cacheline_aligned at the end.
+
+And guess what? That means that now the compiler has actually to play
+games with manually aligning the frame of that function, since the
+natural stack alignment is *not* a full cacheline aligned thing. So
+it's kind of true: the frame allocation is mnot a simple static thing,
+it's a nasty complex thing that wastes memory and time.
+
+That ____cacheline_aligned goes back many years, this is not new, it
+seems to come from back in 2014: commit 2565711fb7d7 ("perf: Improve
+the perf_sample_data struct layout").
+
+But it really seems entirely and utterly bogus. That cacheline
+alignment makes things *worse*, when the variables are on the local
+stack. The local stack is already going to be dirty and in the cache,
+and aligning those things isn't going to - and I quote from the code
+in that commend in that commit - "minimize the cachelines touched".
+
+Quite the reverse. It's just going to make the stack frame use *more*
+memory, and make any cacheline usage _worse_.
+
+Maybe there are static (non-automatic) cases of that "struct
+perf_sample_data" where the alignment makes sense, but it does not
+seem to make sense on the _type_. It should be on those individual
+variables, not on every perf_sample_data.
+
+I didn't make any real effort to analyze this, but from a few quick
+greps, it looks like every single case is an automatic variable on the
+stack, and that the forced alignment is actually a bad thing every
+single time. It never ever generates better cache use, but it _does_
+generate worse code, and bigger stack frames.
+
+Hmm? What am I missing?
+
+                 Linus
