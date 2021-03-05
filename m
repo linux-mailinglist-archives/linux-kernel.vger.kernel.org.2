@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B651932E5EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:14:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B9F32E5F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbhCEKOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:14:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhCEKN7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:13:59 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0481C061574;
-        Fri,  5 Mar 2021 02:13:58 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id bj7so1689930pjb.2;
-        Fri, 05 Mar 2021 02:13:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=wSrhAkuioRfi2byGRmhfZaxog1DTberVqOCug0qyBSM=;
-        b=etoRr5iN4X9QoGJ6fZX7ml2TdcptAVhelRK0OWZ14r95G+svszfR8AhWYWp1X5YOsZ
-         RZwT3GP2ckGE1U54l2SdqBariVkhq0R6QX6XSETBJaFsSh/4uh/pGckEkq3p2s6yIWly
-         ofgaA40/IQs815NzpdaMqpPNFs8FfGpKgBMyPCipXi1dhe775NuUWnPrFMbdUJd8zSFA
-         Jht9TVeh5LooGGjEBml54BMw1iamXCMrNcZuf9PEHIbzq+0zTqhr9x+fAKqFpLKQt/K1
-         f/tzd+kxbH2XAoFbPDRljGzlkGhrQ1tjSvh7k9MlbkSJd5UWaejxXKe3asVZGkcRLZQp
-         C8jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=wSrhAkuioRfi2byGRmhfZaxog1DTberVqOCug0qyBSM=;
-        b=ubfp7QWpa1/6UCWK+q+iDp9HDf66dlGCMpIov4RAcEMwHJ5Y+1blYXtJmShRyMnMs8
-         5O/9vO/u1AakBtenk7eVUfEqqOoE6z6psU+TAUfkh6CvKOT9siiGPNo3VlOMvIJ0YJtI
-         Y4WKza7ZAtwt1X+kSnQciywIakS+n17f/Cp+Jhw1YH9VWMiX+PWX2UEMa3oCe346eUS5
-         OoC3NttS3TJvMIY/vQfgAVMTpRV5aL5NxEcrG7EVr8kZBgbGu58+numLRLmrCHlx7pYQ
-         TvLaGPEJRiLTDYR7qQHHwn5IEOC8TyEs7pGmPMV6hwVX4KV7WF9G8zG/QydG7Iza8WK5
-         y7lw==
-X-Gm-Message-State: AOAM531oWe8p42hbZUsTyxwEcvIBzeS9zNoWKuVOL7hlnk7c5DWTukgO
-        lKVIkoKK7NmZFBPSHNGetuc=
-X-Google-Smtp-Source: ABdhPJw3jtSUflSP8MnmdGWv1kZjOAqwQMsrfnkxygxl4N1ofx/erzRnCiNEfneK8Ld9qgObQ88ENw==
-X-Received: by 2002:a17:902:6bca:b029:e2:c5d6:973e with SMTP id m10-20020a1709026bcab02900e2c5d6973emr8136154plt.40.1614939238498;
-        Fri, 05 Mar 2021 02:13:58 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.129])
-        by smtp.gmail.com with ESMTPSA id y9sm2074675pgc.9.2021.03.05.02.13.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 02:13:57 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     kgraul@linux.ibm.com, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] net: smc: fix error return code of smc_diag_dump_proto()
-Date:   Fri,  5 Mar 2021 02:13:51 -0800
-Message-Id: <20210305101351.14683-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S229611AbhCEKPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:15:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49634 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229642AbhCEKPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 05:15:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F7BE64F5B;
+        Fri,  5 Mar 2021 10:15:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614939345;
+        bh=LQO0GYleOioZ8BoxpVtzneVCI9JUoMq/b2rhTDq/f0c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TAxAeWMG8J49MDuVosnyV+wL1iKaJtSfTAM+s7AVBVcLjyTZxATOrpnKgPhINvB/c
+         ElLbCe6j/LsKK1z7FAcI+jFCOR0WzgBOZbzL95CXBXWUPzlxloKmVBGmytqNk1RI7N
+         Gn7bUR21uLlyStUYc0wingRCE2wR1IJYTLWd9bnI=
+Date:   Fri, 5 Mar 2021 11:15:43 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Samuel Zou <zou_wei@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        lkft-triage@lists.linaro.org, patches@kernelci.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/657] 5.10.20-rc4 review
+Message-ID: <YEIEz0lHjzRLCkGl@kroah.com>
+References: <1eca83a8a33c44f99ed11d3b423505df@HQMAIL107.nvidia.com>
+ <da58faaa-e0f4-c0f4-d68c-7c1c09415b58@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <da58faaa-e0f4-c0f4-d68c-7c1c09415b58@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the list of head is empty, no error return code of
-smc_diag_dump_proto() is assigned.
-To fix this bug, rc is assigned with -ENOENT as error return code.
+On Fri, Mar 05, 2021 at 05:07:42PM +0800, Samuel Zou wrote:
+> On Tue, 02 Mar 2021 20:28:49 +0100, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.20 release.
+> > There are 657 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.20-rc4.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> Tested on arm64 and x86 for 5.10.20,
+> 
+> Kernel repo:
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> Branch: linux-5.10.y
+> Version: 5.10.20
+> Commit: 83be32b6c9e55d5b04181fc9788591d5611d4a96
+> Compiler: gcc version 7.3.0 (GCC)
+> 
+> 
+> arm64 (No kernel failures)
+> --------------------------------------------------------------------
+> Testcase Result Summary:
+> total_num: 4716
+> succeed_num: 4713
+> failed_num: 3
+> timeout_num: 0
+> 
+> x86 (No kernel failures)
+> --------------------------------------------------------------------
+> Testcase Result Summary:
+> total_num: 4716
+> succeed_num: 4713
+> failed_num: 3
+> timeout_num: 0
+> 
+> Tested-by: Hulk Robot <hulkci@huawei.com>
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- net/smc/smc_diag.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Thanks for testing and letting me know.
 
-diff --git a/net/smc/smc_diag.c b/net/smc/smc_diag.c
-index c952986a6aca..a90889482842 100644
---- a/net/smc/smc_diag.c
-+++ b/net/smc/smc_diag.c
-@@ -201,8 +201,10 @@ static int smc_diag_dump_proto(struct proto *prot, struct sk_buff *skb,
- 
- 	read_lock(&prot->h.smc_hash->lock);
- 	head = &prot->h.smc_hash->ht;
--	if (hlist_empty(head))
-+	if (hlist_empty(head)) {
-+		rc = -ENOENT;
- 		goto out;
-+	}
- 
- 	sk_for_each(sk, head) {
- 		if (!net_eq(sock_net(sk), net))
--- 
-2.17.1
-
+greg k-h
