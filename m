@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BD232E7EC
+	by mail.lfdr.de (Postfix) with ESMTP id 97E4B32E7ED
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbhCEMXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:23:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58272 "EHLO mail.kernel.org"
+        id S230087AbhCEMXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:23:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229669AbhCEMXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:23:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68AA964FED;
-        Fri,  5 Mar 2021 12:23:30 +0000 (UTC)
+        id S229604AbhCEMXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:23:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5996F64F23;
+        Fri,  5 Mar 2021 12:23:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947011;
-        bh=zAWYyGYJNc3+5PGuzBJamF3D3UHWFg4X/HGAlrziTdI=;
+        s=korg; t=1614947013;
+        bh=d0jGzkFBimWHNeWNs8Ft2kPeFuTI6L7Um7CfnEdjPVY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0fXJ5bV4B77SaB0V0QBfEgjbHMhckdr1P7YXb2NxtYp8XIJwqo99Bn6koEkOcW+aE
-         s4ruHHsHQG1PtJCDedGShfBDPuppUL52CLhrmjLrx6pVXG6m+Zv57gb2S1bvthRbK5
-         nu5HjIIl9KFVtojZlGvdflBKzmChVuvI5zN32h88=
+        b=k12ARa2qFeSvI4VIWQ9yGHUcjbXLpMdu7ABkyswLMXdXYCmuZtaYqS83+6TKJNyLq
+         vmp1JVHOKsoLBOKk0TEX3FJprNp7wnQkOg9e3+lJMzLJzXOy9Z0+vVeRxnBITsLAPW
+         8uS1YF4J8lip5OmG7utju0MpffPP5bufNO71XRwU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Paasch <cpaasch@apple.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 016/104] mptcp: fix spurious retransmissions
-Date:   Fri,  5 Mar 2021 13:20:21 +0100
-Message-Id: <20210305120903.977847571@linuxfoundation.org>
+        stable@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: [PATCH 5.11 017/104] riscv: Get rid of MAX_EARLY_MAPPING_SIZE
+Date:   Fri,  5 Mar 2021 13:20:22 +0100
+Message-Id: <20210305120904.027044302@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120903.166929741@linuxfoundation.org>
 References: <20210305120903.166929741@linuxfoundation.org>
@@ -41,101 +40,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Alexandre Ghiti <alex@ghiti.fr>
 
-commit 64b9cea7a0afe579dd2682f1f1c04f2e4e72fd25 upstream.
+commit 0f02de4481da684aad6589aed0ea47bd1ab391c9 upstream.
 
-Syzkaller was able to trigger the following splat again:
+At early boot stage, we have a whole PGDIR to map the kernel, so there
+is no need to restrict the early mapping size to 128MB. Removing this
+define also allows us to simplify some compile time logic.
 
-WARNING: CPU: 1 PID: 12512 at net/mptcp/protocol.c:761 mptcp_reset_timer+0x12a/0x160 net/mptcp/protocol.c:761
-Modules linked in:
-CPU: 1 PID: 12512 Comm: kworker/1:6 Not tainted 5.10.0-rc6 #52
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-Workqueue: events mptcp_worker
-RIP: 0010:mptcp_reset_timer+0x12a/0x160 net/mptcp/protocol.c:761
-Code: e8 4b 0c ad ff e8 56 21 88 fe 48 b8 00 00 00 00 00 fc ff df 48 c7 04 03 00 00 00 00 48 83 c4 40 5b 5d 41 5c c3 e8 36 21 88 fe <0f> 0b 41 bc c8 00 00 00 eb 98 e8 e7 b1 af fe e9 30 ff ff ff 48 c7
-RSP: 0018:ffffc900018c7c68 EFLAGS: 00010293
-RAX: ffff888108cb1c80 RBX: 1ffff92000318f8d RCX: ffffffff82ad0307
-RDX: 0000000000000000 RSI: ffffffff82ad036a RDI: 0000000000000007
-RBP: ffff888113e2d000 R08: ffff888108cb1c80 R09: ffffed10227c5ab7
-R10: ffff888113e2d5b7 R11: ffffed10227c5ab6 R12: 0000000000000000
-R13: ffff88801f100000 R14: ffff888113e2d5b0 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff88811b500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd76a874ef8 CR3: 000000001689c005 CR4: 0000000000170ee0
-Call Trace:
- mptcp_worker+0xaa4/0x1560 net/mptcp/protocol.c:2334
- process_one_work+0x8d3/0x1200 kernel/workqueue.c:2272
- worker_thread+0x9c/0x1090 kernel/workqueue.c:2418
- kthread+0x303/0x410 kernel/kthread.c:292
- ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:296
+This fixes large kernel mappings with a size greater than 128MB, as it
+is the case for syzbot kernels whose size was just ~130MB.
 
-The mptcp_worker tries to update the MPTCP retransmission timer
-even if such timer is not currently scheduled.
+Note that on rv64, for now, we are then limited to PGDIR size for early
+mapping as we can't use PGD mappings (see [1]). That should be enough
+given the relative small size of syzbot kernels compared to PGDIR_SIZE
+which is 1GB.
 
-The mptcp_rtx_head() return value is bogus: we can have enqueued
-data not yet transmitted. The above may additionally cause spurious,
-unneeded MPTCP-level retransmissions.
+[1] https://lore.kernel.org/lkml/20200603153608.30056-1-alex@ghiti.fr/
 
-Fix the issue adding an explicit clearing of the rtx queue before
-trying to retransmit and checking for unacked data.
-Additionally drop an unneeded timer stop call and the unused
-mptcp_rtx_tail() helper.
-
-Reported-by: Christoph Paasch <cpaasch@apple.com>
-Fixes: 6e628cd3a8f7 ("mptcp: use mptcp release_cb for delayed tasks")
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+Tested-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mptcp/protocol.c |    3 +--
- net/mptcp/protocol.h |   11 ++---------
- 2 files changed, 3 insertions(+), 11 deletions(-)
+ arch/riscv/mm/init.c |   21 +++++----------------
+ 1 file changed, 5 insertions(+), 16 deletions(-)
 
---- a/net/mptcp/protocol.c
-+++ b/net/mptcp/protocol.c
-@@ -364,8 +364,6 @@ static void mptcp_check_data_fin_ack(str
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -226,8 +226,6 @@ pgd_t swapper_pg_dir[PTRS_PER_PGD] __pag
+ pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+ pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
  
- 	/* Look for an acknowledged DATA_FIN */
- 	if (mptcp_pending_data_fin_ack(sk)) {
--		mptcp_stop_timer(sk);
+-#define MAX_EARLY_MAPPING_SIZE	SZ_128M
 -
- 		WRITE_ONCE(msk->snd_data_fin_enable, 0);
+ pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
  
- 		switch (sk->sk_state) {
-@@ -2299,6 +2297,7 @@ static void mptcp_worker(struct work_str
- 	if (!test_and_clear_bit(MPTCP_WORK_RTX, &msk->flags))
- 		goto unlock;
+ void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
+@@ -302,13 +300,7 @@ static void __init create_pte_mapping(pt
  
-+	__mptcp_clean_una(sk);
- 	dfrag = mptcp_rtx_head(sk);
- 	if (!dfrag)
- 		goto unlock;
---- a/net/mptcp/protocol.h
-+++ b/net/mptcp/protocol.h
-@@ -325,20 +325,13 @@ static inline struct mptcp_data_frag *mp
- 	return list_last_entry(&msk->rtx_queue, struct mptcp_data_frag, list);
- }
+ pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
+ pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+-
+-#if MAX_EARLY_MAPPING_SIZE < PGDIR_SIZE
+-#define NUM_EARLY_PMDS		1UL
+-#else
+-#define NUM_EARLY_PMDS		(1UL + MAX_EARLY_MAPPING_SIZE / PGDIR_SIZE)
+-#endif
+-pmd_t early_pmd[PTRS_PER_PMD * NUM_EARLY_PMDS] __initdata __aligned(PAGE_SIZE);
++pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+ pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
  
--static inline struct mptcp_data_frag *mptcp_rtx_tail(const struct sock *sk)
-+static inline struct mptcp_data_frag *mptcp_rtx_head(const struct sock *sk)
+ static pmd_t *__init get_pmd_virt_early(phys_addr_t pa)
+@@ -330,11 +322,9 @@ static pmd_t *get_pmd_virt_late(phys_add
+ 
+ static phys_addr_t __init alloc_pmd_early(uintptr_t va)
  {
- 	struct mptcp_sock *msk = mptcp_sk(sk);
+-	uintptr_t pmd_num;
++	BUG_ON((va - PAGE_OFFSET) >> PGDIR_SHIFT);
  
--	if (!before64(msk->snd_nxt, READ_ONCE(msk->snd_una)))
-+	if (msk->snd_una == READ_ONCE(msk->snd_nxt))
- 		return NULL;
- 
--	return list_last_entry(&msk->rtx_queue, struct mptcp_data_frag, list);
--}
--
--static inline struct mptcp_data_frag *mptcp_rtx_head(const struct sock *sk)
--{
--	struct mptcp_sock *msk = mptcp_sk(sk);
--
- 	return list_first_entry_or_null(&msk->rtx_queue, struct mptcp_data_frag, list);
+-	pmd_num = (va - PAGE_OFFSET) >> PGDIR_SHIFT;
+-	BUG_ON(pmd_num >= NUM_EARLY_PMDS);
+-	return (uintptr_t)&early_pmd[pmd_num * PTRS_PER_PMD];
++	return (uintptr_t)early_pmd;
  }
  
+ static phys_addr_t __init alloc_pmd_fixmap(uintptr_t va)
+@@ -452,7 +442,7 @@ asmlinkage void __init setup_vm(uintptr_
+ 	uintptr_t va, pa, end_va;
+ 	uintptr_t load_pa = (uintptr_t)(&_start);
+ 	uintptr_t load_sz = (uintptr_t)(&_end) - load_pa;
+-	uintptr_t map_size = best_map_size(load_pa, MAX_EARLY_MAPPING_SIZE);
++	uintptr_t map_size;
+ #ifndef __PAGETABLE_PMD_FOLDED
+ 	pmd_t fix_bmap_spmd, fix_bmap_epmd;
+ #endif
+@@ -464,12 +454,11 @@ asmlinkage void __init setup_vm(uintptr_
+ 	 * Enforce boot alignment requirements of RV32 and
+ 	 * RV64 by only allowing PMD or PGD mappings.
+ 	 */
+-	BUG_ON(map_size == PAGE_SIZE);
++	map_size = PMD_SIZE;
+ 
+ 	/* Sanity check alignment and size */
+ 	BUG_ON((PAGE_OFFSET % PGDIR_SIZE) != 0);
+ 	BUG_ON((load_pa % map_size) != 0);
+-	BUG_ON(load_sz > MAX_EARLY_MAPPING_SIZE);
+ 
+ 	pt_ops.alloc_pte = alloc_pte_early;
+ 	pt_ops.get_pte_virt = get_pte_virt_early;
 
 
