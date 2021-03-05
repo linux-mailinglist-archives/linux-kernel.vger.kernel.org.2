@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9A432E97F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 639E232EA6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbhCEMdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:33:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42812 "EHLO mail.kernel.org"
+        id S231217AbhCEMi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:38:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231190AbhCEMcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:32:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BA1D65013;
-        Fri,  5 Mar 2021 12:32:22 +0000 (UTC)
+        id S233328AbhCEMhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:37:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1D4565004;
+        Fri,  5 Mar 2021 12:37:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947542;
-        bh=rnKrIeNFbYZk1vq/xRH5e2pbjjUFGfsQkzFlBb77OjU=;
+        s=korg; t=1614947853;
+        bh=Z2M2ys1lmKRh/M2Kjm2EflgGySWlW9fRITQ7E/fdjqc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=weHiyK92PW4XWOy86vPY8gdXE5NuiaWcg9BZNdc3eRVZ3ZzGoyJucGi6yMCqjs/vX
-         8tNcNvXnBf2MqEgZLFhvH5rA1gS9hjYx6jDR0aH/2oyvZDYAYX+EpHVwzDZ5oI0YkE
-         PcYtqgwgzzSyeVRONTuMfU7+EEAIBcsS+kVXUNIg=
+        b=mxMCnxXoy/PJCdP/mo3fQNvi/K7b+8R2Ki39ZiKi0vK+RY4TCksIW/xjavEBb6meR
+         /b+j+bVvI69N5GPQsvm//FljoydRQSqWcOd1X/7sOrdRlCOTPkc+Nai9L/vGBdnlRm
+         DyzQfJ0waVRIeL7aD/USgi9sI4aXwfTjcga4cRE0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eckhart Mohr <e.mohr@tuxedocomputers.com>,
-        Werner Sembach <wse@tuxedocomputers.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 100/102] ALSA: hda/realtek: Add quirk for Clevo NH55RZQ
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Fangrui Song <maskray@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 28/52] x86/build: Treat R_386_PLT32 relocation as R_386_PC32
 Date:   Fri,  5 Mar 2021 13:21:59 +0100
-Message-Id: <20210305120908.200568168@linuxfoundation.org>
+Message-Id: <20210305120855.058396983@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+References: <20210305120853.659441428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +44,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+From: Fangrui Song <maskray@google.com>
 
-commit 48698c973e6b4dde94d87cd1ded56d9436e9c97d upstream.
+[ Upstream commit bb73d07148c405c293e576b40af37737faf23a6a ]
 
-This applies a SND_PCI_QUIRK(...) to the Clevo NH55RZQ barebone. This
-fixes the issue of the device not recognizing a pluged in microphone.
+This is similar to commit
 
-The device has both, a microphone only jack, and a speaker + microphone
-combo jack. The combo jack already works. The microphone-only jack does
-not recognize when a device is pluged in without this patch.
+  b21ebf2fb4cd ("x86: Treat R_X86_64_PLT32 as R_X86_64_PC32")
 
-Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
-Co-developed-by: Werner Sembach <wse@tuxedocomputers.com>
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/0eee6545-5169-ef08-6cfa-5def8cd48c86@tuxedocomputers.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+but for i386. As far as the kernel is concerned, R_386_PLT32 can be
+treated the same as R_386_PC32.
+
+R_386_PLT32/R_X86_64_PLT32 are PC-relative relocation types which
+can only be used by branches. If the referenced symbol is defined
+externally, a PLT will be used.
+
+R_386_PC32/R_X86_64_PC32 are PC-relative relocation types which can be
+used by address taking operations and branches. If the referenced symbol
+is defined externally, a copy relocation/canonical PLT entry will be
+created in the executable.
+
+On x86-64, there is no PIC vs non-PIC PLT distinction and an
+R_X86_64_PLT32 relocation is produced for both `call/jmp foo` and
+`call/jmp foo@PLT` with newer (2018) GNU as/LLVM integrated assembler.
+This avoids canonical PLT entries (st_shndx=0, st_value!=0).
+
+On i386, there are 2 types of PLTs, PIC and non-PIC. Currently,
+the GCC/GNU as convention is to use R_386_PC32 for non-PIC PLT and
+R_386_PLT32 for PIC PLT. Copy relocations/canonical PLT entries
+are possible ABI issues but GCC/GNU as will likely keep the status
+quo because (1) the ABI is legacy (2) the change will drop a GNU
+ld diagnostic for non-default visibility ifunc in shared objects.
+
+clang-12 -fno-pic (since [1]) can emit R_386_PLT32 for compiler
+generated function declarations, because preventing canonical PLT
+entries is weighed over the rare ifunc diagnostic.
+
+Further info for the more interested:
+
+  https://github.com/ClangBuiltLinux/linux/issues/1210
+  https://sourceware.org/bugzilla/show_bug.cgi?id=27169
+  https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6 [1]
+
+ [ bp: Massage commit message. ]
+
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Fangrui Song <maskray@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Link: https://lkml.kernel.org/r/20210127205600.1227437-1-maskray@google.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kernel/module.c |  1 +
+ arch/x86/tools/relocs.c  | 12 ++++++++----
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8128,6 +8128,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1558, 0x8551, "System76 Gazelle (gaze14)", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x8560, "System76 Gazelle (gaze14)", ALC269_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1558, 0x8561, "System76 Gazelle (gaze14)", ALC269_FIXUP_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x1558, 0x8562, "Clevo NH[5|7][0-9]RZ[Q]", ALC269_FIXUP_DMIC),
- 	SND_PCI_QUIRK(0x1558, 0x8668, "Clevo NP50B[BE]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x8680, "Clevo NJ50LU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x8686, "Clevo NH50[CZ]U", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
+index 6645f123419c..9f0be2c7e346 100644
+--- a/arch/x86/kernel/module.c
++++ b/arch/x86/kernel/module.c
+@@ -126,6 +126,7 @@ int apply_relocate(Elf32_Shdr *sechdrs,
+ 			*location += sym->st_value;
+ 			break;
+ 		case R_386_PC32:
++		case R_386_PLT32:
+ 			/* Add the value, subtract its position */
+ 			*location += sym->st_value - (uint32_t)location;
+ 			break;
+diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
+index 3a6c8ebc8032..aa046d46ff8f 100644
+--- a/arch/x86/tools/relocs.c
++++ b/arch/x86/tools/relocs.c
+@@ -841,9 +841,11 @@ static int do_reloc32(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
+ 	case R_386_PC32:
+ 	case R_386_PC16:
+ 	case R_386_PC8:
++	case R_386_PLT32:
+ 		/*
+-		 * NONE can be ignored and PC relative relocations don't
+-		 * need to be adjusted.
++		 * NONE can be ignored and PC relative relocations don't need
++		 * to be adjusted. Because sym must be defined, R_386_PLT32 can
++		 * be treated the same way as R_386_PC32.
+ 		 */
+ 		break;
+ 
+@@ -884,9 +886,11 @@ static int do_reloc_real(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
+ 	case R_386_PC32:
+ 	case R_386_PC16:
+ 	case R_386_PC8:
++	case R_386_PLT32:
+ 		/*
+-		 * NONE can be ignored and PC relative relocations don't
+-		 * need to be adjusted.
++		 * NONE can be ignored and PC relative relocations don't need
++		 * to be adjusted. Because sym must be defined, R_386_PLT32 can
++		 * be treated the same way as R_386_PC32.
+ 		 */
+ 		break;
+ 
+-- 
+2.30.1
+
 
 
