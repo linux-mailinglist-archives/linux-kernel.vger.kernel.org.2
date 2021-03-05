@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031F332DEC4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 02:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD49432DEC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 02:05:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbhCEBFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 20:05:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhCEBFF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 20:05:05 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6B2C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 17:05:03 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id 130so401198qkh.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 17:05:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HUEdpwjc2Su9tpo1aoC+ANv42PZu8fYCrhiuo8S1xNA=;
-        b=TsQNIxhvoFWfCsYfxiPHMo7LC12G6oW1vlgR9YOR86WHTL8P9T6SVF5DsQ2HhHH79i
-         aQxqgoiGlWBBLh3OxCXrurMwZVJ/zy5BZpJ2bKC3r1/mEsbRlNEKvK5z0HXYZjd2vY3I
-         OfXm1CTeBSzFyka08g9yWpXSbd+JgtZFwS+Qu5SrV6yfoMfDMfF34snU1oAgABQdVBSB
-         VT4aP2Hef4KuWW8x9HCJBoSiT95ZwIzgxnXNKs1ZpkGBmsZnNkxMo7YxPnoKBKuVKjPG
-         gMuLxOmQKctFagNk0MwZKTdZIxP62An+FfqaeSVTpLr69+EQ9Qdi5b5kJsqvd6EbzrD/
-         2vQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HUEdpwjc2Su9tpo1aoC+ANv42PZu8fYCrhiuo8S1xNA=;
-        b=QueBwDuGpw8JfQeTr9/buMv57XcsoKoUsoqsAVmYXHuoRuNaZuDlSQ8FUZ5Fcxhcop
-         ec+/MKi4T3V+SwKhvh0DMGV+kYFcvn4WHAGl+W7nikwJ4wpu3fQOULS8uDrV0B2EJhJR
-         1sNHGLdTLKrvixnSDtzHilt/9QQZwzk0RsvPBhBMJzVsakRymBCA94i5ILE2jTWMEW+e
-         E51wMcOePAmB6kas6mik6yDOFWaxgFO44M535v+Tn/7vx0eHK13LVaEjnSepY+xHBKIM
-         G4Pcx4Qoc6sqdkUjg9ItgkDeZuu3ayS0Gq955pBk4KF9I7i5PxH5zAdKmbt2GGI8ZfhM
-         1crw==
-X-Gm-Message-State: AOAM532m/mGlwwy0kTRbnubqnqjdFOM7gQWjXzE4tl92WaOBoF1FHhCX
-        f4CcbhXV2SRoFa+pl3APSfCNIIRTRRV5dRBA81yOAw==
-X-Google-Smtp-Source: ABdhPJw42/HssFweLgeFrpM484Wnrrt2uEEiKTVFS0/p2lX0wWO8F8jRlEKskzq4IO1y71W7Yiszc35WGCxO97jAXzA=
-X-Received: by 2002:a37:a647:: with SMTP id p68mr6919823qke.189.1614906302400;
- Thu, 04 Mar 2021 17:05:02 -0800 (PST)
+        id S229570AbhCEBFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 20:05:30 -0500
+Received: from ozlabs.org ([203.11.71.1]:58529 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229436AbhCEBF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 20:05:29 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ds8fs6YM6z9sWD;
+        Fri,  5 Mar 2021 12:05:25 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614906327;
+        bh=uNvFCAO2+/dn7zGMlkg9As9h70Dvz8K1kFCotm7Xju8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PnLAC90/7KkCqBqXaLXitm2zG+rzO4YYr7FZCY9rfDJ+17IQHAZpTIh1g7womNx/o
+         wnMEnN1HorjuOM9lhf1Pf1JuZc0weOa3YFoHJh3hGJaKOQxKMjnqYpb9mbF8vbSThz
+         1ZK8iEhxDgmvCnnnKJ+KLJ0rAd6guEEl8VkJYSCGFGTvlydZkbTzyMTfyyIMbNZ8Y+
+         FFAS+tM6BqkKwkyWPT1vI4gCVwE1RkcXHbjkWdKLFdDUaizXlGGmvs9BX0SShVoXCG
+         vv2YC5lfBD40ecIC52PjYbJUenFGyT0GstSMH4szUDg+psLwnqxNxVvC9U4SjI5REj
+         axK9ChShZOEXA==
+Date:   Fri, 5 Mar 2021 12:05:23 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Jiri Slaby <jslaby@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <uwe@kleine-koenig.org>
+Subject: linux-next: manual merge of the tty tree with the powerpc-fixes
+ tree
+Message-ID: <20210305120523.0cb114b9@canb.auug.org.au>
 MIME-Version: 1.0
-References: <YD9dUkGhlRT8vvcy@hirez.programming.kicks-ass.net>
- <20210303224653.2579656-1-joshdon@google.com> <CAKwvOdmijctJfM3gNfwEVjaQyp3LZkhnAwgsT7EBhsSBJyfLAA@mail.gmail.com>
-In-Reply-To: <CAKwvOdmijctJfM3gNfwEVjaQyp3LZkhnAwgsT7EBhsSBJyfLAA@mail.gmail.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Thu, 4 Mar 2021 17:04:51 -0800
-Message-ID: <CABk29Ns5qu-wm=BqpRa75kvCUeMUF0ozrQr2tbcy2WuSR013JA@mail.gmail.com>
-Subject: Re: [PATCH v2] sched: Optimize __calc_delta.
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Clement Courbet <courbet@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Bill Wendling <morbo@google.com>, sedat.dilek@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/9xWkDb4+9_2nx0jSjYMefla";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 9:34 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
->
-> Hi Josh, Thanks for helping get this patch across the finish line.
-> Would you mind updating the commit message to point to
-> https://bugs.llvm.org/show_bug.cgi?id=20197?
+--Sig_/9xWkDb4+9_2nx0jSjYMefla
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Sure thing, just saw that it got marked as a dup.
+Hi all,
 
-Peter, since you've already pulled the patch, can you modify the
-commit message directly? Nick also recommended dropping the
-punctuation in the commit oneline.
+Today's linux-next merge of the tty tree got a conflict in:
 
-> >  #include <linux/binfmts.h>
-> > +#include <linux/bitops.h>
->
-> This hunk of the patch is curious.  I assume that bitops.h is needed
-> for fls(); if so, why not #include it in kernel/sched/fair.c?
-> Otherwise this potentially hurts compile time for all TUs that include
-> kernel/sched/sched.h.
+  drivers/tty/hvc/hvcs.c
 
-bitops.h is already included in sched.h via another include, so this
-was just meant to make it more explicit. Motivation for putting it
-here vs. fair.c was 325ea10c080940.
+between commit:
+
+  386a966f5ce7 ("vio: make remove callback return void")
+
+from the powerpc-fixes tree and commit:
+
+  fb8d350c291c ("tty: hvc, drop unneeded forward declarations")
+
+from the tty tree.
+
+I fixed it up (they both removed the forward decalrartion of
+hvcs_remove(), but the latter removed more) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/9xWkDb4+9_2nx0jSjYMefla
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBBg9MACgkQAVBC80lX
+0GwXiQf8DH+F4whK60DwjNEeg8slREuMDGj5efB//THFJmu1MUAsJfNIxZ+tYRwD
+hIEeS9EWl6G/o28EqBe6yBsIdB4Q6/8CQD8q+0dC5rUrcnB9yGso7NdDut/aQJv1
+8Xf3jbcLhafoceBARbPZ+ad4s7nGN+tbXnN8aIa5wiT2yvxaCQl23sZkHNYJGXJH
+l8l9Gun1v8goZoaa/BSQr7RcNaHpBHycHRFss6QAa9nCbap67ZVAngFQYm4JuAGU
+oeaH/Hbr5Ai2h3H8zEUr/Ivyyc8UK8+EWaVS9oqrXEZKdTvEBZPtMg1493pF0c4o
+erVXqm+X/JvQlrNFGwLRu+DTmE32FQ==
+=+4E4
+-----END PGP SIGNATURE-----
+
+--Sig_/9xWkDb4+9_2nx0jSjYMefla--
