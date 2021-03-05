@@ -2,68 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C6432E556
+	by mail.lfdr.de (Postfix) with ESMTP id 02CA032E555
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbhCEJxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:53:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43374 "EHLO mail.kernel.org"
+        id S229597AbhCEJxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:53:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229520AbhCEJxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229604AbhCEJxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Mar 2021 04:53:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B31264FE9;
-        Fri,  5 Mar 2021 09:53:00 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61C8764FEF;
+        Fri,  5 Mar 2021 09:53:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614937980;
-        bh=AQkQVnVFWVRfrhHzYaVpWwDXLniWq/KwNuU/2JTjAYY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=iqNNkl+XHv8aY7VPk/6k81fIjyJtp6YhO6A2g+MjsujC0oOp+s8+iY5r2rJ7SeNTI
-         kLlhwqxY6dC6hKKYMhY+7LYL7fE2VGdNNDP0ezbuHcsEK8geuQcxbbAfxmp3kKmFC1
-         +/oVDCy3xDfNe5a5Y78rz/1OIwiVkQezLeNgrABgbdou+VOr+6fEU/rTgLPfgGOJ0i
-         XKKqYucfJH5QY1zgt8j/M5MWGWCqaPBqqa/mV8AFrDt71Bh4aB8pAquMmPnL8gTsYW
-         mS6dcGrj75fwgeBBItL1lKJU7PA+3Yfml1l5/lOdt/xCUnQXKq9hUo3Z3oxnk6DaAv
-         QjX8FzC/CULrg==
-Date:   Fri, 5 Mar 2021 03:52:58 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH RESEND][next] hwmon: (max6621) Fix fall-through warnings for
- Clang
-Message-ID: <20210305095258.GA141583@embeddedor>
+        s=k20201202; t=1614937981;
+        bh=lWXNhLBFQ2XgGhc6pj58AcY8/fDvYsv9r/2/f1/VKhQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GwEl0ktloubUnDo1Hz61ikSwMWCk+//Z+b6G2GSH8bh9HOxZucShh0ELa+UAY3WRV
+         99U+c6Q5mB6Io5RuQhbhyF6Q84KInjF0fRbjG9rTpjvfJRnED1EwcRFyn6FMYKE6uI
+         c7PCGe8dspVOav7H/0SqxQQ7nPxPFWP8Xq9BEXU+QqTCaMbpeoa4K7HpgdcZPT2hMC
+         /xjyv0snaEdfOi0sGaZHqnAEAi1DiQ7daK19THv6h7QStcvsuYufsEdETZZ11lS5f6
+         kBr7SkGHy2HEqQWYKlwKjKzh2nRrM/L/tAXNbxXh1VSaHPlWgmwwygi0YxCcCGwE5Q
+         FiCRO95LAWiQA==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lI791-0001Ew-Rp; Fri, 05 Mar 2021 10:53:15 +0100
+Date:   Fri, 5 Mar 2021 10:53:15 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com
+Subject: Re: [PATCH] usb: serial: io_edgeport: fix memory leak in edge_startup
+Message-ID: <YEH/i1syuN9Yq3Wu@hovoldconsulting.com>
+References: <20210301230152.527093-1-paskripkin@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210301230152.527093-1-paskripkin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-by explicitly adding a break statement instead of letting the code fall
-through to the next case.
+On Tue, Mar 02, 2021 at 02:01:52AM +0300, Pavel Skripkin wrote:
+> sysbot found memory leak in edge_startup().
+> The problem was that when an error was received from the usb_submit_urb(),
+> nothing was cleaned up.
+> 
+> Reported-by: syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 
-Link: https://github.com/KSPP/linux/issues/115
-Acked-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/hwmon/max6621.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Now applied, thanks.
 
-diff --git a/drivers/hwmon/max6621.c b/drivers/hwmon/max6621.c
-index 367855d5edae..7821132e17fa 100644
---- a/drivers/hwmon/max6621.c
-+++ b/drivers/hwmon/max6621.c
-@@ -156,7 +156,7 @@ max6621_is_visible(const void *data, enum hwmon_sensor_types type, u32 attr,
- 		default:
- 			break;
- 		}
--
-+		break;
- 	default:
- 		break;
- 	}
--- 
-2.27.0
-
+Johan
