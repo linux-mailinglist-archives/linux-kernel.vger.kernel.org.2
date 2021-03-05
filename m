@@ -2,147 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE0832E3D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D833432E3DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbhCEIkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:40:52 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:38368 "EHLO pegase1.c-s.fr"
+        id S229497AbhCEIme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:42:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229551AbhCEIkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:40:49 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DsLmG1HhXz9tws2;
-        Fri,  5 Mar 2021 09:40:46 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id Qfa6vAzoH0fA; Fri,  5 Mar 2021 09:40:46 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DsLmF69Jdz9tws0;
-        Fri,  5 Mar 2021 09:40:45 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E57F58B78D;
-        Fri,  5 Mar 2021 09:40:46 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id vPt5UF7YwDZ3; Fri,  5 Mar 2021 09:40:46 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A0AEC8B78B;
-        Fri,  5 Mar 2021 09:40:46 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 76F7B674E4; Fri,  5 Mar 2021 08:40:46 +0000 (UTC)
-Message-Id: <f08ef2b6f339ba19987cfef4307a4dd26b2faf97.1614933479.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3] powerpc/32: remove bogus ppc_select syscall
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri,  5 Mar 2021 08:40:46 +0000 (UTC)
+        id S229493AbhCEImN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 03:42:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE2AE64F11;
+        Fri,  5 Mar 2021 08:42:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614933733;
+        bh=mgxBLmLXHhIZquaeQklM8mANN4oNT1voBTTYJbZRqF4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Nsuz6zi9ZRmhDY6rbc7gE+6wo2JedEJwMFUpoBAmNFDgAxra49iHRWTky1ss2Z9mI
+         5CP3Rq/dbQbU6wXSLflPlwIhR+zq9s10j3tgnxbMbZ0IXhKlM9OqhaDvIytsM31Gtr
+         Me+NCGj8JvwREpWAWL75JAxBdEbYY18JEGKMl0JxmOUSVb2+Ow5+phytN0/E0RhP08
+         J8BLaCKwMTYVqnfUypGx43tV6GKZZyk8nHrvaoI1RNXFPcsmifmG1+HtTw+qSpkxrM
+         6eo8YVZW1kGX0WOpUSkioxumzAaE5SS4WndADMViejYN8v11NZuXSnqI6zmvFyF6R7
+         LYyIbc/4xJAGQ==
+Date:   Fri, 5 Mar 2021 02:42:09 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH RESEND][next] netfilter: Fix fall-through warnings for Clang
+Message-ID: <20210305084209.GA138063@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+warnings by explicitly adding multiple break statements instead of just
+letting the code fall through to the next case.
 
-The ppc_select function was introduced in linux-2.3.48 in order to support
-code confusing the legacy select() calling convention with the standard one.
-Even 24 years ago, all correctly built code should not have done this and
-could have easily been phased out. Nothing that was compiled later should
-actually try to use the old_select interface, and it would have been broken
-already on all ppc64 kernels with the syscall emulation layer.
-
-This patch brings the 32 bit compat ABI and the native 32 bit ABI for
-powerpc into a consistent state, by removing support for both the
-old_select system call number and the handler for it.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-[chleroy: Rebased and updated the number of years elapsed and dropped last part of the commit message]
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Link: https://github.com/KSPP/linux/issues/115
+Acked-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
-First version was in 2008, at that time it was rejected, see
-http://patchwork.ozlabs.org/project/linuxppc-dev/patch/200809240839.14902.arnd@arndb.de/
-A reduced version of it was merged as commit dad2f2fb0fc7 ("powerpc: Fix wrong error code from ppc32 select syscall")
+ net/netfilter/nf_conntrack_proto_dccp.c | 1 +
+ net/netfilter/nf_tables_api.c           | 1 +
+ net/netfilter/nft_ct.c                  | 1 +
+ 3 files changed, 3 insertions(+)
 
-If we decide to still keep this, then we'll have to:
-- take into account -4096 < fd < 0 case
-- use unsafe_get_user inside a uaccess_begin block
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/asm-prototypes.h |  3 ---
- arch/powerpc/kernel/syscalls.c            | 25 -----------------------
- arch/powerpc/kernel/syscalls/syscall.tbl  |  4 +---
- 3 files changed, 1 insertion(+), 31 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/asm-prototypes.h b/arch/powerpc/include/asm/asm-prototypes.h
-index 939f3c94c8f3..78e0a3bd448a 100644
---- a/arch/powerpc/include/asm/asm-prototypes.h
-+++ b/arch/powerpc/include/asm/asm-prototypes.h
-@@ -63,9 +63,6 @@ long sys_swapcontext(struct ucontext __user *old_ctx,
- #ifdef CONFIG_PPC32
- long sys_debug_setcontext(struct ucontext __user *ctx,
- 			  int ndbg, struct sig_dbg_op __user *dbg);
--int
--ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp,
--	   struct __kernel_old_timeval __user *tvp);
- unsigned long __init early_init(unsigned long dt_ptr);
- void __init machine_init(u64 dt_ptr);
+diff --git a/net/netfilter/nf_conntrack_proto_dccp.c b/net/netfilter/nf_conntrack_proto_dccp.c
+index db7479db8512..4f33307fa3cf 100644
+--- a/net/netfilter/nf_conntrack_proto_dccp.c
++++ b/net/netfilter/nf_conntrack_proto_dccp.c
+@@ -397,6 +397,7 @@ dccp_new(struct nf_conn *ct, const struct sk_buff *skb,
+ 			msg = "not picking up existing connection ";
+ 			goto out_invalid;
+ 		}
++		break;
+ 	case CT_DCCP_REQUEST:
+ 		break;
+ 	case CT_DCCP_INVALID:
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index b07703e19108..1f53459e30e9 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -8557,6 +8557,7 @@ static int nf_tables_check_loops(const struct nft_ctx *ctx,
+ 							data->verdict.chain);
+ 				if (err < 0)
+ 					return err;
++				break;
+ 			default:
+ 				break;
+ 			}
+diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
+index 882fe8648653..0592a9456084 100644
+--- a/net/netfilter/nft_ct.c
++++ b/net/netfilter/nft_ct.c
+@@ -527,6 +527,7 @@ static void __nft_ct_set_destroy(const struct nft_ctx *ctx, struct nft_ct *priv)
+ 	case NFT_CT_ZONE:
+ 		if (--nft_ct_pcpu_template_refcnt == 0)
+ 			nft_ct_tmpl_put_pcpu();
++		break;
  #endif
-diff --git a/arch/powerpc/kernel/syscalls.c b/arch/powerpc/kernel/syscalls.c
-index 078608ec2e92..70b0eb5bedfd 100644
---- a/arch/powerpc/kernel/syscalls.c
-+++ b/arch/powerpc/kernel/syscalls.c
-@@ -71,31 +71,6 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, size_t, len,
- 	return do_mmap2(addr, len, prot, flags, fd, offset, PAGE_SHIFT);
- }
- 
--#ifdef CONFIG_PPC32
--/*
-- * Due to some executables calling the wrong select we sometimes
-- * get wrong args.  This determines how the args are being passed
-- * (a single ptr to them all args passed) then calls
-- * sys_select() with the appropriate args. -- Cort
-- */
--int
--ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp, struct __kernel_old_timeval __user *tvp)
--{
--	if ( (unsigned long)n >= 4096 )
--	{
--		unsigned long __user *buffer = (unsigned long __user *)n;
--		if (!access_ok(buffer, 5*sizeof(unsigned long))
--		    || __get_user(n, buffer)
--		    || __get_user(inp, ((fd_set __user * __user *)(buffer+1)))
--		    || __get_user(outp, ((fd_set  __user * __user *)(buffer+2)))
--		    || __get_user(exp, ((fd_set  __user * __user *)(buffer+3)))
--		    || __get_user(tvp, ((struct __kernel_old_timeval  __user * __user *)(buffer+4))))
--			return -EFAULT;
--	}
--	return sys_select(n, inp, outp, exp, tvp);
--}
--#endif
--
- #ifdef CONFIG_PPC64
- long ppc64_personality(unsigned long personality)
- {
-diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
-index 0b2480cf3e47..5bb0e90e502e 100644
---- a/arch/powerpc/kernel/syscalls/syscall.tbl
-+++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-@@ -110,9 +110,7 @@
- 79	common	settimeofday			sys_settimeofday		compat_sys_settimeofday
- 80	common	getgroups			sys_getgroups
- 81	common	setgroups			sys_setgroups
--82	32	select				ppc_select			sys_ni_syscall
--82	64	select				sys_ni_syscall
--82	spu	select				sys_ni_syscall
-+82	common	select				sys_ni_syscall
- 83	common	symlink				sys_symlink
- 84	32	oldlstat			sys_lstat			sys_ni_syscall
- 84	64	oldlstat			sys_ni_syscall
+ 	default:
+ 		break;
 -- 
-2.25.0
+2.27.0
 
