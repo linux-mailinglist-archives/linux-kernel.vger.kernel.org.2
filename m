@@ -2,44 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6616232E9E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF9D32E93F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232661AbhCEMfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:35:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46704 "EHLO mail.kernel.org"
+        id S231590AbhCEMbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:31:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230054AbhCEMfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:35:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C9316501B;
-        Fri,  5 Mar 2021 12:34:59 +0000 (UTC)
+        id S231504AbhCEMaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:30:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B130765029;
+        Fri,  5 Mar 2021 12:30:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947700;
-        bh=+/remy9VZUtk6rBgKhqlx0i91ROeDpESHj11RFu21QY=;
+        s=korg; t=1614947451;
+        bh=MTFjmCUYHEfjoNJ7NLmabPm5GwToGEZ97xs/BaabEu8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dQie8WSljsqF0cT7vP1283Zi/aogr1zpzYY/xptNYZp0OliQHG+ODcywNO3HolpzR
-         bgJsCNaVlKwpO08HjJVMjpZSzjDIwHDxmz8orNUILSOo/m1PZI7bwEdslbvK3hzcEs
-         /lbAADKv73lHZ/gmh8ODegm/a29iDYWedm1eA8zM=
+        b=HeDxU4/s0KJladIHk8FmjbMRoYfDWuHtuYJbahBrpNY8fC+CKwQ8/g43qdSuHAll+
+         g/ChhA3J+6YpB+ezgH1JCPPuygioAKZ5hpB0fL5d3iKLRB2aVOI3jcn9pAKPgpgIa9
+         wUYqRCkYMekYnyVwQmONjPTuDJ4QIvsD7BSqjtW4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Angus Ainslie <angus@akkea.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Martin Kepplinger <martink@posteo.de>,
-        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
-        Siva Rebbagondla <siva8118@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 25/72] rsi: Fix TX EAPOL packet handling against iwlwifi AP
-Date:   Fri,  5 Mar 2021 13:21:27 +0100
-Message-Id: <20210305120858.580239724@linuxfoundation.org>
+        stable@vger.kernel.org, Chao Leng <lengchao@huawei.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 069/102] nvme-rdma: add clean action for failed reconnection
+Date:   Fri,  5 Mar 2021 13:21:28 +0100
+Message-Id: <20210305120906.674604443@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
-References: <20210305120857.341630346@linuxfoundation.org>
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+References: <20210305120903.276489876@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,69 +39,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Chao Leng <lengchao@huawei.com>
 
-[ Upstream commit 65277100caa2f2c62b6f3c4648b90d6f0435f3bc ]
+[ Upstream commit 958dc1d32c80566f58d18f05ef1f05bd32d172c1 ]
 
-In case RSI9116 SDIO WiFi operates in STA mode against Intel 9260 in AP mode,
-the association fails. The former is using wpa_supplicant during association,
-the later is set up using hostapd:
+A crash happens when inject failed reconnection.
+If reconnect failed after start io queues, the queues will be unquiesced
+and new requests continue to be delivered. Reconnection error handling
+process directly free queues without cancel suspend requests. The
+suppend request will time out, and then crash due to use the queue
+after free.
 
-iwl$ cat hostapd.conf
-interface=wlp1s0
-ssid=test
-country_code=DE
-hw_mode=g
-channel=1
-wpa=2
-wpa_passphrase=test
-wpa_key_mgmt=WPA-PSK
-iwl$ hostapd -d hostapd.conf
+Add sync queues and cancel suppend requests for reconnection error
+handling.
 
-rsi$ wpa_supplicant -i wlan0 -c <(wpa_passphrase test test)
-
-The problem is that the TX EAPOL data descriptor RSI_DESC_REQUIRE_CFM_TO_HOST
-flag and extended descriptor EAPOL4_CONFIRM frame type are not set in case the
-AP is iwlwifi, because in that case the TX EAPOL packet is 2 bytes shorter.
-
-The downstream vendor driver has this change in place already [1], however
-there is no explanation for it, neither is there any commit history from which
-such explanation could be obtained.
-
-[1] https://github.com/SiliconLabs/RS911X-nLink-OSD/blob/master/rsi/rsi_91x_hal.c#L238
-
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Angus Ainslie <angus@akkea.ca>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Martin Kepplinger <martink@posteo.de>
-Cc: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
-Cc: Siva Rebbagondla <siva8118@gmail.com>
-Cc: linux-wireless@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20201015111616.429220-1-marex@denx.de
+Signed-off-by: Chao Leng <lengchao@huawei.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/rsi/rsi_91x_hal.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/nvme/host/rdma.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_hal.c b/drivers/net/wireless/rsi/rsi_91x_hal.c
-index 6f8d5f9a9f7e..a07304405b2c 100644
---- a/drivers/net/wireless/rsi/rsi_91x_hal.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_hal.c
-@@ -248,7 +248,8 @@ int rsi_prepare_data_desc(struct rsi_common *common, struct sk_buff *skb)
- 			rsi_set_len_qno(&data_desc->len_qno,
- 					(skb->len - FRAME_DESC_SZ),
- 					RSI_WIFI_MGMT_Q);
--		if ((skb->len - header_size) == EAPOL4_PACKET_LEN) {
-+		if (((skb->len - header_size) == EAPOL4_PACKET_LEN) ||
-+		    ((skb->len - header_size) == EAPOL4_PACKET_LEN - 2)) {
- 			data_desc->misc_flags |=
- 				RSI_DESC_REQUIRE_CFM_TO_HOST;
- 			xtend_desc->confirm_frame_type = EAPOL4_CONFIRM;
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index 4eb867804b6a..195703013272 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -919,12 +919,16 @@ static int nvme_rdma_configure_admin_queue(struct nvme_rdma_ctrl *ctrl,
+ 
+ 	error = nvme_init_identify(&ctrl->ctrl);
+ 	if (error)
+-		goto out_stop_queue;
++		goto out_quiesce_queue;
+ 
+ 	return 0;
+ 
++out_quiesce_queue:
++	blk_mq_quiesce_queue(ctrl->ctrl.admin_q);
++	blk_sync_queue(ctrl->ctrl.admin_q);
+ out_stop_queue:
+ 	nvme_rdma_stop_queue(&ctrl->queues[0]);
++	nvme_cancel_admin_tagset(&ctrl->ctrl);
+ out_cleanup_queue:
+ 	if (new)
+ 		blk_cleanup_queue(ctrl->ctrl.admin_q);
+@@ -1001,8 +1005,10 @@ static int nvme_rdma_configure_io_queues(struct nvme_rdma_ctrl *ctrl, bool new)
+ 
+ out_wait_freeze_timed_out:
+ 	nvme_stop_queues(&ctrl->ctrl);
++	nvme_sync_io_queues(&ctrl->ctrl);
+ 	nvme_rdma_stop_io_queues(ctrl);
+ out_cleanup_connect_q:
++	nvme_cancel_tagset(&ctrl->ctrl);
+ 	if (new)
+ 		blk_cleanup_queue(ctrl->ctrl.connect_q);
+ out_free_tag_set:
+@@ -1144,10 +1150,18 @@ static int nvme_rdma_setup_ctrl(struct nvme_rdma_ctrl *ctrl, bool new)
+ 	return 0;
+ 
+ destroy_io:
+-	if (ctrl->ctrl.queue_count > 1)
++	if (ctrl->ctrl.queue_count > 1) {
++		nvme_stop_queues(&ctrl->ctrl);
++		nvme_sync_io_queues(&ctrl->ctrl);
++		nvme_rdma_stop_io_queues(ctrl);
++		nvme_cancel_tagset(&ctrl->ctrl);
+ 		nvme_rdma_destroy_io_queues(ctrl, new);
++	}
+ destroy_admin:
++	blk_mq_quiesce_queue(ctrl->ctrl.admin_q);
++	blk_sync_queue(ctrl->ctrl.admin_q);
+ 	nvme_rdma_stop_queue(&ctrl->queues[0]);
++	nvme_cancel_admin_tagset(&ctrl->ctrl);
+ 	nvme_rdma_destroy_admin_queue(ctrl, new);
+ 	return ret;
+ }
 -- 
 2.30.1
 
