@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6814732E96D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DB732E9DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232136AbhCEMcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:32:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42312 "EHLO mail.kernel.org"
+        id S231629AbhCEMfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:35:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232536AbhCEMcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:32:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0690465004;
-        Fri,  5 Mar 2021 12:32:02 +0000 (UTC)
+        id S232435AbhCEMe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:34:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E88D46501A;
+        Fri,  5 Mar 2021 12:34:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947523;
-        bh=+S58+QLx3ePuw2zu29LSutDOGxJGNBNL+1TN4eKkVJo=;
+        s=korg; t=1614947697;
+        bh=mMbMGvK82PX3oQrM7vu6NF1qOcbTscHtxXFdvBBeSeE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PYXRXuIeVsz+V9HMDGwzXLDtrQsqk8wBM+LUFSXMNFytoj1gg0U5rzXsryomRLfaH
-         ByQK/0mBHmJrtMWwpiCyGgg6+A5sK9R+n4eNXrRX136P9zPYBJs1aU6yZUoMrU6STG
-         kFe7ddILvNKSft/rPQBobaEP508d4EXv7kmnTMhw=
+        b=cTCu6wZArQAMOtQydOH+pVJXdZCeBXvgbn6YYXwNmuXLOUBNGZwhbONWAESyCIDly
+         RXtNrM+PC+falFjmkhQUR25kczUroZllo/wNMy6/mkH4Y0pmfqpNJRy2+Z1gaelv6J
+         an80gKlxEEyVL9IXBQ3A4dwar6aTn7cCN6sngC98=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 094/102] tty: fix up iterate_tty_read() EOVERFLOW handling
+        stable@vger.kernel.org, Chao Leng <lengchao@huawei.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 51/72] nvme-tcp: add clean action for failed reconnection
 Date:   Fri,  5 Mar 2021 13:21:53 +0100
-Message-Id: <20210305120907.904466423@linuxfoundation.org>
+Message-Id: <20210305120859.833090797@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
+References: <20210305120857.341630346@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,64 +39,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Chao Leng <lengchao@huawei.com>
 
-commit e71a8d5cf4b4f274740e31b601216071e2a11afa upstream.
+[ Upstream commit 70a99574a79f1cd4dc7ad56ea37be40844bfb97b ]
 
-When I converted the tty_ldisc_ops 'read()' function to take a kernel
-pointer, I was a bit too aggressive about the ldisc returning EOVERFLOW.
+If reconnect failed after start io queues, the queues will be unquiesced
+and new requests continue to be delivered. Reconnection error handling
+process directly free queues without cancel suspend requests. The
+suppend request will time out, and then crash due to use the queue
+after free.
 
-Yes, we want to have EOVERFLOW override any partially read data (because
-the whole point is that the buffer was too small for the whole packet,
-and we don't want to see partial packets), but it shouldn't override a
-previous EFAULT.
+Add sync queues and cancel suppend requests for reconnection error
+handling.
 
-And in fact, it really is just EOVERFLOW that is special and should
-throw away any partially read data, not "any error".  Admittedly
-EOVERFLOW is currently the only one that can happen for a continuation
-read - and if the first read iteration returns an error we won't have this issue.
-
-So this is more of a technicality, but let's just make the intent very
-explicit, and re-organize the error handling a bit so that this is all
-clearer.
-
-Reported-by: Jiri Slaby <jirislaby@kernel.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
-Link: https://lore.kernel.org/r/CAHk-=wh+-rGsa=xruEWdg_fJViFG8rN9bpLrfLz=_yBYh2tBhA@mail.gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Chao Leng <lengchao@huawei.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/tty_io.c |   19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ drivers/nvme/host/tcp.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -860,13 +860,20 @@ static int iterate_tty_read(struct tty_l
- 		if (!size)
- 			break;
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index a554021e1ab9..77a3c488ec12 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -1710,8 +1710,10 @@ static int nvme_tcp_configure_io_queues(struct nvme_ctrl *ctrl, bool new)
  
--		/*
--		 * A ldisc read error return will override any previously copied
--		 * data (eg -EOVERFLOW from HDLC)
--		 */
- 		if (size < 0) {
--			memzero_explicit(kernel_buf, sizeof(kernel_buf));
--			return size;
-+			/* Did we have an earlier error (ie -EFAULT)? */
-+			if (retval)
-+				break;
-+			retval = size;
-+
-+			/*
-+			 * -EOVERFLOW means we didn't have enough space
-+			 * for a whole packet, and we shouldn't return
-+			 * a partial result.
-+			 */
-+			if (retval == -EOVERFLOW)
-+				offset = 0;
-+			break;
- 		}
+ out_wait_freeze_timed_out:
+ 	nvme_stop_queues(ctrl);
++	nvme_sync_io_queues(ctrl);
+ 	nvme_tcp_stop_io_queues(ctrl);
+ out_cleanup_connect_q:
++	nvme_cancel_tagset(ctrl);
+ 	if (new)
+ 		blk_cleanup_queue(ctrl->connect_q);
+ out_free_tag_set:
+@@ -1773,12 +1775,16 @@ static int nvme_tcp_configure_admin_queue(struct nvme_ctrl *ctrl, bool new)
  
- 		copied = copy_to_iter(kernel_buf, size, to);
+ 	error = nvme_init_identify(ctrl);
+ 	if (error)
+-		goto out_stop_queue;
++		goto out_quiesce_queue;
+ 
+ 	return 0;
+ 
++out_quiesce_queue:
++	blk_mq_quiesce_queue(ctrl->admin_q);
++	blk_sync_queue(ctrl->admin_q);
+ out_stop_queue:
+ 	nvme_tcp_stop_queue(ctrl, 0);
++	nvme_cancel_admin_tagset(ctrl);
+ out_cleanup_queue:
+ 	if (new)
+ 		blk_cleanup_queue(ctrl->admin_q);
+@@ -1892,10 +1898,18 @@ static int nvme_tcp_setup_ctrl(struct nvme_ctrl *ctrl, bool new)
+ 	return 0;
+ 
+ destroy_io:
+-	if (ctrl->queue_count > 1)
++	if (ctrl->queue_count > 1) {
++		nvme_stop_queues(ctrl);
++		nvme_sync_io_queues(ctrl);
++		nvme_tcp_stop_io_queues(ctrl);
++		nvme_cancel_tagset(ctrl);
+ 		nvme_tcp_destroy_io_queues(ctrl, new);
++	}
+ destroy_admin:
++	blk_mq_quiesce_queue(ctrl->admin_q);
++	blk_sync_queue(ctrl->admin_q);
+ 	nvme_tcp_stop_queue(ctrl, 0);
++	nvme_cancel_admin_tagset(ctrl);
+ 	nvme_tcp_destroy_admin_queue(ctrl, new);
+ 	return ret;
+ }
+-- 
+2.30.1
+
 
 
