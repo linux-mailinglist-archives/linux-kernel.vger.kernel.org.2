@@ -2,120 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B810832F40D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D749532F417
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbhCETjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 14:39:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44710 "EHLO
+        id S230165AbhCETjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 14:39:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhCETi5 (ORCPT
+        with ESMTP id S229591AbhCETjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:38:57 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC95C06175F;
-        Fri,  5 Mar 2021 11:38:57 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id x29so2055020pgk.6;
-        Fri, 05 Mar 2021 11:38:57 -0800 (PST)
+        Fri, 5 Mar 2021 14:39:06 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E20C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 11:39:06 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id l18so2726687pji.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 11:39:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qAJgbNw9KBqNioDnptWCHAlDfIWtd5u8+ZRDe39se/w=;
-        b=BoJ5pB1gsmBYyhYj6uXrjMiM/HZVJKlQ3H2cdr7ls3HPILovWa4gmUYX5CHtDqqpzz
-         JO9Px+5oacSMkKj1TBCvgRttIvpKSLHD3PIYNFU8rJZWm2jp6lZkp2jt1BA5dLjuqgsA
-         MUrtdTuVjvfbU1SDZZW8xOHrBqoBIAj15P24+3f+MkIvYKnPPQ2S06rBOZTNpqLwXLHF
-         iuykssBPu0zMvBNJwTAHrNUsmfOX+kBWdmYAU5JTm/Gx/T6cWNL30hOjlm8l981vOvww
-         FosprjLZ1CJYjMUtfyYnw+46PZkBK8XSl5Z43ho5WESW26llmU5NtfUEstASOPofayA8
-         gxWg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=JB6kdr5tZpshWCy8V9QYmlDg00VbremNU/eNtnae9YQ=;
+        b=klVphLhascJXjUnHD8FEDvvYZa+HqIWAzGHfuwOX0XJPnOdtMPCk7cRWEW+CQMtQSP
+         JK77Fs6uUJLPFWJy4wjbLYEfc+qfzUpNP/VcZlV5AzGgfCWHVy2pObQ6JLG9/q88eF0Q
+         mJvqUNRASQntYXH2Dpzlw2B8dfQyEaexrB3Jo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qAJgbNw9KBqNioDnptWCHAlDfIWtd5u8+ZRDe39se/w=;
-        b=HJFzupb2Any2z9dSGAcZh4Me04q28RKASHLVvAswzHEtcCdzaNydEYbJQKVIuRl6Zd
-         fcvdsFBC0wv8MzxkhcXCGKEPNIXddsFaoc2bl7Srwdj3rlbJdftkUo9OlEzQ4VnwIAG6
-         pEEk0y8HHb7YFg1T7sMm75NvEYl+Dv/d9V0vbRxXwSgz8uKm+2r9APWM7dY6AE+bYkYh
-         W/HtYKMtW1EfrHgJDJsV2KHaHIAbqclKDu8E6aR8supFTrsCxCpedRWFqzB4Yz0JfEyU
-         h2cU16AxPad+hUoMfLanvfQmyFs/bm+PhrjPa/62CXtjNN3HtBEhlE+WvD6OwUHAgfb2
-         rn1g==
-X-Gm-Message-State: AOAM5305yZ0JeBGI0KhNktP/q/3/fw+zIJbVS3J1rRyU1APRziBtAs81
-        VQAB8xR6rhkqiba/7Pgx1VU=
-X-Google-Smtp-Source: ABdhPJyxrxQRE8Hql05EoHrzeYX0bTCaIz+xT1bVtCRehDR1Cbi5fj5I7E+a27xt0AB8zVohEhteBA==
-X-Received: by 2002:a05:6a00:1a01:b029:1da:a7ee:438f with SMTP id g1-20020a056a001a01b02901daa7ee438fmr10643151pfv.77.1614973137167;
-        Fri, 05 Mar 2021 11:38:57 -0800 (PST)
-Received: from ?IPv6:2405:201:600d:a089:58af:ffb4:5a90:f2bc? ([2405:201:600d:a089:58af:ffb4:5a90:f2bc])
-        by smtp.gmail.com with ESMTPSA id i22sm3108234pjz.56.2021.03.05.11.38.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=JB6kdr5tZpshWCy8V9QYmlDg00VbremNU/eNtnae9YQ=;
+        b=sXqjuKZ0mPWPYIzImlchu2R9rrNj7AgJPLTIWi4GCLewAS5sidjpPHz6hH9q7v5/ds
+         REyKr5OvVmLa0L2D2Z0m/u+mYVdmWbrjfHFBAUEBhuPUu3rBfIAfg7pFdnyJyLYJARlW
+         YWeMCVGtlFbMOzqSVOhTWcZYqNSPrYR1l59JJYe3m0luQUjqG0P589g7owmuckBGzDhN
+         h4w4Y1+OL3c+XqbeDgf3vBKy692LLC2qUcfIhdxRUwCppjVhR5xsvIQcPtPoIeclGqyI
+         uEscwINLU1gHVVqB+hlEVbXMbMZOnepvBIzycZ6Qsl9piTm//C+WkMGe6EKY+JbmTnZ0
+         OMGg==
+X-Gm-Message-State: AOAM531xHiZHpjco4zxvCCwXbHbiupQFqme4nRh47K04jGkjGJwYG8Pv
+        ss1qaDnXcEmnD120qKyY/K89PQ==
+X-Google-Smtp-Source: ABdhPJxna8HSJsU74R2/mecjb+RJE4MHeJcu0zzhDLZkEkzRExlGOIoPRv2UzRiNz7lyWLi302bEBQ==
+X-Received: by 2002:a17:90b:92:: with SMTP id bb18mr11533435pjb.40.1614973146376;
+        Fri, 05 Mar 2021 11:39:06 -0800 (PST)
+Received: from localhost ([2620:15c:202:1:2878:25d1:94cb:a547])
+        by smtp.gmail.com with UTF8SMTPSA id y15sm3960837pgi.31.2021.03.05.11.39.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 11:38:56 -0800 (PST)
-Subject: Re: [RFC] scripts: kernel-doc: fix attribute capture in function
- parsing
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     corbet@lwn.net, lukas.bulwahn@gmail.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20210305182000.8363-1-yashsri421@gmail.com>
- <20210305184322.GN2723601@casper.infradead.org>
-From:   Aditya <yashsri421@gmail.com>
-Message-ID: <bcd38964-bfff-99c2-eb24-1942836e9526@gmail.com>
-Date:   Sat, 6 Mar 2021 01:08:51 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 05 Mar 2021 11:39:06 -0800 (PST)
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Peter Chen <peter.chen@nxp.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
+        linux-usb@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        devicetree@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Subject: [PATCH v6 3/5] of/platform: Add stubs for of_platform_device_create/destroy()
+Date:   Fri,  5 Mar 2021 11:38:51 -0800
+Message-Id: <20210305113832.v6.3.I08fd2e1c775af04f663730e9fb4d00e6bbb38541@changeid>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+In-Reply-To: <20210305193853.2040456-1-mka@chromium.org>
+References: <20210305193853.2040456-1-mka@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20210305184322.GN2723601@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/21 12:13 am, Matthew Wilcox wrote:
-> On Fri, Mar 05, 2021 at 11:50:00PM +0530, Aditya Srivastava wrote:
->> Provide a simple fix by adding "__attribute_const__" in the corresponding
->> regex expression.
->>
->> A quick evaluation by running 'kernel-doc -none' on kernel-tree reveals
->> that no additional warning or error has been added or removed by the fix.
-> 
-> I'm no perlmonger, but why isn't this simply:
-> 
-> +++ b/scripts/kernel-doc
-> @@ -1753,6 +1753,7 @@ sub dump_function($$) {
->      $prototype =~ s/^__inline +//;
->      $prototype =~ s/^__always_inline +//;
->      $prototype =~ s/^noinline +//;
-> +    $prototype =~ s/__attribute_const__ +//;
->      $prototype =~ s/__init +//;
->      $prototype =~ s/__init_or_module +//;
->      $prototype =~ s/__meminit +//;
-> 
-> (completely untested)
-> 
->> +++ b/scripts/kernel-doc
->> @@ -1753,6 +1753,7 @@ sub dump_function($$) {
->>      my $prototype = shift;
->>      my $file = shift;
->>      my $noret = 0;
->> +    my $attribute_const = qr{__attribute_const__};
->>  
->>      print_lineno($new_start_line);
->>  
->> @@ -1808,7 +1809,7 @@ sub dump_function($$) {
->>  	$prototype =~ m/^(\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
->>  	$prototype =~ m/^(\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
->>  	$prototype =~ m/^(\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
->> -	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
->> +	$prototype =~ m/^(\w+\s+\w+\s*\*+$attribute_const?)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
->>  	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
->>  	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
->>  	$prototype =~ m/^()([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
+Code for platform_device_create() and of_platform_device_create() is
+only generated if CONFIG_OF_ADDRESS=y. Add stubs to avoid unresolved
+symbols when CONFIG_OF_ADDRESS is not set.
 
-Hi Matthew
-You are correct, it should be placed there. I was considering it as a
-return type instead.
-I'll send a modified v2 with the changes.
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+---
 
-Thanks
-Aditya
+Changes in v6:
+- patch added to the series
+
+ include/linux/of_platform.h | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/of_platform.h b/include/linux/of_platform.h
+index 84a966623e78..d15b6cd5e1c3 100644
+--- a/include/linux/of_platform.h
++++ b/include/linux/of_platform.h
+@@ -61,16 +61,18 @@ static inline struct platform_device *of_find_device_by_node(struct device_node
+ }
+ #endif
+ 
++extern int of_platform_bus_probe(struct device_node *root,
++				 const struct of_device_id *matches,
++				 struct device *parent);
++
++#ifdef CONFIG_OF_ADDRESS
+ /* Platform devices and busses creation */
+ extern struct platform_device *of_platform_device_create(struct device_node *np,
+ 						   const char *bus_id,
+ 						   struct device *parent);
+ 
+ extern int of_platform_device_destroy(struct device *dev, void *data);
+-extern int of_platform_bus_probe(struct device_node *root,
+-				 const struct of_device_id *matches,
+-				 struct device *parent);
+-#ifdef CONFIG_OF_ADDRESS
++
+ extern int of_platform_populate(struct device_node *root,
+ 				const struct of_device_id *matches,
+ 				const struct of_dev_auxdata *lookup,
+@@ -84,6 +86,18 @@ extern int devm_of_platform_populate(struct device *dev);
+ 
+ extern void devm_of_platform_depopulate(struct device *dev);
+ #else
++/* Platform devices and busses creation */
++static inline struct platform_device *of_platform_device_create(struct device_node *np,
++								const char *bus_id,
++								struct device *parent)
++{
++	return NULL;
++}
++static inline int of_platform_device_destroy(struct device *dev, void *data)
++{
++	return -ENODEV;
++}
++
+ static inline int of_platform_populate(struct device_node *root,
+ 					const struct of_device_id *matches,
+ 					const struct of_dev_auxdata *lookup,
+-- 
+2.30.1.766.gb4fecdf3b7-goog
+
