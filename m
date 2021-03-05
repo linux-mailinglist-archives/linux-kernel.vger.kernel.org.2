@@ -2,96 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B6232F189
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:41:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8BB332F198
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhCERkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:40:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbhCERkM (ORCPT
+        id S229601AbhCERo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:44:29 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2635 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhCERny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:40:12 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FD4C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 09:40:12 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id k12so3780327ljg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 09:40:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vk913xlln+/lnAFL9m3uYtGSeZcmPVbTMVjkjjTaGBo=;
-        b=GhndKDzQzM94hqe40MtxD0SnptXBVM4J9SX229bd/syGiKxsZHR/4a7H+bc6zzOJI7
-         XF4mpvEKvQ/3TZoQr2bkZm5Qa0pOZQ9qQewm68h5xBmfPMg+EQYMVUfO0Dgs9BcIPskK
-         YvoywHbVHqPyT/ZVQrusxqEvj/XDfyzmH53HpCEsfsjYcGP6oFrltBVq36TbA8OiG45p
-         LF8r4klV6foAu1PgdmDHsAV37QUtmIFFkKJVHgqveZnSstaFOZwttJQeOGpKneFQbh4J
-         v0G/9/tTKEag/W8bwwKxvs98e9FXoSpQ7ncWGjCjXWzOxJvp/FvKRrhLW0V1nDeL5baQ
-         BLiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vk913xlln+/lnAFL9m3uYtGSeZcmPVbTMVjkjjTaGBo=;
-        b=THH+ke29LYsdyeR0Q+ts4qSSogiq1OaSo3/tHuOedQ55gNhH0AMu2394uoDyiZOHAI
-         JJvBtv7N5uPYRYBc9VYnCSLymL/h2j20oDB3gCQS43nQOFK77cnc3e8HaBiPzMdzP7Bf
-         o9MqkgJomHjsD2ReXNKw8JbZ7PFUB0ehThK4Qos//bFXy52vlA1NhbVQEt9JT3SvE+pm
-         jX6tX3M9HkfIuDThz60JhEZ3pJtHbTl4Lm+I1wNdqEs9LB8Ik9K6Dl3ueIzn/ulcwifX
-         8E6fcT8X11DxXtB+Gb2bBVvG3F34Fffo6Q3WtzyuVnzAa/1QGf2CgB/mWLzEJaWBLI1j
-         iCag==
-X-Gm-Message-State: AOAM531bJvNBfW3LJcZRJi1o0n9dmpVQB7RpaXhGmvWnIem76GK1DWM8
-        ZM+gfRZil/JqaGvqs5HoK5cYNw==
-X-Google-Smtp-Source: ABdhPJyl8eN5UlRGZLhzBG/kOop8hQaBmTkDKl8NH20D8i/D6Gny6QTrr8N5CrccyVv6p4Fc8Ocb3g==
-X-Received: by 2002:a2e:854b:: with SMTP id u11mr6060434ljj.318.1614966010642;
-        Fri, 05 Mar 2021 09:40:10 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id x14sm381159lfg.165.2021.03.05.09.40.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 09:40:10 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id F1E1310257C; Fri,  5 Mar 2021 20:40:09 +0300 (+03)
-Date:   Fri, 5 Mar 2021 20:40:09 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, riel@redhat.com,
-        kirill.shutemov@linux.intel.com, ebru.akagunduz@gmail.com,
-        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 0/5] Cleanup and fixup for khugepaged
-Message-ID: <20210305174009.ugxpn223j7aoi4bc@box>
-References: <20210304123013.23560-1-linmiaohe@huawei.com>
+        Fri, 5 Mar 2021 12:43:54 -0500
+Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DsZdv3rkwz67vV5;
+        Sat,  6 Mar 2021 01:36:03 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 5 Mar 2021 18:43:51 +0100
+Received: from [10.47.8.182] (10.47.8.182) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 5 Mar 2021
+ 17:43:50 +0000
+Subject: Re: [PATCH] iommu/dma: Resurrect the "forcedac" option
+To:     Robin Murphy <robin.murphy@arm.com>, <joro@8bytes.org>
+CC:     <iommu@lists.linux-foundation.org>, <dwmw2@infradead.org>,
+        <baolu.lu@linux.intel.com>, <murphyt7@tcd.ie>,
+        <thunder.leizhen@huawei.com>, <will@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <7eece8e0ea7bfbe2cd0e30789e0d46df573af9b0.1614961776.git.robin.murphy@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <76a931ab-fd2a-284e-61ef-9e26bceb4890@huawei.com>
+Date:   Fri, 5 Mar 2021 17:41:52 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304123013.23560-1-linmiaohe@huawei.com>
+In-Reply-To: <7eece8e0ea7bfbe2cd0e30789e0d46df573af9b0.1614961776.git.robin.murphy@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.8.182]
+X-ClientProxiedBy: lhreml713-chm.china.huawei.com (10.201.108.64) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 07:30:08AM -0500, Miaohe Lin wrote:
-> Hi all,
-> This series contains cleanups to remove unneeded return value, use
-> helper function and so on. And there is one fix to correct the wrong
-> result value for trace_mm_collapse_huge_page_isolate().
+On 05/03/2021 16:32, Robin Murphy wrote:
+> In converting intel-iommu over to the common IOMMU DMA ops, it quietly
+> lost the functionality of its "forcedac" option. Since this is a handy
+> thing both for testing and for performance optimisation on certain
+> platforms, reimplement it under the common IOMMU parameter namespace.
 > 
-> More details can be found in the respective changelogs. Thanks!
+> For the sake of fixing the inadvertent breakage of the Intel-specific
+> parameter, remove the dmar_forcedac remnants and hook it up as an alias
+> while documenting the transition to the new common parameter.
 > 
-> Miaohe Lin (5):
->   khugepaged: remove unneeded return value of
->     khugepaged_collapse_pte_mapped_thps()
->   khugepaged: reuse the smp_wmb() inside __SetPageUptodate()
->   khugepaged: use helper khugepaged_test_exit() in __khugepaged_enter()
->   khugepaged: remove unnecessary mem_cgroup_uncharge() in
->     collapse_[file|huge_page]
->   khugepaged: fix wrong result value for
->     trace_mm_collapse_huge_page_isolate()
+
+Do you think that having a kconfig option to control the default for 
+this can help identify the broken platforms which rely on forcedac=0? 
+But seems a bit trivial for that, though.
+
+Or are we bothered (finding them)?
+
+Thanks,
+john
+
+> Fixes: c588072bba6b ("iommu/vt-d: Convert intel iommu driver to the iommu ops")
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> ---
+>   Documentation/admin-guide/kernel-parameters.txt | 15 ++++++++-------
+>   drivers/iommu/dma-iommu.c                       | 13 ++++++++++++-
+>   drivers/iommu/intel/iommu.c                     |  5 ++---
+>   include/linux/dma-iommu.h                       |  2 ++
+>   4 files changed, 24 insertions(+), 11 deletions(-)
 > 
->  mm/khugepaged.c | 47 ++++++++++++++++++++---------------------------
->  1 file changed, 20 insertions(+), 27 deletions(-)
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 04545725f187..835f810f2f26 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1869,13 +1869,6 @@
+>   			bypassed by not enabling DMAR with this option. In
+>   			this case, gfx device will use physical address for
+>   			DMA.
+> -		forcedac [X86-64]
+> -			With this option iommu will not optimize to look
+> -			for io virtual address below 32-bit forcing dual
+> -			address cycle on pci bus for cards supporting greater
+> -			than 32-bit addressing. The default is to look
+> -			for translation below 32-bit and if not available
+> -			then look in the higher range.
+>   		strict [Default Off]
+>   			With this option on every unmap_single operation will
+>   			result in a hardware IOTLB flush operation as opposed
+> @@ -1964,6 +1957,14 @@
+>   		nobypass	[PPC/POWERNV]
+>   			Disable IOMMU bypass, using IOMMU for PCI devices.
+>   
+> +	iommu.forcedac=	[ARM64, X86] Control IOVA allocation for PCI devices.
+> +			Format: { "0" | "1" }
+> +			0 - Try to allocate a 32-bit DMA address first, before
+> +			  falling back to the full range if needed.
+> +			1 - Allocate directly from the full usable range,
+> +			  forcing Dual Address Cycle for PCI cards supporting
+> +			  greater than 32-bit addressing.
+> +
+>   	iommu.strict=	[ARM64] Configure TLB invalidation behaviour
+>   			Format: { "0" | "1" }
+>   			0 - Lazy mode.
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index 9ab6ee22c110..260bf3de1992 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -52,6 +52,17 @@ struct iommu_dma_cookie {
+>   };
+>   
+>   static DEFINE_STATIC_KEY_FALSE(iommu_deferred_attach_enabled);
+> +bool iommu_dma_forcedac __read_mostly;
+> +
+> +static int __init iommu_dma_forcedac_setup(char *str)
+> +{
+> +	int ret = kstrtobool(str, &iommu_dma_forcedac);
+> +
+> +	if (!ret && iommu_dma_forcedac)
+> +		pr_info("Forcing DAC for PCI devices\n");
+> +	return ret;
+> +}
+> +early_param("iommu.forcedac", iommu_dma_forcedac_setup);
+>   
+>   void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
+>   		struct iommu_domain *domain)
+> @@ -438,7 +449,7 @@ static dma_addr_t iommu_dma_alloc_iova(struct iommu_domain *domain,
+>   		dma_limit = min(dma_limit, (u64)domain->geometry.aperture_end);
+>   
+>   	/* Try to get PCI devices a SAC address */
+> -	if (dma_limit > DMA_BIT_MASK(32) && dev_is_pci(dev))
+> +	if (dma_limit > DMA_BIT_MASK(32) && !iommu_dma_forcedac && dev_is_pci(dev))
+>   		iova = alloc_iova_fast(iovad, iova_len,
+>   				       DMA_BIT_MASK(32) >> shift, false);
+>   
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index ee0932307d64..1c32522220bc 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -360,7 +360,6 @@ int intel_iommu_enabled = 0;
+>   EXPORT_SYMBOL_GPL(intel_iommu_enabled);
+>   
+>   static int dmar_map_gfx = 1;
+> -static int dmar_forcedac;
+>   static int intel_iommu_strict;
+>   static int intel_iommu_superpage = 1;
+>   static int iommu_identity_mapping;
+> @@ -451,8 +450,8 @@ static int __init intel_iommu_setup(char *str)
+>   			dmar_map_gfx = 0;
+>   			pr_info("Disable GFX device mapping\n");
+>   		} else if (!strncmp(str, "forcedac", 8)) {
+> -			pr_info("Forcing DAC for PCI devices\n");
+> -			dmar_forcedac = 1;
+> +			pr_warn("intel_iommu=forcedac deprecated; use iommu.forcedac instead\n");
+> +			iommu_dma_forcedac = true;
+>   		} else if (!strncmp(str, "strict", 6)) {
+>   			pr_info("Disable batched IOTLB flush\n");
+>   			intel_iommu_strict = 1;
+> diff --git a/include/linux/dma-iommu.h b/include/linux/dma-iommu.h
+> index 706b68d1359b..13d1f4c14d7b 100644
+> --- a/include/linux/dma-iommu.h
+> +++ b/include/linux/dma-iommu.h
+> @@ -40,6 +40,8 @@ void iommu_dma_get_resv_regions(struct device *dev, struct list_head *list);
+>   void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
+>   		struct iommu_domain *domain);
+>   
+> +extern bool iommu_dma_forcedac;
+> +
+>   #else /* CONFIG_IOMMU_DMA */
+>   
+>   struct iommu_domain;
+> 
 
-Apart from patch 4/5, looks fine. For the rest, you can use:
-
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-
--- 
- Kirill A. Shutemov
