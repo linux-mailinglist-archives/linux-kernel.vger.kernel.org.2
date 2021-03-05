@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781D032F594
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7664332F596
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhCEVyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:54:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhCEVyI (ORCPT
+        id S229669AbhCEV5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 16:57:21 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:44863 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229672AbhCEV5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 16:54:08 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412D8C06175F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 13:54:08 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id h4so4702938ljl.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 13:54:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GsmMJABHzjW2imdiPFuBeArH9DaQyKHwBF7blWrk06o=;
-        b=VYmZTqRzqRfXYYbPq4vU9UkIKIyFebUXF+fHNRjhr3iifCoNKRu+HHXLMeqm3xZDYH
-         i/gCvMdtE+8hqyPAwuxNSjW68kzaprBvJIaGcDgPw+YIXsLC3xeJezFFtsAEpTKdOx/l
-         E56fv7ugEoJKKG17KZJjvavpZVmn3wZVN2pFQitux0AKhBjP0+5b9tL5zUPEgg1DYfvp
-         kqViuMiNWrI04N0ARC+2m8FUediMH3GRg0Otv+JUML8gKufh33kbXSd/Y/kxBGPAOsJl
-         uYraYW1I5R8fGG6MeY5DxqeGmVMhAFur0jBoZOhgMofoB1vh/obnYN37d7XtUsZlSAn6
-         WBuw==
+        Fri, 5 Mar 2021 16:57:14 -0500
+Received: by mail-oi1-f174.google.com with SMTP id x20so4111745oie.11;
+        Fri, 05 Mar 2021 13:57:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GsmMJABHzjW2imdiPFuBeArH9DaQyKHwBF7blWrk06o=;
-        b=i9WzrPsYUeRyTu7XHoiNBTgrrRpBqvF1pkgeN9DqkhV4g9XMtWivDhY4IO9gfFIC0u
-         4+oelJuICV8/OOn5rHJJykhoZH7jT2A4EdxnlBg3sNOVpC6bU8sC6z8XYIAXrXjMFQZ+
-         zSdAHQe8cj4kPrX5TpZRy22iV2eY1VDyHYELTP164PmHEH+erbG97mYgm0slEy63oJVn
-         Hw/IY9DmGk8R5R9t2fwkwV6aa91bqR87BRaL3Eo43SsfikT3LeUjYQdJt2Gex+DO5H3f
-         0cP3mkRGkDiVdTjDrU+g6cF+gXEPyZwrhcvNkB8eLKgDHjg5iuXQQ5g0hNm9632CmPCL
-         W4Uw==
-X-Gm-Message-State: AOAM5306qy3aBBnBJBxowm0ZevtHtf+MwnfNRcyeN2DfkRJ0dc3lIzhN
-        DdGYIVvt0e0uT3/40SGbq2PLji9vqU2iskTuXHWszA==
-X-Google-Smtp-Source: ABdhPJwOIepxZeN1ajeIR8EKiu0p/vlD2aPti7IKeBUrk0Xh0mg0RU2cYdzMCTqxs3DSJnhfPhO1OiTwxhYIVXVSTY0=
-X-Received: by 2002:a2e:9cc4:: with SMTP id g4mr6555699ljj.34.1614981246415;
- Fri, 05 Mar 2021 13:54:06 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MxDQYRpemmvxub9yE7cZIY4oUHqhC/Xcd1pD0uQpZgs=;
+        b=HhYYLtLh/VIqypZ2uM5JrXUTAMOcQ8w45CM+83X+cVX2/1GIqRhQ/5Jr6nyAmGIUsU
+         WNNM4BHXR0NF9jCuU3K0M4TIPoQYnOf4E8x9mi2WfyOl4gSSpSYHNRbiH5+XI7WD7arI
+         ZRwFaRuaZE+bg2PNSzC/Y8U87dTRuMDbLJpkp0+IV7Z0sQRPwt59hxnoTr/H3l0DiVtb
+         rq8UicUEGlok/OnQlgIzeZtrsrfsL7bOOO3s33U1zOo1yfgPtbOIS3qI5mJ7HuxxF0KT
+         38paymmzeUlhSdQxTxyIIDxYMlZmYocvRdUqgiAarKcxavo1yEKzF5KxZwMw67anZ9ek
+         aKuw==
+X-Gm-Message-State: AOAM533edrgobdtB6y4VDpRtFtBD+kskfeFdvzI4MvsTxel9jCvHvfHk
+        RxaVpBIDgN9THdD9+4IpsQ==
+X-Google-Smtp-Source: ABdhPJwUxY21pvbjFVpIIH/mCjRoozUTiukLrG4+o2FKaMdMb9sVM2rZilFqvv8kppGI5rPg2spFyg==
+X-Received: by 2002:aca:1302:: with SMTP id e2mr8517920oii.170.1614981433657;
+        Fri, 05 Mar 2021 13:57:13 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a49sm844234otc.37.2021.03.05.13.57.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 13:57:13 -0800 (PST)
+Received: (nullmailer pid 716064 invoked by uid 1000);
+        Fri, 05 Mar 2021 21:57:12 -0000
+Date:   Fri, 5 Mar 2021 15:57:12 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: cpufreq: cpufreq-qcom-hw: Document SM8350
+ CPUfreq compatible
+Message-ID: <20210305215712.GA710574@robh.at.kernel.org>
+References: <20210216111251.1838149-1-vkoul@kernel.org>
+ <20210217044955.qmbpd43wis7xtjoj@vireshk-i7>
+ <20210218124457.GW2774@vkoul-mobl.Dlink>
+ <20210218154820.lkcut7a657s6aqeg@vireshk-i7>
 MIME-Version: 1.0
-References: <20210305212639.775498-1-shakeelb@google.com>
-In-Reply-To: <20210305212639.775498-1-shakeelb@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 5 Mar 2021 13:53:54 -0800
-Message-ID: <CALvZod5oPTj8r6vKXVGgtKoXVaRWbRX9S2mLVtSnyysqtzr_ng@mail.gmail.com>
-Subject: Re: [PATCH v4] memcg: charge before adding to swapcache on swapin
-To:     Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210218154820.lkcut7a657s6aqeg@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 1:26 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> Currently the kernel adds the page, allocated for swapin, to the
-> swapcache before charging the page. This is fine but now we want a
-> per-memcg swapcache stat which is essential for folks who wants to
-> transparently migrate from cgroup v1's memsw to cgroup v2's memory and
-> swap counters. In addition charging a page before exposing it to other
-> parts of the kernel is a step in the right direction.
->
-> To correctly maintain the per-memcg swapcache stat, this patch has
-> adopted to charge the page before adding it to swapcache. One
-> challenge in this option is the failure case of add_to_swap_cache() on
-> which we need to undo the mem_cgroup_charge(). Specifically undoing
-> mem_cgroup_uncharge_swap() is not simple.
->
-> To resolve the issue, this patch introduces transaction like interface
-> to charge a page for swapin. The function mem_cgroup_charge_swapin_page()
-> initiates the charging of the page and mem_cgroup_finish_swapin_page()
-> completes the charging process. So, the kernel starts the charging
-> process of the page for swapin with mem_cgroup_charge_swapin_page(),
-> adds the page to the swapcache and on success completes the charging
-> process with mem_cgroup_finish_swapin_page().
+On Thu, Feb 18, 2021 at 09:18:20PM +0530, Viresh Kumar wrote:
+> On 18-02-21, 18:14, Vinod Koul wrote:
+> > On 17-02-21, 10:19, Viresh Kumar wrote:
+> > > On 16-02-21, 16:42, Vinod Koul wrote:
+> > > > Add the CPUfreq compatible for SM8350 SoC along with note for using the
+> > > > specific compatible for SoCs
+> > > > 
+> > > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > > > ---
+> > > >  Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt | 4 +++-
+> > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+> > > > index 9299028ee712..3eb3cee59d79 100644
+> > > > --- a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+> > > > +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+> > > > @@ -8,7 +8,9 @@ Properties:
+> > > >  - compatible
+> > > >  	Usage:		required
+> > > >  	Value type:	<string>
+> > > > -	Definition:	must be "qcom,cpufreq-hw" or "qcom,cpufreq-epss".
+> > > > +	Definition:	must be "qcom,cpufreq-hw" or "qcom,cpufreq-epss"
+> > > > +			along with SoC specific compatible:
+> > > > +			  "qcom,sm8350-cpufreq-epss", "qcom,cpufreq-epss"
+> > > 
+> > > And why is SoC specific compatible required here ? Is the implementation on
+> > > sm8350 any different than the ones using "qcom,cpufreq-epss" compatible ?
+> > > 
+> > > FWIW, the same compatible string must be reused until the time there is
+> > > difference in the hardware. The compatible string must be considered as a marker
+> > > for a particular version of the hardware.
+> > 
+> > Rob has indicated that we should use a SoC specific compatible and I
+> > agree with that. We are using both soc and generic one here and driver
+> > will be loaded for generic one.
+> 
+> I am not sure of the context, lets see what Rob has to say on this. I
+> believe we only need 1 compatible string here (whatever it is), as
+> this is just one version of the hardware we are talking about. We
+> already have 2 somehow and you are trying to add one more and I don't
+> fell good about it. :(
 
-And of course I forgot to update the commit message.
+The h/w block is the same features and bugs in every single 
+implementation? If not sure, better be safe.
 
-Andrew, please replace the third paragraph with the following para:
+I don't know that I'd go back and add SoC ones for everything though.
 
-To resolve the issue, this patch decouples the charging for swapin pages from
-mem_cgroup_charge(). Two new functions are introduced,
-mem_cgroup_swapin_charge_page() for just charging the swapin page and
-mem_cgroup_swapin_uncharge_swap() for uncharging the swap slot once the
-page has been successfully added to the swapcache.
+Rob
