@@ -2,109 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B7D32F16B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7D932F134
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhCERia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:38:30 -0500
-Received: from mga02.intel.com ([134.134.136.20]:17653 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhCERiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:38:11 -0500
-IronPort-SDR: F6J+Kgk7lAOFy5tX+zHiII0IEWoNr8/KbDp2RlTcpXQzu1in6Vumu7m8H6R2cHt1Oi0pq/XlCd
- UJFOmu+yNFOw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="174806716"
-X-IronPort-AV: E=Sophos;i="5.81,225,1610438400"; 
-   d="scan'208";a="174806716"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 09:38:10 -0800
-IronPort-SDR: V8S+r/m6WCCO93Id+ivB5a55PlSLR6x9/YP2YufFy5dgDG/IthDhHx7IkRWyqUP5fDy6/ZJ8Iq
- Vbj/h8O2pCUg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,225,1610438400"; 
-   d="scan'208";a="401752423"
-Received: from viggo.jf.intel.com (HELO ray) ([10.54.77.144])
-  by fmsmga008.fm.intel.com with ESMTP; 05 Mar 2021 09:38:09 -0800
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        by ray (Postfix) with ESMTP id 5A751E3E90;
-        Thu,  4 Mar 2021 10:42:59 -0800 (PST)
-Subject: Re: [PATCH v4 2/3] x86/vmemmap: Drop handling of 1GB vmemmap ranges
-To:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210301083230.30924-1-osalvador@suse.de>
- <20210301083230.30924-3-osalvador@suse.de>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <62c5b490-353a-ca3a-d2c8-f02189210c32@intel.com>
-Date:   Thu, 4 Mar 2021 10:42:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229719AbhCERa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:30:27 -0500
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:43184 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhCERaT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 12:30:19 -0500
+Received: by mail-ot1-f47.google.com with SMTP id v12so2519436ott.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 09:30:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tOauJKMgg2MIheNpatw8gIZjWUnov8KxvweDn05QQmo=;
+        b=H2aE8Cadb7mEto1MNFCBdHETtvR4qhk+WUPgq59/WGG0XFNYDAa6UpvSdoL778zu7h
+         EYi+5trnxzun5/T+1DbtBh6CAWz3B5YY8Or+7CVFarvLA3H4nZ5OwhKxmP2egOA1dwAU
+         Uj1VsDhsPR1JitXzSQphDUSfqab1uP6ESNTKSoAlWKVKb8k/hJxH4fZKaOv/lOdxv3+k
+         igcxRMEXy2Wfry/n5IpGwtbuMI4hfHjkokYcFCJ6tmU9l2+aqDAs3et1nvGHbkb6LID5
+         HWWr1X6HnWYclT3/rCCTF029WbPsfmp0j0xW4nKsitsm7hDsHg1td+hes7spB88hURkJ
+         iUrQ==
+X-Gm-Message-State: AOAM53188VBiR2fJ5pYzlI4NyCWuumKGFANf/3CwVkY4RNkieCCgs9xe
+        xH1nKXNDpULs/2dHt9C+JADACEDLJkqXe/x9108=
+X-Google-Smtp-Source: ABdhPJw7kiCY7ypaPshwF6NqTnAaGu425LVQRtZRQtn8d7w/pnpcFU//vxu0toPT0xhLptUvszCnBZIiDhqXTIYv+ho=
+X-Received: by 2002:a05:6830:1057:: with SMTP id b23mr9243050otp.206.1614965418684;
+ Fri, 05 Mar 2021 09:30:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210301083230.30924-3-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210305102405.14940-1-baijiaju1990@gmail.com>
+In-Reply-To: <20210305102405.14940-1-baijiaju1990@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 5 Mar 2021 18:30:07 +0100
+Message-ID: <CAJZ5v0g5vy4PDVGTso+cV1Zz1LvtUN7OsgWntVAFv9pr0a=6mA@mail.gmail.com>
+Subject: Re: [PATCH] base: dd: fix error return code of driver_sysfs_add()
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/1/21 12:32 AM, Oscar Salvador wrote:
-> We never get to allocate 1GB pages when mapping the vmemmap range.
-> Drop the dead code both for the aligned and unaligned cases and leave
-> only the direct map handling.
+On Fri, Mar 5, 2021 at 11:24 AM Jia-Ju Bai <baijiaju1990@gmail.com> wrote:
+>
+> When device_create_file() fails and returns a non-zero value,
+> no error return code of driver_sysfs_add() is assigned.
+> To fix this bug, ret is assigned with the return value of
+> device_create_file(), and then ret is checked.
+>
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-Could you elaborate a bit on why 1GB pages are never used?  It is just
-unlikely to have a 64GB contiguous area of memory that needs 1GB of
-contiguous vmemmap?  Or, does the fact that sections are smaller than
-64GB keeps this from happening?
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+> ---
+>  drivers/base/dd.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+> index 9179825ff646..f94bbef95258 100644
+> --- a/drivers/base/dd.c
+> +++ b/drivers/base/dd.c
+> @@ -413,8 +413,11 @@ static int driver_sysfs_add(struct device *dev)
+>         if (ret)
+>                 goto rm_dev;
+>
+> -       if (!IS_ENABLED(CONFIG_DEV_COREDUMP) || !dev->driver->coredump ||
+> -           !device_create_file(dev, &dev_attr_coredump))
+> +       if (!IS_ENABLED(CONFIG_DEV_COREDUMP) || !dev->driver->coredump)
+> +               return 0;
+> +
+> +       ret = device_create_file(dev, &dev_attr_coredump);
+> +       if (!ret)
+>                 return 0;
+>
+>         sysfs_remove_link(&dev->kobj, "driver");
+> --
+> 2.17.1
+>
