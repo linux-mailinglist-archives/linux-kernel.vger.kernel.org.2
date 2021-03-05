@@ -2,159 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7F132F5FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F66432F605
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:43:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhCEWjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 17:39:17 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:41464 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbhCEWjG (ORCPT
+        id S229701AbhCEWma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 17:42:30 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:48246 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhCEWm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 17:39:06 -0500
-Received: by mail-ot1-f50.google.com with SMTP id w3so3345064oti.8;
-        Fri, 05 Mar 2021 14:39:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0DQGnKEeYikHg3sEmIT2jOgE9H8/5ye18Kh/5SFhQQo=;
-        b=WVcW2+YF0sz7xfsryd7IibwmtsZoufoyVLsFClZCOi5Sht1xVqGzI3HjVLZaTX+JLD
-         hp3qnJL5dYGkxl1N7DBGtAVPzOQsHWHBFNTHtcHW3nMyzQyKUiteO/VJz8l0KsHO+/ni
-         wOLeKzDS5VTbI6qDoSkKrXLkJ7zVzIIt3VgSQ+EWvqttjzCHo7lGpahqdTjlbMXBTUEi
-         8ngdotph0Cgb8pU3eCxI4JhFsj03Kr38rpvZ7s6CeVAXC65kwQHyLbKxrxqXhrrUco9+
-         suOlwfKmZngq8Z/jhiOOKlDaif7CF0/eUPs2JjCwqXz61Gbr805mBG3EQ7/ArSKbRatO
-         nOwQ==
-X-Gm-Message-State: AOAM5321Ivqy+0Le1Z+TYJNqiwJJuD+yIg0uDcN22/m1JRWqCwOQZHAy
-        fUBhLzkrRdECHlEnmZ2uKXpZqCeWSQ==
-X-Google-Smtp-Source: ABdhPJz8HnPbascpSMFIXJ7NJb8pA8YOLOJSoRsOHpjv7cekvS1uWgAniW9p3zvV+NjG0alXEr0XYA==
-X-Received: by 2002:a9d:340b:: with SMTP id v11mr9889048otb.284.1614983946316;
-        Fri, 05 Mar 2021 14:39:06 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a7sm875815oon.8.2021.03.05.14.39.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 14:39:04 -0800 (PST)
-Received: (nullmailer pid 772358 invoked by uid 1000);
-        Fri, 05 Mar 2021 22:39:03 -0000
-Date:   Fri, 5 Mar 2021 16:39:03 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     peng.fan@oss.nxp.com
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, o.rempel@pengutronix.de,
-        devicetree@vger.kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        paul@crapouillou.net, matthias.bgg@gmail.com, agross@kernel.org,
-        patrice.chotard@st.com, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V12 02/10] dt-bindings: remoteproc: imx_rproc: add
- i.MX8MQ/M support
-Message-ID: <20210305223903.GA769908@robh.at.kernel.org>
-References: <1613611500-12414-1-git-send-email-peng.fan@oss.nxp.com>
- <1613611500-12414-3-git-send-email-peng.fan@oss.nxp.com>
+        Fri, 5 Mar 2021 17:42:29 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 63F581C0B81; Fri,  5 Mar 2021 23:42:27 +0100 (CET)
+Date:   Fri, 5 Mar 2021 23:42:26 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Adam Nichols <adam@grimm-co.com>,
+        Chris Leech <cleech@redhat.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        Lee Duncan <lduncan@suse.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH 5.10 083/102] scsi: iscsi: Restrict sessions and handles
+ to admin capabilities
+Message-ID: <20210305224226.GA801@amd>
+References: <20210305120903.276489876@linuxfoundation.org>
+ <20210305120907.364742631@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
 Content-Disposition: inline
-In-Reply-To: <1613611500-12414-3-git-send-email-peng.fan@oss.nxp.com>
+In-Reply-To: <20210305120907.364742631@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 09:24:52AM +0800, peng.fan@oss.nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> Add i.MX8MQ/M support, also include mailbox for rpmsg/virtio usage.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  .../bindings/remoteproc/fsl,imx-rproc.yaml    | 51 ++++++++++++++++++-
->  1 file changed, 50 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-> index 54d2456530a6..52c8e523506d 100644
-> --- a/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-> +++ b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-> @@ -4,7 +4,7 @@
->  $id: "http://devicetree.org/schemas/remoteproc/fsl,imx-rproc.yaml#"
->  $schema: "http://devicetree.org/meta-schemas/core.yaml#"
->  
-> -title: NXP iMX6SX/iMX7D Co-Processor Bindings
-> +title: NXP i.MX Co-Processor Bindings
->  
->  description:
->    This binding provides support for ARM Cortex M4 Co-processor found on some NXP iMX SoCs.
-> @@ -15,6 +15,8 @@ maintainers:
->  properties:
->    compatible:
->      enum:
-> +      - fsl,imx8mq-cm4
-> +      - fsl,imx8mm-cm4
->        - fsl,imx7d-cm4
->        - fsl,imx6sx-cm4
->  
-> @@ -26,6 +28,20 @@ properties:
->      description:
->        Phandle to syscon block which provide access to System Reset Controller
->  
-> +  mbox-names:
-> +    items:
-> +      - const: tx
-> +      - const: rx
-> +      - const: rxdb
-> +
-> +  mboxes:
-> +    description:
-> +      This property is required only if the rpmsg/virtio functionality is used.
-> +      List of <&phandle type channel> - 1 channel for TX, 1 channel for RX, 1 channel for RXDB.
-> +      (see mailbox/fsl,mu.yaml)
-> +    minItems: 1
-> +    maxItems: 3
-> +
->    memory-region:
->      description:
->        If present, a phandle for a reserved memory area that used for vdev buffer,
-> @@ -58,4 +74,37 @@ examples:
->        clocks		= <&clks IMX7D_ARM_M4_ROOT_CLK>;
->      };
->  
-> +  - |
-> +    #include <dt-bindings/clock/imx8mm-clock.h>
-> +    rsc_table: rsc_table@550ff000 {
-> +      no-map;
-> +      reg = <0x550ff000 0x1000>;
-> +    };
-> +
-> +    vdev0vring0: vdev0vring0@55000000 {
-> +      no-map;
-> +      reg = <0x55000000 0x8000>;
-> +    };
-> +
-> +    vdev0vring1: vdev0vring1@55008000 {
-> +      reg = <0x55008000 0x8000>;
-> +      no-map;
-> +    };
-> +
-> +    vdev0buffer: vdev0buffer@55400000 {
-> +      compatible = "shared-dma-pool";
-> +      reg = <0x55400000 0x100000>;
-> +      no-map;
-> +    };
 
-These all go in /reserved-memory, right? Best to omit them from the 
-example.
+--Qxx1br4bt0+wmkIi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi!
+
+> From: Lee Duncan <lduncan@suse.com>
+>=20
+> commit 688e8128b7a92df982709a4137ea4588d16f24aa upstream.
+>=20
+> Protect the iSCSI transport handle, available in sysfs, by requiring
+> CAP_SYS_ADMIN to read it. Also protect the netlink socket by restricting
+> reception of messages to ones sent with CAP_SYS_ADMIN. This disables
+> normal users from being able to end arbitrary iSCSI sessions.
+
+Should not normal filesystem permissions be used?
+
+> +++ b/drivers/scsi/scsi_transport_iscsi.c
+> @@ -132,6 +132,9 @@ show_transport_handle(struct device *dev
+>  		      char *buf)
+>  {
+>  	struct iscsi_internal *priv =3D dev_to_iscsi_internal(dev);
 > +
-> +    imx8mm-cm4 {
-> +      compatible = "fsl,imx8mm-cm4";
-> +      clocks = <&clk IMX8MM_CLK_M4_DIV>;
-> +      mbox-names = "tx", "rx", "rxdb";
-> +      mboxes = <&mu 0 1
-> +                &mu 1 1
-> +                &mu 3 1>;
-> +      memory-region = <&vdev0buffer>, <&vdev0vring0>, <&vdev0vring1>, <&rsc_table>;
-> +      syscon = <&src>;
-> +    };
->  ...
-> -- 
-> 2.30.0
-> 
+> +	if (!capable(CAP_SYS_ADMIN))
+> +		return -EACCES;
+>  	return sprintf(buf, "%llu\n", (unsigned long long)iscsi_handle(priv->is=
+csi_transport));
+>  }
+>  static DEVICE_ATTR(handle, S_IRUGO, show_transport_handle, NULL);
+
+AFAICT we make the file 0444 (world readable) and then fail the read
+with capability check. If the file is not supposed to be
+world-readable, it should have 0400 permissions, right?
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--Qxx1br4bt0+wmkIi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBCs9IACgkQMOfwapXb+vIsdwCgjcQuK8NkqZ8lM4jIvGfPCp1N
+Th4AoKvOHXdxsh61FJi5vnG6bJ8zD4yF
+=wfqM
+-----END PGP SIGNATURE-----
+
+--Qxx1br4bt0+wmkIi--
