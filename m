@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC5C32F38C
+	by mail.lfdr.de (Postfix) with ESMTP id 0F19D32F38B
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCETKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 14:10:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhCETKC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:10:02 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F692C061574;
-        Fri,  5 Mar 2021 11:10:02 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id j8so2862311otc.0;
-        Fri, 05 Mar 2021 11:10:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iXzxwkzjLPM7KiJlrDFoXaEopVztroSTDc/T8EMHkyA=;
-        b=MHFhF1jy/arRNMe+nRyOQC57EQvTOsY6xXLgEOXZBFd9dqdRZIVlBWIC3S97NIQwtQ
-         iDuxd2SYi6D5XyPg6ecwKwFK4V7+/3FnqrNOtHmvpAkgcbm3Tmeap4lZh4OLtlEFugHi
-         Y8xiHkhEjmUq9D9igDgXhvovqcXUTS25i0s39z0sYCvqDJzfvHoiJlbs3Ag9RHvyh1s5
-         RvidPRO0ZNshH3OQQ9y+t6prDNk4K7SWqtf5+UpJa91klgQIrIx45TZqHL8+KGNc9Tnt
-         6J2EYeav9hkbRjCUmC0MQuq5T5MqzH6ELwBol9e12fXYY1/x42Can0cE348oscPRuDGw
-         zdow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iXzxwkzjLPM7KiJlrDFoXaEopVztroSTDc/T8EMHkyA=;
-        b=dBd5IRzcVF18KP8Yo/mION5z4cbMHaqns9fOi3DttltOfl2tvZ31TCYBhbPRBJgYok
-         hQ8/nzj2/7JM3B/olMmUt701Vk95C49qUxgD99fSD6tJh4uHLEPRJ5fBm7yxiNf8Y/nF
-         RgBq4lUY1avX/HWwnbzkDiIrO6T7wYrJrfhqgdgYPoiYv0h3Kd5rR2yzi/q1x2vfi8+t
-         bUIeMB/wMM82a6FKNcEcZHiSR9HAo4IWjOHODQx+yMO7d0UbWVPDGbFfGT7zTQzn1Nxt
-         Fhk2IKTAXG0eVRxyfvMK+48zhBK8m+b9fGwaXbKffRyoDuO6iz34VL/RTAhtJZt8GP41
-         xsAA==
-X-Gm-Message-State: AOAM530a09shdz3+RIWCCZbIIw8alT4Gddw0u+e8K8ph4IXtV0zRxe/j
-        1ncCErFOvIYLHhZIaO9PlmLs/Mc+gpdexTGw0dM=
-X-Google-Smtp-Source: ABdhPJx2hSgeK+Yqg7IMRFfwiaPsKVqALRblWQSXFF33Bri5Jv38Yca6XaIqX4fmYVUvCMVExpkjIb4XO50ayw6IDFg=
-X-Received: by 2002:a9d:20c3:: with SMTP id x61mr9318715ota.311.1614971401734;
- Fri, 05 Mar 2021 11:10:01 -0800 (PST)
+        id S229563AbhCETKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 14:10:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229486AbhCETJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 14:09:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12653650A1;
+        Fri,  5 Mar 2021 19:09:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614971398;
+        bh=cuKug+dm7eNzqdSen+voo2Z8E6BB2Gh6+BQHsew7zRQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=r3dsaf+uWHXgpXj4Zl6sideUgpWjl/mPN438Afdo/QoEnuBF5mG2lLFFy7BxO/H5X
+         oO0fYhVq4LSKYjorIQwKd1xTzQZPl1+jewp4KQ8KfwqPk0/5wegeK7BzLv1dvmHiOw
+         TbGzUHg1qj2IWhFTw30PEViM6UQBnCVkIApJcWBaSMl/cl2kTuVU0yL3XteyHYZ1Gc
+         nmQ+IY03jKcyG5nfag657Dub5KEh9CwO0H78Z6DOLsgglrybDcak1c1atmjj1blZC2
+         kz2tgYhYXZEw3UeUKF3jhqhjpn9Gtcq7sJLg6izeTVqX9/QyGS+vqC2dRBSTlzKAtQ
+         9cv0Dk9pJtvtQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id ADBFE3523946; Fri,  5 Mar 2021 11:09:57 -0800 (PST)
+Date:   Fri, 5 Mar 2021 11:09:57 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH] tools/memory-model: Fix smp_mb__after_spinlock() spelling
+Message-ID: <20210305190957.GE2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210305102823.415900-1-bjorn.topel@gmail.com>
+ <20210305153655.GC38200@rowland.harvard.edu>
+ <e90fee12-a29e-cddb-5db3-24d92d4e03f8@intel.com>
+ <20210305182650.GA2713@paulmck-ThinkPad-P72>
+ <20210305185924.GA48113@rowland.harvard.edu>
 MIME-Version: 1.0
-References: <20210303132510.66904-1-colin.king@canonical.com>
-In-Reply-To: <20210303132510.66904-1-colin.king@canonical.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 5 Mar 2021 14:09:50 -0500
-Message-ID: <CADnq5_Pqd0J_VpSkK_hAd9mUg2YgBLcZCEo3u7pXADPAW0_Zkg@mail.gmail.com>
-Subject: Re: [PATCH][next] drm/amdgpu/display: remove redundant continue statement
-To:     Colin King <colin.king@canonical.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210305185924.GA48113@rowland.harvard.edu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  thanks.
+On Fri, Mar 05, 2021 at 01:59:24PM -0500, Alan Stern wrote:
+> On Fri, Mar 05, 2021 at 10:26:50AM -0800, Paul E. McKenney wrote:
+> > On Fri, Mar 05, 2021 at 04:41:49PM +0100, Björn Töpel wrote:
+> > > On 2021-03-05 16:36, Alan Stern wrote:
+> > > > On Fri, Mar 05, 2021 at 11:28:23AM +0100, Björn Töpel wrote:
+> > > > > From: Björn Töpel <bjorn.topel@intel.com>
+> > > > > 
+> > > > > A misspelled invokation of git-grep, revealed that
+> > > > -------------------^
+> > > > 
+> > > > Smetimes my brain is a little slow...  Do you confirm that this is a
+> > > > joke?
+> > > > 
+> > > 
+> > > I wish, Alan. I wish.
+> > > 
+> > > Looks like I can only spel function names correctly.
+> > 
+> > Heh!  I missed that one completely.  Please see below for a wortschmied
+> > commit.
+> > 
+> > 							Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > commit 1c737ce34715db9431f6b034f92dbf09d954126d
+> > Author: Björn Töpel <bjorn.topel@intel.com>
+> > Date:   Fri Mar 5 11:28:23 2021 +0100
+> > 
+> >     tools/memory-model: Fix smp_mb__after_spinlock() spelling
+> >     
+> >     A misspelled git-grep regex revealed that smp_mb__after_spinlock()
+> >     was misspelled in explanation.txt.
+> >     
+> >     This commit adds the missing "_" to smp_mb__after_spinlock().
+> 
+> Strictly speaking, the commit adds a missing "_" to 
+> smp_mb_after_spinlock().  If it added anything to 
+> smp_mb__after_spinlock(), the result would be incorrect.
+> 
+> How about just:
+> 
+>     A misspelled git-grep regex revealed that smp_mb__after_spinlock()
+>     was misspelled in explanation.txt.  This commit adds the missing "_".
 
-Alex
+Very good, updated as you suggest, thank you!
 
-On Wed, Mar 3, 2021 at 8:25 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The continue statement in a for-loop is redudant and can be removed.
-> Clean up the code to address this.
->
-> Addresses-Coverity: ("Continue as no effect")
-> Fixes: b6f91fc183f7 ("drm/amdgpu/display: buffer INTERRUPT_LOW_IRQ_CONTEXT interrupt work")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c
-> index 8ce10d0973c5..d3c687d07ee6 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_irq.c
-> @@ -520,9 +520,7 @@ static void amdgpu_dm_irq_schedule_work(struct amdgpu_device *adev,
->                 return;
->
->         list_for_each_entry (handler_data, handler_list, list) {
-> -               if (!queue_work(system_highpri_wq, &handler_data->work)) {
-> -                       continue;
-> -               } else {
-> +               if (queue_work(system_highpri_wq, &handler_data->work)) {
->                         work_queued = true;
->                         break;
->                 }
-> --
-> 2.30.0
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+							Thanx, Paul
