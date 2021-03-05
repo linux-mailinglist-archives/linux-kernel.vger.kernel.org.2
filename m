@@ -2,69 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32EE132ECA5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:56:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE2C32ECAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhCEN43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:56:29 -0500
-Received: from www.zeus03.de ([194.117.254.33]:53252 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230391AbhCEN4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:56:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=k1; bh=/fW9K0irdCEFidceFN8Hjw5GYun
-        xF6GvAyPEXzxASEQ=; b=bgjlLBawYusbRljl7HwsCEDsu1hEgP6yTzkhFH3vQFG
-        7Vhia2iR5YML3XzZF6k6PcwI0LgG+FyJ+8D8eidK4v52RLSZ2aHwHCaNhnu4QtHJ
-        h4+5QPNXojnP4QbNG9LFSyCk5tDZ4KeNjLeXVKJyiY8LDuPBijHVJoh/NP0w0qeg
-        =
-Received: (qmail 2241771 invoked from network); 5 Mar 2021 14:56:11 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Mar 2021 14:56:11 +0100
-X-UD-Smtp-Session: l3s3148p1@XPIdcsq8TJlN91Vm
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Subject: [PATCH] dt-bindings: timer: renesas,cmt: add r8a779a0 CMT support
-Date:   Fri,  5 Mar 2021 14:56:03 +0100
-Message-Id: <20210305135603.1227-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.29.2
+        id S230399AbhCEN5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:57:55 -0500
+Received: from mail-vs1-f47.google.com ([209.85.217.47]:44872 "EHLO
+        mail-vs1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229737AbhCEN5m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 08:57:42 -0500
+Received: by mail-vs1-f47.google.com with SMTP id d25so980988vsr.11;
+        Fri, 05 Mar 2021 05:57:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wlv2raXctHckbeXP1zL3FcneicW28YXK69//DrBPOK4=;
+        b=tdtJrAcUbrToxEtM2TRpna6tv9k49Qr/0H9WtkYttdTOYj6CN3dp+UB5Ucetd1bKjk
+         GXFaYQbbqecZdU35Dvyqv+LmI7fTJVAkFOfUANigRmecnyEsfWelVRKHJheGjYf55dOX
+         PyhZ0s2eztf8hwARqLMvAyzOJwMKVw9d+UeNl0bAJaMH217Mu8QL1Z6LABbyY0+T8aiY
+         wB+1mN1OaM9tuHaeQPCPbcd8r5DV1yoZyJMDPc6K3Ur7RRZJo6LdqDrgtrubJYN4URE7
+         N5LN6zMn26rUYmWpZR/EU8yd5XaIp5Ps1YuFEKL16DvjjxDF6PgeanHcgjoon848MmXo
+         DARw==
+X-Gm-Message-State: AOAM5308ati/nniXK1f5EIDApuzGNIPgI61n2jMqKf2iZwqWjw3ugosi
+        heaaV7AZObceHa+BJl9aotSWN254ZcoSUi933V8=
+X-Google-Smtp-Source: ABdhPJw0V2g02eK+sAULP8zrVz/fuz3tVVUfaWr3omUwlkrp6fuCKZw8yaHGFawnjKLWZ05hjvKPz2X/m7/k7/1fOYg=
+X-Received: by 2002:a05:6102:2403:: with SMTP id j3mr5822400vsi.40.1614952661682;
+ Fri, 05 Mar 2021 05:57:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-2-brad@pensando.io>
+In-Reply-To: <20210304034141.7062-2-brad@pensando.io>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 5 Mar 2021 14:57:30 +0100
+Message-ID: <CAMuHMdUsFb-qpssVXkxv0gV8qpi6mUNx+3o+ZUhc5UMCKppzrQ@mail.gmail.com>
+Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
+To:     Brad Larson <brad@pensando.io>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CMT passed the testsuite fine, so let's add it.
+Hi Brad,
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
+On Thu, Mar 4, 2021 at 4:59 AM Brad Larson <brad@pensando.io> wrote:
+> This GPIO driver is for the Pensando Elba SoC which
+> provides control of four chip selects on two SPI busses.
+>
+> Signed-off-by: Brad Larson <brad@pensando.io>
 
- Documentation/devicetree/bindings/timer/renesas,cmt.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks for your patch!
 
-diff --git a/Documentation/devicetree/bindings/timer/renesas,cmt.yaml b/Documentation/devicetree/bindings/timer/renesas,cmt.yaml
-index 428db3a21bb9..363ec28e07da 100644
---- a/Documentation/devicetree/bindings/timer/renesas,cmt.yaml
-+++ b/Documentation/devicetree/bindings/timer/renesas,cmt.yaml
-@@ -79,6 +79,7 @@ properties:
-               - renesas,r8a77980-cmt0     # 32-bit CMT0 on R-Car V3H
-               - renesas,r8a77990-cmt0     # 32-bit CMT0 on R-Car E3
-               - renesas,r8a77995-cmt0     # 32-bit CMT0 on R-Car D3
-+              - renesas,r8a779a0-cmt0     # 32-bit CMT0 on R-Car V3U
-           - const: renesas,rcar-gen3-cmt0 # 32-bit CMT0 on R-Car Gen3 and RZ/G2
- 
-       - items:
-@@ -94,6 +95,7 @@ properties:
-               - renesas,r8a77980-cmt1     # 48-bit CMT on R-Car V3H
-               - renesas,r8a77990-cmt1     # 48-bit CMT on R-Car E3
-               - renesas,r8a77995-cmt1     # 48-bit CMT on R-Car D3
-+              - renesas,r8a779a0-cmt1     # 48-bit CMT on R-Car V3U
-           - const: renesas,rcar-gen3-cmt1 # 48-bit CMT on R-Car Gen3 and RZ/G2
- 
-   reg:
+> --- a/drivers/gpio/Kconfig
+> +++ b/drivers/gpio/Kconfig
+> @@ -241,6 +241,12 @@ config GPIO_EIC_SPRD
+>         help
+>           Say yes here to support Spreadtrum EIC device.
+>
+> +config GPIO_ELBA_SPICS
+> +       bool "Pensando Elba SPI chip-select"
+> +       depends on ARCH_PENSANDO_ELBA_SOC
+
+Any specific reason this can't be "... || COMPILE_TEST"?
+
+> +       help
+> +         Say yes here to support the Pensndo Elba SoC SPI chip-select driver
+> +
+>  config GPIO_EM
+>         tristate "Emma Mobile GPIO"
+>         depends on (ARCH_EMEV2 || COMPILE_TEST) && OF_GPIO
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.29.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
