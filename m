@@ -2,70 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4D832F6B1
+	by mail.lfdr.de (Postfix) with ESMTP id 564CE32F6B2
 	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCEXij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 18:38:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhCEXiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 18:38:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 907B9650A0;
-        Fri,  5 Mar 2021 23:38:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614987485;
-        bh=Y1/XL2oAp80BxQKqdsYH7jDkWbHHD+zI8kViEFbZ2jM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LflxLg58/wTKQEB71QsI/MNiUzk3aG8jo73zpliqpi/nanh/6OTBXCsOw1trvltj1
-         5ssTzhtVfGBxoSJM6+n7gx9NFJVxG4+ExBOvqI2rb8bimS9IYlCNBWj68nXGjucUyD
-         QH59PGrmbtVZm4ebcT4rkATK6BkvlpnItE6Iu0dqvIzh2BGCwlt8XhMQFZ+xZFh1/B
-         w0jBB6g24Q1LJ3flDNCfj9iJj4E6DITOV7zAXesY4pSTJiztES+WnjuBQ+yygrLf6p
-         pjvR56pqJbGn9AIxFSdxp0vDzjZxgoB2SqYpyOnDRSIcCoO6Qe6ST3jfZRSw1CO7Ei
-         VhNQV+aiwZNgQ==
-Received: by pali.im (Postfix)
-        id 237FC105A; Sat,  6 Mar 2021 00:38:03 +0100 (CET)
-Date:   Sat, 6 Mar 2021 00:38:02 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.11 16/67] net: sfp: add mode quirk for GPON
- module Ubiquiti U-Fiber Instant
-Message-ID: <20210305233802.x3g6bfmgbpwmv3e2@pali>
-References: <20210224125026.481804-16-sashal@kernel.org>
- <20210224125212.482485-12-sashal@kernel.org>
- <20210225190306.65jnl557vvs6d7o3@pali>
- <YEFgHQt6bp7yBjH/@sashalap>
+        id S229938AbhCEXik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 18:38:40 -0500
+Received: from pb-smtp21.pobox.com ([173.228.157.53]:62291 "EHLO
+        pb-smtp21.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229848AbhCEXiV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 18:38:21 -0500
+Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
+        by pb-smtp21.pobox.com (Postfix) with ESMTP id EF225121D7C;
+        Fri,  5 Mar 2021 18:38:20 -0500 (EST)
+        (envelope-from junio@pobox.com)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=from:to:cc
+        :subject:references:date:in-reply-to:message-id:mime-version
+        :content-type; s=sasl; bh=JiJZnAx2HE7c1+BaJK3156FqSFU=; b=pf8Yxq
+        mYIRallHhrew+bDCKs4rJzZ/1iyLfnMTd3W1BiIpG0Cp0ODy86JENO7MFiDNJXV4
+        wnp2La68fW7o+bczGqxU/BBW71b15+a0vk/LSh4rmSNlfJ0SujdWoD9mW33q7N81
+        3Q9T+MXf6rIFbJl/5gO4axWmRXc1DOZbA9d40=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=pobox.com; h=from:to:cc
+        :subject:references:date:in-reply-to:message-id:mime-version
+        :content-type; q=dns; s=sasl; b=KaA5BH3zTbiIwrZ+QfNopbPnRUcE5BJO
+        2wRc9lHUyP1W35en67tPhgzp85h0hC5ovtlzsUlPR/dJz/Ex1Uk30KSk+3+E5Ag7
+        2PySWVtdClOBKHd5P/fKhAhrbigmJ2v3LgM+ttqmqXtE2ev2pHylTyTUIujFRunx
+        v0955k+Qv8o=
+Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp21.pobox.com (Postfix) with ESMTP id E7A55121D7B;
+        Fri,  5 Mar 2021 18:38:20 -0500 (EST)
+        (envelope-from junio@pobox.com)
+Received: from pobox.com (unknown [34.74.119.39])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp21.pobox.com (Postfix) with ESMTPSA id 41F89121D7A;
+        Fri,  5 Mar 2021 18:38:18 -0500 (EST)
+        (envelope-from junio@pobox.com)
+From:   Junio C Hamano <gitster@pobox.com>
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     Christian Couder <christian.couder@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, git <git@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: A note on the 5.12-rc1 tag
+References: <CAHk-=wjnzdLSP3oDxhf9eMTYo7GF-QjaNLBUH1Zk3c4A7X75YA@mail.gmail.com>
+        <YEFIXFyP5tWrPDMw@localhost>
+        <CAP8UFD07ezNOXU5Q3RZAHOJGMjuaJY-R=x=hhQcQvYOAKzKF2g@mail.gmail.com>
+        <xmqq8s71bhfm.fsf@gitster.c.googlers.com> <YEK5d+8TSqS/rdMu@localhost>
+Date:   Fri, 05 Mar 2021 15:38:16 -0800
+In-Reply-To: <YEK5d+8TSqS/rdMu@localhost> (Josh Triplett's message of "Fri, 5
+        Mar 2021 15:06:31 -0800")
+Message-ID: <xmqqmtvh893r.fsf@gitster.c.googlers.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1.90 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YEFgHQt6bp7yBjH/@sashalap>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
+X-Pobox-Relay-ID: DD062490-7E0B-11EB-91DC-D609E328BF65-77302942!pb-smtp21.pobox.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 04 March 2021 17:33:01 Sasha Levin wrote:
-> On Thu, Feb 25, 2021 at 08:03:06PM +0100, Pali Rohár wrote:
-> > On Wednesday 24 February 2021 07:49:34 Sasha Levin wrote:
-> > > From: Pali Rohár <pali@kernel.org>
-> > > 
-> > > [ Upstream commit f0b4f847673299577c29b71d3f3acd3c313d81b7 ]
-> > 
-> > Hello! This commit requires also commit~1 from that patch series:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=426c6cbc409cbda9ab1a9dbf15d3c2ef947eb8c1
-> > 
-> > Without it kernel cannot read EEPROM from Ubiquiti U-Fiber Instant
-> > module and therefore the hook based on EEPROM data which is below would
-> > not be applied.
-> 
-> Looks like that commit is already in, thanks!
+Josh Triplett <josh@joshtriplett.org> writes:
 
-Yes! Now I see that commit in 5.11 queue. So 5.11 would be OK.
+>> It is trivial for you to fetch the refs/notes/do-not--checkout notes
+>> tree from me and merge it into your refs/notes/do-not--checkout
+>> notes tree, I would think; "git notes merge" may have room for
+>> improvement, but essentially it would just want a union of two
+>> sets, no?
+>
+> My primary concern about notes is that they require manual
+> action/configuration in order to share. I was looking for a solution
+> that would automatically protect anyone who pulled from linux.git
+> (directly or indirectly), without them having to specifically take a
+> separate step to sync this information.
 
-But I do not see it in 5.10 queue. In 5.10 queue I see only backport of
-f0b4f8476732 commit. 426c6cbc409c seems to be still missing.
+If "without any configuration" is a hard requirement, then by
+definition you'd need to live with what you get from "git clone" and
+"git pull" alone, so be it the notes or any other mechanism, there
+currently is nothing that lets you do the "skip this part while
+bisection".
 
-Could you check it?
+
