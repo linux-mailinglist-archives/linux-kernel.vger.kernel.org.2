@@ -2,107 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD0332E6E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6AD232E690
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbhCEK7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:59:00 -0500
-Received: from 4.mo173.mail-out.ovh.net ([46.105.34.219]:48214 "EHLO
-        4.mo173.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhCEK60 (ORCPT
+        id S229608AbhCEKkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:40:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhCEKjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:58:26 -0500
-X-Greylist: delayed 2018 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Mar 2021 05:58:26 EST
-Received: from player787.ha.ovh.net (unknown [10.110.103.133])
-        by mo173.mail-out.ovh.net (Postfix) with ESMTP id 6BE501605C7
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 11:39:47 +0100 (CET)
-Received: from milecki.pl (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
-        (Authenticated sender: rafal@milecki.pl)
-        by player787.ha.ovh.net (Postfix) with ESMTPSA id 46D2E1BE6FC32;
-        Fri,  5 Mar 2021 10:39:37 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-97G002147fd398-b58b-41e1-ab1a-00ab95efaa5d,
-                    4F7D11A3904BD8E553EC742B87CBB6774FEDAA0F) smtp.auth=rafal@milecki.pl
-X-OVh-ClientIp: 194.187.74.233
-Subject: Re: [PATCH 2/2] nvmem: iomap: new driver exposing NVMEM accessible
- using I/O mapping
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivek Unune <npcomplete13@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
-References: <20210304144132.24098-1-zajec5@gmail.com>
- <20210304144132.24098-2-zajec5@gmail.com>
- <047bced8-6c20-4a0a-c7ea-e0ad83318461@linaro.org>
- <93708a21-3444-f68e-c834-a4f769a0acba@milecki.pl>
- <35e498b6-3b2c-d154-db00-d755af339b60@linaro.org>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Message-ID: <ba4e4376-7d75-4b0e-9d59-26e32dbe2029@milecki.pl>
-Date:   Fri, 5 Mar 2021 11:39:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Fri, 5 Mar 2021 05:39:53 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06DDC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 02:39:52 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id w7so995836wmb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 02:39:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QAdiWW4xwrryTGLdOvOtGLA/wZ8tOat9yGLAJoNAxMg=;
+        b=zSq01aMNZU/0lbjMkjkR1Uw1zAN1FtTgasQkQglRVDE9fQtiNLSJ346wtKBSn/qbsP
+         //qeKC0aTNWf4/I9QENg940YXKDXMaxje+guRsevzMpW931uh2m3y/AFE2jhMXNe1PAD
+         NYx587Huhc2tdlTd+Re0llJ8+7Jhrs09WNfp2Li77VNZHS6q5w8f4+oyibgeqE+DsWzR
+         LOURo4gs2+u+TOycVrYnOcgUnhJhaH1fVdmbVdGXt7C3lusS7VQRMb2+S96OFXwJY+X9
+         ys25kGCEjb0pZyi5/c2guIM0kWkyh5t/BnfA6PRxJ+CqyJW/22VeuRWbdoWUPHBVq+we
+         T5dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QAdiWW4xwrryTGLdOvOtGLA/wZ8tOat9yGLAJoNAxMg=;
+        b=gpq8kMpL6Q1heXPe7utO0eXsC8vmbG+Bc71n+Ts2tygRHi7rHleUcy76V4NVzOinAY
+         O7VzWKQsDSEteyVRJjbs5N6btTdAxY1q0xvdGlo/NyQNxaIYW3hArY5tIXEJ3Z+is4cC
+         chYhCDTtt2lK7FHEECfiBTQ0CjjaDHprijEraE2DWDGstAXX3YBIAUyCtz/ix5tVnbOX
+         4ug5lsoWks1STIegHc60LYuEy3RkVOZxNzdN4RNbb5R5th0gm6w+Fp6KsN+e2O3ZaLkF
+         ugTJv7Ot/aaQ3fgt5oyv36a7JvVWtFXKCg+Eun56iuXHvqZYJ7ucK7WPfLaPeeWYSwD5
+         eZfg==
+X-Gm-Message-State: AOAM5324CTfVlhZEH1UCz6ULpNd75UzD+3fEKZWDBQ5vQ+BvBJ/wxsH+
+        FqXpFr7JLePNLPv0dOmIDmRZhQ==
+X-Google-Smtp-Source: ABdhPJyg+mYo+eyJo4nlyLEW6IIs5uu8pJlCxPE06eXsjVFve/od1o2v389wAUalmaTvP7K1+U1x6A==
+X-Received: by 2002:a05:600c:4f0b:: with SMTP id l11mr8192686wmq.102.1614940791595;
+        Fri, 05 Mar 2021 02:39:51 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id t8sm4115141wrr.10.2021.03.05.02.39.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Mar 2021 02:39:51 -0800 (PST)
+Subject: Re: [PATCH 2/3] soundwire: qcom: add auto enumeration support
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        vkoul@kernel.org
+Cc:     sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
+ <20210226170250.9067-3-srinivas.kandagatla@linaro.org>
+ <0c551b23-7ed4-59d7-72c2-284bdf8584f1@linux.intel.com>
+ <4721dd27-c8ce-f988-3c10-794841390656@linaro.org>
+ <01e5ea33-1813-069a-1674-042141947323@linux.intel.com>
+ <601b585e-c3e3-4006-b078-d54c3fd36438@linaro.org>
+ <c5fe182d-1769-73ed-0268-5353fd030521@linux.intel.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <5b067c8d-0d90-1531-a1b1-118fa73c0078@linaro.org>
+Date:   Fri, 5 Mar 2021 10:39:50 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <35e498b6-3b2c-d154-db00-d755af339b60@linaro.org>
+In-Reply-To: <c5fe182d-1769-73ed-0268-5353fd030521@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 752945565747678743
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtiedgudekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepkeduheejheffudefhffghfegjeejleetkeevueelveegkefhhfffieehleelgfevnecukfhppedtrddtrddtrddtpdduleegrddukeejrdejgedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejkeejrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprhgrfhgrlhesmhhilhgvtghkihdrphhlpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.03.2021 11:33, Srinivas Kandagatla wrote:
-> On 05/03/2021 10:24, Rafał Miłecki wrote:
->>>>
->>>> +static int iomap_read(void *context, unsigned int offset, void *val,
->>>> +              size_t bytes)
->>>> +{
->>>> +    struct iomap *priv = context;
->>>> +    u8 *src = priv->base + offset;
->>>> +    u8 *dst = val;
->>>> +    size_t tmp;
->>>> +
->>>> +    tmp = offset % 4;
->>>> +    memcpy_fromio(dst, src, tmp);
->>>> +    dst += tmp;
->>>> +    src += tmp;
->>>> +    bytes -= tmp;
->>>> +
->>>> +    tmp = rounddown(bytes, 4);
->>>> +    __ioread32_copy(dst, src, tmp / 4);
->>>> +    dst += tmp;
->>>> +    src += tmp;
->>>> +    bytes -= tmp;
->>>> +
->>>> +    memcpy_fromio(dst, src, bytes);
->>>> +
->>>
->>>
->>> You could just do this!
->>>
->>>      while (bytes--)
->>>          *val++ = readb(priv->base + offset + i++);
->>
->> Do you mean that as replacement for "memcpy_fromio" or the whole
->> function code?
-> 
-> Yes please!
-> 
->> The reason for using __ioread32_copy() was to improve reading
->> performance (using aligned 32 bit access where possible). I'm not sure
->> if that really matters?
-> 
-> Just simple while loop is much readable than the previous code TBH!
-> 
->>
-> 
->> P.S.
->> Please don't yell at me in every sentence :( Makes me a bit sad :(
-> Sorry!! I did not mean anything as such! :-)
 
-All clear (I hope)! Thanks for your review!
+
+On 03/03/2021 16:35, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 3/3/21 3:38 AM, Srinivas Kandagatla wrote:
+>>
+>>
+>> On 02/03/2021 14:34, Pierre-Louis Bossart wrote:
+>>>
+>>>
+>>>>>> +        if (!val1 && !val2)
+>>>>>> +            break;
+>>>>>> +
+>>>>>> +        addr = buf2[1] | (buf2[0] << 8) | (buf1[3] << 16) |
+>>>>>> +            ((u64)buf1[2] << 24) | ((u64)buf1[1] << 32) |
+>>>>>> +            ((u64)buf1[0] << 40);
+>>>>>> +
+>>>>>> +        sdw_extract_slave_id(bus, addr, &id);
+>>>>>> +        /* Now compare with entries */
+>>>>>> +        list_for_each_entry_safe(slave, _s, &bus->slaves, node) {
+>>>>>> +            if (sdw_compare_devid(slave, id) == 0) {
+>>>>>> +                u32 status = qcom_swrm_get_n_device_status(ctrl, i);
+>>>>>> +                if (status == SDW_SLAVE_ATTACHED) {
+>>>>>> +                    slave->dev_num = i;
+>>>>>> +                    mutex_lock(&bus->bus_lock);
+>>>>>> +                    set_bit(i, bus->assigned);
+>>>>>> +                    mutex_unlock(&bus->bus_lock);
+>>>>>> +
+>>>>>> +                }
+>>>>>
+>>>>> And that part is strange as well. The bus->assigned bit should be 
+>>>>> set even if the Slave is not in the list provided by platform 
+>>>>> firmware. It's really tracking the state of the hardware, and it 
+>>>>> should not be influenced by what software knows to manage.
+>>>>
+>>>> Am not 100% sure If I understand the concern here, but In normal 
+>>>> (non auto enum) cases this bit is set by the bus code while its 
+>>>> doing enumeration to assign a dev number from the assigned bitmap!
+>>>>
+>>>> However in this case where auto enumeration happens it makes sense 
+>>>> to set this here with matching dev number!
+>>>>
+>>>> AFAIU from code, each bit in this bitmap corresponds to slave dev 
+>>>> number!
+>>>
+>>> Yes, but the point was "why do you compare with information coming 
+>>> from platform firmware"? if the hardware reports the presence of 
+>>> devices on 
+>>
+>> This is the logic that hardware IP document suggests to use to get get 
+>> the correct the device number associated with the slave!
+>>
+>>
+>>> the link, why not use the information as is?
+>>>
+>>> You recently added code that helps us deal with devices that are not 
+>>> listed in DT or ACPI tables, so why would we filter in this specific 
+>>> loop?
+> 
+> I don't think my point was understood, so let me try to explain it 
+> differently.
+> 
+> it's my understanding that the hardware reads the DevID registers and 
+> writes a Device Number - so that the entire enumeration sequence started 
+> by reading DevID0 and finished by a successful write to SCP_DevNum is 
+> handled in hardware.
+> 
+> The question is: what happens if that device is NOT described in the 
+> Device Tree data? The loop over bus->slaves will not find this device by 
+> comparing with known devID values, so the set_bit(i, bus->assigned) will 
+> not happen.
+
+yes, that is true, There is no way we can assign a dev_number to the 
+device which is not enumerated on the bus!
+
+Am sure this is the same behavior with soundwire core too, atleast form 
+the code I can see it sets the assigned bit for only the devices that 
+are enumerated on the bus! Not all the devices specified in DT!
+Unless I missed something!
+
+--srini
+
+
+--srini
+> 
+> 
