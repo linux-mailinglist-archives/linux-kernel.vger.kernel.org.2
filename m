@@ -2,178 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D7F32E4C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C47432E4CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbhCEJ1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:27:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhCEJ1P (ORCPT
+        id S229653AbhCEJ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:28:19 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:35630 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhCEJ1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:27:15 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6F1C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 01:27:15 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id b7so1609745edz.8
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 01:27:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gxJmRko8zfsnlnfj+4nCVTlalJzJ5o7jDUz31ZEenxc=;
-        b=WYzFtrqAtFmeJiWRU0sKPU3fozVGqNEbo5BB28EDzF0zCCut67hVDjus9nAEI9F2dF
-         WV/PC+IiB3FVUYngCCTs+7Thn253+HMXpBGVXIX+PM34uYb3UrDfo3ka2o4o+016vrP6
-         m4AC3FWWmS/ojc24NaV6u2X8qHjuCOx2Xe5OM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gxJmRko8zfsnlnfj+4nCVTlalJzJ5o7jDUz31ZEenxc=;
-        b=HU473N1RwvXBF/NntbsLYH4B7X2Z/HVYueWWlgE1Ya6PWdSocZZInLZgxUM+JOaEa/
-         zH361DRq0JwOSZOZlileFsNaZmBBrgAjVSBSyx5vLjiS7nlRJz6/gyTm1q5C5rmjnTYv
-         vSSeltiGhGZh+gmE/iZWMuK+onxXCYgcgDBFUOQoIdmDIuGlQjcFqNGPBqX26KYOHDT4
-         wFuTWYbEjVsSaxwrOEY3ydr+gav8LatghYFphzbx5/IPh1nXQcv56zJjk63q2M4oW+sK
-         oWlBoZft9bdb5XqwANoCMNpwEGOoV6sV8lk/SOiLWvWhTezIvkzsQeiukGP5ck1tvACA
-         h3LA==
-X-Gm-Message-State: AOAM530eg73yh03NbZvgNepmOX4hQTZqNjku4qZ939+QQVfF537ysQiW
-        oLLDBb7lwwaBF7bRwItoJBRHtQ==
-X-Google-Smtp-Source: ABdhPJwqMTg6XSO15OOv6ShlcEyyPdz3FDam4sT7aPKjfjhlL33Dknw/bFp2OUPAFUYSOTRtgMx+Tg==
-X-Received: by 2002:aa7:ce16:: with SMTP id d22mr8301819edv.95.1614936433889;
-        Fri, 05 Mar 2021 01:27:13 -0800 (PST)
-Received: from prevas-ravi.prevas.se ([80.208.71.141])
-        by smtp.gmail.com with ESMTPSA id n5sm1240929edw.7.2021.03.05.01.27.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 01:27:13 -0800 (PST)
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH v2] kbuild: add CONFIG_VMLINUX_MAP expert option
-Date:   Fri,  5 Mar 2021 10:27:07 +0100
-Message-Id: <20210305092707.740539-1-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <CAK7LNAQ_CuUOH7mY8Rf3kxLxXKm0oxBsK=XgAS9ScMaW-55OuQ@mail.gmail.com>
-References: <CAK7LNAQ_CuUOH7mY8Rf3kxLxXKm0oxBsK=XgAS9ScMaW-55OuQ@mail.gmail.com>
+        Fri, 5 Mar 2021 04:27:54 -0500
+Received: from [IPv6:2a01:e0a:4cb:a870:b9e2:e9f:d661:5a2f] (unknown [IPv6:2a01:e0a:4cb:a870:b9e2:e9f:d661:5a2f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9279D1F468C9;
+        Fri,  5 Mar 2021 09:27:47 +0000 (GMT)
+Subject: Re: [PATCH v4 05/11] media: hantro: Add a field to distinguish the
+ hardware versions
+To:     Ezequiel Garcia <ezequiel@collabora.com>, p.zabel@pengutronix.de,
+        mchehab@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, peng.fan@nxp.com,
+        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20210303113952.178519-1-benjamin.gaignard@collabora.com>
+ <20210303113952.178519-6-benjamin.gaignard@collabora.com>
+ <32899bc605ae7173c29b25a396e21d7fad32d4bf.camel@collabora.com>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <23f62276-237d-1161-259a-84748db7365b@collabora.com>
+Date:   Fri, 5 Mar 2021 10:27:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <32899bc605ae7173c29b25a396e21d7fad32d4bf.camel@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It can be quite useful to have ld emit a link map file, in order to
-debug or verify that special sections end up where they are supposed
-to, and to see what LD_DEAD_CODE_DATA_ELIMINATION manages to get rid
-of.
 
-The only reason I'm not just adding this unconditionally is that the
-.map file can be rather large (several MB), and that's a waste of
-space when one isn't interested in these things. Also make it depend
-on CONFIG_EXPERT.
+Le 03/03/2021 à 23:05, Ezequiel Garcia a écrit :
+> On Wed, 2021-03-03 at 12:39 +0100, Benjamin Gaignard wrote:
+>> Decoders hardware blocks could exist in multiple versions: add
+>> a field to distinguish them at runtime.
+>> G2 hardware block doesn't have postprocessor hantro_needs_postproc
+>> function should always returns false in for this hardware.
+>> hantro_needs_postproc function becoming to much complex to
+>> stay inline in .h file move it to .c file.
+>>
+> Note that I already questioned this patch before:
+>
+> https://lkml.org/lkml/2021/2/17/722
+>
+> I think it's better to rely on of_device_id.data for this
+> type of thing.
+>
+> In particular, I was expecting that just using
+> hantro_variant.postproc_regs would be enough.
+>
+> Can you try if that works and avoid reading swreg(0)
+> and probing the hardware core?
 
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- .gitignore              |  1 +
- Documentation/dontdiff  |  1 +
- lib/Kconfig.debug       | 10 ++++++++++
- scripts/link-vmlinux.sh |  8 ++++++++
- 4 files changed, 20 insertions(+)
+I have found a way to remove this: if the variant doesn't define
+post processor formats, needs_postproc function will always returns
+false and that what the only useful usage of this version field.
 
-diff --git a/.gitignore b/.gitignore
-index 3af66272d6f1..3adea59847ce 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -59,6 +59,7 @@ modules.order
- /linux
- /vmlinux
- /vmlinux.32
-+/vmlinux.map
- /vmlinux.symvers
- /vmlinux-gdb.py
- /vmlinuz
-diff --git a/Documentation/dontdiff b/Documentation/dontdiff
-index e361fc95ca29..ac42ad8d430d 100644
---- a/Documentation/dontdiff
-+++ b/Documentation/dontdiff
-@@ -252,6 +252,7 @@ vmlinux-*
- vmlinux.aout
- vmlinux.bin.all
- vmlinux.lds
-+vmlinux.map
- vmlinux.symvers
- vmlinuz
- voffset.h
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 5ea0c1773b0a..663c1cd5018c 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -412,6 +412,16 @@ config VMLINUX_VALIDATION
- 	depends on STACK_VALIDATION && DEBUG_ENTRY && !PARAVIRT
- 	default y
- 
-+config VMLINUX_MAP
-+	bool "Generate vmlinux.map file when linking"
-+	depends on EXPERT
-+	help
-+	  Selecting this option will pass "-Map=vmlinux.map" to ld
-+	  when linking vmlinux. That file can be useful for verifying
-+	  and debugging magic section games, and for seeing which
-+	  pieces of code get eliminated with
-+	  CONFIG_LD_DEAD_CODE_DATA_ELIMINATION.
-+
- config DEBUG_FORCE_WEAK_PER_CPU
- 	bool "Force weak per-cpu definitions"
- 	depends on DEBUG_KERNEL
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index 3b261b0f74f0..855fd4e6f03e 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -155,6 +155,7 @@ vmlinux_link()
- 	local output=${1}
- 	local objects
- 	local strip_debug
-+	local map_option
- 
- 	info LD ${output}
- 
-@@ -166,6 +167,10 @@ vmlinux_link()
- 		strip_debug=-Wl,--strip-debug
- 	fi
- 
-+	if [ -n "${CONFIG_VMLINUX_MAP}" ]; then
-+		map_option="-Map=${output}.map"
-+	fi
-+
- 	if [ "${SRCARCH}" != "um" ]; then
- 		if [ -n "${CONFIG_LTO_CLANG}" ]; then
- 			# Use vmlinux.o instead of performing the slow LTO
-@@ -187,6 +192,7 @@ vmlinux_link()
- 		${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux}	\
- 			${strip_debug#-Wl,}			\
- 			-o ${output}				\
-+			${map_option}				\
- 			-T ${lds} ${objects}
- 	else
- 		objects="-Wl,--whole-archive			\
-@@ -200,6 +206,7 @@ vmlinux_link()
- 		${CC} ${CFLAGS_vmlinux}				\
- 			${strip_debug}				\
- 			-o ${output}				\
-+			${map_option:+-Wl,${map_option}}	\
- 			-Wl,-T,${lds}				\
- 			${objects}				\
- 			-lutil -lrt -lpthread
-@@ -303,6 +310,7 @@ cleanup()
- 	rm -f .tmp_vmlinux*
- 	rm -f System.map
- 	rm -f vmlinux
-+	rm -f vmlinux.map
- 	rm -f vmlinux.o
- }
- 
--- 
-2.29.2
+Benjamin
 
+>
+> Thanks!
+> Ezequiel
+>
+>> Keep the default behavoir to be G1 hardware.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> ---
+>>   drivers/staging/media/hantro/hantro.h          | 13 +++++++------
+>>   drivers/staging/media/hantro/hantro_drv.c      |  2 ++
+>>   drivers/staging/media/hantro/hantro_postproc.c | 17 +++++++++++++++++
+>>   3 files changed, 26 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
+>> index a76a0d79db9f..05876e426419 100644
+>> --- a/drivers/staging/media/hantro/hantro.h
+>> +++ b/drivers/staging/media/hantro/hantro.h
+>> @@ -37,6 +37,9 @@ struct hantro_codec_ops;
+>>   #define HANTRO_HEVC_DECODER    BIT(19)
+>>   #define HANTRO_DECODERS                0xffff0000
+>>   
+>> +#define HANTRO_G1_REV          0x6731
+>> +#define HANTRO_G2_REV          0x6732
+>> +
+>>   /**
+>>    * struct hantro_irq - irq handler and name
+>>    *
+>> @@ -171,6 +174,7 @@ hantro_vdev_to_func(struct video_device *vdev)
+>>    * @enc_base:          Mapped address of VPU encoder register for convenience.
+>>    * @dec_base:          Mapped address of VPU decoder register for convenience.
+>>    * @ctrl_base:         Mapped address of VPU control block.
+>> + * @core_hw_dec_rev    Runtime detected HW decoder core revision
+>>    * @vpu_mutex:         Mutex to synchronize V4L2 calls.
+>>    * @irqlock:           Spinlock to synchronize access to data structures
+>>    *                     shared with interrupt handlers.
+>> @@ -190,6 +194,7 @@ struct hantro_dev {
+>>          void __iomem *enc_base;
+>>          void __iomem *dec_base;
+>>          void __iomem *ctrl_base;
+>> +       u32 core_hw_dec_rev;
+>>   
+>>          struct mutex vpu_mutex; /* video_device lock */
+>>          spinlock_t irqlock;
+>> @@ -412,12 +417,8 @@ hantro_get_dst_buf(struct hantro_ctx *ctx)
+>>          return v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
+>>   }
+>>   
+>> -static inline bool
+>> -hantro_needs_postproc(const struct hantro_ctx *ctx,
+>> -                     const struct hantro_fmt *fmt)
+>> -{
+>> -       return !ctx->is_encoder && fmt->fourcc != V4L2_PIX_FMT_NV12;
+>> -}
+>> +bool hantro_needs_postproc(const struct hantro_ctx *ctx,
+>> +                          const struct hantro_fmt *fmt);
+>>   
+>>   static inline dma_addr_t
+>>   hantro_get_dec_buf_addr(struct hantro_ctx *ctx, struct vb2_buffer *vb)
+>> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+>> index f0b68e16fcc0..e3e6df28f470 100644
+>> --- a/drivers/staging/media/hantro/hantro_drv.c
+>> +++ b/drivers/staging/media/hantro/hantro_drv.c
+>> @@ -836,6 +836,8 @@ static int hantro_probe(struct platform_device *pdev)
+>>          }
+>>          vpu->enc_base = vpu->reg_bases[0] + vpu->variant->enc_offset;
+>>          vpu->dec_base = vpu->reg_bases[0] + vpu->variant->dec_offset;
+>> +       /* by default decoder is G1 */
+>> +       vpu->core_hw_dec_rev = HANTRO_G1_REV;
+>>   
+>>          ret = dma_set_coherent_mask(vpu->dev, DMA_BIT_MASK(32));
+>>          if (ret) {
+>> diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/drivers/staging/media/hantro/hantro_postproc.c
+>> index 6d2a8f2a8f0b..050880f720d6 100644
+>> --- a/drivers/staging/media/hantro/hantro_postproc.c
+>> +++ b/drivers/staging/media/hantro/hantro_postproc.c
+>> @@ -50,6 +50,23 @@ const struct hantro_postproc_regs hantro_g1_postproc_regs = {
+>>          .display_width = {G1_REG_PP_DISPLAY_WIDTH, 0, 0xfff},
+>>   };
+>>   
+>> +bool hantro_needs_postproc(const struct hantro_ctx *ctx,
+>> +                          const struct hantro_fmt *fmt)
+>> +{
+>> +       struct hantro_dev *vpu = ctx->dev;
+>> +
+>> +       if (ctx->is_encoder)
+>> +               return false;
+>> +
+>> +       if (vpu->core_hw_dec_rev == HANTRO_G1_REV):q
+>> +               return fmt->fourcc != V4L2_PIX_FMT_NV12;
+>> +
+>> +       if (vpu->core_hw_dec_rev == HANTRO_G2_REV)
+>> +               return false;
+>> +
+>> +       return false;
+>> +}
+>> +
+>>   void hantro_postproc_enable(struct hantro_ctx *ctx)
+>>   {
+>>          struct hantro_dev *vpu = ctx->dev;
+>
+>
