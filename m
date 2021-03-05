@@ -2,135 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8020532E3D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE0832E3D7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbhCEIip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:38:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35197 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229578AbhCEIii (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:38:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614933517;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YAI/I8B7wpZIUjXzzsxu1gO3qnb8MhXPXX1hsky7UW0=;
-        b=duCFqQf9ho5cF8PRY81PeT0PQX2EvfSTw5kljqfcPP4SfiVRMq7nAPoVI1+OYIINSyKKDo
-        2ILs46jzXb9vwBcBYoH3liCmKlRwfkSIqTPqdUF5nyjgF4MzAxTitzYyVKR9o9WiVinmcp
-        HpVUFxwE+rW9/pRFheGv+kmb0Ro+dNc=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-462-qxOEdsvtM6OXnIR1WkR7RQ-1; Fri, 05 Mar 2021 03:38:36 -0500
-X-MC-Unique: qxOEdsvtM6OXnIR1WkR7RQ-1
-Received: by mail-ed1-f70.google.com with SMTP id i19so585909edy.18
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 00:38:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=YAI/I8B7wpZIUjXzzsxu1gO3qnb8MhXPXX1hsky7UW0=;
-        b=GLqizGXzh0hqGQ6SmMKySg/Vg7HrwFXH398lf/zzzRJNp+Yy+4ugA/DJ3KKiF5oIg4
-         oqDJJlxkLHrOB3QYCWZ/+aIp8oMQvgw85oneLiwxwOnEGIuKeYgFbRGx3kQWMwM1erbD
-         Ug3vURdBD5+b7KuywtzknnEeHX8Uhw9BBjwMiTW5gUQArCL9m0aZTdWaGwTBIWP2+7f6
-         AuWL4D+gM//w5YSjBy87Ko9M7te6VlHDPO45wcQCtrgQvX7RNcCOQXpJzLimnTGbKh2U
-         PAsGV1DrLrhXF3YMx6ktRrZEom43H5+3cT4B+IivpPiKVJK5HGR9YbtKlj+Hl0YLcXNM
-         xs1A==
-X-Gm-Message-State: AOAM532WNdt/QteirL8meTVgNFMV/i5mZthDsXJNB4Fk9rVv1Du10TSN
-        Tz0YaLM5IkiwTSGJkrKh8AHodSaswLRu8TSRNooLCy5eL6mjtdOmhFO46OGJoHbC0Tw1FlrPUXR
-        sPI53QOpAnGzWjY6e1ahUyUW2
-X-Received: by 2002:aa7:c4c2:: with SMTP id p2mr8145828edr.213.1614933514895;
-        Fri, 05 Mar 2021 00:38:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzpKQMBiWEPcNeeOxJLoLVSCp4kYG/AfcmBBA9HYJJaMxhtQXqPnopI+sO2MueR69Vo1Ksn1A==
-X-Received: by 2002:aa7:c4c2:: with SMTP id p2mr8145823edr.213.1614933514755;
-        Fri, 05 Mar 2021 00:38:34 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id s18sm1227188edc.21.2021.03.05.00.38.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 00:38:34 -0800 (PST)
-Date:   Fri, 5 Mar 2021 09:38:32 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 01/10] vdpa: add get_config_size callback in
- vdpa_config_ops
-Message-ID: <20210305083832.hotg52p7kluus2xq@steredhat>
-References: <20210216094454.82106-1-sgarzare@redhat.com>
- <20210216094454.82106-2-sgarzare@redhat.com>
- <5de4cd5b-04cb-46ca-1717-075e5e8542fd@redhat.com>
- <20210302141516.oxsdb7jogrvu75yc@steredhat>
- <8a3f39ab-1cee-d0c3-e4d1-dc3ec492a763@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8a3f39ab-1cee-d0c3-e4d1-dc3ec492a763@redhat.com>
+        id S229526AbhCEIkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:40:52 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:38368 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229551AbhCEIkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 03:40:49 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DsLmG1HhXz9tws2;
+        Fri,  5 Mar 2021 09:40:46 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Qfa6vAzoH0fA; Fri,  5 Mar 2021 09:40:46 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DsLmF69Jdz9tws0;
+        Fri,  5 Mar 2021 09:40:45 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E57F58B78D;
+        Fri,  5 Mar 2021 09:40:46 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id vPt5UF7YwDZ3; Fri,  5 Mar 2021 09:40:46 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A0AEC8B78B;
+        Fri,  5 Mar 2021 09:40:46 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 76F7B674E4; Fri,  5 Mar 2021 08:40:46 +0000 (UTC)
+Message-Id: <f08ef2b6f339ba19987cfef4307a4dd26b2faf97.1614933479.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v3] powerpc/32: remove bogus ppc_select syscall
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri,  5 Mar 2021 08:40:46 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 04:34:52PM +0800, Jason Wang wrote:
->
->On 2021/3/2 10:15 下午, Stefano Garzarella wrote:
->>On Tue, Mar 02, 2021 at 12:14:13PM +0800, Jason Wang wrote:
->>>
->>>On 2021/2/16 5:44 下午, Stefano Garzarella wrote:
->>>>This new callback is used to get the size of the configuration space
->>>>of vDPA devices.
->>>>
->>>>Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
->>>>---
->>>> include/linux/vdpa.h              | 4 ++++
->>>> drivers/vdpa/ifcvf/ifcvf_main.c   | 6 ++++++
->>>> drivers/vdpa/mlx5/net/mlx5_vnet.c | 6 ++++++
->>>> drivers/vdpa/vdpa_sim/vdpa_sim.c  | 9 +++++++++
->>>> 4 files changed, 25 insertions(+)
->>>>
->>>>diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
->>>>index 4ab5494503a8..fddf42b17573 100644
->>>>--- a/include/linux/vdpa.h
->>>>+++ b/include/linux/vdpa.h
->>>>@@ -150,6 +150,9 @@ struct vdpa_iova_range {
->>>>  * @set_status:            Set the device status
->>>>  *                @vdev: vdpa device
->>>>  *                @status: virtio device status
->>>>+ * @get_config_size:        Get the size of the configuration space
->>>>+ *                @vdev: vdpa device
->>>>+ *                Returns size_t: configuration size
->>>
->>>
->>>Rethink about this, how much we could gain by introducing a 
->>>dedicated ops here? E.g would it be simpler if we simply introduce 
->>>a max_config_size to vdpa device?
->>
->>Mainly because in this way we don't have to add new parameters to 
->>the vdpa_alloc_device() function.
->>
->>We do the same for example for 'get_device_id', 'get_vendor_id', 
->>'get_vq_num_max'. All of these are usually static, but we have ops.
->>I think because it's easier to extend.
->>
->>I don't know if it's worth adding a new structure for these static 
->>values at this point, like 'struct vdpa_config_params'.
->
->
->Yes, that's the point. I think for any static values, it should be set 
->during device allocation.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Yeah, I see.
+The ppc_select function was introduced in linux-2.3.48 in order to support
+code confusing the legacy select() calling convention with the standard one.
+Even 24 years ago, all correctly built code should not have done this and
+could have easily been phased out. Nothing that was compiled later should
+actually try to use the old_select interface, and it would have been broken
+already on all ppc64 kernels with the syscall emulation layer.
 
->
->I'm fine with both.
->
+This patch brings the 32 bit compat ABI and the native 32 bit ABI for
+powerpc into a consistent state, by removing support for both the
+old_select system call number and the handler for it.
 
-@Michael any thoughts?
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+[chleroy: Rebased and updated the number of years elapsed and dropped last part of the commit message]
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+First version was in 2008, at that time it was rejected, see
+http://patchwork.ozlabs.org/project/linuxppc-dev/patch/200809240839.14902.arnd@arndb.de/
+A reduced version of it was merged as commit dad2f2fb0fc7 ("powerpc: Fix wrong error code from ppc32 select syscall")
 
-Thanks,
-Stefano
+If we decide to still keep this, then we'll have to:
+- take into account -4096 < fd < 0 case
+- use unsafe_get_user inside a uaccess_begin block
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/asm-prototypes.h |  3 ---
+ arch/powerpc/kernel/syscalls.c            | 25 -----------------------
+ arch/powerpc/kernel/syscalls/syscall.tbl  |  4 +---
+ 3 files changed, 1 insertion(+), 31 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/asm-prototypes.h b/arch/powerpc/include/asm/asm-prototypes.h
+index 939f3c94c8f3..78e0a3bd448a 100644
+--- a/arch/powerpc/include/asm/asm-prototypes.h
++++ b/arch/powerpc/include/asm/asm-prototypes.h
+@@ -63,9 +63,6 @@ long sys_swapcontext(struct ucontext __user *old_ctx,
+ #ifdef CONFIG_PPC32
+ long sys_debug_setcontext(struct ucontext __user *ctx,
+ 			  int ndbg, struct sig_dbg_op __user *dbg);
+-int
+-ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp,
+-	   struct __kernel_old_timeval __user *tvp);
+ unsigned long __init early_init(unsigned long dt_ptr);
+ void __init machine_init(u64 dt_ptr);
+ #endif
+diff --git a/arch/powerpc/kernel/syscalls.c b/arch/powerpc/kernel/syscalls.c
+index 078608ec2e92..70b0eb5bedfd 100644
+--- a/arch/powerpc/kernel/syscalls.c
++++ b/arch/powerpc/kernel/syscalls.c
+@@ -71,31 +71,6 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, size_t, len,
+ 	return do_mmap2(addr, len, prot, flags, fd, offset, PAGE_SHIFT);
+ }
+ 
+-#ifdef CONFIG_PPC32
+-/*
+- * Due to some executables calling the wrong select we sometimes
+- * get wrong args.  This determines how the args are being passed
+- * (a single ptr to them all args passed) then calls
+- * sys_select() with the appropriate args. -- Cort
+- */
+-int
+-ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp, struct __kernel_old_timeval __user *tvp)
+-{
+-	if ( (unsigned long)n >= 4096 )
+-	{
+-		unsigned long __user *buffer = (unsigned long __user *)n;
+-		if (!access_ok(buffer, 5*sizeof(unsigned long))
+-		    || __get_user(n, buffer)
+-		    || __get_user(inp, ((fd_set __user * __user *)(buffer+1)))
+-		    || __get_user(outp, ((fd_set  __user * __user *)(buffer+2)))
+-		    || __get_user(exp, ((fd_set  __user * __user *)(buffer+3)))
+-		    || __get_user(tvp, ((struct __kernel_old_timeval  __user * __user *)(buffer+4))))
+-			return -EFAULT;
+-	}
+-	return sys_select(n, inp, outp, exp, tvp);
+-}
+-#endif
+-
+ #ifdef CONFIG_PPC64
+ long ppc64_personality(unsigned long personality)
+ {
+diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
+index 0b2480cf3e47..5bb0e90e502e 100644
+--- a/arch/powerpc/kernel/syscalls/syscall.tbl
++++ b/arch/powerpc/kernel/syscalls/syscall.tbl
+@@ -110,9 +110,7 @@
+ 79	common	settimeofday			sys_settimeofday		compat_sys_settimeofday
+ 80	common	getgroups			sys_getgroups
+ 81	common	setgroups			sys_setgroups
+-82	32	select				ppc_select			sys_ni_syscall
+-82	64	select				sys_ni_syscall
+-82	spu	select				sys_ni_syscall
++82	common	select				sys_ni_syscall
+ 83	common	symlink				sys_symlink
+ 84	32	oldlstat			sys_lstat			sys_ni_syscall
+ 84	64	oldlstat			sys_ni_syscall
+-- 
+2.25.0
 
