@@ -2,129 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17AF232E00C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A46632E010
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:25:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbhCEDZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 22:25:05 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13060 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhCEDZF (ORCPT
+        id S229592AbhCEDZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 22:25:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229458AbhCEDZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 22:25:05 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DsCjR3kjszMjHB;
-        Fri,  5 Mar 2021 11:22:51 +0800 (CST)
-Received: from [10.67.102.197] (10.67.102.197) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 5 Mar 2021 11:24:55 +0800
-Subject: Re: [PATCH 4/4] nfc: Avoid endless loops caused by repeated
- llcp_sock_connect()(Internet mail)
-To:     =?UTF-8?B?a2l5aW4o5bC55LquKQ==?= <kiyin@tencent.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "sameo@linux.intel.com" <sameo@linux.intel.com>,
-        "linville@tuxdriver.com" <linville@tuxdriver.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "mkl@pengutronix.de" <mkl@pengutronix.de>,
-        "stefan@datenfreihafen.org" <stefan@datenfreihafen.org>,
-        "matthieu.baerts@tessares.net" <matthieu.baerts@tessares.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     "wangle6@huawei.com" <wangle6@huawei.com>,
-        "xiaoqian9@huawei.com" <xiaoqian9@huawei.com>
-References: <20210303061654.127666-1-nixiaoming@huawei.com>
- <20210303061654.127666-5-nixiaoming@huawei.com>
- <2965a9b88d254b7f8e7f4356875bbedb@tencent.com>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <9295c052-a9e2-619c-eb40-87b592e2c08d@huawei.com>
-Date:   Fri, 5 Mar 2021 11:24:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        Thu, 4 Mar 2021 22:25:46 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D73FC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 19:25:45 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id 133so449453ybd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 19:25:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ay5J86kgYWbdIWMdruKR+P2kKShrDefEb66DCFFN0wQ=;
+        b=MRDBxpu1ZHSKCl7DmLcbOSZCSDYVcZO0KHqaJHPQX+7eYwU0mqajcELZqHq2/Bn7L7
+         45CNx/x663c/tjPyi78wPVf7FBbigVfTPjEQXTnFHVxBdWRGTNKuwhv/+a8lid6lty90
+         D15/wFb6icLsJ5FC4Q42VQq1WTBzCE2x8e50CFTZG7GXDGe5Rfca7kV0aDsLQFXjM8nI
+         5SmFUTez/YRB5eD44mxdP6d/yTHCHz6rGjQ7REtjxoD38pf1dFZmJM6EuR7LIlKFWQL0
+         Boet8NLso0d9RANdK7WwzzakoIPFUOOE0na7h7LD2kbve3YiZQpve4v1uaTSOR7SZIRe
+         LSyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ay5J86kgYWbdIWMdruKR+P2kKShrDefEb66DCFFN0wQ=;
+        b=GjxvhUAzK0T75P9Ofp/Ic3ukj5klpUiLgkX5hBkksZBDHSCvVahjVpscSB5vqQZfOG
+         V4Bkj5BkcZJAyDpLtZI/VWCSNTQfQI0+cV6FzWdY5F5eu9/NiY3DFoqGxIs3SOqOPS/f
+         CLZft9lrDvvxMl4YwYwOMAy9tX//6wXc9sN2JXmySIgYSQPQrjU+TtSwNCj7mLqaLPEb
+         Ke7JggN8EmzxxPHokLz2YgCHFmHNahvfFYg8JEkSuf0fyv3HyJYZfDna3MOdw5vwZNPp
+         BqnWOHfvcsX5CPBI4w6DNeJolGokl6egY9tgv1b950lffbvqequDx2CZZ0rQiezmzPHb
+         1ILg==
+X-Gm-Message-State: AOAM530O+evHX8fUNUpzWm2WqVaESNee+zt3LAlSwjeQktWfBaaOj96T
+        hmtJqAbUVSSdgcm2Z+dB+G242LXMw5nfjBgzKC1ZeA==
+X-Google-Smtp-Source: ABdhPJye95kyOm6bVXDLiKp+DMuFYzAP5ryTHY7gwMfbopP2BYHfZPoEoxM/kuiQI4zRwQANtANd2KiXXvdCnZGX3Co=
+X-Received: by 2002:a25:ca8f:: with SMTP id a137mr10830265ybg.228.1614914744122;
+ Thu, 04 Mar 2021 19:25:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <2965a9b88d254b7f8e7f4356875bbedb@tencent.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.102.197]
-X-CFilter-Loop: Reflected
+References: <20210302211133.2244281-1-saravanak@google.com>
+ <b2dd44c2720fb96093fc4feeb64f0f4e@walle.cc> <CAGETcx_xCpid3QW0gQJWLL6ZfT-VJJq-SYX4tG09GRQWucw=qg@mail.gmail.com>
+ <CAGETcx__oG2XrQ8RwZ57cVgV+Ukfni4qUQCe11kbL8E1U+4a_g@mail.gmail.com>
+ <12f31a46e8dc3f0e53c1a7440a4ce087@walle.cc> <CAGETcx8hAX2iv3KakM+pXeBPu_RFsUFLBBZvwDVxG95mAY=woA@mail.gmail.com>
+ <85f883921c73a9ac77b8263b958a5c71@walle.cc>
+In-Reply-To: <85f883921c73a9ac77b8263b958a5c71@walle.cc>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 4 Mar 2021 19:25:08 -0800
+Message-ID: <CAGETcx9zkjgF=AjCkNcPKLriNk30PGugXKTNRhzTFm5cDQHm0A@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] driver core: Set fw_devlink=on take II
+To:     Michael Walle <michael@walle.cc>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/3 17:28, kiyin(尹亮) wrote:
-> Hi xiaoming,
->    the path can only fix the endless loop problem. it can't fix the meaningless llcp_sock->service_name problem.
->    if we set llcp_sock->service_name to meaningless string, the connect will be failed. and sk->sk_state will not be LLCP_CONNECTED. then we can call llcp_sock_connect() many times. that leaks everything: llcp_sock->dev, llcp_sock->local, llcp_sock->ssap, llcp_sock->service_name...
+On Wed, Mar 3, 2021 at 2:21 AM Michael Walle <michael@walle.cc> wrote:
+>
+> Am 2021-03-03 10:28, schrieb Saravana Kannan:
+> > On Wed, Mar 3, 2021 at 12:59 AM Michael Walle <michael@walle.cc> wrote:
+> >>
+> >> Am 2021-03-02 23:47, schrieb Saravana Kannan:
+> >> > On Tue, Mar 2, 2021 at 2:42 PM Saravana Kannan <saravanak@google.com>
+> >> > wrote:
+> >> >>
+> >> >> On Tue, Mar 2, 2021 at 2:24 PM Michael Walle <michael@walle.cc> wrote:
+> >> >> >
+> >> >> > Am 2021-03-02 22:11, schrieb Saravana Kannan:
+> >> >> > > I think Patch 1 should fix [4] without [5]. Can you test the series
+> >> >> > > please?
+> >> >> >
+> >> >> > Mh, I'm on latest linux-next (next-20210302) and I've applied patch 3/3
+> >> >> > and
+> >> >> > reverted commit 7007b745a508 ("PCI: layerscape: Convert to
+> >> >> > builtin_platform_driver()"). I'd assumed that PCIe shouldn't be working,
+> >> >> > right? But it is. Did I miss something?
+> >> >>
+> >> >> You need to revert [5].
+> >> >
+> >> > My bad. You did revert it. Ah... I wonder if it was due to
+> >> > fw_devlink.strict that I added. To break PCI again, also set
+> >> > fw_devlink.strict=1 in the kernel command line.
+> >>
+> >> Indeed, adding fw_devlink.strict=1 will break PCI again. But if
+> >> I then apply 1/3 and 2/3 again, PCI is still broken. Just to be clear:
+> >> I'm keeping the fw_devlink.strict=1 parameter.
+> >
+> > Thanks for your testing! I assume you are also setting fw_devlink=on?
+>
+> I've applied patch 3/3 and added nothing to the commandline, so yes.
+>
+> > Hmmm... ok. In the working case, does your PCI probe before IOMMU? If
+> > yes, then your results make sense.
+>
+> Yes that was the conclusion last time. That the probe is deferred and
+> the __init section is already discarded when there might a second
+> try of the probe.
 
-I didn't find the code to modify sk->sk_state after a connect failure. 
-Can you provide guidance?
+Long response below, but the TL;DR is:
+The real fix for your case was the implementation of fw_devlink.strict
+and NOT Patch 1 of this series. So, sorry for wasting your test
+effort.
 
-Based on my understanding of the current code:
-After llcp_sock_connect() is invoked using the meaningless service_name 
-as the parameter, sk->sk_state is set to LLCP_CONNECTING. After that, no 
-corresponding service responds to the request because the service_name 
-is meaningless, the value of sk->sk_state remains unchanged.
-Therefore, when llcp_sock_connect() is invoked again, resources such as 
-llcp_sock->service_name are not repeatedly applied because sk_state is 
-set to LLCP_CONNECTING.
+During the earlier debugging (for take I), this is what I thought:
 
-In this way, the repeated invoking of llcp_sock_connect() does not 
-repeatedly leak resources.
+With fw_devlink=permissive, your boot sequence was (Case 1):
+1. IOMMU probe
+2. PCI builtin_platform_driver_probe() attempt
+    - Driver core sets up PCI with IOMMU
+    - PCI probe succeeds.
+    - PCI works with IOMMU. <---- Remember this point.
 
-Thanks
-Xiaoming Ni
+And with fw_devlink=on, I thought the IOMMU probe order was
+unnecessarily changed and caused this (Case 2):
+1. IOMMU probe reordered for some reason to be attempted before its
+suppliers. Gets deferred.
+2. PCI probe attempt
+    - fw_devlink + device links defers the probe because IOMMU isn't ready.
+    - builtin_platform_driver_probe() replaces drv->probe with
+platform_probe_fail()
+3. IOMMU deferred probe succeeds eventually.
+4. PCI deferred probe is attempted
+    - platform_probe_fail() which is a stub just returns -ENXIO
 
+And if this was the case, patch 1 in this series would have fixed it
+by removing unnecessary reordering of probes.
 
-> 
->> -----Original Message-----
->> From: Xiaoming Ni [mailto:nixiaoming@huawei.com]
->> Sent: Wednesday, March 3, 2021 2:17 PM
->> To: linux-kernel@vger.kernel.org; kiyin(尹亮) <kiyin@tencent.com>;
->> stable@vger.kernel.org; gregkh@linuxfoundation.org; sameo@linux.intel.com;
->> linville@tuxdriver.com; davem@davemloft.net; kuba@kernel.org;
->> mkl@pengutronix.de; stefan@datenfreihafen.org;
->> matthieu.baerts@tessares.net; netdev@vger.kernel.org
->> Cc: nixiaoming@huawei.com; wangle6@huawei.com; xiaoqian9@huawei.com
->> Subject: [PATCH 4/4] nfc: Avoid endless loops caused by repeated
->> llcp_sock_connect()(Internet mail)
->>
->> When sock_wait_state() returns -EINPROGRESS, "sk->sk_state" is
->> LLCP_CONNECTING. In this case, llcp_sock_connect() is repeatedly invoked,
->>   nfc_llcp_sock_link() will add sk to local->connecting_sockets twice.
->>   sk->sk_node->next will point to itself, that will make an endless loop  and
->> hang-up the system.
->> To fix it, check whether sk->sk_state is LLCP_CONNECTING in
->>   llcp_sock_connect() to avoid repeated invoking.
->>
->> fix CVE-2020-25673
->> Fixes: b4011239a08e ("NFC: llcp: Fix non blocking sockets connections")
->> Reported-by: "kiyin(尹亮)" <kiyin@tencent.com>
->> Link: https://www.openwall.com/lists/oss-security/2020/11/01/1
->> Cc: <stable@vger.kernel.org> #v3.11
->> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
->> ---
->>   net/nfc/llcp_sock.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/net/nfc/llcp_sock.c b/net/nfc/llcp_sock.c index
->> 59172614b249..a3b46f888803 100644
->> --- a/net/nfc/llcp_sock.c
->> +++ b/net/nfc/llcp_sock.c
->> @@ -673,6 +673,10 @@ static int llcp_sock_connect(struct socket *sock,
->> struct sockaddr *_addr,
->>   		ret = -EISCONN;
->>   		goto error;
->>   	}
->> +	if (sk->sk_state == LLCP_CONNECTING) {
->> +		ret = -EINPROGRESS;
->> +		goto error;
->> +	}
->>
->>   	dev = nfc_get_device(addr->dev_idx);
->>   	if (dev == NULL) {
->> --
->> 2.27.0
->>
-> 
+But what was really happening was (after I went through your logs
+again and looked at the code):
+With fw_devlink=permissive, your boot sequence was really (Case 3):
+1. PCI builtin_platform_driver_probe() attempt
+    - Driver core does NOT set up PCI with IOMMU
+    - PCI probe succeeds.
+    - PCI works without IOMMU. <---- Remember this point.
+2. IOMMU probes
 
+And with fw_devlink=on what was happening was (Case 4):
+1. PCI builtin_platform_driver_probe() attempt
+    - fw_devlink + device links defers the probe because it thinks
+IOMMU is mandatory and isn't ready.
+    - builtin_platform_driver_probe() replaces drv->probe with
+platform_probe_fail()
+2. IOMMU probes.
+3. PCI deferred probe is attempted
+    - platform_probe_fail() which is a stub just returns -ENXIO
+4. PCI is broken now.
+
+In your case IOMMU is not mandatory and PCI works without IOMMU even
+when fw_devlink=off/permissive. So the real fix for your case is the
+addition of fw_devlink.strict and defaulting it to 0. Because of my
+misunderstanding of your case, I didn't realize I already fixed your
+case and I thought Patch 1 in this series would fix your case.
+
+Patch 1 in this series is still important for other reasons, just not for you.
+
+> So I guess, Patch 1/3 and Patch 2/3 doesn't fix that and the drivers
+> still need to be converted to builtin_platform_driver(), right?
+
+So there is no real issue between fw_devlink=on and
+builtin_platform_driver_probe() anymore. At least none that I know of
+or has been reported.
+
+If you really want your PCI to work _with_ IOMMU, then
+builtin_platform_driver_probe() is wrong even with fw_devlink=off. And
+if you wanted PCI to work with IOMMU support and fw_devlink wasn't
+available, you'll have to play initcall chicken with the IOMMU driver
+or implement some IOMMU check + deferred probing in your PCI probe
+function.
+
+However, with fw_devlink=on, all you have to do is set fw_devlink=on
+and fw_devlink.strict=1 and use builtin_platform_driver() and not have
+to care about initcall orders or figure out how to defer when IOMMU
+isn't ready yet.
+
+-Saravana
