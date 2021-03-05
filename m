@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E6D32F52E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:11:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD7432F522
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:11:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhCEVKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:10:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51480 "EHLO mail.kernel.org"
+        id S229813AbhCEVKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 16:10:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229601AbhCEVKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229562AbhCEVKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Mar 2021 16:10:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6A076650B0;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3BF83650A0;
         Fri,  5 Mar 2021 21:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614978609;
-        bh=HImJ3ds2JUI8CXhpIYg07+5NVQogfm4xzRM1yFy+rfw=;
+        bh=mdg/PC0DMiK48dveOcYJjv586g3ib5adhGlG23rjx8s=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Ed1kD4Syj4zMhtynJl5nJFqbxeG8Tvt8YNTgd1GHJ7d8e/KMTMg7xC5T2eHDXdTCq
-         3xKlMsrO+7DAr2k1V2yHye/TN8hMjn3L2GlUZd4pDniCQYuWuslNUXaRHoj9qzILak
-         W/sz7vVHBlJTAslgzzi99i8spcQVOoOr7EC+jEQgPIGKMqykni3Ygz/kwFAfEhaW0A
-         BjiPcSP73msvfeBsqLz2Bj/VxmY52xiAIhQGa2QT7CMSldHljK/ZE511/4DX6OTrZp
-         xjwhqCiRIuO6LC0VijIBkjl7XCQofzFb31fChjePunQgOm3VB5SFuepRZ352uvYgii
-         yLUoX9ZWa1tug==
+        b=CkGjQpP8kaU1SPZ1a+VAADE+/gGPLGQBiM+WNnTXEJAo8blNthO/U8Q5hX5P0hEYx
+         gYrzWAMf5nlSAIXLM+cU4lcmq7FQmqeRDRezNicGlIOPTvWZYApgDpFAGzzeO8taoY
+         TYzT93xSM6MXa/xb8JCh7JH0I4wH0McHNRlef4UvO/xqhWmOJqxZz9ldxO08Rgqgim
+         cBqsupW/1ULeN3ElVdycki612MI5nmaUpD107twDeR2RLoF797YXPapbOMiG354lWd
+         bCYQWefAxwKmS0nOzdJRgGGRbXLc7me7up3r/gtBmp9fM5rMXuuwJ9UW7We8xyySmB
+         OuqgWrcONbWRA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 60844609EA;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3003E609EA;
         Fri,  5 Mar 2021 21:10:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] selftest/net/ipsec.c: Remove unneeded semicolon
+Subject: Re: [PATCH] sun/niu: fix wrong RXMAC_BC_FRM_CNT_COUNT count
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161497860938.24588.3460986732299054232.git-patchwork-notify@kernel.org>
+Message-Id: <161497860919.24588.1162341745662570326.git-patchwork-notify@kernel.org>
 Date:   Fri, 05 Mar 2021 21:10:09 +0000
-References: <20210305093306.1403-1-vulab@iscas.ac.cn>
-In-Reply-To: <20210305093306.1403-1-vulab@iscas.ac.cn>
-To:     Xu Wang <vulab@iscas.ac.cn>
-Cc:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+References: <20210305170212.146135-1-efremov@linux.com>
+In-Reply-To: <20210305170212.146135-1-efremov@linux.com>
+To:     Denis Efremov <efremov@linux.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,18 +46,21 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Fri,  5 Mar 2021 09:33:06 +0000 you wrote:
-> fix semicolon.cocci warning:
-> tools/testing/selftests/net/ipsec.c:1788:2-3: Unneeded semicolon
+On Fri,  5 Mar 2021 20:02:12 +0300 you wrote:
+> RXMAC_BC_FRM_CNT_COUNT added to mp->rx_bcasts twice in a row
+> in niu_xmac_interrupt(). Remove the second addition.
 > 
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+> Signed-off-by: Denis Efremov <efremov@linux.com>
 > ---
->  tools/testing/selftests/net/ipsec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I don't know the code of the dirver, but this looks like a real bug.
+> Otherwise, it's more readable as:
+>    mp->rx_bcasts += RXMAC_BC_FRM_CNT_COUNT * 2;
+> 
+> [...]
 
 Here is the summary with links:
-  - selftest/net/ipsec.c: Remove unneeded semicolon
-    https://git.kernel.org/netdev/net/c/0a7e0c3b5702
+  - sun/niu: fix wrong RXMAC_BC_FRM_CNT_COUNT count
+    https://git.kernel.org/netdev/net/c/155b23e6e534
 
 You are awesome, thank you!
 --
