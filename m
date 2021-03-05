@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E67D32DF8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BC732DF90
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhCECRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 21:17:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46958 "EHLO
+        id S229458AbhCECSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 21:18:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhCECRi (ORCPT
+        with ESMTP id S229463AbhCECSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 21:17:38 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BE2C061574;
-        Thu,  4 Mar 2021 18:17:37 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id g185so583227qkf.6;
-        Thu, 04 Mar 2021 18:17:37 -0800 (PST)
+        Thu, 4 Mar 2021 21:18:16 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3336DC061756
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 18:18:15 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id i69so473609qke.19
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 18:18:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7OfH/7aQnmQER1/Jp2nanZu8HmrIn7USSW5vpL5BRBE=;
-        b=FudP2PUGinIUc6kpmSOzXYEcgqURLa3uJm5JsiGyFmmaV5I+W8hIGd+jPLykIR3GLd
-         DAxPJWYaCKyDh1B0B8uNn+Dmp5AnAMZs0scyM3zJ0rFNzIifIs7H5usfso2qkX1bxHDm
-         gIbKRWQCDBPMeTLJODbIytea8/8Sp5OoLM8C3yiSwPw8CyHYjH1Ad1rBkoQVHxGFmhp4
-         +N26cKo1lg7hoUv9YKG5mjnnn3ZvoVMwIF6ULTKuvo8sg6R8a7OKsiSyZnTMX+ymDdmQ
-         igmtG+h1C+9wE5NTsP9dKmKmiBKdMFNg8pJ9qWUCLucOMq6JI16puWTeoHQSmhBeIZbn
-         j/7w==
+        d=google.com; s=20161025;
+        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=iFsu/EdgzPCi1WqYdYUBcFgRLZpgieXshXK9nnq/e2Q=;
+        b=Dm7EqRrQGHwk4GNJMLxWsQTTtpmjMKr5XzzRltH4yF4XLUzdFFiyvsjnp1NTrFqAWD
+         CjfRG3hCuW1YFGc6A9Y05LccX7aY94QO+wvrTna8ER7QCPvAqc9cTr+SDbDE7Ldpjw3t
+         rgtktSM2aFRd0K33Dqco70ItekgC6OfWuwo0KQ+vkE9LIdkGuecrItyAYNY5IrqvtPnf
+         IM5vybBlZZIJb6OQHKcf0RcSJiUJryCWGAhm5Qi0FNJWVncKswsoai/pll1Euh2JIGiA
+         gbO6fIcNJdAVjAQtSPfOZWTgAaL5JAINvcWY30PuSr1We+YkowOrraGVXDfiXT9XhhEG
+         nq9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7OfH/7aQnmQER1/Jp2nanZu8HmrIn7USSW5vpL5BRBE=;
-        b=KGBXFoTiPyh7Yq9f0H7ws573v3auh+zqaArPDL2Ny1N1p9YS0469+FFN0GnPcOV7Ll
-         e/JArMxKqnoY2xlDMgTIdIPbm5skDnH6bmK3BBLUribgQrEW6JGyPcfqtAo3c3Am5t6T
-         PLeY90RKTh9jZlZYynqDVmCy7ig3Oi6mJUHr4vZEd3EHWsSVAD9+J7Jws5MftdaHnCO/
-         tluysOSSdFYaW7viz7FydaT7oT7JVcsCBSbQdaKzFmbw3U8KkCEc7/iUkLjY0YC0wudL
-         JLizGzo1uJcELaDwCRO63Bsb+/3FQ0x52SAN3cqDSOQnhkGR3FX6KyIPRCitLSZIq2Nz
-         WRXg==
-X-Gm-Message-State: AOAM531bRlBbFXQXJTc7nKT7bAqGfgcU8l/L6gVeuedts/Soz3wYelX5
-        iKDjAej+ZV2CrbQbQyOwBRAW95LLDvoIOe2k
-X-Google-Smtp-Source: ABdhPJyfAU2sf2GWPUNtKJrfgIpvoRbEu6kWTxG2sMJ0R8UWWWhz33cBdvGRRG0//2sv48EUaZGyvA==
-X-Received: by 2002:ae9:e40b:: with SMTP id q11mr7375602qkc.318.1614910656470;
-        Thu, 04 Mar 2021 18:17:36 -0800 (PST)
-Received: from localhost.localdomain ([156.146.54.138])
-        by smtp.gmail.com with ESMTPSA id j2sm1011601qtv.43.2021.03.04.18.17.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 18:17:35 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     jpoimboe@redhat.com, jikos@kernel.org, mbenes@suse.cz,
-        pmladek@suse.com, joe.lawrence@redhat.com, corbet@lwn.net,
-        live-patching@vger.kernel.org, linux-doc@vger.kernel.org,
+        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
+         :subject:from:to:cc;
+        bh=iFsu/EdgzPCi1WqYdYUBcFgRLZpgieXshXK9nnq/e2Q=;
+        b=kiy3Aq7bWCO6vINsJjznvw6FB2FB5IUbVmfSzHbQGtp20AwULJeHqP/0AheBbCMz1i
+         GlHo0FHaHdB4yMYZUdciaSa53SOAMlN01kYKH5N4CDdwa950z9DtwyMAq1qvxwt8c3N3
+         +zGgARnhjTwVZsa8KGO/Z5umBcRj+NQ7vb6uY9VdEHuIGGpRD7u5aSDHmk0PJxDsCGCz
+         WkXZfYKbcidzj/6drPJZAysrr3M0GT1RA42ct/xF3HAnKUbjDNXNjXY4xt493H+Ou32t
+         sOFyofifILzcmyTtvVfjdK68omFEj9QNtUKNo4vCX/ZSfL7GumtfuzCNfh6Q2I8YTJRg
+         jrpg==
+X-Gm-Message-State: AOAM532ZS+XLl2LCozcsG3qlbKwMs/nZJDPrks7EjJgbtaL+SlC44Vry
+        rgHekTvtF8TyXZg+4MrM/bbOYE7Lvrw=
+X-Google-Smtp-Source: ABdhPJyfHd60C/yt6/C0Ijkwk9RyVf8bjnYna4ppLSBzVsVQ7VGppNses7R6R1uiC2x3LrH3g3AER8JsCOo=
+Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:9857:be95:97a2:e91c])
+ (user=seanjc job=sendgmr) by 2002:a0c:fec8:: with SMTP id z8mr7027044qvs.59.1614910691867;
+ Thu, 04 Mar 2021 18:18:11 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu,  4 Mar 2021 18:18:08 -0800
+Message-Id: <20210305021808.3769732-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH] KVM: x86: Ensure deadline timer has truly expired before
+ posting its IRQ
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] docs: livepatch: Fix a typo in the file shadow-vars.rst
-Date:   Fri,  5 Mar 2021 07:47:20 +0530
-Message-Id: <20210305021720.21874-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When posting a deadline timer interrupt, open code the checks guarding
+__kvm_wait_lapic_expire() in order to skip the lapic_timer_int_injected()
+check in kvm_wait_lapic_expire().  The injection check will always fail
+since the interrupt has not yet be injected.  Moving the call after
+injection would also be wrong as that wouldn't actually delay delivery
+of the IRQ if it is indeed sent via posted interrupt.
 
-s/ varibles/variables/
-
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Fixes: 010fd37fddf6 ("KVM: LAPIC: Reduce world switch latency caused by timer_advance_ns")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- Documentation/livepatch/shadow-vars.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/lapic.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/livepatch/shadow-vars.rst b/Documentation/livepatch/shadow-vars.rst
-index c05715aeafa4..8464866d18ba 100644
---- a/Documentation/livepatch/shadow-vars.rst
-+++ b/Documentation/livepatch/shadow-vars.rst
-@@ -165,7 +165,7 @@ In-flight parent objects
-
- Sometimes it may not be convenient or possible to allocate shadow
- variables alongside their parent objects.  Or a livepatch fix may
--require shadow varibles to only a subset of parent object instances.  In
-+require shadow variables to only a subset of parent object instances.  In
- these cases, the klp_shadow_get_or_alloc() call can be used to attach
- shadow variables to parents already in-flight.
-
---
-2.30.1
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index 45d40bfacb7c..cb8ebfaccfb6 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -1642,7 +1642,16 @@ static void apic_timer_expired(struct kvm_lapic *apic, bool from_timer_fn)
+ 	}
+ 
+ 	if (kvm_use_posted_timer_interrupt(apic->vcpu)) {
+-		kvm_wait_lapic_expire(vcpu);
++		/*
++		 * Ensure the guest's timer has truly expired before posting an
++		 * interrupt.  Open code the relevant checks to avoid querying
++		 * lapic_timer_int_injected(), which will be false since the
++		 * interrupt isn't yet injected.  Waiting until after injecting
++		 * is not an option since that won't help a posted interrupt.
++		 */
++		if (vcpu->arch.apic->lapic_timer.expired_tscdeadline &&
++		    vcpu->arch.apic->lapic_timer.timer_advance_ns)
++			__kvm_wait_lapic_expire(vcpu);
+ 		kvm_apic_inject_pending_timer_irqs(apic);
+ 		return;
+ 	}
+-- 
+2.30.1.766.gb4fecdf3b7-goog
 
