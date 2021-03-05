@@ -2,94 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD8332F233
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6595332F238
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhCESLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 13:11:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhCESK4 (ORCPT
+        id S229517AbhCESNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 13:13:52 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6122 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhCESNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 13:10:56 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94467C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 10:10:55 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id w9so3829304edc.11
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 10:10:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=ubmhmztN8a8Hj0poOvVT8YbZJDxjF/QA8WxAgvM4BAo=;
-        b=RBhZe6IVRoBkXgOGPTYenj14nkf3DHhFmd27DCVTFkVU37xSXaHheV4A5ZidTnyl+c
-         9PmNMmT6d0zHwMt4ZLvLlJSfAB+19qZ7LLzmAJ0DTEq3wkzAgGmmBACA0BEGDuDKGrfL
-         gBlrPMb9uw6/odrFxO6QyhTYJnzUlD8Srby/9uvPkn/7w76iFUucWWk4QmTo1ZGXG0cx
-         I0Cx687AKLp9i6YdMeerGvdJal7MZCtMNIAuNKknOWPRmZxY3125ZkSBPsN4s8OTVtDn
-         BdzbLS7ixDlZBVTvmdlECo54l/cu09xzKUNFFmgfFMpHL/M78+aoczP0vZ88aadDKIPo
-         sILQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ubmhmztN8a8Hj0poOvVT8YbZJDxjF/QA8WxAgvM4BAo=;
-        b=nC1qmA2JQExjG/AWsFyK1rFHhrdJIqDWsr8lPw5PSasbUqlTs35iIZDlQYzig7p8b6
-         Uts3Y7HhhUXxfXRS24R6cbO7E5X6utOxdJD82iz+Qrtz4ikgJBZJ8X4tghpYBRK+CLIf
-         nVAF/Bv9uJ0J/wC/A10+7nMxVI84SP8TPecy+FEPZZ/BvNwFWFt2i1nSkWtjKsNYecQO
-         Us7tUjT8knlfkdP475vfh00TccpebWBNUohNLqYtQ7tK15AKA/SssvKT8RZZ8Sp/4X21
-         XK7Dzdb5A67iOrhFkvmeMiw+TrPPxjL8j9bn8zcMqatkHoMvbYTGyKYHOG8F7b9csUJY
-         xoaA==
-X-Gm-Message-State: AOAM530zb02KTG1kHSFIKXwsQ5uvO0Of29SM2u4lha+8kodL97P4BC3b
-        4CSk4Zs40qWUJggfVhij9Gg=
-X-Google-Smtp-Source: ABdhPJw/b0DZ2fi/I+8a78lVzCb51tukJxdYHo7pThM7/cl89xGGjztHp5x9jHdnZ2aTdv9RwsXdGA==
-X-Received: by 2002:a50:8a90:: with SMTP id j16mr10103042edj.334.1614967854419;
-        Fri, 05 Mar 2021 10:10:54 -0800 (PST)
-Received: from LEGION ([27.255.58.138])
-        by smtp.gmail.com with ESMTPSA id br13sm1953440ejb.87.2021.03.05.10.10.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 10:10:54 -0800 (PST)
-Date:   Fri, 5 Mar 2021 23:10:44 +0500
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Cc:     musamaanjum@gmail.com
-Subject: [PATCH] kvm: x86: use NULL instead of using plain integer as pointer
-Message-ID: <20210305181044.GA489219@LEGION>
+        Fri, 5 Mar 2021 13:13:19 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B604274bf0001>; Fri, 05 Mar 2021 10:13:19 -0800
+Received: from [10.25.102.43] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 5 Mar
+ 2021 18:13:08 +0000
+Subject: Re: [PATCH] PCI: tegra: Disable PTM capabilities for EP mode
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Om Prakash Singh <omp@nvidia.com>
+CC:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
+        <lorenzo.pieralisi@arm.com>, <amurray@thegoodpenguin.co.uk>,
+        <bhelgaas@google.com>, <kishon@ti.com>, <thierry.reding@gmail.com>,
+        <Jisheng.Zhang@synaptics.com>, <jonathanh@nvidia.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>,
+        <oop.singh@gmail.com>
+References: <20210305121934.GA1067436@bjorn-Precision-5520>
+From:   Vidya Sagar <vidyas@nvidia.com>
+Message-ID: <81c84df2-e52b-7713-5026-c3e0a27376bd@nvidia.com>
+Date:   Fri, 5 Mar 2021 23:43:05 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210305121934.GA1067436@bjorn-Precision-5520>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614967999; bh=iXH6BGuoOPrc5Y2F4o7qmuZpbDhOYFMuk95svGbaDhA=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=j6b14bYx8SWcuYKB4nYMCnrbfhD7TM8A7PARdKS7aVhJVDlRn1T1WeSYbjTFQGNEV
+         nG9W45W2/T+LPXqHKcem76+9r/upO/BeP+p4H+TDJUR8NHzqNsZIo5XRttlPq/7h0I
+         zO5rhourvYT0X1ymHx55NMTYQX9dXdRzoi16a2P18sJzEbS9B2eS7TmwQbIbTtFWFn
+         RhJD2O7X9U4LriG0PCYnFDv9oef7DKvNVbeURSISGIJyRZBMyFjJ+Kw5SCu4Z6qurW
+         cVpcXWvJD45DJYH02h6QRYBEYOVrE16rVNAVQvxt57ttNrELYzGwm4xB00zfp+6GMX
+         5k0sUveJtzZiQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparse warnings removed:
-warning: Using plain integer as NULL pointer
 
-Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
----
- arch/x86/kvm/x86.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 884e5b3838c7..3e11065038e5 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10570,7 +10570,7 @@ void __user * __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
- 			return (void __user *)hva;
- 	} else {
- 		if (!slot || !slot->npages)
--			return 0;
-+			return NULL;
- 
- 		old_npages = slot->npages;
- 		hva = slot->userspace_addr;
--- 
-2.25.1
+On 3/5/2021 5:49 PM, Bjorn Helgaas wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> On Fri, Mar 05, 2021 at 01:42:34PM +0530, Om Prakash Singh wrote:
+>> PCIe EP compliance expect PTM capabilities (ROOT_CAPABLE, RES_CAPABLE,
+>> CLK_GRAN) to be disabled.
+> 
+> I guess this is just enforcing the PCIe spec requirements that only
+> Root Ports, RCRBs, and Switches are allowed to set the PTM Responder
+> Capable bit, and that the Local Clock Granularity is RsvdP if PTM Root
+> Capable is zero?  (PCIe r5.0, sec 7.9.16.2)
+> 
+> Should this be done more generally somewhere in the dwc code as
+> opposed to in the tegra code?
+Agree.
 
+> 
+>> Signed-off-by: Om Prakash Singh <omp@nvidia.com>
+>> ---
+>>   drivers/pci/controller/dwc/pcie-tegra194.c | 17 ++++++++++++++++-
+>>   include/uapi/linux/pci_regs.h              |  1 +
+>>   2 files changed, 17 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+>> index 6fa216e..a588312 100644
+>> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
+>> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+>> @@ -1639,7 +1639,7 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
+>>        struct dw_pcie *pci = &pcie->pci;
+>>        struct dw_pcie_ep *ep = &pci->ep;
+>>        struct device *dev = pcie->dev;
+>> -     u32 val;
+>> +     u32 val, ptm_cap_base = 0;
+> 
+> Unnecessary init.
+> 
+>>        int ret;
+>>
+>>        if (pcie->ep_state == EP_STATE_ENABLED)
+>> @@ -1760,6 +1760,21 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
+>>                                                      PCI_CAP_ID_EXP);
+>>        clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
+>>
+>> +     /* Disable PTM root and responder capability */
+>> +     ptm_cap_base = dw_pcie_find_ext_capability(&pcie->pci,
+>> +                                                PCI_EXT_CAP_ID_PTM);
+>> +     if (ptm_cap_base) {
+>> +             dw_pcie_dbi_ro_wr_en(pci);
+>> +             val = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
+>> +             val &= ~PCI_PTM_CAP_ROOT;
+>> +             dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, val);
+>> +
+>> +             val = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
+>> +             val &= ~(PCI_PTM_CAP_RES | PCI_PTM_GRANULARITY_MASK);
+Why can't this be clubbed with "val &= ~PCI_PTM_CAP_ROOT;" ?
+
+>> +             dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, val);
+>> +             dw_pcie_dbi_ro_wr_dis(pci);
+>> +     }
+>> +
+>>        val = (ep->msi_mem_phys & MSIX_ADDR_MATCH_LOW_OFF_MASK);
+>>        val |= MSIX_ADDR_MATCH_LOW_OFF_EN;
+>>        dw_pcie_writel_dbi(pci, MSIX_ADDR_MATCH_LOW_OFF, val);
+>> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+>> index e709ae8..9dd6f8d 100644
+>> --- a/include/uapi/linux/pci_regs.h
+>> +++ b/include/uapi/linux/pci_regs.h
+>> @@ -1050,6 +1050,7 @@
+>>   /* Precision Time Measurement */
+>>   #define PCI_PTM_CAP                  0x04        /* PTM Capability */
+>>   #define  PCI_PTM_CAP_REQ             0x00000001  /* Requester capable */
+>> +#define  PCI_PTM_CAP_RES             0x00000002  /* Responder capable */
+>>   #define  PCI_PTM_CAP_ROOT            0x00000004  /* Root capable */
+>>   #define  PCI_PTM_GRANULARITY_MASK    0x0000FF00  /* Clock granularity */
+>>   #define PCI_PTM_CTRL                 0x08        /* PTM Control */
+>> --
+>> 2.7.4
+>>
