@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5FE32EB09
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1FF32EAA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233495AbhCEMlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:41:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57116 "EHLO mail.kernel.org"
+        id S232906AbhCEMjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:39:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233406AbhCEMlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:41:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A11A165022;
-        Fri,  5 Mar 2021 12:41:10 +0000 (UTC)
+        id S233266AbhCEMjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:39:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9285664FF0;
+        Fri,  5 Mar 2021 12:39:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948071;
-        bh=PeWfzulb+clhPBVEu08GBvUVQyZF5shtRru7TSyQ4/0=;
+        s=korg; t=1614947949;
+        bh=IeS8j57gMTcCyijsl9N/hXC23WsQuf8HJcZ5/BNwIT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ObHuKLCkXvAqETFS5LS9ErBeYtpYx4QUk+nNnjTy1ogrDid03VjaSqC4pJ3D4R2IL
-         1kQiDmJXsVT2vMkbEuiR0wmr+nRCJcHyOF0px6nSfLmuZNt/Rn83rnQ+dzdbIbIDK9
-         no9ahAyW/ppvCGzsVdKRZH0rJJ9Q8oNiy/OQViZI=
+        b=plW1VPKmKav0YLVS6F9ZmAaP8SVZ3CvIcPML5n4Q/ea0v81xPXIHGg8eSEGmhvema
+         mQZVeIqHvHnJiwmwHCjemv4980smpEk9jssXxeAvEu1I+TVwUkCqcDCF40PD8IjIgV
+         AS0Cl1MeX8IYiygHk95BQ1nbYk4IgPaXGi3mjh8w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 4.9 07/41] futex: Dont enable IRQs unconditionally in put_pi_state()
-Date:   Fri,  5 Mar 2021 13:22:14 +0100
-Message-Id: <20210305120851.638890063@linuxfoundation.org>
+        stable@vger.kernel.org, Li Xinhai <lixinhai.lxh@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 16/39] mm/hugetlb.c: fix unnecessary address expansion of pmd sharing
+Date:   Fri,  5 Mar 2021 13:22:15 +0100
+Message-Id: <20210305120852.582776615@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
-References: <20210305120851.255002428@linuxfoundation.org>
+In-Reply-To: <20210305120851.751937389@linuxfoundation.org>
+References: <20210305120851.751937389@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +42,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Hutchings <ben@decadent.org.uk>
+From: Li Xinhai <lixinhai.lxh@gmail.com>
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+commit a1ba9da8f0f9a37d900ff7eff66482cf7de8015e upstream.
 
-commit 1e106aa3509b86738769775969822ffc1ec21bf4 upstream.
+The current code would unnecessarily expand the address range.  Consider
+one example, (start, end) = (1G-2M, 3G+2M), and (vm_start, vm_end) =
+(1G-4M, 3G+4M), the expected adjustment should be keep (1G-2M, 3G+2M)
+without expand.  But the current result will be (1G-4M, 3G+4M).  Actually,
+the range (1G-4M, 1G) and (3G, 3G+4M) would never been involved in pmd
+sharing.
 
-The exit_pi_state_list() function calls put_pi_state() with IRQs disabled
-and is not expecting that IRQs will be enabled inside the function.
+After this patch, we will check that the vma span at least one PUD aligned
+size and the start,end range overlap the aligned range of vma.
 
-Use the _irqsave() variant so that IRQs are restored to the original state
-instead of being enabled unconditionally.
+With above example, the aligned vma range is (1G, 3G), so if (start, end)
+range is within (1G-4M, 1G), or within (3G, 3G+4M), then no adjustment to
+both start and end.  Otherwise, we will have chance to adjust start
+downwards or end upwards without exceeding (vm_start, vm_end).
 
-Fixes: 153fbd1226fb ("futex: Fix more put_pi_state() vs. exit_pi_state_list() races")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201106085205.GA1159983@mwanda
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[bwh: Backported to 4.9: adjust context]
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Mike:
+
+: The 'adjusted range' is used for calls to mmu notifiers and cache(tlb)
+: flushing.  Since the current code unnecessarily expands the range in some
+: cases, more entries than necessary would be flushed.  This would/could
+: result in performance degradation.  However, this is highly dependent on
+: the user runtime.  Is there a combination of vma layout and calls to
+: actually hit this issue?  If the issue is hit, will those entries
+: unnecessarily flushed be used again and need to be unnecessarily reloaded?
+
+Link: https://lkml.kernel.org/r/20210104081631.2921415-1-lixinhai.lxh@gmail.com
+Fixes: 75802ca66354 ("mm/hugetlb: fix calculation of adjust_range_if_pmd_sharing_possible")
+Signed-off-by: Li Xinhai <lixinhai.lxh@gmail.com>
+Suggested-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Peter Xu <peterx@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/futex.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ mm/hugetlb.c |   22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -882,10 +882,12 @@ static void put_pi_state(struct futex_pi
- 	 * and has cleaned up the pi_state already
- 	 */
- 	if (pi_state->owner) {
--		raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
-+		unsigned long flags;
-+
-+		raw_spin_lock_irqsave(&pi_state->pi_mutex.wait_lock, flags);
- 		pi_state_update_owner(pi_state, NULL);
- 		rt_mutex_proxy_unlock(&pi_state->pi_mutex);
--		raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
-+		raw_spin_unlock_irqrestore(&pi_state->pi_mutex.wait_lock, flags);
- 	}
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4631,21 +4631,23 @@ static bool vma_shareable(struct vm_area
+ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
+ 				unsigned long *start, unsigned long *end)
+ {
+-	unsigned long a_start, a_end;
++	unsigned long v_start = ALIGN(vma->vm_start, PUD_SIZE),
++		v_end = ALIGN_DOWN(vma->vm_end, PUD_SIZE);
  
- 	if (current->pi_state_cache) {
+-	if (!(vma->vm_flags & VM_MAYSHARE))
++	/*
++	 * vma need span at least one aligned PUD size and the start,end range
++	 * must at least partialy within it.
++	 */
++	if (!(vma->vm_flags & VM_MAYSHARE) || !(v_end > v_start) ||
++		(*end <= v_start) || (*start >= v_end))
+ 		return;
+ 
+ 	/* Extend the range to be PUD aligned for a worst case scenario */
+-	a_start = ALIGN_DOWN(*start, PUD_SIZE);
+-	a_end = ALIGN(*end, PUD_SIZE);
++	if (*start > v_start)
++		*start = ALIGN_DOWN(*start, PUD_SIZE);
+ 
+-	/*
+-	 * Intersect the range with the vma range, since pmd sharing won't be
+-	 * across vma after all
+-	 */
+-	*start = max(vma->vm_start, a_start);
+-	*end = min(vma->vm_end, a_end);
++	if (*end < v_end)
++		*end = ALIGN(*end, PUD_SIZE);
+ }
+ 
+ /*
 
 
