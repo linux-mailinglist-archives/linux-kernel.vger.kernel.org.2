@@ -2,189 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0708F32F67A
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C359732F67D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbhCEXOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 18:14:42 -0500
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:39409 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbhCEXOl (ORCPT
+        id S229729AbhCEXPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 18:15:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229642AbhCEXOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 18:14:41 -0500
-Received: by mail-ot1-f42.google.com with SMTP id h22so3423658otr.6;
-        Fri, 05 Mar 2021 15:14:41 -0800 (PST)
+        Fri, 5 Mar 2021 18:14:46 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDFAC06175F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 15:14:46 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id o38so2357573pgm.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 15:14:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=cGT+MDF0P9t+59N2JBromxQsPwywDMBUNWrDg5O/QMI=;
+        b=WODSua2j9rcMPMdyeboEwM00yi/ZbVJHjjcTlj+bq01hexiFgqnFaK1w/wo4a+J+Yd
+         6Ag86QGjXpOTyUUOSE6UVjT34rLGzLvaZdHclLR9Nu9xO0ACF/RaB2WQy7PXPV/02ZNc
+         YZi5Tc/g0H41wtxn5P4SzPf7PYHeV1qBn/wso=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5nXz+NHeNvgfQP7Thr5OxhfCzkTfrNsANsOPr8cVUT0=;
-        b=JNufiOxKrYrJtergWoICzH2bJJpavcYrSfBueCtSZxMP8PNNXTlCukW6GFsZj8B+x0
-         5mZ/moATlBvowr4nQj3voRucmZORRDq7l2VDcYhWXuQySyaS6rN/4ILju74myMZpSabk
-         sz5fCcV0H1lPzCajhnvwYdv4i24ibtF2yJChiR6d3HtFdyVSZbFozp/fSS8Iu8swgAmS
-         Q0n7KC/VzORg7uoVrkQQ/ptkVmIUbBRQr4Uv2kdq1tzamQawQ8uDIEBjB1ryt5/M5B5R
-         wJ4E+vr6dEBvT2nLh5vXB/AoZJUX8d55T+jugRHRf0ma150qejqH+tIJj+seys24yNGe
-         23wg==
-X-Gm-Message-State: AOAM533V/Lm3T//9au+cH/6TfpyLDydcRHXry+wG+gqBV3ZuqNXJ0LNK
-        3aQqGJnzbUUEwvWiW1CFmw==
-X-Google-Smtp-Source: ABdhPJyfbgPitOj8ncVestAxDYpBaKWyTKEtfDYwnWakIsyGPzKPUXorveqf8hsf/u+CHRZE0EMT4w==
-X-Received: by 2002:a05:6830:13c1:: with SMTP id e1mr9788567otq.310.1614986080859;
-        Fri, 05 Mar 2021 15:14:40 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k68sm895763otk.28.2021.03.05.15.14.38
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=cGT+MDF0P9t+59N2JBromxQsPwywDMBUNWrDg5O/QMI=;
+        b=inUeKIWtOGU5ju2gtXNB1Grg9aCt3A78eVzbLFaqAYaKZAkfnDcRpjJ/sZB6rAZjq8
+         vFaDuG7DcAhzGS05DmhUJg6He8eB2Q4WDhZwgh33/T6r9gF3h47F9+zdRNrP3sMpgzrV
+         EcmvEJOYxaWHCj59TGc5fo1xUNp344YrP39rQTynH/s+yDUaBs+Y8lz2XKobUk2BTLEE
+         NX5kwI/7ETnuWLQ+fVpkGXm3sc3AHeI6fKxNr3SYcBXzwE/SuOP0GeNrIJHJQt/0xcgF
+         TmpjkmU3xjlq7FVrbbP4aY/Jf2+Tz7sViNUMkeD9bvpLht/Z+crlnuGN/FODWLomuo5T
+         AxTQ==
+X-Gm-Message-State: AOAM531yurKIe11kENglTvD5N+g8YRov3akhSZzd3hPpISVIClhOa5Z0
+        m0AYK0ThFHZYO42ehVI0Ttm4N3PVlnfrKg==
+X-Google-Smtp-Source: ABdhPJw6bZ5EhjusVNNB8fbv74nKkrjso6CQiHWUJEhRtrxaGo9TR/SP+ZSL/swzX4tdZhqB4YxpDw==
+X-Received: by 2002:a05:6a00:158b:b029:1d1:f9c9:84ca with SMTP id u11-20020a056a00158bb02901d1f9c984camr11566169pfk.46.1614986086200;
+        Fri, 05 Mar 2021 15:14:46 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i7sm3087542pfq.184.2021.03.05.15.14.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 15:14:39 -0800 (PST)
-Received: (nullmailer pid 819644 invoked by uid 1000);
-        Fri, 05 Mar 2021 23:14:37 -0000
-Date:   Fri, 5 Mar 2021 17:14:37 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Al Cooper <alcooperx@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: Add support for the Broadcom UART
- driver
-Message-ID: <20210305231437.GA814293@robh.at.kernel.org>
-References: <20210219203708.49056-1-alcooperx@gmail.com>
- <20210219203708.49056-2-alcooperx@gmail.com>
+        Fri, 05 Mar 2021 15:14:45 -0800 (PST)
+Date:   Fri, 5 Mar 2021 15:14:44 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [GIT PULL] gcc-plugins fixes for v5.12-rc2
+Message-ID: <202103051512.624654ABB8@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210219203708.49056-2-alcooperx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 03:37:07PM -0500, Al Cooper wrote:
-> Add DT bindings for the Broadcom 8250 based UART driver. This
-> UART is based on an 8250 but adds additional functionality. The
-> additional features include the ability to use DMA for transfers and
-> a baud rate clock system that is more accurate at high baud rates.
-> This UART is backward compatible with the standard 8250 UART.
-> 
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
-> ---
->  .../bindings/serial/brcm,bcm7271-uart.yaml    | 96 +++++++++++++++++++
->  1 file changed, 96 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml b/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
-> new file mode 100644
-> index 000000000000..f3d58e613480
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
-> @@ -0,0 +1,96 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/serial/brcm,bcm7271-uart.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Broadcom 8250 based serial port devicetree bindings
-> +
-> +maintainers:
-> +  - Al Cooper <alcooperx@gmail.com>
-> +
-> +description: |+
-> +  The Broadcom UART is based on the basic 8250 UART but with
-> +  enhancements for more accurate high speed baud rates and support
-> +  for DMA.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^serial@[0-9a-f]+$"
 
-Reference serial.yaml and you can drop this (and have slave devices).
+Hi Linus,
 
-You'll need to use 'unevaluatedProperties' instead of 
-'additionalProperties' as well.
+Please pull these tiny gcc-plugin fixes for v5.12-rc2. These issues
+are small but have been reported a couple times now by static analyzers,
+so best to get them fixed to reduce the noise. :)
 
-> +
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - brcm,bcm7271-uart
-> +          - brcm,bcm7278-uart
+Thanks!
 
-Blank line.
+-Kees
 
-> +  reg:
-> +    minItems: 1
-> +    maxItems: 5
-> +
-> +  reg-names:
-> +    description: The UART register block and optionally the DMA register blocks.
-> +    oneOf:
-> +      - items:
-> +          - const: uart
-> +      - items:
-> +          - const: uart
-> +          - const: dma_arb
-> +          - const: dma_rx
-> +          - const: dma_tx
-> +          - const: dma_intr2
-> +
-> +  clocks:
-> +    minItems: 1
-> +
-> +  clock-names:
-> +    const: sw_baud
-> +
-> +  interrupts:
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  interrupt-names:
-> +    description: The UART interrupt and optionally the DMA interrupt.
-> +    oneOf:
-> +      - items:
-> +          - const: uart
-> +      - items:
-> +          - const: uart
-> +          - const: dma
+The following changes since commit fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8:
 
-Drop the oneOf and add 'minItems: 1'.
+  Linux 5.12-rc1 (2021-02-28 16:05:19 -0800)
 
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - clocks
-> +  - clock-names
-> +  - interrupts
-> +  - interrupt-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    serial@840d000 {
-> +        compatible = "brcm,bcm7271-uart";
-> +        reg = <0x840d000 0x20>;
-> +        reg-names = "uart";
-> +        interrupts = <0x0 0x62 0x4>;
-> +        interrupt-names = "uart";
-> +        clocks = <&scmi_clk 190>;
-> +        clock-names = "sw_baud";
-> +    };
-> +
-> +    serial@840e000 {
-> +        compatible = "brcm,bcm7271-uart";
-> +        reg = <0x840e000 0x20>,
-> +              <0x840e080 0x8>,
-> +              <0x840e100 0xa8>,
-> +              <0x840e200 0x4c>,
-> +              <0x840e300 0x30>;
-> +        reg-names = "uart", "dma_arb", "dma_rx", "dma_tx", "dma_intr2";
-> +        interrupts = <0x0 0x62 0x4>, <0x0 0x75 0x4>;
-> +        interrupt-names = "uart", "dma";
-> +        clocks = <&scmi_clk 190>;
-> +        clock-names = "sw_baud";
-> +    };
-> -- 
-> 2.17.1
-> 
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/gcc-plugins-v5.12-rc2
+
+for you to fetch changes up to 5477edcacaacb8af8169450180a1d3bd0dfb9c99:
+
+  gcc-plugins: latent_entropy: remove unneeded semicolon (2021-03-01 19:19:50 -0800)
+
+----------------------------------------------------------------
+gcc-plugins fixes for v5.12-rc2
+
+- Fix coding style issues (Jason Yan)
+
+----------------------------------------------------------------
+Jason Yan (2):
+      gcc-plugins: structleak: remove unneeded variable 'ret'
+      gcc-plugins: latent_entropy: remove unneeded semicolon
+
+ scripts/gcc-plugins/latent_entropy_plugin.c | 2 +-
+ scripts/gcc-plugins/structleak_plugin.c     | 3 +--
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+-- 
+Kees Cook
