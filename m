@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8596E32EA68
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CCCA32EA2E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232970AbhCEMiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:38:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50370 "EHLO mail.kernel.org"
+        id S232933AbhCEMgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:36:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233295AbhCEMh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:37:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C79CC64FF0;
-        Fri,  5 Mar 2021 12:37:27 +0000 (UTC)
+        id S232853AbhCEMgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:36:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 716A865014;
+        Fri,  5 Mar 2021 12:36:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947848;
-        bh=REp7H5p8IRHVqCJCTfbqYcUv2c+CstGSyLCle3paWm8=;
+        s=korg; t=1614947783;
+        bh=Mqw/Xi4CtknF9CnDt+xfZR2WJq/GQJJN7ERbesdt2Zo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U7Df47diid+ZXWQMSjXUaxPH06YLSXDmlcy+2PFEVjPM1Z/1XGkTKM8d8xVXj2XCJ
-         e7UIAEH62AoSYgp8ukjcVz6xS2sBawVIKNM+vGC2gKjMlcP0GtPBsghwRgnPpehTtK
-         2IYYgIzRCd0bL86uCzpwzJUossQgBHjhU4CCHwSE=
+        b=KCj4p1XKqiB4kadLH0Q0mwmrvDT2pCoiMMf8RZrZ1y3E2S2ohtABaJBVFyhYjTcDz
+         k+dAbARx8EIKGFjGODtrWXhnZRldhPEaUEsx00qv+oOb5aKYRbhKeb7iiIXURfhV08
+         f9jPQohVYiPzfTQNbsaw5yzY8NWOMXXjbBJliJhM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anders Roxell <anders.roxell@linaro.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH 4.19 09/52] MIPS: VDSO: Use CLANG_FLAGS instead of filtering out --target=
-Date:   Fri,  5 Mar 2021 13:21:40 +0100
-Message-Id: <20210305120854.117213156@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+36315852ece4132ec193@syzkaller.appspotmail.com,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        jfs-discussion@lists.sourceforge.net,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH 4.19 10/52] JFS: more checks for invalid superblock
+Date:   Fri,  5 Mar 2021 13:21:41 +0100
+Message-Id: <20210305120854.169806432@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
 References: <20210305120853.659441428@linuxfoundation.org>
@@ -41,61 +43,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit 76d7fff22be3e4185ee5f9da2eecbd8188e76b2c upstream.
+commit 3bef198f1b17d1bb89260bad947ef084c0a2d1a6 upstream.
 
-Commit ee67855ecd9d ("MIPS: vdso: Allow clang's --target flag in VDSO
-cflags") allowed the '--target=' flag from the main Makefile to filter
-through to the vDSO. However, it did not bring any of the other clang
-specific flags for controlling the integrated assembler and the GNU
-tools locations (--prefix=, --gcc-toolchain=, and -no-integrated-as).
-Without these, we will get a warning (visible with tinyconfig):
+syzbot is feeding invalid superblock data to JFS for mount testing.
+JFS does not check several of the fields -- just assumes that they
+are good since the JFS_MAGIC and version fields are good.
 
-arch/mips/vdso/elf.S:14:1: warning: DWARF2 only supports one section per
-compilation unit
-.pushsection .note.Linux, "a",@note ; .balign 4 ; .long 2f - 1f ; .long
-4484f - 3f ; .long 0 ; 1:.asciz "Linux" ; 2:.balign 4 ; 3:
-^
-arch/mips/vdso/elf.S:34:2: warning: DWARF2 only supports one section per
-compilation unit
- .section .mips_abiflags, "a"
- ^
+In this case (syzbot reproducer), we have s_l2bsize == 0xda0c,
+pad == 0xf045, and s_state == 0x50, all of which are invalid IMO.
+Having s_l2bsize == 0xda0c causes this UBSAN warning:
+  UBSAN: shift-out-of-bounds in fs/jfs/jfs_mount.c:373:25
+  shift exponent -9716 is negative
 
-All of these flags are bundled up under CLANG_FLAGS in the main Makefile
-and exported so that they can be added to Makefiles that set their own
-CFLAGS. Use this value instead of filtering out '--target=' so there is
-no warning and all of the tools are properly used.
+s_l2bsize can be tested for correctness. pad can be tested for non-0
+and punted. s_state can be tested for its valid values and punted.
 
-Cc: stable@vger.kernel.org
-Fixes: ee67855ecd9d ("MIPS: vdso: Allow clang's --target flag in VDSO cflags")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1256
-Reported-by: Anders Roxell <anders.roxell@linaro.org>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Anders Roxell <anders.roxell@linaro.org>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-[nc: Fix conflict due to lack of 99570c3da96a and 076f421da5d4 in 4.19]
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Do those 3 tests and if any of them fails, report the superblock as
+invalid/corrupt and let fsck handle it.
+
+With this patch, chkSuper() says this when JFS_DEBUG is enabled:
+  jfs_mount: Mount Failure: superblock is corrupt!
+  Mount JFS Failure: -22
+  jfs_mount failed w/return code = -22
+
+The obvious problem with this method is that next week there could
+be another syzbot test that uses different fields for invalid values,
+this making this like a game of whack-a-mole.
+
+syzkaller link: https://syzkaller.appspot.com/bug?extid=36315852ece4132ec193
+
+Reported-by: syzbot+36315852ece4132ec193@syzkaller.appspotmail.com
+Reported-by: kernel test robot <lkp@intel.com> # v2
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc: jfs-discussion@lists.sourceforge.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/vdso/Makefile |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ fs/jfs/jfs_filsys.h |    1 +
+ fs/jfs/jfs_mount.c  |   10 ++++++++++
+ 2 files changed, 11 insertions(+)
 
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -10,12 +10,9 @@ ccflags-vdso := \
- 	$(filter -march=%,$(KBUILD_CFLAGS)) \
- 	$(filter -m%-float,$(KBUILD_CFLAGS)) \
- 	$(filter -mno-loongson-%,$(KBUILD_CFLAGS)) \
-+	$(CLANG_FLAGS) \
- 	-D__VDSO__
+--- a/fs/jfs/jfs_filsys.h
++++ b/fs/jfs/jfs_filsys.h
+@@ -281,5 +281,6 @@
+ 				 * fsck() must be run to repair
+ 				 */
+ #define	FM_EXTENDFS 0x00000008	/* file system extendfs() in progress */
++#define	FM_STATE_MAX 0x0000000f	/* max value of s_state */
  
--ifeq ($(cc-name),clang)
--ccflags-vdso += $(filter --target=%,$(KBUILD_CFLAGS))
--endif
--
- cflags-vdso := $(ccflags-vdso) \
- 	$(filter -W%,$(filter-out -Wa$(comma)%,$(KBUILD_CFLAGS))) \
- 	-O2 -g -fPIC -fno-strict-aliasing -fno-common -fno-builtin -G 0 \
+ #endif				/* _H_JFS_FILSYS */
+--- a/fs/jfs/jfs_mount.c
++++ b/fs/jfs/jfs_mount.c
+@@ -49,6 +49,7 @@
+ 
+ #include <linux/fs.h>
+ #include <linux/buffer_head.h>
++#include <linux/log2.h>
+ 
+ #include "jfs_incore.h"
+ #include "jfs_filsys.h"
+@@ -378,6 +379,15 @@ static int chkSuper(struct super_block *
+ 	sbi->bsize = bsize;
+ 	sbi->l2bsize = le16_to_cpu(j_sb->s_l2bsize);
+ 
++	/* check some fields for possible corruption */
++	if (sbi->l2bsize != ilog2((u32)bsize) ||
++	    j_sb->pad != 0 ||
++	    le32_to_cpu(j_sb->s_state) > FM_STATE_MAX) {
++		rc = -EINVAL;
++		jfs_err("jfs_mount: Mount Failure: superblock is corrupt!");
++		goto out;
++	}
++
+ 	/*
+ 	 * For now, ignore s_pbsize, l2bfactor.  All I/O going through buffer
+ 	 * cache.
 
 
