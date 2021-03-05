@@ -2,119 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9FF32E3DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:45:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8374F32E3E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbhCEIpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:45:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
+        id S229582AbhCEIqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:46:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhCEIos (ORCPT
+        with ESMTP id S229573AbhCEIpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:44:48 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79989C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 00:44:46 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id l133so1701016oib.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 00:44:46 -0800 (PST)
+        Fri, 5 Mar 2021 03:45:53 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AAFC06175F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 00:45:53 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id mj10so1898709ejb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 00:45:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KB08yorhtcB6bwnYQdEUiilQWgj+qvMuWqAWFcX/SDg=;
-        b=ZxLlJnE23vDFkH/RI149rtpJ6Rb1DuzsbCYGBoepoSLkhoigkzcZQUrThOEJZMZwXg
-         g1v7bO3IE1yzgG9XgDolnIsjLiFud25gSY/WXkSrUQ33M9yrvaC+DmEwk9uROs2DEDYZ
-         UeOvLWSeWGxxNp8UchPjXELvxDG+jSq+E/C9Z8SMTDaDbNjhI98yvEQ5EqBlK3Ac87vk
-         NSlDPFWK49JH8UMthr1MOgrwDRFUjDlDss3egSdIyPYv1PPdvhoq7JyduB4XShz7Lwso
-         6/33LAwukxq1jS0D82bC9rlW937dDemOUMjOVCjpBBHS2XaVb4B7qqTdOJU7Kbe3tA6L
-         fTXg==
+         :cc;
+        bh=5iA4x57cYD26M9mH9ZJl/HuREPakbn8+6uPhwu8dScQ=;
+        b=NfLSGdKWY4SW5FR5f1IF46zHLQNEnhdkLS+i/UTCwbQJl3iejMao+y0vnNga2Rm51m
+         UPhwK0pUNjGXenfpV40qgmpkqDIDWwM8PHXixt/Ix6mGuGMM0thPNB0LDKi87aqZh6hE
+         xI0tOylhI5e87UfYhA7fkkP4ZGOSHgs1APTcpwVICgS67QeqmMWOg50ZFVFcsdfcIMQa
+         YFeteLio3B6FM0SAoP/p/UOpn+WtV1jZ8v8fqI49wq+yMcgIoZ9mn38ZcpKf/1TDBtyi
+         NTWzqTeDX7eHn2ihLG7oChALd4H/OyrOcDSldnMC3lXH7Po0IN9YqR2c/8Cf8p7JTN7i
+         Qpxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KB08yorhtcB6bwnYQdEUiilQWgj+qvMuWqAWFcX/SDg=;
-        b=F3CjttnI+taEkHfW8s8S2DbR6zYxB4GrLfyyxM/pTZHCQiWmXjsBl2jNB2OKYjNRHi
-         vCfOCbjB7e9KTwytEtVhduOln271FhIMtqvCRXoNprqiCbu4zcJQi7zTFmfwbTSbaGun
-         SQUEvscW1otEZ1VAfWY15cesoYW8bhqjHzYm3jG2XoXxaZ4vYfteKBwvbzaMuqi7Hq0K
-         0CR3xYXeD9aqPiDB1Bi71x7qejhtz8X1a1JT/1DmlUuLTYKmQI1ZezbpjX3Hmk3gsd8Z
-         NEjfrrDIhYq6LIi6ICFyBBK+cx6vI3LHFtSBL6oMW5zzull6ZKlzP4wG4HWidt8COEeA
-         Qk4A==
-X-Gm-Message-State: AOAM533mPxy9p01jT2TCI8/bWDD2J3ThXraUgguWoUjpalIoJeIlYFeb
-        sxqw9WWSNCA9QD/IepBIRayvl7R6bGNweKhY1wM=
-X-Google-Smtp-Source: ABdhPJxR8UD4zmwPWma3pzbK8QCYZjGc7PejnTVLeCvE+CW5nhVqP0j0e5s2Np4XhDKntGZwQKsI0w==
-X-Received: by 2002:aca:4d8f:: with SMTP id a137mr1610818oib.132.1614933885443;
-        Fri, 05 Mar 2021 00:44:45 -0800 (PST)
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com. [209.85.210.46])
-        by smtp.gmail.com with ESMTPSA id g6sm432421ooh.29.2021.03.05.00.44.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 00:44:44 -0800 (PST)
-Received: by mail-ot1-f46.google.com with SMTP id d9so1044401ote.12;
-        Fri, 05 Mar 2021 00:44:44 -0800 (PST)
-X-Received: by 2002:a9d:12e1:: with SMTP id g88mr3706815otg.305.1614933884478;
- Fri, 05 Mar 2021 00:44:44 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=5iA4x57cYD26M9mH9ZJl/HuREPakbn8+6uPhwu8dScQ=;
+        b=QUyfogbV9TV6+irPuWlnAB2dezU877JIt6inA1cR8vFu7y1CGaQwTpjSwyethA8TnV
+         hR1MRHfNmK3uDsnHzSRQ2TDVNiDqZSXv9c7BSxP6trfjyALv1Dpw9gQdcuUehi3UFm0s
+         q93yfVCek7JFvYIDngo3jWj+JEHm9359Jqm5ER7mHapcgoXmWqE8R1826TDnQTBAinHV
+         RQqtSmiUSb76eYkOwRQ+uZ54vk3Njmob5eNpvI3ATHlxB5JQ5OOk5sGTqy5S2sWnYIHl
+         QDnr5nLh+9uX1jPgStMNI9R3N6aneexg5mp4ONGv9/klUezyOHRyVc2xySxE4evNss8J
+         duZA==
+X-Gm-Message-State: AOAM533CgEoTOCF4P53Z6oQpTopgQ31WWR5UfXQDWNEOeXgITH7hn/BC
+        bc+4on923n7UKFeOM/J8mFnR15j7huhijtnVLvqfNA==
+X-Google-Smtp-Source: ABdhPJxvKJEduCeKxilU3h+wx3QcSAC478yoM/m/H5MK1cr3jwbhYnACXxu4n/dzHr/P2a6/wAMjv9mLYiv4d555RVM=
+X-Received: by 2002:a17:906:d938:: with SMTP id rn24mr1425523ejb.87.1614933952198;
+ Fri, 05 Mar 2021 00:45:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20210303135500.24673-1-alex.bennee@linaro.org>
- <20210303135500.24673-2-alex.bennee@linaro.org> <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
- <20210305075131.GA15940@goby>
-In-Reply-To: <20210305075131.GA15940@goby>
-From:   Arnd Bergmann <arnd@linaro.org>
-Date:   Fri, 5 Mar 2021 09:44:28 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
-Message-ID: <CAK8P3a0qtByN4Fnutr1yetdVZkPJn87yK+w+_DAUXOMif-13aA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB) subsystem
-To:     Joakim Bech <joakim.bech@linaro.org>
-Cc:     =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        ruchika.gupta@linaro.org,
-        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
-        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
-        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+References: <20210304102452.21726-1-brgl@bgdev.pl> <20210304102452.21726-9-brgl@bgdev.pl>
+ <CAMuHMdXRK5=w1-Z=EbM60Sf2bLY1EiVaxbZjMP+XyQ3g7nBpZw@mail.gmail.com> <YEHs3CxWnusWklME@kroah.com>
+In-Reply-To: <YEHs3CxWnusWklME@kroah.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 5 Mar 2021 09:45:41 +0100
+Message-ID: <CAMRc=MddDb+nakgEM+Xeqm=rMMkkWO2EDekD36EoPJashYP88w@mail.gmail.com>
+Subject: Re: [PATCH v2 08/12] drivers: export device_is_bound()
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>, Shuah Khan <shuah@kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 8:52 AM Joakim Bech <joakim.bech@linaro.org> wrote:
-> On Thu, Mar 04, 2021 at 09:56:24PM +0100, Arnd Bergmann wrote:
-> > On Wed, Mar 3, 2021 at 2:54 PM Alex Benn=C3=A9e <alex.bennee@linaro.org=
-> wrote:
-> > That said, I can also imagine use cases where we do want to
-> > store the key in the kernel's keyring, so maybe we end up needing
-> > both.
+On Fri, Mar 5, 2021 at 9:34 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, Mar 05, 2021 at 09:18:30AM +0100, Geert Uytterhoeven wrote:
+> > CC Greg
 > >
-> The concern I have in those cases is that you need to share the RPMB key
-> in some way if you need to access the RPMB device from secure side as
-> well as from the non-secure side. Technically doable I guess, but in
-> practice and in terms of security it doesn't seem like a good approach.
+> > On Thu, Mar 4, 2021 at 11:30 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> > >
+> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > >
+> > > Export the symbol for device_is_bound() so that we can use it in gpio-sim
+> > > to check if the simulated GPIO chip is bound before fetching its driver
+> > > data from configfs callbacks in order to retrieve the name of the GPIO
+> > > chip device.
+> > >
+> > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > ---
+> > >  drivers/base/dd.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+> > > index 9179825ff646..c62c02e3490a 100644
+> > > --- a/drivers/base/dd.c
+> > > +++ b/drivers/base/dd.c
+> > > @@ -353,6 +353,7 @@ bool device_is_bound(struct device *dev)
+> > >  {
+> > >         return dev->p && klist_node_attached(&dev->p->knode_driver);
+> > >  }
+> > > +EXPORT_SYMBOL_GPL(device_is_bound);
 >
-> In a shared environment like that you also have the problem that you
-> need to agree on how to actually store files on the RPMB device. OP-TEE
-> has it's own "FAT-look-a-like" implementation when using RPMB. But if
-> you need mutual access, then you need to get into agreement on where to
-> actually store the files in the RPMB.
+> No.  Please no.  Why is this needed?  Feels like someone is doing
+> something really wrong...
 >
-> However, if secure side for some reason doesn't use RPMB at all, then
-> kernel could of course take control of it and use it.
+> NACK.
 >
-> I would probably not spend too much time on taking that use case into
-> account until we actually see a real need for it.
 
-I think the scenario for the 'nvme-rpmb' tool that does the signing in user
-space does not involve any TEE at the moment, because PCs usually
-don't have one.
+I should have Cc'ed you the entire series, my bad.
 
-I agree that sharing the RPMB is not a great idea, so if you have a TEE
-in the system that requires an RPMB for storage, it won't be usable by
-anything else. However, you can have multiple RPMB partitions with separate
-keys on an NVMe drive, and you can easily have multiple emulated
-virtio-rpmb devices  in a guest and use them for purposes other than the
-TEE.
+This is the patch that uses this change - it's a new, improved testing
+module for GPIO using configfs & sysfs as you (I think) suggested a
+while ago:
 
-      Arnd
+https://lkml.org/lkml/2021/3/4/355
+
+The story goes like this: committing the configfs item registers a
+platform device. As far as I understand - there's no guarantee that
+the device will be bound to a driver before the commit callback (or
+more specifically platform_device_register_full() in this case)
+returns so the user may try to retrieve the name of the device
+immediately (normally user-space should wait for the associated uevent
+but nobody can force that) by doing:
+
+mv /sys/kernel/config/gpio-sim/pending/foo /sys/kernel/config/gpio-sim/live/
+cat /sys/kernel/config/gpio-sim/live/foo/dev_name
+
+If the device is not bound at this point, we'll have a crash in the
+kernel as opposed to just returning -ENODEV.
+
+Please advise on how to handle it without device_is_bound().
+
+Best Regards,
+Bartosz
