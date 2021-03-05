@@ -2,153 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8915832E67C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D87532E674
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229464AbhCEKdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:33:37 -0500
-Received: from 6.mo173.mail-out.ovh.net ([46.105.43.93]:39737 "EHLO
-        6.mo173.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhCEKdW (ORCPT
+        id S229818AbhCEKa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:30:58 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57662 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229690AbhCEKa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:33:22 -0500
-Received: from player750.ha.ovh.net (unknown [10.109.156.41])
-        by mo173.mail-out.ovh.net (Postfix) with ESMTP id 263991633EF
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 11:24:47 +0100 (CET)
-Received: from milecki.pl (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
-        (Authenticated sender: rafal@milecki.pl)
-        by player750.ha.ovh.net (Postfix) with ESMTPSA id E44FC1BA40728;
-        Fri,  5 Mar 2021 10:24:36 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-95G001e4f3bde1-afa5-4127-9562-5a7b4f35abba,
-                    4F7D11A3904BD8E553EC742B87CBB6774FEDAA0F) smtp.auth=rafal@milecki.pl
-X-OVh-ClientIp: 194.187.74.233
-Subject: Re: [PATCH 2/2] nvmem: iomap: new driver exposing NVMEM accessible
- using I/O mapping
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivek Unune <npcomplete13@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
-References: <20210304144132.24098-1-zajec5@gmail.com>
- <20210304144132.24098-2-zajec5@gmail.com>
- <047bced8-6c20-4a0a-c7ea-e0ad83318461@linaro.org>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Message-ID: <93708a21-3444-f68e-c834-a4f769a0acba@milecki.pl>
-Date:   Fri, 5 Mar 2021 11:24:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Fri, 5 Mar 2021 05:30:26 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125ATGfM002168;
+        Fri, 5 Mar 2021 05:30:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=4UbJnKh/rNouiIUUWZr3ZpULnYtu8wIcqi44QhFm7VQ=;
+ b=cIManWSHycp6SdCZ1FadOLerR/MlP2K2WmPMGZqOEPQdpBCRT4vz3I9I+BZ48RZqdqls
+ H8Tn11W9vC3fxm4ZMQgLzsMtb2G0EAlutXhwOxq51CBEF0sLuBEAqUFKTUYOU2PpXmDJ
+ zG0f0m45HbwfCDk2yOHlmV1qv3r1S/A2MxAwUMZC7dCcq+ZWpClqDJ5ZUn8as8t8GkRe
+ horv+n3OlO8e/dTrmRHxkotO9wADDUBlw1PoBPJGhn66hPW9vqKwC6qXPoSwdiG/MET+
+ HQqrwFkDzIwoA+luD+7jxK4loDdtcgL5JTyM9Qop/uQWqeJn5g24oslKGaaNrzS2jwrK 3w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373jxdr13u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 05:30:24 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 125AUMqv012206;
+        Fri, 5 Mar 2021 05:30:23 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373jxdr12e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 05:30:22 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 125AREnQ002959;
+        Fri, 5 Mar 2021 10:30:20 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 37293fswbt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 10:30:20 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 125AUIdc37683680
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 5 Mar 2021 10:30:18 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EE74CA406F;
+        Fri,  5 Mar 2021 10:30:17 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 94C70A4053;
+        Fri,  5 Mar 2021 10:30:17 +0000 (GMT)
+Received: from [9.171.51.82] (unknown [9.171.51.82])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  5 Mar 2021 10:30:17 +0000 (GMT)
+Subject: Re: [PATCH] net: smc: fix error return code of smc_diag_dump_proto()
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210305101351.14683-1-baijiaju1990@gmail.com>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+Message-ID: <d1d50e39-e496-1060-2c71-2338c0572c55@linux.ibm.com>
+Date:   Fri, 5 Mar 2021 11:30:20 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <047bced8-6c20-4a0a-c7ea-e0ad83318461@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210305101351.14683-1-baijiaju1990@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 499336608932138519
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtiedgudehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepkeduheejheffudefhffghfegjeejleetkeevueelveegkefhhfffieehleelgfevnecukfhppedtrddtrddtrddtpdduleegrddukeejrdejgedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejhedtrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprhgrfhgrlhesmhhilhgvtghkihdrphhlpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-05_05:2021-03-03,2021-03-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ spamscore=0 clxscore=1011 bulkscore=0 mlxlogscore=999 malwarescore=0
+ lowpriorityscore=0 adultscore=0 phishscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103050048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.03.2021 11:02, Srinivas Kandagatla wrote:
-> On 04/03/2021 14:41, Rafał Miłecki wrote:
->> From: Rafał Miłecki <rafal@milecki.pl>
->>
->> This is a generic NVMEM access method used e.g. by Broadcom for their
->> NVRAM on MIPS and Northstar devices.
->>
->> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->> ---
->>   drivers/nvmem/Kconfig  |  7 +++
->>   drivers/nvmem/Makefile |  2 +
->>   drivers/nvmem/iomap.c  | 99 ++++++++++++++++++++++++++++++++++++++++++
->>   3 files changed, 108 insertions(+)
->>   create mode 100644 drivers/nvmem/iomap.c
->>
->> diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
->> index 75d2594c16e1..3d5c5684685d 100644
->> --- a/drivers/nvmem/Kconfig
->> +++ b/drivers/nvmem/Kconfig
->> @@ -278,4 +278,11 @@ config NVMEM_RMEM
->>         This driver can also be built as a module. If so, the module
->>         will be called nvmem-rmem.
->> +
->> +config NVMEM_IOMAP
->> +    tristate "I/O mapped NVMEM support"
->> +    depends on HAS_IOMEM
->> +    help
->> +      This driver supports NVMEM that can be accessed using I/O mapping.
->> +
->>   endif
->> diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
->> index 5376b8e0dae5..88a3b6979c53 100644
->> --- a/drivers/nvmem/Makefile
->> +++ b/drivers/nvmem/Makefile
->> @@ -57,3 +57,5 @@ obj-$(CONFIG_SPRD_EFUSE)    += nvmem_sprd_efuse.o
->>   nvmem_sprd_efuse-y        := sprd-efuse.o
->>   obj-$(CONFIG_NVMEM_RMEM)     += nvmem-rmem.o
->>   nvmem-rmem-y            := rmem.o
->> +obj-$(CONFIG_NVMEM_IOMAP)    += nvmem_iomap.o
->> +nvmem_iomap-y            := iomap.o
->> diff --git a/drivers/nvmem/iomap.c b/drivers/nvmem/iomap.c
->> new file mode 100644
->> index 000000000000..ab6b40858a64
->> --- /dev/null
->> +++ b/drivers/nvmem/iomap.c
->> @@ -0,0 +1,99 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Copyright (C) 2021 Rafał Miłecki <rafal@milecki.pl>
->> + */
->> +
->> +#include <linux/io.h>
->> +#include <linux/mod_devicetable.h>
->> +#include <linux/module.h>
->> +#include <linux/nvmem-provider.h>
->> +#include <linux/platform_device.h>
->> +
->> +struct iomap {
->> +    struct device *dev;
->> +    void __iomem *base;
->> +};
->> +
->> +static int iomap_read(void *context, unsigned int offset, void *val,
->> +              size_t bytes)
->> +{
->> +    struct iomap *priv = context;
->> +    u8 *src = priv->base + offset;
->> +    u8 *dst = val;
->> +    size_t tmp;
->> +
->> +    tmp = offset % 4;
->> +    memcpy_fromio(dst, src, tmp);
->> +    dst += tmp;
->> +    src += tmp;
->> +    bytes -= tmp;
->> +
->> +    tmp = rounddown(bytes, 4);
->> +    __ioread32_copy(dst, src, tmp / 4);
->> +    dst += tmp;
->> +    src += tmp;
->> +    bytes -= tmp;
->> +
->> +    memcpy_fromio(dst, src, bytes);
->> +
-> 
-> 
-> You could just do this!
-> 
->      while (bytes--)
->          *val++ = readb(priv->base + offset + i++);
+On 05/03/2021 11:13, Jia-Ju Bai wrote:
+> When the list of head is empty, no error return code of
+> smc_diag_dump_proto() is assigned.
+> To fix this bug, rc is assigned with -ENOENT as error return code.
 
-Do you mean that as replacement for "memcpy_fromio" or the whole
-function code?
-The reason for using __ioread32_copy() was to improve reading
-performance (using aligned 32 bit access where possible). I'm not sure
-if that really matters?
+Your change would break smc_diag_dump().
+When there are no IPv4 sockets (SMCPROTO_SMC) in the list and -ENOENT 
+is returned then smc_diag_dump() will not try to dump any IPv6 sockets
+(SMCPROTO_SMC6). Returning zero is correct here.
 
-P.S.
-Please don't yell at me in every sentence :( Makes me a bit sad :(
+> 
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> ---
+>  net/smc/smc_diag.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/smc/smc_diag.c b/net/smc/smc_diag.c
+> index c952986a6aca..a90889482842 100644
+> --- a/net/smc/smc_diag.c
+> +++ b/net/smc/smc_diag.c
+> @@ -201,8 +201,10 @@ static int smc_diag_dump_proto(struct proto *prot, struct sk_buff *skb,
+>  
+>  	read_lock(&prot->h.smc_hash->lock);
+>  	head = &prot->h.smc_hash->ht;
+> -	if (hlist_empty(head))
+> +	if (hlist_empty(head)) {
+> +		rc = -ENOENT;
+>  		goto out;
+> +	}
+>  
+>  	sk_for_each(sk, head) {
+>  		if (!net_eq(sock_net(sk), net))
+> 
+
+-- 
+Karsten
+
+(I'm a dude)
