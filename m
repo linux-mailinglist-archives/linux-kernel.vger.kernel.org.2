@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463F232E618
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6135932E61A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbhCEKTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:19:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbhCEKTA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:19:00 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28671C061761
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 02:18:59 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id v9so2755600lfa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 02:18:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xwNLb2P2LVN8VWnFdZc+rwNuJ+QqAA27JjkB8JsHwdE=;
-        b=ASt1IVQLPzb9L80bE8m9f6kqqabCk7u0JOhy1MzrBL/Y2CJ0Dk+b11puVpKMC0/6Ns
-         ie9feACUA5VpTHep8VxEOVnrNzCWCNw0ghuzbPl2o2TA6BQKPyu2TvpIsSl+n7WOXxhJ
-         GnbpuvsdvzZ3lgB/WInil0/rAKCDEgOYM/BQIW1fnTNNKCc9Fub2YSSwCjDghaAsgXLx
-         evXri9xJW+v/yVU6UBVsQBMa4XNp4xWamt9MADq5BSFM8ZPLmV2Xkc7NScHS74SmE1hH
-         NVzcQFja3IFFj/naH4Ke4fa2zCfotjNhZsI0D7r4QpvMHpkV+H8RGn9fq5IQFSj0RD1D
-         yI4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xwNLb2P2LVN8VWnFdZc+rwNuJ+QqAA27JjkB8JsHwdE=;
-        b=rN5bppwwxfzA2MNXhK862EBKfaUlwvq/wgGLgXbxxXTM4GaKH3pIE+ef9rnDbmKb2Y
-         KCrxEb4emsNOU5Z3EjgNXCvsELgsYmS8nV7sBWnEr+v72ppXnTj2GYPl+fsvnZbit2IJ
-         3Q03Gd9bWsFwMlgQkRQ2Rixe1xMt89KiTbeb795SdYk74tKvBLmqNS0Kcvb137mL4iRc
-         pqhAXjBSkdKw0jsgSfNBvZ1zDEoZwOfSfet47gOkIwwuK7OdZzjtL6haL3VBRrEic/sO
-         qNxmX+MnbBHlKpKqPqB4bUxGFCv4lEaxQxICFpcsRuP2QFF6ajhwEnBQRANQ1jqkBH0V
-         h/xg==
-X-Gm-Message-State: AOAM531hYr5S9wT9Y0ZDToppNhSmSIfwM5cwoGQ16ZOztwA0m3Z0uh/C
-        CeKVE+rJ6792LqN15gzKqX7AmIipsYEFUdA1RfSdFg==
-X-Google-Smtp-Source: ABdhPJxA/IN9FI+YATqXHoTLFT+UsL1VJiDBv807dBmpi79MIpih6Nv69+jErWGhJ3E/idF9JDF05vISQLysXpmYRtw=
-X-Received: by 2002:a19:6b13:: with SMTP id d19mr5000896lfa.291.1614939537603;
- Fri, 05 Mar 2021 02:18:57 -0800 (PST)
+        id S230035AbhCEKTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:19:40 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:48894 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229615AbhCEKTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 05:19:19 -0500
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx__KaBUJgMMwUAA--.26130S2;
+        Fri, 05 Mar 2021 18:19:06 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wangming01@loongson.cn
+Subject: [PATCH v3 0/7] Add basic support for Loongson-2K1000
+Date:   Fri,  5 Mar 2021 18:18:59 +0800
+Message-Id: <20210305101906.28971-1-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-7-marcan@marcan.st>
-In-Reply-To: <20210304213902.83903-7-marcan@marcan.st>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 5 Mar 2021 11:18:46 +0100
-Message-ID: <CACRpkdYZX81vEivv331OOsaRUr65aLza3-Au-by5OL+w1D0RPA@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 06/27] dt-bindings: timer: arm,arch_timer: Add
- interrupt-names support
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dx__KaBUJgMMwUAA--.26130S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7urykAr1DAw4DKryfXFWDJwb_yoW8Wr4kpw
+        43Cw15KF45Cry3Crn3JryUWryrArWfJrZrWF47Xr15GasIqa4Yvr1fJFs8Jr42vrykta4j
+        9ry8WrW7GFnrC3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gw1l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbo5l5UUUUU==
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 10:40 PM Hector Martin <marcan@marcan.st> wrote:
+These patches support single-core DTS boot to the serial port login
+interface, which can be operated using conventional commands.
 
-> Not all platforms provide the same set of timers/interrupts, and Linux
-> only needs one (plus kvm/guest ones); some platforms are working around
-> this by using dummy fake interrupts. Implementing interrupt-names allows
-> the devicetree to specify an arbitrary set of available interrupts, so
-> the timer code can pick the right one.
->
-> This also adds the hyp-virt timer/interrupt, which was previously not
-> expressed in the fixed 4-interrupt form.
->
-> Signed-off-by: Hector Martin <marcan@marcan.st>
+I have successfully tested it on the Loongson 2K1000 machine.
+pmon: http://cgit.loongnix.org/cgit/pmon-loongson3/
 
-This looks good to me.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Qing Zhang (7):
+  MIPS: Loongson64: DeviceTree for 2K1000
+  MIPS: Loongson64: Distinguish firmware dependencies DTB/LEFI
+  MIPS: Loongson64: Add support for the 2K1000 to get cpu_clock_freq
+  MIPS: Loongson64: Add 2K1000 early_printk_port
+  irqchip/loongson-liointc: irqchip add 2.0 version
+  dt-bindings: interrupt-controller: Add Loongson-2K1000 LIOINTC
+  MIPS: Loongson64: Add a Loongson-2k default config file
 
-Yours,
-Linus Walleij
+ .../loongson,liointc.yaml                     |   7 +-
+ arch/mips/boot/dts/loongson/Makefile          |   1 +
+ .../boot/dts/loongson/loongson64-2k1000.dtsi  | 243 ++++++++++++
+ .../dts/loongson/loongson64_2core_2k1000.dts  |  10 +
+ arch/mips/configs/loongson2k_defconfig        | 353 ++++++++++++++++++
+ .../include/asm/mach-loongson64/boot_param.h  |   6 +
+ .../asm/mach-loongson64/builtin_dtbs.h        |   1 +
+ .../include/asm/mach-loongson64/loongson.h    |   3 +-
+ arch/mips/loongson64/env.c                    |  13 +-
+ arch/mips/loongson64/init.c                   |  21 +-
+ arch/mips/loongson64/time.c                   |  20 +
+ drivers/irqchip/irq-loongson-liointc.c        |  55 ++-
+ 12 files changed, 716 insertions(+), 17 deletions(-)
+ create mode 100644 arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+ create mode 100644 arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dts
+ create mode 100644 arch/mips/configs/loongson2k_defconfig
+
+-- 
+2.20.1
+
