@@ -2,111 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB23D32E00F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:25:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AF232E00C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbhCEDZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 22:25:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhCEDZL (ORCPT
+        id S229580AbhCEDZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 22:25:05 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13060 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229458AbhCEDZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 22:25:11 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9B6C061574;
-        Thu,  4 Mar 2021 19:25:11 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id i14so1001450pjz.4;
-        Thu, 04 Mar 2021 19:25:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JsELJRNcDtTSsFfuFxiHJtBmBmVHnlXcRIQtbNC8CRQ=;
-        b=hJwZBIae6zSKiD4JIIPtqSsaJlPghNkWhA5y+CW5kSbYN7SGoot49nQU45ZyssgybJ
-         5k+eNYIfwTAP+icU6rj3t9XCs+kRv1EUHf/SVS4uxQ+jFwqT+aqCBiO5aJM0eu9+yUBN
-         i1YM+UYl2PnfJrlIstL+coReHiSyny6zVlR4On8Mg0/X6SJGakTUClkt3MTne3rnzeJy
-         BMIvAPpvTTVAxkiE+pC0uCtk8MDpYYuAntq7zqcuv8Hb4bVWEOqd93v+W/FngZ/e0cf0
-         6gWv9XZ5KsNtlzjfcOvbpFbwLJkykdbQF8Ci4Lc3owIp7zzPPSQGmg+ybUfyc/H/mOr0
-         y3HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JsELJRNcDtTSsFfuFxiHJtBmBmVHnlXcRIQtbNC8CRQ=;
-        b=eX+EpkqIIcD0AOeTipF9H7l971uyDru1e8YaiEk6O3wCFsX0q677YeF7XQGel2k9BB
-         7vqHFHG90yToJ9gbREDI9qE5fWUovn9Hw7uYDMWdJJLt/GuSFDmjLw4q8iQkufyv7xcF
-         VmKam+QIOb+TofqikeuEePD7FNvJGLpyxPQ5cJHlQU4voYBagsGXyrq7pnXoupvFW2ym
-         oorcdP9R7T4FyLIFOKNRThJTcwePn37/aVcmcqzrAax9vTyJx7IJkRmw235MCDxNQXlg
-         BlNKDpE+PUGDY6lVoSGri5XezJ6w/qL54Ff5OuTaHK9aUNGCfQm+UJCTPIO8T9VjuUw3
-         OPNQ==
-X-Gm-Message-State: AOAM533/iH7oGUspx2Vqz0I9bWfGBGZY6cmoY4oGprI1zpPPrGAtHavT
-        XXqcLveOrpl/BWv6ulXgjn8=
-X-Google-Smtp-Source: ABdhPJxub6tDTbIx20kB9vYGjQjZsDcc/y6IwqkpiKR3ai0zt205Rmwf8QAYoX8kVJQM5LtkN0ecvw==
-X-Received: by 2002:a17:90b:798:: with SMTP id l24mr7625513pjz.63.1614914710762;
-        Thu, 04 Mar 2021 19:25:10 -0800 (PST)
-Received: from localhost.localdomain ([103.114.158.1])
-        by smtp.gmail.com with ESMTPSA id w1sm670629pgs.15.2021.03.04.19.25.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 19:25:10 -0800 (PST)
-From:   Jiele zhao <unclexiaole@gmail.com>
-To:     keescook@chromium.org
-Cc:     jmorris@namei.org, serge@hallyn.com,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jiele zhao <unclexiaole@gmail.com>
-Subject: [PATCH v3] security/loadpin: Replace "kernel_read_file_str[j]" with function "kernel_read_file_id_str(j)".
-Date:   Fri,  5 Mar 2021 03:21:10 +0000
-Message-Id: <20210305032110.215024-1-unclexiaole@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 4 Mar 2021 22:25:05 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DsCjR3kjszMjHB;
+        Fri,  5 Mar 2021 11:22:51 +0800 (CST)
+Received: from [10.67.102.197] (10.67.102.197) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 5 Mar 2021 11:24:55 +0800
+Subject: Re: [PATCH 4/4] nfc: Avoid endless loops caused by repeated
+ llcp_sock_connect()(Internet mail)
+To:     =?UTF-8?B?a2l5aW4o5bC55LquKQ==?= <kiyin@tencent.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "sameo@linux.intel.com" <sameo@linux.intel.com>,
+        "linville@tuxdriver.com" <linville@tuxdriver.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "mkl@pengutronix.de" <mkl@pengutronix.de>,
+        "stefan@datenfreihafen.org" <stefan@datenfreihafen.org>,
+        "matthieu.baerts@tessares.net" <matthieu.baerts@tessares.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     "wangle6@huawei.com" <wangle6@huawei.com>,
+        "xiaoqian9@huawei.com" <xiaoqian9@huawei.com>
+References: <20210303061654.127666-1-nixiaoming@huawei.com>
+ <20210303061654.127666-5-nixiaoming@huawei.com>
+ <2965a9b88d254b7f8e7f4356875bbedb@tencent.com>
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <9295c052-a9e2-619c-eb40-87b592e2c08d@huawei.com>
+Date:   Fri, 5 Mar 2021 11:24:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
+In-Reply-To: <2965a9b88d254b7f8e7f4356875bbedb@tencent.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.102.197]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Actually Linux kernel already provide function "kernel_read_file_id_str()"
-for secure access in "kernel_read_file.h".
-And, in "parse_exclude()" function, it's better to use
+On 2021/3/3 17:28, kiyin(尹亮) wrote:
+> Hi xiaoming,
+>    the path can only fix the endless loop problem. it can't fix the meaningless llcp_sock->service_name problem.
+>    if we set llcp_sock->service_name to meaningless string, the connect will be failed. and sk->sk_state will not be LLCP_CONNECTED. then we can call llcp_sock_connect() many times. that leaks everything: llcp_sock->dev, llcp_sock->local, llcp_sock->ssap, llcp_sock->service_name...
 
-	BUILD_BUG_ON(ARRAY_SIZE(kernel_read_file_str) - 1 !=
-		ARRAY_SIZE(ignore_read_file_id));
+I didn't find the code to modify sk->sk_state after a connect failure. 
+Can you provide guidance?
 
-to make sure the arrays stay within expected sizes.
+Based on my understanding of the current code:
+After llcp_sock_connect() is invoked using the meaningless service_name 
+as the parameter, sk->sk_state is set to LLCP_CONNECTING. After that, no 
+corresponding service responds to the request because the service_name 
+is meaningless, the value of sk->sk_state remains unchanged.
+Therefore, when llcp_sock_connect() is invoked again, resources such as 
+llcp_sock->service_name are not repeatedly applied because sk_state is 
+set to LLCP_CONNECTING.
 
-By the way, sorry for that mistake PATCH v2 file, I sent wrong path... ...
+In this way, the repeated invoking of llcp_sock_connect() does not 
+repeatedly leak resources.
 
-Signed-off-by: Jiele zhao <unclexiaole@gmail.com>
----
- security/loadpin/loadpin.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Thanks
+Xiaoming Ni
 
-diff --git a/security/loadpin/loadpin.c b/security/loadpin/loadpin.c
-index b12f7d986b1e..1c35164673b4 100644
---- a/security/loadpin/loadpin.c
-+++ b/security/loadpin/loadpin.c
-@@ -210,9 +210,10 @@ static void __init parse_exclude(void)
- 	 */
- 	BUILD_BUG_ON(ARRAY_SIZE(exclude_read_files) !=
- 		     ARRAY_SIZE(ignore_read_file_id));
--	BUILD_BUG_ON(ARRAY_SIZE(kernel_read_file_str) <
-+	BUILD_BUG_ON(ARRAY_SIZE(kernel_read_file_str) - 1 !=
- 		     ARRAY_SIZE(ignore_read_file_id));
- 
-+
- 	for (i = 0; i < ARRAY_SIZE(exclude_read_files); i++) {
- 		cur = exclude_read_files[i];
- 		if (!cur)
-@@ -221,9 +222,9 @@ static void __init parse_exclude(void)
- 			continue;
- 
- 		for (j = 0; j < ARRAY_SIZE(ignore_read_file_id); j++) {
--			if (strcmp(cur, kernel_read_file_str[j]) == 0) {
-+			if (strcmp(cur, kernel_read_file_id_str(j)) == 0) {
- 				pr_info("excluding: %s\n",
--					kernel_read_file_str[j]);
-+					kernel_read_file_id_str(j));
- 				ignore_read_file_id[j] = 1;
- 				/*
- 				 * Can not break, because one read_file_str
--- 
-2.25.1
+
+> 
+>> -----Original Message-----
+>> From: Xiaoming Ni [mailto:nixiaoming@huawei.com]
+>> Sent: Wednesday, March 3, 2021 2:17 PM
+>> To: linux-kernel@vger.kernel.org; kiyin(尹亮) <kiyin@tencent.com>;
+>> stable@vger.kernel.org; gregkh@linuxfoundation.org; sameo@linux.intel.com;
+>> linville@tuxdriver.com; davem@davemloft.net; kuba@kernel.org;
+>> mkl@pengutronix.de; stefan@datenfreihafen.org;
+>> matthieu.baerts@tessares.net; netdev@vger.kernel.org
+>> Cc: nixiaoming@huawei.com; wangle6@huawei.com; xiaoqian9@huawei.com
+>> Subject: [PATCH 4/4] nfc: Avoid endless loops caused by repeated
+>> llcp_sock_connect()(Internet mail)
+>>
+>> When sock_wait_state() returns -EINPROGRESS, "sk->sk_state" is
+>> LLCP_CONNECTING. In this case, llcp_sock_connect() is repeatedly invoked,
+>>   nfc_llcp_sock_link() will add sk to local->connecting_sockets twice.
+>>   sk->sk_node->next will point to itself, that will make an endless loop  and
+>> hang-up the system.
+>> To fix it, check whether sk->sk_state is LLCP_CONNECTING in
+>>   llcp_sock_connect() to avoid repeated invoking.
+>>
+>> fix CVE-2020-25673
+>> Fixes: b4011239a08e ("NFC: llcp: Fix non blocking sockets connections")
+>> Reported-by: "kiyin(尹亮)" <kiyin@tencent.com>
+>> Link: https://www.openwall.com/lists/oss-security/2020/11/01/1
+>> Cc: <stable@vger.kernel.org> #v3.11
+>> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+>> ---
+>>   net/nfc/llcp_sock.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/net/nfc/llcp_sock.c b/net/nfc/llcp_sock.c index
+>> 59172614b249..a3b46f888803 100644
+>> --- a/net/nfc/llcp_sock.c
+>> +++ b/net/nfc/llcp_sock.c
+>> @@ -673,6 +673,10 @@ static int llcp_sock_connect(struct socket *sock,
+>> struct sockaddr *_addr,
+>>   		ret = -EISCONN;
+>>   		goto error;
+>>   	}
+>> +	if (sk->sk_state == LLCP_CONNECTING) {
+>> +		ret = -EINPROGRESS;
+>> +		goto error;
+>> +	}
+>>
+>>   	dev = nfc_get_device(addr->dev_idx);
+>>   	if (dev == NULL) {
+>> --
+>> 2.27.0
+>>
+> 
 
