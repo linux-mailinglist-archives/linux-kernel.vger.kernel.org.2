@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D07032E7A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CA532E7A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbhCEMFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:05:40 -0500
-Received: from foss.arm.com ([217.140.110.172]:52376 "EHLO foss.arm.com"
+        id S229758AbhCEMGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:06:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229562AbhCEMF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:05:27 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F22531B;
-        Fri,  5 Mar 2021 04:05:27 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.47.91])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B046D3F766;
-        Fri,  5 Mar 2021 04:05:24 -0800 (PST)
-Date:   Fri, 5 Mar 2021 12:04:53 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        broonie@kernel.org, linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
- save_stack_trace() and friends
-Message-ID: <20210305120453.GA74705@C02TD0UTHF1T.local>
-References: <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu>
- <YD+o5QkCZN97mH8/@elver.google.com>
- <20210304145730.GC54534@C02TD0UTHF1T.local>
- <CANpmjNOSpFbbDaH9hNucXrpzG=HpsoQpk5w-24x8sU_G-6cz0Q@mail.gmail.com>
- <20210304165923.GA60457@C02TD0UTHF1T.local>
- <YEEYDSJeLPvqRAHZ@elver.google.com>
- <20210304180154.GD60457@C02TD0UTHF1T.local>
- <CANpmjNOZWuhqXATDjH3F=DMbpg2xOy0XppVJ+Wv2XjFh_crJJg@mail.gmail.com>
- <20210304185148.GE60457@C02TD0UTHF1T.local>
- <CANpmjNMQNWBtWS7O_aaCfbMWvQUnzWTPXoxgD8DzqNzKfL_2Dg@mail.gmail.com>
+        id S229493AbhCEMGQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:06:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05F9564E60;
+        Fri,  5 Mar 2021 12:06:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614945975;
+        bh=seIgEFW9DLtQzQlaeFxbhm+QRr5e0pQ/jgFuY8NjaGI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=perRWwrnJeslMC1hKprDhNXjUI7bveE5t87LFC3/uVP4/0R1nBqJivBtjShEhub1e
+         DtkoeyhmamPYWa2lGkzVn1WLBVe+RHIWNuLFhi7quOGr8AAITTBfsM4CKWiYic0jd6
+         8Ew7aWuj6leNJP78kmnyRSmezX4xJjtpC1Qjbmss=
+Date:   Fri, 5 Mar 2021 13:06:12 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>, Ian Ray <ian.ray@ge.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCHv4] serial: imx: Add DMA buffer configuration via sysfs
+Message-ID: <YEIetFdcuYZU98s/@kroah.com>
+References: <20210305115058.92284-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANpmjNMQNWBtWS7O_aaCfbMWvQUnzWTPXoxgD8DzqNzKfL_2Dg@mail.gmail.com>
+In-Reply-To: <20210305115058.92284-1-sebastian.reichel@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 08:01:29PM +0100, Marco Elver wrote:
-> On Thu, 4 Mar 2021 at 19:51, Mark Rutland <mark.rutland@arm.com> wrote:
-> > On Thu, Mar 04, 2021 at 07:22:53PM +0100, Marco Elver wrote:
-
-> > > I was having this problem with KCSAN, where the compiler would
-> > > tail-call-optimize __tsan_X instrumentation.
-> >
-> > Those are compiler-generated calls, right? When those are generated the
-> > compilation unit (and whatever it has included) might not have provided
-> > a prototype anyway, and the compiler has special knowledge of the
-> > functions, so it feels like the compiler would need to inhibit TCO here
-> > for this to be robust. For their intended usage subjecting them to TCO
-> > doesn't seem to make sense AFAICT.
-> >
-> > I suspect that compilers have some way of handling that; otherwise I'd
-> > expect to have heard stories of mcount/fentry calls getting TCO'd and
-> > causing problems. So maybe there's an easy fix there?
+On Fri, Mar 05, 2021 at 12:50:58PM +0100, Sebastian Reichel wrote:
+> From: Fabien Lahoudere <fabien.lahoudere@collabora.com>
 > 
-> I agree, the compiler builtins should be handled by the compiler
-> directly, perhaps that was a bad example. But we also have "explicit
-> instrumentation", e.g. everything that's in <linux/instrumented.h>.
-
-True -- I agree for those we want similar, and can see a case for a
-no-tco-calls-to-me attribute on functions as with noreturn.
-
-Maybe for now it's worth adding prevent_tail_call_optimization() to the
-instrument_*() call wrappers in <linux/instrumented.h>? As those are
-__always_inline, that should keep the function they get inlined in
-around. Though we probably want to see if we can replace the mb() in
-prevent_tail_call_optimization() with something that doesn't require a
-real CPU barrier.
-
-[...]
-
-> > I reckon for basically any instrumentation we don't want calls to be
-> > TCO'd, though I'm not immediately sure of cases beyond sanitizers and
-> > mcount/fentry.
+> In order to optimize serial communication (performance/throughput VS
+> latency), we may need to tweak DMA period number and size. This adds
+> sysfs attributes to configure those values before initialising DMA.
+> The defaults will stay the same as before (16 buffers with a size of
+> 1024 bytes). Afterwards the values can be read/write with the
+> following sysfs files:
 > 
-> Thinking about this more, I think it's all debugging tools. E.g.
-> lockdep, if you lock/unlock at the end of a function, you might tail
-> call into lockdep. If the compiler applies TCO, and lockdep determines
-> there's a bug and then shows a trace, you'll have no idea where the
-> actual bug is. The kernel has lots of debugging facilities that add
-> instrumentation in this way. So perhaps it's a general debugging-tool
-> problem (rather than just sanitizers).
+> /sys/class/tty/ttymxc*/dma_buffer_size
+> /sys/class/tty/ttymxc*/dma_buffer_count
 
-This makes sense to me.
+Ick no.  Custom sysfs attributes for things like serial ports are crazy.
 
-Thanks,
-Mark.
+> This is mainly needed for GEHC CS ONE (arch/arm/boot/dts/imx53-ppd.dts),
+> which has multiple microcontrollers connected via UART controlling. One
+> of the UARTs is connected to an on-board microcontroller at 19200 baud,
+> which constantly pushes critical data (so aging character detect
+> interrupt will never trigger). This data must be processed at 50-200 Hz,
+> so UART should return data in less than 5-20ms. With 1024 byte DMA
+> buffer (and a constant data stream) the read operation instead needs
+> 1024 byte / 19200 baud = 53.333ms, which is way too long (note: Worst
+> Case would be remote processor sending data with short pauses <= 7
+> characters, which would further increase this number). The current
+> downstream kernel instead configures 24 bytes resulting in 1.25ms,
+> but that is obviously not sensible for normal UART use cases and cannot
+> be used as new default.
+
+Why can't this be a device tree attribute?  Why does this have to be a
+sysfs thing that no one will know how to tune and set over time.  This
+hardware should not force a user to manually tune it to get it to work
+properly, this isn't the 1990's anymore :(
+
+Please never force a user to choose stuff like this, they never will
+know what to do.
+
+thanks,
+
+greg k-h
