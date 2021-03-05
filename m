@@ -2,227 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6AB032ED96
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7643132EDA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhCEPBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:01:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230047AbhCEPBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:01:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CDCA65011;
-        Fri,  5 Mar 2021 15:01:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614956498;
-        bh=LFaFvz9E3qYlcPNdU+O7gyV5kGiBqm2Lk/DUBLgzstM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bAYrH3CzM0CTo6UHbq2fwOzDwrp19w2LCvdSBos1FXvlVhrKVQ995v43IHFc7TGJs
-         ZGOfkkhVOgVQ21Gqv35SoZ3nB1t0zBceh8xrtxY0MoaWcK9wBSs0lePpZVKQe0pyUs
-         8kGuHPzkSJpLW4tStgMV4aHIXlt/RHMdVTw/+x6Y=
-Date:   Fri, 5 Mar 2021 16:01:36 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>, Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 08/12] drivers: export device_is_bound()
-Message-ID: <YEJH0J6czwpNlZAg@kroah.com>
-References: <20210304102452.21726-9-brgl@bgdev.pl>
- <CAMuHMdXRK5=w1-Z=EbM60Sf2bLY1EiVaxbZjMP+XyQ3g7nBpZw@mail.gmail.com>
- <YEHs3CxWnusWklME@kroah.com>
- <CAMRc=MddDb+nakgEM+Xeqm=rMMkkWO2EDekD36EoPJashYP88w@mail.gmail.com>
- <YEHyDUQ3V7Pl6+TU@kroah.com>
- <CAMRc=Md7FeQAd4Syh685+jyZAq2QStBNoo0ACQxrSB=4N6d3dg@mail.gmail.com>
- <YEIG0u8Vg3e6ZBhz@kroah.com>
- <CAMRc=Meznt=5m_4OnSRf04xHsUy39hH7S7_8ftZaHq6GD-taEw@mail.gmail.com>
- <YEIVi8aDSEukrK7E@kroah.com>
- <CAMRc=MeNBt=J2LkDAYKhd9iQJCfyTvAxBKmJZ7vjVUOmYjexLg@mail.gmail.com>
+        id S230050AbhCEPDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:03:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229672AbhCEPDW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 10:03:22 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E653FC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 07:03:21 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id w34so486836pga.8
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 07:03:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2mlYSW9obf6ZHWc89hkL3cxC+hIY8OuKOPTUYIiFH0A=;
+        b=J6MTCpdKN6RbHYeZCKONYiDSec9HN6g5MOD48exdVQl9rBzpoKxe/fXU+ub+InlwI9
+         /C/O5SHDUrqEQzJLItBfA2St18/8xW4RlUw2Vdiq6eImAdMCgIT0yqEX7IQhpqQI2vFL
+         wkpDjHAah8KBj+GLj5hxch3CWWG6By1Ccf9ydjZK3219BeHiOumA8j/3qN97VUW/L05V
+         52imTqTtuj3UId+UJKsPtoBYPeCQD2C/OmCtRG2e5c//Thl94OKaJ9m3pDzQGcUEUgzU
+         PF4V3iTv0FNO9x5d71GxoWw8s2s1gdCsB3D8ww4Bly8RJ3Q0Mt89b9ZbdKlKlCvBG6JK
+         IuFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2mlYSW9obf6ZHWc89hkL3cxC+hIY8OuKOPTUYIiFH0A=;
+        b=omEKTyK5i2PU8/XdYq/Wv8DzCFl5v7rB04g/GblQI7g4bkwRBX7nID9vx1qB6Futig
+         UvXz8HXZOJUYkCNdyFiWc1UyAB5CFiyEaeLzJetBbIZBfr+ATw/z0t38r/AY3jskXJBB
+         ExbvXDM1PPH6w+VrDkS9qWD3hhb62CojECMTJPDQfuFL7nB2Cjgj+Rq4VmDclGYu3qJC
+         0H17BfTVkQ2AYgB+Whtbchd90MgPp70jYuifW8ELfOTjdeVBT5vqyMmMZoEm5trnGp2R
+         9DV7f10mhaLvapfs1mR9ebZdwQQDl9OaiIwH3nyiUpMfck3C3cOd9TXA7k2aCjvBK+lY
+         NGKg==
+X-Gm-Message-State: AOAM530D+ZM+/jKHrkaICdfmRB5Xsie4tGilYUxMCHLWoT7jjlUVJmJG
+        QA06n604HlyoeA6jp+8Hn+2XmjmTS6BdrfUq4EPlnwUSSz3csLlM
+X-Google-Smtp-Source: ABdhPJx2AsMoIAD1vR1ykd/0xY4yQ2cyON9Ui1Hcd4m8KbzbgFcFYC24pz+4T8epFidgoa72a1Ero5G2nRWHf8lhQ54=
+X-Received: by 2002:a63:ee4b:: with SMTP id n11mr9173347pgk.265.1614956601438;
+ Fri, 05 Mar 2021 07:03:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMRc=MeNBt=J2LkDAYKhd9iQJCfyTvAxBKmJZ7vjVUOmYjexLg@mail.gmail.com>
+References: <1607651182-12307-1-git-send-email-victor.liu@nxp.com> <1607651182-12307-3-git-send-email-victor.liu@nxp.com>
+In-Reply-To: <1607651182-12307-3-git-send-email-victor.liu@nxp.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Fri, 5 Mar 2021 16:03:10 +0100
+Message-ID: <CAG3jFyvJZkVRs4NnDmPmGk-Qkr0voyvf3JNvKFAKDyxcCNR3Cw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] phy: Add LVDS configuration options
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>, kishon@ti.com,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de,
+        Fabio Estevam <festevam@gmail.com>, linux-imx@nxp.com,
+        agx@sigxcpu.org, robert.chiras@nxp.com, martin.kepplinger@puri.sm
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 03:20:27PM +0100, Bartosz Golaszewski wrote:
-> On Fri, Mar 5, 2021 at 12:27 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Fri, Mar 05, 2021 at 11:58:18AM +0100, Bartosz Golaszewski wrote:
-> > > On Fri, Mar 5, 2021 at 11:24 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Fri, Mar 05, 2021 at 10:16:10AM +0100, Bartosz Golaszewski wrote:
-> > > > > On Fri, Mar 5, 2021 at 9:55 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > > >
-> > > > > > On Fri, Mar 05, 2021 at 09:45:41AM +0100, Bartosz Golaszewski wrote:
-> > > > > > > On Fri, Mar 5, 2021 at 9:34 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > > > > >
-> > > > > > > > On Fri, Mar 05, 2021 at 09:18:30AM +0100, Geert Uytterhoeven wrote:
-> > > > > > > > > CC Greg
-> > > > > > > > >
-> > > > > > > > > On Thu, Mar 4, 2021 at 11:30 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> > > > > > > > > >
-> > > > > > > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > > > > > > > >
-> > > > > > > > > > Export the symbol for device_is_bound() so that we can use it in gpio-sim
-> > > > > > > > > > to check if the simulated GPIO chip is bound before fetching its driver
-> > > > > > > > > > data from configfs callbacks in order to retrieve the name of the GPIO
-> > > > > > > > > > chip device.
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > > > > > > > > ---
-> > > > > > > > > >  drivers/base/dd.c | 1 +
-> > > > > > > > > >  1 file changed, 1 insertion(+)
-> > > > > > > > > >
-> > > > > > > > > > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> > > > > > > > > > index 9179825ff646..c62c02e3490a 100644
-> > > > > > > > > > --- a/drivers/base/dd.c
-> > > > > > > > > > +++ b/drivers/base/dd.c
-> > > > > > > > > > @@ -353,6 +353,7 @@ bool device_is_bound(struct device *dev)
-> > > > > > > > > >  {
-> > > > > > > > > >         return dev->p && klist_node_attached(&dev->p->knode_driver);
-> > > > > > > > > >  }
-> > > > > > > > > > +EXPORT_SYMBOL_GPL(device_is_bound);
-> > > > > > > >
-> > > > > > > > No.  Please no.  Why is this needed?  Feels like someone is doing
-> > > > > > > > something really wrong...
-> > > > > > > >
-> > > > > > > > NACK.
-> > > > > > > >
-> > > > > > >
-> > > > > > > I should have Cc'ed you the entire series, my bad.
-> > > > > > >
-> > > > > > > This is the patch that uses this change - it's a new, improved testing
-> > > > > > > module for GPIO using configfs & sysfs as you (I think) suggested a
-> > > > > > > while ago:
-> > > > > > >
-> > > > > > > https://lkml.org/lkml/2021/3/4/355
-> > > > > > >
-> > > > > > > The story goes like this: committing the configfs item registers a
-> > > > > > > platform device.
-> > > > > >
-> > > > > > Ick, no, stop there, that's not a "real" device, please do not abuse
-> > > > > > platform devices like that, you all know I hate this :(
-> > > > > >
-> > > > > > Use the virtbus code instead perhaps?
-> > > > > >
-> > > > >
-> > > > > I have no idea what virtbus is and grepping for it only returns three
-> > > > > hits in: ./drivers/pci/iov.c and it's a function argument.
-> > > > >
-> > > > > If it stands for virtual bus then for sure it sounds like the right
-> > > > > thing but I need to find more info on this.
-> > > >
-> > > > Sorry, wrong name, see Documentation/driver-api/auxiliary_bus.rst for
-> > > > the details.  "virtbus" was what I think about it as that was my
-> > > > original name for it, but it eventually got merged with a different
-> > > > name.
-> > > >
-> 
-> Unless I'm not seeing something - it completely doesn't look like the
-> right solution. This auxiliary bus sounds like MFD with extra steps.
-> Its aim seems to be to provide virtual devices for sub-modules of real
-> devices.
-> 
-> What I have here really is a dummy device for which no HW exists.
+Hey Liu,
 
-Then just use a "normal" virtual device.  We have loads of them.  But if
-you want to bind a "driver" to it, then use the aux bus please.  Do NOT
-abuse a platform device for this.
+This patch seems to be included in both this series and the "Add some
+DRM bridge drivers support for i.MX8qm/qxp SoCs" series. Instead of
+having the two series have a conflict I would suggest either merging
+them (if that makes sense) or removing this patch from one of them and
+explicitly stating that there is a dependency on the other series.
 
-> Also: while the preferred way is to use configfs to instantiate these
-> simulated devices, then can still be registered from device-tree (this
-> is a feature that was requested and eventually implemented in
-> gpio-mockup which we want to phase out so we can't just drop it).
-> AFAIK only platform devices can be populated from DT.
+(the patch itself still looks good though :) )
 
-If you really are using DT, then ok, a platform device can be used, but
-you didn't say that :)
-
-> I guess we could create something like a "virtual bus" that would be
-> there for devices that don't exist on any physical bus but this would
-> end up in big part being the same thing as platform devices.
-
-That's what the aux bus code is there for.  So maybe you do need to use
-it.
-
-> > > > > > > As far as I understand - there's no guarantee that
-> > > > > > > the device will be bound to a driver before the commit callback (or
-> > > > > > > more specifically platform_device_register_full() in this case)
-> > > > > > > returns so the user may try to retrieve the name of the device
-> > > > > > > immediately (normally user-space should wait for the associated uevent
-> > > > > > > but nobody can force that) by doing:
-> > > > > > >
-> > > > > > > mv /sys/kernel/config/gpio-sim/pending/foo /sys/kernel/config/gpio-sim/live/
-> > > > > > > cat /sys/kernel/config/gpio-sim/live/foo/dev_name
-> > > > > > >
-> > > > > > > If the device is not bound at this point, we'll have a crash in the
-> > > > > > > kernel as opposed to just returning -ENODEV.
-> > > > > >
-> > > > > > How will the kernel crash?  What has created the dev_name sysfs file
-> > > > > > before it is possible to be read from?  That feels like the root
-> > > > > > problem.
-> > > > > >
-> > > > >
-> > > > > It's not sysfs - it's in configfs. Each chip has a read-only configfs
-> > > > > attribute that returns the name of the device - I don't really have a
-> > > > > better idea to map the configfs items to devices that committing
-> > > > > creates.
-> > > >
-> > > > Same question, why are you exporting a configfs attribute that can not
-> > > > be read from?  Only export it when your driver is bound to the device.
-> > > >
-> > >
-> > > The device doesn't know anything about configfs. Why would it? The
-> > > configuration of a GPIO chip can't be changed after it's instantiated,
-> > > this is why we have committable items.
-> > >
-> > > We export a directory in configfs: gpio-sim -> user creates a new
-> > > directory (item) in gpio-sim/pending/foo and it's not tied to any
-> > > device yet but exports attributes which we use to configure the device
-> > > (label, number of lines, line names etc.), then we mv
-> > > gpio-sim/pending/foo gpio-sim/live and this is when the device gets
-> > > created and registered with the subsystem. We take all the configured
-> > > attributes and put them into device properties for both the driver and
-> > > gpiolib core (for standard properties) to read - just like we would
-> > > with a regular GPIO driver because this is the goal: test the core
-> > > code.
-> >
-> > Ok, but they why are you trying to have dev_name be an exported thing?
-> > I don't understand an attribute here that is visable but can not be read
-> > from.
-> >
-> 
-> Because once the associated configfs item is committed and the device
-> created, it will become readable. The list of attributes is fixed in
-> configfs. I'm not sure what the better approach would be - return
-> "none" if the device handle is NULL?
-
-Sounds reasonable, I don't know how configfs works, it's been a decade
-since I last touched it.
-
-> > And why not just use the default device name function: dev_name(), which
-> > will always return a string that will work no matter if the device is
-> > bound to a driver or not.
-> >
-> 
-> I can do this but then it's possible that user-space gets the name of
-> the device which doesn't exist in sysfs. I guess we can mention that
-> in the documentation.
-
-Device names can change over time, nothing new there.
-
-thanks,
-
-greg k-h
+On Fri, 11 Dec 2020 at 02:56, Liu Ying <victor.liu@nxp.com> wrote:
+>
+> This patch allows LVDS PHYs to be configured through
+> the generic functions and through a custom structure
+> added to the generic union.
+>
+> The parameters added here are based on common LVDS PHY
+> implementation practices.  The set of parameters
+> should cover all potential users.
+>
+> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: NXP Linux Team <linux-imx@nxp.com>
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> ---
+> v2->v3:
+> * No change.
+>
+> v1->v2:
+> * No change.
+>
+>  include/linux/phy/phy-lvds.h | 48 ++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/phy/phy.h      |  4 ++++
+>  2 files changed, 52 insertions(+)
+>  create mode 100644 include/linux/phy/phy-lvds.h
+>
+> diff --git a/include/linux/phy/phy-lvds.h b/include/linux/phy/phy-lvds.h
+> new file mode 100644
+> index 00000000..1b5b9d6
+> --- /dev/null
+> +++ b/include/linux/phy/phy-lvds.h
+> @@ -0,0 +1,48 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright 2020 NXP
+> + */
+> +
+> +#ifndef __PHY_LVDS_H_
+> +#define __PHY_LVDS_H_
+> +
+> +/**
+> + * struct phy_configure_opts_lvds - LVDS configuration set
+> + *
+> + * This structure is used to represent the configuration state of a
+> + * LVDS phy.
+> + */
+> +struct phy_configure_opts_lvds {
+> +       /**
+> +        * @bits_per_lane_and_dclk_cycle:
+> +        *
+> +        * Number of bits per data lane and differential clock cycle.
+> +        */
+> +       unsigned int bits_per_lane_and_dclk_cycle;
+> +
+> +       /**
+> +        * @differential_clk_rate:
+> +        *
+> +        * Clock rate, in Hertz, of the LVDS differential clock.
+> +        */
+> +       unsigned long differential_clk_rate;
+> +
+> +       /**
+> +        * @lanes:
+> +        *
+> +        * Number of active, consecutive, data lanes, starting from
+> +        * lane 0, used for the transmissions.
+> +        */
+> +       unsigned int lanes;
+> +
+> +       /**
+> +        * @is_slave:
+> +        *
+> +        * Boolean, true if the phy is a slave which works together
+> +        * with a master phy to support dual link transmission,
+> +        * otherwise a regular phy or a master phy.
+> +        */
+> +       bool is_slave;
+> +};
+> +
+> +#endif /* __PHY_LVDS_H_ */
+> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+> index e435bdb..d450b44 100644
+> --- a/include/linux/phy/phy.h
+> +++ b/include/linux/phy/phy.h
+> @@ -17,6 +17,7 @@
+>  #include <linux/regulator/consumer.h>
+>
+>  #include <linux/phy/phy-dp.h>
+> +#include <linux/phy/phy-lvds.h>
+>  #include <linux/phy/phy-mipi-dphy.h>
+>
+>  struct phy;
+> @@ -51,10 +52,13 @@ enum phy_mode {
+>   *             the MIPI_DPHY phy mode.
+>   * @dp:                Configuration set applicable for phys supporting
+>   *             the DisplayPort protocol.
+> + * @lvds:      Configuration set applicable for phys supporting
+> + *             the LVDS phy mode.
+>   */
+>  union phy_configure_opts {
+>         struct phy_configure_opts_mipi_dphy     mipi_dphy;
+>         struct phy_configure_opts_dp            dp;
+> +       struct phy_configure_opts_lvds          lvds;
+>  };
+>
+>  /**
+> --
+> 2.7.4
+>
