@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81AF332F570
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3019F32F576
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbhCEVoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:44:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbhCEVnv (ORCPT
+        id S229719AbhCEVqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 16:46:51 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:35626 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229611AbhCEVqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 16:43:51 -0500
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2ABFC06175F;
-        Fri,  5 Mar 2021 13:43:50 -0800 (PST)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Dsh7g59sjz1rwn0;
-        Fri,  5 Mar 2021 22:43:43 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4Dsh7g3fl1z1qr4d;
-        Fri,  5 Mar 2021 22:43:43 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id zA9oLoIZs84D; Fri,  5 Mar 2021 22:43:41 +0100 (CET)
-X-Auth-Info: GmqYrIyAYBzZBk9/Hy/h0siIg5F0MIUqR5KnsSVg2Bc=
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Fri,  5 Mar 2021 22:43:40 +0100 (CET)
-Subject: Re: [PATCH v3 1/2] dt-bindings: display: bridge: Add bindings for
- SN65DSI83/84/85
-To:     Jagan Teki <jagan@amarulasolutions.com>,
+        Fri, 5 Mar 2021 16:46:19 -0500
+Received: by mail-oi1-f177.google.com with SMTP id i21so4136369oii.2;
+        Fri, 05 Mar 2021 13:46:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3aXASnehLpAnhE7ybXqztlUJbmoibh1p17DxUSvDDCI=;
+        b=RUwvDuccqg82EIE8yEImwHz6ZBxoufuks3jzUFgpxIUNTtUiU2DMEz4eA7rErndybV
+         8CErdGZrWFLR332iuDFL3nwpnvrjiLJJq1sPZS+jTDQm2eAVVw7/uKXdnuM3HKe3UaEg
+         0JTDIos2zvSYVPt1RQTLLZRhn4y0DM6dup7pzrv0r+UCkyqJWHjiONN1MTzFN4ValAsE
+         sjAZ7FdmvgV8YdsInbmAh4ebNcs93583T4EEmhU93NKIP+sQQvqw+N2yCQGgYippVoBJ
+         MEKZzVElbbc3tBQW12Gck0y77GsaxgXGfVderlnvfyQLekfNqK9i1ZMGLTEgiwQB301u
+         Slnw==
+X-Gm-Message-State: AOAM531n5/izpXhFPB7UAAQwQ24bnQ3qMmZPVkmWGN0+lkZFwKZf1ceo
+        BurUcbrt0JEFPP82GlKvrg==
+X-Google-Smtp-Source: ABdhPJycvVIc1/tf9vzPn8sweFi9jbD9stgDWfMUX+S5uKGI6UR/oPm+RtWtikPpVZbl6ISl77TOUg==
+X-Received: by 2002:aca:6289:: with SMTP id w131mr8562283oib.69.1614980779246;
+        Fri, 05 Mar 2021 13:46:19 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y194sm805855ooa.19.2021.03.05.13.46.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 13:46:18 -0800 (PST)
+Received: (nullmailer pid 701367 invoked by uid 1000);
+        Fri, 05 Mar 2021 21:46:17 -0000
+Date:   Fri, 5 Mar 2021 15:46:17 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     tongtiangen <tongtiangen@huawei.com>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        Drew Davenport <ddavenport@chromium.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-amarula@amarulasolutions.com
-References: <20210214174453.104616-1-jagan@amarulasolutions.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <be0fdd57-507d-0f9b-89db-65891531908c@denx.de>
-Date:   Fri, 5 Mar 2021 22:43:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>
+Subject: Re: [PATCH v3 1/2] drm/msm: add compatibles for sm8150/sm8250 display
+Message-ID: <20210305214617.GA701315@robh.at.kernel.org>
+References: <20210215162607.21360-1-jonathan@marek.ca>
+ <20210215162607.21360-2-jonathan@marek.ca>
 MIME-Version: 1.0
-In-Reply-To: <20210214174453.104616-1-jagan@amarulasolutions.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215162607.21360-2-jonathan@marek.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/14/21 6:44 PM, Jagan Teki wrote:
-> SN65DSI83/84/85 devices are MIPI DSI to LVDS based bridge
-> controller IC's from Texas Instruments.
+On Mon, 15 Feb 2021 11:26:04 -0500, Jonathan Marek wrote:
+> The driver already has support for sm8150/sm8250, but the compatibles were
+> never added.
 > 
-> SN65DSI83 - Single Channel DSI to Single-link LVDS bridge
-> SN65DSI84 - Single Channel DSI to Dual-link LVDS bridge
-> SN65DSI85 - Dual Channel DSI to Dual-link LVDS bridge
+> Also inverse the non-mdp4 condition in add_display_components() to avoid
+> having to check every new compatible in the condition.
+> 
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  Documentation/devicetree/bindings/display/msm/dpu.txt | 4 ++--
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c               | 2 ++
+>  drivers/gpu/drm/msm/msm_drv.c                         | 6 +++---
+>  3 files changed, 7 insertions(+), 5 deletions(-)
+> 
 
-[...]
-
-> +description: |
-> +  SN65DSI83/84/85 devices are MIPI DSI to LVDS based bridge controller
-> +  IC's from Texas Instruments.
-> +
-> +  SN65DSI83 - Single Channel DSI to Single-link LVDS bridge
-> +  SN65DSI84 - Single Channel DSI to Dual-link LVDS bridge
-> +  SN65DSI85 - Dual Channel DSI to Dual-link LVDS bridge
-
-[...]
-
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - ti,sn65dsi83
-> +      - ti,sn65dsi84
-
-DSI85 seems missing ?
-
-> +  reg:
-> +    const: 0x2c
-
-I have the DSI83 device at 0x2d, so this cannot be const 0x2c ?
-
-> +  enable-gpios:
-> +    maxItems: 1
-> +    description: GPIO specifier for bridge enable pin (active high).
-
-The bridge can work without this GPIO, so its optional.
-
-[...]
-
-Also, Doug reported that vcc and vcore regulators should likely be 
-listed, see feedback on:
-[PATCH 1/2] dt-bindings: drm/bridge: ti-sn65dsi83: Add TI SN65DSI83 bindings
+Acked-by: Rob Herring <robh@kernel.org>
