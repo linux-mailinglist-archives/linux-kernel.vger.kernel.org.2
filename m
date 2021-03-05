@@ -2,114 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED8332F668
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:10:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E16F32F66D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:10:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbhCEXJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 18:09:52 -0500
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:34410 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbhCEXJn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 18:09:43 -0500
-Received: by mail-oi1-f181.google.com with SMTP id x78so4360909oix.1;
-        Fri, 05 Mar 2021 15:09:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XrYODSIj7UXVI1uCbWVvuJ9MDvf1FusiVZYMMI3JkzE=;
-        b=kQADzgzuKcDKX3ObVS78GFKs6D0iSkgpZX1kKyl1mdlGb6WFPXWp3I+G/u7/q5oG2p
-         NubEgtoH9MQWkTUDinn+LZqfuI52PUnUgOzR5O7fI/awEwiSQ6i6VZK7ndSsxum/xWtv
-         g4yNRw2iK/crQAmunk2UHtSYbqxw1zeFiyhtu3Pg9bqK7uzN61Kay4AtLxeNMo2GHHdh
-         /DB6DeL0aM5niEH4zGSCcN29q/6+d+2ZBBkiAyN9QMBBgvJCrdVn+du4zmF77oB1mKEM
-         4QzzkJJdvyv/HQ+6YyV4GyBdVQOBfJUh9A7wbJNthtlfXUYEYtGk4SMi7N1iLfRe1CQt
-         c5xA==
-X-Gm-Message-State: AOAM532FOqLr9/VPcHqupZYiLxhKMf4aj7BMU7g1rD93ZTU6fCW6cNG9
-        O/IJshhWvOBrJm35sMkgzg==
-X-Google-Smtp-Source: ABdhPJxEV9cNQ+u/FV083e8uupzMrx3E3n1YaYFtT8S202fGkWxSE3FlaHA0lY05b966tc3KmXUmRA==
-X-Received: by 2002:aca:4587:: with SMTP id s129mr8889344oia.133.1614985782649;
-        Fri, 05 Mar 2021 15:09:42 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r13sm853187oot.41.2021.03.05.15.09.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 15:09:41 -0800 (PST)
-Received: (nullmailer pid 813032 invoked by uid 1000);
-        Fri, 05 Mar 2021 23:09:40 -0000
-Date:   Fri, 5 Mar 2021 17:09:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     openipmi-developer@lists.sourceforge.net, openbmc@lists.ozlabs.org,
-        minyard@acm.org, joel@jms.id.au, lee.jones@linaro.org,
-        avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
-        venture@google.com, yuenn@google.com, benjaminfair@google.com,
-        linus.walleij@linaro.org, chiawei_wang@aspeedtech.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH 17/19] dt-bindings: ipmi: Add optional SerIRQ property to
- ASPEED KCS devices
-Message-ID: <20210305230940.GA809870@robh.at.kernel.org>
-References: <20210219142523.3464540-1-andrew@aj.id.au>
- <20210219142523.3464540-18-andrew@aj.id.au>
+        id S230147AbhCEXKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 18:10:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230118AbhCEXKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 18:10:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 15291650A7;
+        Fri,  5 Mar 2021 23:10:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614985811;
+        bh=yFKMPzG5kWJn0aHjATAiZbWKkeVB9hf5JPJ2fHOGdt8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=acJics5CMChP9r0lJ154TIvfjBOqf9Uo7nxh2/KAyCE02RBeYzBooEOMSu7FRtGkO
+         2A3vU4BufYp17p4R1nzcSviKWn9soCcGvjLvQ1O6T71aSlV5oPfQrxtBZv1VHuSCW2
+         /VSO3ld0RgHLE1zo/xIPZ1bpirb3r5QbnfIPvSljGphvVuZYTVM6L9cmcZ0GPr1rT/
+         uImQErP/56++5UR/jxws45Oeq6jJfEETakBeaOutkFDVTtkcK6YpHgl5W+QiGdNzJv
+         GZTMKaTAciSdWO3iDtFrvTiIyM3sz6GwTU5NeTxeQCrg9An6Vw14D1l6cfKtTIrRAH
+         jLrsVh2tc1hbg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0FF3D609D4;
+        Fri,  5 Mar 2021 23:10:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219142523.3464540-18-andrew@aj.id.au>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] lan743x: trim all 4 bytes of the FCS; not just 2
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161498581106.14945.12506796771360832279.git-patchwork-notify@kernel.org>
+Date:   Fri, 05 Mar 2021 23:10:11 +0000
+References: <20210305222445.19053-1-george.mccollister@gmail.com>
+In-Reply-To: <20210305222445.19053-1-george.mccollister@gmail.com>
+To:     George McCollister <george.mccollister@gmail.com>
+Cc:     bryan.whitehead@microchip.com, UNGLinuxDriver@microchip.com,
+        davem@davemloft.net, kuba@kernel.org, thesven73@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 12:55:21AM +1030, Andrew Jeffery wrote:
-> Allocating IO and IRQ resources to LPC devices is in-theory an operation
-> for the host, however ASPEED don't appear to expose this capability
-> outside the BMC (e.g. SuperIO). Instead, we are left with BMC-internal
-> registers for managing these resources, so introduce a devicetree
-> property for KCS devices to describe SerIRQ properties.
+Hello:
+
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Fri,  5 Mar 2021 16:24:45 -0600 you wrote:
+> Trim all 4 bytes of the received FCS; not just 2 of them. Leaving 2
+> bytes of the FCS on the frame breaks DSA tailing tag drivers.
 > 
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> Fixes: a8db76d40e4d ("lan743x: boost performance on cpu archs w/o dma cache snooping")
+> Signed-off-by: George McCollister <george.mccollister@gmail.com>
 > ---
->  .../bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml      | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml b/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
-> index 1c1cc4265948..808475a2c2ca 100644
-> --- a/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
-> +++ b/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
-> @@ -47,6 +47,18 @@ properties:
->        channels the status address is derived from the data address, but the
->        status address may be optionally provided.
->  
-> +  aspeed,lpc-interrupts:
-> +    $ref: "/schemas/types.yaml#/definitions/uint32-matrix"
-> +    minItems: 1
-> +    maxItems: 1
-> +    description: |
-> +      A 2-cell property expressing the LPC SerIRQ number and the interrupt
-> +      level/sense encoding (specified in the standard fashion).
+>  drivers/net/ethernet/microchip/lan743x_main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-That would be uint32-array with 'maxItems: 2'.
+Here is the summary with links:
+  - [net] lan743x: trim all 4 bytes of the FCS; not just 2
+    https://git.kernel.org/netdev/net/c/3e21a10fdea3
 
-> +
-> +      Note that the generated interrupt is issued from the BMC to the host, and
-> +      thus the target interrupt controller is not captured by the BMC's
-> +      devicetree.
-> +
->    kcs_chan:
->      deprecated: true
->      $ref: '/schemas/types.yaml#/definitions/uint32'
-> @@ -84,9 +96,11 @@ allOf:
->  
->  examples:
->    - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
->      kcs3: kcs@24 {
->          compatible = "aspeed,ast2600-kcs-bmc";
->          reg = <0x24 0x1>, <0x30 0x1>, <0x3c 0x1>;
->          aspeed,lpc-io-reg = <0xca2>;
-> +        aspeed,lpc-interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
->          interrupts = <8>;
->      };
-> -- 
-> 2.27.0
-> 
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
