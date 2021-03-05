@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE99632EFC2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A93A632EFC9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhCEQMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 11:12:51 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:50280 "EHLO
+        id S230438AbhCEQNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 11:13:54 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:50454 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhCEQMh (ORCPT
+        with ESMTP id S231150AbhCEQNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 11:12:37 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 125GCVLK111354;
-        Fri, 5 Mar 2021 10:12:31 -0600
+        Fri, 5 Mar 2021 11:13:44 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 125GDaXw111852;
+        Fri, 5 Mar 2021 10:13:36 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614960751;
-        bh=pOppNCEoPstfDrrdFFuISm0AZlchJLIgzlwfWglHmro=;
+        s=ti-com-17Q1; t=1614960816;
+        bh=2Nq+FG81TbTrzmxX49w84LoZUCSVdMDwMvSqxxTjUz8=;
         h=Subject:To:References:From:Date:In-Reply-To;
-        b=CvH+Etqu6zObqGo6/wmIOxKl/T1Rcc+ykCh62KM/7nl8YEmgBWFJ2MLrmM26pYiz8
-         qu6ThRuiOvnz/4WOPuFtuDRqdO0Iy3IxTHEjS7vQJ2vXXfNee17DFXiW5OxuA4OZKM
-         e5cBluxladvi6chx8T3IXkF3CpxSTEdJw1DIrSrs=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 125GCV3l031684
+        b=kiEweBHJzeods30Yiu/Fuw/Uw0EEECnEUmYpLwVSnhQK9jHItAr6ZkF+Dc9IquOCw
+         4K4uQ8CFaQgAkq3ThnuOR6TcAtWiXamMZ/JUcDsHtCgREEwhwf3D/EpipLDtSfi2/N
+         lySn4Pve9OSIDT8gI9VITzo/V/Oazq/42RxYr42c=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 125GDaMI045422
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 5 Mar 2021 10:12:31 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 5 Mar 2021 10:13:36 -0600
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 5 Mar
- 2021 10:12:31 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ 2021 10:13:35 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 5 Mar 2021 10:12:31 -0600
+ Frontend Transport; Fri, 5 Mar 2021 10:13:35 -0600
 Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 125GCS07039586;
-        Fri, 5 Mar 2021 10:12:29 -0600
-Subject: Re: [PATCH v2 2/3] arm64: dts: ti: am654-base-board: Enable 8D-8D-8D
- mode on OSPI
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 125GDX7t041189;
+        Fri, 5 Mar 2021 10:13:33 -0600
+Subject: Re: [PATCH v2 3/3] arm64: dts: ti: k3-j7200-som-p0: Add nodes for
+ OSPI0
 To:     Pratyush Yadav <p.yadav@ti.com>, Nishanth Menon <nm@ti.com>,
         Tero Kristo <kristo@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 References: <20210305153926.3479-1-p.yadav@ti.com>
- <20210305153926.3479-3-p.yadav@ti.com>
+ <20210305153926.3479-4-p.yadav@ti.com>
 From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <df1610bc-fbcc-9ebb-e8d2-24f2d69aba00@ti.com>
-Date:   Fri, 5 Mar 2021 21:42:28 +0530
+Message-ID: <cbc23906-68cd-d885-2a81-c6088c402caf@ti.com>
+Date:   Fri, 5 Mar 2021 21:43:32 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210305153926.3479-3-p.yadav@ti.com>
+In-Reply-To: <20210305153926.3479-4-p.yadav@ti.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -64,38 +64,103 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 3/5/21 9:09 PM, Pratyush Yadav wrote:
-> Set the Tx bus width to 8 so 8D-8D-8D mode can be selected. Change the
-> frequency to 25 MHz. This is the frequency that the flash has been
-> successfully tested with in Octal DTR mode. The total performance should
-> still increase since 8D-8D-8D mode should be at least twice as fast as
-> 1S-1S-8S mode.
+> TI J7200 has the Cadence OSPI controller for interfacing with OSPI
+> flashes. Add its node to allow using SPI flashes.
 > 
 > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 > ---
-> 
 
 Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
 
+
+
+> 
 > Notes:
->     No changes in v2.
+>     Changes in v2:
+>     - Do not force a pulldown on the DQS line because it already has a
+>       pulldown resistor.
 > 
->  arch/arm64/boot/dts/ti/k3-am654-base-board.dts | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 17 +++++++++
+>  arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi   | 36 +++++++++++++++++++
+>  2 files changed, 53 insertions(+)
 > 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-> index fe3043943906..9e87fb313a54 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
-> @@ -483,9 +483,9 @@ &ospi0 {
->  	flash@0{
->  		compatible = "jedec,spi-nor";
->  		reg = <0x0>;
-> -		spi-tx-bus-width = <1>;
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+> index 359e3e8a8cd0..5408ec815d58 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+> @@ -269,6 +269,23 @@ hbmc: hyperbus@47034000 {
+>  			#size-cells = <1>;
+>  			mux-controls = <&hbmc_mux 0>;
+>  		};
+> +
+> +		ospi0: spi@47040000 {
+> +			compatible = "ti,am654-ospi";
+> +			reg = <0x0 0x47040000 0x0 0x100>,
+> +			      <0x5 0x00000000 0x1 0x0000000>;
+> +			interrupts = <GIC_SPI 840 IRQ_TYPE_LEVEL_HIGH>;
+> +			cdns,fifo-depth = <256>;
+> +			cdns,fifo-width = <4>;
+> +			cdns,trigger-address = <0x0>;
+> +			clocks = <&k3_clks 103 0>;
+> +			assigned-clocks = <&k3_clks 103 0>;
+> +			assigned-clock-parents = <&k3_clks 103 2>;
+> +			assigned-clock-rates = <166666666>;
+> +			power-domains = <&k3_pds 103 TI_SCI_PD_EXCLUSIVE>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +		};
+>  	};
+>  
+>  	tscadc0: tscadc@40200000 {
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+> index a988e2ab2ba1..34724440171a 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+> @@ -100,6 +100,22 @@ J721E_WKUP_IOPAD(0x24, PIN_INPUT, 1) /* (A8) MCU_OSPI0_D6.MCU_HYPERBUS0_DQ6 */
+>  			J721E_WKUP_IOPAD(0x28, PIN_INPUT, 1) /* (A7) MCU_OSPI0_D7.MCU_HYPERBUS0_DQ7 */
+>  		>;
+>  	};
+> +
+> +	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-pins-default {
+> +		pinctrl-single,pins = <
+> +			J721E_WKUP_IOPAD(0x0000, PIN_OUTPUT, 0) /* MCU_OSPI0_CLK */
+> +			J721E_WKUP_IOPAD(0x002c, PIN_OUTPUT, 0) /* MCU_OSPI0_CSn0 */
+> +			J721E_WKUP_IOPAD(0x000c, PIN_INPUT, 0)  /* MCU_OSPI0_D0 */
+> +			J721E_WKUP_IOPAD(0x0010, PIN_INPUT, 0)  /* MCU_OSPI0_D1 */
+> +			J721E_WKUP_IOPAD(0x0014, PIN_INPUT, 0)  /* MCU_OSPI0_D2 */
+> +			J721E_WKUP_IOPAD(0x0018, PIN_INPUT, 0)  /* MCU_OSPI0_D3 */
+> +			J721E_WKUP_IOPAD(0x001c, PIN_INPUT, 0)  /* MCU_OSPI0_D4 */
+> +			J721E_WKUP_IOPAD(0x0020, PIN_INPUT, 0)  /* MCU_OSPI0_D5 */
+> +			J721E_WKUP_IOPAD(0x0024, PIN_INPUT, 0)  /* MCU_OSPI0_D6 */
+> +			J721E_WKUP_IOPAD(0x0028, PIN_INPUT, 0)  /* MCU_OSPI0_D7 */
+> +			J721E_WKUP_IOPAD(0x0008, PIN_INPUT, 0)  /* MCU_OSPI0_DQS */
+> +		>;
+> +	};
+>  };
+>  
+>  &main_pmx0 {
+> @@ -235,3 +251,23 @@ exp_som: gpio@21 {
+>  				  "GPIO_LIN_EN", "CAN_STB";
+>  	};
+>  };
+> +
+> +&ospi0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
+> +
+> +	flash@0{
+> +		compatible = "jedec,spi-nor";
+> +		reg = <0x0>;
 > +		spi-tx-bus-width = <8>;
->  		spi-rx-bus-width = <8>;
-> -		spi-max-frequency = <40000000>;
+> +		spi-rx-bus-width = <8>;
 > +		spi-max-frequency = <25000000>;
->  		cdns,tshsl-ns = <60>;
->  		cdns,tsd2d-ns = <60>;
->  		cdns,tchsh-ns = <60>;
+> +		cdns,tshsl-ns = <60>;
+> +		cdns,tsd2d-ns = <60>;
+> +		cdns,tchsh-ns = <60>;
+> +		cdns,tslch-ns = <60>;
+> +		cdns,read-delay = <4>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +	};
+> +};
 > 
