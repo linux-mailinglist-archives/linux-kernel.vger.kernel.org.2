@@ -2,126 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692A132EC67
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B9F32EC69
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhCENlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:41:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38106 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229551AbhCENkd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:40:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614951632;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Us44kK8almkKYV1H4wnmYxtlb2pEgbBYf7YjCuA7KUs=;
-        b=M0anrqweY3c20R2UOVnbVbrL/8khiHgnraQnwQwSVz0u4hZwHLarGjTvGh7/YLMAQPwhrg
-        y71OEXZHlxCpnkWR/epehRBDLmHY9eWpHb/Va62iXJUnMJYGIq1HYYIRLbI4+fnWK+rOvr
-        bocyrUd095QCzjMt7DFNgFszWsm9HCc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-292-dpmasTY_MeeuFUIuDoyzHg-1; Fri, 05 Mar 2021 08:40:28 -0500
-X-MC-Unique: dpmasTY_MeeuFUIuDoyzHg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S230490AbhCENlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:41:04 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:46774 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229750AbhCENkq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 08:40:46 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614951644; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=DmIWVPazE1ZGWAakc7cfMkZrozZnhscQVMNNwhF/Zw0=; b=Uw2z5fGVPprFAguNDEL6Vm4WVGkIsYJS0GiZ+t5Fw+3Lq4dsykImXv+udyS2noMJxYetB9C8
+ wBBo3FrqFP+q1k7NxBpg1KIs1lp+rQ9+1vp+Kx1ilF01+V6+fJ1YQIY21/OLPCWjrjJVwfLr
+ eIMPpnXbnkoUK5gfXADPYm3rFK4=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 604234d62a5e6d1bfa490ca0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Mar 2021 13:40:38
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BCE50C43464; Fri,  5 Mar 2021 13:40:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C5EF108BD15;
-        Fri,  5 Mar 2021 13:40:26 +0000 (UTC)
-Received: from [10.36.112.194] (ovpn-112-194.ams2.redhat.com [10.36.112.194])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3DA0919934;
-        Fri,  5 Mar 2021 13:40:22 +0000 (UTC)
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        George Kennedy <george.kennedy@oracle.com>
-Cc:     Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oscar Salvador <osalvador@suse.de>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@suse.com>
-References: <1614802160-29362-1-git-send-email-george.kennedy@oracle.com>
- <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
- <9c3bc1b2-bb8d-194d-6faf-e4d7d346dc9b@oracle.com>
- <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
-Message-ID: <1ae44491-4404-6873-4ee6-6cf58c1ae6fb@redhat.com>
-Date:   Fri, 5 Mar 2021 14:40:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1EADCC433CA;
+        Fri,  5 Mar 2021 13:40:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1EADCC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jes Sorensen <Jes.Sorensen@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH RESEND][next] rtl8xxxu: Fix fall-through warnings for Clang
+References: <20210305094850.GA141221@embeddedor>
+Date:   Fri, 05 Mar 2021 15:40:33 +0200
+In-Reply-To: <20210305094850.GA141221@embeddedor> (Gustavo A. R. Silva's
+        message of "Fri, 5 Mar 2021 03:48:50 -0600")
+Message-ID: <871rct67n2.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> The ibft table, for example, is mapped in via acpi_map() and kmap(). The
->> page for the ibft table is not reserved, so it can end up on the freelist.
-> 
-> You appear to be saying that it is not sufficient to kmap() a page in
-> order to use it safely.  It is also necessary to reserve it upfront,
-> for example with the help of memblock_reserve().  Is that correct?  If
-> so, is there an alternative way to reserve a page frame?
+"Gustavo A. R. Silva" <gustavoars@kernel.org> writes:
 
-If the memory is indicated by the BIOS/firmware as valid memory 
-(!reserved) but contains actual tables that have to remain untouched 
-what happens is:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix
+> multiple warnings by replacing /* fall through */ comments with
+> the new pseudo-keyword macro fallthrough; instead of letting the
+> code fall through to the next case.
+>
+> Notice that Clang doesn't recognize /* fall through */ comments as
+> implicit fall-through markings.
+>
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-1) Memblock thinks the memory should be given to the buddy, because it
-    is valid memory and was not reserved by anyone (i.e., the bios, early
-    allocations).
+It's not cool that you ignore the comments you got in [1], then after a
+while mark the patch as "RESEND" and not even include a changelog why it
+was resent.
 
-2) Memblock will expose the pages to the buddy, adding them to the free
-    page list.
-
-3) Anybody can allocate them, e.g., via alloc_pages().
-
-The root issue is that pages that should not get exposed to the buddy as 
-free pages get exposed to the buddy as free pages. We have to teach 
-memblock that these pages are not actually to be used, but instead, area 
-reserved.
-
-> 
->>>
->>>> Use memblock_reserve() to reserve all the ACPI table pages.
->>> How is this going to help?
->> If the ibft table page is not reserved, it will end up on the freelist
->> and potentially be allocated before ibft_init() is called.
->>
->> I believe this is the call that causes the ibft table page (in this case
->> pfn=0xbe453) to end up on the freelist:
->>
->> memmap_init_range: size=bd49b, nid=0, zone=1, start_pfn=1000,
->> zone_end_pfn=100000
-> 
-> David, is commit 7fef431be9c9 related to this and if so, then how?
-> 
-
-Memory gets allocated and used in a different order, which seems to have 
-exposed (yet another) latent BUG. The same could be reproduced via zone 
-shuffling with a little luck.
+[1] https://patchwork.kernel.org/project/linux-wireless/patch/d522f387b2d0dde774785c7169c1f25aa529989d.1605896060.git.gustavoars@kernel.org/
 
 -- 
-Thanks,
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-David / dhildenb
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
