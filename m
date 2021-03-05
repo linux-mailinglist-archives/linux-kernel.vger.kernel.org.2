@@ -2,190 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA9A32F187
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:40:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B6232F189
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhCERkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:40:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47080 "EHLO
+        id S229815AbhCERkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:40:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbhCERjs (ORCPT
+        with ESMTP id S229957AbhCERkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:39:48 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AD9C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 09:39:48 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id s16so1751173plr.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 09:39:48 -0800 (PST)
+        Fri, 5 Mar 2021 12:40:12 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FD4C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 09:40:12 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id k12so3780327ljg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 09:40:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=0U/5k+q/HJ1YlYlyAATLdvdzgFw3Kh+iX+qoDNdFdc8=;
-        b=AYGddGvVV9JNaZ72VmtfGsuOKbRA/FCZWvlh7Z3BV10+vNHMqUrtA9h2RhaLtW3+80
-         GFTs756gi65p5PmZDecnyP8D9yJu1lz1sk7Os77rlIfpZUi60RAPHUEEsTWbuyn+5F7b
-         8S8rioR5X3rcx0s3pFQDnD/9CJd9fPg1CIsKSfMbLhljqfsa25USxt1V10bemt1Y3oyR
-         RSU2KDzfEtiNYNgpjbL3zz1HzMywgh8p4CQBVvNM6Zxx5bNIyDFG5hD7V1HKFcxx6MyA
-         c5ald3CQqVEsuXGJyBSuhlrVlxwoHX4Tiwn5hiKnbNc0xRLcI99GatlWWvxQX9W47e3r
-         bF5g==
+        bh=vk913xlln+/lnAFL9m3uYtGSeZcmPVbTMVjkjjTaGBo=;
+        b=GhndKDzQzM94hqe40MtxD0SnptXBVM4J9SX229bd/syGiKxsZHR/4a7H+bc6zzOJI7
+         XF4mpvEKvQ/3TZoQr2bkZm5Qa0pOZQ9qQewm68h5xBmfPMg+EQYMVUfO0Dgs9BcIPskK
+         YvoywHbVHqPyT/ZVQrusxqEvj/XDfyzmH53HpCEsfsjYcGP6oFrltBVq36TbA8OiG45p
+         LF8r4klV6foAu1PgdmDHsAV37QUtmIFFkKJVHgqveZnSstaFOZwttJQeOGpKneFQbh4J
+         v0G/9/tTKEag/W8bwwKxvs98e9FXoSpQ7ncWGjCjXWzOxJvp/FvKRrhLW0V1nDeL5baQ
+         BLiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=0U/5k+q/HJ1YlYlyAATLdvdzgFw3Kh+iX+qoDNdFdc8=;
-        b=J0a28uviEuFyvzW+cnSYXGnnEN1Ra68p379Zs4dDxS8krv58rQZNnq/bSrSr3kS7c8
-         cSadT92jn2TFIKq0zZO3AG4TUvjfBbmZzkhRtft20DHRJzjvVEmDvfN3MqTmourxIVhu
-         DweRbIVlzpSCy5Ok92WmAcmxGN3pgMphkJbZIU0ZYl0EHzx80G7KUbXNwlMTEwFtESqu
-         OssOpZqb25tzc39HwY0Xmr8XWBehXWUkEdZM6hREjvEsKp8Uw/LiIwImmV7JW3ZX2OYK
-         s+dqekeBuX1APAFnXDzFODb7dGy6mts5yRpilUg6+Vnmm9Xm1rz4hrz1ojrRYNXEjeIR
-         T+KQ==
-X-Gm-Message-State: AOAM5307HlNXPG/9Q8dkV3hhPwi5VjChf8eV3SQsznHMLgMr0ST4Dhih
-        piRKqlaQjS65lsDm4dTMbMGDMQ==
-X-Google-Smtp-Source: ABdhPJzQuiVScsJZfLsQeeYPIMvlqkVTgipz2lTEd++UI4HjY8Nuw1xrqt+7oZEme9eA+6nAx101bg==
-X-Received: by 2002:a17:90a:540c:: with SMTP id z12mr11003937pjh.163.1614965987931;
-        Fri, 05 Mar 2021 09:39:47 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id d6sm2681398pjs.38.2021.03.05.09.39.46
+        bh=vk913xlln+/lnAFL9m3uYtGSeZcmPVbTMVjkjjTaGBo=;
+        b=THH+ke29LYsdyeR0Q+ts4qSSogiq1OaSo3/tHuOedQ55gNhH0AMu2394uoDyiZOHAI
+         JJvBtv7N5uPYRYBc9VYnCSLymL/h2j20oDB3gCQS43nQOFK77cnc3e8HaBiPzMdzP7Bf
+         o9MqkgJomHjsD2ReXNKw8JbZ7PFUB0ehThK4Qos//bFXy52vlA1NhbVQEt9JT3SvE+pm
+         jX6tX3M9HkfIuDThz60JhEZ3pJtHbTl4Lm+I1wNdqEs9LB8Ik9K6Dl3ueIzn/ulcwifX
+         8E6fcT8X11DxXtB+Gb2bBVvG3F34Fffo6Q3WtzyuVnzAa/1QGf2CgB/mWLzEJaWBLI1j
+         iCag==
+X-Gm-Message-State: AOAM531bJvNBfW3LJcZRJi1o0n9dmpVQB7RpaXhGmvWnIem76GK1DWM8
+        ZM+gfRZil/JqaGvqs5HoK5cYNw==
+X-Google-Smtp-Source: ABdhPJyl8eN5UlRGZLhzBG/kOop8hQaBmTkDKl8NH20D8i/D6Gny6QTrr8N5CrccyVv6p4Fc8Ocb3g==
+X-Received: by 2002:a2e:854b:: with SMTP id u11mr6060434ljj.318.1614966010642;
+        Fri, 05 Mar 2021 09:40:10 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id x14sm381159lfg.165.2021.03.05.09.40.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 09:39:47 -0800 (PST)
-Date:   Fri, 5 Mar 2021 10:39:45 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v5 15/16] rpmsg: char: no dynamic endpoint management for
- the default one
-Message-ID: <20210305173945.GB3885132@xps15>
-References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
- <20210219111501.14261-16-arnaud.pouliquen@foss.st.com>
- <20210304184034.GA3854911@xps15>
- <d5a451e1-3dac-f665-aabd-bd72afc88b75@foss.st.com>
+        Fri, 05 Mar 2021 09:40:10 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id F1E1310257C; Fri,  5 Mar 2021 20:40:09 +0300 (+03)
+Date:   Fri, 5 Mar 2021 20:40:09 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, riel@redhat.com,
+        kirill.shutemov@linux.intel.com, ebru.akagunduz@gmail.com,
+        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 0/5] Cleanup and fixup for khugepaged
+Message-ID: <20210305174009.ugxpn223j7aoi4bc@box>
+References: <20210304123013.23560-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d5a451e1-3dac-f665-aabd-bd72afc88b75@foss.st.com>
+In-Reply-To: <20210304123013.23560-1-linmiaohe@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 12:09:37PM +0100, Arnaud POULIQUEN wrote:
+On Thu, Mar 04, 2021 at 07:30:08AM -0500, Miaohe Lin wrote:
+> Hi all,
+> This series contains cleanups to remove unneeded return value, use
+> helper function and so on. And there is one fix to correct the wrong
+> result value for trace_mm_collapse_huge_page_isolate().
 > 
+> More details can be found in the respective changelogs. Thanks!
 > 
-> On 3/4/21 7:40 PM, Mathieu Poirier wrote:
-> > There has to be a capital letter at the start of the title:
-> > 
-> > rpmsg: char: No dynamic endpoint management for the default one
-> > 
-> > Please fix for all the patches.
+> Miaohe Lin (5):
+>   khugepaged: remove unneeded return value of
+>     khugepaged_collapse_pte_mapped_thps()
+>   khugepaged: reuse the smp_wmb() inside __SetPageUptodate()
+>   khugepaged: use helper khugepaged_test_exit() in __khugepaged_enter()
+>   khugepaged: remove unnecessary mem_cgroup_uncharge() in
+>     collapse_[file|huge_page]
+>   khugepaged: fix wrong result value for
+>     trace_mm_collapse_huge_page_isolate()
 > 
-> Ok, I will update the subjects with capital letter in my next revision.
-> 
-> Just for my information, is it a new rule? kernel documentation [1] gives a
-> canonical subject and an example without capital letter.
+>  mm/khugepaged.c | 47 ++++++++++++++++++++---------------------------
+>  1 file changed, 20 insertions(+), 27 deletions(-)
 
-I don't think it is a rule but in the past few years the trend has been to
-use a capital letter.  I was convinced the documentation had a capital letter
-but you have proven that it doesn't so you can ignore this part if you wish.
+Apart from patch 4/5, looks fine. For the rest, you can use:
 
-> 
-> [1]
-> https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#the-canonical-patch-format
-> 
-> > 
-> > On Fri, Feb 19, 2021 at 12:15:00PM +0100, Arnaud Pouliquen wrote:
-> >> Do not dynamically manage the default endpoint. The ept address must
-> >> not change.
-> >> This update is needed to manage the RPMSG_CREATE_DEV_IOCTL. In this
-> >> case a default endpoint is used and it's address must not change or
-> >> been reused by another service.
-> > 
-> > The above is very difficult to understand.  I am not sure about introducing
-> > RPMSG_CREATE_DEV_IOCTL in this patchset.  More on that in an upcoming comment.
-> 
-> The purpose of this revision was mainly to provide a view of what we could do to
-> provide a more generic control interface.
-> 
-> To simplify the review I can remove the RPMSG_CREATE_DEV_IOCTL management and
-> send it as a next step, in a separate patchset.
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-Yes, it would make this patchset quite simple.
-
-> 
-> > 
-> >>
-> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> >> ---
-> >>  drivers/rpmsg/rpmsg_char.c | 28 +++++++++++++++++++++-------
-> >>  1 file changed, 21 insertions(+), 7 deletions(-)
-> >>
-> >> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> >> index c98b0e69679b..8d3f9d6c20ad 100644
-> >> --- a/drivers/rpmsg/rpmsg_char.c
-> >> +++ b/drivers/rpmsg/rpmsg_char.c
-> >> @@ -114,14 +114,23 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
-> >>  	struct rpmsg_endpoint *ept;
-> >>  	struct rpmsg_device *rpdev = eptdev->rpdev;
-> >>  	struct device *dev = &eptdev->dev;
-> >> +	u32 addr = eptdev->chinfo.src;
-> >>  
-> >>  	get_device(dev);
-> >>  
-> >> -	ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
-> >> -	if (!ept) {
-> >> -		dev_err(dev, "failed to open %s\n", eptdev->chinfo.name);
-> >> -		put_device(dev);
-> >> -		return -EINVAL;
-> >> +	/*
-> >> +	 * The RPMsg device can has been created by a ns announcement. In this
-> >> +	 * case a default endpoint has been created. Reuse it to avoid to manage
-> >> +	 * a new address on each open close.
-> >> +	 */
-> > 
-> > Here too it is very difficult to understand because the comment
-> > doesn't not describe what the code does.  The code creates an enpoint if it
-> > has not been created, which means /dev/rpmsgX was created from the ioctl. 
-> 
-> Right, not enough explicit
-> 
-> Thanks,
-> Arnaud
-> 
-> > 
-> >> +	ept = rpdev->ept;
-> >> +	if (!ept || addr != ept->addr) {
-> >> +		ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
-> >> +		if (!ept) {
-> >> +			dev_err(dev, "failed to open %s\n", eptdev->chinfo.name);
-> >> +			put_device(dev);
-> >> +			return -EINVAL;
-> >> +		}
-> >>  	}
-> >>  
-> >>  	eptdev->ept = ept;
-> >> @@ -133,12 +142,17 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
-> >>  static int rpmsg_eptdev_release(struct inode *inode, struct file *filp)
-> >>  {
-> >>  	struct rpmsg_eptdev *eptdev = cdev_to_eptdev(inode->i_cdev);
-> >> +	struct rpmsg_device *rpdev = eptdev->rpdev;
-> >>  	struct device *dev = &eptdev->dev;
-> >>  
-> >> -	/* Close the endpoint, if it's not already destroyed by the parent */
-> >> +	/*
-> >> +	 * Close the endpoint, if it's not already destroyed by the parent and it is not the
-> >> +	 * default one.
-> >> +	 */
-> >>  	mutex_lock(&eptdev->ept_lock);
-> >>  	if (eptdev->ept) {
-> >> -		rpmsg_destroy_ept(eptdev->ept);
-> >> +		if (eptdev->ept != rpdev->ept)
-> >> +			rpmsg_destroy_ept(eptdev->ept);
-> >>  		eptdev->ept = NULL;
-> >>  	}
-> >>  	mutex_unlock(&eptdev->ept_lock);
-> >> -- 
-> >> 2.17.1
-> >>
+-- 
+ Kirill A. Shutemov
