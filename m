@@ -2,62 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4298E32DF04
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 02:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 650E132DF0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 02:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229575AbhCEBVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 20:21:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229458AbhCEBVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 20:21:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8AD864FF0;
-        Fri,  5 Mar 2021 01:21:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1614907280;
-        bh=m4h7ZHJClpaGq4z31HFjlAN1BbQ52JQhKvIB5gkF1OA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gV3fjtZ7OYER8xZbyYzMav33XcDtppeuPKzWbAum91qZLWbgue6N2j0lWoP5Lesq9
-         8r/lH+nkZkrrs7CqPKd6AvwppXlrL8851hkFWnrCCSWLoYmK1o9gzrdr6pGyuy+AXU
-         J91a9bJZe8LWGJnCKATUTVWlpZDTQYuRy5UIJFig=
-Date:   Thu, 4 Mar 2021 17:21:20 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] units: Add the HZ_PER_KHZ macro
-Message-Id: <20210304172120.437d25238b880f5885e59142@linux-foundation.org>
-In-Reply-To: <3ffdd3de-c30e-f237-7bd7-2700d426e53a@linaro.org>
-References: <20210223203004.7219-1-daniel.lezcano@linaro.org>
-        <CAHp75VcJwoye5KOYXF3Fs1F-82JPP-7VaU4z5OqBrYDr+AGQ5w@mail.gmail.com>
-        <CAHp75Vcqug9qC_ejHE03YguiSy-XpsZV6g36-pe3VOFgTS2-tA@mail.gmail.com>
-        <20210303163125.dcc0a086a939a58ed30750e8@linux-foundation.org>
-        <3ffdd3de-c30e-f237-7bd7-2700d426e53a@linaro.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S229584AbhCEBYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 20:24:10 -0500
+Received: from emcscan.emc.com.tw ([192.72.220.5]:24208 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229458AbhCEBYJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 20:24:09 -0500
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="39657530"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 05 Mar 2021 09:24:08 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(2828:0:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Fri, 05 Mar 2021 09:24:05 +0800 (CST)
+Received: from 192.168.33.11
+        by webmail.emc.com.tw with Mail2000 ESMTP Server V7.00(2474:1:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Fri, 05 Mar 2021 09:24:05 +0800 (CST)
+From:   "jingle" <jingle.wu@emc.com.tw>
+To:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>
+Cc:     "'linux-kernel'" <linux-kernel@vger.kernel.org>,
+        "'linux-input'" <linux-input@vger.kernel.org>,
+        "'phoenix'" <phoenix@emc.com.tw>,
+        "'dave.wang'" <dave.wang@emc.com.tw>,
+        "'josh.chen'" <josh.chen@emc.com.tw>
+References: <20210226073537.4926-1-jingle.wu@emc.com.tw> <YDx8M4Rhdi8hW4EO@google.com> <1614647097.9201.jingle.wu@emc.com.tw> <YEGBeWHRfL4gN9pX@google.com>
+In-Reply-To: <YEGBeWHRfL4gN9pX@google.com>
+Subject: RE: [PATCH] Input: elan_i2c - Reduce the resume time for new dev ices
+Date:   Fri, 5 Mar 2021 09:24:05 +0800
+Message-ID: <004f01d7115e$3ba005e0$b2e011a0$@emc.com.tw>
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AQGs01cKeSW+WSlGkCw6sJc3Mb/pawH5MxoQAdwxvXACK2QSBKqZDPmQ
+Content-Language: zh-tw
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcMDYwMTFcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy03OTJkN2ViZS03ZDUxLTExZWItOGUwZi1mMDc5NTk2OWU3NWVcYW1lLXRlc3RcNzkyZDdlYzAtN2Q1MS0xMWViLThlMGYtZjA3OTU5NjllNzVlYm9keS50eHQiIHN6PSIxNjgwIiB0PSIxMzI1OTM4MTA0NTM5MzU3NzQiIGg9ImlvQnd0Wnp3K3BFWTdYWDBiaTc1YkdJSVQycz0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 13:41:27 +0100 Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+HI Dmitry:
 
-> > Also, why make them signed types?  Negative Hz is physically
-> > nonsensical.  If that upsets some code somewhere because it was dealing
-> > with signed types then, well, that code needed fixing anyway.
-> > 
-> > Ditto MILLIWATT_PER_WATT and friends, sigh.
-> 
-> At the first glance converting to unsigned long should not hurt the
-> users of this macro.
-> 
-> The current series introduces the macro and its usage but by converting
-> the existing type.
-> 
-> Is it ok if I send a separate series to change the units from L to UL?
+In this case (in the newer parts behavior regarding need to reset after
+powering them on), it is consistent with the original driver behavior with
+any new or old device
+(be called data->ops->initialize(client) : usleep(100) , etc.. , because
+this times "data->quirks" is equal 0 at probe state.) 
 
-That's the way to do it...
+THANKS
+JINGLE
+
+-----Original Message-----
+From: Dmitry Torokhov [mailto:dmitry.torokhov@gmail.com] 
+Sent: Friday, March 05, 2021 8:55 AM
+To: jingle.wu
+Cc: linux-kernel; linux-input; phoenix; dave.wang; josh.chen
+Subject: Re: [PATCH] Input: elan_i2c - Reduce the resume time for new dev
+ices
+
+Hi Jingle,
+
+On Tue, Mar 02, 2021 at 09:04:57AM +0800, jingle.wu wrote:
+> HI Dmitry:
+> 
+> So data->ops->initialize(client) essentially performs reset of the 
+> controller (we may want to rename it even) and as far as I understand 
+> you would want to avoid resetting the controller on newer devices, 
+> right?
+> 
+> -> YES
+> 
+> My question is how behavior of older devices differ from the new ones 
+> (are they stay in "undefined" state at power up) and whether it is 
+> possible to determine if controller is in operating mode. For example, 
+> what would happen on older devices if we call elan_query_product() 
+> below without resetting the controller?
+> 
+> -> But there may be other problems, because ELAN can't test all the 
+> -> older devices , so use quirk to divide this part.
+
+OK, but could you please tell me what exactly was changed in the newer parts
+behavior regarding need to reset after powering them on?
+
+Thanks.
+
+--
+Dmitry
+
