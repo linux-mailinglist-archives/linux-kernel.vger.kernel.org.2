@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCAE32E08D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9A532E095
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhCEETl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 23:19:41 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64644 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229690AbhCEETk (ORCPT
+        id S229629AbhCEEVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 23:21:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229463AbhCEEVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 23:19:40 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12544YQY070061;
-        Thu, 4 Mar 2021 23:19:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=LqR2TXEh97yGVBBSx0eCKJKZMDI0vptlzlcbTFPS2Ok=;
- b=U9bM/RSQOuR/W3wSSpRL2RUsq+KJZUFai882hWbPHFFogkKRfBaJ5ca4P+8EWDIDbDIw
- RPTR9JbFTkv3LlJTLIc4rj7Xekhx+iBkgwCUoU+h5Qe2cy7RftrUQS8qdAaxiGaQPTv3
- G5D0/U5rZKC7vABDOTxYpXsnDqGTOWcCBNKN+6YTuFRnbvl2LXMU3JmoQB0WEM312q/m
- WsJ+RtBmbUFSG/ojmKVSFxh36No2DdpouUVIvgcf3pgo82TfSBTRjVINYkexsmcE0Hbj
- s7F+rYcKw4VR+LFqRuthz42K451HbRJsfMjBZluCR/f29vlU8pPJCcr8yxpM2ijmzyUL OA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 373cth1c3v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 23:19:16 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12544UYW069777;
-        Thu, 4 Mar 2021 23:19:16 -0500
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 373cth1c3q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 04 Mar 2021 23:19:16 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1254IJNf002810;
-        Fri, 5 Mar 2021 04:19:15 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma03dal.us.ibm.com with ESMTP id 3720r0wquf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 04:19:15 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1254JE8i30343676
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 5 Mar 2021 04:19:14 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4F573C6057;
-        Fri,  5 Mar 2021 04:19:14 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 20B18C605A;
-        Fri,  5 Mar 2021 04:19:14 +0000 (GMT)
-Received: from suka-w540.localdomain (unknown [9.85.205.202])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri,  5 Mar 2021 04:19:13 +0000 (GMT)
-Received: by suka-w540.localdomain (Postfix, from userid 1000)
-        id E820B2E282E; Thu,  4 Mar 2021 20:19:10 -0800 (PST)
-Date:   Thu, 4 Mar 2021 20:19:10 -0800
-From:   Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-To:     angkery <angkery@163.com>
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        drt@linux.ibm.com, ljp@linux.ibm.com, davem@davemloft.net,
-        kuba@kernel.org, linuxppc-dev@lists.ozlabs.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-Subject: Re: [PATCH] ibmvnic: remove excessive irqsave
-Message-ID: <20210305041910.GA1396452@us.ibm.com>
-References: <20210305014350.1460-1-angkery@163.com>
+        Thu, 4 Mar 2021 23:21:22 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB6DC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 20:21:21 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id y67so1246764pfb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 20:21:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=gz/AcE1P3Yr0Gm3eX8zMColErHy3vzo5LgxPPoJy2Jk=;
+        b=kY8V/bf1GuiWwCdaTfawn1N3oYw5qHY4I3d+1frPAQk7kWAFrHlpIOvu6MWLvIOSNA
+         cRFUjenXWECOJY5KwAZcVxl74V4+H1TeJ+oZ/gPnA9QdBWLwWOG058/9ebmvpNvYZ8Jw
+         aq+eNacU3GkhdfVyygNl0JL2pZee3gPJIE6nI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=gz/AcE1P3Yr0Gm3eX8zMColErHy3vzo5LgxPPoJy2Jk=;
+        b=oER3WEqw+GVEX1h7X2h1JVW58D5DdGPpeSksAHswaHoQNcIN8otM2kAadW23x7ddGK
+         zmcAOct5l9cSEeUzixwaX9TsEP7TeotXx1M5YNEqSjOcchlNBxaUi+JO72MQPNgp/SEB
+         SlEeGoRe/Ue+QKxucYlBDg3FmU6bUrMRsp58uOG2wZhDHDu4Zgzt/acukOetYM7Sdecz
+         JDUjOhd4ZhYZyqVHUj94LW6bNWUHsfNvQY2yT7Caq9Sp2yJuccT7dG5mXNASTwsH/EuC
+         /QtWn8rxrZ4LSUxLl2uSqxczkaM0y4oQvJrrl5Fuo1zb9PreBiruQXaZwZeC+0LCpGgP
+         KJzw==
+X-Gm-Message-State: AOAM531GxOOG2SFsxol22RcZSv5LTUqm8cPgWt5r0sYgDEyDsNUwC1BO
+        OxQ+m9oU89GIQ9bdiNHc4zIUHg==
+X-Google-Smtp-Source: ABdhPJws3fv+IybUhg0peK6oAerLhUCQfi4i3mhvn/s/0GmTUD9CWZaU7lNW4W47mB+Pa6UAr6NJvw==
+X-Received: by 2002:aa7:95b5:0:b029:1ef:272f:920c with SMTP id a21-20020aa795b50000b02901ef272f920cmr4482082pfk.21.1614918080816;
+        Thu, 04 Mar 2021 20:21:20 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:b498:4a2d:bc34:b77e])
+        by smtp.gmail.com with ESMTPSA id k10sm222492pfk.49.2021.03.04.20.21.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 20:21:20 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305014350.1460-1-angkery@163.com>
-X-Operating-System: Linux 2.0.32 on an i486
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-05_03:2021-03-03,2021-03-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 bulkscore=0 spamscore=0 impostorscore=0 malwarescore=0
- priorityscore=1501 adultscore=0 clxscore=1011 mlxlogscore=860
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103050018
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <95e58426-c7ab-6ba5-17ea-392754899959@rasmusvillemoes.dk>
+References: <20210301174749.1269154-1-swboyd@chromium.org> <20210301174749.1269154-6-swboyd@chromium.org> <20210304170052.GK2723601@casper.infradead.org> <161488534185.1478170.10285681551102444519@swboyd.mtv.corp.google.com> <95e58426-c7ab-6ba5-17ea-392754899959@rasmusvillemoes.dk>
+Subject: Re: [PATCH 5/7] printk: Make %pS and friends print module build ID
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-doc@vger.kernel.org
+To:     Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Date:   Thu, 04 Mar 2021 20:21:18 -0800
+Message-ID: <161491807864.1478170.14069558494579871831@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-angkery [angkery@163.com] wrote:
-> From: Junlin Yang <yangjunlin@yulong.com>
-> 
-> ibmvnic_remove locks multiple spinlocks while disabling interrupts:
-> spin_lock_irqsave(&adapter->state_lock, flags);
-> spin_lock_irqsave(&adapter->rwi_lock, flags);
-> 
-> there is no need for the second irqsave,since interrupts are disabled
-> at that point, so remove the second irqsave:
-> spin_lock_irqsave(&adapter->state_lock, flags);
-> spin_lock(&adapter->rwi_lock);
-> 
-> Generated by: ./scripts/coccinelle/locks/flags.cocci
-> ./drivers/net/ethernet/ibm/ibmvnic.c:5413:1-18:
-> ERROR: nested lock+irqsave that reuses flags from line 5404.
-> 
+Quoting Rasmus Villemoes (2021-03-04 15:11:47)
+> On 04/03/2021 20.15, Stephen Boyd wrote:
+> > Quoting Matthew Wilcox (2021-03-04 09:00:52)
+> >> On Mon, Mar 01, 2021 at 09:47:47AM -0800, Stephen Boyd wrote:
+> >>> Example:
+> >>>
+> >>>  WARNING: CPU: 4 PID: 3255 at drivers/misc/lkdtm/bugs.c:83 lkdtm_WARN=
+ING+0x28/0x30 [lkdtm] (ed5019fdf5e53be37cb1ba7899292d7e143b259e)
+> >>
+> >> Would the first 12 characters instead of all 40 make it more palatable
+> >> without reducing its utility?
+> >=20
+> > I can't seem to request debuginfo from debuginfod without the full 40
+> > characters. It's not a git sha1 hash.=20
+> >=20
+> >> And I feel it should be within the [], so maybe this:
+> >>
+> >> WARNING: CPU: 4 PID: 3255 at drivers/misc/lkdtm/bugs.c:83 lkdtm_WARNIN=
+G+0x28/0x30 [lkdtm ed5019fdf5e5]
+> >>
+> >=20
+> > Sure I could put the hex numbers inside the brackets. I suspect changing
+> > %pS or updating the "Modules linked in:" line isn't going to be
+> > palatable. I've decided to introduce another printk format %pT to print
+> > the stacktrace=20
+>=20
+> Can you avoid claiming a new "top-level" %p modifier? Isn't it better to
+> add a new flag to '%pS', say '%pSb' to include build-id?
+>=20
 
-Thanks. Please add
-
-Fixes: 4a41c421f367 ("ibmvnic: serialize access to work queue on remove")
-
-> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
-
-Reviewed-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+I see that %pSR is used in alpha for the stacktrace. I guess we can have
+%pSb and %pSr then.
