@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB27832EAEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F39832EB3F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233324AbhCEMlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:41:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55632 "EHLO mail.kernel.org"
+        id S232956AbhCEMnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:43:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232107AbhCEMkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:40:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C2AE65021;
-        Fri,  5 Mar 2021 12:40:23 +0000 (UTC)
+        id S233847AbhCEMm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:42:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60C016501C;
+        Fri,  5 Mar 2021 12:42:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948024;
-        bh=TdrpZQSTS4o7o95YC/NtfEjy6fNbOOCMsqqNwMtlu0Q=;
+        s=korg; t=1614948147;
+        bh=Mqw/Xi4CtknF9CnDt+xfZR2WJq/GQJJN7ERbesdt2Zo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j2E9u3eDcdYwzNWVeXt/B3y1uTliaPLdiijKQRkTHWM2z4KvR07Ybe1Ov3E1iag4E
-         fqRDIwIX0W3Oj1dm2h4guDtHlUjvdnT01mIgrqs3KlMM3DdSGYVJRbGxKHzmBSaG77
-         po2OGe0YCrrMRjeRDF9nQ81ewVmVRlTsV5Xg27p0=
+        b=ZXCqQHN0OXVcNE9gnDUPRDG/b/dDYCgRTG7JU5xV1gb7PvM1mPfouGFP67nTjtwpf
+         fap4W+vaxvhs/EVvQA8bo1BchHH4L6L29xhGVb4E4QDjQRRq5Dvkcd2ZoNNHbc1HFT
+         ELUSOZzVOeYWTMjknfalkqkKTmnECBLMwexSR06w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Fangrui Song <maskray@google.com>,
-        Borislav Petkov <bp@suse.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 25/39] x86/build: Treat R_386_PLT32 relocation as R_386_PC32
-Date:   Fri,  5 Mar 2021 13:22:24 +0100
-Message-Id: <20210305120853.031205310@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+36315852ece4132ec193@syzkaller.appspotmail.com,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        jfs-discussion@lists.sourceforge.net,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH 4.9 18/41] JFS: more checks for invalid superblock
+Date:   Fri,  5 Mar 2021 13:22:25 +0100
+Message-Id: <20210305120852.182320874@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120851.751937389@linuxfoundation.org>
-References: <20210305120851.751937389@linuxfoundation.org>
+In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
+References: <20210305120851.255002428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,111 +43,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fangrui Song <maskray@google.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit bb73d07148c405c293e576b40af37737faf23a6a ]
+commit 3bef198f1b17d1bb89260bad947ef084c0a2d1a6 upstream.
 
-This is similar to commit
+syzbot is feeding invalid superblock data to JFS for mount testing.
+JFS does not check several of the fields -- just assumes that they
+are good since the JFS_MAGIC and version fields are good.
 
-  b21ebf2fb4cd ("x86: Treat R_X86_64_PLT32 as R_X86_64_PC32")
+In this case (syzbot reproducer), we have s_l2bsize == 0xda0c,
+pad == 0xf045, and s_state == 0x50, all of which are invalid IMO.
+Having s_l2bsize == 0xda0c causes this UBSAN warning:
+  UBSAN: shift-out-of-bounds in fs/jfs/jfs_mount.c:373:25
+  shift exponent -9716 is negative
 
-but for i386. As far as the kernel is concerned, R_386_PLT32 can be
-treated the same as R_386_PC32.
+s_l2bsize can be tested for correctness. pad can be tested for non-0
+and punted. s_state can be tested for its valid values and punted.
 
-R_386_PLT32/R_X86_64_PLT32 are PC-relative relocation types which
-can only be used by branches. If the referenced symbol is defined
-externally, a PLT will be used.
+Do those 3 tests and if any of them fails, report the superblock as
+invalid/corrupt and let fsck handle it.
 
-R_386_PC32/R_X86_64_PC32 are PC-relative relocation types which can be
-used by address taking operations and branches. If the referenced symbol
-is defined externally, a copy relocation/canonical PLT entry will be
-created in the executable.
+With this patch, chkSuper() says this when JFS_DEBUG is enabled:
+  jfs_mount: Mount Failure: superblock is corrupt!
+  Mount JFS Failure: -22
+  jfs_mount failed w/return code = -22
 
-On x86-64, there is no PIC vs non-PIC PLT distinction and an
-R_X86_64_PLT32 relocation is produced for both `call/jmp foo` and
-`call/jmp foo@PLT` with newer (2018) GNU as/LLVM integrated assembler.
-This avoids canonical PLT entries (st_shndx=0, st_value!=0).
+The obvious problem with this method is that next week there could
+be another syzbot test that uses different fields for invalid values,
+this making this like a game of whack-a-mole.
 
-On i386, there are 2 types of PLTs, PIC and non-PIC. Currently,
-the GCC/GNU as convention is to use R_386_PC32 for non-PIC PLT and
-R_386_PLT32 for PIC PLT. Copy relocations/canonical PLT entries
-are possible ABI issues but GCC/GNU as will likely keep the status
-quo because (1) the ABI is legacy (2) the change will drop a GNU
-ld diagnostic for non-default visibility ifunc in shared objects.
+syzkaller link: https://syzkaller.appspot.com/bug?extid=36315852ece4132ec193
 
-clang-12 -fno-pic (since [1]) can emit R_386_PLT32 for compiler
-generated function declarations, because preventing canonical PLT
-entries is weighed over the rare ifunc diagnostic.
-
-Further info for the more interested:
-
-  https://github.com/ClangBuiltLinux/linux/issues/1210
-  https://sourceware.org/bugzilla/show_bug.cgi?id=27169
-  https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6 [1]
-
- [ bp: Massage commit message. ]
-
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Fangrui Song <maskray@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Link: https://lkml.kernel.org/r/20210127205600.1227437-1-maskray@google.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+36315852ece4132ec193@syzkaller.appspotmail.com
+Reported-by: kernel test robot <lkp@intel.com> # v2
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc: jfs-discussion@lists.sourceforge.net
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/module.c |  1 +
- arch/x86/tools/relocs.c  | 12 ++++++++----
- 2 files changed, 9 insertions(+), 4 deletions(-)
+ fs/jfs/jfs_filsys.h |    1 +
+ fs/jfs/jfs_mount.c  |   10 ++++++++++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
-index f58336af095c..1ccfe6bb9122 100644
---- a/arch/x86/kernel/module.c
-+++ b/arch/x86/kernel/module.c
-@@ -126,6 +126,7 @@ int apply_relocate(Elf32_Shdr *sechdrs,
- 			*location += sym->st_value;
- 			break;
- 		case R_386_PC32:
-+		case R_386_PLT32:
- 			/* Add the value, subtract its position */
- 			*location += sym->st_value - (uint32_t)location;
- 			break;
-diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-index 220e97841e49..c58b63178123 100644
---- a/arch/x86/tools/relocs.c
-+++ b/arch/x86/tools/relocs.c
-@@ -840,9 +840,11 @@ static int do_reloc32(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
- 	case R_386_PC32:
- 	case R_386_PC16:
- 	case R_386_PC8:
-+	case R_386_PLT32:
- 		/*
--		 * NONE can be ignored and PC relative relocations don't
--		 * need to be adjusted.
-+		 * NONE can be ignored and PC relative relocations don't need
-+		 * to be adjusted. Because sym must be defined, R_386_PLT32 can
-+		 * be treated the same way as R_386_PC32.
- 		 */
- 		break;
+--- a/fs/jfs/jfs_filsys.h
++++ b/fs/jfs/jfs_filsys.h
+@@ -281,5 +281,6 @@
+ 				 * fsck() must be run to repair
+ 				 */
+ #define	FM_EXTENDFS 0x00000008	/* file system extendfs() in progress */
++#define	FM_STATE_MAX 0x0000000f	/* max value of s_state */
  
-@@ -883,9 +885,11 @@ static int do_reloc_real(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
- 	case R_386_PC32:
- 	case R_386_PC16:
- 	case R_386_PC8:
-+	case R_386_PLT32:
- 		/*
--		 * NONE can be ignored and PC relative relocations don't
--		 * need to be adjusted.
-+		 * NONE can be ignored and PC relative relocations don't need
-+		 * to be adjusted. Because sym must be defined, R_386_PLT32 can
-+		 * be treated the same way as R_386_PC32.
- 		 */
- 		break;
+ #endif				/* _H_JFS_FILSYS */
+--- a/fs/jfs/jfs_mount.c
++++ b/fs/jfs/jfs_mount.c
+@@ -49,6 +49,7 @@
  
--- 
-2.30.1
-
+ #include <linux/fs.h>
+ #include <linux/buffer_head.h>
++#include <linux/log2.h>
+ 
+ #include "jfs_incore.h"
+ #include "jfs_filsys.h"
+@@ -378,6 +379,15 @@ static int chkSuper(struct super_block *
+ 	sbi->bsize = bsize;
+ 	sbi->l2bsize = le16_to_cpu(j_sb->s_l2bsize);
+ 
++	/* check some fields for possible corruption */
++	if (sbi->l2bsize != ilog2((u32)bsize) ||
++	    j_sb->pad != 0 ||
++	    le32_to_cpu(j_sb->s_state) > FM_STATE_MAX) {
++		rc = -EINVAL;
++		jfs_err("jfs_mount: Mount Failure: superblock is corrupt!");
++		goto out;
++	}
++
+ 	/*
+ 	 * For now, ignore s_pbsize, l2bfactor.  All I/O going through buffer
+ 	 * cache.
 
 
