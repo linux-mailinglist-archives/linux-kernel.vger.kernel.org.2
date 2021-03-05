@@ -2,119 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B74732E465
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD46B32E469
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:11:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbhCEJKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:10:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbhCEJKV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:10:21 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C570EC06175F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 01:10:19 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id w11so1220680wrr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 01:10:19 -0800 (PST)
+        id S229682AbhCEJLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:11:02 -0500
+Received: from mail-bn8nam12on2055.outbound.protection.outlook.com ([40.107.237.55]:52320
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229563AbhCEJKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:10:51 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bLNXAOOneU+8eImWEIqV6xa0vHYD959BVozquMT17PvyV/dY4fKj+gL5s0S00c725cMulu0eh85CmPiZUY6JcxOGkFhOMoNt7pKDueQ27P2qzEAVplayMCn6/xOf8DgNV62e8M7sypbgL/oEMxmyL3AVjnE7d7UykACoSg2t5vX+1P4QmqtE2Ul1ky03U6dBM69hZ3dVmQuubLdbKKP+NjsHCeuDpoCgCYnq3Gpq3PPJ6GETVqBaTjHKWLj+E+goX75eaNtZoTBzDEhCnYd4XHYaDkG35Of089JYHTOSUD/z/jRCg8sxcFYUG3l+tbaof1hfYUtugdhtYx6vFa5/uQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=60DRLo7/HLSmrekniY3404kGn+4Pz/FidqLWAJFN84w=;
+ b=gasJ0ib4w96m20/KPg3wk5xnQWOfR03enOSEYYQ+cCmp2hQRPTwyxWqzE0ZUJqXKgVjN0LQWs75w8Jfkj+rCK7TMpxR1kZv4G/1dX4nIS9RX+W2xymvh6KbywOgyQURDCgLTXP0S5WYx3up1SI6VVlbgCNA+AmnYARiq4LHLuztMOHMb/8vy56wE0J3wSN5eTrfeZrUU7ZqrfhZedxSCVrvRdIIowf7m4daV32NgjXGezDwzzufbd1+FPHoddZ6f/73omJhvvnuJRGaOSEjAlks8G7BNZxFBR89dMw81ZsHOsw6Y3uShtp/pV/5m5gQ6QQXio14ZIy9y6CxGge1Dbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.dk smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=63BZTwf3MLMQAkn2BdrHZ1xTK2bwmRKITVezIt3sV9k=;
-        b=qIhQjiqOP57bI/hD1kFs2/6tOxvCVgreYU6SWkrNvwDFlxQwEnv3kFFVIEiRAtV0bs
-         ghqevsOeKImy2rOLICgbeqWEThfUBb62WD98f6OLGoRbJPi+3ECHQTjzD7T09L6iNH1X
-         oAm7OJWf/W0mgFiXr47BHOFHjWLpDx1yqdw07vCbJeqMn/SZ6et48VCP9iSh47jL2RrG
-         gVVStZeH/O8pcqGXOJ9EMd4F8njNQwNN9alPkOkaB3F9hedHZi9ivpiK4dy/1O75s2EC
-         b80SYjFrOOr3XHujkCejze9BNQcAsrZT3Cpqt9O3cmDicy//qO7rhTZOo3V9VbGlcI9b
-         TE4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=63BZTwf3MLMQAkn2BdrHZ1xTK2bwmRKITVezIt3sV9k=;
-        b=lstpnIf9NlRwm2C8qAmFQjlwP56YEj8rTQeQTEWJF+JSIrglC+fcwMM5LcLdEiaiVq
-         f3WSLJmPbqahEGxZwpgZylG0Y9D2gtOICXmQWo+7kcCgVOIEud8xum54X823xi+Sxu8w
-         HQduBbYop4mjU3+TFu7ZSuzek1SebCC+yGIua3seEpW2hUhbRmPJ4Z0+eL+WDGL6/8mL
-         BrjUBFaF4AGjSnph/qJczoq267Dg/JYme/YP161lTWBal3QpRf5JNlcxA2m+u65ZoeZc
-         3Ga/7KuclybMvB2yjBdrCmGANtUoEy3aETBzrTkEPF2eO5c5WCEOZZ1+3zNkoAS6hiLK
-         qjyw==
-X-Gm-Message-State: AOAM530Y9fKq3S7xCUXxOI/0+/KAQZ/jOFldluNo/nAry06OCfEOaUT/
-        CF4bNzLrL3advsGgE+Wl2JVO/g==
-X-Google-Smtp-Source: ABdhPJwGPV9w/pRUAVZfWeOAHCnQFfI/8tinbzeWQre8iQkJRqLUzFYfp3bIvMhEWSuLcWlSXdr0MQ==
-X-Received: by 2002:a5d:5411:: with SMTP id g17mr8376871wrv.194.1614935418378;
-        Fri, 05 Mar 2021 01:10:18 -0800 (PST)
-Received: from [192.168.0.41] (lns-bzn-59-82-252-144-192.adsl.proxad.net. [82.252.144.192])
-        by smtp.googlemail.com with ESMTPSA id 36sm3695411wrh.94.2021.03.05.01.10.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 01:10:17 -0800 (PST)
-Subject: Re: [PATCH] devfreq: Register devfreq as a cooling device
-To:     Steven Price <steven.price@arm.com>, cwchoi00@gmail.com,
-        kyungmin.park@samsung.com, myungjoo.ham@samsung.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        "open list:DRM DRIVERS FOR LIMA" <dri-devel@lists.freedesktop.org>,
-        "moderated list:DRM DRIVERS FOR LIMA" <lima@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>
-References: <20210304125034.28404-1-daniel.lezcano@linaro.org>
- <23db1b13-9418-91f5-4871-f45b983f6e3c@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <e8c5f550-0ca5-b4e4-1113-3af760d2780e@linaro.org>
-Date:   Fri, 5 Mar 2021 10:10:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=60DRLo7/HLSmrekniY3404kGn+4Pz/FidqLWAJFN84w=;
+ b=KHBdU4lRV+0ko4Qi/socVbXlu5kcKm7Z7dNlbbO6WD49hRnMScU+lryllmwh0jCnrxsjyRnljAAYwLru0OVw62xz7K5hFBapa6guZqclLq77f6K7q9Yd1cYlo9COhbn8ihgUl/A6ZqVzpCr2iWH3Sb/TaGg0ZxImVBnAZEBcD+g=
+Received: from CY4PR16CA0028.namprd16.prod.outlook.com (2603:10b6:910:60::15)
+ by DM6PR02MB5337.namprd02.prod.outlook.com (2603:10b6:5:4f::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26; Fri, 5 Mar
+ 2021 09:10:45 +0000
+Received: from CY1NAM02FT030.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:910:60:cafe::94) by CY4PR16CA0028.outlook.office365.com
+ (2603:10b6:910:60::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
+ Transport; Fri, 5 Mar 2021 09:10:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.dk; dkim=none (message not signed)
+ header.d=none;kernel.dk; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ CY1NAM02FT030.mail.protection.outlook.com (10.152.75.163) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3890.19 via Frontend Transport; Fri, 5 Mar 2021 09:10:44 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Fri, 5 Mar 2021 01:10:40 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Fri, 5 Mar 2021 01:10:40 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ axboe@kernel.dk,
+ linux-ide@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Received: from [10.140.6.6] (port=39668 helo=xhdappanad40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <piyush.mehta@xilinx.com>)
+        id 1lI6Tn-0000f9-6B; Fri, 05 Mar 2021 01:10:39 -0800
+From:   Piyush Mehta <piyush.mehta@xilinx.com>
+To:     <axboe@kernel.dk>
+CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <git@xilinx.com>, <sgoud@xilinx.com>, <michal.simek@xilinx.com>,
+        Piyush Mehta <piyush.mehta@xilinx.com>
+Subject: [PATCH V2] ata: ahci: ceva: Updated code by using dev_err_probe()
+Date:   Fri, 5 Mar 2021 14:40:29 +0530
+Message-ID: <20210305091029.23378-1-piyush.mehta@xilinx.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <23db1b13-9418-91f5-4871-f45b983f6e3c@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 20eb73f2-3ad0-43fa-c28e-08d8dfb68ecd
+X-MS-TrafficTypeDiagnostic: DM6PR02MB5337:
+X-Microsoft-Antispam-PRVS: <DM6PR02MB53370A82FCE5512D467873E7D4969@DM6PR02MB5337.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:131;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EIbio2XwFzAj/InnQ9vnVltP2pxFMK5ucxqaJW3qBnsEvixv6gUmcXqb8xG6cI3FGgy8SuGiGY/7Z3OmuD9ghp+b5FPCsJSkhhetqfLdj/vy4XXrh/SbonfZYgvGyCO4b3rYditPpZkxH7ypITtT9vTvmEe5Y8rPv70RMiTOtCVXeeJNNtQhR3+XjTBKF4SCChwHW+pNUnxsYCrvZVc0MbaOnd1hM64d+FvW9LlIrJV1aNQkXwxwG7M/hWaSc7gJOTQuTZsI2AkGP2/VoJetV3SiLiXdOMHfep3IXcupSKN2emmlDoBzCD8zSyYmKfnU8wnfThU0YKwXyjZvTAk+6ZIlGRAdMNjMfZLOJqzXio0z8wDRyC5fp8aq7PVanFvXgmwZx52WYdFNdag6a7xqeplTPciEWod8Frruocwac88ny97sT8KJqRRn2Qk0ceu1d5eKrvYghwk2u0FcF5+d9m9pCBlo2NmQrN1FQqbvmgjIUovFdwqEs5mm7QceNQWyWx9e3DllMI6YaxoQMXVDnDoshk7c7GNhK9CTHEJpRgXWB+C6gN7pCvb9SJp291QHnqyGrWiVslUivC98TmLz4bRNqmTEAfZHTy7nDoujqlVWy4ZBatH0ay2jvk18h/QHHftW2X1+lNIEPrXmDzj52mG3Eiz8P58GxhOswtgBhZO+OUsgMQb48JsPqQ21mX9tUsMo40cN7L2EfTSPMJC6fvZIhv5Thh3LiClS2NiXTqeIq2TtorIimmJY6K3yvXAwZNfzuNXpxAIXeneSxWYhzw==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(136003)(39860400002)(36840700001)(46966006)(6666004)(5660300002)(26005)(36756003)(478600001)(47076005)(186003)(9786002)(82740400003)(82310400003)(1076003)(2616005)(966005)(316002)(107886003)(7696005)(2906002)(70586007)(4326008)(6916009)(356005)(8676002)(336012)(54906003)(36860700001)(15650500001)(36906005)(8936002)(7636003)(70206006)(44832011)(426003)(83380400001)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2021 09:10:44.5186
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20eb73f2-3ad0-43fa-c28e-08d8dfb68ecd
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT030.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB5337
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/03/2021 09:12, Steven Price wrote:
-> On 04/03/2021 12:50, Daniel Lezcano wrote:
->> Currently the default behavior is to manually having the devfreq
->> backend to register themselves as a devfreq cooling device.
->>
->> There are no so many and actually it makes more sense to register the
->> devfreq device when adding it.
->>
->> Consequently, every devfreq becomes a cooling device like cpufreq is.
->>
->> Having a devfreq being registered as a cooling device can not mitigate
->> a thermal zone if it is not bound to this one. Thus, the current
->> configurations are not impacted by this change.
->>
->> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->> ---
+Updated code with already prepared dev_err_probe(). It reduces code size
+and simplifies EPROBE_DEFER handling.
 
-[ ... ]
+Also, unify message format for similar error cases.
 
->>       if (pfdevfreq->opp_of_table_added) {
->>           dev_pm_opp_of_remove_table(&pfdev->pdev->dev);
->>           pfdevfreq->opp_of_table_added = false;
-> 
-> You've removed all references to pfdevfreq->cooling, so please also
-> remove the member from struct panfrost_devfreq (as already done with
-> lima and msm).
+Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+Acked-by: Michal Simek <michal.simek@xilinx.com>
+---
+This patch is based on ahci-ceva patches:
+https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-next&id=5542fabd9e07d6c49c07862e73070c325f93d390
 
-Sure, thanks for spotting this.
+Tree: https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/tree/?h=for-next
 
+Changes for V2:
+- Address review comment- remove curly brackets {}. 
+---
+ drivers/ata/ahci_ceva.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/ata/ahci_ceva.c b/drivers/ata/ahci_ceva.c
+index b980218..50b56cd 100644
+--- a/drivers/ata/ahci_ceva.c
++++ b/drivers/ata/ahci_ceva.c
+@@ -206,11 +206,9 @@ static int ceva_ahci_probe(struct platform_device *pdev)
+ 
+ 	cevapriv->rst = devm_reset_control_get_optional_exclusive(&pdev->dev,
+ 								  NULL);
+-	if (IS_ERR(cevapriv->rst)) {
+-		if (PTR_ERR(cevapriv->rst) != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "failed to get reset: %ld\n",
+-				PTR_ERR(cevapriv->rst));
+-	}
++	if (IS_ERR(cevapriv->rst))
++		dev_err_probe(&pdev->dev, PTR_ERR(cevapriv->rst),
++			      "failed to get reset\n");
+ 
+ 	hpriv = ahci_platform_get_resources(pdev, 0);
+ 	if (IS_ERR(hpriv))
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.7.4
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
