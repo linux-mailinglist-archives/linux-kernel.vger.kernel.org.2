@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B96132EB83
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:45:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2BC32EAE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233776AbhCEMoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:44:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32810 "EHLO mail.kernel.org"
+        id S232667AbhCEMkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:40:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233614AbhCEMnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:43:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DBA164F23;
-        Fri,  5 Mar 2021 12:43:42 +0000 (UTC)
+        id S233414AbhCEMkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:40:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D38865012;
+        Fri,  5 Mar 2021 12:40:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948222;
-        bh=Mqw/Xi4CtknF9CnDt+xfZR2WJq/GQJJN7ERbesdt2Zo=;
+        s=korg; t=1614948015;
+        bh=NH6m+oKyLWRksVitxGNPrtEuM5pzmvRBpVdaqwItRLM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HRViM7pDx3c4DAfQQOW50CEnQmodawAQfhaF3zKx6BwLORbYRfNsRrL7LNxyDlGyo
-         xXQQrKNOnk2wSBlGy97w5S4zijrNEX1Y+veJq1V334ISZMB+Sv3SyHiuN/F0IaI/RU
-         n/F4uorA6zvx+p/SpXy1Kyu405I373W/Mt2ngl7c=
+        b=fG2BJgpUqFMbjW+FpsxuGnIWeOZs98RtjfwP9wDeP/b7tJ6PQwNnvCmj/5RARj5V2
+         O7mOb+NGSC+dNKuTk7uY3d0UqnHR71E/0rsfC0gpiE1Fg7VrcL+ToaRxvQwCwpOFKn
+         z+mRGLLvCjzhHuvmAG8Tbi9f33rNF48Fmgl3yHX8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+36315852ece4132ec193@syzkaller.appspotmail.com,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>,
-        jfs-discussion@lists.sourceforge.net,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH 4.4 08/30] JFS: more checks for invalid superblock
-Date:   Fri,  5 Mar 2021 13:22:37 +0100
-Message-Id: <20210305120849.801773883@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.14 39/39] media: v4l: ioctl: Fix memory leak in video_usercopy
+Date:   Fri,  5 Mar 2021 13:22:38 +0100
+Message-Id: <20210305120853.731590407@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120849.381261651@linuxfoundation.org>
-References: <20210305120849.381261651@linuxfoundation.org>
+In-Reply-To: <20210305120851.751937389@linuxfoundation.org>
+References: <20210305120851.751937389@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,82 +44,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-commit 3bef198f1b17d1bb89260bad947ef084c0a2d1a6 upstream.
+commit fb18802a338b36f675a388fc03d2aa504a0d0899 upstream.
 
-syzbot is feeding invalid superblock data to JFS for mount testing.
-JFS does not check several of the fields -- just assumes that they
-are good since the JFS_MAGIC and version fields are good.
+When an IOCTL with argument size larger than 128 that also used array
+arguments were handled, two memory allocations were made but alas, only
+the latter one of them was released. This happened because there was only
+a single local variable to hold such a temporary allocation.
 
-In this case (syzbot reproducer), we have s_l2bsize == 0xda0c,
-pad == 0xf045, and s_state == 0x50, all of which are invalid IMO.
-Having s_l2bsize == 0xda0c causes this UBSAN warning:
-  UBSAN: shift-out-of-bounds in fs/jfs/jfs_mount.c:373:25
-  shift exponent -9716 is negative
+Fix this by adding separate variables to hold the pointers to the
+temporary allocations.
 
-s_l2bsize can be tested for correctness. pad can be tested for non-0
-and punted. s_state can be tested for its valid values and punted.
-
-Do those 3 tests and if any of them fails, report the superblock as
-invalid/corrupt and let fsck handle it.
-
-With this patch, chkSuper() says this when JFS_DEBUG is enabled:
-  jfs_mount: Mount Failure: superblock is corrupt!
-  Mount JFS Failure: -22
-  jfs_mount failed w/return code = -22
-
-The obvious problem with this method is that next week there could
-be another syzbot test that uses different fields for invalid values,
-this making this like a game of whack-a-mole.
-
-syzkaller link: https://syzkaller.appspot.com/bug?extid=36315852ece4132ec193
-
-Reported-by: syzbot+36315852ece4132ec193@syzkaller.appspotmail.com
-Reported-by: kernel test robot <lkp@intel.com> # v2
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc: jfs-discussion@lists.sourceforge.net
+Reported-by: Arnd Bergmann <arnd@kernel.org>
+Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
+Fixes: d14e6d76ebf7 ("[media] v4l: Add multi-planar ioctl handling code")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/jfs/jfs_filsys.h |    1 +
- fs/jfs/jfs_mount.c  |   10 ++++++++++
- 2 files changed, 11 insertions(+)
+ drivers/media/v4l2-core/v4l2-ioctl.c |   19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
---- a/fs/jfs/jfs_filsys.h
-+++ b/fs/jfs/jfs_filsys.h
-@@ -281,5 +281,6 @@
- 				 * fsck() must be run to repair
- 				 */
- #define	FM_EXTENDFS 0x00000008	/* file system extendfs() in progress */
-+#define	FM_STATE_MAX 0x0000000f	/* max value of s_state */
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -2836,7 +2836,7 @@ video_usercopy(struct file *file, unsign
+ 	       v4l2_kioctl func)
+ {
+ 	char	sbuf[128];
+-	void    *mbuf = NULL;
++	void    *mbuf = NULL, *array_buf = NULL;
+ 	void	*parg = (void *)arg;
+ 	long	err  = -EINVAL;
+ 	bool	has_array_args;
+@@ -2894,20 +2894,14 @@ video_usercopy(struct file *file, unsign
+ 	has_array_args = err;
  
- #endif				/* _H_JFS_FILSYS */
---- a/fs/jfs/jfs_mount.c
-+++ b/fs/jfs/jfs_mount.c
-@@ -49,6 +49,7 @@
+ 	if (has_array_args) {
+-		/*
+-		 * When adding new types of array args, make sure that the
+-		 * parent argument to ioctl (which contains the pointer to the
+-		 * array) fits into sbuf (so that mbuf will still remain
+-		 * unused up to here).
+-		 */
+-		mbuf = kvmalloc(array_size, GFP_KERNEL);
++		array_buf = kvmalloc(array_size, GFP_KERNEL);
+ 		err = -ENOMEM;
+-		if (NULL == mbuf)
++		if (array_buf == NULL)
+ 			goto out_array_args;
+ 		err = -EFAULT;
+-		if (copy_from_user(mbuf, user_ptr, array_size))
++		if (copy_from_user(array_buf, user_ptr, array_size))
+ 			goto out_array_args;
+-		*kernel_ptr = mbuf;
++		*kernel_ptr = array_buf;
+ 	}
  
- #include <linux/fs.h>
- #include <linux/buffer_head.h>
-+#include <linux/log2.h>
+ 	/* Handles IOCTL */
+@@ -2926,7 +2920,7 @@ video_usercopy(struct file *file, unsign
  
- #include "jfs_incore.h"
- #include "jfs_filsys.h"
-@@ -378,6 +379,15 @@ static int chkSuper(struct super_block *
- 	sbi->bsize = bsize;
- 	sbi->l2bsize = le16_to_cpu(j_sb->s_l2bsize);
+ 	if (has_array_args) {
+ 		*kernel_ptr = (void __force *)user_ptr;
+-		if (copy_to_user(user_ptr, mbuf, array_size))
++		if (copy_to_user(user_ptr, array_buf, array_size))
+ 			err = -EFAULT;
+ 		goto out_array_args;
+ 	}
+@@ -2948,6 +2942,7 @@ out_array_args:
+ 	}
  
-+	/* check some fields for possible corruption */
-+	if (sbi->l2bsize != ilog2((u32)bsize) ||
-+	    j_sb->pad != 0 ||
-+	    le32_to_cpu(j_sb->s_state) > FM_STATE_MAX) {
-+		rc = -EINVAL;
-+		jfs_err("jfs_mount: Mount Failure: superblock is corrupt!");
-+		goto out;
-+	}
-+
- 	/*
- 	 * For now, ignore s_pbsize, l2bfactor.  All I/O going through buffer
- 	 * cache.
+ out:
++	kvfree(array_buf);
+ 	kvfree(mbuf);
+ 	return err;
+ }
 
 
