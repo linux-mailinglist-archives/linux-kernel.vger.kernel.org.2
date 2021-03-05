@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F58032DE9E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:53:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E78F932DE9D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbhCEAwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 19:52:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39058 "EHLO mail.kernel.org"
+        id S231753AbhCEAwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 19:52:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231738AbhCEAw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231749AbhCEAw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 4 Mar 2021 19:52:28 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A69F26500F;
+        by mail.kernel.org (Postfix) with ESMTPSA id C0ED565015;
         Fri,  5 Mar 2021 00:52:27 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1lHyhe-001sUm-K3; Thu, 04 Mar 2021 19:52:26 -0500
-Message-ID: <20210305005226.493367442@goodmis.org>
+        id 1lHyhe-001sVG-Oo; Thu, 04 Mar 2021 19:52:26 -0500
+Message-ID: <20210305005226.644708987@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Thu, 04 Mar 2021 19:52:03 -0500
+Date:   Thu, 04 Mar 2021 19:52:04 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>
-Subject: [for-linus][PATCH 2/3] tracing: Skip selftests if tracing is disabled
+Subject: [for-linus][PATCH 3/3] tracing: Fix comment about the trace_event_call flags
 References: <20210305005201.588505771@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -36,41 +36,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-If tracing is disabled for some reason (traceoff_on_warning, command line,
-etc), the ftrace selftests are guaranteed to fail, as their results are
-defined by trace data in the ring buffers. If the ring buffers are turned
-off, the tests will fail, due to lack of data.
-
-Because tracing being disabled is for a specific reason (warning, user
-decided to, etc), it does not make sense to enable tracing to run the self
-tests, as the test output may corrupt the reason for the tracing to be
-disabled.
-
-Instead, simply skip the self tests and report that they are being skipped
-due to tracing being disabled.
+In the declaration of the struct trace_event_call, the flags has the bits
+defined in the comment above it. But these bits are also defined by the
+TRACE_EVENT_FL_* enums just above the declaration of the struct. As the
+comment about the flags in the struct has become stale and incorrect, just
+replace it with a reference to the TRACE_EVENT_FL_* enum above.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/linux/trace_events.h | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index e295c413580e..eccb4e1187cc 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -1929,6 +1929,12 @@ static int run_tracer_selftest(struct tracer *type)
- 	if (!selftests_can_run)
- 		return save_selftest(type);
- 
-+	if (!tracing_is_on()) {
-+		pr_warn("Selftest for tracer %s skipped due to tracing disabled\n",
-+			type->name);
-+		return 0;
-+	}
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 7077fec653bb..28e7af1406f2 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -349,15 +349,8 @@ struct trace_event_call {
+ 	struct event_filter	*filter;
+ 	void			*mod;
+ 	void			*data;
+-	/*
+-	 *   bit 0:		filter_active
+-	 *   bit 1:		allow trace by non root (cap any)
+-	 *   bit 2:		failed to apply filter
+-	 *   bit 3:		trace internal event (do not enable)
+-	 *   bit 4:		Event was enabled by module
+-	 *   bit 5:		use call filter rather than file filter
+-	 *   bit 6:		Event is a tracepoint
+-	 */
 +
- 	/*
- 	 * Run a selftest on this tracer.
- 	 * Here we reset the trace buffer, and set the current
++	/* See the TRACE_EVENT_FL_* flags above */
+ 	int			flags; /* static flags of different events */
+ 
+ #ifdef CONFIG_PERF_EVENTS
 -- 
 2.30.0
 
