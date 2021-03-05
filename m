@@ -2,94 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB25F32ECA4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:56:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EE132ECA5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:56:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhCEN42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:56:28 -0500
-Received: from foss.arm.com ([217.140.110.172]:54574 "EHLO foss.arm.com"
+        id S231220AbhCEN43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:56:29 -0500
+Received: from www.zeus03.de ([194.117.254.33]:53252 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230165AbhCEN4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:56:03 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C89D3101E;
-        Fri,  5 Mar 2021 05:56:02 -0800 (PST)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0805A3F73B;
-        Fri,  5 Mar 2021 05:56:00 -0800 (PST)
-Date:   Fri, 5 Mar 2021 13:55:58 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        joel@joelfernandes.org, valentin.schneider@arm.com,
-        fweisbec@gmail.com, tglx@linutronix.de
-Subject: Re: [PATCH 3/7 v4] sched/fair: remove unused parameter of
- update_nohz_stats
-Message-ID: <20210305135558.rorthawxu26q4o5y@e107158-lin.cambridge.arm.com>
-References: <20210224133007.28644-1-vincent.guittot@linaro.org>
- <20210224133007.28644-4-vincent.guittot@linaro.org>
+        id S230391AbhCEN4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 08:56:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=k1; bh=/fW9K0irdCEFidceFN8Hjw5GYun
+        xF6GvAyPEXzxASEQ=; b=bgjlLBawYusbRljl7HwsCEDsu1hEgP6yTzkhFH3vQFG
+        7Vhia2iR5YML3XzZF6k6PcwI0LgG+FyJ+8D8eidK4v52RLSZ2aHwHCaNhnu4QtHJ
+        h4+5QPNXojnP4QbNG9LFSyCk5tDZ4KeNjLeXVKJyiY8LDuPBijHVJoh/NP0w0qeg
+        =
+Received: (qmail 2241771 invoked from network); 5 Mar 2021 14:56:11 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Mar 2021 14:56:11 +0100
+X-UD-Smtp-Session: l3s3148p1@XPIdcsq8TJlN91Vm
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>
+Subject: [PATCH] dt-bindings: timer: renesas,cmt: add r8a779a0 CMT support
+Date:   Fri,  5 Mar 2021 14:56:03 +0100
+Message-Id: <20210305135603.1227-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210224133007.28644-4-vincent.guittot@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/24/21 14:30, Vincent Guittot wrote:
-> idle load balance is the only user of update_nohz_stats and doesn't use
-> force parameter. Remove it
-> 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->  kernel/sched/fair.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index e23709f6854b..f52f4dd3fb9e 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -8352,7 +8352,7 @@ group_type group_classify(unsigned int imbalance_pct,
->  	return group_has_spare;
->  }
->  
-> -static bool update_nohz_stats(struct rq *rq, bool force)
-> +static bool update_nohz_stats(struct rq *rq)
->  {
->  #ifdef CONFIG_NO_HZ_COMMON
->  	unsigned int cpu = rq->cpu;
-> @@ -8363,7 +8363,7 @@ static bool update_nohz_stats(struct rq *rq, bool force)
->  	if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
->  		return false;
->  
-> -	if (!force && !time_after(jiffies, rq->last_blocked_load_update_tick))
-> +	if (!time_after(jiffies, rq->last_blocked_load_update_tick))
->  		return true;
->  
->  	update_blocked_averages(cpu);
-> @@ -10401,7 +10401,7 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
->  
->  		rq = cpu_rq(balance_cpu);
->  
-> -		has_blocked_load |= update_nohz_stats(rq, true);
-> +		has_blocked_load |= update_nohz_stats(rq);
+CMT passed the testsuite fine, so let's add it.
 
-I think Dietmar commented on this on v1. There's a change in behavior here
-AFAICT. Worth expanding the changelog to explain that this will be rate limited
-and why it's okay? It'll help a lost soul like me who doesn't have the ins and
-outs of this code carved in their head :-)
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
 
-Thanks
+ Documentation/devicetree/bindings/timer/renesas,cmt.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
---
-Qais Yousef
+diff --git a/Documentation/devicetree/bindings/timer/renesas,cmt.yaml b/Documentation/devicetree/bindings/timer/renesas,cmt.yaml
+index 428db3a21bb9..363ec28e07da 100644
+--- a/Documentation/devicetree/bindings/timer/renesas,cmt.yaml
++++ b/Documentation/devicetree/bindings/timer/renesas,cmt.yaml
+@@ -79,6 +79,7 @@ properties:
+               - renesas,r8a77980-cmt0     # 32-bit CMT0 on R-Car V3H
+               - renesas,r8a77990-cmt0     # 32-bit CMT0 on R-Car E3
+               - renesas,r8a77995-cmt0     # 32-bit CMT0 on R-Car D3
++              - renesas,r8a779a0-cmt0     # 32-bit CMT0 on R-Car V3U
+           - const: renesas,rcar-gen3-cmt0 # 32-bit CMT0 on R-Car Gen3 and RZ/G2
+ 
+       - items:
+@@ -94,6 +95,7 @@ properties:
+               - renesas,r8a77980-cmt1     # 48-bit CMT on R-Car V3H
+               - renesas,r8a77990-cmt1     # 48-bit CMT on R-Car E3
+               - renesas,r8a77995-cmt1     # 48-bit CMT on R-Car D3
++              - renesas,r8a779a0-cmt1     # 48-bit CMT on R-Car V3U
+           - const: renesas,rcar-gen3-cmt1 # 48-bit CMT on R-Car Gen3 and RZ/G2
+ 
+   reg:
+-- 
+2.29.2
 
-
->  
->  		/*
->  		 * If time for next balance is due,
-> -- 
-> 2.17.1
-> 
