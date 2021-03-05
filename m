@@ -2,37 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FDA32EA02
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E3632EA53
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232831AbhCEMfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:35:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47440 "EHLO mail.kernel.org"
+        id S232708AbhCEMh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:37:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232781AbhCEMf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:35:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A06D6501B;
-        Fri,  5 Mar 2021 12:35:24 +0000 (UTC)
+        id S232941AbhCEMgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:36:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC51B65014;
+        Fri,  5 Mar 2021 12:36:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947725;
-        bh=rogCNzfi93XtoYDT4BTfo9cWeB3Q9a5K03AptW41Ko0=;
+        s=korg; t=1614947811;
+        bh=JtaYzPNlDI7tqDNphEOdtbx2Ac0hDe4hPbGR1bbhcj4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bftpFplnk83YxTvSAhnQbL6uT5VUxtuzPD8A9n0qmYCw8zuByv1dlMjd45BSB0t22
-         7UHdwbwuimykHpUcGCP1howVq4A3AJKKONFqclyrPgPOLlqVX+x826Tcgtt1zsA7VI
-         lyImkfDgJFx4xIVUSjL4phi1gpAr9EgklDki8CmI=
+        b=xnDknYLGHHeOY19YeSR6+ws9kiGAcf9dLd6CqhQXnjt8chAkL4NcarOM/OFMNmGBE
+         nPv5xNpLAyNtUP47nYubRqYLyBVV4zsVCEBhutm/sA7GgpiEaCD6zma++hkpS4iZxv
+         EKDYwYGY+XNJu0DDpl3E7fyy4mbWwQSv5tNpC0Mg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Raz Bouganim <r-bouganim@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 31/72] wlcore: Fix command execute failure 19 for wl12xx
+        stable@vger.kernel.org, Zi Yan <ziy@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 02/52] hugetlb: fix update_and_free_page contig page struct assumption
 Date:   Fri,  5 Mar 2021 13:21:33 +0100
-Message-Id: <20210305120858.854933128@linuxfoundation.org>
+Message-Id: <20210305120853.778850487@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
-References: <20210305120857.341630346@linuxfoundation.org>
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+References: <20210305120853.659441428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,127 +47,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Mike Kravetz <mike.kravetz@oracle.com>
 
-[ Upstream commit cb88d01b67383a095e3f7caeb4cdade5a6cf0417 ]
+commit dbfee5aee7e54f83d96ceb8e3e80717fac62ad63 upstream.
 
-We can currently get a "command execute failure 19" error on beacon loss
-if the signal is weak:
+page structs are not guaranteed to be contiguous for gigantic pages.  The
+routine update_and_free_page can encounter a gigantic page, yet it assumes
+page structs are contiguous when setting page flags in subpages.
 
-wlcore: Beacon loss detected. roles:0xff
-wlcore: Connection loss work (role_id: 0).
-...
-wlcore: ERROR command execute failure 19
-...
-WARNING: CPU: 0 PID: 1552 at drivers/net/wireless/ti/wlcore/main.c:803
-...
-(wl12xx_queue_recovery_work.part.0 [wlcore])
-(wl12xx_cmd_role_start_sta [wlcore])
-(wl1271_op_bss_info_changed [wlcore])
-(ieee80211_prep_connection [mac80211])
+If update_and_free_page encounters non-contiguous page structs, we can see
+“BUG: Bad page state in process …” errors.
 
-Error 19 is defined as CMD_STATUS_WRONG_NESTING from the wlcore firmware,
-and seems to mean that the firmware no longer wants to see the quirk
-handling for WLCORE_QUIRK_START_STA_FAILS done.
+Non-contiguous page structs are generally not an issue.  However, they can
+exist with a specific kernel configuration and hotplug operations.  For
+example: Configure the kernel with CONFIG_SPARSEMEM and
+!CONFIG_SPARSEMEM_VMEMMAP.  Then, hotplug add memory for the area where
+the gigantic page will be allocated.  Zi Yan outlined steps to reproduce
+here [1].
 
-This quirk got added with commit 18eab430700d ("wlcore: workaround
-start_sta problem in wl12xx fw"), and it seems that this already got fixed
-in the firmware long time ago back in 2012 as wl18xx never had this quirk
-in place to start with.
+[1] https://lore.kernel.org/linux-mm/16F7C58B-4D79-41C5-9B64-A1A1628F4AF2@nvidia.com/
 
-As we no longer even support firmware that early, to me it seems that it's
-safe to just drop WLCORE_QUIRK_START_STA_FAILS to fix the error. Looks
-like earlier firmware got disabled back in 2013 with commit 0e284c074ef9
-("wl12xx: increase minimum singlerole firmware version required").
-
-If it turns out we still need WLCORE_QUIRK_START_STA_FAILS with any
-firmware that the driver works with, we can simply revert this patch and
-add extra checks for firmware version used.
-
-With this fix wlcore reconnects properly after a beacon loss.
-
-Cc: Raz Bouganim <r-bouganim@ti.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210115065613.7731-1-tony@atomide.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lkml.kernel.org/r/20210217184926.33567-1-mike.kravetz@oracle.com
+Fixes: 944d9fec8d7a ("hugetlb: add support for gigantic page allocation at runtime")
+Signed-off-by: Zi Yan <ziy@nvidia.com>
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: Davidlohr Bueso <dbueso@suse.de>
+Cc: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Joao Martins <joao.m.martins@oracle.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 ---
- drivers/net/wireless/ti/wl12xx/main.c   |  3 ---
- drivers/net/wireless/ti/wlcore/main.c   | 15 +--------------
- drivers/net/wireless/ti/wlcore/wlcore.h |  3 ---
- 3 files changed, 1 insertion(+), 20 deletions(-)
+ mm/hugetlb.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ti/wl12xx/main.c b/drivers/net/wireless/ti/wl12xx/main.c
-index 3c9c623bb428..9d7dbfe7fe0c 100644
---- a/drivers/net/wireless/ti/wl12xx/main.c
-+++ b/drivers/net/wireless/ti/wl12xx/main.c
-@@ -635,7 +635,6 @@ static int wl12xx_identify_chip(struct wl1271 *wl)
- 		wl->quirks |= WLCORE_QUIRK_LEGACY_NVS |
- 			      WLCORE_QUIRK_DUAL_PROBE_TMPL |
- 			      WLCORE_QUIRK_TKIP_HEADER_SPACE |
--			      WLCORE_QUIRK_START_STA_FAILS |
- 			      WLCORE_QUIRK_AP_ZERO_SESSION_ID;
- 		wl->sr_fw_name = WL127X_FW_NAME_SINGLE;
- 		wl->mr_fw_name = WL127X_FW_NAME_MULTI;
-@@ -659,7 +658,6 @@ static int wl12xx_identify_chip(struct wl1271 *wl)
- 		wl->quirks |= WLCORE_QUIRK_LEGACY_NVS |
- 			      WLCORE_QUIRK_DUAL_PROBE_TMPL |
- 			      WLCORE_QUIRK_TKIP_HEADER_SPACE |
--			      WLCORE_QUIRK_START_STA_FAILS |
- 			      WLCORE_QUIRK_AP_ZERO_SESSION_ID;
- 		wl->plt_fw_name = WL127X_PLT_FW_NAME;
- 		wl->sr_fw_name = WL127X_FW_NAME_SINGLE;
-@@ -688,7 +686,6 @@ static int wl12xx_identify_chip(struct wl1271 *wl)
- 		wl->quirks |= WLCORE_QUIRK_TX_BLOCKSIZE_ALIGN |
- 			      WLCORE_QUIRK_DUAL_PROBE_TMPL |
- 			      WLCORE_QUIRK_TKIP_HEADER_SPACE |
--			      WLCORE_QUIRK_START_STA_FAILS |
- 			      WLCORE_QUIRK_AP_ZERO_SESSION_ID;
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1171,14 +1171,16 @@ static inline void destroy_compound_giga
+ static void update_and_free_page(struct hstate *h, struct page *page)
+ {
+ 	int i;
++	struct page *subpage = page;
  
- 		wlcore_set_min_fw_ver(wl, WL128X_CHIP_VER,
-diff --git a/drivers/net/wireless/ti/wlcore/main.c b/drivers/net/wireless/ti/wlcore/main.c
-index 5f74cf821068..be0ed19f9356 100644
---- a/drivers/net/wireless/ti/wlcore/main.c
-+++ b/drivers/net/wireless/ti/wlcore/main.c
-@@ -2862,21 +2862,8 @@ static int wlcore_join(struct wl1271 *wl, struct wl12xx_vif *wlvif)
+ 	if (hstate_is_gigantic(h) && !gigantic_page_supported())
+ 		return;
  
- 	if (is_ibss)
- 		ret = wl12xx_cmd_role_start_ibss(wl, wlvif);
--	else {
--		if (wl->quirks & WLCORE_QUIRK_START_STA_FAILS) {
--			/*
--			 * TODO: this is an ugly workaround for wl12xx fw
--			 * bug - we are not able to tx/rx after the first
--			 * start_sta, so make dummy start+stop calls,
--			 * and then call start_sta again.
--			 * this should be fixed in the fw.
--			 */
--			wl12xx_cmd_role_start_sta(wl, wlvif);
--			wl12xx_cmd_role_stop_sta(wl, wlvif);
--		}
--
-+	else
- 		ret = wl12xx_cmd_role_start_sta(wl, wlvif);
--	}
- 
- 	return ret;
- }
-diff --git a/drivers/net/wireless/ti/wlcore/wlcore.h b/drivers/net/wireless/ti/wlcore/wlcore.h
-index b7821311ac75..81c94d390623 100644
---- a/drivers/net/wireless/ti/wlcore/wlcore.h
-+++ b/drivers/net/wireless/ti/wlcore/wlcore.h
-@@ -547,9 +547,6 @@ wlcore_set_min_fw_ver(struct wl1271 *wl, unsigned int chip,
- /* Each RX/TX transaction requires an end-of-transaction transfer */
- #define WLCORE_QUIRK_END_OF_TRANSACTION		BIT(0)
- 
--/* the first start_role(sta) sometimes doesn't work on wl12xx */
--#define WLCORE_QUIRK_START_STA_FAILS		BIT(1)
--
- /* wl127x and SPI don't support SDIO block size alignment */
- #define WLCORE_QUIRK_TX_BLOCKSIZE_ALIGN		BIT(2)
- 
--- 
-2.30.1
-
+ 	h->nr_huge_pages--;
+ 	h->nr_huge_pages_node[page_to_nid(page)]--;
+-	for (i = 0; i < pages_per_huge_page(h); i++) {
+-		page[i].flags &= ~(1 << PG_locked | 1 << PG_error |
++	for (i = 0; i < pages_per_huge_page(h);
++	     i++, subpage = mem_map_next(subpage, page, i)) {
++		subpage->flags &= ~(1 << PG_locked | 1 << PG_error |
+ 				1 << PG_referenced | 1 << PG_dirty |
+ 				1 << PG_active | 1 << PG_private |
+ 				1 << PG_writeback);
 
 
