@@ -2,280 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3A232F2B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 286A132F2B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbhCESf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 13:35:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
+        id S230527AbhCESfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 13:35:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbhCESbz (ORCPT
+        with ESMTP id S230213AbhCEScG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 13:31:55 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097CBC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 10:31:55 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id y7so3333402ybh.20
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 10:31:55 -0800 (PST)
+        Fri, 5 Mar 2021 13:32:06 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61DE4C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 10:32:06 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id g9so2891567ilc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 10:32:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=oPnB+15Iks7tPihY57VTLY3xzIc6/gS7fJ46t5oskwQ=;
-        b=cXraSC8Gn8J0EJA/KmySSEC0IcGtyz9uOZmMQR0FryXSvIJvLVvuRrmZP1Q7ENv2vM
-         zKHtE4wLxIAHMtUTTp3rPg+/rc7g0B5e56tIKi/oiDty5qodIEM6blAhaJ4KpMaTPVQb
-         0fP/uA1TXyY7QJ+NhfGT4uuvITF5/qiU38BMjweRzIVbIkIP03KSRN0V+xW6/YW8ocpw
-         2+2vFinOxxg8q79YXOfUlYUH6AA2KbZriu/KP8eyC7vWOXVOnWxPnGBRPBq8xqH7otvX
-         XHn3rw/ddddY5X9ppDQSN1YbYffMrb+dzy4mv8Z3wytM+h6orKWP78DEAO+x589jXSyI
-         4Iww==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xyYvWN9CdVcGaizLmclP8f/7E1L76lIbSbn9tpFjonE=;
+        b=EwU19WKQglB4fj5XTujhitA2tx0OM+SV2CtSd0dTsvxj242jTHXwQEnoyhojxAHuLF
+         wQphFkNayBbDddUcmcV8AS+CEBW5kufh+/uskGY1SgMGn5QajykCczcK7wrRrnWTHIwc
+         ApbBhL9hJ8pVHRf08MgqKUCxENI1zFCq3l39CvSZCmGwb/eaGOdUG5xaVWIYLgcgLaHS
+         LHaDO2zSBJQ29tN2YLt8ImI0XrtTbYm3s8rta7nVweOP3DV9GugyHdsM11ipF/CDAqAj
+         IB/1FGaXOmwQ59+5rFOi4dZS674MODhcLakAafqYCNxAkcTdQ1ERhBz7WHigzTh+FYQh
+         lTxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=oPnB+15Iks7tPihY57VTLY3xzIc6/gS7fJ46t5oskwQ=;
-        b=Wa9O/yLzDWyLFrMueay1kuOqNu5EE8EP5KIX6bkOKsMIuWACe0klI4JOZLFNTLJxTz
-         arYKnjpiQTZb2MckrxcJPJgqJ2QgF1CrZGLwpOCWMQqE1BLMfIb2LjFadIt8m5LjdA44
-         cWrnhYtYNHkxp4uPEJkzSpuDNd1bRrfAsPxWNsZOImYg4XN7mCi9tbegdY1odn6NWW6y
-         FMwKwKjVdbPUfLS8g3ruveBeDkrN6r/XKCLCuSoGjw5DASuoZpxKRdlRxGx2SOhDw2we
-         1rQnB6qPZmuGmnhRb7PCpmWiC08G6weNnixjMNaCYm00pvGeOOvFKKYht6Ybepz2YwbC
-         IlkQ==
-X-Gm-Message-State: AOAM531jLF2h8w1aG1Q7PxYv+Y814SQjnPkDtnkq+mb6/JWPUlAwdcBp
-        MEJk3zcCHvZO5DFPnJv9edqGBHA/UB0=
-X-Google-Smtp-Source: ABdhPJxvzzCdnXSgD6gNL8R+EsmkLrp9RaC/yeM4CegXhGkzvzA71cjvMwng2d1RCujiYhEozU/+oiTk3ao=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:9857:be95:97a2:e91c])
- (user=seanjc job=sendgmr) by 2002:a25:c090:: with SMTP id c138mr15081978ybf.314.1614969114273;
- Fri, 05 Mar 2021 10:31:54 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  5 Mar 2021 10:31:23 -0800
-In-Reply-To: <20210305183123.3978098-1-seanjc@google.com>
-Message-Id: <20210305183123.3978098-12-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210305183123.3978098-1-seanjc@google.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v4 11/11] KVM: VMX: Track root HPA instead of EPTP for
- paravirt Hyper-V TLB flush
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xyYvWN9CdVcGaizLmclP8f/7E1L76lIbSbn9tpFjonE=;
+        b=qeEg3eEkPg6wcVHt94KKcAptWlkDyGZZe1sBMttjpjddXXoZdnRAQz6H5enCpCPaIV
+         0RKBlyji0aE9bd00uaRZNUTmvW8eLi8RQO0yYaFGBH+mksioBt1PHeUSGnCzxxMPdip1
+         6HESIe42AOjkApIkKqV9Hc9Hik9s4xTjDXfrWCUJWWXx3QMJsDa2E6LsUd7/J2FazBsC
+         vVhGmHZzJqjqdbRUUwnoRPREYBhQiPF1SPUjYTQHvWt1lbV8f5DLCGDHNlZpbs3V5jh+
+         29i1OkvR9VbegoGZWJypDHrPx9GW3OTggiPKOc2SZBc3JmUV5hzdA7XzdaZl7Lap8Wsx
+         LTtg==
+X-Gm-Message-State: AOAM5307u7JHDaulUVkhDoc0beUR6I4rkikDpRE16/UEVm0jiJByZsG1
+        euxS4clBTXFaVbLLlv2nxv0hkA==
+X-Google-Smtp-Source: ABdhPJxm+EZVrr7eQOOci/buzkKSaRKVj7cA3NiT34F6vl0PFTL1OxMsiOrSYOfkrtaXCYWDt7kP9Q==
+X-Received: by 2002:a05:6e02:506:: with SMTP id d6mr10155780ils.150.1614969125837;
+        Fri, 05 Mar 2021 10:32:05 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id l16sm1704564ils.11.2021.03.05.10.32.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 10:32:05 -0800 (PST)
+Subject: Re: [PATCH] blk-cgroup: Fix the recursive blkg rwstat
+To:     Xunlei Pang <xlpang@linux.alibaba.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tj@kernel.org
+References: <1614932007-97224-1-git-send-email-xlpang@linux.alibaba.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <4cc104d1-9aa3-a838-b786-9a808dd85945@kernel.dk>
+Date:   Fri, 5 Mar 2021 11:32:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1614932007-97224-1-git-send-email-xlpang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+On 3/5/21 1:13 AM, Xunlei Pang wrote:
+> The current blkio.throttle.io_service_bytes_recursive doesn't
+> work correctly.
+> 
+> As an example, for the following blkcg hierarchy:
+>  (Made 1GB READ in test1, 512MB READ in test2)
+>      test
+>     /    \
+>  test1   test2
+> 
+> $ head -n 1 test/test1/blkio.throttle.io_service_bytes_recursive
+> 8:0 Read 1073684480
+> $ head -n 1 test/test2/blkio.throttle.io_service_bytes_recursive
+> 8:0 Read 537448448
+> $ head -n 1 test/blkio.throttle.io_service_bytes_recursive
+> 8:0 Read 537448448
+> 
+> Clearly, above data of "test" reflects "test2" not "test1"+"test2".
+> 
+> Do the correct summary in blkg_rwstat_recursive_sum().
 
-Track the address of the top-level EPT struct, a.k.a. the root HPA,
-instead of the EPTP itself for Hyper-V's paravirt TLB flush.  The
-paravirt API takes only the address, not the full EPTP, and in theory
-tracking the EPTP could lead to false negatives, e.g. if the HPA matched
-but the attributes in the EPTP do not.  In practice, such a mismatch is
-extremely unlikely, if not flat out impossible, given how KVM generates
-the EPTP.
+LGTM, Tejun?
 
-Opportunsitically rename the related fields to use the 'root'
-nomenclature, and to prefix them with 'hv_' to connect them to Hyper-V's
-paravirt TLB flushing.
+> 
+> Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
+> ---
+>  block/blk-cgroup-rwstat.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/block/blk-cgroup-rwstat.c b/block/blk-cgroup-rwstat.c
+> index 85d5790..3304e84 100644
+> --- a/block/blk-cgroup-rwstat.c
+> +++ b/block/blk-cgroup-rwstat.c
+> @@ -109,6 +109,7 @@ void blkg_rwstat_recursive_sum(struct blkcg_gq *blkg, struct blkcg_policy *pol,
+>  
+>  	lockdep_assert_held(&blkg->q->queue_lock);
+>  
+> +	memset(sum, 0, sizeof(*sum));
+>  	rcu_read_lock();
+>  	blkg_for_each_descendant_pre(pos_blkg, pos_css, blkg) {
+>  		struct blkg_rwstat *rwstat;
+> @@ -122,7 +123,7 @@ void blkg_rwstat_recursive_sum(struct blkcg_gq *blkg, struct blkcg_policy *pol,
+>  			rwstat = (void *)pos_blkg + off;
+>  
+>  		for (i = 0; i < BLKG_RWSTAT_NR; i++)
+> -			sum->cnt[i] = blkg_rwstat_read_counter(rwstat, i);
+> +			sum->cnt[i] += blkg_rwstat_read_counter(rwstat, i);
+>  	}
+>  	rcu_read_unlock();
+>  }
+> 
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/vmx/vmx.c | 83 ++++++++++++++++++++----------------------
- arch/x86/kvm/vmx/vmx.h |  6 +--
- 2 files changed, 42 insertions(+), 47 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 720dcfe2a57d..ef826594365f 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -481,18 +481,14 @@ static int kvm_fill_hv_flush_list_func(struct hv_guest_mapping_flush_list *flush
- 			range->pages);
- }
- 
--static inline int hv_remote_flush_eptp(u64 eptp, struct kvm_tlb_range *range)
-+static inline int hv_remote_flush_root_ept(hpa_t root_ept,
-+					   struct kvm_tlb_range *range)
- {
--	/*
--	 * FLUSH_GUEST_PHYSICAL_ADDRESS_SPACE hypercall needs address
--	 * of the base of EPT PML4 table, strip off EPT configuration
--	 * information.
--	 */
- 	if (range)
--		return hyperv_flush_guest_mapping_range(eptp & PAGE_MASK,
-+		return hyperv_flush_guest_mapping_range(root_ept,
- 				kvm_fill_hv_flush_list_func, (void *)range);
- 	else
--		return hyperv_flush_guest_mapping(eptp & PAGE_MASK);
-+		return hyperv_flush_guest_mapping(root_ept);
- }
- 
- static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
-@@ -500,56 +496,55 @@ static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
- {
- 	struct kvm_vmx *kvm_vmx = to_kvm_vmx(kvm);
- 	struct kvm_vcpu *vcpu;
--	int ret = 0, i, nr_unique_valid_eptps;
--	u64 tmp_eptp;
-+	int ret = 0, i, nr_unique_valid_roots;
-+	hpa_t root;
- 
--	spin_lock(&kvm_vmx->ept_pointer_lock);
-+	spin_lock(&kvm_vmx->hv_root_ept_lock);
- 
--	if (!VALID_PAGE(kvm_vmx->hv_tlb_eptp)) {
--		nr_unique_valid_eptps = 0;
-+	if (!VALID_PAGE(kvm_vmx->hv_root_ept)) {
-+		nr_unique_valid_roots = 0;
- 
- 		/*
--		 * Flush all valid EPTPs, and see if all vCPUs have converged
--		 * on a common EPTP, in which case future flushes can skip the
--		 * loop and flush the common EPTP.
-+		 * Flush all valid roots, and see if all vCPUs have converged
-+		 * on a common root, in which case future flushes can skip the
-+		 * loop and flush the common root.
- 		 */
- 		kvm_for_each_vcpu(i, vcpu, kvm) {
--			tmp_eptp = to_vmx(vcpu)->ept_pointer;
--			if (!VALID_PAGE(tmp_eptp) ||
--			    tmp_eptp == kvm_vmx->hv_tlb_eptp)
-+			root = to_vmx(vcpu)->hv_root_ept;
-+			if (!VALID_PAGE(root) || root == kvm_vmx->hv_root_ept)
- 				continue;
- 
- 			/*
--			 * Set the tracked EPTP to the first valid EPTP.  Keep
--			 * this EPTP for the entirety of the loop even if more
--			 * EPTPs are encountered as a low effort optimization
--			 * to avoid flushing the same (first) EPTP again.
-+			 * Set the tracked root to the first valid root.  Keep
-+			 * this root for the entirety of the loop even if more
-+			 * roots are encountered as a low effort optimization
-+			 * to avoid flushing the same (first) root again.
- 			 */
--			if (++nr_unique_valid_eptps == 1)
--				kvm_vmx->hv_tlb_eptp = tmp_eptp;
-+			if (++nr_unique_valid_roots == 1)
-+				kvm_vmx->hv_root_ept = root;
- 
- 			if (!ret)
--				ret = hv_remote_flush_eptp(tmp_eptp, range);
-+				ret = hv_remote_flush_root_ept(root, range);
- 
- 			/*
--			 * Stop processing EPTPs if a failure occurred and
--			 * there is already a detected EPTP mismatch.
-+			 * Stop processing roots if a failure occurred and
-+			 * multiple valid roots have already been detected.
- 			 */
--			if (ret && nr_unique_valid_eptps > 1)
-+			if (ret && nr_unique_valid_roots > 1)
- 				break;
- 		}
- 
- 		/*
--		 * The optimized flush of a single EPTP can't be used if there
--		 * are multiple valid EPTPs (obviously).
-+		 * The optimized flush of a single root can't be used if there
-+		 * are multiple valid roots (obviously).
- 		 */
--		if (nr_unique_valid_eptps > 1)
--			kvm_vmx->hv_tlb_eptp = INVALID_PAGE;
-+		if (nr_unique_valid_roots > 1)
-+			kvm_vmx->hv_root_ept = INVALID_PAGE;
- 	} else {
--		ret = hv_remote_flush_eptp(kvm_vmx->hv_tlb_eptp, range);
-+		ret = hv_remote_flush_root_ept(kvm_vmx->hv_root_ept, range);
- 	}
- 
--	spin_unlock(&kvm_vmx->ept_pointer_lock);
-+	spin_unlock(&kvm_vmx->hv_root_ept_lock);
- 	return ret;
- }
- static int hv_remote_flush_tlb(struct kvm *kvm)
-@@ -584,17 +579,17 @@ static int hv_enable_direct_tlbflush(struct kvm_vcpu *vcpu)
- 
- #endif /* IS_ENABLED(CONFIG_HYPERV) */
- 
--static void hv_load_mmu_eptp(struct kvm_vcpu *vcpu, u64 eptp)
-+static void hv_track_root_ept(struct kvm_vcpu *vcpu, hpa_t root_ept)
- {
- #if IS_ENABLED(CONFIG_HYPERV)
- 	struct kvm_vmx *kvm_vmx = to_kvm_vmx(vcpu->kvm);
- 
- 	if (kvm_x86_ops.tlb_remote_flush == hv_remote_flush_tlb) {
--		spin_lock(&kvm_vmx->ept_pointer_lock);
--		to_vmx(vcpu)->ept_pointer = eptp;
--		if (eptp != kvm_vmx->hv_tlb_eptp)
--			kvm_vmx->hv_tlb_eptp = INVALID_PAGE;
--		spin_unlock(&kvm_vmx->ept_pointer_lock);
-+		spin_lock(&kvm_vmx->hv_root_ept_lock);
-+		to_vmx(vcpu)->hv_root_ept = root_ept;
-+		if (root_ept != kvm_vmx->hv_root_ept)
-+			kvm_vmx->hv_root_ept = INVALID_PAGE;
-+		spin_unlock(&kvm_vmx->hv_root_ept_lock);
- 	}
- #endif
- }
-@@ -3137,7 +3132,7 @@ static void vmx_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa,
- 		eptp = construct_eptp(vcpu, root_hpa, root_level);
- 		vmcs_write64(EPT_POINTER, eptp);
- 
--		hv_load_mmu_eptp(vcpu, eptp);
-+		hv_track_root_ept(vcpu, root_hpa);
- 
- 		if (!enable_unrestricted_guest && !is_paging(vcpu))
- 			guest_cr3 = to_kvm_vmx(kvm)->ept_identity_map_addr;
-@@ -6929,7 +6924,7 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
- 	vmx->pi_desc.sn = 1;
- 
- #if IS_ENABLED(CONFIG_HYPERV)
--	vmx->ept_pointer = INVALID_PAGE;
-+	vmx->hv_root_ept = INVALID_PAGE;
- #endif
- 	return 0;
- 
-@@ -6948,7 +6943,7 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
- static int vmx_vm_init(struct kvm *kvm)
- {
- #if IS_ENABLED(CONFIG_HYPERV)
--	spin_lock_init(&to_kvm_vmx(kvm)->ept_pointer_lock);
-+	spin_lock_init(&to_kvm_vmx(kvm)->hv_root_ept_lock);
- #endif
- 
- 	if (!ple_gap)
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index 6d97b5a64b62..0fb3236b0283 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -326,7 +326,7 @@ struct vcpu_vmx {
- 	u64 msr_ia32_feature_control;
- 	u64 msr_ia32_feature_control_valid_bits;
- #if IS_ENABLED(CONFIG_HYPERV)
--	u64 ept_pointer;
-+	u64 hv_root_ept;
- #endif
- 
- 	struct pt_desc pt_desc;
-@@ -348,8 +348,8 @@ struct kvm_vmx {
- 	gpa_t ept_identity_map_addr;
- 
- #if IS_ENABLED(CONFIG_HYPERV)
--	hpa_t hv_tlb_eptp;
--	spinlock_t ept_pointer_lock;
-+	hpa_t hv_root_ept;
-+	spinlock_t hv_root_ept_lock;
- #endif
- };
- 
 -- 
-2.30.1.766.gb4fecdf3b7-goog
+Jens Axboe
 
