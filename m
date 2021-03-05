@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDD532E8FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA1432E805
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232302AbhCEM36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:29:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38524 "EHLO mail.kernel.org"
+        id S230474AbhCEMY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:24:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230272AbhCEM32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:29:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6BA765004;
-        Fri,  5 Mar 2021 12:29:27 +0000 (UTC)
+        id S230122AbhCEMYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:24:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3483E65022;
+        Fri,  5 Mar 2021 12:24:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947368;
-        bh=5aDedKZVvSe29sFYJ9x/T5C67ZydrxkJ9kxIEJU1DkY=;
+        s=korg; t=1614947047;
+        bh=9Rkd35JWqDdnI/d/KvbRUpgIk0pHtpga6C2IoiqExHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oy5yCZqX9RpGBXLuRbfAvy2WUZUKpZceosayh4lV5uAeqsLYoCsdHAbeMTNF4Z2pF
-         Zs7OD4TEPQsc2tqkT9Tx42f6mXMgg9T0VkS9SqqNg4t4Fc/YNQ3Jhs9srfzghzukeX
-         6Ynw8y41fGGeCXaB7N/2iNOSLLkXo67XZF5ybd8Y=
+        b=tdBofzDui3Uw4JZUWmE7m8QN/Bz9N9TjXg/oZP22+f6zNUUWnuqKxhvtm/pytUCW2
+         LkUz3rKCA9I84mPtwTUQuAD9vhvZf8EdtiuKEAz6MHhjiZlUaKoy1wh9MylKT1j/CD
+         MyM4+IewB9364sfyCKMroBNvfhj1185CXYcICWUc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 013/102] net/af_iucv: remove WARN_ONCE on malformed RX packets
-Date:   Fri,  5 Mar 2021 13:20:32 +0100
-Message-Id: <20210305120903.924378353@linuxfoundation.org>
+        stable@vger.kernel.org, wenxu <wenxu@ucloud.cn>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.11 028/104] net/sched: cls_flower: Reject invalid ct_state flags rules
+Date:   Fri,  5 Mar 2021 13:20:33 +0100
+Message-Id: <20210305120904.560845902@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120903.166929741@linuxfoundation.org>
+References: <20210305120903.166929741@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +41,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Egorenkov <egorenar@linux.ibm.com>
+From: wenxu <wenxu@ucloud.cn>
 
-commit 27e9c1de529919d8dd7d072415d3bcae77709300 upstream.
+commit 1bcc51ac0731aab1b109b2cd5c3d495f1884e5ca upstream.
 
-syzbot reported the following finding:
+Reject the unsupported and invalid ct_state flags of cls flower rules.
 
-AF_IUCV failed to receive skb, len=0
-WARNING: CPU: 0 PID: 522 at net/iucv/af_iucv.c:2039 afiucv_hs_rcv+0x174/0x190 net/iucv/af_iucv.c:2039
-CPU: 0 PID: 522 Comm: syz-executor091 Not tainted 5.10.0-rc1-syzkaller-07082-g55027a88ec9f #0
-Hardware name: IBM 3906 M04 701 (KVM/Linux)
-Call Trace:
- [<00000000b87ea538>] afiucv_hs_rcv+0x178/0x190 net/iucv/af_iucv.c:2039
-([<00000000b87ea534>] afiucv_hs_rcv+0x174/0x190 net/iucv/af_iucv.c:2039)
- [<00000000b796533e>] __netif_receive_skb_one_core+0x13e/0x188 net/core/dev.c:5315
- [<00000000b79653ce>] __netif_receive_skb+0x46/0x1c0 net/core/dev.c:5429
- [<00000000b79655fe>] netif_receive_skb_internal+0xb6/0x220 net/core/dev.c:5534
- [<00000000b796ac3a>] netif_receive_skb+0x42/0x318 net/core/dev.c:5593
- [<00000000b6fd45f4>] tun_rx_batched.isra.0+0x6fc/0x860 drivers/net/tun.c:1485
- [<00000000b6fddc4e>] tun_get_user+0x1c26/0x27f0 drivers/net/tun.c:1939
- [<00000000b6fe0f00>] tun_chr_write_iter+0x158/0x248 drivers/net/tun.c:1968
- [<00000000b4f22bfa>] call_write_iter include/linux/fs.h:1887 [inline]
- [<00000000b4f22bfa>] new_sync_write+0x442/0x648 fs/read_write.c:518
- [<00000000b4f238fe>] vfs_write.part.0+0x36e/0x5d8 fs/read_write.c:605
- [<00000000b4f2984e>] vfs_write+0x10e/0x148 fs/read_write.c:615
- [<00000000b4f29d0e>] ksys_write+0x166/0x290 fs/read_write.c:658
- [<00000000b8dc4ab4>] system_call+0xe0/0x28c arch/s390/kernel/entry.S:415
-Last Breaking-Event-Address:
- [<00000000b8dc64d4>] __s390_indirect_jump_r14+0x0/0xc
-
-Malformed RX packets shouldn't generate any warnings because
-debugging info already flows to dropmon via the kfree_skb().
-
-Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
-Reviewed-by: Julian Wiedmann <jwi@linux.ibm.com>
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: e0ace68af2ac ("net/sched: cls_flower: Add matching on conntrack info")
+Signed-off-by: wenxu <wenxu@ucloud.cn>
+Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/iucv/af_iucv.c |    1 -
- 1 file changed, 1 deletion(-)
+ include/uapi/linux/pkt_cls.h |    2 ++
+ net/sched/cls_flower.c       |   39 +++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 39 insertions(+), 2 deletions(-)
 
---- a/net/iucv/af_iucv.c
-+++ b/net/iucv/af_iucv.c
-@@ -2036,7 +2036,6 @@ static int afiucv_hs_rcv(struct sk_buff
- 	char nullstring[8];
+--- a/include/uapi/linux/pkt_cls.h
++++ b/include/uapi/linux/pkt_cls.h
+@@ -591,6 +591,8 @@ enum {
+ 	TCA_FLOWER_KEY_CT_FLAGS_ESTABLISHED = 1 << 1, /* Part of an existing connection. */
+ 	TCA_FLOWER_KEY_CT_FLAGS_RELATED = 1 << 2, /* Related to an established connection. */
+ 	TCA_FLOWER_KEY_CT_FLAGS_TRACKED = 1 << 3, /* Conntrack has occurred. */
++
++	__TCA_FLOWER_KEY_CT_FLAGS_MAX,
+ };
  
- 	if (!pskb_may_pull(skb, sizeof(*trans_hdr))) {
--		WARN_ONCE(1, "AF_IUCV failed to receive skb, len=%u", skb->len);
- 		kfree_skb(skb);
- 		return NET_RX_SUCCESS;
+ enum {
+--- a/net/sched/cls_flower.c
++++ b/net/sched/cls_flower.c
+@@ -30,6 +30,11 @@
+ 
+ #include <uapi/linux/netfilter/nf_conntrack_common.h>
+ 
++#define TCA_FLOWER_KEY_CT_FLAGS_MAX \
++		((__TCA_FLOWER_KEY_CT_FLAGS_MAX - 1) << 1)
++#define TCA_FLOWER_KEY_CT_FLAGS_MASK \
++		(TCA_FLOWER_KEY_CT_FLAGS_MAX - 1)
++
+ struct fl_flow_key {
+ 	struct flow_dissector_key_meta meta;
+ 	struct flow_dissector_key_control control;
+@@ -686,8 +691,10 @@ static const struct nla_policy fl_policy
+ 	[TCA_FLOWER_KEY_ENC_IP_TTL_MASK] = { .type = NLA_U8 },
+ 	[TCA_FLOWER_KEY_ENC_OPTS]	= { .type = NLA_NESTED },
+ 	[TCA_FLOWER_KEY_ENC_OPTS_MASK]	= { .type = NLA_NESTED },
+-	[TCA_FLOWER_KEY_CT_STATE]	= { .type = NLA_U16 },
+-	[TCA_FLOWER_KEY_CT_STATE_MASK]	= { .type = NLA_U16 },
++	[TCA_FLOWER_KEY_CT_STATE]	=
++		NLA_POLICY_MASK(NLA_U16, TCA_FLOWER_KEY_CT_FLAGS_MASK),
++	[TCA_FLOWER_KEY_CT_STATE_MASK]	=
++		NLA_POLICY_MASK(NLA_U16, TCA_FLOWER_KEY_CT_FLAGS_MASK),
+ 	[TCA_FLOWER_KEY_CT_ZONE]	= { .type = NLA_U16 },
+ 	[TCA_FLOWER_KEY_CT_ZONE_MASK]	= { .type = NLA_U16 },
+ 	[TCA_FLOWER_KEY_CT_MARK]	= { .type = NLA_U32 },
+@@ -1390,12 +1397,33 @@ static int fl_set_enc_opt(struct nlattr
+ 	return 0;
+ }
+ 
++static int fl_validate_ct_state(u16 state, struct nlattr *tb,
++				struct netlink_ext_ack *extack)
++{
++	if (state && !(state & TCA_FLOWER_KEY_CT_FLAGS_TRACKED)) {
++		NL_SET_ERR_MSG_ATTR(extack, tb,
++				    "no trk, so no other flag can be set");
++		return -EINVAL;
++	}
++
++	if (state & TCA_FLOWER_KEY_CT_FLAGS_NEW &&
++	    state & TCA_FLOWER_KEY_CT_FLAGS_ESTABLISHED) {
++		NL_SET_ERR_MSG_ATTR(extack, tb,
++				    "new and est are mutually exclusive");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int fl_set_key_ct(struct nlattr **tb,
+ 			 struct flow_dissector_key_ct *key,
+ 			 struct flow_dissector_key_ct *mask,
+ 			 struct netlink_ext_ack *extack)
+ {
+ 	if (tb[TCA_FLOWER_KEY_CT_STATE]) {
++		int err;
++
+ 		if (!IS_ENABLED(CONFIG_NF_CONNTRACK)) {
+ 			NL_SET_ERR_MSG(extack, "Conntrack isn't enabled");
+ 			return -EOPNOTSUPP;
+@@ -1403,6 +1431,13 @@ static int fl_set_key_ct(struct nlattr *
+ 		fl_set_key_val(tb, &key->ct_state, TCA_FLOWER_KEY_CT_STATE,
+ 			       &mask->ct_state, TCA_FLOWER_KEY_CT_STATE_MASK,
+ 			       sizeof(key->ct_state));
++
++		err = fl_validate_ct_state(mask->ct_state,
++					   tb[TCA_FLOWER_KEY_CT_STATE_MASK],
++					   extack);
++		if (err)
++			return err;
++
  	}
+ 	if (tb[TCA_FLOWER_KEY_CT_ZONE]) {
+ 		if (!IS_ENABLED(CONFIG_NF_CONNTRACK_ZONES)) {
 
 
