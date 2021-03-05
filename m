@@ -2,73 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4332632EFDA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EF232EFE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbhCEQRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 11:17:06 -0500
-Received: from marcansoft.com ([212.63.210.85]:45302 "EHLO mail.marcansoft.com"
+        id S230238AbhCEQTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 11:19:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230372AbhCEQQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 11:16:54 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id A3A373FA1B;
-        Fri,  5 Mar 2021 16:16:45 +0000 (UTC)
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210304213902.83903-1-marcan@marcan.st>
- <20210304213902.83903-22-marcan@marcan.st>
- <CAHp75Vc+t9_FNHZ0xYNaJ1+Ny+FFeZKA79abxV2NAsZvpBh3Bg@mail.gmail.com>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [RFT PATCH v3 21/27] tty: serial: samsung_tty: IRQ rework
-Message-ID: <535ff48e-160e-4ba4-23ac-54e478a2f3ee@marcan.st>
-Date:   Sat, 6 Mar 2021 01:16:43 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S229882AbhCEQTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 11:19:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2F0265092;
+        Fri,  5 Mar 2021 16:19:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614961143;
+        bh=JbqpCzbiZhOJg7RXN3nYPgSGE1F66AcCU1LkFJFaT44=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BCVM3hDSn4iJYdeOeAeJSt4TW7B4xv9taNYHJouvfmf7fsrRyWyUIdCRslBT3Qa8R
+         7vy0Xvuo+YS0/mpnkLMCWBsnlpIPtdtU0lzO2rFJcImatWz6W45d/ZNVy7F+Tjnqlz
+         e7rgPj08EwJCxgMs6YuJh2sBZhzr08i27IyLBniu8HDO/NRfX5S6v3l+7ciqmnu/ij
+         ld++4tX3XuW+taDIzI90mSR+5OndNqVKlVS8IbaHdCzaXBZdkVcNUC4oVmjHZYXUiq
+         VpTGoANUBJ1Wk3dTpBK/OUb8TP/k1RueRhdq8G1L0c4FQxmIm8a98tnFt82JTQpr2x
+         6E/1foRXT4pww==
+Received: by mail-ej1-f52.google.com with SMTP id w17so4563897ejc.6;
+        Fri, 05 Mar 2021 08:19:03 -0800 (PST)
+X-Gm-Message-State: AOAM531Hr9eKwDc1vB9ebLvqhs6Pnns2a01lVfzcd9MkTgyDQMkK8apx
+        JpN/XC7xQlVzfnK8Bja/AO+DherpMIL9uQ0kyA==
+X-Google-Smtp-Source: ABdhPJz5KANNdL2ryaw8s4LqJ/7MTLA9iKXqYzgw+PyABAMFuVaCmgJCrJWLEKPtnoxWgiuIO7mnIClBkemeoHkNeCo=
+X-Received: by 2002:a17:906:2312:: with SMTP id l18mr2953629eja.468.1614961142243;
+ Fri, 05 Mar 2021 08:19:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vc+t9_FNHZ0xYNaJ1+Ny+FFeZKA79abxV2NAsZvpBh3Bg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+References: <20210125044803.4310-1-Zhiqiang.Hou@nxp.com>
+In-Reply-To: <20210125044803.4310-1-Zhiqiang.Hou@nxp.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 5 Mar 2021 10:18:49 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKudb9XRTb-_bN=i-sAadQQ40zHrph8f4xZ92cnKxFz3A@mail.gmail.com>
+Message-ID: <CAL_JsqKudb9XRTb-_bN=i-sAadQQ40zHrph8f4xZ92cnKxFz3A@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: Move forward the iATU detection process
+To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Jingoo Han <jingoohan1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/03/2021 00.17, Andy Shevchenko wrote:
-> Add a separate change that removes flags from the spin lock in the IRQ handler.
+On Sun, Jan 24, 2021 at 10:39 PM Zhiqiang Hou <Zhiqiang.Hou@nxp.com> wrote:
+>
+> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+>
+> In the dw_pcie_ep_init(), it depends on the detected iATU region
+> numbers to allocate the in/outbound window management bit map.
+> It fails after the commit 281f1f99cf3a ("PCI: dwc: Detect number
+> of iATU windows").
+>
+> So this patch move the iATU region detection into a new function,
+> move forward the detection to the very beginning of functions
+> dw_pcie_host_init() and dw_pcie_ep_init(). And also remove it
+> from the dw_pcie_setup(), since it's more like a software
+> perspective initialization step than hardware setup.
+>
+> Fixes: 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows")
+> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-designware-ep.c   |  2 ++
+>  drivers/pci/controller/dwc/pcie-designware-host.c |  2 ++
+>  drivers/pci/controller/dwc/pcie-designware.c      | 11 ++++++++---
+>  drivers/pci/controller/dwc/pcie-designware.h      |  1 +
+>  4 files changed, 13 insertions(+), 3 deletions(-)
 
-This commit should have no functional changes; I am just splitting an 
-existing function into two, where one takes the lock and the other does 
-the work. Do you mean using a different locking function? I'm not 
-entirely sure what you're suggesting.
+Reviewed-by: Rob Herring <robh@kernel.org>
 
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+Bjorn, can you pick this up for 5.12. Lorenzo is on holiday.
+
+Rob
