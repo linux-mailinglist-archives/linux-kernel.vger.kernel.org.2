@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A9532ECA1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F06C32EC93
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbhCEN4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:56:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50348 "EHLO mail.kernel.org"
+        id S233654AbhCEMmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:42:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233254AbhCEMhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:37:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 203D565004;
-        Fri,  5 Mar 2021 12:37:24 +0000 (UTC)
+        id S233498AbhCEMlp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:41:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB6926501C;
+        Fri,  5 Mar 2021 12:41:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947845;
-        bh=FushAJf8Gwe16QHcyOgMcpaObvnUCNA6BY2jUdbPlOA=;
+        s=korg; t=1614948105;
+        bh=rCjQLpaXFPWhsy6+gKBiTLjmhg3HwXgLQgVHzoF0dMs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TNrfQZlLe6DMa/DoYl/LqbSAR98Mk1ABU/SUOIIqHsDfJlgyJV8cH6JX7SxZOYAnG
-         gIw2Tt2mq39Q3MaUq89o94vSYxxDhcD24SIEJ7xwJHo+mRiMjqdpKu3cdmr+YyErY/
-         0Y+x+QWyooouXwRwYpr860fR+o07Uz7gh9zmft7I=
+        b=l/a1m333mDvlgksnKG/wmuZrprswYw1NlFqvpqrGvw/zDfCIYDWNxLgHyhd5NGi3E
+         3r1ncBB/vliHDe+pu23kyB/FWbi/LfzK/lFvmTThtAzUnyiNDVz5b1XJzOqxyKwd5j
+         bxkyyrpEhEerhtd/z+LlyMuUi7oWzlfLe0Ek49fw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Murray <andrew.murray@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 4.19 08/52] arm64: Use correct ll/sc atomic constraints
-Date:   Fri,  5 Mar 2021 13:21:39 +0100
-Message-Id: <20210305120854.066015556@linuxfoundation.org>
+        stable@vger.kernel.org, Gopal Tiwari <gtiwari@redhat.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 30/41] Bluetooth: Fix null pointer dereference in amp_read_loc_assoc_final_data
+Date:   Fri,  5 Mar 2021 13:22:37 +0100
+Message-Id: <20210305120852.761087263@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
-References: <20210305120853.659441428@linuxfoundation.org>
+In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
+References: <20210305120851.255002428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,253 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Murray <andrew.murray@arm.com>
+From: Gopal Tiwari <gtiwari@redhat.com>
 
-commit 580fa1b874711d633f9b145b7777b0e83ebf3787 upstream.
+[ Upstream commit e8bd76ede155fd54d8c41d045dda43cd3174d506 ]
 
-The A64 ISA accepts distinct (but overlapping) ranges of immediates for:
+kernel panic trace looks like:
 
- * add arithmetic instructions ('I' machine constraint)
- * sub arithmetic instructions ('J' machine constraint)
- * 32-bit logical instructions ('K' machine constraint)
- * 64-bit logical instructions ('L' machine constraint)
+ #5 [ffffb9e08698fc80] do_page_fault at ffffffffb666e0d7
+ #6 [ffffb9e08698fcb0] page_fault at ffffffffb70010fe
+    [exception RIP: amp_read_loc_assoc_final_data+63]
+    RIP: ffffffffc06ab54f  RSP: ffffb9e08698fd68  RFLAGS: 00010246
+    RAX: 0000000000000000  RBX: ffff8c8845a5a000  RCX: 0000000000000004
+    RDX: 0000000000000000  RSI: ffff8c8b9153d000  RDI: ffff8c8845a5a000
+    RBP: ffffb9e08698fe40   R8: 00000000000330e0   R9: ffffffffc0675c94
+    R10: ffffb9e08698fe58  R11: 0000000000000001  R12: ffff8c8b9cbf6200
+    R13: 0000000000000000  R14: 0000000000000000  R15: ffff8c8b2026da0b
+    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+ #7 [ffffb9e08698fda8] hci_event_packet at ffffffffc0676904 [bluetooth]
+ #8 [ffffb9e08698fe50] hci_rx_work at ffffffffc06629ac [bluetooth]
+ #9 [ffffb9e08698fe98] process_one_work at ffffffffb66f95e7
 
-... but we currently use the 'I' constraint for many atomic operations
-using sub or logical instructions, which is not always valid.
+hcon->amp_mgr seems NULL triggered kernel panic in following line inside
+function amp_read_loc_assoc_final_data
 
-When CONFIG_ARM64_LSE_ATOMICS is not set, this allows invalid immediates
-to be passed to instructions, potentially resulting in a build failure.
-When CONFIG_ARM64_LSE_ATOMICS is selected the out-of-line ll/sc atomics
-always use a register as they have no visibility of the value passed by
-the caller.
+        set_bit(READ_LOC_AMP_ASSOC_FINAL, &mgr->state);
 
-This patch adds a constraint parameter to the ATOMIC_xx and
-__CMPXCHG_CASE macros so that we can pass appropriate constraints for
-each case, with uses updated accordingly.
+Fixed by checking NULL for mgr.
 
-Unfortunately prior to GCC 8.1.0 the 'K' constraint erroneously accepted
-'4294967295', so we must instead force the use of a register.
-
-Signed-off-by: Andrew Murray <andrew.murray@arm.com>
-Signed-off-by: Will Deacon <will@kernel.org>
-[bwh: Backported to 4.19: adjust context]
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Gopal Tiwari <gtiwari@redhat.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/atomic_ll_sc.h |   89 +++++++++++++++++-----------------
- 1 file changed, 47 insertions(+), 42 deletions(-)
+ net/bluetooth/amp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/arch/arm64/include/asm/atomic_ll_sc.h
-+++ b/arch/arm64/include/asm/atomic_ll_sc.h
-@@ -37,7 +37,7 @@
-  * (the optimize attribute silently ignores these options).
-  */
+diff --git a/net/bluetooth/amp.c b/net/bluetooth/amp.c
+index e32f34189007..b01b43ab6f83 100644
+--- a/net/bluetooth/amp.c
++++ b/net/bluetooth/amp.c
+@@ -305,6 +305,9 @@ void amp_read_loc_assoc_final_data(struct hci_dev *hdev,
+ 	struct hci_request req;
+ 	int err = 0;
  
--#define ATOMIC_OP(op, asm_op)						\
-+#define ATOMIC_OP(op, asm_op, constraint)				\
- __LL_SC_INLINE void							\
- __LL_SC_PREFIX(atomic_##op(int i, atomic_t *v))				\
- {									\
-@@ -51,11 +51,11 @@ __LL_SC_PREFIX(atomic_##op(int i, atomic
- "	stxr	%w1, %w0, %2\n"						\
- "	cbnz	%w1, 1b"						\
- 	: "=&r" (result), "=&r" (tmp), "+Q" (v->counter)		\
--	: "Ir" (i));							\
-+	: #constraint "r" (i));						\
- }									\
- __LL_SC_EXPORT(atomic_##op);
- 
--#define ATOMIC_OP_RETURN(name, mb, acq, rel, cl, op, asm_op)		\
-+#define ATOMIC_OP_RETURN(name, mb, acq, rel, cl, op, asm_op, constraint)\
- __LL_SC_INLINE int							\
- __LL_SC_PREFIX(atomic_##op##_return##name(int i, atomic_t *v))		\
- {									\
-@@ -70,14 +70,14 @@ __LL_SC_PREFIX(atomic_##op##_return##nam
- "	cbnz	%w1, 1b\n"						\
- "	" #mb								\
- 	: "=&r" (result), "=&r" (tmp), "+Q" (v->counter)		\
--	: "Ir" (i)							\
-+	: #constraint "r" (i)						\
- 	: cl);								\
- 									\
- 	return result;							\
- }									\
- __LL_SC_EXPORT(atomic_##op##_return##name);
- 
--#define ATOMIC_FETCH_OP(name, mb, acq, rel, cl, op, asm_op)		\
-+#define ATOMIC_FETCH_OP(name, mb, acq, rel, cl, op, asm_op, constraint)	\
- __LL_SC_INLINE int							\
- __LL_SC_PREFIX(atomic_fetch_##op##name(int i, atomic_t *v))		\
- {									\
-@@ -92,7 +92,7 @@ __LL_SC_PREFIX(atomic_fetch_##op##name(i
- "	cbnz	%w2, 1b\n"						\
- "	" #mb								\
- 	: "=&r" (result), "=&r" (val), "=&r" (tmp), "+Q" (v->counter)	\
--	: "Ir" (i)							\
-+	: #constraint "r" (i)						\
- 	: cl);								\
- 									\
- 	return result;							\
-@@ -110,8 +110,8 @@ __LL_SC_EXPORT(atomic_fetch_##op##name);
- 	ATOMIC_FETCH_OP (_acquire,        , a,  , "memory", __VA_ARGS__)\
- 	ATOMIC_FETCH_OP (_release,        ,  , l, "memory", __VA_ARGS__)
- 
--ATOMIC_OPS(add, add)
--ATOMIC_OPS(sub, sub)
-+ATOMIC_OPS(add, add, I)
-+ATOMIC_OPS(sub, sub, J)
- 
- #undef ATOMIC_OPS
- #define ATOMIC_OPS(...)							\
-@@ -121,17 +121,17 @@ ATOMIC_OPS(sub, sub)
- 	ATOMIC_FETCH_OP (_acquire,        , a,  , "memory", __VA_ARGS__)\
- 	ATOMIC_FETCH_OP (_release,        ,  , l, "memory", __VA_ARGS__)
- 
--ATOMIC_OPS(and, and)
--ATOMIC_OPS(andnot, bic)
--ATOMIC_OPS(or, orr)
--ATOMIC_OPS(xor, eor)
-+ATOMIC_OPS(and, and, )
-+ATOMIC_OPS(andnot, bic, )
-+ATOMIC_OPS(or, orr, )
-+ATOMIC_OPS(xor, eor, )
- 
- #undef ATOMIC_OPS
- #undef ATOMIC_FETCH_OP
- #undef ATOMIC_OP_RETURN
- #undef ATOMIC_OP
- 
--#define ATOMIC64_OP(op, asm_op)						\
-+#define ATOMIC64_OP(op, asm_op, constraint)				\
- __LL_SC_INLINE void							\
- __LL_SC_PREFIX(atomic64_##op(long i, atomic64_t *v))			\
- {									\
-@@ -145,11 +145,11 @@ __LL_SC_PREFIX(atomic64_##op(long i, ato
- "	stxr	%w1, %0, %2\n"						\
- "	cbnz	%w1, 1b"						\
- 	: "=&r" (result), "=&r" (tmp), "+Q" (v->counter)		\
--	: "Ir" (i));							\
-+	: #constraint "r" (i));						\
- }									\
- __LL_SC_EXPORT(atomic64_##op);
- 
--#define ATOMIC64_OP_RETURN(name, mb, acq, rel, cl, op, asm_op)		\
-+#define ATOMIC64_OP_RETURN(name, mb, acq, rel, cl, op, asm_op, constraint)\
- __LL_SC_INLINE long							\
- __LL_SC_PREFIX(atomic64_##op##_return##name(long i, atomic64_t *v))	\
- {									\
-@@ -164,14 +164,14 @@ __LL_SC_PREFIX(atomic64_##op##_return##n
- "	cbnz	%w1, 1b\n"						\
- "	" #mb								\
- 	: "=&r" (result), "=&r" (tmp), "+Q" (v->counter)		\
--	: "Ir" (i)							\
-+	: #constraint "r" (i)						\
- 	: cl);								\
- 									\
- 	return result;							\
- }									\
- __LL_SC_EXPORT(atomic64_##op##_return##name);
- 
--#define ATOMIC64_FETCH_OP(name, mb, acq, rel, cl, op, asm_op)		\
-+#define ATOMIC64_FETCH_OP(name, mb, acq, rel, cl, op, asm_op, constraint)\
- __LL_SC_INLINE long							\
- __LL_SC_PREFIX(atomic64_fetch_##op##name(long i, atomic64_t *v))	\
- {									\
-@@ -186,7 +186,7 @@ __LL_SC_PREFIX(atomic64_fetch_##op##name
- "	cbnz	%w2, 1b\n"						\
- "	" #mb								\
- 	: "=&r" (result), "=&r" (val), "=&r" (tmp), "+Q" (v->counter)	\
--	: "Ir" (i)							\
-+	: #constraint "r" (i)						\
- 	: cl);								\
- 									\
- 	return result;							\
-@@ -204,8 +204,8 @@ __LL_SC_EXPORT(atomic64_fetch_##op##name
- 	ATOMIC64_FETCH_OP (_acquire,, a,  , "memory", __VA_ARGS__)	\
- 	ATOMIC64_FETCH_OP (_release,,  , l, "memory", __VA_ARGS__)
- 
--ATOMIC64_OPS(add, add)
--ATOMIC64_OPS(sub, sub)
-+ATOMIC64_OPS(add, add, I)
-+ATOMIC64_OPS(sub, sub, J)
- 
- #undef ATOMIC64_OPS
- #define ATOMIC64_OPS(...)						\
-@@ -215,10 +215,10 @@ ATOMIC64_OPS(sub, sub)
- 	ATOMIC64_FETCH_OP (_acquire,, a,  , "memory", __VA_ARGS__)	\
- 	ATOMIC64_FETCH_OP (_release,,  , l, "memory", __VA_ARGS__)
- 
--ATOMIC64_OPS(and, and)
--ATOMIC64_OPS(andnot, bic)
--ATOMIC64_OPS(or, orr)
--ATOMIC64_OPS(xor, eor)
-+ATOMIC64_OPS(and, and, L)
-+ATOMIC64_OPS(andnot, bic, )
-+ATOMIC64_OPS(or, orr, L)
-+ATOMIC64_OPS(xor, eor, L)
- 
- #undef ATOMIC64_OPS
- #undef ATOMIC64_FETCH_OP
-@@ -248,7 +248,7 @@ __LL_SC_PREFIX(atomic64_dec_if_positive(
- }
- __LL_SC_EXPORT(atomic64_dec_if_positive);
- 
--#define __CMPXCHG_CASE(w, sfx, name, sz, mb, acq, rel, cl)		\
-+#define __CMPXCHG_CASE(w, sfx, name, sz, mb, acq, rel, cl, constraint)	\
- __LL_SC_INLINE u##sz							\
- __LL_SC_PREFIX(__cmpxchg_case_##name##sz(volatile void *ptr,		\
- 					 unsigned long old,		\
-@@ -268,29 +268,34 @@ __LL_SC_PREFIX(__cmpxchg_case_##name##sz
- 	"2:"								\
- 	: [tmp] "=&r" (tmp), [oldval] "=&r" (oldval),			\
- 	  [v] "+Q" (*(u##sz *)ptr)					\
--	: [old] "Kr" (old), [new] "r" (new)				\
-+	: [old] #constraint "r" (old), [new] "r" (new)			\
- 	: cl);								\
- 									\
- 	return oldval;							\
- }									\
- __LL_SC_EXPORT(__cmpxchg_case_##name##sz);
- 
--__CMPXCHG_CASE(w, b,     ,  8,        ,  ,  ,         )
--__CMPXCHG_CASE(w, h,     , 16,        ,  ,  ,         )
--__CMPXCHG_CASE(w,  ,     , 32,        ,  ,  ,         )
--__CMPXCHG_CASE( ,  ,     , 64,        ,  ,  ,         )
--__CMPXCHG_CASE(w, b, acq_,  8,        , a,  , "memory")
--__CMPXCHG_CASE(w, h, acq_, 16,        , a,  , "memory")
--__CMPXCHG_CASE(w,  , acq_, 32,        , a,  , "memory")
--__CMPXCHG_CASE( ,  , acq_, 64,        , a,  , "memory")
--__CMPXCHG_CASE(w, b, rel_,  8,        ,  , l, "memory")
--__CMPXCHG_CASE(w, h, rel_, 16,        ,  , l, "memory")
--__CMPXCHG_CASE(w,  , rel_, 32,        ,  , l, "memory")
--__CMPXCHG_CASE( ,  , rel_, 64,        ,  , l, "memory")
--__CMPXCHG_CASE(w, b,  mb_,  8, dmb ish,  , l, "memory")
--__CMPXCHG_CASE(w, h,  mb_, 16, dmb ish,  , l, "memory")
--__CMPXCHG_CASE(w,  ,  mb_, 32, dmb ish,  , l, "memory")
--__CMPXCHG_CASE( ,  ,  mb_, 64, dmb ish,  , l, "memory")
-+/*
-+ * Earlier versions of GCC (no later than 8.1.0) appear to incorrectly
-+ * handle the 'K' constraint for the value 4294967295 - thus we use no
-+ * constraint for 32 bit operations.
-+ */
-+__CMPXCHG_CASE(w, b,     ,  8,        ,  ,  ,         , )
-+__CMPXCHG_CASE(w, h,     , 16,        ,  ,  ,         , )
-+__CMPXCHG_CASE(w,  ,     , 32,        ,  ,  ,         , )
-+__CMPXCHG_CASE( ,  ,     , 64,        ,  ,  ,         , L)
-+__CMPXCHG_CASE(w, b, acq_,  8,        , a,  , "memory", )
-+__CMPXCHG_CASE(w, h, acq_, 16,        , a,  , "memory", )
-+__CMPXCHG_CASE(w,  , acq_, 32,        , a,  , "memory", )
-+__CMPXCHG_CASE( ,  , acq_, 64,        , a,  , "memory", L)
-+__CMPXCHG_CASE(w, b, rel_,  8,        ,  , l, "memory", )
-+__CMPXCHG_CASE(w, h, rel_, 16,        ,  , l, "memory", )
-+__CMPXCHG_CASE(w,  , rel_, 32,        ,  , l, "memory", )
-+__CMPXCHG_CASE( ,  , rel_, 64,        ,  , l, "memory", L)
-+__CMPXCHG_CASE(w, b,  mb_,  8, dmb ish,  , l, "memory", )
-+__CMPXCHG_CASE(w, h,  mb_, 16, dmb ish,  , l, "memory", )
-+__CMPXCHG_CASE(w,  ,  mb_, 32, dmb ish,  , l, "memory", )
-+__CMPXCHG_CASE( ,  ,  mb_, 64, dmb ish,  , l, "memory", L)
- 
- #undef __CMPXCHG_CASE
- 
++	if (!mgr)
++		return;
++
+ 	cp.phy_handle = hcon->handle;
+ 	cp.len_so_far = cpu_to_le16(0);
+ 	cp.max_len = cpu_to_le16(hdev->amp_assoc_size);
+-- 
+2.30.1
+
 
 
