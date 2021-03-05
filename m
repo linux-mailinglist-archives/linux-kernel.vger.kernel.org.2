@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC9C32DEEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 02:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A2C32DEEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 02:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhCEBLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 20:11:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32784 "EHLO
+        id S230472AbhCEBLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 20:11:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbhCEBLm (ORCPT
+        with ESMTP id S230454AbhCEBLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 20:11:42 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2042BC061761
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 17:11:42 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id b127so664593ybc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 17:11:42 -0800 (PST)
+        Thu, 4 Mar 2021 20:11:45 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869CAC061765
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 17:11:44 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id l3so653028ybf.17
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 17:11:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=GwLtnjUHvhPN+SdKpQLX9+PZpDkmPsCXyyolIntRT8Q=;
-        b=YTBApRYdKmN5TNo2/zDb8jt3g5J1OBP5RrcLnOmgvYROgZ4nw8D8iOcoMM+/fowvvH
-         5drldgzi8cHBpIZBd4LVlVyaxh4Pp8juYwQcp8n6dgBmujr7WNRlSFBkBW94xJbrMZog
-         TaMVEIvM/KOUmFeBjCjNQn4vLefwOERlwzVEBiVccgYHiPzUc3k41wddWXP5FlDoiI4z
-         l94BaTRP4ri/jZ7z68m0OEI9j2WcIMjYRLdpEojOzOcqweXDVAI7vVN/JTcmgpk7ly6/
-         ry34aQMWAi98LSrjjvuO2YWMuJvuF6LtU8mS5Uj+5yAUU695Fb4NzGlNfxwizElDYcsa
-         kRCw==
+        bh=a0iu5Jr62fO/y6sZLX97v683VVAURhp+4UWYw55JC8A=;
+        b=a2TdeP2jIifcVwzqSBDM0de5+MwbT43APmxx1Fo6PChIdw0LzDMC9HH6i09sQbEvEQ
+         nsyBB+1a0yRtBfvP2QLcuusKIDVaJIyt2qi927seF24rIwjt/udvGo4h0hYKjPzZ9/Tc
+         CLr+SlevtE/inchuXygmJbsrDG+ALFWdiRVcBqXQqJi9rzfiOZ5EJODShYqljY3lHYE1
+         IA8Cl4sh4rzvzaT3TLvsFFuRKvuMcRvstyQ5HgLNxFyCelqK37iuhOXXXbcoHzAy7eng
+         JF2iI6cZShez1bzrx2ti3DJgXO+TKcMXM373c3PeViizQuDK12tO0dqa2W2PAL5N2mNH
+         /VsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=GwLtnjUHvhPN+SdKpQLX9+PZpDkmPsCXyyolIntRT8Q=;
-        b=b4Rg/3LQ9Yr7ue/d3+3549WcRGNXADQse9nZHiGmURWRxWEzlSiV7zSFPkGAmk8Co4
-         M66PEMjIsTArShSI/QABmYhjgvsS8yjShX/8GdikfWtamqfKUqDjBUxKu2y4jJvOjGaf
-         qMwsPtIiYXcQnGNv3G01AuydYtAzP6WOcu1/ltd5+qbgl8/YgLuYuMVC977Q2ZEQU8x4
-         J7xz+sX0HiRHvTznWvfgLHFmsYi8lRiTRhS66FSkQ9CNerO82dHW/vFNU2fpYxgjd9y7
-         5p3lp1R8UC4o3wT0fH5ZUegxacQidJ0S7+TByewZfYD4BTxKCYb9Yd628Xqe9tGH4/5f
-         PBLA==
-X-Gm-Message-State: AOAM531ZHEXNb12q4pA0H2vPVaqva3dhwhkp7e+KMmzUjXnJJw2m+5Ap
-        i4NvweeVzGwyAy3nRPWlco/Vd2o70/8=
-X-Google-Smtp-Source: ABdhPJwhGY3VsDk0phWFsY+dbxEMztlaHmwM2ag+WGOvqjCSG0YIdrtM0Q+LclZIX/JU85vbBBawg175iE4=
+        bh=a0iu5Jr62fO/y6sZLX97v683VVAURhp+4UWYw55JC8A=;
+        b=By6Ov/VECjc85Pd+lpbY9bfy0VhmHXmQJWBBiLdyHBKSuyGLv+ShQAbVj6uWM8iIR4
+         Z54LiR4s7bI4Lflz6SVsra2U38+vYASSN1JIqUGHqK07I8oyNkLOPta3MTP1iWiFtrG1
+         +YU9AR2UOdu5uRhJOj8AIjb+0nNRrDHWvrM5ES2ro/M8Rr0lweAWqxkQEF8YLX2Fi6ev
+         siOP+krFIGtV1K/cN6bc9XW2IDTCpdKEqDRiPANerSwU4Y4VjpJ/wkcAXiUe72erDPQC
+         nxgKPo2+IUCWVUuTyveXufNg/J0VG2xO9VN6Il0NZiNSC4nyJTEwtVHLnd+0rLWxjXuB
+         hTVw==
+X-Gm-Message-State: AOAM530pXlPLldVjM5l7+ESxK8sM4Xe49yx+4xCcj93/B8sDliuAzvRN
+        V7lSx+ZGy9HYYoCG3iMvvo6iIPqn9oo=
+X-Google-Smtp-Source: ABdhPJzgFxnA5s0adQuP9jc1yY23XBQGOxKNuuDdMTj9ETO8QkE751E1BJ0BbCGDJhnhGUcLZF+QyU861W8=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:9857:be95:97a2:e91c])
- (user=seanjc job=sendgmr) by 2002:a25:d6d5:: with SMTP id n204mr10136397ybg.22.1614906701379;
- Thu, 04 Mar 2021 17:11:41 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:655:: with SMTP id 82mr9307990ybg.168.1614906703841;
+ Thu, 04 Mar 2021 17:11:43 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  4 Mar 2021 17:10:59 -0800
+Date:   Thu,  4 Mar 2021 17:11:00 -0800
 In-Reply-To: <20210305011101.3597423-1-seanjc@google.com>
-Message-Id: <20210305011101.3597423-16-seanjc@google.com>
+Message-Id: <20210305011101.3597423-17-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210305011101.3597423-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v2 15/17] KVM: x86/mmu: Unexport MMU load/unload functions
+Subject: [PATCH v2 16/17] KVM: x86/mmu: Sync roots after MMU load iff load as successful
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -69,70 +69,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unexport the MMU load and unload helpers now that they are no longer
-used (incorrectly) in vendor code.
-
-Opportunistically move the kvm_mmu_sync_roots() declaration into mmu.h,
-it should not be exposed to vendor code.
-
-No functional change intended.
+For clarity, explicitly skip syncing roots if the MMU load failed
+instead of relying on the !VALID_PAGE check in kvm_mmu_sync_roots().
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/include/asm/kvm_host.h | 3 ---
- arch/x86/kvm/mmu.h              | 4 ++++
- arch/x86/kvm/mmu/mmu.c          | 2 --
- 3 files changed, 4 insertions(+), 5 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 6db60ea8ee5b..2da6c9f5935a 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1592,9 +1592,6 @@ void kvm_update_dr7(struct kvm_vcpu *vcpu);
- 
- int kvm_mmu_unprotect_page(struct kvm *kvm, gfn_t gfn);
- void __kvm_mmu_free_some_pages(struct kvm_vcpu *vcpu);
--int kvm_mmu_load(struct kvm_vcpu *vcpu);
--void kvm_mmu_unload(struct kvm_vcpu *vcpu);
--void kvm_mmu_sync_roots(struct kvm_vcpu *vcpu);
- void kvm_mmu_free_roots(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
- 			ulong roots_to_free);
- gpa_t translate_nested_gpa(struct kvm_vcpu *vcpu, gpa_t gpa, u32 access,
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index 72b0f66073dc..67e8c7c7a6ce 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -74,6 +74,10 @@ bool kvm_can_do_async_pf(struct kvm_vcpu *vcpu);
- int kvm_handle_page_fault(struct kvm_vcpu *vcpu, u64 error_code,
- 				u64 fault_address, char *insn, int insn_len);
- 
-+int kvm_mmu_load(struct kvm_vcpu *vcpu);
-+void kvm_mmu_unload(struct kvm_vcpu *vcpu);
-+void kvm_mmu_sync_roots(struct kvm_vcpu *vcpu);
-+
- static inline int kvm_mmu_reload(struct kvm_vcpu *vcpu)
- {
- 	if (likely(vcpu->arch.mmu->root_hpa != INVALID_PAGE))
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index fa1aca21f6eb..4f66ca0f5f68 100644
+index 4f66ca0f5f68..bceff7d815c3 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4859,7 +4859,6 @@ int kvm_mmu_load(struct kvm_vcpu *vcpu)
+@@ -4850,10 +4850,11 @@ int kvm_mmu_load(struct kvm_vcpu *vcpu)
+ 	else
+ 		r = mmu_alloc_shadow_roots(vcpu);
+ 	write_unlock(&vcpu->kvm->mmu_lock);
++	if (r)
++		goto out;
+ 
+ 	kvm_mmu_sync_roots(vcpu);
+-	if (r)
+-		goto out;
++
+ 	kvm_mmu_load_pgd(vcpu);
+ 	static_call(kvm_x86_tlb_flush_current)(vcpu);
  out:
- 	return r;
- }
--EXPORT_SYMBOL_GPL(kvm_mmu_load);
- 
- void kvm_mmu_unload(struct kvm_vcpu *vcpu)
- {
-@@ -4868,7 +4867,6 @@ void kvm_mmu_unload(struct kvm_vcpu *vcpu)
- 	kvm_mmu_free_roots(vcpu, &vcpu->arch.guest_mmu, KVM_MMU_ROOTS_ALL);
- 	WARN_ON(VALID_PAGE(vcpu->arch.guest_mmu.root_hpa));
- }
--EXPORT_SYMBOL_GPL(kvm_mmu_unload);
- 
- static bool need_remote_flush(u64 old, u64 new)
- {
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
