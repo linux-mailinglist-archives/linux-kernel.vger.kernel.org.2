@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F5832F075
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4F332F07E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbhCEQ6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 11:58:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbhCEQ5o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 11:57:44 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7279DC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 08:57:44 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id l22so2056355wme.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 08:57:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KCqXF6DhvLeATztmzz0XQr9+I4zPUB4uuBIegF8P6nE=;
-        b=IMmBhWIQWHQ9j6NO3Sxd6z737s2HBldvIlXMi5+KS0PAbALJQgLBT2dPVJPi6J3azO
-         1krAjPTgVoI+Idf1hYw93K98TIgxepR+ZJhFMEo5bKQy38ghn2VWqbQUl4BS0QyVlLfl
-         jgr+lAWxVH88y66NNvvrhMnPQ8x/b1R8VWbATAjH8eZ7TpyGKrgum2GRxqe3AHzdgkYi
-         /iBYSuC8o3NoD89iwtOf4O26Odv0Dpw7S0Lpip3sKdN+yKxnGb7ArIzJc3JKQzil3OSX
-         Q7GIQhTC/vWWTYYMbsDWunZzsAj+dHH2KezBwkKNX6E+OghPTb2Inq/7Zcja6ONlX4+l
-         yt7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KCqXF6DhvLeATztmzz0XQr9+I4zPUB4uuBIegF8P6nE=;
-        b=bheJ+SdCcp6YiFe6BjkU388lUrcBYIMs5hzfg+8RU7LYBB65y7PMjpSXAZVJNhdCM0
-         KEtty8MITya2m5JAT0F9fCre5xbfdVcFK5ClxB3Niy8VfBKevzrfHAG/bYqJZgUOxNXj
-         lB7oi6U42dizZTEG/cwGmjajZTPxbqAUTTY3ke4eE+J1WNLLGmYukASQ+Xm9iyX7bfdm
-         PO05lQgsGP7WrVHUuO7B7beC1J+YMxW8YCIpdaQ5xhOyPnCj0BHzbk35xZjZsHZRX6LV
-         ZMnUOwP75CZ29JXwW41Uv8p6FOiA3pRjTxAIMUbd/eJ8aF2jKp9Fwyj5eBDEa8gQJxNh
-         XhvA==
-X-Gm-Message-State: AOAM530kwO5koucQWz4+xqTuvZLaa7GymUYYmlIPYiOZcVjNk/S4mWh4
-        DmRkFCYko/UT+UJ5ZR0eHe4IvA==
-X-Google-Smtp-Source: ABdhPJydVHPdsB7IJQiJn5tz58VfcEp05KbBoQ+X6A9ge2JOOLS46OV37tlIyXxO7COzJkjS6SUg0A==
-X-Received: by 2002:a7b:cdf7:: with SMTP id p23mr9880933wmj.26.1614963463274;
-        Fri, 05 Mar 2021 08:57:43 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id l2sm5272464wrv.50.2021.03.05.08.57.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Mar 2021 08:57:42 -0800 (PST)
-Subject: Re: [PATCH 2/3] soundwire: qcom: add auto enumeration support
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        vkoul@kernel.org
-Cc:     sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
- <20210226170250.9067-3-srinivas.kandagatla@linaro.org>
- <0c551b23-7ed4-59d7-72c2-284bdf8584f1@linux.intel.com>
- <4721dd27-c8ce-f988-3c10-794841390656@linaro.org>
- <01e5ea33-1813-069a-1674-042141947323@linux.intel.com>
- <601b585e-c3e3-4006-b078-d54c3fd36438@linaro.org>
- <c5fe182d-1769-73ed-0268-5353fd030521@linux.intel.com>
- <5b067c8d-0d90-1531-a1b1-118fa73c0078@linaro.org>
- <46e297dc-487f-1959-1b84-22978fd9a19b@linux.intel.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <a9129fe5-c505-920f-d3d4-85282ce83120@linaro.org>
-Date:   Fri, 5 Mar 2021 16:57:41 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S231127AbhCEQ7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 11:59:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230387AbhCEQ7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 11:59:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B31D64F1E;
+        Fri,  5 Mar 2021 16:59:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614963551;
+        bh=Anr2szlxokrML4bcZ0Hk4njlruTj6i3bBKAsz8Ik/i8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZUPrT4WrxDvcA5waC/JCToBDhp1Kk6d3fuhFTFtApJbxl0DgugRoL98HlHKCN+L7k
+         tDU5jCwdV+7H8hoi0mdwLKsCb6Sb6+QgoyLpevCgAngM79HAAGqMdDWgx6G4KN1p0z
+         3jQAWjeCtBm8z+uq76vuvHzUu3XyyM/ucb1oWgdgFZeql/ibvBWxASXsCw5Ya/5Bj9
+         66KUukox4oZMKGGxtCD3+ISsnUhlVKb4PZPuMde71ut26Ojz2C/0qfpL0Lex4NeBt9
+         /cwZFHGTuCvZyl0jAguHl1gtlz88pIRcTXtKzXA0H3PgovHmIkSq6dLJSpA1aSfQur
+         Wkmsn/I2oG+ZQ==
+Date:   Fri, 5 Mar 2021 16:59:05 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, tabba@google.com,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
+        seanjc@google.com, robh+dt@kernel.org
+Subject: Re: [PATCH v3 28/32] KVM: arm64: Add
+ kvm_pgtable_stage2_idmap_greedy()
+Message-ID: <20210305165904.GA23172@willie-the-truck>
+References: <20210302150002.3685113-1-qperret@google.com>
+ <20210302150002.3685113-29-qperret@google.com>
+ <20210305143941.GA23017@willie-the-truck>
+ <YEJISCQOHNbs363+@google.com>
 MIME-Version: 1.0
-In-Reply-To: <46e297dc-487f-1959-1b84-22978fd9a19b@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEJISCQOHNbs363+@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 05/03/2021 16:19, Pierre-Louis Bossart wrote:
->>>
->>>
->>> The question is: what happens if that device is NOT described in the 
->>> Device Tree data? The loop over bus->slaves will not find this device 
->>> by comparing with known devID values, so the set_bit(i, 
->>> bus->assigned) will not happen.
->>
->> yes, that is true, There is no way we can assign a dev_number to the 
->> device which is not enumerated on the bus!
->>
->> Am sure this is the same behavior with soundwire core too, atleast 
->> form the code I can see it sets the assigned bit for only the devices 
->> that are enumerated on the bus! Not all the devices specified in DT!
->> Unless I missed something!
+On Fri, Mar 05, 2021 at 03:03:36PM +0000, Quentin Perret wrote:
+> On Friday 05 Mar 2021 at 14:39:42 (+0000), Will Deacon wrote:
+> > On Tue, Mar 02, 2021 at 02:59:58PM +0000, Quentin Perret wrote:
+> > > +	/* Reduce the kvm_mem_range to a granule size */
+> > > +	ret = __stage2_reduce_range(&data, range->end);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	/* Walk the range to check permissions and reduce further if needed */
+> > > +	do {
+> > > +		ret = kvm_pgtable_walk(pgt, range->start, range->end, &walker);
+> > 
+> > (we spent some time debugging an issue here and you spotted that you're
+> > passing range->end instead of the size ;)
 > 
-> I am talking about the other way around, where a device is present and 
-> enumerated on the bus but not listed in DT. In that case the hardware 
-> did assign a device number but bus->assigned will not be set.
+> Yep, I have the fix applied locally, and ready to fly in v4 :)
+> 
+> > > +	} while (ret == -EAGAIN);
+> > 
+> > I'm a bit nervous about this loop -- what guarantees forward progress here?
+> > Can we return to the host after a few tries instead?
+> 
+> -EAGAIN only happens when we've been able to successfully reduce the
+> range to a potentially valid granule size. That can't happen infinitely.
+> 
+> We're guaranteed to fail when trying to reduce the range to a
+> granularity smaller than PAGE_SIZE (the -EINVAL case of
+> __stage2_reduce_range), which is indicative of a host memory abort in a
+> page it should not access (because marked PROT_NONE for instance).
 
-thanks for your patience!
+Can you compute an upper bound on the number of iterations based on the
+number of page-table levels then? I'm just conscious that all of this is
+effectively running with irqs disabled, and so being able to reason about
+the amount of work we're going to do makes me much more comfortable.
 
-Ah, I understand it now!, yes that part is missing!
-
-adding Something like what core does in qcom driver should fix it!
-
-if (!found) {
-	sdw_slave_add(bus, &id, NULL);
-	dev_err(bus->dev, "Slave Entry not found\n");
-}
-
---srini
+Will
