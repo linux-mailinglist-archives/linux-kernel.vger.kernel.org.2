@@ -2,72 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE1F32EEBC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:25:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9558D32EEC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:27:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhCEPYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:24:51 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:33323 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbhCEPYg (ORCPT
+        id S229793AbhCEP01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:26:27 -0500
+Received: from mail-oo1-f52.google.com ([209.85.161.52]:33649 "EHLO
+        mail-oo1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229631AbhCEP0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:24:36 -0500
-Received: by mail-ot1-f46.google.com with SMTP id j8so2155811otc.0;
-        Fri, 05 Mar 2021 07:24:36 -0800 (PST)
+        Fri, 5 Mar 2021 10:26:05 -0500
+Received: by mail-oo1-f52.google.com with SMTP id z22so513499oop.0;
+        Fri, 05 Mar 2021 07:26:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=quVCV0I7lj6jCfburMRjdQI6nYTa64wdVEOmdpejras=;
-        b=LurI1Q1b8mKEg+oNjuHTN2A1Op/8GNcGt1yTQlGxXbklb8ulyE96SrkdwSWWZuj1iy
-         p1YRhWqpdZXr32ftdLwluxvwLxun4UeJiM0erG2Js4hpHDBfEubj3x70gYZlioOVm27S
-         N/qUS8WBg3Y3za0FNONbs/KJfJAXt3UcgZjZB83V5/BLL+m2B93akkzb55zfVeeCEsx9
-         MZXjRoz3O6SK5SfzGJseEljrHgFKjpHhAfh79106Yphg+RkFzNiJIcs+Ptg9mwKpq3uz
-         Im4ihT0BlTY3gxCvtDtAmPscstKAXS4pl47TCdknNOhlbEi/uDhLUD1BvaIdtGgcU8vU
-         GMUg==
-X-Gm-Message-State: AOAM532yCcKbaeylAdIM3rvzUPSP8khZ80j8R1wROIgXSdOTkXjP9HZm
-        h2jcoRRpsE8ezdYGW8p+3Q==
-X-Google-Smtp-Source: ABdhPJyFbBvtTNTuTtyQ/MJel+9PoFHbBrd4tQeC7uXkeJZtWp3mXJtgyNcNhSW2KciROY+m3bCloA==
-X-Received: by 2002:a9d:6308:: with SMTP id q8mr8174085otk.160.1614957875976;
-        Fri, 05 Mar 2021 07:24:35 -0800 (PST)
+        bh=UGAA0VPbUBDV2qLusFPRZCr8HQGQiMTQXTjHRkiKM9U=;
+        b=HKASSMqMSjBlcfAflKNFZejHVHZn4XlVArsVye2cqBUZ4XRFyfrlt8NgfFcrJZDrIZ
+         MGz8sQJz3TvF55704qEcM5fqze80UWIECh1VyjxLH8NKUJfUw5nOMW5t1FnR609As3oi
+         XT/DLiPIJT9r0GNQ74GyB4FgySsnXb0R9Vvk+0uK5oRt2Un9XaFsL3nsUsdknRi15DD1
+         SiNjEcTqXPYDufmrDT6wnktnkgzxWn+4T16Q8pJLHOWo10mmSFpLhh1zg9ssVs0TUtHM
+         cRztYxEneDXULu36PYUPeQNhcwr1J/4U7T3nedqsuoxJLhN2vk0v1j/m6mXNS9z+CP41
+         /f6w==
+X-Gm-Message-State: AOAM531mbGllPyHy7MXWxn5G1vPTFn9XAze9S036JEMIvbMHf8ZiNkwm
+        1jwYN45oDbKkuX5R0BpmLV9k6GR8uQ==
+X-Google-Smtp-Source: ABdhPJx3lV/XmuOxRe9jwX3wFlzW99kU6evn3a/1b6kGViDLbxlbZSot1vM6FZNCeizVp/3t0bzTyw==
+X-Received: by 2002:a4a:3901:: with SMTP id m1mr8185039ooa.60.1614957964956;
+        Fri, 05 Mar 2021 07:26:04 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c20sm529641oiw.18.2021.03.05.07.24.34
+        by smtp.gmail.com with ESMTPSA id c2sm575653ooo.17.2021.03.05.07.26.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 07:24:35 -0800 (PST)
-Received: (nullmailer pid 182642 invoked by uid 1000);
-        Fri, 05 Mar 2021 15:24:34 -0000
-Date:   Fri, 5 Mar 2021 09:24:34 -0600
+        Fri, 05 Mar 2021 07:26:03 -0800 (PST)
+Received: (nullmailer pid 185595 invoked by uid 1000);
+        Fri, 05 Mar 2021 15:26:01 -0000
+Date:   Fri, 5 Mar 2021 09:26:01 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
-        Amit Kucheria <amitk@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     linux-amarula@amarulasolutions.com,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Rob Herring <robh+dt@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v10 8/8] dt-bindings: thermal: tsens: Document ipq8064
- bindings
-Message-ID: <20210305152434.GA182458@robh.at.kernel.org>
-References: <20210217194011.22649-1-ansuelsmth@gmail.com>
- <20210217194011.22649-9-ansuelsmth@gmail.com>
+        linux-stm32@st-md-mailman.stormreply.com,
+        devicetree@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@st.com>
+Subject: Re: [PATCH v3 01/10] dt-bindings: arm: stm32: Add Engicam MicroGEA
+ STM32MP1 MicroDev 2.0
+Message-ID: <20210305152601.GA185123@robh.at.kernel.org>
+References: <20210228154323.76911-1-jagan@amarulasolutions.com>
+ <20210228154323.76911-2-jagan@amarulasolutions.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210217194011.22649-9-ansuelsmth@gmail.com>
+In-Reply-To: <20210228154323.76911-2-jagan@amarulasolutions.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Feb 2021 20:40:10 +0100, Ansuel Smith wrote:
-> Document the use of bindings used for msm8960 tsens based devices.
-> msm8960 use the same gcc regs and is set as a child of the qcom gcc.
+On Sun, 28 Feb 2021 21:13:14 +0530, Jagan Teki wrote:
+> MicroGEA STM32MP1 is a STM32MP157A based Micro SOM.
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> MicroDev 2.0 is a general purpose miniature carrier board with CAN,
+> LTE and LVDS panel interfaces.
+> 
+> MicroGEA STM32MP1 needs to mount on top of this MicroDev 2.0 board
+> for creating complete MicroGEA STM32MP1 MicroDev 2.0 Carrier board.
+> 
+> Add bindings for it.
+> 
+> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
 > ---
->  .../bindings/thermal/qcom-tsens.yaml          | 56 ++++++++++++++++---
->  1 file changed, 48 insertions(+), 8 deletions(-)
+> Changes for v3:
+> - updated commit message
+> Changes for v2:
+> - none
+> 
+>  Documentation/devicetree/bindings/arm/stm32/stm32.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
