@@ -2,174 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A23332E016
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:29:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0347F32E01C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbhCED3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 22:29:34 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:13861 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhCED3d (ORCPT
+        id S229601AbhCEDbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 22:31:11 -0500
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:43903 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhCEDbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 22:29:33 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DsCq82Yrbz8svh;
-        Fri,  5 Mar 2021 11:27:48 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 5 Mar 2021
- 11:29:21 +0800
-Subject: Re: [PATCH] configfs: Fix use-after-free issue in
- __configfs_open_file
-To:     <linux-kernel@vger.kernel.org>
-CC:     <chao@kernel.org>, Daiyue Zhang <zhangdaiyue1@huawei.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Joel Becker <jlbec@evilplan.org>,
-        "Christoph Hellwig" <hch@lst.de>, Yi Chen <chenyi77@huawei.com>,
-        Ge Qiu <qiuge@huawei.com>, <linux-fsdevel@vger.kernel.org>
-References: <20210301061053.105377-1-yuchao0@huawei.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <040d3680-0e12-7957-da05-39017d33edb4@huawei.com>
-Date:   Fri, 5 Mar 2021 11:29:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <20210301061053.105377-1-yuchao0@huawei.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+        Thu, 4 Mar 2021 22:31:10 -0500
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 54835891AE;
+        Fri,  5 Mar 2021 16:31:08 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1614915068;
+        bh=KD1juPyXNCgiool63yGexf0dRtNlatc2uFIxPsMc+Xk=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=v1Vam4TOnkrX079zzIV8KehQMJy0kMy2wJpRjdG5hX7yWu28s77ZDfdzcmdKxFdEA
+         AQF8Au8N4klze+h1a5pAGubiMBGrmfSxYH7qaUya2rD+KK6jW+zbYt5FqEcoOcxbtu
+         kB57vQW9VTmZO6DNP1QVhOysiPag6h5r9vCIkABGPGLslsZOG8l0uZoWjpEIweDLQS
+         s9GpLchVWvECXwat6SQpDcpVQ7phrUAGRZQ/BSCtCoOwas9YubGl8boBBQHEWUsX/l
+         7L8bEvzXy47myorTaj4vAmU9dyX86tAemshBFAFJps2dxluQmgpSdkg9qIcaIq52iI
+         AIuXDOk55VORQ==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B6041a5d90000>; Fri, 05 Mar 2021 16:30:33 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Fri, 5 Mar 2021 16:30:31 +1300
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.012; Fri, 5 Mar 2021 16:30:31 +1300
+From:   Mark Tomlinson <Mark.Tomlinson@alliedtelesis.co.nz>
+To:     "fw@strlen.de" <fw@strlen.de>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pablo@netfilter.org" <pablo@netfilter.org>,
+        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
+        "kadlec@netfilter.org" <kadlec@netfilter.org>
+Subject: Re: [PATCH 3/3] netfilter: x_tables: Use correct memory barriers.
+Thread-Topic: [PATCH 3/3] netfilter: x_tables: Use correct memory barriers.
+Thread-Index: AQHXEJYqSIGupJItGUut6XOWJvc4xKpymfUAgAFKuQA=
+Date:   Fri, 5 Mar 2021 03:30:30 +0000
+Message-ID: <631d774f41a564b28d40a5639a58f1ab0d7f6e03.camel@alliedtelesis.co.nz>
+References: <20210304013116.8420-1-mark.tomlinson@alliedtelesis.co.nz>
+         <20210304013116.8420-4-mark.tomlinson@alliedtelesis.co.nz>
+         <20210304074648.GJ17911@breakpoint.cc>
+In-Reply-To: <20210304074648.GJ17911@breakpoint.cc>
+Accept-Language: en-NZ, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [2001:df5:b000:23:2d77:907a:1462:3c65]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4016757BD182D84D86CB42E80B012C05@atlnz.lc>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=j5wOGto6lCVxjVACX6YA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc fsdevel
-
-Ping,
-
-Any comments one this patch?
-
-On 2021/3/1 14:10, Chao Yu wrote:
-> From: Daiyue Zhang <zhangdaiyue1@huawei.com>
-> 
-> Commit b0841eefd969 ("configfs: provide exclusion between IO and removals")
-> uses ->frag_dead to mark the fragment state, thus no bothering with extra
-> refcount on config_item when opening a file. The configfs_get_config_item
-> was removed in __configfs_open_file, but not with config_item_put. So the
-> refcount on config_item will lost its balance, causing use-after-free
-> issues in some occasions like this:
-> 
-> Test:
-> 1. Mount configfs on /config with read-only items:
-> drwxrwx--- 289 root   root            0 2021-04-01 11:55 /config
-> drwxr-xr-x   2 root   root            0 2021-04-01 11:54 /config/a
-> --w--w--w-   1 root   root         4096 2021-04-01 11:53 /config/a/1.txt
-> ......
-> 
-> 2. Then run:
-> for file in /config
-> do
-> echo $file
-> grep -R 'key' $file
-> done
-> 
-> 3. __configfs_open_file will be called in parallel, the first one
-> got called will do:
-> if (file->f_mode & FMODE_READ) {
-> 	if (!(inode->i_mode & S_IRUGO))
-> 		goto out_put_module;
-> 			config_item_put(buffer->item);
-> 				kref_put()
-> 					package_details_release()
-> 						kfree()
-> 
-> the other one will run into use-after-free issues like this:
-> BUG: KASAN: use-after-free in __configfs_open_file+0x1bc/0x3b0
-> Read of size 8 at addr fffffff155f02480 by task grep/13096
-> CPU: 0 PID: 13096 Comm: grep VIP: 00 Tainted: G        W       4.14.116-kasan #1
-> TGID: 13096 Comm: grep
-> Call trace:
-> dump_stack+0x118/0x160
-> kasan_report+0x22c/0x294
-> __asan_load8+0x80/0x88
-> __configfs_open_file+0x1bc/0x3b0
-> configfs_open_file+0x28/0x34
-> do_dentry_open+0x2cc/0x5c0
-> vfs_open+0x80/0xe0
-> path_openat+0xd8c/0x2988
-> do_filp_open+0x1c4/0x2fc
-> do_sys_open+0x23c/0x404
-> SyS_openat+0x38/0x48
-> 
-> Allocated by task 2138:
-> kasan_kmalloc+0xe0/0x1ac
-> kmem_cache_alloc_trace+0x334/0x394
-> packages_make_item+0x4c/0x180
-> configfs_mkdir+0x358/0x740
-> vfs_mkdir2+0x1bc/0x2e8
-> SyS_mkdirat+0x154/0x23c
-> el0_svc_naked+0x34/0x38
-> 
-> Freed by task 13096:
-> kasan_slab_free+0xb8/0x194
-> kfree+0x13c/0x910
-> package_details_release+0x524/0x56c
-> kref_put+0xc4/0x104
-> config_item_put+0x24/0x34
-> __configfs_open_file+0x35c/0x3b0
-> configfs_open_file+0x28/0x34
-> do_dentry_open+0x2cc/0x5c0
-> vfs_open+0x80/0xe0
-> path_openat+0xd8c/0x2988
-> do_filp_open+0x1c4/0x2fc
-> do_sys_open+0x23c/0x404
-> SyS_openat+0x38/0x48
-> el0_svc_naked+0x34/0x38
-> 
-> To fix this issue, remove the config_item_put in
-> __configfs_open_file to balance the refcount of config_item.
-> 
-> Fixes: b0841eefd969 ("configfs: provide exclusion between IO and removals")
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Joel Becker <jlbec@evilplan.org>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Daiyue Zhang <zhangdaiyue1@huawei.com>
-> Signed-off-by: Yi Chen <chenyi77@huawei.com>
-> Signed-off-by: Ge Qiu <qiuge@huawei.com>
-> Reviewed-by: Chao Yu <yuchao0@huawei.com>
-> ---
->   fs/configfs/file.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/configfs/file.c b/fs/configfs/file.c
-> index 1f0270229d7b..da8351d1e455 100644
-> --- a/fs/configfs/file.c
-> +++ b/fs/configfs/file.c
-> @@ -378,7 +378,7 @@ static int __configfs_open_file(struct inode *inode, struct file *file, int type
->   
->   	attr = to_attr(dentry);
->   	if (!attr)
-> -		goto out_put_item;
-> +		goto out_free_buffer;
->   
->   	if (type & CONFIGFS_ITEM_BIN_ATTR) {
->   		buffer->bin_attr = to_bin_attr(dentry);
-> @@ -391,7 +391,7 @@ static int __configfs_open_file(struct inode *inode, struct file *file, int type
->   	/* Grab the module reference for this attribute if we have one */
->   	error = -ENODEV;
->   	if (!try_module_get(buffer->owner))
-> -		goto out_put_item;
-> +		goto out_free_buffer;
->   
->   	error = -EACCES;
->   	if (!buffer->item->ci_type)
-> @@ -435,8 +435,6 @@ static int __configfs_open_file(struct inode *inode, struct file *file, int type
->   
->   out_put_module:
->   	module_put(buffer->owner);
-> -out_put_item:
-> -	config_item_put(buffer->item);
->   out_free_buffer:
->   	up_read(&frag->frag_sem);
->   	kfree(buffer);
-> 
+T24gVGh1LCAyMDIxLTAzLTA0IGF0IDA4OjQ2ICswMTAwLCBGbG9yaWFuIFdlc3RwaGFsIHdyb3Rl
+Og0KPiBNYXJrIFRvbWxpbnNvbiA8bWFyay50b21saW5zb25AYWxsaWVkdGVsZXNpcy5jby5uej4g
+d3JvdGU6DQo+ID4gQ2hhbmdpbmcgdG8gdXNpbmcgc21wX21iKCkgaW5zdGVhZCBvZiBzbXBfd21i
+KCkgZml4ZXMgdGhlIGtlcm5lbCBwYW5pYw0KPiA+IHJlcG9ydGVkIGluIGNjMDBiY2FhNTg5OSwN
+Cj4gDQo+IENhbiB5b3UgcmVwcm9kdWNlIHRoZSBjcmFzaGVzIHdpdGhvdXQgdGhpcyBjaGFuZ2U/
+DQoNClllcy4gSW4gb3VyIHRlc3QgZW52aXJvbm1lbnQgd2Ugd2VyZSBzZWVpbmcgYSBrZXJuZWwg
+cGFuaWMgYXBwcm94LiB0d2ljZQ0KYSBkYXksIHdpdGggYSBzaW1pbGFyIG91dHB1dCB0byB0aGF0
+IHNob3duIGluIFN1YmFzaCdzIHBhdGNoIChjYzAwYmNhYTU4OTkpLg0KV2l0aCB0aGlzIHBhdGNo
+IHdlIGFyZSBub3Qgc2VlaW5nIGFueSBpc3N1ZS4gVGhlIENQVSBpcyBhIGR1YWwtY29yZSBBUk0N
+CkNvcnRleC1BOS4NCg0KPiA+IEhvdyBtdWNoIG9mIGFuIGltcGFjdCBpcyB0aGUgTUIgY2hhbmdl
+IG9uIHRoZSBwYWNrZXQgcGF0aD8NCg0KSSB3aWxsIHJ1biBvdXIgdGhyb3VnaHB1dCB0ZXN0cyBh
+bmQgZ2V0IHRoZXNlIHJlc3VsdHMuDQoNCkkgaGF2ZSBhIHNjcmlwdCB3aGljaCBtYWtlcyBhcm91
+bmQgMjAwIGNhbGxzIHRvIGlwdGFibGVzLiBUaGlzIHdhcyB0YWtpbmcNCjExLjU5cyBhbmQgbm93
+IGlzIGJhY2sgdG8gMS4xNnMuDQoNCg==
