@@ -2,93 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C7032F3F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:33:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A6532F3F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:33:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhCETcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 14:32:43 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:44843 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbhCETcV (ORCPT
+        id S230143AbhCETdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 14:33:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47978 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229730AbhCETc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:32:21 -0500
-Received: by mail-oi1-f169.google.com with SMTP id x20so3689283oie.11;
-        Fri, 05 Mar 2021 11:32:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XaS2sNj3AaDvFNYBjMZ96z/1bD+wKa0y2e10rT1bRbo=;
-        b=DBJ+dOmakxUa3Whvpz5LdGaiC5P7s5uAFWVqSy/fV4xPp6WWVxIp8FCPzfBqpVshrl
-         HLkhU1QlDxrkZfgPAoOyKf/p8XGxpMtVEl57wRZqlfGEelXhzJ1CgwM3SL1kkr/y+UZ3
-         fyXAuITl5mr86eUdlASReaYjav3A4gXdkKXtAOPboFHHAM3YhuiWJ8a6aIod6AXoCrJF
-         aJrQPLYSBp4eiPOPDjSE4pRrk3HHinwzkD4m78vLCxt577Gnt0jyrvhkFxzAY9sc0QOY
-         G+ghCS/OyHeSF9Ht7FrbQkGGmcul2vDrldYvEC+kLMOXclFkjRyQcpoTpWdoulE/ow3S
-         yIiQ==
-X-Gm-Message-State: AOAM533Qie9RwdJRzBx1UtrUWY2wqeYHyDYDQrDnt0XGK0dw0zkfqK9F
-        ICIUMs5acGtKlS3R30Ditqgk9X4VXw==
-X-Google-Smtp-Source: ABdhPJzeJ22aG7OHIMAzQMrvP4kx0nmrnZrAZfCRF/bSzz2qFHlNgD/X+8eCHp1qdTXD3YrzIsQb9A==
-X-Received: by 2002:aca:da83:: with SMTP id r125mr8319982oig.127.1614972740680;
-        Fri, 05 Mar 2021 11:32:20 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p66sm710872oib.53.2021.03.05.11.32.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 11:32:19 -0800 (PST)
-Received: (nullmailer pid 518985 invoked by uid 1000);
-        Fri, 05 Mar 2021 19:32:18 -0000
-Date:   Fri, 5 Mar 2021 13:32:18 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     elder@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
-        davem@davemloft.net, kuba@kernel.org,
-        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH v1 6/7] dt-bindings: net: qcom-ipa: Document
- qcom,sc7180-ipa compatible
-Message-ID: <20210305193218.GA517246@robh.at.kernel.org>
-References: <20210211175015.200772-1-angelogioacchino.delregno@somainline.org>
- <20210211175015.200772-7-angelogioacchino.delregno@somainline.org>
+        Fri, 5 Mar 2021 14:32:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614972775;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lzFUlmEwerGb1otgAwUz4uvPmsIdAWjstYZ2iDVwDbo=;
+        b=UvfIXrBfriXI4YjojfhH7OgeOVmVLS2cCd7bep6x310ohNAdHPeAAOPKCjiNn0E/+bt1rT
+        dU5IHsA0j4MIuiKWh4oxxVxDXGBSIqXHUFUBY5IDSkzArUtZWarmJlipFuF52QY+xdvZc8
+        1uhVacYDB6ZsMz0g/YjocKVEVjYuXwg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-302-QUCO94aoNBaBZDyW2FovUA-1; Fri, 05 Mar 2021 14:32:51 -0500
+X-MC-Unique: QUCO94aoNBaBZDyW2FovUA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E29E28143F0;
+        Fri,  5 Mar 2021 19:32:49 +0000 (UTC)
+Received: from treble (ovpn-116-51.rdu2.redhat.com [10.10.116.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F37E760843;
+        Fri,  5 Mar 2021 19:32:46 +0000 (UTC)
+Date:   Fri, 5 Mar 2021 13:32:44 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>, rostedt@goodmis.org,
+        kuba@kernel.org, ast@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, x86@kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com, yhs@fb.com
+Subject: Re: [PATCH] x86: kprobes: orc: Fix ORC walks in kretprobes
+Message-ID: <20210305193244.odtphdj5wm5cslf7@treble>
+References: <d72c62498ea0514e7b81a3eab5e8c1671137b9a0.1614902828.git.dxu@dxuuu.xyz>
+ <20210305182806.df403dec398875c2c1b2c62d@kernel.org>
+ <20210305195809.a9784ecf0b321c14fd18d247@kernel.org>
+ <20210305192515.6utyhm5kks4zexwn@maharaja.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210211175015.200772-7-angelogioacchino.delregno@somainline.org>
+In-Reply-To: <20210305192515.6utyhm5kks4zexwn@maharaja.localdomain>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 06:50:14PM +0100, AngeloGioacchino Del Regno wrote:
-> The driver supports SC7180, but the binding was not documented.
-> Just add it.
+On Fri, Mar 05, 2021 at 11:25:15AM -0800, Daniel Xu wrote:
+> > BTW, is this a regression? or CONFIG_UNWINDER_ORC has this issue before?
+> > It seems that the above commit just changed the default unwinder. This means
+> > OCR stack unwinder has this bug before that commit.
 > 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> ---
->  Documentation/devicetree/bindings/net/qcom,ipa.yaml | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> I see your point -- I suppose it depends on point of view. Viewed from
+> userspace, a change in kernel defaults means that one kernel worked and
+> the next one didn't -- all without the user doing anything. Consider it
+> from the POV of a typical linux user who just takes whatever the distro
+> gives them and doesn't compile their own kernels.
 > 
-> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> index 8a2d12644675..b063c6c1077a 100644
-> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> @@ -43,7 +43,11 @@ description:
->  
->  properties:
->    compatible:
-> -    const: "qcom,sdm845-ipa"
-> +    oneOf:
-> +      - items:
-> +          - enum:
+> From the kernel point of view, you're also right. ORC didn't regress, it
+> was always broken for this particular use case. But as a primarily
+> userspace developer, I would consider this a kernel regression.
 
-Just enum, you don't need oneOf when only 1. And items is implied when 
-only 1 entry.
+Either way, if the bug has always existed in the ORC unwinder, the Fixes
+tag needs to reference the original ORC commit:
 
-> +              - "qcom,sdm845-ipa"
-> +              - "qcom,sc7180-ipa"
->  
->    reg:
->      items:
-> -- 
-> 2.30.0
-> 
+  Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
+
+That makes it possible for stable kernels to identify the source of the
+bug and corresponding fix.  Many people used the ORC unwinder before it
+became the default.
+
+-- 
+Josh
+
