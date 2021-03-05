@@ -2,120 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57DE32E49E
+	by mail.lfdr.de (Postfix) with ESMTP id 4467632E49D
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhCEJTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:19:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
+        id S229601AbhCEJTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:19:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbhCEJTB (ORCPT
+        with ESMTP id S229589AbhCEJTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:19:01 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FFBC061574
+        Fri, 5 Mar 2021 04:19:00 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7320BC061756
         for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 01:19:00 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id k66so800549wmf.1
+Received: by mail-wm1-x334.google.com with SMTP id w203-20020a1c49d40000b029010c706d0642so5688545wma.0
         for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 01:19:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8vJPV4FFwyt82QjbLhQn3+aWfcjT4u1dwj3bRwwYUZg=;
-        b=nCBqUkSK4KKfw+b3O4dSAu30OZObhhK/hc1tmfr0QT3OO6SNikoNtfNIf4ImrZaBuw
-         fOGpB6D3w5mu1Gp2MxOq3MgCDDGuwJ4sCyCvPaqVq0/Mr95qRW6kzhjE4JV2Ve+f0v5J
-         R1yoy9l/FhsBx2wCqKFePLGMw8c82/N2GMro9PFvhk/1uLsiyorZZspXPxcK9ddNXO62
-         XvuFtQ3byMIjjlpM7qT2JSuOPoxkzi+/bZQWjzWi3ks52l9wPzTV9ZqEliqraKdqbR14
-         35v+2X0/aVQyqEfV5/UlTH2rUQpz7AL4/vw4r4DdG8ugNfROUrkY2vGE3LsGATptCuz7
-         77Ig==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9NaXk4dB/rdZ6Q95jjM7mfrL2gEwIE0c0/Z44hytAfo=;
+        b=Hke56nsGOFEllx5nEFlQ7K+8nJcZqv81lMbYYK+j9c6hfvFkV0FjZaCRpSVajwmF+R
+         GZI+CjXTUC11H+imXOfNZqJatZHa91SDJqqugfmJxerX+JAeHe+eouMn7LVUzLloMZCy
+         Y4IstHkPHM+rYlCNbPNB0sj7vjLnL4KEYrJVSLVisFxOSi6R726B8fXb5oXCXB9I9bq2
+         2+Oq6rlaGwmdFyXaKFVHQ/pn5gsCxAGrhZbZJdG/H4IV5ZAGFXeZyCIhfEqItEsMnpZK
+         hTfK/LsgFCRdEU5+il/a9i52RVry3xDajxqkQz/+XlgzeizorZEGs8mJE2dA/DXJtX90
+         beeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8vJPV4FFwyt82QjbLhQn3+aWfcjT4u1dwj3bRwwYUZg=;
-        b=ZR3NWJ3aaxubqU/iKCmVG/WN9Y9EpYYp2WK3IrikJuiJ6fHG/uA6yjcbnnt/qjgcDD
-         /J/bHQpmzUWD/05pvRaXuVd9tiWCwaJBYsuoQuxbOMyDq+AEUJsRsA0iK6qn/KsZspPs
-         X3m8A69K78lvqrHLgBjeFCJZtlPeGBY5irs75yb8oui6w5Yo7or+Db6DCvDL7q9DaDgi
-         +YT2H6z531ovID1RkSRRZ7L7R++ipmfrgaWTiTt9TuydERihNWmjpV1b8/h+xFQApWkz
-         T/irXdw9nk3HMJxTkkKgKdkvpFB2IsOQJE6d12ozEH1tH/GWxOLPjAeoewjmuhpPM/BU
-         epNA==
-X-Gm-Message-State: AOAM532+/W32DNWjrz5LJstRY6EAbG7EVWn5EeHxFUIv2s8vFDXZyV9Z
-        57SFS0n6huXAPUC5D4NNDARbiA==
-X-Google-Smtp-Source: ABdhPJwrDZdyUEX/CX8cn+VF0ajEbirzA9wYgQWCTVvm8e666ZxT2NbDPANZG6FBAnU7u4fM8Tdvcw==
-X-Received: by 2002:a1c:2155:: with SMTP id h82mr8014110wmh.169.1614935939487;
-        Fri, 05 Mar 2021 01:18:59 -0800 (PST)
-Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
-        by smtp.gmail.com with ESMTPSA id k11sm3545806wmj.1.2021.03.05.01.18.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 01:18:59 -0800 (PST)
-Date:   Fri, 5 Mar 2021 09:18:56 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, tabba@google.com,
-        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
-        seanjc@google.com, robh+dt@kernel.org
-Subject: Re: [PATCH v3 27/32] KVM: arm64: Refactor stage2_map_set_prot_attr()
-Message-ID: <YEH3gKYY/Rz7W+50@google.com>
-References: <20210302150002.3685113-1-qperret@google.com>
- <20210302150002.3685113-28-qperret@google.com>
- <20210304200335.GG21950@willie-the-truck>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9NaXk4dB/rdZ6Q95jjM7mfrL2gEwIE0c0/Z44hytAfo=;
+        b=XSlj/AlY7a4VFDBK/Ft9UM3FYk6qetuDSqRC6E06+CR1buXb7NxdmKjPHdWh/HAPVm
+         8SYH0S7mlnH8miFv0AfYwEzDs+GaGmsIC7zEybKTJVWDIYThjxy3o/GENu9dUaK0x9R4
+         L01X54TMWSAhB8oUXv+UKoJKpCeXas/Zk7U5dV0vZfh3r0b/jzl6xxNnLUA1Nx8Nlsyo
+         UwaWLXXlW+/RYi3H5c8oPxDmsEFOMOlS8L4IVdEdqyzfPbgh7SvbEutIj6qWQraHvfi0
+         tyuUT2vpGunO5jKPHsyq3+sg3UhV22PTB0W8hmdNUa9kiSOj27N53osXgUF8+eqv6lVk
+         VZ0Q==
+X-Gm-Message-State: AOAM533fMYMEsr40ekN6q4yrHhjoPDUZR/hMJAeeDnI23AJC+kqFkZvB
+        dD7HD8iH099ccEJ/OKbWjSFeFjMF6sd3jg==
+X-Google-Smtp-Source: ABdhPJw6DQo57kVctbf9LdrGa50qhXc9YYge5k8O1RQjCtdYNLIQRZq/GIm4f3DRItMYIea2ZkfHSQ==
+X-Received: by 2002:a1c:c244:: with SMTP id s65mr7629124wmf.2.1614935938869;
+        Fri, 05 Mar 2021 01:18:58 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id f7sm3478937wre.78.2021.03.05.01.18.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Mar 2021 01:18:58 -0800 (PST)
+Subject: Re: [PATCH] ASoC: codecs: lpass-wsa-macro: fix RX MIX input controls
+To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
+Cc:     Banajit Goswami <bgoswami@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "moderated list:QCOM AUDIO (ASoC) DRIVERS" 
+        <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210305005049.24726-1-jonathan@marek.ca>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <901874d6-9b1f-714b-31bf-0e1e61956890@linaro.org>
+Date:   Fri, 5 Mar 2021 09:18:57 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304200335.GG21950@willie-the-truck>
+In-Reply-To: <20210305005049.24726-1-jonathan@marek.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 04 Mar 2021 at 20:03:36 (+0000), Will Deacon wrote:
-> On Tue, Mar 02, 2021 at 02:59:57PM +0000, Quentin Perret wrote:
-> > In order to ease its re-use in other code paths, refactor
-> > stage2_map_set_prot_attr() to not depend on a stage2_map_data struct.
-> > No functional change intended.
-> > 
-> > Signed-off-by: Quentin Perret <qperret@google.com>
-> > ---
-> >  arch/arm64/kvm/hyp/pgtable.c | 19 ++++++++-----------
-> >  1 file changed, 8 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> > index 8e7059fcfd40..8aa01a9e2603 100644
-> > --- a/arch/arm64/kvm/hyp/pgtable.c
-> > +++ b/arch/arm64/kvm/hyp/pgtable.c
-> > @@ -494,8 +494,7 @@ u64 kvm_get_vtcr(u64 mmfr0, u64 mmfr1, u32 phys_shift)
-> >  	return vtcr;
-> >  }
-> >  
-> > -static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
-> > -				    struct stage2_map_data *data)
-> > +static kvm_pte_t stage2_get_prot_attr(enum kvm_pgtable_prot prot)
-> >  {
-> >  	bool device = prot & KVM_PGTABLE_PROT_DEVICE;
-> >  	kvm_pte_t attr = device ? PAGE_S2_MEMATTR(DEVICE_nGnRE) :
-> > @@ -504,15 +503,15 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
-> >  
-> >  	if (prot & KVM_PGTABLE_PROT_NONE) {
-> >  		if (prot != KVM_PGTABLE_PROT_NONE)
-> > -			return -EINVAL;
-> > +			return 0;
+Thanks Jonathan for testing the Mix path!
+
+On 05/03/2021 00:50, Jonathan Marek wrote:
+> Attempting to use the RX MIX path at 48kHz plays at 96kHz, because these
+> controls are incorrectly toggling the first bit of the register, which
+> is part of the FS_RATE field.
 > 
-> Hmm, does the architecture actually say that having all these attributes
-> as 0 is illegal?
+Yes bit 0 is part of PCM RATE!
 
-Hmm, that's a good point, that might not be the case. I assumed we would
-have no use for this, but there we can easily avoid the restriction
-so...
-
-> If not, I think it would be better to keep the int return
-> code and replace the 'data' parameter with a pointer to a kvm_pte_t.
+> Fix the problem by using the same method used by the "WSA RX_MIX EC0_MUX"
+> control, which is to use SND_SOC_NOPM as the register and use an enum in
+> the shift field instead.
 > 
-> Does that work?
+> Fixes: 2c4066e5d428 ("ASoC: codecs: lpass-wsa-macro: add dapm widgets and route")
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
 
-I think so yes, I'll fix it up.
+This looks good to me.
 
-Cheers,
-Quentin
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+>   sound/soc/codecs/lpass-wsa-macro.c | 20 +++++++++++---------
+>   1 file changed, 11 insertions(+), 9 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+> index f399f4dff5511..bd2561f9fb9fa 100644
+> --- a/sound/soc/codecs/lpass-wsa-macro.c
+> +++ b/sound/soc/codecs/lpass-wsa-macro.c
+> @@ -1211,14 +1211,16 @@ static int wsa_macro_enable_mix_path(struct snd_soc_dapm_widget *w,
+>   				     struct snd_kcontrol *kcontrol, int event)
+>   {
+>   	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+> -	u16 gain_reg;
+> +	u16 path_reg, gain_reg;
+>   	int val;
+>   
+> -	switch (w->reg) {
+> -	case CDC_WSA_RX0_RX_PATH_MIX_CTL:
+> +	switch (w->shift) {
+> +	case WSA_MACRO_RX_MIX0:
+> +		path_reg = CDC_WSA_RX0_RX_PATH_MIX_CTL;
+>   		gain_reg = CDC_WSA_RX0_RX_VOL_MIX_CTL;
+>   		break;
+> -	case CDC_WSA_RX1_RX_PATH_MIX_CTL:
+> +	case WSA_MACRO_RX_MIX1:
+> +		path_reg = CDC_WSA_RX1_RX_PATH_MIX_CTL;
+>   		gain_reg = CDC_WSA_RX1_RX_VOL_MIX_CTL;
+>   		break;
+>   	default:
+> @@ -1231,7 +1233,7 @@ static int wsa_macro_enable_mix_path(struct snd_soc_dapm_widget *w,
+>   		snd_soc_component_write(component, gain_reg, val);
+>   		break;
+>   	case SND_SOC_DAPM_POST_PMD:
+> -		snd_soc_component_update_bits(component, w->reg,
+> +		snd_soc_component_update_bits(component, path_reg,
+>   					      CDC_WSA_RX_PATH_MIX_CLK_EN_MASK,
+>   					      CDC_WSA_RX_PATH_MIX_CLK_DISABLE);
+>   		break;
+> @@ -2068,14 +2070,14 @@ static const struct snd_soc_dapm_widget wsa_macro_dapm_widgets[] = {
+>   	SND_SOC_DAPM_MUX("WSA_RX0 INP0", SND_SOC_NOPM, 0, 0, &rx0_prim_inp0_mux),
+>   	SND_SOC_DAPM_MUX("WSA_RX0 INP1", SND_SOC_NOPM, 0, 0, &rx0_prim_inp1_mux),
+>   	SND_SOC_DAPM_MUX("WSA_RX0 INP2", SND_SOC_NOPM, 0, 0, &rx0_prim_inp2_mux),
+> -	SND_SOC_DAPM_MUX_E("WSA_RX0 MIX INP", CDC_WSA_RX0_RX_PATH_MIX_CTL,
+> -			   0, 0, &rx0_mix_mux, wsa_macro_enable_mix_path,
+> +	SND_SOC_DAPM_MUX_E("WSA_RX0 MIX INP", SND_SOC_NOPM, WSA_MACRO_RX_MIX0,
+> +			   0, &rx0_mix_mux, wsa_macro_enable_mix_path,
+>   			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+>   	SND_SOC_DAPM_MUX("WSA_RX1 INP0", SND_SOC_NOPM, 0, 0, &rx1_prim_inp0_mux),
+>   	SND_SOC_DAPM_MUX("WSA_RX1 INP1", SND_SOC_NOPM, 0, 0, &rx1_prim_inp1_mux),
+>   	SND_SOC_DAPM_MUX("WSA_RX1 INP2", SND_SOC_NOPM, 0, 0, &rx1_prim_inp2_mux),
+> -	SND_SOC_DAPM_MUX_E("WSA_RX1 MIX INP", CDC_WSA_RX1_RX_PATH_MIX_CTL,
+> -			   0, 0, &rx1_mix_mux, wsa_macro_enable_mix_path,
+> +	SND_SOC_DAPM_MUX_E("WSA_RX1 MIX INP", SND_SOC_NOPM, WSA_MACRO_RX_MIX1,
+> +			   0, &rx1_mix_mux, wsa_macro_enable_mix_path,
+>   			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+>   
+>   	SND_SOC_DAPM_MIXER_E("WSA_RX INT0 MIX", SND_SOC_NOPM, 0, 0, NULL, 0,
+> 
