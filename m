@@ -2,112 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6510632DE35
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F43032DE38
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhCEAEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 19:04:21 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:53071 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231521AbhCEAET (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 19:04:19 -0500
-Received: by mail-il1-f200.google.com with SMTP id e16so148250ile.19
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 16:04:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=bqLq8lEZAr3udvWoJ5bAlwyE7Hbzc7Aau7j02WMMyZQ=;
-        b=rVBAPq64hVYuz0GwxAPESOuggqE4idRtJoVD0JoiZvnw6FwZzkFSQBZhpyUNEh1VyX
-         aA4C5WSloFeFClYvMHY3O9SIEkSeqW3RbW6X8sH1PpYAcEJ0TLnW8yZXdj0j/nRHI8O9
-         /ST9BJNZnjpvxRRaGclFgapHv/tTc4TudGkcX17GRvJuCKeZHIGFrdoG2nLN2NZqNvbV
-         fT02KIe/n8QYPL1rpYZFcDTYnrTJt62s5QY8mvWEdusqQ6rKxq+8SsctodmG1AFmKkNS
-         gILmHRl39KS1E2UgUXTVIq8yk2nAKEkBj9U0vgUJogbgCTFFaMVw3GbdQ2fNcUMWb+9J
-         ZZag==
-X-Gm-Message-State: AOAM5337wzy5r85XncPx3DxEtyFUeg3cZxJ650r3O2Py6xaLQnV2ZBaY
-        eQrUrTOeb+4BbC4UD83EkuV+zBuabouGa1IayIbOGFO53lNT
-X-Google-Smtp-Source: ABdhPJyZ7X1PN5WYLX+tIw1Zbs+iVyIUGLXs1ez5SRC8FYFFL2+T/5vm5avVf1e1dadgDVcjILLDvy61otGySSFxz5gWtMQsnXWC
+        id S231934AbhCEAEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 19:04:30 -0500
+Received: from mail-bn8nam11on2068.outbound.protection.outlook.com ([40.107.236.68]:7409
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231840AbhCEAE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 19:04:29 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EwlqbkDzFM0dpyaMRppq1EYF0fp1jCFlUIttBqFoXEubgCd84r3tsyMp282rOjhtFNdQ2iiFz8cxE+mJkIhcfHdShT/5CbotD4f7t0j0eUIpwSI66anHOqx3K3vsqdNRZ6ERhxnORWeaVQHq+qMwod9g6tBRT/c3ANZfH0XBvlOkco54/U6fsFdqFBiKurn9ekKSK74a3mEd9PO1+VjVU6kbaKxlJkFYDrm6iw3iDEmawqzR1hjWiHwD1fJYKn2MCc8RVo3AqrdfdnoxUJyLIbl1XrXpO6aS/BKj3dLXRw19l7PkVTnauWAavhBY+A76RA9N5a8GQvUIiWFpR8l5LA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=msMkOVMaJP8Xv2pnmbcFunK2NqKOCK13CaPouoPBPu0=;
+ b=CA09z7bl+iNWMjKkjOuIqay1jBp7rME2W9lSo23XK0pn9pxIYqpWOGXD0L3CpuNa/RNWnX4wAJYDn+ymYHgMxDO5OiN1ovSIWC80BBA2pNyAY4IbYsj7KyCmpbAqNtjm9KN1IeYuzIaSXLHCBkJtS+KejzH3lV7QuYvGzXpaUxxkKB99Oi0036XuRv59eJInGCz0HeIdmXQvwCQSoLdLdN7FQwP5QIwrrCXxwfRpwF3Tbr8mVbavY74EbArZIpPaNIUshpwyxEsJ5kkc055TGGjg1VH+pydOPpkXMV0ZrW7ddWK8bppe0gaNQtMXtLvcE1U9puVB2DqK9uIgB/iYug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=msMkOVMaJP8Xv2pnmbcFunK2NqKOCK13CaPouoPBPu0=;
+ b=r4RuRjW1QbBJMJwZnVrRRP4x7sP1EmYBx/mPtdGmVOFhCWuk2A7axAshSsacOFm+pDBFtjquVcNbvP1mYBN9KPfwU3H0yZO4G+kgkbThDQppfbfwtOYi8tKePhET09EvCqoOz8rTj6npo8uiyA85MJhe1exXYk++VMdy8LbJlW0=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SA0PR12MB4495.namprd12.prod.outlook.com (2603:10b6:806:70::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Fri, 5 Mar
+ 2021 00:04:27 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::30fb:2d6c:a0bf:2f1d]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::30fb:2d6c:a0bf:2f1d%3]) with mapi id 15.20.3890.032; Fri, 5 Mar 2021
+ 00:04:27 +0000
+Cc:     brijesh.singh@amd.com, Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        John Allen <john.allen@amd.com>
+Subject: Re: [PATCH] crypto: ccp - Don't initialize SEV support without the
+ SEV feature
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <c1ea9899e6169bf3a3042866e165a2f90bda3ebd.1614810669.git.thomas.lendacky@amd.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <802f4e75-6e77-c48f-464d-9abcdc53bd8f@amd.com>
+Date:   Thu, 4 Mar 2021 18:04:25 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
+In-Reply-To: <c1ea9899e6169bf3a3042866e165a2f90bda3ebd.1614810669.git.thomas.lendacky@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [70.112.153.56]
+X-ClientProxiedBy: SN4PR0701CA0022.namprd07.prod.outlook.com
+ (2603:10b6:803:28::32) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-X-Received: by 2002:a5e:980e:: with SMTP id s14mr3880359ioj.63.1614902658921;
- Thu, 04 Mar 2021 16:04:18 -0800 (PST)
-Date:   Thu, 04 Mar 2021 16:04:18 -0800
-In-Reply-To: <0000000000009b387305bc00fda6@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000054fbc005bcbed38f@google.com>
-Subject: Re: WARNING in ieee802154_get_llsec_params
-From:   syzbot <syzbot+cde43a581a8e5f317bc2@syzkaller.appspotmail.com>
-To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, stefan@datenfreihafen.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN4PR0701CA0022.namprd07.prod.outlook.com (2603:10b6:803:28::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 5 Mar 2021 00:04:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 26b6b142-8c60-4895-1667-08d8df6a3db5
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4495:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4495BF4752B6FABD5BFD416AE5969@SA0PR12MB4495.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mNFENpr4LA5MtnB+Cr/ZLOiR9XtsNGEBUUEVq7kk8LZYv2hnUd+balZvvm6wV/jRp7M855wNY9syzGPHPOrHizMOMM/DViQLJTsG8m6YkxuM9accgkmmIcjU9PnH2eJmhAqtuaEuKDXsYDt3KRcchGnB+gUabUew/lopiZU9tgmYk/tXTJkOEqairV08Wx30IDzNMULdD7Wt3mYtNJd22fTmJNuQdTFlbM4PcofMdSeWCKr6rQpaZcfgeQgDIFLBHa1sgyXGUeszTYXDUrZBTXpKmvvAv/lH7UOBdBFI0JCCljCOycW8KLMM2f4VQS3vhbhuqxivYUf8upo0ji5L2pivjn7KvGRd+PYlqzPPtyiRSTzSRepv5MN+lPr++j4wF4di9EoF0gwIeLwPwGVIE2nW5ijA5EaTBzHto+qpyIOTklmydgJGReU7d6OO1O6GkNtp7Cy/NNdb5Igs1HZ6L1g0ioRd/igy07Iuc1Mj7jq+7+a8tGSKnMx1uVe088fd82O+rmTlJ+aOD3GOi0NdNfIcpzE47Yq44II5Am/L9mY+THsrh1dlMiEkP+E6KME8SvWkvUDEmTlpWCsjP5bCokwWyeNYrrbycYjwAoSa+HQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(366004)(346002)(376002)(26005)(6512007)(8936002)(4326008)(186003)(8676002)(54906003)(86362001)(52116002)(956004)(2616005)(44832011)(83380400001)(16526019)(6486002)(53546011)(6506007)(66946007)(31686004)(31696002)(316002)(66476007)(2906002)(5660300002)(478600001)(66556008)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TlJ2TjZkS0NTdHBLdUo4ZnJjT0FYZ3RRRGZDUnBUMTFXK0NFRG1Za1B4YVY2?=
+ =?utf-8?B?MXFSbXpDODliTUZtY09leWlLN054eFpFNnExOFovazJXVjZ6UTZuY0E4aTBQ?=
+ =?utf-8?B?b3JuNjFITENhVnZSa1p2bjQzRnRoTUo2ejZxUDJFd2dsUytOdjM1TkVFUXJi?=
+ =?utf-8?B?cmM1ZUxCVXJRbzlweXUxUUFYdm1YVHh1QmU4Rml2SFpPWXRSZHZZMFNuRDNB?=
+ =?utf-8?B?YmwvNGhFNk9TdnZlTUkvNU95VXRHcFFPQkl4WDJmeXVoT3NlVWRSRHZoaDhk?=
+ =?utf-8?B?N1RNNWs3Skl6UXFFeU0vTkJGRHlXOU0walhtd2tDdDBEK21nRlRzOThsQUQ2?=
+ =?utf-8?B?OXlnTUZaTkg3S0Rja3RBb1l4czlVRWFVVC9tbHdNYlN1SExlNnl2cTRGcS9p?=
+ =?utf-8?B?cW1za0YyK0xWWENTTHFuL2lja0NaNmlCOGdzek1XMko3MDVSR2FZRjlJMlVj?=
+ =?utf-8?B?T0o5ZC9JUHNTQXBnN3dPZ1VMU0ZYYkppTmtnenBrWW9iazF5UW9iY0xXb0Nq?=
+ =?utf-8?B?TTE3V05nOEJ3N29IczdoYzJ4YmhUcGQ4bkxRK2Z1WjlIOVRPRUdJSkRraFl6?=
+ =?utf-8?B?d2RoMGNmQWhIMzdycVc0bnV2SWUxdE5oeVlpY3paMThxTThVNjZnUzNWcTFp?=
+ =?utf-8?B?R1NoM3NTQkE5eUVFdDdCR2V6REhZVmhNamFOaWlNTEFJUGczSjF3eDBPckp0?=
+ =?utf-8?B?NDhmVENVaE5uZjNVdEFiSHFVZlVzWkVDT0lGUTVYSWhPemx3K081UEdxRENv?=
+ =?utf-8?B?aXFxVzZ3dmpPTmtLbTgxT3NSYjBKbnFNODdkRHFDNEpYU1FkN2xlU0FZNktj?=
+ =?utf-8?B?RVJycmlzaHNPNjBDc3l3UUhiM1I3aFJjK3UzdkxacVo2akYvQUJQMTlTZC9l?=
+ =?utf-8?B?Nzg1cU1RMWZ1dmdzelgvOUx1bVM1WTFOYlFSWWFVL3B4TGhMK1hsSkQ3U2hi?=
+ =?utf-8?B?OHgyQTQ5a3pRdUNtbFJleGdPcHZMajIzbnNrT3pxRTFPK0h5RzB1RkF0L3VU?=
+ =?utf-8?B?NkdOUHArcEYvcVZwdit1aHJFVXRuL0hLckdYRG9vRDI0dUhXSzQ4TUs2cmdY?=
+ =?utf-8?B?RFdNbEd1N3QrTjdLWG05SjMwSmJNSFZBelA1cEZyOXc3cEVrS0k5L0lNMDRH?=
+ =?utf-8?B?UkxvS0gzWTNFeWJmZlFjZ1Y4bnE1TkdyNnRWZUNMQlpqUEZvWVFabXRtSTJU?=
+ =?utf-8?B?dWhmcHlSL3FzSlpaQitzMjBBR0Y4YUVHUFRHQVpOUU5RaTZneTNiRmZFUXJv?=
+ =?utf-8?B?WXMwbFV3dTdMQ0lubk1HNHBWSmpJQWo3QnFIZDIxblJKQ0xwcWIydFlyYTlG?=
+ =?utf-8?B?YVFnT0N0MDJwOG9lZEdQOTAvaXllMG9qOWhDNkFrODRucVlaNUE5YTR2Uk1G?=
+ =?utf-8?B?Z0tsdERialZiYzJGVUttQ3VBMXUzSWZqamN4eXpXYXRWa2pXNjNyREMwWDB1?=
+ =?utf-8?B?SEwwQUo3cU4vNEhRZDVVTDZoa2VISy9zRjJvenVydTZ4OExxZmFlcmJ1RW9z?=
+ =?utf-8?B?aTROVFFvM0RsVnl6ZXlMaW5tdmQxN01pbXFrTGpGRDBtOEQ1LytsVHJ2K2N0?=
+ =?utf-8?B?R1hrMmxQalhqRE9NanJSL01JbEcrb0xnZWYvdU9kVGcwZHJLOEZDVnBsZEFT?=
+ =?utf-8?B?WmhzQmRWT01SRUNiU0FaNFdua21GT1pvdEJhU3k3SUd6MmlEdWIzRkJWQjY1?=
+ =?utf-8?B?SDFVYU8yYnZSRE90TVVjMS9FZmx2WEd3bjFHcUxCcEdxcXh0czczRXNKQTJG?=
+ =?utf-8?Q?c4m7r17CLhGbcp30oQoNGA5hWFbVnrmUx7R2YW0?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26b6b142-8c60-4895-1667-08d8df6a3db5
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2021 00:04:27.0445
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vONwrTUHSJaqxdvbqZDpeRvCb5hVd6VvxnFhrevSZ58jg9aG/l8YE0b50wyP9ezZkyeqkpIu2bs2vqxLA6L3vA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4495
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
 
-HEAD commit:    f5427c24 Add linux-next specific files for 20210304
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12bb4ff2d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a7876f68bf0bea99
-dashboard link: https://syzkaller.appspot.com/bug?extid=cde43a581a8e5f317bc2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=124c7b46d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1276f5b0d00000
+On 3/3/21 4:31 PM, Tom Lendacky wrote:
+> From: Tom Lendacky <thomas.lendacky@amd.com>
+>
+> If SEV has been disabled (e.g. through BIOS), the driver probe will still
+> issue SEV firmware commands. The SEV INIT firmware command will return an
+> error in this situation, but the error code is a general error code that
+> doesn't highlight the exact reason.
+>
+> Add a check for X86_FEATURE_SEV in sev_dev_init() and emit a meaningful
+> message and skip attempting to initialize the SEV firmware if the feature
+> is not enabled. Since building the SEV code is dependent on X86_64, adding
+> the check won't cause any build problems.
+>
+> Cc: John Allen <john.allen@amd.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cde43a581a8e5f317bc2@syzkaller.appspotmail.com
 
-------------[ cut here ]------------
-DEBUG_LOCKS_WARN_ON(lock->magic != lock)
-WARNING: CPU: 1 PID: 8406 at kernel/locking/mutex.c:928 __mutex_lock_common kernel/locking/mutex.c:928 [inline]
-WARNING: CPU: 1 PID: 8406 at kernel/locking/mutex.c:928 __mutex_lock+0xc0b/0x1120 kernel/locking/mutex.c:1093
-Modules linked in:
-CPU: 1 PID: 8406 Comm: syz-executor446 Not tainted 5.12.0-rc1-next-20210304-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__mutex_lock_common kernel/locking/mutex.c:928 [inline]
-RIP: 0010:__mutex_lock+0xc0b/0x1120 kernel/locking/mutex.c:1093
-Code: 08 84 d2 0f 85 a3 04 00 00 8b 05 98 77 c0 04 85 c0 0f 85 12 f5 ff ff 48 c7 c6 00 85 6b 89 48 c7 c7 c0 82 6b 89 e8 ed be bc ff <0f> 0b e9 f8 f4 ff ff 65 48 8b 1c 25 00 f0 01 00 be 08 00 00 00 48
-RSP: 0018:ffffc9000163f258 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801e509c00 RSI: ffffffff815bc1b5 RDI: fffff520002c7e3d
-RBP: ffff8880220e0c90 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815b528e R11: 0000000000000000 R12: 0000000000000000
-R13: dffffc0000000000 R14: ffffffff8a8a8200 R15: 0000000000000000
-FS:  0000000001676300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffc942cffac CR3: 0000000020f9b000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ieee802154_get_llsec_params+0x3f/0x70 net/mac802154/cfg.c:321
- rdev_get_llsec_params net/ieee802154/rdev-ops.h:241 [inline]
- nl802154_get_llsec_params+0xce/0x390 net/ieee802154/nl802154.c:745
- nl802154_send_iface+0x7cf/0xa70 net/ieee802154/nl802154.c:823
- nl802154_get_interface+0xeb/0x230 net/ieee802154/nl802154.c:889
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x440899
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe18370df8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000000107cf RCX: 0000000000440899
-RDX: 0000000000000000 RSI: 0000000020000300 RDI: 0000000000000005
-RBP: 0000000000000000 R08: 00007ffe18370f98 R09: 00007ffe18370f98
-R10: 00007ffe18370f98 R11: 0000000000000246 R12: 00007ffe18370e0c
-R13: 431bde82d7b634db R14: 00000000004ae018 R15: 00000000004004a0
+Reviewed-By: Brijesh Singh <brijesh.singh@amd.com>
 
+> ---
+>  drivers/crypto/ccp/sev-dev.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+> index 476113e12489..b9fc8d7aca73 100644
+> --- a/drivers/crypto/ccp/sev-dev.c
+> +++ b/drivers/crypto/ccp/sev-dev.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/ccp.h>
+>  #include <linux/firmware.h>
+>  #include <linux/gfp.h>
+> +#include <linux/cpufeature.h>
+>  
+>  #include <asm/smp.h>
+>  
+> @@ -971,6 +972,11 @@ int sev_dev_init(struct psp_device *psp)
+>  	struct sev_device *sev;
+>  	int ret = -ENOMEM;
+>  
+> +	if (!boot_cpu_has(X86_FEATURE_SEV)) {
+> +		dev_info_once(dev, "SEV: memory encryption not enabled by BIOS\n");
+> +		return 0;
+> +	}
+> +
+>  	sev = devm_kzalloc(dev, sizeof(*sev), GFP_KERNEL);
+>  	if (!sev)
+>  		goto e_err;
