@@ -2,264 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519A132E770
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7795D32E771
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbhCELv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 06:51:29 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:37336 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhCELvU (ORCPT
+        id S229882AbhCELwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 06:52:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229616AbhCELv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 06:51:20 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 491251F469FF
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id D964D4800C3; Fri,  5 Mar 2021 12:51:16 +0100 (CET)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Ian Ray <ian.ray@ge.com>, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, kernel@collabora.com
-Subject: [PATCHv4] serial: imx: Add DMA buffer configuration via sysfs
-Date:   Fri,  5 Mar 2021 12:50:58 +0100
-Message-Id: <20210305115058.92284-1-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.30.1
+        Fri, 5 Mar 2021 06:51:28 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB1CC061756
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 03:51:28 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id o10so1203564pgg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 03:51:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NnCGMYkLHHhLzlha7wIoj+XRbzjVqrdLciTxm17dSR0=;
+        b=xw/B0M8/nF/p2drnRDH6KBVl5mOKJeX+aaBaRAYg+cUninCl1/9UT2yQ9zahq+v2s2
+         EjBjWeatB4wsl/Defd2CJdAwnyCO5P9dcd2JhkC4S3X0RvHt9NljjiRR58+VY/NU/nPS
+         Bg0UQD9wT9KGd5tgTK40QLtEuSyBJ5rfMahIUef7gNC2qFRXQMlopTRQGLP94exZY4gf
+         qj59JJsqjl/J4szSRU5pvo5SMuR9nX9v/Gq+xEyo5LjS1OWjWstFp/z/8tjvIRQ2n6f7
+         bS3Kec/ozQl+B6Gbv/Hpv4Q+S1QIBKb/zJqLnL/fRpUuK4VFajkoiMqSg/kLR6FCXmnR
+         0/JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NnCGMYkLHHhLzlha7wIoj+XRbzjVqrdLciTxm17dSR0=;
+        b=jgcjVNPOhxoWRiUJ8n5hVhEh+yJwEt1RoKWuyb4xxg7j3nLzNyzKl9stHg9LydUqAA
+         r84JFCxrau3eOny7RErDvdwHmvNSy6MU6nqxSeFafaNO9lMDXXruKqTWHq+P8Jz4Kads
+         XzDUjbmMaiVVc9wvLldkhDb7ok+9AMr9pUdt2QGJv/lF/tzuIoIYMCaV7yeu9bFicjOq
+         d/5cqKt66o7a9LMP7SaVdVvabTIyzZ9scRTGE8KNKFGbYVG9b9tqsbbWFhXa95YD68bs
+         RjBOtCCsX+6CCSm4oyt8O5hhBWIV8Nviiaoh0B07H7b7KeqFA+dFWqAzShLZgGlPsggw
+         U9Ow==
+X-Gm-Message-State: AOAM530uc44djGEzdu8iWb6BXO+210DFmf+qnqLmLbddoMkbcWA4YdhB
+        PaFZrkYim/BeqgK9yFnqQ5j8aw==
+X-Google-Smtp-Source: ABdhPJzWYQ9hY6hwI1KR7IjfqM4m48t7udGV7npDdPdORAFZg8Zmvwi6DFjGg8C7r7xn6zZSPYBRgA==
+X-Received: by 2002:a65:41c6:: with SMTP id b6mr7996516pgq.7.1614945087509;
+        Fri, 05 Mar 2021 03:51:27 -0800 (PST)
+Received: from leoy-ThinkPad-X240s ([103.136.125.226])
+        by smtp.gmail.com with ESMTPSA id q14sm2048018pfh.172.2021.03.05.03.51.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 03:51:27 -0800 (PST)
+Date:   Fri, 5 Mar 2021 19:51:20 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Alexandre Truong <alexandre.truong@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Al Grant <al.grant@arm.com>, James Clark <james.clark@arm.com>,
+        Wilco Dijkstra <wilco.dijkstra@arm.com>
+Subject: Re: [PATCH RESEND WITH CCs v3 3/4] perf tools: enable
+ dwarf_callchain_users on aarch64
+Message-ID: <20210305115120.GA5478@leoy-ThinkPad-X240s>
+References: <20210304163255.10363-1-alexandre.truong@arm.com>
+ <20210304163255.10363-3-alexandre.truong@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304163255.10363-3-alexandre.truong@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabien Lahoudere <fabien.lahoudere@collabora.com>
+Hi Alexandre,
 
-In order to optimize serial communication (performance/throughput VS
-latency), we may need to tweak DMA period number and size. This adds
-sysfs attributes to configure those values before initialising DMA.
-The defaults will stay the same as before (16 buffers with a size of
-1024 bytes). Afterwards the values can be read/write with the
-following sysfs files:
+On Thu, Mar 04, 2021 at 04:32:54PM +0000, Alexandre Truong wrote:
+> On arm64, enable dwarf_callchain_users which will be needed
+> to do a dwarf unwind in order to get the caller of the leaf frame.
+> 
+> Signed-off-by: Alexandre Truong <alexandre.truong@arm.com>
+> Cc: John Garry <john.garry@huawei.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Kemeng Shi <shikemeng@huawei.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: Kan Liang <kan.liang@linux.intel.com>
+> Cc: Jin Yao <yao.jin@linux.intel.com>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Al Grant <al.grant@arm.com>
+> Cc: James Clark <james.clark@arm.com>
+> Cc: Wilco Dijkstra <wilco.dijkstra@arm.com>
+> ---
+>  tools/perf/builtin-report.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+> index 2a845d6cac09..93661a3eaeb1 100644
+> --- a/tools/perf/builtin-report.c
+> +++ b/tools/perf/builtin-report.c
+> @@ -405,6 +405,10 @@ static int report__setup_sample_type(struct report *rep)
+>  
+>  	callchain_param_setup(sample_type);
+>  
+> +	if (callchain_param.record_mode == CALLCHAIN_FP &&
+> +			strncmp(rep->session->header.env.arch, "aarch64", 7) == 0)
+> +		dwarf_callchain_users = true;
+> +
 
-/sys/class/tty/ttymxc*/dma_buffer_size
-/sys/class/tty/ttymxc*/dma_buffer_count
+I don't have knowledge for dwarf or FP.
 
-This is mainly needed for GEHC CS ONE (arch/arm/boot/dts/imx53-ppd.dts),
-which has multiple microcontrollers connected via UART controlling. One
-of the UARTs is connected to an on-board microcontroller at 19200 baud,
-which constantly pushes critical data (so aging character detect
-interrupt will never trigger). This data must be processed at 50-200 Hz,
-so UART should return data in less than 5-20ms. With 1024 byte DMA
-buffer (and a constant data stream) the read operation instead needs
-1024 byte / 19200 baud = 53.333ms, which is way too long (note: Worst
-Case would be remote processor sending data with short pauses <= 7
-characters, which would further increase this number). The current
-downstream kernel instead configures 24 bytes resulting in 1.25ms,
-but that is obviously not sensible for normal UART use cases and cannot
-be used as new default.
+This patch is suspicious for me that since it only fixes the issue for
+"perf report" command, but it cannot support "perf script".
 
-The same device also has another microcontroller with a 4M baud UART
-connection exchanging lots of data. For this the same mechanism can
-be used to increase the buffer size (downstream uses 4K instead of
-the default 1K) with potentially slightly reduced buffer count. At
-this baud rate latency is not an issue (4096 byte / 4M baud = 0.977 ms).
-Before increasing the default buffer count from 4 to 16 in 76c38d30fee7,
-this was required to avoid data loss. With the changed default it's
-a performance optimization.
+I did a quick testing for "perf script" command with the test code from
+patch 04, seems to me it cannot fix the fp omitting issue for
+"perf script" command:
 
-Signed-off-by: Fabien Lahoudere <fabien.lahoudere@collabora.com>
-[reword documentation and commit message, rebase to current code]
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
-I excluded Fabien from the Cc list, his mail address is no longer valid.
+  arm64_fp_test 11211  2282.355095:     176307 cycles: 
+              aaaac2e40740 f2+0x10 (/root/arm64_fp_test)
+              aaaac2e4061c main+0xc (/root/arm64_fp_test)
+              ffff961fbd24 __libc_start_main+0xe4 (/usr/lib/aarch64-linux-gnu/libc-2.28.so)
+              aaaac2e4065c _start+0x34 (/root/arm64_fp_test)
 
-Changes since PATCHv3 [*]:
- * rewrote commit message to provide a lot more details why this is needed
- * rebased to torvalds/master (5.12-rc1-dontuse), also applies on top of linux-next
- * use sysfs_emit() instead of sprintf
+Could you check for this?  Thanks!
 
-[*] https://lore.kernel.org/lkml/1539249903-6316-1-git-send-email-fabien.lahoudere@collabora.com/
----
- .../ABI/stable/sysfs-driver-imx-uart          | 12 +++
- drivers/tty/serial/imx.c                      | 98 +++++++++++++++++--
- 2 files changed, 103 insertions(+), 7 deletions(-)
- create mode 100644 Documentation/ABI/stable/sysfs-driver-imx-uart
+Leo
 
-diff --git a/Documentation/ABI/stable/sysfs-driver-imx-uart b/Documentation/ABI/stable/sysfs-driver-imx-uart
-new file mode 100644
-index 000000000000..27a50fcd9c5f
---- /dev/null
-+++ b/Documentation/ABI/stable/sysfs-driver-imx-uart
-@@ -0,0 +1,12 @@
-+What:		/sys/class/tty/ttymxc*/dma_buffer_count
-+Date:		March 2021
-+Contact:	Sebastian Reichel <sebastian.reichel@collabora.com>
-+Description:	The i.MX serial DMA buffer is split into multiple chunks, so that
-+		chunks can be processed while others are being filled with data.
-+		This represents the number of chunks.
-+
-+What:		/sys/class/tty/ttymxc*/dma_buffer_size
-+Date:		March 2021
-+Contact:	Sebastian Reichel <sebastian.reichel@collabora.com>
-+Description:	This represents the size of each DMA buffer chunk. Total DMA
-+		buffer size is this number multiplied by dma_buffer_count.
-diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index 8257597d034d..1c5eb7be0c07 100644
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -225,6 +225,8 @@ struct imx_port {
- 	struct scatterlist	rx_sgl, tx_sgl[2];
- 	void			*rx_buf;
- 	struct circ_buf		rx_ring;
-+	unsigned int		rx_buf_size;
-+	unsigned int		rx_period_length;
- 	unsigned int		rx_periods;
- 	dma_cookie_t		rx_cookie;
- 	unsigned int		tx_bytes;
-@@ -1193,10 +1195,6 @@ static void imx_uart_dma_rx_callback(void *data)
- 	}
- }
- 
--/* RX DMA buffer periods */
--#define RX_DMA_PERIODS	16
--#define RX_BUF_SIZE	(RX_DMA_PERIODS * PAGE_SIZE / 4)
--
- static int imx_uart_start_rx_dma(struct imx_port *sport)
- {
- 	struct scatterlist *sgl = &sport->rx_sgl;
-@@ -1207,9 +1205,8 @@ static int imx_uart_start_rx_dma(struct imx_port *sport)
- 
- 	sport->rx_ring.head = 0;
- 	sport->rx_ring.tail = 0;
--	sport->rx_periods = RX_DMA_PERIODS;
- 
--	sg_init_one(sgl, sport->rx_buf, RX_BUF_SIZE);
-+	sg_init_one(sgl, sport->rx_buf, sport->rx_buf_size);
- 	ret = dma_map_sg(dev, sgl, 1, DMA_FROM_DEVICE);
- 	if (ret == 0) {
- 		dev_err(dev, "DMA mapping error for RX.\n");
-@@ -1326,7 +1323,8 @@ static int imx_uart_dma_init(struct imx_port *sport)
- 		goto err;
- 	}
- 
--	sport->rx_buf = kzalloc(RX_BUF_SIZE, GFP_KERNEL);
-+	sport->rx_buf_size = sport->rx_period_length * sport->rx_periods;
-+	sport->rx_buf = kzalloc(sport->rx_buf_size, GFP_KERNEL);
- 	if (!sport->rx_buf) {
- 		ret = -ENOMEM;
- 		goto err;
-@@ -1786,6 +1784,85 @@ static const char *imx_uart_type(struct uart_port *port)
- 	return sport->port.type == PORT_IMX ? "IMX" : NULL;
- }
- 
-+static ssize_t dma_buffer_size_store(struct device *dev,
-+				     struct device_attribute *attr,
-+				     const char *buf, size_t count)
-+{
-+	unsigned int plen;
-+	int ret;
-+	struct device *port_device = dev->parent;
-+	struct imx_port *sport = dev_get_drvdata(port_device);
-+
-+	if (sport->dma_chan_rx) {
-+		dev_warn(dev, "RX DMA in use\n");
-+		return -EBUSY;
-+	}
-+
-+	ret = kstrtou32(buf, 0, &plen);
-+	if (ret == 0) {
-+		sport->rx_period_length = plen;
-+		ret = count;
-+	}
-+
-+	return ret;
-+}
-+
-+static ssize_t dma_buffer_size_show(struct device *dev,
-+				    struct device_attribute *attr,
-+				    char *buf)
-+{
-+	struct device *port_device = dev->parent;
-+	struct imx_port *sport = dev_get_drvdata(port_device);
-+
-+	return sysfs_emit(buf, "%u\n", sport->rx_period_length);
-+}
-+
-+static DEVICE_ATTR_RW(dma_buffer_size);
-+
-+static ssize_t dma_buffer_count_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf, size_t count)
-+{
-+	unsigned int periods;
-+	int ret;
-+	struct device *port_device = dev->parent;
-+	struct imx_port *sport = dev_get_drvdata(port_device);
-+
-+	if (sport->dma_chan_rx) {
-+		dev_warn(dev, "RX DMA in use\n");
-+		return -EBUSY;
-+	}
-+
-+	ret = kstrtou32(buf, 0, &periods);
-+	if (ret == 0) {
-+		sport->rx_periods = periods;
-+		ret = count;
-+	}
-+
-+	return ret;
-+}
-+
-+static ssize_t dma_buffer_count_show(struct device *dev,
-+				     struct device_attribute *attr,
-+				     char *buf)
-+{
-+	struct device *port_device = dev->parent;
-+	struct imx_port *sport = dev_get_drvdata(port_device);
-+
-+	return sysfs_emit(buf, "%u\n", sport->rx_periods);
-+}
-+
-+static DEVICE_ATTR_RW(dma_buffer_count);
-+
-+static struct attribute *imx_uart_attrs[] = {
-+	&dev_attr_dma_buffer_size.attr,
-+	&dev_attr_dma_buffer_count.attr,
-+	NULL
-+};
-+static struct attribute_group imx_uart_attr_group = {
-+	.attrs = imx_uart_attrs,
-+};
-+
- /*
-  * Configure/autoconfigure the port.
-  */
-@@ -2189,6 +2266,10 @@ static enum hrtimer_restart imx_trigger_stop_tx(struct hrtimer *t)
- 	return HRTIMER_NORESTART;
- }
- 
-+/* Default RX DMA buffer configuration */
-+#define RX_DMA_PERIODS		16
-+#define RX_DMA_PERIOD_LEN	(PAGE_SIZE / 4)
-+
- static int imx_uart_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-@@ -2257,6 +2338,9 @@ static int imx_uart_probe(struct platform_device *pdev)
- 	sport->port.rs485_config = imx_uart_rs485_config;
- 	sport->port.flags = UPF_BOOT_AUTOCONF;
- 	timer_setup(&sport->timer, imx_uart_timeout, 0);
-+	sport->rx_period_length = RX_DMA_PERIOD_LEN;
-+	sport->rx_periods = RX_DMA_PERIODS;
-+	sport->port.attr_group = &imx_uart_attr_group;
- 
- 	sport->gpios = mctrl_gpio_init(&sport->port, 0);
- 	if (IS_ERR(sport->gpios))
--- 
-2.30.1
-
+>  	if (rep->stitch_lbr && (callchain_param.record_mode != CALLCHAIN_LBR)) {
+>  		ui__warning("Can't find LBR callchain. Switch off --stitch-lbr.\n"
+>  			    "Please apply --call-graph lbr when recording.\n");
+> -- 
+> 2.23.0
+> 
