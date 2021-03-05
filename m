@@ -2,84 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E08B32E76C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 519A132E770
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbhCELtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 06:49:49 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:50023 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229672AbhCELtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 06:49:41 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DsQy96jkXz9sWL;
-        Fri,  5 Mar 2021 22:49:37 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1614944979;
-        bh=MFuEr/zpCREmU8rWGDeBRzuATbhdbCM1oGMnXg6xVJA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=iqqfOFNX9EQlJSH/QhZZ0p6dE3IkuDgX/+x3w6yrBguuBdJT+jY7FX2diXMKV0ALl
-         +keQy4Z341L6a8EZLdY7Gl8NJU5gZS0MAfOpTNZiAzBO2QKsrzfaiGylrzMQIPZQm3
-         CSxGVfSC5Iw41blS8SDq2alD7gJzxyOUQf0AwLVw7+h+Ps7feiYoEJ/JVJ/gr/fxMj
-         UtLYMOgbVPH16NxnEsyLRgZVmjPul7J53e1mOrzcI3Mt/hrBZc2Moqi3m3N9hqpVue
-         yQDAjSKkliB/ApMNL2rDGxjiCxQ9sxw2Xi1NaGtkMwf/LJy+eKyHcKqwqOAypP9nXG
-         VqDsphppeLQ5A==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Marco Elver <elver@google.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
-In-Reply-To: <CANpmjNM9o1s4O4v2T9HUohPdCDJzWcaC5KDrt_7BSVdTUQWagw@mail.gmail.com>
-References: <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
- <08a96c5d-4ae7-03b4-208f-956226dee6bb@csgroup.eu>
- <CANpmjNPYEmLtQEu5G=zJLUzOBaGoqNKwLyipDCxvytdKDKb7mg@mail.gmail.com>
- <ad61cb3a-2b4a-3754-5761-832a1dd0c34e@csgroup.eu>
- <CANpmjNOnVzei7frKcMzMHxaDXh5NvTA-Wpa29C2YC1GUxyKfhQ@mail.gmail.com>
- <f036c53d-7e81-763c-47f4-6024c6c5f058@csgroup.eu>
- <CANpmjNMn_CUrgeSqBgiKx4+J8a+XcxkaLPWoDMUvUEXk8+-jxg@mail.gmail.com>
- <7270e1cc-bb6b-99ee-0043-08a027b8d83a@csgroup.eu>
- <YEDXJ5JNkgvDFehc@elver.google.com> <874khqry78.fsf@mpe.ellerman.id.au>
- <YEHiq1ALdPn2crvP@elver.google.com>
- <f6e47f4f-6953-6584-f023-8b9c22d6974e@csgroup.eu>
- <CANpmjNM9o1s4O4v2T9HUohPdCDJzWcaC5KDrt_7BSVdTUQWagw@mail.gmail.com>
-Date:   Fri, 05 Mar 2021 22:49:36 +1100
-Message-ID: <87tupprfan.fsf@mpe.ellerman.id.au>
+        id S229861AbhCELv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 06:51:29 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:37336 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229562AbhCELvU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 06:51:20 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 491251F469FF
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id D964D4800C3; Fri,  5 Mar 2021 12:51:16 +0100 (CET)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Ian Ray <ian.ray@ge.com>, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, kernel@collabora.com
+Subject: [PATCHv4] serial: imx: Add DMA buffer configuration via sysfs
+Date:   Fri,  5 Mar 2021 12:50:58 +0100
+Message-Id: <20210305115058.92284-1-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marco Elver <elver@google.com> writes:
-...
->
-> The choice is between:
->
-> 1. ARCH_FUNC_PREFIX (as a matter of fact, the ARCH_FUNC_PREFIX patch
-> is already in -mm). Perhaps we could optimize it further, by checking
-> ARCH_FUNC_PREFIX in buf, and advancing buf like you propose, but I'm
-> not sure it's worth worrying about.
->
-> 2. The dynamic solution that I proposed that does not use a hard-coded
-> '.' (or some variation thereof).
->
-> Please tell me which solution you prefer, 1 or 2 -- I'd like to stop
-> bikeshedding here. If there's a compelling argument for hard-coding
-> the '.' in non-arch code, please clarify, but otherwise I'd like to
-> keep arch-specific things out of generic code.
+From: Fabien Lahoudere <fabien.lahoudere@collabora.com>
 
-It's your choice, I was just trying to minimise the size of the wart you
-have to carry in kfence code to deal with it.
+In order to optimize serial communication (performance/throughput VS
+latency), we may need to tweak DMA period number and size. This adds
+sysfs attributes to configure those values before initialising DMA.
+The defaults will stay the same as before (16 buffers with a size of
+1024 bytes). Afterwards the values can be read/write with the
+following sysfs files:
 
-The ARCH_FUNC_PREFIX solution is fine by me.
+/sys/class/tty/ttymxc*/dma_buffer_size
+/sys/class/tty/ttymxc*/dma_buffer_count
 
-cheers
+This is mainly needed for GEHC CS ONE (arch/arm/boot/dts/imx53-ppd.dts),
+which has multiple microcontrollers connected via UART controlling. One
+of the UARTs is connected to an on-board microcontroller at 19200 baud,
+which constantly pushes critical data (so aging character detect
+interrupt will never trigger). This data must be processed at 50-200 Hz,
+so UART should return data in less than 5-20ms. With 1024 byte DMA
+buffer (and a constant data stream) the read operation instead needs
+1024 byte / 19200 baud = 53.333ms, which is way too long (note: Worst
+Case would be remote processor sending data with short pauses <= 7
+characters, which would further increase this number). The current
+downstream kernel instead configures 24 bytes resulting in 1.25ms,
+but that is obviously not sensible for normal UART use cases and cannot
+be used as new default.
+
+The same device also has another microcontroller with a 4M baud UART
+connection exchanging lots of data. For this the same mechanism can
+be used to increase the buffer size (downstream uses 4K instead of
+the default 1K) with potentially slightly reduced buffer count. At
+this baud rate latency is not an issue (4096 byte / 4M baud = 0.977 ms).
+Before increasing the default buffer count from 4 to 16 in 76c38d30fee7,
+this was required to avoid data loss. With the changed default it's
+a performance optimization.
+
+Signed-off-by: Fabien Lahoudere <fabien.lahoudere@collabora.com>
+[reword documentation and commit message, rebase to current code]
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+---
+I excluded Fabien from the Cc list, his mail address is no longer valid.
+
+Changes since PATCHv3 [*]:
+ * rewrote commit message to provide a lot more details why this is needed
+ * rebased to torvalds/master (5.12-rc1-dontuse), also applies on top of linux-next
+ * use sysfs_emit() instead of sprintf
+
+[*] https://lore.kernel.org/lkml/1539249903-6316-1-git-send-email-fabien.lahoudere@collabora.com/
+---
+ .../ABI/stable/sysfs-driver-imx-uart          | 12 +++
+ drivers/tty/serial/imx.c                      | 98 +++++++++++++++++--
+ 2 files changed, 103 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/ABI/stable/sysfs-driver-imx-uart
+
+diff --git a/Documentation/ABI/stable/sysfs-driver-imx-uart b/Documentation/ABI/stable/sysfs-driver-imx-uart
+new file mode 100644
+index 000000000000..27a50fcd9c5f
+--- /dev/null
++++ b/Documentation/ABI/stable/sysfs-driver-imx-uart
+@@ -0,0 +1,12 @@
++What:		/sys/class/tty/ttymxc*/dma_buffer_count
++Date:		March 2021
++Contact:	Sebastian Reichel <sebastian.reichel@collabora.com>
++Description:	The i.MX serial DMA buffer is split into multiple chunks, so that
++		chunks can be processed while others are being filled with data.
++		This represents the number of chunks.
++
++What:		/sys/class/tty/ttymxc*/dma_buffer_size
++Date:		March 2021
++Contact:	Sebastian Reichel <sebastian.reichel@collabora.com>
++Description:	This represents the size of each DMA buffer chunk. Total DMA
++		buffer size is this number multiplied by dma_buffer_count.
+diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
+index 8257597d034d..1c5eb7be0c07 100644
+--- a/drivers/tty/serial/imx.c
++++ b/drivers/tty/serial/imx.c
+@@ -225,6 +225,8 @@ struct imx_port {
+ 	struct scatterlist	rx_sgl, tx_sgl[2];
+ 	void			*rx_buf;
+ 	struct circ_buf		rx_ring;
++	unsigned int		rx_buf_size;
++	unsigned int		rx_period_length;
+ 	unsigned int		rx_periods;
+ 	dma_cookie_t		rx_cookie;
+ 	unsigned int		tx_bytes;
+@@ -1193,10 +1195,6 @@ static void imx_uart_dma_rx_callback(void *data)
+ 	}
+ }
+ 
+-/* RX DMA buffer periods */
+-#define RX_DMA_PERIODS	16
+-#define RX_BUF_SIZE	(RX_DMA_PERIODS * PAGE_SIZE / 4)
+-
+ static int imx_uart_start_rx_dma(struct imx_port *sport)
+ {
+ 	struct scatterlist *sgl = &sport->rx_sgl;
+@@ -1207,9 +1205,8 @@ static int imx_uart_start_rx_dma(struct imx_port *sport)
+ 
+ 	sport->rx_ring.head = 0;
+ 	sport->rx_ring.tail = 0;
+-	sport->rx_periods = RX_DMA_PERIODS;
+ 
+-	sg_init_one(sgl, sport->rx_buf, RX_BUF_SIZE);
++	sg_init_one(sgl, sport->rx_buf, sport->rx_buf_size);
+ 	ret = dma_map_sg(dev, sgl, 1, DMA_FROM_DEVICE);
+ 	if (ret == 0) {
+ 		dev_err(dev, "DMA mapping error for RX.\n");
+@@ -1326,7 +1323,8 @@ static int imx_uart_dma_init(struct imx_port *sport)
+ 		goto err;
+ 	}
+ 
+-	sport->rx_buf = kzalloc(RX_BUF_SIZE, GFP_KERNEL);
++	sport->rx_buf_size = sport->rx_period_length * sport->rx_periods;
++	sport->rx_buf = kzalloc(sport->rx_buf_size, GFP_KERNEL);
+ 	if (!sport->rx_buf) {
+ 		ret = -ENOMEM;
+ 		goto err;
+@@ -1786,6 +1784,85 @@ static const char *imx_uart_type(struct uart_port *port)
+ 	return sport->port.type == PORT_IMX ? "IMX" : NULL;
+ }
+ 
++static ssize_t dma_buffer_size_store(struct device *dev,
++				     struct device_attribute *attr,
++				     const char *buf, size_t count)
++{
++	unsigned int plen;
++	int ret;
++	struct device *port_device = dev->parent;
++	struct imx_port *sport = dev_get_drvdata(port_device);
++
++	if (sport->dma_chan_rx) {
++		dev_warn(dev, "RX DMA in use\n");
++		return -EBUSY;
++	}
++
++	ret = kstrtou32(buf, 0, &plen);
++	if (ret == 0) {
++		sport->rx_period_length = plen;
++		ret = count;
++	}
++
++	return ret;
++}
++
++static ssize_t dma_buffer_size_show(struct device *dev,
++				    struct device_attribute *attr,
++				    char *buf)
++{
++	struct device *port_device = dev->parent;
++	struct imx_port *sport = dev_get_drvdata(port_device);
++
++	return sysfs_emit(buf, "%u\n", sport->rx_period_length);
++}
++
++static DEVICE_ATTR_RW(dma_buffer_size);
++
++static ssize_t dma_buffer_count_store(struct device *dev,
++				      struct device_attribute *attr,
++				      const char *buf, size_t count)
++{
++	unsigned int periods;
++	int ret;
++	struct device *port_device = dev->parent;
++	struct imx_port *sport = dev_get_drvdata(port_device);
++
++	if (sport->dma_chan_rx) {
++		dev_warn(dev, "RX DMA in use\n");
++		return -EBUSY;
++	}
++
++	ret = kstrtou32(buf, 0, &periods);
++	if (ret == 0) {
++		sport->rx_periods = periods;
++		ret = count;
++	}
++
++	return ret;
++}
++
++static ssize_t dma_buffer_count_show(struct device *dev,
++				     struct device_attribute *attr,
++				     char *buf)
++{
++	struct device *port_device = dev->parent;
++	struct imx_port *sport = dev_get_drvdata(port_device);
++
++	return sysfs_emit(buf, "%u\n", sport->rx_periods);
++}
++
++static DEVICE_ATTR_RW(dma_buffer_count);
++
++static struct attribute *imx_uart_attrs[] = {
++	&dev_attr_dma_buffer_size.attr,
++	&dev_attr_dma_buffer_count.attr,
++	NULL
++};
++static struct attribute_group imx_uart_attr_group = {
++	.attrs = imx_uart_attrs,
++};
++
+ /*
+  * Configure/autoconfigure the port.
+  */
+@@ -2189,6 +2266,10 @@ static enum hrtimer_restart imx_trigger_stop_tx(struct hrtimer *t)
+ 	return HRTIMER_NORESTART;
+ }
+ 
++/* Default RX DMA buffer configuration */
++#define RX_DMA_PERIODS		16
++#define RX_DMA_PERIOD_LEN	(PAGE_SIZE / 4)
++
+ static int imx_uart_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+@@ -2257,6 +2338,9 @@ static int imx_uart_probe(struct platform_device *pdev)
+ 	sport->port.rs485_config = imx_uart_rs485_config;
+ 	sport->port.flags = UPF_BOOT_AUTOCONF;
+ 	timer_setup(&sport->timer, imx_uart_timeout, 0);
++	sport->rx_period_length = RX_DMA_PERIOD_LEN;
++	sport->rx_periods = RX_DMA_PERIODS;
++	sport->port.attr_group = &imx_uart_attr_group;
+ 
+ 	sport->gpios = mctrl_gpio_init(&sport->port, 0);
+ 	if (IS_ERR(sport->gpios))
+-- 
+2.30.1
+
