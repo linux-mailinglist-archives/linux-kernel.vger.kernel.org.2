@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1AA32E961
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8254232EA37
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbhCEMcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:32:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41638 "EHLO mail.kernel.org"
+        id S231286AbhCEMhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:37:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231784AbhCEMbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:31:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE6B465029;
-        Fri,  5 Mar 2021 12:31:35 +0000 (UTC)
+        id S232888AbhCEMge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:36:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECA5165004;
+        Fri,  5 Mar 2021 12:36:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947496;
-        bh=eAwaXMiEXyKxabvLrXknajWjXn6HfIAyhd9zxfYJk8w=;
+        s=korg; t=1614947794;
+        bh=h1z53uxqsHam5ZsBYZw50JLpUZtyU6R90jbtUyzn+VE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CtJU1rG89pwnNTEPIRwLRYo9X20c7NjFsO/uyRFtQq2Do/1ui1EXq4cW8E3OttUDB
-         oDyl4+oZTFtRUaWIYfprJBKi/Vku4DszARXLFfc0+kkvbdHu95BbZsOjWy7ub95KEx
-         S/0aHi129HeAUc3YotUnPn7oFs+ixY4/mOM0hfmE=
+        b=0h9CiRu78i72Ii1OP3zpLHsdDdcY/SdHEvyCmPnSi7APhC6dsYHsTWaklASV/L2fV
+         b44HyRCW0d0ap86Gf6v9dBhEIiPXslyb1LvUnxcZxSZDU18XyoMar+NU4gzi7DawzJ
+         brFMww93Rqjl7Yz4JAsRUNQIPw6CV/5gVR6tzlng=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adam Nichols <adam@grimm-co.com>,
-        Lee Duncan <lduncan@suse.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Chris Leech <cleech@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 085/102] scsi: iscsi: Verify lengths on passthrough PDUs
-Date:   Fri,  5 Mar 2021 13:21:44 +0100
-Message-Id: <20210305120907.465593010@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com,
+        Sabyrzhan Tasbolatov <snovitoll@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Subject: [PATCH 4.19 14/52] smackfs: restrict bytes count in smackfs write functions
+Date:   Fri,  5 Mar 2021 13:21:45 +0100
+Message-Id: <20210305120854.367243408@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+References: <20210305120853.659441428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,49 +41,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Leech <cleech@redhat.com>
+From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 
-commit f9dbdf97a5bd92b1a49cee3d591b55b11fd7a6d5 upstream.
+commit 7ef4c19d245f3dc233fd4be5acea436edd1d83d8 upstream.
 
-Open-iSCSI sends passthrough PDUs over netlink, but the kernel should be
-verifying that the provided PDU header and data lengths fall within the
-netlink message to prevent accessing beyond that in memory.
+syzbot found WARNINGs in several smackfs write operations where
+bytes count is passed to memdup_user_nul which exceeds
+GFP MAX_ORDER. Check count size if bigger than PAGE_SIZE.
 
-Cc: stable@vger.kernel.org
-Reported-by: Adam Nichols <adam@grimm-co.com>
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Chris Leech <cleech@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Per smackfs doc, smk_write_net4addr accepts any label or -CIPSO,
+smk_write_net6addr accepts any label or -DELETE. I couldn't find
+any general rule for other label lengths except SMK_LABELLEN,
+SMK_LONGLABEL, SMK_CIPSOMAX which are documented.
+
+Let's constrain, in general, smackfs label lengths for PAGE_SIZE.
+Although fuzzer crashes write to smackfs/netlabel on 0x400000 length.
+
+Here is a quick way to reproduce the WARNING:
+python -c "print('A' * 0x400000)" > /sys/fs/smackfs/netlabel
+
+Reported-by: syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/scsi_transport_iscsi.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ security/smack/smackfs.c |   21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -3627,6 +3627,7 @@ iscsi_if_recv_msg(struct sk_buff *skb, s
- {
- 	int err = 0;
- 	u32 portid;
-+	u32 pdu_len;
- 	struct iscsi_uevent *ev = nlmsg_data(nlh);
- 	struct iscsi_transport *transport = NULL;
- 	struct iscsi_internal *priv;
-@@ -3769,6 +3770,14 @@ iscsi_if_recv_msg(struct sk_buff *skb, s
- 			err = -EINVAL;
- 		break;
- 	case ISCSI_UEVENT_SEND_PDU:
-+		pdu_len = nlh->nlmsg_len - sizeof(*nlh) - sizeof(*ev);
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -1191,7 +1191,7 @@ static ssize_t smk_write_net4addr(struct
+ 		return -EPERM;
+ 	if (*ppos != 0)
+ 		return -EINVAL;
+-	if (count < SMK_NETLBLADDRMIN)
++	if (count < SMK_NETLBLADDRMIN || count > PAGE_SIZE - 1)
+ 		return -EINVAL;
+ 
+ 	data = memdup_user_nul(buf, count);
+@@ -1451,7 +1451,7 @@ static ssize_t smk_write_net6addr(struct
+ 		return -EPERM;
+ 	if (*ppos != 0)
+ 		return -EINVAL;
+-	if (count < SMK_NETLBLADDRMIN)
++	if (count < SMK_NETLBLADDRMIN || count > PAGE_SIZE - 1)
+ 		return -EINVAL;
+ 
+ 	data = memdup_user_nul(buf, count);
+@@ -1858,6 +1858,10 @@ static ssize_t smk_write_ambient(struct
+ 	if (!smack_privileged(CAP_MAC_ADMIN))
+ 		return -EPERM;
+ 
++	/* Enough data must be present */
++	if (count == 0 || count > PAGE_SIZE)
++		return -EINVAL;
 +
-+		if ((ev->u.send_pdu.hdr_size > pdu_len) ||
-+		    (ev->u.send_pdu.data_size > (pdu_len - ev->u.send_pdu.hdr_size))) {
-+			err = -EINVAL;
-+			break;
-+		}
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+ 		return PTR_ERR(data);
+@@ -2029,6 +2033,9 @@ static ssize_t smk_write_onlycap(struct
+ 	if (!smack_privileged(CAP_MAC_ADMIN))
+ 		return -EPERM;
+ 
++	if (count > PAGE_SIZE)
++		return -EINVAL;
 +
- 		conn = iscsi_conn_lookup(ev->u.send_pdu.sid, ev->u.send_pdu.cid);
- 		if (conn) {
- 			mutex_lock(&conn_mutex);
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+ 		return PTR_ERR(data);
+@@ -2116,6 +2123,9 @@ static ssize_t smk_write_unconfined(stru
+ 	if (!smack_privileged(CAP_MAC_ADMIN))
+ 		return -EPERM;
+ 
++	if (count > PAGE_SIZE)
++		return -EINVAL;
++
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+ 		return PTR_ERR(data);
+@@ -2669,6 +2679,10 @@ static ssize_t smk_write_syslog(struct f
+ 	if (!smack_privileged(CAP_MAC_ADMIN))
+ 		return -EPERM;
+ 
++	/* Enough data must be present */
++	if (count == 0 || count > PAGE_SIZE)
++		return -EINVAL;
++
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+ 		return PTR_ERR(data);
+@@ -2761,10 +2775,13 @@ static ssize_t smk_write_relabel_self(st
+ 		return -EPERM;
+ 
+ 	/*
++	 * No partial write.
+ 	 * Enough data must be present.
+ 	 */
+ 	if (*ppos != 0)
+ 		return -EINVAL;
++	if (count == 0 || count > PAGE_SIZE)
++		return -EINVAL;
+ 
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
 
 
