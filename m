@@ -2,139 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A1A32E1B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 06:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ABCC32E1B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 06:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbhCEFkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 00:40:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33732 "EHLO
+        id S229688AbhCEFkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 00:40:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbhCEFkE (ORCPT
+        with ESMTP id S229670AbhCEFkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 00:40:04 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE08AC061574;
-        Thu,  4 Mar 2021 21:40:03 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id b7so923650edz.8;
-        Thu, 04 Mar 2021 21:40:03 -0800 (PST)
+        Fri, 5 Mar 2021 00:40:17 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E24B6C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 21:40:16 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id a4so602789pgc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 21:40:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lBCWGdO9ttBa6bwSQbn6+grvew9hSstcWY182hlBYEM=;
-        b=rJQXYGimR08jN/gQDfES8jfSvwKcM0pia534mWsfkeY46w1w3Ns96ld7txEzSa4Tp7
-         m8xbaH5WMDyWwWnu9++GSiUhFFMx8y9jlrujXEZJk+XMNKtzMKR+CgG2xTPiAHKlZbTN
-         cbKrjY2rgsjs66hPNlFHETHTpAzjIj9w1hBZ9wuRb3+FVHe0sMNV/NcwypoU8UWGSbJy
-         WLu9RDf7f5FIfwOgBbHLdOHndQcEJxVcxxShvY3zMswgeSoaUkU45SOtYYGZ9p8snaXz
-         FgXkPNSkrKSqk9k7mi+2C2OqtRMEkVrAHjqB0xe4OJFV48q00//6gte9HM/fgxKd0w5U
-         XFdw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=F4kegxO+hyM9AAlLWbK87rAqjEYzkEMk/GVzELor2z8=;
+        b=oKEQ6gNHFODs+dg2G9gk5/6gLVWzoPdxh0LP6pTy61BNuZPzZCcCWX3XB4mTZ+WaAj
+         Szac7cRDk1QSTsrYA+1SNwvPzYRtOwdKbFcLTpIu1qVx2KmHh5zrgoyRJvcjEl3WfRHD
+         YzovAc9Z6xlvG7ZGjG6OZhzZx6Sf76e/bVvEM2XLvz15zE8TH9KIp6YWWqnqR6WoagnE
+         ju1aZ8KKxy9hApZFNtOANVLSzczg7b3uxf3HG/KHf1XJT0LzfGcA/ROlsYjzvQ9AhGpu
+         xzX1qaVk5yUSnbR0sTL5/vEslTMq9vTRNqS8ipUNLyjl9C115YyiIiyIs/3DRIJ6+yYo
+         6umw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lBCWGdO9ttBa6bwSQbn6+grvew9hSstcWY182hlBYEM=;
-        b=gchJ42pu7qWg3oEadxmQyLJ/xb04OtqFqlev8T/XPqgg3VTof/YyuwfReURxdy5uJe
-         NL5Lw3+AtGlUJkAZnF7hnTqizTF+6n63JN3ejnoT2XngyYkMFNAZR3KiA96/vJd+8O2y
-         PoWfHLD73amUtnT6EeT1t+yssEyP3EIDmP7nBHBVH3AM2vlsTqvfTlGWyDtgUPceyOxD
-         AoC4vxFlkw0xaxCColTJwnjEYXFlT32e6LKwkNNnD87pwpBBRWVkeZg/GMtUJ7EBegeR
-         o7UEDqShxY/W2F12Z8777UfTVpjPujoDxZtpLy2FTMvVRmOSyT1TKWk9adUK9PWv90Rf
-         lYYg==
-X-Gm-Message-State: AOAM533fNj40DcBsiC74AWTNmbIVk88H3oB5KD8ECH2M9yN4s7Ukxcbl
-        4lL+lhkCB0eaRJxKHfs076jVLSiwAd7Lk85JJ4yJnphSiGs/MA==
-X-Google-Smtp-Source: ABdhPJwRYPqV/WwnWo7oMVkuV/nG6sJ/y9vzbn1Nm9xklW0+3v+eQWia67FEOL3YXyt3hmuJKCns0CIPbYxLeZv/mXE=
-X-Received: by 2002:a05:6402:5244:: with SMTP id t4mr6521852edd.87.1614922802651;
- Thu, 04 Mar 2021 21:40:02 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=F4kegxO+hyM9AAlLWbK87rAqjEYzkEMk/GVzELor2z8=;
+        b=c2fKVAx4PUXZ1OhJAXWyTfdQ6xSK+pysRavwubvCrtQq/LZeqF0593f1/1IRVkfrYk
+         E5WaS0DI4pHLjp1iTtVLqVLCf1Sbaoh84paV2xs3NTo/arg5yJ+Lw/4L9AVK73K9mIZ/
+         0pzTbid355gDsy844uJgh5U20VSWOgL6VKJZrjajkO75U1PMlcreZTRZaVdi9V0tN6OV
+         D3oRS7bkVgKAz4KMg/1EBRbjEMQUXNkxaavVRgpX6KdHM/g/rj87izWSGeCRYo67+CgV
+         sw36aN1Ehc0HofH/7QXV4wamJfhNWzWvxoAit9kAvf53P0ZxogSk71zmXORRF9ia1TYj
+         S2FA==
+X-Gm-Message-State: AOAM530VlLUhKraAtNGyfvVNbCMdgKBD1Jf3IPoR8yvWcfAf0OuFKs0j
+        QhBq83dHe8/O/YfGpfLVD2M=
+X-Google-Smtp-Source: ABdhPJxBvEd6h0zxbCEaLB6do9J1Bo5uZYu3HTZtKtSSy/chfRKAV6CGUU3kStEEtIgyGG44XAxpsQ==
+X-Received: by 2002:a62:7708:0:b029:1ee:f656:51d5 with SMTP id s8-20020a6277080000b02901eef65651d5mr7354124pfc.59.1614922816402;
+        Thu, 04 Mar 2021 21:40:16 -0800 (PST)
+Received: from cosmos ([103.113.142.250])
+        by smtp.gmail.com with ESMTPSA id 35sm983425pgm.64.2021.03.04.21.40.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 04 Mar 2021 21:40:16 -0800 (PST)
+Date:   Fri, 5 Mar 2021 11:10:12 +0530
+From:   Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing: fix memory leaks in __create_synth_event()
+Message-ID: <20210305054011.GA1944@cosmos>
+References: <20210304094521.GA1826@cosmos>
+ <20210304094049.19554140@gandalf.local.home>
 MIME-Version: 1.0
-References: <CAHk-=wjnzdLSP3oDxhf9eMTYo7GF-QjaNLBUH1Zk3c4A7X75YA@mail.gmail.com>
- <YEFIXFyP5tWrPDMw@localhost>
-In-Reply-To: <YEFIXFyP5tWrPDMw@localhost>
-From:   Christian Couder <christian.couder@gmail.com>
-Date:   Fri, 5 Mar 2021 06:39:51 +0100
-Message-ID: <CAP8UFD07ezNOXU5Q3RZAHOJGMjuaJY-R=x=hhQcQvYOAKzKF2g@mail.gmail.com>
-Subject: Re: A note on the 5.12-rc1 tag
-To:     Josh Triplett <josh@joshtriplett.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, git <git@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304094049.19554140@gandalf.local.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 1:58 AM Josh Triplett <josh@joshtriplett.org> wrote:
-> On Wed, Mar 03, 2021 at 12:53:18PM -0800, Linus Torvalds wrote:
+On Thu, Mar 04, 2021 at 09:40:49AM -0500, Steven Rostedt wrote:
+> On Thu, 4 Mar 2021 15:15:24 +0530
+> Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com> wrote:
+> 
+> Not anything to do with you. I have a set of fixes that I have queued that
+> requires a ~13 hour test to run before I push off to Linus. When it was
+> almost done, I discovered another bug. Fixed it. Killed the almost completed
+> running test, and restarted it for another 13 hour run. I woke up this
+> morning happy to see that it passed, but then found your patch.
+> 
+> Wash, rinse, repeat! :-p
 
-> > One additional reason for this note is that I want to not just warn
-> > people to not run this if you have a swapfile - even if you are
-> > personally not impacted (like I am, and probably most people are -
-> > swap partitions all around) - I want to make sure that nobody starts
-> > new topic branches using that 5.12-rc1 tag. I know a few developers
-> > tend to go "Ok, rc1 is out, I got all my development work into this
-> > merge window, I will now fast-forward to rc1 and use that as a base
-> > for the next release". Don't do it this time. It may work perfectly
-> > well for you because you have the common partition setup, but it can
-> > end up being a horrible base for anybody else that might end up
-> > bisecting into that area.
->
-> Even if people avoid basing their topic branches on 5.12-rc1, it's still
-> possible for a future bisect to end up wandering to one of the existing
-> dangerous commits, if someone's trying to find a historical bug and git
-> happens to choose that as a halfway point. And if they happen to be
-> using a swap file, they could end up with serious data loss, years from
-> now when "5.12-rc1 is broken" isn't on the top of their mind or even
-> something they heard about originally.
->
-> Would it make sense to add a feature to git that allows defining a
-> "dangerous" region for bisect? Rough sketch:
-> - Add a `/.git-bisect-dangerous` file to the repository, containing a
->   list of of commit range expressions (contains commit X, doesn't
->   contain commit Y) and associated messages ("Do not use these kernels
->   if you have a swap file; if you need to bisect into here, disable swap
->   files first").
-> - git-bisect, as it navigates commits, always checks that file for any
->   commit it processes, and adds any new entries it sees into
->   `.git/bisect-dangerous`; it never removes entries from there.
+Sorry for wrong timing of sending this patch :)
 
-The `git bisect skip` machinery uses `refs/bisect/skip-<commit>` refs
-instead of such a file, so I wonder if such a file is needed. It could
-be used to store a map between skipped commits and the associated
-messages though. Or git notes could be used for that purpose.
+Thanks for looking into it, and applying it.
 
-By the way I wonder what should happen if a commit is associated with
-a message by a `/.git-bisect-dangerous` file, but in another branch
-such file associates it with a different message. I guess all the
-different messages should be stored, and then displayed.
-
-> - git-bisect avoids choosing bisection points anywhere in that range
->   until it absolutely has to (because it's narrowed an issue to that
->   range). This can use something similar to the existing `git bisect
->   skip` machinery. Manual bisections print the message at that point.
->   Automated bisections (`git bisect run`) stop and print the range
->   without narrowing further, unless the user passes something like
->   `--dangerous-ok=commit-range`.
-
-Yeah, using the `git bisect skip` machinery looks like a good idea.
-Instead of `/.git-bisect-dangerous`, the file could actually be called
-`/.git-bisect-skip` and could also store ranges where the code doesn't
-compile, or completely misbehave, without necessarily being dangerous.
-The dangerous status would only be conveyed by the associated messages
-then.
-
-Another way could be to directly share some special refs similar to
-the existing `refs/bisect/skip-<commit>` refs, instead of a
-`/.git-bisect-dangerous` file. This would likely raise some issues
-about how to create and share these refs and the associated messages
-though.
-
-> (git notes would be nice for this, but they're hard to share reliably;
-> the above mechanism to accumulate entries from a file in the repo seems
-> simpler. I can imagine other possibilities.)
-
-If the notes are created automatically from the `/.git-bisect-skip`
-files and stored in `refs/notes/skip`, then they might not need to be
-shared. If people already share notes, they would just need to stop
-sharing those in `refs/notes/skip`.
-
-> Does something like this seem potentially reasonable, and worth doing to
-> help people avoid future catastrophic data loss?
-
-It seems reasonable as part of the skip mechanism.
+Regards,
+Vamshi
