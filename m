@@ -2,35 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6680D32EB2B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F09232EB27
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232460AbhCEMmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:42:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58424 "EHLO mail.kernel.org"
+        id S231852AbhCEMms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:42:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229558AbhCEMl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:41:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 686A96501E;
-        Fri,  5 Mar 2021 12:41:56 +0000 (UTC)
+        id S232828AbhCEMmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:42:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3CB66501C;
+        Fri,  5 Mar 2021 12:41:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948116;
-        bh=WjEAog0f8Qtcs1aXT2i6lX9hZnCcem9uJpztSw7U3GU=;
+        s=korg; t=1614948119;
+        bh=NrG+Vy08TDWPTGqLD7yn+tbUYEZVsHhvi1dT4c5g6x4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K/vLEMvPYnJ52nupHNUpSdB1uavFtPbhP7igOtC/k318PJw+rGSd8mwhflFdOTHv8
-         DZmhTBvT4c6vVPo+e+MDK0/OakkyXBrep/pZZTa3PwRzcVN3vY7HTOU3oJgwe/3hhG
-         vuIHvdrSF9UZ7A832cr3M7vxpvI7Jq/qkIwktWgc=
+        b=vMg7r/XfsreB09KEfDiPb0nj8jyGCdRwfXCE2W3L5lO+lokSeZt870LYO6IHHeP/s
+         oyXHnHx6SjUzGEH93TyPs3itGsPiEh0wXQeIXuI4UaE9x2Up+Xt5FpvIisulJXF4cj
+         rUOL+HoV0xSNy6bqymJdxD5b9dojgEbPZoMdodiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adam Nichols <adam@grimm-co.com>,
-        Chris Leech <cleech@redhat.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Lee Duncan <lduncan@suse.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.9 33/41] scsi: iscsi: Restrict sessions and handles to admin capabilities
-Date:   Fri,  5 Mar 2021 13:22:40 +0100
-Message-Id: <20210305120852.912202137@linuxfoundation.org>
+        stable@vger.kernel.org, Joe Perches <joe@perches.com>
+Subject: [PATCH 4.9 34/41] sysfs: Add sysfs_emit and sysfs_emit_at to format sysfs output
+Date:   Fri,  5 Mar 2021 13:22:41 +0100
+Message-Id: <20210305120852.963888091@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
 References: <20210305120851.255002428@linuxfoundation.org>
@@ -42,47 +38,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Duncan <lduncan@suse.com>
+From: Joe Perches <joe@perches.com>
 
-commit 688e8128b7a92df982709a4137ea4588d16f24aa upstream.
+commit 2efc459d06f1630001e3984854848a5647086232 upstream.
 
-Protect the iSCSI transport handle, available in sysfs, by requiring
-CAP_SYS_ADMIN to read it. Also protect the netlink socket by restricting
-reception of messages to ones sent with CAP_SYS_ADMIN. This disables
-normal users from being able to end arbitrary iSCSI sessions.
+Output defects can exist in sysfs content using sprintf and snprintf.
 
-Cc: stable@vger.kernel.org
-Reported-by: Adam Nichols <adam@grimm-co.com>
-Reviewed-by: Chris Leech <cleech@redhat.com>
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+sprintf does not know the PAGE_SIZE maximum of the temporary buffer
+used for outputting sysfs content and it's possible to overrun the
+PAGE_SIZE buffer length.
+
+Add a generic sysfs_emit function that knows that the size of the
+temporary buffer and ensures that no overrun is done.
+
+Add a generic sysfs_emit_at function that can be used in multiple
+call situations that also ensures that no overrun is done.
+
+Validate the output buffer argument to be page aligned.
+Validate the offset len argument to be within the PAGE_SIZE buf.
+
+Signed-off-by: Joe Perches <joe@perches.com>
+Link: https://lore.kernel.org/r/884235202216d464d61ee975f7465332c86f76b2.1600285923.git.joe@perches.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/scsi_transport_iscsi.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ Documentation/filesystems/sysfs.txt |    8 +----
+ fs/sysfs/file.c                     |   55 ++++++++++++++++++++++++++++++++++++
+ include/linux/sysfs.h               |   16 ++++++++++
+ 3 files changed, 74 insertions(+), 5 deletions(-)
 
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -119,6 +119,9 @@ show_transport_handle(struct device *dev
- 		      char *buf)
- {
- 	struct iscsi_internal *priv = dev_to_iscsi_internal(dev);
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EACCES;
- 	return sprintf(buf, "%llu\n", (unsigned long long)iscsi_handle(priv->iscsi_transport));
- }
- static DEVICE_ATTR(handle, S_IRUGO, show_transport_handle, NULL);
-@@ -3522,6 +3525,9 @@ iscsi_if_recv_msg(struct sk_buff *skb, s
- 	struct iscsi_cls_conn *conn;
- 	struct iscsi_endpoint *ep = NULL;
+--- a/Documentation/filesystems/sysfs.txt
++++ b/Documentation/filesystems/sysfs.txt
+@@ -211,12 +211,10 @@ Other notes:
+   is 4096. 
  
-+	if (!netlink_capable(skb, CAP_SYS_ADMIN))
-+		return -EPERM;
+ - show() methods should return the number of bytes printed into the
+-  buffer. This is the return value of scnprintf().
++  buffer.
+ 
+-- show() must not use snprintf() when formatting the value to be
+-  returned to user space. If you can guarantee that an overflow
+-  will never happen you can use sprintf() otherwise you must use
+-  scnprintf().
++- show() should only use sysfs_emit() or sysfs_emit_at() when formatting
++  the value to be returned to user space.
+ 
+ - store() should return the number of bytes used from the buffer. If the
+   entire buffer has been used, just return the count argument.
+--- a/fs/sysfs/file.c
++++ b/fs/sysfs/file.c
+@@ -17,6 +17,7 @@
+ #include <linux/list.h>
+ #include <linux/mutex.h>
+ #include <linux/seq_file.h>
++#include <linux/mm.h>
+ 
+ #include "sysfs.h"
+ #include "../kernfs/kernfs-internal.h"
+@@ -549,3 +550,57 @@ void sysfs_remove_bin_file(struct kobjec
+ 	kernfs_remove_by_name(kobj->sd, attr->attr.name);
+ }
+ EXPORT_SYMBOL_GPL(sysfs_remove_bin_file);
 +
- 	if (nlh->nlmsg_type == ISCSI_UEVENT_PATH_UPDATE)
- 		*group = ISCSI_NL_GRP_UIP;
- 	else
++/**
++ *	sysfs_emit - scnprintf equivalent, aware of PAGE_SIZE buffer.
++ *	@buf:	start of PAGE_SIZE buffer.
++ *	@fmt:	format
++ *	@...:	optional arguments to @format
++ *
++ *
++ * Returns number of characters written to @buf.
++ */
++int sysfs_emit(char *buf, const char *fmt, ...)
++{
++	va_list args;
++	int len;
++
++	if (WARN(!buf || offset_in_page(buf),
++		 "invalid sysfs_emit: buf:%p\n", buf))
++		return 0;
++
++	va_start(args, fmt);
++	len = vscnprintf(buf, PAGE_SIZE, fmt, args);
++	va_end(args);
++
++	return len;
++}
++EXPORT_SYMBOL_GPL(sysfs_emit);
++
++/**
++ *	sysfs_emit_at - scnprintf equivalent, aware of PAGE_SIZE buffer.
++ *	@buf:	start of PAGE_SIZE buffer.
++ *	@at:	offset in @buf to start write in bytes
++ *		@at must be >= 0 && < PAGE_SIZE
++ *	@fmt:	format
++ *	@...:	optional arguments to @fmt
++ *
++ *
++ * Returns number of characters written starting at &@buf[@at].
++ */
++int sysfs_emit_at(char *buf, int at, const char *fmt, ...)
++{
++	va_list args;
++	int len;
++
++	if (WARN(!buf || offset_in_page(buf) || at < 0 || at >= PAGE_SIZE,
++		 "invalid sysfs_emit_at: buf:%p at:%d\n", buf, at))
++		return 0;
++
++	va_start(args, fmt);
++	len = vscnprintf(buf + at, PAGE_SIZE - at, fmt, args);
++	va_end(args);
++
++	return len;
++}
++EXPORT_SYMBOL_GPL(sysfs_emit_at);
+--- a/include/linux/sysfs.h
++++ b/include/linux/sysfs.h
+@@ -300,6 +300,11 @@ static inline void sysfs_enable_ns(struc
+ 	return kernfs_enable_ns(kn);
+ }
+ 
++__printf(2, 3)
++int sysfs_emit(char *buf, const char *fmt, ...);
++__printf(3, 4)
++int sysfs_emit_at(char *buf, int at, const char *fmt, ...);
++
+ #else /* CONFIG_SYSFS */
+ 
+ static inline int sysfs_create_dir_ns(struct kobject *kobj, const void *ns)
+@@ -506,6 +511,17 @@ static inline void sysfs_enable_ns(struc
+ {
+ }
+ 
++__printf(2, 3)
++static inline int sysfs_emit(char *buf, const char *fmt, ...)
++{
++	return 0;
++}
++
++__printf(3, 4)
++static inline int sysfs_emit_at(char *buf, int at, const char *fmt, ...)
++{
++	return 0;
++}
+ #endif /* CONFIG_SYSFS */
+ 
+ static inline int __must_check sysfs_create_file(struct kobject *kobj,
 
 
