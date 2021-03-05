@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4A032E9E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B24A32EA2F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhCEMfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:35:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45772 "EHLO mail.kernel.org"
+        id S232942AbhCEMgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:36:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232490AbhCEMeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:34:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E03BF6501A;
-        Fri,  5 Mar 2021 12:34:23 +0000 (UTC)
+        id S232868AbhCEMg0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:36:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73AF965012;
+        Fri,  5 Mar 2021 12:36:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947664;
-        bh=hK/Ok1kevv7pLNz660F0pBVsk5zM3LWPxclkES4qxNA=;
+        s=korg; t=1614947786;
+        bh=iNpADlAOw9Mz5CDANl2pSnOb5uLzJQsz474mR2BtAlI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xjh1zH4stIYezWQ7jmjTpvNtmkte7uGfhE4EIBp+OgTQwxGX0VRAtNkhcsNYXk68i
-         2o0EJKwJwvC9h/XNVsTTV3faTmWAnVw3H/KQ8fM1iKpR+GR1q7LT/xPCk6yrV3mmQZ
-         abSOb+3gCYOvbyxKbqHoUGtBEWMQFq5LKDE5j40Q=
+        b=lHqSDxb2n2zFS8VNc1MDUB6b71nrgLPQnjYgRi7gAEUWu7xO99uDtva3CQcbWRbyV
+         iIT3vZEegx3ecyblzYPiv+UEyPdp5K8cMaXHB2fyxQXbg0ecUW7e9aAKnyAnc3PLBT
+         rUHLEf3Edm0VdgmQhaz/l5Dw/8T1Bvwk1U+iJESI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 40/72] brcmfmac: Add DMI nvram filename quirk for Voyo winpad A15 tablet
+        stable@vger.kernel.org,
+        syzbot+c9e365d7f450e8aa615d@syzkaller.appspotmail.com,
+        Zqiang <qiang.zhang@windriver.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 4.19 11/52] udlfb: Fix memory leak in dlfb_usb_probe
 Date:   Fri,  5 Mar 2021 13:21:42 +0100
-Message-Id: <20210305120859.306868273@linuxfoundation.org>
+Message-Id: <20210305120854.218016682@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
-References: <20210305120857.341630346@linuxfoundation.org>
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+References: <20210305120853.659441428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,68 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Zqiang <qiang.zhang@windriver.com>
 
-[ Upstream commit a338c874d3d9d2463f031e89ae14942929b93db6 ]
+commit 5c0e4110f751934e748a66887c61f8e73805f0f9 upstream.
 
-The Voyo winpad A15 tablet contains quite generic names in the sys_vendor
-and product_name DMI strings, without this patch brcmfmac will try to load:
-rcmfmac4330-sdio.To be filled by O.E.M.-To be filled by O.E.M..txt
-as nvram file which is a bit too generic.
+The dlfb_alloc_urb_list function is called in dlfb_usb_probe function,
+after that if an error occurs, the dlfb_free_urb_list function need to
+be called.
 
-Add a DMI quirk so that a unique and clearly identifiable nvram file name
-is used on the Voyo winpad A15 tablet.
+BUG: memory leak
+unreferenced object 0xffff88810adde100 (size 32):
+  comm "kworker/1:0", pid 17, jiffies 4294947788 (age 19.520s)
+  hex dump (first 32 bytes):
+    10 30 c3 0d 81 88 ff ff c0 fa 63 12 81 88 ff ff  .0........c.....
+    00 30 c3 0d 81 88 ff ff 80 d1 3a 08 81 88 ff ff  .0........:.....
+  backtrace:
+    [<0000000019512953>] kmalloc include/linux/slab.h:552 [inline]
+    [<0000000019512953>] kzalloc include/linux/slab.h:664 [inline]
+    [<0000000019512953>] dlfb_alloc_urb_list drivers/video/fbdev/udlfb.c:1892 [inline]
+    [<0000000019512953>] dlfb_usb_probe.cold+0x289/0x988 drivers/video/fbdev/udlfb.c:1704
+    [<0000000072160152>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<00000000a8d6726f>] really_probe+0x159/0x480 drivers/base/dd.c:554
+    [<00000000c3ce4b0e>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
+    [<00000000e942e01c>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
+    [<00000000de0a5a5c>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<00000000463fbcb4>] __device_attach+0x122/0x250 drivers/base/dd.c:912
+    [<00000000b881a711>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<00000000364bbda5>] device_add+0x5ac/0xc30 drivers/base/core.c:2936
+    [<00000000eecca418>] usb_set_configuration+0x9de/0xb90 drivers/usb/core/message.c:2159
+    [<00000000edfeca2d>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<000000001830872b>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+    [<00000000a8d6726f>] really_probe+0x159/0x480 drivers/base/dd.c:554
+    [<00000000c3ce4b0e>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
+    [<00000000e942e01c>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
+    [<00000000de0a5a5c>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
 
-While preparing a matching linux-firmware update I noticed that the nvram
-is identical to the nvram used on the Prowise-PT301 tablet, so the new DMI
-quirk entry simply points to the already existing Prowise-PT301 nvram file.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210129171413.139880-2-hdegoede@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+c9e365d7f450e8aa615d@syzkaller.appspotmail.com
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201215063022.16746-1-qiang.zhang@windriver.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- .../wireless/broadcom/brcm80211/brcmfmac/dmi.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/video/fbdev/udlfb.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
-index 824a79f24383..6d5188b78f2d 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
-@@ -44,6 +44,14 @@ static const struct brcmf_dmi_data predia_basic_data = {
- 	BRCM_CC_43341_CHIP_ID, 2, "predia-basic"
- };
+--- a/drivers/video/fbdev/udlfb.c
++++ b/drivers/video/fbdev/udlfb.c
+@@ -1020,6 +1020,7 @@ static void dlfb_ops_destroy(struct fb_i
+ 	}
+ 	vfree(dlfb->backing_buffer);
+ 	kfree(dlfb->edid);
++	dlfb_free_urb_list(dlfb);
+ 	usb_put_dev(dlfb->udev);
+ 	kfree(dlfb);
  
-+/* Note the Voyo winpad A15 tablet uses the same Ampak AP6330 module, with the
-+ * exact same nvram file as the Prowise-PT301 tablet. Since the nvram for the
-+ * Prowise-PT301 is already in linux-firmware we just point to that here.
-+ */
-+static const struct brcmf_dmi_data voyo_winpad_a15_data = {
-+	BRCM_CC_4330_CHIP_ID, 4, "Prowise-PT301"
-+};
-+
- static const struct dmi_system_id dmi_platform_data[] = {
- 	{
- 		/* ACEPC T8 Cherry Trail Z8350 mini PC */
-@@ -125,6 +133,16 @@ static const struct dmi_system_id dmi_platform_data[] = {
- 		},
- 		.driver_data = (void *)&predia_basic_data,
- 	},
-+	{
-+		/* Voyo winpad A15 tablet */
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
-+			DMI_MATCH(DMI_BOARD_NAME, "Aptio CRB"),
-+			/* Above strings are too generic, also match on BIOS date */
-+			DMI_MATCH(DMI_BIOS_DATE, "11/20/2014"),
-+		},
-+		.driver_data = (void *)&voyo_winpad_a15_data,
-+	},
- 	{}
- };
- 
--- 
-2.30.1
-
 
 
