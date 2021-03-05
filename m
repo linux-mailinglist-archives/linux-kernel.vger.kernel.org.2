@@ -2,209 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9DB032F13B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F09E332F143
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:34:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhCERba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:31:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51780 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229679AbhCERa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:30:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB0DF65020;
-        Fri,  5 Mar 2021 17:30:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614965456;
-        bh=CVsvv7UFetXQMMq5IPnSWLmRDhBKI97RD+pTVdoh59w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QP9DdUp+bEXDQFvCjM93ztF7f8GOJVXE2yEOpN8fxjEht6I4KhKTjyA8A2LmnuzIk
-         /74zvQgQL1+Ia4jhoGKD/cuZsgv1Ey3xeAcd9Rl/iJTdl/4Yq1NGLMErfoBKYB6iYb
-         uQdzucQ6dDYESpORgeumLKzjO7BJjkrzLcVSbn3IxCnl7n9LBndHENKs78rJDuvcwP
-         JmDw+nj1Dd5U9s21ocoKbW+4kDHOwwbiSJ1hhe+oni0Kib3KHQIoMZ7VHG4lcVfuDN
-         AtgXXkNyesV5aYJARInuDqR2x/Pz+weLCt3JXMuIN1OZRrtHQa+jXlRyKFsAmH5MeV
-         h3k9y7p0uMBPA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3494340647; Fri,  5 Mar 2021 14:30:54 -0300 (-03)
-Date:   Fri, 5 Mar 2021 14:30:54 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>,
-        Al Grant <al.grant@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/8] perf cs-etm: Support PID tracing in config
-Message-ID: <YEJqzqd/tLVLTmm6@kernel.org>
-References: <20210206150833.42120-1-leo.yan@linaro.org>
- <20210206150833.42120-6-leo.yan@linaro.org>
+        id S229648AbhCEReM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:34:12 -0500
+Received: from mail.micronovasrl.com ([212.103.203.10]:48380 "EHLO
+        mail.micronovasrl.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhCERd7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 12:33:59 -0500
+Received: from mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1])
+        by mail.micronovasrl.com (Postfix) with ESMTP id E1267B0485F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 18:33:57 +0100 (CET)
+Authentication-Results: mail.micronovasrl.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=micronovasrl.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=micronovasrl.com;
+         h=content-transfer-encoding:content-language:content-type
+        :content-type:in-reply-to:mime-version:user-agent:date:date
+        :message-id:from:from:references:to:subject:subject; s=dkim; t=
+        1614965636; x=1615829637; bh=eODxb9VuSlFhNpsqeLIuCjA+kSmV2Ml2tuY
+        wtb7TzUg=; b=QAS/zB4c13tNsmfk3/WNdu+Q2AMBKKqTXjhQHAmoOLIItz1PoZz
+        cUeq9TenABcXqccz8+Z8Ih4uy5Nd5I1QNu9/bbAHGJCFC0PPBZJ+1qtWFXsmqw9p
+        hwMh5F6CNsGzTgZilIagfC9Qxtwy8kUwl9Qr80BjMJbt+HLcMQmQOkuQ=
+X-Virus-Scanned: Debian amavisd-new at mail.micronovasrl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.901
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.901 tagged_above=-10 required=4.5
+        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, NICE_REPLY_A=-0.001]
+        autolearn=unavailable autolearn_force=no
+Received: from mail.micronovasrl.com ([127.0.0.1])
+        by mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id scMansTDIl7j for <linux-kernel@vger.kernel.org>;
+        Fri,  5 Mar 2021 18:33:56 +0100 (CET)
+Received: from [192.168.50.85] (146-241-168-111.dyn.eolo.it [146.241.168.111])
+        by mail.micronovasrl.com (Postfix) with ESMTPSA id 1252CB04750;
+        Fri,  5 Mar 2021 18:33:55 +0100 (CET)
+Subject: Re: [PATCH 1/3] dt-bindings: Add Hycon Technology vendor prefix
+To:     =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.ne@posteo.net>,
+        Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Rob Herring <robh@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210305163834.70924-1-giulio.benetti@benettiengineering.com>
+ <20210305163834.70924-2-giulio.benetti@benettiengineering.com>
+ <YEJpogUgOHHPFUQ+@latitude>
+From:   Giulio Benetti <giulio.benetti@micronovasrl.com>
+Message-ID: <f1c78d68-5e84-ab52-3de6-44a9312f2afa@micronovasrl.com>
+Date:   Fri, 5 Mar 2021 18:33:55 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210206150833.42120-6-leo.yan@linaro.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <YEJpogUgOHHPFUQ+@latitude>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: it
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Feb 06, 2021 at 11:08:30PM +0800, Leo Yan escreveu:
-> From: Suzuki K Poulose <suzuki.poulose@arm.com>
-> 
-> If the kernel is running at EL2, the pid of a task is exposed via VMID
-> instead of the CONTEXTID.  Add support for this in the perf tool.
-> 
-> This patch respects user setting if user has specified any configs
-> from "contextid", "contextid1" or "contextid2"; otherwise, it
-> dynamically sets config based on PMU format "contextid".
+Hi Jonathan,
 
-Since the merge window is closed, I'll continue processing this from
-here onwards on my perf/core branch, as soon as I get what I have in
-perf/urgent sent upstream and merged.
-
-- Arnaldo
-
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Al Grant <al.grant@arm.com>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Co-developed-by: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> Reviewed-by: Mike Leach <mike.leach@linaro.org>
-> ---
->  tools/include/linux/coresight-pmu.h |  3 ++
->  tools/perf/arch/arm/util/cs-etm.c   | 61 +++++++++++++++++++++++------
->  2 files changed, 52 insertions(+), 12 deletions(-)
+Il 05/03/2021 18:25, Jonathan Neuschäfer ha scritto:
+> Hello,
 > 
-> diff --git a/tools/include/linux/coresight-pmu.h b/tools/include/linux/coresight-pmu.h
-> index 5dc47cfdcf07..4ac5c081af93 100644
-> --- a/tools/include/linux/coresight-pmu.h
-> +++ b/tools/include/linux/coresight-pmu.h
-> @@ -20,14 +20,17 @@
->   */
->  #define ETM_OPT_CYCACC		12
->  #define ETM_OPT_CTXTID		14
-> +#define ETM_OPT_CTXTID2		15
->  #define ETM_OPT_TS		28
->  #define ETM_OPT_RETSTK		29
->  
->  /* ETMv4 CONFIGR programming bits for the ETM OPTs */
->  #define ETM4_CFG_BIT_CYCACC	4
->  #define ETM4_CFG_BIT_CTXTID	6
-> +#define ETM4_CFG_BIT_VMID	7
->  #define ETM4_CFG_BIT_TS		11
->  #define ETM4_CFG_BIT_RETSTK	12
-> +#define ETM4_CFG_BIT_VMID_OPT	15
->  
->  static inline int coresight_get_trace_id(int cpu)
->  {
-> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-> index c25c878fd06c..fa6f91a7c8a1 100644
-> --- a/tools/perf/arch/arm/util/cs-etm.c
-> +++ b/tools/perf/arch/arm/util/cs-etm.c
-> @@ -67,6 +67,7 @@ static int cs_etm_set_context_id(struct auxtrace_record *itr,
->  	char path[PATH_MAX];
->  	int err = -EINVAL;
->  	u32 val;
-> +	u64 contextid;
->  
->  	ptr = container_of(itr, struct cs_etm_recording, itr);
->  	cs_etm_pmu = ptr->cs_etm_pmu;
-> @@ -86,25 +87,59 @@ static int cs_etm_set_context_id(struct auxtrace_record *itr,
->  		goto out;
->  	}
->  
-> +	/* User has configured for PID tracing, respects it. */
-> +	contextid = evsel->core.attr.config &
-> +			(BIT(ETM_OPT_CTXTID) | BIT(ETM_OPT_CTXTID2));
-> +
->  	/*
-> -	 * TRCIDR2.CIDSIZE, bit [9-5], indicates whether contextID tracing
-> -	 * is supported:
-> -	 *  0b00000 Context ID tracing is not supported.
-> -	 *  0b00100 Maximum of 32-bit Context ID size.
-> -	 *  All other values are reserved.
-> +	 * If user doesn't configure the contextid format, parse PMU format and
-> +	 * enable PID tracing according to the "contextid" format bits:
-> +	 *
-> +	 *   If bit ETM_OPT_CTXTID is set, trace CONTEXTIDR_EL1;
-> +	 *   If bit ETM_OPT_CTXTID2 is set, trace CONTEXTIDR_EL2.
->  	 */
-> -	val = BMVAL(val, 5, 9);
-> -	if (!val || val != 0x4) {
-> -		err = -EINVAL;
-> -		goto out;
-> +	if (!contextid)
-> +		contextid = perf_pmu__format_bits(&cs_etm_pmu->format,
-> +						  "contextid");
-> +
-> +	if (contextid & BIT(ETM_OPT_CTXTID)) {
-> +		/*
-> +		 * TRCIDR2.CIDSIZE, bit [9-5], indicates whether contextID
-> +		 * tracing is supported:
-> +		 *  0b00000 Context ID tracing is not supported.
-> +		 *  0b00100 Maximum of 32-bit Context ID size.
-> +		 *  All other values are reserved.
-> +		 */
-> +		val = BMVAL(val, 5, 9);
-> +		if (!val || val != 0x4) {
-> +			pr_err("%s: CONTEXTIDR_EL1 isn't supported\n",
-> +			       CORESIGHT_ETM_PMU_NAME);
-> +			err = -EINVAL;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	if (contextid & BIT(ETM_OPT_CTXTID2)) {
-> +		/*
-> +		 * TRCIDR2.VMIDOPT[30:29] != 0 and
-> +		 * TRCIDR2.VMIDSIZE[14:10] == 0b00100 (32bit virtual contextid)
-> +		 * We can't support CONTEXTIDR in VMID if the size of the
-> +		 * virtual context id is < 32bit.
-> +		 * Any value of VMIDSIZE >= 4 (i.e, > 32bit) is fine for us.
-> +		 */
-> +		if (!BMVAL(val, 29, 30) || BMVAL(val, 10, 14) < 4) {
-> +			pr_err("%s: CONTEXTIDR_EL2 isn't supported\n",
-> +			       CORESIGHT_ETM_PMU_NAME);
-> +			err = -EINVAL;
-> +			goto out;
-> +		}
->  	}
->  
->  	/* All good, let the kernel know */
-> -	evsel->core.attr.config |= (1 << ETM_OPT_CTXTID);
-> +	evsel->core.attr.config |= contextid;
->  	err = 0;
->  
->  out:
-> -
->  	return err;
->  }
->  
-> @@ -489,7 +524,9 @@ static u64 cs_etmv4_get_config(struct auxtrace_record *itr)
->  		config |= BIT(ETM4_CFG_BIT_TS);
->  	if (config_opts & BIT(ETM_OPT_RETSTK))
->  		config |= BIT(ETM4_CFG_BIT_RETSTK);
-> -
-> +	if (config_opts & BIT(ETM_OPT_CTXTID2))
-> +		config |= BIT(ETM4_CFG_BIT_VMID) |
-> +			  BIT(ETM4_CFG_BIT_VMID_OPT);
->  	return config;
->  }
->  
-> -- 
-> 2.25.1
+> On Fri, Mar 05, 2021 at 05:38:32PM +0100, Giulio Benetti wrote:
+>> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
+>>
+>> Update Documentation/devicetree/bindings/vendor-prefixes.yaml to
+>> include "hycon" as a vendor prefix for "Hycon Technology".
+>> Company website: http://www.hycontek.com/
+> 
+> As far as I can see, https would be possible here.
+
++1
+
+>> Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
+>> ---
+>>   Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+>> index a1312637d6ff..51b00aa96dff 100644
+>> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+>> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+>> @@ -488,6 +488,8 @@ patternProperties:
+>>     "^hugsun,.*":
+>>       description: Shenzhen Hugsun Technology Co. Ltd.
+>>     "^hwacom,.*":
+>> +    description: Hycon Technology Corp.
+>> +  "^hycon,.*":
+>>       description: HwaCom Systems Inc.
+> 
+> This is the wrong way around. You declared "hwacom," to mean "Hycon
+> Technology Corp.", and "hycon," to mean "HwaCom Systems Inc.".
 > 
 
+Thank you, I've modified it and I'll send a v2 with the rest of
+patchset.
+
+Best regards
 -- 
+Giulio Benetti
+CTO
 
-- Arnaldo
+MICRONOVA SRL
+Sede: Via A. Niedda 3 - 35010 Vigonza (PD)
+Tel. 049/8931563 - Fax 049/8931346
+Cod.Fiscale - P.IVA 02663420285
+Capitale Sociale € 26.000 i.v.
+Iscritta al Reg. Imprese di Padova N. 02663420285
+Numero R.E.A. 258642
