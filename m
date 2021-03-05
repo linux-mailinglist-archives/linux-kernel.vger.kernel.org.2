@@ -2,188 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE6C32E338
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 08:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DAD32E33A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 08:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbhCEHvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 02:51:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhCEHvh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 02:51:37 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6610FC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 23:51:35 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id hs11so1646935ejc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 23:51:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=cKVGTa6ju/LsREjFD7gnw/RP1YjlyJ1xmIXcDe5uO2Q=;
-        b=Zh06eYHcY8hTJFgnQm43ngFpY1VdFU7XH/rX9h9CDzvHCJDt78jMLLhoB4pYSKr35m
-         OpJKt6P+BL+8/Iz+9LeT4jx8oYAi8tdd0u5jDQFswMWxsob7Ko1AkxoYsdcCH4XdNAKu
-         ujcTLn0DF/oTurrWkf52u0TFGu2nZia+eqTZNpp3FB/uZpjq4fpA8gi9BRdXM7v7N1A5
-         rrADZKzB7t3bb3bxFnE1kOIuBCZ2Vn61Pp4hDI44+/qDl/weOCkQVskqugNDR+7REKBW
-         M1fggiwWZAatHscXciMBsjt6C53L2tLZMIgUgfJvQQWJ2CELTGmvswHaEopVfTo2wXFY
-         7FXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=cKVGTa6ju/LsREjFD7gnw/RP1YjlyJ1xmIXcDe5uO2Q=;
-        b=q5guYTr7Hy1lUwbuGarv1QUCT7NnA0G5zHoZM7mnxMVgI1siA3YOrKr4KHkzZcm6Sg
-         mZcR0P119iOHmZm/bTKZuIoa1JN9tqFdU4KedG2W9cXaZYqy+74pmGPWxFkcNAEMTmrH
-         I5Ug1/Byvws4uZD8NKyDDsXjXJgMjeTQwxhJHYJzSKRwZ/2+DVuFBW/NctM3T3dmjJDz
-         OOe14LrPvTBqGPFMxD95ROwTWAnrUEfp8LgIrPRSf7uiWcgLR2Q6VwX8aPgrHZTWvLeC
-         cqjXJxJHEhx8LYL1IYQIOd/47WMhJCDM7dkfNdI/J+fGpydG1GgA8/dVb5AJkfZ/NYoJ
-         2lZw==
-X-Gm-Message-State: AOAM532m3IDGP2HoQR3+2IUUeaDGQokRcO5qKQ9/BFYzkdDFgrYv0X/L
-        en0BIx9u4nUl7vDt+JamvnjHyA==
-X-Google-Smtp-Source: ABdhPJzJyKW6gvVHpeMLZSWCIv+GoQQYb17WsbWJkkvmT+3hnDQcSK0OW77fFBTCRV0flB0vEY8CPA==
-X-Received: by 2002:a17:906:7e12:: with SMTP id e18mr1273626ejr.316.1614930694041;
-        Thu, 04 Mar 2021 23:51:34 -0800 (PST)
-Received: from goby (81-231-61-187-no276.tbcn.telia.com. [81.231.61.187])
-        by smtp.gmail.com with ESMTPSA id de17sm1031396ejc.16.2021.03.04.23.51.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 23:51:33 -0800 (PST)
-Date:   Fri, 5 Mar 2021 08:51:31 +0100
-From:   Joakim Bech <joakim.bech@linaro.org>
-To:     Arnd Bergmann <arnd@linaro.org>
-Cc:     Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        ruchika.gupta@linaro.org,
-        "Winkler, Tomas" <tomas.winkler@intel.com>, yang.huang@intel.com,
-        bing.zhu@intel.com, Matti.Moell@opensynergy.com,
-        hmo@opensynergy.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-nvme@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>
-Subject: Re: [RFC PATCH 1/5] rpmb: add Replay Protected Memory Block (RPMB)
- subsystem
-Message-ID: <20210305075131.GA15940@goby>
-References: <20210303135500.24673-1-alex.bennee@linaro.org>
- <20210303135500.24673-2-alex.bennee@linaro.org>
- <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
+        id S229505AbhCEHxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 02:53:40 -0500
+Received: from muru.com ([72.249.23.125]:39712 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229458AbhCEHxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 02:53:39 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 701C380BA;
+        Fri,  5 Mar 2021 07:54:17 +0000 (UTC)
+Date:   Fri, 5 Mar 2021 09:53:35 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Keerthy <j-keerthy@ti.com>, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/3] clocksource/drivers/timer-ti-dm: Fix posted mode
+ status check order
+Message-ID: <YEHjf6dcTByVvwBX@atomide.com>
+References: <20210304072135.52712-1-tony@atomide.com>
+ <20210304072135.52712-2-tony@atomide.com>
+ <bd551701-da42-8f9f-ad49-5d87baa9beec@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK8P3a0W5X8Mvq0tDrz7d67SfQA=PqthpnGDhn8w1Xhwa030-A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <bd551701-da42-8f9f-ad49-5d87baa9beec@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 09:56:24PM +0100, Arnd Bergmann wrote:
-> On Wed, Mar 3, 2021 at 2:54 PM Alex Bennée <alex.bennee@linaro.org> wrote:
-> >
-> > A number of storage technologies support a specialised hardware
-> > partition designed to be resistant to replay attacks. The underlying
-> > HW protocols differ but the operations are common. The RPMB partition
-> > cannot be accessed via standard block layer, but by a set of specific
-> > commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
-> > partition provides authenticated and replay protected access, hence
-> > suitable as a secure storage.
-> >
-> > The RPMB layer aims to provide in-kernel API for Trusted Execution
-> > Environment (TEE) devices that are capable to securely compute block
-> > frame signature. In case a TEE device wishes to store a replay
-> > protected data, requests the storage device via RPMB layer to store
-> > the data.
-> >
-> > A TEE device driver can claim the RPMB interface, for example, via
-> > class_interface_register(). The RPMB layer provides a series of
-> > operations for interacting with the device.
-> >
-> >   * program_key - a one time operation for setting up a new device
-> >   * get_capacity - introspect the device capacity
-> >   * get_write_count - check the write counter
-> >   * write_blocks - write a series of blocks to the RPMB device
-> >   * read_blocks - read a series of blocks from the RPMB device
-> 
-> Based on the discussion we had today in a meeting, it seems the
-> main change that is needed is to get back to the original model
-> of passing the encrypted data to the kernel instead of cleartext
-> data, as the main use case we know of is to have the key inside of
-> the TEE device and not available to the kernel or user space.
-> 
-Yes, for OP-TEE we have to encrypt all data going to RPMB, since the
-information goes via non-secure world. We get the integrity by applying
-the HMAC with the key that is being discussed in this thread. The TEE
-owns and is responsible for programming the key (and that should be
-something that is achieved as part of the manufacturing process).
+* Grygorii Strashko <grygorii.strashko@ti.com> [210304 20:58]:
+> On 04/03/2021 09:21, Tony Lindgren wrote:
+> > When the timer is configured in posted mode, we need to check the write-
+> > posted status register (TWPS) before writing to the register.
+...
 
-> This is also required to be able to forward the encrypted data
-> through the same interface on a KVM host, when the guest
-> uses virtio-rpmb, and the host forwards the data into an mmc or
-> ufs device.
+> > --- a/drivers/clocksource/timer-ti-dm-systimer.c
+> > +++ b/drivers/clocksource/timer-ti-dm-systimer.c
+> > @@ -449,13 +449,13 @@ static int dmtimer_set_next_event(unsigned long cycles,
+> >   	struct dmtimer_systimer *t = &clkevt->t;
+> >   	void __iomem *pend = t->base + t->pend;
+> > -	writel_relaxed(0xffffffff - cycles, t->base + t->counter);
+> >   	while (readl_relaxed(pend) & WP_TCRR)
+> >   		cpu_relax();
+> > +	writel_relaxed(0xffffffff - cycles, t->base + t->counter);
+> > -	writel_relaxed(OMAP_TIMER_CTRL_ST, t->base + t->ctrl);
+> >   	while (readl_relaxed(pend) & WP_TCLR)
+> >   		cpu_relax();
+> > +	writel_relaxed(OMAP_TIMER_CTRL_ST, t->base + t->ctrl);
 > 
-> That said, I can also imagine use cases where we do want to
-> store the key in the kernel's keyring, so maybe we end up needing
-> both.
-> 
-The concern I have in those cases is that you need to share the RPMB key
-in some way if you need to access the RPMB device from secure side as
-well as from the non-secure side. Technically doable I guess, but in
-practice and in terms of security it doesn't seem like a good approach.
+> It seems static [and inline] helper here could be better solution. no?
 
-In a shared environment like that you also have the problem that you
-need to agree on how to actually store files on the RPMB device. OP-TEE
-has it's own "FAT-look-a-like" implementation when using RPMB. But if
-you need mutual access, then you need to get into agreement on where to
-actually store the files in the RPMB.
+Well we wanted to get rid of the confusing macros. And in this case I
+suspect we can eventually do just one read of the pending register for
+the registers used mask rather than check the status separately multiple
+times. But that needs to be carefully tested and is not a fix :)
 
-However, if secure side for some reason doesn't use RPMB at all, then
-kernel could of course take control of it and use it.
-
-I would probably not spend too much time on taking that use case into
-account until we actually see a real need for it.
-
-> > The detailed operation of implementing the access is left to the TEE
-> > device driver itself.
-> >
-> > [This is based-on Thomas Winkler's proposed API from:
-> >
-> >   https://lore.kernel.org/linux-mmc/1478548394-8184-2-git-send-email-tomas.winkler@intel.com/
-> >
-> > The principle difference is the framing details and HW specific
-> > bits (JDEC vs NVME frames) are left to the lower level TEE driver to
-> > worry about. The eventual userspace ioctl interface will aim to be
-> > similarly generic. This is an RFC to follow up on:
-> >
-> >   Subject: RPMB user space ABI
-> >   Date: Thu, 11 Feb 2021 14:07:00 +0000
-> >   Message-ID: <87mtwashi4.fsf@linaro.org>]
-> >
-> > Signed-off-by: Alex Bennée <alex.bennee@linaro.org>
-> > Cc: Tomas Winkler <tomas.winkler@intel.com>
-> > Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> > Cc: Linus  Walleij <linus.walleij@linaro.org>
-> > Cc: Arnd Bergmann <arnd.bergmann@linaro.org>
-> > Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> > ---
-> >  MAINTAINERS                |   7 +
-> >  drivers/char/Kconfig       |   2 +
-> >  drivers/char/Makefile      |   1 +
-> >  drivers/char/rpmb/Kconfig  |  11 +
-> >  drivers/char/rpmb/Makefile |   7 +
-> >  drivers/char/rpmb/core.c   | 429 +++++++++++++++++++++++++++++++++++++
-> >  include/linux/rpmb.h       | 163 ++++++++++++++
-> 
-> 
-> My feeling is that it should be a top-level subsystem, in drivers/rpmb
-> rather than drivers/char/rpmb, as you implement an abstraction layer
-> that other drivers can plug into, rather than a simple driver.
-> 
->        Arnd
-
--- 
 Regards,
-Joakim
+
+Tony
