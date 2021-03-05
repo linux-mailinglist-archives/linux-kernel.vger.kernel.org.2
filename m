@@ -2,75 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B04132EBF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA9132EC10
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhCENSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:18:33 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:35124 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229505AbhCENSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:18:11 -0500
-Received: from zn.tnic (p200300ec2f0b9500a5847b5a228c2b11.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:9500:a584:7b5a:228c:2b11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C48C41EC032C;
-        Fri,  5 Mar 2021 14:18:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1614950289;
+        id S230109AbhCEN1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:27:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42004 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230051AbhCEN1E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 08:27:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614950823;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=a6f8ruqcL1B2dSMKwksbdBsdxs5yzu8wbv0uJQXnMNo=;
-        b=EkI+7VZbOy9eJwcY5GNvIWNWAu+Phj9QJUxT0cC6OmGjfK11MhgOezKR4+BEspBcvIlwyU
-        W4LU3DwkOrE19LOwQpwR2eYQnUbVPzj9Bc0tVcG524otAxveN5JaPFbzAXkgZ3lzvoyuMz
-        rf1E5aoZ1tKb8j4qdnvV+WlkE6J16fg=
-Date:   Fri, 5 Mar 2021 14:18:04 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Mike Travis <mike.travis@hpe.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steve Wahl <steve.wahl@hpe.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Russ Anderson <rja@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] x86/platform/uv: Add set of kernel block size for
- hubless arches
-Message-ID: <20210305131804.GA2685@zn.tnic>
-References: <20210304223955.183463-1-mike.travis@hpe.com>
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iUA1D4MaFvDkvOetYPodYlEn7+aykl6YUCJj7oVKQPc=;
+        b=VdA+iFxvzgVzFGmAIroNAxLa7D4uDqI8P/yi+TIPeD/b7bp8XpRfMRHiO4wu/YACPVs/zZ
+        7RJMZToF8T6EePmEjJkBbhUT3+D/HL9E1hlhXtTqXvWbJqH3qtUqeY59h9jc4OgKifL/6K
+        Zeb5a8j7yPYU5ljQMTOzjnSCtIne+oo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-413-qpGctsy8Pk2y1FIZdoo2gQ-1; Fri, 05 Mar 2021 08:26:59 -0500
+X-MC-Unique: qpGctsy8Pk2y1FIZdoo2gQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A145969758;
+        Fri,  5 Mar 2021 13:26:57 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.195.157])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 554F82B0BC;
+        Fri,  5 Mar 2021 13:26:55 +0000 (UTC)
+Subject: Re: [bisected] 5.12-rc1 hpsa regression: "scsi: hpsa: Correct dev
+ cmds outstanding for retried cmds" breaks hpsa P600
+To:     Don.Brace@microchip.com, slyich@gmail.com
+Cc:     glaubitz@physik.fu-berlin.de, storagedev@microchip.com,
+        linux-scsi@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jszczype@redhat.com,
+        Scott.Benesh@microchip.com, Scott.Teel@microchip.com,
+        martin.petersen@oracle.com
+References: <20210222230519.73f3e239@sf>
+ <cc658b61-530e-90bf-3858-36cc60468a24@kernel.dk>
+ <8decdd2e-a380-9951-3ebb-2bc3e48aa1c3@physik.fu-berlin.de>
+ <20210223083507.43b5a6dd@sf>
+ <51cbf584-07ef-1e62-7a3b-81494a04faa6@physik.fu-berlin.de>
+ <9441757f-d4bc-a5b5-5fb0-967c9aaca693@physik.fu-berlin.de>
+ <20210223192743.0198d4a9@sf> <20210302222630.5056f243@sf>
+ <25dfced0-88b2-b5b3-f1b6-8b8a9931bf90@physik.fu-berlin.de>
+ <20210303002236.2f4ec01f@sf> <20210303085533.505b1590@sf>
+ <SN6PR11MB284885A5751845EEA290BFCFE1989@SN6PR11MB2848.namprd11.prod.outlook.com>
+ <20210303220401.501449e5@sf>
+ <SN6PR11MB2848371902B9488289A7B4C7E1979@SN6PR11MB2848.namprd11.prod.outlook.com>
+From:   Tomas Henzl <thenzl@redhat.com>
+Message-ID: <5532f9ab-7555-d51b-f4d5-f9b72a61f248@redhat.com>
+Date:   Fri, 5 Mar 2021 14:26:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <SN6PR11MB2848371902B9488289A7B4C7E1979@SN6PR11MB2848.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210304223955.183463-1-mike.travis@hpe.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 04:39:55PM -0600, Mike Travis wrote:
-> The commit below added a call to set the block size value that is needed
-> to set the value used by the kernel.  This was done for UV Hubbed systems.
-> This commit adds that same set call to hubless systems which supports the
-> same NVRAMS and Intel BIOS thus the same problem occurs.
+On 3/4/21 6:00 PM, Don.Brace@microchip.com wrote:
+> -----Original Message-----
+> From: Sergei Trofimovich [mailto:slyich@gmail.com] 
+> Sent: Wednesday, March 3, 2021 4:04 PM
+> To: Don Brace - C33706 <Don.Brace@microchip.com>
+> Cc: glaubitz@physik.fu-berlin.de; storagedev <storagedev@microchip.com>; linux-scsi@vger.kernel.org; linux-ia64@vger.kernel.org; linux-kernel@vger.kernel.org; jszczype@redhat.com; Scott Benesh - C33703 <Scott.Benesh@microchip.com>; Scott Teel - C33730 <Scott.Teel@microchip.com>; thenzl@redhat.com; martin.petersen@oracle.com
+> Subject: Re: [bisected] 5.12-rc1 hpsa regression: "scsi: hpsa: Correct dev cmds outstanding for retried cmds" breaks hpsa P600
 > 
-> Fixes: bbbd2b51a2aa ...
+> Glad to hear the patch works. 
+> The P600 is an unsupported controller that was removed some time ago (by us) and re-added in this patch:
+> commit 135ae6edeb51979d0998daf1357f149a7d6ebb08 scsi: hpsa: add support for legacy boards
+> Author: Hannes Reinecke <hare@suse.de>
+> Date:   Tue Aug 15 08:58:04 2017 +0200
+> 
+> So, when testing the original patch, I no longer have a P600 to test with. It used to be supported by our obsoleted cciss driver.
 
-The format is:
+Do you know why this is specific to P600, since the struct is used only
+internally in the driver and not used to communicate with the controller
+or am I wrong?
 
-Fixes: bbbd2b51a2aa ("x86/platform/UV: Use new set memory block size function")
+> 
+> Since patch f749d8b7a9896bc6e5ffe104cc64345037e0b152 scsi: hpsa: Correct dev cmds outstanding for retried cmds has
+> already been applied to Martin Petersons 5.13/scsi-queue, perhaps it would be better to send up another patch to correct your alignment issue on these legacy boards.
+> 
+> Wondering what others think about this?
 
-and you don't need to paste the commit text.
+I agree with you I'd prefer a new patch.
 
-And if you add a Fixes tag, then this is supposed to fix something but
-I'm unclear what exactly this fixes?
+Thanks,
+Tomas
 
-IOW, should this patch be backported to stable because UV hubless
-systems would somehow fail without it?
+> 
+> Thanks,
+> Don
+> 
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
