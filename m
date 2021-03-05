@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CD532EA2D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBBA32E94A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbhCEMgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:36:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49188 "EHLO mail.kernel.org"
+        id S232445AbhCEMbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:31:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231653AbhCEMgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:36:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA16565004;
-        Fri,  5 Mar 2021 12:36:19 +0000 (UTC)
+        id S231481AbhCEMbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:31:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DA1A6503E;
+        Fri,  5 Mar 2021 12:31:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947780;
-        bh=6XbPyMXrPH8f/n12FwrhRU/yqo78/XYFjvo/xkSA89U=;
+        s=korg; t=1614947468;
+        bh=iZsLd584RbSUhwjPW9xpgntjv5HdqZmgRYr2gYXj+3M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m3zi9ckjYSuS2r5pj1fLuCl9jLoIQd0zlEY80DkN/zHlbdkJlhTvhLnJiVjZpFbo7
-         eNNwaTN8wijo9uO/NRenzANV3/m/U3MHrKg4I+tlOl7Ty5jET0KAwO4V1O/zc7i9bz
-         DSEvJCGL/zDEiRRoC+kUfbuEIkSE4oEUGqwmOCeU=
+        b=b3TQUvsFOmE/Y/RW1kRGdScwxg7qNs71IEbnLTKC/zr5Q+ky+CotT1/DAOY5+w0xk
+         zKavj8TVB+oU6nanOOLwFJf5pHGVPOlZq78QuwvHNnOVZPlj4CI176U/ywQ3hSVB3B
+         3sZW/M02Vu4aJ2AAIAXdUrzeRCPs1XUYtXQ4WxO8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        Lech Perczak <lech.perczak@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 01/52] net: usb: qmi_wwan: support ZTE P685M modem
-Date:   Fri,  5 Mar 2021 13:21:32 +0100
-Message-Id: <20210305120853.733431768@linuxfoundation.org>
+        stable@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 074/102] perf/x86/kvm: Add Cascade Lake Xeon steppings to isolation_ucodes[]
+Date:   Fri,  5 Mar 2021 13:21:33 +0100
+Message-Id: <20210305120906.917849403@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
-References: <20210305120853.659441428@linuxfoundation.org>
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+References: <20210305120903.276489876@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,62 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lech Perczak <lech.perczak@gmail.com>
+From: Jim Mattson <jmattson@google.com>
 
-commit 88eee9b7b42e69fb622ddb3ff6f37e8e4347f5b2 upstream.
+[ Upstream commit b3c3361fe325074d4144c29d46daae4fc5a268d5 ]
 
-Now that interface 3 in "option" driver is no longer mapped, add device
-ID matching it to qmi_wwan.
+Cascade Lake Xeon parts have the same model number as Skylake Xeon
+parts, so they are tagged with the intel_pebs_isolation
+quirk. However, as with Skylake Xeon H0 stepping parts, the PEBS
+isolation issue is fixed in all microcode versions.
 
-The modem is used inside ZTE MF283+ router and carriers identify it as
-such.
-Interface mapping is:
-0: QCDM, 1: AT (PCUI), 2: AT (Modem), 3: QMI, 4: ADB
+Add the Cascade Lake Xeon steppings (5, 6, and 7) to the
+isolation_ucodes[] table so that these parts benefit from Andi's
+optimization in commit 9b545c04abd4f ("perf/x86/kvm: Avoid unnecessary
+work in guest filtering").
 
-T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=480  MxCh= 0
-D:  Ver= 2.01 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=19d2 ProdID=1275 Rev=f0.00
-S:  Manufacturer=ZTE,Incorporated
-S:  Product=ZTE Technologies MSM
-S:  SerialNumber=P685M510ZTED0000CP&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&0
-C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
-E:  Ad=87(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
-E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=(none)
-E:  Ad=88(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-
-Acked-by: Bjørn Mork <bjorn@mork.no>
-Signed-off-by: Lech Perczak <lech.perczak@gmail.com>
-Link: https://lore.kernel.org/r/20210223183456.6377-1-lech.perczak@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Jim Mattson <jmattson@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Link: https://lkml.kernel.org/r/20210205191324.2889006-1-jmattson@google.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/qmi_wwan.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/events/intel/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -1217,6 +1217,7 @@ static const struct usb_device_id produc
- 	{QMI_FIXED_INTF(0x19d2, 0x1255, 4)},
- 	{QMI_FIXED_INTF(0x19d2, 0x1256, 4)},
- 	{QMI_FIXED_INTF(0x19d2, 0x1270, 5)},	/* ZTE MF667 */
-+	{QMI_FIXED_INTF(0x19d2, 0x1275, 3)},	/* ZTE P685M */
- 	{QMI_FIXED_INTF(0x19d2, 0x1401, 2)},
- 	{QMI_FIXED_INTF(0x19d2, 0x1402, 2)},	/* ZTE MF60 */
- 	{QMI_FIXED_INTF(0x19d2, 0x1424, 2)},
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 7d4d89fa8647..aaa7bffdb20f 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -4384,6 +4384,9 @@ static const struct x86_cpu_desc isolation_ucodes[] = {
+ 	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_X,		 2, 0x0b000014),
+ 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 3, 0x00000021),
+ 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 4, 0x00000000),
++	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 5, 0x00000000),
++	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 6, 0x00000000),
++	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 7, 0x00000000),
+ 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_L,		 3, 0x0000007c),
+ 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE,		 3, 0x0000007c),
+ 	INTEL_CPU_DESC(INTEL_FAM6_KABYLAKE,		 9, 0x0000004e),
+-- 
+2.30.1
+
 
 
