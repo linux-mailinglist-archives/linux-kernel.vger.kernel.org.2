@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4386532F624
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3827D32F62C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhCEWxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 17:53:45 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:43079 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhCEWxn (ORCPT
+        id S230007AbhCEWyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 17:54:55 -0500
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:43180 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229982AbhCEWyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 17:53:43 -0500
-Received: by mail-oi1-f169.google.com with SMTP id d20so4265387oiw.10;
-        Fri, 05 Mar 2021 14:53:43 -0800 (PST)
+        Fri, 5 Mar 2021 17:54:47 -0500
+Received: by mail-oi1-f173.google.com with SMTP id d20so4267793oiw.10;
+        Fri, 05 Mar 2021 14:54:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=MptyKcKkrBvMdU5T4FKB96zYxJGrM+Ad5xW7zai5ozg=;
-        b=W86x2KocQaGIDTauFaPOC5s4ylDKVBcDushggROiulAEEsghMFiJ8nnsBNvwiOO7ci
-         buSaFItqb6xK72Efk9CKwLd6UYlnyQYIKtUkK+G3ECR8oVXqEJFL00S2+GMGR/BrXL4D
-         m84sP1NDVDGqHCSMLKYg/aQe8KidEcLRFGPYzJrswJXsr5bQRCnyaJ0zO/2/gfSA7lQm
-         Jf9J8So1pb4wYRo8Th0o5Fo1f62RmnkR9Cg4F3hexsBP2cGOvMiieEYMMuJMixCeZcMW
-         cb8T6En1F+QrrcHSnBBCKdGdvQ+wFUPltYB6M1F35hgoAXMef+4xYwRw5hJYxn7jcnnB
-         bDWQ==
-X-Gm-Message-State: AOAM5305NBZCIl+joWFNUJDg8wcERtRZVOHdVyop5NEbLw4eLR78z5DQ
-        qehULCyqr8pVFTm6GQn+GQ==
-X-Google-Smtp-Source: ABdhPJxdtgSbpJixrz+Z5LbK4JUHrcE45GXpKZt1VhHXd1m6xPLZB7yzMMYTbsMptezYOQkEUMS5xg==
-X-Received: by 2002:aca:4a87:: with SMTP id x129mr2883349oia.107.1614984822707;
-        Fri, 05 Mar 2021 14:53:42 -0800 (PST)
+        bh=YmJy9RHCJy3uQpyMxegFKyRBZmNkXavxc/ygHGcpB/Q=;
+        b=hraon5aFcVIgq6fUtwtSv2SbrJjEUob4rqicCZ2xfow5x8luF/uJjIT7sFbIYZUCjj
+         Ehcsbq9dJigXSnJGalMp1T1OcDV2CLAUzoF4cNhpec+PRuZOeZWxXjM4cM0DSlsK3Jfz
+         s4+xPj2MEQ2AIKojaSsbHVIlKTzpBVB2SCQPdGBnnYkKxeMFCCFzdSPdNlzFtQu8Bado
+         qyEQQoeFij9ciNUxMcstxgU9G92RI4o+KGxHattWxMdmQN1bceqEUTUhemZQfbojEvGY
+         JgrAWz7zuDU9Nk5mptAa9UFvifVJnIhzAjTzBkk8gwAxzNGk8tzooWClM8F93G0FLAic
+         rWzQ==
+X-Gm-Message-State: AOAM531C9m1yM6P/U3Bq3R1/wxKa0L++o63gdlMHqGhUhLVugjb6Vs7Q
+        GvN0yy1rzdriUnQ5OSbQPw==
+X-Google-Smtp-Source: ABdhPJwgqxdxeG3gLvugwUTSgjpNpEvow3sM8VSthPlMcISqgz/neBTZry3GPD1+z9Sob/oL1Ma0uw==
+X-Received: by 2002:aca:ad02:: with SMTP id w2mr8911700oie.143.1614984887139;
+        Fri, 05 Mar 2021 14:54:47 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t2sm954269otq.45.2021.03.05.14.53.41
+        by smtp.gmail.com with ESMTPSA id i3sm926972otk.56.2021.03.05.14.54.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 14:53:42 -0800 (PST)
-Received: (nullmailer pid 791904 invoked by uid 1000);
-        Fri, 05 Mar 2021 22:53:40 -0000
-Date:   Fri, 5 Mar 2021 16:53:40 -0600
+        Fri, 05 Mar 2021 14:54:46 -0800 (PST)
+Received: (nullmailer pid 793356 invoked by uid 1000);
+        Fri, 05 Mar 2021 22:54:45 -0000
+Date:   Fri, 5 Mar 2021 16:54:44 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     David Airlie <airlied@linux.ie>, devicetree@vger.kernel.org,
-        allen <allen.chen@ite.com.tw>, Sam Ravnborg <sam@ravnborg.org>,
+Cc:     Giulio Benetti <giulio.benetti@micronovasrl.com>,
         Thierry Reding <thierry.reding@gmail.com>,
-        Giulio Benetti <giulio.benetti@micronovasrl.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
         Krzysztof Kozlowski <krzk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
         Daniel Palmer <daniel@0x0f.com>,
-        dri-devel@lists.freedesktop.org,
-        Max Merchel <Max.Merchel@tq-group.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Lubomir Rintel <lkundrak@v3.sk>, allen <allen.chen@ite.com.tw>,
         Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 3/9] dt-bindings: display/panel: add Jenson JT60249-01
-Message-ID: <20210305225340.GA791875@robh.at.kernel.org>
+        Max Merchel <Max.Merchel@tq-group.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/9] dt-bindings: display/panel: add Jenson JT60245-01
+Message-ID: <20210305225444.GA792026@robh.at.kernel.org>
 References: <20210218225458.823773-1-giulio.benetti@benettiengineering.com>
- <20210218225458.823773-4-giulio.benetti@benettiengineering.com>
+ <20210218225458.823773-5-giulio.benetti@benettiengineering.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218225458.823773-4-giulio.benetti@benettiengineering.com>
+In-Reply-To: <20210218225458.823773-5-giulio.benetti@benettiengineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Feb 2021 23:54:51 +0100, Giulio Benetti wrote:
+On Thu, Feb 18, 2021 at 11:54:52PM +0100, Giulio Benetti wrote:
 > From: Giulio Benetti <giulio.benetti@micronovasrl.com>
 > 
-> Add DT binding for "jenson,jt60249-01".
+> Add DT binding for "jenson,jt60245-01".
 > 
 > Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
 > Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
@@ -76,5 +76,22 @@ On Thu, 18 Feb 2021 23:54:51 +0100, Giulio Benetti wrote:
 >  .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
 >  1 file changed, 2 insertions(+)
 > 
+> diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+> index 08afd6501094..fd0d2a573350 100644
+> --- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+> +++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+> @@ -169,6 +169,8 @@ properties:
+>        - jenson,jt60248-01
+>          # Jenson Display JT60249-01 5" (800x480) TFT LCD panel
+>        - jenson,jt60249-01
+> +        # Jenson Display JT60245-01 7" (800x480) TFT LCD panel
+> +      - jenson,jt60245-01
 
-Acked-by: Rob Herring <robh@kernel.org>
+It was going so well. Alpha-numeric order please.
+
+>          # King & Display KD116N21-30NV-A010 eDP TFT LCD panel
+>        - kingdisplay,kd116n21-30nv-a010
+>          # Kaohsiung Opto-Electronics Inc. 5.7" QVGA (320 x 240) TFT LCD panel
+> -- 
+> 2.25.1
+> 
