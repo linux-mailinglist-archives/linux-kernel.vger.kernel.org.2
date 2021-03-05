@@ -2,129 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4706632E098
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6876E32E0AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbhCEEWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 23:22:02 -0500
-Received: from foss.arm.com ([217.140.110.172]:47460 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229463AbhCEEWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 23:22:01 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 31FACD6E;
-        Thu,  4 Mar 2021 20:22:01 -0800 (PST)
-Received: from [10.163.68.69] (unknown [10.163.68.69])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9A69C3F73B;
-        Thu,  4 Mar 2021 20:21:56 -0800 (PST)
-Subject: Re: [PATCH V2 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based
- memory
-To:     Will Deacon <will@kernel.org>, David Hildenbrand <david@redhat.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
-        linux-mm@kvack.org,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>, vkabatov@redhat.com,
-        linux-arm-kernel@lists.infradead.org
-References: <4d8f5156-8628-5531-1485-322ad92aa15c@redhat.com>
- <0e649f28-4d54-319d-f876-8a93870cda7f@arm.com>
- <20210205185552.GA23216@willie-the-truck>
- <20210211115354.GB29894@willie-the-truck>
- <23e5eb93-a39c-c68e-eac1-c5ccf9036079@arm.com>
- <a54d7dcc-8603-6d3d-143f-b09c431b8e32@redhat.com>
- <20210303190428.GB24035@arm.com> <20210303212406.GB20055@willie-the-truck>
- <b8dfa24d-e287-0039-ea6d-f644f52f4dbf@arm.com>
- <9872a864-15b1-12a7-6aac-0e68554bc744@redhat.com>
- <20210304093559.GB20721@willie-the-truck>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <023088a4-c5aa-7a24-f9dd-ecd2b11dcae6@arm.com>
-Date:   Fri, 5 Mar 2021 09:52:30 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230113AbhCEEYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 23:24:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhCEEYG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 23:24:06 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091B2C061756
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 20:24:05 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d8so721628plg.10
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 20:24:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HtxKgLnDbZmtVO4z48HYTdMJ972OxE6DOGqpFiyH4e0=;
+        b=E2ydhqrgD+aOyLA/U6w68roveyJRay0UKbw2XKoCd4QzSTG3/5J5+wvhS3l6uGcS/0
+         8fZRZUTzIfLdL3SIbfoAhyrCDbypUkm3tyKKnRpy1zPnkSY+2oZhC2UEprBIimMX9X41
+         iXyQgKbIXRe18LIy3YRzo8T7XL/nBB1GcS0KLMQmX5V9T0i7FSz1Inzri3ba46su3RCW
+         j2ZCTLvmhQ47Bj+KGfc1t5h8dyYojwU6rB36KFI9jVohrguKknTqXVJa5tG8WKCQCAgI
+         8AajB9aaYIhWAhXy1WE+e9Y04cxOe18iPW6TNX0c2IUIqXoBMNV0wpcasvqmJFaMnDq/
+         2dqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HtxKgLnDbZmtVO4z48HYTdMJ972OxE6DOGqpFiyH4e0=;
+        b=sin4zvNg8DMd0HQOjHtbOW9CxbcpTAt+LygqIG1ZMZXCH5AMqFf2NZoCCsh0NglFDM
+         eUSvvyVwbcSuxNwgfXWiNBRkmT3xk/JGKVQQvg6pDF7/m3Wzqmng8j7lyad0aFxoWUKg
+         sb5/NGKOAFCCCCDIu6Tq2lA4bulLoTYudpaz6NejiU4XVz0jtd+szfScE0QIy3eTHoe2
+         lHQuMjlgMSZHUE61kS1CwGYl4qOS+uK2RnBp2rhomCE5izw9aLzLF+2/EUrxz2w3U5t4
+         ijoUxf9tpDz/pVGOSoxG/akgx3CmA8l3gtM9ulfzU8yur65eBpcAdSwXf9OkKn0PMY+S
+         b+Iw==
+X-Gm-Message-State: AOAM530HDp2/yfstvMHBbllhJ/jm2EdVLT4L+zo+EO6iGfNwGuIPgYW/
+        VxCcIFcBiNq76OJcROzUbduQKw==
+X-Google-Smtp-Source: ABdhPJzKpidnV8/JWdBNV7owG/V8CyaTrTVt46bwWXNeOp+FG3g/+iue92wHTArhSXHln1eaea7V8g==
+X-Received: by 2002:a17:90a:f0cf:: with SMTP id fa15mr8393500pjb.20.1614918244488;
+        Thu, 04 Mar 2021 20:24:04 -0800 (PST)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id 1sm872919pfh.90.2021.03.04.20.24.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Mar 2021 20:24:03 -0800 (PST)
+Date:   Fri, 5 Mar 2021 09:54:01 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Beata Michalska <beata.michalska@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org
+Subject: Re: [PATCH] opp: Invalidate current opp when draining the opp list
+Message-ID: <20210305042401.gktrgach4dzxp7on@vireshk-i7>
+References: <1614870454-18709-1-git-send-email-beata.michalska@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210304093559.GB20721@willie-the-truck>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614870454-18709-1-git-send-email-beata.michalska@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/4/21 3:06 PM, Will Deacon wrote:
-> On Thu, Mar 04, 2021 at 09:12:31AM +0100, David Hildenbrand wrote:
->> On 04.03.21 04:31, Anshuman Khandual wrote:
->>> On 3/4/21 2:54 AM, Will Deacon wrote:
->>>> On Wed, Mar 03, 2021 at 07:04:33PM +0000, Catalin Marinas wrote:
->>>>> On Thu, Feb 11, 2021 at 01:35:56PM +0100, David Hildenbrand wrote:
->>>>>> On 11.02.21 13:10, Anshuman Khandual wrote:
->>>>>>> On 2/11/21 5:23 PM, Will Deacon wrote:
->>>>>>>> ... and dropped. These patches appear to be responsible for a boot
->>>>>>>> regression reported by CKI:
->>>>>>>
->>>>>>> Ahh, boot regression ? These patches only change the behaviour
->>>>>>> for non boot memory only.
->>>>>>>
->>>>>>>> https://lore.kernel.org/r/cki.8D1CB60FEC.K6NJMEFQPV@redhat.com
->>>>>>>
->>>>>>> Will look into the logs and see if there is something pointing to
->>>>>>> the problem.
->>>>>>
->>>>>> It's strange. One thing I can imagine is a mis-detection of early sections.
->>>>>> However, I don't see that happening:
->>>>>>
->>>>>> In sparse_init_nid(), we:
->>>>>> 1. Initialize the memmap
->>>>>> 2. Set SECTION_IS_EARLY | SECTION_HAS_MEM_MAP via
->>>>>>     sparse_init_one_section()
->>>>>>
->>>>>> Only hotplugged sections (DIMMs, dax/kmem) set SECTION_HAS_MEM_MAP without
->>>>>> SECTION_IS_EARLY - which is correct, because these are not early.
->>>>>>
->>>>>> So once we know that we have valid_section() -- SECTION_HAS_MEM_MAP is set
->>>>>> -- early_section() should be correct.
->>>>>>
->>>>>> Even if someone would be doing a pfn_valid() after
->>>>>> memblocks_present()->memory_present() but before
->>>>>> sparse_init_nid(), we should be fine (!valid_section() -> return 0).
->>>>>
->>>>> I couldn't figure out how this could fail with Anshuman's patches.
->>>>> Will's suspicion is that some invalid/null pointer gets dereferenced
->>>>> before being initialised but the only case I see is somewhere in
->>>>> pfn_section_valid() (ms->usage) if valid_section() && !early_section().
->>>>>
->>>>> Assuming that we do get a valid_section(ms) && !early_section(ms), is
->>>>> there a case where ms->usage is not initialised? I guess races with
->>>>> section_deactivate() are not possible this early.
->>>>>
->>>>> Another situation could be that pfn_valid() returns true when no memory
->>>>> is mapped for that pfn.
->>>>
->>>> The case I wondered about was __pfn_to_section() with a bogus pfn, since
->>>> with patch 2/2 we call that *before* checking that pfn_to_section_nr() is
->>>> sane.
->>>
->>> Right, that is problematic. __pfn_to_section() should not be called without
->>> first validating pfn_to_section_nr(), as it could cause out-of-bound access
->>> on mem_section buffer. Will fix that order but as there is no test scenario
->>> which is definitive for this reported regression, how should we ensure that
->>> it fixes the problem ?
->>
->> Oh, right, I missed that in patch #2. (and when comparing to generic
->> pfn_valid()).
->>
->> I thought bisecting pointed at patch #1, that's why I didn't even have
->> another look at patch #2. Makes sense.
+On 04-03-21, 15:07, Beata Michalska wrote:
+> The current_opp when set, grabs additional reference on the opp,
+> which is then supposed to be dropped upon releasing the opp table.
+> Still both dev_pm_opp_remove_table and dev_pm_opp_remove_all_dynamic
+> will completely drain the OPPs list, including dropping the additional
+> reference on current_opp. This may lead to an attempt to access
+> memory that has already been released. Make sure that while draining
+> the list (in both dynamic and static cases) the current_opp gets
+> actually invalidated.
 > 
-> I don't think we ever bisected it beyond these two patches, so it could
-> be either of them. Anshuman -- please work with Veronika on this, as she
-> has access to the problematic machine and was really helpful in debugging
-> this last time.
+> Fixes: 81c4d8a3c414 ("opp: Keep track of currently programmed OPP")
+> 
+> Signed-off-by: Beata Michalska <beata.michalska@arm.com>
+> ---
+>  drivers/opp/core.c | 49 ++++++++++++++++++++++++++++++++-----------------
+>  1 file changed, 32 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index c268938..10e65c4 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -1502,10 +1502,39 @@ static struct dev_pm_opp *_opp_get_next(struct opp_table *opp_table,
+>  	return opp;
+>  }
+>  
+> -bool _opp_remove_all_static(struct opp_table *opp_table)
+> +static int __opp_drain_list(struct opp_table *opp_table, bool dynamic)
+>  {
+>  	struct dev_pm_opp *opp;
+> +	int count = 0;
+> +
+> +	/*
+> +	 * Can't remove the OPP from under the lock, debugfs removal needs to
+> +	 * happen lock less to avoid circular dependency issues.
+> +	 */
+> +	while ((opp = _opp_get_next(opp_table, dynamic))) {
+> +		/*
+> +		 * The current_opp has extra hold on the ref count,
+> +		 * still the draining here will result in all of them
+> +		 * being dropped completely, so make
+> +		 * sure no one will try to access the current_opp
+> +		 * afterwords
+> +		 */
+> +		if (opp_table->current_opp == opp &&
+> +		    !(kref_read(&opp->kref) - 1))
+> +			opp_table->current_opp = NULL;
 
-Sure, will respin the patch series with a fix for [PATCH 2/2] as discussed
-and then follow up with Veronika to recreate the problem.
+Did you miss looking at:
+
+static void _opp_table_kref_release(struct kref *kref)
+{
+        ...
+
+	if (opp_table->current_opp)
+		dev_pm_opp_put(opp_table->current_opp);
+
+        ...
+}
+
+?
+
+This is the place where the last reference to the current_opp is released and so
+we shouldn't have any invalid access to it anywhere else.
+
+Or am I missing some context here ?
+
+-- 
+viresh
