@@ -2,111 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4CA32EBEA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:11:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B04132EBF8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhCENKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:10:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbhCENKZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:10:25 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568ABC06175F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 05:10:25 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id f12so2009974wrx.8
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 05:10:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lvRMx9fuzhRV1OU+wVVNvO051Bw/5hEEULvhLdN6++M=;
-        b=zjU0n+LQ1FfA8UUJ+w8kRd3hL7n55ebkeduiYPeA0oVDnOvSAoBG518Np9fff6DeZw
-         3XSz2syDAc6ugB1WxDFcHmE/B7zwaWiQBsnalqDs79EWJu8VYcwNMGrYRoCTNzWX3zUD
-         mFjJZ10ZU7ak5dCtrtQzETRSHF2O5qAJgWoX3IQeMh47HrsorI9qmuhsmDEj4V11um1i
-         eXIMezeI/7qVfwAyQI/MtaN0flmYD5SBokfSvlEQDTy3rWDLVEOYfeVdMSWYgULwas9M
-         4dl4n543VUYjWURxa0agOx+5jyFBsNV1eQLoLDqZVchW/JuVyU6JjmBjT4W6AQ39lnMC
-         lx9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lvRMx9fuzhRV1OU+wVVNvO051Bw/5hEEULvhLdN6++M=;
-        b=ir1OIpseY/Le/I0REvFxG8YlL+tssIXMNpqrhZN8OKBIhv3Q9tGaVSvmOJp0H80uQD
-         H69Bc/WXpL3m56do5fLJ1UJprKmRqCYAedN8UYZ25h/OtzgOMAi8auJ8mikOlSmDxv6K
-         j/zQS6OVm9S+oJ/fc7CcNIA4m+kc6CXfiQY052RvUCmzwxR85a/IOAX9nIKKCRl7kEPx
-         R4hn9xPTW+DeZM7PlIS+/6jSVYeUuNOqrvAabeW+h31gq1VXaSUjTnrDoODWOczsWkD9
-         Ki0wNzExp+/nowpQnao2ALPlXzhct8ei8T6CNMjkBlQXydGtKzJnc+DZyqdj9FQ3T1xQ
-         hAfw==
-X-Gm-Message-State: AOAM5314mEtko+AFdUMyrMBKFlg9qgsfprDNXArkFz2S75HWmS7ohvEV
-        83NvS7MqHkb+B1Cj7/NMBKiWAUyj2+BBiQ==
-X-Google-Smtp-Source: ABdhPJzqgjP8kzbOu06orYle5LzGqmsq6Kl6y4pKIfQ6cDL9jmqc/7eXH4wTzsIqPj2yVZltUP5xHw==
-X-Received: by 2002:a5d:4fcb:: with SMTP id h11mr9820748wrw.66.1614949823768;
-        Fri, 05 Mar 2021 05:10:23 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id i26sm5014075wmb.18.2021.03.05.05.10.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Mar 2021 05:10:23 -0800 (PST)
-Subject: Re: [PATCH] pinctrl: qcom: lpass lpi: use default pullup/strength
- values
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210304194816.3843-1-jonathan@marek.ca>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <f30a6c1b-cd91-3442-fbac-10f508f8a640@linaro.org>
-Date:   Fri, 5 Mar 2021 13:10:22 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S229911AbhCENSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:18:33 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:35124 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229505AbhCENSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 08:18:11 -0500
+Received: from zn.tnic (p200300ec2f0b9500a5847b5a228c2b11.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:9500:a584:7b5a:228c:2b11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C48C41EC032C;
+        Fri,  5 Mar 2021 14:18:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1614950289;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=a6f8ruqcL1B2dSMKwksbdBsdxs5yzu8wbv0uJQXnMNo=;
+        b=EkI+7VZbOy9eJwcY5GNvIWNWAu+Phj9QJUxT0cC6OmGjfK11MhgOezKR4+BEspBcvIlwyU
+        W4LU3DwkOrE19LOwQpwR2eYQnUbVPzj9Bc0tVcG524otAxveN5JaPFbzAXkgZ3lzvoyuMz
+        rf1E5aoZ1tKb8j4qdnvV+WlkE6J16fg=
+Date:   Fri, 5 Mar 2021 14:18:04 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mike Travis <mike.travis@hpe.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steve Wahl <steve.wahl@hpe.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Russ Anderson <rja@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] x86/platform/uv: Add set of kernel block size for
+ hubless arches
+Message-ID: <20210305131804.GA2685@zn.tnic>
+References: <20210304223955.183463-1-mike.travis@hpe.com>
 MIME-Version: 1.0
-In-Reply-To: <20210304194816.3843-1-jonathan@marek.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210304223955.183463-1-mike.travis@hpe.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Jonathan for fixing this!
-
-On 04/03/2021 19:48, Jonathan Marek wrote:
-> If these fields are not set in dts, the driver will use these variables
-> uninitialized to set the fields. Not only will it set garbage values for
-> these fields, but it can overflow into other fields and break those.
+On Thu, Mar 04, 2021 at 04:39:55PM -0600, Mike Travis wrote:
+> The commit below added a call to set the block size value that is needed
+> to set the value used by the kernel.  This was done for UV Hubbed systems.
+> This commit adds that same set call to hubless systems which supports the
+> same NVRAMS and Intel BIOS thus the same problem occurs.
 > 
-> In the current sm8250 dts, the dmic01 entries do not have a pullup setting,
-> and might not work without this change.
-> 
-> Fixes: 6e261d1090d6 ("pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
+> Fixes: bbbd2b51a2aa ...
 
-LGTM,
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+The format is:
 
+Fixes: bbbd2b51a2aa ("x86/platform/UV: Use new set memory block size function")
 
---srini
+and you don't need to paste the commit text.
 
+And if you add a Fixes tag, then this is supposed to fix something but
+I'm unclear what exactly this fixes?
 
->   drivers/pinctrl/qcom/pinctrl-lpass-lpi.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-> index 369ee20a7ea95..2f19ab4db7208 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-> @@ -392,7 +392,7 @@ static int lpi_config_set(struct pinctrl_dev *pctldev, unsigned int group,
->   			  unsigned long *configs, unsigned int nconfs)
->   {
->   	struct lpi_pinctrl *pctrl = dev_get_drvdata(pctldev->dev);
-> -	unsigned int param, arg, pullup, strength;
-> +	unsigned int param, arg, pullup = LPI_GPIO_BIAS_DISABLE, strength = 2;
->   	bool value, output_enabled = false;
->   	const struct lpi_pingroup *g;
->   	unsigned long sval;
-> 
+IOW, should this patch be backported to stable because UV hubless
+systems would somehow fail without it?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
