@@ -2,143 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD46B32E469
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:11:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 161AF32E46D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbhCEJLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:11:02 -0500
-Received: from mail-bn8nam12on2055.outbound.protection.outlook.com ([40.107.237.55]:52320
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229563AbhCEJKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:10:51 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bLNXAOOneU+8eImWEIqV6xa0vHYD959BVozquMT17PvyV/dY4fKj+gL5s0S00c725cMulu0eh85CmPiZUY6JcxOGkFhOMoNt7pKDueQ27P2qzEAVplayMCn6/xOf8DgNV62e8M7sypbgL/oEMxmyL3AVjnE7d7UykACoSg2t5vX+1P4QmqtE2Ul1ky03U6dBM69hZ3dVmQuubLdbKKP+NjsHCeuDpoCgCYnq3Gpq3PPJ6GETVqBaTjHKWLj+E+goX75eaNtZoTBzDEhCnYd4XHYaDkG35Of089JYHTOSUD/z/jRCg8sxcFYUG3l+tbaof1hfYUtugdhtYx6vFa5/uQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=60DRLo7/HLSmrekniY3404kGn+4Pz/FidqLWAJFN84w=;
- b=gasJ0ib4w96m20/KPg3wk5xnQWOfR03enOSEYYQ+cCmp2hQRPTwyxWqzE0ZUJqXKgVjN0LQWs75w8Jfkj+rCK7TMpxR1kZv4G/1dX4nIS9RX+W2xymvh6KbywOgyQURDCgLTXP0S5WYx3up1SI6VVlbgCNA+AmnYARiq4LHLuztMOHMb/8vy56wE0J3wSN5eTrfeZrUU7ZqrfhZedxSCVrvRdIIowf7m4daV32NgjXGezDwzzufbd1+FPHoddZ6f/73omJhvvnuJRGaOSEjAlks8G7BNZxFBR89dMw81ZsHOsw6Y3uShtp/pV/5m5gQ6QQXio14ZIy9y6CxGge1Dbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.dk smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=60DRLo7/HLSmrekniY3404kGn+4Pz/FidqLWAJFN84w=;
- b=KHBdU4lRV+0ko4Qi/socVbXlu5kcKm7Z7dNlbbO6WD49hRnMScU+lryllmwh0jCnrxsjyRnljAAYwLru0OVw62xz7K5hFBapa6guZqclLq77f6K7q9Yd1cYlo9COhbn8ihgUl/A6ZqVzpCr2iWH3Sb/TaGg0ZxImVBnAZEBcD+g=
-Received: from CY4PR16CA0028.namprd16.prod.outlook.com (2603:10b6:910:60::15)
- by DM6PR02MB5337.namprd02.prod.outlook.com (2603:10b6:5:4f::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26; Fri, 5 Mar
- 2021 09:10:45 +0000
-Received: from CY1NAM02FT030.eop-nam02.prod.protection.outlook.com
- (2603:10b6:910:60:cafe::94) by CY4PR16CA0028.outlook.office365.com
- (2603:10b6:910:60::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
- Transport; Fri, 5 Mar 2021 09:10:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.dk; dkim=none (message not signed)
- header.d=none;kernel.dk; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- CY1NAM02FT030.mail.protection.outlook.com (10.152.75.163) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3890.19 via Frontend Transport; Fri, 5 Mar 2021 09:10:44 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Fri, 5 Mar 2021 01:10:40 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Fri, 5 Mar 2021 01:10:40 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- axboe@kernel.dk,
- linux-ide@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Received: from [10.140.6.6] (port=39668 helo=xhdappanad40.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <piyush.mehta@xilinx.com>)
-        id 1lI6Tn-0000f9-6B; Fri, 05 Mar 2021 01:10:39 -0800
-From:   Piyush Mehta <piyush.mehta@xilinx.com>
-To:     <axboe@kernel.dk>
-CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <git@xilinx.com>, <sgoud@xilinx.com>, <michal.simek@xilinx.com>,
-        Piyush Mehta <piyush.mehta@xilinx.com>
-Subject: [PATCH V2] ata: ahci: ceva: Updated code by using dev_err_probe()
-Date:   Fri, 5 Mar 2021 14:40:29 +0530
-Message-ID: <20210305091029.23378-1-piyush.mehta@xilinx.com>
-X-Mailer: git-send-email 2.17.1
+        id S229552AbhCEJMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:12:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47222 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229469AbhCEJLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:11:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614935493; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EzbUJaQzdHyWQWYArhmveTTGFRarGR/POWGz43IcYds=;
+        b=WRAaCcQBvs+ROf3f9UYV/D5gQd6QjIR+GA8FQRtJa9yLj8pNsiAOX+ib91QiwXx0hYx4RR
+        mn/4s+tYkhD/511Jt70xhn81DN9x2VKzKHKpFTYjldQOsPKUbcNBryoZvo3dIj3w0LXlXm
+        RMeKmKWNxJzpK7WkhmjVLRsp90kFNSs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DC864AF24;
+        Fri,  5 Mar 2021 09:11:32 +0000 (UTC)
+Date:   Fri, 5 Mar 2021 10:11:32 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] mm: Fix dropped memcg from mem cgroup soft limit
+ tree
+Message-ID: <YEH1xF8xm9MCsQ+q@dhcp22.suse.cz>
+References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
+ <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
+ <YC68Xo9+R2msn/ul@dhcp22.suse.cz>
+ <72cb8618-73af-ce08-d5d5-30cab30755a3@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 20eb73f2-3ad0-43fa-c28e-08d8dfb68ecd
-X-MS-TrafficTypeDiagnostic: DM6PR02MB5337:
-X-Microsoft-Antispam-PRVS: <DM6PR02MB53370A82FCE5512D467873E7D4969@DM6PR02MB5337.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:131;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EIbio2XwFzAj/InnQ9vnVltP2pxFMK5ucxqaJW3qBnsEvixv6gUmcXqb8xG6cI3FGgy8SuGiGY/7Z3OmuD9ghp+b5FPCsJSkhhetqfLdj/vy4XXrh/SbonfZYgvGyCO4b3rYditPpZkxH7ypITtT9vTvmEe5Y8rPv70RMiTOtCVXeeJNNtQhR3+XjTBKF4SCChwHW+pNUnxsYCrvZVc0MbaOnd1hM64d+FvW9LlIrJV1aNQkXwxwG7M/hWaSc7gJOTQuTZsI2AkGP2/VoJetV3SiLiXdOMHfep3IXcupSKN2emmlDoBzCD8zSyYmKfnU8wnfThU0YKwXyjZvTAk+6ZIlGRAdMNjMfZLOJqzXio0z8wDRyC5fp8aq7PVanFvXgmwZx52WYdFNdag6a7xqeplTPciEWod8Frruocwac88ny97sT8KJqRRn2Qk0ceu1d5eKrvYghwk2u0FcF5+d9m9pCBlo2NmQrN1FQqbvmgjIUovFdwqEs5mm7QceNQWyWx9e3DllMI6YaxoQMXVDnDoshk7c7GNhK9CTHEJpRgXWB+C6gN7pCvb9SJp291QHnqyGrWiVslUivC98TmLz4bRNqmTEAfZHTy7nDoujqlVWy4ZBatH0ay2jvk18h/QHHftW2X1+lNIEPrXmDzj52mG3Eiz8P58GxhOswtgBhZO+OUsgMQb48JsPqQ21mX9tUsMo40cN7L2EfTSPMJC6fvZIhv5Thh3LiClS2NiXTqeIq2TtorIimmJY6K3yvXAwZNfzuNXpxAIXeneSxWYhzw==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(136003)(39860400002)(36840700001)(46966006)(6666004)(5660300002)(26005)(36756003)(478600001)(47076005)(186003)(9786002)(82740400003)(82310400003)(1076003)(2616005)(966005)(316002)(107886003)(7696005)(2906002)(70586007)(4326008)(6916009)(356005)(8676002)(336012)(54906003)(36860700001)(15650500001)(36906005)(8936002)(7636003)(70206006)(44832011)(426003)(83380400001)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2021 09:10:44.5186
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20eb73f2-3ad0-43fa-c28e-08d8dfb68ecd
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT030.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB5337
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <72cb8618-73af-ce08-d5d5-30cab30755a3@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Updated code with already prepared dev_err_probe(). It reduces code size
-and simplifies EPROBE_DEFER handling.
+On Thu 04-03-21 09:35:08, Tim Chen wrote:
+> 
+> 
+> On 2/18/21 11:13 AM, Michal Hocko wrote:
+> 
+> > 
+> > Fixes: 4e41695356fb ("memory controller: soft limit reclaim on contention")
+> > Acked-by: Michal Hocko <mhocko@suse.com>
+> > 
+> > Thanks!
+> >> ---
+> >>  mm/memcontrol.c | 6 +++++-
+> >>  1 file changed, 5 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> >> index ed5cc78a8dbf..a51bf90732cb 100644
+> >> --- a/mm/memcontrol.c
+> >> +++ b/mm/memcontrol.c
+> >> @@ -3505,8 +3505,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+> >>  			loop > MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS))
+> >>  			break;
+> >>  	} while (!nr_reclaimed);
+> >> -	if (next_mz)
+> >> +	if (next_mz) {
+> >> +		spin_lock_irq(&mctz->lock);
+> >> +		__mem_cgroup_insert_exceeded(next_mz, mctz, excess);
+> >> +		spin_unlock_irq(&mctz->lock);
+> >>  		css_put(&next_mz->memcg->css);
+> >> +	}
+> >>  	return nr_reclaimed;
+> >>  }
+> >>  
+> >> -- 
+> >> 2.20.1
+> > 
+> 
+> Mel,
+> 
+> Reviewing this patch a bit more, I realize that there is a chance that the removed
+> next_mz could be inserted back to the tree from a memcg_check_events
+> that happen in between.  So we need to make sure that the next_mz
+> is indeed off the tree and update the excess value before adding it
+> back.  Update the patch to the patch below.
 
-Also, unify message format for similar error cases.
-
-Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
-Acked-by: Michal Simek <michal.simek@xilinx.com>
----
-This patch is based on ahci-ceva patches:
-https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-next&id=5542fabd9e07d6c49c07862e73070c325f93d390
-
-Tree: https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/tree/?h=for-next
-
-Changes for V2:
-- Address review comment- remove curly brackets {}. 
----
- drivers/ata/ahci_ceva.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/ata/ahci_ceva.c b/drivers/ata/ahci_ceva.c
-index b980218..50b56cd 100644
---- a/drivers/ata/ahci_ceva.c
-+++ b/drivers/ata/ahci_ceva.c
-@@ -206,11 +206,9 @@ static int ceva_ahci_probe(struct platform_device *pdev)
- 
- 	cevapriv->rst = devm_reset_control_get_optional_exclusive(&pdev->dev,
- 								  NULL);
--	if (IS_ERR(cevapriv->rst)) {
--		if (PTR_ERR(cevapriv->rst) != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "failed to get reset: %ld\n",
--				PTR_ERR(cevapriv->rst));
--	}
-+	if (IS_ERR(cevapriv->rst))
-+		dev_err_probe(&pdev->dev, PTR_ERR(cevapriv->rst),
-+			      "failed to get reset\n");
- 
- 	hpriv = ahci_platform_get_resources(pdev, 0);
- 	if (IS_ERR(hpriv))
+This scenario is certainly possible but it shouldn't really matter much
+as __mem_cgroup_insert_exceeded bails out when the node is on the tree
+already.
 -- 
-2.7.4
-
+Michal Hocko
+SUSE Labs
