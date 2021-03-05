@@ -2,103 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F5832EE4E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:20:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA5032EE7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbhCEPTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:19:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbhCEPS7 (ORCPT
+        id S230288AbhCEPUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:20:46 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2623 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230109AbhCEPUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:18:59 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9F9C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 07:18:59 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id a9so2233182qkn.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 07:18:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3Is9vMcVQC0jiR/bY3goerqoWdcu0QpBRJ6X8l+xAMI=;
-        b=b5PIs8orsX4xYD+gYzt/4+pf3KXx7tMdpyIIg2xeAkj3kWUtpxXJRw+XYldfcu1r6K
-         TeNM7MjnvHxsNKu1ptI+8Swf+PxMK3iyjypcMYFXz0kYMUWSbDmMZCDUKezn6blDZD1U
-         eLgK3Le3XKxZwtVa8sBRNpS4PWca8LlbXaa38S0FupO8oCcxCxJiS/O/Gg5qqWdbvcv+
-         iX4dj7Bx1I3QPMjg4xPLFKzEST/gsjxRvjfXSX1Hs3WtTDRwfT+qKvKD2lJn+O6dekpc
-         dWuSS8+YjBTJopRMtTQJ4O/Tx7/h0UvRUf1HNCSFKtvYgXOcdaOH0VLrzGWm8ifTkM+X
-         NE+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3Is9vMcVQC0jiR/bY3goerqoWdcu0QpBRJ6X8l+xAMI=;
-        b=CELMfnuyATrDs7XEWjbbjXXTYeDO/RzMX0URRX5gTBN7VX8ti/cCpVGfRPmoBH6i9t
-         X+4u3YBcLXQJVPXcriYtqaHQAdubPOwRgDNQ40R2tMZs5h3Fzv+yPhPM+7Rnjx3hCyQy
-         RBOA4ESeLarD03evfSKDAlWN12z/0k8HeWwysdN5cbzJLZ/P69QtOC/4L1YrMnInkYvl
-         01EgkX2Ngkr0181zm/KY9mjO8uygMbIoZ+rGUsJwGMq7DFcIIoF/CzKnSrB3LXwU1JgJ
-         4wmXngwLPzAxoRMdgu2NpCW6QUc9dDNWEzzYUhLu3NAMCr7n4Zn9uyG70ccV+1lNcgvn
-         nDcg==
-X-Gm-Message-State: AOAM533NkD/wgS8wF6WHlsg89zMHZsStsFXKG4Umh4sJnYgwy+uIxyS9
-        TrIMXUzN3I1Md6lZCRWD3Qwnb6nA+SAh9seV/z/i40wAti+stA==
-X-Google-Smtp-Source: ABdhPJyZo9ka344zgC8WXuMkPkcI/p1xgGNofsWH/8m/zfgX1fFTImyIga0n+FheaeEsuqCuzK5ZGQwZsuPL7eQwhjg=
-X-Received: by 2002:a37:96c4:: with SMTP id y187mr10177900qkd.231.1614957538234;
- Fri, 05 Mar 2021 07:18:58 -0800 (PST)
+        Fri, 5 Mar 2021 10:20:04 -0500
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DsWV73FxLz67vx9;
+        Fri,  5 Mar 2021 23:14:07 +0800 (CST)
+Received: from fraphisprd00473.huawei.com (7.182.8.141) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Fri, 5 Mar 2021 16:19:54 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <mjg59@google.com>
+CC:     <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v4 00/11] evm: Improve usability of portable signatures
+Date:   Fri, 5 Mar 2021 16:19:12 +0100
+Message-ID: <20210305151923.29039-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <CACT4Y+YytChe9Tv5etacBL4snEDu+A2fNzF4zKiKtfmH0C0roQ@mail.gmail.com>
- <20210203160543.GA19512@duo.ucw.cz> <20210203172834.GA3943@mipc>
- <CACT4Y+bkQOAwAwEnRoZVwKM2sDpHW3bzeWdga4MhxhERvZKT+Q@mail.gmail.com> <20210203192453.GA21047@amd>
-In-Reply-To: <20210203192453.GA21047@amd>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 5 Mar 2021 16:18:46 +0100
-Message-ID: <CACT4Y+aG1JEkLfFvvBhC0ZSpk-huWwAshdb8nwKExFbw2fq59Q@mail.gmail.com>
-Subject: Re: syzbot reporting less duplicates
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     bobwxc <bobwxc@email.cn>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [7.182.8.141]
+X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 8:24 PM Pavel Machek <pavel@ucw.cz> wrote:
->
-> Hi!
-> On Wed 2021-02-03 19:22:34, Dmitry Vyukov wrote:
-> > On Wed, Feb 3, 2021 at 6:39 PM bobwxc <bobwxc@email.cn> wrote:
-> > >
-> > > On Wed, Feb 03, 2021 at 05:05:43PM +0100, Pavel Machek wrote:
-> > > > On Mon 2021-02-01 11:52:12, Dmitry Vyukov wrote:
-> > > > Could we please get common prefix (like syzbot: KASAN:....) so that
-> > > > the bulk of emails is easier to remove?
-> > > There are several bots testing on the kernel, maybe we should give a prefix
-> > > format for all bot.
-> > > Also we can use mail-address to fliter email, but it's still a little
-> > > inconvenient.
-> >
-> > Hi Pavel, bobwxc,
-> >
-> > Yes, I was wondering if syzbot in From/To/CC can be used for
-> > filtering? I assume email clients that can filter based on subject can
-> > also filter based on From/To/CC.
-> > Does anybody filter syzbot emails? Maybe you can share what works
-> > best?
->
-> From does not really work. So... syzbot reports for subsystems I don't
-> maintain are uninteresting, and so is the resulting discussion.
->
-> While filtering on "From:" is easy for initial report, it does not
-> make it easy to remove follow up discussion.n
->
-> > I am not sure a common prefix for all bots is useful because it
-> > supports only all or nothing. There are also some bots that
-> > maintainers use now that seem to be fundamental to the process, if one
-> > is ignoring them, then they are effectively ignoring what the
-> > maintainer is saying.
->
-> I'm pretty sure common prefix for all bots is useful.
+EVM portable signatures are particularly suitable for the protection of
+metadata of immutable files where metadata is signed by a software vendor.
+They can be used for example in conjunction with an IMA policy that
+appraises only executed and memory mapped files.
 
-This is now implemented and deployed:
-https://github.com/google/syzkaller/pull/2472
+However, some usability issues are still unsolved, especially when EVM is
+used without loading an HMAC key. This patch set attempts to fix the open
+issues.
 
-Here is the first example report with the prefix:
-https://lore.kernel.org/lkml/0000000000002592aa05bccabae5@google.com/T/#u
+Patch 1 allows EVM to be used without loading an HMAC key. Patch 2 avoids
+appraisal verification of public keys (they are already verified by the key
+subsystem).
+
+Patches 3-5 allow metadata verification to be turned off when no HMAC key
+is loaded and to use this mode in a safe way (by ensuring that IMA
+revalidates metadata when there is a change).
+
+Patches 6-8 make portable signatures more usable if metadata verification
+is not turned off, by ignoring the INTEGRITY_NOLABEL and INTEGRITY_NOXATTS
+errors when possible, by accepting any metadata modification until
+signature verification succeeds (useful when xattrs/attrs are copied
+sequentially from a source) and by allowing operations that don't change
+metadata.
+
+Patch 9 makes it possible to use portable signatures when the IMA policy
+requires file signatures and patch 10 shows portable signatures in the
+measurement list when the ima-sig template is selected.
+
+Lastly, patch 11 avoids undesired removal of security.ima when a file is
+not selected by the IMA policy.
+
+Changelog
+
+v3:
+- introduce evm_ignore_error_safe() to correctly ignore INTEGRITY_NOLABEL
+  and INTEGRITY_NOXATTRS errors
+- fix an error in evm_xattr_acl_change()
+- replace #ifndef with !IS_ENABLED() in integrity_load_keys()
+- reintroduce ima_inode_removexattr()
+- adapt patches to apply on top of the idmapped mounts patch set
+
+v2:
+- replace EVM_RESET_STATUS flag with evm_status_revalidate()
+- introduce IMA post hooks ima_inode_post_setxattr() and
+  ima_inode_post_removexattr()
+- remove ima_inode_removexattr()
+- ignore INTEGRITY_NOLABEL error if the HMAC key is not loaded
+
+v1:
+- introduce EVM_RESET_STATUS integrity flag instead of clearing IMA flag
+- introduce new template field evmsig
+- add description of evm_xattr_acl_change() and evm_xattr_change()
+
+Roberto Sassu (11):
+  evm: Execute evm_inode_init_security() only when an HMAC key is loaded
+  evm: Load EVM key in ima_load_x509() to avoid appraisal
+  evm: Refuse EVM_ALLOW_METADATA_WRITES only if an HMAC key is loaded
+  ima: Move ima_reset_appraise_flags() call to post hooks
+  evm: Introduce evm_status_revalidate()
+  evm: Ignore INTEGRITY_NOLABEL/INTEGRITY_NOXATTRS if conditions are
+    safe
+  evm: Allow xattr/attr operations for portable signatures
+  evm: Allow setxattr() and setattr() for unmodified metadata
+  ima: Allow imasig requirement to be satisfied by EVM portable
+    signatures
+  ima: Introduce template field evmsig and write to field sig as
+    fallback
+  ima: Don't remove security.ima if file must not be appraised
+
+ Documentation/ABI/testing/evm             |   5 +-
+ Documentation/security/IMA-templates.rst  |   4 +-
+ fs/xattr.c                                |   2 +
+ include/linux/evm.h                       |   6 +
+ include/linux/ima.h                       |  18 +++
+ include/linux/integrity.h                 |   1 +
+ security/integrity/evm/evm_main.c         | 188 ++++++++++++++++++++--
+ security/integrity/evm/evm_secfs.c        |   4 +-
+ security/integrity/iint.c                 |   4 +-
+ security/integrity/ima/ima_appraise.c     |  55 +++++--
+ security/integrity/ima/ima_init.c         |   4 +
+ security/integrity/ima/ima_template.c     |   2 +
+ security/integrity/ima/ima_template_lib.c |  33 +++-
+ security/integrity/ima/ima_template_lib.h |   2 +
+ security/security.c                       |   1 +
+ 15 files changed, 297 insertions(+), 32 deletions(-)
+
+-- 
+2.26.2
+
