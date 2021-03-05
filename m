@@ -2,161 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D06432E59B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:03:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE56932E59A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhCEKCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:02:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhCEKC1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:02:27 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509E4C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 02:02:27 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id p8so2252833ejb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 02:02:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4+jzqKGagATPjg/VwwcWdsrDJERQg03vPdEG5QDDx6Y=;
-        b=YNz/PEtm5Ver0vYi7v+xl8TmT0Bq3Heywo9loY0n8mJjOyld490V6BGc3tIo1mNSCr
-         OQp7OA5IoZO1kr6yWzLtHJJv0vGvrtJoF1tJAQh7GkZl0eIEK/1r1+Y9HuX+sUGN031E
-         FoQszYMuIp1vzcavHiTuI7XBrIdVD7FE8fg4Hk4hSHKP33jXeqn4ovK2aY97fyr68weJ
-         bm5+uVh3RvlUXnJXKWxW8y5Nj89Yr8ZN8kwwgpCESzBkkKfRkrta3dbqHvuHUcoHwbsY
-         C4rsGyhWe5NLP1pzAYcaFYhpf8jhtcKViaEctgOStLNT3GTqlXFHkuKtJYJ0XO77GMGL
-         K+og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4+jzqKGagATPjg/VwwcWdsrDJERQg03vPdEG5QDDx6Y=;
-        b=PDCns66lnPy0iOiv7Xiz2RelLJ2Mw5e6Kxrq5dRhT73trkOtuYobkAAzcuBt75mM5x
-         hQ48VoUCUeAE6aiEJvyO1x/3qxnsPv65Dd7yPRDfcvGeravBJLWAgPbGgXtJUKQRoAlz
-         AyJCB26D1GwwPhqvdpoJHx6vOwJ0HscTZsaP6HJzA5Ra3Ka5xZIluO2pJAs252enVLkz
-         v1/Bx24kq5ZSmI9rtU9wnnmAwQXdCLdlqQdq/IAzKUbF74sAOJYuuExIgocGV9N3B/MW
-         ci1PwW+DIiiWY+l+71Nnw+dZHW80i6Ri4aN8Pw45fFKMGWcc7eEnxtrXLSaKJyYk4Y36
-         hviA==
-X-Gm-Message-State: AOAM5325/bHersBnRkO+oYOn4GZ9bjefMkOc5+nIzjKuRLFUvVnhmWRh
-        opFMWuVD0ebVvMmLUbrvF52Z9qafKXLD4vFEil9oFg==
-X-Google-Smtp-Source: ABdhPJxz89IE+aAgCF0gMQEoezCLzDvhGBdk15aI7RofQpNcrzsBXMp6cp2s/wF2+k/F3NscWxzuO0v03KoowOttML4=
-X-Received: by 2002:a17:906:d8ca:: with SMTP id re10mr1587977ejb.18.1614938545934;
- Fri, 05 Mar 2021 02:02:25 -0800 (PST)
+        id S229773AbhCEKCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:02:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46086 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229957AbhCEKCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 05:02:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C86164F45;
+        Fri,  5 Mar 2021 10:02:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614938541;
+        bh=ju5aiY7t8yuacS4TNsi2zbNjewpWGBo8WBUPY/Hv9AE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aEl/dN1J2UbpTsa1LTePKCr42YiT+xziEGCfi8suiPMrjS10Lnsyr8XSr7GOqBnsL
+         P6maa/ds752Cmdw6MVK52xAHyhpTu/GxOm/hRgFYVWSDhsqpGnXos4NH4lRGfdkEWx
+         78Ta+9wP1ZGI/QC3F0DAmTRKp3C6SZwUtsHH6TtbMVkimh8Bb0To7GSmZqaei/hNtJ
+         gvA+wus0t6u74/fRk/2SCDlR8ZKg2o2LFo4ojGRo3Xuoc5hhY9UkimJondvIRfbpr2
+         Vv42o7ew25OtnQPU1+RBbY6jgmDf2YGuRoagAQ3BMMQTBYJta2JBkiQPAji8sobG9f
+         ffJpqcywrFLVw==
+Date:   Fri, 5 Mar 2021 04:02:19 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH RESEND][next] phy: qcom-usb-hs: Fix fall-through warnings for
+ Clang
+Message-ID: <20210305100219.GA142595@embeddedor>
 MIME-Version: 1.0
-References: <20210302192700.399054668@linuxfoundation.org> <CA+G9fYsA7U7rzd=yGYQ=uWViY3_dXc4iY_pC-DM1K3R+gac19g@mail.gmail.com>
- <175fac9c-ac3f-bd82-9e5d-2c2970cfc519@roeck-us.net> <CA+G9fYtkrAs=ASaVVu6-Lnck8A6Pt_LGODxnpTYouvppbw_rbQ@mail.gmail.com>
- <CAHk-=wgxLTur2G5mvYKCXE4DkUo90T2Dy3X526sqJgOCm0gzNA@mail.gmail.com>
- <CA+G9fYsUJvLbaqOFkxYZJxZkgay92vxjjoD69C0+tS5kthZmoQ@mail.gmail.com> <YEHxNECRwr4Z4ka2@kroah.com>
-In-Reply-To: <YEHxNECRwr4Z4ka2@kroah.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 5 Mar 2021 15:32:14 +0530
-Message-ID: <CA+G9fYv5+T4Z1-7QqyyUht5U8vOQyaQr3O+wOq5TLxS4E9Uu_g@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/657] 5.10.20-rc4 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Mar 2021 at 14:22, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Mar 05, 2021 at 01:39:46PM +0530, Naresh Kamboju wrote:
-> > On Fri, 5 Mar 2021 at 02:45, Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > On Thu, Mar 4, 2021 at 9:56 AM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > > >
-> > > > On Thu, 4 Mar 2021 at 01:34, Guenter Roeck <linux@roeck-us.net> wrote:
-> > > > >
-> > > > > Upstream has:
-> > > > >
-> > > > > e71a8d5cf4b4 tty: fix up iterate_tty_read() EOVERFLOW handling
-> > > > > ddc5fda74561 tty: fix up hung_up_tty_read() conversion
-> > > >
-> > > > I have applied these two patches and the reported problem did not solve.
-> > >
-> > > Hmm. Upstream has:
-> > >
-> > > *  3342ff2698e9 ("tty: protect tty_write from odd low-level tty disciplines")
-> > > *  a9cbbb80e3e7 ("tty: avoid using vfs_iocb_iter_write() for
-> > > redirected console writes")
-> > > *  17749851eb9c ("tty: fix up hung_up_tty_write() conversion")
-> > > G  e71a8d5cf4b4 ("tty: fix up iterate_tty_read() EOVERFLOW handling")
-> > > G  ddc5fda74561 ("tty: fix up hung_up_tty_read() conversion")
-> > >  * c7135bbe5af2 ("tty: fix up hung_up_tty_write() conversion")
-> > >   d7fe75cbc23c ("tty: teach the n_tty ICANON case about the new
-> > > "cookie continuations" too")
-> > >   15ea8ae8e03f ("tty: teach n_tty line discipline about the new
-> > > "cookie continuations"")
-> > >   64a69892afad ("tty: clean up legacy leftovers from n_tty line discipline")
-> > > *  9bb48c82aced ("tty: implement write_iter")
-> > > *  dd78b0c483e3 ("tty: implement read_iter")
-> > > *  3b830a9c34d5 ("tty: convert tty_ldisc_ops 'read()' function to take
-> > > a kernel pointer")
-> > >
-> > > Where those ones marked with '*' seem to be in v5.10.y, and the one
-> > > prefixed with 'G' are the ones Guenter mentioned.
-> > >
-> > > (We seem to have the "tty: fix up hung_up_tty_write() conversion"
-> > > commit twice. I'm not sure how that happened, but whatever).
->
-> I merged it through two different branches by applying it from email,
-> one for 5.10-final and one for 5.11-rc1, sorry about that.
->
-> > > But that still leaves three commits that don't seem to be in 5.10.y:
-> > >
-> > >   d7fe75cbc23c ("tty: teach the n_tty ICANON case about the new
-> > > "cookie continuations" too")
-> > >   15ea8ae8e03f ("tty: teach n_tty line discipline about the new
-> > > "cookie continuations"")
-> > >   64a69892afad ("tty: clean up legacy leftovers from n_tty line discipline")
-> > >
-> > > and they might fix what are otherwise short reads. Which is allowed by
-> > > POSIX, afaik, but ..
-> > >
-> > > Do those three commits fix your test-case?
-> >
-> > Yes.
-> > As per your suggestion I've added these three patches and tested
-> > and the reported test case PASS now [1].
-> >
-> > This means I have five extra patches on top of the stable v5.10.20 tag.
-> >
-> > $ git log --oneline
-> > 8c1c1de499af tty: teach the n_tty ICANON case about the new "cookie
-> > continuations" too
-> > 02aada164879 tty: teach n_tty line discipline about the new "cookie
-> > continuations"
-> > fb0df6b17897 tty: clean up legacy leftovers from n_tty line discipline
-> > 429f7fc84d6a tty: fix up iterate_tty_read() EOVERFLOW handling
-> > d0d54bca80a8 tty: fix up hung_up_tty_read() conversion
-> > 83be32b6c9e5 (tag: v5.10.20, origin/linux-5.10.y) Linux 5.10.20
->
-> That last commit, "tty: fix up hung_up_tty_read() conversion" is already
-> in 5.10.20 as e018e57fd5c0 ("tty: fix up hung_up_tty_write()
-> conversion"), it came in at 5.10.11, so how did you apply it again?
+In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+by explicitly adding a break statement instead of letting the code fall
+through to the next case.
 
-It is easy to confuse between read() and write().
-tty: fix up hung_up_tty_read() conversion
-tty: fix up hung_up_tty_write() conversion
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/phy/qualcomm/phy-qcom-usb-hs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Write() was there but read() is a commit that has been cherry-picked.
+diff --git a/drivers/phy/qualcomm/phy-qcom-usb-hs.c b/drivers/phy/qualcomm/phy-qcom-usb-hs.c
+index 327df1a99f77..5c6c17673396 100644
+--- a/drivers/phy/qualcomm/phy-qcom-usb-hs.c
++++ b/drivers/phy/qualcomm/phy-qcom-usb-hs.c
+@@ -56,6 +56,7 @@ static int qcom_usb_hs_phy_set_mode(struct phy *phy,
+ 			fallthrough;
+ 		case PHY_MODE_USB_DEVICE:
+ 			val |= ULPI_INT_SESS_VALID;
++			break;
+ 		default:
+ 			break;
+ 		}
+-- 
+2.27.0
 
-> Anyway, thanks for these, I've queued up the 4 other commits now to the
-> 5.10.y and 5.11.y trees, let's see what happens...
-
-Thank you !
-
-- Naresh
