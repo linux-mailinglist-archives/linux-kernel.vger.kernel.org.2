@@ -2,160 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4DB632EE52
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A214432EE42
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:19:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbhCEPTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:19:35 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12699 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbhCEPTU (ORCPT
+        id S229714AbhCEPS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:18:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229528AbhCEPSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:19:20 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DsWYZ2qwSzlSkl;
-        Fri,  5 Mar 2021 23:17:06 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 5 Mar 2021 23:19:08 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <hare@suse.de>, <bvanassche@acm.org>, <ming.lei@redhat.com>,
-        <axboe@kernel.dk>, <hch@lst.de>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <pragalla@codeaurora.org>, <kashyap.desai@broadcom.com>,
-        <yuyufen@huawei.com>, John Garry <john.garry@huawei.com>
-Subject: [RFC PATCH v3 3/3] blk-mq: Lockout tagset iterator when exiting elevator
-Date:   Fri, 5 Mar 2021 23:14:54 +0800
-Message-ID: <1614957294-188540-4-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1614957294-188540-1-git-send-email-john.garry@huawei.com>
-References: <1614957294-188540-1-git-send-email-john.garry@huawei.com>
+        Fri, 5 Mar 2021 10:18:11 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E258AC061574;
+        Fri,  5 Mar 2021 07:18:10 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id t29so2233875pfg.11;
+        Fri, 05 Mar 2021 07:18:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GXgybONIV8Un/qYPL7SKvbrjGoX85mO1+G2xJKWHF3E=;
+        b=sD7+gFdq32Xgi82kLRFU8pXvDETXmXWFq5ktrjMXiKtsFmc3tkBTGl9OPNcRVS5S1b
+         IQ8Qy9pw5yhF+GRTj/D4QgtyP/q4b3ystH7neC7qz6vtSMyvO6BSxV7KiAUQcNTr4UTi
+         5KzToosJ1xdv0MJzEJ4ZWNTmXIdCIvacx//eXGz1ybbrCC2aMRzLyvynSO6siknF4F2D
+         NCPyOWqq6NtQjMtp/YeP3aFWj3ZOoB+dz1yNVlYk9dPrEnwszpngqSI+Hp8GP8mYfmOS
+         mKVoPJc3PEXRPc3oJnF3AMEg+DsH7/RF4pfDcZAGq/vKTIQf/GubK/io8czwxLxuvav4
+         sBPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GXgybONIV8Un/qYPL7SKvbrjGoX85mO1+G2xJKWHF3E=;
+        b=WvRFsvYVU2u5jPxosEObfUKDPza5H9fyj2Qp4OqJPq8rmd78J0Cq+NaOZYBynZwFli
+         QQIPZOPkOMrRLxsvzBz14bwA84RvG+MpagVR8ozFcY20ZWy4D2lwakfQOVwYHRUZMHrt
+         54f7Q5O+Z9Bd0/OuARim1Z7VlOIzd4Ef9Pe9XDBjssEfpqmlOusGTHhrR0PEBQcaKCRA
+         dbN088QBKxfKljeXUoYgRAQ00gp/hN/ARDM0bqzEWHFwcTMaMwSRDZpdNsBaHmF2gcf4
+         o1R0+8DoDhACzweY16hmFI9flmTxX8c/gCmr0DG8KUNjX3MTIkPBjok78/4kIXgFN1jr
+         ezgA==
+X-Gm-Message-State: AOAM5321AoS/If88BiOw0o0ln9HeyG4mNTR14y7/W3PEJJmBTj7rZoY6
+        Gfw9OKuWwS/9YrPUcmoPOJBo+CvurSLVACHHx3Y=
+X-Google-Smtp-Source: ABdhPJyUU6I/nYiB5+xIlT+woCy/dtsvBTSu8eJVmQJh5/G5wQS/XU/eYDIMbG6chJU3ZJn8dUFbp5bYBMEgzydMDww=
+X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
+ q20-20020a056a000854b02901b762330c5fmr9460771pfk.73.1614957490271; Fri, 05
+ Mar 2021 07:18:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-22-marcan@marcan.st>
+In-Reply-To: <20210304213902.83903-22-marcan@marcan.st>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 5 Mar 2021 17:17:54 +0200
+Message-ID: <CAHp75Vc+t9_FNHZ0xYNaJ1+Ny+FFeZKA79abxV2NAsZvpBh3Bg@mail.gmail.com>
+Subject: Re: [RFT PATCH v3 21/27] tty: serial: samsung_tty: IRQ rework
+To:     Hector Martin <marcan@marcan.st>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All queues associated with a tagset are frozen when one queue is exiting
-an elevator. This is to ensure that one queue running
-blk_mq_queue_tag_busy_iter() cannot hold a stale request reference for
-the queue who is exiting the elevator.
+On Thu, Mar 4, 2021 at 11:41 PM Hector Martin <marcan@marcan.st> wrote:
+>
+> * Split out s3c24xx_serial_tx_chars from s3c24xx_serial_tx_irq,
+>   where only the latter acquires the port lock. This will be necessary
+>   on platforms which have edge-triggered IRQs, as we need to call
+>   s3c24xx_serial_tx_chars to kick off transmission from outside IRQ
+>   context, with the port lock held.
+>
+> * Rename s3c24xx_serial_rx_chars to s3c24xx_serial_rx_irq for
+>   consistency with the above. All it does now is call two other
+>   functions anyway.
+>
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> ---
+>  drivers/tty/serial/samsung_tty.c | 34 +++++++++++++++++++-------------
+>  1 file changed, 20 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+> index 39b2eb165bdc..7106eb238d8c 100644
+> --- a/drivers/tty/serial/samsung_tty.c
+> +++ b/drivers/tty/serial/samsung_tty.c
+> @@ -827,7 +827,7 @@ static irqreturn_t s3c24xx_serial_rx_chars_pio(void *dev_id)
+>         return IRQ_HANDLED;
+>  }
+>
+> -static irqreturn_t s3c24xx_serial_rx_chars(int irq, void *dev_id)
+> +static irqreturn_t s3c24xx_serial_rx_irq(int irq, void *dev_id)
+>  {
+>         struct s3c24xx_uart_port *ourport = dev_id;
+>
+> @@ -836,16 +836,12 @@ static irqreturn_t s3c24xx_serial_rx_chars(int irq, void *dev_id)
+>         return s3c24xx_serial_rx_chars_pio(dev_id);
+>  }
+>
+> -static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
+> +static void s3c24xx_serial_tx_chars(struct s3c24xx_uart_port *ourport)
+>  {
+> -       struct s3c24xx_uart_port *ourport = id;
+>         struct uart_port *port = &ourport->port;
+>         struct circ_buf *xmit = &port->state->xmit;
+> -       unsigned long flags;
+>         int count, dma_count = 0;
+>
+> -       spin_lock_irqsave(&port->lock, flags);
+> -
+>         count = CIRC_CNT_TO_END(xmit->head, xmit->tail, UART_XMIT_SIZE);
+>
+>         if (ourport->dma && ourport->dma->tx_chan &&
+> @@ -862,7 +858,7 @@ static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
+>                 wr_reg(port, S3C2410_UTXH, port->x_char);
+>                 port->icount.tx++;
+>                 port->x_char = 0;
+> -               goto out;
+> +               return;
+>         }
+>
+>         /* if there isn't anything more to transmit, or the uart is now
+> @@ -871,7 +867,7 @@ static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
+>
+>         if (uart_circ_empty(xmit) || uart_tx_stopped(port)) {
+>                 s3c24xx_serial_stop_tx(port);
+> -               goto out;
+> +               return;
+>         }
+>
+>         /* try and drain the buffer... */
+> @@ -893,7 +889,7 @@ static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
+>
+>         if (!count && dma_count) {
+>                 s3c24xx_serial_start_tx_dma(ourport, dma_count);
+> -               goto out;
+> +               return;
+>         }
+>
+>         if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS) {
+> @@ -904,8 +900,18 @@ static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
+>
+>         if (uart_circ_empty(xmit))
+>                 s3c24xx_serial_stop_tx(port);
+> +}
+> +
+> +static irqreturn_t s3c24xx_serial_tx_irq(int irq, void *id)
+> +{
+> +       struct s3c24xx_uart_port *ourport = id;
+> +       struct uart_port *port = &ourport->port;
+> +       unsigned long flags;
+> +
 
-However, there is nothing to stop blk_mq_all_tag_iter() being run for
-the tagset, and, again, getting hold of a stale request reference. A kasan
-UAF can be triggered for this scenario:
 
-BUG: KASAN: use-after-free in bt_tags_iter+0xe0/0x128 
-Read of size 4 at addr ffff001085330fcc by task more/3038 
- 
- CPU: 1 PID: 3038 Comm: more Not tainted 5.12.0-rc1-11926-g7359e4a1604d-dirty #750 
- Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon D05 IT21 Nemo 2.0 RC0 04/18/2018
-Call trace: 
-dump_backtrace+0x0/0x2d0 
-show_stack+0x18/0x68 
-dump_stack+0x100/0x16c 
-print_address_description.constprop.13+0x68/0x30c
-kasan_report+0x1d8/0x240 
-__asan_load4+0x9c/0xd8 
-bt_tags_iter+0xe0/0x128
-__blk_mq_all_tag_iter+0x320/0x3a8
-blk_mq_tagset_busy_iter+0x84/0xb8
-scsi_host_busy+0x88/0xb8 
-show_host_busy+0x1c/0x48 
-dev_attr_show+0x44/0x90
-sysfs_kf_seq_show+0x128/0x1c8
-kernfs_seq_show+0xa0/0xb8
-seq_read_iter+0x210/0x660
-kernfs_fop_read_iter+0x208/0x2b0 
-new_sync_read+0x1ec/0x2d0
-vfs_read+0x188/0x248 
-ksys_read+0xc8/0x178 
-__arm64_sys_read+0x44/0x58 
-el0_svc_common.constprop.1+0xc4/0x190
-do_el0_svc+0x90/0xa0 
-el0_svc+0x24/0x38
-el0_sync_handler+0x90/0xb8 
-el0_sync+0x154/0x180 
- 
-To avoid this, reject the tagset iterators when the queue is exiting
-the elevator.
+> +       spin_lock_irqsave(&port->lock, flags);
+> +
+> +       s3c24xx_serial_tx_chars(ourport);
+>
+> -out:
+>         spin_unlock_irqrestore(&port->lock, flags);
 
-This should not break any semantics in blk_mq_all_tag_iter(), as, since
-all queues are frozen, there should be no active tags to iterate.
+Add a separate change that removes flags from the spin lock in the IRQ handler.
 
-Signed-off-by: John Garry <john.garry@huawei.com>
----
- block/blk-mq-tag.c     | 5 +++++
- block/blk-mq.c         | 1 +
- block/blk.h            | 4 ++++
- include/linux/blk-mq.h | 1 +
- 4 files changed, 11 insertions(+)
+>         return IRQ_HANDLED;
+>  }
+> @@ -919,11 +925,11 @@ static irqreturn_t s3c64xx_serial_handle_irq(int irq, void *id)
+>         irqreturn_t ret = IRQ_HANDLED;
+>
+>         if (pend & S3C64XX_UINTM_RXD_MSK) {
+> -               ret = s3c24xx_serial_rx_chars(irq, id);
+> +               ret = s3c24xx_serial_rx_irq(irq, id);
+>                 wr_regl(port, S3C64XX_UINTP, S3C64XX_UINTM_RXD_MSK);
+>         }
+>         if (pend & S3C64XX_UINTM_TXD_MSK) {
+> -               ret = s3c24xx_serial_tx_chars(irq, id);
+> +               ret = s3c24xx_serial_tx_irq(irq, id);
+>                 wr_regl(port, S3C64XX_UINTP, S3C64XX_UINTM_TXD_MSK);
+>         }
+>         return ret;
+> @@ -1155,7 +1161,7 @@ static int s3c24xx_serial_startup(struct uart_port *port)
+>
+>         ourport->rx_enabled = 1;
+>
+> -       ret = request_irq(ourport->rx_irq, s3c24xx_serial_rx_chars, 0,
+> +       ret = request_irq(ourport->rx_irq, s3c24xx_serial_rx_irq, 0,
+>                           s3c24xx_serial_portname(port), ourport);
+>
+>         if (ret != 0) {
+> @@ -1169,7 +1175,7 @@ static int s3c24xx_serial_startup(struct uart_port *port)
+>
+>         ourport->tx_enabled = 1;
+>
+> -       ret = request_irq(ourport->tx_irq, s3c24xx_serial_tx_chars, 0,
+> +       ret = request_irq(ourport->tx_irq, s3c24xx_serial_tx_irq, 0,
+>                           s3c24xx_serial_portname(port), ourport);
+>
+>         if (ret) {
+> --
+> 2.30.0
+>
 
-diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-index 7ff1b20d58e7..5950fee490e8 100644
---- a/block/blk-mq-tag.c
-+++ b/block/blk-mq-tag.c
-@@ -358,11 +358,16 @@ void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
- {
- 	int i;
- 
-+	if (!atomic_inc_not_zero(&tagset->iter_usage_counter))
-+		return;
-+
- 	for (i = 0; i < tagset->nr_hw_queues; i++) {
- 		if (tagset->tags && tagset->tags[i])
- 			__blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
- 					      BT_TAG_ITER_STARTED);
- 	}
-+
-+	atomic_dec(&tagset->iter_usage_counter);
- }
- EXPORT_SYMBOL(blk_mq_tagset_busy_iter);
- 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 9cb60bf7ac24..326e1b0e5b83 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -3493,6 +3493,7 @@ int blk_mq_alloc_tag_set(struct blk_mq_tag_set *set)
- 			goto out_free_mq_rq_maps;
- 		}
- 	}
-+	atomic_set(&set->iter_usage_counter, 1);
- 
- 	mutex_init(&set->tag_list_lock);
- 	INIT_LIST_HEAD(&set->tag_list);
-diff --git a/block/blk.h b/block/blk.h
-index 1a948bfd91e4..461e5b54eb5f 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -214,9 +214,13 @@ static inline void elevator_exit(struct request_queue *q,
- 		blk_mq_quiesce_queue(tmp);
- 	}
- 
-+	while (atomic_cmpxchg(&set->iter_usage_counter, 1, 0) != 1);
-+
- 	blk_mq_sched_free_requests(q);
- 	__elevator_exit(q, e);
- 
-+	atomic_set(&set->iter_usage_counter, 1);
-+
- 	list_for_each_entry(tmp, &set->tag_list, tag_set_list) {
- 		if (tmp == q)
- 			continue;
-diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-index 2c473c9b8990..30a21335767b 100644
---- a/include/linux/blk-mq.h
-+++ b/include/linux/blk-mq.h
-@@ -263,6 +263,7 @@ struct blk_mq_tag_set {
- 
- 	struct mutex		tag_list_lock;
- 	struct list_head	tag_list;
-+	atomic_t		iter_usage_counter;
- };
- 
- /**
+
 -- 
-2.26.2
-
+With Best Regards,
+Andy Shevchenko
