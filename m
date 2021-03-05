@@ -2,228 +2,493 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58D632EC4A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDE432EC4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhCENfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:35:12 -0500
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:44422 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230423AbhCENew (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:34:52 -0500
-Received: by mail-oi1-f178.google.com with SMTP id x20so2470406oie.11;
-        Fri, 05 Mar 2021 05:34:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+Mx6ZToxOtXCF5d9Uj1GVvv2nmYAp8tY/BxTFwwTgYQ=;
-        b=TnLw8Ne9mrDs6+dRbOyH2CJbNWEwZdakfqBASIH6ItoE/zDe832/EHbFNsg+blsxip
-         6xT1+FkQosnUy4aLMRQA7tXmtZvnl2tlvmO9wCHz8Ntrm6MwPBlRoJjj7zGJsBYJQoeM
-         vfdT0mraOkEVpucgunT98JnNAEUotWa2g8fR3Tya6CI3FsCDqdoei4GnJSAKM2pL+RzS
-         qzKjNSTz3Vvc/mgBeWOBJ5P8GtC8kLkyYig93PgRhCWBfvVXy2pQQhdUiBp7q9L+BaTE
-         3NqrPqqfCBkK834HF7YBiaq61azY+WyMcl6UgZjEXd+QSnfgLNzMpJ4tProipktXeX+F
-         DIuA==
-X-Gm-Message-State: AOAM5304wFjwu0B2IYkfxSXyM5jN5C1PuF9nDp7lXh/pDUjYhTEi1g4d
-        gJYa2lVuSrvXBra+ojtBCzBhmwWTkJQRPa702Lo=
-X-Google-Smtp-Source: ABdhPJzbtT78Lvi4GCyhCQlxyP4bAma6cv3iJOfvr/g4xDNpjEl0dKlTkHX5E/7XfVPZDtAhALDRV/S4NJ7HXmquwT0=
-X-Received: by 2002:aca:f245:: with SMTP id q66mr6881439oih.69.1614951292035;
- Fri, 05 Mar 2021 05:34:52 -0800 (PST)
+        id S229971AbhCENgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:36:47 -0500
+Received: from mga01.intel.com ([192.55.52.88]:47529 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229563AbhCENgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 08:36:40 -0500
+IronPort-SDR: Fa0HI0QutV6vByj1pd85qwClZJ9p3nKa3H2IUW/7zoouNzRdpcIVeZJsJEiqm8toluHXmAJXw2
+ otrlTPD5c8mA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="207384215"
+X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
+   d="scan'208";a="207384215"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 05:36:39 -0800
+IronPort-SDR: cgxSOhgEF+xYdebQ8gyNIGyu+FGObqXttEKf6HlPYpxebh/qYrX6sFjwaU9/O3muS16jQOCkWC
+ wakEW9qUyknQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
+   d="scan'208";a="401680449"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP; 05 Mar 2021 05:36:38 -0800
+Received: from [10.254.90.138] (kliang2-MOBL.ccr.corp.intel.com [10.254.90.138])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 5E382580224;
+        Fri,  5 Mar 2021 05:36:37 -0800 (PST)
+Subject: Re: [PATCH 00/49] Add Alder Lake support for perf
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
+        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
+        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
+References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
+ <0b447023-7c74-bc4f-5485-e03897d213da@linux.intel.com>
+ <YEEdyMdzKdDKIvmp@hirez.programming.kicks-ass.net>
+ <YEISfS9rDU1+FJ44@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <b6b05e33-d4c8-8a05-ff06-ec86a50d0e4a@linux.intel.com>
+Date:   Fri, 5 Mar 2021 08:36:35 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210304201253.14652-1-andriy.shevchenko@linux.intel.com> <20210304201253.14652-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210304201253.14652-2-andriy.shevchenko@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 5 Mar 2021 14:34:40 +0100
-Message-ID: <CAJZ5v0io925Fjua0GDKkCLnQZBjg=5ffRFzCc==_+ygSd7t4Ew@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] irqdomain: Introduce irq_domain_create_simple() API
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YEISfS9rDU1+FJ44@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 9:13 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> Linus Walleij pointed out that ird_domain_add_simple() gained
-> additional functionality and can't be anymore replaced with
-> a simple conditional. In preparation to upgrade GPIO library
-> to use fwnode, introduce irq_domain_create_simple() API which is
-> functional equivalent to the existing irq_domain_add_simple(),
-> but takes a pointer to the struct fwnode_handle as a parameter.
->
-> While at it, amend documentation to mention irq_domain_create_*()
-> functions where it makes sense.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-This requires an ACK from Marc or Thomas so I can apply it.
 
-> ---
->  Documentation/core-api/irq/irq-domain.rst | 22 ++++++++++++----------
->  include/linux/irqdomain.h                 | 19 ++++++++++++++-----
->  kernel/irq/irqdomain.c                    | 20 ++++++++++----------
->  3 files changed, 36 insertions(+), 25 deletions(-)
->
-> diff --git a/Documentation/core-api/irq/irq-domain.rst b/Documentation/core-api/irq/irq-domain.rst
-> index a77c24c27f7b..8214e215a8bf 100644
-> --- a/Documentation/core-api/irq/irq-domain.rst
-> +++ b/Documentation/core-api/irq/irq-domain.rst
-> @@ -42,10 +42,10 @@ irq_domain usage
->  ================
->
->  An interrupt controller driver creates and registers an irq_domain by
-> -calling one of the irq_domain_add_*() functions (each mapping method
-> -has a different allocator function, more on that later).  The function
-> -will return a pointer to the irq_domain on success.  The caller must
-> -provide the allocator function with an irq_domain_ops structure.
-> +calling one of the irq_domain_add_*() or irq_domain_create_*() functions
-> +(each mapping method has a different allocator function, more on that later).
-> +The function will return a pointer to the irq_domain on success. The caller
-> +must provide the allocator function with an irq_domain_ops structure.
->
->  In most cases, the irq_domain will begin empty without any mappings
->  between hwirq and IRQ numbers.  Mappings are added to the irq_domain
-> @@ -147,6 +147,7 @@ Legacy
->         irq_domain_add_simple()
->         irq_domain_add_legacy()
->         irq_domain_add_legacy_isa()
-> +       irq_domain_create_simple()
->         irq_domain_create_legacy()
->
->  The Legacy mapping is a special case for drivers that already have a
-> @@ -169,13 +170,13 @@ supported.  For example, ISA controllers would use the legacy map for
->  mapping Linux IRQs 0-15 so that existing ISA drivers get the correct IRQ
->  numbers.
->
-> -Most users of legacy mappings should use irq_domain_add_simple() which
-> -will use a legacy domain only if an IRQ range is supplied by the
-> -system and will otherwise use a linear domain mapping. The semantics
-> -of this call are such that if an IRQ range is specified then
-> +Most users of legacy mappings should use irq_domain_add_simple() or
-> +irq_domain_create_simple() which will use a legacy domain only if an IRQ range
-> +is supplied by the system and will otherwise use a linear domain mapping.
-> +The semantics of this call are such that if an IRQ range is specified then
->  descriptors will be allocated on-the-fly for it, and if no range is
-> -specified it will fall through to irq_domain_add_linear() which means
-> -*no* irq descriptors will be allocated.
-> +specified it will fall through to irq_domain_add_linear() or
-> +irq_domain_create_linear() which means *no* irq descriptors will be allocated.
->
->  A typical use case for simple domains is where an irqchip provider
->  is supporting both dynamic and static IRQ assignments.
-> @@ -186,6 +187,7 @@ that the driver using the simple domain call irq_create_mapping()
->  before any irq_find_mapping() since the latter will actually work
->  for the static IRQ assignment case.
->
-> +irq_domain_add_simple() and irq_domain_create_simple() as well as
->  irq_domain_add_legacy() and irq_domain_create_legacy() are functionally
->  equivalent, except for the first argument is different - the former
->  accepts an Open Firmware specific 'struct device_node', while the latter
-> diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-> index 42d196805f58..6e78f5909723 100644
-> --- a/include/linux/irqdomain.h
-> +++ b/include/linux/irqdomain.h
-> @@ -260,11 +260,11 @@ struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, int size,
->                                     irq_hw_number_t hwirq_max, int direct_max,
->                                     const struct irq_domain_ops *ops,
->                                     void *host_data);
-> -struct irq_domain *irq_domain_add_simple(struct device_node *of_node,
-> -                                        unsigned int size,
-> -                                        unsigned int first_irq,
-> -                                        const struct irq_domain_ops *ops,
-> -                                        void *host_data);
-> +struct irq_domain *irq_domain_create_simple(struct fwnode_handle *fwnode,
-> +                                           unsigned int size,
-> +                                           unsigned int first_irq,
-> +                                           const struct irq_domain_ops *ops,
-> +                                           void *host_data);
->  struct irq_domain *irq_domain_add_legacy(struct device_node *of_node,
->                                          unsigned int size,
->                                          unsigned int first_irq,
-> @@ -329,6 +329,15 @@ static inline struct irq_domain *irq_find_host(struct device_node *node)
->         return d;
->  }
->
-> +static inline struct irq_domain *irq_domain_add_simple(struct device_node *of_node,
-> +                                                      unsigned int size,
-> +                                                      unsigned int first_irq,
-> +                                                      const struct irq_domain_ops *ops,
-> +                                                      void *host_data)
-> +{
-> +       return irq_domain_create_simple(of_node_to_fwnode(of_node), size, first_irq, ops, host_data);
-> +}
+On 3/5/2021 6:14 AM, Peter Zijlstra wrote:
+> On Thu, Mar 04, 2021 at 06:50:00PM +0100, Peter Zijlstra wrote:
+>> On Thu, Mar 04, 2021 at 10:50:45AM -0500, Liang, Kan wrote:
+>>> Hi Peter,
+>>>
+>>> Could you please take a look at the perf kernel patches (3-25)?
+>>>
+>>> By now, we have got some comments regarding the generic hybrid feature
+>>> enumeration code and perf tool patches. I would appreciate it very much if
+>>> you could comment on the perf kernel patches.
+>>>
+>>
+>> Yeah, I started staring at it yesterday.. I'll try and respond tomorrow.
+> 
+> OK, so STYLE IS HORRIBLE, please surrender your CAPS-LOCK key until
+> further notice.
+> 
+> The below is a completely unfinished 'diff' against 3-20. It has various
+> notes interspersed.
+> 
+> Please rework.
+
+
+Thanks for the detailed comments. I will rework the code accordingly.
+
+Thanks,
+Kan
+
+> 
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -44,11 +44,13 @@
+>   
+>   #include "perf_event.h"
+>   
+> +static struct pmu pmu;
 > +
->  /**
->   * irq_domain_add_linear() - Allocate and register a linear revmap irq_domain.
->   * @of_node: pointer to interrupt controller's device tree node.
-> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-> index 288151393a06..a7f4028971e4 100644
-> --- a/kernel/irq/irqdomain.c
-> +++ b/kernel/irq/irqdomain.c
-> @@ -295,8 +295,8 @@ void irq_domain_update_bus_token(struct irq_domain *domain,
->  EXPORT_SYMBOL_GPL(irq_domain_update_bus_token);
->
->  /**
-> - * irq_domain_add_simple() - Register an irq_domain and optionally map a range of irqs
-> - * @of_node: pointer to interrupt controller's device tree node.
-> + * irq_domain_create_simple() - Register an irq_domain and optionally map a range of irqs
-> + * @fwnode: firmware node for the interrupt controller
->   * @size: total number of irqs in mapping
->   * @first_irq: first number of irq block assigned to the domain,
->   *     pass zero to assign irqs on-the-fly. If first_irq is non-zero, then
-> @@ -312,15 +312,15 @@ EXPORT_SYMBOL_GPL(irq_domain_update_bus_token);
->   * irqs get mapped dynamically on the fly. However, if the controller requires
->   * static virq assignments (non-DT boot) then it will set that up correctly.
->   */
-> -struct irq_domain *irq_domain_add_simple(struct device_node *of_node,
-> -                                        unsigned int size,
-> -                                        unsigned int first_irq,
-> -                                        const struct irq_domain_ops *ops,
-> -                                        void *host_data)
-> +struct irq_domain *irq_domain_create_simple(struct fwnode_handle *fwnode,
-> +                                           unsigned int size,
-> +                                           unsigned int first_irq,
-> +                                           const struct irq_domain_ops *ops,
-> +                                           void *host_data)
->  {
->         struct irq_domain *domain;
->
-> -       domain = __irq_domain_add(of_node_to_fwnode(of_node), size, size, 0, ops, host_data);
-> +       domain = __irq_domain_add(fwnode, size, size, 0, ops, host_data);
->         if (!domain)
->                 return NULL;
->
-> @@ -328,7 +328,7 @@ struct irq_domain *irq_domain_add_simple(struct device_node *of_node,
->                 if (IS_ENABLED(CONFIG_SPARSE_IRQ)) {
->                         /* attempt to allocated irq_descs */
->                         int rc = irq_alloc_descs(first_irq, first_irq, size,
-> -                                                of_node_to_nid(of_node));
-> +                                                of_node_to_nid(to_of_node(fwnode)));
->                         if (rc < 0)
->                                 pr_info("Cannot allocate irq_descs @ IRQ%d, assuming pre-allocated\n",
->                                         first_irq);
-> @@ -338,7 +338,7 @@ struct irq_domain *irq_domain_add_simple(struct device_node *of_node,
->
->         return domain;
->  }
-> -EXPORT_SYMBOL_GPL(irq_domain_add_simple);
-> +EXPORT_SYMBOL_GPL(irq_domain_create_simple);
->
->  /**
->   * irq_domain_add_legacy() - Allocate and register a legacy revmap irq_domain.
-> --
-> 2.30.1
->
+>   struct x86_pmu x86_pmu __read_mostly;
+>   
+>   DEFINE_PER_CPU(struct cpu_hw_events, cpu_hw_events) = {
+>   	.enabled = 1,
+> -	.hybrid_pmu_idx = X86_NON_HYBRID_PMU,
+> +	.pmu = &pmu;
+>   };
+>   
+>   DEFINE_STATIC_KEY_FALSE(rdpmc_never_available_key);
+> @@ -184,7 +186,7 @@ static inline int get_possible_num_count
+>   {
+>   	int bit, num_counters = 0;
+>   
+> -	if (!IS_X86_HYBRID)
+> +	if (!is_hybrid())
+>   		return x86_pmu.num_counters;
+>   
+>   	for_each_set_bit(bit, &x86_pmu.hybrid_pmu_bitmap, X86_HYBRID_PMU_MAX_INDEX)
+> @@ -270,6 +272,9 @@ bool check_hw_exists(int num_counters, i
+>   		if (ret)
+>   			goto msr_fail;
+>   		for (i = 0; i < num_counters_fixed; i++) {
+> +			/*
+> +			 * XXX comment that explains why/how NULL below works.
+> +			 */
+>   			if (fixed_counter_disabled(i, NULL))
+>   				continue;
+>   			if (val & (0x03 << i*4)) {
+> @@ -352,7 +357,6 @@ set_ext_hw_attr(struct hw_perf_event *hw
+>   {
+>   	struct perf_event_attr *attr = &event->attr;
+>   	unsigned int cache_type, cache_op, cache_result;
+> -	struct x86_hybrid_pmu *pmu = IS_X86_HYBRID ? container_of(event->pmu, struct x86_hybrid_pmu, pmu) : NULL;
+>   	u64 config, val;
+>   
+>   	config = attr->config;
+> @@ -372,10 +376,7 @@ set_ext_hw_attr(struct hw_perf_event *hw
+>   		return -EINVAL;
+>   	cache_result = array_index_nospec(cache_result, PERF_COUNT_HW_CACHE_RESULT_MAX);
+>   
+> -	if (pmu)
+> -		val = pmu->hw_cache_event_ids[cache_type][cache_op][cache_result];
+> -	else
+> -		val = hw_cache_event_ids[cache_type][cache_op][cache_result];
+> +	val = hybrid(event->pmu, hw_cache_event_ids)[cache_type][cache_op][cache_result];
+>   
+>   	if (val == 0)
+>   		return -ENOENT;
+> @@ -384,10 +385,7 @@ set_ext_hw_attr(struct hw_perf_event *hw
+>   		return -EINVAL;
+>   
+>   	hwc->config |= val;
+> -	if (pmu)
+> -		attr->config1 = pmu->hw_cache_extra_regs[cache_type][cache_op][cache_result];
+> -	else
+> -		attr->config1 = hw_cache_extra_regs[cache_type][cache_op][cache_result];
+> +	attr->config1 = hybrid(event->pmu, hw_cache_extra_regs)[cache_type][cache_op][cache_result];
+>   	return x86_pmu_extra_regs(val, event);
+>   }
+>   
+> @@ -742,13 +740,11 @@ void x86_pmu_enable_all(int added)
+>   	}
+>   }
+>   
+> -static struct pmu pmu;
+> -
+>   static inline int is_x86_event(struct perf_event *event)
+>   {
+>   	int bit;
+>   
+> -	if (!IS_X86_HYBRID)
+> +	if (!is_hybrid())
+>   		return event->pmu == &pmu;
+>   
+>   	for_each_set_bit(bit, &x86_pmu.hybrid_pmu_bitmap, X86_HYBRID_PMU_MAX_INDEX) {
+> @@ -760,6 +756,7 @@ static inline int is_x86_event(struct pe
+>   
+>   struct pmu *x86_get_pmu(void)
+>   {
+> +	/* borken */
+>   	return &pmu;
+>   }
+>   /*
+> @@ -963,7 +960,7 @@ EXPORT_SYMBOL_GPL(perf_assign_events);
+>   
+>   int x86_schedule_events(struct cpu_hw_events *cpuc, int n, int *assign)
+>   {
+> -	int num_counters = X86_HYBRID_READ_FROM_CPUC(num_counters, cpuc);
+> +	int num_counters = hybrid(cpuc->pmu, num_counters);
+>   	struct event_constraint *c;
+>   	struct perf_event *e;
+>   	int n0, i, wmin, wmax, unsched = 0;
+> @@ -1124,7 +1121,7 @@ static void del_nr_metric_event(struct c
+>   static int collect_event(struct cpu_hw_events *cpuc, struct perf_event *event,
+>   			 int max_count, int n)
+>   {
+> -	union perf_capabilities intel_cap = X86_HYBRID_READ_FROM_CPUC(intel_cap, cpuc);
+> +	union perf_capabilities intel_cap = hybrid(cpuc->pmu, intel_cap);
+>   
+>   	if (intel_cap.perf_metrics && add_nr_metric_event(cpuc, event))
+>   		return -EINVAL;
+> @@ -1147,8 +1144,8 @@ static int collect_event(struct cpu_hw_e
+>    */
+>   static int collect_events(struct cpu_hw_events *cpuc, struct perf_event *leader, bool dogrp)
+>   {
+> -	int num_counters = X86_HYBRID_READ_FROM_CPUC(num_counters, cpuc);
+> -	int num_counters_fixed = X86_HYBRID_READ_FROM_CPUC(num_counters_fixed, cpuc);
+> +	int num_counters = hybrid(cpuc->pmu, num_counters);
+> +	int num_counters_fixed = hybrid(cpuc->pmu, num_counters_fixed);
+>   	struct perf_event *event;
+>   	int n, max_count;
+>   
+> @@ -1522,9 +1519,9 @@ void perf_event_print_debug(void)
+>   	u64 pebs, debugctl;
+>   	int cpu = smp_processor_id();
+>   	struct cpu_hw_events *cpuc = &per_cpu(cpu_hw_events, cpu);
+> -	int num_counters = X86_HYBRID_READ_FROM_CPUC(num_counters, cpuc);
+> -	int num_counters_fixed = X86_HYBRID_READ_FROM_CPUC(num_counters_fixed, cpuc);
+> -	struct event_constraint *pebs_constraints = X86_HYBRID_READ_FROM_CPUC(pebs_constraints, cpuc);
+> +	int num_counters = hybrid(cpuc->pmu, num_counters);
+> +	int num_counters_fixed = hybrid(cpuc->pmu, num_counters_fixed);
+> +	struct event_constraint *pebs_constraints = hybrid(cpuc->pmu, pebs_constraints);
+>   	unsigned long flags;
+>   	int idx;
+>   
+> @@ -1605,7 +1602,7 @@ void x86_pmu_stop(struct perf_event *eve
+>   static void x86_pmu_del(struct perf_event *event, int flags)
+>   {
+>   	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> -	union perf_capabilities intel_cap = X86_HYBRID_READ_FROM_CPUC(intel_cap, cpuc);
+> +	union perf_capabilities intel_cap = hybrid(cpuc->pmu, intel_cap);
+>   	int i;
+>   
+>   	/*
+> @@ -2105,7 +2102,7 @@ static int __init init_hw_perf_events(vo
+>   
+>   	pmu.attr_update = x86_pmu.attr_update;
+>   
+> -	if (!IS_X86_HYBRID) {
+> +	if (!is_hybrid()) {
+>   		x86_pmu_show_pmu_cap(x86_pmu.num_counters,
+>   				     x86_pmu.num_counters_fixed,
+>   				     x86_pmu.intel_ctrl);
+> @@ -2139,7 +2136,7 @@ static int __init init_hw_perf_events(vo
+>   	if (err)
+>   		goto out1;
+>   
+> -	if (!IS_X86_HYBRID) {
+> +	if (!is_hybrid()) {
+>   		err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
+>   		if (err)
+>   			goto out2;
+> @@ -2303,7 +2300,11 @@ static struct cpu_hw_events *allocate_fa
+>   		return ERR_PTR(-ENOMEM);
+>   	cpuc->is_fake = 1;
+>   
+> -	if (IS_X86_HYBRID)
+> +	/*
+> +	 * Utterly broken, this selects a random pmu to validate on;
+> +	 * it should match event->pmu.
+> +	 */
+> +	if (is_hybrid())
+>   		cpuc->hybrid_pmu_idx = x86_hybrid_get_idx_from_cpu(cpu);
+>   	else
+>   		cpuc->hybrid_pmu_idx = X86_NON_HYBRID_PMU;
+> @@ -2362,8 +2363,10 @@ static int validate_group(struct perf_ev
+>   
+>   	/*
+>   	 * Reject events from different hybrid PMUs.
+> +	 *
+> +	 * This is just flat out buggered.
+>   	 */
+> -	if (IS_X86_HYBRID) {
+> +	if (is_hybrid()) {
+>   		struct perf_event *sibling;
+>   		struct pmu *pmu = NULL;
+>   
+> @@ -2380,6 +2383,26 @@ static int validate_group(struct perf_ev
+>   
+>   		if (pmu && pmu != event->pmu)
+>   			return ret;
+> +
+> +		/*
+> +		 * Maybe something like so..
+> +		 */
+> +
+> +		struct perf_event *sibling;
+> +		struct pmu *pmu = NULL;
+> +
+> +		if (is_x86_event(leader))
+> +			pmu = leader->pmu;
+> +
+> +		for_each_sibling_event(sibling, leader) {
+> +			if (!is_x86_event(sibling))
+> +				continue;
+> +
+> +			if (!pmu)
+> +				pmu = sibling->pmu;
+> +			else if (pmu != sibling->pmu)
+> +				return ret;
+> +		}
+>   	}
+>   
+>   	fake_cpuc = allocate_fake_cpuc();
+> @@ -2418,7 +2441,7 @@ static int x86_pmu_event_init(struct per
+>   	    (event->attr.type != PERF_TYPE_HW_CACHE))
+>   		return -ENOENT;
+>   
+> -	if (IS_X86_HYBRID && (event->cpu != -1)) {
+> +	if (is_hybrid() && (event->cpu != -1)) {
+>   		hybrid_pmu = container_of(event->pmu, struct x86_hybrid_pmu, pmu);
+>   		if (!cpumask_test_cpu(event->cpu, &hybrid_pmu->supported_cpus))
+>   			return -ENOENT;
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -3168,7 +3168,7 @@ struct event_constraint *
+>   x86_get_event_constraints(struct cpu_hw_events *cpuc, int idx,
+>   			  struct perf_event *event)
+>   {
+> -	struct event_constraint *event_constraints = X86_HYBRID_READ_FROM_CPUC(event_constraints, cpuc);
+> +	struct event_constraint *event_constraints = hybrid(cpuc->pmu, event_constraints);
+>   	struct event_constraint *c;
+>   
+>   	if (event_constraints) {
+> @@ -3180,10 +3180,10 @@ x86_get_event_constraints(struct cpu_hw_
+>   		}
+>   	}
+>   
+> -	if (!HAS_VALID_HYBRID_PMU_IN_CPUC(cpuc))
+> +	if (!is_hybrid() || !cpuc->pmu)
+>   		return &unconstrained;
+>   
+> -	return &x86_pmu.hybrid_pmu[cpuc->hybrid_pmu_idx].unconstrained;
+> +	return hybrid_pmu(cpuc->pmu)->unconstrained;
+>   }
+>   
+>   static struct event_constraint *
+> @@ -3691,7 +3691,7 @@ static inline bool intel_pmu_has_cap(str
+>   {
+>   	struct x86_hybrid_pmu *pmu;
+>   
+> -	if (!IS_X86_HYBRID)
+> +	if (!is_hybrid())
+>   		return test_bit(idx, (unsigned long *)&x86_pmu.intel_cap.capabilities);
+>   
+>   	pmu = container_of(event->pmu, struct x86_hybrid_pmu, pmu);
+> @@ -4224,7 +4224,7 @@ int intel_cpuc_prepare(struct cpu_hw_eve
+>   {
+>   	cpuc->pebs_record_size = x86_pmu.pebs_record_size;
+>   
+> -	if (IS_X86_HYBRID || x86_pmu.extra_regs || x86_pmu.lbr_sel_map) {
+> +	if (is_hybrid() || x86_pmu.extra_regs || x86_pmu.lbr_sel_map) {
+>   		cpuc->shared_regs = allocate_shared_regs(cpu);
+>   		if (!cpuc->shared_regs)
+>   			goto err;
+> @@ -4377,8 +4377,8 @@ static void init_hybrid_pmu(int cpu)
+>   	if (!test_bit(idx, &x86_pmu.hybrid_pmu_bitmap))
+>   		return;
+>   
+> -	cpuc->hybrid_pmu_idx = idx;
+>   	pmu = &x86_pmu.hybrid_pmu[idx];
+> +	cpuc->pmu = &pmu.pmu;
+>   
+>   	/* Only register PMU for the first CPU */
+>   	if (!cpumask_empty(&pmu->supported_cpus)) {
+> @@ -4451,7 +4451,7 @@ static void intel_pmu_cpu_starting(int c
+>   	int core_id = topology_core_id(cpu);
+>   	int i;
+>   
+> -	if (IS_X86_HYBRID)
+> +	if (is_hybrid())
+>   		init_hybrid_pmu(cpu);
+>   
+>   	init_debug_store_on_cpu(cpu);
+> @@ -4480,7 +4480,7 @@ static void intel_pmu_cpu_starting(int c
+>   	 * feature for now. The corresponding bit should always be 0 on
+>   	 * a hybrid platform, e.g., Alder Lake.
+>   	 */
+> -	if (!IS_X86_HYBRID && x86_pmu.intel_cap.perf_metrics) {
+> +	if (!is_hybrid() && x86_pmu.intel_cap.perf_metrics) {
+>   		union perf_capabilities perf_cap;
+>   
+>   		rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap.capabilities);
+> @@ -4569,7 +4569,7 @@ static void intel_pmu_cpu_dead(int cpu)
+>   {
+>   	intel_cpuc_finish(&per_cpu(cpu_hw_events, cpu));
+>   
+> -	if (IS_X86_HYBRID) {
+> +	if (is_hybrid()) {
+>   		struct cpu_hw_events *cpuc = &per_cpu(cpu_hw_events, cpu);
+>   		int idx = x86_hybrid_get_idx_from_cpu(cpu);
+>   		struct x86_hybrid_pmu *hybrid_pmu;
+> @@ -4579,7 +4579,7 @@ static void intel_pmu_cpu_dead(int cpu)
+>   
+>   		hybrid_pmu = &x86_pmu.hybrid_pmu[idx];
+>   		cpumask_clear_cpu(cpu, &hybrid_pmu->supported_cpus);
+> -		cpuc->hybrid_pmu_idx = X86_NON_HYBRID_PMU;
+> +		cpuc->pmu = NULL;
+>   		if (cpumask_empty(&hybrid_pmu->supported_cpus)) {
+>   			perf_pmu_unregister(&hybrid_pmu->pmu);
+>   			hybrid_pmu->pmu.type = -1;
+> @@ -6217,7 +6217,7 @@ __init int intel_pmu_init(void)
+>   
+>   	snprintf(pmu_name_str, sizeof(pmu_name_str), "%s", name);
+>   
+> -	if (!IS_X86_HYBRID) {
+> +	if (!is_hybrid()) {
+>   		group_events_td.attrs  = td_attr;
+>   		group_events_mem.attrs = mem_attr;
+>   		group_events_tsx.attrs = tsx_attr;
+> @@ -6273,7 +6273,7 @@ __init int intel_pmu_init(void)
+>   		pr_cont("full-width counters, ");
+>   	}
+>   
+> -	if (!IS_X86_HYBRID && x86_pmu.intel_cap.perf_metrics)
+> +	if (!is_hybrid() && x86_pmu.intel_cap.perf_metrics)
+>   		x86_pmu.intel_ctrl |= 1ULL << GLOBAL_CTRL_EN_PERF_METRICS;
+>   
+>   	return 0;
+> --- a/arch/x86/events/intel/ds.c
+> +++ b/arch/x86/events/intel/ds.c
+> @@ -2217,7 +2217,7 @@ void __init intel_ds_init(void)
+>   			}
+>   			pr_cont("PEBS fmt4%c%s, ", pebs_type, pebs_qual);
+>   
+> -			if (!IS_X86_HYBRID && x86_pmu.intel_cap.pebs_output_pt_available) {
+> +			if (!is_hybrid() && x86_pmu.intel_cap.pebs_output_pt_available) {
+>   				pr_cont("PEBS-via-PT, ");
+>   				x86_get_pmu()->capabilities |= PERF_PMU_CAP_AUX_OUTPUT;
+>   			}
+> --- a/arch/x86/events/perf_event.h
+> +++ b/arch/x86/events/perf_event.h
+> @@ -331,7 +331,7 @@ struct cpu_hw_events {
+>   	/*
+>   	 * Hybrid PMU support
+>   	 */
+> -	int			        hybrid_pmu_idx;
+> +	struct pmu			*pmu;
+>   };
+>   
+>   #define __EVENT_CONSTRAINT_RANGE(c, e, n, m, w, o, f) {	\
+> @@ -671,21 +671,30 @@ struct x86_hybrid_pmu {
+>   	struct extra_reg		*extra_regs;
+>   };
+>   
+> -#define IS_X86_HYBRID			cpu_feature_enabled(X86_FEATURE_HYBRID_CPU)
+> -
+> -#define HAS_VALID_HYBRID_PMU_IN_CPUC(_cpuc)				\
+> -	(IS_X86_HYBRID &&						\
+> -	 ((_cpuc)->hybrid_pmu_idx >= X86_HYBRID_PMU_ATOM_IDX) &&	\
+> -	 ((_cpuc)->hybrid_pmu_idx < X86_HYBRID_PMU_MAX_INDEX))
+> +static __always_inline bool is_hybrid(void)
+> +{
+> +	return unlikely(cpu_feature_enabled(X86_FEATURE_HYBRID_CPU));
+> +}
+>   
+> -#define X86_HYBRID_READ_FROM_CPUC(_name, _cpuc)				\
+> -	(_cpuc && HAS_VALID_HYBRID_PMU_IN_CPUC(_cpuc) ? x86_pmu.hybrid_pmu[(_cpuc)->hybrid_pmu_idx]._name : x86_pmu._name)
+> +static __always_inline bool is_hybrid_idx(int idx)
+> +{
+> +	return (unsigned)idx < X86_HYBRID_PMU_MAX_INDEX;
+> +}
+>   
+> -#define X86_HYBRID_READ_FROM_EVENT(_name, _event)			\
+> -	(IS_X86_HYBRID ? ((struct x86_hybrid_pmu *)(_event->pmu))->_name : x86_pmu._name)
+> +static __always_inline struct x86_hybrid_pmu *hybrid_pmu(struct pmu *)
+> +{
+> +	return container_of(pmu, struct x86_hybrid_pmu, pmu);
+> +}
+>   
+> -#define IS_VALID_HYBRID_PMU_IDX(idx)					\
+> -	(idx < X86_HYBRID_PMU_MAX_INDEX && idx > X86_NON_HYBRID_PMU)
+> +#define hybrid(_pmu, _field)						\
+> +({									\
+> +	typeof(x86_pmu._field) __F = x86_pmu._field;			\
+> +									\
+> +	if (is_hybrid() && (_pmu))					\
+> +		__F = hybrid_pmu(_pmu)->_field;				\
+> +									\
+> +	__F;								\
+> +})
+>   
+>   static inline enum x86_hybrid_pmu_type_idx
+>   x86_hybrid_get_idx_from_cpu(unsigned int cpu)
+> @@ -898,9 +907,12 @@ struct x86_pmu {
+>   	 * for all PMUs. The hybrid_pmu only includes the unique capabilities.
+>   	 * The hybrid_pmu_bitmap is the bits map of the possible hybrid_pmu.
+>   	 */
+> +	int				(*filter_match)(struct perf_event *event);
+>   	unsigned long			hybrid_pmu_bitmap;
+> +	/*
+> +	 * This thing is huge, use dynamic allocation!
+> +	 */
+>   	struct x86_hybrid_pmu		hybrid_pmu[X86_HYBRID_PMU_MAX_INDEX];
+> -	int				(*filter_match)(struct perf_event *event);
+>   };
+>   
+>   struct x86_perf_task_context_opt {
+> 
