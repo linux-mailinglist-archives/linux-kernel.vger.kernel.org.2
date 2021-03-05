@@ -2,169 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF2432F20E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A6232F214
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhCESCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 13:02:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhCESB4 (ORCPT
+        id S229718AbhCESCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 13:02:22 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42346 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229526AbhCESCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 13:01:56 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8372AC061756
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 10:01:52 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id o38so1897333pgm.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 10:01:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VKk7Lw9rNrZF7cjZoXQtqz9ifc+AiOgTohH4rRfp/Cw=;
-        b=pMN8yASc0+EWiw43ig2F4gk0UaX/YjEIQKPVPJ8nHq6aulAeRE6YXZ5BNl1qwjjEtQ
-         f9yuaaxQb3QH889tdKg3Kaf9TPi4eLTfM9VgFSHODAmr12YcQMe/UPjerpMQhJcRaBYO
-         2mwfIkx9iER1apwv6cLnZ1jiaX9Zt7Ryg1HUOheiOZXmsx92wfcH2885BOZXAC0FUHgz
-         1rCUK+uv3CqIrX5CWlmhQdLYwDVY7EBfoCv6wQwjJ0UUnvUL+IA/6vzYWmCISDmF7Gwh
-         7cYrb/2QDk8S6+aged04oklsRrMtsC1Kl9H7si0r6GJD7cQwqrynU1UlZAKbtH9srNCH
-         9xow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VKk7Lw9rNrZF7cjZoXQtqz9ifc+AiOgTohH4rRfp/Cw=;
-        b=nuU4bQDOX5plk4Tkl56fl5i4+n/Wl1I6iYFv/cHCvi0WjSP++d4y3FFpFeylswyfpz
-         TuZDuxEwx4c4W/480PkNusbbcPN57g8MAYD+bic1HpwV8PyRyxmKm9ngCipkDNroR7Um
-         4GQcx7JkogXVNwl4NCFxxpTi/r29Xwn3MQjJeJpTx+g5jpsYcO/VV9+/TQwipB5SeySU
-         eXC3Jc+IVVcsk+R5UXfROe79Sq4UJHOi/bj04otB6UKx2i3rrHwP2P1aw+LZlOZy1DiP
-         gK9QzotLoZyeefieBi5TQ54FAQeID7zZw9S01ROI8/TzQ2VWsLOoTZko9jYYYQr/X8EW
-         jwkg==
-X-Gm-Message-State: AOAM533Efgc6vpx/GU4p8p1XAxQgMeLY9P+TsYjwjK8dwmS2PUGDdSeq
-        GnVmL9jSNmds4fJCc+hJSCgeMWhOl6Noog==
-X-Google-Smtp-Source: ABdhPJwZnAMdip8tL6bNiOKM5AFa814g15BDif8cdL9qTcRdT725R0VGDTF6JdMgFPyjpW3Avp+BRg==
-X-Received: by 2002:a63:f63:: with SMTP id 35mr9923357pgp.119.1614967311850;
-        Fri, 05 Mar 2021 10:01:51 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id y8sm3348761pfe.36.2021.03.05.10.01.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 10:01:49 -0800 (PST)
-Date:   Fri, 5 Mar 2021 11:01:47 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v5 13/16] rpmsg: char: introduce
- __rpmsg_chrdev_create_eptdev function
-Message-ID: <20210305180147.GC3885132@xps15>
-References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
- <20210219111501.14261-14-arnaud.pouliquen@foss.st.com>
- <20210304185520.GC3854911@xps15>
- <de4db82c-8136-6fe7-f17a-59d65e8b266c@foss.st.com>
+        Fri, 5 Mar 2021 13:02:19 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125HYm3Q134311;
+        Fri, 5 Mar 2021 13:02:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=vA3gk2DanwGTF2Onwczf03QQRxf8P3h787WW2pyBFaw=;
+ b=mPRywqmqSFKTR4okp+DXR07QR4+ykTqSxOKL5wkMzY4hd5N4jnnEJo5AeElaaUzmoTou
+ 5uvG0TnmPw7zwobv5mJeJTl0w66zbRb25gRGHAnLNblDSxCzE6Zl8OHhYKDu8Er86PMB
+ 18+oSlkxjrLekghxSKoraRUWfJVig0dbRmo0mdMSc+6ZY0SFEZ+slKqKmTH2ZkS/NFwA
+ S1N+RwLGcTKj/1O6OMluJN0PO/3sxA5WbBmMkjO4lrO6cyl6AVeVZJCC5k39lyhuB4fO
+ D0Vx3poho3FLqLJYrOlmcPGn4SFKez/5BLXWXdPRvXmfqyfDL0aX5QVCFGhL5CxCDoxV dw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373k57mp38-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 13:02:12 -0500
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 125HZ45Q136361;
+        Fri, 5 Mar 2021 13:02:11 -0500
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 373k57mp2k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 13:02:11 -0500
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 125Hl9Mj024267;
+        Fri, 5 Mar 2021 18:02:10 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma01dal.us.ibm.com with ESMTP id 371qmv7pa1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 18:02:10 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 125I296F42992034
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 5 Mar 2021 18:02:09 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9E132112066;
+        Fri,  5 Mar 2021 18:02:09 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 79B5D112065;
+        Fri,  5 Mar 2021 18:02:09 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri,  5 Mar 2021 18:02:09 +0000 (GMT)
+Subject: Re: [PATCH v10 5/9] x509: Detect sm2 keys by their parameters OID
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        dhowells@redhat.com, zohar@linux.ibm.com,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+References: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
+ <20210305005203.3547587-6-stefanb@linux.vnet.ibm.com>
+ <YEJnYOvFnWr7YcJK@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <85b2cdaa-52e1-f519-db85-2ba95dc42b3b@linux.ibm.com>
+Date:   Fri, 5 Mar 2021 13:02:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <de4db82c-8136-6fe7-f17a-59d65e8b266c@foss.st.com>
+In-Reply-To: <YEJnYOvFnWr7YcJK@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-05_13:2021-03-03,2021-03-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ adultscore=0 mlxscore=0 lowpriorityscore=0 impostorscore=0 bulkscore=0
+ suspectscore=0 mlxlogscore=999 clxscore=1015 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103050090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 11:46:47AM +0100, Arnaud POULIQUEN wrote:
-> 
-> 
-> On 3/4/21 7:55 PM, Mathieu Poirier wrote:
-> > On Fri, Feb 19, 2021 at 12:14:58PM +0100, Arnaud Pouliquen wrote:
-> >> Introduce the __rpmsg_chrdev_create_eptdev internal function that returns
-> >> the rpmsg_eptdev context structure.
-> >> This patch prepares the introduction of a RPMsg device for the
-> >> char device. the RPMsg device will need a reference to the context.
-> >>
-> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> >> ---
-> >>  drivers/rpmsg/rpmsg_char.c | 23 ++++++++++++++++++-----
-> >>  1 file changed, 18 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> >> index 09ae1304837c..66dcb8845d6c 100644
-> >> --- a/drivers/rpmsg/rpmsg_char.c
-> >> +++ b/drivers/rpmsg/rpmsg_char.c
-> >> @@ -328,8 +328,9 @@ int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data)
-> >>  }
-> >>  EXPORT_SYMBOL(rpmsg_chrdev_eptdev_destroy);
-> >>  
-> >> -int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
-> >> -			       struct rpmsg_channel_info chinfo)
-> >> +static struct rpmsg_eptdev *__rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev,
-> >> +							 struct device *parent,
-> >> +							 struct rpmsg_channel_info chinfo)
-> >>  {
-> >>  	struct rpmsg_eptdev *eptdev;
-> >>  	struct device *dev;
-> >> @@ -337,7 +338,7 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
-> >>  
-> >>  	eptdev = kzalloc(sizeof(*eptdev), GFP_KERNEL);
-> >>  	if (!eptdev)
-> >> -		return -ENOMEM;
-> >> +		return ERR_PTR(-ENOMEM);
-> >>  
-> >>  	dev = &eptdev->dev;
-> >>  	eptdev->rpdev = rpdev;
-> >> @@ -381,7 +382,7 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
-> >>  		put_device(dev);
-> >>  	}
-> >>  
-> >> -	return ret;
-> >> +	return eptdev;
-> >>  
-> >>  free_ept_ida:
-> >>  	ida_simple_remove(&rpmsg_ept_ida, dev->id);
-> >> @@ -391,7 +392,19 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
-> >>  	put_device(dev);
-> >>  	kfree(eptdev);
-> >>  
-> >> -	return ret;
-> >> +	return ERR_PTR(ret);
-> >> +}
-> >> +
-> >> +int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
-> >> +			       struct rpmsg_channel_info chinfo)
-> >> +{
-> >> +	struct rpmsg_eptdev *eptdev;
-> >> +
-> >> +	eptdev = __rpmsg_chrdev_create_eptdev(rpdev, &rpdev->dev, chinfo);
-> > 
-> > Shouldn't the second argument to __rpmsg_chrdev_create_eptdev() be @parent?
-> 
-> This keep the legacy hierarchy:
-> https://elixir.bootlin.com/linux/latest/source/drivers/rpmsg/rpmsg_char.c#L362
+On 3/5/21 12:16 PM, Jarkko Sakkinen wrote:
+> On Thu, Mar 04, 2021 at 07:51:59PM -0500, Stefan Berger wrote:
+>> From: Stefan Berger <stefanb@linux.ibm.com>
+>>
+>> Detect whether a key is an sm2 type of key by its OID in the parameters
+>> array rather than assuming that everything under OID_id_ecPublicKey
+>> is sm2, which is not the case.
+>>
+>> Cc: David Howells <dhowells@redhat.com>
+>> Cc: keyrings@vger.kernel.org
+>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>> Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+>> ---
+>>   crypto/asymmetric_keys/x509_cert_parser.c | 12 +++++++++++-
+>>   include/linux/oid_registry.h              |  1 +
+>>   lib/oid_registry.c                        | 13 +++++++++++++
+>>   3 files changed, 25 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+>> index 52c9b455fc7d..1621ceaf5c95 100644
+>> --- a/crypto/asymmetric_keys/x509_cert_parser.c
+>> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
+>> @@ -459,6 +459,7 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+>>   			  const void *value, size_t vlen)
+>>   {
+>>   	struct x509_parse_context *ctx = context;
+>> +	enum OID oid;
+> enum is not a real type, and it is hard to recall how much it allocates
+> from stack. I would replace this with plain int.
 
-In patch 12 it is clear the first and second arguments are ctrldev->rpdev and
-ctrldev->dev.  In this set the second arguments becomes rpdev->dev, which is
-different than ctrldev->dev.  Goind back to rpmsg_ctrl_probe() we have:
 
-        dev = &ctrldev->dev;
-        device_initialize(dev);
-        dev->parent = &rpdev->dev;
+That would be worse considering existing code: 
+https://elixir.bootlin.com/linux/latest/source/lib/oid_registry.c#L25
 
-As such in __rpmsg_chrdev_create_eptdev(), eptdev->dev->parent becomes
-ctrldev->dev->parent rather than ctrldev->dev.
 
-> 
-> Thanks,
-> Arnaud
-> 
-> 
-> > 
-> >> +	if (IS_ERR(eptdev))
-> >> +		return PTR_ERR(eptdev);
-> >> +
-> >> +	return 0;
-> >>  }
-> >>  EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
-> >>  
-> >> -- 
-> >> 2.17.1
-> >>
+>
+>>   
+>>   	ctx->key_algo = ctx->last_oid;
+>>   	switch (ctx->last_oid) {
+>> @@ -470,7 +471,16 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+>>   		ctx->cert->pub->pkey_algo = "ecrdsa";
+>>   		break;
+>>   	case OID_id_ecPublicKey:
+>> -		ctx->cert->pub->pkey_algo = "sm2";
+>> +		if (parse_OID(ctx->params, ctx->params_size, &oid) != 0)
+>> +			return -EBADMSG;
+>> +
+>> +		switch (oid) {
+>> +		case OID_sm2:
+>> +			ctx->cert->pub->pkey_algo = "sm2";
+>> +			break;
+>> +		default:
+>> +			return -ENOPKG;
+>> +		}
+>>   		break;
+>>   	default:
+>>   		return -ENOPKG;
+>> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
+>> index b504e2f36b25..f32d91895e4d 100644
+>> --- a/include/linux/oid_registry.h
+>> +++ b/include/linux/oid_registry.h
+>> @@ -121,6 +121,7 @@ enum OID {
+>>   };
+>>   
+>>   extern enum OID look_up_OID(const void *data, size_t datasize);
+>> +extern int parse_OID(const void *data, size_t datasize, enum OID *oid);
+>>   extern int sprint_oid(const void *, size_t, char *, size_t);
+>>   extern int sprint_OID(enum OID, char *, size_t);
+>>   
+>> diff --git a/lib/oid_registry.c b/lib/oid_registry.c
+>> index f7ad43f28579..508e0b34b5f0 100644
+>> --- a/lib/oid_registry.c
+>> +++ b/lib/oid_registry.c
+>> @@ -11,6 +11,7 @@
+>>   #include <linux/kernel.h>
+>>   #include <linux/errno.h>
+>>   #include <linux/bug.h>
+>> +#include <linux/asn1.h>
+>>   #include "oid_registry_data.c"
+>>   
+>>   MODULE_DESCRIPTION("OID Registry");
+>> @@ -92,6 +93,18 @@ enum OID look_up_OID(const void *data, size_t datasize)
+>>   }
+>>   EXPORT_SYMBOL_GPL(look_up_OID);
+>>   
+>> +int parse_OID(const void *data, size_t datasize, enum OID *oid)
+> An exported function without kdoc.
+>
+>> +{
+>> +	const unsigned char *v = data;
+>> +
+>> +	if (datasize < 2 || v[0] != ASN1_OID || v[1] != datasize - 2)
+>> +		return -EBADMSG;
+> '1' and '2' are magic numbers unless you either have constants defining
+> them, or at least an inline comment with explanation.
+
+
+I can add those.
+
+
