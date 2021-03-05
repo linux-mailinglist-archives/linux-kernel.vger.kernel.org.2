@@ -2,107 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371A432EEE8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A368A32EF29
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbhCEPde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:33:34 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:42317 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230109AbhCEPdN (ORCPT
+        id S231209AbhCEPkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:40:11 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:28436 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229651AbhCEPj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:33:13 -0500
-Received: (qmail 39139 invoked by uid 1000); 5 Mar 2021 10:33:12 -0500
-Date:   Fri, 5 Mar 2021 10:33:12 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Fri, 5 Mar 2021 10:39:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1614958444; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=NCb6Eb5skoDeaV7EGHekrACuOaCGfT1SGlpd/j3IWv36qHt3L5xhNtZdShO79kB6iA
+    0v3fc+w0odtGJJ6puR8VTiNm5/bitaAmbLLeK92/uuUgre2Q+up3AIYgIuBL6kyUg9wf
+    vzSz3D7DAyZglpl1KeQKzUPbokGBTrYyaPJ976TwvUEk5g/R8w6PkarPTqMQSfjKIG1d
+    fY9VaWYsYI7ALlhTzUOJ+pU/0pD0nzVAeu7Fz76ahVO+NVHotWcAt1khY9OLl6OQq2TY
+    i+T4FEORTs51p9UebY/XtFHNCp4NgL78PZqy9OjQ9M8Ew/sLzTU3LupXcANlSwIFeABr
+    hDEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1614958444;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:To:From:Cc:Date:From:Subject:Sender;
+    bh=0kAX5Uvl1Kt2XqcpwIJ75LAHYcnTKNSYe2VlZsDsh/c=;
+    b=Tak7poHV88GzJmtzKEimtSiqLzMFdkK9yK4ihE6KbVtpOEsPTzi1pqlSQjGOPCeKfQ
+    YVA1J5k0rWZxJDnAd3+yl4zknFe/AIe6jjbHSymz3oj/CGNqP8ymgREbt03ySn9tomn2
+    U3hXUf5mQDd7KIJQQnhsHgUH9MjoSXoEm7Cvi2Supc0k21Y6wVgYNgyD+Y46SdtYK5A2
+    hykDlambCT4lyVBrA/A94vlrK9hCkH0KqEaDZqv+V6K059eeaRBU1+74i0BUp4xqqdd1
+    I9ZWZ5FBdRyZPEjN5dhPLWQclb0LI3yQC3EUdogcZl4zNFclwIhkNMBSGTXhl5fy31Ry
+    St9g==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1614958444;
+    s=strato-dkim-0002; d=schoebel-theuer.de;
+    h=Message-Id:Date:Subject:To:From:Cc:Date:From:Subject:Sender;
+    bh=0kAX5Uvl1Kt2XqcpwIJ75LAHYcnTKNSYe2VlZsDsh/c=;
+    b=dKDLeZc8PNXm1PZcdSrsEJLMQ0DaddPMM9b9HCzCh74/QIhb5GAvfWHyC3pPwpI1Zs
+    86GJ/Gp9SvYCXZERrM1UDADQ59EXO1by2vU5jCRMofRKm+Ij/G0foex9XH0H7Nr1x7Oe
+    Hpn/WkhEJU0GCgyz13cRTUYuCxMRKNe5b30VZafVrY6kp2+hKxIwTFJWjJJ2QrANHIe0
+    lro3KsIXXeOSXzP3XujEIybCL8PSMTuWHiNwyOgf1tWzpNYM48FfGx+OT94yp9K/C3hZ
+    j+4tHLHdPB3RE94yBypgz1q4MTPL9H+lqzZQCkBfyEMKCQvwgEe72xK4rFX3x/HS5k+w
+    do/A==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":OH8QVVOrc/CP6za/qRmbF3BWedPGA1vjs2e0bDjfg8SjapJoMy/ngEsCKWYHf7tw4FryMmnohon9SYQ="
+X-RZG-CLASS-ID: mo00
+Received: from localhost.localdomain
+    by smtp.strato.de (RZmta 47.20.3 DYNA|AUTH)
+    with ESMTPSA id 6007d4x25FY35Wu
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 5 Mar 2021 16:34:03 +0100 (CET)
+From:   Thomas Schoebel-Theuer <tst@schoebel-theuer.de>
+To:     tst@schoebel-theuer.de,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ikjoon Jang <ikjn@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: Re: [PATCH 16/17] usb: common: add function to get interval
- expressed in us unit
-Message-ID: <20210305153312.GA38200@rowland.harvard.edu>
-References: <1614934975-15188-1-git-send-email-chunfeng.yun@mediatek.com>
- <1614934975-15188-16-git-send-email-chunfeng.yun@mediatek.com>
+        Lee Jones <lee.jones@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Schoebel-Theuer <tst@1und1.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH STABLE 4.4] futex: fix spin_lock() / spin_unlock_irq() imbalance
+Date:   Fri,  5 Mar 2021 16:33:42 +0100
+Message-Id: <20210305153342.25248-1-tst@schoebel-theuer.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614934975-15188-16-git-send-email-chunfeng.yun@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 05:02:54PM +0800, Chunfeng Yun wrote:
-> Add a new function to convert bInterval into the time expressed
-> in 1us unit.
-> 
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
+From: Thomas Schoebel-Theuer <tst@1und1.de>
 
-> --- a/drivers/usb/common/common.c
-> +++ b/drivers/usb/common/common.c
-> @@ -165,6 +165,39 @@ enum usb_dr_mode usb_get_dr_mode(struct device *dev)
->  }
->  EXPORT_SYMBOL_GPL(usb_get_dr_mode);
->  
-> +unsigned int usb_decode_interval(const struct usb_endpoint_descriptor *epd,
-> +				 enum usb_device_speed speed)
-> +{
-> +	unsigned int interval = 0;
-> +
-> +	switch (usb_endpoint_type(epd)) {
-> +	case USB_ENDPOINT_XFER_CONTROL:
-> +		/* uframes per NAK */
-> +		if (speed == USB_SPEED_HIGH)
-> +			interval = epd->bInterval;
-> +		break;
-> +	case USB_ENDPOINT_XFER_ISOC:
-> +		interval = 1 << (epd->bInterval - 1);
-> +		break;
-> +	case USB_ENDPOINT_XFER_BULK:
-> +		/* uframes per NAK */
-> +		if (speed == USB_SPEED_HIGH && usb_endpoint_dir_out(epd))
-> +			interval = epd->bInterval;
-> +		break;
-> +	case USB_ENDPOINT_XFER_INT:
-> +		if (speed >= USB_SPEED_HIGH)
-> +			interval = 1 << (epd->bInterval - 1);
-> +		else
-> +			interval = epd->bInterval;
-> +		break;
-> +	}
-> +
-> +	interval *= (speed >= USB_SPEED_HIGH) ? 125 : 1000;
-> +
-> +	return interval;
-> +}
-> +EXPORT_SYMBOL_GPL(usb_decode_interval);
+The following is obviously incorrect:
 
-> --- a/include/linux/usb/ch9.h
-> +++ b/include/linux/usb/ch9.h
-> @@ -90,6 +90,17 @@ extern enum usb_ssp_rate usb_get_maximum_ssp_rate(struct device *dev);
->   */
->  extern const char *usb_state_string(enum usb_device_state state);
->  
-> +/**
-> + * usb_decode_interval - Decode bInterval into the time expressed in 1us unit
-> + * @epd: The descriptor of the endpoint
-> + * @speed: The speed that the endpoint works as
-> + *
-> + * Function returns the interval expressed in 1us unit for servicing
-> + * endpoint for data transfers.
-> + */
-> +unsigned int usb_decode_interval(const struct usb_endpoint_descriptor *epd,
-> +				 enum usb_device_speed speed);
+static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_q *this,
+             struct futex_hash_bucket *hb)
+{
+[...]
+	raw_spin_lock(&pi_state->pi_mutex.wait_lock);
+[...]
+	raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
+[...]
+}
 
-As a general rule, I believe people expect to find the kerneldoc for a 
-function next to the function's definition, not next to the declaration 
-in a header file.
+The 4.4-specific fix should probably go into the direction of
+b4abf91047c.
 
-Alan Stern
+Probably, backporting of b4abf91047c
+to 4.4 LTS could be another good idea.
+
+However, this might involve some more 4.4-specific work and
+require thorough testing:
+
+> git log --oneline v4.4..b4abf91047c -- kernel/futex.c kernel/locking/rtmutex.c | wc -l
+10
+
+So this patch is just an obvious quickfix for now.
+
+Signed-off-by: Thomas Schoebel-Theuer <tst@1und1.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 394fc498142
+Fixes: 6510e4a2d04
+---
+ kernel/futex.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/futex.c b/kernel/futex.c
+index 70ad21bbb1d5..4a707bc7cceb 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1406,7 +1406,7 @@ static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_q *this,
+ 	if (pi_state->owner != current)
+ 		return -EINVAL;
+ 
+-	raw_spin_lock(&pi_state->pi_mutex.wait_lock);
++	raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
+ 	new_owner = rt_mutex_next_owner(&pi_state->pi_mutex);
+ 
+ 	/*
+-- 
+2.26.2
+
