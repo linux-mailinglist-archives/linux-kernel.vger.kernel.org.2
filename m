@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3327832EAFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B178F32EA85
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhCEMlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:41:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56352 "EHLO mail.kernel.org"
+        id S233128AbhCEMjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:39:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231481AbhCEMkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:40:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 632CB64F44;
-        Fri,  5 Mar 2021 12:40:51 +0000 (UTC)
+        id S233208AbhCEMiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:38:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2F2264FF0;
+        Fri,  5 Mar 2021 12:38:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948052;
-        bh=NYwiH+5EuGAV3ozikYUwsigLCl1JjdhMMqp81bVPGlk=;
+        s=korg; t=1614947887;
+        bh=0geVAclmWYxJtTl967G7WCvrc0OimZqO6eXFDTYSpc0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MasPNZKiVvyIA0XedfgUezfqWvHfzm0iqY25SL2ViVXgUg7a6yqNAuxJlEhuW0OgF
-         iy0NzUeK6TmDRDCj6ILVTHXsXpfFT4G7351Vr/AcVfIR41eKqJ6jxFjzUcsytZo4eb
-         EvSaVKW3KNKDuzTaTVufnn0eS2fm/J2a5gVEv7N0=
+        b=ijNEfzqSe6veHcT3wVwA4vMuXP/EdAVpEf6CARfZHDFEAnIDkTLgNNyGyX3jX29jf
+         eTxhkzN/+XdqfmG1f0xQhiha+PpW7AxkpyMKAQZHYthf4ST+dqsXIamAo6x4FByBnp
+         2jbBQ6AUtJXmz4LxOtNIR8HNlTqW4Nr4sFIySVjY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rolf Eike Beer <eb@emlix.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 4.9 11/41] scripts: set proper OpenSSL include dir also for  sign-file
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Jan Beulich <jbeulich@suse.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 4.19 47/52] xen-netback: respect gnttab_map_refs()s return value
 Date:   Fri,  5 Mar 2021 13:22:18 +0100
-Message-Id: <20210305120851.837437806@linuxfoundation.org>
+Message-Id: <20210305120855.963665111@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
-References: <20210305120851.255002428@linuxfoundation.org>
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+References: <20210305120853.659441428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,27 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rolf Eike Beer <eb@emlix.com>
+From: Jan Beulich <jbeulich@suse.com>
 
-commit fe968c41ac4f4ec9ffe3c4cf16b72285f5e9674f upstream.
+commit 2991397d23ec597405b116d96de3813420bdcbc3 upstream.
 
-Fixes: 2cea4a7a1885 ("scripts: use pkg-config to locate libcrypto")
-Signed-off-by: Rolf Eike Beer <eb@emlix.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Commit 3194a1746e8a ("xen-netback: don't "handle" error by BUG()")
+dropped respective a BUG_ON() without noticing that with this the
+variable's value wouldn't be consumed anymore. With gnttab_set_map_op()
+setting all status fields to a non-zero value, in case of an error no
+slot should have a status of GNTST_okay (zero).
+
+This is part of XSA-367.
+
+Cc: <stable@vger.kernel.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Link: https://lore.kernel.org/r/d933f495-619a-0086-5fb4-1ec3cf81a8fc@suse.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- scripts/Makefile |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/xen-netback/netback.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/scripts/Makefile
-+++ b/scripts/Makefile
-@@ -26,6 +26,7 @@ hostprogs-$(CONFIG_SYSTEM_EXTRA_CERTIFIC
+--- a/drivers/net/xen-netback/netback.c
++++ b/drivers/net/xen-netback/netback.c
+@@ -1326,11 +1326,21 @@ int xenvif_tx_action(struct xenvif_queue
+ 		return 0;
  
- HOSTCFLAGS_sortextable.o = -I$(srctree)/tools/include
- HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
-+HOSTCFLAGS_sign-file.o = $(CRYPTO_CFLAGS)
- HOSTLOADLIBES_sign-file = $(CRYPTO_LIBS)
- HOSTCFLAGS_extract-cert.o = $(CRYPTO_CFLAGS)
- HOSTLOADLIBES_extract-cert = $(CRYPTO_LIBS)
+ 	gnttab_batch_copy(queue->tx_copy_ops, nr_cops);
+-	if (nr_mops != 0)
++	if (nr_mops != 0) {
+ 		ret = gnttab_map_refs(queue->tx_map_ops,
+ 				      NULL,
+ 				      queue->pages_to_map,
+ 				      nr_mops);
++		if (ret) {
++			unsigned int i;
++
++			netdev_err(queue->vif->dev, "Map fail: nr %u ret %d\n",
++				   nr_mops, ret);
++			for (i = 0; i < nr_mops; ++i)
++				WARN_ON_ONCE(queue->tx_map_ops[i].status ==
++				             GNTST_okay);
++		}
++	}
+ 
+ 	work_done = xenvif_tx_submit(queue);
+ 
 
 
