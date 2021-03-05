@@ -2,209 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5D132EE97
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B92F32EEA5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:23:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbhCEPVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:21:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45486 "EHLO
+        id S229829AbhCEPWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:22:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhCEPVL (ORCPT
+        with ESMTP id S230521AbhCEPWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:21:11 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EBEC061756;
-        Fri,  5 Mar 2021 07:21:11 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id x29so1590907pgk.6;
-        Fri, 05 Mar 2021 07:21:11 -0800 (PST)
+        Fri, 5 Mar 2021 10:22:21 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8743AC061756
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 07:22:21 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id h13so2244041pjt.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 07:22:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bGAHDIVFaRp/bdPI6zF1ZJd9aUgFlGEMGn0CcVtEKYk=;
-        b=MUx/LASvSQLR4RYoO8m/RQi8+glkk5s7yXGhXqKSZZRX51R6eyHtxNzwSgsxZoG3gK
-         2peagQb/CeCoh+rF5ceMp4OsaChVpJYhBDkBSXPX8+ikjCWQKFO+dx4PFhXUb9Tqf3IM
-         BRTD/4owgFp3aj5BWq/aI1l95kqbCBgcGhxeD4ExINxaLEB0NFbiYtVEW/UwSkbymeyB
-         vk3aHhrkPwQF9Ig1sBPLIPVgdZIxiKFqFC1lxLyEGhD1nV+tEezsEItIwsTG0SSZGiLd
-         6SVqeIY2FZMrX4bjMJ68QJjswcXvF1AyIxP0AAb6JMJe4j3BIco5cOTsZPUkmmLWw3U7
-         OltQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wxoa0yK9hiaUs30uaCIrzcYi8kY+19xmjNAI3OUqgyg=;
+        b=c75le3XEPFcaZsVxGM3XsBqhWjLvTlNKBzxbjjFdzHpTqSV+KWCcxT2bVCNFk+GFZ6
+         urTe715ydlT8zINgnoPrAYD8TlU3dMsHt9eIVazFtO+I6Jg0wu6E0+tEtVJhkLRi8ARy
+         Ve/CJk1MOYjD27mhwxBhCpMjfY9cB+XKhWjWPcIRuhFS4tU7EkDv7FrmJ4U/lq4Xdclm
+         Zkdx2YP4xODMnTxJsG7XYZ9s4wmwg7MvUjR/iDLo2/dy7mCOGAq0w13I8NWbVCvdK+cC
+         2Wzz/0xRJOFqWI7mD5fS+8K2QpotzkCQWXEJ2uZO8dGpJgzG+gEvBMNIPotvWxX5CAmI
+         5fvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bGAHDIVFaRp/bdPI6zF1ZJd9aUgFlGEMGn0CcVtEKYk=;
-        b=sd6rXzaLO8WYZHVUr38XXAn7Y1XBjNnHMEovm7XVjVPF0aHXlTKhk9hwlQk9x/Zaej
-         xMoXEyZC7CaBhBV33sxljyvaV+9smrnl9g1tcqYTB9MnP9t3NEcZh01RwFtX51pVVXzJ
-         nL/tM20WCl93G7d5OAeh/ChuwccthAqfCEl2TtnJpKJbqtgGce7nfPdaqpYK3h1zGjRG
-         nFCP7xf2ktJHS0ThRfZuE/2lshxyhf0PbTu3bXHwyQvLOT/ZW7yGLH3sIcaH9J6+WxqM
-         mJbbncPycyXrXJzb3/3Zsh9LJSpBC8QE40DZtNb4/RX/byNu3iZ1wsQ/L46+xA6Jdzn8
-         Sopw==
-X-Gm-Message-State: AOAM531Re1DNbh2pUnMVIxYCp/FEq53cLsU5DlZVvehlhp9Rv+3ctxlU
-        ngBGW/1XndKMcAO8azZ82sU=
-X-Google-Smtp-Source: ABdhPJxTtcUrlOU0ojVBk/nRhKT2L7aTRDTI+pNV10V56uOHFfUJLesskrGlnHOgB81bLCMmsYrnQg==
-X-Received: by 2002:a63:4e44:: with SMTP id o4mr9228695pgl.46.1614957670534;
-        Fri, 05 Mar 2021 07:21:10 -0800 (PST)
-Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
-        by smtp.gmail.com with ESMTPSA id k63sm3081844pfd.48.2021.03.05.07.21.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 07:21:10 -0800 (PST)
-Subject: Re: [RFC PATCH 5/12] HV: Add ghcb hvcall support for SNP VM
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com,
-        sunilmut@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
-        sthemmin@microsoft.com, wei.liu@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com
-References: <20210228150315.2552437-1-ltykernel@gmail.com>
- <20210228150315.2552437-6-ltykernel@gmail.com>
- <87mtvkcfw8.fsf@vitty.brq.redhat.com>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <d1a9dd9c-8e1d-85a8-2270-9663cec3249e@gmail.com>
-Date:   Fri, 5 Mar 2021 23:21:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wxoa0yK9hiaUs30uaCIrzcYi8kY+19xmjNAI3OUqgyg=;
+        b=TkgUvJh4Zn83rSl84BltD5hLA2ZTZU/WyabcsLtmcWPsqa4DmpL34SRYzbm0KfQDew
+         wwP2lUgZ7M91TkP7oVR62Jn7STeRU1U1pw7C/N2XXUO37dDOOj97FnEwBdgN3hEOzzmU
+         l7NSlSS9RMGBE4urL5R9Mi77GPT49mqHnyZ03mWRM+eQ0EEVfHpRxfXW/owwXcBe1hlf
+         cOAUYJkeG5oNuUh3c9UoUQLj404Gu6hWAaZJfRGKh6xqWbDS2zY/SzipOKROrSz8+P9a
+         z9QuhlOkMDNayo2pUlZKdPFIpDOVugMkW7IAmret2KisgAFqfpdn5p9ZBtJrD3tZJ6nh
+         qgpQ==
+X-Gm-Message-State: AOAM531/uQYP8Le7VILvQ3qpiQsDSjybAqjdSXA/heliCOSKB5Al4mtB
+        cIPuTrMzR+mftHw8GXLMkoutWVdPMRsxuJR3CxuxXQ==
+X-Google-Smtp-Source: ABdhPJw5ZAsqywVtH0BwssTWluIZq8MEdOUKOr5IiQoU7/DNBPrVI23nRNbeFLpq6wTLR3mk95fmV9ZUlyvgaQ8X+wE=
+X-Received: by 2002:a17:902:d707:b029:e5:c9ce:cb33 with SMTP id
+ w7-20020a170902d707b02900e5c9cecb33mr9156791ply.32.1614957741057; Fri, 05 Mar
+ 2021 07:22:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87mtvkcfw8.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1607651182-12307-1-git-send-email-victor.liu@nxp.com> <a89d5c08c9f0793acfb9d056d5748e4a3cf16c2f.camel@nxp.com>
+In-Reply-To: <a89d5c08c9f0793acfb9d056d5748e4a3cf16c2f.camel@nxp.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Fri, 5 Mar 2021 16:22:10 +0100
+Message-ID: <CAG3jFyvWZV_WVeR1+EvvH0C47CqCtPDMULiOVKzR51ukzFMJwA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/5] phy: phy-fsl-imx8-mipi-dphy: Add i.MX8qxp LVDS PHY
+ mode support
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>, kishon@ti.com,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de,
+        Fabio Estevam <festevam@gmail.com>, linux-imx@nxp.com,
+        agx@sigxcpu.org, robert.chiras@nxp.com, martin.kepplinger@puri.sm
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hey Liu,
 
+Looking at this series[1], all but patch#2 has been reviewed, and #2
+looks good to me. So I think this series is ready to have v4 re-spun
+and and all of the r-bs from v3 added to the relevant patches.
 
-On 3/4/2021 1:21 AM, Vitaly Kuznetsov wrote:
-> Tianyu Lan <ltykernel@gmail.com> writes:
-> 
->> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
->>
->> Hyper-V provides ghcb hvcall to handle VMBus
->> HVCALL_SIGNAL_EVENT and HVCALL_POST_MESSAGE
->> msg in SNP Isolation VM. Add such support.
->>
->> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
->> ---
->>   arch/x86/hyperv/ivm.c           | 69 +++++++++++++++++++++++++++++++++
->>   arch/x86/include/asm/mshyperv.h |  1 +
->>   drivers/hv/connection.c         |  6 ++-
->>   drivers/hv/hv.c                 |  8 +++-
->>   4 files changed, 82 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
->> index 4332bf7aaf9b..feaabcd151f5 100644
->> --- a/arch/x86/hyperv/ivm.c
->> +++ b/arch/x86/hyperv/ivm.c
->> @@ -14,8 +14,77 @@
->>   
->>   union hv_ghcb {
->>   	struct ghcb ghcb;
->> +	struct {
->> +		u64 hypercalldata[509];
->> +		u64 outputgpa;
->> +		union {
->> +			union {
->> +				struct {
->> +					u32 callcode        : 16;
->> +					u32 isfast          : 1;
->> +					u32 reserved1       : 14;
->> +					u32 isnested        : 1;
->> +					u32 countofelements : 12;
->> +					u32 reserved2       : 4;
->> +					u32 repstartindex   : 12;
->> +					u32 reserved3       : 4;
->> +				};
->> +				u64 asuint64;
->> +			} hypercallinput;
->> +			union {
->> +				struct {
->> +					u16 callstatus;
->> +					u16 reserved1;
->> +					u32 elementsprocessed : 12;
->> +					u32 reserved2         : 20;
->> +				};
->> +				u64 asunit64;
->> +			} hypercalloutput;
->> +		};
->> +		u64 reserved2;
->> +	} hypercall;
->>   } __packed __aligned(PAGE_SIZE);
->>   
->> +u64 hv_ghcb_hypercall(u64 control, void *input, void *output, u32 input_size)
->> +{
->> +	union hv_ghcb *hv_ghcb;
->> +	void **ghcb_base;
->> +	unsigned long flags;
->> +
->> +	if (!ms_hyperv.ghcb_base)
->> +		return -EFAULT;
->> +
->> +	local_irq_save(flags);
->> +	ghcb_base = (void **)this_cpu_ptr(ms_hyperv.ghcb_base);
->> +	hv_ghcb = (union hv_ghcb *)*ghcb_base;
->> +	if (!hv_ghcb) {
->> +		local_irq_restore(flags);
->> +		return -EFAULT;
->> +	}
->> +
->> +	memset(hv_ghcb, 0x00, HV_HYP_PAGE_SIZE);
->> +	hv_ghcb->ghcb.protocol_version = 1;
->> +	hv_ghcb->ghcb.ghcb_usage = 1;
->> +
->> +	hv_ghcb->hypercall.outputgpa = (u64)output;
->> +	hv_ghcb->hypercall.hypercallinput.asuint64 = 0;
->> +	hv_ghcb->hypercall.hypercallinput.callcode = control;
->> +
->> +	if (input_size)
->> +		memcpy(hv_ghcb->hypercall.hypercalldata, input, input_size);
->> +
->> +	VMGEXIT();
->> +
->> +	hv_ghcb->ghcb.ghcb_usage = 0xffffffff;
->> +	memset(hv_ghcb->ghcb.save.valid_bitmap, 0,
->> +	       sizeof(hv_ghcb->ghcb.save.valid_bitmap));
->> +
->> +	local_irq_restore(flags);
->> +
->> +	return hv_ghcb->hypercall.hypercalloutput.callstatus;
->> +}
->> +EXPORT_SYMBOL_GPL(hv_ghcb_hypercall);
->> +
->>   void hv_ghcb_msr_write(u64 msr, u64 value)
->>   {
->>   	union hv_ghcb *hv_ghcb;
->> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
->> index f624d72b99d3..c8f66d269e5b 100644
->> --- a/arch/x86/include/asm/mshyperv.h
->> +++ b/arch/x86/include/asm/mshyperv.h
->> @@ -274,6 +274,7 @@ void hv_sint_rdmsrl_ghcb(u64 msr, u64 *value);
->>   void hv_signal_eom_ghcb(void);
->>   void hv_ghcb_msr_write(u64 msr, u64 value);
->>   void hv_ghcb_msr_read(u64 msr, u64 *value);
->> +u64 hv_ghcb_hypercall(u64 control, void *input, void *output, u32 input_size);
->>   
->>   #define hv_get_synint_state_ghcb(int_num, val)			\
->>   	hv_sint_rdmsrl_ghcb(HV_X64_MSR_SINT0 + int_num, val)
->> diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
->> index c83612cddb99..79bca653dce9 100644
->> --- a/drivers/hv/connection.c
->> +++ b/drivers/hv/connection.c
->> @@ -442,6 +442,10 @@ void vmbus_set_event(struct vmbus_channel *channel)
->>   
->>   	++channel->sig_events;
->>   
->> -	hv_do_fast_hypercall8(HVCALL_SIGNAL_EVENT, channel->sig_event);
->> +	if (hv_isolation_type_snp())
->> +		hv_ghcb_hypercall(HVCALL_SIGNAL_EVENT, &channel->sig_event,
->> +				NULL, sizeof(u64));
->> +	else
->> +		hv_do_fast_hypercall8(HVCALL_SIGNAL_EVENT, channel->sig_event);
-> 
-> vmbus_set_event() is a hotpath so I'd suggest we introduce a static
-> branch instead of checking hv_isolation_type_snp() every time.
-> 
+[1] https://patchwork.kernel.org/project/dri-devel/cover/1607651182-12307-1-git-send-email-victor.liu@nxp.com/
 
-Good suggestion. Will add it in the next version. Thanks.
-
+On Fri, 19 Feb 2021 at 10:22, Liu Ying <victor.liu@nxp.com> wrote:
+>
+> A gentle ping.
+>
+> Vinod, Kishon, it would be nice if you may help review this.
+>
+> Thanks,
+> Liu Ying
+>
+> On Fri, 2020-12-11 at 09:46 +0800, Liu Ying wrote:
+> > Hi,
+> >
+> > This series adds i.MX8qxp LVDS PHY mode support for the Mixel PHY in the
+> > Freescale i.MX8qxp SoC.
+> >
+> > The Mixel PHY is MIPI DPHY + LVDS PHY combo, which can works in either
+> > MIPI DPHY mode or LVDS PHY mode.  The PHY mode is controlled by i.MX8qxp
+> > SCU firmware.  The PHY driver would call a SCU function to configure the
+> > mode.
+> >
+> > The PHY driver is already supporting the Mixel MIPI DPHY in i.MX8mq SoC,
+> > where it appears to be a single MIPI DPHY.
+> >
+> >
+> > Patch 1/5 sets PHY mode in the Northwest Logic MIPI DSI host controller
+> > bridge driver, since i.MX8qxp SoC embeds this controller IP to support
+> > MIPI DSI displays together with the Mixel PHY.
+> >
+> > Patch 2/5 allows LVDS PHYs to be configured through the generic PHY functions
+> > and through a custom structure added to the generic PHY configuration union.
+> >
+> > Patch 3/5 converts mixel,mipi-dsi-phy plain text dt binding to json-schema.
+> >
+> > Patch 4/5 adds dt binding support for the Mixel combo PHY in i.MX8qxp SoC.
+> >
+> > Patch 5/5 adds the i.MX8qxp LVDS PHY mode support in the Mixel PHY driver.
+> >
+> >
+> > Welcome comments, thanks.
+> >
+> > v2->v3:
+> > * Improve readability of mixel_dphy_set_mode() in the Mixel PHY driver. (Guido)
+> > * Improve the 'clock-names' property in the PHY dt binding.
+> >
+> > v1->v2:
+> > * Convert mixel,mipi-dsi-phy plain text dt binding to json-schema. (Guido)
+> > * Print invalid PHY mode in dmesg from the Mixel PHY driver. (Guido)
+> > * Add Guido's R-b tag on the patch for the nwl-dsi drm bridge driver.
+> >
+> > Liu Ying (5):
+> >   drm/bridge: nwl-dsi: Set PHY mode in nwl_dsi_enable()
+> >   phy: Add LVDS configuration options
+> >   dt-bindings: phy: Convert mixel,mipi-dsi-phy to json-schema
+> >   dt-bindings: phy: mixel: mipi-dsi-phy: Add Mixel combo PHY support for
+> >     i.MX8qxp
+> >   phy: freescale: phy-fsl-imx8-mipi-dphy: Add i.MX8qxp LVDS PHY mode
+> >     support
+> >
+> >  .../devicetree/bindings/phy/mixel,mipi-dsi-phy.txt |  29 ---
+> >  .../bindings/phy/mixel,mipi-dsi-phy.yaml           | 107 ++++++++
+> >  drivers/gpu/drm/bridge/nwl-dsi.c                   |   6 +
+> >  drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c     | 269 ++++++++++++++++++++-
+> >  include/linux/phy/phy-lvds.h                       |  48 ++++
+> >  include/linux/phy/phy.h                            |   4 +
+> >  6 files changed, 423 insertions(+), 40 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.txt
+> >  create mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml
+> >  create mode 100644 include/linux/phy/phy-lvds.h
+> >
+>
