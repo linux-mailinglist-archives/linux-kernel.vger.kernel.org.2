@@ -2,123 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A227332E739
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 406C232E6F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 12:04:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbhCEL23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 06:28:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhCEL2W (ORCPT
+        id S229653AbhCELDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 06:03:22 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:13438 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229563AbhCELC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 06:28:22 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C04C061574;
-        Fri,  5 Mar 2021 03:28:21 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id a9so1512289qkn.13;
-        Fri, 05 Mar 2021 03:28:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=9aYdjFgWqnMMd/pegg29j6uoQFfPwGg5bdGoORGW97k=;
-        b=GB8gzeWVGTCxgMSwAIRreiwDrXXiauC4nUTGJm2zsrW++vmdSifqeH6UA3A8sYxw7a
-         qwNzgyRKiRnT7CdsjLl1sdhEDbDbsmR45oAc3W3v9bzzGGeS1RoVE1wZTTdgM3x77Rur
-         Hn4KfV8Ud/cE/rB7e21Hjzs9eC1xlWAV0mZ/+idwqrO/QboY5aKOOLJbO2OHYWRBRt7g
-         oQTotQ6l/CjJzQG6zcjD9YCsU/jdEAXxHokTrRw5x89qX0aVyvwi1WcKNTh57C8Ms3H8
-         AznwQje+lwNYAc/O8cx1l6Enl768bqB6dczCL2WWxuWVrMzCgUQGB1m9D+TyjNYFWM1Y
-         nC0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=9aYdjFgWqnMMd/pegg29j6uoQFfPwGg5bdGoORGW97k=;
-        b=mpSuH4jwF2AuRzH+sk49+j4nfKC7X+We7I56C1UfqRy+VEGqujdT9yVqmTR+yloQX5
-         siUZpFutjXdg6RSES1cEtG8fCpmMC1yGtNEJHsxPLZFRXb4qDM87FGJLOzt8Rf/+OFBr
-         ceyPmNWQykfyhPywZsIgVOEtxcNbIvy73exIHHE8ycXhwd6yMwK8fnGR/10qePyUdoLD
-         mmtilRGxm/6RHpOnkqVWcOqxt+pWFGnHX7FSRsp3dcNOxORmk9e5cE3N+BFDkNSHe2Fh
-         wrSE+qxIBHP/MMqMb4OQweAnUV0mdFdD31vfNNrVd9Jiygd2DdT6Cs47dhOfTmycKpr5
-         soVw==
-X-Gm-Message-State: AOAM5307iUTNm05pRo+H+XfsPaokotv2/8mUflLMkCpjr5USMt+Rc9I2
-        rBTrqNCFxL9F07oRJIsW7K2r7dBgUGIkSaYaMuBaMC4nmjgKAw==
-X-Google-Smtp-Source: ABdhPJxQTgXHpK4IuluipdptQkn5JS9gYe5j4hl+eUGYMddrXm+KfLDh1JFV+PJhfe5ALK13m90Do8d4CW0aKMUFBuo=
-X-Received: by 2002:a37:ab0f:: with SMTP id u15mr8698366qke.438.1614943701024;
- Fri, 05 Mar 2021 03:28:21 -0800 (PST)
+        Fri, 5 Mar 2021 06:02:56 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DsPtX3GNgzjVcX;
+        Fri,  5 Mar 2021 19:01:24 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Fri, 5 Mar 2021
+ 19:02:40 +0800
+From:   Nanyong Sun <sunnanyong@huawei.com>
+To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>
+CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <palmerdabbelt@google.com>, <atish.patra@wdc.com>,
+        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+Subject: [PATCH 0/9] riscv: misc cleanup
+Date:   Fri, 5 Mar 2021 19:33:23 +0800
+Message-ID: <20210305113332.428048-1-sunnanyong@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210305094353.13511-1-baijiaju1990@gmail.com>
-In-Reply-To: <20210305094353.13511-1-baijiaju1990@gmail.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 5 Mar 2021 11:28:10 +0000
-Message-ID: <CAL3q7H62btgspnDRUvRp7Xv17TPdzUae7JzrHLvaLYpR-N43hA@mail.gmail.com>
-Subject: Re: [PATCH] fs: btrfs: fix error return code of btrfs_recover_relocation()
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.113.32]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 9:46 AM Jia-Ju Bai <baijiaju1990@gmail.com> wrote:
->
-> When the list of reloc_roots is empty, no error return code of
-> btrfs_recover_relocation() is assigned.
-> To fix this bug, err is assigned with -ENOENT as error return code.
+Fix some compilation warnings,improve code style
 
-No, there isn't any such bug.
+Nanyong Sun (9):
+  riscv: traps: Fix no prototype warnings
+  riscv: irq: Fix no prototype warning
+  riscv: sbi: Fix comment of __sbi_set_timer_v01
+  riscv: ptrace: Fix no prototype warnings
+  riscv: time: Fix no prototype for time_init
+  riscv: syscall_table: Reduce W=1 compilation warnings noise
+  riscv: process: Fix no prototype for show_regs
+  riscv: ftrace: Use ftrace_get_regs helper
+  riscv: process: Fix no prototype for arch_dup_task_struct
 
-If there are no reloc roots, it means there's no relocation to resume,
-in which case err is already 0 and we therefore return 0.
-By setting err to -ENOENT, that will cause a mount failure on any fs
-that does not have relocation to resume.
+ arch/riscv/include/asm/asm-prototypes.h | 16 ++++++++++++++++
+ arch/riscv/include/asm/irq.h            |  2 ++
+ arch/riscv/include/asm/processor.h      |  1 +
+ arch/riscv/include/asm/ptrace.h         |  5 +++++
+ arch/riscv/include/asm/timex.h          |  2 ++
+ arch/riscv/kernel/Makefile              |  1 +
+ arch/riscv/kernel/probes/ftrace.c       | 16 +++++++++-------
+ arch/riscv/kernel/process.c             |  1 +
+ arch/riscv/kernel/sbi.c                 |  2 +-
+ arch/riscv/kernel/time.c                |  1 +
+ arch/riscv/kernel/traps.c               |  1 +
+ 11 files changed, 40 insertions(+), 8 deletions(-)
 
-You could have tested this simply by doing:
+-- 
+2.25.1
 
-$ mkfs.btrfs -f /dev/sdc
-$ mount /dev/sdc /mnt/sdc
-mount: /mnt/sdc: mount(2) system call failed: No such file or directory.
-
-It's always a good idea to test patches, even if we are very
-comfortable with the code they are touching...
-
-Thanks.
-
-
->
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-> ---
->  fs/btrfs/relocation.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 232d5da7b7be..631b672a852f 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -3817,8 +3817,10 @@ int btrfs_recover_relocation(struct btrfs_root *ro=
-ot)
->         }
->         btrfs_release_path(path);
->
-> -       if (list_empty(&reloc_roots))
-> +       if (list_empty(&reloc_roots)) {
-> +               err =3D -ENOENT;
->                 goto out;
-> +       }
->
->         rc =3D alloc_reloc_control(fs_info);
->         if (!rc) {
-> --
-> 2.17.1
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
