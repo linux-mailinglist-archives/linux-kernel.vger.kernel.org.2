@@ -2,174 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F6A32E2F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 08:29:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC64632E2FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 08:34:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhCEH3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 02:29:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhCEH3H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 02:29:07 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B0FC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 23:29:07 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id s7so965538plg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 23:29:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RJoz/8xuDCJn1f9evq2zlHAytdLjrLobtmu0nkHCwbg=;
-        b=TBHbltnZBZc++36r9UEUY16jIwGw4e0u7Qr7AX4CBDuXojJjSaVhRBrLcwVeEnvuYM
-         vZ4zoMdGgT1vein2UTjG0jydvKjd3fIQsap/SyQQLoLD7k1h4CmvnW9kO1ZpWYaLi1u1
-         Lz7D+hatp82zsVmRvdqo2MF2Cz0l99jMGOZTmVBolpFHT5zTrK2jQdyeHeQ9kwR6K6We
-         vt4/qr5fOZvydmKOavm/fA+t+eVXHE3iohAiYtSHr28O98nYrSD9VxOlp0WwzIp+EXdc
-         EEDbjxPHpXl5HoSvB5hPTpTW7+1ZKfEjI+om33Eu0K/bRcZqMRSrWHBFYuUZc5CCIYJ6
-         LyZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RJoz/8xuDCJn1f9evq2zlHAytdLjrLobtmu0nkHCwbg=;
-        b=Gne1Pxpd5kPNIewRZIvQ6IN7JGBLb4qrhDUpYs34fKyLlygVfgVknAApwdPRrDNcl/
-         jt0k3BGSqKqmY1vrH+rkIQZLICWixfpCCmCFEAH0m8VDHujJ61GCQeIKg39yz0JR5Au+
-         vhtTjMzvxTtnVrxQB1+UgvPHKU5Fe3OEIUyCvNhRlQk5pqJi9v14aLRCZarH8lMwIE73
-         474ACYXiRsO27aNJMRYzPO4wNaxqx+MqiYxQ0VdoPtLXINnIM9kSQlssNpflcMb79gOc
-         X3MbIJM4ztcVyV3APE/btz+0VsLLUnsKoVFGvbKhalzoEBVywO8wLL+Hd/BtjAsV0EOJ
-         3IHw==
-X-Gm-Message-State: AOAM530Elql4f4hL5PEHWzcPHxEL8eRjzKGhdhonIWBpsRJyCJM44hWX
-        pP53SmWCF6nTFjazIVxg2P4hYg==
-X-Google-Smtp-Source: ABdhPJxxVS/BKMTQ9yyg/c/FmK2TvdRibGSYf/HjxTK0BDLpIPbJa1fInXZbCLziPAKufN0GFhxoZw==
-X-Received: by 2002:a17:902:ed0c:b029:e5:d0a4:9793 with SMTP id b12-20020a170902ed0cb02900e5d0a49793mr7580316pld.10.1614929346694;
-        Thu, 04 Mar 2021 23:29:06 -0800 (PST)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id q15sm1403567pfk.181.2021.03.04.23.29.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Mar 2021 23:29:05 -0800 (PST)
-Date:   Fri, 5 Mar 2021 12:59:03 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
-        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [PATCH v6] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210305072903.wtw645rukmqr5hx5@vireshk-i7>
-References: <9a2086f37c0a62069b67c39a3f75941b78a0039c.1614749417.git.jie.deng@intel.com>
- <20210304060638.7qes424vvdmptz5c@vireshk-i7>
- <f3f4aaf8-521c-3e9e-4757-97f2e33e44f6@intel.com>
- <20210305030916.trb35i53rzwf6kyn@vireshk-i7>
- <669d3c4e-d69b-1e0d-6625-ce7d0832c108@intel.com>
+        id S229517AbhCEHeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 02:34:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229446AbhCEHeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 02:34:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B173964F59;
+        Fri,  5 Mar 2021 07:34:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614929647;
+        bh=S2MMb6iAzEnkRQJZsxsHQCU5Dz1C7ovitVWgE5EloxQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=a0IXR79ZJaymLhmqN4IwpsNfUI+n1jvBglRlmKKAxwbLcmpK0sbGIN8+N28mFJa+O
+         lvfk+/r6L4RQh2jnnun3xxgaOiIy/PRq7Md2dx+I5+RhmgJjE8h6XAfSnM9Ju1bMGN
+         YaqoSaDNehwurRQ1vDmqM5YvSDGkTwIZAwQiQnbSoKGwsL/bWR8/azThA05RTfEgHW
+         SWqTNbwPal3HR+P5B009UNGpT+UGuspsc1nx41WnxpJOt+lcOYewE1Sj9WJbGI/ULh
+         ACND8fZaV8B8XE4Yhg7sVd0qe8RawFPQa6MBOcc6jNeC/IACkDW39i3I9Tyd8WPq4E
+         xRFHfec0pbanw==
+Date:   Fri, 5 Mar 2021 01:34:03 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] net: mscc: ocelot: Fix fall-through warnings for Clang
+Message-ID: <20210305073403.GA122237@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <669d3c4e-d69b-1e0d-6625-ce7d0832c108@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-03-21, 15:00, Jie Deng wrote:
-> On 2021/3/5 11:09, Viresh Kumar wrote:
-> > On 05-03-21, 09:46, Jie Deng wrote:
-> > > On 2021/3/4 14:06, Viresh Kumar wrote:
-> > > > > +	mutex_lock(&vi->i2c_lock);
-> > > > I have never worked with i2c stuff earlier, but I don't think you need a lock
-> > > > here. The transactions seem to be serialized by the i2c-core by itself (look at
-> > > > i2c_transfer() in i2c-core-base.c), though there is another exported version
-> > > > __i2c_transfer() but the comment over it says the callers must take adapter lock
-> > > > before calling it.
-> > > Lock is needed since no "lock_ops" is registered in this i2c_adapter.
-> > drivers/i2c/i2c-core-base.c:
-> > 
-> > static int i2c_register_adapter(struct i2c_adapter *adap)
-> > {
-> >          ...
-> > 
-> >          if (!adap->lock_ops)
-> >                  adap->lock_ops = &i2c_adapter_lock_ops;
-> > 
-> >          ...
-> > }
-> > 
-> > This should take care of it ?
-> 
-> 
-> The problem is that you can't guarantee that adap->algo->master_xfer is only
-> called
-> from i2c_transfer. Any function who holds the adapter can call
-> adap->algo->master_xfer
-> directly. So I think it is safer to have a lock in virtio_i2c_xfer.
+In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+by explicitly adding a break statement instead of just letting the code
+fall through to the next case.
 
-So I tried to look for such callers in the kernel.
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+---
+ drivers/net/ethernet/mscc/ocelot_vcap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-$ git grep -l "\<master_xfer(" 
-Documentation/i2c/dev-interface.rst
-drivers/gpu/drm/gma500/intel_gmbus.c
-drivers/gpu/drm/gma500/psb_intel_sdvo.c
-drivers/gpu/drm/i915/display/intel_gmbus.c
-drivers/gpu/drm/i915/display/intel_sdvo.c
-drivers/i2c/busses/i2c-iop3xx.c
-drivers/i2c/i2c-core-base.c
-drivers/media/usb/dvb-usb/dw2102.c
-drivers/media/usb/ttusb-budget/dvb-ttusb-budget.c
-drivers/mfd/88pm860x-i2c.c
-include/uapi/linux/i2c.h
-
-Out of these only one caller is not registering the adapter itself.
-
-drivers/mfd/88pm860x-i2c.c
-
-I was expecting everyone to call the generic functions provided by the i2c core,
-not sure why this ended up calling the master_xfer stuff directly.
-
-So this should be general practice to go via i2c core I believe, unless I am
-missing something here.
-
-Wolfram, can you please clarify if locking is required here or not ?
-
-> > > > > +static struct i2c_adapter virtio_adapter = {
-> > > > > +	.owner = THIS_MODULE,
-> > > > > +	.name = "Virtio I2C Adapter",
-> > > > > +	.class = I2C_CLASS_DEPRECATED,
-> > > > Why are we using something that is deprecated here ?
-> > > Warn users that the adapter doesn't support classes anymore.
-> > So this is the right thing to do? Or this is what we expect from new drivers?
-> > Sorry, I am just new to this stuff and so...
-> 
-> 
-> https://patchwork.ozlabs.org/project/linux-i2c/patch/20170729121143.3980-1-wsa@the-dreams.de/
-
-Frankly this confused me even further :)
-
-The earlier comment in the code said:
-        "/* Warn users that adapter will stop using classes */"
-
-so this looks more for existing drivers..
-
-Then the commit message says this:
-
-        "Hopefully making clear that it is not needed for new drivers."
-
-and comment says:
-
-        "/* Warn users that the adapter doesn't support classes anymore */"
-
-Reading this it looks this is only required for existing adapters so they can
-warn userspace and shouldn't be required for new drivers.
-
-Am I reading it incorrectly ?
-
+diff --git a/drivers/net/ethernet/mscc/ocelot_vcap.c b/drivers/net/ethernet/mscc/ocelot_vcap.c
+index 37a232911395..7945393a0655 100644
+--- a/drivers/net/ethernet/mscc/ocelot_vcap.c
++++ b/drivers/net/ethernet/mscc/ocelot_vcap.c
+@@ -761,6 +761,7 @@ static void is1_entry_set(struct ocelot *ocelot, int ix,
+ 			vcap_key_bytes_set(vcap, &data, VCAP_IS1_HK_ETYPE,
+ 					   etype.value, etype.mask);
+ 		}
++		break;
+ 	}
+ 	default:
+ 		break;
 -- 
-viresh
+2.27.0
+
