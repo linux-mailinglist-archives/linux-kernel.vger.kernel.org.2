@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7063E32F42B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5252232F428
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhCETmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 14:42:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
+        id S229829AbhCETmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 14:42:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230112AbhCETmR (ORCPT
+        with ESMTP id S230144AbhCETmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:42:17 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EE6C06175F;
-        Fri,  5 Mar 2021 11:42:17 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id g27so3256334iox.2;
-        Fri, 05 Mar 2021 11:42:17 -0800 (PST)
+        Fri, 5 Mar 2021 14:42:11 -0500
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB53C06175F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 11:42:10 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id z6so1482205wrh.11
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 11:42:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=nt32QhVHzb3AENSb5YIy5UA4K+u/RYIwLbCnQB1uC4Q=;
-        b=cN6sWaGUr7uk5054iUQya5vyfzhWjihiu9zHJixqNTx+519hMe0GIVJpQ03aebfcLX
-         OXjfPzZKOBACLFgu+N1y+PzR5mqiyOV4UmlkpP3HL2zbykb4Eg1uWUndqaGR1aIJQeoM
-         xfDsdZIDmhrtxStve4B+yZ+kRkijzgzJwX496jFvjUPGcSRfx4zwNLaWogxESSV9LGXt
-         r8ZjCZJPDsDa+a0b23ebjmfUb1Hb3YyBVHX/I2PVM3P3SRhjQyT7/J1FtfwORo+EyvwT
-         1whISDx+BMTNGnbRN1Z/HMfHDKAG1jWRydHnRw5Da9ub6DsAJebqRzfGO85ZV/bN7yO6
-         lPMw==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=PXXsisettvtG626o8G5UFd6fcAq7tGjSyM7Qp09eMjc=;
+        b=Ef9tENAmYuuNON1s1900rWv8JzjeyBEGi7mTFEkpGlgve5wKs3C1Y9UcTagGowk6fB
+         yncL2YenKxd/8IGJCgDfh2Nf0lybvbVW8/XhDxHJg+CrTnUPkBuAWn8lJujebUmKajPC
+         BarhpabND0t0dQuTvpusHQlqSoZm9m3KihUHDdDebWnBvK5saIbI/4IGaEf+ojZ980El
+         gjg1otXhhtxylPjvB1/SAQ9XzoO9ZlwB01tZ9sJBM01hMqeVAx8qjF5kI9md1xEoAoGp
+         7SSHkxbkzoBxvuedruOTNLrSt43VQZ+3QjpT3BHcaqaXfDXo6oMOwVUmNZ/xmkY0dWmg
+         QSaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=nt32QhVHzb3AENSb5YIy5UA4K+u/RYIwLbCnQB1uC4Q=;
-        b=ive7mP+kY+LEwfdWeAQGO4jCpFGFY9izn+6GHCu499/kk7CDRoBHWMYKwcq9tLXJsu
-         qVdrvvtIiQRONcmUXsl7nHQc7ruaTjsXXQ9bbBSLDuRDEqWYL0MaZU+Hblzn4r+QhDcm
-         YCOLVNb2mwJiiDekAUl+M/55CKnBw/UVi0YBuhlTy5BBvIei7bL3Cm70RVcCG62QPhOe
-         S/zRgLtFL4FHSdGEBzRwI6Vo2iZSgZC+qEtutiQhE7iamiXMZNtZHUfK8tTr77inOb7p
-         f4sDk15MQjlTMsUoRIrf0wGt7YzPfuOjANi+ItKCatH2cXIm1f4ooguqRbEGB1iZFEYR
-         jyGw==
-X-Gm-Message-State: AOAM532TLwxD+PZ+V5AXOgtv0IM17X6SqAoLHiazyStAqZ9do22Rtvbx
-        kkjn2MWRsQpsEKEeqKqSqY6xnyLAQR7Y0EQA5fABZQuqbAO63g==
-X-Google-Smtp-Source: ABdhPJxZISgEXK/GkurIncyKWx/JpMQGogEABHu8j6Ql6/X3NDp+W67mWZNUAZ3SnOsWwNabIRjCPi+aXkOqniG+Y5I=
-X-Received: by 2002:a02:b890:: with SMTP id p16mr11266473jam.138.1614973336876;
- Fri, 05 Mar 2021 11:42:16 -0800 (PST)
-MIME-Version: 1.0
-References: <CA+icZUWJyPTefHkGEgQtDO9TOM4CN_b2qPJGQVF7NE=Q=fGAEQ@mail.gmail.com>
- <CA+icZUUzBvmi9SvJ4Bh8ER_+Rkm9vv9FkKwoS8ofmRsko_fJhg@mail.gmail.com>
- <CA+icZUXCgW0bPcqNf+DSubBciQeBMbNX5zbjkMXinqRdkE1PfA@mail.gmail.com>
- <20210301155321.GA1490228@rowland.harvard.edu> <CA+icZUVpQtsq8y=rjR3Ad_G1VXWpR4D4xao8DGUkRiuxoT+cPA@mail.gmail.com>
- <20210305160728.GE38200@rowland.harvard.edu> <CA+icZUXnjDwyKEoX_7KOaVd=PpvEQhpJRvwZbW_xocDfXZpUzQ@mail.gmail.com>
- <CA+icZUUFGh5CWH-UJK4T-h_Qd2KNnOCrGuT8fg0+Fvjm0C2kbg@mail.gmail.com> <20210305193003.GE48113@rowland.harvard.edu>
-In-Reply-To: <20210305193003.GE48113@rowland.harvard.edu>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 5 Mar 2021 20:41:40 +0100
-Message-ID: <CA+icZUXUAVAusGBKSAtUEN1kH2PLchpi0cU+w-m67QznA7+F4A@mail.gmail.com>
-Subject: Re: [xhci] usb 4-1: reset SuperSpeed Gen 1 USB device number 2 using xhci_hcd
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=PXXsisettvtG626o8G5UFd6fcAq7tGjSyM7Qp09eMjc=;
+        b=aFs1IKcqaxBdft0wPlnUt4l19gc4v3xAWp2MOdl0atxjdkVWjd1qnGIM5xk/Eunrgr
+         XX/xIxzz9nPdQfxiuNSKhnl+gy3QvrsfwcK5bC2a+1olc2hsWAb17O69epyWb45l8p4J
+         fIYAplNm2vPivldXlyQjPS2bOUjUetzZLeWW7obM9gGguUM92cAm/5/sFyFIUn5TmFA5
+         j5FB7vHxCuxB+Nz5KxarVqznEUEq1oWovasNKNEXVAHmbbQyQRHuscgGHTqitwK7hCgR
+         7C2wxB9puhGCBDaGj8deWeU82HYqEbHRlndEoXLgy2zKkudIGvKbIBEmnSJuTGIHgmrm
+         +Nvg==
+X-Gm-Message-State: AOAM531o/qWC6HRUvMNp45F0pkB2iJquqyxmqRxSZ6M19jfwC4pWgT5m
+        08JNqwPB7Uidk76QQEQnDEW8AhvZIQ==
+X-Google-Smtp-Source: ABdhPJx6oXROxqM2BtAkojWNPnIKEm5QF2g7Q/hOAtw/5J/vn/c5F47IiZwhM7r+wDan0JgRrZUv7BZIdg==
+Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:e:611c:f54a:61d6])
+ (user=elver job=sendgmr) by 2002:adf:e548:: with SMTP id z8mr11274105wrm.246.1614973329440;
+ Fri, 05 Mar 2021 11:42:09 -0800 (PST)
+Date:   Fri,  5 Mar 2021 20:42:05 +0100
+Message-Id: <20210305194206.3165917-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH 1/2] lib/vsprintf: do not show no_hash_pointers message
+ multiple times
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com
+Cc:     linux-kernel@vger.kernel.org, vbabka@suse.cz, timur@kernel.org,
+        pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 8:30 PM Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> On Fri, Mar 05, 2021 at 08:22:22PM +0100, Sedat Dilek wrote:
-> > The quirks match:
-> >
-> > [Fri Mar  5 20:06:56 2021] usb-storage 4-1:1.0: USB Mass Storage device detected
-> > [Fri Mar  5 20:06:56 2021] usb-storage 4-1:1.0: Quirks match for vid
-> > 174c pid 55aa: 400000
-> >
-> > That seems not to be the trick:
-> >
-> > root# LC_ALL=C dmesg -T | grep 'usb 4-1:'
-> > [Fri Mar  5 20:06:55 2021] usb 4-1: new SuperSpeed Gen 1 USB device
-> > number 2 using xhci_hcd
-> > [Fri Mar  5 20:06:55 2021] usb 4-1: New USB device found,
-> > idVendor=174c, idProduct=55aa, bcdDevice= 1.00
-> > [Fri Mar  5 20:06:55 2021] usb 4-1: New USB device strings: Mfr=2,
-> > Product=3, SerialNumber=1
-> > [Fri Mar  5 20:06:55 2021] usb 4-1: Product: MEDION HDDrive-n-GO
-> > [Fri Mar  5 20:06:55 2021] usb 4-1: Manufacturer: MEDION
-> > [Fri Mar  5 20:06:55 2021] usb 4-1: SerialNumber: 3180000000000000092C
-> > [Fri Mar  5 20:06:57 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
-> > number 2 using xhci_hcd
->
-> Okay, that indicates the ATA commands are being sent not by the kernel
-> but by some program.  I'm not sure how you can easily find out which
-> program; probably the best thing to do is turn them off one by one until
-> you find the one responsible.
->
+Do not show no_hash_pointers message multiple times if the option was
+passed more than once (e.g. via generated command line).
 
-I can hardly imagine which user-space tools other than powertop can
-interfere here.
-Any ideas?
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ lib/vsprintf.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I will remove or better comment the quirks in
-/etc/modules-load.d/usb-storage.conf for now.
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 41ddc353ebb8..4a14889ccb35 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -2096,6 +2096,9 @@ EXPORT_SYMBOL_GPL(no_hash_pointers);
+ 
+ static int __init no_hash_pointers_enable(char *str)
+ {
++	if (no_hash_pointers)
++		return 0;
++
+ 	no_hash_pointers = true;
+ 
+ 	pr_warn("**********************************************************\n");
 
-- Sedat -
+base-commit: fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8
+-- 
+2.30.1.766.gb4fecdf3b7-goog
+
