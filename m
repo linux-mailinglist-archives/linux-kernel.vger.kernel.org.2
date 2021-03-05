@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800EB32EAF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 277EA32EB4D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbhCEMlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:41:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56122 "EHLO mail.kernel.org"
+        id S233561AbhCEMn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:43:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232659AbhCEMkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:40:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3F2564EE8;
-        Fri,  5 Mar 2021 12:40:35 +0000 (UTC)
+        id S233909AbhCEMmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:42:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2FBE6501E;
+        Fri,  5 Mar 2021 12:42:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948037;
-        bh=/L8RgTkiiLICWqBuKZKSOqyNFiTIn4f/gXZAs1zfS/k=;
+        s=korg; t=1614948158;
+        bh=x2pZO0Ll6m1FhfnW52ZnN31MY/w7Njhu8L43SndQ9Zk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OcczqEmNe0b4B0K68aMIiOQJkST4v2oD5jAiNbkLU62QHRtscdoLT9hBp44dzQaRt
-         CCYBzsdLanBIOW4u0LlQjmNU9/c2r2sVB1Q/nY6gX2j1Tjke+rClucM91aBKT9VlHH
-         3hOnJBVsuhlnja+GzM9eX7JvAiM5397Ys/aHzB24=
+        b=yUNFhCQxefg4QsFLdmKZA7JJ343rOD5nz6ETjfMucCi1Wc4sqDD39LtmrY1kznkpn
+         yguM5TrswXtc2aHel5ASxMwE+US6cP2UL65rd1XzLH4xNbPA0YFRu0I38M1j/J/m25
+         0C7H93Z7hmPd7MPNFNlbvSz59Rv5jr0oY2/TyJrg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 29/39] f2fs: handle unallocated section and zone on pinned/atgc
-Date:   Fri,  5 Mar 2021 13:22:28 +0100
-Message-Id: <20210305120853.238256885@linuxfoundation.org>
+        stable@vger.kernel.org, Li Xinhai <lixinhai.lxh@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 22/41] mm/hugetlb.c: fix unnecessary address expansion of pmd sharing
+Date:   Fri,  5 Mar 2021 13:22:29 +0100
+Message-Id: <20210305120852.390526315@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120851.751937389@linuxfoundation.org>
-References: <20210305120851.751937389@linuxfoundation.org>
+In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
+References: <20210305120851.255002428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +42,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaegeuk Kim <jaegeuk@kernel.org>
+From: Li Xinhai <lixinhai.lxh@gmail.com>
 
-[ Upstream commit 632faca72938f9f63049e48a8c438913828ac7a9 ]
+commit a1ba9da8f0f9a37d900ff7eff66482cf7de8015e upstream.
 
-If we have large section/zone, unallocated segment makes them corrupted.
+The current code would unnecessarily expand the address range.  Consider
+one example, (start, end) = (1G-2M, 3G+2M), and (vm_start, vm_end) =
+(1G-4M, 3G+4M), the expected adjustment should be keep (1G-2M, 3G+2M)
+without expand.  But the current result will be (1G-4M, 3G+4M).  Actually,
+the range (1G-4M, 1G) and (3G, 3G+4M) would never been involved in pmd
+sharing.
 
-E.g.,
+After this patch, we will check that the vma span at least one PUD aligned
+size and the start,end range overlap the aligned range of vma.
 
-  - Pinned file:       -1 119304647 119304647
-  - ATGC   data:       -1 119304647 119304647
+With above example, the aligned vma range is (1G, 3G), so if (start, end)
+range is within (1G-4M, 1G), or within (3G, 3G+4M), then no adjustment to
+both start and end.  Otherwise, we will have chance to adjust start
+downwards or end upwards without exceeding (vm_start, vm_end).
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Mike:
+
+: The 'adjusted range' is used for calls to mmu notifiers and cache(tlb)
+: flushing.  Since the current code unnecessarily expands the range in some
+: cases, more entries than necessary would be flushed.  This would/could
+: result in performance degradation.  However, this is highly dependent on
+: the user runtime.  Is there a combination of vma layout and calls to
+: actually hit this issue?  If the issue is hit, will those entries
+: unnecessarily flushed be used again and need to be unnecessarily reloaded?
+
+Link: https://lkml.kernel.org/r/20210104081631.2921415-1-lixinhai.lxh@gmail.com
+Fixes: 75802ca66354 ("mm/hugetlb: fix calculation of adjust_range_if_pmd_sharing_possible")
+Signed-off-by: Li Xinhai <lixinhai.lxh@gmail.com>
+Suggested-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Peter Xu <peterx@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/f2fs/segment.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/hugetlb.c |   22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-index 0d46e936d54e..00c415131b06 100644
---- a/fs/f2fs/segment.h
-+++ b/fs/f2fs/segment.h
-@@ -91,11 +91,11 @@
- #define BLKS_PER_SEC(sbi)					\
- 	((sbi)->segs_per_sec * (sbi)->blocks_per_seg)
- #define GET_SEC_FROM_SEG(sbi, segno)				\
--	((segno) / (sbi)->segs_per_sec)
-+	(((segno) == -1) ? -1: (segno) / (sbi)->segs_per_sec)
- #define GET_SEG_FROM_SEC(sbi, secno)				\
- 	((secno) * (sbi)->segs_per_sec)
- #define GET_ZONE_FROM_SEC(sbi, secno)				\
--	((secno) / (sbi)->secs_per_zone)
-+	(((secno) == -1) ? -1: (secno) / (sbi)->secs_per_zone)
- #define GET_ZONE_FROM_SEG(sbi, segno)				\
- 	GET_ZONE_FROM_SEC(sbi, GET_SEC_FROM_SEG(sbi, segno))
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4436,21 +4436,23 @@ static bool vma_shareable(struct vm_area
+ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
+ 				unsigned long *start, unsigned long *end)
+ {
+-	unsigned long a_start, a_end;
++	unsigned long v_start = ALIGN(vma->vm_start, PUD_SIZE),
++		v_end = ALIGN_DOWN(vma->vm_end, PUD_SIZE);
  
--- 
-2.30.1
-
+-	if (!(vma->vm_flags & VM_MAYSHARE))
++	/*
++	 * vma need span at least one aligned PUD size and the start,end range
++	 * must at least partialy within it.
++	 */
++	if (!(vma->vm_flags & VM_MAYSHARE) || !(v_end > v_start) ||
++		(*end <= v_start) || (*start >= v_end))
+ 		return;
+ 
+ 	/* Extend the range to be PUD aligned for a worst case scenario */
+-	a_start = ALIGN_DOWN(*start, PUD_SIZE);
+-	a_end = ALIGN(*end, PUD_SIZE);
++	if (*start > v_start)
++		*start = ALIGN_DOWN(*start, PUD_SIZE);
+ 
+-	/*
+-	 * Intersect the range with the vma range, since pmd sharing won't be
+-	 * across vma after all
+-	 */
+-	*start = max(vma->vm_start, a_start);
+-	*end = min(vma->vm_end, a_end);
++	if (*end < v_end)
++		*end = ALIGN(*end, PUD_SIZE);
+ }
+ 
+ /*
 
 
