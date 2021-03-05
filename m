@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C45432EA8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:40:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E0C32EA95
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbhCEMjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:39:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52118 "EHLO mail.kernel.org"
+        id S229848AbhCEMjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:39:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230462AbhCEMie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:38:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B70A165012;
-        Fri,  5 Mar 2021 12:38:32 +0000 (UTC)
+        id S233072AbhCEMig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:38:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA17564FF0;
+        Fri,  5 Mar 2021 12:38:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947913;
-        bh=1JkpQNtZ3SdC0LsOZyLxa+V3Yxg6V5nE2CLt/WhrWlU=;
+        s=korg; t=1614947916;
+        bh=HyXNKzlEerydnVeJ0HfUOD7a5QP60KoqNzEpC574pPo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NlffRs5WanOdsHrYi5UPlekxdNNwvcG16iJzEenrF1hBoovU07nqW49N/XsPfhCBb
-         MNEICVB4xS19WS8NjNNVLKD743TEeAtMzksWIRF++RPwlaad0k8hzfT+yGad5gXZ+d
-         kkPz3oHyKogHZgunW9qRP4WJmGMq8f6rbWYs83Eg=
+        b=HS9rSJTmnX7cKKJ/UkAQWSuTkPaBPFtA3a4Ls8rhCRwgMTO906PHbP7pE9dGT8+0c
+         X57ifMEoR10OMDDEEjBDdhYJelbQPC/33vlyywGxElEzvPHa+FpxEVRVsJX6KyFKHN
+         WXmTcSUCRj7z8gbGygUOLjRjsDTW45ivswX7ylFw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Eric Yang <eric.yang2@amd.com>,
-        Anson Jacob <anson.jacob@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 33/52] drm/amd/display: Guard against NULL pointer deref when get_i2c_info fails
-Date:   Fri,  5 Mar 2021 13:22:04 +0100
-Message-Id: <20210305120855.298573239@linuxfoundation.org>
+Subject: [PATCH 4.19 34/52] media: uvcvideo: Allow entities with no pads
+Date:   Fri,  5 Mar 2021 13:22:05 +0100
+Message-Id: <20210305120855.341940501@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
 References: <20210305120853.659441428@linuxfoundation.org>
@@ -43,44 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
 
-[ Upstream commit 44a09e3d95bd2b7b0c224100f78f335859c4e193 ]
+[ Upstream commit 7532dad6634031d083df7af606fac655b8d08b5c ]
 
-[Why]
-If the BIOS table is invalid or corrupt then get_i2c_info can fail
-and we dereference a NULL pointer.
+Avoid an underflow while calculating the number of inputs for entities
+with zero pads.
 
-[How]
-Check that ddc_pin is not NULL before using it and log an error if it
-is because this is unexpected.
-
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Reviewed-by: Eric Yang <eric.yang2@amd.com>
-Acked-by: Anson Jacob <anson.jacob@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc_link.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/media/usb/uvc/uvc_driver.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-index fa0e6c8e2447..e3bedf4cc9c0 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-@@ -1124,6 +1124,11 @@ static bool construct(
- 		goto ddc_create_fail;
- 	}
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 38c73cdbef70..998ce712978a 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -940,7 +940,10 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
+ 	unsigned int i;
  
-+	if (!link->ddc->ddc_pin) {
-+		DC_ERROR("Failed to get I2C info for connector!\n");
-+		goto ddc_create_fail;
-+	}
-+
- 	link->ddc_hw_inst =
- 		dal_ddc_get_line(
- 			dal_ddc_service_get_ddc_pin(link->ddc));
+ 	extra_size = roundup(extra_size, sizeof(*entity->pads));
+-	num_inputs = (type & UVC_TERM_OUTPUT) ? num_pads : num_pads - 1;
++	if (num_pads)
++		num_inputs = type & UVC_TERM_OUTPUT ? num_pads : num_pads - 1;
++	else
++		num_inputs = 0;
+ 	size = sizeof(*entity) + extra_size + sizeof(*entity->pads) * num_pads
+ 	     + num_inputs;
+ 	entity = kzalloc(size, GFP_KERNEL);
+@@ -956,7 +959,7 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
+ 
+ 	for (i = 0; i < num_inputs; ++i)
+ 		entity->pads[i].flags = MEDIA_PAD_FL_SINK;
+-	if (!UVC_ENTITY_IS_OTERM(entity))
++	if (!UVC_ENTITY_IS_OTERM(entity) && num_pads)
+ 		entity->pads[num_pads-1].flags = MEDIA_PAD_FL_SOURCE;
+ 
+ 	entity->bNrInPins = num_inputs;
 -- 
 2.30.1
 
