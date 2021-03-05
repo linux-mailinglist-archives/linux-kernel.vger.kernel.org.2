@@ -2,137 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAB932E246
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 07:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B483A32E24B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 07:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbhCEGgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 01:36:07 -0500
-Received: from mga03.intel.com ([134.134.136.65]:45346 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229457AbhCEGgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 01:36:06 -0500
-IronPort-SDR: vtv4XS9sQQYA+jov34aDTMi3NisvRjcjSSK54EJ24hVuPDKKdbZYbfxjA34jDeW1/r9QoYon3b
- HC8sDMJS558Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="187641956"
-X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
-   d="scan'208";a="187641956"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 22:36:05 -0800
-IronPort-SDR: L/1Rakrn0nPUwl8ADcVyGcPU8fhOU6QO3BmPgqolDprzfIJ2lZtgsamH2Fss42/ezLA7Y4j5Nv
- sJkx+JVso6QQ==
-X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
-   d="scan'208";a="401171163"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 22:36:01 -0800
-Subject: Re: [PATCH v3 7/9] KVM: vmx/pmu: Add Arch LBR emulation and its VMCS
- field
-To:     Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>
-References: <20210303135756.1546253-1-like.xu@linux.intel.com>
- <20210303135756.1546253-8-like.xu@linux.intel.com>
- <YD/GrQAl1NMPHXFj@google.com>
- <267c408c-6999-649b-d733-8d64f9cf0594@intel.com>
- <YEEXqf3b4uaSdNKv@google.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <dfaf5f35-c288-64a7-bbb6-bdee52784121@intel.com>
-Date:   Fri, 5 Mar 2021 14:35:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229650AbhCEGhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 01:37:06 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:54821 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229601AbhCEGhF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 01:37:05 -0500
+Received: by mail-io1-f71.google.com with SMTP id n15so1064363ioh.21
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 22:37:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=9eaCYfkOQuJEVGK3vD++ucoro9m1dub/WdBbvxw09lQ=;
+        b=AICvJmgPPvzrarwSkGzRjt4UBU++7y93vEczIv40HoSdFXY2t3JefNro52Sh5sORKN
+         RQ/AXsCpQSooTCyQdJQsf7Jf8yZKnXj0JNSLIW5a+Vc6f45K//eMXZDSd5WS3cAkVSpY
+         wVW2ylpJxpUSMozcDH3vAUAFj3ZOES3QqJSTPolNN7qRjRBlobGQzEwHuSwC2bxff94Y
+         FDHIJ/biP6a254DlHHVXuxB4daImOacwbi+r47W6Jzd/qczAQnngrVGSFPjw6WYWl46d
+         OZl0lg9+xCV7Uq476iDtTj6CpTHwZKyh/lIzY8X1ECBQEjl3pfNsi3Y1pp+lM6pklBWG
+         JfuQ==
+X-Gm-Message-State: AOAM530ma0Y4BUqjlGnugUYS131w6XATXhHvAVaTFW7o0sGNXH5Dn+qW
+        QOP21A5xyMs6hrB1gIT8mC8BS+RaSewV4J7ilCY+qjnfl8LD
+X-Google-Smtp-Source: ABdhPJxi5FMb8Gtqz+q8eOcjlJ7eTcYMgt8xt0JDLdD5lcTHbZxuE/yqpKlOFPKmyN37WeK74E03P96+WJLIcvMieDoGzNTvO9hX
 MIME-Version: 1.0
-In-Reply-To: <YEEXqf3b4uaSdNKv@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Received: by 2002:a05:6e02:20e5:: with SMTP id q5mr7133793ilv.131.1614926224754;
+ Thu, 04 Mar 2021 22:37:04 -0800 (PST)
+Date:   Thu, 04 Mar 2021 22:37:04 -0800
+In-Reply-To: <0000000000009b387305bc00fda6@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f70f8f05bcc44f14@google.com>
+Subject: Re: WARNING in ieee802154_get_llsec_params
+From:   syzbot <syzbot+cde43a581a8e5f317bc2@syzkaller.appspotmail.com>
+To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org, stefan@datenfreihafen.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/5 1:23, Sean Christopherson wrote:
-> On Thu, Mar 04, 2021, Xu, Like wrote:
->> On 2021/3/4 1:26, Sean Christopherson wrote:
->>> On Wed, Mar 03, 2021, Like Xu wrote:
->>>> New VMX controls bits for Arch LBR are added. When bit 21 in vmentry_ctrl
->>>> is set, VM entry will write the value from the "Guest IA32_LBR_CTL" guest
->>>> state field to IA32_LBR_CTL. When bit 26 in vmexit_ctrl is set, VM exit
->>>> will clear IA32_LBR_CTL after the value has been saved to the "Guest
->>>> IA32_LBR_CTL" guest state field.
->>> ...
->>>
->>>> @@ -2529,7 +2532,8 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
->>>>    	      VM_EXIT_LOAD_IA32_EFER |
->>>>    	      VM_EXIT_CLEAR_BNDCFGS |
->>>>    	      VM_EXIT_PT_CONCEAL_PIP |
->>>> -	      VM_EXIT_CLEAR_IA32_RTIT_CTL;
->>>> +	      VM_EXIT_CLEAR_IA32_RTIT_CTL |
->>>> +	      VM_EXIT_CLEAR_IA32_LBR_CTL;
->>> So, how does MSR_ARCH_LBR_CTL get restored on the host?  What if the host wants
->>> to keep _its_ LBR recording active while the guest is running?
->> Thank you!
->>
->> I will add "host_lbrctlmsr" field to "struct vcpu_vmx" and
->> repeat the update/get_debugctlmsr() stuff.
-> I am not remotely confident that tracking LBRCTL via vcpu_vmx is correct, and
-> I'm far less confident that the existing DEBUGCTL logic is correct.  As Jim
-> pointed out[*], intel_pmu_handle_irq() can run at any time, and it's not at all
-> clear to me that the DEBUGCTL coming out of the NMI handler is guaranteed to be
-> the same value going in.  Ditto for LBRCTL.
+syzbot has bisected this issue to:
 
-It's not true for "Ditto for LBRCTL".
+commit b60673c4c418bef7550d02faf53c34fbfeb366bf
+Author: Jakub Kicinski <kuba@kernel.org>
+Date:   Tue Mar 3 05:05:15 2020 +0000
 
-Because the usage of ARCH_LBR_CTL is specified for LBR,
-not the shared case of DEBUGCTL. And all LBR events created from
-KVM or host perf syscall are all under the control of host perf subsystem.
+    nl802154: add missing attribute validation for dev_type
 
-The irq handler would restore the original value of the ARCH_LBR_CTL
-even it's called after the KVM snapshots DEBUCTL on vCPU load.
-The change is transparent to the update_lbrctlmsr() and get_lbrctlmsr().
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=100b11b0d00000
+start commit:   f5427c24 Add linux-next specific files for 20210304
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=120b11b0d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=140b11b0d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a7876f68bf0bea99
+dashboard link: https://syzkaller.appspot.com/bug?extid=cde43a581a8e5f317bc2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=124c7b46d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1276f5b0d00000
 
-> Actually, NMIs aside, KVM's DEBUGCTL handling is provably broken since writing
-> /sys/devices/cpu/freeze_on_smi is propagated to other CPUs via IRQ, and KVM
-> snapshots DEBUCTL on vCPU load, i.e. runs with IRQs enabled long after grabbing
-> the value.
->
->    WARNING: CPU: 5 PID: 0 at arch/x86/events/intel/core.c:4066 flip_smm_bit+0xb/0x30
->    RIP: 0010:flip_smm_bit+0xb/0x30
->    Call Trace:
->     <IRQ>
->     flush_smp_call_function_queue+0x118/0x1a0
->     __sysvec_call_function+0x2c/0x90
->     asm_call_irq_on_stack+0x12/0x20
->     </IRQ>
+Reported-by: syzbot+cde43a581a8e5f317bc2@syzkaller.appspotmail.com
+Fixes: b60673c4c418 ("nl802154: add missing attribute validation for dev_type")
 
-This kind of bug with the keyword "flip_smm_bit" did not appear on the 
-mailing list.
-Would you mind to share testcases or more details about the steps to 
-reproduce ?
-
->
-> So, rather than pile on more MSR handling that is at best dubious, and at worst
-> broken, I would like to see KVM properly integrate with perf to ensure KVM
-> restores the correct, fresh values of all MSRs that are owned by perf.  Or at
-> least add something that guarantees that intel_pmu_handle_irq() preserves the
-> MSRs.  As is, it's impossible to review these KVM changes without deep, deep
-> knowledge of what perf is doing.
-
-Jim complained more about the inconsistent maintenance of
-MSR_IA32_PEBS_ENABLE between KVM and perf subsystem.
-
-The issue bothers the host due to the subsystem integration,
-but the guest's use of PBES will be safe and reliable.
-
-We could cover more details in the guest PEBS enabling thread.
-
->
-> https://lkml.kernel.org/r/20210209225653.1393771-1-jmattson@google.com
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
