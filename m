@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6794932E5D1
+	by mail.lfdr.de (Postfix) with ESMTP id B73F632E5D2
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhCEKK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:10:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbhCEKKL (ORCPT
+        id S230047AbhCEKK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:10:29 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:54532 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229940AbhCEKKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:10:11 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E99ECC061574;
-        Fri,  5 Mar 2021 02:10:10 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id t4so1427864qkp.1;
-        Fri, 05 Mar 2021 02:10:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g649SWY5Pg9iweh3f261DGBlQ2YmVzNL6uLU/MjqmfE=;
-        b=EMbRLNAUW6LOBSy+mzI2wPZy6hjsPxEbyJ93p/GGgK9CQRdSOg5EAqNzM8FrPytIBB
-         /62Mmz6P0Gdl6WDygDTCb/OlbtelYgsd9SSU7eynFP0abWYQWu2al7J2yeH2LtwJShRU
-         bxM+WXFjRVbnan+3e1y1OxxiyhjnII0UJxdb0tSFiL4wjA+BnZcJkMCx/b3EZEnv3NHT
-         OlHHItU1cUj13Ei4A19d3lKn28UcrUniHzN0my0jPiBRivrckjkliyavnywS1urctqoB
-         4msaLEgfEU0IRasQi//T5i4JrLf/OW8AyjXQTpzPEh2sKYobkI1N3P0AczPM0sV16T0r
-         Mz1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g649SWY5Pg9iweh3f261DGBlQ2YmVzNL6uLU/MjqmfE=;
-        b=U3eLZwko27brrHgsT1k9/P2cU+qiTwBOJzNr8PTUJKVs1xccoCeTg8w5stSXDPvhm1
-         zdCgPztYcpLDjH9d2cpPvgjJdC+QVfXslHS7EoPaIhklA6QChSWWtzz2uW8cwRqkNx2K
-         m+FemRsRflYCLHIkOp5ipqFJdXuumws4w+rbs5jlefyzu2jnQL+/wg/nAeu4B3f7vetF
-         Nbor6Zspn4R9Hami0AnypdBsovozq/8svl7DW7yf433GcmAqhj5+fazi+CGsGbcISwSe
-         mNU4ZqNty78Pfwnb57vflBEjkPXaYMOSfnZXbvRGxX/MZdySDWuhjUl+rz+iaJPpKb/l
-         4Y9Q==
-X-Gm-Message-State: AOAM530vZMtWbk1+ZD13YSYblN/VSYTzVacjsTBC6iWxENBAYMY+/3g8
-        tu1ENbtnGIvAW3psAjppxLk=
-X-Google-Smtp-Source: ABdhPJySSLSA3e5v4sHWMXUdW68rSD3rQk4qdlvmCUhdA4OJxDiR3IWlaOWKjTGDubuaFBTh60k3rg==
-X-Received: by 2002:a05:620a:1593:: with SMTP id d19mr8009552qkk.83.1614939010241;
-        Fri, 05 Mar 2021 02:10:10 -0800 (PST)
-Received: from localhost.localdomain ([156.146.54.164])
-        by smtp.gmail.com with ESMTPSA id z2sm1496968qkg.22.2021.03.05.02.10.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 02:10:09 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     jpoimboe@redhat.com, jikos@kernel.org, mbenes@suse.cz,
-        pmladek@suse.com, joe.lawrence@redhat.com, corbet@lwn.net,
-        live-patching@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH V2] docs: livepatch: Fix a typo and remove the unnecessary gaps in a sentence
-Date:   Fri,  5 Mar 2021 15:39:23 +0530
-Message-Id: <20210305100923.3731-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 5 Mar 2021 05:10:14 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 125A9wKE110650;
+        Fri, 5 Mar 2021 04:09:59 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614938999;
+        bh=YBLvYThaKVg7tURgnRZwl586okBWQyFp0lWLZANmnaA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=V2D85JCcwkwMHsADSiw9UBzYUTHANxXu1uOys/sDHPxHjxdtbO/9ypDK43E2NQQkW
+         mKvBf7Gq4XWknqNTg8rRH7MIFWjVf/bRLVEpwK0Q5vmhuOJkfCGUBEluTEGhCquksO
+         my4CEY3Mrjz8XTQ9hhLhatGF2wybFswF/HHk5qCU=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 125A9wMl106232
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 5 Mar 2021 04:09:58 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 5 Mar
+ 2021 04:09:58 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 5 Mar 2021 04:09:58 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 125A9uvd115311;
+        Fri, 5 Mar 2021 04:09:57 -0600
+Subject: Re: [PATCH 1/3] clocksource/drivers/timer-ti-dm: Fix posted mode
+ status check order
+To:     Tony Lindgren <tony@atomide.com>
+CC:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Keerthy <j-keerthy@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210304072135.52712-1-tony@atomide.com>
+ <20210304072135.52712-2-tony@atomide.com>
+ <bd551701-da42-8f9f-ad49-5d87baa9beec@ti.com> <YEHjf6dcTByVvwBX@atomide.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <4f6212f7-824b-450e-b605-fcc8dc50a8fb@ti.com>
+Date:   Fri, 5 Mar 2021 12:09:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YEHjf6dcTByVvwBX@atomide.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/varibles/variables/
 
-...and remove leading spaces from a sentence.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- Changes from V1:
-  Pter pointed out some awkward  leading space in a sentence ,fixed it.
+On 05/03/2021 09:53, Tony Lindgren wrote:
+> * Grygorii Strashko <grygorii.strashko@ti.com> [210304 20:58]:
+>> On 04/03/2021 09:21, Tony Lindgren wrote:
+>>> When the timer is configured in posted mode, we need to check the write-
+>>> posted status register (TWPS) before writing to the register.
+> ...
+> 
+>>> --- a/drivers/clocksource/timer-ti-dm-systimer.c
+>>> +++ b/drivers/clocksource/timer-ti-dm-systimer.c
+>>> @@ -449,13 +449,13 @@ static int dmtimer_set_next_event(unsigned long cycles,
+>>>    	struct dmtimer_systimer *t = &clkevt->t;
+>>>    	void __iomem *pend = t->base + t->pend;
+>>> -	writel_relaxed(0xffffffff - cycles, t->base + t->counter);
+>>>    	while (readl_relaxed(pend) & WP_TCRR)
+>>>    		cpu_relax();
+>>> +	writel_relaxed(0xffffffff - cycles, t->base + t->counter);
+>>> -	writel_relaxed(OMAP_TIMER_CTRL_ST, t->base + t->ctrl);
+>>>    	while (readl_relaxed(pend) & WP_TCLR)
+>>>    		cpu_relax();
+>>> +	writel_relaxed(OMAP_TIMER_CTRL_ST, t->base + t->ctrl);
+>>
+>> It seems static [and inline] helper here could be better solution. no?
+> 
+> Well we wanted to get rid of the confusing macros. And in this case I
+> suspect we can eventually do just one read of the pending register for
+> the registers used mask rather than check the status separately multiple
+> times. But that needs to be carefully tested and is not a fix :)
 
- Documentation/livepatch/shadow-vars.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Might work.
 
-diff --git a/Documentation/livepatch/shadow-vars.rst b/Documentation/livepatch/shadow-vars.rst
-index c05715aeafa4..2ee114a91a35 100644
---- a/Documentation/livepatch/shadow-vars.rst
-+++ b/Documentation/livepatch/shadow-vars.rst
-@@ -165,8 +165,8 @@ In-flight parent objects
-
- Sometimes it may not be convenient or possible to allocate shadow
- variables alongside their parent objects.  Or a livepatch fix may
--require shadow varibles to only a subset of parent object instances.  In
--these cases, the klp_shadow_get_or_alloc() call can be used to attach
-+require shadow variables to only a subset of parent object instances.
-+In these cases, the klp_shadow_get_or_alloc() call can be used to attach
- shadow variables to parents already in-flight.
-
- For commit 1d147bfa6429, a good spot to allocate a shadow spinlock is
---
-2.20.1
-
+-- 
+Best regards,
+grygorii
