@@ -2,248 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA14932E4E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4A932E4F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbhCEJdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:33:11 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:35688 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhCEJdD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:33:03 -0500
-Received: from [IPv6:2a01:e0a:4cb:a870:b9e2:e9f:d661:5a2f] (unknown [IPv6:2a01:e0a:4cb:a870:b9e2:e9f:d661:5a2f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 853DD1F46894;
-        Fri,  5 Mar 2021 09:32:54 +0000 (GMT)
-Subject: Re: [PATCH v4 09/11] media: hantro: IMX8M: add variant for G2/HEVC
- codec
-To:     Ezequiel Garcia <ezequiel@collabora.com>, p.zabel@pengutronix.de,
-        mchehab@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, peng.fan@nxp.com,
-        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <20210303113952.178519-1-benjamin.gaignard@collabora.com>
- <20210303113952.178519-10-benjamin.gaignard@collabora.com>
- <0a4ad90338e58a7cc953fb9cd0a0414dacb010d4.camel@collabora.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <9766921b-f363-a200-e513-36e0524928a1@collabora.com>
-Date:   Fri, 5 Mar 2021 10:32:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <0a4ad90338e58a7cc953fb9cd0a0414dacb010d4.camel@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S229832AbhCEJdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:33:49 -0500
+Received: from smtp23.cstnet.cn ([159.226.251.23]:46334 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229494AbhCEJdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:33:37 -0500
+Received: from localhost.localdomain (unknown [124.16.141.241])
+        by APP-03 (Coremail) with SMTP id rQCowABXX0_V+kFg5nttAQ--.11138S2;
+        Fri, 05 Mar 2021 17:33:10 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] selftest/net/ipsec.c: Remove unneeded semicolon
+Date:   Fri,  5 Mar 2021 09:33:06 +0000
+Message-Id: <20210305093306.1403-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowABXX0_V+kFg5nttAQ--.11138S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gw4xAF45Zr45Kr4fGF4rXwb_yoW3Grb_tr
+        4Utas7CFs5AF9Fvr4fGF45uFZ5t3W5WF4xKFWUZa13tw4UAan8GFWkZr1DA3WxW3909342
+        vF4YyFy3W342gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbFAYjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I
+        3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxV
+        WUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAF
+        wI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcI
+        k0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
+        Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU56c_DUUUUU==
+X-Originating-IP: [124.16.141.241]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCgoLA1z4jaEWoAAAs2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+fix semicolon.cocci warning:
+tools/testing/selftests/net/ipsec.c:1788:2-3: Unneeded semicolon
 
-Le 03/03/2021 à 23:08, Ezequiel Garcia a écrit :
-> On Wed, 2021-03-03 at 12:39 +0100, Benjamin Gaignard wrote:
->> Add variant to IMX8M to enable G2/HEVC codec.
->> Define the capabilities for the hardware up to 3840x2160.
->> Retrieve the hardware version at init to distinguish G1 from G2.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->> version 2:
->> - remove useless clocks
->>
->>   drivers/staging/media/hantro/hantro_drv.c   |  1 +
->>   drivers/staging/media/hantro/hantro_hw.h    |  1 +
->>   drivers/staging/media/hantro/imx8m_vpu_hw.c | 95 ++++++++++++++++++++-
->>   3 files changed, 93 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
->> index bc90a52f4d3d..976be7b6ecfb 100644
->> --- a/drivers/staging/media/hantro/hantro_drv.c
->> +++ b/drivers/staging/media/hantro/hantro_drv.c
->> @@ -591,6 +591,7 @@ static const struct of_device_id of_hantro_match[] = {
->>   #endif
->>   #ifdef CONFIG_VIDEO_HANTRO_IMX8M
->>          { .compatible = "nxp,imx8mq-vpu", .data = &imx8mq_vpu_variant, },
->> +       { .compatible = "nxp,imx8mq-vpu-g2", .data = &imx8mq_vpu_g2_variant },
->>   #endif
->>          { /* sentinel */ }
->>   };
->> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
->> index dade3b0769c1..f61f58da05fe 100644
->> --- a/drivers/staging/media/hantro/hantro_hw.h
->> +++ b/drivers/staging/media/hantro/hantro_hw.h
->> @@ -193,6 +193,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
->>   extern const struct hantro_variant rk3328_vpu_variant;
->>   extern const struct hantro_variant rk3288_vpu_variant;
->>   extern const struct hantro_variant imx8mq_vpu_variant;
->> +extern const struct hantro_variant imx8mq_vpu_g2_variant;
->>   
->>   extern const struct hantro_postproc_regs hantro_g1_postproc_regs;
->>   
->> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
->> index d5b4312b9391..46b33531be85 100644
->> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
->> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
->> @@ -12,6 +12,7 @@
->>   #include "hantro.h"
->>   #include "hantro_jpeg.h"
->>   #include "hantro_g1_regs.h"
->> +#include "hantro_g2_regs.h"
->>   
->>   static int imx8mq_runtime_resume(struct hantro_dev *vpu)
->>   {
->> @@ -90,6 +91,26 @@ static const struct hantro_fmt imx8m_vpu_dec_fmts[] = {
->>          },
->>   };
->>   
->> +static const struct hantro_fmt imx8m_vpu_g2_dec_fmts[] = {
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_NV12,
->> +               .codec_mode = HANTRO_MODE_NONE,
->> +       },
->> +       {
->> +               .fourcc = V4L2_PIX_FMT_HEVC_SLICE,
->> +               .codec_mode = HANTRO_MODE_HEVC_DEC,
->> +               .max_depth = 2,
->> +               .frmsize = {
->> +                       .min_width = 48,
->> +                       .max_width = 3840,
->> +                       .step_width = MB_DIM,
->> +                       .min_height = 48,
->> +                       .max_height = 2160,
->> +                       .step_height = MB_DIM,
->> +               },
->> +       },
->> +};
->> +
->>   static irqreturn_t imx8m_vpu_g1_irq(int irq, void *dev_id)
->>   {
->>          struct hantro_dev *vpu = dev_id;
->> @@ -108,9 +129,42 @@ static irqreturn_t imx8m_vpu_g1_irq(int irq, void *dev_id)
->>          return IRQ_HANDLED;
->>   }
->>   
->> +static irqreturn_t imx8m_vpu_g2_irq(int irq, void *dev_id)
->> +{
->> +       struct hantro_dev *vpu = dev_id;
->> +       enum vb2_buffer_state state;
->> +       u32 status;
->> +
->> +       status = vdpu_read(vpu, HEVC_REG_INTERRUPT);
->> +       state = (status & HEVC_REG_INTERRUPT_DEC_RDY_INT) ?
->> +                VB2_BUF_STATE_DONE : VB2_BUF_STATE_ERROR;
->> +
->> +       vdpu_write(vpu, 0, HEVC_REG_INTERRUPT);
->> +       vdpu_write(vpu, HEVC_REG_CONFIG_DEC_CLK_GATE_E, HEVC_REG_CONFIG);
-> Is this clock gate enable needed on each interrupt?
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ tools/testing/selftests/net/ipsec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yes because if a reset as occur after init, it is the only
-platform specific piece of code that is called.
+diff --git a/tools/testing/selftests/net/ipsec.c b/tools/testing/selftests/net/ipsec.c
+index 17ced7d6ce25..f23438d512c5 100644
+--- a/tools/testing/selftests/net/ipsec.c
++++ b/tools/testing/selftests/net/ipsec.c
+@@ -1785,7 +1785,7 @@ static void grand_child_serv(unsigned int nr, int cmd_fd, void *buf,
+ 		break;
+ 	default:
+ 		printk("got unknown msg type %d", msg->type);
+-	};
++	}
+ }
+ 
+ static int grand_child_f(unsigned int nr, int cmd_fd, void *buf)
+-- 
+2.17.1
 
->
->> +
->> +       hantro_irq_done(vpu, state);
->> +
->> +       return IRQ_HANDLED;
->> +}
->> +
->>   static int imx8mq_vpu_hw_init(struct hantro_dev *vpu)
->>   {
->> -       vpu->dec_base = vpu->reg_bases[0];
->> +       int ret;
->> +
->> +       /* Check variant version */
->> +       ret = clk_bulk_prepare_enable(vpu->variant->num_clocks, vpu->clocks);
->> +       if (ret) {
->> +               dev_err(vpu->dev, "Failed to enable clocks\n");
->> +               return ret;
->> +       }
->> +
->> +       /* Make that the device has been reset before read it id */
->> +       ret = device_reset(vpu->dev);
->> +       if (ret)
->> +               dev_err(vpu->dev, "Failed to reset Hantro VPU\n");
->> +
->> +       vpu->core_hw_dec_rev = (vdpu_read(vpu, HEVC_REG_VERSION) >> 16) & 0xffff;
->> +       clk_bulk_disable_unprepare(vpu->variant->num_clocks, vpu->clocks);
->>   
->>          return 0;
->>   }
->> @@ -149,17 +203,32 @@ static const struct hantro_codec_ops imx8mq_vpu_codec_ops[] = {
->>          },
->>   };
->>   
->> +static const struct hantro_codec_ops imx8mq_vpu_g2_codec_ops[] = {
->> +       [HANTRO_MODE_HEVC_DEC] = {
->> +               .run = hantro_g2_hevc_dec_run,
->> +               .reset = imx8mq_vpu_reset,
->> +               .init = hantro_hevc_dec_init,
->> +               .exit = hantro_hevc_dec_exit,
->> +       },
->> +};
->> +
->>   /*
->>    * VPU variants.
->>    */
->>   
->>   static const struct hantro_irq imx8mq_irqs[] = {
->>          { "g1", imx8m_vpu_g1_irq },
->> -       { "g2", NULL /* TODO: imx8m_vpu_g2_irq */ },
->>   };
->>   
->> -static const char * const imx8mq_clk_names[] = { "g1", "g2", "bus" };
->> -static const char * const imx8mq_reg_names[] = { "g1", "g2", "ctrl" };
->> +static const struct hantro_irq imx8mq_g2_irqs[] = {
->> +       { "g2", imx8m_vpu_g2_irq },
->> +};
->> +
->> +static const char * const imx8mq_clk_names[] = { "g1", "bus"};
->> +static const char * const imx8mq_reg_names[] = { "g1"};
->> +
->> +static const char * const imx8mq_g2_clk_names[] = { "g2", "bus"};
->> +static const char * const imx8mq_g2_reg_names[] = { "g2"};
->>   
->>   const struct hantro_variant imx8mq_vpu_variant = {
->>          .dec_fmts = imx8m_vpu_dec_fmts,
->> @@ -179,3 +248,21 @@ const struct hantro_variant imx8mq_vpu_variant = {
->>          .reg_names = imx8mq_reg_names,
->>          .num_regs = ARRAY_SIZE(imx8mq_reg_names)
->>   };
->> +
->> +const struct hantro_variant imx8mq_vpu_g2_variant = {
->> +       .dec_offset = 0x0,
->> +       .dec_fmts = imx8m_vpu_g2_dec_fmts,
->> +       .num_dec_fmts = ARRAY_SIZE(imx8m_vpu_g2_dec_fmts),
->> +       .postproc_fmts = imx8m_vpu_postproc_fmts,
->> +       .num_postproc_fmts = ARRAY_SIZE(imx8m_vpu_postproc_fmts),
-> Is this postproc_fmts correct?
-
-No, I will remove it since G2 doesn't have postproc.
-
-Benjamin
-
->
-> Thanks!
-> Ezequiel
->
->> +       .codec = HANTRO_HEVC_DECODER,
->> +       .codec_ops = imx8mq_vpu_g2_codec_ops,
->> +       .init = imx8mq_vpu_hw_init,
->> +       .runtime_resume = imx8mq_runtime_resume,
->> +       .irqs = imx8mq_g2_irqs,
->> +       .num_irqs = ARRAY_SIZE(imx8mq_g2_irqs),
->> +       .clk_names = imx8mq_g2_clk_names,
->> +       .num_clocks = ARRAY_SIZE(imx8mq_g2_clk_names),
->> +       .reg_names = imx8mq_g2_reg_names,
->> +       .num_regs = ARRAY_SIZE(imx8mq_g2_reg_names),
->> +};
->
->
