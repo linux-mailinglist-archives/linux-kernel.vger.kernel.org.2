@@ -2,105 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D34232E64E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463F232E618
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhCEK0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:26:41 -0500
-Received: from esa8.hc1455-7.c3s2.iphmx.com ([139.138.61.253]:18697 "EHLO
-        esa8.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229464AbhCEK0P (ORCPT
+        id S229779AbhCEKTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:19:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229737AbhCEKTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:26:15 -0500
-X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Mar 2021 05:26:15 EST
-IronPort-SDR: krv/S+CFAURZZwWR4NKucmyBBjBYj9sr2GZaukzSln510273MOw8KznX5a0jDucHTnKE8tCrn7
- Kut1vOzngp3cGATtLVTnjbJ1fu67o7jho6SNVbmvxymsvZtBdAxIOxukDrGHMZ0a7ar0Jm/C0+
- ouGarW05dpRih2kK8eg23RD5GXIIC/4R0gIKDdNCsXyVephvrrvxZLxpzPuHj1ss2eg8ia35HF
- qkoHNrgI2AOujvGmsPxRo6m+Kt/p3QQdpZSej9c8w+9rradc21Donf/jdem7p07hiaPgaI9aAI
- eNU=
-X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="9801819"
-X-IronPort-AV: E=Sophos;i="5.81,224,1610377200"; 
-   d="scan'208";a="9801819"
-Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
-  by esa8.hc1455-7.c3s2.iphmx.com with ESMTP; 05 Mar 2021 19:19:04 +0900
-Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com [192.168.87.58])
-        by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 99D0BEBA5A
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 19:19:03 +0900 (JST)
-Received: from oym-om4.fujitsu.com (oym-om4.o.css.fujitsu.com [10.85.58.164])
-        by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id C214EB4E5A
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 19:19:02 +0900 (JST)
-Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
-        by oym-om4.fujitsu.com (Postfix) with ESMTP id 6768A40237059;
-        Fri,  5 Mar 2021 19:19:02 +0900 (JST)
-From:   Shunsuke Nakamura <nakamura.shun@fujitsu.com>
-To:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
-        leo.yan@linaro.org, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 3/3] perf vendor events arm64: Add "_" to the event name, which starts with a number
-Date:   Fri,  5 Mar 2021 19:18:41 +0900
-Message-Id: <20210305101841.3133721-4-nakamura.shun@fujitsu.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210305101841.3133721-1-nakamura.shun@fujitsu.com>
-References: <20210305101841.3133721-1-nakamura.shun@fujitsu.com>
+        Fri, 5 Mar 2021 05:19:00 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28671C061761
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 02:18:59 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id v9so2755600lfa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 02:18:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xwNLb2P2LVN8VWnFdZc+rwNuJ+QqAA27JjkB8JsHwdE=;
+        b=ASt1IVQLPzb9L80bE8m9f6kqqabCk7u0JOhy1MzrBL/Y2CJ0Dk+b11puVpKMC0/6Ns
+         ie9feACUA5VpTHep8VxEOVnrNzCWCNw0ghuzbPl2o2TA6BQKPyu2TvpIsSl+n7WOXxhJ
+         GnbpuvsdvzZ3lgB/WInil0/rAKCDEgOYM/BQIW1fnTNNKCc9Fub2YSSwCjDghaAsgXLx
+         evXri9xJW+v/yVU6UBVsQBMa4XNp4xWamt9MADq5BSFM8ZPLmV2Xkc7NScHS74SmE1hH
+         NVzcQFja3IFFj/naH4Ke4fa2zCfotjNhZsI0D7r4QpvMHpkV+H8RGn9fq5IQFSj0RD1D
+         yI4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xwNLb2P2LVN8VWnFdZc+rwNuJ+QqAA27JjkB8JsHwdE=;
+        b=rN5bppwwxfzA2MNXhK862EBKfaUlwvq/wgGLgXbxxXTM4GaKH3pIE+ef9rnDbmKb2Y
+         KCrxEb4emsNOU5Z3EjgNXCvsELgsYmS8nV7sBWnEr+v72ppXnTj2GYPl+fsvnZbit2IJ
+         3Q03Gd9bWsFwMlgQkRQ2Rixe1xMt89KiTbeb795SdYk74tKvBLmqNS0Kcvb137mL4iRc
+         pqhAXjBSkdKw0jsgSfNBvZ1zDEoZwOfSfet47gOkIwwuK7OdZzjtL6haL3VBRrEic/sO
+         qNxmX+MnbBHlKpKqPqB4bUxGFCv4lEaxQxICFpcsRuP2QFF6ajhwEnBQRANQ1jqkBH0V
+         h/xg==
+X-Gm-Message-State: AOAM531hYr5S9wT9Y0ZDToppNhSmSIfwM5cwoGQ16ZOztwA0m3Z0uh/C
+        CeKVE+rJ6792LqN15gzKqX7AmIipsYEFUdA1RfSdFg==
+X-Google-Smtp-Source: ABdhPJxA/IN9FI+YATqXHoTLFT+UsL1VJiDBv807dBmpi79MIpih6Nv69+jErWGhJ3E/idF9JDF05vISQLysXpmYRtw=
+X-Received: by 2002:a19:6b13:: with SMTP id d19mr5000896lfa.291.1614939537603;
+ Fri, 05 Mar 2021 02:18:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-7-marcan@marcan.st>
+In-Reply-To: <20210304213902.83903-7-marcan@marcan.st>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 5 Mar 2021 11:18:46 +0100
+Message-ID: <CACRpkdYZX81vEivv331OOsaRUr65aLza3-Au-by5OL+w1D0RPA@mail.gmail.com>
+Subject: Re: [RFT PATCH v3 06/27] dt-bindings: timer: arm,arch_timer: Add
+ interrupt-names support
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The perf parser does not support event names that start with a number.
-This patch adds "_" to the event name, which starts with a number.
+On Thu, Mar 4, 2021 at 10:40 PM Hector Martin <marcan@marcan.st> wrote:
 
-Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
----
- .../pmu-events/arch/arm64/fujitsu/a64fx/other.json     | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+> Not all platforms provide the same set of timers/interrupts, and Linux
+> only needs one (plus kvm/guest ones); some platforms are working around
+> this by using dummy fake interrupts. Implementing interrupt-names allows
+> the devicetree to specify an arbitrary set of available interrupts, so
+> the timer code can pick the right one.
+>
+> This also adds the hyp-virt timer/interrupt, which was previously not
+> expressed in the fixed 4-interrupt form.
+>
+> Signed-off-by: Hector Martin <marcan@marcan.st>
 
-diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
-index 68b8e46d6140..10c823ac26cc 100644
---- a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
-+++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
-@@ -98,31 +98,31 @@
-   {
-     "PublicDescription": "This event counts every cycle that no instruction was committed, but counts at the time when commits MOVPRFX only.",
-     "EventCode": "0x190",
--    "EventName": "0INST_COMMIT",
-+    "EventName": "_0INST_COMMIT",
-     "BriefDescription": "This event counts every cycle that no instruction was committed, but counts at the time when commits MOVPRFX only."
-   },
-   {
-     "PublicDescription": "This event counts every cycle that one instruction is committed.",
-     "EventCode": "0x191",
--    "EventName": "1INST_COMMIT",
-+    "EventName": "_1INST_COMMIT",
-     "BriefDescription": "This event counts every cycle that one instruction is committed."
-   },
-   {
-     "PublicDescription": "This event counts every cycle that two instructions are committed.",
-     "EventCode": "0x192",
--    "EventName": "2INST_COMMIT",
-+    "EventName": "_2INST_COMMIT",
-     "BriefDescription": "This event counts every cycle that two instructions are committed."
-   },
-   {
-     "PublicDescription": "This event counts every cycle that three instructions are committed.",
-     "EventCode": "0x193",
--    "EventName": "3INST_COMMIT",
-+    "EventName": "_3INST_COMMIT",
-     "BriefDescription": "This event counts every cycle that three instructions are committed."
-   },
-   {
-     "PublicDescription": "This event counts every cycle that four instructions are committed.",
-     "EventCode": "0x194",
--    "EventName": "4INST_COMMIT",
-+    "EventName": "_4INST_COMMIT",
-     "BriefDescription": "This event counts every cycle that four instructions are committed."
-   },
-   {
--- 
-2.25.1
+This looks good to me.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
+Yours,
+Linus Walleij
