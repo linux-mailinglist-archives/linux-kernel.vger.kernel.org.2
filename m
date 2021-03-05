@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B47632E516
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C54BE32E521
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbhCEJlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:41:49 -0500
-Received: from smtp2.axis.com ([195.60.68.18]:52733 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229592AbhCEJlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:41:20 -0500
+        id S229573AbhCEJob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:44:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229494AbhCEJoA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:44:00 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B193FC061574;
+        Fri,  5 Mar 2021 01:44:00 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id t26so994208pgv.3;
+        Fri, 05 Mar 2021 01:44:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1614937280;
-  x=1646473280;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=eX7eX07dPUECO9RUugQmgGxyuPcG2Ye9kthbsk8KXZc=;
-  b=Zu21fam45OG21ce4yYt32ntQYHAFNPeYaIQdesTDVWn01RN6ufpoz9xt
-   t6IZcBhbITH6i0L2eAL1NEfMdh1rldxssLQYy51rW+TddZHt9JCi2Gs7+
-   ViBl4s62C7YQhLpS01ZDsJ/R1vV6xCzGnZWpz88p5cYpoKbX+EhhvBXYJ
-   bGS86e3wBRs65xKJoA176HC+ZuS8oeifd6w6A19ngtG/z1Gmu2uUi6Foo
-   UVJuvm3Iejj8rfWebpBirXg2V0uF2IdvWNlvzvtwART0Ije/YX13uuXSC
-   2vDdMny59XCzC87lP12wh+xn0nRf80HiWyjqx/LipzqlUMUduU8wnXTdl
-   w==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     <pshilov@microsoft.com>, Steve French <sfrench@samba.org>
-CC:     <kernel@axis.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        <linux-cifs@vger.kernel.org>, <samba-technical@lists.samba.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] CIFS: Prevent error log on spurious oplock break
-Date:   Fri, 5 Mar 2021 10:41:07 +0100
-Message-ID: <20210305094107.13743-1-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=myXEvGngLyw0rSdRs2pyTmkG4KiSVGWXGtBSKeFf77c=;
+        b=a9Qy1lShvEdwL5fcKgoBZqEuhU2arR/7RHUuKxhdo03LhyhGS0L2fdKGtaUKZ01JS+
+         yeKeJEATMH6hostfjhH4Ux0L+DCNR1phOR/gHsbgOpMnCDd8tOb9Tt1qS0SIhML/BJSE
+         c8xHateOqYF6OafcfiXBAEAY0sfLTSqLTDL0T87t9+GjNAR4Z8cxI/nIWE3Itpz4IUN1
+         zQx1cGAFbQ4yeEAKMOMn654l0xRCNbbDh2Az+mqRRdTLC6ezgxlzoCfCs5MJuAO95A1f
+         2LeWVChHCPgpqp2jS4GZDs9ttME/RXp7NtBAocWhOpZ99YQ848xHjc/CrdRZj5aT+1CS
+         xVlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=myXEvGngLyw0rSdRs2pyTmkG4KiSVGWXGtBSKeFf77c=;
+        b=FmnThHtT3NJunx7bW9foyL+Af1K3R+pcnog1ohQf/VDM6OKDUsABcL7wICGtT3nx86
+         Rr92FtI7ne8IB2rcNogwfAyDMly7a1ptID2UoR/+DgMtdYDUIJ/84Hd95w0aUBTBMjp+
+         C7wqtMuqMEtMsn3VePI2k1gs015oiJQxGjcXPlqI33wenvgGkHQ/m1gv0M3Nhpkjkp9n
+         1g4mLclPjvZElXCdViXKge5HE1rc9UvFTaeN1XRX0TwFSVBjltKCYlOMLsCqZ0I/eC5n
+         ySh0NDvxG9kvKW3jdVaUx5CuDyjBAveSGfnfApuaN4kL9RIHiu6qpMEghmFi4dxzIOfj
+         7dFA==
+X-Gm-Message-State: AOAM530s9cylKbunM9tUwDTB2+qtUunsYywV/SeXZO9nTys78bbRVBb2
+        sObhVxjezrVS8dEOtHo/jRY=
+X-Google-Smtp-Source: ABdhPJxz+yPDlpH57O3Ran5esvJ+eTUaChtMck3XKfhtcBnU/Ks7MYYQD0daprqkotGMlQBubo9T4w==
+X-Received: by 2002:aa7:9342:0:b029:1ee:8893:8554 with SMTP id 2-20020aa793420000b02901ee88938554mr8357111pfn.2.1614937440360;
+        Fri, 05 Mar 2021 01:44:00 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.129])
+        by smtp.gmail.com with ESMTPSA id c193sm2136793pfc.180.2021.03.05.01.43.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 01:43:59 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] fs: btrfs: fix error return code of btrfs_recover_relocation()
+Date:   Fri,  5 Mar 2021 01:43:53 -0800
+Message-Id: <20210305094353.13511-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SMB1 version of ->is_oplock_break() returns true even if the FileId
-is not found, as long as the oplock break notification message structure
-itself appears to be valid.  A true return value makes
-cifs_demultiplex_thread() to not print an error message for such
-packets.
+When the list of reloc_roots is empty, no error return code of
+btrfs_recover_relocation() is assigned.
+To fix this bug, err is assigned with -ENOENT as error return code.
 
-However, the SMB2 version returns false in such cases, leading to an
-error "No task to wake, unknown frame received!" followed by a hexdump
-of the packet header being printed by cifs_demultiplex_thread().
-
-Note that before commit fa9c2362497fbd64788063288d ("CIFS: Fix SMB2
-oplock break processing"), SMB2 also returned true for the case where a
-connection was found but the FileId was not, but it's not clear to me if
-that commit really intended to change the behaviour of the error prints.
-
-Change the behaviour of SMB2 to be the same as SMB1 and avoid the error
-messages for these packets which we ignore as per the spec.
-
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 ---
- fs/cifs/smb2misc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/relocation.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/cifs/smb2misc.c b/fs/cifs/smb2misc.c
-index 60d4bd1eae2b..3ea3bda64083 100644
---- a/fs/cifs/smb2misc.c
-+++ b/fs/cifs/smb2misc.c
-@@ -679,7 +679,7 @@ smb2_is_valid_lease_break(char *buffer)
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 232d5da7b7be..631b672a852f 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -3817,8 +3817,10 @@ int btrfs_recover_relocation(struct btrfs_root *root)
  	}
- 	spin_unlock(&cifs_tcp_ses_lock);
- 	cifs_dbg(FYI, "Can not process lease break - no lease matched\n");
--	return false;
-+	return true;
- }
+ 	btrfs_release_path(path);
  
- bool
-@@ -755,7 +755,7 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
- 	}
- 	spin_unlock(&cifs_tcp_ses_lock);
- 	cifs_dbg(FYI, "Can not process oplock break for non-existent connection\n");
--	return false;
-+	return true;
- }
+-	if (list_empty(&reloc_roots))
++	if (list_empty(&reloc_roots)) {
++		err = -ENOENT;
+ 		goto out;
++	}
  
- void
+ 	rc = alloc_reloc_control(fs_info);
+ 	if (!rc) {
 -- 
-2.28.0
+2.17.1
 
