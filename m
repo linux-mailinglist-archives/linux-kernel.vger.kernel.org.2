@@ -2,98 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379ED32E880
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4664C32E8DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbhCEM1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:27:14 -0500
-Received: from mail-out.m-online.net ([212.18.0.9]:40624 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbhCEM0t (ORCPT
+        id S232164AbhCEM3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:29:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28546 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232142AbhCEM2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:26:49 -0500
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4DsRn34C3Cz1qsZs;
-        Fri,  5 Mar 2021 13:26:47 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4DsRn33TjWz1t6p6;
-        Fri,  5 Mar 2021 13:26:47 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id oKW_NzhLEexk; Fri,  5 Mar 2021 13:26:46 +0100 (CET)
-X-Auth-Info: 7sNqH9INcwCoYmH9P1rkueSRV97XCQQxSO/sSqCJ1pc=
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 5 Mar 2021 07:28:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614947329;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SIZLbtAZFPSHx5KKUsWXi2GN4jMwh5B3FLo1HVp/XuA=;
+        b=ARrl+A4NacEJoQDWXFN/jTOax3EpcP22OuWcRHEBIWfDrrG+Wr/GiVIgjqcAn7TbGM9mD8
+        u/59lfYb6O52NRW/vnzgIkwT0uPrVBPvRuaVVPj7gWjU/NGtsGstM9o54XRkt1nLLmNKbI
+        J8eSPvHe2LiO8bFHbbbouJKTK3uZdvs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-258-wSKFs8qaPzSDUFBiJ11oCQ-1; Fri, 05 Mar 2021 07:28:47 -0500
+X-MC-Unique: wSKFs8qaPzSDUFBiJ11oCQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Fri,  5 Mar 2021 13:26:46 +0100 (CET)
-Subject: Re: [PATCH v1 1/1] gpiolib: Read "gpio-line-names" from a firmware
- node
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Roman Guskov <rguskov@dh-electronics.com>
-References: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
- <506c1e48-c648-69d4-8e4f-b42fe02156f7@denx.de>
- <YEIjGcPF9yNnKdSp@smile.fi.intel.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <2f567d44-4aaa-02f7-a60f-d6ad5404373a@denx.de>
-Date:   Fri, 5 Mar 2021 13:26:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 916B283DD20;
+        Fri,  5 Mar 2021 12:28:45 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 67AED10013D6;
+        Fri,  5 Mar 2021 12:28:45 +0000 (UTC)
+Received: from zmail19.collab.prod.int.phx2.redhat.com (zmail19.collab.prod.int.phx2.redhat.com [10.5.83.22])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 129654BB40;
+        Fri,  5 Mar 2021 12:28:42 +0000 (UTC)
+Date:   Fri, 5 Mar 2021 07:28:40 -0500 (EST)
+From:   Veronika Kabatova <vkabatov@redhat.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Message-ID: <2001895867.30197818.1614947320141.JavaMail.zimbra@redhat.com>
+In-Reply-To: <d7470949-0d9d-0863-f5d1-9391134a5e5e@arm.com>
+References: <1614921898-4099-1-git-send-email-anshuman.khandual@arm.com> <d7470949-0d9d-0863-f5d1-9391134a5e5e@arm.com>
+Subject: Re: [PATCH V3 0/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based
+ memory
 MIME-Version: 1.0
-In-Reply-To: <YEIjGcPF9yNnKdSp@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.36.114.98, 10.4.195.5]
+Thread-Topic: arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
+Thread-Index: HYYsJ7UKXk8vnHFKJgWVD82gr9EAgQ==
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/5/21 1:24 PM, Andy Shevchenko wrote:
-> On Fri, Mar 05, 2021 at 01:11:39PM +0100, Marek Vasut wrote:
->> On 3/5/21 1:02 PM, Andy Shevchenko wrote:
->>> On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
->>> see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
->>> pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
->>> and iterates over all of its DT subnodes when registering each GPIO
->>> bank gpiochip. Each gpiochip has:
->>>
->>>     - gpio_chip.parent = dev,
->>>       where dev is the device node of the pin controller
->>>     - gpio_chip.of_node = np,
->>>       which is the OF node of the GPIO bank
->>>
->>> Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
->>> i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
->>>
->>> The original code behaved correctly, as it extracted the "gpio-line-names"
->>> from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
->>>
->>> To achieve the same behaviour, read property from the firmware node.
->>>
->>> Fixes: 7cba1a4d5e162 ("gpiolib: generalize devprop_gpiochip_set_names() for device properties")
->>> Reported-by: Marek Vasut <marex@denx.de>
->>> Reported-by: Roman Guskov <rguskov@dh-electronics.com>
->>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>
->> Tested-by: Marek Vasut <marex@denx.de>
->> Reviewed-by: Marek Vasut <marex@denx.de>
-> 
-> Thanks!
-> 
->> Thanks
->>
->>>    static int devprop_gpiochip_set_names(struct gpio_chip *chip)
->>>    {
->>>    	struct gpio_device *gdev = chip->gpiodev;
->>> -	struct device *dev = chip->parent;
->>> +	struct fwnode_handle *fwnode = dev_fwnode(&gdev->dev);
->>
->> You could make the order here a reverse xmas tree, but that's a nitpick.
-> 
-> They are dependent, can't be reordered.
 
-Doh, you're right.
+
+----- Original Message -----
+> From: "Anshuman Khandual" <anshuman.khandual@arm.com>
+> To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, l=
+inux-mm@kvack.org
+> Cc: "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon" <will@kern=
+el.org>, "Ard Biesheuvel" <ardb@kernel.org>,
+> "Mark Rutland" <mark.rutland@arm.com>, "James Morse" <james.morse@arm.com=
+>, "Robin Murphy" <robin.murphy@arm.com>,
+> "J=C3=A9r=C3=B4me Glisse" <jglisse@redhat.com>, "Dan Williams" <dan.j.wil=
+liams@intel.com>, "David Hildenbrand"
+> <david@redhat.com>, "Mike Rapoport" <rppt@linux.ibm.com>, "Veronika Kabat=
+ova" <vkabatov@redhat.com>
+> Sent: Friday, March 5, 2021 6:38:14 AM
+> Subject: Re: [PATCH V3 0/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE bas=
+ed memory
+>=20
+>=20
+> On 3/5/21 10:54 AM, Anshuman Khandual wrote:
+> > This series fixes pfn_valid() for ZONE_DEVICE based memory and also
+> > improves
+> > its performance for normal hotplug memory. While here, it also reorgani=
+zes
+> > pfn_valid() on CONFIG_SPARSEMEM. This series is based on v5.12-rc1.
+> >=20
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: James Morse <james.morse@arm.com>
+> > Cc: Robin Murphy <robin.murphy@arm.com>
+> > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: David Hildenbrand <david@redhat.com>
+> > Cc: Mike Rapoport <rppt@linux.ibm.com>
+> > Cc: Veronika Kabatova <vkabatov@redhat.com>
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-mm@kvack.org
+> > Cc: linux-kernel@vger.kernel.org
+> >=20
+> > Changes in V3:
+> >=20
+> > - Validate the pfn before fetching mem_section with __pfn_to_section() =
+in
+> > [PATCH 2/2]
+>=20
+> Hello Veronica,
+>=20
+> Could you please help recreate the earlier failure [1] but with this
+> series applies on v5.12-rc1. Thank you.
+>=20
+
+Hello Anshuman,
+
+the machine in question is currently loaned to a developer. I'll reach
+out to them and will let you know once I have any results.
+
+
+Veronika
+
+> [1]
+> https://lore.kernel.org/linux-arm-kernel/cki.8D1CB60FEC.K6NJMEFQPV@redhat=
+.com/
+>=20
+> - Anshuman
+>=20
+>=20
+
