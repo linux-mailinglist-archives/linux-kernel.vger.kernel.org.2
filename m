@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B013032E457
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3DB32E45C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:08:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbhCEJHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:07:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229464AbhCEJHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:07:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4BDF64F44;
-        Fri,  5 Mar 2021 09:07:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614935240;
-        bh=ikzpr71mS+z2zxKgVFU67kaIOGEN5DRSzKmf5wpQ0/0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hF8wOGhhfZcgTpyJg8FQrwG4cd/T9gtCrHq0gVkhdt5FVk3h3dm8NfAP4LahvPFOA
-         pJikgwz6fb7eeNLODtRvWHcQQuTwxeG0tpBfv+XIWX2f7XTPyuOuaUX8/izfB7En42
-         xMLUZlAjHiEJmISQ3I0RWiahCJlDSM3gnUjIgzTFYF/qzVELUXkZDo7f9pUjUyaa1a
-         jDzvF/VVS/bghoK4czQgjzTz1n84TlQQ7VxeYUBt2hLIxpdnXkM4azrSGh/vun7ora
-         pxfJzT4wiTpRep3Zipkrwz2xY5GZyHfUEt7BzHiEktgfPxKHni624fxVHmEHmdft6K
-         1XUajEkQtO3Hg==
-Date:   Fri, 5 Mar 2021 03:07:17 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH RESEND][next] sctp: Fix fall-through warnings for Clang
-Message-ID: <20210305090717.GA139387@embeddedor>
+        id S229788AbhCEJIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:08:22 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:13863 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhCEJHw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:07:52 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DsMKP5nscz8t1v;
+        Fri,  5 Mar 2021 17:06:01 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 5 Mar 2021 17:07:43 +0800
+Subject: Re: [PATCH 5.10 000/657] 5.10.20-rc4 review
+References: <1eca83a8a33c44f99ed11d3b423505df@HQMAIL107.nvidia.com>
+From:   Samuel Zou <zou_wei@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>,
+        <lkft-triage@lists.linaro.org>, <patches@kernelci.org>,
+        <pavel@denx.de>, <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>, <linux-tegra@vger.kernel.org>
+X-Forwarded-Message-Id: <1eca83a8a33c44f99ed11d3b423505df@HQMAIL107.nvidia.com>
+Message-ID: <da58faaa-e0f4-c0f4-d68c-7c1c09415b58@huawei.com>
+Date:   Fri, 5 Mar 2021 17:07:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <1eca83a8a33c44f99ed11d3b423505df@HQMAIL107.nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.100]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix a couple
-of warnings by explicitly adding a break statement and replacing a
-comment with a goto statement instead of letting the code fall through
-to the next case.
+On Tue, 02 Mar 2021 20:28:49 +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.20 release.
+> There are 657 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.20-rc4.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Link: https://github.com/KSPP/linux/issues/115
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- net/sctp/input.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Tested on arm64 and x86 for 5.10.20,
 
-diff --git a/net/sctp/input.c b/net/sctp/input.c
-index d508f6f3dd08..5ceaf75105ba 100644
---- a/net/sctp/input.c
-+++ b/net/sctp/input.c
-@@ -633,7 +633,7 @@ int sctp_v4_err(struct sk_buff *skb, __u32 info)
- 		break;
- 	case ICMP_REDIRECT:
- 		sctp_icmp_redirect(sk, transport, skb);
--		/* Fall through to out_unlock. */
-+		goto out_unlock;
- 	default:
- 		goto out_unlock;
- 	}
-@@ -1236,6 +1236,7 @@ static struct sctp_association *__sctp_rcv_walk_lookup(struct net *net,
- 						net, ch, laddr,
- 						sctp_hdr(skb)->source,
- 						transportp);
-+			break;
- 		default:
- 			break;
- 		}
--- 
-2.27.0
+Kernel repo: 
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.10.y
+Version: 5.10.20
+Commit: 83be32b6c9e55d5b04181fc9788591d5611d4a96
+Compiler: gcc version 7.3.0 (GCC)
 
+
+arm64 (No kernel failures)
+--------------------------------------------------------------------
+Testcase Result Summary:
+total_num: 4716
+succeed_num: 4713
+failed_num: 3
+timeout_num: 0
+
+x86 (No kernel failures)
+--------------------------------------------------------------------
+Testcase Result Summary:
+total_num: 4716
+succeed_num: 4713
+failed_num: 3
+timeout_num: 0
+
+Tested-by: Hulk Robot <hulkci@huawei.com>
