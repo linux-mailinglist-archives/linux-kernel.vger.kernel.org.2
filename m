@@ -2,59 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E74732F5AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8E132F5B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbhCEV7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:59:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhCEV67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 16:58:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 09AE265051;
-        Fri,  5 Mar 2021 21:58:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614981539;
-        bh=wCtH3MoXQz+BB4xKiktPGcCpzGS4AumQg2uqoXMHhm4=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=uDEsmjUkuk+y1UnQf4uk5YFcHTP7XBVBG9txAdBNZnzp1pHsBXzKGZFaPEcm9spZc
-         E+7T033yrncKqEFqNQ6hhEkgu+NTe8SQmEJkzRD81INHWTYeEowGu9LiCZ/YtV3S0I
-         YAl4bjzJUSsMOxSj1VGOM/71bjXVQl7GSyP+iwnWJLBRmnJl2uva7cu3QjFARqYRjk
-         s/c2XKXevBinKkR0k9lU2D3rlbgw5rA7j680rSxixBZI+FG0bHNstyLHEi6P43zLPy
-         DapPD7SKQZGoigRgPsvn4SyclWSs61m577cs2QrsWbkD4zl821XaPpsHuEyFKyStwr
-         1LSCqDZbkhuRg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 055E2609EA;
-        Fri,  5 Mar 2021 21:58:59 +0000 (UTC)
-Subject: Re: [git pull] IOMMU Fixes for Linux iommu-updates-v5.12
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210305162319.GA14489@8bytes.org>
-References: <20210305162319.GA14489@8bytes.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210305162319.GA14489@8bytes.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v5.12-rc1
-X-PR-Tracked-Commit-Id: 444d66a23c1f1e4c4d12aed4812681d0ad835d60
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: fc2c8d0af05af4c380824e40ff99ede398913ae5
-Message-Id: <161498153901.14373.491816744847742815.pr-tracker-bot@kernel.org>
-Date:   Fri, 05 Mar 2021 21:58:59 +0000
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+        id S229750AbhCEWGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 17:06:40 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:46280 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229597AbhCEWGh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 17:06:37 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 573C11C0B81; Fri,  5 Mar 2021 23:06:35 +0100 (CET)
+Date:   Fri, 5 Mar 2021 23:06:34 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chris.Paterson2@renesas.com
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/30] 4.4.260-rc1 review
+Message-ID: <20210305220634.GA27686@amd>
+References: <20210305120849.381261651@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
+Content-Disposition: inline
+In-Reply-To: <20210305120849.381261651@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 5 Mar 2021 17:23:24 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v5.12-rc1
+--zYM0uCDKw75PZbzx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/fc2c8d0af05af4c380824e40ff99ede398913ae5
+Hi!
 
-Thank you!
+> This is the start of the stable review cycle for the 4.4.260 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Ok, so we ran some tests.
+
+And they failed:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/107595=
+9449
+
+[   26.785861] <LAVA_SIGNAL_TESTCASE TEST_CASE_ID=3DCVE-2018-3639 RESULT=3D=
+fail>
+Received signal: <TESTCASE> TEST_CASE_ID=3DCVE-2018-3639 RESULT=3Dfail
+
+Testcase name is spectre-meltdown-checker... Failing on qemu? Somehow
+strange, but it looks like real test failure.
+
+I'm cc: ing Chris, perhaps he can help.
+
+Best regards,
+								Pavel
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--zYM0uCDKw75PZbzx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBCq2oACgkQMOfwapXb+vJeZgCgkQQCgXjzaDGyk/wIwvRJkfOl
+qNsAn0eDH2zeeH9H1nHqNZObBvQtPd4F
+=cbFg
+-----END PGP SIGNATURE-----
+
+--zYM0uCDKw75PZbzx--
