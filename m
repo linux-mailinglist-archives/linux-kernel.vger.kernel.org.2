@@ -2,169 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A713832DFA5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E2CC32DFAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbhCECZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 21:25:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhCECZe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 21:25:34 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDFDC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 18:25:33 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id r25so817880ljk.11
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 18:25:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2FGTyyXGBlrhr2U0Y+zu7HE9K3MeHxtD2Y4He3VPYgY=;
-        b=dsvHLQY6xZe01a5ElvrEKz2pi2TzN4XqbM2bPG3BcVWYMkAt1L46kzpBrdiL/S7gZh
-         z0gvyLN132f+PtGiObi6hJSzO+5GunORowUlDFpQFrRd10F77NUVToUY4kwxv7eqltZ3
-         2zcmmsBl5Nam3WZBemqCHgtVPD0X4BV3HVEVEgdMIEOfUmBw2kojQRiJkdAPXT7gUXx7
-         f/+RtIQ/XP/WsODFr4OVERBKz8QrZDGf4HvNGKEoZi7Z21u/cBA1ZYKbVYRO5wvbpsfT
-         OXjhj/cl0EpCdJTuc0QiMiKAwnzLGH2EpVToNseuUNO1LPb7Ti8iktjtHNWePdyT7Fbb
-         J/Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2FGTyyXGBlrhr2U0Y+zu7HE9K3MeHxtD2Y4He3VPYgY=;
-        b=Mp8M3fpkCtaQLsYayBnlIbxVWyZPA6GQrI4fYhsuJAaeVa68vHqKtX+1XvTRmg2ZwR
-         v1qoa/AQoSomNi8YCe3gBDN8tSRlUt+iR5BgTNCAk/9ouiwemom3J/u5uZVc1BdKJ2u1
-         Gw+99MKpuJxPZgWC/Ti8mVun7lcamSt0732Q33Suyhx9YJH+jdTQgwOivc9SVUqmMpA8
-         cLiu21saytSiU/rLye5qfVHWJ1viS249Ac9r/OXafDlrLM4WUTzeAPHI3ISdmxAXw23J
-         2aIoqf8MIrOuLaj27cOEy5guBwYNKMc1C1+tNn76UiU2xuLNaCE6/ZBmzCIPfXIXN+oS
-         24IQ==
-X-Gm-Message-State: AOAM531zXsncYJBc4H+v88Ltfo8lwdJXbzLf2BqM0mRr5rfW56y55bYF
-        /x+ebeUV0Hd8faWgD3RaMJGQ89p1D2EP/+hY9Npk8g==
-X-Google-Smtp-Source: ABdhPJwe/5pWuEwctojiEqkxaWP/Hd/Y+WMdhvJlCfoB36pYIQsTTJub01OtXWwlx0Dji3uBg8tPbSm0uF9ia4ywm9o=
-X-Received: by 2002:a19:7e0b:: with SMTP id z11mr4314739lfc.320.1614911131451;
- Thu, 04 Mar 2021 18:25:31 -0800 (PST)
+        id S229512AbhCECaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 21:30:16 -0500
+Received: from mga17.intel.com ([192.55.52.151]:16282 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229436AbhCECaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 21:30:15 -0500
+IronPort-SDR: qGvEhvfXPROf3fTcRsM8tSzle86f1UMz6UofxtLwtu7ck/bReVaNMVuAtmJz13J4QML0wufedt
+ Ou3QaugqVZFQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="167447704"
+X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
+   d="scan'208";a="167447704"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 18:30:15 -0800
+IronPort-SDR: ePoY6QpTi/YcC2rfLPO5FlABIqcjkcpS6UhOKFpjT9hHdg4qRLciLJgl1lnl5PEb76rITYYLnZ
+ Kl5i8vYBWM9g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
+   d="scan'208";a="401082713"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.165])
+  by fmsmga008.fm.intel.com with ESMTP; 04 Mar 2021 18:30:13 -0800
+Date:   Fri, 5 Mar 2021 10:30:12 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        Qais Yousef <qais.yousef@arm.com>, andi.kleen@intel.com
+Subject: Re: [PATCH] clocksource: don't run watchdog forever
+Message-ID: <20210305023012.GB17707@shbuild999.sh.intel.com>
+References: <1614653665-20905-1-git-send-email-feng.tang@intel.com>
+ <YD4CdQqX5Lea1rB5@hirez.programming.kicks-ass.net>
+ <20210302120634.GB76460@shbuild999.sh.intel.com>
+ <875z286xtk.fsf@nanos.tec.linutronix.de>
+ <20210304074316.GA43191@shbuild999.sh.intel.com>
+ <87wnun57ke.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210225053204.697951-1-lzye@google.com> <1b315e2cd02f4017cc746909088cc8bc1a39024e.camel@hadess.net>
- <CAFFuddJKqkUEFdqhk8o+6K3_a42UyT934dmj002MS8deLD6fdA@mail.gmail.com>
-In-Reply-To: <CAFFuddJKqkUEFdqhk8o+6K3_a42UyT934dmj002MS8deLD6fdA@mail.gmail.com>
-From:   Chris Ye <lzye@google.com>
-Date:   Thu, 4 Mar 2021 18:25:20 -0800
-Message-ID: <CAFFudd+Y6maj=F8LwGeakvkRoh_a_s2yi_rtB4LUnY=CVrMGWA@mail.gmail.com>
-Subject: Re: [PATCH] [v2] Input: Add "Share" button to Microsoft Xbox One controller.
-To:     Bastien Nocera <hadess@hadess.net>
-Cc:     =?UTF-8?Q?=C5=81ukasz_Patron?= <priv.luk@gmail.com>,
-        Benjamin Valentin <benpicco@googlemail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Olivier_Cr=C3=AAte?= <olivier.crete@ocrete.ca>,
-        Sanjay Govind <sanjay.govind9@gmail.com>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        trivial@kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wnun57ke.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bastien,  just want to follow up again on this.  I've checked again
-with the Xbox team that the "Share button" is given for the product,
-the HID usage profile and mapping to RECORD is what Xbox team expects
-and they want the same mapping for USB.
+On Thu, Mar 04, 2021 at 03:15:13PM +0100, Thomas Gleixner wrote:
+> Feng,
+> 
+> On Thu, Mar 04 2021 at 15:43, Feng Tang wrote:
+> > On Wed, Mar 03, 2021 at 04:50:31PM +0100, Thomas Gleixner wrote:
+> >> Anything pre TSC_ADJUST wants the watchdog on. With TSC ADJUST available
+> >> we can probably avoid it.
+> >> 
+> >> There is a caveat though. If the machine never goes idle then TSC adjust
+> >> is not able to detect a potential wreckage. OTOH, most of the broken
+> >> BIOSes tweak TSC only by a few cycles and that is usually detectable
+> >> during boot. So we might be clever about it and schedule a check every
+> >> hour when during the first 10 minutes a modification of TSC adjust is
+> >> seen on any CPU.
+> >
+> > I don't have much experience with tsc_adjust, and try to understand it:
+> > The 'modification of TSC' here has 2 cases: ? 
+> > * First read of 'TSC_ADJUST' MSR of a just boot CPU returns non-zero
+> > value
+> 
+> That's catching stupid BIOSes which set the TSC to random values during
+> boot/reboot. That's a one off boot issue and not a real problem. The
+> kernel fixes it up and is done with it. Nothing to care about.
+> 
+> > * Following read of 'TSC_ADJUST' doesn't equal to the 'tsc_adjust' value
+> >   saved in per-cpu data.
+> 
+> That's where we catch broken BIOS/SMI implementations which try to
+> "hide" the time wasted in BIOS/SMI by setting the TSC back to the value
+> they saved on SMI entry. That was a popular BIOS "feature" some years
+> ago, but it seems the BIOS tinkerers finally gave up on it.
+ 
+Thanks for the detailed explaination! I understand now.
 
-Thanks!
-Chris
+> >> Where is this TSC_DISABLE_WRITE bit again?
+> 
+> I'm serious about this. Once the kernel has taken over a CPU there is
+> absolutely no reason for any context to write to the TSC/TSC_ADJUST
+> register ever again. So having a mechanism to prevent writes would
+> surely help to make the TSC more trustworthy.
+> 
+> > Also, does the patch ("x86/tsc: mark tsc reliable for qualified platforms")
+> > need to wait till this caveat case is solved?
+> 
+> Yes, but that should be trivial to do. 
 
+Ok, I see.
 
-On Tue, Mar 2, 2021 at 3:57 PM Chris Ye <lzye@google.com> wrote:
->
-> Hi Bastien,
->     The "Share button" is a name Microsoft calls it, it actually has
-> HID descriptor defined in the bluetooth interface, which the HID usage
-> is:
-> consumer 0xB2:
-> 0x05, 0x0C,        //   Usage Page (Consumer)
-> 0x0A, 0xB2, 0x00,  //   Usage (Record)
-> Microsoft wants the same key code to be generated consistently for USB
-> and bluetooth.
-> Thanks!
-> Chris
->
->
-> On Tue, Mar 2, 2021 at 1:50 AM Bastien Nocera <hadess@hadess.net> wrote:
-> >
-> > On Thu, 2021-02-25 at 05:32 +0000, Chris Ye wrote:
-> > > Add "Share" button input capability and input event mapping for
-> > > Microsoft Xbox One controller.
-> > > Fixed Microsoft Xbox One controller share button not working under USB
-> > > connection.
-> > >
-> > > Signed-off-by: Chris Ye <lzye@google.com>
-> > > ---
-> > >  drivers/input/joystick/xpad.c | 9 ++++++++-
-> > >  1 file changed, 8 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/input/joystick/xpad.c
-> > > b/drivers/input/joystick/xpad.c
-> > > index 9f0d07dcbf06..0c3374091aff 100644
-> > > --- a/drivers/input/joystick/xpad.c
-> > > +++ b/drivers/input/joystick/xpad.c
-> > > @@ -79,6 +79,7 @@
-> > >  #define MAP_DPAD_TO_BUTTONS            (1 << 0)
-> > >  #define MAP_TRIGGERS_TO_BUTTONS                (1 << 1)
-> > >  #define MAP_STICKS_TO_NULL             (1 << 2)
-> > > +#define MAP_SHARE_BUTTON               (1 << 3)
-> > >  #define DANCEPAD_MAP_CONFIG    (MAP_DPAD_TO_BUTTONS
-> > > |                  \
-> > >                                 MAP_TRIGGERS_TO_BUTTONS |
-> > > MAP_STICKS_TO_NULL)
-> > >
-> > > @@ -130,6 +131,7 @@ static const struct xpad_device {
-> > >         { 0x045e, 0x02e3, "Microsoft X-Box One Elite pad", 0,
-> > > XTYPE_XBOXONE },
-> > >         { 0x045e, 0x02ea, "Microsoft X-Box One S pad", 0, XTYPE_XBOXONE
-> > > },
-> > >         { 0x045e, 0x0719, "Xbox 360 Wireless Receiver",
-> > > MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360W },
-> > > +       { 0x045e, 0x0b12, "Microsoft X-Box One X pad",
-> > > MAP_SHARE_BUTTON, XTYPE_XBOXONE },
-> > >         { 0x046d, 0xc21d, "Logitech Gamepad F310", 0, XTYPE_XBOX360 },
-> > >         { 0x046d, 0xc21e, "Logitech Gamepad F510", 0, XTYPE_XBOX360 },
-> > >         { 0x046d, 0xc21f, "Logitech Gamepad F710", 0, XTYPE_XBOX360 },
-> > > @@ -862,6 +864,8 @@ static void xpadone_process_packet(struct usb_xpad
-> > > *xpad, u16 cmd, unsigned char
-> > >         /* menu/view buttons */
-> > >         input_report_key(dev, BTN_START,  data[4] & 0x04);
-> > >         input_report_key(dev, BTN_SELECT, data[4] & 0x08);
-> > > +       if (xpad->mapping & MAP_SHARE_BUTTON)
-> > > +               input_report_key(dev, KEY_RECORD, data[22] & 0x01);
-> > >
-> > >         /* buttons A,B,X,Y */
-> > >         input_report_key(dev, BTN_A,    data[4] & 0x10);
-> > > @@ -1669,9 +1673,12 @@ static int xpad_init_input(struct usb_xpad
-> > > *xpad)
-> > >
-> > >         /* set up model-specific ones */
-> > >         if (xpad->xtype == XTYPE_XBOX360 || xpad->xtype ==
-> > > XTYPE_XBOX360W ||
-> > > -           xpad->xtype == XTYPE_XBOXONE) {
-> > > +               xpad->xtype == XTYPE_XBOXONE) {
-> > >                 for (i = 0; xpad360_btn[i] >= 0; i++)
-> > >                         input_set_capability(input_dev, EV_KEY,
-> > > xpad360_btn[i]);
-> > > +               if (xpad->mapping & MAP_SHARE_BUTTON) {
-> > > +                       input_set_capability(input_dev, EV_KEY,
-> > > KEY_RECORD);
-> >
-> > Is there not a better keycode to use than "Record"? Should a "share"
-> > keycode be added?
-> >
-> > I couldn't find a share button in the most recent USB HID Usage Tables:
-> > https://www.usb.org/document-library/hid-usage-tables-121
-> >
-> > > +               }
-> > >         } else {
-> > >                 for (i = 0; xpad_btn[i] >= 0; i++)
-> > >                         input_set_capability(input_dev, EV_KEY,
-> > > xpad_btn[i]);
-> >
-> >
+Thanks,
+Feng
+
+> 
+> Thanks,
+> 
+>         tglx
