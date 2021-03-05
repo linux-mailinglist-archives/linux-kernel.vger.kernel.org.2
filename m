@@ -2,106 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9A532E095
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4706632E098
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhCEEVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 23:21:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhCEEVW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 23:21:22 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB6DC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 20:21:21 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id y67so1246764pfb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 20:21:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=gz/AcE1P3Yr0Gm3eX8zMColErHy3vzo5LgxPPoJy2Jk=;
-        b=kY8V/bf1GuiWwCdaTfawn1N3oYw5qHY4I3d+1frPAQk7kWAFrHlpIOvu6MWLvIOSNA
-         cRFUjenXWECOJY5KwAZcVxl74V4+H1TeJ+oZ/gPnA9QdBWLwWOG058/9ebmvpNvYZ8Jw
-         aq+eNacU3GkhdfVyygNl0JL2pZee3gPJIE6nI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=gz/AcE1P3Yr0Gm3eX8zMColErHy3vzo5LgxPPoJy2Jk=;
-        b=oER3WEqw+GVEX1h7X2h1JVW58D5DdGPpeSksAHswaHoQNcIN8otM2kAadW23x7ddGK
-         zmcAOct5l9cSEeUzixwaX9TsEP7TeotXx1M5YNEqSjOcchlNBxaUi+JO72MQPNgp/SEB
-         SlEeGoRe/Ue+QKxucYlBDg3FmU6bUrMRsp58uOG2wZhDHDu4Zgzt/acukOetYM7Sdecz
-         JDUjOhd4ZhYZyqVHUj94LW6bNWUHsfNvQY2yT7Caq9Sp2yJuccT7dG5mXNASTwsH/EuC
-         /QtWn8rxrZ4LSUxLl2uSqxczkaM0y4oQvJrrl5Fuo1zb9PreBiruQXaZwZeC+0LCpGgP
-         KJzw==
-X-Gm-Message-State: AOAM531GxOOG2SFsxol22RcZSv5LTUqm8cPgWt5r0sYgDEyDsNUwC1BO
-        OxQ+m9oU89GIQ9bdiNHc4zIUHg==
-X-Google-Smtp-Source: ABdhPJws3fv+IybUhg0peK6oAerLhUCQfi4i3mhvn/s/0GmTUD9CWZaU7lNW4W47mB+Pa6UAr6NJvw==
-X-Received: by 2002:aa7:95b5:0:b029:1ef:272f:920c with SMTP id a21-20020aa795b50000b02901ef272f920cmr4482082pfk.21.1614918080816;
-        Thu, 04 Mar 2021 20:21:20 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:b498:4a2d:bc34:b77e])
-        by smtp.gmail.com with ESMTPSA id k10sm222492pfk.49.2021.03.04.20.21.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 20:21:20 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S229759AbhCEEWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 23:22:02 -0500
+Received: from foss.arm.com ([217.140.110.172]:47460 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229463AbhCEEWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 23:22:01 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 31FACD6E;
+        Thu,  4 Mar 2021 20:22:01 -0800 (PST)
+Received: from [10.163.68.69] (unknown [10.163.68.69])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9A69C3F73B;
+        Thu,  4 Mar 2021 20:21:56 -0800 (PST)
+Subject: Re: [PATCH V2 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based
+ memory
+To:     Will Deacon <will@kernel.org>, David Hildenbrand <david@redhat.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        linux-mm@kvack.org,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>, vkabatov@redhat.com,
+        linux-arm-kernel@lists.infradead.org
+References: <4d8f5156-8628-5531-1485-322ad92aa15c@redhat.com>
+ <0e649f28-4d54-319d-f876-8a93870cda7f@arm.com>
+ <20210205185552.GA23216@willie-the-truck>
+ <20210211115354.GB29894@willie-the-truck>
+ <23e5eb93-a39c-c68e-eac1-c5ccf9036079@arm.com>
+ <a54d7dcc-8603-6d3d-143f-b09c431b8e32@redhat.com>
+ <20210303190428.GB24035@arm.com> <20210303212406.GB20055@willie-the-truck>
+ <b8dfa24d-e287-0039-ea6d-f644f52f4dbf@arm.com>
+ <9872a864-15b1-12a7-6aac-0e68554bc744@redhat.com>
+ <20210304093559.GB20721@willie-the-truck>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <023088a4-c5aa-7a24-f9dd-ecd2b11dcae6@arm.com>
+Date:   Fri, 5 Mar 2021 09:52:30 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <95e58426-c7ab-6ba5-17ea-392754899959@rasmusvillemoes.dk>
-References: <20210301174749.1269154-1-swboyd@chromium.org> <20210301174749.1269154-6-swboyd@chromium.org> <20210304170052.GK2723601@casper.infradead.org> <161488534185.1478170.10285681551102444519@swboyd.mtv.corp.google.com> <95e58426-c7ab-6ba5-17ea-392754899959@rasmusvillemoes.dk>
-Subject: Re: [PATCH 5/7] printk: Make %pS and friends print module build ID
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-doc@vger.kernel.org
-To:     Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Date:   Thu, 04 Mar 2021 20:21:18 -0800
-Message-ID: <161491807864.1478170.14069558494579871831@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20210304093559.GB20721@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rasmus Villemoes (2021-03-04 15:11:47)
-> On 04/03/2021 20.15, Stephen Boyd wrote:
-> > Quoting Matthew Wilcox (2021-03-04 09:00:52)
-> >> On Mon, Mar 01, 2021 at 09:47:47AM -0800, Stephen Boyd wrote:
-> >>> Example:
-> >>>
-> >>>  WARNING: CPU: 4 PID: 3255 at drivers/misc/lkdtm/bugs.c:83 lkdtm_WARN=
-ING+0x28/0x30 [lkdtm] (ed5019fdf5e53be37cb1ba7899292d7e143b259e)
-> >>
-> >> Would the first 12 characters instead of all 40 make it more palatable
-> >> without reducing its utility?
-> >=20
-> > I can't seem to request debuginfo from debuginfod without the full 40
-> > characters. It's not a git sha1 hash.=20
-> >=20
-> >> And I feel it should be within the [], so maybe this:
-> >>
-> >> WARNING: CPU: 4 PID: 3255 at drivers/misc/lkdtm/bugs.c:83 lkdtm_WARNIN=
-G+0x28/0x30 [lkdtm ed5019fdf5e5]
-> >>
-> >=20
-> > Sure I could put the hex numbers inside the brackets. I suspect changing
-> > %pS or updating the "Modules linked in:" line isn't going to be
-> > palatable. I've decided to introduce another printk format %pT to print
-> > the stacktrace=20
->=20
-> Can you avoid claiming a new "top-level" %p modifier? Isn't it better to
-> add a new flag to '%pS', say '%pSb' to include build-id?
->=20
 
-I see that %pSR is used in alpha for the stacktrace. I guess we can have
-%pSb and %pSr then.
+
+On 3/4/21 3:06 PM, Will Deacon wrote:
+> On Thu, Mar 04, 2021 at 09:12:31AM +0100, David Hildenbrand wrote:
+>> On 04.03.21 04:31, Anshuman Khandual wrote:
+>>> On 3/4/21 2:54 AM, Will Deacon wrote:
+>>>> On Wed, Mar 03, 2021 at 07:04:33PM +0000, Catalin Marinas wrote:
+>>>>> On Thu, Feb 11, 2021 at 01:35:56PM +0100, David Hildenbrand wrote:
+>>>>>> On 11.02.21 13:10, Anshuman Khandual wrote:
+>>>>>>> On 2/11/21 5:23 PM, Will Deacon wrote:
+>>>>>>>> ... and dropped. These patches appear to be responsible for a boot
+>>>>>>>> regression reported by CKI:
+>>>>>>>
+>>>>>>> Ahh, boot regression ? These patches only change the behaviour
+>>>>>>> for non boot memory only.
+>>>>>>>
+>>>>>>>> https://lore.kernel.org/r/cki.8D1CB60FEC.K6NJMEFQPV@redhat.com
+>>>>>>>
+>>>>>>> Will look into the logs and see if there is something pointing to
+>>>>>>> the problem.
+>>>>>>
+>>>>>> It's strange. One thing I can imagine is a mis-detection of early sections.
+>>>>>> However, I don't see that happening:
+>>>>>>
+>>>>>> In sparse_init_nid(), we:
+>>>>>> 1. Initialize the memmap
+>>>>>> 2. Set SECTION_IS_EARLY | SECTION_HAS_MEM_MAP via
+>>>>>>     sparse_init_one_section()
+>>>>>>
+>>>>>> Only hotplugged sections (DIMMs, dax/kmem) set SECTION_HAS_MEM_MAP without
+>>>>>> SECTION_IS_EARLY - which is correct, because these are not early.
+>>>>>>
+>>>>>> So once we know that we have valid_section() -- SECTION_HAS_MEM_MAP is set
+>>>>>> -- early_section() should be correct.
+>>>>>>
+>>>>>> Even if someone would be doing a pfn_valid() after
+>>>>>> memblocks_present()->memory_present() but before
+>>>>>> sparse_init_nid(), we should be fine (!valid_section() -> return 0).
+>>>>>
+>>>>> I couldn't figure out how this could fail with Anshuman's patches.
+>>>>> Will's suspicion is that some invalid/null pointer gets dereferenced
+>>>>> before being initialised but the only case I see is somewhere in
+>>>>> pfn_section_valid() (ms->usage) if valid_section() && !early_section().
+>>>>>
+>>>>> Assuming that we do get a valid_section(ms) && !early_section(ms), is
+>>>>> there a case where ms->usage is not initialised? I guess races with
+>>>>> section_deactivate() are not possible this early.
+>>>>>
+>>>>> Another situation could be that pfn_valid() returns true when no memory
+>>>>> is mapped for that pfn.
+>>>>
+>>>> The case I wondered about was __pfn_to_section() with a bogus pfn, since
+>>>> with patch 2/2 we call that *before* checking that pfn_to_section_nr() is
+>>>> sane.
+>>>
+>>> Right, that is problematic. __pfn_to_section() should not be called without
+>>> first validating pfn_to_section_nr(), as it could cause out-of-bound access
+>>> on mem_section buffer. Will fix that order but as there is no test scenario
+>>> which is definitive for this reported regression, how should we ensure that
+>>> it fixes the problem ?
+>>
+>> Oh, right, I missed that in patch #2. (and when comparing to generic
+>> pfn_valid()).
+>>
+>> I thought bisecting pointed at patch #1, that's why I didn't even have
+>> another look at patch #2. Makes sense.
+> 
+> I don't think we ever bisected it beyond these two patches, so it could
+> be either of them. Anshuman -- please work with Veronika on this, as she
+> has access to the problematic machine and was really helpful in debugging
+> this last time.
+
+Sure, will respin the patch series with a fix for [PATCH 2/2] as discussed
+and then follow up with Veronika to recreate the problem.
