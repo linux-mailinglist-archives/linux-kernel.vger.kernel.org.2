@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DFAE32EADA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:41:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F56E32EB20
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:43:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233435AbhCEMkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:40:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55136 "EHLO mail.kernel.org"
+        id S233592AbhCEMmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:42:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233381AbhCEMkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:40:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C96CF64EE8;
-        Fri,  5 Mar 2021 12:40:07 +0000 (UTC)
+        id S231852AbhCEMlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:41:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB5FA6501E;
+        Fri,  5 Mar 2021 12:41:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614948008;
-        bh=hlEnXVV2ikeQ7dVGnJ4SgXa7G/kxCFzM7kTwFPgIv8c=;
+        s=korg; t=1614948099;
+        bh=lQbAOskAQvk773Y3UVHoD9TuD/ynxE/cjo+6z+6pi8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=utuqmh+/aqOFdK0vWHpzC0Z6l0nhzc1ewUfuxNMbb8J28k5/2GnWFPhhmCKqByKa6
-         VeZ7x/VCDpQwzIIMwDdu+fpt5inBVLlyyo9nIs2zUGD2tXWRdCXvXz2YHJUVUcQfVH
-         WirNxUaRXtTGLq5sDJ6/ztbOwhOjXw/vdg1MC8Ss=
+        b=fQ08JWmKZTU2nDTJboCnrcsLbXLxO6JDIx/oEPBTNHvc9VIm6mA3L6b+Sqzhp1/8s
+         Sot7xfpfOTRTAnDNuHeMQiPUjP/pR5Op4zOiOOVvd2JCqkmoPMoiKbtqHg1STm5IsZ
+         0HLmOrh3He5BVDx2uIfx7TG9LkcCx+Z1NZCA8sGk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Jan Beulich <jbeulich@suse.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.14 36/39] xen-netback: respect gnttab_map_refs()s return value
+        stable@vger.kernel.org, Miaoqing Pan <miaoqing@codeaurora.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 28/41] ath10k: fix wmi mgmt tx queue full due to race condition
 Date:   Fri,  5 Mar 2021 13:22:35 +0100
-Message-Id: <20210305120853.594097608@linuxfoundation.org>
+Message-Id: <20210305120852.674704445@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120851.751937389@linuxfoundation.org>
-References: <20210305120851.751937389@linuxfoundation.org>
+In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
+References: <20210305120851.255002428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +41,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Miaoqing Pan <miaoqing@codeaurora.org>
 
-commit 2991397d23ec597405b116d96de3813420bdcbc3 upstream.
+[ Upstream commit b55379e343a3472c35f4a1245906db5158cab453 ]
 
-Commit 3194a1746e8a ("xen-netback: don't "handle" error by BUG()")
-dropped respective a BUG_ON() without noticing that with this the
-variable's value wouldn't be consumed anymore. With gnttab_set_map_op()
-setting all status fields to a non-zero value, in case of an error no
-slot should have a status of GNTST_okay (zero).
+Failed to transmit wmi management frames:
 
-This is part of XSA-367.
+[84977.840894] ath10k_snoc a000000.wifi: wmi mgmt tx queue is full
+[84977.840913] ath10k_snoc a000000.wifi: failed to transmit packet, dropping: -28
+[84977.840924] ath10k_snoc a000000.wifi: failed to submit frame: -28
+[84977.840932] ath10k_snoc a000000.wifi: failed to transmit frame: -28
 
-Cc: <stable@vger.kernel.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Link: https://lore.kernel.org/r/d933f495-619a-0086-5fb4-1ec3cf81a8fc@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This issue is caused by race condition between skb_dequeue and
+__skb_queue_tail. The queue of ‘wmi_mgmt_tx_queue’ is protected by a
+different lock: ar->data_lock vs list->lock, the result is no protection.
+So when ath10k_mgmt_over_wmi_tx_work() and ath10k_mac_tx_wmi_mgmt()
+running concurrently on different CPUs, there appear to be a rare corner
+cases when the queue length is 1,
+
+  CPUx (skb_deuque)			CPUy (__skb_queue_tail)
+					next=list
+					prev=list
+  struct sk_buff *skb = skb_peek(list);	WRITE_ONCE(newsk->next, next);
+  WRITE_ONCE(list->qlen, list->qlen - 1);WRITE_ONCE(newsk->prev, prev);
+  next       = skb->next;		WRITE_ONCE(next->prev, newsk);
+  prev       = skb->prev;		WRITE_ONCE(prev->next, newsk);
+  skb->next  = skb->prev = NULL;	list->qlen++;
+  WRITE_ONCE(next->prev, prev);
+  WRITE_ONCE(prev->next, next);
+
+If the instruction ‘next = skb->next’ is executed before
+‘WRITE_ONCE(prev->next, newsk)’, newsk will be lost, as CPUx get the
+old ‘next’ pointer, but the length is still added by one. The final
+result is the length of the queue will reach the maximum value but
+the queue is empty.
+
+So remove ar->data_lock, and use 'skb_queue_tail' instead of
+'__skb_queue_tail' to prevent the potential race condition. Also switch
+to use skb_queue_len_lockless, in case we queue a few SKBs simultaneously.
+
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1.c2-00033-QCAHLSWMTPLZ-1
+
+Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1608618887-8857-1-git-send-email-miaoqing@codeaurora.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/xen-netback/netback.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -1328,11 +1328,21 @@ int xenvif_tx_action(struct xenvif_queue
- 		return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 8b3fe88d1c4e..564181bb0906 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3452,23 +3452,16 @@ bool ath10k_mac_tx_frm_has_freq(struct ath10k *ar)
+ static int ath10k_mac_tx_wmi_mgmt(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct sk_buff_head *q = &ar->wmi_mgmt_tx_queue;
+-	int ret = 0;
+-
+-	spin_lock_bh(&ar->data_lock);
  
- 	gnttab_batch_copy(queue->tx_copy_ops, nr_cops);
--	if (nr_mops != 0)
-+	if (nr_mops != 0) {
- 		ret = gnttab_map_refs(queue->tx_map_ops,
- 				      NULL,
- 				      queue->pages_to_map,
- 				      nr_mops);
-+		if (ret) {
-+			unsigned int i;
-+
-+			netdev_err(queue->vif->dev, "Map fail: nr %u ret %d\n",
-+				   nr_mops, ret);
-+			for (i = 0; i < nr_mops; ++i)
-+				WARN_ON_ONCE(queue->tx_map_ops[i].status ==
-+				             GNTST_okay);
-+		}
-+	}
+-	if (skb_queue_len(q) == ATH10K_MAX_NUM_MGMT_PENDING) {
++	if (skb_queue_len_lockless(q) >= ATH10K_MAX_NUM_MGMT_PENDING) {
+ 		ath10k_warn(ar, "wmi mgmt tx queue is full\n");
+-		ret = -ENOSPC;
+-		goto unlock;
++		return -ENOSPC;
+ 	}
  
- 	work_done = xenvif_tx_submit(queue);
+-	__skb_queue_tail(q, skb);
++	skb_queue_tail(q, skb);
+ 	ieee80211_queue_work(ar->hw, &ar->wmi_mgmt_tx_work);
  
+-unlock:
+-	spin_unlock_bh(&ar->data_lock);
+-
+-	return ret;
++	return 0;
+ }
+ 
+ static enum ath10k_mac_tx_path
+-- 
+2.30.1
+
 
 
