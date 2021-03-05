@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E0C32EA57
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6814732E96D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232979AbhCEMiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:38:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50122 "EHLO mail.kernel.org"
+        id S232136AbhCEMcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:32:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232532AbhCEMg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:36:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00C2E6501B;
-        Fri,  5 Mar 2021 12:36:58 +0000 (UTC)
+        id S232536AbhCEMcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:32:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0690465004;
+        Fri,  5 Mar 2021 12:32:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947819;
-        bh=5jGaORRjLwfbn7w26dKd/8CU0voAt/GVBMAr90VeoSE=;
+        s=korg; t=1614947523;
+        bh=+S58+QLx3ePuw2zu29LSutDOGxJGNBNL+1TN4eKkVJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L4s0Y5CgOfmlxy2eBXbyNvWUXnB+SR4qoTOHyo6R6WwpJrOQJd5VV1t5f6fMdAO1O
-         O+LJ79mC9MDPsOsLWDDAc1ctle9KrDGH7gaMUUh9FGw4ywMKsWdeefCzVJ26+rfZhm
-         PR2913KGdgag1wBKOz3kKH9qvAiY027KIpfZyAWQ=
+        b=PYXRXuIeVsz+V9HMDGwzXLDtrQsqk8wBM+LUFSXMNFytoj1gg0U5rzXsryomRLfaH
+         ByQK/0mBHmJrtMWwpiCyGgg6+A5sK9R+n4eNXrRX136P9zPYBJs1aU6yZUoMrU6STG
+         kFe7ddILvNKSft/rPQBobaEP508d4EXv7kmnTMhw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 22/52] x86/reboot: Add Zotac ZBOX CI327 nano PCI reboot quirk
+        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 094/102] tty: fix up iterate_tty_read() EOVERFLOW handling
 Date:   Fri,  5 Mar 2021 13:21:53 +0100
-Message-Id: <20210305120854.771299063@linuxfoundation.org>
+Message-Id: <20210305120907.904466423@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
-References: <20210305120853.659441428@linuxfoundation.org>
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+References: <20210305120903.276489876@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,52 +39,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 4b2d8ca9208be636b30e924b1cbcb267b0740c93 ]
+commit e71a8d5cf4b4f274740e31b601216071e2a11afa upstream.
 
-On this system the M.2 PCIe WiFi card isn't detected after reboot, only
-after cold boot. reboot=pci fixes this behavior. In [0] the same issue
-is described, although on another system and with another Intel WiFi
-card. In case it's relevant, both systems have Celeron CPUs.
+When I converted the tty_ldisc_ops 'read()' function to take a kernel
+pointer, I was a bit too aggressive about the ldisc returning EOVERFLOW.
 
-Add a PCI reboot quirk on affected systems until a more generic fix is
-available.
+Yes, we want to have EOVERFLOW override any partially read data (because
+the whole point is that the buffer was too small for the whole packet,
+and we don't want to see partial packets), but it shouldn't override a
+previous EFAULT.
 
-[0] https://bugzilla.kernel.org/show_bug.cgi?id=202399
+And in fact, it really is just EOVERFLOW that is special and should
+throw away any partially read data, not "any error".  Admittedly
+EOVERFLOW is currently the only one that can happen for a continuation
+read - and if the first read iteration returns an error we won't have this issue.
 
- [ bp: Massage commit message. ]
+So this is more of a technicality, but let's just make the intent very
+explicit, and re-organize the error handling a bit so that this is all
+clearer.
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/1524eafd-f89c-cfa4-ed70-0bde9e45eec9@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Link: https://lore.kernel.org/r/CAHk-=wh+-rGsa=xruEWdg_fJViFG8rN9bpLrfLz=_yBYh2tBhA@mail.gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/reboot.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/tty/tty_io.c |   19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-index a19706bee687..6489cc19ed06 100644
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -477,6 +477,15 @@ static const struct dmi_system_id reboot_dmi_table[] __initconst = {
- 		},
- 	},
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -860,13 +860,20 @@ static int iterate_tty_read(struct tty_l
+ 		if (!size)
+ 			break;
  
-+	{	/* PCIe Wifi card isn't detected after reboot otherwise */
-+		.callback = set_pci_reboot,
-+		.ident = "Zotac ZBOX CI327 nano",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "NA"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "ZBOX-CI327NANO-GS-01"),
-+		},
-+	},
+-		/*
+-		 * A ldisc read error return will override any previously copied
+-		 * data (eg -EOVERFLOW from HDLC)
+-		 */
+ 		if (size < 0) {
+-			memzero_explicit(kernel_buf, sizeof(kernel_buf));
+-			return size;
++			/* Did we have an earlier error (ie -EFAULT)? */
++			if (retval)
++				break;
++			retval = size;
 +
- 	/* Sony */
- 	{	/* Handle problems with rebooting on Sony VGN-Z540N */
- 		.callback = set_bios_reboot,
--- 
-2.30.1
-
++			/*
++			 * -EOVERFLOW means we didn't have enough space
++			 * for a whole packet, and we shouldn't return
++			 * a partial result.
++			 */
++			if (retval == -EOVERFLOW)
++				offset = 0;
++			break;
+ 		}
+ 
+ 		copied = copy_to_iter(kernel_buf, size, to);
 
 
