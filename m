@@ -2,146 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3698C32E0F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 06:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 379F132E104
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 06:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbhCEFBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 00:01:25 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:40865 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229494AbhCEFBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 00:01:25 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DsFv51fBxz9sWC;
-        Fri,  5 Mar 2021 16:01:21 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1614920483;
-        bh=HADzFLTJiRHajBtjocr0L74hT5U/LhK0mJtw/ouXjxU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=sEe2yFiC70JfvnTxe0YgAiMh6nPZoEvi0h5USTs843tRe/5UWfhsI5ZfJlPD+sxY8
-         5UoyDp6tzIGvMLKGfBowCZxj+H5gAiPPDfUoUC5MzRMH2Zxs49/SEwXQf16EpAAU4R
-         ffP5FzEKJXU7IbAiBS+oIXeJPwi4wY4tJefrzbVG/9BQ+//8Vxw3EvpXwoB8PNNS//
-         NxlemWXb2+BNshP5Oi9NpWOViNwMPTW9EEWmXUBh4JGysfFdDoBg7O4auR1uzvBVcQ
-         o+naRGI6YtSJqxX+vvyHHxGVm+N8VzQIGyBfrLdBNapOyGO9Xpd4X5qm8mBaN6MGKc
-         2pJljh5YD9i4g==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Marco Elver <elver@google.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
-In-Reply-To: <YEDXJ5JNkgvDFehc@elver.google.com>
-References: <CAG_fn=WFffkVzqC9b6pyNuweFhFswZfa8RRio2nL9-Wq10nBbw@mail.gmail.com>
- <f806de26-daf9-9317-fdaa-a0f7a32d8fe0@csgroup.eu>
- <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
- <08a96c5d-4ae7-03b4-208f-956226dee6bb@csgroup.eu>
- <CANpmjNPYEmLtQEu5G=zJLUzOBaGoqNKwLyipDCxvytdKDKb7mg@mail.gmail.com>
- <ad61cb3a-2b4a-3754-5761-832a1dd0c34e@csgroup.eu>
- <CANpmjNOnVzei7frKcMzMHxaDXh5NvTA-Wpa29C2YC1GUxyKfhQ@mail.gmail.com>
- <f036c53d-7e81-763c-47f4-6024c6c5f058@csgroup.eu>
- <CANpmjNMn_CUrgeSqBgiKx4+J8a+XcxkaLPWoDMUvUEXk8+-jxg@mail.gmail.com>
- <7270e1cc-bb6b-99ee-0043-08a027b8d83a@csgroup.eu>
- <YEDXJ5JNkgvDFehc@elver.google.com>
-Date:   Fri, 05 Mar 2021 16:01:15 +1100
-Message-ID: <874khqry78.fsf@mpe.ellerman.id.au>
+        id S229615AbhCEFFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 00:05:05 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:48898 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhCEFFC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 00:05:02 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12554MVb074851;
+        Thu, 4 Mar 2021 23:04:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614920662;
+        bh=U0H1T2uqfz94VIfupekbSvG64g6Q1bFcWLHxDtZXkRo=;
+        h=From:To:CC:Subject:Date;
+        b=Wux98L/XpAmOM9Zb2Eh+ZhhJsnrgGtKK0RPf8ykrGgND+z4oygQL0Nuc0uUHW1KSP
+         AcnmxZ6+p7jqpDJd0qgMLAc7vdcff+Fzk8qQBJxeYsGoJA497pIKnCeNldZFGujxdE
+         w1om3sRvuPNmuldvIX2OekFrlhVzl/fQOeFB9reg=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12554MQH012146
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 4 Mar 2021 23:04:22 -0600
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Mar
+ 2021 23:04:21 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 4 Mar 2021 23:04:21 -0600
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12554D95116197;
+        Thu, 4 Mar 2021 23:04:14 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Nadeem Athani <nadeem@cadence.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-renesas-soc@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: [PATCH v3 0/7] Add SR-IOV support in PCIe Endpoint Core
+Date:   Fri, 5 Mar 2021 10:34:03 +0530
+Message-ID: <20210305050410.9201-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marco Elver <elver@google.com> writes:
-> On Thu, Mar 04, 2021 at 12:48PM +0100, Christophe Leroy wrote:
->> Le 04/03/2021 =C3=A0 12:31, Marco Elver a =C3=A9crit=C2=A0:
->> > On Thu, 4 Mar 2021 at 12:23, Christophe Leroy
->> > <christophe.leroy@csgroup.eu> wrote:
->> > > Le 03/03/2021 =C3=A0 11:56, Marco Elver a =C3=A9crit :
->> > > >=20
->> > > > Somewhat tangentially, I also note that e.g. show_regs(regs) (which
->> > > > was printed along the KFENCE report above) didn't include the top
->> > > > frame in the "Call Trace", so this assumption is definitely not
->> > > > isolated to KFENCE.
->> > > >=20
->> > >=20
->> > > Now, I have tested PPC64 (with the patch I sent yesterday to modify =
-save_stack_trace_regs()
->> > > applied), and I get many failures. Any idea ?
->> > >=20
->> > > [   17.653751][   T58] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
->> > > [   17.654379][   T58] BUG: KFENCE: invalid free in .kfence_guarded_=
-free+0x2e4/0x530
->> > > [   17.654379][   T58]
->> > > [   17.654831][   T58] Invalid free of 0xc00000003c9c0000 (in kfence=
--#77):
->> > > [   17.655358][   T58]  .kfence_guarded_free+0x2e4/0x530
->> > > [   17.655775][   T58]  .__slab_free+0x320/0x5a0
->> > > [   17.656039][   T58]  .test_double_free+0xe0/0x198
->> > > [   17.656308][   T58]  .kunit_try_run_case+0x80/0x110
->> > > [   17.656523][   T58]  .kunit_generic_run_threadfn_adapter+0x38/0x50
->> > > [   17.657161][   T58]  .kthread+0x18c/0x1a0
->> > > [   17.659148][   T58]  .ret_from_kernel_thread+0x58/0x70
->> > > [   17.659869][   T58]
-> [...]
->> >=20
->> > Looks like something is prepending '.' to function names. We expect
->> > the function name to appear as-is, e.g. "kfence_guarded_free",
->> > "test_double_free", etc.
->> >=20
->> > Is there something special on ppc64, where the '.' is some convention?
->> >=20
->>=20
->> I think so, see https://refspecs.linuxfoundation.org/ELF/ppc64/PPC-elf64=
-abi.html#FUNC-DES
->>=20
->> Also see commit https://github.com/linuxppc/linux/commit/02424d896
->
-> Thanks -- could you try the below patch? You'll need to define
-> ARCH_FUNC_PREFIX accordingly.
->
-> We think, since there are only very few architectures that add a prefix,
-> requiring <asm/kfence.h> to define something like ARCH_FUNC_PREFIX is
-> the simplest option. Let me know if this works for you.
->
-> There an alternative option, which is to dynamically figure out the
-> prefix, but if this simpler option is fine with you, we'd prefer it.
+Patch series
+*) Adds support to add virtual functions to enable endpoint controller
+   which supports SR-IOV capability
+*) Add support in Cadence endpoint driver to configure virtual functions
+*) Enable pci_endpoint_test driver to create pci_device for virtual
+   functions
 
-We have rediscovered this problem in basically every tracing / debugging
-feature added in the last 20 years :)
+v1 of the patch series can be found at [1]
+v2 of the patch series can be found at [2]
 
-I think the simplest solution is the one tools/perf/util/symbol.c uses,
-which is to just skip a leading '.'.
+Here both physical functions and virtual functions use the same
+pci_endpoint_test driver and existing pcitest utility can be used
+to test virtual functions as well.
 
-Does that work?
+Changes from v2:
+*) Fixed DT binding documentation comment by Rob
+*) Fixed the error check in pci-epc-core.c
 
-diff --git a/mm/kfence/report.c b/mm/kfence/report.c
-index ab83d5a59bb1..67b49dc54b38 100644
---- a/mm/kfence/report.c
-+++ b/mm/kfence/report.c
-@@ -67,6 +67,9 @@ static int get_stack_skipnr(const unsigned long stack_ent=
-ries[], int num_entries
- 	for (skipnr =3D 0; skipnr < num_entries; skipnr++) {
- 		int len =3D scnprintf(buf, sizeof(buf), "%ps", (void *)stack_entries[ski=
-pnr]);
-=20
-+		if (buf[0] =3D=3D '.')
-+			buf++;
-+
- 		if (str_has_prefix(buf, "kfence_") || str_has_prefix(buf, "__kfence_") ||
- 		    !strncmp(buf, "__slab_free", len)) {
- 			/*
+Changes from v1:
+*) Re-based and Re-worked to latest kernel 5.10.0-rc2+ (now has generic
+   binding for EP)
 
+[1] -> http://lore.kernel.org/r/20191231113534.30405-1-kishon@ti.com
+[2] -> http://lore.kernel.org/r/20201112175358.2653-1-kishon@ti.com
 
+Kishon Vijay Abraham I (7):
+  dt-bindings: PCI: pci-ep: Add binding to specify virtual function
+  PCI: endpoint: Add support to add virtual function in endpoint core
+  PCI: endpoint: Add support to link a physical function to a virtual
+    function
+  PCI: endpoint: Add virtual function number in pci_epc ops
+  PCI: cadence: Add support to configure virtual functions
+  misc: pci_endpoint_test: Populate sriov_configure ops to configure
+    SR-IOV device
+  Documentation: PCI: endpoint/pci-endpoint-cfs: Guide to use SR-IOV
 
-cheers
+ .../PCI/endpoint/pci-endpoint-cfs.rst         |  12 +-
+ .../devicetree/bindings/pci/pci-ep.yaml       |   9 +
+ drivers/misc/pci_endpoint_test.c              |   1 +
+ .../pci/controller/cadence/pcie-cadence-ep.c  | 251 +++++++++++++++---
+ drivers/pci/controller/cadence/pcie-cadence.h |   7 +
+ .../pci/controller/dwc/pcie-designware-ep.c   |  36 +--
+ drivers/pci/controller/pcie-rcar-ep.c         |  19 +-
+ drivers/pci/controller/pcie-rockchip-ep.c     |  18 +-
+ drivers/pci/endpoint/functions/pci-epf-ntb.c  |  79 +++---
+ drivers/pci/endpoint/functions/pci-epf-test.c |  66 +++--
+ drivers/pci/endpoint/pci-ep-cfs.c             |  24 ++
+ drivers/pci/endpoint/pci-epc-core.c           | 130 ++++++---
+ drivers/pci/endpoint/pci-epf-core.c           | 144 +++++++++-
+ include/linux/pci-epc.h                       |  57 ++--
+ include/linux/pci-epf.h                       |  16 +-
+ 15 files changed, 666 insertions(+), 203 deletions(-)
+
+-- 
+2.17.1
+
