@@ -2,96 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C788C32E6A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B8E32E6A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229494AbhCEKq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:46:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhCEKqO (ORCPT
+        id S229688AbhCEKqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:46:31 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:39589 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229558AbhCEKqV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:46:14 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEB6C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 02:46:13 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id u187so1012663wmg.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 02:46:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QYcloRQYqoQYeneB9TUL5LWRoYdegubdAgTSoIagbwI=;
-        b=l1f+UOwIgVlt828ar7VR0vnkFXh4cRc5C417MtipeTaqlFL9hi+QxQf/kRpJECja4M
-         b1VgvXtLOV2KpkBB58JtxLb1r7x39cua/HRZI9XXxtgnnfrWNKNfRFRTEas45fO773zY
-         7mJT+4G1Sc+QLV2KsJ35V7xN27sbUzT0B7bZHtGhOQSugEZHgtKaZ8IjZJJY8KECnj/e
-         NDxYvkkIxMp0CEG5YQG2rPAaxqFREGuonfLmWbqP9a2as8Ty/JDljoFuQmk5w49uAPkM
-         S2mRfInX6LS/JeefCGRhe0mbClkNBjicwLmnvj5wLTXA7t3Uwhc3PfpgO3P27y1rnfyj
-         Tanw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QYcloRQYqoQYeneB9TUL5LWRoYdegubdAgTSoIagbwI=;
-        b=rQBRRzgx1DUxD0lU+uG8wuEe41YFwRYqkXxh6r8zYx7Ew9yDuwNVV1p+lPjKM+rkZR
-         X0PajiwC3Fqi9Pu7AJdioVeg01svQMI/5yF21VZKiuqETjtQPnLj90iaRTd1SIAXk9f6
-         WfCK0l0nxE9zMkhQl8Udc7pxDN0UnMyOhNsjJYj7BeLbqQLc7iAoHnAUlA3kqr6GEOeX
-         jP3qKVZejO55FiO+XizGpOYXBCffP6CGewdJATZPZ5rdYRIDCHaWcJklJHXRJCqCMZdb
-         BCZ2FD+WlHB3NkIa9gLeQTopO4FiFJyr/nK2zWkZDlFLd+XJ9gsL5Cek4L7/H4acluQc
-         Wa1w==
-X-Gm-Message-State: AOAM530gQodbo7z1uki3Zx5OlNSFp0UtWyJJzwhfKCcKlUz8wW0fPyXy
-        6HEZECuVswoRt2tFMb6vUkA4Xw==
-X-Google-Smtp-Source: ABdhPJyPsHNdCZQ/LIRLnpXLb4jgGrGPiuq6+S8OtX5p5lHKSRBR7HyNChZTX5gDnxX/xPZN/4jXLA==
-X-Received: by 2002:a1c:2049:: with SMTP id g70mr8213376wmg.7.1614941172536;
-        Fri, 05 Mar 2021 02:46:12 -0800 (PST)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id o11sm4083278wrq.74.2021.03.05.02.46.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 02:46:12 -0800 (PST)
-Date:   Fri, 5 Mar 2021 11:45:50 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Eric Auger <eric.auger@redhat.com>
-Cc:     eric.auger.pro@gmail.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, will@kernel.org, maz@kernel.org,
-        robin.murphy@arm.com, joro@8bytes.org, alex.williamson@redhat.com,
-        tn@semihalf.com, zhukeqian1@huawei.com,
-        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
-        wangxingang5@huawei.com, jiangkunkun@huawei.com,
-        zhangfei.gao@linaro.org, zhangfei.gao@gmail.com,
-        vivek.gautam@arm.com, shameerali.kolothum.thodi@huawei.com,
-        yuzenghui@huawei.com, nicoleotsuka@gmail.com,
-        lushenming@huawei.com, vsethi@nvidia.com
-Subject: Re: [PATCH v12 03/13] vfio: VFIO_IOMMU_SET_MSI_BINDING
-Message-ID: <YEIL3qmcRfhUoRGt@myrica>
-References: <20210223210625.604517-1-eric.auger@redhat.com>
- <20210223210625.604517-4-eric.auger@redhat.com>
+        Fri, 5 Mar 2021 05:46:21 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125AcLOY026340;
+        Fri, 5 Mar 2021 11:46:15 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=e8RgWyuTLeswgNcGA3ifo/dI3vZUFn59Nt++mY73tcI=;
+ b=VonhnXj3mFxSVt4fitfX6UjULmCRSRubQAuM/KrvVZQYZA2ouOHyqHGFDp1YJ8DEB9ro
+ I0QcpwTClTRndysEA8HG/jmCKXNlxHoyd7LCH/G1z4qX8z85WYmyEAb6qdepctdKo3mQ
+ 88yjp/BA+l36bpxpKuwSTW/Qxyi5M8IwTArCu0e8IQsvq8kU2s1WERqTrjYaKMRRkNTA
+ CFM8txCfIsXKACS9iBZ3BTsn4iiJdZmJgsCWUY7WMvNw7mRr/C3gvAiyHzqpuvVv0pUz
+ RjIJpFqj3Z3/JpnysWjFkKRCNb8WuOP/ELMyanHLuMOvdtVPwgayUcPZXHhL1Xnb+7mU TQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36yfc4dq0k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 11:46:15 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9D66910002A;
+        Fri,  5 Mar 2021 11:46:14 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 85D252425CB;
+        Fri,  5 Mar 2021 11:46:14 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Mar
+ 2021 11:46:13 +0100
+Subject: Re: [PATCH v5 08/16] rpmsg: glink: add sendto and trysendto ops
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Andy Gross <agross@kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
+ <20210219111501.14261-9-arnaud.pouliquen@foss.st.com>
+ <20210304191129.GE3854911@xps15>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <e0f60693-3184-55c1-db67-1725a5f9c24d@foss.st.com>
+Date:   Fri, 5 Mar 2021 11:46:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210223210625.604517-4-eric.auger@redhat.com>
+In-Reply-To: <20210304191129.GE3854911@xps15>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-05_05:2021-03-03,2021-03-05 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Mathieu,
 
-On Tue, Feb 23, 2021 at 10:06:15PM +0100, Eric Auger wrote:
-> This patch adds the VFIO_IOMMU_SET_MSI_BINDING ioctl which aim
-> to (un)register the guest MSI binding to the host. This latter
-> then can use those stage 1 bindings to build a nested stage
-> binding targeting the physical MSIs.
+On 3/4/21 8:11 PM, Mathieu Poirier wrote:
+> On Fri, Feb 19, 2021 at 12:14:53PM +0100, Arnaud Pouliquen wrote:
+>> Implement the sendto ops to support the future rpmsg_char update for the
+>> vitio backend support.
+> 
+> Add a new line, otherwise it is very easy to read.
+> 
+>> The use of sendto in rpmsg_char is needed as a destination address is
+>> requested at least by the virtio backend.
+> 
+> Same here and throughout the patchset.
+> 
+>> The glink implementation does not need a destination address so ignores it.
+>>
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>> ---
+>>  drivers/rpmsg/qcom_glink_native.c | 16 ++++++++++++++++
+>>  1 file changed, 16 insertions(+)
+>>
+>> diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
+>> index d4e4dd482614..ae2c03b59c55 100644
+>> --- a/drivers/rpmsg/qcom_glink_native.c
+>> +++ b/drivers/rpmsg/qcom_glink_native.c
+>> @@ -1332,6 +1332,20 @@ static int qcom_glink_trysend(struct rpmsg_endpoint *ept, void *data, int len)
+>>  	return __qcom_glink_send(channel, data, len, false);
+>>  }
+>>  
+>> +static int qcom_glink_sendto(struct rpmsg_endpoint *ept, void *data, int len, u32 dst)
+>> +{
+>> +	struct glink_channel *channel = to_glink_channel(ept);
+>> +
+>> +	return __qcom_glink_send(channel, data, len, true);
+>> +}
+>> +
+>> +static int qcom_glink_trysendto(struct rpmsg_endpoint *ept, void *data, int len, u32 dst)
+>> +{
+>> +	struct glink_channel *channel = to_glink_channel(ept);
+>> +
+>> +	return __qcom_glink_send(channel, data, len, false);
+>> +}
+> 
+> Just rename send() to sendto() and trysend() to trysendto() and ignore the
+> destination address.  
 
-Now that RMR is in the IORT spec, could it be used for the nested MSI
-problem?  For virtio-iommu tables I was planning to do it like this:
+Function prototypes have to match with rpmsg_endpoint_ops structure defined
+below. So seems to me not possible to just rename the functions.
+Please could you clarify if i missed something?
 
-MSI is mapped at stage-2 with an arbitrary IPA->doorbell PA. We report
-this IPA to userspace through iommu_groups/X/reserved_regions. No change
-there. Then to the guest we report a reserved identity mapping at IPA
-(using RMR, an equivalent DT binding, or probed RESV_MEM for
-virtio-iommu). The guest creates that mapping at stage-1, and that's it.
-Unless I overlooked something we'd only reuse existing infrastructure and
-avoid the SET_MSI_BINDING interface.
+> The same goes for the next patch.  I would fold patch 08
+> and 09 into 10 to help get the big picture.
+
+I'm going to squash all in one.
 
 Thanks,
-Jean
+Arnaud
+
+> 
+>> +
+>>  /*
+>>   * Finds the device_node for the glink child interested in this channel.
+>>   */
+>> @@ -1364,7 +1378,9 @@ static const struct rpmsg_device_ops glink_device_ops = {
+>>  static const struct rpmsg_endpoint_ops glink_endpoint_ops = {
+>>  	.destroy_ept = qcom_glink_destroy_ept,
+>>  	.send = qcom_glink_send,
+>> +	.sendto = qcom_glink_sendto,
+>>  	.trysend = qcom_glink_trysend,
+>> +	.trysendto = qcom_glink_trysendto,
+>>  };
+>>  
+>>  static void qcom_glink_rpdev_release(struct device *dev)
+>> -- 
+>> 2.17.1
+>>
