@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9554932F150
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F8332F14E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhCERf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:35:26 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:45778 "EHLO
+        id S230131AbhCERfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:35:24 -0500
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:55478 "EHLO
         mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229818AbhCERfJ (ORCPT
+        by vger.kernel.org with ESMTP id S229848AbhCERfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Mar 2021 12:35:09 -0500
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125HWLWc005729;
-        Fri, 5 Mar 2021 11:34:50 -0600
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125HWLWd005729;
+        Fri, 5 Mar 2021 11:34:51 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=V92//usCAgPrYcOQlrA51IEqEqfTTrguEF7VyWvOWj8=;
- b=gkZWdUaAi5RqmGM72BxLWkmlTJldzfOgdjhGViZgS/ID6F7UapeYANnR43tlvn3i7gBJ
- sle0dm23FF7gnC1qnz5deo7fbuy9yeJyS30uSwvnngiXRhZqwvDRx+h+1bUotZJVCYvK
- zVxEI/iuoNBb36ZZqS8Z22RgWRm1XZFJTKVCA1igIQITuYq7yNBVo4uc5W1UN18/wCmZ
- RGdg9HZTHXO8F9fp85iGInf+MAY0AKUIjbtogPxYZatx8NHJdg8jVk9AES0KM7GX1tn8
- aNg2w3qOPZjLzErFFLgfNTI5VopUAZZdzHIG+qkdTiPzkLSt6uM0ssn9cznwkyyy2d6I ZA== 
+ bh=gzlzn/tFGqAHE4cuR79qKhda+aJsVeXIbF0XxJZZB0k=;
+ b=Mza9Gnj+zcbwmFPdBexDlWIAzD0fAogGh7HsfPMx7oz9TDT/TIOSF66GzTM+FJ61VJ5G
+ Mc/9nXVF2cShVkR5HMLN80VXW+mEkzLXSrzlY1qRiMmAYCw3ktNVnqFKBxLG0Y4J0sBE
+ QavF0FC2SPqkLRz3kfrhcfe06chpgKVBKf/ggHPxLh02TDl9DHCjTLVFV+aC3irOwg0t
+ q3f78Jv1mFAB4c6oPQcuw5N0Pu4KYA/r5UZTMMuH24MaObsrQVKjDQQAyz838/ikZN33
+ bMDwYBtck7qKt+UL5ZeXiCpioQCKl9gTdtpZitkSjV/ABqH4uyj9Zo2cO3itF1dJC+fI MQ== 
 Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 36ymc70eyn-5
+        by mx0a-001ae601.pphosted.com with ESMTP id 36ymc70eyn-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 05 Mar 2021 11:34:50 -0600
+        Fri, 05 Mar 2021 11:34:51 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 5 Mar 2021
@@ -36,8 +36,8 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
  Transport; Fri, 5 Mar 2021 17:34:48 +0000
 Received: from mail1.cirrus.com (unknown [198.61.64.35])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C94E711D8;
-        Fri,  5 Mar 2021 17:34:47 +0000 (UTC)
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 23BAD11D6;
+        Fri,  5 Mar 2021 17:34:48 +0000 (UTC)
 From:   Lucas Tanure <tanureal@opensource.cirrus.com>
 To:     James Schulman <james.schulman@cirrus.com>,
         David Rhodes <david.rhodes@cirrus.com>,
@@ -48,9 +48,9 @@ CC:     Richard Fitzgerald <rf@opensource.cirrus.com>,
         <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
         <linux-kernel@vger.kernel.org>,
         Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: [PATCH v2 09/15] ASoC: cs42l42: Set clock source for both ways of stream
-Date:   Fri, 5 Mar 2021 17:34:36 +0000
-Message-ID: <20210305173442.195740-10-tanureal@opensource.cirrus.com>
+Subject: [PATCH v2 10/15] ASoC: cs42l42: Add Capture Support
+Date:   Fri, 5 Mar 2021 17:34:37 +0000
+Message-ID: <20210305173442.195740-11-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305173442.195740-1-tanureal@opensource.cirrus.com>
 References: <20210305173442.195740-1-tanureal@opensource.cirrus.com>
@@ -66,144 +66,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the enable/disable of clocks to cs42l42_mute_stream so the record
-path also get clocks.
+Add support for capture path on headseat pins
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
 Changes in v2:
-- Add missing cs42l42_private struct pointer
+- No changes
 
- sound/soc/codecs/cs42l42.c | 86 +++++++++++++++++++++-----------------
- sound/soc/codecs/cs42l42.h |  1 +
- 2 files changed, 49 insertions(+), 38 deletions(-)
+ sound/soc/codecs/cs42l42.c | 39 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/cs42l42.h | 12 ++++++++++++
+ 2 files changed, 51 insertions(+)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index cad623e73d0fd..774d81a1de1d8 100644
+index 774d81a1de1d8..54dd942f3731e 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -784,52 +784,63 @@ static int cs42l42_set_sysclk(struct snd_soc_dai *dai,
- 	return 0;
- }
+@@ -472,6 +472,18 @@ static const struct snd_soc_dapm_widget cs42l42_dapm_widgets[] = {
  
--static int cs42l42_mute(struct snd_soc_dai *dai, int mute, int direction)
-+static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
+ 	/* Playback Requirements */
+ 	SND_SOC_DAPM_SUPPLY("ASP DAI0", CS42L42_PWR_CTL1, CS42L42_ASP_DAI_PDN_SHIFT, 1, NULL, 0),
++
++	/* Capture Path */
++	SND_SOC_DAPM_INPUT("HS"),
++	SND_SOC_DAPM_ADC("ADC", NULL, CS42L42_PWR_CTL1, CS42L42_ADC_PDN_SHIFT, 1),
++	SND_SOC_DAPM_AIF_OUT("SDOUT1", NULL, 0, CS42L42_ASP_TX_CH_EN, CS42L42_ASP_TX0_CH1_SHIFT, 0),
++	SND_SOC_DAPM_AIF_OUT("SDOUT2", NULL, 1, CS42L42_ASP_TX_CH_EN, CS42L42_ASP_TX0_CH2_SHIFT, 0),
++
++	/* Capture Requirements */
++	SND_SOC_DAPM_SUPPLY("ASP DAO0", CS42L42_PWR_CTL1, CS42L42_ASP_DAO_PDN_SHIFT, 1, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("ASP TX EN", CS42L42_ASP_TX_SZ_EN, CS42L42_ASP_TX_EN_SHIFT, 0, NULL, 0),
++
++	/* Playback/Capture Requirements */
+ 	SND_SOC_DAPM_SUPPLY("SCLK", CS42L42_ASP_CLK_CFG, CS42L42_ASP_SCLK_EN_SHIFT, 0, NULL, 0),
+ };
+ 
+@@ -489,6 +501,21 @@ static const struct snd_soc_dapm_route cs42l42_audio_map[] = {
+ 	{"SDIN2", NULL, "ASP DAI0"},
+ 	{"SDIN1", NULL, "SCLK"},
+ 	{"SDIN2", NULL, "SCLK"},
++
++	/* Capture Path */
++	{"ADC", NULL, "HS"},
++	{ "SDOUT1", NULL, "ADC" },
++	{ "SDOUT2", NULL, "ADC" },
++	{ "Capture", NULL, "SDOUT1" },
++	{ "Capture", NULL, "SDOUT2" },
++
++	/* Capture Requirements */
++	{ "SDOUT1", NULL, "ASP DAO0" },
++	{ "SDOUT2", NULL, "ASP DAO0" },
++	{ "SDOUT1", NULL, "SCLK" },
++	{ "SDOUT2", NULL, "SCLK" },
++	{ "SDOUT1", NULL, "ASP TX EN" },
++	{ "SDOUT2", NULL, "ASP TX EN" },
+ };
+ 
+ static int cs42l42_component_probe(struct snd_soc_component *component)
+@@ -748,12 +775,24 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
  {
  	struct snd_soc_component *component = dai->component;
-+	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
- 	unsigned int regval;
- 	u8 fullScaleVol;
+ 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
++	unsigned int channels = params_channels(params);
+ 	unsigned int width = (params_width(params) / 8) - 1;
+ 	unsigned int val = 0;
  
- 	if (mute) {
--		/* Mark SCLK as not present to turn on the internal
--		 * oscillator.
--		 */
--		snd_soc_component_update_bits(component, CS42L42_OSC_SWITCH,
--						CS42L42_SCLK_PRESENT_MASK, 0);
--
--		snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
--				CS42L42_PLL_START_MASK,
--				0 << CS42L42_PLL_START_SHIFT);
--
- 		/* Mute the headphone */
--		snd_soc_component_update_bits(component, CS42L42_HP_CTL,
--				CS42L42_HP_ANA_AMUTE_MASK |
--				CS42L42_HP_ANA_BMUTE_MASK,
--				CS42L42_HP_ANA_AMUTE_MASK |
--				CS42L42_HP_ANA_BMUTE_MASK);
-+		if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			snd_soc_component_update_bits(component, CS42L42_HP_CTL,
-+						      CS42L42_HP_ANA_AMUTE_MASK |
-+						      CS42L42_HP_ANA_BMUTE_MASK,
-+						      CS42L42_HP_ANA_AMUTE_MASK |
-+						      CS42L42_HP_ANA_BMUTE_MASK);
-+
-+		cs42l42->stream_use &= ~(1 << stream);
-+		if(!cs42l42->stream_use) {
-+			/*
-+			 * Switch to the internal oscillator.
-+			 * SCLK must remain running until after this clock switch.
-+			 * Without a source of clock the I2C bus doesn't work.
-+			 */
-+			snd_soc_component_update_bits(component, CS42L42_OSC_SWITCH,
-+						      CS42L42_SCLK_PRESENT_MASK, 0);
-+			snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
-+						      CS42L42_PLL_START_MASK, 0);
+ 	cs42l42->srate = params_rate(params);
+ 
+ 	switch(substream->stream) {
++	case SNDRV_PCM_STREAM_CAPTURE:
++		if (channels == 2) {
++			val |= CS42L42_ASP_TX_CH2_AP_MASK;
++			val |= width << CS42L42_ASP_TX_CH2_RES_SHIFT;
 +		}
- 	} else {
--		snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
--				CS42L42_PLL_START_MASK,
--				1 << CS42L42_PLL_START_SHIFT);
--		/* Read the headphone load */
--		regval = snd_soc_component_read(component, CS42L42_LOAD_DET_RCSTAT);
--		if (((regval & CS42L42_RLA_STAT_MASK) >>
--			CS42L42_RLA_STAT_SHIFT) == CS42L42_RLA_STAT_15_OHM) {
--			fullScaleVol = CS42L42_HP_FULL_SCALE_VOL_MASK;
--		} else {
--			fullScaleVol = 0;
-+		if (!cs42l42->stream_use) {
-+			/* SCLK must be running before codec unmute */
-+			snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
-+						      CS42L42_PLL_START_MASK, 1);
++		val |= width << CS42L42_ASP_TX_CH1_RES_SHIFT;
 +
-+			/* Mark SCLK as present, turn off internal oscillator */
-+			snd_soc_component_update_bits(component, CS42L42_OSC_SWITCH,
-+						      CS42L42_SCLK_PRESENT_MASK,
-+						      CS42L42_SCLK_PRESENT_MASK);
- 		}
-+		cs42l42->stream_use |= 1 << stream;
-+
-+		if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+			/* Read the headphone load */
-+			regval = snd_soc_component_read(component, CS42L42_LOAD_DET_RCSTAT);
-+			if (((regval & CS42L42_RLA_STAT_MASK) >> CS42L42_RLA_STAT_SHIFT) ==
-+			    CS42L42_RLA_STAT_15_OHM) {
-+				fullScaleVol = CS42L42_HP_FULL_SCALE_VOL_MASK;
-+			} else {
-+				fullScaleVol = 0;
-+			}
- 
--		/* Un-mute the headphone, set the full scale volume flag */
--		snd_soc_component_update_bits(component, CS42L42_HP_CTL,
--				CS42L42_HP_ANA_AMUTE_MASK |
--				CS42L42_HP_ANA_BMUTE_MASK |
--				CS42L42_HP_FULL_SCALE_VOL_MASK, fullScaleVol);
--
--		/* Mark SCLK as present, turn off internal oscillator */
--		snd_soc_component_update_bits(component, CS42L42_OSC_SWITCH,
--				CS42L42_SCLK_PRESENT_MASK,
--				CS42L42_SCLK_PRESENT_MASK);
-+			/* Un-mute the headphone, set the full scale volume flag */
-+			snd_soc_component_update_bits(component, CS42L42_HP_CTL,
-+						      CS42L42_HP_ANA_AMUTE_MASK |
-+						      CS42L42_HP_ANA_BMUTE_MASK |
-+						      CS42L42_HP_FULL_SCALE_VOL_MASK, fullScaleVol);
-+		}
- 	}
- 
- 	return 0;
-@@ -844,8 +855,7 @@ static const struct snd_soc_dai_ops cs42l42_ops = {
- 	.hw_params	= cs42l42_pcm_hw_params,
- 	.set_fmt	= cs42l42_set_dai_fmt,
- 	.set_sysclk	= cs42l42_set_sysclk,
--	.mute_stream	= cs42l42_mute,
--	.no_capture_mute = 1,
-+	.mute_stream	= cs42l42_mute_stream,
- };
- 
- static struct snd_soc_dai_driver cs42l42_dai = {
++		snd_soc_component_update_bits(component, CS42L42_ASP_TX_CH_AP_RES,
++				CS42L42_ASP_TX_CH1_AP_MASK | CS42L42_ASP_TX_CH2_AP_MASK |
++				CS42L42_ASP_TX_CH2_RES_MASK | CS42L42_ASP_TX_CH1_RES_MASK, val);
++		break;
+ 	case SNDRV_PCM_STREAM_PLAYBACK:
+ 		val |= width << CS42L42_ASP_RX_CH_RES_SHIFT;
+ 		/* channel 1 on low LRCLK */
 diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 4b448c102f538..3dcbfebc53b0f 100644
+index 3dcbfebc53b0f..c373259ed46f7 100644
 --- a/sound/soc/codecs/cs42l42.h
 +++ b/sound/soc/codecs/cs42l42.h
-@@ -768,6 +768,7 @@ struct  cs42l42_private {
- 	u8 bias_thresholds[CS42L42_NUM_BIASES];
- 	u8 hs_bias_ramp_rate;
- 	u8 hs_bias_ramp_time;
-+	u8 stream_use;
- };
+@@ -683,8 +683,20 @@
  
- #endif /* __CS42L42_H__ */
+ /* Page 0x29 Serial Port TX Registers */
+ #define CS42L42_ASP_TX_SZ_EN		(CS42L42_PAGE_29 + 0x01)
++#define CS42L42_ASP_TX_EN_SHIFT		0
+ #define CS42L42_ASP_TX_CH_EN		(CS42L42_PAGE_29 + 0x02)
++#define CS42L42_ASP_TX0_CH2_SHIFT	1
++#define CS42L42_ASP_TX0_CH1_SHIFT	0
++
+ #define CS42L42_ASP_TX_CH_AP_RES	(CS42L42_PAGE_29 + 0x03)
++#define CS42L42_ASP_TX_CH1_AP_SHIFT	7
++#define CS42L42_ASP_TX_CH1_AP_MASK	(1 << CS42L42_ASP_TX_CH1_AP_SHIFT)
++#define CS42L42_ASP_TX_CH2_AP_SHIFT	6
++#define CS42L42_ASP_TX_CH2_AP_MASK	(1 << CS42L42_ASP_TX_CH2_AP_SHIFT)
++#define CS42L42_ASP_TX_CH2_RES_SHIFT	2
++#define CS42L42_ASP_TX_CH2_RES_MASK	(3 << CS42L42_ASP_TX_CH2_RES_SHIFT)
++#define CS42L42_ASP_TX_CH1_RES_SHIFT	0
++#define CS42L42_ASP_TX_CH1_RES_MASK	(3 << CS42L42_ASP_TX_CH1_RES_SHIFT)
+ #define CS42L42_ASP_TX_CH1_BIT_MSB	(CS42L42_PAGE_29 + 0x04)
+ #define CS42L42_ASP_TX_CH1_BIT_LSB	(CS42L42_PAGE_29 + 0x05)
+ #define CS42L42_ASP_TX_HIZ_DLY_CFG	(CS42L42_PAGE_29 + 0x06)
 -- 
 2.30.1
 
