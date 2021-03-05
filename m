@@ -2,91 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1671432F3E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:30:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6CA32F3E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 20:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhCETaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 14:30:00 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:51860 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbhCET3s (ORCPT
+        id S230007AbhCETac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 14:30:32 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:49113 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229616AbhCETaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:29:48 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 1457220B83EA;
-        Fri,  5 Mar 2021 11:29:48 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1457220B83EA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1614972588;
-        bh=C6yfakTHu6d1eI3TYLCRPkMg4Ti+vegwEX0NiykQuoU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Hpln3CAQrwyY4794PdvobdjJXJrkT6Eaw6MshSYNHF8DUz7yfgY07jS7s3sQw2ZQt
-         pPPyNSZFBliuZqe1SAFGEDkRlcS18BPnWTHN+dSjR9s5SV9clJYzievx8zSb7UM8Rc
-         /iTnm8a2bMK+Rb4/Rie+s1UND0o8IMxncfyejL1E=
-Subject: Re: [PATCH v3] selinux: measure state and policy capabilities
-To:     Paul Moore <paul@paul-moore.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     zohar@linux.ibm.com,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        tusharsu@linux.microsoft.com, tyhicks@linux.microsoft.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, sashal@kernel.org,
-        James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210212163709.3139-1-nramas@linux.microsoft.com>
- <CAHC9VhSMz8FtK5HMPA1+FMeU0cs4vfCCaimxb-J+VDj_Dyk-nA@mail.gmail.com>
- <af0f2d60c6584b613172b08e4fcea4119e231e93.camel@HansenPartnership.com>
- <CAHC9VhRBdJ9Vh1ESezim129OEf1UJ-Mxm1g9FpxEJmt-PUSLjg@mail.gmail.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <9170636f-1793-2272-e3fe-1551c18edeb9@linux.microsoft.com>
-Date:   Fri, 5 Mar 2021 11:29:47 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 5 Mar 2021 14:30:04 -0500
+Received: (qmail 49912 invoked by uid 1000); 5 Mar 2021 14:30:03 -0500
+Date:   Fri, 5 Mar 2021 14:30:03 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [xhci] usb 4-1: reset SuperSpeed Gen 1 USB device number 2 using
+ xhci_hcd
+Message-ID: <20210305193003.GE48113@rowland.harvard.edu>
+References: <CA+icZUWJyPTefHkGEgQtDO9TOM4CN_b2qPJGQVF7NE=Q=fGAEQ@mail.gmail.com>
+ <CA+icZUUzBvmi9SvJ4Bh8ER_+Rkm9vv9FkKwoS8ofmRsko_fJhg@mail.gmail.com>
+ <CA+icZUXCgW0bPcqNf+DSubBciQeBMbNX5zbjkMXinqRdkE1PfA@mail.gmail.com>
+ <20210301155321.GA1490228@rowland.harvard.edu>
+ <CA+icZUVpQtsq8y=rjR3Ad_G1VXWpR4D4xao8DGUkRiuxoT+cPA@mail.gmail.com>
+ <20210305160728.GE38200@rowland.harvard.edu>
+ <CA+icZUXnjDwyKEoX_7KOaVd=PpvEQhpJRvwZbW_xocDfXZpUzQ@mail.gmail.com>
+ <CA+icZUUFGh5CWH-UJK4T-h_Qd2KNnOCrGuT8fg0+Fvjm0C2kbg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHC9VhRBdJ9Vh1ESezim129OEf1UJ-Mxm1g9FpxEJmt-PUSLjg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+icZUUFGh5CWH-UJK4T-h_Qd2KNnOCrGuT8fg0+Fvjm0C2kbg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/5/21 11:22 AM, Paul Moore wrote:
-
-Hi Paul,
-
-> On Fri, Mar 5, 2021 at 12:57 PM James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
->> On Fri, 2021-03-05 at 12:52 -0500, Paul Moore wrote:
->> [...]
->>> This draft seems fine to me, but there is a small logistical blocker
->>> at the moment which means I can't merge this until -rc2 is released,
->>> which likely means this coming Monday.  The problem is that this
->>> patch relies on code that went upstream via in the last merge window
->>> via the IMA tree, not the SELinux tree; normally that wouldn't be a
->>> problem as I typically rebase the selinux/next to Linus' -rc1 tag
->>> once the merge window is closed, but in this particular case the -rc1
->>> tag is dangerously broken for some system configurations (the tag has
->>> since been renamed) so I'm not rebasing onto -rc1 this time around.
->>>
->>> Assuming that -rc2 fixes the swapfile/fs-corruption problem, early
->>> next week I'll rebase selinux/next to -rc2 and merge this patch.
->>> However, if the swapfile bug continues past -rc2 we can consider
->>> merging this via the IMA tree, but I'd assume not do that if possible
->>> due to merge conflict and testing reasons.
->>
->> If it helps, we rebased the SCSI tree on top of the merge for the
->> swapfile fix which is this one, without waiting for -rc2:
+On Fri, Mar 05, 2021 at 08:22:22PM +0100, Sedat Dilek wrote:
+> The quirks match:
 > 
-> Considering that -rc2 is only two days away I'm not going to lose a
-> lot of sleep over it.
+> [Fri Mar  5 20:06:56 2021] usb-storage 4-1:1.0: USB Mass Storage device detected
+> [Fri Mar  5 20:06:56 2021] usb-storage 4-1:1.0: Quirks match for vid
+> 174c pid 55aa: 400000
 > 
+> That seems not to be the trick:
+> 
+> root# LC_ALL=C dmesg -T | grep 'usb 4-1:'
+> [Fri Mar  5 20:06:55 2021] usb 4-1: new SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
+> [Fri Mar  5 20:06:55 2021] usb 4-1: New USB device found,
+> idVendor=174c, idProduct=55aa, bcdDevice= 1.00
+> [Fri Mar  5 20:06:55 2021] usb 4-1: New USB device strings: Mfr=2,
+> Product=3, SerialNumber=1
+> [Fri Mar  5 20:06:55 2021] usb 4-1: Product: MEDION HDDrive-n-GO
+> [Fri Mar  5 20:06:55 2021] usb 4-1: Manufacturer: MEDION
+> [Fri Mar  5 20:06:55 2021] usb 4-1: SerialNumber: 3180000000000000092C
+> [Fri Mar  5 20:06:57 2021] usb 4-1: reset SuperSpeed Gen 1 USB device
+> number 2 using xhci_hcd
 
-Thanks for reviewing the patch.
+Okay, that indicates the ATA commands are being sent not by the kernel 
+but by some program.  I'm not sure how you can easily find out which 
+program; probably the best thing to do is turn them off one by one until 
+you find the one responsible.
 
-I can wait until the swapfile issue is resolved (in rc2 or later) and 
-you are able to merge this patch. Please take your time.
-
-thanks,
-   -lakshmi
+Alan Stern
