@@ -2,103 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D50C32E558
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C6432E556
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbhCEJxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:53:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43412 "EHLO mail.kernel.org"
+        id S229798AbhCEJxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:53:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229611AbhCEJxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:53:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F75A64FF0;
+        id S229520AbhCEJxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:53:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B31264FE9;
         Fri,  5 Mar 2021 09:53:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614937985;
-        bh=HISQ8FVK1FEQR2uPQffgIVaQdAag9fQWCstT9nYNRR4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ROvsjQ369W4Mti4eFRR1Wc1FOLTKKFKDEmwei6CFzaQJ6Qz9XT2wuHNZm6UJ42/Wq
-         mswZpqhpLsCDqTifukAomcs2qL1z4XIMdjcBZZM7Wjbm48ywRY6plez2k5ozqzGN6W
-         D3VlwYCsFcbXFXY6lSs6p/h6jvgiebLp+/iyQEFkvAKLED4VKfA9g5+J8lNWwOiO1V
-         X4eqtyYUhRI5GSk8s/r3nXkcn58FKOIvEYxyu1IxhWaEviTywIQHxMLqCRsNsNJUCc
-         2hEA6hswMuFWi6efEqyoq0eVdEwptFb7eTf8f7HTG1XX63xQuAE4gu7x2Rv4uYt3QD
-         17AhWxXZziwpg==
-Date:   Fri, 5 Mar 2021 09:52:56 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Jian Cai <jiancai@google.com>
-Cc:     ndesaulniers@google.com, manojgupta@google.com, llozano@google.com,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Joey Gouly <joey.gouly@arm.com>,
-        James Morse <james.morse@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v6] ARM: Implement SLS mitigation
-Message-ID: <20210305095256.GA22536@willie-the-truck>
-References: <20210223023542.2287529-1-jiancai@google.com>
- <20210305005327.405365-1-jiancai@google.com>
+        s=k20201202; t=1614937980;
+        bh=AQkQVnVFWVRfrhHzYaVpWwDXLniWq/KwNuU/2JTjAYY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=iqNNkl+XHv8aY7VPk/6k81fIjyJtp6YhO6A2g+MjsujC0oOp+s8+iY5r2rJ7SeNTI
+         kLlhwqxY6dC6hKKYMhY+7LYL7fE2VGdNNDP0ezbuHcsEK8geuQcxbbAfxmp3kKmFC1
+         +/oVDCy3xDfNe5a5Y78rz/1OIwiVkQezLeNgrABgbdou+VOr+6fEU/rTgLPfgGOJ0i
+         XKKqYucfJH5QY1zgt8j/M5MWGWCqaPBqqa/mV8AFrDt71Bh4aB8pAquMmPnL8gTsYW
+         mS6dcGrj75fwgeBBItL1lKJU7PA+3Yfml1l5/lOdt/xCUnQXKq9hUo3Z3oxnk6DaAv
+         QjX8FzC/CULrg==
+Date:   Fri, 5 Mar 2021 03:52:58 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH RESEND][next] hwmon: (max6621) Fix fall-through warnings for
+ Clang
+Message-ID: <20210305095258.GA141583@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210305005327.405365-1-jiancai@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 04:53:18PM -0800, Jian Cai wrote:
-> This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
-> -mharden-sls=all, which mitigates the straight-line speculation
-> vulnerability, speculative execution of the instruction following some
-> unconditional jumps. Notice -mharden-sls= has other options as below,
-> and this config turns on the strongest option.
-> 
-> all: enable all mitigations against Straight Line Speculation that are implemented.
-> none: disable all mitigations against Straight Line Speculation.
-> retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
-> blr: enable the mitigation against Straight Line Speculation for BLR instructions.
-> 
-> Links:
-> https://reviews.llvm.org/D93221
-> https://reviews.llvm.org/D81404
-> https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/downloads/straight-line-speculation
-> https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/frequently-asked-questions#SLS2
-> 
-> Suggested-by: Manoj Gupta <manojgupta@google.com>
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> Suggested-by: David Laight <David.Laight@aculab.com>
-> Suggested-by: Will Deacon <will@kernel.org>
+In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+by explicitly adding a break statement instead of letting the code fall
+through to the next case.
 
-I'm still reasonably opposed to this patch, so please don't add my
-"Suggested-by" here as, if I were to suggest anything, it would be not
-to apply this patch :)
+Link: https://github.com/KSPP/linux/issues/115
+Acked-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/hwmon/max6621.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I still don't see why SLS is worth a compiler mitigation which will affect
-all CPUs that run the kernel binary, but Spectre-v1 is not. In other words,
-the big thing missing from this is a justification as to why SLS is a
-problem worth working around for general C code.
+diff --git a/drivers/hwmon/max6621.c b/drivers/hwmon/max6621.c
+index 367855d5edae..7821132e17fa 100644
+--- a/drivers/hwmon/max6621.c
++++ b/drivers/hwmon/max6621.c
+@@ -156,7 +156,7 @@ max6621_is_visible(const void *data, enum hwmon_sensor_types type, u32 attr,
+ 		default:
+ 			break;
+ 		}
+-
++		break;
+ 	default:
+ 		break;
+ 	}
+-- 
+2.27.0
 
-Will
