@@ -2,68 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6955F32E8B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9432032E831
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:25:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231998AbhCEM2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:28:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36046 "EHLO mail.kernel.org"
+        id S231288AbhCEMZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:25:33 -0500
+Received: from mga02.intel.com ([134.134.136.20]:39041 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231892AbhCEM1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:27:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F5E165029;
-        Fri,  5 Mar 2021 12:27:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947273;
-        bh=41gEd6++g7CldqoBzWI5DQiF/iGGyUIeaooAlXSFWlE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LUZklBLoO8Gw2nirNtk1qwpQtGy2OutQhEvszSlNeJYhzu1lC++Lpbxobuuy4e9fy
-         llRjy4SZsZuYkKvLCQ+GS/xInzPYc5WlIPFJ1jsj8ymtyHe9AfzIvzD8hiqceUBnej
-         6xkJ7BnQMPBdQOZTTrjtF+TI/Z212uQnhnaHYBUk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.11 104/104] ALSA: hda/realtek: Apply dual codec quirks for MSI Godlike X570 board
-Date:   Fri,  5 Mar 2021 13:21:49 +0100
-Message-Id: <20210305120908.273960557@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.166929741@linuxfoundation.org>
-References: <20210305120903.166929741@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S231219AbhCEMZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:25:03 -0500
+IronPort-SDR: nJSO2EIz82aZBhBvW+FQOGeDyug3rahERXqXni85n2baigdj6pOBbuViFzmKxpznZ7kCjnOB5/
+ p0O1ghV/y/7A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="174754639"
+X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
+   d="scan'208";a="174754639"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 04:25:02 -0800
+IronPort-SDR: F9VsvIGTk9t5fdi8BGF3w5v2svrB0+16BCW3HgSXTwhLkEQReS98mrS5h9fB6HwhDuEeilVy2H
+ xTBlkANB0RHw==
+X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
+   d="scan'208";a="507983703"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 04:24:59 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lI9Vp-00A7Rv-1J; Fri, 05 Mar 2021 14:24:57 +0200
+Date:   Fri, 5 Mar 2021 14:24:57 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Marek Vasut <marex@denx.de>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Roman Guskov <rguskov@dh-electronics.com>
+Subject: Re: [PATCH v1 1/1] gpiolib: Read "gpio-line-names" from a firmware
+ node
+Message-ID: <YEIjGcPF9yNnKdSp@smile.fi.intel.com>
+References: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
+ <506c1e48-c648-69d4-8e4f-b42fe02156f7@denx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <506c1e48-c648-69d4-8e4f-b42fe02156f7@denx.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+On Fri, Mar 05, 2021 at 01:11:39PM +0100, Marek Vasut wrote:
+> On 3/5/21 1:02 PM, Andy Shevchenko wrote:
+> > On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
+> > see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
+> > pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
+> > and iterates over all of its DT subnodes when registering each GPIO
+> > bank gpiochip. Each gpiochip has:
+> > 
+> >    - gpio_chip.parent = dev,
+> >      where dev is the device node of the pin controller
+> >    - gpio_chip.of_node = np,
+> >      which is the OF node of the GPIO bank
+> > 
+> > Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
+> > i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
+> > 
+> > The original code behaved correctly, as it extracted the "gpio-line-names"
+> > from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
+> > 
+> > To achieve the same behaviour, read property from the firmware node.
+> > 
+> > Fixes: 7cba1a4d5e162 ("gpiolib: generalize devprop_gpiochip_set_names() for device properties")
+> > Reported-by: Marek Vasut <marex@denx.de>
+> > Reported-by: Roman Guskov <rguskov@dh-electronics.com>
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> Tested-by: Marek Vasut <marex@denx.de>
+> Reviewed-by: Marek Vasut <marex@denx.de>
 
-commit 26af17722a07597d3e556eda92c6fce8d528bc9f upstream.
+Thanks!
 
-There is another MSI board (1462:cc34) that has dual Realtek codecs,
-and we need to apply the existing quirk for fixing the conflicts of
-Master control.
+> Thanks
+> 
+> >   static int devprop_gpiochip_set_names(struct gpio_chip *chip)
+> >   {
+> >   	struct gpio_device *gdev = chip->gpiodev;
+> > -	struct device *dev = chip->parent;
+> > +	struct fwnode_handle *fwnode = dev_fwnode(&gdev->dev);
+> 
+> You could make the order here a reverse xmas tree, but that's a nitpick.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211743
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210303142346.28182-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+They are dependent, can't be reordered.
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2532,6 +2532,7 @@ static const struct snd_pci_quirk alc882
- 	SND_PCI_QUIRK(0x1462, 0x1276, "MSI-GL73", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1293, "MSI-GP65", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
-+	SND_PCI_QUIRK(0x1462, 0xcc34, "MSI Godlike X570", ALC1220_FIXUP_GB_DUAL_CODECS),
- 	SND_PCI_QUIRK(0x1462, 0xda57, "MSI Z270-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
- 	SND_PCI_QUIRK_VENDOR(0x1462, "MSI", ALC882_FIXUP_GPIO3),
- 	SND_PCI_QUIRK(0x147b, 0x107a, "Abit AW9D-MAX", ALC882_FIXUP_ABIT_AW9D_MAX),
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
