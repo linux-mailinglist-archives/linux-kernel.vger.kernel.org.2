@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8788432EA55
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C1F32E96B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232904AbhCEMh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:37:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50104 "EHLO mail.kernel.org"
+        id S232065AbhCEMcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:32:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231694AbhCEMg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:36:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9721965004;
-        Fri,  5 Mar 2021 12:36:56 +0000 (UTC)
+        id S232523AbhCEMcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:32:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CD5B65029;
+        Fri,  5 Mar 2021 12:32:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947817;
-        bh=CFfvMjZor35N/S6Fn9ztZsz8Mjywf8KBGXJhclra0ko=;
+        s=korg; t=1614947520;
+        bh=PJyvEExXLhKyW+Mwpwkr7mvrqXgOQxMqBnjn9yIbJHU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VaJrYeymNWdKx2ZU0/U/O5daInbPT0OVu5JTpgadijh5F0gP8m8EaS7Gm8prRq4RI
-         fRaRsVGurEcxUEapu/XyCk3lwWQ+3jtynjUNYTPe57W4SefQEnCBSTpF6VtZe4ZBjX
-         yhUDCy05WyWwQhBqmCsjvZTtl4fOwIIw8ujGhtdg=
+        b=gjTQ/8qH28z8jjZtIpZr1uNlAsjsUvuGB4u7Do0uRcE2N42DRqFMVf+/OE73aNANH
+         tcAF3i0Bh7PuZR28nfffrrO9cyYvNSyC4qdG1wpk0umUosk8w3LwlzZhd9uPtlxBwr
+         5mCWEp86OSaNMS/lNHxgw3AXvyPUoMUCOy0gfDZE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 21/52] staging: fwserial: Fix error handling in fwserial_create
+        stable@vger.kernel.org,
+        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Sandipan Das <sandipan@linux.ibm.com>
+Subject: [PATCH 5.10 093/102] powerpc/sstep: Fix incorrect return from analyze_instr()
 Date:   Fri,  5 Mar 2021 13:21:52 +0100
-Message-Id: <20210305120854.721298340@linuxfoundation.org>
+Message-Id: <20210305120907.855387479@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
-References: <20210305120853.659441428@linuxfoundation.org>
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+References: <20210305120903.276489876@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Ananth N Mavinakayanahalli <ananth@linux.ibm.com>
 
-[ Upstream commit f31559af97a0eabd467e4719253675b7dccb8a46 ]
+commit 718aae916fa6619c57c348beaedd675835cf1aa1 upstream.
 
-When fw_core_add_address_handler() fails, we need to destroy
-the port by tty_port_destroy(). Also we need to unregister
-the address handler by fw_core_remove_address_handler() on
-failure.
+We currently just percolate the return value from analyze_instr()
+to the caller of emulate_step(), especially if it is a -1.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Link: https://lore.kernel.org/r/20201221122437.10274-1-dinghao.liu@zju.edu.cn
+For one particular case (opcode = 4) for instructions that aren't
+currently emulated, we are returning 'should not be single-stepped'
+while we should have returned 0 which says 'did not emulate, may
+have to single-step'.
+
+Fixes: 930d6288a26787 ("powerpc: sstep: Add support for maddhd, maddhdu, maddld instructions")
+Signed-off-by: Ananth N Mavinakayanahalli <ananth@linux.ibm.com>
+Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+Tested-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Reviewed-by: Sandipan Das <sandipan@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/161157999039.64773.14950289716779364766.stgit@thinktux.local
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/fwserial/fwserial.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/powerpc/lib/sstep.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/fwserial/fwserial.c b/drivers/staging/fwserial/fwserial.c
-index fa0dd425b454..cd062628a46b 100644
---- a/drivers/staging/fwserial/fwserial.c
-+++ b/drivers/staging/fwserial/fwserial.c
-@@ -2219,6 +2219,7 @@ static int fwserial_create(struct fw_unit *unit)
- 		err = fw_core_add_address_handler(&port->rx_handler,
- 						  &fw_high_memory_region);
- 		if (err) {
-+			tty_port_destroy(&port->port);
- 			kfree(port);
- 			goto free_ports;
- 		}
-@@ -2301,6 +2302,7 @@ unregister_ttys:
+--- a/arch/powerpc/lib/sstep.c
++++ b/arch/powerpc/lib/sstep.c
+@@ -1382,6 +1382,11 @@ int analyse_instr(struct instruction_op
  
- free_ports:
- 	for (--i; i >= 0; --i) {
-+		fw_core_remove_address_handler(&serial->ports[i]->rx_handler);
- 		tty_port_destroy(&serial->ports[i]->port);
- 		kfree(serial->ports[i]);
- 	}
--- 
-2.30.1
-
+ #ifdef __powerpc64__
+ 	case 4:
++		/*
++		 * There are very many instructions with this primary opcode
++		 * introduced in the ISA as early as v2.03. However, the ones
++		 * we currently emulate were all introduced with ISA 3.0
++		 */
+ 		if (!cpu_has_feature(CPU_FTR_ARCH_300))
+ 			goto unknown_opcode;
+ 
+@@ -1409,7 +1414,7 @@ int analyse_instr(struct instruction_op
+ 		 * There are other instructions from ISA 3.0 with the same
+ 		 * primary opcode which do not have emulation support yet.
+ 		 */
+-		return -1;
++		goto unknown_opcode;
+ #endif
+ 
+ 	case 7:		/* mulli */
 
 
