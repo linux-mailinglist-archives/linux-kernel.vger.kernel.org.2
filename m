@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD2B32E160
+	by mail.lfdr.de (Postfix) with ESMTP id E91FC32E161
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 06:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbhCEFYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 00:24:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:47964 "EHLO foss.arm.com"
+        id S229520AbhCEFYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 00:24:50 -0500
+Received: from foss.arm.com ([217.140.110.172]:47988 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229469AbhCEFYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 00:24:42 -0500
+        id S229469AbhCEFYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 00:24:48 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8371D101E;
-        Thu,  4 Mar 2021 21:24:42 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 61A87113E;
+        Thu,  4 Mar 2021 21:24:48 -0800 (PST)
 Received: from p8cg001049571a15.arm.com (unknown [10.163.68.69])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 661233F73B;
-        Thu,  4 Mar 2021 21:24:37 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3E9043F73B;
+        Thu,  4 Mar 2021 21:24:42 -0800 (PST)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org
@@ -32,9 +32,9 @@ Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
         David Hildenbrand <david@redhat.com>,
         Mike Rapoport <rppt@linux.ibm.com>,
         Veronika Kabatova <vkabatov@redhat.com>
-Subject: [PATCH V3 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
-Date:   Fri,  5 Mar 2021 10:54:57 +0530
-Message-Id: <1614921898-4099-2-git-send-email-anshuman.khandual@arm.com>
+Subject: [PATCH V3 2/2] arm64/mm: Reorganize pfn_valid()
+Date:   Fri,  5 Mar 2021 10:54:58 +0530
+Message-Id: <1614921898-4099-3-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1614921898-4099-1-git-send-email-anshuman.khandual@arm.com>
 References: <1614921898-4099-1-git-send-email-anshuman.khandual@arm.com>
@@ -42,64 +42,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pfn_valid() validates a pfn but basically it checks for a valid struct page
-backing for that pfn. It should always return positive for memory ranges
-backed with struct page mapping. But currently pfn_valid() fails for all
-ZONE_DEVICE based memory types even though they have struct page mapping.
-
-pfn_valid() asserts that there is a memblock entry for a given pfn without
-MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
-that they do not have memblock entries. Hence memblock_is_map_memory() will
-invariably fail via memblock_search() for a ZONE_DEVICE based address. This
-eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
-to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
-into the system via memremap_pages() called from a driver, their respective
-memory sections will not have SECTION_IS_EARLY set.
-
-Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
-regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
-for firmware reserved memory regions. memblock_is_map_memory() can just be
-skipped as its always going to be positive and that will be an optimization
-for the normal hotplug memory. Like ZONE_DEVICE based memory, all normal
-hotplugged memory too will not have SECTION_IS_EARLY set for their sections
-
-Skipping memblock_is_map_memory() for all non early memory sections would
-fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
-performance for normal hotplug memory as well.
+There are multiple instances of pfn_to_section_nr() and __pfn_to_section()
+when CONFIG_SPARSEMEM is enabled. This can be optimized if memory section
+is fetched earlier. This replaces the open coded PFN and ADDR conversion
+with PFN_PHYS() and PHYS_PFN() helpers. While there, also add a comment.
+This does not cause any functional change.
 
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Will Deacon <will@kernel.org>
 Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Robin Murphy <robin.murphy@arm.com>
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
-Acked-by: David Hildenbrand <david@redhat.com>
-Fixes: 73b20c84d42d ("arm64: mm: implement pte_devmap support")
+Reviewed-by: David Hildenbrand <david@redhat.com>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/arm64/mm/init.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/arm64/mm/init.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
 diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 0ace5e68efba..5920c527845a 100644
+index 5920c527845a..3685e12aba9b 100644
 --- a/arch/arm64/mm/init.c
 +++ b/arch/arm64/mm/init.c
-@@ -230,6 +230,18 @@ int pfn_valid(unsigned long pfn)
+@@ -219,16 +219,26 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
  
- 	if (!valid_section(__pfn_to_section(pfn)))
- 		return 0;
-+
+ int pfn_valid(unsigned long pfn)
+ {
+-	phys_addr_t addr = pfn << PAGE_SHIFT;
++	phys_addr_t addr = PFN_PHYS(pfn);
+ 
+-	if ((addr >> PAGE_SHIFT) != pfn)
 +	/*
-+	 * ZONE_DEVICE memory does not have the memblock entries.
-+	 * memblock_is_map_memory() check for ZONE_DEVICE based
-+	 * addresses will always fail. Even the normal hotplugged
-+	 * memory will never have MEMBLOCK_NOMAP flag set in their
-+	 * memblock entries. Skip memblock search for all non early
-+	 * memory sections covering all of hotplug memory including
-+	 * both normal and ZONE_DEVICE based.
++	 * Ensure the upper PAGE_SHIFT bits are clear in the
++	 * pfn. Else it might lead to false positives when
++	 * some of the upper bits are set, but the lower bits
++	 * match a valid pfn.
 +	 */
-+	if (!early_section(__pfn_to_section(pfn)))
-+		return pfn_section_valid(__pfn_to_section(pfn), pfn);
++	if (PHYS_PFN(addr) != pfn)
+ 		return 0;
+ 
+ #ifdef CONFIG_SPARSEMEM
++{
++	struct mem_section *ms;
++
+ 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+ 		return 0;
+ 
+-	if (!valid_section(__pfn_to_section(pfn)))
++	ms = __pfn_to_section(pfn);
++	if (!valid_section(ms))
+ 		return 0;
+ 
+ 	/*
+@@ -240,8 +250,9 @@ int pfn_valid(unsigned long pfn)
+ 	 * memory sections covering all of hotplug memory including
+ 	 * both normal and ZONE_DEVICE based.
+ 	 */
+-	if (!early_section(__pfn_to_section(pfn)))
+-		return pfn_section_valid(__pfn_to_section(pfn), pfn);
++	if (!early_section(ms))
++		return pfn_section_valid(ms, pfn);
++}
  #endif
  	return memblock_is_map_memory(addr);
  }
