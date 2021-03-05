@@ -2,201 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C33D32EC25
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E41F132EC24
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhCENaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:30:23 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:43002 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhCENaT (ORCPT
+        id S230183AbhCENaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:30:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230083AbhCEN35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:30:19 -0500
-Received: by mail-oi1-f173.google.com with SMTP id l64so2469006oig.9;
-        Fri, 05 Mar 2021 05:30:19 -0800 (PST)
+        Fri, 5 Mar 2021 08:29:57 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43287C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 05:29:57 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id r5so2000948pfh.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 05:29:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mfYkm+BL2FbXLFwEZ3ZDrP3/MgNwOcEcENSfV05Qjdc=;
+        b=jYQus7fMOi42foxsoGrc7MRHYgV6svCXk6QYw11BMh3GfwwnGOL7gI1uGtHHPL1PPZ
+         1VkCsHplucpoOW5WNGm/MCZuOg1gDrmK9fZ8j6/jDMoj4+NKM8sz5kyWgYgocTDoARXh
+         xvNM2tMeiprZNeDoxGoTDP3Q9xK+b0RM1P2LfcL/a9Sod61jbpIqvNzGgBT3JssB0Nbi
+         4WUbgYZQ2pXufAPML3uIl9cGAlYnoWz06nsMsx0deoT01xgerG0H5L7VzHLc76GG9Yjn
+         iUEKUkQgCw6fCqt/0g20va/6goirBV4bCPa52DVs5Ci2+ehK9SgOGihsmWHVQBm/BNKh
+         KRGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8NQ7Or3v5+8GN49zjQ5rWQuRInRqmqpTTu5Y5nSeheE=;
-        b=ppsr0ZvsQQ797ApnVAhlIQ5nPBwlP/yx3Wd7ABdjd/Six4Q4oj39wwJzOMi2jmQOnA
-         BVy56ipH2hTPtXn569W6xCMTOFEE6AWSApzhuUjww/IbT3G9SO5dqeTxAKxOX/ESc+4Q
-         FSYjbSX/anBtLnV4Dzo+RIEHCyMyAg5cwZvVi6V56iV240JFw/ZhFxAMWm7ErwcvU1iE
-         j6g7Wrcb5XCtp+8nRJNddsxQoVFq2o7n4vYX+fCNFoJvXzG8/W8Up37aaKHdxkMf+diw
-         d5UEKhXKiZApa+5p/elSeJWFwfYhUC9XqWSVNlisPwlJGyb1PwrjUr9Rzsc4ztW70F9R
-         VR0Q==
-X-Gm-Message-State: AOAM531JKYHL7zCQHS3htckd423QtYq/geHtgU4YRZzFVTGKUXP3EBFN
-        COD/QuFZiBXVtxbfbzgaDgCPjfgLodLL6OQpF4Q=
-X-Google-Smtp-Source: ABdhPJyVd/WbLsE4stDwYELwiqB0BhSkc0oeszeVzB9M4BVWcGcPECtfNIkQa5Lt1G3D3RNFd+3hj2gfnrwXfyLiJto=
-X-Received: by 2002:aca:e189:: with SMTP id y131mr7198566oig.71.1614951019003;
- Fri, 05 Mar 2021 05:30:19 -0800 (PST)
+        bh=mfYkm+BL2FbXLFwEZ3ZDrP3/MgNwOcEcENSfV05Qjdc=;
+        b=MoSZlC3u31Ii53Qa8O8zRVXMk1P1Rg6fQTSjDMpDYwoaPMqiuCsRrNfaCzWqsNr45h
+         URyyq4xVb07yDIK//K48OHxsAJ657iJNEilp2jt4yOZtYry3ZydeKke/goqwm8ax8yrs
+         vafKJg0Qx0NEn3lX4+WL238vDoeVn01eV4ezFB8ecK/aDl1Hfz850zPaGxIQSPLn/OU3
+         lqKiKrUZZ0po4+o89sortDuk4lk5N7ekWkCts0e7ZRer2WG5bg/ijNvMdmtT3O9Ic+F6
+         S04o1A1OJAgK0ZtEtJn4p9VJDmb7w52EMPZO+CNy5cJM2JQuVOMVrLwlmD9rRSMlF2y/
+         GjJg==
+X-Gm-Message-State: AOAM530TJDd91ymCGl8/TZlZwt5AiW1vax3YYPThbzd7lyvfaS+8cqe4
+        WAako6MWuXXFzWQ6TsPatU7Ow5/mOk825xaxmL3ndg==
+X-Google-Smtp-Source: ABdhPJy6d4A+K8v9995VANqIhEfj6XvmEqvEzQWkNGBLTVQn62bqPp0rx1a3sqPoLU1BrmK+vCHlTp1wu+o1gmXiUPg=
+X-Received: by 2002:a62:7a09:0:b029:1f1:5cf4:3fd7 with SMTP id
+ v9-20020a627a090000b02901f15cf43fd7mr1689899pfc.66.1614950996685; Fri, 05 Mar
+ 2021 05:29:56 -0800 (PST)
 MIME-Version: 1.0
-References: <1614802160-29362-1-git-send-email-george.kennedy@oracle.com>
- <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com> <9c3bc1b2-bb8d-194d-6faf-e4d7d346dc9b@oracle.com>
-In-Reply-To: <9c3bc1b2-bb8d-194d-6faf-e4d7d346dc9b@oracle.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 5 Mar 2021 14:30:07 +0100
-Message-ID: <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
-To:     George Kennedy <george.kennedy@oracle.com>,
-        David Hildenbrand <david@redhat.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oscar Salvador <osalvador@suse.de>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@suse.com>
+References: <1614138270-2374-1-git-send-email-bbhatt@codeaurora.org> <1614138270-2374-2-git-send-email-bbhatt@codeaurora.org>
+In-Reply-To: <1614138270-2374-2-git-send-email-bbhatt@codeaurora.org>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Fri, 5 Mar 2021 14:37:51 +0100
+Message-ID: <CAMZdPi9Kg7_tcu1WQMQHzmNQLyBnH4TeJf6Rbq73Q=Ur7RDsqA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] bus: mhi: core: Introduce internal register poll
+ helper function
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?Q2FybCBZaW4o5q635byg5oiQKQ==?= <carl.yin@quectel.com>,
+        Naveen Kumar <naveen.kumar@quectel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 12:14 AM George Kennedy
-<george.kennedy@oracle.com> wrote:
+On Wed, 24 Feb 2021 at 04:44, Bhaumik Bhatt <bbhatt@codeaurora.org> wrote:
 >
-> Hello Rafael,
+> Introduce helper function to allow MHI core driver to poll for
+> a value in a register field. This helps reach a common path to
+> read and poll register values along with a retry time interval.
 >
-> On 3/4/2021 7:14 AM, Rafael J. Wysocki wrote:
-> > On Thu, Mar 4, 2021 at 2:22 AM George Kennedy <george.kennedy@oracle.com> wrote:
-> >> Since commit 7fef431be9c9 ("mm/page_alloc: place pages to tail
-> >> in __free_pages_core()") the following use after free occurs
-> >> intermittently when acpi tables are accessed.
-> >>
-> >> BUG: KASAN: use-after-free in ibft_init+0x134/0xc49
-> >> Read of size 4 at addr ffff8880be453004 by task swapper/0/1
-> >> CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc1-7a7fd0d #1
-> >> Call Trace:
-> >>   dump_stack+0xf6/0x158
-> >>   print_address_description.constprop.9+0x41/0x60
-> >>   kasan_report.cold.14+0x7b/0xd4
-> >>   __asan_report_load_n_noabort+0xf/0x20
-> >>   ibft_init+0x134/0xc49
-> >>   do_one_initcall+0xc4/0x3e0
-> >>   kernel_init_freeable+0x5af/0x66b
-> >>   kernel_init+0x16/0x1d0
-> >>   ret_from_fork+0x22/0x30
-> >>
-> >> ACPI tables mapped via kmap() do not have their mapped pages
-> >> reserved and the pages can be "stolen" by the buddy allocator.
-> >>
-> > What do you mean by this?
->>
-> The ibft table, for example, is mapped in via acpi_map() and kmap(). The
-> page for the ibft table is not reserved, so it can end up on the freelist.
-
-You appear to be saying that it is not sufficient to kmap() a page in
-order to use it safely.  It is also necessary to reserve it upfront,
-for example with the help of memblock_reserve().  Is that correct?  If
-so, is there an alternative way to reserve a page frame?
-
-> >
-> >> Use memblock_reserve() to reserve all the ACPI table pages.
-> > How is this going to help?
-> If the ibft table page is not reserved, it will end up on the freelist
-> and potentially be allocated before ibft_init() is called.
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ---
+>  drivers/bus/mhi/core/internal.h |  3 +++
+>  drivers/bus/mhi/core/main.c     | 23 +++++++++++++++++++++++
+>  2 files changed, 26 insertions(+)
 >
-> I believe this is the call that causes the ibft table page (in this case
-> pfn=0xbe453) to end up on the freelist:
+> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+> index 6f80ec3..005286b 100644
+> --- a/drivers/bus/mhi/core/internal.h
+> +++ b/drivers/bus/mhi/core/internal.h
+> @@ -643,6 +643,9 @@ int __must_check mhi_read_reg(struct mhi_controller *mhi_cntrl,
+>  int __must_check mhi_read_reg_field(struct mhi_controller *mhi_cntrl,
+>                                     void __iomem *base, u32 offset, u32 mask,
+>                                     u32 shift, u32 *out);
+> +int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
+> +                                   void __iomem *base, u32 offset, u32 mask,
+> +                                   u32 shift, u32 val, u32 delayus);
+>  void mhi_write_reg(struct mhi_controller *mhi_cntrl, void __iomem *base,
+>                    u32 offset, u32 val);
+>  void mhi_write_reg_field(struct mhi_controller *mhi_cntrl, void __iomem *base,
+> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> index 4e0131b..249ae26 100644
+> --- a/drivers/bus/mhi/core/main.c
+> +++ b/drivers/bus/mhi/core/main.c
+> @@ -4,6 +4,7 @@
+>   *
+>   */
 >
-> memmap_init_range: size=bd49b, nid=0, zone=1, start_pfn=1000,
-> zone_end_pfn=100000
-
-David, is commit 7fef431be9c9 related to this and if so, then how?
-
-> [    0.477319]  memmap_init_range+0x33b/0x4e2
-> [    0.479053]  memmap_init_zone+0x1e0/0x243
-> [    0.485276]  free_area_init_node+0xa4e/0xac5
-> [    0.498242]  free_area_init+0xf4a/0x107a
-> [    0.509958]  zone_sizes_init+0xd9/0x111
-> [    0.511731]  paging_init+0x4a/0x4c
-> [    0.512417]  setup_arch+0x14f8/0x1758
-> [    0.519193]  start_kernel+0x6c/0x46f
-> [    0.519921]  x86_64_start_reservations+0x37/0x39
-> [    0.520847]  x86_64_start_kernel+0x7b/0x7e
-> [    0.521666]  secondary_startup_64_no_verify+0xb0/0xbb
+> +#include <linux/delay.h>
+>  #include <linux/device.h>
+>  #include <linux/dma-direction.h>
+>  #include <linux/dma-mapping.h>
+> @@ -37,6 +38,28 @@ int __must_check mhi_read_reg_field(struct mhi_controller *mhi_cntrl,
+>         return 0;
+>  }
 >
-> >
-> >> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
-> >> ---
-> >>   arch/x86/kernel/setup.c        | 3 +--
-> >>   drivers/acpi/acpica/tbinstal.c | 4 ++++
-> >>   2 files changed, 5 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> >> index d883176..97deea3 100644
-> >> --- a/arch/x86/kernel/setup.c
-> >> +++ b/arch/x86/kernel/setup.c
-> >> @@ -1046,6 +1046,7 @@ void __init setup_arch(char **cmdline_p)
-> >>          cleanup_highmap();
-> >>
-> >>          memblock_set_current_limit(ISA_END_ADDRESS);
-> >> +       acpi_boot_table_init();
-> > This cannot be moved before the acpi_table_upgrade() invocation AFAICS.
-> >
-> > Why exactly do you want to move it?
->
-> Want to make sure there are slots for memblock_reserve() to be able to
-> reserve the page.
+> +int __must_check mhi_poll_reg_field(struct mhi_controller *mhi_cntrl,
+> +                                   void __iomem *base, u32 offset,
+> +                                   u32 mask, u32 shift, u32 val, u32 delayus)
+> +{
+> +       int ret = -ENOENT;
+> +       u32 out, retry = (mhi_cntrl->timeout_ms * 1000) / delayus;
 
-Well, that may not require reordering the initialization this way.
+Can we get the timeout from parameter, not sure all callers will want
+to wait the controller timeout_ms in the future. In case of PCI the
+mhi_cntrl->timeout_ms can be really huge given the device can take up
+to 15 seconds to completely start.
 
-> >>          e820__memblock_setup();
-> >>
-> >>          /*
-> >> @@ -1139,8 +1140,6 @@ void __init setup_arch(char **cmdline_p)
-> >>          /*
-> >>           * Parse the ACPI tables for possible boot-time SMP configuration.
-> >>           */
-> >> -       acpi_boot_table_init();
-> >> -
-> >>          early_acpi_boot_init();
-> >>
-> >>          initmem_init();
-> >> diff --git a/drivers/acpi/acpica/tbinstal.c b/drivers/acpi/acpica/tbinstal.c
-> >> index 8d1e5b5..4e32b22 100644
-> >> --- a/drivers/acpi/acpica/tbinstal.c
-> >> +++ b/drivers/acpi/acpica/tbinstal.c
-> >> @@ -8,6 +8,7 @@
-> >>    *****************************************************************************/
-> >>
-> >>   #include <acpi/acpi.h>
-> >> +#include <linux/memblock.h>
-> >>   #include "accommon.h"
-> >>   #include "actables.h"
-> >>
-> >> @@ -58,6 +59,9 @@
-> >>                                        new_table_desc->flags,
-> >>                                        new_table_desc->pointer);
-> >>
-> >> +       memblock_reserve(new_table_desc->address,
-> >> +                        PAGE_ALIGN(new_table_desc->pointer->length));
-> >> +
-> > Why do you want to do this here in the first place?
->
-> If there is a better place to do it, I can move the memblock_reserve()
-> there. The memblock_reserve() cannot be done from the ibft code - it's
-> too late - the ibft table page has already ended up on the freelist by
-> the time ibft_init() is called.
+> +
+> +       while (retry--) {
+> +               ret = mhi_read_reg_field(mhi_cntrl, base, offset, mask, shift,
+> +                                        &out);
+> +               if (ret)
+> +                       return -EIO;
+> +
+> +               if (out == val)
+> +                       return 0;
+> +
+> +               udelay(delayus);
 
-I see.
+I would use a sleep variant (msleep) and millisecond parameter for the function.
 
-> >
-> > Things like that cannot be done in the ACPICA code in general.
->
-> Can you recommend a better place to do the memblock_reserve() from?
-
-Maybe.  I need to understand the problem better, though.
-
-Thanks!
+Regards,
+Loic
