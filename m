@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F9832E995
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:34:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 461D932E997
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbhCEMdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:33:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43892 "EHLO mail.kernel.org"
+        id S231339AbhCEMdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:33:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230406AbhCEMdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:33:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 307866501A;
-        Fri,  5 Mar 2021 12:33:08 +0000 (UTC)
+        id S232384AbhCEMdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:33:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0680B65019;
+        Fri,  5 Mar 2021 12:33:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947589;
-        bh=2O0lwenxAmIM5XsUES+XaigKREFGud5r6uG5Xbus590=;
+        s=korg; t=1614947592;
+        bh=2EqZg4RU7LVE7gbSx+bg95LHGMPaJje5IXToq/HNGVw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kSookPK9iz54UNWd5wGGfHSwvyh2Fst0CJ5UfTZARPaJtZTL9Pqv3rfHapSm0dJIA
-         wPMhxZYtXHZR42JA3Jel9nQswEl8EjT2yPEwmwBnYD7EUhkabSxq6zwbmJ6w+KsY0J
-         eIRM6uyaY/jhsEl4iJoBwYfPRiyc+5zEc+6Dx15s=
+        b=Ou87NsNUyszrL/3rGH5evOaw5KFjQ0boCS5TnrxrLg+MLmlOy8ZkTWUTHgXR0tTlu
+         q1ger9x6M6W/0g3ng3dXzQQHrIy5D+C484uNIhJIO5+98uaZJAnBMn8U0omqArdWoO
+         tC1RnzyDBUjDzEs2E2JYI8B5bdh7Q2jX2L+0c29w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 13/72] net/af_iucv: remove WARN_ONCE on malformed RX packets
-Date:   Fri,  5 Mar 2021 13:21:15 +0100
-Message-Id: <20210305120857.984571475@linuxfoundation.org>
+        syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com,
+        Sabyrzhan Tasbolatov <snovitoll@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Subject: [PATCH 5.4 14/72] smackfs: restrict bytes count in smackfs write functions
+Date:   Fri,  5 Mar 2021 13:21:16 +0100
+Message-Id: <20210305120858.032965574@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
 References: <20210305120857.341630346@linuxfoundation.org>
@@ -42,57 +41,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Egorenkov <egorenar@linux.ibm.com>
+From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 
-commit 27e9c1de529919d8dd7d072415d3bcae77709300 upstream.
+commit 7ef4c19d245f3dc233fd4be5acea436edd1d83d8 upstream.
 
-syzbot reported the following finding:
+syzbot found WARNINGs in several smackfs write operations where
+bytes count is passed to memdup_user_nul which exceeds
+GFP MAX_ORDER. Check count size if bigger than PAGE_SIZE.
 
-AF_IUCV failed to receive skb, len=0
-WARNING: CPU: 0 PID: 522 at net/iucv/af_iucv.c:2039 afiucv_hs_rcv+0x174/0x190 net/iucv/af_iucv.c:2039
-CPU: 0 PID: 522 Comm: syz-executor091 Not tainted 5.10.0-rc1-syzkaller-07082-g55027a88ec9f #0
-Hardware name: IBM 3906 M04 701 (KVM/Linux)
-Call Trace:
- [<00000000b87ea538>] afiucv_hs_rcv+0x178/0x190 net/iucv/af_iucv.c:2039
-([<00000000b87ea534>] afiucv_hs_rcv+0x174/0x190 net/iucv/af_iucv.c:2039)
- [<00000000b796533e>] __netif_receive_skb_one_core+0x13e/0x188 net/core/dev.c:5315
- [<00000000b79653ce>] __netif_receive_skb+0x46/0x1c0 net/core/dev.c:5429
- [<00000000b79655fe>] netif_receive_skb_internal+0xb6/0x220 net/core/dev.c:5534
- [<00000000b796ac3a>] netif_receive_skb+0x42/0x318 net/core/dev.c:5593
- [<00000000b6fd45f4>] tun_rx_batched.isra.0+0x6fc/0x860 drivers/net/tun.c:1485
- [<00000000b6fddc4e>] tun_get_user+0x1c26/0x27f0 drivers/net/tun.c:1939
- [<00000000b6fe0f00>] tun_chr_write_iter+0x158/0x248 drivers/net/tun.c:1968
- [<00000000b4f22bfa>] call_write_iter include/linux/fs.h:1887 [inline]
- [<00000000b4f22bfa>] new_sync_write+0x442/0x648 fs/read_write.c:518
- [<00000000b4f238fe>] vfs_write.part.0+0x36e/0x5d8 fs/read_write.c:605
- [<00000000b4f2984e>] vfs_write+0x10e/0x148 fs/read_write.c:615
- [<00000000b4f29d0e>] ksys_write+0x166/0x290 fs/read_write.c:658
- [<00000000b8dc4ab4>] system_call+0xe0/0x28c arch/s390/kernel/entry.S:415
-Last Breaking-Event-Address:
- [<00000000b8dc64d4>] __s390_indirect_jump_r14+0x0/0xc
+Per smackfs doc, smk_write_net4addr accepts any label or -CIPSO,
+smk_write_net6addr accepts any label or -DELETE. I couldn't find
+any general rule for other label lengths except SMK_LABELLEN,
+SMK_LONGLABEL, SMK_CIPSOMAX which are documented.
 
-Malformed RX packets shouldn't generate any warnings because
-debugging info already flows to dropmon via the kfree_skb().
+Let's constrain, in general, smackfs label lengths for PAGE_SIZE.
+Although fuzzer crashes write to smackfs/netlabel on 0x400000 length.
 
-Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
-Reviewed-by: Julian Wiedmann <jwi@linux.ibm.com>
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Here is a quick way to reproduce the WARNING:
+python -c "print('A' * 0x400000)" > /sys/fs/smackfs/netlabel
+
+Reported-by: syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/iucv/af_iucv.c |    1 -
- 1 file changed, 1 deletion(-)
+ security/smack/smackfs.c |   21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
---- a/net/iucv/af_iucv.c
-+++ b/net/iucv/af_iucv.c
-@@ -2176,7 +2176,6 @@ static int afiucv_hs_rcv(struct sk_buff
- 	char nullstring[8];
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -1163,7 +1163,7 @@ static ssize_t smk_write_net4addr(struct
+ 		return -EPERM;
+ 	if (*ppos != 0)
+ 		return -EINVAL;
+-	if (count < SMK_NETLBLADDRMIN)
++	if (count < SMK_NETLBLADDRMIN || count > PAGE_SIZE - 1)
+ 		return -EINVAL;
  
- 	if (!pskb_may_pull(skb, sizeof(*trans_hdr))) {
--		WARN_ONCE(1, "AF_IUCV failed to receive skb, len=%u", skb->len);
- 		kfree_skb(skb);
- 		return NET_RX_SUCCESS;
- 	}
+ 	data = memdup_user_nul(buf, count);
+@@ -1423,7 +1423,7 @@ static ssize_t smk_write_net6addr(struct
+ 		return -EPERM;
+ 	if (*ppos != 0)
+ 		return -EINVAL;
+-	if (count < SMK_NETLBLADDRMIN)
++	if (count < SMK_NETLBLADDRMIN || count > PAGE_SIZE - 1)
+ 		return -EINVAL;
+ 
+ 	data = memdup_user_nul(buf, count);
+@@ -1830,6 +1830,10 @@ static ssize_t smk_write_ambient(struct
+ 	if (!smack_privileged(CAP_MAC_ADMIN))
+ 		return -EPERM;
+ 
++	/* Enough data must be present */
++	if (count == 0 || count > PAGE_SIZE)
++		return -EINVAL;
++
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+ 		return PTR_ERR(data);
+@@ -2001,6 +2005,9 @@ static ssize_t smk_write_onlycap(struct
+ 	if (!smack_privileged(CAP_MAC_ADMIN))
+ 		return -EPERM;
+ 
++	if (count > PAGE_SIZE)
++		return -EINVAL;
++
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+ 		return PTR_ERR(data);
+@@ -2088,6 +2095,9 @@ static ssize_t smk_write_unconfined(stru
+ 	if (!smack_privileged(CAP_MAC_ADMIN))
+ 		return -EPERM;
+ 
++	if (count > PAGE_SIZE)
++		return -EINVAL;
++
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+ 		return PTR_ERR(data);
+@@ -2643,6 +2653,10 @@ static ssize_t smk_write_syslog(struct f
+ 	if (!smack_privileged(CAP_MAC_ADMIN))
+ 		return -EPERM;
+ 
++	/* Enough data must be present */
++	if (count == 0 || count > PAGE_SIZE)
++		return -EINVAL;
++
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+ 		return PTR_ERR(data);
+@@ -2735,10 +2749,13 @@ static ssize_t smk_write_relabel_self(st
+ 		return -EPERM;
+ 
+ 	/*
++	 * No partial write.
+ 	 * Enough data must be present.
+ 	 */
+ 	if (*ppos != 0)
+ 		return -EINVAL;
++	if (count == 0 || count > PAGE_SIZE)
++		return -EINVAL;
+ 
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
 
 
