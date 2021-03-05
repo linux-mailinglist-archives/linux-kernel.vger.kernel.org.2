@@ -2,123 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1853232EF51
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC2332EF61
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbhCEPsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:48:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54434 "EHLO mail.kernel.org"
+        id S229978AbhCEPvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:51:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231219AbhCEPrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:47:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2287E65092;
-        Fri,  5 Mar 2021 15:47:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614959253;
-        bh=LZDg8chHQnKxfnvQXDeCl73wwlxc/LGrLyawbsjqJf4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=omTvdzTY3BcKun81+mXyUYLEpAeBVUVnSBThuBapVwZCkNmXK4WW8PkqxFhfHDmmw
-         8roqNBSvRa44hJVXudK5M1B55J5S9eTdcfoGDzXutRfkK2DaY5PKEEpa4GN7NcgBeK
-         HJlkUnOoh+cwHrsB/zOgohz9hpzvD0tCIbkaDUyM=
-Date:   Fri, 5 Mar 2021 16:47:24 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Ikjoon Jang <ikjn@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: Re: [PATCH 16/17] usb: common: add function to get interval
- expressed in us unit
-Message-ID: <YEJSjJnjXl7f/BP9@kroah.com>
-References: <1614934975-15188-1-git-send-email-chunfeng.yun@mediatek.com>
- <1614934975-15188-16-git-send-email-chunfeng.yun@mediatek.com>
- <20210305153312.GA38200@rowland.harvard.edu>
+        id S229558AbhCEPv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 10:51:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 763CE65098;
+        Fri,  5 Mar 2021 15:51:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614959485;
+        bh=xaeKME6Ua+2h67Q5RJolMrcXStqSWyB8CTRElNWIdNw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rRBl/eyvNDoud0LUtrcLX3ZHlvFGYju9nRGC39q3t+sL/avqv7YMNUYtgGz+64bC4
+         ba8t52YZcQZP3AD6bZ40jv96cX+sdGEI0xEQY69Fbif8/ZX1LK24REnFh0qun1HSu0
+         5IczDBfK5rRw7HW1wAcDu2AahDGioeTqPBOqmZTXY20PjFiFwdylWietKbwwJKWI9O
+         Uk8JbPVhPc8ueXo/5GNzJcCWtvuK07/7q06/fB7srsrwWAEMz62zIBsYjdlgx7dQU9
+         7StWGQz91kPVR5yitBRxn8gdnBYy3vcdj8DLTrS8breER6uZJnWc2M72edeVGicex9
+         VEiPkVgxaxidQ==
+Received: by mail-ot1-f44.google.com with SMTP id j8so2244956otc.0;
+        Fri, 05 Mar 2021 07:51:25 -0800 (PST)
+X-Gm-Message-State: AOAM5326SrXlvMIBpYRMXBOye3ZeFynQj4E8mh7z7mkwHAadR9s876Cu
+        wzR+KylaFjbfe9TeKm4xa09dUXKqy3CUkBcPyvY=
+X-Google-Smtp-Source: ABdhPJy9oV+4qLl47P+rrukasKtK8n7azdZjxa8hAXJBGcPPcFGMLNqAWqsBN3UFc1UFX0r7zYKKwNbJzSCj+keSlF4=
+X-Received: by 2002:a9d:12e1:: with SMTP id g88mr5226195otg.305.1614959484753;
+ Fri, 05 Mar 2021 07:51:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305153312.GA38200@rowland.harvard.edu>
+References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-11-marcan@marcan.st>
+ <CACRpkdYeeUb6WUe_RBxBEjNnTJ9o55Z-8Ma7CLokFOdCtF0M+Q@mail.gmail.com> <CAHp75VfEshraJMUfmCNvMgm5yVRNLk-yDkbJ+6m6NuLV4tme7g@mail.gmail.com>
+In-Reply-To: <CAHp75VfEshraJMUfmCNvMgm5yVRNLk-yDkbJ+6m6NuLV4tme7g@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 5 Mar 2021 16:51:08 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a20yXBktB_QqgqgSP69-PXnfs1AwNOf01v-DYFWktmRYQ@mail.gmail.com>
+Message-ID: <CAK8P3a20yXBktB_QqgqgSP69-PXnfs1AwNOf01v-DYFWktmRYQ@mail.gmail.com>
+Subject: Re: [RFT PATCH v3 10/27] docs: driver-api: device-io: Document
+ ioremap() variants & access funcs
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Hector Martin <marcan@marcan.st>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 10:33:12AM -0500, Alan Stern wrote:
-> On Fri, Mar 05, 2021 at 05:02:54PM +0800, Chunfeng Yun wrote:
-> > Add a new function to convert bInterval into the time expressed
-> > in 1us unit.
-> > 
-> > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> > ---
-> 
-> > --- a/drivers/usb/common/common.c
-> > +++ b/drivers/usb/common/common.c
-> > @@ -165,6 +165,39 @@ enum usb_dr_mode usb_get_dr_mode(struct device *dev)
-> >  }
-> >  EXPORT_SYMBOL_GPL(usb_get_dr_mode);
-> >  
-> > +unsigned int usb_decode_interval(const struct usb_endpoint_descriptor *epd,
-> > +				 enum usb_device_speed speed)
-> > +{
-> > +	unsigned int interval = 0;
-> > +
-> > +	switch (usb_endpoint_type(epd)) {
-> > +	case USB_ENDPOINT_XFER_CONTROL:
-> > +		/* uframes per NAK */
-> > +		if (speed == USB_SPEED_HIGH)
-> > +			interval = epd->bInterval;
-> > +		break;
-> > +	case USB_ENDPOINT_XFER_ISOC:
-> > +		interval = 1 << (epd->bInterval - 1);
-> > +		break;
-> > +	case USB_ENDPOINT_XFER_BULK:
-> > +		/* uframes per NAK */
-> > +		if (speed == USB_SPEED_HIGH && usb_endpoint_dir_out(epd))
-> > +			interval = epd->bInterval;
-> > +		break;
-> > +	case USB_ENDPOINT_XFER_INT:
-> > +		if (speed >= USB_SPEED_HIGH)
-> > +			interval = 1 << (epd->bInterval - 1);
-> > +		else
-> > +			interval = epd->bInterval;
-> > +		break;
-> > +	}
-> > +
-> > +	interval *= (speed >= USB_SPEED_HIGH) ? 125 : 1000;
-> > +
-> > +	return interval;
-> > +}
-> > +EXPORT_SYMBOL_GPL(usb_decode_interval);
-> 
-> > --- a/include/linux/usb/ch9.h
-> > +++ b/include/linux/usb/ch9.h
-> > @@ -90,6 +90,17 @@ extern enum usb_ssp_rate usb_get_maximum_ssp_rate(struct device *dev);
-> >   */
-> >  extern const char *usb_state_string(enum usb_device_state state);
-> >  
-> > +/**
-> > + * usb_decode_interval - Decode bInterval into the time expressed in 1us unit
-> > + * @epd: The descriptor of the endpoint
-> > + * @speed: The speed that the endpoint works as
-> > + *
-> > + * Function returns the interval expressed in 1us unit for servicing
-> > + * endpoint for data transfers.
-> > + */
-> > +unsigned int usb_decode_interval(const struct usb_endpoint_descriptor *epd,
-> > +				 enum usb_device_speed speed);
-> 
-> As a general rule, I believe people expect to find the kerneldoc for a 
-> function next to the function's definition, not next to the declaration 
-> in a header file.
+On Fri, Mar 5, 2021 at 4:09 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Fri, Mar 5, 2021 at 12:25 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> > On Thu, Mar 4, 2021 at 10:40 PM Hector Martin <marcan@marcan.st> wrote:
+> >
+> > > This documents the newly introduced ioremap_np() along with all the
+> > > other common ioremap() variants, and some higher-level abstractions
+> > > available.
+> > >
+> > > Signed-off-by: Hector Martin <marcan@marcan.st>
+> >
+> > I like this, I just want one change:
+> >
+> > Put the common ioremap() on top in all paragraphs, so the norm
+> > comes before the exceptions.
+> >
+> > I.e. it is weird to mention ioremap_np() before mentioning ioremap().
+>
+> +1 here. That is what I have stumbled upon reading carefully.
 
-I was going to make the same review comment, but if you look above this
-in that file, there's other kernel doc information in the .h file, so
-this does match with the style of the file :(
+In that case, the order should probably be:
 
-We can fix that all up later.
+ioremap
+ioremap_wc
+ioremap_wt
+ioremap_np
+ioremap_uc
+ioremap_cache
 
-thanks,
+Going from most common to least common, rather than going from
+strongest to weakest.
 
-greg k-h
+       Arnd
