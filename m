@@ -2,177 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2EE232DFAF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD03832DFB1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhCECcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 21:32:47 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:32891 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229436AbhCECcq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 21:32:46 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 53AB85C0090;
-        Thu,  4 Mar 2021 21:32:46 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 04 Mar 2021 21:32:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=u
-        ly4XdvButdgDELM29dyWpA9ZHuCLzxXZmjwGa94+e4=; b=xP+D8hjP1JjVmXppB
-        iAG99NbBD9kXFPW1SR50116sbV+eOG31ygSitmGuoROd1qqVRdMor7mUWEdJ9rMH
-        1FWDiOMsPM71uX1O+xWmXYjJ5uq2tFF5eraEDMyBhq1kOHSUCB647eVX/hByJc9o
-        f6Kc+94Lvjhg8mDVvmRfyEHacJLuBmG47l+nTSJdnbUCq3OdYvRRSG/ee9orYDB0
-        sXDGtI3Aqms2hqnjuorTl7+Vl1Zha8uIUvAuiWUyV3mcEO/NCFHeGqsDxurv7+C4
-        67FhfaiXfT/NEIkF9uuQhs0H5c6LLvX6DYM85jWEONWNa90mArdudIBDf5TLIbsl
-        Ow8Ag==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=uly4XdvButdgDELM29dyWpA9ZHuCLzxXZmjwGa94+
-        e4=; b=uoCecw2lfp2ymWA3EzxfNSwlYDT8EsiOiu1jMOrRgHrZ2JGP+V3VSddT/
-        SEYtWLCRVMFE99wYJLMgPeGUwjpE9HUVwLHOu1ahwmHeKAaKPAZSoU9e+Fl3rI7F
-        IHo8Rj++KLd9QajS3fB3Q9VS8EJOsokmhbqYNeVoYn+MYavgUCyrYesF0rYbEjz/
-        dkji+vCMQP5p8EBsJVrliTlLCREUY2h1lbhJOdZaPIQppLT88pW21jVey1n8MmYI
-        bgQ04RAH5zXbkAWt5/TcYlc+uB4GlL9MDIfxYlWgzBxr541Nhmh83ZBtiThAP0/d
-        N7ZDtdkM3z1ROxE4XCaH8ouvBMqyA==
-X-ME-Sender: <xms:TphBYCHUH6g2v_YtpcZ4eJ8QSnAgjB2dwIgwMgNlo6yQNfDZlSWMqA>
-    <xme:TphBYDUUhaK7FCxo9QSJooWQimVRanG0jS7mI7FbSV2e5sluwCiK3ese1DHjD_wDi
-    QOAov6BY3t5hkXr4xY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddthedggeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdeftfenucfhrhhomheplfhirgig
-    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeefleduiedtvdekffeggfeukeejgeeffeetlefghfekffeuteei
-    jeeghefhueffvdenucfkphepgeehrdeffedrhedtrddvheegnecuvehluhhsthgvrhfuih
-    iivgepudenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhl
-    hihgohgrthdrtghomh
-X-ME-Proxy: <xmx:TphBYMKQDVFMCw3tfB9wNfKsCRNjikGzwNDxbLKap6Twvvql86hZFw>
-    <xmx:TphBYMFakKbphECfEsYTUijBJyLEpQr5v5gdT0EjXc109ZCu7e2i3Q>
-    <xmx:TphBYIXOL-GP09mPqH3CM6tIWPyuoO6stzjfAzGaJpnTOp06yG4Azw>
-    <xmx:TphBYGzEqHtOg2L4I7zWMKkyJX5PezAotFkGrw7YcsFuAA8eAZ6-Rg>
-Received: from [127.0.0.1] (li1000-254.members.linode.com [45.33.50.254])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E60FF1080054;
-        Thu,  4 Mar 2021 21:32:43 -0500 (EST)
-Subject: Re: [PATCH 2/2] MIPS: Loongson64: Move loongson_system_configuration
- to loongson.h
-To:     Qing Zhang <zhangqing@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210304110057.22144-1-zhangqing@loongson.cn>
- <20210304110057.22144-3-zhangqing@loongson.cn>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <606a54a3-bf1e-2e71-e2e2-ff5b2c07cbb2@flygoat.com>
-Date:   Fri, 5 Mar 2021 10:32:41 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S229791AbhCECdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 21:33:32 -0500
+Received: from mga06.intel.com ([134.134.136.31]:38809 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229436AbhCECdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 21:33:31 -0500
+IronPort-SDR: J5ZrL8MbjQAIS+PNlNF2fc4GMVOYa64tAfkOP2STYc+/W8rU7pxgFw1q3+f4bXYPhrRxxGpyLZ
+ 7PDr+hT1em+A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="248941328"
+X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
+   d="scan'208";a="248941328"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 18:33:30 -0800
+IronPort-SDR: ZBEGOxWl1Occbip9Q3/yVi4Hx23VPJWDUFNza22g7byXr/dQhCIv+jUgZ6NB6D1WIeO0qGXVVC
+ vjEQtDRhraiA==
+X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
+   d="scan'208";a="401093201"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 18:33:26 -0800
+Subject: Re: [PATCH v3 5/9] KVM: vmx/pmu: Add MSR_ARCH_LBR_DEPTH emulation for
+ Arch LBR
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
+        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210303135756.1546253-1-like.xu@linux.intel.com>
+ <20210303135756.1546253-6-like.xu@linux.intel.com>
+ <YD/APUcINwvP53VZ@google.com>
+ <890a6f34-812a-5937-8761-d448a04f67d7@intel.com>
+ <YEEG48erESM0+3CB@google.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <5be999eb-64d7-de0e-254b-82711acc5e24@intel.com>
+Date:   Fri, 5 Mar 2021 10:33:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210304110057.22144-3-zhangqing@loongson.cn>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Language: en-US
+In-Reply-To: <YEEG48erESM0+3CB@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/3/5 0:12, Sean Christopherson wrote:
+> On Thu, Mar 04, 2021, Xu, Like wrote:
+>> Hi Sean,
+>>
+>> Thanks for your detailed review on the patch set.
+>>
+>> On 2021/3/4 0:58, Sean Christopherson wrote:
+>>> On Wed, Mar 03, 2021, Like Xu wrote:
+>>>> @@ -348,10 +352,26 @@ static bool intel_pmu_handle_lbr_msrs_access(struct kvm_vcpu *vcpu,
+>>>>    	return true;
+>>>>    }
+>>>> +/*
+>>>> + * Check if the requested depth values is supported
+>>>> + * based on the bits [0:7] of the guest cpuid.1c.eax.
+>>>> + */
+>>>> +static bool arch_lbr_depth_is_valid(struct kvm_vcpu *vcpu, u64 depth)
+>>>> +{
+>>>> +	struct kvm_cpuid_entry2 *best;
+>>>> +
+>>>> +	best = kvm_find_cpuid_entry(vcpu, 0x1c, 0);
+>>>> +	if (best && depth && !(depth % 8))
+>>> This is still wrong, it fails to weed out depth > 64.
+>> How come ? The testcases depth = {65, 127, 128} get #GP as expected.
+> @depth is a u64, throw in a number that is a multiple of 8 and >= 520, and the
+> "(1ULL << (depth / 8 - 1))" will trigger undefined behavior due to shifting
+> beyond the capacity of a ULL / u64.
 
+Extra:
 
-�� 2021/3/4 ����7:00, Qing Zhang д��:
-> The purpose of separating loongson_system_configuration from boot_param.h
-> is to keep the other structure consistent with the firmware.
-> 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+when we say "undefined behavior" if shifting beyond the capacity of a ULL,
+do you mean that the actual behavior depends on the machine, architecture 
+or compiler?
 
+>
+> Adding the "< 64" check would also allow dropping the " & 0xff" since the check
+> would ensure the shift doesn't go beyond bit 7.  I'm not sure the cleverness is
+> worth shaving a cycle, though.
 
+Finally how about:
 
-Acked-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+     if (best && depth && (depth < 65) && !(depth & 7))
+         return best->eax & BIT_ULL(depth / 8 - 1);
 
+     return false;
 
+Do you see the room for optimization ？
 
-- Jiaxun
+>
+>>> Not that this is a hot path, but it's probably worth double checking that the
+>>> compiler generates simple code for "depth % 8", e.g. it can be "depth & 7)".
+>> Emm, the "%" operation is quite normal over kernel code.
+> So is "&" :-)  I was just pointing out that the compiler should optimize this,
+> and it did.
+>
+>> if (best && depth && !(depth % 8))
+>>     10659:       48 85 c0                test   rax,rax
+>>     1065c:       74 c7                   je     10625 <intel_pmu_set_msr+0x65>
+>>     1065e:       4d 85 e4                test   r12,r12
+>>     10661:       74 c2                   je     10625 <intel_pmu_set_msr+0x65>
+>>     10663:       41 f6 c4 07             test   r12b,0x7
+>>     10667:       75 bc                   jne    10625 <intel_pmu_set_msr+0x65>
+>>
+>> It looks like the compiler does the right thing.
+>> Do you see the room for optimization ？
+>>
+>>>> +		return (best->eax & 0xff) & (1ULL << (depth / 8 - 1));
+> Actually, looking at this again, I would explicitly use BIT() instead of 1ULL
+> (or BIT_ULL), since the shift must be 7 or less.
+>
+>>>> +
+>>>> +	return false;
+>>>> +}
+>>>> +
 
-> ---
->   .../include/asm/mach-loongson64/boot_param.h   | 18 ------------------
->   .../include/asm/mach-loongson64/loongson.h     | 18 ++++++++++++++++++
->   drivers/irqchip/irq-loongson-liointc.c         |  2 +-
->   3 files changed, 19 insertions(+), 19 deletions(-)
-> 
-> diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch/mips/include/asm/mach-loongson64/boot_param.h
-> index 1c1cdf57137e..035b1a69e2d0 100644
-> --- a/arch/mips/include/asm/mach-loongson64/boot_param.h
-> +++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
-> @@ -198,24 +198,6 @@ enum loongson_bridge_type {
->   	VIRTUAL = 3
->   };
->   
-> -struct loongson_system_configuration {
-> -	u32 nr_cpus;
-> -	u32 nr_nodes;
-> -	int cores_per_node;
-> -	int cores_per_package;
-> -	u16 boot_cpu_id;
-> -	u16 reserved_cpus_mask;
-> -	enum loongson_cpu_type cputype;
-> -	enum loongson_bridge_type bridgetype;
-> -	u64 restart_addr;
-> -	u64 poweroff_addr;
-> -	u64 suspend_addr;
-> -	u64 vgabios_addr;
-> -	u32 dma_mask_bits;
-> -	u64 workarounds;
-> -	void (*early_config)(void);
-> -};
-> -
->   extern struct efi_memory_map_loongson *loongson_memmap;
->   extern struct loongson_system_configuration loongson_sysconf;
->   
-> diff --git a/arch/mips/include/asm/mach-loongson64/loongson.h b/arch/mips/include/asm/mach-loongson64/loongson.h
-> index ac1c20e172a2..6189deb188cf 100644
-> --- a/arch/mips/include/asm/mach-loongson64/loongson.h
-> +++ b/arch/mips/include/asm/mach-loongson64/loongson.h
-> @@ -12,6 +12,24 @@
->   #include <linux/irq.h>
->   #include <boot_param.h>
->   
-> +/* machine-specific boot configuration */
-> +struct loongson_system_configuration {
-> +	u32 nr_cpus;
-> +	u32 nr_nodes;
-> +	int cores_per_node;
-> +	int cores_per_package;
-> +	u16 boot_cpu_id;
-> +	u16 reserved_cpus_mask;
-> +	enum loongson_cpu_type cputype;
-> +	enum loongson_bridge_type bridgetype;
-> +	u64 restart_addr;
-> +	u64 poweroff_addr;
-> +	u64 suspend_addr;
-> +	u64 vgabios_addr;
-> +	u32 dma_mask_bits;
-> +	u64 workarounds;
-> +	void (*early_config)(void);
-> +};
->   
->   /* machine-specific reboot/halt operation */
->   extern void mach_prepare_reboot(void);
-> diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
-> index 09b91b81851c..249566a23cc4 100644
-> --- a/drivers/irqchip/irq-loongson-liointc.c
-> +++ b/drivers/irqchip/irq-loongson-liointc.c
-> @@ -16,7 +16,7 @@
->   #include <linux/smp.h>
->   #include <linux/irqchip/chained_irq.h>
->   
-> -#include <boot_param.h>
-> +#include <loongson.h>
->   
->   #define LIOINTC_CHIP_IRQ	32
->   #define LIOINTC_NUM_PARENT 4
-> 
