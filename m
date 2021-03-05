@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B3532E927
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B0C32E9A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231415AbhCEMa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:30:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40144 "EHLO mail.kernel.org"
+        id S231208AbhCEMd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:33:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232273AbhCEMaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:30:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 753836501A;
-        Fri,  5 Mar 2021 12:30:21 +0000 (UTC)
+        id S232087AbhCEMdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:33:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1D6865004;
+        Fri,  5 Mar 2021 12:33:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947422;
-        bh=pnklZ2Gn4N5w3TMfQHWAPPAhaWagdeWsD/2kAeMEny0=;
+        s=korg; t=1614947604;
+        bh=KKFEiqyIJJSnu8U2sU9rD4d5UqVxif6VaTUmGfcFVes=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LfqN0EYi2ORqcVACzOmvN5PIqnO5MRCXvH/ca+kil3xT5fFcCBMQ2GYbiguOJuN1R
-         TiGDL2dzNS9pH1cBMcay9z3itHl3vhRy0YJa82+lrFv+HNHoWj/h5FItz/SFccEq1a
-         MDSl/JnAzE5frZJtrqI8KE0ioRQRoUWH5V415il0=
+        b=MqDcuq14wre4q7ceGwC/LiMaAjQjR+ConNeNejkgd/ZqWKY3eGg4kGHQcOTlx/sfk
+         jnAxDWYD0eDYhxYmnOJq7bhtm0ML+Nme7H9AVrwyAUZRzvHOdrv4mzHP4a8OR7dDVh
+         Go4sU6dmL0+Cnc3lt6iK4chGnUh+VMnqr0X9hvEE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Defang Bo <bodefang@126.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 060/102] drm/amdgpu: Add check to prevent IH overflow
-Date:   Fri,  5 Mar 2021 13:21:19 +0100
-Message-Id: <20210305120906.234680922@linuxfoundation.org>
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 18/72] net: bridge: use switchdev for port flags set through sysfs too
+Date:   Fri,  5 Mar 2021 13:21:20 +0100
+Message-Id: <20210305120858.232117675@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
+References: <20210305120857.341630346@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,174 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Defang Bo <bodefang@126.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit e4180c4253f3f2da09047f5139959227f5cf1173 ]
+commit 8043c845b63a2dd88daf2d2d268a33e1872800f0 upstream.
 
-Similar to commit <b82175750131>("drm/amdgpu: fix IH overflow on Vega10 v2").
-When an ring buffer overflow happens the appropriate bit is set in the WPTR
-register which is also written back to memory. But clearing the bit in the
-WPTR doesn't trigger another memory writeback.
+Looking through patchwork I don't see that there was any consensus to
+use switchdev notifiers only in case of netlink provided port flags but
+not sysfs (as a sort of deprecation, punishment or anything like that),
+so we should probably keep the user interface consistent in terms of
+functionality.
 
-So what can happen is that we end up processing the buffer overflow over and
-over again because the bit is never cleared. Resulting in a random system
-lockup because of an infinite loop in an interrupt handler.
+http://patchwork.ozlabs.org/project/netdev/patch/20170605092043.3523-3-jiri@resnulli.us/
+http://patchwork.ozlabs.org/project/netdev/patch/20170608064428.4785-3-jiri@resnulli.us/
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Defang Bo <bodefang@126.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 3922285d96e7 ("net: bridge: Add support for offloading port attributes")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/cz_ih.c      | 37 ++++++++++++++++---------
- drivers/gpu/drm/amd/amdgpu/iceland_ih.c | 36 +++++++++++++++---------
- drivers/gpu/drm/amd/amdgpu/tonga_ih.c   | 37 ++++++++++++++++---------
- 3 files changed, 71 insertions(+), 39 deletions(-)
+ net/bridge/br_sysfs_if.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/cz_ih.c b/drivers/gpu/drm/amd/amdgpu/cz_ih.c
-index 1dca0cabc326..13520d173296 100644
---- a/drivers/gpu/drm/amd/amdgpu/cz_ih.c
-+++ b/drivers/gpu/drm/amd/amdgpu/cz_ih.c
-@@ -193,19 +193,30 @@ static u32 cz_ih_get_wptr(struct amdgpu_device *adev,
+--- a/net/bridge/br_sysfs_if.c
++++ b/net/bridge/br_sysfs_if.c
+@@ -55,9 +55,8 @@ static BRPORT_ATTR(_name, 0644,					\
+ static int store_flag(struct net_bridge_port *p, unsigned long v,
+ 		      unsigned long mask)
+ {
+-	unsigned long flags;
+-
+-	flags = p->flags;
++	unsigned long flags = p->flags;
++	int err;
  
- 	wptr = le32_to_cpu(*ih->wptr_cpu);
+ 	if (v)
+ 		flags |= mask;
+@@ -65,6 +64,10 @@ static int store_flag(struct net_bridge_
+ 		flags &= ~mask;
  
--	if (REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW)) {
--		wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
--		/* When a ring buffer overflow happen start parsing interrupt
--		 * from the last not overwritten vector (wptr + 16). Hopefully
--		 * this should allow us to catchup.
--		 */
--		dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
--			wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
--		ih->rptr = (wptr + 16) & ih->ptr_mask;
--		tmp = RREG32(mmIH_RB_CNTL);
--		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
--		WREG32(mmIH_RB_CNTL, tmp);
--	}
-+	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
-+		goto out;
+ 	if (flags != p->flags) {
++		err = br_switchdev_set_port_flag(p, flags, mask);
++		if (err)
++			return err;
 +
-+	/* Double check that the overflow wasn't already cleared. */
-+	wptr = RREG32(mmIH_RB_WPTR);
-+
-+	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
-+		goto out;
-+
-+	wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
-+
-+	/* When a ring buffer overflow happen start parsing interrupt
-+	 * from the last not overwritten vector (wptr + 16). Hopefully
-+	 * this should allow us to catchup.
-+	 */
-+	dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
-+		wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
-+	ih->rptr = (wptr + 16) & ih->ptr_mask;
-+	tmp = RREG32(mmIH_RB_CNTL);
-+	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
-+	WREG32(mmIH_RB_CNTL, tmp);
-+
-+
-+out:
- 	return (wptr & ih->ptr_mask);
- }
- 
-diff --git a/drivers/gpu/drm/amd/amdgpu/iceland_ih.c b/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
-index a13dd9a51149..7d165f024f07 100644
---- a/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
-+++ b/drivers/gpu/drm/amd/amdgpu/iceland_ih.c
-@@ -193,19 +193,29 @@ static u32 iceland_ih_get_wptr(struct amdgpu_device *adev,
- 
- 	wptr = le32_to_cpu(*ih->wptr_cpu);
- 
--	if (REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW)) {
--		wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
--		/* When a ring buffer overflow happen start parsing interrupt
--		 * from the last not overwritten vector (wptr + 16). Hopefully
--		 * this should allow us to catchup.
--		 */
--		dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
--			 wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
--		ih->rptr = (wptr + 16) & ih->ptr_mask;
--		tmp = RREG32(mmIH_RB_CNTL);
--		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
--		WREG32(mmIH_RB_CNTL, tmp);
--	}
-+	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
-+		goto out;
-+
-+	/* Double check that the overflow wasn't already cleared. */
-+	wptr = RREG32(mmIH_RB_WPTR);
-+
-+	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
-+		goto out;
-+
-+	wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
-+	/* When a ring buffer overflow happen start parsing interrupt
-+	 * from the last not overwritten vector (wptr + 16). Hopefully
-+	 * this should allow us to catchup.
-+	 */
-+	dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
-+		wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
-+	ih->rptr = (wptr + 16) & ih->ptr_mask;
-+	tmp = RREG32(mmIH_RB_CNTL);
-+	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
-+	WREG32(mmIH_RB_CNTL, tmp);
-+
-+
-+out:
- 	return (wptr & ih->ptr_mask);
- }
- 
-diff --git a/drivers/gpu/drm/amd/amdgpu/tonga_ih.c b/drivers/gpu/drm/amd/amdgpu/tonga_ih.c
-index e40140bf6699..db0a3bda13fb 100644
---- a/drivers/gpu/drm/amd/amdgpu/tonga_ih.c
-+++ b/drivers/gpu/drm/amd/amdgpu/tonga_ih.c
-@@ -195,19 +195,30 @@ static u32 tonga_ih_get_wptr(struct amdgpu_device *adev,
- 
- 	wptr = le32_to_cpu(*ih->wptr_cpu);
- 
--	if (REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW)) {
--		wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
--		/* When a ring buffer overflow happen start parsing interrupt
--		 * from the last not overwritten vector (wptr + 16). Hopefully
--		 * this should allow us to catchup.
--		 */
--		dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
--			 wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
--		ih->rptr = (wptr + 16) & ih->ptr_mask;
--		tmp = RREG32(mmIH_RB_CNTL);
--		tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
--		WREG32(mmIH_RB_CNTL, tmp);
--	}
-+	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
-+		goto out;
-+
-+	/* Double check that the overflow wasn't already cleared. */
-+	wptr = RREG32(mmIH_RB_WPTR);
-+
-+	if (!REG_GET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW))
-+		goto out;
-+
-+	wptr = REG_SET_FIELD(wptr, IH_RB_WPTR, RB_OVERFLOW, 0);
-+
-+	/* When a ring buffer overflow happen start parsing interrupt
-+	 * from the last not overwritten vector (wptr + 16). Hopefully
-+	 * this should allow us to catchup.
-+	 */
-+
-+	dev_warn(adev->dev, "IH ring buffer overflow (0x%08X, 0x%08X, 0x%08X)\n",
-+		wptr, ih->rptr, (wptr + 16) & ih->ptr_mask);
-+	ih->rptr = (wptr + 16) & ih->ptr_mask;
-+	tmp = RREG32(mmIH_RB_CNTL);
-+	tmp = REG_SET_FIELD(tmp, IH_RB_CNTL, WPTR_OVERFLOW_CLEAR, 1);
-+	WREG32(mmIH_RB_CNTL, tmp);
-+
-+out:
- 	return (wptr & ih->ptr_mask);
- }
- 
--- 
-2.30.1
-
+ 		p->flags = flags;
+ 		br_port_flags_change(p, mask);
+ 	}
 
 
