@@ -2,88 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE3E32E410
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:59:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7934A32E412
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbhCEI6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:58:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhCEI6M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:58:12 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEE8C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 00:58:11 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id z190so1231236qka.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 00:58:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=229AXg85Pog+hgsT/zw/Y21FmddYbB2y/IxgWdPynj4=;
-        b=POZV7tLmJDkKZQeFDC7/oKLuDHMWEOfI4OYkqUcKyWEv1vcyzHKMTPF1VzZ/7d4wvd
-         4vLV3OBwIDUaFHmxcV3uwkpaZUrZVzMy5LyuBLuQBNhvMk4oKFvMaYN1YXsmp2N4MJE3
-         /F3J7Z3Xa3/arvgoRyXAx6dNu8h0T0X4nrWkSE261B+NIDBeK43KgpS4cJsAm6HUIt24
-         1/QZ0h3ZaToGboUaTlnV1clvJPNzb6XGjePk4kQJYhI8+3l5KRaQaklqpxecofVY9Ukr
-         2xI3aAHgc5GkntSAnlrX13gwl5AacnxCw3L0lL3bD1D2K9yL4H6AofIjNJpUJZ/6ZiVV
-         yr1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=229AXg85Pog+hgsT/zw/Y21FmddYbB2y/IxgWdPynj4=;
-        b=qDJeb+DgSkUsOQqZtd1xmY11eKXKRhad1ssfm5y2Jm+B8Vsb7EdoFR0TLBpsKMCCfz
-         1XfbJYCNILEZWA69f9xuuqMGyb03kYrUtDdAv7p3uLg4sMMvtatFUcOjVFIZ6WlAGZmV
-         vc8RmxNhiAueYirmuK5VoVjNT+kjMP6dsdpxa+Ur/UBws7md3pPDa0f1C8NPGD9W+ICD
-         sSEjUodGcplg1Vpfq3kEenRgQJn/PTMSbOGEt5LZ5qV9+0Bk+W1uZKDUbMIHVBAsFSA5
-         MhMH7kYE1AwGJiAOqKOdHa3OxPPMH8LS94WvK4i9IFSmc4xLNEMD5jzBwCRfzUdhZbGF
-         wOfg==
-X-Gm-Message-State: AOAM5305u8NthTyxvEkaKvxw3jPLAqxWAjIkfDjqOokXhCVALsAiugcF
-        xj24PMh0NQqrDvIrpjKpkrVdFOPtiUqj+5s3l/6M3A==
-X-Google-Smtp-Source: ABdhPJxfVndZMBttXrZUePQ54he8IGrHNhocsLR4F26Lt5PGY6NiSB6pmBKZYkQzPOHBoj9T6lpZQCYZvHQqY4q2O8E=
-X-Received: by 2002:a05:620a:1353:: with SMTP id c19mr8364887qkl.392.1614934690350;
- Fri, 05 Mar 2021 00:58:10 -0800 (PST)
+        id S229719AbhCEI7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:59:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55296 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229669AbhCEI6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 03:58:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EC9B60C3D;
+        Fri,  5 Mar 2021 08:58:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614934728;
+        bh=tnyEQxy0Y/KOIM6iOkT9Z8U4KODj9rAGSc5t67PmiNw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NxcMK/LIhqnIHIGDpk7a2D0VosKxGgcarl24qEzK/0FqZ8J/47tU31Qg9Tz5gGfsf
+         E5jH75Dc/8PAeeKXTNKLh80kUYfPb+THm8stH6LPdlj8NSY80ukPr8+LBICIqf31oy
+         tvdDZna8myVh43MQOQEz4snHXvmtijtnnqLV5thO5IBuB1wGYjvnTa42NjsYn74pEF
+         JbhO20C0asNY9ARESDwFO02ZvI+WF5PGRfQnfFMyl5IEPqhU8ljUj8o6oZrEepgy3Q
+         VfiA4iuo6Ztr/mQHUKGJeKae18c1YoIwcvZZ7Hbe0pAOK3yG0uQxwowz11EMC5I1bx
+         pEtO1CeogKJ4w==
+Date:   Fri, 5 Mar 2021 02:58:45 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Ariel Elior <aelior@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     GR-everest-linux-l2@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH RESEND][next] qed: Fix fall-through warnings for Clang
+Message-ID: <20210305085845.GA138782@embeddedor>
 MIME-Version: 1.0
-References: <20210304205256.2162309-1-elver@google.com> <CAG_fn=XVAFjgkFCj8kc6Bz4rvBwCeE4HUcJPBTWQcNjrBLaT=g@mail.gmail.com>
- <20210304173132.6696eb2a357edf835a5033ee@linux-foundation.org>
-In-Reply-To: <20210304173132.6696eb2a357edf835a5033ee@linux-foundation.org>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 5 Mar 2021 09:57:58 +0100
-Message-ID: <CAG_fn=Um2FW2m9y0iZ6J4L63-2bBVVrgu3hMQ0-GLwHxU6Hiiw@mail.gmail.com>
-Subject: Re: [PATCH mm] kfence, slab: fix cache_alloc_debugcheck_after() for
- bulk allocations
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Dmitriy Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Jann Horn <jannh@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Marco Elver <elver@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 2:31 AM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Thu, 4 Mar 2021 22:05:48 +0100 Alexander Potapenko <glider@google.com> wrote:
->
-> > On Thu, Mar 4, 2021 at 9:53 PM Marco Elver <elver@google.com> wrote:
-> > >
-> > > cache_alloc_debugcheck_after() performs checks on an object, including
-> > > adjusting the returned pointer. None of this should apply to KFENCE
-> > > objects. While for non-bulk allocations, the checks are skipped when we
-> > > allocate via KFENCE, for bulk allocations cache_alloc_debugcheck_after()
-> > > is called via cache_alloc_debugcheck_after_bulk().
-> >
-> > @Andrew, is this code used by anyone?
-> > As far as I understand, it cannot be enabled by any config option, so
-> > nobody really tests it.
-> > If it is still needed, shall we promote #if DEBUGs in slab.c to a
-> > separate config option, or maybe this code can be safely removed?
->
-> It's all used:
+In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+warnings by explicitly adding a couple of break statements instead of
+just letting the code fall through to the next case.
 
-Got it, sorry for being too hasty!
+Link: https://github.com/KSPP/linux/issues/115
+Reviewed-by: Igor Russkikh <irusskikh@marvell.com>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/ethernet/qlogic/qed/qed_l2.c    | 1 +
+ drivers/net/ethernet/qlogic/qed/qed_sriov.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_l2.c b/drivers/net/ethernet/qlogic/qed/qed_l2.c
+index 07824bf9d68d..dfaf10edfabf 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_l2.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_l2.c
+@@ -396,6 +396,7 @@ int qed_sp_eth_vport_start(struct qed_hwfn *p_hwfn,
+ 		tpa_param->tpa_ipv6_en_flg = 1;
+ 		tpa_param->tpa_pkt_split_flg = 1;
+ 		tpa_param->tpa_gro_consistent_flg = 1;
++		break;
+ 	default:
+ 		break;
+ 	}
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_sriov.c b/drivers/net/ethernet/qlogic/qed/qed_sriov.c
+index b8dc5c4591ef..ed2b6fe5a78d 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_sriov.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_sriov.c
+@@ -4734,6 +4734,7 @@ void qed_inform_vf_link_state(struct qed_hwfn *hwfn)
+ 			 */
+ 			link.speed = (hwfn->cdev->num_hwfns > 1) ?
+ 				     100000 : 40000;
++			break;
+ 		default:
+ 			/* In auto mode pass PF link image to VF */
+ 			break;
+-- 
+2.27.0
+
