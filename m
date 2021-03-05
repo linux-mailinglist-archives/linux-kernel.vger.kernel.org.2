@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D877132EA77
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D3532EA6D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232887AbhCEMio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:38:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50978 "EHLO mail.kernel.org"
+        id S231127AbhCEMif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:38:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232005AbhCEMhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:37:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DEB7D65004;
-        Fri,  5 Mar 2021 12:37:43 +0000 (UTC)
+        id S232307AbhCEMhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:37:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5BD264FF0;
+        Fri,  5 Mar 2021 12:37:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947864;
-        bh=ilO/xNqsOcCX7Cms4TpczYCrbu0BtTE+nRX7LeCQJDw=;
+        s=korg; t=1614947867;
+        bh=gfJsEOLFlhOFuevab/YlfiMZUugZsd9zOztP2+2HySk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ucJogOdn/oJkBk2KWcz8rBKc5YJJC/2F7Jr/C0TkdxvouPfJQyLYWr77N61sXl1qt
-         rBZSIQml9U97eEfWcMov5B1E7rpH2zocDbpZBv1h1jO1sr3VTGwgjiDOWgn6I9ICEC
-         bVca1nBr0Yu9ul8slY1Vfa6m2OffdOHw7jcgwoyw=
+        b=MXpYUPYUBWq6wu7BLBdsQ96c3i7SRzWalCAx7p3o61UX33z2PWuBU+N/tFeh8O4da
+         85M/AFOqfczhcKiolCEgROKrdnpwXVxhEUEoL77dd7F0Io32SMukzcWjN02ZIUeyUC
+         LqcUkxs22D427TLp38xatfoNUROgkUIR+yHq4JI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 40/52] ASoC: Intel: bytcr_rt5640: Add quirk for the Voyo Winpad A15 tablet
-Date:   Fri,  5 Mar 2021 13:22:11 +0100
-Message-Id: <20210305120855.630069471@linuxfoundation.org>
+Subject: [PATCH 4.19 41/52] ASoC: Intel: bytcr_rt5640: Add quirk for the Acer One S1002 tablet
+Date:   Fri,  5 Mar 2021 13:22:12 +0100
+Message-Id: <20210305120855.672299015@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
 References: <20210305120853.659441428@linuxfoundation.org>
@@ -43,46 +43,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit e1317cc9ca4ac20262895fddb065ffda4fc29cfb ]
+[ Upstream commit c58947af08aedbdee0fce5ea6e6bf3e488ae0e2c ]
 
-The Voyo Winpad A15 tablet uses a Bay Trail (non CR) SoC, so it is using
-SSP2 (AIF1) and it mostly works with the defaults. But instead of using
-DMIC1 it is using an analog mic on IN1, add a quirk for this.
+The Acer One S1002 tablet is using an analog mic on IN1 and has
+its jack-detect connected to JD2_IN4N, instead of using the default
+IN3 for its internal mic and JD1_IN4P for jack-detect.
+
+Note it is also using AIF2 instead of AIF1 which is somewhat unusual,
+this is correctly advertised in the ACPI CHAN package, so the speakers
+do work without the quirk.
+
+Add a quirk for the mic and jack-detect settings.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210216213555.36555-3-hdegoede@redhat.com
+Link: https://lore.kernel.org/r/20210216213555.36555-5-hdegoede@redhat.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 4dd1941d4147..910214ab140e 100644
+index 910214ab140e..8a943de1e5b5 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -756,6 +756,20 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF2 |
+@@ -409,6 +409,19 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
  					BYT_RT5640_MCLK_EN),
  	},
-+	{	/* Voyo Winpad A15 */
++	{	/* Acer One 10 S1002 */
 +		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
-+			DMI_MATCH(DMI_BOARD_NAME, "Aptio CRB"),
-+			/* Above strings are too generic, also match on BIOS date */
-+			DMI_MATCH(DMI_BIOS_DATE, "11/20/2014"),
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "One S1002"),
 +		},
 +		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
 +					BYT_RT5640_JD_SRC_JD2_IN4N |
 +					BYT_RT5640_OVCD_TH_2000UA |
 +					BYT_RT5640_OVCD_SF_0P75 |
 +					BYT_RT5640_DIFF_MIC |
++					BYT_RT5640_SSP0_AIF2 |
 +					BYT_RT5640_MCLK_EN),
 +	},
- 	{	/* Catch-all for generic Insyde tablets, must be last */
+ 	{
  		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Insyde"),
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
 -- 
 2.30.1
 
