@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBC932DF6A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B930F32DF6D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbhCECDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 21:03:53 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:27720 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhCECDw (ORCPT
+        id S229580AbhCECFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 21:05:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhCECFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 21:03:52 -0500
-Date:   Fri, 05 Mar 2021 02:03:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1614909830;
-        bh=GduqeEmhvsNKh/mBiEjO2HT/vpt87Bd8VyVcvhIY1Kg=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=m8FWBaot3PepJ8Y03N2zE0ipJkigXZ3Gu2W+gCse4GH9nPPBQs2egIhMo+f75sHW4
-         vaZK1XBwEVPsq/8O17MdAdyrKs4kR6S8fkkkpGhDSeaX6smO3T1eMHXsq3MawsqpDb
-         ySXux0ch/J2ktTseMbVJi/SJ8ZpXA7mjXlEKWCc4=
-To:     caleb@connolly.tech, andi@etezian.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: [PATCH] input: s6sy761: fix coordinate read bit shift
-Message-ID: <20210305020310.550527-1-caleb@connolly.tech>
+        Thu, 4 Mar 2021 21:05:50 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481B9C061574;
+        Thu,  4 Mar 2021 18:05:49 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id g185so558943qkf.6;
+        Thu, 04 Mar 2021 18:05:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bSUjjb3HsS8cD5GxX1FQLqtqNzgpMXQmde2Ym1EhNkk=;
+        b=RmsACRpMIdO7wzoRbRr09xLM3R5cdv9FrY1m1CNl14b+U1IolHKKgrKf5t+SY2yXZQ
+         S/iAk3rgV8rXzrwD0CFTdYRi+xCj3+LGDcYvcDEMGOfIJhL1F5DGH2ltI24rX5fzQF7M
+         XtSlb1/EuPsp+rjKeb6i4wakd31aSilJTk0LfqOa5ulL08w9MmRWClKiNxQe8kogGR1W
+         rnVob5VEChCPm7KQwWjBBUrPAUJ0Yj7jsau0k4OpnvRsoxZMrrW87mlmmTZoptFyBjmI
+         qNEVJwMFKDPRiaW9CxCxaKirytbIW0m3uKOumhVFYfqlvx8HAWlqcTSsI9/fJyy9ol/n
+         Pjyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bSUjjb3HsS8cD5GxX1FQLqtqNzgpMXQmde2Ym1EhNkk=;
+        b=CCFTVL7QHg2kUmLrdzwNnIxM/HkgHhP00/zExLVoNltwg92bYL1Ms+6in1Iuy2ouUu
+         pfvyrL+Xg9h53KjBHwGqE49k6vNDEk3A1tgxMeiGLwBZC34h6Jee+6FLCAEvYrv359sP
+         2BMBGUI+j5wnbnqm7g5KqSsoRvHL5VLbfZGvK/tXmTFDBcpYJMl+Ikk+Jmuwar6k60G3
+         8bg6YGcgJAYENYrz2bPDKNyaRqKjdjens+3AX2d5uUbVSqgc6PwNe/YvjkZuP5zhTaCf
+         pUKy95Ou7WoGTy6KTNYLfLQautIfdxolxVdp2Q1fda/O/sp0OG4GOezz/GVU/+OsnWNm
+         22EQ==
+X-Gm-Message-State: AOAM532EeHcHrBX5d6lL78zRUCgKbMsTYCgTHMuq4cFQGnOq4ySoX+DL
+        IykPzDUi5I2v+Rzdn3f001QTtz9gqdRHLxBv
+X-Google-Smtp-Source: ABdhPJygElhfPp4fpfZhuhowkBi490xFvhG62ABtyc8ckHc6/zVWpfhWpAqC/ZZERhJnQkBm+3+gpw==
+X-Received: by 2002:a05:620a:218e:: with SMTP id g14mr7029864qka.111.1614909948472;
+        Thu, 04 Mar 2021 18:05:48 -0800 (PST)
+Received: from localhost.localdomain ([156.146.54.138])
+        by smtp.gmail.com with ESMTPSA id g11sm872928qkk.5.2021.03.04.18.05.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 18:05:47 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     tsbogend@alpha.franken.de, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] arch: mips: bcm63xx: Spello fix in the file clk.c
+Date:   Fri,  5 Mar 2021 07:35:35 +0530
+Message-Id: <20210305020535.25006-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
 
-The touch coordinates are read by shifting a value left by 3,
-this is incorrect and effectively causes the coordinates to
-be half of the correct value.
 
-Shift by 4 bits instead to report the correct value.
+s/revelant/relevant/
 
-This matches downstream examples, and has been confirmed on my
-device (OnePlus 7 Pro).
-
-Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- drivers/input/touchscreen/s6sy761.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/mips/bcm63xx/clk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/s6sy761.c b/drivers/input/touchscree=
-n/s6sy761.c
-index b63d7fdf0cd2..85a1f465c097 100644
---- a/drivers/input/touchscreen/s6sy761.c
-+++ b/drivers/input/touchscreen/s6sy761.c
-@@ -145,8 +145,8 @@ static void s6sy761_report_coordinates(struct s6sy761_d=
-ata *sdata,
- =09u8 major =3D event[4];
- =09u8 minor =3D event[5];
- =09u8 z =3D event[6] & S6SY761_MASK_Z;
--=09u16 x =3D (event[1] << 3) | ((event[3] & S6SY761_MASK_X) >> 4);
--=09u16 y =3D (event[2] << 3) | (event[3] & S6SY761_MASK_Y);
-+=09u16 x =3D (event[1] << 4) | ((event[3] & S6SY761_MASK_X) >> 4);
-+=09u16 y =3D (event[2] << 4) | (event[3] & S6SY761_MASK_Y);
-=20
- =09input_mt_slot(sdata->input, tid);
-=20
---=20
-2.29.2
+diff --git a/arch/mips/bcm63xx/clk.c b/arch/mips/bcm63xx/clk.c
+index 164115944a7f..5a3e325275d0 100644
+--- a/arch/mips/bcm63xx/clk.c
++++ b/arch/mips/bcm63xx/clk.c
+@@ -76,7 +76,7 @@ static struct clk clk_enet_misc = {
+ };
 
-
------BEGIN PGP SIGNATURE-----
-Version: ProtonMail
-
-wsFmBAEBCAAQBQJgQZF1CRAFgzErGV9ktgAKCRAFgzErGV9ktroYD/9RVSpG
-TNuHm0cz8tS/oPFxPxO6Y35p3IF7I77hv0/Qy8CDBgyiJ2pZYP5dOgMPp7NV
-MbIYMlN0sjXsAhcm81eho4qp7r5Fnv5YdRoe8QaueRaBVqG5xeip//sdYsdP
-lkSLLJqM7caXOZ2QaVZp4w9v7PpZvyGTdDeBtyhVwrRpuEcZraFBGhyfv4Xf
-WvU/hKj+0cnKt+WpmnEtwBkkX4PDqm2yXQASm5HrHli5z8XSlaTO55jFcQRP
-+PcV/uBEVm9yhi4qYGEZYFZ526IpIcB4vKJi5h3fYro3ye66GfT+zb4HHwA/
-cRoEFfRQ6TX1NUBeawi5l7LnAXP3w/RMQ9HnULjiFgLI1a63EsucXGnan2gt
-N0Ig0nnbD/c0UG9dsm5u7POM1JhDrX184Bvh3WPb4t0XfYRCIQVB4S+ElG3n
-KoPLMWjOzfSxFQcEK4axpOYePDGfbqMYTNy+g+m/aQa40OnYem2Tp6koIpz4
-tzzHgpKlrUuMe571jZFO+eIwIxuu/5yaE1qBANfaCIemDWxX2dXEeaoFCTtu
-LdqkxaQuxqPaZORlbuRHFkaFEsk2iWZ6eOSNo6dBQ+qxbIHFj8xYqYkZh5Hn
-g7zP0UpHbcTEggFgGB0AM6n3+qQXVR+EwtKr7vBWiSAR6p2T87MNflFWbvk5
-1fCR4mi79Teaafgunw=3D=3D
-=3DhTKj
------END PGP SIGNATURE-----
+ /*
+- * Ethernet MAC clocks: only revelant on 6358, silently enable misc
++ * Ethernet MAC clocks: only relevant on 6358, silently enable misc
+  * clocks
+  */
+ static void enetx_set(struct clk *clk, int enable)
+--
+2.30.1
 
