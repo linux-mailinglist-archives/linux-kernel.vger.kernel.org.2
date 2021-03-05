@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A62932E9F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B8632E965
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232744AbhCEMfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:35:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46402 "EHLO mail.kernel.org"
+        id S231844AbhCEMcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:32:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231860AbhCEMen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:34:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 510676501D;
-        Fri,  5 Mar 2021 12:34:40 +0000 (UTC)
+        id S232404AbhCEMbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:31:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6440465013;
+        Fri,  5 Mar 2021 12:31:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947681;
-        bh=/KBQUc3XBQeTdmbwSV/TnNC2PL+nXl0zvygNZc+Jvlk=;
+        s=korg; t=1614947506;
+        bh=G80eKNMqk+J+q5wvs2LWGwmOXh5IjT2rjcuv5l+YbQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bXTlT+23k2cbt5j9HHoDq0F/mXLuo5h5yZ328uMFC/dJe8c9zVqGS0JGcjOF4wA5i
-         PpMpozYm7kwlguE+KhSA5nTHm9LkdQMi0LQtXU3eDCJ101NPxVpG2tr8sytYQbTlmX
-         6JsCKFu71vbEbyZ5zC8aVMBTjXMB7zcpYoaCUgIU=
+        b=FNufSG4yZhsFXfTPYZo8dx1jGD6Gj3pNHUIenlXNDqnHjZMkAw09nuRYYkrZhYU5o
+         rTyBghuK0XGh2Uo0CwlFiZpoK0lhIb3jgPreQvOnvHy2Ag+8nzZwG1DrzyBv1IIfR4
+         9X74wg7MGf0AdF3wl5txc9oY7owz9XHEy3Ljut18=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Eric Yang <eric.yang2@amd.com>,
-        Anson Jacob <anson.jacob@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 45/72] drm/amd/display: Guard against NULL pointer deref when get_i2c_info fails
+        stable@vger.kernel.org,
+        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>, Juergen Gross <jgross@suse.com>,
+        Jan Beulich <jbeulich@suse.com>
+Subject: [PATCH 5.10 088/102] xen: fix p2m size in dom0 for disabled memory hotplug case
 Date:   Fri,  5 Mar 2021 13:21:47 +0100
-Message-Id: <20210305120859.550735603@linuxfoundation.org>
+Message-Id: <20210305120907.615438324@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
-References: <20210305120857.341630346@linuxfoundation.org>
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+References: <20210305120903.276489876@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +41,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+From: Juergen Gross <jgross@suse.com>
 
-[ Upstream commit 44a09e3d95bd2b7b0c224100f78f335859c4e193 ]
+commit 882213990d32fd224340a4533f6318dd152be4b2 upstream.
 
-[Why]
-If the BIOS table is invalid or corrupt then get_i2c_info can fail
-and we dereference a NULL pointer.
+Since commit 9e2369c06c8a18 ("xen: add helpers to allocate unpopulated
+memory") foreign mappings are using guest physical addresses allocated
+via ZONE_DEVICE functionality.
 
-[How]
-Check that ddc_pin is not NULL before using it and log an error if it
-is because this is unexpected.
+This will result in problems for the case of no balloon memory hotplug
+being configured, as the p2m list will only cover the initial memory
+size of the domain. Any ZONE_DEVICE allocated address will be outside
+the p2m range and thus a mapping can't be established with that memory
+address.
 
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Reviewed-by: Eric Yang <eric.yang2@amd.com>
-Acked-by: Anson Jacob <anson.jacob@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix that by extending the p2m size for that case. At the same time add
+a check for a to be created mapping to be within the p2m limits in
+order to detect errors early.
+
+While changing a comment, remove some 32-bit leftovers.
+
+This is XSA-369.
+
+Fixes: 9e2369c06c8a18 ("xen: add helpers to allocate unpopulated memory")
+Cc: <stable@vger.kernel.org> # 5.9
+Reported-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Jan Beulich <jbeulich@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc_link.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/x86/include/asm/xen/page.h |   12 ++++++++++++
+ arch/x86/xen/p2m.c              |   10 ++++++----
+ arch/x86/xen/setup.c            |   25 +++----------------------
+ 3 files changed, 21 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-index fa92b88bc5a1..40041c61a100 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-@@ -1303,6 +1303,11 @@ static bool construct(
- 		goto ddc_create_fail;
- 	}
+--- a/arch/x86/include/asm/xen/page.h
++++ b/arch/x86/include/asm/xen/page.h
+@@ -87,6 +87,18 @@ clear_foreign_p2m_mapping(struct gnttab_
+ #endif
  
-+	if (!link->ddc->ddc_pin) {
-+		DC_ERROR("Failed to get I2C info for connector!\n");
-+		goto ddc_create_fail;
-+	}
+ /*
++ * The maximum amount of extra memory compared to the base size.  The
++ * main scaling factor is the size of struct page.  At extreme ratios
++ * of base:extra, all the base memory can be filled with page
++ * structures for the extra memory, leaving no space for anything
++ * else.
++ *
++ * 10x seems like a reasonable balance between scaling flexibility and
++ * leaving a practically usable system.
++ */
++#define XEN_EXTRA_MEM_RATIO	(10)
 +
- 	link->ddc_hw_inst =
- 		dal_ddc_get_line(
- 			dal_ddc_service_get_ddc_pin(link->ddc));
--- 
-2.30.1
-
++/*
+  * Helper functions to write or read unsigned long values to/from
+  * memory, when the access may fault.
+  */
+--- a/arch/x86/xen/p2m.c
++++ b/arch/x86/xen/p2m.c
+@@ -416,6 +416,9 @@ void __init xen_vmalloc_p2m_tree(void)
+ 	xen_p2m_last_pfn = xen_max_p2m_pfn;
+ 
+ 	p2m_limit = (phys_addr_t)P2M_LIMIT * 1024 * 1024 * 1024 / PAGE_SIZE;
++	if (!p2m_limit && IS_ENABLED(CONFIG_XEN_UNPOPULATED_ALLOC))
++		p2m_limit = xen_start_info->nr_pages * XEN_EXTRA_MEM_RATIO;
++
+ 	vm.flags = VM_ALLOC;
+ 	vm.size = ALIGN(sizeof(unsigned long) * max(xen_max_p2m_pfn, p2m_limit),
+ 			PMD_SIZE * PMDS_PER_MID_PAGE);
+@@ -652,10 +655,9 @@ bool __set_phys_to_machine(unsigned long
+ 	pte_t *ptep;
+ 	unsigned int level;
+ 
+-	if (unlikely(pfn >= xen_p2m_size)) {
+-		BUG_ON(mfn != INVALID_P2M_ENTRY);
+-		return true;
+-	}
++	/* Only invalid entries allowed above the highest p2m covered frame. */
++	if (unlikely(pfn >= xen_p2m_size))
++		return mfn == INVALID_P2M_ENTRY;
+ 
+ 	/*
+ 	 * The interface requires atomic updates on p2m elements.
+--- a/arch/x86/xen/setup.c
++++ b/arch/x86/xen/setup.c
+@@ -59,18 +59,6 @@ static struct {
+ } xen_remap_buf __initdata __aligned(PAGE_SIZE);
+ static unsigned long xen_remap_mfn __initdata = INVALID_P2M_ENTRY;
+ 
+-/* 
+- * The maximum amount of extra memory compared to the base size.  The
+- * main scaling factor is the size of struct page.  At extreme ratios
+- * of base:extra, all the base memory can be filled with page
+- * structures for the extra memory, leaving no space for anything
+- * else.
+- * 
+- * 10x seems like a reasonable balance between scaling flexibility and
+- * leaving a practically usable system.
+- */
+-#define EXTRA_MEM_RATIO		(10)
+-
+ static bool xen_512gb_limit __initdata = IS_ENABLED(CONFIG_XEN_512GB);
+ 
+ static void __init xen_parse_512gb(void)
+@@ -790,20 +778,13 @@ char * __init xen_memory_setup(void)
+ 		extra_pages += max_pages - max_pfn;
+ 
+ 	/*
+-	 * Clamp the amount of extra memory to a EXTRA_MEM_RATIO
+-	 * factor the base size.  On non-highmem systems, the base
+-	 * size is the full initial memory allocation; on highmem it
+-	 * is limited to the max size of lowmem, so that it doesn't
+-	 * get completely filled.
++	 * Clamp the amount of extra memory to a XEN_EXTRA_MEM_RATIO
++	 * factor the base size.
+ 	 *
+ 	 * Make sure we have no memory above max_pages, as this area
+ 	 * isn't handled by the p2m management.
+-	 *
+-	 * In principle there could be a problem in lowmem systems if
+-	 * the initial memory is also very large with respect to
+-	 * lowmem, but we won't try to deal with that here.
+ 	 */
+-	extra_pages = min3(EXTRA_MEM_RATIO * min(max_pfn, PFN_DOWN(MAXMEM)),
++	extra_pages = min3(XEN_EXTRA_MEM_RATIO * min(max_pfn, PFN_DOWN(MAXMEM)),
+ 			   extra_pages, max_pages - max_pfn);
+ 	i = 0;
+ 	addr = xen_e820_table.entries[0].addr;
 
 
