@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233FC32EA13
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FEE32EA6B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbhCEMgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:36:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47882 "EHLO mail.kernel.org"
+        id S230453AbhCEMi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:38:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232435AbhCEMfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:35:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A80F65027;
-        Fri,  5 Mar 2021 12:35:35 +0000 (UTC)
+        id S233346AbhCEMhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:37:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 645696501B;
+        Fri,  5 Mar 2021 12:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947736;
-        bh=acKLn+rjEj4GLNjnDvR2gDy/O+xFPyGO2hiJrIVlMqA=;
+        s=korg; t=1614947856;
+        bh=mH5lfZ8/5v9mgS6Y436aF+xZF4680Y0Wb2+gP2hbx34=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aCyPnl2Dgzc8plwv9+KEVcI0nuYodUWfPHkhjPG6PYVoeDoAwzYey3UWtsCYopjCW
-         YXMalXXWxqwS9urXgqVCEnfjdgv0xYW9trc2bqOffaSfQnOtyko3suGLCUqsTMxVnh
-         BIwWNkzH/rMllForm8aJzmkMtTibDM7WVU8y374w=
+        b=NWZ67lWeZvGlPwKqovcuHouMADQHL7nsWsoCzFxv662wLt1yHMQC60NfKxY478yjx
+         qzXj8I1i4cq4kqm8wPtkU+78EeUMnVqEiUtI1RG43QzES+TE/sMaZH9dqhWKAZui9G
+         mGeqns3SP+YmkZVapHQnHe+QXmSVlphojGSGDZVs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Jan Beulich <jbeulich@suse.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 5.4 66/72] xen-netback: respect gnttab_map_refs()s return value
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 37/52] btrfs: fix error handling in commit_fs_roots
 Date:   Fri,  5 Mar 2021 13:22:08 +0100
-Message-Id: <20210305120900.569399337@linuxfoundation.org>
+Message-Id: <20210305120855.483963642@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
-References: <20210305120857.341630346@linuxfoundation.org>
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+References: <20210305120853.659441428@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit 2991397d23ec597405b116d96de3813420bdcbc3 upstream.
+[ Upstream commit 4f4317c13a40194940acf4a71670179c4faca2b5 ]
 
-Commit 3194a1746e8a ("xen-netback: don't "handle" error by BUG()")
-dropped respective a BUG_ON() without noticing that with this the
-variable's value wouldn't be consumed anymore. With gnttab_set_map_op()
-setting all status fields to a non-zero value, in case of an error no
-slot should have a status of GNTST_okay (zero).
+While doing error injection I would sometimes get a corrupt file system.
+This is because I was injecting errors at btrfs_search_slot, but would
+only do it one time per stack.  This uncovered a problem in
+commit_fs_roots, where if we get an error we would just break.  However
+we're in a nested loop, the first loop being a loop to find all the
+dirty fs roots, and then subsequent root updates would succeed clearing
+the error value.
 
-This is part of XSA-367.
+This isn't likely to happen in real scenarios, however we could
+potentially get a random ENOMEM once and then not again, and we'd end up
+with a corrupted file system.  Fix this by moving the error checking
+around a bit to the main loop, as this is the only place where something
+will fail, and return the error as soon as it occurs.
 
-Cc: <stable@vger.kernel.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Link: https://lore.kernel.org/r/d933f495-619a-0086-5fb4-1ec3cf81a8fc@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+With this patch my reproducer no longer corrupts the file system.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/xen-netback/netback.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ fs/btrfs/transaction.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -1335,11 +1335,21 @@ int xenvif_tx_action(struct xenvif_queue
- 		return 0;
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 8829d89eb4af..1b52c960682d 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1249,7 +1249,6 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
+ 	struct btrfs_root *gang[8];
+ 	int i;
+ 	int ret;
+-	int err = 0;
  
- 	gnttab_batch_copy(queue->tx_copy_ops, nr_cops);
--	if (nr_mops != 0)
-+	if (nr_mops != 0) {
- 		ret = gnttab_map_refs(queue->tx_map_ops,
- 				      NULL,
- 				      queue->pages_to_map,
- 				      nr_mops);
-+		if (ret) {
-+			unsigned int i;
+ 	spin_lock(&fs_info->fs_roots_radix_lock);
+ 	while (1) {
+@@ -1261,6 +1260,8 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
+ 			break;
+ 		for (i = 0; i < ret; i++) {
+ 			struct btrfs_root *root = gang[i];
++			int ret2;
 +
-+			netdev_err(queue->vif->dev, "Map fail: nr %u ret %d\n",
-+				   nr_mops, ret);
-+			for (i = 0; i < nr_mops; ++i)
-+				WARN_ON_ONCE(queue->tx_map_ops[i].status ==
-+				             GNTST_okay);
-+		}
-+	}
+ 			radix_tree_tag_clear(&fs_info->fs_roots_radix,
+ 					(unsigned long)root->root_key.objectid,
+ 					BTRFS_ROOT_TRANS_TAG);
+@@ -1282,17 +1283,17 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
+ 						    root->node);
+ 			}
  
- 	work_done = xenvif_tx_submit(queue);
+-			err = btrfs_update_root(trans, fs_info->tree_root,
++			ret2 = btrfs_update_root(trans, fs_info->tree_root,
+ 						&root->root_key,
+ 						&root->root_item);
++			if (ret2)
++				return ret2;
+ 			spin_lock(&fs_info->fs_roots_radix_lock);
+-			if (err)
+-				break;
+ 			btrfs_qgroup_free_meta_all_pertrans(root);
+ 		}
+ 	}
+ 	spin_unlock(&fs_info->fs_roots_radix_lock);
+-	return err;
++	return 0;
+ }
  
+ /*
+-- 
+2.30.1
+
 
 
