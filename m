@@ -2,129 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F8632E3F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BAB32E3FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229489AbhCEIwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:52:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53722 "EHLO mail.kernel.org"
+        id S229592AbhCEIxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:53:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229538AbhCEIwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:52:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7C3F64F59;
-        Fri,  5 Mar 2021 08:52:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614934327;
-        bh=YomETzGtBP9KFxio8Vo2yqnxfBIHiDfol7GxCxmGtU0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z+KYGf6BTBkscKqK3tJt4E+PFzmX5WeMIS7j74De5lLwQwmAp5fo+XDqJpK42h8LB
-         DwzXgbF2PgreCzTcYhdqdA/Qu2LiFNO8QgGKVGq7kC2ujJa1GXV0BeFjSAJqd8Y+Si
-         XbsucLPiloZ2XkSU8Zql42Tsj3y1VGXE+6emO+1g=
-Date:   Fri, 5 Mar 2021 09:52:04 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 5.10 000/657] 5.10.20-rc4 review
-Message-ID: <YEHxNECRwr4Z4ka2@kroah.com>
-References: <20210302192700.399054668@linuxfoundation.org>
- <CA+G9fYsA7U7rzd=yGYQ=uWViY3_dXc4iY_pC-DM1K3R+gac19g@mail.gmail.com>
- <175fac9c-ac3f-bd82-9e5d-2c2970cfc519@roeck-us.net>
- <CA+G9fYtkrAs=ASaVVu6-Lnck8A6Pt_LGODxnpTYouvppbw_rbQ@mail.gmail.com>
- <CAHk-=wgxLTur2G5mvYKCXE4DkUo90T2Dy3X526sqJgOCm0gzNA@mail.gmail.com>
- <CA+G9fYsUJvLbaqOFkxYZJxZkgay92vxjjoD69C0+tS5kthZmoQ@mail.gmail.com>
+        id S229493AbhCEIxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 03:53:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C3A264DE8;
+        Fri,  5 Mar 2021 08:52:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614934380;
+        bh=0K5gEXyiena0MlzGojgi19OmF18QgKL8tbUhZJGMau0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CSlU89qrCCkyru9O2mSXJ47yjCEREClQLKFyfeiDd3RjLLNEZzjs841th6ADz9nPg
+         nscjWQfVNAR3BTLytPULQN81TVsTkRlKeSlblxq1wpycAGuHlj8zhNwUczvC4Ym+xa
+         Xi5//86R9U+YGm3Ml7OJZ3jjcb8lzpk4dQkAzqZ49sqAboN7qZSZi9DNzU1XUOtv4M
+         rGrakwKsf2HfyH+3fGWQNgeKorTZW70EDHKWWsS1c8KR8d/1CsABbyXsCW9jXIMh5u
+         DxRFlT6OpJw2bQnnU9SJfmq+ZlaOogzP1+sHBXVG/OI1YMRHZNcDr0P/7AOQoypKBw
+         4WCM0xO9sywoA==
+Date:   Fri, 5 Mar 2021 02:52:57 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH RESEND][next] ice: Fix fall-through warnings for Clang
+Message-ID: <20210305085257.GA138498@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYsUJvLbaqOFkxYZJxZkgay92vxjjoD69C0+tS5kthZmoQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 01:39:46PM +0530, Naresh Kamboju wrote:
-> On Fri, 5 Mar 2021 at 02:45, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > On Thu, Mar 4, 2021 at 9:56 AM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > >
-> > > On Thu, 4 Mar 2021 at 01:34, Guenter Roeck <linux@roeck-us.net> wrote:
-> > > >
-> > > > Upstream has:
-> > > >
-> > > > e71a8d5cf4b4 tty: fix up iterate_tty_read() EOVERFLOW handling
-> > > > ddc5fda74561 tty: fix up hung_up_tty_read() conversion
-> > >
-> > > I have applied these two patches and the reported problem did not solve.
-> >
-> > Hmm. Upstream has:
-> >
-> > *  3342ff2698e9 ("tty: protect tty_write from odd low-level tty disciplines")
-> > *  a9cbbb80e3e7 ("tty: avoid using vfs_iocb_iter_write() for
-> > redirected console writes")
-> > *  17749851eb9c ("tty: fix up hung_up_tty_write() conversion")
-> > G  e71a8d5cf4b4 ("tty: fix up iterate_tty_read() EOVERFLOW handling")
-> > G  ddc5fda74561 ("tty: fix up hung_up_tty_read() conversion")
-> >  * c7135bbe5af2 ("tty: fix up hung_up_tty_write() conversion")
-> >   d7fe75cbc23c ("tty: teach the n_tty ICANON case about the new
-> > "cookie continuations" too")
-> >   15ea8ae8e03f ("tty: teach n_tty line discipline about the new
-> > "cookie continuations"")
-> >   64a69892afad ("tty: clean up legacy leftovers from n_tty line discipline")
-> > *  9bb48c82aced ("tty: implement write_iter")
-> > *  dd78b0c483e3 ("tty: implement read_iter")
-> > *  3b830a9c34d5 ("tty: convert tty_ldisc_ops 'read()' function to take
-> > a kernel pointer")
-> >
-> > Where those ones marked with '*' seem to be in v5.10.y, and the one
-> > prefixed with 'G' are the ones Guenter mentioned.
-> >
-> > (We seem to have the "tty: fix up hung_up_tty_write() conversion"
-> > commit twice. I'm not sure how that happened, but whatever).
+In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+by explicitly adding a break statement instead of just letting the code
+fall through to the next case.
 
-I merged it through two different branches by applying it from email,
-one for 5.10-final and one for 5.11-rc1, sorry about that.
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> > But that still leaves three commits that don't seem to be in 5.10.y:
-> >
-> >   d7fe75cbc23c ("tty: teach the n_tty ICANON case about the new
-> > "cookie continuations" too")
-> >   15ea8ae8e03f ("tty: teach n_tty line discipline about the new
-> > "cookie continuations"")
-> >   64a69892afad ("tty: clean up legacy leftovers from n_tty line discipline")
-> >
-> > and they might fix what are otherwise short reads. Which is allowed by
-> > POSIX, afaik, but ..
-> >
-> > Do those three commits fix your test-case?
-> 
-> Yes.
-> As per your suggestion I've added these three patches and tested
-> and the reported test case PASS now [1].
-> 
-> This means I have five extra patches on top of the stable v5.10.20 tag.
-> 
-> $ git log --oneline
-> 8c1c1de499af tty: teach the n_tty ICANON case about the new "cookie
-> continuations" too
-> 02aada164879 tty: teach n_tty line discipline about the new "cookie
-> continuations"
-> fb0df6b17897 tty: clean up legacy leftovers from n_tty line discipline
-> 429f7fc84d6a tty: fix up iterate_tty_read() EOVERFLOW handling
-> d0d54bca80a8 tty: fix up hung_up_tty_read() conversion
-> 83be32b6c9e5 (tag: v5.10.20, origin/linux-5.10.y) Linux 5.10.20
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+index 02b12736ea80..207f6ee3a7f6 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+@@ -143,6 +143,7 @@ ice_rx_csum(struct ice_ring *ring, struct sk_buff *skb,
+ 	case ICE_RX_PTYPE_INNER_PROT_UDP:
+ 	case ICE_RX_PTYPE_INNER_PROT_SCTP:
+ 		skb->ip_summed = CHECKSUM_UNNECESSARY;
++		break;
+ 	default:
+ 		break;
+ 	}
+-- 
+2.27.0
 
-That last commit, "tty: fix up hung_up_tty_read() conversion" is already
-in 5.10.20 as e018e57fd5c0 ("tty: fix up hung_up_tty_write()
-conversion"), it came in at 5.10.11, so how did you apply it again?
-
-Anyway, thanks for these, I've queued up the 4 other commits now to the
-5.10.y and 5.11.y trees, let's see what happens...
-
-greg k-h
