@@ -2,146 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABB732EEF4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BD432EEFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:36:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhCEPfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:35:44 -0500
-Received: from mail-dm6nam12on2088.outbound.protection.outlook.com ([40.107.243.88]:32257
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        id S230271AbhCEPgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:36:20 -0500
+Received: from mail-dm6nam10on2079.outbound.protection.outlook.com ([40.107.93.79]:5089
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229493AbhCEPfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:35:36 -0500
+        id S229651AbhCEPf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 10:35:58 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LKQOu4ynjjaY90HkcgexBsHZzG8rIDZ8Jwe1rpITcUUfW/7kOcdPKNw3Kyo2D9qS/UCdW+08Cl7FEF2p3oVKxwiv7hUCWPnMXDMidDRVre4XKH/rIR4Bsh5lNIyrCMzV8XoHPFeHfrfab2s/mlM4uID0koTn0bpJ7h5HYeQmywCf4gnbgTehH/9wbD+Url/peh/uyxldWkz1maDqTk4EbsHS5pOZO7tx77UDACQnEHNrRJnWvTkMnxGeAO4k56wGCj5YHyGPQ9Z4+ob14EziSBmt+C27e1wvUs5eixOZ8ZXmM2UPbHujUQ345CcDP+ziigNxfm3wZIy7dHsX/D3ZGQ==
+ b=ZJSaqcO5vRbeiwOgiMrqLNxcU3un2pgu56TivVCOqIAJw2v4zg4GcPZW/AlWUhlJeNv7Yb4MwXVd++TfKcRE9S3klaWKbkI1RC++LSCK/KYBl8CSP/Y38FakpuLM2ABrHsaEi8WGSoWajGIUEpiLz2Yfs6M8XFjucbMGL6h6wkHi4qzrsuADmYFIqLgLlaiVvQrhQnpvIh2sLFixccCHNfXA2VjFBUi8KU13xuL1UI+mkuU7kMKai02xrUrVPN3lOx8GlLjVxxp6+AwJFXLA30zJz0VyB8+fzzuugWQtL2XhZ6d0ld2b5Fyz22Pl3ZrrSEqTMoNTeBVfPjObQzg/AQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5yAo8HNPdG2my5ygZyWP7+c+nZJmkLuvxytN/DmUSRA=;
- b=iydscFhPiDilTvAnhGh/8l/0cLGrSJUYF3PURq4DZ+DVd6ALWKL5BbaykbMVISLqoU/PB4/R1LETnP0XTcY8N1/4MU1ms5vdV+AMLtt/w6qBXh8c+KbtCRAxqNGssPUMp6Nii4Ts+oO786fUwRGccuR71JdNefC9MPA4D9rmgSmvYxrqOJ850YXIi4hg/emJZRTbi8jnUohEacQF9ymAvPaNF6sjFeTKDuooMdlMhzK2Loe2qZVKiihmh2jXM3FeS+80g+WHRbDxCtQx10KUraS63EvYtje6v7L4eHcw95dWAvv0Pp8xX/9A/ucDfhxO1Y0TIFcEAbXVZecNdI9hVg==
+ bh=NO+U6nYbDCh7eZLDdcFjLaKVE47rBO77ruo/hFRD7bA=;
+ b=YRrOTMAClGLDDODxF6N9XKoaLtwwxRteayN/+710/x3ugrouDtwQiv/qRcAjiUh7XEM0qgzn3LqOMwZeGnyxw3vLrhkMu7Cua/3d5Z84WWFWynXWJQTJ7eYGbS38SZytAEbbuNunc7HBbKHk+FHHNporXxqz3BTsnTTtBtFBIYG7dLZW1yAPrRrbvhqT1HIfewipJBPq4PBavLtGeNWDmNWQjQLqQwc/AZi8eZPqfsxeV4q18ljxh2eIzR/szvlYoFQZQ8oStSMIcQ+m/ctjP//pjNcH1tWdmR/9Pc7XGQFRFERSIqAogKZ8/gPPPPMyOuw7PMQp9uJPQPa4AZUb/w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5yAo8HNPdG2my5ygZyWP7+c+nZJmkLuvxytN/DmUSRA=;
- b=FcHPZNann/dm1cKb8Ep970EyUAI5mc0nal8XQibvf+U0v06sZ88mWjTlQq+TgLZZ7w+pwsAyAHlre2z/1E8JQS0Z2/EzbcLFZ7I0s+zJR5IKEDOdXDEvPeApI41bC0vRyVJbYoLPVRNyMQOSutko+eFxfU9olrDoCkIgT1O24ac=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4048.namprd12.prod.outlook.com (2603:10b6:208:1d5::8) with
+ bh=NO+U6nYbDCh7eZLDdcFjLaKVE47rBO77ruo/hFRD7bA=;
+ b=PTBiJWfr6hUzMEungzHLD+PzUp2lwbzdugWmzM4kvqDrCfPPqPOda4YOW7oGwCfDAnHldTgnHyyslMEvjyZeLSGm8rFjFFe3ESz86SU4V7n2ZaFREm0hNfKAqFex65JswHMwrqOUGS57/FbBYnqknEkNOcn+zF7R8zuaB/Rspi8=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=vmware.com;
+Received: from SN6PR05MB5759.namprd05.prod.outlook.com (2603:10b6:805:103::19)
+ by SN7PR05MB7776.namprd05.prod.outlook.com (2603:10b6:806:10e::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Fri, 5 Mar
- 2021 15:35:34 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3912.023; Fri, 5 Mar 2021
- 15:35:33 +0000
-Subject: Re: [PATCH 5.11 079/104] drm/amdgpu: enable only one high prio
- compute queue
-To:     Sasha Levin <sashal@kernel.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Das, Nirmoy" <Nirmoy.Das@amd.com>
-References: <20210305120903.166929741@linuxfoundation.org>
- <20210305120907.039431314@linuxfoundation.org>
- <23197f54-020a-691c-5733-45ce7e624fec@amd.com>
- <MW3PR12MB44918AD858505706809367F3F7969@MW3PR12MB4491.namprd12.prod.outlook.com>
- <9f12d4c6-35c8-7466-f1bc-bee31957e11b@amd.com>
- <MW3PR12MB4491E72712027DCBB8486E59F7969@MW3PR12MB4491.namprd12.prod.outlook.com>
- <YEJOt6KXCzNb5y+x@sashalap>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <1b5bfcb0-3860-bb81-f0ad-91a522beef0a@amd.com>
-Date:   Fri, 5 Mar 2021 16:35:28 +0100
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.13; Fri, 5 Mar
+ 2021 15:35:51 +0000
+Received: from SN6PR05MB5759.namprd05.prod.outlook.com
+ ([fe80::24ea:f168:e288:980a]) by SN6PR05MB5759.namprd05.prod.outlook.com
+ ([fe80::24ea:f168:e288:980a%5]) with mapi id 15.20.3912.023; Fri, 5 Mar 2021
+ 15:35:51 +0000
+Subject: Re: [patch 2/7] drm/vmgfx: Replace kmap_atomic()
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        spice-devel@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        nouveau@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        intel-gfx@lists.freedesktop.org
+References: <20210303132023.077167457@linutronix.de>
+ <20210303132711.487711828@linutronix.de>
+From:   Roland Scheidegger <sroland@vmware.com>
+Message-ID: <5ea9de05-31a1-855f-ab28-49c0cb6b724c@vmware.com>
+Date:   Fri, 5 Mar 2021 16:35:42 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <YEJOt6KXCzNb5y+x@sashalap>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:ee4e:e545:33e0:7359]
-X-ClientProxiedBy: AM4PR0501CA0051.eurprd05.prod.outlook.com
- (2603:10a6:200:68::19) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+ Firefox/78.0 Thunderbird/78.7.0
+In-Reply-To: <20210303132711.487711828@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [46.126.183.173]
+X-ClientProxiedBy: GVAP278CA0006.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:710:20::16) To SN6PR05MB5759.namprd05.prod.outlook.com
+ (2603:10b6:805:103::19)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:ee4e:e545:33e0:7359] (2a02:908:1252:fb60:ee4e:e545:33e0:7359) by AM4PR0501CA0051.eurprd05.prod.outlook.com (2603:10a6:200:68::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.18 via Frontend Transport; Fri, 5 Mar 2021 15:35:32 +0000
+Received: from [192.168.1.125] (46.126.183.173) by GVAP278CA0006.CHEP278.PROD.OUTLOOK.COM (2603:10a6:710:20::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 5 Mar 2021 15:35:47 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9f31223d-1240-4edd-5d9d-08d8dfec50da
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4048:
+X-MS-Office365-Filtering-Correlation-Id: 56c967c0-4a56-49a8-4a18-08d8dfec5b14
+X-MS-TrafficTypeDiagnostic: SN7PR05MB7776:
+X-LD-Processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB40480C5262E10BB3E82B22FA83969@MN2PR12MB4048.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Microsoft-Antispam-PRVS: <SN7PR05MB777677942214BB2CB9209A4BC6969@SN7PR05MB7776.namprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: msBdntCN6Ff8BMvxhQaPNK4VaKb+hZq1tZ05OOoTzEk3oVwa/jTfPJ6HXTpM1Kvvb2OYvz4sPgNGKhxMIUbPA+iK3kZuijGWsS5GaaggjFjzfHwtBopIc1q9qzh5x71buPJ8pBtU8EJJPyH3b71w+p49V6OnDjsVLEXLJVMP7lXVrCCYD5U/60RyXPp7k+NtbLWMY4tRuBkL4w6QOvnsK6QVuIfuloZ71bxFVizPHsBmZVqK9SQwQBkdKkQaw6mryQ/tSuUk4Gy/pyknW50DtHREMkUkJ9cdzr2/4lLksOsBjsUVcHWh/7qSMj6vUpBRjXlNYnCpja/CgCvsuGzVsQtTrmhyCFaXbwjuv8tKnMFUAAIVCFEOMtiY77JI9zP++Lt75FmXeybxOCLeftKjl/NGY1m+dNR9xMZgDbqcX0+QqXQnsBNn+5i6Wbo+CV2+Odsg320BtAqozmGaETHH0ZW1qJ/PDu87tEtLwCulrBJ5YQmfZj6qydyWjZCrUp8oC692PgIngSYFw747grJg1wROKaArjRulIVecfOnr3Aat3InvgtkMuaL8X2eLjOAwMTBbKMIJyokixBkZN3LNohrwMNlPDPw1Lrqbf/RB0Ho=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(376002)(366004)(39860400002)(110136005)(316002)(6636002)(54906003)(66946007)(66556008)(31696002)(5660300002)(66476007)(86362001)(52116002)(6486002)(478600001)(36756003)(2906002)(4744005)(8676002)(2616005)(31686004)(4326008)(8936002)(16526019)(186003)(6666004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZWJEOFpnMHYrK2RjOFdLVWpQdGZGVUEwV2dQS0dKMzZkblR3WjQ5S1JjTDhN?=
- =?utf-8?B?cGttUDVFSkl1QURNRTRmYlRJR0w1UGcweFpLaGVvUDFxNEtnMTdNZStqRFFx?=
- =?utf-8?B?SnFmM28vZDFEdG9zeHBLSnc5TmprdlI2a3dGRktBZXlDSDF1OTRJQm1Tb1VP?=
- =?utf-8?B?NkZUVmk2aHh2bVJFV3V0dmNOdjRPeEpydW1WT0QrdSt5cDBXUWpiY2hDMnp5?=
- =?utf-8?B?RXpWZjd5SWNHUHZLS0JDeHlPTUExbnYzalQ3OUd0ZGV2TUV6TFBOSXlxMzdD?=
- =?utf-8?B?NmhtWVVLeC9mTVBEbkJtWHVpVlRpQ09WOEdiYTVicEorQkIvMjdDSVRpSDZI?=
- =?utf-8?B?Z3NiUENTUVhIZ3l2anZaMFNrR1FMcHlzZCtscWF0Y1ZqUnpxNWx0N1Z2SDVr?=
- =?utf-8?B?Ulg1aVVLaXcybjVhUU1DcldLZmd2eVVBNWZabS83NitCTEh1T3ZjZTI1VkZU?=
- =?utf-8?B?SXh3dVI3SHBKMkYrWHJIRDJQdlRZdXRHMXRGVzVRZzJTbWwyQU1MMmREWi9n?=
- =?utf-8?B?ZWFtWGFrSDQ1N0c3Tm8rL1QrUEJsTk5oUEpyS08xejBodWtTejhTdnoyN2k2?=
- =?utf-8?B?S3JYcngwTkRucnRzcDJxME82cDFteGJ3cDlyRU5hRWdsUmxqbE51RHFZRU00?=
- =?utf-8?B?K1M0MzN0dVFmODZaaDBtU1BoYUJkckRiaEI0SStlUU9NL3ZYS0J5TklSNjll?=
- =?utf-8?B?dklJMGoxWG1DbERRbXFGNThOM1pwMUdLM2hZOVBaQkp4ZmluSVVHcGhkU09j?=
- =?utf-8?B?ZmdwQm5VYXRVeW90ZGdDdGs3YlhSamw5NHBmQkNhRUUxaExVVnFoeW5mSHhy?=
- =?utf-8?B?ZXl5M1NKckRBK0preSs5UHlCUjhQUDhXV3A0VlM0dGowaTFUYnJsRzRMQ0pU?=
- =?utf-8?B?STRYcW9TY1lGTTRhbGV0QThHNXJ5OFN6WkJ1OWQ2eVRuQUI3ZTBkYlpwN0JF?=
- =?utf-8?B?S2FORFlGWmxoTDBKeEpGa1NKSzE5SHVLaDBBTVIwOG5FOG9BU0duTjlSMHRl?=
- =?utf-8?B?UFJ2UHFnNENheVBtd2VUQmgvbVErSnAwVjhwUFY5eGRzYks5SmIyZ2szbjN1?=
- =?utf-8?B?TXg5RHJDejBnT3MwN0hqKzAxR2htSmlZVlN0Umg0S1FrRnYzb3A4UllubnEx?=
- =?utf-8?B?UWgxQ21NeXVvRHprMnUrUk9ndXdFSHJqQSsxY1dMajhJTFFhbjY3ZFpXcTlX?=
- =?utf-8?B?ayt1cXZqSmVIbW9JWVU0ZUJldG53STFzcWtIbFY4dm8wS0RCd0RraXZoL1Ro?=
- =?utf-8?B?Q0czcHEzUDFIN1p0RTd6SU54VHl0WXhYTlIrZk1jU0VsUUp1MVZUb2pLNG1S?=
- =?utf-8?B?cFQ1VGVkdjFwT1lFV1g4MTNQeTZSd0RraFdLZlpGeXdUeVB6NTNCNkxCeUJP?=
- =?utf-8?B?Q0xmeWZieWJqaVh5bkwvajR2cnhqZTRyOWtvb3pNc3FIbFZicXRrb3dLbU8w?=
- =?utf-8?B?MnRtSEJGWjRHWjVHRzhsVmFENFVQclVMeXI3NjVrVUhjV0llWE1WdUtJZEJo?=
- =?utf-8?B?WmtwVmE1QVZqVHhYai9sZnR5dDRXaWhZUHlrd3k0Y3B5cjFOWnFMTmZWcTd4?=
- =?utf-8?B?MWNVR0REYWttRlhOc2RJZndka3ltUnJVUWQyaXBod2puYytWb3pDdzRjajVX?=
- =?utf-8?B?aFB0VXMwbDUrK25Mc01HWHVZQ3IxQkJpNFg4LzZRWG95bzg3V2J1OFZGSkwr?=
- =?utf-8?B?RWgvMFFqeWEva1BRVzFZcTZuNVBXV1ZvaW1sRktzcXZLTlFVWFlLYmszeUVh?=
- =?utf-8?B?VitnUjY1ejl2T25QUkFmQ0RmcUdqZTBRc3lNVDhQV25tay9mYkltdHlld3c1?=
- =?utf-8?B?YnhWQ0RBU3lXSGFUQjA3cUJuZE1kOXdUWXVVVmFkZ1Q0MERORkxoczNqTkUy?=
- =?utf-8?Q?uV2plOOF/cyn6?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f31223d-1240-4edd-5d9d-08d8dfec50da
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: NofJGWdatcpXpusWZDcrXHRCinDXEfmJlN1kKEUlO5jOhXVIQ2lJS7huuJssfv1NqExPR7IXGPBH2KFVqEucTrumVDvsyfYrB5Usbc66kFHp9mWEgMTII2nqTLYWWginOPYFFTObp8k76my9R6CZ39B7hMvYND+plW8RhSNilVBZdlszlNbnehKmWzkHeG20r8AkPAxC8owa0dJeY/UCmES3PxA5VSeRiuzA2WK7vMcqghWGjQqA+/1XyY6bT8ctlZYveGmIcN5HmZGX+SLrhgZLe8yHbU5VI8LmAWlApXIOLGuZaoT2RT2PaUph7eheI5v833ey8wQgepeV0aWrN4GcQTwE6iKyrSxL8egn8PAHRqsYDWuYgUKKBiqn6ek+GzCYOg/c5UQ3wBXtbYWa2mgqSwsOloZbw++O/q0YxBnWI/r5tCEedOOJs1/0fjCD7SqxFb3Q8r+eHGVnH/hLD3F9ZjR9fCxpUsjSI5+6oIJ+WuN8XSQ48Bcub31FnPy37EQJpMzdmqc6yHdkC4ZCgrClYkhW++yf9XAKe3PJU/gNoXHAgzXbEnCTDzmcVSBXRONTOYexmWJFbzfdyIvT6y4l/7HL87EFl/tlXzOdoFABOK97IdQIshO5OlammF/IRHWB3fkNnq2vT9MtKRzD4A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR05MB5759.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(39860400002)(366004)(376002)(478600001)(5660300002)(2906002)(316002)(956004)(2616005)(26005)(6666004)(186003)(53546011)(8936002)(86362001)(8676002)(36756003)(6486002)(83380400001)(31686004)(16576012)(4326008)(54906003)(7416002)(66476007)(31696002)(110136005)(16526019)(66946007)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?U1lSSXRrS0c3eDV6aytYb1NDd1k1NDVNb3U4NzlDbEVSSG5RRFUvbXZnaklU?=
+ =?utf-8?B?SW1QbEZTTVNaWE1CMVIzQk82WjVsRnBuZDg3MDVXQTZYbkZUWUptRXZDSDdQ?=
+ =?utf-8?B?U2U5Z2oyMzBseGZlR0t2MmZQWEhUQjFpSjBNQ2w5UmlPZkxmUGwwdGNVeUI2?=
+ =?utf-8?B?K3dScVo4VlRoN2FJOXFkSnJxcE1haDVUQ3ZZcktYUjhaaWRQZE1WTHRBYnZj?=
+ =?utf-8?B?OXFhc1ZBeHdpenNiNGZucTJaT2EyelJXWms5aDI1cVlZNWFkR0c4YUgrTjhQ?=
+ =?utf-8?B?TVZqVEhqaEhpWEczbTYvd0FQSDZuVDBpUG5ib0h1dkhmNjVpZDF0RjY0MmVU?=
+ =?utf-8?B?VW02QXNGWGsxQ25BbHZjWUMzVlN0bW5zSlRLallkZUVZTFNzQTg4d0IrS2xx?=
+ =?utf-8?B?ZHN6QTNmNm5BM2JId0Z0TWt4ckROSXpKdkk3T1NXdW85YmMvQ0MyVFNyYTd3?=
+ =?utf-8?B?U1RBbUdodDRJOGhURXpxbFYxNUZHSUZWdXZ2bUJyZ21TUGJSZmNCcEpMM2pu?=
+ =?utf-8?B?NGVsVTFWdGxrbUJzSnQvQUhSamVabEQxdld2THd0RzJBVi9tZmQwRkUwcnc5?=
+ =?utf-8?B?MWl4Z1IzTzVkUUNhNlYzeFRxN0h6QjJ4U1JCVmZuQXE0a1U0bHByNW9QMW5h?=
+ =?utf-8?B?OXNlQ3V0OEErU2pCY3lvZFpaVnZzd2R0ZjV6RUtkclRuQzV1dEk2UlNlRVMx?=
+ =?utf-8?B?THBpelRzZS9CbnRtbnpTSnUrQ3Qvd1Jpc1l1RGV1R3ErQzJyNUxQZWxvUUor?=
+ =?utf-8?B?ZkFqRXJhc1FPM3VIcWwzUVFpb2lIcVJ5YnFaaVRWN1R1SURwUDl3Y3BWV2tZ?=
+ =?utf-8?B?aVJEZWplUkdObTZTK0dvYlVOSVhQcEdsbytlMWV0TklKS1pRalBWSU1xdHpU?=
+ =?utf-8?B?Yk1INDA4aFRDMjMrZnFZTFRJVFM1aVFkZ1VLVmtmbXZVZWZxa1ZpcGFwaEU2?=
+ =?utf-8?B?WGJHMUtzeWpmekI4U2xNSzZiTkhQREdMR21WTU1yS09vTWFPL1FyVTZlWTB0?=
+ =?utf-8?B?QVY0WTI0TWRCa045bWpXUzFZREFkbHI3RnRadlFEMTRZTER3NldQcHFiZGJx?=
+ =?utf-8?B?UHZ4UHpMUGxYSUFsZ3ZpMmJ0VmxWMHFLck5PTkpHN2VuU09xOVJ0SmtzTU9X?=
+ =?utf-8?B?UDh4T1haNUVQb0VwYko5cFZVd3g1YmtSbnUxQkFIWjhWLzlzSzEvbVVHTXly?=
+ =?utf-8?B?b29sR1dOZlY3RjhkSWRvSlVpU1dzZGtnZUwyakY2YjM0OVpiUlI0Wm9UK2Rq?=
+ =?utf-8?B?cUZ5V3YxeTZMWlVvNkpmU2JNb1dlcUlpMnR4RzBOUEFtdE1IcjNlMjVzZ1Iz?=
+ =?utf-8?B?b1owdjRYa2t3Wk0wbVIrQXk3WEZHME81bFNyV0NxdzRybUUxajRic2pYazNo?=
+ =?utf-8?B?bDFQMTRDOTlUanF2V3FSVU5CWWprdWZubkhKQ2FIRVRzWWJ5YUZzUzRIUkl5?=
+ =?utf-8?B?blFjS1RVU1JDWjY4UkVFN0RUVDB2U21ZUDhCNmlGVUtUR0tsTlMwUGczNk1s?=
+ =?utf-8?B?SkM5V1FYc3F4Uy9TbWJGekFpRFJ4a1c4UHZ0eVEyZjJlbUF5YnU2NW1IelRO?=
+ =?utf-8?B?cC9kNlRIdFpQblNhWjhxa0ljQTBtMjVCQUVRdjJqWEFJdWhxdTZJL3laTlUz?=
+ =?utf-8?B?RWFBTUlwb2g1WEYwbDhmejY2VXVvbC9LZlVXT1pmakcrSy9VTlNnVERpcitU?=
+ =?utf-8?B?NnBKUDV2MEhaZ3BoTGo4SmNCL1VKdkdMd1hsMTE1d0E2L3A4TER3Ni9PVUlE?=
+ =?utf-8?Q?hYuyaS3lRrd9+hdM/XkzwS/3h/KM4kVs+/4kxR8?=
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56c967c0-4a56-49a8-4a18-08d8dfec5b14
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR05MB5759.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2021 15:35:33.7587
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2021 15:35:51.0505
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jGgOTFY75vTaY5x35zTfiukBuwkbvnqTLrywrFoT4rb2zOYJlFhhphy2sz2bGAW4
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4048
+X-MS-Exchange-CrossTenant-UserPrincipalName: OkYcfP3kGmfcdbbLoc4DFutXVefiF7ZRu+JYoHaI0hvP8HvObkU+7ujbp6eYzeiVciIWfHtZJezMYD1uUZlEpQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR05MB7776
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 05.03.21 um 16:31 schrieb Sasha Levin:
-> On Fri, Mar 05, 2021 at 03:27:00PM +0000, Deucher, Alexander wrote:
->> Not sure if Sasha picked that up or not. Would need to check that.  
->> If it's not, this patch should be dropped.
->
-> Yes, it went in via autosel. I can drop it if it's not needed.
->
+On 03.03.21 14:20, Thomas Gleixner wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> There is no reason to disable pagefaults and preemption as a side effect of
+> kmap_atomic_prot().
+> 
+> Use kmap_local_page_prot() instead and document the reasoning for the
+> mapping usage with the given pgprot.
+> 
+> Remove the NULL pointer check for the map. These functions return a valid
+> address for valid pages and the return was bogus anyway as it would have
+> left preemption and pagefaults disabled.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: VMware Graphics <linux-graphics-maintainer@vmware.com>
+> Cc: Roland Scheidegger <sroland@vmware.com>
+> Cc: Zack Rusin <zackr@vmware.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: dri-devel@lists.freedesktop.org
+> ---
+>  drivers/gpu/drm/vmwgfx/vmwgfx_blit.c |   30 ++++++++++++------------------
+>  1 file changed, 12 insertions(+), 18 deletions(-)
+> 
+> --- a/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
+> +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_blit.c
+> @@ -375,12 +375,12 @@ static int vmw_bo_cpu_blit_line(struct v
+>  		copy_size = min_t(u32, copy_size, PAGE_SIZE - src_page_offset);
+>  
+>  		if (unmap_src) {
+> -			kunmap_atomic(d->src_addr);
+> +			kunmap_local(d->src_addr);
+>  			d->src_addr = NULL;
+>  		}
+>  
+>  		if (unmap_dst) {
+> -			kunmap_atomic(d->dst_addr);
+> +			kunmap_local(d->dst_addr);
+>  			d->dst_addr = NULL;
+>  		}
+>  
+> @@ -388,12 +388,8 @@ static int vmw_bo_cpu_blit_line(struct v
+>  			if (WARN_ON_ONCE(dst_page >= d->dst_num_pages))
+>  				return -EINVAL;
+>  
+> -			d->dst_addr =
+> -				kmap_atomic_prot(d->dst_pages[dst_page],
+> -						 d->dst_prot);
+> -			if (!d->dst_addr)
+> -				return -ENOMEM;
+> -
+> +			d->dst_addr = kmap_local_page_prot(d->dst_pages[dst_page],
+> +							   d->dst_prot);
+>  			d->mapped_dst = dst_page;
+>  		}
+>  
+> @@ -401,12 +397,8 @@ static int vmw_bo_cpu_blit_line(struct v
+>  			if (WARN_ON_ONCE(src_page >= d->src_num_pages))
+>  				return -EINVAL;
+>  
+> -			d->src_addr =
+> -				kmap_atomic_prot(d->src_pages[src_page],
+> -						 d->src_prot);
+> -			if (!d->src_addr)
+> -				return -ENOMEM;
+> -
+> +			d->src_addr = kmap_local_page_prot(d->src_pages[src_page],
+> +							   d->src_prot);
+>  			d->mapped_src = src_page;
+>  		}
+>  		diff->do_cpy(diff, d->dst_addr + dst_page_offset,
+> @@ -436,8 +428,10 @@ static int vmw_bo_cpu_blit_line(struct v
+>   *
+>   * Performs a CPU blit from one buffer object to another avoiding a full
+>   * bo vmap which may exhaust- or fragment vmalloc space.
+> - * On supported architectures (x86), we're using kmap_atomic which avoids
+> - * cross-processor TLB- and cache flushes and may, on non-HIGHMEM systems
+> + *
+> + * On supported architectures (x86), we're using kmap_local_prot() which
+> + * avoids cross-processor TLB- and cache flushes. kmap_local_prot() will
+> + * either map a highmem page with the proper pgprot on HIGHMEM=y systems or
+>   * reference already set-up mappings.
+>   *
+>   * Neither of the buffer objects may be placed in PCI memory
+> @@ -500,9 +494,9 @@ int vmw_bo_cpu_blit(struct ttm_buffer_ob
+>  	}
+>  out:
+>  	if (d.src_addr)
+> -		kunmap_atomic(d.src_addr);
+> +		kunmap_local(d.src_addr);
+>  	if (d.dst_addr)
+> -		kunmap_atomic(d.dst_addr);
+> +		kunmap_local(d.dst_addr);
+>  
+>  	return ret;
+>  }
+> 
+> 
 
-IIRC this patch was created *before* the feature which needs it was 
-merged. So it isn't a bug fix, but rather just a prerequisite for a new 
-feature.
+Seems reasonable to me.
+Reviewed-by: Roland Scheidegger <sroland@vmware.com>
 
-Because of this it should only be merged into an older kernel if the new 
-features is back ported as well.
-
-Alex do you agree that we can drop it?
-
-Thanks,
-Christian.
