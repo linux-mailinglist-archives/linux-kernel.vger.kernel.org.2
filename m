@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE8832F0FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC7D32F104
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 18:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbhCERRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 12:17:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhCERRS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 12:17:18 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2B7C061574;
-        Fri,  5 Mar 2021 09:17:18 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id o38so1814689pgm.9;
-        Fri, 05 Mar 2021 09:17:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vZxE5LzIm/RddZNFPKbHI1Yzxy5Rt/JdUUrNbKPK7BI=;
-        b=jEia3TtZZen5UCXozTnq88z/B2DGZZGIJ3YW3T+2SXfKJEA0rM4psv5uXEF1V39hCL
-         qRSKzH0qzqgn2b1+movpUs2jw9XKGe4KCIrHJPQqLNQ2x0BJLff8TV68FXE8tbLzGIav
-         MGcs+yjNoKYScYMZVn7guxt2y01fK8OkrzFdcjCri/ww1DwbhUhmukWgURVwHa7hDk0p
-         gtr2tohcHS1XOjMQOve/oMw3cTgS7wC9PbPsT83clQf/hOK34izBA82CGqwzJY72bGDJ
-         uAnEOHA9C1jTECVtehQllJpN14NPM1Ok17ESdrkp0hPKveg0rXiQJk8pixroqAsuka3e
-         Obbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vZxE5LzIm/RddZNFPKbHI1Yzxy5Rt/JdUUrNbKPK7BI=;
-        b=uFTbxnuKJfAupP6Y2sAndwBViEtzbPp+N/qp/7yZty/D3xneXIi4ifNbhEk+gtGXv3
-         jKWMlXPiUtE/IeT1J6F/7QaIfHKdsdbePw5EUFRrhPogyxKUk19LYNUFZkXAb+51WS2W
-         UmkzJCCCaDNP5gcmImr5+1GzhXtNR2oCol9kqn/zkPA9Q//TWM/0nvU0ek3vdHeAQMmY
-         kHK2zYkALv69PVEig4Y9RG9nThFmxggmKdNc5NIIcBdlBTChVd5XcPSkf4b0c6WR+S0/
-         VDDVIJmDXIhVVcN6mkaFknmB1KAeilGewLToyfSm59VGQmInjdYAR4DFSnoqFPoBaeI1
-         cmFA==
-X-Gm-Message-State: AOAM532q8EEaKup7W03e8V/swTvyBoxq6rgI74ObKoprVwkuJ7U9ZrXm
-        mfqADx/kLbYAy7xDDAuOSoHjhSYH/J80l91bE/s=
-X-Google-Smtp-Source: ABdhPJw9/fsHyYEzsLX5qxp4uZa+zw7PCC/wyECwYZalmkooiW7ZcrJ3kd92+1dkVcydp1hyk4+DTLZCpNV4f2lfiWI=
-X-Received: by 2002:a63:ce15:: with SMTP id y21mr9734082pgf.4.1614964638082;
- Fri, 05 Mar 2021 09:17:18 -0800 (PST)
+        id S229592AbhCERTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 12:19:42 -0500
+Received: from marcansoft.com ([212.63.210.85]:33278 "EHLO mail.marcansoft.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229465AbhCERTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 12:19:35 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 0610042037;
+        Fri,  5 Mar 2021 17:19:25 +0000 (UTC)
+Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
+ MMIO as non-posted
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-13-marcan@marcan.st>
+ <CAHp75VdGYDDCRBRmd3O3Mt1opgDdwuRBoS1E=vaVc45h9eR-0w@mail.gmail.com>
+ <04ea35d6-cd7d-d6de-75ae-59b1e0c77f04@marcan.st>
+ <CAHp75Vd6adVM94G1vCrQcZoegQFWHbK14YRRuBTQZwrM5CV2jQ@mail.gmail.com>
+ <CAK8P3a1X4DyWdeBM1Vx+QMXU7+VhJrLHFLVzwAE4a4mb_xuqMQ@mail.gmail.com>
+From:   Hector Martin <marcan@marcan.st>
+Message-ID: <7c56c08f-9382-5db4-647a-1afae79c84de@marcan.st>
+Date:   Sat, 6 Mar 2021 02:19:23 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210302163309.25528-1-henning.schild@siemens.com>
- <20210302163309.25528-2-henning.schild@siemens.com> <CAHp75VfDDGxdhP0-yKOCJyJ_+Y2Zu3TmOdvUJmEZ0AvQnceV6A@mail.gmail.com>
- <2fad304a-9e1e-c83d-7a9e-02b35ed22418@redhat.com> <CAHp75VfB8v1n3Hav_oMqG0k4C31NBEUe082i8NrrOGUbSgoESw@mail.gmail.com>
- <20210305174223.11537d42@md1za8fc.ad001.siemens.net>
-In-Reply-To: <20210305174223.11537d42@md1za8fc.ad001.siemens.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 5 Mar 2021 19:17:01 +0200
-Message-ID: <CAHp75VdssrnvGn+Qs6Ua72MSFrTCHOCMBdPEAfmGFp1RrwdJ+g@mail.gmail.com>
-Subject: Re: [PATCH 1/4] platform/x86: simatic-ipc: add main driver for
- Siemens devices
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAK8P3a1X4DyWdeBM1Vx+QMXU7+VhJrLHFLVzwAE4a4mb_xuqMQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 6:47 PM Henning Schild
-<henning.schild@siemens.com> wrote:
-> Am Fri, 5 Mar 2021 17:42:42 +0200
-> schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
-> > On Thu, Mar 4, 2021 at 3:47 PM Hans de Goede <hdegoede@redhat.com>
-> > wrote:
+On 06/03/2021 01.43, Arnd Bergmann wrote:
+> - setting ioremap() on PCI buses non-posted only makes them
+>    only slower but not more reliable, because the non-posted flag
+>    on the bus is discarded by the PCI host bridge.
 
-...
+Note that this doesn't work here *anyway*. The fabric is picky in both 
+directions: thou shalt use nGnRnE for on-SoC MMIO and nGnRE for PCIe 
+windows, or else, SError.
 
-> > [1]: https://gitlab.com/andy-shev/next/-/tree/p2sb
->
-> That is a little weird, might be a good idea to RFC reply to the cover
-> letter of this one. To allow review and discussion in a central place.
-
-I'm now rebasing it to be more presentable.
-If you can test this approach and it works for you, I'll send a formal
-RFC series.
+Since these devices can support *any* PCI device via Thunderbolt, making 
+PCI drivers be the oddball ones needing special APIs would mean hundreds 
+of changes needed - the vast majority of PCI drivers in the kernel use 
+plain ioremap variants that don't have any flags to look at.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
