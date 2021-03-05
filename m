@@ -2,99 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5736D32EC41
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0D132EC46
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 14:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhCENca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 08:32:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230214AbhCENcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 08:32:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9511E64FE1;
-        Fri,  5 Mar 2021 13:32:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614951129;
-        bh=55hgLVLRpKPexGnBCm48Hok+NXMns/a7aBDs5Q2HzgI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oSeA+bg03jj5FJKgyQZeHgtF/vk8ozEXBbVuHNyiRoWHtwsdnHahf5LnKPIkZfeFG
-         dzRsqqOktklLQKMs+aiqLZUJucPjeS/UP1X8XRlhlSWiesYUOFxgLUSGsEpkGKqKUU
-         GyUUQzxlR7/WORegymL22JHsFIuSbaBIamE1MmTSIVSIdVsD5olQYArmZZ7iSz4Yoy
-         dMPpbUDF/nKtgBnWzYPu0A3eVUSJ2XmE7GdEa/oXbz4FsiHwjXp/5piqx5N8NTCPPt
-         fdOFk5+GS752l1Xy6Xozz29lYY+vuD2mJ+VSgiQ+cmdR6Jzhh5fdUVjHL0vAioNc9k
-         PH6NVrqGw5rzw==
-Received: by mail-ot1-f49.google.com with SMTP id w3so1764782oti.8;
-        Fri, 05 Mar 2021 05:32:09 -0800 (PST)
-X-Gm-Message-State: AOAM531nNYRgjn/6dbh0uweBfPSsHWXVLTKTVw2fS4sBTyP7CMCZFkMB
-        H7T+lzq5Z1PtzNk4hmYWPsRZcbzaIkU96woFmDQ=
-X-Google-Smtp-Source: ABdhPJzuKOSq+MerxuJ8G6FDLwNzmS/nCm5HmW4JhwLACo+PPdrNvyg3oHdzwvcrJAR6srL3obIemOIjF9OfI8STYzQ=
-X-Received: by 2002:a9d:6b8b:: with SMTP id b11mr8029668otq.210.1614951128966;
- Fri, 05 Mar 2021 05:32:08 -0800 (PST)
+        id S230076AbhCENeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 08:34:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60207 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229714AbhCENdh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 08:33:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614951216;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MqWRfoqjJJX1oCGsqSoQZT6Ma+kh9YnMUkmUpRDU7/s=;
+        b=ObbuUEzgvYKaHN1XR8sZIldjpI/eCfyBVvRdNWnY3Uuypo36o2eX1AhNKrOsJzHuEAQ96N
+        IJ/VzjM8rRS3pwrjUhJVuSX2cU1ZvZBShaDtKEojfyygU14YZuavFlYlzLsgcWY5QCsFan
+        mN2JlhTFu6fx9JTSw4WReKT3novzQgU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-411-vVb8OZBSOiulGn4f6SnCxA-1; Fri, 05 Mar 2021 08:33:35 -0500
+X-MC-Unique: vVb8OZBSOiulGn4f6SnCxA-1
+Received: by mail-wr1-f72.google.com with SMTP id z6so1069152wrh.11
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 05:33:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MqWRfoqjJJX1oCGsqSoQZT6Ma+kh9YnMUkmUpRDU7/s=;
+        b=najC80VKm83CNjYDgW4UJRlf5/PKfQjyV1/TFya3gXkvwq5poZYnnt1M3Vh5I8h1gs
+         kjBPn1OIS2zJ3Q6GYJ9aJhIVqiHX9U886Z33lp14LAd5DqrYrG7iRigNV4CB0gs4j2yo
+         VVk1Esj5cKwrFrlFtPA530P2uIQI1q3PNFs6x28ivOm4bpEGJjWGhvdGtnbxuEkdAKxz
+         m19WeVv4yGNfFPIUgI/7cy7JHrQQp0b1WL4AipNHxBLRnm7T2gXSzbJkWcWO8Z59c++M
+         lOu6yEhINtFMhdotYhJvQbBVgo8hDnGMtUzq6LQyxyowI1GKAaQF/JkveHYjm+sNrm8E
+         3qlA==
+X-Gm-Message-State: AOAM532BNcF9NUOFymXQY2OzHCUuJehpw8TehYnk3Rrty7095aQPNw5v
+        Myeblo4bh0UydyRySSoKUbN0ATak/K7YUYmcRpGTQlX/4H6jNNiHmyIzhZeqnBTjuOKyFJI22yH
+        Fi1TS7X82OTSDLnLUR5NkFYmsWxwZQztYimZAwHMz9rQFrhC6gOKavNUe8dEhR74VaNQ0WnA38a
+        cz
+X-Received: by 2002:a1c:dd43:: with SMTP id u64mr8882894wmg.160.1614951213841;
+        Fri, 05 Mar 2021 05:33:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJya3iP5RYwJvdDTTIRPDvdYUscev85wp26JjU5aGj67bi2aNv4bvS53gSugXLyntWss4UecpQ==
+X-Received: by 2002:a1c:dd43:: with SMTP id u64mr8882874wmg.160.1614951213620;
+        Fri, 05 Mar 2021 05:33:33 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id a131sm4639109wmc.48.2021.03.05.05.33.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 05:33:33 -0800 (PST)
+Subject: Re: [PATCH] KVM: SVM: Connect 'npt' module param to KVM's internal
+ 'npt_enabled'
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210305021637.3768573-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <51ee04a2-94b0-9f63-cd2e-584ed1bfd87a@redhat.com>
+Date:   Fri, 5 Mar 2021 14:33:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210222230519.73f3e239@sf> <cc658b61-530e-90bf-3858-36cc60468a24@kernel.dk>
- <8decdd2e-a380-9951-3ebb-2bc3e48aa1c3@physik.fu-berlin.de>
- <20210223083507.43b5a6dd@sf> <51cbf584-07ef-1e62-7a3b-81494a04faa6@physik.fu-berlin.de>
- <9441757f-d4bc-a5b5-5fb0-967c9aaca693@physik.fu-berlin.de>
- <20210223192743.0198d4a9@sf> <20210302222630.5056f243@sf> <25dfced0-88b2-b5b3-f1b6-8b8a9931bf90@physik.fu-berlin.de>
- <20210303002236.2f4ec01f@sf> <20210303085533.505b1590@sf> <SN6PR11MB284885A5751845EEA290BFCFE1989@SN6PR11MB2848.namprd11.prod.outlook.com>
- <CAMuHMdVLFfSoC-UYW+3sijeZhLf9xt3rqS=7LTYhzX_1RDxpYA@mail.gmail.com>
-In-Reply-To: <CAMuHMdVLFfSoC-UYW+3sijeZhLf9xt3rqS=7LTYhzX_1RDxpYA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 5 Mar 2021 14:31:52 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0EhxvQ3pP6iMwHdR3RwF3CcAaWvfodPnzPip2iW2wBgQ@mail.gmail.com>
-Message-ID: <CAK8P3a0EhxvQ3pP6iMwHdR3RwF3CcAaWvfodPnzPip2iW2wBgQ@mail.gmail.com>
-Subject: Re: [bisected] 5.12-rc1 hpsa regression: "scsi: hpsa: Correct dev
- cmds outstanding for retried cmds" breaks hpsa P600
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Don.Brace@microchip.com, slyich@gmail.com,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        storagedev@microchip.com, scsi <linux-scsi@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        jszczype@redhat.com, Scott.Benesh@microchip.com,
-        Scott.Teel@microchip.com, thenzl@redhat.com,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210305021637.3768573-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 10:24 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Fri, Mar 5, 2021 at 12:26 AM <Don.Brace@microchip.com> wrote:
-> > > > On 3/2/21 11:26 PM, Sergei Trofimovich wrote:
-> > struct CommandList {
-> >         struct CommandListHeader Header;                 /*     0    20 */
-> >         struct RequestBlock Request;                     /*    20    20 */
-> >         struct ErrDescriptor ErrDesc;                    /*    40    12 */
-> >         struct SGDescriptor SG[32];                      /*    52   512 */
-> >         /* --- cacheline 8 boundary (512 bytes) was 52 bytes ago --- */
-> >         u32                        busaddr;              /*   564     4 */
-> >         struct ErrorInfo *         err_info;             /*   568     8 */
-> >         /* --- cacheline 9 boundary (576 bytes) --- */
-> >         struct ctlr_info *         h;                    /*   576     8 */
-> >         int                        cmd_type;             /*   584     4 */
-> >         long int                   cmdindex;             /*   588     8 */
-> >         struct completion *        waiting;              /*   596     8 */
-> >         struct scsi_cmnd *         scsi_cmd;             /*   604     8 */
-> >         struct work_struct work;                         /*   612    32 */
-> >         /* --- cacheline 10 boundary (640 bytes) was 4 bytes ago --- */
-> >         struct hpsa_scsi_dev_t *   phys_disk;            /*   644     8 */
-> >         struct hpsa_scsi_dev_t *   device;               /*   652     8 */
-> >         bool                       retry_pending;        /*   660     1 */
-> >         atomic_t                   refcount;             /*   661     4 */
->
-> How come this atomic_t is no longer aligned to its natural alignment?
+On 05/03/21 03:16, Sean Christopherson wrote:
+> Directly connect the 'npt' param to the 'npt_enabled' variable so that
+> runtime adjustments to npt_enabled are reflected in sysfs.  Move the
+> !PAE restriction to a runtime check to ensure NPT is forced off if the
+> host is using 2-level paging, and add a comment explicitly stating why
+> NPT requires a 64-bit kernel or a kernel with PAE enabled.
+> 
+> Opportunistically switch the param to octal permissions.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/svm/svm.c | 27 ++++++++++++++-------------
+>   1 file changed, 14 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 54610270f66a..0ee74321461e 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -115,13 +115,6 @@ static const struct svm_direct_access_msrs {
+>   	{ .index = MSR_INVALID,				.always = false },
+>   };
+>   
+> -/* enable NPT for AMD64 and X86 with PAE */
+> -#if defined(CONFIG_X86_64) || defined(CONFIG_X86_PAE)
+> -bool npt_enabled = true;
+> -#else
+> -bool npt_enabled;
+> -#endif
+> -
+>   /*
+>    * These 2 parameters are used to config the controls for Pause-Loop Exiting:
+>    * pause_filter_count: On processors that support Pause filtering(indicated
+> @@ -170,9 +163,12 @@ module_param(pause_filter_count_shrink, ushort, 0444);
+>   static unsigned short pause_filter_count_max = KVM_SVM_DEFAULT_PLE_WINDOW_MAX;
+>   module_param(pause_filter_count_max, ushort, 0444);
+>   
+> -/* allow nested paging (virtualized MMU) for all guests */
+> -static int npt = true;
+> -module_param(npt, int, S_IRUGO);
+> +/*
+> + * Use nested page tables by default.  Note, NPT may get forced off by
+> + * svm_hardware_setup() if it's unsupported by hardware or the host kernel.
+> + */
+> +bool npt_enabled = true;
+> +module_param_named(npt, npt_enabled, bool, 0444);
+>   
+>   /* allow nested virtualization in KVM/SVM */
+>   static int nested = true;
+> @@ -988,12 +984,17 @@ static __init int svm_hardware_setup(void)
+>   			goto err;
+>   	}
+>   
+> +	/*
+> +	 * KVM's MMU doesn't support using 2-level paging for itself, and thus
+> +	 * NPT isn't supported if the host is using 2-level paging since host
+> +	 * CR4 is unchanged on VMRUN.
+> +	 */
+> +	if (!IS_ENABLED(CONFIG_X86_64) && !IS_ENABLED(CONFIG_X86_PAE))
+> +		npt_enabled = false;
+> +
+>   	if (!boot_cpu_has(X86_FEATURE_NPT))
+>   		npt_enabled = false;
+>   
+> -	if (npt_enabled && !npt)
+> -		npt_enabled = false;
+> -
+>   	kvm_configure_mmu(npt_enabled, get_max_npt_level(), PG_LEVEL_1G);
+>   	pr_info("kvm: Nested Paging %sabled\n", npt_enabled ? "en" : "dis");
+>   
+> 
 
-There is a
+Queued, thanks.
 
-#pragma pack(1)
+Paolo
 
-in linux 203 of this file!
-
-It looks like some of the members in struct raid_map_data
-and struct CommandListHeader need to be annotated as packed,
-but the file accidentally packs everything until the '#pragma pack()'
-in line 875, including the kernel-side CommandList data structure
-that clearly must not be packed.
-
-        Arnd
