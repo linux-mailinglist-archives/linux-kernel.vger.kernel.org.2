@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A045D32E92F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:31:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C1D32E9AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:34:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhCEMbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:31:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40208 "EHLO mail.kernel.org"
+        id S232449AbhCEMeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:34:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232357AbhCEMab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:30:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BF7F65019;
-        Fri,  5 Mar 2021 12:30:30 +0000 (UTC)
+        id S232284AbhCEMdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:33:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E539F65031;
+        Fri,  5 Mar 2021 12:33:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947430;
-        bh=EPFxJQjWuDFkWoVbhvuMng8JMM13EjuStJJNKOavW9M=;
+        s=korg; t=1614947617;
+        bh=BJ47TRwlWXvFhRCoo7kohcLGde2zATmuhBKPLUtphMg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mhydZ3AUC1RZWfWFYBcrqQr32ybpNn6Xfq+3reSAy9HDPV5XyzOijC4Z5t8CY4dRA
-         IvPFUF7LyAhYX5Jkveib5NrJrr+4/bdZka+0PPbWOI6kFTZQKmIEHrFxQMnC6bWjPJ
-         0x7WTXGGjMmEU0Du3kNNMudVKrnWOoShdQcLf8G8=
+        b=HF2A8667LIBkgygSPF5YKyVI/ZV68kiu2jxf/b7+MRftEatnZmFxd+JxHNkcIL52R
+         rXYduDmmby1+FwF3VhsYY5TulggbhhUJyJoAZrreCt19+nSLyR8vEILl+tEB+FJZyo
+         M7YkSVYy3IoGZwBMsiJJJQ4xJ3FCsR/CIAnwrVcQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Claire Chang <tientzu@chromium.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 045/102] Bluetooth: hci_h5: Set HCI_QUIRK_SIMULTANEOUS_DISCOVERY for btrtl
-Date:   Fri,  5 Mar 2021 13:21:04 +0100
-Message-Id: <20210305120905.507539566@linuxfoundation.org>
+        Christoph Hellwig <hch@lst.de>,
+        Keith Busch <kbusch@kernel.org>, Marc Orr <marcorr@google.com>
+Subject: [PATCH 5.4 03/72] nvme-pci: refactor nvme_unmap_data
+Date:   Fri,  5 Mar 2021 13:21:05 +0100
+Message-Id: <20210305120857.514738570@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
+References: <20210305120857.341630346@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +39,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claire Chang <tientzu@chromium.org>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 7f9f2c3f7d99b8ae773459c74ac5e99a0dd46db9 ]
+commit 9275c206f88e5c49cb3e71932c81c8561083db9e upstream.
 
-Realtek Bluetooth controllers can do both LE scan and BR/EDR inquiry
-at once, need to set HCI_QUIRK_SIMULTANEOUS_DISCOVERY quirk.
+Split out three helpers from nvme_unmap_data that will allow finer grained
+unwinding from nvme_map_data.
 
-Signed-off-by: Claire Chang <tientzu@chromium.org>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Reviewed-by: Marc Orr <marcorr@google.com>
+Signed-off-by: Marc Orr <marcorr@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/bluetooth/hci_h5.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/nvme/host/pci.c |   77 ++++++++++++++++++++++++++++++------------------
+ 1 file changed, 49 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-index 78d635f1d156..996729e78105 100644
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -906,6 +906,11 @@ static int h5_btrtl_setup(struct h5 *h5)
- 	/* Give the device some time before the hci-core sends it a reset */
- 	usleep_range(10000, 20000);
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -528,50 +528,71 @@ static inline bool nvme_pci_use_sgls(str
+ 	return true;
+ }
  
-+	/* Enable controller to do both LE scan and BR/EDR inquiry
-+	 * simultaneously.
-+	 */
-+	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
+-static void nvme_unmap_data(struct nvme_dev *dev, struct request *req)
++static void nvme_free_prps(struct nvme_dev *dev, struct request *req)
+ {
+-	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
+ 	const int last_prp = dev->ctrl.page_size / sizeof(__le64) - 1;
+-	dma_addr_t dma_addr = iod->first_dma, next_dma_addr;
++	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
++	dma_addr_t dma_addr = iod->first_dma;
+ 	int i;
+ 
+-	if (iod->dma_len) {
+-		dma_unmap_page(dev->dev, dma_addr, iod->dma_len,
+-			       rq_dma_dir(req));
+-		return;
++	for (i = 0; i < iod->npages; i++) {
++		__le64 *prp_list = nvme_pci_iod_list(req)[i];
++		dma_addr_t next_dma_addr = le64_to_cpu(prp_list[last_prp]);
 +
- out_free:
- 	btrtl_free(btrtl_dev);
++		dma_pool_free(dev->prp_page_pool, prp_list, dma_addr);
++		dma_addr = next_dma_addr;
+ 	}
  
--- 
-2.30.1
-
+-	WARN_ON_ONCE(!iod->nents);
++}
+ 
+-	if (is_pci_p2pdma_page(sg_page(iod->sg)))
+-		pci_p2pdma_unmap_sg(dev->dev, iod->sg, iod->nents,
+-				    rq_dma_dir(req));
+-	else
+-		dma_unmap_sg(dev->dev, iod->sg, iod->nents, rq_dma_dir(req));
++static void nvme_free_sgls(struct nvme_dev *dev, struct request *req)
++{
++	const int last_sg = SGES_PER_PAGE - 1;
++	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
++	dma_addr_t dma_addr = iod->first_dma;
++	int i;
+ 
++	for (i = 0; i < iod->npages; i++) {
++		struct nvme_sgl_desc *sg_list = nvme_pci_iod_list(req)[i];
++		dma_addr_t next_dma_addr = le64_to_cpu((sg_list[last_sg]).addr);
+ 
+-	if (iod->npages == 0)
+-		dma_pool_free(dev->prp_small_pool, nvme_pci_iod_list(req)[0],
+-			dma_addr);
++		dma_pool_free(dev->prp_page_pool, sg_list, dma_addr);
++		dma_addr = next_dma_addr;
++	}
+ 
+-	for (i = 0; i < iod->npages; i++) {
+-		void *addr = nvme_pci_iod_list(req)[i];
++}
+ 
+-		if (iod->use_sgl) {
+-			struct nvme_sgl_desc *sg_list = addr;
++static void nvme_unmap_sg(struct nvme_dev *dev, struct request *req)
++{
++	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
+ 
+-			next_dma_addr =
+-			    le64_to_cpu((sg_list[SGES_PER_PAGE - 1]).addr);
+-		} else {
+-			__le64 *prp_list = addr;
++	if (is_pci_p2pdma_page(sg_page(iod->sg)))
++		pci_p2pdma_unmap_sg(dev->dev, iod->sg, iod->nents,
++				    rq_dma_dir(req));
++	else
++		dma_unmap_sg(dev->dev, iod->sg, iod->nents, rq_dma_dir(req));
++}
+ 
+-			next_dma_addr = le64_to_cpu(prp_list[last_prp]);
+-		}
++static void nvme_unmap_data(struct nvme_dev *dev, struct request *req)
++{
++	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
+ 
+-		dma_pool_free(dev->prp_page_pool, addr, dma_addr);
+-		dma_addr = next_dma_addr;
++	if (iod->dma_len) {
++		dma_unmap_page(dev->dev, iod->first_dma, iod->dma_len,
++			       rq_dma_dir(req));
++		return;
+ 	}
+ 
++	WARN_ON_ONCE(!iod->nents);
++
++	nvme_unmap_sg(dev, req);
++	if (iod->npages == 0)
++		dma_pool_free(dev->prp_small_pool, nvme_pci_iod_list(req)[0],
++			      iod->first_dma);
++	else if (iod->use_sgl)
++		nvme_free_sgls(dev, req);
++	else
++		nvme_free_prps(dev, req);
+ 	mempool_free(iod->sg, dev->iod_mempool);
+ }
+ 
 
 
