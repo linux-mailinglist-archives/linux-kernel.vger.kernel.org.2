@@ -2,137 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BEC32F5D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAE932F5DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 23:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCEWXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 17:23:11 -0500
-Received: from mail-oo1-f41.google.com ([209.85.161.41]:41925 "EHLO
-        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhCEWXE (ORCPT
+        id S229818AbhCEWZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 17:25:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhCEWZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 17:23:04 -0500
-Received: by mail-oo1-f41.google.com with SMTP id h38so803120ooi.8;
-        Fri, 05 Mar 2021 14:23:04 -0800 (PST)
+        Fri, 5 Mar 2021 17:25:31 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40051C06175F;
+        Fri,  5 Mar 2021 14:25:31 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id m25so4173080oie.12;
+        Fri, 05 Mar 2021 14:25:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=L9qw6y0f/4x5jeN7qjKB91j9vnd2pvN2mt/Fz923hAc=;
+        b=OQwW3qpaGsQtYHWq4DWyzXqvytmy+j9AARX7JQoG4TD3uCeuMvGHra5SAp6Bg1eWWp
+         v+bGKORuZAOaAoYiJbbtrj1k2nboBKWHGTdnx0tw1DtsUFh8biGydbojVjTgKgTL42t9
+         EmUphAtirwIoMVSEG6ieznOLF0+VxB6Xh1N+3NvvopB7eS2N1FV+eUoVP83N9FOAwhl3
+         DKnthKnnVw7ZTXGqA0ZfdWnMbyKnMhFpgIwrWokQr1tDoPzF1Br3dC9xnCFiJONokBDq
+         8OqQug3+y/melLM34U2kDHD15NQmGpC9zK/ze/McDPX/ZOjaoen25WWw4ph6XZJxfc0i
+         C/kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=b8P+vy/tLdxvp5/ToJi80Q/DHBxXI6Ot1Z2gtZWpXw8=;
-        b=OiU5TlzzQbhrPvgFCbqqx43HKubGaGdUXicwxF2LerJxK0Erq07MqWXetSeviTotvA
-         nI9fijQaBiGNWw+u+FYN/qUS75949jv3+iYgUJtDb1q4EgmAtkDZdh8msJ45Ynmjdwug
-         znm+oCrNumui9x2MlexOnVlIY6/34ifAuIzo1naJKmT/6Oow73P8umNEjV1cvK7Qxz6z
-         Ztb13QGX1JoEGuV9MjYmGfuDW0ZY7u8bku55oz6F9+9qkcTQIGZJ4NvWZc5WCGZO4z04
-         XUdbrK8tQ/2XHw88kZzVWnhesbRnQfew/s0XwdMbIoguHAP3eAYXOH0lbKAq0C4YkxGG
-         6xZg==
-X-Gm-Message-State: AOAM532qdusV+yrCAWMsbvzn5Rgu4GQHrFkg/+7hYk5lI+Ii0Wt596gF
-        4NZCS48Ja8ey78C5JoYNoA==
-X-Google-Smtp-Source: ABdhPJyOKMFlHRvt9nZGqAzqrlWl3iV1hED2sgZuiivhtD5q9gLMMzNY/ECHThZmidDO6Y8cIe1wLQ==
-X-Received: by 2002:a4a:3012:: with SMTP id q18mr9540216oof.21.1614982982146;
-        Fri, 05 Mar 2021 14:23:02 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s73sm818019oih.36.2021.03.05.14.23.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 14:23:01 -0800 (PST)
-Received: (nullmailer pid 750912 invoked by uid 1000);
-        Fri, 05 Mar 2021 22:23:00 -0000
-Date:   Fri, 5 Mar 2021 16:23:00 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        devicetree@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v2 3/3] dt-bindings: mtd: Document use of
- nvmem-partitions compatible
-Message-ID: <20210305222300.GA718014@robh.at.kernel.org>
-References: <20210216212638.28382-1-ansuelsmth@gmail.com>
- <20210216212638.28382-4-ansuelsmth@gmail.com>
- <1cf374f1-09d5-9fa9-9b0d-d8079f2f6fbc@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1cf374f1-09d5-9fa9-9b0d-d8079f2f6fbc@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=L9qw6y0f/4x5jeN7qjKB91j9vnd2pvN2mt/Fz923hAc=;
+        b=Im5CmvMb5+ayOCaj1JOXifOFpeIffIfXSm3kC9tIeXAWPFtSb39FM9hX1PAPlkRGsz
+         SXZzUk5tdIL3EuAzML/mSJU84IjgZGnhZ4B6RlLCytdevrs4sJFhR3C4xzW0t+8+GQ8F
+         4wqM1BZS1ak4eM7rKhN++C2iUutNkhmREyKnzJJmx00AWD+lHo8v61xiQxjTOIN3c70Z
+         jvuH9I1HNhzQrbI/PRwSSAPhIV0FZYSqC72vcfswpQFsERITiknZ6eZ6z/FZr8Ib3p+t
+         qi9NDV9bDPOB13r7qnObCf+ht8uJ27C0AcMHOf+hR08NbEkByoMd4UEN+yyl9IVcV7Uf
+         NW2w==
+X-Gm-Message-State: AOAM532g/qN6Qv2DK4XOvezpNrIkogqzxQt/f31tUeGHKSF0kQQn2rbY
+        s8+sXnSfBzVL0qIWlMVVBQ==
+X-Google-Smtp-Source: ABdhPJzKVcWhqytnowZa454HbZWy50n5OEMjVHeW+jB3e2ifCYp376E/ATzhFGMDv3mtuGYtL0Or1Q==
+X-Received: by 2002:aca:da83:: with SMTP id r125mr8805599oig.127.1614983130540;
+        Fri, 05 Mar 2021 14:25:30 -0800 (PST)
+Received: from threadripper.novatech-llc.local ([216.21.169.52])
+        by smtp.gmail.com with ESMTPSA id w3sm880768oti.71.2021.03.05.14.25.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Mar 2021 14:25:30 -0800 (PST)
+From:   George McCollister <george.mccollister@gmail.com>
+Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        George McCollister <george.mccollister@gmail.com>
+Subject: [PATCH net] lan743x: trim all 4 bytes of the FCS; not just 2
+Date:   Fri,  5 Mar 2021 16:24:45 -0600
+Message-Id: <20210305222445.19053-1-george.mccollister@gmail.com>
+X-Mailer: git-send-email 2.11.0
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 11:01:55AM +0100, Rafał Miłecki wrote:
-> [Rob: please advise]
-> 
-> On 16.02.2021 22:26, Ansuel Smith wrote:
-> > Document nvmem-partitions compatible used to treat mtd partitions as a
-> > nvmem provider.
-> 
-> Until now we were using "compatible" string in partition node only for
-> parsers (looking for subpartitions). We need to think if this change can
-> break anything from DT / Linux perspective.
-> 
-> Compatible strings should be unique, so there is no risk of conflict
-> between NVMEM and parsers.
-> 
-> Now: can we ever need mtd partition to:
-> 1. Contain subpartitions
-> 2. Provide NVMEM
-> at the same time?
-> 
-> Let's say:
-> 
-> partition@0 {
-> 	compatible = "vendor,dynamic-firmware-partitions", "nvmem-partitions";
+Trim all 4 bytes of the received FCS; not just 2 of them. Leaving 2
+bytes of the FCS on the frame breaks DSA tailing tag drivers.
 
-I think you'd want the "vendor,dynamic-firmware-partitions" parser/code 
-to serve up any nvmem regions. Whether you have a fallback here depends 
-if an OS could make use of the regions knowing nothing about 
-"vendor,dynamic-firmware-partitions".
+Fixes: a8db76d40e4d ("lan743x: boost performance on cpu archs w/o dma cache snooping")
+Signed-off-by: George McCollister <george.mccollister@gmail.com>
+---
+ drivers/net/ethernet/microchip/lan743x_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 	label = "firmware";
-> 	reg = <0x0 0x100000>;
-> 	#address-cells = <1>;
-> 	#size-cells = <1>;
-> 	ranges = <0 0x0 0x100000>;
-> 
-> 	firmware-version@10 {
-> 		reg = <0x10 0x4>;
-> 	};
-> 
-> 	firmware-date@10 {
-> 		reg = <0x20 0x4>;
-> 	};
-> };
-> 
-> Is that allowed to respect both "compatible" strings and have:
-> 1. Linux parser parse "firmware" for subpartitions
-> 2. Linux MTD register "firmware" as NVMEM device
-> ?
-> 
-> If not, what other options do we have? Is that allowed to have a
-> dangling MTD NVMEM node with phandle to MTD partition?
-> 
-> firmware: partition@0 {
-> 	compatible = "vendor,dynamic-firmware-partitions";
-> 	label = "firmware";
-> 	reg = <0x0 0x100000>;
-> };
-> 
-> (...)
-> 
-> firmware-version@10 {
-> 	compatible = "mtd-nvmem";
-> 	reg = <0x10 0x4>;
-> 	mtd = <&firmware>;
-> };
-> 
-> firmware-date@10 {
-> 	compatible = "mtd-nvmem";
-> 	reg = <0x20 0x4>;
-> 	mtd = <&firmware>;
-> };
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index 334e99ffe56f..360d16965a5c 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -2040,7 +2040,7 @@ lan743x_rx_trim_skb(struct sk_buff *skb, int frame_length)
+ 		dev_kfree_skb_irq(skb);
+ 		return NULL;
+ 	}
+-	frame_length = max_t(int, 0, frame_length - RX_HEAD_PADDING - 2);
++	frame_length = max_t(int, 0, frame_length - RX_HEAD_PADDING - 4);
+ 	if (skb->len > frame_length) {
+ 		skb->tail -= skb->len - frame_length;
+ 		skb->len = frame_length;
+-- 
+2.11.0
 
-This, I would not like to see.
-
-Rob
