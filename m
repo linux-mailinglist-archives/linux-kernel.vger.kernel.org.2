@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D4632E929
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E0E32E936
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhCEMbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:31:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40184 "EHLO mail.kernel.org"
+        id S232278AbhCEMba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:31:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231229AbhCEMa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:30:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 594886501A;
-        Fri,  5 Mar 2021 12:30:27 +0000 (UTC)
+        id S230126AbhCEMae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:30:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35ACD65013;
+        Fri,  5 Mar 2021 12:30:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947427;
-        bh=m47c8CyMAJsxicRFIgL66Wpta6RrjK/b0KyBOsiQs1Y=;
+        s=korg; t=1614947433;
+        bh=IXWHVeZGcTu+lup1EMSM9SVctKUsfyIPhyCU6TNynYg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h5eWdLx5fpo7Tl+Xnn4wo+8VO1FHDvq6l+pF/fns9ZAnwI+j1MWxUDYwybClf/RXG
-         5/kaCDWH4vxRQaemmgZxep5wfe4b3Ugw09lJnZmGhl3Q1J7GZEqOMuh3AXoUFcWvGP
-         oOfAgHnQZGydpDVWHSR3od0mBnZ8mQizHx+cJnb4=
+        b=WhoCz4MmBJfyxH6/o5ciDsqODcilIPl5OSDhZMzSETiggXLQG/24D6Ebv2uzyvGGg
+         5UfR/FNAAEGmCO3nb5Pw7XGNEKtaX1FgzE2FqzniruwImbXcTyn/B51G6cpCXB6WCG
+         ticgA6nI+9q6i98q4V4BWp8cqFCY/GZGOXVzPLyo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rasmus Porsager <rasmus@beat.dk>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Eric Yang <eric.yang2@amd.com>,
+        Anson Jacob <anson.jacob@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 062/102] ASoC: Intel: bytcr_rt5640: Add new BYT_RT5640_NO_SPEAKERS quirk-flag
-Date:   Fri,  5 Mar 2021 13:21:21 +0100
-Message-Id: <20210305120906.333140056@linuxfoundation.org>
+Subject: [PATCH 5.10 063/102] drm/amd/display: Guard against NULL pointer deref when get_i2c_info fails
+Date:   Fri,  5 Mar 2021 13:21:22 +0100
+Message-Id: <20210305120906.378458220@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
 References: <20210305120903.276489876@linuxfoundation.org>
@@ -42,104 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
 
-[ Upstream commit 1851ccf9e155b2a6f6cca1a7bd49325f5efbd5d2 ]
+[ Upstream commit 44a09e3d95bd2b7b0c224100f78f335859c4e193 ]
 
-Some devices, like mini PCs/media/top-set boxes do not have any speakers
-at all, an example of the is the Mele PCG03 Mini PC.
+[Why]
+If the BIOS table is invalid or corrupt then get_i2c_info can fail
+and we dereference a NULL pointer.
 
-Add a new BYT_RT5640_NO_SPEAKERS quirk-flag which when sets does not add
-speaker routes and modifies the components and the (optional) long_name
-strings to reflect that there are no speakers.
+[How]
+Check that ddc_pin is not NULL before using it and log an error if it
+is because this is unexpected.
 
-Cc: Rasmus Porsager <rasmus@beat.dk>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210109210119.159032-2-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Reviewed-by: Eric Yang <eric.yang2@amd.com>
+Acked-by: Anson Jacob <anson.jacob@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_link.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index f790514a147d..db3633de9122 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -71,6 +71,7 @@ enum {
- #define BYT_RT5640_SSP0_AIF2		BIT(21)
- #define BYT_RT5640_MCLK_EN		BIT(22)
- #define BYT_RT5640_MCLK_25MHZ		BIT(23)
-+#define BYT_RT5640_NO_SPEAKERS		BIT(24)
- 
- #define BYTCR_INPUT_DEFAULTS				\
- 	(BYT_RT5640_IN3_MAP |				\
-@@ -132,6 +133,8 @@ static void log_quirks(struct device *dev)
- 		dev_info(dev, "quirk JD_NOT_INV enabled\n");
- 	if (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER)
- 		dev_info(dev, "quirk MONO_SPEAKER enabled\n");
-+	if (byt_rt5640_quirk & BYT_RT5640_NO_SPEAKERS)
-+		dev_info(dev, "quirk NO_SPEAKERS enabled\n");
- 	if (byt_rt5640_quirk & BYT_RT5640_DIFF_MIC)
- 		dev_info(dev, "quirk DIFF_MIC enabled\n");
- 	if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) {
-@@ -934,7 +937,7 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
- 		ret = snd_soc_dapm_add_routes(&card->dapm,
- 					byt_rt5640_mono_spk_map,
- 					ARRAY_SIZE(byt_rt5640_mono_spk_map));
--	} else {
-+	} else if (!(byt_rt5640_quirk & BYT_RT5640_NO_SPEAKERS)) {
- 		ret = snd_soc_dapm_add_routes(&card->dapm,
- 					byt_rt5640_stereo_spk_map,
- 					ARRAY_SIZE(byt_rt5640_stereo_spk_map));
-@@ -1179,6 +1182,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
- static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- {
- 	static const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3" };
-+	__maybe_unused const char *spk_type;
- 	const struct dmi_system_id *dmi_id;
- 	struct byt_rt5640_private *priv;
- 	struct snd_soc_acpi_mach *mach;
-@@ -1186,7 +1190,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	struct acpi_device *adev;
- 	int ret_val = 0;
- 	int dai_index = 0;
--	int i;
-+	int i, cfg_spk;
- 
- 	is_bytcr = false;
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-@@ -1325,16 +1329,24 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 		}
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+index e1e5d81a5e43..21c7b642a8b4 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+@@ -1454,6 +1454,11 @@ static bool dc_link_construct(struct dc_link *link,
+ 		goto ddc_create_fail;
  	}
  
-+	if (byt_rt5640_quirk & BYT_RT5640_NO_SPEAKERS) {
-+		cfg_spk = 0;
-+		spk_type = "none";
-+	} else if (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) {
-+		cfg_spk = 1;
-+		spk_type = "mono";
-+	} else {
-+		cfg_spk = 2;
-+		spk_type = "stereo";
++	if (!link->ddc->ddc_pin) {
++		DC_ERROR("Failed to get I2C info for connector!\n");
++		goto ddc_create_fail;
 +	}
 +
- 	snprintf(byt_rt5640_components, sizeof(byt_rt5640_components),
--		 "cfg-spk:%s cfg-mic:%s",
--		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ? "1" : "2",
-+		 "cfg-spk:%d cfg-mic:%s", cfg_spk,
- 		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
- 	byt_rt5640_card.components = byt_rt5640_components;
- #if !IS_ENABLED(CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES)
- 	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
--		 "bytcr-rt5640-%s-spk-%s-mic",
--		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ?
--			"mono" : "stereo",
-+		 "bytcr-rt5640-%s-spk-%s-mic", spk_type,
- 		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
- 	byt_rt5640_card.long_name = byt_rt5640_long_name;
- #endif
+ 	link->ddc_hw_inst =
+ 		dal_ddc_get_line(dal_ddc_service_get_ddc_pin(link->ddc));
+ 
 -- 
 2.30.1
 
