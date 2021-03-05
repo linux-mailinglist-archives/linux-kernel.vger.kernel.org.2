@@ -2,161 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029FD32ED8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 15:59:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA63232ED93
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbhCEO7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 09:59:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
+        id S230013AbhCEPAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:00:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhCEO6w (ORCPT
+        with ESMTP id S229971AbhCEPAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 09:58:52 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12841C061756
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 06:58:52 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id s15so1925544qtq.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 06:58:52 -0800 (PST)
+        Fri, 5 Mar 2021 10:00:19 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE28C061574;
+        Fri,  5 Mar 2021 07:00:18 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id w7so1710590wmb.5;
+        Fri, 05 Mar 2021 07:00:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qZ3AoTf6cXU1bu8uuC00ZxA2V46t8CB6SICrs+0qcjk=;
-        b=env4aw7KLR9Tgvix1pjweQF3uNic1np0s7qWnz+oha8p6xblltNMqVPfju4YQtlm8Z
-         QtN7owCUjlpIHROURmnrrtW2Z//xjCf2sQenGXPbG2wZVHyN8qCRT3zBPt7ZPD7g6aF+
-         eRdkkzy8HnTNrhl/SDbf0B+KnYg+TA3mUx7Go=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Y2H8czy4HWKYT33LVWK4xxuIgGxYNVC0YsC4IjH3YU4=;
+        b=tFNvcKaWr3p2qbdNI7ESZo/lZdwe60EhEb+qVwy5rhd2H1dXWtHXKZ5nWBywJyF82N
+         rlspaSoX7C8ftpLNYjtIzyK46LgPQ98/NQYLrYsQtXqftLjgnH1tWNeR3JxKgFkT9rMa
+         RPLG+wRmoBf43XiSY1MJVE7PiPrb4r5txz59dX4TRSmUwBsWPeaJn5B2bfcczvsLAp1t
+         bIyOtpzv2ReTKFTBUumuraxsDKdOzxud0mQWnEAq5fvLjuF/gJP+dxrCEHK2PmmzzF6H
+         uk0waWBNocs4c8AWScey4js0JRP631Az8GzxGtyxGPJzHZAtSADDz2JR3TjUZXu6D7nY
+         Jq8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qZ3AoTf6cXU1bu8uuC00ZxA2V46t8CB6SICrs+0qcjk=;
-        b=Vp+WT5KI7GHHn+iN2TUChPpySxvKGX8VV646E8e9I67QxXMpbhdELZQ6TKr7dWfgqT
-         +vJJ5b+IFyEA+S6AcLTc57mSx9riOnUjbWSN20ys/NM52zaFggifYj5hm/oKZgH2qHz3
-         SUFfbl3L6A72m9DfwFiKbn+65JDpzfFZjK7c1np948RF5bPg8iX5lZ9MkuOX0lDe9/S5
-         4iYXHpSDj0VHKGEYYyzy5faOqaDmTkkg24gqkerTiWxDLRUa+IP0K0mu/TAeNRvJd8fe
-         8Yj934Z6krBVdecr3Q8JG4LyFBqgAlZsltMB8JZTcwBmAskHeP2w3Hnhi7leYF2ouqbQ
-         ZcLA==
-X-Gm-Message-State: AOAM531AQUrtUZK7r2WrE44UFr9wg/jhFkVwHlkzp/bRQynli/9tDHMc
-        fcqLCF5JRBYUCmGihxAtDHW5x5g1x9tsMA==
-X-Google-Smtp-Source: ABdhPJw/EEX0Ul8WvYZTlz+excaT4NjfLDxQ8yZEmG+SFh3VMH5wY6/euy7ArDb93UXjJuMYB5KJTw==
-X-Received: by 2002:a05:622a:d4:: with SMTP id p20mr9443550qtw.141.1614956330361;
-        Fri, 05 Mar 2021 06:58:50 -0800 (PST)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
-        by smtp.gmail.com with ESMTPSA id 19sm1871108qkv.95.2021.03.05.06.58.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 06:58:49 -0800 (PST)
-Received: by mail-yb1-f181.google.com with SMTP id d9so2257274ybq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 06:58:49 -0800 (PST)
-X-Received: by 2002:a25:d3c5:: with SMTP id e188mr14732960ybf.345.1614956329260;
- Fri, 05 Mar 2021 06:58:49 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y2H8czy4HWKYT33LVWK4xxuIgGxYNVC0YsC4IjH3YU4=;
+        b=g+8GNIsrS60YMNJN6DHuyiwV/ZJ/dcqUdd9rxmKvgPyceaxCv9K5xj8T7KYq3j/cqB
+         xESO9bv/vfqvXXGMBMuSLV271yXdPh8xY17AY68tYsKBCSRIJL+RZBiSwvEuC/evUMsR
+         fURC2LNeHhaWH8rbP++QPHUuklBBQtw8BGonuD5+GFO7Swm/X/9tnC5GGkDA9DfqgqWA
+         yhoDP40HEOaOxH1mQOfKfSMhinZpgbsw/EOWhq8VoVCcOVoWqI0RKdkLcWOutTesGNdL
+         H9qKnvIE0K0PBqqsIeTXILAoRkao19t0w8uKJ7m6IvyVzQjE2vP284bLMRFX4goe3efb
+         rqtA==
+X-Gm-Message-State: AOAM530EXyEqlG8dDtwYHA8B0LNLG3hnYBgjSMbGZaE0pqj+Nwcg186r
+        vL3WZMsG6rJFKOdD0sa1w7c=
+X-Google-Smtp-Source: ABdhPJxntrDeo/Jx3XF//2yFpFLbmkKQx5cmQmD6DeUjjBs7BlfgKVpNN4GQdpGoHA+h0NuLyHboLw==
+X-Received: by 2002:a05:600c:1405:: with SMTP id g5mr9157287wmi.140.1614956417493;
+        Fri, 05 Mar 2021 07:00:17 -0800 (PST)
+Received: from ubuntudesktop (205.158.32.217.dyn.plus.net. [217.32.158.205])
+        by smtp.gmail.com with ESMTPSA id j20sm4489167wmp.30.2021.03.05.07.00.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 07:00:16 -0800 (PST)
+Date:   Fri, 5 Mar 2021 15:00:14 +0000
+From:   Lee <leegib@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8192e: Fix possible buffer overflow in
+ _rtl92e_wx_set_scan
+Message-ID: <20210305150014.GA627584@ubuntudesktop>
+References: <20210226114829.316980-1-leegib@gmail.com>
+ <20210226134333.GA2087@kadam>
+ <20210226140526.GG2222@kadam>
+ <20210301132535.GR2087@kadam>
+ <20210305082228.GG2222@kadam>
 MIME-Version: 1.0
-References: <20210227002603.3260599-1-dianders@chromium.org>
- <20210226162521.2.I7c9190630cf9131b42d521aa1c5b97135012a734@changeid> <6537aec4-7f6e-ede9-12ea-e84bab738d7b@linaro.org>
-In-Reply-To: <6537aec4-7f6e-ede9-12ea-e84bab738d7b@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 5 Mar 2021 06:58:37 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XnS82=62zSyOkn++kt0BD40Qp5EmZ0SWoW25Gs7nXi8g@mail.gmail.com>
-Message-ID: <CAD=FV=XnS82=62zSyOkn++kt0BD40Qp5EmZ0SWoW25Gs7nXi8g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] nvmem: core: Allow nvmem_cell_read_u16/32/64 to read
- smaller cells
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Niklas Cassel <niklas.cassel@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305082228.GG2222@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Fri, Mar 5, 2021 at 2:27 AM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
->
->
->
-> On 27/02/2021 00:26, Douglas Anderson wrote:
-> > The current way that cell "length" is specified for nvmem cells is a
-> > little fuzzy. For instance, let's look at the gpu speed bin currently
-> > in sc7180.dtsi:
-> >
-> >    gpu_speed_bin: gpu_speed_bin@1d2 {
-> >      reg = <0x1d2 0x2>;
-> >      bits = <5 8>;
-> >    };
-> >
-> > This is an 8-bit value (as specified by the "bits" field). However,
-> > it has a "length" of 2 (bytes), presumably because the value spans
-> > across two bytes.
-> >
-> > When querying this value right now, it's hard for a client to know if
-> > they should be calling nvmem_cell_read_u16() or nvmem_cell_read_u8().
-> > Today they must call nvmem_cell_read_u16() because the "length" of the
-> > cell was 2 (bytes). However, if a later SoC ever came around and
-> > didn't span across 2 bytes it would be unclear.  If a later Soc
-> > specified, for instance:
-> >
-> >    gpu_speed_bin: gpu_speed_bin@100 {
-> >      reg = <0x100 0x1>;
-> >      bits = <0 8>;
-> >    };
-> >
-> > ...then the caller would need to change to try calling
-> > nvmem_cell_read_u8() because the u16 version would fail.
-> >
->
-> If the consumer driver is expecting the sizes to span around byte to
-> many bytes
+Hi Dan,
 
-I guess in my mind that's outside of the scope of what the consumer
-should need to know.  The consumer wants a number and they know it's
-stored in nvmem.  They shouldn't need to consider the bit packing
-within nvmem.  Imagine that have a structure definition:
+Do you think any of these could be potential issues:
 
-struct example {
-  int num1:6;
-  int num2:6;
-  int num3:6;
-  int num4:6;
-};
-struct example e;
+driver/staging/
 
-What I think you're saying is that you should need a different syntax
-for accessing "e.num1" and "e.num4" (because they happen not to span
-bytes) compared to accessing "e.num2" and "e.num3". As it is, C
-abstracts this out and allows you not to care. You can just do:
+rtl8192e/rtllib_rx.c:2442
+wlan-ng/cfg80211.c:316
+rtl8723bs/os_dep/ioctl_cfg80211.c:1591
+rtl8723bs/os_dep/ioctl_cfg80211.c:2738
 
-e.num1 + e.num2 + e.num3 + e.num4
+and if so, findable via Smatch?
 
-...and it works fine even though some of those span bytes and some
-don't.  I want the same thing.
+Regards,
+Lee
 
 
-> , then, Why not just call nvmem_cell_read() which should also
-> return you how many bytes it has read!
-
-See my response to patch #1. This requires open-coding a small but
-still non-trivial bit of code for all consumers. It should be in the
-core.
-
-
-> > Let's solve this by allowing clients to read a "larger" value. We'll
-> > just fill it in with 0.
->
-> That is misleading the consumer! If the consumer is expecting a u16 or
-> u32, cell size should be of that size!!
-
-If you think it's confusing to change the behavior of the existing
-functions, would you be opposed to me adding a new function like
-nvmem_cell_read_le_u32_or_smaller() (or provide me a better name) that
-would be flexible like this?
-
--Doug
+On Fri, Mar 05, 2021 at 11:22:28AM +0300, Dan Carpenter wrote:
+> Actually, I looked through a bunch of these and they're mostly false
+> positives outside of staging.  I guess there are a few ways the ->ssid
+> can be changed.  Via netlink, from the network or from the an ioctl.
+> 
+> I still have a couple questions, but so far as I can see it's mostly the
+> ioctl which has problems.
+> 
+> I really want Smatch to be able to figure the netlink stuff...  That
+> should be doable.
+> 
+> regards,
+> dan carpenter
+> 
