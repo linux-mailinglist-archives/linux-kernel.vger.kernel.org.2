@@ -2,144 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79AB32E49C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A57DE32E49E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 10:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhCEJTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 04:19:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52510 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229718AbhCEJSn (ORCPT
+        id S229815AbhCEJTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 04:19:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229793AbhCEJTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:18:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614935923;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cAq6+R4omWqyip9PJ9aVfNyoU1PYQDYL/jyjusPSWNI=;
-        b=eN9FtNDPlwxvEd6mwpuLPMmSE9IOA2t8krKUE2tmIz1YWKAM2YUzesN43lHqW/1wL3U5Tr
-        SeREi5rzsy4LFI83c4uCzQVra1poUdFgZTcMETPJMNIuw81FGsECGaKFZOc/jJfBfuZEEi
-        YmnjBgJkp8+sGkf+PkjxxAx20z2fjao=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-278-HcSqhqcMN5qVjDN5bgFLew-1; Fri, 05 Mar 2021 04:18:41 -0500
-X-MC-Unique: HcSqhqcMN5qVjDN5bgFLew-1
-Received: by mail-ed1-f70.google.com with SMTP id f11so631348edk.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 01:18:41 -0800 (PST)
+        Fri, 5 Mar 2021 04:19:01 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FFBC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 01:19:00 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id k66so800549wmf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 01:19:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8vJPV4FFwyt82QjbLhQn3+aWfcjT4u1dwj3bRwwYUZg=;
+        b=nCBqUkSK4KKfw+b3O4dSAu30OZObhhK/hc1tmfr0QT3OO6SNikoNtfNIf4ImrZaBuw
+         fOGpB6D3w5mu1Gp2MxOq3MgCDDGuwJ4sCyCvPaqVq0/Mr95qRW6kzhjE4JV2Ve+f0v5J
+         R1yoy9l/FhsBx2wCqKFePLGMw8c82/N2GMro9PFvhk/1uLsiyorZZspXPxcK9ddNXO62
+         XvuFtQ3byMIjjlpM7qT2JSuOPoxkzi+/bZQWjzWi3ks52l9wPzTV9ZqEliqraKdqbR14
+         35v+2X0/aVQyqEfV5/UlTH2rUQpz7AL4/vw4r4DdG8ugNfROUrkY2vGE3LsGATptCuz7
+         77Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=cAq6+R4omWqyip9PJ9aVfNyoU1PYQDYL/jyjusPSWNI=;
-        b=VPuyqz1hZaubdgyY2hJpo7fUW+bPb9DJQ7DWbGzyZ0yda5FEHWVdSgjSI8gl/W6r1W
-         MYQUxK8yfpF3nU69ZWWFDgLTAfegW9+VvxU8ADIXaRO44lc3lHaaQvWZqvr8/8zDGJLB
-         HqkZ/2dFph7apZHW7W7OrH2N0vB7pyjdgoZ3b57FpYVsq8ZMn3VWFytLHK4YIJCaWhm3
-         gh/ab03LeIDoN3AbFVRM7YoaA//cL7L9b0ETLSQn61plgwY8QNzc6otvHo+jeiM6m+Qg
-         x1XSPsHi5T3YYvJF/5D/dgzjvpA2LsKWMOq/aAZveJ3esPVQUNbiWe0D7LQKip/tm0rT
-         +h/g==
-X-Gm-Message-State: AOAM531R+bGtGr5XOh8UuAamYt3j1+mjh9yNsAqNVYZjXe4eXQ6m4VvQ
-        XoryXO6gTU/Nm5xf8TXCbHbUb+zg/7MB7Z3UQhOkPbUKfMUQ+lOv0amBwpHqrMH5XIDdcyK/r1K
-        QswXs4ASMJSKHp2Y6LFOBQJSp
-X-Received: by 2002:a05:6402:b48:: with SMTP id bx8mr8583601edb.162.1614935920335;
-        Fri, 05 Mar 2021 01:18:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyXVfX0PnPVQKsPe9R9YUW7n4rJt0Uylzj8NB5VS7T55LlPe5QcWAL5+fw4IFfKrx7bsdqrHg==
-X-Received: by 2002:a05:6402:b48:: with SMTP id bx8mr8583591edb.162.1614935920177;
-        Fri, 05 Mar 2021 01:18:40 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id t17sm1220844edr.36.2021.03.05.01.18.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8vJPV4FFwyt82QjbLhQn3+aWfcjT4u1dwj3bRwwYUZg=;
+        b=ZR3NWJ3aaxubqU/iKCmVG/WN9Y9EpYYp2WK3IrikJuiJ6fHG/uA6yjcbnnt/qjgcDD
+         /J/bHQpmzUWD/05pvRaXuVd9tiWCwaJBYsuoQuxbOMyDq+AEUJsRsA0iK6qn/KsZspPs
+         X3m8A69K78lvqrHLgBjeFCJZtlPeGBY5irs75yb8oui6w5Yo7or+Db6DCvDL7q9DaDgi
+         +YT2H6z531ovID1RkSRRZ7L7R++ipmfrgaWTiTt9TuydERihNWmjpV1b8/h+xFQApWkz
+         T/irXdw9nk3HMJxTkkKgKdkvpFB2IsOQJE6d12ozEH1tH/GWxOLPjAeoewjmuhpPM/BU
+         epNA==
+X-Gm-Message-State: AOAM532+/W32DNWjrz5LJstRY6EAbG7EVWn5EeHxFUIv2s8vFDXZyV9Z
+        57SFS0n6huXAPUC5D4NNDARbiA==
+X-Google-Smtp-Source: ABdhPJwrDZdyUEX/CX8cn+VF0ajEbirzA9wYgQWCTVvm8e666ZxT2NbDPANZG6FBAnU7u4fM8Tdvcw==
+X-Received: by 2002:a1c:2155:: with SMTP id h82mr8014110wmh.169.1614935939487;
+        Fri, 05 Mar 2021 01:18:59 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id k11sm3545806wmj.1.2021.03.05.01.18.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 01:18:39 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        linux-hyperv@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        wei.liu@kernel.org, ligrassi@microsoft.com, kys@microsoft.com
-Subject: Re: [RFC PATCH 04/18] virt/mshv: request version ioctl
-In-Reply-To: <194e0dad-495e-ae94-3f51-d2c95da52139@linux.microsoft.com>
-References: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1605918637-12192-5-git-send-email-nunodasneves@linux.microsoft.com>
- <87y2fxmlmb.fsf@vitty.brq.redhat.com>
- <194e0dad-495e-ae94-3f51-d2c95da52139@linux.microsoft.com>
-Date:   Fri, 05 Mar 2021 10:18:38 +0100
-Message-ID: <87eeguc61d.fsf@vitty.brq.redhat.com>
+        Fri, 05 Mar 2021 01:18:59 -0800 (PST)
+Date:   Fri, 5 Mar 2021 09:18:56 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, tabba@google.com,
+        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
+        seanjc@google.com, robh+dt@kernel.org
+Subject: Re: [PATCH v3 27/32] KVM: arm64: Refactor stage2_map_set_prot_attr()
+Message-ID: <YEH3gKYY/Rz7W+50@google.com>
+References: <20210302150002.3685113-1-qperret@google.com>
+ <20210302150002.3685113-28-qperret@google.com>
+ <20210304200335.GG21950@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304200335.GG21950@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nuno Das Neves <nunodasneves@linux.microsoft.com> writes:
+On Thursday 04 Mar 2021 at 20:03:36 (+0000), Will Deacon wrote:
+> On Tue, Mar 02, 2021 at 02:59:57PM +0000, Quentin Perret wrote:
+> > In order to ease its re-use in other code paths, refactor
+> > stage2_map_set_prot_attr() to not depend on a stage2_map_data struct.
+> > No functional change intended.
+> > 
+> > Signed-off-by: Quentin Perret <qperret@google.com>
+> > ---
+> >  arch/arm64/kvm/hyp/pgtable.c | 19 ++++++++-----------
+> >  1 file changed, 8 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> > index 8e7059fcfd40..8aa01a9e2603 100644
+> > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > @@ -494,8 +494,7 @@ u64 kvm_get_vtcr(u64 mmfr0, u64 mmfr1, u32 phys_shift)
+> >  	return vtcr;
+> >  }
+> >  
+> > -static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
+> > -				    struct stage2_map_data *data)
+> > +static kvm_pte_t stage2_get_prot_attr(enum kvm_pgtable_prot prot)
+> >  {
+> >  	bool device = prot & KVM_PGTABLE_PROT_DEVICE;
+> >  	kvm_pte_t attr = device ? PAGE_S2_MEMATTR(DEVICE_nGnRE) :
+> > @@ -504,15 +503,15 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
+> >  
+> >  	if (prot & KVM_PGTABLE_PROT_NONE) {
+> >  		if (prot != KVM_PGTABLE_PROT_NONE)
+> > -			return -EINVAL;
+> > +			return 0;
+> 
+> Hmm, does the architecture actually say that having all these attributes
+> as 0 is illegal?
 
-> On 2/9/2021 5:11 AM, Vitaly Kuznetsov wrote:
->> Nuno Das Neves <nunodasneves@linux.microsoft.com> writes:
->> 
-...
->>> +
->>> +3.1 MSHV_REQUEST_VERSION
->>> +------------------------
->>> +:Type: /dev/mshv ioctl
->>> +:Parameters: pointer to a u32
->>> +:Returns: 0 on success
->>> +
->>> +Before issuing any other ioctls, a MSHV_REQUEST_VERSION ioctl must be called to
->>> +establish the interface version with the kernel module.
->>> +
->>> +The caller should pass the MSHV_VERSION as an argument.
->>> +
->>> +The kernel module will check which interface versions it supports and return 0
->>> +if one of them matches.
->>> +
->>> +This /dev/mshv file descriptor will remain 'locked' to that version as long as
->>> +it is open - this ioctl can only be called once per open.
->>> +
->> 
->> KVM used to have KVM_GET_API_VERSION too but this turned out to be not
->> very convenient so we use capabilities (KVM_CHECK_EXTENSION/KVM_ENABLE_CAP)
->> instead.
->> 
->
-> The goal of MSHV_REQUEST_VERSION is to support changes to APIs in the core set.
-> When we add new features/ioctls beyond the core we can use an extension/capability
-> approach like KVM.
->
+Hmm, that's a good point, that might not be the case. I assumed we would
+have no use for this, but there we can easily avoid the restriction
+so...
 
-Driver versions is a very bad idea from distribution/stable kernel point
-of view as it presumes that the history is linear. It is not.
+> If not, I think it would be better to keep the int return
+> code and replace the 'data' parameter with a pointer to a kvm_pte_t.
+> 
+> Does that work?
 
-Imagine you have the following history upstream:
+I think so yes, I'll fix it up.
 
-MSHV_REQUEST_VERSION = 1
-<100 commits with features/fixes>
-MSHV_REQUEST_VERSION = 2
-<another 100 commits with features/fixes>
-MSHV_REQUEST_VERSION = 2
-
-Now I'm a linux distribution / stable kernel maintainer. My kernel is at
-MSHV_REQUEST_VERSION = 1. Now I want to backport 1 feature from between
-VER=1 and VER=2 and another feature from between VER=2 and VER=3. My
-history now looks like
-
-MSHV_REQUEST_VERSION = 1
-<5 commits from between VER=1 and VER=2>
-   Which version should I declare here???? 
-<5 commits from between VER=2 and VER=3>
-   Which version should I declare here???? 
-
-If I keep VER=1 then userspace will think that I don't have any extra
-features added and just won't use them. If I change VER to 2/3, it'll
-think I have *all* features from between these versions.
-
-The only reasonable way to manage this is to attach a "capability" to
-every ABI change and expose this capability *in the same commit which
-introduces the change to the ABI*. This way userspace will now exactly
-which ioctls are available and what are their interfaces.
-
-Also, trying to define "core set" is hard but you don't really need
-to.
-
--- 
-Vitaly
-
+Cheers,
+Quentin
