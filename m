@@ -2,140 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762E732F544
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE0B32F546
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 22:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbhCEVYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 16:24:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38944 "EHLO
+        id S229616AbhCEV06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 16:26:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhCEVX7 (ORCPT
+        with ESMTP id S229488AbhCEV0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 16:23:59 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27824C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 13:23:59 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id d3so5944118lfg.10
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 13:23:59 -0800 (PST)
+        Fri, 5 Mar 2021 16:26:46 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D61C06175F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 13:26:46 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id g16so2322858pfr.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 13:26:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SydtHA9ySlkODMySHl2z0gV1PL50P5TP1t2fIowj2ao=;
-        b=IiowVuY5H7HwbHt3FsPfra4svFZ+jyUJwevcVWIDYh7E47fIsYZfyfxWEaqkp+Y1Cl
-         aM4IJyeHPL8m5C/ULkmtXt/Tk2W67vqLtjpPJix1g5tvliIcOrY+E/aTytf6+TPiYUkB
-         XhWp9HZieAf4AnqTMwrfdrBt63JbWcnOu+SvU=
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=lxAI0j1/St6hPFn3ZCuch4vJBF1V02T8EEpuBZ+oodk=;
+        b=mlhUJbtF3anvprjznY6/RwDNa9Fk6rH/Ug77AtG9fyVmc4VBjNbXf2/fBeXdaIqgxt
+         OxSeGK0mzLJUh05ePqXVtXtJte61NESxJUxlX0q9RHQycCVIz5zO0HUY12pEZWfiwPYz
+         dJJi2XgymqEi9gN1X0WSolsTDLA/L//xJWRPLndClxoKM377oxrt37TYYaXH/DR+pSqd
+         2qgsEYOtDWKpNU/Cgpltql1pO9zpKINRRG/O3UbhUbORVLvlb+0RoNjTuoR0ZNOJrsup
+         mBDGGozSsUpTdp1nSIAToPYIYzl6s9p60he3LKO0D/7aZsluv94KwuL9mQbgOgDRfGHi
+         pgVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SydtHA9ySlkODMySHl2z0gV1PL50P5TP1t2fIowj2ao=;
-        b=TeepY/vYqWdgRuCSR6vEbobjLXRUkQPDWJx1CdWDSdU10TYFNghEisemn0IC4e0hZd
-         fLNyYC96Y2EjX9yHEnvESXWnh4wSK6JwBKpEIeyq2lvz1TLjMgk4wvl7nBpGrurS7kxj
-         FwniCnl9OyhPaJkbRfrvlopjkHg0QZQEvlivbzHVCiJdi/F164ueFyMbFFGfEK66ZU2z
-         YCva15E97UJqkm/RwuPqLlp4qt4WoRaqw77gxiuqx609PVEw7ovKCvM08Xi34aJuiN5F
-         TicR+7En0XEMpX9SPOYg3Jp5+jDU3SckmszWNqv99RHgxmgasEayFqOXrdQAnz+RfNI1
-         1sPw==
-X-Gm-Message-State: AOAM530s4QPLQzmUkKsdcDn6VkdPY4LE8braJn8kK+tItBLynBbhajjD
-        ufJoVPeURvbtIn1NMBV8UthpwRBHMg5pYw==
-X-Google-Smtp-Source: ABdhPJx3bHnNJzWYv566vXj3peGNTIS6z0qgaQlhhQSL9FnIJIO94vO5FIJhWLq0rptH9bVtC2gbPw==
-X-Received: by 2002:a05:6512:98d:: with SMTP id w13mr6894444lft.100.1614979437332;
-        Fri, 05 Mar 2021 13:23:57 -0800 (PST)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id n23sm444747lfq.121.2021.03.05.13.23.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 13:23:55 -0800 (PST)
-Received: by mail-lj1-f179.google.com with SMTP id e2so4566938ljo.7
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 13:23:55 -0800 (PST)
-X-Received: by 2002:a2e:a589:: with SMTP id m9mr151221ljp.220.1614979434841;
- Fri, 05 Mar 2021 13:23:54 -0800 (PST)
-MIME-Version: 1.0
-References: <YDvLYzsGu+l1pQ2y@localhost.localdomain> <CAHk-=wjFWZMVWTbvUMVxQqGKvGMC_BNrahCtTkpEjxoC0k-T=A@mail.gmail.com>
- <YDvwVlG/fqVxVYlQ@localhost.localdomain> <CAHk-=wi54DEScexxpMrO+Q2Nag_Tup+Y5YBHc_9_xGLeRfP8pA@mail.gmail.com>
- <877dmo10m3.fsf@tromey.com> <CAHk-=wi13+FLcRo4zmnRUmmY=AAns-Yd5NR_mVdcAd6ZrPq2fA@mail.gmail.com>
- <4835ec1d2ecc40b285596288a0df4f47@AcuMS.aculab.com> <CAHk-=wh8PptzH-=ak1D7C5Zp6EJ8eurYqVqGdQauupAFaNuG4g@mail.gmail.com>
- <44a0cc9cb5344add8ee4d91bffbf958f@AcuMS.aculab.com>
-In-Reply-To: <44a0cc9cb5344add8ee4d91bffbf958f@AcuMS.aculab.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 5 Mar 2021 13:23:38 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whh3fiL7FcLD_r1rfx-gP9W4HWS7vTPM9LKUH+0xzF2=A@mail.gmail.com>
-Message-ID: <CAHk-=whh3fiL7FcLD_r1rfx-gP9W4HWS7vTPM9LKUH+0xzF2=A@mail.gmail.com>
-Subject: Re: [PATCH 00/11] pragma once: treewide conversion
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Tom Tromey <tom@tromey.com>, Alexey Dobriyan <adobriyan@gmail.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=lxAI0j1/St6hPFn3ZCuch4vJBF1V02T8EEpuBZ+oodk=;
+        b=UXTAf7aAyjvDZIHMfne3jwWG8Ia6RGv6e4+Eo4dX0yyzHk2GVVaNzArK39GMP0bQ5C
+         UK6YV9lUV25KgIz/Ps3VtMvnUvlkTx5buBRKV6HdCHCntdykbsKgNfREQ+qKPQmNg4zC
+         AqCe7+p9UZooFSnuY7rAZUNNdW2OVjguDxTn5rrtwA4laLtADYyKUPoArpYGZutizvKX
+         GAVGjguKtVkWhCNnmAsm46DqyU/xxFDWniVxIC1s5hK5i7TeoeEPWL4khZj2aQ9EzQw3
+         +6/liBUtt6JoJfyDYMF40mZz7/s0oBmSD+QIH7gn5TLJHVfS67UcCN2MA5lPLPSJ/VJm
+         i6ng==
+X-Gm-Message-State: AOAM5312eCDQ7rpb7z+GFBNFtf8T4vVXCOpJn7Wg51CURz7QBNpJgu/Z
+        RbgFlgMKQDRgDIhZjZcGq69AUnBzm0W+nQ==
+X-Google-Smtp-Source: ABdhPJwbtxPgvS1fsQckBTub+R7tGV+AQHoTN2lQxcLB/TKN01lOTLRhGa/uJcbxJVthz9zoHaMdmXk3f0qfMw==
+Sender: "shakeelb via sendgmr" <shakeelb@shakeelb.svl.corp.google.com>
+X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:2894:3999:cbe6:26b2])
+ (user=shakeelb job=sendgmr) by 2002:a17:90a:bf04:: with SMTP id
+ c4mr11960900pjs.170.1614979604105; Fri, 05 Mar 2021 13:26:44 -0800 (PST)
+Date:   Fri,  5 Mar 2021 13:26:39 -0800
+Message-Id: <20210305212639.775498-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH v4] memcg: charge before adding to swapcache on swapin
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 1:19 AM David Laight <David.Laight@aculab.com> wrote:
->
-> The point is that you can skip the unwanted parts of
-> #if without having to parse the file at all.
-> You just need to detect the line breaks.
+Currently the kernel adds the page, allocated for swapin, to the
+swapcache before charging the page. This is fine but now we want a
+per-memcg swapcache stat which is essential for folks who wants to
+transparently migrate from cgroup v1's memsw to cgroup v2's memory and
+swap counters. In addition charging a page before exposing it to other
+parts of the kernel is a step in the right direction.
 
-That's not actually true AT ALL.
+To correctly maintain the per-memcg swapcache stat, this patch has
+adopted to charge the page before adding it to swapcache. One
+challenge in this option is the failure case of add_to_swap_cache() on
+which we need to undo the mem_cgroup_charge(). Specifically undoing
+mem_cgroup_uncharge_swap() is not simple.
 
-You still need to at the very least parse the preprocessor tokens,
-looking for things like #if, #else, and #endif. Because those can -
-and do - nest inside the whole thing, so you're not even looking for
-the final #endif, you have to be aware that there might be new #if
-statements that means that now you now have to increment the nesting
-count for the endif.
+To resolve the issue, this patch introduces transaction like interface
+to charge a page for swapin. The function mem_cgroup_charge_swapin_page()
+initiates the charging of the page and mem_cgroup_finish_swapin_page()
+completes the charging process. So, the kernel starts the charging
+process of the page for swapin with mem_cgroup_charge_swapin_page(),
+adds the page to the swapcache and on success completes the charging
+process with mem_cgroup_finish_swapin_page().
 
-And to do even just *THAT*, you need to do all the comment parsing,
-and all the string parsing, because a #endif means something entirely
-different if there was a "/*"  or a string on a previous line that
-hasn't been terminated yet (yes, unterminated strings are bad
-practice, but ..).
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Hugh Dickins <hughd@google.com>
+---
+Changes since v3:
+- Updated the comments on introduced functions (Johannes)
+- Rename the funcations to be more clear (Hugh & Johannes)
 
-And regardless of even _those_ issues, you still should do all the
-other syntactic tokenization stuff (ie all the quoting, the the
-character handling: 'a' is a valid C token, but if you see the string
-"it's" outside of a comment, that's a syntax error even if it's inside
-a disabled region. IOW, this is an incorrect file:
+Changes since v2:
+- fixed build for !CONFIG_MEMCG
+- simplified failure path from add_to_swap_cache()
 
-   #if 0
-   it's a bug to do this, and the compiler should scream
-   #endif
+Changes since v1:
+- Removes __GFP_NOFAIL and introduced transaction interface for charging
+  (suggested by Johannes)
+- Updated the commit message
 
-because it's simply not a valid token sequence. The fact that it's
-inside a "#if 0" region doesn't change that fact at all.  So you did
-need to do all the tokenization logic.
+ include/linux/memcontrol.h |  13 +++++
+ mm/memcontrol.c            | 117 +++++++++++++++++++++++--------------
+ mm/memory.c                |  14 ++---
+ mm/swap_state.c            |  13 ++---
+ 4 files changed, 97 insertions(+), 60 deletions(-)
 
-The same goes for all the wide string stuff, the tri-graph horrors, etc etc.
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index e6dc793d587d..f522b09f2df7 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -596,6 +596,9 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
+ }
+ 
+ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask);
++int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
++				  gfp_t gfp, swp_entry_t entry);
++void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry);
+ 
+ void mem_cgroup_uncharge(struct page *page);
+ void mem_cgroup_uncharge_list(struct list_head *page_list);
+@@ -1141,6 +1144,16 @@ static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
+ 	return 0;
+ }
+ 
++static inline int mem_cgroup_swapin_charge_page(struct page *page,
++			struct mm_struct *mm, gfp_t gfp, swp_entry_t entry)
++{
++	return 0;
++}
++
++static inline void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry)
++{
++}
++
+ static inline void mem_cgroup_uncharge(struct page *page)
+ {
+ }
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 2db2aeac8a9e..21c38c0b6e5a 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6690,6 +6690,27 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+ 			atomic_long_read(&parent->memory.children_low_usage)));
+ }
+ 
++static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
++			       gfp_t gfp)
++{
++	unsigned int nr_pages = thp_nr_pages(page);
++	int ret;
++
++	ret = try_charge(memcg, gfp, nr_pages);
++	if (ret)
++		goto out;
++
++	css_get(&memcg->css);
++	commit_charge(page, memcg);
++
++	local_irq_disable();
++	mem_cgroup_charge_statistics(memcg, page, nr_pages);
++	memcg_check_events(memcg, page);
++	local_irq_enable();
++out:
++	return ret;
++}
++
+ /**
+  * mem_cgroup_charge - charge a newly allocated page to a cgroup
+  * @page: page to charge
+@@ -6699,55 +6720,71 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+  * Try to charge @page to the memcg that @mm belongs to, reclaiming
+  * pages according to @gfp_mask if necessary.
+  *
++ * Do not use this for pages allocated for swapin.
++ *
+  * Returns 0 on success. Otherwise, an error code is returned.
+  */
+ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+ {
+-	unsigned int nr_pages = thp_nr_pages(page);
+-	struct mem_cgroup *memcg = NULL;
+-	int ret = 0;
++	struct mem_cgroup *memcg;
++	int ret;
+ 
+ 	if (mem_cgroup_disabled())
+-		goto out;
++		return 0;
+ 
+-	if (PageSwapCache(page)) {
+-		swp_entry_t ent = { .val = page_private(page), };
+-		unsigned short id;
++	memcg = get_mem_cgroup_from_mm(mm);
++	ret = __mem_cgroup_charge(page, memcg, gfp_mask);
++	css_put(&memcg->css);
+ 
+-		/*
+-		 * Every swap fault against a single page tries to charge the
+-		 * page, bail as early as possible.  shmem_unuse() encounters
+-		 * already charged pages, too.  page and memcg binding is
+-		 * protected by the page lock, which serializes swap cache
+-		 * removal, which in turn serializes uncharging.
+-		 */
+-		VM_BUG_ON_PAGE(!PageLocked(page), page);
+-		if (page_memcg(compound_head(page)))
+-			goto out;
++	return ret;
++}
+ 
+-		id = lookup_swap_cgroup_id(ent);
+-		rcu_read_lock();
+-		memcg = mem_cgroup_from_id(id);
+-		if (memcg && !css_tryget_online(&memcg->css))
+-			memcg = NULL;
+-		rcu_read_unlock();
+-	}
++/**
++ * mem_cgroup_swapin_charge_page - charge a newly allocated page for swapin
++ * @page: page to charge
++ * @mm: mm context of the victim
++ * @gfp: reclaim mode
++ * @entry: swap entry for which the page is allocated
++ *
++ * This function charges a page allocated for swapin. Please call this before
++ * adding the page to the swapcache.
++ *
++ * Returns 0 on success. Otherwise, an error code is returned.
++ */
++int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
++				  gfp_t gfp, swp_entry_t entry)
++{
++	struct mem_cgroup *memcg;
++	unsigned short id;
++	int ret;
+ 
+-	if (!memcg)
++	if (mem_cgroup_disabled())
++		return 0;
++
++	id = lookup_swap_cgroup_id(entry);
++	rcu_read_lock();
++	memcg = mem_cgroup_from_id(id);
++	if (!memcg || !css_tryget_online(&memcg->css))
+ 		memcg = get_mem_cgroup_from_mm(mm);
++	rcu_read_unlock();
+ 
+-	ret = try_charge(memcg, gfp_mask, nr_pages);
+-	if (ret)
+-		goto out_put;
++	ret = __mem_cgroup_charge(page, memcg, gfp);
+ 
+-	css_get(&memcg->css);
+-	commit_charge(page, memcg);
+-
+-	local_irq_disable();
+-	mem_cgroup_charge_statistics(memcg, page, nr_pages);
+-	memcg_check_events(memcg, page);
+-	local_irq_enable();
++	css_put(&memcg->css);
++	return ret;
++}
+ 
++/*
++ * mem_cgroup_swapin_uncharge_swap - uncharge swap slot
++ * @entry: swap entry for which the page is charged
++ *
++ * Call this function after successfully adding the charged page to swapcache.
++ *
++ * Note: This function assumes the page for which swap slot is being uncharged
++ * is order 0 page.
++ */
++void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry)
++{
+ 	/*
+ 	 * Cgroup1's unified memory+swap counter has been charged with the
+ 	 * new swapcache page, finish the transfer by uncharging the swap
+@@ -6760,20 +6797,14 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+ 	 * correspond 1:1 to page and swap slot lifetimes: we charge the
+ 	 * page to memory here, and uncharge swap when the slot is freed.
+ 	 */
+-	if (do_memsw_account() && PageSwapCache(page)) {
+-		swp_entry_t entry = { .val = page_private(page) };
++	if (!mem_cgroup_disabled() && do_memsw_account()) {
+ 		/*
+ 		 * The swap entry might not get freed for a long time,
+ 		 * let's not wait for it.  The page already received a
+ 		 * memory+swap charge, drop the swap entry duplicate.
+ 		 */
+-		mem_cgroup_uncharge_swap(entry, nr_pages);
++		mem_cgroup_uncharge_swap(entry, 1);
+ 	}
+-
+-out_put:
+-	css_put(&memcg->css);
+-out:
+-	return ret;
+ }
+ 
+ struct uncharge_gather {
+diff --git a/mm/memory.c b/mm/memory.c
+index c8e357627318..5ddc133d0038 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3307,21 +3307,15 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 			page = alloc_page_vma(GFP_HIGHUSER_MOVABLE, vma,
+ 							vmf->address);
+ 			if (page) {
+-				int err;
+-
+ 				__SetPageLocked(page);
+ 				__SetPageSwapBacked(page);
+-				set_page_private(page, entry.val);
+-
+-				/* Tell memcg to use swap ownership records */
+-				SetPageSwapCache(page);
+-				err = mem_cgroup_charge(page, vma->vm_mm,
+-							GFP_KERNEL);
+-				ClearPageSwapCache(page);
+-				if (err) {
++
++				if (mem_cgroup_swapin_charge_page(page,
++					vma->vm_mm, GFP_KERNEL, entry)) {
+ 					ret = VM_FAULT_OOM;
+ 					goto out_page;
+ 				}
++				mem_cgroup_swapin_uncharge_swap(entry);
+ 
+ 				shadow = get_shadow_from_swap_cache(entry);
+ 				if (shadow)
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index 3cdee7b11da9..fb7efa08fe57 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -497,16 +497,14 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
+ 	__SetPageLocked(page);
+ 	__SetPageSwapBacked(page);
+ 
+-	/* May fail (-ENOMEM) if XArray node allocation failed. */
+-	if (add_to_swap_cache(page, entry, gfp_mask & GFP_RECLAIM_MASK, &shadow)) {
+-		put_swap_page(page, entry);
++	if (mem_cgroup_swapin_charge_page(page, NULL, gfp_mask, entry))
+ 		goto fail_unlock;
+-	}
+ 
+-	if (mem_cgroup_charge(page, NULL, gfp_mask)) {
+-		delete_from_swap_cache(page);
++	/* May fail (-ENOMEM) if XArray node allocation failed. */
++	if (add_to_swap_cache(page, entry, gfp_mask & GFP_RECLAIM_MASK, &shadow))
+ 		goto fail_unlock;
+-	}
++
++	mem_cgroup_swapin_uncharge_swap(entry);
+ 
+ 	if (shadow)
+ 		workingset_refault(page, shadow);
+@@ -517,6 +515,7 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
+ 	return page;
+ 
+ fail_unlock:
++	put_swap_page(page, entry);
+ 	unlock_page(page);
+ 	put_page(page);
+ 	return NULL;
+-- 
+2.30.1.766.gb4fecdf3b7-goog
 
-End result: you need to still do basically all of the basic lexing,
-and while you can then usually quickly throw the result mostly away
-(and you could possibly use a simplified lexer _because_ you throw it
-away), you actually didn't really win much. Doing a specialized lexer
-just for the disabled regions is probably simply a bad idea: the fact
-that you need to still do all the #if nesting etc checking means that
-you still do need to do a modicum of tokenization etc.
-
-Really: the whole "trivial" front-end parsing phase of C - and
-particularly C++ - is a huge huge deal. It's going to show in the
-profiles of the compiler quite decisively, unless you have a compiler
-that then spends absolutely insane time on optimization and tries to
-do things that basically no sane compiler does (because developers
-wouldn't put up with the time sink).
-
-So yes, I've even used things like super-optimizers that chew on small
-pieces of code for _days_ because they have insane exponential costs
-etc. I've never done it seriously, because it really isn't realistic,
-but it can be a fun exercise to try.
-
-Outside of those kinds of super-optimizers, lexing and parsing is a
-big big deal.
-
-(And again - this is very much language-specific.  The C/C++ model of
-header files is very very flexible, and has a lot of conveniences, but
-it's also a big part of why the front end is such a big deal. Other
-language models have other trade-offs).
-
-             Linus
