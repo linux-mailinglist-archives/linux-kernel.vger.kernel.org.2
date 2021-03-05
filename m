@@ -2,136 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD7832E0E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C363A32E0EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229559AbhCEEyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 23:54:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52270 "EHLO
+        id S229528AbhCEE7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 23:59:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhCEEyW (ORCPT
+        with ESMTP id S229463AbhCEE7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 23:54:22 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009E8C061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 20:54:21 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id b8so630193oti.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 20:54:21 -0800 (PST)
+        Thu, 4 Mar 2021 23:59:48 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C45C061574;
+        Thu,  4 Mar 2021 20:59:48 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id v12so624290ott.10;
+        Thu, 04 Mar 2021 20:59:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v5vUH7jZFg89PccMthKJVQxPCOGJqn1GXklu4BKBrBs=;
-        b=JuvOf4VVEYS89LfkQM53QREtjLbjv+M6xBZrd6lInijt/o4C39mz4CXUCN78+4APWG
-         cLRHwmUDY7sOY0CJpIUt1MLqwEwkp1q0GYdNbESH1KjA3aDqbVR9FDVoTXe1Sk9Xr16U
-         EDSsihGqbI4f6atWBiikbF9SUDcJpOuV44QOr6gLiZUUCkfV1dI/pBntjWMZppicxZWJ
-         dW8KwZrWbsQoLFVRzDCdhfr557JEkWfkC0+deY/U34AU8tJqLLVo3B8S1/pcJ5PtfxrD
-         GvEXPoJhZuSf2/8yRzyJEEiLXWaCpRkPfP9OOoYp2RR3FRJFbcdI5OqtY7LaOFRiJL/R
-         /kPQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g0Mk72avpHdhSJAjqBV5Yll3WvB1xqe8t3SVT3h8H5k=;
+        b=CI9w0x4SKtGImgBFfj3etYWLTG9vsxvaMEKVO9F8GmvkuYUUwkJyLXahEl/PpwnIXX
+         4orQ0SHxLHw0+CtH2+vJNdD3np6x0FAywYPKM1jiusFpC546N3cofuwUlLOM9kE84lYo
+         Sm01CW3imaRgyg4tN8HZExpfGfII5+itgs396aV88zF7D5dnHC20Kaels8rsA05eIvJL
+         ehSUBPHrO9v85hNGXlmVS6rzOpaU90fOcjdNsbiUBDL+SopPnNDkKKPUkD39fAf/ReOv
+         Sn3yv17JytDJ0bmDx3osG8r3vL4gCAXNrMD7zra1z4Fz0Ams2upy8kGO/eQ3Tcy4WJxa
+         GIIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v5vUH7jZFg89PccMthKJVQxPCOGJqn1GXklu4BKBrBs=;
-        b=JdLVzNxFslOHurjCXDHoBcNRpe2eVjrmXSvdgGGJ043DFkAx302/5ABgjOVGQhKA/j
-         azz1n4YQ9ejypB3LnvBHAyG2GgICVZjV9KoYd+ErMtWVCDNiqx3GrsGqHfRLCDxu3NUQ
-         GXqu9AzMDo1zl6ixzSYonyMKuR1KDBLFzosw7yz7vnUZ62OMkVjkyIdFdx9PpVpnVP4G
-         b0o6YCc327mIbWGD0Kje7yHLAT0+GXTHgo4/yk/886EHax64Bp4TV1HKg/7BD4nc4KRA
-         9te+rZdwl4P9Jn810BqF6i7v0N8SkU7U1i3w/d/XpwF0c3vWvoJuMtQ6asCQEGITmRLa
-         tQEQ==
-X-Gm-Message-State: AOAM531Hfk0oHHi59RPxBOipYVpFyVg/+OR0JN5WLtTSPL/4+LybvIr4
-        TEho8xQCgt0SsLwcJfEJv0TWp9F2ajx6YQ==
-X-Google-Smtp-Source: ABdhPJx8mwLwoYpU80IxbM0PI2U+kNY5M/A1Cshqk+6PQRbHjEc7b3FUZ69dHwffF+iR/BW9pkEVGQ==
-X-Received: by 2002:a9d:7196:: with SMTP id o22mr6403661otj.107.1614920061290;
-        Thu, 04 Mar 2021 20:54:21 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c25sm400317otk.35.2021.03.04.20.54.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 20:54:20 -0800 (PST)
-Date:   Thu, 4 Mar 2021 22:54:19 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     subashab@codeaurora.org, stranche@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org, sharathv@codeaurora.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 5/6] net: qualcomm: rmnet: don't use C
- bit-fields in rmnet checksum trailer
-Message-ID: <YEG5e3K/gElI3bSh@builder.lan>
-References: <20210304223431.15045-1-elder@linaro.org>
- <20210304223431.15045-6-elder@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g0Mk72avpHdhSJAjqBV5Yll3WvB1xqe8t3SVT3h8H5k=;
+        b=SRtaDWik+JV4SsRQmUa3l4LZ7O0hjKcMPfDlg+chj/8ppO2lE11QUUSQsF6rpGpjXA
+         mzax3iVJG+kdYXt28Ddo6ScL1C0KAHLsgRvgsbujijur+xWPxv7kvWR7c6mdcU6ulY/S
+         cmxGDbmAYUxLW+ZSJtz5n17tv+z/JBJDhuMtbymxdYfQldTIg+pq+psTDQFz3SwcekyL
+         5uwjgeZGrACwnxTN4AApKANZ6z6TB7wez3H4E/HVMPokXRmnVZ0V1IK9h2jrXKPpRZkK
+         7RsGoLNOiHbfKHjz4u1wZP/CCKhsRP0w0Xm7V6oJbqy3MnmU8MQa+I5wbzhJOVm0D8pM
+         dJpw==
+X-Gm-Message-State: AOAM533B6U+zIvk/avikGNvFIV+zOsswm4s+laoGga9/tZQVVDSh8jWx
+        4jwnyAuScBgpdnScAuhsqVVL1e7NIEmumQ5eakw=
+X-Google-Smtp-Source: ABdhPJw9g001D7R/evptKBtMKwJyyDDxQePDW9srrI1add9OteIESjKLHzaOl6RFJ9mLGuVmNoOrcNNMMRCBhZST/Oc=
+X-Received: by 2002:a9d:6e01:: with SMTP id e1mr6552620otr.74.1614920387915;
+ Thu, 04 Mar 2021 20:59:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304223431.15045-6-elder@linaro.org>
+References: <20210305034931.3237558-1-weiyongjun1@huawei.com>
+In-Reply-To: <20210305034931.3237558-1-weiyongjun1@huawei.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Fri, 5 Mar 2021 05:59:36 +0100
+Message-ID: <CAMhs-H_0wPa+sFSs4hEx+52e3gMYm=xDVjOEnv2A6v6nSs-JUg@mail.gmail.com>
+Subject: Re: [PATCH -next] phy: ralink: phy-mt7621-pci: fix return value check
+ in mt7621_pci_phy_probe()
+To:     "'Wei Yongjun" <weiyongjun1@huawei.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 04 Mar 16:34 CST 2021, Alex Elder wrote:
-
-> Replace the use of C bit-fields in the rmnet_map_dl_csum_trailer
-> structure with a single one-byte field, using constant field masks
-> to encode or get at embedded values.
-> 
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> Signed-off-by: Alex Elder <elder@linaro.org>
+On Fri, Mar 5, 2021 at 4:40 AM 'Wei Yongjun <weiyongjun1@huawei.com> wrote:
+>
+> From: Wei Yongjun <weiyongjun1@huawei.com>
+>
+> Fix the return value check which testing the wrong variable
+> in mt7621_pci_phy_probe().
+>
+> Fixes: d87da32372a0 ("phy: ralink: Add PHY driver for MT7621 PCIe PHY")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 > ---
->  .../ethernet/qualcomm/rmnet/rmnet_map_data.c    |  2 +-
->  include/linux/if_rmnet.h                        | 17 +++++++----------
->  2 files changed, 8 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> index 3291f252d81b0..29d485b868a65 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> @@ -365,7 +365,7 @@ int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 len)
->  
->  	csum_trailer = (struct rmnet_map_dl_csum_trailer *)(skb->data + len);
->  
-> -	if (!csum_trailer->valid) {
-> +	if (!u8_get_bits(csum_trailer->flags, MAP_CSUM_DL_VALID_FMASK)) {
->  		priv->stats.csum_valid_unset++;
->  		return -EINVAL;
->  	}
-> diff --git a/include/linux/if_rmnet.h b/include/linux/if_rmnet.h
-> index 4824c6328a82c..1fbb7531238b6 100644
-> --- a/include/linux/if_rmnet.h
-> +++ b/include/linux/if_rmnet.h
-> @@ -19,21 +19,18 @@ struct rmnet_map_header {
->  #define MAP_PAD_LEN_FMASK		GENMASK(5, 0)
->  
->  struct rmnet_map_dl_csum_trailer {
-> -	u8  reserved1;
-> -#if defined(__LITTLE_ENDIAN_BITFIELD)
-> -	u8  valid:1;
-> -	u8  reserved2:7;
-> -#elif defined (__BIG_ENDIAN_BITFIELD)
-> -	u8  reserved2:7;
-> -	u8  valid:1;
-> -#else
-> -#error	"Please fix <asm/byteorder.h>"
-> -#endif
-> +	u8 reserved1;
-> +	u8 flags;			/* MAP_CSUM_DL_*_FMASK */
->  	__be16 csum_start_offset;
->  	__be16 csum_length;
->  	__be16 csum_value;
->  } __aligned(1);
->  
-> +/* rmnet_map_dl_csum_trailer flags field:
-> + *  VALID:	1 = checksum and length valid; 0 = ignore them
-> + */
-> +#define MAP_CSUM_DL_VALID_FMASK		GENMASK(0, 0)
-> +
->  struct rmnet_map_ul_csum_header {
->  	__be16 csum_start_offset;
->  #if defined(__LITTLE_ENDIAN_BITFIELD)
-> -- 
-> 2.20.1
-> 
+>  drivers/phy/ralink/phy-mt7621-pci.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+
+Reviewed-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
