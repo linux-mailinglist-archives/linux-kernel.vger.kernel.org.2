@@ -2,105 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BC732DF90
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E943B32DF91
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:19:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229458AbhCECSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 21:18:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhCECSQ (ORCPT
+        id S229538AbhCECTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 21:19:35 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13059 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhCECTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 21:18:16 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3336DC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 18:18:15 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id i69so473609qke.19
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 18:18:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=iFsu/EdgzPCi1WqYdYUBcFgRLZpgieXshXK9nnq/e2Q=;
-        b=Dm7EqRrQGHwk4GNJMLxWsQTTtpmjMKr5XzzRltH4yF4XLUzdFFiyvsjnp1NTrFqAWD
-         CjfRG3hCuW1YFGc6A9Y05LccX7aY94QO+wvrTna8ER7QCPvAqc9cTr+SDbDE7Ldpjw3t
-         rgtktSM2aFRd0K33Dqco70ItekgC6OfWuwo0KQ+vkE9LIdkGuecrItyAYNY5IrqvtPnf
-         IM5vybBlZZIJb6OQHKcf0RcSJiUJryCWGAhm5Qi0FNJWVncKswsoai/pll1Euh2JIGiA
-         gbO6fIcNJdAVjAQtSPfOZWTgAaL5JAINvcWY30PuSr1We+YkowOrraGVXDfiXT9XhhEG
-         nq9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
-         :subject:from:to:cc;
-        bh=iFsu/EdgzPCi1WqYdYUBcFgRLZpgieXshXK9nnq/e2Q=;
-        b=kiy3Aq7bWCO6vINsJjznvw6FB2FB5IUbVmfSzHbQGtp20AwULJeHqP/0AheBbCMz1i
-         GlHo0FHaHdB4yMYZUdciaSa53SOAMlN01kYKH5N4CDdwa950z9DtwyMAq1qvxwt8c3N3
-         +zGgARnhjTwVZsa8KGO/Z5umBcRj+NQ7vb6uY9VdEHuIGGpRD7u5aSDHmk0PJxDsCGCz
-         WkXZfYKbcidzj/6drPJZAysrr3M0GT1RA42ct/xF3HAnKUbjDNXNjXY4xt493H+Ou32t
-         sOFyofifILzcmyTtvVfjdK68omFEj9QNtUKNo4vCX/ZSfL7GumtfuzCNfh6Q2I8YTJRg
-         jrpg==
-X-Gm-Message-State: AOAM532ZS+XLl2LCozcsG3qlbKwMs/nZJDPrks7EjJgbtaL+SlC44Vry
-        rgHekTvtF8TyXZg+4MrM/bbOYE7Lvrw=
-X-Google-Smtp-Source: ABdhPJyfHd60C/yt6/C0Ijkwk9RyVf8bjnYna4ppLSBzVsVQ7VGppNses7R6R1uiC2x3LrH3g3AER8JsCOo=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:9857:be95:97a2:e91c])
- (user=seanjc job=sendgmr) by 2002:a0c:fec8:: with SMTP id z8mr7027044qvs.59.1614910691867;
- Thu, 04 Mar 2021 18:18:11 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  4 Mar 2021 18:18:08 -0800
-Message-Id: <20210305021808.3769732-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH] KVM: x86: Ensure deadline timer has truly expired before
- posting its IRQ
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 4 Mar 2021 21:19:34 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DsBFt356lzMjHn;
+        Fri,  5 Mar 2021 10:17:22 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 5 Mar 2021
+ 10:19:31 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: expose # of overprivision segments
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <kernel-team@android.com>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20210302054233.3886681-1-jaegeuk@kernel.org>
+ <920469a9-45d3-68e3-1f8d-a436bdd60cfe@huawei.com>
+ <YD5wQRX+HnltBvEM@google.com> <YD6HjZG7QMS6Z3Tb@google.com>
+ <05b43d3e-d735-ae34-5a4f-3d81a4fc8a9b@huawei.com>
+ <YEEd1q5nz9EYGy8H@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <ee90aac8-bc84-0a85-e1b8-f51c40c77535@huawei.com>
+Date:   Fri, 5 Mar 2021 10:19:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <YEEd1q5nz9EYGy8H@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When posting a deadline timer interrupt, open code the checks guarding
-__kvm_wait_lapic_expire() in order to skip the lapic_timer_int_injected()
-check in kvm_wait_lapic_expire().  The injection check will always fail
-since the interrupt has not yet be injected.  Moving the call after
-injection would also be wrong as that wouldn't actually delay delivery
-of the IRQ if it is indeed sent via posted interrupt.
+On 2021/3/5 1:50, Jaegeuk Kim wrote:
+> On 03/04, Chao Yu wrote:
+>> On 2021/3/3 2:44, Jaegeuk Kim wrote:
+>>> On 03/02, Jaegeuk Kim wrote:
+>>>> On 03/02, Chao Yu wrote:
+>>>>> On 2021/3/2 13:42, Jaegeuk Kim wrote:
+>>>>>> This is useful when checking conditions during checkpoint=disable in Android.
+>>>>>
+>>>>> This sysfs entry is readonly, how about putting this at
+>>>>> /sys/fs/f2fs/<disk>/stat/?
+>>>>
+>>>> Urg.. "stat" is a bit confused. I'll take a look a better ones.
+>>
+>> Oh, I mean put it into "stat" directory, not "stat" entry, something like this:
+>>
+>> /sys/fs/f2fs/<disk>/stat/ovp_segments
+> 
+> I meant that too. Why is it like stat, since it's a geomerty?
 
-Fixes: 010fd37fddf6 ("KVM: LAPIC: Reduce world switch latency caused by timer_advance_ns")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/lapic.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+Hmm.. I feel a little bit weired to treat ovp_segments as 'stat' class, one reason
+is ovp_segments is readonly and is matching the readonly attribute of a stat.
 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 45d40bfacb7c..cb8ebfaccfb6 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -1642,7 +1642,16 @@ static void apic_timer_expired(struct kvm_lapic *apic, bool from_timer_fn)
- 	}
- 
- 	if (kvm_use_posted_timer_interrupt(apic->vcpu)) {
--		kvm_wait_lapic_expire(vcpu);
-+		/*
-+		 * Ensure the guest's timer has truly expired before posting an
-+		 * interrupt.  Open code the relevant checks to avoid querying
-+		 * lapic_timer_int_injected(), which will be false since the
-+		 * interrupt isn't yet injected.  Waiting until after injecting
-+		 * is not an option since that won't help a posted interrupt.
-+		 */
-+		if (vcpu->arch.apic->lapic_timer.expired_tscdeadline &&
-+		    vcpu->arch.apic->lapic_timer.timer_advance_ns)
-+			__kvm_wait_lapic_expire(vcpu);
- 		kvm_apic_inject_pending_timer_irqs(apic);
- 		return;
- 	}
--- 
-2.30.1.766.gb4fecdf3b7-goog
+> 
+>>
+>>>
+>>> Taking a look at other entries using in Android, I feel that this one can't be
+>>> in stat or whatever other location, since I worry about the consistency with
+>>> similar dirty/free segments. It seems it's not easy to clean up the existing
+>>> ones anymore.
+>>
+>> Well, actually, the entry number are still increasing continuously, the result is
+>> that it becomes more and more slower and harder for me to find target entry name
+>> from that directory.
+>>
+>> IMO, once new readonly entry was added to "<disk>" directory, there is no chance
+>> to reloacate it due to interface compatibility. So I think this is the only
+>> chance to put it to the appropriate place at this time.
+> 
+> I know, but this will diverge those info into different places. I don't have
+> big concern when finding a specific entry with this tho, how about making
+> symlinks to create a dir structure for your easy access? Or, using a script
+> would be alternative way.
 
+Yes, there should be some alternative ways to help to access f2fs sysfs
+interface, but from a point view of user, I'm not sure he can figure out those
+ways.
+
+For those fs meta stat, why not adding a single entry to include all info you
+need rather than adding them one by one? e.g.
+
+/proc/fs/f2fs/<disk>/super_block
+/proc/fs/f2fs/<disk>/checkpoint
+/proc/fs/f2fs/<disk>/nat_table
+/proc/fs/f2fs/<disk>/sit_table
+...
+
+Thanks,
+
+> 
+>>
+>> Thanks,
+>>
+>>>
+>>>>
+>>>>>
+>>>>>>
+>>>>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>>>>>> ---
+>>>>>>     fs/f2fs/sysfs.c | 8 ++++++++
+>>>>>>     1 file changed, 8 insertions(+)
+>>>>>>
+>>>>>> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+>>>>>> index e38a7f6921dd..254b6fa17406 100644
+>>>>>> --- a/fs/f2fs/sysfs.c
+>>>>>> +++ b/fs/f2fs/sysfs.c
+>>>>>> @@ -91,6 +91,13 @@ static ssize_t free_segments_show(struct f2fs_attr *a,
+>>>>>>     			(unsigned long long)(free_segments(sbi)));
+>>>>>>     }
+>>>>>> +static ssize_t ovp_segments_show(struct f2fs_attr *a,
+>>>>>> +		struct f2fs_sb_info *sbi, char *buf)
+>>>>>> +{
+>>>>>> +	return sprintf(buf, "%llu\n",
+>>>>>> +			(unsigned long long)(overprovision_segments(sbi)));
+>>>>>> +}
+>>>>>> +
+>>>>>>     static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
+>>>>>>     		struct f2fs_sb_info *sbi, char *buf)
+>>>>>>     {
+>>>>>> @@ -629,6 +636,7 @@ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, node_io_flag, node_io_flag);
+>>>>>>     F2FS_RW_ATTR(CPRC_INFO, ckpt_req_control, ckpt_thread_ioprio, ckpt_thread_ioprio);
+>>>>>>     F2FS_GENERAL_RO_ATTR(dirty_segments);
+>>>>>>     F2FS_GENERAL_RO_ATTR(free_segments);
+>>>>>> +F2FS_GENERAL_RO_ATTR(ovp_segments);
+>>>>>
+>>>>> Missed to add document entry in Documentation/ABI/testing/sysfs-fs-f2fs?
+>>>>
+>>>> Yeah, thanks.
+>>>>
+>>>>>
+>>>>> Thanks,
+>>>>>
+>>>>>>     F2FS_GENERAL_RO_ATTR(lifetime_write_kbytes);
+>>>>>>     F2FS_GENERAL_RO_ATTR(features);
+>>>>>>     F2FS_GENERAL_RO_ATTR(current_reserved_blocks);
+>>>>>>
+>>>>
+>>>>
+>>>> _______________________________________________
+>>>> Linux-f2fs-devel mailing list
+>>>> Linux-f2fs-devel@lists.sourceforge.net
+>>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>> .
+>>>
+> .
+> 
