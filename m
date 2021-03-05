@@ -2,143 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CE932E1F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 07:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5BD32E1FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 07:07:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbhCEGFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 01:05:03 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:24418 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229448AbhCEGFC (ORCPT
+        id S229651AbhCEGHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 01:07:04 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:35590 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhCEGHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 01:05:02 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125645DO176273;
-        Fri, 5 Mar 2021 01:04:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to; s=pp1;
- bh=fsIDT7dGq1C3PN1Tl3aJgDEQWnUZ2WyKi07Dve8KGp8=;
- b=fKBNTpEyPG0ixr4feEqcgmfVECJAh4/PahhQBPxyEpnkx5s4iSglZIW1bZgPP7cHuTBM
- UfRFBnAsHth9E/9TRloPHDN/WBkIROgS07uAuGmynrosYUpBKEeX5IYR+8S/8buo7bGa
- LNxFIDig77cjJIt3WVTij63wLAM0lZ7NrFphS1ajN8irHWjW8G93jOcHP7asAw7bTM5k
- NgQorT2CJiLkPhd71mi/0wRgV9nfarop0ox4LQh/y9fcSZjtV7OaroBa95KaXsuhQwnR
- 3teOBpX/Y1khC+9xM3WLylVSN0HbFj9xesGqNs60WC/7NYpYEJOS6dQR2ntFO97ize7R hw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 373f2480g0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 01:04:34 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12564Xlu179250;
-        Fri, 5 Mar 2021 01:04:33 -0500
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 373f2480eq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 01:04:33 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1255mLJ2026365;
-        Fri, 5 Mar 2021 06:04:32 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma04wdc.us.ibm.com with ESMTP id 3712pj5a1h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 06:04:32 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12564UHG45023548
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 5 Mar 2021 06:04:31 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DDE66C6055;
-        Fri,  5 Mar 2021 06:04:30 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 22085C6059;
-        Fri,  5 Mar 2021 06:04:29 +0000 (GMT)
-Received: from [9.85.134.181] (unknown [9.85.134.181])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Fri,  5 Mar 2021 06:04:28 +0000 (GMT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH] ibmvnic: remove excessive irqsave
-From:   Lijun Pan <ljp@linux.vnet.ibm.com>
-In-Reply-To: <67215668-0850-a0f3-06e1-49db590b8fcc@csgroup.eu>
-Date:   Fri, 5 Mar 2021 00:04:27 -0600
-Cc:     angkery <angkery@163.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        Dany Madden <drt@linux.ibm.com>, Lijun Pan <ljp@linux.ibm.com>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <753DD123-9E78-4270-B6D8-81A8D07B1FA0@linux.vnet.ibm.com>
-References: <20210305014350.1460-1-angkery@163.com>
- <67215668-0850-a0f3-06e1-49db590b8fcc@csgroup.eu>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-05_03:2021-03-03,2021-03-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- adultscore=0 suspectscore=0 impostorscore=0 phishscore=0 spamscore=0
- clxscore=1011 priorityscore=1501 malwarescore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103050028
+        Fri, 5 Mar 2021 01:07:03 -0500
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 12566f6G027079;
+        Fri, 5 Mar 2021 15:06:41 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 12566f6G027079
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614924402;
+        bh=axtBVNcIKru8BTiupCH9xPKdR4trfvDzg7QV+dWIl84=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UnkXThtIV0P6A/Qzd4zEc4txigdJdqvV4LMYz7RB4w8evjXA7uK9k7JKeDmrgkx0l
+         V7qFVyxGKYTsB8OOm0EjA9GNgxLGN/h7rU3WnQ7B4Vd9OMFcisej3JRDlhmd4RWIjG
+         oN4NI9c8IGZSpbVin9dKx8ffN3piql5iEkxqTc5HDJJJGbkoIl6lMMPsUy03rV5Y09
+         /HqahoJxUNGrJnWbYS5pgbyPpkgy7KoY6Oux/ed3+931R7hSo+Dsd7hGogTxDZVW2b
+         pQ22CoI+r/TCEglDS3IPq+YbUC9+vNd23u38ZHy1RGm+Rp8ZVTxz4pLZRpuSqK72qy
+         DksjTPPFDfPEQ==
+X-Nifty-SrcIP: [209.85.216.52]
+Received: by mail-pj1-f52.google.com with SMTP id jx13so1216621pjb.1;
+        Thu, 04 Mar 2021 22:06:41 -0800 (PST)
+X-Gm-Message-State: AOAM531Q/O1oVqNVs3utaBHgWY3eaoh9/pjdccq2bhgrBjeGYyGVtRuM
+        nZGtUFtxo2yEQMc8qEKC3fU7xzCTrAu8GCvSVrM=
+X-Google-Smtp-Source: ABdhPJwsJvOTmO9gWuAKFbnHPgtJ8A5SPQ6B2s5Gmeeb4KSBm+FsOxMLNtRfxzOSwYcqKTZZw+RUEWLWM6oVz1NxHrg=
+X-Received: by 2002:a17:90a:dc08:: with SMTP id i8mr8206973pjv.153.1614924401138;
+ Thu, 04 Mar 2021 22:06:41 -0800 (PST)
+MIME-Version: 1.0
+References: <20210303183333.46543-1-masahiroy@kernel.org> <CAKwvOdkhZGv_q9vgDdYY44OrbzmMD_E+GL3SyOk-jQ0kdXtMzg@mail.gmail.com>
+In-Reply-To: <CAKwvOdkhZGv_q9vgDdYY44OrbzmMD_E+GL3SyOk-jQ0kdXtMzg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 5 Mar 2021 15:06:04 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ4SibwSONO8io5_b1d-ELmfTYTpwfwJk=ABcfsNhEU3g@mail.gmail.com>
+Message-ID: <CAK7LNAQ4SibwSONO8io5_b1d-ELmfTYTpwfwJk=ABcfsNhEU3g@mail.gmail.com>
+Subject: Re: [PATCH 1/4] kbuild: remove LLVM=1 test from HAS_LTO_CLANG
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 4, 2021 at 5:47 AM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> + Sami
+>
+> On Wed, Mar 3, 2021 at 10:34 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > This guarding is wrong. As Documentation/kbuild/llvm.rst notes, LLVM=1
+> > switches the default of tools, but you can still override CC, LD, etc.
+> > individually.
+> >
+> > BTW, LLVM is not 1/0 flag. If LLVM is not passed in, it is empty.
+>
+> Do we have the same problem with LLVM_IAS?  LGTM otherwise, but wanted
+> to check that before signing off.
+
+3/4 will replace this LLVM_IAS check with AS_IS_LLVM.
+
+We do not need to add a noise change.
 
 
-> On Mar 4, 2021, at 11:49 PM, Christophe Leroy =
-<christophe.leroy@csgroup.eu> wrote:
->=20
->=20
->=20
-> Le 05/03/2021 =C3=A0 02:43, angkery a =C3=A9crit :
->> From: Junlin Yang <yangjunlin@yulong.com>
->> ibmvnic_remove locks multiple spinlocks while disabling interrupts:
->> spin_lock_irqsave(&adapter->state_lock, flags);
->> spin_lock_irqsave(&adapter->rwi_lock, flags);
->> there is no need for the second irqsave,since interrupts are disabled
->> at that point, so remove the second irqsave:
->=20
-> The probl=C3=A8me is not that there is no need. The problem is a lot =
-more serious:
-> As reported by coccinella, the second _irqsave() overwrites the value =
-saved in 'flags' by the first _irqsave, therefore when the second =
-_irqrestore comes, the value in 'flags' is not valid, the value saved by =
-the first _irqsave has been lost. This likely leads to IRQs remaining =
-disabled, which is _THE_ problem really.
 
-That does sounds like a more serious functional problem than coccinella =
-check.
-Thanks for your explanation.
 
->=20
->> spin_lock_irqsave(&adapter->state_lock, flags);
->> spin_lock(&adapter->rwi_lock);
->> Generated by: ./scripts/coccinelle/locks/flags.cocci
->> ./drivers/net/ethernet/ibm/ibmvnic.c:5413:1-18:
->> ERROR: nested lock+irqsave that reuses flags from line 5404.
->> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
->> ---
->>  drivers/net/ethernet/ibm/ibmvnic.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->> diff --git a/drivers/net/ethernet/ibm/ibmvnic.c =
-b/drivers/net/ethernet/ibm/ibmvnic.c
->> index 2464c8a..a52668d 100644
->> --- a/drivers/net/ethernet/ibm/ibmvnic.c
->> +++ b/drivers/net/ethernet/ibm/ibmvnic.c
->> @@ -5408,9 +5408,9 @@ static void ibmvnic_remove(struct vio_dev *dev)
->>  	 * after setting state, so __ibmvnic_reset() which is called
->>  	 * from the flush_work() below, can make progress.
->>  	 */
->> -	spin_lock_irqsave(&adapter->rwi_lock, flags);
->> +	spin_lock(&adapter->rwi_lock);
->>  	adapter->state =3D VNIC_REMOVING;
->> -	spin_unlock_irqrestore(&adapter->rwi_lock, flags);
->> +	spin_unlock(&adapter->rwi_lock);
->>    	spin_unlock_irqrestore(&adapter->state_lock, flags);
->> =20
+>
+> (Also, the rest of the patches in this series seem more related to
+> DWARFv5 cleanups; this patch seems orthogonal while those are a
+> visible progression).
 
+Kind of orthogonal, but I am touching the same code hunk,
+which would cause a merge conflict.
+
+
+> >
+> > Non-zero return code is all treated as failure anyway.
+> >
+> > So, $(success,test $(LLVM) -eq 1) and $(success,test "$(LLVM)" = 1)
+> > works equivalently in the sense that both are expanded to 'n' if LLVM
+> > is not given. The difference is that the former internally fails due
+> > to syntax error.
+> >
+> >   $ test ${LLVM} -eq 1
+> >   bash: test: -eq: unary operator expected
+> >   $ echo $?
+> >   2
+> >
+> >   $ test "${LLVM}" -eq 1
+> >   bash: test: : integer expression expected
+> >   $ echo $?
+> >   2
+> >
+> >   $ test "${LLVM}" = 1
+> >   echo $?
+> >   1
+> >
+> >   $ test -n "${LLVM}"
+> >   $ echo $?
+> >   1
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  arch/Kconfig | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/arch/Kconfig b/arch/Kconfig
+> > index 2bb30673d8e6..2af10ebe5ed0 100644
+> > --- a/arch/Kconfig
+> > +++ b/arch/Kconfig
+> > @@ -632,7 +632,6 @@ config HAS_LTO_CLANG
+> >         def_bool y
+> >         # Clang >= 11: https://github.com/ClangBuiltLinux/linux/issues/510
+> >         depends on CC_IS_CLANG && CLANG_VERSION >= 110000 && LD_IS_LLD
+> > -       depends on $(success,test $(LLVM) -eq 1)
+>
+> IIRC, we needed some other LLVM utilities like llvm-nm and llvm-ar,
+> which are checked below. So I guess we can still support CC=clang
+> AR=llvm-ar NM=llvm-nm, and this check is redundant.
+
+Yes, I think so.
+
+
+>
+> >         depends on $(success,test $(LLVM_IAS) -eq 1)
+> >         depends on $(success,$(NM) --help | head -n 1 | grep -qi llvm)
+> >         depends on $(success,$(AR) --help | head -n 1 | grep -qi llvm)
+> > --
+> > 2.27.0
+> >
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOdkhZGv_q9vgDdYY44OrbzmMD_E%2BGL3SyOk-jQ0kdXtMzg%40mail.gmail.com.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
