@@ -2,132 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD03832DFB1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D94BE32DFB3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbhCECdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 21:33:32 -0500
-Received: from mga06.intel.com ([134.134.136.31]:38809 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229436AbhCECdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 21:33:31 -0500
-IronPort-SDR: J5ZrL8MbjQAIS+PNlNF2fc4GMVOYa64tAfkOP2STYc+/W8rU7pxgFw1q3+f4bXYPhrRxxGpyLZ
- 7PDr+hT1em+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="248941328"
-X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
-   d="scan'208";a="248941328"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 18:33:30 -0800
-IronPort-SDR: ZBEGOxWl1Occbip9Q3/yVi4Hx23VPJWDUFNza22g7byXr/dQhCIv+jUgZ6NB6D1WIeO0qGXVVC
- vjEQtDRhraiA==
-X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
-   d="scan'208";a="401093201"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 18:33:26 -0800
-Subject: Re: [PATCH v3 5/9] KVM: vmx/pmu: Add MSR_ARCH_LBR_DEPTH emulation for
- Arch LBR
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, wei.w.wang@intel.com,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>
-References: <20210303135756.1546253-1-like.xu@linux.intel.com>
- <20210303135756.1546253-6-like.xu@linux.intel.com>
- <YD/APUcINwvP53VZ@google.com>
- <890a6f34-812a-5937-8761-d448a04f67d7@intel.com>
- <YEEG48erESM0+3CB@google.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <5be999eb-64d7-de0e-254b-82711acc5e24@intel.com>
-Date:   Fri, 5 Mar 2021 10:33:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229516AbhCECib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 21:38:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhCECia (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 21:38:30 -0500
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8988CC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 18:38:30 -0800 (PST)
+Received: by mail-ua1-x929.google.com with SMTP id c44so258559uad.12
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 18:38:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QS2dc4BRJJgr8umUp9EpdfHdtGHxUWTC0395zWXgRQ0=;
+        b=LSH6iwuk+SlxyAgzUKOCThatNBJjTF63wj9pl7/rv3WvWASJdjJ5g08bUmf4+LU4nr
+         hUsYKepzYVnbq2ahvA2yinYFF1yOI+u7nlH+XozKJBVt/hGCDT0EI6B51/JnJ4hrDbXI
+         lcFb/vEF3ijhC35zMtJnWQNY1R0xMoIaRGfErQzQSiAN3iNmMjUjLN14hzICPK81xQCI
+         Pb9/lKaEvaWgRm3xCbQqMpivxmjtVOCDebEA+INWDAkDqUPrMMxty/lQQDEK2+Db3xdC
+         CwiHANsN8spPAlFQkX7yqbhlTWfSY1RcjoyC/niyBpki7rRNL3tK4aZU20flB8KcWp5R
+         C83g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QS2dc4BRJJgr8umUp9EpdfHdtGHxUWTC0395zWXgRQ0=;
+        b=OND6Tmm8zkoxZoFvy4vpgUzGxZNS2m4xLpP6aqqZdu3QTykfmtv+FyCeSo0Cs5WUZC
+         n6bQj9Xihm3AG468RVVMV6ztuv4oiXHprisTh57XzjqQl38Hd3r6KD+Hcek+kNgBJvTj
+         GnDCp5+xrhVJMiMJwZ++cLxZuhAVZ2bz/wQ/hKi4Bxj8TVKQpCR6U+ZSHRW1XCmuIYNT
+         kJwv3GhMvKs4F6y7Gt0igYxEiMRZ+TsihjdLnIR0v3m484pLYJOSPo/FjRZoNpYn1+WZ
+         PsgeFPxa88WLWzD92XNpi9P2YpkqbyJbiGEs/Hoo5ixJMK0w03q3It/S8/4AO4QmvRAn
+         cKUw==
+X-Gm-Message-State: AOAM533x/1XyVsq3ahQWuScl1PewuFK/W2qEAsiep7jPkYp/NIyV7oyO
+        YyeSfucEKESIdPFGtbu26DJe802Em46aAys/VViiQw==
+X-Google-Smtp-Source: ABdhPJxMZd/afyVrbW4edXEQyCei1a86gfA8o3+MYDlHubXJYjQzSdCnAYOppQlxL7/Vjn59qH+xxqJciQKFnen8Po0=
+X-Received: by 2002:a9f:374d:: with SMTP id a13mr4660885uae.122.1614911909135;
+ Thu, 04 Mar 2021 18:38:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YEEG48erESM0+3CB@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210304184544.2014171-1-samitolvanen@google.com>
+ <87k0qmzq5u.wl-maz@kernel.org> <CABCJKufmjMT8+hGEnL3aJM7-OSwhYSHiJA=i8e7dHSGDWXYtsg@mail.gmail.com>
+ <878s72sgwt.wl-maz@kernel.org> <CABCJKud1EmXmmQj-YOUNCFhE3P1W6Uhqpwe1G0zcR5zw71ksJA@mail.gmail.com>
+In-Reply-To: <CABCJKud1EmXmmQj-YOUNCFhE3P1W6Uhqpwe1G0zcR5zw71ksJA@mail.gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Thu, 4 Mar 2021 18:38:17 -0800
+Message-ID: <CABCJKudvzBggE7AZQERto5Wo_LoL0G2sNee7_1R7h2TnGhjq8A@mail.gmail.com>
+Subject: Re: [PATCH] KVM: arm64: Disable LTO in hyp
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Fangrui Song <maskray@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        James Morse <james.morse@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        kvmarm@lists.cs.columbia.edu, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/5 0:12, Sean Christopherson wrote:
-> On Thu, Mar 04, 2021, Xu, Like wrote:
->> Hi Sean,
->>
->> Thanks for your detailed review on the patch set.
->>
->> On 2021/3/4 0:58, Sean Christopherson wrote:
->>> On Wed, Mar 03, 2021, Like Xu wrote:
->>>> @@ -348,10 +352,26 @@ static bool intel_pmu_handle_lbr_msrs_access(struct kvm_vcpu *vcpu,
->>>>    	return true;
->>>>    }
->>>> +/*
->>>> + * Check if the requested depth values is supported
->>>> + * based on the bits [0:7] of the guest cpuid.1c.eax.
->>>> + */
->>>> +static bool arch_lbr_depth_is_valid(struct kvm_vcpu *vcpu, u64 depth)
->>>> +{
->>>> +	struct kvm_cpuid_entry2 *best;
->>>> +
->>>> +	best = kvm_find_cpuid_entry(vcpu, 0x1c, 0);
->>>> +	if (best && depth && !(depth % 8))
->>> This is still wrong, it fails to weed out depth > 64.
->> How come ? The testcases depth = {65, 127, 128} get #GP as expected.
-> @depth is a u64, throw in a number that is a multiple of 8 and >= 520, and the
-> "(1ULL << (depth / 8 - 1))" will trigger undefined behavior due to shifting
-> beyond the capacity of a ULL / u64.
-
-Extra:
-
-when we say "undefined behavior" if shifting beyond the capacity of a ULL,
-do you mean that the actual behavior depends on the machine, architecture 
-or compiler?
-
+On Thu, Mar 4, 2021 at 2:34 PM Sami Tolvanen <samitolvanen@google.com> wrote:
 >
-> Adding the "< 64" check would also allow dropping the " & 0xff" since the check
-> would ensure the shift doesn't go beyond bit 7.  I'm not sure the cleverness is
-> worth shaving a cycle, though.
-
-Finally how about:
-
-     if (best && depth && (depth < 65) && !(depth & 7))
-         return best->eax & BIT_ULL(depth / 8 - 1);
-
-     return false;
-
-Do you see the room for optimization ？
-
+> On Thu, Mar 4, 2021 at 2:17 PM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Thu, 04 Mar 2021 21:25:41 +0000,
+> > Sami Tolvanen <samitolvanen@google.com> wrote:
+> > >
+> > > On Thu, Mar 4, 2021 at 11:15 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > >
+> > > > On Thu, 04 Mar 2021 18:45:44 +0000,
+> > > > Sami Tolvanen <samitolvanen@google.com> wrote:
+> > > > >
+> > > > > allmodconfig + CONFIG_LTO_CLANG_THIN=y fails to build due to following
+> > > > > linker errors:
+> > > > >
+> > > > >   ld.lld: error: irqbypass.c:(function __guest_enter: .text+0x21CC):
+> > > >
+> > > > I assume this message is only an oddity, right? Because
+> > > > __guest_enter() is as far as you can imagine from irqbypass.c...
+> > >
+> > > I'm not sure what's up with the filename in the error message. Fangrui
+> > > or Nick probably have a better idea.
+> > >
+> > > > >   relocation R_AARCH64_CONDBR19 out of range: 2031220 is not in
+> > > > >   [-1048576, 1048575]; references hyp_panic
+> > > > >   >>> defined in vmlinux.o
+> > > > >
+> > > > >   ld.lld: error: irqbypass.c:(function __guest_enter: .text+0x21E0):
+> > > > >   relocation R_AARCH64_ADR_PREL_LO21 out of range: 2031200 is not in
+> > > > >   [-1048576, 1048575]; references hyp_panic
+> > > > >   >>> defined in vmlinux.o
+> > > > >
+> > > > > As LTO is not really necessary for the hypervisor code, disable it for
+> > > > > the hyp directory to fix the build.
+> > > >
+> > > > Can you shed some light on what the problem is exactly?
+> > >
+> > > I assume hyp_panic() ends up being placed too far from __guest_enter()
+> > > when the kernel is large enough. Possibly something to do with LLVM
+> > > always splitting functions into separate sections with LTO. I'm not
+> > > sure why the linker cannot shuffle things around to make everyone
+> > > happy in this case, but I confirmed that this patch also fixes the
+> > > build issue for me:
+> > >
+> > > diff --git a/arch/arm64/kvm/hyp/vhe/switch.c b/arch/arm64/kvm/hyp/vhe/switch.c
+> > > index af8e940d0f03..128197b7c794 100644
+> > > --- a/arch/arm64/kvm/hyp/vhe/switch.c
+> > > +++ b/arch/arm64/kvm/hyp/vhe/switch.c
+> > > @@ -214,7 +214,7 @@ static void __hyp_call_panic(u64 spsr, u64 elr, u64 par)
+> > >  }
+> > >  NOKPROBE_SYMBOL(__hyp_call_panic);
+> > >
+> > > -void __noreturn hyp_panic(void)
+> > > +void __noreturn hyp_panic(void) __section(".text")
+> > >  {
+> > >         u64 spsr = read_sysreg_el2(SYS_SPSR);
+> > >         u64 elr = read_sysreg_el2(SYS_ELR);
+> > >
+> >
+> > We're getting into black-magic territory here. Why wouldn't hyp_panic
+> > be in the .text section already?
 >
->>> Not that this is a hot path, but it's probably worth double checking that the
->>> compiler generates simple code for "depth % 8", e.g. it can be "depth & 7)".
->> Emm, the "%" operation is quite normal over kernel code.
-> So is "&" :-)  I was just pointing out that the compiler should optimize this,
-> and it did.
+> It's not quite black magic. LLVM essentially flips on
+> -ffunction-sections with LTO and therefore, hyp_panic() will be in
+> .text.hyp_panic in vmlinux.o, while __guest_enter() will be in .text.
+> Everything ends up in .text when we link vmlinux, of course.
 >
->> if (best && depth && !(depth % 8))
->>     10659:       48 85 c0                test   rax,rax
->>     1065c:       74 c7                   je     10625 <intel_pmu_set_msr+0x65>
->>     1065e:       4d 85 e4                test   r12,r12
->>     10661:       74 c2                   je     10625 <intel_pmu_set_msr+0x65>
->>     10663:       41 f6 c4 07             test   r12b,0x7
->>     10667:       75 bc                   jne    10625 <intel_pmu_set_msr+0x65>
->>
->> It looks like the compiler does the right thing.
->> Do you see the room for optimization ？
->>
->>>> +		return (best->eax & 0xff) & (1ULL << (depth / 8 - 1));
-> Actually, looking at this again, I would explicitly use BIT() instead of 1ULL
-> (or BIT_ULL), since the shift must be 7 or less.
->
->>>> +
->>>> +	return false;
->>>> +}
->>>> +
+> $ readelf --sections vmlinux.o | grep hyp_panic
+>   [3936] .text.hyp_panic   PROGBITS         0000000000000000  004b56e4
 
+Note that disabling LTO here has essentially the same effect as using
+__section(".text"). It stops the compiler from splitting these
+functions into .text.* sections and makes it less likely that
+hyp_panic() ends up too far away from __guest_enter().
+
+If neither of these workarounds sound appealing, I suppose we could
+alternatively change hyp/entry.S to use adr_l for hyp_panic. Thoughts?
+
+Sami
