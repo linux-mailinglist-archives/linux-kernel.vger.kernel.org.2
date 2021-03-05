@@ -2,149 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1282D32E013
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A23332E016
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 04:29:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbhCED21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 22:28:27 -0500
-Received: from foss.arm.com ([217.140.110.172]:47150 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229458AbhCED20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 22:28:26 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 286EDD6E;
-        Thu,  4 Mar 2021 19:28:26 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.68.69])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 258B43F7D7;
-        Thu,  4 Mar 2021 19:28:21 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3] mm: Generalize HUGETLB_PAGE_SIZE_VARIABLE
-Date:   Fri,  5 Mar 2021 08:58:48 +0530
-Message-Id: <1614914928-22039-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S229562AbhCED3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 22:29:34 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:13861 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229458AbhCED3d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 22:29:33 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DsCq82Yrbz8svh;
+        Fri,  5 Mar 2021 11:27:48 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 5 Mar 2021
+ 11:29:21 +0800
+Subject: Re: [PATCH] configfs: Fix use-after-free issue in
+ __configfs_open_file
+To:     <linux-kernel@vger.kernel.org>
+CC:     <chao@kernel.org>, Daiyue Zhang <zhangdaiyue1@huawei.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Joel Becker <jlbec@evilplan.org>,
+        "Christoph Hellwig" <hch@lst.de>, Yi Chen <chenyi77@huawei.com>,
+        Ge Qiu <qiuge@huawei.com>, <linux-fsdevel@vger.kernel.org>
+References: <20210301061053.105377-1-yuchao0@huawei.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <040d3680-0e12-7957-da05-39017d33edb4@huawei.com>
+Date:   Fri, 5 Mar 2021 11:29:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <20210301061053.105377-1-yuchao0@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HUGETLB_PAGE_SIZE_VARIABLE need not be defined for each individual
-platform subscribing it. Instead just make it generic.
++Cc fsdevel
 
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: linux-ia64@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Suggested-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-This change was originally suggested in an earilier discussion. This
-applies on v5.12-rc1 and has been build tested on all applicable
-platforms i.e ia64 and powerpc.
+Ping,
 
-https://patchwork.kernel.org/project/linux-mm/patch/1613024531-19040-3-git-send-email-anshuman.khandual@arm.com/
+Any comments one this patch?
 
-Changes in V3:
-
-- Dropped the bool desciption that enabled user selection
-- Dropped the dependency on HUGETLB_PAGE for HUGETLB_PAGE_SIZE_VARIABLE
-
-Changes in V2:
-
-https://patchwork.kernel.org/project/linux-mm/patch/1614661987-23881-1-git-send-email-anshuman.khandual@arm.com/
-
-- Added a description for HUGETLB_PAGE_SIZE_VARIABLE
-- Added HUGETLB_PAGE dependency while selecting HUGETLB_PAGE_SIZE_VARIABLE
-
-Changes in V1:
-
-https://patchwork.kernel.org/project/linux-mm/patch/1614577853-7452-1-git-send-email-anshuman.khandual@arm.com/
-
- arch/ia64/Kconfig    | 6 +-----
- arch/powerpc/Kconfig | 6 +-----
- mm/Kconfig           | 7 +++++++
- 3 files changed, 9 insertions(+), 10 deletions(-)
-
-diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-index 2ad7a8d29fcc..dccf5bfebf48 100644
---- a/arch/ia64/Kconfig
-+++ b/arch/ia64/Kconfig
-@@ -32,6 +32,7 @@ config IA64
- 	select TTY
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_VIRT_CPU_ACCOUNTING
-+	select HUGETLB_PAGE_SIZE_VARIABLE if HUGETLB_PAGE
- 	select VIRT_TO_BUS
- 	select GENERIC_IRQ_PROBE
- 	select GENERIC_PENDING_IRQ if SMP
-@@ -82,11 +83,6 @@ config STACKTRACE_SUPPORT
- config GENERIC_LOCKBREAK
- 	def_bool n
- 
--config HUGETLB_PAGE_SIZE_VARIABLE
--	bool
--	depends on HUGETLB_PAGE
--	default y
--
- config GENERIC_CALIBRATE_DELAY
- 	bool
- 	default y
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 386ae12d8523..11fea95a1f2c 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -231,6 +231,7 @@ config PPC
- 	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS_NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
- 	select HAVE_PERF_REGS
- 	select HAVE_PERF_USER_STACK_DUMP
-+	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64 && HUGETLB_PAGE
- 	select MMU_GATHER_RCU_TABLE_FREE
- 	select MMU_GATHER_PAGE_SIZE
- 	select HAVE_REGS_AND_STACK_ACCESS_API
-@@ -415,11 +416,6 @@ config HIGHMEM
- 
- source "kernel/Kconfig.hz"
- 
--config HUGETLB_PAGE_SIZE_VARIABLE
--	bool
--	depends on HUGETLB_PAGE && PPC_BOOK3S_64
--	default y
--
- config MATH_EMULATION
- 	bool "Math emulation"
- 	depends on 4xx || PPC_8xx || PPC_MPC832x || BOOKE
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 24c045b24b95..4413a69e7850 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -274,6 +274,13 @@ config ARCH_ENABLE_HUGEPAGE_MIGRATION
- config ARCH_ENABLE_THP_MIGRATION
- 	bool
- 
-+config HUGETLB_PAGE_SIZE_VARIABLE
-+	def_bool n
-+	help
-+	  Allows the pageblock_order value to be dynamic instead of just standard
-+	  HUGETLB_PAGE_ORDER when there are multiple HugeTLB page sizes available
-+	  on a platform.
-+
- config CONTIG_ALLOC
- 	def_bool (MEMORY_ISOLATION && COMPACTION) || CMA
- 
--- 
-2.20.1
-
+On 2021/3/1 14:10, Chao Yu wrote:
+> From: Daiyue Zhang <zhangdaiyue1@huawei.com>
+> 
+> Commit b0841eefd969 ("configfs: provide exclusion between IO and removals")
+> uses ->frag_dead to mark the fragment state, thus no bothering with extra
+> refcount on config_item when opening a file. The configfs_get_config_item
+> was removed in __configfs_open_file, but not with config_item_put. So the
+> refcount on config_item will lost its balance, causing use-after-free
+> issues in some occasions like this:
+> 
+> Test:
+> 1. Mount configfs on /config with read-only items:
+> drwxrwx--- 289 root   root            0 2021-04-01 11:55 /config
+> drwxr-xr-x   2 root   root            0 2021-04-01 11:54 /config/a
+> --w--w--w-   1 root   root         4096 2021-04-01 11:53 /config/a/1.txt
+> ......
+> 
+> 2. Then run:
+> for file in /config
+> do
+> echo $file
+> grep -R 'key' $file
+> done
+> 
+> 3. __configfs_open_file will be called in parallel, the first one
+> got called will do:
+> if (file->f_mode & FMODE_READ) {
+> 	if (!(inode->i_mode & S_IRUGO))
+> 		goto out_put_module;
+> 			config_item_put(buffer->item);
+> 				kref_put()
+> 					package_details_release()
+> 						kfree()
+> 
+> the other one will run into use-after-free issues like this:
+> BUG: KASAN: use-after-free in __configfs_open_file+0x1bc/0x3b0
+> Read of size 8 at addr fffffff155f02480 by task grep/13096
+> CPU: 0 PID: 13096 Comm: grep VIP: 00 Tainted: G        W       4.14.116-kasan #1
+> TGID: 13096 Comm: grep
+> Call trace:
+> dump_stack+0x118/0x160
+> kasan_report+0x22c/0x294
+> __asan_load8+0x80/0x88
+> __configfs_open_file+0x1bc/0x3b0
+> configfs_open_file+0x28/0x34
+> do_dentry_open+0x2cc/0x5c0
+> vfs_open+0x80/0xe0
+> path_openat+0xd8c/0x2988
+> do_filp_open+0x1c4/0x2fc
+> do_sys_open+0x23c/0x404
+> SyS_openat+0x38/0x48
+> 
+> Allocated by task 2138:
+> kasan_kmalloc+0xe0/0x1ac
+> kmem_cache_alloc_trace+0x334/0x394
+> packages_make_item+0x4c/0x180
+> configfs_mkdir+0x358/0x740
+> vfs_mkdir2+0x1bc/0x2e8
+> SyS_mkdirat+0x154/0x23c
+> el0_svc_naked+0x34/0x38
+> 
+> Freed by task 13096:
+> kasan_slab_free+0xb8/0x194
+> kfree+0x13c/0x910
+> package_details_release+0x524/0x56c
+> kref_put+0xc4/0x104
+> config_item_put+0x24/0x34
+> __configfs_open_file+0x35c/0x3b0
+> configfs_open_file+0x28/0x34
+> do_dentry_open+0x2cc/0x5c0
+> vfs_open+0x80/0xe0
+> path_openat+0xd8c/0x2988
+> do_filp_open+0x1c4/0x2fc
+> do_sys_open+0x23c/0x404
+> SyS_openat+0x38/0x48
+> el0_svc_naked+0x34/0x38
+> 
+> To fix this issue, remove the config_item_put in
+> __configfs_open_file to balance the refcount of config_item.
+> 
+> Fixes: b0841eefd969 ("configfs: provide exclusion between IO and removals")
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Joel Becker <jlbec@evilplan.org>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Daiyue Zhang <zhangdaiyue1@huawei.com>
+> Signed-off-by: Yi Chen <chenyi77@huawei.com>
+> Signed-off-by: Ge Qiu <qiuge@huawei.com>
+> Reviewed-by: Chao Yu <yuchao0@huawei.com>
+> ---
+>   fs/configfs/file.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/configfs/file.c b/fs/configfs/file.c
+> index 1f0270229d7b..da8351d1e455 100644
+> --- a/fs/configfs/file.c
+> +++ b/fs/configfs/file.c
+> @@ -378,7 +378,7 @@ static int __configfs_open_file(struct inode *inode, struct file *file, int type
+>   
+>   	attr = to_attr(dentry);
+>   	if (!attr)
+> -		goto out_put_item;
+> +		goto out_free_buffer;
+>   
+>   	if (type & CONFIGFS_ITEM_BIN_ATTR) {
+>   		buffer->bin_attr = to_bin_attr(dentry);
+> @@ -391,7 +391,7 @@ static int __configfs_open_file(struct inode *inode, struct file *file, int type
+>   	/* Grab the module reference for this attribute if we have one */
+>   	error = -ENODEV;
+>   	if (!try_module_get(buffer->owner))
+> -		goto out_put_item;
+> +		goto out_free_buffer;
+>   
+>   	error = -EACCES;
+>   	if (!buffer->item->ci_type)
+> @@ -435,8 +435,6 @@ static int __configfs_open_file(struct inode *inode, struct file *file, int type
+>   
+>   out_put_module:
+>   	module_put(buffer->owner);
+> -out_put_item:
+> -	config_item_put(buffer->item);
+>   out_free_buffer:
+>   	up_read(&frag->frag_sem);
+>   	kfree(buffer);
+> 
