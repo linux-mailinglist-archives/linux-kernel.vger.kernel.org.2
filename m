@@ -2,145 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2541932E5B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EDA32E5BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhCEKGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:06:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229582AbhCEKGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:06:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1523B64DE8;
-        Fri,  5 Mar 2021 10:06:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614938771;
-        bh=UNxINQHDvJJrmSF6ND02usDivy14O5g6jxTERdFgETg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jpUnlxKS9k5CsqpJiso5lwZ5FNLdxMWw9mV8Dmez4VJVF0FPsImkKpxwfmQPMUGuU
-         bTdkGK6SGnspmWjV0QTHXj9q04WWS8gaeNhMjRpACWYpGZbiAKDbFEDVkx3qEgqIC0
-         67rE1sdzi8iL2a/Y5PFP8JcXvk4Uo0kgjUD8std889Fl+4cqRzYIi2s4kHC+yl0DF0
-         titOa1hOt39NTb6bs2V2ynDCHAMJcGxfsi/IFnplbR6H46ne7Ai9/5WdVxOWf+wanU
-         AFRyoDrrDydaKm2hg5219fbfh7rxRO+F5T2em43B3LzpLWlLMLmO0l/5E2Wh/S9yJt
-         HyTQiOchAC2+w==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lI7Ll-0001I6-Nj; Fri, 05 Mar 2021 11:06:25 +0100
-Date:   Fri, 5 Mar 2021 11:06:25 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Lech Perczak <lech.perczak@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        =?utf-8?B?QmrDuHJu?= Mork <bjorn@mork.no>
-Subject: Re: [PATCH 5.10 491/663] USB: serial: option: update interface
- mapping for ZTE P685M
-Message-ID: <YEICoXZjxKVurcKl@hovoldconsulting.com>
-References: <20210301161141.760350206@linuxfoundation.org>
- <20210301161206.139213430@linuxfoundation.org>
- <fdfc7e5b-ebc3-9a99-7077-9cca3d470c2f@gmail.com>
+        id S229779AbhCEKIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:08:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhCEKIK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 05:08:10 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280E1C061756
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 02:08:10 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id l18so1679604pji.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 02:08:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GXPv2DXPXjrXg5fyChY0npbP53+5naub4cxs5k8FnjE=;
+        b=pC44tl0rO91OEFPNhRVDMTM6V4bjAQpk3j1s4O9rkPpAb3WOc3nF94AG8Vgi6Un2yb
+         JL9spn0uwW/aLo4pW+juYvNj5eoiph4HKeIycUsBaXosTnigcaRAZuotJX0aa1N7AL/I
+         AHwDKbWNxqAFKumtdZ+UtjjkZsRR7Ha675B2vYAezFHcgR5gt9q9ie/dFSMBp6/uJnPm
+         dltcrnSInzCYR+X5nhJjc+zTykLP5P8EI8FZ6uNMTy2wFqFZ8pLnBl9pMq7ldCnN+REI
+         ZvzsQBh6XqqzuByvWzyokAdAWAYeQ+sUbn5W3bv6/TM/b1zx9MPMdD18q65D6OyjUY27
+         +LQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GXPv2DXPXjrXg5fyChY0npbP53+5naub4cxs5k8FnjE=;
+        b=SRW1vF0L89zk4ZMzl3zCc3d5rA+A4SZFmnkwUrRRR3u6dvwiVvdvrQlKzGUwNxDYm5
+         QDcgP1JXcW4VH1uKmrA/iYB37zmFeaFgoTbejHnUxbVqr8XBsf9REwItJhrMkrcmHVJK
+         rfsIkX5M02Tpa/+uDANTrWg9je6rToEbnzKajcweobmgwsuawTEthteAz/8Uo/YEo4PY
+         Rkh8TIBZsesD2BVDSLblOeHer/e7+lApSGQ3UK96csH7OrMRN+7RsNo5S5y1/NlWMgbt
+         jpTx2uCisyHhXIzobrtG1m/2pPRZFQy+ISP5/8EwnWZHsS52yMaUX9F1Gu87J/1CZiVb
+         jD0g==
+X-Gm-Message-State: AOAM531QgVi7OyZNz7t30HEsOzI8sVaASqgiMusdu60aRh3OjgVgmfL6
+        Ako7xHCxyfF64V0rGBRlO+ZPpvYrH9ir/ec6LDd47Q==
+X-Google-Smtp-Source: ABdhPJy0Xh5JWTm6MhpMfyWTy9/YLhz+WdZKD5ObOM3STrYtUVh+b6JCcjgEyJhfaCbBdAEL5dvq++X32GQGRbWwKyg=
+X-Received: by 2002:a17:902:b610:b029:e3:2b1e:34ff with SMTP id
+ b16-20020a170902b610b02900e32b1e34ffmr7875516pls.69.1614938889597; Fri, 05
+ Mar 2021 02:08:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fdfc7e5b-ebc3-9a99-7077-9cca3d470c2f@gmail.com>
+References: <20210304155144.1.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
+ <20210304155144.2.Id492ddb6e2cdd05eb94474b93654b04b270c9bbe@changeid>
+In-Reply-To: <20210304155144.2.Id492ddb6e2cdd05eb94474b93654b04b270c9bbe@changeid>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Fri, 5 Mar 2021 11:07:58 +0100
+Message-ID: <CAG3jFyveF9rbMDT7DEjwndutEW54O_wQTVDe_FW=QeAvfpvADw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] drm/bridge: ti-sn65dsi86: Move code in prep for EDID
+ read fix
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        MSM <linux-arm-msm@vger.kernel.org>, robdclark@chromium.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 01:01:17AM +0100, Lech Perczak wrote:
-> Hi,
-> 
-> On 2021-03-01 at 17:12, Greg Kroah-Hartman wrote:
-> > From: Lech Perczak <lech.perczak@gmail.com>
-> >
-> > commit 6420a569504e212d618d4a4736e2c59ed80a8478 upstream.
-> >
-> > This patch prepares for qmi_wwan driver support for the device.
-> > Previously "option" driver mapped itself to interfaces 0 and 3 (matching
-> > ff/ff/ff), while interface 3 is in fact a QMI port.
-> > Interfaces 1 and 2 (matching ff/00/00) expose AT commands,
-> > and weren't supported previously at all.
-> > Without this patch, a possible conflict would exist if device ID was
-> > added to qmi_wwan driver for interface 3.
-> >
-> > Update and simplify device ID to match interfaces 0-2 directly,
-> > to expose QCDM (0), PCUI (1), and modem (2) ports and avoid conflict
-> > with QMI (3), and ADB (4).
-> >
-> > The modem is used inside ZTE MF283+ router and carriers identify it as
-> > such.
-> > Interface mapping is:
-> > 0: QCDM, 1: AT (PCUI), 2: AT (Modem), 3: QMI, 4: ADB
-> >
-> > T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=480  MxCh= 0
-> > D:  Ver= 2.01 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-> > P:  Vendor=19d2 ProdID=1275 Rev=f0.00
-> > S:  Manufacturer=ZTE,Incorporated
-> > S:  Product=ZTE Technologies MSM
-> > S:  SerialNumber=P685M510ZTED0000CP&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&0
-> > C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
-> > I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> > E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-> > E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-> > E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-> > E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-> > E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
-> > E:  Ad=87(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
-> > E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=(none)
-> > E:  Ad=88(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> >
-> > Cc: Johan Hovold <johan@kernel.org>
-> > Cc: Bjørn Mork <bjorn@mork.no>
-> > Signed-off-by: Lech Perczak <lech.perczak@gmail.com>
-> > Link: https://lore.kernel.org/r/20210207005443.12936-1-lech.perczak@gmail.com
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Johan Hovold <johan@kernel.org>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >   drivers/usb/serial/option.c |    3 ++-
-> >   1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > --- a/drivers/usb/serial/option.c
-> > +++ b/drivers/usb/serial/option.c
-> > @@ -1569,7 +1569,8 @@ static const struct usb_device_id option
-> >   	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1272, 0xff, 0xff, 0xff) },
-> >   	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1273, 0xff, 0xff, 0xff) },
-> >   	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1274, 0xff, 0xff, 0xff) },
-> > -	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1275, 0xff, 0xff, 0xff) },
-> > +	{ USB_DEVICE(ZTE_VENDOR_ID, 0x1275),	/* ZTE P685M */
-> > +	  .driver_info = RSVD(3) | RSVD(4) },
-> >   	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1276, 0xff, 0xff, 0xff) },
-> >   	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1277, 0xff, 0xff, 0xff) },
-> >   	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1278, 0xff, 0xff, 0xff) },
-> >
-> >
-> If this patch is selected, then 88eee9b7b42e69fb622ddb3ff6f37e8e4347f5b2 
-> ("net: usb: qmi_wwan: support ZTE P685M modem")
-> should probably be selected, too, or both be dropped.
-> This patch frees up an interface to be claimed by qmi_wwan driver by the 
-> mentioned patch.
-> The mentioned patch only adds a device ID to qmi_wwan driver.
+Hey Douglas,
 
-Greg's already picked up the networking one, but why would we drop this
-one without the net patch? What good is the QMI interface unless bound
-to the network driver? And claiming the ADB port doesn't make any sense.
+Thanks for splitting this out into its own patch.
 
-> Regarding version, I think that backporting to 5.4.y and later is 
-> enough, as OpenWrt,
-> from which both patches originate, is currently on 5.4.y on the target 
-> requiring them, and will move to 5.10.y soon.
-> Backporting this would certainly make OpenWrt folks happy for two 
-> backports fewer, however I don't insist on it.
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
 
-We typically backport device ids to all active stable trees.
-
-Johan
+On Fri, 5 Mar 2021 at 00:53, Douglas Anderson <dianders@chromium.org> wrote:
+>
+> This patch is _only_ code motion to prepare for the patch
+> ("drm/bridge: ti-sn65dsi86: Properly get the EDID, but only if
+> refclk") and make it easier to understand.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+>
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 196 +++++++++++++-------------
+>  1 file changed, 98 insertions(+), 98 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 942019842ff4..491c9c4f32d1 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -345,6 +345,104 @@ static int ti_sn_bridge_parse_regulators(struct ti_sn_bridge *pdata)
+>                                        pdata->supplies);
+>  }
+>
+> +static u32 ti_sn_bridge_get_dsi_freq(struct ti_sn_bridge *pdata)
+> +{
+> +       u32 bit_rate_khz, clk_freq_khz;
+> +       struct drm_display_mode *mode =
+> +               &pdata->bridge.encoder->crtc->state->adjusted_mode;
+> +
+> +       bit_rate_khz = mode->clock *
+> +                       mipi_dsi_pixel_format_to_bpp(pdata->dsi->format);
+> +       clk_freq_khz = bit_rate_khz / (pdata->dsi->lanes * 2);
+> +
+> +       return clk_freq_khz;
+> +}
+> +
+> +/* clk frequencies supported by bridge in Hz in case derived from REFCLK pin */
+> +static const u32 ti_sn_bridge_refclk_lut[] = {
+> +       12000000,
+> +       19200000,
+> +       26000000,
+> +       27000000,
+> +       38400000,
+> +};
+> +
+> +/* clk frequencies supported by bridge in Hz in case derived from DACP/N pin */
+> +static const u32 ti_sn_bridge_dsiclk_lut[] = {
+> +       468000000,
+> +       384000000,
+> +       416000000,
+> +       486000000,
+> +       460800000,
+> +};
+> +
+> +static void ti_sn_bridge_set_refclk_freq(struct ti_sn_bridge *pdata)
+> +{
+> +       int i;
+> +       u32 refclk_rate;
+> +       const u32 *refclk_lut;
+> +       size_t refclk_lut_size;
+> +
+> +       if (pdata->refclk) {
+> +               refclk_rate = clk_get_rate(pdata->refclk);
+> +               refclk_lut = ti_sn_bridge_refclk_lut;
+> +               refclk_lut_size = ARRAY_SIZE(ti_sn_bridge_refclk_lut);
+> +               clk_prepare_enable(pdata->refclk);
+> +       } else {
+> +               refclk_rate = ti_sn_bridge_get_dsi_freq(pdata) * 1000;
+> +               refclk_lut = ti_sn_bridge_dsiclk_lut;
+> +               refclk_lut_size = ARRAY_SIZE(ti_sn_bridge_dsiclk_lut);
+> +       }
+> +
+> +       /* for i equals to refclk_lut_size means default frequency */
+> +       for (i = 0; i < refclk_lut_size; i++)
+> +               if (refclk_lut[i] == refclk_rate)
+> +                       break;
+> +
+> +       regmap_update_bits(pdata->regmap, SN_DPPLL_SRC_REG, REFCLK_FREQ_MASK,
+> +                          REFCLK_FREQ(i));
+> +}
+> +
+> +static void ti_sn_bridge_post_disable(struct drm_bridge *bridge)
+> +{
+> +       struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
+> +
+> +       clk_disable_unprepare(pdata->refclk);
+> +
+> +       pm_runtime_put_sync(pdata->dev);
+> +}
+> +
+> +static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
+> +{
+> +       struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
+> +
+> +       pm_runtime_get_sync(pdata->dev);
+> +
+> +       /* configure bridge ref_clk */
+> +       ti_sn_bridge_set_refclk_freq(pdata);
+> +
+> +       /*
+> +        * HPD on this bridge chip is a bit useless.  This is an eDP bridge
+> +        * so the HPD is an internal signal that's only there to signal that
+> +        * the panel is done powering up.  ...but the bridge chip debounces
+> +        * this signal by between 100 ms and 400 ms (depending on process,
+> +        * voltage, and temperate--I measured it at about 200 ms).  One
+> +        * particular panel asserted HPD 84 ms after it was powered on meaning
+> +        * that we saw HPD 284 ms after power on.  ...but the same panel said
+> +        * that instead of looking at HPD you could just hardcode a delay of
+> +        * 200 ms.  We'll assume that the panel driver will have the hardcoded
+> +        * delay in its prepare and always disable HPD.
+> +        *
+> +        * If HPD somehow makes sense on some future panel we'll have to
+> +        * change this to be conditional on someone specifying that HPD should
+> +        * be used.
+> +        */
+> +       regmap_update_bits(pdata->regmap, SN_HPD_DISABLE_REG, HPD_DISABLE,
+> +                          HPD_DISABLE);
+> +
+> +       drm_panel_prepare(pdata->panel);
+> +}
+> +
+>  static int ti_sn_bridge_attach(struct drm_bridge *bridge,
+>                                enum drm_bridge_attach_flags flags)
+>  {
+> @@ -443,64 +541,6 @@ static void ti_sn_bridge_disable(struct drm_bridge *bridge)
+>         drm_panel_unprepare(pdata->panel);
+>  }
+>
+> -static u32 ti_sn_bridge_get_dsi_freq(struct ti_sn_bridge *pdata)
+> -{
+> -       u32 bit_rate_khz, clk_freq_khz;
+> -       struct drm_display_mode *mode =
+> -               &pdata->bridge.encoder->crtc->state->adjusted_mode;
+> -
+> -       bit_rate_khz = mode->clock *
+> -                       mipi_dsi_pixel_format_to_bpp(pdata->dsi->format);
+> -       clk_freq_khz = bit_rate_khz / (pdata->dsi->lanes * 2);
+> -
+> -       return clk_freq_khz;
+> -}
+> -
+> -/* clk frequencies supported by bridge in Hz in case derived from REFCLK pin */
+> -static const u32 ti_sn_bridge_refclk_lut[] = {
+> -       12000000,
+> -       19200000,
+> -       26000000,
+> -       27000000,
+> -       38400000,
+> -};
+> -
+> -/* clk frequencies supported by bridge in Hz in case derived from DACP/N pin */
+> -static const u32 ti_sn_bridge_dsiclk_lut[] = {
+> -       468000000,
+> -       384000000,
+> -       416000000,
+> -       486000000,
+> -       460800000,
+> -};
+> -
+> -static void ti_sn_bridge_set_refclk_freq(struct ti_sn_bridge *pdata)
+> -{
+> -       int i;
+> -       u32 refclk_rate;
+> -       const u32 *refclk_lut;
+> -       size_t refclk_lut_size;
+> -
+> -       if (pdata->refclk) {
+> -               refclk_rate = clk_get_rate(pdata->refclk);
+> -               refclk_lut = ti_sn_bridge_refclk_lut;
+> -               refclk_lut_size = ARRAY_SIZE(ti_sn_bridge_refclk_lut);
+> -               clk_prepare_enable(pdata->refclk);
+> -       } else {
+> -               refclk_rate = ti_sn_bridge_get_dsi_freq(pdata) * 1000;
+> -               refclk_lut = ti_sn_bridge_dsiclk_lut;
+> -               refclk_lut_size = ARRAY_SIZE(ti_sn_bridge_dsiclk_lut);
+> -       }
+> -
+> -       /* for i equals to refclk_lut_size means default frequency */
+> -       for (i = 0; i < refclk_lut_size; i++)
+> -               if (refclk_lut[i] == refclk_rate)
+> -                       break;
+> -
+> -       regmap_update_bits(pdata->regmap, SN_DPPLL_SRC_REG, REFCLK_FREQ_MASK,
+> -                          REFCLK_FREQ(i));
+> -}
+> -
+>  static void ti_sn_bridge_set_dsi_rate(struct ti_sn_bridge *pdata)
+>  {
+>         unsigned int bit_rate_mhz, clk_freq_mhz;
+> @@ -821,46 +861,6 @@ static void ti_sn_bridge_enable(struct drm_bridge *bridge)
+>         drm_panel_enable(pdata->panel);
+>  }
+>
+> -static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
+> -{
+> -       struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
+> -
+> -       pm_runtime_get_sync(pdata->dev);
+> -
+> -       /* configure bridge ref_clk */
+> -       ti_sn_bridge_set_refclk_freq(pdata);
+> -
+> -       /*
+> -        * HPD on this bridge chip is a bit useless.  This is an eDP bridge
+> -        * so the HPD is an internal signal that's only there to signal that
+> -        * the panel is done powering up.  ...but the bridge chip debounces
+> -        * this signal by between 100 ms and 400 ms (depending on process,
+> -        * voltage, and temperate--I measured it at about 200 ms).  One
+> -        * particular panel asserted HPD 84 ms after it was powered on meaning
+> -        * that we saw HPD 284 ms after power on.  ...but the same panel said
+> -        * that instead of looking at HPD you could just hardcode a delay of
+> -        * 200 ms.  We'll assume that the panel driver will have the hardcoded
+> -        * delay in its prepare and always disable HPD.
+> -        *
+> -        * If HPD somehow makes sense on some future panel we'll have to
+> -        * change this to be conditional on someone specifying that HPD should
+> -        * be used.
+> -        */
+> -       regmap_update_bits(pdata->regmap, SN_HPD_DISABLE_REG, HPD_DISABLE,
+> -                          HPD_DISABLE);
+> -
+> -       drm_panel_prepare(pdata->panel);
+> -}
+> -
+> -static void ti_sn_bridge_post_disable(struct drm_bridge *bridge)
+> -{
+> -       struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
+> -
+> -       clk_disable_unprepare(pdata->refclk);
+> -
+> -       pm_runtime_put_sync(pdata->dev);
+> -}
+> -
+>  static const struct drm_bridge_funcs ti_sn_bridge_funcs = {
+>         .attach = ti_sn_bridge_attach,
+>         .pre_enable = ti_sn_bridge_pre_enable,
+> --
+> 2.30.1.766.gb4fecdf3b7-goog
+>
