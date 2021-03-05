@@ -2,37 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FEE32EA6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:39:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C274532EAF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbhCEMi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:38:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50444 "EHLO mail.kernel.org"
+        id S232328AbhCEMlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:41:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233346AbhCEMhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:37:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 645696501B;
-        Fri,  5 Mar 2021 12:37:35 +0000 (UTC)
+        id S232244AbhCEMkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:40:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8E7C64E84;
+        Fri,  5 Mar 2021 12:40:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947856;
-        bh=mH5lfZ8/5v9mgS6Y436aF+xZF4680Y0Wb2+gP2hbx34=;
+        s=korg; t=1614948045;
+        bh=SwcCi8I5s9Fk7jXCQKcNUAccniTQdcskiFZh/amYeSE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NWZ67lWeZvGlPwKqovcuHouMADQHL7nsWsoCzFxv662wLt1yHMQC60NfKxY478yjx
-         qzXj8I1i4cq4kqm8wPtkU+78EeUMnVqEiUtI1RG43QzES+TE/sMaZH9dqhWKAZui9G
-         mGeqns3SP+YmkZVapHQnHe+QXmSVlphojGSGDZVs=
+        b=N8ie6ayh/af18zCePIRSTPs6biF4CLyaRqNeL54XMUSwlbcHG4jPEmNwo2pc6f2KH
+         GyqZ8GXvxp0vov2iBxnOmmvPOZK35fdmugwQSVxV8bRvd+ZSRzbFArCYW5NeA43JNm
+         +crRjyzJ9noygDGhxy1Fy6h9CUNeR02CUwIzjcmc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 37/52] btrfs: fix error handling in commit_fs_roots
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        juri.lelli@arm.com, bigeasy@linutronix.de, xlpang@redhat.com,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jdesfossez@efficios.com, dvhart@infradead.org, bristot@redhat.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCH 4.9 01/41] futex: Cleanup variable names for futex_top_waiter()
 Date:   Fri,  5 Mar 2021 13:22:08 +0100
-Message-Id: <20210305120855.483963642@linuxfoundation.org>
+Message-Id: <20210305120851.334085382@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
-References: <20210305120853.659441428@linuxfoundation.org>
+In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
+References: <20210305120851.255002428@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,79 +45,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Ben Hutchings <ben@decadent.org.uk>
 
-[ Upstream commit 4f4317c13a40194940acf4a71670179c4faca2b5 ]
+From: Peter Zijlstra <peterz@infradead.org>
 
-While doing error injection I would sometimes get a corrupt file system.
-This is because I was injecting errors at btrfs_search_slot, but would
-only do it one time per stack.  This uncovered a problem in
-commit_fs_roots, where if we get an error we would just break.  However
-we're in a nested loop, the first loop being a loop to find all the
-dirty fs roots, and then subsequent root updates would succeed clearing
-the error value.
+commit 499f5aca2cdd5e958b27e2655e7e7f82524f46b1 upstream.
 
-This isn't likely to happen in real scenarios, however we could
-potentially get a random ENOMEM once and then not again, and we'd end up
-with a corrupted file system.  Fix this by moving the error checking
-around a bit to the main loop, as this is the only place where something
-will fail, and return the error as soon as it occurs.
+futex_top_waiter() returns the top-waiter on the pi_mutex. Assinging
+this to a variable 'match' totally obscures the code.
 
-With this patch my reproducer no longer corrupts the file system.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: juri.lelli@arm.com
+Cc: bigeasy@linutronix.de
+Cc: xlpang@redhat.com
+Cc: rostedt@goodmis.org
+Cc: mathieu.desnoyers@efficios.com
+Cc: jdesfossez@efficios.com
+Cc: dvhart@infradead.org
+Cc: bristot@redhat.com
+Link: http://lkml.kernel.org/r/20170322104151.554710645@infradead.org
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+[bwh: Backported to 4.9: adjust context]
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/transaction.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ kernel/futex.c |   28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 8829d89eb4af..1b52c960682d 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1249,7 +1249,6 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
- 	struct btrfs_root *gang[8];
- 	int i;
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1352,14 +1352,14 @@ static int lookup_pi_state(u32 __user *u
+ 			   union futex_key *key, struct futex_pi_state **ps,
+ 			   struct task_struct **exiting)
+ {
+-	struct futex_q *match = futex_top_waiter(hb, key);
++	struct futex_q *top_waiter = futex_top_waiter(hb, key);
+ 
+ 	/*
+ 	 * If there is a waiter on that futex, validate it and
+ 	 * attach to the pi_state when the validation succeeds.
+ 	 */
+-	if (match)
+-		return attach_to_pi_state(uaddr, uval, match->pi_state, ps);
++	if (top_waiter)
++		return attach_to_pi_state(uaddr, uval, top_waiter->pi_state, ps);
+ 
+ 	/*
+ 	 * We are the first waiter - try to look up the owner based on
+@@ -1414,7 +1414,7 @@ static int futex_lock_pi_atomic(u32 __us
+ 				int set_waiters)
+ {
+ 	u32 uval, newval, vpid = task_pid_vnr(task);
+-	struct futex_q *match;
++	struct futex_q *top_waiter;
  	int ret;
--	int err = 0;
  
- 	spin_lock(&fs_info->fs_roots_radix_lock);
- 	while (1) {
-@@ -1261,6 +1260,8 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
- 			break;
- 		for (i = 0; i < ret; i++) {
- 			struct btrfs_root *root = gang[i];
-+			int ret2;
-+
- 			radix_tree_tag_clear(&fs_info->fs_roots_radix,
- 					(unsigned long)root->root_key.objectid,
- 					BTRFS_ROOT_TRANS_TAG);
-@@ -1282,17 +1283,17 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
- 						    root->node);
- 			}
+ 	/*
+@@ -1440,9 +1440,9 @@ static int futex_lock_pi_atomic(u32 __us
+ 	 * Lookup existing state first. If it exists, try to attach to
+ 	 * its pi_state.
+ 	 */
+-	match = futex_top_waiter(hb, key);
+-	if (match)
+-		return attach_to_pi_state(uaddr, uval, match->pi_state, ps);
++	top_waiter = futex_top_waiter(hb, key);
++	if (top_waiter)
++		return attach_to_pi_state(uaddr, uval, top_waiter->pi_state, ps);
  
--			err = btrfs_update_root(trans, fs_info->tree_root,
-+			ret2 = btrfs_update_root(trans, fs_info->tree_root,
- 						&root->root_key,
- 						&root->root_item);
-+			if (ret2)
-+				return ret2;
- 			spin_lock(&fs_info->fs_roots_radix_lock);
--			if (err)
--				break;
- 			btrfs_qgroup_free_meta_all_pertrans(root);
- 		}
- 	}
- 	spin_unlock(&fs_info->fs_roots_radix_lock);
--	return err;
-+	return 0;
+ 	/*
+ 	 * No waiter and user TID is 0. We are here because the
+@@ -1532,11 +1532,11 @@ static void mark_wake_futex(struct wake_
+ 	q->lock_ptr = NULL;
  }
  
- /*
--- 
-2.30.1
-
+-static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_q *this,
++static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_q *top_waiter,
+ 			 struct futex_hash_bucket *hb)
+ {
+ 	struct task_struct *new_owner;
+-	struct futex_pi_state *pi_state = this->pi_state;
++	struct futex_pi_state *pi_state = top_waiter->pi_state;
+ 	u32 uninitialized_var(curval), newval;
+ 	WAKE_Q(wake_q);
+ 	bool deboost;
+@@ -1557,7 +1557,7 @@ static int wake_futex_pi(u32 __user *uad
+ 
+ 	/*
+ 	 * When we interleave with futex_lock_pi() where it does
+-	 * rt_mutex_timed_futex_lock(), we might observe @this futex_q waiter,
++	 * rt_mutex_timed_futex_lock(), we might observe @top_waiter futex_q waiter,
+ 	 * but the rt_mutex's wait_list can be empty (either still, or again,
+ 	 * depending on which side we land).
+ 	 *
+@@ -2975,7 +2975,7 @@ static int futex_unlock_pi(u32 __user *u
+ 	u32 uninitialized_var(curval), uval, vpid = task_pid_vnr(current);
+ 	union futex_key key = FUTEX_KEY_INIT;
+ 	struct futex_hash_bucket *hb;
+-	struct futex_q *match;
++	struct futex_q *top_waiter;
+ 	int ret;
+ 
+ retry:
+@@ -2999,9 +2999,9 @@ retry:
+ 	 * all and we at least want to know if user space fiddled
+ 	 * with the futex value instead of blindly unlocking.
+ 	 */
+-	match = futex_top_waiter(hb, &key);
+-	if (match) {
+-		ret = wake_futex_pi(uaddr, uval, match, hb);
++	top_waiter = futex_top_waiter(hb, &key);
++	if (top_waiter) {
++		ret = wake_futex_pi(uaddr, uval, top_waiter, hb);
+ 		/*
+ 		 * In case of success wake_futex_pi dropped the hash
+ 		 * bucket lock.
 
 
