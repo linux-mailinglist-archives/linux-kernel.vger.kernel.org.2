@@ -2,85 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796AA32F311
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:45:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6F832F301
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhCESpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 13:45:13 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:49364 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbhCESoh (ORCPT
+        id S229716AbhCESoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 13:44:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhCESnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 13:44:37 -0500
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 0.83.537)
- id a79710fd8a3dea04; Fri, 5 Mar 2021 19:44:35 +0100
-Received: from kreacher.localnet (89-64-81-9.dynamic.chello.pl [89.64.81.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 905FD663EA1;
-        Fri,  5 Mar 2021 19:44:33 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Subject: [PATCH v1 3/4] IIO: acpi-als: Get rid of ACPICA message printing
-Date:   Fri, 05 Mar 2021 19:42:29 +0100
-Message-ID: <6250192.e2TqKytQZN@kreacher>
-In-Reply-To: <2775419.haJ69vZeI0@kreacher>
-References: <2775419.haJ69vZeI0@kreacher>
+        Fri, 5 Mar 2021 13:43:41 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF28C061574;
+        Fri,  5 Mar 2021 10:43:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sIGgzA66tHNsHeYn52XPo7JeAyKpJREW3Whf9/UDz4Y=; b=OpnKc2NA/LxZwoGWyc+vlOOaWP
+        yuxaV1NSzwOKD5oALjsHc5ar2eyGku1gpkXfZXWrJQeYg3GebuJggCh5voJFZ4m0PCupLcRcbj2wN
+        8mjYj+4QhF7hAYPK6arrF80Z8qDrGC/FoOQHJPzhJjaCXAtdKoQAsaaZ5QXvENYd1noOiQJy6OwJC
+        hS55Yxrv+91mmq3wFsmY3vi19i57u3bLwlJOLTL4abU/HxLphOPER7Nq0l7oBMFi8/fidBFwHPaHK
+        qtKcUiRze1HSCaoM++0S/gNbDuaHzItcbTCaK+HWbToYFDuujgbsgT7NSos9Dbq0Hfx6q//9mNr2O
+        C9N9k6VA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lIFQ2-00C85B-3R; Fri, 05 Mar 2021 18:43:23 +0000
+Date:   Fri, 5 Mar 2021 18:43:22 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     corbet@lwn.net, lukas.bulwahn@gmail.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [RFC] scripts: kernel-doc: fix attribute capture in function
+ parsing
+Message-ID: <20210305184322.GN2723601@casper.infradead.org>
+References: <20210305182000.8363-1-yashsri421@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtiedguddtjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttddvnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgfelheffhfetffelhfelteejffetteetgfetkeejvdfhfeeftdeufeevgeevieevnecukfhppeekledrieegrdekuddrleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekuddrledphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepjhhitgdvfeeskhgvrhhnvghlrdhorhhgpdhrtghp
- thhtoheplhgrrhhssehmvghtrghfohhordguvgdprhgtphhtthhopehpmhgvvghrfiesphhmvggvrhifrdhnvghtpdhrtghpthhtoheplhhinhhugidqihhiohesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehjuggvlhhvrghrvgesshhushgvrdgtohhmpdhrtghpthhtoheplhhinhhugiesrhhovggtkhdquhhsrdhnvghtpdhrtghpthhtoheplhhinhhugidqhhifmhhonhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=11 Fuz1=11 Fuz2=11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305182000.8363-1-yashsri421@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Fri, Mar 05, 2021 at 11:50:00PM +0530, Aditya Srivastava wrote:
+> Provide a simple fix by adding "__attribute_const__" in the corresponding
+> regex expression.
+> 
+> A quick evaluation by running 'kernel-doc -none' on kernel-tree reveals
+> that no additional warning or error has been added or removed by the fix.
 
-Use acpi_evaluation_failure_warn() introduced previously instead of
-the ACPICA-specific ACPI_EXCEPTION() macro to log warning messages
-regarding ACPI object evaluation failures and drop the
-ACPI_MODULE_NAME() definition only used by the ACPICA message
-printing macro.
+I'm no perlmonger, but why isn't this simply:
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/iio/light/acpi-als.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
++++ b/scripts/kernel-doc
+@@ -1753,6 +1753,7 @@ sub dump_function($$) {
+     $prototype =~ s/^__inline +//;
+     $prototype =~ s/^__always_inline +//;
+     $prototype =~ s/^noinline +//;
++    $prototype =~ s/__attribute_const__ +//;
+     $prototype =~ s/__init +//;
+     $prototype =~ s/__init_or_module +//;
+     $prototype =~ s/__meminit +//;
 
-Index: linux-pm/drivers/iio/light/acpi-als.c
-===================================================================
---- linux-pm.orig/drivers/iio/light/acpi-als.c
-+++ linux-pm/drivers/iio/light/acpi-als.c
-@@ -26,8 +26,6 @@
- #define ACPI_ALS_DEVICE_NAME		"acpi-als"
- #define ACPI_ALS_NOTIFY_ILLUMINANCE	0x80
- 
--ACPI_MODULE_NAME("acpi-als");
--
- /*
-  * So far, there's only one channel in here, but the specification for
-  * ACPI0008 says there can be more to what the block can report. Like
-@@ -91,7 +89,7 @@ static int acpi_als_read_value(struct ac
- 				       &temp_val);
- 
- 	if (ACPI_FAILURE(status)) {
--		ACPI_EXCEPTION((AE_INFO, status, "Error reading ALS %s", prop));
-+		acpi_evaluation_failure_warn(als->device->handle, prop, status);
- 		return -EIO;
- 	}
- 
+(completely untested)
 
-
-
+> +++ b/scripts/kernel-doc
+> @@ -1753,6 +1753,7 @@ sub dump_function($$) {
+>      my $prototype = shift;
+>      my $file = shift;
+>      my $noret = 0;
+> +    my $attribute_const = qr{__attribute_const__};
+>  
+>      print_lineno($new_start_line);
+>  
+> @@ -1808,7 +1809,7 @@ sub dump_function($$) {
+>  	$prototype =~ m/^(\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
+>  	$prototype =~ m/^(\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
+>  	$prototype =~ m/^(\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
+> -	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
+> +	$prototype =~ m/^(\w+\s+\w+\s*\*+$attribute_const?)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
+>  	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
+>  	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
+>  	$prototype =~ m/^()([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
