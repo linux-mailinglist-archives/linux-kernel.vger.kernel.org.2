@@ -2,132 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7606732F6FC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1199B32F704
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbhCEXzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 18:55:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbhCEXzL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 18:55:11 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3A0C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 15:55:11 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id fu20so104007pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 15:55:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f3poge5+rEFOPBLlgkkWAEUuEZq1vRObX8yBVeHFMs0=;
-        b=dZN6rzdOx/xJ7q6PKT4IdLtFYJWm+GNWL6cQXPKYqkAZVzlXUa7dPkT8BfaARZvGN7
-         Omg6wkBv45SPIOqc7yGgd87U6V5Q7qZ2oLpVXznKrtPWZW1PM2GZqEX2vtFeVEh6xEH5
-         kD6JrAu6llI6Po/C1owIaG+HrMCUPLvv5fLqLV82Ewox4Fjh/kHzM/171Xm6Ho87xfgW
-         gA70EqvpqFxLbqOGjNHILOhx0kBzNy0toMMPojOcPh+Nsu76EVaGYD3RjAs+nUh/nVeo
-         Xq2gB6YPVHE28u+Mz9l64195jslRHp9rPbyhO8T3ylfUo7U4HR1H8S9+MCBftzwLzg2k
-         9vcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f3poge5+rEFOPBLlgkkWAEUuEZq1vRObX8yBVeHFMs0=;
-        b=an0Z4QOO40h2AU+hmLzml2p2BkGaAr++kvObfNl1gb0JogVlpfKs8s1VgUPF+6xfWK
-         i58c+hks9RJFrop12n9trl/86rQPS7DLGuCBj703/AlGs1EPkewwbA4pd/fW5gIE+7HW
-         NqwE9pzIstLgy0Tal5/O+8aLFs6OKsBWTpXddF9UWX1JwjSlMREc2Wpfq/cXoQMjnhD3
-         KGvTLLMG8QzjqQG6Kkv7Zd+DCW52thOiwh0NpcjmabU2R8aU6Ata/23GCVPXFhMAQPgT
-         f0xOmGPry82G6DCsqNQgTkHVLvVUKGDSRGc/auwSpKa8LtEW48RPxCa03HlnsjBduKUT
-         8vRQ==
-X-Gm-Message-State: AOAM532qt7J2c5tjsi63GKR1rBI2vwT901j0W+8VXO5S1TEKKtsJvHNV
-        HREEHANB2b1uHJMloqy6hss8mnEItHnv0WNVDJhKQA==
-X-Google-Smtp-Source: ABdhPJxsHOVKHkJsQgBmJ8MCE2TahFZc5ouI9vLx674RguitlqsK538zUjNntZM1amjxtos2fVSc+2XJiUPQyAMXTDA=
-X-Received: by 2002:a17:903:31ca:b029:e6:65f:ca87 with SMTP id
- v10-20020a17090331cab02900e6065fca87mr1091669ple.85.1614988510448; Fri, 05
- Mar 2021 15:55:10 -0800 (PST)
-MIME-Version: 1.0
-References: <24cd7db274090f0e5bc3adcdc7399243668e3171.1614987311.git.andreyknvl@google.com>
- <20210305154956.3bbfcedab3f549b708d5e2fa@linux-foundation.org> <CAAeHK+yHf7p9H_EiPVfA9qadGU_6x0RrKwX-WjKrHEFz+xFEbg@mail.gmail.com>
-In-Reply-To: <CAAeHK+yHf7p9H_EiPVfA9qadGU_6x0RrKwX-WjKrHEFz+xFEbg@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Sat, 6 Mar 2021 00:54:59 +0100
-Message-ID: <CAAeHK+w3Xr8=xLP2og6A54f=wr=BvNj18yKR6ntno1-hbqroFw@mail.gmail.com>
-Subject: Re: [PATCH v2] kasan, mm: fix crash with HW_TAGS and DEBUG_PAGEALLOC
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S229719AbhCEX7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 18:59:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229592AbhCEX6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 18:58:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF3DE601FE;
+        Fri,  5 Mar 2021 23:58:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1614988721;
+        bh=HbZT0bF1MsVnxN6BmosWjrgrZCSm028Kpqvom+zo5rA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kP9fQL0oxzF4MeLAIlf9r2mjWb0IXmPVbfnY/LAipr6zyaplBjZKHIYvNDiD/vksT
+         MxPzAQpWPcorsIEn0ivLCcIPgk2TU4tCLSY39d/t9fwKXPcwKtiMabmvhE/xlPzKwD
+         Xlb3wWSDeMKoqkni3RpbOJg3TVMfltCCYWcH8+AU=
+Date:   Fri, 5 Mar 2021 15:58:40 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Zhou Guanghui <zhouguanghui1@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        hannes@cmpxchg.org, hughd@google.com,
+        kirill.shutemov@linux.intel.com, npiggin@gmail.com, ziy@nvidia.com,
+        wangkefeng.wang@huawei.com, guohanjun@huawei.com,
+        dingtianhong@huawei.com, chenweilong@huawei.com,
+        rui.xiang@huawei.com
+Subject: Re: [PATCH v2 2/2] mm/memcg: set memcg when split page
+Message-Id: <20210305155840.4bb6dea4fb473d9ffbe49c99@linux-foundation.org>
+In-Reply-To: <YEIblNv0BMITFzYO@dhcp22.suse.cz>
+References: <20210304074053.65527-1-zhouguanghui1@huawei.com>
+        <20210304074053.65527-3-zhouguanghui1@huawei.com>
+        <YEIblNv0BMITFzYO@dhcp22.suse.cz>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 6, 2021 at 12:54 AM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> On Sat, Mar 6, 2021 at 12:50 AM Andrew Morton <akpm@linux-foundation.org> wrote:
-> >
-> > On Sat,  6 Mar 2021 00:36:33 +0100 Andrey Konovalov <andreyknvl@google.com> wrote:
-> >
-> > > Currently, kasan_free_nondeferred_pages()->kasan_free_pages() is called
-> > > after debug_pagealloc_unmap_pages(). This causes a crash when
-> > > debug_pagealloc is enabled, as HW_TAGS KASAN can't set tags on an
-> > > unmapped page.
-> > >
-> > > This patch puts kasan_free_nondeferred_pages() before
-> > > debug_pagealloc_unmap_pages() and arch_free_page(), which can also make
-> > > the page unavailable.
-> > >
-> > > ...
-> > >
-> > > --- a/mm/page_alloc.c
-> > > +++ b/mm/page_alloc.c
-> > > @@ -1304,6 +1304,12 @@ static __always_inline bool free_pages_prepare(struct page *page,
-> > >
-> > >       kernel_poison_pages(page, 1 << order);
-> > >
-> > > +     /*
-> > > +      * With hardware tag-based KASAN, memory tags must be set before the
-> > > +      * page becomes unavailable via debug_pagealloc or arch_free_page.
-> > > +      */
-> > > +     kasan_free_nondeferred_pages(page, order, fpi_flags);
-> > > +
-> > >       /*
-> > >        * arch_free_page() can make the page's contents inaccessible.  s390
-> > >        * does this.  So nothing which can access the page's contents should
-> > > @@ -1313,8 +1319,6 @@ static __always_inline bool free_pages_prepare(struct page *page,
-> > >
-> > >       debug_pagealloc_unmap_pages(page, 1 << order);
-> > >
-> > > -     kasan_free_nondeferred_pages(page, order, fpi_flags);
-> > > -
-> > >       return true;
-> > >  }
-> >
-> > kasan_free_nondeferred_pages() has only two args in current mainline.
->
-> Ah, yes, forgot to mention: this goes on top of:
->
-> kasan: initialize shadow to TAG_INVALID for SW_TAGS
-> mm, kasan: don't poison boot memory with tag-based modes
->
-> >
-> > I fixed that in the obvious manner...
->
-> Thanks!
->
-> If you changed this patch, you'll also need to change the other one though.
+On Fri, 5 Mar 2021 12:52:52 +0100 Michal Hocko <mhocko@suse.com> wrote:
 
-Nevermind, just realized that this should be a backportable fix :)
+> On Thu 04-03-21 07:40:53, Zhou Guanghui wrote:
+> > As described in the split_page function comment, for the non-compound
+> > high order page, the sub-pages must be freed individually. If the
+> > memcg of the fisrt page is valid, the tail pages cannot be uncharged
+> > when be freed.
+> > 
+> > For example, when alloc_pages_exact is used to allocate 1MB continuous
+> > physical memory, 2MB is charged(kmemcg is enabled and __GFP_ACCOUNT is
+> > set). When make_alloc_exact free the unused 1MB and free_pages_exact
+> > free the applied 1MB, actually, only 4KB(one page) is uncharged.
+> > 
+> > Therefore, the memcg of the tail page needs to be set when split page.
+> > 
+> 
+> As already mentioned there are at least two explicit users of
+> __GFP_ACCOUNT with alloc_exact_pages added recently. It would be good to
+> mention that explicitly and maybe even mention 7efe8ef274024 resp.
+> c419621873713 so that it is clear this is not just a theoretical issue.
+
+I added
+
+: Michel:
+: 
+: There are at least two explicit users of __GFP_ACCOUNT with
+: alloc_exact_pages added recently.  See 7efe8ef274024 ("KVM: arm64:
+: Allocate stage-2 pgd pages with GFP_KERNEL_ACCOUNT") and c419621873713
+: ("KVM: s390: Add memcg accounting to KVM allocations"), so this is not
+: just a theoretical issue.
+
+And should we cc:stable on this one?
