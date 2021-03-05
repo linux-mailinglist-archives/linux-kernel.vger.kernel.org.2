@@ -2,140 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E5E32E05F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:07:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 035B432E07A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 05:15:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbhCEEHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 23:07:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42162 "EHLO
+        id S229648AbhCEEPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 23:15:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhCEEHQ (ORCPT
+        with ESMTP id S229458AbhCEEPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 23:07:16 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD0BC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Mar 2021 20:07:16 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id r19so576842otk.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Mar 2021 20:07:16 -0800 (PST)
+        Thu, 4 Mar 2021 23:15:15 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF74BC061574;
+        Thu,  4 Mar 2021 20:15:15 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id 97so537592otf.13;
+        Thu, 04 Mar 2021 20:15:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g2X3AuyS9pE7ney+yblpjXrUEFgN6B0LhuiKB+8C6j0=;
-        b=l/+cAui14+nB7D+m/sfh68LTZXT+BoYCuLhsKYjhD9JfvmIHQ4b011TqbRm2jmscQc
-         +80zUf7mAUDIp4jLhWh6/Tg/IzM+bv3LGMJaZXXd89ExVF+Gf9NqcGK+3RZi9+O1znDx
-         xry+M51zEbftdbh9+SVLEimRUkNDyVKN9lZBUYxdAgjv5NXTdCpz75nDCo2ZWonwx7h7
-         TGFWYnvlgSzVQIIfBd1fefoROaKgfE20+bcPRwx4Lhd01nFY7QJt+CIFUd7DSi6j+7xB
-         dWTlwYDUN+gQm8+5wUREFB55o8VFKjXnY+QDEaUp3zZtqsnPx6gvV8GwoPhbHB+a09VI
-         Oh5A==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ol2sv43a4c7Kzs6ae8wJhgcMGKRJ/yzNIsWMK1Kklyc=;
+        b=Ooc/tUoSW2UBgDcqhkUmogJjPafbLq6iORWPUB7/Pm05vZtuMOJ+n7oJeLRnBBf1rm
+         3wNAYHyN+/j6/0eknr2lqaE7nx0jjhLXH7oJRON8H1wIqq3+XQ+qnzr1kNSrd7Cear3P
+         TGKa+LSxwBqf8twndWUYiBTnJRmOn2hsFmxTcAMJ/K5ukFrk83fwuMghdm50izVE0i7u
+         pP2jNAFC0s2ePBWins7FCVr+mUcXkdZDL0TshbAtQCCUR6LhTwZfufPxvl070fg4CA+w
+         fg1pcKthQG2ONzdVw2zokgq7YG+i38EM/Xg7Wjta9MfcSYRbKmdAXB3uzL2z4x0Mph7D
+         6zFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g2X3AuyS9pE7ney+yblpjXrUEFgN6B0LhuiKB+8C6j0=;
-        b=Ia3JQUmyG3dEmS32aYSmUZ5reIYQMd047WoGWRWaXnwMNhUwbxqi3crsdZ4U7FFlhU
-         sV26zoStcPpWOrf3vP14IGfWxZYGNDCQips5o5mcxcb6FIaINhhDqHYPr511vwbIw6v+
-         ExscfibmfHr60aJwJCAPn0QwLZVjlPCZAOYyOnt4CRlbY8nm7dAKCvCSJfhbfD4s1sWl
-         IQuMcwoiTaQwYbg2mZ2mvgG3sHD8EkH4OoJ3qX7gkv7j48D+WIVmuz+ZoEV/5+pqyrpp
-         NYp7QklC9eBwfgP6Ejvz3AnyWf/OTc+0Mp4Bw2MFHLJxkfHhuveUUP/14Tvu65Mgcib9
-         NURw==
-X-Gm-Message-State: AOAM532sxmn5+QyiPdIrS8qdlYT+koFIzVDkYTPm0gj5Ol2dUDSDt7E3
-        noNgVvQ0ala4yGrQ2dWKPcvwV6VyeIyNcA==
-X-Google-Smtp-Source: ABdhPJzwBPs6wvWsm27RwtgAjbWHeKN4hGUqDR46f7Eiu0YSpf+/VPwLOfH75cJImSiyaO3EBcuJ4g==
-X-Received: by 2002:a05:6830:2119:: with SMTP id i25mr6086111otc.249.1614917235811;
-        Thu, 04 Mar 2021 20:07:15 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id s21sm339104oos.5.2021.03.04.20.07.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 20:07:15 -0800 (PST)
-Date:   Thu, 4 Mar 2021 22:07:13 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     subashab@codeaurora.org, stranche@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org, sharathv@codeaurora.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/6] net: qualcomm: rmnet: simplify some byte
- order logic
-Message-ID: <YEGucXIUQ59UcLrJ@builder.lan>
-References: <20210304223431.15045-1-elder@linaro.org>
- <20210304223431.15045-3-elder@linaro.org>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ol2sv43a4c7Kzs6ae8wJhgcMGKRJ/yzNIsWMK1Kklyc=;
+        b=ZiCkHdHEB6EGptdthi5cNWw8ssW9vP6N/6aloSysuf8EujG2oimXcIZWp/exY8UKf9
+         7AD+SadXZLTEhltCtB/I2v84ne1XBo+vxfDMTtkyjSPBfrNsNmfy7caLKbTX1YApesqP
+         +PgQj674w6JwCj0Cs8nMDE9/Kk8VXhbiTXO8SctvN30XQkBUBaKjBMON4sJHqKiY4oRa
+         QHS3JceMw3xyRiYQBHoumyYWadWATJDUlkYHO4HEMRaP4NOP6DOtkT8y+ZQY9LUaTiu4
+         jrouG8ZGAQLv+LE9DXHrPjRN1BEcf6elzlz+G5J7KzNZe5mHtyXN6+fliqg3VeXX1z26
+         8J2A==
+X-Gm-Message-State: AOAM53341MUUiZf/Vt4hiWpdZ+zJRVpIwUx792S+gwe5oc7HCKWQ8WL2
+        B3sUPI+TZOOAFWuAfQZQcCUQkAnaqVI=
+X-Google-Smtp-Source: ABdhPJxNA1UIAtBtxML3r76Y1n0Txy1wTkIjXVtaAE4prVOhGr5pbup554TLRfsOKOcpIzsXvxoj2g==
+X-Received: by 2002:a9d:6012:: with SMTP id h18mr6284641otj.336.1614917715028;
+        Thu, 04 Mar 2021 20:15:15 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o20sm314811oor.14.2021.03.04.20.15.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 04 Mar 2021 20:15:13 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 4 Mar 2021 20:15:12 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 057/141] watchdog: Fix fall-through warnings for Clang
+Message-ID: <20210305041512.GA154288@roeck-us.net>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <713aa26be06d50dd3bb582a3cb71f04787ad5d5b.1605896059.git.gustavoars@kernel.org>
+ <20210304230406.GA106291@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210304223431.15045-3-elder@linaro.org>
+In-Reply-To: <20210304230406.GA106291@embeddedor>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 04 Mar 16:34 CST 2021, Alex Elder wrote:
-
-> In rmnet_map_ipv4_ul_csum_header() and rmnet_map_ipv6_ul_csum_header()
-> the offset within a packet at which checksumming should commence is
-> calculated.  This calculation involves byte swapping and a forced type
-> conversion that makes it hard to understand.
+On Thu, Mar 04, 2021 at 05:04:06PM -0600, Gustavo A. R. Silva wrote:
+> Hi all,
 > 
-> Simplify this by computing the offset in host byte order, then
-> converting the result when assigning it into the header field.
+> It's been more than 3 months; who can take this, please? :)
 > 
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> ---
->  .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 22 ++++++++++---------
->  1 file changed, 12 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> index 21d38167f9618..bd1aa11c9ce59 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> @@ -197,12 +197,13 @@ rmnet_map_ipv4_ul_csum_header(void *iphdr,
->  			      struct rmnet_map_ul_csum_header *ul_header,
->  			      struct sk_buff *skb)
->  {
-> -	struct iphdr *ip4h = (struct iphdr *)iphdr;
-> -	__be16 *hdr = (__be16 *)ul_header, offset;
-> +	__be16 *hdr = (__be16 *)ul_header;
-> +	struct iphdr *ip4h = iphdr;
-> +	u16 offset;
-> +
-> +	offset = skb_transport_header(skb) - (unsigned char *)iphdr;
-> +	ul_header->csum_start_offset = htons(offset);
->  
-> -	offset = htons((__force u16)(skb_transport_header(skb) -
 
-Just curious, why does this require a __force, or even a cast?
+I am not in favor of cosmetic patches for old drivers,
+and I am not going to provide tags for them anymore.
+The driver should be converted to use the watchdog core,
+or it should be dropped.
 
-
-Regardless, your proposed way of writing it is easier to read.
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> -				     (unsigned char *)iphdr));
-> -	ul_header->csum_start_offset = offset;
->  	ul_header->csum_insert_offset = skb->csum_offset;
->  	ul_header->csum_enabled = 1;
->  	if (ip4h->protocol == IPPROTO_UDP)
-> @@ -239,12 +240,13 @@ rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
->  			      struct rmnet_map_ul_csum_header *ul_header,
->  			      struct sk_buff *skb)
->  {
-> -	struct ipv6hdr *ip6h = (struct ipv6hdr *)ip6hdr;
-> -	__be16 *hdr = (__be16 *)ul_header, offset;
-> +	__be16 *hdr = (__be16 *)ul_header;
-> +	struct ipv6hdr *ip6h = ip6hdr;
-> +	u16 offset;
-> +
-> +	offset = skb_transport_header(skb) - (unsigned char *)ip6hdr;
-> +	ul_header->csum_start_offset = htons(offset);
->  
-> -	offset = htons((__force u16)(skb_transport_header(skb) -
-> -				     (unsigned char *)ip6hdr));
-> -	ul_header->csum_start_offset = offset;
->  	ul_header->csum_insert_offset = skb->csum_offset;
->  	ul_header->csum_enabled = 1;
->  
-> -- 
-> 2.20.1
-> 
+Guenter
