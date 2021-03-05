@@ -2,99 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D8932F49C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:29:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACE332F4A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 21:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhCEU2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 15:28:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55264 "EHLO
+        id S229576AbhCEUeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 15:34:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhCEU2X (ORCPT
+        with ESMTP id S229446AbhCEUeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 15:28:23 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D0DC06175F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 12:28:23 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id l7so2985641pfd.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 12:28:23 -0800 (PST)
+        Fri, 5 Mar 2021 15:34:08 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639E9C06175F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 12:34:08 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id s7so2001584plg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 12:34:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=piAdAlxX6cGUOE8F0JpLHJ9nmpFDMC1HCkTuqOWznxk=;
-        b=ZMfRcZ4TDA8/dEClsxUS/L/u5rgoabu87qxGNj+0yZa6lwgQL/N63UEyBzxVDnJEjx
-         DXNVeoKNIf5KrdFrRI9cQira81+9a6MNvsobpoLqJJddXEESNUp4iHimhrfUFs5l2/0G
-         NY4CCDs4A9g/GCPH//PsA3BIjozH84M+Boneo=
+        bh=tN8qZ+KWThYmH9E3VZapMbdXrEuUHZuLx5+p/96sDQg=;
+        b=u3sxopforp6nw7U1k71RKhMi0jxPGCBXVbNAe1a/hMx/5YqRKbKVsWXWszD5V6AYVT
+         4j9lsvSkRH4/KvULFVzmACUXig3MsgZgusLEI1xU0dFKGuG32i2z9QSlsCeYA8VkkMN+
+         OT5n4d4R6/3qkXiitnJajvF4l0P7Z6MkvpNQ0C2oDUXLHGf4ItLgAQfg8R9zfFOGDTBs
+         hME9KO0segjMFQyORi97xzjFdBZlULp0hb9VmEGvYUIfV6lnmmiOLfAe0WhFTyl2IJiS
+         GGRyj/w+TcpN6HSbtD0Poob1uiC9pzCdl7PuYbHy9RNSqkr9B6Gs60GVghRkqwAbZruE
+         9I9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=piAdAlxX6cGUOE8F0JpLHJ9nmpFDMC1HCkTuqOWznxk=;
-        b=daV1iGSM2CHh5snZFCyJBl9nbQSa4JygVfn7maFPN3V0NdgTx6cwL8xQuYbIwzKxkF
-         GyYijaROUPQrjZwG4WLGYqmyDLyj+7Ij5LrS4DzYaOwSfEAzxZmPpLuscEWQSZoWBaSy
-         pjrfb0NoU+U/BhclqkBTj2062CIJBpekey4sTWeXQfBIpQnHnoC7TCfwOX8bauH4DK3M
-         Z/6wb8zajWDzexxHng1scZPWQjPq6d/I91b9tZ7C6BaqbFzUL02MT+QOifr777mFg4wZ
-         m4a/nHIDGE3PsHVjLym3m9deSn2gj9uX6FD6lTGC+K6zAfnyTdYzJt6b1KwSF/LHYhB4
-         BZTw==
-X-Gm-Message-State: AOAM533JAbQ88BxfyZj5ouW55vfNHQjhL/Wc1Tcm4nG5DVxXldVk4fml
-        BFXPJHfJdT5rMCLKOgJz2U38yXJoHshOLQ==
-X-Google-Smtp-Source: ABdhPJwDP89NM72Xmxkxt3+td/+HHTavGdq0RdR0KUyjCNPkQps+ga54WgNdcBG9JtaZDqAFts+g2Q==
-X-Received: by 2002:a63:fa4d:: with SMTP id g13mr10282679pgk.201.1614976102793;
-        Fri, 05 Mar 2021 12:28:22 -0800 (PST)
-Received: from localhost ([2620:15c:202:1:2878:25d1:94cb:a547])
-        by smtp.gmail.com with UTF8SMTPSA id i128sm2955938pfe.64.2021.03.05.12.28.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 12:28:22 -0800 (PST)
-Date:   Fri, 5 Mar 2021 12:28:20 -0800
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/4] arm64: dts: qcom: sc7180: Disable charger thermal
- zone for coachz rev1 and rev2
-Message-ID: <YEKUZI2zfdDLe7mP@google.com>
-References: <20210304180415.1531430-1-mka@chromium.org>
- <20210304100341.4.I95b8a63103b77cab6a7cf9c150f0541db57fda98@changeid>
- <CAD=FV=UQoXsPYqv8a25Kn+=z1pZu4YUKK7VZSm4rq_i9KpD3rQ@mail.gmail.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=tN8qZ+KWThYmH9E3VZapMbdXrEuUHZuLx5+p/96sDQg=;
+        b=U4PCAyKAta7QT3vjnl6BzJhMyxa89RepM81KeOMRW+eAgugys3YupaMZhKWFydiKLe
+         3Xx6xI99ZIi9Bm1XiN2WH4zyqB2K7UtB2pwwVK/ZKo0Z57HiB38pNwiBp1eXMxbnJZbG
+         FhAEIaG8IJxEio9Ef+/Fqss0eUYq/d3OesbbNPvgXG4IrwzXerAAr2vETTfcS7yrHrl3
+         WyhhQTU2m1+7XCsTM2czB+bNLraa+I+gP+4j5vui4JLRM+jC0iNXdlNxw1hIfKZDf0j+
+         WjfWfpXeN+woOAYuuDouoLoDAj14w+dk9swmSPZ0HUEIW9Y6E0U0TA46NueGm5A7yj/G
+         UdNA==
+X-Gm-Message-State: AOAM530sjJMrYzXhnqDcHoGnlEIoFSmyHNhYu2WQNFPUWhvTfvpBrM7Y
+        3urT/VUkZ4xZ6FMcFl5Qr9Y=
+X-Google-Smtp-Source: ABdhPJw2klNUgWRvAsdtpsMkpBeP9d0568Xu37yKp9QSgKykh5ObcVpTT4CKNcDEKpsNNxLybuemPQ==
+X-Received: by 2002:a17:903:304e:b029:e5:d43:9415 with SMTP id u14-20020a170903304eb02900e50d439415mr10315907pla.42.1614976447900;
+        Fri, 05 Mar 2021 12:34:07 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:9db6:fc32:1046:dd86])
+        by smtp.gmail.com with ESMTPSA id e65sm942325pfe.9.2021.03.05.12.34.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 12:34:06 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Fri, 5 Mar 2021 12:34:05 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, gregkh@linuxfoundation.org,
+        surenb@google.com, joaodias@google.com, jhubbard@nvidia.com,
+        willy@infradead.org
+Subject: Re: [PATCH v4] mm: cma: support sysfs
+Message-ID: <YEKVvZOAVvyu6eSo@google.com>
+References: <20210304161704.3056806-1-minchan@kernel.org>
+ <98637abc-3b64-5bbc-f270-55619e12dccd@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD=FV=UQoXsPYqv8a25Kn+=z1pZu4YUKK7VZSm4rq_i9KpD3rQ@mail.gmail.com>
+In-Reply-To: <98637abc-3b64-5bbc-f270-55619e12dccd@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 10:50:12AM -0800, Doug Anderson wrote:
-> Hi,
-> 
-> On Thu, Mar 4, 2021 at 10:04 AM Matthias Kaehlcke <mka@chromium.org> wrote:
-> >
-> > CoachZ rev1 and rev2 are stuffed with a 47k NTC as thermistor for the
-> > charger temperature which currently isn't supported by the PM6150 ADC
-> > driver. Disable the charger thermal zone to avoid the use of bogus
-> > temperature values.
-> >
-> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+On Fri, Mar 05, 2021 at 06:34:22PM +0100, David Hildenbrand wrote:
+> On 04.03.21 17:17, Minchan Kim wrote:
+> > Since CMA is getting used more widely, it's more important to
+> > keep monitoring CMA statistics for system health since it's
+> > directly related to user experience.
+> > 
+> > This patch introduces sysfs statistics for CMA, in order to provide
+> > some basic monitoring of the CMA allocator.
+> > 
+> >   * the number of CMA page allocation attempts
+> >   * the number of CMA page allocation failures
+> > 
+> > These two values allow the user to calcuate the allocation
+> > failure rate for each CMA area.
+> > 
+> > e.g.)
+> >    /sys/kernel/mm/cma/WIFI/cma_alloc_pages_[attempts|fails]
+> >    /sys/kernel/mm/cma/SENSOR/cma_alloc_pages_[attempts|fails]
+> >    /sys/kernel/mm/cma/BLUETOOTH/cma_alloc_pages_[attempts|fails]
+> > 
+> > The cma_stat was intentionally allocated by dynamic allocation
+> > to harmonize with kobject lifetime management.
+> > https://lore.kernel.org/linux-mm/YCOAmXqt6dZkCQYs@kroah.com/
+> > 
+> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> > Signed-off-by: Minchan Kim <minchan@kernel.org>
 > > ---
-> >
-> >  arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts | 9 +++++++++
-> >  arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2.dts | 9 +++++++++
-> >  2 files changed, 18 insertions(+)
+> >  From v3 - https://lore.kernel.org/linux-mm/20210303205053.2906924-1-minchan@kernel.org/
+> >   * kmalloc_array - akpm
+> >   * add why cma_stat was implemented by dynamic allocation - akpm
+> >   * use !__GFP_NOWARN facility to print error - akpm
+> > 
+> >  From v2 - https://lore.kernel.org/linux-mm/20210208180142.2765456-1-minchan@kernel.org/
+> >   * sysfs doc and description modification - jhubbard
+> > 
+> >  From v1 - https://lore.kernel.org/linux-mm/20210203155001.4121868-1-minchan@kernel.org/
+> >   * fix sysfs build and refactoring - willy
+> >   * rename and drop some attributes - jhubbard
+> > 
+> >   Documentation/ABI/testing/sysfs-kernel-mm-cma |  25 ++++
+> >   mm/Kconfig                                    |   7 ++
+> >   mm/Makefile                                   |   1 +
+> >   mm/cma.c                                      |   6 +-
+> >   mm/cma.h                                      |  18 +++
+> >   mm/cma_sysfs.c                                | 110 ++++++++++++++++++
+> >   6 files changed, 166 insertions(+), 1 deletion(-)
+> >   create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-cma
+> >   create mode 100644 mm/cma_sysfs.c
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+> > new file mode 100644
+> > index 000000000000..f518af819cee
+> > --- /dev/null
+> > +++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+> > @@ -0,0 +1,25 @@
+> > +What:		/sys/kernel/mm/cma/
+> > +Date:		Feb 2021
+> > +Contact:	Minchan Kim <minchan@kernel.org>
+> > +Description:
+> > +		/sys/kernel/mm/cma/ contains a subdirectory for each CMA
+> > +		heap name (also sometimes called CMA areas).
+> > +
+> > +		Each CMA heap subdirectory (that is, each
+> > +		/sys/kernel/mm/cma/<cma-heap-name> directory) contains the
+> > +		following items:
+> > +
+> > +			cma_alloc_pages_attempts
+> > +			cma_alloc_pages_fails
 > 
-> I guess this patch is written with the assumption that eventually
-> we'll create a "-r3" or "-r4" that has a proper thermistor stuffed but
-> maybe we're not sure which one?  Right now you're disabling it for
-> both -r1 and -r2+ which is all revisions, so this could go in the
-> coachz.dtsi file...
+> Nit: why "cma_" again when we are already under "/cma/" ?
 
-The proper thermistor should be stuffed in rev3.
+Originally, there was desire to add cma_alloc_attempts as well as
+cma_alloc_pages_attempts. 
 
-For some reason there was already a -r3 .dts in my mental model,
-probably I created one when I started with a downstream version of
-this series just before you posted your's to bring upstream (mostly)
-in sync with downstream. I'll add it in v2.
+> 
+> I'd simply go with something like
+> 
+> "total_alloc_attempts"
+> "failed_alloc_attempts"
+
+If we really want to remove the cma prefix, maybe,
+
+alloc_pages_attempts
+alloc_pages_fails
+
+If someone want to count cma_alloc itself, Then
+
+alloc_success
+alloc_fail
+
+Does that make sense?
