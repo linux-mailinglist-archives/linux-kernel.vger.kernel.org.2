@@ -2,204 +2,1192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A01D32E2DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 08:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C573B32E2DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 08:21:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbhCEHSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 02:18:24 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:43397 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhCEHSX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 02:18:23 -0500
-X-Originating-IP: 78.199.60.242
-Received: from [192.168.1.150] (unknown [78.199.60.242])
-        (Authenticated sender: hadess@hadess.net)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 0ECC1E0005;
-        Fri,  5 Mar 2021 07:18:18 +0000 (UTC)
-Message-ID: <9f7e01a5b70a7e06c66eca4c297e3882f5243bfc.camel@hadess.net>
-Subject: Re: [PATCH] [v2] Input: Add "Share" button to Microsoft Xbox One
- controller.
-From:   Bastien Nocera <hadess@hadess.net>
-To:     Roderick Colenbrander <thunderbird2k@gmail.com>,
-        Chris Ye <lzye@google.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     =?UTF-8?Q?=C5=81ukasz?= Patron <priv.luk@gmail.com>,
-        Benjamin Valentin <benpicco@googlemail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Olivier =?ISO-8859-1?Q?Cr=EAte?= <olivier.crete@ocrete.ca>,
-        Sanjay Govind <sanjay.govind9@gmail.com>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, trivial@kernel.org,
-        kernel-team@android.com
-Date:   Fri, 05 Mar 2021 08:18:18 +0100
-In-Reply-To: <CAEc3jaCG2NvYcNHwk7rnvw4pgmbEEeDdfvB3SdP5Vs2ROtS9kw@mail.gmail.com>
-References: <20210225053204.697951-1-lzye@google.com>
-         <1b315e2cd02f4017cc746909088cc8bc1a39024e.camel@hadess.net>
-         <CAFFuddJKqkUEFdqhk8o+6K3_a42UyT934dmj002MS8deLD6fdA@mail.gmail.com>
-         <CAFFudd+Y6maj=F8LwGeakvkRoh_a_s2yi_rtB4LUnY=CVrMGWA@mail.gmail.com>
-         <CAEc3jaCG2NvYcNHwk7rnvw4pgmbEEeDdfvB3SdP5Vs2ROtS9kw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S229489AbhCEHVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 02:21:24 -0500
+Received: from mga11.intel.com ([192.55.52.93]:43696 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229446AbhCEHVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 02:21:23 -0500
+IronPort-SDR: XEDLjO/RXzryDwR2M3FIwTEC1dkYRsZ2aURAKujJv7iFSdCr7uh2hTmdRdMaN/amzvf95KBDkm
+ Axy56cBfnwsw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="184219925"
+X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
+   d="scan'208";a="184219925"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 23:21:23 -0800
+IronPort-SDR: DTOg3WeM0P3eB0+Hbk7I7DCpFUcdE5CZ0PAuO8Z82mYpSOHB8/4rq0LU3tntpetpIeYofPmv2q
+ lFiC8TAX/KiQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
+   d="scan'208";a="370090282"
+Received: from shbuild999.sh.intel.com ([10.239.146.165])
+  by orsmga006.jf.intel.com with ESMTP; 04 Mar 2021 23:21:19 -0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     nivedita@alum.mit.edu, thomas.lendacky@amd.com,
+        yazen.ghannam@amd.com, wei.huang2@amd.com,
+        Feng Tang <feng.tang@intel.com>, Borislav Petkov <bp@suse.de>
+Subject: [PATCH v5] tools/x86: Add a kcpuid tool to show raw CPU features
+Date:   Fri,  5 Mar 2021 15:21:18 +0800
+Message-Id: <1614928878-86075-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-03-04 at 20:42 -0800, Roderick Colenbrander wrote:
-> (resend in plain text)
-> +benjamin in a more explicit way
-> 
-> Hi Chris,
-> 
-> I see the need for the Record button. I wonder what makes sense from
-> the Linux kernel perspective. For DualShock 4 and DualSense there is a
-> Share button too (it introduced it). For DualShock 4 that was mapped
-> to 'Select' I think per Linux gamepad spec. For DualSense in 5.12 we
-> did the same... Though if there is a true 'Record' button we want to
-> use moving forward. Maybe we still want to change the button
-> definition for DualSensein 5.12 while we can...
-> 
-> It would be good to get some consensus on these buttons.
+End users frequently want to know what features their processor
+supports, independent of what the kernel supports.
 
-The XBox One Series X controller has 3 of those "middle" buttons, 2
-equivalent to Start/Select on older controllers (that were already
-present on older versions of the pad) and Share.
-https://www.xbox.com/en-US/accessories/controllers/xbox-wireless-controller
+/proc/cpuinfo is great. It is omnipresent and since it is provided by
+the kernel it is always as up to date as the kernel. But, it could be
+ambiguous about processor features which can be disabled by the kernel
+at boot-time or compile-time.
 
-The Options buttons on the DS4 replaces Start and Select:
-https://manuals.playstation.net/document/en/ps4/basic/pn_controller.html
-so Share got added, but Select taken away, which is why you had to
-label it Select in the driver.
+There are some user space tools showing more raw features, but they are
+not bound with kernel, and go with distros. Many end users are still
+using old distros with new kernels (upgraded by themselves), and may
+not upgrade the distros only to get a newer tool.
 
-I don't really see how to fix that without retroactively re-adding
-buttons to the DS4 controller ;)
+So here arise the need for a new tool, which
+  * shows raw CPU features read from the CPUID instruction
+  * will be easier to update compared to existing userspace
+    tooling (perhaps distributed like perf)
+  * inherits "modern" kernel development process, in contrast to some
+    of the existing userspace CPUID tools which are still being developed
+    without git and distributed in tarballs from non-https sites.
+  * Can produce output consistent with /proc/cpuinfo to make comparison
+    easier.
 
-> 
-> Thanks,
-> Roderick
-> 
-> 
-> On Thu, Mar 4, 2021 at 6:25 PM Chris Ye <lzye@google.com> wrote:
-> > 
-> > Hi Bastien,  just want to follow up again on this.  I've checked
-> > again
-> > with the Xbox team that the "Share button" is given for the product,
-> > the HID usage profile and mapping to RECORD is what Xbox team expects
-> > and they want the same mapping for USB.
-> > 
-> > Thanks!
-> > Chris
-> > 
-> > 
-> > On Tue, Mar 2, 2021 at 3:57 PM Chris Ye <lzye@google.com> wrote:
-> > > 
-> > > Hi Bastien,
-> > >     The "Share button" is a name Microsoft calls it, it actually
-> > > has
-> > > HID descriptor defined in the bluetooth interface, which the HID
-> > > usage
-> > > is:
-> > > consumer 0xB2:
-> > > 0x05, 0x0C,        //   Usage Page (Consumer)
-> > > 0x0A, 0xB2, 0x00,  //   Usage (Record)
-> > > Microsoft wants the same key code to be generated consistently for
-> > > USB
-> > > and bluetooth.
-> > > Thanks!
-> > > Chris
-> > > 
-> > > 
-> > > On Tue, Mar 2, 2021 at 1:50 AM Bastien Nocera <hadess@hadess.net>
-> > > wrote:
-> > > > 
-> > > > On Thu, 2021-02-25 at 05:32 +0000, Chris Ye wrote:
-> > > > > Add "Share" button input capability and input event mapping for
-> > > > > Microsoft Xbox One controller.
-> > > > > Fixed Microsoft Xbox One controller share button not working
-> > > > > under USB
-> > > > > connection.
-> > > > > 
-> > > > > Signed-off-by: Chris Ye <lzye@google.com>
-> > > > > ---
-> > > > >  drivers/input/joystick/xpad.c | 9 ++++++++-
-> > > > >  1 file changed, 8 insertions(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/drivers/input/joystick/xpad.c
-> > > > > b/drivers/input/joystick/xpad.c
-> > > > > index 9f0d07dcbf06..0c3374091aff 100644
-> > > > > --- a/drivers/input/joystick/xpad.c
-> > > > > +++ b/drivers/input/joystick/xpad.c
-> > > > > @@ -79,6 +79,7 @@
-> > > > >  #define MAP_DPAD_TO_BUTTONS            (1 << 0)
-> > > > >  #define MAP_TRIGGERS_TO_BUTTONS                (1 << 1)
-> > > > >  #define MAP_STICKS_TO_NULL             (1 << 2)
-> > > > > +#define MAP_SHARE_BUTTON               (1 << 3)
-> > > > >  #define DANCEPAD_MAP_CONFIG    (MAP_DPAD_TO_BUTTONS
-> > > > > >                  \
-> > > > >                                 MAP_TRIGGERS_TO_BUTTONS |
-> > > > > MAP_STICKS_TO_NULL)
-> > > > > 
-> > > > > @@ -130,6 +131,7 @@ static const struct xpad_device {
-> > > > >         { 0x045e, 0x02e3, "Microsoft X-Box One Elite pad", 0,
-> > > > > XTYPE_XBOXONE },
-> > > > >         { 0x045e, 0x02ea, "Microsoft X-Box One S pad", 0,
-> > > > > XTYPE_XBOXONE
-> > > > > },
-> > > > >         { 0x045e, 0x0719, "Xbox 360 Wireless Receiver",
-> > > > > MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360W },
-> > > > > +       { 0x045e, 0x0b12, "Microsoft X-Box One X pad",
-> > > > > MAP_SHARE_BUTTON, XTYPE_XBOXONE },
-> > > > >         { 0x046d, 0xc21d, "Logitech Gamepad F310", 0,
-> > > > > XTYPE_XBOX360 },
-> > > > >         { 0x046d, 0xc21e, "Logitech Gamepad F510", 0,
-> > > > > XTYPE_XBOX360 },
-> > > > >         { 0x046d, 0xc21f, "Logitech Gamepad F710", 0,
-> > > > > XTYPE_XBOX360 },
-> > > > > @@ -862,6 +864,8 @@ static void xpadone_process_packet(struct
-> > > > > usb_xpad
-> > > > > *xpad, u16 cmd, unsigned char
-> > > > >         /* menu/view buttons */
-> > > > >         input_report_key(dev, BTN_START,  data[4] & 0x04);
-> > > > >         input_report_key(dev, BTN_SELECT, data[4] & 0x08);
-> > > > > +       if (xpad->mapping & MAP_SHARE_BUTTON)
-> > > > > +               input_report_key(dev, KEY_RECORD, data[22] &
-> > > > > 0x01);
-> > > > > 
-> > > > >         /* buttons A,B,X,Y */
-> > > > >         input_report_key(dev, BTN_A,    data[4] & 0x10);
-> > > > > @@ -1669,9 +1673,12 @@ static int xpad_init_input(struct
-> > > > > usb_xpad
-> > > > > *xpad)
-> > > > > 
-> > > > >         /* set up model-specific ones */
-> > > > >         if (xpad->xtype == XTYPE_XBOX360 || xpad->xtype ==
-> > > > > XTYPE_XBOX360W ||
-> > > > > -           xpad->xtype == XTYPE_XBOXONE) {
-> > > > > +               xpad->xtype == XTYPE_XBOXONE) {
-> > > > >                 for (i = 0; xpad360_btn[i] >= 0; i++)
-> > > > >                         input_set_capability(input_dev, EV_KEY,
-> > > > > xpad360_btn[i]);
-> > > > > +               if (xpad->mapping & MAP_SHARE_BUTTON) {
-> > > > > +                       input_set_capability(input_dev, EV_KEY,
-> > > > > KEY_RECORD);
-> > > > 
-> > > > Is there not a better keycode to use than "Record"? Should a
-> > > > "share"
-> > > > keycode be added?
-> > > > 
-> > > > I couldn't find a share button in the most recent USB HID Usage
-> > > > Tables:
-> > > > https://www.usb.org/document-library/hid-usage-tables-121
-> > > > 
-> > > > > +               }
-> > > > >         } else {
-> > > > >                 for (i = 0; xpad_btn[i] >= 0; i++)
-> > > > >                         input_set_capability(input_dev, EV_KEY,
-> > > > > xpad_btn[i]);
-> > > > 
-> > > > 
+The CPUID leaf definitions are kept in an .csv file which allows for
+updating only that file to add support for new feature leafs.
 
+This is based on prototype code from Borislav Petkov
+(http://sr71.net/~dave/intel/stupid-cpuid.c).
+
+ [ bp: Massage, add #define _GNU_SOURCE to fix implicit declaration of
+   function ‘strcasestr' warning. ]
+
+Originally-from: Borislav Petkov <bp@alien8.de>
+Suggested-by: Dave Hansen <dave.hansen@intel.com>
+Suggested-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/1603344083-100742-1-git-send-email-feng.tang@intel.com
+---
+Changelog:
+
+  v5:
+  * rebased against v5.11
+  * fix a buffer overflow issue in v4
+
+  v4:
+  * rebase against 5.11-rc4
+  * Boris helped to find and fix a segmentation fault and one
+    compile warning
+  * add more cpuid info into cpuid.csv
+  * will show boolean bit flags only by default
+  * some code cleanup
+
+  v3:
+  * use .csv file instead of plain text file which also uses
+    comma to separate fields (Borislav)
+  * add option to support a user specified .csv file (Dave)
+  * make install will put the csv file under /usr/share/hwdata/ (Dave)
+
+  v2:
+  * use a new text file to store all the bits definition of each
+    CPUID leaf/subleafs, which is easier for future expansion, as
+    the core .c file will be kept untouched, suggested by Borislav/Dave
+  * some code cleanup
+
+ tools/arch/x86/kcpuid/Makefile  |  24 ++
+ tools/arch/x86/kcpuid/cpuid.csv | 380 +++++++++++++++++++++++
+ tools/arch/x86/kcpuid/kcpuid.c  | 646 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 1050 insertions(+)
+ create mode 100644 tools/arch/x86/kcpuid/Makefile
+ create mode 100644 tools/arch/x86/kcpuid/cpuid.csv
+ create mode 100644 tools/arch/x86/kcpuid/kcpuid.c
+
+diff --git a/tools/arch/x86/kcpuid/Makefile b/tools/arch/x86/kcpuid/Makefile
+new file mode 100644
+index 0000000..87b554f
+--- /dev/null
++++ b/tools/arch/x86/kcpuid/Makefile
+@@ -0,0 +1,24 @@
++# SPDX-License-Identifier: GPL-2.0
++# Makefile for x86/kcpuid tool
++
++kcpuid : kcpuid.c
++
++CFLAGS = -Wextra
++
++BINDIR ?= /usr/sbin
++
++HWDATADIR ?= /usr/share/misc/
++
++override CFLAGS += -O2 -Wall -I../../../include
++
++%: %.c
++	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
++
++.PHONY : clean
++clean :
++	@rm -f kcpuid
++
++install : kcpuid
++	install -d  $(DESTDIR)$(BINDIR)
++	install -m 755 -p kcpuid $(DESTDIR)$(BINDIR)/kcpuid
++	install -m 444 -p cpuid.csv $(HWDATADIR)/cpuid.csv
+diff --git a/tools/arch/x86/kcpuid/cpuid.csv b/tools/arch/x86/kcpuid/cpuid.csv
+new file mode 100644
+index 0000000..f4a5b85
+--- /dev/null
++++ b/tools/arch/x86/kcpuid/cpuid.csv
+@@ -0,0 +1,380 @@
++# The basic row format is:
++# LEAF, SUBLEAF, register_name, bits, short_name, long_description
++
++# Leaf 00H
++         0,    0,  EAX,   31:0, max_basic_leafs, Max input value for supported subleafs
++
++# Leaf 01H
++         1,    0,  EAX,    3:0, stepping, Stepping ID
++         1,    0,  EAX,    7:4, model, Model
++         1,    0,  EAX,   11:8, family, Family ID
++         1,    0,  EAX,  13:12, processor, Processor Type
++         1,    0,  EAX,  19:16, model_ext, Extended Model ID
++         1,    0,  EAX,  27:20, family_ext, Extended Family ID
++
++         1,    0,  EBX,    7:0, brand, Brand Index
++         1,    0,  EBX,   15:8, clflush_size, CLFLUSH line size (value * 8) in bytes
++         1,    0,  EBX,  23:16, max_cpu_id, Maxim number of addressable logic cpu in this package
++         1,    0,  EBX,  31:24, apic_id, Initial APIC ID
++
++         1,    0,  ECX,      0, sse3, Streaming SIMD Extensions 3(SSE3)
++         1,    0,  ECX,      1, pclmulqdq, PCLMULQDQ instruction supported
++         1,    0,  ECX,      2, dtes64, DS area uses 64-bit layout
++         1,    0,  ECX,      3, mwait, MONITOR/MWAIT supported
++         1,    0,  ECX,      4, ds_cpl, CPL Qualified Debug Store which allows for branch message storage qualified by CPL
++         1,    0,  ECX,      5, vmx, Virtual Machine Extensions supported
++         1,    0,  ECX,      6, smx, Safer Mode Extension supported
++         1,    0,  ECX,      7, eist, Enhanced Intel SpeedStep Technology
++         1,    0,  ECX,      8, tm2, Thermal Monitor 2
++         1,    0,  ECX,      9, ssse3, Supplemental Streaming SIMD Extensions 3 (SSSE3)
++         1,    0,  ECX,     10, l1_ctx_id, L1 data cache could be set to either adaptive mode or shared mode (check IA32_MISC_ENABLE bit 24 definition)
++         1,    0,  ECX,     11, sdbg, IA32_DEBUG_INTERFACE MSR for silicon debug supported
++         1,    0,  ECX,     12, fma, FMA extensions using YMM state supported
++         1,    0,  ECX,     13, cmpxchg16b, 'CMPXCHG16B - Compare and Exchange Bytes' supported
++         1,    0,  ECX,     14, xtpr_update, xTPR Update Control supported
++         1,    0,  ECX,     15, pdcm, Perfmon and Debug Capability present
++         1,    0,  ECX,     17, pcid, Process-Context Identifiers feature present
++         1,    0,  ECX,     18, dca, Prefetching data from a memory mapped device supported
++         1,    0,  ECX,     19, sse4_1, SSE4.1 feature present
++         1,    0,  ECX,     20, sse4_2, SSE4.2 feature present
++         1,    0,  ECX,     21, x2apic, x2APIC supported
++         1,    0,  ECX,     22, movbe, MOVBE instruction supported
++         1,    0,  ECX,     23, popcnt, POPCNT instruction supported
++         1,    0,  ECX,     24, tsc_deadline_timer, LAPIC supports one-shot operation using a TSC deadline value
++         1,    0,  ECX,     25, aesni, AESNI instruction supported
++         1,    0,  ECX,     26, xsave, XSAVE/XRSTOR processor extended states (XSETBV/XGETBV/XCR0)
++         1,    0,  ECX,     27, osxsave, OS has set CR4.OSXSAVE bit to enable XSETBV/XGETBV/XCR0
++         1,    0,  ECX,     28, avx, AVX instruction supported
++         1,    0,  ECX,     29, f16c, 16-bit floating-point conversion instruction supported
++         1,    0,  ECX,     30, rdrand, RDRAND instruction supported
++
++         1,    0,  EDX,      0, fpu, x87 FPU on chip
++         1,    0,  EDX,      1, vme, Virtual-8086 Mode Enhancement
++         1,    0,  EDX,      2, de, Debugging Extensions
++         1,    0,  EDX,      3, pse, Page Size Extensions
++         1,    0,  EDX,      4, tsc, Time Stamp Counter
++         1,    0,  EDX,      5, msr, RDMSR and WRMSR Support
++         1,    0,  EDX,      6, pae, Physical Address Extensions
++         1,    0,  EDX,      7, mce, Machine Check Exception
++         1,    0,  EDX,      8, cx8, CMPXCHG8B instr
++         1,    0,  EDX,      9, apic, APIC on Chip
++         1,    0,  EDX,     11, sep, SYSENTER and SYSEXIT instrs
++         1,    0,  EDX,     12, mtrr, Memory Type Range Registers
++         1,    0,  EDX,     13, pge, Page Global Bit
++         1,    0,  EDX,     14, mca, Machine Check Architecture
++         1,    0,  EDX,     15, cmov, Conditional Move Instrs
++         1,    0,  EDX,     16, pat, Page Attribute Table
++         1,    0,  EDX,     17, pse36, 36-Bit Page Size Extension
++         1,    0,  EDX,     18, psn, Processor Serial Number
++         1,    0,  EDX,     19, clflush, CLFLUSH instr
++#         1,    0,  EDX,     20,
++         1,    0,  EDX,     21, ds, Debug Store
++         1,    0,  EDX,     22, acpi, Thermal Monitor and Software Controlled Clock Facilities
++         1,    0,  EDX,     23, mmx, Intel MMX Technology
++         1,    0,  EDX,     24, fxsr, XSAVE and FXRSTOR Instrs
++         1,    0,  EDX,     25, sse, SSE
++         1,    0,  EDX,     26, sse2, SSE2
++         1,    0,  EDX,     27, ss, Self Snoop
++         1,    0,  EDX,     28, hit, Max APIC IDs
++         1,    0,  EDX,     29, tm, Thermal Monitor
++#         1,    0,  EDX,     30,
++         1,    0,  EDX,     31, pbe, Pending Break Enable
++
++# Leaf 02H
++# cache and TLB descriptor info
++
++# Leaf 03H
++# Precessor Serial Number, introduced on Pentium III, not valid for
++# latest models
++
++# Leaf 04H
++# thread/core and cache topology
++         4,    0,  EAX,    4:0, cache_type, Cache type like instr/data or unified
++         4,    0,  EAX,    7:5, cache_level, Cache Level (starts at 1)
++         4,    0,  EAX,      8, cache_self_init, Cache Self Initialization
++         4,    0,  EAX,      9, fully_associate, Fully Associative cache
++#         4,    0,  EAX,  13:10, resvd, resvd
++         4,    0,  EAX,  25:14, max_logical_id, Max number of addressable IDs for logical processors sharing the cache
++         4,    0,  EAX,  31:26, max_phy_id, Max number of addressable IDs for processors in phy package
++
++         4,    0,  EBX,   11:0, cache_linesize, Size of a cache line in bytes
++         4,    0,  EBX,  21:12, cache_partition, Physical Line partitions
++         4,    0,  EBX,  31:22, cache_ways, Ways of associativity
++         4,    0,  ECX,   31:0, cache_sets, Number of Sets - 1
++         4,    0,  EDX,      0, c_wbinvd, 1 means WBINVD/INVD is not ganranteed to act upon lower level caches of non-originating threads sharing this cache
++         4,    0,  EDX,      1, c_incl, Whether cache is inclusive of lower cache level
++         4,    0,  EDX,      2, c_comp_index, Complex Cache Indexing
++
++# Leaf 05H
++# MONITOR/MWAIT
++	 5,    0,  EAX,   15:0, min_mon_size, Smallest monitor line size in bytes
++	 5,    0,  EBX,   15:0, max_mon_size, Largest monitor line size in bytes
++	 5,    0,  ECX,      0, mwait_ext, Enum of Monitor-Mwait extensions supported
++	 5,    0,  ECX,      1, mwait_irq_break, Largest monitor line size in bytes
++	 5,    0,  EDX,    3:0, c0_sub_stats, Number of C0* sub C-states supported using MWAIT
++	 5,    0,  EDX,    7:4, c1_sub_stats, Number of C1* sub C-states supported using MWAIT
++	 5,    0,  EDX,   11:8, c2_sub_stats, Number of C2* sub C-states supported using MWAIT
++	 5,    0,  EDX,  15:12, c3_sub_stats, Number of C3* sub C-states supported using MWAIT
++	 5,    0,  EDX,  19:16, c4_sub_stats, Number of C4* sub C-states supported using MWAIT
++	 5,    0,  EDX,  23:20, c5_sub_stats, Number of C5* sub C-states supported using MWAIT
++	 5,    0,  EDX,  27:24, c6_sub_stats, Number of C6* sub C-states supported using MWAIT
++	 5,    0,  EDX,  31:28, c7_sub_stats, Number of C7* sub C-states supported using MWAIT
++
++# Leaf 06H
++# Thermal & Power Management
++
++	 6,    0,  EAX,      0, dig_temp, Digital temperature sensor supported
++	 6,    0,  EAX,      1, turbo, Intel Turbo Boost
++	 6,    0,  EAX,      2, arat, Always running APIC timer
++#	 6,    0,  EAX,      3, resv, Reserved
++	 6,    0,  EAX,      4, pln, Power limit notifications supported
++	 6,    0,  EAX,      5, ecmd, Clock modulation duty cycle extension supported
++	 6,    0,  EAX,      6, ptm, Package thermal management supported
++	 6,    0,  EAX,      7, hwp, HWP base register
++	 6,    0,  EAX,      8, hwp_notify, HWP notification
++	 6,    0,  EAX,      9, hwp_act_window, HWP activity window
++	 6,    0,  EAX,     10, hwp_energy, HWP energy performance preference
++	 6,    0,  EAX,     11, hwp_pkg_req, HWP package level request
++#	 6,    0,  EAX,     12, resv, Reserved
++	 6,    0,  EAX,     13, hdc, HDC base registers supported
++	 6,    0,  EAX,     14, turbo3, Turbo Boost Max 3.0
++	 6,    0,  EAX,     15, hwp_cap, Highest Performance change supported
++	 6,    0,  EAX,     16, hwp_peci, HWP PECI override is supported
++	 6,    0,  EAX,     17, hwp_flex, Flexible HWP is supported
++	 6,    0,  EAX,     18, hwp_fast, Fast access mode for the IA32_HWP_REQUEST MSR is supported
++#	 6,    0,  EAX,     19, resv, Reserved
++	 6,    0,  EAX,     20, hwp_ignr, Ignoring Idle Logical Processor HWP request is supported
++
++	 6,    0,  EBX,    3:0, therm_irq_thresh, Number of Interrupt Thresholds in Digital Thermal Sensor
++	 6,    0,  ECX,      0, aperfmperf, Presence of IA32_MPERF and IA32_APERF
++	 6,    0,  ECX,      3, energ_bias, Performance-energy bias preference supported
++
++# Leaf 07H
++#	ECX == 0
++# AVX512 refers to https://en.wikipedia.org/wiki/AVX-512
++# XXX: Do we really need to enumerate each and every AVX512 sub features
++
++	 7,    0,  EBX,      0, fsgsbase, RDFSBASE/RDGSBASE/WRFSBASE/WRGSBASE supported
++	 7,    0,  EBX,      1, tsc_adjust, TSC_ADJUST MSR supported
++	 7,    0,  EBX,      2, sgx, Software Guard Extensions
++	 7,    0,  EBX,      3, bmi1, BMI1
++	 7,    0,  EBX,      4, hle, Hardware Lock Elision
++	 7,    0,  EBX,      5, avx2, AVX2
++#	 7,    0,  EBX,      6, fdp_excp_only, x87 FPU Data Pointer updated only on x87 exceptions
++	 7,    0,  EBX,      7, smep, Supervisor-Mode Execution Prevention
++	 7,    0,  EBX,      8, bmi2, BMI2
++	 7,    0,  EBX,      9, rep_movsb, Enhanced REP MOVSB/STOSB
++	 7,    0,  EBX,     10, invpcid, INVPCID instruction
++	 7,    0,  EBX,     11, rtm, Restricted Transactional Memory
++	 7,    0,  EBX,     12, rdt_m, Intel RDT Monitoring capability
++	 7,    0,  EBX,     13, depc_fpu_cs_ds, Deprecates FPU CS and FPU DS
++	 7,    0,  EBX,     14, mpx, Memory Protection Extensions
++	 7,    0,  EBX,     15, rdt_a, Intel RDT Allocation capability
++	 7,    0,  EBX,     16, avx512f, AVX512 Foundation instr
++	 7,    0,  EBX,     17, avx512dq, AVX512 Double and Quadword AVX512 instr
++	 7,    0,  EBX,     18, rdseed, RDSEED instr
++	 7,    0,  EBX,     19, adx, ADX instr
++	 7,    0,  EBX,     20, smap, Supervisor Mode Access Prevention
++	 7,    0,  EBX,     21, avx512ifma, AVX512 Integer Fused Multiply Add
++#	 7,    0,  EBX,     22, resvd, resvd
++	 7,    0,  EBX,     23, clflushopt, CLFLUSHOPT instr
++	 7,    0,  EBX,     24, clwb, CLWB instr
++	 7,    0,  EBX,     25, intel_pt, Intel Processor Trace instr
++	 7,    0,  EBX,     26, avx512pf, Prefetch
++	 7,    0,  EBX,     27, avx512er, AVX512 Exponent Reciproca instr
++	 7,    0,  EBX,     28, avx512cd, AVX512 Conflict Detection instr
++	 7,    0,  EBX,     29, sha, Intel Secure Hash Algorithm Extensions instr
++	 7,    0,  EBX,     26, avx512bw, AVX512 Byte & Word instr
++	 7,    0,  EBX,     28, avx512vl, AVX512 Vector Length Extentions (VL)
++	 7,    0,  ECX,      0, prefetchwt1, X
++	 7,    0,  ECX,      1, avx512vbmi, AVX512 Vector Byte Manipulation Instructions
++	 7,    0,  ECX,      2, umip, User-mode Instruction Prevention
++
++	 7,    0,  ECX,      3, pku, Protection Keys for User-mode pages
++	 7,    0,  ECX,      4, ospke, CR4 PKE set to enable protection keys
++#	 7,    0,  ECX,   16:5, resvd, resvd
++	 7,    0,  ECX,  21:17, mawau, The value of MAWAU used by the BNDLDX and BNDSTX instructions in 64-bit mode
++	 7,    0,  ECX,     22, rdpid, RDPID and IA32_TSC_AUX
++#	 7,    0,  ECX,  29:23, resvd, resvd
++	 7,    0,  ECX,     30, sgx_lc, SGX Launch Configuration
++#	 7,    0,  ECX,     31, resvd, resvd
++
++# Leaf 08H
++#
++
++
++# Leaf 09H
++# Direct Cache Access (DCA) information
++	 9,    0,  ECX,   31:0, dca_cap, The value of IA32_PLATFORM_DCA_CAP
++
++# Leaf 0AH
++# Architectural Performance Monitoring
++#
++# Do we really need to print out the PMU related stuff?
++# Does normal user really care about it?
++#
++       0xA,    0,  EAX,    7:0, pmu_ver, Performance Monitoring Unit version
++       0xA,    0,  EAX,   15:8, pmu_gp_cnt_num, Numer of general-purose PMU counters per logical CPU
++       0xA,    0,  EAX,  23:16, pmu_cnt_bits, Bit wideth of PMU counter
++       0xA,    0,  EAX,  31:24, pmu_ebx_bits, Length of EBX bit vector to enumerate PMU events
++
++       0xA,    0,  EBX,      0, pmu_no_core_cycle_evt, Core cycle event not available
++       0xA,    0,  EBX,      1, pmu_no_instr_ret_evt, Instruction retired event not available
++       0xA,    0,  EBX,      2, pmu_no_ref_cycle_evt, Reference cycles event not available
++       0xA,    0,  EBX,      3, pmu_no_llc_ref_evt, Last-level cache reference event not available
++       0xA,    0,  EBX,      4, pmu_no_llc_mis_evt, Last-level cache misses event not available
++       0xA,    0,  EBX,      5, pmu_no_br_instr_ret_evt, Branch instruction retired event not available
++       0xA,    0,  EBX,      6, pmu_no_br_mispredict_evt, Branch mispredict retired event not available
++
++       0xA,    0,  ECX,    4:0, pmu_fixed_cnt_num, Performance Monitoring Unit version
++       0xA,    0,  ECX,   12:5, pmu_fixed_cnt_bits, Numer of PMU counters per logical CPU
++
++# Leaf 0BH
++# Extended Topology Enumeration Leaf
++#
++
++       0xB,    0,  EAX,    4:0, id_shift, Number of bits to shift right on x2APIC ID to get a unique topology ID of the next level type
++       0xB,    0,  EBX,   15:0, cpu_nr, Number of logical processors at this level type
++       0xB,    0,  ECX,   15:8, lvl_type, 0-Invalid 1-SMT 2-Core
++       0xB,    0,  EDX,   31:0, x2apic_id, x2APIC ID the current logical processor
++
++
++# Leaf 0DH
++# Processor Extended State
++
++       0xD,    0,  EAX,      0, x87, X87 state
++       0xD,    0,  EAX,      1, sse, SSE state
++       0xD,    0,  EAX,      2, avx, AVX state
++       0xD,    0,  EAX,    4:3, mpx, MPX state
++       0xD,    0,  EAX,    7:5, avx512, AVX-512 state
++       0xD,    0,  EAX,      9, pkru, PKRU state
++
++       0xD,    0,  EBX,   31:0, max_sz_xcr0, Maximum size (bytes) required by enabled features in XCR0
++       0xD,    0,  ECX,   31:0, max_sz_xsave, Maximum size (bytes) of the XSAVE/XRSTOR save area
++
++       0xD,    1,  EAX,      0, xsaveopt, XSAVEOPT available
++       0xD,    1,  EAX,      1, xsavec, XSAVEC and compacted form supported
++       0xD,    1,  EAX,      2, xgetbv, XGETBV supported
++       0xD,    1,  EAX,      3, xsaves, XSAVES/XRSTORS and IA32_XSS supported
++
++       0xD,    1,  EBX,   31:0, max_sz_xcr0, Maximum size (bytes) required by enabled features in XCR0
++       0xD,    1,  ECX,      8, pt, PT state
++       0xD,    1,  ECX,      11, cet_usr, CET user state
++       0xD,    1,  ECX,      12, cet_supv, CET supervisor state
++       0xD,    1,  ECX,      13, hdc, HDC state
++       0xD,    1,  ECX,      16, hwp, HWP state
++
++# Leaf 0FH
++# Intel RDT Monitoring
++
++       0xF,    0,  EBX,   31:0, rmid_range, Maximum range (zero-based) of RMID within this physical processor of all types
++       0xF,    0,  EDX,      1, l3c_rdt_mon, L3 Cache RDT Monitoring supported
++
++       0xF,    1,  ECX,   31:0, rmid_range, Maximum range (zero-based) of RMID of this types
++       0xF,    1,  EDX,      0, l3c_ocp_mon, L3 Cache occupancy Monitoring supported
++       0xF,    1,  EDX,      1, l3c_tbw_mon, L3 Cache Total Bandwidth Monitoring supported
++       0xF,    1,  EDX,      2, l3c_lbw_mon, L3 Cache Local Bandwidth Monitoring supported
++
++# Leaf 10H
++# Intel RDT Allocation
++
++      0x10,    0,  EBX,      1, l3c_rdt_alloc, L3 Cache Allocation supported
++      0x10,    0,  EBX,      2, l2c_rdt_alloc, L2 Cache Allocation supported
++      0x10,    0,  EBX,      3, mem_bw_alloc, Memory Bandwidth Allocation supported
++
++
++# Leaf 12H
++# SGX Capability
++#
++# Some detailed SGX features not added yet
++
++      0x12,    0,  EAX,      0, sgx1, L3 Cache Allocation supported
++      0x12,    1,  EAX,      0, sgx2, L3 Cache Allocation supported
++
++
++# Leaf 14H
++# Intel Processor Tracer
++#
++
++# Leaf 15H
++# Time Stamp Counter and Nominal Core Crystal Clock Information
++
++      0x15,    0,  EAX,   31:0, tsc_denominator, The denominator of the TSC/”core crystal clock” ratio
++      0x15,    0,  EBX,   31:0, tsc_numerator, The numerator of the TSC/”core crystal clock” ratio
++      0x15,    0,  ECX,   31:0, nom_freq, Nominal frequency of the core crystal clock in Hz
++
++# Leaf 16H
++# Processor Frequency Information
++
++      0x16,    0,  EAX,   15:0, cpu_base_freq, Processor Base Frequency in MHz
++      0x16,    0,  EBX,   15:0, cpu_max_freq, Maximum Frequency in MHz
++      0x16,    0,  ECX,   15:0, bus_freq, Bus (Reference) Frequency in MHz
++
++# Leaf 17H
++# System-On-Chip Vendor Attribute
++
++      0x17,    0,  EAX,   31:0, max_socid, Maximum input value of supported sub-leaf
++      0x17,    0,  EBX,   15:0, soc_vid, SOC Vendor ID
++      0x17,    0,  EBX,     16, std_vid, SOC Vendor ID is assigned via an industry standard scheme
++      0x17,    0,  ECX,   31:0, soc_pid, SOC Project ID assigned by vendor
++      0x17,    0,  EDX,   31:0, soc_sid, SOC Stepping ID
++
++# Leaf 18H
++# Deterministic Address Translation Parameters
++
++
++# Leaf 19H
++# Key Locker Leaf
++
++
++# Leaf 1AH
++# Hybrid Information
++
++      0x1A,    0,  EAX,  31:24, core_type, 20H-Intel_Atom 40H-Intel_Core
++
++
++# Leaf 1FH
++# V2 Extended Topology - A preferred superset to leaf 0BH
++
++
++# According to SDM
++# 40000000H - 4FFFFFFFH is invalid range
++
++
++# Leaf 80000001H
++# Extended Processor Signature and Feature Bits
++
++0x80000001,    0,  ECX,      0, lahf_lm, LAHF/SAHF available in 64-bit mode
++0x80000001,    0,  ECX,      5, lzcnt, LZCNT
++0x80000001,    0,  ECX,      8, prefetchw, PREFETCHW
++
++0x80000001,    0,  EDX,     11, sysret, SYSCALL/SYSRET supported
++0x80000001,    0,  EDX,     20, exec_dis, Execute Disable Bit available
++0x80000001,    0,  EDX,     26, 1gb_page, 1GB page supported
++0x80000001,    0,  EDX,     27, rdtscp, RDTSCP and IA32_TSC_AUX are available
++#0x80000001,    0,  EDX,     29, 64b, 64b Architecture supported
++
++# Leaf 80000002H/80000003H/80000004H
++# Processor Brand String
++
++# Leaf 80000005H
++# Reserved
++
++# Leaf 80000006H
++# Extended L2 Cache Features
++
++0x80000006,    0,  ECX,    7:0, clsize, Cache Line size in bytes
++0x80000006,    0,  ECX,  15:12, l2c_assoc, L2 Associativity
++0x80000006,    0,  ECX,  31:16, csize, Cache size in 1K units
++
++
++# Leaf 80000007H
++
++0x80000007,    0,  EDX,      8, nonstop_tsc, Invariant TSC available
++
++
++# Leaf 80000008H
++
++0x80000008,    0,  EAX,    7:0, phy_adr_bits, Physical Address Bits
++0x80000008,    0,  EAX,   15:8, lnr_adr_bits, Linear Address Bits
++0x80000007,    0,  EBX,      9, wbnoinvd, WBNOINVD
+diff --git a/tools/arch/x86/kcpuid/kcpuid.c b/tools/arch/x86/kcpuid/kcpuid.c
+new file mode 100644
+index 0000000..984fb5a
+--- /dev/null
++++ b/tools/arch/x86/kcpuid/kcpuid.c
+@@ -0,0 +1,646 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE
++
++#include <stdio.h>
++#include <stdbool.h>
++#include <stdlib.h>
++#include <string.h>
++#include <getopt.h>
++
++#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
++
++typedef unsigned int u32;
++typedef unsigned long long u64;
++
++char *def_csv = "/usr/share/misc/cpuid.csv";
++char *user_csv;
++
++
++/* Cover both single-bit flag and multiple-bits fields */
++struct bits_desc {
++	int start, end;		/* start and end bits */
++	int value;		/* 0 or 1 for 1-bit flag */
++	char simp[32];
++	char detail[256];
++};
++
++/* descriptor info for eax/ebx/ecx/edx */
++struct reg_desc {
++	int nr;		/* number of valid entries */
++	struct bits_desc descs[32];
++};
++
++enum {
++	R_EAX = 0,
++	R_EBX,
++	R_ECX,
++	R_EDX,
++	NR_REGS
++};
++
++struct subleaf {
++	u32 index;
++	u32 sub;
++	u32 eax, ebx, ecx, edx;
++	struct reg_desc info[NR_REGS];	/* eax, ebx, ecx, edx */
++};
++
++/* Represent one leaf (basic or extended) */
++struct cpuid_func {
++	/*
++	 * Array of subleafs for this func, if there is no subleafs
++	 * then the leafs[0] is the main leaf
++	 */
++	struct subleaf *leafs;
++	int nr;
++};
++
++struct cpuid_range {
++	struct cpuid_func *funcs;	/* array of main leafs */
++	int nr;				/* number of valid leafs */
++	bool is_ext;
++};
++
++/*
++ * basic:  basic functions started from 0
++ * ext:    extended functions started from 0x80000000
++ */
++struct cpuid_range *leafs_basic, *leafs_ext;
++
++static int num_leafs;
++static bool is_amd;
++static bool show_details;
++static bool show_raw;
++static bool show_flags_only = true;
++static u32 user_index = 0xFFFFFFFF;
++static u32 user_sub = 0xFFFFFFFF;
++static int flines;
++
++static inline void cpuid(u32 *eax, u32 *ebx, u32 *ecx, u32 *edx)
++{
++	/* ecx is often an input as well as an output. */
++	asm volatile("cpuid"
++	    : "=a" (*eax),
++	      "=b" (*ebx),
++	      "=c" (*ecx),
++	      "=d" (*edx)
++	    : "0" (*eax), "2" (*ecx));
++}
++
++static inline bool has_subleafs(u32 f)
++{
++	if (f == 0x7 || f == 0xd)
++		return true;
++
++	if (is_amd) {
++		if (f == 0x8000001d)
++			return true;
++		return false;
++	}
++
++	switch (f) {
++	case 0x4:
++	case 0xb:
++	case 0xf:
++	case 0x10:
++	case 0x14:
++	case 0x18:
++	case 0x1f:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static void leaf_print_raw(struct subleaf *leaf)
++{
++	if (has_subleafs(leaf->index)) {
++		if (leaf->sub == 0)
++			printf("0x%08x: subleafs:\n", leaf->index);
++
++		printf(" %2d: EAX=0x%08x, EBX=0x%08x, ECX=0x%08x, EDX=0x%08x\n",
++			leaf->sub, leaf->eax, leaf->ebx, leaf->ecx, leaf->edx);
++	} else {
++		printf("0x%08x: EAX=0x%08x, EBX=0x%08x, ECX=0x%08x, EDX=0x%08x\n",
++			leaf->index, leaf->eax, leaf->ebx, leaf->ecx, leaf->edx);
++	}
++}
++
++/* Return true is the input eax/ebx/ecx/edx are all zero */
++static bool cpuid_store(struct cpuid_range *range, u32 f, int subleaf,
++			u32 a, u32 b, u32 c, u32 d)
++{
++	struct cpuid_func *func;
++	struct subleaf *leaf;
++	int s = 0;
++
++	if (a == 0 && b == 0 && c == 0 && d == 0)
++		return true;
++
++	/*
++	 * Cut off vendor-prefix from CPUID function as we're using it as an
++	 * index into ->funcs.
++	 */
++	func = &range->funcs[f & 0xffff];
++
++	if (!func->leafs) {
++		func->leafs = malloc(sizeof(struct subleaf));
++		if (!func->leafs)
++			perror("malloc func leaf");
++
++		func->nr = 1;
++	} else {
++		s = func->nr;
++		func->leafs = realloc(func->leafs, (s + 1) * sizeof(*leaf));
++		if (!func->leafs)
++			perror("realloc f->leafs");
++
++		func->nr++;
++	}
++
++	leaf = &func->leafs[s];
++
++	leaf->index = f;
++	leaf->sub = subleaf;
++	leaf->eax = a;
++	leaf->ebx = b;
++	leaf->ecx = c;
++	leaf->edx = d;
++
++	return false;
++}
++
++static void raw_dump_range(struct cpuid_range *range)
++{
++	u32 f;
++	int i;
++
++	printf("\n%s Leafs :\n", range->is_ext ? "Extended" : "Basic");
++	printf("================\n");
++
++	for (f = 0; (int)f < range->nr; f++) {
++		struct cpuid_func *func = &range->funcs[f];
++		u32 index = f;
++
++		if (range->is_ext)
++			index += 0x80000000;
++
++		/* Skip leaf without valid items */
++		if (!func->nr)
++			continue;
++
++		/* First item is the main leaf, followed by all subleafs */
++		for (i = 0; i < func->nr; i++)
++			leaf_print_raw(&func->leafs[i]);
++	}
++}
++
++#define MAX_SUBLEAF_NUM		32
++struct cpuid_range *setup_cpuid_range(u32 input_eax)
++{
++	u32 max_func, idx_func;
++	int subleaf;
++	struct cpuid_range *range;
++	u32 eax, ebx, ecx, edx;
++	u32 f = input_eax;
++	int max_subleaf;
++	bool allzero;
++
++	eax = input_eax;
++	ebx = ecx = edx = 0;
++
++	cpuid(&eax, &ebx, &ecx, &edx);
++	max_func = eax;
++	idx_func = (max_func & 0xffff) + 1;
++
++	range = malloc(sizeof(struct cpuid_range));
++	if (!range)
++		perror("malloc range");
++
++	if (input_eax & 0x80000000)
++		range->is_ext = true;
++	else
++		range->is_ext = false;
++
++	range->funcs = malloc(sizeof(struct cpuid_func) * idx_func);
++	if (!range->funcs)
++		perror("malloc range->funcs");
++
++	range->nr = idx_func;
++	memset(range->funcs, 0, sizeof(struct cpuid_func) * idx_func);
++
++	for (; f <= max_func; f++) {
++		eax = f;
++		subleaf = ecx = 0;
++
++		cpuid(&eax, &ebx, &ecx, &edx);
++		allzero = cpuid_store(range, f, subleaf, eax, ebx, ecx, edx);
++		if (allzero)
++			continue;
++		num_leafs++;
++
++		if (!has_subleafs(f))
++			continue;
++
++		max_subleaf = MAX_SUBLEAF_NUM;
++
++		/*
++		 * Some can provide the exact number of subleafs,
++		 * others have to be tried (0xf)
++		 */
++		if (f == 0x7 || f == 0x14 || f == 0x17 || f == 0x18)
++			max_subleaf = (eax & 0xff) + 1;
++
++		if (f == 0xb)
++			max_subleaf = 2;
++
++		for (subleaf = 1; subleaf < max_subleaf; subleaf++) {
++			eax = f;
++			ecx = subleaf;
++
++			cpuid(&eax, &ebx, &ecx, &edx);
++			allzero = cpuid_store(range, f, subleaf,
++						eax, ebx, ecx, edx);
++			if (allzero)
++				continue;
++			num_leafs++;
++		}
++
++	}
++
++	return range;
++}
++
++/*
++ * The basic row format for cpuid.csv  is
++ *	LEAF,SUBLEAF,register_name,bits,short name,long description
++ *
++ * like:
++ *	0,    0,  EAX,   31:0, max_basic_leafs,  Max input value for supported subleafs
++ *	1,    0,  ECX,      0, sse3,  Streaming SIMD Extensions 3(SSE3)
++ */
++static int parse_line(char *line)
++{
++	char *str;
++	int i;
++	struct cpuid_range *range;
++	struct cpuid_func *func;
++	struct subleaf *leaf;
++	u32 index;
++	u32 sub;
++	char buffer[512];
++	char *buf;
++	/*
++	 * Tokens:
++	 *  1. leaf
++	 *  2. subleaf
++	 *  3. register
++	 *  4. bits
++	 *  5. short name
++	 *  6. long detail
++	 */
++	char *tokens[6];
++	struct reg_desc *reg;
++	struct bits_desc *bdesc;
++	int reg_index;
++	char *start, *end;
++
++	/* Skip comments and NULL line */
++	if (line[0] == '#' || line[0] == '\n')
++		return 0;
++
++	strncpy(buffer, line, 511);
++	buffer[511] = 0;
++	str = buffer;
++	for (i = 0; i < 5; i++) {
++		tokens[i] = strtok(str, ",");
++		if (!tokens[i])
++			goto err_exit;
++		str = NULL;
++	}
++	tokens[5] = strtok(str, "\n");
++
++	/* index/main-leaf */
++	index = strtoull(tokens[0], NULL, 0);
++
++	if (index & 0x80000000)
++		range = leafs_ext;
++	else
++		range = leafs_basic;
++
++	index &= 0x7FFFFFFF;
++	/* Skip line parsing for non-existing indexes */
++	if ((int)index >= range->nr)
++		return -1;
++
++	func = &range->funcs[index];
++
++	/* Return if the index has no valid item on this platform */
++	if (!func->nr)
++		return 0;
++
++	/* subleaf */
++	sub = strtoul(tokens[1], NULL, 0);
++	if ((int)sub > func->nr)
++		return -1;
++
++	leaf = &func->leafs[sub];
++	buf = tokens[2];
++
++	if (strcasestr(buf, "EAX"))
++		reg_index = R_EAX;
++	else if (strcasestr(buf, "EBX"))
++		reg_index = R_EBX;
++	else if (strcasestr(buf, "ECX"))
++		reg_index = R_ECX;
++	else if (strcasestr(buf, "EDX"))
++		reg_index = R_EDX;
++	else
++		goto err_exit;
++
++	reg = &leaf->info[reg_index];
++	bdesc = &reg->descs[reg->nr++];
++
++	/* bit flag or bits field */
++	buf = tokens[3];
++
++	end = strtok(buf, ":");
++	bdesc->end = strtoul(end, NULL, 0);
++	bdesc->start = bdesc->end;
++
++	/* start != NULL means it is bit fields */
++	start = strtok(NULL, ":");
++	if (start)
++		bdesc->start = strtoul(start, NULL, 0);
++
++	strcpy(bdesc->simp, tokens[4]);
++	strcpy(bdesc->detail, tokens[5]);
++	return 0;
++
++err_exit:
++	printf("Warning: wrong line format:\n");
++	printf("\tline[%d]: %s\n", flines, line);
++	return -1;
++}
++
++/* Parse csv file, and construct the array of all leafs and subleafs */
++static void parse_text(void)
++{
++	FILE *file;
++	char *filename, *line = NULL;
++	size_t len = 0;
++	int ret;
++
++	if (show_raw)
++		return;
++
++	filename = user_csv ? user_csv : def_csv;
++	file = fopen(filename, "r");
++	if (!file) {
++		printf("Fail to open '%s'\n", filename);
++		return;
++	}
++
++	while (1) {
++		ret = getline(&line, &len, file);
++		flines++;
++		if (ret > 0)
++			parse_line(line);
++
++		if (feof(file))
++			break;
++	}
++
++	fclose(file);
++}
++
++
++/* Decode every eax/ebx/ecx/edx */
++static void decode_bits(u32 value, struct reg_desc *rdesc)
++{
++	struct bits_desc *bdesc;
++	int start, end, i;
++	u32 mask;
++
++	for (i = 0; i < rdesc->nr; i++) {
++		bdesc = &rdesc->descs[i];
++
++		start = bdesc->start;
++		end = bdesc->end;
++		if (start == end) {
++			/* single bit flag */
++			if (value & (1 << start))
++				printf("\t%-20s %s%s\n",
++					bdesc->simp,
++					show_details ? "-" : "",
++					show_details ? bdesc->detail : ""
++					);
++		} else {
++			/* bit fields */
++			if (show_flags_only)
++				continue;
++
++			mask = ((u64)1 << (end - start + 1)) - 1;
++			printf("\t%-20s\t: 0x%-8x\t%s%s\n",
++					bdesc->simp,
++					(value >> start) & mask,
++					show_details ? "-" : "",
++					show_details ? bdesc->detail : ""
++					);
++		}
++	}
++}
++
++static void show_leaf(struct subleaf *leaf)
++{
++	if (!leaf)
++		return;
++
++	if (show_raw)
++		leaf_print_raw(leaf);
++
++	decode_bits(leaf->eax, &leaf->info[R_EAX]);
++	decode_bits(leaf->ebx, &leaf->info[R_EBX]);
++	decode_bits(leaf->ecx, &leaf->info[R_ECX]);
++	decode_bits(leaf->edx, &leaf->info[R_EDX]);
++}
++
++static void show_func(struct cpuid_func *func)
++{
++	int i;
++
++	if (!func)
++		return;
++
++	for (i = 0; i < func->nr; i++)
++		show_leaf(&func->leafs[i]);
++}
++
++static void show_range(struct cpuid_range *range)
++{
++	int i;
++
++	for (i = 0; i < range->nr; i++)
++		show_func(&range->funcs[i]);
++}
++
++static inline struct cpuid_func *index_to_func(u32 index)
++{
++	struct cpuid_range *range;
++
++	range = (index & 0x80000000) ? leafs_ext : leafs_basic;
++	index &= 0x7FFFFFFF;
++
++	if (((index & 0xFFFF) + 1) > (u32)range->nr) {
++		printf("ERR: invalid input index (0x%x)\n", index);
++		return NULL;
++	}
++	return &range->funcs[index];
++}
++
++static void show_info(void)
++{
++	struct cpuid_func *func;
++
++	if (show_raw) {
++		/* Show all of the raw output of 'cpuid' instr */
++		raw_dump_range(leafs_basic);
++		raw_dump_range(leafs_ext);
++		return;
++	}
++
++	if (user_index != 0xFFFFFFFF) {
++		/* Only show specific leaf/subleaf info */
++		func = index_to_func(user_index);
++		if (!func)
++			return;
++
++		/* Dump the raw data also */
++		show_raw = true;
++
++		if (user_sub != 0xFFFFFFFF) {
++			if (user_sub + 1 <= (u32)func->nr) {
++				show_leaf(&func->leafs[user_sub]);
++				return;
++			}
++
++			printf("ERR: invalid input subleaf (0x%x)\n", user_sub);
++		}
++
++		show_func(func);
++		return;
++	}
++
++	printf("CPU features:\n=============\n\n");
++	show_range(leafs_basic);
++	show_range(leafs_ext);
++}
++
++static void setup_platform_cpuid(void)
++{
++	 u32 eax, ebx, ecx, edx;
++
++	/* Check vendor */
++	eax = ebx = ecx = edx = 0;
++	cpuid(&eax, &ebx, &ecx, &edx);
++
++	/* "htuA" */
++	if (ebx == 0x68747541)
++		is_amd = true;
++
++	/* Setup leafs for the basic and extended range */
++	leafs_basic = setup_cpuid_range(0x0);
++	leafs_ext = setup_cpuid_range(0x80000000);
++}
++
++static void usage(void)
++{
++	printf("  usage: kcpuid [-abdfhr] [-l leaf] [-s subleaf]\n"
++		"\t-a|--all             Show both bit flags and complex bit fields info\n"
++		"\t-b|--bitflags        Show boolean flags only\n"
++		"\t-d|--detail          Show details of the flag/fields (default)\n"
++		"\t-f|--flags           Specify the cpuid csv file\n"
++		"\t-h|--help            Show usage info\n"
++		"\t-l|--leaf=index      Specify the leaf you want to check\n"
++		"\t-r|--raw             Show raw cpuid data\n"
++		"\t-s|--subleaf=sub     Specify the subleaf you want to check\n"
++		"\n"
++	);
++}
++
++static struct option opts[] = {
++	{ "all", no_argument, NULL, 'a' },		/* show both bit flags and fields */
++	{ "bitflags", no_argument, NULL, 'b' },		/* only show bit flags, default on */
++	{ "detail", no_argument, NULL, 'd' },		/* show detail descriptions */
++	{ "file", required_argument, NULL, 'f' },	/* use user's cpuid file */
++	{ "help", no_argument, NULL, 'h'},		/* show usage */
++	{ "leaf", required_argument, NULL, 'l'},	/* only check a specific leaf */
++	{ "raw", no_argument, NULL, 'r'},		/* show raw CPUID leaf data */
++	{ "subleaf", required_argument, NULL, 's'},	/* check a specific subleaf */
++	{ NULL, 0, NULL, 0 }
++};
++
++static int parse_options(int argc, char *argv[])
++{
++	int c;
++
++	while ((c = getopt_long(argc, argv, "abdf:hl:rs:",
++					opts, NULL)) != -1)
++		switch (c) {
++		case 'a':
++			show_flags_only = false;
++			break;
++		case 'b':
++			show_flags_only = true;
++			break;
++		case 'd':
++			show_details = true;
++			break;
++		case 'f':
++			user_csv = optarg;
++			break;
++		case 'h':
++			usage();
++			exit(1);
++			break;
++		case 'l':
++			/* main leaf */
++			user_index = strtoul(optarg, NULL, 0);
++			break;
++		case 'r':
++			show_raw = true;
++			break;
++		case 's':
++			/* subleaf */
++			user_sub = strtoul(optarg, NULL, 0);
++			break;
++		default:
++			printf("%s: Invalid option '%c'\n", argv[0], optopt);
++			return -1;
++	}
++
++	return 0;
++}
++
++/*
++ * Do 4 things in turn:
++ * 1. Parse user options
++ * 2. Parse and store all the CPUID leaf data supported on this platform
++ * 2. Parse the csv file, while skipping leafs which are not available
++ *    on this platform
++ * 3. Print leafs info based on uers options
++ */
++int main(int argc, char *argv[])
++{
++	if (parse_options(argc, argv))
++		return -1;
++
++	/* Setup the cpuid leafs of current platform */
++	setup_platform_cpuid();
++
++	/* Read and parse the 'cpuid.csv' */
++	parse_text();
++
++	show_info();
++	return 0;
++}
+-- 
+2.7.4
 
