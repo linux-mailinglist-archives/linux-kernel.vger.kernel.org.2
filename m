@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F4A32E6E2
+	by mail.lfdr.de (Postfix) with ESMTP id 719E632E6E1
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhCEK6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:58:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59084 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229563AbhCEK6P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S229615AbhCEK6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:58:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229562AbhCEK6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Mar 2021 05:58:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614941895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sHlrpn4zse8BQ0Odyiv2E1am7E/hOFAxlulV7HXZ0PM=;
-        b=ZCmABzpTrR0DTSBHwH0N3PJLqpBjM8JJx+vXKMb1+flbAXrfp4OCqNxsR0R/zoOBY4uflK
-        W9eKwttTZ8K1zWve6jNwPkEbluAB3THifv3RNXeRr6TbvuAxOAUaBAj36fL9W0bxQj/DaC
-        Dcu/TnG1wIu53/4vmgVIht8im11YES0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-141-ErG1G87MPb-WDEP0o854_Q-1; Fri, 05 Mar 2021 05:58:13 -0500
-X-MC-Unique: ErG1G87MPb-WDEP0o854_Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46E6C1054F90;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 060A065017;
         Fri,  5 Mar 2021 10:58:11 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.191])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 8C48760C43;
-        Fri,  5 Mar 2021 10:57:58 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri,  5 Mar 2021 11:58:10 +0100 (CET)
-Date:   Fri, 5 Mar 2021 11:57:57 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>
-Subject: Re: [PATCH] signal: Allow RT tasks to cache one sigqueue struct
-Message-ID: <20210305105756.GA20900@redhat.com>
-References: <20210303142025.wbbt2nnr6dtgwjfi@linutronix.de>
- <20210303153732.GC28955@redhat.com>
- <87im6662xg.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87im6662xg.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614941894;
+        bh=tpGGos/+4wGJlmCH7+jmCnuleW/o3VbCDIjs2xkrdBI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pWzBFywBn6pibvyb63ukNW329oDFwIF51VDg3ZLjDiBrE+71K0AYTNEYf5cv0N93V
+         6B6j+eXZj/kVLnu2EWLqMbP+wZcymdRcZhII+VPZfshVMuE8bQib7qKvMIyqTDtUON
+         HjalYOsUZO2jc1ReVZHMAbk/s72yyhIDnPHDVfbPy4CU5JbNkj0SAGZ2zBk3z8ECTK
+         S47bpW2pMm6kJ79/2TGUz5yjO7naoMtXvstmK660DJw/eHWdIB7wWCva3YWbeeyJdz
+         uHA8/O6t0HQTbimx4/76Lwe4q3iH5P3ASXzk9RLt0aKjlaQNaQ73y9Fv4W5uPZIePQ
+         9j0GNqlZNkw2g==
+Date:   Fri, 5 Mar 2021 19:58:09 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, rostedt@goodmis.org,
+        jpoimboe@redhat.com, kuba@kernel.org, ast@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com, yhs@fb.com
+Subject: Re: [PATCH] x86: kprobes: orc: Fix ORC walks in kretprobes
+Message-Id: <20210305195809.a9784ecf0b321c14fd18d247@kernel.org>
+In-Reply-To: <20210305182806.df403dec398875c2c1b2c62d@kernel.org>
+References: <d72c62498ea0514e7b81a3eab5e8c1671137b9a0.1614902828.git.dxu@dxuuu.xyz>
+        <20210305182806.df403dec398875c2c1b2c62d@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/04, Thomas Gleixner wrote:
->
-> On Wed, Mar 03 2021 at 16:37, Oleg Nesterov wrote:
-> > On 03/03, Sebastian Andrzej Siewior wrote:
-> >>
-> >> +static struct sigqueue *sigqueue_from_cache(struct task_struct *t)
-> >> +{
-> >> +	struct sigqueue *q = t->sigqueue_cache;
-> >> +
-> >> +	if (q && cmpxchg(&t->sigqueue_cache, q, NULL) == q)
-> >> +		return q;
-> >> +	return NULL;
-> >> +}
-> >> +
-> >> +static bool sigqueue_add_cache(struct task_struct *t, struct sigqueue *q)
-> >> +{
-> >> +	if (!t->sigqueue_cache && cmpxchg(&t->sigqueue_cache, NULL, q) == NULL)
-> >> +		return true;
-> >> +	return false;
-> >> +}
-> >
-> > Do we really need cmpxchg? It seems they are always called with
-> > spinlock held.
->
-> With which spinlock held?
->
-> __send_signal()         <- sighand::siglock held
->   __sigqueue_alloc()
->
-> alloc_posix_timer()
->   sigqueue_alloc()      <- No lock held
->     __sigqueue_alloc()
+On Fri, 5 Mar 2021 18:28:06 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-In the last case "fromslab" is true, sigqueue_from_cache() won't be called.
+> Hi Daniel,
+> 
+> On Thu,  4 Mar 2021 16:07:52 -0800
+> Daniel Xu <dxu@dxuuu.xyz> wrote:
+> 
+> > Getting a stack trace from inside a kretprobe used to work with frame
+> > pointer stack walks. After the default unwinder was switched to ORC,
+> > stack traces broke because ORC did not know how to skip the
+> > `kretprobe_trampoline` "frame".
+> > 
+> > Frame based stack walks used to work with kretprobes because
+> > `kretprobe_trampoline` does not set up a new call frame. Thus, the frame
+> > pointer based unwinder could walk directly to the kretprobe'd caller.
+> > 
+> > For example, this stack is walked incorrectly with ORC + kretprobe:
+> > 
+> >     # bpftrace -e 'kretprobe:do_nanosleep { @[kstack] = count() }'
+> >     Attaching 1 probe...
+> >     ^C
+> > 
+> >     @[
+> >         kretprobe_trampoline+0
+> >     ]: 1
+> > 
+> > After this patch, the stack is walked correctly:
+> > 
+> >     # bpftrace -e 'kretprobe:do_nanosleep { @[kstack] = count() }'
+> >     Attaching 1 probe...
+> >     ^C
+> > 
+> >     @[
+> >         kretprobe_trampoline+0
+> >         __x64_sys_nanosleep+150
+> >         do_syscall_64+51
+> >         entry_SYSCALL_64_after_hwframe+68
+> >     ]: 12
+> > 
+> > Fixes: fc72ae40e303 ("x86/unwind: Make CONFIG_UNWINDER_ORC=y the default in kconfig for 64-bit")
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> 
+> OK, basically good, but this is messy, and doing much more than fixing issue.
 
-> and on the free side we have a bunch of callers which do not hold
-> sighand::siglock either.
+BTW, is this a regression? or CONFIG_UNWINDER_ORC has this issue before?
+It seems that the above commit just changed the default unwinder. This means
+OCR stack unwinder has this bug before that commit. If you choose the 
+CONFIG_UNWINDER_FRAME_POINTER, it might work again.
 
-Where?
+If so, it is not a regression. this need to be fixed, but ORC has this issue
+from the original code.
 
-Oleg.
+Thank you,
 
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
