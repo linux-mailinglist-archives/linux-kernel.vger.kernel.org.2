@@ -2,133 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8374F32E3E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:46:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3207532E3E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 09:48:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbhCEIqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 03:46:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
+        id S229601AbhCEIsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 03:48:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhCEIpx (ORCPT
+        with ESMTP id S229589AbhCEIr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 03:45:53 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AAFC06175F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 00:45:53 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id mj10so1898709ejb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 00:45:53 -0800 (PST)
+        Fri, 5 Mar 2021 03:47:27 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9B0C061574;
+        Fri,  5 Mar 2021 00:47:27 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d12so1594708pfo.7;
+        Fri, 05 Mar 2021 00:47:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5iA4x57cYD26M9mH9ZJl/HuREPakbn8+6uPhwu8dScQ=;
-        b=NfLSGdKWY4SW5FR5f1IF46zHLQNEnhdkLS+i/UTCwbQJl3iejMao+y0vnNga2Rm51m
-         UPhwK0pUNjGXenfpV40qgmpkqDIDWwM8PHXixt/Ix6mGuGMM0thPNB0LDKi87aqZh6hE
-         xI0tOylhI5e87UfYhA7fkkP4ZGOSHgs1APTcpwVICgS67QeqmMWOg50ZFVFcsdfcIMQa
-         YFeteLio3B6FM0SAoP/p/UOpn+WtV1jZ8v8fqI49wq+yMcgIoZ9mn38ZcpKf/1TDBtyi
-         NTWzqTeDX7eHn2ihLG7oChALd4H/OyrOcDSldnMC3lXH7Po0IN9YqR2c/8Cf8p7JTN7i
-         Qpxg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=iXKUWbmSLel/CjieMrQtXA0OopXZ8i0L9q59UfEsA0s=;
+        b=skX3ruyx3cB6ZanqDYCAHTQzs+jzI4cnVjOOexKNwYf5usKc8EbUNNMoJGI/3KR7dC
+         +9QnguEddejP6D60EtKXdYKgHejnXZbHHZOiyUq7hpdpmp2Pcfu8xpWSQsBQ0Ng/Knq3
+         PEQBDGsOz5ZQXdQb0pWHw5602hr7ICNobyzdDnWBJrED/bMVbEQsEd2n/sdwi21QqB5Y
+         +9KGQaQ1U6G7pD8qqZLVrRruFbHIQLfHKr9I8Izse9DoPMUbsNsw5N2NJXsCIihUanjO
+         Z45AjsJ5j6Wz3vxsdsNKigadJUpyDq+sAMWwv6GFEhyjre5ZuecAWkaamN46wMqbVdXK
+         8KQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5iA4x57cYD26M9mH9ZJl/HuREPakbn8+6uPhwu8dScQ=;
-        b=QUyfogbV9TV6+irPuWlnAB2dezU877JIt6inA1cR8vFu7y1CGaQwTpjSwyethA8TnV
-         hR1MRHfNmK3uDsnHzSRQ2TDVNiDqZSXv9c7BSxP6trfjyALv1Dpw9gQdcuUehi3UFm0s
-         q93yfVCek7JFvYIDngo3jWj+JEHm9359Jqm5ER7mHapcgoXmWqE8R1826TDnQTBAinHV
-         RQqtSmiUSb76eYkOwRQ+uZ54vk3Njmob5eNpvI3ATHlxB5JQ5OOk5sGTqy5S2sWnYIHl
-         QDnr5nLh+9uX1jPgStMNI9R3N6aneexg5mp4ONGv9/klUezyOHRyVc2xySxE4evNss8J
-         duZA==
-X-Gm-Message-State: AOAM533CgEoTOCF4P53Z6oQpTopgQ31WWR5UfXQDWNEOeXgITH7hn/BC
-        bc+4on923n7UKFeOM/J8mFnR15j7huhijtnVLvqfNA==
-X-Google-Smtp-Source: ABdhPJxvKJEduCeKxilU3h+wx3QcSAC478yoM/m/H5MK1cr3jwbhYnACXxu4n/dzHr/P2a6/wAMjv9mLYiv4d555RVM=
-X-Received: by 2002:a17:906:d938:: with SMTP id rn24mr1425523ejb.87.1614933952198;
- Fri, 05 Mar 2021 00:45:52 -0800 (PST)
-MIME-Version: 1.0
-References: <20210304102452.21726-1-brgl@bgdev.pl> <20210304102452.21726-9-brgl@bgdev.pl>
- <CAMuHMdXRK5=w1-Z=EbM60Sf2bLY1EiVaxbZjMP+XyQ3g7nBpZw@mail.gmail.com> <YEHs3CxWnusWklME@kroah.com>
-In-Reply-To: <YEHs3CxWnusWklME@kroah.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 5 Mar 2021 09:45:41 +0100
-Message-ID: <CAMRc=MddDb+nakgEM+Xeqm=rMMkkWO2EDekD36EoPJashYP88w@mail.gmail.com>
-Subject: Re: [PATCH v2 08/12] drivers: export device_is_bound()
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>, Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=iXKUWbmSLel/CjieMrQtXA0OopXZ8i0L9q59UfEsA0s=;
+        b=rdcQaao0XBNbN5ZMTMQ0nozXei4CGBBc1QZQDJTQg2bQXdfbzYf1axGFmAHwDykLCo
+         Legjo3j2qEKmi+n/ngLszPQnVsgnpqKsHOaSzCJ9iZlwmESTjx2jFkyc3kLtJ1bJfji9
+         oKeylA4iWdAVnj8k7rqRBtsEbZ0aeu4aij4lU5ds/bvc7IE3iGdSixNkCP9ntnwdstYS
+         mGNC0LIi0Do6UYY93gAxWUuHqsUhzAbTQUJY3+H09zgLizhtYM9Vft06sVXZLzOaWXNe
+         JxXgfQ293gOceq6CViYtzVAOK/zhzu1UKHtVmZloBrr7Eh3V6w9eyzOuS8lm5e44vYlD
+         mtJw==
+X-Gm-Message-State: AOAM530ff83v2p49ikmBx1KznedcZEJVaciEnfaUJd5iX1ejBkwv4j+j
+        sbfYMHcNDXejE6JonaPmtEE=
+X-Google-Smtp-Source: ABdhPJy7+djtqogavZnlVRBFra1BNaxIq3rv16L8ZDRVEHRYdhxWaAozpsxz4/f+Csk+HDM8H8S8Rw==
+X-Received: by 2002:a05:6a00:886:b029:1ed:b546:6d1f with SMTP id q6-20020a056a000886b02901edb5466d1fmr8202804pfj.22.1614934047345;
+        Fri, 05 Mar 2021 00:47:27 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.129])
+        by smtp.gmail.com with ESMTPSA id js16sm1664393pjb.21.2021.03.05.00.47.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 00:47:26 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com,
+        stanley.chu@mediatek.com, cang@codeaurora.org,
+        tomas.winkler@intel.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] scsi: ufs: fix error return code of ufshcd_populate_vreg()
+Date:   Fri,  5 Mar 2021 00:47:18 -0800
+Message-Id: <20210305084718.12108-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 9:34 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Mar 05, 2021 at 09:18:30AM +0100, Geert Uytterhoeven wrote:
-> > CC Greg
-> >
-> > On Thu, Mar 4, 2021 at 11:30 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> > >
-> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > >
-> > > Export the symbol for device_is_bound() so that we can use it in gpio-sim
-> > > to check if the simulated GPIO chip is bound before fetching its driver
-> > > data from configfs callbacks in order to retrieve the name of the GPIO
-> > > chip device.
-> > >
-> > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > ---
-> > >  drivers/base/dd.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> > > index 9179825ff646..c62c02e3490a 100644
-> > > --- a/drivers/base/dd.c
-> > > +++ b/drivers/base/dd.c
-> > > @@ -353,6 +353,7 @@ bool device_is_bound(struct device *dev)
-> > >  {
-> > >         return dev->p && klist_node_attached(&dev->p->knode_driver);
-> > >  }
-> > > +EXPORT_SYMBOL_GPL(device_is_bound);
->
-> No.  Please no.  Why is this needed?  Feels like someone is doing
-> something really wrong...
->
-> NACK.
->
+When np is NULL or of_parse_phandle() returns NULL, no error return code
+of ufshcd_populate_vreg() is assigned.
+To fix this bug, ret is assigned with -EINVAL or -ENOENT as error return
+code.
 
-I should have Cc'ed you the entire series, my bad.
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/scsi/ufs/ufshcd-pltfrm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-This is the patch that uses this change - it's a new, improved testing
-module for GPIO using configfs & sysfs as you (I think) suggested a
-while ago:
+diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
+index 1a69949a4ea1..9f11c416a919 100644
+--- a/drivers/scsi/ufs/ufshcd-pltfrm.c
++++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+@@ -113,6 +113,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
+ 
+ 	if (!np) {
+ 		dev_err(dev, "%s: non DT initialization\n", __func__);
++		ret = -EINVAL;
+ 		goto out;
+ 	}
+ 
+@@ -120,6 +121,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
+ 	if (!of_parse_phandle(np, prop_name, 0)) {
+ 		dev_info(dev, "%s: Unable to find %s regulator, assuming enabled\n",
+ 				__func__, prop_name);
++		ret = -ENOENT;
+ 		goto out;
+ 	}
+ 
+-- 
+2.17.1
 
-https://lkml.org/lkml/2021/3/4/355
-
-The story goes like this: committing the configfs item registers a
-platform device. As far as I understand - there's no guarantee that
-the device will be bound to a driver before the commit callback (or
-more specifically platform_device_register_full() in this case)
-returns so the user may try to retrieve the name of the device
-immediately (normally user-space should wait for the associated uevent
-but nobody can force that) by doing:
-
-mv /sys/kernel/config/gpio-sim/pending/foo /sys/kernel/config/gpio-sim/live/
-cat /sys/kernel/config/gpio-sim/live/foo/dev_name
-
-If the device is not bound at this point, we'll have a crash in the
-kernel as opposed to just returning -ENODEV.
-
-Please advise on how to handle it without device_is_bound().
-
-Best Regards,
-Bartosz
