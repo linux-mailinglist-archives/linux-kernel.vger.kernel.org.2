@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47DBB32F00A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:30:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB8A32F033
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 17:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhCEQ31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 11:29:27 -0500
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:37986 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230249AbhCEQ3Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 11:29:16 -0500
-Received: from pps.filterd (m0150242.ppops.net [127.0.0.1])
-        by mx0a-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125GOAXi001599;
-        Fri, 5 Mar 2021 16:29:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
- bh=fJHyDTB2qPx+sZf6HGzCPJL+APYbN9P6V3Y1YSTgLkg=;
- b=ChkZ/+Iys3Az4ekP4HQ+/L3SjbR4IH8047LydBdT7q8DRaf760tIya+bdcF325aTPw8m
- +sl8rmm4GAyrPgyFACYvkKb8r+B9X3W+odos90PAUPgpNpoU8qOS0Ntv7pkJ1nVyorcj
- fR7ejuetWopl0XwVuwfR97mgtMjRAiD1O5UBrNd4Y/Dee9/FIJtoH3Aja2xs1DAV0M5k
- 5MIn6wmDlGnnRphJRjnJc3UV3OfXXbjzlij9Ar87yEHdj2uxEPDgBa5TinNDOVcZ26FB
- 8yeXnQOf6fDSpHDD5MDLnT6QoeEbYO/GVamDZsUvNC93H/5jpTePjMAi1JitarIb1Gn3 dA== 
-Received: from g2t2354.austin.hpe.com (g2t2354.austin.hpe.com [15.233.44.27])
-        by mx0a-002e3701.pphosted.com with ESMTP id 373feec5ge-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Mar 2021 16:29:04 +0000
-Received: from g2t2360.austin.hpecorp.net (g2t2360.austin.hpecorp.net [16.196.225.135])
-        by g2t2354.austin.hpe.com (Postfix) with ESMTP id 2A2EB83;
-        Fri,  5 Mar 2021 16:29:03 +0000 (UTC)
-Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g2t2360.austin.hpecorp.net (Postfix) with ESMTP id 5E05237;
-        Fri,  5 Mar 2021 16:29:02 +0000 (UTC)
-From:   Mike Travis <mike.travis@hpe.com>
-To:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steve Wahl <steve.wahl@hpe.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Mike Travis <mike.travis@hpe.com>, Russ Anderson <rja@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH v2] x86/platform/uv: Add set of kernel block size for hubless arches
-Date:   Fri,  5 Mar 2021 10:28:53 -0600
-Message-Id: <20210305162853.299892-1-mike.travis@hpe.com>
-X-Mailer: git-send-email 2.21.0
+        id S230260AbhCEQkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 11:40:18 -0500
+Received: from m12-13.163.com ([220.181.12.13]:55246 "EHLO m12-13.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229558AbhCEQjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 11:39:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=84Sfy
+        PNBxHgq99YUnviXVMgxuSif+wV/5LOoOlGrFtQ=; b=d2r1GH0EG/1ZtieJlsl8k
+        dgGT32KnYEgdiprQHHc5E2UbtwQWmq/DJPV1GQTRmm1AOuO8oAp3dxb4P3IzwHcF
+        lPcs7r1lDODuRyuHp8QHDLE/ut/x0YeOob749j/pOBPBuxKcDvrhSwSWXLNWUdzr
+        STn/9KJa4Glhyp9RkIJBuM=
+Received: from yangjunlin.ccdomain.com (unknown [218.17.89.92])
+        by smtp9 (Coremail) with SMTP id DcCowAAnd5Ns8EFgtBCrhw--.51670S2;
+        Fri, 05 Mar 2021 16:48:46 +0800 (CST)
+From:   angkery <angkery@163.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        drt@linux.ibm.com, ljp@linux.ibm.com, sukadev@linux.ibm.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Junlin Yang <yangjunlin@yulong.com>
+Subject: [PATCH v1] ibmvnic: remove excessive irqsave
+Date:   Fri,  5 Mar 2021 16:48:39 +0800
+Message-Id: <20210305084839.2405-1-angkery@163.com>
+X-Mailer: git-send-email 2.24.0.windows.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-05_10:2021-03-03,2021-03-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- mlxlogscore=999 clxscore=1015 spamscore=0 lowpriorityscore=0 phishscore=0
- suspectscore=0 priorityscore=1501 mlxscore=0 impostorscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103050082
+X-CM-TRANSID: DcCowAAnd5Ns8EFgtBCrhw--.51670S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7WF13Xr4fKFy5Ar4UZF47urg_yoW8CFykpF
+        4fWFy3Gw1vqw1jqa9rXw18AFs3C39YgrW8u34kCws3ur98Ar1rXFn5tFy29rWDG3ySkan8
+        ZF1UZ393AFn8C3DanT9S1TB71UUUUj7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07b58n5UUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5dqjyvlu16il2tof0z/xtbBFA5MI1aD+lj1pQAAsS
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit below added a call to set the block size value that is needed
-by the kernel to set the boundaries in the section list.  This was done
-for UV Hubbed systems but missed in the UV Hubless setup.  Fix that
-mistake by adding that same set call for hubless systems, which support
-the same NVRAMS and Intel BIOS, thus the same problem occurs.
+From: Junlin Yang <yangjunlin@yulong.com>
 
-Fixes: bbbd2b51a2aa ("x86/platform/UV: Use new set memory block size function")
+ibmvnic_remove locks multiple spinlocks while disabling interrupts:
+spin_lock_irqsave(&adapter->state_lock, flags);
+spin_lock_irqsave(&adapter->rwi_lock, flags);
 
-Signed-off-by: Mike Travis <mike.travis@hpe.com>
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
-Reviewed-by: Russ Anderson <rja@hpe.com>
+As reported by coccinelle, the second _irqsave() overwrites the value
+saved in 'flags' by the first _irqsave(),   therefore when the second
+_irqrestore() comes,the value in 'flags' is not valid,the value saved
+by the first _irqsave() has been lost.
+This likely leads to IRQs remaining disabled. So remove the second
+_irqsave():
+spin_lock_irqsave(&adapter->state_lock, flags);
+spin_lock(&adapter->rwi_lock);
+
+Generated by: ./scripts/coccinelle/locks/flags.cocci
+./drivers/net/ethernet/ibm/ibmvnic.c:5413:1-18:
+ERROR: nested lock+irqsave that reuses flags from line 5404.
+
+Fixes: 4a41c421f367 ("ibmvnic: serialize access to work queue on remove")
+Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
 ---
-v2: Change patch description to match requirements.
----
- arch/x86/kernel/apic/x2apic_uv_x.c | 3 +++
- 1 file changed, 3 insertions(+)
+Changes in v1:
+	a.According to Christophe Leroy's explanation, update the commit information.
+	b.Add fixes tags.
 
-diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index 52bc217ca8c3..c9ddd233e32f 100644
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -1671,6 +1671,9 @@ static __init int uv_system_init_hubless(void)
- 	if (rc < 0)
- 		return rc;
+ drivers/net/ethernet/ibm/ibmvnic.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index 2464c8a..a52668d 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -5408,9 +5408,9 @@ static void ibmvnic_remove(struct vio_dev *dev)
+ 	 * after setting state, so __ibmvnic_reset() which is called
+ 	 * from the flush_work() below, can make progress.
+ 	 */
+-	spin_lock_irqsave(&adapter->rwi_lock, flags);
++	spin_lock(&adapter->rwi_lock);
+ 	adapter->state = VNIC_REMOVING;
+-	spin_unlock_irqrestore(&adapter->rwi_lock, flags);
++	spin_unlock(&adapter->rwi_lock);
  
-+	/* Set section block size for current node memory */
-+	set_block_size();
-+
- 	/* Create user access node */
- 	if (rc >= 0)
- 		uv_setup_proc_files(1);
+ 	spin_unlock_irqrestore(&adapter->state_lock, flags);
+ 
 -- 
-2.21.0
+1.9.1
+
 
