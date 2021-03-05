@@ -2,146 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B414D32E594
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1CA32E595
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbhCEKCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:02:20 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:40020 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhCEKCB (ORCPT
+        id S229963AbhCEKCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:02:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhCEKCR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:02:01 -0500
-Received: by mail-ot1-f54.google.com with SMTP id b8so1244765oti.7;
-        Fri, 05 Mar 2021 02:02:01 -0800 (PST)
+        Fri, 5 Mar 2021 05:02:17 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3DFC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 02:02:17 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id w1so2250458ejf.11
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 02:02:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GRC2Y0yC42Y1EH5KbI50W2aWiq7kngTQEblGKY3SQmc=;
+        b=GothC0fBH2XEicdmeOy5BlwIbxBo48V//n3KuOEKMVDhURBrKEn/1pxUN4qEWEBxVL
+         VmRm+QJaoXGlEkFUEPwSTCYSZXnp7oS4PM6WDINCcivyN8nXan+UzaUjbdRAl0xabMLs
+         /mFbFxoTbyRzi/zmsBkORqS/pvZLvfLxdpmIs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uKCewYQJvMbPerPRkRf9I5tEdNTeXU0qbT+16Snt2Nc=;
-        b=neFDCsrxlqQQL46DIue4SWDA9v7BBpud6txGoXnfaOWxRbE225Toqg7cLxrVPCC80M
-         u1/V7brE5QP4eO+RlgttRas0v7sGTPnyAe/82xN6joa+gjwIHCWTmRmqtBD2xBZM6jQo
-         81d5Mk6352f1mC0Hh81MV1/3YJBVtGOcQ0iK1zrYneSObaccgBgNJ4WQVeGMUBjAS4jj
-         D73Pb6scRJf5aawTv3m9NmN08MKdVg8covdapvElwgr6SthDlP14QIlzCzAb9rm0QMQf
-         RARL7THBtFEJtMkoruRzbevB5/Rbrr9vncWXMHDkQapDKO7o0uJB9mOojShneVyHl87o
-         N/OA==
-X-Gm-Message-State: AOAM5328yI4GMeO+5whH7tQhL8SVSfN5ZIp+l4yEiQG05MdFPbOMbkJe
-        kE5N+Rz8n8/AlhDekXI1vA0yBD+7GzxGr92BKRA=
-X-Google-Smtp-Source: ABdhPJzG3yT1mT7d18zhGjsd+eH1orCoPyrGsDUdNVtcFvmTZQwPtYk2JByvXe4N+5oBPifp9krAVXolQYC+z1hM+8Y=
-X-Received: by 2002:a9d:4a8e:: with SMTP id i14mr7340068otf.37.1614938520646;
- Fri, 05 Mar 2021 02:02:00 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GRC2Y0yC42Y1EH5KbI50W2aWiq7kngTQEblGKY3SQmc=;
+        b=kEY0CXcg2b/ygyhThJDCBjvjxrZhcpjhojveSBq95rbciAocjVD7VA9UjE5bPfZz78
+         Ufw679woC9gQ1FDHsZwnwsAbHK62JH69M7YgQVEE9UjZMdo8W56Tfx2g7oQna5nzdC9I
+         9pH9naLhukMizqDh8FrEdOOURpLQZVJlnj8s4Jfsq162XqCECFV72eQgav6xjKOGvTPa
+         ka3IrN6gixkp6EnK9/xyvlsxZ/o+k9oKaeJ4UZ64fD76jxWygP95PFLcxee7rI0cX/u8
+         YmsmHSLNkAVfxpeNRMXnotTjAbcBS8cWdheYVVnA+FVTJGETqmB8lxIZnBTNG3jtRG/N
+         eRhg==
+X-Gm-Message-State: AOAM533vRVWmpLEPi6DW6UF8DWNkK6uXn9PNqGTOTfGx++BZGdkZ0JUL
+        KmSpMgYwVhrsaS4nolF6FCIr/Q==
+X-Google-Smtp-Source: ABdhPJzcocXQzKr/9kf3AnihZeBnSoVC3XwiNhCp06ZeOpkZhLYwKWQOtRRDmPzyUe8gyE9xRq/xEg==
+X-Received: by 2002:a17:906:7150:: with SMTP id z16mr1512151ejj.103.1614938536001;
+        Fri, 05 Mar 2021 02:02:16 -0800 (PST)
+Received: from prevas-ravi.prevas.se ([80.208.71.141])
+        by smtp.gmail.com with ESMTPSA id y2sm1223419ejf.30.2021.03.05.02.02.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 02:02:15 -0800 (PST)
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: apply fixdep logic to link-vmlinux.sh
+Date:   Fri,  5 Mar 2021 11:02:12 +0100
+Message-Id: <20210305100212.818562-1-linux@rasmusvillemoes.dk>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210304110057.22144-1-zhangqing@loongson.cn> <20210304110057.22144-3-zhangqing@loongson.cn>
-In-Reply-To: <20210304110057.22144-3-zhangqing@loongson.cn>
-From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
-Date:   Fri, 5 Mar 2021 11:01:49 +0100
-Message-ID: <CAAdtpL6xDyYgDdHFkZPjtbbX4tV4K=7YehEoeGSgHdw-rXtURw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] MIPS: Loongson64: Move loongson_system_configuration
- to loongson.h
-To:     Qing Zhang <zhangqing@loongson.cn>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The patch adding CONFIG_VMLINUX_MAP revealed a small defect in the
+build system: link-vmlinux.sh takes decisions based on CONFIG_*
+options, but changing one of those does not always lead to vmlinux
+being linked again.
 
-On Thu, Mar 4, 2021 at 5:35 PM Qing Zhang <zhangqing@loongson.cn> wrote:
->
-> The purpose of separating loongson_system_configuration from boot_param.h
-> is to keep the other structure consistent with the firmware.
+For most of the CONFIG_* knobs referenced previously, this has
+probably been hidden by those knobs also affecting some object file,
+hence indirectly also vmlinux.
 
-This is supposed to be a trivial patch, but the description actually
-confuses me.
+But CONFIG_VMLINUX_MAP is only handled inside link-vmlinux.sh, and
+changing CONFIG_VMLINUX_MAP=n to CONFIG_VMLINUX_MAP=y does not cause
+the build system to re-link (and hence have vmlinux.map
+emitted). Since that map file is mostly a debugging aid, this is
+merely a nuisance which is easily worked around by just deleting
+vmlinux and building again.
 
-Why is the move out of "boot_param.h" keeping it consistent with fw?
+But one could imagine other (possibly future) CONFIG options that
+actually do affect the vmlinux binary but which are not captured
+through some object file dependency.
 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
-> ---
->  .../include/asm/mach-loongson64/boot_param.h   | 18 ------------------
->  .../include/asm/mach-loongson64/loongson.h     | 18 ++++++++++++++++++
->  drivers/irqchip/irq-loongson-liointc.c         |  2 +-
->  3 files changed, 19 insertions(+), 19 deletions(-)
->
-> diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch/mips/include/asm/mach-loongson64/boot_param.h
-> index 1c1cdf57137e..035b1a69e2d0 100644
-> --- a/arch/mips/include/asm/mach-loongson64/boot_param.h
-> +++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
-> @@ -198,24 +198,6 @@ enum loongson_bridge_type {
->         VIRTUAL = 3
->  };
->
-> -struct loongson_system_configuration {
-> -       u32 nr_cpus;
-> -       u32 nr_nodes;
-> -       int cores_per_node;
-> -       int cores_per_package;
-> -       u16 boot_cpu_id;
-> -       u16 reserved_cpus_mask;
-> -       enum loongson_cpu_type cputype;
-> -       enum loongson_bridge_type bridgetype;
-> -       u64 restart_addr;
-> -       u64 poweroff_addr;
-> -       u64 suspend_addr;
-> -       u64 vgabios_addr;
-> -       u32 dma_mask_bits;
-> -       u64 workarounds;
-> -       void (*early_config)(void);
-> -};
-> -
->  extern struct efi_memory_map_loongson *loongson_memmap;
->  extern struct loongson_system_configuration loongson_sysconf;
->
-> diff --git a/arch/mips/include/asm/mach-loongson64/loongson.h b/arch/mips/include/asm/mach-loongson64/loongson.h
-> index ac1c20e172a2..6189deb188cf 100644
-> --- a/arch/mips/include/asm/mach-loongson64/loongson.h
-> +++ b/arch/mips/include/asm/mach-loongson64/loongson.h
-> @@ -12,6 +12,24 @@
->  #include <linux/irq.h>
->  #include <boot_param.h>
->
-> +/* machine-specific boot configuration */
-> +struct loongson_system_configuration {
-> +       u32 nr_cpus;
-> +       u32 nr_nodes;
-> +       int cores_per_node;
-> +       int cores_per_package;
-> +       u16 boot_cpu_id;
-> +       u16 reserved_cpus_mask;
-> +       enum loongson_cpu_type cputype;
-> +       enum loongson_bridge_type bridgetype;
-> +       u64 restart_addr;
-> +       u64 poweroff_addr;
-> +       u64 suspend_addr;
-> +       u64 vgabios_addr;
-> +       u32 dma_mask_bits;
-> +       u64 workarounds;
-> +       void (*early_config)(void);
-> +};
->
->  /* machine-specific reboot/halt operation */
->  extern void mach_prepare_reboot(void);
-> diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
-> index 09b91b81851c..249566a23cc4 100644
-> --- a/drivers/irqchip/irq-loongson-liointc.c
-> +++ b/drivers/irqchip/irq-loongson-liointc.c
-> @@ -16,7 +16,7 @@
->  #include <linux/smp.h>
->  #include <linux/irqchip/chained_irq.h>
->
-> -#include <boot_param.h>
-> +#include <loongson.h>
->
->  #define LIOINTC_CHIP_IRQ       32
->  #define LIOINTC_NUM_PARENT 4
-> --
-> 2.20.1
->
+To fix this, make link-vmlinux.sh emit a .vmlinux.d file in the same
+format as the dependency files generated by gcc, and apply the fixdep
+logic to that. I've tested that this correctly works with both in-tree
+and out-of-tree builds.
+
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+ Makefile                | 2 +-
+ scripts/link-vmlinux.sh | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index b18dbc634690..19d2f7fd088a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1192,7 +1192,7 @@ cmd_link-vmlinux =                                                 \
+ 	$(if $(ARCH_POSTLINK), $(MAKE) -f $(ARCH_POSTLINK) $@, true)
+ 
+ vmlinux: scripts/link-vmlinux.sh autoksyms_recursive $(vmlinux-deps) FORCE
+-	+$(call if_changed,link-vmlinux)
++	+$(call if_changed_dep,link-vmlinux)
+ 
+ targets := vmlinux
+ 
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 855fd4e6f03e..7d4b7c6f01e8 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -312,6 +312,7 @@ cleanup()
+ 	rm -f vmlinux
+ 	rm -f vmlinux.map
+ 	rm -f vmlinux.o
++	rm -f .vmlinux.d
+ }
+ 
+ on_exit()
+@@ -421,6 +422,7 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
+ fi
+ 
+ vmlinux_link vmlinux "${kallsymso}" ${btf_vmlinux_bin_o}
++echo "vmlinux: $0" > .vmlinux.d
+ 
+ # fill in BTF IDs
+ if [ -n "${CONFIG_DEBUG_INFO_BTF}" -a -n "${CONFIG_BPF}" ]; then
+-- 
+2.29.2
+
