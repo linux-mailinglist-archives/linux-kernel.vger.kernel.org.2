@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0982932E8D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 551D132E85F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232115AbhCEM3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:29:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37558 "EHLO mail.kernel.org"
+        id S231402AbhCEM0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:26:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232014AbhCEM2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:28:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C113C65029;
-        Fri,  5 Mar 2021 12:28:36 +0000 (UTC)
+        id S231256AbhCEMZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:25:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C04ED65024;
+        Fri,  5 Mar 2021 12:25:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947317;
-        bh=IxnJxRiT4HmKwHo+MU2Tp4cjV2vTzr0uWsF1wjVTaN4=;
+        s=korg; t=1614947155;
+        bh=eDL/9MPBYV99q0GeChgfJ/p1S/mC/CDFiMcmxkqnFuk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=msETL+zi04mNa+yiAVIqFDNEIskrwY0/FEdQZitX5cBRWog0CTXj+7zH8siEHcuEy
-         e0yAF+FwMnMLwq1sRczbsJOjxswgVePsVPOzhduqRSlZ8nZtpC+JU64dQOep6f+bz1
-         pu1gwzUADWGNyxVhUm8teGz9cBnhuUedDLoFtOGE=
+        b=YMo8caA8yvfiEURGdiuUCcbNLMHxLd41bquGP0qMY+lVzLMLpbaQyrhRRoYwCVYA7
+         kZFmGO1gXfTjGhyj6w7/Nve94QVKYWyCqEW0T/AD833NsexJZem0ZPzh02EsgOgjUT
+         X79Y6d1m721PoJQnz9vS2l2RKdI83DCyWzFSR3Do=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Zhibin Liu <zhibinliu@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 023/102] tcp: fix tcp_rmem documentation
-Date:   Fri,  5 Mar 2021 13:20:42 +0100
-Message-Id: <20210305120904.421879766@linuxfoundation.org>
+        stable@vger.kernel.org, Don Curtis <bugrprt21882@online.de>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 038/104] EDAC/amd64: Do not load on family 0x15, model 0x13
+Date:   Fri,  5 Mar 2021 13:20:43 +0100
+Message-Id: <20210305120905.036301186@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120903.166929741@linuxfoundation.org>
+References: <20210305120903.166929741@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Borislav Petkov <bp@suse.de>
 
-commit 1d1be91254bbdd189796041561fd430f7553bb88 upstream.
+[ Upstream commit 6c13d7ff81e6d2f01f62ccbfa49d1b8d87f274d0 ]
 
-tcp_rmem[1] has been changed to 131072, we should update the documentation
-to reflect this.
+Those were only laptops and are very very unlikely to have ECC memory.
+Currently, when the driver attempts to load, it issues:
 
-Fixes: a337531b942b ("tcp: up initial rmem to 128KB and SYN rwin to around 64KB")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: Zhibin Liu <zhibinliu@google.com>
-Cc: Yuchung Cheng <ycheng@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  EDAC amd64: Error: F1 not found: device 0x1601 (broken BIOS?)
+
+because the PCI device is the wrong one (it uses the F15h default one).
+
+So do not load the driver on them as that is pointless.
+
+Reported-by: Don Curtis <bugrprt21882@online.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Tested-by: Don Curtis <bugrprt21882@online.de>
+Link: http://bugzilla.opensuse.org/show_bug.cgi?id=1179763
+Link: https://lkml.kernel.org/r/20201218160622.20146-1-bp@alien8.de
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/networking/ip-sysctl.rst |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/edac/amd64_edac.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
---- a/Documentation/networking/ip-sysctl.rst
-+++ b/Documentation/networking/ip-sysctl.rst
-@@ -630,16 +630,15 @@ tcp_rmem - vector of 3 INTEGERs: min, de
+diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
+index f7087ddddb90..5754f429a8d2 100644
+--- a/drivers/edac/amd64_edac.c
++++ b/drivers/edac/amd64_edac.c
+@@ -3342,10 +3342,13 @@ static struct amd64_family_type *per_family_init(struct amd64_pvt *pvt)
+ 			fam_type = &family_types[F15_M60H_CPUS];
+ 			pvt->ops = &family_types[F15_M60H_CPUS].ops;
+ 			break;
++		/* Richland is only client */
++		} else if (pvt->model == 0x13) {
++			return NULL;
++		} else {
++			fam_type	= &family_types[F15_CPUS];
++			pvt->ops	= &family_types[F15_CPUS].ops;
+ 		}
+-
+-		fam_type	= &family_types[F15_CPUS];
+-		pvt->ops	= &family_types[F15_CPUS].ops;
+ 		break;
  
- 	default: initial size of receive buffer used by TCP sockets.
- 	This value overrides net.core.rmem_default used by other protocols.
--	Default: 87380 bytes. This value results in window of 65535 with
--	default setting of tcp_adv_win_scale and tcp_app_win:0 and a bit
--	less for default tcp_app_win. See below about these variables.
-+	Default: 131072 bytes.
-+	This value results in initial window of 65535.
+ 	case 0x16:
+@@ -3539,6 +3542,7 @@ static int probe_one_instance(unsigned int nid)
+ 	pvt->mc_node_id	= nid;
+ 	pvt->F3 = F3;
  
- 	max: maximal size of receive buffer allowed for automatically
- 	selected receiver buffers for TCP socket. This value does not override
- 	net.core.rmem_max.  Calling setsockopt() with SO_RCVBUF disables
- 	automatic tuning of that socket's receive buffer size, in which
- 	case this value is ignored.
--	Default: between 87380B and 6MB, depending on RAM size.
-+	Default: between 131072 and 6MB, depending on RAM size.
- 
- tcp_sack - BOOLEAN
- 	Enable select acknowledgments (SACKS).
++	ret = -ENODEV;
+ 	fam_type = per_family_init(pvt);
+ 	if (!fam_type)
+ 		goto err_enable;
+-- 
+2.30.1
+
 
 
