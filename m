@@ -2,94 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CE632EDF4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:09:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BF432EDEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhCEPJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:09:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhCEPJA (ORCPT
+        id S230300AbhCEPJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:09:19 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18826 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229749AbhCEPIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:09:00 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428BEC061756
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 07:09:00 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id w9so2995576edt.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 07:09:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JjTJfcQAXeOWcp9QkQJCNvSpKl1Ds2qR5zvC+5VzgvI=;
-        b=CpyWh+9m1kcl9bm6CS/WtsL7nEetdYXq/2VszRk50K4nPPdMtT736vpXI66iJE+BnP
-         t8M5VYEFLqkXwIEad8lE8fLWYnkJMGaBvSLvWwSvibSg8gdi+vB6cm6o3ema3ymJDQCr
-         eF5qaICjAyLicS6JRBJ5Q+SM4a9temU0s9hUkJtp/QsB3KWbgOJRQFC9XJr14GCTDkj8
-         MsijxkYsXAqGstSCZWDAn3d9H/XiLJICOFqB2MaG/DRPPjEHUTt7cfphfPT0TdG1PRnF
-         TFVOapdBPLFDGav+yFTXhp7qDZ/uuVWuH++U/k3g/b2dk2ztzQksQfKYu6AC3nr/AftS
-         zG1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JjTJfcQAXeOWcp9QkQJCNvSpKl1Ds2qR5zvC+5VzgvI=;
-        b=t43wTcrjgL9+tMujtUryChya7tZypynebFZbNi1AFn4mOPYsNQ2j/IXqcVWxGXqgUf
-         muy1/a+xrHpxiZWN6vX9sOdY9L9RlC8zVI3yOdq/uPvUoh9nhJAYLVE6kz9zbpkEG2Yb
-         Y+lSotCOyjFB2tlmLs4SYjxWPF2EKUmeTYricLsLZF0EazeCF1gV1lda+Rg0uRtT7rim
-         m+NyhLuRRJLsaWgDN669Wy91efgAx7r1Mr3MNR3WaPPJ0ABp56kPihLAaX9Rw714KOpv
-         Rd3ajXLewb2QMkxKBrHTu29YoPHEQnkRo1RRU5B4e8c9disK2jaYd7RYEZWeIlg51k2S
-         bp7w==
-X-Gm-Message-State: AOAM532sUhDpX7xYAsPL4opL3XX3QeHt7+KOBr6PlDIgKqtyiAQvFbQ1
-        R/pM9OGdS+E3ottnlYuDlOIdxWmmI1Q=
-X-Google-Smtp-Source: ABdhPJxEc/rrcrWHQeRgxjIsdE1j+HeMJksQCkPL69b+mMWxx2dpwxrs4iv/Qx7u9byhSki4ylKShg==
-X-Received: by 2002:a05:6402:1c1b:: with SMTP id ck27mr9514354edb.223.1614956938719;
-        Fri, 05 Mar 2021 07:08:58 -0800 (PST)
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com. [209.85.221.46])
-        by smtp.gmail.com with ESMTPSA id f11sm1636142eje.107.2021.03.05.07.08.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 07:08:58 -0800 (PST)
-Received: by mail-wr1-f46.google.com with SMTP id a18so2420216wrc.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 07:08:56 -0800 (PST)
-X-Received: by 2002:a5d:640b:: with SMTP id z11mr9605831wru.327.1614956936586;
- Fri, 05 Mar 2021 07:08:56 -0800 (PST)
+        Fri, 5 Mar 2021 10:08:51 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125F44V3072482;
+        Fri, 5 Mar 2021 10:08:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=RWhl6t9iddsgIIGFtjbP86KDfclS79MfmIlMtxt6fYM=;
+ b=gRt2RJg3yF42E5cm+KM7lLOK+aPugoF7KYU9JA9lF5Tl6WXltLNmDGF/6bnTxTmH0BO4
+ jUETkdvyDu/1RFqQs03lDUIbZJiPSX+FGQnhYJ/ZfDFK6v/K1Ahm7InehyZxPIzCiutH
+ 5cN3TurYnHsOxRLZvYFP7/8GrziHi9DCy18anSCgL3J8IRCvUQDO+Bn4mHT/LrQrDl7F
+ 2zkLOJ2m3GMVh7Ry1D86B/588sNIm9OTnlFOEuMjaAoZRvkWNeP4Tn6edbCs50YtCFjl
+ MUjvHCNirn3eIk2nlPAIktGgw75PJ60dUf2rU+XPhC6sNILXqwu+q6W/ZroiiS7QxUtY jA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 373nsyjncn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 10:08:50 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 125F4EFt073502;
+        Fri, 5 Mar 2021 10:08:50 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 373nsyjnbr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 10:08:50 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 125F28E5017121;
+        Fri, 5 Mar 2021 15:08:48 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 371162kv01-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 15:08:48 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 125F8jXE36307322
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 5 Mar 2021 15:08:45 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6ABC642047;
+        Fri,  5 Mar 2021 15:08:45 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1C15242041;
+        Fri,  5 Mar 2021 15:08:45 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.57.80])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  5 Mar 2021 15:08:45 +0000 (GMT)
+Subject: Re: [PATCH v5 1/3] s390/kvm: split kvm_s390_logical_to_effective
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     frankja@linux.ibm.com, david@redhat.com, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org
+References: <20210302174443.514363-1-imbrenda@linux.ibm.com>
+ <20210302174443.514363-2-imbrenda@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <a2148aca-6663-4d7e-af71-e7dcac6e54ea@de.ibm.com>
+Date:   Fri, 5 Mar 2021 16:08:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210305123347.15311-1-hxseverything@gmail.com>
-In-Reply-To: <20210305123347.15311-1-hxseverything@gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Fri, 5 Mar 2021 10:08:20 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSc_RDHb8dmMzfwatt89pXsX2AA1--X98pEGkmmfpVs-Vg@mail.gmail.com>
-Message-ID: <CA+FuTSc_RDHb8dmMzfwatt89pXsX2AA1--X98pEGkmmfpVs-Vg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests_bpf: extend test_tc_tunnel test with vxlan
-To:     Xuesen Huang <hxseverything@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Xuesen Huang <huangxuesen@kuaishou.com>,
-        Li Wang <wangli09@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210302174443.514363-2-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-05_08:2021-03-03,2021-03-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ phishscore=0 spamscore=0 mlxscore=0 suspectscore=0 adultscore=0
+ impostorscore=0 lowpriorityscore=0 clxscore=1015 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103050077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 7:34 AM Xuesen Huang <hxseverything@gmail.com> wrote:
->
-> From: Xuesen Huang <huangxuesen@kuaishou.com>
->
-> Add BPF_F_ADJ_ROOM_ENCAP_L2_ETH flag to the existing tests which
-> encapsulates the ethernet as the inner l2 header.
->
-> Update a vxlan encapsulation test case.
->
-> Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
-> Signed-off-by: Li Wang <wangli09@kuaishou.com>
-> Signed-off-by: Willem de Bruijn <willemb@google.com>
 
 
-Please don't add my signed off by without asking.
+On 02.03.21 18:44, Claudio Imbrenda wrote:
+> Split kvm_s390_logical_to_effective to a generic function called
+> _kvm_s390_logical_to_effective. The new function takes a PSW and an address
+> and returns the address with the appropriate bits masked off. The old
+> function now calls the new function with the appropriate PSW from the vCPU.
+> 
+> This is needed to avoid code duplication for vSIE.
+> 
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 
-That said,
+We might need cc stable here as well for patch 3?
 
-Acked-by: Willem de Bruijn <willemb@google.com>
+Otherwise this looks good.
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+
+> ---
+>   arch/s390/kvm/gaccess.h | 29 ++++++++++++++++++++++++-----
+>   1 file changed, 24 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/s390/kvm/gaccess.h b/arch/s390/kvm/gaccess.h
+> index f4c51756c462..107fdfd2eadd 100644
+> --- a/arch/s390/kvm/gaccess.h
+> +++ b/arch/s390/kvm/gaccess.h
+> @@ -36,6 +36,29 @@ static inline unsigned long kvm_s390_real_to_abs(struct kvm_vcpu *vcpu,
+>   	return gra;
+>   }
+>   
+> +/**
+> + * _kvm_s390_logical_to_effective - convert guest logical to effective address
+> + * @psw: psw of the guest
+> + * @ga: guest logical address
+> + *
+> + * Convert a guest logical address to an effective address by applying the
+> + * rules of the addressing mode defined by bits 31 and 32 of the given PSW
+> + * (extendended/basic addressing mode).
+> + *
+> + * Depending on the addressing mode, the upper 40 bits (24 bit addressing
+> + * mode), 33 bits (31 bit addressing mode) or no bits (64 bit addressing
+> + * mode) of @ga will be zeroed and the remaining bits will be returned.
+> + */
+> +static inline unsigned long _kvm_s390_logical_to_effective(psw_t *psw,
+> +							   unsigned long ga)
+> +{
+> +	if (psw_bits(*psw).eaba == PSW_BITS_AMODE_64BIT)
+> +		return ga;
+> +	if (psw_bits(*psw).eaba == PSW_BITS_AMODE_31BIT)
+> +		return ga & ((1UL << 31) - 1);
+> +	return ga & ((1UL << 24) - 1);
+> +}
+> +
+>   /**
+>    * kvm_s390_logical_to_effective - convert guest logical to effective address
+>    * @vcpu: guest virtual cpu
+> @@ -54,11 +77,7 @@ static inline unsigned long kvm_s390_logical_to_effective(struct kvm_vcpu *vcpu,
+>   {
+>   	psw_t *psw = &vcpu->arch.sie_block->gpsw;
+>   
+> -	if (psw_bits(*psw).eaba == PSW_BITS_AMODE_64BIT)
+> -		return ga;
+> -	if (psw_bits(*psw).eaba == PSW_BITS_AMODE_31BIT)
+> -		return ga & ((1UL << 31) - 1);
+> -	return ga & ((1UL << 24) - 1);
+> +	return _kvm_s390_logical_to_effective(&vcpu->arch.sie_block->gpsw, ga);
+>   }
+>   
+>   /*
+> 
