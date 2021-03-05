@@ -2,54 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EAC32EF08
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 076B532EF13
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 16:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbhCEPhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 10:37:21 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:57881 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230403AbhCEPg4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 10:36:56 -0500
-Received: (qmail 39458 invoked by uid 1000); 5 Mar 2021 10:36:55 -0500
-Date:   Fri, 5 Mar 2021 10:36:55 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH] tools/memory-model: Fix smp_mb__after_spinlock() spelling
-Message-ID: <20210305153655.GC38200@rowland.harvard.edu>
-References: <20210305102823.415900-1-bjorn.topel@gmail.com>
+        id S230411AbhCEPi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 10:38:56 -0500
+Received: from msg-1.mailo.com ([213.182.54.11]:46954 "EHLO msg-1.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230409AbhCEPik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 10:38:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+        t=1614958706; bh=IJWTVFVLVMiRjAF1EDvvIM29SEwvY2ZYRcWp/GQI8rI=;
+        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
+         MIME-Version:Content-Transfer-Encoding;
+        b=XE56SCppg1580xBH8Z+79j67RZrcWDxxVWps1USrIz4qyhBoJHUlH1FCFLlgMrkDz
+         6uExHSltNLRWyFuX2EzbmwDAl0wKYVdxLLsrGl5o07d4lV4KnIFmpWDOcFP+cELucx
+         k/Qj08BSN8c41ktE1ecd2wE3MApTdlb/+12QZ9rI=
+Received: by b-6.in.mailobj.net [192.168.90.16] with ESMTP
+        via proxy.mailoo.org [213.182.55.207]
+        Fri,  5 Mar 2021 16:38:26 +0100 (CET)
+X-EA-Auth: Gd1awqFxyD+mTJVbODcKBi2spwT16i1aNLBodGHcrQIuJUI+URUu2rsIDz+LiL2ptYO6KFQRQzUXBTpUio79cAX56L8w6EAZM5Zc1BIt/FA=
+From:   Vincent Knecht <vincent.knecht@mailoo.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Vincent Knecht <vincent.knecht@mailoo.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Michael Srba <Michael.Srba@seznam.cz>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6 1/2] dt-bindings: input/touchscreen: add bindings for msg2638
+Date:   Fri,  5 Mar 2021 16:38:04 +0100
+Message-Id: <20210305153815.126937-1-vincent.knecht@mailoo.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210305102823.415900-1-bjorn.topel@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 11:28:23AM +0100, Björn Töpel wrote:
-> From: Björn Töpel <bjorn.topel@intel.com>
-> 
-> A misspelled invokation of git-grep, revealed that
--------------------^
+This adds dts bindings for the mstar msg2638 touchscreen.
 
-Smetimes my brain is a little slow...  Do you confirm that this is a 
-joke?
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+---
+Changed in v6:
+- change touchscreen-size-x/y values in example section to reflect
+  scaling removal in driver (Dmitry)
+- add Linus W. Reviewed-by
+Changed in v5: nothing
+Changed in v4:
+- don't use wildcards in compatible strings (Rob H)
+- rename from msg26xx to msg2638
+- rename example pinctrl-0 to &ts_int_reset_default for consistency
+Changed in v3:
+- added `touchscreen-size-x: true` and `touchscreen-size-y: true` properties
+Changed in v2:
+- changed M-Star to MStar in title line
+- changed reset gpio to active-low in example section
+---
+ .../input/touchscreen/mstar,msg2638.yaml      | 69 +++++++++++++++++++
+ 1 file changed, 69 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/mstar,msg2638.yaml
 
-Alan
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/mstar,msg2638.yaml b/Documentation/devicetree/bindings/input/touchscreen/mstar,msg2638.yaml
+new file mode 100644
+index 000000000000..3a42c23faf6f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/touchscreen/mstar,msg2638.yaml
+@@ -0,0 +1,69 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/touchscreen/mstar,msg2638.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MStar msg2638 touchscreen controller Bindings
++
++maintainers:
++  - Vincent Knecht <vincent.knecht@mailoo.org>
++
++allOf:
++  - $ref: touchscreen.yaml#
++
++properties:
++  compatible:
++    const: mstar,msg2638
++
++  reg:
++    const: 0x26
++
++  interrupts:
++    maxItems: 1
++
++  reset-gpios:
++    maxItems: 1
++
++  vdd-supply:
++    description: Power supply regulator for the chip
++
++  vddio-supply:
++    description: Power supply regulator for the I2C bus
++
++  touchscreen-size-x: true
++  touchscreen-size-y: true
++
++additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - reset-gpios
++  - touchscreen-size-x
++  - touchscreen-size-y
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      touchscreen@26 {
++        compatible = "mstar,msg2638";
++        reg = <0x26>;
++        interrupt-parent = <&msmgpio>;
++        interrupts = <13 IRQ_TYPE_EDGE_FALLING>;
++        reset-gpios = <&msmgpio 100 GPIO_ACTIVE_LOW>;
++        pinctrl-names = "default";
++        pinctrl-0 = <&ts_int_reset_default>;
++        vdd-supply = <&pm8916_l17>;
++        vddio-supply = <&pm8916_l5>;
++        touchscreen-size-x = <2048>;
++        touchscreen-size-y = <2048>;
++      };
++    };
++
++...
+-- 
+2.29.2
+
+
+
