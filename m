@@ -2,105 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD87632DF41
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 02:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A1532DF46
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 02:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhCEBxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 20:53:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47482 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229478AbhCEBw7 (ORCPT
+        id S229737AbhCEBxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 20:53:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229478AbhCEBxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 20:52:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614909178;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1PouAGyaEAojf3ovTLFX1yOmiU99mhHbemhpq78aaTo=;
-        b=fTiapm5qm/coo+vtDgKpiclSo6I5ELEFVdKDmCUKOKwMuQf+xdKRw7XGf76Vmct8PPyQGi
-        IPsNSu7RnIZrXG8YL/7p4YcvdkW/VDaTSLr21FtxNmnVLo/CxQYuAzlOv0SZbNwEpM6zzY
-        tg+7RG76c53HrvThOkL5Ok+C++krqEw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-21-aoH0ADXoPxG-HWKJhQM3Yw-1; Thu, 04 Mar 2021 20:52:56 -0500
-X-MC-Unique: aoH0ADXoPxG-HWKJhQM3Yw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 56E2F1842142;
-        Fri,  5 Mar 2021 01:52:54 +0000 (UTC)
-Received: from Whitewolf.lyude.net (ovpn-113-27.rdu2.redhat.com [10.10.113.27])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9FCD52BFEB;
-        Fri,  5 Mar 2021 01:52:52 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     nouveau@lists.freedesktop.org
-Cc:     stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        James Jones <jajones@nvidia.com>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
-        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/nouveau/kms/nve4-nv108: Limit cursors to 128x128
-Date:   Thu,  4 Mar 2021 20:52:41 -0500
-Message-Id: <20210305015242.740590-1-lyude@redhat.com>
+        Thu, 4 Mar 2021 20:53:36 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD98C061574;
+        Thu,  4 Mar 2021 17:53:36 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id s15so621314qtq.0;
+        Thu, 04 Mar 2021 17:53:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pYfAEJ7fWkQ8UQ2mRUbZHr7wUFmDZtF6/2zKh9pN6Wk=;
+        b=hNLv39f5qF4XPo6yUqn8fH1B2MToNlKICvGn3yh5ve42PRs8gWcpqppHtoclZdkVaa
+         3neRQqHYRNC1xbgrbkmORGdMF1auW4ctxJCGQ1VY+pKVCdApFNpDIxB44wVjNg0B84Jw
+         KsuemL1uCLJ7JQ3JMlOMu7O4czwInI1isq35ATqrR4peRR8K5jyOK5PZWV1ZQbHuQd9X
+         mztXQKxj1xL3S1Gf6NL1TEqQ5HEjLR6HuSizb/1S37unA4wNYUg6s3wKm6JGokY6ttVG
+         zkddNSiAXEnPf8M8hLSaCTdwim4amSk8fwbgJk+ujBcXYT6vIiWyH1uDLYLqoRsmcTbX
+         aNkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pYfAEJ7fWkQ8UQ2mRUbZHr7wUFmDZtF6/2zKh9pN6Wk=;
+        b=qw2fYOxts4j9pTUaV1sCwKFIGGPDXXWHfYRH7AguDniqO+C1mp00/VP3YhXR7DtKs+
+         EEo6rXGYtYzYDlhBTzKTZA8Nd69ZiRkIgTaQV07dsrTMQ29B77ERI7xxEJRaGzyHNZgK
+         WV3ipHTvro0o6T49io/0bhI6pm4lpMXRkmDfpP2PVueMe9eYWDTnxcuYHAj0oFSBP/cr
+         zkjyAq8hSXW42dAfmdgHErq/SOcNJdLzYRavT+snROzfkKBiY8htzExck10wepftdxSa
+         QwRghJ1eg1n0v2PZ5+ODkMsKqrUF5fgzrZNrWpw71lIkNwoKKDKW3Mn+AH9upRNU93K8
+         qCFw==
+X-Gm-Message-State: AOAM532L3OqtdpatzJhVf+bOkAMtyKZyTlrZ911t6q0UB4Ug/oSlRUuH
+        8zMnjRTOCssGqHyVjEdFGkU=
+X-Google-Smtp-Source: ABdhPJyt6oHeTYvBH3jQB4uQbB3/vyS03EW2YR+MqZSR0QvY3kxLOdUlmHQd79DhInb5VoOIENbecw==
+X-Received: by 2002:ac8:578f:: with SMTP id v15mr6609232qta.172.1614909216076;
+        Thu, 04 Mar 2021 17:53:36 -0800 (PST)
+Received: from localhost.localdomain ([156.146.54.138])
+        by smtp.gmail.com with ESMTPSA id i9sm839832qko.69.2021.03.04.17.53.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Mar 2021 17:53:35 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        p.zabel@pengutronix.de, linux-pm@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] thermal: Fix a typo in the file soctherm.c
+Date:   Fri,  5 Mar 2021 07:23:20 +0530
+Message-Id: <20210305015320.7614-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While Kepler does technically support 256x256 cursors, it turns out that
-Kepler actually has some additional requirements for scanout surfaces that
-we're not enforcing correctly, which aren't present on Maxwell and later.
-Cursor surfaces must always use small pages (4K), and overlay surfaces must
-always use large pages (128K).
 
-Fixing this correctly though will take a bit more work: as we'll need to
-add some code in prepare_fb() to move cursor FBs in large pages to small
-pages, and vice-versa for overlay FBs. So until we have the time to do
-that, just limit cursor surfaces to 128x128 - a size small enough to always
-default to small pages.
+s/calibaration/calibration/
 
-This means small ovlys are still broken on Kepler, but it is extremely
-unlikely anyone cares about those anyway :).
-
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Fixes: d3b2f0f7921c ("drm/nouveau/kms/nv50-: Report max cursor size to userspace")
-Cc: <stable@vger.kernel.org> # v5.11+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- drivers/gpu/drm/nouveau/dispnv50/disp.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/thermal/tegra/soctherm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-index 196612addfd6..1c9c0cdf85db 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-@@ -2693,9 +2693,20 @@ nv50_display_create(struct drm_device *dev)
- 	else
- 		nouveau_display(dev)->format_modifiers = disp50xx_modifiers;
- 
--	if (disp->disp->object.oclass >= GK104_DISP) {
-+	/* FIXME: 256x256 cursors are supported on Kepler, however unlike Maxwell and later
-+	 * generations Kepler requires that we use small pages (4K) for cursor scanout surfaces. The
-+	 * proper fix for this is to teach nouveau to migrate fbs being used for the cursor plane to
-+	 * small page allocations in prepare_fb(). When this is implemented, we should also force
-+	 * large pages (128K) for ovly fbs in order to fix Kepler ovlys.
-+	 * But until then, just limit cursors to 128x128 - which is small enough to avoid ever using
-+	 * large pages.
-+	 */
-+	if (disp->disp->object.oclass >= GM107_DISP) {
- 		dev->mode_config.cursor_width = 256;
- 		dev->mode_config.cursor_height = 256;
-+	} else if (disp->disp->object.oclass >= GK104_DISP) {
-+		dev->mode_config.cursor_width = 128;
-+		dev->mode_config.cursor_height = 128;
- 	} else {
- 		dev->mode_config.cursor_width = 64;
- 		dev->mode_config.cursor_height = 64;
--- 
-2.29.2
+diff --git a/drivers/thermal/tegra/soctherm.c b/drivers/thermal/tegra/soctherm.c
+index 66e0639da4bf..8b8fbd49679b 100644
+--- a/drivers/thermal/tegra/soctherm.c
++++ b/drivers/thermal/tegra/soctherm.c
+@@ -2195,7 +2195,7 @@ static int tegra_soctherm_probe(struct platform_device *pdev)
+ 	if (err)
+ 		return err;
+
+-	/* calculate tsensor calibaration data */
++	/* calculate tsensor calibration data */
+ 	for (i = 0; i < soc->num_tsensors; ++i) {
+ 		err = tegra_calc_tsensor_calib(&soc->tsensors[i],
+ 					       &shared_calib,
+--
+2.30.1
 
