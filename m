@@ -2,194 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F23532F65E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C9532F65B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbhCEXIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 18:08:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbhCEXIE (ORCPT
+        id S229576AbhCEXHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 18:07:35 -0500
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:40548 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230027AbhCEXHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 18:08:04 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E3DC061761
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 15:08:03 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id g185so3730380qkf.6
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 15:08:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dNOfy+4JVngKRWmS3lpLOlIxvZssBG0MFQQkKbrKJlg=;
-        b=O5GL+LmzFSaO5vYSK6DQ1VSdrnRjKWpzQWa1N/14LIh2qXKbGuJGk05JDwf7u+wLSZ
-         yY/UoYFg5qyUg8Zq4MXqL+G11I+V0jQq+2oCXPPfhDMOFYC8ilkxTha6eM+T24xPGdp7
-         rmXhMA7d5w1m0xRZdtnWjHhw8na3gTQBWw+Q/QwW/i10b6vbxTM7EhDuEnPFzXUM0rfy
-         /VTebUQzz+sM+4Ez6VoeVlH6jeki/JUyPcj3sHzBgUkpgdM/5D+yzAjr/Lt+B3+6k5el
-         nDw0UniH5uwGi5KXr7MnNwHIhA/BB377tBompL1e1ayIfffm4RNPrkPEmqrw7YGVYHSd
-         rvng==
+        Fri, 5 Mar 2021 18:07:13 -0500
+Received: by mail-oi1-f178.google.com with SMTP id w65so4308321oie.7;
+        Fri, 05 Mar 2021 15:07:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dNOfy+4JVngKRWmS3lpLOlIxvZssBG0MFQQkKbrKJlg=;
-        b=sc+VOGemg8NiLhAbwP8dKBlFZu8ru2W6B4mnXaiJaGPiNXt2O19wv3PdBvZg12JiV6
-         lFtJ0t+HbKUpSRfFFLi3aG6Oag+f61EXLUgRqJJzs3uVvuprtNjRF663nI7f6IDwuQmt
-         dcAAleC2pvsvZ+BBTQSzmlhMQThDppeRkBNf5m6zNxcziNwJPJuJKXCVmcYs18inbRgi
-         QIudkRRlFI9yRewdPXjax06pvYUFnllKzoBkhgXP5n3HN8c+NWS7qNg63z1HHJ3tNaM0
-         91GXeAVgS+Dt2Jf4mweozeAqTpx4HkVykVivPcROdYPnLtsUXuiyCEu/41ep4+evpvhO
-         SZbQ==
-X-Gm-Message-State: AOAM532z9PlcJLW8+vhrOHUjkBSuRGlSnZai0xmlGXNJ53n+ebRyuJso
-        QMZngUtPOH0V3MNyeLi9NpdfUUJmfY42lA4Q4oU=
-X-Google-Smtp-Source: ABdhPJxw8pg7Vjat2LQVDgSIs8+7LU4dkFVLn4MTIo8uqHTehUq8Npi3JYT07t8hM0E3jHzk4La6QA==
-X-Received: by 2002:a37:6244:: with SMTP id w65mr11172754qkb.393.1614985682638;
-        Fri, 05 Mar 2021 15:08:02 -0800 (PST)
-Received: from [192.168.0.189] (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id s133sm2870546qke.1.2021.03.05.15.08.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 15:08:01 -0800 (PST)
-Subject: Re: [PATCH] drm/msm/dsi: support CPHY mode for 7nm pll/phy
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        "Kristian H. Kristensen" <hoegsberg@google.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Dave Airlie <airlied@redhat.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210215162805.21481-1-jonathan@marek.ca>
- <3e511cd9-2dbc-abf0-23c0-26779eb1777f@linaro.org>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <cafc7dad-68bf-28f0-4134-e494c6f68256@marek.ca>
-Date:   Fri, 5 Mar 2021 18:06:43 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3EoYEeSygE/KZK2Mj6hNkGMUGHyAfG9Fyx4STWgPwTE=;
+        b=eoDWnP0CaAtNe75a+GLOWNlMOvNDyP5aPSv+O0T8GqMgxght1EgkkL/X7l0v0mUIEZ
+         t+lEsaLeyUh7oAhzvdUQrER71bzRcwOjiqeAjr4AolgOUev9qu/QUkWDOrXYmUwtTb0J
+         pW4Mbz4tOZRWA1TWTLSx/WxY1mMXVhMFlIxYjrcQ5/0PNlV2vz6KVWu+vkqAWJBoWbml
+         ePaFjDSrHETVRqyroPZ6e2nxvm8oveVjQth+sqxSrGiIQS+avu0VOPGbowJ4sES6R9Kn
+         knuJIExqRSYrxjwfwLa2/3vM128otkAUIkw1bNtdpmni4bJ31DOYrtWqVUroIhDmoegy
+         w/Fw==
+X-Gm-Message-State: AOAM5337BKgwFejgeH6jVo0EBP3BOXc6WWG9n8fAvg3A9U0dcWbbwfLF
+        x4n7uhHW1q/8Lp9E12ugxNDtR4bYfw==
+X-Google-Smtp-Source: ABdhPJx4ZtFxecd//omqNCC21K3NJ+sdbprwXmJs8fNWf1UBUrHCzfmLYt3ImejkAhI2HXuRFKNepQ==
+X-Received: by 2002:aca:4745:: with SMTP id u66mr8823213oia.37.1614985632884;
+        Fri, 05 Mar 2021 15:07:12 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u67sm862614oie.35.2021.03.05.15.07.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 15:07:12 -0800 (PST)
+Received: (nullmailer pid 809675 invoked by uid 1000);
+        Fri, 05 Mar 2021 23:07:10 -0000
+Date:   Fri, 5 Mar 2021 17:07:10 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     openipmi-developer@lists.sourceforge.net, openbmc@lists.ozlabs.org,
+        minyard@acm.org, joel@jms.id.au, lee.jones@linaro.org,
+        avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        linus.walleij@linaro.org, chiawei_wang@aspeedtech.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH 16/19] dt-bindings: ipmi: Convert ASPEED KCS binding to
+ schema
+Message-ID: <20210305230710.GA798530@robh.at.kernel.org>
+References: <20210219142523.3464540-1-andrew@aj.id.au>
+ <20210219142523.3464540-17-andrew@aj.id.au>
 MIME-Version: 1.0
-In-Reply-To: <3e511cd9-2dbc-abf0-23c0-26779eb1777f@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219142523.3464540-17-andrew@aj.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/5/21 5:45 PM, Dmitry Baryshkov wrote:
-> On 15/02/2021 19:27, Jonathan Marek wrote:
->> Add the required changes to support 7nm pll/phy in CPHY mode.
->>
->> This adds a "qcom,dsi-phy-cphy-mode" property for the PHY node to enable
->> the CPHY mode.
->>
->> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+On Sat, Feb 20, 2021 at 12:55:20AM +1030, Andrew Jeffery wrote:
+> Given the deprecated binding, improve the ability to detect issues in
+> the platform devicetrees. Further, a subsequent patch will introduce a
+> new interrupts property for specifying SerIRQ behaviour, so convert
+> before we do any further additions.
 > 
-> Other that few comments bellow:
+> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> ---
+>  .../bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml | 92 +++++++++++++++++++
+>  .../bindings/ipmi/aspeed-kcs-bmc.txt          | 33 -------
+>  2 files changed, 92 insertions(+), 33 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/ipmi/aspeed-kcs-bmc.txt
 > 
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> 
->> ---
->>   .../devicetree/bindings/display/msm/dsi.txt   |  1 +
->>   drivers/gpu/drm/msm/dsi/dsi.c                 | 12 +--
->>   drivers/gpu/drm/msm/dsi/dsi.h                 |  6 +-
->>   drivers/gpu/drm/msm/dsi/dsi.xml.h             |  2 +
->>   drivers/gpu/drm/msm/dsi/dsi_host.c            | 34 +++++--
->>   drivers/gpu/drm/msm/dsi/phy/dsi_phy.c         | 49 +++++++++-
->>   drivers/gpu/drm/msm/dsi/phy/dsi_phy.h         |  3 +
->>   drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c     | 89 ++++++++++++++-----
->>   drivers/gpu/drm/msm/dsi/pll/dsi_pll.c         |  4 +-
->>   drivers/gpu/drm/msm/dsi/pll/dsi_pll.h         |  5 +-
->>   drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c     | 71 +++++++++------
->>   11 files changed, 210 insertions(+), 66 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/display/msm/dsi.txt 
->> b/Documentation/devicetree/bindings/display/msm/dsi.txt
->> index b9a64d3ff184..7ffc86a9816b 100644
->> --- a/Documentation/devicetree/bindings/display/msm/dsi.txt
->> +++ b/Documentation/devicetree/bindings/display/msm/dsi.txt
->> @@ -124,6 +124,7 @@ Required properties:
->>   Optional properties:
->>   - qcom,dsi-phy-regulator-ldo-mode: Boolean value indicating if the 
->> LDO mode PHY
->>     regulator is wanted.
->> +- qcom,dsi-phy-cphy-mode: Boolean value indicating if CPHY mode is 
->> wanted.
->>   - qcom,mdss-mdp-transfer-time-us:    Specifies the dsi transfer time 
->> for command mode
->>                       panels in microseconds. Driver uses this number 
->> to adjust
->>                       the clock rate according to the expected 
->> transfer time.
-> 
-> This should go in a separate patch, shan't it?
-> 
->> diff --git a/drivers/gpu/drm/msm/dsi/dsi.c 
->> b/drivers/gpu/drm/msm/dsi/dsi.c
->> index 627048851d99..68d8547f7264 100644
->> --- a/drivers/gpu/drm/msm/dsi/dsi.c
->> +++ b/drivers/gpu/drm/msm/dsi/dsi.c
->> @@ -13,7 +13,7 @@ struct drm_encoder *msm_dsi_get_encoder(struct 
->> msm_dsi *msm_dsi)
->>       return msm_dsi->encoder;
->>   }
->> -static int dsi_get_phy(struct msm_dsi *msm_dsi)
->> +static int dsi_get_phy(struct msm_dsi *msm_dsi, bool *cphy_mode)
-> 
-> I see no need to pass the 'cphy_mode' through the bool pointer and back 
-> to msm_dsi_host_init. What about just putting it into struct msm_dsi?
-> 
+> diff --git a/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml b/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
+> new file mode 100644
+> index 000000000000..1c1cc4265948
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
+> @@ -0,0 +1,92 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/ipmi/aspeed,ast2400-kcs-bmc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ASPEED BMC KCS Devices
+> +
+> +maintainers:
+> +  - Andrew Jeffery <andrew@aj.id.au>
+> +
+> +description: |
+> +  The Aspeed BMC SoCs typically use the Keyboard-Controller-Style (KCS)
+> +  interfaces on the LPC bus for in-band IPMI communication with their host.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - description: Channel ID derived from reg
+> +        items:
+> +          enum:
+> +            - aspeed,ast2400-kcs-bmc-v2
+> +            - aspeed,ast2500-kcs-bmc-v2
+> +            - aspeed,ast2600-kcs-bmc
+> +
+> +      - description: Old-style with explicit channel ID, no reg
+> +        deprecated: true
+> +        items:
+> +          enum:
+> +            - aspeed,ast2400-kcs-bmc
+> +            - aspeed,ast2500-kcs-bmc
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  reg:
+> +    minItems: 3
+> +    maxItems: 3
+> +    description: IDR, ODR and STR register addresses
 
-Because it doesn't need to be stored in msm_dsi (need it in msm_dsi_host 
-which doesn't have access to msm_dsi). But I suppose it doesn't hurt to 
-also have it in msm_dsi and make things a bit cleaner.
+items:
+  - description: IDR register
+  - description: ODR register
+  - description: STR register
 
->>   {
->>       struct platform_device *pdev = msm_dsi->pdev;
->>       struct platform_device *phy_pdev;
->> @@ -29,6 +29,7 @@ static int dsi_get_phy(struct msm_dsi *msm_dsi)
->>       if (phy_pdev)
->>           msm_dsi->phy = platform_get_drvdata(phy_pdev);
->> +    *cphy_mode = of_property_read_bool(phy_node, 
->> "qcom,dsi-phy-cphy-mode");
->>       of_node_put(phy_node);
->>       if (!phy_pdev || !msm_dsi->phy) {
->> @@ -65,6 +66,7 @@ static void dsi_destroy(struct msm_dsi *msm_dsi)
->>   static struct msm_dsi *dsi_init(struct platform_device *pdev)
->>   {
->>       struct msm_dsi *msm_dsi;
->> +    bool cphy_mode;
->>       int ret;
->>       if (!pdev)
->> @@ -79,13 +81,13 @@ static struct msm_dsi *dsi_init(struct 
->> platform_device *pdev)
->>       msm_dsi->pdev = pdev;
->>       platform_set_drvdata(pdev, msm_dsi);
->> -    /* Init dsi host */
->> -    ret = msm_dsi_host_init(msm_dsi);
->> +    /* GET dsi PHY */
->> +    ret = dsi_get_phy(msm_dsi, &cphy_mode);
->>       if (ret)
->>           goto destroy_dsi;
->> -    /* GET dsi PHY */
->> -    ret = dsi_get_phy(msm_dsi);
->> +    /* Init dsi host */
->> +    ret = msm_dsi_host_init(msm_dsi, cphy_mode);
->>       if (ret)
->>           goto destroy_dsi;
-> 
+> +
+> +  aspeed,lpc-io-reg:
+> +    $ref: '/schemas/types.yaml#/definitions/uint32'
+> +    minItems: 1
+> +    maxItems: 2
+
+A uint32 can only have 1 item. uint32-array perhaps?
+
+
+> +    description: |
+> +      The host CPU LPC IO data and status addresses for the device. For most
+> +      channels the status address is derived from the data address, but the
+> +      status address may be optionally provided.
+> +
+> +  kcs_chan:
+> +    deprecated: true
+> +    $ref: '/schemas/types.yaml#/definitions/uint32'
+> +    maxItems: 1
+
+Drop
+
+> +    description: The LPC channel number in the controller
+> +
+> +  kcs_addr:
+> +    deprecated: true
+> +    $ref: '/schemas/types.yaml#/definitions/uint32'
+> +    maxItems: 1
+
+Drop
+
+> +    description: The host CPU IO map address
+> +
+> +required:
+> +  - compatible
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - aspeed,ast2400-kcs-bmc
+> +              - aspeed,ast2500-kcs-bmc
+> +    then:
+> +      required:
+> +        - kcs_chan
+> +        - kcs_addr
+> +    else:
+> +      required:
+> +        - reg
+> +        - aspeed,lpc-io-reg
+> +
+> +examples:
+> +  - |
+> +    kcs3: kcs@24 {
+> +        compatible = "aspeed,ast2600-kcs-bmc";
+> +        reg = <0x24 0x1>, <0x30 0x1>, <0x3c 0x1>;
+> +        aspeed,lpc-io-reg = <0xca2>;
+> +        interrupts = <8>;
+> +    };
+> diff --git a/Documentation/devicetree/bindings/ipmi/aspeed-kcs-bmc.txt b/Documentation/devicetree/bindings/ipmi/aspeed-kcs-bmc.txt
+> deleted file mode 100644
+> index 193e71ca96b0..000000000000
+> --- a/Documentation/devicetree/bindings/ipmi/aspeed-kcs-bmc.txt
+> +++ /dev/null
+> @@ -1,33 +0,0 @@
+> -# Aspeed KCS (Keyboard Controller Style) IPMI interface
+> -
+> -The Aspeed SOCs (AST2400 and AST2500) are commonly used as BMCs
+> -(Baseboard Management Controllers) and the KCS interface can be
+> -used to perform in-band IPMI communication with their host.
+> -
+> -## v1
+> -Required properties:
+> -- compatible : should be one of
+> -    "aspeed,ast2400-kcs-bmc"
+> -    "aspeed,ast2500-kcs-bmc"
+> -- interrupts : interrupt generated by the controller
+> -- kcs_chan : The LPC channel number in the controller
+> -- kcs_addr : The host CPU IO map address
+> -
+> -## v2
+> -Required properties:
+> -- compatible : should be one of
+> -    "aspeed,ast2400-kcs-bmc-v2"
+> -    "aspeed,ast2500-kcs-bmc-v2"
+> -- reg : The address and size of the IDR, ODR and STR registers
+> -- interrupts : interrupt generated by the controller
+> -- aspeed,lpc-io-reg : The host CPU LPC IO address for the device
+> -
+> -Example:
+> -
+> -    kcs3: kcs@24 {
+> -        compatible = "aspeed,ast2500-kcs-bmc-v2";
+> -        reg = <0x24 0x1>, <0x30 0x1>, <0x3c 0x1>;
+> -        aspeed,lpc-reg = <0xca2>;
+> -        interrupts = <8>;
+> -        status = "okay";
+> -    };
+> -- 
+> 2.27.0
 > 
