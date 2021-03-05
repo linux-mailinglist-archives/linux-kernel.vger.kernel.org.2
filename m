@@ -2,115 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7259932E5B8
+	by mail.lfdr.de (Postfix) with ESMTP id 2541932E5B7
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 11:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhCEKGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 05:06:39 -0500
-Received: from mout.kundenserver.de ([212.227.126.131]:55975 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhCEKGd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 05:06:33 -0500
-Received: from mail-oi1-f177.google.com ([209.85.167.177]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MLiXQ-1l0aV12ZFY-00Hj7X for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021
- 11:06:27 +0100
-Received: by mail-oi1-f177.google.com with SMTP id z126so1902303oiz.6
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 02:06:27 -0800 (PST)
-X-Gm-Message-State: AOAM531Hw6L0Lo5Vmhvsu0TzU8wo7/GE8JEnP7jzzDw9pO+97HqaC+QW
-        3Jt1HKKmte1p+FXT4MoPfkMj57qFXH9g+/gFskU=
-X-Google-Smtp-Source: ABdhPJwzyOO7oekaLxVCuYpCBrhMK4PzMy38JZ7xjbD74JT6jclKDiqZP1kKYyYJiRiPAwfQ+NkcFWiabrQ66QAV4CE=
-X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr6442482oie.4.1614938786377;
- Fri, 05 Mar 2021 02:06:26 -0800 (PST)
+        id S229714AbhCEKGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 05:06:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229582AbhCEKGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 05:06:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1523B64DE8;
+        Fri,  5 Mar 2021 10:06:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614938771;
+        bh=UNxINQHDvJJrmSF6ND02usDivy14O5g6jxTERdFgETg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jpUnlxKS9k5CsqpJiso5lwZ5FNLdxMWw9mV8Dmez4VJVF0FPsImkKpxwfmQPMUGuU
+         bTdkGK6SGnspmWjV0QTHXj9q04WWS8gaeNhMjRpACWYpGZbiAKDbFEDVkx3qEgqIC0
+         67rE1sdzi8iL2a/Y5PFP8JcXvk4Uo0kgjUD8std889Fl+4cqRzYIi2s4kHC+yl0DF0
+         titOa1hOt39NTb6bs2V2ynDCHAMJcGxfsi/IFnplbR6H46ne7Ai9/5WdVxOWf+wanU
+         AFRyoDrrDydaKm2hg5219fbfh7rxRO+F5T2em43B3LzpLWlLMLmO0l/5E2Wh/S9yJt
+         HyTQiOchAC2+w==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lI7Ll-0001I6-Nj; Fri, 05 Mar 2021 11:06:25 +0100
+Date:   Fri, 5 Mar 2021 11:06:25 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Lech Perczak <lech.perczak@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        =?utf-8?B?QmrDuHJu?= Mork <bjorn@mork.no>
+Subject: Re: [PATCH 5.10 491/663] USB: serial: option: update interface
+ mapping for ZTE P685M
+Message-ID: <YEICoXZjxKVurcKl@hovoldconsulting.com>
+References: <20210301161141.760350206@linuxfoundation.org>
+ <20210301161206.139213430@linuxfoundation.org>
+ <fdfc7e5b-ebc3-9a99-7077-9cca3d470c2f@gmail.com>
 MIME-Version: 1.0
-References: <f08ef2b6f339ba19987cfef4307a4dd26b2faf97.1614933479.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <f08ef2b6f339ba19987cfef4307a4dd26b2faf97.1614933479.git.christophe.leroy@csgroup.eu>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 5 Mar 2021 11:06:09 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2b+u+8smkKWB-V2Non+nnZmNG4dNi6cGpM8weYuY5j6A@mail.gmail.com>
-Message-ID: <CAK8P3a2b+u+8smkKWB-V2Non+nnZmNG4dNi6cGpM8weYuY5j6A@mail.gmail.com>
-Subject: Re: [PATCH v3] powerpc/32: remove bogus ppc_select syscall
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:XD4AW04t8YHVMP2SQ5rTmd4fjBic97r75+2s7osFwY/sZV6klA2
- +V9o2ertgiassocNqDbpY3ltAWvtFUV8cnJO/jjfYlx0UHYx5NWIZ0a7mfpFRcFpIuRy7+5
- pvUO6QrFy7Slz/HFqk5W3159Oq8+b07qrneHqBJDJuiWiuJ+5z6QemRVQNEmoBKimao3YPu
- rkmkSctvyihDFOzFjZlmQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:RLgcZuQPRGw=:GOTj6mchfe8I/RGLDL0XvW
- W9A0al+WgOPSzseyodwlr+CkCz3FvPX/3x+mTMyFu59KXRAs8jD2hI1EJ4v65Xi8OILaN4iHm
- 503u5IieeL4oMsmkxTBUkYDUodGADzKNCXqXr4UIMdxZhaW7AtppoctPlQ9ZVGs2nlh56SxGQ
- Z/JzMj2/ItLx23dyPQmuN3veELYe7d3TGaXXnQdMbWtT+9FduxNBonqsEL2f1+wASmjU4RFJJ
- HGC0LXTADbdOSiQbfAqo6U898baEloc/V1RXJkxebiBinuMlp6usAsjZNOYRnAUi1vw9R9Aay
- jcwhC8s0IdrLw7lW/BuTIWzMbuANBH1tcDZL+R7la6dEWCqsZtGz8wTVlhGBqHvhKyT25FYj/
- jbB3A83DKZUjltDp0K6BQVQG1jUu+QMF3pJqD8hDWVcKn7LivdIjOpkpXl4JlE0IfScRnBneJ
- OfxjzatgjPqCcCqsddB7Yqb1FjKj9FHwwy34vGgNCSBBAdNl8tFe
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fdfc7e5b-ebc3-9a99-7077-9cca3d470c2f@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 9:40 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The ppc_select function was introduced in linux-2.3.48 in order to support
-> code confusing the legacy select() calling convention with the standard one.
-> Even 24 years ago, all correctly built code should not have done this and
-> could have easily been phased out. Nothing that was compiled later should
-> actually try to use the old_select interface, and it would have been broken
-> already on all ppc64 kernels with the syscall emulation layer.
->
-> This patch brings the 32 bit compat ABI and the native 32 bit ABI for
-> powerpc into a consistent state, by removing support for both the
-> old_select system call number and the handler for it.
+On Thu, Mar 04, 2021 at 01:01:17AM +0100, Lech Perczak wrote:
+> Hi,
+> 
+> On 2021-03-01 at 17:12, Greg Kroah-Hartman wrote:
+> > From: Lech Perczak <lech.perczak@gmail.com>
+> >
+> > commit 6420a569504e212d618d4a4736e2c59ed80a8478 upstream.
+> >
+> > This patch prepares for qmi_wwan driver support for the device.
+> > Previously "option" driver mapped itself to interfaces 0 and 3 (matching
+> > ff/ff/ff), while interface 3 is in fact a QMI port.
+> > Interfaces 1 and 2 (matching ff/00/00) expose AT commands,
+> > and weren't supported previously at all.
+> > Without this patch, a possible conflict would exist if device ID was
+> > added to qmi_wwan driver for interface 3.
+> >
+> > Update and simplify device ID to match interfaces 0-2 directly,
+> > to expose QCDM (0), PCUI (1), and modem (2) ports and avoid conflict
+> > with QMI (3), and ADB (4).
+> >
+> > The modem is used inside ZTE MF283+ router and carriers identify it as
+> > such.
+> > Interface mapping is:
+> > 0: QCDM, 1: AT (PCUI), 2: AT (Modem), 3: QMI, 4: ADB
+> >
+> > T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=480  MxCh= 0
+> > D:  Ver= 2.01 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+> > P:  Vendor=19d2 ProdID=1275 Rev=f0.00
+> > S:  Manufacturer=ZTE,Incorporated
+> > S:  Product=ZTE Technologies MSM
+> > S:  SerialNumber=P685M510ZTED0000CP&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&0
+> > C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
+> > I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+> > E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+> > E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+> > E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+> > E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+> > E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
+> > E:  Ad=87(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
+> > E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=(none)
+> > E:  Ad=88(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> >
+> > Cc: Johan Hovold <johan@kernel.org>
+> > Cc: Bjørn Mork <bjorn@mork.no>
+> > Signed-off-by: Lech Perczak <lech.perczak@gmail.com>
+> > Link: https://lore.kernel.org/r/20210207005443.12936-1-lech.perczak@gmail.com
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Johan Hovold <johan@kernel.org>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >   drivers/usb/serial/option.c |    3 ++-
+> >   1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > --- a/drivers/usb/serial/option.c
+> > +++ b/drivers/usb/serial/option.c
+> > @@ -1569,7 +1569,8 @@ static const struct usb_device_id option
+> >   	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1272, 0xff, 0xff, 0xff) },
+> >   	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1273, 0xff, 0xff, 0xff) },
+> >   	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1274, 0xff, 0xff, 0xff) },
+> > -	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1275, 0xff, 0xff, 0xff) },
+> > +	{ USB_DEVICE(ZTE_VENDOR_ID, 0x1275),	/* ZTE P685M */
+> > +	  .driver_info = RSVD(3) | RSVD(4) },
+> >   	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1276, 0xff, 0xff, 0xff) },
+> >   	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1277, 0xff, 0xff, 0xff) },
+> >   	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1278, 0xff, 0xff, 0xff) },
+> >
+> >
+> If this patch is selected, then 88eee9b7b42e69fb622ddb3ff6f37e8e4347f5b2 
+> ("net: usb: qmi_wwan: support ZTE P685M modem")
+> should probably be selected, too, or both be dropped.
+> This patch frees up an interface to be claimed by qmi_wwan driver by the 
+> mentioned patch.
+> The mentioned patch only adds a device ID to qmi_wwan driver.
 
-The description still seems wrong, please drop all the nonsense I wrote
-back then and explain what is actually going on.
+Greg's already picked up the networking one, but why would we drop this
+one without the net patch? What good is the QMI interface unless bound
+to the network driver? And claiming the ADB port doesn't make any sense.
 
-This is what I can see from the linux-history tree:
+> Regarding version, I think that backporting to 5.4.y and later is 
+> enough, as OpenWrt,
+> from which both patches originate, is currently on 5.4.y on the target 
+> requiring them, and will move to 5.10.y soon.
+> Backporting this would certainly make OpenWrt folks happy for two 
+> backports fewer, however I don't insist on it.
 
-- The original ppc32 port (linux-1.3.45) had a regular '__NR_select/sys_select'
-  syscall at #82 and an unusable '__NR__newselect/sys_panic' syscall at #142,
-  while i386 had the indirect '__NR_select/sys_oldselect' syscall at #82
-  and the regular '__NR__newselect/sys_select' version at #142. This was
-  rather confusing.
+We typically backport device ids to all active stable trees.
 
-- linux-2.1.48 changed both #82 and #142 to the ppc_select() version that
-  tries to guess whether the x86 __NR_select/sys_oldselect() behavior or
-  the regular __NR__newselect/sys_select() behavior is used.
-
-- linux-2.5.5 added ppc64 support, with a compat version of ppc_select()
-  on both #82 and #142 that would either use the __NR__newselect/sys_select
-  semantics or panic() when passed an invalud 'n'. The native ppc64
-  port started out with just __NR__newselect/sys_select() on #142
-
-- linux-2.5.19 changed ppc64 compat mode to no longer panic(), making
-  both #82 and #142 behave like __NR__newselect/sys_select().
-
-- glibc support for ppc32 gets merged during the linux-2.5 days, supporting
-  only #142 with the new behavior.
-
-- linux-2.5.41 dropped support for #82 on ppc64 in compat mode but not
-  native ppc32.
-
-- linux-2.6.14 merged the two architecture ports but kept the behavior
-  unchanged for both.
-
-- linux-2.6.32 changed the native ppc32 #142 __NR__newselect to
-  behave the same as compat mode and no longer emulate the
-  x86 oldselect, but #82 remained unchanged.
-
-So we have changed behavior multiple times in the past, and the
-current state still theoretically allows running non-glibc binaries that
-ran on kernels before 2.1.48 that used either the original powerpc
-select or the i386 compatible oldselect semantics. Chances are that
-those binaries are broken for some other reason now.
-
-          Arnd
+Johan
