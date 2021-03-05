@@ -2,89 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B930F32DF6D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2159B32DF72
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 03:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbhCECFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 21:05:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        id S229711AbhCECHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 21:07:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhCECFu (ORCPT
+        with ESMTP id S229436AbhCECHB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 21:05:50 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481B9C061574;
-        Thu,  4 Mar 2021 18:05:49 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id g185so558943qkf.6;
-        Thu, 04 Mar 2021 18:05:49 -0800 (PST)
+        Thu, 4 Mar 2021 21:07:01 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147C0C061574;
+        Thu,  4 Mar 2021 18:07:00 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id l18so952737pji.3;
+        Thu, 04 Mar 2021 18:07:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bSUjjb3HsS8cD5GxX1FQLqtqNzgpMXQmde2Ym1EhNkk=;
-        b=RmsACRpMIdO7wzoRbRr09xLM3R5cdv9FrY1m1CNl14b+U1IolHKKgrKf5t+SY2yXZQ
-         S/iAk3rgV8rXzrwD0CFTdYRi+xCj3+LGDcYvcDEMGOfIJhL1F5DGH2ltI24rX5fzQF7M
-         XtSlb1/EuPsp+rjKeb6i4wakd31aSilJTk0LfqOa5ulL08w9MmRWClKiNxQe8kogGR1W
-         rnVob5VEChCPm7KQwWjBBUrPAUJ0Yj7jsau0k4OpnvRsoxZMrrW87mlmmTZoptFyBjmI
-         qNEVJwMFKDPRiaW9CxCxaKirytbIW0m3uKOumhVFYfqlvx8HAWlqcTSsI9/fJyy9ol/n
-         Pjyg==
+        h=from:to:cc:subject:date:message-id;
+        bh=/usniTDLiZiY8Exv4EpG2GjU878KlAu6Su7ozkPE5fc=;
+        b=e0aRU/TZORIsKilI2TQU8KUuzpMAjooSQyA9BAsirKE7H83ltJDp1PkAEOvLPg4a+d
+         VV0vnhyp+c4a0Hh1HL7AJazFVaQvTFX5WHoEwY1YD/UhaaKYRzQINMzA73bCgen4FgUy
+         vopD4PYed12SVSFBeBy2fsFRopnm9CEbUtTXoF6h2Z0HZT14AzeIxm1uIwMYdEXweLZe
+         7+ORYmxKJ8NY/xggGGfviDBJVmovmxEbY62/yAx/AQWEvKS6AwAwQQDOpNXtoRbRTr+R
+         /NmTO8CKNjqYwRUOcUermD1entHfXnUOk+dK1wcfR/RpJH38qaUtxa8mB0VmHDZ9VAI2
+         a4cQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bSUjjb3HsS8cD5GxX1FQLqtqNzgpMXQmde2Ym1EhNkk=;
-        b=CCFTVL7QHg2kUmLrdzwNnIxM/HkgHhP00/zExLVoNltwg92bYL1Ms+6in1Iuy2ouUu
-         pfvyrL+Xg9h53KjBHwGqE49k6vNDEk3A1tgxMeiGLwBZC34h6Jee+6FLCAEvYrv359sP
-         2BMBGUI+j5wnbnqm7g5KqSsoRvHL5VLbfZGvK/tXmTFDBcpYJMl+Ikk+Jmuwar6k60G3
-         8bg6YGcgJAYENYrz2bPDKNyaRqKjdjens+3AX2d5uUbVSqgc6PwNe/YvjkZuP5zhTaCf
-         pUKy95Ou7WoGTy6KTNYLfLQautIfdxolxVdp2Q1fda/O/sp0OG4GOezz/GVU/+OsnWNm
-         22EQ==
-X-Gm-Message-State: AOAM532EeHcHrBX5d6lL78zRUCgKbMsTYCgTHMuq4cFQGnOq4ySoX+DL
-        IykPzDUi5I2v+Rzdn3f001QTtz9gqdRHLxBv
-X-Google-Smtp-Source: ABdhPJygElhfPp4fpfZhuhowkBi490xFvhG62ABtyc8ckHc6/zVWpfhWpAqC/ZZERhJnQkBm+3+gpw==
-X-Received: by 2002:a05:620a:218e:: with SMTP id g14mr7029864qka.111.1614909948472;
-        Thu, 04 Mar 2021 18:05:48 -0800 (PST)
-Received: from localhost.localdomain ([156.146.54.138])
-        by smtp.gmail.com with ESMTPSA id g11sm872928qkk.5.2021.03.04.18.05.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/usniTDLiZiY8Exv4EpG2GjU878KlAu6Su7ozkPE5fc=;
+        b=SAOyA+UFqcktB3RbdCxN34mXBf74Qw5EEj3Ve4qt1NO64rhTY8GqLvcGAqJ6fy22Si
+         QMf3GQC384mW/9fbDN+uCxYJbomYIQ6Iy4F8HXzWirS3XKnIV4xLh9PXRc9nE2XKg9FH
+         MkJhMQXYX5RozvGG2CmwQYVx2UVcjx/MecRDQDic7d3e93Sct7LCVmRvo6LBKwPgtN+w
+         ngWeTI6Dxo4OLrw6xCWnW4+Lpy7MKTYBWQNnT8/DF/nK8RcqV4ZWdXSZY+zlLEe6ICZ5
+         xIWMOEW2jg3/qDiIv1h/aMKJLcIYupZRMVeJJ5buB0cCVR5UNPl2DToleLahpc/Hq5up
+         XaJw==
+X-Gm-Message-State: AOAM531u+umpsvC0LZzEsTFVpkjqKzW4Ikj3HS+BtKxgNzUDmmzjxCb3
+        mIRihhAQ/NG1VwdwYKh0Wew=
+X-Google-Smtp-Source: ABdhPJwMvt6h8jHR6WGGPI/ATAmWsG/FC6M72R2MjK437fW8DrVyjKiZG+s/2T8zKic4Xoq9iZujPA==
+X-Received: by 2002:a17:90a:8c08:: with SMTP id a8mr7730178pjo.136.1614910019577;
+        Thu, 04 Mar 2021 18:06:59 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.46])
+        by smtp.gmail.com with ESMTPSA id gm9sm461117pjb.13.2021.03.04.18.06.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 18:05:47 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     tsbogend@alpha.franken.de, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] arch: mips: bcm63xx: Spello fix in the file clk.c
-Date:   Fri,  5 Mar 2021 07:35:35 +0530
-Message-Id: <20210305020535.25006-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 04 Mar 2021 18:06:59 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     andy@greyhouse.net, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] net: tehuti: fix error return code in bdx_probe()
+Date:   Thu,  4 Mar 2021 18:06:48 -0800
+Message-Id: <20210305020648.3202-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When bdx_read_mac() fails, no error return code of bdx_probe() 
+is assigned.
+To fix this bug, err is assigned with -EFAULT as error return code.
 
-
-s/revelant/relevant/
-
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 ---
- arch/mips/bcm63xx/clk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/tehuti/tehuti.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/bcm63xx/clk.c b/arch/mips/bcm63xx/clk.c
-index 164115944a7f..5a3e325275d0 100644
---- a/arch/mips/bcm63xx/clk.c
-+++ b/arch/mips/bcm63xx/clk.c
-@@ -76,7 +76,7 @@ static struct clk clk_enet_misc = {
- };
-
- /*
-- * Ethernet MAC clocks: only revelant on 6358, silently enable misc
-+ * Ethernet MAC clocks: only relevant on 6358, silently enable misc
-  * clocks
-  */
- static void enetx_set(struct clk *clk, int enable)
---
-2.30.1
+diff --git a/drivers/net/ethernet/tehuti/tehuti.c b/drivers/net/ethernet/tehuti/tehuti.c
+index b8f4f419173f..d054c6e83b1c 100644
+--- a/drivers/net/ethernet/tehuti/tehuti.c
++++ b/drivers/net/ethernet/tehuti/tehuti.c
+@@ -2044,6 +2044,7 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		/*bdx_hw_reset(priv); */
+ 		if (bdx_read_mac(priv)) {
+ 			pr_err("load MAC address failed\n");
++			err = -EFAULT;
+ 			goto err_out_iomap;
+ 		}
+ 		SET_NETDEV_DEV(ndev, &pdev->dev);
+-- 
+2.17.1
 
