@@ -2,113 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB9D32DE31
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B98132DE2D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 01:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233491AbhCEABJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Mar 2021 19:01:09 -0500
-Received: from mga06.intel.com ([134.134.136.31]:38155 "EHLO mga06.intel.com"
+        id S232913AbhCEAA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Mar 2021 19:00:57 -0500
+Received: from mga05.intel.com ([192.55.52.43]:20843 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233358AbhCEABC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Mar 2021 19:01:02 -0500
-IronPort-SDR: pbl/nf12h9n7RMO5kkoXm8bkR7t+nkQJhGxDFmM2XFJBqGKqyvBkb+9rJFb/WLDG3DbcnO/XrZ
- i2doJNSRIxZw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="248921883"
+        id S230475AbhCEAAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Mar 2021 19:00:55 -0500
+IronPort-SDR: hcUwStuTMKn2n1Ox8GoyuUp2+5bFNjOJY+J8M6BFTNMIW5PETMCAg/uzI62QxhJapOHSnyUtcI
+ Ns69OnVdJ9zg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="272534078"
 X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
-   d="scan'208";a="248921883"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 16:01:02 -0800
-IronPort-SDR: u6tiM7EChXKnap2WU9nMY6+rO96oNcpw0iz5J5zR071El4CGIbdwlA9B6sNg7rODVYeXV3RJ+l
- pwvJrrL7vYMw==
+   d="scan'208";a="272534078"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 16:00:55 -0800
+IronPort-SDR: IIrHKLv/Wbw781jrLXP6GGfcAJlfl0o9ZnUffbWw0Ke+Yb4AZjJaCp5TBcrfIVW05FRDUp2ct8
+ QOsGwLB1Skwg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,224,1610438400"; 
-   d="scan'208";a="436042233"
+X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
+   d="scan'208";a="428851624"
 Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by FMSMGA003.fm.intel.com with ESMTP; 04 Mar 2021 16:00:52 -0800
-Subject: [PATCH 06/10] mm/vmscan: add page demotion counter
+  by fmsmga004.fm.intel.com with ESMTP; 04 Mar 2021 16:00:54 -0800
+Subject: [PATCH 07/10] mm/vmscan: add helper for querying ability to age anonymous pages
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        yang.shi@linux.alibaba.com, rientjes@google.com,
-        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com,
-        osalvador@suse.de
+        rientjes@google.com, ying.huang@intel.com,
+        dan.j.williams@intel.com, david@redhat.com, osalvador@suse.de
 From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Thu, 04 Mar 2021 16:00:00 -0800
+Date:   Thu, 04 Mar 2021 16:00:02 -0800
 References: <20210304235949.7922C1C3@viggo.jf.intel.com>
 In-Reply-To: <20210304235949.7922C1C3@viggo.jf.intel.com>
-Message-Id: <20210305000000.48BA4A97@viggo.jf.intel.com>
+Message-Id: <20210305000002.D171810D@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-From: Yang Shi <yang.shi@linux.alibaba.com>
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-Account the number of demoted pages into reclaim_state->nr_demoted.
+Anonymous pages are kept on their own LRU(s).  These lists could
+theoretically always be scanned and maintained.  But, without swap,
+there is currently nothing the kernel can *do* with the results of a
+scanned, sorted LRU for anonymous pages.
 
-Add pgdemote_kswapd and pgdemote_direct VM counters showed in
-/proc/vmstat.
+A check for '!total_swap_pages' currently serves as a valid check as
+to whether anonymous LRUs should be maintained.  However, another
+method will be added shortly: page demotion.
 
-[ daveh:
-   - __count_vm_events() a bit, and made them look at the THP
-     size directly rather than getting data from migrate_pages()
-]
+Abstract out the 'total_swap_pages' checks into a helper, give it a
+logically significant name, and check for the possibility of page
+demotion.
 
-Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: David Rientjes <rientjes@google.com>
 Cc: Huang Ying <ying.huang@intel.com>
 Cc: Dan Williams <dan.j.williams@intel.com>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: osalvador <osalvador@suse.de>
-
---
-
-Changes since 202010:
- * remove unused scan-control 'demoted' field
 ---
 
- b/include/linux/vm_event_item.h |    2 ++
- b/mm/vmscan.c                   |    5 +++++
- b/mm/vmstat.c                   |    2 ++
- 3 files changed, 9 insertions(+)
+ b/mm/vmscan.c |   28 +++++++++++++++++++++++++---
+ 1 file changed, 25 insertions(+), 3 deletions(-)
 
-diff -puN include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter include/linux/vm_event_item.h
---- a/include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter	2021-03-04 15:35:57.698806425 -0800
-+++ b/include/linux/vm_event_item.h	2021-03-04 15:35:57.719806425 -0800
-@@ -33,6 +33,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PS
- 		PGREUSE,
- 		PGSTEAL_KSWAPD,
- 		PGSTEAL_DIRECT,
-+		PGDEMOTE_KSWAPD,
-+		PGDEMOTE_DIRECT,
- 		PGSCAN_KSWAPD,
- 		PGSCAN_DIRECT,
- 		PGSCAN_DIRECT_THROTTLE,
-diff -puN mm/vmscan.c~mm-vmscan-add-page-demotion-counter mm/vmscan.c
---- a/mm/vmscan.c~mm-vmscan-add-page-demotion-counter	2021-03-04 15:35:57.700806425 -0800
-+++ b/mm/vmscan.c	2021-03-04 15:35:57.724806425 -0800
-@@ -1118,6 +1118,11 @@ static unsigned int demote_page_list(str
- 			    target_nid, MIGRATE_ASYNC, MR_DEMOTION,
- 			    &nr_succeeded);
- 
-+	if (current_is_kswapd())
-+		__count_vm_events(PGDEMOTE_KSWAPD, nr_succeeded);
-+	else
-+		__count_vm_events(PGDEMOTE_DIRECT, nr_succeeded);
-+
- 	return nr_succeeded;
+diff -puN mm/vmscan.c~mm-vmscan-anon-can-be-aged mm/vmscan.c
+--- a/mm/vmscan.c~mm-vmscan-anon-can-be-aged	2021-03-04 15:35:58.935806422 -0800
++++ b/mm/vmscan.c	2021-03-04 15:35:58.942806422 -0800
+@@ -2517,6 +2517,26 @@ out:
+ 	}
  }
  
-diff -puN mm/vmstat.c~mm-vmscan-add-page-demotion-counter mm/vmstat.c
---- a/mm/vmstat.c~mm-vmscan-add-page-demotion-counter	2021-03-04 15:35:57.708806425 -0800
-+++ b/mm/vmstat.c	2021-03-04 15:35:57.726806425 -0800
-@@ -1244,6 +1244,8 @@ const char * const vmstat_text[] = {
- 	"pgreuse",
- 	"pgsteal_kswapd",
- 	"pgsteal_direct",
-+	"pgdemote_kswapd",
-+	"pgdemote_direct",
- 	"pgscan_kswapd",
- 	"pgscan_direct",
- 	"pgscan_direct_throttle",
++/*
++ * Anonymous LRU management is a waste if there is
++ * ultimately no way to reclaim the memory.
++ */
++bool anon_should_be_aged(struct lruvec *lruvec)
++{
++	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
++
++	/* Aging the anon LRU is valuable if swap is present: */
++	if (total_swap_pages > 0)
++		return true;
++
++	/* Also valuable if anon pages can be demoted: */
++	if (next_demotion_node(pgdat->node_id) >= 0)
++		return true;
++
++	/* No way to reclaim anon pages.  Should not age anon LRUs: */
++	return false;
++}
++
+ static void shrink_lruvec(struct lruvec *lruvec, struct scan_control *sc)
+ {
+ 	unsigned long nr[NR_LRU_LISTS];
+@@ -2626,7 +2646,8 @@ static void shrink_lruvec(struct lruvec
+ 	 * Even if we did not try to evict anon pages at all, we want to
+ 	 * rebalance the anon lru active/inactive ratio.
+ 	 */
+-	if (total_swap_pages && inactive_is_low(lruvec, LRU_INACTIVE_ANON))
++	if (anon_should_be_aged(lruvec) &&
++	    inactive_is_low(lruvec, LRU_INACTIVE_ANON))
+ 		shrink_active_list(SWAP_CLUSTER_MAX, lruvec,
+ 				   sc, LRU_ACTIVE_ANON);
+ }
+@@ -3455,10 +3476,11 @@ static void age_active_anon(struct pglis
+ 	struct mem_cgroup *memcg;
+ 	struct lruvec *lruvec;
+ 
+-	if (!total_swap_pages)
++	lruvec = mem_cgroup_lruvec(NULL, pgdat);
++
++	if (!anon_should_be_aged(lruvec))
+ 		return;
+ 
+-	lruvec = mem_cgroup_lruvec(NULL, pgdat);
+ 	if (!inactive_is_low(lruvec, LRU_INACTIVE_ANON))
+ 		return;
+ 
 _
