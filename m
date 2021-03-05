@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6DD32EA18
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C8632EAA5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 13:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbhCEMgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 07:36:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48356 "EHLO mail.kernel.org"
+        id S230285AbhCEMji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 07:39:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232784AbhCEMft (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:35:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7DB965004;
-        Fri,  5 Mar 2021 12:35:48 +0000 (UTC)
+        id S233150AbhCEMjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:39:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B10C964F27;
+        Fri,  5 Mar 2021 12:39:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614947749;
-        bh=y711LrvMH/5W5cwwXm7Q8uZg4EK+DXbi3/Rm+Sc00IA=;
+        s=korg; t=1614947946;
+        bh=KUuTsOkO2u9pXaJOVbi0gyr6Ku6BCiPczctQjV2gM7U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gWkYCej6CqgjTQY0VlvkIVaWgCpgtQXzIUa9ZzJZs6u9jDIAYaVvNIEzZZUWezza1
-         UBh3h1ecfjv5BdKXxPrSXOgTVqrCv9L8jovhwwZoSgXhgG1Mo0UgG37O+T0Zg7Fd6A
-         KxtRdxQDjDhemVMZZ2DndoHuEXJY8eAo8Y0WloVA=
+        b=rmXyWrfkbhdTaRy08PUxUjnnSPFLM+QEtZ63D40F7X6UwdC3dSG1s89j1VbnYTH+Z
+         00EdwRlnouprr4sZAKn9BTe69aK5ebeKkBNwzVpSly2LrztV0LXlyW2X6lg5R5m+X2
+         R2Bon+5/HumZA38QpBxMcnnYEpEX8oAy2xqJ5lKE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eckhart Mohr <e.mohr@tuxedocomputers.com>,
-        Werner Sembach <wse@tuxedocomputers.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 71/72] ALSA: hda/realtek: Add quirk for Intel NUC 10
-Date:   Fri,  5 Mar 2021 13:22:13 +0100
-Message-Id: <20210305120900.807844603@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com,
+        Eric Dumazet <edumazet@google.com>,
+        Marco Elver <elver@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 15/39] net: fix up truesize of cloned skb in skb_prepare_for_shift()
+Date:   Fri,  5 Mar 2021 13:22:14 +0100
+Message-Id: <20210305120852.533785703@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
-References: <20210305120857.341630346@linuxfoundation.org>
+In-Reply-To: <20210305120851.751937389@linuxfoundation.org>
+References: <20210305120851.751937389@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Werner Sembach <wse@tuxedocomputers.com>
+From: Marco Elver <elver@google.com>
 
-commit 73e7161eab5dee98114987239ec9c87fe8034ddb upstream.
+commit 097b9146c0e26aabaa6ff3e5ea536a53f5254a79 upstream.
 
-This adds a new SND_PCI_QUIRK(...) and applies it to the Intel NUC 10
-devices. This fixes the issue of the devices not having audio input and
-output on the headset jack because the kernel does not recognize when
-something is plugged in.
+Avoid the assumption that ksize(kmalloc(S)) == ksize(kmalloc(S)): when
+cloning an skb, save and restore truesize after pskb_expand_head(). This
+can occur if the allocator decides to service an allocation of the same
+size differently (e.g. use a different size class, or pass the
+allocation on to KFENCE).
 
-The new quirk was inspired by the quirk for the Intel NUC 8 devices, but
-it turned out that the NUC 10 uses another pin. This information was
-acquired by black box testing likely pins.
+Because truesize is used for bookkeeping (such as sk_wmem_queued), a
+modified truesize of a cloned skb may result in corrupt bookkeeping and
+relevant warnings (such as in sk_stream_kill_queues()).
 
-Co-developed-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
-Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210302180414.23194-1-wse@tuxedocomputers.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lkml.kernel.org/r/X9JR/J6dMMOy1obu@elver.google.com
+Reported-by: syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/r/20210201160420.2826895-1-elver@google.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ net/core/skbuff.c |   14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6320,6 +6320,7 @@ enum {
- 	ALC269_FIXUP_LEMOTE_A1802,
- 	ALC269_FIXUP_LEMOTE_A190X,
- 	ALC256_FIXUP_INTEL_NUC8_RUGGED,
-+	ALC256_FIXUP_INTEL_NUC10,
- 	ALC255_FIXUP_XIAOMI_HEADSET_MIC,
- 	ALC274_FIXUP_HP_MIC,
- 	ALC274_FIXUP_HP_HEADSET_MIC,
-@@ -7697,6 +7698,15 @@ static const struct hda_fixup alc269_fix
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MODE
- 	},
-+	[ALC256_FIXUP_INTEL_NUC10] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x19, 0x01a1913c }, /* use as headset mic, without its own jack detect */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_HEADSET_MODE
-+	},
- 	[ALC255_FIXUP_XIAOMI_HEADSET_MIC] = {
- 		.type = HDA_FIXUP_VERBS,
- 		.v.verbs = (const struct hda_verb[]) {
-@@ -8096,6 +8106,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
- 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
- 	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
-+	SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -3089,7 +3089,19 @@ EXPORT_SYMBOL(skb_split);
+  */
+ static int skb_prepare_for_shift(struct sk_buff *skb)
+ {
+-	return skb_cloned(skb) && pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
++	int ret = 0;
++
++	if (skb_cloned(skb)) {
++		/* Save and restore truesize: pskb_expand_head() may reallocate
++		 * memory where ksize(kmalloc(S)) != ksize(kmalloc(S)), but we
++		 * cannot change truesize at this point.
++		 */
++		unsigned int save_truesize = skb->truesize;
++
++		ret = pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
++		skb->truesize = save_truesize;
++	}
++	return ret;
+ }
  
- #if 0
- 	/* Below is a quirk table taken from the old code.
+ /**
 
 
