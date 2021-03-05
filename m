@@ -2,208 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFC732F26C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:24:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 424D832F26E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Mar 2021 19:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhCESXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 13:23:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33538 "EHLO
+        id S229969AbhCESXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 13:23:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54153 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229837AbhCESXL (ORCPT
+        by vger.kernel.org with ESMTP id S229589AbhCESXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 13:23:11 -0500
+        Fri, 5 Mar 2021 13:23:23 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614968590;
+        s=mimecast20190719; t=1614968602;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UBlr5iwi3txToIZalk7mH8mEF/smQnuT6Yz6L+zX5F0=;
-        b=P0GG2hK9nPvuQsXt6EP9Fhz/ASvCDVDKTexXCfnNEqFP4tW9t+b89ro0zGLIOsXDuBgGGS
-        oCWgfRTPFeTosZ/KTMBxWdwWjajFnPV/XcIHJ0CDA6/OzZm3G2M8v5eblV6JvROxgKNy/H
-        LxHLQo4YNcLYiMVXhUQouPaXE2vV9E0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-331-uLxmRfCJN8O63EK29dBDng-1; Fri, 05 Mar 2021 13:23:07 -0500
-X-MC-Unique: uLxmRfCJN8O63EK29dBDng-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 03696108BD07;
-        Fri,  5 Mar 2021 18:23:04 +0000 (UTC)
-Received: from [10.36.112.194] (ovpn-112-194.ams2.redhat.com [10.36.112.194])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 12A3D1001B2C;
-        Fri,  5 Mar 2021 18:22:56 +0000 (UTC)
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=c3=ada?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        Linux MM <linux-mm@kvack.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-References: <20210303185807.2160264-1-surenb@google.com>
- <CALvZod73Uem8jzP3QQdQ6waXbx80UUOTJQS7WBwnmaCdq++8xw@mail.gmail.com>
- <CAJuCfpFgDRezmQMjCajXzBp86UbMLMJbqEaeo0_J+pneZ5XOgg@mail.gmail.com>
- <CALvZod4nZ6W05N-4ostUEz5EbCuEvuBpc4LRYfAFgwQU-wb9dQ@mail.gmail.com>
- <b45d9599-b917-10c3-6b86-6ecd8db16d43@redhat.com>
- <CALvZod6b8H-=N6WVrgMVLE3=pm-ELWerjAO5v5KHSH-ih337+g@mail.gmail.com>
- <c234a564-a052-b586-2a32-8580aaf8ca5d@redhat.com>
- <CAJuCfpHmks2Lxu8j0LaU+yhS3yO62=4qo=Jinr3mK0Km7yguAQ@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v3 1/1] mm/madvise: replace ptrace attach requirement for
- process_madvise
-Message-ID: <3dfb7545-3545-cdbe-d643-8d76fc77a30f@redhat.com>
-Date:   Fri, 5 Mar 2021 19:22:56 +0100
+        bh=Cif4JRqiNpGdkfMRSZ/fYAiktCyfQJU6RgpMU5eJol0=;
+        b=TIjuUB9f8rkK0xEoNsNk2LWnqHZhvpS4nZ4CqTJZzvfr63wrFG4T5lwN18OphlKdJ97DjQ
+        /2hwA5DwTFYdxXiCmr6EYr9L4pUeKc4KUWa2hIVZ17meM7zI7wJTdNqmpCRocmT/6tcOx6
+        /EvrCyUF2mBTOchq7ZzEwyu5pIF8M6Y=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-464-1uCIkNgxOVuuZsI2JrNzZA-1; Fri, 05 Mar 2021 13:23:21 -0500
+X-MC-Unique: 1uCIkNgxOVuuZsI2JrNzZA-1
+Received: by mail-wm1-f69.google.com with SMTP id v5so1153433wml.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 10:23:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Cif4JRqiNpGdkfMRSZ/fYAiktCyfQJU6RgpMU5eJol0=;
+        b=pXokPXOEqESfE9bEdcVDAptVxqnOA3lKl2bK50XlbW4gXbwclh505FwspDvxR4rjaU
+         fBKxJmbYXbPHHsTa4V3ZVJHg7wykK4MK6/+Lhemlk9WfujiBmsaHLJV1YDj9/a6nyKUt
+         lzQUScFTv2JajWaBep6uvhagmR4QcVFifaP2JQltICL88LkOTH4D1t8Fu0bDYhHlagzB
+         U3Ud1B1myEL4u2bHE7DRVaH9ByGpuKhELCaRJEfBovWG7jdtyeVMOljLTF2qdW9BYJ40
+         BmOdJqhNzww/+58V/ceCiRmwAHqPyPaGEQMdwjrEp3Ay/ayfks88/DC5VcsRjkWU4Nw/
+         j+ZA==
+X-Gm-Message-State: AOAM530VQmC710Q9YwFfhvB7O1D1X7npNCf/DRHNEQbrhLUgAE1r1I9d
+        kFD6y8R/2/6pk7rsKnYbaKbCh4ThU7/XFnKxPwOSBa5oYu0mtRQ3I/F2RV6Bpmik52xw36j+ZxW
+        TFnRcHATs/ZT+LwyHAdOzJKc8
+X-Received: by 2002:adf:f851:: with SMTP id d17mr10572413wrq.267.1614968600001;
+        Fri, 05 Mar 2021 10:23:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx3epZPNLDLCGcU127fgtBb9iUrOAdZs2EfY770AltyxOXwJ9t8wyFIk7LamLdgEUUg+Ku2aA==
+X-Received: by 2002:adf:f851:: with SMTP id d17mr10572398wrq.267.1614968599844;
+        Fri, 05 Mar 2021 10:23:19 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x8sm5343865wru.46.2021.03.05.10.23.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 10:23:19 -0800 (PST)
+Subject: Re: [PATCH v2 09/17] KVM: x86/mmu: Use '0' as the one and only value
+ for an invalid PAE root
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <20210305011101.3597423-1-seanjc@google.com>
+ <20210305011101.3597423-10-seanjc@google.com>
+ <63d2a610-f897-805c-23a7-488a65485f36@redhat.com>
+ <YEJ21vvQfBXnvlP8@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c4e386f6-35f5-fdd7-10c9-c690615f1a47@redhat.com>
+Date:   Fri, 5 Mar 2021 19:23:18 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAJuCfpHmks2Lxu8j0LaU+yhS3yO62=4qo=Jinr3mK0Km7yguAQ@mail.gmail.com>
+In-Reply-To: <YEJ21vvQfBXnvlP8@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.03.21 19:08, Suren Baghdasaryan wrote:
-> On Fri, Mar 5, 2021 at 9:52 AM David Hildenbrand <david@redhat.com> wrote:
+On 05/03/21 19:22, Sean Christopherson wrote:
+> On Fri, Mar 05, 2021, Paolo Bonzini wrote:
+>> On 05/03/21 02:10, Sean Christopherson wrote:
+>>> Use '0' to denote an invalid pae_root instead of '0' or INVALID_PAGE.
+>>> Unlike root_hpa, the pae_roots hold permission bits and thus are
+>>> guaranteed to be non-zero.  Having to deal with both values leads to
+>>> bugs, e.g. failing to set back to INVALID_PAGE, warning on the wrong
+>>> value, etc...
 >>
->> On 05.03.21 18:45, Shakeel Butt wrote:
->>> On Fri, Mar 5, 2021 at 9:37 AM David Hildenbrand <david@redhat.com> wrote:
->>>>
->>>> On 04.03.21 01:03, Shakeel Butt wrote:
->>>>> On Wed, Mar 3, 2021 at 3:34 PM Suren Baghdasaryan <surenb@google.com> wrote:
->>>>>>
->>>>>> On Wed, Mar 3, 2021 at 3:17 PM Shakeel Butt <shakeelb@google.com> wrote:
->>>>>>>
->>>>>>> On Wed, Mar 3, 2021 at 10:58 AM Suren Baghdasaryan <surenb@google.com> wrote:
->>>>>>>>
->>>>>>>> process_madvise currently requires ptrace attach capability.
->>>>>>>> PTRACE_MODE_ATTACH gives one process complete control over another
->>>>>>>> process. It effectively removes the security boundary between the
->>>>>>>> two processes (in one direction). Granting ptrace attach capability
->>>>>>>> even to a system process is considered dangerous since it creates an
->>>>>>>> attack surface. This severely limits the usage of this API.
->>>>>>>> The operations process_madvise can perform do not affect the correctness
->>>>>>>> of the operation of the target process; they only affect where the data
->>>>>>>> is physically located (and therefore, how fast it can be accessed).
->>>>>>>> What we want is the ability for one process to influence another process
->>>>>>>> in order to optimize performance across the entire system while leaving
->>>>>>>> the security boundary intact.
->>>>>>>> Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
->>>>>>>> and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
->>>>>>>> and CAP_SYS_NICE for influencing process performance.
->>>>>>>>
->>>>>>>> Cc: stable@vger.kernel.org # 5.10+
->>>>>>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->>>>>>>> Reviewed-by: Kees Cook <keescook@chromium.org>
->>>>>>>> Acked-by: Minchan Kim <minchan@kernel.org>
->>>>>>>> Acked-by: David Rientjes <rientjes@google.com>
->>>>>>>> ---
->>>>>>>> changes in v3
->>>>>>>> - Added Reviewed-by: Kees Cook <keescook@chromium.org>
->>>>>>>> - Created man page for process_madvise per Andrew's request: https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/commit/?id=a144f458bad476a3358e3a45023789cb7bb9f993
->>>>>>>> - cc'ed stable@vger.kernel.org # 5.10+ per Andrew's request
->>>>>>>> - cc'ed linux-security-module@vger.kernel.org per James Morris's request
->>>>>>>>
->>>>>>>>     mm/madvise.c | 13 ++++++++++++-
->>>>>>>>     1 file changed, 12 insertions(+), 1 deletion(-)
->>>>>>>>
->>>>>>>> diff --git a/mm/madvise.c b/mm/madvise.c
->>>>>>>> index df692d2e35d4..01fef79ac761 100644
->>>>>>>> --- a/mm/madvise.c
->>>>>>>> +++ b/mm/madvise.c
->>>>>>>> @@ -1198,12 +1198,22 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
->>>>>>>>                    goto release_task;
->>>>>>>>            }
->>>>>>>>
->>>>>>>> -       mm = mm_access(task, PTRACE_MODE_ATTACH_FSCREDS);
->>>>>>>> +       /* Require PTRACE_MODE_READ to avoid leaking ASLR metadata. */
->>>>>>>> +       mm = mm_access(task, PTRACE_MODE_READ_FSCREDS);
->>>>>>>>            if (IS_ERR_OR_NULL(mm)) {
->>>>>>>>                    ret = IS_ERR(mm) ? PTR_ERR(mm) : -ESRCH;
->>>>>>>>                    goto release_task;
->>>>>>>>            }
->>>>>>>>
->>>>>>>> +       /*
->>>>>>>> +        * Require CAP_SYS_NICE for influencing process performance. Note that
->>>>>>>> +        * only non-destructive hints are currently supported.
->>>>>>>
->>>>>>> How is non-destructive defined? Is MADV_DONTNEED non-destructive?
->>>>>>
->>>>>> Non-destructive in this context means the data is not lost and can be
->>>>>> recovered. I follow the logic described in
->>>>>> https://lwn.net/Articles/794704/ where Minchan was introducing
->>>>>> MADV_COLD and MADV_PAGEOUT as non-destructive versions of MADV_FREE
->>>>>> and MADV_DONTNEED. Following that logic, MADV_FREE and MADV_DONTNEED
->>>>>> would be considered destructive hints.
->>>>>> Note that process_madvise_behavior_valid() allows only MADV_COLD and
->>>>>> MADV_PAGEOUT at the moment, which are both non-destructive.
->>>>>>
->>>>>
->>>>> There is a plan to support MADV_DONTNEED for this syscall. Do we need
->>>>> to change these access checks again with that support?
->>>>
->>>> Eh, I absolutely don't think letting another process discard memory in
->>>> another process' address space is a good idea. The target process can
->>>> observe that easily and might even run into real issues.
->>>>
->>>> What's the use case?
->>>>
->>>
->>> Userspace oom reaper. Please look at
->>> https://lore.kernel.org/linux-api/20201014183943.GA1489464@google.com/T/
->>>
->>
->> Thanks, somehow I missed that (not that it really changed my opinion on
->> the approach while skimming over the discussion :) will have a more
->> detailed look)
+>> I don't dispute this is a good idea, but it deserves one or more comments.
 > 
-> The latest version of that patchset is:
-> https://lore.kernel.org/patchwork/patch/1344419/
-> Yeah, memory reaping is a special case when we are operating on a
-> dying process to speed up the release of its memory. I don't know if
-> for that particular case we need to make the checks stricter. It's a
-> dying process anyway and the data is being destroyed. Allowing to
-> speed up that process probably can still use CAP_SYS_NICE.
+> Agreed.   What about adding macros?
+> 
+> /* Comment goes here. */
+> #define INVALID_PAE_ROOT	0
+> #define IS_VALID_PAE_ROOT(x)	(!!(x))
 
-I know, unrelated discussion (sorry, I don't have above thread in my 
-archive anymore due to automatic cleanups ...) , but introducing 
-MADV_DONTEED on a remote processes, having to tweak range logic because 
-we always want to apply it to the whole MM, just to speed up memory 
-reaping sounds like completely abusing madvise()/process_madvise() to me.
+Yep, that's a nice solution.
 
-You want different semantics than MADV_DONTNEED. You want different 
-semantics than madvise.
+Paolo
 
-Simple example: mlock()ed pages in the target process. MADV_DONTNEED 
-would choke on that. For the use case of reaping, you certainly don't care.
-
-I am not sure if process_madvise() is the right interface to enforce 
-discarding of all target memory.
-
-
-Not to mention that MADV_FREE doesn't make any sense IMHO for memory 
-reaping ... no to mention exposing this via process_madvise().
-
--- 
-Thanks,
-
-David / dhildenb
+> 
+> 
+> Also, I missed this pattern in mmu_audit.c's mmu_spte_walk():
+> 
+> 	for (i = 0; i < 4; ++i) {
+> 		hpa_t root = vcpu->arch.mmu->pae_root[i];
+> 
+> 		if (root && VALID_PAGE(root)) {
+> 			root &= PT64_BASE_ADDR_MASK;
+> 			sp = to_shadow_page(root);
+> 			__mmu_spte_walk(vcpu, sp, fn, 2);
+> 		}
+> 	}
+> 
 
