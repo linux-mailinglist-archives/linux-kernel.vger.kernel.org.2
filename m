@@ -2,155 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1747E32FCC4
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E3F32FCC8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:30:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbhCFT25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 14:28:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46438 "EHLO mail.kernel.org"
+        id S231439AbhCFTaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 14:30:02 -0500
+Received: from mout.gmx.net ([212.227.15.18]:50547 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230390AbhCFT21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 14:28:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFF9D650B5;
-        Sat,  6 Mar 2021 19:28:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615058907;
-        bh=/cRTkN5iORhsOndKR9uOHKvVeqUAVFqGbXTHgpQzAfM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m7yu71zWsA252G+1tar+X9Ox0T0oREHd4pNkuLpq6MEdUzvbJBKsJ9m3zo89rhuWi
-         /HxxP+jTcy+og6tctQMcY5CSS+SPTbxjaNf4nCA3EXMcqVuxqENM1F/jBiOxXJ3hB6
-         uQ6tOTsuaZ1niqe2R8tD8xc98WPwZd2Ja80MNPXNuW1jDHdtxr7F/2WvJWoZoRPJeG
-         deMKFLxHvkT35+ay0BQHJrCbz8aDhaDnqVb21+lb1R8L9INmLmBhSaKNTfiFNGOINr
-         ysffzWeYBDawkmxYoTvFgWgtSeyScMA900P1Eoko2S7bfTrJMfCcTj+AVEafeuBKXw
-         MoOjF9MgB9pFA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B0FF440647; Sat,  6 Mar 2021 16:28:22 -0300 (-03)
-Date:   Sat, 6 Mar 2021 16:28:22 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Gon Solo <gonsolo@gmail.com>
-Cc:     John Garry <john.garry@huawei.com>, Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] Perf: Clean generated directory, other archs.
-Message-ID: <YEPX1oaV6vz5FW05@kernel.org>
-References: <20210303183247.217385-1-gonsolo@gmail.com>
+        id S231440AbhCFT3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 14:29:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1615058965;
+        bh=nVW5W5QEQtfYbQWml0kYGVV/4QWg40c3mHIc4HsSoL0=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=W/mLGq6besJTk53Du84rUjtGJBA3Ybms9+Jo1fsLyLtyht4Yyi+2RatMZcAcfEXvF
+         W3iUrTO8+Ng7ZOqM0bKztwv3SLCvs8oBWAzif4EdGAE0gOtmkd1GRkae1/qDpJPqoL
+         2cv5El6BcSYa6mu1bnRVqyjBcM/RXB4EhROF0IKY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.153.24]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MryXH-1m5jHM2mbF-00nzWB; Sat, 06
+ Mar 2021 20:29:25 +0100
+Subject: Re: [PATCH] arch/parisc/kernel: remove duplicate include in ptrace
+To:     menglong8.dong@gmail.com, oleg@redhat.com
+Cc:     James.Bottomley@HansenPartnership.com,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhang Yunkai <zhang.yunkai@zte.com.cn>
+References: <20210304022410.186848-1-zhang.yunkai@zte.com.cn>
+From:   Helge Deller <deller@gmx.de>
+Message-ID: <fb46ea24-3c5e-f992-4f33-eb00c06c8369@gmx.de>
+Date:   Sat, 6 Mar 2021 20:29:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303183247.217385-1-gonsolo@gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210304022410.186848-1-zhang.yunkai@zte.com.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:YKWoOGci7b09B19Q7X27W19H8+QYMHLMiiH5QcOnnIalWdrWv8Y
+ D55lDbR33SODtOOAIyHhTwwHB2ir9FfK7b0ohN5AMWaFCplpyd6v1AkvhFGYoiCSliPjTcg
+ 7rPLaTHgTzo1IihJlSdEb6BEJhdswjPAA55kp6pxU9aJUZ+vUK/GslffpFMkS3kYa549m7x
+ aNdDAHsCoJuVUvQi63bUA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7iMxN3hlQWM=:0xy0BJINoHvtlPTU7eA8Kz
+ hj/JtKr4HPitjnvAkQ/bdQQCLwRgD+3NB8zDPCJPppiddht45ihxE4nuNV2nwuuwUL+pWl7yB
+ sBhoxYxlU7TeIKHhbAHxNVsT7ppxyovLHmAO8O30FFtOmL49LtLrdrL0Nc2Ve1+T23sE97k43
+ JD6TMg9lHGhn11M1lt7lh070nkMEciJCnJNL1U9PNiBm0bncr41peGocTA64uuIqUFW0B/Nxb
+ Y+7zUFTa1y4iwSHWDI3tocBPs5mOKYq3/SDLSftCIYh70H9Lsv9GO5IlKe8Cf9Urm67jrNEAM
+ OcifZTLCGm46wmZsXgKrNpgtzK/oTcZ7NewhF3HB+u4pecr2nKT5gjrCrYFOc1GbeGWLAljzY
+ r5nE/m20n5f3DaPCvMKAQT31VkeKEQL5vEe6Iy9d7fsL/K5WUfoX4ShKUcLLcPbcGCBJYeixa
+ 1NwHrFq+P3Yi78hcfI1oR0lugk/zEns1mrvyLlMMc7TMrvUtbWG4BNna96EkiWdOo5MRcDrV2
+ sMkQ4WKplxBPv9rX4x8fWHH7YaRBP53pxksecKSivtUMeQEsj3WUC8avjf/LInBLhXDLxXjPr
+ Oo4jGpSuxZD4SUNh6c95czDWuBXJRRpNIWzTnj2RqkR3OrJm3K848cV+H6s7PwYUEn7xUPQ+G
+ 3zDBlt/hzaOuBIQxAsTe8sIIglz/PSUaPLnzTvR9fOn5g/YrT56vmRz7F81+RnVmlZf6dIyBv
+ CgmjzSqOtthJCgxnrFB5QBZMgy3ZCF0N/zKNCZwHWdse9Ma0lEZJbCQJ2IRZwz0iQxDRLvp81
+ deylq6ZwBzQ/LNwpj48XqosrTJno94nB0twHhAgCGyz4tczzGwGqSmxHWYfcNBO3kjhbfkecX
+ 9N+m7icK6ddWmCyNeQCw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Mar 03, 2021 at 07:32:46PM +0100, Gon Solo escreveu:
+On 3/4/21 3:24 AM, menglong8.dong@gmail.com wrote:
+> From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+>
+> 'linux/compat.h' included in 'arch/parisc/kernel/ptrace.c' is duplicated=
+.
+> It is also included in the 24th line.
+>
+> Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 
+Thanks,
+applied to the parisc-next tree.
 
-You forgot to add an explanation here and to add your:
-
-Signed-off-by: Gon Solo <gonsolo@gmail.com>
-
-In this case a:
-
-Suggested-by: Arnaldo Carvalho de Melo <acme@kernel.org>
-
-Is also appropriate, since I pointed you in this direction.
-
-Please take a look at:
-
-Documentation/process/submitting-patches.rst
-
-Direct link for your convenience:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst
-
-Thanks for working on this!
-
-- Arnaldo
+Helge
 
 > ---
->  tools/perf/arch/arm64/Makefile   | 5 +++--
->  tools/perf/arch/powerpc/Makefile | 5 +++--
->  tools/perf/arch/s390/Makefile    | 5 +++--
->  3 files changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/perf/arch/arm64/Makefile b/tools/perf/arch/arm64/Makefile
-> index fab3095fb5d0..426aecdd0b71 100644
-> --- a/tools/perf/arch/arm64/Makefile
-> +++ b/tools/perf/arch/arm64/Makefile
-> @@ -10,7 +10,8 @@ HAVE_KVM_STAT_SUPPORT := 1
->  # Syscall table generation for perf
->  #
->  
-> -out    := $(OUTPUT)arch/arm64/include/generated/asm
-> +generated := $(OUTPUT)arch/arm64/include/generated
-> +out    := $(generated)/asm
->  header := $(out)/syscalls.c
->  incpath := $(srctree)/tools
->  sysdef := $(srctree)/tools/arch/arm64/include/uapi/asm/unistd.h
-> @@ -24,6 +25,6 @@ $(header): $(sysdef) $(systbl)
->  	$(Q)$(SHELL) '$(systbl)' '$(CC)' '$(HOSTCC)' $(incpath) $(sysdef) > $@
->  
->  clean::
-> -	$(call QUIET_CLEAN, arm64) $(RM) $(header)
-> +	$(call QUIET_CLEAN, arm64) $(RM) -r $(header) $(generated)
->  
->  archheaders: $(header)
-> diff --git a/tools/perf/arch/powerpc/Makefile b/tools/perf/arch/powerpc/Makefile
-> index 840ea0e59287..979c2bebc167 100644
-> --- a/tools/perf/arch/powerpc/Makefile
-> +++ b/tools/perf/arch/powerpc/Makefile
-> @@ -11,7 +11,8 @@ PERF_HAVE_JITDUMP := 1
->  # Syscall table generation for perf
->  #
->  
-> -out    := $(OUTPUT)arch/powerpc/include/generated/asm
-> +generated := $(OUTPUT)arch/powerpc/include/generated
-> +out    := $(generated)/asm
->  header32 := $(out)/syscalls_32.c
->  header64 := $(out)/syscalls_64.c
->  sysprf := $(srctree)/tools/perf/arch/powerpc/entry/syscalls
-> @@ -28,6 +29,6 @@ $(header32): $(sysdef) $(systbl)
->  	$(Q)$(SHELL) '$(systbl)' '32' $(sysdef) > $@
->  
->  clean::
-> -	$(call QUIET_CLEAN, powerpc) $(RM) $(header32) $(header64)
-> +	$(call QUIET_CLEAN, powerpc) $(RM) -r $(header32) $(header64) $(generated)
->  
->  archheaders: $(header32) $(header64)
-> diff --git a/tools/perf/arch/s390/Makefile b/tools/perf/arch/s390/Makefile
-> index 74bffbea03e2..27cf67f1cc78 100644
-> --- a/tools/perf/arch/s390/Makefile
-> +++ b/tools/perf/arch/s390/Makefile
-> @@ -10,7 +10,8 @@ PERF_HAVE_JITDUMP := 1
->  # Syscall table generation for perf
->  #
->  
-> -out    := $(OUTPUT)arch/s390/include/generated/asm
-> +generated := $(OUTPUT)arch/s390/include/generated
-> +out    := $(generated)/asm
->  header := $(out)/syscalls_64.c
->  sysprf := $(srctree)/tools/perf/arch/s390/entry/syscalls
->  sysdef := $(sysprf)/syscall.tbl
-> @@ -23,6 +24,6 @@ $(header): $(sysdef) $(systbl)
->  	$(Q)$(SHELL) '$(systbl)' $(sysdef) > $@
->  
->  clean::
-> -	$(call QUIET_CLEAN, s390) $(RM) $(header)
-> +	$(call QUIET_CLEAN, s390) $(RM) -r $(header) $(generted)
->  
->  archheaders: $(header)
-> -- 
-> 2.27.0
-> 
+>   arch/parisc/kernel/ptrace.c | 1 -
+>   1 file changed, 1 deletion(-)
+>
+> diff --git a/arch/parisc/kernel/ptrace.c b/arch/parisc/kernel/ptrace.c
+> index 2127974982df..918faa95740c 100644
+> --- a/arch/parisc/kernel/ptrace.c
+> +++ b/arch/parisc/kernel/ptrace.c
+> @@ -567,7 +567,6 @@ static const struct user_regset_view user_parisc_nat=
+ive_view =3D {
+>   };
+>
+>   #ifdef CONFIG_64BIT
+> -#include <linux/compat.h>
+>
+>   static int gpr32_get(struct task_struct *target,
+>   		     const struct user_regset *regset,
+>
 
--- 
-
-- Arnaldo
