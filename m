@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5665F32F80B
+	by mail.lfdr.de (Postfix) with ESMTP id D164932F80C
 	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 04:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhCFDTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 22:19:11 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:60826 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229642AbhCFDS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 22:18:58 -0500
-Received: from [10.130.0.65] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx__CW9EJgJiEVAA--.9853S3;
-        Sat, 06 Mar 2021 11:18:47 +0800 (CST)
-Subject: Re: [PATCH 1/2] MIPS: Loongson64: Remove unused sysconf members
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-References: <20210304110057.22144-1-zhangqing@loongson.cn>
- <20210304110057.22144-2-zhangqing@loongson.cn>
- <67d0389d-9df4-066d-2c8d-2eda967fb2fc@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   zhangqing <zhangqing@loongson.cn>
-Message-ID: <d2f51232-7fd7-a655-c041-9e0e42bbe221@loongson.cn>
-Date:   Sat, 6 Mar 2021 11:18:46 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S230217AbhCFDTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 22:19:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229701AbhCFDTB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 22:19:01 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903ADC06175F;
+        Fri,  5 Mar 2021 19:18:50 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id w65so4791794oie.7;
+        Fri, 05 Mar 2021 19:18:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=JCDq+uiwLZuYstNdKdn+4e8HqRfAw2eH/rMEXDRybbE=;
+        b=JTRFyxLsRecAMj8Q435NNZB4GoPigS+YpFm9a2PBges//gsP/f/x8nallCT8n3J9wb
+         IH9KAT1MrDZhjyYgPpyEQDLRIx7K8zm35o9viInXvt95WZn8/NWx5OVUHRnbQ3wiPY5Z
+         W/aV+RrGVU9JYhf4QNnJuW3kblSF5XYYPdpIyyWrlfiAhCvNGkxq1URo/+SMx75dSuDA
+         NEmAJORGFfz2Xi5yY1a/nYEvdzoQXc7LnAHaGlpuHBlTYSO5aCLk24xWiJEWN43CZvqr
+         /TQCMJpAWAIfttc7FtMgJSjLnD1FYiNnvZAJe8pZD9vz3jyOgIoTX2vZ5f2xJryHQ71Q
+         A6gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JCDq+uiwLZuYstNdKdn+4e8HqRfAw2eH/rMEXDRybbE=;
+        b=NbfM4NsuRQGLTP9vanVUNPJ55eu7Dmb9idX7//IzUYG5/IFIgQPSIzJWgA4jeryoSQ
+         zSDphyH43XI86apVI2zdgJkWC6ombQiXdCbTFNA75T2wj5BL3WI86RDqOCieViHUs1gz
+         aWUjeZEkyNQdJbqOkzrHCLVoRh8kr4pvS47w4AV2VWs/+Y46p+E4sCllY/rQCrOrIukd
+         mYzw6sODCskVtqCym4IN2V+1AYK6YstQaBrfx0AGO9JQAbOvmefYB5vrxzddU8dq9D5o
+         xhRTqEzrbU+R1XksyyxwMaSK9rkgg9iYBe5ecKHmqMSGuPcnKj/QLfJxRyjTxOaCR0tl
+         GDgw==
+X-Gm-Message-State: AOAM530N0BaWgJeli4IP6BSleptpoDfFDUIVDcFf7NrOBLIFnKDfHwhA
+        iUC+cK4E2/rhhkROb3V5hu9scu3BZyA=
+X-Google-Smtp-Source: ABdhPJy2uT+T8viNA0/5UJKBmZXkZdseYpUtXPUB0A1kEe+oXR+fJnvMJooG55/tsHvWBekNBpCCxg==
+X-Received: by 2002:a05:6808:128e:: with SMTP id a14mr9706357oiw.71.1615000729991;
+        Fri, 05 Mar 2021 19:18:49 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a6sm819970otq.79.2021.03.05.19.18.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 05 Mar 2021 19:18:48 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 5 Mar 2021 19:18:47 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH RESEND][next] hwmon: (max6621) Fix fall-through warnings
+ for Clang
+Message-ID: <20210306031847.GA192807@roeck-us.net>
+References: <20210305095258.GA141583@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <67d0389d-9df4-066d-2c8d-2eda967fb2fc@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dx__CW9EJgJiEVAA--.9853S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jw43GFy3ZFyrJFWDKryfWFg_yoWxurg_CF
-        4FywsrC3W8Cr4vyFs8KF4v9r97urZ7JFWDZ34vqr1Fq3sFkF9Fqa4xGrn2ka43AFW8Zr9r
-        urnY9w4Fk3yDAjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbsxYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487
-        MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
-        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
-        JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
-        vEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2
-        jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
-        ZFpf9x07j7xhLUUUUU=
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305095258.GA141583@embeddedor>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 05, 2021 at 03:52:58AM -0600, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a break statement instead of letting the code fall
+> through to the next case.
+> 
+> Link: https://github.com/KSPP/linux/issues/115
+> Acked-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
 
+I Acked those, thus assuming that they would be applied through some
+other tree. If that is not the case, you'll need to let me know. The
+resend only means to me that whatever tree was supposed to pick it up
+did not do it, but it doesn't result in any action from my side.
 
-On 03/05/2021 10:32 AM, Jiaxun Yang wrote:
->
->
-> 在 2021/3/4 下午7:00, Qing Zhang 写道:
->> We don't need them anymore, They are uniform on all Loongson64 systems
->> and have been fixed in DeviceTree.loongson3_platform_init is replaced
->> with DTS + driver.
->>
->> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
->> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
->
-> Acked-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
->
-> Hmm, why it comes with my sign-off?
-> I assue it's my patch somewhere off the tree?
-Hi, Jiaxun
+Guenter
 
-Thank you very much for your reply.
-
-Yes, it is like this.out of tree provides good ideas, and clean up 
-others by the way.
-
-Thanks,
-Qing
-
->
-> Thanks.
->
-> - Jiaxun
->
-
+>  drivers/hwmon/max6621.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwmon/max6621.c b/drivers/hwmon/max6621.c
+> index 367855d5edae..7821132e17fa 100644
+> --- a/drivers/hwmon/max6621.c
+> +++ b/drivers/hwmon/max6621.c
+> @@ -156,7 +156,7 @@ max6621_is_visible(const void *data, enum hwmon_sensor_types type, u32 attr,
+>  		default:
+>  			break;
+>  		}
+> -
+> +		break;
+>  	default:
+>  		break;
+>  	}
+> -- 
+> 2.27.0
+> 
