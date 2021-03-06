@@ -2,67 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8427C32F9AC
+	by mail.lfdr.de (Postfix) with ESMTP id D21DF32F9AD
 	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhCFLSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 06:18:42 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:57950 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229917AbhCFLSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 06:18:25 -0500
-Received: from zn.tnic (p200300ec2f1bd90027b3ba04162e9c54.dip0.t-ipconnect.de [IPv6:2003:ec:2f1b:d900:27b3:ba04:162e:9c54])
+        id S230265AbhCFLT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 06:19:26 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:58585 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229917AbhCFLTG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 06:19:06 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4593E1EC0402;
-        Sat,  6 Mar 2021 12:18:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1615029504;
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 44EB422239;
+        Sat,  6 Mar 2021 12:19:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1615029544;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=JoN1l3YjsWEwrhXrFq/YfzpwEnBzmTi0W3gK6nPGqME=;
-        b=h+sN2hlDui3qiKMUUEkZB4261xxER2Z2OdYCbuNAlw9zAB5iqHX5pI4x2Wba/C+XJtNTKQ
-        kF1u/R9tRqxg5d+/302nflbHXiiB464dToOt4yo5aPiF9S883dijFvO9Qm/In1+Wze19TB
-        pwz0onlKPLIcJoakll59FCBLTiH7Kvc=
-Date:   Sat, 6 Mar 2021 12:18:15 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     menglong8.dong@gmail.com
-Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        hpa@zytor.com, peterz@infradead.org, ggherdovich@suse.cz,
-        rafael.j.wysocki@intel.com, rppt@kernel.org,
-        nathan.fontenot@amd.com, ashok.raj@intel.com, brgerst@gmail.com,
-        linux-kernel@vger.kernel.org,
-        Zhang Yunkai <zhang.yunkai@zte.com.cn>
-Subject: Re: [PATCH] x86/smpboot: remove duplicate include in smpboot.c
-Message-ID: <20210306111815.GA7596@zn.tnic>
-References: <20210306065610.211901-1-zhang.yunkai@zte.com.cn>
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zX9fO4b7o8NQG+rCtbaK0gMHIlmYCHWUTWEk7uKieYc=;
+        b=fiqyZFA/qmJlYzwdeAt10ZrSLagIBQZmdfpkR2tHYfM9AmLraABBY8FcKm6KlO2ZHk4nNz
+        3VmwoKfU2I2soU6Kyrhmejh454b5RGbDGQepd928pxzB6lR1VjJarDydRBxPnsxRJHKxut
+        hvWbbV6H1FTaWQS8S1r8uPvUo8c1JF0=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210306065610.211901-1-zhang.yunkai@zte.com.cn>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 06 Mar 2021 12:19:03 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc:     vigneshr@ti.com, p.yadav@ti.com, linux-mtd@lists.infradead.org,
+        miquel.raynal@bootlin.com, richard@nod.at,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] mtd: spi-nor: Move Software Write Protection logic
+ out of the core
+In-Reply-To: <20210306095002.22983-5-tudor.ambarus@microchip.com>
+References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
+ <20210306095002.22983-5-tudor.ambarus@microchip.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <7fb8af561eda06444ee0e0c592147af7@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 10:56:10PM -0800, menglong8.dong@gmail.com wrote:
-> From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+Am 2021-03-06 10:50, schrieb Tudor Ambarus:
+> It makes the core file a bit smaller and provides better separation
+> between the Software Write Protection features and the core logic.
+> All the next generic software write protection features (e.g. 
+> Individual
+> Block Protection) will reside in swp.c.
 > 
-> 'cpu_device_id.h' and 'intel_family.h' included in 'smpboot.c'
-> is duplicated. It is also included in the 80th line.
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+
+[..]
+
+> @@ -3554,6 +3152,9 @@ int spi_nor_scan(struct spi_nor *nor, const char 
+> *name,
+>  	if (ret)
+>  		return ret;
 > 
-> Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+> +	if (nor->params->locking_ops)
 
-If you send another person's patch, then your SOB needs to follow his/hers:
+Should this be in spi_nor_register_locking_ops(), too? I.e.
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
+void spi_nor_register_locking_ops() {
+     if (!nor->params->locking_ops)
+         return;
+..
+}
 
-Also, merge those two x86 patches removing includes into one please.
+I don't have a strong opinion on that so far. I just noticed because
+I put the check into spi_nor_otp_init() for my OTP series. They should
+be the same though.
 
-Thx.
+> +		spi_nor_register_locking_ops(nor);
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+-michael
