@@ -2,81 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9A932FC2A
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 18:07:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C0D32FC2C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 18:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhCFRHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 12:07:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231249AbhCFRHD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 12:07:03 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED92C06175F
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 09:07:02 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id l14so1607680qtr.10
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 09:07:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YpqFU/WH93rAnDj1yFPOUMsML7kE15FG7OpMRmI6VOk=;
-        b=lqUa3JgA7vwzlGmAnIReW+CDdgbpUq1hHgrXc7tsb3EAg5ZpHTuO59ZvYQ06oeoCmL
-         NFKLBBs4hVllSFacz+T27+DzAV8eufHWwEwuEw6j4I4xAVQ/JXdXPqVeOY5dMjm3A5KS
-         rOUoq/Z0GGiHgqFQjmoGzoE57zRpPiVqZCN3s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YpqFU/WH93rAnDj1yFPOUMsML7kE15FG7OpMRmI6VOk=;
-        b=XRHVA3LEiFSB0glyEb2Dy+omQKd2MUrtYImHhQDGSAXXMCPoeSNzbmOXsCSPoKsZBu
-         VKs99Rh9o118V+7TdYrhIbCfx6nnn1/0/xmHZF4wFahTfLOXEqw3Zzg3OTu2kk04OrnD
-         wm/KgPwC9E5rziqPzr6kbiJ1a3B3+9SsyZ2919DqeWtAiKtGgPGbx4cKgR1WcOMhV1rd
-         gzjplImsnkD0W8s+VxkJ7EjJD4z9LbJpjC2d9VknyBb6f/eBF5XJJhOJw+cBKEHb+sxI
-         fIwGc7H2iMtMqIzRWpfsfNRbatCvyi3UH5v4e4Nj3rHm2PiADHgLnl63QnKMg0gVaRsW
-         JTfg==
-X-Gm-Message-State: AOAM531BspgBOoMGEwpdsOkm/+JHC0SGMF/YgWUaEM80q3dmlEeFCK8U
-        rto6fccmq+jfxKlePIZa4UUU7CiSqeFVWxc+XWWcPA==
-X-Google-Smtp-Source: ABdhPJwJhKkiF/NoD+K9iea6Lhx4ktdxz5R3+GzHT8+pww/oN3UHClY2jcu37KlVeR9ufDL/9rQhi7Iy0vKl0v4zYDg=
-X-Received: by 2002:ac8:480e:: with SMTP id g14mr14104704qtq.249.1615050422018;
- Sat, 06 Mar 2021 09:07:02 -0800 (PST)
+        id S231220AbhCFRIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 12:08:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231229AbhCFRHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 12:07:49 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CFA2B64FFD;
+        Sat,  6 Mar 2021 17:07:47 +0000 (UTC)
+Date:   Sat, 6 Mar 2021 17:07:43 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ye Xiang <xiang.ye@intel.com>
+Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] iio: hid-sensor-temperature: Fix issues of
+ timestamp channel
+Message-ID: <20210306170743.16d30d95@archlinux>
+In-Reply-To: <20210303063615.12130-4-xiang.ye@intel.com>
+References: <20210303063615.12130-1-xiang.ye@intel.com>
+        <20210303063615.12130-4-xiang.ye@intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210305120930.14297-1-mark-pk.tsai@mediatek.com>
-In-Reply-To: <20210305120930.14297-1-mark-pk.tsai@mediatek.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Sun, 7 Mar 2021 02:06:51 +0900
-Message-ID: <CAFr9PXmDp7UwWnT+49Yciy-gvYiQOd3cus0W_QnGKm-LqziHCg@mail.gmail.com>
-Subject: Re: [PATCH] irqchip/irq-mst: Support polarity configuration
-To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Daniel Palmer <daniel@thingy.jp>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek@lists.infradead.org, yj.chiang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark-PK,
+On Wed,  3 Mar 2021 14:36:14 +0800
+Ye Xiang <xiang.ye@intel.com> wrote:
 
-I'm trying to understand the logic behind the changes.
-It seems like the polarity of interrupts is always the same between
-the MStar intc and the GIC? Low level interrupts are handled in the
-mstar intc and become high level interrupts to the GIC?
-I think for the Mstar MSC313(e) and SigmaStar chips all of the
-internal interrupts are high level so I never noticed this behaviour.
-I can't remember seeing anything that handled this in the MStar kernel
-code I looked at.
-Is this specific to a certain chip or does it apply for everything
-with this intc?
-The register values being lost if the chip goes into suspend to memory
-makes sense for the MStar chips too I think as everything that is not
-in the "pmsleep" register group seems to be lost.
+> This patch fixes 2 issues of timestamp channel:
+> 1. This patch ensures that there is sufficient space and correct
+> alignment for the timestamp.
+> 2. Correct the timestamp channel scan index.
+This isn't technically a bug because channel index numbers just need
+to be monotonic.  Still it's a reasonable tidy up given 1.
+> 
+> Fixes: 59d0f2da3569 ("iio: hid: Add temperature sensor support")
+> Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+Applied to the fixes togreg branch of iio.git and marked for stable.
+Patch 4 is not a fix (I think) so will have to wait for this to
+be upstream.
 
-Thanks,
+Jonathan
 
-Daniel
+> ---
+>  drivers/iio/temperature/hid-sensor-temperature.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/iio/temperature/hid-sensor-temperature.c b/drivers/iio/temperature/hid-sensor-temperature.c
+> index e3d38cbcf354..dc534ed784c3 100644
+> --- a/drivers/iio/temperature/hid-sensor-temperature.c
+> +++ b/drivers/iio/temperature/hid-sensor-temperature.c
+> @@ -15,7 +15,10 @@
+>  struct temperature_state {
+>  	struct hid_sensor_common common_attributes;
+>  	struct hid_sensor_hub_attribute_info temperature_attr;
+> -	s32 temperature_data;
+> +	struct {
+> +		s32 temperature_data;
+> +		u64 timestamp __aligned(8);
+> +	} scan;
+>  	int scale_pre_decml;
+>  	int scale_post_decml;
+>  	int scale_precision;
+> @@ -36,7 +39,7 @@ static const struct iio_chan_spec temperature_channels[] = {
+>  			BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+>  			BIT(IIO_CHAN_INFO_HYSTERESIS),
+>  	},
+> -	IIO_CHAN_SOFT_TIMESTAMP(3),
+> +	IIO_CHAN_SOFT_TIMESTAMP(1),
+>  };
+>  
+>  /* Adjust channel real bits based on report descriptor */
+> @@ -127,9 +130,8 @@ static int temperature_proc_event(struct hid_sensor_hub_device *hsdev,
+>  	struct temperature_state *temp_st = iio_priv(indio_dev);
+>  
+>  	if (atomic_read(&temp_st->common_attributes.data_ready))
+> -		iio_push_to_buffers_with_timestamp(indio_dev,
+> -				&temp_st->temperature_data,
+> -				iio_get_time_ns(indio_dev));
+> +		iio_push_to_buffers_with_timestamp(indio_dev, &temp_st->scan,
+> +						   iio_get_time_ns(indio_dev));
+>  
+>  	return 0;
+>  }
+> @@ -144,7 +146,7 @@ static int temperature_capture_sample(struct hid_sensor_hub_device *hsdev,
+>  
+>  	switch (usage_id) {
+>  	case HID_USAGE_SENSOR_DATA_ENVIRONMENTAL_TEMPERATURE:
+> -		temp_st->temperature_data = *(s32 *)raw_data;
+> +		temp_st->scan.temperature_data = *(s32 *)raw_data;
+>  		return 0;
+>  	default:
+>  		return -EINVAL;
+
