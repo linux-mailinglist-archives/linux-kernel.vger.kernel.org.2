@@ -2,93 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7AC32FA70
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 13:11:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D17E32FA73
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 13:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhCFMLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 07:11:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58814 "EHLO
+        id S230468AbhCFMMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 07:12:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhCFMLL (ORCPT
+        with ESMTP id S230216AbhCFMMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 07:11:11 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE67C06174A;
-        Sat,  6 Mar 2021 04:11:11 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id o38so3194070pgm.9;
-        Sat, 06 Mar 2021 04:11:11 -0800 (PST)
+        Sat, 6 Mar 2021 07:12:17 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6381CC06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 04:12:16 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id m11so7879676lji.10
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 04:12:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BVyrDkDYNfdYuIzuJBagkTAPrMEkMX8z2zUgIheSJaU=;
-        b=ASAXRCI+vRWIwdq9xkZXcMsd99MrrgfVm4z+J5v8l6sF87zpwZB019+nwVXr53ewgt
-         eX2fm/lft4j7MxtjfjEZOTmdJDfLPOgphMZu/bDs0NLEYgaZnxqO98QA1sizq3ucwUEi
-         bNXwuZf0DgkxXN0Gb6XpQq6LWikcJvT7MwsT9tdAddNITrPEFb6UWz3Y4fjCSkBbVMYT
-         yh31V7MMgBzz9jYnDkjhwNWsgarWra3ehNufqdDVFZztKExeWQPBdPSyclhyow+qLmpr
-         Jum8yEmL8TYfG/xcUfdqjNTcM5s+/I62LMbqjkOE/9LD7T64/0+xmBMAMPFDAenK/22y
-         hyhg==
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6SCt4Ui+oWB0RLaz7Uoac380htVeaF4ZyeG6ZlsBEco=;
+        b=qfWkCZuD2BO4ofIxVsNQP5WrvWYTObPEsUcMNlZWxwwg+35XoltNPXcJPnjtSKJOoK
+         dQaCUQ+zt9CnUXReJXpUGv/8CsURgGFdc/Qybwmon/0K2QU6hOo9VAVQ1DtR6EllPJS1
+         R7lwXk7y6mo4J3GyAjeRJ61XM25j7uVNUI8wqrGr6noXL/dwyzEDmLjizZpVk5bQGcyo
+         KcodKupdksLk3XKqFtpJezNxReg0J2DDGMAlcsjlYddCX+iFoTVms3TiK4VER2pTPOXK
+         RfCYgmWGRFHDcAYLPTduWQTGooNMSxQbbJaecWotoXv3/i0nj9jC2pGRsozckKhfU4QJ
+         oYfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BVyrDkDYNfdYuIzuJBagkTAPrMEkMX8z2zUgIheSJaU=;
-        b=JkZOT5zdDpiwuyQXyvb1Y1bZ1W6sA6nOIfG1Mhp1flH+X6kV8YrZHeR/V3fuWqtQkz
-         3BJke8XtPuiM+JNJ4TTsawesgJWtpUoxmxLcb62j5c+wbwGMunW0WD7Kk9YY7PBwNE05
-         fTXervWWMN2rGJR92U+tOcrEmvb8ufV/VIFgmO2Dfhb/QSe1FbVFG38JFf4Sq/+hNWs0
-         9hFspAk4xZ6mAH3XGKUJ5lWgFmiTasRbrqFDygAkScX9jeEe4D7JnJcVlPCHIhm1MCbF
-         JiSEBBqxyoGL6/jqaM6X8CIm8sAzoPTrbD8jGvlEtWdsvAPSci9jlz9tIahqzM8smQll
-         OAdg==
-X-Gm-Message-State: AOAM531skk78mOswmeRib78tiizKUw6FC7OQrd+d7gZHb0MJKa/Lnvvh
-        GwhKLkq5AZ/TQZscUnPrfps=
-X-Google-Smtp-Source: ABdhPJyAt3pUMHH9D43EtcoFrV+BCXDQyqG82hlYEpMq4QSieYKHqZ+tNyuLiHwIjNTS5dnnE4XM8A==
-X-Received: by 2002:a63:c702:: with SMTP id n2mr12426084pgg.382.1615032671174;
-        Sat, 06 Mar 2021 04:11:11 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id b14sm5209799pji.14.2021.03.06.04.11.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 04:11:10 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: zhang.yunkai@zte.com.cn
-To:     mchehab@kernel.org
-Cc:     sakari.ailus@linux.intel.com, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Yunkai <zhang.yunkai@zte.com.cn>
-Subject: [PATCH] media:atomisp: remove duplicate include in sh_css
-Date:   Sat,  6 Mar 2021 04:11:04 -0800
-Message-Id: <20210306121104.218696-1-zhang.yunkai@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6SCt4Ui+oWB0RLaz7Uoac380htVeaF4ZyeG6ZlsBEco=;
+        b=DXYqApwAK2taeRLkhHrXlcKhYdXzwU/XFdOiJEN1U8tSz64UaZNgBHit7e4KO+iQJc
+         WrEWJBP/NImrVQoxTIpkG5OHPPTQNxZ8xUaHwgRUBfcU9Led5+ZCPsMQZQnnN4lGLOh3
+         jQvtnD/wmuHoGL5Wx0kgvtWhvh56/deXgD8ZKxi3QXY7yUDz1buAA6tmHXS1XZ8v8YWf
+         JUI4EUv6Ev2btS4mA4Yx8eR67OJ3NFCvrAsmwRF/uCts7TJRdNWkB83Nim8WpujU5fRU
+         Gk5iRY07c6eq5SiKBlAzRbLm1zrlfV/tB5ALA1c6Z9G3GH+DIc9fYfd9My7IclWXJpWl
+         k7rA==
+X-Gm-Message-State: AOAM533ew1fIVOCzEGFY6JMpA0cR4LaD7oExcpBK4nwwJoNAxz3Y4GFC
+        GbM8ey7mUutICUskFhx764KUv2Hw580ve5Lcjdj5/IAdbUw=
+X-Google-Smtp-Source: ABdhPJxPpRrEZQliL+YGDZbV1sZiRba3nFEAEVdEh/J9SksORZ6w0Sev0ZM9XKRdfSOGSEAhN8lREi2We5AiXXbZj6k=
+X-Received: by 2002:a2e:9250:: with SMTP id v16mr8217453ljg.162.1615032733450;
+ Sat, 06 Mar 2021 04:12:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210306054801.18263-1-xypron.glpk@gmx.de>
+In-Reply-To: <20210306054801.18263-1-xypron.glpk@gmx.de>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Sat, 6 Mar 2021 17:42:01 +0530
+Message-ID: <CAAhSdy08=ffPe+fYWX9ds4wNSMU3uzT8OENk0o93xpfZOKtYig@mail.gmail.com>
+Subject: Re: [PATCH 1/1] RISC-V: correct enum sbi_ext_rfence_fid
+To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Sean Anderson <seanga2@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+On Sat, Mar 6, 2021 at 11:19 AM Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
+>
+> The constants in enum sbi_ext_rfence_fid should match the SBI
+> specification. See
+> https://github.com/riscv/riscv-sbi-doc/blob/master/riscv-sbi.adoc#78-function-listing
+>
+> | Function Name               | FID | EID
+> | sbi_remote_fence_i          |   0 | 0x52464E43
+> | sbi_remote_sfence_vma       |   1 | 0x52464E43
+> | sbi_remote_sfence_vma_asid  |   2 | 0x52464E43
+> | sbi_remote_hfence_gvma_vmid |   3 | 0x52464E43
+> | sbi_remote_hfence_gvma      |   4 | 0x52464E43
+> | sbi_remote_hfence_vvma_asid |   5 | 0x52464E43
+> | sbi_remote_hfence_vvma      |   6 | 0x52464E43
+>
+> Fixes: ecbacc2a3efd ("RISC-V: Add SBI v0.2 extension definitions")
+> Reported-by: Sean Anderson <seanga2@gmail.com>
+> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
 
-'ia_css_isys.h' included in 'sh_css.c' is duplicated.
-It is also included in the 30th line.
+Good catch.
 
-Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
----
- drivers/staging/media/atomisp/pci/sh_css.c | 3 ---
- 1 file changed, 3 deletions(-)
+I guess we never saw any issues because these calls are only used by
+KVM RISC-V which is not merged yet. Further for KVM RISC-V, the HFENCE
+instruction is emulated as flush everything on FPGA, QEMU, and Spike so
+we did not notice any issue with KVM RISC-V too.
 
-diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
-index ddee04c8248d..afddc54094e9 100644
---- a/drivers/staging/media/atomisp/pci/sh_css.c
-+++ b/drivers/staging/media/atomisp/pci/sh_css.c
-@@ -49,9 +49,6 @@
- #include "ia_css_pipe_util.h"
- #include "ia_css_pipe_binarydesc.h"
- #include "ia_css_pipe_stagedesc.h"
--#ifndef ISP2401
--#include "ia_css_isys.h"
--#endif
- 
- #include "tag.h"
- #include "assert_support.h"
--- 
-2.25.1
+Looks good to me.
 
+Reviewed-by: Anup Patel <anup@brainfault.org>
+
+Regards,
+Anup
+
+> ---
+>  arch/riscv/include/asm/sbi.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+> index 99895d9c3bdd..d7027411dde8 100644
+> --- a/arch/riscv/include/asm/sbi.h
+> +++ b/arch/riscv/include/asm/sbi.h
+> @@ -51,10 +51,10 @@ enum sbi_ext_rfence_fid {
+>         SBI_EXT_RFENCE_REMOTE_FENCE_I = 0,
+>         SBI_EXT_RFENCE_REMOTE_SFENCE_VMA,
+>         SBI_EXT_RFENCE_REMOTE_SFENCE_VMA_ASID,
+> -       SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA,
+>         SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA_VMID,
+> -       SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA,
+> +       SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA,
+>         SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA_ASID,
+> +       SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA,
+>  };
+>
+>  enum sbi_ext_hsm_fid {
+> --
+> 2.30.1
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
