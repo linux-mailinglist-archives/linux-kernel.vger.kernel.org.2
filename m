@@ -2,99 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A807532F969
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4468732F967
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbhCFKk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 05:40:57 -0500
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:38849 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbhCFKkz (ORCPT
+        id S230134AbhCFKkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 05:40:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229969AbhCFKkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 05:40:55 -0500
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 126AedS4021724
-        for <linux-kernel@vger.kernel.org>; Sat, 6 Mar 2021 19:40:39 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 126AedS4021724
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615027239;
-        bh=BplUrRiYbi4amxPmnKQ9mC3hGG6hKszQ8eV6smsKPzg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=0kqVlP/3ZzSDgGVOx8flG0dnvpeIERliGX6g1KJt05JbryMs60Co70o/w6CiK0nmu
-         Z0hDA2/7G7mLVW1wYdTz+UB/C+BSYZUEmpBtfl3842HQVg8khx/ncFixUlCh13AZZJ
-         ATc640oIGXdFXQVE+dmmcRN/Id7zJNPtWgiPGnj1vi8oUNFxvgljT5qvdytKneZUqQ
-         yGnkDEDYHC8kU22NC0cHaYVRjcMAb1q+Q9B98PYn43mI1BWunmxZQwHlvDjlV8X+AH
-         k922+aVqbXnIqrkoJ3PE5fv86ukSZNttEAAl6i/oxXjvEHATIKzWTcZ8zTx+nZfl8X
-         VVXSRi10dazLg==
-X-Nifty-SrcIP: [209.85.210.179]
-Received: by mail-pf1-f179.google.com with SMTP id m6so3994088pfk.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 02:40:39 -0800 (PST)
-X-Gm-Message-State: AOAM5321IabHmdz4DTbXVC6pP5igmpUihaTxEpfeoTC7z7oACg3ympjl
-        h+CBLvOmBsGekd+NjmEW0HRKi9UJRtmvcTD4QSg=
-X-Google-Smtp-Source: ABdhPJyA2J+2Pr4VifpdvfaC20PwT1z64SKVBUnvGgby79es8lTfZOuV9hXhdo7FzFjw5fjD6I7L7+6XlcNapoFGhCU=
-X-Received: by 2002:a65:41c6:: with SMTP id b6mr12172438pgq.7.1615027238655;
- Sat, 06 Mar 2021 02:40:38 -0800 (PST)
+        Sat, 6 Mar 2021 05:40:19 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7389FC06175F
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 02:40:18 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id w9so6476947edt.13
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 02:40:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mRhKROtaG02yUwurNBgzOTBJWtWQvo2wqnE/vQQcSmk=;
+        b=uHa2yEiBKaCkyi2eo8gwvHkWoTfAlOh34qaFwnEn5pHf5ezWoAxpYNPYY8D4QvaiZ0
+         OqEnuVkYEdsAf0lBq3e5/OtIOx2SOz04eFHdHFssOPrwBXEk3gPBMViB6Nh/kFScA9J5
+         In4oAIFV4rlVKEX7Q7k7rzxxMuG3ZLyal5LWyxs6OgYJNzeuHU4lHyDW84C7v/fJ3u7o
+         3EhZqzSKsQHTK1iQIbU+ac1a5Iy1HGxmEu0LL/SgcJ/fVkR21Zgzb7c6qqrIPgORUKC/
+         lNpms2cxBbYbou30jBjWmSmd0K+CIrdPwYtOfkswxbhm6FIOfcuRcYazFqdRf8suM4gZ
+         ZOqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mRhKROtaG02yUwurNBgzOTBJWtWQvo2wqnE/vQQcSmk=;
+        b=DSHOwfVhrUhOL4zabwzB2JNnpFq2DxtB5W8MAf37c8rfa1P+oJACoFyiSK8SSyhtvg
+         mkzCM2SLv+P8nV3w8ZRjCbNi6hTalEiGckb8Al6IWrwCGz87Wm2qq4qGsu1e7Qs5Rs8o
+         1lxUStUEQqxsgcSBVnQeEQGrN9SqZlmkVqU7U7PGDnBpU7pD6Y3UlWABexXCBS+8lXpC
+         D6d+KBd/u+/uGu+kby823ECRWKClE1tYG4H/appI41YY8+yqmPcDVp5n+DqJEZeKxax+
+         yw64X0e5+Mm7e/VnyjeFQsBlMsgpCwhnfsKouUSoVwZcfsE4/+LDTnHDzlboclo6yb4n
+         sxcQ==
+X-Gm-Message-State: AOAM5307dEhCqWudFN8M5LzuN39HXazf1oFeJ04OSCT6/K6tq4x3BPP4
+        Ffi2qXtYRba1rWrheyIhpywFAjH02KgD9x3/9GhgkA==
+X-Google-Smtp-Source: ABdhPJxD8OxYnbgWyUDqNvuc4AvP1eSI8LFiZp+kdYA3BMZjYgUVIM8HATojRxOpIw+7Bl4jpn0+xexQca6X49MKzqs=
+X-Received: by 2002:aa7:dd99:: with SMTP id g25mr13097382edv.230.1615027217055;
+ Sat, 06 Mar 2021 02:40:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20210303104314.24121-1-jslaby@suse.cz>
-In-Reply-To: <20210303104314.24121-1-jslaby@suse.cz>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 6 Mar 2021 19:40:01 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATWcu1p=F+zHCTdGK2ZRMjKKOS4DvAWrOnRjc_iKTCKmA@mail.gmail.com>
-Message-ID: <CAK7LNATWcu1p=F+zHCTdGK2ZRMjKKOS4DvAWrOnRjc_iKTCKmA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: dummy-tools, fix inverted tests for gcc
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210305120849.381261651@linuxfoundation.org>
+In-Reply-To: <20210305120849.381261651@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 6 Mar 2021 16:10:05 +0530
+Message-ID: <CA+G9fYsw702Hva2NZP-btNd9yNfmU0_xnNi9+ohQCMwgX-BusQ@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/30] 4.4.260-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 7:43 PM Jiri Slaby <jslaby@suse.cz> wrote:
+On Fri, 5 Mar 2021 at 18:15, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> There is a test in Kconfig which takes inverted value of a compiler
-> check:
-> * config CC_HAS_INT128
->         def_bool !$(cc-option,$(m64-flag) -D__SIZEOF_INT128__=0)
+> This is the start of the stable review cycle for the 4.4.260 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> This results in CC_HAS_INT128 not being in super-config generated by
-> dummy-tools. So take this into account in the gcc script.
+> Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
+> Anything received after that time might be too late.
 >
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.260-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
 
-Applied to linux-kbuild/fixes.
-Thanks.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.260-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: 22ce103533f98c3a483b24b6e18069e581f58f16
+git describe: v4.4.259-31-g22ce103533f9
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
+y/build/v4.4.259-31-g22ce103533f9
+
+No regressions (compared to build v4.4.259)
+
+No fixes (compared to build v4.4.259)
+
+Ran 22484 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- i386
+- juno-64k_page_size
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* ltp-open-posix-tests
+* network-basic-tests
+* perf
+* v4l2-compliance
+* install-android-platform-tools-r2600
+* kselftest-kvm
+* kselftest-vm
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.260-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git branch: 4.4.260-rc1-hikey-20210305-947
+git commit: cce57b0d5e1b470f2de450435f74b9eba4e898a7
+git describe: 4.4.260-rc1-hikey-20210305-947
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.260-rc1-hikey-20210305-947
 
 
-We could fix init/Kconfig to use the positive logic as follows,
-but I guess (hope) this conditional will go away
-when we raise the GCC min version next time.
-So, I am fine with fixing this in dummy-tools.
+No regressions (compared to build 4.4.259-rc2-hikey-20210302-945)
 
+No fixes (compared to build 4.4.259-rc2-hikey-20210302-945)
 
+Ran 1909 total tests in the following environments and test suites.
 
+Environments
+--------------
+- hi6220-hikey - arm64
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 22946fe5ded9..502594a78282 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -849,7 +849,7 @@ config ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
-        bool
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
 
- config CC_HAS_INT128
--       def_bool !$(cc-option,$(m64-flag) -D__SIZEOF_INT128__=0) && 64BIT
-+       def_bool $(success,echo '__int128 x;' | $(CC) $(CLANG_FLAGS)
--x c - -c -o /dev/null) && 64BIT
-
- #
- # For architectures that know their GCC __int128 support is sound
-
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+--=20
+Linaro LKFT
+https://lkft.linaro.org
