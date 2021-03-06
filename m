@@ -2,194 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC04A32F884
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 06:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A51F32F886
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 06:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhCFF1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 00:27:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57250 "EHLO
+        id S229869AbhCFFck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 00:32:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhCFF1D (ORCPT
+        with ESMTP id S229617AbhCFFb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 00:27:03 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF29C06175F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 21:27:03 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id 18so3611319pfo.6
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 21:27:03 -0800 (PST)
+        Sat, 6 Mar 2021 00:31:59 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4079C06175F;
+        Fri,  5 Mar 2021 21:31:59 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id o10so2776527pgg.4;
+        Fri, 05 Mar 2021 21:31:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Uc7mXQTuHDzk+aDNNzQQX07oTLDrDNn3MiGGfXF4/WM=;
-        b=Zz2xJ5ConvofN2Q21zhivY2nUjs7UpEQtJDX+ho5tWKNNQWsl8uaQWjvzZWU5sPWls
-         h/q1rJ+T+0r8fKS/PtoPtosFNzvyfUjfiBNF/M/ixYJQH4Qr+t0crXIRfDDzuZv8HmmM
-         SOcGb/gTXeeOQSqfbgGY9rLn2Uj7xdxnvnvEPSanwO381L000gNKlGKZiZEDQ7McnPDj
-         P31Bt0C4c2BlLo+XEF6Npy+TvweKxQZrhC4y0Mj4TaSbfVZCJn91OaGO/J0mWqq20ssZ
-         M6hMb12AQ8+vtG3lw9pBIX6wsN/iYEoau8BVVQYgxEu6q1gTz3tWxmLC/QarZNuqZbV2
-         vUWA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ba6Kh5nlkiTFtk0PXNQUw8yZAHH+934YM3ghxMY4d5s=;
+        b=DwovAFeNcBz6wMpiYdDM2ejicIFMzmYmvj3Eqdp0fvkzII4dNZR1nI2OSEtyP+iPTX
+         X137WqWWNx/uLkzwvv2qMxlSGs2QJ+nMtdzJwZEgbu6cZ21rlM2uyY0Nfk+unwE05suM
+         ZClNt7uo6ZGqi9QzZoStfPe0PIEaW3WQjs3TD9AoxtxdtN8mK28s5wy9HIszFRzHdisY
+         HcmTIoQH/YGMPlKmf0mMXxYWObXoXSY9STGHYRh4J3iAHTYg2u5MHiovEKAZmmkmSzCu
+         eEgafZ4I6p0sZNtuBiOYHeBov8G2ATnwI/MP+zCEcv7mhedscucBdqnDig7ZnFf11K1x
+         Jtjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Uc7mXQTuHDzk+aDNNzQQX07oTLDrDNn3MiGGfXF4/WM=;
-        b=jojrdPo3qQLY4fOQDveYRmsYHBfF1SjMitr5ZSrNKkUY26YRykEnGNfBAETytC3uv/
-         aGCOBWZQjm9l9JzkLbaymldpt9E6T1Zgko3MlBULI2qlHyReQn28LjkBKUcdGPUYP+Cg
-         /JOBmbQQsswXfWCKXOmyDPvgtVLg4MSCNR+DOAlRuPONMxKfnGGElmRlOFu7zcZqL3hz
-         k1tyDfm6y0XgLX1Jebgw5h6LIvTTt2mNOvg37ijR34lN3prleW7CtY5tjTMgDN6sDnDZ
-         gqaxzkTWwGCPxD88WIBoawqdg5/e2ZdRkuL77FRVbvrJDYsB0WKDWcM3MxDdHgoQa7Te
-         Tj2w==
-X-Gm-Message-State: AOAM533/IAUUoZauskyBiftoyg1xxeRzN7F6EaYARELDLEfsNjHRJknw
-        tDd7k2Za8RCIlycjFYPav0+gCP4oFQCuqsJP0XvTUQ==
-X-Google-Smtp-Source: ABdhPJxiDBW/SysoysDGwuv3pMvN2NDBPV959/X5Vlh3+H1J5qHIM3V4hqpM6no/LkX8N8sC04Mx8Qz/Red7im6ikCM=
-X-Received: by 2002:a63:141e:: with SMTP id u30mr11847397pgl.31.1615008422782;
- Fri, 05 Mar 2021 21:27:02 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ba6Kh5nlkiTFtk0PXNQUw8yZAHH+934YM3ghxMY4d5s=;
+        b=Ot/4/nCdeVdSdiunUuu41L+YdRwrsLA2NOEgbenA9yIX+/NM+2ObfNhCjLEc3pbXI1
+         lCHM6a1myBHQ+jyZumh8jpOAXYl/Me0VKn6r87Yjxlak3ii/2CbGmfOw+13VOLZjUi1l
+         aUUIesvDDaAaExinuSqXAo+b7HuzXD9roClug9HxJgGMqls5OPrK7gMKDcdt7WL7p2S5
+         CimBnUToKO1LphrF9PpdgTJMuFz0ELfbeFaxz204+ylnfHOo9Y8O7FH7chMtHpyS2Ybs
+         p59y+HoTEB7qSo/EoXObn/OltEggZNsQv3CXOVmk1MyvYJSeJoWorSWKJ7YJHRNc1Ud/
+         +G9A==
+X-Gm-Message-State: AOAM53124xdrsWaG1kodEoOJcoQde0eLYVwmMkbCULHMOK/AvqpGpE2M
+        LPexTSBXJ3qQ/NGFUpDcR+xxCccyNKo=
+X-Google-Smtp-Source: ABdhPJyHalJOaGuB0mZjKXXa9ezMYpENRLmNnbxkj2qF4DVFP715xlTmcBVuJpi5bjZ06NXF7NxUxQ==
+X-Received: by 2002:aa7:963d:0:b029:1ee:253:5b7 with SMTP id r29-20020aa7963d0000b02901ee025305b7mr12370910pfg.4.1615008718889;
+        Fri, 05 Mar 2021 21:31:58 -0800 (PST)
+Received: from [10.230.70.25] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id c12sm3745671pjq.48.2021.03.05.21.31.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 21:31:58 -0800 (PST)
+Subject: Re: [PATCH 5.10 000/102] 5.10.21-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210305120903.276489876@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <cc21ec83-b6a1-d11d-280f-fd88120cea09@gmail.com>
+Date:   Fri, 5 Mar 2021 21:31:52 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210303055917.66054-1-songmuchun@bytedance.com>
- <20210303055917.66054-2-songmuchun@bytedance.com> <YEJ+7JM3YfjfVVNo@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YEJ+7JM3YfjfVVNo@carbon.dhcp.thefacebook.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 6 Mar 2021 13:26:26 +0800
-Message-ID: <CAMZfGtVE9QKeHaMxF0xRYwme1JSf_G5+vru_R=_iND5DBk3RvA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 1/5] mm: memcontrol: introduce obj_cgroup_{un}charge_page
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 6, 2021 at 2:56 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Wed, Mar 03, 2021 at 01:59:13PM +0800, Muchun Song wrote:
-> > We know that the unit of slab object charging is bytes, the unit of
-> > kmem page charging is PAGE_SIZE. If we want to reuse obj_cgroup APIs
-> > to charge the kmem pages, we should pass PAGE_SIZE (as third parameter)
-> > to obj_cgroup_charge(). Because the size is already PAGE_SIZE, we can
-> > skip touch the objcg stock. And obj_cgroup_{un}charge_page() are
-> > introduced to charge in units of page level.
-> >
-> > In the later patch, we also can reuse those two helpers to charge or
-> > uncharge a number of kernel pages to a object cgroup. This is just
-> > a code movement without any functional changes.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->
-> This patch looks good to me, even as a standalone refactoring.
-> Please, rename obj_cgroup_charge_page() to obj_cgroup_charge_pages()
-> and the same with uncharge. It's because _page suffix usually means
-> we're dealing with a physical page (e.g. struct page * as an argument),
-> here it's not the case.
 
-Make sense.
 
->
-> Please, add my Acked-by: Roman Gushchin <guro@fb.com>
-> after the renaming.
+On 3/5/2021 4:20 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.21 release.
+> There are 102 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.21-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
 
-Will do. Thanks for your review.
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
->
-> Thank you!
->
-> > ---
-> >  mm/memcontrol.c | 46 +++++++++++++++++++++++++++++++---------------
-> >  1 file changed, 31 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 845eec01ef9d..faae16def127 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -3056,6 +3056,34 @@ static void memcg_free_cache_id(int id)
-> >       ida_simple_remove(&memcg_cache_ida, id);
-> >  }
-> >
-> > +static inline void obj_cgroup_uncharge_page(struct obj_cgroup *objcg,
-> > +                                         unsigned int nr_pages)
-> > +{
-> > +     rcu_read_lock();
-> > +     __memcg_kmem_uncharge(obj_cgroup_memcg(objcg), nr_pages);
-> > +     rcu_read_unlock();
-> > +}
-> > +
-> > +static int obj_cgroup_charge_page(struct obj_cgroup *objcg, gfp_t gfp,
-> > +                               unsigned int nr_pages)
-> > +{
-> > +     struct mem_cgroup *memcg;
-> > +     int ret;
-> > +
-> > +     rcu_read_lock();
-> > +retry:
-> > +     memcg = obj_cgroup_memcg(objcg);
-> > +     if (unlikely(!css_tryget(&memcg->css)))
-> > +             goto retry;
-> > +     rcu_read_unlock();
-> > +
-> > +     ret = __memcg_kmem_charge(memcg, gfp, nr_pages);
-> > +
-> > +     css_put(&memcg->css);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> >  /**
-> >   * __memcg_kmem_charge: charge a number of kernel pages to a memcg
-> >   * @memcg: memory cgroup to charge
-> > @@ -3180,11 +3208,8 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
-> >               unsigned int nr_pages = stock->nr_bytes >> PAGE_SHIFT;
-> >               unsigned int nr_bytes = stock->nr_bytes & (PAGE_SIZE - 1);
-> >
-> > -             if (nr_pages) {
-> > -                     rcu_read_lock();
-> > -                     __memcg_kmem_uncharge(obj_cgroup_memcg(old), nr_pages);
-> > -                     rcu_read_unlock();
-> > -             }
-> > +             if (nr_pages)
-> > +                     obj_cgroup_uncharge_page(old, nr_pages);
-> >
-> >               /*
-> >                * The leftover is flushed to the centralized per-memcg value.
-> > @@ -3242,7 +3267,6 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
-> >
-> >  int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
-> >  {
-> > -     struct mem_cgroup *memcg;
-> >       unsigned int nr_pages, nr_bytes;
-> >       int ret;
-> >
-> > @@ -3259,24 +3283,16 @@ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
-> >        * refill_obj_stock(), called from this function or
-> >        * independently later.
-> >        */
-> > -     rcu_read_lock();
-> > -retry:
-> > -     memcg = obj_cgroup_memcg(objcg);
-> > -     if (unlikely(!css_tryget(&memcg->css)))
-> > -             goto retry;
-> > -     rcu_read_unlock();
-> > -
-> >       nr_pages = size >> PAGE_SHIFT;
-> >       nr_bytes = size & (PAGE_SIZE - 1);
-> >
-> >       if (nr_bytes)
-> >               nr_pages += 1;
-> >
-> > -     ret = __memcg_kmem_charge(memcg, gfp, nr_pages);
-> > +     ret = obj_cgroup_charge_page(objcg, gfp, nr_pages);
-> >       if (!ret && nr_bytes)
-> >               refill_obj_stock(objcg, PAGE_SIZE - nr_bytes);
-> >
-> > -     css_put(&memcg->css);
-> >       return ret;
-> >  }
-> >
-> > --
-> > 2.11.0
-> >
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
