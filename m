@@ -2,246 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12EA032F718
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 01:06:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC4032F71C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 01:07:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhCFAGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 19:06:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45364 "EHLO
+        id S229982AbhCFAGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 19:06:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhCFAFu (ORCPT
+        with ESMTP id S229818AbhCFAGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 19:05:50 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C75C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 16:05:50 -0800 (PST)
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id C575122256;
-        Sat,  6 Mar 2021 01:05:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1614989147;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6vYZSKUm8UQgDARDdDwNawTrGlQT/7lLmUbdR2Psfy8=;
-        b=X8rjvKeoQBffC90bVuxRXFqjnppIOCXSNcAHkSKorQb+Bueo9FFku+l8GKpR6tJN/puKyP
-        u0z/5KFbJBE5fUt/ICZcXtZuh/gFZtp9KM6GAwWqSoLgatTij83Vk/Y4z83k7cjPWaRooq
-        tUMA45M/7vC3Hnld7spHywc2sMF0WBs=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH v4 4/4] mtd: spi-nor: implement OTP erase for Winbond and similar flashes
-Date:   Sat,  6 Mar 2021 01:05:35 +0100
-Message-Id: <20210306000535.9890-5-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210306000535.9890-1-michael@walle.cc>
-References: <20210306000535.9890-1-michael@walle.cc>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 5 Mar 2021 19:06:03 -0500
+Received: from mail-lf1-x14a.google.com (mail-lf1-x14a.google.com [IPv6:2a00:1450:4864:20::14a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC71BC06175F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 16:06:02 -0800 (PST)
+Received: by mail-lf1-x14a.google.com with SMTP id m16so1386116lfg.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 16:06:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=fj2q1zjTS7x5AWIG0dea58z8gWp6VMPPrsYTyOmyMJM=;
+        b=UM8dPWueQ2rP8EQo22LdiFyFIdNcCm2LrTSYmDM5rdipYyWdvPnCGXqzzc47WHtSsy
+         hQkeEeT7Ssu8oPpE1PgktnWl0RccYYOCRoDcrhs4G3kfHceJK9WbSVmkpsfAXbwrLYO5
+         o1Laczp1zvUGvOkZpzzwBWHaUjHUJaJU3YWWeO3Oovo1hrmE1WKm3qhhSz78IQK5ORPQ
+         QD+UAm0N7kAwsHGr9UDhMzI99Kq4GktDYPgKl5HXdujIwjSqUEzKyeVK+AYmD6YAc2QC
+         GnTl1m7b2eHmW9gNVCAN1UR0DDmMSG3P7jD+nztIZfiYhmCvpTXyRu6g+FyTNRmi/0cm
+         jjhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=fj2q1zjTS7x5AWIG0dea58z8gWp6VMPPrsYTyOmyMJM=;
+        b=XZ9AjzcxWxfngGHUSSjkHxP4yPVT09lyijYcmXd3akjOE6Pxs3oV6qkkwMVc9e7cQ6
+         A9npa7HA7sn5frYzsioej6SU9gaZTwmOAyZs2XGrE8iRWSbBQ3tSoZ1QB8a1gq3/UAHT
+         c2ceT/FNMcl1btD8W6UCsEHu1B7+e1tyIvXZMnodDuhxD9dE650754cJyHLxxtNpD7bt
+         MP3eexnYoCEp91gcIEfC3SKZMWxKLhyiSoCO2pYv9K4YAuXqT9hbKsqNFGEgDzo106ZV
+         cAY0ryvpSpFO6O46VmM9N6lH6If7TDiRQWERpQrrcVXvMgL5HUx6BlLxcrWPPc4YnXug
+         4joA==
+X-Gm-Message-State: AOAM532puUaLksb+v44HAarlS79BdM3bPyA6Mc7ReZhru5jZwcJzvhVw
+        96ICDHNxnvtarFiwMRaK0CjV+mAgTGlk4oOQ
+X-Google-Smtp-Source: ABdhPJwSPDStaX/1ocLrHIISD3Qbk8FBkFPpRGzbZcmX+3ex2F1wrfrqzwIzWVswDnjpK5pWJshVddfpd1SJiy9a
+Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:953b:d7cf:2b01:f178])
+ (user=andreyknvl job=sendgmr) by 2002:a2e:8e86:: with SMTP id
+ z6mr833578ljk.27.1614989161291; Fri, 05 Mar 2021 16:06:01 -0800 (PST)
+Date:   Sat,  6 Mar 2021 01:05:57 +0100
+Message-Id: <b6cd96a70f8faf58a1013ae063357d84db8d38d6.1614989145.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH v3 1/2] kasan: initialize shadow to TAG_INVALID for SW_TAGS
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Winbond flashes with OTP support provide a command to erase the OTP
-data. This might come in handy during development.
+Currently, KASAN_SW_TAGS uses 0xFF as the default tag value for
+unallocated memory. The underlying idea is that since that memory
+hasn't been allocated yet, it's only supposed to be dereferenced
+through a pointer with the native 0xFF tag.
 
-This was tested with a Winbond W25Q32JW on a LS1028A SoC with the
-NXP FSPI controller.
+While this is a good idea in terms on consistency, practically it
+doesn't bring any benefit. Since the 0xFF pointer tag is a match-all
+tag, it doesn't matter what tag the accessed memory has. No accesses
+through 0xFF-tagged pointers are considered buggy by KASAN.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
+This patch changes the default tag value for unallocated memory to 0xFE,
+which is the tag KASAN uses for inaccessible memory. This doesn't affect
+accesses through 0xFF-tagged pointer to this memory, buut this allows
+KASAN to detect wild and large out-of-bounds invalid memory accesses
+through otherwise-tagged pointers.
+
+This is a prepatory patch for the next one, which changes the tag-based
+KASAN modes to not poison the boot memory.
+
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- drivers/mtd/spi-nor/core.c    |  4 +-
- drivers/mtd/spi-nor/core.h    |  4 ++
- drivers/mtd/spi-nor/otp.c     | 74 ++++++++++++++++++++++++++++++++++-
- drivers/mtd/spi-nor/winbond.c |  1 +
- 4 files changed, 79 insertions(+), 4 deletions(-)
+ include/linux/kasan.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index ef7df26896f1..21a737804576 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -166,8 +166,8 @@ static int spi_nor_controller_ops_read_reg(struct spi_nor *nor, u8 opcode,
- 	return nor->controller_ops->read_reg(nor, opcode, buf, len);
- }
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index b91732bd05d7..1d89b8175027 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -30,7 +30,8 @@ struct kunit_kasan_expectation {
+ /* Software KASAN implementations use shadow memory. */
  
--static int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
--					    const u8 *buf, size_t len)
-+int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
-+				     const u8 *buf, size_t len)
- {
- 	if (spi_nor_protocol_is_dtr(nor->reg_proto))
- 		return -EOPNOTSUPP;
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index dfbf6ba42b57..ef62ec4625a1 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -213,6 +213,7 @@ struct spi_nor_otp_ops {
- 	int (*read)(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
- 	int (*write)(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
- 	int (*lock)(struct spi_nor *nor, unsigned int region);
-+	int (*erase)(struct spi_nor *nor, loff_t addr);
- 	int (*is_locked)(struct spi_nor *nor, unsigned int region);
- };
- 
-@@ -481,6 +482,8 @@ extern const struct spi_nor_manufacturer spi_nor_xmc;
- void spi_nor_spimem_setup_op(const struct spi_nor *nor,
- 			     struct spi_mem_op *op,
- 			     const enum spi_nor_protocol proto);
-+int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
-+				     const u8 *buf, size_t len);
- int spi_nor_write_enable(struct spi_nor *nor);
- int spi_nor_write_disable(struct spi_nor *nor);
- int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
-@@ -506,6 +509,7 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
- 
- int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
- int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
-+int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr);
- int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
- int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
- 
-diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
-index 4e8da9108c77..78ec79368c29 100644
---- a/drivers/mtd/spi-nor/otp.c
-+++ b/drivers/mtd/spi-nor/otp.c
-@@ -8,6 +8,7 @@
- #include <linux/log2.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/spi-nor.h>
-+#include <linux/spi/spi-mem.h>
- 
- #include "core.h"
- 
-@@ -111,6 +112,50 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf
- 	return ret ?: written;
- }
- 
-+/**
-+ * spi_nor_otp_erase_secr() - erase one OTP region
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @to:         offset to write to
-+ * @len:        number of bytes to write
-+ * @buf:        pointer to src buffer
-+ *
-+ * Erase one OTP region by using the SPINOR_OP_ESECR commands. This method is
-+ * used on GigaDevice and Winbond flashes.
-+ *
-+ * Return: 0 on success, -errno otherwise
-+ */
-+int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr)
-+{
-+	int ret;
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	if (nor->spimem) {
-+		struct spi_mem_op op =
-+			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_ESECR, 0),
-+				   SPI_MEM_OP_ADDR(3, addr, 0),
-+				   SPI_MEM_OP_NO_DUMMY,
-+				   SPI_MEM_OP_NO_DATA);
-+
-+		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
-+
-+		ret = spi_mem_exec_op(nor->spimem, &op);
-+	} else {
-+		nor->bouncebuf[2] = addr & 0xff;
-+		nor->bouncebuf[1] = (addr >> 8) & 0xff;
-+		nor->bouncebuf[0] = (addr >> 16) & 0xff;
-+
-+		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_ESECR,
-+						       nor->bouncebuf, 3);
-+	}
-+	if (ret)
-+		return ret;
-+
-+	return spi_nor_wait_till_ready(nor);
-+}
-+
- static int spi_nor_otp_lock_bit_cr(unsigned int region)
- {
- 	static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
-@@ -319,11 +364,13 @@ static int spi_nor_mtd_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	return spi_nor_mtd_otp_read_write(mtd, to, len, retlen, buf, true);
- }
- 
--static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
-+static int spi_nor_mtd_otp_lock_erase(struct mtd_info *mtd, loff_t from,
-+				      size_t len, bool is_erase)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
- 	const struct spi_nor_otp_ops *ops = spi_nor_otp_ops(nor);
- 	unsigned int region;
-+	loff_t start;
- 	int ret;
- 
- 	if (from < 0 || (from + len) > spi_nor_otp_size(nor))
-@@ -342,7 +389,12 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
- 
- 	while (len) {
- 		region = spi_nor_otp_offset_to_region(nor, from);
--		ret = ops->lock(nor, region);
-+		start = spi_nor_otp_region_start(nor, region);
-+
-+		if (is_erase)
-+			ret = ops->erase(nor, start);
-+		else
-+			ret = ops->lock(nor, region);
- 		if (ret)
- 			goto out;
- 
-@@ -356,6 +408,23 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
- 	return ret;
- }
- 
-+static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
-+{
-+	return spi_nor_mtd_otp_lock_erase(mtd, from, len, false);
-+}
-+
-+static int spi_nor_mtd_otp_erase(struct mtd_info *mtd, loff_t from, size_t len)
-+{
-+	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-+	const struct spi_nor_otp_ops *ops = spi_nor_otp_ops(nor);
-+
-+	/* OTP erase is optional */
-+	if (!ops->erase)
-+		return -EOPNOTSUPP;
-+
-+	return spi_nor_mtd_otp_lock_erase(mtd, from, len, true);
-+}
-+
- void spi_nor_otp_init(struct spi_nor *nor)
- {
- 	struct mtd_info *mtd = &nor->mtd;
-@@ -379,4 +448,5 @@ void spi_nor_otp_init(struct spi_nor *nor)
- 	mtd->_read_user_prot_reg = spi_nor_mtd_otp_read;
- 	mtd->_write_user_prot_reg = spi_nor_mtd_otp_write;
- 	mtd->_lock_user_prot_reg = spi_nor_mtd_otp_lock;
-+	mtd->_erase_user_prot_reg = spi_nor_mtd_otp_erase;
- }
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 9a3f8ff007fd..e04219ac11fd 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -138,6 +138,7 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- static const struct spi_nor_otp_ops winbond_otp_ops = {
- 	.read = spi_nor_otp_read_secr,
- 	.write = spi_nor_otp_write_secr,
-+	.erase = spi_nor_otp_erase_secr,
- 	.lock = spi_nor_otp_lock_sr2,
- 	.is_locked = spi_nor_otp_is_locked_sr2,
- };
+ #ifdef CONFIG_KASAN_SW_TAGS
+-#define KASAN_SHADOW_INIT 0xFF
++/* This matches KASAN_TAG_INVALID. */
++#define KASAN_SHADOW_INIT 0xFE
+ #else
+ #define KASAN_SHADOW_INIT 0
+ #endif
 -- 
-2.20.1
+2.30.1.766.gb4fecdf3b7-goog
 
