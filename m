@@ -2,68 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9EC32FAE6
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 14:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B385D32FAEB
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 14:40:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhCFNic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 08:38:32 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:52105 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbhCFNiJ (ORCPT
+        id S230506AbhCFNjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 08:39:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230512AbhCFNjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 08:38:09 -0500
-Received: from fsav403.sakura.ne.jp (fsav403.sakura.ne.jp [133.242.250.102])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 126DboK9026971;
-        Sat, 6 Mar 2021 22:37:50 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav403.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav403.sakura.ne.jp);
- Sat, 06 Mar 2021 22:37:50 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav403.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 126Dboiq026964
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 6 Mar 2021 22:37:50 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH] security: tomoyo: fix error return code of
- tomoyo_update_domain()
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jmorris@namei.org, serge@hallyn.com
-References: <20210306130346.16296-1-baijiaju1990@gmail.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <79dd201e-ea6e-8de5-6250-25c23453448d@i-love.sakura.ne.jp>
-Date:   Sat, 6 Mar 2021 22:37:49 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Sat, 6 Mar 2021 08:39:13 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2D6C06174A;
+        Sat,  6 Mar 2021 05:39:13 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id z9so4684464iln.1;
+        Sat, 06 Mar 2021 05:39:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UUtXX8/HZ0V6MQRHKlsjyuvUd1b9QHwqr/3loxbIPr0=;
+        b=LVnsIhWWvq/e9UQMz17fmPOgkualzCNApWudHFHQxA8iGpdpheK2LgtfHnrJqLhM8F
+         haBfBjTg3EJLyf4pLX4v63BdLQMKu0qF+P+ZMVlD6gI8U1FNeJB4Qu/FWBbiOGaJqfKU
+         Pdnhj9V9ruM0XuT9fdJq65KITijELkSNQo9a8BNRrN5+P8S0/X4tDAoUYxUqfNC3kErW
+         kDY9HgUkG79aY2obKhYb4O8Idg9Y6vHbNRGy99Aek78tHaURS3wYya6fsZPEEPjfbf/J
+         8vXvgdAS8SQ9HycGp9MB9kyQvoiHThXIfAFHmjQZRMZmPIPMt2iBmQ5qFin/1fIjgFRy
+         bAuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UUtXX8/HZ0V6MQRHKlsjyuvUd1b9QHwqr/3loxbIPr0=;
+        b=DZ7f5IjUmseXljTQnfUrtCk7ypjd7IxhKERDehGqvS3AebOly0GNUMrE5D0fd0azFJ
+         7BXAmzUPuwCK7bcDMIxoek7TiwK+ZCpRv+fZsvqGx9L+7Vg2W2DZkLdpTNNKM1XsnPZm
+         Wx4v2i5JqVbXVos31nTnXJmHOaFZh1XEsqI1eqfYLK1cPBfFxsE6V+GTDP2DdEoelpcS
+         ff3OzCBNwXHH7oeuqthyg+7i1W4bnONGs/9GfFLhfISz4OlzJ8Egspfjuk3pVb7AxQys
+         pz1c1211/sbrr4tk4yYPBWLvWAn12n/2vmVfYKFd4TV4TFSrhIHcCfEYgQyUN3OWsO0Z
+         ZULg==
+X-Gm-Message-State: AOAM532WJx2+UwGpY//1RxTRm5JjJd2lrwyfpvtQbTiBfHiklqBwdWpA
+        etL2EUM2MyBSjLIJu5UzHqUlrcEO74SW2XP5mGU=
+X-Google-Smtp-Source: ABdhPJxHu2RjGeqsCKdYOEuGeOlX1kBsXprC1jCl5fML6RgYaPkTtZPueNlHOnznhZQMgvdfftrJupojm09iAk6wNWE=
+X-Received: by 2002:a05:6e02:20e8:: with SMTP id q8mr12395869ilv.205.1615037952694;
+ Sat, 06 Mar 2021 05:39:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210306130346.16296-1-baijiaju1990@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1613134924.git.syednwaris@gmail.com> <CAMpxmJXWk8YJR6-DHMj3+Dk4-TdE-FuFtxK_MvbsoLVqZA9rLg@mail.gmail.com>
+In-Reply-To: <CAMpxmJXWk8YJR6-DHMj3+Dk4-TdE-FuFtxK_MvbsoLVqZA9rLg@mail.gmail.com>
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+Date:   Sat, 6 Mar 2021 19:09:01 +0530
+Message-ID: <CACG_h5rjCYxn8F1xipX2tDB193B7Sj-86aGk07pmAtq2ot31Wg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Introduce the for_each_set_clump macro
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        linux-pm <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/03/06 22:03, Jia-Ju Bai wrote:
-> When mutex_lock_interruptible() fails, the error return code of
-> tomoyo_update_domain() is not properly assigned.
-> To fix this bug, error is assigned with the return value of
-> mutex_lock_interruptible(), and then error is checked.
+On Wed, Mar 3, 2021 at 8:13 PM Bartosz Golaszewski
+<bgolaszewski@baylibre.com> wrote:
+>
+> On Fri, Feb 12, 2021 at 2:19 PM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+> >
+> > Hello Bartosz,
+> >
+> > Since this patchset primarily affects GPIO drivers, would you like
+> > to pick it up through your GPIO tree?
+> >
+>
+> Sure, as soon as you figure out what's wrong with the xilinx patch.
+> Could you also follow William's suggestion and rename the functions?
+>
+> Bart
 
-Thanks for a patch, but this patch is wrong.
-Since the variable "error" is initialized as
+I have incorporated William's suggestions and have also solved the
+build error coming in the xilinx patch.
 
-  int error = is_delete ? -ENOENT : -ENOMEM;
+I am sharing the v3 patchset. Thanks !
 
-at the beginning of this function, unconditionally overwriting
-this variable with the return code of mutex_lock_interruptible() breaks
+Regards
 
-  if (error && !is_delete) {
-  }
 
-block of this function.
-
-And the caller does not check if the return code is -EINTR
-instead of -ENOENT or -ENOMEM.
+Syed Nayyar Waris
