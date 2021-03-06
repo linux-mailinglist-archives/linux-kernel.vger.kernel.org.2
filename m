@@ -2,200 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06E832F82A
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 05:07:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A5332F82F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 05:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbhCFEFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 23:05:32 -0500
-Received: from sonic303-23.consmr.mail.gq1.yahoo.com ([98.137.64.204]:36925
-        "EHLO sonic303-23.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229642AbhCFEE4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 23:04:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1615003495; bh=5xCAjFV02GYYen6UTXN4SrBhgC7CieWo2gsnput/pug=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=T5OBCQbNyw7f7o01WDIxcQb+znyozJ1w02PFLc6KdekE//0bAC3y3nOlQlBiYFtK+SVthYrocIHKbviZYjwLjrl26XV5EoSpAbrR4EiJgzHtzBsjE5AXDIrn3QEkrKr2IxfE2XHk3nSas4N6ZOv8LXFSEIRpveOwkT/ypRxoVVXkSEuDgsr801kpYDatI53wq83lMrm7HWK8YnfJMDKOqu9GeBGfo+u1r9lwn5tUXFUAjVG4dCxLOUXRatRx2LapIxZNKMHgYR4SsOdEA+jEEkPhxSv7wplztAelT8L2AITyiPPwjQzo8qDGSwpLg96DYBwHTTLIk5/D3oucKzJF1g==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1615003495; bh=ZSrR6YgRFqTlEYl1tOnFFtuXRFKzcCifZOKhjAKlxsn=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=OjZaefhqdaDzoQXOWS9fIcpmx+evN2lOdiusRxcNgrC5+Fd/1f6kc5NkeqB6xJd1eR5GxcbembOqN1za236RQXRzEQmpHkHhF2nqq7eP7IUiLMoQomqpbGwLZRQQy3W5L1TT4K6nYie3qpF0GgNLWgOvjEpvWpU1u+6RX+0iIyoe4Czq/8F5R5euC0Z6Twh+xgUnLzhBNVVjVigXC2W7mGkMOvwFc+71Grdu9UW7NRA9dGnHTnE0TcY4znhRPN2gEDhCM65Cjd25pmbRvPOUyJIFEt+w7EVkIexQCXPS4gQRXVu7ozFwyD4YidRENLMnEoemCKe1ibPuVYFZOIkA3Q==
-X-YMail-OSG: kucRKUwVM1kmlbcKa7NY8l4UABXRQeefKMNhN8lZfYr2dd_.vp9Se78s6YE6VwW
- NFQGWAWoea1GUVgNU19y61W6JK_doAiWgp1GEf6CX59LCXWw7mlq_jwoUGvi608Zi2grl2clT3cs
- kPJF.5irczsNk31lCr918UYb24JDIut1InWQ.tF7sDr4EfP.Dg9nySUYZsMegQT.nGSY2.uusuIK
- C.ZtBklYJynZu5gB4OUpDkOmN_bDJW7Bst8NAm0pFmTnUhgitADjj6ieFeyJJ9wVk8oW1aIL_Q0q
- zejLzvPK5Iz_wbZu8V4XkN_wLuusVUsyZqSdX5Dhf9nOjjRpUkmHXA0Rx9uWaP4JG8W9XbpT66QC
- CzpTkVJHRTfn52HxxB0._Ao19M1YfLX_RrN96dOUT1GwVLzKdQ6TcKbxBnycA8DUVKpso2Nl_0vy
- nZ_OjVea16L10Mqz8fSed1JSXrTUITZf4nH5WTAvUamoaSdxEd4YMo90bqBQcojrIA99.kFXKlT6
- dJCsRe1RniFV0JTd7567ryEUYYmqf1YRbaJaB7e2TcA4WVAKorERNtDHgtGMUVoJUBZsQ6XjQoag
- 00HqDHaSRYri3RLyBLMkQ._RV5kfsc8SHQ2TQUt1_BIk2kckYWVgPJovnkhWmog4cn0eSYSlGTpd
- unZwIkft93mm3w4T0J_aBWGm3tYXbTEt09sQ0Fxbi9lGC2TK3Kz1foTXYx3JuvyyYddhzpXIaJi7
- tVxYUno5laTGqND.JCRchxpr35pEJgEYSCHjlLJF2XXC1dMc7Yg4loF8u_ZI0PTc8JVSpHj_o8Z0
- uwUcDXyzJrFGT2YkaVlCG74fvCaXckUhxcipWAtSPD48B87UzRwYJfAXmt.k5Yx7yYG.cgbUvFs.
- N2P7_dGYubeBeRLuve_E76.bvr30btIDz99.iMxeubBQXb8kM.XNN8vofSXd_Ghm4kwKvKxewTbM
- oLtJhLPx297h6vl0_8ZgtRzUonJfyytksuJboBVR6HnV5wVcVeesL8B1btywoxiqtnojrIdRoW6S
- zqlhF846q_ITvFCJnXDFc3TYns6UCb.IEyNTbEuNIL17oycL2gSNUmZAmwO5E_yuhutF74tVb4u.
- Qt1gLnrKlIwdzey_1I2UgKeeG6tIhQLx_pITo4D.Jk1rCDaYJK83hQKx68xQjXE5EjZeVBYex.bO
- rssHevJis0_eUXArZnlq5_bN7pzC_NdQBuJTojLgVJdo5A4s3mPKeVKDtsJ87qdeFW2oA5WYMMxv
- JrBm2ASTfBFJ1BEj5b.AbXjUz301a8tz.KslHd.OeKauFdVZwE.WPOMctZYiQS.QS5QmcF4Fq7bF
- BbKZBWgpr4ZNC.6Vg71vV62Zo6vgb.E5nmq9Kwrlgztdgk6Pzt984ARnTB6TXpE.RmbdLBH0Zhu3
- t7.awqxlRjZA13zRe.nXyvajkHPn9IZRl.inOau49HVZAOJuQlx1Ggk1JcXR0lgFEwlfayxgLW3x
- 61Yp1VqH8Itr93vGf_AHd3J625XUWcCBfbnA1uTmgbMn8LfASo4_NBVBx2EkPWDLZWZlGu1iCALr
- iVAPT9hKmjd3cA1cv.F8.HAr89P7H46uwHUoZe5aU7Z6IF9U8wNqLQwHYAdC_GPCNFQMAPa3Juww
- KrkZW.9Dur91mwFD6rvH3AMSUcK1vZzhtOAqZfs98Wkpgj2N4da7Et9IunHxZt8sIZ2HXv49yBEU
- O6w0jbzxzcBZpn0vBfzAsaFtM.5GMWU45CWhbR5mdRHzQpNYsR7ztPEhVUtRZmgtwzS3Cpux_GGm
- i0GP1uZ20PpLOmqEUScCuf33t_DmNJwAHPHvgBsQ2_HIdvPE_O82urPIglfab0GJ6Vk8rfUHGXC8
- GveyTPV.O.JtfICZ5ApO._yEPV5uILPwR4MZiSm3MFqnCz96_9jshBmwCcwcG5pK9541fYUVpURB
- flM..cQeJc05Ql5mpYKr12Q27HqoIwYI3oM7woBrfE0E6BlgIfAkIZMR9w.Erj.LpmsEGihpKUs5
- 1jI_IGlFMorqf7jYTW.lQnjyrMkyQTw07u8zOr4BuOHeUrtk7N8ISUM4oWVTCevmIxOyc7fPFV7Y
- Iyx9pIk03Lzt9TcLlz9zs.V0TsPP8kahA.CZRz2UF3Kh9GZK3Gi0raLBCVuwOqY1_7q2Oj.aEaYS
- 6zOBbgYNm.VSWI8LE7H7EhhZQuRtX8dhh7jEXpiZ75ibpoxB3z6cowCbXKQnAkZfJu0GkDzf7dgI
- nTzN2qWEXKjUUDMBxLSGbWYb1kQuQLCAuoNY8tGSFPkwH0NJSQxXSwsHxU4wVcvuNvlaEQkrB8x6
- b0ESvbXIvs0WVKmIheMczktXOkt2kBGNcMgIZvBz0IPsPU.ldGXKGFF8tKBoLcI.UeTg4cpC89SW
- RX3m4DLbapv_Q6HQzNtRPfqAaVN8_e_k5Z_xuz401yDQA7uGV1wvC.oJ.a1jWYv0w84PsCzfvpXU
- v98T6KW8FwzpuMbme2hfqzgqQLqkEYX51otzC9npvc1D4W3jdz0dvzqZqdf.dtjL9C9x0a5yjv5M
- 2nAHD8wn5k1z7NBENTiuKjnJybWCFLas0F3vWlH9bpcvaq8UYseJy3ElzWo4pOSuwqJ.2Me6cYvJ
- dKfd3_LMmkwMVsT0muLVD2Ma4A.lqlmSZDI57TCx2qeInu08ECJE7
-X-Sonic-MF: <hsiangkao@aol.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.gq1.yahoo.com with HTTP; Sat, 6 Mar 2021 04:04:55 +0000
-Received: by kubenode526.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 8c5221a1eae591564358a3225682cbee;
-          Sat, 06 Mar 2021 04:04:53 +0000 (UTC)
-From:   Gao Xiang <hsiangkao@aol.com>
-To:     linux-erofs@lists.ozlabs.org, Chao Yu <yuchao0@huawei.com>,
-        Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Gao Xiang <hsiangkao@redhat.com>,
-        Martin DEVERA <devik@eaxlabs.cz>
-Subject: [PATCH v2] erofs: fix bio->bi_max_vecs behavior change
-Date:   Sat,  6 Mar 2021 12:04:38 +0800
-Message-Id: <20210306040438.8084-1-hsiangkao@aol.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210306033109.28466-1-hsiangkao@aol.com>
-References: <20210306033109.28466-1-hsiangkao@aol.com>
+        id S229875AbhCFER5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 23:17:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229642AbhCFERm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 23:17:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87AC265005;
+        Sat,  6 Mar 2021 04:17:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615004261;
+        bh=JG/2e1lJh6g7lyOKj2exd139cipDVLRkA4E7ybz5KAM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rzF4uYfPpwlkHigXs2pN/dKWzWnE03d6bQi/zAl81k8BdgRT/G9Diy7tZKpugJg6u
+         7xqa778ijiP0W5PLnTzNSgNbEWjiFSObwYkAPBO0y1NlsCsce8GrSbt25Q2DKBRoDY
+         D5uAH2iIcfGeklm9fZmJDwWaAQE5IzJbzndmWTsVAJRVexnWniJpETQcG7Q894YRub
+         h+b4Q3Fzza4PgKEtxqAGLNKpl+fCTtKofzfZ7cNj2HLCj0e6z9dk0OLry/7saWamqJ
+         YRrR1L1XSYTmemt197Fd35vi4obKf2YlZ+DaH9Tm6Gwh/RWJb4Qafi6BmC0AERemBs
+         Uj2I9TTsReaDg==
+Received: by mail-lf1-f49.google.com with SMTP id v9so8300370lfa.1;
+        Fri, 05 Mar 2021 20:17:41 -0800 (PST)
+X-Gm-Message-State: AOAM533O0hMEMmthhNujJxU/+bwkKu0KelS9HrzV3EtfNPzlisbrIc7P
+        b+wyFb6KeUsEJRrN96vfI+0ekCp3frboMYcjqBo=
+X-Google-Smtp-Source: ABdhPJz39jAeX+gKEfeE96e3+a7VxML1Q9mZmzhl9DwJu4HthFNyF+7vhmUW3RgOMzojnR1rJa4qIajmNoMYXKd1ddU=
+X-Received: by 2002:a05:6512:2288:: with SMTP id f8mr7754188lfu.346.1615004259929;
+ Fri, 05 Mar 2021 20:17:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210306032314.3186-1-angkery@163.com>
+In-Reply-To: <20210306032314.3186-1-angkery@163.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sat, 6 Mar 2021 12:17:28 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTSx3AYyQ7Z4SD19LX1fygbauAdUFCnRS2aAuUX0XRUQA@mail.gmail.com>
+Message-ID: <CAJF2gTTSx3AYyQ7Z4SD19LX1fygbauAdUFCnRS2aAuUX0XRUQA@mail.gmail.com>
+Subject: Re: [PATCH] csky: fix typos
+To:     angkery <angkery@163.com>
+Cc:     linux-csky@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Junlin Yang <yangjunlin@yulong.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@redhat.com>
+Thx,
 
-Martin reported an issue that directory read could be hung on the
-latest -rc kernel with some certain image. The root cause is that
-commit baa2c7c97153 ("block: set .bi_max_vecs as actual allocated
-vector number") changes .bi_max_vecs behavior. bio->bi_max_vecs
-is set as actual allocated vector number rather than the requested
-number now.
+Looks good to me, Signed-off-by.
 
-Let's avoid using .bi_max_vecs completely instead.
+On Sat, Mar 6, 2021 at 11:23 AM angkery <angkery@163.com> wrote:
+>
+> From: Junlin Yang <yangjunlin@yulong.com>
+>
+> fixes three typos found by codespell.
+>
+> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+> ---
+>  arch/csky/include/asm/asid.h    | 2 +-
+>  arch/csky/include/asm/barrier.h | 2 +-
+>  arch/csky/include/asm/vdso.h    | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/csky/include/asm/asid.h b/arch/csky/include/asm/asid.h
+> index ac08b0f..6ff205a 100644
+> --- a/arch/csky/include/asm/asid.h
+> +++ b/arch/csky/include/asm/asid.h
+> @@ -37,7 +37,7 @@ void asid_new_context(struct asid_info *info, atomic64_t *pasid,
+>   * Check the ASID is still valid for the context. If not generate a new ASID.
+>   *
+>   * @pasid: Pointer to the current ASID batch
+> - * @cpu: current CPU ID. Must have been acquired throught get_cpu()
+> + * @cpu: current CPU ID. Must have been acquired through get_cpu()
+>   */
+>  static inline void asid_check_context(struct asid_info *info,
+>                                       atomic64_t *pasid, unsigned int cpu,
+> diff --git a/arch/csky/include/asm/barrier.h b/arch/csky/include/asm/barrier.h
+> index 84fc600c..f4045dd 100644
+> --- a/arch/csky/include/asm/barrier.h
+> +++ b/arch/csky/include/asm/barrier.h
+> @@ -64,7 +64,7 @@
+>
+>  /*
+>   * sync:        completion barrier, all sync.xx instructions
+> - *              guarantee the last response recieved by bus transaction
+> + *              guarantee the last response received by bus transaction
+>   *              made by ld/st instructions before sync.s
+>   * sync.s:      inherit from sync, but also shareable to other cores
+>   * sync.i:      inherit from sync, but also flush cpu pipeline
+> diff --git a/arch/csky/include/asm/vdso.h b/arch/csky/include/asm/vdso.h
+> index eb5142f..bdce581 100644
+> --- a/arch/csky/include/asm/vdso.h
+> +++ b/arch/csky/include/asm/vdso.h
+> @@ -16,7 +16,7 @@ struct vdso_data {
+>   * offset of 0, but since the linker must support setting weak undefined
+>   * symbols to the absolute address 0 it also happens to support other low
+>   * addresses even when the code model suggests those low addresses would not
+> - * otherwise be availiable.
+> + * otherwise be available.
+>   */
+>  #define VDSO_SYMBOL(base, name)                                                        \
+>  ({                                                                             \
+> --
+> 1.9.1
+>
+>
 
-Reported-by: Martin DEVERA <devik@eaxlabs.cz>
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
----
-change since v1:
- - since bio->bi_max_vecs doesn't record extent blocks anymore,
-   introduce a remaining extent block to avoid extent excess.
 
- fs/erofs/data.c | 28 +++++++++++-----------------
- 1 file changed, 11 insertions(+), 17 deletions(-)
-
-diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-index f88851c5c250..1249e74b3bf0 100644
---- a/fs/erofs/data.c
-+++ b/fs/erofs/data.c
-@@ -129,6 +129,7 @@ static inline struct bio *erofs_read_raw_page(struct bio *bio,
- 					      struct page *page,
- 					      erofs_off_t *last_block,
- 					      unsigned int nblocks,
-+					      unsigned int *eblks,
- 					      bool ra)
- {
- 	struct inode *const inode = mapping->host;
-@@ -145,8 +146,7 @@ static inline struct bio *erofs_read_raw_page(struct bio *bio,
- 
- 	/* note that for readpage case, bio also equals to NULL */
- 	if (bio &&
--	    /* not continuous */
--	    *last_block + 1 != current_block) {
-+	    (*last_block + 1 != current_block || !*eblks)) {
- submit_bio_retry:
- 		submit_bio(bio);
- 		bio = NULL;
-@@ -216,7 +216,8 @@ static inline struct bio *erofs_read_raw_page(struct bio *bio,
- 		if (nblocks > DIV_ROUND_UP(map.m_plen, PAGE_SIZE))
- 			nblocks = DIV_ROUND_UP(map.m_plen, PAGE_SIZE);
- 
--		bio = bio_alloc(GFP_NOIO, bio_max_segs(nblocks));
-+		*eblks = bio_max_segs(nblocks);
-+		bio = bio_alloc(GFP_NOIO, *eblks);
- 
- 		bio->bi_end_io = erofs_readendio;
- 		bio_set_dev(bio, sb->s_bdev);
-@@ -229,16 +230,8 @@ static inline struct bio *erofs_read_raw_page(struct bio *bio,
- 	/* out of the extent or bio is full */
- 	if (err < PAGE_SIZE)
- 		goto submit_bio_retry;
--
-+	--*eblks;
- 	*last_block = current_block;
--
--	/* shift in advance in case of it followed by too many gaps */
--	if (bio->bi_iter.bi_size >= bio->bi_max_vecs * PAGE_SIZE) {
--		/* err should reassign to 0 after submitting */
--		err = 0;
--		goto submit_bio_out;
--	}
--
- 	return bio;
- 
- err_out:
-@@ -252,7 +245,6 @@ static inline struct bio *erofs_read_raw_page(struct bio *bio,
- 
- 	/* if updated manually, continuous pages has a gap */
- 	if (bio)
--submit_bio_out:
- 		submit_bio(bio);
- 	return err ? ERR_PTR(err) : NULL;
- }
-@@ -264,23 +256,26 @@ static inline struct bio *erofs_read_raw_page(struct bio *bio,
- static int erofs_raw_access_readpage(struct file *file, struct page *page)
- {
- 	erofs_off_t last_block;
-+	unsigned int eblks;
- 	struct bio *bio;
- 
- 	trace_erofs_readpage(page, true);
- 
- 	bio = erofs_read_raw_page(NULL, page->mapping,
--				  page, &last_block, 1, false);
-+				  page, &last_block, 1, &eblks, false);
- 
- 	if (IS_ERR(bio))
- 		return PTR_ERR(bio);
- 
--	DBG_BUGON(bio);	/* since we have only one bio -- must be NULL */
-+	if (bio)
-+		submit_bio(bio);
- 	return 0;
- }
- 
- static void erofs_raw_access_readahead(struct readahead_control *rac)
- {
- 	erofs_off_t last_block;
-+	unsigned int eblks;
- 	struct bio *bio = NULL;
- 	struct page *page;
- 
-@@ -291,7 +286,7 @@ static void erofs_raw_access_readahead(struct readahead_control *rac)
- 		prefetchw(&page->flags);
- 
- 		bio = erofs_read_raw_page(bio, rac->mapping, page, &last_block,
--				readahead_count(rac), true);
-+				readahead_count(rac), &eblks, true);
- 
- 		/* all the page errors are ignored when readahead */
- 		if (IS_ERR(bio)) {
-@@ -305,7 +300,6 @@ static void erofs_raw_access_readahead(struct readahead_control *rac)
- 		put_page(page);
- 	}
- 
--	/* the rare case (end in gaps) */
- 	if (bio)
- 		submit_bio(bio);
- }
 -- 
-2.20.1
+Best Regards
+ Guo Ren
 
+ML: https://lore.kernel.org/linux-csky/
