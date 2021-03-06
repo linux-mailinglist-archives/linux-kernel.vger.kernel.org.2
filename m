@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D1932FCF4
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A0532FCF9
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 21:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhCFT6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 14:58:19 -0500
-Received: from mail-pf1-f169.google.com ([209.85.210.169]:44976 "EHLO
-        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231177AbhCFT6Q (ORCPT
+        id S231282AbhCFUA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 15:00:27 -0500
+Received: from mail-pg1-f181.google.com ([209.85.215.181]:46523 "EHLO
+        mail-pg1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230390AbhCFT77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 14:58:16 -0500
-Received: by mail-pf1-f169.google.com with SMTP id t29so4435188pfg.11;
-        Sat, 06 Mar 2021 11:58:16 -0800 (PST)
+        Sat, 6 Mar 2021 14:59:59 -0500
+Received: by mail-pg1-f181.google.com with SMTP id h4so3709432pgf.13;
+        Sat, 06 Mar 2021 11:59:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=vrwdJhhYtSH9wQZ5EXhp7heMqxOYZiFZDSvmiyJutDA=;
-        b=VYIDyOwTkNfI4gHYu5pPKfzj/Bs6v7UZ/+REk4bJDl11Lg1RX5ICO/8jrr3AMffHp1
-         6S27IlH3ThvGv08QXztnWvZULQdFrItBIyfr9HbyFGucOGRma44LSws2rKFCy01bwGpW
-         yrLnWlSghJGMvtzyDfWIKvMTB0CVXbI27TkdFPSzbejfcWHJpBNLqRB5BVbMfioomOYT
-         6B2i7LHsSdjln/nM3K3NB3IwWB2V6gKgesCw9Zbx2B04qscpSkW+y93Vizhjp4eEnIBx
-         QM3Ni9JFpp6gOUsTK871VeGn4ATk4rfSOpVvuz3m+UQYAdU8jRoZGD4VrsZXLJ+Egvsm
-         2j8Q==
-X-Gm-Message-State: AOAM530a5z0WhHHUwpUe2C7IIYMwIvzm/bRYqafLctPhChdzndPujVDc
-        58Qd5rBa9ckEfgCmKY4Q8g==
-X-Google-Smtp-Source: ABdhPJyIkD3xwASyiv2hONK661jHJeeDgt+7b9ZQTNaf1Ja9t99WvD8XURjwe4kk7/XbL2T2N/XhCA==
-X-Received: by 2002:a62:b50d:0:b029:1ed:c0d:3778 with SMTP id y13-20020a62b50d0000b02901ed0c0d3778mr14784437pfe.72.1615060696520;
-        Sat, 06 Mar 2021 11:58:16 -0800 (PST)
+        bh=erxLaPpHTstlUNHepYANnRLE/oN1GTdnKJPQlCNXi4o=;
+        b=H00oDUlbNL2Kip5Yz9LPHrqqv/fhbr+3GNLrd3uL2ilIeVt1WNJbiuaNYrSAqPdduH
+         ZVvu+JDPuMPuB287VU7MAww9QUsIZrVcVy9tXUHdLItEXtkLo5u/QRBDJ1wiAly7kKse
+         iIWrJ9dvVuvQe1xNsD4EvZm/WFuAPaHpbOpTR9eVYVdgxoX44XWJukdneObD1oBgdcu5
+         ICENOO8ZX3NlChYol6wqq4BlKx3FOwFF52wk0UZC/eMrQBvZ8iah3upckSdfVAT4VA3T
+         ZPA2hHqkssnwpZZ/VBK/n49UW5VWAv+ovDDKb3nHo76blUD9ZrkSuWWC8hsBdz7eVGK0
+         gRXA==
+X-Gm-Message-State: AOAM530bqNjjhJCahiSv5D6zB1O0olYz/LS6jfJbUZUcccgv7r7OyLtT
+        ZnnJTkLHIXhQ3Wr4zM+3MA==
+X-Google-Smtp-Source: ABdhPJz3tgjVJfWmKgbca9UKRH91w/uITuWlBZmCUxlAapxTJ2vbbhF42rvUio4LeFbH5FQ87AzDoQ==
+X-Received: by 2002:a63:531e:: with SMTP id h30mr14203467pgb.158.1615060798907;
+        Sat, 06 Mar 2021 11:59:58 -0800 (PST)
 Received: from robh.at.kernel.org ([172.58.27.98])
-        by smtp.gmail.com with ESMTPSA id t6sm775470pjs.26.2021.03.06.11.58.10
+        by smtp.gmail.com with ESMTPSA id c12sm5944246pjq.48.2021.03.06.11.59.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 11:58:15 -0800 (PST)
-Received: (nullmailer pid 1121697 invoked by uid 1000);
-        Sat, 06 Mar 2021 19:58:08 -0000
-Date:   Sat, 6 Mar 2021 11:58:08 -0800
+        Sat, 06 Mar 2021 11:59:58 -0800 (PST)
+Received: (nullmailer pid 1124050 invoked by uid 1000);
+        Sat, 06 Mar 2021 19:59:53 -0000
+Date:   Sat, 6 Mar 2021 11:59:53 -0800
 From:   Rob Herring <robh@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        linux-arm-kernel@lists.infradead.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org,
-        Philipp Zabel <p.zabel@pengutronix.de>, kernel@collabora.com,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        dri-devel@lists.freedesktop.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCHv1 4/6] dt-bindings: arm: fsl: add GE B1x5pv2 boards
-Message-ID: <20210306195808.GA1121640@robh.at.kernel.org>
-References: <20210222171247.97609-1-sebastian.reichel@collabora.com>
- <20210222171247.97609-5-sebastian.reichel@collabora.com>
+To:     Joe Sandom <joe.g.sandom@gmail.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Joe Sandom <joe.sandom@outlook.com>, jic23@kernel.org
+Subject: Re: [RESEND][PATCH v4 2/2] Added AMS tsl2591 device tree binding
+Message-ID: <20210306195953.GA1123991@robh.at.kernel.org>
+References: <20210222212313.29319-1-joe.g.sandom@gmail.com>
+ <20210222212313.29319-2-joe.g.sandom@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210222171247.97609-5-sebastian.reichel@collabora.com>
+In-Reply-To: <20210222212313.29319-2-joe.g.sandom@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 18:12:45 +0100, Sebastian Reichel wrote:
-> Document the compatible for GE B1x5pv2 boards.
+On Mon, 22 Feb 2021 21:23:13 +0000, Joe Sandom wrote:
+> Device tree binding for AMS/TAOS tsl2591 ambient light sensor.
 > 
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> This driver supports configuration via device tree and sysfs.
+> Supported channels for raw infrared light intensity,
+> raw combined light intensity and illuminance in lux.
+> The driver additionally supports iio events on lower and
+> upper thresholds.
+> 
+> This is a very-high sensitivity light-to-digital converter that
+> transforms light intensity into a digital signal.
+> 
+> Datasheet Available at: https://ams.com/tsl25911
+> 
+> Signed-off-by: Joe Sandom <joe.g.sandom@gmail.com>
 > ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+> Changes in v4:
+> - Corrected id field to include vendor name in prefix
+> 
+> Notes:
+> - Previously incorrectly included binding in same patch as driver.
+>   This was pointed out by the maintainer and has now been changed to
+>   a patch series. Sorry for the confusion!
+> 
+> Reason for re-send;
+> - Maintainer email was outlook address, changed to gmail address as this
+>   is the email the patch is being sent from.
+> 
+>  .../bindings/iio/light/amstaos,tsl2591.yaml   | 50 +++++++++++++++++++
+>  1 file changed, 50 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
