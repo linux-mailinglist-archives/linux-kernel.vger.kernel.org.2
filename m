@@ -2,95 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E3F32FCC8
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0356632FCCA
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhCFTaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 14:30:02 -0500
-Received: from mout.gmx.net ([212.227.15.18]:50547 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231440AbhCFT3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 14:29:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1615058965;
-        bh=nVW5W5QEQtfYbQWml0kYGVV/4QWg40c3mHIc4HsSoL0=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=W/mLGq6besJTk53Du84rUjtGJBA3Ybms9+Jo1fsLyLtyht4Yyi+2RatMZcAcfEXvF
-         W3iUrTO8+Ng7ZOqM0bKztwv3SLCvs8oBWAzif4EdGAE0gOtmkd1GRkae1/qDpJPqoL
-         2cv5El6BcSYa6mu1bnRVqyjBcM/RXB4EhROF0IKY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.153.24]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MryXH-1m5jHM2mbF-00nzWB; Sat, 06
- Mar 2021 20:29:25 +0100
-Subject: Re: [PATCH] arch/parisc/kernel: remove duplicate include in ptrace
-To:     menglong8.dong@gmail.com, oleg@redhat.com
-Cc:     James.Bottomley@HansenPartnership.com,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhang Yunkai <zhang.yunkai@zte.com.cn>
-References: <20210304022410.186848-1-zhang.yunkai@zte.com.cn>
-From:   Helge Deller <deller@gmx.de>
-Message-ID: <fb46ea24-3c5e-f992-4f33-eb00c06c8369@gmx.de>
-Date:   Sat, 6 Mar 2021 20:29:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231468AbhCFTbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 14:31:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231417AbhCFTbE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 14:31:04 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D967C06174A;
+        Sat,  6 Mar 2021 11:31:04 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id e2so5263444ilu.0;
+        Sat, 06 Mar 2021 11:31:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=2lh9+dUR8kVgvf+4hcHiRqiDmfQ8HmE46F/fM16hxVQ=;
+        b=bav/D0rcQqutO1YZNXtcpUEzITsezhHmyAfADOF+++WKuQxQVBA34z8fcIhihZmlD6
+         rXtm2gxPinRBx2kAQed40SzlUic/YDWn31hhStdl6q15wOODx+BwTAgNlfvGsLXDpMPR
+         TodaalRuO6R0nQ0RQvCySe/9fDEXEg/GrOuAPW11Zq0eRRHn472n1+1dXiBkt8kC8Qws
+         b7X7tNmOhioEXDlS7RBFGISeD7Qz9VANwz/2CNcdbvnPrChkxqAaeoswiDjqmuHldpAm
+         FLCLhcsY0YN98AB6FQ3y4MA/IiB7sUkmvDmAwJdS+fU6+kFOJtAsQ2LUP0gIhfREa5RS
+         KHMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=2lh9+dUR8kVgvf+4hcHiRqiDmfQ8HmE46F/fM16hxVQ=;
+        b=g1qzbMrnk6pTQi0VBLWsnq1y5YmbqgtkZzMC7flpMVOyrmNqMVmLz/PpV8DCG5t9pu
+         iYHLl+FOakgV0y3JVC+c3d/KfDnztCtrG8W9pdhnLXZJFN5+8kGIMrZN4C4UmAjFK123
+         DluVVdyfpkiureyPNXXw6XhzqezP8hjaNCaDc1ygr14Izz0ctB87qZqA+rzrK9slY6uw
+         UWb29RoUNzdD5ADCmlMzDKOBavDInvQW8qpClUqJB2XAO/G5NMH7TlUvqSRA7Zjnndki
+         /GjXaR76SNuWma9cpPdBJdZB2+Z+feCqI2to+SvKF8ZBjdzWNNi0hVzdp9WOGZ3xsf7V
+         qr+A==
+X-Gm-Message-State: AOAM533gGXHbtSBrlwfJCWo/n+4pR9IuBLGHicaMwVhXT/uQHfuxNNyh
+        d38tDeaMDMm/IvfBR0rMK6quZ6VkfnsyWtnz1cAL47ypUHI=
+X-Google-Smtp-Source: ABdhPJxMNTytnXFRmnFIxWtt/BY1W0K+wRvlHPyORrPVvzw6j47ot6IMx+h4E2WngpcUCWgNWEl7kFAchkVqv36u+sE=
+X-Received: by 2002:a05:6e02:13a6:: with SMTP id h6mr14773241ilo.10.1615059063453;
+ Sat, 06 Mar 2021 11:31:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210304022410.186848-1-zhang.yunkai@zte.com.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:YKWoOGci7b09B19Q7X27W19H8+QYMHLMiiH5QcOnnIalWdrWv8Y
- D55lDbR33SODtOOAIyHhTwwHB2ir9FfK7b0ohN5AMWaFCplpyd6v1AkvhFGYoiCSliPjTcg
- 7rPLaTHgTzo1IihJlSdEb6BEJhdswjPAA55kp6pxU9aJUZ+vUK/GslffpFMkS3kYa549m7x
- aNdDAHsCoJuVUvQi63bUA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7iMxN3hlQWM=:0xy0BJINoHvtlPTU7eA8Kz
- hj/JtKr4HPitjnvAkQ/bdQQCLwRgD+3NB8zDPCJPppiddht45ihxE4nuNV2nwuuwUL+pWl7yB
- sBhoxYxlU7TeIKHhbAHxNVsT7ppxyovLHmAO8O30FFtOmL49LtLrdrL0Nc2Ve1+T23sE97k43
- JD6TMg9lHGhn11M1lt7lh070nkMEciJCnJNL1U9PNiBm0bncr41peGocTA64uuIqUFW0B/Nxb
- Y+7zUFTa1y4iwSHWDI3tocBPs5mOKYq3/SDLSftCIYh70H9Lsv9GO5IlKe8Cf9Urm67jrNEAM
- OcifZTLCGm46wmZsXgKrNpgtzK/oTcZ7NewhF3HB+u4pecr2nKT5gjrCrYFOc1GbeGWLAljzY
- r5nE/m20n5f3DaPCvMKAQT31VkeKEQL5vEe6Iy9d7fsL/K5WUfoX4ShKUcLLcPbcGCBJYeixa
- 1NwHrFq+P3Yi78hcfI1oR0lugk/zEns1mrvyLlMMc7TMrvUtbWG4BNna96EkiWdOo5MRcDrV2
- sMkQ4WKplxBPv9rX4x8fWHH7YaRBP53pxksecKSivtUMeQEsj3WUC8avjf/LInBLhXDLxXjPr
- Oo4jGpSuxZD4SUNh6c95czDWuBXJRRpNIWzTnj2RqkR3OrJm3K848cV+H6s7PwYUEn7xUPQ+G
- 3zDBlt/hzaOuBIQxAsTe8sIIglz/PSUaPLnzTvR9fOn5g/YrT56vmRz7F81+RnVmlZf6dIyBv
- CgmjzSqOtthJCgxnrFB5QBZMgy3ZCF0N/zKNCZwHWdse9Ma0lEZJbCQJ2IRZwz0iQxDRLvp81
- deylq6ZwBzQ/LNwpj48XqosrTJno94nB0twHhAgCGyz4tczzGwGqSmxHWYfcNBO3kjhbfkecX
- 9N+m7icK6ddWmCyNeQCw==
+References: <20210301155321.GA1490228@rowland.harvard.edu> <CA+icZUVpQtsq8y=rjR3Ad_G1VXWpR4D4xao8DGUkRiuxoT+cPA@mail.gmail.com>
+ <20210305160728.GE38200@rowland.harvard.edu> <CA+icZUXnjDwyKEoX_7KOaVd=PpvEQhpJRvwZbW_xocDfXZpUzQ@mail.gmail.com>
+ <CA+icZUUFGh5CWH-UJK4T-h_Qd2KNnOCrGuT8fg0+Fvjm0C2kbg@mail.gmail.com>
+ <20210305193003.GE48113@rowland.harvard.edu> <CA+icZUXUAVAusGBKSAtUEN1kH2PLchpi0cU+w-m67QznA7+F4A@mail.gmail.com>
+ <20210305194745.GF48113@rowland.harvard.edu> <CA+icZUXEWh6G-Bm9-2F1X=S=ZYog37PiaMWHUjZWs1g-KDOqJg@mail.gmail.com>
+ <CA+icZUUBpB9UFEypCFmCYc2grUC11QESNwj0_cXfut9fx0JOQA@mail.gmail.com> <20210306165808.GD74411@rowland.harvard.edu>
+In-Reply-To: <20210306165808.GD74411@rowland.harvard.edu>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 6 Mar 2021 20:30:27 +0100
+Message-ID: <CA+icZUVfDvAnHucYtGC3J6OXyFAZ-c9DU0z8s6iqK_g4Y=Nckw@mail.gmail.com>
+Subject: Re: [xhci] usb 4-1: reset SuperSpeed Gen 1 USB device number 2 using xhci_hcd
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/4/21 3:24 AM, menglong8.dong@gmail.com wrote:
-> From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+On Sat, Mar 6, 2021 at 5:58 PM Alan Stern <stern@rowland.harvard.edu> wrote:
 >
-> 'linux/compat.h' included in 'arch/parisc/kernel/ptrace.c' is duplicated=
-.
-> It is also included in the 24th line.
+> On Sat, Mar 06, 2021 at 07:42:30AM +0100, Sedat Dilek wrote:
+> > No, with Debian-Kernel 5.10.19-1 there are no xhci-resets:
 >
-> Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
-
-Thanks,
-applied to the parisc-next tree.
-
-Helge
-
-> ---
->   arch/parisc/kernel/ptrace.c | 1 -
->   1 file changed, 1 deletion(-)
->
-> diff --git a/arch/parisc/kernel/ptrace.c b/arch/parisc/kernel/ptrace.c
-> index 2127974982df..918faa95740c 100644
-> --- a/arch/parisc/kernel/ptrace.c
-> +++ b/arch/parisc/kernel/ptrace.c
-> @@ -567,7 +567,6 @@ static const struct user_regset_view user_parisc_nat=
-ive_view =3D {
->   };
->
->   #ifdef CONFIG_64BIT
-> -#include <linux/compat.h>
->
->   static int gpr32_get(struct task_struct *target,
->   		     const struct user_regset *regset,
+> Is the kernel the only thing that is different?  The rest of the
+> operating system and environment is exactly the same?
 >
 
+The kernel is the only change.
+
+> > But I see there is already a quirk enabled and matches my ASmedia USB
+> > 3.0 controller (as I have *no* usb-storage-quirks enabled):
+> >
+> > root# LC_ALL=C dmesg -T | grep -i quirks | egrep '174c|55aa'
+> > [Sat Mar  6 06:52:41 2021] usb-storage 4-1:1.0: Quirks match for vid
+> > 174c pid 55aa: 400000
+>
+> Yes, this is because that type of device already has a quirk entry built
+> into the kernel.  You can find it by searching for "174c" in the kernel
+> source file drivers/usb/storage/unusual_devs.h.
+>
+
+OK, will look into it.
+
+> > Thanks Alan for all the hints and tips in the topic "usb-storage and
+> > quirks" and your patience.
+>
+> You can try building a 5.11 kernel with the patch below.  I don't know
+> whether it will show anything in the dmesg log when one of these resets
+> occurs, but it might.
+>
+> If that doesn't work out, another possibility is to use git bisect to
+> find the commit between 5.10 and 5.11 which caused the problem to start.
+>
+
+This is with Linux v5.12-rc2 - not v5.11.y.
+I look if I can apply the patch.
+
+- Sedat -
+
+>
+>
+> --- usb-devel.orig/block/scsi_ioctl.c
+> +++ usb-devel/block/scsi_ioctl.c
+> @@ -258,8 +258,11 @@ static int blk_complete_sghdr_rq(struct
+>         hdr->host_status = host_byte(req->result);
+>         hdr->driver_status = driver_byte(req->result);
+>         hdr->info = 0;
+> -       if (hdr->masked_status || hdr->host_status || hdr->driver_status)
+> +       if (hdr->masked_status || hdr->host_status || hdr->driver_status) {
+>                 hdr->info |= SG_INFO_CHECK;
+> +               printk(KERN_INFO "SCSI ioctl error, cmd %02X, prog %s\n",
+> +                               req->cmd[0], current->comm);
+> +       }
+>         hdr->resid = req->resid_len;
+>         hdr->sb_len_wr = 0;
+>
+>
