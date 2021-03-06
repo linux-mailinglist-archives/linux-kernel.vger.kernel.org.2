@@ -2,160 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BA732F980
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E33C32F996
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhCFK4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 05:56:20 -0500
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:42591 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230058AbhCFK4G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 05:56:06 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 23FAC16BC;
-        Sat,  6 Mar 2021 05:56:05 -0500 (EST)
-Received: from imap1 ([10.202.2.51])
-  by compute6.internal (MEProxy); Sat, 06 Mar 2021 05:56:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=DgBeYPbl7qp9c6e80Nndsm0w1hmKO3h
-        sAbLlZ1WpbzY=; b=Kza6bjSuFCkaYdFvoyPi4iVipcjHXWhts8ykHdUZ2tdtsKh
-        G5BnvS7A+RxdELzMZ3cxBfxR9hf7xqWQY5nW1GoVPWhh6PgwnCxG8uWKLgQBU6xW
-        hLFUenEBg/+nbqz/FwWQZWFOP2GFL7P8z4ZB0EPWpQDUc96mVvhqaS8NHlay1q+7
-        VZzoHP8ucXLR4nMIFHeVXqrmth4AHxvsCFYjWCb/v0EhxEac4VXOsv97moMCpp9I
-        rxqcqZo8Lo8tX0jl9d0jH7ygPdw8MrtUEot3fi3REbeWdd7qO6E0IxJO57IkiD/e
-        ei/EOAilivBWAqn2L2+kHA/MIv7Se06sGTfsz2Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=DgBeYP
-        bl7qp9c6e80Nndsm0w1hmKO3hsAbLlZ1WpbzY=; b=CskdT3eaYXGF4nU9ZrUkF7
-        gfigLrIkveMW4b176tpPtU/331RXPgtoUeXNnkaTRW3s4xUCfbRe3eOCRatuKp3W
-        aA63mjD8EXQZ7SuQdHz2bP7PH0xwS2BvFa+2z7Jc++HiXB+0lmaiFuVFv6/bbP+s
-        0mZHs1CiMC2eKTfHO/UCIRfDlK9M5BZyNqC64l6My4NxLvE2dbKa0013afKbmY38
-        CTbHz9XbEyTmNyQ6s5NeuV/65jnMlx2EJqRlcRYb327ioi4PwlpLbXFM0iTOTFc3
-        EupKEaYaLaIG5C6ShnucbqwjYjk3qXCCKPkVaqqqWZ1B5jxtMgBOVpGoUPoJ2RcQ
-        ==
-X-ME-Sender: <xms:w19DYFTESn_z93xD2eeDcIZDMZZlWUW30ANfaY-732yKwCWr6_Afyw>
-    <xme:w19DYOwrn3wFdBsW21td4M7Nsp5HsDHL3guFC0Urnl7O7M-iCPIzeNMIyeJ3OQR25
-    t99GZR47wr0XcGhuic>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtkedgvddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdflihgr
-    gihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqe
-    enucggtffrrghtthgvrhhnpeevtdehveetkedvvdehhfeuueeffeduffduveevudeiveeu
-    tedvheekteeujeegueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:w19DYK0TLC7AARoKtyVKzHiGiA0OloFw7KbuZPk65heNzNM5I6HEWg>
-    <xmx:w19DYNA60bA_YycJE8xoiXM6NqsJuI_4UrKv3WoY2JKb_AYAj1Aazw>
-    <xmx:w19DYOiu8BdZXTAT_MU2G05nJj2Cmk00cKE7-4TPEEB2yPrejsPdvw>
-    <xmx:xF9DYGfDRqQz_f_RT2JwSuS75B5xX7QuGH87npvwr2pyaD2hSpyg9A>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 524A7130005D; Sat,  6 Mar 2021 05:56:03 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-206-g078a48fda5-fm-20210226.001-g078a48fd
-Mime-Version: 1.0
-Message-Id: <3a5481f9-d1d5-4439-9679-ad7615ba8009@www.fastmail.com>
-In-Reply-To: <20210306095308.GA5751@alpha.franken.de>
-References: <20210304110057.22144-1-zhangqing@loongson.cn>
- <20210304110057.22144-3-zhangqing@loongson.cn>
- <20210306080337.GC4744@alpha.franken.de>
- <d1072504-514b-4be0-85ba-69a6d885de58@www.fastmail.com>
- <20210306095308.GA5751@alpha.franken.de>
-Date:   Sat, 06 Mar 2021 18:55:41 +0800
-From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To:     "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Cc:     "Qing Zhang" <zhangqing@loongson.cn>,
-        "Huacai Chen" <chenhuacai@kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Marc Zyngier" <maz@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?Re:_[PATCH_2/2]_MIPS:_Loongson64:_Move_loongson=5Fsystem=5Fcon?=
- =?UTF-8?Q?figuration_to_loongson.h?=
-Content-Type: text/plain
+        id S230408AbhCFLGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 06:06:02 -0500
+Received: from mout01.posteo.de ([185.67.36.65]:50009 "EHLO mout01.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230191AbhCFLFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 06:05:31 -0500
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 89441160062
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 12:05:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1615028725; bh=3lFsvNtqRkWfrCAk8Np/tkLZyeQIHcNn7r2wpS+Xo3c=;
+        h=Date:From:To:Cc:Subject:From;
+        b=on7iB8Bd3E91URtkUt4SRZyPvLDYECX0RnDm/ThuS5QhbdzliUZaEKvSbL1+A7raw
+         dJAhOa+q6BRA0F9ijVOTmI5Q7/XpliLJi3oc95uO5yQWU39jyIgQ+tlEfOpvwhFJZt
+         CKAiHdgmSo4ANAdldpOItdZ4qEqlDtbxeWJrWVkK+A38jNgmSujnQkM5fo+0JU7PIG
+         G/xAGZJdp3qN9DhJ1js10XU2xTSpalGRJAclDH6V65eDZEavHLz/qFlfi9+/Ha0x/M
+         coAnIBiF0MSwvCu6fmjvHcCAt9Y2WJqrKkA2GgPxuaTp8vb9Irma0urTZdTeKVmwQq
+         k08H1YK56LAMw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4Dt1wg5Ch7z6tm6;
+        Sat,  6 Mar 2021 12:05:23 +0100 (CET)
+Date:   Sat, 6 Mar 2021 12:05:22 +0100
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH v6 2/2] hwspinlock: add sun6i hardware spinlock support
+Message-ID: <20210306120522.7e8f98e5@monster.powergraphx.local>
+In-Reply-To: <20210302172002.4yygufnrmrbultk5@gilmour>
+References: <cover.1614430467.git.wilken.gottwalt@posteo.net>
+        <d7c7bb2adac0ad9171a407b29b33b384724172ab.1614430467.git.wilken.gottwalt@posteo.net>
+        <20210301131305.wrsonoqwcm6ua2e2@hendrix>
+        <20210301150608.014b807b@monster.powergraphx.local>
+        <20210302172002.4yygufnrmrbultk5@gilmour>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2 Mar 2021 18:20:02 +0100
+Maxime Ripard <maxime@cerno.tech> wrote:
 
-
-On Sat, Mar 6, 2021, at 5:53 PM, Thomas Bogendoerfer wrote:
-> On Sat, Mar 06, 2021 at 05:00:15PM +0800, Jiaxun Yang wrote:
+> Hi,
+> 
+> On Mon, Mar 01, 2021 at 03:06:08PM +0100, Wilken Gottwalt wrote:
+> > On Mon, 1 Mar 2021 14:13:05 +0100
+> > Maxime Ripard <mripard@kernel.org> wrote:
 > > 
+> > > On Sat, Feb 27, 2021 at 02:03:54PM +0100, Wilken Gottwalt wrote:
+> > > > Adds the sun6i_hwspinlock driver for the hardware spinlock unit found in
+> > > > most of the sun6i compatible SoCs.
+> > > >
+> > > > This unit provides at least 32 spinlocks in hardware. The implementation
+> > > > supports 32, 64, 128 or 256 32bit registers. A lock can be taken by
+> > > > reading a register and released by writing a 0 to it. This driver
+> > > > supports all 4 spinlock setups, but for now only the first setup (32
+> > > > locks) seem to exist in available devices. This spinlock unit is shared
+> > > > between all ARM cores and the embedded companion core. All of them can
+> > > > take/release a lock with a single cycle operation. It can be used to
+> > > > sync access to devices shared by the ARM cores and the companion core.
+> > > >
+> > > > There are two ways to check if a lock is taken. The first way is to read
+> > > > a lock. If a 0 is returned, the lock was free and is taken now. If an 1
+> > > > is returned, the caller has to try again. Which means the lock is taken.
+> > > > The second way is to read a 32bit wide status register where every bit
+> > > > represents one of the 32 first locks. According to the datasheets this
+> > > > status register supports only the 32 first locks. This is the reason the
+> > > > first way (lock read/write) approach is used to be able to cover all 256
+> > > > locks in future devices. The driver also reports the amount of supported
+> > > > locks via debugfs.
+> > > >
+> > > > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
 > > 
-> > On Sat, Mar 6, 2021, at 4:03 PM, Thomas Bogendoerfer wrote:
-> > > On Thu, Mar 04, 2021 at 07:00:57PM +0800, Qing Zhang wrote:
-> > > > The purpose of separating loongson_system_configuration from boot_param.h
-> > > > is to keep the other structure consistent with the firmware.
-> > > > 
-> > > > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> > > > Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
-> > > > ---
-> > > >  .../include/asm/mach-loongson64/boot_param.h   | 18 ------------------
-> > > >  .../include/asm/mach-loongson64/loongson.h     | 18 ++++++++++++++++++
-> > > 
-> > > as you are already touching mach-loongson64 files...
-> > > 
-> > > Is there a chance you clean up that up even further ? My goal is to
-> > > have only files in mach-<platform> files, which have an mach-generic
-> > > counterpart. Everything else should go to its own directory. So in
-> > > case of loongson something
-> > > 
-> > > like
-> > > 
-> > > arch/mips/include/asm/loongson		for common stuff
-> > > arch/mips/include/asm/loongson/32
-> > > arch/mips/include/asm/loongson/64
-> > 
-> > Hi Thomas
-> > 
-> > I'm object to this idea as loongson32/2ef/64 have nothing in common.
+> > Nope, I had to replace the devm_hwspin_lock_register function by the
+> > hwspin_lock_register function because like Bjorn pointed out that it can
+> > fail and needs to handled correctly. And having a devm_* function does not
+> > play well with the non-devm clock/reset functions and winding back if an
+> > error occurs. It also messes with the call order in the remove function. So
+> > I went back to the classic way where I have full control over the call order.
 > 
-> at least they share the name loongson, so having
-> 
-> arch/mips/include/asm/loongson
-> 
-> sounds like a good move.
-> 
-> And seeing 
-> 
-> diff -u mach-loongson2ef/ mach-loongson64/loongson.h  | diffstat
->  loongson.h |  137 +++++++++++++------------------------------------------------
->  1 file changed, 30 insertions(+), 107 deletions(-)
-> 
-> wc mach-loongson2ef/loongson.h 
->   318   963 11278 mach-loongson2ef/loongson.h
-> 
-> so there is something to shared. To me it looks like 2ef could be merged
-> into 64, but that's nothing I'm wanting.
+> If you're talking about the clock and reset line reassertion, I don't
+> really see what the trouble is. Sure, it's not going to be in the exact
+> same order in remove, but it's still going to execute in the proper
+> order (ie, clock disable, then reset disable, then clock put and reset
+> put). And you can use devm_add_action if you want to handle things
+> automatically.
 
-Hmm there are duplications in loongson.h just because we didn't clean them up when splitting loongson2ef out of loongson64.
+See, in v5 zje result of devm_hwspin_lock_register was returned directly. The
+remove callback or the bank_fail/clk_fail labels would not run, if the registering
+fails. In v6 it is fixed.
 
-> 
-> Just to understand you, you want
-> 
-> arch/mips/include/asm/loongson/2ef
-> arch/mips/include/asm/loongson/32
-> arch/mips/include/asm/loongson/64
++	platform_set_drvdata(pdev, priv);
++
++	return devm_hwspin_lock_register(&pdev->dev, priv->bank, &sun6i_hwspinlock_ops,
++					 SPINLOCK_BASE_ID, priv->nlocks);
++bank_fail:
++	clk_disable_unprepare(priv->ahb_clk);
++clk_fail:
++	reset_control_assert(priv->reset);
++
++	return err;
++}
 
-Yeah it looks reasonable but from my point of view doing these movement brings no actual benefit :-(
+So, is v6 fine for you even if it uses a more classic approach?
 
-Thanks.
-
-- Jiaxun
-
-> 
-> ?
-> 
-> Thomas.
-> 
-> -- 
-> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-> good idea.                                                [ RFC1925, 2.3 ]
->
-
--- 
-- Jiaxun
+greetings,
+Will
