@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACE532FCDE
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 598B632FCE0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:48:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhCFTq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 14:46:57 -0500
-Received: from mail-qt1-f181.google.com ([209.85.160.181]:35718 "EHLO
-        mail-qt1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbhCFTqo (ORCPT
+        id S231343AbhCFTrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 14:47:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231228AbhCFTrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 14:46:44 -0500
-Received: by mail-qt1-f181.google.com with SMTP id w1so4611437qto.2;
-        Sat, 06 Mar 2021 11:46:44 -0800 (PST)
+        Sat, 6 Mar 2021 14:47:17 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EECC06175F
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 11:47:17 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id r19so5329979otk.2
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 11:47:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
+        bh=Xmi0rHoThxmVAwKADHBN2StwB49iy48ak0XOknAe5mc=;
+        b=oct8kALmhW4nQruRqaUxBzaqiTi36phR45XxP6kCwTI3/1iasmQORazxg4ezR2steA
+         grKNURyc2+KjQ9N0uRzRpds/MSocvJIoTgcfOBmU2bFOI8HS2ZvEydaAu4W0RtqZvPwB
+         Sqr1ZvCFogBtN8PpPCEoi4kfJKnoMv+3fwhpp3qCcDGtyb9lPYnm6slQJGzhA8Oe9Trh
+         udD68EVvA2YVJb8j46yXS5B45Ou0Osx7ODZwfwf37Uz81fSYofcsE2/KAVo3fA6PtzcR
+         JI6fQ/hsWFqHE5RMzliWyBeL+dTxyltpeJz06aKalFv6uf/GAicHEo6RjGLTpg0iDQ+K
+         AKQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Dz08oUU8oV3VKa4xa4+vLLPEt2YVK+n5GIJg6+VztrU=;
-        b=IENOuhgyQGK2Z5penWZx+KAZBPHE8NRNl0b4VtaQ2MESBpzboSFPJyv/1lmWTqli1u
-         hu6sPGdtKujbeF3PAXrya5jqqv6DsIXkudkaoXcPy64cbMMTivfFzZ+zFczNyPU1ANJk
-         zJWSptyVcdpjWss0x46SOXF4RR42IRbH3BECNASkSAsu/7w2SdJOAqBQIp7yYKPPMYpO
-         8OeWgP+aMzPV3fOdjwtaIjwfm6BA1sEh1tWfBQUyv5dzhBK+UD+nocErkoQ5pe5o5Kgf
-         F56sAsAXiPFF3YqGDjDbfnOXikpZ1+eoKifa88PPnP9CD8yw1hthcRT44Ja1TMGt8ZxD
-         kXYA==
-X-Gm-Message-State: AOAM531USUGb6F86QcTK71jxc99acWi8PnZr7N1AlySvCiAeiWpYf3Zb
-        jicvjwHkw+ICuHGoWBbN5Q==
-X-Google-Smtp-Source: ABdhPJxw0Btrw6trPcNehtOx4+8KCZP9E/IrnkXLe9elDIlJdWYYymfGa+R3yv9JHoNqamNl8qaesw==
-X-Received: by 2002:ac8:580c:: with SMTP id g12mr14483948qtg.14.1615060003891;
-        Sat, 06 Mar 2021 11:46:43 -0800 (PST)
-Received: from robh.at.kernel.org ([172.58.27.98])
-        by smtp.gmail.com with ESMTPSA id c186sm4470415qkb.107.2021.03.06.11.46.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 11:46:43 -0800 (PST)
-Received: (nullmailer pid 1105712 invoked by uid 1000);
-        Sat, 06 Mar 2021 19:46:37 -0000
-Date:   Sat, 6 Mar 2021 11:46:37 -0800
-From:   Rob Herring <robh@kernel.org>
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     devicetree@vger.kernel.org, Daniel Palmer <daniel@0x0f.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Giulio Benetti <giulio.benetti@micronovasrl.com>,
-        allen <allen.chen@ite.com.tw>, Arnd Bergmann <arnd@arndb.de>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v2 1/9] dt-bindings: Add Jenson Display vendor prefix
-Message-ID: <20210306194637.GA1105512@robh.at.kernel.org>
-References: <20210305225444.GA792026@robh.at.kernel.org>
- <20210305234427.572114-1-giulio.benetti@benettiengineering.com>
- <20210305234427.572114-2-giulio.benetti@benettiengineering.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
+         :mime-version;
+        bh=Xmi0rHoThxmVAwKADHBN2StwB49iy48ak0XOknAe5mc=;
+        b=trQfPMQReKMNS+KtTU+YxEP06M9uFDLd35nEm1nkcr9h8tu/1bnh4CfaTu+KPd2EVz
+         tWDH9mivB/qXNBQAk4o+1Qxv3j8Rvjw4JC3K+sDtK1ViOLbkVeZYvjiXDHvB2i3YJQ3m
+         gBwxq5aR8ed2rTkhN4X4DQ7mfiT861lP6CvWaSLp8eZUoBOHmd8eIPVjNnxFOZA6blkx
+         O/HBXsB5GYmpxti4hD+3FfJWVT/scCNf8+Y7g56ybUw0ZhOt/G5QB8PSGPyuhw18w6fY
+         YDLj6PM/tcrgx2At8UE5jGrbfF2MBj3Ods+7My5nyCtlfFyPNYz8i7pvowr3B2KXDHn3
+         xA3A==
+X-Gm-Message-State: AOAM531Km3VCXUdzHt9Q+UL9RVpKFVur/iqDVuVziDLYq6Tfr/zPOgI6
+        lYHl+qm1q/f+5jbUJwe+wLm3tg==
+X-Google-Smtp-Source: ABdhPJzQGU+WJ+f4Vx4/sS/E5LLQf2dsh9y7bU5WYY7dYregoUEPQ3VFYo3oWJZf4yZr95C475c6sA==
+X-Received: by 2002:a05:6830:1416:: with SMTP id v22mr13105708otp.239.1615060036544;
+        Sat, 06 Mar 2021 11:47:16 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id 85sm1361683oii.39.2021.03.06.11.47.15
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Sat, 06 Mar 2021 11:47:16 -0800 (PST)
+Date:   Sat, 6 Mar 2021 11:47:05 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Luca Coelho <luciano.coelho@intel.com>
+cc:     Kalle Valo <kvalo@codeaurora.org>,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] iwlwifi: fix DVM build regression in 5.12-rc
+Message-ID: <alpine.LSU.2.11.2103061139200.1285@eggly.anvils>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305234427.572114-2-giulio.benetti@benettiengineering.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 06 Mar 2021 00:44:18 +0100, Giulio Benetti wrote:
-> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
-> 
-> Update Documentation/devicetree/bindings/vendor-prefixes.yaml to
-> include "jenson" as a vendor prefix for "Jenson Display".
-> Company website: http://www.jensondisplay.com/
-> 
-> Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+There is no iwl_so_trans_cfg if CONFIG_IWLDVM but not CONFIG_IWLMVM:
+move the CONFIG_IWLMVM guard up before the problematic SnJ workaround
+to fix the build breakage.
 
+Fixes: 930be4e76f26 ("iwlwifi: add support for SnJ with Jf devices")
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
+ drivers/net/wireless/intel/iwlwifi/pcie/drv.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If a tag was not added on purpose, please state why and what changed.
-
+--- 5.12-rc2/drivers/net/wireless/intel/iwlwifi/pcie/drv.c	2021-02-28 16:58:55.082425755 -0800
++++ linux/drivers/net/wireless/intel/iwlwifi/pcie/drv.c	2021-03-05 18:42:53.650809293 -0800
+@@ -1106,6 +1106,7 @@ static int iwl_pci_probe(struct pci_dev
+ 		}
+ 	}
+ 
++#if IS_ENABLED(CONFIG_IWLMVM)
+ 	/*
+ 	 * Workaround for problematic SnJ device: sometimes when
+ 	 * certain RF modules are connected to SnJ, the device ID
+@@ -1116,7 +1117,6 @@ static int iwl_pci_probe(struct pci_dev
+ 	if (CSR_HW_REV_TYPE(iwl_trans->hw_rev) == IWL_CFG_MAC_TYPE_SNJ)
+ 		iwl_trans->trans_cfg = &iwl_so_trans_cfg;
+ 
+-#if IS_ENABLED(CONFIG_IWLMVM)
+ 	/*
+ 	 * special-case 7265D, it has the same PCI IDs.
+ 	 *
