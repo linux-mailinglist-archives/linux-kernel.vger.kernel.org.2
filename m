@@ -2,129 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D17E32FA73
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 13:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1338332FA94
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 13:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhCFMMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 07:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59046 "EHLO
+        id S231239AbhCFMN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 07:13:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbhCFMMR (ORCPT
+        with ESMTP id S231133AbhCFMMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 07:12:17 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6381CC06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 04:12:16 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id m11so7879676lji.10
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 04:12:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6SCt4Ui+oWB0RLaz7Uoac380htVeaF4ZyeG6ZlsBEco=;
-        b=qfWkCZuD2BO4ofIxVsNQP5WrvWYTObPEsUcMNlZWxwwg+35XoltNPXcJPnjtSKJOoK
-         dQaCUQ+zt9CnUXReJXpUGv/8CsURgGFdc/Qybwmon/0K2QU6hOo9VAVQ1DtR6EllPJS1
-         R7lwXk7y6mo4J3GyAjeRJ61XM25j7uVNUI8wqrGr6noXL/dwyzEDmLjizZpVk5bQGcyo
-         KcodKupdksLk3XKqFtpJezNxReg0J2DDGMAlcsjlYddCX+iFoTVms3TiK4VER2pTPOXK
-         RfCYgmWGRFHDcAYLPTduWQTGooNMSxQbbJaecWotoXv3/i0nj9jC2pGRsozckKhfU4QJ
-         oYfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6SCt4Ui+oWB0RLaz7Uoac380htVeaF4ZyeG6ZlsBEco=;
-        b=DXYqApwAK2taeRLkhHrXlcKhYdXzwU/XFdOiJEN1U8tSz64UaZNgBHit7e4KO+iQJc
-         WrEWJBP/NImrVQoxTIpkG5OHPPTQNxZ8xUaHwgRUBfcU9Led5+ZCPsMQZQnnN4lGLOh3
-         jQvtnD/wmuHoGL5Wx0kgvtWhvh56/deXgD8ZKxi3QXY7yUDz1buAA6tmHXS1XZ8v8YWf
-         JUI4EUv6Ev2btS4mA4Yx8eR67OJ3NFCvrAsmwRF/uCts7TJRdNWkB83Nim8WpujU5fRU
-         Gk5iRY07c6eq5SiKBlAzRbLm1zrlfV/tB5ALA1c6Z9G3GH+DIc9fYfd9My7IclWXJpWl
-         k7rA==
-X-Gm-Message-State: AOAM533ew1fIVOCzEGFY6JMpA0cR4LaD7oExcpBK4nwwJoNAxz3Y4GFC
-        GbM8ey7mUutICUskFhx764KUv2Hw580ve5Lcjdj5/IAdbUw=
-X-Google-Smtp-Source: ABdhPJxPpRrEZQliL+YGDZbV1sZiRba3nFEAEVdEh/J9SksORZ6w0Sev0ZM9XKRdfSOGSEAhN8lREi2We5AiXXbZj6k=
-X-Received: by 2002:a2e:9250:: with SMTP id v16mr8217453ljg.162.1615032733450;
- Sat, 06 Mar 2021 04:12:13 -0800 (PST)
+        Sat, 6 Mar 2021 07:12:55 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 881E5C06174A;
+        Sat,  6 Mar 2021 04:12:55 -0800 (PST)
+Date:   Sat, 06 Mar 2021 12:12:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615032774;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=48kPM0f79vSXe1drsieCmgoNMep3siPJdaGAOREFhMQ=;
+        b=KSP9sC1dfn7lBUP4oFmuk4cS+P4Nk+QA2HXAcUf48f/4nfqzjkDw7ycdLfSZ9H1mhgke2E
+        riXYnl4keXCpZTlGaHuHqlFPWXyqxxuiXU+KEOlSoWWLF7lQ8BmQ53GyZ8fLyA9t8RvR/a
+        unjNc4vnSnKFhiQ+8tzGm9dA1IDBm0wEwuHjtfyVx3WbMSkUKSBXs1VIra5wSiBlaH9bf2
+        LHtciU13Jhk3vKysG0IZxNtUwoXLsVSekNp957R3xo480OuCSV8xdEQJvjsJb92xH5QnFa
+        cK/QWH2jdZA9hphAmmhDJIcHqW3nUT4uHMAq1OsQhKvpo0CcJw6nhh/3MZ8Itg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615032774;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=48kPM0f79vSXe1drsieCmgoNMep3siPJdaGAOREFhMQ=;
+        b=Y2wAMcQXZ3T6fabjBIxQh99b2I3CbZSIqY4enoalfSPkHKoahqUGx6n88thbmaDzQaqZew
+        GcMF6PgeXyRy/+AA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/mm] smp: Micro-optimize smp_call_function_many_cond()
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        x86@kernel.org
 MIME-Version: 1.0
-References: <20210306054801.18263-1-xypron.glpk@gmx.de>
-In-Reply-To: <20210306054801.18263-1-xypron.glpk@gmx.de>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Sat, 6 Mar 2021 17:42:01 +0530
-Message-ID: <CAAhSdy08=ffPe+fYWX9ds4wNSMU3uzT8OENk0o93xpfZOKtYig@mail.gmail.com>
-Subject: Re: [PATCH 1/1] RISC-V: correct enum sbi_ext_rfence_fid
-To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Sean Anderson <seanga2@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <161503277342.398.3827662830739276370.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 6, 2021 at 11:19 AM Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
->
-> The constants in enum sbi_ext_rfence_fid should match the SBI
-> specification. See
-> https://github.com/riscv/riscv-sbi-doc/blob/master/riscv-sbi.adoc#78-function-listing
->
-> | Function Name               | FID | EID
-> | sbi_remote_fence_i          |   0 | 0x52464E43
-> | sbi_remote_sfence_vma       |   1 | 0x52464E43
-> | sbi_remote_sfence_vma_asid  |   2 | 0x52464E43
-> | sbi_remote_hfence_gvma_vmid |   3 | 0x52464E43
-> | sbi_remote_hfence_gvma      |   4 | 0x52464E43
-> | sbi_remote_hfence_vvma_asid |   5 | 0x52464E43
-> | sbi_remote_hfence_vvma      |   6 | 0x52464E43
->
-> Fixes: ecbacc2a3efd ("RISC-V: Add SBI v0.2 extension definitions")
-> Reported-by: Sean Anderson <seanga2@gmail.com>
-> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+The following commit has been merged into the x86/mm branch of tip:
 
-Good catch.
+Commit-ID:     d43f17a1da25373580ebb466de7d0641acbf6fd6
+Gitweb:        https://git.kernel.org/tip/d43f17a1da25373580ebb466de7d0641acbf6fd6
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 02 Mar 2021 08:02:43 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Sat, 06 Mar 2021 13:00:22 +01:00
 
-I guess we never saw any issues because these calls are only used by
-KVM RISC-V which is not merged yet. Further for KVM RISC-V, the HFENCE
-instruction is emulated as flush everything on FPGA, QEMU, and Spike so
-we did not notice any issue with KVM RISC-V too.
+smp: Micro-optimize smp_call_function_many_cond()
 
-Looks good to me.
+Call the generic send_call_function_single_ipi() function, which
+will avoid the IPI when @last_cpu is idle.
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+---
+ kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-Anup
-
-> ---
->  arch/riscv/include/asm/sbi.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index 99895d9c3bdd..d7027411dde8 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -51,10 +51,10 @@ enum sbi_ext_rfence_fid {
->         SBI_EXT_RFENCE_REMOTE_FENCE_I = 0,
->         SBI_EXT_RFENCE_REMOTE_SFENCE_VMA,
->         SBI_EXT_RFENCE_REMOTE_SFENCE_VMA_ASID,
-> -       SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA,
->         SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA_VMID,
-> -       SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA,
-> +       SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA,
->         SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA_ASID,
-> +       SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA,
->  };
->
->  enum sbi_ext_hsm_fid {
-> --
-> 2.30.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+diff --git a/kernel/smp.c b/kernel/smp.c
+index b6375d7..af0d51d 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -694,7 +694,7 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+ 		 * provided mask.
+ 		 */
+ 		if (nr_cpus == 1)
+-			arch_send_call_function_single_ipi(last_cpu);
++			send_call_function_single_ipi(last_cpu);
+ 		else if (likely(nr_cpus > 1))
+ 			arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
+ 	}
