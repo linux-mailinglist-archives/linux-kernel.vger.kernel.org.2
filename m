@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B66C32FD78
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 22:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD39732FD7E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 22:26:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbhCFVW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 16:22:28 -0500
-Received: from mail-qk1-f172.google.com ([209.85.222.172]:46409 "EHLO
-        mail-qk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbhCFVWD (ORCPT
+        id S229929AbhCFV0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 16:26:10 -0500
+Received: from mail-qv1-f54.google.com ([209.85.219.54]:38149 "EHLO
+        mail-qv1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229642AbhCFVZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 16:22:03 -0500
-Received: by mail-qk1-f172.google.com with SMTP id a9so5660461qkn.13;
-        Sat, 06 Mar 2021 13:22:02 -0800 (PST)
+        Sat, 6 Mar 2021 16:25:38 -0500
+Received: by mail-qv1-f54.google.com with SMTP id bh3so2809917qvb.5;
+        Sat, 06 Mar 2021 13:25:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=E7eYftR2wMfewj1sTXJZYikKAn2RMMlfLmgDJ6YQCRs=;
-        b=dnMBOb5z1nPZEXtdcq/2LlK9irRKvrOtiGns1veD+IW8zQFTNG4SyT6ebkREdBnM0i
-         29Xz0UNiwk2KJeMCDZF0Bz6MYo+Gr4pea9YwGKMot6ncY6kRYgZUznMwPewukOAZaSTR
-         mAosfh7Bi13E9MvLVm6ux/WOaI/0fVuolTn52lkWwssr5lJhbXrRyJQTqkhB1aPMJG2z
-         pgRuxL9w7yiR1sIgYu5jJN8LWPGlyd+5nfa3IF2ay4Mc//G78fIU/QoKFcZbEa3vE7Ys
-         +/vJhRQRPS3f5sMJ6GOX4h0kx3p4kyR0h+FbBQkBDdyvbI5NSHTDwLvpeS586vo0gfcT
-         AelQ==
-X-Gm-Message-State: AOAM530XSEItXExVeksymnGiswktt5X7gmkJGWo+XA9AYihcnuXDIPX5
-        SU7aR1fXErVt6J/dfpWCPw==
-X-Google-Smtp-Source: ABdhPJzrIgAu0rpWZvQNOf0zfohllEMJAadakNVhLzWYsX5BzsN0CU7JxK7dqON1CD7XoeW+sFDoxg==
-X-Received: by 2002:a37:a715:: with SMTP id q21mr14577025qke.309.1615065722395;
-        Sat, 06 Mar 2021 13:22:02 -0800 (PST)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=fAXOswsEkCwCYLA42rqdjJRv0N0k2d/7dOqRSOJ+rZY=;
+        b=nwNWB62HTBV2AOLk5k5Gt6/Vz6zjyzIPAhz3FRGi+l1UISs5xORUUk4qS/bv06X6ib
+         mOYPs1b4AsYhmNZ00BnIhITqDwxvFO1c4LQlx5HBMyM9YqE0JKi5x7fKGnbaoQkOEHlY
+         PqPEGUo0Qw2c3TkBvEc9jTwjPb+8aSU4LIF7dpQ8+PK7L9plzI4D7VEAeMe1+gUB6Tpu
+         ZT39E8otO1ayxNrSzr6GgDFlY4mh8XDXUHWBJKvniQ/z62KzMl6c9ctDCUjF7n2fou4T
+         nVXVk45O4ankn2bxdsSwZrLyh+SO3AFQTvxu1xAfq23zN1bYgoXGJRzisESKwX2gNy/w
+         xGYw==
+X-Gm-Message-State: AOAM531AZ2MMyj5ZwzQiWp3xmT9FF8eKe7WAp5p64a8xjKuURNLt6vW9
+        Yg3NHzUTHN/AEdCm6SzkNg==
+X-Google-Smtp-Source: ABdhPJxSjrmvdxUpEYQNr1si+PAGIJYtuOeH9qs3P2Tuf7j/rQMTKTU/Ld0F9xJcxI74vf2tIwv3+A==
+X-Received: by 2002:a0c:b929:: with SMTP id u41mr14981209qvf.30.1615065938231;
+        Sat, 06 Mar 2021 13:25:38 -0800 (PST)
 Received: from robh.at.kernel.org ([172.58.27.98])
-        by smtp.gmail.com with ESMTPSA id m21sm4518002qka.28.2021.03.06.13.21.58
+        by smtp.gmail.com with ESMTPSA id s126sm4485763qkf.62.2021.03.06.13.25.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 13:22:01 -0800 (PST)
-Received: (nullmailer pid 1233861 invoked by uid 1000);
-        Sat, 06 Mar 2021 21:21:56 -0000
-Date:   Sat, 6 Mar 2021 14:21:56 -0700
+        Sat, 06 Mar 2021 13:25:37 -0800 (PST)
+Received: (nullmailer pid 1238784 invoked by uid 1000);
+        Sat, 06 Mar 2021 21:25:32 -0000
+Date:   Sat, 6 Mar 2021 14:25:32 -0700
 From:   Rob Herring <robh@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     devicetree@vger.kernel.org,
-        angelogioacchino.delregno@somainline.org,
-        martin.botka@somainline.org, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>, marijn.suijten@somainline.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH 2/2] iio: qcom-spmi-vadc: Add definitions for USB DP/DM
- VADCs
-Message-ID: <20210306212156.GA1233807@robh.at.kernel.org>
-References: <20210225213605.117201-1-konrad.dybcio@somainline.org>
- <20210225213605.117201-2-konrad.dybcio@somainline.org>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Vivek Unune <npcomplete13@gmail.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: Re: [PATCH 1/3] dt-bindings: phy: convert Broadcom NS USB 2.0 to the
+ json-schema
+Message-ID: <20210306212532.GA1238704@robh.at.kernel.org>
+References: <20210226114501.31086-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210225213605.117201-2-konrad.dybcio@somainline.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210226114501.31086-1-zajec5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 22:36:05 +0100, Konrad Dybcio wrote:
-> From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+On Fri, 26 Feb 2021 12:44:59 +0100, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> Some SoCs do have a USB DP/DM ADC at 0x43, 0x44.
+> Minor example fixes:
+> 1. Include bcm-nsp.h
+> 2. Add address to the node name
 > 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 > ---
->  include/dt-bindings/iio/qcom,spmi-vadc.h | 3 +++
->  1 file changed, 3 insertions(+)
+> This has been verified using dt_binding_check
+> ---
+>  .../bindings/phy/bcm-ns-usb2-phy.txt          | 21 -------
+>  .../bindings/phy/brcm,ns-usb2-phy.yaml        | 55 +++++++++++++++++++
+>  2 files changed, 55 insertions(+), 21 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/phy/bcm-ns-usb2-phy.txt
+>  create mode 100644 Documentation/devicetree/bindings/phy/brcm,ns-usb2-phy.yaml
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
