@@ -2,96 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B920D32FDAD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 23:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C421832FDAC
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 23:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbhCFWHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 17:07:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38360 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229642AbhCFWH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 17:07:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F1C75AB8C;
-        Sat,  6 Mar 2021 22:07:26 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     tglx@linutronix.de
-Cc:     paulmck@kernel.org, dave@stgolabs.net,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH] tasklet: Remove tasklet_kill_immediate
-Date:   Sat,  6 Mar 2021 13:36:58 -0800
-Message-Id: <20210306213658.12862-1-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
+        id S229821AbhCFWHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 17:07:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229642AbhCFWG1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 17:06:27 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5657CC06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 14:06:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=7KlDfjGp7qrFtRej7uFJqB5juRL+J4hofoA6AzEBi7Q=; b=PtsDOYiVkLb+QY3R5bsgbUOvIT
+        QQyQuBkj4fU1aGorkPdjUeswlh8YZff3rvDd3ey6oi7P9ahJ9n8OwSBnqJD7yn7FT1XU6W02QlLeI
+        PUEOIje2R+6U0tLLFZh933Cdulh/Fa1LqzCmPWVM+WDVUI4/m6R+jcelFwlDCVQUbJt8=;
+Received: from p200300ccff3790001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff37:9000:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1lIf3z-0005tT-Ql; Sat, 06 Mar 2021 23:06:19 +0100
+Date:   Sat, 6 Mar 2021 23:06:19 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Jonathan =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>
+Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH -next] mfd: ntxec: Support for EC in Tolino Shine 2 HD
+Message-ID: <20210306230619.15ae787f@aktux>
+In-Reply-To: <YEPj2ss13w5p+R4C@latitude>
+References: <20210306181314.12673-1-andreas@kemnade.info>
+        <YEPUppNWNiAMnczF@latitude>
+        <20210306204219.6a7eae56@aktux>
+        <YEPj2ss13w5p+R4C@latitude>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ever since RCU was converted to softirq, it has no users.
+On Sat, 6 Mar 2021 21:19:38 +0100
+Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net> wrote:
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- include/linux/interrupt.h |  1 -
- kernel/softirq.c          | 32 --------------------------------
- 2 files changed, 33 deletions(-)
+[...]
+> > > > +	case NTXEC_VERSION_TOLINO_SHINE2:
+> > > > +		has_rtc =3D false;
+> > > > +		ec->regmap =3D devm_regmap_init(ec->dev, NULL,
+> > > > +					      ec->regmap,
+> > > > +					      &regmap_config_noack);   =20
+> > >=20
+> > > Ah=E2=80=94 A custom regmap stacked on top of the old regmap=E2=80=A6=
+ I think this
+> > > deserves a comment.
+> > >  =20
+> > Yes, devm_regmap_init_i2c() sets a different set of callbacks depending
+> > on circumstances. Seems to be the easiest way to avoid duplicating too
+> > much code. I really hope that there are not so much devices requiring
+> > such a dirty stuff that adding such thing to the generic regmap code
+> > would be justified. =20
+>=20
+> Ok, please add a short comment here or extend the one above the repmap
+> config struct, to save interested readers a bit of trouble. I guess "add
+> a wrapper" goes in right direction, but it didn't make the stacking
+> obvious to me when I first read it.
+>
 
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 967e25767153..36a2ac6baf9a 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -712,7 +712,6 @@ static inline void tasklet_enable(struct tasklet_struct *t)
- }
- 
- extern void tasklet_kill(struct tasklet_struct *t);
--extern void tasklet_kill_immediate(struct tasklet_struct *t, unsigned int cpu);
- extern void tasklet_init(struct tasklet_struct *t,
- 			 void (*func)(unsigned long), unsigned long data);
- extern void tasklet_setup(struct tasklet_struct *t,
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index 9908ec4a9bfe..8b44ab9a2f69 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -658,38 +658,6 @@ static void run_ksoftirqd(unsigned int cpu)
- }
- 
- #ifdef CONFIG_HOTPLUG_CPU
--/*
-- * tasklet_kill_immediate is called to remove a tasklet which can already be
-- * scheduled for execution on @cpu.
-- *
-- * Unlike tasklet_kill, this function removes the tasklet
-- * _immediately_, even if the tasklet is in TASKLET_STATE_SCHED state.
-- *
-- * When this function is called, @cpu must be in the CPU_DEAD state.
-- */
--void tasklet_kill_immediate(struct tasklet_struct *t, unsigned int cpu)
--{
--	struct tasklet_struct **i;
--
--	BUG_ON(cpu_online(cpu));
--	BUG_ON(test_bit(TASKLET_STATE_RUN, &t->state));
--
--	if (!test_bit(TASKLET_STATE_SCHED, &t->state))
--		return;
--
--	/* CPU is dead, so no lock needed. */
--	for (i = &per_cpu(tasklet_vec, cpu).head; *i; i = &(*i)->next) {
--		if (*i == t) {
--			*i = t->next;
--			/* If this was the tail element, move the tail ptr */
--			if (*i == NULL)
--				per_cpu(tasklet_vec, cpu).tail = i;
--			return;
--		}
--	}
--	BUG();
--}
--
- static int takeover_tasklets(unsigned int cpu)
- {
- 	/* CPU is dead, so no lock needed. */
--- 
-2.26.2
+I will wait for some days to see whether anybody chokes on that stack.
 
+Regards,
+Andreas
