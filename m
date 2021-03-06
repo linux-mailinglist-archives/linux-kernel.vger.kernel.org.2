@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DC432FBE3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 17:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A93A232FBE5
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 17:28:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231149AbhCFQ0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 11:26:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57206 "EHLO
+        id S231174AbhCFQ1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 11:27:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231139AbhCFQ0h (ORCPT
+        with ESMTP id S231157AbhCFQ1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 11:26:37 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA31DC06174A;
-        Sat,  6 Mar 2021 08:26:37 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so831296pjg.5;
-        Sat, 06 Mar 2021 08:26:37 -0800 (PST)
+        Sat, 6 Mar 2021 11:27:40 -0500
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B960C06174A;
+        Sat,  6 Mar 2021 08:27:40 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id z12so760846ooh.5;
+        Sat, 06 Mar 2021 08:27:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yL/aYoE+aG2ZWMHaqrx7JSuFUFqJAg4Q9N8gr1xJxaE=;
-        b=QIY9YO+t6iNg+hPO7BaluUlpxvQSHxLbmrTNoMtPNn1sicK1+WlSGLV2n4IFruyWds
-         yl/8+jz5d2aQhTPX7t1/oBfbukW+c1HWIhGV1UORhYTCcZ9wcY90wB866kHBTIhG/tTC
-         FFYZDcjTazf8Q0srQ2xfsOG4aj6LgXY38qiB6YXArzadHVm+/wAFJefkg5KXD/eJSFnZ
-         W7I8ibxDkNx0fCgr5frBbuKQrrYDYwG7Yc73atPBi8PPhsLCt/7B4IfGV8tjQl3QYczw
-         rG9HxQPbl6f1YkewbUGBY0/H19EdsbpCBuWjekKOICZYZR6Sj0WyWCvsqe64QD5YpHWo
-         cZqA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BkKfHcP7oTWbfRSVHmFJOX/kwbnSR5KYczn3KXXH78E=;
+        b=BkwOkyGC6FrzKStxdQ6Tm3wLGoJO267MGBJhXsXGFQ8SSdpB2fYXMCWObdmkj+wRio
+         L04paO92/2JBnqIVNOONOEX9jx4bGLtsCXV1b+Y97enuJNXYe/Vxt/f+ocdAS1OESrOQ
+         bZzvWbY0lPiVvBwNS3xUOtsTG/mepHhzJIF6tyHf/t7nKtBnuuTIsgulDgULsuEExWHM
+         wjgh+8Uh+7AedkZOOgJ3ZPaE/oGHs6niw+L8OH2Z1n2goajSDWh9gjrC19vvYEAGNxrl
+         S6XCCjhq03CHQFDgpd9mEqk6iRtzE6ck5C5HJ3rgG5NtFQoGunhjt5tVGZEY4tkl0mLc
+         SRhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yL/aYoE+aG2ZWMHaqrx7JSuFUFqJAg4Q9N8gr1xJxaE=;
-        b=Lg10NfO+YDbDWahi+h4OzJ3/Peu9qTyHm3aXC7WS2E1znqXN/KluqtnOGbdYabtGQY
-         03cY6HvdohwBXWyS/TcRlm9DXLJh8C2UEGzsQrrZp3Dz3RfTrBC46TTngba3NSlRKfT+
-         HDWEyzId7HmXBX9VGuJjJ3f07j1SZff/bCZ/+G/5hj/02G6UgIxNJ1xfCQumAMQRLgIR
-         RNnHuTDM3V01++BscWGQj27luyh0yX87wg4PhRp+GfHH4d9u647ty+RBr34r1DxFdePZ
-         TlXjV65kDYXibyiuUvyBvCxPR+GwY5PduTUrP/dmDlHOp4QzGSMWOtpZmot74dKqzDtY
-         UKkg==
-X-Gm-Message-State: AOAM531Z/rCLNNdDOAvXJjqH8N7xNXa1FGYDjehzRe8iWMGMhxj0BbH8
-        L84g9Mh/6gflzazs7wsytv4nXoodhALif0nbTg4=
-X-Google-Smtp-Source: ABdhPJzHiUiVzOzuJW3HjdQZ5ow91HEc/Br5TUfGZPReNYbeuEk/YkffDiezsRwhPrst0+3LMlEkAuCXJrjsXjcGMTE=
-X-Received: by 2002:a17:90a:4586:: with SMTP id v6mr15155077pjg.129.1615047997252;
- Sat, 06 Mar 2021 08:26:37 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BkKfHcP7oTWbfRSVHmFJOX/kwbnSR5KYczn3KXXH78E=;
+        b=cbnfXBZnBTagUF8ssZphZisgDLxbL9o4EkG015azNqd1TSrW3RboZoQVzue/K1WDfX
+         ppGyFg3lJg9xQjCFlGdlWELfmAQZWi0AeBc5d2yIqo54/a/YciMOi+V1Y6dPjAe7N2bx
+         CEzEjFnXFVdLGQ5AijUlh0v6jCeEgw+K3+6G40FOZTzPZ8XQHddCTay5cSppcGAivJbL
+         w5sAjPcYCOwHCULy2n9adMIzJMPpkKtrXyKOLlPCwb1dKvZ7rjliACccBew5VnjRlSXM
+         QVC6unOrJmnrxfYqLdtBx1UEPlvNgfCsRVkEuS9+rQ/AcofuPQ+yQDqgrDrntTga2A33
+         4tjw==
+X-Gm-Message-State: AOAM533pLGAOdi1RIu7/1vyQjBytbOLD+5JYjGcxWpzP7rLZlVc6roG2
+        7CoPSWYeyI0w0GTl0NOvaS4=
+X-Google-Smtp-Source: ABdhPJyiO7J4EK8r6sCXPeHx+g49cBz7qDiZp1BAj5mrA3NufJULb0YdW26vCe37s+cmOmwE3pZf8g==
+X-Received: by 2002:a4a:9bdc:: with SMTP id b28mr12372712ook.48.1615048060005;
+        Sat, 06 Mar 2021 08:27:40 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y83sm1267733oig.15.2021.03.06.08.27.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 06 Mar 2021 08:27:39 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 6 Mar 2021 08:27:37 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/30] 4.4.260-rc1 review
+Message-ID: <20210306162737.GA25820@roeck-us.net>
+References: <20210305120849.381261651@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210306155712.4298-1-noltari@gmail.com> <20210306155712.4298-3-noltari@gmail.com>
-In-Reply-To: <20210306155712.4298-3-noltari@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 6 Mar 2021 18:26:20 +0200
-Message-ID: <CAHp75VfLwF+TXAwJKMu9TmXsW5A-r1yV4p-pJ1j+XZSgNZUj=w@mail.gmail.com>
-Subject: Re: [PATCH v5 02/15] gpio: regmap: set gpio_chip of_node
-To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305120849.381261651@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 6, 2021 at 5:57 PM =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gm=
-ail.com> wrote:
->
-> This is needed for properly registering GPIO regmap as a child of a regma=
-p
-> pin controller.
+On Fri, Mar 05, 2021 at 01:22:29PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.260 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
+> Anything received after that time might be too late.
+> 
 
-Thanks for an update!
+Build results:
+	total: 165 pass: 165 fail: 0
+Qemu test results:
+	total: 329 pass: 329 fail: 0
 
-...
-
->         chip->parent =3D config->parent;
-
-> +       if (config->fwnode)
-
-This...
-
-> +               chip->of_node =3D to_of_node(config->fwnode);
-
-> +       else
-> +               chip->of_node =3D dev_of_node(config->parent);
-
-...and these lines are not needed. If there is no of_node in the chip,
-the GPIO library will take care of it to be parent's one.
-
---=20
-With Best Regards,
-Andy Shevchenko
+Guenter
