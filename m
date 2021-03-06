@@ -2,183 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA3332F752
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 01:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8339E32F75B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 01:45:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbhCFAje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 19:39:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52538 "EHLO
+        id S229768AbhCFAog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 19:44:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhCFAja (ORCPT
+        with ESMTP id S229679AbhCFAoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 19:39:30 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48005C06175F;
-        Fri,  5 Mar 2021 16:39:27 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id w18so3226555pfu.9;
-        Fri, 05 Mar 2021 16:39:27 -0800 (PST)
+        Fri, 5 Mar 2021 19:44:04 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE906C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 16:44:03 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id y131so1632814oia.8
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 16:44:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wSQMvz/uoD2V+0F+KZdBHyVqbtrZWTT88VchY3bdcS4=;
-        b=NuRnefGmXN2vvJG7JmVEslN1zqs41d4SXv3ARZprMRDJd/7rUaOUG03fK0oXGBmYT7
-         mP5T0eG7UYHV7jyFqeM0a/SOKEMav/6DQW1OLwnf16+8gmCD62D2V0SPlvF+q+Ci5Y45
-         gTdnkndtybksZgQ0VmwZhyx6Lps8V4hBRiPxENhCC/YY2BJoS88E9sVPeI+t+sGhEkAf
-         pWWNrNl2ngn0qf4st8QN0suqTrwKOL8l412qo8j5KzKmCLZq1PJyCEMrqGjNtO/9XPSi
-         ecOaKE5/f/yaoVVT5AQzS4UhhFO1zZGhy5bqWigw5+HBAfTsPF3gRwgs61SlgG7bC6GV
-         8Jpg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Wljdg2Ulm2u3Dpzx8Iq4uzqIrv5JdcAhx+0eauq9coc=;
+        b=IJ+cvLOg/toHpJIFHESEiOn/U6WxswcFCFnETj9qi98y89NZi/M/Jz0aDlrz1QOsxV
+         IY8HknqMCZh8ybLBTVSaDR36oWTg9UCXJuZZSnTLZjrvUXSPFtwmHicqH+iXO9F5IlIp
+         qyQa1YLCDIsA4IouvThH4c1Xc6hrkt2o8yAlwJk4InggOF4WNFgyTpO9MkuEFSc9bmxr
+         6Fhe4aMKGQTKW/wlpzsRAJMV8iZvYAsF6SALlOrKrFfeXz7n5tN4ZdyPa1GmVmC9VkFT
+         VrHTkRBYD1tvbOFOKnQFuVoGFH2tFB/PiVTr7ukomW/IV5xgyA2uvUSbJNgXAb73LwYn
+         2CvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wSQMvz/uoD2V+0F+KZdBHyVqbtrZWTT88VchY3bdcS4=;
-        b=ZaRdOTuJFMqKDWeOmbdHj3RlNVyE7nVy1zGicI+4UrhY0F79lGQ3sXi4E48ON0ORcj
-         UaLsQPdM9+ge0TGQq+2PZM1QENhjo1RMc0vscO8clwsKh11easMaeq2HRw0Ur47JMOKP
-         pU1MUri2camOCUYWEEzp9Yd10Ldyi2EjCTBHPipCxjETk5EBgfdW9XZU6yO9YsX+a1+u
-         yGlZicx5O23ZGI7ZMoFb7EzcVCKSOTkasGwzAGkviDSfiYvQjRIYzPJzaZ6Alo/PkdKg
-         TUGrbFeGyNGPfA85HQ30dyAGoPJBO9bGgGaW3/CNe7koilEz5hXiPTo4b4HQ+H0L58Uz
-         ZjuA==
-X-Gm-Message-State: AOAM533JEzanc0Mry9LSQibh3jmb9cBkcaehiNggu4AtcBiiRn1y6FYF
-        GFjGve6Vm0smIej/9wgMesmMasYD1MTGGA==
-X-Google-Smtp-Source: ABdhPJzR0LRPvO2I7DVrGhZVkWhb35ITb2RKsavQMrDIYX9yahufg9+OGuHqH4KyI0G1jSVekQNpow==
-X-Received: by 2002:a63:5863:: with SMTP id i35mr1132052pgm.228.1614991165717;
-        Fri, 05 Mar 2021 16:39:25 -0800 (PST)
-Received: from [172.30.1.19] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id r30sm3774793pgu.86.2021.03.05.16.39.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 16:39:24 -0800 (PST)
-Subject: Re: [PATCH v2 1/4] devfreq: Register devfreq as a cooling device on
- demand
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, steven.price@arm.com,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-References: <20210305170338.13647-1-daniel.lezcano@linaro.org>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <7d51cdb7-e833-f267-1dca-e75a68b635ad@gmail.com>
-Date:   Sat, 6 Mar 2021 09:39:20 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wljdg2Ulm2u3Dpzx8Iq4uzqIrv5JdcAhx+0eauq9coc=;
+        b=OJkF+S1X1C1Efu04oTqMAeWd0mIXTY+/am0HwXUAcAOneSBeRXGv+y5L0UZeWIwvdd
+         +E2aZjcbz4aE91r+v2zCG3+V2G+n6K7pXk9zMAvhFuNAXS22hbyg+62oh6YfYanZ7Ltc
+         5sCSW80iNwCv5LgPSAS+Hezr7rNx55zSEiTZk+L5LayePFmfb8GzQI5k9fs5yLIKxv+L
+         2iGMuc/Ys9VyQMhpsEKBB2z33yBOXrjPKJwEZUPgt+kDb3rhQno0VsInO1ogsBUmA7tG
+         mieTXVc+9ulLs/MeoYUAMbaxb1R1hGJMghb5GWUdEiwuErm40exxh+yM+f4HK0A3Pj5z
+         +KuA==
+X-Gm-Message-State: AOAM533NcRzwaFSmZnTY0Z576IYhStp97KKwTmuT2bXp28Jyab75jt+l
+        ZymZWIHF66Cr+FvUQvmDtVNZ5w==
+X-Google-Smtp-Source: ABdhPJwaUlESQTDr6uRL3opuUdtoNtjtVPl0s2jwKflYDEbRC2BlspmSEcEJ53RbG5R8hYVCQeYarA==
+X-Received: by 2002:aca:5cd6:: with SMTP id q205mr9100063oib.94.1614991443260;
+        Fri, 05 Mar 2021 16:44:03 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id f193sm866606oig.8.2021.03.05.16.44.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 16:44:02 -0800 (PST)
+Date:   Fri, 5 Mar 2021 18:44:01 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Elliot Berman <eberman@codeaurora.org>,
+        Brian Masney <masneyb@onstation.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: Re: [PATCH 1/6] firmware: qcom_scm: Make
+ __qcom_scm_is_call_available() return bool
+Message-ID: <YELQUXSI4J2w/6oO@builder.lan>
+References: <20210223214539.1336155-1-swboyd@chromium.org>
+ <20210223214539.1336155-2-swboyd@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20210305170338.13647-1-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223214539.1336155-2-swboyd@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue 23 Feb 15:45 CST 2021, Stephen Boyd wrote:
 
-On 21. 3. 6. 오전 2:03, Daniel Lezcano wrote:
-> Currently the default behavior is to manually having the devfreq
-> backend to register themselves as a devfreq cooling device.
+> Make __qcom_scm_is_call_available() return bool instead of int. The
+> function has "is" in the name, so it should return a bool to indicate
+> the truth of the call being available. Unfortunately, it can return a
+> number < 0 which also looks "true", but not all callers expect that and
+> thus they think a call is available when really the check to see if the
+> call is available failed to figure it out.
 > 
-> Instead of adding the code in the drivers for the thermal cooling
-> device registering, let's provide a flag in the devfreq's profile to
-> tell the common devfreq code to register the newly created devfreq as
-> a cooling device.
-> 
-> Suggested-by: Chanwoo Choi <cwchoi00@gmail.com>
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Elliot Berman <eberman@codeaurora.org>
+> Cc: Brian Masney <masneyb@onstation.org>
+> Cc: Stephan Gerhold <stephan@gerhold.net>
+> Cc: Jeffrey Hugo <jhugo@codeaurora.org>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Fixes: 0f206514749b ("scsi: firmware: qcom_scm: Add support for programming inline crypto keys")
+> Fixes: 0434a4061471 ("firmware: qcom: scm: add support to restore secure config to qcm_scm-32")
+> Fixes: b0a1614fb1f5 ("firmware: qcom: scm: add OCMEM lock/unlock interface")
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
 > ---
->   drivers/devfreq/devfreq.c | 11 +++++++++++
->   include/linux/devfreq.h   |  7 +++++++
->   2 files changed, 18 insertions(+)
+>  drivers/firmware/qcom_scm.c | 19 ++++++++-----------
+>  1 file changed, 8 insertions(+), 11 deletions(-)
 > 
-> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-> index b6d63f02d293..5c0fdd3a48d2 100644
-> --- a/drivers/devfreq/devfreq.c
-> +++ b/drivers/devfreq/devfreq.c
-> @@ -11,6 +11,7 @@
->   #include <linux/kmod.h>
->   #include <linux/sched.h>
->   #include <linux/debugfs.h>
-> +#include <linux/devfreq_cooling.h>
->   #include <linux/errno.h>
->   #include <linux/err.h>
->   #include <linux/init.h>
-> @@ -26,6 +27,7 @@
->   #include <linux/hrtimer.h>
->   #include <linux/of.h>
->   #include <linux/pm_qos.h>
-> +#include <linux/thermal.h> >   #include <linux/units.h>
-
-Acutally, current devfreq-next branch doesn't contain previous
-your patch about units clean-up. So that when I applied it to next
-branch, merge conflict happen because of '<linux/units.h>'.
-
-Just send the patches again regardless of 'devfreq: Use HZ macros'.
-
->   #include "governor.h"
->   
-> @@ -935,6 +937,13 @@ struct devfreq *devfreq_add_device(struct device *dev,
->   
->   	mutex_unlock(&devfreq_list_lock);
->   
-> +	if (devfreq->profile->is_cooling_device) {
-> +		devfreq->cdev = devfreq_cooling_em_register(devfreq, NULL);
-> +		if (IS_ERR(devfreq->cdev))
-> +			dev_info(dev, "Failed to register devfreq "
-> +				 "cooling device\n");
-
-Have to initialize devfreq->cdev by NULL when error happen.
-Because of just returning from thermal_cooling_device_unregister
-when cdev is not used.
-
-> +	}
-> +
->   	return devfreq;
->   
->   err_init:
-> @@ -960,6 +969,8 @@ int devfreq_remove_device(struct devfreq *devfreq)
->   	if (!devfreq)
->   		return -EINVAL;
->   
-> +	thermal_cooling_device_unregister(devfreq->cdev);
-> +
->   	if (devfreq->governor) {
->   		devfreq->governor->event_handler(devfreq,
->   						 DEVFREQ_GOV_STOP, NULL);
-> diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
-> index 26ea0850be9b..554e7904b0c5 100644
-> --- a/include/linux/devfreq.h
-> +++ b/include/linux/devfreq.h
-> @@ -98,11 +98,15 @@ struct devfreq_dev_status {
->    * @freq_table:		Optional list of frequencies to support statistics
->    *			and freq_table must be generated in ascending order.
->    * @max_state:		The size of freq_table.
-> + *
-> + * @is_cooling_device: A self-explanatory boolean giving the device a
-> + *                     cooling effect property.
->    */
->   struct devfreq_dev_profile {
->   	unsigned long initial_freq;
->   	unsigned int polling_ms;
->   	enum devfreq_timer timer;
-> +	bool is_cooling_device;
->   
->   	int (*target)(struct device *dev, unsigned long *freq, u32 flags);
->   	int (*get_dev_status)(struct device *dev,
-> @@ -198,6 +202,9 @@ struct devfreq {
->   
->   	struct srcu_notifier_head transition_notifier_list;
->   
-> +	/* Pointer to the cooling device if used for thermal mitigation */ > +	struct thermal_cooling_device *cdev;
-> +
-You need to the description of cdev instance to 'struct devfreq'.
-
->   	struct notifier_block nb_min;
->   	struct notifier_block nb_max;
->   };
+> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+> index f57779fc7ee9..2be5573dce53 100644
+> --- a/drivers/firmware/qcom_scm.c
+> +++ b/drivers/firmware/qcom_scm.c
+> @@ -113,9 +113,6 @@ static void qcom_scm_clk_disable(void)
+>  	clk_disable_unprepare(__scm->bus_clk);
+>  }
+>  
+> -static int __qcom_scm_is_call_available(struct device *dev, u32 svc_id,
+> -					u32 cmd_id);
+> -
+>  enum qcom_scm_convention qcom_scm_convention;
+>  static bool has_queried __read_mostly;
+>  static DEFINE_SPINLOCK(query_lock);
+> @@ -219,8 +216,8 @@ static int qcom_scm_call_atomic(struct device *dev,
+>  	}
+>  }
+>  
+> -static int __qcom_scm_is_call_available(struct device *dev, u32 svc_id,
+> -					u32 cmd_id)
+> +static bool __qcom_scm_is_call_available(struct device *dev, u32 svc_id,
+> +					 u32 cmd_id)
+>  {
+>  	int ret;
+>  	struct qcom_scm_desc desc = {
+> @@ -247,7 +244,7 @@ static int __qcom_scm_is_call_available(struct device *dev, u32 svc_id,
+>  
+>  	ret = qcom_scm_call(dev, &desc, &res);
+>  
+> -	return ret ? : res.result[0];
+> +	return ret ? false : !!res.result[0];
+>  }
+>  
+>  /**
+> @@ -585,9 +582,8 @@ bool qcom_scm_pas_supported(u32 peripheral)
+>  	};
+>  	struct qcom_scm_res res;
+>  
+> -	ret = __qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_PIL,
+> -					   QCOM_SCM_PIL_PAS_IS_SUPPORTED);
+> -	if (ret <= 0)
+> +	if (!__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_PIL,
+> +					  QCOM_SCM_PIL_PAS_IS_SUPPORTED))
+>  		return false;
+>  
+>  	ret = qcom_scm_call(__scm->dev, &desc, &res);
+> @@ -1060,17 +1056,18 @@ EXPORT_SYMBOL(qcom_scm_ice_set_key);
+>   */
+>  bool qcom_scm_hdcp_available(void)
+>  {
+> +	bool avail;
+>  	int ret = qcom_scm_clk_enable();
+>  
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = __qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_HDCP,
+> +	avail = __qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_HDCP,
+>  						QCOM_SCM_HDCP_INVOKE);
+>  
+>  	qcom_scm_clk_disable();
+>  
+> -	return ret > 0;
+> +	return avail;
+>  }
+>  EXPORT_SYMBOL(qcom_scm_hdcp_available);
+>  
+> -- 
+> https://chromeos.dev
 > 
-
-
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
