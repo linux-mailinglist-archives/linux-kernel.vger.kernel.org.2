@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFE832F931
+	by mail.lfdr.de (Postfix) with ESMTP id BA90A32F932
 	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 10:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhCFJu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 04:50:28 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:37008 "EHLO
+        id S230173AbhCFJvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 04:51:06 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:6733 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhCFJuR (ORCPT
+        with ESMTP id S229833AbhCFJuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 04:50:17 -0500
+        Sat, 6 Mar 2021 04:50:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1615024217; x=1646560217;
+  t=1615024219; x=1646560219;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=PsOk4rFOQ/dSpsD0csoV74Acj9W64l71Io7lHfbk35s=;
-  b=aZ1mNUD8qAU+o16bWN1MMAzmgqsRKt1x4wsfJsCXmVkPhJvx/ZuG0RWQ
-   wK1Hpf8INmlgDTqQtqDrkR7JlspFMYr5Q4MmZByU1vdP6mf6kGnyEFxrK
-   TY1bafO60FuSrWz0wh0o0qj4WeI2A7rMWqasW3aen+QuXG8OKVBuYJleX
-   fJQYUBn+ez5mCyCOH9VXTVDaWOVFfxsvzuzLjNpBQxepqReYfNdCqf8wi
-   0/iCErDltvDfOS1U+u77tWjW3owQ3Uu0gYldD80Kvn0aMOtYiUaoRHtkc
-   D+2OdM8uafrTQ5GIZygfYbft9DIWHYQ1f9ypNUbUxhSnf0WVzeuTFVxoa
-   g==;
-IronPort-SDR: beaBLT/sTFwrm0wRUJF4THNifrhUwWNAgdsSXhdKqFLcqkuMGFLR2SaYBXi9bzrLqKhNFfkuX3
- TmvM9tPnH/ubhrdWyDI/ngRA6Qera2O5YKO1294hNWhYc/2IiiQGlJizUN1gFZx6Lsl6W1PNaW
- VBarrF28OyS0cuD51rvOEyT/6r4UcDcOBNxdNjj1d1joHvGDjaKzzR4n6RLkPwXBZpOFQEYPsZ
- aSWXG1hsKh4lDDY6W7aFj/dI00U9SmsK61zmxFQw9xTb9T46DJR/9yMbrbzf7w8dpgWnsWHnv+
- Qo8=
+  bh=r6RVfEF+mYBVvOP3x3E7ZAefZ77XnxMbmrvE067SrqE=;
+  b=0MmbdND+fvcl5c9c601v7pGojCHMXxfh+9eHqR7aKbhCgM2qODfYbJpK
+   UpTkoapA5dg3szPlLeAYWCLCokjTDAxp6vyfoTM/N+A0ZX9otQbhBMzVA
+   UxJN/uBcckZognDxWtbih7zaPvPIuSPgqM+Qjsf+MvePtFK1HVT3aSYZC
+   +PLCdnZQ4H/7cn6ZBX3a3pUMLm4KFMl2+ZJa3P6W0r/XZgJI8jbUlW7C5
+   uggXRrzGTngp25f4galjyqa8USNaiB4onVk0Vv3OH2Sij4AG3bg6+Y8/U
+   pToqzNVG+NO2ujlb3Wv4ycqLtbI/6qSp5ttGktKlLHiMKtpcqmvdHjvtB
+   Q==;
+IronPort-SDR: /mkpGwVuBR5qxC1iU8gA5SJIKw7AVwYl7blZf57QLaD+g5GkUogPNOvGV5bOoV3MsimeKI+ZDg
+ EW4ltMRYBZtMow1/HKoN7az5zvSpZN0hmsIlJFx/0RgPaSWeqgqOQ6xZ2f+jjuaRCpMkqWY+JL
+ WgUoVb0FjTt1J8CgLm3TiFUnRt95aSUQj3M4eKUi7VVzneju0iUcMlaRp9gc7V2d7L/4kASk6i
+ f2Cj1G5n3rT32/daiXV0Fve8O8v9CT/2FcwyUGHxiqyFddQohCS20NkLUXvW12+rQqfPp1b7qz
+ PDU=
 X-IronPort-AV: E=Sophos;i="5.81,227,1610434800"; 
-   d="scan'208";a="111726346"
+   d="scan'208";a="112202510"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Mar 2021 02:50:16 -0700
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Mar 2021 02:50:19 -0700
 Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
  chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 6 Mar 2021 02:50:16 -0700
+ 15.1.2176.2; Sat, 6 Mar 2021 02:50:18 -0700
 Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Sat, 6 Mar 2021 02:50:14 -0700
+ 15.1.2176.2 via Frontend Transport; Sat, 6 Mar 2021 02:50:16 -0700
 From:   Tudor Ambarus <tudor.ambarus@microchip.com>
 To:     <vigneshr@ti.com>, <p.yadav@ti.com>, <michael@walle.cc>
 CC:     <linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
         <richard@nod.at>, <linux-kernel@vger.kernel.org>,
         Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 3/5] mtd: spi-nor: Get rid of duplicated argument in spi_nor_parse_sfdp()
-Date:   Sat, 6 Mar 2021 11:50:00 +0200
-Message-ID: <20210306095002.22983-4-tudor.ambarus@microchip.com>
+Subject: [PATCH v2 4/5] mtd: spi-nor: Move Software Write Protection logic out of the core
+Date:   Sat, 6 Mar 2021 11:50:01 +0200
+Message-ID: <20210306095002.22983-5-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210306095002.22983-1-tudor.ambarus@microchip.com>
 References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
@@ -59,433 +59,918 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-spi_nor_parse_sfdp(nor, nor->params);
-passes for the second argument a member within the first argument.
-Drop the second argument and obtain it directly from the first,
-and do it across all the children functions. This is a follow up for
-'commit 69a8eed58cc0 ("mtd: spi-nor: Don't copy self-pointing struct around")'
+It makes the core file a bit smaller and provides better separation
+between the Software Write Protection features and the core logic.
+All the next generic software write protection features (e.g. Individual
+Block Protection) will reside in swp.c.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
-v2: Add params local variable in spi_nor_parse_4bait(), because
-params is used in multiple locations.
+ drivers/mtd/spi-nor/Makefile |   2 +-
+ drivers/mtd/spi-nor/core.c   | 407 +---------------------------------
+ drivers/mtd/spi-nor/core.h   |   4 +
+ drivers/mtd/spi-nor/swp.c    | 419 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 428 insertions(+), 404 deletions(-)
+ create mode 100644 drivers/mtd/spi-nor/swp.c
 
- drivers/mtd/spi-nor/core.c     | 10 ++---
- drivers/mtd/spi-nor/core.h     |  6 +--
- drivers/mtd/spi-nor/issi.c     |  3 +-
- drivers/mtd/spi-nor/macronix.c |  3 +-
- drivers/mtd/spi-nor/sfdp.c     | 72 +++++++++++++---------------------
- drivers/mtd/spi-nor/sfdp.h     |  3 +-
- drivers/mtd/spi-nor/spansion.c | 12 +++---
- drivers/mtd/spi-nor/winbond.c  |  3 +-
- 8 files changed, 42 insertions(+), 70 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 653923896205..da05b03f28d2 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+-spi-nor-objs			:= core.o sfdp.o
++spi-nor-objs			:= core.o sfdp.o swp.o
+ spi-nor-objs			+= atmel.o
+ spi-nor-objs			+= catalyst.o
+ spi-nor-objs			+= eon.o
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 498da1ec3a89..d12f14aba957 100644
+index d12f14aba957..08c9cfd9bcde 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2629,22 +2629,20 @@ void spi_nor_init_uniform_erase_map(struct spi_nor_erase_map *map,
- 
- int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
- 			     const struct sfdp_parameter_header *bfpt_header,
--			     const struct sfdp_bfpt *bfpt,
--			     struct spi_nor_flash_parameter *params)
-+			     const struct sfdp_bfpt *bfpt)
- {
- 	int ret;
- 
- 	if (nor->manufacturer && nor->manufacturer->fixups &&
- 	    nor->manufacturer->fixups->post_bfpt) {
- 		ret = nor->manufacturer->fixups->post_bfpt(nor, bfpt_header,
--							   bfpt, params);
-+							   bfpt);
- 		if (ret)
- 			return ret;
- 	}
- 
- 	if (nor->info->fixups && nor->info->fixups->post_bfpt)
--		return nor->info->fixups->post_bfpt(nor, bfpt_header, bfpt,
--						    params);
-+		return nor->info->fixups->post_bfpt(nor, bfpt_header, bfpt);
- 
- 	return 0;
+@@ -1730,376 +1730,6 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	return ret;
  }
-@@ -2899,7 +2897,7 @@ static void spi_nor_sfdp_init_params(struct spi_nor *nor)
  
- 	memcpy(&sfdp_params, nor->params, sizeof(sfdp_params));
- 
--	if (spi_nor_parse_sfdp(nor, nor->params)) {
-+	if (spi_nor_parse_sfdp(nor)) {
- 		memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
- 		nor->addr_width = 0;
- 		nor->flags &= ~SNOR_F_4B_OPCODES;
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 4a3f7f150b5d..db07832ee66c 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -261,8 +261,7 @@ struct spi_nor_fixups {
- 	void (*default_init)(struct spi_nor *nor);
- 	int (*post_bfpt)(struct spi_nor *nor,
- 			 const struct sfdp_parameter_header *bfpt_header,
--			 const struct sfdp_bfpt *bfpt,
--			 struct spi_nor_flash_parameter *params);
-+			 const struct sfdp_bfpt *bfpt);
- 	void (*post_sfdp)(struct spi_nor *nor);
- };
- 
-@@ -470,8 +469,7 @@ void spi_nor_init_uniform_erase_map(struct spi_nor_erase_map *map,
- 
- int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
- 			     const struct sfdp_parameter_header *bfpt_header,
--			     const struct sfdp_bfpt *bfpt,
--			     struct spi_nor_flash_parameter *params);
-+			     const struct sfdp_bfpt *bfpt);
- 
- static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
- {
-diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
-index ffcb60e54a80..1e5bb5408b68 100644
---- a/drivers/mtd/spi-nor/issi.c
-+++ b/drivers/mtd/spi-nor/issi.c
-@@ -11,8 +11,7 @@
- static int
- is25lp256_post_bfpt_fixups(struct spi_nor *nor,
- 			   const struct sfdp_parameter_header *bfpt_header,
--			   const struct sfdp_bfpt *bfpt,
--			   struct spi_nor_flash_parameter *params)
-+			   const struct sfdp_bfpt *bfpt)
- {
- 	/*
- 	 * IS25LP256 supports 4B opcodes, but the BFPT advertises a
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 9203abaac229..6c2680b4cdad 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -11,8 +11,7 @@
- static int
- mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
- 			    const struct sfdp_parameter_header *bfpt_header,
--			    const struct sfdp_bfpt *bfpt,
--			    struct spi_nor_flash_parameter *params)
-+			    const struct sfdp_bfpt *bfpt)
- {
- 	/*
- 	 * MX25L25635F supports 4B opcodes but MX25L25635E does not.
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 25142ec4737b..23c28e91f698 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -405,8 +405,6 @@ static void spi_nor_regions_sort_erase_types(struct spi_nor_erase_map *map)
-  * @nor:		pointer to a 'struct spi_nor'
-  * @bfpt_header:	pointer to the 'struct sfdp_parameter_header' describing
-  *			the Basic Flash Parameter Table length and version
-- * @params:		pointer to the 'struct spi_nor_flash_parameter' to be
-- *			filled
-  *
-  * The Basic Flash Parameter Table is the main and only mandatory table as
-  * defined by the SFDP (JESD216) specification.
-@@ -431,9 +429,9 @@ static void spi_nor_regions_sort_erase_types(struct spi_nor_erase_map *map)
-  * Return: 0 on success, -errno otherwise.
-  */
- static int spi_nor_parse_bfpt(struct spi_nor *nor,
--			      const struct sfdp_parameter_header *bfpt_header,
--			      struct spi_nor_flash_parameter *params)
-+			      const struct sfdp_parameter_header *bfpt_header)
- {
-+	struct spi_nor_flash_parameter *params = nor->params;
- 	struct spi_nor_erase_map *map = &params->erase_map;
- 	struct spi_nor_erase_type *erase_type = map->erase_type;
- 	struct sfdp_bfpt bfpt;
-@@ -552,8 +550,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 
- 	/* Stop here if not JESD216 rev A or later. */
- 	if (bfpt_header->length == BFPT_DWORD_MAX_JESD216)
--		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt,
--						params);
-+		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
- 
- 	/* Page size: this field specifies 'N' so the page size = 2^N bytes. */
- 	val = bfpt.dwords[BFPT_DWORD(11)];
-@@ -614,8 +611,8 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 
- 	/* Stop here if not JESD216 rev C or later. */
- 	if (bfpt_header->length == BFPT_DWORD_MAX_JESD216B)
--		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt,
--						params);
-+		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
-+
- 	/* 8D-8D-8D command extension. */
- 	switch (bfpt.dwords[BFPT_DWORD(18)] & BFPT_DWORD18_CMD_EXT_MASK) {
- 	case BFPT_DWORD18_CMD_EXT_REP:
-@@ -635,7 +632,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 		return -EOPNOTSUPP;
- 	}
- 
--	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt, params);
-+	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
+-static u8 spi_nor_get_sr_bp_mask(struct spi_nor *nor)
+-{
+-	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
+-
+-	if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
+-		return mask | SR_BP3_BIT6;
+-
+-	if (nor->flags & SNOR_F_HAS_4BIT_BP)
+-		return mask | SR_BP3;
+-
+-	return mask;
+-}
+-
+-static u8 spi_nor_get_sr_tb_mask(struct spi_nor *nor)
+-{
+-	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
+-		return SR_TB_BIT6;
+-	else
+-		return SR_TB_BIT5;
+-}
+-
+-static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
+-{
+-	unsigned int bp_slots, bp_slots_needed;
+-	u8 mask = spi_nor_get_sr_bp_mask(nor);
+-
+-	/* Reserved one for "protect none" and one for "protect all". */
+-	bp_slots = (1 << hweight8(mask)) - 2;
+-	bp_slots_needed = ilog2(nor->info->n_sectors);
+-
+-	if (bp_slots_needed > bp_slots)
+-		return nor->info->sector_size <<
+-			(bp_slots_needed - bp_slots);
+-	else
+-		return nor->info->sector_size;
+-}
+-
+-static void spi_nor_get_locked_range_sr(struct spi_nor *nor, u8 sr, loff_t *ofs,
+-					uint64_t *len)
+-{
+-	struct mtd_info *mtd = &nor->mtd;
+-	u64 min_prot_len;
+-	u8 mask = spi_nor_get_sr_bp_mask(nor);
+-	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
+-	u8 bp, val = sr & mask;
+-
+-	if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3_BIT6)
+-		val = (val & ~SR_BP3_BIT6) | SR_BP3;
+-
+-	bp = val >> SR_BP_SHIFT;
+-
+-	if (!bp) {
+-		/* No protection */
+-		*ofs = 0;
+-		*len = 0;
+-		return;
+-	}
+-
+-	min_prot_len = spi_nor_get_min_prot_length_sr(nor);
+-	*len = min_prot_len << (bp - 1);
+-
+-	if (*len > mtd->size)
+-		*len = mtd->size;
+-
+-	if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
+-		*ofs = 0;
+-	else
+-		*ofs = mtd->size - *len;
+-}
+-
+-/*
+- * Return 1 if the entire region is locked (if @locked is true) or unlocked (if
+- * @locked is false); 0 otherwise
+- */
+-static int spi_nor_check_lock_status_sr(struct spi_nor *nor, loff_t ofs,
+-					uint64_t len, u8 sr, bool locked)
+-{
+-	loff_t lock_offs;
+-	uint64_t lock_len;
+-
+-	if (!len)
+-		return 1;
+-
+-	spi_nor_get_locked_range_sr(nor, sr, &lock_offs, &lock_len);
+-
+-	if (locked)
+-		/* Requested range is a sub-range of locked range */
+-		return (ofs + len <= lock_offs + lock_len) && (ofs >= lock_offs);
+-	else
+-		/* Requested range does not overlap with locked range */
+-		return (ofs >= lock_offs + lock_len) || (ofs + len <= lock_offs);
+-}
+-
+-static int spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+-				u8 sr)
+-{
+-	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, true);
+-}
+-
+-static int spi_nor_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
+-				  u8 sr)
+-{
+-	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, false);
+-}
+-
+-/*
+- * Lock a region of the flash. Compatible with ST Micro and similar flash.
+- * Supports the block protection bits BP{0,1,2}/BP{0,1,2,3} in the status
+- * register
+- * (SR). Does not support these features found in newer SR bitfields:
+- *   - SEC: sector/block protect - only handle SEC=0 (block protect)
+- *   - CMP: complement protect - only support CMP=0 (range is not complemented)
+- *
+- * Support for the following is provided conditionally for some flash:
+- *   - TB: top/bottom protect
+- *
+- * Sample table portion for 8MB flash (Winbond w25q64fw):
+- *
+- *   SEC  |  TB   |  BP2  |  BP1  |  BP0  |  Prot Length  | Protected Portion
+- *  --------------------------------------------------------------------------
+- *    X   |   X   |   0   |   0   |   0   |  NONE         | NONE
+- *    0   |   0   |   0   |   0   |   1   |  128 KB       | Upper 1/64
+- *    0   |   0   |   0   |   1   |   0   |  256 KB       | Upper 1/32
+- *    0   |   0   |   0   |   1   |   1   |  512 KB       | Upper 1/16
+- *    0   |   0   |   1   |   0   |   0   |  1 MB         | Upper 1/8
+- *    0   |   0   |   1   |   0   |   1   |  2 MB         | Upper 1/4
+- *    0   |   0   |   1   |   1   |   0   |  4 MB         | Upper 1/2
+- *    X   |   X   |   1   |   1   |   1   |  8 MB         | ALL
+- *  ------|-------|-------|-------|-------|---------------|-------------------
+- *    0   |   1   |   0   |   0   |   1   |  128 KB       | Lower 1/64
+- *    0   |   1   |   0   |   1   |   0   |  256 KB       | Lower 1/32
+- *    0   |   1   |   0   |   1   |   1   |  512 KB       | Lower 1/16
+- *    0   |   1   |   1   |   0   |   0   |  1 MB         | Lower 1/8
+- *    0   |   1   |   1   |   0   |   1   |  2 MB         | Lower 1/4
+- *    0   |   1   |   1   |   1   |   0   |  4 MB         | Lower 1/2
+- *
+- * Returns negative on errors, 0 on success.
+- */
+-static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+-{
+-	struct mtd_info *mtd = &nor->mtd;
+-	u64 min_prot_len;
+-	int ret, status_old, status_new;
+-	u8 mask = spi_nor_get_sr_bp_mask(nor);
+-	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
+-	u8 pow, val;
+-	loff_t lock_len;
+-	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+-	bool use_top;
+-
+-	ret = spi_nor_read_sr(nor, nor->bouncebuf);
+-	if (ret)
+-		return ret;
+-
+-	status_old = nor->bouncebuf[0];
+-
+-	/* If nothing in our range is unlocked, we don't need to do anything */
+-	if (spi_nor_is_locked_sr(nor, ofs, len, status_old))
+-		return 0;
+-
+-	/* If anything below us is unlocked, we can't use 'bottom' protection */
+-	if (!spi_nor_is_locked_sr(nor, 0, ofs, status_old))
+-		can_be_bottom = false;
+-
+-	/* If anything above us is unlocked, we can't use 'top' protection */
+-	if (!spi_nor_is_locked_sr(nor, ofs + len, mtd->size - (ofs + len),
+-				  status_old))
+-		can_be_top = false;
+-
+-	if (!can_be_bottom && !can_be_top)
+-		return -EINVAL;
+-
+-	/* Prefer top, if both are valid */
+-	use_top = can_be_top;
+-
+-	/* lock_len: length of region that should end up locked */
+-	if (use_top)
+-		lock_len = mtd->size - ofs;
+-	else
+-		lock_len = ofs + len;
+-
+-	if (lock_len == mtd->size) {
+-		val = mask;
+-	} else {
+-		min_prot_len = spi_nor_get_min_prot_length_sr(nor);
+-		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
+-		val = pow << SR_BP_SHIFT;
+-
+-		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3)
+-			val = (val & ~SR_BP3) | SR_BP3_BIT6;
+-
+-		if (val & ~mask)
+-			return -EINVAL;
+-
+-		/* Don't "lock" with no region! */
+-		if (!(val & mask))
+-			return -EINVAL;
+-	}
+-
+-	status_new = (status_old & ~mask & ~tb_mask) | val;
+-
+-	/* Disallow further writes if WP pin is asserted */
+-	status_new |= SR_SRWD;
+-
+-	if (!use_top)
+-		status_new |= tb_mask;
+-
+-	/* Don't bother if they're the same */
+-	if (status_new == status_old)
+-		return 0;
+-
+-	/* Only modify protection if it will not unlock other areas */
+-	if ((status_new & mask) < (status_old & mask))
+-		return -EINVAL;
+-
+-	return spi_nor_write_sr_and_check(nor, status_new);
+-}
+-
+-/*
+- * Unlock a region of the flash. See spi_nor_sr_lock() for more info
+- *
+- * Returns negative on errors, 0 on success.
+- */
+-static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+-{
+-	struct mtd_info *mtd = &nor->mtd;
+-	u64 min_prot_len;
+-	int ret, status_old, status_new;
+-	u8 mask = spi_nor_get_sr_bp_mask(nor);
+-	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
+-	u8 pow, val;
+-	loff_t lock_len;
+-	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
+-	bool use_top;
+-
+-	ret = spi_nor_read_sr(nor, nor->bouncebuf);
+-	if (ret)
+-		return ret;
+-
+-	status_old = nor->bouncebuf[0];
+-
+-	/* If nothing in our range is locked, we don't need to do anything */
+-	if (spi_nor_is_unlocked_sr(nor, ofs, len, status_old))
+-		return 0;
+-
+-	/* If anything below us is locked, we can't use 'top' protection */
+-	if (!spi_nor_is_unlocked_sr(nor, 0, ofs, status_old))
+-		can_be_top = false;
+-
+-	/* If anything above us is locked, we can't use 'bottom' protection */
+-	if (!spi_nor_is_unlocked_sr(nor, ofs + len, mtd->size - (ofs + len),
+-				    status_old))
+-		can_be_bottom = false;
+-
+-	if (!can_be_bottom && !can_be_top)
+-		return -EINVAL;
+-
+-	/* Prefer top, if both are valid */
+-	use_top = can_be_top;
+-
+-	/* lock_len: length of region that should remain locked */
+-	if (use_top)
+-		lock_len = mtd->size - (ofs + len);
+-	else
+-		lock_len = ofs;
+-
+-	if (lock_len == 0) {
+-		val = 0; /* fully unlocked */
+-	} else {
+-		min_prot_len = spi_nor_get_min_prot_length_sr(nor);
+-		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
+-		val = pow << SR_BP_SHIFT;
+-
+-		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3)
+-			val = (val & ~SR_BP3) | SR_BP3_BIT6;
+-
+-		/* Some power-of-two sizes are not supported */
+-		if (val & ~mask)
+-			return -EINVAL;
+-	}
+-
+-	status_new = (status_old & ~mask & ~tb_mask) | val;
+-
+-	/* Don't protect status register if we're fully unlocked */
+-	if (lock_len == 0)
+-		status_new &= ~SR_SRWD;
+-
+-	if (!use_top)
+-		status_new |= tb_mask;
+-
+-	/* Don't bother if they're the same */
+-	if (status_new == status_old)
+-		return 0;
+-
+-	/* Only modify protection if it will not lock other areas */
+-	if ((status_new & mask) > (status_old & mask))
+-		return -EINVAL;
+-
+-	return spi_nor_write_sr_and_check(nor, status_new);
+-}
+-
+-/*
+- * Check if a region of the flash is (completely) locked. See spi_nor_sr_lock()
+- * for more info.
+- *
+- * Returns 1 if entire region is locked, 0 if any portion is unlocked, and
+- * negative on errors.
+- */
+-static int spi_nor_sr_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
+-{
+-	int ret;
+-
+-	ret = spi_nor_read_sr(nor, nor->bouncebuf);
+-	if (ret)
+-		return ret;
+-
+-	return spi_nor_is_locked_sr(nor, ofs, len, nor->bouncebuf[0]);
+-}
+-
+-static const struct spi_nor_locking_ops spi_nor_sr_locking_ops = {
+-	.lock = spi_nor_sr_lock,
+-	.unlock = spi_nor_sr_unlock,
+-	.is_locked = spi_nor_sr_is_locked,
+-};
+-
+-static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+-{
+-	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+-	int ret;
+-
+-	ret = spi_nor_lock_and_prep(nor);
+-	if (ret)
+-		return ret;
+-
+-	ret = nor->params->locking_ops->lock(nor, ofs, len);
+-
+-	spi_nor_unlock_and_unprep(nor);
+-	return ret;
+-}
+-
+-static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+-{
+-	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+-	int ret;
+-
+-	ret = spi_nor_lock_and_prep(nor);
+-	if (ret)
+-		return ret;
+-
+-	ret = nor->params->locking_ops->unlock(nor, ofs, len);
+-
+-	spi_nor_unlock_and_unprep(nor);
+-	return ret;
+-}
+-
+-static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+-{
+-	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+-	int ret;
+-
+-	ret = spi_nor_lock_and_prep(nor);
+-	if (ret)
+-		return ret;
+-
+-	ret = nor->params->locking_ops->is_locked(nor, ofs, len);
+-
+-	spi_nor_unlock_and_unprep(nor);
+-	return ret;
+-}
+-
+ /**
+  * spi_nor_sr1_bit6_quad_enable() - Set the Quad Enable BIT(6) in the Status
+  * Register 1.
+@@ -3049,7 +2679,7 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
+ 	 * the default ones.
+ 	 */
+ 	if (nor->flags & SNOR_F_HAS_LOCK && !nor->params->locking_ops)
+-		nor->params->locking_ops = &spi_nor_sr_locking_ops;
++		spi_nor_init_default_locking_ops(nor);
  }
  
  /**
-@@ -800,18 +797,14 @@ spi_nor_region_check_overlay(struct spi_nor_erase_region *region,
- /**
-  * spi_nor_init_non_uniform_erase_map() - initialize the non-uniform erase map
-  * @nor:	pointer to a 'struct spi_nor'
-- * @params:     pointer to a duplicate 'struct spi_nor_flash_parameter' that is
-- *              used for storing SFDP parsed data
-  * @smpt:	pointer to the sector map parameter table
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--static int
--spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
--				   struct spi_nor_flash_parameter *params,
--				   const u32 *smpt)
-+static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
-+					      const u32 *smpt)
- {
--	struct spi_nor_erase_map *map = &params->erase_map;
-+	struct spi_nor_erase_map *map = &nor->params->erase_map;
- 	struct spi_nor_erase_type *erase = map->erase_type;
- 	struct spi_nor_erase_region *region;
- 	u64 offset;
-@@ -889,8 +882,6 @@ spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
-  * spi_nor_parse_smpt() - parse Sector Map Parameter Table
-  * @nor:		pointer to a 'struct spi_nor'
-  * @smpt_header:	sector map parameter table header
-- * @params:		pointer to a duplicate 'struct spi_nor_flash_parameter'
-- *                      that is used for storing SFDP parsed data
-  *
-  * This table is optional, but when available, we parse it to identify the
-  * location and size of sectors within the main data array of the flash memory
-@@ -899,8 +890,7 @@ spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
-  * Return: 0 on success, -errno otherwise.
-  */
- static int spi_nor_parse_smpt(struct spi_nor *nor,
--			      const struct sfdp_parameter_header *smpt_header,
--			      struct spi_nor_flash_parameter *params)
-+			      const struct sfdp_parameter_header *smpt_header)
- {
- 	const u32 *sector_map;
- 	u32 *smpt;
-@@ -928,11 +918,11 @@ static int spi_nor_parse_smpt(struct spi_nor *nor,
- 		goto out;
- 	}
+@@ -3161,32 +2791,6 @@ static int spi_nor_quad_enable(struct spi_nor *nor)
+ 	return nor->params->quad_enable(nor);
+ }
  
--	ret = spi_nor_init_non_uniform_erase_map(nor, params, sector_map);
-+	ret = spi_nor_init_non_uniform_erase_map(nor, sector_map);
+-/**
+- * spi_nor_try_unlock_all() - Tries to unlock the entire flash memory array.
+- * @nor:	pointer to a 'struct spi_nor'.
+- *
+- * Some SPI NOR flashes are write protected by default after a power-on reset
+- * cycle, in order to avoid inadvertent writes during power-up. Backward
+- * compatibility imposes to unlock the entire flash memory array at power-up
+- * by default.
+- *
+- * Unprotecting the entire flash array will fail for boards which are hardware
+- * write-protected. Thus any errors are ignored.
+- */
+-static void spi_nor_try_unlock_all(struct spi_nor *nor)
+-{
+-	int ret;
+-
+-	if (!(nor->flags & SNOR_F_HAS_LOCK))
+-		return;
+-
+-	dev_dbg(nor->dev, "Unprotecting entire flash array\n");
+-
+-	ret = spi_nor_unlock(&nor->mtd, 0, nor->params->size);
+-	if (ret)
+-		dev_dbg(nor->dev, "Failed to unlock the entire flash memory array\n");
+-}
+-
+ static int spi_nor_init(struct spi_nor *nor)
+ {
+ 	int err;
+@@ -3497,12 +3101,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	mtd->_suspend = spi_nor_suspend;
+ 	mtd->_resume = spi_nor_resume;
+ 
+-	if (nor->params->locking_ops) {
+-		mtd->_lock = spi_nor_lock;
+-		mtd->_unlock = spi_nor_unlock;
+-		mtd->_is_locked = spi_nor_is_locked;
+-	}
+-
+ 	if (info->flags & USE_FSR)
+ 		nor->flags |= SNOR_F_USE_FSR;
+ 	if (info->flags & SPI_NOR_HAS_TB) {
+@@ -3554,6 +3152,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
  	if (ret)
- 		goto out;
- 
--	spi_nor_regions_sort_erase_types(&params->erase_map);
-+	spi_nor_regions_sort_erase_types(&nor->params->erase_map);
- 	/* fall through */
- out:
- 	kfree(smpt);
-@@ -944,13 +934,11 @@ static int spi_nor_parse_smpt(struct spi_nor *nor,
-  * @nor:		pointer to a 'struct spi_nor'.
-  * @param_header:	pointer to the 'struct sfdp_parameter_header' describing
-  *			the 4-Byte Address Instruction Table length and version.
-- * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
- static int spi_nor_parse_4bait(struct spi_nor *nor,
--			       const struct sfdp_parameter_header *param_header,
--			       struct spi_nor_flash_parameter *params)
-+			       const struct sfdp_parameter_header *param_header)
- {
- 	static const struct sfdp_4bait reads[] = {
- 		{ SNOR_HWCAPS_READ,		BIT(0) },
-@@ -974,6 +962,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
- 		{ 0u /* not used */,		BIT(11) },
- 		{ 0u /* not used */,		BIT(12) },
- 	};
-+	struct spi_nor_flash_parameter *params = nor->params;
- 	struct spi_nor_pp_command *params_pp = params->page_programs;
- 	struct spi_nor_erase_map *map = &params->erase_map;
- 	struct spi_nor_erase_type *erase_type = map->erase_type;
-@@ -1130,13 +1119,11 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
-  * @nor:		pointer to a 'struct spi_nor'
-  * @profile1_header:	pointer to the 'struct sfdp_parameter_header' describing
-  *			the Profile 1.0 Table length and version.
-- * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
- static int spi_nor_parse_profile1(struct spi_nor *nor,
--				  const struct sfdp_parameter_header *profile1_header,
--				  struct spi_nor_flash_parameter *params)
-+				  const struct sfdp_parameter_header *profile1_header)
- {
- 	u32 *dwords, addr;
- 	size_t len;
-@@ -1160,14 +1147,14 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
- 
- 	 /* Set the Read Status Register dummy cycles and dummy address bytes. */
- 	if (dwords[0] & PROFILE1_DWORD1_RDSR_DUMMY)
--		params->rdsr_dummy = 8;
-+		nor->params->rdsr_dummy = 8;
- 	else
--		params->rdsr_dummy = 4;
-+		nor->params->rdsr_dummy = 4;
- 
- 	if (dwords[0] & PROFILE1_DWORD1_RDSR_ADDR_BYTES)
--		params->rdsr_addr_nbytes = 4;
-+		nor->params->rdsr_addr_nbytes = 4;
- 	else
--		params->rdsr_addr_nbytes = 0;
-+		nor->params->rdsr_addr_nbytes = 0;
- 
- 	/*
- 	 * We don't know what speed the controller is running at. Find the
-@@ -1193,7 +1180,7 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
- 	dummy = round_up(dummy, 2);
- 
- 	/* Update the fast read settings. */
--	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
-+	spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_8_8_8_DTR],
- 				  0, dummy, opcode,
- 				  SNOR_PROTO_8_8_8_DTR);
- 
-@@ -1210,13 +1197,11 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
-  * @nor:		pointer to a 'struct spi_nor'
-  * @sccr_header:	pointer to the 'struct sfdp_parameter_header' describing
-  *			the SCCR Map table length and version.
-- * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
- static int spi_nor_parse_sccr(struct spi_nor *nor,
--			      const struct sfdp_parameter_header *sccr_header,
--			      struct spi_nor_flash_parameter *params)
-+			      const struct sfdp_parameter_header *sccr_header)
- {
- 	u32 *dwords, addr;
- 	size_t len;
-@@ -1245,8 +1230,6 @@ static int spi_nor_parse_sccr(struct spi_nor *nor,
- /**
-  * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
-  * @nor:		pointer to a 'struct spi_nor'
-- * @params:		pointer to the 'struct spi_nor_flash_parameter' to be
-- *			filled
-  *
-  * The Serial Flash Discoverable Parameters are described by the JEDEC JESD216
-  * specification. This is a standard which tends to supported by almost all
-@@ -1256,8 +1239,7 @@ static int spi_nor_parse_sccr(struct spi_nor *nor,
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--int spi_nor_parse_sfdp(struct spi_nor *nor,
--		       struct spi_nor_flash_parameter *params)
-+int spi_nor_parse_sfdp(struct spi_nor *nor)
- {
- 	const struct sfdp_parameter_header *param_header, *bfpt_header;
- 	struct sfdp_parameter_header *param_headers = NULL;
-@@ -1326,7 +1308,7 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
- 			bfpt_header = param_header;
- 	}
- 
--	err = spi_nor_parse_bfpt(nor, bfpt_header, params);
-+	err = spi_nor_parse_bfpt(nor, bfpt_header);
- 	if (err)
- 		goto exit;
- 
-@@ -1336,19 +1318,19 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
- 
- 		switch (SFDP_PARAM_HEADER_ID(param_header)) {
- 		case SFDP_SECTOR_MAP_ID:
--			err = spi_nor_parse_smpt(nor, param_header, params);
-+			err = spi_nor_parse_smpt(nor, param_header);
- 			break;
- 
- 		case SFDP_4BAIT_ID:
--			err = spi_nor_parse_4bait(nor, param_header, params);
-+			err = spi_nor_parse_4bait(nor, param_header);
- 			break;
- 
- 		case SFDP_PROFILE1_ID:
--			err = spi_nor_parse_profile1(nor, param_header, params);
-+			err = spi_nor_parse_profile1(nor, param_header);
- 			break;
- 
- 		case SFDP_SCCR_MAP_ID:
--			err = spi_nor_parse_sccr(nor, param_header, params);
-+			err = spi_nor_parse_sccr(nor, param_header);
- 			break;
- 
- 		default:
-diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
-index 89152ae1cf3e..bbf80d2990ab 100644
---- a/drivers/mtd/spi-nor/sfdp.h
-+++ b/drivers/mtd/spi-nor/sfdp.h
-@@ -107,7 +107,6 @@ struct sfdp_parameter_header {
- 	u8		id_msb;
- };
- 
--int spi_nor_parse_sfdp(struct spi_nor *nor,
--		       struct spi_nor_flash_parameter *params);
-+int spi_nor_parse_sfdp(struct spi_nor *nor);
- 
- #endif /* __LINUX_MTD_SFDP_H */
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index b0c5521c1e27..ee82dcd75310 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -142,8 +142,7 @@ static void s28hs512t_post_sfdp_fixup(struct spi_nor *nor)
- 
- static int s28hs512t_post_bfpt_fixup(struct spi_nor *nor,
- 				     const struct sfdp_parameter_header *bfpt_header,
--				     const struct sfdp_bfpt *bfpt,
--				     struct spi_nor_flash_parameter *params)
-+				     const struct sfdp_bfpt *bfpt)
- {
- 	/*
- 	 * The BFPT table advertises a 512B page size but the page size is
-@@ -162,9 +161,9 @@ static int s28hs512t_post_bfpt_fixup(struct spi_nor *nor,
  		return ret;
  
- 	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR3V_PGSZ)
--		params->page_size = 512;
-+		nor->params->page_size = 512;
- 	else
--		params->page_size = 256;
-+		nor->params->page_size = 256;
++	if (nor->params->locking_ops)
++		spi_nor_register_locking_ops(nor);
++
+ 	/* Send all the required SPI flash commands to initialize device */
+ 	ret = spi_nor_init(nor);
+ 	if (ret)
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index db07832ee66c..74f6026b7335 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -471,6 +471,10 @@ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
+ 			     const struct sfdp_parameter_header *bfpt_header,
+ 			     const struct sfdp_bfpt *bfpt);
  
- 	return 0;
- }
-@@ -178,8 +177,7 @@ static struct spi_nor_fixups s28hs512t_fixups = {
- static int
- s25fs_s_post_bfpt_fixups(struct spi_nor *nor,
- 			 const struct sfdp_parameter_header *bfpt_header,
--			 const struct sfdp_bfpt *bfpt,
--			 struct spi_nor_flash_parameter *params)
-+			 const struct sfdp_bfpt *bfpt)
++void spi_nor_init_default_locking_ops(struct spi_nor *nor);
++void spi_nor_try_unlock_all(struct spi_nor *nor);
++void spi_nor_register_locking_ops(struct spi_nor *nor);
++
+ static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
  {
- 	/*
- 	 * The S25FS-S chip family reports 512-byte pages in BFPT but
-@@ -187,7 +185,7 @@ s25fs_s_post_bfpt_fixups(struct spi_nor *nor,
- 	 * of 256 bytes.  Overwrite the page size advertised by BFPT
- 	 * to get the writes working.
- 	 */
--	params->page_size = 256;
-+	nor->params->page_size = 256;
- 
- 	return 0;
- }
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index e5dfa786f190..5d5240fb9a32 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -11,8 +11,7 @@
- static int
- w25q256_post_bfpt_fixups(struct spi_nor *nor,
- 			 const struct sfdp_parameter_header *bfpt_header,
--			 const struct sfdp_bfpt *bfpt,
--			 struct spi_nor_flash_parameter *params)
-+			 const struct sfdp_bfpt *bfpt)
- {
- 	/*
- 	 * W25Q256JV supports 4B opcodes but W25Q256FV does not.
+ 	return mtd->priv;
+diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+new file mode 100644
+index 000000000000..75b9bb53d584
+--- /dev/null
++++ b/drivers/mtd/spi-nor/swp.c
+@@ -0,0 +1,419 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2005, Intec Automation Inc.
++ * Copyright (C) 2014, Freescale Semiconductor, Inc.
++ */
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/spi-nor.h>
++
++#include "core.h"
++
++static u8 spi_nor_get_sr_bp_mask(struct spi_nor *nor)
++{
++	u8 mask = SR_BP2 | SR_BP1 | SR_BP0;
++
++	if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6)
++		return mask | SR_BP3_BIT6;
++
++	if (nor->flags & SNOR_F_HAS_4BIT_BP)
++		return mask | SR_BP3;
++
++	return mask;
++}
++
++static u8 spi_nor_get_sr_tb_mask(struct spi_nor *nor)
++{
++	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
++		return SR_TB_BIT6;
++	else
++		return SR_TB_BIT5;
++}
++
++static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
++{
++	unsigned int bp_slots, bp_slots_needed;
++	u8 mask = spi_nor_get_sr_bp_mask(nor);
++
++	/* Reserved one for "protect none" and one for "protect all". */
++	bp_slots = (1 << hweight8(mask)) - 2;
++	bp_slots_needed = ilog2(nor->info->n_sectors);
++
++	if (bp_slots_needed > bp_slots)
++		return nor->info->sector_size <<
++			(bp_slots_needed - bp_slots);
++	else
++		return nor->info->sector_size;
++}
++
++static void spi_nor_get_locked_range_sr(struct spi_nor *nor, u8 sr, loff_t *ofs,
++					uint64_t *len)
++{
++	struct mtd_info *mtd = &nor->mtd;
++	u64 min_prot_len;
++	u8 mask = spi_nor_get_sr_bp_mask(nor);
++	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
++	u8 bp, val = sr & mask;
++
++	if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3_BIT6)
++		val = (val & ~SR_BP3_BIT6) | SR_BP3;
++
++	bp = val >> SR_BP_SHIFT;
++
++	if (!bp) {
++		/* No protection */
++		*ofs = 0;
++		*len = 0;
++		return;
++	}
++
++	min_prot_len = spi_nor_get_min_prot_length_sr(nor);
++	*len = min_prot_len << (bp - 1);
++
++	if (*len > mtd->size)
++		*len = mtd->size;
++
++	if (nor->flags & SNOR_F_HAS_SR_TB && sr & tb_mask)
++		*ofs = 0;
++	else
++		*ofs = mtd->size - *len;
++}
++
++/*
++ * Return 1 if the entire region is locked (if @locked is true) or unlocked (if
++ * @locked is false); 0 otherwise
++ */
++static int spi_nor_check_lock_status_sr(struct spi_nor *nor, loff_t ofs,
++					uint64_t len, u8 sr, bool locked)
++{
++	loff_t lock_offs;
++	uint64_t lock_len;
++
++	if (!len)
++		return 1;
++
++	spi_nor_get_locked_range_sr(nor, sr, &lock_offs, &lock_len);
++
++	if (locked)
++		/* Requested range is a sub-range of locked range */
++		return (ofs + len <= lock_offs + lock_len) && (ofs >= lock_offs);
++	else
++		/* Requested range does not overlap with locked range */
++		return (ofs >= lock_offs + lock_len) || (ofs + len <= lock_offs);
++}
++
++static int spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
++				u8 sr)
++{
++	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, true);
++}
++
++static int spi_nor_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
++				  u8 sr)
++{
++	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, false);
++}
++
++/*
++ * Lock a region of the flash. Compatible with ST Micro and similar flash.
++ * Supports the block protection bits BP{0,1,2}/BP{0,1,2,3} in the status
++ * register
++ * (SR). Does not support these features found in newer SR bitfields:
++ *   - SEC: sector/block protect - only handle SEC=0 (block protect)
++ *   - CMP: complement protect - only support CMP=0 (range is not complemented)
++ *
++ * Support for the following is provided conditionally for some flash:
++ *   - TB: top/bottom protect
++ *
++ * Sample table portion for 8MB flash (Winbond w25q64fw):
++ *
++ *   SEC  |  TB   |  BP2  |  BP1  |  BP0  |  Prot Length  | Protected Portion
++ *  --------------------------------------------------------------------------
++ *    X   |   X   |   0   |   0   |   0   |  NONE         | NONE
++ *    0   |   0   |   0   |   0   |   1   |  128 KB       | Upper 1/64
++ *    0   |   0   |   0   |   1   |   0   |  256 KB       | Upper 1/32
++ *    0   |   0   |   0   |   1   |   1   |  512 KB       | Upper 1/16
++ *    0   |   0   |   1   |   0   |   0   |  1 MB         | Upper 1/8
++ *    0   |   0   |   1   |   0   |   1   |  2 MB         | Upper 1/4
++ *    0   |   0   |   1   |   1   |   0   |  4 MB         | Upper 1/2
++ *    X   |   X   |   1   |   1   |   1   |  8 MB         | ALL
++ *  ------|-------|-------|-------|-------|---------------|-------------------
++ *    0   |   1   |   0   |   0   |   1   |  128 KB       | Lower 1/64
++ *    0   |   1   |   0   |   1   |   0   |  256 KB       | Lower 1/32
++ *    0   |   1   |   0   |   1   |   1   |  512 KB       | Lower 1/16
++ *    0   |   1   |   1   |   0   |   0   |  1 MB         | Lower 1/8
++ *    0   |   1   |   1   |   0   |   1   |  2 MB         | Lower 1/4
++ *    0   |   1   |   1   |   1   |   0   |  4 MB         | Lower 1/2
++ *
++ * Returns negative on errors, 0 on success.
++ */
++static int spi_nor_sr_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
++{
++	struct mtd_info *mtd = &nor->mtd;
++	u64 min_prot_len;
++	int ret, status_old, status_new;
++	u8 mask = spi_nor_get_sr_bp_mask(nor);
++	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
++	u8 pow, val;
++	loff_t lock_len;
++	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
++	bool use_top;
++
++	ret = spi_nor_read_sr(nor, nor->bouncebuf);
++	if (ret)
++		return ret;
++
++	status_old = nor->bouncebuf[0];
++
++	/* If nothing in our range is unlocked, we don't need to do anything */
++	if (spi_nor_is_locked_sr(nor, ofs, len, status_old))
++		return 0;
++
++	/* If anything below us is unlocked, we can't use 'bottom' protection */
++	if (!spi_nor_is_locked_sr(nor, 0, ofs, status_old))
++		can_be_bottom = false;
++
++	/* If anything above us is unlocked, we can't use 'top' protection */
++	if (!spi_nor_is_locked_sr(nor, ofs + len, mtd->size - (ofs + len),
++				  status_old))
++		can_be_top = false;
++
++	if (!can_be_bottom && !can_be_top)
++		return -EINVAL;
++
++	/* Prefer top, if both are valid */
++	use_top = can_be_top;
++
++	/* lock_len: length of region that should end up locked */
++	if (use_top)
++		lock_len = mtd->size - ofs;
++	else
++		lock_len = ofs + len;
++
++	if (lock_len == mtd->size) {
++		val = mask;
++	} else {
++		min_prot_len = spi_nor_get_min_prot_length_sr(nor);
++		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
++		val = pow << SR_BP_SHIFT;
++
++		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3)
++			val = (val & ~SR_BP3) | SR_BP3_BIT6;
++
++		if (val & ~mask)
++			return -EINVAL;
++
++		/* Don't "lock" with no region! */
++		if (!(val & mask))
++			return -EINVAL;
++	}
++
++	status_new = (status_old & ~mask & ~tb_mask) | val;
++
++	/* Disallow further writes if WP pin is asserted */
++	status_new |= SR_SRWD;
++
++	if (!use_top)
++		status_new |= tb_mask;
++
++	/* Don't bother if they're the same */
++	if (status_new == status_old)
++		return 0;
++
++	/* Only modify protection if it will not unlock other areas */
++	if ((status_new & mask) < (status_old & mask))
++		return -EINVAL;
++
++	return spi_nor_write_sr_and_check(nor, status_new);
++}
++
++/*
++ * Unlock a region of the flash. See spi_nor_sr_lock() for more info
++ *
++ * Returns negative on errors, 0 on success.
++ */
++static int spi_nor_sr_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
++{
++	struct mtd_info *mtd = &nor->mtd;
++	u64 min_prot_len;
++	int ret, status_old, status_new;
++	u8 mask = spi_nor_get_sr_bp_mask(nor);
++	u8 tb_mask = spi_nor_get_sr_tb_mask(nor);
++	u8 pow, val;
++	loff_t lock_len;
++	bool can_be_top = true, can_be_bottom = nor->flags & SNOR_F_HAS_SR_TB;
++	bool use_top;
++
++	ret = spi_nor_read_sr(nor, nor->bouncebuf);
++	if (ret)
++		return ret;
++
++	status_old = nor->bouncebuf[0];
++
++	/* If nothing in our range is locked, we don't need to do anything */
++	if (spi_nor_is_unlocked_sr(nor, ofs, len, status_old))
++		return 0;
++
++	/* If anything below us is locked, we can't use 'top' protection */
++	if (!spi_nor_is_unlocked_sr(nor, 0, ofs, status_old))
++		can_be_top = false;
++
++	/* If anything above us is locked, we can't use 'bottom' protection */
++	if (!spi_nor_is_unlocked_sr(nor, ofs + len, mtd->size - (ofs + len),
++				    status_old))
++		can_be_bottom = false;
++
++	if (!can_be_bottom && !can_be_top)
++		return -EINVAL;
++
++	/* Prefer top, if both are valid */
++	use_top = can_be_top;
++
++	/* lock_len: length of region that should remain locked */
++	if (use_top)
++		lock_len = mtd->size - (ofs + len);
++	else
++		lock_len = ofs;
++
++	if (lock_len == 0) {
++		val = 0; /* fully unlocked */
++	} else {
++		min_prot_len = spi_nor_get_min_prot_length_sr(nor);
++		pow = ilog2(lock_len) - ilog2(min_prot_len) + 1;
++		val = pow << SR_BP_SHIFT;
++
++		if (nor->flags & SNOR_F_HAS_SR_BP3_BIT6 && val & SR_BP3)
++			val = (val & ~SR_BP3) | SR_BP3_BIT6;
++
++		/* Some power-of-two sizes are not supported */
++		if (val & ~mask)
++			return -EINVAL;
++	}
++
++	status_new = (status_old & ~mask & ~tb_mask) | val;
++
++	/* Don't protect status register if we're fully unlocked */
++	if (lock_len == 0)
++		status_new &= ~SR_SRWD;
++
++	if (!use_top)
++		status_new |= tb_mask;
++
++	/* Don't bother if they're the same */
++	if (status_new == status_old)
++		return 0;
++
++	/* Only modify protection if it will not lock other areas */
++	if ((status_new & mask) > (status_old & mask))
++		return -EINVAL;
++
++	return spi_nor_write_sr_and_check(nor, status_new);
++}
++
++/*
++ * Check if a region of the flash is (completely) locked. See spi_nor_sr_lock()
++ * for more info.
++ *
++ * Returns 1 if entire region is locked, 0 if any portion is unlocked, and
++ * negative on errors.
++ */
++static int spi_nor_sr_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
++{
++	int ret;
++
++	ret = spi_nor_read_sr(nor, nor->bouncebuf);
++	if (ret)
++		return ret;
++
++	return spi_nor_is_locked_sr(nor, ofs, len, nor->bouncebuf[0]);
++}
++
++static const struct spi_nor_locking_ops spi_nor_sr_locking_ops = {
++	.lock = spi_nor_sr_lock,
++	.unlock = spi_nor_sr_unlock,
++	.is_locked = spi_nor_sr_is_locked,
++};
++
++void spi_nor_init_default_locking_ops(struct spi_nor *nor)
++{
++	nor->params->locking_ops = &spi_nor_sr_locking_ops;
++}
++
++static int spi_nor_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
++{
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret;
++
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	ret = nor->params->locking_ops->lock(nor, ofs, len);
++
++	spi_nor_unlock_and_unprep(nor);
++	return ret;
++}
++
++static int spi_nor_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
++{
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret;
++
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	ret = nor->params->locking_ops->unlock(nor, ofs, len);
++
++	spi_nor_unlock_and_unprep(nor);
++	return ret;
++}
++
++static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
++{
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret;
++
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	ret = nor->params->locking_ops->is_locked(nor, ofs, len);
++
++	spi_nor_unlock_and_unprep(nor);
++	return ret;
++}
++
++/**
++ * spi_nor_try_unlock_all() - Tries to unlock the entire flash memory array.
++ * @nor:	pointer to a 'struct spi_nor'.
++ *
++ * Some SPI NOR flashes are write protected by default after a power-on reset
++ * cycle, in order to avoid inadvertent writes during power-up. Backward
++ * compatibility imposes to unlock the entire flash memory array at power-up
++ * by default.
++ *
++ * Unprotecting the entire flash array will fail for boards which are hardware
++ * write-protected. Thus any errors are ignored.
++ */
++void spi_nor_try_unlock_all(struct spi_nor *nor)
++{
++	int ret;
++
++	if (!(nor->flags & SNOR_F_HAS_LOCK))
++		return;
++
++	dev_dbg(nor->dev, "Unprotecting entire flash array\n");
++
++	ret = spi_nor_unlock(&nor->mtd, 0, nor->params->size);
++	if (ret)
++		dev_dbg(nor->dev, "Failed to unlock the entire flash memory array\n");
++}
++
++void spi_nor_register_locking_ops(struct spi_nor *nor)
++{
++	struct mtd_info *mtd = &nor->mtd;
++
++	mtd->_lock = spi_nor_lock;
++	mtd->_unlock = spi_nor_unlock;
++	mtd->_is_locked = spi_nor_is_locked;
++}
 -- 
 2.25.1
 
