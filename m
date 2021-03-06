@@ -2,103 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C6432FAC7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 14:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B472032FACE
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 14:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbhCFNHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 08:07:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42700 "EHLO
+        id S230242AbhCFNPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 08:15:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhCFNHj (ORCPT
+        with ESMTP id S229888AbhCFNOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 08:07:39 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1813C06174A;
-        Sat,  6 Mar 2021 05:07:38 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id u75so4981545ybi.10;
-        Sat, 06 Mar 2021 05:07:38 -0800 (PST)
+        Sat, 6 Mar 2021 08:14:46 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE70C06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 05:14:45 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id d13so6978635edp.4
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 05:14:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ATpFGSJY46yedmzJDru9SiqB2GPuBTTkX5e7hHNDmgQ=;
-        b=OewBR4mFIG8qQm3SnYpRZvdV1lvJMb9wI45+5gWV4CaJ8QC+pQm3YBPnuimVmsWq61
-         JU9LoZBvZSijQn/fb5FrWhmX3mcVAl+G8vB6LkgzQprzcO3kMxbhlEepzYr9Hxpnp2R+
-         0ody94zv8NgPQyW5hYB9rjRkvyHHCkyOTxE5S0CUTf7xrIBtvWvlqeoIJqe6JqstYA1w
-         6zvA43o+5OML4aoRcvcpPFAqiqrWRs+unbojR18EV/Ysg8+UkUc/AXDjbSVNn5eFxVx3
-         +p0ArbvnOz7LO/rGTVoew8+k+t4LCFLlVEHAucohQPtQqNSXTLtehP//H/5GW46ZXbS2
-         Jh7A==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KFj0L+kuX3w0y3pNrmRfQeddr6KSngxQbB8TpEwmjoQ=;
+        b=Ax/NvCGbY0yonQSHVABoIBQcdkkiG2FNUNUP5ApnUqgfyM9ERleUWqbsW4vEj+y6vt
+         3979fgQN6G+1uX9AWcbgAepi0jCPV5mkv4FdXdWKE8pMdQK/cpstMprjRGV9fQe51gdJ
+         hIDdHnZmfmFdJKL5vJDBZ3sS55NO1XheSW+L+KiKHWMiQ00NQ6ljZSq5Zw/lTa7fompV
+         LxL+CxIpOS2Wb8696iLDaRiknDgZMYo456h5CZrr8s/Qbnh6y5uDfGAetrv/Q//2436e
+         t43auWw5uR8mqk78b7KVmTC+M7iPHJhfpD0nNqLjL4diluTbahJ7OvqT56evChlqCePW
+         RpvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ATpFGSJY46yedmzJDru9SiqB2GPuBTTkX5e7hHNDmgQ=;
-        b=irD1zS8dLpWfcaIVAdqXG3uN5CpqsYWhNgnhWtF5ARd9c4yJUhRNYenkqtZ7JfHcOO
-         FKKUtxgCFrmDhkqp8gGY6CYFh3G/AmKIIqa7zUv2hb+VIGHh4dHe1YeSzUiA+X8Jofpq
-         8yPzdPs6ybSnDKi1HOWr4LOvvCEivHZjLFSPjup6wpsR2INIrULHXVOyn4IO2R8LSToG
-         P1jAn2oqMU3EO9tSc9HJyazaGFttWvffm1qjOxtmqI2M3OtoziE/EHTsHD3YXirIikDh
-         szN18NStXM9xA5lRBf42Ku92/DY2NPwUzUGgbXP2XIvFa26lTNMQgLNY4wUo1+1pCiGW
-         rkIg==
-X-Gm-Message-State: AOAM533HqEMlqOYKWuWopFIlzA4nUbVgOAAc1g4jGMCXiLUGpfTedLko
-        LfCtWcJQFATKWUN5ZKdT08v+ZsxDdO4iuLAPr8M=
-X-Google-Smtp-Source: ABdhPJx1b37KN1V3/vvMORCUJFH9irDWY3DvTJJn0sJR1gZGT7+GIXqkXhdBHgwnRhXPiT6m/hVKyfdyQO7R0PI6J/Y=
-X-Received: by 2002:a25:d296:: with SMTP id j144mr21120022ybg.33.1615036058165;
- Sat, 06 Mar 2021 05:07:38 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=KFj0L+kuX3w0y3pNrmRfQeddr6KSngxQbB8TpEwmjoQ=;
+        b=uH9UI2ZZM5hzGpC9JA8uW//cUk9m4kOIjbXhFcGekPONxSuYG2Im44RsPOJY5qDZYa
+         O6Dehg3ALIcHjaU30FeuxchR60s2wVhcWvFO/NwuJMIyMtnh+qCzat/lajsmfM9/w0Lv
+         oLNIpTroc2jiTnq62km07akW4fhQiHs+umffKskZ4L70yHIIwkpzJkO4UA4x8kcuei41
+         hkmgdm89Y1aHpG/1XV1PyhoCYyTVavrddl69kVcFDk+fmkQfEBePJlflorWLOipaVwZD
+         Z/tl34tEgiljocO1Su6rqIfoPjK4dyUGKt+D1tsyA7s4xmoCiuPufVGJ+jWQWfdJUhZV
+         lMVQ==
+X-Gm-Message-State: AOAM530qyDvcZCCWfM3mODt/7KHscl5P5mTNdL78lehMtzqpHIkhZKeH
+        4QqJKQEWWrj3b3FqizE6tAc=
+X-Google-Smtp-Source: ABdhPJzL840oKc04Yh0AKzjE2Pl4y3DHTG5pNUmAtxDs1DSKblkFOyIhT/T6aZnFrIV+yxB6Hh/7UA==
+X-Received: by 2002:a50:ed90:: with SMTP id h16mr7189109edr.101.1615036484433;
+        Sat, 06 Mar 2021 05:14:44 -0800 (PST)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id i6sm3185499ejz.95.2021.03.06.05.14.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 05:14:44 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sat, 6 Mar 2021 14:14:42 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: "struct perf_sample_data" alignment
+Message-ID: <20210306131442.GA552533@gmail.com>
+References: <CAHk-=wgQWHDUFjzmAazg8WN0BR7nOyHmduj-MV1GWWDUu+UKCQ@mail.gmail.com>
+ <YEHtjioucovbxbRt@hirez.programming.kicks-ass.net>
+ <YEJG8v/sCxsG5Lsg@hirez.programming.kicks-ass.net>
+ <CAADnVQLBrdBggyP1kBVrRQ2JDG+-5HzWAiLR7e-bNuLsKu2PkQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <YDvLYzsGu+l1pQ2y@localhost.localdomain> <CAHk-=wjFWZMVWTbvUMVxQqGKvGMC_BNrahCtTkpEjxoC0k-T=A@mail.gmail.com>
- <YDvwVlG/fqVxVYlQ@localhost.localdomain> <CAHk-=wi54DEScexxpMrO+Q2Nag_Tup+Y5YBHc_9_xGLeRfP8pA@mail.gmail.com>
- <877dmo10m3.fsf@tromey.com> <CAHk-=wi13+FLcRo4zmnRUmmY=AAns-Yd5NR_mVdcAd6ZrPq2fA@mail.gmail.com>
- <4835ec1d2ecc40b285596288a0df4f47@AcuMS.aculab.com> <CAHk-=wh8PptzH-=ak1D7C5Zp6EJ8eurYqVqGdQauupAFaNuG4g@mail.gmail.com>
- <44a0cc9cb5344add8ee4d91bffbf958f@AcuMS.aculab.com> <CAHk-=whh3fiL7FcLD_r1rfx-gP9W4HWS7vTPM9LKUH+0xzF2=A@mail.gmail.com>
-In-Reply-To: <CAHk-=whh3fiL7FcLD_r1rfx-gP9W4HWS7vTPM9LKUH+0xzF2=A@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sat, 6 Mar 2021 14:07:27 +0100
-Message-ID: <CANiq72k-_ORGU+tCVhBGnr0QtH4hQ45ayzDtoHND8JZa2jYYPA@mail.gmail.com>
-Subject: Re: [PATCH 00/11] pragma once: treewide conversion
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Tom Tromey <tom@tromey.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQLBrdBggyP1kBVrRQ2JDG+-5HzWAiLR7e-bNuLsKu2PkQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 10:25 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> And regardless of even _those_ issues, you still should do all the
-> other syntactic tokenization stuff (ie all the quoting, the the
-> character handling: 'a' is a valid C token, but if you see the string
-> "it's" outside of a comment, that's a syntax error even if it's inside
-> a disabled region. IOW, this is an incorrect file:
->
->    #if 0
->    it's a bug to do this, and the compiler should scream
->    #endif
->
-> because it's simply not a valid token sequence. The fact that it's
-> inside a "#if 0" region doesn't change that fact at all.  So you did
-> need to do all the tokenization logic.
 
-Compilers don't scream that much, only GCC seems to give a warning. I
-assume it is because it is just undefined rather than a required
-error/diagnostic, i.e. the "If a =E2=80=99 or a " character matches the las=
-t
-category, the behavior is undefined." in 6.4.
+* Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-Concerning #pragma once: I actually would like to have a standard
-#once directive if what is a "seen file" could be defined a bit more
-precisely. Even if just says it creates a guard with something similar
-to the result of `__FILE__` would be good enough for many projects out
-there, and one can still use guards when flexibility is needed and/or
-corner cases are expected (which, if detected, the compiler could also
-warn about).
+> > This seems to be it... (completely untested)
+> >
+> > ---
+> > diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> > index 3f7f89ea5e51..918a296d2ca2 100644
+> > --- a/include/linux/perf_event.h
+> > +++ b/include/linux/perf_event.h
+> > @@ -1032,7 +1032,9 @@ struct perf_sample_data {
+> >         u64                             cgroup;
+> >         u64                             data_page_size;
+> >         u64                             code_page_size;
+> > -} ____cacheline_aligned;
+> > +};
+> > +
+> > +typedef struct perf_sample_data perf_sample_data_t ____cacheline_aligned;
+> >
+> >  /* default value for data source */
+> >  #define PERF_MEM_NA (PERF_MEM_S(OP, NA)   |\
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index b0c45d923f0f..f32c623abef6 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -923,7 +923,7 @@ __bpf_perf_event_output(struct pt_regs *regs, struct bpf_map *map,
+> >   * bpf_perf_event_output
+> >   */
+> >  struct bpf_trace_sample_data {
+> > -       struct perf_sample_data sds[3];
+> > +       perf_sample_data_t sds[3];
+> 
+> bpf side doesn't care about about cacheline aligned.
+> No need to add new typedef just for that.
 
-Cheers,
-Miguel
+So this structure is not supposed to be exposed to any ABI anywhere.
+
+I did a (non-exhaustive) search of tooling, and there doesn't appear 
+to be any accidental exposure.
+
+The in-kernel ABI interaction appears to be the following:
+
+ - In __perf_event_header_size() we only use fields within 
+   perf_sample_data to size the header. Alignment won't change any of 
+   the output.
+
+ - Ditto in perf_event__id_header_size().
+
+I.e. I think we should just zap it per the patch below (untested).
+
+Thanks,
+
+	Ingo
+
+============>
+
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 3f7f89ea5e51..d75e03ff31ea 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -1032,7 +1032,7 @@ struct perf_sample_data {
+ 	u64				cgroup;
+ 	u64				data_page_size;
+ 	u64				code_page_size;
+-} ____cacheline_aligned;
++};
+ 
+ /* default value for data source */
+ #define PERF_MEM_NA (PERF_MEM_S(OP, NA)   |\
