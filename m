@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0765632FA06
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B892932FA16
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhCFLme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 06:42:34 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34280 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhCFLmW (ORCPT
+        id S231223AbhCFLmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 06:42:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230372AbhCFLmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 06:42:22 -0500
+        Sat, 6 Mar 2021 06:42:23 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0616C061762;
+        Sat,  6 Mar 2021 03:42:22 -0800 (PST)
 Date:   Sat, 06 Mar 2021 11:42:20 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615030941;
+        s=2020; t=1615030940;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=trxFQB8QUuSivL5J71BUEOmqr0J1API3E+ON47ryfb0=;
-        b=lc4UXGNSLJdsx+qvpqA2vpiZXV+z+FEwYkShsWNnzQUYoU4smZNr3fmNxgJXt7b2LFhqnj
-        A586dCtahoUa8Sjvf9q4Ao0urBynZGEunpkYHVkVPyLvw6VqSTT5bC/1S8wMeWdN5Rd3nb
-        gbVzQ70KM6XlXTj0RpfmOdMtJ0qxuaRspux8MzOInQFAZoChuK+YFpJ2fc8+AqGZtr0WEs
-        Rgbr8owTIh8APfv+uXZREKnoWVl2Xn3BSCrikSPsu0hYwg6tavnfBf0bEYysqaKFtRxqmg
-        tdvRCITBO65EiENYHM2gXfFaQoIJeZ0cH86Vw17hd+U7iJwZjWsbCdV09/SMYA==
+        bh=BkE9zXVJs1uIjTiJRKhrcBr9hDJuA0FAi4lmYBlnHaQ=;
+        b=z2BtPty7j8rcESRaJPMVSacXGptylRaKBVyr11Ur9C9+qJI6KaLf+Yx9s1P1I3jPPVmoa6
+        divY8QJVg7mPIy1gXBBecj8rsHe9bJ419uvUiYgrdiFg0l2kk/vxwzSP9DZDwIOheriPRX
+        35nWz420Y4IUGdBvHTVitqQhfmr6dIHffAC22BJiWMPTf4WFa2iil226E8foQfNgIGF/pi
+        9fZ8yCVt86M7FLgYN8GIZ7yi0e9cu1z65MlKLuY5Qt5n5a/Kdo10mMNXsnPywjmDtAGIE6
+        kFMjmBD2KEmRfZKQP4cQknDzt+y1zI9MJG040JVuqeoLmv2pL4UOjO8zS9aIAw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615030941;
+        s=2020e; t=1615030940;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=trxFQB8QUuSivL5J71BUEOmqr0J1API3E+ON47ryfb0=;
-        b=P4on0JT7wZASFA97cRB18/clQk2Mx1JMVGDV5KyBSpWEdytPwhKZSQfVo7OHSoRv1lyERd
-        0tracpfQCc1JMdDw==
+        bh=BkE9zXVJs1uIjTiJRKhrcBr9hDJuA0FAi4lmYBlnHaQ=;
+        b=8EgLAgX68iw1HnNgQTimkIGgpQPbFtz1nhprgBxdL4cmcfvo51b9/3KRvIbU6LyFOCCUME
+        1gnOI3ApHt8D4zBg==
 From:   "tip-bot2 for Vincent Donnefort" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/pelt: Fix task util_est update filtering
+Subject: [tip: sched/core] cpu/hotplug: Allowing to reset fail injection
 Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210225165820.1377125-1-vincent.donnefort@arm.com>
-References: <20210225165820.1377125-1-vincent.donnefort@arm.com>
+In-Reply-To: <20210216103506.416286-2-vincent.donnefort@arm.com>
+References: <20210216103506.416286-2-vincent.donnefort@arm.com>
 MIME-Version: 1.0
-Message-ID: <161503094077.398.18057493289217956874.tip-bot2@tip-bot2>
+Message-ID: <161503094046.398.4094849843898938715.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,93 +62,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     b89997aa88f0b07d8a6414c908af75062103b8c9
-Gitweb:        https://git.kernel.org/tip/b89997aa88f0b07d8a6414c908af75062103b8c9
+Commit-ID:     3ae70c251f344976428d1f6ee61ea7b4e170fec3
+Gitweb:        https://git.kernel.org/tip/3ae70c251f344976428d1f6ee61ea7b4e170fec3
 Author:        Vincent Donnefort <vincent.donnefort@arm.com>
-AuthorDate:    Thu, 25 Feb 2021 16:58:20 
+AuthorDate:    Tue, 16 Feb 2021 10:35:04 
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Sat, 06 Mar 2021 12:40:22 +01:00
 
-sched/pelt: Fix task util_est update filtering
+cpu/hotplug: Allowing to reset fail injection
 
-Being called for each dequeue, util_est reduces the number of its updates
-by filtering out when the EWMA signal is different from the task util_avg
-by less than 1%. It is a problem for a sudden util_avg ramp-up. Due to the
-decay from a previous high util_avg, EWMA might now be close enough to
-the new util_avg. No update would then happen while it would leave
-ue.enqueued with an out-of-date value.
-
-Taking into consideration the two util_est members, EWMA and enqueued for
-the filtering, ensures, for both, an up-to-date value.
-
-This is for now an issue only for the trace probe that might return the
-stale value. Functional-wise, it isn't a problem, as the value is always
-accessed through max(enqueued, ewma).
-
-This problem has been observed using LISA's UtilConvergence:test_means on
-the sd845c board.
-
-No regression observed with Hackbench on sd845c and Perf-bench sched pipe
-on hikey/hikey960.
+Currently, the only way of resetting the fail injection is to trigger a
+hotplug, hotunplug or both. This is rather annoying for testing
+and, as the default value for this file is -1, it seems pretty natural to
+let a user write it.
 
 Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20210225165820.1377125-1-vincent.donnefort@arm.com
+Link: https://lkml.kernel.org/r/20210216103506.416286-2-vincent.donnefort@arm.com
 ---
- kernel/sched/fair.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ kernel/cpu.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 1af51a6..f5d6541 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3941,6 +3941,8 @@ static inline void util_est_dequeue(struct cfs_rq *cfs_rq,
- 	trace_sched_util_est_cfs_tp(cfs_rq);
- }
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 1b6302e..9121edf 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -2207,6 +2207,11 @@ static ssize_t write_cpuhp_fail(struct device *dev,
+ 	if (ret)
+ 		return ret;
  
-+#define UTIL_EST_MARGIN (SCHED_CAPACITY_SCALE / 100)
-+
- /*
-  * Check if a (signed) value is within a specified (unsigned) margin,
-  * based on the observation that:
-@@ -3958,7 +3960,7 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
- 				   struct task_struct *p,
- 				   bool task_sleep)
- {
--	long last_ewma_diff;
-+	long last_ewma_diff, last_enqueued_diff;
- 	struct util_est ue;
- 
- 	if (!sched_feat(UTIL_EST))
-@@ -3979,6 +3981,8 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
- 	if (ue.enqueued & UTIL_AVG_UNCHANGED)
- 		return;
- 
-+	last_enqueued_diff = ue.enqueued;
-+
- 	/*
- 	 * Reset EWMA on utilization increases, the moving average is used only
- 	 * to smooth utilization decreases.
-@@ -3992,12 +3996,17 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
- 	}
- 
- 	/*
--	 * Skip update of task's estimated utilization when its EWMA is
-+	 * Skip update of task's estimated utilization when its members are
- 	 * already ~1% close to its last activation value.
- 	 */
- 	last_ewma_diff = ue.enqueued - ue.ewma;
--	if (within_margin(last_ewma_diff, (SCHED_CAPACITY_SCALE / 100)))
-+	last_enqueued_diff -= ue.enqueued;
-+	if (within_margin(last_ewma_diff, UTIL_EST_MARGIN)) {
-+		if (!within_margin(last_enqueued_diff, UTIL_EST_MARGIN))
-+			goto done;
-+
- 		return;
++	if (fail == CPUHP_INVALID) {
++		st->fail = fail;
++		return count;
 +	}
++
+ 	if (fail < CPUHP_OFFLINE || fail > CPUHP_ONLINE)
+ 		return -EINVAL;
  
- 	/*
- 	 * To avoid overestimation of actual task utilization, skip updates if
