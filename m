@@ -2,113 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00DA32F9C2
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 055D632F9D8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbhCFLf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 06:35:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
+        id S230453AbhCFLiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 06:38:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbhCFLfV (ORCPT
+        with ESMTP id S230271AbhCFLht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 06:35:21 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAF3C06175F;
-        Sat,  6 Mar 2021 03:35:20 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id w34so2091361pga.8;
-        Sat, 06 Mar 2021 03:35:20 -0800 (PST)
+        Sat, 6 Mar 2021 06:37:49 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD2DC06175F
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 03:37:49 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id d11so3904751qtx.9
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 03:37:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=RFcAptOGUzRFgc1VcA5H4/3lDHhPtSvWgw9OuJoIW28=;
-        b=ZvgTalSC71oPlL8WnLg4t8W9jsbTDX2i6R7giAZKzGn89jhZCH6bvptq9X5yzNQS5I
-         TqWkQy4xBzy1OqYPpKLPkibJibENFxX0lVx2Z3bBNqQJT6/Cxoo1YJqChS7XXHLYoD1Y
-         hAIEuNh9Mniy8UBLnq/dzEFSFRGsZuKkSWTI6xTY74miUVquK7bKEGdjq69axTk/ecyw
-         OXwtviL6EtS4ew+my7eiZj7n5tX3sEg6cLFBYdft0RVMHx3jO/htmDoJd07BvIFQCdla
-         kFXLUUzIe9kVZjcE3mKs1fqRFOZ+fB/z6yztLuFF/OumKpCvkZU9An0PiPBG1vVRKVHV
-         ET0g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rLZcEItVMaZT77m15hh5Bj+DXsjyuX1Wi7CvUEsHYU8=;
+        b=kGkkyvuxM16s5Dd/vu0fIqgpFdef4nuJUXBQc/3cH7o636pQYm2QfEwuYjcFnIUF3+
+         VSLfZe+X9py2TuwhVEGO7Wf09FSALWAnIh/2LhtXSfAQKItNguvyi0RSwbXNP0ZQWXO9
+         jEVCZpjPOrEfQYGntZ2JF76WJVmOqgAiW+TxUgCRl4kTS3903KwV6HFF5kaVELDC/x4r
+         nAeugQb4NgG3jKdAMnRH0rQSy8r0Z6OsGvx0bOeplv6oUxRsTk4cF/3prlFisjwNIHwN
+         h/vQLNBSQFJKOd/XGkCmmdEFhMs/MmOML01q88UMCAsObuvHMOLCCBB6aqzf8+aGuu3/
+         1DpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=RFcAptOGUzRFgc1VcA5H4/3lDHhPtSvWgw9OuJoIW28=;
-        b=mXHH0GiCM+yk98sQaVFvP7/IPwb5PXMJTOcVIuTLVKEaxmERktK34KwnvTnUgvvGFd
-         k+xev7GoazpQMu7+ZmahU8pZgGXCPP8HLbwm2ajGNPeRk4F0FSUT1Sc7gzBN35ZiK9e3
-         oKI89U0kKShK5+sOp2AzgXqqCZgbTxvCmNANrVMoTt0ZG3auKkGATN/ERM7QMO/8ldvP
-         cYDeum6UoIfWRywNapyMT3mHrariggQgnsmTNGNDQ7BchVh5YGKFWJ8k906GuyAy1ov1
-         qBP4It+4RrXbW3TqTJ7jWevnF57cZjWdGRIgRP+vFFb8sjs+6B2UfD3FFKzp6jUIyYH6
-         2bDw==
-X-Gm-Message-State: AOAM532HYilz3mSAr0Iter4wFx1nI/+dj0oa4agb+lfm7njmKf4duMBm
-        wKgL4fGhWIkYsgHI5FsqJIY=
-X-Google-Smtp-Source: ABdhPJyVJQxFLZUKLdkwHW2bBFVsEj+2VwFa5BbmcE8NrsH2miLBMn1v3xMmQzBBt4oxhz57odo1ow==
-X-Received: by 2002:a63:d618:: with SMTP id q24mr12380661pgg.283.1615030520441;
-        Sat, 06 Mar 2021 03:35:20 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:600d:a089:2cbb:f743:ffa5:41bc])
-        by smtp.googlemail.com with ESMTPSA id n184sm5342980pfd.205.2021.03.06.03.35.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 03:35:19 -0800 (PST)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     corbet@lwn.net
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org, willy@infradead.org
-Subject: [RFC v2] scripts: kernel-doc: fix attribute capture in function parsing
-Date:   Sat,  6 Mar 2021 17:05:10 +0530
-Message-Id: <20210306113510.31023-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CAKXUXMwoYa6xbCsqnUYL5uSA71h_3xV7-8erF6XTpmkck8ozaw@mail.gmail.com>
-References: <CAKXUXMwoYa6xbCsqnUYL5uSA71h_3xV7-8erF6XTpmkck8ozaw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rLZcEItVMaZT77m15hh5Bj+DXsjyuX1Wi7CvUEsHYU8=;
+        b=YddJJsJmnsfcSs2bUFt+WEbZTjLQF+sBAQIa2l6QDw6MAJFKNGcD/Ha4rXZ8UgKqvt
+         ulJ/f/pTJ0cZcyxwo+3LbwoIX2fz1fAaD8WohpJLV0PrNK3j3SjMJdfz/BTyiQZrBpg1
+         T9TvLX4ny+kv0c2Wi0LQnksPdiJ+m+AI9rI2yo5FVo+/QERKf/8ejdDN5B1HbnajJftg
+         mYo4ot9/A7sgAGwgUpwLSh2PxVPwMnqtFGLjEf/0u1ug+AyyOUUS9AGundSpGwKerI91
+         otm40xsnZ8+njoWysP4WvmmmbwPwOtIgJE+K0uta9Y2MpxFwxQRoIb3D4dhz4qT5wrB9
+         ba3w==
+X-Gm-Message-State: AOAM531EtBGgl49toaHyWka58Vpm9R8KB4EqF1/xvptzwsKJuNCQ8uLA
+        sVtDpif0CPbwaWY8DX1eAzJIgFWkL8+9FIavR99hYw==
+X-Google-Smtp-Source: ABdhPJxYA9ku6N1PDdsktCXehDnti2bdz0hJtZV0CfBHamUTyev7iN1pLvaay9z4cLB807kE3n8lo8+uorUNVhpJwZ0=
+X-Received: by 2002:ac8:6f3b:: with SMTP id i27mr12856662qtv.67.1615030668299;
+ Sat, 06 Mar 2021 03:37:48 -0800 (PST)
+MIME-Version: 1.0
+References: <000000000000ccbedd05bcd0504e@google.com>
+In-Reply-To: <000000000000ccbedd05bcd0504e@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sat, 6 Mar 2021 12:37:37 +0100
+Message-ID: <CACT4Y+a54q=WzJU9UgzW1P6-xvJqrTJ9doXcqCgyu+MPBFFL=w@mail.gmail.com>
+Subject: Re: [syzbot] upstream boot error: WARNING in kvm_wait
+To:     syzbot <syzbot+a4c8bc1d1dc7b620630d@syzkaller.appspotmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, wanpengli@tencent.com,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, kernel-doc warns for function prototype parsing on the
-presence of attributes "__attribute_const__" and "__flatten" in the
-definition.
+On Fri, Mar 5, 2021 at 9:56 PM syzbot
+<syzbot+a4c8bc1d1dc7b620630d@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    280d542f Merge tag 'drm-fixes-2021-03-05' of git://anongit..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=138c7a92d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=dc4003509ab3fc78
+> dashboard link: https://syzkaller.appspot.com/bug?extid=a4c8bc1d1dc7b620630d
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+a4c8bc1d1dc7b620630d@syzkaller.appspotmail.com
 
-There are 166 occurrences in ~70 files in the kernel tree for
-"__attribute_const__" and 5 occurrences in 4 files for "__flatten".
++Mark, I've enabled CONFIG_DEBUG_IRQFLAGS on syzbot and it led to this breakage.
+Is it a bug in kvm_wait or in the debugging code itself? If it's a
+real bug, I would assume it's pretty bad as it happens all the time.
 
-Out of 166, there are 3 occurrences in three different files with
-"__attribute_const__" and a preceding kernel-doc; and, 1 occurrence in
-./mm/percpu.c for "__flatten" with a preceding kernel-doc. All other
-occurrences have no preceding kernel-doc.
 
-Add support for  "__attribute_const__" and "__flatten" attributes.
-
-A quick evaluation by running 'kernel-doc -none' on kernel-tree reveals
-that no additional warning or error has been added or removed by the fix.
-
-Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
-Changes in v2:
-- Remove "__attribute_const__" from the $return_type capture regex and add to the substituting ones.
-- Add support for "__flatten" attribute
-- Modify commit message
-
- scripts/kernel-doc | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 68df17877384..e1e562b2e2e7 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -1766,12 +1766,14 @@ sub dump_function($$) {
-     $prototype =~ s/^noinline +//;
-     $prototype =~ s/__init +//;
-     $prototype =~ s/__init_or_module +//;
-+    $prototype =~ s/__flatten +//;
-     $prototype =~ s/__meminit +//;
-     $prototype =~ s/__must_check +//;
-     $prototype =~ s/__weak +//;
-     $prototype =~ s/__sched +//;
-     $prototype =~ s/__printf\s*\(\s*\d*\s*,\s*\d*\s*\) +//;
-     my $define = $prototype =~ s/^#\s*define\s+//; #ak added
-+    $prototype =~ s/__attribute_const__ +//;
-     $prototype =~ s/__attribute__\s*\(\(
-             (?:
-                  [\w\s]++          # attribute name
--- 
-2.17.1
-
+> ------------[ cut here ]------------
+> raw_local_irq_restore() called with IRQs enabled
+> WARNING: CPU: 2 PID: 213 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
+> Modules linked in:
+> CPU: 2 PID: 213 Comm: kworker/u17:4 Not tainted 5.12.0-rc1-syzkaller #0
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+> Workqueue: events_unbound call_usermodehelper_exec_work
+>
+> RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
+> Code: be ff cc cc cc cc cc cc cc cc cc cc cc 80 3d e4 38 af 04 00 74 01 c3 48 c7 c7 a0 8f 6b 89 c6 05 d3 38 af 04 01 e8 e7 b9 be ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
+> RSP: 0000:ffffc90000fe7770 EFLAGS: 00010286
+>
+> RAX: 0000000000000000 RBX: ffffffff8c0e9c68 RCX: 0000000000000000
+> RDX: ffff8880116bc3c0 RSI: ffffffff815c0cf5 RDI: fffff520001fcee0
+> RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000001
+> R10: ffffffff815b9a5e R11: 0000000000000000 R12: 0000000000000003
+> R13: fffffbfff181d38d R14: 0000000000000001 R15: ffff88802cc36000
+> FS:  0000000000000000(0000) GS:ffff88802cc00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000000 CR3: 000000000bc8e000 CR4: 0000000000150ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  kvm_wait arch/x86/kernel/kvm.c:860 [inline]
+>  kvm_wait+0xc9/0xe0 arch/x86/kernel/kvm.c:837
+>  pv_wait arch/x86/include/asm/paravirt.h:564 [inline]
+>  pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
+>  __pv_queued_spin_lock_slowpath+0x8b8/0xb40 kernel/locking/qspinlock.c:508
+>  pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:554 [inline]
+>  queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
+>  queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
+>  do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
+>  spin_lock include/linux/spinlock.h:354 [inline]
+>  copy_fs_struct+0x1c8/0x340 fs/fs_struct.c:123
+>  copy_fs kernel/fork.c:1443 [inline]
+>  copy_process+0x4dc2/0x6fd0 kernel/fork.c:2088
+>  kernel_clone+0xe7/0xab0 kernel/fork.c:2462
+>  kernel_thread+0xb5/0xf0 kernel/fork.c:2514
+>  call_usermodehelper_exec_work kernel/umh.c:172 [inline]
+>  call_usermodehelper_exec_work+0xcc/0x180 kernel/umh.c:158
+>  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000ccbedd05bcd0504e%40google.com.
