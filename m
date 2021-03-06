@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C28E32FA24
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC51E32FA23
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:43:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbhCFLm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 06:42:56 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34368 "EHLO
+        id S231341AbhCFLmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 06:42:54 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:34268 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbhCFLmZ (ORCPT
+        with ESMTP id S230406AbhCFLmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 6 Mar 2021 06:42:25 -0500
 Date:   Sat, 06 Mar 2021 11:42:23 -0000
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1P3PuapQCPu+P6h38eAFeVR5TUXIRpe3xn112g4z9pE=;
-        b=YvXnUI0qZ+/xEYl16U6rbgYM8RRLMakJ6Kyo4pHZM1TUrYzM4uz4pfCJRNcuZo16icNMrO
-        pJKyvcavNdIvIyZV24xPd/HpERS/fLV6EwNZCTw1Qp4vaIqvXiwOgzs/zFlQFukemOdm2j
-        Ukh4Ffqm1wUZEhM8SmemoKySBOvZo+mXBg43WAU1Rdgksu4A9gGUQVntpIYdP3hmpSGiL0
-        /hT7COCbQ6Pa70qoKFtwO17k//S/qp41g/hnHgwA4OVXujKRPQEPTJnBNKAMrxFqJYIKqe
-        qvshWPMvkLTE06pmgoQkRuw4L9LkaIkHLrQqv9Kyin05MzYvHyf1jiSWNf7EIw==
+        bh=EOn20dMtpMJdbJU3UovE4frcnkqDklpuKaNeXSDjxiI=;
+        b=omdLUi5ud3LsOETcfYFrMcq5iFkn1v4Nus74EhqUdl4xhj+4rdERw64BVX4chz8WD0MBYD
+        35LaybRYzmX9tWNLjMStB8iARmdiejRPCGjKXM/Xjz3AlOBsBRMjUN3W6UeZ3hjWpESxjs
+        IE5lhDrsQ9SAgUtmy4+uqawMUUkeNIjqqF9vNinVsqXrMRF6veoFi3hfQey4iBg9WMGrMi
+        y47njqghIgimkXlMxfimPnFEBTiC4juw0TkRFJHz+J9e6ammRbZQE3dJTJypQ3dmIk7eg+
+        HA6lssj/bcsyNkPIjnVijrn9+yEyxgdTZmzY7kp3m76z+s1GqY9XA1Sw/Un4wg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1615030944;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,24 +33,25 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1P3PuapQCPu+P6h38eAFeVR5TUXIRpe3xn112g4z9pE=;
-        b=9Ru/NouYvLGg5LKyz33DDDcwMf2wKHixK9xd7vKN/0CRXGMRQVfofRn84yEvvjGSyKP0NF
-        B3t3yWENoAQD7nDQ==
-From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
+        bh=EOn20dMtpMJdbJU3UovE4frcnkqDklpuKaNeXSDjxiI=;
+        b=HDJK4zH2PbjXTpI2pPafJuyUqd8jnVFOFOKGym+aigNjjp3ze2SB/RZ1oLTUK7fdYOFx2t
+        GW3tslyw5ZFJhYDw==
+From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Remove update of blocked load from
- newidle_balance
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+Subject: [tip: sched/core] kcov: Remove kcov include from sched.h and move it
+ to its users.
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210224133007.28644-2-vincent.guittot@linaro.org>
-References: <20210224133007.28644-2-vincent.guittot@linaro.org>
+        Johannes Berg <johannes@sipsolutions.net>,
+        Andrey Konovalov <andreyknvl@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210218173124.iy5iyqv3a4oia4vv@linutronix.de>
+References: <20210218173124.iy5iyqv3a4oia4vv@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <161503094353.398.8402845944658689039.tip-bot2@tip-bot2>
+Message-ID: <161503094379.398.12330646699386290495.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,121 +62,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     0826530de3cbdc89e60a89e86def94a5f0fc81ca
-Gitweb:        https://git.kernel.org/tip/0826530de3cbdc89e60a89e86def94a5f0fc81ca
-Author:        Vincent Guittot <vincent.guittot@linaro.org>
-AuthorDate:    Wed, 24 Feb 2021 14:30:01 +01:00
+Commit-ID:     183f47fcaa54a5ffe671d990186d330ac8c63b10
+Gitweb:        https://git.kernel.org/tip/183f47fcaa54a5ffe671d990186d330ac8c63b10
+Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+AuthorDate:    Thu, 18 Feb 2021 18:31:24 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Sat, 06 Mar 2021 12:40:21 +01:00
 
-sched/fair: Remove update of blocked load from newidle_balance
+kcov: Remove kcov include from sched.h and move it to its users.
 
-newidle_balance runs with both preempt and irq disabled which prevent
-local irq to run during this period. The duration for updating the
-blocked load of CPUs varies according to the number of CPU cgroups
-with non-decayed load and extends this critical period to an uncontrolled
-level.
+The recent addition of in_serving_softirq() to kconv.h results in
+compile failure on PREEMPT_RT because it requires
+task_struct::softirq_disable_cnt. This is not available if kconv.h is
+included from sched.h.
 
-Remove the update from newidle_balance and trigger a normal ILB that
-will take care of the update instead.
+It is not needed to include kconv.h from sched.h. All but the net/ user
+already include the kconv header file.
 
-This reduces the IRQ latency from O(nr_cgroups * nr_nohz_cpus) to
-O(nr_cgroups).
+Move the include of the kconv.h header from sched.h it its users.
+Additionally include sched.h from kconv.h to ensure that everything
+task_struct related is available.
 
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210224133007.28644-2-vincent.guittot@linaro.org
+Acked-by: Johannes Berg <johannes@sipsolutions.net>
+Acked-by: Andrey Konovalov <andreyknvl@google.com>
+Link: https://lkml.kernel.org/r/20210218173124.iy5iyqv3a4oia4vv@linutronix.de
 ---
- kernel/sched/fair.c | 33 +++++----------------------------
- 1 file changed, 5 insertions(+), 28 deletions(-)
+ drivers/usb/usbip/usbip_common.h | 1 +
+ include/linux/kcov.h             | 1 +
+ include/linux/sched.h            | 1 -
+ net/core/skbuff.c                | 1 +
+ net/mac80211/iface.c             | 1 +
+ net/mac80211/rx.c                | 1 +
+ 6 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 794c2cb..806e16f 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7392,8 +7392,6 @@ enum migration_type {
- #define LBF_NEED_BREAK	0x02
- #define LBF_DST_PINNED  0x04
- #define LBF_SOME_PINNED	0x08
--#define LBF_NOHZ_STATS	0x10
--#define LBF_NOHZ_AGAIN	0x20
+diff --git a/drivers/usb/usbip/usbip_common.h b/drivers/usb/usbip/usbip_common.h
+index d60ce17..a7dd6c6 100644
+--- a/drivers/usb/usbip/usbip_common.h
++++ b/drivers/usb/usbip/usbip_common.h
+@@ -18,6 +18,7 @@
+ #include <linux/usb.h>
+ #include <linux/wait.h>
+ #include <linux/sched/task.h>
++#include <linux/kcov.h>
+ #include <uapi/linux/usbip.h>
  
- struct lb_env {
- 	struct sched_domain	*sd;
-@@ -8397,9 +8395,6 @@ static inline void update_sg_lb_stats(struct lb_env *env,
- 	for_each_cpu_and(i, sched_group_span(group), env->cpus) {
- 		struct rq *rq = cpu_rq(i);
+ #undef pr_fmt
+diff --git a/include/linux/kcov.h b/include/linux/kcov.h
+index 4e3037d..55dc338 100644
+--- a/include/linux/kcov.h
++++ b/include/linux/kcov.h
+@@ -2,6 +2,7 @@
+ #ifndef _LINUX_KCOV_H
+ #define _LINUX_KCOV_H
  
--		if ((env->flags & LBF_NOHZ_STATS) && update_nohz_stats(rq, false))
--			env->flags |= LBF_NOHZ_AGAIN;
--
- 		sgs->group_load += cpu_load(rq);
- 		sgs->group_util += cpu_util(i);
- 		sgs->group_runnable += cpu_runnable(rq);
-@@ -8940,11 +8935,6 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 	struct sg_lb_stats tmp_sgs;
- 	int sg_status = 0;
++#include <linux/sched.h>
+ #include <uapi/linux/kcov.h>
  
--#ifdef CONFIG_NO_HZ_COMMON
--	if (env->idle == CPU_NEWLY_IDLE && READ_ONCE(nohz.has_blocked))
--		env->flags |= LBF_NOHZ_STATS;
--#endif
--
- 	do {
- 		struct sg_lb_stats *sgs = &tmp_sgs;
- 		int local_group;
-@@ -8981,14 +8971,6 @@ next_group:
- 	/* Tag domain that child domain prefers tasks go to siblings first */
- 	sds->prefer_sibling = child && child->flags & SD_PREFER_SIBLING;
+ struct task_struct;
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index ef00bb2..cf245bc 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -14,7 +14,6 @@
+ #include <linux/pid.h>
+ #include <linux/sem.h>
+ #include <linux/shm.h>
+-#include <linux/kcov.h>
+ #include <linux/mutex.h>
+ #include <linux/plist.h>
+ #include <linux/hrtimer.h>
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 545a472..420f23c 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -60,6 +60,7 @@
+ #include <linux/prefetch.h>
+ #include <linux/if_vlan.h>
+ #include <linux/mpls.h>
++#include <linux/kcov.h>
  
--#ifdef CONFIG_NO_HZ_COMMON
--	if ((env->flags & LBF_NOHZ_AGAIN) &&
--	    cpumask_subset(nohz.idle_cpus_mask, sched_domain_span(env->sd))) {
--
--		WRITE_ONCE(nohz.next_blocked,
--			   jiffies + msecs_to_jiffies(LOAD_AVG_PERIOD));
--	}
--#endif
- 
- 	if (env->sd->flags & SD_NUMA)
- 		env->fbq_type = fbq_classify_group(&sds->busiest_stat);
-@@ -10517,16 +10499,11 @@ static void nohz_newidle_balance(struct rq *this_rq)
- 	    time_before(jiffies, READ_ONCE(nohz.next_blocked)))
- 		return;
- 
--	raw_spin_unlock(&this_rq->lock);
- 	/*
--	 * This CPU is going to be idle and blocked load of idle CPUs
--	 * need to be updated. Run the ilb locally as it is a good
--	 * candidate for ilb instead of waking up another idle CPU.
--	 * Kick an normal ilb if we failed to do the update.
-+	 * Blocked load of idle CPUs need to be updated.
-+	 * Kick an ILB to update statistics.
- 	 */
--	if (!_nohz_idle_balance(this_rq, NOHZ_STATS_KICK, CPU_NEWLY_IDLE))
--		kick_ilb(NOHZ_STATS_KICK);
--	raw_spin_lock(&this_rq->lock);
-+	kick_ilb(NOHZ_STATS_KICK);
- }
- 
- #else /* !CONFIG_NO_HZ_COMMON */
-@@ -10587,8 +10564,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 			update_next_balance(sd, &next_balance);
- 		rcu_read_unlock();
- 
--		nohz_newidle_balance(this_rq);
--
- 		goto out;
- 	}
- 
-@@ -10654,6 +10629,8 @@ out:
- 
- 	if (pulled_task)
- 		this_rq->idle_stamp = 0;
-+	else
-+		nohz_newidle_balance(this_rq);
- 
- 	rq_repin_lock(this_rq, rf);
- 
+ #include <net/protocol.h>
+ #include <net/dst.h>
+diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
+index b80c9b0..c127deb 100644
+--- a/net/mac80211/iface.c
++++ b/net/mac80211/iface.c
+@@ -15,6 +15,7 @@
+ #include <linux/if_arp.h>
+ #include <linux/netdevice.h>
+ #include <linux/rtnetlink.h>
++#include <linux/kcov.h>
+ #include <net/mac80211.h>
+ #include <net/ieee80211_radiotap.h>
+ #include "ieee80211_i.h"
+diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
+index c1343c0..62047e9 100644
+--- a/net/mac80211/rx.c
++++ b/net/mac80211/rx.c
+@@ -17,6 +17,7 @@
+ #include <linux/etherdevice.h>
+ #include <linux/rcupdate.h>
+ #include <linux/export.h>
++#include <linux/kcov.h>
+ #include <linux/bitops.h>
+ #include <net/mac80211.h>
+ #include <net/ieee80211_radiotap.h>
