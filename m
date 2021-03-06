@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730F832F7CF
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 03:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDD032F7D3
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 03:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbhCFC21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 21:28:27 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:51206 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229901AbhCFC2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 21:28:14 -0500
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxKdWv6EJgvxsVAA--.26817S2;
-        Sat, 06 Mar 2021 10:28:00 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wangming01@loongson.cn
-Subject: [PATCH v3 0/7] Add basic support for Loongson-2K1000
-Date:   Sat,  6 Mar 2021 10:27:52 +0800
-Message-Id: <20210306022759.9431-1-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.20.1
+        id S229719AbhCFCaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 21:30:35 -0500
+Received: from p3plsmtpa12-05.prod.phx3.secureserver.net ([68.178.252.234]:40368
+        "EHLO p3plsmtpa12-05.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229818AbhCFCab (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 21:30:31 -0500
+Received: from chrisHP110 ([76.103.216.188])
+        by :SMTPAUTH: with ESMTPA
+        id IMi4ld3TzrZPFIMi6lWsrK; Fri, 05 Mar 2021 19:30:30 -0700
+X-CMAE-Analysis: v=2.4 cv=be2u7MDB c=1 sm=1 tr=0 ts=6042e946
+ a=ZkbE6z54K4jjswx6VoHRvg==:117 a=ZkbE6z54K4jjswx6VoHRvg==:17
+ a=kj9zAlcOel0A:10 a=HnUYZtbmAAAA:20 a=NW8-NIpsAAAA:8 a=sF2Hq0S-_YJbdP9ujVwA:9
+ a=CjuIK1q_8ugA:10 a=FTAPkevyI8KQvgyCdMRv:22 a=BPzZvq435JnGatEyYwdK:22
+X-SECURESERVER-ACCT: don@thebollingers.org
+From:   "Don Bollinger" <don@thebollingers.org>
+To:     "'Jakub Kicinski'" <kuba@kernel.org>
+Cc:     "'Andrew Lunn'" <andrew@lunn.ch>, <arndb@arndb.de>,
+        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
+        <brandon_chuang@edge-core.com>, <wally_wang@accton.com>,
+        <aken_liu@edge-core.com>, <gulv@microsoft.com>,
+        <jolevequ@microsoft.com>, <xinxliu@microsoft.com>,
+        "'netdev'" <netdev@vger.kernel.org>,
+        "'Moshe Shemesh'" <moshe@nvidia.com>, <don@thebollingers.org>
+References: <20210215193821.3345-1-don@thebollingers.org>       <YDl3f8MNWdZWeOBh@lunn.ch>      <000901d70cb2$b2848420$178d8c60$@thebollingers.org>     <004f01d70ed5$8bb64480$a322cd80$@thebollingers.org>     <YD1ScQ+w8+1H//Y+@lunn.ch>      <003901d711f2$be2f55d0$3a8e0170$@thebollingers.org> <20210305145518.57a765bc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210305145518.57a765bc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Subject: RE: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS EEPROMS
+Date:   Fri, 5 Mar 2021 18:30:27 -0800
+Message-ID: <005e01d71230$ad203be0$0760b3a0$@thebollingers.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxKdWv6EJgvxsVAA--.26817S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7urykAr1DAw4DKryfXFWDJwb_yoW8Wr4kpw
-        43Cw15KF45Cry3Crn3JryUWryrArWfJrZrWF47Xr15GasIqa4Yvr1fJFs8Jr42vrykta4j
-        9ry8WrW7GFnrC3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-        Yx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbV
-        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK
-        6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbF4iU
-        UUUUU==
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQKX2ThEytgxSBCv+zte4L/P7xUGAgJF1IfoAfArhLgBgnHheQD1wSRRAcnMEPsCilAQ5aicmFNA
+Content-Language: en-us
+X-CMAE-Envelope: MS4xfN4YfeNScLb4n4eofhupqpAJXrnysvqSFDl20o7mOBFfNLjkY/YlVUGa+1EuEbdzBHFk2XTiv3LO8AQIsKOqIuioMsHXcN38FSakt4Ci0awQeTPEr40r
+ rIvlDTW5KousjXSsCwfFeopFYIA4dTtjBlEO6eKgSOQsedTMeqJhJYwcz2nTaW/RZlErVWtP96aV3BHLXPBfRm+rrJBYocsjXCuF015eAJ0fBTZIlRJahg83
+ 9b096iBO1Yr8QCZwu6WdtMcMf0LrUpvOF1O1xR3zG/qLtHaD198758ZciVUnUVTBhueTIC00/ZMJ26j77ZYr2MkDHI+1nmTaBwej8sMMOAl4rObMw4tcBotf
+ QIAs6/BUJsVEcV7Rc/VKojbJLlfBmFon0j5ePOlnB/F0CvAj1ijPyPPdmlLG1nJtog4cLroialwqdg9AZBwNXcQxDJreTZgYz2+pyyXo83oXkhe5BEHpx5er
+ ZEQuVO5WI58saSos+fjI/M0QTqUscOl1TV2DeqnD67NuqJovgzxEZiEoZyosHSMxpJ/jAmf/awDbMCMysU8lz/k8MHo3tVO0ZrElhi7vwg/76W+gI9PzYAFP
+ Wxe1Jo6sXzPgBtMcdwrTpXQ0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These patches support single-core DTS boot to the serial port login
-interface, which can be operated using conventional commands.
+On Fri, 5 Mar 2021 2:55 PM -0800 Jakub Kicinski wrote:
+> On Fri, 5 Mar 2021 11:07:08 -0800 Don Bollinger wrote:
+> > Acknowledging your objections, I nonetheless request that optoe be
+> > accepted into upstream as an eeprom driver in drivers/misc/eeprom.  It
+> > is a legitimate driver, with a legitimate user community, which
+> > deserves the benefits of being managed as a legitimate part of the linux
+> kernel.
+> 
+> It's in the best interest of the community to standardize on how we expect
+> things to operate. You're free to do whatever you want in your proprietary
+> systems but please don't expect us to accept a parallel, in now way
+superior
+> method of accessing SFPs.
 
-I have successfully tested it on the Loongson 2K1000 machine.
-pmon: http://cgit.loongnix.org/cgit/pmon-loongson3/
+These are not proprietary systems.  The Network Operating Systems that use
+optoe are open source projects, Linux based, available on github, and
+contributing to the Linux source (see for example
+https://github.com/Azure/SONiC).  The switches that these NOSs run on are
+open spec systems
+(https://www.opencompute.org/wiki/Networking/SpecsAndDesigns).  The fact
+that they use the SDK from the switch silicon vendor should not mean they
+are banished from the Linux community.
 
-Qing Zhang (7):
-  MIPS: Loongson64: DeviceTree for 2K1000
-  MIPS: Loongson64: Distinguish firmware dependencies DTB/LEFI
-  MIPS: Loongson64: Add support for the 2K1000 to get cpu_clock_freq
-  MIPS: Loongson64: Add 2K1000 early_printk_port
-  irqchip/loongson-liointc: irqchip add 2.0 version
-  dt-bindings: interrupt-controller: Add Loongson-2K1000 LIOINTC
-  MIPS: Loongson64: Add a Loongson-2k default config file
+I am proposing acceptance of a commonly used implementation for accessing
+SFPs because the one used by the netdev/netlink community does not fit the
+architecture of the white box NOS/switch community.  I am not trying to pick
+sides, I am trying to make optoe available to both communities, to improve
+EEPROM access for both of them.
 
- .../loongson,liointc.yaml                     |   7 +-
- arch/mips/boot/dts/loongson/Makefile          |   1 +
- .../boot/dts/loongson/loongson64-2k1000.dtsi  | 243 ++++++++++++
- .../dts/loongson/loongson64_2core_2k1000.dts  |  10 +
- arch/mips/configs/loongson2k_defconfig        | 353 ++++++++++++++++++
- .../include/asm/mach-loongson64/boot_param.h  |   6 +
- .../asm/mach-loongson64/builtin_dtbs.h        |   1 +
- .../include/asm/mach-loongson64/loongson.h    |   3 +-
- arch/mips/loongson64/env.c                    |  13 +-
- arch/mips/loongson64/init.c                   |  21 +-
- arch/mips/loongson64/time.c                   |  20 +
- drivers/irqchip/irq-loongson-liointc.c        |  55 ++-
- 12 files changed, 716 insertions(+), 17 deletions(-)
- create mode 100644 arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
- create mode 100644 arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dts
- create mode 100644 arch/mips/configs/loongson2k_defconfig
-
--- 
-2.20.1
+Don
 
