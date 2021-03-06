@@ -2,152 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C766332FAED
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 14:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59AE732FAE0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 14:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhCFNmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 08:42:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229888AbhCFNmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 08:42:24 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CB5265018;
-        Sat,  6 Mar 2021 13:42:22 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 13:33:51 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <mircea.caprioru@analog.com>
-Subject: Re: [PATCH][RESEND] iio: dac: ad5686: Add support for
- AD5673R/AD5677R
-Message-ID: <20210218133351.32fcaead@archlinux>
-In-Reply-To: <20210217074102.23148-1-alexandru.ardelean@analog.com>
-References: <20210217074102.23148-1-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230473AbhCFNhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 08:37:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230472AbhCFNhE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 08:37:04 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58266C06174A;
+        Sat,  6 Mar 2021 05:37:04 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id q2-20020a17090a2e02b02900bee668844dso643863pjd.3;
+        Sat, 06 Mar 2021 05:37:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=lsCQCAQNCQuZMTW5LL9WzweLlGjeyMxQVHgG7fBsL1o=;
+        b=nFsDYqlu3hvsMzwin6DRWtl6v0tWFYrc9nJxNuhQ5iTqQBILNm+rFpxCEtEoCmxeb7
+         b4uaQFquEQPTqYTixUg2P5JsTWq4wySzYU3biIp2sWUyeypZbhUKFKLbIyHXm+CishDs
+         0/QpkLjfkeSYcXLIlBWfaidI8Ke2r0Z0kn+rRkChLlh9InnElKSrY9nkpPfuneUbRUdx
+         7dcsAqcnJl27Ct6nT3eMCYTXC+PEFBzoIH5oiboKFQgGcyFrHfv7m8glQcBvtO7d4IRS
+         ZmmX1roTgcOZAEAi0h9ZC/uK4Xm0wmsNtdzsN8pAvCQj1Qr/QHR5fWiJY/+Qk7r7CxrK
+         N1pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lsCQCAQNCQuZMTW5LL9WzweLlGjeyMxQVHgG7fBsL1o=;
+        b=UhVO9sRqWZDerVR0aBZu2RBHhhPXXubrrTJthdhnF5HktfEQoy5rU0eSOiBpfsVxyB
+         5wm91tKp+UfJw7MeB9RAtpx2jLjyFw0nMOBmD6CvdZDtRyEUri+49I/p9GSWO3fsFlIA
+         8AnPMdxjVEEL56Z1y4JQKj8z35Rq1FL/PCtZrjq285gpCrG5BxarJ2wj6DCAUURrvzHq
+         qIxyYsHLrhaNCtTq+Jw+euvGn/e3Lm6drbMeiWNhC3+FGTs2NO+G7sZvYH9luLiiUsBO
+         bo5fiayqidFlFh0coqd+eL3eZyeENphRSyZqYrbN/QNYpd2iBR8rC6dAiWvxyAzbEA1L
+         CGbA==
+X-Gm-Message-State: AOAM531q+SbCI02nqmUeyVay3/KgI9O9o+1UhL1Y0rY6KuEzzbJHq4Wo
+        6zbyy/aJhqtjDrEVHo02GLM=
+X-Google-Smtp-Source: ABdhPJxQVpxRn+xLx9O/fYjYHEtlI6MKsTvwtMVL469x1+hOq1I8GH0d2vH6RLd9IarUlmPCLJazoA==
+X-Received: by 2002:a17:90a:c20a:: with SMTP id e10mr14798599pjt.221.1615037824035;
+        Sat, 06 Mar 2021 05:37:04 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.66])
+        by smtp.gmail.com with ESMTPSA id e12sm5345659pjj.23.2021.03.06.05.36.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 05:37:03 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, ohad@wizery.com
+Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] rpmsg: qcom_glink_native: fix error return code of qcom_glink_rx_data()
+Date:   Sat,  6 Mar 2021 05:36:24 -0800
+Message-Id: <20210306133624.17237-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Feb 2021 09:41:02 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+When idr_find() returns NULL to intent, no error return code of
+qcom_glink_rx_data() is assigned.
+To fix this bug, ret is assigned with -ENOENT in this case.
 
-> From: Mircea Caprioru <mircea.caprioru@analog.com>
-> 
-> The AD5673R/AD5677R are low power, 16-channel, 12-/16-bit buffered voltage
-> output digital-to-analog converters (DACs). They include a 2.5 V internal
-> reference (enabled by default).
-> 
-> These devices are very similar to AD5674R/AD5679R, except that they
-> have an i2c interface.
-> 
-> Signed-off-by: Mircea Caprioru <mircea.caprioru@analog.com>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/rpmsg/qcom_glink_native.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Applied, thanks
-
-Jonathan
-
-> ---
-> 
-> Forgot to include the linux-iio list in the first send.
-> 
->  drivers/iio/dac/Kconfig      |  5 +++--
->  drivers/iio/dac/ad5686.c     | 12 ++++++++++++
->  drivers/iio/dac/ad5686.h     |  2 ++
->  drivers/iio/dac/ad5696-i2c.c |  6 ++++--
->  4 files changed, 21 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
-> index cea07b4cced1..75e1f2b48638 100644
-> --- a/drivers/iio/dac/Kconfig
-> +++ b/drivers/iio/dac/Kconfig
-> @@ -142,8 +142,9 @@ config AD5696_I2C
->  	select AD5686
->  	help
->  	  Say yes here to build support for Analog Devices AD5311R, AD5338R,
-> -	  AD5671R, AD5675R, AD5691R, AD5692R, AD5693, AD5693R, AD5694, AD5694R,
-> -	  AD5695R, AD5696, and AD5696R Digital to Analog converters.
-> +	  AD5671R, AD5673R, AD5675R, AD5677R, AD5691R, AD5692R, AD5693, AD5693R,
-> +	  AD5694, AD5694R, AD5695R, AD5696, and AD5696R Digital to Analog
-> +	  converters.
->  
->  	  To compile this driver as a module, choose M here: the module will be
->  	  called ad5696.
-> diff --git a/drivers/iio/dac/ad5686.c b/drivers/iio/dac/ad5686.c
-> index 7d6792ac1020..99a95282ac57 100644
-> --- a/drivers/iio/dac/ad5686.c
-> +++ b/drivers/iio/dac/ad5686.c
-> @@ -301,6 +301,12 @@ static const struct ad5686_chip_info ad5686_chip_info_tbl[] = {
->  		.num_channels = 8,
->  		.regmap_type = AD5686_REGMAP,
->  	},
-> +	[ID_AD5673R] = {
-> +		.channels = ad5674r_channels,
-> +		.int_vref_mv = 2500,
-> +		.num_channels = 16,
-> +		.regmap_type = AD5686_REGMAP,
-> +	},
->  	[ID_AD5674R] = {
->  		.channels = ad5674r_channels,
->  		.int_vref_mv = 2500,
-> @@ -324,6 +330,12 @@ static const struct ad5686_chip_info ad5686_chip_info_tbl[] = {
->  		.num_channels = 8,
->  		.regmap_type = AD5686_REGMAP,
->  	},
-> +	[ID_AD5677R] = {
-> +		.channels = ad5679r_channels,
-> +		.int_vref_mv = 2500,
-> +		.num_channels = 16,
-> +		.regmap_type = AD5686_REGMAP,
-> +	},
->  	[ID_AD5679R] = {
->  		.channels = ad5679r_channels,
->  		.int_vref_mv = 2500,
-> diff --git a/drivers/iio/dac/ad5686.h b/drivers/iio/dac/ad5686.h
-> index d9c8ba413fe9..f89a6f92b427 100644
-> --- a/drivers/iio/dac/ad5686.h
-> +++ b/drivers/iio/dac/ad5686.h
-> @@ -55,10 +55,12 @@ enum ad5686_supported_device_ids {
->  	ID_AD5338R,
->  	ID_AD5671R,
->  	ID_AD5672R,
-> +	ID_AD5673R,
->  	ID_AD5674R,
->  	ID_AD5675R,
->  	ID_AD5676,
->  	ID_AD5676R,
-> +	ID_AD5677R,
->  	ID_AD5679R,
->  	ID_AD5681R,
->  	ID_AD5682R,
-> diff --git a/drivers/iio/dac/ad5696-i2c.c b/drivers/iio/dac/ad5696-i2c.c
-> index a39eda7c02d2..24a6a4a5a2e0 100644
-> --- a/drivers/iio/dac/ad5696-i2c.c
-> +++ b/drivers/iio/dac/ad5696-i2c.c
-> @@ -1,7 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - * AD5671R, AD5675R, AD5691R, AD5692R, AD5693, AD5693R,
-> - * AD5694, AD5694R, AD5695R, AD5696, AD5696R
-> + * AD5338R, AD5671R, AD5673R, AD5675R, AD5677R, AD5691R, AD5692R, AD5693,
-> + * AD5693R, AD5694, AD5694R, AD5695R, AD5696, AD5696R
->   * Digital to analog converters driver
->   *
->   * Copyright 2018 Analog Devices Inc.
-> @@ -74,7 +74,9 @@ static const struct i2c_device_id ad5686_i2c_id[] = {
->  	{"ad5311r", ID_AD5311R},
->  	{"ad5338r", ID_AD5338R},
->  	{"ad5671r", ID_AD5671R},
-> +	{"ad5673r", ID_AD5673R},
->  	{"ad5675r", ID_AD5675R},
-> +	{"ad5677r", ID_AD5677R},
->  	{"ad5691r", ID_AD5691R},
->  	{"ad5692r", ID_AD5692R},
->  	{"ad5693", ID_AD5693},
+diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
+index 27a05167c18c..4840886532ff 100644
+--- a/drivers/rpmsg/qcom_glink_native.c
++++ b/drivers/rpmsg/qcom_glink_native.c
+@@ -857,6 +857,7 @@ static int qcom_glink_rx_data(struct qcom_glink *glink, size_t avail)
+ 			dev_err(glink->dev,
+ 				"no intent found for channel %s intent %d",
+ 				channel->name, liid);
++			ret = -ENOENT;
+ 			goto advance_rx;
+ 		}
+ 	}
+-- 
+2.17.1
 
