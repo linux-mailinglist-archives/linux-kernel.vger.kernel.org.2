@@ -2,149 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055D632F9D8
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F82432FA1C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:43:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbhCFLiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 06:38:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
+        id S231270AbhCFLmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 06:42:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbhCFLht (ORCPT
+        with ESMTP id S230329AbhCFLmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 06:37:49 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD2DC06175F
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 03:37:49 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id d11so3904751qtx.9
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 03:37:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rLZcEItVMaZT77m15hh5Bj+DXsjyuX1Wi7CvUEsHYU8=;
-        b=kGkkyvuxM16s5Dd/vu0fIqgpFdef4nuJUXBQc/3cH7o636pQYm2QfEwuYjcFnIUF3+
-         VSLfZe+X9py2TuwhVEGO7Wf09FSALWAnIh/2LhtXSfAQKItNguvyi0RSwbXNP0ZQWXO9
-         jEVCZpjPOrEfQYGntZ2JF76WJVmOqgAiW+TxUgCRl4kTS3903KwV6HFF5kaVELDC/x4r
-         nAeugQb4NgG3jKdAMnRH0rQSy8r0Z6OsGvx0bOeplv6oUxRsTk4cF/3prlFisjwNIHwN
-         h/vQLNBSQFJKOd/XGkCmmdEFhMs/MmOML01q88UMCAsObuvHMOLCCBB6aqzf8+aGuu3/
-         1DpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rLZcEItVMaZT77m15hh5Bj+DXsjyuX1Wi7CvUEsHYU8=;
-        b=YddJJsJmnsfcSs2bUFt+WEbZTjLQF+sBAQIa2l6QDw6MAJFKNGcD/Ha4rXZ8UgKqvt
-         ulJ/f/pTJ0cZcyxwo+3LbwoIX2fz1fAaD8WohpJLV0PrNK3j3SjMJdfz/BTyiQZrBpg1
-         T9TvLX4ny+kv0c2Wi0LQnksPdiJ+m+AI9rI2yo5FVo+/QERKf/8ejdDN5B1HbnajJftg
-         mYo4ot9/A7sgAGwgUpwLSh2PxVPwMnqtFGLjEf/0u1ug+AyyOUUS9AGundSpGwKerI91
-         otm40xsnZ8+njoWysP4WvmmmbwPwOtIgJE+K0uta9Y2MpxFwxQRoIb3D4dhz4qT5wrB9
-         ba3w==
-X-Gm-Message-State: AOAM531EtBGgl49toaHyWka58Vpm9R8KB4EqF1/xvptzwsKJuNCQ8uLA
-        sVtDpif0CPbwaWY8DX1eAzJIgFWkL8+9FIavR99hYw==
-X-Google-Smtp-Source: ABdhPJxYA9ku6N1PDdsktCXehDnti2bdz0hJtZV0CfBHamUTyev7iN1pLvaay9z4cLB807kE3n8lo8+uorUNVhpJwZ0=
-X-Received: by 2002:ac8:6f3b:: with SMTP id i27mr12856662qtv.67.1615030668299;
- Sat, 06 Mar 2021 03:37:48 -0800 (PST)
+        Sat, 6 Mar 2021 06:42:21 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F37C061760;
+        Sat,  6 Mar 2021 03:42:20 -0800 (PST)
+Date:   Sat, 06 Mar 2021 11:42:18 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615030939;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OtCP09WvW9qGYlkOGxq/0menNUv0fdvsr1kCKhuJ4eM=;
+        b=hl6pBQqU1nr8PeUs0+PVMUlIbDXWWXwSJh1B0TlWxSk6IdolJsF/Qaoj0IOXTe5CAU2dot
+        1dQa/SwLozvHh9tX+sFfWYmHCL9XycgNABzM/zhjbeZorA3Z5g218yWQGo22xdAFocu9SD
+        /ir/I060puq6UgpRiMUrN3R5aJAZ4ZVqG6jaAb32bTREOvZAk7OFpZ3mvUqb1M1AuaB7+t
+        al1dD7/CTsC4lNddiHmZy1fM75r9fx2H1rqj0ZgweqbJPkW5SjicgbnYfpvL1up6+YdXv+
+        fyTUPhRMQgVfWl/kocRipVGm3TW+VRAwS8HPhtgLPkTf/loDq/LLDuyR+9y6HA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615030939;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OtCP09WvW9qGYlkOGxq/0menNUv0fdvsr1kCKhuJ4eM=;
+        b=TCzQ5uH+tQr83acF6RJfuorALnIOfyxFk9BqfELX2fulysyhgpFfLQpz4F9Tq190k8tb+u
+        /qCT2h2B7HjCaaBA==
+From:   "tip-bot2 for Chengming Zhou" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] psi: Optimize task switch inside shared cgroups
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210303034659.91735-5-zhouchengming@bytedance.com>
+References: <20210303034659.91735-5-zhouchengming@bytedance.com>
 MIME-Version: 1.0
-References: <000000000000ccbedd05bcd0504e@google.com>
-In-Reply-To: <000000000000ccbedd05bcd0504e@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sat, 6 Mar 2021 12:37:37 +0100
-Message-ID: <CACT4Y+a54q=WzJU9UgzW1P6-xvJqrTJ9doXcqCgyu+MPBFFL=w@mail.gmail.com>
-Subject: Re: [syzbot] upstream boot error: WARNING in kvm_wait
-To:     syzbot <syzbot+a4c8bc1d1dc7b620630d@syzkaller.appspotmail.com>
-Cc:     Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, wanpengli@tencent.com,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <161503093807.398.7510792283650382775.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 9:56 PM syzbot
-<syzbot+a4c8bc1d1dc7b620630d@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    280d542f Merge tag 'drm-fixes-2021-03-05' of git://anongit..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=138c7a92d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=dc4003509ab3fc78
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a4c8bc1d1dc7b620630d
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+a4c8bc1d1dc7b620630d@syzkaller.appspotmail.com
+The following commit has been merged into the sched/core branch of tip:
 
-+Mark, I've enabled CONFIG_DEBUG_IRQFLAGS on syzbot and it led to this breakage.
-Is it a bug in kvm_wait or in the debugging code itself? If it's a
-real bug, I would assume it's pretty bad as it happens all the time.
+Commit-ID:     4117cebf1a9fcbf35b9aabf0e37b6c5eea296798
+Gitweb:        https://git.kernel.org/tip/4117cebf1a9fcbf35b9aabf0e37b6c5eea296798
+Author:        Chengming Zhou <zhouchengming@bytedance.com>
+AuthorDate:    Wed, 03 Mar 2021 11:46:59 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Sat, 06 Mar 2021 12:40:23 +01:00
 
+psi: Optimize task switch inside shared cgroups
 
-> ------------[ cut here ]------------
-> raw_local_irq_restore() called with IRQs enabled
-> WARNING: CPU: 2 PID: 213 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-> Modules linked in:
-> CPU: 2 PID: 213 Comm: kworker/u17:4 Not tainted 5.12.0-rc1-syzkaller #0
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-> Workqueue: events_unbound call_usermodehelper_exec_work
->
-> RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-> Code: be ff cc cc cc cc cc cc cc cc cc cc cc 80 3d e4 38 af 04 00 74 01 c3 48 c7 c7 a0 8f 6b 89 c6 05 d3 38 af 04 01 e8 e7 b9 be ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
-> RSP: 0000:ffffc90000fe7770 EFLAGS: 00010286
->
-> RAX: 0000000000000000 RBX: ffffffff8c0e9c68 RCX: 0000000000000000
-> RDX: ffff8880116bc3c0 RSI: ffffffff815c0cf5 RDI: fffff520001fcee0
-> RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000001
-> R10: ffffffff815b9a5e R11: 0000000000000000 R12: 0000000000000003
-> R13: fffffbfff181d38d R14: 0000000000000001 R15: ffff88802cc36000
-> FS:  0000000000000000(0000) GS:ffff88802cc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000000 CR3: 000000000bc8e000 CR4: 0000000000150ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  kvm_wait arch/x86/kernel/kvm.c:860 [inline]
->  kvm_wait+0xc9/0xe0 arch/x86/kernel/kvm.c:837
->  pv_wait arch/x86/include/asm/paravirt.h:564 [inline]
->  pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
->  __pv_queued_spin_lock_slowpath+0x8b8/0xb40 kernel/locking/qspinlock.c:508
->  pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:554 [inline]
->  queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
->  queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
->  do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
->  spin_lock include/linux/spinlock.h:354 [inline]
->  copy_fs_struct+0x1c8/0x340 fs/fs_struct.c:123
->  copy_fs kernel/fork.c:1443 [inline]
->  copy_process+0x4dc2/0x6fd0 kernel/fork.c:2088
->  kernel_clone+0xe7/0xab0 kernel/fork.c:2462
->  kernel_thread+0xb5/0xf0 kernel/fork.c:2514
->  call_usermodehelper_exec_work kernel/umh.c:172 [inline]
->  call_usermodehelper_exec_work+0xcc/0x180 kernel/umh.c:158
->  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
->  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
->  kthread+0x3b1/0x4a0 kernel/kthread.c:292
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000ccbedd05bcd0504e%40google.com.
+The commit 36b238d57172 ("psi: Optimize switching tasks inside shared
+cgroups") only update cgroups whose state actually changes during a
+task switch only in task preempt case, not in task sleep case.
+
+We actually don't need to clear and set TSK_ONCPU state for common cgroups
+of next and prev task in sleep case, that can save many psi_group_change
+especially when most activity comes from one leaf cgroup.
+
+sleep before:
+psi_dequeue()
+  while ((group = iterate_groups(prev)))  # all ancestors
+    psi_group_change(prev, .clear=TSK_RUNNING|TSK_ONCPU)
+psi_task_switch()
+  while ((group = iterate_groups(next)))  # all ancestors
+    psi_group_change(next, .set=TSK_ONCPU)
+
+sleep after:
+psi_dequeue()
+  nop
+psi_task_switch()
+  while ((group = iterate_groups(next)))  # until (prev & next)
+    psi_group_change(next, .set=TSK_ONCPU)
+  while ((group = iterate_groups(prev)))  # all ancestors
+    psi_group_change(prev, .clear=common?TSK_RUNNING:TSK_RUNNING|TSK_ONCPU)
+
+When a voluntary sleep switches to another task, we remove one call of
+psi_group_change() for every common cgroup ancestor of the two tasks.
+
+Co-developed-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Link: https://lkml.kernel.org/r/20210303034659.91735-5-zhouchengming@bytedance.com
+---
+ kernel/sched/psi.c   | 35 +++++++++++++++++++++++++----------
+ kernel/sched/stats.h | 28 ++++++++++++----------------
+ 2 files changed, 37 insertions(+), 26 deletions(-)
+
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 3907a6b..ee3c5b4 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -840,20 +840,35 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
+ 		}
+ 	}
+ 
+-	/*
+-	 * If this is a voluntary sleep, dequeue will have taken care
+-	 * of the outgoing TSK_ONCPU alongside TSK_RUNNING already. We
+-	 * only need to deal with it during preemption.
+-	 */
+-	if (sleep)
+-		return;
+-
+ 	if (prev->pid) {
+-		psi_flags_change(prev, TSK_ONCPU, 0);
++		int clear = TSK_ONCPU, set = 0;
++
++		/*
++		 * When we're going to sleep, psi_dequeue() lets us handle
++		 * TSK_RUNNING and TSK_IOWAIT here, where we can combine it
++		 * with TSK_ONCPU and save walking common ancestors twice.
++		 */
++		if (sleep) {
++			clear |= TSK_RUNNING;
++			if (prev->in_iowait)
++				set |= TSK_IOWAIT;
++		}
++
++		psi_flags_change(prev, clear, set);
+ 
+ 		iter = NULL;
+ 		while ((group = iterate_groups(prev, &iter)) && group != common)
+-			psi_group_change(group, cpu, TSK_ONCPU, 0, true);
++			psi_group_change(group, cpu, clear, set, true);
++
++		/*
++		 * TSK_ONCPU is handled up to the common ancestor. If we're tasked
++		 * with dequeuing too, finish that for the rest of the hierarchy.
++		 */
++		if (sleep) {
++			clear &= ~TSK_ONCPU;
++			for (; group; group = iterate_groups(prev, &iter))
++				psi_group_change(group, cpu, clear, set, true);
++		}
+ 	}
+ }
+ 
+diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
+index 9e4e67a..dc218e9 100644
+--- a/kernel/sched/stats.h
++++ b/kernel/sched/stats.h
+@@ -84,28 +84,24 @@ static inline void psi_enqueue(struct task_struct *p, bool wakeup)
+ 
+ static inline void psi_dequeue(struct task_struct *p, bool sleep)
+ {
+-	int clear = TSK_RUNNING, set = 0;
++	int clear = TSK_RUNNING;
+ 
+ 	if (static_branch_likely(&psi_disabled))
+ 		return;
+ 
+-	if (!sleep) {
+-		if (p->in_memstall)
+-			clear |= TSK_MEMSTALL;
+-	} else {
+-		/*
+-		 * When a task sleeps, schedule() dequeues it before
+-		 * switching to the next one. Merge the clearing of
+-		 * TSK_RUNNING and TSK_ONCPU to save an unnecessary
+-		 * psi_task_change() call in psi_sched_switch().
+-		 */
+-		clear |= TSK_ONCPU;
++	/*
++	 * A voluntary sleep is a dequeue followed by a task switch. To
++	 * avoid walking all ancestors twice, psi_task_switch() handles
++	 * TSK_RUNNING and TSK_IOWAIT for us when it moves TSK_ONCPU.
++	 * Do nothing here.
++	 */
++	if (sleep)
++		return;
+ 
+-		if (p->in_iowait)
+-			set |= TSK_IOWAIT;
+-	}
++	if (p->in_memstall)
++		clear |= TSK_MEMSTALL;
+ 
+-	psi_task_change(p, clear, set);
++	psi_task_change(p, clear, 0);
+ }
+ 
+ static inline void psi_ttwu_dequeue(struct task_struct *p)
