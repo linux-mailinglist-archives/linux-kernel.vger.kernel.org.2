@@ -2,200 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830AF32F7C6
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 03:22:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B08D432F7CC
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 03:22:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhCFCTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 21:19:50 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:46138 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229701AbhCFCTe (ORCPT
+        id S230285AbhCFCU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 21:20:56 -0500
+Received: from mail-pg1-f175.google.com ([209.85.215.175]:33520 "EHLO
+        mail-pg1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229978AbhCFCUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 21:19:34 -0500
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 1262J9K5011968;
-        Sat, 6 Mar 2021 11:19:09 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 1262J9K5011968
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614997149;
-        bh=L3FQe892KYTxx5812Ek7RmQh0GfMG4VfuLgvmQHunsQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Nq2qeuL5M/8H19ZjiSltFknmcluRx5LzAYiuXSQMldauRse81jL47y1pSYA/yOupP
-         V6YBKun85vMtz1ckfvFE2+9C0P4jg7CdrIiT40moRfbS2wjg3B+laeIwey6N2WgY+f
-         DOQkrhp5QgnB60+C7cssoPaf3J82KPArKIgo2OOhDut1roUeQHB8fp/JcqIBjWPB7K
-         8oQ7WwMpNLMQ038K1uBGSu1Y1K+/xiEAEbSDXyaIMyx817ZBJcvkx/tNro3XfyT8qH
-         rASbv4UccnQiK+6/j+/ys4kqa+UxDrTppSOjN3O/mre9sefga7ogZmpQcXjtYoc5HQ
-         /vpu5drrAW23Q==
-X-Nifty-SrcIP: [209.85.214.182]
-Received: by mail-pl1-f182.google.com with SMTP id u11so2300882plg.13;
-        Fri, 05 Mar 2021 18:19:09 -0800 (PST)
-X-Gm-Message-State: AOAM531GqQr7fffrV6oQZnKjMRaYy1zmEDOM9xF7O6kr6Dj0QewkmLiV
-        zjktBt7Yi60jg8oHQdMJ9UYvyfVjf2KIp+pfnHY=
-X-Google-Smtp-Source: ABdhPJwsTPMJxJ420fM2BEDqqbpXcGnD1P0DbTPxQr1kguPu1yrJbezcmwonjG5+FplvYvT/ahdJE+ug1/iGMzhhqi4=
-X-Received: by 2002:a17:902:b088:b029:e5:b645:dcf2 with SMTP id
- p8-20020a170902b088b02900e5b645dcf2mr11295833plr.71.1614997148646; Fri, 05
- Mar 2021 18:19:08 -0800 (PST)
+        Fri, 5 Mar 2021 21:20:50 -0500
+Received: by mail-pg1-f175.google.com with SMTP id g4so2574108pgj.0;
+        Fri, 05 Mar 2021 18:20:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bE/iCbha/qMZwN1FXZ2u1X/M1nTVjSVo/EJ2I/6t+28=;
+        b=hTov3iaztr4fre7YXmoxRnZO7o/x6+n8jCguzCpkuD1jLoGRD0R3/OfivinHirLXrR
+         k690l1f7mHWbLz904KVoR2fQDGyvSsYnclnQVJa/CTLUvspBOtqVXpSvg4EyoQgGj/E2
+         m6CiO1ywR9/8ihMU8Bsi7hPD++v6PCiIgOfiIF2h13Fn9krHu9tXnjOsVi/YtbamCUcx
+         6vSgcj8p2gVu9KyEsrOwjrqVPViBerqjat6tmKQcSqRHgBYjhuHX0v9xiE+te+R8t8KX
+         smykUGHaJDncJbTyal5Omlh/ilXnoTJlF+EC88b/G0jP/91AQ3z9Dn4agnnGf42WUaeP
+         RBZA==
+X-Gm-Message-State: AOAM5321aEPEa3frKcyPiX91mm3E7oSUa5HsSeqhMsbIKXlG7LeIpmPZ
+        WOo21RXXWpUfVgQUIkBjN/w=
+X-Google-Smtp-Source: ABdhPJwWpjDtFjyqu/hPAadJF4wkq4uEc4gzxquLksXA0IyP+bK54Hnz7Y4gMdaREq1UQmqKxW20Cw==
+X-Received: by 2002:a63:440d:: with SMTP id r13mr10733911pga.377.1614997239031;
+        Fri, 05 Mar 2021 18:20:39 -0800 (PST)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id u1sm3642720pfn.209.2021.03.05.18.20.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 18:20:37 -0800 (PST)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id B6DAC404BB; Sat,  6 Mar 2021 02:20:36 +0000 (UTC)
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     minchan@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com
+Cc:     axboe@kernel.dk, mbenes@suse.com, mcgrof@kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] zram: fix few ltp zram02.sh crashes
+Date:   Sat,  6 Mar 2021 02:20:33 +0000
+Message-Id: <20210306022035.11266-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.23.0.rc1
 MIME-Version: 1.0
-References: <20210304113708.215121-1-masahiroy@kernel.org> <202103041518.22EB819E@keescook>
- <CAHk-=wj6t2i1BgmWP1Zb2WVF3zZzkHvsxsALJk7VpfKm6UgLcw@mail.gmail.com>
- <20210305022500.cyi3cfwgt2t6mona@treble> <20210306012815.nfmquoln65vq6yq7@treble>
-In-Reply-To: <20210306012815.nfmquoln65vq6yq7@treble>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 6 Mar 2021 11:18:31 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR7E4Ud9MPy3q5VOab4EFMumr5GMHqyv=H970+gPTBrFg@mail.gmail.com>
-Message-ID: <CAK7LNAR7E4Ud9MPy3q5VOab4EFMumr5GMHqyv=H970+gPTBrFg@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: rebuild GCC plugins when the compiler is upgraded
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Frank Eigler <fche@redhat.com>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 6, 2021 at 10:28 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Thu, Mar 04, 2021 at 08:25:00PM -0600, Josh Poimboeuf wrote:
-> > On Thu, Mar 04, 2021 at 03:37:14PM -0800, Linus Torvalds wrote:
-> > > On Thu, Mar 4, 2021 at 3:20 PM Kees Cook <keescook@chromium.org> wrote:
-> > > >
-> > > > This seems fine to me, but I want to make sure Josh has somewhere to
-> > > > actually go with this. Josh, does this get you any closer?
-> >
-> > No, this doesn't seem to help me at all.
-> >
-> > > > It sounds like the plugins need to move to another location for
-> > > > packaged kernels?
-> > >
-> > > Well, it might be worth extending the stuff that gets installed with
-> > > /lib/modules/<kernel-version>/ with enough information and
-> > > infrastruvcture to then build any external modules.
-> >
-> > The gcc plugins live in scripts/, which get installed by "make
-> > modules_install" already.  So the plugins' source and makefiles are in
-> > /lib/modules/<kernel-version>/build/scripts/gcc-plugins.
-> >
-> > So everything needed for building the plugins is already there.  We just
-> > need the kernel makefiles to rebuild the plugins locally, when building
-> > an external module.
->
-> This seems to work with very limited testing...  Based on top of
-> Masahiro's recent patch:
->
->   https://lkml.kernel.org/r/CAK7LNARHoTnZ3gAvHgnYB4n-wYuboxC10A6zURh1ODGhxWd2yA@mail.gmail.com
+LTP's zram02.sh script can be used to crah your kernel pretty badly.
 
+  cd testcases/kernel/device-drivers/zram
+  while true; do PATH=$PATH:$PWD:$PWD/../../../lib/ ./zram02.sh; done
 
+This won't do much, however if you run this in two separate windows
+you'll see the kernel become unhappy quite fast. The crux of this
+issue was mishandling of cpu hotplug multistate on the zram driver
+in consideration for driver unload. However there was still another
+long lasting bug present: races with sysfs attributes and driver
+unload.
 
+This series fixes these issues.
 
-Is this a bad coding contest?
+[0] https://github.com/linux-test-project/ltp.git 
 
-I am not asking you to add ugly ifeq or whatever
-hacks to say "this worked for me".
+Luis Chamberlain (2):
+  zram: fix crashes due to use of cpu hotplug multistate
+  zram: fix races of sysfs attribute removal and usage
 
-Please feel free to do this in the fedora kernel,
-but do not send it to upstream.
-
-Sorry, I really do not want to see hacks like this any more.
-
-Remember, how badly objtool was integrated in the build system,
-and you even blocked me from fixing that.
-
-
-
-
-
-
-
-> From: Josh Poimboeuf <jpoimboe@redhat.com>
-> Subject: [PATCH] gcc-plugins: Rebuild plugins in external module directory
->
-> When building external kernel modules, the build system doesn't require
-> the GCC version to match the version used to build the original kernel.
->
-> In fact, most distros release the compiler and the kernel in separate
-> packages, with separate release cadences.  So it's not uncommon for
-> mismatches to occur.
->
-> But with GCC plugins enabled, that's no longer allowed:
->
->   cc1: error: incompatible gcc/plugin versions
->   cc1: error: failed to initialize plugin ./scripts/gcc-plugins/structleak_plugin.so
->
-> That error comes from the plugin's call to
-> plugin_default_version_check(), which strictly enforces the GCC version.
-> The strict check makes sense, because there's nothing to prevent the GCC
-> plugin ABI from changing, and it often does.
->
-> Since plugins are tightly tied to the compiler version, just rebuild
-> them locally in the external module directory, and then use the local
-> version in the external module build.
->
-> Reported-by: Ondrej Mosnacek <omosnace@redhat.com>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> ---
->  Makefile                     | 1 +
->  scripts/Makefile.gcc-plugins | 2 +-
->  scripts/gcc-plugins/Makefile | 8 ++++++--
->  3 files changed, 8 insertions(+), 3 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index bc208886fcce..90c6656de224 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1784,6 +1784,7 @@ prepare:
->                 echo "  The kernel was built by: "$(CONFIG_CC_VERSION_TEXT); \
->                 echo "  You are using:           $(CC_VERSION_TEXT)"; \
->         fi
-> +       $(Q)$(MAKE) $(build)=scripts/gcc-plugins
->
->  PHONY += help
->  help:
-> diff --git a/scripts/Makefile.gcc-plugins b/scripts/Makefile.gcc-plugins
-> index 952e46876329..be4303678942 100644
-> --- a/scripts/Makefile.gcc-plugins
-> +++ b/scripts/Makefile.gcc-plugins
-> @@ -48,7 +48,7 @@ export DISABLE_ARM_SSP_PER_TASK_PLUGIN
->
->  # All the plugin CFLAGS are collected here in case a build target needs to
->  # filter them out of the KBUILD_CFLAGS.
-> -GCC_PLUGINS_CFLAGS := $(strip $(addprefix -fplugin=$(objtree)/scripts/gcc-plugins/, $(gcc-plugin-y)) $(gcc-plugin-cflags-y))
-> +GCC_PLUGINS_CFLAGS := $(strip $(addprefix -fplugin=$(if $(KBUILD_EXTMOD),$(KBUILD_EXTMOD),$(objtree))/scripts/gcc-plugins/, $(gcc-plugin-y)) $(gcc-plugin-cflags-y))
->  # The sancov_plugin.so is included via CFLAGS_KCOV, so it is removed here.
->  GCC_PLUGINS_CFLAGS := $(filter-out %/sancov_plugin.so, $(GCC_PLUGINS_CFLAGS))
->  export GCC_PLUGINS_CFLAGS
-> diff --git a/scripts/gcc-plugins/Makefile b/scripts/gcc-plugins/Makefile
-> index b5487cce69e8..9f8e2ef3ab56 100644
-> --- a/scripts/gcc-plugins/Makefile
-> +++ b/scripts/gcc-plugins/Makefile
-> @@ -1,10 +1,14 @@
->  # SPDX-License-Identifier: GPL-2.0
->
-> -$(obj)/randomize_layout_plugin.so: $(objtree)/$(obj)/randomize_layout_seed.h
-> +ifneq ($(KBUILD_EXTMOD),)
-> +override obj := $(KBUILD_EXTMOD)/$(obj)
-> +endif
-> +
-> +$(obj)/randomize_layout_plugin.so: $(objtree)/$(src)/randomize_layout_seed.h
->  quiet_cmd_create_randomize_layout_seed = GENSEED $@
->  cmd_create_randomize_layout_seed = \
->    $(CONFIG_SHELL) $(srctree)/$(src)/gen-random-seed.sh $@ $(objtree)/include/generated/randomize_layout_hash.h
-> -$(objtree)/$(obj)/randomize_layout_seed.h: FORCE
-> +$(objtree)/$(src)/randomize_layout_seed.h: FORCE
->         $(call if_changed,create_randomize_layout_seed)
->  targets += randomize_layout_seed.h randomize_layout_hash.h
->
-> --
-> 2.29.2
->
-
+ drivers/block/zram/zram_drv.c | 82 +++++++++++++++++++++++++++++++----
+ 1 file changed, 74 insertions(+), 8 deletions(-)
 
 -- 
-Best Regards
-Masahiro Yamada
+2.30.1
+
