@@ -2,16 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EECB32FA31
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E22D732FA42
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhCFLs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 06:48:56 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34576 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbhCFLsl (ORCPT
+        id S230510AbhCFLtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 06:49:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230289AbhCFLsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 06:48:41 -0500
+        Sat, 6 Mar 2021 06:48:47 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1B1C061760;
+        Sat,  6 Mar 2021 03:48:47 -0800 (PST)
 Date:   Sat, 06 Mar 2021 11:48:39 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1615031320;
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7T8x8ztAnJo6bl1pmY4MS2LuKu9HiFs6RbEUMHKW/ow=;
-        b=Tw689aN2SWNVKhjXm4YgKdRxPuOeJUocUku5WtiwMmmF8069Da7CDGke1PS64JRJMzFr0n
-        t3R00tDuY/w/nSGloR07hkjDfJo6ztWhzqOnDR38NTGQHR9gMoTO/Odt20QKleNOkKsf2D
-        xogJI/Ww43PW7/tisWOU8Y9BGtB4Fd6jjzqJYTD8WNW0daSeRhumS1lUq2uAiTWG90Bgns
-        q7Ef+7LxXYBhB/zZNr3t1/FUAU4h4ogQbewmuig4aKlekcRHVwUqwoLlVNk6XGcFvZlxM8
-        3bNhee5RWBdbxeldiE9xcWRdXw5grnS1jAiuXsA/10Ldr53JYenhBiz8HfF6Rg==
+        bh=t7XsPDXIAlGV/PIFreHDZ+nJ2sDnp5r+3/3683Zy0uE=;
+        b=26RU+fn8WlGLS16VBtlOXTlciZdHts8zh6OjcPeOobmtf3iqyomt/DtOIN8Jb2LxLMpDq0
+        lUbNalIpRqmwkZaQ8voek/k54P9HJba47uZ+Trg0iaMSPceSyFCid/jjWMEpknTFJLVZTZ
+        SR8SHAKj/iSi1v2btOKAud64nyfHVHWim8jDc6+h6gRwKV40p7dXl9moAMdZkGUvPheyGU
+        5i4iXeJDBcU23WcewBFNqamAlIkDjFvqpPFEXG9zCp4m2fcrHWnbq9VIv+cI+Qyj9dgaNQ
+        ETOkgBfO8mPpJWfaOf0JSWA9HLrXHNbcLC+vHl0Cf0tJTSXJA3O/DB5X2XMZAA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1615031320;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,23 +36,23 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7T8x8ztAnJo6bl1pmY4MS2LuKu9HiFs6RbEUMHKW/ow=;
-        b=KX1McQ3S+PXRerSI2NkmuPBJrJI1YM0252Ps6OjAGC5w59dSandXHZAY0G/eUDD+EjZ7sR
-        6Ocg7NM/q09q/6AA==
+        bh=t7XsPDXIAlGV/PIFreHDZ+nJ2sDnp5r+3/3683Zy0uE=;
+        b=HF6kCc5SNKyv7aUSapnItt4YxQySPKJVXGEFp5v5xrqKFly6EzG5tfm1/znxNebNwcVEaf
+        ZtVme6wFa9uzvEAg==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] objtool: Add --backup
+Subject: [tip: objtool/core] objtool: Parse options from OBJTOOL_ARGS
 Cc:     Borislav Petkov <bp@alien8.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Ingo Molnar <mingo@kernel.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <YD4obT3aoXPWl7Ax@hirez.programming.kicks-ass.net>
-References: <YD4obT3aoXPWl7Ax@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210226110004.252553847@infradead.org>
+References: <20210226110004.252553847@infradead.org>
 MIME-Version: 1.0
-Message-ID: <161503131980.398.8868237092915126620.tip-bot2@tip-bot2>
+Message-ID: <161503131911.398.14570626719309626291.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,154 +63,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     8ad15c6900840e8a2163012f4581c52127622e02
-Gitweb:        https://git.kernel.org/tip/8ad15c6900840e8a2163012f4581c52127622e02
+Commit-ID:     900b4df347bbac4874149a226143a556909faba8
+Gitweb:        https://git.kernel.org/tip/900b4df347bbac4874149a226143a556909faba8
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 26 Feb 2021 10:59:59 +01:00
+AuthorDate:    Fri, 26 Feb 2021 11:32:30 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Sat, 06 Mar 2021 12:44:23 +01:00
 
-objtool: Add --backup
+objtool: Parse options from OBJTOOL_ARGS
 
-Teach objtool to write backups files, such that it becomes easier to
-see what objtool did to the object file.
+Teach objtool to parse options from the OBJTOOL_ARGS environment
+variable.
 
-Backup files will be ${name}.orig.
+This enables things like:
+
+  $ OBJTOOL_ARGS="--backup" make O=defconfig-build/ kernel/ponies.o
+
+to obtain both defconfig-build/kernel/ponies.o{,.orig} and easily
+inspect what objtool actually did.
 
 Suggested-by: Borislav Petkov <bp@alien8.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Borislav Petkov <bp@suse.de>
 Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://lkml.kernel.org/r/YD4obT3aoXPWl7Ax@hirez.programming.kicks-ass.net
+Link: https://lkml.kernel.org/r/20210226110004.252553847@infradead.org
 ---
- tools/objtool/builtin-check.c           |  4 +-
- tools/objtool/include/objtool/builtin.h |  3 +-
- tools/objtool/objtool.c                 | 64 ++++++++++++++++++++++++-
- 3 files changed, 69 insertions(+), 2 deletions(-)
+ tools/objtool/builtin-check.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
 diff --git a/tools/objtool/builtin-check.c b/tools/objtool/builtin-check.c
-index c3a85d8..97f063d 100644
+index 0399752..8b38b5d 100644
 --- a/tools/objtool/builtin-check.c
 +++ b/tools/objtool/builtin-check.c
-@@ -18,7 +18,8 @@
+@@ -15,6 +15,7 @@
+ 
+ #include <subcmd/parse-options.h>
+ #include <string.h>
++#include <stdlib.h>
  #include <objtool/builtin.h>
  #include <objtool/objtool.h>
  
--bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats, validate_dup, vmlinux, mcount, noinstr;
-+bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats,
-+     validate_dup, vmlinux, mcount, noinstr, backup;
- 
- static const char * const check_usage[] = {
- 	"objtool check [<options>] file.o",
-@@ -37,6 +38,7 @@ const struct option check_options[] = {
- 	OPT_BOOLEAN('n', "noinstr", &noinstr, "noinstr validation for vmlinux.o"),
- 	OPT_BOOLEAN('l', "vmlinux", &vmlinux, "vmlinux.o validation"),
- 	OPT_BOOLEAN('M', "mcount", &mcount, "generate __mcount_loc"),
-+	OPT_BOOLEAN('B', "backup", &backup, "create .orig files before modification"),
- 	OPT_END(),
+@@ -26,6 +27,11 @@ static const char * const check_usage[] = {
+ 	NULL,
  };
  
-diff --git a/tools/objtool/include/objtool/builtin.h b/tools/objtool/include/objtool/builtin.h
-index 2502bb2..d019210 100644
---- a/tools/objtool/include/objtool/builtin.h
-+++ b/tools/objtool/include/objtool/builtin.h
-@@ -8,7 +8,8 @@
- #include <subcmd/parse-options.h>
++static const char * const env_usage[] = {
++	"OBJTOOL_ARGS=\"<options>\"",
++	NULL,
++};
++
+ const struct option check_options[] = {
+ 	OPT_BOOLEAN('f', "no-fp", &no_fp, "Skip frame pointer validation"),
+ 	OPT_BOOLEAN('u', "no-unreachable", &no_unreachable, "Skip 'unreachable instruction' warnings"),
+@@ -44,6 +50,25 @@ const struct option check_options[] = {
  
- extern const struct option check_options[];
--extern bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats, validate_dup, vmlinux, mcount, noinstr;
-+extern bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats,
-+            validate_dup, vmlinux, mcount, noinstr, backup;
- 
- extern int cmd_check(int argc, const char **argv);
- extern int cmd_orc(int argc, const char **argv);
-diff --git a/tools/objtool/objtool.c b/tools/objtool/objtool.c
-index 7b97ce4..43c1836 100644
---- a/tools/objtool/objtool.c
-+++ b/tools/objtool/objtool.c
-@@ -17,6 +17,7 @@
- #include <stdbool.h>
- #include <string.h>
- #include <stdlib.h>
-+#include <unistd.h>
- #include <subcmd/exec-cmd.h>
- #include <subcmd/pager.h>
- #include <linux/kernel.h>
-@@ -44,6 +45,64 @@ bool help;
- const char *objname;
- static struct objtool_file file;
- 
-+static bool objtool_create_backup(const char *_objname)
-+{
-+	int len = strlen(_objname);
-+	char *buf, *base, *name = malloc(len+6);
-+	int s, d, l, t;
-+
-+	if (!name) {
-+		perror("failed backup name malloc");
-+		return false;
-+	}
-+
-+	strcpy(name, _objname);
-+	strcpy(name + len, ".orig");
-+
-+	d = open(name, O_CREAT|O_WRONLY|O_TRUNC, 0644);
-+	if (d < 0) {
-+		perror("failed to create backup file");
-+		return false;
-+	}
-+
-+	s = open(_objname, O_RDONLY);
-+	if (s < 0) {
-+		perror("failed to open orig file");
-+		return false;
-+	}
-+
-+	buf = malloc(4096);
-+	if (!buf) {
-+		perror("failed backup data malloc");
-+		return false;
-+	}
-+
-+	while ((l = read(s, buf, 4096)) > 0) {
-+		base = buf;
-+		do {
-+			t = write(d, base, l);
-+			if (t < 0) {
-+				perror("failed backup write");
-+				return false;
-+			}
-+			base += t;
-+			l -= t;
-+		} while (l);
-+	}
-+
-+	if (l < 0) {
-+		perror("failed backup read");
-+		return false;
-+	}
-+
-+	free(name);
-+	free(buf);
-+	close(d);
-+	close(s);
-+
-+	return true;
-+}
-+
- struct objtool_file *objtool_open_read(const char *_objname)
+ int cmd_parse_options(int argc, const char **argv, const char * const usage[])
  {
- 	if (objname) {
-@@ -59,6 +118,11 @@ struct objtool_file *objtool_open_read(const char *_objname)
- 	if (!file.elf)
- 		return NULL;
- 
-+	if (backup && !objtool_create_backup(objname)) {
-+		WARN("can't create backup file");
-+		return NULL;
++	const char *envv[16] = { };
++	char *env;
++	int envc;
++
++	env = getenv("OBJTOOL_ARGS");
++	if (env) {
++		envv[0] = "OBJTOOL_ARGS";
++		for (envc = 1; envc < ARRAY_SIZE(envv); ) {
++			envv[envc++] = env;
++			env = strchr(env, ' ');
++			if (!env)
++				break;
++			*env = '\0';
++			env++;
++		}
++
++		parse_options(envc, envv, check_options, env_usage, 0);
 +	}
 +
- 	INIT_LIST_HEAD(&file.insn_list);
- 	hash_init(file.insn_hash);
- 	INIT_LIST_HEAD(&file.static_call_list);
+ 	argc = parse_options(argc, argv, check_options, usage, 0);
+ 	if (argc != 1)
+ 		usage_with_options(usage, check_options);
