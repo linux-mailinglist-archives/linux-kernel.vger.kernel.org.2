@@ -2,85 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93A232FBE5
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 17:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A35C532FBEA
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 17:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhCFQ1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 11:27:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
+        id S231175AbhCFQ31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 11:29:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbhCFQ1k (ORCPT
+        with ESMTP id S229779AbhCFQ3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 11:27:40 -0500
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B960C06174A;
-        Sat,  6 Mar 2021 08:27:40 -0800 (PST)
-Received: by mail-oo1-xc29.google.com with SMTP id z12so760846ooh.5;
-        Sat, 06 Mar 2021 08:27:40 -0800 (PST)
+        Sat, 6 Mar 2021 11:29:18 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA8EC06174A;
+        Sat,  6 Mar 2021 08:29:17 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id w17so10359328ejc.6;
+        Sat, 06 Mar 2021 08:29:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BkKfHcP7oTWbfRSVHmFJOX/kwbnSR5KYczn3KXXH78E=;
-        b=BkwOkyGC6FrzKStxdQ6Tm3wLGoJO267MGBJhXsXGFQ8SSdpB2fYXMCWObdmkj+wRio
-         L04paO92/2JBnqIVNOONOEX9jx4bGLtsCXV1b+Y97enuJNXYe/Vxt/f+ocdAS1OESrOQ
-         bZzvWbY0lPiVvBwNS3xUOtsTG/mepHhzJIF6tyHf/t7nKtBnuuTIsgulDgULsuEExWHM
-         wjgh+8Uh+7AedkZOOgJ3ZPaE/oGHs6niw+L8OH2Z1n2goajSDWh9gjrC19vvYEAGNxrl
-         S6XCCjhq03CHQFDgpd9mEqk6iRtzE6ck5C5HJ3rgG5NtFQoGunhjt5tVGZEY4tkl0mLc
-         SRhw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ey8Iam28nWwFN4fqDqHWXz4/dWKH/12t99L89RsheoI=;
+        b=tvdyAvS58OLLGgC+WvrF3dui6xqtzqAfCkutRS7zWByztDn0Bmu9Kqh26vV+L7KBJY
+         8VIw2C1H0FbIpy/WSD+zmR4E42AS7Wg4KcGgI9qh/BwCEaRQeM7IObKy4K+mL1vcqD2B
+         Yo85WIim7R4xEsIkuwJYkCPVa1FbP5ab+39orFE56a4QR3E5eAAZxWQc+JmsGH0yabBU
+         ojF0Mav+tFph/UadgkVGpuAhW7meQZtvIH/z4DiMp0cDwnwoWVwW7e1LStlE7ByTU4sM
+         gTOjz/0ZMm+KEHplkVoRqw+BoysL0uF2beOOxuNAFUdIGoKXP9nYWNq14eqF78rI7D59
+         9KOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BkKfHcP7oTWbfRSVHmFJOX/kwbnSR5KYczn3KXXH78E=;
-        b=cbnfXBZnBTagUF8ssZphZisgDLxbL9o4EkG015azNqd1TSrW3RboZoQVzue/K1WDfX
-         ppGyFg3lJg9xQjCFlGdlWELfmAQZWi0AeBc5d2yIqo54/a/YciMOi+V1Y6dPjAe7N2bx
-         CEzEjFnXFVdLGQ5AijUlh0v6jCeEgw+K3+6G40FOZTzPZ8XQHddCTay5cSppcGAivJbL
-         w5sAjPcYCOwHCULy2n9adMIzJMPpkKtrXyKOLlPCwb1dKvZ7rjliACccBew5VnjRlSXM
-         QVC6unOrJmnrxfYqLdtBx1UEPlvNgfCsRVkEuS9+rQ/AcofuPQ+yQDqgrDrntTga2A33
-         4tjw==
-X-Gm-Message-State: AOAM533pLGAOdi1RIu7/1vyQjBytbOLD+5JYjGcxWpzP7rLZlVc6roG2
-        7CoPSWYeyI0w0GTl0NOvaS4=
-X-Google-Smtp-Source: ABdhPJyiO7J4EK8r6sCXPeHx+g49cBz7qDiZp1BAj5mrA3NufJULb0YdW26vCe37s+cmOmwE3pZf8g==
-X-Received: by 2002:a4a:9bdc:: with SMTP id b28mr12372712ook.48.1615048060005;
-        Sat, 06 Mar 2021 08:27:40 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y83sm1267733oig.15.2021.03.06.08.27.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 06 Mar 2021 08:27:39 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 6 Mar 2021 08:27:37 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.4 00/30] 4.4.260-rc1 review
-Message-ID: <20210306162737.GA25820@roeck-us.net>
-References: <20210305120849.381261651@linuxfoundation.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ey8Iam28nWwFN4fqDqHWXz4/dWKH/12t99L89RsheoI=;
+        b=cQBuG+H8zBnRHQ15MosYAk68EZBz8CsDmWEmf2/Ow9267zaEAsjZUrjxZmldveEaeq
+         xD1gCA+CCfJQHdta9cdX8Rn+yWIdN0lh2mxPRJvYILHTDeyxs2LqMvGrJko5e10DVxbp
+         NvKKU2pULfdvhhjSpwLknMnAwMwPTjfvCFDosHm3pORkPo3ROqTAYI5KQjd0GYU2i4al
+         BJR+kPXPQSRXRZL1rfFfpM5k3bFKWs6scffAYYGkVK9GwpaE3GNzOwCEKQvWZdF93Ti+
+         0z1abIdffS6P5ejfv/E8TRDYMoAgnpVg9TwWmmiQd0MvNctquKQ7ZZvz9Qnl0J2c3IbK
+         BjzQ==
+X-Gm-Message-State: AOAM533kZs1BtfrD2gUrCdZnoIaNSB0BDrU2x8SxYOSPOHjQp85FGJhy
+        O+SgV+KH+gscurik0u2EhTUC8q19vYy0mw==
+X-Google-Smtp-Source: ABdhPJwA+ARDP33bRighyeE1YXRk/HIoXy4caD6XU0gZC5nO0dsYGgdE8VjloFPOsmUx5HHowcO2NA==
+X-Received: by 2002:a17:906:f02:: with SMTP id z2mr7554520eji.469.1615048154849;
+        Sat, 06 Mar 2021 08:29:14 -0800 (PST)
+Received: from saturn.lan ([188.27.130.90])
+        by smtp.googlemail.com with ESMTPSA id q1sm3493349ejt.65.2021.03.06.08.29.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 08:29:14 -0800 (PST)
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] iio: kfifo: mask flags without zero-check in devm_iio_kfifo_buffer_setup()
+Date:   Sat,  6 Mar 2021 18:28:34 +0200
+Message-Id: <20210306162834.7339-1-ardeleanalex@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305120849.381261651@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 01:22:29PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.260 release.
-> There are 30 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
-> Anything received after that time might be too late.
-> 
+As pointed by Lars, this doesn't require a zero-check. Also, while looking
+at this a little closer at it (again), the masking can be done later, as
+there is a zero-check for 'mode_flags' anyway, which returns -EINVAL. And
+we only need the 'mode_flags' later in the logic.
 
-Build results:
-	total: 165 pass: 165 fail: 0
-Qemu test results:
-	total: 329 pass: 329 fail: 0
+This change is more of a tweak.
 
-Guenter
+Fixes: ae9886d6aa29 ("iio: kfifo: add devm_iio_kfifo_buffer_setup() helper")
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+---
+
+Apologies for the late-ness of this.
+I don't know if this makes sense to squash in the original, or to have
+as a fix commit.
+It is a bit messy now that the original is committed into the tree,
+and now we're fixing/tweaking it.
+
+ drivers/iio/buffer/kfifo_buf.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/iio/buffer/kfifo_buf.c b/drivers/iio/buffer/kfifo_buf.c
+index e8a434f84778..8e3a1a9e495c 100644
+--- a/drivers/iio/buffer/kfifo_buf.c
++++ b/drivers/iio/buffer/kfifo_buf.c
+@@ -275,9 +275,6 @@ int devm_iio_kfifo_buffer_setup(struct device *dev,
+ {
+ 	struct iio_buffer *buffer;
+ 
+-	if (mode_flags)
+-		mode_flags &= kfifo_access_funcs.modes;
+-
+ 	if (!mode_flags)
+ 		return -EINVAL;
+ 
+@@ -285,6 +282,8 @@ int devm_iio_kfifo_buffer_setup(struct device *dev,
+ 	if (!buffer)
+ 		return -ENOMEM;
+ 
++	mode_flags &= kfifo_access_funcs.modes;
++
+ 	indio_dev->modes |= mode_flags;
+ 	indio_dev->setup_ops = setup_ops;
+ 
+-- 
+2.25.1
+
