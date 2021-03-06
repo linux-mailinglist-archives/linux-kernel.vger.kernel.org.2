@@ -2,241 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6E332FACA
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 14:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C6432FAC7
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 14:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhCFNMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 08:12:03 -0500
-Received: from gecko.sbs.de ([194.138.37.40]:46327 "EHLO gecko.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230213AbhCFNMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 08:12:03 -0500
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 126DBZYo010323
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 6 Mar 2021 14:11:35 +0100
-Received: from md1za8fc.ad001.siemens.net ([139.22.40.205])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 126D6XWf023339;
-        Sat, 6 Mar 2021 14:06:33 +0100
-Date:   Sat, 6 Mar 2021 14:06:33 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <platform-driver-x86@vger.kernel.org>,
-        <linux-watchdog@vger.kernel.org>,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Hans de Goede" <hdegoede@redhat.com>
-Subject: Re: [PATCH 2/4] leds: simatic-ipc-leds: add new driver for Siemens
- Industial PCs
-Message-ID: <20210306140633.57f28b05@md1za8fc.ad001.siemens.net>
-In-Reply-To: <20210306135453.6dc186d2@md1za8fc.ad001.siemens.net>
-References: <20210302163309.25528-1-henning.schild@siemens.com>
-        <20210302163309.25528-3-henning.schild@siemens.com>
-        <20210302205452.GA32573@duo.ucw.cz>
-        <20210303141052.30641e6b@md1za8fc.ad001.siemens.net>
-        <20210303193134.GB8720@amd>
-        <20210303214810.511ad65a@md1za8fc.ad001.siemens.net>
-        <20210303215615.64e45720@md1za8fc.ad001.siemens.net>
-        <20210305192555.34f7ea0f@md1za8fc.ad001.siemens.net>
-        <20210306135453.6dc186d2@md1za8fc.ad001.siemens.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230323AbhCFNHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 08:07:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229888AbhCFNHj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 08:07:39 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1813C06174A;
+        Sat,  6 Mar 2021 05:07:38 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id u75so4981545ybi.10;
+        Sat, 06 Mar 2021 05:07:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ATpFGSJY46yedmzJDru9SiqB2GPuBTTkX5e7hHNDmgQ=;
+        b=OewBR4mFIG8qQm3SnYpRZvdV1lvJMb9wI45+5gWV4CaJ8QC+pQm3YBPnuimVmsWq61
+         JU9LoZBvZSijQn/fb5FrWhmX3mcVAl+G8vB6LkgzQprzcO3kMxbhlEepzYr9Hxpnp2R+
+         0ody94zv8NgPQyW5hYB9rjRkvyHHCkyOTxE5S0CUTf7xrIBtvWvlqeoIJqe6JqstYA1w
+         6zvA43o+5OML4aoRcvcpPFAqiqrWRs+unbojR18EV/Ysg8+UkUc/AXDjbSVNn5eFxVx3
+         +p0ArbvnOz7LO/rGTVoew8+k+t4LCFLlVEHAucohQPtQqNSXTLtehP//H/5GW46ZXbS2
+         Jh7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ATpFGSJY46yedmzJDru9SiqB2GPuBTTkX5e7hHNDmgQ=;
+        b=irD1zS8dLpWfcaIVAdqXG3uN5CpqsYWhNgnhWtF5ARd9c4yJUhRNYenkqtZ7JfHcOO
+         FKKUtxgCFrmDhkqp8gGY6CYFh3G/AmKIIqa7zUv2hb+VIGHh4dHe1YeSzUiA+X8Jofpq
+         8yPzdPs6ybSnDKi1HOWr4LOvvCEivHZjLFSPjup6wpsR2INIrULHXVOyn4IO2R8LSToG
+         P1jAn2oqMU3EO9tSc9HJyazaGFttWvffm1qjOxtmqI2M3OtoziE/EHTsHD3YXirIikDh
+         szN18NStXM9xA5lRBf42Ku92/DY2NPwUzUGgbXP2XIvFa26lTNMQgLNY4wUo1+1pCiGW
+         rkIg==
+X-Gm-Message-State: AOAM533HqEMlqOYKWuWopFIlzA4nUbVgOAAc1g4jGMCXiLUGpfTedLko
+        LfCtWcJQFATKWUN5ZKdT08v+ZsxDdO4iuLAPr8M=
+X-Google-Smtp-Source: ABdhPJx1b37KN1V3/vvMORCUJFH9irDWY3DvTJJn0sJR1gZGT7+GIXqkXhdBHgwnRhXPiT6m/hVKyfdyQO7R0PI6J/Y=
+X-Received: by 2002:a25:d296:: with SMTP id j144mr21120022ybg.33.1615036058165;
+ Sat, 06 Mar 2021 05:07:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <YDvLYzsGu+l1pQ2y@localhost.localdomain> <CAHk-=wjFWZMVWTbvUMVxQqGKvGMC_BNrahCtTkpEjxoC0k-T=A@mail.gmail.com>
+ <YDvwVlG/fqVxVYlQ@localhost.localdomain> <CAHk-=wi54DEScexxpMrO+Q2Nag_Tup+Y5YBHc_9_xGLeRfP8pA@mail.gmail.com>
+ <877dmo10m3.fsf@tromey.com> <CAHk-=wi13+FLcRo4zmnRUmmY=AAns-Yd5NR_mVdcAd6ZrPq2fA@mail.gmail.com>
+ <4835ec1d2ecc40b285596288a0df4f47@AcuMS.aculab.com> <CAHk-=wh8PptzH-=ak1D7C5Zp6EJ8eurYqVqGdQauupAFaNuG4g@mail.gmail.com>
+ <44a0cc9cb5344add8ee4d91bffbf958f@AcuMS.aculab.com> <CAHk-=whh3fiL7FcLD_r1rfx-gP9W4HWS7vTPM9LKUH+0xzF2=A@mail.gmail.com>
+In-Reply-To: <CAHk-=whh3fiL7FcLD_r1rfx-gP9W4HWS7vTPM9LKUH+0xzF2=A@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sat, 6 Mar 2021 14:07:27 +0100
+Message-ID: <CANiq72k-_ORGU+tCVhBGnr0QtH4hQ45ayzDtoHND8JZa2jYYPA@mail.gmail.com>
+Subject: Re: [PATCH 00/11] pragma once: treewide conversion
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Tom Tromey <tom@tromey.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Sat, 6 Mar 2021 13:54:53 +0100
-schrieb Henning Schild <henning.schild@siemens.com>:
+On Fri, Mar 5, 2021 at 10:25 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> And regardless of even _those_ issues, you still should do all the
+> other syntactic tokenization stuff (ie all the quoting, the the
+> character handling: 'a' is a valid C token, but if you see the string
+> "it's" outside of a comment, that's a syntax error even if it's inside
+> a disabled region. IOW, this is an incorrect file:
+>
+>    #if 0
+>    it's a bug to do this, and the compiler should scream
+>    #endif
+>
+> because it's simply not a valid token sequence. The fact that it's
+> inside a "#if 0" region doesn't change that fact at all.  So you did
+> need to do all the tokenization logic.
 
-> Am Fri, 5 Mar 2021 19:25:55 +0100
-> schrieb Henning Schild <henning.schild@siemens.com>:
-> 
-> > Am Wed, 3 Mar 2021 21:56:15 +0100
-> > schrieb Henning Schild <henning.schild@siemens.com>:
-> >   
-> > > Am Wed, 3 Mar 2021 21:48:21 +0100
-> > > schrieb Henning Schild <henning.schild@siemens.com>:
-> > >     
-> > > > Am Wed, 3 Mar 2021 20:31:34 +0100
-> > > > schrieb Pavel Machek <pavel@ucw.cz>:
-> > > >       
-> > > > > Hi!
-> > > > >         
-> > > > > > > > +static struct simatic_ipc_led simatic_ipc_leds_io[] = {
-> > > > > > > > +	{1 << 15, "simatic-ipc:green:run-stop"},
-> > > > > > > > +	{1 << 7,  "simatic-ipc:yellow:run-stop"},
-> > > > > > > > +	{1 << 14, "simatic-ipc:red:error"},
-> > > > > > > > +	{1 << 6,  "simatic-ipc:yellow:error"},
-> > > > > > > > +	{1 << 13, "simatic-ipc:red:maint"},
-> > > > > > > > +	{1 << 5,  "simatic-ipc:yellow:maint"},
-> > > > > > > > +	{0, ""},
-> > > > > > > > +};            
-> > > > > > > 
-> > > > > > > Please use names consistent with other systems, this is
-> > > > > > > user visible. If you have two-color power led, it should
-> > > > > > > be :green:power... See include/dt-bindings/leds/common.h .
-> > > > > > >      
-> > > > > > 
-> > > > > > Well we wanted to pick names that are printed on the devices
-> > > > > > and would like to stick to those. Has been a discussion ...
-> > > > > > Can we have symlinks to have multiple names per LED?
-> > > > > >   
-> > > > > 
-> > > > > No symlinks. We plan to have command line tool to manipulate
-> > > > > LEDs, aliases might be possible there.        
-> > > > 
-> > > > Sounds like a future plan. sysfs and "cat" "echo" are mighty
-> > > > tools and "everything is a file" is the best idea ever. So i
-> > > > would say any aliasing should live in the kernel, but that is
-> > > > just me. Tools will just get out of sync, be missing in busybox
-> > > > or a random yocto ... or whichever distro you like.
-> > > > On the other hand you have "complexity should be userland" ... i
-> > > > do not have the answer.      
-> > > 
-> > > My personal horror would be systemd-ledd or some dracut snipet for
-> > > initrd. But that would be a generic led class discussion ... that
-> > > tool.
-> > >     
-> > > > > > How strong would you feel about us using our names?
-> > > > > >  
-> > > > > 
-> > > > > Strongly. :-)        
-> > > > 
-> > > > OK, will try to find a match where possible.       
-> > > 
-> > > Do we happen to have a description of the existing names, to find
-> > > a fit for ours? In the header you pointed out i only found names
-> > > without "meaning"    
-> > 
-> > I had a closer look at the several LED_FUNCTION_ while i could
-> > probably find a match for the names we had in mind ...
-> > 
-> > -       {1 << 14, "simatic-ipc:red:error"},
-> > +       {1 << 14, "simatic-ipc:red:" LED_FUNCTION_FAULT },
-> > 
-> > I still do not understand what those mean. Going over the kernel
-> > sources many have only one single grep-hit in the tree.
-> > LED_FUNCTION_ not having a single one in drivers/leds
-> > Others are found in one dts and in that header ... 2 hits in the
-> > tree, maybe i should add my favorite strings ;)
-> > 
-> > LED_FUNCTION_FLASH vs LED_FUNCTION_TORCH ...? Sound like timing, not
-> > function.
-> > 
-> > Let us say i match the three "error", "run-stop", "maint" to
-> > LED_FUNCTION_*
-> > 
-> > I would have a really hard time finding matches for other LEDs i did
-> > not even propose. One example being disks ... many of them, would i
-> > be allowed to 
-> > 
-> > LED_FUNCTION_DISK "0"
-> > LED_FUNCTION_DISK "1"
-> > ...
-> > 
-> > they would all have the same colors.
-> > 
-> > Maybe you explain the idea behind choosing only from that namespace?
-> > My guess would be high-level software being able to toggle leds
-> > totally indep of the device it runs on. Such software would have to
-> > do some really nasty directory listing, name parsing, dealing with
-> > multiple hits. Does such generic software already exist, maybe that
-> > would help me understand my "mapping problems" ?
-> > 
-> > The current class encodes, color, function and name into "name".
-> > 
-> > Maybe i am all wrong and should go for
-> > 
-> > {1 << 14, "simatic-ipc-error:red:" LED_FUNCTION_STATUS }
-> > {1 << 15, "simatic-ipc-run-stop:green:" LED_FUNCTION_STATUS}
-> > {...    , "simatic-ipc-hdd0:red:" LED_FUNCTION_DISK }
-> > {...    , "simatic-ipc-hdd1:red:" LED_FUNCTION_DISK }
-> > 
-> > so appending my wanted name to the name before the first :, and use
-> > functions i "understand" after the second :  
-> 
-> Found the docs and the check script. It has been a while since i read
-> those docs.
-> 
-> But that script fails on bus=platform
-> 
-> quick workaround would be
-> 
->         fi
-> +elif [ "$bus" = "platform" ]; then
-> +       true
->  else
->         echo "Unknown device type."
->         exit 1
-> 
-> But i guess it would be nice to get some sort of platform information,
-> device vendor etc.
-> 
-> I see two options for pattern i could choose
-> 
-> "green:" LED_FUNCTION_STATUS "-0"
-> -> platform bus patch needed, no plaform information  
-> 
-> simatic-ipc:green:" LED_FUNCTION_STATUS "-0"
-> -> platform bus patch needed, will fail with "Unknown devicename"  
-> 
-> Without further advice i will choose the second for v2. That is also
-> what i.e. "tpacpi" on my laptop looks like.
-> 
-> I would also be happy to include a fix to that script. My suggestion
-> would be to allow bus=platform, in which case a "devicename" will be
-> required and is allowed to have any value.
+Compilers don't scream that much, only GCC seems to give a warning. I
+assume it is because it is just undefined rather than a required
+error/diagnostic, i.e. the "If a =E2=80=99 or a " character matches the las=
+t
+category, the behavior is undefined." in 6.4.
 
-Furthermore it might be good to catch that in the led core instead of
-that script. Maybe warn() on dev registration when function/color/name
-seem off. Could later become "return -EINVAL"
+Concerning #pragma once: I actually would like to have a standard
+#once directive if what is a "seen file" could be defined a bit more
+precisely. Even if just says it creates a guard with something similar
+to the result of `__FILE__` would be good enough for many projects out
+there, and one can still use guards when flexibility is needed and/or
+corner cases are expected (which, if detected, the compiler could also
+warn about).
 
-Henning
-
-> regards,
-> Henning
-> 
-> > regards,
-> > Henning
-> > 
-> >   
-> > > regards,
-> > > Henning
-> > >     
-> > > >       
-> > > > > Do you have a picture how the leds look like?        
-> > > > 
-> > > > I could even find chassis photos in our internal review but that
-> > > > would be too much.
-> > > > 
-> > > > Our idea is probably the same as yours. We want the same names
-> > > > across all devices. But we struggle with colors because on some
-> > > > boxes we have red+green, while other offer yellow ...
-> > > > implemented in HW and messing with red+green in some cases.
-> > > > 
-> > > > But so far we only looked at Siemens devices and thought we
-> > > > could get our own "namespace".
-> > > > 
-> > > > To be honest i could not even tell how our names map on the
-> > > > known ones, but we will do our best to find a match. They all
-> > > > are "high-level" so "power" and other basic things are not
-> > > > exposed.
-> > > > 
-> > > > regards,
-> > > > Henning
-> > > >        
-> > > > > Best regards,
-> > > > > 							Pavel
-> > > > >      
-> > > >       
-> > >     
-> >   
-> 
-
+Cheers,
+Miguel
