@@ -2,120 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0F432F7F2
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 04:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A40032F7F5
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 04:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbhCFDFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 22:05:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhCFDFS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 22:05:18 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1EFC06175F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 19:05:18 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id 16so1964103pfn.5
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 19:05:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=C3NLEHrnsN9ERk6AvvzJ5QN+B7qHrtPpBVa7hDiDUzw=;
-        b=M1kxf5FFuBGbYf80LTez2uwZPcP1lv5lFoZXNRisoDLzEBxL3joYrkfG8RN+5hpe/9
-         6Xz7y+vW23H60eGxTsn2ds+KgMAqSgEcZvR/Pv1INKDfQAowaHJBxE54hwq8JNFDwMDJ
-         5NV0/J8ns3/MUu+sGdP3OapdxbpgsWQjwL5r47oU6Ixee4nV8BO5zi3OA0Lx0Hrk9jXI
-         8S0uzY/xMqmEaOhc8vWhKZED4i3M3oWVFxScA3dgqmWmUpGbg7fbNQeZ4G2wgT4ai38r
-         dk93z8mOfi0wNDipeanuJEid7/vsPzDKgi6hKIA8v4Pokh0za8FlmQawRsv6ZWFBqm3i
-         2YqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C3NLEHrnsN9ERk6AvvzJ5QN+B7qHrtPpBVa7hDiDUzw=;
-        b=MXpurqafN1TAroTwD+pYWbqbMsEl64LgOKoMhXIeeQhsVh3s9Npjq343jAP8lyOcxN
-         IRXEQHBTGhfNQC3VOsEUX+wXmJQCN0P8dj/cpx8TU12ZSwHxDMQJc3TD0yemw4yNA1fm
-         e0wcotTp2b/hkhI+LZzgyZr0zXxsWMkDSobu0PtvEJJOdwA2BIN3CO/GfBwr7JXviS6q
-         gfK4z9bOfNVLyk9m733fWWlVHTkIOApDSw3wE2VwSKerkD9jEk9Dmyn7VEgsaKZ446Ye
-         YAtmaXFvUbQOM+rdAZzNubXWobzLti0laW2FXoo/FQWPu0OwL44JkvC2VE/+H+0Aq3b9
-         omHw==
-X-Gm-Message-State: AOAM531kcYRukgFb6iZrUQLo4Z2ZLYl8q5onunUuqa9e2LgKUoLzOiLN
-        JzX9/Jv82qSXFj6IJ562Z3RLvQ==
-X-Google-Smtp-Source: ABdhPJxPKR48rF0f9k74bRjzyzQ9501I3wZwxWa7o8VClbp2FhAkOOqOgBOKFQr1/IEEE1joJwICrA==
-X-Received: by 2002:a63:e5d:: with SMTP id 29mr11134045pgo.450.1614999918067;
-        Fri, 05 Mar 2021 19:05:18 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([103.136.125.226])
-        by smtp.gmail.com with ESMTPSA id j35sm3929857pgj.45.2021.03.05.19.05.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 19:05:17 -0800 (PST)
-Date:   Sat, 6 Mar 2021 11:05:12 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>,
-        Al Grant <al.grant@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/8] perf cs-etm: Fix bitmap for option
-Message-ID: <20210306030512.GD5478@leoy-ThinkPad-X240s>
-References: <20210206150833.42120-1-leo.yan@linaro.org>
- <20210206150833.42120-5-leo.yan@linaro.org>
- <20210208204641.GE2077938@xps15>
- <20210209015855.GA54680@leoy-ThinkPad-X240s>
- <YEJqiNkIsNWS0E2G@kernel.org>
+        id S229818AbhCFDHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 22:07:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229597AbhCFDHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 22:07:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA0B065014;
+        Sat,  6 Mar 2021 03:07:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615000023;
+        bh=zn0JFhWLOx0WKJo1sTK7pkbGvSLJIhKUGcL1D3bVCD8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bEVVbEpTudN8Y2ipurYkBGUn4RvhuwNINHyTxFqxGPRuYxhCmwZZkgJLcdZwbds8u
+         dgQJWFbdwmbaYVTCDkL60yjtpETVcR36dVKFb5sLh0XETFNGMx45WypasWGI7dsvb+
+         qLjU5wazV1qfS2IWO09NtzYHbfk3J4qGf91ofr4pdYi0T9pv3KAsexIkeVWUWoXcJm
+         yYkIGJJxAcSOWxSqH0RoA3LUDCccTCmfInByyx+CBGDTETLPPvw+JZqbQFC5DfAfI7
+         l8IZ2OXmfj0Q+YR1yO7XGT1UpkD402MkLsmCLthTU9+blgEB8Xmg3KyKuZIOrsEm9+
+         2G/X2gz83gf4A==
+Received: by mail-il1-f182.google.com with SMTP id g9so3847761ilc.3;
+        Fri, 05 Mar 2021 19:07:03 -0800 (PST)
+X-Gm-Message-State: AOAM531f2cPdbvI3GfZXE+UCOJDZsuun69/kRgtjka4vIEa2dyChzabX
+        2H9e37os5fRFr6+XDeymnwhxWXiOsq+EN2ttqbU=
+X-Google-Smtp-Source: ABdhPJwU2xZ1RY207vdVebt1O7FNVEfwrFz4GeIUIch52Xl3MSqUGTVF8NpNxvoTFd9J7zH42cxwsrtTlcglABgmUA8=
+X-Received: by 2002:a05:6e02:b2c:: with SMTP id e12mr11142438ilu.143.1615000023173;
+ Fri, 05 Mar 2021 19:07:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEJqiNkIsNWS0E2G@kernel.org>
+References: <20210306023633.9579-1-zhangqing@loongson.cn> <20210306023633.9579-6-zhangqing@loongson.cn>
+In-Reply-To: <20210306023633.9579-6-zhangqing@loongson.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Sat, 6 Mar 2021 11:06:51 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7vrq2GRL0m7ZAhvK2XOELx_3s8-VjmkMJn1ZkL28fwfQ@mail.gmail.com>
+Message-ID: <CAAhV-H7vrq2GRL0m7ZAhvK2XOELx_3s8-VjmkMJn1ZkL28fwfQ@mail.gmail.com>
+Subject: Re: [PATCH v3 5/7] irqchip/loongson-liointc: irqchip add 2.0 version
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, wangming01@loongson.cn
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+Hi, Qing,
 
-On Fri, Mar 05, 2021 at 02:29:44PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Feb 09, 2021 at 09:58:55AM +0800, Leo Yan escreveu:
-> > On Mon, Feb 08, 2021 at 01:46:41PM -0700, Mathieu Poirier wrote:
-> > > On Sat, Feb 06, 2021 at 11:08:29PM +0800, Leo Yan wrote:
-> > > > From: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > > > 
-> > > > When set option with macros ETM_OPT_CTXTID and ETM_OPT_TS, it wrongly
-> > > > takes these two values (14 and 28 prespectively) as bit masks, but
-> > > > actually both are the offset for bits.  But this doesn't lead to
-> > > > further failure due to the AND logic operation will be always true for
-> > > > ETM_OPT_CTXTID / ETM_OPT_TS.
-> > > > 
-> > > > This patch defines new independent macros (rather than using the
-> > > > "config" bits) for requesting the "contextid" and "timestamp" for
-> > > > cs_etm_set_option().
-> > > > 
-> > > > [leoy: Extract the change as a separate patch for easier review]
-> > > 
-> > > This should go just above your name - see below.
-> 
-> I fixed this up and added this patch to my perf/urgent branch, for
-> v5.12, since the kernel bits are upstream and this is a fix.
+On Sat, Mar 6, 2021 at 10:36 AM Qing Zhang <zhangqing@loongson.cn> wrote:
+>
+> Add IO interrupt controller support for Loongson 2k1000, different
+> from the 3a series is that 2K1000 has 64 interrupt sources, 0-31
+> correspond to the device tree liointc0 device node, and the other
+> correspond to liointc1 node.
+Use the formal name (Loongson-2K1000, Loongson-3A series), please.
 
-Yeah, it makes sense to pick this patch into perf/urgent branch since
-it's a fixing patch.
-
-Actually, this patch has been merged into the tmp.perf/core branch [1],
-after you move it to the perf/urgent branch, I can confirm all other
-patches for perf tool in this series have been merged into the
-tmp.perf/core branch.
-
-Thanks,
-Leo
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/commit/?h=tmp.perf/core&id=8c559e8d68630d64d932bada633705f6551427df
+Huacai
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> ---
+>
+> v2-v3: No change
+>
+>  drivers/irqchip/irq-loongson-liointc.c | 55 +++++++++++++++++++++-----
+>  1 file changed, 46 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
+> index 09b91b81851c..1c3c80f7f9f5 100644
+> --- a/drivers/irqchip/irq-loongson-liointc.c
+> +++ b/drivers/irqchip/irq-loongson-liointc.c
+> @@ -20,6 +20,7 @@
+>
+>  #define LIOINTC_CHIP_IRQ       32
+>  #define LIOINTC_NUM_PARENT 4
+> +#define LIOINTC_NUM_CORES      4
+>
+>  #define LIOINTC_INTC_CHIP_START        0x20
+>
+> @@ -42,6 +43,7 @@ struct liointc_handler_data {
+>  struct liointc_priv {
+>         struct irq_chip_generic         *gc;
+>         struct liointc_handler_data     handler[LIOINTC_NUM_PARENT];
+> +       void __iomem                    *core_isr[LIOINTC_NUM_CORES];
+>         u8                              map_cache[LIOINTC_CHIP_IRQ];
+>         bool                            has_lpc_irq_errata;
+>  };
+> @@ -51,11 +53,12 @@ static void liointc_chained_handle_irq(struct irq_desc *desc)
+>         struct liointc_handler_data *handler = irq_desc_get_handler_data(desc);
+>         struct irq_chip *chip = irq_desc_get_chip(desc);
+>         struct irq_chip_generic *gc = handler->priv->gc;
+> +       int core = get_ebase_cpunum() % LIOINTC_NUM_CORES;
+>         u32 pending;
+>
+>         chained_irq_enter(chip, desc);
+>
+> -       pending = readl(gc->reg_base + LIOINTC_REG_INTC_STATUS);
+> +       pending = readl(handler->priv->core_isr[core]);
+>
+>         if (!pending) {
+>                 /* Always blame LPC IRQ if we have that bug */
+> @@ -141,6 +144,15 @@ static void liointc_resume(struct irq_chip_generic *gc)
+>  }
+>
+>  static const char * const parent_names[] = {"int0", "int1", "int2", "int3"};
+> +static const char * const core_reg_names[] = {"isr0", "isr1", "isr2", "isr3"};
+> +
+> +static void __iomem *liointc_get_reg_byname(struct device_node *node,
+> +                                               const char *name)
+> +{
+> +       int index = of_property_match_string(node, "reg-names", name);
+> +
+> +       return of_iomap(node, index);
+> +}
+>
+>  static int __init liointc_of_init(struct device_node *node,
+>                                   struct device_node *parent)
+> @@ -159,10 +171,28 @@ static int __init liointc_of_init(struct device_node *node,
+>         if (!priv)
+>                 return -ENOMEM;
+>
+> -       base = of_iomap(node, 0);
+> -       if (!base) {
+> -               err = -ENODEV;
+> -               goto out_free_priv;
+> +       if (of_device_is_compatible(node, "loongson,liointc-2.0")) {
+> +               base = liointc_get_reg_byname(node, "main");
+> +               if (!base) {
+> +                       err = -ENODEV;
+> +                       goto out_free_priv;
+> +               }
+> +               for (i = 0; i < LIOINTC_NUM_CORES; i++) {
+> +                       priv->core_isr[i] =
+> +                               liointc_get_reg_byname(node, core_reg_names[i]);
+> +               }
+> +               if (!priv->core_isr[0]) {
+> +                       err = -ENODEV;
+> +                       goto out_iounmap_base;
+> +               }
+> +       } else {
+> +               base = of_iomap(node, 0);
+> +               if (!base) {
+> +                       err = -ENODEV;
+> +                       goto out_free_priv;
+> +               }
+> +               for (i = 0; i < LIOINTC_NUM_CORES; i++)
+> +                       priv->core_isr[i] = base + LIOINTC_REG_INTC_STATUS;
+>         }
+>
+>         for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
+> @@ -172,7 +202,7 @@ static int __init liointc_of_init(struct device_node *node,
+>         }
+>         if (!have_parent) {
+>                 err = -ENODEV;
+> -               goto out_iounmap;
+> +               goto out_iounmap_isr;
+>         }
+>
+>         sz = of_property_read_variable_u32_array(node,
+> @@ -183,7 +213,7 @@ static int __init liointc_of_init(struct device_node *node,
+>         if (sz < 4) {
+>                 pr_err("loongson-liointc: No parent_int_map\n");
+>                 err = -ENODEV;
+> -               goto out_iounmap;
+> +               goto out_iounmap_isr;
+>         }
+>
+>         for (i = 0; i < LIOINTC_NUM_PARENT; i++)
+> @@ -195,7 +225,7 @@ static int __init liointc_of_init(struct device_node *node,
+>         if (!domain) {
+>                 pr_err("loongson-liointc: cannot add IRQ domain\n");
+>                 err = -EINVAL;
+> -               goto out_iounmap;
+> +               goto out_iounmap_isr;
+>         }
+>
+>         err = irq_alloc_domain_generic_chips(domain, 32, 1,
+> @@ -260,7 +290,13 @@ static int __init liointc_of_init(struct device_node *node,
+>
+>  out_free_domain:
+>         irq_domain_remove(domain);
+> -out_iounmap:
+> +out_iounmap_isr:
+> +       for (i = 0; i < LIOINTC_NUM_CORES; i++) {
+> +               if (!priv->core_isr[i])
+> +                       continue;
+> +               iounmap(priv->core_isr[i]);
+> +       }
+> +out_iounmap_base:
+>         iounmap(base);
+>  out_free_priv:
+>         kfree(priv);
+> @@ -270,3 +306,4 @@ static int __init liointc_of_init(struct device_node *node,
+>
+>  IRQCHIP_DECLARE(loongson_liointc_1_0, "loongson,liointc-1.0", liointc_of_init);
+>  IRQCHIP_DECLARE(loongson_liointc_1_0a, "loongson,liointc-1.0a", liointc_of_init);
+> +IRQCHIP_DECLARE(loongson_liointc_2_0, "loongson,liointc-2.0", liointc_of_init);
+> --
+> 2.20.1
+>
