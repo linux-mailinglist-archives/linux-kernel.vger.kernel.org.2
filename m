@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD2632F9BC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E00DA32F9C2
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhCFLdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 06:33:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50624 "EHLO
+        id S230404AbhCFLf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 06:35:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhCFLdD (ORCPT
+        with ESMTP id S230207AbhCFLfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 06:33:03 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A520C06175F;
-        Sat,  6 Mar 2021 03:33:03 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id d11so2700509plo.8;
-        Sat, 06 Mar 2021 03:33:03 -0800 (PST)
+        Sat, 6 Mar 2021 06:35:21 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAF3C06175F;
+        Sat,  6 Mar 2021 03:35:20 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id w34so2091361pga.8;
+        Sat, 06 Mar 2021 03:35:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/fx6WZgqSrjuYPDTVZcWrwGq9E9g/m5mMZJZkpp59xk=;
-        b=kH2wB7I9PrIkI/QXOpeCZAzddtwF0C+J1nXLA/2d3q61WoKQNVhnvTSm+TkMja7z8p
-         xE/subkLSw06NJxGy+MuEY8Z8pivX+jAg6+omGLQ/jV6Pz3rW7IYsndsRNFkNXg5y/+c
-         i+nGDbrAU+Hk5ViSGC7c4FmR8Q7IoMbln0wBM80Q/cH32UoIbv+SI0LMh9binPlLenrQ
-         aEIUU3SVo+CJxwqKDWe0k+Ofo73t9bvX0C+5LWSbegy4q/VSGXBm/yRC7tM2SbfWhFw1
-         9ZA0jizcNBZ2urevCUiHh+nMKhvF/9gd9kHF/0vKPtj98bh2TjsvUaBNCvWlKUIe9skU
-         qOQg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=RFcAptOGUzRFgc1VcA5H4/3lDHhPtSvWgw9OuJoIW28=;
+        b=ZvgTalSC71oPlL8WnLg4t8W9jsbTDX2i6R7giAZKzGn89jhZCH6bvptq9X5yzNQS5I
+         TqWkQy4xBzy1OqYPpKLPkibJibENFxX0lVx2Z3bBNqQJT6/Cxoo1YJqChS7XXHLYoD1Y
+         hAIEuNh9Mniy8UBLnq/dzEFSFRGsZuKkSWTI6xTY74miUVquK7bKEGdjq69axTk/ecyw
+         OXwtviL6EtS4ew+my7eiZj7n5tX3sEg6cLFBYdft0RVMHx3jO/htmDoJd07BvIFQCdla
+         kFXLUUzIe9kVZjcE3mKs1fqRFOZ+fB/z6yztLuFF/OumKpCvkZU9An0PiPBG1vVRKVHV
+         ET0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/fx6WZgqSrjuYPDTVZcWrwGq9E9g/m5mMZJZkpp59xk=;
-        b=jIDLgqfJorRbFabo93k9ztADG0OxgTB0L3Fx+IJk3wxS0Hr9/gu8fiCSnXEedvs5oD
-         W7mGQiuojvyJVavcZMHMqTdHyyec3fKPczxTIUipp4/yzppEwMak4tY6lHny24V9gnkR
-         4sBKVvyfhZNUahVCPjRPUGgVY7XD5VFHUoJLZI1C7yB1jbXG04cq4suFLwMYJc8SaLaM
-         kpPcRptHEC9oS+auANSIIDUCRzP/LP8hHQ4Ho0uUqU0oDsJTqn0/iOw215xqrjrbWh1h
-         oxOhtMEyOTm3Q4SDxQo8VUG5e9WFequ7NZdHfHqmtWGmXXLcx9rjm3HMfO1PS47vZ5nq
-         mxSQ==
-X-Gm-Message-State: AOAM532DO0hPcWk507bvXsts33C3GuNYfoNCUvE35IjEPaWhqNP/gxaD
-        NWpMZ74r207dLmgobEeI3Hc=
-X-Google-Smtp-Source: ABdhPJx/g3BbbVaGbZa7LNVuZkgSOwDfPURgUCz4tuwJwhKwSHdP67mWEGPTz3W+Woc9Arv7W3Zufg==
-X-Received: by 2002:a17:90a:d58a:: with SMTP id v10mr15477300pju.36.1615030382183;
-        Sat, 06 Mar 2021 03:33:02 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id s26sm5460463pfd.5.2021.03.06.03.33.00
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=RFcAptOGUzRFgc1VcA5H4/3lDHhPtSvWgw9OuJoIW28=;
+        b=mXHH0GiCM+yk98sQaVFvP7/IPwb5PXMJTOcVIuTLVKEaxmERktK34KwnvTnUgvvGFd
+         k+xev7GoazpQMu7+ZmahU8pZgGXCPP8HLbwm2ajGNPeRk4F0FSUT1Sc7gzBN35ZiK9e3
+         oKI89U0kKShK5+sOp2AzgXqqCZgbTxvCmNANrVMoTt0ZG3auKkGATN/ERM7QMO/8ldvP
+         cYDeum6UoIfWRywNapyMT3mHrariggQgnsmTNGNDQ7BchVh5YGKFWJ8k906GuyAy1ov1
+         qBP4It+4RrXbW3TqTJ7jWevnF57cZjWdGRIgRP+vFFb8sjs+6B2UfD3FFKzp6jUIyYH6
+         2bDw==
+X-Gm-Message-State: AOAM532HYilz3mSAr0Iter4wFx1nI/+dj0oa4agb+lfm7njmKf4duMBm
+        wKgL4fGhWIkYsgHI5FsqJIY=
+X-Google-Smtp-Source: ABdhPJyVJQxFLZUKLdkwHW2bBFVsEj+2VwFa5BbmcE8NrsH2miLBMn1v3xMmQzBBt4oxhz57odo1ow==
+X-Received: by 2002:a63:d618:: with SMTP id q24mr12380661pgg.283.1615030520441;
+        Sat, 06 Mar 2021 03:35:20 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:600d:a089:2cbb:f743:ffa5:41bc])
+        by smtp.googlemail.com with ESMTPSA id n184sm5342980pfd.205.2021.03.06.03.35.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 03:33:01 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: zhang.yunkai@zte.com.cn
-To:     mchehab@kernel.org
-Cc:     dwlsalmeida@gmail.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Yunkai <zhang.yunkai@zte.com.cn>
-Subject: [PATCH] media:vidtv: remove duplicate include in vidtv_psi
-Date:   Sat,  6 Mar 2021 03:32:55 -0800
-Message-Id: <20210306113255.217387-1-zhang.yunkai@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sat, 06 Mar 2021 03:35:19 -0800 (PST)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     corbet@lwn.net
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org, willy@infradead.org
+Subject: [RFC v2] scripts: kernel-doc: fix attribute capture in function parsing
+Date:   Sat,  6 Mar 2021 17:05:10 +0530
+Message-Id: <20210306113510.31023-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CAKXUXMwoYa6xbCsqnUYL5uSA71h_3xV7-8erF6XTpmkck8ozaw@mail.gmail.com>
+References: <CAKXUXMwoYa6xbCsqnUYL5uSA71h_3xV7-8erF6XTpmkck8ozaw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+Currently, kernel-doc warns for function prototype parsing on the
+presence of attributes "__attribute_const__" and "__flatten" in the
+definition.
 
-'string.h' included in 'vidtv_psi.c' is duplicated.
+There are 166 occurrences in ~70 files in the kernel tree for
+"__attribute_const__" and 5 occurrences in 4 files for "__flatten".
 
-Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+Out of 166, there are 3 occurrences in three different files with
+"__attribute_const__" and a preceding kernel-doc; and, 1 occurrence in
+./mm/percpu.c for "__flatten" with a preceding kernel-doc. All other
+occurrences have no preceding kernel-doc.
+
+Add support for  "__attribute_const__" and "__flatten" attributes.
+
+A quick evaluation by running 'kernel-doc -none' on kernel-tree reveals
+that no additional warning or error has been added or removed by the fix.
+
+Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 ---
- drivers/media/test-drivers/vidtv/vidtv_psi.c | 1 -
- 1 file changed, 1 deletion(-)
+Changes in v2:
+- Remove "__attribute_const__" from the $return_type capture regex and add to the substituting ones.
+- Add support for "__flatten" attribute
+- Modify commit message
 
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_psi.c b/drivers/media/test-drivers/vidtv/vidtv_psi.c
-index 47ed7907db8d..c11ac8dca73d 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_psi.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_psi.c
-@@ -19,7 +19,6 @@
- #include <linux/ratelimit.h>
- #include <linux/slab.h>
- #include <linux/string.h>
--#include <linux/string.h>
- #include <linux/time.h>
- #include <linux/types.h>
- 
+ scripts/kernel-doc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index 68df17877384..e1e562b2e2e7 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -1766,12 +1766,14 @@ sub dump_function($$) {
+     $prototype =~ s/^noinline +//;
+     $prototype =~ s/__init +//;
+     $prototype =~ s/__init_or_module +//;
++    $prototype =~ s/__flatten +//;
+     $prototype =~ s/__meminit +//;
+     $prototype =~ s/__must_check +//;
+     $prototype =~ s/__weak +//;
+     $prototype =~ s/__sched +//;
+     $prototype =~ s/__printf\s*\(\s*\d*\s*,\s*\d*\s*\) +//;
+     my $define = $prototype =~ s/^#\s*define\s+//; #ak added
++    $prototype =~ s/__attribute_const__ +//;
+     $prototype =~ s/__attribute__\s*\(\(
+             (?:
+                  [\w\s]++          # attribute name
 -- 
-2.25.1
+2.17.1
 
