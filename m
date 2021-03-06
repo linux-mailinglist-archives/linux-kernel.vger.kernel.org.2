@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADB932FB16
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 15:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CC832FB1A
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 15:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbhCFOJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 09:09:03 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:16188 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230507AbhCFOI5 (ORCPT
+        id S230487AbhCFOLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 09:11:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230322AbhCFOLW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 09:08:57 -0500
-X-IronPort-AV: E=Sophos;i="5.81,228,1610406000"; 
-   d="scan'208";a="496489458"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 Mar 2021 15:08:56 +0100
-Date:   Sat, 6 Mar 2021 15:08:56 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Denis Efremov <efremov@linux.com>
-cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 RESEND] coccinelle: misc: add minmax script
-In-Reply-To: <20210219090655.8985-1-efremov@linux.com>
-Message-ID: <alpine.DEB.2.22.394.2103061503290.2976@hadrien>
-References: <20210216160326.1341741-1-efremov@linux.com> <20210219090655.8985-1-efremov@linux.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Sat, 6 Mar 2021 09:11:22 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCC6C06174A;
+        Sat,  6 Mar 2021 06:11:22 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id z5so2832694plg.3;
+        Sat, 06 Mar 2021 06:11:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=LgM7YFWhlt5znBD2/JLvW1bjNTi6OGhQjmnGFZap7Hs=;
+        b=ckNoAB+ODBWa3INVgftQWQRWPnnDR4uxPs2MSO1/0eBbzbgDjEB5MKmQwCBfbiNb9Z
+         JnLvIHZg0k9YxRwiUO6b/M9wyu7lNZYlM2KAsNtrQe1kRr1YH4iJOTwk27AQ/HRDYFdv
+         1U8BA1QGM+4bHvofgz0XRVqq3x9bB35QCl1WwBvrxtyd+Y8aW+yiEa1hM3H4Szyi1SDv
+         QC6o7NcyNZzJadL0cZ1VzgYE3+0gZvSExobJdZ8Y0LiTz1rnlXaH27rzZamtjC72DH5v
+         sA/8GMSC8WIwHsUJIjF5293I+Aq2z1C8loYeTUkjUcTgshQ61RUqDHksCVOiEsfZh8WK
+         Qr8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=LgM7YFWhlt5znBD2/JLvW1bjNTi6OGhQjmnGFZap7Hs=;
+        b=ZvfJThNW5gHgDHHxK+2IT+fhs+vr3VE2DDoP0BiIlkATiGfJI3+Vo/JIF7nzOzkWmD
+         os1E5nRlyhLpqu9+p07u3DkP9Yf2pRtU+cUgQDk8x9FaRM6yuKaSaaGte5CTEVTGCDHY
+         +eAySn3cyBmxeYN+F90DWff9aua0LHQTGw8gchlZR52mqbL8gD0nKKlab5xH+MH0ifFQ
+         73VlWKWMt78UM06ApnFgTQO1lDcc2ZwHGkB2SDgov+xMywKnK4/nGo31OVs2bvlDMjCG
+         +RercBPJATb8VO98HCgsF1JYFGJjMJJg9gbwD+WOUHs7JBnAxc8sjI6vARjb4n/tw5Uh
+         4vFQ==
+X-Gm-Message-State: AOAM532GKLtTVavo2AWGXSmf9XEE0FoIBIky9BOIhr37kWsVQAZpPlZi
+        Wu/QUpjLNMIQVB/7wBAO/22gKAOt6LbH6w==
+X-Google-Smtp-Source: ABdhPJx0HUd2uHXnnm00G2u5dzEtzPO7Dne+6GxhtL76qKb/VcoV+Na1KZuJBVIKvaSY7hjCik7XYA==
+X-Received: by 2002:a17:90a:a10a:: with SMTP id s10mr15827869pjp.36.1615039881660;
+        Sat, 06 Mar 2021 06:11:21 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.79])
+        by smtp.gmail.com with ESMTPSA id d2sm5521364pjx.42.2021.03.06.06.11.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 06:11:21 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] thermal: thermal_of: fix error return code of thermal_of_populate_bind_params()
+Date:   Sat,  6 Mar 2021 06:11:06 -0800
+Message-Id: <20210306141106.18695-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When kcalloc() fails and __tcbp is NULL, no error return code of
+thermal_of_populate_bind_params() is assigned.
+To fix this bug, ret is assigned with -ENOMEM in this case.
 
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/thermal/thermal_of.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-On Fri, 19 Feb 2021, Denis Efremov wrote:
+diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+index 69ef12f852b7..e8c9041482e9 100644
+--- a/drivers/thermal/thermal_of.c
++++ b/drivers/thermal/thermal_of.c
+@@ -710,8 +710,10 @@ static int thermal_of_populate_bind_params(struct device_node *np,
+ 	}
+ 
+ 	__tcbp = kcalloc(count, sizeof(*__tcbp), GFP_KERNEL);
+-	if (!__tcbp)
++	if (!__tcbp) {
++		ret = -ENOMEM;
+ 		goto end;
++	}
+ 
+ 	for (i = 0; i < count; i++) {
+ 		ret = of_parse_phandle_with_args(np, "cooling-device",
+-- 
+2.17.1
 
-> Check for opencoded min(), max() implementations.
->
-> Signed-off-by: Denis Efremov <efremov@linux.com>
-> ---
->
-> Changes in v2:
->  - <... ...> instead of ... when any
->  - org mode reports fixed
->  - patch rule to drop excessive ()
->
->  scripts/coccinelle/misc/minmax.cocci | 224 +++++++++++++++++++++++++++
->  1 file changed, 224 insertions(+)
->  create mode 100644 scripts/coccinelle/misc/minmax.cocci
->
-> diff --git a/scripts/coccinelle/misc/minmax.cocci b/scripts/coccinelle/misc/minmax.cocci
-> new file mode 100644
-> index 000000000000..61d6b61fd82c
-> --- /dev/null
-> +++ b/scripts/coccinelle/misc/minmax.cocci
-> @@ -0,0 +1,224 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +///
-> +/// Check for opencoded min(), max() implementations.
-> +/// Generated patches sometimes require adding a cast to fix compile warning.
-> +/// Warnings/patches scope intentionally limited to a function body.
-> +///
-> +// Confidence: Medium
-> +// Copyright: (C) 2021 Denis Efremov ISPRAS
-> +// Options: --no-includes --include-headers
-> +//
-> +// Keywords: min, max
-> +//
-> +
-> +
-> +virtual report
-> +virtual org
-> +virtual context
-> +virtual patch
-> +
-> +@rmax depends on !patch@
-> +identifier func;
-> +expression x, y;
-> +binary operator cmp = {>, >=};
-> +position p;
-> +@@
-> +
-> +func(...)
-> +{
-> +	<...
-> +*	x cmp@p y ? x : y
-
-The rule below indicated with FIXME is supposed to deal with the
-possibility of () that are unnecessary when using min and max.  It doesn't
-work, because <... P ...> allow P to match 0 or more times, and thus
-func@p matches every function.
-
-A simpler solution is to just allow arbitrary () in the pattern, eg:
-
-  (x) cmp@p (y) ? (x) : (y)
-
-That will allow each occurrence of x and y to occur with and without
-parentheses.  In the submitted  semantic patch, the () issue was only
-considered in the patch case.  But it actually affects the purely matching
-cases too, because () can be used at one occurrence, but not the other.
-
-> +@script:python depends on report@
-> +p << rmax.p;
-> +@@
-> +
-> +coccilib.report.print_report(p[0], "WARNING opportunity for max()")
-
-p is an array because it can be bound to different positions on different
-control-flow paths.  Notably this occurs with <... ...>.  If there are
-multiple occurrences of the pattern, there will be one match that contains
-all of them.  Thus the reporting code should be:
-
-for p0 in p:
-  coccilib.report.print_report(p0, "WARNING opportunity for max()")
-
-julia
