@@ -2,261 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98CF32FCA8
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA8F32FCAE
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:17:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhCFTPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 14:15:04 -0500
-Received: from mout.gmx.net ([212.227.17.22]:48455 "EHLO mout.gmx.net"
+        id S231516AbhCFTRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 14:17:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231177AbhCFTOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 14:14:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1615058087;
-        bh=xmOKEwI7ZeP/3hnIXVV4eVvYACS1d36IEoWwwamsar8=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=HbVy8j0J5xdj2CIIlle8WNtDpams6uVTGCQEGtiN9bMglj/0KriEsEh4zA0VbcBGO
-         SJRS5CKDlRooB+dK/azjj3s20Ywj81+ivQxLgdidoid0F7mlVrT/m9dMNVFNuKFuuR
-         Wa1sGSaYWlXVWJTJpUBzmZ+uawVf3gzZF5LGVBQw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N49hB-1liZPz3N2X-0108EM; Sat, 06
- Mar 2021 20:14:46 +0100
-Date:   Sat, 6 Mar 2021 20:14:46 +0100
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     j.neuschaefer@gmx.net, lee.jones@linaro.org,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH -next] mfd: ntxec: Support for EC in Tolino Shine 2 HD
-Message-ID: <YEPUppNWNiAMnczF@latitude>
-References: <20210306181314.12673-1-andreas@kemnade.info>
+        id S231585AbhCFTQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 14:16:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E48BC65004;
+        Sat,  6 Mar 2021 19:16:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615058214;
+        bh=nV6ae13fXxxsetQ6fzmDHfH0TawA3gmKiWa9auwwSis=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bjmwfN85Gbc+KAOBEJtgkF8E3vBYskAxrUXqp2mJu8Egb3ST7LbKXiXv72V4fE/PG
+         TvbTe+zsO2gvx92+nGUuz5exSoblkLKbjskeT922A4ttcwEbKeV5h1wT29BvlB0Tzr
+         y276wBhy/uyW+Q3UiHWidBRHrUw145iXqXVmydU8h3eTyV84dUWY75iMeC70JqjunB
+         Z6lgjzDBGcAN9s5aFBoYSkOuAik+c7hDFJZNDX8j+hFrBZWKO9AHMihK61TJKBW7XV
+         2S1A0FyzKElTaBZoLrt5LtXS8vPHCIkW4Q6Z0422s2BKFcYZQn7nXGqRJcH4wtbW0O
+         1jQN2iUCw2VyA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5A94840647; Sat,  6 Mar 2021 16:16:51 -0300 (-03)
+Date:   Sat, 6 Mar 2021 16:16:51 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH][RFC] perf annotate: show full line locations with 'k' in
+ UI
+Message-ID: <YEPVI8rHUffiBnjO@kernel.org>
+References: <9acb63e0-af38-eeeb-157e-32f6177da557@suse.cz>
+ <20210212203408.GH1398414@kernel.org>
+ <5b59c46e-4907-7ab9-a68d-dd234e988dc7@suse.cz>
+ <YEOSWxmy1mbe0ucw@kernel.org>
+ <25a6384f-d862-5dda-4fec-8f0555599c75@suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hCtsFvQpjT434NKf"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210306181314.12673-1-andreas@kemnade.info>
-X-Provags-ID: V03:K1:XsEnlvIuR7wTpmDHOH9z04Biy4KW4BVturfThauM6aAgvZiN3r6
- +Wyex+kbQYGtcHyMv7C4H5EXW63I/HY4pDdhuj+PY/gO75uEBSFc/7aH5lEu8nFBeRZtpJS
- c6UvjHTu5xH3cwUuwzDzICMsqnQ2sn59cNL71f1CHhBluytx9TjhbOnE+eaGnx4RCQIUE+a
- E4RbrtZgflrBoM1A9Ju+A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mtgMcpaqMVk=:yiK8n4Tr9Y5niTvQolX86s
- FYAV85FZTnBHmvD9dLb2TPpW5n/kZRp0fpXANpO3J3ieaZEl8kxaGvGFv1N9H4bT1IH1cysUR
- IjD9YpFpsRtCLnJfP/ZRAikFOMYU/1hUm2ySawckKzbD8D62ADMSa+J74i57M5klr2/NLT3Gp
- C7PHsWbWcsKR3IrYngefweAC3c1Ga5fXYfuawtWWDjdqNAIXMfz2/ZNZON2tR8OvNsca7/aAH
- 2lPP0TldF4EgrpkQTJ7yXM9I6YONxZN6hCH6EbFqLjdaG3oTn3urGJEknNEMujr2hppZh85NH
- 2vR4sl0gK/sURbl8nQA2ucEkIkRCTXb5M8sJ02AmT3KlIS33Lp13XZzp/PFnd7uE1Dm9OoX18
- 88ddhFoofz60VL4tNGn1+KW2wVYky46cAbCtlHcfkNQadECVzepy+NAgusnTRQyJWYJzUKc62
- mLiBkkYQTvrf9zy5DCY0kECcIIXRmTpOPxsImUKUABcTlyFUaKMabMmRrNqhUv07cvdEx44NM
- yJHEnQpxIVcM7OwryhSexTemmBGbtDdh2pSrYAhaj7AHiEBJcVtPBFOdYPxj7D9lQn593hcS6
- 23AiSbKw1IjrZUbHKDbaaubgCGoxzsPngmaZeCbxJ4XlUunk70xkvRb91fg+k/zhF44ncHFz+
- q+O58uR+KeQuvx0lSo/ehueKCn9NafNLUcsPLnvVl7QADrVBsLbUgFfweyzXSFFPBcNM9IH13
- WEnh8RlycCljUoVBvoQfkSggaxq85sAzRk47VE9+EmdVCKsB4UUzVyX92B3VLEdijL9Zu3T2K
- 0GHw0c12Sz+WxqwfU6F4mxDP9lxLQruUd+NF208Q3dguvqgf/Trz7V1mXXIaFJKqYClXhwL4z
- jmWD0dDqHkdCFjAaaUVg==
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <25a6384f-d862-5dda-4fec-8f0555599c75@suse.cz>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Sat, Mar 06, 2021 at 08:02:24PM +0100, Martin Liška escreveu:
+> On 3/6/21 3:31 PM, Arnaldo Carvalho de Melo wrote:
+> > I see, it works only when pressing on source code lines:
+> 
+> Hey.
+> 
+> Yes, I forgot to explicitly mention that.
 
---hCtsFvQpjT434NKf
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Some requests, send the mail inline, not as an attachment, so that I can
+use scripts that will extract the Message-ID, add it as a Link: tag,
+etc.
 
-Hi,
+Also something Ingo asked me since the dawn of times and I grew used to:
 
-(Cc'ing Mark Brown because of the regmap related questions)
 
-On Sat, Mar 06, 2021 at 07:13:14PM +0100, Andreas Kemnade wrote:
-> Add the version of the EC in the Tolino Shine 2 HD
-> to the supported versions. It seems not to have an RTC
-> and does not ack data written to it.
-> The vendor kernel happily ignores write errors, using
-> I2C via userspace i2c-set also shows the error.
-> So add a quirk to ignore that error.
->=20
-> PWM can be successfully configured despite of that error.
+[PATCH][RFC] perf annotate: show full line locations with 'k' in
 
-I'm curious, is this one of the variants with two PWM channels
-(for configurable color temperature)?
+[PATCH][RFC] perf annotate: Show full line locations with 'k' in
 
->=20
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+Capitalize that :-)
+
+Also please base your work on my perf/core branch, as I had to do
+adjustments to one of the patch hunks.
+
+> > Source file location: /usr/src/debug/kernel-5.10.fc33/linux-5.10.19-200.fc33.x86_64/./arch/x86/include/asm/msr.h:205
+> > 
+> > So we better improve that message? I.e. 'press on source code lines', or
+> > 'enable showing source code lines to get line number'?
+> 
+> Fixed that in the attached patch. I got inspiration from 's' hotkey which prints the following warning:
+> "Only available for assembly lines.".
+
+Thanks, testing now.
+
+- Arnaldo
+ 
+> Thanks,
+> Martin
+
+> From 8fb7db7722c481ee4d1e0de2d2dc884f25aa90a1 Mon Sep 17 00:00:00 2001
+> From: Martin Liska <mliska@suse.cz>
+> Date: Mon, 15 Feb 2021 12:34:46 +0100
+> Subject: [PATCH] perf annotate: show full source location with 'l' hotkey
+> MIME-Version: 1.0
+> Content-Type: text/plain; charset=UTF-8
+> Content-Transfer-Encoding: 8bit
+> 
+> Right now, when Line numbers are displayed, one can't easily
+> find a source file that the line corresponds to.
+> 
+> When a source line is selected and 'l' is pressed, full source file
+> location is displayed in perf UI footer line. The hotkey works
+> only for source code lines.
+> 
+> Signed-off-by: Martin Liška <mliska@suse.cz>
 > ---
->  drivers/mfd/ntxec.c       | 57 ++++++++++++++++++++++++++++++++++++---
->  include/linux/mfd/ntxec.h |  1 +
->  2 files changed, 55 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/mfd/ntxec.c b/drivers/mfd/ntxec.c
-> index 957de2b03529..e7fe570127af 100644
-> --- a/drivers/mfd/ntxec.c
-> +++ b/drivers/mfd/ntxec.c
-> @@ -96,6 +96,36 @@ static struct notifier_block ntxec_restart_handler =3D=
- {
->  	.priority =3D 128,
->  };
-> =20
-> +static int regmap_ignore_write(void *context,
-> +			       unsigned int reg, unsigned int val)
+>  tools/perf/ui/browsers/annotate.c | 25 +++++++++++++++++++++++--
+>  tools/perf/util/annotate.c        | 12 ++++++++++--
+>  tools/perf/util/annotate.h        |  2 ++
+>  3 files changed, 35 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+> index bd77825fd5a1..cf60ba59b903 100644
+> --- a/tools/perf/ui/browsers/annotate.c
+> +++ b/tools/perf/ui/browsers/annotate.c
+> @@ -381,6 +381,25 @@ static bool annotate_browser__toggle_source(struct annotate_browser *browser)
+>  	return true;
+>  }
+>  
+> +#define SYM_TITLE_MAX_SIZE (PATH_MAX + 64)
 > +
+> +static void annotate_browser__show_full_location(struct ui_browser *browser)
 > +{
-> +	struct regmap *regmap =3D context;
+> +	struct annotate_browser *ab = container_of(browser, struct annotate_browser, b);
+> +	struct disasm_line *cursor = disasm_line(ab->selection);
+> +	struct annotation_line *al = &cursor->al;
 > +
-> +	regmap_write(regmap, reg, val);
-> +
-> +	return 0;
+> +	if (al->offset != -1)
+> +		ui_helpline__puts("Only available for source code lines.");
+> +	else if (al->fileloc == NULL)
+> +		ui_helpline__puts("No source file location.");
+> +	else {
+> +		char help_line[SYM_TITLE_MAX_SIZE];
+> +		sprintf (help_line, "Source file location: %s", al->fileloc);
+> +		ui_helpline__puts(help_line);
+> +	}
 > +}
 > +
-> +static int regmap_wrap_read(void *context, unsigned int reg,
-> +			    unsigned int *val)
-> +{
-> +	struct regmap *regmap =3D context;
-> +
-> +	return regmap_read(regmap, reg, val);
-> +}
-> +
-> +/* some firmware versions do not ack written data, add a wrapper */
-> +static const struct regmap_config regmap_config_noack =3D {
-> +	.name =3D "ntxec_noack",
-> +	.reg_bits =3D 8,
-> +	.val_bits =3D 16,
-> +	.cache_type =3D REGCACHE_NONE,
-> +	.val_format_endian =3D REGMAP_ENDIAN_BIG,
-> +	.reg_write =3D regmap_ignore_write,
-> +	.reg_read =3D regmap_wrap_read
-
-Is the read wrapper necessary? It seems to me from reading regmap.h
-that leaving .reg_read set to NULL should do the right thing, but I'm
-not sure.
-
-> +};
-> +
->  static const struct regmap_config regmap_config =3D {
->  	.name =3D "ntxec",
->  	.reg_bits =3D 8,
-> @@ -109,10 +139,15 @@ static const struct mfd_cell ntxec_subdevices[] =3D=
- {
->  	{ .name =3D "ntxec-pwm" },
->  };
-> =20
-> +static const struct mfd_cell ntxec_subdev_pwm[] =3D {
-> +	{ .name =3D "ntxec-pwm" },
-> +};
-
-ntxec_subdevices vs. ntxec_subdev_pwm seems slightly inconsistent in
-naming. ntxec_subdevices_pwm would be a wrong plural, but IMHO slightly
-better because of consistency. Maybe rename ntxec_subdevices to
-ntxec_subdev?
-
-> +
->  static int ntxec_probe(struct i2c_client *client)
+>  static void ui_browser__init_asm_mode(struct ui_browser *browser)
 >  {
->  	struct ntxec *ec;
->  	unsigned int version;
-> +	bool has_rtc;
->  	int res;
-> =20
->  	ec =3D devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
-> @@ -137,6 +172,15 @@ static int ntxec_probe(struct i2c_client *client)
->  	/* Bail out if we encounter an unknown firmware version */
->  	switch (version) {
->  	case NTXEC_VERSION_KOBO_AURA:
-> +		has_rtc =3D true;
-> +		break;
-> +	case NTXEC_VERSION_TOLINO_SHINE2:
-> +		has_rtc =3D false;
-> +		ec->regmap =3D devm_regmap_init(ec->dev, NULL,
-> +					      ec->regmap,
-> +					      &regmap_config_noack);
-
-Ah=E2=80=94 A custom regmap stacked on top of the old regmap=E2=80=A6 I thi=
-nk this
-deserves a comment.
-
-> +		if (IS_ERR(ec->regmap))
-> +			return PTR_ERR(ec->regmap);
->  		break;
->  	default:
->  		dev_err(ec->dev,
-> @@ -155,7 +199,6 @@ static int ntxec_probe(struct i2c_client *client)
+>  	struct annotation *notes = browser__annotation(browser);
+> @@ -388,8 +407,6 @@ static void ui_browser__init_asm_mode(struct ui_browser *browser)
+>  	browser->nr_entries = notes->nr_asm_entries;
+>  }
+>  
+> -#define SYM_TITLE_MAX_SIZE (PATH_MAX + 64)
+> -
+>  static int sym_title(struct symbol *sym, struct map *map, char *title,
+>  		     size_t sz, int percent_type)
+>  {
+> @@ -747,6 +764,7 @@ static int annotate_browser__run(struct annotate_browser *browser,
+>  		"c             Show min/max cycle\n"
+>  		"/             Search string\n"
+>  		"k             Toggle line numbers\n"
+> +		"l             Show full source file location\n"
+>  		"P             Print to [symbol_name].annotation file.\n"
+>  		"r             Run available scripts\n"
+>  		"p             Toggle percent type [local/global]\n"
+> @@ -760,6 +778,9 @@ static int annotate_browser__run(struct annotate_browser *browser,
+>  		case 'k':
+>  			notes->options->show_linenr = !notes->options->show_linenr;
+>  			break;
+> +		case 'l':
+> +			annotate_browser__show_full_location (&browser->b);
+> +			continue;
+>  		case 'H':
+>  			nd = browser->curr_hot;
+>  			break;
+> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> index e3eae646be3e..e4b0c21362d8 100644
+> --- a/tools/perf/util/annotate.c
+> +++ b/tools/perf/util/annotate.c
+> @@ -1159,6 +1159,7 @@ struct annotate_args {
+>  	s64			  offset;
+>  	char			  *line;
+>  	int			  line_nr;
+> +	char			  *fileloc;
+>  };
+>  
+>  static void annotation_line__init(struct annotation_line *al,
+> @@ -1168,6 +1169,7 @@ static void annotation_line__init(struct annotation_line *al,
+>  	al->offset = args->offset;
+>  	al->line = strdup(args->line);
+>  	al->line_nr = args->line_nr;
+> +	al->fileloc = args->fileloc;
+>  	al->data_nr = nr;
+>  }
+>  
+> @@ -1480,7 +1482,7 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+>   */
+>  static int symbol__parse_objdump_line(struct symbol *sym,
+>  				      struct annotate_args *args,
+> -				      char *parsed_line, int *line_nr)
+> +				      char *parsed_line, int *line_nr, char **fileloc)
+>  {
+>  	struct map *map = args->ms.map;
+>  	struct annotation *notes = symbol__annotation(sym);
+> @@ -1492,6 +1494,7 @@ static int symbol__parse_objdump_line(struct symbol *sym,
+>  	/* /filename:linenr ? Save line number and ignore. */
+>  	if (regexec(&file_lineno, parsed_line, 2, match, 0) == 0) {
+>  		*line_nr = atoi(parsed_line + match[1].rm_so);
+> +		*fileloc = strdup(parsed_line);
+>  		return 0;
+>  	}
+>  
+> @@ -1511,6 +1514,7 @@ static int symbol__parse_objdump_line(struct symbol *sym,
+>  	args->offset  = offset;
+>  	args->line    = parsed_line;
+>  	args->line_nr = *line_nr;
+> +	args->fileloc = *fileloc;
+>  	args->ms.sym  = sym;
+>  
+>  	dl = disasm_line__new(args);
+> @@ -1805,6 +1809,7 @@ static int symbol__disassemble_bpf(struct symbol *sym,
+>  			args->offset = -1;
+>  			args->line = strdup(srcline);
+>  			args->line_nr = 0;
+> +			args->fileloc = NULL;
+>  			args->ms.sym  = sym;
+>  			dl = disasm_line__new(args);
+>  			if (dl) {
+> @@ -1816,6 +1821,7 @@ static int symbol__disassemble_bpf(struct symbol *sym,
+>  		args->offset = pc;
+>  		args->line = buf + prev_buf_size;
+>  		args->line_nr = 0;
+> +		args->fileloc = NULL;
+>  		args->ms.sym  = sym;
+>  		dl = disasm_line__new(args);
+>  		if (dl)
+> @@ -1850,6 +1856,7 @@ symbol__disassemble_bpf_image(struct symbol *sym,
+>  	args->offset = -1;
+>  	args->line = strdup("to be implemented");
+>  	args->line_nr = 0;
+> +	args->fileloc = NULL;
+>  	dl = disasm_line__new(args);
+>  	if (dl)
+>  		annotation_line__add(&dl->al, &notes->src->source);
+> @@ -1931,6 +1938,7 @@ static int symbol__disassemble(struct symbol *sym, struct annotate_args *args)
+>  	bool delete_extract = false;
+>  	bool decomp = false;
+>  	int lineno = 0;
+> +	char *fileloc = NULL;
+>  	int nline;
+>  	char *line;
+>  	size_t line_len;
+> @@ -2058,7 +2066,7 @@ static int symbol__disassemble(struct symbol *sym, struct annotate_args *args)
+>  		 * See disasm_line__new() and struct disasm_line::line_nr.
 >  		 */
->  		res =3D regmap_write(ec->regmap, NTXEC_REG_POWERKEEP,
->  				   NTXEC_POWERKEEP_VALUE);
-> -		if (res < 0)
->  			return res;
-
-This deletion looks like a mistake.
-
-> =20
->  		if (poweroff_restart_client)
-> @@ -181,8 +224,16 @@ static int ntxec_probe(struct i2c_client *client)
-> =20
->  	i2c_set_clientdata(client, ec);
-> =20
-> -	res =3D devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE, ntxec_subdev=
-ices,
-> -				   ARRAY_SIZE(ntxec_subdevices), NULL, 0, NULL);
-> +	if (has_rtc)
-> +		res =3D devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE,
-> +					   ntxec_subdevices,
-> +					   ARRAY_SIZE(ntxec_subdevices),
-> +					   NULL, 0, NULL);
-> +	else
-> +		res =3D devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE,
-> +					   ntxec_subdev_pwm,
-> +					   ARRAY_SIZE(ntxec_subdev_pwm),
-> +					   NULL, 0, NULL);
-
-At some point, it will probably be simpler to have
-
-	struct mfd_cell *subdev =3D ntxec_subdevices;
-	size_t subdev_size =3D ARRAY_SIZE(ntxec_subdevices);
-
-on top of the probe function and override them in the switch statement,
-but at this point I think it doesn't matter, and either way is fine.
-
->  	if (res)
->  		dev_err(ec->dev, "Failed to add subdevices: %d\n", res);
-> =20
-> diff --git a/include/linux/mfd/ntxec.h b/include/linux/mfd/ntxec.h
-> index 361204d125f1..26ab3b8eb612 100644
-> --- a/include/linux/mfd/ntxec.h
-> +++ b/include/linux/mfd/ntxec.h
-> @@ -33,5 +33,6 @@ static inline __be16 ntxec_reg8(u8 value)
-> =20
->  /* Known firmware versions */
->  #define NTXEC_VERSION_KOBO_AURA	0xd726	/* found in Kobo Aura */
-> +#define NTXEC_VERSION_TOLINO_SHINE2 0xf110 /* found in Tolino Shine 2 HD=
- */
-> =20
->  #endif
-> --=20
-> 2.29.2
->=20
+>  		if (symbol__parse_objdump_line(sym, args, expanded_line,
+> -					       &lineno) < 0)
+> +					       &lineno, &fileloc) < 0)
+>  			break;
+>  		nline++;
+>  	}
+> diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+> index 096cdaf21b01..3757416bcf46 100644
+> --- a/tools/perf/util/annotate.h
+> +++ b/tools/perf/util/annotate.h
+> @@ -84,6 +84,7 @@ struct annotation_options {
+>  	     print_lines,
+>  	     full_path,
+>  	     show_linenr,
+> +	     show_fileloc,
+>  	     show_nr_jumps,
+>  	     show_minmax_cycle,
+>  	     show_asm_raw,
+> @@ -136,6 +137,7 @@ struct annotation_line {
+>  	s64			 offset;
+>  	char			*line;
+>  	int			 line_nr;
+> +	char			*fileloc;
+>  	int			 jump_sources;
+>  	float			 ipc;
+>  	u64			 cycles;
+> -- 
+> 2.30.1
+> 
 
 
-Thanks for your patch,
-Jonathan
+-- 
 
---hCtsFvQpjT434NKf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmBD1JkACgkQCDBEmo7z
-X9spmhAAyUafhUf8Qp2yJSoFl5wr/LVs4uklDu6AXnVkdLW9N6UtfhyXG2P7sENr
-CciUSPfSOw0JKCfoctTW5/y7A4AWYzGeRy6GUYsl2Cj0qmRouD0Pj5RTzfJeatf4
-9KMgoX7e09rpAfPIGKJengnqr1ju8z6qJlDA3DyxrRVYRJIsXCau78KnObsDyfDX
-VLpX+icsQ4VlILA4GB2iVVz/Rl1j1HqBT//nUTQa3TuLFhA4cg7sPCoYGR9RzfkE
-si0eC9NSIUfq0WXZSbP8YmBMlVL6WTP/6c3JsOCP1+0kDqF+SX1pqw35I4Nfe8Z/
-Q8XSMilHc6+hHDYflOKVjkpRUzivVkUlCS/X/zk0UXb4ddCRacqVUdtrwAHKjjbX
-UrJbMBZWUG6AnYesOgnGpq14WeZ4dUcZq6SsT+P7BhcHIrmyknzqAxxCQap8PRkW
-JW0elXFi+aZyRWiDo4aHymtfXhFyJHMEzHwipl+f7Un68swWpqMtqsOL26anuZ9A
-52B+HNRGW6sWHwUcMP+nS2zEvPxXPlD5+WJAXdOO3pyIfO/MDIpp34jhesLJAx4d
-mTpLgK+332PCWzCNamgA/LthezaW2m3+d4BlHD0IbCNcLG8J41b6eRgl2dZG1fJi
-/VGIupyUZqaZm3iy2ItbtnMEIbZ627m1StIOnUH2hKB2p00IP5I=
-=bTIl
------END PGP SIGNATURE-----
-
---hCtsFvQpjT434NKf--
+- Arnaldo
