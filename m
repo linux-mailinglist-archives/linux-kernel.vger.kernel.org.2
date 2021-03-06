@@ -2,80 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4143832FDEF
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 00:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A9632FDF6
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 00:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbhCFW7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 17:59:42 -0500
-Received: from elvis.franken.de ([193.175.24.41]:50538 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229733AbhCFW7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 17:59:17 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lIftD-0000w8-00; Sat, 06 Mar 2021 23:59:15 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A115EC114C; Sat,  6 Mar 2021 23:58:55 +0100 (CET)
-Date:   Sat, 6 Mar 2021 23:58:55 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Paul Cercueil <paul@crapouillou.net>, od@zcrc.me,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: boot/compressed: Copy DTB to aligned address
-Message-ID: <20210306225855.GA3574@alpha.franken.de>
-References: <20210303193305.924384-1-paul@crapouillou.net>
- <CAL_JsqLfkjC4c4PYfm6yJLZMH-5WaKA_mr9ziJ1J63UohcgRCw@mail.gmail.com>
- <20210306084513.GA5453@alpha.franken.de>
- <CAL_JsqK0_M18gnoYFyTyf_OaQgbmbYYyoAr-WaFCzzsmFuFeFg@mail.gmail.com>
+        id S229919AbhCFXII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 18:08:08 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54154 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229818AbhCFXHt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 18:07:49 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 523F31C0B76; Sun,  7 Mar 2021 00:07:42 +0100 (CET)
+Date:   Sun, 7 Mar 2021 00:07:39 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@denx.de>, Chris.Paterson2@renesas.com,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/30] 4.4.260-rc1 review
+Message-ID: <20210306230738.GA10472@amd>
+References: <20210305120849.381261651@linuxfoundation.org>
+ <20210305220634.GA27686@amd>
+ <YEM4d6O+6Jfw3RH/@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="OgqxwSJOaUobr8KG"
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqK0_M18gnoYFyTyf_OaQgbmbYYyoAr-WaFCzzsmFuFeFg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YEM4d6O+6Jfw3RH/@kroah.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 06, 2021 at 02:35:21PM -0700, Rob Herring wrote:
-> On Sat, Mar 6, 2021 at 1:45 AM Thomas Bogendoerfer
-> <tsbogend@alpha.franken.de> wrote:
-> >
-> > On Wed, Mar 03, 2021 at 02:37:55PM -0600, Rob Herring wrote:
-> > > On Wed, Mar 3, 2021 at 1:33 PM Paul Cercueil <paul@crapouillou.net> wrote:
-> > > >
-> > > > Since 5.12-rc1, the Device Tree blob must now be properly aligned.
-> > >
-> > > I had checked the other built-in cases as microblaze broke too, but
-> > > missed some of the many ways MIPS can have a dtb. Appended and
-> > > built-in DTBs were supposed to be temporary. :(
-> >
-> > and a fdt can also be provided by firmware. And according to spec
-> > there is no aligmnet requirement. So this whole change will break
-> > then. What was the reason for the whole churn ?
-> 
-> There was a long discussion on devicetree-compiler list a few months
-> ago. In summary, a while back libfdt switched to accessors from raw
-> pointer accesses to avoid any possible unaligned accesses (is MIPS
-> always okay with unaligned accesses?).
 
-no, it will trap unaligned accesses, that's the reason for Paul's problem.
+--OgqxwSJOaUobr8KG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> This was determined to be a
-> performance regression and an overkill as the DT structure itself
-> should always be naturally aligned if the dtb is 64-bit aligned. I
-> think 32-bit aligned has some possible misaligned accesses.
+Hi!
 
-the access macros are using *(unsigned long long *), which isn't
-even nice for 32bit CPUs...
+> > > This is the start of the stable review cycle for the 4.4.260 release.
+> > > There are 30 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, plea=
+se
+> > > let me know.
+> >=20
+> > Ok, so we ran some tests.
+> >=20
+> > And they failed:
+> >=20
+> > https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/10=
+75959449
+> >=20
+> > [   26.785861] <LAVA_SIGNAL_TESTCASE TEST_CASE_ID=3DCVE-2018-3639 RESUL=
+T=3Dfail>
+> > Received signal: <TESTCASE> TEST_CASE_ID=3DCVE-2018-3639 RESULT=3Dfail
+> >=20
+> > Testcase name is spectre-meltdown-checker... Failing on qemu? Somehow
+> > strange, but it looks like real test failure.
+> >=20
+> > I'm cc: ing Chris, perhaps he can help.
+>=20
+> Can you bisect?
 
-> As part of this, a dtb alignment check was added. So worst case, we
-> could disable that if need be.
+I'm kind of hoping someone else hits this, too, as I'm not that
+experienced with the CIP q/a system.
 
-yeah, or override fdt32/64_to_cpu, if I understood the code correctly.
+But in the meantime I resubmitted older kerneland it is passing on
+qemu, so it looks it might be real.=20
 
-Thomas.
+I can probably bisect it on Monday. I may try to start bisection on
+Sunday.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--OgqxwSJOaUobr8KG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBECzkACgkQMOfwapXb+vLYsgCcDq6xNI1KHZ1Ln8p//eZ98ibu
+YswAn2918UP8KkvwtVydTyyF0X3425UR
+=bfQT
+-----END PGP SIGNATURE-----
+
+--OgqxwSJOaUobr8KG--
