@@ -2,89 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BED32FB13
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 15:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ADB932FB16
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 15:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhCFOH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 09:07:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbhCFOH3 (ORCPT
+        id S230496AbhCFOJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 09:09:03 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:16188 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230507AbhCFOI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 09:07:29 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0451C06174A;
-        Sat,  6 Mar 2021 06:07:26 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id o10so3329742pgg.4;
-        Sat, 06 Mar 2021 06:07:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=F0SjiCboT6GDUEHPfbG3Clqv3ILwMSQy+iD8PAxRb5c=;
-        b=LS82c58fxfkTcP+tx8loY2y5a9C2zL73pbG9BxOyVHx0FYlUDsgGu670PdyLVkS75g
-         Shvtb4avdMzEGp+bLJo3xnZUmgolkJJmzh3pR3YlQAom0zx2x9GsyrFGxWD+Q+l32mlh
-         aSDfRM9WMmoZ7WFOkTRuQQj13O1XAWwB26WE924o0GbRV0Esn5BemDfRy1KX4HcQf+Fs
-         CK7VqIqCihvqBp5N2AELRgZ6WyVcU0/4oCcIz9T5ipigm3NUAy7V3G/MtO6iuWdCRiWu
-         3P9eBGiNurr9kBqZePxe+Vs00vA82Ei+QKu+BVwn80qmd8Zfd6OhWyVBqZKcwCZWC4E1
-         +Flw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=F0SjiCboT6GDUEHPfbG3Clqv3ILwMSQy+iD8PAxRb5c=;
-        b=NsPgLbi68Fm/wOCboqjpFc+/A0+YX7N+qcj7reW2sobc8WSrR18hD0sX8c26yzDDwY
-         VSgkw+7Rd16xdvuhsEjdxMVcjknO26iYNduhw3NVXTHafOUT9DOX/nPoGNYdY9LsrPwl
-         yI9tEIeCil3hDCYex4rzkODpLoAPNaKx9zYtyTupV6xFld6YJRE1Zik9c1vzQYDiwnJl
-         2Mya6C2JE/D4XxKJpGycLvTmXiKvQz8oxO/pF9rrqod0R17umiS+BwPUfS034uth6aRa
-         3cbYfzJt06xoUdSMjyDdLxS3s2NCFW4HhobB6u8p22MImjFj5ENuo8ngPOLkxiw9Gi4e
-         Ks6A==
-X-Gm-Message-State: AOAM531cNbTH8Z24fBtrZRT+pidXh8da6O0aUoUIGV6z3/3uC7ltM+Oc
-        7D8HUZpxS1k5gRqg2MsM9WHeiBVdnjFpWw==
-X-Google-Smtp-Source: ABdhPJz8ny5s0BgnkeQPqUwSQGLzytCMVZShB3wt53a39/w1iArL5x7ZB4Ocg+Ci6e3HWdz/g4BQdg==
-X-Received: by 2002:a63:2262:: with SMTP id t34mr13381075pgm.303.1615039646370;
-        Sat, 06 Mar 2021 06:07:26 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.79])
-        by smtp.gmail.com with ESMTPSA id v1sm5653116pjt.1.2021.03.06.06.07.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 06:07:25 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     jiri@nvidia.com, idosch@nvidia.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] net: mellanox: mlxsw: fix error return code of mlxsw_sp_router_nve_promote_decap()
-Date:   Sat,  6 Mar 2021 06:07:05 -0800
-Message-Id: <20210306140705.18517-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 6 Mar 2021 09:08:57 -0500
+X-IronPort-AV: E=Sophos;i="5.81,228,1610406000"; 
+   d="scan'208";a="496489458"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 Mar 2021 15:08:56 +0100
+Date:   Sat, 6 Mar 2021 15:08:56 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Denis Efremov <efremov@linux.com>
+cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 RESEND] coccinelle: misc: add minmax script
+In-Reply-To: <20210219090655.8985-1-efremov@linux.com>
+Message-ID: <alpine.DEB.2.22.394.2103061503290.2976@hadrien>
+References: <20210216160326.1341741-1-efremov@linux.com> <20210219090655.8985-1-efremov@linux.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When fib_entry is NULL, no error return code of
-mlxsw_sp_router_nve_promote_decap() is assigned.
-To fix this bug, err is assigned with -EINVAL in this case.
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
-index 9ce90841f92d..7b260e25df1b 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
-@@ -1981,8 +1981,10 @@ int mlxsw_sp_router_nve_promote_decap(struct mlxsw_sp *mlxsw_sp, u32 ul_tb_id,
- 	fib_entry = mlxsw_sp_router_ip2me_fib_entry_find(mlxsw_sp, ul_tb_id,
- 							 ul_proto, ul_sip,
- 							 type);
--	if (!fib_entry)
-+	if (!fib_entry) {
-+		err = -EINVAL;
- 		goto out;
-+	}
- 
- 	fib_entry->decap.tunnel_index = tunnel_index;
- 	fib_entry->type = MLXSW_SP_FIB_ENTRY_TYPE_NVE_DECAP;
--- 
-2.17.1
+On Fri, 19 Feb 2021, Denis Efremov wrote:
 
+> Check for opencoded min(), max() implementations.
+>
+> Signed-off-by: Denis Efremov <efremov@linux.com>
+> ---
+>
+> Changes in v2:
+>  - <... ...> instead of ... when any
+>  - org mode reports fixed
+>  - patch rule to drop excessive ()
+>
+>  scripts/coccinelle/misc/minmax.cocci | 224 +++++++++++++++++++++++++++
+>  1 file changed, 224 insertions(+)
+>  create mode 100644 scripts/coccinelle/misc/minmax.cocci
+>
+> diff --git a/scripts/coccinelle/misc/minmax.cocci b/scripts/coccinelle/misc/minmax.cocci
+> new file mode 100644
+> index 000000000000..61d6b61fd82c
+> --- /dev/null
+> +++ b/scripts/coccinelle/misc/minmax.cocci
+> @@ -0,0 +1,224 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +///
+> +/// Check for opencoded min(), max() implementations.
+> +/// Generated patches sometimes require adding a cast to fix compile warning.
+> +/// Warnings/patches scope intentionally limited to a function body.
+> +///
+> +// Confidence: Medium
+> +// Copyright: (C) 2021 Denis Efremov ISPRAS
+> +// Options: --no-includes --include-headers
+> +//
+> +// Keywords: min, max
+> +//
+> +
+> +
+> +virtual report
+> +virtual org
+> +virtual context
+> +virtual patch
+> +
+> +@rmax depends on !patch@
+> +identifier func;
+> +expression x, y;
+> +binary operator cmp = {>, >=};
+> +position p;
+> +@@
+> +
+> +func(...)
+> +{
+> +	<...
+> +*	x cmp@p y ? x : y
+
+The rule below indicated with FIXME is supposed to deal with the
+possibility of () that are unnecessary when using min and max.  It doesn't
+work, because <... P ...> allow P to match 0 or more times, and thus
+func@p matches every function.
+
+A simpler solution is to just allow arbitrary () in the pattern, eg:
+
+  (x) cmp@p (y) ? (x) : (y)
+
+That will allow each occurrence of x and y to occur with and without
+parentheses.  In the submitted  semantic patch, the () issue was only
+considered in the patch case.  But it actually affects the purely matching
+cases too, because () can be used at one occurrence, but not the other.
+
+> +@script:python depends on report@
+> +p << rmax.p;
+> +@@
+> +
+> +coccilib.report.print_report(p[0], "WARNING opportunity for max()")
+
+p is an array because it can be bound to different positions on different
+control-flow paths.  Notably this occurs with <... ...>.  If there are
+multiple occurrences of the pattern, there will be one match that contains
+all of them.  Thus the reporting code should be:
+
+for p0 in p:
+  coccilib.report.print_report(p0, "WARNING opportunity for max()")
+
+julia
