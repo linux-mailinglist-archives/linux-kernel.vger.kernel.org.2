@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FC832F845
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 05:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D1432F852
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 06:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhCFEy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 23:54:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229919AbhCFEym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 23:54:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6459165004;
-        Sat,  6 Mar 2021 04:54:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615006481;
-        bh=Wa4Bw26HoIcAUd6ZQXNe09EtrI1nCHJH/RzeHCepf9I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T+GwdOmNNFxHZ9hWHvqkj5fS11o8kpPGKjXzfrWPMKdxUCl5fyz9O6jlXDlbRU42p
-         oSsJ+bIRcJS13KH3iSJdpAYGzZwWRL384hg9lWv5Eh0l8AoGT6P4ABK9n+s9hk9rxf
-         r8Ttggw/m+bTeJnEVxlsFuvy3P5e6AJjiqLdMgm8dWaHFCSDBgN79LxcY6sXHcHEXd
-         dXLdBSXpMJ+unfzLZg5hadmDYuYPBU7eqYxeIsxjTLcKtC4Oz3jhzeQsI8hVulILUS
-         Yf2VWo56OdGrYXoVfy/eSCkrgitFv4dJrOhBMYbyIMb2Q6XHGXoYStcp4v3ADUbu2T
-         Pz/tklQL58P2Q==
-Date:   Fri, 5 Mar 2021 22:54:39 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH RESEND][next] hwmon: (max6621) Fix fall-through warnings
- for Clang
-Message-ID: <20210306045439.GA179425@embeddedor>
-References: <20210305095258.GA141583@embeddedor>
- <20210306031847.GA192807@roeck-us.net>
+        id S229642AbhCFFRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 00:17:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229461AbhCFFRD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 00:17:03 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0DB3C06175F;
+        Fri,  5 Mar 2021 21:17:03 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id c16so2463774ply.0;
+        Fri, 05 Mar 2021 21:17:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cErAmnOra7kRX450Lrj5VD5Ge9IfSo97gVGl7j0r8Jw=;
+        b=p9I5FTk2MN88XacQMMzfhBgOYaQJRhgRbwqYKUxsUhRgCqapErjum3BQ98Qj1HMFiz
+         8vdzYiPiU+N7ySE9Vh9o4ySwvc9/+nGceshudA1q7Hf6V0D4rnJvJ60PSJzlX0UPXKc2
+         YXmMuyzWlSVfg35CoRre2uoymVxa1CJ4Z9E2H9nSsw6FXFv19ULFPRUYgQQ5S9aqzUBJ
+         2aEI4ZFIixTYc5E0hL2Bil1pgiHTT3PXaQQnrP2NSlw9W80tvGFBF3WLHXqWPQZfEvsI
+         YNpBgJ7c6LaHCJfjJDMDwghJT+DwH7PqmjK2MjEcayrIbrCJnb4CxayrsK+wiFuk/3Is
+         qFgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cErAmnOra7kRX450Lrj5VD5Ge9IfSo97gVGl7j0r8Jw=;
+        b=k/7LeySC13j9f0aZUBulXiIUtCt4QKEebWAzsZNOpQdrtN2Yp4AFvvi9wpGNT+5bgr
+         T31+Gt9hszJFpIoSpvukNRGZ/jVZULoy+cOb5WlROtVNdjL4/E7NOP9Eo/bpKwrd2veH
+         fRaSlKWDpx2iED1mqvfc+SRMT+N9PUwSo/HMbAM+o0MIzplXybA7YBh3EPIULJ3LJpmu
+         PjRzwz61oyFR4sKg9H8HhbmrHkTMtcGLfjNEKgWPaGui6p+pfQplLg9DAw1DoZHAXgxD
+         W0D4Jqxcx+sLb5uTcxhldUB4uHhJr53UkMF0onBprxTY9ikGN38PSroke1q0iM7gnTWt
+         zkyA==
+X-Gm-Message-State: AOAM533SoFLI8Z78X753+HG+WNQNo5m4OknT+vkkTwMvXeklz9YHGgFn
+        FVi7SXfLVSX4ELADLib174qxuyEcP2w=
+X-Google-Smtp-Source: ABdhPJyHbqjwRbXfOWubYLVkl/+97bZ6UXdYtUo5LO0Zy9Ez3IPmnnH4A8v+2ctjFMvt2n+WGZ0qbA==
+X-Received: by 2002:a17:90b:806:: with SMTP id bk6mr13818884pjb.16.1615007820670;
+        Fri, 05 Mar 2021 21:17:00 -0800 (PST)
+Received: from [10.230.70.25] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id o1sm3676438pgq.1.2021.03.05.21.16.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 21:17:00 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH 4.9 00/41] 4.9.260-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210305120851.255002428@linuxfoundation.org>
+Message-ID: <64442e2d-c0ef-2400-a9d9-039b264ddcc3@gmail.com>
+Date:   Fri, 5 Mar 2021 21:16:54 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210306031847.GA192807@roeck-us.net>
+In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
 
-On Fri, Mar 05, 2021 at 07:18:47PM -0800, Guenter Roeck wrote:
-> On Fri, Mar 05, 2021 at 03:52:58AM -0600, Gustavo A. R. Silva wrote:
-> > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> > by explicitly adding a break statement instead of letting the code fall
-> > through to the next case.
-> > 
-> > Link: https://github.com/KSPP/linux/issues/115
-> > Acked-by: Guenter Roeck <linux@roeck-us.net>
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > ---
+
+On 3/5/2021 4:22 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.260 release.
+> There are 41 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> I Acked those, thus assuming that they would be applied through some
-> other tree. If that is not the case, you'll need to let me know. The
-> resend only means to me that whatever tree was supposed to pick it up
-> did not do it, but it doesn't result in any action from my side.
+> Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.260-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
 
-This was not directed at you, in particular. I'm resending this for
-the cosideration of whomever is in charge of this code. If this is
-not taken or ignored once again, I will consider adding this to
-my own tree.
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-Thanks
---
-Gustavo
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
 
-> >  drivers/hwmon/max6621.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/hwmon/max6621.c b/drivers/hwmon/max6621.c
-> > index 367855d5edae..7821132e17fa 100644
-> > --- a/drivers/hwmon/max6621.c
-> > +++ b/drivers/hwmon/max6621.c
-> > @@ -156,7 +156,7 @@ max6621_is_visible(const void *data, enum hwmon_sensor_types type, u32 attr,
-> >  		default:
-> >  			break;
-> >  		}
-> > -
-> > +		break;
-> >  	default:
-> >  		break;
-> >  	}
-> > -- 
-> > 2.27.0
-> > 
+
