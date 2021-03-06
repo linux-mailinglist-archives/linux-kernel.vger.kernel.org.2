@@ -2,132 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4B132FC98
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E48D032FC8B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhCFTN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 14:13:59 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:54240 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231363AbhCFTNq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 14:13:46 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 126J6uDO011401;
-        Sat, 6 Mar 2021 13:13:35 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=IktnEuzg1ZGoJtu1+yDY32Nu0JF3e7Ysdso1aDneHnk=;
- b=BMjHq7at49TU1j9jxa3CpiOO98cdhzX0Kb7b5rk7WqgbBCeQABgQHHLEpAHJ33silchB
- 4jRyMqCdcKR1ndwkAx/naK2iprWILuKBfdk6dZDxcE3TtntlabTtdjSuILfgYj/uFuT9
- +ZdtARTKy+bQhGXNBEfaHHxhZeehvflVcluBiP6ClLsZvM3UhQLToQW345fu7VRidjlP
- wIXKKpEi3eQm6ltrXgEItq60HzxCfF9gAadQzJPhiboBcKjZ68q7lUmRoLl9hlk9zdkX
- 6b7k4SMb46l9dxCkw/HtjL7F7JI6HhWtg0Qk4KeEQKHQe2KKNLkcCGH+fzJnso1YUvNs SA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 3748198d06-8
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 06 Mar 2021 13:13:35 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 6 Mar 2021
- 18:56:30 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Sat, 6 Mar 2021 18:56:30 +0000
-Received: from mail1.cirrus.com (unknown [198.61.64.35])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 06FD911D7;
-        Sat,  6 Mar 2021 18:56:30 +0000 (UTC)
-From:   Lucas Tanure <tanureal@opensource.cirrus.com>
-To:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: [PATCH v3 15/15] ASoC: cs42l42: Wait for PLL to lock before switching to it
-Date:   Sat, 6 Mar 2021 18:55:53 +0000
-Message-ID: <20210306185553.62053-16-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210306185553.62053-1-tanureal@opensource.cirrus.com>
-References: <20210306185553.62053-1-tanureal@opensource.cirrus.com>
+        id S231208AbhCFTC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 14:02:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40078 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230346AbhCFTC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 14:02:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7CE4BAC83;
+        Sat,  6 Mar 2021 19:02:25 +0000 (UTC)
+Subject: Re: [PATCH][RFC] perf annotate: show full line locations with 'k' in
+ UI
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+References: <9acb63e0-af38-eeeb-157e-32f6177da557@suse.cz>
+ <20210212203408.GH1398414@kernel.org>
+ <5b59c46e-4907-7ab9-a68d-dd234e988dc7@suse.cz> <YEOSWxmy1mbe0ucw@kernel.org>
+From:   =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>
+Message-ID: <25a6384f-d862-5dda-4fec-8f0555599c75@suse.cz>
+Date:   Sat, 6 Mar 2021 20:02:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
- phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=958 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103060119
+In-Reply-To: <YEOSWxmy1mbe0ucw@kernel.org>
+Content-Type: multipart/mixed;
+ boundary="------------B5377B99AAD6F96118233677"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+This is a multi-part message in MIME format.
+--------------B5377B99AAD6F96118233677
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The PLL should have locked before using it to supply MCLK.
+On 3/6/21 3:31 PM, Arnaldo Carvalho de Melo wrote:
+> I see, it works only when pressing on source code lines:
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Hey.
+
+Yes, I forgot to explicitly mention that.
+
+> 
+> Source file location: /usr/src/debug/kernel-5.10.fc33/linux-5.10.19-200.fc33.x86_64/./arch/x86/include/asm/msr.h:205
+> 
+> So we better improve that message? I.e. 'press on source code lines', or
+> 'enable showing source code lines to get line number'?
+
+Fixed that in the attached patch. I got inspiration from 's' hotkey which prints the following warning:
+"Only available for assembly lines.".
+
+Thanks,
+Martin
+
+--------------B5377B99AAD6F96118233677
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-perf-annotate-show-full-source-location-with-l-hotke.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+ filename*0="0001-perf-annotate-show-full-source-location-with-l-hotke.pa";
+ filename*1="tch"
+
+From 8fb7db7722c481ee4d1e0de2d2dc884f25aa90a1 Mon Sep 17 00:00:00 2001
+From: Martin Liska <mliska@suse.cz>
+Date: Mon, 15 Feb 2021 12:34:46 +0100
+Subject: [PATCH] perf annotate: show full source location with 'l' hotkey
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Right now, when Line numbers are displayed, one can't easily
+find a source file that the line corresponds to.
+
+When a source line is selected and 'l' is pressed, full source file
+location is displayed in perf UI footer line. The hotkey works
+only for source code lines.
+
+Signed-off-by: Martin Liška <mliska@suse.cz>
 ---
-Changes in v3:
-- No changes
+ tools/perf/ui/browsers/annotate.c | 25 +++++++++++++++++++++++--
+ tools/perf/util/annotate.c        | 12 ++++++++++--
+ tools/perf/util/annotate.h        |  2 ++
+ 3 files changed, 35 insertions(+), 4 deletions(-)
 
-Changes in v2:
-- Lucas signed-off added
-
- sound/soc/codecs/cs42l42.c | 12 +++++++++++-
- sound/soc/codecs/cs42l42.h |  2 ++
- 2 files changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index d7a314aa59b73..bf982e145e945 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -862,6 +862,7 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
- 	unsigned int regval;
- 	u8 fullScaleVol;
-+	int ret;
+diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+index bd77825fd5a1..cf60ba59b903 100644
+--- a/tools/perf/ui/browsers/annotate.c
++++ b/tools/perf/ui/browsers/annotate.c
+@@ -381,6 +381,25 @@ static bool annotate_browser__toggle_source(struct annotate_browser *browser)
+ 	return true;
+ }
  
- 	if (mute) {
- 		/* Mute the headphone */
-@@ -887,9 +888,18 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 	} else {
- 		if (!cs42l42->stream_use) {
- 			/* SCLK must be running before codec unmute */
--			if ((cs42l42->bclk < 11289600) && (cs42l42->sclk < 11289600))
-+			if ((cs42l42->bclk < 11289600) && (cs42l42->sclk < 11289600)) {
- 				snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
- 							      CS42L42_PLL_START_MASK, 1);
-+				ret = regmap_read_poll_timeout(cs42l42->regmap,
-+							       CS42L42_PLL_LOCK_STATUS,
-+							       regval,
-+							       (regval & 1),
-+							       CS42L42_PLL_LOCK_POLL_US,
-+							       CS42L42_PLL_LOCK_TIMEOUT_US);
-+				if (ret < 0)
-+					dev_warn(component->dev, "PLL failed to lock: %d\n", ret);
-+			}
++#define SYM_TITLE_MAX_SIZE (PATH_MAX + 64)
++
++static void annotate_browser__show_full_location(struct ui_browser *browser)
++{
++	struct annotate_browser *ab = container_of(browser, struct annotate_browser, b);
++	struct disasm_line *cursor = disasm_line(ab->selection);
++	struct annotation_line *al = &cursor->al;
++
++	if (al->offset != -1)
++		ui_helpline__puts("Only available for source code lines.");
++	else if (al->fileloc == NULL)
++		ui_helpline__puts("No source file location.");
++	else {
++		char help_line[SYM_TITLE_MAX_SIZE];
++		sprintf (help_line, "Source file location: %s", al->fileloc);
++		ui_helpline__puts(help_line);
++	}
++}
++
+ static void ui_browser__init_asm_mode(struct ui_browser *browser)
+ {
+ 	struct annotation *notes = browser__annotation(browser);
+@@ -388,8 +407,6 @@ static void ui_browser__init_asm_mode(struct ui_browser *browser)
+ 	browser->nr_entries = notes->nr_asm_entries;
+ }
  
- 			/* Mark SCLK as present, turn off internal oscillator */
- 			regmap_multi_reg_write(cs42l42->regmap, cs42l42_to_sclk_seq,
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 214cee762709d..36b763f0d1a06 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -756,6 +756,8 @@
- #define CS42L42_NUM_SUPPLIES	5
- #define CS42L42_BOOT_TIME_US	3000
- #define CS42L42_CLOCK_SWITCH_DELAY_US 150
-+#define CS42L42_PLL_LOCK_POLL_US	250
-+#define CS42L42_PLL_LOCK_TIMEOUT_US	1250
+-#define SYM_TITLE_MAX_SIZE (PATH_MAX + 64)
+-
+ static int sym_title(struct symbol *sym, struct map *map, char *title,
+ 		     size_t sz, int percent_type)
+ {
+@@ -747,6 +764,7 @@ static int annotate_browser__run(struct annotate_browser *browser,
+ 		"c             Show min/max cycle\n"
+ 		"/             Search string\n"
+ 		"k             Toggle line numbers\n"
++		"l             Show full source file location\n"
+ 		"P             Print to [symbol_name].annotation file.\n"
+ 		"r             Run available scripts\n"
+ 		"p             Toggle percent type [local/global]\n"
+@@ -760,6 +778,9 @@ static int annotate_browser__run(struct annotate_browser *browser,
+ 		case 'k':
+ 			notes->options->show_linenr = !notes->options->show_linenr;
+ 			break;
++		case 'l':
++			annotate_browser__show_full_location (&browser->b);
++			continue;
+ 		case 'H':
+ 			nd = browser->curr_hot;
+ 			break;
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index e3eae646be3e..e4b0c21362d8 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -1159,6 +1159,7 @@ struct annotate_args {
+ 	s64			  offset;
+ 	char			  *line;
+ 	int			  line_nr;
++	char			  *fileloc;
+ };
  
- static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
- 	"VA",
+ static void annotation_line__init(struct annotation_line *al,
+@@ -1168,6 +1169,7 @@ static void annotation_line__init(struct annotation_line *al,
+ 	al->offset = args->offset;
+ 	al->line = strdup(args->line);
+ 	al->line_nr = args->line_nr;
++	al->fileloc = args->fileloc;
+ 	al->data_nr = nr;
+ }
+ 
+@@ -1480,7 +1482,7 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+  */
+ static int symbol__parse_objdump_line(struct symbol *sym,
+ 				      struct annotate_args *args,
+-				      char *parsed_line, int *line_nr)
++				      char *parsed_line, int *line_nr, char **fileloc)
+ {
+ 	struct map *map = args->ms.map;
+ 	struct annotation *notes = symbol__annotation(sym);
+@@ -1492,6 +1494,7 @@ static int symbol__parse_objdump_line(struct symbol *sym,
+ 	/* /filename:linenr ? Save line number and ignore. */
+ 	if (regexec(&file_lineno, parsed_line, 2, match, 0) == 0) {
+ 		*line_nr = atoi(parsed_line + match[1].rm_so);
++		*fileloc = strdup(parsed_line);
+ 		return 0;
+ 	}
+ 
+@@ -1511,6 +1514,7 @@ static int symbol__parse_objdump_line(struct symbol *sym,
+ 	args->offset  = offset;
+ 	args->line    = parsed_line;
+ 	args->line_nr = *line_nr;
++	args->fileloc = *fileloc;
+ 	args->ms.sym  = sym;
+ 
+ 	dl = disasm_line__new(args);
+@@ -1805,6 +1809,7 @@ static int symbol__disassemble_bpf(struct symbol *sym,
+ 			args->offset = -1;
+ 			args->line = strdup(srcline);
+ 			args->line_nr = 0;
++			args->fileloc = NULL;
+ 			args->ms.sym  = sym;
+ 			dl = disasm_line__new(args);
+ 			if (dl) {
+@@ -1816,6 +1821,7 @@ static int symbol__disassemble_bpf(struct symbol *sym,
+ 		args->offset = pc;
+ 		args->line = buf + prev_buf_size;
+ 		args->line_nr = 0;
++		args->fileloc = NULL;
+ 		args->ms.sym  = sym;
+ 		dl = disasm_line__new(args);
+ 		if (dl)
+@@ -1850,6 +1856,7 @@ symbol__disassemble_bpf_image(struct symbol *sym,
+ 	args->offset = -1;
+ 	args->line = strdup("to be implemented");
+ 	args->line_nr = 0;
++	args->fileloc = NULL;
+ 	dl = disasm_line__new(args);
+ 	if (dl)
+ 		annotation_line__add(&dl->al, &notes->src->source);
+@@ -1931,6 +1938,7 @@ static int symbol__disassemble(struct symbol *sym, struct annotate_args *args)
+ 	bool delete_extract = false;
+ 	bool decomp = false;
+ 	int lineno = 0;
++	char *fileloc = NULL;
+ 	int nline;
+ 	char *line;
+ 	size_t line_len;
+@@ -2058,7 +2066,7 @@ static int symbol__disassemble(struct symbol *sym, struct annotate_args *args)
+ 		 * See disasm_line__new() and struct disasm_line::line_nr.
+ 		 */
+ 		if (symbol__parse_objdump_line(sym, args, expanded_line,
+-					       &lineno) < 0)
++					       &lineno, &fileloc) < 0)
+ 			break;
+ 		nline++;
+ 	}
+diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+index 096cdaf21b01..3757416bcf46 100644
+--- a/tools/perf/util/annotate.h
++++ b/tools/perf/util/annotate.h
+@@ -84,6 +84,7 @@ struct annotation_options {
+ 	     print_lines,
+ 	     full_path,
+ 	     show_linenr,
++	     show_fileloc,
+ 	     show_nr_jumps,
+ 	     show_minmax_cycle,
+ 	     show_asm_raw,
+@@ -136,6 +137,7 @@ struct annotation_line {
+ 	s64			 offset;
+ 	char			*line;
+ 	int			 line_nr;
++	char			*fileloc;
+ 	int			 jump_sources;
+ 	float			 ipc;
+ 	u64			 cycles;
 -- 
 2.30.1
 
+
+--------------B5377B99AAD6F96118233677--
