@@ -2,99 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D4332F922
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 10:28:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE7232F927
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 10:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhCFJ1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 04:27:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47022 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229738AbhCFJ1E (ORCPT
+        id S229929AbhCFJhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 04:37:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229782AbhCFJhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 04:27:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615022821;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e5O/LpcxMMdquDVNYjg2lF3OYstWuYNsRwulGsHakfc=;
-        b=blbWV8cU3prZoc4ZWouEcs9cXArZ+MHCuP/f7ygGNUs7gR4wPjxq6LGluQaxsr6zqttR9k
-        Z4d3umG2MkTAZFEtpBGO6FnQz3my3ee33zMY1nG5Rs+9hpYRXYH+9EUsTk2em58wGJlwbk
-        iraBKs4ayU8TddT1ynP8QoSC07EIWYI=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-171-XJvPEE7wPb6HxrZpRC6sjw-1; Sat, 06 Mar 2021 04:26:59 -0500
-X-MC-Unique: XJvPEE7wPb6HxrZpRC6sjw-1
-Received: by mail-wr1-f69.google.com with SMTP id h5so2260776wrr.17
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 01:26:58 -0800 (PST)
+        Sat, 6 Mar 2021 04:37:10 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 823BEC061760
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 01:37:07 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id w9so6300624edt.13
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 01:37:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=hgLC2gL7+jrR036xKYjmUttxSScVAwH1a98vjs+S9Zw=;
+        b=v+4Ec5zt99MbWbWXgfwzaQfRWtp8XsCOPooveNOu2ofSVvaW7V9nI5vZzEfzrz3S1C
+         aMYqpHqdxdkYfQGHJCqTcmJmt3GfzeefIB9BFnatXE9Kb/7e64XBm3+bJHeo3ajl+qN9
+         8RK8akpcsMbmxogCeO2UvvljProDSABkicYcJQjRSIeKhoNveyWpfrpYLy6vteturNsK
+         SbadaYPTlblJLpT1a94tZIqklOJammzKI1Ul+JW5UxP/DPpVvop+l1j6Unkuf/cmgwTi
+         SLZPHCypY27tMmFelJI5VALNPUr2J31vk4aQ4OH78tOSYAEvDTnbYt/On3acrmVTtI96
+         wSlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=e5O/LpcxMMdquDVNYjg2lF3OYstWuYNsRwulGsHakfc=;
-        b=lK7f2VYAko91xQbnrETa5JUGZ0jI5Euqb5DmLusIwYfrxNeNmKOKC7pPlKg8Aqra+8
-         KtuvFm2pl5COcEhlSTRLGAYA/Gd+TZiCh4rEgLcn3UR3TuxGk6Kr/AawW9vF7FgKc2TZ
-         ZJ2jVZkfBliFg+BEYXnMX/T3GDntr3JeNn3RNUWDaEOWnXtqoOg9bigk8se7ckzrci4q
-         eBTNew9I9PJ0jHcDBiBFWlkB+GDKLVkR0hwbODzJE3aqka8o+otgvnZxNIrPtodVyw9H
-         W8fT2Voyg+WPrxDf784MS+/RwDMXGRtXJao/7OMf9u5kwGK3SIBRA5C+zVp6KjwYFQSK
-         GK3Q==
-X-Gm-Message-State: AOAM531ryms8wMwl2+DXTxZ+5w9BMmtsguEA1hZExghpBZ5llxTBQIua
-        RFXtGxlZ9NeAeWThM5OmEyEUpmjjfcs7L6IpcAt4qqguX29+2t3hjtMFx2iXRE20vm4wv8av2uI
-        Sp4vBPhIeXzeKLDb30GeiVFMZ
-X-Received: by 2002:a5d:4002:: with SMTP id n2mr3398523wrp.148.1615022818013;
-        Sat, 06 Mar 2021 01:26:58 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw9/q/9S+4sLU2rGSr6w+yDYGAFfQ+D9c80lfJ+5k/SiOHKsOSUvmPuATMc8lsg7cJLJrdpgA==
-X-Received: by 2002:a5d:4002:: with SMTP id n2mr3398516wrp.148.1615022817864;
-        Sat, 06 Mar 2021 01:26:57 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id o14sm7710140wri.48.2021.03.06.01.26.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Mar 2021 01:26:57 -0800 (PST)
-Subject: Re: [PATCH 03/28] KVM: nSVM: inject exceptions via
- svm_check_nested_events
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        vkuznets@redhat.com, mlevitsk@redhat.com,
-        Jim Mattson <jmattson@google.com>
-References: <YELdblXaKBTQ4LGf@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <fc2b0085-eb0f-dbab-28c2-a244916c655f@redhat.com>
-Date:   Sat, 6 Mar 2021 10:26:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hgLC2gL7+jrR036xKYjmUttxSScVAwH1a98vjs+S9Zw=;
+        b=F8NrSOdoSlNYKqY/UliuvE3zNEOzo/dTzlOxj565gKJ9CB8jIz+t7CwuttxqadKQ+l
+         nJ2h6Lnthyq8j14kRfu00+6BxMYGDcdoCASEIuOI62KMnLim0sKJt09kTi9GQvskFEis
+         C4XG37MPBAUHWqFRHlgb8gxDaxMGYKU9ATATvmYSgFMhAtYpCZNQ8m66q4gBMajnV3Cv
+         FIHu9gDKqkH0R/O6zARHbCDlS3xUr5UX+ene8AkbfGSS0u9z0bxNX+sxwUN7Dig6XRtP
+         Q9P0cXnhopF5bDXQQW411+eGwfXnz7faiOzHYNmNkIlHa8+Y4CyqKYQJb/sSBqp4r637
+         VqSw==
+X-Gm-Message-State: AOAM533rsx0o60MpZVMqB6tqtzs8FBNtaeLbuExDSkhj4VpKXCB7aDBu
+        KxKo6iIQggUa//paaTDvAXbKbRWDbq5WgHCxXaoRlw==
+X-Google-Smtp-Source: ABdhPJxGwfrYEiX+q/mgyffFfH+/PM3qHy2H6CxzqgLJS+FUJViZ1ZfRTCEqjRo8Y2EnFO6jMSveD10/nUqQoKJJc2s=
+X-Received: by 2002:aa7:cb0d:: with SMTP id s13mr13007139edt.221.1615023425876;
+ Sat, 06 Mar 2021 01:37:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YELdblXaKBTQ4LGf@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210305120903.276489876@linuxfoundation.org>
+In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 6 Mar 2021 15:06:54 +0530
+Message-ID: <CA+G9fYtEVEaXPojqqkOdZZXN+q5-QZEN-W8a9E9CkjS58hpFnQ@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/102] 5.10.21-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/03/21 02:39, Sean Christopherson wrote:
-> Unless KVM (L0) knowingly wants to override L1, e.g. KVM_GUESTDBG_* cases, KVM
-> shouldn't do a damn thing except forward the exception to L1 if L1 wants the
-> exception.
-> 
-> ud_interception() and gp_interception() do quite a bit before forwarding the
-> exception, and in the case of #UD, it's entirely possible the #UD will never get
-> forwarded to L1.  #GP is even more problematic because it's a contributory
-> exception, and kvm_multiple_exception() is not equipped to check and handle
-> nested intercepts before vectoring the exception, which means KVM will
-> incorrectly escalate a #GP->#DF and #GP->#DF->Triple Fault instead of exiting
-> to L1.  That's a wee bit problematic since KVM also has a soon-to-be-fixed bug
-> where it kills L1 on a Triple Fault in L2...
+On Fri, 5 Mar 2021 at 17:59, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.21 release.
+> There are 102 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.21-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I agree with the #GP problem, but this is on purpose.  For example, if 
-L1 CPUID has MOVBE and it is being emulated via #UD, L1 would be right 
-to set MOVBE in L2's CPUID and expect it not to cause a #UD.  The same 
-is true for the VMware #GP interception case.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Maxim is also working on this, the root cause is that 
-kvm_multiple_exception()'s escalation of contributory exceptions to #DF 
-and triple fault is incorrect in the case of nested virtualization.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Paolo
+Summary
+------------------------------------------------------------------------
 
+kernel: 5.10.21-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.10.y
+git commit: 80aaabbaf433294d1f075981fa3785d7f4b55159
+git describe: v5.10.20-103-g80aaabbaf433
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
+.y/build/v5.10.20-103-g80aaabbaf433
+
+No regressions (compared to build v5.10.20)
+
+fixes (compared to build v5.10.20)
+------------------
+  ltp-pty-tests:
+    * hangup01
+
+
+Ran 65964 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-i386-clang
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* ltp-commands-tests
+* ltp-cve-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* v4l2-compliance
+* fwts
+* kselftest-
+* kselftest-bpf
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-io-tests
+* network-basic-tests
+* kselftest-android
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lkdtm
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-vm
+* kselftest-x86
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-open-posix-tests
+* perf
+* kunit
+* rcutorture
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
