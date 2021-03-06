@@ -2,78 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DCC32F832
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 05:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E705B32F835
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 05:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbhCFE1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 23:27:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbhCFE0t (ORCPT
+        id S230051AbhCFEck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 23:32:40 -0500
+Received: from mail-pj1-f41.google.com ([209.85.216.41]:33788 "EHLO
+        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229714AbhCFEc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 23:26:49 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334BFC06175F;
-        Fri,  5 Mar 2021 20:26:49 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso213061pjb.4;
-        Fri, 05 Mar 2021 20:26:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=C0fc0z8FwjdECdFL+lTC1saxBB6QAyp/014WA2umBAY=;
-        b=DJUmIgPB6QVL8f1DEx3XLfY+Nu1TBOodVQjhORI4QPbPg5LC4hHAyjr5ZUScAnot5n
-         IOUCU8cGNY5i48GsQ2r0F6L5CViJnjbSgQur5DNIjdznPkffRuTVUzASPUedqtHEZytj
-         Mp+7COo2nu/UPpKjg9QnU4smjxFLT6xlPPR+q6ec3ZFFhxutmx+GDlVix2KHvKIyUxX4
-         2qv+gikVKJnEhbBUG8xoJqSIgbFLAOUMMG+ZJby2oOcrMYu8B2eoVUNUVxO2Y0BX1dmU
-         86T2whdAPYSqn4GkTH+mKyUCbbg79lCx6CoasDU9vDOoQ7zs4JFI5c7nj+tLRRIyDWUd
-         YrRA==
+        Fri, 5 Mar 2021 23:32:27 -0500
+Received: by mail-pj1-f41.google.com with SMTP id j14-20020a17090a588eb02900cefe2daa2cso151487pji.0;
+        Fri, 05 Mar 2021 20:32:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=C0fc0z8FwjdECdFL+lTC1saxBB6QAyp/014WA2umBAY=;
-        b=Yzyfb14bKrmfasDEnAOHWPllj4fleyZfK3mGMKaTIN0qc/ondkW8++s1bJDkk76mnY
-         Mi6yLNNFxmPmTYQI1PFUuaAEgDf69dDyQ0iK8T2ICUcaKgmrw2xccQAJIJlXoZuhL8ut
-         eUK+lvDEtRP4rNfXXRMXjq1EZ8wljdP/FjQAeNS9clwijvOvzvhVyqmjMS5PcnDZj2HI
-         vaQVnjgqDX3vez7PxUtsnUxdZpJEOdEtMUD2DD4AZdeg/PXfyaMkN19cjq2ev9ObCHbS
-         1t6XUD/VM90oP9i9nehq3qTd7sApLMStJbRwdMiEF9jJv1mVWi6U/JGvqHOPmOJPqT3K
-         1igQ==
-X-Gm-Message-State: AOAM5314B/a1xS02fJ3DAJekPzX646B0w1brWUB1QGLt2F6SrA00qt7V
-        QFeMnEblWZ569Q6WW1EzwQg=
-X-Google-Smtp-Source: ABdhPJz4OoiLeNhbNJLVfW/+qy+iekVop9E1alzONPh8qwGHDpn2REE5h98elA8jq8NdWjzwb5EoPQ==
-X-Received: by 2002:a17:90a:de90:: with SMTP id n16mr12860466pjv.10.1615004808579;
-        Fri, 05 Mar 2021 20:26:48 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id mp1sm3381534pjb.48.2021.03.05.20.26.42
+        bh=0FLdb7WRYyetMAGeVkmVyaxyT94n1/im6YgyjkPRT3E=;
+        b=CGCJrIPfnZ7Mgz/1f6l55lxDaAjW9oRsxkl9RmG4YzHZqO5MzkjqVmWevj5B3eKirb
+         X9we6corwSdoP2XxUcYWO1kQX3hBFjvxXjRJnCO3IJU49qcTENl9R3RVkZ2PjAR3+fuI
+         DAFRTb303F02N7+uCq6y0RmxdoHFzoVaZEcWxMuwQbfRPYATXNzYmBZk428BTkt4OsMS
+         G6tDxzElikvAhrJO4qUYL2/FndpxSUpxyOkyaBGial9nWpqd73hBtMNPEC56Uk33sizM
+         rUQUQ6PD6hLUocHV9YxVGxnBa6X5TBq6IGf9s0p3LK9zUOu1xKIYoj6VnSWBx2CwWk90
+         gvjA==
+X-Gm-Message-State: AOAM533fyeUmVKntMeeY/xlZIRBvs9TyoFk7YcYyM5Ctxj8MyzlY+yvD
+        gqIelo7BLo2Pud+ExThDJeTafsagqKk=
+X-Google-Smtp-Source: ABdhPJywIhgawDTlWs6vOPCOvxkKzRxO0NIFJq96trJk5+cU+UtxNV74qZdVpuhUal9m/JelfZChkg==
+X-Received: by 2002:a17:90a:4381:: with SMTP id r1mr14325348pjg.20.1615005146889;
+        Fri, 05 Mar 2021 20:32:26 -0800 (PST)
+Received: from ?IPv6:2601:647:4000:d7:508e:d398:f4d5:3d44? ([2601:647:4000:d7:508e:d398:f4d5:3d44])
+        by smtp.gmail.com with ESMTPSA id z3sm3233394pff.40.2021.03.05.20.32.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 20:26:47 -0800 (PST)
-Subject: Re: [PATCH net-next v2 3/3] net: phy: broadcom: Allow BCM54210E to
- configure APD
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Chan <mchan@broadcom.com>,
-        "open list:BROADCOM ETHERNET PHY DRIVERS" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>, michael@walle.cc
-References: <20210213034632.2420998-1-f.fainelli@gmail.com>
- <20210213034632.2420998-4-f.fainelli@gmail.com>
- <20210213104245.uti4qb2u2r5nblef@skbuf>
- <4e1c1a4c-d276-c850-8e97-16ef1f08dcff@gmail.com>
- <99e28317-e93d-88fa-f43f-d1d072b61292@gmail.com>
- <20210305010845.blqccudijh6ezm6a@skbuf>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <840bf142-d398-13cd-36a2-a013f6e44b53@gmail.com>
-Date:   Fri, 5 Mar 2021 20:26:41 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.0
+        Fri, 05 Mar 2021 20:32:26 -0800 (PST)
+Subject: Re: [RFC PATCH v3 2/3] blk-mq: Freeze and quiesce all queues for
+ tagset in elevator_exit()
+To:     John Garry <john.garry@huawei.com>, hare@suse.de,
+        ming.lei@redhat.com, axboe@kernel.dk, hch@lst.de
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pragalla@codeaurora.org, kashyap.desai@broadcom.com,
+        yuyufen@huawei.com
+References: <1614957294-188540-1-git-send-email-john.garry@huawei.com>
+ <1614957294-188540-3-git-send-email-john.garry@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <52618092-07ca-ecb5-320f-957af26ab146@acm.org>
+Date:   Fri, 5 Mar 2021 20:32:24 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210305010845.blqccudijh6ezm6a@skbuf>
+In-Reply-To: <1614957294-188540-3-git-send-email-john.garry@huawei.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -81,63 +58,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/5/21 7:14 AM, John Garry wrote:
+> diff --git a/block/blk.h b/block/blk.h
+> index 3b53e44b967e..1a948bfd91e4 100644
+> --- a/block/blk.h
+> +++ b/block/blk.h
+> @@ -201,10 +201,29 @@ void elv_unregister_queue(struct request_queue *q);
+>  static inline void elevator_exit(struct request_queue *q,
+>  		struct elevator_queue *e)
+>  {
+> +	struct blk_mq_tag_set *set = q->tag_set;
+> +	struct request_queue *tmp;
+> +
+>  	lockdep_assert_held(&q->sysfs_lock);
+>  
+> +	mutex_lock(&set->tag_list_lock);
+> +	list_for_each_entry(tmp, &set->tag_list, tag_set_list) {
+> +		if (tmp == q)
+> +			continue;
+> +		blk_mq_freeze_queue(tmp);
+> +		blk_mq_quiesce_queue(tmp);
+> +	}
+> +
+>  	blk_mq_sched_free_requests(q);
+>  	__elevator_exit(q, e);
+> +
+> +	list_for_each_entry(tmp, &set->tag_list, tag_set_list) {
+> +		if (tmp == q)
+> +			continue;
+> +		blk_mq_unquiesce_queue(tmp);
+> +		blk_mq_unfreeze_queue(tmp);
+> +	}
+> +	mutex_unlock(&set->tag_list_lock);
+>  }
 
+This patch introduces nesting of tag_list_lock inside sysfs_lock. The
+latter is per request queue while the former can be shared across
+multiple request queues. Has it been analyzed whether this is safe?
 
-On 3/4/2021 5:08 PM, Vladimir Oltean wrote:
-> On Tue, Mar 02, 2021 at 07:37:34PM -0800, Florian Fainelli wrote:
->> Took a while but for the 54210E reference board here are the numbers,
->> your mileage will vary depending on the supplies, regulator efficiency
->> and PCB design around the PHY obviously:
->>
->> BMCR.PDOWN:			86.12 mW
->> auto-power down:		77.84 mW
-> 
-> Quite curious that the APD power is lower than the normal BMCR.PDOWN
-> value. As far as my understanding goes, when in APD mode, the PHY even
-> wakes up from time to time to send pulses to the link partner?
+Thanks,
 
-Auto-power down kicks in when the cable is disconnected. There is
-another IDDQ mode that supports energy detection though I am unsure of
-when it would be useful for most Linux enabled systems.
-
-> 
->> auto-power-down, DLL disabled:  30.83 mW
-> 
-> The jump from simple APD to APD with DLL disabled is pretty big.
-> Correct me if I'm wrong, but there's an intermediary step which was not
-> measured, where the CLK125 is disabled but the internal DLL (Delay
-> Locked Loop?) is still enabled. I think powering off the internal DLL
-> also implies powering off the CLK125 pin, at least that's how the PHY
-> driver treats things at the moment. But we don't know if the huge
-> reduction in power is due just to CLK125 or the DLL (it's more likely
-> it's due to both, in equal amounts).
-
-Agree, I do not have the break down though.
-
-> 
-> Anyway, it's great to have some results which tell us exactly what is
-> worthwhile and what isn't. In other news, I've added the BCM5464 to the
-> list of PHYs with APD and I didn't see any issues thus far.
-> 
->> IDDQ-low power:			 9.85 mW (requires a RESETn toggle)
->> IDDQ with soft recovery:	10.75 mW
->>
->> Interestingly, the 50212E that I am using requires writing the PDOWN bit
->> and only that bit (not a RMW) in order to get in a correct state, both
->> LEDs keep flashing when that happens, fixes coming.
->>
->> When net-next opens back up I will submit patches to support IDDQ with
->> soft recovery since that is clearly much better than the standard power
->> down and it does not require a RESETn toggle.
-> 
-> Iddq must be the quiescent supply current, isn't it (but in that case,
-> I'm a bit confused to not see a value in mA)? Is it an actual operating
-> mode (I don't see anything about that mentioned in the BCM5464 sheet)
-> and if it is, what is there exactly to support?
-
-You would put the PHY in IDDQ with soft recovery (or ultra low power)
-when you are administratively bringing down the network interface (and
-its PHY), or when suspending to a low power state where Wake-on-LAN is
-not enabled.
--- 
-Florian
+Bart.
