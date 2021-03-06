@@ -2,152 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D0232F971
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:45:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4BA32F972
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbhCFKou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 05:44:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40146 "EHLO
+        id S229662AbhCFKrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 05:47:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbhCFKoP (ORCPT
+        with ESMTP id S229813AbhCFKr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 05:44:15 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671B4C06175F;
-        Sat,  6 Mar 2021 02:44:14 -0800 (PST)
-Date:   Sat, 06 Mar 2021 10:44:10 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615027451;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i3TbMPyJ4q/rEX0v+j8qU/SMu9e5MJJ994TgIEawHMw=;
-        b=ZZvGntQAuo7zpdixrttTx6iN+dAHVY0RAtxL7/JIGbDrnZFxas6adxhIi1zzprIfNm4Dvv
-        UC9DzooIldwFLN/qnPJZW8WfFk1nnaN0bIlTnJBtUYvKUDNcopfBAEG5esGTXP5Xl8V1lx
-        dtwMB3qxbIOSrAycg/ID8sBCypbGWZuGAJagRm/HeYXc40BiaHHMQygmMUulDYyhMqCC4M
-        gVMWNW/macHgepj2WQodcg2vHXFlQ4ys0aq4bJ4uVL3ANlE/tTrrgjg52EA77+L8jgyOaA
-        zu1eiwui6itWIbB867+l8h97H3nY+VZ6lRBoELQ7zKPENNhYelpbeZcFu4oTUA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615027451;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i3TbMPyJ4q/rEX0v+j8qU/SMu9e5MJJ994TgIEawHMw=;
-        b=dO7gnkib5wyv5Jn5A1oRyLHR3K5z/ecUTxy2cMVaznE0+ecnVNMrcYiDRTPs5WsKWUfsIQ
-        w13mHnLjreIYdzBA==
-From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/unwind/orc: Disable KASAN checking in the ORC
- unwinder, part 2
-Cc:     Ivan Babrou <ivan@cloudflare.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>, stable@kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <9583327904ebbbeda399eca9c56d6c7085ac20fe.1612534649.git.jpoimboe@redhat.com>
-References: <9583327904ebbbeda399eca9c56d6c7085ac20fe.1612534649.git.jpoimboe@redhat.com>
+        Sat, 6 Mar 2021 05:47:29 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2A0C06175F
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 02:47:29 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id l2so3103615pgb.1
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 02:47:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+OVArO45cIFAZDllkGVnvJRDcrMzTd8kZJ6zshsC9EY=;
+        b=cS+ut13MTQYqZC81q17e6WqC26TgE19vcCvDknXlTxQN/o/aOdlCMKbh1WS7MF7LrO
+         MGpVAK9HQhFi+tImfmnY69TGVP3cjERsOmtegbYTchJy3SQyrk7FO3CmQDEO0idwbAen
+         r+zfjxTdYYI0qxny+Wkr0B41QRWHAYywnT6DXK/kgqFswlcD9z81EgyG0Bc2NDr6/gg6
+         JCV7ttYE0yEPud/xNvmx1iG6aG+e5c43xw7432AfpOtR0fbuO9Ag91sxptBdWhetCc3W
+         dntq/r93iMWPmTNvVLUedJRUxO0fZI3L3zQD640Xh7TBlwYJs9Zm8xFaWSF8K97kDY+z
+         bXyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+OVArO45cIFAZDllkGVnvJRDcrMzTd8kZJ6zshsC9EY=;
+        b=S7TNuo8cl4giM97843jSPSN93KTlE/60K9SLOS1aVcjNRKg3Vb7qvakppFke5yPLPC
+         +D8AkVkkgHSz0SJkqUT2w1zG97fSdhcW5sKe8wgANMHG7wDXnIQSoTbzTmQhs2kbjNSL
+         hMiX9oon76kdACgQYX5iWQLkPyouXbLh3eoJ05D2bSkAG8tSlHC9nLb5UGUFSJ2moBzU
+         XxNOLNlkrjj73VRi/3X/jCX8GpWQFZ+EoVztOrXJF8EZ/ZWOgoMVDAl48GYiiPVYjkMu
+         QRPnK9q1N7XWczThWQtyOONRvar/sIFecHaR7Bgf+drsVsO9ObJz9Hfi+5U/i7MnR8n4
+         9hsg==
+X-Gm-Message-State: AOAM533YlBRQax5Gumw+KeIrL6vM1agOvnJw+nN4674WYmwrK3G+22jg
+        /qo65HU8j26tY5N0PVu8xUs=
+X-Google-Smtp-Source: ABdhPJyjym9wsWQn1eiIbQ3l+me663Tkn6GiPbKErmB1Gshj4oPC5Bw8MUW2B9eaGSZMPxxLNd8Ycw==
+X-Received: by 2002:a65:40c4:: with SMTP id u4mr12188962pgp.139.1615027648964;
+        Sat, 06 Mar 2021 02:47:28 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id o62sm4677955pga.43.2021.03.06.02.47.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 02:47:28 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: zhang.yunkai@zte.com.cn
+To:     sunpeng.li@amd.com
+Cc:     harry.wentland@amd.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        nicholas.kazlauskas@amd.com, Rodrigo.Siqueira@amd.com,
+        aurabindo.pillai@amd.com, stylon.wang@amd.com, contact@emersion.fr,
+        bas@basnieuwenhuizen.nl, Bhawanpreet.Lakha@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Zhang Yunkai <zhang.yunkai@zte.com.cn>
+Subject: [PATCH] drm/amd/display: remove duplicate include in amdgpu_dm.c
+Date:   Sat,  6 Mar 2021 02:47:20 -0800
+Message-Id: <20210306104720.215738-1-zhang.yunkai@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <161502745059.398.8274137708006500653.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 
-Commit-ID:     8bd7b3980ca62904814d536b3a2453001992a0c3
-Gitweb:        https://git.kernel.org/tip/8bd7b3980ca62904814d536b3a2453001992a0c3
-Author:        Josh Poimboeuf <jpoimboe@redhat.com>
-AuthorDate:    Fri, 05 Feb 2021 08:24:02 -06:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Sat, 06 Mar 2021 11:37:00 +01:00
+'drm/drm_hdcp.h' included in 'amdgpu_dm.c' is duplicated.
+It is also included in the 79th line.
 
-x86/unwind/orc: Disable KASAN checking in the ORC unwinder, part 2
-
-KASAN reserves "redzone" areas between stack frames in order to detect
-stack overruns.  A read or write to such an area triggers a KASAN
-"stack-out-of-bounds" BUG.
-
-Normally, the ORC unwinder stays in-bounds and doesn't access the
-redzone.  But sometimes it can't find ORC metadata for a given
-instruction.  This can happen for code which is missing ORC metadata, or
-for generated code.  In such cases, the unwinder attempts to fall back
-to frame pointers, as a best-effort type thing.
-
-This fallback often works, but when it doesn't, the unwinder can get
-confused and go off into the weeds into the KASAN redzone, triggering
-the aforementioned KASAN BUG.
-
-But in this case, the unwinder's confusion is actually harmless and
-working as designed.  It already has checks in place to prevent
-off-stack accesses, but those checks get short-circuited by the KASAN
-BUG.  And a BUG is a lot more disruptive than a harmless unwinder
-warning.
-
-Disable the KASAN checks by using READ_ONCE_NOCHECK() for all stack
-accesses.  This finishes the job started by commit 881125bfe65b
-("x86/unwind: Disable KASAN checking in the ORC unwinder"), which only
-partially fixed the issue.
-
-Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
-Reported-by: Ivan Babrou <ivan@cloudflare.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Tested-by: Ivan Babrou <ivan@cloudflare.com>
-Cc: stable@kernel.org
-Link: https://lkml.kernel.org/r/9583327904ebbbeda399eca9c56d6c7085ac20fe.1612534649.git.jpoimboe@redhat.com
+Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 ---
- arch/x86/kernel/unwind_orc.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-index 2a1d47f..1bcc14c 100644
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -367,8 +367,8 @@ static bool deref_stack_regs(struct unwind_state *state, unsigned long addr,
- 	if (!stack_access_ok(state, addr, sizeof(struct pt_regs)))
- 		return false;
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 3e1fd1e7d09f..fee46fbcb0b7 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -44,7 +44,6 @@
+ #include "amdgpu_dm.h"
+ #ifdef CONFIG_DRM_AMD_DC_HDCP
+ #include "amdgpu_dm_hdcp.h"
+-#include <drm/drm_hdcp.h>
+ #endif
+ #include "amdgpu_pm.h"
  
--	*ip = regs->ip;
--	*sp = regs->sp;
-+	*ip = READ_ONCE_NOCHECK(regs->ip);
-+	*sp = READ_ONCE_NOCHECK(regs->sp);
- 	return true;
- }
- 
-@@ -380,8 +380,8 @@ static bool deref_stack_iret_regs(struct unwind_state *state, unsigned long addr
- 	if (!stack_access_ok(state, addr, IRET_FRAME_SIZE))
- 		return false;
- 
--	*ip = regs->ip;
--	*sp = regs->sp;
-+	*ip = READ_ONCE_NOCHECK(regs->ip);
-+	*sp = READ_ONCE_NOCHECK(regs->sp);
- 	return true;
- }
- 
-@@ -402,12 +402,12 @@ static bool get_reg(struct unwind_state *state, unsigned int reg_off,
- 		return false;
- 
- 	if (state->full_regs) {
--		*val = ((unsigned long *)state->regs)[reg];
-+		*val = READ_ONCE_NOCHECK(((unsigned long *)state->regs)[reg]);
- 		return true;
- 	}
- 
- 	if (state->prev_regs) {
--		*val = ((unsigned long *)state->prev_regs)[reg];
-+		*val = READ_ONCE_NOCHECK(((unsigned long *)state->prev_regs)[reg]);
- 		return true;
- 	}
- 
+-- 
+2.25.1
+
