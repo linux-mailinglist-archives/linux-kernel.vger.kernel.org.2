@@ -2,230 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DC432F957
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C30B32F95F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbhCFKRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 05:17:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbhCFKQx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 05:16:53 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D53E9C061760
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 02:16:52 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id p1so6465041edy.2
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 02:16:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vpCJk3kxAUD6YVwGA0kurvyADNZxkbrLcK6rA9kmJXo=;
-        b=GufDzOldv4hGX1K5K7vfm9QTSFRsIBXM+/q7zZDHczVeZlJJlwWSzCpDInTQXIhmiF
-         P2hEFzrb9qQglczOLrDq85Z+SF50I9oIQFgCFa30ekWKn8exj8wJuwLbYvqGcQnaYRxq
-         E0+WBYPRb3dV4Xh3mhcZ8lakuAoKWcw3b23KH8w7/vqPEVzQcKfeoFtQgEY75gIrBjdX
-         tjpqe/H+NEEBNs++tz0DWtO8fyK10/HOqigFDHvJT8ZtnSy7wBBMtNQ4hsrfZJR7BJn4
-         gs5KdGYcehjzcs+z72i2wtIcG0kR59h/Q5EJIXWThi4WpePpLIrzAN6lO+xo15/+YUTi
-         gnqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vpCJk3kxAUD6YVwGA0kurvyADNZxkbrLcK6rA9kmJXo=;
-        b=ailjaEMpzd+7haN3VKPBS9A+Nm/WlZ/C8nh1/vSGtuJTn7LGBKMjlyQ6yNEACUJKIZ
-         RhkEXwRz4f7bk5GOrjby2LiZTNYQKrsJDUJJEePE5a6zWXZ+GOX3PT93VuZwt4FHkOcH
-         lXDniijDjiJhn0YxDGaGXRVAh1Za8qWMNDbZiEzBqFSd4zfiDrVJmqWvyD4B6A4i34Pr
-         Ogil6CPOCFgm+oeN2eSDIf7IbIPt2uEcStz3KwYV22W0Fa8bNOHLoDU+OHVYAsTVHLeM
-         IIq7mi6Ew+XwgNj81X6+Wve3f+4Q35xKiSWCvx2Mjnilt1VcN12diBjBSpig6MYO1bVw
-         GfYA==
-X-Gm-Message-State: AOAM533Pqj5L9rLuo4E4w9QJ116VNVtAT8uw3K9uAez/hIRUpUbz54km
-        uKAY7GSQI3X3LKTjAdH29IIFHcK6wl752SZiuph6Vg==
-X-Google-Smtp-Source: ABdhPJzVZrIIt1UjSDK1oGZowS0tBuWMTmzUW7gHV8FAOSzVIM6LDX0gO3qjd6DetjqVEVE9u4MppSEkD9uqkAnKd5M=
-X-Received: by 2002:aa7:d287:: with SMTP id w7mr2701579edq.23.1615025811350;
- Sat, 06 Mar 2021 02:16:51 -0800 (PST)
+        id S229957AbhCFKaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 05:30:20 -0500
+Received: from elvis.franken.de ([193.175.24.41]:48401 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229738AbhCFKaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 05:30:04 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lIUCA-0006qw-00; Sat, 06 Mar 2021 11:30:02 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 76D5FC114B; Sat,  6 Mar 2021 10:53:08 +0100 (CET)
+Date:   Sat, 6 Mar 2021 10:53:08 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Qing Zhang <zhangqing@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] MIPS: Loongson64: Move loongson_system_configuration
+ to loongson.h
+Message-ID: <20210306095308.GA5751@alpha.franken.de>
+References: <20210304110057.22144-1-zhangqing@loongson.cn>
+ <20210304110057.22144-3-zhangqing@loongson.cn>
+ <20210306080337.GC4744@alpha.franken.de>
+ <d1072504-514b-4be0-85ba-69a6d885de58@www.fastmail.com>
 MIME-Version: 1.0
-References: <20210305120851.751937389@linuxfoundation.org>
-In-Reply-To: <20210305120851.751937389@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 6 Mar 2021 15:46:39 +0530
-Message-ID: <CA+G9fYtsUsbvNBCvNLU5oXmw2+e08cUqrm=CAw_qtzx_DtKhsw@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/39] 4.14.224-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d1072504-514b-4be0-85ba-69a6d885de58@www.fastmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Mar 2021 at 18:10, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.224 release.
-> There are 39 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.224-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Sat, Mar 06, 2021 at 05:00:15PM +0800, Jiaxun Yang wrote:
+> 
+> 
+> On Sat, Mar 6, 2021, at 4:03 PM, Thomas Bogendoerfer wrote:
+> > On Thu, Mar 04, 2021 at 07:00:57PM +0800, Qing Zhang wrote:
+> > > The purpose of separating loongson_system_configuration from boot_param.h
+> > > is to keep the other structure consistent with the firmware.
+> > > 
+> > > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> > > Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> > > ---
+> > >  .../include/asm/mach-loongson64/boot_param.h   | 18 ------------------
+> > >  .../include/asm/mach-loongson64/loongson.h     | 18 ++++++++++++++++++
+> > 
+> > as you are already touching mach-loongson64 files...
+> > 
+> > Is there a chance you clean up that up even further ? My goal is to
+> > have only files in mach-<platform> files, which have an mach-generic
+> > counterpart. Everything else should go to its own directory. So in
+> > case of loongson something
+> > 
+> > like
+> > 
+> > arch/mips/include/asm/loongson		for common stuff
+> > arch/mips/include/asm/loongson/32
+> > arch/mips/include/asm/loongson/64
+> 
+> Hi Thomas
+> 
+> I'm object to this idea as loongson32/2ef/64 have nothing in common.
 
+at least they share the name loongson, so having
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+arch/mips/include/asm/loongson
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+sounds like a good move.
 
-Summary
-------------------------------------------------------------------------
+And seeing 
 
-kernel: 4.14.224-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: 31fdc1da4f570e606123fad56182d8e3d5e8049e
-git describe: v4.14.223-40-g31fdc1da4f57
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
-.y/build/v4.14.223-40-g31fdc1da4f57
+diff -u mach-loongson2ef/ mach-loongson64/loongson.h  | diffstat
+ loongson.h |  137 +++++++++++++------------------------------------------------
+ 1 file changed, 30 insertions(+), 107 deletions(-)
 
-No regressions (compared to build v4.14.223)
+wc mach-loongson2ef/loongson.h 
+  318   963 11278 mach-loongson2ef/loongson.h
 
-No fixes (compared to build v4.14.223)
+so there is something to shared. To me it looks like 2ef could be merged
+into 64, but that's nothing I'm wanting.
 
-Ran 43847 total tests in the following environments and test suites.
+Just to understand you, you want
 
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-64k_page_size
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
+arch/mips/include/asm/loongson/2ef
+arch/mips/include/asm/loongson/32
+arch/mips/include/asm/loongson/64
 
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-intel_pstate
-* kselftest-livepatch
-* kselftest-ptrace
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* perf
-* fwts
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* v4l2-compliance
-* kselftest-bpf
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-vm
-* kselftest-x86
-* ltp-fs-tests
-* ltp-open-posix-tests
-* rcutorture
-* ssuite
+?
 
---=20
-Linaro LKFT
-https://lkft.linaro.org
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
