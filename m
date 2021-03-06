@@ -2,112 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB1732F9B7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 907E632FA1D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:43:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhCFL2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 06:28:51 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:48012 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhCFL2R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 06:28:17 -0500
-Received: by mail-io1-f69.google.com with SMTP id o4so4090228ioh.14
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 03:28:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=+vfSdO+SL3Qb4u87AJJ+RYM5MXyih+emXtKp5NK9jp0=;
-        b=SfaxVkn2hhmrCY68I7uhPGEnAO+LwtNcOpvt2iaP4F5y1u6GJUZoUj2UTGwBeDNqbV
-         RhGyDp8VLSF/AJr68J82ZE33+XngEvk18N+u9aa2sJEgikqzIqBcyoTIXfrPNCss7MY7
-         TBBScYgaTq85pFzWp8cHeMf1EDOzCRS5umn6gOCJHQ2PCmFt/n6kAezofjQRy3rXufOf
-         Z92b0+dyqfPTjfKxA6PvNt/cGHit3UtOmvqgN52m1CSYsvkwXrMurncw+QhnJb/7Q2D6
-         8W7koW0sbP+d5ITh2VfDJR1p+gYjIHuUOGjpaqY9L3WF0wDLM6z6554pKq00DGV1u9ow
-         Isyw==
-X-Gm-Message-State: AOAM531xFo3v+U7mQYLC1S4ql9yORQ++0lJmA09iqyRo2yTxiPYWbZMM
-        beHqlbeO2HxTlZhVeIMSZJ3rDYAUsgqgk629AHjoaDCEJnhH
-X-Google-Smtp-Source: ABdhPJziCEqzKon0OaJlKlz5oXBilnbCKhYwoGWECyXG9W+BLbGVSYRzKoWmPckCfn+3veI8RqdWcRfVsZB4yVHdQ3rNrSEumjzt
+        id S231283AbhCFLmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 06:42:46 -0500
+Received: from ms-10.1blu.de ([178.254.4.101]:40518 "EHLO ms-10.1blu.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230390AbhCFLmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 06:42:25 -0500
+X-Greylist: delayed 3763 seconds by postgrey-1.27 at vger.kernel.org; Sat, 06 Mar 2021 06:42:24 EST
+Received: from [37.209.98.109] (helo=marius.localnet)
+        by ms-10.1blu.de with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <mail@mariuszachmann.de>)
+        id 1lIULQ-0004nW-5d; Sat, 06 Mar 2021 11:39:36 +0100
+From:   Marius Zachmann <mail@mariuszachmann.de>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH RESEND][next] hwmon: (corsair-cpro) Fix fall-through warnings for Clang
+Date:   Sat, 06 Mar 2021 11:39:35 +0100
+Message-ID: <107682713.BXpLqza3Di@marius>
+In-Reply-To: <20210305095359.GA141682@embeddedor>
+References: <20210305095359.GA141682@embeddedor>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1608:: with SMTP id t8mr12838661ilu.79.1615030097317;
- Sat, 06 Mar 2021 03:28:17 -0800 (PST)
-Date:   Sat, 06 Mar 2021 03:28:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004094ff05bcdc7ffb@google.com>
-Subject: [syzbot] bpf boot error: WARNING in kvm_wait
-From:   syzbot <syzbot+46fc491326a456ff8127@syzkaller.appspotmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Con-Id: 241080
+X-Con-U: 0-mail
+X-Originating-IP: 37.209.98.109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 06.03.21 at 10:53:59 CET, Gustavo A. R. Silva wrote
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a break statement instead of letting the code fall
+> through to the next case.
+> 
+> Link: https://github.com/KSPP/linux/issues/115
+> Acked-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-syzbot found the following issue on:
+Acked-by: Marius Zachmann <mail@mariuszachmann.de>
 
-HEAD commit:    edbea922 veth: Store queue_mapping independently of XDP pr..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=113ae02ad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=402784bff477e1ac
-dashboard link: https://syzkaller.appspot.com/bug?extid=46fc491326a456ff8127
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+46fc491326a456ff8127@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-raw_local_irq_restore() called with IRQs enabled
-WARNING: CPU: 0 PID: 4787 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-Modules linked in:
-CPU: 0 PID: 4787 Comm: systemd-getty-g Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-Code: be ff cc cc cc cc cc cc cc cc cc cc cc 80 3d 1e 62 b0 04 00 74 01 c3 48 c7 c7 a0 8e 6b 89 c6 05 0d 62 b0 04 01 e8 57 da be ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
-RSP: 0018:ffffc900012efc40 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffffffff8be28b80 RCX: 0000000000000000
-RDX: ffff888023de5340 RSI: ffffffff815bea35 RDI: fffff5200025df7a
-RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff815b77be R11: 0000000000000000 R12: 0000000000000003
-R13: fffffbfff17c5170 R14: 0000000000000001 R15: ffff8880b9c35f40
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa257bcaab4 CR3: 000000000bc8e000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- kvm_wait arch/x86/kernel/kvm.c:860 [inline]
- kvm_wait+0xc9/0xe0 arch/x86/kernel/kvm.c:837
- pv_wait arch/x86/include/asm/paravirt.h:564 [inline]
- pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
- __pv_queued_spin_lock_slowpath+0x8b8/0xb40 kernel/locking/qspinlock.c:508
- pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:554 [inline]
- queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
- queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
- do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
- spin_lock include/linux/spinlock.h:354 [inline]
- check_stack_usage kernel/exit.c:715 [inline]
- do_exit+0x1d6a/0x2ae0 kernel/exit.c:868
- do_group_exit+0x125/0x310 kernel/exit.c:922
- __do_sys_exit_group kernel/exit.c:933 [inline]
- __se_sys_exit_group kernel/exit.c:931 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fa2592a3618
-Code: Unable to access opcode bytes at RIP 0x7fa2592a35ee.
-RSP: 002b:00007ffc579980b8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fa2592a3618
-RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
-RBP: 00007fa2595808e0 R08: 00000000000000e7 R09: fffffffffffffee8
-R10: 00007fa25775e158 R11: 0000000000000246 R12: 00007fa2595808e0
-R13: 00007fa259585c20 R14: 0000000000000000 R15: 0000000000000000
+> ---
+>  drivers/hwmon/corsair-cpro.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/hwmon/corsair-cpro.c b/drivers/hwmon/corsair-cpro.c
+> index 591929ec217a..fa6aa4fc8b52 100644
+> --- a/drivers/hwmon/corsair-cpro.c
+> +++ b/drivers/hwmon/corsair-cpro.c
+> @@ -310,6 +310,7 @@ static int ccp_write(struct device *dev, enum hwmon_sensor_types type,
+>  		default:
+>  			break;
+>  		}
+> +		break;
+>  	default:
+>  		break;
+>  	}
+> 
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
