@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B5A32FB1E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 15:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2E532FB23
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 15:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhCFOQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 09:16:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbhCFOPp (ORCPT
+        id S230504AbhCFOVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 09:21:36 -0500
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:49688 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230329AbhCFOVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 09:15:45 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2629C06174A;
-        Sat,  6 Mar 2021 06:15:44 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id j6so2824033plx.6;
-        Sat, 06 Mar 2021 06:15:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=X8TTCBPkViEllxII2GAPq686qNKT8VhCeBCNCuQb630=;
-        b=X4HjQFXJ5I+4Ga5ghW9W0m+NFQmbaZvOV/98ZlS9tGmLGyTFguBYAqaluWx6xhXs5x
-         +Flxm6eUBr75IEMaL91AqyIrG0WtRsQKeK9WEFTtsywnpiLhd9CCkOQxxetDnNTJr+eH
-         3z1yvhdANnQdGU+jcpbmOL7qTJOKvuGjQrAp72HicTG7vJVHyI7VIF4w8oQn5Z3UA0wr
-         2grs5Nhohf7kdBvXkNe7YyFG1hdlnQjW/h9WmqNNxIrLvE44Wdmto/OgVQWeqwNe1fOg
-         hZVJR6PWKGyPL2vth00xb01ROaTnNFPNx1ykVUcZlHJ0DGcq7Uzs3PE7HCqHehn/Sr9U
-         uGAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=X8TTCBPkViEllxII2GAPq686qNKT8VhCeBCNCuQb630=;
-        b=pcSnV0nnErMm6j0FizIuNYqrn2TgC17qaCTayuq3W3vja10Ul/b/nXDx6gvPGOSnv5
-         3I9+SPdP7e3IzPz6RMZkl6P0hhQCfCBK6wpazZo/3+wtN0ssZkuqnLM0wDkuaqc0L5WD
-         gabPRZY3sMbJt81w7rBSENXC5+XiiN5KcoKE8HgeoCDH57j/YOUHGjjTgi9GuotYww0/
-         4dz6bjB84tYuIq3vtli5TiHPyrscYQtB5DP4QuOPKlfOG8JZwde0E3Q6y8aj4spWMMSE
-         QvrZL4O/zeaLXA0IV+7A2nzwMURp+T2w6bRNV0M5BjtfSe/dtIyrjcpZiBzC0LJLuAPH
-         O1yw==
-X-Gm-Message-State: AOAM531oSUyVSyY6zisNxKvFxg+f1uymwA6ulqiyKg4m9klgg3FPrsQE
-        EPXjvzCscavkAZfUl9n9/DE=
-X-Google-Smtp-Source: ABdhPJyaM8lMeDzibOR+TiKsLfgOxn28TEFwwtmGxMsh78ukFhJQhsfWsQh0vUQxUgOzuk2qDAxXXQ==
-X-Received: by 2002:a17:90a:e50c:: with SMTP id t12mr15289117pjy.138.1615040144308;
-        Sat, 06 Mar 2021 06:15:44 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.79])
-        by smtp.gmail.com with ESMTPSA id 64sm5516888pfd.174.2021.03.06.06.15.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 06:15:43 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     yong.deng@magewell.com, mchehab@kernel.org, mripard@kernel.org,
-        wens@csie.org, jernej.skrabec@siol.net
-Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] media: platform: sunxi: sun6i-csi: fix error return code of sun6i_video_start_streaming()
-Date:   Sat,  6 Mar 2021 06:15:28 -0800
-Message-Id: <20210306141528.18925-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 6 Mar 2021 09:21:19 -0500
+Received: from localhost.localdomain ([90.126.17.6])
+        by mwinf5d10 with ME
+        id d2MA2400207rLVE032MAlN; Sat, 06 Mar 2021 15:21:17 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 06 Mar 2021 15:21:17 +0100
+X-ME-IP: 90.126.17.6
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org, krzk@kernel.org,
+        nathan@kernel.org, gustavoars@kernel.org, arnd@arndb.de,
+        ben-linux@fluff.org
+Cc:     linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/2 V2] usb: gadget: s3c: Fix incorrect resources releasing
+Date:   Sat,  6 Mar 2021 15:21:08 +0100
+Message-Id: <20210306142108.3429-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When sun6i_video_remote_subdev() returns NULL to subdev, no error return
-code of sun6i_video_start_streaming() is assigned.
-To fix this bug, ret is assigned with -EINVAL in this case.
+Since commit 188db4435ac6 ("usb: gadget: s3c: use platform resources"),
+'request_mem_region()' and 'ioremap()' are no more used, so they don't need
+to be undone in the error handling path of the probe and in the removre
+function.
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Remove these calls and the unneeded 'rsrc_start' and 'rsrc_len' global
+variables.
+
+Fixes: 188db4435ac6 ("usb: gadget: s3c: use platform resources")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+the 'err' label is used only to reduce the diff size of this patch. It is
+removed in the following patch.
 
-diff --git a/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c b/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c
-index b55de9ab64d8..3181d0781b61 100644
---- a/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c
-+++ b/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c
-@@ -151,8 +151,10 @@ static int sun6i_video_start_streaming(struct vb2_queue *vq, unsigned int count)
+v2: Fix a stupid error in the hash in Fixes:
+---
+ drivers/usb/gadget/udc/s3c2410_udc.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/usb/gadget/udc/s3c2410_udc.c b/drivers/usb/gadget/udc/s3c2410_udc.c
+index f1ea51476add..3fc436286bad 100644
+--- a/drivers/usb/gadget/udc/s3c2410_udc.c
++++ b/drivers/usb/gadget/udc/s3c2410_udc.c
+@@ -54,8 +54,6 @@ static struct clk		*udc_clock;
+ static struct clk		*usb_bus_clock;
+ static void __iomem		*base_addr;
+ static int			irq_usbd;
+-static u64			rsrc_start;
+-static u64			rsrc_len;
+ static struct dentry		*s3c2410_udc_debugfs_root;
+ 
+ static inline u32 udc_read(u32 reg)
+@@ -1775,7 +1773,7 @@ static int s3c2410_udc_probe(struct platform_device *pdev)
+ 	base_addr = devm_platform_ioremap_resource(pdev, 0);
+ 	if (!base_addr) {
+ 		retval = -ENOMEM;
+-		goto err_mem;
++		goto err;
  	}
  
- 	subdev = sun6i_video_remote_subdev(video, NULL);
--	if (!subdev)
-+	if (!subdev) {
-+		ret = -EINVAL;
- 		goto stop_media_pipeline;
-+	}
+ 	the_controller = udc;
+@@ -1793,7 +1791,7 @@ static int s3c2410_udc_probe(struct platform_device *pdev)
+ 	if (retval != 0) {
+ 		dev_err(dev, "cannot get irq %i, err %d\n", irq_usbd, retval);
+ 		retval = -EBUSY;
+-		goto err_map;
++		goto err;
+ 	}
  
- 	config.pixelformat = video->fmt.fmt.pix.pixelformat;
- 	config.code = video->mbus_code;
+ 	dev_dbg(dev, "got irq %i\n", irq_usbd);
+@@ -1864,10 +1862,7 @@ static int s3c2410_udc_probe(struct platform_device *pdev)
+ 		gpio_free(udc_info->vbus_pin);
+ err_int:
+ 	free_irq(irq_usbd, udc);
+-err_map:
+-	iounmap(base_addr);
+-err_mem:
+-	release_mem_region(rsrc_start, rsrc_len);
++err:
+ 
+ 	return retval;
+ }
+@@ -1899,9 +1894,6 @@ static int s3c2410_udc_remove(struct platform_device *pdev)
+ 
+ 	free_irq(irq_usbd, udc);
+ 
+-	iounmap(base_addr);
+-	release_mem_region(rsrc_start, rsrc_len);
+-
+ 	if (!IS_ERR(udc_clock) && udc_clock != NULL) {
+ 		clk_disable_unprepare(udc_clock);
+ 		clk_put(udc_clock);
 -- 
-2.17.1
+2.27.0
 
