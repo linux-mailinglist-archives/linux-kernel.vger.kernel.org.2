@@ -2,102 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83BA3305BE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:00:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EB73305D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233597AbhCHCAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 21:00:00 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:56212 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233588AbhCHB7t (ORCPT
+        id S230442AbhCHCQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 21:16:00 -0500
+Received: from mail-io1-f52.google.com ([209.85.166.52]:44142 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230521AbhCHCPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 20:59:49 -0500
-X-UUID: 5829353be91c45ce80dc07f32882201d-20210308
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=6qYg+DJBSG1Du8y4MYkkOeqRrd9rwS5CN17jsGP6xzU=;
-        b=WA6IpcBHguky+rMLAFcyeVeWfUfnqQYsRTb61ouCgT1I0ZyCZePG80OX9mfkEuH61webF2JR7kblsyqAwLYBVgnRR6TuJQkIfPfOXB4TsBGTJ/4vYovdhyD7mruRBO+S5rJJBhN+k4ZwSNlS88y6kVXiEGZMfT45EsTO46FcwVY=;
-X-UUID: 5829353be91c45ce80dc07f32882201d-20210308
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1233242520; Mon, 08 Mar 2021 09:59:34 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs06n2.mediatek.inc
- (172.21.101.130) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 8 Mar
- 2021 09:58:37 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 8 Mar 2021 09:58:36 +0800
-Message-ID: <1615168716.32109.6.camel@mhfsdcap03>
-Subject: Re: [PATCH 16/17] usb: common: add function to get interval
- expressed in us unit
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-CC:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ikjoon Jang <ikjn@chromium.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Date:   Mon, 8 Mar 2021 09:58:36 +0800
-In-Reply-To: <20210305153312.GA38200@rowland.harvard.edu>
-References: <1614934975-15188-1-git-send-email-chunfeng.yun@mediatek.com>
-         <1614934975-15188-16-git-send-email-chunfeng.yun@mediatek.com>
-         <20210305153312.GA38200@rowland.harvard.edu>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Sun, 7 Mar 2021 21:15:37 -0500
+Received: by mail-io1-f52.google.com with SMTP id 81so8319693iou.11;
+        Sun, 07 Mar 2021 18:15:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=zUhMpHW1VVHowuwumAIjSibq4yrtfBm/0FQm+5qDnvo=;
+        b=r64NK7knaXssnmTQXPbBeQeyxjNj5ctP3w+7UP9emCNrb/E3T7d9lcbLWPXEJ1zbF1
+         fPKUMO6EFJkdPkgKEcQM3X9cYqZjGqNXGs5PAIAggcV0QYLbYt3SdSXNVqY23kGfouvC
+         ont29slnYt3PWh9YP2GcqvrUjZGNfPbaitVT/BL/DBd5Fw+yr+Hn3HZoXVvqAVA853ch
+         VO/C6s8gqbU//zDujnQQENIMZ+pF60p0kuDDY9Dcz+gHsLPCM1dBuuM4orAqDVaj226e
+         KvMouA1+hs0S4ZLBxaSeQTX9VhTY2Tz4OUPzHGoB2QPzOX4rwjePBmIscp0GYNtEiSa/
+         928g==
+X-Gm-Message-State: AOAM533qQUKCXAIHOgOWKR+nNxtQuHQKBMC6Cmz/1ZiioP+8iuQKHq6i
+        yGZOA+lyvqAtu4YgAgpakQ==
+X-Google-Smtp-Source: ABdhPJyJ4+Xk5fu91tItzXJMFfQKHGOUGzBjfazjdZbIWp1LHEJoenrI8ZrmQ27FjmyvsTP16nOXmA==
+X-Received: by 2002:a5d:9250:: with SMTP id e16mr17112049iol.27.1615169736731;
+        Sun, 07 Mar 2021 18:15:36 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id 74sm5340847iob.43.2021.03.07.18.15.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 18:15:35 -0800 (PST)
+Received: (nullmailer pid 1282752 invoked by uid 1000);
+        Sat, 06 Mar 2021 21:52:32 -0000
+Date:   Sat, 6 Mar 2021 14:52:32 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivek Unune <npcomplete13@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH 2/3] dt-bindings: phy: brcm,ns-usb2-phy: bind single CRU
+ reg
+Message-ID: <20210306215232.GA1238918@robh.at.kernel.org>
+References: <20210226114501.31086-1-zajec5@gmail.com>
+ <20210226114501.31086-2-zajec5@gmail.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: AA76056FEB5929E229E6F99F439BC3A0267241E9DCA4D6CBEACABBBCC2768C852000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210226114501.31086-2-zajec5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTAzLTA1IGF0IDEwOjMzIC0wNTAwLCBBbGFuIFN0ZXJuIHdyb3RlOg0KPiBP
-biBGcmksIE1hciAwNSwgMjAyMSBhdCAwNTowMjo1NFBNICswODAwLCBDaHVuZmVuZyBZdW4gd3Jv
-dGU6DQo+ID4gQWRkIGEgbmV3IGZ1bmN0aW9uIHRvIGNvbnZlcnQgYkludGVydmFsIGludG8gdGhl
-IHRpbWUgZXhwcmVzc2VkDQo+ID4gaW4gMXVzIHVuaXQuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1i
-eTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiAN
-Cj4gPiAtLS0gYS9kcml2ZXJzL3VzYi9jb21tb24vY29tbW9uLmMNCj4gPiArKysgYi9kcml2ZXJz
-L3VzYi9jb21tb24vY29tbW9uLmMNCj4gPiBAQCAtMTY1LDYgKzE2NSwzOSBAQCBlbnVtIHVzYl9k
-cl9tb2RlIHVzYl9nZXRfZHJfbW9kZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4gIH0NCj4gPiAg
-RVhQT1JUX1NZTUJPTF9HUEwodXNiX2dldF9kcl9tb2RlKTsNCj4gPiAgDQo+ID4gK3Vuc2lnbmVk
-IGludCB1c2JfZGVjb2RlX2ludGVydmFsKGNvbnN0IHN0cnVjdCB1c2JfZW5kcG9pbnRfZGVzY3Jp
-cHRvciAqZXBkLA0KPiA+ICsJCQkJIGVudW0gdXNiX2RldmljZV9zcGVlZCBzcGVlZCkNCj4gPiAr
-ew0KPiA+ICsJdW5zaWduZWQgaW50IGludGVydmFsID0gMDsNCj4gPiArDQo+ID4gKwlzd2l0Y2gg
-KHVzYl9lbmRwb2ludF90eXBlKGVwZCkpIHsNCj4gPiArCWNhc2UgVVNCX0VORFBPSU5UX1hGRVJf
-Q09OVFJPTDoNCj4gPiArCQkvKiB1ZnJhbWVzIHBlciBOQUsgKi8NCj4gPiArCQlpZiAoc3BlZWQg
-PT0gVVNCX1NQRUVEX0hJR0gpDQo+ID4gKwkJCWludGVydmFsID0gZXBkLT5iSW50ZXJ2YWw7DQo+
-ID4gKwkJYnJlYWs7DQo+ID4gKwljYXNlIFVTQl9FTkRQT0lOVF9YRkVSX0lTT0M6DQo+ID4gKwkJ
-aW50ZXJ2YWwgPSAxIDw8IChlcGQtPmJJbnRlcnZhbCAtIDEpOw0KPiA+ICsJCWJyZWFrOw0KPiA+
-ICsJY2FzZSBVU0JfRU5EUE9JTlRfWEZFUl9CVUxLOg0KPiA+ICsJCS8qIHVmcmFtZXMgcGVyIE5B
-SyAqLw0KPiA+ICsJCWlmIChzcGVlZCA9PSBVU0JfU1BFRURfSElHSCAmJiB1c2JfZW5kcG9pbnRf
-ZGlyX291dChlcGQpKQ0KPiA+ICsJCQlpbnRlcnZhbCA9IGVwZC0+YkludGVydmFsOw0KPiA+ICsJ
-CWJyZWFrOw0KPiA+ICsJY2FzZSBVU0JfRU5EUE9JTlRfWEZFUl9JTlQ6DQo+ID4gKwkJaWYgKHNw
-ZWVkID49IFVTQl9TUEVFRF9ISUdIKQ0KPiA+ICsJCQlpbnRlcnZhbCA9IDEgPDwgKGVwZC0+Yklu
-dGVydmFsIC0gMSk7DQo+ID4gKwkJZWxzZQ0KPiA+ICsJCQlpbnRlcnZhbCA9IGVwZC0+YkludGVy
-dmFsOw0KPiA+ICsJCWJyZWFrOw0KPiA+ICsJfQ0KPiA+ICsNCj4gPiArCWludGVydmFsICo9IChz
-cGVlZCA+PSBVU0JfU1BFRURfSElHSCkgPyAxMjUgOiAxMDAwOw0KPiA+ICsNCj4gPiArCXJldHVy
-biBpbnRlcnZhbDsNCj4gPiArfQ0KPiA+ICtFWFBPUlRfU1lNQk9MX0dQTCh1c2JfZGVjb2RlX2lu
-dGVydmFsKTsNCj4gDQo+ID4gLS0tIGEvaW5jbHVkZS9saW51eC91c2IvY2g5LmgNCj4gPiArKysg
-Yi9pbmNsdWRlL2xpbnV4L3VzYi9jaDkuaA0KPiA+IEBAIC05MCw2ICs5MCwxNyBAQCBleHRlcm4g
-ZW51bSB1c2Jfc3NwX3JhdGUgdXNiX2dldF9tYXhpbXVtX3NzcF9yYXRlKHN0cnVjdCBkZXZpY2Ug
-KmRldik7DQo+ID4gICAqLw0KPiA+ICBleHRlcm4gY29uc3QgY2hhciAqdXNiX3N0YXRlX3N0cmlu
-ZyhlbnVtIHVzYl9kZXZpY2Vfc3RhdGUgc3RhdGUpOw0KPiA+ICANCj4gPiArLyoqDQo+ID4gKyAq
-IHVzYl9kZWNvZGVfaW50ZXJ2YWwgLSBEZWNvZGUgYkludGVydmFsIGludG8gdGhlIHRpbWUgZXhw
-cmVzc2VkIGluIDF1cyB1bml0DQo+ID4gKyAqIEBlcGQ6IFRoZSBkZXNjcmlwdG9yIG9mIHRoZSBl
-bmRwb2ludA0KPiA+ICsgKiBAc3BlZWQ6IFRoZSBzcGVlZCB0aGF0IHRoZSBlbmRwb2ludCB3b3Jr
-cyBhcw0KPiA+ICsgKg0KPiA+ICsgKiBGdW5jdGlvbiByZXR1cm5zIHRoZSBpbnRlcnZhbCBleHBy
-ZXNzZWQgaW4gMXVzIHVuaXQgZm9yIHNlcnZpY2luZw0KPiA+ICsgKiBlbmRwb2ludCBmb3IgZGF0
-YSB0cmFuc2ZlcnMuDQo+ID4gKyAqLw0KPiA+ICt1bnNpZ25lZCBpbnQgdXNiX2RlY29kZV9pbnRl
-cnZhbChjb25zdCBzdHJ1Y3QgdXNiX2VuZHBvaW50X2Rlc2NyaXB0b3IgKmVwZCwNCj4gPiArCQkJ
-CSBlbnVtIHVzYl9kZXZpY2Vfc3BlZWQgc3BlZWQpOw0KPiANCj4gQXMgYSBnZW5lcmFsIHJ1bGUs
-IEkgYmVsaWV2ZSBwZW9wbGUgZXhwZWN0IHRvIGZpbmQgdGhlIGtlcm5lbGRvYyBmb3IgYSANCj4g
-ZnVuY3Rpb24gbmV4dCB0byB0aGUgZnVuY3Rpb24ncyBkZWZpbml0aW9uLCBub3QgbmV4dCB0byB0
-aGUgZGVjbGFyYXRpb24gDQo+IGluIGEgaGVhZGVyIGZpbGUuDQpHb3QgaXQsIHRoYW5rcw0KDQo+
-IA0KPiBBbGFuIFN0ZXJuDQoNCg==
+On Fri, Feb 26, 2021 at 12:45:00PM +0100, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> The old binding was using whole DMU space. It was an overkill. DMU is a
+> big block which contains e.g. CRU which contains e.g. PLLs, PHY, pinctrl
+> and thermal blocks.
+> 
+> Rework the binding to directly use a single CRU register that controls
+> USB 2.0 PHY. It's still required to reference CRU generic clkset
+> register so add a syscon for that.
+> 
+> For a full DMU & CRU description see arch/arm/boot/dts/bcm5301x.dtsi .
+> 
+> The old binding is deprecated now.
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+> This has been verified using dt_binding_check
+> 
+> I'd really like to get Rob's ack to make sure I don't do anything stupid
+> 
+> It's a reworked version of my abonded 2019 patch:
+> [PATCH V2 1/2] dt-bindings: bcm-ns-usb2-phy: rework binding to use CRU syscon
+> https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20190108123907.19816-1-zajec5@gmail.com/
+> ---
+>  .../bindings/phy/brcm,ns-usb2-phy.yaml        | 46 +++++++++++++++----
+>  1 file changed, 36 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/brcm,ns-usb2-phy.yaml b/Documentation/devicetree/bindings/phy/brcm,ns-usb2-phy.yaml
+> index b8b683ce8fa9..8e056d4d205a 100644
+> --- a/Documentation/devicetree/bindings/phy/brcm,ns-usb2-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/brcm,ns-usb2-phy.yaml
+> @@ -16,11 +16,20 @@ properties:
+>      const: brcm,ns-usb2-phy
+>  
+>    reg:
+> -    maxItems: 1
+> -    description: DMU (Device Management Unit) address range
+> +    anyOf:
+> +      - maxItems: 1
+> +        description: PHY control register
+> +      - maxItems: 1
+> +        description: DMU (Device Management Unit) address range
+> +        deprecated: true
+>  
+>    reg-names:
+>      const: dmu
+> +    deprecated: true
+> +
+> +  brcm,syscon-clkset:
+> +    description: phandle to syscon for clkset register
+> +    $ref: /schemas/types.yaml#/definitions/phandle
 
+Don't really need this as it's just a compatible node of the parent 
+node.
+
+>  
+>    clocks:
+>      maxItems: 1
+> @@ -34,22 +43,39 @@ properties:
+>  
+>  required:
+>    - reg
+> -  - reg-names
+>    - clocks
+>    - clock-names
+>    - "#phy-cells"
+>  
+> +oneOf:
+> +  - required:
+> +      - brcm,syscon-clkset
+> +  - required:
+> +      - reg-names
+> +
+>  additionalProperties: false
+>  
+>  examples:
+>    - |
+>      #include <dt-bindings/clock/bcm-nsp.h>
+>  
+> -    usb2-phy@1800c000 {
+> -        compatible = "brcm,ns-usb2-phy";
+> -        reg = <0x1800c000 0x1000>;
+> -        reg-names = "dmu";
+> -        clocks = <&genpll BCM_NSP_GENPLL_USB_PHY_REF_CLK>;
+> -        clock-names = "phy-ref-clk";
+> -        #phy-cells = <0>;
+> +    cru-bus@1800c100 {
+> +        compatible = "simple-bus";
+
+A specific compatible is needed for this block.
+
+> +        ranges = <0 0x1800c100 0x1a4>;
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +
+> +        usb2-phy@64 {
+> +            compatible = "brcm,ns-usb2-phy";
+> +            reg = <0x64 0x4>;
+> +            brcm,syscon-clkset = <&clkset>;
+> +            clocks = <&genpll BCM_NSP_GENPLL_USB_PHY_REF_CLK>;
+> +            clock-names = "phy-ref-clk";
+> +            #phy-cells = <0>;
+> +        };
+> +
+> +        clkset: syscon@80 {
+> +            compatible = "brcm,cru-clkset", "syscon";
+> +            reg = <0x80 0x4>;
+> +        };
+
+Is this going to expand to 0x1a4/4 child nodes? The problem with one 
+node per register is I don't know when it ends and you have to 
+constantly update your DT.
+
+Rob
