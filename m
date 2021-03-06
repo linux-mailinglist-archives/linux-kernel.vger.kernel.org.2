@@ -2,54 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC3E32F92D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 10:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABDF32F92F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 10:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhCFJuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 04:50:24 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:33727 "EHLO
+        id S230094AbhCFJuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 04:50:25 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:4531 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbhCFJuK (ORCPT
+        with ESMTP id S229738AbhCFJuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 04:50:10 -0500
+        Sat, 6 Mar 2021 04:50:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1615024209; x=1646560209;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=6d8k/C2zcO7dRNE3vNUlOTglcHwp5T6AxxIZYwQ4r5s=;
-  b=tgYd98fHi5n5Ydla5WsErMIE3YlOCyCeB2vS53q7XQCoRv84OZncnax2
-   0bzhLgBsxniOUeKrHDRbv2cI8OdHP0INkVu1qIHeI8eeZ180Wv3EtfpEr
-   JWM2KcL+nKLJlRyYpMGo2ICDKNBBZXizpPkM1tSRMJ1gogNzmjdD1VruY
-   L+6RIrtuksPuNXc0VgiQ0b28c5IEdIlcFDv0b5bBsJL+v0CipQAPTDu1p
-   zkH/q6HdkZ9ZLwhjlctSUY5BBBuwKm/E2urV8rbYVVdMWkrKbieJhLzyN
-   j1guZh/mBiViepmi2rEGC/q+YNMYH1m4YPb/M9/YXhyiOVGDEN3nyc0u6
-   w==;
-IronPort-SDR: B0sdHwEu5mieVwBAIOzkyI2zj3sWNnjSNt+LzVp1hxIWYbZBpMO5f5cQKh1yUjjwRPTxC+QL/6
- cebMLn81i/5I2KFGfetRZjWgwC8dzlwo8l212evjJoM9SJ7W2OERLcMEC+C/2Dk0eQXuVSnoug
- vK5Mn7d2HUZw45+TXJPmziVgzMaWEhGQj5NIfVMoF2JK9aqe7lMH6npY9UV+N3f0HWi4Pl8oSG
- ftMHjMfSeTj2LkZeI8SkhKEqAgkzmxutS6ekBX+Ki9sC6L8ewBCkFmG1bZcmxpc7QnL8zzAomV
- 4hQ=
+  t=1615024212; x=1646560212;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=F67KRwC5EvnpuwLQWrA/2oiNrHaxxAL/UiwBj3D0GEU=;
+  b=ONzqPhh3h0rHiB3C+zMb9Sz5HKHGe88dmP6ojNTW9lzO6ySQ1BIeGNZj
+   eArRcPL1n1tC3TZAqfGR+vuKhQbWB0MhouXw5n9V5mZIAdjkdRZLaZGBp
+   6+a4deSVojCtDqbMyRl94feGhCZWqH8dBAkTfgtQoiIgCLrixMRRdnIcl
+   z0o9mYNcLPh3eWZbY7CTsIjOjACmFQO6bA44GuTipioPAIL9AhcXvL5fP
+   hhdIWmh5f3VIvnOfffEcrZKx+6gQBwMJhTTIoRglwwDThIt/nKZB03mX6
+   I8QGwPLgHmnPJysvkVP9mYngNBhf6BD0kK2KGfmrKHjNZZrQ1fKDopPBm
+   A==;
+IronPort-SDR: j6vwh5zVtSGoszYfxQfynJCECjNI9V1AvIb48+gPb47r5d9BcpqBDUCtIj2bb5Ya8pl4b0hR3e
+ 2u7zVKFikw3XULTnHEv7SOvUZJZ7tpprVOmntTvISCF6Vsbw0jOppklrz9JOuGQkN0TrV370k6
+ UgVns943nW4JV3SJ8xwHAqR8JhI2r2Ka9fVYL9gsCgpIyO7R8HZIbgNTiTZvrkfUlPhssBumsf
+ nRM8TbkInlj2BqLJfjh64yuc2eZgjAxT9NtaNlKn4CavIMtQBg8oSOyf9zoUaHSE8tujwotNI4
+ SA8=
 X-IronPort-AV: E=Sophos;i="5.81,227,1610434800"; 
-   d="scan'208";a="46513037"
+   d="scan'208";a="112202496"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Mar 2021 02:50:09 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Mar 2021 02:50:11 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 6 Mar 2021 02:50:08 -0700
+ 15.1.2176.2; Sat, 6 Mar 2021 02:50:11 -0700
 Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Sat, 6 Mar 2021 02:50:06 -0700
+ 15.1.2176.2 via Frontend Transport; Sat, 6 Mar 2021 02:50:09 -0700
 From:   Tudor Ambarus <tudor.ambarus@microchip.com>
 To:     <vigneshr@ti.com>, <p.yadav@ti.com>, <michael@walle.cc>
 CC:     <linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
         <richard@nod.at>, <linux-kernel@vger.kernel.org>,
         Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 0/5] mtd: spi-nor: Cleanup patches
-Date:   Sat, 6 Mar 2021 11:49:57 +0200
-Message-ID: <20210306095002.22983-1-tudor.ambarus@microchip.com>
+Subject: [PATCH v2 1/5] mtd: spi-nor: core: Advance erase after the erase cmd has been completed
+Date:   Sat, 6 Mar 2021 11:49:58 +0200
+Message-ID: <20210306095002.22983-2-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210306095002.22983-1-tudor.ambarus@microchip.com>
+References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -57,29 +59,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Various cleanup patches done while reviewing contributions.
+addr and len were gratuitously updated even when spi_nor_wait_till_ready()
+failed. Wait for the erase cmd to complete and then advance the erase.
 
-Tudor Ambarus (5):
-  mtd: spi-nor: core: Advance erase after the erase cmd has been
-    completed
-  mtd: spi-nor: core: Add vdbg msg for spi_nor_erase_multi_sectors()
-  mtd: spi-nor: Get rid of duplicated argument in spi_nor_parse_sfdp()
-  mtd: spi-nor: Move Software Write Protection logic out of the core
-  mtd: spi-nor: swp: Drop 'else' after 'return'
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+---
+v2:
+- update commit message
+- Add R-b tag
 
- drivers/mtd/spi-nor/Makefile   |   2 +-
- drivers/mtd/spi-nor/core.c     | 432 ++-------------------------------
- drivers/mtd/spi-nor/core.h     |  10 +-
- drivers/mtd/spi-nor/issi.c     |   3 +-
- drivers/mtd/spi-nor/macronix.c |   3 +-
- drivers/mtd/spi-nor/sfdp.c     |  72 +++---
- drivers/mtd/spi-nor/sfdp.h     |   3 +-
- drivers/mtd/spi-nor/spansion.c |  12 +-
- drivers/mtd/spi-nor/swp.c      | 419 ++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/winbond.c  |   3 +-
- 10 files changed, 479 insertions(+), 480 deletions(-)
- create mode 100644 drivers/mtd/spi-nor/swp.c
+ drivers/mtd/spi-nor/core.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 0522304f52fa..bcaa161bc7db 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1618,12 +1618,12 @@ static int spi_nor_erase_multi_sectors(struct spi_nor *nor, u64 addr, u32 len)
+ 			if (ret)
+ 				goto destroy_erase_cmd_list;
+ 
+-			addr += cmd->size;
+-			cmd->count--;
+-
+ 			ret = spi_nor_wait_till_ready(nor);
+ 			if (ret)
+ 				goto destroy_erase_cmd_list;
++
++			addr += cmd->size;
++			cmd->count--;
+ 		}
+ 		list_del(&cmd->list);
+ 		kfree(cmd);
+@@ -1704,12 +1704,12 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 			if (ret)
+ 				goto erase_err;
+ 
+-			addr += mtd->erasesize;
+-			len -= mtd->erasesize;
+-
+ 			ret = spi_nor_wait_till_ready(nor);
+ 			if (ret)
+ 				goto erase_err;
++
++			addr += mtd->erasesize;
++			len -= mtd->erasesize;
+ 		}
+ 
+ 	/* erase multiple sectors */
 -- 
 2.25.1
 
