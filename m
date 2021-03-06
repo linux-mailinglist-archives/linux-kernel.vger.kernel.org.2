@@ -2,109 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AE732F933
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 10:52:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E48FB32F939
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 10:56:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhCFJvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 04:51:10 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:6733 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbhCFJuW (ORCPT
+        id S230246AbhCFJys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 04:54:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229672AbhCFJyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 04:50:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1615024222; x=1646560222;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ntGPrOaW4RoWXY/jkpumcnSQ+hE89vhCyHANUqE9kEc=;
-  b=Duhyu0lx4/mcEvllZjnAQPOGF9rR8laGUEuK/x+Od/UpJ7AwV011gKe8
-   EWvyczA5DSoiS6dXWWIjRnfZ8LMQ+C1uLTTGK2V33Pvjki0kPWVMbLhRQ
-   +0fjk27a+G3cL+nrVYIgbG8KzFKBD7aBT+Rh0NDvSse3V8/5t5eAnHi5i
-   OgVOgXmh59dyydVJL13pjXKuX5+LndIpGw6bN/158cZho4cyUDJ4QkwCV
-   14kfB5zRbBUKFONL8WHAlOlI8xGuOBKbsFOZARd5pcOTVfBwev8QlBAow
-   fJQAorE/OhWsFl6Utkpg3edTrN3JmGuicUw2BnVGdrU1cHt0f4mYY+Uqj
-   g==;
-IronPort-SDR: Q0r0o8Ei2NK0Hf0zmhitHDUvXgcDKX5+zjcHjOx3cxQUYtAjP4McLzT1XThqPGCFOKLMHxgW+9
- favsPeipU2xAXgAkWSPd/3vgVf+CQsJ3zL/S99J2+yVYJiR7oubKRMjhkgAyjXoOiCAu0kWvpO
- EvInX7/woOzTOd4Ti07L+42FlsQWwX3OOrh1OZ6vXcJWtVMIvI3ZV7/4I3GTCjDfHTjmNTqHvl
- zS/fKs9AtmeBEn0M+4UNGKbQMYBm5EYF10HkiUy3rM7Bd4YrnW+ODKbkDSbqk9mvecNbkVSE+b
- kIs=
-X-IronPort-AV: E=Sophos;i="5.81,227,1610434800"; 
-   d="scan'208";a="112202514"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Mar 2021 02:50:21 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 6 Mar 2021 02:50:21 -0700
-Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Sat, 6 Mar 2021 02:50:19 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <vigneshr@ti.com>, <p.yadav@ti.com>, <michael@walle.cc>
-CC:     <linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <linux-kernel@vger.kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 5/5] mtd: spi-nor: swp: Drop 'else' after 'return'
-Date:   Sat, 6 Mar 2021 11:50:02 +0200
-Message-ID: <20210306095002.22983-6-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210306095002.22983-1-tudor.ambarus@microchip.com>
-References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
+        Sat, 6 Mar 2021 04:54:24 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC636C06175F;
+        Sat,  6 Mar 2021 01:54:23 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id b8so4293769oti.7;
+        Sat, 06 Mar 2021 01:54:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o3VJe+ZuS7Fy+8jhh+o3TzrnaFKjAbnnuNEMdGEuQ4E=;
+        b=QuJn9ttAkQRO7rHC8UcuVjfI3su2spVFllMTP309N67RH4n1ImxdQ9iveaaMtGX5qd
+         02bdzY929BsWffTrw8VuFhuY7uGMZZHubF4rBGfaiU+18Mdc7LGC+n2AQ91M2UqHw/4a
+         YWudRWPV9tVmocf6M8vJr9G3dNP4QuGJtJU4y7JFoc0fN4d8qQfXVYPXwBDlIiu2vfuy
+         KgDt55Ze+3Twr87NRaFinoFXHBwZL/PBKNDYcrgf3BvjhSSceF1PQCbai4f/DDeqzxWI
+         +HobtGisW7Kizuk5oJqoe6QPJLAaJrtBC0yMnMKsK8ibezGst8Gn5KfUlZsSvX+NhzFq
+         b2xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o3VJe+ZuS7Fy+8jhh+o3TzrnaFKjAbnnuNEMdGEuQ4E=;
+        b=ex0Nj522jzKYa469SbSbpHvyaveTSh6eD4Je6RPtQgVkSD1mumzcT8s0CXec00nEcD
+         axpTA9dqBvWII/3hKmtAXVf/sdRmlUeIgu6IelcWni0Og0hh2+RwrUcQ7OVHKG9iISxs
+         cPPvcf615gDBxZNNxAFQXsTILS0105r2SYhfergTIlx5klkizPvutcnVEyDHNipT9Q5E
+         iu0ViV8EgRvXtS52d5dSsVlwW8/qIh9Xw/3vaFtsX9+evnUzPJ0pRbbY7jHB7Q7+y+AC
+         UqDUUPtuG29Hf5AV0qN6gSUJRwWGO0GvCceQ32eoJjf/Bp90y6ToTWB5zzQH/Aff5Pdc
+         2kdg==
+X-Gm-Message-State: AOAM531S8Gfo3fsXhTC6C1iPv31NPoJEy+D3odANcMbwWLgNRvECrA4+
+        gcLL7Su7BEsCg7KtUQe4FGXQrK91lRCjQj53hnu78fLlpQmWWA==
+X-Google-Smtp-Source: ABdhPJybzMi6Zw1D5o/q36FweHJTgQsEC4CUoErnRfmyhvEIJiB7hgtCgLLtx8z+JX/kKaXVdimIgJXII5x018M6qXQ=
+X-Received: by 2002:a9d:6e01:: with SMTP id e1mr11415112otr.74.1615024462779;
+ Sat, 06 Mar 2021 01:54:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20210218070709.11932-1-sergio.paracuellos@gmail.com>
+ <20210218070709.11932-3-sergio.paracuellos@gmail.com> <20210305224756.GA777984@robh.at.kernel.org>
+ <CAMhs-H_RoA-JvT9Q1K+8tEA1vqS6HWuE-D4=kWVsoOWTwjTGbw@mail.gmail.com>
+In-Reply-To: <CAMhs-H_RoA-JvT9Q1K+8tEA1vqS6HWuE-D4=kWVsoOWTwjTGbw@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Sat, 6 Mar 2021 10:54:11 +0100
+Message-ID: <CAMhs-H9noK84G_PgLdL1kTS9YuEa=bKojrOojYTBtOeKy+L7RA@mail.gmail.com>
+Subject: Re: [PATCH v9 2/6] dt: bindings: add mt7621-clk device tree binding documentation
+To:     Rob Herring <robh@kernel.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, John Crispin <john@phrozen.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        NeilBrown <neil@brown.name>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-else is not generally useful after a break or return.
+Hi again,
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/mtd/spi-nor/swp.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+On Sat, Mar 6, 2021 at 8:12 AM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> Hi Rob,
+>
+> On Fri, Mar 5, 2021 at 11:47 PM Rob Herring <robh@kernel.org> wrote:
+> [snip]
+> > > +
+> > > +  ralink,sysctl:
+> > > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > > +    description:
+> > > +      phandle of syscon used to control system registers
+> > > +
+> > > +  ralink,memctl:
+> > > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > > +    description:
+> > > +      phandle of syscon used to control memory registers
+> >
+> > I assume one of these phandles are the main registers for the clocks?
+> > Make this a child node and drop that phandle.
+>
+> The 'ralink,sysctl' phandle is to read bootstrap register to be able
+> to derive xtal and a clk gate register for the peripherals.
+> The 'ralink,memctl' phandle is to read the cpu clock frequency from
+> the memory controller.
+>
+> So there is not "main registers". I already put this as a child node
+> in v4 and I was told to get rid of child nodes. I need this as a
+> regmap to other DT node registers (sysctl, and memctl) to be able to
+> use the driver without specific architecture operations and properly
+> enable for COMPILE_TEST without dirty Makefile arch flags. Both sysctl
+> and memctl has no other child nodes, and I think that's why I was told
+> to avoid child nodes at the end. I explained here [0] current sysctl
+> and memctl in the mt7621 device tree and my view of the need for this
+> two syscons:
+>
+> [0]: https://lkml.org/lkml/2021/1/2/9
+>
+> So to avoid to send again "a previous version" on this patch, please
+> guide me in the correct thing to do. Stephen, Rob, I will be really
+> happy with your help :)
 
-diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index 75b9bb53d584..c35cb3becb41 100644
---- a/drivers/mtd/spi-nor/swp.c
-+++ b/drivers/mtd/spi-nor/swp.c
-@@ -25,8 +25,8 @@ static u8 spi_nor_get_sr_tb_mask(struct spi_nor *nor)
- {
- 	if (nor->flags & SNOR_F_HAS_SR_TB_BIT6)
- 		return SR_TB_BIT6;
--	else
--		return SR_TB_BIT5;
-+
-+	return SR_TB_BIT5;
- }
- 
- static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
-@@ -41,8 +41,8 @@ static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
- 	if (bp_slots_needed > bp_slots)
- 		return nor->info->sector_size <<
- 			(bp_slots_needed - bp_slots);
--	else
--		return nor->info->sector_size;
-+
-+	return nor->info->sector_size;
- }
- 
- static void spi_nor_get_locked_range_sr(struct spi_nor *nor, u8 sr, loff_t *ofs,
-@@ -96,9 +96,9 @@ static int spi_nor_check_lock_status_sr(struct spi_nor *nor, loff_t ofs,
- 	if (locked)
- 		/* Requested range is a sub-range of locked range */
- 		return (ofs + len <= lock_offs + lock_len) && (ofs >= lock_offs);
--	else
--		/* Requested range does not overlap with locked range */
--		return (ofs >= lock_offs + lock_len) || (ofs + len <= lock_offs);
-+
-+	/* Requested range does not overlap with locked range */
-+	return (ofs >= lock_offs + lock_len) || (ofs + len <= lock_offs);
- }
- 
- static int spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
--- 
-2.25.1
+Since there are no other child nodes for this sysc, should merge clock
+properties
+with this node in the following way a valid approach:
 
+ sysc: sysc@0 {
+     compatible = "mediatek,mt7621-sysc", "syscon";
+     reg = <0x0 0x100>;
+     #clock-cells = <1>;
+     ralink,memctl = <&memc>;
+     clock-output-names = "xtal", "cpu", "bus",
+                                        "50m", "125m", "150m",
+                                        "250m", "270m";
+};
+
+Consumer clock:
+
+node: node@0 {
+  ...
+  clocks = <&sysc MT7621_CLK_WHATEVER>;
+ ...
+};
+
+If that is the case... and since 'sysc' is used as system control
+registers for all the rest of the world, where should be the yaml file
+with bindings placed?
+
+Thanks in advance again for your help.
+
+Best regards,
+    Sergio Paracuellos
+
+>
+> Best regards,
+>     Sergio Paracuellos
+> >
+> > > +
+> > > +  clock-output-names:
+> > > +    maxItems: 8
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - '#clock-cells'
+> > > +  - ralink,sysctl
+> > > +  - ralink,memctl
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    #include <dt-bindings/clock/mt7621-clk.h>
+> > > +
+> > > +    pll {
+> > > +      compatible = "mediatek,mt7621-clk";
+> > > +      #clock-cells = <1>;
+> > > +      ralink,sysctl = <&sysc>;
+> > > +      ralink,memctl = <&memc>;
+> > > +      clock-output-names = "xtal", "cpu", "bus",
+> > > +                           "50m", "125m", "150m",
+> > > +                           "250m", "270m";
+> > > +    };
+> > > --
+> > > 2.25.1
+> > >
