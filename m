@@ -2,91 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B062F32FD1A
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 21:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D22D32FD1B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 21:29:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbhCFU1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 15:27:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231403AbhCFU1k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 15:27:40 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E227AC06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 12:27:39 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id t16so5369822ott.3
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 12:27:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=e+Ere75oCQWSmOpz788sW6R8AeYpQOZY+AlLnzPu4nA=;
-        b=bHiG1PFbENrTJVDVaHEaQuHfTjv1dRM7IAWNveS0CXsm+sgC/S2oWK09PHS0f81eB4
-         6hYdFYtYnDaCLTYFcfHudB+xPGwqtdmfasK81Yp99CgjcpcpgwD4i0phOAl0gb2I6PDI
-         vD56JUFiZC3h8x2/RmxUw1d93TMHJyUg8BCzGYaMxKZi2QHcO5fIoVnhWqyOk57t2uRf
-         n8fmtOI0K0VWA1md6QgNjXIqUjA8+CnGAJMvy9fmmpdi7n6b8vaFnFydMXk70gWq71pl
-         TldQLkfwZdPeyHCrgFi43L/tkEGla9A8akQ8Ea5F/hNmPkpDQdWBUUsTFoFWqeeQP6ph
-         2pXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=e+Ere75oCQWSmOpz788sW6R8AeYpQOZY+AlLnzPu4nA=;
-        b=m7AzP3ZTygHGiD8WzGLaubX3seOrnkMcJwimyBNi0KJEUrH6DPunjYjj0TrA+CtcFH
-         I3a519xiRJBDfNZ1AJN8chlfuJPeEg0l5CEbkd8shjGLtc94VZMxCgr4lyfnVFW3kKTF
-         5U5jrFhYf+qjMlWOQpQQPi7wDrzoqS+LeeptvRjp4pGjoGGozmqvriTO38TbxzQRYFL/
-         Qk0qP29wawxk2nUY0hGcmlvhhLIIgS2GMFHsNeUfv/k3LrNajs8HWFNXKQ8/tGPjVIur
-         mOdwf+sgJ9gHbQWC2F1GZoelLMnFKHhV/SqNoLHn8+skSzjtCpw+WKynHID+y3bcRK79
-         yXxw==
-X-Gm-Message-State: AOAM531NBEXIauUr+Pl/gxbaTJYJXrcd6X1HoGirWeKaWMKqzFYs9PYC
-        oBHstEs8AejSRb5BWxmKx2j2cQ==
-X-Google-Smtp-Source: ABdhPJyVdqrQqI1rCj7xVOLaAzCPfpgEQigRntSoNrMPuYhqNPFkbrb2axkAOhPmmr++12qr3k6eLw==
-X-Received: by 2002:a05:6830:15:: with SMTP id c21mr4570241otp.20.1615062459173;
-        Sat, 06 Mar 2021 12:27:39 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id w1sm1401471oop.1.2021.03.06.12.27.38
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Sat, 06 Mar 2021 12:27:38 -0800 (PST)
-Date:   Sat, 6 Mar 2021 12:27:09 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Mordechay Goodstein <mordechay.goodstein@intel.com>,
-        Jiri Kosina <jikos@kernel.org>, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] iwlwifi: fix DVM build regression in 5.12-rc
-In-Reply-To: <CA+icZUVedsZzJ7qk4fgSZV37M6YUjnP=sfWFK9V9f0y0KpQ4tA@mail.gmail.com>
-Message-ID: <alpine.LSU.2.11.2103061224040.1637@eggly.anvils>
-References: <alpine.LSU.2.11.2103061139200.1285@eggly.anvils> <CA+icZUVedsZzJ7qk4fgSZV37M6YUjnP=sfWFK9V9f0y0KpQ4tA@mail.gmail.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S231400AbhCFU2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 15:28:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231419AbhCFU2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 15:28:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52015650BB
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 20:28:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615062517;
+        bh=FbFUAhMcWk8nluH8AWEZYz/pjD7uDN7+Y6qsWXcBsSM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SvQ/6MZIEae2rVRZGEWKYOktzULZeEIPBHP7KzTwm1XD8jU9H/7ZcHC1nHCtLQkIK
+         fSVizAMSLTJ3F2kdJSHZM+GORE0zC8XiQt2WtWGjDYokc4ye/Dr9Eu/NgNB4dlC33t
+         6pAbmlpCirwFeuQ5S/9TiMIfumnAVWTze8qqoaAU9nEWqdIpNj2xwNTFEE9PUZXYhm
+         eHREVm+alZ6GUgo2Ib8wyu+/VC0uigBSvLdgVY4Zv+K2asxywNp4EH8uoTYf0I0NNS
+         /8/JY5Kzv5j/gzmrE+RfwyElCFe8CdYL0saES2/5Xfof6phAfsUdtGXWZrj91dsTrw
+         EGkIFJ4WTUsKA==
+Received: by mail-qv1-f51.google.com with SMTP id t1so2757045qvj.8
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 12:28:37 -0800 (PST)
+X-Gm-Message-State: AOAM532Xv4JK7JI5RtQs4Mn3FbHoD4w6JOoWfxF13iLvM/+XpnROPdsF
+        U1qUF6/Gh3oUVlyBJbRZHo6IAIr9FsKx975Iv4g=
+X-Google-Smtp-Source: ABdhPJxbRqjPrfKCPrQpb1HQoBTmcwKrCdzTckHk5QJpHmIOL5bXMwGdp7CHMjlVYSYl66gpZT9qkPPePY5KQ63ITa8=
+X-Received: by 2002:a0c:f541:: with SMTP id p1mr9066255qvm.14.1615062516404;
+ Sat, 06 Mar 2021 12:28:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+References: <20210305194206.3165917-1-elver@google.com> <20210305194206.3165917-2-elver@google.com>
+In-Reply-To: <20210305194206.3165917-2-elver@google.com>
+From:   Timur Tabi <timur@kernel.org>
+Date:   Sat, 6 Mar 2021 14:27:58 -0600
+X-Gmail-Original-Message-ID: <CAOZdJXXXweZG0Mgcf4LLt2SV3mONESunLwgx2c4rDaKrWevrYQ@mail.gmail.com>
+Message-ID: <CAOZdJXXXweZG0Mgcf4LLt2SV3mONESunLwgx2c4rDaKrWevrYQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] lib/vsprintf: reduce space taken by no_hash_pointers warning
+To:     Marco Elver <elver@google.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>, vbabka@suse.cz,
+        timur@kernel.org, Petr Mladek <pmladek@suse.com>,
+        rostedt@goodmis.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        andriy.shevchenko@linux.intel.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 6 Mar 2021, Sedat Dilek wrote:
-> On Sat, Mar 6, 2021 at 8:48 PM Hugh Dickins <hughd@google.com> wrote:
-> >
-> > There is no iwl_so_trans_cfg if CONFIG_IWLDVM but not CONFIG_IWLMVM:
-> > move the CONFIG_IWLMVM guard up before the problematic SnJ workaround
-> > to fix the build breakage.
-> >
-> > Fixes: 930be4e76f26 ("iwlwifi: add support for SnJ with Jf devices")
-> > Signed-off-by: Hugh Dickins <hughd@google.com>
-> 
-> See "iwlwifi: pcie: fix iwl_so_trans_cfg link error when CONFIG_IWLMVM
-> is disabled" in [1].
-> 
-> - Sedat -
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers.git/commit/?id=62541e266703549550e77fd46138422dbdc881f1
+On Fri, Mar 5, 2021 at 1:46 PM Marco Elver <elver@google.com> wrote:
+> +static const char no_hash_pointers_warning[8][55] __initconst = {
+> +       "******************************************************",
+> +       "   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   ",
+> +       " This system shows unhashed kernel memory addresses   ",
+> +       " via the console, logs, and other interfaces. This    ",
+> +       " might reduce the security of your system.            ",
+> +       " If you see this message and you are not debugging    ",
+> +       " the kernel, report this immediately to your system   ",
+> +       " administrator!                                       ",
+> +};
+> +
+>  static int __init no_hash_pointers_enable(char *str)
+>  {
+> +       /* Indices into no_hash_pointers_warning; -1 is an empty line. */
+> +       const int lines[] = { 0, 1, -1, 2, 3, 4, -1, 5, 6, 7, -1, 1, 0 };
 
-Thanks for looking out that and the other one, Sedat: I swear I checked
-linux-next before sending, but my check seems to have been... defective.
+You can save a few more bytes by making this an array of s8.
 
-Hugh
+I agree with the __initconst.  The rest seems overkill to me, but I
+won't reject it.
+
+Acked-by: Timur Tabi <timur@kernel.org>
