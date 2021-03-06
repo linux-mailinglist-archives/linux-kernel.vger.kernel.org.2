@@ -2,115 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C61C32F8FA
+	by mail.lfdr.de (Postfix) with ESMTP id 517B432F8F9
 	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 09:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbhCFIaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 03:30:18 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13136 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhCFI3e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 03:29:34 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DsyQq1cMXz16F3p;
-        Sat,  6 Mar 2021 16:27:47 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.61) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 6 Mar 2021 16:29:22 +0800
-From:   Yang Jihong <yangjihong1@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>,
-        <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
-        <mliska@suse.cz>, <linux-kernel@vger.kernel.org>
-CC:     <yangjihong1@huawei.com>, <zhangjinhao2@huawei.com>
-Subject: [PATCH] perf annotate: Fix sample events lost in stdio mode
-Date:   Sat, 6 Mar 2021 16:28:59 +0800
-Message-ID: <20210306082859.179541-1-yangjihong1@huawei.com>
-X-Mailer: git-send-email 2.30.GIT
+        id S229965AbhCFI3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 03:29:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49074 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229626AbhCFI3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 03:29:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A7D57AC54;
+        Sat,  6 Mar 2021 08:29:15 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Kamal Dasu <kdasu.kdev@gmail.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v2] MIPS: kernel: Reserve exception base early to prevent corruption
+Date:   Sat,  6 Mar 2021 09:29:09 +0100
+Message-Id: <20210306082910.3472-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.61]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In hist__find_annotations function, since have a hist_entry per IP for the same
-symbol, we free notes->src to signal already processed this symbol in stdio mode;
-when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
+BMIPS is one of the few platforms that do change the exception base.
+After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
+with kernel_end") we started seeing BMIPS boards fail to boot with the
+built-in FDT being corrupted.
 
-However, there is a problem, for example, run the following command:
+Before the cited commit, early allocations would be in the [kernel_end,
+RAM_END] range, but after commit they would be within [RAM_START +
+PAGE_SIZE, RAM_END].
 
- # perf record -e branch-misses -e branch-instructions -a sleep 1
+The custom exception base handler that is installed by
+bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
+memory region allocated by unflatten_and_copy_device_tree() thus
+corrupting the FDT used by the kernel.
 
-perf.data file contains different types of sample event.
+To fix this, we need to perform an early reservation of the custom
+exception space. So we reserve it already in cpu_probe() for the CPUs
+where this is fixed. For CPU with an ebase config register allocation
+of exception space will be done in trap_init().
 
-If the same IP sample event exists in branch-misses and branch-instructions,
-this event uses the same symbol. When annotate branch-misses events, notes->src
-corresponding to this event is set to null, as a result, when annotate
-branch-instructions events, this event is skipped and no annotate is output.
+Huge thanks to Serget for analysing and proposing a solution to this
+issue.
 
-Solution of this patch is to add a u8 member to struct sym_hist and use a bit to
-indicate whether the symbol has been processed.
-Because different types of event correspond to different sym_hist, no conflict
-occurs.
+Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
+Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
+Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 ---
- tools/perf/builtin-annotate.c | 22 ++++++++++++++--------
- tools/perf/util/annotate.h    |  4 ++++
- 2 files changed, 18 insertions(+), 8 deletions(-)
+Changes in v2:
+ - do only memblock reservation in reserve_exception_space()
+ - reserve 0..0x400 for all CPUs without ebase register and
+   to addtional reserve_exception_space for BMIPS CPUs
 
-diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-index a23ba6bb99b6..c8c67892ae82 100644
---- a/tools/perf/builtin-annotate.c
-+++ b/tools/perf/builtin-annotate.c
-@@ -372,15 +372,21 @@ static void hists__find_annotations(struct hists *hists,
- 			if (next != NULL)
- 				nd = next;
+ arch/mips/include/asm/traps.h    |  3 +++
+ arch/mips/kernel/cpu-probe.c     |  7 +++++++
+ arch/mips/kernel/cpu-r3k-probe.c |  3 +++
+ arch/mips/kernel/traps.c         | 10 +++++-----
+ 4 files changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
+index 6aa8f126a43d..b710e76c9c65 100644
+--- a/arch/mips/include/asm/traps.h
++++ b/arch/mips/include/asm/traps.h
+@@ -24,8 +24,11 @@ extern void (*board_ebase_setup)(void);
+ extern void (*board_cache_error_setup)(void);
+ 
+ extern int register_nmi_notifier(struct notifier_block *nb);
++extern void reserve_exception_space(phys_addr_t addr, unsigned long size);
+ extern char except_vec_nmi[];
+ 
++#define VECTORSPACING 0x100	/* for EI/VI mode */
++
+ #define nmi_notifier(fn, pri)						\
+ ({									\
+ 	static struct notifier_block fn##_nb = {			\
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index 9a89637b4ecf..b565bc4b900d 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -26,6 +26,7 @@
+ #include <asm/elf.h>
+ #include <asm/pgtable-bits.h>
+ #include <asm/spram.h>
++#include <asm/traps.h>
+ #include <linux/uaccess.h>
+ 
+ #include "fpu-probe.h"
+@@ -1628,6 +1629,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+ 		c->cputype = CPU_BMIPS3300;
+ 		__cpu_name[cpu] = "Broadcom BMIPS3300";
+ 		set_elf_platform(cpu, "bmips3300");
++		reserve_exception_space(0x400, VECTORSPACING * 64);
+ 		break;
+ 	case PRID_IMP_BMIPS43XX: {
+ 		int rev = c->processor_id & PRID_REV_MASK;
+@@ -1638,6 +1640,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+ 			__cpu_name[cpu] = "Broadcom BMIPS4380";
+ 			set_elf_platform(cpu, "bmips4380");
+ 			c->options |= MIPS_CPU_RIXI;
++			reserve_exception_space(0x400, VECTORSPACING * 64);
  		} else {
--			hist_entry__tty_annotate(he, evsel, ann);
-+			struct sym_hist *h = annotated_source__histogram(notes->src,
-+									 evsel->idx);
-+
-+			if (h->processed == 0) {
-+				hist_entry__tty_annotate(he, evsel, ann);
-+
-+				/*
-+				 * Since we have a hist_entry per IP for the same
-+				 * symbol, set processed flag of evsel in sym_hist
-+				 * to signal we already processed this symbol.
-+				 */
-+				h->processed = 1;
-+			}
-+
- 			nd = rb_next(nd);
--			/*
--			 * Since we have a hist_entry per IP for the same
--			 * symbol, free he->ms.sym->src to signal we already
--			 * processed this symbol.
--			 */
--			zfree(&notes->src->cycles_hist);
--			zfree(&notes->src);
- 		}
+ 			c->cputype = CPU_BMIPS4350;
+ 			__cpu_name[cpu] = "Broadcom BMIPS4350";
+@@ -1654,6 +1657,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+ 			__cpu_name[cpu] = "Broadcom BMIPS5000";
+ 		set_elf_platform(cpu, "bmips5000");
+ 		c->options |= MIPS_CPU_ULRI | MIPS_CPU_RIXI;
++		reserve_exception_space(0x1000, VECTORSPACING * 64);
+ 		break;
  	}
  }
-diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-index 096cdaf21b01..89872bfdc958 100644
---- a/tools/perf/util/annotate.h
-+++ b/tools/perf/util/annotate.h
-@@ -228,6 +228,10 @@ void symbol__calc_percent(struct symbol *sym, struct evsel *evsel);
- struct sym_hist {
- 	u64		      nr_samples;
- 	u64		      period;
+@@ -2133,6 +2137,9 @@ void cpu_probe(void)
+ 	if (cpu == 0)
+ 		__ua_limit = ~((1ull << cpu_vmbits) - 1);
+ #endif
 +
-+	u8		      processed  : 1, /* whether symbol has been processed, used for annotate */
-+			      __reserved : 7;
-+
- 	struct sym_hist_entry addr[];
- };
++	if (cpu_has_mips_r2_r6)
++		reserve_exception_space(0, 0x400);
+ }
  
+ void cpu_report(void)
+diff --git a/arch/mips/kernel/cpu-r3k-probe.c b/arch/mips/kernel/cpu-r3k-probe.c
+index abdbbe8c5a43..af654771918c 100644
+--- a/arch/mips/kernel/cpu-r3k-probe.c
++++ b/arch/mips/kernel/cpu-r3k-probe.c
+@@ -21,6 +21,7 @@
+ #include <asm/fpu.h>
+ #include <asm/mipsregs.h>
+ #include <asm/elf.h>
++#include <asm/traps.h>
+ 
+ #include "fpu-probe.h"
+ 
+@@ -158,6 +159,8 @@ void cpu_probe(void)
+ 		cpu_set_fpu_opts(c);
+ 	else
+ 		cpu_set_nofpu_opts(c);
++
++	reserve_exception_space(0, 0x400);
+ }
+ 
+ void cpu_report(void)
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index e0352958e2f7..808b8b61ded1 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -2009,13 +2009,16 @@ void __noreturn nmi_exception_handler(struct pt_regs *regs)
+ 	nmi_exit();
+ }
+ 
+-#define VECTORSPACING 0x100	/* for EI/VI mode */
+-
+ unsigned long ebase;
+ EXPORT_SYMBOL_GPL(ebase);
+ unsigned long exception_handlers[32];
+ unsigned long vi_handlers[64];
+ 
++void reserve_exception_space(phys_addr_t addr, unsigned long size)
++{
++	memblock_reserve(addr, size);
++}
++
+ void __init *set_except_vector(int n, void *addr)
+ {
+ 	unsigned long handler = (unsigned long) addr;
+@@ -2367,10 +2370,7 @@ void __init trap_init(void)
+ 
+ 	if (!cpu_has_mips_r2_r6) {
+ 		ebase = CAC_BASE;
+-		ebase_pa = virt_to_phys((void *)ebase);
+ 		vec_size = 0x400;
+-
+-		memblock_reserve(ebase_pa, vec_size);
+ 	} else {
+ 		if (cpu_has_veic || cpu_has_vint)
+ 			vec_size = 0x200 + VECTORSPACING*64;
 -- 
-2.30.GIT
+2.29.2
 
