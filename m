@@ -2,104 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C30B32F95F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DCC32F96A
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhCFKaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 05:30:20 -0500
-Received: from elvis.franken.de ([193.175.24.41]:48401 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229738AbhCFKaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 05:30:04 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lIUCA-0006qw-00; Sat, 06 Mar 2021 11:30:02 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 76D5FC114B; Sat,  6 Mar 2021 10:53:08 +0100 (CET)
-Date:   Sat, 6 Mar 2021 10:53:08 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     Qing Zhang <zhangqing@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] MIPS: Loongson64: Move loongson_system_configuration
- to loongson.h
-Message-ID: <20210306095308.GA5751@alpha.franken.de>
-References: <20210304110057.22144-1-zhangqing@loongson.cn>
- <20210304110057.22144-3-zhangqing@loongson.cn>
- <20210306080337.GC4744@alpha.franken.de>
- <d1072504-514b-4be0-85ba-69a6d885de58@www.fastmail.com>
+        id S230135AbhCFKmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 05:42:04 -0500
+Received: from 3.mo178.mail-out.ovh.net ([46.105.44.197]:52319 "EHLO
+        3.mo178.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230184AbhCFKlz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 05:41:55 -0500
+X-Greylist: delayed 462 seconds by postgrey-1.27 at vger.kernel.org; Sat, 06 Mar 2021 05:41:55 EST
+Received: from player794.ha.ovh.net (unknown [10.108.57.72])
+        by mo178.mail-out.ovh.net (Postfix) with ESMTP id E33CEC6307
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 11:34:08 +0100 (CET)
+Received: from etezian.org (213-243-141-64.bb.dnainternet.fi [213.243.141.64])
+        (Authenticated sender: andi@etezian.org)
+        by player794.ha.ovh.net (Postfix) with ESMTPSA id ACFA8189DE25E;
+        Sat,  6 Mar 2021 10:34:00 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-104R00514333635-2488-4637-90a3-dac8af8f3e7f,
+                    9571E067575576FF419ADF64CFE3CE9644992B38) smtp.auth=andi@etezian.org
+X-OVh-ClientIp: 213.243.141.64
+Date:   Sat, 6 Mar 2021 12:33:59 +0200
+From:   Andi Shyti <andi@etezian.org>
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     andi@etezian.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] input: s6sy761: fix coordinate read bit shift
+Message-ID: <YENal0wZTYvKNN+6@jack.zhora.eu>
+References: <20210305185710.225168-1-caleb@connolly.tech>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d1072504-514b-4be0-85ba-69a6d885de58@www.fastmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210305185710.225168-1-caleb@connolly.tech>
+X-Ovh-Tracer-Id: 6530219462860784343
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtkedgudeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeetnhguihcuufhhhihtihcuoegrnhguihesvghtvgiiihgrnhdrohhrgheqnecuggftrfgrthhtvghrnheptdfgudduhfefueeujeefieehtdeftefggeevhefgueellefhudetgeeikeduieefnecukfhppedtrddtrddtrddtpddvudefrddvgeefrddugedurdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejleegrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprghnughisegvthgviihirghnrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 06, 2021 at 05:00:15PM +0800, Jiaxun Yang wrote:
+Hi Caleb,
+
+On Fri, Mar 05, 2021 at 06:58:10PM +0000, Caleb Connolly wrote:
+> The touch coordinate register contains the following:
 > 
+>         byte 3             byte 2             byte 1
+> +--------+--------+ +-----------------+ +-----------------+
+> |        |        | |                 | |                 |
+> | X[3:0] | Y[3:0] | |     Y[11:4]     | |     X[11:4]     |
+> |        |        | |                 | |                 |
+> +--------+--------+ +-----------------+ +-----------------+
 > 
-> On Sat, Mar 6, 2021, at 4:03 PM, Thomas Bogendoerfer wrote:
-> > On Thu, Mar 04, 2021 at 07:00:57PM +0800, Qing Zhang wrote:
-> > > The purpose of separating loongson_system_configuration from boot_param.h
-> > > is to keep the other structure consistent with the firmware.
-> > > 
-> > > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> > > Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
-> > > ---
-> > >  .../include/asm/mach-loongson64/boot_param.h   | 18 ------------------
-> > >  .../include/asm/mach-loongson64/loongson.h     | 18 ++++++++++++++++++
-> > 
-> > as you are already touching mach-loongson64 files...
-> > 
-> > Is there a chance you clean up that up even further ? My goal is to
-> > have only files in mach-<platform> files, which have an mach-generic
-> > counterpart. Everything else should go to its own directory. So in
-> > case of loongson something
-> > 
-> > like
-> > 
-> > arch/mips/include/asm/loongson		for common stuff
-> > arch/mips/include/asm/loongson/32
-> > arch/mips/include/asm/loongson/64
+> Bytes 2 and 1 need to be shifted left by 4 bits, the least significant
+> nibble of each is stored in byte 3. Currently they are only
+> being shifted by 3 causing the reported coordinates to be incorrect.
 > 
-> Hi Thomas
+> This matches downstream examples, and has been confirmed on my
+> device (OnePlus 7 Pro).
 > 
-> I'm object to this idea as loongson32/2ef/64 have nothing in common.
+> Fixes: 0145a7141e59 ("Input: add support for the Samsung S6SY761
+> touchscreen")
+> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
 
-at least they share the name loongson, so having
+Reviewed-by: Andi Shyti <andi@etezian.org>
 
-arch/mips/include/asm/loongson
-
-sounds like a good move.
-
-And seeing 
-
-diff -u mach-loongson2ef/ mach-loongson64/loongson.h  | diffstat
- loongson.h |  137 +++++++++++++------------------------------------------------
- 1 file changed, 30 insertions(+), 107 deletions(-)
-
-wc mach-loongson2ef/loongson.h 
-  318   963 11278 mach-loongson2ef/loongson.h
-
-so there is something to shared. To me it looks like 2ef could be merged
-into 64, but that's nothing I'm wanting.
-
-Just to understand you, you want
-
-arch/mips/include/asm/loongson/2ef
-arch/mips/include/asm/loongson/32
-arch/mips/include/asm/loongson/64
-
-?
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Thanks,
+Andi
