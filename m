@@ -2,144 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EC232FD37
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 21:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA6032FD3B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 21:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhCFUkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 15:40:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbhCFUkG (ORCPT
+        id S229690AbhCFUrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 15:47:24 -0500
+Received: from mail-qv1-f53.google.com ([209.85.219.53]:37970 "EHLO
+        mail-qv1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229597AbhCFUq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 15:40:06 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33572C06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 12:40:06 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lIdiR-0008Lm-H2; Sat, 06 Mar 2021 21:39:59 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:7dba:e827:788e:df30])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id A471F5EF45C;
-        Sat,  6 Mar 2021 20:39:55 +0000 (UTC)
-Date:   Sat, 6 Mar 2021 21:39:54 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Boqun Feng <boqun.feng@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        schuchmann@schleissheimer.de
-Subject: Re: [PATCH] leds: trigger: fix potential deadlock with libata
-Message-ID: <20210306203954.ya5oqgkdalcw45c4@pengutronix.de>
-References: <20201102104152.GG9930@xps-13-7390>
+        Sat, 6 Mar 2021 15:46:57 -0500
+Received: by mail-qv1-f53.google.com with SMTP id bh3so2778639qvb.5;
+        Sat, 06 Mar 2021 12:46:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y/bwRZFE+81GxJ819/dzmZmbJ5VhND4GcsCvXIq1kmU=;
+        b=g07XtYLZmZNzx4a8DKzjR0IeVmWy74e/+EIwzvcOO1bLIgmEil+jaRqux3FVD82o+C
+         mMhhhNeDp0b71SyFJUZVA7sKqxOoZtVIyuiPaR5EMpW9jyyjX9kw9Z9R/Q2qNYfR9kfb
+         TXeSLXtQoJL1d9L5aicEuMFG48XnBHKhzoCQ9Wof3hrqEP2bNorI0t+xY8DRcKLKHPGU
+         EvGEV0VUwma7TsbsSY6qFFz+8kuehEHwLA9YqJhGgWQPAThfQJLfWkRA0HKNG6BCmPwE
+         JxGT/3bFYnQOMrKkIF0l/05ZJUDvTYgTpPgGoKs/R8WrPWVpliMzrjEhxLjuZpDKq1FQ
+         xu9Q==
+X-Gm-Message-State: AOAM533x1Ig+jh+vz1syR0xo5/ZTbMWUqxOB7CWkFBf3iP48NGzMlmpm
+        uTAYIHt45TLPoviqiyWF7A==
+X-Google-Smtp-Source: ABdhPJzkozUHpwvVJzF8cjeIVjY27mE83sREQIGN2MFZZWdBK+eZETiFMTsf8hZMF9Av6T7XR/Zk8g==
+X-Received: by 2002:a0c:b894:: with SMTP id y20mr14731003qvf.43.1615063617136;
+        Sat, 06 Mar 2021 12:46:57 -0800 (PST)
+Received: from robh.at.kernel.org ([172.58.27.98])
+        by smtp.gmail.com with ESMTPSA id v135sm4603573qka.98.2021.03.06.12.46.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 12:46:56 -0800 (PST)
+Received: (nullmailer pid 1186613 invoked by uid 1000);
+        Sat, 06 Mar 2021 20:46:49 -0000
+Date:   Sat, 6 Mar 2021 13:46:49 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Irui Wang <irui.wang@mediatek.com>
+Cc:     Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Longfei Wang <longfei.wang@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>, yong.wu@mediatek.com,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2,1/3] dt-bindings: media: mtk-vcodec: Separating mtk
+ vcodec encoder node
+Message-ID: <20210306204649.GA1177075@robh.at.kernel.org>
+References: <20210225073603.5881-1-irui.wang@mediatek.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="t7snmzm7huw3tosc"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201102104152.GG9930@xps-13-7390>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210225073603.5881-1-irui.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Feb 25, 2021 at 03:36:01PM +0800, Irui Wang wrote:
+> Updates binding document since the avc and vp8 hardware encoder in
+> MT8173 are now separated. Separate "mediatek,mt8173-vcodec-enc" to
+> "mediatek,mt8173-vcodec-enc-vp8" and "mediatek,mt8173-vcodec-enc".
 
---t7snmzm7huw3tosc
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is not a compatible change. Please explain that here and why that's 
+okay (if it is).
 
-Hello *,
-
-On 02.11.2020 11:41:52, Andrea Righi wrote:
-> We have the following potential deadlock condition:
->=20
->  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
->  WARNING: possible irq lock inversion dependency detected
->  5.10.0-rc2+ #25 Not tainted
->  --------------------------------------------------------
->  swapper/3/0 just changed the state of lock:
->  ffff8880063bd618 (&host->lock){-...}-{2:2}, at: ata_bmdma_interrupt+0x27=
-/0x200
->  but this lock took another, HARDIRQ-READ-unsafe lock in the past:
->   (&trig->leddev_list_lock){.+.?}-{2:2}
->=20
->  and interrupts could create inverse lock ordering between them.
-
-[...]
-
+> 
+> This is a preparing patch for smi cleaning up "mediatek,larb".
+> 
+> Acked-by: Tiffany Lin <tiffany.lin@mediatek.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Signed-off-by: Maoguang Meng <maoguang.meng@mediatek.com>
+> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
 > ---
->  drivers/leds/led-triggers.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/leds/led-triggers.c b/drivers/leds/led-triggers.c
-> index 91da90cfb11d..16d1a93a10a8 100644
-> --- a/drivers/leds/led-triggers.c
-> +++ b/drivers/leds/led-triggers.c
-> @@ -378,14 +378,15 @@ void led_trigger_event(struct led_trigger *trig,
->  			enum led_brightness brightness)
->  {
->  	struct led_classdev *led_cdev;
-> +	unsigned long flags;
-> =20
->  	if (!trig)
->  		return;
-> =20
-> -	read_lock(&trig->leddev_list_lock);
-> +	read_lock_irqsave(&trig->leddev_list_lock, flags);
->  	list_for_each_entry(led_cdev, &trig->led_cdevs, trig_list)
->  		led_set_brightness(led_cdev, brightness);
-> -	read_unlock(&trig->leddev_list_lock);
-> +	read_unlock_irqrestore(&trig->leddev_list_lock, flags);
->  }
->  EXPORT_SYMBOL_GPL(led_trigger_event);
+> Change since v1:
+> - rename compatible and device node
+> ---
+>  .../bindings/media/mediatek-vcodec.txt        | 55 ++++++++++---------
+>  1 file changed, 29 insertions(+), 26 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+> index 8217424fd4bd..03209cbd7540 100644
+> --- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+> +++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+> @@ -4,7 +4,9 @@ Mediatek Video Codec is the video codec hw present in Mediatek SoCs which
+>  supports high resolution encoding and decoding functionalities.
+>  
+>  Required properties:
+> -- compatible : "mediatek,mt8173-vcodec-enc" for MT8173 encoder
+> +- compatible : must be one of the following string:
+> +  "mediatek,mt8173-vcodec-enc-vp8" for mt8173 vp8 encoder.
+> +  "mediatek,mt8173-vcodec-enc" for mt8173 avc encoder.
+>    "mediatek,mt8183-vcodec-enc" for MT8183 encoder.
+>    "mediatek,mt8173-vcodec-dec" for MT8173 decoder.
+>  - reg : Physical base address of the video codec registers and length of
+> @@ -13,10 +15,10 @@ Required properties:
+>  - mediatek,larb : must contain the local arbiters in the current Socs.
+>  - clocks : list of clock specifiers, corresponding to entries in
+>    the clock-names property.
+> -- clock-names: encoder must contain "venc_sel_src", "venc_sel",,
+> -  "venc_lt_sel_src", "venc_lt_sel", decoder must contain "vcodecpll",
+> -  "univpll_d2", "clk_cci400_sel", "vdec_sel", "vdecpll", "vencpll",
+> -  "venc_lt_sel", "vdec_bus_clk_src".
+> +- clock-names:
+> +   encoder must contain "venc_sel";
 
-meanwhile this patch hit v5.10.x stable and caused a performance
-degradation on our use case:
+What happened to the other clocks?
 
-It's an embedded ARM system, 4x Cortex A53, with an SPI attached CAN
-controller. CAN stands for Controller Area Network and here used to
-connect to some automotive equipment. Over CAN an ISOTP (a CAN-specific
-Transport Protocol) transfer is running. With this patch, we see CAN
-frames delayed for ~6ms, the usual gap between CAN frames is 240=C2=B5s.
+Seems like you are dropping what are parent clocks? That seems unrelated 
+to the VP8 split? If so, that's a separate change.
 
-Reverting this patch, restores the old performance.
-
-What is the best way to solve this dilemma? Identify the critical path
-in our use case? Is there a way we can get around the irqsave in
-led_trigger_event()?
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---t7snmzm7huw3tosc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBD6JgACgkQqclaivrt
-76m1rwf+KLjRgkIr5BXzcwO/8aQVUzeWEPQpb7c/U3NwClPoNhSv8RPLGoSd7GZq
-rUTND0+a6HLVMZI62T4lzq9vMAG4DWPN7KFUyxFyyWOaHtwGfcizNb3LuH2lxaWF
-RlTMT3VPgVxQxgxuK2KjPWXFHHqJxWy8AbebA1FtMiXpqVB3BcWiMWcqki3RNAdG
-d9EMW48rKOYRNyjGJIWd5yFWBf9TLEy6grmlC7+9klugC47F5GgPzQp2yvUPPr8t
-bPu3NXCCd6PtRS4S1Vb0IuKLr2lQ+NDVRDqjczibAGBIa5rSqAaTXrABxs41oD9L
-/tlILnp/m7RLUq9htDU7JOwZsoReAA==
-=PJhf
------END PGP SIGNATURE-----
-
---t7snmzm7huw3tosc--
+> +   decoder  must contain "vcodecpll", "univpll_d2", "clk_cci400_sel",
+> +   "vdec_sel", "vdecpll", "vencpll", "venc_lt_sel", "vdec_bus_clk_src".
+>  - iommus : should point to the respective IOMMU block with master port as
+>    argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
+>    for details.
+> @@ -80,14 +82,10 @@ vcodec_dec: vcodec@16000000 {
+>      assigned-clock-rates = <0>, <0>, <0>, <1482000000>, <800000000>;
+>    };
+>  
+> -  vcodec_enc: vcodec@18002000 {
+> +vcodec_enc_avc: vcodec@18002000 {
+>      compatible = "mediatek,mt8173-vcodec-enc";
+> -    reg = <0 0x18002000 0 0x1000>,    /*VENC_SYS*/
+> -          <0 0x19002000 0 0x1000>;    /*VENC_LT_SYS*/
+> -    interrupts = <GIC_SPI 198 IRQ_TYPE_LEVEL_LOW>,
+> -		 <GIC_SPI 202 IRQ_TYPE_LEVEL_LOW>;
+> -    mediatek,larb = <&larb3>,
+> -		    <&larb5>;
+> +    reg = <0 0x18002000 0 0x1000>;
+> +    interrupts = <GIC_SPI 198 IRQ_TYPE_LEVEL_LOW>;
+>      iommus = <&iommu M4U_PORT_VENC_RCPU>,
+>               <&iommu M4U_PORT_VENC_REC>,
+>               <&iommu M4U_PORT_VENC_BSDMA>,
+> @@ -98,8 +96,20 @@ vcodec_dec: vcodec@16000000 {
+>               <&iommu M4U_PORT_VENC_REF_LUMA>,
+>               <&iommu M4U_PORT_VENC_REF_CHROMA>,
+>               <&iommu M4U_PORT_VENC_NBM_RDMA>,
+> -             <&iommu M4U_PORT_VENC_NBM_WDMA>,
+> -             <&iommu M4U_PORT_VENC_RCPU_SET2>,
+> +             <&iommu M4U_PORT_VENC_NBM_WDMA>;
+> +    mediatek,larb = <&larb3>;
+> +    mediatek,vpu = <&vpu>;
+> +    clocks = <&topckgen CLK_TOP_VENC_SEL>;
+> +    clock-names = "venc_sel";
+> +    assigned-clocks = <&topckgen CLK_TOP_VENC_SEL>;
+> +    assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL>;
+> +  };
+> +
+> +vcodec_enc_vp8: vcodec@19002000 {
+> +    compatible = "mediatek,mt8173-vcodec-enc-vp8";
+> +    reg =  <0 0x19002000 0 0x1000>;	/* VENC_LT_SYS */
+> +    interrupts = <GIC_SPI 202 IRQ_TYPE_LEVEL_LOW>;
+> +    iommus = <&iommu M4U_PORT_VENC_RCPU_SET2>,
+>               <&iommu M4U_PORT_VENC_REC_FRM_SET2>,
+>               <&iommu M4U_PORT_VENC_BSDMA_SET2>,
+>               <&iommu M4U_PORT_VENC_SV_COMA_SET2>,
+> @@ -108,17 +118,10 @@ vcodec_dec: vcodec@16000000 {
+>               <&iommu M4U_PORT_VENC_CUR_CHROMA_SET2>,
+>               <&iommu M4U_PORT_VENC_REF_LUMA_SET2>,
+>               <&iommu M4U_PORT_VENC_REC_CHROMA_SET2>;
+> +    mediatek,larb = <&larb5>;
+>      mediatek,vpu = <&vpu>;
+> -    clocks = <&topckgen CLK_TOP_VENCPLL_D2>,
+> -             <&topckgen CLK_TOP_VENC_SEL>,
+> -             <&topckgen CLK_TOP_UNIVPLL1_D2>,
+> -             <&topckgen CLK_TOP_VENC_LT_SEL>;
+> -    clock-names = "venc_sel_src",
+> -                  "venc_sel",
+> -                  "venc_lt_sel_src",
+> -                  "venc_lt_sel";
+> -    assigned-clocks = <&topckgen CLK_TOP_VENC_SEL>,
+> -                      <&topckgen CLK_TOP_VENC_LT_SEL>;
+> -    assigned-clock-parents = <&topckgen CLK_TOP_VENCPLL_D2>,
+> -                             <&topckgen CLK_TOP_UNIVPLL1_D2>;
+> +    clocks = <&topckgen CLK_TOP_VENC_LT_SEL>;
+> +    clock-names = "venc_lt_sel";
+> +    assigned-clocks = <&topckgen CLK_TOP_VENC_LT_SEL>;
+> +    assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL_370P5>;
+>    };
+> -- 
+> 2.25.1
+> 
