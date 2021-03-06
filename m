@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2C732FB29
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 15:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4342B32FB2E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 15:31:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhCFOWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 09:22:17 -0500
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:32936 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbhCFOVs (ORCPT
+        id S230409AbhCFObI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 09:31:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230197AbhCFOaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 09:21:48 -0500
-Received: from localhost.localdomain ([90.126.17.6])
-        by mwinf5d10 with ME
-        id d2Mn2400207rLVE032Mnne; Sat, 06 Mar 2021 15:21:47 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 06 Mar 2021 15:21:47 +0100
-X-ME-IP: 90.126.17.6
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org, krzk@kernel.org,
-        nathan@kernel.org, gustavoars@kernel.org, arnd@arndb.de,
-        ben-linux@fluff.org
-Cc:     linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 2/2 v2] usb: gadget: s3c: Fix the error handling path in 's3c2410_udc_probe()'
-Date:   Sat,  6 Mar 2021 15:21:45 +0100
-Message-Id: <20210306142145.3490-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sat, 6 Mar 2021 09:30:39 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B58C06174A;
+        Sat,  6 Mar 2021 06:30:38 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id z7so2830463plk.7;
+        Sat, 06 Mar 2021 06:30:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=sTssXhzPVHELqYGgO3fz4klNiS/VEUisGSmKd9f8OhM=;
+        b=HuQ2h7BO1J26rYlSbkXhPkHeTa31R9GDqcv0uc8nS0qTxiTxiEHn21uUSeY0cgsuwj
+         gu/dqp+ZGniDlkbL1k29e670cmSUN6+TI9YL+rHjCIlSMyx6rEHgOnY+h/6Ajb1pmdhi
+         bZCTGR3M4hbzoRN/v9C+H6QTceuFhEk0QMzFCu/ud3b2ezL82ppwDqXZ/7HJ9NjNX49u
+         us0GtXtqIXO6TwLZp1tmqYzR2Fi4CLY8YM2SkWrbTHVHZcNiMtooQU2FF4X8uAZOxZbt
+         OHrWmp4WFup1B4iUpNemc6HY9AU0IOmjDyNk18A/jota3Np4ucNBtYCV8MvvvW+0Qlsa
+         GujA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=sTssXhzPVHELqYGgO3fz4klNiS/VEUisGSmKd9f8OhM=;
+        b=V4cJyoJhGioIgt/tH6hUbMzmJO2xELK5HVc5XbHR9QpVt/LqwlHzoV2IuKygCtb/G3
+         nF7qN1ZbK8itbJrrc9Hp5Qo+g5Q4IbkPALIFT+aa/1adxqM6uyV4lMB1gJ87FIwt1WKD
+         G9bKlN4NygwDU3Zih4lCF0zfGkZE+u8WgaOmkwEutcTUYFXJNgOJnGDlGaWb+QRAoP9+
+         dobLdHOnRtAjfUDYWj0HgoQXbSKMwbQ2stei3PjYqzZLuTKocLBimDVtcw1Xse5kjEKD
+         Tu9XTGmFFN1qF8j1Ah+NOvYoRo4r9K4X1Kvdbw8wgzWM3PEK9ZLT/BAp4bTADRBzx0s1
+         YrDw==
+X-Gm-Message-State: AOAM532q7YiyPxyqTgCwHk2veO67/HSxq5mgmGNJ0DbLAPQd4csMC/ZC
+        lEzXOpz1C4uOPcCWCskynLo=
+X-Google-Smtp-Source: ABdhPJyFJ8DmP3ei8Huw6ZEmDB/k8/yjBGWR/xlpU3kVtqkfzRneCKLjp8JOhIihK373TGrSb3aWzQ==
+X-Received: by 2002:a17:902:e54c:b029:e5:e7cf:d746 with SMTP id n12-20020a170902e54cb02900e5e7cfd746mr9398991plf.56.1615041038383;
+        Sat, 06 Mar 2021 06:30:38 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.79])
+        by smtp.gmail.com with ESMTPSA id d24sm5546288pjw.37.2021.03.06.06.30.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 06:30:37 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] media: tuners: fix error return code of hybrid_tuner_request_state()
+Date:   Sat,  6 Mar 2021 06:30:28 -0800
+Message-Id: <20210306143028.19457-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some 'clk_prepare_enable()' and 'clk_get()' must be undone in the error
-handling path of the probe function, as already done in the remove
-function.
+When kzalloc() fails and state is NULL, no error return code is
+assigned.
+To fix this bug, __ret is assigned with -ENOMEM in this case.
 
-Fixes: 3fc154b6b813 ("USB Gadget driver for Samsung s3c2410 ARM SoC")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 ---
-v2: Fix a stupid error in the hash in Fixes:
----
- drivers/usb/gadget/udc/s3c2410_udc.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/media/tuners/tuner-i2c.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/udc/s3c2410_udc.c b/drivers/usb/gadget/udc/s3c2410_udc.c
-index 3fc436286bad..146250e93412 100644
---- a/drivers/usb/gadget/udc/s3c2410_udc.c
-+++ b/drivers/usb/gadget/udc/s3c2410_udc.c
-@@ -1750,7 +1750,8 @@ static int s3c2410_udc_probe(struct platform_device *pdev)
- 	udc_clock = clk_get(NULL, "usb-device");
- 	if (IS_ERR(udc_clock)) {
- 		dev_err(dev, "failed to get udc clock source\n");
--		return PTR_ERR(udc_clock);
-+		retval = PTR_ERR(udc_clock);
-+		goto err_usb_bus_clk;
- 	}
- 
- 	clk_prepare_enable(udc_clock);
-@@ -1773,7 +1774,7 @@ static int s3c2410_udc_probe(struct platform_device *pdev)
- 	base_addr = devm_platform_ioremap_resource(pdev, 0);
- 	if (!base_addr) {
- 		retval = -ENOMEM;
--		goto err;
-+		goto err_udc_clk;
- 	}
- 
- 	the_controller = udc;
-@@ -1791,7 +1792,7 @@ static int s3c2410_udc_probe(struct platform_device *pdev)
- 	if (retval != 0) {
- 		dev_err(dev, "cannot get irq %i, err %d\n", irq_usbd, retval);
- 		retval = -EBUSY;
--		goto err;
-+		goto err_udc_clk;
- 	}
- 
- 	dev_dbg(dev, "got irq %i\n", irq_usbd);
-@@ -1862,7 +1863,14 @@ static int s3c2410_udc_probe(struct platform_device *pdev)
- 		gpio_free(udc_info->vbus_pin);
- err_int:
- 	free_irq(irq_usbd, udc);
--err:
-+err_udc_clk:
-+	clk_disable_unprepare(udc_clock);
-+	clk_put(udc_clock);
-+	udc_clock = NULL;
-+err_usb_bus_clk:
-+	clk_disable_unprepare(usb_bus_clock);
-+	clk_put(usb_bus_clock);
-+	usb_bus_clock = NULL;
- 
- 	return retval;
- }
+diff --git a/drivers/media/tuners/tuner-i2c.h b/drivers/media/tuners/tuner-i2c.h
+index 724952e001cd..26cf7da29f30 100644
+--- a/drivers/media/tuners/tuner-i2c.h
++++ b/drivers/media/tuners/tuner-i2c.h
+@@ -133,8 +133,10 @@ static inline int tuner_i2c_xfer_send_recv(struct tuner_i2c_props *props,
+ 	}								\
+ 	if (0 == __ret) {						\
+ 		state = kzalloc(sizeof(type), GFP_KERNEL);		\
+-		if (NULL == state)					\
++		if (NULL == state) {				\
++			__ret = -ENOMEM;				\
+ 			goto __fail;					\
++ 		} 							\
+ 		state->i2c_props.addr = i2caddr;			\
+ 		state->i2c_props.adap = i2cadap;			\
+ 		state->i2c_props.name = devname;			\
 -- 
-2.27.0
+2.17.1
 
