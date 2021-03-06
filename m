@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7998532FB21
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 15:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B5A32FB1E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 15:16:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhCFORw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 09:17:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57672 "EHLO
+        id S230481AbhCFOQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 09:16:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230417AbhCFORX (ORCPT
+        with ESMTP id S230213AbhCFOPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 09:17:23 -0500
-X-Greylist: delayed 185 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 06 Mar 2021 06:17:22 PST
-Received: from mxe2.seznam.cz (mxe2.seznam.cz [IPv6:2a02:598:2::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E1BC06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 06:17:22 -0800 (PST)
-Received: from email.seznam.cz
-        by email-smtpc22b.ng.seznam.cz (email-smtpc22b.ng.seznam.cz [10.23.18.29])
-        id 27a239f60cab81f423fb2541;
-        Sat, 06 Mar 2021 15:17:04 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seznam.cz; s=beta;
-        t=1615040224; bh=6J8EgNHJnWziHVT9MNKzvy5L2WLLJqTPisB4qjoONwo=;
-        h=Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
-         Content-Transfer-Encoding;
-        b=H6XmKMGcYckHAl257aQbrhf+yKNjP4st25FFg3d+7Zat83qAkz8so4txK/nzD+/nZ
-         RcNpCCRlXt6XOsacQniY+1xuyxwB6keWr9Sk7LgsYLKLERIzmaIps0M35JJr+KfWDj
-         KiygNIsUHTWqtijqSuUdZpOybP9hu3juGwnjFMvs=
-Received: from linux.local (cst-prg-27-252.cust.vodafone.cz [46.135.27.252])
-        by email-relay10.ng.seznam.cz (Seznam SMTPD 1.3.124) with ESMTP;
-        Sat, 06 Mar 2021 15:13:35 +0100 (CET)  
-From:   Giovanni Gherdovich <bobdc9664@seznam.cz>
-To:     George Hilliard <thirtythreeforty@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Giovanni Gherdovich <bobdc9664@seznam.cz>,
-        John Crispin <blogic@openwrt.org>,
-        Neil Brown <neil@brown.name>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: ralink-gdma: Check return code of device_reset
-Date:   Sat,  6 Mar 2021 15:13:22 +0100
-Message-Id: <20210306141322.7516-1-bobdc9664@seznam.cz>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sat, 6 Mar 2021 09:15:45 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2629C06174A;
+        Sat,  6 Mar 2021 06:15:44 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id j6so2824033plx.6;
+        Sat, 06 Mar 2021 06:15:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=X8TTCBPkViEllxII2GAPq686qNKT8VhCeBCNCuQb630=;
+        b=X4HjQFXJ5I+4Ga5ghW9W0m+NFQmbaZvOV/98ZlS9tGmLGyTFguBYAqaluWx6xhXs5x
+         +Flxm6eUBr75IEMaL91AqyIrG0WtRsQKeK9WEFTtsywnpiLhd9CCkOQxxetDnNTJr+eH
+         3z1yvhdANnQdGU+jcpbmOL7qTJOKvuGjQrAp72HicTG7vJVHyI7VIF4w8oQn5Z3UA0wr
+         2grs5Nhohf7kdBvXkNe7YyFG1hdlnQjW/h9WmqNNxIrLvE44Wdmto/OgVQWeqwNe1fOg
+         hZVJR6PWKGyPL2vth00xb01ROaTnNFPNx1ykVUcZlHJ0DGcq7Uzs3PE7HCqHehn/Sr9U
+         uGAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=X8TTCBPkViEllxII2GAPq686qNKT8VhCeBCNCuQb630=;
+        b=pcSnV0nnErMm6j0FizIuNYqrn2TgC17qaCTayuq3W3vja10Ul/b/nXDx6gvPGOSnv5
+         3I9+SPdP7e3IzPz6RMZkl6P0hhQCfCBK6wpazZo/3+wtN0ssZkuqnLM0wDkuaqc0L5WD
+         gabPRZY3sMbJt81w7rBSENXC5+XiiN5KcoKE8HgeoCDH57j/YOUHGjjTgi9GuotYww0/
+         4dz6bjB84tYuIq3vtli5TiHPyrscYQtB5DP4QuOPKlfOG8JZwde0E3Q6y8aj4spWMMSE
+         QvrZL4O/zeaLXA0IV+7A2nzwMURp+T2w6bRNV0M5BjtfSe/dtIyrjcpZiBzC0LJLuAPH
+         O1yw==
+X-Gm-Message-State: AOAM531oSUyVSyY6zisNxKvFxg+f1uymwA6ulqiyKg4m9klgg3FPrsQE
+        EPXjvzCscavkAZfUl9n9/DE=
+X-Google-Smtp-Source: ABdhPJyaM8lMeDzibOR+TiKsLfgOxn28TEFwwtmGxMsh78ukFhJQhsfWsQh0vUQxUgOzuk2qDAxXXQ==
+X-Received: by 2002:a17:90a:e50c:: with SMTP id t12mr15289117pjy.138.1615040144308;
+        Sat, 06 Mar 2021 06:15:44 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.79])
+        by smtp.gmail.com with ESMTPSA id 64sm5516888pfd.174.2021.03.06.06.15.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 06:15:43 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     yong.deng@magewell.com, mchehab@kernel.org, mripard@kernel.org,
+        wens@csie.org, jernej.skrabec@siol.net
+Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] media: platform: sunxi: sun6i-csi: fix error return code of sun6i_video_start_streaming()
+Date:   Sat,  6 Mar 2021 06:15:28 -0800
+Message-Id: <20210306141528.18925-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device_reset() function is marked as "__must_check", thus the static
-analysis tool "sparse" complains that in ralink-gdma its return value is
-ignored. Log a warning in case it returns an error.
+When sun6i_video_remote_subdev() returns NULL to subdev, no error return
+code of sun6i_video_start_streaming() is assigned.
+To fix this bug, ret is assigned with -EINVAL in this case.
 
-Signed-off-by: Giovanni Gherdovich <bobdc9664@seznam.cz>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 ---
- drivers/staging/ralink-gdma/ralink-gdma.c | 4 +++-
+ drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/ralink-gdma/ralink-gdma.c b/drivers/staging/ralink-gdma/ralink-gdma.c
-index 655df317d0ee..3c26b665ee7c 100644
---- a/drivers/staging/ralink-gdma/ralink-gdma.c
-+++ b/drivers/staging/ralink-gdma/ralink-gdma.c
-@@ -833,7 +833,9 @@ static int gdma_dma_probe(struct platform_device *pdev)
- 		return ret;
+diff --git a/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c b/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c
+index b55de9ab64d8..3181d0781b61 100644
+--- a/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c
++++ b/drivers/media/platform/sunxi/sun6i-csi/sun6i_video.c
+@@ -151,8 +151,10 @@ static int sun6i_video_start_streaming(struct vb2_queue *vq, unsigned int count)
  	}
  
--	device_reset(&pdev->dev);
-+	ret = device_reset(&pdev->dev);
-+	if (ret)
-+		dev_err(&pdev->dev, "failed to reset: %d\n", ret);
+ 	subdev = sun6i_video_remote_subdev(video, NULL);
+-	if (!subdev)
++	if (!subdev) {
++		ret = -EINVAL;
+ 		goto stop_media_pipeline;
++	}
  
- 	dd = &dma_dev->ddev;
- 	dma_cap_set(DMA_MEMCPY, dd->cap_mask);
+ 	config.pixelformat = video->fmt.fmt.pix.pixelformat;
+ 	config.code = video->mbus_code;
 -- 
-2.26.2
+2.17.1
 
