@@ -2,73 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D1732F7E7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 03:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B561132F7E9
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 03:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhCFCpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 21:45:10 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13131 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhCFCog (ORCPT
+        id S229906AbhCFCvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 21:51:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58635 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229616AbhCFCvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 21:44:36 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dspmn6NrHz16GZ5;
-        Sat,  6 Mar 2021 10:42:49 +0800 (CST)
-Received: from [10.174.179.20] (10.174.179.20) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 6 Mar 2021 10:44:29 +0800
-Subject: Re: [PATCH 0/5] Cleanup and fixup for khugepaged
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-CC:     <akpm@linux-foundation.org>, <riel@redhat.com>,
-        <kirill.shutemov@linux.intel.com>, <ebru.akagunduz@gmail.com>,
-        <dan.carpenter@oracle.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20210304123013.23560-1-linmiaohe@huawei.com>
- <20210305174009.ugxpn223j7aoi4bc@box>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <d3bca0bf-0d0c-f40a-5a12-33ab6d333ca3@huawei.com>
-Date:   Sat, 6 Mar 2021 10:44:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 5 Mar 2021 21:51:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614999069;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=++7DcKSf9hOj91f+XMYFeWkJNgQ9ogj9a8AP84qU87E=;
+        b=JzbD2YsbfsurOg2vc3gghysdD9DHN82XyUXkyyjqxIhhix4UtewUiEKhuhfhPFnN5zVXRr
+        2UeNMs67QJ+XfE7bbK9ZaMmobGE3gt+q/T139tJNJqe6fgzSFAqdFMupH7VFrKwqsEMO1B
+        iZYE5ge90ebHZQ3UbojSGYCfvFd+4yM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-46-aqXXq4NYNOCCDIpKMWr2ag-1; Fri, 05 Mar 2021 21:51:07 -0500
+X-MC-Unique: aqXXq4NYNOCCDIpKMWr2ag-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C8FA78015B7;
+        Sat,  6 Mar 2021 02:51:05 +0000 (UTC)
+Received: from treble (ovpn-112-85.rdu2.redhat.com [10.10.112.85])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6631D5C1C2;
+        Sat,  6 Mar 2021 02:51:02 +0000 (UTC)
+Date:   Fri, 5 Mar 2021 20:50:59 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Frank Eigler <fche@redhat.com>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Subject: Re: [PATCH] kbuild: rebuild GCC plugins when the compiler is upgraded
+Message-ID: <20210306025059.z6dn6mi7mxyufkr2@treble>
+References: <20210304113708.215121-1-masahiroy@kernel.org>
+ <202103041518.22EB819E@keescook>
+ <CAHk-=wj6t2i1BgmWP1Zb2WVF3zZzkHvsxsALJk7VpfKm6UgLcw@mail.gmail.com>
+ <20210305022500.cyi3cfwgt2t6mona@treble>
+ <20210306012815.nfmquoln65vq6yq7@treble>
+ <CAK7LNAR7E4Ud9MPy3q5VOab4EFMumr5GMHqyv=H970+gPTBrFg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210305174009.ugxpn223j7aoi4bc@box>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.20]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAR7E4Ud9MPy3q5VOab4EFMumr5GMHqyv=H970+gPTBrFg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/6 1:40, Kirill A. Shutemov wrote:
-> On Thu, Mar 04, 2021 at 07:30:08AM -0500, Miaohe Lin wrote:
->> Hi all,
->> This series contains cleanups to remove unneeded return value, use
->> helper function and so on. And there is one fix to correct the wrong
->> result value for trace_mm_collapse_huge_page_isolate().
->>
->> More details can be found in the respective changelogs. Thanks!
->>
->> Miaohe Lin (5):
->>   khugepaged: remove unneeded return value of
->>     khugepaged_collapse_pte_mapped_thps()
->>   khugepaged: reuse the smp_wmb() inside __SetPageUptodate()
->>   khugepaged: use helper khugepaged_test_exit() in __khugepaged_enter()
->>   khugepaged: remove unnecessary mem_cgroup_uncharge() in
->>     collapse_[file|huge_page]
->>   khugepaged: fix wrong result value for
->>     trace_mm_collapse_huge_page_isolate()
->>
->>  mm/khugepaged.c | 47 ++++++++++++++++++++---------------------------
->>  1 file changed, 20 insertions(+), 27 deletions(-)
+On Sat, Mar 06, 2021 at 11:18:31AM +0900, Masahiro Yamada wrote:
+> On Sat, Mar 6, 2021 at 10:28 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >
+> > On Thu, Mar 04, 2021 at 08:25:00PM -0600, Josh Poimboeuf wrote:
+> > > On Thu, Mar 04, 2021 at 03:37:14PM -0800, Linus Torvalds wrote:
+> > > > On Thu, Mar 4, 2021 at 3:20 PM Kees Cook <keescook@chromium.org> wrote:
+> > > > >
+> > > > > This seems fine to me, but I want to make sure Josh has somewhere to
+> > > > > actually go with this. Josh, does this get you any closer?
+> > >
+> > > No, this doesn't seem to help me at all.
+> > >
+> > > > > It sounds like the plugins need to move to another location for
+> > > > > packaged kernels?
+> > > >
+> > > > Well, it might be worth extending the stuff that gets installed with
+> > > > /lib/modules/<kernel-version>/ with enough information and
+> > > > infrastruvcture to then build any external modules.
+> > >
+> > > The gcc plugins live in scripts/, which get installed by "make
+> > > modules_install" already.  So the plugins' source and makefiles are in
+> > > /lib/modules/<kernel-version>/build/scripts/gcc-plugins.
+> > >
+> > > So everything needed for building the plugins is already there.  We just
+> > > need the kernel makefiles to rebuild the plugins locally, when building
+> > > an external module.
+> >
+> > This seems to work with very limited testing...  Based on top of
+> > Masahiro's recent patch:
+> >
+> >   https://lkml.kernel.org/r/CAK7LNARHoTnZ3gAvHgnYB4n-wYuboxC10A6zURh1ODGhxWd2yA@mail.gmail.com
 > 
-> Apart from patch 4/5, looks fine. For the rest, you can use:
+> Is this a bad coding contest?
 > 
-> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> I am not asking you to add ugly ifeq or whatever
+> hacks to say "this worked for me".
+> 
+> Please feel free to do this in the fedora kernel,
+> but do not send it to upstream.
+> 
+> Sorry, I really do not want to see hacks like this any more.
 
-Many thanks for review and ack! :)
+Geez, that's a bit harsh.  I never claimed to be a brilliant makefile
+coder.  Do you have any constructive feedback for improving the patch?
 
-> 
+> Remember, how badly objtool was integrated in the build system,
+> and you even blocked me from fixing that.
+
+I have no idea what you're talking about, nor how it would be relevant
+to this patch.
+
+-- 
+Josh
 
