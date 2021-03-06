@@ -2,450 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D2F32FB7E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 16:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA9832FB86
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 16:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhCFPy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 10:54:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58409 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230213AbhCFPyz (ORCPT
+        id S231169AbhCFP5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 10:57:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230426AbhCFP5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 10:54:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615046094;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YLgTC5xuRtEJoWFeLL0Al3QRdT5Bosciz4GMHZ864Iw=;
-        b=OUM3UOd7bMqgZCjzd/uiRJ3QdbL4bhVu9i+/Phe2hhGX05ATdU0ItbPUQ+RGySssoPnwG9
-        cZ1ZC1SN9IjzzwpzhL6h8IK40fDh5ETu25/s/HinxBnXCW1wuArim/jtU5Zw1hy8P49uYQ
-        QU0fYmz5LyPmAsZo5Vd3WOqAAOwHagA=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-2jU-gskmMeiU-WV-1SOHIQ-1; Sat, 06 Mar 2021 10:54:52 -0500
-X-MC-Unique: 2jU-gskmMeiU-WV-1SOHIQ-1
-Received: by mail-qt1-f197.google.com with SMTP id 16so4464423qtw.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 07:54:52 -0800 (PST)
+        Sat, 6 Mar 2021 10:57:15 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 614E4C06174A;
+        Sat,  6 Mar 2021 07:57:15 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id l11so2539924wrp.7;
+        Sat, 06 Mar 2021 07:57:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PQalZdsjMeEdzdHCYcxnWVC/5dbAJ8TFy9uCuDo9Ako=;
+        b=o3NKgj/ML2Fdw3E3yqJK5tuk6SLXj26vmLVv5fwSdc4pxjpCTcshUzfYV2L6wIE32S
+         3nOt3rRhgz4lSC2GbCVbwKvZAoLQW5xob2xKo+dCcedY0gyVJo4ajLoOEtqY5CNrUY94
+         lLhbmTrwMFPpkcYLFKicqGKdBmL3QxyCD2uBKwFqPQB58i7JYzhLz7ZlYITykrbaovdH
+         DGzaqOG5vSFrHs1k9uYMij9+0K6rNk6kysG1o7Djad2YpP46okk54vYXw32eZCG9pAGG
+         8fz5nuLqZD56llqKMXb1Dk81az47n1a9Op6TPgNJu1O1sYzd1t/kjAbpGHsFd1T/Mc9i
+         VlWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=YLgTC5xuRtEJoWFeLL0Al3QRdT5Bosciz4GMHZ864Iw=;
-        b=VM1qMRJBn3cPU8IPvGnNhtkscGqzjK2m6B+1WoF+3JrgSd9PvVGG812c03EFeiMmjR
-         U9PBMstizzkhQ6483SQ0hx1YcJ5kM8t4RY8OC+xu+oHoUa1gidhFABbnZD0C4MOiCj9P
-         Bvmlr90n1ah3/GjuKxOgSDPXp6RvYIsnylHojkd/bqSIy3XlvByaB7asQp7VeuoiJW1K
-         MRfEwPYd4cUXUUNCrUdzugzY8e8MxYOqf8z7ScZ58xAsVFGE8mTY4PEoNR6XoR6Nff+r
-         XEcAn/AaGVz5h9mMFl5L3Cq0zvDLq5YjfGOaXbId2pWN6/8S15KMdZkTP7Cc7g0Xe1ZF
-         xVlg==
-X-Gm-Message-State: AOAM530RM87akFLxXTkMZhpNQjWo6/3vQE9Xd4232cE3dX3tPf51MBNM
-        enyuTvonY+8nDVm2bcOC9L3a7QxlqEmXwbZRMZehbyj5t8Oh81C4V+R1JTprtmeKEjXXRsBqqP3
-        nOdYQLSw475tTYMHxkI2V3UYA
-X-Received: by 2002:a37:4986:: with SMTP id w128mr13417974qka.313.1615046092134;
-        Sat, 06 Mar 2021 07:54:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzyLTrFOQONvwDTS1rBfmKz8RbkWm9STaMvLOWehDw2QzE7KpMqyZdcIsSYwSHcEdi0UdRfcA==
-X-Received: by 2002:a37:4986:: with SMTP id w128mr13417959qka.313.1615046091884;
-        Sat, 06 Mar 2021 07:54:51 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id z11sm4182354qkg.52.2021.03.06.07.54.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Mar 2021 07:54:51 -0800 (PST)
-Subject: Re: [PATCH V3 XRT Alveo 17/18] fpga: xrt: partition isolation
- platform driver
-To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
-Cc:     Lizhi Hou <lizhih@xilinx.com>, linux-fpga@vger.kernel.org,
-        maxz@xilinx.com, sonal.santan@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
-        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
-References: <20210218064019.29189-1-lizhih@xilinx.com>
- <20210218064019.29189-18-lizhih@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <74def489-0a25-f90a-a00c-9d79dcbaf25a@redhat.com>
-Date:   Sat, 6 Mar 2021 07:54:49 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PQalZdsjMeEdzdHCYcxnWVC/5dbAJ8TFy9uCuDo9Ako=;
+        b=RvYXE4zPchuKkexzW64EHT0zf+HJfrro4UkjAby1ntb+lfflnzKRGuJcBp2e7fdCWO
+         X3hIUEikNjjUSnpSPecal7ihQSLr8oY22DJzY3OAumm/Rsfr7P0DcgovjQMr1z7y271A
+         KmYezh7tAKO+MTLLcfsNKyA7JSW8jclIP12iXGlzejOblQP0B8Ya6+B9F97lU39o/V3b
+         0h/hruReADj+bZF7K4oKVBr9SF3Y97BtjI5xusQdqlYZlOvAOh2jpkgvN/FvV4R46RYg
+         oSHrRtY90aKGfdYIzvhRdCDAdLuu2fiAEuXapToq24ZcHLNYktlZPmb7XcZmpXlzHK0p
+         DSYQ==
+X-Gm-Message-State: AOAM532s6CEar4N/w+rt9VWOS5qmQPiSa5257P2PspgoUuIYRojSIDga
+        mCK/NV36STYXA9DCOeCToD8=
+X-Google-Smtp-Source: ABdhPJzEBvk+0qZ4wvxReTAxapkrIp8filPkdGIzJhEQdXgrvO5MFR2TVnQtuRf70m0gy4D42Cj61A==
+X-Received: by 2002:a5d:6307:: with SMTP id i7mr14876883wru.305.1615046234018;
+        Sat, 06 Mar 2021 07:57:14 -0800 (PST)
+Received: from skynet.lan (224.red-2-138-103.dynamicip.rima-tde.net. [2.138.103.224])
+        by smtp.gmail.com with ESMTPSA id p6sm9315188wru.2.2021.03.06.07.57.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 07:57:13 -0800 (PST)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v5 00/15] pinctrl: add BCM63XX pincontrol support
+Date:   Sat,  6 Mar 2021 16:56:57 +0100
+Message-Id: <20210306155712.4298-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210218064019.29189-18-lizhih@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+First of all, I've based this on the patches sent by Jonas Gorski back in
+2016:
+https://www.spinics.net/lists/linux-gpio/msg15983.html
+http://patchwork.ozlabs.org/project/linux-gpio/patch/1471604025-21575-2-git-send-email-jonas.gorski@gmail.com/
 
-On 2/17/21 10:40 PM, Lizhi Hou wrote:
-> Add partition isolation platform driver. partition isolation is
-> a hardware function discovered by walking firmware metadata.
-> A platform device node will be created for it. Partition isolation
-> function isolate the different fpga regions
->
-> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
-> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
-> ---
->  drivers/fpga/xrt/include/xleaf/axigate.h |  25 ++
->  drivers/fpga/xrt/lib/xleaf/axigate.c     | 298 +++++++++++++++++++++++
->  2 files changed, 323 insertions(+)
->  create mode 100644 drivers/fpga/xrt/include/xleaf/axigate.h
->  create mode 100644 drivers/fpga/xrt/lib/xleaf/axigate.c
->
-> diff --git a/drivers/fpga/xrt/include/xleaf/axigate.h b/drivers/fpga/xrt/include/xleaf/axigate.h
-> new file mode 100644
-> index 000000000000..2cef71e13b30
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/include/xleaf/axigate.h
-> @@ -0,0 +1,25 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Header file for XRT Axigate Leaf Driver
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors:
-> + *	Lizhi Hou <Lizhi.Hou@xilinx.com>
-> + */
-> +
-> +#ifndef _XRT_AXIGATE_H_
-> +#define _XRT_AXIGATE_H_
-> +
-> +#include "xleaf.h"
-> +#include "metadata.h"
-> +
-> +/*
-> + * AXIGATE driver IOCTL calls.
-> + */
-> +enum xrt_axigate_ioctl_cmd {
-> +	XRT_AXIGATE_FREEZE = XRT_XLEAF_CUSTOM_BASE, /* See comments in xleaf.h */
-> +	XRT_AXIGATE_FREE,
-These are substrings, could change suffix to make it harder for developer to mix up.
-> +};
-> +
-> +#endif	/* _XRT_AXIGATE_H_ */
-> diff --git a/drivers/fpga/xrt/lib/xleaf/axigate.c b/drivers/fpga/xrt/lib/xleaf/axigate.c
-> new file mode 100644
-> index 000000000000..382969f9925f
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/lib/xleaf/axigate.c
-> @@ -0,0 +1,298 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Xilinx Alveo FPGA AXI Gate Driver
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors:
-> + *      Lizhi Hou<Lizhi.Hou@xilinx.com>
-> + */
-> +
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/delay.h>
-> +#include <linux/device.h>
-> +#include <linux/io.h>
-> +#include "metadata.h"
-> +#include "xleaf.h"
-> +#include "xleaf/axigate.h"
-> +
-> +#define XRT_AXIGATE "xrt_axigate"
-> +
-> +struct axigate_regs {
-> +	u32		iag_wr;
-> +	u32		iag_rvsd;
-> +	u32		iag_rd;
-> +} __packed;
-similar to other patches, prefix of element is not needed.
-> +
-> +struct xrt_axigate {
-> +	struct platform_device	*pdev;
-> +	void			*base;
-> +	struct mutex		gate_lock; /* gate dev lock */
-> +
-> +	void			*evt_hdl;
-> +	const char		*ep_name;
-> +
-> +	bool			gate_freezed;
-> +};
-> +
-> +/* the ep names are in the order of hardware layers */
-> +static const char * const xrt_axigate_epnames[] = {
-> +	XRT_MD_NODE_GATE_PLP,
-> +	XRT_MD_NODE_GATE_ULP,
-what are plp, ulp ? it is helpful to comment or expand acronyms
-> +	NULL
-> +};
-> +
-> +#define reg_rd(g, r)						\
-> +	ioread32((void *)(g)->base + offsetof(struct axigate_regs, r))
-> +#define reg_wr(g, v, r)						\
-> +	iowrite32(v, (void *)(g)->base + offsetof(struct axigate_regs, r))
-> +
-> +static inline void freeze_gate(struct xrt_axigate *gate)
-> +{
-> +	reg_wr(gate, 0, iag_wr);
-The values written here and below are magic, the need to have #defines
-> +	ndelay(500);
-> +	reg_rd(gate, iag_rd);
-> +}
-> +
-> +static inline void free_gate(struct xrt_axigate *gate)
-> +{
-> +	reg_wr(gate, 0x2, iag_wr);
-> +	ndelay(500);
-> +	(void)reg_rd(gate, iag_rd);
-> +	reg_wr(gate, 0x3, iag_wr);
-> +	ndelay(500);
-> +	reg_rd(gate, iag_rd);
-> +}
-> +
-> +static int xrt_axigate_epname_idx(struct platform_device *pdev)
-> +{
-> +	int			i;
-> +	int			ret;
-int i, ret;
-> +	struct resource		*res;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		xrt_err(pdev, "Empty Resource!");
-> +		return -EINVAL;
-> +	}
-> +
-> +	for (i = 0; xrt_axigate_epnames[i]; i++) {
+I've tried to address all coments from Linus Walleij, but I know that
+this may still need some other modifications
 
-null guarded array is useful with the size isn't know,
+This patchset adds appropriate binding documentation and drivers for
+pin controller cores found in the BCM63XX MIPS SoCs currently supported.
 
-in this case it is, so covert loop to using ARRAY_SIZE
+While the GPIO part is always the same, the pinmux part varies quite a
+lot between different SoCs. Sometimes they have defined groups which
+can be muxed into different functions, sometimes each function has a
+different group. Sometimes you can mux individual pins. Often it is a
+combination of single pins and groups.
 
-> +		ret = strncmp(xrt_axigate_epnames[i], res->name,
-> +			      strlen(xrt_axigate_epnames[i]) + 1);
-needs a strlen check in case res->name is just a substring
-> +		if (!ret)
-> +			break;
-> +	}
-> +
-> +	ret = (xrt_axigate_epnames[i]) ? i : -EINVAL;
-> +	return ret;
-> +}
-> +
-> +static void xrt_axigate_freeze(struct platform_device *pdev)
-> +{
-> +	struct xrt_axigate	*gate;
-> +	u32			freeze = 0;
-> +
-> +	gate = platform_get_drvdata(pdev);
-> +
-> +	mutex_lock(&gate->gate_lock);
-> +	freeze = reg_rd(gate, iag_rd);
-> +	if (freeze) {		/* gate is opened */
-> +		xleaf_broadcast_event(pdev, XRT_EVENT_PRE_GATE_CLOSE, false);
-> +		freeze_gate(gate);
-> +	}
-> +
-> +	gate->gate_freezed = true;
-Looks like freeze could be 0, so is setting gate_freeze = true correct all the time ?
-> +	mutex_unlock(&gate->gate_lock);
-> +
-> +	xrt_info(pdev, "freeze gate %s", gate->ep_name);
-> +}
-> +
-> +static void xrt_axigate_free(struct platform_device *pdev)
-> +{
-> +	struct xrt_axigate	*gate;
-> +	u32			freeze;
-> +
-> +	gate = platform_get_drvdata(pdev);
-> +
-> +	mutex_lock(&gate->gate_lock);
-> +	freeze = reg_rd(gate, iag_rd);
-> +	if (!freeze) {		/* gate is closed */
-> +		free_gate(gate);
-> +		xleaf_broadcast_event(pdev, XRT_EVENT_POST_GATE_OPEN, true);
-> +		/* xrt_axigate_free() could be called in event cb, thus
-> +		 * we can not wait for the completes
-> +		 */
-> +	}
-> +
-> +	gate->gate_freezed = false;
-freezed is not a word, the element name should be 'gate_frozen'
-> +	mutex_unlock(&gate->gate_lock);
-> +
-> +	xrt_info(pdev, "free gate %s", gate->ep_name);
-> +}
-> +
-> +static void xrt_axigate_event_cb(struct platform_device *pdev, void *arg)
-> +{
-> +	struct platform_device *leaf;
-> +	struct xrt_event *evt = (struct xrt_event *)arg;
-> +	enum xrt_events e = evt->xe_evt;
-> +	enum xrt_subdev_id id = evt->xe_subdev.xevt_subdev_id;
-> +	int instance = evt->xe_subdev.xevt_subdev_instance;
-> +	struct xrt_axigate *gate = platform_get_drvdata(pdev);
-> +	struct resource	*res;
-> +
-> +	switch (e) {
-> +	case XRT_EVENT_POST_CREATION:
-> +		break;
-> +	default:
-> +		return;
-> +	}
-convert switch() to if ()
-> +
-> +	if (id != XRT_SUBDEV_AXIGATE)
-> +		return;
-> +
-> +	leaf = xleaf_get_leaf_by_id(pdev, id, instance);
-> +	if (!leaf)
-> +		return;
-> +
-> +	res = platform_get_resource(leaf, IORESOURCE_MEM, 0);
-> +	if (!res || !strncmp(res->name, gate->ep_name, strlen(res->name) + 1)) {
-> +		(void)xleaf_put_leaf(pdev, leaf);
-> +		return;
-> +	}
-> +
-> +	/*
-> +	 * higher level axigate instance created,
-> +	 * make sure the gate is openned. This covers 1RP flow which
+Some core versions require the GPIO direction to be set according to the
+function, most do not. Sometimes the mux register(s) contain bits for
+unrelated other functions.
 
-is openned -> is opened
+v5: introduce changes suggested by Andy Shevchenko.
+v4: fix gpiochip_irqchip_add_domain(), remove IRQ Kconfig selections and add
+ missing of_node_put().
+v3: introduce new files for shared code and add more changes suggested by
+ Linus Walleij. Also add a new patch needed for properly parsing gpio-ranges.
+v2: introduce changes suggested by Linus Walleij and remove interrupts
+ - In order to use GPIO_REGMAP, the need to get gpio_chip from gpio_regmap
+ and use it for pinctrl_add_gpio_range() and gpio_chip.direction_input()
+ and gpio_chip.direction_output().
 
-what is 1RP ?
+Álvaro Fernández Rojas (15):
+  gpio: guard gpiochip_irqchip_add_domain() with GPIOLIB_IRQCHIP
+  gpio: regmap: set gpio_chip of_node
+  pinctrl: bcm: add bcm63xx base code
+  dt-bindings: add BCM6328 pincontroller binding documentation
+  pinctrl: add a pincontrol driver for BCM6328
+  dt-bindings: add BCM6358 pincontroller binding documentation
+  pinctrl: add a pincontrol driver for BCM6358
+  dt-bindings: add BCM6362 pincontroller binding documentation
+  pinctrl: add a pincontrol driver for BCM6362
+  dt-bindings: add BCM6368 pincontroller binding documentation
+  pinctrl: add a pincontrol driver for BCM6368
+  dt-bindings: add BCM63268 pincontroller binding documentation
+  pinctrl: add a pincontrol driver for BCM63268
+  dt-bindings: add BCM6318 pincontroller binding documentation
+  pinctrl: add a pincontrol driver for BCM6318
 
-Tom
+ .../pinctrl/brcm,bcm6318-pinctrl.yaml         | 187 +++++
+ .../pinctrl/brcm,bcm63268-pinctrl.yaml        | 208 ++++++
+ .../pinctrl/brcm,bcm6328-pinctrl.yaml         | 171 +++++
+ .../pinctrl/brcm,bcm6358-pinctrl.yaml         | 137 ++++
+ .../pinctrl/brcm,bcm6362-pinctrl.yaml         | 250 +++++++
+ .../pinctrl/brcm,bcm6368-pinctrl.yaml         | 261 +++++++
+ drivers/gpio/gpio-regmap.c                    |   4 +
+ drivers/pinctrl/bcm/Kconfig                   |  55 ++
+ drivers/pinctrl/bcm/Makefile                  |   7 +
+ drivers/pinctrl/bcm/pinctrl-bcm6318.c         | 498 ++++++++++++++
+ drivers/pinctrl/bcm/pinctrl-bcm63268.c        | 643 ++++++++++++++++++
+ drivers/pinctrl/bcm/pinctrl-bcm6328.c         | 404 +++++++++++
+ drivers/pinctrl/bcm/pinctrl-bcm6358.c         | 369 ++++++++++
+ drivers/pinctrl/bcm/pinctrl-bcm6362.c         | 617 +++++++++++++++++
+ drivers/pinctrl/bcm/pinctrl-bcm6368.c         | 523 ++++++++++++++
+ drivers/pinctrl/bcm/pinctrl-bcm63xx.c         | 112 +++
+ drivers/pinctrl/bcm/pinctrl-bcm63xx.h         |  43 ++
+ include/linux/gpio/driver.h                   |   9 +
+ include/linux/gpio/regmap.h                   |   3 +
+ 19 files changed, 4501 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm6318-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm63268-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm6358-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm6362-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm6368-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm6318.c
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm63268.c
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm6328.c
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm6358.c
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm6362.c
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm6368.c
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm63xx.c
+ create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm63xx.h
 
-> +	 * has plp gate as well.
-> +	 */
-> +	if (xrt_axigate_epname_idx(leaf) > xrt_axigate_epname_idx(pdev))
-> +		xrt_axigate_free(pdev);
-> +	else
-> +		xleaf_ioctl(leaf, XRT_AXIGATE_FREE, NULL);
-> +
-> +	(void)xleaf_put_leaf(pdev, leaf);
-> +}
-> +
-> +static int
-> +xrt_axigate_leaf_ioctl(struct platform_device *pdev, u32 cmd, void *arg)
-> +{
-> +	switch (cmd) {
-> +	case XRT_XLEAF_EVENT:
-> +		xrt_axigate_event_cb(pdev, arg);
-> +		break;
-> +	case XRT_AXIGATE_FREEZE:
-> +		xrt_axigate_freeze(pdev);
-> +		break;
-> +	case XRT_AXIGATE_FREE:
-> +		xrt_axigate_free(pdev);
-> +		break;
-> +	default:
-> +		xrt_err(pdev, "unsupported cmd %d", cmd);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int xrt_axigate_remove(struct platform_device *pdev)
-> +{
-> +	struct xrt_axigate	*gate;
-> +
-> +	gate = platform_get_drvdata(pdev);
-> +
-> +	if (gate->base)
-> +		iounmap(gate->base);
-> +
-> +	platform_set_drvdata(pdev, NULL);
-> +	devm_kfree(&pdev->dev, gate);
-> +
-> +	return 0;
-> +}
-> +
-> +static int xrt_axigate_probe(struct platform_device *pdev)
-> +{
-> +	struct xrt_axigate	*gate;
-> +	struct resource		*res;
-> +	int			ret;
-> +
-> +	gate = devm_kzalloc(&pdev->dev, sizeof(*gate), GFP_KERNEL);
-> +	if (!gate)
-> +		return -ENOMEM;
-> +
-> +	gate->pdev = pdev;
-> +	platform_set_drvdata(pdev, gate);
-> +
-> +	xrt_info(pdev, "probing...");
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		xrt_err(pdev, "Empty resource 0");
-> +		ret = -EINVAL;
-> +		goto failed;
-> +	}
-> +
-> +	gate->base = ioremap(res->start, res->end - res->start + 1);
-> +	if (!gate->base) {
-> +		xrt_err(pdev, "map base iomem failed");
-> +		ret = -EFAULT;
-> +		goto failed;
-> +	}
-> +
-> +	gate->ep_name = res->name;
-> +
-> +	mutex_init(&gate->gate_lock);
-> +
-> +	return 0;
-> +
-> +failed:
-> +	xrt_axigate_remove(pdev);
-> +	return ret;
-> +}
-> +
-> +static struct xrt_subdev_endpoints xrt_axigate_endpoints[] = {
-> +	{
-> +		.xse_names = (struct xrt_subdev_ep_names[]) {
-> +			{ .ep_name = "ep_pr_isolate_ulp_00" },
-> +			{ NULL },
-> +		},
-> +		.xse_min_ep = 1,
-> +	},
-> +	{
-> +		.xse_names = (struct xrt_subdev_ep_names[]) {
-> +			{ .ep_name = "ep_pr_isolate_plp_00" },
-> +			{ NULL },
-> +		},
-> +		.xse_min_ep = 1,
-> +	},
-> +	{ 0 },
-> +};
-> +
-> +static struct xrt_subdev_drvdata xrt_axigate_data = {
-> +	.xsd_dev_ops = {
-> +		.xsd_ioctl = xrt_axigate_leaf_ioctl,
-> +	},
-> +};
-> +
-> +static const struct platform_device_id xrt_axigate_table[] = {
-> +	{ XRT_AXIGATE, (kernel_ulong_t)&xrt_axigate_data },
-> +	{ },
-> +};
-> +
-> +static struct platform_driver xrt_axigate_driver = {
-> +	.driver = {
-> +		.name = XRT_AXIGATE,
-> +	},
-> +	.probe = xrt_axigate_probe,
-> +	.remove = xrt_axigate_remove,
-> +	.id_table = xrt_axigate_table,
-> +};
-> +
-> +void axigate_leaf_init_fini(bool init)
-> +{
-> +	if (init) {
-> +		xleaf_register_driver(XRT_SUBDEV_AXIGATE,
-> +				      &xrt_axigate_driver, xrt_axigate_endpoints);
-> +	} else {
-> +		xleaf_unregister_driver(XRT_SUBDEV_AXIGATE);
-> +	}
-> +}
+-- 
+2.20.1
 
