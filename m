@@ -2,115 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A5332F82F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 05:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DCC32F832
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 05:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbhCFER5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 23:17:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229642AbhCFERm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 23:17:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87AC265005;
-        Sat,  6 Mar 2021 04:17:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615004261;
-        bh=JG/2e1lJh6g7lyOKj2exd139cipDVLRkA4E7ybz5KAM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rzF4uYfPpwlkHigXs2pN/dKWzWnE03d6bQi/zAl81k8BdgRT/G9Diy7tZKpugJg6u
-         7xqa778ijiP0W5PLnTzNSgNbEWjiFSObwYkAPBO0y1NlsCsce8GrSbt25Q2DKBRoDY
-         D5uAH2iIcfGeklm9fZmJDwWaAQE5IzJbzndmWTsVAJRVexnWniJpETQcG7Q894YRub
-         h+b4Q3Fzza4PgKEtxqAGLNKpl+fCTtKofzfZ7cNj2HLCj0e6z9dk0OLry/7saWamqJ
-         YRrR1L1XSYTmemt197Fd35vi4obKf2YlZ+DaH9Tm6Gwh/RWJb4Qafi6BmC0AERemBs
-         Uj2I9TTsReaDg==
-Received: by mail-lf1-f49.google.com with SMTP id v9so8300370lfa.1;
-        Fri, 05 Mar 2021 20:17:41 -0800 (PST)
-X-Gm-Message-State: AOAM533O0hMEMmthhNujJxU/+bwkKu0KelS9HrzV3EtfNPzlisbrIc7P
-        b+wyFb6KeUsEJRrN96vfI+0ekCp3frboMYcjqBo=
-X-Google-Smtp-Source: ABdhPJz39jAeX+gKEfeE96e3+a7VxML1Q9mZmzhl9DwJu4HthFNyF+7vhmUW3RgOMzojnR1rJa4qIajmNoMYXKd1ddU=
-X-Received: by 2002:a05:6512:2288:: with SMTP id f8mr7754188lfu.346.1615004259929;
- Fri, 05 Mar 2021 20:17:39 -0800 (PST)
+        id S230007AbhCFE1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 23:27:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229642AbhCFE0t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 23:26:49 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334BFC06175F;
+        Fri,  5 Mar 2021 20:26:49 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso213061pjb.4;
+        Fri, 05 Mar 2021 20:26:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=C0fc0z8FwjdECdFL+lTC1saxBB6QAyp/014WA2umBAY=;
+        b=DJUmIgPB6QVL8f1DEx3XLfY+Nu1TBOodVQjhORI4QPbPg5LC4hHAyjr5ZUScAnot5n
+         IOUCU8cGNY5i48GsQ2r0F6L5CViJnjbSgQur5DNIjdznPkffRuTVUzASPUedqtHEZytj
+         Mp+7COo2nu/UPpKjg9QnU4smjxFLT6xlPPR+q6ec3ZFFhxutmx+GDlVix2KHvKIyUxX4
+         2qv+gikVKJnEhbBUG8xoJqSIgbFLAOUMMG+ZJby2oOcrMYu8B2eoVUNUVxO2Y0BX1dmU
+         86T2whdAPYSqn4GkTH+mKyUCbbg79lCx6CoasDU9vDOoQ7zs4JFI5c7nj+tLRRIyDWUd
+         YrRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=C0fc0z8FwjdECdFL+lTC1saxBB6QAyp/014WA2umBAY=;
+        b=Yzyfb14bKrmfasDEnAOHWPllj4fleyZfK3mGMKaTIN0qc/ondkW8++s1bJDkk76mnY
+         Mi6yLNNFxmPmTYQI1PFUuaAEgDf69dDyQ0iK8T2ICUcaKgmrw2xccQAJIJlXoZuhL8ut
+         eUK+lvDEtRP4rNfXXRMXjq1EZ8wljdP/FjQAeNS9clwijvOvzvhVyqmjMS5PcnDZj2HI
+         vaQVnjgqDX3vez7PxUtsnUxdZpJEOdEtMUD2DD4AZdeg/PXfyaMkN19cjq2ev9ObCHbS
+         1t6XUD/VM90oP9i9nehq3qTd7sApLMStJbRwdMiEF9jJv1mVWi6U/JGvqHOPmOJPqT3K
+         1igQ==
+X-Gm-Message-State: AOAM5314B/a1xS02fJ3DAJekPzX646B0w1brWUB1QGLt2F6SrA00qt7V
+        QFeMnEblWZ569Q6WW1EzwQg=
+X-Google-Smtp-Source: ABdhPJz4OoiLeNhbNJLVfW/+qy+iekVop9E1alzONPh8qwGHDpn2REE5h98elA8jq8NdWjzwb5EoPQ==
+X-Received: by 2002:a17:90a:de90:: with SMTP id n16mr12860466pjv.10.1615004808579;
+        Fri, 05 Mar 2021 20:26:48 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id mp1sm3381534pjb.48.2021.03.05.20.26.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 20:26:47 -0800 (PST)
+Subject: Re: [PATCH net-next v2 3/3] net: phy: broadcom: Allow BCM54210E to
+ configure APD
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Chan <mchan@broadcom.com>,
+        "open list:BROADCOM ETHERNET PHY DRIVERS" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>, michael@walle.cc
+References: <20210213034632.2420998-1-f.fainelli@gmail.com>
+ <20210213034632.2420998-4-f.fainelli@gmail.com>
+ <20210213104245.uti4qb2u2r5nblef@skbuf>
+ <4e1c1a4c-d276-c850-8e97-16ef1f08dcff@gmail.com>
+ <99e28317-e93d-88fa-f43f-d1d072b61292@gmail.com>
+ <20210305010845.blqccudijh6ezm6a@skbuf>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <840bf142-d398-13cd-36a2-a013f6e44b53@gmail.com>
+Date:   Fri, 5 Mar 2021 20:26:41 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210306032314.3186-1-angkery@163.com>
-In-Reply-To: <20210306032314.3186-1-angkery@163.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Sat, 6 Mar 2021 12:17:28 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTSx3AYyQ7Z4SD19LX1fygbauAdUFCnRS2aAuUX0XRUQA@mail.gmail.com>
-Message-ID: <CAJF2gTTSx3AYyQ7Z4SD19LX1fygbauAdUFCnRS2aAuUX0XRUQA@mail.gmail.com>
-Subject: Re: [PATCH] csky: fix typos
-To:     angkery <angkery@163.com>
-Cc:     linux-csky@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Junlin Yang <yangjunlin@yulong.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210305010845.blqccudijh6ezm6a@skbuf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thx,
-
-Looks good to me, Signed-off-by.
-
-On Sat, Mar 6, 2021 at 11:23 AM angkery <angkery@163.com> wrote:
->
-> From: Junlin Yang <yangjunlin@yulong.com>
->
-> fixes three typos found by codespell.
->
-> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
-> ---
->  arch/csky/include/asm/asid.h    | 2 +-
->  arch/csky/include/asm/barrier.h | 2 +-
->  arch/csky/include/asm/vdso.h    | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/csky/include/asm/asid.h b/arch/csky/include/asm/asid.h
-> index ac08b0f..6ff205a 100644
-> --- a/arch/csky/include/asm/asid.h
-> +++ b/arch/csky/include/asm/asid.h
-> @@ -37,7 +37,7 @@ void asid_new_context(struct asid_info *info, atomic64_t *pasid,
->   * Check the ASID is still valid for the context. If not generate a new ASID.
->   *
->   * @pasid: Pointer to the current ASID batch
-> - * @cpu: current CPU ID. Must have been acquired throught get_cpu()
-> + * @cpu: current CPU ID. Must have been acquired through get_cpu()
->   */
->  static inline void asid_check_context(struct asid_info *info,
->                                       atomic64_t *pasid, unsigned int cpu,
-> diff --git a/arch/csky/include/asm/barrier.h b/arch/csky/include/asm/barrier.h
-> index 84fc600c..f4045dd 100644
-> --- a/arch/csky/include/asm/barrier.h
-> +++ b/arch/csky/include/asm/barrier.h
-> @@ -64,7 +64,7 @@
->
->  /*
->   * sync:        completion barrier, all sync.xx instructions
-> - *              guarantee the last response recieved by bus transaction
-> + *              guarantee the last response received by bus transaction
->   *              made by ld/st instructions before sync.s
->   * sync.s:      inherit from sync, but also shareable to other cores
->   * sync.i:      inherit from sync, but also flush cpu pipeline
-> diff --git a/arch/csky/include/asm/vdso.h b/arch/csky/include/asm/vdso.h
-> index eb5142f..bdce581 100644
-> --- a/arch/csky/include/asm/vdso.h
-> +++ b/arch/csky/include/asm/vdso.h
-> @@ -16,7 +16,7 @@ struct vdso_data {
->   * offset of 0, but since the linker must support setting weak undefined
->   * symbols to the absolute address 0 it also happens to support other low
->   * addresses even when the code model suggests those low addresses would not
-> - * otherwise be availiable.
-> + * otherwise be available.
->   */
->  #define VDSO_SYMBOL(base, name)                                                        \
->  ({                                                                             \
-> --
-> 1.9.1
->
->
 
 
+On 3/4/2021 5:08 PM, Vladimir Oltean wrote:
+> On Tue, Mar 02, 2021 at 07:37:34PM -0800, Florian Fainelli wrote:
+>> Took a while but for the 54210E reference board here are the numbers,
+>> your mileage will vary depending on the supplies, regulator efficiency
+>> and PCB design around the PHY obviously:
+>>
+>> BMCR.PDOWN:			86.12 mW
+>> auto-power down:		77.84 mW
+> 
+> Quite curious that the APD power is lower than the normal BMCR.PDOWN
+> value. As far as my understanding goes, when in APD mode, the PHY even
+> wakes up from time to time to send pulses to the link partner?
+
+Auto-power down kicks in when the cable is disconnected. There is
+another IDDQ mode that supports energy detection though I am unsure of
+when it would be useful for most Linux enabled systems.
+
+> 
+>> auto-power-down, DLL disabled:  30.83 mW
+> 
+> The jump from simple APD to APD with DLL disabled is pretty big.
+> Correct me if I'm wrong, but there's an intermediary step which was not
+> measured, where the CLK125 is disabled but the internal DLL (Delay
+> Locked Loop?) is still enabled. I think powering off the internal DLL
+> also implies powering off the CLK125 pin, at least that's how the PHY
+> driver treats things at the moment. But we don't know if the huge
+> reduction in power is due just to CLK125 or the DLL (it's more likely
+> it's due to both, in equal amounts).
+
+Agree, I do not have the break down though.
+
+> 
+> Anyway, it's great to have some results which tell us exactly what is
+> worthwhile and what isn't. In other news, I've added the BCM5464 to the
+> list of PHYs with APD and I didn't see any issues thus far.
+> 
+>> IDDQ-low power:			 9.85 mW (requires a RESETn toggle)
+>> IDDQ with soft recovery:	10.75 mW
+>>
+>> Interestingly, the 50212E that I am using requires writing the PDOWN bit
+>> and only that bit (not a RMW) in order to get in a correct state, both
+>> LEDs keep flashing when that happens, fixes coming.
+>>
+>> When net-next opens back up I will submit patches to support IDDQ with
+>> soft recovery since that is clearly much better than the standard power
+>> down and it does not require a RESETn toggle.
+> 
+> Iddq must be the quiescent supply current, isn't it (but in that case,
+> I'm a bit confused to not see a value in mA)? Is it an actual operating
+> mode (I don't see anything about that mentioned in the BCM5464 sheet)
+> and if it is, what is there exactly to support?
+
+You would put the PHY in IDDQ with soft recovery (or ultra low power)
+when you are administratively bringing down the network interface (and
+its PHY), or when suspending to a low power state where Wake-on-LAN is
+not enabled.
 -- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+Florian
