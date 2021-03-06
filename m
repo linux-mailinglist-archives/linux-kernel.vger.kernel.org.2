@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF9F32FC41
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 18:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F7D32FC45
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 18:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231272AbhCFRVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 12:21:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230429AbhCFRUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 12:20:42 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1448C65017;
-        Sat,  6 Mar 2021 17:20:40 +0000 (UTC)
-Date:   Sat, 6 Mar 2021 17:20:38 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Eugen Hristev <eugen.hristev@microchip.com>
-Cc:     <robh+dt@kernel.org>, <ludovic.desroches@microchip.com>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/4] iio: adc: at91-sama5d2: initialize hardware after
- clock is started
-Message-ID: <20210306172038.482b2b9a@archlinux>
-In-Reply-To: <20210301143256.16502-3-eugen.hristev@microchip.com>
-References: <20210301143256.16502-1-eugen.hristev@microchip.com>
-        <20210301143256.16502-3-eugen.hristev@microchip.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231203AbhCFRXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 12:23:13 -0500
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:39500 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230426AbhCFRW4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 12:22:56 -0500
+Received: from [192.168.1.18] ([90.126.17.6])
+        by mwinf5d66 with ME
+        id d5No2400U07rLVE035NpjZ; Sat, 06 Mar 2021 18:22:53 +0100
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 06 Mar 2021 18:22:53 +0100
+X-ME-IP: 90.126.17.6
+Subject: Re: [PATCH 2/2 v2] usb: gadget: s3c: Fix the error handling path in
+ 's3c2410_udc_probe()'
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        balbi@kernel.org, gregkh@linuxfoundation.org, nathan@kernel.org,
+        gustavoars@kernel.org, arnd@arndb.de, ben-linux@fluff.org
+Cc:     linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20210306142145.3490-1-christophe.jaillet@wanadoo.fr>
+ <64c3ca58-639f-95af-35e1-7d5ba240a7c9@canonical.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <1fb088c0-c94c-908e-e607-796f834f45f3@wanadoo.fr>
+Date:   Sat, 6 Mar 2021 18:22:48 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <64c3ca58-639f-95af-35e1-7d5ba240a7c9@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Mar 2021 16:32:54 +0200
-Eugen Hristev <eugen.hristev@microchip.com> wrote:
-
-> The hw_init hardware init call must happen after the clock is prepared and
-> enabled. Otherwise, writing to the registers might lead to a block or
-> external abort.
-
-Fix for existing parts or something only needed for the new devices?
-If it's a fix we should be looking to back port it so please
-provide me with a fixes tag.
-
-If it's a fix but not super urgent then let me know and we can
-take it with the rest of this series (and hence keep things simple)
-
-Thanks,
-
-Jonathan
-
+Le 06/03/2021 à 17:16, Krzysztof Kozlowski a écrit :
+> On 06/03/2021 15:21, Christophe JAILLET wrote:
+>> Some 'clk_prepare_enable()' and 'clk_get()' must be undone in the error
+>> handling path of the probe function, as already done in the remove
+>> function.
+>>
+>> Fixes: 3fc154b6b813 ("USB Gadget driver for Samsung s3c2410 ARM SoC")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>> v2: Fix a stupid error in the hash in Fixes:
+>> ---
+>>   drivers/usb/gadget/udc/s3c2410_udc.c | 16 ++++++++++++----
+>>   1 file changed, 12 insertions(+), 4 deletions(-)
+>>
 > 
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> ---
->  drivers/iio/adc/at91-sama5d2_adc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Do not ignore received tags but add them before sending a new version of patch.
+> https://lore.kernel.org/linux-samsung-soc/36ef897b-aedc-fcc3-89c8-c602d9733a9b@canonical.com/T/#t
 > 
-> diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
-> index a7826f097b95..63325f037f09 100644
-> --- a/drivers/iio/adc/at91-sama5d2_adc.c
-> +++ b/drivers/iio/adc/at91-sama5d2_adc.c
-> @@ -1832,12 +1832,12 @@ static int at91_adc_probe(struct platform_device *pdev)
->  		goto vref_disable;
->  	}
->  
-> -	at91_adc_hw_init(indio_dev);
-> -
->  	ret = clk_prepare_enable(st->per_clk);
->  	if (ret)
->  		goto vref_disable;
->  
-> +	at91_adc_hw_init(indio_dev);
-> +
->  	platform_set_drvdata(pdev, indio_dev);
->  
->  	ret = at91_adc_buffer_and_trigger_init(&pdev->dev, indio_dev);
+> Also somehow your 2nd patch is not in-reply to first one. Don't change
+> the settings of sending patches. git format-patch and
+> git send-email default settings are correct. Look here:
+> https://lore.kernel.org/linux-samsung-soc/
+> Only your patches are not threaded.
+> 
+> Best regards,
+> Krzysztof
+> 
+Hi,
 
+sorry for missing the typo in the first patch.
+
+For your other comments above, however, I use standard settings only.
+My patches are generated by commands like:
+    git format-patch -2
+
+I use cover letter only if it looks useful. In such a case, I use:
+    git format-patch --thread --cover-letter -2
+
+I've never seen that threading series was the rule and/or that cover 
+letters were a must have. If I'm wrong, sorry, I was not aware of that.
+
+I'll also add the "Reviewed-by:" tag.
+
+
+Thx for the review and explanations.
+
+CJ
