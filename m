@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A51F32F886
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 06:33:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1906E32F891
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 07:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbhCFFck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 00:32:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbhCFFb7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 00:31:59 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4079C06175F;
-        Fri,  5 Mar 2021 21:31:59 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id o10so2776527pgg.4;
-        Fri, 05 Mar 2021 21:31:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ba6Kh5nlkiTFtk0PXNQUw8yZAHH+934YM3ghxMY4d5s=;
-        b=DwovAFeNcBz6wMpiYdDM2ejicIFMzmYmvj3Eqdp0fvkzII4dNZR1nI2OSEtyP+iPTX
-         X137WqWWNx/uLkzwvv2qMxlSGs2QJ+nMtdzJwZEgbu6cZ21rlM2uyY0Nfk+unwE05suM
-         ZClNt7uo6ZGqi9QzZoStfPe0PIEaW3WQjs3TD9AoxtxdtN8mK28s5wy9HIszFRzHdisY
-         HcmTIoQH/YGMPlKmf0mMXxYWObXoXSY9STGHYRh4J3iAHTYg2u5MHiovEKAZmmkmSzCu
-         eEgafZ4I6p0sZNtuBiOYHeBov8G2ATnwI/MP+zCEcv7mhedscucBdqnDig7ZnFf11K1x
-         Jtjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ba6Kh5nlkiTFtk0PXNQUw8yZAHH+934YM3ghxMY4d5s=;
-        b=Ot/4/nCdeVdSdiunUuu41L+YdRwrsLA2NOEgbenA9yIX+/NM+2ObfNhCjLEc3pbXI1
-         lCHM6a1myBHQ+jyZumh8jpOAXYl/Me0VKn6r87Yjxlak3ii/2CbGmfOw+13VOLZjUi1l
-         aUUIesvDDaAaExinuSqXAo+b7HuzXD9roClug9HxJgGMqls5OPrK7gMKDcdt7WL7p2S5
-         CimBnUToKO1LphrF9PpdgTJMuFz0ELfbeFaxz204+ylnfHOo9Y8O7FH7chMtHpyS2Ybs
-         p59y+HoTEB7qSo/EoXObn/OltEggZNsQv3CXOVmk1MyvYJSeJoWorSWKJ7YJHRNc1Ud/
-         +G9A==
-X-Gm-Message-State: AOAM53124xdrsWaG1kodEoOJcoQde0eLYVwmMkbCULHMOK/AvqpGpE2M
-        LPexTSBXJ3qQ/NGFUpDcR+xxCccyNKo=
-X-Google-Smtp-Source: ABdhPJyHalJOaGuB0mZjKXXa9ezMYpENRLmNnbxkj2qF4DVFP715xlTmcBVuJpi5bjZ06NXF7NxUxQ==
-X-Received: by 2002:aa7:963d:0:b029:1ee:253:5b7 with SMTP id r29-20020aa7963d0000b02901ee025305b7mr12370910pfg.4.1615008718889;
-        Fri, 05 Mar 2021 21:31:58 -0800 (PST)
-Received: from [10.230.70.25] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id c12sm3745671pjq.48.2021.03.05.21.31.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 21:31:58 -0800 (PST)
-Subject: Re: [PATCH 5.10 000/102] 5.10.21-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210305120903.276489876@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <cc21ec83-b6a1-d11d-280f-fd88120cea09@gmail.com>
-Date:   Fri, 5 Mar 2021 21:31:52 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.0
+        id S229676AbhCFFtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 00:49:21 -0500
+Received: from mout.gmx.net ([212.227.15.19]:57469 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229461AbhCFFs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 00:48:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1615009705;
+        bh=XkgRczxN8Lu2cKgohs/4mQt4fS01rpwtWg9QmMNmGjk=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=hnpANIK+dTYGXem+v9bNWcUyjlZ6H753azMe+jWYPXSIx9lZgD1Lx5vpetsc+KPie
+         JE3N9sgge0HD0OJSQPfP6JzZgqLoTV9KBl+IBL1OxK7kVp4LDYnL3NQ2wvwaQvL/18
+         RsnLjykFyaGlAAY3A95piN+rhjQZ0iaQAcA1w10Y=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from LT02.fritz.box ([62.143.246.89]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M2O6e-1lLAQB2jpG-003rp6; Sat, 06
+ Mar 2021 06:48:25 +0100
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Atish Patra <atish.patra@wdc.com>, Anup Patel <anup.patel@wdc.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Sean Anderson <seanga2@gmail.com>
+Subject: [PATCH 1/1] RISC-V: correct enum sbi_ext_rfence_fid
+Date:   Sat,  6 Mar 2021 06:48:01 +0100
+Message-Id: <20210306054801.18263-1-xypron.glpk@gmx.de>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <20210305120903.276489876@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:4Kj6MuvqVd2A/9vCK8eZOjS02y5+ixmu93ibhNy+GDch1jOILrx
+ dj9cbp3fRtMaQhmzQ5TRm21Ej43oyGDfmeYwnh8/CtyIuNFIiYBsxBPqnJVxS69KHJeMOPb
+ lFWO1Gp3oKF4PhRLsgLQHRMC9zgdJ/u31L0wXkIefIjlEfb7PjXYjqcBJL1lmtZexABkZPy
+ 9/Iem+BbFLo1jXAzLrEog==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:KENFoSQWyZ4=:3mdzYqadC6+C1mK/js6NBT
+ rhedwlBz5g9tXYe6J25wO77W9PYqZ35frCz5yjHja1bn5nwEuqMGJMckz3ent5Bd5TxaNJ0Ew
+ iahNN0EmULj7+2dp8IhsUCWRqtGOQ2iHc4RWA02bSlZFKZL00yUrYY9sYtxChyHg2uUt0rpOt
+ 47QhtBPK69cPIQ4KnTo+sN0Cp4Kxi5eb7HL7gXDpE0H5bJXQxrjeNAxyThhrjlIPnRn/tr5Hw
+ oAo2j0QLbTLbK0Y05RmY0PruaYaFic4OCtYQK8f6uY5JRAOqcDwlfFarKvHMAhze021TeN79j
+ 23u0n3w0o7k4tQ9Gr1dP63zYI2fhre8jvsFndXmZK08fwkszVtaQg3utCVimFKBSuvKkrsxUc
+ x1jswNJglHLmP5beDO+eQBGloAhkhIMJNyd7/CEGpl/P8Rqu5BiZCglROyaDWuWOsg1T0QQom
+ wb5pGzsgaSwW1rvWlZo3aPySHY85HZXGCgzv/4iv90UFq6cQV4w9uU+jEmoV5nAIzC2RJ7j9l
+ 5+H0awd6aBolSucbj99oUjw5XcSzpwt2CeT51go+t+Zfh7GNSBegtMt+2RYoXqiYC85/XlwWf
+ NnCsyVUlm/HBqjnzRJylAMJdPokExIOB3RBHlCsgwrTbmMaRS/feMgfoFkpmaZCQhFfwBrf2A
+ X6MVT6sGSIuFbcjPVCfcmmqWG+htsaPwJYnXBQdknC4ppB0zwQ26dlKBD4Qi7/fG9Tq+Farvy
+ w+KXXhKlo+Ia8swe4r3uNgBIUpXZ1ngsimT02tKuF6dMb/Abbh0LHjKBq1squ+jSAm+U3yr5K
+ LlKAdHRh79IC8jhDl5DWWg8sjdmp9mmxFZhb1/v8bEa+NBNS+NKlsqsV/jarFymFmCcPhMs59
+ x5tknQEAOzJ8siHkhr5Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The constants in enum sbi_ext_rfence_fid should match the SBI
+specification. See
+https://github.com/riscv/riscv-sbi-doc/blob/master/riscv-sbi.adoc#78-funct=
+ion-listing
 
+| Function Name               | FID | EID
+| sbi_remote_fence_i          |   0 | 0x52464E43
+| sbi_remote_sfence_vma       |   1 | 0x52464E43
+| sbi_remote_sfence_vma_asid  |   2 | 0x52464E43
+| sbi_remote_hfence_gvma_vmid |   3 | 0x52464E43
+| sbi_remote_hfence_gvma      |   4 | 0x52464E43
+| sbi_remote_hfence_vvma_asid |   5 | 0x52464E43
+| sbi_remote_hfence_vvma      |   6 | 0x52464E43
 
-On 3/5/2021 4:20 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.21 release.
-> There are 102 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.21-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
+Fixes: ecbacc2a3efd ("RISC-V: Add SBI v0.2 extension definitions")
+Reported-by: Sean Anderson <seanga2@gmail.com>
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+=2D--
+ arch/riscv/include/asm/sbi.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+index 99895d9c3bdd..d7027411dde8 100644
+=2D-- a/arch/riscv/include/asm/sbi.h
++++ b/arch/riscv/include/asm/sbi.h
+@@ -51,10 +51,10 @@ enum sbi_ext_rfence_fid {
+ 	SBI_EXT_RFENCE_REMOTE_FENCE_I =3D 0,
+ 	SBI_EXT_RFENCE_REMOTE_SFENCE_VMA,
+ 	SBI_EXT_RFENCE_REMOTE_SFENCE_VMA_ASID,
+-	SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA,
+ 	SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA_VMID,
+-	SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA,
++	SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA,
+ 	SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA_ASID,
++	SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA,
+ };
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+ enum sbi_ext_hsm_fid {
+=2D-
+2.30.1
+
