@@ -2,65 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B43532FC3E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 18:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF9F32FC41
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 18:21:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231255AbhCFRUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 12:20:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58492 "EHLO mail.kernel.org"
+        id S231272AbhCFRVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 12:21:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230429AbhCFRUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 12:20:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E98B26501C;
-        Sat,  6 Mar 2021 17:20:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615051201;
-        bh=xetRj3rmZQfQt3c6LR210hA6CF3O9Qb6QyMhMdZgCvY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ygHc8EDAjm25ict/vFdcehacUEunb0EtMiGb2A/rAcw1YDQCteE7CdXN1EgItySOg
-         /xBcvFwHRjibe0m0zjdJ4nFM8hLzzEZf2F17krMuepxiKwpnGrpLUH/+ROjIy6vqB9
-         5lvaTIFjGSY3qFB+8WIKyeewxj7eNFnmc6We8Md0=
-Date:   Sat, 6 Mar 2021 18:19:57 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/102] 5.10.21-rc1 review
-Message-ID: <YEO5vRfve1fCsZEv@kroah.com>
-References: <20210305120903.276489876@linuxfoundation.org>
- <20210306032428.GB193012@roeck-us.net>
- <YENRYLA3A6w5RQbH@kroah.com>
+        id S230429AbhCFRUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 12:20:42 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1448C65017;
+        Sat,  6 Mar 2021 17:20:40 +0000 (UTC)
+Date:   Sat, 6 Mar 2021 17:20:38 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     <robh+dt@kernel.org>, <ludovic.desroches@microchip.com>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/4] iio: adc: at91-sama5d2: initialize hardware after
+ clock is started
+Message-ID: <20210306172038.482b2b9a@archlinux>
+In-Reply-To: <20210301143256.16502-3-eugen.hristev@microchip.com>
+References: <20210301143256.16502-1-eugen.hristev@microchip.com>
+        <20210301143256.16502-3-eugen.hristev@microchip.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YENRYLA3A6w5RQbH@kroah.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 06, 2021 at 10:54:40AM +0100, Greg Kroah-Hartman wrote:
-> On Fri, Mar 05, 2021 at 07:24:28PM -0800, Guenter Roeck wrote:
-> > On Fri, Mar 05, 2021 at 01:20:19PM +0100, Greg Kroah-Hartman wrote:
-> > > This is the start of the stable review cycle for the 5.10.21 release.
-> > > There are 102 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > > 
-> > > Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
-> > > Anything received after that time might be too late.
-> > > 
-> > 
-> > Building arm:realview-pb-a8:realview_defconfig:realview_pb:mem512:arm-realview-pba8:initrd ... failed
-> > ------------
-> > Error log:
-> > kernel/rcu/tree.c:683:2: error: implicit declaration of function 'IRQ_WORK_INIT'
+On Mon, 1 Mar 2021 16:32:54 +0200
+Eugen Hristev <eugen.hristev@microchip.com> wrote:
+
+> The hw_init hardware init call must happen after the clock is prepared and
+> enabled. Otherwise, writing to the registers might lead to a block or
+> external abort.
+
+Fix for existing parts or something only needed for the new devices?
+If it's a fix we should be looking to back port it so please
+provide me with a fixes tag.
+
+If it's a fix but not super urgent then let me know and we can
+take it with the rest of this series (and hence keep things simple)
+
+Thanks,
+
+Jonathan
+
 > 
-> Ugh, I thought I dropped that patch last round, I'll go do it again
-> later today, thanks for catching this...
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> ---
+>  drivers/iio/adc/at91-sama5d2_adc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
+> index a7826f097b95..63325f037f09 100644
+> --- a/drivers/iio/adc/at91-sama5d2_adc.c
+> +++ b/drivers/iio/adc/at91-sama5d2_adc.c
+> @@ -1832,12 +1832,12 @@ static int at91_adc_probe(struct platform_device *pdev)
+>  		goto vref_disable;
+>  	}
+>  
+> -	at91_adc_hw_init(indio_dev);
+> -
+>  	ret = clk_prepare_enable(st->per_clk);
+>  	if (ret)
+>  		goto vref_disable;
+>  
+> +	at91_adc_hw_init(indio_dev);
+> +
+>  	platform_set_drvdata(pdev, indio_dev);
+>  
+>  	ret = at91_adc_buffer_and_trigger_init(&pdev->dev, indio_dev);
 
-I did drop it, and Sasha added it back, hopefully it really doesn't come
-back without a working backport this time :)
-
-greg k-h
