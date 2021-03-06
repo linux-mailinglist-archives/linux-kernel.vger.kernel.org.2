@@ -2,78 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B22932F80A
+	by mail.lfdr.de (Postfix) with ESMTP id 5665F32F80B
 	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 04:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhCFDTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 22:19:10 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12702 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhCFDSs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 22:18:48 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DsqWg6ZtSzlT1B;
-        Sat,  6 Mar 2021 11:16:31 +0800 (CST)
-Received: from [10.174.179.20] (10.174.179.20) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 6 Mar 2021 11:18:39 +0800
-Subject: Re: [PATCH 4/5] khugepaged: remove unnecessary mem_cgroup_uncharge()
- in collapse_[file|huge_page]
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-CC:     <akpm@linux-foundation.org>, <riel@redhat.com>,
-        <kirill.shutemov@linux.intel.com>, <ebru.akagunduz@gmail.com>,
-        <dan.carpenter@oracle.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20210304123013.23560-1-linmiaohe@huawei.com>
- <20210304123013.23560-5-linmiaohe@huawei.com>
- <20210305173809.ufg6rfgmvgbvwxih@box>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <06f49699-6657-30f1-292d-b3d94d35d9f6@huawei.com>
-Date:   Sat, 6 Mar 2021 11:18:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S230200AbhCFDTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 22:19:11 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:60826 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229642AbhCFDS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 22:18:58 -0500
+Received: from [10.130.0.65] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx__CW9EJgJiEVAA--.9853S3;
+        Sat, 06 Mar 2021 11:18:47 +0800 (CST)
+Subject: Re: [PATCH 1/2] MIPS: Loongson64: Remove unused sysconf members
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+References: <20210304110057.22144-1-zhangqing@loongson.cn>
+ <20210304110057.22144-2-zhangqing@loongson.cn>
+ <67d0389d-9df4-066d-2c8d-2eda967fb2fc@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   zhangqing <zhangqing@loongson.cn>
+Message-ID: <d2f51232-7fd7-a655-c041-9e0e42bbe221@loongson.cn>
+Date:   Sat, 6 Mar 2021 11:18:46 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <20210305173809.ufg6rfgmvgbvwxih@box>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.20]
-X-CFilter-Loop: Reflected
+In-Reply-To: <67d0389d-9df4-066d-2c8d-2eda967fb2fc@flygoat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dx__CW9EJgJiEVAA--.9853S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jw43GFy3ZFyrJFWDKryfWFg_yoWxurg_CF
+        4FywsrC3W8Cr4vyFs8KF4v9r97urZ7JFWDZ34vqr1Fq3sFkF9Fqa4xGrn2ka43AFW8Zr9r
+        urnY9w4Fk3yDAjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbsxYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487
+        MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2
+        jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
+        ZFpf9x07j7xhLUUUUU=
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/6 1:38, Kirill A. Shutemov wrote:
-> On Thu, Mar 04, 2021 at 07:30:12AM -0500, Miaohe Lin wrote:
->> Since commit 7ae88534cdd9 ("mm: move mem_cgroup_uncharge out of
->> __page_cache_release()"), the mem_cgroup will be uncharged when hpage is
->> freed. Uncharge mem_cgroup here is harmless but it looks confusing and
->> buggy: if mem_cgroup charge failed, we will call mem_cgroup_uncharge()
->> uncorrectly in error path because hpage is not IS_ERR_OR_NULL().
+
+
+On 03/05/2021 10:32 AM, Jiaxun Yang wrote:
+>
+>
+> 在 2021/3/4 下午7:00, Qing Zhang 写道:
+>> We don't need them anymore, They are uniform on all Loongson64 systems
+>> and have been fixed in DeviceTree.loongson3_platform_init is replaced
+>> with DTS + driver.
 >>
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> 
-> Hm. I'm not sure about this patch.
-> 
-> For !NUMA the page will get allocated and freed very early: in
-> khugepaged_do_scan() and with the change mem_cgroup_charge() may get
-> called twice for two different mm_structs.
+>> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+>> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+>
+> Acked-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+>
+> Hmm, why it comes with my sign-off?
+> I assue it's my patch somewhere off the tree?
+Hi, Jiaxun
 
-Many thanks for point it out.
+Thank you very much for your reply.
 
-> > Is it safe?
+Yes, it is like this.out of tree provides good ideas, and clean up 
+others by the way.
 
-I'am sorry I missed the !NUMA case! :(
+Thanks,
+Qing
 
-In !NUMA case, hpage may not be freed in the khugepaged_do_scan() while loop. Thus mem_cgroup_charge()
-may get called twice for two different mm_structs. In fact, mem_cgroup_uncharge() may also get called
-twice __but__ it's safe to do this.
+>
+> Thanks.
+>
+> - Jiaxun
+>
 
-The imbalance of mem_cgroup_charge() and mem_cgroup_uncharge() looks buggy and weird __but__ it's safe
-to call mem_cgroup_uncharge() many times with or without a successful mem_cgroup_charge() call.
-So I would drop this patch.
-
-> 
-
-Thanks again.
