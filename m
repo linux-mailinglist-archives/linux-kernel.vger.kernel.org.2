@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABB632FBF4
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 17:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D79AA32FBF9
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 17:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhCFQbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 11:31:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58282 "EHLO
+        id S230507AbhCFQdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 11:33:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230525AbhCFQba (ORCPT
+        with ESMTP id S230213AbhCFQdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 11:31:30 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8106CC06174A;
-        Sat,  6 Mar 2021 08:31:30 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id h22so4953933otr.6;
-        Sat, 06 Mar 2021 08:31:30 -0800 (PST)
+        Sat, 6 Mar 2021 11:33:43 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 216D4C06174A;
+        Sat,  6 Mar 2021 08:33:43 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id m25so6158460oie.12;
+        Sat, 06 Mar 2021 08:33:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=0abfN4+p0r6rxh7CwRm9iy1owMAFDWmJNro201nOqLw=;
-        b=ksCDMYR0X9T7gmseXn5T67qmlgWtZah/pulGNgYrw3kbTMghu3ft/HMv0yJlNS10s+
-         bar5rgGLcaXEGWfjIGTQggx8tXDXAlyv7ItJtkmNV4zGyT7TsvWKUe2tUBAAOSno/vCn
-         7JvxaAmlHVJamdcAEEVyW1KK/sJmtmxfYOInvgZbTB3PX2o0YWoVgMKP9DZEa+s0N3uJ
-         yE/VOZ6NfvqwTamcQUR+Gla7dMeizAiyW8Rl/mT3YCSeloRk0bMTyQ3Qt6kEYZRiaUWY
-         JZjKi7d6bExa6KHiBMtAIe7Ir1yANmF177uFik2pD5wABq3spkz/ddScMYxwcDdDBScm
-         PTzA==
+        bh=6YMn1Tv+xGdetVfsABhq1njwRIlvXZdIQwHsYFvh5iY=;
+        b=ZrBubTCTV91vRahcl6iW3NgBCrqStvBPKRxY/m6TNSuFw4mJuDkmX8jpCVtR19++p1
+         EAE1ko11Ek+VwmtjcimhAy9TlFS/NonXP8ucMePlCRnKdhtHfJqb8jJ27o7HjEuOYVhb
+         eED4G8jETnNQxULt2jbOdCcvYp0jB/6QH1XX1kRR/cYllNi+WvByBBmcAp2G6Lap2DXG
+         loGR585ZG7YavVITFUzqJ3IFLh99kerJFuwn1Lno1uyvfJpzZg8+bN7PNfVGnlvEW1fL
+         iYMMWNrIug7n5xrnVVFXS3eC2ibHc6EyXJW+ZDES5rvHSpNUbHW7VfXC0SGGQULdwW6G
+         jz/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0abfN4+p0r6rxh7CwRm9iy1owMAFDWmJNro201nOqLw=;
-        b=ex2BF9KfmYvRiaWPdRhaKwHkNW4t2NWmq7NEmZtJTH5U85tRoSGNHEZ/VgKcgDo7Vw
-         q4cSLhfqEC8+t5kR46tn8bKhJsj0y+TMC1C7jYBNXr0EmVvBhPoDMw3yR22U/XZDUdoa
-         9L9C3079wxdFa4Avehpp++iZWmG263tdV4NTqo7diF+t3ftEVGLbPkiu43AgPSg8iHLo
-         gqDhjY1KzOqHAqexUtmr0KH0LvTj0WkSWUX862P1YjhhqaFsGuQOe+S/yGudX2JjlSrl
-         d0gHoF1QAFyhRVN6/3FMniTgOR086RK0AOWcPIC1eEG2coR55FK4MuNkhgtXwmM30u+O
-         1sww==
-X-Gm-Message-State: AOAM531eLGG81HklNIHz1ZIgfVe2bCji3jFxHaqgtGYuopjklzMINj9N
-        ahJxqIi5kCi0LbW8X0Q9kTE=
-X-Google-Smtp-Source: ABdhPJzdXYWuc6jg8NQX0nt1DJeKk6XWv3NsFnj/EXvi28xkZwaQUqu0+QOUxWhU3f21+FNDZlVq8Q==
-X-Received: by 2002:a9d:3df7:: with SMTP id l110mr12697862otc.36.1615048290026;
-        Sat, 06 Mar 2021 08:31:30 -0800 (PST)
+        bh=6YMn1Tv+xGdetVfsABhq1njwRIlvXZdIQwHsYFvh5iY=;
+        b=Ww5rY3fC2/ShxvXyCsIAOlzSDk1J0sg94Jqw3SRyrjh8MRKJLPeeARoyt1YNYFKujK
+         Sh3MWA4kHAonE+GkbuDCpNT7G4x1y0GA0sLJKHPSCNAt1vXk82Xor4845jRW678qkf9R
+         Px4X4iiqtwc3yZX/+okSB9P84kUzvWGiWBWIh+rIYto0Cf7U10Yy8+FrISQDQAbO2Y+W
+         5T8w1M95pq8lsbkJk4GeWKqv07LVJzHFzhrXE19nBIYqfhTfeX2cMvxsK+IVVpwNz6rz
+         lfATxQwcbKZaZbZNnCAeH70D0mTZiUQWoufxCiG2pD7KJ5bBhMUTbyyRYPf8vJ8ZqhhR
+         ybBg==
+X-Gm-Message-State: AOAM530QZNunQgSagpm0MlWzuY/pYjDBBHpqhgAEHF/G26nkrGCuYhCg
+        WeswEdLSeoIzAySTZ55hPjOoNIAEYRo=
+X-Google-Smtp-Source: ABdhPJzqeMl6kx0OUZn8g09IrdjJNWHbCfgOyLt4zleY/ODJL4jwHh+8uWxukOo5BRIYLI0JZtCDXA==
+X-Received: by 2002:a54:4689:: with SMTP id k9mr11457467oic.149.1615048422465;
+        Sat, 06 Mar 2021 08:33:42 -0800 (PST)
 Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m22sm1235754ooj.43.2021.03.06.08.31.29
+        by smtp.gmail.com with ESMTPSA id s21sm1298955oos.5.2021.03.06.08.33.41
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 06 Mar 2021 08:31:29 -0800 (PST)
+        Sat, 06 Mar 2021 08:33:42 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 6 Mar 2021 08:31:28 -0800
+Date:   Sat, 6 Mar 2021 08:33:40 -0800
 From:   Guenter Roeck <linux@roeck-us.net>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
         akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
         lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
         f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/52] 4.19.179-rc1 review
-Message-ID: <20210306163128.GF25820@roeck-us.net>
-References: <20210305120853.659441428@linuxfoundation.org>
+Subject: Re: [PATCH 5.4 00/72] 5.4.103-rc1 review
+Message-ID: <20210306163340.GG25820@roeck-us.net>
+References: <20210305120857.341630346@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+In-Reply-To: <20210305120857.341630346@linuxfoundation.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 01:21:31PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.179 release.
-> There are 52 patches in this series, all will be posted as a response
+On Fri, Mar 05, 2021 at 01:21:02PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.103 release.
+> There are 72 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -79,10 +79,17 @@ On Fri, Mar 05, 2021 at 01:21:31PM +0100, Greg Kroah-Hartman wrote:
 > 
 
 Build results:
-	total: 155 pass: 155 fail: 0
+	total: 157 pass: 157 fail: 0
 Qemu test results:
-	total: 420 pass: 420 fail: 0
+	total: 429 pass: 425 fail: 4
+Failed tests:
+	arm:realview-pb-a8:realview_defconfig:realview_pb:mem512:arm-realview-pba8:initrd
+	arm:realview-pbx-a9:realview_defconfig:realview_pb:arm-realview-pbx-a9:initrd
+	arm:realview-eb:realview_defconfig:realview_eb:mem512:arm-realview-eb:initrd
+	arm:realview-eb-mpcore:realview_defconfig:realview_eb:mem512:arm-realview-eb-11mp-ctrevb:initrd
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Failure as already reported:
+
+kernel/rcu/tree.c:617:2: error: implicit declaration of function 'IRQ_WORK_INIT'
 
 Guenter
