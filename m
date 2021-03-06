@@ -2,133 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589A432FCBD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D5132FCC5
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhCFT0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 14:26:16 -0500
-Received: from vmicros1.altlinux.org ([194.107.17.57]:50130 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231292AbhCFTZ4 (ORCPT
+        id S231414AbhCFT26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 14:28:58 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:38752 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231139AbhCFT2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 14:25:56 -0500
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id 9FAA872C8B8;
-        Sat,  6 Mar 2021 22:25:53 +0300 (MSK)
-Received: from altlinux.org (sole.flsd.net [185.75.180.6])
-        by imap.altlinux.org (Postfix) with ESMTPSA id 51E974A4736;
-        Sat,  6 Mar 2021 22:25:53 +0300 (MSK)
-Date:   Sat, 6 Mar 2021 22:25:53 +0300
-From:   Vitaly Chikunov <vt@altlinux.org>
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, herbert@gondor.apana.org.au,
-        dhowells@redhat.com, zohar@linux.ibm.com,
-        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Saulo Alessandre <saulo.alessandre@tse.jus.br>,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: Re: [PATCH v10 3/9] crypto: Add math to support fast NIST P384
-Message-ID: <20210306192553.lxy5w262g2vs2hvv@altlinux.org>
-References: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
- <20210305005203.3547587-4-stefanb@linux.vnet.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-In-Reply-To: <20210305005203.3547587-4-stefanb@linux.vnet.ibm.com>
+        Sat, 6 Mar 2021 14:28:30 -0500
+Received: by mail-ot1-f43.google.com with SMTP id a17so5287791oto.5;
+        Sat, 06 Mar 2021 11:28:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=xyiAtqGUhm5WhvdlXAu5lc9wGfvlbIWFApl+PBFJsB0=;
+        b=cD39bHbu6s3gn66EC/pWfX+/cdbbVFDDlhlA6dujQEaOTA08KWySoQezJgxJVWHRcB
+         8nQDJFDSxgSTI+lB8GRyPZhDV3GPSvT5G1p/TkWjJLZ+cPDafgecFRGaBGuyRibHl/7z
+         6kYYwe1Si2uVcRkBT3YLc8gQfLnYry3FtWAOlqVNOwIIrqjMl9Ok81eYXJJVb/zyakZx
+         kHzVSAlj6PSadGhwvTbzvu8ojVOrGcus5PjI3SItvYTrfxBxrU9+M55yOzmFR6HwdoAd
+         UDrOIpDBqhwWyeZFk0+b8Y46YIwKvwIr9DnniBySrYtUAEat701CgS+NIRV6ska/LL89
+         13AQ==
+X-Gm-Message-State: AOAM530+G2TpPebDi7CDFMyMfh3AtySmZnp0HzBsWGzk0FXBLEn6MH2Q
+        4WC+3a7RUMkV6ULQr0NXnw==
+X-Google-Smtp-Source: ABdhPJwliZEDkh8g1tf3lNuUwvOd7FUyIQvQzTzQg1LkJx1/NvzE8AidrB2JtWyHP199xv56OzK8ew==
+X-Received: by 2002:a9d:503:: with SMTP id 3mr3855401otw.77.1615058910377;
+        Sat, 06 Mar 2021 11:28:30 -0800 (PST)
+Received: from robh.at.kernel.org ([172.58.102.249])
+        by smtp.gmail.com with ESMTPSA id w11sm1349866ooc.35.2021.03.06.11.28.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 11:28:29 -0800 (PST)
+Received: (nullmailer pid 1058184 invoked by uid 1000);
+        Sat, 06 Mar 2021 19:28:21 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-usb@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <20210305113832.v6.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+References: <20210305193853.2040456-1-mka@chromium.org> <20210305113832.v6.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+Subject: Re: [PATCH v6 1/5] dt-bindings: usb: Add binding for Realtek RTS5411 hub controller
+Date:   Sat, 06 Mar 2021 12:28:21 -0700
+Message-Id: <1615058901.081592.1058183.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stefan,
-
-On Thu, Mar 04, 2021 at 07:51:57PM -0500, Stefan Berger wrote:
-> From: Saulo Alessandre <saulo.alessandre@tse.jus.br>
+On Fri, 05 Mar 2021 11:38:49 -0800, Matthias Kaehlcke wrote:
+> The Realtek RTS5411 is a USB 3.0 hub controller with 4 ports.
 > 
-> * crypto/ecc.c
->   - add vli_mmod_fast_384
->   - change some routines to pass ecc_curve forward until vli_mmod_fast
+> This initial version of the binding only describes USB related
+> aspects of the RTS5411, it does not cover the option of
+> connecting the controller as an i2c slave.
 > 
-> * crypto/ecc.h
->   - add ECC_CURVE_NIST_P384_DIGITS
->   - change ECC_MAX_DIGITS to P384 size
-> 
-> Signed-off-by: Saulo Alessandre <saulo.alessandre@tse.jus.br>
-> Tested-by: Stefan Berger <stefanb@linux.ibm.com>
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 > ---
->  crypto/ecc.c | 266 +++++++++++++++++++++++++++++++++++++--------------
->  crypto/ecc.h |   3 +-
->  2 files changed, 194 insertions(+), 75 deletions(-)
 > 
-> diff --git a/crypto/ecc.c b/crypto/ecc.c
-> index f6cef5a7942d..c125576cda6b 100644
-> --- a/crypto/ecc.c
-> +++ b/crypto/ecc.c
-> @@ -778,18 +778,133 @@ static void vli_mmod_fast_256(u64 *result, const u64 *product,
->  ...
->  /* Computes result = product % curve_prime for different curve_primes.
->   *
->   * Note that curve_primes are distinguished just by heuristic check and
->   * not by complete conformance check.
->   */
->  static bool vli_mmod_fast(u64 *result, u64 *product,
-> -			  const u64 *curve_prime, unsigned int ndigits)
-> +			  const struct ecc_curve *curve)
->  {
->  	u64 tmp[2 * ECC_MAX_DIGITS];
-> +	const u64 *curve_prime = curve->p;
-> +	const unsigned int ndigits = curve->g.ndigits;
->  
-> -	/* Currently, both NIST primes have -1 in lowest qword. */
-> -	if (curve_prime[0] != -1ull) {
-> +	/* Currently, all NIST have name nist_.* */
-> +	if (strncmp(curve->name, "nist_", 5) != 0) {
+> Changes in v6:
+> - Realtek binding instead of generic onboard_usb_hub
+> - added 'companion-hub' property
+> - added reference to 'usb-device.yaml'
+> - 'fixed' indentation of compatible entries to keep yamllint happy
+> - added 'additionalProperties' entry
+> - updated commit message
+> 
+> Changes in v5:
+> - updated 'title'
+> - only use standard USB compatible strings
+> - deleted 'usb_hub' node
+> - renamed 'usb_controller' node to 'usb-controller'
+> - removed labels from USB nodes
+> - added 'vdd-supply' to USB nodes
+> 
+> Changes in v4:
+> - none
+> 
+> Changes in v3:
+> - updated commit message
+> - removed recursive reference to $self
+> - adjusted 'compatible' definition to support multiple entries
+> - changed USB controller phandle to be a node
+> 
+> Changes in v2:
+> - removed 'wakeup-source' and 'power-off-in-suspend' properties
+> - consistently use spaces for indentation in example
+> 
+>  .../bindings/usb/realtek,rts5411.yaml         | 58 +++++++++++++++++++
+>  1 file changed, 58 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+> 
 
-I am not sure, but maybe this strncmp should not be optimized somehow,
-since vli_mmod_fast could be called quite frequently. Perhaps by integer
-algo id or even callback?
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Thanks,
+yamllint warnings/errors:
 
->  		/* Try to handle Pseudo-Marsenne primes. */
->  		if (curve_prime[ndigits - 1] == -1ull) {
->  			vli_mmod_special(result, product, curve_prime,
-> @@ -812,6 +927,9 @@ static bool vli_mmod_fast(u64 *result, u64 *product,
->  	case 4:
->  		vli_mmod_fast_256(result, product, curve_prime, tmp);
->  		break;
-> +	case 6:
-> +		vli_mmod_fast_384(result, product, curve_prime, tmp);
-> +		break;
->  	default:
->  		pr_err_ratelimited("ecc: unsupported digits size!\n");
->  		return false;
-> @@ -835,22 +953,22 @@ EXPORT_SYMBOL(vli_mod_mult_slow);
->  
->  /* Computes result = (left * right) % curve_prime. */
->  static void vli_mod_mult_fast(u64 *result, const u64 *left, const u64 *right,
-> -			      const u64 *curve_prime, unsigned int ndigits)
-> +			      const struct ecc_curve *curve)
->  {
->  	u64 product[2 * ECC_MAX_DIGITS];
->  
-> -	vli_mult(product, left, right, ndigits);
-> -	vli_mmod_fast(result, product, curve_prime, ndigits);
-> +	vli_mult(product, left, right, curve->g.ndigits);
-> +	vli_mmod_fast(result, product, curve);
->  }
->  
->  /* Computes result = left^2 % curve_prime. */
->  static void vli_mod_square_fast(u64 *result, const u64 *left,
-> -				const u64 *curve_prime, unsigned int ndigits)
-> +				const struct ecc_curve *curve)
->  {
->  	u64 product[2 * ECC_MAX_DIGITS];
->  
-> -	vli_square(product, left, ndigits);
-> -	vli_mmod_fast(result, product, curve_prime, ndigits);
-> +	vli_square(product, left, curve->g.ndigits);
-> +	vli_mmod_fast(result, product, curve);
->  }
->  
->  #define EVEN(vli) (!(vli[0] & 1))
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/realtek,rts5411.example.dt.yaml: hub@1: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/realtek,rts5411.example.dt.yaml: hub@2: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/realtek,rts5411.yaml
+
+See https://patchwork.ozlabs.org/patch/1448184
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
