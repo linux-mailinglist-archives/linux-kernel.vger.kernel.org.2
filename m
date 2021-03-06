@@ -2,95 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4BA32F972
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDAC32F974
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:49:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbhCFKrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 05:47:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbhCFKr3 (ORCPT
+        id S230053AbhCFKtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 05:49:09 -0500
+Received: from relay06.th.seeweb.it ([5.144.164.167]:45733 "EHLO
+        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229714AbhCFKtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 05:47:29 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2A0C06175F
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 02:47:29 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id l2so3103615pgb.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 02:47:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+OVArO45cIFAZDllkGVnvJRDcrMzTd8kZJ6zshsC9EY=;
-        b=cS+ut13MTQYqZC81q17e6WqC26TgE19vcCvDknXlTxQN/o/aOdlCMKbh1WS7MF7LrO
-         MGpVAK9HQhFi+tImfmnY69TGVP3cjERsOmtegbYTchJy3SQyrk7FO3CmQDEO0idwbAen
-         r+zfjxTdYYI0qxny+Wkr0B41QRWHAYywnT6DXK/kgqFswlcD9z81EgyG0Bc2NDr6/gg6
-         JCV7ttYE0yEPud/xNvmx1iG6aG+e5c43xw7432AfpOtR0fbuO9Ag91sxptBdWhetCc3W
-         dntq/r93iMWPmTNvVLUedJRUxO0fZI3L3zQD640Xh7TBlwYJs9Zm8xFaWSF8K97kDY+z
-         bXyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+OVArO45cIFAZDllkGVnvJRDcrMzTd8kZJ6zshsC9EY=;
-        b=S7TNuo8cl4giM97843jSPSN93KTlE/60K9SLOS1aVcjNRKg3Vb7qvakppFke5yPLPC
-         +D8AkVkkgHSz0SJkqUT2w1zG97fSdhcW5sKe8wgANMHG7wDXnIQSoTbzTmQhs2kbjNSL
-         hMiX9oon76kdACgQYX5iWQLkPyouXbLh3eoJ05D2bSkAG8tSlHC9nLb5UGUFSJ2moBzU
-         XxNOLNlkrjj73VRi/3X/jCX8GpWQFZ+EoVztOrXJF8EZ/ZWOgoMVDAl48GYiiPVYjkMu
-         QRPnK9q1N7XWczThWQtyOONRvar/sIFecHaR7Bgf+drsVsO9ObJz9Hfi+5U/i7MnR8n4
-         9hsg==
-X-Gm-Message-State: AOAM533YlBRQax5Gumw+KeIrL6vM1agOvnJw+nN4674WYmwrK3G+22jg
-        /qo65HU8j26tY5N0PVu8xUs=
-X-Google-Smtp-Source: ABdhPJyjym9wsWQn1eiIbQ3l+me663Tkn6GiPbKErmB1Gshj4oPC5Bw8MUW2B9eaGSZMPxxLNd8Ycw==
-X-Received: by 2002:a65:40c4:: with SMTP id u4mr12188962pgp.139.1615027648964;
-        Sat, 06 Mar 2021 02:47:28 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id o62sm4677955pga.43.2021.03.06.02.47.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 02:47:28 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: zhang.yunkai@zte.com.cn
-To:     sunpeng.li@amd.com
-Cc:     harry.wentland@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        nicholas.kazlauskas@amd.com, Rodrigo.Siqueira@amd.com,
-        aurabindo.pillai@amd.com, stylon.wang@amd.com, contact@emersion.fr,
-        bas@basnieuwenhuizen.nl, Bhawanpreet.Lakha@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Yunkai <zhang.yunkai@zte.com.cn>
-Subject: [PATCH] drm/amd/display: remove duplicate include in amdgpu_dm.c
-Date:   Sat,  6 Mar 2021 02:47:20 -0800
-Message-Id: <20210306104720.215738-1-zhang.yunkai@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Sat, 6 Mar 2021 05:49:08 -0500
+Received: from [192.168.1.101] (abac94.neoplus.adsl.tpnet.pl [83.6.166.94])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id E9B223E8B8;
+        Sat,  6 Mar 2021 11:49:06 +0100 (CET)
+Subject: Re: [PATCH] arm64: dts: add support for the Pixel 2 XL
+To:     Caleb Connolly <caleb@connolly.tech>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210305213235.398252-1-caleb@connolly.tech>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <2e7178e5-9c97-808e-b2ca-19ef0bb667e3@somainline.org>
+Date:   Sat, 6 Mar 2021 11:49:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210305213235.398252-1-caleb@connolly.tech>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 
-'drm/drm_hdcp.h' included in 'amdgpu_dm.c' is duplicated.
-It is also included in the 79th line.
+On 05.03.2021 22:35, Caleb Connolly wrote:
+> Add a minimal devicetree capable of booting on the Pixel 2 XL MSM8998
+> device.
+>
+> It's currently possible to boot the device into postmarketOS with USB
+> networking, however the display panel depends on Display Stream
+> Compression which is not yet supported in the kernel.
+>
+> The bootloader also requires that the dtbo partition contains a device
+> tree overlay with a particular id which has to be overlayed onto the
+> existing dtb. It's possible to use a specially crafted dtbo partition to
+> workaround this, more information is available here:
+>
+>     https://gitlab.com/calebccff/dtbo-google-wahoo-mainline
+>
+> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> ---
+> It's possible to get wifi working by running Bjorns diag-router in the
+> background, without this the wifi firmware crashes every 10 seconds or
+> so. This is the same issue encountered on the OnePlus 5.
+>
+>  arch/arm64/boot/dts/qcom/Makefile             |   1 +
+>  .../boot/dts/qcom/msm8998-google-taimen.dts   |  14 +
+>  .../boot/dts/qcom/msm8998-google-wahoo.dtsi   | 391 ++++++++++++++++++
+>  3 files changed, 406 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/msm8998-google-taimen.dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/msm8998-google-wahoo.dtsi
+>
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> index 5113fac80b7a..d942d3ec3928 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -16,6 +16,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8994-msft-lumia-cityman.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8994-sony-xperia-kitakami-sumire.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8996-mtp.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-asus-novago-tp370ql.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-google-taimen.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-hp-envy-x2.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-lenovo-miix-630.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-mtp.dtb
+> diff --git a/arch/arm64/boot/dts/qcom/msm8998-google-taimen.dts b/arch/arm64/boot/dts/qcom/msm8998-google-taimen.dts
+> new file mode 100644
+> index 000000000000..ffaaafe14037
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/msm8998-google-taimen.dts
+> @@ -0,0 +1,14 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2020, Caleb Connolly <caleb@connolly.tech>
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "msm8998-google-wahoo.dtsi"
+> +
+> +/ {
+> +	model = "Google Pixel 2 XL";
+> +	compatible = "google,taimen", "google,wahoo", "qcom,msm8998", "qcom,msm8998-mtp";
 
-Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
----
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 1 -
- 1 file changed, 1 deletion(-)
+Drop the mtp compatible. Also, afaict wahoo is a shared platform name for P2/2XL, so perhaps using the same naming scheme we used for Xperias/Lumias (soc-vendor-platform-board) would clear up some confusion. In this case, I'm not sure about the wahoo compatible, but I reckon it's fine for it to stay so that it's easier to introduce potential quirks that concern both devices.
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 3e1fd1e7d09f..fee46fbcb0b7 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -44,7 +44,6 @@
- #include "amdgpu_dm.h"
- #ifdef CONFIG_DRM_AMD_DC_HDCP
- #include "amdgpu_dm_hdcp.h"
--#include <drm/drm_hdcp.h>
- #endif
- #include "amdgpu_pm.h"
- 
--- 
-2.25.1
+
+> +	qcom,msm-id = <0x124 0x20001>;
+
+Move it to the common dtsi, unless the other Pixel ships with a different SoC revision.
+
+
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/msm8998-google-wahoo.dtsi b/arch/arm64/boot/dts/qcom/msm8998-google-wahoo.dtsi
+> new file mode 100644
+> index 000000000000..0c221ead2df7
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/msm8998-google-wahoo.dtsi
+> @@ -0,0 +1,391 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2020 Caleb Connolly <caleb@connolly.tech> */
+> +
+> +#include "msm8998.dtsi"
+> +#include "pm8998.dtsi"
+> +#include "pmi8998.dtsi"
+> +#include "pm8005.dtsi"
+> +
+> +/delete-node/ &mpss_mem;
+> +/delete-node/ &venus_mem;
+> +/delete-node/ &mba_mem;
+> +/delete-node/ &slpi_mem;
+> +
+> +/ {
+> +	aliases {
+> +	};
+> +
+> +	chosen {
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		/* Add "earlycon" intended to be used in combination with UART serial console */
+> +		bootargs = "clk_ignore_unused earlycon console=ttyGS0,115200";// loglevel=10 drm.debug=15 debug";
+
+clk_ignore_unused is a BIG hack!
+
+You should trace which clocks are important for it to stay alive and fix it on the driver side.
+
+What breaks if it's not there? Does it still happen with Angelo's clk patches that got in for the 5.12
+
+window?
+
+Aside from that, //loglevel... should also go.
+
+
+> +
+> +	vph_pwr: vph-pwr-regulator {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vph_pwr";
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +	};
+> +};
+
+Don't you need to specify voltage here?
+
+
+> +
+> +&blsp1_uart3 {
+> +	status = "disabled";
+> +
+> +	bluetooth {
+> +		compatible = "qcom,wcn3990-bt";
+> +
+> +		vddio-supply = <&vreg_s4a_1p8>;
+> +		vddxo-supply = <&vreg_l7a_1p8>;
+> +		vddrf-supply = <&vreg_l17a_1p3>;
+> +		vddch0-supply = <&vreg_l25a_3p3>;
+> +		max-speed = <3200000>;
+> +	};
+> +};
+
+Either enable the UART or rid the bluetooth for now.
+
+
+> +
+> +&pm8005_lsid1 {
+> +	pm8005-regulators {
+> +		compatible = "qcom,pm8005-regulators";
+> +
+> +		vdd_s1-supply = <&vph_pwr>;
+> +
+> +		pm8005_s1: s1 { /* VDD_GFX supply */
+
+regulator-name = "vdd_gfx";
+
+
+> +
+> +&spmi_bus {
+> +	pmic@0 {
+> +		compatible = "qcom,pm8994", "qcom,spmi-pmic";
+> +		reg = <0x0 SPMI_USID>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		pon@800 {
+> +			compatible = "qcom,pm8916-pon";
+> +
+> +			reg = <0x800>;
+> +			mode-bootloader = <0x2>;
+> +			mode-recovery = <0x1>;
+> +
+> +			pwrkey {
+> +				compatible = "qcom,pm8941-pwrkey";
+> +				interrupts = <0x0 0x8 0 IRQ_TYPE_EDGE_BOTH>;
+> +				debounce = <15625>;
+> +				bias-pull-up;
+> +				linux,code = <KEY_POWER>;
+> +			};
+> +		};
+> +	};
+> +};
+
+That's a lot of indentation, it would be better to add a label: somewhere instead.. Moreover, the exact same pwrkey node is already present in pm8998.dtsi, so you should just drop this.
+
+
+Konrad
 
