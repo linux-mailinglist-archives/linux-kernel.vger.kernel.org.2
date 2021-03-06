@@ -2,68 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39DC632F764
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 01:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 751D932F769
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 02:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbhCFA5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 19:57:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229837AbhCFA5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 19:57:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFED665071;
-        Sat,  6 Mar 2021 00:57:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1614992236;
-        bh=0IqKdxvmrz+QUHpTk1VBUkhYWVz5TV+kPB13ug6tHzQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RpS7DcKenRZjpX3KelAyqN+9lpeExflxhAs2jrdaB1ZrlvdQmxkw2eyh3QlfH1gAO
-         cP6nd6JtPTalDmzHcHQpcFdKQtIzrNeNtE8x1xvWB2VNf0jgpzvcdyyNW2rCk7NCYy
-         vEqIk8sWyQ2rM2ygurXM0JDHd3QXuyQSyjMxu2wg=
-Date:   Fri, 5 Mar 2021 16:57:15 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Saravanan D <saravanand@fb.com>
-Cc:     <mingo@redhat.com>, <x86@kernel.org>,
-        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
-        <hannes@cmpxchg.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-team@fb.com>
-Subject: Re: [PATCH V6] x86/mm: Tracking linear mapping split events
-Message-Id: <20210305165715.94140a44b177d0e34d59e220@linux-foundation.org>
-In-Reply-To: <20210218235744.1040634-1-saravanand@fb.com>
-References: <20210218235744.1040634-1-saravanand@fb.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S230027AbhCFBAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 20:00:43 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13476 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229971AbhCFBAQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 20:00:16 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DsmSJ1WxczjTkx;
+        Sat,  6 Mar 2021 08:58:24 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 6 Mar 2021 09:00:04 +0800
+Subject: Re: [PATCH 4.19 00/52] 4.19.179-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210305120853.659441428@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <b802c1eb-a0ca-3778-4c6d-af7b9e890639@huawei.com>
+Date:   Sat, 6 Mar 2021 09:00:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.100]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Feb 2021 15:57:44 -0800 Saravanan D <saravanand@fb.com> wrote:
 
-> To help with debugging the sluggishness caused by TLB miss/reload,
-> we introduce monotonic hugepage [direct mapped] split event counts since
-> system state: SYSTEM_RUNNING to be displayed as part of
-> /proc/vmstat in x86 servers
->
-> ...
->
-> --- a/arch/x86/mm/pat/set_memory.c
-> +++ b/arch/x86/mm/pat/set_memory.c
-> @@ -120,6 +120,10 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
->  #ifdef CONFIG_SWAP
->  		SWAP_RA,
->  		SWAP_RA_HIT,
-> +#endif
-> +#ifdef CONFIG_X86
-> +		DIRECT_MAP_LEVEL2_SPLIT,
-> +		DIRECT_MAP_LEVEL3_SPLIT,
->  #endif
->  		NR_VM_EVENT_ITEMS
->  };
 
-This is the first appearance of arch-specific fields in /proc/vmstat.
+On 2021/3/5 20:21, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.179 release.
+> There are 52 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.179-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-I don't really see a problem with this - vmstat is basically a dumping
-ground of random developer stuff.  But was this the best place in which
-to present this data?
+Tested on arm64 and x86 for 4.19.179-rc1,
+
+Kernel repo: 
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.19.y
+Version: 4.19.179-rc1+
+Commit: 1112456421caf2562801d760aef4da53915246c0
+Compiler: gcc version 7.3.0 (GCC)
+
+
+arm64 (No kernel failures)
+--------------------------------------------------------------------
+Testcase Result Summary:
+total_num: 4674
+succeed_num: 4715
+failed_num: 1
+timeout_num: 0
+
+x86 (No kernel failures)
+--------------------------------------------------------------------
+Testcase Result Summary:
+total_num: 4674
+succeed_num: 4670
+failed_num: 4
+timeout_num: 0
+
+Tested-by: Hulk Robot <hulkci@huawei.com>
