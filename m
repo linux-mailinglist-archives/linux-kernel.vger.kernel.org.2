@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657A832FD6B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 22:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5629F32FD6F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 22:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCFVSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 16:18:38 -0500
-Received: from mail-pg1-f172.google.com ([209.85.215.172]:35997 "EHLO
-        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbhCFVSW (ORCPT
+        id S229922AbhCFVTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 16:19:11 -0500
+Received: from mail-pf1-f174.google.com ([209.85.210.174]:36936 "EHLO
+        mail-pf1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229642AbhCFVSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 16:18:22 -0500
-Received: by mail-pg1-f172.google.com with SMTP id t26so3784194pgv.3;
-        Sat, 06 Mar 2021 13:18:22 -0800 (PST)
+        Sat, 6 Mar 2021 16:18:40 -0500
+Received: by mail-pf1-f174.google.com with SMTP id a188so4655811pfb.4;
+        Sat, 06 Mar 2021 13:18:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=XDUfdodzGUJFOwgS+gmCdHVWDq2RAg4FN8l3oGXsrm0=;
-        b=MQeaQyM5GoQ8qR18Ss0sTqAnGka0fMy3iCRrMjOf1WymZBsg2isIFkqr0jN8rRHDlA
-         QwyXhmboM4VjXfMEYVCcrTBO5TCJtf3SW2tXNLFu1qABu0f0TX26hL4Fa/4HKjfhXQHB
-         YISddxM5O4As9qVca4inRFb9NT3M23csBBuWsBb0mQnIUP9xEFjhdrZZM/+fHGaw3VXC
-         nGAbtFrSGPVb5CbSfimOpkO+AOLUzE3dW0DRdnojOHfgpmDUrEWv+iUM0aha6QOdTJEU
-         TRNoVLAUWsCrHC5bAOle3CYJ20t++QPt8cUPqGDOYZInzw0hAptSnMPXuXTcRiGKL0oH
-         VZyg==
-X-Gm-Message-State: AOAM532LZtlWg5371N4OEUjbJOhxcIoBN/QqUy+w01tod582AAtscW7u
-        82Nx9yAyN4fkg/OFeHJaBg==
-X-Google-Smtp-Source: ABdhPJx2hPmB5uR/5kjSKm8WOFSkMWpazJAqqNAaf78kUPuyyvz5crWMRZmC8R8pB60cvsDiCD2JUQ==
-X-Received: by 2002:aa7:8b07:0:b029:1f3:e233:3997 with SMTP id f7-20020aa78b070000b02901f3e2333997mr2182648pfd.27.1615065501681;
-        Sat, 06 Mar 2021 13:18:21 -0800 (PST)
+         :mime-version:content-disposition:in-reply-to;
+        bh=bRMSNS0G8aL8UCuQkyktn5/7S2pt44DDzL/uQZBNB3M=;
+        b=b8qWO8IeSbfW0q8IsBKnslK3jjYeTbLjD1z5K688FvgkbWSwYItErOSBAesXljbGiY
+         UJDjPzmKntATbxsRityd6ITmY281giXqfDV7crxbAkFK1BpGhjTGxifx1awo53r+WCc+
+         xLDFdEBR9JsLL5hm+j30IMlw3vZw+g5P58RltxIIWXlrJi4w7Q0vRivZWCZXlpAAFBWS
+         hkCh7HzDFvIfylx7TZd0FKzRMepjHhkO+aPPoLELERvfAjqwF2c5hZbxN+ubq9nUefXq
+         d4e4+vQ3G+awDMHZGuwSD2lHCq38g991T8gieWdquiqfd37YFSCQLnka3mI6vqv6idvJ
+         sFQQ==
+X-Gm-Message-State: AOAM533dE1WN9ZPE1dhAJHIcz+ucRsetZxzjoEt+v+RPoRJs9Glc0pE9
+        9NtXsRpbVMljdj5rYNjmiw==
+X-Google-Smtp-Source: ABdhPJzOiYe87bFlIa275pXseRPXE3osJxYu0jzCFw7MCcqeq84q768evU78CEiUstW31UpFajb9cw==
+X-Received: by 2002:aa7:86d9:0:b029:1ef:4f40:4bba with SMTP id h25-20020aa786d90000b02901ef4f404bbamr11662745pfo.54.1615065520312;
+        Sat, 06 Mar 2021 13:18:40 -0800 (PST)
 Received: from robh.at.kernel.org ([172.58.27.98])
-        by smtp.gmail.com with ESMTPSA id f19sm6176840pgl.49.2021.03.06.13.18.18
+        by smtp.gmail.com with ESMTPSA id q3sm6353008pfn.14.2021.03.06.13.18.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 13:18:20 -0800 (PST)
-Received: (nullmailer pid 1228594 invoked by uid 1000);
-        Sat, 06 Mar 2021 21:18:16 -0000
-Date:   Sat, 6 Mar 2021 14:18:16 -0700
+        Sat, 06 Mar 2021 13:18:39 -0800 (PST)
+Received: (nullmailer pid 1229081 invoked by uid 1000);
+        Sat, 06 Mar 2021 21:18:33 -0000
+Date:   Sat, 6 Mar 2021 14:18:33 -0700
 From:   Rob Herring <robh@kernel.org>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        devicetree@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Maxime Ripard <maxime@cerno.tech>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        jonas.gorski@gmail.com, Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH 3/4] dt-bindings: clock: Add BCM63268 timer binding
-Message-ID: <20210306211816.GA1228536@robh.at.kernel.org>
-References: <20210225194201.17001-1-noltari@gmail.com>
- <20210225194201.17001-4-noltari@gmail.com>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, linux-clk@vger.kernel.org,
+        martin.botka@somainline.org, ~postmarketos/upstreaming@lists.sr.ht,
+        angelogioacchino.delregno@somainline.org,
+        phone-devel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        marijn.suijten@somainline.org,
+        Michael Turquette <mturquette@baylibre.com>
+Subject: Re: [PATCH 1/2] dt-bindings: clock: qcom,gcc: Document MSM8976
+ compatibles
+Message-ID: <20210306211833.GA1229035@robh.at.kernel.org>
+References: <20210225201845.109670-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210225194201.17001-4-noltari@gmail.com>
+In-Reply-To: <20210225201845.109670-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 20:42:00 +0100, Álvaro Fernández Rojas wrote:
-> Document the Broadcom BCM63268 Clock and Reset controller.
+On Thu, 25 Feb 2021 21:18:42 +0100, Konrad Dybcio wrote:
+> Document the newly added compatibles for 8976 GCC.
 > 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
->  .../clock/brcm,bcm63268-timer-clocks.yaml     | 40 +++++++++++++++++++
->  1 file changed, 40 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/brcm,bcm63268-timer-clocks.yaml
+>  Documentation/devicetree/bindings/clock/qcom,gcc.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
