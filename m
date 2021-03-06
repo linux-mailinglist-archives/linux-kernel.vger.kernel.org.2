@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE27432F9B2
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB1732F9B7
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbhCFLZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 06:25:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbhCFLZF (ORCPT
+        id S229917AbhCFL2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 06:28:51 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:48012 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229888AbhCFL2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 06:25:05 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB53C06175F;
-        Sat,  6 Mar 2021 03:25:04 -0800 (PST)
-Date:   Sat, 06 Mar 2021 11:25:02 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615029903;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HYVzgnpFzQqJ6+1Q/++zctsfN6V/MytOndqgpQX6xns=;
-        b=dllNtQACJcQCClmujtXHHoQxH3yzzfwnW/I+SI7DkI3/YCpwtN5eswWJPKu5lScJyArbA2
-        Popty6JqFDgTo0ZYM9E9pWvYhpwt9s5z630nqAFF2Jv9oApQhvxtyT6Jdg5vZ4s21OAvqj
-        a3ATuHVM+1tcZRQ6qyO42DWxaxBFJEwZWFY1O1muzy38X3AQd0q7l4BnS41rGmBfR1iWcP
-        MpjuFZVHtVQ5Wl+mItg4kOJAU3lTi5aDKa2ckdhMZ07h+piBpxhDewSKxBqg9JZx40bwTA
-        bNfZu15LAvtde2Cc20edy6gSjLD8NME+GmriW0W6KZbyHyUmTHBYv/+h07ZT/w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615029903;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HYVzgnpFzQqJ6+1Q/++zctsfN6V/MytOndqgpQX6xns=;
-        b=WNQzp6nvenHT1p3fmjIgRG1rpLR0AQfEphCpSUGVX8BqJGyvFBMqpztCtNIzQN6X4ij00+
-        XOc8eS7XBV4pVDDg==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/seves] x86/sev-es: Remove subtraction of res variable
-Cc:     Borislav Petkov <bp@suse.de>, Joerg Roedel <jroedel@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210223111130.16201-1-bp@alien8.de>
-References: <20210223111130.16201-1-bp@alien8.de>
+        Sat, 6 Mar 2021 06:28:17 -0500
+Received: by mail-io1-f69.google.com with SMTP id o4so4090228ioh.14
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 03:28:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+vfSdO+SL3Qb4u87AJJ+RYM5MXyih+emXtKp5NK9jp0=;
+        b=SfaxVkn2hhmrCY68I7uhPGEnAO+LwtNcOpvt2iaP4F5y1u6GJUZoUj2UTGwBeDNqbV
+         RhGyDp8VLSF/AJr68J82ZE33+XngEvk18N+u9aa2sJEgikqzIqBcyoTIXfrPNCss7MY7
+         TBBScYgaTq85pFzWp8cHeMf1EDOzCRS5umn6gOCJHQ2PCmFt/n6kAezofjQRy3rXufOf
+         Z92b0+dyqfPTjfKxA6PvNt/cGHit3UtOmvqgN52m1CSYsvkwXrMurncw+QhnJb/7Q2D6
+         8W7koW0sbP+d5ITh2VfDJR1p+gYjIHuUOGjpaqY9L3WF0wDLM6z6554pKq00DGV1u9ow
+         Isyw==
+X-Gm-Message-State: AOAM531xFo3v+U7mQYLC1S4ql9yORQ++0lJmA09iqyRo2yTxiPYWbZMM
+        beHqlbeO2HxTlZhVeIMSZJ3rDYAUsgqgk629AHjoaDCEJnhH
+X-Google-Smtp-Source: ABdhPJziCEqzKon0OaJlKlz5oXBilnbCKhYwoGWECyXG9W+BLbGVSYRzKoWmPckCfn+3veI8RqdWcRfVsZB4yVHdQ3rNrSEumjzt
 MIME-Version: 1.0
-Message-ID: <161502990248.398.6445049374742993400.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1608:: with SMTP id t8mr12838661ilu.79.1615030097317;
+ Sat, 06 Mar 2021 03:28:17 -0800 (PST)
+Date:   Sat, 06 Mar 2021 03:28:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004094ff05bcdc7ffb@google.com>
+Subject: [syzbot] bpf boot error: WARNING in kvm_wait
+From:   syzbot <syzbot+46fc491326a456ff8127@syzkaller.appspotmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/seves branch of tip:
+Hello,
 
-Commit-ID:     f3db3365c069c2a8505cdee8033fe3d22d2fe6c0
-Gitweb:        https://git.kernel.org/tip/f3db3365c069c2a8505cdee8033fe3d22d2fe6c0
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Tue, 23 Feb 2021 12:03:19 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Sat, 06 Mar 2021 12:08:53 +01:00
+syzbot found the following issue on:
 
-x86/sev-es: Remove subtraction of res variable
+HEAD commit:    edbea922 veth: Store queue_mapping independently of XDP pr..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=113ae02ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=402784bff477e1ac
+dashboard link: https://syzkaller.appspot.com/bug?extid=46fc491326a456ff8127
 
-vc_decode_insn() calls copy_from_kernel_nofault() by way of
-vc_fetch_insn_kernel() to fetch 15 bytes max of opcodes to decode.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+46fc491326a456ff8127@syzkaller.appspotmail.com
 
-copy_from_kernel_nofault() returns negative on error and 0 on success.
-The error case is handled by returning ES_EXCEPTION.
+------------[ cut here ]------------
+raw_local_irq_restore() called with IRQs enabled
+WARNING: CPU: 0 PID: 4787 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
+Modules linked in:
+CPU: 0 PID: 4787 Comm: systemd-getty-g Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
+Code: be ff cc cc cc cc cc cc cc cc cc cc cc 80 3d 1e 62 b0 04 00 74 01 c3 48 c7 c7 a0 8e 6b 89 c6 05 0d 62 b0 04 01 e8 57 da be ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
+RSP: 0018:ffffc900012efc40 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffffffff8be28b80 RCX: 0000000000000000
+RDX: ffff888023de5340 RSI: ffffffff815bea35 RDI: fffff5200025df7a
+RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff815b77be R11: 0000000000000000 R12: 0000000000000003
+R13: fffffbfff17c5170 R14: 0000000000000001 R15: ffff8880b9c35f40
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa257bcaab4 CR3: 000000000bc8e000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ kvm_wait arch/x86/kernel/kvm.c:860 [inline]
+ kvm_wait+0xc9/0xe0 arch/x86/kernel/kvm.c:837
+ pv_wait arch/x86/include/asm/paravirt.h:564 [inline]
+ pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
+ __pv_queued_spin_lock_slowpath+0x8b8/0xb40 kernel/locking/qspinlock.c:508
+ pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:554 [inline]
+ queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
+ queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
+ do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
+ spin_lock include/linux/spinlock.h:354 [inline]
+ check_stack_usage kernel/exit.c:715 [inline]
+ do_exit+0x1d6a/0x2ae0 kernel/exit.c:868
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fa2592a3618
+Code: Unable to access opcode bytes at RIP 0x7fa2592a35ee.
+RSP: 002b:00007ffc579980b8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fa2592a3618
+RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
+RBP: 00007fa2595808e0 R08: 00000000000000e7 R09: fffffffffffffee8
+R10: 00007fa25775e158 R11: 0000000000000246 R12: 00007fa2595808e0
+R13: 00007fa259585c20 R14: 0000000000000000 R15: 0000000000000000
 
-In the success case, the ret variable which contains the return value is
-0 so there's no need to subtract it from MAX_INSN_SIZE when initializing
-the insn buffer for further decoding. Remove it.
 
-No functional changes.
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Joerg Roedel <jroedel@suse.de>
-Link: https://lkml.kernel.org/r/20210223111130.16201-1-bp@alien8.de
 ---
- arch/x86/kernel/sev-es.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index 84c1821..1e78f4b 100644
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -267,7 +267,7 @@ static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt)
- 			return ES_EXCEPTION;
- 		}
- 
--		insn_init(&ctxt->insn, buffer, MAX_INSN_SIZE - res, 1);
-+		insn_init(&ctxt->insn, buffer, MAX_INSN_SIZE, 1);
- 		insn_get_length(&ctxt->insn);
- 	}
- 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
