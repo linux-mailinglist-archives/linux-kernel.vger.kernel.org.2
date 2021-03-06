@@ -2,203 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42DC32FA29
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:43:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B718F32FA2E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhCFLnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 06:43:13 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34280 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbhCFLm1 (ORCPT
+        id S230406AbhCFLrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 06:47:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230260AbhCFLrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 06:42:27 -0500
-Date:   Sat, 06 Mar 2021 11:42:26 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615030946;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JeaEYVhu+77EDVCDVK7k5q00t0U7QsQXoyYLwl8BYcA=;
-        b=4smvSPa/hqX2rKdyCapcCtfpuo+pub4Rcb0XbgQs4ufEnz0YdAujULaRMTVpjFHAqwMa0H
-        73tumFNbl6aAmLldFxf7zTgd3Nu1vTHQagRoe7cTvRwMgWknbrtvl2AEpz/i/ndeC05vwC
-        mLhcH4gwO/mwJhFW0YCqPAHvnrWko+LRXBLg4PfQz/xqm8iKQtAbP+RSb2EuUuBieP1y91
-        aVdffRHEHi2zQDw0dtv0iYPVS7XaRKYnYYJ25bzJYgD3Uwhh9GFz2hfuAdT9pTDn4ClVA7
-        fq1Gea5oseqLDEMgdvzj+yAUaqhgZfrDUqmEiousKYR+7xWLFTOmBbPSuJRONg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615030946;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JeaEYVhu+77EDVCDVK7k5q00t0U7QsQXoyYLwl8BYcA=;
-        b=R+EPeQfrGtfs6nG9wQ0JGzhLIETjXreJykGxGAouYomwYfB7xaV5EFmcL+Cqg/Odjcbbp4
-        Pvx2oAFXW/y7EtCw==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Fix migration_cpu_stop() requeueing
-Cc:     stable@kernel.org, "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210224131355.357743989@infradead.org>
-References: <20210224131355.357743989@infradead.org>
+        Sat, 6 Mar 2021 06:47:14 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DE9C06174A;
+        Sat,  6 Mar 2021 03:47:14 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id z5so2731528plg.3;
+        Sat, 06 Mar 2021 03:47:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rajPZQvK+Fslf8NyrtY3YSn7CgCwIT/U4wqXMTZdE3M=;
+        b=qqWdmn2zAPaoKvzPbQs/uGWtEUJlJcwn8HxypI5XtJHb7vsn9qflI0Xep/v9WR/EKk
+         qdjnvta3gAVRgAYuCscCJvIy1V8PlWC1PjmMSDfY4/usmcoOjHTzBZQg68P3Jj0bz/Ko
+         N+PUBZ/J4LjiA91fUn4930xqi4JlMh5d7PqF0KNsJdZKl0HunhHHzuNdG15hFO+THW3V
+         5pa0X/ZqhyCse42X2tIyQOC1q140nNgbjelxB3X2C8A52tm3Hxx/0DDoAPZ+v7jaErmO
+         AIKY35ruk4cfJqcwfyCmRZkpk3eaEVJQGWXtDaO8aibGt1slOKX5ynJxMP/4yD7OlyR8
+         WNlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rajPZQvK+Fslf8NyrtY3YSn7CgCwIT/U4wqXMTZdE3M=;
+        b=KPz3jKPcw4VRWBT1yvwTyisjfa7h3/xZGXJOUne8KrBvPWV7eW+x5mgTefSKcYYAV3
+         SAc092vibEJWvXJ/mC21AJu+v6c0/CzGo8bODXMlsBx7/kcsYH6vm5U2kD8vYn/DL2cq
+         QtW+ky0dBglt5UQsfxdLoC4Gk1Z0oqWd7zycGRuBqswxod+E4+Av805610HTW8uokgiB
+         SoCeYs4bDrbtU3nVVGDxcZAP+aRRh8Rb+byM/HGqlSc8czUIeje5M3slcMf7J4HDwBRc
+         Dp0RC/dnwSry/WKO5K2sfcSbkb+S48MuJyCrQbra9pBbs3bPULH9mnMefFKiKV6xLKGv
+         9c0A==
+X-Gm-Message-State: AOAM532Y7C4BhMPxFscDAKIclpcABEbyiQ00l8o+v+55nSnY5CH0q4pY
+        9xZUxZeOGFGb87kmdQmwMGBjbFxqgUA=
+X-Google-Smtp-Source: ABdhPJyiOvhtapIDzsnz3eB0j9OO+k6Bk8sY+5WIzkLMASRa9I6w39tJ82K2o7nnDIIGhqHGW9b/RA==
+X-Received: by 2002:a17:90a:d911:: with SMTP id c17mr3142106pjv.98.1615031233524;
+        Sat, 06 Mar 2021 03:47:13 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id x1sm5073502pje.40.2021.03.06.03.47.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 03:47:13 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: zhang.yunkai@zte.com.cn
+To:     cang@codeaurora.org
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, jaegeuk@kernel.org, asutoshd@codeaurora.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhang Yunkai <zhang.yunkai@zte.com.cn>
+Subject: [PATCH] scsi:ufs: remove duplicate include in ufshcd
+Date:   Sat,  6 Mar 2021 03:47:06 -0800
+Message-Id: <20210306114706.217873-1-zhang.yunkai@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <161503094617.398.15367885573032267808.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 
-Commit-ID:     8a6edb5257e2a84720fe78cb179eca58ba76126f
-Gitweb:        https://git.kernel.org/tip/8a6edb5257e2a84720fe78cb179eca58ba76126f
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Sat, 13 Feb 2021 13:10:35 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sat, 06 Mar 2021 12:40:20 +01:00
+'blkdev.h' included in 'ufshcd.c' is duplicated.
+It is also included in the 18th line.
 
-sched: Fix migration_cpu_stop() requeueing
-
-When affine_move_task(p) is called on a running task @p, which is not
-otherwise already changing affinity, we'll first set
-p->migration_pending and then do:
-
-	 stop_one_cpu(cpu_of_rq(rq), migration_cpu_stop, &arg);
-
-This then gets us to migration_cpu_stop() running on the CPU that was
-previously running our victim task @p.
-
-If we find that our task is no longer on that runqueue (this can
-happen because of a concurrent migration due to load-balance etc.),
-then we'll end up at the:
-
-	} else if (dest_cpu < 1 || pending) {
-
-branch. Which we'll take because we set pending earlier. Here we first
-check if the task @p has already satisfied the affinity constraints,
-if so we bail early [A]. Otherwise we'll reissue migration_cpu_stop()
-onto the CPU that is now hosting our task @p:
-
-	stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
-			    &pending->arg, &pending->stop_work);
-
-Except, we've never initialized pending->arg, which will be all 0s.
-
-This then results in running migration_cpu_stop() on the next CPU with
-arg->p == NULL, which gives the by now obvious result of fireworks.
-
-The cure is to change affine_move_task() to always use pending->arg,
-furthermore we can use the exact same pattern as the
-SCA_MIGRATE_ENABLE case, since we'll block on the pending->done
-completion anyway, no point in adding yet another completion in
-stop_one_cpu().
-
-This then gives a clear distinction between the two
-migration_cpu_stop() use cases:
-
-  - sched_exec() / migrate_task_to() : arg->pending == NULL
-  - affine_move_task() : arg->pending != NULL;
-
-And we can have it ignore p->migration_pending when !arg->pending. Any
-stop work from sched_exec() / migrate_task_to() is in addition to stop
-works from affine_move_task(), which will be sufficient to issue the
-completion.
-
-Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
-Cc: stable@kernel.org
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210224131355.357743989@infradead.org
+Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 ---
- kernel/sched/core.c | 39 ++++++++++++++++++++++++++++-----------
- 1 file changed, 28 insertions(+), 11 deletions(-)
+ drivers/scsi/ufs/ufshcd.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index ca2bb62..79ddba5 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1922,6 +1922,24 @@ static int migration_cpu_stop(void *data)
- 	rq_lock(rq, &rf);
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 77161750c9fb..9a564b6fd092 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -24,7 +24,6 @@
+ #include "ufs_bsg.h"
+ #include "ufshcd-crypto.h"
+ #include <asm/unaligned.h>
+-#include <linux/blkdev.h>
  
- 	pending = p->migration_pending;
-+	if (pending && !arg->pending) {
-+		/*
-+		 * This happens from sched_exec() and migrate_task_to(),
-+		 * neither of them care about pending and just want a task to
-+		 * maybe move about.
-+		 *
-+		 * Even if there is a pending, we can ignore it, since
-+		 * affine_move_task() will have it's own stop_work's in flight
-+		 * which will manage the completion.
-+		 *
-+		 * Notably, pending doesn't need to match arg->pending. This can
-+		 * happen when tripple concurrent affine_move_task() first sets
-+		 * pending, then clears pending and eventually sets another
-+		 * pending.
-+		 */
-+		pending = NULL;
-+	}
-+
- 	/*
- 	 * If task_rq(p) != rq, it cannot be migrated here, because we're
- 	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued because
-@@ -2194,10 +2212,6 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 			    int dest_cpu, unsigned int flags)
- {
- 	struct set_affinity_pending my_pending = { }, *pending = NULL;
--	struct migration_arg arg = {
--		.task = p,
--		.dest_cpu = dest_cpu,
--	};
- 	bool complete = false;
- 
- 	/* Can the task run on the task's current CPU? If so, we're done */
-@@ -2235,6 +2249,12 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 			/* Install the request */
- 			refcount_set(&my_pending.refs, 1);
- 			init_completion(&my_pending.done);
-+			my_pending.arg = (struct migration_arg) {
-+				.task = p,
-+				.dest_cpu = -1,		/* any */
-+				.pending = &my_pending,
-+			};
-+
- 			p->migration_pending = &my_pending;
- 		} else {
- 			pending = p->migration_pending;
-@@ -2265,12 +2285,6 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 		p->migration_flags &= ~MDF_PUSH;
- 		task_rq_unlock(rq, p, rf);
- 
--		pending->arg = (struct migration_arg) {
--			.task = p,
--			.dest_cpu = -1,
--			.pending = pending,
--		};
--
- 		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
- 				    &pending->arg, &pending->stop_work);
- 
-@@ -2283,8 +2297,11 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 		 * is_migration_disabled(p) checks to the stopper, which will
- 		 * run on the same CPU as said p.
- 		 */
-+		refcount_inc(&pending->refs); /* pending->{arg,stop_work} */
- 		task_rq_unlock(rq, p, rf);
--		stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
-+
-+		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
-+				    &pending->arg, &pending->stop_work);
- 
- 	} else {
- 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/ufs.h>
+-- 
+2.25.1
+
