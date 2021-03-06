@@ -2,70 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF50E32FD29
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 21:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B807532FD2D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 21:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhCFUg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 15:36:28 -0500
-Received: from mail-pj1-f49.google.com ([209.85.216.49]:36544 "EHLO
-        mail-pj1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231183AbhCFUgY (ORCPT
+        id S231460AbhCFUhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 15:37:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231438AbhCFUgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 15:36:24 -0500
-Received: by mail-pj1-f49.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so957583pjh.1;
-        Sat, 06 Mar 2021 12:36:23 -0800 (PST)
+        Sat, 6 Mar 2021 15:36:46 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671C7C06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 12:36:45 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id jt13so11595583ejb.0
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 12:36:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bVBJNOetXrqKceA6PQT3AoaWCMo1uBzTwNd40e3p5Mg=;
+        b=DUH2TaJDmYKl3P+nqyQnZD/L+UUehgvGZ+JdR6f29HgDHqUZMlDctwBIl8mYEmOyr0
+         N4JfiYpVnsK20wsamLI2lVHA89Wfq08BTq5pazwlWEnowiN+pvdoMlOFkXMkezTctVU6
+         yLVLH/j9zqqOc1XXIzlPNblcwaWBnvPKoE+8ygaflWqyueqL8GQUxJqDZ0IOPsbLAq4D
+         ClAITvBD9MRRxeIdqI+0cvIdl865zgrrN5mPPgRQlFQTjJcqKYMYzsPzMflqD2WkyucY
+         yYqxvUtScFD3cWQ3k6qWXggCW2IBUYcSUf7R3K/wcLL0Zz3r5yXY54vMvwFWm819EQIv
+         72nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kxst1hG7ALyCmuPlQ7JFD7SMZloRyR6/yTfXMK8W7T0=;
-        b=hF159ji8oR92LgUpHS4NKAf0lpQwhTmVLmn4LNokqwj9gXSjedaXnDxYuYlxPhdVEZ
-         GaBerzJYExH2Ad41sPwa1e+Hwi/mVuOPL8jC1zpTSbg7Ayd67+HUQtvzZSbPondtJOlF
-         NqiTWVJkfrJLnEcOAqEn/QCLBTnoPgwRA16YPgZbZFQpiEmLnXIreeIumzYGD99BU8yT
-         NUPIcUD1RoIabQSMnrZN+QLyFB+d8OpgKT8cDMEuopo2RKmIS9EazDh1YPOWAfu5T9ka
-         mGyXbcLc1FaX7EfSIhYjTn4S4cliTBVjD7Gj2kl2WAdfPGYbNfr4gsqUiyg/gyicYrPQ
-         pPKg==
-X-Gm-Message-State: AOAM531Y4BRjSUqPq+/oiWJcZPXKCnyVu9mfVQhYwTzoSNQKzGlXCr+H
-        7t+n06r5dyJ/kY4MgJV09A==
-X-Google-Smtp-Source: ABdhPJz0P+6rkvVUSXxTrcwxqhCKO6b8X5k2tVKedc0iXxGFF8nD+HcxsXL0EuR95YHQZyqlJKMczg==
-X-Received: by 2002:a17:90b:809:: with SMTP id bk9mr16677761pjb.83.1615062983602;
-        Sat, 06 Mar 2021 12:36:23 -0800 (PST)
-Received: from robh.at.kernel.org ([172.58.27.98])
-        by smtp.gmail.com with ESMTPSA id t22sm6300886pjw.54.2021.03.06.12.36.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 12:36:22 -0800 (PST)
-Received: (nullmailer pid 1172590 invoked by uid 1000);
-        Sat, 06 Mar 2021 20:36:17 -0000
-Date:   Sat, 6 Mar 2021 13:36:17 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, timur@kernel.org,
-        nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 7/7] ASoC: dt-bindings: imx-rpmsg: Add binding doc for
- rpmsg machine driver
-Message-ID: <20210306203617.GA1164939@robh.at.kernel.org>
-References: <1614221563-26822-1-git-send-email-shengjiu.wang@nxp.com>
- <1614221563-26822-8-git-send-email-shengjiu.wang@nxp.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bVBJNOetXrqKceA6PQT3AoaWCMo1uBzTwNd40e3p5Mg=;
+        b=bXtfFHAE5n0jW+2p25j8yo3V6i3lsiK11T7SHg395sPZuHnx4GdHPXjhS8sjCTeRlf
+         47Xq9+PbryAGyLXQdQJFUQ7oxiC2RJ2vlf4Pc1tGQ/AOlMmmsUsKBg8d2ggUX32a6V0A
+         F2lTP4wuuzsCmdh21jSmwebKU/8uYf6issi/8t4rgVlSwwNUOt0Id/bUruFcBIVU/D/z
+         YH13glAyjfoexSONmkg6jIqcLlTXieVFiwph79983JQcgEL5/97ynareWBVTblB5KlY5
+         K2bvHhhrkhadEmQRrPfexVoPaH68qzpMr7ocqB4mov8FgkaQIQJ2Yo53GfdFihUxz7OL
+         fQDA==
+X-Gm-Message-State: AOAM533YePQ6vQAsCsAAd0KbKpEBzjbbD1jNq4cvEHpYbU3vZkUsd7MC
+        Nzu67ypH7+aJZIEGrOYkV+7//dNpo5CMAiyiOSjDdw==
+X-Google-Smtp-Source: ABdhPJwWg5JZfa53VPl0WuQEKYMbCdynjlz48fz7pdzLNK+5tXI6itu2L3u8T4IRUn3/J6V3gGOhtuytQtomfVZ9FIo=
+X-Received: by 2002:a17:906:2818:: with SMTP id r24mr8202331ejc.472.1615063004125;
+ Sat, 06 Mar 2021 12:36:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614221563-26822-8-git-send-email-shengjiu.wang@nxp.com>
+References: <20210208105530.3072869-1-ruansy.fnst@cn.fujitsu.com> <20210208105530.3072869-2-ruansy.fnst@cn.fujitsu.com>
+In-Reply-To: <20210208105530.3072869-2-ruansy.fnst@cn.fujitsu.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Sat, 6 Mar 2021 12:36:39 -0800
+Message-ID: <CAPcyv4jqEdPoF5YM+jSYJd74KqRTwbbEum7=moa3=Wyn6UyU9g@mail.gmail.com>
+Subject: Re: [PATCH v3 01/11] pagemap: Introduce ->memory_failure()
+To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        device-mapper development <dm-devel@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        david <david@fromorbit.com>, Christoph Hellwig <hch@lst.de>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>, qi.fuli@fujitsu.com,
+        Yasunori Goto <y-goto@fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 10:52:43AM +0800, Shengjiu Wang wrote:
-> Imx-rpmsg is a new added machine driver for supporting audio on Cortex-M
-> core. The Cortex-M core will control the audio interface, DMA and audio
-> codec, setup the pipeline, the audio driver on Cortex-A core side is just
-> to communitcate with M core, it is a virtual sound card and don't touch
-> the hardware.
+On Mon, Feb 8, 2021 at 2:55 AM Shiyang Ruan <ruansy.fnst@cn.fujitsu.com> wrote:
+>
+> When memory-failure occurs, we call this function which is implemented
+> by each kind of devices.  For the fsdax case, pmem device driver
+> implements it.  Pmem device driver will find out the block device where
+> the error page locates in, and try to get the filesystem on this block
+> device.  And finally call filesystem handler to deal with the error.
+> The filesystem will try to recover the corrupted data if possiable.
+>
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+> ---
+>  include/linux/memremap.h | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/include/linux/memremap.h b/include/linux/memremap.h
+> index 79c49e7f5c30..0bcf2b1e20bd 100644
+> --- a/include/linux/memremap.h
+> +++ b/include/linux/memremap.h
+> @@ -87,6 +87,14 @@ struct dev_pagemap_ops {
+>          * the page back to a CPU accessible page.
+>          */
+>         vm_fault_t (*migrate_to_ram)(struct vm_fault *vmf);
+> +
+> +       /*
+> +        * Handle the memory failure happens on one page.  Notify the processes
+> +        * who are using this page, and try to recover the data on this page
+> +        * if necessary.
+> +        */
+> +       int (*memory_failure)(struct dev_pagemap *pgmap, unsigned long pfn,
+> +                             int flags);
+>  };
 
-This sounds like 1 h/w block (the interface to the cortex-M), your DT 
-should be 1 node. If you need 2 drivers to satisfy the needs of the OS, 
-then instantiate one device from the other device's driver.
+After the conversation with Dave I don't see the point of this. If
+there is a memory_failure() on a page, why not just call
+memory_failure()? That already knows how to find the inode and the
+filesystem can be notified from there.
 
-Rob
+Although memory_failure() is inefficient for large range failures, I'm
+not seeing a better option, so I'm going to test calling
+memory_failure() over a large range whenever an in-use dax-device is
+hot-removed.
