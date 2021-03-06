@@ -2,77 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1199B32F704
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 00:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7598932F70D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 01:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhCEX7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 18:59:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229592AbhCEX6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 18:58:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF3DE601FE;
-        Fri,  5 Mar 2021 23:58:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1614988721;
-        bh=HbZT0bF1MsVnxN6BmosWjrgrZCSm028Kpqvom+zo5rA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kP9fQL0oxzF4MeLAIlf9r2mjWb0IXmPVbfnY/LAipr6zyaplBjZKHIYvNDiD/vksT
-         MxPzAQpWPcorsIEn0ivLCcIPgk2TU4tCLSY39d/t9fwKXPcwKtiMabmvhE/xlPzKwD
-         Xlb3wWSDeMKoqkni3RpbOJg3TVMfltCCYWcH8+AU=
-Date:   Fri, 5 Mar 2021 15:58:40 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Zhou Guanghui <zhouguanghui1@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        hannes@cmpxchg.org, hughd@google.com,
-        kirill.shutemov@linux.intel.com, npiggin@gmail.com, ziy@nvidia.com,
-        wangkefeng.wang@huawei.com, guohanjun@huawei.com,
-        dingtianhong@huawei.com, chenweilong@huawei.com,
-        rui.xiang@huawei.com
-Subject: Re: [PATCH v2 2/2] mm/memcg: set memcg when split page
-Message-Id: <20210305155840.4bb6dea4fb473d9ffbe49c99@linux-foundation.org>
-In-Reply-To: <YEIblNv0BMITFzYO@dhcp22.suse.cz>
-References: <20210304074053.65527-1-zhouguanghui1@huawei.com>
-        <20210304074053.65527-3-zhouguanghui1@huawei.com>
-        <YEIblNv0BMITFzYO@dhcp22.suse.cz>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229493AbhCFAEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 19:04:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229592AbhCFAEU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 19:04:20 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AADC06175F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 16:04:20 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id x4so115874lfu.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 16:04:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ng7BsdZElPC+gzGXsxquczNpRrNVtdewc/pU/jfXSXU=;
+        b=o5cANNl02cVFCKeEn8S0ugiKV8NbQH9GEfE6+dziNCsAnt1NmX7DP1/cOm/whSzwxn
+         s1MAwdppLndgTGvVJbVlf18fanM6QeIozEkrEAsI62ypB7S/3chPOmH27/E/38Io4M5N
+         GrWjxXy8j8zUNcqLNUY33zYB7NG/Osz9S/Y3jt9tNs0DzHGA6cc9drCjwQ5nJHN9HH7g
+         mE6/LzkHJ5MuzjfjQ+vi3c5tgNXeVfJvdDkcuVkEskaehdscQJm6y5sJjiSpLOO/p4p/
+         tcWcOBh8wW3BfyWsN4K/BoZhFUHy5KeKJhRa4hEFrXZAYI+hbPn5kRmvKi5Rn9roQTjG
+         biug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ng7BsdZElPC+gzGXsxquczNpRrNVtdewc/pU/jfXSXU=;
+        b=cFcABGHeYurIof7nnmRHEFaSQJwOd4z3U3Y3VA022q6VA/tlIVZ4BRpGBnmcVIVEfr
+         sag9YiJbyMPrauuB+CSFE1gYtLik/jia9/ts642t6RFxc1WUOeBmNh8fschLuhO4LoJo
+         Pm0JwHfw9WxIpo5tXinsr/+HA2LxWOUaLygncx33TDpynwHiAWB1JjBxw/yqN0d6UbAs
+         hA7nVXW1hACN778DDahA3kqB4Hw/M6dE2Qc+7DfA5ZnWTcSv3bAAYreW/9XAJncQibrl
+         xR07/EiQa+pyNown88xV6ivF4I+Lz4iZG0+wd2Uum7GEiz1Dvmj8iq3yYM+BNWJ1pK1z
+         WMTA==
+X-Gm-Message-State: AOAM533/cWSGs4/TwfdOfbCcmqOhb7ib/0Vx4SnG0mYGZqnO9mxNOok4
+        +xVAW+KzsFdxR4GS0G1xhUJj0H0IOqMF2WM1AeodSg==
+X-Google-Smtp-Source: ABdhPJw3kAw6w2N1NCbGWxO+aTK6zp6EbB7I/d5Avwjp+/KBiNT6y/utjJk8NryZ4VkzD8cMkQqjJasW5zf5MpMUYiA=
+X-Received: by 2002:a19:5055:: with SMTP id z21mr7120804lfj.297.1614989058347;
+ Fri, 05 Mar 2021 16:04:18 -0800 (PST)
+MIME-Version: 1.0
+References: <20210303170932.1838634-1-jthierry@redhat.com> <20210305235102.384950-1-ndesaulniers@google.com>
+In-Reply-To: <20210305235102.384950-1-ndesaulniers@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 5 Mar 2021 16:04:07 -0800
+Message-ID: <CAKwvOdmgRAJXVdaHAnZoYm-Y4Dt01CYxvsnJC6zaSwr5amRWBg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 00/13] objtool: add base support for arm64
+To:     Julien Thierry <jthierry@redhat.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, ycote@redhat.com,
+        Fangrui Song <maskray@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Pete Swain <swine@google.com>,
+        Yonghyun Hwang <yonghyun@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Mar 2021 12:52:52 +0100 Michal Hocko <mhocko@suse.com> wrote:
+On Fri, Mar 5, 2021 at 3:51 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> (in response to
+> https://lore.kernel.org/linux-arm-kernel/20210303170932.1838634-1-jthierry@redhat.com/
+> from the command line)
+>
+> > Changes since v1[2]:
+> > - Drop gcc plugin in favor of -fno-jump-tables
+>
+> Thank you for this!  I built+booted(under emulation) arm64 defconfig and built
+> arm64 allmodconfig with LLVM=1 with this series applied.
+>
+> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+> One thing I noticed was a spew of warnings for allmodconfig, like:
+> init/main.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
+> init/main.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
+>
+> I assume those are from the KASAN constructors. See also:
+> https://github.com/ClangBuiltLinux/linux/issues/1238
+>
+> Can we disable HAVE_STACK_PROTECTOR if CC_IS_CLANG and CONFIG_KASAN is set,
+> until we can resolve the above issue?
 
-> On Thu 04-03-21 07:40:53, Zhou Guanghui wrote:
-> > As described in the split_page function comment, for the non-compound
-> > high order page, the sub-pages must be freed individually. If the
-> > memcg of the fisrt page is valid, the tail pages cannot be uncharged
-> > when be freed.
-> > 
-> > For example, when alloc_pages_exact is used to allocate 1MB continuous
-> > physical memory, 2MB is charged(kmemcg is enabled and __GFP_ACCOUNT is
-> > set). When make_alloc_exact free the unused 1MB and free_pages_exact
-> > free the applied 1MB, actually, only 4KB(one page) is uncharged.
-> > 
-> > Therefore, the memcg of the tail page needs to be set when split page.
-> > 
-> 
-> As already mentioned there are at least two explicit users of
-> __GFP_ACCOUNT with alloc_exact_pages added recently. It would be good to
-> mention that explicitly and maybe even mention 7efe8ef274024 resp.
-> c419621873713 so that it is clear this is not just a theoretical issue.
+Ah, filtering the logs more, it looks like GCOV is has the same issue
+KASAN does (known issue).  Here's a filtered log:
+https://gist.github.com/nickdesaulniers/01358015b33bd16ccd7d951c4a8c44e7
 
-I added
+I'm curious about the failure to decode certain instructions?
 
-: Michel:
-: 
-: There are at least two explicit users of __GFP_ACCOUNT with
-: alloc_exact_pages added recently.  See 7efe8ef274024 ("KVM: arm64:
-: Allocate stage-2 pgd pages with GFP_KERNEL_ACCOUNT") and c419621873713
-: ("KVM: s390: Add memcg accounting to KVM allocations"), so this is not
-: just a theoretical issue.
-
-And should we cc:stable on this one?
+The stack state mismatches are what are valuable to me; we'll need
+some help digging into those at some point.  The logs from defconfig
+are clean.
+-- 
+Thanks,
+~Nick Desaulniers
