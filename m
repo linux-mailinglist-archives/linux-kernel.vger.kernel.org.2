@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7599332F838
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 05:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2874A32F83C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 05:44:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbhCFEg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 23:36:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhCFEgH (ORCPT
+        id S229781AbhCFEnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 23:43:23 -0500
+Received: from mail-pl1-f177.google.com ([209.85.214.177]:33294 "EHLO
+        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229642AbhCFEnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 23:36:07 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44F2C06175F;
-        Fri,  5 Mar 2021 20:36:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RWCxwMP7E0t1Cv2Sce54HAeoQwsG0UeKFOUNYGps2a0=; b=FHDdTH+xd4AJVLLCat2soNRIW/
-        afPBVSefStZEWrGZBzy9LLpZp+HLsH9lpOsZDMBX7g1VBvY5Aawb8ayJTW4LkeCoOvJK4wKm6Pthg
-        RxVVy3GJHCwj7yDzIedVWEkVfdxJvGJ/Oi34NFnQ0aJsVn/gD3KYZXjgDomOzZL5ZSpMiyZgwW1sb
-        GtDCXXKx1sNRmXpDgtYypGujeRAaqgcYDYrYxyMTCeTuTYWrIRcTGZNcun+0tpZB0eG73Dx1l+bLf
-        Ozzz7hrV9UhfxRRUk3PQrdyCLptcEbp1FWCkZXKushPBMCTg8Up2v6ItkoNkB2vcVrY3V5JWhFZPG
-        xtItxtww==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lIOfM-00Cc4o-31; Sat, 06 Mar 2021 04:35:51 +0000
-Date:   Sat, 6 Mar 2021 04:35:48 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     corbet@lwn.net, lukas.bulwahn@gmail.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [RFC v3] scripts: kernel-doc: fix typedef support for
- struct/union parsing
-Message-ID: <20210306043548.GO2723601@casper.infradead.org>
-References: <CAKXUXMzHPnM=ie06ZGuFXyJ7RcRjYomjyASbp3ND9-Mb2Es+2w@mail.gmail.com>
- <20210225145033.11431-1-yashsri421@gmail.com>
+        Fri, 5 Mar 2021 23:43:07 -0500
+Received: by mail-pl1-f177.google.com with SMTP id c16so2439356ply.0;
+        Fri, 05 Mar 2021 20:43:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WpuX4jtViXGHBqpqCDoI3IPp3tBlZBEZA1GBacd28cw=;
+        b=i7hLxZOUDceuapM0M9f8/X0dUPqxFtYHHTSdTgCvRngpWIykp+cmczq80G9csK4iy8
+         02nmCHqH729P0QSMPc6YVfchJ6rPV0kr3kdSeDlI1EjUjtIPhCebQxEQz479XO/tAjUL
+         EfQVZFVp6pwISKLWWpNO/wxP4sjJt2NHT60XAaXUjeNh6SiDSHV8m3dcvjNxnXLKSJFI
+         C2IFacmyteNdw46aYW2Mc4xrt5dXIlsapaBmJiGZF2TXOyog51rgun04bNgT2v8aZ9lE
+         /XW1f05IuApaMqYUFJSxcvmOAGoN8gIyMrFh0xxkbBFj1RWeCC+eW8F7M5dy/LjkK1Z0
+         Rtmg==
+X-Gm-Message-State: AOAM5316jnn4L6z5UqI6esmDvVvdu6x0DJ2vQJoZ7t9CFSN8JpLpg28i
+        UEoKufePQVOd59meq4sns+8=
+X-Google-Smtp-Source: ABdhPJyjpLfbzjfzX2gwl18nucxUcIfibp3ZYmX+nqFjK7BU4AymfgOUJJxNmUDOgCa/oeamnYyd2Q==
+X-Received: by 2002:a17:90a:4a06:: with SMTP id e6mr13643790pjh.141.1615005786526;
+        Fri, 05 Mar 2021 20:43:06 -0800 (PST)
+Received: from ?IPv6:2601:647:4000:d7:508e:d398:f4d5:3d44? ([2601:647:4000:d7:508e:d398:f4d5:3d44])
+        by smtp.gmail.com with ESMTPSA id k9sm3437410pji.8.2021.03.05.20.43.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Mar 2021 20:43:05 -0800 (PST)
+Subject: Re: [RFC PATCH v3 3/3] blk-mq: Lockout tagset iterator when exiting
+ elevator
+To:     John Garry <john.garry@huawei.com>, hare@suse.de,
+        ming.lei@redhat.com, axboe@kernel.dk, hch@lst.de
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pragalla@codeaurora.org, kashyap.desai@broadcom.com,
+        yuyufen@huawei.com
+References: <1614957294-188540-1-git-send-email-john.garry@huawei.com>
+ <1614957294-188540-4-git-send-email-john.garry@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <48a3cf78-3f6d-c13c-bca2-1f8277817b45@acm.org>
+Date:   Fri, 5 Mar 2021 20:43:03 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225145033.11431-1-yashsri421@gmail.com>
+In-Reply-To: <1614957294-188540-4-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 08:20:33PM +0530, Aditya Srivastava wrote:
-> +++ b/scripts/kernel-doc
-> @@ -1201,12 +1201,23 @@ sub dump_union($$) {
->  sub dump_struct($$) {
->      my $x = shift;
->      my $file = shift;
-> +    my $decl_type;
-> +    my $members;
-> +    my $type = qr{struct|union};
-> +    # For capturing struct/union definition body, i.e. "{members*}qualifiers*"
-> +    my $definition_body = qr{\{(.*)\}(?:\s*(?:__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)))*};
-> -    if ($x =~ /(struct|union)\s+(\w+)\s*\{(.*)\}(\s*(__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)))*/) {
-> -	my $decl_type = $1;
-> +    if ($x =~ /($type)\s+(\w+)\s*$definition_body/) {
-> +	$decl_type = $1;
->  	$declaration_name = $2;
-> -	my $members = $3;
-> +	$members = $3;
-> +    } elsif ($x =~ /typedef\s+($type)\s*$definition_body\s*(\w+)\s*;/) {
-> +	$decl_type = $1;
-> +	$declaration_name = $3;
-> +	$members = $2;
-> +    }
+On 3/5/21 7:14 AM, John Garry wrote:
+> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+> index 7ff1b20d58e7..5950fee490e8 100644
+> --- a/block/blk-mq-tag.c
+> +++ b/block/blk-mq-tag.c
+> @@ -358,11 +358,16 @@ void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
+>  {
+>  	int i;
+>  
+> +	if (!atomic_inc_not_zero(&tagset->iter_usage_counter))
+> +		return;
+> +
+>  	for (i = 0; i < tagset->nr_hw_queues; i++) {
+>  		if (tagset->tags && tagset->tags[i])
+>  			__blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
+>  					      BT_TAG_ITER_STARTED);
+>  	}
+> +
+> +	atomic_dec(&tagset->iter_usage_counter);
+>  }
+>  EXPORT_SYMBOL(blk_mq_tagset_busy_iter);
 
-In the same spirit as dump_function, would something like this work?
+This changes the behavior of blk_mq_tagset_busy_iter(). What will e.g.
+happen if the mtip driver calls blk_mq_tagset_busy_iter(&dd->tags,
+mtip_abort_cmd, dd) concurrently with another blk_mq_tagset_busy_iter()
+call and if that causes all mtip_abort_cmd() calls to be skipped?
 
--    if ($x =~ /(struct|union)\s+(\w+)\s*\{(.*)\}(\s*(__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)))*/) {
-+    $x =~ s/__packed +//;
-+    $x =~ s/__aligned +//;
-+    $x =~ s/____cacheline_aligned_in_smp +//;
-+    $x =~ s/____cacheline_aligned +//;
-+    $x =~ s/__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)//;
-+
-+    if ($x =~ /(struct|union)\s+(\w+)\s*\{(.*)\}(\s*)*/) {
+> +	while (atomic_cmpxchg(&set->iter_usage_counter, 1, 0) != 1);
 
+Isn't it recommended to call cpu_relax() inside busy-waiting loops?
+
+>  	blk_mq_sched_free_requests(q);
+>  	__elevator_exit(q, e);
+>  
+> +	atomic_set(&set->iter_usage_counter, 1);
+
+Can it happen that the above atomic_set() call happens while a
+blk_mq_tagset_busy_iter() call is in progress? Should that atomic_set()
+call perhaps be changed into an atomic_inc() call?
+
+Thanks,
+
+Bart.
