@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC92932FB72
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 16:42:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D61832FB7B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 16:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhCFPl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 10:41:29 -0500
-Received: from mail-pl1-f174.google.com ([209.85.214.174]:34686 "EHLO
-        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230415AbhCFPlJ (ORCPT
+        id S230512AbhCFPtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 10:49:11 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:37355 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230429AbhCFPsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 10:41:09 -0500
-Received: by mail-pl1-f174.google.com with SMTP id ba1so2899070plb.1;
-        Sat, 06 Mar 2021 07:41:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nXc40e+JPmYpBu4fmyccX1rpUpLpord1lILzin0rU+8=;
-        b=RJvfRusmnIHHiqSANbVU1vJ4mpQOOYMKE4FKdPpthegvzf0KfE4zUC7i7Mwvo1eKD2
-         YRFq3Fkz1W/YJBxp8/3w2oYQTE2xSfNx9WzlxLH3jvPr3XDSlfsyugTNU9qH617c3qg/
-         EyMCA5BDeHsE0vfkELYGo8r74kU7vhVj0ppN+sqoAe0r0KL+zCR8uHTFLO/o+Pm3yYJ3
-         1ModYBaG1iLdKPpSrdz507WB8FZKQePSAkRfd41tONFf9M+MESqJ+Kf8WTD2mlWcLhza
-         EdTkKqzlIOWvpm22lOM1jG6FwubVoVcqM+tasmjc/ra4MKkXKyzGpW2RBNfxUE7Egwse
-         zuew==
-X-Gm-Message-State: AOAM530npBpUi6COYUYpLD3vPTVwm+TxpmfrjUP/T0peYb4SX7dtYhO/
-        XVf8fJULtowhWIXV/VNvcpmlJT1Ed98=
-X-Google-Smtp-Source: ABdhPJzbOb3I8RKUG8KemBKLeGCeNFJ1TE/wsPfNSqWBYPoGaPn8HWcAhUbdsVkDsz6DsP1TJoRScg==
-X-Received: by 2002:a17:903:31c4:b029:e1:8840:8ab9 with SMTP id v4-20020a17090331c4b02900e188408ab9mr13355587ple.70.1615045268594;
-        Sat, 06 Mar 2021 07:41:08 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id v1sm5827121pjt.1.2021.03.06.07.41.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 07:41:07 -0800 (PST)
-Date:   Sat, 6 Mar 2021 07:41:06 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-fpga@vger.kernel.org
-Subject: Re: [PATCH] fpga: xilinx-pr-decoupler: Simplify code by using
- dev_err_probe()
-Message-ID: <YEOikp4Zs4/ABkof@epycbox.lan>
-References: <666708105c25ae5fa7bb23b5eabd7d12fe9cb1b3.1612445770.git.michal.simek@xilinx.com>
+        Sat, 6 Mar 2021 10:48:43 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id D97825C00CB
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 10:48:42 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sat, 06 Mar 2021 10:48:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=artagnon.com; h=
+        from:to:subject:date:message-id:mime-version:content-type
+        :content-transfer-encoding; s=fm1; bh=ZNVzCeUQ/9cLP7BSVqVfDL2Wy0
+        Av5E2NkuTW/6iV13o=; b=dLdCEXXN/jewcBFgotrC5k93wi12fBBkoRZVdZbnm0
+        NyQvFdgzHCum1cqxtG97GG8sd75sWKtcyH/5xr29nUL6XrmophVxXL+D82XnqJRQ
+        6MGusjIMFvMTczYfTlzAMJNpgodu90SfzKnrslefYZKPUUA9SlTe3hAvVwFyakBk
+        dQ/GmnQ0zkp1GKffqNcSM/tdURlgOBn7uk/L1dnfxFRjrd8+iKaZ6a0GDa6CKYlP
+        VlQ6dP+l6qdOrwF6WMWyW6sky9lsLjGglAtbLI7QF81yeP9JsPSAsWcKaNAh94Q/
+        FCKtBnLhhmzbSz3lA64fKOycI8CTg4o9pefI4QB+PMtg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=ZNVzCe
+        UQ/9cLP7BSVqVfDL2Wy0Av5E2NkuTW/6iV13o=; b=lFw8ogx5T/crNWvkNjdGaN
+        BJ1wPuIwasOo4QSsyRka2Gg6wuwZL4Qkb0RGSzhmDjtRxT1CTvZQ3Zc+tCyH4RIm
+        IKhjdg52FP1ib8jzsXM7sNCDjgvNPfHrc5zCkM0tigx2cel0Lh5c97DW0KL8ngnV
+        yCfBVk1HS9TucKPG01GroHb6hzsL+TE5JcspOjuWKiNy4EmM1xF6/EzKE2kkgqdh
+        sMpTT9CpzXfEMT5BHc2uVrwjgco68BPnCw1RW0jZ/r1XdOz8RC3HqKIzVnoiMXw7
+        iP4xgFJ/S13vZC3QljDUMirKYp4DOL/LjPiKmEtsqnJeooMPRUXrwEaoYrSqwCKw
+        ==
+X-ME-Sender: <xms:WqRDYIN7XpKJN2Ife6jr_yQPmlJLzjSFPBsemUUXW-bPvT4HqbmLQA>
+    <xme:WqRDYO9k7PNgn92hlXdWhLiL-pYVSFkFHLPb2LUYSI_OZna_SMw38QSvdRcG673g_
+    dEEQsa6nX1VgvFED1s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtkedgjeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofggtgfgsehtkeertd
+    ertdejnecuhfhrohhmpeftrghmkhhumhgrrhcutfgrmhgrtghhrghnughrrgcuoehrsegr
+    rhhtrghgnhhonhdrtghomheqnecuggftrfgrthhtvghrnhepudfggfdtvdeuhedugeefve
+    duffehledthfdvleeuteehueeihfdtvedtkeffgeefnecukfhppeefjedrudejvddrudej
+    uddruddtheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpehrsegrrhhtrghgnhhonhdrtghomh
+X-ME-Proxy: <xmx:WqRDYPQLCoSod7VQ7RcO_0SipqjbChTT9sLQH5A3O5rLPA-Nfb_4WA>
+    <xmx:WqRDYAu71yCCMj_ns_CPdmKIi79tf83mKlzXaEIOQ7Tf13VNEyMZFQ>
+    <xmx:WqRDYAdKTgIDWIDxbNcmLJwV7_rAN-cwUclvZwFm4wWni1VYxL7BGQ>
+    <xmx:WqRDYKqzI1DyNgzpvtrsRJaj-OePBzjLCx8gg7nlu9Tr2MSKnI4aiw>
+Received: from localhost.localdomain (unknown [37.172.171.105])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 43DEB240054
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 10:48:42 -0500 (EST)
+From:   Ramkumar Ramachandra <r@artagnon.com>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH] [.mailmap] Add entry for Ramkumar Ramachandra
+Date:   Sat,  6 Mar 2021 16:48:27 +0100
+Message-Id: <20210306154827.10820-1-r@artagnon.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <666708105c25ae5fa7bb23b5eabd7d12fe9cb1b3.1612445770.git.michal.simek@xilinx.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 02:36:11PM +0100, Michal Simek wrote:
-> Use already prepared dev_err_probe() introduced by commit a787e5400a1c
-> ("driver core: add device probe log helper").
-> It simplifies EPROBE_DEFER handling.
-> 
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> ---
-> 
->  drivers/fpga/xilinx-pr-decoupler.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/fpga/xilinx-pr-decoupler.c b/drivers/fpga/xilinx-pr-decoupler.c
-> index 7d69af230567..b0eaf26af6e7 100644
-> --- a/drivers/fpga/xilinx-pr-decoupler.c
-> +++ b/drivers/fpga/xilinx-pr-decoupler.c
-> @@ -100,11 +100,9 @@ static int xlnx_pr_decoupler_probe(struct platform_device *pdev)
->  		return PTR_ERR(priv->io_base);
->  
->  	priv->clk = devm_clk_get(&pdev->dev, "aclk");
-> -	if (IS_ERR(priv->clk)) {
-> -		if (PTR_ERR(priv->clk) != -EPROBE_DEFER)
-> -			dev_err(&pdev->dev, "input clock not found\n");
-> -		return PTR_ERR(priv->clk);
-> -	}
-> +	if (IS_ERR(priv->clk))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(priv->clk),
-> +				     "input clock not found\n");
->  
->  	err = clk_prepare_enable(priv->clk);
->  	if (err) {
-> -- 
-> 2.30.0
-> 
-Applied to for-5.13,
+Signed-off-by: Ramkumar Ramachandra <r@artagnon.com>
+---
+ .mailmap | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks
+diff --git a/.mailmap b/.mailmap
+index 85b93cdefc87..78bff5f1e881 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -282,6 +282,7 @@ Rafael J. Wysocki <rjw@rjwysocki.net> <rjw@sisk.pl>
+ Rajesh Shah <rajesh.shah@intel.com>
+ Ralf Baechle <ralf@linux-mips.org>
+ Ralf Wildenhues <Ralf.Wildenhues@gmx.de>
++Ramkumar Ramachandra <r@artagnon.com> <artagnon@gmail.com>
+ Randy Dunlap <rdunlap@infradead.org> <rdunlap@xenotime.net>
+ Rémi Denis-Courmont <rdenis@simphalempin.com>
+ Ricardo Ribalda <ribalda@kernel.org> <ricardo@ribalda.com>
+-- 
+2.30.1
+
