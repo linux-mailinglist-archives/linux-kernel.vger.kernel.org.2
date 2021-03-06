@@ -2,138 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1660832F8D3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 08:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B571632F8D8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 08:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhCFHtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 02:49:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbhCFHsq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 02:48:46 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B7FC06175F;
-        Fri,  5 Mar 2021 23:48:45 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so369830pjh.1;
-        Fri, 05 Mar 2021 23:48:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DSZXu94+R555WhtuFMRch+eV8hmVBvr/x43d2hheJJc=;
-        b=VluraUHuZsIPa2k+Kvj6GH7BSkPT41eqr4M/CQ/PUSvCotnYQfO6dOYS7/3E6EecX2
-         2+MnYrBdCyZRgy4So3JceeAQkU/QAp5BVIV74Lefs08LkPlmCV5ZdKJreID3r/1VeepX
-         q3McCPKRMX8szQ0hAEX13XyB7Z6raB0oihzyt7ukQ23MDkt5uzxTnXfexj4ogbw20IFC
-         bQNvhn0GKIv4RtUmsgauvLn4+PnLWHrk5RjHRBfv5Xofv1r8w88hhM4ZWZoxZkong2DQ
-         e5v4d5dAUmMeZQyHpOeCU5apI0HruD/KYJyLElAZXp72x7+ifWCkAtMcmOuVZ3CKAGvf
-         n/bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DSZXu94+R555WhtuFMRch+eV8hmVBvr/x43d2hheJJc=;
-        b=Eej4gghUT23gHEMEYu2p0HNGy5Rhp2BMFRXixwXKBC3c+EUj06FkDRula27ORtv8n7
-         oV6RhyudEAesWhACo9KeaYcB9vBi/kNy/rjDJQ5hc8ikW19oQ8bs9NpbDWelk5iIbtEM
-         PsDOhef4SVxzc++Ma0IKgb03Z5HIRhgodeZFrvoedf+vyXIKBbvVNbNEf7SL78MgvF1J
-         Re3PqpcykHJ/ye3ryQHo4DP//BlJvcjhyCZ2NE9RojAns4UQOEjRe9Bs/Egwqp2Xz1Bi
-         5UCnGwzU9qWmG7fXpKRX4wzJlqYG2tQBDfbOold3hzaEgv1vRnUpLCJw70aSA9vHFg+1
-         aQJg==
-X-Gm-Message-State: AOAM530htLptfGKb8as6bP8g4N6FgYj+Eynm7y0ztrHLLsojzDR23Ojb
-        Fd12s4I/53fUmIxO5C5rOr8=
-X-Google-Smtp-Source: ABdhPJx9oouAzAWFEXuhiUUwFZmuNk93Mo4/2GAEE/laT9yMPbZYkKWgCky8dE7eqgyhymy47DspLw==
-X-Received: by 2002:a17:902:b7cb:b029:e4:55cd:ddf0 with SMTP id v11-20020a170902b7cbb02900e455cdddf0mr11953507plz.45.1615016925270;
-        Fri, 05 Mar 2021 23:48:45 -0800 (PST)
-Received: from ?IPv6:2405:201:600d:a089:2cbb:f743:ffa5:41bc? ([2405:201:600d:a089:2cbb:f743:ffa5:41bc])
-        by smtp.gmail.com with ESMTPSA id x23sm4452314pff.133.2021.03.05.23.48.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 23:48:44 -0800 (PST)
-Subject: Re: [RFC v3] scripts: kernel-doc: fix typedef support for
- struct/union parsing
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <CAKXUXMzHPnM=ie06ZGuFXyJ7RcRjYomjyASbp3ND9-Mb2Es+2w@mail.gmail.com>
- <20210225145033.11431-1-yashsri421@gmail.com>
- <20210306043548.GO2723601@casper.infradead.org>
- <CAKXUXMwD_ZZA7EJaxZBRfMDEvwd4Ghsj2vy9KCfj0R-yx2_K0Q@mail.gmail.com>
-From:   Aditya <yashsri421@gmail.com>
-Message-ID: <6a75c9f4-460f-f83e-7fe2-5a3a4c64232b@gmail.com>
-Date:   Sat, 6 Mar 2021 13:18:38 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAKXUXMwD_ZZA7EJaxZBRfMDEvwd4Ghsj2vy9KCfj0R-yx2_K0Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S229919AbhCFHww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 02:52:52 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:49602 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229637AbhCFHwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 02:52:43 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf_O+NENgpj0VAA--.26764S2;
+        Sat, 06 Mar 2021 15:52:30 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] riscv: Return -EFAULT if copy_{to,from}_user() failed in signal.c
+Date:   Sat,  6 Mar 2021 15:52:29 +0800
+Message-Id: <1615017149-24843-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxf_O+NENgpj0VAA--.26764S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tr13ZF18Ww4fGw17KFWfKrg_yoW8Zw1xpF
+        45Ca43Kr4xGFn7uas3Jw18WF95Ar93tFyIkr90k3WSyFs8trs8t34kJa4jqF4rJryrCw4v
+        ka98trWYkw4rWr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4xMxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jcYFXUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/21 11:55 am, Lukas Bulwahn wrote:
-> On Sat, Mar 6, 2021 at 5:35 AM Matthew Wilcox <willy@infradead.org> wrote:
->>
->> On Thu, Feb 25, 2021 at 08:20:33PM +0530, Aditya Srivastava wrote:
->>> +++ b/scripts/kernel-doc
->>> @@ -1201,12 +1201,23 @@ sub dump_union($$) {
->>>  sub dump_struct($$) {
->>>      my $x = shift;
->>>      my $file = shift;
->>> +    my $decl_type;
->>> +    my $members;
->>> +    my $type = qr{struct|union};
->>> +    # For capturing struct/union definition body, i.e. "{members*}qualifiers*"
->>> +    my $definition_body = qr{\{(.*)\}(?:\s*(?:__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)))*};
->>> -    if ($x =~ /(struct|union)\s+(\w+)\s*\{(.*)\}(\s*(__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)))*/) {
->>> -     my $decl_type = $1;
->>> +    if ($x =~ /($type)\s+(\w+)\s*$definition_body/) {
->>> +     $decl_type = $1;
->>>       $declaration_name = $2;
->>> -     my $members = $3;
->>> +     $members = $3;
->>> +    } elsif ($x =~ /typedef\s+($type)\s*$definition_body\s*(\w+)\s*;/) {
->>> +     $decl_type = $1;
->>> +     $declaration_name = $3;
->>> +     $members = $2;
->>> +    }
->>
->> In the same spirit as dump_function, would something like this work?
->>
-> 
-> I agree. That might be a suitable clean-up to keep the code for
-> functions and struct/union parsing similar in style/spirit.
-> 
-> Aditya, would you like to create a patch for that?
-> 
+copy_{to,from}_user() returns the amount left to copy, it should return
+-EFAULT error code if copy {to,from} user failed, just like the return
+value is an error code when {put,get}_user() failed, this is to make the
+return value consistent, no function change.
 
-Sure Lukas.
-I have a doubt though, Can't we use a single expression separated by
-"|" here, instead of multiple lines? i.e.,
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/riscv/kernel/signal.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-$x =~
-s/__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)\s*//;
+diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
+index 65942b3..c76d877 100644
+--- a/arch/riscv/kernel/signal.c
++++ b/arch/riscv/kernel/signal.c
+@@ -39,7 +39,7 @@ static long restore_fp_state(struct pt_regs *regs,
+ 
+ 	err = __copy_from_user(&current->thread.fstate, state, sizeof(*state));
+ 	if (unlikely(err))
+-		return err;
++		return -EFAULT;
+ 
+ 	fstate_restore(current, regs);
+ 
+@@ -67,7 +67,7 @@ static long save_fp_state(struct pt_regs *regs,
+ 	fstate_save(current, regs);
+ 	err = __copy_to_user(state, &current->thread.fstate, sizeof(*state));
+ 	if (unlikely(err))
+-		return err;
++		return -EFAULT;
+ 
+ 	/* We support no other extension state at this time. */
+ 	for (i = 0; i < ARRAY_SIZE(sc_fpregs->q.reserved); i++) {
+@@ -87,8 +87,12 @@ static long restore_sigcontext(struct pt_regs *regs,
+ 	struct sigcontext __user *sc)
+ {
+ 	long err;
++
+ 	/* sc_regs is structured the same as the start of pt_regs */
+ 	err = __copy_from_user(regs, &sc->sc_regs, sizeof(sc->sc_regs));
++	if (unlikely(err))
++		return -EFAULT;
++
+ 	/* Restore the floating-point state. */
+ 	if (has_fpu)
+ 		err |= restore_fp_state(regs, &sc->sc_fpregs);
+@@ -140,8 +144,12 @@ static long setup_sigcontext(struct rt_sigframe __user *frame,
+ {
+ 	struct sigcontext __user *sc = &frame->uc.uc_mcontext;
+ 	long err;
++
+ 	/* sc_regs is structured the same as the start of pt_regs */
+ 	err = __copy_to_user(&sc->sc_regs, regs, sizeof(sc->sc_regs));
++	if (unlikely(err))
++		return -EFAULT;
++
+ 	/* Save the floating-point state. */
+ 	if (has_fpu)
+ 		err |= save_fp_state(regs, &sc->sc_fpregs);
+-- 
+2.1.0
 
-
-Probably we could do something similar for dump_function, i.e.,
--    $prototype =~ s/^static +//;
--    $prototype =~ s/^extern +//;
--    $prototype =~ s/^asmlinkage +//;
--    $prototype =~ s/^inline +//;
--    $prototype =~ s/^__inline__ +//;
--    $prototype =~ s/^__inline +//;
--    $prototype =~ s/^__always_inline +//;
--    $prototype =~ s/^noinline +//;
-
-+    $prototype =~
-s/^(?:static|extern|asmlinkage|__?inline__?|__always_inline|noinline) +//;
-And so on for other regexps.
-
-What do you think?
-
-Thanks
-Aditya
