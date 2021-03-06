@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D1432F852
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 06:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 747DC32F854
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 06:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbhCFFRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 00:17:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55136 "EHLO
+        id S229713AbhCFFTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 00:19:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhCFFRD (ORCPT
+        with ESMTP id S229676AbhCFFTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 00:17:03 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0DB3C06175F;
-        Fri,  5 Mar 2021 21:17:03 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id c16so2463774ply.0;
-        Fri, 05 Mar 2021 21:17:03 -0800 (PST)
+        Sat, 6 Mar 2021 00:19:43 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EEABC06175F;
+        Fri,  5 Mar 2021 21:19:43 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so259156pjv.1;
+        Fri, 05 Mar 2021 21:19:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cErAmnOra7kRX450Lrj5VD5Ge9IfSo97gVGl7j0r8Jw=;
-        b=p9I5FTk2MN88XacQMMzfhBgOYaQJRhgRbwqYKUxsUhRgCqapErjum3BQ98Qj1HMFiz
-         8vdzYiPiU+N7ySE9Vh9o4ySwvc9/+nGceshudA1q7Hf6V0D4rnJvJ60PSJzlX0UPXKc2
-         YXmMuyzWlSVfg35CoRre2uoymVxa1CJ4Z9E2H9nSsw6FXFv19ULFPRUYgQQ5S9aqzUBJ
-         2aEI4ZFIixTYc5E0hL2Bil1pgiHTT3PXaQQnrP2NSlw9W80tvGFBF3WLHXqWPQZfEvsI
-         YNpBgJ7c6LaHCJfjJDMDwghJT+DwH7PqmjK2MjEcayrIbrCJnb4CxayrsK+wiFuk/3Is
-         qFgQ==
+        bh=Ws1tIzR+EqbzsrUI6QtE+RYRtlETTGCi1UFlR29P9Qc=;
+        b=Bt+4ATPjYcbxWTswNrSOMfHzoWNFTgHZFVDs8MvMubIpVZkLnLrNjkxN3zdS2CrOGT
+         i/PcyhYfL21qgKvgrtZXVWM+9uXV2kLjXE9T9ydYT1NTURfcXkbGLVc5nsNCs8hDAEG9
+         wNer1ylORkuysTKlGmLlSoM46d7nse7XUEssie71VVon8F8coqN9+S+XAIXLw41ahN87
+         MHY1WQnHsyXUOrSq1xkmxe0OwfpMBDm+4FthrLkhEzVZq6n2sF3JslyjaqrKyx4STbLX
+         N7kuo9GYfSz5Og8oHwGUmqRl1d7iY4oa34UTFzIh+Wq9npGXiM/8dwzDn5ury9YvPD8C
+         /Fzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=cErAmnOra7kRX450Lrj5VD5Ge9IfSo97gVGl7j0r8Jw=;
-        b=k/7LeySC13j9f0aZUBulXiIUtCt4QKEebWAzsZNOpQdrtN2Yp4AFvvi9wpGNT+5bgr
-         T31+Gt9hszJFpIoSpvukNRGZ/jVZULoy+cOb5WlROtVNdjL4/E7NOP9Eo/bpKwrd2veH
-         fRaSlKWDpx2iED1mqvfc+SRMT+N9PUwSo/HMbAM+o0MIzplXybA7YBh3EPIULJ3LJpmu
-         PjRzwz61oyFR4sKg9H8HhbmrHkTMtcGLfjNEKgWPaGui6p+pfQplLg9DAw1DoZHAXgxD
-         W0D4Jqxcx+sLb5uTcxhldUB4uHhJr53UkMF0onBprxTY9ikGN38PSroke1q0iM7gnTWt
-         zkyA==
-X-Gm-Message-State: AOAM533SoFLI8Z78X753+HG+WNQNo5m4OknT+vkkTwMvXeklz9YHGgFn
-        FVi7SXfLVSX4ELADLib174qxuyEcP2w=
-X-Google-Smtp-Source: ABdhPJyHbqjwRbXfOWubYLVkl/+97bZ6UXdYtUo5LO0Zy9Ez3IPmnnH4A8v+2ctjFMvt2n+WGZ0qbA==
-X-Received: by 2002:a17:90b:806:: with SMTP id bk6mr13818884pjb.16.1615007820670;
-        Fri, 05 Mar 2021 21:17:00 -0800 (PST)
+        bh=Ws1tIzR+EqbzsrUI6QtE+RYRtlETTGCi1UFlR29P9Qc=;
+        b=BpKH7dpmUTtj//oB+Efxjaqq+TojP3i46MLOC2VHHAUUwNPfXAn20cEh/MWHA09FtY
+         2m1NbICzMyWF+9IKOydQ0EBuxAwaFB7svKJFtPX1v+Z42mbr2cOt+qzyBhWsGBLTEm7C
+         j5hLgpfukeYwIqThPlbv208UY+G+FSmSAOKmfjZIfZ/oyqiGrz8O8autmvTlg+D1oGQC
+         XNXbvQoRzJpyNxBxe03z7pBD+3vBT2HwsQfhQLhVMU9N01owSDmp89UO70ObkQXc9Zn3
+         CG+5li3QwrvPQBd0cRp0+cT8BsMTL99t6RWdFHYMpA9tG03GzQfCUH8albpnBRKS3oDX
+         kmbA==
+X-Gm-Message-State: AOAM5322QT4HCKGO3yLt8lr/QNzqKeQSpPfWlh68MjPM1XuVe0XKdswP
+        wj4bMrFaNwfZL0JmJmEfZsui/BtJPTo=
+X-Google-Smtp-Source: ABdhPJztIMQCQVAq6siKCTc09fIA8DwAGUmFOrWU1iLco7KOIrCw7wLRl+wkBXGJui2bGCWTqoAW7A==
+X-Received: by 2002:a17:90a:bd97:: with SMTP id z23mr14433978pjr.189.1615007982779;
+        Fri, 05 Mar 2021 21:19:42 -0800 (PST)
 Received: from [10.230.70.25] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id o1sm3676438pgq.1.2021.03.05.21.16.55
+        by smtp.gmail.com with ESMTPSA id x190sm4003168pfx.60.2021.03.05.21.19.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 21:17:00 -0800 (PST)
+        Fri, 05 Mar 2021 21:19:42 -0800 (PST)
+Subject: Re: [PATCH] arch: mips: bcm63xx: Spello fix in the file clk.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        tsbogend@alpha.franken.de, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+References: <20210305020535.25006-1-unixbhaskar@gmail.com>
 From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH 4.9 00/41] 4.9.260-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210305120851.255002428@linuxfoundation.org>
-Message-ID: <64442e2d-c0ef-2400-a9d9-039b264ddcc3@gmail.com>
-Date:   Fri, 5 Mar 2021 21:16:54 -0800
+Message-ID: <82de531b-6daf-6175-0733-e3e6fb99e15d@gmail.com>
+Date:   Fri, 5 Mar 2021 21:19:39 -0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Firefox/78.0 Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
+In-Reply-To: <20210305020535.25006-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -73,27 +72,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 3/5/2021 4:22 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.260 release.
-> There are 41 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 3/4/2021 6:05 PM, Bhaskar Chowdhury wrote:
 > 
-> Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
-> Anything received after that time might be too late.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.260-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
+> s/revelant/relevant/
 > 
-> thanks,
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+Previous changes to this file/directory usually used MIPS: BCM63XX: as a
+subject prefix, maybe Thomas can fix it up while applying for consistency.
+
+Thanks
 -- 
 Florian
-
-
