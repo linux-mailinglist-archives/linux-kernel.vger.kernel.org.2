@@ -2,55 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1484832F79F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 03:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0862132F7A5
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 03:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhCFB7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 20:59:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
+        id S230035AbhCFB7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 20:59:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhCFB7S (ORCPT
+        with ESMTP id S229719AbhCFB7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 20:59:18 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC867C06175F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 17:59:17 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id q77so4630933ybq.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 17:59:17 -0800 (PST)
+        Fri, 5 Mar 2021 20:59:20 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02A0C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 17:59:19 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id o7so3262936qtw.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 17:59:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=z7jhFDxZM9VTyPoGFztEXoUOfIVmvLNL9K69yw2EqzA=;
-        b=Q8U7Cb261MgpP1c9JoyQYEQIXZcdAAJXcuEmrXNKtBg1h9M5Wt19jMulmazXjobo3c
-         9uVeRmNPZYrgdIHaz5UWc1PsqexJYOSstPOvFCfYIjkTYZ7JmAk0387DR8M8sTJDebli
-         zHCXVmmFKmyQz4rvlCHvfgGiPfYyxabEWikWztKqglgztT91lUBmLguMyIH5gMfgkBwL
-         WudxOq9aO9qusWf3iHNusmBxtG5AVVccyoQTvIdlLCx3cYeDhnjDoff7+fg+iBY3ub4B
-         deE9kWyX/Csa6rbkp6o6LArPA6FnQQKvKHLGjKQbB3T/6qnoQyf860Or+EIZ8yE9JuJy
-         ntTA==
+        h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=y0THIMpkur6+/Bj9ZSP2+9NkkxbkY6p2tIHGIaTzjYc=;
+        b=RR2ofdzqdDJEfpTGPYWFAR7FmrxgkujmTTyYhg52C+RbNDiSQzJ9/Oeb3G9OGauPfz
+         N4kGHVOi3Bqz/6k7gjCL0LaoFw+APfHFKLdiuEnWWjADJb36zLj9VId0gTDMOiL4fXVl
+         6Ghu7Ij4ubMWSj/FlDEjAICmgKVn19fIxE2cJ+OTIgUPiUDTx9Q10ybvgKxzKVZHTP2p
+         VGTY51Aqv9c57vA3IP0HxZOAFzw7FT/FsjRubwbpyh/Xe5C/nl+K47BncBiyqSIWFfnF
+         57ByUAWrmTAp+uQ8G24U91WjUK+3aKgKGQGLaFX+atulVwAZXqla6Yb99NZgZj2td2kp
+         Kuqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
-         :subject:from:to:cc;
-        bh=z7jhFDxZM9VTyPoGFztEXoUOfIVmvLNL9K69yw2EqzA=;
-        b=S7rIzxk5iSYhVsQyA2riSfv38JXj6yIrElZ7L4OJmQfFNrxJuEcENbzxjwMPRPkfBT
-         ZKvd9aETJ83IhCYY5CiDucOA5s3EjRYeQknhUtJNOzlGwtVCQxZAqIhgdn1a804AWpkM
-         tiG6JS/jf3ccvDIA+EKuAVT/OoYpViSpJT6uEFan+OBqXw4eXOBBPjSpa4VGe5gC+wTC
-         MYaTihxXedByYyNn4sVQ6FpeaAxvIATPnrUsqP16p3u1hZeG809h2gCQp778LlIuWMwL
-         yMEf0EiSnGAzvqqPSbvW8uPp5wDfKVCOBkGxfpx6RIzcP5ual5H40K76VCK3//1RqS9u
-         yKCA==
-X-Gm-Message-State: AOAM532LbVsYXwRNfS7bKoYwJkVnhBm+lOCen+2ZCVb+gZZ1aY0hCAm2
-        WYTAA8EUQFapzjsNgKORUPEfftdk02E=
-X-Google-Smtp-Source: ABdhPJzjGIFz5Hr/RnjHu369C+hLDQpYspgyW5RTyRX/kcJz0x2C1AC4CE2WUWsJ5ltoDZiQDkNa76v4gIk=
+        h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=y0THIMpkur6+/Bj9ZSP2+9NkkxbkY6p2tIHGIaTzjYc=;
+        b=s5Ay+5TRgVYglx/iY2Rgba9dNDEz70PI0orVtY3XXgn9Aq/l7xoYSbByQgkZpKirlJ
+         qvcZXMft7Qd4LXWy9wGeulAFrtngoOSxvsv5EE5P4XO8+eEGWY1XhkKwSE7qh6tIQc5j
+         KXo+Stbmr2eoCUiJpDwD6f1E6U5o+zxLgdGgA74QQGFM080cSpY4JXZtdkAWzHZ8EeD9
+         c7UmtlnbnA2izWHhvj0kN+O5A2Jd/dobxF+jPgpyM+lGK4V6THknhGPwWrnaXkCVh2ER
+         edb6zG147EIaCdPzVi7klLjCmK0aydRbin9rdL2usTvhxai+qYZXtlmRU6YyzQxUjXrl
+         kucQ==
+X-Gm-Message-State: AOAM532iTVlG22/J2HNjKJzXzMYcLXqnDWL/xKvXMs90Ik7rUYl1EJY3
+        Yg5J+2vb4g+AdqO3H/bYfwUlFLPOM/U=
+X-Google-Smtp-Source: ABdhPJy/04xIWQKM5doZWovlhW61e9m2oWCL5ySlbjt0CJz1yHoHULQZJBmHs8UshbQDP6IXBQNDFKyyYJE=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:fc04:f9df:1efb:bf0c])
- (user=seanjc job=sendgmr) by 2002:a25:420e:: with SMTP id p14mr18702645yba.371.1614995956849;
- Fri, 05 Mar 2021 17:59:16 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6214:1909:: with SMTP id
+ er9mr11880770qvb.5.1614995959126; Fri, 05 Mar 2021 17:59:19 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  5 Mar 2021 17:58:51 -0800
-Message-Id: <20210306015905.186698-1-seanjc@google.com>
+Date:   Fri,  5 Mar 2021 17:58:52 -0800
+In-Reply-To: <20210306015905.186698-1-seanjc@google.com>
+Message-Id: <20210306015905.186698-2-seanjc@google.com>
 Mime-Version: 1.0
+References: <20210306015905.186698-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v4 00/14] KVM: SVM: Misc SEV cleanups
+Subject: [PATCH v4 01/14] KVM: SVM: Zero out the VMCB array used to track SEV
+ ASID association
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
@@ -69,69 +73,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Minor bug fixes and refactorings of SEV related code, mainly to clean up
-the KVM code for tracking whether or not SEV and SEV-ES are enabled.  E.g.
-KVM has both sev_es and svm_sev_enabled(), and a global 'sev' flag while
-also using 'sev' as a local variable in several places.
+Zero out the array of VMCB pointers so that pre_sev_run() won't see
+garbage when querying the array to detect when an SEV ASID is being
+associated with a new VMCB.  In practice, reading random values is all
+but guaranteed to be benign as a false negative (which is extremely
+unlikely on its own) can only happen on CPU0 on the first VMRUN and would
+only cause KVM to skip the ASID flush.  For anything bad to happen, a
+previous instance of KVM would have to exit without flushing the ASID,
+_and_ KVM would have to not flush the ASID at any time while building the
+new SEV guest.
 
-Based kvm/master, v5.12-rc1-dontuse.
+Cc: Borislav Petkov <bp@suse.de>
+Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
+Fixes: 70cd94e60c73 ("KVM: SVM: VMRUN should use associated ASID when SEV is enabled")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/svm/svm.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-v4:
- - Reinstate the patch to override CPUID.0x8000_001F.
- - Properly configure the CPUID.0x8000_001F override. [Paolo]
- - Rebase to v5.12-rc1-dontuse.
-v3:
- - Drop two patches: add a dedicated feature word for CPUID_0x8000001F,
-   and use the new word to mask host CPUID in KVM.  I'll send these as a
-   separate mini-series so that Boris can take them through tip.
- - Add a patch to remove dependency on
-   CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT. [Boris / Paolo]
- - Use kcalloc() instead of an open-coded equivalent. [Tom]
- - Nullify sev_asid_bitmap when freeing it during setup. [Tom]
- - Add a comment in sev_hardware_teardown() to document why it's safe to
-   query the ASID bitmap without taking the lock. [Tom]
- - Collect reviews. [Tom and Brijesh]
-v2:
- - Remove the kernel's sev_enabled instead of renaming it to sev_guest.
- - Fix various build issues. [Tom]
- - Remove stable tag from the patch to free sev_asid_bitmap.  Keeping the
-   bitmap on failure is truly only a leak once svm_sev_enabled() is
-   dropped later in the series.  It's still arguably a fix since KVM will
-   unnecessarily keep memory, but it's not stable material. [Tom]
- - Collect one Ack. [Tom]
-
-v1:
- - https://lkml.kernel.org/r/20210109004714.1341275-1-seanjc@google.com
-
-Sean Christopherson (14):
-  KVM: SVM: Zero out the VMCB array used to track SEV ASID association
-  KVM: SVM: Free sev_asid_bitmap during init if SEV setup fails
-  KVM: SVM: Move SEV module params/variables to sev.c
-  KVM: x86: Do not advertise SME, VM_PAGE_FLUSH, or unknown features
-  x86/sev: Drop redundant and potentially misleading 'sev_enabled'
-  KVM: SVM: Append "_enabled" to module-scoped SEV/SEV-ES control
-    variables
-  KVM: SVM: Condition sev_enabled and sev_es_enabled on
-    CONFIG_KVM_AMD_SEV=y
-  KVM: SVM: Enable SEV/SEV-ES functionality by default (when supported)
-  KVM: SVM: Unconditionally invoke sev_hardware_teardown()
-  KVM: SVM: Explicitly check max SEV ASID during sev_hardware_setup()
-  KVM: SVM: Move SEV VMCB tracking allocation to sev.c
-  KVM: SVM: Drop redundant svm_sev_enabled() helper
-  KVM: SVM: Remove an unnecessary prototype declaration of
-    sev_flush_asids()
-  KVM: SVM: Skip SEV cache flush if no ASIDs have been used
-
- arch/x86/include/asm/mem_encrypt.h |  1 -
- arch/x86/kvm/cpuid.c               |  6 +++
- arch/x86/kvm/cpuid.h               |  1 +
- arch/x86/kvm/svm/sev.c             | 72 +++++++++++++++++++++---------
- arch/x86/kvm/svm/svm.c             | 35 +++++----------
- arch/x86/kvm/svm/svm.h             |  8 +---
- arch/x86/mm/mem_encrypt.c          | 12 +++--
- arch/x86/mm/mem_encrypt_identity.c |  1 -
- 8 files changed, 74 insertions(+), 62 deletions(-)
-
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index c636021b066b..01ce8ac77a07 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -568,9 +568,8 @@ static int svm_cpu_init(int cpu)
+ 	clear_page(page_address(sd->save_area));
+ 
+ 	if (svm_sev_enabled()) {
+-		sd->sev_vmcbs = kmalloc_array(max_sev_asid + 1,
+-					      sizeof(void *),
+-					      GFP_KERNEL);
++		sd->sev_vmcbs = kcalloc(max_sev_asid + 1, sizeof(void *),
++					GFP_KERNEL);
+ 		if (!sd->sev_vmcbs)
+ 			goto free_save_area;
+ 	}
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
