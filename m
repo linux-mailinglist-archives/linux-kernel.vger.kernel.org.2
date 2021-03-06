@@ -2,529 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5286932F9BE
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:35:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1082132F9D2
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhCFLfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 06:35:22 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:38560 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229888AbhCFLew (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 06:34:52 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 126BYc1K006179;
-        Sat, 6 Mar 2021 05:34:39 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=HvCqcO4aSV2SvJeScAa1eVu2H1MV1bsKg8/4nBErAS8=;
- b=g8xdp7kJx0c0Zp90j1CmwTnlSG7T6CbYZWE59Hv4lOPwBtqvyaDkUjfY/bkirpEuOjNA
- h2mP6vZ47pF/lJ7PsxF2A04gbZU1p9zJx+kL1eaeBj6ZJd4teyEN23t/wDyQOtllWVL+
- cqyI/PmFhurf73VkIblANUrOwy8KfdOgzelgfgcg5ul+bbfwiL76BE2pL/VwsXMWbgnl
- nGsEnS/QZdjwjj3uITwWow1dWD3P21BSMCmbMdhsex9UvLVpCSVCrQsRQ8q3YFFj63S4
- BcrOUmxynz8DpwmqFsBbh3eQB+9q5Sz3amzwQqEDeQyNIsIR+ktToL6fgA9jb6nkzX/1 Nw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 37471vr316-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 06 Mar 2021 05:34:39 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 6 Mar 2021
- 11:19:35 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Sat, 6 Mar 2021 11:19:35 +0000
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.45])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4AFC411CF;
-        Sat,  6 Mar 2021 11:19:35 +0000 (UTC)
-From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 3/4] ALSA: hda/cirrus: Add jack detect interrupt support from CS42L42 companion codec.
-Date:   Sat, 6 Mar 2021 11:19:33 +0000
-Message-ID: <20210306111934.4832-4-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210306111934.4832-1-vitalyr@opensource.cirrus.com>
-References: <20210306111934.4832-1-vitalyr@opensource.cirrus.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230424AbhCFLiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 06:38:11 -0500
+Received: from mail-am6eur05on2056.outbound.protection.outlook.com ([40.107.22.56]:36193
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230208AbhCFLhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 06:37:42 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YoMVW8REmzEn9neeV/RkoMxRdCkt1NjEFgkYIxzlKRxeuYORa3aeMb+KVO7UxcKjvFbaFX9Gln1xrBbQumCzG2xeWtg9nucEYW8qY1OVflHx+fZQe/WBmn4LJX99l2OPVQIzjhpiykZL9M8fBydl5JuIG2pC7+Wix/YDF2aM8/DZciEG/GphqK5fA4H6R3OFONi8q89T3pwf0yQ3Rc9hr8aq6OK8iW90DFtIxSScc40liDOJRR+lROD7eytARnGv3Kke85gJoUClT1xrPrEJR/b7pvGghZWp4uypwKUgBQqbCxe5PkmFe+Srk5qnnar7oz/+6enTfJeQOG8t9r0J2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dJj+qEWKY08xIrAb9Eg0x7f7Z6Zo/ICmzWhsnKsa2xs=;
+ b=eF0kQUD0vErLOqXYry3EL5UOZQ/t24BxAZnpZMBlxQ4lbg+7qvxB3PdvqoVP2eGjMg1ouYEk/NeLwQgP1gnC/YYR1t/fBGym0plsSe1PuDZ6gtGsO+Fkw2SXvuyuXq7HCro74tNSYM2yjqfFFUg+0a9iSzQQgvoPA3BkA7jT8sjZ8zsynXxlZTB8vqE9kJGT6VKDAluZDFPvsGwQID86/7YZGSBqbu+WgZXUfg/m4Z9uom352+m/e6lusuk+JWClIOvvOEG7lxV8M/ijkABuLFl4oPQOhDxXlQHvhskKk1cibuQs4kSvBXCGUAghnSC6bw0yO36PGWMK7POYFwHyWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dJj+qEWKY08xIrAb9Eg0x7f7Z6Zo/ICmzWhsnKsa2xs=;
+ b=La+yj1q8cwBHN1csSituSdRJv7tMU9pLtM/8IHrOOFXpI7BkBUJmfpUP2+xqQXIeQ4CQKuzWBaIT+NefJ0/NSEkmS2K9BRthhR/C2hIU3l9qxky28asTYnpZaVDEMCnKZ5VRBXKANa2o4XmerhYY2WuGyv5fuCO+6lD9CAE4Mlw=
+Authentication-Results: wizery.com; dkim=none (message not signed)
+ header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DBBPR04MB7659.eurprd04.prod.outlook.com (2603:10a6:10:209::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Sat, 6 Mar
+ 2021 11:37:37 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d58c:d479:d094:43d0]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d58c:d479:d094:43d0%9]) with mapi id 15.20.3846.054; Sat, 6 Mar 2021
+ 11:37:37 +0000
+From:   peng.fan@oss.nxp.com
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, o.rempel@pengutronix.de,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        paul@crapouillou.net, matthias.bgg@gmail.com, agross@kernel.org,
+        patrice.chotard@st.com, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V13 00/10] remoteproc: imx_rproc: support iMX8MQ/M 
+Date:   Sat,  6 Mar 2021 19:24:15 +0800
+Message-Id: <1615029865-23312-1-git-send-email-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.7.4
 Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 adultscore=0
- malwarescore=0 mlxlogscore=999 impostorscore=0 bulkscore=0
- priorityscore=1501 mlxscore=0 spamscore=0 suspectscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103060070
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: HK2PR04CA0047.apcprd04.prod.outlook.com
+ (2603:1096:202:14::15) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by HK2PR04CA0047.apcprd04.prod.outlook.com (2603:1096:202:14::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3912.17 via Frontend Transport; Sat, 6 Mar 2021 11:37:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 729c8d38-39ca-42e4-950f-08d8e0943dea
+X-MS-TrafficTypeDiagnostic: DBBPR04MB7659:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DBBPR04MB76595F0E8AE6610CF7FFFA9BC9959@DBBPR04MB7659.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 25F4+sAoEfKiEl40bZGpSR9OpQ5UwE06H/seskt2MRQhWJrisXC9RSotSeaYVKELwIxYm1tH9yTEx0NuOY9Qd6n9yGEZRfgbbdojTTThjYAqPqW2XVEojljP+OfVeq0KeSs/UwiBfEjuc7b7vrKrc1A+62iK4y9XrKYmbcZBi5HVsFCUKB95pb9o91+CPFyfdSf+MSc4P1duvUUriB5QJafms+UXll9XwE4x7AueEgUt7NELSWBlnEKqQ0favXBGWvMm+h2VOfNeAT0GBPWrglops6eFWczjHLiVhPXK/gdv4NHUvKda/JY7IZ8YKWGFEfAshHn3nqZxcxvHltLryapfdJB6kYkG19iYDzlHiizZs9dMUo0GilJGVgthEULd5q/jH5METP4xoVbrQhVjszR26isUSf4PyD/RbamOpe7HgfyiJIUyJ9JI9Et2HJEYV99gvwTMsk1xyPCuBkMrh9BGQj23sEkyzA7Se1XqHSJtEaksgU2hqFRzeCOggswbPzjf6O0rsSv0y/6oWzcWt9vPdRQY8sLFJ67D031JUGcm0hvt6ewiaqf1D3RYgCV2Y0CS5u0riPqyqi/rCQzRNu6vd+hPLPByrZBxoLT8G4LvZGjB1zVOtocaf/TJ4MDkW4SynFvWsRaWtPy/ztOAEDkQvw7gMwgRbXv+OEOn1UvoDvNz+allYDs23qcii4O7
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(136003)(39860400002)(346002)(86362001)(6486002)(956004)(9686003)(16526019)(5660300002)(7416002)(966005)(316002)(2616005)(6512007)(478600001)(6506007)(69590400012)(52116002)(83380400001)(4326008)(66556008)(66946007)(26005)(8676002)(66476007)(2906002)(8936002)(186003)(4743002)(6666004)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?nbx3FYRysDKE+uPdj7zQpBs4StBHepCc+WwnRIIs3m3NMDM8kQaivVxXBl2/?=
+ =?us-ascii?Q?Hb8mkMI1XUzjrXjt41JQjEC9X7c94LvjlwvDdsawlr1etM/8jLVbjVWalYLw?=
+ =?us-ascii?Q?w58H2f1OEXglrrCvZKTg/2MkZ/+qH5HJutFYZJ82HOya3mna5r8fuPNSV/Re?=
+ =?us-ascii?Q?oaoVtIuc9cal2gxxi4AxIPfhlRaAVDlTh3YPKa32P1RZkkrWbREEZO4eyP0C?=
+ =?us-ascii?Q?rzuXOizEanY38gJWOGPPBD+JbrXhzfv9h2hx0zgx018uNclplFvHv92O8fdV?=
+ =?us-ascii?Q?c9PeasX2OP13z1iN4UXQvYEO3Lrj6tub1t8aJ0beHfTs3tMflSq854orY5zg?=
+ =?us-ascii?Q?pbDohAWpw5llHs50iOtd9Pw4qkRJ1+Ks4gO2WrrAw1vwxmEmtIQtpvnbeex1?=
+ =?us-ascii?Q?o+acYgN3L1w9ntGnl2b+QFedZ3jZenemMFNHBt7S0M/E/KGF2GPNO09NE92r?=
+ =?us-ascii?Q?RpNU1lURmQG3If3MxnUnTM89D2iw/qcapP3wlOGufnrAHbAcNdcJ6Ah7J7TC?=
+ =?us-ascii?Q?GP83hVjeHpwPSXmA7DqcMJYhvbXw4JRvFASSJOB/MP5wdAduV61Lsn0XaV7V?=
+ =?us-ascii?Q?Il8RHG8rpGXSOWLwgZpc9AN9hraxodAh4ussYK0X5RgMwKPikIAEjGiRgr8o?=
+ =?us-ascii?Q?hAj+03fVLkksSzuUSz1uVHf25KBaIZZtXv7V3Dpbc5um/qCAYJ1SwGU4vQR3?=
+ =?us-ascii?Q?efcj7TNk2HyrNCIoz/QnMpogCQrbwleZx/bTFwexvmmmPqznLQtRe4fXKV0h?=
+ =?us-ascii?Q?42aE9w8tYYMGFXJfqUEp1c62DbM6IzZEMk4vjf3nZtL7jfSr9pOzdJzsg8xk?=
+ =?us-ascii?Q?g81mmshfvXdeTuRsWi1/bekGyHph3eOZysRpA+OETIDtsD+DuUapwlWoFHNQ?=
+ =?us-ascii?Q?mdde9m99U9rPkpOCshA7BakQ7qWg77yeQrj/kln7Oqg713CUFqF1JfRPNR06?=
+ =?us-ascii?Q?DyYynn412iJkNSOMDLJtL9nh1NlpMNIpcFD2SgIxTFxb0nknr7Womtbzk+sZ?=
+ =?us-ascii?Q?V2be5iKCPLjhQUdz1jWZXo/lzkWQs/5xviZFavQY+YYUxFVkFbD9E6/SLn9+?=
+ =?us-ascii?Q?GxFMf7JTApDhCutEiTVCBwQ8utbaoMnsL9EEbefRTgvABUF6wgK5zDQPXqH1?=
+ =?us-ascii?Q?Nh6itt/owCVDl0VzCO/TkneYC2L2QOTkRYtqRbMtdxgqPWcur/qPRQYT5Mws?=
+ =?us-ascii?Q?JgnFYLTZmislKh36ytVEbZCqEAmDpjxF23lQP2hu0qZ8HXO5bVu28vjWO1WH?=
+ =?us-ascii?Q?WmTHKwlpkXU7o01P6GTwPoXVodzkdvgjL9ujIm0V+4UZ276PbnM/bF6Sh2Jv?=
+ =?us-ascii?Q?ZDDxSaOS5ENTrMyBjslWD8Yd?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 729c8d38-39ca-42e4-950f-08d8e0943dea
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2021 11:37:37.3939
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eGO4ybynncvBoapB2M5iOGrSJ/kc8/BGoUGpN0Ze6xbGmOZpReTD0WbbXgnGTySB3JNX8PD54xs9NEgiXnmiJA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7659
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the case of CS8409 we do not have unsol events from NID's 0x24 and 0x34
-where hs mic and hp are connected. Companion codec CS42L42 will generate
-interrupt via gpio 4 to notify jack events. We have to overwrite standard
-snd_hda_jack_unsol_event(), read CS42L42 jack detect status registers and
-then notify status via generic snd_hda_jack_unsol_event() call.
+From: Peng Fan <peng.fan@nxp.com>
 
-Tested on DELL Inspiron-3500, DELL Inspiron-3501, DELL Inspiron-3505.
+V13:
+ Add R-b tag from Rob for patch 1.
+ Drop the reserved memory node from patch 2 per Rob's comment.
+ Mathieu, Bjorn
+  Only patch 2 not have R-b/A-b tag, but since Rob's only has a minor comment, and
+  addressed in this version, is it ok for you take into remoteproc next branch?
+  Thanks.
 
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
+V12:
+ Add maxItems to avoid dt_bindings_check fail
+ Rebased on top of linux-next
 
-Changes in v3:
-- Fixed missing static function declaration warning (Reported-by: kernel test robot <lkp@intel.com>)
-- Improved unsolicited events handling for headset type 4
+V11:
+ Per Rob's comments, fix memory-region in patch 1/10
+ Rebased on top of Linux-next
 
- sound/pci/hda/patch_cirrus.c | 309 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 307 insertions(+), 2 deletions(-)
+V10:
+ Per Rob's comments, fix patch 1/10
 
-diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
-index d664eed5c3cf..1d2f6a1224e6 100644
---- a/sound/pci/hda/patch_cirrus.c
-+++ b/sound/pci/hda/patch_cirrus.c
-@@ -9,6 +9,7 @@
- #include <linux/slab.h>
- #include <linux/module.h>
- #include <sound/core.h>
-+#include <linux/mutex.h>
- #include <linux/pci.h>
- #include <sound/tlv.h>
- #include <sound/hda_codec.h>
-@@ -38,6 +39,15 @@ struct cs_spec {
- 	/* for MBP SPDIF control */
- 	int (*spdif_sw_put)(struct snd_kcontrol *kcontrol,
- 			    struct snd_ctl_elem_value *ucontrol);
-+
-+	unsigned int cs42l42_hp_jack_in:1;
-+	unsigned int cs42l42_mic_jack_in:1;
-+
-+	struct mutex cs8409_i2c_mux;
-+
-+	/* verb exec op override */
-+	int (*exec_verb)(struct hdac_device *dev, unsigned int cmd,
-+				 unsigned int flags, unsigned int *res);
- };
+V9:
+ Per Mathieu's comments,
+   update the tile of yaml in patch 2/10
+   update the Kconfig and MODULE_DESCRIPTION, I merge this change in patch 8/10,
+   since this is a minor change, I still keep Mathieu's R-b tag. If any objection, I could remove.
+   Add R-b tag in Patch 10/10
+
+ Rob, please help review patch 1/10 and 2/10
+
+V8:
+ Address sparse warning in patch 4/10 reported by kernel test robot
+
+V7:
+ Add R-b tag from Mathieu
+ vdevbuffer->vdev0buffer in patch 1/10, 7/10
+ correct err msg and shutdown seq per Mathieu's comments in patch 10/10
+ Hope this version is ok to be merged.
  
- /* available models with CS420x */
-@@ -1229,6 +1239,13 @@ static int patch_cs4213(struct hda_codec *codec)
- #define CS8409_CS42L42_SPK_PIN_NID	0x2c
- #define CS8409_CS42L42_AMIC_PIN_NID	0x34
- #define CS8409_CS42L42_DMIC_PIN_NID	0x44
-+#define CS8409_CS42L42_DMIC_ADC_PIN_NID	0x22
-+
-+#define CS42L42_HSDET_AUTO_DONE	0x02
-+#define CS42L42_HSTYPE_MASK		0x03
-+
-+#define CS42L42_JACK_INSERTED	0x0C
-+#define CS42L42_JACK_REMOVED	0x00
- 
- #define GPIO3_INT (1 << 3)
- #define GPIO4_INT (1 << 4)
-@@ -1429,6 +1446,7 @@ static const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
- 	{ 0x1C03, 0xC0 },
- 	{ 0x1105, 0x00 },
- 	{ 0x1112, 0xC0 },
-+	{ 0x1101, 0x02 },
- 	{} /* Terminator */
- };
- 
-@@ -1565,6 +1583,8 @@ static unsigned int cs8409_i2c_write(struct hda_codec *codec,
- /* Assert/release RTS# line to CS42L42 */
- static void cs8409_cs42l42_reset(struct hda_codec *codec)
- {
-+	struct cs_spec *spec = codec->spec;
-+
- 	/* Assert RTS# line */
- 	snd_hda_codec_write(codec,
- 			codec->core.afg, 0, AC_VERB_SET_GPIO_DATA, 0);
-@@ -1576,21 +1596,190 @@ static void cs8409_cs42l42_reset(struct hda_codec *codec)
- 	/* wait ~10ms */
- 	usleep_range(10000, 15000);
- 
--	/* Clear interrupts status */
-+	mutex_lock(&spec->cs8409_i2c_mux);
-+
-+	/* Clear interrupts, by reading interrupt status registers */
- 	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308, 1);
- 	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1309, 1);
- 	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130A, 1);
- 	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130F, 1);
- 
-+	mutex_unlock(&spec->cs8409_i2c_mux);
-+
-+}
-+
-+/* Configure CS42L42 slave codec for jack autodetect */
-+static int cs8409_cs42l42_enable_jack_detect(struct hda_codec *codec)
-+{
-+	struct cs_spec *spec = codec->spec;
-+
-+	mutex_lock(&spec->cs8409_i2c_mux);
-+
-+	/* Set TIP_SENSE_EN for analog front-end of tip sense. */
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b70, 0x0020, 1);
-+	/* Clear WAKE# */
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b71, 0x0001, 1);
-+	/* Wait ~2.5ms */
-+	usleep_range(2500, 3000);
-+	/* Set mode WAKE# output follows the combination logic directly */
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b71, 0x0020, 1);
-+	/* Clear interrupts status */
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f, 1);
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1b7b, 1);
-+	/* Enable interrupt */
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1320, 0x03, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b79, 0x00, 1);
-+
-+	mutex_unlock(&spec->cs8409_i2c_mux);
-+
-+	return 0;
-+}
-+
-+/* Enable and run CS42L42 slave codec jack auto detect */
-+static void cs8409_cs42l42_run_jack_detect(struct hda_codec *codec)
-+{
-+	struct cs_spec *spec = codec->spec;
-+
-+	mutex_lock(&spec->cs8409_i2c_mux);
-+
-+	/* Clear interrupts */
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308, 1);
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1b77, 1);
-+
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1102, 0x87, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1f06, 0x86, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b74, 0x07, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x131b, 0x01, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1120, 0x80, 1);
-+	/* Wait ~110ms*/
-+	usleep_range(110000, 200000);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x111f, 0x77, 1);
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1120, 0xc0, 1);
-+	/* Wait ~10ms */
-+	usleep_range(10000, 25000);
-+
-+	mutex_unlock(&spec->cs8409_i2c_mux);
-+
- }
- 
- static void cs8409_cs42l42_reg_setup(struct hda_codec *codec)
- {
- 	const struct cs8409_i2c_param *seq = cs42l42_init_reg_seq;
-+	struct cs_spec *spec = codec->spec;
-+
-+	mutex_lock(&spec->cs8409_i2c_mux);
- 
- 	for (; seq->addr; seq++)
- 		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, seq->addr, seq->reg, 1);
- 
-+	mutex_unlock(&spec->cs8409_i2c_mux);
-+
-+}
-+
-+/*
-+ * In the case of CS8409 we do not have unsolicited events from NID's 0x24
-+ * and 0x34 where hs mic and hp are connected. Companion codec CS42L42 will
-+ * generate interrupt via gpio 4 to notify jack events. We have to overwrite
-+ * generic snd_hda_jack_unsol_event(), read CS42L42 jack detect status registers
-+ * and then notify status via generic snd_hda_jack_unsol_event() call.
-+ */
-+static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
-+{
-+	struct cs_spec *spec = codec->spec;
-+	int status_changed = 0;
-+	unsigned int reg_cdc_status = 0;
-+	unsigned int reg_hs_status = 0;
-+	unsigned int reg_ts_status = 0;
-+	int type = 0;
-+	struct hda_jack_tbl *jk;
-+
-+	/* jack_unsol_event() will be called every time gpio line changing state.
-+	 * In this case gpio4 line goes up as a result of reading interrupt status
-+	 * registers in previous cs8409_jack_unsol_event() call.
-+	 * We don't need to handle this event, ignoring...
-+	 */
-+	if ((res & (1 << 4)))
-+		return;
-+
-+	mutex_lock(&spec->cs8409_i2c_mux);
-+
-+	/* Read jack detect status registers */
-+	reg_cdc_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308, 1);
-+	reg_hs_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1124, 1);
-+	reg_ts_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f, 1);
-+
-+	/* Clear interrupts */
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1b7b, 1);
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308, 1);
-+	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f, 1);
-+
-+	mutex_unlock(&spec->cs8409_i2c_mux);
-+
-+	/* HSDET_AUTO_DONE */
-+	if (reg_cdc_status & CS42L42_HSDET_AUTO_DONE) {
-+
-+		type = ((reg_hs_status & CS42L42_HSTYPE_MASK) + 1);
-+		/* CS42L42 reports optical jack as type 4
-+		 * We don't handle optical jack
-+		 */
-+		if (type != 4) {
-+			if (!spec->cs42l42_hp_jack_in) {
-+				status_changed = 1;
-+				spec->cs42l42_hp_jack_in = 1;
-+			}
-+			/* type = 3 has no mic */
-+			if ((!spec->cs42l42_mic_jack_in) && (type != 3)) {
-+				status_changed = 1;
-+				spec->cs42l42_mic_jack_in = 1;
-+			}
-+		} else {
-+			if (spec->cs42l42_hp_jack_in || spec->cs42l42_mic_jack_in) {
-+				status_changed = 1;
-+				spec->cs42l42_hp_jack_in = 0;
-+				spec->cs42l42_mic_jack_in = 0;
-+			}
-+		}
-+
-+	} else {
-+		/* TIP_SENSE INSERT/REMOVE */
-+		switch (reg_ts_status) {
-+		case CS42L42_JACK_INSERTED:
-+			cs8409_cs42l42_run_jack_detect(codec);
-+			break;
-+
-+		case CS42L42_JACK_REMOVED:
-+			if (spec->cs42l42_hp_jack_in || spec->cs42l42_mic_jack_in) {
-+				status_changed = 1;
-+				spec->cs42l42_hp_jack_in = 0;
-+				spec->cs42l42_mic_jack_in = 0;
-+			}
-+			break;
-+
-+		default:
-+			/* jack in transition */
-+			status_changed = 0;
-+			break;
-+		}
-+	}
-+
-+	if (status_changed) {
-+
-+		snd_hda_set_pin_ctl(codec, CS8409_CS42L42_SPK_PIN_NID,
-+				(spec->cs42l42_hp_jack_in)?0 : PIN_OUT);
-+
-+		/* Report jack*/
-+		jk = snd_hda_jack_tbl_get_mst(codec, CS8409_CS42L42_HP_PIN_NID, 0);
-+		if (jk) {
-+			snd_hda_jack_unsol_event(codec,
-+				(jk->tag << AC_UNSOL_RES_TAG_SHIFT) & AC_UNSOL_RES_TAG);
-+		}
-+		/* Report jack*/
-+		jk = snd_hda_jack_tbl_get_mst(codec, CS8409_CS42L42_AMIC_PIN_NID, 0);
-+		if (jk) {
-+			snd_hda_jack_unsol_event(codec,
-+				(jk->tag << AC_UNSOL_RES_TAG_SHIFT) & AC_UNSOL_RES_TAG);
-+		}
-+	}
- }
- 
- static int cs8409_cs42l42_build_controls(struct hda_codec *codec)
-@@ -1603,6 +1792,13 @@ static int cs8409_cs42l42_build_controls(struct hda_codec *codec)
- 
- 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_BUILD);
- 
-+	/* Run jack auto detect first time on boot
-+	 * after controls have been added, to check if jack has
-+	 * been already plugged in
-+	 */
-+	cs8409_cs42l42_run_jack_detect(codec);
-+	usleep_range(100000, 150000);
-+
- 	return 0;
- }
- 
-@@ -1610,14 +1806,61 @@ static int cs8409_cs42l42_build_controls(struct hda_codec *codec)
- /* Manage PDREF, when transition to D3hot */
- static int cs8409_suspend(struct hda_codec *codec)
- {
-+	struct cs_spec *spec = codec->spec;
-+
-+	mutex_lock(&spec->cs8409_i2c_mux);
-+	/* Power down CS42L42 ASP/EQ/MIX/HP */
-+	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1101, 0xfe, 1);
-+	mutex_unlock(&spec->cs8409_i2c_mux);
- 	/* Assert CS42L42 RTS# line */
- 	snd_hda_codec_write(codec,
- 			codec->core.afg, 0, AC_VERB_SET_GPIO_DATA, 0);
-+
- 	snd_hda_shutup_pins(codec);
-+
- 	return 0;
- }
- #endif
- 
-+static void cs8409_cs42l42_cap_sync_hook(struct hda_codec *codec,
-+					 struct snd_kcontrol *kcontrol,
-+					 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct cs_spec *spec = codec->spec;
-+	unsigned int curval, expval;
-+	/* CS8409 DMIC Pin only allows the setting of the Stream Parameters in
-+	 * Power State D0. When a headset is unplugged, and the path is switched to
-+	 * the DMIC, the Stream is restarted with the new ADC, but this is done in
-+	 * Power State D3. Restart the Stream now DMIC is in D0.
-+	 */
-+	if (spec->gen.cur_adc == CS8409_CS42L42_DMIC_ADC_PIN_NID) {
-+		curval = snd_hda_codec_read(codec, spec->gen.cur_adc,
-+			0, AC_VERB_GET_CONV, 0);
-+		expval = (spec->gen.cur_adc_stream_tag << 4) | 0;
-+		if (curval != expval) {
-+			codec_dbg(codec, "%s Restarting Stream after DMIC switch\n", __func__);
-+			__snd_hda_codec_cleanup_stream(codec, spec->gen.cur_adc, 1);
-+			snd_hda_codec_setup_stream(codec, spec->gen.cur_adc,
-+					   spec->gen.cur_adc_stream_tag, 0,
-+					   spec->gen.cur_adc_format);
-+		}
-+	}
-+}
-+
-+/* Enable/Disable Unsolicited Response for gpio(s) 3,4 */
-+static void cs8409_enable_ur(struct hda_codec *codec, int flag)
-+{
-+	/* GPIO4 INT# and GPIO3 WAKE# */
-+	snd_hda_codec_write(codec, codec->core.afg,
-+			0, AC_VERB_SET_GPIO_UNSOLICITED_RSP_MASK,
-+			flag?(GPIO3_INT | GPIO4_INT) : 0);
-+
-+	snd_hda_codec_write(codec, codec->core.afg,
-+			0, AC_VERB_SET_UNSOLICITED_ENABLE,
-+			flag?AC_UNSOL_ENABLED : 0);
-+
-+}
-+
- /* Vendor specific HW configuration
-  * PLL, ASP, I2C, SPI, GPIOs, DMIC etc...
-  */
-@@ -1638,6 +1881,9 @@ static int cs8409_cs42l42_hw_init(struct hda_codec *codec)
- 	for (; seq->nid; seq++)
- 		cs_vendor_coef_set(codec, seq->cir, seq->coeff);
- 
-+	/* Disable Unsolicited Response during boot */
-+	cs8409_enable_ur(codec, 0);
-+
- 	/* Reset CS42L42 */
- 	cs8409_cs42l42_reset(codec);
- 
-@@ -1647,11 +1893,18 @@ static int cs8409_cs42l42_hw_init(struct hda_codec *codec)
- 	if (codec->fixup_id == CS8409_WARLOCK ||
- 			codec->fixup_id == CS8409_CYBORG) {
- 		/* FULL_SCALE_VOL = 0 for Warlock / Cyborg */
-+		mutex_lock(&spec->cs8409_i2c_mux);
- 		cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x2001, 0x01, 1);
-+		mutex_unlock(&spec->cs8409_i2c_mux);
- 		/* DMIC1_MO=00b, DMIC1/2_SR=1 */
- 		cs_vendor_coef_set(codec, 0x09, 0x0003);
- 	}
- 
-+	cs8409_cs42l42_enable_jack_detect(codec);
-+
-+	/* Enable Unsolicited Response */
-+	cs8409_enable_ur(codec, 1);
-+
- 	return 1;
- }
- 
-@@ -1671,6 +1924,8 @@ static int cs8409_cs42l42_init(struct hda_codec *codec)
- 
- 		cs8409_cs42l42_hw_init(codec);
- 
-+		cs8409_cs42l42_run_jack_detect(codec);
-+		usleep_range(100000, 150000);
- 	}
- 
- 	return ret;
-@@ -1681,7 +1936,7 @@ static const struct hda_codec_ops cs8409_cs42l42_patch_ops = {
- 	.build_pcms = snd_hda_gen_build_pcms,
- 	.init = cs8409_cs42l42_init,
- 	.free = cs_free,
--	.unsol_event = snd_hda_jack_unsol_event,
-+	.unsol_event = cs8409_jack_unsol_event,
- #ifdef CONFIG_PM
- 	.suspend = cs8409_suspend,
- #endif
-@@ -1741,6 +1996,45 @@ static int cs8409_cs42l42_fixup(struct hda_codec *codec)
- 	return err;
- }
- 
-+static int cs8409_cs42l42_exec_verb(struct hdac_device *dev,
-+		unsigned int cmd, unsigned int flags, unsigned int *res)
-+{
-+	struct hda_codec *codec = container_of(dev, struct hda_codec, core);
-+	struct cs_spec *spec = codec->spec;
-+
-+	unsigned int nid = 0;
-+	unsigned int verb = 0;
-+
-+	nid = ((cmd >> 20) & 0x07f);
-+	verb = ((cmd >> 8) & 0x0fff);
-+
-+	/* CS8409 pins have no AC_PINSENSE_PRESENCE
-+	 * capabilities. We have to intercept 2 calls for pins 0x24 and 0x34
-+	 * and return correct pin sense values for read_pin_sense() call from
-+	 * hda_jack based on CS42L42 jack detect status.
-+	 */
-+	switch (nid) {
-+	case CS8409_CS42L42_HP_PIN_NID:
-+		if (verb == AC_VERB_GET_PIN_SENSE) {
-+			*res = (spec->cs42l42_hp_jack_in) ? AC_PINSENSE_PRESENCE : 0;
-+			return 0;
-+		}
-+		break;
-+
-+	case CS8409_CS42L42_AMIC_PIN_NID:
-+		if (verb == AC_VERB_GET_PIN_SENSE) {
-+			*res = (spec->cs42l42_mic_jack_in) ? AC_PINSENSE_PRESENCE : 0;
-+			return 0;
-+		}
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	return spec->exec_verb(dev, cmd, flags, res);
-+}
-+
- static int patch_cs8409(struct hda_codec *codec)
- {
- 	struct cs_spec *spec;
-@@ -1766,8 +2060,16 @@ static int patch_cs8409(struct hda_codec *codec)
- 
- 		snd_hda_add_verbs(codec, cs8409_cs42l42_add_verbs);
- 
-+		/* verb exec op override */
-+		spec->exec_verb = codec->core.exec_verb;
-+		codec->core.exec_verb = cs8409_cs42l42_exec_verb;
-+
-+		mutex_init(&spec->cs8409_i2c_mux);
-+
- 		codec->patch_ops = cs8409_cs42l42_patch_ops;
- 
-+		spec->gen.cap_sync_hook = cs8409_cs42l42_cap_sync_hook;
-+
- 		spec->gen.suppress_auto_mute = 1;
- 		spec->gen.no_primary_hp = 1;
- 		/* GPIO 5 out, 3,4 in */
-@@ -1775,6 +2077,9 @@ static int patch_cs8409(struct hda_codec *codec)
- 		spec->gpio_data = 0;
- 		spec->gpio_mask = 0x03f;
- 
-+		spec->cs42l42_hp_jack_in = 0;
-+		spec->cs42l42_mic_jack_in = 0;
-+
- 		err = cs8409_cs42l42_fixup(codec);
- 
- 		if (err > 0)
+V6:
+ Add R-b tag from Mathieu
+ Convert imx-rproc.txt to yaml and add dt-bindings support for i.MX8MQ/M, patch 1/10 2/10
+ No other changes.
+
+V5:
+ Apply on Linux next
+ Add V5 subject prefix
+ Add R-b tag from Bjorn for 1/8, 2/8, 3/8
+ https://patchwork.kernel.org/project/linux-remoteproc/cover/20201229033019.25899-1-peng.fan@nxp.com/
+
+V4:
+ According to Bjorn's comments, add is_iomem for da to va usage
+ 1/8, 2/8 is new patch
+ 3/8, follow Bjorn's comments to correct/update the err msg.
+ 6/8, new patch
+ 8/8, use dev_err_probe to simplify code, use queue_work instead schedule_delayed_work
+
+V3:
+ Since I was quite busy in the past days, V3 is late
+ Rebased on Linux-next
+ Add R-b tags
+ 1/7: Add R-b tag of Mathieu, add comments
+ 4/7: Typo fix
+ 5/7: Add R-b tag of Mathieu, drop index Per Mathieu's comments
+ 6/7: Add R-b tag of Mathieu
+ 7/7: Add comment for vqid << 16, drop unneeded timeout settings of mailbox
+      Use queue_work instead of schedule_delayed_work
+      free mbox channels when remove
+ https://lkml.org/lkml/2020/12/4/82
+
+V2:
+ Rebased on linux-next
+ Dropped early boot feature to make patchset simple.
+ Drop rsc-da
+ https://patchwork.kernel.org/project/linux-remoteproc/cover/20200927064131.24101-1-peng.fan@nxp.com/
+
+V1:
+ https://patchwork.kernel.org/cover/11682461/
+
+This patchset is to support i.MX8MQ/M coproc.
+The early boot feature was dropped to make the patchset small in V2.
+
+Since i.MX specific TCM memory requirement, add elf platform hook.
+Several patches have got reviewed by Oleksij and Mathieu in v1.
+
+
+Peng Fan (10):
+  dt-bindings: remoteproc: convert imx rproc bindings to json-schema
+  dt-bindings: remoteproc: imx_rproc: add i.MX8MQ/M support
+  remoteproc: introduce is_iomem to rproc_mem_entry
+  remoteproc: add is_iomem to da_to_va
+  remoteproc: imx_rproc: correct err message
+  remoteproc: imx_rproc: use devm_ioremap
+  remoteproc: imx_rproc: add i.MX specific parse fw hook
+  remoteproc: imx_rproc: support i.MX8MQ/M
+  remoteproc: imx_rproc: ignore mapping vdev regions
+  remoteproc: imx_proc: enable virtio/mailbox
+
+ .../bindings/remoteproc/fsl,imx-rproc.yaml    |  90 ++++++
+ .../bindings/remoteproc/imx-rproc.txt         |  33 ---
+ drivers/remoteproc/Kconfig                    |   6 +-
+ drivers/remoteproc/imx_rproc.c                | 262 +++++++++++++++++-
+ drivers/remoteproc/ingenic_rproc.c            |   2 +-
+ drivers/remoteproc/keystone_remoteproc.c      |   2 +-
+ drivers/remoteproc/mtk_scp.c                  |   6 +-
+ drivers/remoteproc/omap_remoteproc.c          |   2 +-
+ drivers/remoteproc/pru_rproc.c                |   2 +-
+ drivers/remoteproc/qcom_q6v5_adsp.c           |   2 +-
+ drivers/remoteproc/qcom_q6v5_pas.c            |   2 +-
+ drivers/remoteproc/qcom_q6v5_wcss.c           |   2 +-
+ drivers/remoteproc/qcom_wcnss.c               |   2 +-
+ drivers/remoteproc/remoteproc_core.c          |   7 +-
+ drivers/remoteproc/remoteproc_coredump.c      |   8 +-
+ drivers/remoteproc/remoteproc_debugfs.c       |   2 +-
+ drivers/remoteproc/remoteproc_elf_loader.c    |  21 +-
+ drivers/remoteproc/remoteproc_internal.h      |   2 +-
+ drivers/remoteproc/st_slim_rproc.c            |   2 +-
+ drivers/remoteproc/ti_k3_dsp_remoteproc.c     |   2 +-
+ drivers/remoteproc/ti_k3_r5_remoteproc.c      |   2 +-
+ drivers/remoteproc/wkup_m3_rproc.c            |   2 +-
+ include/linux/remoteproc.h                    |   4 +-
+ 23 files changed, 393 insertions(+), 72 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
+
 -- 
-2.25.1
+2.30.0
 
