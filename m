@@ -2,109 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F0732F8FF
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 09:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C61C32F8FA
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 09:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhCFImK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 03:42:10 -0500
-Received: from 8.mo4.mail-out.ovh.net ([188.165.33.112]:40220 "EHLO
-        8.mo4.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhCFIl6 (ORCPT
+        id S230059AbhCFIaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 03:30:18 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13136 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229628AbhCFI3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 03:41:58 -0500
-X-Greylist: delayed 600 seconds by postgrey-1.27 at vger.kernel.org; Sat, 06 Mar 2021 03:41:58 EST
-Received: from player737.ha.ovh.net (unknown [10.108.35.159])
-        by mo4.mail-out.ovh.net (Postfix) with ESMTP id 5832426B355
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 09:25:08 +0100 (CET)
-Received: from RCM-web10.webmail.mail.ovh.net (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
-        (Authenticated sender: rafal@milecki.pl)
-        by player737.ha.ovh.net (Postfix) with ESMTPSA id D40441245BA27;
-        Sat,  6 Mar 2021 08:24:59 +0000 (UTC)
+        Sat, 6 Mar 2021 03:29:34 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DsyQq1cMXz16F3p;
+        Sat,  6 Mar 2021 16:27:47 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.61) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 6 Mar 2021 16:29:22 +0800
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>,
+        <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
+        <mliska@suse.cz>, <linux-kernel@vger.kernel.org>
+CC:     <yangjihong1@huawei.com>, <zhangjinhao2@huawei.com>
+Subject: [PATCH] perf annotate: Fix sample events lost in stdio mode
+Date:   Sat, 6 Mar 2021 16:28:59 +0800
+Message-ID: <20210306082859.179541-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.30.GIT
 MIME-Version: 1.0
-Date:   Sat, 06 Mar 2021 09:24:58 +0100
-From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivek Unune <npcomplete13@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH V2 mips/linux.git] firmware: bcm47xx_nvram: refactor
- finding & reading NVRAM
-In-Reply-To: <20210306080007.GB4744@alpha.franken.de>
-References: <20210304072357.31108-1-zajec5@gmail.com>
- <20210305055501.13099-1-zajec5@gmail.com>
- <CAAdtpL7iWiumiOwMOH1xiBZvyOB0HB7W-9MMHoPPxkb3Srme=w@mail.gmail.com>
- <f4045af5-4866-6fc9-f34a-d789a7febb77@milecki.pl>
- <CAAdtpL5CMTaB6qCR=nZj+1MoGC97_BVd-r30E2RRYOhiktOiZQ@mail.gmail.com>
- <c66d6d99-affd-f833-1689-32394bc6a548@milecki.pl>
- <20210306080007.GB4744@alpha.franken.de>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <4f686c1babf19c42592751b6a11896c9@milecki.pl>
-X-Sender: rafal@milecki.pl
-X-Originating-IP: 194.187.74.233
-X-Webmail-UserID: rafal@milecki.pl
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 4351603141091495430
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtjedguddtlecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvffujghffgfkgihitgfgsehtkehjtddtreejnecuhfhrohhmpeftrghfrghlpgfoihhlvggtkhhiuceorhgrfhgrlhesmhhilhgvtghkihdrphhlqeenucggtffrrghtthgvrhhnpeejffdufffgjefgvdeigedukefffeevheejueeikeehudeiudehvdeifeduteehieenucfkpheptddrtddrtddrtddpudelgedrudekjedrjeegrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeefjedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.61]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-06 09:00, Thomas Bogendoerfer wrote:
-> On Fri, Mar 05, 2021 at 12:56:55PM +0100, Rafał Miłecki wrote:
->> On 05.03.2021 12:47, Philippe Mathieu-Daudé wrote:
->> > On Fri, Mar 5, 2021 at 11:16 AM Rafał Miłecki <rafal@milecki.pl> wrote:
->> > > On 05.03.2021 10:58, Philippe Mathieu-Daudé wrote:
->> > > > On Fri, Mar 5, 2021 at 6:55 AM Rafał Miłecki <zajec5@gmail.com> wrote:
->> > > > >
->> > > > > From: Rafał Miłecki <rafal@milecki.pl>
->> > > > >
->> > > > > 1. Use meaningful variable names (e.g. "flash_start", "res_size" instead
->> > > > >      of e.g. "iobase", "end")
->> > > > > 2. Always operate on "offset" instead of mix of start, end, size, etc.
->> > > >
->> > > > "instead of a mix"
->> > > >
->> > > > > 3. Add helper checking for NVRAM to avoid duplicating code
->> > > > > 4. Use "found" variable instead of goto
->> > > > > 5. Use simpler checking of offsets and sizes (2 nested loops with
->> > > > >      trivial check instead of extra function)
->> > > >
->> > > > This could be a series of trivial patches, why did you choose to make a mixed
->> > > > bag harder to review?
->> > >
->> > > It's a subjective thing and often a matter of maintainer taste. I can
->> > > say that after contributing to various Linux subsystems. If you split a
->> > > similar patch for MTD subsystem you'll get complains about making
->> > > changes too small & too hard to review (sic!).
->> >
->> > Fine. MTD subsystem developers are probably smarter than I'm :)
->> >
->> > > This isn't a bomb really: 63 insertions(+), 48 deletions(-)
->> >
->> > Too many changes at once for my brain stack doesn't mean others are
->> > willing to review it. But to me that means each time I'll have to pass over
->> > it while bisecting or reviewing git history I'll suffer the same overflow.
->> > Anyway, matter of taste as you said.
->> 
->> If I hear another voice for splitting this change into smaller patches
->> I'm 100% happy to do so. Honestly!
->> 
->> I just don't know if by splitting I won't annoy other people by making
->> changes too small.
->> 
->> Please speak up! :)
-> 
-> please split it. IMHO the current is patch is hard to review, because 
-> of the
-> different changes mixed together.
+In hist__find_annotations function, since have a hist_entry per IP for the same
+symbol, we free notes->src to signal already processed this symbol in stdio mode;
+when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
 
-Will do, thank you for comments Philippe, Thomas!
+However, there is a problem, for example, run the following command:
+
+ # perf record -e branch-misses -e branch-instructions -a sleep 1
+
+perf.data file contains different types of sample event.
+
+If the same IP sample event exists in branch-misses and branch-instructions,
+this event uses the same symbol. When annotate branch-misses events, notes->src
+corresponding to this event is set to null, as a result, when annotate
+branch-instructions events, this event is skipped and no annotate is output.
+
+Solution of this patch is to add a u8 member to struct sym_hist and use a bit to
+indicate whether the symbol has been processed.
+Because different types of event correspond to different sym_hist, no conflict
+occurs.
+---
+ tools/perf/builtin-annotate.c | 22 ++++++++++++++--------
+ tools/perf/util/annotate.h    |  4 ++++
+ 2 files changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+index a23ba6bb99b6..c8c67892ae82 100644
+--- a/tools/perf/builtin-annotate.c
++++ b/tools/perf/builtin-annotate.c
+@@ -372,15 +372,21 @@ static void hists__find_annotations(struct hists *hists,
+ 			if (next != NULL)
+ 				nd = next;
+ 		} else {
+-			hist_entry__tty_annotate(he, evsel, ann);
++			struct sym_hist *h = annotated_source__histogram(notes->src,
++									 evsel->idx);
++
++			if (h->processed == 0) {
++				hist_entry__tty_annotate(he, evsel, ann);
++
++				/*
++				 * Since we have a hist_entry per IP for the same
++				 * symbol, set processed flag of evsel in sym_hist
++				 * to signal we already processed this symbol.
++				 */
++				h->processed = 1;
++			}
++
+ 			nd = rb_next(nd);
+-			/*
+-			 * Since we have a hist_entry per IP for the same
+-			 * symbol, free he->ms.sym->src to signal we already
+-			 * processed this symbol.
+-			 */
+-			zfree(&notes->src->cycles_hist);
+-			zfree(&notes->src);
+ 		}
+ 	}
+ }
+diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+index 096cdaf21b01..89872bfdc958 100644
+--- a/tools/perf/util/annotate.h
++++ b/tools/perf/util/annotate.h
+@@ -228,6 +228,10 @@ void symbol__calc_percent(struct symbol *sym, struct evsel *evsel);
+ struct sym_hist {
+ 	u64		      nr_samples;
+ 	u64		      period;
++
++	u8		      processed  : 1, /* whether symbol has been processed, used for annotate */
++			      __reserved : 7;
++
+ 	struct sym_hist_entry addr[];
+ };
+ 
+-- 
+2.30.GIT
+
