@@ -2,77 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E6532FD86
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 22:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CB432FD8C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 22:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbhCFVfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 16:35:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229709AbhCFVff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 16:35:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18850650C9;
-        Sat,  6 Mar 2021 21:35:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615066535;
-        bh=7A0VOvCfl+U06ZpaUEf3bWRU7A3XrmarnXWCSLAZIa8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iEd2cL/EcpOfzk5qqnv2vAS9AQ96X87gITqP0XNsJnmwB6B4qSjekqrlRyJG5lGk+
-         f0pYzSEud0YZoLAn8iYkKOQUur+uYCxBKD4mBdDMPsXvhw3RyAtDUVNTNm+mPhGifF
-         yEkC/16w0Yuf45Sw6we1fGRyRxfATAYzf4OG3DH6fyNHl/9tD1G3oPQRmM5H17Qol0
-         UFh0XWgLemnBoHSt2fYePOm23TzHKwJM60rifWtQximb28s0zvPPrvhGJiYAZOeyPj
-         v0Yr6BkjGCmlBZeNCLJTfr1E0Q4S5WG6/mgsD/azXnN2rOyJxNdSxPjz0DknBqt3wW
-         yiL2I5YPicePA==
-Received: by mail-ej1-f47.google.com with SMTP id p8so11765729ejb.10;
-        Sat, 06 Mar 2021 13:35:35 -0800 (PST)
-X-Gm-Message-State: AOAM533p0X0qV/1sOG7AApUDENslkWG5hwNsL4ciIKvo44NucoLj5h0c
-        MhMJtffrPawEK5nX4tHnIudN6DO7M2ME26Mffw==
-X-Google-Smtp-Source: ABdhPJxXFZVhSRPDf9x8QRYq/Xu9KATA0aCen7wNLOhjGQKIJ9Vb39DtoBXl4iyG5lmGPzuGpLojYL6uGKiqFkwOgZc=
-X-Received: by 2002:a17:906:d153:: with SMTP id br19mr8111116ejb.360.1615066533691;
- Sat, 06 Mar 2021 13:35:33 -0800 (PST)
+        id S229768AbhCFViz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 16:38:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhCFViX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 16:38:23 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4723EC06174A;
+        Sat,  6 Mar 2021 13:38:23 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id n79so5735469qke.3;
+        Sat, 06 Mar 2021 13:38:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rqWBb593TSZlw5a9zDn6tM3Ds+mzfiHH5ylMd3NHCPQ=;
+        b=Hh0UOR9uonFK8WcP4GC5nxxv0i0pvobPWCt64va5g2iSvqBVeNY40cNeO+XacW4s8A
+         mJ8M+jpvOyJmdSAUhUZHP5BtyUbdXzDeYEyfjlt+0HhVlN5P69MA14jeSXrgmNltTJhO
+         DXtXUpsdF+Cw/ycFwUU6p5nprB0M6I43dYruarNSyrLlvtQJYnRlmTH+Xed2MTCiXjgp
+         yH73OpG5bWJRFe8dZez4GPyqApjqeUYTWgBkrYL8hfY0bKwH1Wh1VWLPXxcXCXtcOfpt
+         0xNJ8YQFyRwZBU8QPrrbCwqK9AL0lX1m9DwDpsxr+f0jw8EOJ/dlx1KaL7IdB7pYAru8
+         kmmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rqWBb593TSZlw5a9zDn6tM3Ds+mzfiHH5ylMd3NHCPQ=;
+        b=qogfstgU4M3VZGsKAisQymhkI9DIKIGBmHOjDDO4jC62UTZ5MsAGWNr+9lbEX31U0o
+         4iyx9N8LrfagcaMpUIW4OkQaWL9beuZZedIOwjj4CUt5OHpeVBXPqpnbCMrl6ThpFoRG
+         OlN2wPMHrAQdDoqaY1OmE5rxitGh/QwFDqo0uheBnQNl3Lr3q0+64Kmo5ltcXF/UR6SV
+         oirMILiB1IlIg1xBfMILjCkIuCikkn101KflV8D+j5k4iOJ+qUNLqi8zUyK3UBmJwCMr
+         7Ny+MZ6bfc6a51fVU30LFeAyQzbOqyBw3BAe1sv+Ma/iApBuUbRGF72ZoSfR2N5LdMcy
+         zdOA==
+X-Gm-Message-State: AOAM5328xjKOGYfSXXWZe0mZDWT7Qu75/YO58LhEHyfBmZ6uSbBXBFkP
+        UT6SGiPA1PaG5Bm0peMZ2bb/aOBMmObvoG0w
+X-Google-Smtp-Source: ABdhPJxbA6blMjZKLr6s1Ip+H0qpzLlo9ruy+rJOUB+GhjcIrMC5eXTbuaYoeOEn+YAWDtyL371iEg==
+X-Received: by 2002:a37:6283:: with SMTP id w125mr14959138qkb.447.1615066702534;
+        Sat, 06 Mar 2021 13:38:22 -0800 (PST)
+Received: from localhost.localdomain ([138.199.13.185])
+        by smtp.gmail.com with ESMTPSA id n4sm4451149qta.38.2021.03.06.13.38.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 13:38:22 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] soc: qcom: Fix typos in the file qmi_encdec.c
+Date:   Sun,  7 Mar 2021 03:05:42 +0530
+Message-Id: <20210306213542.19413-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210303193305.924384-1-paul@crapouillou.net> <CAL_JsqLfkjC4c4PYfm6yJLZMH-5WaKA_mr9ziJ1J63UohcgRCw@mail.gmail.com>
- <20210306084513.GA5453@alpha.franken.de>
-In-Reply-To: <20210306084513.GA5453@alpha.franken.de>
-From:   Rob Herring <robh@kernel.org>
-Date:   Sat, 6 Mar 2021 14:35:21 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqK0_M18gnoYFyTyf_OaQgbmbYYyoAr-WaFCzzsmFuFeFg@mail.gmail.com>
-Message-ID: <CAL_JsqK0_M18gnoYFyTyf_OaQgbmbYYyoAr-WaFCzzsmFuFeFg@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: boot/compressed: Copy DTB to aligned address
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Paul Cercueil <paul@crapouillou.net>, od@zcrc.me,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 6, 2021 at 1:45 AM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
->
-> On Wed, Mar 03, 2021 at 02:37:55PM -0600, Rob Herring wrote:
-> > On Wed, Mar 3, 2021 at 1:33 PM Paul Cercueil <paul@crapouillou.net> wrote:
-> > >
-> > > Since 5.12-rc1, the Device Tree blob must now be properly aligned.
-> >
-> > I had checked the other built-in cases as microblaze broke too, but
-> > missed some of the many ways MIPS can have a dtb. Appended and
-> > built-in DTBs were supposed to be temporary. :(
->
-> and a fdt can also be provided by firmware. And according to spec
-> there is no aligmnet requirement. So this whole change will break
-> then. What was the reason for the whole churn ?
 
-There was a long discussion on devicetree-compiler list a few months
-ago. In summary, a while back libfdt switched to accessors from raw
-pointer accesses to avoid any possible unaligned accesses (is MIPS
-always okay with unaligned accesses?). This was determined to be a
-performance regression and an overkill as the DT structure itself
-should always be naturally aligned if the dtb is 64-bit aligned. I
-think 32-bit aligned has some possible misaligned accesses.
+Rudimentory spelling fixes throughout the file.
 
-As part of this, a dtb alignment check was added. So worst case, we
-could disable that if need be.
+s/descibing/describing/
+s/inforation/information/
 
-Rob
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/soc/qcom/qmi_encdec.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/soc/qcom/qmi_encdec.c b/drivers/soc/qcom/qmi_encdec.c
+index 3aaab71d1b2c..328cc8237191 100644
+--- a/drivers/soc/qcom/qmi_encdec.c
++++ b/drivers/soc/qcom/qmi_encdec.c
+@@ -451,11 +451,11 @@ static int qmi_decode_basic_elem(void *buf_dst, const void *buf_src,
+
+ /**
+  * qmi_decode_struct_elem() - Decodes elements of struct data type
+- * @ei_array: Struct info array descibing the struct element.
++ * @ei_array: Struct info array describing the struct element.
+  * @buf_dst: Buffer to store the decoded element.
+  * @buf_src: Buffer containing the elements in QMI wire format.
+  * @elem_len: Number of elements to be decoded.
+- * @tlv_len: Total size of the encoded inforation corresponding to
++ * @tlv_len: Total size of the encoded information corresponding to
+  *           this struct element.
+  * @dec_level: Depth of the nested structure from the main structure.
+  *
+@@ -499,10 +499,10 @@ static int qmi_decode_struct_elem(struct qmi_elem_info *ei_array,
+
+ /**
+  * qmi_decode_string_elem() - Decodes elements of string data type
+- * @ei_array: Struct info array descibing the string element.
++ * @ei_array: Struct info array describing the string element.
+  * @buf_dst: Buffer to store the decoded element.
+  * @buf_src: Buffer containing the elements in QMI wire format.
+- * @tlv_len: Total size of the encoded inforation corresponding to
++ * @tlv_len: Total size of the encoded information corresponding to
+  *           this string element.
+  * @dec_level: Depth of the string element from the main structure.
+  *
+--
+2.26.2
+
