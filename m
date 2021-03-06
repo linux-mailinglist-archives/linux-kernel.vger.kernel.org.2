@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AF932FD59
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 22:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 379C632FD60
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 22:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhCFVJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 16:09:58 -0500
-Received: from mail-pf1-f171.google.com ([209.85.210.171]:40400 "EHLO
-        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhCFVJn (ORCPT
+        id S229737AbhCFVPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 16:15:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229642AbhCFVPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 16:09:43 -0500
-Received: by mail-pf1-f171.google.com with SMTP id x7so1188346pfi.7;
-        Sat, 06 Mar 2021 13:09:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=1NFomRzi4xgjHlzifXEdAJagWvD2oXKyv02N+cpRX0s=;
-        b=rQDehLatn+1uhaGsewYCcFvKHPbkhLE9sphMqYIff4qmTJCp+XaCC1qkN1xZuo3cjW
-         12GIyr7vf+wEMbgqDj7KKuaLbvyTLQgw/lxQtFtX1h9BFhAqIWaINDoFePqlcXANsRAh
-         y5a9kDVK0HoKUZp7hEM1DJSlkDvEoY2kZ0UWxA1mE80ymziEMtozmMxzz5w+dfsbIcDY
-         tbMhLEtzaIifLJhsY8ms1dzw1qAmGre0q4+6q6x2kQSe1OO/gwIBzWrvL6/H+wiC3y6L
-         ZxeMku9QgwWRzmp/nU9XhVVqQ0W9yg+gmNmmyPPZi5a/HicjDLYiVzTSDyS96XaSsdV9
-         BZ7A==
-X-Gm-Message-State: AOAM530SXSEgeCYKkSeuPPe2GZf7nQvLsnRpnO3ZM4FxBC4zg4IkhPqm
-        iSy2rsh3LeJl4IxJCeNkPQ==
-X-Google-Smtp-Source: ABdhPJxjdjj9u38fIN3Momyu/WLXQ5qzFlXPV8oF+wZYsDGIcuXMUWGgE3MOfQ1J0YG7hfxmNR4SHw==
-X-Received: by 2002:a63:1524:: with SMTP id v36mr13979377pgl.221.1615064982615;
-        Sat, 06 Mar 2021 13:09:42 -0800 (PST)
-Received: from robh.at.kernel.org ([172.58.27.98])
-        by smtp.gmail.com with ESMTPSA id v185sm6201829pfb.125.2021.03.06.13.09.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 13:09:41 -0800 (PST)
-Received: (nullmailer pid 1217154 invoked by uid 1000);
-        Sat, 06 Mar 2021 21:09:37 -0000
-Date:   Sat, 6 Mar 2021 14:09:37 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     devicetree@vger.kernel.org, Stefan Wahren <stefan.wahren@i2se.com>,
-        linux-clk@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>, jonas.gorski@gmail.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/4] mips: bmips: add BCM63268 timer clock definitions
-Message-ID: <20210306210937.GA1217101@robh.at.kernel.org>
-References: <20210225194201.17001-1-noltari@gmail.com>
- <20210225194201.17001-2-noltari@gmail.com>
+        Sat, 6 Mar 2021 16:15:42 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71E9C06174A;
+        Sat,  6 Mar 2021 13:15:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=VQ8FmP4Hiih4NweBx3Yr8lFu8i5sit0vYyEzaq8cIKI=; b=MTNLzm+TUW2tPd2YM3vEfoLXhT
+        G1URl0uhROFXmJqGvDGstSL0BwFIZ0rEb5BmEn7X3cH48XFUFL8UpAXgtI55qdj7KtJdeeFaMzFoJ
+        pEnIABvfHdWHingVqmIee2Gqvk4nKdPG34HJz3pRkArs4VPUDHwW2uh8vvnfy73IR01WmwIa6UQRZ
+        W2pARTeo98x3sMtyiC2f9ala6Xx4vdSUZQab1ncgbAiZE9L5rOO4JhiINwVNQwfn8cflXhTlxkAMc
+        T2gKpba9HnMnYkFNIxyHl7uJ5346+pWGNWB1N3k65AAD46Lr+3YH6xnW9QjwCJVrECYb2KpquL+5V
+        Qiy5haFg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lIeGe-00DWSA-I9; Sat, 06 Mar 2021 21:15:23 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-fbdev@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, Jani Nikula <jani.nikula@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jaya Kumar <jayalk@intworks.biz>
+Subject: [PATCH] fb_defio: Use __set_page_dirty_no_writeback
+Date:   Sat,  6 Mar 2021 21:15:16 +0000
+Message-Id: <20210306211516.3222952-1-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210225194201.17001-2-noltari@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 20:41:58 +0100, Álvaro Fernández Rojas wrote:
-> Add missing timer clock definitions for BCM63268.
-> 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> ---
->  include/dt-bindings/clock/bcm63268-clock.h | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
+The home-grown set_page_dirty() implementation had the wrong return value.
+Use __set_page_dirty_no_writeback() like other in-memory implementations.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ drivers/video/fbdev/core/fb_defio.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/drivers/video/fbdev/core/fb_defio.c b/drivers/video/fbdev/core/fb_defio.c
+index a591d291b231..35021265e294 100644
+--- a/drivers/video/fbdev/core/fb_defio.c
++++ b/drivers/video/fbdev/core/fb_defio.c
+@@ -151,15 +151,8 @@ static const struct vm_operations_struct fb_deferred_io_vm_ops = {
+ 	.page_mkwrite	= fb_deferred_io_mkwrite,
+ };
+ 
+-static int fb_deferred_io_set_page_dirty(struct page *page)
+-{
+-	if (!PageDirty(page))
+-		SetPageDirty(page);
+-	return 0;
+-}
+-
+ static const struct address_space_operations fb_deferred_io_aops = {
+-	.set_page_dirty = fb_deferred_io_set_page_dirty,
++	.set_page_dirty = __set_page_dirty_no_writeback,
+ };
+ 
+ int fb_deferred_io_mmap(struct fb_info *info, struct vm_area_struct *vma)
+-- 
+2.30.0
+
