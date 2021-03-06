@@ -2,64 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2430732FC32
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 18:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6CF32FC35
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 18:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhCFRRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 12:17:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58050 "EHLO mail.kernel.org"
+        id S231219AbhCFRRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 12:17:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229779AbhCFRQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 12:16:29 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08C8C64FE8;
-        Sat,  6 Mar 2021 17:16:26 +0000 (UTC)
-Date:   Sat, 6 Mar 2021 17:16:23 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>, Kangjie Lu <kjlu@umn.edu>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iio: gyro: mpu3050: Fix error handling in
- mpu3050_trigger_handler
-Message-ID: <20210306171623.41a9e664@archlinux>
-In-Reply-To: <CACRpkdZMrQNncocSdqQXbFCdTB9N=PuoNSvW5sU_DLZ8Es0feg@mail.gmail.com>
-References: <20210301080421.13436-1-dinghao.liu@zju.edu.cn>
-        <CACRpkdZMrQNncocSdqQXbFCdTB9N=PuoNSvW5sU_DLZ8Es0feg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229779AbhCFRRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 12:17:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0013B65005;
+        Sat,  6 Mar 2021 17:17:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615051030;
+        bh=hVurEmaGO7eGhA6G/3cCILeLD1F8g4Ut3WbQdHX8dmE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1iuQUOfrkERVJyvTpyiVfh1w3cdr3Wu2rR4Hk1N8aD68bQ/gW0EPrYUjwpdBGuSba
+         vTQw4+rIFZOCyLhGVkh1+4l+Huc7Ylm6qxrwEyaIHAIIGb6CEhCulqmNsfIA+n/I1Z
+         7R2gU7Rxb9oZYwtfrAQwvlXxpIpokBvXiXOVBEug=
+Date:   Sat, 6 Mar 2021 18:17:04 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Nirmoy <nirmodas@amd.com>
+Cc:     "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>,
+        "Das, Nirmoy" <Nirmoy.Das@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH 5.11 079/104] drm/amdgpu: enable only one high prio
+ compute queue
+Message-ID: <YEO5EA9rhKfskXp7@kroah.com>
+References: <20210305120903.166929741@linuxfoundation.org>
+ <20210305120907.039431314@linuxfoundation.org>
+ <23197f54-020a-691c-5733-45ce7e624fec@amd.com>
+ <MW3PR12MB44918AD858505706809367F3F7969@MW3PR12MB4491.namprd12.prod.outlook.com>
+ <9f12d4c6-35c8-7466-f1bc-bee31957e11b@amd.com>
+ <MW3PR12MB4491E72712027DCBB8486E59F7969@MW3PR12MB4491.namprd12.prod.outlook.com>
+ <YEJOt6KXCzNb5y+x@sashalap>
+ <1b5bfcb0-3860-bb81-f0ad-91a522beef0a@amd.com>
+ <MW3PR12MB4491C79B8F847B982066A3ABF7969@MW3PR12MB4491.namprd12.prod.outlook.com>
+ <489d8a9e-1e24-82b8-7738-5e93aa1aabf4@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <489d8a9e-1e24-82b8-7738-5e93aa1aabf4@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Mar 2021 16:45:10 +0100
-Linus Walleij <linus.walleij@linaro.org> wrote:
-
-> On Mon, Mar 1, 2021 at 9:04 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
+On Fri, Mar 05, 2021 at 04:57:36PM +0100, Nirmoy wrote:
 > 
-> > There is one regmap_bulk_read() call in mpu3050_trigger_handler
-> > that we have caught its return value bug lack further handling.
-> > Check and terminate the execution flow just like the other three
-> > regmap_bulk_read() calls in this function.
-> >
-> > Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>  
+> On 3/5/21 4:40 PM, Deucher, Alexander wrote:
+> > [AMD Public Use]
+> > 
+> > > -----Original Message-----
+> > > From: Koenig, Christian <Christian.Koenig@amd.com>
+> > > Sent: Friday, March 5, 2021 10:35 AM
+> > > To: Sasha Levin <sashal@kernel.org>; Deucher, Alexander
+> > > <Alexander.Deucher@amd.com>
+> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; linux-
+> > > kernel@vger.kernel.org; stable@vger.kernel.org; Das, Nirmoy
+> > > <Nirmoy.Das@amd.com>
+> > > Subject: Re: [PATCH 5.11 079/104] drm/amdgpu: enable only one high prio
+> > > compute queue
+> > > 
+> > > Am 05.03.21 um 16:31 schrieb Sasha Levin:
+> > > > On Fri, Mar 05, 2021 at 03:27:00PM +0000, Deucher, Alexander wrote:
+> > > > > Not sure if Sasha picked that up or not. Would need to check that. If
+> > > > > it's not, this patch should be dropped.
+> > > > Yes, it went in via autosel. I can drop it if it's not needed.
+> > > > 
+> > > IIRC this patch was created *before* the feature which needs it was merged.
+> > > So it isn't a bug fix, but rather just a prerequisite for a new feature.
+> > > 
+> > > Because of this it should only be merged into an older kernel if the new
+> > > features is back ported as well.
+> > > 
+> > > Alex do you agree that we can drop it?
+> > I think so, but I don't remember the exact sequence.  @Das, Nirmoy?
 > 
-> OK that makes sense.
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Applied with a fixes tag (it goes all the way back) and marked
-for stable.
-
-Thanks,
-
-Jonathan
-
 > 
-> Yours,
-> Linus Walleij
+> Yes, I agree with Christian. We should not backport it alone.
 
+Ok, now dropped from 5.10 and 5.11 queues.
+
+greg k-h
