@@ -2,344 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B2032FABC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 13:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C973D32FABD
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 14:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhCFMzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 07:55:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47064 "EHLO mail.kernel.org"
+        id S230289AbhCFM72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 07:59:28 -0500
+Received: from m12-11.163.com ([220.181.12.11]:56986 "EHLO m12-11.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230439AbhCFMzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 07:55:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A5EA65009;
-        Sat,  6 Mar 2021 12:55:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615035334;
-        bh=ezJonZsW5VUFEppqbj+9l/V+HQgHfbegXc0Ez2nPw7c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rXly2PXNd6/iZFHpre/hKPSfW1ScoRf5nekgi+nlshuDKpl5LMa4FbDAU8wq+JuqX
-         FXL885SnE/Vz90cak2jj/YR7XMpiAjQOSFXS0NB0BSI4MU1Eo7A/g2LeR4wFOlJ+vi
-         ZQeWQnBAwkp6wrlk2rlstjDEAMCYau8incUejJ6Eb0f6s/roEMqm0usDOAQhrz/6Eo
-         DVXO73Cu4eMgwOJhXCWKryhzCDLuktSQGkICL9Ql3/d9WpaXbUQx6oUlSkoWbq6t3t
-         JK+wNRyGMq2A2M4uRVvj1VRTj10W1cWCzndGWC6/Vi1gf04ZuFvaePM/QCLE3/l68g
-         DyT/kQ7pdif6Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3FC1840647; Sat,  6 Mar 2021 09:55:32 -0300 (-03)
-Date:   Sat, 6 Mar 2021 09:55:32 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     Alexandre Truong <alexandre.truong@arm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kemeng Shi <shikemeng@huawei.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Al Grant <al.grant@arm.com>,
-        Wilco Dijkstra <wilco.dijkstra@arm.com>
-Subject: Re: [PATCH RESEND WITH CCs v3 4/4] perf tools: determine if LR is
- the return address
-Message-ID: <YEN7xFjj7n66A9Xr@kernel.org>
-References: <20210304163255.10363-1-alexandre.truong@arm.com>
- <20210304163255.10363-4-alexandre.truong@arm.com>
- <57fdc0c9-ea72-5cd0-405a-c7bff0daf9d6@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57fdc0c9-ea72-5cd0-405a-c7bff0daf9d6@arm.com>
-X-Url:  http://acmel.wordpress.com
+        id S229888AbhCFM6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 07:58:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=xIqRi6sc4GA9IazljU
+        i1uo1ZMQyqIUqyNcK1eFRFpLo=; b=FcnDPPV9EhnUUugsUlTuBUDJ39AvQK43pD
+        tq/5baYrXoWCBmSheouNscytzURagvJQ98sDGRpkxchd5Y0Chyl4l+wPEPGndC+M
+        42JddzoWrAvEVQvaOvL4mkpU/fT35wsZFr/8YSY9CwqAFatzx9YrIyAl9UCSfyxd
+        1RMkhG+DI=
+Received: from localhost.localdomain (unknown [36.170.36.204])
+        by smtp7 (Coremail) with SMTP id C8CowACnzHxCfENgQu5vQw--.54302S2;
+        Sat, 06 Mar 2021 20:57:39 +0800 (CST)
+From:   Hailong Liu <liuhailongg6@163.com>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        Hailong Liu <liu.hailong6@zte.com.cn>
+Subject: [PATCH] clocksourc: Fix the comments to __clocksource_register_scale
+Date:   Sat,  6 Mar 2021 20:57:10 +0800
+Message-Id: <20210306125710.77490-1-liuhailongg6@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: C8CowACnzHxCfENgQu5vQw--.54302S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruw17CF1UurW5Gw1DWr4Durg_yoWfuFX_GF
+        4IqrW0gryayr9I9asrAa15Xa1Ik3s7CFyIyr1DGFsrGw1UJan8Cr90qr13Zrn8W3W7Ka98
+        ArZxWrySkw1fXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU09FxUUUUUU==
+X-Originating-IP: [36.170.36.204]
+X-CM-SenderInfo: xolxxtxlor0wjjw6il2tof0z/xtbBFQNNYFXloCz+tgAAsP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Mar 05, 2021 at 10:54:03AM +0200, James Clark escreveu:
-> I've tested this patchset on a few different applications and have seen it significantly improve
-> quality of frame pointer stacks on aarch64. For example with GDB 10 and default build options,
-> 'bfd_calc_gnu_debuglink_crc32' is a leaf function, and its caller 'gdb_bfd_crc' is ommitted,
-> but with the patchset it is included. I've also confirmed that this is correct from looking at
-> the source code.
-> 
-> Before:
-> 
->         # Children      Self  Command          Shared Object               Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                          
->         # ........  ........  ...............  ..........................  ...........
->         #
->             34.55%     0.00%  gdb-100          gdb-100                     [.] _start
->                    0.78%
->                         _start
->                         __libc_start_main
->                         main
->                         gdb_main
->                         captured_command_loop
->                         gdb_do_one_event
->                         check_async_event_handlers
->                         fetch_inferior_event
->                         inferior_event_handler
->                         do_all_inferior_continuations
->                         attach_post_wait
->                         post_create_inferior
->                         svr4_solib_create_inferior_hook
->                         solib_add
->                         solib_read_symbols
->                         symbol_file_add_with_addrs
->                         read_symbols
->                         elf_symfile_read
->                         find_separate_debug_file_by_debuglink[abi:cxx11]
->                         find_separate_debug_file
->                         separate_debug_file_exists
->                         gdb_bfd_crc
->                         bfd_calc_gnu_debuglink_crc32
-> 
-> After:
-> 
->         # Children      Self  Command          Shared Object               Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                          
->         # ........  ........  ...............  ..........................  ...........
->         #
->             34.55%     0.00%  gdb-100          gdb-100                     [.] _start
->                    0.78%
->                         _start
->                         __libc_start_main
->                         main
->                         gdb_main
->                         captured_command_loop
->                         gdb_do_one_event
->                         check_async_event_handlers
->                         fetch_inferior_event
->                         inferior_event_handler
->                         do_all_inferior_continuations
->                         attach_post_wait
->                         post_create_inferior
->                         svr4_solib_create_inferior_hook
->                         solib_add
->                         solib_read_symbols
->                         symbol_file_add_with_addrs
->                         read_symbols
->                         elf_symfile_read
->                         find_separate_debug_file_by_debuglink[abi:cxx11]
->                         find_separate_debug_file
->                         separate_debug_file_exists
->                         get_file_crc   <--------------------- leaf frame caller added
->                         bfd_calc_gnu_debuglink_crc32
-> 
-> There is a question about whether the overhead of recording all the registers is acceptable, for
-> filesize and time. We could make it a manual step, at the cost of not showing better frame pointer
-> stacks by default.
+From: Hailong Liu <liu.hailong6@zte.com.cn>
 
-Can someone quantify this, i.e. how much space per perf.data for a
-typical scenario? But anyway, I'm applying it as is now, we can change
-it if needed, its not like files with the extra registers won't be
-valid if/when we decide not to collect it by default in the future.
+The return value of __clocksource_register_scale() is awlays 0, which does
+not match the comments.
 
-If we decide to make this selectable, we should have it as a .perfconfig
-knob as well, so that one can set it and change the default, etc.
+Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
+---
+ kernel/time/clocksource.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-- Arnaldo
- 
-> Tested-by: James Clark <james.clark@arm.com>
-> 
-> On 04/03/2021 18:32, Alexandre Truong wrote:
-> > On arm64 and frame pointer mode (e.g: perf record --callgraph fp),
-> > use dwarf unwind info to check if the link register is the return
-> > address in order to inject it to the frame pointer stack.
-> > 
-> > Write the following application:
-> > 
-> > 	int a = 10;
-> > 
-> > 	void f2(void)
-> > 	{
-> > 		for (int i = 0; i < 1000000; i++)
-> > 			a *= a;
-> > 	}
-> > 
-> > 	void f1()
-> > 	{
-> > 		for (int i = 0; i < 10; i++)
-> > 			f2();
-> > 	}
-> > 
-> > 	int main (void)
-> > 	{
-> > 		f1();
-> > 		return 0;
-> > 	}
-> > 
-> > with the following compilation flags:
-> > 	gcc -fno-omit-frame-pointer -fno-inline -O2
-> > 
-> > The compiler omits the frame pointer for f2 on arm. This is a problem
-> > with any leaf call, for example an application with many different
-> > calls to malloc() would always omit the calling frame, even if it
-> > can be determined.
-> > 
-> > 	./perf record --call-graph fp ./a.out
-> > 	./perf report
-> > 
-> > currently gives the following stack:
-> > 
-> > 0xffffea52f361
-> > _start
-> > __libc_start_main
-> > main
-> > f2
-> > 
-> > After this change, perf report correctly shows f1() calling f2(),
-> > even though it was missing from the frame pointer unwind:
-> > 
-> > 	./perf report
-> > 
-> > 0xffffea52f361
-> > _start
-> > __libc_start_main
-> > main
-> > f1
-> > f2
-> > 
-> > Signed-off-by: Alexandre Truong <alexandre.truong@arm.com>
-> > Cc: John Garry <john.garry@huawei.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > Cc: Leo Yan <leo.yan@linaro.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> > Cc: Jiri Olsa <jolsa@redhat.com>
-> > Cc: Namhyung Kim <namhyung@kernel.org>
-> > Cc: Kemeng Shi <shikemeng@huawei.com>
-> > Cc: Ian Rogers <irogers@google.com>
-> > Cc: Andi Kleen <ak@linux.intel.com>
-> > Cc: Kan Liang <kan.liang@linux.intel.com>
-> > Cc: Jin Yao <yao.jin@linux.intel.com>
-> > Cc: Adrian Hunter <adrian.hunter@intel.com>
-> > Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > Cc: Al Grant <al.grant@arm.com>
-> > Cc: James Clark <james.clark@arm.com>
-> > Cc: Wilco Dijkstra <wilco.dijkstra@arm.com>
-> > ---
-> >  tools/perf/util/Build                         |  1 +
-> >  .../util/arm-frame-pointer-unwind-support.c   | 44 +++++++++++++++++++
-> >  .../util/arm-frame-pointer-unwind-support.h   |  7 +++
-> >  tools/perf/util/machine.c                     |  9 ++--
-> >  4 files changed, 58 insertions(+), 3 deletions(-)
-> >  create mode 100644 tools/perf/util/arm-frame-pointer-unwind-support.c
-> >  create mode 100644 tools/perf/util/arm-frame-pointer-unwind-support.h
-> > 
-> > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> > index 188521f34347..3b82cb992bce 100644
-> > --- a/tools/perf/util/Build
-> > +++ b/tools/perf/util/Build
-> > @@ -1,3 +1,4 @@
-> > +perf-y += arm-frame-pointer-unwind-support.o
-> >  perf-y += annotate.o
-> >  perf-y += block-info.o
-> >  perf-y += block-range.o
-> > diff --git a/tools/perf/util/arm-frame-pointer-unwind-support.c b/tools/perf/util/arm-frame-pointer-unwind-support.c
-> > new file mode 100644
-> > index 000000000000..964efd08e72e
-> > --- /dev/null
-> > +++ b/tools/perf/util/arm-frame-pointer-unwind-support.c
-> > @@ -0,0 +1,44 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include "../arch/arm64/include/uapi/asm/perf_regs.h"
-> > +#include "arch/arm64/include/perf_regs.h"
-> > +#include "event.h"
-> > +#include "arm-frame-pointer-unwind-support.h"
-> > +#include "callchain.h"
-> > +#include "unwind.h"
-> > +
-> > +struct entries {
-> > +	u64 stack[2];
-> > +	size_t length;
-> > +};
-> > +
-> > +static bool get_leaf_frame_caller_enabled(struct perf_sample *sample)
-> > +{
-> > +	return callchain_param.record_mode == CALLCHAIN_FP && sample->user_regs.regs
-> > +		&& sample->user_regs.mask == PERF_REGS_MASK;
-> > +}
-> > +
-> > +static int add_entry(struct unwind_entry *entry, void *arg)
-> > +{
-> > +	struct entries *entries = arg;
-> > +
-> > +	entries->stack[entries->length++] = entry->ip;
-> > +	return 0;
-> > +}
-> > +
-> > +u64 get_leaf_frame_caller_aarch64(struct perf_sample *sample, struct thread *thread)
-> > +{
-> > +	int ret;
-> > +
-> > +	struct entries entries = {{0, 0}, 0};
-> > +
-> > +	if (!get_leaf_frame_caller_enabled(sample))
-> > +		return 0;
-> > +
-> > +	ret = unwind__get_entries(add_entry, &entries, thread, sample, 2);
-> > +
-> > +	if (ret || entries.length != 2)
-> > +		return ret;
-> > +
-> > +	return callchain_param.order == ORDER_CALLER ?
-> > +		entries.stack[0] : entries.stack[1];
-> > +}
-> > diff --git a/tools/perf/util/arm-frame-pointer-unwind-support.h b/tools/perf/util/arm-frame-pointer-unwind-support.h
-> > new file mode 100644
-> > index 000000000000..16dc03fa9abe
-> > --- /dev/null
-> > +++ b/tools/perf/util/arm-frame-pointer-unwind-support.h
-> > @@ -0,0 +1,7 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#ifndef __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H
-> > +#define __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H
-> > +
-> > +u64 get_leaf_frame_caller_aarch64(struct perf_sample *sample, struct thread *thread);
-> > +
-> > +#endif /* __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H */
-> > diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> > index 7f03ffa016b0..dfb72dbc0e2d 100644
-> > --- a/tools/perf/util/machine.c
-> > +++ b/tools/perf/util/machine.c
-> > @@ -34,6 +34,7 @@
-> >  #include "bpf-event.h"
-> >  #include <internal/lib.h> // page_size
-> >  #include "cgroup.h"
-> > +#include "arm-frame-pointer-unwind-support.h"
-> >  
-> >  #include <linux/ctype.h>
-> >  #include <symbol/kallsyms.h>
-> > @@ -2671,10 +2672,12 @@ static int find_prev_cpumode(struct ip_callchain *chain, struct thread *thread,
-> >  	return err;
-> >  }
-> >  
-> > -static u64 get_leaf_frame_caller(struct perf_sample *sample __maybe_unused,
-> > -		struct thread *thread __maybe_unused)
-> > +static u64 get_leaf_frame_caller(struct perf_sample *sample, struct thread *thread)
-> >  {
-> > -	return 0;
-> > +	if (strncmp(thread->maps->machine->env->arch, "aarch64", 7) == 0)
-> > +		return get_leaf_frame_caller_aarch64(sample, thread);
-> > +	else
-> > +		return 0;
-> >  }
-> >  
-> >  static int thread__resolve_callchain_sample(struct thread *thread,
-> > 
-
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index cce484a2cc7c..1e1b5df724f4 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -909,7 +909,7 @@ EXPORT_SYMBOL_GPL(__clocksource_update_freq_scale);
+  * @scale:	Scale factor multiplied against freq to get clocksource hz
+  * @freq:	clocksource frequency (cycles per second) divided by scale
+  *
+- * Returns -EBUSY if registration fails, zero otherwise.
++ * Returns 0 always.
+  *
+  * This *SHOULD NOT* be called directly! Please use the
+  * clocksource_register_hz() or clocksource_register_khz helper functions.
 -- 
+2.17.1
 
-- Arnaldo
