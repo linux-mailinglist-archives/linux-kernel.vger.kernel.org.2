@@ -2,110 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6333C32FA69
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 13:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F38F532FA6C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 13:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhCFMBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 07:01:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbhCFMBH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 07:01:07 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF60BC06174A;
-        Sat,  6 Mar 2021 04:01:06 -0800 (PST)
-Date:   Sat, 06 Mar 2021 12:01:05 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615032065;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5MNa7PtVDOhipEBQKw5XetEFY7BvEAR17MKEeSV449I=;
-        b=jakS0Bhglk5Diih6AsOWefX/DElpFh04/nEz26hVo/HTCd3ndutPocHWGhtH9BHfznVLLv
-        Rq47B8+nLgRfagfHpGzoeJKT0A5vZEcaSQW+GVzoidBMY39f6N41DmyUZb4UCmRQndTQ7V
-        kbwU4bFit9l/DMkwRUZPQ04FX9en2h+sSwx8rDpQBz7COBMOLzFjvYmE+YVNwve2chFbVL
-        x0v5hYU6fVzwp/GOKZZZJFDLkXT9g+FDO24B570FoJtztEjSyXcYM4pTFr0G9nNZ97nogJ
-        IgU+csC0PYd7Xpv4ullE84gr1ZT/nlyjBzxDFJdw6x92godwHD7fqRJX3am/Rg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615032065;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5MNa7PtVDOhipEBQKw5XetEFY7BvEAR17MKEeSV449I=;
-        b=q67GrrGjr+armGqDzfViV6jig4MRMG0y+PmEopM2suihTEa2xr2Lul0WwcRmTqZSpI0qQp
-        +PaoeO3xzmzcVEAg==
-From:   "tip-bot2 for Justin Ernst" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/platform] x86/platform/uv: Fix indentation warning in
- Documentation/ABI/testing/sysfs-firmware-sgi_uv
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Justin Ernst <justin.ernst@hpe.com>,
-        Borislav Petkov <bp@suse.de>,
-        Mike Travis <mike.travis@hpe.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210219182852.385297-1-justin.ernst@hpe.com>
-References: <20210219182852.385297-1-justin.ernst@hpe.com>
-MIME-Version: 1.0
-Message-ID: <161503206505.398.71755286884944348.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S230034AbhCFMIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 07:08:35 -0500
+Received: from m12-18.163.com ([220.181.12.18]:59979 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229969AbhCFMIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 07:08:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=G1CefTDUOphs/ju8OA
+        6vyhQmbezCTp81UWY6mcWD6gQ=; b=mjwnRbe+WDUGtNAbQWTX+J8i/F5lFCJAzp
+        N9qSPWCeEFdtZPUPNAsxa240gwQk0ev4bIGpYm1D/7vy1dsNdWSJ00F2WtTeKLMX
+        L6yte7D/eDFhnv7ub1GUEFSDPRV36C762BZ4UUHvu4uX/FaRORoROnu+VeasZVnM
+        NjQd2Bv1E=
+Received: from localhost.localdomain (unknown [36.170.36.204])
+        by smtp14 (Coremail) with SMTP id EsCowADX0vB9cENg7OF3XQ--.29206S2;
+        Sat, 06 Mar 2021 20:07:26 +0800 (CST)
+From:   zhangkun4jr@163.com
+To:     Mathias Nyman <mathias.nyman@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhang Kun <zhangkun@cdjrlc.com>
+Subject: [PATCH] xhci: Remove unused value len from xhci_unmap_temp_buf
+Date:   Sat,  6 Mar 2021 20:06:44 +0800
+Message-Id: <20210306120644.74406-1-zhangkun4jr@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: EsCowADX0vB9cENg7OF3XQ--.29206S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKrWkZrWxXryUGw4DXryxKrg_yoWDGFc_Cr
+        93Ar1kC3yDGw1qvr12yanFv3yqka18Xrs7WFs2vF15ua4Utas8ZF1rAFykXa4rGF48JFsI
+        qw15WrW8tr10vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5Ta0JUUUUU==
+X-Originating-IP: [36.170.36.204]
+X-CM-SenderInfo: x2kd0whnxqkyru6rljoofrz/1tbiqh1NtVr7sWPVMgAAsb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/platform branch of tip:
+From: Zhang Kun <zhangkun@cdjrlc.com>
 
-Commit-ID:     e93d757c3f33c8a09f4aae579da4dc4500707471
-Gitweb:        https://git.kernel.org/tip/e93d757c3f33c8a09f4aae579da4dc4500707471
-Author:        Justin Ernst <justin.ernst@hpe.com>
-AuthorDate:    Fri, 19 Feb 2021 12:28:52 -06:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Sat, 06 Mar 2021 12:28:35 +01:00
+The value assigned to len by sg_pcopy_from_buffer() never used for
+anything, so remove it.
 
-x86/platform/uv: Fix indentation warning in Documentation/ABI/testing/sysfs-firmware-sgi_uv
-
-Commit
-
-  c9624cb7db1c ("x86/platform/uv: Update sysfs documentation")
-
-misplaced the first line of a codeblock section, causing the reported
-warning message:
-
-  Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpected indentation.
-
-Move the misplaced line below the required blank line to remove the
-warning message.
-
-Fixes: c9624cb7db1c ("x86/platform/uv: Update sysfs documentation")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Justin Ernst <justin.ernst@hpe.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Mike Travis <mike.travis@hpe.com>
-Link: https://lkml.kernel.org/r/20210219182852.385297-1-justin.ernst@hpe.com
+Signed-off-by: Zhang Kun <zhangkun@cdjrlc.com>
 ---
- Documentation/ABI/testing/sysfs-firmware-sgi_uv | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/host/xhci.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-firmware-sgi_uv b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-index 637c668..12ed843 100644
---- a/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-+++ b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-@@ -39,8 +39,8 @@ Description:
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index bd27bd670104..6ebda89d476c 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -1335,7 +1335,6 @@ static bool xhci_urb_temp_buffer_required(struct usb_hcd *hcd,
  
- 		The uv_type entry contains the hub revision number.
- 		This value can be used to identify the UV system version::
--			"0.*" = Hubless UV ('*' is subtype)
+ static void xhci_unmap_temp_buf(struct usb_hcd *hcd, struct urb *urb)
+ {
+-	unsigned int len;
+ 	unsigned int buf_len;
+ 	enum dma_data_direction dir;
  
-+			"0.*" = Hubless UV ('*' is subtype)
- 			"3.0" = UV2
- 			"5.0" = UV3
- 			"7.0" = UV4
+@@ -1351,7 +1350,7 @@ static void xhci_unmap_temp_buf(struct usb_hcd *hcd, struct urb *urb)
+ 				 dir);
+ 
+ 	if (usb_urb_dir_in(urb))
+-		len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs,
++		sg_pcopy_from_buffer(urb->sg, urb->num_sgs,
+ 					   urb->transfer_buffer,
+ 					   buf_len,
+ 					   0);
+-- 
+2.17.1
+
+
