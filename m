@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBD732FAB5
+	by mail.lfdr.de (Postfix) with ESMTP id A9EB332FAB6
 	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 13:47:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhCFMrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230373AbhCFMrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 6 Mar 2021 07:47:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38288 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhCFMqw (ORCPT
+        with ESMTP id S230213AbhCFMrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 07:46:52 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEAFC06174A;
-        Sat,  6 Mar 2021 04:46:51 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id r25so7941908ljk.11;
-        Sat, 06 Mar 2021 04:46:51 -0800 (PST)
+        Sat, 6 Mar 2021 07:47:04 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22532C06174A;
+        Sat,  6 Mar 2021 04:47:04 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id q20so4022517pfu.8;
+        Sat, 06 Mar 2021 04:47:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u2g6ss6rYKOP4lmEx+LB3UxrMMnguT0MjRtT2mTAeZs=;
-        b=bV4kzdGdE+CEJGifEziaa7CAs1FAczELonSZHQYs7MQsybqCfFQF4mobSTpPcwgo1S
-         wIZm3YKW7QZopStzM2tvyuUukpuo26SD/PmcL5wabkX6UU6cjmElwix37kM3HMHs6qAC
-         gFsWGFuYG23x+0CHnDIu5nLk81ax55SHWx3Y3kMjqX07oLWJTavjOOGKsPlHo1JdEeyk
-         GdYWmph8E3+3JqS7wHf/rF6Ii/05GUgwBBdzmyFkPNcDgx/faAoWdjjrd+aEemC02Iiy
-         dyyjYbjDDh5BgcFdik+DbWYRGFT4rc7+ucUphFeQBw2r/eXrA5XKIMJGxTtlvlHXyh3q
-         Vwrg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ub/RM878x+/yo+HYb6HeLXrrco+SRSL5u/Q5amkWLtw=;
+        b=nFnFDoZIPqYWVCWUyYqoy75hA20i5+6LiO8L041tSYqZm0rRYDKjT7+gllNbZXxpuv
+         rgdXmYJY+4v7rM+7QlFJdiFXGwgMax6I6DzLbrYDaNVJ2eJfII7Gyb3hrQ9CMWxoZgB+
+         mul3jFfBJdeZr1z5m/vRE0jpPJ5g80Ra4QlvBXz4vMmY2iJ90YHrAnklWPrLAnGyzONj
+         3hGZTgyXzki8qWot7TDjJ4Inub/9rOlqgVpZq2nNnq1Z0BM7LWeZJDbfV/Pfh6IBY/dM
+         6q42FPaR4Kd03GPMLbWn+NDUKFBT1DkUIm8hl8eiPkgtWl1JaIdGP7QjxvMcgVfmGGOT
+         Sjuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u2g6ss6rYKOP4lmEx+LB3UxrMMnguT0MjRtT2mTAeZs=;
-        b=HAesqh3jZRh2vlh7eCEzX8frUZssLeeFWWHVq269a8O/9Fpx1dKPMYVc8VXRAMJfPe
-         vlsCsHDVo2DH/haKHorOjvcjQOZabALtyzSefcUlK0tBWqNTExB9qZ9vtWihBXrzygwZ
-         Ycq7met1+h2Z9285P47UkQ9325UKyYIjegd2Xx2vIoTxz+XgyQHWzC36GKNvGPdieLkq
-         zTsRHo/bxOErCwmGzNHLZjsfxy6btgTrodPXIlsXqqponjJrpJXQnq6+k8IXfwItQXyu
-         0Atvef+He4ZLhQ9SOZhNA2CCERmF2VwHQSjuKj2LuRlUPR6/j2r+xhBS24GQOAzWsTLe
-         6Ilg==
-X-Gm-Message-State: AOAM533ANug21ixm4G2SDEFHs1+bkDROIFf6ERJ9JvX7RRrjH1Km9tK+
-        BZ5wI15LCeUvUBrVMOdk/yreVIZ4UICqpbPGq6g=
-X-Google-Smtp-Source: ABdhPJx1ZvVxwBE+EAJhHYtvZQgfQ3C3X1V8ubcPz5t1unbzrKwm0OXIVk/rxjCtGqGFespcEcTz3V/c8m69RsKBo64=
-X-Received: by 2002:a2e:6f15:: with SMTP id k21mr8281700ljc.444.1615034809963;
- Sat, 06 Mar 2021 04:46:49 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ub/RM878x+/yo+HYb6HeLXrrco+SRSL5u/Q5amkWLtw=;
+        b=ecrZEh+ygp/E25oyD9avztuQ2iSp90MkxM9cTN5wJfQN3G2b9DzcG54vMkzsFUTDqS
+         WvICbRcrRPdy7JHcGecaM3J+qaf1bzWjHWyr6/codAr05tZAxo3vrJv5GKCg05zJY1H7
+         5jqrrxnn4kgXvBCshb+Ijc3GV1V59f97cu0LbHDxjzSnd/yED5twv3mXad0IlG7ZGvti
+         0eAGP3E33XJyaAXnVHi0UIe968kNg+JY1ud+HwsJR6eRaeSoiSTaRcwJnrYzjC0Ldq60
+         K83tkeIKttCaxIS18SG4tJTbZG/Ww4mqXZw6GMUpO+1YhnkDADMb/K5E07qdIy5pnVou
+         xFkA==
+X-Gm-Message-State: AOAM530GtrCZW48mLmP1ajDQcvilB2thEIW6yQGKSJvGVeB0d/b2VAUS
+        IbBk1H1oaPVPGPIDUFZyYJcd9vZ+rP4=
+X-Google-Smtp-Source: ABdhPJxd8dwMi5hN2uiG2rZhjc0tmAsP1rk3xleUg2LRaPYN1Uosu+19jQnrUQJbLIoFkz/mpYDSXA==
+X-Received: by 2002:a62:80cf:0:b029:1f3:1959:2e42 with SMTP id j198-20020a6280cf0000b02901f319592e42mr1791611pfd.39.1615034823658;
+        Sat, 06 Mar 2021 04:47:03 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id s12sm5176983pgj.70.2021.03.06.04.47.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 04:47:03 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: zhang.yunkai@zte.com.cn
+To:     linux@roeck-us.net
+Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhang Yunkai <zhang.yunkai@zte.com.cn>
+Subject: [PATCH] watchdog:dw_wdt: remove duplicate include
+Date:   Sat,  6 Mar 2021 04:46:57 -0800
+Message-Id: <20210306124657.219873-1-zhang.yunkai@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1615030121-23439-1-git-send-email-peng.fan@oss.nxp.com>
-In-Reply-To: <1615030121-23439-1-git-send-email-peng.fan@oss.nxp.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Sat, 6 Mar 2021 09:46:40 -0300
-Message-ID: <CAOMZO5DDJ3746-sBFBuQBDxJqQZKP1BBZTG9Brn8WZBnbe7RJg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: imx8mp: add wdog2/3 nodes
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peng,
+From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 
-On Sat, Mar 6, 2021 at 8:41 AM <peng.fan@oss.nxp.com> wrote:
->
-> From: Peng Fan <peng.fan@nxp.com>
->
-> There is wdog[2,3] in i.MX8MP, so add them, all wdogs share the
-> same clock root, so use the wdog1 clk here.
+'linux/kernel.h' included in 'dw_wdt.c' is duplicated.
+It is also included in the 17th line.
 
-The patch looks good, but I don't understand this sentence where you
-state that "all wdogs share the same clock root, so use the wdog1 clk
-here."
+Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+---
+ drivers/watchdog/dw_wdt.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-wdog1 uses IMX8MP_CLK_WDOG1_ROOT
-wdog2 uses IMX8MP_CLK_WDOG2_ROOT
-wdog3 uses IMX8MP_CLK_WDOG3_ROOT
+diff --git a/drivers/watchdog/dw_wdt.c b/drivers/watchdog/dw_wdt.c
+index 32d0e1781e63..b1642e2d9175 100644
+--- a/drivers/watchdog/dw_wdt.c
++++ b/drivers/watchdog/dw_wdt.c
+@@ -19,7 +19,6 @@
+ #include <linux/delay.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
+-#include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/interrupt.h>
+-- 
+2.25.1
 
-Please clarify.
