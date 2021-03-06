@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1696B32FAB7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 13:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B8A32FAB9
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 13:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhCFMuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 07:50:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230191AbhCFMt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 07:49:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3D9E64E99;
-        Sat,  6 Mar 2021 12:49:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615034999;
-        bh=KzPAYpNOBmjttsGTmuHzzdOdnQdaewefyavHfAmQMyo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oFZXaxvFDR1Ss28IAF5e0bIOXsqsjrA6ryMeXV/6BMvTxcsSXhUOO4+mhr4/tNW+3
-         mAbUdNAMOkHl9IIPaWvfJgz+asP7HjwFEJVn0qWM2NYb7Cvi/lvjPQO/BtA7AaUPu3
-         ugjtwN1ceTvclyMriMFjosG5VFIAiDb17+pyrVF7PYCijuHKF84ZfjPCpAmGHtqlEK
-         4+KoDuacdXFMQHLyhW7OdUEkf3rIjPuenzcTXbgSjGvKUNOEgNyujf9ebdi3S8doQp
-         LzdnONET0jzB3soEDaFlt/KhpnHupPJfx58ZtKUrdU8yeH+BODU16ZSu0KiB9dD5VX
-         GtBhEh3JWwUfA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B449A40647; Sat,  6 Mar 2021 09:49:55 -0300 (-03)
-Date:   Sat, 6 Mar 2021 09:49:55 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 1/3] perf skel: Remove some unused variables.
-Message-ID: <YEN6c5o3IUYWnLxW@kernel.org>
-References: <20210306080840.3785816-1-irogers@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210306080840.3785816-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+        id S230414AbhCFMvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 07:51:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230227AbhCFMvk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 07:51:40 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A827C06174A;
+        Sat,  6 Mar 2021 04:51:40 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id ga23-20020a17090b0397b02900c0b81bbcd4so608056pjb.0;
+        Sat, 06 Mar 2021 04:51:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=GMqmR5RnBsh7jie/YN1lnXFMmTgGBFqTmdQGM4wGJig=;
+        b=vcS5oJTiNdGDAa9IAmGM60n4ErR4webU9pziPfkSdcNkFRZ7IJaBgs2ct8P9+4MmGz
+         dcrbwCYCiBKHII8WqQXlO9UBEE19BPhnpzr/+TxUd/EB/huyu1vvoAsKhpYObeaooXDr
+         rvDuti9TwzQscMLep8JLxOsTDNBx6B8TAP6uR5epappaB4pj3Loj9MpqRvYW+l9A8Fwy
+         pECpc725zAbV7Hb1CoBVIkCrHsaAXaROrrbJ8ZEo2lALHE/GfpzZDDRlyjorVmMl/2ZN
+         Ps9bFDOoXdGDp8zZ4bSqqj7/ZCI5QbY2/abrlZ71J1XBxcEiSFa0B+BY7tJDXZ4Yif/U
+         5IBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=GMqmR5RnBsh7jie/YN1lnXFMmTgGBFqTmdQGM4wGJig=;
+        b=ezgKyXpfR3ook1AYJI+WRfMQF6G68BDZ87u+HiQpVY2Hb9XWLK+Mr/jA1kQRToeKfC
+         Jh0i4xAR2GoIBwhyKr/Ii8T91zu+qlHkXMoO5KyaKFOzrj2SWuBBxM2+QYm9738QIG5G
+         39DVSUsiFQgCK3pjYdVv+w3PnfxbY6hNbzqnRngIHVFI/eNx17B3iH4vUICoTZhBLTpZ
+         kPcGZqh3CLnb641x8OumDE0sRZh87zi08a24r0XQM5DwUO22eV3b5Uk+9Da2Bax0S8ON
+         NAvJ+iQJbx4yFiIzsFNBEuI1vCCTCQVWI7MbpquXJR6iJtXG1dZZAHRkL3WBVIz00jtz
+         79Qg==
+X-Gm-Message-State: AOAM5300IfxNYA4vyMAZ3Vnflqpq0zRaHSvCH69Fh8XHx8W7lhMlk5d6
+        acXTfDAHFBgrzI0HEXLko8Y=
+X-Google-Smtp-Source: ABdhPJz35H7kzMetYStuaa8FZUiHrMPVZ4WXzGKCF1Yf8fC+hEA36LuLtJbHdGYzgZMd1eBJG6LoOw==
+X-Received: by 2002:a17:90a:5217:: with SMTP id v23mr15549888pjh.126.1615035099655;
+        Sat, 06 Mar 2021 04:51:39 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.79])
+        by smtp.gmail.com with ESMTPSA id c24sm2083387pfi.193.2021.03.06.04.51.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 04:51:38 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     linus.walleij@linaro.org, jrdr.linux@gmail.com,
+        zhengyongjun3@huawei.com, grandmaster@al2klimov.de
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] pinctrl: ti: fix error return code of ti_iodelay_probe()
+Date:   Sat,  6 Mar 2021 04:51:22 -0800
+Message-Id: <20210306125122.15043-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Mar 06, 2021 at 12:08:38AM -0800, Ian Rogers escreveu:
-> Fixes -Wall warnings.
+When ti_iodelay_pinconf_init_dev() fails, no error return code of
+ti_iodelay_probe() is assigned.
+To fix this bug, ret is assigned with the return value of
+ti_iodelay_pinconf_init_dev(), and then ret is checked.
 
-Thanks, tested all with:
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/pinctrl/ti/pinctrl-ti-iodelay.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-  $ make BUILD_BPF_SKEL=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin
-
-Which makes me realize we need to turn both python3 and building the bpf
-skel to be the default...
-
-- Arnaldo
+diff --git a/drivers/pinctrl/ti/pinctrl-ti-iodelay.c b/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
+index 60a67139ff0a..e5848269175a 100644
+--- a/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
++++ b/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
+@@ -867,7 +867,8 @@ static int ti_iodelay_probe(struct platform_device *pdev)
+ 		goto exit_out;
+ 	}
  
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c b/tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
-> index c7cec92d0236..ab12b4c4ece2 100644
-> --- a/tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
-> +++ b/tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
-> @@ -52,7 +52,7 @@ int BPF_PROG(fentry_XXX)
->  static inline void
->  fexit_update_maps(struct bpf_perf_event_value *after)
->  {
-> -	struct bpf_perf_event_value *before, diff, *accum;
-> +	struct bpf_perf_event_value *before, diff;
->  	__u32 zero = 0;
->  
->  	before = bpf_map_lookup_elem(&fentry_readings, &zero);
-> @@ -78,7 +78,6 @@ int BPF_PROG(fexit_XXX)
->  {
->  	struct bpf_perf_event_value reading;
->  	__u32 cpu = bpf_get_smp_processor_id();
-> -	__u32 one = 1, zero = 0;
->  	int err;
->  
->  	/* read all events before updating the maps, to reduce error */
-> -- 
-> 2.30.1.766.gb4fecdf3b7-goog
-> 
-
+-	if (ti_iodelay_pinconf_init_dev(iod))
++	ret = ti_iodelay_pinconf_init_dev(iod);
++	if (ret)
+ 		goto exit_out;
+ 
+ 	ret = ti_iodelay_alloc_pins(dev, iod, res->start);
 -- 
+2.17.1
 
-- Arnaldo
