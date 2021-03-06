@@ -2,241 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26F932FCD7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4616B32FCD4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 20:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbhCFTnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 14:43:08 -0500
-Received: from mail-pl1-f169.google.com ([209.85.214.169]:45870 "EHLO
-        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231139AbhCFTma (ORCPT
+        id S230346AbhCFTm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 14:42:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231177AbhCFTm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 14:42:30 -0500
-Received: by mail-pl1-f169.google.com with SMTP id u18so3019822plc.12;
-        Sat, 06 Mar 2021 11:42:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4R36E9EdT6ETKf8115BEW/u8iSuuWBguPooeE6zkOa0=;
-        b=eKl1o/l/0PgR/id9K0hbQLBV5ZAXWvuvJRixIqyuhc9g1AaWYj3m5NpUK3Eds3LpB6
-         1cz4qRYj48MWy8x6/jAbDQTrtygbKY6A4VNyEQq3KVom+zB6yUmQ4SMlZXbkGk++hyc1
-         SP6+22VRcFpIDcSXyu1Eq2wgn7HeYAgsj88SmnLN/s9B2MVEUdTOyeD1+1FJeCxG8fV3
-         +EYej2JzQZOjicQtjt3FblgIJlyUgnx7sTlJ/99pb/YhUySFq/68kOqKMqRJ5447IWda
-         p6Xl1rLw6aP3NSZOywrTTbT4IcnDP9h0NtJLYv2p3MuBoytrdnkHjBzIJRwBeTB+Fs5t
-         4vDA==
-X-Gm-Message-State: AOAM533Ey4UYQet36VhOLl5/ufxNHdf/hKZrZU1OYeLOzQS1e8dyTH5M
-        Y/s/0BFk6WX4RoEEbtKSOw==
-X-Google-Smtp-Source: ABdhPJwcv7WeclJXqsectBUh9xkZCoe2AlcgXv4w/qPpL9Fz17Zk8zWUctVTUKHK0sFEBZXf0Pydtw==
-X-Received: by 2002:a17:903:3093:b029:e4:7e03:d618 with SMTP id u19-20020a1709033093b02900e47e03d618mr14203055plc.54.1615059750302;
-        Sat, 06 Mar 2021 11:42:30 -0800 (PST)
-Received: from robh.at.kernel.org ([172.58.27.98])
-        by smtp.gmail.com with ESMTPSA id e22sm6102693pgk.56.2021.03.06.11.42.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 11:42:29 -0800 (PST)
-Received: (nullmailer pid 1095132 invoked by uid 1000);
-        Sat, 06 Mar 2021 19:41:20 -0000
-Date:   Sat, 6 Mar 2021 13:41:20 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     Giulio Benetti <giulio.benetti@micronovasrl.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: touchscreen: Add HY46XX bindings
-Message-ID: <20210306194120.GA1075725@robh.at.kernel.org>
-References: <20210305163834.70924-1-giulio.benetti@benettiengineering.com>
- <20210305163834.70924-3-giulio.benetti@benettiengineering.com>
+        Sat, 6 Mar 2021 14:42:28 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1684C06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 11:42:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=m73A6zMCVbK5mbsOfUBuvDvfG/aaNxXDXfwY7sKcxBw=; b=Pz99ln7L65TCF43YtL8SeAineZ
+        Rk7VjtNes2Et+1S0nJ712uPmmY7NOydjFjttcHqnYkhveScA6uaV8T63o8akxweED4CvLtUnBNq5y
+        zowv9YJR8WFF6Zjgdu5UfdacvpgaNZScu4b9H921vn6QzuoaN8KWYIt3kef/cOVqDcpk=;
+Received: from p200300ccff3790001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff37:9000:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1lIcod-0004uJ-Tc; Sat, 06 Mar 2021 20:42:20 +0100
+Date:   Sat, 6 Mar 2021 20:42:19 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Jonathan =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>
+Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH -next] mfd: ntxec: Support for EC in Tolino Shine 2 HD
+Message-ID: <20210306204219.6a7eae56@aktux>
+In-Reply-To: <YEPUppNWNiAMnczF@latitude>
+References: <20210306181314.12673-1-andreas@kemnade.info>
+        <YEPUppNWNiAMnczF@latitude>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305163834.70924-3-giulio.benetti@benettiengineering.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 05:38:33PM +0100, Giulio Benetti wrote:
-> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
-> 
-> This adds device tree bindings for the Hycon HY46XX touchscreen series.
-> 
-> Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
-> ---
->  .../input/touchscreen/hycon,hy46xx.yaml       | 130 ++++++++++++++++++
->  MAINTAINERS                                   |   6 +
->  2 files changed, 136 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml b/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
-> new file mode 100644
-> index 000000000000..cddd5e5bae92
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
-> @@ -0,0 +1,130 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/input/touchscreen/hycon-hy46xx.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: hyconon HY46XX series touchscreen controller Bindings
-> +
-> +description: |
-> +             There are 6 variants of the chip for various touch panel sizes and coverl len material
-> +              Glass: 0.3mm--4.0mm
-> +              PET/PMMA: 0.2mm--2.0mm
-> +               HY4613(B)-N048  < 6"
-> +               HY4614(B)-N068  7" .. 10.1"
-> +               HY4621-NS32  < 5"
-> +               HY4623-NS48  5.1" .. 7"
-> +              Glass: 0.3mm--8.0mm
-> +              PET/PMMA: 0.2mm--4.0mm
-> +               HY4633(B)-N048  < 6"
-> +               HY4635(B)-N048  < 7" .. 10.1"
-> +
-> +maintainers:
-> +  - Giulio Benetti <giulio.benetti@micronovasrl.com>
-> +
-> +allOf:
-> +  - $ref: touchscreen.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - hycon,hycon-hy4613
-> +      - hycon,hycon-hy4614
-> +      - hycon,hycon-hy4621
-> +      - hycon,hycon-hy4623
-> +      - hycon,hycon-hy4633
-> +      - hycon,hycon-hy4635
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +
-> +  vcc-supply: true
-> +
-> +  threshold:
+On Sat, 6 Mar 2021 20:14:46 +0100
+Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net> wrote:
 
-Needs a vendor prefix here and all the custom properties.
+> Hi,
+>=20
+> (Cc'ing Mark Brown because of the regmap related questions)
+>=20
+> On Sat, Mar 06, 2021 at 07:13:14PM +0100, Andreas Kemnade wrote:
+> > Add the version of the EC in the Tolino Shine 2 HD
+> > to the supported versions. It seems not to have an RTC
+> > and does not ack data written to it.
+> > The vendor kernel happily ignores write errors, using
+> > I2C via userspace i2c-set also shows the error.
+> > So add a quirk to ignore that error.
+> >=20
+> > PWM can be successfully configured despite of that error. =20
+>=20
+> I'm curious, is this one of the variants with two PWM channels
+> (for configurable color temperature)?
+>=20
+No. Tolino Shine 3 and Kobo Clara HD have such things. There you have a
+/sys/class/backlight/backlight_{cold,warm}.
 
-One of the touchscreen properties doesn't already address this?
+> >=20
+> > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> > ---
+> >  drivers/mfd/ntxec.c       | 57 ++++++++++++++++++++++++++++++++++++---
+> >  include/linux/mfd/ntxec.h |  1 +
+> >  2 files changed, 55 insertions(+), 3 deletions(-)
+> >=20
+> > diff --git a/drivers/mfd/ntxec.c b/drivers/mfd/ntxec.c
+> > index 957de2b03529..e7fe570127af 100644
+> > --- a/drivers/mfd/ntxec.c
+> > +++ b/drivers/mfd/ntxec.c
+> > @@ -96,6 +96,36 @@ static struct notifier_block ntxec_restart_handler =
+=3D {
+> >  	.priority =3D 128,
+> >  };
+> > =20
+> > +static int regmap_ignore_write(void *context,
+> > +			       unsigned int reg, unsigned int val)
+> > +
+> > +{
+> > +	struct regmap *regmap =3D context;
+> > +
+> > +	regmap_write(regmap, reg, val);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int regmap_wrap_read(void *context, unsigned int reg,
+> > +			    unsigned int *val)
+> > +{
+> > +	struct regmap *regmap =3D context;
+> > +
+> > +	return regmap_read(regmap, reg, val);
+> > +}
+> > +
+> > +/* some firmware versions do not ack written data, add a wrapper */
+> > +static const struct regmap_config regmap_config_noack =3D {
+> > +	.name =3D "ntxec_noack",
+> > +	.reg_bits =3D 8,
+> > +	.val_bits =3D 16,
+> > +	.cache_type =3D REGCACHE_NONE,
+> > +	.val_format_endian =3D REGMAP_ENDIAN_BIG,
+> > +	.reg_write =3D regmap_ignore_write,
+> > +	.reg_read =3D regmap_wrap_read =20
+>=20
+> Is the read wrapper necessary? It seems to me from reading regmap.h
+> that leaving .reg_read set to NULL should do the right thing, but I'm
+> not sure.
+>
+well if we want to read from it, there need to be some function for it.
+But if... I do not see anything worth to read besides of version.
+I think we can leave ouf val_format_endian because a lot of stuff is
+bypassed if no bus is set in regmap_init().
+There is e.g. a goto skip_format_initialization.
 
-> +    description: Allows setting the sensitivity in the range from 0 to 255.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 255
-> +
-> +  proximity-sensor-switch:
+> > +};
+> > +
+> >  static const struct regmap_config regmap_config =3D {
+> >  	.name =3D "ntxec",
+> >  	.reg_bits =3D 8,
+> > @@ -109,10 +139,15 @@ static const struct mfd_cell ntxec_subdevices[] =
+=3D {
+> >  	{ .name =3D "ntxec-pwm" },
+> >  };
+> > =20
+> > +static const struct mfd_cell ntxec_subdev_pwm[] =3D {
+> > +	{ .name =3D "ntxec-pwm" },
+> > +}; =20
+>=20
+> ntxec_subdevices vs. ntxec_subdev_pwm seems slightly inconsistent in
+> naming. ntxec_subdevices_pwm would be a wrong plural, but IMHO slightly
+> better because of consistency. Maybe rename ntxec_subdevices to
+> ntxec_subdev?
+>=20
+yes, I will change it.
 
-Why a switch rather than enable or disable?
+> > +
+> >  static int ntxec_probe(struct i2c_client *client)
+> >  {
+> >  	struct ntxec *ec;
+> >  	unsigned int version;
+> > +	bool has_rtc;
+> >  	int res;
+> > =20
+> >  	ec =3D devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
+> > @@ -137,6 +172,15 @@ static int ntxec_probe(struct i2c_client *client)
+> >  	/* Bail out if we encounter an unknown firmware version */
+> >  	switch (version) {
+> >  	case NTXEC_VERSION_KOBO_AURA:
+> > +		has_rtc =3D true;
+> > +		break;
+> > +	case NTXEC_VERSION_TOLINO_SHINE2:
+> > +		has_rtc =3D false;
+> > +		ec->regmap =3D devm_regmap_init(ec->dev, NULL,
+> > +					      ec->regmap,
+> > +					      &regmap_config_noack); =20
+>=20
+> Ah=E2=80=94 A custom regmap stacked on top of the old regmap=E2=80=A6 I t=
+hink this
+> deserves a comment.
+>=20
+Yes, devm_regmap_init_i2c() sets a different set of callbacks depending
+on circumstances. Seems to be the easiest way to avoid duplicating too
+much code. I really hope that there are not so much devices requiring
+such a dirty stuff that adding such thing to the generic regmap code
+would be justified.
 
-> +    description: Allows enabling or disabling the Proximity Sensor.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 1
+> > +		if (IS_ERR(ec->regmap))
+> > +			return PTR_ERR(ec->regmap);
+> >  		break;
+> >  	default:
+> >  		dev_err(ec->dev,
+> > @@ -155,7 +199,6 @@ static int ntxec_probe(struct i2c_client *client)
+> >  		 */
+> >  		res =3D regmap_write(ec->regmap, NTXEC_REG_POWERKEEP,
+> >  				   NTXEC_POWERKEEP_VALUE);
+> > -		if (res < 0)
+> >  			return res; =20
+>=20
+> This deletion looks like a mistake.
+>=20
+Oops, sorry.
 
-Is this a hardware config or something a user would want to change at 
-runtime? The latter shouldn't be in DT.
+> > =20
+> >  		if (poweroff_restart_client)
+> > @@ -181,8 +224,16 @@ static int ntxec_probe(struct i2c_client *client)
+> > =20
+> >  	i2c_set_clientdata(client, ec);
+> > =20
+> > -	res =3D devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE, ntxec_subd=
+evices,
+> > -				   ARRAY_SIZE(ntxec_subdevices), NULL, 0, NULL);
+> > +	if (has_rtc)
+> > +		res =3D devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE,
+> > +					   ntxec_subdevices,
+> > +					   ARRAY_SIZE(ntxec_subdevices),
+> > +					   NULL, 0, NULL);
+> > +	else
+> > +		res =3D devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE,
+> > +					   ntxec_subdev_pwm,
+> > +					   ARRAY_SIZE(ntxec_subdev_pwm),
+> > +					   NULL, 0, NULL); =20
+>=20
+> At some point, it will probably be simpler to have
+>=20
+> 	struct mfd_cell *subdev =3D ntxec_subdevices;
+> 	size_t subdev_size =3D ARRAY_SIZE(ntxec_subdevices);
+>=20
+> on top of the probe function and override them in the switch statement,
+> but at this point I think it doesn't matter, and either way is fine.
+>=20
+Yes, that might be a good idea.
 
-What does not present mean? Unless there is a need for keeping the 
-default setting, then this could be boolean instead.
-
-Same questions for the rest of the properties.
-
-> +
-> +  glove-enable:
-> +    description: Allows enabling or disabling glove setting.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 1
-> +
-> +  report-speed:
-> +    description: Allows setting the report speed(i.e 0x64 => 100Hz).
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 255
-> +
-> +  power-noise-enable:
-> +    description: Allows enabling or disabling power noise filter.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 1
-> +
-> +  filter-data:
-> +    description: Allows setting the filtering data before reporting touch
-> +                 in the range from 0 to 5.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 5
-> +
-> +  gain:
-> +    description: Allows setting the sensitivity distance in the range from 0 to 5.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 5
-> +
-> +  edge-offset:
-> +    description: Allows setting the edge compensation in the range from 0 to 16.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 16
-> +
-> +  touchscreen-size-x: true
-> +  touchscreen-size-y: true
-> +  touchscreen-fuzz-x: true
-> +  touchscreen-fuzz-y: true
-> +  touchscreen-inverted-x: true
-> +  touchscreen-inverted-y: true
-> +  touchscreen-swapped-x-y: true
-> +  interrupt-controller: true
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    i2c {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      hycon-hy4633@1c {
-> +        compatible = "hycon,hy4633";
-> +        reg = <0x1c>;
-> +        interrupt-parent = <&gpio2>;
-> +        interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
-> +        reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
-> +      };
-> +    };
-> +
-> +...
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index d92f85ca831d..3f83daf6b2bf 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8245,6 +8245,12 @@ S:	Maintained
->  F:	mm/hwpoison-inject.c
->  F:	mm/memory-failure.c
->  
-> +HYCON HY46XX TOUCHSCREEN SUPPORT
-> +M:	Giulio Benetti <giulio.benetti@micronovasrl.com>
-> +L:	linux-input@vger.kernel.org
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
-> +
->  HYGON PROCESSOR SUPPORT
->  M:	Pu Wen <puwen@hygon.cn>
->  L:	linux-kernel@vger.kernel.org
-> -- 
-> 2.25.1
-> 
+Regards,
+Andreas
