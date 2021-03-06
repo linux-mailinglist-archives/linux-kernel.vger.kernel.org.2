@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DCC32F96A
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7EF32F963
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhCFKmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 05:42:04 -0500
-Received: from 3.mo178.mail-out.ovh.net ([46.105.44.197]:52319 "EHLO
-        3.mo178.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbhCFKlz (ORCPT
+        id S230043AbhCFKet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 05:34:49 -0500
+Received: from relay06.th.seeweb.it ([5.144.164.167]:35225 "EHLO
+        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229714AbhCFKeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 05:41:55 -0500
-X-Greylist: delayed 462 seconds by postgrey-1.27 at vger.kernel.org; Sat, 06 Mar 2021 05:41:55 EST
-Received: from player794.ha.ovh.net (unknown [10.108.57.72])
-        by mo178.mail-out.ovh.net (Postfix) with ESMTP id E33CEC6307
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 11:34:08 +0100 (CET)
-Received: from etezian.org (213-243-141-64.bb.dnainternet.fi [213.243.141.64])
-        (Authenticated sender: andi@etezian.org)
-        by player794.ha.ovh.net (Postfix) with ESMTPSA id ACFA8189DE25E;
-        Sat,  6 Mar 2021 10:34:00 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-104R00514333635-2488-4637-90a3-dac8af8f3e7f,
-                    9571E067575576FF419ADF64CFE3CE9644992B38) smtp.auth=andi@etezian.org
-X-OVh-ClientIp: 213.243.141.64
-Date:   Sat, 6 Mar 2021 12:33:59 +0200
-From:   Andi Shyti <andi@etezian.org>
-To:     Caleb Connolly <caleb@connolly.tech>
-Cc:     andi@etezian.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] input: s6sy761: fix coordinate read bit shift
-Message-ID: <YENal0wZTYvKNN+6@jack.zhora.eu>
-References: <20210305185710.225168-1-caleb@connolly.tech>
+        Sat, 6 Mar 2021 05:34:23 -0500
+Received: from [192.168.1.101] (abac94.neoplus.adsl.tpnet.pl [83.6.166.94])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id C2DFC3E9B6;
+        Sat,  6 Mar 2021 11:34:13 +0100 (CET)
+Subject: Re: [PATCH] arm64: dts: qcom: Introduce SM8350 HDK
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210306020905.1173790-1-bjorn.andersson@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <83273ce6-448d-a969-e9bf-97c11d57a38b@somainline.org>
+Date:   Sat, 6 Mar 2021 11:34:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305185710.225168-1-caleb@connolly.tech>
-X-Ovh-Tracer-Id: 6530219462860784343
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtkedgudeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeetnhguihcuufhhhihtihcuoegrnhguihesvghtvgiiihgrnhdrohhrgheqnecuggftrfgrthhtvghrnheptdfgudduhfefueeujeefieehtdeftefggeevhefgueellefhudetgeeikeduieefnecukfhppedtrddtrddtrddtpddvudefrddvgeefrddugedurdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejleegrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprghnughisegvthgviihirghnrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+In-Reply-To: <20210306020905.1173790-1-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Caleb,
+Hi!
 
-On Fri, Mar 05, 2021 at 06:58:10PM +0000, Caleb Connolly wrote:
-> The touch coordinate register contains the following:
-> 
->         byte 3             byte 2             byte 1
-> +--------+--------+ +-----------------+ +-----------------+
-> |        |        | |                 | |                 |
-> | X[3:0] | Y[3:0] | |     Y[11:4]     | |     X[11:4]     |
-> |        |        | |                 | |                 |
-> +--------+--------+ +-----------------+ +-----------------+
-> 
-> Bytes 2 and 1 need to be shifted left by 4 bits, the least significant
-> nibble of each is stored in byte 3. Currently they are only
-> being shifted by 3 causing the reported coordinates to be incorrect.
-> 
-> This matches downstream examples, and has been confirmed on my
-> device (OnePlus 7 Pro).
-> 
-> Fixes: 0145a7141e59 ("Input: add support for the Samsung S6SY761
-> touchscreen")
-> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
 
-Reviewed-by: Andi Shyti <andi@etezian.org>
+> +		vreg_l5b_0p88: ldo5 {
+> +			regulator-name = "vreg_l5b_0p88";
+> +			regulator-min-microvolt = <880000>;
+> +			regulator-max-microvolt = <888000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +		};
+> +
 
-Thanks,
-Andi
+This one needs `regulator-allow-set-load` since you specify current settings under UFS nodes, we've seen it not working at all without this property.
+
+
+> +		vreg_l6b_1p2: ldo6 {
+> +			regulator-name = "vreg_l6b_1p2";
+> +			regulator-min-microvolt = <1200000>;
+> +			regulator-max-microvolt = <1208000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +		};
+> +
+> +		vreg_l7b_2p96: ldo7 {
+> +			regulator-name = "vreg_l7b_2p96";
+> +			regulator-min-microvolt = <2504000>;
+> +			regulator-max-microvolt = <2504000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +		};
+> +
+> +		vreg_l9b_1p2: ldo9 {
+> +			regulator-name = "vreg_l9b_1p2";
+> +			regulator-min-microvolt = <1200000>;
+> +			regulator-max-microvolt = <1200000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +		};
+
+Ditto for all three
+
+
+> +&usb_1_dwc3 {
+> +	/* TODO: Define USB-C connector properly */
+
+Sidenote: doesn't the new pm8150x (I think?) USB-C driver work on pm8350x?
+
+
+> +/* PINCTRL - additions to nodes defined in sdm845.dtsi */
+
+sm8350
+
+
+Aside from these minor comments,
+
+Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+
+
+Konrad
+
