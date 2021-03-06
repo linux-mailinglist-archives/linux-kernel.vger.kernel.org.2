@@ -2,64 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C1F32F8E7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 09:09:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8C932F8E8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 09:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbhCFIIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 03:08:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229917AbhCFII0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 03:08:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70E3365005;
-        Sat,  6 Mar 2021 08:08:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615018106;
-        bh=7MqLNS/VVbz8eHfXJi5HBrZoe1beVZd2IWQ9p+o2vms=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q+b7RDbCF6xrgAv+7WC3+rmIlDHv8XA4+tj8PDUXYlMQET+dyWlNQii9GsjXQUmej
-         wEyimfGsDXqYwwgKGAMn+yRMDbEIpo34fc6do0E78mMA7olHsyW4JsoST+KrK2pD8S
-         9agV0HnPuOO26E0+kSQlmTYzUxz/ac2MWVBHV53Q=
-Date:   Sat, 6 Mar 2021 09:08:23 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Chris.Paterson2@renesas.com, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.4 00/30] 4.4.260-rc1 review
-Message-ID: <YEM4d6O+6Jfw3RH/@kroah.com>
-References: <20210305120849.381261651@linuxfoundation.org>
- <20210305220634.GA27686@amd>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305220634.GA27686@amd>
+        id S230143AbhCFIJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 03:09:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230120AbhCFIIq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 03:08:46 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3BEC06175F
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 00:08:45 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 131so5400494ybp.16
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 00:08:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=R6bxlxn6SEFq8MFd7akjuYul4kQQDRjIClSoUqfhgZk=;
+        b=iffMWUgJRJdVa33c4N+jW+/oLbjhoKVtnHRzSFuD2z3RgNFjgK4/PRytX0ddVYmvFW
+         tXmDy2VUeaTSzaFfQL876e7U9v3TjRfwzfDXsHmAF3pl4hubY16Z9EvjXoyiVsT566ir
+         O2e/BAy1rf/K1wGISkT8dyu+mU/EKHneCVRMmsp5FYIapTgXZb1FJaQM6vraSP/twcjB
+         /0tk3bXHc08zNPoOVWYvWMfN+sCB0ZUkLXWfx8/JxuLocrF5S6RPPp+xFj5NH0qCmU7P
+         A9EHfl4WBu0vuvtsckd7W4/L5eqaubUCLhDiZQ7RQ7Nn2Vr5StALOtAXLz1pFUdJeKfk
+         7k5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=R6bxlxn6SEFq8MFd7akjuYul4kQQDRjIClSoUqfhgZk=;
+        b=nuaB40utpjLgnfAqAL+4Mo+yJ1RKBkiVhWCs/ZXW1cdU0CXnwIlxbwqvbrZ2ssHmF3
+         YvH4iAIQ0TfcsL8zOc8sAbFq6oCbHyTZ56lL2M8EuUkI0u3POQBTQQq+xxWcWjUyqLsO
+         Vn9jEEgXP5d0sl9TGrxhSJWvUjf3oJ53VqCnHzIDopB8+k6b4McWSCOA7slzSAf9lW0w
+         WPP4VjUimbz3wjj0WxBceSfpmd1jxISdhxKj/gX0nBzKzpClXKyzonbjfsEJf5q8Shf9
+         jZDNOY+xOfn445XQW4oEjGwFIqP78LB6ARgZfcmNiSnO28zLZ4a4eJsJoXwaNG9ZO0xg
+         b1mQ==
+X-Gm-Message-State: AOAM533E4lOY5Pw4oWdniGsT6T+f28pGJBkBufuR+ySIqGOr9VyX47sA
+        tUkVCCdam5sFq+LbzuQdP91XYXmmRP70
+X-Google-Smtp-Source: ABdhPJyjnrBrfsvcV5/LKUwzGyo/BskDt/5z709FmcDfTEDDnQ9i59Sqx9jx7JgRGrTTn8PYDjeoHU+ju6De
+Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:d9f:b4b1:d43b:2030])
+ (user=irogers job=sendgmr) by 2002:a25:c793:: with SMTP id
+ w141mr19010425ybe.29.1615018125066; Sat, 06 Mar 2021 00:08:45 -0800 (PST)
+Date:   Sat,  6 Mar 2021 00:08:38 -0800
+Message-Id: <20210306080840.3785816-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH 1/3] perf skel: Remove some unused variables.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 11:06:34PM +0100, Pavel Machek wrote:
-> Hi!
-> 
-> > This is the start of the stable review cycle for the 4.4.260 release.
-> > There are 30 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> 
-> Ok, so we ran some tests.
-> 
-> And they failed:
-> 
-> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/1075959449
-> 
-> [   26.785861] <LAVA_SIGNAL_TESTCASE TEST_CASE_ID=CVE-2018-3639 RESULT=fail>
-> Received signal: <TESTCASE> TEST_CASE_ID=CVE-2018-3639 RESULT=fail
-> 
-> Testcase name is spectre-meltdown-checker... Failing on qemu? Somehow
-> strange, but it looks like real test failure.
-> 
-> I'm cc: ing Chris, perhaps he can help.
+Fixes -Wall warnings.
 
-Can you bisect?
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c b/tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
+index c7cec92d0236..ab12b4c4ece2 100644
+--- a/tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
++++ b/tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
+@@ -52,7 +52,7 @@ int BPF_PROG(fentry_XXX)
+ static inline void
+ fexit_update_maps(struct bpf_perf_event_value *after)
+ {
+-	struct bpf_perf_event_value *before, diff, *accum;
++	struct bpf_perf_event_value *before, diff;
+ 	__u32 zero = 0;
+ 
+ 	before = bpf_map_lookup_elem(&fentry_readings, &zero);
+@@ -78,7 +78,6 @@ int BPF_PROG(fexit_XXX)
+ {
+ 	struct bpf_perf_event_value reading;
+ 	__u32 cpu = bpf_get_smp_processor_id();
+-	__u32 one = 1, zero = 0;
+ 	int err;
+ 
+ 	/* read all events before updating the maps, to reduce error */
+-- 
+2.30.1.766.gb4fecdf3b7-goog
+
