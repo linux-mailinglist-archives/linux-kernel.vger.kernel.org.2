@@ -2,120 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8C432FC68
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 19:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A701B32FC6F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 19:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhCFSJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 13:09:55 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:23179 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231278AbhCFSJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 13:09:35 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DtCL200JXz9v089;
-        Sat,  6 Mar 2021 19:09:30 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id mkl9CLEeLAJH; Sat,  6 Mar 2021 19:09:29 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DtCL16Fjzz9v085;
-        Sat,  6 Mar 2021 19:09:29 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BB6348B768;
-        Sat,  6 Mar 2021 19:09:31 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id vkPrD6uBrmsE; Sat,  6 Mar 2021 19:09:31 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 670268B75B;
-        Sat,  6 Mar 2021 19:09:31 +0100 (CET)
-Received: by localhost.localdomain (Postfix, from userid 0)
-        id 4B224674E3; Sat,  6 Mar 2021 18:09:31 +0000 (UTC)
-Message-Id: <26bdf034740261a5d144264f150d5ae7d466dad5.1615053848.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1615053848.git.christophe.leroy@csgroup.eu>
-References: <cover.1615053848.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v1 3/3] Revert "soc: fsl: qe: introduce qe_io{read,write}*
- wrappers"
-To:     Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Timur Tabi <timur@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org
-Date:   Sat,  6 Mar 2021 18:09:31 +0000 (UTC)
+        id S231334AbhCFSNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 13:13:42 -0500
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:35406 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230346AbhCFSNQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 13:13:16 -0500
+Received: by mail-pj1-f50.google.com with SMTP id ga23-20020a17090b0397b02900c0b81bbcd4so856742pjb.0;
+        Sat, 06 Mar 2021 10:13:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JjqFOEuF/irQ0wQ7BMz3JdcfoaUBCUP+26117l0UxWo=;
+        b=EdedKj+kyaRs843I9nODkBSga3MwcdRMamAxpSIMSN35msixygy0u4/32hRqTWI7Lq
+         6dn3ym71yN6XAiJeaYEx9WklIU/i184IoLROLQa/tKIxhmTRfw78IQxnlL8z+b68uDgC
+         f5eRXaSd25zft5OU7UgV/CsG8e6EUBhbF4lpDQqS9ThoWPrqrbXa0GrnM9UfGZs3+QcC
+         PIjlKuGYWcrdcdpS0k22lEivLvBCLKuefi9SXnJL1SGnnOO/Joo+pT8Bw1IWkt41B+py
+         Zi/wIt65M+d+YFXJ50BqoJA3ywnQvkxVvmScnf7QtdzsP5ZtypVOa88NrGZAN4zJbyxg
+         EUlw==
+X-Gm-Message-State: AOAM530tvjNVWnyCbtUOoEfzzJqogJyG3k99TMGDO21Nf0eZWaoLQRLh
+        Ad0G0K6/k0W6QR/D/cEl+6MmFPFD6OQ=
+X-Google-Smtp-Source: ABdhPJyYbm/S/JfNG4pysZBmANmlNFNJ6xx2wpr3076gFmpnSxxnR4XY0YOf2ghPIv9NyxQYSu57IQ==
+X-Received: by 2002:a17:90a:20c:: with SMTP id c12mr16287332pjc.224.1615054395496;
+        Sat, 06 Mar 2021 10:13:15 -0800 (PST)
+Received: from ?IPv6:2601:647:4000:d7:9183:7829:b654:e538? ([2601:647:4000:d7:9183:7829:b654:e538])
+        by smtp.gmail.com with ESMTPSA id q9sm5646141pgs.28.2021.03.06.10.13.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Mar 2021 10:13:14 -0800 (PST)
+Subject: Re: [RFC PATCH v3 1/3] blk-mq: Clean up references to old requests
+ when freeing rqs
+To:     John Garry <john.garry@huawei.com>, hare@suse.de,
+        ming.lei@redhat.com, axboe@kernel.dk, hch@lst.de
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pragalla@codeaurora.org, kashyap.desai@broadcom.com,
+        yuyufen@huawei.com
+References: <1614957294-188540-1-git-send-email-john.garry@huawei.com>
+ <1614957294-188540-2-git-send-email-john.garry@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <ab2c3bc2-6dac-3c5c-3589-9383c459f478@acm.org>
+Date:   Sat, 6 Mar 2021 10:13:11 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <1614957294-188540-2-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 6ac9b61786cc64ae5cbfb69413137656f72e8204.
+On 3/5/21 7:14 AM, John Garry wrote:
+> @@ -2296,10 +2296,14 @@ void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
+>  
+>  		for (i = 0; i < tags->nr_tags; i++) {
+>  			struct request *rq = tags->static_rqs[i];
+> +			int j;
+>  
+>  			if (!rq)
+>  				continue;
+>  			set->ops->exit_request(set, rq, hctx_idx);
+> +			/* clean up any references which occur in @ref_tags */
+> +			for (j = 0; ref_tags && j < ref_tags->nr_tags; j++)
+> +				cmpxchg(&ref_tags->rqs[j], rq, 0);
+>  			tags->static_rqs[i] = NULL;
+>  		}
+>  	}
 
-This commit was required because at that time, ioread/iowrite
-functions were sub-optimal on powerpc/32 compared to the
-architecture specific in_/out_ IO accessors.
+What prevents blk_mq_tagset_busy_iter() from reading hctx->tags[...]
+before the cmpxcg() call and dereferencing it after blk_mq_free_rqs()
+has called __free_pages()?
 
-But there are now equivalent since
-commit 894fa235eb4c ("powerpc: inline iomap accessors").
+Thanks,
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- include/soc/fsl/qe/qe.h | 34 +++++++++-------------------------
- 1 file changed, 9 insertions(+), 25 deletions(-)
-
-diff --git a/include/soc/fsl/qe/qe.h b/include/soc/fsl/qe/qe.h
-index 4925a1b59dc9..b02e9fe69146 100644
---- a/include/soc/fsl/qe/qe.h
-+++ b/include/soc/fsl/qe/qe.h
-@@ -239,37 +239,21 @@ static inline int qe_alive_during_sleep(void)
- #define qe_muram_dma cpm_muram_dma
- #define qe_muram_free_addr cpm_muram_free_addr
- 
--#ifdef CONFIG_PPC32
--#define qe_iowrite8(val, addr)     out_8(addr, val)
--#define qe_iowrite16be(val, addr)  out_be16(addr, val)
--#define qe_iowrite32be(val, addr)  out_be32(addr, val)
--#define qe_ioread8(addr)           in_8(addr)
--#define qe_ioread16be(addr)        in_be16(addr)
--#define qe_ioread32be(addr)        in_be32(addr)
--#else
--#define qe_iowrite8(val, addr)     iowrite8(val, addr)
--#define qe_iowrite16be(val, addr)  iowrite16be(val, addr)
--#define qe_iowrite32be(val, addr)  iowrite32be(val, addr)
--#define qe_ioread8(addr)           ioread8(addr)
--#define qe_ioread16be(addr)        ioread16be(addr)
--#define qe_ioread32be(addr)        ioread32be(addr)
--#endif
--
--#define qe_setbits_be32(_addr, _v) qe_iowrite32be(qe_ioread32be(_addr) |  (_v), (_addr))
--#define qe_clrbits_be32(_addr, _v) qe_iowrite32be(qe_ioread32be(_addr) & ~(_v), (_addr))
-+#define qe_setbits_be32(_addr, _v) iowrite32be(ioread32be(_addr) |  (_v), (_addr))
-+#define qe_clrbits_be32(_addr, _v) iowrite32be(ioread32be(_addr) & ~(_v), (_addr))
- 
--#define qe_setbits_be16(_addr, _v) qe_iowrite16be(qe_ioread16be(_addr) |  (_v), (_addr))
--#define qe_clrbits_be16(_addr, _v) qe_iowrite16be(qe_ioread16be(_addr) & ~(_v), (_addr))
-+#define qe_setbits_be16(_addr, _v) iowrite16be(ioread16be(_addr) |  (_v), (_addr))
-+#define qe_clrbits_be16(_addr, _v) iowrite16be(ioread16be(_addr) & ~(_v), (_addr))
- 
--#define qe_setbits_8(_addr, _v) qe_iowrite8(qe_ioread8(_addr) |  (_v), (_addr))
--#define qe_clrbits_8(_addr, _v) qe_iowrite8(qe_ioread8(_addr) & ~(_v), (_addr))
-+#define qe_setbits_8(_addr, _v) iowrite8(ioread8(_addr) |  (_v), (_addr))
-+#define qe_clrbits_8(_addr, _v) iowrite8(ioread8(_addr) & ~(_v), (_addr))
- 
- #define qe_clrsetbits_be32(addr, clear, set) \
--	qe_iowrite32be((qe_ioread32be(addr) & ~(clear)) | (set), (addr))
-+	iowrite32be((ioread32be(addr) & ~(clear)) | (set), (addr))
- #define qe_clrsetbits_be16(addr, clear, set) \
--	qe_iowrite16be((qe_ioread16be(addr) & ~(clear)) | (set), (addr))
-+	iowrite16be((ioread16be(addr) & ~(clear)) | (set), (addr))
- #define qe_clrsetbits_8(addr, clear, set) \
--	qe_iowrite8((qe_ioread8(addr) & ~(clear)) | (set), (addr))
-+	iowrite8((ioread8(addr) & ~(clear)) | (set), (addr))
- 
- /* Structure that defines QE firmware binary files.
-  *
--- 
-2.25.0
-
+Bart.
