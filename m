@@ -2,84 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59AE732FAE0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 14:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F7232FAE4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 14:38:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbhCFNhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 08:37:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230472AbhCFNhE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 08:37:04 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58266C06174A;
-        Sat,  6 Mar 2021 05:37:04 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id q2-20020a17090a2e02b02900bee668844dso643863pjd.3;
-        Sat, 06 Mar 2021 05:37:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=lsCQCAQNCQuZMTW5LL9WzweLlGjeyMxQVHgG7fBsL1o=;
-        b=nFsDYqlu3hvsMzwin6DRWtl6v0tWFYrc9nJxNuhQ5iTqQBILNm+rFpxCEtEoCmxeb7
-         b4uaQFquEQPTqYTixUg2P5JsTWq4wySzYU3biIp2sWUyeypZbhUKFKLbIyHXm+CishDs
-         0/QpkLjfkeSYcXLIlBWfaidI8Ke2r0Z0kn+rRkChLlh9InnElKSrY9nkpPfuneUbRUdx
-         7dcsAqcnJl27Ct6nT3eMCYTXC+PEFBzoIH5oiboKFQgGcyFrHfv7m8glQcBvtO7d4IRS
-         ZmmX1roTgcOZAEAi0h9ZC/uK4Xm0wmsNtdzsN8pAvCQj1Qr/QHR5fWiJY/+Qk7r7CxrK
-         N1pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=lsCQCAQNCQuZMTW5LL9WzweLlGjeyMxQVHgG7fBsL1o=;
-        b=UhVO9sRqWZDerVR0aBZu2RBHhhPXXubrrTJthdhnF5HktfEQoy5rU0eSOiBpfsVxyB
-         5wm91tKp+UfJw7MeB9RAtpx2jLjyFw0nMOBmD6CvdZDtRyEUri+49I/p9GSWO3fsFlIA
-         8AnPMdxjVEEL56Z1y4JQKj8z35Rq1FL/PCtZrjq285gpCrG5BxarJ2wj6DCAUURrvzHq
-         qIxyYsHLrhaNCtTq+Jw+euvGn/e3Lm6drbMeiWNhC3+FGTs2NO+G7sZvYH9luLiiUsBO
-         bo5fiayqidFlFh0coqd+eL3eZyeENphRSyZqYrbN/QNYpd2iBR8rC6dAiWvxyAzbEA1L
-         CGbA==
-X-Gm-Message-State: AOAM531q+SbCI02nqmUeyVay3/KgI9O9o+1UhL1Y0rY6KuEzzbJHq4Wo
-        6zbyy/aJhqtjDrEVHo02GLM=
-X-Google-Smtp-Source: ABdhPJxQVpxRn+xLx9O/fYjYHEtlI6MKsTvwtMVL469x1+hOq1I8GH0d2vH6RLd9IarUlmPCLJazoA==
-X-Received: by 2002:a17:90a:c20a:: with SMTP id e10mr14798599pjt.221.1615037824035;
-        Sat, 06 Mar 2021 05:37:04 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.66])
-        by smtp.gmail.com with ESMTPSA id e12sm5345659pjj.23.2021.03.06.05.36.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 05:37:03 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, ohad@wizery.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] rpmsg: qcom_glink_native: fix error return code of qcom_glink_rx_data()
-Date:   Sat,  6 Mar 2021 05:36:24 -0800
-Message-Id: <20210306133624.17237-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S230491AbhCFNh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 08:37:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230477AbhCFNhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 08:37:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62E5F60233;
+        Sat,  6 Mar 2021 13:37:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615037857;
+        bh=PoLzbg2aJfQOMc4vTetdMx94TeNR0p3+MFHnmg6DgMQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XIcbKTIYQy7XA9pL2ApnReMnvi5eDVFWGmF2nzq77l0tTSAcderiYIuwaA0aU/SD0
+         3oi8wtIvfpYmWdiIDprhsfy4XS05SX9heEt3gPNgU2cb0w4qH3QaS7HKla0sUr0ZMV
+         Ofj1oRIBEaEtuwVHzCwSvkiw8sn/UNvtCr9Or25Xw7YVLQi7r8pk5HBEAkPw3/TENj
+         XFJwzvvc1aE9Eut48jAh0IaDxNZr3zHKs20RuVKXmkCfTHjmlM2JvIMtdLAubSCPoO
+         BG3LU8VnUDOVQu8jm8Cmg+EvMlo/EhyG6KHukmc0QmJgGFvacZAK3tkePs+SgRuWbl
+         ZT/BuuHHkjeDQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id EE48D40647; Sat,  6 Mar 2021 10:37:33 -0300 (-03)
+Date:   Sat, 6 Mar 2021 10:37:33 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     menglong8.dong@gmail.com
+Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, irogers@google.com, xiong.zhenwu@zte.com.cn,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tool/perf/bench: fix misspellings using codespell
+Message-ID: <YEOFnSVwZAuciVTH@kernel.org>
+References: <20210305092212.204923-1-xiong.zhenwu@zte.com.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305092212.204923-1-xiong.zhenwu@zte.com.cn>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When idr_find() returns NULL to intent, no error return code of
-qcom_glink_rx_data() is assigned.
-To fix this bug, ret is assigned with -ENOENT in this case.
+Em Fri, Mar 05, 2021 at 01:22:12AM -0800, menglong8.dong@gmail.com escreveu:
+> From: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
+> 
+> $ codespell ./tool/perf/bench
+> tools/perf/bench/inject-buildid.c:375: tihs  ==> this 
+> 
+> Fix a typo found by codespell.
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- drivers/rpmsg/qcom_glink_native.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks, applied.
 
-diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
-index 27a05167c18c..4840886532ff 100644
---- a/drivers/rpmsg/qcom_glink_native.c
-+++ b/drivers/rpmsg/qcom_glink_native.c
-@@ -857,6 +857,7 @@ static int qcom_glink_rx_data(struct qcom_glink *glink, size_t avail)
- 			dev_err(glink->dev,
- 				"no intent found for channel %s intent %d",
- 				channel->name, liid);
-+			ret = -ENOENT;
- 			goto advance_rx;
- 		}
- 	}
+- Arnaldo
+
+ 
+> Signed-off-by: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
+> ---
+>  tools/perf/bench/inject-buildid.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/bench/inject-buildid.c b/tools/perf/bench/inject-buildid.c
+> index 280227e3ffd7..55d373b75791 100644
+> --- a/tools/perf/bench/inject-buildid.c
+> +++ b/tools/perf/bench/inject-buildid.c
+> @@ -372,7 +372,7 @@ static int inject_build_id(struct bench_data *data, u64 *max_rss)
+>  			len += synthesize_flush(data);
+>  	}
+>  
+> -	/* tihs makes the child to finish */
+> +	/* this makes the child to finish */
+>  	close(data->input_pipe[1]);
+>  
+>  	wait4(data->pid, &status, 0, &rusage);
+> -- 
+> 2.25.1
+> 
+
 -- 
-2.17.1
 
+- Arnaldo
