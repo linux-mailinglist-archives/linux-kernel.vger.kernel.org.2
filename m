@@ -2,75 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CD232FBDF
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 17:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DC432FBE3
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 17:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhCFQZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 11:25:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230216AbhCFQZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 11:25:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5228065005;
-        Sat,  6 Mar 2021 16:25:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615047916;
-        bh=CVP5kR74Pu36RHohYTytHQFOqe51SYgpkePNbq51+hY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VscOPZ+fSxvnSQRd3rV78Obpf1l3xJsl4m1/7bPtdREbld0ssNRnummiiADBwT0tQ
-         wfT97P/TnSmqCx3fNxHHTH9+G/VvyzbOEsxbQoWWc5aIwZjvyQ7w8Kd6zTDJl/bbtM
-         1fEhJINix2YxFXVu3JJkWR240o8gkqw2k9eq1qDY=
-Date:   Sat, 6 Mar 2021 17:25:11 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     zhangkun4jr@163.com
-Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhang Kun <zhangkun@cdjrlc.com>
-Subject: Re: [PATCH] xhci: Remove unused value len from xhci_unmap_temp_buf
-Message-ID: <YEOs5w8AYutM27/u@kroah.com>
-References: <20210306120644.74406-1-zhangkun4jr@163.com>
+        id S231149AbhCFQ0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 11:26:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231139AbhCFQ0h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 11:26:37 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA31DC06174A;
+        Sat,  6 Mar 2021 08:26:37 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so831296pjg.5;
+        Sat, 06 Mar 2021 08:26:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yL/aYoE+aG2ZWMHaqrx7JSuFUFqJAg4Q9N8gr1xJxaE=;
+        b=QIY9YO+t6iNg+hPO7BaluUlpxvQSHxLbmrTNoMtPNn1sicK1+WlSGLV2n4IFruyWds
+         yl/8+jz5d2aQhTPX7t1/oBfbukW+c1HWIhGV1UORhYTCcZ9wcY90wB866kHBTIhG/tTC
+         FFYZDcjTazf8Q0srQ2xfsOG4aj6LgXY38qiB6YXArzadHVm+/wAFJefkg5KXD/eJSFnZ
+         W7I8ibxDkNx0fCgr5frBbuKQrrYDYwG7Yc73atPBi8PPhsLCt/7B4IfGV8tjQl3QYczw
+         rG9HxQPbl6f1YkewbUGBY0/H19EdsbpCBuWjekKOICZYZR6Sj0WyWCvsqe64QD5YpHWo
+         cZqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yL/aYoE+aG2ZWMHaqrx7JSuFUFqJAg4Q9N8gr1xJxaE=;
+        b=Lg10NfO+YDbDWahi+h4OzJ3/Peu9qTyHm3aXC7WS2E1znqXN/KluqtnOGbdYabtGQY
+         03cY6HvdohwBXWyS/TcRlm9DXLJh8C2UEGzsQrrZp3Dz3RfTrBC46TTngba3NSlRKfT+
+         HDWEyzId7HmXBX9VGuJjJ3f07j1SZff/bCZ/+G/5hj/02G6UgIxNJ1xfCQumAMQRLgIR
+         RNnHuTDM3V01++BscWGQj27luyh0yX87wg4PhRp+GfHH4d9u647ty+RBr34r1DxFdePZ
+         TlXjV65kDYXibyiuUvyBvCxPR+GwY5PduTUrP/dmDlHOp4QzGSMWOtpZmot74dKqzDtY
+         UKkg==
+X-Gm-Message-State: AOAM531Z/rCLNNdDOAvXJjqH8N7xNXa1FGYDjehzRe8iWMGMhxj0BbH8
+        L84g9Mh/6gflzazs7wsytv4nXoodhALif0nbTg4=
+X-Google-Smtp-Source: ABdhPJzHiUiVzOzuJW3HjdQZ5ow91HEc/Br5TUfGZPReNYbeuEk/YkffDiezsRwhPrst0+3LMlEkAuCXJrjsXjcGMTE=
+X-Received: by 2002:a17:90a:4586:: with SMTP id v6mr15155077pjg.129.1615047997252;
+ Sat, 06 Mar 2021 08:26:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210306120644.74406-1-zhangkun4jr@163.com>
+References: <20210306155712.4298-1-noltari@gmail.com> <20210306155712.4298-3-noltari@gmail.com>
+In-Reply-To: <20210306155712.4298-3-noltari@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 6 Mar 2021 18:26:20 +0200
+Message-ID: <CAHp75VfLwF+TXAwJKMu9TmXsW5A-r1yV4p-pJ1j+XZSgNZUj=w@mail.gmail.com>
+Subject: Re: [PATCH v5 02/15] gpio: regmap: set gpio_chip of_node
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 06, 2021 at 08:06:44PM +0800, zhangkun4jr@163.com wrote:
-> From: Zhang Kun <zhangkun@cdjrlc.com>
-> 
-> The value assigned to len by sg_pcopy_from_buffer() never used for
-> anything, so remove it.
-> 
-> Signed-off-by: Zhang Kun <zhangkun@cdjrlc.com>
-> ---
->  drivers/usb/host/xhci.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-> index bd27bd670104..6ebda89d476c 100644
-> --- a/drivers/usb/host/xhci.c
-> +++ b/drivers/usb/host/xhci.c
-> @@ -1335,7 +1335,6 @@ static bool xhci_urb_temp_buffer_required(struct usb_hcd *hcd,
->  
->  static void xhci_unmap_temp_buf(struct usb_hcd *hcd, struct urb *urb)
->  {
-> -	unsigned int len;
->  	unsigned int buf_len;
->  	enum dma_data_direction dir;
->  
-> @@ -1351,7 +1350,7 @@ static void xhci_unmap_temp_buf(struct usb_hcd *hcd, struct urb *urb)
->  				 dir);
->  
->  	if (usb_urb_dir_in(urb))
-> -		len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs,
-> +		sg_pcopy_from_buffer(urb->sg, urb->num_sgs,
->  					   urb->transfer_buffer,
->  					   buf_len,
->  					   0);
+On Sat, Mar 6, 2021 at 5:57 PM =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gm=
+ail.com> wrote:
+>
+> This is needed for properly registering GPIO regmap as a child of a regma=
+p
+> pin controller.
 
-SHouldn't this be checked instead of ignored?
+Thanks for an update!
 
-thanks,
+...
 
-greg k-h
+>         chip->parent =3D config->parent;
+
+> +       if (config->fwnode)
+
+This...
+
+> +               chip->of_node =3D to_of_node(config->fwnode);
+
+> +       else
+> +               chip->of_node =3D dev_of_node(config->parent);
+
+...and these lines are not needed. If there is no of_node in the chip,
+the GPIO library will take care of it to be parent's one.
+
+--=20
+With Best Regards,
+Andy Shevchenko
