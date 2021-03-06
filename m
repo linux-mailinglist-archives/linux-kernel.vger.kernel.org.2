@@ -2,242 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7564532F7C9
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 03:22:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 730F832F7CF
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 03:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhCFCUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 21:20:54 -0500
-Received: from mail-pf1-f172.google.com ([209.85.210.172]:45328 "EHLO
-        mail-pf1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229701AbhCFCUl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 21:20:41 -0500
-Received: by mail-pf1-f172.google.com with SMTP id j12so3298307pfj.12;
-        Fri, 05 Mar 2021 18:20:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sH3OkCvCOBYt79tZW/C4X89IagBOPX3UHnmVepERPXk=;
-        b=KykEVRV/axRG18e/mVbGueqP/h3ZwzZgDSJVbm90+E66PAbosvUZcBpHuI2JUHp4PD
-         SiwKs8QjfA4zloEPkU0ypR9DpFzDAcowNli9yqKJKPlpXyesUoixbUYsMudVdG+0Mkyt
-         QRwiVhEltTE/V7a+bXFfoYZGmHxdpdo8UDEIVnoAi/LIaNx5dVK+Vqn7cTDrFGw2qQeV
-         g67yJ2JDg1eMQyQUEtDCPYrr1zZ3029/xdyzf6hUb4SXEb7vRXU3cBAV4Je+Z18iekEB
-         4fDvFVWy/uw3znX5VGzK7c+kjGT631D8fPG7IIXOQPejJs0A3CLrmwk9lbaABWNUpZnc
-         RG3Q==
-X-Gm-Message-State: AOAM532slLcciZyP9HXgPYkE6qorzFcijY/aRn+kvn0LmoR1/sEqB6/K
-        1GD7bX50uc2LrsAQ+x8ve84=
-X-Google-Smtp-Source: ABdhPJw/TP9vazlfiwjqnc2l8n9ra1Xm8G6cfoPVHppcpU5wH6Fj7rRbbeT/SR2P94Kx5ntffks6Bw==
-X-Received: by 2002:a62:1558:0:b029:1ef:19ac:2b00 with SMTP id 85-20020a6215580000b02901ef19ac2b00mr10915165pfv.67.1614997240827;
-        Fri, 05 Mar 2021 18:20:40 -0800 (PST)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id d14sm3214566pji.22.2021.03.05.18.20.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 18:20:37 -0800 (PST)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id C3925419AC; Sat,  6 Mar 2021 02:20:36 +0000 (UTC)
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     minchan@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com
-Cc:     axboe@kernel.dk, mbenes@suse.com, mcgrof@kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] zram: fix races of sysfs attribute removal and usage
-Date:   Sat,  6 Mar 2021 02:20:35 +0000
-Message-Id: <20210306022035.11266-3-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.23.0.rc1
-In-Reply-To: <20210306022035.11266-1-mcgrof@kernel.org>
-References: <20210306022035.11266-1-mcgrof@kernel.org>
+        id S230112AbhCFC21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 21:28:27 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:51206 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229901AbhCFC2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 21:28:14 -0500
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxKdWv6EJgvxsVAA--.26817S2;
+        Sat, 06 Mar 2021 10:28:00 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wangming01@loongson.cn
+Subject: [PATCH v3 0/7] Add basic support for Loongson-2K1000
+Date:   Sat,  6 Mar 2021 10:27:52 +0800
+Message-Id: <20210306022759.9431-1-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxKdWv6EJgvxsVAA--.26817S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7urykAr1DAw4DKryfXFWDJwb_yoW8Wr4kpw
+        43Cw15KF45Cry3Crn3JryUWryrArWfJrZrWF47Xr15GasIqa4Yvr1fJFs8Jr42vrykta4j
+        9ry8WrW7GFnrC3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+        Yx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK
+        6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbF4iU
+        UUUUU==
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we have sysfs attributes which muck with the driver
-heavily we me end up with situations where the core
-kernel driver removal call races with usage of a sysfs
-attribute. The can happen when for instance a lock is
-used on the sysfs attribute which is also used for
-driver removal.
+These patches support single-core DTS boot to the serial port login
+interface, which can be operated using conventional commands.
 
-To fix this we just *try* to get a refcount to the
-module prior to mucking with a sysfs attribute. If this
-fails we just give up right away. Ideally we'd want
-a generic solution, however this requires a bit more
-work. If we tried to generalize this on the block layer
-the closest we get is the disk->fops->owner, however
-zram is an example driver where the disk->fops is
-actually even changed *after* module load, and so the
-original disk->fops->owner can be dynamic. In zram's
-case the fops->owner is the same, however we have no
-semantics to ensure this is the case for all block
-drivers.
+I have successfully tested it on the Loongson 2K1000 machine.
+pmon: http://cgit.loongnix.org/cgit/pmon-loongson3/
 
-Using these two lines in two separate terminals can easily
-reproduce this hang:
+Qing Zhang (7):
+  MIPS: Loongson64: DeviceTree for 2K1000
+  MIPS: Loongson64: Distinguish firmware dependencies DTB/LEFI
+  MIPS: Loongson64: Add support for the 2K1000 to get cpu_clock_freq
+  MIPS: Loongson64: Add 2K1000 early_printk_port
+  irqchip/loongson-liointc: irqchip add 2.0 version
+  dt-bindings: interrupt-controller: Add Loongson-2K1000 LIOINTC
+  MIPS: Loongson64: Add a Loongson-2k default config file
 
-Loop 1 on one terminal:
+ .../loongson,liointc.yaml                     |   7 +-
+ arch/mips/boot/dts/loongson/Makefile          |   1 +
+ .../boot/dts/loongson/loongson64-2k1000.dtsi  | 243 ++++++++++++
+ .../dts/loongson/loongson64_2core_2k1000.dts  |  10 +
+ arch/mips/configs/loongson2k_defconfig        | 353 ++++++++++++++++++
+ .../include/asm/mach-loongson64/boot_param.h  |   6 +
+ .../asm/mach-loongson64/builtin_dtbs.h        |   1 +
+ .../include/asm/mach-loongson64/loongson.h    |   3 +-
+ arch/mips/loongson64/env.c                    |  13 +-
+ arch/mips/loongson64/init.c                   |  21 +-
+ arch/mips/loongson64/time.c                   |  20 +
+ drivers/irqchip/irq-loongson-liointc.c        |  55 ++-
+ 12 files changed, 716 insertions(+), 17 deletions(-)
+ create mode 100644 arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+ create mode 100644 arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dts
+ create mode 100644 arch/mips/configs/loongson2k_defconfig
 
-while true;
-	do modprobe zram;
-	modprobe -r zram;
-done
-
-Loop 2 on a second terminal:
-while true; do
-	echo 1024 >  /sys/block/zram0/disksize;
-	echo 1 > /sys/block/zram0/reset;
-done
-
-The splat which follows is comes up without this patch.
-
-INFO: task bash:888 blocked for more than 120 seconds.
-      Tainted: G            E 5.12.0-rc1-next-20210304+ #4
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:bash            state:D stack:    0 pid:  888 ppid: 887 flags:0x00000004
-Call Trace:
- __schedule+0x2e4/0x900
- schedule+0x46/0xb0
- schedule_preempt_disabled+0xa/0x10
- __mutex_lock.constprop.0+0x2c3/0x490
- ? _kstrtoull+0x35/0xd0
- reset_store+0x6c/0x160 [zram]
- kernfs_fop_write_iter+0x124/0x1b0
- new_sync_write+0x11c/0x1b0
- vfs_write+0x1c2/0x260
- ksys_write+0x5f/0xe0
- do_syscall_64+0x33/0x80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f34f2c3df33
-RSP: 002b:00007ffe751df6e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f34f2c3df33
-RDX: 0000000000000002 RSI: 0000561ccb06ec10 RDI: 0000000000000001
-RBP: 0000561ccb06ec10 R08: 000000000000000a R09: 0000000000000001
-R10: 0000561ccb157590 R11: 0000000000000246 R12: 0000000000000002
-R13: 00007f34f2d0e6a0 R14: 0000000000000002 R15: 00007f34f2d0e8a0
-INFO: task modprobe:1104 can't die for more than 120 seconds.
-task:modprobe        state:D stack:    0 pid: 1104 ppid: 916 flags:0x00004004
-Call Trace:
- __schedule+0x2e4/0x900
- schedule+0x46/0xb0
- __kernfs_remove.part.0+0x228/0x2b0
- ? finish_wait+0x80/0x80
- kernfs_remove_by_name_ns+0x50/0x90
- remove_files+0x2b/0x60
- sysfs_remove_group+0x38/0x80
- sysfs_remove_groups+0x29/0x40
- device_remove_attrs+0x4a/0x80
- device_del+0x183/0x3e0
- ? mutex_lock+0xe/0x30
- del_gendisk+0x27a/0x2d0
- zram_remove+0x8a/0xb0 [zram]
- ? hot_remove_store+0xf0/0xf0 [zram]
- zram_remove_cb+0xd/0x10 [zram]
- idr_for_each+0x5e/0xd0
- destroy_devices+0x39/0x6f [zram]
- __do_sys_delete_module+0x190/0x2a0
- do_syscall_64+0x33/0x80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f32adf727d7
-RSP: 002b:00007ffc08bb38a8 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
-RAX: ffffffffffffffda RBX: 000055eea23cbb10 RCX: 00007f32adf727d7
-RDX: 0000000000000000 RSI: 0000000000000800 RDI: 000055eea23cbb78
-RBP: 000055eea23cbb10 R08: 0000000000000000 R09: 0000000000000000
-R10: 00007f32adfe5ac0 R11: 0000000000000206 R12: 000055eea23cbb78
-R13: 0000000000000000 R14: 0000000000000000 R15: 000055eea23cbc20
-
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/block/zram/zram_drv.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 63b6119cee93..ce54f4bf5a5b 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -1722,6 +1722,9 @@ static ssize_t disksize_store(struct device *dev,
- 	struct zram *zram = dev_to_zram(dev);
- 	int err;
- 
-+	if (!try_module_get(THIS_MODULE))
-+		return -ENODEV;
-+
- 	mutex_lock(&zram_index_mutex);
- 
- 	if (!zram_up) {
-@@ -1762,6 +1765,7 @@ static ssize_t disksize_store(struct device *dev,
- 	up_write(&zram->init_lock);
- 
- 	mutex_unlock(&zram_index_mutex);
-+	module_put(THIS_MODULE);
- 
- 	return len;
- 
-@@ -1771,6 +1775,7 @@ static ssize_t disksize_store(struct device *dev,
- 	up_write(&zram->init_lock);
- out:
- 	mutex_unlock(&zram_index_mutex);
-+	module_put(THIS_MODULE);
- 	return err;
- }
- 
-@@ -1786,6 +1791,9 @@ static ssize_t reset_store(struct device *dev,
- 	if (ret)
- 		return ret;
- 
-+	if (!try_module_get(THIS_MODULE))
-+		return -ENODEV;
-+
- 	mutex_lock(&zram_index_mutex);
- 
- 	if (!zram_up) {
-@@ -1823,6 +1831,7 @@ static ssize_t reset_store(struct device *dev,
- 
- out:
- 	mutex_unlock(&zram_index_mutex);
-+	module_put(THIS_MODULE);
- 	return len;
- }
- 
-@@ -2043,13 +2052,19 @@ static ssize_t hot_add_show(struct class *class,
- {
- 	int ret;
- 
-+	if (!try_module_get(THIS_MODULE))
-+		return -ENODEV;
-+
- 	mutex_lock(&zram_index_mutex);
- 	if (!zram_up) {
- 		mutex_unlock(&zram_index_mutex);
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto out;
- 	}
- 	ret = zram_add();
-+out:
- 	mutex_unlock(&zram_index_mutex);
-+	module_put(THIS_MODULE);
- 
- 	if (ret < 0)
- 		return ret;
-@@ -2073,6 +2088,9 @@ static ssize_t hot_remove_store(struct class *class,
- 	if (dev_id < 0)
- 		return -EINVAL;
- 
-+	if (!try_module_get(THIS_MODULE))
-+		return -ENODEV;
-+
- 	mutex_lock(&zram_index_mutex);
- 
- 	if (!zram_up) {
-@@ -2091,6 +2109,7 @@ static ssize_t hot_remove_store(struct class *class,
- 
- out:
- 	mutex_unlock(&zram_index_mutex);
-+	module_put(THIS_MODULE);
- 	return ret ? ret : count;
- }
- static CLASS_ATTR_WO(hot_remove);
 -- 
-2.30.1
+2.20.1
 
