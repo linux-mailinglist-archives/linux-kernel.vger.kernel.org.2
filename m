@@ -2,142 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59B832F78E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 02:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CB332F794
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 02:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhCFBki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 20:40:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
+        id S229718AbhCFBx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 20:53:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhCFBkG (ORCPT
+        with ESMTP id S229493AbhCFBxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 20:40:06 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391B4C06175F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 17:40:06 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so75383pjc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 17:40:06 -0800 (PST)
+        Fri, 5 Mar 2021 20:53:00 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5015C06175F;
+        Fri,  5 Mar 2021 17:53:00 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id u20so4016318iot.9;
+        Fri, 05 Mar 2021 17:53:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :in-reply-to;
-        bh=xX/55P6fzvPP+kG+riEc/RE6T+vgX3JT/FeKbV8wZec=;
-        b=cqkjENhf6SfmvG3cJTO5IOLbDHJOY2IKbtMCIWiigCb/iJinZ+7WIlNn5WPNnlJjJk
-         OlR0qk+8k/5RHOBFyZY1pL9CfTMZYtmADUwLHEiCBTwPz0F2OGa/PasdauGZw6/GaNnP
-         wNVxyLoEq3mtVfd8E2/Co7Y6onzV1RcXYhY4v2Xr54AwfQ2wtcRfpdaoPWg6wdRd3n7J
-         d9FVYBmQ/9C+XNJrCrYrbdJlIomB1TcsxvRNAyVV/cSZbaScNyhOFN6jhkLImiXKa6jq
-         mvzAMUrm1+MyGBO0FFvxzo4kNXegZT7YU+/1CC0QYyBdnHnt0KuEVOcT5fRuCnAASykE
-         Fwtw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DKCLycYpc3HKoJmuKPBdeHcQJ9gEh+09JrAX4tJjuOo=;
+        b=cHA5c3x+i5YpdF7NuMdeZOez2mxXfShWziiUFDPqrxH2zSdnXomtkyZWz5cthIvO22
+         s7s9mWe44nPB0jvEnJPAMuDjQENwQJocVHeHIL44ea35Kr/6KChALv9HMbGZrHYVJM3P
+         tJh4N6yQziZs+KFrQYAn7UUJNQoXCcgQu2qXKsiLHnepo6ZdkoAKdkPe0mlHLx9NE0o7
+         Ls2jWUArF/X1tsGCL23QKaDXAtbRQUGrpFKAmKVARI3vf+1/vPYM64F3nhVsAIqWybFv
+         s26KUHJmv4gG9/Khhgb+cOiMCO4F7GUEp5VgCYRthGKo4AdfJJ7aECMzveFsBwC5A8GE
+         XTew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:in-reply-to;
-        bh=xX/55P6fzvPP+kG+riEc/RE6T+vgX3JT/FeKbV8wZec=;
-        b=k80vrJ+yW5giXA/iRMH20BJTb3CNR3GpbrWS4IjLsXKHNyxEeT/vbB8AWPnN4lSzEH
-         ifOhz67MvZ/Uy5zugOoJ4XHa6wOXkWYyTyg0gwujZ5H+ROlK17GZV/n+V1cZDar7bz6I
-         hj/pahhbOxYZBqiAz99t5z0cBrJ5GpeTBRcaCdoSjCA9bgWpd00EbHEWj2+0Ws1zXDqi
-         rIWCSuXgi+5qciWSEyJBNTnmlTBpAMs5myhCXk1b73ozn96yFUdSsxlguaajMCJdxMEn
-         mooGUbSKgEvD8VfjjCR693+mGMdFc+aPqUDHuCFiahvC0h5WMpa4Xc2f7NoqBm3k7uOk
-         rtLA==
-X-Gm-Message-State: AOAM532cSMbCVzqvxGBtZap7rosLpdawxUzm+PKtrBl7aUaGADWYUBf1
-        QmBg63JWMotjJxL8Qct9nnnwGw==
-X-Google-Smtp-Source: ABdhPJw4UarDJ5mYAf08tWOWBCaTWJdKCJjmp6ylq+RSgegSnMASdCGiDyV8GCT7AgWZ5jFf78sPNQ==
-X-Received: by 2002:a17:90a:f010:: with SMTP id bt16mr13191132pjb.116.1614994805665;
-        Fri, 05 Mar 2021 17:40:05 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:fc04:f9df:1efb:bf0c])
-        by smtp.gmail.com with ESMTPSA id g6sm3609630pfi.15.2021.03.05.17.40.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 17:40:04 -0800 (PST)
-Date:   Fri, 5 Mar 2021 17:39:58 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        vkuznets@redhat.com, mlevitsk@redhat.com,
-        Jim Mattson <jmattson@google.com>
-Subject: Re: [PATCH 03/28] KVM: nSVM: inject exceptions via
- svm_check_nested_events
-Message-ID: <YELdblXaKBTQ4LGf@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DKCLycYpc3HKoJmuKPBdeHcQJ9gEh+09JrAX4tJjuOo=;
+        b=M1ho9KDA4lW9Imfl2mqOCMusWtAqgUuBcxDrdnZdBkDVslvYFj8CUUi8TkGkAycInb
+         X/uf2Z1PVqbY79gtMIkVzLzQjIpPU9k2eVS8YWsuTbEoUZUWR/vxp9qLivyYsLqSyGHj
+         FQCd2UocuRQaNZtkXOWZV97m5bfPmMIOuGwpFcABptDuvXtTbXLdYy4cwh8pC6PZNBUf
+         FwR0Im4tGoQiTzLvN2tN31b3Q0jBLXZM6piU9NGcrDWDOaNDv6Rp5Xg6G9DtEzptDfi7
+         3r2ru0k0DC6rGvZv6nQMp6PwBqRoxIN4eHUTRuDO0khEKFaQimc3zgoS3BYxRji5uvJn
+         vmNw==
+X-Gm-Message-State: AOAM530zjI6zvXE8+ZFMeXqfVUvVQ3En/o6FgfE8IwOkVlA+XJLxHpKp
+        emFShekwyKQRo/lfkDfYJnzQ0eet3SdAlKNC+Ls=
+X-Google-Smtp-Source: ABdhPJz1LKvjkKpi0mhhWNpQ/jhaYsdcSFGnQIHJxnvPcCnrRZkUL3VDIXLbOq9IltszwFxvj536k9ZaQDcbQggHQWs=
+X-Received: by 2002:a5d:97c9:: with SMTP id k9mr10521371ios.45.1614995580001;
+ Fri, 05 Mar 2021 17:53:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526172308.111575-4-pbonzini@redhat.com>
+References: <20210218070709.11932-1-sergio.paracuellos@gmail.com>
+ <20210218070709.11932-3-sergio.paracuellos@gmail.com> <20210305224756.GA777984@robh.at.kernel.org>
+In-Reply-To: <20210305224756.GA777984@robh.at.kernel.org>
+From:   Chuanhong Guo <gch981213@gmail.com>
+Date:   Sat, 6 Mar 2021 09:52:48 +0800
+Message-ID: <CAJsYDVLJy_F6HYbQUjFzB+YKnaNujBH_Fqo0rinvTfs-0o8xfA@mail.gmail.com>
+Subject: Re: [PATCH v9 2/6] dt: bindings: add mt7621-clk device tree binding documentation
+To:     Rob Herring <robh@kernel.org>
+Cc:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        John Crispin <john@phrozen.org>, NeilBrown <neil@brown.name>,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hopefully I got the In-Reply-To header right...
+Hi Rob!
 
-On Thu, May 28, 2020, Paolo Bonzini wrote:
-> This allows exceptions injected by the emulator to be properly delivered
-> as vmexits.  The code also becomes simpler, because we can just let all
-> L0-intercepted exceptions go through the usual path.  In particular, our
-> emulation of the VMX #DB exit qualification is very much simplified,
-> because the vmexit injection path can use kvm_deliver_exception_payload
-> to update DR6.
+On Sat, Mar 6, 2021 at 6:48 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Thu, Feb 18, 2021 at 08:07:05AM +0100, Sergio Paracuellos wrote:
+> > Adds device tree binding documentation for clocks in the
+> > MT7621 SOC.
+> >
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > ---
+> >  .../bindings/clock/mediatek,mt7621-clk.yaml   | 66 +++++++++++++++++++
+> >  1 file changed, 66 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
+> > new file mode 100644
+> > index 000000000000..842a0f2c9d40
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
+> > @@ -0,0 +1,66 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/clock/mediatek,mt7621-clk.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: MT7621 Clock Device Tree Bindings
+> > +
+> > +maintainers:
+> > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > +
+> > +description: |
+> > +  The MT7621 has a PLL controller from where the cpu clock is provided
+> > +  as well as derived clocks for the bus and the peripherals. It also
+> > +  can gate SoC device clocks.
+> > +
+> > +  Each clock is assigned an identifier and client nodes use this identifier
+> > +  to specify the clock which they consume.
+> > +
+> > +  All these identifiers could be found in:
+> > +  [1]: <include/dt-bindings/clock/mt7621-clk.h>.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: mediatek,mt7621-clk
+> > +
+> > +  "#clock-cells":
+> > +    description:
+> > +      The first cell indicates the clock number, see [1] for available
+> > +      clocks.
+> > +    const: 1
+> > +
+> > +  ralink,sysctl:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description:
+> > +      phandle of syscon used to control system registers
+> > +
+> > +  ralink,memctl:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description:
+> > +      phandle of syscon used to control memory registers
+>
+> I assume one of these phandles are the main registers for the clocks?
+> Make this a child node and drop that phandle.
 
-Sadly, it's also completely and utterly broken for #UD and #GP, and a bit
-sketchy for #AC.
+On MT7621, CPU clock can be chosen from 3 sources: crystal clock,
+a fixed 500MHz clock or a clock created by the memory controller.
+sysctl contains a bootstrap register to determine crystal clock, a
+clock mux for choosing between the 3 sources for CPU clock, and
+a clock gate register for various peripherals. The ralink,memctl
+phandle here is to read the cpu clock frequency from the memory
+controller.
+The original implementation hides this hardware detail to avoid
+splitting the driver into three just for the CPU clock.
+Is this approach okay and we can put it under sysctl node,
+or this driver needs to be further splitted?
 
-Unless KVM (L0) knowingly wants to override L1, e.g. KVM_GUESTDBG_* cases, KVM
-shouldn't do a damn thing except forward the exception to L1 if L1 wants the
-exception.
-
-ud_interception() and gp_interception() do quite a bit before forwarding the
-exception, and in the case of #UD, it's entirely possible the #UD will never get
-forwarded to L1.  #GP is even more problematic because it's a contributory
-exception, and kvm_multiple_exception() is not equipped to check and handle
-nested intercepts before vectoring the exception, which means KVM will
-incorrectly escalate a #GP->#DF and #GP->#DF->Triple Fault instead of exiting
-to L1.  That's a wee bit problematic since KVM also has a soon-to-be-fixed bug
-where it kills L1 on a Triple Fault in L2...
-
-I think this will fix the bugs, I'll properly test and post next week.
-
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 90a1704b5752..928e11646dca 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -926,11 +926,11 @@ static int nested_svm_intercept(struct vcpu_svm *svm)
-        }
-        case SVM_EXIT_EXCP_BASE ... SVM_EXIT_EXCP_BASE + 0x1f: {
-                /*
--                * Host-intercepted exceptions have been checked already in
--                * nested_svm_exit_special.  There is nothing to do here,
--                * the vmexit is injected by svm_check_nested_events.
-+                * Note, KVM may already have snagged exceptions it wants to
-+                * handle even if L1 also wants the exception, e.g. #MC.
-                 */
--               vmexit = NESTED_EXIT_DONE;
-+               if (vmcb_is_intercept(&svm->nested.ctl, exit_code))
-+                       vmexit = NESTED_EXIT_DONE;
-                break;
-        }
-        case SVM_EXIT_ERR: {
-@@ -1122,19 +1122,23 @@ int nested_svm_exit_special(struct vcpu_svm *svm)
-        case SVM_EXIT_INTR:
-        case SVM_EXIT_NMI:
-        case SVM_EXIT_NPF:
-+       case SVM_EXIT_EXCP_BASE + MC_VECTOR:
-                return NESTED_EXIT_HOST;
--       case SVM_EXIT_EXCP_BASE ... SVM_EXIT_EXCP_BASE + 0x1f: {
-+       case SVM_EXIT_EXCP_BASE + DB_VECTOR:
-+       case SVM_EXIT_EXCP_BASE + BP_VECTOR: {
-+               /* KVM gets first crack at #DBs and #BPs, if it wants them. */
-                u32 excp_bits = 1 << (exit_code - SVM_EXIT_EXCP_BASE);
-                if (svm->vmcb01.ptr->control.intercepts[INTERCEPT_EXCEPTION] &
-                    excp_bits)
-                        return NESTED_EXIT_HOST;
--               else if (exit_code == SVM_EXIT_EXCP_BASE + PF_VECTOR &&
--                        svm->vcpu.arch.apf.host_apf_flags)
--                       /* Trap async PF even if not shadowing */
--                       return NESTED_EXIT_HOST;
-                break;
-        }
-+       case SVM_EXIT_EXCP_BASE + PF_VECTOR:
-+               /* Trap async PF even if not shadowing */
-+               if (svm->vcpu.arch.apf.host_apf_flags)
-+                       return NESTED_EXIT_HOST;
-+               break;
-        default:
-                break;
-        }
+-- 
+Regards,
+Chuanhong Guo
