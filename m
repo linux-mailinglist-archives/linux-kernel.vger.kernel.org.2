@@ -2,334 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB6532F78B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 02:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C59B832F78E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 02:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbhCFBia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 20:38:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229493AbhCFBiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 20:38:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EF7264FE9;
-        Sat,  6 Mar 2021 01:38:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614994694;
-        bh=sFDEO1LYihkB6mzVxkDKvbynBX2LeeDe9NGyVLeNyYA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KiwgFMlTkrtPSrSX2RwJZa2SYnETGG7ok9hNA7uQfagJQWrIpWCGsIji3YrW4ePNI
-         QkuVgMigf9vXjMHbG6zYpzgo10fsOvUhtAoXtX0RHQhjoQaMGl7/QHGtABpZiCzGcp
-         9EXgOhiOZgrksFKQ01K+veqqwTUG6pbB95W9i4bdodBPON38RA1Wvali7uaAQL23uU
-         y+hmLSQ/DXCPJwfqCBSgbqYNOXsLes97HqW0MbTFSe1I/SFQBMzRbVLj5uih8GcAz3
-         DL+FGDKVGit1uX72Y+t0OCsWfWiolDfUCzfSwVxGHYZFDh2/Q0FfQ7TT55N/tYNLkY
-         Qspkq5VNVZK2A==
-Date:   Sat, 6 Mar 2021 09:38:08 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Sanket Parmar <sparmar@cadence.com>
-Cc:     pawell@cadence.com, a-govindraju@ti.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kurahul@cadence.com,
-        gregkh@linuxfoundation.org, frank.li@nxp.com
-Subject: Re: [PATCH] usb: cdns3: Coherent memory allocation optimization
-Message-ID: <20210306013808.GA2399@b29397-desktop>
-References: <1614960071-30367-1-git-send-email-sparmar@cadence.com>
+        id S229882AbhCFBki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 20:40:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229697AbhCFBkG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 20:40:06 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391B4C06175F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Mar 2021 17:40:06 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so75383pjc.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Mar 2021 17:40:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :in-reply-to;
+        bh=xX/55P6fzvPP+kG+riEc/RE6T+vgX3JT/FeKbV8wZec=;
+        b=cqkjENhf6SfmvG3cJTO5IOLbDHJOY2IKbtMCIWiigCb/iJinZ+7WIlNn5WPNnlJjJk
+         OlR0qk+8k/5RHOBFyZY1pL9CfTMZYtmADUwLHEiCBTwPz0F2OGa/PasdauGZw6/GaNnP
+         wNVxyLoEq3mtVfd8E2/Co7Y6onzV1RcXYhY4v2Xr54AwfQ2wtcRfpdaoPWg6wdRd3n7J
+         d9FVYBmQ/9C+XNJrCrYrbdJlIomB1TcsxvRNAyVV/cSZbaScNyhOFN6jhkLImiXKa6jq
+         mvzAMUrm1+MyGBO0FFvxzo4kNXegZT7YU+/1CC0QYyBdnHnt0KuEVOcT5fRuCnAASykE
+         Fwtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:in-reply-to;
+        bh=xX/55P6fzvPP+kG+riEc/RE6T+vgX3JT/FeKbV8wZec=;
+        b=k80vrJ+yW5giXA/iRMH20BJTb3CNR3GpbrWS4IjLsXKHNyxEeT/vbB8AWPnN4lSzEH
+         ifOhz67MvZ/Uy5zugOoJ4XHa6wOXkWYyTyg0gwujZ5H+ROlK17GZV/n+V1cZDar7bz6I
+         hj/pahhbOxYZBqiAz99t5z0cBrJ5GpeTBRcaCdoSjCA9bgWpd00EbHEWj2+0Ws1zXDqi
+         rIWCSuXgi+5qciWSEyJBNTnmlTBpAMs5myhCXk1b73ozn96yFUdSsxlguaajMCJdxMEn
+         mooGUbSKgEvD8VfjjCR693+mGMdFc+aPqUDHuCFiahvC0h5WMpa4Xc2f7NoqBm3k7uOk
+         rtLA==
+X-Gm-Message-State: AOAM532cSMbCVzqvxGBtZap7rosLpdawxUzm+PKtrBl7aUaGADWYUBf1
+        QmBg63JWMotjJxL8Qct9nnnwGw==
+X-Google-Smtp-Source: ABdhPJw4UarDJ5mYAf08tWOWBCaTWJdKCJjmp6ylq+RSgegSnMASdCGiDyV8GCT7AgWZ5jFf78sPNQ==
+X-Received: by 2002:a17:90a:f010:: with SMTP id bt16mr13191132pjb.116.1614994805665;
+        Fri, 05 Mar 2021 17:40:05 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:fc04:f9df:1efb:bf0c])
+        by smtp.gmail.com with ESMTPSA id g6sm3609630pfi.15.2021.03.05.17.40.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 17:40:04 -0800 (PST)
+Date:   Fri, 5 Mar 2021 17:39:58 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        vkuznets@redhat.com, mlevitsk@redhat.com,
+        Jim Mattson <jmattson@google.com>
+Subject: Re: [PATCH 03/28] KVM: nSVM: inject exceptions via
+ svm_check_nested_events
+Message-ID: <YELdblXaKBTQ4LGf@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1614960071-30367-1-git-send-email-sparmar@cadence.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200526172308.111575-4-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-03-05 17:01:11, Sanket Parmar wrote:
-> Allocation of DMA coherent memory in atomic context using
-> dma_alloc_coherent() might fail on some platform. To fix it,
-> Replaced dma_alloc_coherent() with dma_pool API to allocate a
-> smaller chunk of DMA coherent memory for TRB rings.
-> 
-> Also in cdns3_prepare_aligned_request_buf(), replaced
-> dma_alloc_coherent() with kmalloc and dma_map API to allocate
-> aligned request buffer of dynamic length.
-> 
+Hopefully I got the In-Reply-To header right...
 
-You do two changes in one commit, would you please split this one as
-two patches?
+On Thu, May 28, 2020, Paolo Bonzini wrote:
+> This allows exceptions injected by the emulator to be properly delivered
+> as vmexits.  The code also becomes simpler, because we can just let all
+> L0-intercepted exceptions go through the usual path.  In particular, our
+> emulation of the VMX #DB exit qualification is very much simplified,
+> because the vmexit injection path can use kvm_deliver_exception_payload
+> to update DR6.
 
-> Fixes: commit 7733f6c32e36 ("usb: cdns3: Add Cadence USB3 DRD Driver")
+Sadly, it's also completely and utterly broken for #UD and #GP, and a bit
+sketchy for #AC.
 
-"commit" is not needed
+Unless KVM (L0) knowingly wants to override L1, e.g. KVM_GUESTDBG_* cases, KVM
+shouldn't do a damn thing except forward the exception to L1 if L1 wants the
+exception.
 
-> Reported by: Aswath Govindraju <a-govindraju@ti.com>
+ud_interception() and gp_interception() do quite a bit before forwarding the
+exception, and in the case of #UD, it's entirely possible the #UD will never get
+forwarded to L1.  #GP is even more problematic because it's a contributory
+exception, and kvm_multiple_exception() is not equipped to check and handle
+nested intercepts before vectoring the exception, which means KVM will
+incorrectly escalate a #GP->#DF and #GP->#DF->Triple Fault instead of exiting
+to L1.  That's a wee bit problematic since KVM also has a soon-to-be-fixed bug
+where it kills L1 on a Triple Fault in L2...
 
-Reported-by:
+I think this will fix the bugs, I'll properly test and post next week.
 
-> Signed-off-by: Sanket Parmar <sparmar@cadence.com>
-> ---
->  drivers/usb/cdns3/cdns3-gadget.c |  115 ++++++++++++++++++++++---------------
->  drivers/usb/cdns3/cdns3-gadget.h |    3 +
->  2 files changed, 71 insertions(+), 47 deletions(-)
-> 
-> diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
-> index 582bfec..5fd6993 100644
-> --- a/drivers/usb/cdns3/cdns3-gadget.c
-> +++ b/drivers/usb/cdns3/cdns3-gadget.c
-> @@ -59,6 +59,7 @@
->  #include <linux/dma-mapping.h>
->  #include <linux/usb/gadget.h>
->  #include <linux/module.h>
-> +#include <linux/dmapool.h>
->  #include <linux/iopoll.h>
->  
->  #include "core.h"
-> @@ -190,29 +191,13 @@ dma_addr_t cdns3_trb_virt_to_dma(struct cdns3_endpoint *priv_ep,
->  	return priv_ep->trb_pool_dma + offset;
->  }
->  
-> -static int cdns3_ring_size(struct cdns3_endpoint *priv_ep)
-> -{
-> -	switch (priv_ep->type) {
-> -	case USB_ENDPOINT_XFER_ISOC:
-> -		return TRB_ISO_RING_SIZE;
-> -	case USB_ENDPOINT_XFER_CONTROL:
-> -		return TRB_CTRL_RING_SIZE;
-> -	default:
-> -		if (priv_ep->use_streams)
-> -			return TRB_STREAM_RING_SIZE;
-> -		else
-> -			return TRB_RING_SIZE;
-> -	}
-> -}
-> -
->  static void cdns3_free_trb_pool(struct cdns3_endpoint *priv_ep)
->  {
->  	struct cdns3_device *priv_dev = priv_ep->cdns3_dev;
->  
->  	if (priv_ep->trb_pool) {
-> -		dma_free_coherent(priv_dev->sysdev,
-> -				  cdns3_ring_size(priv_ep),
-> -				  priv_ep->trb_pool, priv_ep->trb_pool_dma);
-> +		dma_pool_free(priv_dev->eps_dma_pool,
-> +				priv_ep->trb_pool, priv_ep->trb_pool_dma);
->  		priv_ep->trb_pool = NULL;
->  	}
->  }
-> @@ -226,7 +211,7 @@ static void cdns3_free_trb_pool(struct cdns3_endpoint *priv_ep)
->  int cdns3_allocate_trb_pool(struct cdns3_endpoint *priv_ep)
->  {
->  	struct cdns3_device *priv_dev = priv_ep->cdns3_dev;
-> -	int ring_size = cdns3_ring_size(priv_ep);
-> +	int ring_size = TRB_RING_SIZE;
-
-You will use the same size for TRB ring region for control/bulk/isoc
-endpoint.
-
->  	int num_trbs = ring_size / TRB_SIZE;
->  	struct cdns3_trb *link_trb;
->  
-> @@ -234,10 +219,10 @@ int cdns3_allocate_trb_pool(struct cdns3_endpoint *priv_ep)
->  		cdns3_free_trb_pool(priv_ep);
->  
->  	if (!priv_ep->trb_pool) {
-> -		priv_ep->trb_pool = dma_alloc_coherent(priv_dev->sysdev,
-> -						       ring_size,
-> -						       &priv_ep->trb_pool_dma,
-> -						       GFP_DMA32 | GFP_ATOMIC);
-> +		priv_ep->trb_pool = dma_pool_alloc(priv_dev->eps_dma_pool,
-> +						GFP_DMA32 | GFP_ATOMIC,
-> +						&priv_ep->trb_pool_dma);
-
-dma_pool_alloc also allocates the whole thunk of TRB region. See the
-kernel-doc for dma_pool_create.
-
- * Given one of these pools, dma_pool_alloc()
- * may be used to allocate memory.  Such memory will all have "consistent"
-> +
->  		if (!priv_ep->trb_pool)
->  			return -ENOMEM;
->  
-> @@ -833,10 +818,26 @@ void cdns3_gadget_giveback(struct cdns3_endpoint *priv_ep,
->  	usb_gadget_unmap_request_by_dev(priv_dev->sysdev, request,
->  					priv_ep->dir);
->  
-> -	if ((priv_req->flags & REQUEST_UNALIGNED) &&
-> -	    priv_ep->dir == USB_DIR_OUT && !request->status)
-> -		memcpy(request->buf, priv_req->aligned_buf->buf,
-> -		       request->length);
-> +	if ((priv_req->flags & REQUEST_UNALIGNED) && priv_req->aligned_buf) {
-> +		struct cdns3_aligned_buf *buf;
-> +
-> +		buf = priv_req->aligned_buf;
-> +		dma_unmap_single(priv_dev->sysdev, buf->dma, buf->size,
-> +			buf->dir);
-> +		priv_req->flags &= ~REQUEST_UNALIGNED;
-> +
-> +		if (priv_ep->dir == USB_DIR_OUT && !request->status) {
-> +			memcpy(request->buf, priv_req->aligned_buf->buf,
-> +			       request->length);
-> +		}
-> +
-> +		trace_cdns3_free_aligned_request(priv_req);
-> +		priv_req->aligned_buf->in_use = 0;
-> +		queue_work(system_freezable_wq,
-> +			   &priv_dev->aligned_buf_wq);
-> +		priv_req->aligned_buf = NULL;
-> +
-> +	}
->  
->  	priv_req->flags &= ~(REQUEST_PENDING | REQUEST_UNALIGNED);
->  	/* All TRBs have finished, clear the counter */
-> @@ -898,8 +899,7 @@ static void cdns3_free_aligned_request_buf(struct work_struct *work)
->  			 * interrupts.
->  			 */
->  			spin_unlock_irqrestore(&priv_dev->lock, flags);
-> -			dma_free_coherent(priv_dev->sysdev, buf->size,
-> -					  buf->buf, buf->dma);
-> +			kfree(buf->buf);
->  			kfree(buf);
->  			spin_lock_irqsave(&priv_dev->lock, flags);
->  		}
-> @@ -925,27 +925,16 @@ static int cdns3_prepare_aligned_request_buf(struct cdns3_request *priv_req)
->  		if (!buf)
->  			return -ENOMEM;
->  
-> -		buf->size = priv_req->request.length;
-> +		buf->size = usb_endpoint_dir_out(priv_ep->endpoint.desc) ?
-> +				usb_ep_align(&(priv_ep->endpoint), priv_req->request.length)
-> +				: priv_req->request.length;
->  
-> -		buf->buf = dma_alloc_coherent(priv_dev->sysdev,
-> -					      buf->size,
-> -					      &buf->dma,
-> -					      GFP_ATOMIC);
-> +		buf->buf = kmalloc(buf->size, GFP_ATOMIC);
->  		if (!buf->buf) {
->  			kfree(buf);
->  			return -ENOMEM;
->  		}
->  
-> -		if (priv_req->aligned_buf) {
-> -			trace_cdns3_free_aligned_request(priv_req);
-> -			priv_req->aligned_buf->in_use = 0;
-> -			queue_work(system_freezable_wq,
-> -				   &priv_dev->aligned_buf_wq);
-> -		}
-> -
-> -		buf->in_use = 1;
-> -		priv_req->aligned_buf = buf;
-> -
->  		list_add_tail(&buf->list,
->  			      &priv_dev->aligned_buf_list);
->  	}
-> @@ -955,6 +944,27 @@ static int cdns3_prepare_aligned_request_buf(struct cdns3_request *priv_req)
->  		       priv_req->request.length);
->  	}
->  
-> +	if (priv_req->aligned_buf) {
-> +		trace_cdns3_free_aligned_request(priv_req);
-> +		priv_req->aligned_buf->in_use = 0;
-> +		queue_work(system_freezable_wq,
-> +			   &priv_dev->aligned_buf_wq);
-> +	}
-> +
-> +	buf->dir =  priv_ep->dir ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
-> +	buf->in_use = 1;
-> +	priv_req->aligned_buf = buf;
-> +
-> +	buf->dma = dma_map_single(priv_dev->sysdev, buf->buf, buf->size,
-> +				buf->dir);
-> +
-> +	if (dma_mapping_error(priv_dev->sysdev, buf->dma)) {
-> +		dev_err(priv_dev->dev, "Failed to map buffer\n");
-> +		kfree(buf->buf);
-> +		kfree(buf);
-> +		return -EFAULT;
-> +	}
-> +
->  	priv_req->flags |= REQUEST_UNALIGNED;
->  	trace_cdns3_prepare_aligned_request(priv_req);
->  
-> @@ -3103,16 +3113,17 @@ static void cdns3_gadget_exit(struct cdns *cdns)
->  		struct cdns3_aligned_buf *buf;
->  
->  		buf = cdns3_next_align_buf(&priv_dev->aligned_buf_list);
-> -		dma_free_coherent(priv_dev->sysdev, buf->size,
-> -				  buf->buf,
-> -				  buf->dma);
-> +		dma_unmap_single(priv_dev->sysdev, buf->dma, buf->size,
-> +			buf->dir);
->  
->  		list_del(&buf->list);
-> +		kfree(buf->buf);
->  		kfree(buf);
->  	}
->  
->  	dma_free_coherent(priv_dev->sysdev, 8, priv_dev->setup_buf,
->  			  priv_dev->setup_dma);
-> +	dma_pool_destroy(priv_dev->eps_dma_pool);
->  
->  	kfree(priv_dev->zlp_buf);
->  	usb_put_gadget(&priv_dev->gadget);
-> @@ -3185,6 +3196,14 @@ static int cdns3_gadget_start(struct cdns *cdns)
->  	/* initialize endpoint container */
->  	INIT_LIST_HEAD(&priv_dev->gadget.ep_list);
->  	INIT_LIST_HEAD(&priv_dev->aligned_buf_list);
-> +	priv_dev->eps_dma_pool = dma_pool_create("cdns3_eps_dma_pool",
-> +						priv_dev->sysdev,
-> +						TRB_RING_SIZE, 8, 0);
-> +	if (!priv_dev->eps_dma_pool) {
-> +		dev_err(priv_dev->dev, "Failed to create TRB dma pool\n");
-> +		ret = -ENOMEM;
-> +		goto err1;
-> +	}
->  
->  	ret = cdns3_init_eps(priv_dev);
->  	if (ret) {
-> @@ -3235,6 +3254,8 @@ static int cdns3_gadget_start(struct cdns *cdns)
->  err2:
->  	cdns3_free_all_eps(priv_dev);
->  err1:
-> +	dma_pool_destroy(priv_dev->eps_dma_pool);
-> +
->  	usb_put_gadget(&priv_dev->gadget);
->  	cdns->gadget_dev = NULL;
->  	return ret;
-> diff --git a/drivers/usb/cdns3/cdns3-gadget.h b/drivers/usb/cdns3/cdns3-gadget.h
-> index 21fa461..c5660f2 100644
-> --- a/drivers/usb/cdns3/cdns3-gadget.h
-> +++ b/drivers/usb/cdns3/cdns3-gadget.h
-> @@ -12,6 +12,7 @@
->  #ifndef __LINUX_CDNS3_GADGET
->  #define __LINUX_CDNS3_GADGET
->  #include <linux/usb/gadget.h>
-> +#include <linux/dma-direction.h>
->  
->  /*
->   * USBSS-DEV register interface.
-> @@ -1205,6 +1206,7 @@ struct cdns3_aligned_buf {
->  	void			*buf;
->  	dma_addr_t		dma;
->  	u32			size;
-> +	enum dma_data_direction dir;
->  	unsigned		in_use:1;
->  	struct list_head	list;
->  };
-> @@ -1298,6 +1300,7 @@ struct cdns3_device {
->  
->  	struct cdns3_usb_regs		__iomem *regs;
->  
-> +	struct dma_pool			*eps_dma_pool;
->  	struct usb_ctrlrequest		*setup_buf;
->  	dma_addr_t			setup_dma;
->  	void				*zlp_buf;
-> -- 
-> 1.7.1
-> 
-
-I guess this issue may due to the size for DMA region is too small,
-try to enlarge the it (eg, CMA size).
-
--- 
-
-Thanks,
-Peter Chen
-
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index 90a1704b5752..928e11646dca 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -926,11 +926,11 @@ static int nested_svm_intercept(struct vcpu_svm *svm)
+        }
+        case SVM_EXIT_EXCP_BASE ... SVM_EXIT_EXCP_BASE + 0x1f: {
+                /*
+-                * Host-intercepted exceptions have been checked already in
+-                * nested_svm_exit_special.  There is nothing to do here,
+-                * the vmexit is injected by svm_check_nested_events.
++                * Note, KVM may already have snagged exceptions it wants to
++                * handle even if L1 also wants the exception, e.g. #MC.
+                 */
+-               vmexit = NESTED_EXIT_DONE;
++               if (vmcb_is_intercept(&svm->nested.ctl, exit_code))
++                       vmexit = NESTED_EXIT_DONE;
+                break;
+        }
+        case SVM_EXIT_ERR: {
+@@ -1122,19 +1122,23 @@ int nested_svm_exit_special(struct vcpu_svm *svm)
+        case SVM_EXIT_INTR:
+        case SVM_EXIT_NMI:
+        case SVM_EXIT_NPF:
++       case SVM_EXIT_EXCP_BASE + MC_VECTOR:
+                return NESTED_EXIT_HOST;
+-       case SVM_EXIT_EXCP_BASE ... SVM_EXIT_EXCP_BASE + 0x1f: {
++       case SVM_EXIT_EXCP_BASE + DB_VECTOR:
++       case SVM_EXIT_EXCP_BASE + BP_VECTOR: {
++               /* KVM gets first crack at #DBs and #BPs, if it wants them. */
+                u32 excp_bits = 1 << (exit_code - SVM_EXIT_EXCP_BASE);
+                if (svm->vmcb01.ptr->control.intercepts[INTERCEPT_EXCEPTION] &
+                    excp_bits)
+                        return NESTED_EXIT_HOST;
+-               else if (exit_code == SVM_EXIT_EXCP_BASE + PF_VECTOR &&
+-                        svm->vcpu.arch.apf.host_apf_flags)
+-                       /* Trap async PF even if not shadowing */
+-                       return NESTED_EXIT_HOST;
+                break;
+        }
++       case SVM_EXIT_EXCP_BASE + PF_VECTOR:
++               /* Trap async PF even if not shadowing */
++               if (svm->vcpu.arch.apf.host_apf_flags)
++                       return NESTED_EXIT_HOST;
++               break;
+        default:
+                break;
+        }
