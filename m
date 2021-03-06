@@ -2,48 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2968332FA54
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB0F32FA57
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 12:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhCFLzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 06:55:18 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34706 "EHLO
+        id S230522AbhCFLzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 06:55:21 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:34748 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbhCFLyf (ORCPT
+        with ESMTP id S230311AbhCFLyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 06:54:35 -0500
-Date:   Sat, 06 Mar 2021 11:54:34 -0000
+        Sat, 6 Mar 2021 06:54:37 -0500
+Date:   Sat, 06 Mar 2021 11:54:35 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615031674;
+        s=2020; t=1615031676;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=xoum3UnD0wjqttWbj/RvLZ1mxSBsNXJPFP5gnUoxlkU=;
-        b=2pmqi3WK6wnhO/+dX+wlUt6fXV9v04wVyd2M9WuGaBvHIO9zSelEBurzd8/uUcZ3C/Wfvy
-        1wS/WHdfAOCliWrurfPlxiK1wSCKgNSfa5oa/c5cUhmoNqxsKnaQo/8LSAr2pT7yEpYRnC
-        3qLqgFs6yvwkdargvKC1Lh4Ldkt5FFztv/Sv4uP95FZOsowPIbtZ7LDaA68vzWXq5tZTEy
-        lZfThmm9fPg85YQTPISM95K5Iok9qa7T8GlK7YcXiePhLGrRfwRd6a4luLTdoTh8pefeRA
-        ycX26rs7j5t8gX9wYbxhz4EV5lRDecOl5+qNmon9i0CPn9LvAFHsoJmAd+6ZBw==
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NMv5rnBdR/DnhOqUMxgcS8gutRvsoz5d8ENmQUPZ0I8=;
+        b=ZOb/sujcoGBMq3I3OBTGqOoWO5r3UpBFEvgCJDsuBSpE8ceLI6QkyksAnG9Lb6Exqd9HJZ
+        nnDu70zkrDBPtop35Opy3iS8iVLRpFIsWAuuC116q+1upC5FskMyZgRLFngR9th7nr3Fle
+        g6mVgGVAYDMRxBc841OjdJn9/c+J/NhDtuPdTmlEkNNlUJpkffLq8eHhTzW863x8lvs84q
+        60fmLjdO6xipFwOKTOaufsNmNtjWjOf1s5vhGbl86EmWB+qsWoKiQg3tQR/6vKAFTv8rzO
+        oJUH415zX5wJ8JjVnyTT+57YeEcORgoK7NfxDnH0LZDsaEa40xlYCQLaRo/Pbw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615031674;
+        s=2020e; t=1615031676;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=xoum3UnD0wjqttWbj/RvLZ1mxSBsNXJPFP5gnUoxlkU=;
-        b=IzQ/WQDIlz+9gKNBtcIUbK2iGfjrQpb1hiKfP7BHZrcPtMw7Oiky0ePhrVeQX0sacQCUm0
-        CS+/DpNaNGLEIyDQ==
-From:   "tip-bot2 for Shuah Khan" <tip-bot2@linutronix.de>
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NMv5rnBdR/DnhOqUMxgcS8gutRvsoz5d8ENmQUPZ0I8=;
+        b=5lXqNOZY+85FTsDdVvaKljx5mavkD5tQqzdID0B4VszoCNOQLQ5Q1GfQMriNsIjhRCl7uk
+        +BEcyNt3VX/BYuAw==
+From:   "tip-bot2 for Juergen Gross" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] ath10k: Detect conf_mutex held ath10k_drain_tx() calls
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+Subject: [tip: locking/core] locking/csd_lock: Prepare more CSD lock debugging
+Cc:     Juergen Gross <jgross@suse.com>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210301101336.7797-3-jgross@suse.com>
+References: <20210301101336.7797-3-jgross@suse.com>
 MIME-Version: 1.0
-Message-ID: <161503167413.398.1632860817242028005.tip-bot2@tip-bot2>
+Message-ID: <161503167554.398.5010872943457820511.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -54,46 +57,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     bdb1050ee1faaec1e78c15de8b1959176f26c655
-Gitweb:        https://git.kernel.org/tip/bdb1050ee1faaec1e78c15de8b1959176f26c655
-Author:        Shuah Khan <skhan@linuxfoundation.org>
-AuthorDate:    Fri, 26 Feb 2021 17:07:00 -07:00
+Commit-ID:     de7b09ef658d637eed0584eaba30884e409aef31
+Gitweb:        https://git.kernel.org/tip/de7b09ef658d637eed0584eaba30884e409aef31
+Author:        Juergen Gross <jgross@suse.com>
+AuthorDate:    Mon, 01 Mar 2021 11:13:35 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sat, 06 Mar 2021 12:51:15 +01:00
+CommitterDate: Sat, 06 Mar 2021 12:49:48 +01:00
 
-ath10k: Detect conf_mutex held ath10k_drain_tx() calls
+locking/csd_lock: Prepare more CSD lock debugging
 
-ath10k_drain_tx() must not be called with conf_mutex held as workers can
-use that also. Add call to lockdep_assert_not_held() on conf_mutex to
-detect if conf_mutex is held by the caller.
+In order to be able to easily add more CSD lock debugging data to
+struct call_function_data->csd move the call_single_data_t element
+into a sub-structure.
 
-The idea for this patch stemmed from coming across the comment block
-above the ath10k_drain_tx() while reviewing the conf_mutex holds during
-to debug the conf_mutex lock assert in ath10k_debug_fw_stats_request().
-
-Adding detection to assert on conf_mutex hold will help detect incorrect
-usages that could lead to locking problems when async worker routines try
-to call this routine.
-
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/linux-wireless/871rdmu9z9.fsf@codeaurora.org/
+Link: https://lore.kernel.org/r/20210301101336.7797-3-jgross@suse.com
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/smp.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index bb6c5ee..5ce4f8d 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4727,6 +4727,8 @@ out:
- /* Must not be called with conf_mutex held as workers can use that also. */
- void ath10k_drain_tx(struct ath10k *ar)
- {
-+	lockdep_assert_not_held(&ar->conf_mutex);
-+
- 	/* make sure rcu-protected mac80211 tx path itself is drained */
- 	synchronize_net();
+diff --git a/kernel/smp.c b/kernel/smp.c
+index d5f0b21..6d7e6db 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -31,8 +31,12 @@
  
+ #define CSD_TYPE(_csd)	((_csd)->node.u_flags & CSD_FLAG_TYPE_MASK)
+ 
++struct cfd_percpu {
++	call_single_data_t	csd;
++};
++
+ struct call_function_data {
+-	call_single_data_t	__percpu *csd;
++	struct cfd_percpu	__percpu *pcpu;
+ 	cpumask_var_t		cpumask;
+ 	cpumask_var_t		cpumask_ipi;
+ };
+@@ -55,8 +59,8 @@ int smpcfd_prepare_cpu(unsigned int cpu)
+ 		free_cpumask_var(cfd->cpumask);
+ 		return -ENOMEM;
+ 	}
+-	cfd->csd = alloc_percpu(call_single_data_t);
+-	if (!cfd->csd) {
++	cfd->pcpu = alloc_percpu(struct cfd_percpu);
++	if (!cfd->pcpu) {
+ 		free_cpumask_var(cfd->cpumask);
+ 		free_cpumask_var(cfd->cpumask_ipi);
+ 		return -ENOMEM;
+@@ -71,7 +75,7 @@ int smpcfd_dead_cpu(unsigned int cpu)
+ 
+ 	free_cpumask_var(cfd->cpumask);
+ 	free_cpumask_var(cfd->cpumask_ipi);
+-	free_percpu(cfd->csd);
++	free_percpu(cfd->pcpu);
+ 	return 0;
+ }
+ 
+@@ -694,7 +698,7 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+ 
+ 	cpumask_clear(cfd->cpumask_ipi);
+ 	for_each_cpu(cpu, cfd->cpumask) {
+-		call_single_data_t *csd = per_cpu_ptr(cfd->csd, cpu);
++		call_single_data_t *csd = &per_cpu_ptr(cfd->pcpu, cpu)->csd;
+ 
+ 		if (cond_func && !cond_func(cpu, info))
+ 			continue;
+@@ -719,7 +723,7 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+ 		for_each_cpu(cpu, cfd->cpumask) {
+ 			call_single_data_t *csd;
+ 
+-			csd = per_cpu_ptr(cfd->csd, cpu);
++			csd = &per_cpu_ptr(cfd->pcpu, cpu)->csd;
+ 			csd_lock_wait(csd);
+ 		}
+ 	}
