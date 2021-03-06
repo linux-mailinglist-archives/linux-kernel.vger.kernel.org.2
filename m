@@ -2,42 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D8F32F773
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 02:14:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26C232F77B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 02:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbhCFBON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Mar 2021 20:14:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42808 "EHLO mail.kernel.org"
+        id S229690AbhCFB1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Mar 2021 20:27:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229750AbhCFBOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Mar 2021 20:14:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F39516508F;
-        Sat,  6 Mar 2021 01:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614993243;
-        bh=DXFT/1IT9LLTpgWizl+noTVE9yRNg2kxXJH5bWRANWA=;
+        id S229493AbhCFB1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Mar 2021 20:27:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A5B865093;
+        Sat,  6 Mar 2021 01:27:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1614994028;
+        bh=NngIxxx12YXwN0ocivs/pfNKIcJ7UM43YAnjKQEOJfM=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=miRtcu1t21nub3ZEVqX0yb07yYvO7xQPXMXklm3NrVyb93jQ0prAC6n5+INgldwPt
-         D73Yrx6zGVmLbzpnyrGS+O/Qq577Aso5FXjEh2D/e1CPjA4Knn4qVjnzBjO2Gh5DZa
-         p/2rzQWXrYv3beRR6dhGWBX4i28IgmZVnAX9fFBLs2gptIMedHYdCgFjMXtaCN55nL
-         h7RfHpRMr0O9seADSUOg9vfd26gCdVeV1RzMTDjyTnIJblRpfrIYqix9bG+DIrWXdj
-         XLptg/mu1uqVvWF86l7IGsSX/yGflmZSEUV1oVCpQz0BRFG67YtUXwyJgombOxrYSj
-         +5efvXL7lETiQ==
-Date:   Sat, 6 Mar 2021 10:13:57 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
-        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
-        kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
-Message-Id: <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
-In-Reply-To: <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
-References: <161495873696.346821.10161501768906432924.stgit@devnote2>
-        <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        b=fHQ7TGXNn8U+TXweUnRRhRCStjkAEL6+HZ/4g1Gp93VqrG87B849cvT2whLYOv9Jt
+         qXUOhCwlIVGsKO8c0Ad3RRaUeEUca137dEcxq0cB25IhxtKMpRn9xEvdU5oXT+dZm/
+         F6QDuJmRve5IcsJIVFk/2iaHg3lHN1A2K5suOgz4=
+Date:   Fri, 5 Mar 2021 17:27:07 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] kasan, mm: fix crash with HW_TAGS and
+ DEBUG_PAGEALLOC
+Message-Id: <20210305172707.0d16383226ce5bfa87939702@linux-foundation.org>
+In-Reply-To: <CAAeHK+yHf7p9H_EiPVfA9qadGU_6x0RrKwX-WjKrHEFz+xFEbg@mail.gmail.com>
+References: <24cd7db274090f0e5bc3adcdc7399243668e3171.1614987311.git.andreyknvl@google.com>
+        <20210305154956.3bbfcedab3f549b708d5e2fa@linux-foundation.org>
+        <CAAeHK+yHf7p9H_EiPVfA9qadGU_6x0RrKwX-WjKrHEFz+xFEbg@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -45,84 +54,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Mar 2021 11:16:45 -0800
-Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Sat, 6 Mar 2021 00:54:32 +0100 Andrey Konovalov <andreyknvl@google.com> wrote:
 
-> Hi Masami,
+> On Sat, Mar 6, 2021 at 12:50 AM Andrew Morton <akpm@linux-foundation.org> wrote:
+> >
+> > On Sat,  6 Mar 2021 00:36:33 +0100 Andrey Konovalov <andreyknvl@google.com> wrote:
+> >
+> > > Currently, kasan_free_nondeferred_pages()->kasan_free_pages() is called
+> > > after debug_pagealloc_unmap_pages(). This causes a crash when
+> > > debug_pagealloc is enabled, as HW_TAGS KASAN can't set tags on an
+> > > unmapped page.
+> > >
+> > > This patch puts kasan_free_nondeferred_pages() before
+> > > debug_pagealloc_unmap_pages() and arch_free_page(), which can also make
+> > > the page unavailable.
+> > >
+> > > ...
+> > >
+> > > --- a/mm/page_alloc.c
+> > > +++ b/mm/page_alloc.c
+> > > @@ -1304,6 +1304,12 @@ static __always_inline bool free_pages_prepare(struct page *page,
+> > >
+> > >       kernel_poison_pages(page, 1 << order);
+> > >
+> > > +     /*
+> > > +      * With hardware tag-based KASAN, memory tags must be set before the
+> > > +      * page becomes unavailable via debug_pagealloc or arch_free_page.
+> > > +      */
+> > > +     kasan_free_nondeferred_pages(page, order, fpi_flags);
+> > > +
+> > >       /*
+> > >        * arch_free_page() can make the page's contents inaccessible.  s390
+> > >        * does this.  So nothing which can access the page's contents should
+> > > @@ -1313,8 +1319,6 @@ static __always_inline bool free_pages_prepare(struct page *page,
+> > >
+> > >       debug_pagealloc_unmap_pages(page, 1 << order);
+> > >
+> > > -     kasan_free_nondeferred_pages(page, order, fpi_flags);
+> > > -
+> > >       return true;
+> > >  }
+> >
+> > kasan_free_nondeferred_pages() has only two args in current mainline.
 > 
-> On Sat, Mar 06, 2021 at 12:38:57AM +0900, Masami Hiramatsu wrote:
-> > Hello,
-> > 
-> > Here is a series of patches for kprobes and stacktracer to fix the kretprobe
-> > entries in the kernel stack. This was reported by Daniel Xu. I thought that
-> > was in the bpftrace, but it is actually more generic issue.
-> > So I decided to fix the issue in arch independent part.
-> > 
-> > While fixing the issue, I found a bug in ia64 related to kretprobe, which is
-> > fixed by [1/5]. [2/5] and [3/5] is a kind of cleanup before fixing the main
-> > issue. [4/5] is the patch to fix the stacktrace, which involves kretprobe
-> > internal change. And [5/5] removing the stacktrace kretprobe fixup code in
-> > ftrace. 
-> > 
-> > Daniel, can you also check that this fixes your issue too? I hope it is.
+> Ah, yes, forgot to mention: this goes on top of:
 > 
-> Unfortunately, this patch series does not fix the issue I reported.
+> kasan: initialize shadow to TAG_INVALID for SW_TAGS
+> mm, kasan: don't poison boot memory with tag-based modes
 
-Ah, OK. This was my mistake I didn't choose ORC unwinder for test kernel.
+This patch (kasan, mm: fix crash with HW_TAGS and DEBUG_PAGEALLOC) is
+cc:stable, so it should come head of the other two lower priority
+patches.
 
+> >
+> > I fixed that in the obvious manner...
 > 
-> I think the reason your tests work is because you're using ftrace and
-> the ORC unwinder is aware of ftrace trampolines (see
-> arch/x86/kernel/unwind_orc.c:orc_ftrace_find).
-
-OK, so it has to be fixed in ORC unwinder.
-
+> Thanks!
 > 
-> bpftrace kprobes go through perf event subsystem (ie not ftrace) so
-> naturally orc_ftrace_find() does not find an associated trampoline. ORC
-> unwinding fails in this case because
-> arch/x86/kernel/kprobes/core.c:trampoline_handler sets
-> 
->     regs->ip = (unsigned long)&kretprobe_trampoline;
-> 
-> and `kretprobe_trampoline` is marked
-> 
->     STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
-> 
-> so it doesn't have a valid ORC entry. Thus, ORC immediately bails when
-> trying to unwind past the first frame.
+> If you changed this patch, you'll also need to change the other one though.
 
-Hm, in ftrace case, it decode kretprobe's stackframe and stoped right
-after kretprobe_trampoline callsite.
 
- => kretprobe_trace_func+0x21f/0x340
- => kretprobe_dispatcher+0x73/0xb0
- => __kretprobe_trampoline_handler+0xcd/0x1a0
- => trampoline_handler+0x3d/0x50
- => kretprobe_trampoline+0x25/0x50
- => 0
-
-kretprobe replaces the real return address with kretprobe_trampoline
-and kretprobe_trampoline *calls* trampoline_handler (this part depends
-on architecture implementation).
-Thus, if kretprobe_trampoline has no stack frame information, ORC may
-fails at the first kretprobe_trampoline+0x25, that is different from
-the kretprobe_trampoline+0, so the hack doesn't work.
-
-Hmm, how the other inline-asm function makes its stackframe info?
-If I get the kretprobe_trampoline+0, I can fix it up.
-
-> The only way I can think of to fix this issue is to make the ORC
-> unwinder aware of kretprobe (ie the patch I sent earlier). I'm hoping
-> you have another idea if my patch isn't acceptable.
-
-OK, anyway, your patch doesn't care the case that the multiple functions
-are probed by kretprobes. In that case, you'll see several entries are
-replaced by the kretprobe_trampoline. To find it correctly, you have
-to pass a state-holder (@cur of the kretprobe_find_ret_addr())
-to the fixup entries.
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Yup.
