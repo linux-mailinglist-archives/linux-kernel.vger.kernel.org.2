@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7EF32F963
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D246532F965
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Mar 2021 11:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbhCFKet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 05:34:49 -0500
-Received: from relay06.th.seeweb.it ([5.144.164.167]:35225 "EHLO
-        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbhCFKeX (ORCPT
+        id S230107AbhCFKif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 05:38:35 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:33888 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230120AbhCFKiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 05:34:23 -0500
-Received: from [192.168.1.101] (abac94.neoplus.adsl.tpnet.pl [83.6.166.94])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id C2DFC3E9B6;
-        Sat,  6 Mar 2021 11:34:13 +0100 (CET)
-Subject: Re: [PATCH] arm64: dts: qcom: Introduce SM8350 HDK
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Sat, 6 Mar 2021 05:38:22 -0500
+Date:   Sat, 06 Mar 2021 10:38:19 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615027100;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zSSfOnWXoj1UNYlFixyPMLY4tAQO/UE7XPtf2ZoG8ko=;
+        b=KD+jVaIDh6UY+bU64o9RG3rpBd52ZTW5CuksOvXMAG0Lhp4+3Va8NKdbGJTFYGYYP4o48W
+        WJEl5jELL+7AUA1hIaWhb7yEQu0hoRUFOGMY6C312wnccNMQpzcUhQlJbKFsRwBj3dNwo0
+        M2FzLiyPeSkfKcBly7akzuGZDpi2B51LvufNMyKo8VtZlUmgwqUKx8q8Ha7DOV3+g8SFGC
+        dUJFkMDylITqdFc+wvcKIuABKLrC5OmOaQd8tFjK4Y6gl/vfgFyR/VMjuBD+jEc/DlduJw
+        UbWIZfT3RLKXT2h44n1fznqF/tlCvKBAjJFj3UIdGR0oz9pOhYjvVPTI+drYFw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615027100;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zSSfOnWXoj1UNYlFixyPMLY4tAQO/UE7XPtf2ZoG8ko=;
+        b=y+CvJMj0OD+2qmMjS8gI3ytMvWA0nf/funjCiLZ+et5n3mDv/nxGI0CD6VDGcNlJgxHult
+        K6Eh+djeXClk65DA==
+From:   "tip-bot2 for Jiri Slaby" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/vdso] x86/vdso: Use proper modifier for len's format
+ specifier in extract()
+Cc:     Jiri Slaby <jslaby@suse.cz>, Borislav Petkov <bp@suse.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210306020905.1173790-1-bjorn.andersson@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <83273ce6-448d-a969-e9bf-97c11d57a38b@somainline.org>
-Date:   Sat, 6 Mar 2021 11:34:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+In-Reply-To: <20210303064357.17056-1-jslaby@suse.cz>
+References: <20210303064357.17056-1-jslaby@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20210306020905.1173790-1-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8
+Message-ID: <161502709986.398.1775215743911969084.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+The following commit has been merged into the x86/vdso branch of tip:
 
+Commit-ID:     70c9d959226b7c5c48c119e2c1cfc1424f87b023
+Gitweb:        https://git.kernel.org/tip/70c9d959226b7c5c48c119e2c1cfc1424f87b023
+Author:        Jiri Slaby <jslaby@suse.cz>
+AuthorDate:    Wed, 03 Mar 2021 07:43:57 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Sat, 06 Mar 2021 11:34:07 +01:00
 
-> +		vreg_l5b_0p88: ldo5 {
-> +			regulator-name = "vreg_l5b_0p88";
-> +			regulator-min-microvolt = <880000>;
-> +			regulator-max-microvolt = <888000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
+x86/vdso: Use proper modifier for len's format specifier in extract()
 
-This one needs `regulator-allow-set-load` since you specify current settings under UFS nodes, we've seen it not working at all without this property.
+Commit
 
+  8382c668ce4f ("x86/vdso: Add support for exception fixup in vDSO functions")
 
-> +		vreg_l6b_1p2: ldo6 {
-> +			regulator-name = "vreg_l6b_1p2";
-> +			regulator-min-microvolt = <1200000>;
-> +			regulator-max-microvolt = <1208000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l7b_2p96: ldo7 {
-> +			regulator-name = "vreg_l7b_2p96";
-> +			regulator-min-microvolt = <2504000>;
-> +			regulator-max-microvolt = <2504000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l9b_1p2: ldo9 {
-> +			regulator-name = "vreg_l9b_1p2";
-> +			regulator-min-microvolt = <1200000>;
-> +			regulator-max-microvolt = <1200000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
+prints length "len" which is size_t.
 
-Ditto for all three
+Compilers now complain when building on a 32-bit host:
 
+  HOSTCC  arch/x86/entry/vdso/vdso2c
+  ...
+  In file included from arch/x86/entry/vdso/vdso2c.c:162:
+  arch/x86/entry/vdso/vdso2c.h: In function 'extract64':
+  arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of \
+	type 'long unsigned int', but argument 4 has type 'size_t' {aka 'unsigned int'}
 
-> +&usb_1_dwc3 {
-> +	/* TODO: Define USB-C connector properly */
+So use proper modifier (%zu) for size_t.
 
-Sidenote: doesn't the new pm8150x (I think?) USB-C driver work on pm8350x?
+ [ bp: Massage commit message. ]
 
+Fixes: 8382c668ce4f ("x86/vdso: Add support for exception fixup in vDSO functions")
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+Link: https://lkml.kernel.org/r/20210303064357.17056-1-jslaby@suse.cz
+---
+ arch/x86/entry/vdso/vdso2c.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +/* PINCTRL - additions to nodes defined in sdm845.dtsi */
-
-sm8350
-
-
-Aside from these minor comments,
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-
-
-Konrad
-
+diff --git a/arch/x86/entry/vdso/vdso2c.h b/arch/x86/entry/vdso/vdso2c.h
+index 1c7cfac..5264daa 100644
+--- a/arch/x86/entry/vdso/vdso2c.h
++++ b/arch/x86/entry/vdso/vdso2c.h
+@@ -35,7 +35,7 @@ static void BITSFUNC(extract)(const unsigned char *data, size_t data_len,
+ 	if (offset + len > data_len)
+ 		fail("section to extract overruns input data");
+ 
+-	fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
++	fprintf(outfile, "static const unsigned char %s[%zu] = {", name, len);
+ 	BITSFUNC(copy)(outfile, data + offset, len);
+ 	fprintf(outfile, "\n};\n\n");
+ }
