@@ -2,113 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695653300E8
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 13:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FCA3300FC
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 13:44:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbhCGMhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 07:37:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230432AbhCGMhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 07:37:02 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFBDF650FA;
-        Sun,  7 Mar 2021 12:37:01 +0000 (UTC)
-Date:   Sun, 7 Mar 2021 12:36:58 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] iio: buffer: fix use-after-free for attached_buffers
- array
-Message-ID: <20210307123658.3bdc0016@archlinux>
-In-Reply-To: <20210306164710.9944-1-ardeleanalex@gmail.com>
-References: <20210306164710.9944-1-ardeleanalex@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231169AbhCGMnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 07:43:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231236AbhCGMn0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 07:43:26 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1900C06175F;
+        Sun,  7 Mar 2021 04:43:25 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id w7so4413813wmb.5;
+        Sun, 07 Mar 2021 04:43:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cFIEdtDcOdMH5xHTh8GXJTE5+bBLPZzwi26qs1wqPDw=;
+        b=msOY7rOT5jRTd2EIbyTD1SGScsKTAFmDuYVGBqGI1JP5CtfWQibUAQX0bjd8Gr9PVW
+         aPisPbXKBhIFGt3HdRWBS0Vb2Mv5WGfpJRH2NGwqF1510ROPcMRrcBvLJ9w1+AFL3/+h
+         QcPi0l/F/rmJG5FHIxYel9mHFO07nxz06yl2wAHTDBpuD+ZTTmBpgHUmOmEWxD/uvaPJ
+         FQBXqz/NUS5gJ7XYr9zLUZw+B6y/zNu7y3FSEFmFZbF8iVDAqTwmQor+IjcGGZl3PMjx
+         YP6QYpd06xVp2I1ylUEIY2l+sj0602L5QQQWuG6roub/8iGnDlIwAruskZBElwgvIc1/
+         xHQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cFIEdtDcOdMH5xHTh8GXJTE5+bBLPZzwi26qs1wqPDw=;
+        b=UrZiPUn7HQXBeBoFgw8O99L6Is7na3r01aYggLb7aDGD2UuCaYOMYjDFWUXL26G784
+         zRJc72uLdW0Mu24MBKDcQSm6hom3SeCedDCtjE4X3XiyffWxHvsLo6r3taAQFyhA9ywb
+         pYf5k03qdzF3qfNbHZoTdBsp190md648/D7QH8HJRZa/TmkminIO5E3GuXpBmhBdunzW
+         VJRRBwEPtbFF39OPx0b/rSL/V+0W2Q+eu7Be7zDdRkhK6TBG7dvu0Hgj8HXWDpHaPZHS
+         duQE6rbEnhg8QVlYr2/hrMmF5ze9KEX29ks17LDAbN58ra5NfgFrh3LRMs5cLSzNGk1n
+         u3bg==
+X-Gm-Message-State: AOAM533zjnKYPsDxF+rj9JJ+o1TmyUc64pxa8zm6FgsWpeHC9id09rYE
+        c90vqS8bgk4/gNLNMp18WODbiu29q+jBcg==
+X-Google-Smtp-Source: ABdhPJyjnBWzTJLLco6iJfLrw4ICux6lyfANMworRrkFeYX1wuLay8jPBt+xBUHNEwRXWLI4dtM+HQ==
+X-Received: by 2002:a05:600c:3506:: with SMTP id h6mr10882405wmq.168.1615121004439;
+        Sun, 07 Mar 2021 04:43:24 -0800 (PST)
+Received: from [192.168.8.114] ([148.252.132.144])
+        by smtp.gmail.com with ESMTPSA id m14sm14385022wmi.27.2021.03.07.04.43.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Mar 2021 04:43:23 -0800 (PST)
+Subject: Re: [syzbot] possible deadlock in io_sq_thread_finish
+To:     syzbot <syzbot+ac39856cb1b332dbbdda@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000430bf505bcef3b00@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Message-ID: <824f3c6e-9ae7-af14-fac5-2448afa7446a@gmail.com>
+Date:   Sun, 7 Mar 2021 12:39:29 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <000000000000430bf505bcef3b00@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  6 Mar 2021 18:47:10 +0200
-Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
-
-> Thanks to Lars for finding this.
-> The free of the 'attached_buffers' array should be done as late as
-> possible. This change moves it to iio_buffers_put(), which looks like
-> the best place for it, since it takes place right before the IIO device
-> data is free'd.
-
-It feels a bit wrong to do direct freeing of stuff in a _put() call
-given that kind of implies nothing will happen without some reference
-count dropping to 0.  We could think about renaming the function to
-something like
-
-iio_buffers_put_and_free_array() but is a bit long winded.
-
-Otherwise, I'm fine with this but want to let it sit on list a tiny bit
-longer before I take it as it's not totally trivial unlike the previous
-one.
-
-Jonathan
-> The free of this array will be handled by calling iio_device_free().
+On 07/03/2021 09:49, syzbot wrote:
+> Hello,
 > 
-> It looks like this issue was ocurring on the error path of
-> iio_buffers_alloc_sysfs_and_mask() and in
-> iio_buffers_free_sysfs_and_mask()
+> syzbot found the following issue on:
 > 
-> Added a comment in the doc-header of iio_device_attach_buffer() to
-> mention how this will be free'd in case anyone is reading the code
-> and becoming confused about it.
+> HEAD commit:    a38fd874 Linux 5.12-rc2
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=143ee02ad00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=db9c6adb4986f2f2
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ac39856cb1b332dbbdda
 > 
-> Fixes: 36f3118c414d ("iio: buffer: introduce support for attaching more IIO buffers")
-> Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-> Signed-off-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+ac39856cb1b332dbbdda@syzkaller.appspotmail.com
+
+Legit error, park() might take an sqd lock, and then we take it again.
+I'll patch it up
+
+> 
+> ============================================
+> WARNING: possible recursive locking detected
+> 5.12.0-rc2-syzkaller #0 Not tainted
+> --------------------------------------------
+> kworker/u4:7/7615 is trying to acquire lock:
+> ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_stop fs/io_uring.c:7099 [inline]
+> ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_put_sq_data fs/io_uring.c:7115 [inline]
+> ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_finish+0x408/0x650 fs/io_uring.c:7139
+> 
+> but task is already holding lock:
+> ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park fs/io_uring.c:7088 [inline]
+> ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park+0x63/0xc0 fs/io_uring.c:7082
+> 
+> other info that might help us debug this:
+>  Possible unsafe locking scenario:
+> 
+>        CPU0
+>        ----
+>   lock(&sqd->lock);
+>   lock(&sqd->lock);
+> 
+>  *** DEADLOCK ***
+> 
+>  May be due to missing lock nesting notation
+> 
+> 3 locks held by kworker/u4:7/7615:
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2246
+>  #1: ffffc900023a7da8 ((work_completion)(&ctx->exit_work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
+>  #2: ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park fs/io_uring.c:7088 [inline]
+>  #2: ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park+0x63/0xc0 fs/io_uring.c:7082
+> 
+> stack backtrace:
+> CPU: 1 PID: 7615 Comm: kworker/u4:7 Not tainted 5.12.0-rc2-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: events_unbound io_ring_exit_work
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>  print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
+>  check_deadlock kernel/locking/lockdep.c:2872 [inline]
+>  validate_chain kernel/locking/lockdep.c:3661 [inline]
+>  __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4900
+>  lock_acquire kernel/locking/lockdep.c:5510 [inline]
+>  lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
+>  __mutex_lock_common kernel/locking/mutex.c:946 [inline]
+>  __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1093
+>  io_sq_thread_stop fs/io_uring.c:7099 [inline]
+>  io_put_sq_data fs/io_uring.c:7115 [inline]
+>  io_sq_thread_finish+0x408/0x650 fs/io_uring.c:7139
+>  io_ring_ctx_free fs/io_uring.c:8408 [inline]
+>  io_ring_exit_work+0x82/0x9a0 fs/io_uring.c:8539
+>  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> 
+> 
 > ---
->  drivers/iio/industrialio-buffer.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 > 
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index 1a415e97174e..3d0712651d43 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -336,6 +336,8 @@ void iio_buffers_put(struct iio_dev *indio_dev)
->  		buffer = iio_dev_opaque->attached_buffers[i];
->  		iio_buffer_put(buffer);
->  	}
-> +
-> +	kfree(iio_dev_opaque->attached_buffers);
->  }
->  
->  static ssize_t iio_show_scan_index(struct device *dev,
-> @@ -1764,7 +1766,6 @@ int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
->  		buffer = iio_dev_opaque->attached_buffers[unwind_idx];
->  		__iio_buffer_free_sysfs_and_mask(buffer);
->  	}
-> -	kfree(iio_dev_opaque->attached_buffers);
->  	return ret;
->  }
->  
-> @@ -1786,8 +1787,6 @@ void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev)
->  		buffer = iio_dev_opaque->attached_buffers[i];
->  		__iio_buffer_free_sysfs_and_mask(buffer);
->  	}
-> -
-> -	kfree(iio_dev_opaque->attached_buffers);
->  }
->  
->  /**
-> @@ -2062,6 +2061,8 @@ static int iio_buffer_mmap(struct file *filep, struct vm_area_struct *vma)
->   * This function attaches a buffer to a IIO device. The buffer stays attached to
->   * the device until the device is freed. For legacy reasons, the first attached
->   * buffer will also be assigned to 'indio_dev->buffer'.
-> + * The array allocated here, will be free'd via the iio_buffers_put() call,
-> + * which is handled by the iio_device_free().
->   */
->  int iio_device_attach_buffer(struct iio_dev *indio_dev,
->  			     struct iio_buffer *buffer)
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
 
+-- 
+Pavel Begunkov
