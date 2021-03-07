@@ -2,149 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965C832FF8F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 09:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FC532FF8B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 09:12:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhCGHru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 02:47:50 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18288 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229971AbhCGHrS (ORCPT
+        id S230393AbhCGHqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 02:46:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229971AbhCGHqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 02:47:18 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1277YLA5173783;
-        Sun, 7 Mar 2021 02:47:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=POVp9fyakxyA52br+HNplqiEd9E35h8aut0jl4KHgz8=;
- b=fA1I+c1VQilumKH4BsHYrXA9EcSOYSXTL2KfCKR1M9PtsRMEzIx5VrGCdhCxlpMjIZsB
- jZaf+xped44ES0doQuLdLcRTY1EuttKnsOAWPMgv5af2bHcIZr4TDx4IR18IhtfCjWdV
- hmElmPK4XqZBXvoOEBHIJdGCXhf/Aj7KuDCyoheK0QMh14kKk5rO2abQBS1pdBW3wbnM
- j9pGNgM5jKR+nKzjElkoPdXfNsODWQQrc2kmbNIumdFv3a5W5cYmxepA0EkyzcMeRCbJ
- /6F4c4k9RzSVm43FYuw3fNFbWuNRw1ZK6gaftDXtyGhHMl6S8qUmVYEOji7GEWol6h50 TA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 374se6168q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 07 Mar 2021 02:47:04 -0500
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1277YXN4175959;
-        Sun, 7 Mar 2021 02:47:04 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 374se6167f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 07 Mar 2021 02:47:04 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1277hHNJ022752;
-        Sun, 7 Mar 2021 07:47:02 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 3741c8ge27-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 07 Mar 2021 07:47:02 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1277kiVO33882488
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 7 Mar 2021 07:46:44 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2263252071;
-        Sun,  7 Mar 2021 07:46:59 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.23.212])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 878B25206D;
-        Sun,  7 Mar 2021 07:46:20 +0000 (GMT)
-Date:   Sun, 7 Mar 2021 09:46:18 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     George Kennedy <george.kennedy@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oscar Salvador <osalvador@suse.de>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
-Message-ID: <YESEymRQ2/F7xJGt@linux.ibm.com>
-References: <1614802160-29362-1-git-send-email-george.kennedy@oracle.com>
- <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
- <9c3bc1b2-bb8d-194d-6faf-e4d7d346dc9b@oracle.com>
- <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
+        Sun, 7 Mar 2021 02:46:33 -0500
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E08AC06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 23:46:33 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id r5so3157056qvv.9
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 23:46:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hQtEqMHNvN9OvaCbhllTDDfdBhxggIMHD/rchmXP5Hc=;
+        b=pnyWli3gzOn4A74xqVfAXKyrA7R75BxdpNb2gXHPt6AM0fWQ4HZG44xclUatABtRac
+         6XTVJG4LpL9U9AlYkBU36OXrjUv3y1vOx5mAtWZiKGQB0YGeOR7OleAmzrKuVt9RyY8u
+         XKzh7+7J11+RW6FOZBDMdIB0lINJpJfvP4jwT/eJlzdJSV8iyl6+RfKrEUVAd3UqrybG
+         zQOiXB2fCrDKFdJpb+SnPDAR50JZAfEbkI2CFiQ58x9sKLp1RXEenh+7s9P1yJXoPRku
+         swESVrQslsgeSkHocTKGeOnbX7hgT1npj+o9yvuFnFbEjN8QwAXMxDmqXKr+FEGlbvrZ
+         7sSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hQtEqMHNvN9OvaCbhllTDDfdBhxggIMHD/rchmXP5Hc=;
+        b=c3Wbgkz4fIkoHzfQzzdaiGkQpev3rnnOd33EHMfGwhk9p1h+L3NO0CHd7lLAKcORBd
+         ARndkVVPM9YTfvKE4ATAQiZy0Iev/FY58aGYtey8Jsq9gXZZCsPJTay6pgWqtCdb43UV
+         MTl8y6ptyaXThqYro/Quf0KEFALrmqE/AsLIgCIPNiH7vuYiRucwZSUzLdc8Eah7kVqE
+         7KgUBkK5RuhgDPMdoPwIH70sGkY/injdtsx3A4qVYMvuXEovr5npLNIQHoUEXShgTzGA
+         68vrdV1IF/L33w0xetRV27fOSp3MUYFuQInrLVYqSjVmu0xiIZzeavEsbsoeoesCGpPe
+         lcbw==
+X-Gm-Message-State: AOAM533AUPxcnniV0BuHq9ZTYKAk+AhKjrdp5f2DztaFVCqEwtiV11RL
+        S+eFeRdhfl57Wprd/LdetpbBs3Lx6Lc8VfGOzXR+BA==
+X-Google-Smtp-Source: ABdhPJwIQeM+RhgAh1qLyOR9+QiHygMxeVFJhxIdEzmwj2OaXYNaZUPGA4+ks1sY5lRCCSHZNVEmkjsYSA8GaufT/t0=
+X-Received: by 2002:a0c:8304:: with SMTP id j4mr16019838qva.18.1615103190414;
+ Sat, 06 Mar 2021 23:46:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-06_08:2021-03-03,2021-03-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 spamscore=0 bulkscore=0 phishscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 suspectscore=0 impostorscore=0 clxscore=1011
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103070040
+References: <CABXGCsP63mN+G1xE7UBfVRuDRcJiRRC7EXU2y25f9rXkoU-0LQ@mail.gmail.com>
+ <CACVXFVOy8928GNowCQRGQKQxuLtHn0V+pYk1kzeOyc0pyDvkjQ@mail.gmail.com>
+ <20210305090022.1863-1-hdanton@sina.com> <CACVXFVPp_byzrYVwyo05u0v3zoPP42FKZhfWMb6GMBno1rCZRw@mail.gmail.com>
+ <E28250BB-FBFF-4F02-B7A2-9530340E481E@linaro.org> <YEIBYLnAqdueErun@T590> <20210307021524.13260-1-hdanton@sina.com>
+In-Reply-To: <20210307021524.13260-1-hdanton@sina.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sun, 7 Mar 2021 08:46:19 +0100
+Message-ID: <CACT4Y+aLnam+7FGx9MiMRRbgFE6v+Vg6Hu0hkx+P=h+DL8Mayg@mail.gmail.com>
+Subject: Re: [bugreport 5.9-rc8] general protection fault in __bfq_deactivate_entity
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Ming Lei <tom.leiming@gmail.com>,
+        Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+        linux-block <linux-block@vger.kernel.org>,
+        Jens Axboe <axboe@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rafael,
-
-On Fri, Mar 05, 2021 at 02:30:07PM +0100, Rafael J. Wysocki wrote:
-> On Fri, Mar 5, 2021 at 12:14 AM George Kennedy <george.kennedy@oracle.com> wrote:
+On Sun, Mar 7, 2021 at 3:15 AM Hillf Danton <hdanton@sina.com> wrote:
 >
-> > The ibft table, for example, is mapped in via acpi_map() and kmap(). The
-> > page for the ibft table is not reserved, so it can end up on the freelist.
-> 
-> You appear to be saying that it is not sufficient to kmap() a page in
-> order to use it safely.  It is also necessary to reserve it upfront,
-> for example with the help of memblock_reserve().  Is that correct?  If
-> so, is there an alternative way to reserve a page frame?
-
-Like David said in the other reply, if a BIOS does not mark the memory that
-contains an ACPI table as used (e.g. reserved or ACPI data), we need to
-make sure the kernel knows that such memory is in use and an early call to
-memblock_reserve() is exactly what we need here.
-George had this issue with iBFT, but in general this could be any table
-that a buggy BIOS forgot to mark as ACPI data.
- 
-> > >> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> > >> index d883176..97deea3 100644
-> > >> --- a/arch/x86/kernel/setup.c
-> > >> +++ b/arch/x86/kernel/setup.c
-> > >> @@ -1046,6 +1046,7 @@ void __init setup_arch(char **cmdline_p)
-> > >>          cleanup_highmap();
-> > >>
-> > >>          memblock_set_current_limit(ISA_END_ADDRESS);
-> > >> +       acpi_boot_table_init();
-> > > This cannot be moved before the acpi_table_upgrade() invocation AFAICS.
-> > >
-> > > Why exactly do you want to move it?
+> On Fri, 5 Mar 2021 18:01:04 +0800  Ming Lei wrote:
+> > On Fri, Mar 05, 2021 at 10:32:04AM +0100, Paolo Valente wrote:
+> > > I'm thinking of a way to debug this too.  The symptom may hint at a
+> > > use-after-free.  Could you enable KASAN in your tests?  (On the flip
+> > > side, I know this might change timings, thereby making the fault
+> > > disappear).
 > >
-> > Want to make sure there are slots for memblock_reserve() to be able to
-> > reserve the page.
-> 
-> Well, that may not require reordering the initialization this way.
+> > I have asked our QE to reproduce the issue with debug kernel, which may take a
+> > while. And I can't trigger it in my box.
+> >
+> > BTW, for the 2nd 'kernel NULL pointer dereference', the RIP points to:
+> >
+> > (gdb) l *(__bfq_deactivate_entity+0x5b)
+> > 0xffffffff814c31cb is in __bfq_deactivate_entity (block/bfq-wf2q.c:1181).
+> > 1176           * bfq_group_set_parent has already been invoked for the group
+> > 1177           * represented by entity. Therefore, the field
+> > 1178           * entity->sched_data has been set, and we can safely use it.
+> > 1179           */
+> > 1180          st = bfq_entity_service_tree(entity);
+> > 1181          is_in_service = entity == sd->in_service_entity;
+> > 1182
+> > 1183          bfq_calc_finish(entity, entity->service);
+> > 1184
+> > 1185          if (is_in_service)
+> >
+> > Seems entity->sched_data points to NULL.
+>
+> Hi Ming,
+>
+> Thanks for your report.
+>
+> Given the invalid pointer cannot explain line 1180, you are reporting
+> a different issue from what Mike reported, and we can do nothing now
+> for both without a reproducer.
+>
+> Dmitry can you shed some light on the tricks to config kasan to print
+> Call Trace as the reports with the leading [syzbot] on the subject line do?
 
-The memory that is used by the firmware should be reserved before memblock
-allocations are allowed so that ACPI tables won't get trampled by some
-random allocation.
++kasan-dev
 
-On x86 this essentially means that the early reservations need to be
-complete before the call to e820__memblock_setup().
+Hi Hillf,
 
-We probably need more precise refactoring of ACPI init than simply moving
-acpi_boot_table_init() earlier. 
- 
-> > >>          e820__memblock_setup();
-> > >>
+KASAN prints stack traces always unconditionally. There is nothing you
+need to do at all. Do you have any reports w/o stack traces?
 
--- 
-Sincerely yours,
-Mike.
+"[syzbot]" is prepend by syzbot code. If you want some prefix, you
+would need to prepend it manually.
+
+
+
+> > > Thanks,
+> > > Paolo
+> > >
+> > > > Il giorno 5 mar 2021, alle ore 10:27, Ming Lei <tom.leiming@gmail.com> ha scritto:
+> > > >
+> > > > Hello Hillf,
+> > > >
+> > > > Thanks for the debug patch.
+> > > >
+> > > > On Fri, Mar 5, 2021 at 5:00 PM Hillf Danton <hdanton@sina.com> wrote:
+> > > >>
+> > > >> On Thu, 4 Mar 2021 16:42:30 +0800  Ming Lei wrote:
+> > > >>> On Sat, Oct 10, 2020 at 1:40 PM Mikhail Gavrilov
+> > > >>> <mikhail.v.gavrilov@gmail.com> wrote:
+> > > >>>>
+> > > >>>> Paolo, Jens I am sorry for the noise.
+> > > >>>> But today I hit the kernel panic and git blame said that you have
+> > > >>>> created the file in which happened panic (this I saw from trace)
+> > > >>>>
+> > > >>>> $ /usr/src/kernels/`uname -r`/scripts/faddr2line
+> > > >>>> /lib/debug/lib/modules/`uname -r`/vmlinux
+> > > >>>> __bfq_deactivate_entity+0x15a
+> > > >>>> __bfq_deactivate_entity+0x15a/0x240:
+> > > >>>> bfq_gt at block/bfq-wf2q.c:20
+> > > >>>> (inlined by) bfq_insert at block/bfq-wf2q.c:381
+> > > >>>> (inlined by) bfq_idle_insert at block/bfq-wf2q.c:621
+> > > >>>> (inlined by) __bfq_deactivate_entity at block/bfq-wf2q.c:1203
+> > > >>>>
+> > > >>>> https://github.com/torvalds/linux/blame/master/block/bfq-wf2q.c#L1203
+> > > >>>>
+> > > >>>> $ head /sys/block/*/queue/scheduler
+> > > >>>> ==> /sys/block/nvme0n1/queue/scheduler <==
+> > > >>>> [none] mq-deadline kyber bfq
+> > > >>>>
+> > > >>>> ==> /sys/block/sda/queue/scheduler <==
+> > > >>>> mq-deadline kyber [bfq] none
+> > > >>>>
+> > > >>>> ==> /sys/block/zram0/queue/scheduler <==
+> > > >>>> none
+> > > >>>>
+> > > >>>> Trace:
+> > > >>>> general protection fault, probably for non-canonical address
+> > > >>>> 0x46b1b0f0d8856e4a: 0000 [#1] SMP NOPTI
+> > > >>>> CPU: 27 PID: 1018 Comm: kworker/27:1H Tainted: G        W
+> > > >>>> --------- ---  5.9.0-0.rc8.28.fc34.x86_64 #1
+> > > >>>> Hardware name: System manufacturer System Product Name/ROG STRIX
+> > > >>>> X570-I GAMING, BIOS 2606 08/13/2020
+> > > >>>> Workqueue: kblockd blk_mq_run_work_fn
+> > > >>>> RIP: 0010:__bfq_deactivate_entity+0x15a/0x240
+> > > >>>> Code: 48 2b 41 28 48 85 c0 7e 05 49 89 5c 24 18 49 8b 44 24 08 4d 8d
+> > > >>>> 74 24 08 48 85 c0 0f 84 d6 00 00 00 48 8b 7b 28 eb 03 48 89 c8 <48> 8b
+> > > >>>> 48 28 48 8d 70 10 48 8d 50 08 48 29 f9 48 85 c9 48 0f 4f d6
+> > > >>>> RSP: 0018:ffffadf6c0c6fc00 EFLAGS: 00010002
+> > > >>>> RAX: 46b1b0f0d8856e4a RBX: ffff8dc2773b5c88 RCX: 46b1b0f0d8856e4a
+> > > >>>> RDX: ffff8dc7d02ed0a0 RSI: ffff8dc7d02ed0a8 RDI: 0000584e64e96beb
+> > > >>>> RBP: ffff8dc2773b5c00 R08: ffff8dc9054cb938 R09: 0000000000000000
+> > > >>>> R10: 0000000000000018 R11: 0000000000000018 R12: ffff8dc904927150
+> > > >>>> R13: 0000000000000001 R14: ffff8dc904927158 R15: ffff8dc2773b5c88
+> > > >>>> FS:  0000000000000000(0000) GS:ffff8dc90e0c0000(0000) knlGS:0000000000000000
+> > > >>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > >>>> CR2: 0000003e8ebe4000 CR3: 00000007c2546000 CR4: 0000000000350ee0
+> > > >>>> Call Trace:
+> > > >>>> bfq_deactivate_entity+0x4f/0xc0
+> > > >>>
+> > > >>> Hello,
+> > > >>>
+> > > >>> The same stack trace was observed in RH internal test too, and kernel
+> > > >>> is 5.11.0-0.rc6,
+> > > >>> but there isn't reproducer yet.
+> > > >>>
+> > > >>>
+> > > >>> --
+> > > >>> Ming Lei
+> > > >>
+> > > >> Add some debug info.
+> > > >>
+> > > >> --- x/block/bfq-wf2q.c
+> > > >> +++ y/block/bfq-wf2q.c
+> > > >> @@ -647,8 +647,10 @@ static void bfq_forget_entity(struct bfq
+> > > >>
+> > > >>        entity->on_st_or_in_serv = false;
+> > > >>        st->wsum -= entity->weight;
+> > > >> -       if (bfqq && !is_in_service)
+> > > >> +       if (bfqq && !is_in_service) {
+> > > >> +               WARN_ON(entity->tree != NULL);
+> > > >>                bfq_put_queue(bfqq);
+> > > >> +       }
+> > > >> }
+> > > >>
+> > > >> /**
+> > > >> @@ -1631,6 +1633,7 @@ bool __bfq_bfqd_reset_in_service(struct
+> > > >>                 * bfqq gets freed here.
+> > > >>                 */
+> > > >>                int ref = in_serv_bfqq->ref;
+> > > >> +               WARN_ON(in_serv_entity->tree != NULL);
+> > > >>                bfq_put_queue(in_serv_bfqq);
+> > > >>                if (ref == 1)
+> > > >>                        return true;
+> > > >
+> > > > This kernel oops isn't easy to be reproduced, and  we have got another crash
+> > > > report[1] too, still on __bfq_deactivate_entity(), and not easy to
+> > > > trigger.  Can your
+> > > > debug patch cover the report[1]? If not, feel free to add more debug messages,
+> > > > then I will try to reproduce the two.
+> > > >
+> > > > [1] another kernel oops log on __bfq_deactivate_entity
+> > > >
+> > > > [  899.790606] systemd-sysv-generator[25205]: SysV service
+> > > > '/etc/rc.d/init.d/anamon' lacks a native systemd unit file.
+> > > > Automatically generating a unit file for compatibility. Please update
+> > > > package to include a native systemd unit file, in order to make it
+> > > > more safe and robust.
+> > > > [  901.937047] BUG: kernel NULL pointer dereference, address: 0000000000000000
+> > > > [  901.944005] #PF: supervisor read access in kernel mode
+> > > > [  901.949143] #PF: error_code(0x0000) - not-present page
+> > > > [  901.954285] PGD 0 P4D 0
+> > > > [  901.956824] Oops: 0000 [#1] SMP NOPTI
+> > > > [  901.960490] CPU: 13 PID: 22966 Comm: kworker/13:0 Tainted: G
+> > > >  I    X --------- ---  5.11.0-1.el9.x86_64 #1
+> > > > [  901.970829] Hardware name: Dell Inc. PowerEdge R740xd/0WXD1Y, BIOS
+> > > > 2.5.4 01/13/2020
+> > > > [  901.978480] Workqueue: cgwb_release cgwb_release_workfn
+> > > > [  901.983705] RIP: 0010:__bfq_deactivate_entity+0x5b/0x240
+> > > > [  901.989016] Code: b8 30 00 00 00 75 18 48 81 ff 88 00 00 00 74 0f
+> > > > 0f b7 47 8a 83 e8 01 48 8d 04 40 48 c1 e0 04 4c 8b 73 68 48 63 73 40
+> > > > 48 89 df <4d> 8b 3e 4d 8d 64 06 10 e8 48 f0 ff ff 49 39 df 0f 84 87 01
+> > > > 00 00
+> > > > [  902.007763] RSP: 0018:ffffb77107f0bd98 EFLAGS: 00010002
+> > > > [  902.012986] RAX: 0000002fffffffd0 RBX: ffff9853ca9c6098 RCX: 0000000000000046
+> > > > [  902.020119] RDX: 0000000000000001 RSI: 00000000474b1168 RDI: ffff9853ca9c6098
+> > > > [  902.027253] RBP: 0000000000000000 R08: 0000000000000000 R09: ffff985470c2fed0
+> > > > [  902.034383] R10: 0000000000000001 R11: ffff9853c9287d98 R12: ffff9853ca8b8000
+> > > > [  902.041515] R13: 00000000000000ff R14: 0000000000000000 R15: ffff985b44308098
+> > > > [  902.048647] FS:  0000000000000000(0000) GS:ffff98631f980000(0000)
+> > > > knlGS:0000000000000000
+> > > > [  902.056732] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > [  902.062479] CR2: 0000000000000000 CR3: 00000001c0ac2002 CR4: 00000000007706e0
+> > > > [  902.069611] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > [  902.076744] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > [  902.083876] PKRU: 55555554
+> > > > [  902.086589] Call Trace:
+> > > > [  902.089042]  bfq_pd_offline+0x89/0xd0
+> > > > [  902.092708]  blkg_destroy+0x52/0xf0
+> > > > [  902.096200]  blkcg_destroy_blkgs+0x46/0xc0
+> > > > [  902.100300]  cgwb_release_workfn+0xbe/0x150
+> > > > [  902.104485]  process_one_work+0x1e6/0x380
+> > > > [  902.108497]  worker_thread+0x53/0x3d0
+> > > > [  902.112161]  ? process_one_work+0x380/0x380
+> > > > [  902.116346]  kthread+0x11b/0x140
+> > > > [  902.119581]  ? kthread_associate_blkcg+0xa0/0xa0
+> > > > [  902.124199]  ret_from_fork+0x1f/0x30
+> > > > [  902.127780] Modules linked in: sunrpc scsi_debug iscsi_tcp
+> > > > libiscsi_tcp libiscsi scsi_transport_iscsi nft_reject_inet
+> > > > nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat
+> > > > nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set nf_tables nfnetlink
+> > > > rfkill intel_rapl_msr intel_rapl_common isst_if_common skx_edac nfit
+> > > > libnvdimm x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm
+> > > > ipmi_ssif irqbypass mgag200 rapl i2c_algo_bit iTCO_wdt drm_kms_helper
+> > > > intel_cstate iTCO_vendor_support syscopyarea sysfillrect sysimgblt
+> > > > acpi_ipmi mei_me fb_sys_fops intel_uncore pcspkr dell_smbios dcdbas
+> > > > dell_wmi_descriptor wmi_bmof mei cec i2c_i801 ipmi_si acpi_power_meter
+> > > > lpc_ich i2c_smbus ipmi_devintf ipmi_msghandler drm fuse xfs libcrc32c
+> > > > sd_mod t10_pi crct10dif_pclmul crc32_pclmul crc32c_intel ahci libahci
+> > > > megaraid_sas tg3 ghash_clmulni_intel libata wmi dm_mirror
+> > > > dm_region_hash dm_log dm_mod [last unloaded: ip_tables]
+> > > > [  902.208546] CR2: 0000000000000000
+> > > > [  902.211881] ---[ end trace 827b8521dc634ca4 ]---
+> > > >
+> > > >
+> > > > --
+> > > > Ming Lei
+> > >
+> >
+> > --
+> > Ming
+> >
+> >
