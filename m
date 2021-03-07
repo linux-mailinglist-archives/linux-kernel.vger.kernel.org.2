@@ -2,70 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088663302C1
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 16:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF2B3302C5
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 16:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231807AbhCGPtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 10:49:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36170 "EHLO mail.kernel.org"
+        id S232223AbhCGPyC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 7 Mar 2021 10:54:02 -0500
+Received: from aposti.net ([89.234.176.197]:34004 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231757AbhCGPsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 10:48:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 150226501E;
-        Sun,  7 Mar 2021 15:48:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615132091;
-        bh=5yvD+KY+8EPQZt/w8bdUCmccJ4Sa3wYz47atB6Adspo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BEIYmI2pCH6ogHRa1T1M6mUw25P61nFCAc9xjnsiSg7K797IGZFe4JwjQ04DYEW9N
-         RUp724ezxmDlyPw9/XTVvVpvKUnLf1avj9GcN0at1i9PbSbaSBmw7hPUPUDNtrK/vn
-         4cz6M/cOVBSv58I8nCzVeu5hmDQ6e+TUFUlXVPFY=
-Date:   Sun, 7 Mar 2021 16:48:09 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc:     Ronald Warsow <rwarsow@gmx.de>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: stable kernel checksumming fails
-Message-ID: <YET1uTT61awy0X6S@kroah.com>
-References: <d58ab27a-78ad-1119-79ac-2a1fbcd3527a@gmx.de>
- <YETm+6sQqek6kY/A@kroah.com>
- <20210307154354.qbbsy355d5zfubnf@chatter.i7.local>
+        id S232084AbhCGPxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 10:53:22 -0500
+Date:   Sun, 07 Mar 2021 15:53:04 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] ASoC: codecs/jz4770: Remove superfluous error message
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Message-Id: <G4WLPQ.USQXU1D7YOL61@crapouillou.net>
+In-Reply-To: <20210307072133.10832-1-tangbin@cmss.chinamobile.com>
+References: <20210307072133.10832-1-tangbin@cmss.chinamobile.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210307154354.qbbsy355d5zfubnf@chatter.i7.local>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 10:43:54AM -0500, Konstantin Ryabitsev wrote:
-> On Sun, Mar 07, 2021 at 03:45:15PM +0100, Greg KH wrote:
-> > > checksumming the downloaded kernel manually gives an "Okay" though.
-> > > 
-> > > 
-> > > is this just me (on Fedora 33) ?
-> > 
-> > Fails for me on Arch:
-> > 
-> > Verifying checksum on linux-5.11.4.tar.xz
-> > /usr/bin/sha256sum: /home/gregkh/Downloads/linux-tarball-verify.gZo313NCk.untrusted/sha256sums.txt: no properly formatted SHA256 checksum lines found
-> > FAILED to verify the downloaded tarball checksum
-> > 
-> > 
-> > Konstantin, anything change recently?
-> 
-> I think it's just cache invalidation problems. I've committed a tiny change to
-> the script that always grabs that file from the origin servers instead of
-> going via the CDN.
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git/commit/?id=71e570c5f090b5740e323f98504bf38592785b49
-> 
-> This should sidestep the problem.
-> 
-> -K
 
-Nice, fixed it for me, thanks!
 
-Ronald, does it now work for you too?
+Le dim. 7 mars 2021 à 15:21, Tang Bin <tangbin@cmss.chinamobile.com> a 
+écrit :
+> The function devm_platform_ioremap_resource has already contained
+> error message if failed, so remove superfluous dev_err here.
+> 
+> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 
-greg k-h
+Looks good.
+
+Acked-by: Paul Cercueil <paul@crapouillou.net>
+
+Cheers,
+-Paul
+
+> ---
+>  sound/soc/codecs/jz4770.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/jz4770.c b/sound/soc/codecs/jz4770.c
+> index 298689a07..5a24471a5 100644
+> --- a/sound/soc/codecs/jz4770.c
+> +++ b/sound/soc/codecs/jz4770.c
+> @@ -900,11 +900,8 @@ static int jz4770_codec_probe(struct 
+> platform_device *pdev)
+>  	codec->dev = dev;
+> 
+>  	codec->base = devm_platform_ioremap_resource(pdev, 0);
+> -	if (IS_ERR(codec->base)) {
+> -		ret = PTR_ERR(codec->base);
+> -		dev_err(dev, "Failed to ioremap mmio memory: %d\n", ret);
+> -		return ret;
+> -	}
+> +	if (IS_ERR(codec->base))
+> +		return PTR_ERR(codec->base);
+> 
+>  	codec->regmap = devm_regmap_init(dev, NULL, codec,
+>  					&jz4770_codec_regmap_config);
+> --
+> 2.20.1.windows.1
+> 
+> 
+> 
+
+
