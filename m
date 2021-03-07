@@ -2,79 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA72330219
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 15:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A30433021E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 15:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbhCGOas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 09:30:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhCGOaQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 09:30:16 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432D1C06174A;
-        Sun,  7 Mar 2021 06:30:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=xsfa9jRujYdnKBIUGSDMXc9MC+mwfFswtb0biyNkeSI=; b=j3LpT9FNZgliqiRDkO9V7aUok
-        ZFybi0K8ZYzD3KP6jOIrqRR85c1/k++e6YMbhZVox7mtjYeJFErXu6cGVeb4kI4azSR18Ax3lCB9e
-        S2D+JOFXkn+qCebBWuDR+wo5tRAqqY2ESR+zsA30maTicNIUMxNV9QU9smprFbaQm0dVS5UCjorRr
-        qoa+MkRBwEAz8FT2DEdydMLAvJs9vHxlVDQRNEkUzxCHmnfs/nzak2KA4A0RuAXFxRQ4bZ3VvxB6S
-        a7sYhNh0xdz4oAWyxLd8OtNmiAV4D7Jnza6vG/mIJBY17q7vmCqD+2EOqOGUmz+DrifJZmrCOYIZj
-        UlvFJ6J0w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49700)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lIuQA-0001FK-4C; Sun, 07 Mar 2021 14:30:14 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lIuQ9-0006Gf-Rx; Sun, 07 Mar 2021 14:30:13 +0000
-Date:   Sun, 7 Mar 2021 14:30:13 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     od@zcrc.me, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: Fix doc of clk_get_parent
-Message-ID: <20210307143013.GE1463@shell.armlinux.org.uk>
-References: <20210307140626.22699-1-paul@crapouillou.net>
- <20210307142701.GD1463@shell.armlinux.org.uk>
- <J8SLPQ.MXUB9SDIPWN13@crapouillou.net>
+        id S231190AbhCGOhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 09:37:33 -0500
+Received: from mga14.intel.com ([192.55.52.115]:38425 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230507AbhCGOgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 09:36:53 -0500
+IronPort-SDR: NvkpF51uhHo6hopNGx8KlGBpVpgCNF8EDfEuVou8doOC2fmW4E4J0BO5VtUh8esSwg/OPb+KaK
+ TXcMRR+yJKlA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="187263461"
+X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
+   d="scan'208";a="187263461"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 06:36:53 -0800
+IronPort-SDR: 8h+Dh2e1KX2GZ7Bx+XuYAA4ApABmt2uZdE5x3eYmB3w711Pxfw46i0rgCudzKRz35Zdr5xDRc6
+ u9sMfRKltUPw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
+   d="scan'208";a="519660446"
+Received: from lkp-server01.sh.intel.com (HELO 3e992a48ca98) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 07 Mar 2021 06:36:51 -0800
+Received: from kbuild by 3e992a48ca98 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lIuWY-0000SB-Sj; Sun, 07 Mar 2021 14:36:50 +0000
+Date:   Sun, 07 Mar 2021 22:36:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/urgent] BUILD SUCCESS
+ 50bf8080a94d171e843fc013abec19d8ab9f50ae
+Message-ID: <6044e4d6.wN7XJyOmk7oX+6W9%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <J8SLPQ.MXUB9SDIPWN13@crapouillou.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 02:29:07PM +0000, Paul Cercueil wrote:
-> Hi,
-> 
-> Le dim. 7 mars 2021 à 14:27, Russell King - ARM Linux admin
-> <linux@armlinux.org.uk> a écrit :
-> > On Sun, Mar 07, 2021 at 02:06:26PM +0000, Paul Cercueil wrote:
-> > >  On error, or when the passed parameter is NULL, the return value is
-> > > NULL
-> > >  and not a PTR_ERR()-encoded value.
-> > 
-> > No, the documentation is accurate. The CCF is just an implementation
-> > of the API, the file you are modifying is the definitive API
-> > documentation.
-> 
-> Well, then the code has to be fixed, because right now it returns NULL on
-> error, since the 2.6 days.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/urgent
+branch HEAD: 50bf8080a94d171e843fc013abec19d8ab9f50ae  static_call: Fix the module key fixup
 
-And you consider NULL to be an error? A NULL clock isn't defined to be
-an error by the API.
+elapsed time: 729m
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+configs tested: 130
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                        sh7763rdp_defconfig
+powerpc                          g5_defconfig
+xtensa                    smp_lx200_defconfig
+csky                             alldefconfig
+arm                         orion5x_defconfig
+powerpc                      pasemi_defconfig
+arm                       aspeed_g4_defconfig
+mips                      malta_kvm_defconfig
+arm                         lubbock_defconfig
+mips                            e55_defconfig
+powerpc                      ppc44x_defconfig
+powerpc                    ge_imp3a_defconfig
+arm                         hackkit_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arc                         haps_hs_defconfig
+powerpc                      arches_defconfig
+sh                          rsk7264_defconfig
+arm                         bcm2835_defconfig
+mips                     decstation_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                          pcm027_defconfig
+arm                          lpd270_defconfig
+riscv                    nommu_k210_defconfig
+sparc                            allyesconfig
+mips                        maltaup_defconfig
+sh                        sh7785lcr_defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                     sbc8548_defconfig
+parisc                generic-32bit_defconfig
+powerpc                     tqm8555_defconfig
+sh                          r7780mp_defconfig
+parisc                generic-64bit_defconfig
+powerpc                      bamboo_defconfig
+arc                           tb10x_defconfig
+s390                       zfcpdump_defconfig
+mips                     cu1000-neo_defconfig
+arm                        keystone_defconfig
+sh                           se7705_defconfig
+nios2                            alldefconfig
+sh                   sh7724_generic_defconfig
+xtensa                    xip_kc705_defconfig
+m68k                            q40_defconfig
+mips                           rs90_defconfig
+arm                          pxa3xx_defconfig
+arc                      axs103_smp_defconfig
+mips                  decstation_64_defconfig
+powerpc                     tqm8560_defconfig
+microblaze                          defconfig
+mips                         tb0287_defconfig
+powerpc                     tqm8541_defconfig
+sh                          landisk_defconfig
+mips                       rbtx49xx_defconfig
+mips                         tb0219_defconfig
+powerpc                     redwood_defconfig
+m68k                          sun3x_defconfig
+sh                        apsh4ad0a_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210307
+i386                 randconfig-a003-20210307
+i386                 randconfig-a002-20210307
+i386                 randconfig-a004-20210307
+i386                 randconfig-a006-20210307
+i386                 randconfig-a001-20210307
+x86_64               randconfig-a013-20210307
+x86_64               randconfig-a016-20210307
+x86_64               randconfig-a015-20210307
+x86_64               randconfig-a014-20210307
+x86_64               randconfig-a012-20210307
+x86_64               randconfig-a011-20210307
+i386                 randconfig-a016-20210307
+i386                 randconfig-a012-20210307
+i386                 randconfig-a013-20210307
+i386                 randconfig-a014-20210307
+i386                 randconfig-a011-20210307
+i386                 randconfig-a015-20210307
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210307
+x86_64               randconfig-a001-20210307
+x86_64               randconfig-a004-20210307
+x86_64               randconfig-a005-20210307
+x86_64               randconfig-a002-20210307
+x86_64               randconfig-a003-20210307
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
