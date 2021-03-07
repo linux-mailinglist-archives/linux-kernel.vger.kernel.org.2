@@ -2,141 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C8432FF73
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 08:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 310D432FF76
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 08:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbhCGHPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 02:15:21 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:45728 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbhCGHO5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 02:14:57 -0500
-Received: from mail-ed1-f69.google.com ([209.85.208.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1lInct-0002Kt-L4
-        for linux-kernel@vger.kernel.org; Sun, 07 Mar 2021 07:14:55 +0000
-Received: by mail-ed1-f69.google.com with SMTP id cq11so3310625edb.14
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 23:14:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=8RAwbWKs3D0TFja/bS8+raVCy0idj4NZ23+PF/iBrVs=;
-        b=tF0nwcwnoxkMhQmZRzJRulhZqXk3IoCLxIJf9zD+ERyNrXGkqh1+Lj7amJTFZ6LVVk
-         PWZhOMVHpiYs0os+ZneLtesT1ozAwO4Q788vcH0wy7C20xy5cR8cdlPKY3lbEeeSUhBP
-         azd4wyDhineZgYvVSW8zDUtwhQXEw+1BU9tp2yAxOx8yA32a4I3nP3SMDggnBmnOHVXw
-         JwhSVLCCE9xADQCcKqsNErLf08e3KHvJWsMoi/WFvH31x5TpnPtzwVxSxBtpmUTqeWHH
-         6MxKwf+Apxqb2UOB2GOLAIcOJunv1kR8PjqPS2wWqRimZZQY1gi1Gv3bleNom0DMnEST
-         N0IQ==
-X-Gm-Message-State: AOAM530pRYzUNxQbn+Rc9u0W+u/6O2q5odgIzh5wZt+TJ2JxT4wwaBVV
-        g1pSrVIutzQ+xhK9E03QTiyCJz/zpvWFFRd/4cfFg19LkgyGS8Lt/cvbV8SPaeCejfe58AoDH3q
-        2G+yxEVnHbUuCzUGVm9Ma9vG1c+8G76laY0QTLmDhlQ==
-X-Received: by 2002:a17:906:6c4:: with SMTP id v4mr9548304ejb.198.1615101295275;
-        Sat, 06 Mar 2021 23:14:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxexOesV/gr/ay1DEqZGVArOt9zbi7hcYzbtxNarcicjOTC0WZSvwL2nh2syiuMim+McE+8sA==
-X-Received: by 2002:a17:906:6c4:: with SMTP id v4mr9548291ejb.198.1615101295073;
-        Sat, 06 Mar 2021 23:14:55 -0800 (PST)
-Received: from localhost (host-79-43-122-37.retail.telecomitalia.it. [79.43.122.37])
-        by smtp.gmail.com with ESMTPSA id r4sm4856778edv.27.2021.03.06.23.14.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 23:14:54 -0800 (PST)
-Date:   Sun, 7 Mar 2021 08:14:53 +0100
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, schuchmann@schleissheimer.de
-Subject: Re: [PATCH] leds: trigger: fix potential deadlock with libata
-Message-ID: <YER9bWcfTI3jB1wT@xps-13-7390>
-References: <20201102104152.GG9930@xps-13-7390>
- <20210306203954.ya5oqgkdalcw45c4@pengutronix.de>
- <YEQ0ONQCwVUd0wmc@boqun-archlinux>
+        id S231270AbhCGHVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 02:21:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49938 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230390AbhCGHUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 02:20:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2785765015;
+        Sun,  7 Mar 2021 07:20:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615101651;
+        bh=v9O/9s2c/T6FOkPxcEi7kBADpgM081nbxSddhFLI9wY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FGOfNc+C61bQljCWUO9i7SoOadDK9R+ZYnoZnwevQM149jH6erWJFpT8gt5xYUZUJ
+         kVni/Xo1E0SKP3CK1UR0xjSJQkL4OFZaVWUUCBOlQqVIN/esSoT3QMiA1y4OONSb/9
+         yIJei+rTpP/99L4p0AY5DU8VXG8JgVeKO2mXyaWJRXin5ckSc7oh0mj3wPUlXr6jwe
+         QGlsT0rac9eaOxMa2QzO+IZTl8DS6RgglfiRn9EaTBr9kXmODaAZ2eQPAkRXDg71FL
+         AowHf+OrcavIIV/LdlB3lsikSE6NJ7sS1zoJProY5snbTHZuslKDd80kDfBIUcnS1q
+         8tzLaytFCxrNw==
+Date:   Sun, 7 Mar 2021 09:20:44 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kamal Dasu <kdasu.kdev@gmail.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Subject: Re: [PATCH v2] MIPS: kernel: Reserve exception base early to prevent
+ corruption
+Message-ID: <YER+zN0C8dvR41IS@kernel.org>
+References: <20210306082910.3472-1-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YEQ0ONQCwVUd0wmc@boqun-archlinux>
+In-Reply-To: <20210306082910.3472-1-tsbogend@alpha.franken.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 10:02:32AM +0800, Boqun Feng wrote:
-> On Sat, Mar 06, 2021 at 09:39:54PM +0100, Marc Kleine-Budde wrote:
-> > Hello *,
-> > 
-> > On 02.11.2020 11:41:52, Andrea Righi wrote:
-> > > We have the following potential deadlock condition:
-> > > 
-> > >  ========================================================
-> > >  WARNING: possible irq lock inversion dependency detected
-> > >  5.10.0-rc2+ #25 Not tainted
-> > >  --------------------------------------------------------
-> > >  swapper/3/0 just changed the state of lock:
-> > >  ffff8880063bd618 (&host->lock){-...}-{2:2}, at: ata_bmdma_interrupt+0x27/0x200
-> > >  but this lock took another, HARDIRQ-READ-unsafe lock in the past:
-> > >   (&trig->leddev_list_lock){.+.?}-{2:2}
-> > > 
-> > >  and interrupts could create inverse lock ordering between them.
-> > 
-> > [...]
-> > 
-> > > ---
-> > >  drivers/leds/led-triggers.c | 5 +++--
-> > >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/leds/led-triggers.c b/drivers/leds/led-triggers.c
-> > > index 91da90cfb11d..16d1a93a10a8 100644
-> > > --- a/drivers/leds/led-triggers.c
-> > > +++ b/drivers/leds/led-triggers.c
-> > > @@ -378,14 +378,15 @@ void led_trigger_event(struct led_trigger *trig,
-> > >  			enum led_brightness brightness)
-> > >  {
-> > >  	struct led_classdev *led_cdev;
-> > > +	unsigned long flags;
-> > >  
-> > >  	if (!trig)
-> > >  		return;
-> > >  
-> > > -	read_lock(&trig->leddev_list_lock);
-> > > +	read_lock_irqsave(&trig->leddev_list_lock, flags);
-> > >  	list_for_each_entry(led_cdev, &trig->led_cdevs, trig_list)
-> > >  		led_set_brightness(led_cdev, brightness);
-> > > -	read_unlock(&trig->leddev_list_lock);
-> > > +	read_unlock_irqrestore(&trig->leddev_list_lock, flags);
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(led_trigger_event);
-> > 
-> > meanwhile this patch hit v5.10.x stable and caused a performance
-> > degradation on our use case:
-> > 
-> > It's an embedded ARM system, 4x Cortex A53, with an SPI attached CAN
-> > controller. CAN stands for Controller Area Network and here used to
-> > connect to some automotive equipment. Over CAN an ISOTP (a CAN-specific
-> > Transport Protocol) transfer is running. With this patch, we see CAN
-> > frames delayed for ~6ms, the usual gap between CAN frames is 240µs.
-> > 
-> > Reverting this patch, restores the old performance.
-> > 
-> > What is the best way to solve this dilemma? Identify the critical path
-> > in our use case? Is there a way we can get around the irqsave in
-> > led_trigger_event()?
-> > 
+On Sat, Mar 06, 2021 at 09:29:09AM +0100, Thomas Bogendoerfer wrote:
+> BMIPS is one of the few platforms that do change the exception base.
+> After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
+> with kernel_end") we started seeing BMIPS boards fail to boot with the
+> built-in FDT being corrupted.
 > 
-> Probably, we can change from rwlock to rcu here, POC code as follow,
-> only compile tested. Marc, could you see whether this help the
-> performance on your platform? Please note that I haven't test it in a
-> running kernel and I'm not that familir with led subsystem, so use it
-> with caution ;-)
+> Before the cited commit, early allocations would be in the [kernel_end,
+> RAM_END] range, but after commit they would be within [RAM_START +
+> PAGE_SIZE, RAM_END].
+> 
+> The custom exception base handler that is installed by
+> bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
+> memory region allocated by unflatten_and_copy_device_tree() thus
+> corrupting the FDT used by the kernel.
+> 
+> To fix this, we need to perform an early reservation of the custom
+> exception space. So we reserve it already in cpu_probe() for the CPUs
+> where this is fixed. For CPU with an ebase config register allocation
+> of exception space will be done in trap_init().
+> 
+> Huge thanks to Serget for analysing and proposing a solution to this
+> issue.
+> 
+> Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
+> Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-If we don't want to touch the led subsystem at all maybe we could try to
-fix the problem in libata, we just need to prevent calling
-led_trigger_blink_oneshot() with &host->lock held from
-ata_qc_complete(), maybe doing the led blinking from another context (a
-workqueue for example)?
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
 
--Andrea
+> ---
+> Changes in v2:
+>  - do only memblock reservation in reserve_exception_space()
+>  - reserve 0..0x400 for all CPUs without ebase register and
+>    to addtional reserve_exception_space for BMIPS CPUs
+> 
+>  arch/mips/include/asm/traps.h    |  3 +++
+>  arch/mips/kernel/cpu-probe.c     |  7 +++++++
+>  arch/mips/kernel/cpu-r3k-probe.c |  3 +++
+>  arch/mips/kernel/traps.c         | 10 +++++-----
+>  4 files changed, 18 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
+> index 6aa8f126a43d..b710e76c9c65 100644
+> --- a/arch/mips/include/asm/traps.h
+> +++ b/arch/mips/include/asm/traps.h
+> @@ -24,8 +24,11 @@ extern void (*board_ebase_setup)(void);
+>  extern void (*board_cache_error_setup)(void);
+>  
+>  extern int register_nmi_notifier(struct notifier_block *nb);
+> +extern void reserve_exception_space(phys_addr_t addr, unsigned long size);
+>  extern char except_vec_nmi[];
+>  
+> +#define VECTORSPACING 0x100	/* for EI/VI mode */
+> +
+>  #define nmi_notifier(fn, pri)						\
+>  ({									\
+>  	static struct notifier_block fn##_nb = {			\
+> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+> index 9a89637b4ecf..b565bc4b900d 100644
+> --- a/arch/mips/kernel/cpu-probe.c
+> +++ b/arch/mips/kernel/cpu-probe.c
+> @@ -26,6 +26,7 @@
+>  #include <asm/elf.h>
+>  #include <asm/pgtable-bits.h>
+>  #include <asm/spram.h>
+> +#include <asm/traps.h>
+>  #include <linux/uaccess.h>
+>  
+>  #include "fpu-probe.h"
+> @@ -1628,6 +1629,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+>  		c->cputype = CPU_BMIPS3300;
+>  		__cpu_name[cpu] = "Broadcom BMIPS3300";
+>  		set_elf_platform(cpu, "bmips3300");
+> +		reserve_exception_space(0x400, VECTORSPACING * 64);
+>  		break;
+>  	case PRID_IMP_BMIPS43XX: {
+>  		int rev = c->processor_id & PRID_REV_MASK;
+> @@ -1638,6 +1640,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+>  			__cpu_name[cpu] = "Broadcom BMIPS4380";
+>  			set_elf_platform(cpu, "bmips4380");
+>  			c->options |= MIPS_CPU_RIXI;
+> +			reserve_exception_space(0x400, VECTORSPACING * 64);
+>  		} else {
+>  			c->cputype = CPU_BMIPS4350;
+>  			__cpu_name[cpu] = "Broadcom BMIPS4350";
+> @@ -1654,6 +1657,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+>  			__cpu_name[cpu] = "Broadcom BMIPS5000";
+>  		set_elf_platform(cpu, "bmips5000");
+>  		c->options |= MIPS_CPU_ULRI | MIPS_CPU_RIXI;
+> +		reserve_exception_space(0x1000, VECTORSPACING * 64);
+>  		break;
+>  	}
+>  }
+> @@ -2133,6 +2137,9 @@ void cpu_probe(void)
+>  	if (cpu == 0)
+>  		__ua_limit = ~((1ull << cpu_vmbits) - 1);
+>  #endif
+> +
+> +	if (cpu_has_mips_r2_r6)
+> +		reserve_exception_space(0, 0x400);
+>  }
+>  
+>  void cpu_report(void)
+> diff --git a/arch/mips/kernel/cpu-r3k-probe.c b/arch/mips/kernel/cpu-r3k-probe.c
+> index abdbbe8c5a43..af654771918c 100644
+> --- a/arch/mips/kernel/cpu-r3k-probe.c
+> +++ b/arch/mips/kernel/cpu-r3k-probe.c
+> @@ -21,6 +21,7 @@
+>  #include <asm/fpu.h>
+>  #include <asm/mipsregs.h>
+>  #include <asm/elf.h>
+> +#include <asm/traps.h>
+>  
+>  #include "fpu-probe.h"
+>  
+> @@ -158,6 +159,8 @@ void cpu_probe(void)
+>  		cpu_set_fpu_opts(c);
+>  	else
+>  		cpu_set_nofpu_opts(c);
+> +
+> +	reserve_exception_space(0, 0x400);
+>  }
+>  
+>  void cpu_report(void)
+> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+> index e0352958e2f7..808b8b61ded1 100644
+> --- a/arch/mips/kernel/traps.c
+> +++ b/arch/mips/kernel/traps.c
+> @@ -2009,13 +2009,16 @@ void __noreturn nmi_exception_handler(struct pt_regs *regs)
+>  	nmi_exit();
+>  }
+>  
+> -#define VECTORSPACING 0x100	/* for EI/VI mode */
+> -
+>  unsigned long ebase;
+>  EXPORT_SYMBOL_GPL(ebase);
+>  unsigned long exception_handlers[32];
+>  unsigned long vi_handlers[64];
+>  
+> +void reserve_exception_space(phys_addr_t addr, unsigned long size)
+> +{
+> +	memblock_reserve(addr, size);
+> +}
+> +
+>  void __init *set_except_vector(int n, void *addr)
+>  {
+>  	unsigned long handler = (unsigned long) addr;
+> @@ -2367,10 +2370,7 @@ void __init trap_init(void)
+>  
+>  	if (!cpu_has_mips_r2_r6) {
+>  		ebase = CAC_BASE;
+> -		ebase_pa = virt_to_phys((void *)ebase);
+>  		vec_size = 0x400;
+> -
+> -		memblock_reserve(ebase_pa, vec_size);
+>  	} else {
+>  		if (cpu_has_veic || cpu_has_vint)
+>  			vec_size = 0x200 + VECTORSPACING*64;
+> -- 
+> 2.29.2
+> 
+
+-- 
+Sincerely yours,
+Mike.
