@@ -2,185 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA1332FE96
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 04:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9895132FE9E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 05:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhCGDqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 22:46:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbhCGDqD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 22:46:03 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAF4C06175F
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 19:46:03 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id m22so13602834lfg.5
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 19:46:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AK42aRGGlm/OwUAIuhucFNHyVgULs1imdF3+9v0RPss=;
-        b=Od2sV+XL9dGBoMe9POd50mG8LzJC512QQXHmO81U27GfgmPEhF34q6AqrDA9r8k0Yd
-         peUUq+yqmbfOckVB2is5/u2tK2nfPuelbHUK9xvG6+Xe5tjWDoTGVMhuMERtgFsLOEPQ
-         EArmVnh15DuxPm1HUuXcSLhAWLmCrPp6e7Gogx4wrzBc85+52Gpx1swUu4MERHz14uAD
-         bW1Ss8o2HbYs6LawyIxuRFdt5hdrRJjYm8xH7mkfKu7jf8xlqvSA40ZHWbLdp21k4f8a
-         czleOcwq1m08z1RN8Dz3r6CybxVIr9PF0Td0kZ3XhSRCDj7GLIEiJtVIOm7qNquV1Dff
-         Nglw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AK42aRGGlm/OwUAIuhucFNHyVgULs1imdF3+9v0RPss=;
-        b=lO2Jrk1gfbFst9gn51PFVLB/c9l2tJ1yZ80mJywehyqiJHfE3zEjZ5D+LYMudp3BQh
-         GCxQWf1dwt2L0fqEVb01Rt4h8vcrlhdJwAuNpxz2++oZ1mvgOp9ZkKJMXkuUB5aqL425
-         tcg6l/F4TAWMWDaVs/Rl7fOBE+ArK1tMPTDOME+HmUOhIdrzbZV4hUlBjK318BccDP5M
-         kL+JjM2ihFq5z8Kw5YVNh9KkIcKHolz4HQx/t/l0eezhiZZdJtYzNVJDlLd2SAjrv/TT
-         pkTKI1AZ2/W0D5lx87t11qEXSf0l1GctPq9e+nX8GgU2l0RqUF13KMgz/Cc4m1lp419f
-         frpw==
-X-Gm-Message-State: AOAM5305yTkGAJqyh1EZgk2nBRrfarsaLVzt3gOCyGStVLOh1RCV+hr/
-        xxrnZIXj61amC85dcDIY+Wb7ri41LEFhaY3/r8otwGXa3PE=
-X-Google-Smtp-Source: ABdhPJxRKFoNmd92l+KRp5t2vy9zd1/V7LfqWmVyfpZjV8w8pdakYgr48HMBAWRHVDUXwnNEly1gYfskwlCIa4SYA30=
-X-Received: by 2002:a05:6512:234d:: with SMTP id p13mr10162815lfu.87.1615088761838;
- Sat, 06 Mar 2021 19:46:01 -0800 (PST)
+        id S230087AbhCGEC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 23:02:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229964AbhCGEBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 23:01:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 196FE64FEB;
+        Sun,  7 Mar 2021 04:01:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615089713;
+        bh=RVWHB8itdn+TcxVFpUu5BV0AuAsgQxOtiV96uubNodw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qPP0d8hSwaPHZcJmpohMDYr2ylW86uSMo5rzI9MoZd3jAzF+/rd2AQ+NMVqM1+r9i
+         FRAQyOOJ9uN4O4ZI0TUag4SsgwmcftDWhis6qRvpbiPETe1G5+SHZvzocea724bYaT
+         OLvzCkFfkiNzmnydowkad9xjdCogBN9Rn21vMAy+9ULI5QYg/QcbQIH+Tt28jMS17g
+         tx04ynbk5BxdDsadfG1xmLc+mCgVm+eNcp5FK0sZXTdnAsDb2ry06OPFehToS2X6xl
+         u4z8ToedUo5ahsSbDLUyUeoH2S30EWTqNlavpXnRSsua6X6Sjz2XdwVWe9Ni53cOi0
+         +hvhDyAqPnbiw==
+Date:   Sun, 7 Mar 2021 12:01:42 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Pawel Laszczak <pawell@cadence.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jacob Wen <jian.w.wen@oracle.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 0/2] tracing: Detect unsafe dereferencing of pointers
+ from trace events
+Message-ID: <20210307040142.GA2930@b29397-desktop>
+References: <20210226185909.100032746@goodmis.org>
+ <CAHk-=wiWF=ah_q1HBVUth2vuBx2TieN8U331y5FhXiehX-+=TQ@mail.gmail.com>
+ <20210227141802.5c9aca91@oasis.local.home>
+ <20210227190831.56956c80@oasis.local.home>
+ <BYAPR07MB5381637CFA12C3988CA06550DD9A9@BYAPR07MB5381.namprd07.prod.outlook.com>
+ <20210302082355.GA8633@nchen>
+ <20210302095605.7b2881cd@gandalf.local.home>
 MIME-Version: 1.0
-References: <20210307022446.63732-1-guoren@kernel.org> <20210307022446.63732-2-guoren@kernel.org>
-In-Reply-To: <20210307022446.63732-2-guoren@kernel.org>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Sun, 7 Mar 2021 09:15:49 +0530
-Message-ID: <CAAhSdy16JtDj81iXgXTY=n2i-svvR4u8y=1WxmxwZgAPNiH7cQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] riscv: Enable generic clockevent broadcast
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Greentime Hu <greentime.hu@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302095605.7b2881cd@gandalf.local.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 7, 2021 at 7:55 AM <guoren@kernel.org> wrote:
->
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> When percpu-timers are stopped by deep power saving mode, we
-> need system timer help to broadcast IPI_TIMER.
->
-> This is first introduced by broken x86 hardware, where the local apic
-> timer stops in C3 state. But many other architectures(powerpc, mips,
-> arm, hexagon, openrisc, sh) have supported the infrastructure to
-> deal with Power Management issues.
->
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Anup Patel <anup.patel@wdc.com>
-> Cc: Atish Patra <atish.patra@wdc.com>
-> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> Cc: Greentime Hu <greentime.hu@sifive.com>
+On 21-03-02 09:56:05, Steven Rostedt wrote:
+> On Tue, 2 Mar 2021 16:23:55 +0800
+> Peter Chen <peter.chen@kernel.org> wrote:
+> 
+> s it looks like it uses %pa which IIUC from the printk code, it
+> > > >> dereferences the pointer to find it's virtual address. The event has
+> > > >> this as the field:
+> > > >>
+> > > >>                 __field(struct cdns3_trb *, start_trb_addr)
+> > > >>
+> > > >> Assigns it with:
+> > > >>
+> > > >>                 __entry->start_trb_addr = req->trb;
+> > > >>
+> > > >> And prints that with %pa, which will dereference pointer at the time of
+> > > >> reading, where the address in question may no longer be around. That
+> > > >> looks to me as a potential bug.  
+> > 
+> > Steven, thanks for reporting. Do you mind sending patch to fix it?
+> > If you have no time to do it, I will do it later.
+> > 
+> 
+> I would have already fixed it, but I wasn't exactly sure how this is used.
+> 
+> In Documentation/core-api/printk-formats.rst we have:
+> 
+>    Physical address types phys_addr_t
+>    ----------------------------------
+> 
+>    ::
+> 
+>            %pa[p]  0x01234567 or 0x0123456789abcdef
+> 
+>    For printing a phys_addr_t type (and its derivatives, such as
+>    resource_size_t) which can vary based on build options, regardless of the
+>    width of the CPU data path.
+> 
+> So it only looks like it is used to for the size of the pointer.
+> 
+> I guess something like this might work:
+> 
+> diff --git a/drivers/usb/cdns3/cdns3-trace.h b/drivers/usb/cdns3/cdns3-trace.h
+> index 8648c7a7a9dd..d3b8624fc427 100644
+> --- a/drivers/usb/cdns3/cdns3-trace.h
+> +++ b/drivers/usb/cdns3/cdns3-trace.h
+> @@ -214,7 +214,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
+>  		__field(int, no_interrupt)
+>  		__field(int, start_trb)
+>  		__field(int, end_trb)
+> -		__field(struct cdns3_trb *, start_trb_addr)
+> +		__field(phys_addr_t, start_trb_addr)
+>  		__field(int, flags)
+>  		__field(unsigned int, stream_id)
+>  	),
+> @@ -230,7 +230,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
+>  		__entry->no_interrupt = req->request.no_interrupt;
+>  		__entry->start_trb = req->start_trb;
+>  		__entry->end_trb = req->end_trb;
+> -		__entry->start_trb_addr = req->trb;
+> +		__entry->start_trb_addr = *(const phys_addr_t *)req->trb;
+>  		__entry->flags = req->flags;
+>  		__entry->stream_id = req->request.stream_id;
+>  	),
+> @@ -244,7 +244,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
+>  		__entry->status,
+>  		__entry->start_trb,
+>  		__entry->end_trb,
+> -		__entry->start_trb_addr,
+> +		/* %pa dereferences */ &__entry->start_trb_addr,
+>  		__entry->flags,
+>  		__entry->stream_id
+>  	)
+> 
+> 
+> Can you please test it? I don't have the hardware, but I also want to make
+> sure I don't break anything.
+> 
+> Thanks,
+> 
 
-Looks good to me.
+Since the virtual address for req->trb is NULL before using it. It will
+trigger below oops using your change. There is already index
+(start_trb/end_trb) for which TRB it has handled, it is not necessary
+to trace information for its physical address. I decide to delete this
+trace entry, thanks for reporting it.
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+[   61.695160] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+[   61.704066] Mem abort info:
+[   61.706910]   ESR = 0x96000006
+[   61.710000]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   61.715339]   SET = 0, FnV = 0
+[   61.718416]   EA = 0, S1PTW = 0
+[   61.721575] Data abort info:
+[   61.724482]   ISV = 0, ISS = 0x00000006
+[   61.728323]   CM = 0, WnR = 0
+[   61.731324] user pgtable: 4k pages, 48-bit VAs, pgdp=00000008856dd000
+[   61.737816] [0000000000000000] pgd=000000088577a003, p4d=000000088577a003, pud=000000088477c003, pmd=0000000000000000
+[   61.748532] Internal error: Oops: 96000006 [#1] PREEMPT SMP
 
-Regards,
-Anup
+[   61.754113] Modules linked in: fsl_jr_uio caam_jr caamkeyblob_desc caamhash_desc caamalg_desc crypto_engine rng_core authenc libdes crct10dif_ce mxc_jpeg_encdec imx8_media_dev(C) caam error
+Message from syslogd@imx8qmmek at Fri Jul 10 06:52:44 2020 ...
+imx8qmmek kernel: [   61.748532] Internal error: Oops: 96000006 [#1] PREEMPT SMP
+[   61.784245] CPU: 3 PID: 188 Comm: 1-0050 Tainted: G         C        5.10.0-rc7-04451-gfcfe23a5424-dirty #3
+[   61.793993] Hardware name: Freescale i.MX8QXP MEK (DT)
+[   61.799139] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
+[   61.805162] pc : trace_event_raw_event_cdns3_log_request+0xf4/0x170
+[   61.811440] lr : trace_event_raw_event_cdns3_log_request+0x94/0x170
+[   61.817707] sp : ffff80001387ba40
+[   61.821019] x29: ffff80001387ba40 x28: 0000000000000002 
+[   61.826336] x27: ffff000801e20080 x26: ffff000800e5c8c8 
+[   61.831652] x25: ffff0008044e0c00 x24: ffff000800505308 
+[   61.836969] x23: ffff800012464000 x22: 0000000000040050 
+[   61.842286] x21: ffff000801e0aa00 x20: ffff0008002e7f18 
+[   61.847603] x19: ffff000805131300 x18: 0000000000000000 
+[   61.852919] x17: 0000000000000000 x16: 0000000000000000 
+[   61.858245] x15: ffff00080081ca78 x14: ffffffffffffffff 
+[   61.863570] x13: ffff800012404778 x12: 0000000000000018 
+[   61.868896] x11: 0101010101010101 x10: 7f7f7f7f7f7f7f7f 
+[   61.874213] x9 : fefefefeff2f6f64 x8 : ffffffffffffffff 
+[   61.879529] x7 : ffff8000122b05b8 x6 : 0000000000000001 
+[   61.884846] x5 : 0000000000000020 x4 : 0000000000000000 
+[   61.890163] x3 : 0000000000000000 x2 : 0000000000000004 
+[   61.895479] x1 : 0000000000000000 x0 : ffff80001387ba70 
+[   61.900806] Call trace:
+[   61.903260]  trace_event_raw_event_cdns3_log_request+0xf4/0x170
+[   61.909183]  __traceiter_cdns3_free_request+0x34/0x50
+[   61.914241]  cdns3_gadget_ep_free_request+0xa8/0xd8
+[   61.919123]  usb_ep_free_request+0x34/0xd8
+[   61.923223]  composite_dev_cleanup+0xd0/0x170
+[   61.927583]  configfs_composite_unbind+0x68/0xa0
+[   61.932205]  usb_gadget_remove_driver+0x4c/0xd0
+[   61.936737]  usb_del_gadget+0x6c/0xc8
+[   61.940404]  cdns3_gadget_exit+0x4c/0x120
+[   61.944420]  cdns3_role_stop+0x60/0x90
+[   61.948174]  cdns3_role_set+0x64/0xe0
+[   61.951841]  usb_role_switch_set_role.part.0+0x3c/0x90
+[   61.956984]  usb_role_switch_set_role+0x20/0x30
+[   61.961519]  tcpm_mux_set+0x60/0x80
+[   61.965008]  tcpm_reset_port+0xa4/0x108
+[   61.968851]  tcpm_detach+0x6c/0xa0
+[   61.972256]  tcpm_state_machine_work+0x13e0/0x24a0
+[   61.977052]  kthread_worker_fn+0x9c/0x168
+[   61.981064]  kthread+0x148/0x168
+[   61.984296]  ret_from_fork+0x10/0x18
+[   61.987881] Code: b9003a81 b9407661 b9003e81 f9403661 (f9400021) 
+[   61.993983] ---[ end trace c8f1af57d3c61281 ]---
+[   61.998669] note: 1-0050[188] exited with preempt_count 2
 
-> ---
->  arch/riscv/Kconfig      |  2 ++
->  arch/riscv/kernel/smp.c | 16 ++++++++++++++++
->  2 files changed, 18 insertions(+)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 85d626b8ce5e..8637e7344abe 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -28,6 +28,7 @@ config RISCV
->         select ARCH_HAS_SET_DIRECT_MAP
->         select ARCH_HAS_SET_MEMORY
->         select ARCH_HAS_STRICT_KERNEL_RWX if MMU
-> +       select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
->         select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
->         select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
->         select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
-> @@ -39,6 +40,7 @@ config RISCV
->         select EDAC_SUPPORT
->         select GENERIC_ARCH_TOPOLOGY if SMP
->         select GENERIC_ATOMIC64 if !64BIT
-> +       select GENERIC_CLOCKEVENTS_BROADCAST if SMP
->         select GENERIC_EARLY_IOREMAP
->         select GENERIC_GETTIMEOFDAY if HAVE_GENERIC_VDSO
->         select GENERIC_IOREMAP
-> diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-> index ea028d9e0d24..8325d33411d8 100644
-> --- a/arch/riscv/kernel/smp.c
-> +++ b/arch/riscv/kernel/smp.c
-> @@ -9,6 +9,7 @@
->   */
->
->  #include <linux/cpu.h>
-> +#include <linux/clockchips.h>
->  #include <linux/interrupt.h>
->  #include <linux/module.h>
->  #include <linux/profile.h>
-> @@ -27,6 +28,7 @@ enum ipi_message_type {
->         IPI_CALL_FUNC,
->         IPI_CPU_STOP,
->         IPI_IRQ_WORK,
-> +       IPI_TIMER,
->         IPI_MAX
->  };
->
-> @@ -176,6 +178,12 @@ void handle_IPI(struct pt_regs *regs)
->                         irq_work_run();
->                 }
->
-> +#ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
-> +               if (ops & (1 << IPI_TIMER)) {
-> +                       stats[IPI_TIMER]++;
-> +                       tick_receive_broadcast();
-> +               }
-> +#endif
->                 BUG_ON((ops >> IPI_MAX) != 0);
->
->                 /* Order data access and bit testing. */
-> @@ -192,6 +200,7 @@ static const char * const ipi_names[] = {
->         [IPI_CALL_FUNC]         = "Function call interrupts",
->         [IPI_CPU_STOP]          = "CPU stop interrupts",
->         [IPI_IRQ_WORK]          = "IRQ work interrupts",
-> +       [IPI_TIMER]             = "Timer broadcast interrupts",
->  };
->
->  void show_ipi_stats(struct seq_file *p, int prec)
-> @@ -217,6 +226,13 @@ void arch_send_call_function_single_ipi(int cpu)
->         send_ipi_single(cpu, IPI_CALL_FUNC);
->  }
->
-> +#ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
-> +void tick_broadcast(const struct cpumask *mask)
-> +{
-> +       send_ipi_mask(mask, IPI_TIMER);
-> +}
-> +#endif
-> +
->  void smp_send_stop(void)
->  {
->         unsigned long timeout;
-> --
-> 2.25.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+-- 
+
+Thanks,
+Peter Chen
+
