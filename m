@@ -2,70 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB4132FE63
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 02:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2313332FE66
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 02:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhCGBpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 20:45:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35916 "EHLO
+        id S230118AbhCGBqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 20:46:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbhCGBpD (ORCPT
+        with ESMTP id S230134AbhCGBqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 20:45:03 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AD8C06174A;
-        Sat,  6 Mar 2021 17:45:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yowjMpguvRVlCMfZy2mi35DmOW+KXVYAeHTatHqiuns=; b=vGo2+wxf5JmJlFh/XZ6miai8Wi
-        8aICtqLNrH4RIF5V28A6T/rAx8C9J/dJ0b4V/UBHfgvV29nS6zY0FJQ4ufT3BXIrqwrQWqdw9BwEN
-        /CaFPWmaaxPH60z+CCc2pBThp6YbCwKHUJ0qVA8WiUr49yLaHECVEHRMYQL58KcOp1z0tBFRtoRwY
-        ltxt06yXYkI4IGZviO66PGQYfRO25UyjmaLHu+6T0ttu+6FjD2wwJ/1OQbJlSVt4wtir9hjHxQKRP
-        XvMKBJY7E79er1xDp1mnxXHPDp8Lg44XI0ssKyNg2UO6T5Kc4P+JLJhn9yZSKaMN+3mrYOuph2+Fj
-        AlWcVF8g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lIiTN-00Dlko-70; Sun, 07 Mar 2021 01:44:48 +0000
-Date:   Sun, 7 Mar 2021 01:44:45 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Wren Turkal <wt@penguintechs.org>
+        Sat, 6 Mar 2021 20:46:35 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE9EC06175F
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 17:46:35 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id t29so4749526pfg.11
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 17:46:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=penguintechs.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eIq+GxVtZxarjQGt9ar6dChG4GoMdEL7HfKpoddXB5w=;
+        b=SzWFkGKrayAtI9lJUISvwrA1/pqIH3r4tIVebwx79MAbKzn3gScTuBcZr2U/Axvw30
+         3zUUGfXqOsc5lOhyIhOS5wVpgc6SU7koqRXRPUpHFK1Y9JXQg1pUd/SY0hmR2cE+/YpL
+         oi368sfnuMZbeQXgXUuxq/ajNlRmx8jylFjww=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eIq+GxVtZxarjQGt9ar6dChG4GoMdEL7HfKpoddXB5w=;
+        b=KH9eUlGBeGnKwBCJVMHrsmlHeH7O/dVO3QarbVtVBfONyWLiTieakIRP5BhVHwIHpZ
+         M451mwuM7HBjVvsKFe1fTEMKtzYpYkUt6HxgGeQfE2EjTBjsMl4pXQz1sMBCv7DkJGe8
+         Xw0FUOeY8egDX7+ggJlNlYd5/0K2j3w7c23XE8CIK2og1ORgDHYde/owzRGJQWZRzZ10
+         u9tP8ciOUGEcSPzOqzTHC9njCYxlSevtwKfsL1egiXE7jbudEZSwD+B/VcVuxPZJL2A0
+         hrJMxKwIAiOLG2KeLrtInoOCPwDuhFKh+cu1IlV3lMJTZ3mezHvcphfmocHUOJoTD8kH
+         7yWQ==
+X-Gm-Message-State: AOAM530bgxLzufCAxFu4+AaOF4HEDHRgVnxJQkli/C5mNNCsySP5PMuo
+        UIq9APSduV+MaOrwQ6MWt8XA1Zvph/Vy2g==
+X-Google-Smtp-Source: ABdhPJxvOId0xV4z5En2NoX4D88nEpafSAWG3lFdNrujJKbKDZowLVaivo8Q6ydJqkIiPsTlhzNFGg==
+X-Received: by 2002:a63:ee4e:: with SMTP id n14mr14862459pgk.422.1615081594653;
+        Sat, 06 Mar 2021 17:46:34 -0800 (PST)
+Received: from braindead.localdomain (c-71-202-115-154.hsd1.ca.comcast.net. [71.202.115.154])
+        by smtp.gmail.com with ESMTPSA id 35sm6053061pgm.64.2021.03.06.17.46.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Mar 2021 17:46:34 -0800 (PST)
+Subject: Re: [PATCH] Expose the bus kernel docs to the build docs.
+To:     Matthew Wilcox <willy@infradead.org>
 Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Expose the bus kernel docs to the build docs.
-Message-ID: <20210307014445.GT2723601@casper.infradead.org>
 References: <20210307013301.39420-1-wt@penguintechs.org>
+ <20210307014445.GT2723601@casper.infradead.org>
+From:   Wren Turkal <wt@penguintechs.org>
+Message-ID: <80cc4102-2abd-21e8-2140-a54919da3f3d@penguintechs.org>
+Date:   Sat, 6 Mar 2021 17:46:33 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210307013301.39420-1-wt@penguintechs.org>
+In-Reply-To: <20210307014445.GT2723601@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 06, 2021 at 05:33:01PM -0800, Wren Turkal wrote:
-> Before, the bus type related APIs that were defined in the
-> include/linux/device/bus.h were not referenced anywhere in the docs, so
-> I linked it to the bus types api documentation.
+Thanks for the feedback. I will cut another patch in a sec.
 
-I think this is a good thing to do.
-
-> +++ b/Documentation/driver-api/driver-model/bus.rst
-> @@ -144,3 +144,5 @@ sysfs directory using::
->  
->  	int bus_create_file(struct bus_type *, struct bus_attribute *);
->  	void bus_remove_file(struct bus_type *, struct bus_attribute *);
-> +
-> +.. kernel-doc:: include/linux/device/bus.h
-
-Do you want to put a heading in front of it?  I did this in xarray.rst:
-
-Functions and structures
-========================
-
-.. kernel-doc:: include/linux/xarray.h
-.. kernel-doc:: lib/xarray.c
-
-Also, I see that drivers/base/bus.c is included in
-driver-api/infrastructure.rst, and I feel that they should probably be
-included together?
+On 3/6/21 5:44 PM, Matthew Wilcox wrote:
+> Do you want to put a heading in front of it?  I did this in xarray.rst:
+> 
+> Functions and structures
+> ========================
+> 
+> .. kernel-doc:: include/linux/xarray.h
+> .. kernel-doc:: lib/xarray.c
+> 
+> Also, I see that drivers/base/bus.c is included in
+> driver-api/infrastructure.rst, and I feel that they should probably be
+> included together?
