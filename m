@@ -2,62 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B68A3304E0
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 22:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E29B33304E2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 22:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbhCGVbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 16:31:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233026AbhCGVa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 16:30:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id BBB316516B;
-        Sun,  7 Mar 2021 21:30:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615152657;
-        bh=QnqDPVdIxTJC/1EGVfHIK2yKKOr3FQROSMIT8VqU3CY=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=eo+YDQ3BpuKE2lNxjeHJL/jKU20LUwnoteAq2MmnTZ9LH15xmeyhGH82upWP3kP8Q
-         gmk51UcrURro3QO8LABzRXsSoxNQEPb5VD4nExdIM1zFV3g/WLRvhyb0t7bRyvZh5l
-         bKb4xLSKzA/MJUa3lD8orSTII5uGO8EyXlSIclOEbfW2q7c0lX/joHrKRVkTSpvvbH
-         hhKZCesZ8zf+v4VwzRVVWudnCdRV5nOvYeU8htSBlT6vsNTNt3w5IJJ6gkfjNYM2jA
-         0N02mDn2sulnC3I3x6nNUbulJYY17t2BPPJL9icWabq5NkTXuk5xv3m4txJrHp2WBp
-         26WSCrw2J2SNw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B62F8609DB;
-        Sun,  7 Mar 2021 21:30:57 +0000 (UTC)
-Subject: Re: [GIT PULL] m68k updates for 5.12 (take two)
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210307100731.2066899-1-geert@linux-m68k.org>
-References: <20210307100731.2066899-1-geert@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210307100731.2066899-1-geert@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.12-tag2
-X-PR-Tracked-Commit-Id: a65a802aadba072ca7514fc0c301fd7fdc6fc6cb
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: dac518707880617a2beaffc01fb1d7adf4b8008a
-Message-Id: <161515265774.2708.18273760352522911050.pr-tracker-bot@kernel.org>
-Date:   Sun, 07 Mar 2021 21:30:57 +0000
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
+        id S233150AbhCGVs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 16:48:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231266AbhCGVrL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 16:47:11 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA94BC06174A;
+        Sun,  7 Mar 2021 13:47:10 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id h4so5149228pgf.13;
+        Sun, 07 Mar 2021 13:47:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=3B6siShC2ayMTKco0+z1NtZdv0XwsxfaVD6JNO12DmU=;
+        b=JdNdGw/wZ+9sNlvZGgZE8k3YImQ3vFF2joCMrpDwCyvYCiGn/PKncm/HpXF8uRH7Si
+         WB6m/Sjo++MKoX5/8j2gzlwiRbXj2gzCe4W8KSoCpG+Im0KUGpJZaNk+k+frkqKJBFKC
+         Yo3ptRCSacg0GhUE6Pilr39BEK1e9ZLOMz56ne054+OAhU2QzGP4RTzw0XQQvxfi9cFI
+         GH6bZiVcxrjyqfgZmy3J8nYIgXSdAZp01GGNFu9tgoUQoCf29Bki2KBXRy9bxTrMasXN
+         1LspEEIJYJszP3zX+AFowaFaNdF+G+dqI1MeiKylIWngdq9YaQEElJ0KXQFlLzcliyep
+         wwiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3B6siShC2ayMTKco0+z1NtZdv0XwsxfaVD6JNO12DmU=;
+        b=SQ/o8srpU0a2cz/N1PRdlyW0lCsqj9v3dsKLPEhxuHRbnjupSdvc6bK/25LsjrqHoh
+         v064jTVxlFDeQRIximgwqSQfZ+EbbdyBwaXdJroGEUIXVxEuCqHy3/UTG/vBPmYzDO6E
+         0QtsNsaqUZNc/CU5CeLCtUe/llPMaOewDfpOMBgUG8Pbf/kUnbpFy2/S76dEPRS9o4RR
+         XnKTA3OpnArDUn07xqgOpMwCKZRV4nXWYfnubUyFrRpjcwkMDW6WhnlA22AjRfZLVIwl
+         PdYQwxdQGvW9GxAcwtzeOU4pGAVDJ1ESZZimn4/cBlJqO8DraMGfoTdF++MTBLMvw9JO
+         Uvcg==
+X-Gm-Message-State: AOAM53156M6n03phxvTt5pVqSzZ2ZJ3t/k+Iy5lfGEp+wh4nRtcfCZBk
+        nQnCa2K/BA6SHR3ksZjbYAM=
+X-Google-Smtp-Source: ABdhPJw31pTckJKQMyWNpB9meF02ZSL4sNDBn6oqml+CLSMDkJ39dGORr4JcwM1Iqb0XnpSPMTKRKg==
+X-Received: by 2002:a63:5549:: with SMTP id f9mr18659232pgm.28.1615153629968;
+        Sun, 07 Mar 2021 13:47:09 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:bc9b:5ab2:d763:15bc])
+        by smtp.gmail.com with ESMTPSA id k11sm7864307pfc.22.2021.03.07.13.47.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 13:47:08 -0800 (PST)
+Date:   Sun, 7 Mar 2021 13:47:06 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     od@zcrc.me, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] input: gpio-keys: Use hrtimer for software debounce
+Message-ID: <YEVJ2l7zGhX3AryQ@google.com>
+References: <20210305170111.214782-1-paul@crapouillou.net>
+ <20210305170111.214782-3-paul@crapouillou.net>
+ <YEJ57PuEyYknR3MF@google.com>
+ <79IIPQ.DQ7JNXZ0OI5Q2@crapouillou.net>
+ <YEU1irDqZJCdCS0o@google.com>
+ <UUAMPQ.MF37I5G7AY0J2@crapouillou.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <UUAMPQ.MF37I5G7AY0J2@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun,  7 Mar 2021 11:07:31 +0100:
+On Sun, Mar 07, 2021 at 09:11:18PM +0000, Paul Cercueil wrote:
+> Hi Dmitry,
+> 
+> Le dim. 7 mars 2021 à 12:20, Dmitry Torokhov <dmitry.torokhov@gmail.com> a
+> écrit :
+> > On Fri, Mar 05, 2021 at 08:00:43PM +0000, Paul Cercueil wrote:
+> > >  Hi Dmitry,
+> > > 
+> > >  Le ven. 5 mars 2021 à 10:35, Dmitry Torokhov
+> > > <dmitry.torokhov@gmail.com> a
+> > >  écrit :
+> > >  > Hi Paul,
+> > >  >
+> > >  > On Fri, Mar 05, 2021 at 05:01:11PM +0000, Paul Cercueil wrote:
+> > >  > >  -static void gpio_keys_gpio_work_func(struct work_struct *work)
+> > >  > >  +static enum hrtimer_restart gpio_keys_debounce_timer(struct
+> > >  > > hrtimer *t)
+> > >  > >   {
+> > >  > >  -	struct gpio_button_data *bdata =
+> > >  > >  -		container_of(work, struct gpio_button_data, work.work);
+> > >  > >  +	struct gpio_button_data *bdata = container_of(t,
+> > >  > >  +						      struct gpio_button_data,
+> > >  > >  +						      debounce_timer);
+> > >  > >
+> > >  > >   	gpio_keys_gpio_report_event(bdata);
+> > >  >
+> > >  > I am not sure how this works. As far as I know, even
+> > >  > HRTIMER_MODE_REL_SOFT do not allow sleeping in the timer
+> > > handlers, and
+> > >  > gpio_keys_gpio_report_event() use sleeping variant of GPIOD API
+> > > (and
+> > >  > that is not going to change).
+> > > 
+> > >  Quoting <linux/hrtimers.h>, the "timer callback will be executed in
+> > > soft irq
+> > >  context", so sleeping should be possible.
+> > 
+> > I am afraid you misunderstand what soft irq context is, as softirqs and
+> > tasklets still run in interrupt context and therefore can not sleep,
+> > only code running in process context may sleep.
+> 
+> I probably do. My understanding of "softirq" is that the callback runs in a
+> threaded interrupt handler.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.12-tag2
+No, you are thinking about threaded interrupts, which are separate
+beasts. Softirqs are traditional bottom halfs that run after exit of
+hard interrupt, but still are non-preemptible so sleeping is not
+allowed.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/dac518707880617a2beaffc01fb1d7adf4b8008a
+> 
+> > You can test it yourself by sticking "msleep(1)" in
+> > gpio_keys_debounce_timer() and see if you will get "scheduling while
+> > atomic" in logs.
+> 
+> I tested it, it locks up.
+> 
+> > > 
+> > >  But I guess in this case I can use HRTIMER_MODE_REL.
+> > 
+> > This changes selected clock source, but has no effect on whether timer
+> > handler can sleep or not.
+> > 
+> > > 
+> > >  > It seems to me that if you want to use software debounce in gpio
+> > > keys
+> > >  > driver you need to set up sufficiently high HZ for your system.
+> > > Maybe we
+> > >  > could thrown a warning when we see low debounce delay and low HZ
+> > > to
+> > >  > alert system developer.
+> > > 
+> > >  This is exactly what we should not do. I certainly don't want to
+> > > have 250+
+> > >  timer interrupts per second just so that input events aren't lost,
+> > > to work
+> > >  around a sucky debounce implementation. Besides, if you consider the
+> > >  hrtimers doc (Documentation/timers/hrtimers.rst), hrtimers really
+> > > are what
+> > >  should be used here.
+> > 
+> > I explained why they can't. They could be if you restrict gpio_keys to
+> > only be used with GPIOs that do not require sleep to read their state,
+> > but I am not willing to accept such restriction. You either need to have
+> > longer debounce, higher HZ, or see if you can use GPIO controller that
+> > supports debounce handling. See also if you can enable dynamic
+> > ticks/NO_HZ to limit number of timer interrupts on idle system.
+> 
+> We can also use the hrtimer approach if the GPIO doesn't require sleep, and
+> fall back to the standard timer if it does. It's possible to detect that
+> with gpiod_cansleep(). The diff would be pretty slim. Would you accept
+> something like that?
+> 
+> Switching from HZ=250 to HZ=24 leads to a 3% overall performance increase
+> across all apps on our system, so a pretty big optimization, and this is the
+> only blocker.
 
-Thank you!
+Let me take a look at the updated patch and we will see.
+
+Thanks.
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Dmitry
