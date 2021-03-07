@@ -2,200 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570EB33000E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 11:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51388330011
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 11:18:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbhCGKNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 05:13:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59632 "EHLO
+        id S230070AbhCGKR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 05:17:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231521AbhCGKM6 (ORCPT
+        with ESMTP id S231610AbhCGKRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 05:12:58 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F821C06174A;
-        Sun,  7 Mar 2021 02:12:58 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id r15-20020a05600c35cfb029010e639ca09eso2003665wmq.1;
-        Sun, 07 Mar 2021 02:12:58 -0800 (PST)
+        Sun, 7 Mar 2021 05:17:25 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D52C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 02:17:24 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id h9so5417056qtq.7
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 02:17:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3TyMkmxOQJC06CnnXdLtP1kErcHt4cRYBk9nQQy+GeI=;
-        b=uxyeYM8AUgSlp920JR9NYDFKLPqhUH5yf9AsNbuMlXsJLnAr+ez8kZbh7dpd9E3b0L
-         yUCIs5vlLGCf6z+wNoJxf5ZxQaSNZDi1TCzmVVxzb0WlBTXa3WwEh2+qPcAwwKywgPPD
-         nBYnkKZ1vY+USShFP/OYIRGnVEuNhJw584SajEYHplJgL/G6GlZ5SpjYB/1CeNY19WJS
-         14wtWsu27Z579i33uS07F9Z1UyZp19xXqJCKn5hyV8KoueIkp4K44/+4MipR2NsUqI82
-         F9wlLuXGSPK4L0NhGPgVMIG0+jpLhRcQv578EKuIegRw2EBFV2es2DGBRls5qMjhH+03
-         YWrw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Sel+nftChg+kM2jOw+J/2yqQU62BUDNfivprLpMSJls=;
+        b=FAhX+sQbjHABMbcX6gpL2k+ng7W29Y88mQWS372n6hJX1vxLp9pAO4xmAEZS3cHFGj
+         xzNXQZi4sx5l9Qo/m/yp1z1OEnFkaX5BRHI9GdDyp2x+E8niA20mqEM8vGYfAFAWZPO2
+         YudpoxEBPTfYOsoaT009RQ7gDElL1rn9RwrSqtZg3DNFh5Xrey/UKgwE5xjc8HM1ztxT
+         Vc6htAlCeyyIEMYawsOSPvuAUv3XxJ6pS6sk/jRDBODyW92YSF/az9BIzcPb0a/XaFpK
+         tLl1xdcwZLfM1tH/y5d3NwVeWv7IB4H3r05KfPqXuZ+PfBaBLJkB3m1wMAMuE6d+HDDb
+         vCrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3TyMkmxOQJC06CnnXdLtP1kErcHt4cRYBk9nQQy+GeI=;
-        b=NvTVftR9dWBcRqtT7DBFDTByByHSdNhUEb/kQEumoFlzKS5StIvCwn+M69up3s4uKT
-         OS3I20UIM0miLoe09dS+Gw3Hz5FYH9a9i8X0YAjAMiK7fjQNSn34MKMYiBliq93Mi6Dl
-         zch+lGLjje8FbVjn8Bv5kH7yfyXQCziBcysHfxpTAuVgCZVasg/KfFDdINQ2+MINyPNR
-         I0jUTb9ND+joAO9rcYn0NOKm/DHL3IE5RbCXw3Ri4KP8ZnAd2B8olcXawc3cOo5ubz5e
-         J8Ko3iNKD/jufwQMvAEZU1H0pcdZiLWvBfjS5a3vTUMk6/ANtIHAnUX9eYIjes7yL3XK
-         hLLw==
-X-Gm-Message-State: AOAM533gD/RggJFLClnDwSnmBQ2+YwE4WhgNy5wA7sE7wIh8N68O70on
-        Q7Q3giscXUfENCjuMobIZHXfh4puR8VbxA==
-X-Google-Smtp-Source: ABdhPJzf0o08F5ddr6PfN7/kVgikpHIOXR+G4FuQokr3vP6H99fCBlDIGqxxTBuStCrVj7wNJsKjmA==
-X-Received: by 2002:a1c:318b:: with SMTP id x133mr17274165wmx.154.1615111976756;
-        Sun, 07 Mar 2021 02:12:56 -0800 (PST)
-Received: from [192.168.1.10] (224.red-2-138-103.dynamicip.rima-tde.net. [2.138.103.224])
-        by smtp.gmail.com with ESMTPSA id f22sm12665506wmb.31.2021.03.07.02.12.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Mar 2021 02:12:56 -0800 (PST)
-Subject: Re: [PATCH v2 1/2] dt-bindings: interrupt-controller: document
- BCM6345 external interrupt controller
-To:     Rob Herring <robh@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org
-References: <20210223204340.312-1-noltari@gmail.com>
- <20210224075640.20465-1-noltari@gmail.com>
- <20210224075640.20465-2-noltari@gmail.com>
- <20210306201404.GB1137882@robh.at.kernel.org>
-From:   =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>
-Message-ID: <889b9814-40d4-e012-ff7c-39b00f8c623a@gmail.com>
-Date:   Sun, 7 Mar 2021 11:12:55 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Sel+nftChg+kM2jOw+J/2yqQU62BUDNfivprLpMSJls=;
+        b=R6zDuQ1su0E1kY6RphiFbrO5dO6MwZ7uHreRH3azx54co46eFvEZ76CP2Z3X2lMsXX
+         naYLhIfoSIinvlQEB05e3cqALwNr9+tkPtUgmJpQn1yZ8456y2X6GUcn+YqQhwq0pzOW
+         h7pa+IIabL6Qu8kqsuxjmOPHw2mhY5VWXFvEMZeUXVA2DJbds004ab4FI8gkKym6eJnA
+         OsJ2QDCLDhVkMQdOMq3kR5o7StsQhmD8HY7GcmQlr/qLloOQUeX+F8XGyKTguZtzlzhQ
+         mn+i2y9WV+j3soJuRaCXdz7iOSaxKQXX1KSTXOKlFQly0UP5dFk3c+g3NSrgZjYiyqrp
+         wXJQ==
+X-Gm-Message-State: AOAM531sZcv/mFVGID4c3mQLHoXWwRpleKPyjoBPAK9wonz8s2EPCStn
+        PSDBgIulRSxsDMOB8Gzip4HStrhPfV2aSO7OWOW9Hg==
+X-Google-Smtp-Source: ABdhPJxOAewlD2EEa+mNKwK55t8pGtlP+wGovdRdBp6omY1xkkU+OHlzZuFMjYHVa1nKmAiO7ju6slw1dsECI2RNZwo=
+X-Received: by 2002:ac8:5847:: with SMTP id h7mr14323827qth.43.1615112243553;
+ Sun, 07 Mar 2021 02:17:23 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210306201404.GB1137882@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+References: <CABXGCsP63mN+G1xE7UBfVRuDRcJiRRC7EXU2y25f9rXkoU-0LQ@mail.gmail.com>
+ <CACVXFVOy8928GNowCQRGQKQxuLtHn0V+pYk1kzeOyc0pyDvkjQ@mail.gmail.com>
+ <20210305090022.1863-1-hdanton@sina.com> <CACVXFVPp_byzrYVwyo05u0v3zoPP42FKZhfWMb6GMBno1rCZRw@mail.gmail.com>
+ <E28250BB-FBFF-4F02-B7A2-9530340E481E@linaro.org> <YEIBYLnAqdueErun@T590>
+ <20210307021524.13260-1-hdanton@sina.com> <CACT4Y+aLnam+7FGx9MiMRRbgFE6v+Vg6Hu0hkx+P=h+DL8Mayg@mail.gmail.com>
+ <20210307100900.13768-1-hdanton@sina.com>
+In-Reply-To: <20210307100900.13768-1-hdanton@sina.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sun, 7 Mar 2021 11:17:12 +0100
+Message-ID: <CACT4Y+aT0BySK8RVv5tC1pQDPg-7Z_DRToNH7vE7_5pQkqcs1g@mail.gmail.com>
+Subject: Re: [bugreport 5.9-rc8] general protection fault in __bfq_deactivate_entity
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Ming Lei <tom.leiming@gmail.com>,
+        Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+        Palash Oswal <oswalpalash@gmail.com>,
+        linux-block <linux-block@vger.kernel.org>,
+        Jens Axboe <axboe@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Sun, Mar 7, 2021 at 11:09 AM Hillf Danton <hdanton@sina.com> wrote:
+>
+> On Sun, 7 Mar 2021 08:46:19 +0100  Dmitry Vyukov wrote:
+> > On Sun, Mar 7, 2021 at 3:15 AM Hillf Danton <hdanton@sina.com> wrote:
+> > >
+> > > Dmitry can you shed some light on the tricks to config kasan to print
+> > > Call Trace as the reports with the leading [syzbot] on the subject line do?
+> >
+> > +kasan-dev
+> >
+> > Hi Hillf,
+> >
+> > KASAN prints stack traces always unconditionally. There is nothing you
+> > need to do at all.
+>
+> Got it, thanks.
+>
+> > Do you have any reports w/o stack traces?
+>
+> No, but I saw different formats in Call Trace prints.
+>
+> Below from [1] is the instance without file name and line number printed,
+> while both info help spot the cause of the reported issue.
 
-El 06/03/2021 a las 21:14, Rob Herring escribió:
-> On Wed, Feb 24, 2021 at 08:56:39AM +0100, Álvaro Fernández Rojas wrote:
->> Document the binding for the BCM6345 external interrupt controller.
->>
->> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
->> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
->> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
->> ---
->>   v3: pass dt_binding_check.
->>   v2: fix title typo.
->>
->>   .../brcm,bcm6345-ext-intc.yaml                | 78 +++++++++++++++++++
->>   1 file changed, 78 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-intc.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-intc.yaml b/Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-intc.yaml
->> new file mode 100644
->> index 000000000000..a691510e78b7
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-intc.yaml
->> @@ -0,0 +1,78 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/interrupt-controller/brcm,bcm6345-ext-intc.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Broadcom BCM6345 external interrupt controller
->> +
->> +maintainers:
->> +  - Álvaro Fernández Rojas <noltari@gmail.com>
->> +  - Jonas Gorski <jonas.gorski@gmail.com>
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - brcm,bcm6318-ext-intc
->> +      - brcm,bcm6345-ext-intc
->> +
->> +  "#interrupt-cells":
->> +    const: 2
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  "#address-cells":
->> +    const: 0
->> +
->> +  interrupt-controller: true
->> +
->> +  interrupts:
->> +    description: Specifies the interrupt line(s) in the interrupt-parent
->> +      controller node. Valid values depend on the type of parent interrupt
->> +      controller.
->> +    maxItems: 4
->> +
->> +  brcm,field-width:
->> +    description: Interrupt controller field width (the default is 4).
-> 
-> default: 4
-> 
->> +    maxItems: 1
-> 
-> All uint32's are 1 item.
 
-Ok, so I should remove this :)
+KASAN always prints stack traces w/o file:line info, like any other
+kernel bug detection facility. Kernel itself never symbolizes reports.
+In case of syzkaller, syzkaller will symbolize reports and add
+file:line info. The main config it requires is CONFIG_DEBUG_INFO.
 
-> 
-> What's the set or range of values?
+You may see syzkaller kernel configuration guide here:
+https://github.com/google/syzkaller/blob/master/docs/linux/kernel_configs.md
 
-Only BCM6348 needs to set this value to 5, other BCM63xx use the default 
-value of 4 (BCM3368, BCM6318, BCM6328, BCM6338, BCM6345, BCM6358, 
-BCM6362, BCM6368, BCM63268).
+Or fragments that are actually used to generate syzbot configs in this
+dir (the guide above may be out-of-date):
+https://github.com/google/syzkaller/blob/master/dashboard/config/linux/bits/base.yml
+https://github.com/google/syzkaller/blob/master/dashboard/config/linux/bits/debug.yml
+https://github.com/google/syzkaller/blob/master/dashboard/config/linux/bits/kasan.yml
 
-> 
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +
->> +required:
->> +  - "#address-cells"
->> +  - compatible
->> +  - reg
->> +  - "#interrupt-cells"
->> +  - interrupt-controller
->> +  - interrupts
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    interrupt-controller@10000018 {
->> +      #address-cells = <0>;
->> +      compatible = "brcm,bcm6345-ext-intc";
->> +      reg = <0x10000018 0x4>;
->> +
->> +      interrupt-parent = <&periph_intc>;
->> +      #interrupt-cells = <2>;
->> +
->> +      interrupt-controller;
->> +      interrupts = <24>, <25>, <26>, <27>;
->> +    };
->> +
->> +  - |
->> +    interrupt-controller@fffe0014 {
->> +      #address-cells = <0>;
->> +      compatible = "brcm,bcm6345-ext-intc";
->> +      reg = <0xfffe0014 0x4>;
->> +
->> +      interrupt-controller;
->> +      #interrupt-cells = <2>;
->> +
->> +      interrupt-parent = <&cpu_intc>;
->> +      interrupts = <3>, <4>, <5>, <6>;
->> +
->> +      brcm,field-width = <5>;
->> +    };
->> -- 
->> 2.20.1
->>
+Or a complete syzbot config here:
+https://github.com/google/syzkaller/blob/master/dashboard/config/linux/upstream-apparmor-kasan.config
 
-Best regards,
-Álvaro.
+
+> >>>>>>>>>>>>>>>>>>>>>>>>>
+>
+> I was running syzkaller and I found the following issue :
+>
+> Head Commit : b1313fe517ca3703119dcc99ef3bbf75ab42bcfb ( v5.10.4 )
+> Git Tree : stable
+> Console Output :
+> [  242.769080] INFO: task repro:2639 blocked for more than 120 seconds.
+> [  242.769096]       Not tainted 5.10.4 #8
+> [  242.769103] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> disables this message.
+> [  242.769112] task:repro           state:D stack:    0 pid: 2639
+> ppid:  2638 flags:0x00000004
+> [  242.769126] Call Trace:
+> [  242.769148]  __schedule+0x28d/0x7e0
+> [  242.769162]  ? __percpu_counter_sum+0x75/0x90
+> [  242.769175]  schedule+0x4f/0xc0
+> [  242.769187]  __io_uring_task_cancel+0xad/0xf0
+> [  242.769198]  ? wait_woken+0x80/0x80
+> [  242.769210]  bprm_execve+0x67/0x8a0
+> [  242.769223]  do_execveat_common+0x1d2/0x220
+> [  242.769235]  __x64_sys_execveat+0x5d/0x70
+> [  242.769249]  do_syscall_64+0x38/0x90
+> [  242.769260]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> [1] https://lore.kernel.org/lkml/CAGyP=7cFM6BJE7X2PN9YUptQgt5uQYwM4aVmOiVayQPJg1pqaA@mail.gmail.com/
