@@ -2,129 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3205A330459
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 20:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D899330463
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 21:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232723AbhCGTlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 14:41:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbhCGTkr (ORCPT
+        id S232768AbhCGTvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 14:51:43 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:56878 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232744AbhCGTvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 14:40:47 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2000C06174A;
-        Sun,  7 Mar 2021 11:40:42 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id t25so5017516pga.2;
-        Sun, 07 Mar 2021 11:40:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Bnz5/dN9339RrRu3KShS6i5PlP1+9kZIaFyxkuBBjkw=;
-        b=OKQDl/rd3jQpKdyMnlFZX94JTf3btMFgEma6CEAi81UmMgYa1PQFvXWw+W99wBpfxf
-         9svETjt4h0dCHWpG0fsIrHucaSQ0upRRpQkYobe9uNcyKRIOCOyyxK3FpK+jcSD7i43F
-         6iTjZQ3Ld2juqcm2yaEEs9OrZhY4rxFF2Tasuu9+YJl9Z0oAMGhQW2a0rcxiBuMRsPXK
-         VsLYVZJIjSCcM0U3/pLFr3BVvBUxE4iTxpezJbRo4oVeH1cmtr8ItgG00EFuPdE2Tbyw
-         JNaztQoJdjfz7QvUfU9IjsAp1g2DKRkZMFbEzuFL6/HgvBdKyapS8ITKlWkEGs8iJf6U
-         6KhA==
+        Sun, 7 Mar 2021 14:51:14 -0500
+Received: from mail-wm1-f72.google.com ([209.85.128.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lIzQg-0001jF-DE
+        for linux-kernel@vger.kernel.org; Sun, 07 Mar 2021 19:51:06 +0000
+Received: by mail-wm1-f72.google.com with SMTP id o9so1132629wmq.9
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 11:51:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Bnz5/dN9339RrRu3KShS6i5PlP1+9kZIaFyxkuBBjkw=;
-        b=WIt23HN5WFpAjFbZkuAPusZpNznEaRH3etnkcgAog4YLMm7c1o+VuJOXcw5UMbrQ2V
-         ExZGlL1QJKJssE4NGn4eupu6gXFmAN7WBzSxnY/nwhE6H6FQ1D75m3z2CuNWbimvR8ZI
-         QMG0lGeSYHwZnjF59vBM7KCdCpovFwZC4uRL2XHsF/J5mQrTc1DMd2JAE6pVOmLT1j1g
-         lV2/oa8B4Mdkrc36dNiO9KNugAh1K1+Bwc4BrbfAEJJ+hsZrXZ+xbsjZXTownKldlUhk
-         SDEZvuY6XR2VMNY8KhcTDDY9heyONzy+bREf5oI5+f53Sa+MYwiQyCg86x5yNp/Pfoy6
-         bUhQ==
-X-Gm-Message-State: AOAM530Kgyy/UcmAymCOtnfhxw/huqFN68Y755TWQfTdrf/SjAu4ndN8
-        EfMiGpSUu4ZSdM37eoW070I=
-X-Google-Smtp-Source: ABdhPJzlgEx9VvSFRTnYchQfsNnVN79V8qoZ3yUHMgGknD5BN4oTG2YOABEz1g3WfpbnWHtlg8FtTQ==
-X-Received: by 2002:aa7:92cb:0:b029:1f1:542f:2b2b with SMTP id k11-20020aa792cb0000b02901f1542f2b2bmr12294563pfa.31.1615146042241;
-        Sun, 07 Mar 2021 11:40:42 -0800 (PST)
-Received: from z640-arch.lan ([2602:3f:e6a6:5d00::678])
-        by smtp.gmail.com with ESMTPSA id t22sm8629087pjo.45.2021.03.07.11.40.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 11:40:41 -0800 (PST)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Jinyang He <hejinyang@loongson.cn>,
-        Mike Rapoport <rppt@kernel.org>,
-        Youling Tang <tangyouling@loongson.cn>
-Cc:     Tobias Wolf <dev-NTEO@vplace.de>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Marcin Nowakowski <marcin.nowakowski@mips.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH] MIPS: fix memory reservation for non-usermem setups
-Date:   Sun,  7 Mar 2021 11:40:30 -0800
-Message-Id: <20210307194030.8007-1-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        bh=kfxTFWpE+U1s7RCH9bz3J8B1Q2nmRmVCf8INgvhDrDk=;
+        b=Y/w9g9aLPLD9DzoMNwPnzjiGZ8rpMCKrB5Mi6TVtmmHgHf8s9ImCjb0o3hrhMQxyio
+         Lw3CKX+fnE6IIGNtkcT4tN+M6eBJZQcE4vfdttugHi5eWObXl1DroWOX54H4WKOGx3Ft
+         ZxOxJAKUxTv/cA66kk/6WBGIf7nxjz21zFF42cgV8153UBxzYex4bIwW7QcO6Hg+B6NQ
+         i0hiH9p06Xu3rcYvrfSP5GciCtSE2NjATsSRg3K/c/zQCTEVnzP5qFNwDOkOuYldORfZ
+         SNpd6ePrtu+1Dojcfn/ApKz3/6af8x4Ap93s9szaGCosv/10C6qO5r60ANaGi16Kq9CB
+         hNbA==
+X-Gm-Message-State: AOAM531h8epZRuJr9vnTdZoGMsxHfTdFT9YNUekWsCUXymhjX5XnYGCo
+        gu8p2sBP+Fa2j/MCQl70x0b/uCZEiANUAppy0B/NfseLWqIwYFnJhiXP0m6dtg6jLl/56PgEFuO
+        D4YMLa6VGt1CC8rbBUAAOXOU+LFy/wgA2qFi+tWI5mw==
+X-Received: by 2002:a1c:df8a:: with SMTP id w132mr18775265wmg.53.1615146665649;
+        Sun, 07 Mar 2021 11:51:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwffZzLs3PiQ9TeAhZa+zD26CO9uqpWEoQh7UlJniVKzU7h8Kyv9yC8ZT05jpfXr7Q8PQWSPQ==
+X-Received: by 2002:a1c:df8a:: with SMTP id w132mr18775242wmg.53.1615146665465;
+        Sun, 07 Mar 2021 11:51:05 -0800 (PST)
+Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.gmail.com with ESMTPSA id h6sm10016643wmi.6.2021.03.07.11.51.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Mar 2021 11:51:04 -0800 (PST)
+Subject: Re: [RFT PATCH v3 21/27] tty: serial: samsung_tty: IRQ rework
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Hector Martin <marcan@marcan.st>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-22-marcan@marcan.st>
+ <CAHp75Vc+t9_FNHZ0xYNaJ1+Ny+FFeZKA79abxV2NAsZvpBh3Bg@mail.gmail.com>
+ <535ff48e-160e-4ba4-23ac-54e478a2f3ee@marcan.st>
+ <CAHp75Vd_kwdjbus3iq_39+p_xRk3rum2ek3nLLFbBDzMwggnKA@mail.gmail.com>
+ <05ccc09f-ffea-71cd-4288-beed3020bd45@marcan.st>
+ <d33fffec-28bd-99b2-a8b1-cc83b628e4b3@canonical.com>
+ <CAK8P3a0o4NHjXZ+ePj_Xpcw6ZmonoiR1dfkcsv=3i1JBEF4arA@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <20a8ce3e-bffa-4fc0-1f1d-185c04be8d9f@canonical.com>
+Date:   Sun, 7 Mar 2021 20:51:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK8P3a0o4NHjXZ+ePj_Xpcw6ZmonoiR1dfkcsv=3i1JBEF4arA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tobias Wolf <dev-NTEO@vplace.de>
+On 07/03/2021 17:01, Arnd Bergmann wrote:
+> On Sun, Mar 7, 2021 at 12:34 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>> On 05/03/2021 17:29, Hector Martin wrote:
+>>> On 06/03/2021 01.20, Andy Shevchenko wrote:
+>>>>> I am just splitting an
+>>>>> existing function into two, where one takes the lock and the other does
+>>>>> the work. Do you mean using a different locking function? I'm not
+>>>>> entirely sure what you're suggesting.
+>>>>
+>>>> Yes, as a prerequisite
+>>>>
+>>>> spin_lock_irqsave -> spin_lock().
+>>>
+>>> Krzysztof, is this something you want in this series? I was trying to
+>>> avoid logic changes to the non-Apple paths.
+>>
+>> I don't quite get the need for such change (the code will be still
+>> called in interrupt handler, right?), but assuming the "why?" is
+>> properly documented, it can be a separate patch here.
+> 
+> This is only for readability: the common rule is to not disable
+> interrupts when they are already disabled, so a reader might wonder
+> if this instance of the handler is special in some case that it might
+> be called with interrupts enabled.
+> 
+> There is also a small overhead in accessing the global irq mask
+> register on some architectures, but for a uart that does not make
+> any difference of course.
+> 
+> While I'm generally in favor of that kind of cleanup, I'd also
+> prefer to leave it out of this series -- once you get into details
+> like this the series gets harder to review.
 
-Commit 67a3ba25aa95 ("MIPS: Fix incorrect mem=X@Y handling") introduced a new
-issue for rt288x where "PHYS_OFFSET" is 0x0 but the calculated "ramstart" is
-not. As the prerequisite of custom memory map has been removed, this results
-in the full memory range of 0x0 - 0x8000000 to be marked as reserved for this
-platform.
+So it's only about the spinlock in the IRQ handler (which does not need
+to disable the IRQs). Makes sense but not related at all to the topic of
+bringing up Apple M1, therefore should not stop the review/merging.
 
-This patch adds the originally intended prerequisite again.
-
-This patch has been present in OpenWrt tree for over 2 years:
-https://git.openwrt.org/?p=openwrt/openwrt.git;a=commit;h=93bfafb8dc209f153022796d9e747149e66cc29e
-
-Fixes: 67a3ba25aa95 ("MIPS: Fix incorrect mem=X@Y handling")
-Signed-off-by: Tobias Wolf <dev-NTEO@vplace.de>
-[Reword commit message]
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc: Marcin Nowakowski <marcin.nowakowski@mips.com>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
----
- arch/mips/kernel/setup.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 279be0153f8b..97e3a0db651b 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -251,6 +251,8 @@ static unsigned long __init init_initrd(void)
-  * Initialize the bootmem allocator. It also setup initrd related data
-  * if needed.
-  */
-+static int usermem __initdata;
-+
- #if defined(CONFIG_SGI_IP27) || (defined(CONFIG_CPU_LOONGSON64) && defined(CONFIG_NUMA))
- 
- static void __init bootmem_init(void)
-@@ -290,7 +292,7 @@ static void __init bootmem_init(void)
- 	/*
- 	 * Reserve any memory between the start of RAM and PHYS_OFFSET
- 	 */
--	if (ramstart > PHYS_OFFSET)
-+	if (usermem && ramstart > PHYS_OFFSET)
- 		memblock_reserve(PHYS_OFFSET, ramstart - PHYS_OFFSET);
- 
- 	if (PFN_UP(ramstart) > ARCH_PFN_OFFSET) {
-@@ -338,8 +340,6 @@ static void __init bootmem_init(void)
- 
- #endif	/* CONFIG_SGI_IP27 */
- 
--static int usermem __initdata;
--
- static int __init early_parse_mem(char *p)
- {
- 	phys_addr_t start, size;
--- 
-2.30.1
-
+Best regards,
+Krzysztof
