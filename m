@@ -2,152 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 731A7330362
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 18:36:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3948330366
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 18:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhCGRfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 12:35:30 -0500
-Received: from aposti.net ([89.234.176.197]:44168 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229805AbhCGRfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 12:35:01 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     od@zcrc.me, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v2 3/3] input: gpio-keys: Use hrtimer for software debounce
-Date:   Sun,  7 Mar 2021 17:34:36 +0000
-Message-Id: <20210307173436.78730-3-paul@crapouillou.net>
-In-Reply-To: <20210307173436.78730-1-paul@crapouillou.net>
-References: <20210307173436.78730-1-paul@crapouillou.net>
+        id S230483AbhCGRgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 12:36:44 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:37981 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230525AbhCGRgX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 12:36:23 -0500
+Received: by mail-oi1-f182.google.com with SMTP id v192so984540oia.5;
+        Sun, 07 Mar 2021 09:36:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=bzvWL3GDgfoWZ5JORzL1BZkw/ySSrs66mvUv37cteBY=;
+        b=GP9FAt+XI7zIQq8nQvczYexRZhX11iacS28Vso9ELstPJbU2usrzipBEGg5LGnHNUK
+         A4EscmyHHr/qnlT5jjuKzd1/16bdh9KRqjJ+J296jqYTnzKKqFLQtN09cvHMEEhRsW1W
+         oVtdCLB1Zz+0s1YdWFPkgZwz5KxEfBX1nd1qv4Yt8JEtFm4oHNFbm4Wu2qDx3ARK+JFE
+         AbDjoG2JnGtuFCEC2IVPKHqnP2I8h5f3iGybkrGvWSGORZW37Z6kCJ/1I8xJWsh9y2bW
+         1eVBZNAZ7PYLaqOU6bAVB4lYIu26y/XIUvdFVEPt1whDPOHmcPnD2S+4cOZcTT0ywZvO
+         RZNg==
+X-Gm-Message-State: AOAM531mPWGL6+62jvxs0btb+HQo6agZQLjRXqjZ+XvoF1Bc0Lsjq7ST
+        YorLFHDVIkXrc5MgbNEuzP6mY0+ajnroDw==
+X-Google-Smtp-Source: ABdhPJy0NMyHuUgnVbprZQvaSJB7jUsWstmXPz0PeWYvca0t861PjYy3fdwowvxsX0dqeHoeEoguww==
+X-Received: by 2002:aca:bb04:: with SMTP id l4mr14174805oif.9.1615138583009;
+        Sun, 07 Mar 2021 09:36:23 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id o25sm2170501otk.11.2021.03.07.09.36.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 09:36:22 -0800 (PST)
+Date:   Sun, 7 Mar 2021 18:36:19 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: endpoint: Select configfs dependency
+Message-ID: <YEUPExklfpWYVEMx@rocinante>
+References: <20210125113445.2341590-1-arnd@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210125113445.2341590-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We want to be able to report the input event as soon as the debounce
-delay elapsed. However, the current code does not really ensure that,
-as it uses the jiffies-based schedule_delayed_work() API. With a small
-enough HZ value (HZ <= 100), this results in some input events being
-lost, when a key is quickly pressed then released (on a human's time
-scale).
+Hi,
 
-Switching to hrtimers fixes this issue, and will work even on extremely
-low HZ values (tested at HZ=24).
+[...]
+> The newly added pci-epf-ntb driver uses configfs, which
+> causes a link failure when that is disabled at compile-time:
+> 
+> arm-linux-gnueabi-ld: drivers/pci/endpoint/functions/pci-epf-ntb.o: in function `epf_ntb_add_cfs':
+> pci-epf-ntb.c:(.text+0x954): undefined reference to `config_group_init_type_name'
+[...]
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
+Thank you for fixing this!
 
-Notes:
-    v2: HRTIMER_MODE_REL_SOFT -> HRTIMER_MODE_REL
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
 
- drivers/input/keyboard/gpio_keys.c | 33 +++++++++++++++---------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/input/keyboard/gpio_keys.c b/drivers/input/keyboard/gpio_keys.c
-index 4b92f49decef..566e7950fcef 100644
---- a/drivers/input/keyboard/gpio_keys.c
-+++ b/drivers/input/keyboard/gpio_keys.c
-@@ -22,7 +22,6 @@
- #include <linux/platform_device.h>
- #include <linux/input.h>
- #include <linux/gpio_keys.h>
--#include <linux/workqueue.h>
- #include <linux/gpio.h>
- #include <linux/gpio/consumer.h>
- #include <linux/of.h>
-@@ -40,7 +39,7 @@ struct gpio_button_data {
- 	struct hrtimer release_timer;
- 	unsigned int release_delay;	/* in msecs, for IRQ-only buttons */
- 
--	struct delayed_work work;
-+	struct hrtimer debounce_timer;
- 	unsigned int software_debounce;	/* in msecs, for GPIO-driven buttons */
- 
- 	unsigned int irq;
-@@ -145,7 +144,7 @@ static void gpio_keys_disable_button(struct gpio_button_data *bdata)
- 		disable_irq(bdata->irq);
- 
- 		if (bdata->gpiod)
--			cancel_delayed_work_sync(&bdata->work);
-+			hrtimer_cancel(&bdata->debounce_timer);
- 		else
- 			hrtimer_cancel(&bdata->release_timer);
- 
-@@ -376,16 +375,19 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
- 	}
- }
- 
--static void gpio_keys_gpio_work_func(struct work_struct *work)
-+static enum hrtimer_restart gpio_keys_debounce_timer(struct hrtimer *t)
- {
--	struct gpio_button_data *bdata =
--		container_of(work, struct gpio_button_data, work.work);
-+	struct gpio_button_data *bdata = container_of(t,
-+						      struct gpio_button_data,
-+						      debounce_timer);
- 
- 	gpio_keys_gpio_report_event(bdata);
- 	input_sync(bdata->input);
- 
- 	if (bdata->button->wakeup)
- 		pm_relax(bdata->input->dev.parent);
-+
-+	return HRTIMER_NORESTART;
- }
- 
- static irqreturn_t gpio_keys_gpio_isr(int irq, void *dev_id)
-@@ -409,9 +411,9 @@ static irqreturn_t gpio_keys_gpio_isr(int irq, void *dev_id)
- 		}
- 	}
- 
--	mod_delayed_work(system_wq,
--			 &bdata->work,
--			 msecs_to_jiffies(bdata->software_debounce));
-+	hrtimer_start(&bdata->debounce_timer,
-+		      ms_to_ktime(bdata->software_debounce),
-+		      HRTIMER_MODE_REL);
- 
- 	return IRQ_HANDLED;
- }
-@@ -472,7 +474,7 @@ static void gpio_keys_quiesce_key(void *data)
- 	struct gpio_button_data *bdata = data;
- 
- 	if (bdata->gpiod)
--		cancel_delayed_work_sync(&bdata->work);
-+		hrtimer_cancel(&bdata->debounce_timer);
- 	else
- 		hrtimer_cancel(&bdata->release_timer);
- }
-@@ -562,11 +564,13 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
- 			bdata->irq = irq;
- 		}
- 
--		INIT_DELAYED_WORK(&bdata->work, gpio_keys_gpio_work_func);
--
- 		isr = gpio_keys_gpio_isr;
- 		irqflags = IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING;
- 
-+		hrtimer_init(&bdata->debounce_timer,
-+			     CLOCK_REALTIME, HRTIMER_MODE_REL);
-+		bdata->debounce_timer.function = gpio_keys_debounce_timer;
-+
- 		switch (button->wakeup_event_action) {
- 		case EV_ACT_ASSERTED:
- 			bdata->wakeup_trigger_type = active_low ?
-@@ -615,10 +619,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
- 	*bdata->code = button->code;
- 	input_set_capability(input, button->type ?: EV_KEY, *bdata->code);
- 
--	/*
--	 * Install custom action to cancel release timer and
--	 * workqueue item.
--	 */
-+	/* Install custom action to cancel timers. */
- 	error = devm_add_action(dev, gpio_keys_quiesce_key, bdata);
- 	if (error) {
- 		dev_err(dev, "failed to register quiesce action, error: %d\n",
--- 
-2.30.1
-
+Krzysztof
