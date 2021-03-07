@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF2F33028A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 16:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 428E433028B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 16:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232007AbhCGPTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 10:19:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21730 "EHLO
+        id S232221AbhCGPTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 10:19:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45190 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231742AbhCGPS3 (ORCPT
+        by vger.kernel.org with ESMTP id S231815AbhCGPSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 10:18:29 -0500
+        Sun, 7 Mar 2021 10:18:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615130308;
+        s=mimecast20190719; t=1615130311;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qstxnJWrDVN7VD7wfJDsTrlEJ6yOY7WLLMRpqou/h3Q=;
-        b=ECtGyLA65SRrT2Q9xcTfptV5VAanCvieJDrclQwdqploxD40Ej8p9E1wgT+UiW5x/CbXK+
-        Dw6KfrOXt3DAOAEnuX5W/Qw+vPhVJjnGOuua+HswbNLHGQQH5cWgBE/mXj3LutvtUfZS1a
-        AEQUID67agdCFH8jhXeMfuwvfrzZyPU=
+        bh=DI7D0FJ57tZcrPNtDeQsNfHUQDFFHpJ7tOVvsyHk/9w=;
+        b=ZoejBOx4BVSjeGL+Ok3kgVPZIVm09noZOpKy1p688uYJhKUrJkEViX4n4iVcX+HFEKpy7I
+        MmiAWUpP1lkeD/xGD9sDOUg9qxdEjh3bQT7CrEPxqxt/waywEj1pKFNONRGERZhP5hpV/u
+        EKvCj8NTln051HmilcGLW2Lieyp+Gsc=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-3xPcRaAGPH6gT3Ceg0EAzA-1; Sun, 07 Mar 2021 10:18:27 -0500
-X-MC-Unique: 3xPcRaAGPH6gT3Ceg0EAzA-1
+ us-mta-173-y6GVExh5OEu7VsF31bc1Rg-1; Sun, 07 Mar 2021 10:18:30 -0500
+X-MC-Unique: y6GVExh5OEu7VsF31bc1Rg-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 32F0480432D;
-        Sun,  7 Mar 2021 15:18:25 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5D6D26860;
+        Sun,  7 Mar 2021 15:18:27 +0000 (UTC)
 Received: from x1.localdomain (ovpn-112-90.ams2.redhat.com [10.36.112.90])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BDB6760BF1;
-        Sun,  7 Mar 2021 15:18:22 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7952D60BF1;
+        Sun,  7 Mar 2021 15:18:25 +0000 (UTC)
 From:   Hans de Goede <hdegoede@redhat.com>
 To:     Lee Jones <lee.jones@linaro.org>,
         MyungJoo Ham <myungjoo.ham@samsung.com>,
@@ -48,9 +48,9 @@ Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         Charles Keepax <ckeepax@opensource.cirrus.com>,
         alsa-devel@alsa-project.org
-Subject: [PATCH v4 resend 03/13] extcon: arizona: Fix various races on driver unbind
-Date:   Sun,  7 Mar 2021 16:17:57 +0100
-Message-Id: <20210307151807.35201-4-hdegoede@redhat.com>
+Subject: [PATCH v4 resend 04/13] extcon: arizona: Fix flags parameter to the gpiod_get("wlf,micd-pol") call
+Date:   Sun,  7 Mar 2021 16:17:58 +0100
+Message-Id: <20210307151807.35201-5-hdegoede@redhat.com>
 In-Reply-To: <20210307151807.35201-1-hdegoede@redhat.com>
 References: <20210307151807.35201-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -60,124 +60,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We must free/disable all interrupts and cancel all pending works
-before doing further cleanup.
-
-Before this commit arizona_extcon_remove() was doing several
-register writes to shut things down before disabling the IRQs
-and it was cancelling only 1 of the 3 different works used.
-
-Move all the register-writes shutting things down to after
-the disabling of the IRQs and add the 2 missing
-cancel_delayed_work_sync() calls.
-
-This fixes various possible races on driver unbind. One of which
-would always trigger on devices using the mic-clamp feature for
-jack detection. The ARIZONA_MICD_CLAMP_MODE_MASK update was
-done before disabling the IRQs, causing:
-1. arizona_jackdet() to run
-2. detect a jack being inserted (clamp disabled means jack inserted)
-3. call arizona_start_mic() which:
-3.1 Enables the MICVDD regulator
-3.2 takes a pm_runtime_reference
-
-And this was all happening after the ARIZONA_MICD_ENA bit clearing,
-which would undo 3.1 and 3.2 because the ARIZONA_MICD_CLAMP_MODE_MASK
-update was being done after the ARIZONA_MICD_ENA bit clearing.
-
-So this means that arizona_extcon_remove() would exit with
-1. MICVDD enabled and 2. The pm_runtime_reference being unbalanced.
-
-MICVDD still being enabled caused the following oops when the
-regulator is released by the devm framework:
-
-[ 2850.745757] ------------[ cut here ]------------
-[ 2850.745827] WARNING: CPU: 2 PID: 2098 at drivers/regulator/core.c:2123 _regulator_put.part.0+0x19f/0x1b0
-[ 2850.745835] Modules linked in: extcon_arizona ...
-...
-[ 2850.746909] Call Trace:
-[ 2850.746932]  regulator_put+0x2d/0x40
-[ 2850.746946]  release_nodes+0x22a/0x260
-[ 2850.746984]  __device_release_driver+0x190/0x240
-[ 2850.747002]  driver_detach+0xd4/0x120
-...
-[ 2850.747337] ---[ end trace f455dfd7abd9781f ]---
-
-Note this oops is just one of various theoretically possible races caused
-by the wrong ordering inside arizona_extcon_remove(), this fixes the
-ordering fixing all possible races, including the reported oops.
+The initial value of the GPIO should match the info->micd_modes[0].gpio
+value. arizona_extcon_probe() already stores the necessary flag in a
+mode variable, but instead of passing mode as flags to the gpiod_get()
+it was using a hardcoded GPIOD_OUT_LOW.
 
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/extcon/extcon-arizona.c | 40 +++++++++++++++++----------------
- 1 file changed, 21 insertions(+), 19 deletions(-)
+ drivers/extcon/extcon-arizona.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
-index f7ef247de46a..76aacbac5869 100644
+index 76aacbac5869..72d23b15108c 100644
 --- a/drivers/extcon/extcon-arizona.c
 +++ b/drivers/extcon/extcon-arizona.c
-@@ -1760,25 +1760,6 @@ static int arizona_extcon_remove(struct platform_device *pdev)
- 	bool change;
- 	int ret;
- 
--	ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
--				       ARIZONA_MICD_ENA, 0,
--				       &change);
--	if (ret < 0) {
--		dev_err(&pdev->dev, "Failed to disable micd on remove: %d\n",
--			ret);
--	} else if (change) {
--		regulator_disable(info->micvdd);
--		pm_runtime_put(info->dev);
--	}
--
--	gpiod_put(info->micd_pol_gpio);
--
--	pm_runtime_disable(&pdev->dev);
--
--	regmap_update_bits(arizona->regmap,
--			   ARIZONA_MICD_CLAMP_CONTROL,
--			   ARIZONA_MICD_CLAMP_MODE_MASK, 0);
--
- 	if (info->micd_clamp) {
- 		jack_irq_rise = ARIZONA_IRQ_MICD_CLAMP_RISE;
- 		jack_irq_fall = ARIZONA_IRQ_MICD_CLAMP_FALL;
-@@ -1794,10 +1775,31 @@ static int arizona_extcon_remove(struct platform_device *pdev)
- 	arizona_free_irq(arizona, jack_irq_rise, info);
- 	arizona_free_irq(arizona, jack_irq_fall, info);
- 	cancel_delayed_work_sync(&info->hpdet_work);
-+	cancel_delayed_work_sync(&info->micd_detect_work);
-+	cancel_delayed_work_sync(&info->micd_timeout_work);
-+
-+	ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
-+				       ARIZONA_MICD_ENA, 0,
-+				       &change);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "Failed to disable micd on remove: %d\n",
-+			ret);
-+	} else if (change) {
-+		regulator_disable(info->micvdd);
-+		pm_runtime_put(info->dev);
-+	}
-+
-+	regmap_update_bits(arizona->regmap,
-+			   ARIZONA_MICD_CLAMP_CONTROL,
-+			   ARIZONA_MICD_CLAMP_MODE_MASK, 0);
- 	regmap_update_bits(arizona->regmap, ARIZONA_JACK_DETECT_ANALOGUE,
- 			   ARIZONA_JD1_ENA, 0);
- 	arizona_clk32k_disable(arizona);
- 
-+	gpiod_put(info->micd_pol_gpio);
-+
-+	pm_runtime_disable(&pdev->dev);
-+
- 	return 0;
- }
- 
+@@ -1510,7 +1510,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
+ 		 */
+ 		info->micd_pol_gpio = gpiod_get_optional(arizona->dev,
+ 							 "wlf,micd-pol",
+-							 GPIOD_OUT_LOW);
++							 mode);
+ 		if (IS_ERR(info->micd_pol_gpio)) {
+ 			ret = PTR_ERR(info->micd_pol_gpio);
+ 			dev_err(arizona->dev,
 -- 
 2.30.1
 
