@@ -2,147 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BAE33041B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 20:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 868FE33041E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 20:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231971AbhCGTFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 14:05:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40367 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231592AbhCGTEs (ORCPT
+        id S232091AbhCGTFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 14:05:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231592AbhCGTFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 14:04:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615143887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xakOsbHdk63hG7UbqDIRNouESiVml99N7bAiUFLm/GI=;
-        b=ZRLNyd1sfNz7FB4aGqDtFCABSnvzaBceR4fBNd7YmoFh3t/A9gmbGGm6kiGy2NWegvR6pV
-        oR8EMGeqjO6nIWvtdJUmP007eRM4kDGuYuB4pG7eAZKRfaSVD99iZPyGTthoIttS9hT0uG
-        5yC8F0m1ZEpgmYNn3pK4tm+TtkQzM38=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-152-cYfXunZHM--hVy5RNYnxww-1; Sun, 07 Mar 2021 14:04:45 -0500
-X-MC-Unique: cYfXunZHM--hVy5RNYnxww-1
-Received: by mail-ed1-f71.google.com with SMTP id h5so4019354edf.17
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 11:04:45 -0800 (PST)
+        Sun, 7 Mar 2021 14:05:36 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A755C06174A;
+        Sun,  7 Mar 2021 11:05:36 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id t25so4981270pga.2;
+        Sun, 07 Mar 2021 11:05:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6OopSw5D8ep2q2/dbMs+34bXsAVe5qvVqgXWtPVK+p0=;
+        b=isQFK0hiYv6VN2fc5B8j6iJxbMapK7CSFtjIM+VwgPossPH2Wb42Yu6KrMataC0l3m
+         pHK1Nsr5WmCjrw7gKLnW6tmQMGPx8rACcNdd/VdI1P9cwUQh9Hd6C36wYdXEQgJdYjYF
+         Vu/EPblMCm+I4x9TBJhu327DLCjfpAGT6EBj6VpV4dOxVYBZ0pzNZ+hZg5ZoX9PZu2tY
+         vF7WVmp+rgjVvfTWZ906znyrpWWeT/3i3lN/JqcGoWzHzZ7Awn0s68ogeOo/xyUQ/4AK
+         URMDZFd9y4g2KqongEhPW5ELy/hTgWpxlVHgiFSTGPSAjP6lsN2GU7lJDR1zuxySU+nw
+         ulJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xakOsbHdk63hG7UbqDIRNouESiVml99N7bAiUFLm/GI=;
-        b=K2G4Ey66rxGQwC+YO4AP21IQ3pWZjMAFGl2VkiHFDABvB2Jv20+mcO6we+ggfudJvg
-         ajqhF/gKXhEn5Dqmd4Kru67Hq4jHj8COZ1YLQGYbyfIAu5bApUXEqm/hj4S6Z2ht/Uh0
-         fqTc3lCWDjSdjKA+UP6KkUg+xTiSIJ4T9zGBPsFzaqPQgEwT/Gi8jCCWghkY8/zdLlLe
-         RJZ30XhfDpRUwlf0qUcOdMJYMs34Hj78M3sVOCOmJmhiojoDH+XYYY506iKxDpxYyfqj
-         FJ7vZRKCzfqYiOtgVBuoR8JeZ0ezS++4KdW8cjzwDPYeHdQbEywXJV21jtDUUmgba0CZ
-         vi7g==
-X-Gm-Message-State: AOAM533fp6zqpJ4ru6yTB/B9ZElHYaHU86EXb18h/D4ai7k56d14J0Vv
-        JqrvnfJcNngNeI1HIX97Net5nRvlF0nGLKrx1wP1p+2EH3Gv61eIyJYwrIAVWa2ntcD/uDi/T66
-        9WqkflrrWKBWjhEOPn4Qg4wdL
-X-Received: by 2002:a17:906:789:: with SMTP id l9mr11605641ejc.161.1615143884417;
-        Sun, 07 Mar 2021 11:04:44 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxqi8mTySB5bP+ZnvkAFIpC14v4wJp0SEnu2Eb8qnKp6Fnavb7lJbWFXmVoi1UJqI5NFqmMPw==
-X-Received: by 2002:a17:906:789:: with SMTP id l9mr11605627ejc.161.1615143884231;
-        Sun, 07 Mar 2021 11:04:44 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id t15sm5716617edw.84.2021.03.07.11.04.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Mar 2021 11:04:43 -0800 (PST)
-Subject: Re: [PATCH] leds: trigger: fix potential deadlock with libata
-To:     Pavel Machek <pavel@ucw.cz>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Dan Murphy <dmurphy@ti.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, schuchmann@schleissheimer.de
-References: <20201102104152.GG9930@xps-13-7390>
- <20210306203954.ya5oqgkdalcw45c4@pengutronix.de>
- <20210307161357.GA2933@duo.ucw.cz>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <7a83931f-13bd-27c2-4050-4a21be74c49b@redhat.com>
-Date:   Sun, 7 Mar 2021 20:04:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6OopSw5D8ep2q2/dbMs+34bXsAVe5qvVqgXWtPVK+p0=;
+        b=MWSpJftua7vEn/b0Quo5OlEHRqqfnRVBQtpgb6Sd/ns8RgIvAE/5v3p7cEy7frzMEP
+         FDd+w5OH00WNJRo02ZqrBawr35CJJNTnP46Kxj1xYUjc9bpUlg87dSin2bj7vW6ISHh0
+         ZrADoATNT5D3XCu5K+Id2ExtE/tsA0/8P8ZokBfic23ukuYc1gII/RIhOwwMnh2Jg9T/
+         YO7EI2qLZK1VBfUAPHEOZoQNA9w1abdB64W8JWD2Gfn2SDNBPYvKqTDcEPnCF6GL7nJq
+         /7fgvhIxlj7vRiWLKHo8XWTKP3wlwqSW98qWS1eg3WUAxETkVA55IAVR4s2W6yEAfP4U
+         SVdw==
+X-Gm-Message-State: AOAM532riAtNBwnbHWvXOia3hRLeB3gsic6bZ+mhsFfMzmqU3j1vCRPt
+        Y11ON/ylIPDWgRO+jAfx9YLI7v/JEZlToesgPjI=
+X-Google-Smtp-Source: ABdhPJxZugS/AtpXgTFu6XJ6VxJbgAYkkSqb2BomvwTTqEG2l/My8fZS4KbhuaEgVaVIIJpmYra6PYX9yfCCVGnwW3o=
+X-Received: by 2002:a63:ce15:: with SMTP id y21mr17755594pgf.4.1615143936052;
+ Sun, 07 Mar 2021 11:05:36 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210307161357.GA2933@duo.ucw.cz>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210306155712.4298-1-noltari@gmail.com> <20210306155712.4298-4-noltari@gmail.com>
+In-Reply-To: <20210306155712.4298-4-noltari@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 7 Mar 2021 21:05:19 +0200
+Message-ID: <CAHp75VdwqpL0UScR5s+Tf4z7RZQfyo+625uXZtfWV3=xQr6Z2Q@mail.gmail.com>
+Subject: Re: [PATCH v5 03/15] pinctrl: bcm: add bcm63xx base code
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, Mar 6, 2021 at 5:57 PM =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gm=
+ail.com> wrote:
+>
+> Add a helper for registering BCM63XX pin controllers.
 
-On 3/7/21 5:13 PM, Pavel Machek wrote:
-> Hi!
-> 
->>> --- a/drivers/leds/led-triggers.c
->>> +++ b/drivers/leds/led-triggers.c
->>> @@ -378,14 +378,15 @@ void led_trigger_event(struct led_trigger *trig,
->>>  			enum led_brightness brightness)
->>>  {
->>>  	struct led_classdev *led_cdev;
->>> +	unsigned long flags;
->>>  
->>>  	if (!trig)
->>>  		return;
->>>  
->>> -	read_lock(&trig->leddev_list_lock);
->>> +	read_lock_irqsave(&trig->leddev_list_lock, flags);
->>>  	list_for_each_entry(led_cdev, &trig->led_cdevs, trig_list)
->>>  		led_set_brightness(led_cdev, brightness);
->>> -	read_unlock(&trig->leddev_list_lock);
->>> +	read_unlock_irqrestore(&trig->leddev_list_lock, flags);
->>>  }
->>>  EXPORT_SYMBOL_GPL(led_trigger_event)
->>
->> meanwhile this patch hit v5.10.x stable and caused a performance
->> degradation on our use case:
->>
->> It's an embedded ARM system, 4x Cortex A53, with an SPI attached CAN
->> controller. CAN stands for Controller Area Network and here used to
->> connect to some automotive equipment. Over CAN an ISOTP (a CAN-specific
->> Transport Protocol) transfer is running. With this patch, we see CAN
->> frames delayed for ~6ms, the usual gap between CAN frames is 240µs.
->>
->> Reverting this patch, restores the old performance.
->>
->> What is the best way to solve this dilemma? Identify the critical path
->> in our use case? Is there a way we can get around the irqsave in
->> led_trigger_event()?
-> 
-> Hans was pushing for this patch, perhaps he has some ideas...
+Thanks for this, but I think we may use the fwnode API. See below.
 
-I was not pushing for this particular fix, I was asking about a fix
-for the lockdep identified potential deadlock.
+...
 
-And you replied that this was already fixed in your for-next branch
-when I asked, so all in all, other then reporting the potential deadlock
-(after it was already fixed) I have very little do to with this patch.
+> +#include <linux/gpio/regmap.h>
+> +#include <linux/mfd/syscon.h>
 
-With that all said, I must say that I'm surprised that switching from
-read_lock() to read_lock_irqsave() causes such a hefty penalty, so I
-wonder what is really going on here. Using the irqsave version disables
-interrupts, but AFAIK only on the current core and only for the duration
-of the led_set_brightness() call(s) . 
+> +#include <linux/of.h>
 
-Is the system perhaps pinning IRQs to a specific CPU in combination with
-a led_set_brightness() somehow taking much longer then it should?
++ property.h
++ mod_devicetable.h
 
-Note that led_set_brightness() calls are not allowed to block, if they
-block they should use the brightness_set_blocking callback in their
-led_class_dev struct not the regular brightness_set callback. In which case
-the LED-core will defer the actually setting of the LED to a workqueue.
+> +#include <linux/platform_device.h>
+> +
+> +#include "pinctrl-bcm63xx.h"
 
-So one thing which might be worthwhile to check is if any of the LED
-drivers on the system in question are using the brightness_set callback,
-where they should be using the blocking one.
+> +static int bcm63xx_reg_mask_xlate(struct gpio_regmap *gpio,
+> +                                 unsigned int base, unsigned int offset,
+> +                                 unsigned int *reg, unsigned int *mask)
+> +{
+> +       unsigned int line =3D offset % BCM63XX_BANK_GPIOS;
+> +       unsigned int stride =3D offset / BCM63XX_BANK_GPIOS;
+> +
+> +       *reg =3D base - stride * BCM63XX_BANK_SIZE;
+> +       *mask =3D BIT(line);
+> +
+> +       return 0;
+> +}
 
-Regards,
+> +static int bcm63xx_gpio_probe(struct device *dev, struct device_node *no=
+de,
 
-Hans
+device_node *node -> fwnode_handle *fwnode
 
+> +                             const struct bcm63xx_pinctrl_soc *soc,
+> +                             struct bcm63xx_pinctrl *pc)
+> +{
+> +       struct gpio_regmap_config grc =3D {0};
+> +
+> +       grc.parent =3D dev;
+
+> +       grc.fwnode =3D &node->fwnode;
+
+grc.fwnode =3D fwnode;
+
+> +       grc.ngpio =3D soc->ngpios;
+> +       grc.ngpio_per_reg =3D BCM63XX_BANK_GPIOS;
+> +       grc.regmap =3D pc->regs;
+> +       grc.reg_mask_xlate =3D bcm63xx_reg_mask_xlate;
+
+> +       if (of_property_read_u32(node, "data", &grc.reg_dat_base))
+
+fwnode_property_read_u32()
+
+> +               grc.reg_dat_base =3D BCM63XX_DATA_REG;
+> +       grc.reg_set_base =3D grc.reg_dat_base;
+
+> +       if (of_property_read_u32(node, "dirout", &grc.reg_dir_out_base))
+
+Ditto.
+
+> +               grc.reg_dir_out_base =3D BCM63XX_DIROUT_REG;
+> +
+> +       return PTR_ERR_OR_ZERO(devm_gpio_regmap_register(dev, &grc));
+> +}
+> +
+> +int bcm63xx_pinctrl_probe(struct platform_device *pdev,
+> +                         const struct bcm63xx_pinctrl_soc *soc,
+> +                         void *driver_data)
+> +{
+> +       struct device *dev =3D &pdev->dev;
+> +       struct bcm63xx_pinctrl *pc;
+
+> +       struct device_node *node;
+
+struct fwnode_handle *fwnode;
+
+> +       int err;
+> +
+> +       pc =3D devm_kzalloc(dev, sizeof(*pc), GFP_KERNEL);
+> +       if (!pc)
+> +               return -ENOMEM;
+> +
+> +       platform_set_drvdata(pdev, pc);
+> +
+> +       pc->dev =3D dev;
+> +       pc->driver_data =3D driver_data;
+
+> +       pc->regs =3D syscon_node_to_regmap(dev->parent->of_node);
+> +       if (IS_ERR(pc->regs))
+> +               return PTR_ERR(pc->regs);
+> +
+> +       pc->pctl_desc.name =3D dev_name(dev);
+> +       pc->pctl_desc.pins =3D soc->pins;
+> +       pc->pctl_desc.npins =3D soc->npins;
+> +       pc->pctl_desc.pctlops =3D soc->pctl_ops;
+> +       pc->pctl_desc.pmxops =3D soc->pmx_ops;
+> +       pc->pctl_desc.owner =3D THIS_MODULE;
+> +
+> +       pc->pctl_dev =3D devm_pinctrl_register(dev, &pc->pctl_desc, pc);
+> +       if (IS_ERR(pc->pctl_dev))
+> +               return PTR_ERR(pc->pctl_dev);
+
+> +       for_each_child_of_node(dev->of_node, node) {
+
+device_for_each_child_node(dev, fwnode) {
+
+> +               if (of_match_node(bcm63xx_gpio_of_match, node)) {
+
+// for now, since we have not an analogue (yet)
+node =3D=3D> to_of_node(fwnode)
+
+> +                       err =3D bcm63xx_gpio_probe(dev, node, soc, pc);
+
+...(dev, fwnode, soc, pc);
+
+> +                       if (err) {
+> +                               dev_err(dev, "could not add GPIO chip\n")=
+;
+
+> +                               of_node_put(node);
+
+fwnode_handle_put(fwnode);
+
+> +                               return err;
+> +                       }
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
+> diff --git a/drivers/pinctrl/bcm/pinctrl-bcm63xx.h b/drivers/pinctrl/bcm/=
+pinctrl-bcm63xx.h
+> new file mode 100644
+> index 000000000000..3bdb50021f1b
+> --- /dev/null
+> +++ b/drivers/pinctrl/bcm/pinctrl-bcm63xx.h
+> @@ -0,0 +1,43 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Copyright (C) 2021 =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.co=
+m>
+> + * Copyright (C) 2016 Jonas Gorski <jonas.gorski@gmail.com>
+> + */
+> +
+> +#ifndef __PINCTRL_BCM63XX_H__
+> +#define __PINCTRL_BCM63XX_H__
+> +
+> +#include <linux/pinctrl/pinctrl.h>
+> +
+> +#define BCM63XX_BANK_GPIOS 32
+> +
+> +struct bcm63xx_pinctrl_soc {
+> +       struct pinctrl_ops *pctl_ops;
+> +       struct pinmux_ops *pmx_ops;
+> +
+> +       const struct pinctrl_pin_desc *pins;
+> +       unsigned npins;
+> +
+> +       unsigned int ngpios;
+> +};
+> +
+> +struct bcm63xx_pinctrl {
+> +       struct device *dev;
+> +       struct regmap *regs;
+> +
+> +       struct pinctrl_desc pctl_desc;
+> +       struct pinctrl_dev *pctl_dev;
+> +
+> +       void *driver_data;
+> +};
+> +
+> +static inline unsigned int bcm63xx_bank_pin(unsigned int pin)
+> +{
+> +       return pin % BCM63XX_BANK_GPIOS;
+> +}
+> +
+> +int bcm63xx_pinctrl_probe(struct platform_device *pdev,
+> +                         const struct bcm63xx_pinctrl_soc *soc,
+> +                         void *driver_data);
+> +
+> +#endif /* __PINCTRL_BCM63XX_H__ */
+> --
+> 2.20.1
+>
+
+
+--
+With Best Regards,
+Andy Shevchenko
