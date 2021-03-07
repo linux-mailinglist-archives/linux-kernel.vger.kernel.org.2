@@ -2,156 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577B6330537
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 00:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99EAA330539
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 00:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233294AbhCGXvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 18:51:10 -0500
-Received: from mga17.intel.com ([192.55.52.151]:46866 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229797AbhCGXuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 18:50:32 -0500
-IronPort-SDR: pwSX+dk9L+fi22pZ5Ud10wAJHXGO11yuToTEKIshtu66U9YSrEsK69D73zoJZCEElbO99Y+cLP
- rwsuiua85T2g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="167846651"
-X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
-   d="scan'208";a="167846651"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 15:50:31 -0800
-IronPort-SDR: uRqqECxC8vUIEdMu/4tTwt7PdBmi+zTwwUh+kXMtrh5JzasxrG9oq194U1/8XlViglmbBTVPAl
- Cu4NG00r6iuQ==
-X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
-   d="scan'208";a="409096469"
-Received: from ggkanher-mobl4.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.252.142.177])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 15:50:28 -0800
-Date:   Mon, 8 Mar 2021 12:50:26 +1300
-From:   Kai Huang <kai.huang@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
-        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, jethro@fortanix.com,
-        b.thiel@posteo.de
-Subject: Re: [PATCH 06/25] x86/cpu/intel: Allow SGX virtualization without
- Launch Control support
-Message-Id: <20210308125026.08ece7c1f99406a14812715e@intel.com>
-In-Reply-To: <20210305172957.GE2685@zn.tnic>
-References: <cover.1614590788.git.kai.huang@intel.com>
-        <12541888ae9ac7f517582aa64d9153feede7aed4.1614590788.git.kai.huang@intel.com>
-        <20210305172957.GE2685@zn.tnic>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233304AbhCGXyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 18:54:03 -0500
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:34702 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231894AbhCGXxz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 18:53:55 -0500
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJ3BA-003qHP-4O; Sun, 07 Mar 2021 23:51:20 +0000
+Date:   Sun, 7 Mar 2021 23:51:20 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
+Cc:     Ian Kent <raven@themaw.net>, Matthew Wilcox <willy@infradead.org>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>, autofs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Miklos Szeredi <mszeredi@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Ross Zwisler <zwisler@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Mattias Nissler <mnissler@chromium.org>,
+        linux-fsdevel@vger.kernel.org, alexander@mihalicyn.com
+Subject: Re: [RFC PATCH] autofs: find_autofs_mount overmounted parent support
+Message-ID: <YEVm+KH/R5y2rU7K@zeniv-ca.linux.org.uk>
+References: <20210303152931.771996-1-alexander.mikhalitsyn@virtuozzo.com>
+ <832c1a384dc0b71b2902accf3091ea84381acc10.camel@themaw.net>
+ <20210304131133.0ad93dee12a17f41f4052bcb@virtuozzo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304131133.0ad93dee12a17f41f4052bcb@virtuozzo.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Mar 2021 18:29:57 +0100 Borislav Petkov wrote:
-> On Mon, Mar 01, 2021 at 10:45:02PM +1300, Kai Huang wrote:
-> > From: Sean Christopherson <sean.j.christopherson@intel.com>
-> > 
-> > The kernel will currently disable all SGX support if the hardware does
-> > not support launch control.  Make it more permissive to allow SGX
-> > virtualization on systems without Launch Control support.  This will
-> > allow KVM to expose SGX to guests that have less-strict requirements on
-> > the availability of flexible launch control.
-> > 
-> > Improve error message to distinguish between three cases.  There are two
-> > cases where SGX support is completely disabled:
-> > 1) SGX has been disabled completely by the BIOS
-> > 2) SGX LC is locked by the BIOS.  Bare-metal support is disabled because
-> >    of LC unavailability.  SGX virtualization is unavailable (because of
-> >    Kconfig).
-> > One where it is partially available:
-> > 3) SGX LC is locked by the BIOS.  Bare-metal support is disabled because
-> >    of LC unavailability.  SGX virtualization is supported.
-> > 
-> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> > Co-developed-by: Kai Huang <kai.huang@intel.com>
-> > Acked-by: Dave Hansen <dave.hansen@intel.com>
-> > Signed-off-by: Kai Huang <kai.huang@intel.com>
-> > ---
-> >  arch/x86/kernel/cpu/feat_ctl.c | 57 ++++++++++++++++++++++++++--------
-> >  1 file changed, 44 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/arch/x86/kernel/cpu/feat_ctl.c b/arch/x86/kernel/cpu/feat_ctl.c
-> > index 27533a6e04fa..96c370284913 100644
-> > --- a/arch/x86/kernel/cpu/feat_ctl.c
-> > +++ b/arch/x86/kernel/cpu/feat_ctl.c
-> > @@ -105,7 +105,8 @@ early_param("nosgx", nosgx);
-> >  void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
-> >  {
-> >  	bool tboot = tboot_enabled();
-> > -	bool enable_sgx;
-> > +	bool enable_sgx_any, enable_sgx_kvm, enable_sgx_driver;
-> > +	bool enable_vmx;
-> >  	u64 msr;
-> 
-> The preferred ordering of variable declarations at the beginning of a
-> function is reverse fir tree order::
-> 
-> 	struct long_struct_name *descriptive_name;
-> 	unsigned long foo, bar;
-> 	unsigned int tmp;
-> 	int ret;
-> 
+On Thu, Mar 04, 2021 at 01:11:33PM +0300, Alexander Mikhalitsyn wrote:
 
-Will do.
+> That problem connected with CRIU (Checkpoint-Restore in Userspace) project.
+> In CRIU we have support of autofs mounts C/R. To acheive that we need to use
+> ioctl's from /dev/autofs to get data about mounts, restore mount as catatonic
+> (if needed), change pipe fd and so on. But the problem is that during CRIU
+> dump we may meet situation when VFS subtree where autofs mount present was
+> overmounted as whole.
+> 
+> Simpliest example is /proc/sys/fs/binfmt_misc. This mount present on most
+> GNU/Linux distributions by default. For instance on my Fedora 33:
+> 
+> trigger automount of binfmt_misc
+> $ ls /proc/sys/fs/binfmt_misc
+> 
+> $ cat /proc/1/mountinfo | grep binfmt
+> 35 24 0:36 / /proc/sys/fs/binfmt_misc rw,relatime shared:16 - autofs systemd-1 rw,...,direct,pipe_ino=223
+> 632 35 0:56 / /proc/sys/fs/binfmt_misc rw,...,relatime shared:315 - binfmt_misc binfmt_misc rw
+> 
+> $ sudo unshare -m -p --fork --mount-proc sh
+> # cat /proc/self/mountinfo | grep "/proc"
+> 828 809 0:23 / /proc rw,nosuid,nodev,noexec,relatime - proc proc rw
+> 829 828 0:36 / /proc/sys/fs/binfmt_misc rw,relatime - autofs systemd-1 rw,...,direct,pipe_ino=223
+> 943 829 0:56 / /proc/sys/fs/binfmt_misc rw,...,relatime - binfmt_misc binfmt_misc rw
+> 949 828 0:57 / /proc rw...,relatime - proc proc rw
+> 
+> As we can see now autofs mount /proc/sys/fs/binfmt_misc is inaccessible.
+> If we do something like:
+> 
+> struct autofs_dev_ioctl *param;
+> param = malloc(...);
+> devfd = open("/dev/autofs", O_RDONLY);
+> init_autofs_dev_ioctl(param);
+> param->size = size;
+> strcpy(param->path, "/proc/sys/fs/binfmt_misc");
+> param->openmount.devid = 36;
+> err = ioctl(devfd, AUTOFS_DEV_IOCTL_OPENMOUNT, param)
+> 
+> now we get err = -ENOENT.
 
-Since as you suggested, enable_sgx_any will be removed, and initializing
-enable_sgx_driver/kvm will be moved into the if () statement, I think we should
-explicitly initialize them here. How about below?
+Where does that -ENOENT come from?  AFAICS, pathwalk ought to succeed and
+return you the root of overmounting binfmt_misc.  Why doesn't the loop in
+find_autofs_mount() locate anything it would accept?
 
-	bool enable_sgx_kvm = enable_sgx_driver = false;
-	bool tboot = tboot_enabled();
-	bool enable_vmx;
-	...
-
-> 
-> >  	if (rdmsrl_safe(MSR_IA32_FEAT_CTL, &msr)) {
-> > @@ -114,13 +115,21 @@ void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
-> >  		return;
-> >  	}
-> >  
-> > +	enable_vmx = cpu_has(c, X86_FEATURE_VMX) &&
-> > +		     IS_ENABLED(CONFIG_KVM_INTEL);
-> > +
-> >  	/*
-> > -	 * Enable SGX if and only if the kernel supports SGX and Launch Control
-> > -	 * is supported, i.e. disable SGX if the LE hash MSRs can't be written.
-> > +	 * Separate out SGX driver enabling from KVM.  This allows KVM
-> > +	 * guests to use SGX even if the kernel SGX driver refuses to
-> > +	 * use it.  This happens if flexible Faunch Control is not
-> > +	 * available.
-> >  	 */
-> > -	enable_sgx = cpu_has(c, X86_FEATURE_SGX) &&
-> > -		     cpu_has(c, X86_FEATURE_SGX_LC) &&
-> > -		     IS_ENABLED(CONFIG_X86_SGX);
-> > +	enable_sgx_any = cpu_has(c, X86_FEATURE_SGX) &&
-> > +			 IS_ENABLED(CONFIG_X86_SGX);
-> > +	enable_sgx_driver = enable_sgx_any &&
-> > +			    cpu_has(c, X86_FEATURE_SGX_LC);
-> > +	enable_sgx_kvm = enable_sgx_any && enable_vmx &&
-> > +			  IS_ENABLED(CONFIG_X86_SGX_KVM);
-> 
-> That enable_sgx_any use looks weird. You can get rid of it:
-> 
-> 	if (cpu_has(c, X86_FEATURE_SGX) && IS_ENABLED(CONFIG_X86_SGX)) {
-> 		enable_sgx_driver = cpu_has(c, X86_FEATURE_SGX_LC);
-> 		enable_sgx_kvm    = enable_vmx && IS_ENABLED(CONFIG_X86_SGX_KVM);
-> 	}
-> 
-> and yap, let longer lines stick out.
-
-Thanks. Will do.
-
-> 
-> Thx.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+I really dislike the patch - the whole "normalize path" thing is fundamentally
+bogus, not to mention the iterator over all mounts, etc., so I would like to
+understand what the hell is going on before even thinking of *not* NAKing
+it on sight.
