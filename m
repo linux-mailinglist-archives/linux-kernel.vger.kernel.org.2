@@ -2,119 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F30330052
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 12:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B379330057
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 12:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCGLdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 06:33:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
+        id S229960AbhCGLe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 06:34:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhCGLdf (ORCPT
+        with ESMTP id S229919AbhCGLd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 06:33:35 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D50C06174A;
-        Sun,  7 Mar 2021 03:33:35 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id j12so5215712pfj.12;
-        Sun, 07 Mar 2021 03:33:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QE9e3qNn83WSUIE3jJrl7w+oJ+JiRqDPe+H/RVHlaiQ=;
-        b=jAqGFUpvVIshblWcz1U92JGc/yzMRSJnQ4RRDb9E+TnPJHyE4UOL9UoKFi75TxovVB
-         BIk2hgvalBp3AZZdnAhoV5pLUklMWp0Zv75MJN/3FxoSrdksVVm9ekwCfGby/38kK9gU
-         xHDuASCH7ESLCeiiZJ2I67O3ABlNd0ECKi7jaQvv8WpzfIWEjsWkMQhfw9yQTEaHc69t
-         P2M8ao0YjlE6w8ibGYsBk2g5IeRgd9uYGqX+DRULmictZtgj7zhPwVsaM0VqH+/LNW9U
-         e+cG7skQI5UOcDqc0E7Ej0hyPZaj+igV9qICRgsIOF20HXFh+ZN09JiR9X0wai147vT/
-         SmXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QE9e3qNn83WSUIE3jJrl7w+oJ+JiRqDPe+H/RVHlaiQ=;
-        b=mktKYtDLn4HLLYJwNE4zu81Nrx9Tghvo8VvoJm47bu027nYDdKrq50x3jIki/Smx5F
-         oj31PIEK3IhW1a57uBnQWK4aBeZJtfh1HiYW6+f/+EyXolPhyVrLqBV2O4LgDf2tZeut
-         hRlp22mk+as2DTlmch3BfeGFJDppOFEI4qrR2eYXBscm0JEhitaidXceAuDwOdyvkQ0S
-         KaGA2OD4AYGA9QqDYrSGrECn/Zww4Fxrk7LVzDqs7MbzlitFsg1zK5vpwVgUyEP9oY5p
-         mHyR7yxxZNcNLieDUl950rQDisvCF4gjdSJ4fK5v+KAB1UYwjbRLqhsGX9Jc53h9mtXv
-         3/ug==
-X-Gm-Message-State: AOAM533xboWAf8FM2z9e3vEBs8kjDEP1Ubjo35roQ4k2oky5jSavZM65
-        MLCalgZlrdwenv0p99ksF0A=
-X-Google-Smtp-Source: ABdhPJxTGMQM2ns0X8ie7NcjXNv+b1/ikFV/9hVY8e25+Uro7slGW55TB38Ver9fiekPS5XUH7f6vQ==
-X-Received: by 2002:a63:5a02:: with SMTP id o2mr16054504pgb.202.1615116814913;
-        Sun, 07 Mar 2021 03:33:34 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:8b48:4689:855d:ef6b])
-        by smtp.gmail.com with ESMTPSA id r10sm7100110pfq.216.2021.03.07.03.33.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 03:33:34 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Martin Schiller <ms@dev.tdt.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net] net: lapbether: Remove netif_start_queue / netif_stop_queue
-Date:   Sun,  7 Mar 2021 03:33:07 -0800
-Message-Id: <20210307113309.443631-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Sun, 7 Mar 2021 06:33:57 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8D6C061760;
+        Sun,  7 Mar 2021 03:33:57 -0800 (PST)
+Received: from ip4d142c50.dynamic.kabel-deutschland.de ([77.20.44.80] helo=truhe.fritz.box); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1lIrfT-0002Ox-DZ; Sun, 07 Mar 2021 12:33:51 +0100
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] docs: reporting-issues: a easier process for reporting stable regressions
+Date:   Sun,  7 Mar 2021 12:33:48 +0100
+Message-Id: <cover.1615116592.git.linux@leemhuis.info>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1615116837;e43d2063;
+X-HE-SMSGID: 1lIrfT-0002Ox-DZ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the devices in this driver, the default qdisc is "noqueue",
-because their "tx_queue_len" is 0.
+This series creates a streamlined process for users wanting to report
+regressions within a stable and longterm kernel series. The existing process is
+too demanding, complicated and takes too much time for this case.
 
-In function "__dev_queue_xmit" in "net/core/dev.c", devices with the
-"noqueue" qdisc are specially handled. Packets are transmitted without
-being queued after a "dev->flags & IFF_UP" check. However, it's possible
-that even if this check succeeds, "ops->ndo_stop" may still have already
-been called. This is because in "__dev_close_many", "ops->ndo_stop" is
-called before clearing the "IFF_UP" flag.
+I didn't CC the stable maintainers here, they need to review the whole document
+anyway once the last few details have been sorted out.
 
-If we call "netif_stop_queue" in "ops->ndo_stop", then it's possible in
-"__dev_queue_xmit", it sees the "IFF_UP" flag is present, and then it
-checks "netif_xmit_stopped" and finds that the queue is already stopped.
-In this case, it will complain that:
-"Virtual device ... asks to queue packet!"
+v2:
+* inital version, starting straight with v2 to avoid confusion, as one of the
+patches was submitted earlier already
 
-To prevent "__dev_queue_xmit" from generating this complaint, we should
-not call "netif_stop_queue" in "ops->ndo_stop".
+Thorsten Leemhuis (2):
+  docs: reporting-issues.rst: move tainted check upwards
+  docs: reporting-issues.rst: shortcut for reporting stable regressions
 
-We also don't need to call "netif_start_queue" in "ops->ndo_open",
-because after a netdev is allocated and registered, the
-"__QUEUE_STATE_DRV_XOFF" flag is initially not set, so there is no need
-to call "netif_start_queue" to clear it.
+ .../admin-guide/reporting-issues.rst          | 222 +++++++++++-------
+ 1 file changed, 135 insertions(+), 87 deletions(-)
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- drivers/net/wan/lapbether.c | 3 ---
- 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
-index 605fe555e157..c3372498f4f1 100644
---- a/drivers/net/wan/lapbether.c
-+++ b/drivers/net/wan/lapbether.c
-@@ -292,7 +292,6 @@ static int lapbeth_open(struct net_device *dev)
- 		return -ENODEV;
- 	}
- 
--	netif_start_queue(dev);
- 	return 0;
- }
- 
-@@ -300,8 +299,6 @@ static int lapbeth_close(struct net_device *dev)
- {
- 	int err;
- 
--	netif_stop_queue(dev);
--
- 	if ((err = lapb_unregister(dev)) != LAPB_OK)
- 		pr_err("lapb_unregister error: %d\n", err);
- 
+base-commit: ba5cb300e0b540a330d579402d72cdd1808e5a8f
 -- 
-2.27.0
+2.29.2
 
