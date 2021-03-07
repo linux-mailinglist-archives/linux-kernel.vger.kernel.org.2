@@ -2,125 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD6D3304C9
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 22:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D88F3304CA
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 22:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232988AbhCGVMD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 7 Mar 2021 16:12:03 -0500
-Received: from aposti.net ([89.234.176.197]:54586 "EHLO aposti.net"
+        id S233014AbhCGVO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 16:14:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231397AbhCGVLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 16:11:33 -0500
-Date:   Sun, 07 Mar 2021 21:11:18 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 3/3] input: gpio-keys: Use hrtimer for software debounce
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     od@zcrc.me, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Message-Id: <UUAMPQ.MF37I5G7AY0J2@crapouillou.net>
-In-Reply-To: <YEU1irDqZJCdCS0o@google.com>
-References: <20210305170111.214782-1-paul@crapouillou.net>
-        <20210305170111.214782-3-paul@crapouillou.net> <YEJ57PuEyYknR3MF@google.com>
-        <79IIPQ.DQ7JNXZ0OI5Q2@crapouillou.net> <YEU1irDqZJCdCS0o@google.com>
+        id S231397AbhCGVOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 16:14:40 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 380A965155;
+        Sun,  7 Mar 2021 21:14:39 +0000 (UTC)
+Date:   Sun, 7 Mar 2021 16:14:37 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Chen <peter.chen@kernel.org>
+Cc:     Pawel Laszczak <pawell@cadence.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jacob Wen <jian.w.wen@oracle.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 0/2] tracing: Detect unsafe dereferencing of pointers
+ from trace events
+Message-ID: <20210307161437.4c00cd4a@gandalf.local.home>
+In-Reply-To: <20210307040142.GA2930@b29397-desktop>
+References: <20210226185909.100032746@goodmis.org>
+        <CAHk-=wiWF=ah_q1HBVUth2vuBx2TieN8U331y5FhXiehX-+=TQ@mail.gmail.com>
+        <20210227141802.5c9aca91@oasis.local.home>
+        <20210227190831.56956c80@oasis.local.home>
+        <BYAPR07MB5381637CFA12C3988CA06550DD9A9@BYAPR07MB5381.namprd07.prod.outlook.com>
+        <20210302082355.GA8633@nchen>
+        <20210302095605.7b2881cd@gandalf.local.home>
+        <20210307040142.GA2930@b29397-desktop>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+On Sun, 7 Mar 2021 12:01:42 +0800
+Peter Chen <peter.chen@kernel.org> wrote:
 
-Le dim. 7 mars 2021 à 12:20, Dmitry Torokhov 
-<dmitry.torokhov@gmail.com> a écrit :
-> On Fri, Mar 05, 2021 at 08:00:43PM +0000, Paul Cercueil wrote:
->>  Hi Dmitry,
->> 
->>  Le ven. 5 mars 2021 à 10:35, Dmitry Torokhov 
->> <dmitry.torokhov@gmail.com> a
->>  écrit :
->>  > Hi Paul,
->>  >
->>  > On Fri, Mar 05, 2021 at 05:01:11PM +0000, Paul Cercueil wrote:
->>  > >  -static void gpio_keys_gpio_work_func(struct work_struct *work)
->>  > >  +static enum hrtimer_restart gpio_keys_debounce_timer(struct
->>  > > hrtimer *t)
->>  > >   {
->>  > >  -	struct gpio_button_data *bdata =
->>  > >  -		container_of(work, struct gpio_button_data, work.work);
->>  > >  +	struct gpio_button_data *bdata = container_of(t,
->>  > >  +						      struct gpio_button_data,
->>  > >  +						      debounce_timer);
->>  > >
->>  > >   	gpio_keys_gpio_report_event(bdata);
->>  >
->>  > I am not sure how this works. As far as I know, even
->>  > HRTIMER_MODE_REL_SOFT do not allow sleeping in the timer 
->> handlers, and
->>  > gpio_keys_gpio_report_event() use sleeping variant of GPIOD API 
->> (and
->>  > that is not going to change).
->> 
->>  Quoting <linux/hrtimers.h>, the "timer callback will be executed in 
->> soft irq
->>  context", so sleeping should be possible.
+> On 21-03-02 09:56:05, Steven Rostedt wrote:
+> > On Tue, 2 Mar 2021 16:23:55 +0800
+> > Peter Chen <peter.chen@kernel.org> wrote:
+> > 
+> > s it looks like it uses %pa which IIUC from the printk code, it  
+> > > > >> dereferences the pointer to find it's virtual address. The event has
+> > > > >> this as the field:
+> > > > >>
+> > > > >>                 __field(struct cdns3_trb *, start_trb_addr)
+> > > > >>
+> > > > >> Assigns it with:
+> > > > >>
+> > > > >>                 __entry->start_trb_addr = req->trb;
+> > > > >>
+> > > > >> And prints that with %pa, which will dereference pointer at the time of
+> > > > >> reading, where the address in question may no longer be around. That
+> > > > >> looks to me as a potential bug.    
+> > > 
+> > > Steven, thanks for reporting. Do you mind sending patch to fix it?
+> > > If you have no time to do it, I will do it later.
+> > >   
+> > 
+> > I would have already fixed it, but I wasn't exactly sure how this is used.
+> > 
+> > In Documentation/core-api/printk-formats.rst we have:
+> > 
+> >    Physical address types phys_addr_t
+> >    ----------------------------------
+> > 
+> >    ::
+> > 
+> >            %pa[p]  0x01234567 or 0x0123456789abcdef
+> > 
+> >    For printing a phys_addr_t type (and its derivatives, such as
+> >    resource_size_t) which can vary based on build options, regardless of the
+> >    width of the CPU data path.
+> > 
+> > So it only looks like it is used to for the size of the pointer.
+> > 
+> > I guess something like this might work:
+> > 
+> > diff --git a/drivers/usb/cdns3/cdns3-trace.h b/drivers/usb/cdns3/cdns3-trace.h
+> > index 8648c7a7a9dd..d3b8624fc427 100644
+> > --- a/drivers/usb/cdns3/cdns3-trace.h
+> > +++ b/drivers/usb/cdns3/cdns3-trace.h
+> > @@ -214,7 +214,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
+> >  		__field(int, no_interrupt)
+> >  		__field(int, start_trb)
+> >  		__field(int, end_trb)
+> > -		__field(struct cdns3_trb *, start_trb_addr)
+> > +		__field(phys_addr_t, start_trb_addr)
+> >  		__field(int, flags)
+> >  		__field(unsigned int, stream_id)
+> >  	),
+> > @@ -230,7 +230,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
+> >  		__entry->no_interrupt = req->request.no_interrupt;
+> >  		__entry->start_trb = req->start_trb;
+> >  		__entry->end_trb = req->end_trb;
+> > -		__entry->start_trb_addr = req->trb;
+> > +		__entry->start_trb_addr = *(const phys_addr_t *)req->trb;
+> >  		__entry->flags = req->flags;
+> >  		__entry->stream_id = req->request.stream_id;
+> >  	),
+> > @@ -244,7 +244,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
+> >  		__entry->status,
+> >  		__entry->start_trb,
+> >  		__entry->end_trb,
+> > -		__entry->start_trb_addr,
+> > +		/* %pa dereferences */ &__entry->start_trb_addr,
+> >  		__entry->flags,
+> >  		__entry->stream_id
+> >  	)
+> > 
+> > 
+> > Can you please test it? I don't have the hardware, but I also want to make
+> > sure I don't break anything.
+> > 
+> > Thanks,
+> >   
 > 
-> I am afraid you misunderstand what soft irq context is, as softirqs 
-> and
-> tasklets still run in interrupt context and therefore can not sleep,
-> only code running in process context may sleep.
+> Since the virtual address for req->trb is NULL before using it. It will
+> trigger below oops using your change. There is already index
+> (start_trb/end_trb) for which TRB it has handled, it is not necessary
+> to trace information for its physical address. I decide to delete this
+> trace entry, thanks for reporting it.
 
-I probably do. My understanding of "softirq" is that the callback runs 
-in a threaded interrupt handler.
+Thanks for fixing / removing it. But I should have added a NULL check before
+dereferencing, because that's what the vsnprintf() code does.
 
-> You can test it yourself by sticking "msleep(1)" in
-> gpio_keys_debounce_timer() and see if you will get "scheduling while
-> atomic" in logs.
-
-I tested it, it locks up.
-
->> 
->>  But I guess in this case I can use HRTIMER_MODE_REL.
-> 
-> This changes selected clock source, but has no effect on whether timer
-> handler can sleep or not.
-> 
->> 
->>  > It seems to me that if you want to use software debounce in gpio 
->> keys
->>  > driver you need to set up sufficiently high HZ for your system. 
->> Maybe we
->>  > could thrown a warning when we see low debounce delay and low HZ 
->> to
->>  > alert system developer.
->> 
->>  This is exactly what we should not do. I certainly don't want to 
->> have 250+
->>  timer interrupts per second just so that input events aren't lost, 
->> to work
->>  around a sucky debounce implementation. Besides, if you consider the
->>  hrtimers doc (Documentation/timers/hrtimers.rst), hrtimers really 
->> are what
->>  should be used here.
-> 
-> I explained why they can't. They could be if you restrict gpio_keys to
-> only be used with GPIOs that do not require sleep to read their state,
-> but I am not willing to accept such restriction. You either need to 
-> have
-> longer debounce, higher HZ, or see if you can use GPIO controller that
-> supports debounce handling. See also if you can enable dynamic
-> ticks/NO_HZ to limit number of timer interrupts on idle system.
-
-We can also use the hrtimer approach if the GPIO doesn't require sleep, 
-and fall back to the standard timer if it does. It's possible to detect 
-that with gpiod_cansleep(). The diff would be pretty slim. Would you 
-accept something like that?
-
-Switching from HZ=250 to HZ=24 leads to a 3% overall performance 
-increase across all apps on our system, so a pretty big optimization, 
-and this is the only blocker.
-
-Cheers,
--Paul
-
-
+-- Steve
