@@ -2,201 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B46D3304FB
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 23:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E513304FD
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 23:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233205AbhCGWX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 17:23:29 -0500
-Received: from aposti.net ([89.234.176.197]:34054 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231405AbhCGWXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 17:23:03 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     od@zcrc.me, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v3 3/3] input: gpio-keys: Use hrtimer for software debounce, if possible
-Date:   Sun,  7 Mar 2021 22:22:40 +0000
-Message-Id: <20210307222240.380583-3-paul@crapouillou.net>
-In-Reply-To: <20210307222240.380583-1-paul@crapouillou.net>
-References: <20210307222240.380583-1-paul@crapouillou.net>
+        id S229922AbhCGW1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 17:27:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhCGW1Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 17:27:16 -0500
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 246E1C06174A;
+        Sun,  7 Mar 2021 14:27:16 -0800 (PST)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id C3DD792009C; Sun,  7 Mar 2021 23:27:14 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id B7ACC92009B;
+        Sun,  7 Mar 2021 23:27:14 +0100 (CET)
+Date:   Sun, 7 Mar 2021 23:27:14 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH v2] MIPS: kernel: Reserve exception base early to prevent
+ corruption
+In-Reply-To: <20210307214740.blgsti6mr546bm43@mobilestation>
+Message-ID: <alpine.DEB.2.21.2103072317320.51127@angie.orcam.me.uk>
+References: <20210306082910.3472-1-tsbogend@alpha.franken.de> <20210307200612.6ftvptnj4txaf2uy@mobilestation> <20210307212001.GA7835@alpha.franken.de> <20210307214740.blgsti6mr546bm43@mobilestation>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We want to be able to report the input event as soon as the debounce
-delay elapsed. However, the current code does not really ensure that,
-as it uses the jiffies-based schedule_delayed_work() API. With a small
-enough HZ value (HZ <= 100), this results in some input events being
-lost, when a key is quickly pressed then released (on a human's time
-scale).
+On Mon, 8 Mar 2021, Serge Semin wrote:
 
-Switching to hrtimers fixes this issue, and will work even on extremely
-low HZ values (tested at HZ=24). This is however only possible if
-reading the GPIO is possible without sleeping. If this condition is not
-met, the previous approach of using a jiffies-based timer is taken.
+> > some of them are not R2 (SB1), others are. So best bet would be to
+> > simply reserve the first 0x1000 bytes for every CPU and special handling
+> > for the BMIPS case. Does this cover all cases ?
+> 
+> I can't say for sure whether it will cover all the cases/platforms. I
+> visually analysed all the
+> board_{nmi_handler,ejtag_handler,ebase,cache_error}_setup callbacks
+> implementation in MIPS arch to create the list above. Exception vectors or
+> some other stuff can be setup in some other platform-specific manner. But at
+> least reserving a memory below PAGE_SIZE would get the situation partly back
+> to before the memory below the kernel stopped being reserved. Hopefully
+> one page will be enough for the platforms, which relied on that rule. The
+> rest or them sooner or later will manifest itself as it has happened with
+> Broadcom.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
+ I think reserving up to 64KiB might be a bit excessive on one hand while 
+having the size of the reservation depend on configured PAGE_SIZE could be 
+too unpredictable on the other.  I think 4KiB is a good compromise and I'd 
+leave anything else for platform maintainers to sort out.
 
-Notes:
-    v2: HRTIMER_MODE_REL_SOFT -> HRTIMER_MODE_REL
-    
-    v3: Only use a hrtimer-based timer if we know that reading the GPIO
-        will never sleep.
-
- drivers/input/keyboard/gpio_keys.c | 69 ++++++++++++++++++++++++------
- 1 file changed, 56 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/input/keyboard/gpio_keys.c b/drivers/input/keyboard/gpio_keys.c
-index 4b92f49decef..046d9dffa171 100644
---- a/drivers/input/keyboard/gpio_keys.c
-+++ b/drivers/input/keyboard/gpio_keys.c
-@@ -41,6 +41,7 @@ struct gpio_button_data {
- 	unsigned int release_delay;	/* in msecs, for IRQ-only buttons */
- 
- 	struct delayed_work work;
-+	struct hrtimer debounce_timer;
- 	unsigned int software_debounce;	/* in msecs, for GPIO-driven buttons */
- 
- 	unsigned int irq;
-@@ -49,6 +50,7 @@ struct gpio_button_data {
- 	bool disabled;
- 	bool key_pressed;
- 	bool suspended;
-+	bool debounce_use_hrtimer;
- };
- 
- struct gpio_keys_drvdata {
-@@ -144,10 +146,12 @@ static void gpio_keys_disable_button(struct gpio_button_data *bdata)
- 		 */
- 		disable_irq(bdata->irq);
- 
--		if (bdata->gpiod)
--			cancel_delayed_work_sync(&bdata->work);
--		else
-+		if (!bdata->gpiod)
- 			hrtimer_cancel(&bdata->release_timer);
-+		else if (bdata->debounce_use_hrtimer)
-+			hrtimer_cancel(&bdata->debounce_timer);
-+		else
-+			cancel_delayed_work_sync(&bdata->work);
- 
- 		bdata->disabled = true;
- 	}
-@@ -361,7 +365,10 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
- 	unsigned int type = button->type ?: EV_KEY;
- 	int state;
- 
--	state = gpiod_get_value_cansleep(bdata->gpiod);
-+	if (bdata->debounce_use_hrtimer)
-+		state = gpiod_get_value(bdata->gpiod);
-+	else
-+		state = gpiod_get_value_cansleep(bdata->gpiod);
- 	if (state < 0) {
- 		dev_err(input->dev.parent,
- 			"failed to get gpio state: %d\n", state);
-@@ -376,11 +383,8 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
- 	}
- }
- 
--static void gpio_keys_gpio_work_func(struct work_struct *work)
-+static void gpio_keys_debounce_event(struct gpio_button_data *bdata)
- {
--	struct gpio_button_data *bdata =
--		container_of(work, struct gpio_button_data, work.work);
--
- 	gpio_keys_gpio_report_event(bdata);
- 	input_sync(bdata->input);
- 
-@@ -388,6 +392,26 @@ static void gpio_keys_gpio_work_func(struct work_struct *work)
- 		pm_relax(bdata->input->dev.parent);
- }
- 
-+static void gpio_keys_gpio_work_func(struct work_struct *work)
-+{
-+	struct gpio_button_data *bdata = container_of(work,
-+						      struct gpio_button_data,
-+						      work.work);
-+
-+	gpio_keys_debounce_event(bdata);
-+}
-+
-+static enum hrtimer_restart gpio_keys_debounce_timer(struct hrtimer *t)
-+{
-+	struct gpio_button_data *bdata = container_of(t,
-+						      struct gpio_button_data,
-+						      debounce_timer);
-+
-+	gpio_keys_debounce_event(bdata);
-+
-+	return HRTIMER_NORESTART;
-+}
-+
- static irqreturn_t gpio_keys_gpio_isr(int irq, void *dev_id)
- {
- 	struct gpio_button_data *bdata = dev_id;
-@@ -409,9 +433,15 @@ static irqreturn_t gpio_keys_gpio_isr(int irq, void *dev_id)
- 		}
- 	}
- 
--	mod_delayed_work(system_wq,
--			 &bdata->work,
--			 msecs_to_jiffies(bdata->software_debounce));
-+	if (bdata->debounce_use_hrtimer) {
-+		hrtimer_start(&bdata->debounce_timer,
-+			      ms_to_ktime(bdata->software_debounce),
-+			      HRTIMER_MODE_REL);
-+	} else {
-+		mod_delayed_work(system_wq,
-+				 &bdata->work,
-+				 msecs_to_jiffies(bdata->software_debounce));
-+	}
- 
- 	return IRQ_HANDLED;
- }
-@@ -471,10 +501,12 @@ static void gpio_keys_quiesce_key(void *data)
- {
- 	struct gpio_button_data *bdata = data;
- 
--	if (bdata->gpiod)
-+	if (bdata->gpiod) {
-+		hrtimer_cancel(&bdata->debounce_timer);
- 		cancel_delayed_work_sync(&bdata->work);
--	else
-+	} else {
- 		hrtimer_cancel(&bdata->release_timer);
-+	}
- }
- 
- static int gpio_keys_setup_key(struct platform_device *pdev,
-@@ -546,6 +578,13 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
- 			if (error < 0)
- 				bdata->software_debounce =
- 						button->debounce_interval;
-+
-+			/*
-+			 * If reading the GPIO won't sleep, we can use a hrtimer
-+			 * instead of a standard timer for the software
-+			 * debounce, to reduce the latency as much as possible.
-+			 */
-+			bdata->debounce_use_hrtimer = !gpiod_cansleep(bdata->gpiod);
- 		}
- 
- 		if (button->irq) {
-@@ -564,6 +603,10 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
- 
- 		INIT_DELAYED_WORK(&bdata->work, gpio_keys_gpio_work_func);
- 
-+		hrtimer_init(&bdata->debounce_timer,
-+			     CLOCK_REALTIME, HRTIMER_MODE_REL);
-+		bdata->debounce_timer.function = gpio_keys_debounce_timer;
-+
- 		isr = gpio_keys_gpio_isr;
- 		irqflags = IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING;
- 
--- 
-2.30.1
-
+  Maciej
