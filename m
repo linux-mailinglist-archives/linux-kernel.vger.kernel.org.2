@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B774F330517
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 23:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C32933051A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 23:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233217AbhCGWx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 17:53:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233208AbhCGWxB (ORCPT
+        id S233228AbhCGW6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 17:58:01 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:50770 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233219AbhCGW6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 17:53:01 -0500
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA37C06175F
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 14:53:01 -0800 (PST)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 6C335891AE;
-        Mon,  8 Mar 2021 11:52:54 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1615157574;
-        bh=/uKpJ5Y+T9LW6SOC8eRw1AlWYpZCA12/OQkujPvvcJY=;
-        h=From:To:CC:Subject:Date;
-        b=GaUPz3mmGUBnXWWeJo65ql5yaIUz9E8ejIt68W1/UW14ePNIzX7emnkI0fBhGBT3x
-         cJQMFFzkiHVOY5vnAB9eFH/0mPoq9OCurVHzEhZylgDxQw3433CvQG07QQcbMNYXu3
-         6AhUCEpTrEmFk/xB2yXQjbcuZAvsxJxr1+9mzLDU2GLqjRH43XVbvbxaiIdTfSPtRK
-         oVTAKnoieZOjhMggKeK5w1jowP4NdbNejouZFk1fcFT8sSs4RjUpp2uP/7k9ScRbMW
-         n/337qaBOEo6GfOHuw2wrLAMc0YTDGf/Bmnchlqqz4kUM5YmJgXv9HEVzhzQ4rE6ft
-         fiepq67lhkkjA==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B604559460001>; Mon, 08 Mar 2021 11:52:54 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 8 Mar 2021 11:52:54 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.012; Mon, 8 Mar 2021 11:52:54 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     "jdelvare@suse.com" <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-CC:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Errant readings on LM81 with T2080 SoC
-Thread-Topic: Errant readings on LM81 with T2080 SoC
-Thread-Index: AQHXE6SbssdAOSHgwE+zIRhtn11Skw==
-Date:   Sun, 7 Mar 2021 22:52:53 +0000
-Message-ID: <8e0a88ba-01e9-9bc1-c78b-20f26ce27d12@alliedtelesis.co.nz>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F132F842DDAF194C9B19A1C4261BD2BA@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Sun, 7 Mar 2021 17:58:00 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 1465C1C0B76; Sun,  7 Mar 2021 23:57:58 +0100 (CET)
+Date:   Sun, 7 Mar 2021 23:57:57 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/52] 4.19.179-rc1 review
+Message-ID: <20210307225757.GA1911@amd>
+References: <20210305120853.659441428@linuxfoundation.org>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=v3EFt_4kAAAA:20 a=sozttTNsAAAA:8 a=1L_YXzs6ym7sghQsxOAA:9 a=QEXdDO2ut3YA:10 a=aeg5Gbbo78KNqacMgKqU:22 a=BPzZvq435JnGatEyYwdK:22 a=pHzHmUro8NiASowvMSCR:22 a=nt3jZW36AmriUCFCBwmW:22
-X-SEG-SpamProfiler-Score: 0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
+Content-Disposition: inline
+In-Reply-To: <20210305120853.659441428@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCkkndmUgZ290IGEgc3lzdGVtIHVzaW5nIGEgUG93ZXJQQyBUMjA4MCBTb0MgYW5kIGFt
-b25nIG90aGVyIHRoaW5ncyBoYXMgDQphbiBMTTgxIGh3bW9uIGNoaXAuDQoNClVuZGVyIGEgaGln
-aCBDUFUgbG9hZCB3ZSBzZWUgZXJyYW50IHJlYWRpbmdzIGZyb20gdGhlIExNODEgYXMgd2VsbCBh
-cyANCmFjdHVhbCBmYWlsdXJlcy4gSXQncyB0aGUgZXJyYW50IHJlYWRpbmdzIHRoYXQgY2F1c2Ug
-dGhlIG1vc3QgY29uY2VybiANCnNpbmNlIHdlIGNhbiBlYXNpbHkgaWdub3JlIHRoZSByZWFkIGVy
-cm9ycyBpbiBvdXIgbW9uaXRvcmluZyBhcHBsaWNhdGlvbiANCihhbHRob3VnaCBpdCB3b3VsZCBi
-ZSBiZXR0ZXIgaWYgdGhleSB3ZXJlbid0IHRoZXJlIGF0IGFsbCkuDQoNCkknbSBhYmxlIHRvIHJl
-cHJvZHVjZSB0aGlzIHdpdGggYSB0ZXN0IGFwcGxpY2F0aW9uWzBdIHRoYXQgYXJ0aWZpY2lhbGx5
-IA0KY3JlYXRlcyBhIGhpZ2ggQ1BVIGxvYWQgdGhlbiBieSByZXBlYXRlZGx5IGNoZWNraW5nIGZv
-ciB0aGUgYWxsLTFzIA0KdmFsdWVzIGZyb20gdGhlIExNODEgZGF0YXNoZWV0WzFdKHBhZ2UgMTcp
-LiBUaGUgYWxsLTFzIHJlYWRpbmdzIHN0aWNrIA0Kb3V0IGFzIHRoZXkgYXJlIG9idmlvdXNseSBo
-aWdoZXIgdGhhbiB0aGUgdm9sdGFnZSByYWlscyB0aGF0IGFyZSANCmNvbm5lY3RlZCBhbmQgZGlz
-YWdyZWUgd2l0aCBtZWFzdXJlbWVudHMgdGFrZW4gd2l0aCBhIG11bHRpbWV0ZXIuDQoNCkhlcmUn
-cyB0aGUgb3V0cHV0IGZyb20gbXkgZGV2aWNlDQoNCltyb290QGxpbnV4Ym94IH5dIyBjcHVsb2Fk
-IDkwJg0KW3Jvb3RAbGludXhib3ggfl0jICh3aGlsZSB0cnVlOyBkbyBjYXQgL3N5cy9jbGFzcy9o
-d21vbi9od21vbjAvaW4qX2lucHV0IA0KfCBncmVwICczMzIwXHw0MzgzXHw2NjQxXHwxNTkzMFx8
-MzU4Nic7IHNsZWVwIDE7IGRvbmUpJg0KMzU4Ng0KMzU4Ng0KY2F0OiByZWFkIGVycm9yOiBObyBz
-dWNoIGRldmljZSBvciBhZGRyZXNzDQpjYXQ6IHJlYWQgZXJyb3I6IE5vIHN1Y2ggZGV2aWNlIG9y
-IGFkZHJlc3MNCjMzMjANCjMzMjANCjM1ODYNCjM1ODYNCjY2NDENCjY2NDENCjQzODMNCjQzODMN
-Cg0KRnVuZGFtZW50YWxseSBJIHRoaW5rIHRoaXMgaXMgYSBwcm9ibGVtIHdpdGggdGhlIGZhY3Qg
-dGhhdCB0aGUgTE04MSBpcyANCmFuIFNNQnVzIGRldmljZSBidXQgdGhlIFQyMDgwIChhbmQgb3Ro
-ZXIgRnJlZXNjYWxlIFNvQ3MpIHVzZXMgaTJjIGFuZCB3ZSANCmVtdWxhdGUgU01CdXMuIEkgc3Vz
-cGVjdCB0aGUgZXJyYW50IHJlYWRpbmdzIGFyZSB3aGVuIHdlIGRvbid0IGdldCByb3VuZCANCnRv
-IGNvbXBsZXRpbmcgdGhlIHJlYWQgd2l0aGluIHRoZSB0aW1lb3V0IHNwZWNpZmllZCBieSB0aGUg
-U01CdXMgDQpzcGVjaWZpY2F0aW9uLiBEZXBlbmRpbmcgb24gd2hlbiB0aGF0IGhhcHBlbnMgd2Ug
-ZWl0aGVyIGZhaWwgdGhlIA0KdHJhbnNmZXIgb3IgaW50ZXJwcmV0IHRoZSByZXN1bHQgYXMgYWxs
-LTFzLg0KDQpbMF0gLSBodHRwczovL2dpc3QuZ2l0aHViLmNvbS9jcGFja2hhbS82MzU2YTNhOTQz
-YWNjZWJiMjI4MTM1ZGMxMGRhZjcyMQ0KWzFdIC0gaHR0cHM6Ly93d3cudGkuY29tL2xpdC9kcy9z
-eW1saW5rL2xtODEucGRmDQo=
+
+--17pEHd4RhPHOinZp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> This is the start of the stable review cycle for the 4.19.179 release.
+> There are 52 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+CIP testing did not find any problems here (apart from missing boards
+-- not a kernel problem):
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.19.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--17pEHd4RhPHOinZp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBFWnQACgkQMOfwapXb+vLongCgleNZnHl5GPb/DsYvVK4RuZ4j
+HxQAnjDcOx9eq9s719L7j0/Exx3hpwsZ
+=ffof
+-----END PGP SIGNATURE-----
+
+--17pEHd4RhPHOinZp--
