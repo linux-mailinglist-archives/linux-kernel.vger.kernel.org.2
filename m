@@ -2,148 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C4E32FF83
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 08:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 965C832FF8F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 09:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbhCGHgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 02:36:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbhCGHgG (ORCPT
+        id S231163AbhCGHru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 02:47:50 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18288 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229971AbhCGHrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 02:36:06 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE5AC06174A;
-        Sat,  6 Mar 2021 23:36:06 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id kx1so1400373pjb.3;
-        Sat, 06 Mar 2021 23:36:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uKTFoNSndRX4SlCjlrIyTvDGYlDZG2N55rMO+ELI0qU=;
-        b=I8BG7lVXrEj5VoT6+CQqfwf5C4c/3lOvXYEWsknxk+BWaRH6VyTJ6sewTkGebGljQR
-         kd6pQ95DiYbhsuEvALprxkGG8o+wJf7ZxdM90IbSYZQ81cfj1c+tx+pLPH23YwcsgKXo
-         zKmCaAC6GnyKDbFr5gjFzWhHjjsfkctvxa1ATgh8FwVDb2C/td676eMXM0qo7tbIWhjW
-         XA+WocJXsnuQmyZffeirde1KddG6NFFPRuZrdZiUWxxMyNMA3OgAK+Q5+vwdbTlv6oNQ
-         JN0BougCMjz13oIS1jGbPh3f5Vc/uSkmaGQkue8aIIbMvfqjzkVpaHxCOoBMZHjtFmCe
-         8h3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uKTFoNSndRX4SlCjlrIyTvDGYlDZG2N55rMO+ELI0qU=;
-        b=IaC3noZD6qMCw2c71QFN+0kV8TOxHewEsxswu9G9yq31MdoiDphRlnuvhclTb09t+7
-         YclWwxeFgtSUfqlBkiN+foFWWzJX5V5h/dMHCXSJhc569hGUkHs2Mrp2xTHnRM2cpcfQ
-         1pVLYqWUSdeS4Fer5bLYlO+Cnr+76LM/Hm/7QnZr0PWSut7WwGLJz5pg0tN1HA+nq4h7
-         K9T44qBLUCnRUw1aMo5k86eBgBMOEIf2ORN2M6a94K5DXKZtVeo7ObehB4EEAcw16j6Q
-         QYCNuXZLqMa9W95Rnw4aNtRZbpRnc8x0yaXdYYT6RBb/0rADefZ0VJTN7NhV+n5ZazQp
-         xZAw==
-X-Gm-Message-State: AOAM532vIwVJTZOofqE0BZOQeiEMGQ5HS79kEHrFRY9v8Ct+lkkPR1eD
-        YZHnWBxHea2Ros3tQJIe5Kfzhyjp4KwzwpuS
-X-Google-Smtp-Source: ABdhPJxi677DhB/Abs4FPlKBS1Vi6AMpM5RLakMx4cIvbV9WE3AFgIWFIzOw/0cDKEBaOF29/oWLkw==
-X-Received: by 2002:a17:90a:5d09:: with SMTP id s9mr18166436pji.172.1615102566122;
-        Sat, 06 Mar 2021 23:36:06 -0800 (PST)
-Received: from ?IPv6:2405:201:600d:a089:7154:efa8:e27f:8a00? ([2405:201:600d:a089:7154:efa8:e27f:8a00])
-        by smtp.gmail.com with ESMTPSA id e12sm6782956pjj.23.2021.03.06.23.36.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Mar 2021 23:36:05 -0800 (PST)
-Subject: Re: [RFC v3] scripts: kernel-doc: fix typedef support for
- struct/union parsing
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Sun, 7 Mar 2021 02:47:18 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1277YLA5173783;
+        Sun, 7 Mar 2021 02:47:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=POVp9fyakxyA52br+HNplqiEd9E35h8aut0jl4KHgz8=;
+ b=fA1I+c1VQilumKH4BsHYrXA9EcSOYSXTL2KfCKR1M9PtsRMEzIx5VrGCdhCxlpMjIZsB
+ jZaf+xped44ES0doQuLdLcRTY1EuttKnsOAWPMgv5af2bHcIZr4TDx4IR18IhtfCjWdV
+ hmElmPK4XqZBXvoOEBHIJdGCXhf/Aj7KuDCyoheK0QMh14kKk5rO2abQBS1pdBW3wbnM
+ j9pGNgM5jKR+nKzjElkoPdXfNsODWQQrc2kmbNIumdFv3a5W5cYmxepA0EkyzcMeRCbJ
+ /6F4c4k9RzSVm43FYuw3fNFbWuNRw1ZK6gaftDXtyGhHMl6S8qUmVYEOji7GEWol6h50 TA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 374se6168q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 07 Mar 2021 02:47:04 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1277YXN4175959;
+        Sun, 7 Mar 2021 02:47:04 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 374se6167f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 07 Mar 2021 02:47:04 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1277hHNJ022752;
+        Sun, 7 Mar 2021 07:47:02 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03fra.de.ibm.com with ESMTP id 3741c8ge27-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 07 Mar 2021 07:47:02 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1277kiVO33882488
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 7 Mar 2021 07:46:44 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2263252071;
+        Sun,  7 Mar 2021 07:46:59 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.23.212])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 878B25206D;
+        Sun,  7 Mar 2021 07:46:20 +0000 (GMT)
+Date:   Sun, 7 Mar 2021 09:46:18 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     George Kennedy <george.kennedy@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <CAKXUXMzHPnM=ie06ZGuFXyJ7RcRjYomjyASbp3ND9-Mb2Es+2w@mail.gmail.com>
- <20210225145033.11431-1-yashsri421@gmail.com>
- <20210306043548.GO2723601@casper.infradead.org>
- <CAKXUXMwD_ZZA7EJaxZBRfMDEvwd4Ghsj2vy9KCfj0R-yx2_K0Q@mail.gmail.com>
- <6a75c9f4-460f-f83e-7fe2-5a3a4c64232b@gmail.com>
- <20210306152001.GP2723601@casper.infradead.org>
-From:   Aditya <yashsri421@gmail.com>
-Message-ID: <a4d42880-4a91-e5ca-5096-bef498481039@gmail.com>
-Date:   Sun, 7 Mar 2021 13:06:01 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
+Message-ID: <YESEymRQ2/F7xJGt@linux.ibm.com>
+References: <1614802160-29362-1-git-send-email-george.kennedy@oracle.com>
+ <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
+ <9c3bc1b2-bb8d-194d-6faf-e4d7d346dc9b@oracle.com>
+ <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210306152001.GP2723601@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-06_08:2021-03-03,2021-03-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 spamscore=0 bulkscore=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 impostorscore=0 clxscore=1011
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103070040
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/3/21 8:50 pm, Matthew Wilcox wrote:
-> On Sat, Mar 06, 2021 at 01:18:38PM +0530, Aditya wrote:
->> On 6/3/21 11:55 am, Lukas Bulwahn wrote:
->>> I agree. That might be a suitable clean-up to keep the code for
->>> functions and struct/union parsing similar in style/spirit.
->>>
->>> Aditya, would you like to create a patch for that?
->>
->> Sure Lukas.
->> I have a doubt though, Can't we use a single expression separated by
->> "|" here, instead of multiple lines? i.e.,
->>
->> $x =~
->> s/__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)\s*//;
->>
->>
->> Probably we could do something similar for dump_function, i.e.,
->> -    $prototype =~ s/^static +//;
->> -    $prototype =~ s/^extern +//;
->> -    $prototype =~ s/^asmlinkage +//;
->> -    $prototype =~ s/^inline +//;
->> -    $prototype =~ s/^__inline__ +//;
->> -    $prototype =~ s/^__inline +//;
->> -    $prototype =~ s/^__always_inline +//;
->> -    $prototype =~ s/^noinline +//;
->>
->> +    $prototype =~
->> s/^(?:static|extern|asmlinkage|__?inline__?|__always_inline|noinline) +//;
->> And so on for other regexps.
->>
->> What do you think?
+Hello Rafael,
+
+On Fri, Mar 05, 2021 at 02:30:07PM +0100, Rafael J. Wysocki wrote:
+> On Fri, Mar 5, 2021 at 12:14 AM George Kennedy <george.kennedy@oracle.com> wrote:
+>
+> > The ibft table, for example, is mapped in via acpi_map() and kmap(). The
+> > page for the ibft table is not reserved, so it can end up on the freelist.
 > 
-> I think there's a tradeoff between speed / compactness and readability.
-> As someone who doesn't know perl particularly well, I can look at the
-> series of lines and say "Oh, it's stripping out these unwanted things".
-> Your one line, while undoubtedly more efficient, is considerably less
-> easy to understand.
+> You appear to be saying that it is not sufficient to kmap() a page in
+> order to use it safely.  It is also necessary to reserve it upfront,
+> for example with the help of memblock_reserve().  Is that correct?  If
+> so, is there an alternative way to reserve a page frame?
+
+Like David said in the other reply, if a BIOS does not mark the memory that
+contains an ACPI table as used (e.g. reserved or ACPI data), we need to
+make sure the kernel knows that such memory is in use and an early call to
+memblock_reserve() is exactly what we need here.
+George had this issue with iBFT, but in general this could be any table
+that a buggy BIOS forgot to mark as ACPI data.
+ 
+> > >> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> > >> index d883176..97deea3 100644
+> > >> --- a/arch/x86/kernel/setup.c
+> > >> +++ b/arch/x86/kernel/setup.c
+> > >> @@ -1046,6 +1046,7 @@ void __init setup_arch(char **cmdline_p)
+> > >>          cleanup_highmap();
+> > >>
+> > >>          memblock_set_current_limit(ISA_END_ADDRESS);
+> > >> +       acpi_boot_table_init();
+> > > This cannot be moved before the acpi_table_upgrade() invocation AFAICS.
+> > >
+> > > Why exactly do you want to move it?
+> >
+> > Want to make sure there are slots for memblock_reserve() to be able to
+> > reserve the page.
 > 
-> Maybe there's another way to do it that's more efficient while not
-> sacrificing the readability?
-> 
-> Also, would your suggestion work for 'static inline void foo(void)'?
-> I think it needs to remove multiple occurrences of the things in the
-> regex.  
+> Well, that may not require reordering the initialization this way.
 
-Ah, I get it.
+The memory that is used by the firmware should be reserved before memblock
+allocations are allowed so that ACPI tables won't get trampled by some
+random allocation.
 
-But maybe that's what the ?: on the beginning is for?
-> 
+On x86 this essentially means that the early reservations need to be
+complete before the call to e820__memblock_setup().
 
-No, "?:" is just to use this regex for matching, without capturing.
-So, the regex will just remove any of those 'starting' occurrences,
-consequently, "static inline" occurrence will probably not be removed.
-I think the reason for using multiple lines for substitution in
-dump_function is for the same reason, ie, subsequent substitution.
+We probably need more precise refactoring of ACPI init than simply moving
+acpi_boot_table_init() earlier. 
+ 
+> > >>          e820__memblock_setup();
+> > >>
 
-But for dump_struct, it is probably not desired, i.e., subsequent
-substitution/removal. Also, for the same reason, using it with
-dump_struct may cause unwelcomed discrepancies, or cause the user to
-understand that here multiple substitutions are required, but is not so.
-So, I think that we should use a single expression substitution for
-dump_struct, at best. But am not sure if that is required, as
-currently also we are not capturing this part of the regex, as well
-as, matching only at certain position of the definition expression.
-
-But I am curious to what others think about this.
-Will be happy to work on this patch :)
-
-Thanks
-Aditya
+-- 
+Sincerely yours,
+Mike.
