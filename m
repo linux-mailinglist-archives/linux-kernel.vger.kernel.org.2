@@ -2,55 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D33330077
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 12:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F8433007B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 12:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhCGLmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 06:42:51 -0500
-Received: from mail-ej1-f53.google.com ([209.85.218.53]:43842 "EHLO
-        mail-ej1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbhCGLmf (ORCPT
+        id S230425AbhCGLoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 06:44:25 -0500
+Received: from mail-ej1-f51.google.com ([209.85.218.51]:33277 "EHLO
+        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230359AbhCGLoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 06:42:35 -0500
-Received: by mail-ej1-f53.google.com with SMTP id p8so14237536ejb.10;
-        Sun, 07 Mar 2021 03:42:34 -0800 (PST)
+        Sun, 7 Mar 2021 06:44:12 -0500
+Received: by mail-ej1-f51.google.com with SMTP id jt13so14307820ejb.0;
+        Sun, 07 Mar 2021 03:44:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=bpPJ6IkOTz50xq4H5ZvnUgMjnZj0Dmv5rdRTqFH842A=;
-        b=bNKYnkY7fXyPlqmdzd/fdL9PH+iIPJYoGcBAiQFhx29Bzia+V3FO+2dGQVmTrK3FGf
-         HcYWuQE4xVZmcT5827Qn+GUFYHp1fkNb3jz/qfq2vmU5MOnZvTZCsZBLbW4vsfiF6BoW
-         0/qR52yuWCAbupE4E39C+8dUdmDSm4Cg4EUbXnVGc+Z+4ZCiJXgwqm8SZPmoEwyM8PCA
-         gFyCELh5ucIJJDyc2kTFGNovI8N13gEjwyfLEbsj/xAVBTHzEu0d6rYpZBU7DFD1NdpE
-         +ZsO0XOJJUjwg1YIYNTmePrzCM+ccNgLIeMZdQYQUpMaJXXfMPYtYA76c/yIaE2SMuwT
-         KICQ==
-X-Gm-Message-State: AOAM5328M5IjB+Hk3zfemQZ7BD+voQ4NQRpKoUpnFQ0H1G59aIedMJMI
-        SfaiVx8PrZUQiNxG7DgVw2KFtiHtqD4=
-X-Google-Smtp-Source: ABdhPJw8bkYXg0UrngrTNBlLXiMcM4iLzMiC1wwB0BKVtRhAJLIdnEQhfmvNOaPmXgihmfT4n3FlCQ==
-X-Received: by 2002:a17:907:9863:: with SMTP id ko3mr10480992ejc.543.1615117352917;
-        Sun, 07 Mar 2021 03:42:32 -0800 (PST)
+        bh=I+lZXT2bUYW31YOq4X2EmqVSXL5RIdvlx0J7BfQaCn4=;
+        b=g3hLA63jw/fUwaI/SXji7mkxoyl2IjgybvZU7dsmpOD82YhvUxwRkRLhBIASR1+i6q
+         V3rrY4UYmoj7aB3VbDn5hmKqoVAqqtzELRlrWz1wPBdwWLKqHQuHUcyPb1McCf4ak0o/
+         lbE8bO/2/Im09VWMfg4fd4R8Hg+0TLOx1Zc1VLBjRstZkiJpuSrrokC2ZcwEKxDC3oS9
+         Foz5NzbofllyOqZWA9ALAAHCQ1JMfNMb8Rg1AAw7HIj0gkCyGlSKCRKxIPftnsgOZjUO
+         KplZQGGB6mL/EInise4oEK+pldP2n23l+v2k/y2M0D1kLmBFAZ8yrDZ8QOozHESzluIi
+         N6kw==
+X-Gm-Message-State: AOAM530bIxAb9VLDFPuPmvuUZ7iuvAUsahVrzRD6lODhzVmYjYNa3g88
+        hFDlG6hSH3J8wyPlhg56m6+d95Zd9BU=
+X-Google-Smtp-Source: ABdhPJzeVFy2MmR61HOeXXY3sFEGXJ29c7e8ywEDUN4JGbSvrgznOdVKwYJZkBupf9tAY21sRSn/0A==
+X-Received: by 2002:a17:906:3846:: with SMTP id w6mr10561370ejc.190.1615117449726;
+        Sun, 07 Mar 2021 03:44:09 -0800 (PST)
 Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id x21sm5210276eds.53.2021.03.07.03.42.31
+        by smtp.googlemail.com with ESMTPSA id s13sm5310854edr.86.2021.03.07.03.44.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Mar 2021 03:42:32 -0800 (PST)
-Subject: Re: [PATCH 2/2] dt-bindings: serial: samsung: include generic
- dtschema to match bluetooth child
+        Sun, 07 Mar 2021 03:44:09 -0800 (PST)
+Subject: Re: [PATCH] dt-bindings: iio: samsung,exynos-adc: add common clock
+ properties
 To:     Rob Herring <robh@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210212163905.70171-1-krzk@kernel.org>
- <20210212163905.70171-2-krzk@kernel.org>
- <20210305204938.GA613254@robh.at.kernel.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CGME20210212164148eucas1p2ab09436a82d50161ff1a9fc1a169f7d7@eucas1p2.samsung.com>
+ <20210212163816.70058-1-krzk@kernel.org>
+ <85ed4a70-5cd8-3bce-100f-33a1fba7f3fa@samsung.com>
+ <20210215092915.7khog24shtzjzd6g@kozik-lap>
+ <20210305204152.GA607635@robh.at.kernel.org>
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-Message-ID: <6ff17125-5c71-70f9-5042-c73eac12f4c9@kernel.org>
-Date:   Sun, 7 Mar 2021 12:42:31 +0100
+Message-ID: <b43a8735-42fd-be44-01d1-843562b1efd8@kernel.org>
+Date:   Sun, 7 Mar 2021 12:44:08 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210305204938.GA613254@robh.at.kernel.org>
+In-Reply-To: <20210305204152.GA607635@robh.at.kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -58,63 +65,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/03/2021 21:49, Rob Herring wrote:
-> On Fri, Feb 12, 2021 at 05:39:05PM +0100, Krzysztof Kozlowski wrote:
->> Include the generic serial.yaml dtschema so the child node like
->> "bluetooh" will be properly matched:
+On 05/03/2021 21:41, Rob Herring wrote:
+> On Mon, Feb 15, 2021 at 10:29:15AM +0100, Krzysztof Kozlowski wrote:
+>> On Mon, Feb 15, 2021 at 10:01:48AM +0100, Marek Szyprowski wrote:
+>>> Hi Krzysztof,
+>>>
+>>> On 12.02.2021 17:38, Krzysztof Kozlowski wrote:
+>>>> Add common properties appearing in DTSes (assigned-clocks and similar)
+>>>> to fix dtbs_check warnings like:
+>>>>
+>>>>    arch/arm/boot/dts/exynos3250-artik5-eval.dt.yaml:
+>>>>      adc@126c0000: assigned-clock-rates: [[6000000]] is not of type 'object'
+>>>>    arch/arm/boot/dts/exynos3250-artik5-eval.dt.yaml:
+>>>>      adc@126c0000: assigned-clocks: [[7, 238]] is not of type 'object'
+>>>
+>>> Does it mean that assigned-clocks related properties have to be added to 
+>>> almost all bindings?
 >>
->>   arch/arm/boot/dts/exynos4210-universal_c210.dt.yaml:
->>     serial@13800000: 'bluetooth' does not match any of the regexes: 'pinctrl-[0-9]+'
+>> To my understanding: yes, and we already added it to multiple schemas.
 >>
->> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->> ---
->>  .../bindings/serial/samsung_uart.yaml         | 26 ++++++++++++++++++-
->>  1 file changed, 25 insertions(+), 1 deletion(-)
+>>> IMHO this is an over-engineering and this has to be 
+>>> handled somewhere else...
 >>
->> diff --git a/Documentation/devicetree/bindings/serial/samsung_uart.yaml b/Documentation/devicetree/bindings/serial/samsung_uart.yaml
->> index 3e29b561223d..f4faf32ab00f 100644
->> --- a/Documentation/devicetree/bindings/serial/samsung_uart.yaml
->> +++ b/Documentation/devicetree/bindings/serial/samsung_uart.yaml
->> @@ -78,9 +78,11 @@ required:
->>    - interrupts
->>    - reg
->>  
->> -additionalProperties: false
->> +unevaluatedProperties: false
->>  
->>  allOf:
->> +  - $ref: /schemas/serial.yaml#
->> +
->>    - if:
->>        properties:
->>          compatible:
->> @@ -134,3 +136,25 @@ examples:
->>                   <&clocks SCLK_UART>;
->>          samsung,uart-fifosize = <16>;
->>      };
->> +
->> +  - |
->> +    #include <dt-bindings/clock/exynos4.h>
->> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->> +
->> +    serial@13800000 {
->> +        compatible = "samsung,exynos4210-uart";
->> +        reg = <0x13800000 0x100>;
->> +        interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
->> +        clocks = <&clock CLK_UART0>, <&clock CLK_SCLK_UART0>;
->> +        clock-names = "uart", "clk_uart_baud0";
->> +        dmas = <&pdma0 15>, <&pdma0 16>;
->> +        dma-names = "rx", "tx";
->> +        pinctrl-0 = <&uart0_data &uart0_fctl>;
->> +        pinctrl-names = "default";
->> +
->> +        bluetooth {
->> +            compatible = "brcm,bcm4330-bt";
+>> Would have to be made a part of the core schema (just like pinctrl nodes
+>> etc).
 > 
-> Do we need a whole new example for this?
+> That's the case now. It's contingent on having a 'clocks' property in 
+> the node.
 
-No, we don't need it. I find examples useful but if you prefer to have
-them smaller, then I can skip it.
+Do I understand correctly: with new dtschema my patch is not needed anymore?
 
 Best regards,
 Krzysztof
