@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831B933021D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 15:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B02E330221
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 15:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhCGOhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 09:37:32 -0500
-Received: from mga07.intel.com ([134.134.136.100]:17607 "EHLO mga07.intel.com"
+        id S231360AbhCGOhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 09:37:37 -0500
+Received: from mga05.intel.com ([192.55.52.43]:56717 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230495AbhCGOgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230458AbhCGOgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 7 Mar 2021 09:36:53 -0500
-IronPort-SDR: lZPO6TvIQOt2IEq966Lb9jliCLgGeIFL1+aCaeV2Stg1kNL4Z1SZvOof9ipJG4dtHiJ1PYH5r9
- xq9pwYdMJcdw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="251931168"
+IronPort-SDR: opihsnnWJA/0V8PuRk7/cyPHP8f8mOLHAuPspR+gXFeeB6W9YAkGxLoYD1f1eFDvL68F4Y5HhI
+ 2hDn1mFALtsA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="272924551"
 X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
-   d="scan'208";a="251931168"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 06:36:53 -0800
-IronPort-SDR: Wly48Z1XNFL2fn5c8j7MOmFpwxcFYN1c1SagD7l7jjwwiRemY2hncvYG3P+gUyte6lH2PSo49a
- RumBARzwIVKw==
+   d="scan'208";a="272924551"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 06:36:52 -0800
+IronPort-SDR: W33VWtfbPFnDknM11Ci8Egnlp4NqLR3k0gg2rKEOYaj82TvSBtilZXDGcWEndiXPOPyKMiVY8m
+ /mgdqR1EGXWg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
-   d="scan'208";a="437185934"
+   d="scan'208";a="402506834"
 Received: from lkp-server01.sh.intel.com (HELO 3e992a48ca98) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 07 Mar 2021 06:36:51 -0800
+  by fmsmga008.fm.intel.com with ESMTP; 07 Mar 2021 06:36:51 -0800
 Received: from kbuild by 3e992a48ca98 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lIuWY-0000SQ-W1; Sun, 07 Mar 2021 14:36:50 +0000
-Date:   Sun, 07 Mar 2021 22:36:31 +0800
+        id 1lIuWY-0000SH-UE; Sun, 07 Mar 2021 14:36:50 +0000
+Date:   Sun, 07 Mar 2021 22:36:38 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/vdso] BUILD SUCCESS
- 70c9d959226b7c5c48c119e2c1cfc1424f87b023
-Message-ID: <6044e4ef.kUN85qJ9+M3PUssm%lkp@intel.com>
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 5d5675df792ff67e74a500c4c94db0f99e6a10ef
+Message-ID: <6044e4f6.JS2x0vHANCSEyA3b%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/vdso
-branch HEAD: 70c9d959226b7c5c48c119e2c1cfc1424f87b023  x86/vdso: Use proper modifier for len's format specifier in extract()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: 5d5675df792ff67e74a500c4c94db0f99e6a10ef  x86/entry: Fix entry/exit mismatch on failed fast 32-bit syscalls
 
 elapsed time: 729m
 
-configs tested: 81
+configs tested: 87
 configs skipped: 99
 
 The following configs have been built successfully.
@@ -56,16 +56,22 @@ More configs may be tested in the coming days.
 
 gcc tested configs:
 arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
 arm64                            allyesconfig
 arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
 sh                          rsk7264_defconfig
 arm                         bcm2835_defconfig
 mips                     decstation_defconfig
 powerpc                 mpc8560_ads_defconfig
 arm                          pcm027_defconfig
 arm                          lpd270_defconfig
+arm                          pxa3xx_defconfig
+powerpc                      pasemi_defconfig
+arc                      axs103_smp_defconfig
+mips                  decstation_64_defconfig
+powerpc                     tqm8560_defconfig
+microblaze                          defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
