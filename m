@@ -2,76 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057C4330470
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 21:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8CC330473
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 21:21:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232830AbhCGUId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 15:08:33 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:56961 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbhCGUIW (ORCPT
+        id S232819AbhCGUS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 15:18:26 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:51248 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231934AbhCGUSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 15:08:22 -0500
-Received: from mail-wm1-f69.google.com ([209.85.128.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lIzhN-0002l6-EI
-        for linux-kernel@vger.kernel.org; Sun, 07 Mar 2021 20:08:21 +0000
-Received: by mail-wm1-f69.google.com with SMTP id a3so1152889wmm.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 12:08:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qSQieJ8nQE58ekoGafigYdMDYrreYYyCtjGaEuN2LQo=;
-        b=OFsWAoDFJKny0FRlak/2FVQzn2wPyzeNDtRuqNQUooMzaUqRNZG1OMHXVIQopBlYXQ
-         Cx+D5r5vslCLaxmfdCgRzY9eJrofGac64VYYnM5AIBzQ6N6xR55fxO5oWW/vVXSgqZcT
-         1dzVOkErXS9AGxIx3tLh+Wu9IyKqHcBBLVeOFvJ48rXbm0sclKJuR/exWt6AjXU8yH/z
-         2OcQb+gdAreaU8i6+KSVpPXyL0GRZy+smdiLjt9fzL8GgUJgTUNzhURwjsQUzBbkHkHl
-         oJzoRBtp17QQPhTzBfne1leAs0RlqsjB/hDHRwabBg7k0D32ItVqAJf/SX6DEG6b7JCr
-         WlMA==
-X-Gm-Message-State: AOAM533NiqS9v4uz5If3d5lSsg3Ce0KRr5k7eb0gXlhxG3EVouMBoKha
-        X6oi1G1+cwcMvyS5HFRX7UnqnzfC9FI/JE9DMXFODUcKtnOu1jMPXV7A0934ThrX3THJyCTQ8Hs
-        oDFqjzfCQrSE48wIBVWk26Y2fYKR36x8m4E1XwR3IBQ==
-X-Received: by 2002:adf:e791:: with SMTP id n17mr19437523wrm.322.1615147701211;
-        Sun, 07 Mar 2021 12:08:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzSvNTOZIGgHUkrKnFIH0hoAo/Z5A03xBXmm0JmPTuNu4ee6LFgLxcRQ35yz+mgjO+3yTg71Q==
-X-Received: by 2002:adf:e791:: with SMTP id n17mr19437513wrm.322.1615147701044;
-        Sun, 07 Mar 2021 12:08:21 -0800 (PST)
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id r2sm14225087wrt.8.2021.03.07.12.08.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 12:08:20 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-samsung-soc@vger.kernel.org, Olof Johansson <olof@lixom.net>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: (subset) [PATCH] MAINTAINERS: use Krzysztof Kozlowski's Canonical address
-Date:   Sun,  7 Mar 2021 21:08:18 +0100
-Message-Id: <161514768474.92984.2303716384239569013.b4-ty@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210304075751.9201-1-krzysztof.kozlowski@canonical.com>
-References: <20210304075751.9201-1-krzysztof.kozlowski@canonical.com>
+        Sun, 7 Mar 2021 15:18:12 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 04F451C0B76; Sun,  7 Mar 2021 21:18:10 +0100 (CET)
+Date:   Sun, 7 Mar 2021 21:18:09 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@denx.de>, Chris.Paterson2@renesas.com,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/30] 4.4.260-rc1 review
+Message-ID: <20210307201809.GA26738@amd>
+References: <20210305120849.381261651@linuxfoundation.org>
+ <20210305220634.GA27686@amd>
+ <YEM4d6O+6Jfw3RH/@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="VbJkn9YxBvnuCH5J"
+Content-Disposition: inline
+In-Reply-To: <YEM4d6O+6Jfw3RH/@kroah.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 08:57:51 +0100, Krzysztof Kozlowski wrote:
-> Since I plan to use my Canonical address for reviews and other
-> maintenance activities, reflect this in MAINTAINERS to avoid any
-> confusion.
 
-Applied, thanks!
+--VbJkn9YxBvnuCH5J
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[1/1] MAINTAINERS: use Krzysztof Kozlowski's Canonical address
-      commit: ca881b97dbe1ce3ed94e20ae185b246435d86ead
+Hi!
+
+> > > This is the start of the stable review cycle for the 4.4.260 release.
+> > > There are 30 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, plea=
+se
+> > > let me know.
+> >=20
+> > Ok, so we ran some tests.
+
+> > Testcase name is spectre-meltdown-checker... Failing on qemu? Somehow
+> > strange, but it looks like real test failure.
+
+Some kind of timeout, fixed by re-run. So CIP testing did not find any
+problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.4.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
 Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--VbJkn9YxBvnuCH5J
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBFNQAACgkQMOfwapXb+vLeawCfSi0Dk/0Zx/D7T5Y+Qyup7jff
+XasAoKqaOubTWE7A3Ry1B3USYRPAO4aK
+=kuGf
+-----END PGP SIGNATURE-----
+
+--VbJkn9YxBvnuCH5J--
