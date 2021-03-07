@@ -2,177 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DD0330418
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 20:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BAE33041B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 20:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbhCGS4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 13:56:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231927AbhCGSzy (ORCPT
+        id S231971AbhCGTFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 14:05:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40367 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231592AbhCGTEs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 13:55:54 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90101C06174A;
-        Sun,  7 Mar 2021 10:55:54 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id mm21so15715261ejb.12;
-        Sun, 07 Mar 2021 10:55:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pks+SrZ4znCBShGaFDbraYaxx/WgoLb7ivk6yT2CVXY=;
-        b=RtBh84WWcNNnvJc7FEOLo2pkSzlGIEFCW1k2mog0UuBkYQZvCyPo2pml/XQ+JpzkxG
-         Ea2IS7GJfU5pncqESMR1fGHHoFvOLSPTdSBMdlVXhHCnKF3qDMldXdWW7YpUol5O6lN7
-         Afdtxy4KdE4j1V2R8i1buP/UxRh0h3sH6545wii0o+U1OysWmdSrFlrtomaQbnlHK1nP
-         lxlLpiRPXWggcXM5xar5worxyAcLp6C9shnwfnWeJHF7LSawnPah9vFu9xxEcObJCjsR
-         ilzyyVBjLoSjZwc98Ww/dy9BhgIJvE9y5t7cLqq804cyBuxLsYEf0wibKHki7AXsv2oI
-         RTgw==
+        Sun, 7 Mar 2021 14:04:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615143887;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xakOsbHdk63hG7UbqDIRNouESiVml99N7bAiUFLm/GI=;
+        b=ZRLNyd1sfNz7FB4aGqDtFCABSnvzaBceR4fBNd7YmoFh3t/A9gmbGGm6kiGy2NWegvR6pV
+        oR8EMGeqjO6nIWvtdJUmP007eRM4kDGuYuB4pG7eAZKRfaSVD99iZPyGTthoIttS9hT0uG
+        5yC8F0m1ZEpgmYNn3pK4tm+TtkQzM38=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-152-cYfXunZHM--hVy5RNYnxww-1; Sun, 07 Mar 2021 14:04:45 -0500
+X-MC-Unique: cYfXunZHM--hVy5RNYnxww-1
+Received: by mail-ed1-f71.google.com with SMTP id h5so4019354edf.17
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 11:04:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pks+SrZ4znCBShGaFDbraYaxx/WgoLb7ivk6yT2CVXY=;
-        b=q+EBXHy+zKnIq6b+Wtf2pyUBuc24Tcm0Vrota0fr+XIA1aHBFfMhpn9dwJ3u4epQNT
-         h+BBcFT2sRCdbfEUDzFwQ7Mu5HM5P+WF/QWYXtCX9meZGnEj5I4N3ENAqTsit9bpYQsR
-         bhN21QX/1p9fZQc02njmbfEkO34sKu0136MhrOHqFGuCZAe7qM+av2aNeMZOZA0+ikJ+
-         mVkKYD/AQix/MIyd4xyBFZNvQII6Jl3AEPrxSDYlaynkcCg6udrQ7Ak7CE89E/QLutCO
-         ga7juQFSDSW4nJPTbKXm4M60bC42vbr67u50XKIuIXLqd2V7wGo8jB1d6juFZSS5izWT
-         wmwA==
-X-Gm-Message-State: AOAM530DObcktO4ISLgOBNo3THXAJk+Lsg1ioOQa+mZJlakjU4LviY7d
-        hy9z5KA0cHtyWQZKTTbK5YlT1xoA06vp1Q==
-X-Google-Smtp-Source: ABdhPJxv/HnUHsX+0WflxtJwZncZ7VD+zLgQiHjGaj74bItsw1iyBcfOJSjfopc6ZqXKCYPEvPiD4g==
-X-Received: by 2002:a17:906:4993:: with SMTP id p19mr11807991eju.421.1615143353046;
-        Sun, 07 Mar 2021 10:55:53 -0800 (PST)
-Received: from saturn.lan ([188.27.130.90])
-        by smtp.googlemail.com with ESMTPSA id r19sm1046074ejr.55.2021.03.07.10.55.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 10:55:52 -0800 (PST)
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jic23@kernel.org, Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2] iio: buffer: fix use-after-free for attached_buffers array
-Date:   Sun,  7 Mar 2021 20:54:44 +0200
-Message-Id: <20210307185444.32924-1-ardeleanalex@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210306164710.9944-1-ardeleanalex@gmail.com>
-References: <20210306164710.9944-1-ardeleanalex@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xakOsbHdk63hG7UbqDIRNouESiVml99N7bAiUFLm/GI=;
+        b=K2G4Ey66rxGQwC+YO4AP21IQ3pWZjMAFGl2VkiHFDABvB2Jv20+mcO6we+ggfudJvg
+         ajqhF/gKXhEn5Dqmd4Kru67Hq4jHj8COZ1YLQGYbyfIAu5bApUXEqm/hj4S6Z2ht/Uh0
+         fqTc3lCWDjSdjKA+UP6KkUg+xTiSIJ4T9zGBPsFzaqPQgEwT/Gi8jCCWghkY8/zdLlLe
+         RJZ30XhfDpRUwlf0qUcOdMJYMs34Hj78M3sVOCOmJmhiojoDH+XYYY506iKxDpxYyfqj
+         FJ7vZRKCzfqYiOtgVBuoR8JeZ0ezS++4KdW8cjzwDPYeHdQbEywXJV21jtDUUmgba0CZ
+         vi7g==
+X-Gm-Message-State: AOAM533fp6zqpJ4ru6yTB/B9ZElHYaHU86EXb18h/D4ai7k56d14J0Vv
+        JqrvnfJcNngNeI1HIX97Net5nRvlF0nGLKrx1wP1p+2EH3Gv61eIyJYwrIAVWa2ntcD/uDi/T66
+        9WqkflrrWKBWjhEOPn4Qg4wdL
+X-Received: by 2002:a17:906:789:: with SMTP id l9mr11605641ejc.161.1615143884417;
+        Sun, 07 Mar 2021 11:04:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxqi8mTySB5bP+ZnvkAFIpC14v4wJp0SEnu2Eb8qnKp6Fnavb7lJbWFXmVoi1UJqI5NFqmMPw==
+X-Received: by 2002:a17:906:789:: with SMTP id l9mr11605627ejc.161.1615143884231;
+        Sun, 07 Mar 2021 11:04:44 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id t15sm5716617edw.84.2021.03.07.11.04.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Mar 2021 11:04:43 -0800 (PST)
+Subject: Re: [PATCH] leds: trigger: fix potential deadlock with libata
+To:     Pavel Machek <pavel@ucw.cz>, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Andrea Righi <andrea.righi@canonical.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, schuchmann@schleissheimer.de
+References: <20201102104152.GG9930@xps-13-7390>
+ <20210306203954.ya5oqgkdalcw45c4@pengutronix.de>
+ <20210307161357.GA2933@duo.ucw.cz>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <7a83931f-13bd-27c2-4050-4a21be74c49b@redhat.com>
+Date:   Sun, 7 Mar 2021 20:04:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210307161357.GA2933@duo.ucw.cz>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks to Lars for finding this.
-The free of the 'attached_buffers' array should be done as late as
-possible. This change moves it to iio_buffers_put(), which looks like
-the best place for it, since it takes place right before the IIO device
-data is free'd.
-The free of this array will be handled by calling iio_device_free().
-The iio_buffers_put() function is renamed to iio_device_detach_buffers()
-since the role of this function changes a bit.
+Hi,
 
-It looks like this issue was ocurring on the error path of
-iio_buffers_alloc_sysfs_and_mask() and in
-iio_buffers_free_sysfs_and_mask()
+On 3/7/21 5:13 PM, Pavel Machek wrote:
+> Hi!
+> 
+>>> --- a/drivers/leds/led-triggers.c
+>>> +++ b/drivers/leds/led-triggers.c
+>>> @@ -378,14 +378,15 @@ void led_trigger_event(struct led_trigger *trig,
+>>>  			enum led_brightness brightness)
+>>>  {
+>>>  	struct led_classdev *led_cdev;
+>>> +	unsigned long flags;
+>>>  
+>>>  	if (!trig)
+>>>  		return;
+>>>  
+>>> -	read_lock(&trig->leddev_list_lock);
+>>> +	read_lock_irqsave(&trig->leddev_list_lock, flags);
+>>>  	list_for_each_entry(led_cdev, &trig->led_cdevs, trig_list)
+>>>  		led_set_brightness(led_cdev, brightness);
+>>> -	read_unlock(&trig->leddev_list_lock);
+>>> +	read_unlock_irqrestore(&trig->leddev_list_lock, flags);
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(led_trigger_event)
+>>
+>> meanwhile this patch hit v5.10.x stable and caused a performance
+>> degradation on our use case:
+>>
+>> It's an embedded ARM system, 4x Cortex A53, with an SPI attached CAN
+>> controller. CAN stands for Controller Area Network and here used to
+>> connect to some automotive equipment. Over CAN an ISOTP (a CAN-specific
+>> Transport Protocol) transfer is running. With this patch, we see CAN
+>> frames delayed for ~6ms, the usual gap between CAN frames is 240µs.
+>>
+>> Reverting this patch, restores the old performance.
+>>
+>> What is the best way to solve this dilemma? Identify the critical path
+>> in our use case? Is there a way we can get around the irqsave in
+>> led_trigger_event()?
+> 
+> Hans was pushing for this patch, perhaps he has some ideas...
 
-Added a comment in the doc-header of iio_device_attach_buffer() to
-mention how this will be free'd in case anyone is reading the code
-and becoming confused about it.
+I was not pushing for this particular fix, I was asking about a fix
+for the lockdep identified potential deadlock.
 
-Fixes: 36f3118c414d ("iio: buffer: introduce support for attaching more IIO buffers")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Alexandru Ardelean <ardeleanalex@gmail.com>
----
- drivers/iio/iio_core.h            | 4 ++--
- drivers/iio/industrialio-buffer.c | 9 +++++----
- drivers/iio/industrialio-core.c   | 2 +-
- 3 files changed, 8 insertions(+), 7 deletions(-)
+And you replied that this was already fixed in your for-next branch
+when I asked, so all in all, other then reporting the potential deadlock
+(after it was already fixed) I have very little do to with this patch.
 
-diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
-index 062fe16c6c49..8f4a9b264962 100644
---- a/drivers/iio/iio_core.h
-+++ b/drivers/iio/iio_core.h
-@@ -77,7 +77,7 @@ void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev);
- 
- void iio_disable_all_buffers(struct iio_dev *indio_dev);
- void iio_buffer_wakeup_poll(struct iio_dev *indio_dev);
--void iio_buffers_put(struct iio_dev *indio_dev);
-+void iio_device_detach_buffers(struct iio_dev *indio_dev);
- 
- #else
- 
-@@ -93,7 +93,7 @@ static inline void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev) {}
- 
- static inline void iio_disable_all_buffers(struct iio_dev *indio_dev) {}
- static inline void iio_buffer_wakeup_poll(struct iio_dev *indio_dev) {}
--static inline void iio_buffers_put(struct iio_dev *indio_dev) {}
-+static inline void iio_device_detach_buffers(struct iio_dev *indio_dev) {}
- 
- #endif
- 
-diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-index 1a415e97174e..1ff7f731b044 100644
---- a/drivers/iio/industrialio-buffer.c
-+++ b/drivers/iio/industrialio-buffer.c
-@@ -326,7 +326,7 @@ void iio_buffer_init(struct iio_buffer *buffer)
- }
- EXPORT_SYMBOL(iio_buffer_init);
- 
--void iio_buffers_put(struct iio_dev *indio_dev)
-+void iio_device_detach_buffers(struct iio_dev *indio_dev)
- {
- 	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
- 	struct iio_buffer *buffer;
-@@ -336,6 +336,8 @@ void iio_buffers_put(struct iio_dev *indio_dev)
- 		buffer = iio_dev_opaque->attached_buffers[i];
- 		iio_buffer_put(buffer);
- 	}
-+
-+	kfree(iio_dev_opaque->attached_buffers);
- }
- 
- static ssize_t iio_show_scan_index(struct device *dev,
-@@ -1764,7 +1766,6 @@ int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
- 		buffer = iio_dev_opaque->attached_buffers[unwind_idx];
- 		__iio_buffer_free_sysfs_and_mask(buffer);
- 	}
--	kfree(iio_dev_opaque->attached_buffers);
- 	return ret;
- }
- 
-@@ -1786,8 +1787,6 @@ void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev)
- 		buffer = iio_dev_opaque->attached_buffers[i];
- 		__iio_buffer_free_sysfs_and_mask(buffer);
- 	}
--
--	kfree(iio_dev_opaque->attached_buffers);
- }
- 
- /**
-@@ -2062,6 +2061,8 @@ static int iio_buffer_mmap(struct file *filep, struct vm_area_struct *vma)
-  * This function attaches a buffer to a IIO device. The buffer stays attached to
-  * the device until the device is freed. For legacy reasons, the first attached
-  * buffer will also be assigned to 'indio_dev->buffer'.
-+ * The array allocated here, will be free'd via the iio_device_detach_buffers()
-+ * call which is handled by the iio_device_free().
-  */
- int iio_device_attach_buffer(struct iio_dev *indio_dev,
- 			     struct iio_buffer *buffer)
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index d74fbac908df..3be5f75c2846 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -1587,7 +1587,7 @@ static void iio_dev_release(struct device *device)
- 	iio_device_unregister_eventset(indio_dev);
- 	iio_device_unregister_sysfs(indio_dev);
- 
--	iio_buffers_put(indio_dev);
-+	iio_device_detach_buffers(indio_dev);
- 
- 	ida_simple_remove(&iio_ida, indio_dev->id);
- 	kfree(iio_dev_opaque);
--- 
-2.25.1
+With that all said, I must say that I'm surprised that switching from
+read_lock() to read_lock_irqsave() causes such a hefty penalty, so I
+wonder what is really going on here. Using the irqsave version disables
+interrupts, but AFAIK only on the current core and only for the duration
+of the led_set_brightness() call(s) . 
+
+Is the system perhaps pinning IRQs to a specific CPU in combination with
+a led_set_brightness() somehow taking much longer then it should?
+
+Note that led_set_brightness() calls are not allowed to block, if they
+block they should use the brightness_set_blocking callback in their
+led_class_dev struct not the regular brightness_set callback. In which case
+the LED-core will defer the actually setting of the LED to a workqueue.
+
+So one thing which might be worthwhile to check is if any of the LED
+drivers on the system in question are using the brightness_set callback,
+where they should be using the blocking one.
+
+Regards,
+
+Hans
 
