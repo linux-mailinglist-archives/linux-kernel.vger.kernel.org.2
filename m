@@ -2,312 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E07632FE69
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 03:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2919A32FE6D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 03:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhCGCED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 21:04:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
+        id S230084AbhCGCQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 21:16:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbhCGCDq (ORCPT
+        with ESMTP id S229964AbhCGCQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 21:03:46 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6E5C06174A;
-        Sat,  6 Mar 2021 18:03:46 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id t13so3620291qta.11;
-        Sat, 06 Mar 2021 18:03:45 -0800 (PST)
+        Sat, 6 Mar 2021 21:16:19 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEB9C06175F
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 18:16:18 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id d13so9269807edp.4
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 18:16:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=QxvB5zhcmMCmsEmz42AGBb9LKLykoB0qkc+n27okF9U=;
-        b=j8G7N+tYVahLmY1MwTWX5p3UxVFf34QuZnb4RQzdrtNrbmS87lbelnaXcCrFCRACzR
-         h67H50sVB32nEE4wjNsUQdJI7qXCb7w3FzD2hquz5G27z8vz/yxTXzhgJNULhELecPBk
-         iVMmJrPMkpM9eUtsXb5l8LpF2KDziudQ22GqHl5v+MQtuoBBxXfahPtaWiTFWW5CFeNx
-         8lHrvoLd/Gak0an8gp8tXRtViD/u5rX1bs5wDaY3xbhQUmlrasHeEol2X6yxCb4VY++c
-         oSDl4ZfFHzUXHGtjtpOzro583eyFi3/ECutAzwPH/JEBYda6tBkzmRL98loH2yntuYXb
-         Fc5g==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2wLUmejhcVRcqc+rAjZMStnlGz+fratQopF1EIC76k4=;
+        b=R9cms9de9UeuR0CiH0ytJw9WpeNwHpeOjmccfGr0e06l0DDz6dJOZAGtCHmr7Pfg+G
+         GrpZfbcrKP3HGB/7tWn/2+xD1LUlaGD9QBbKT1V71rugJSph48F/JqlDG5SHTFGuZQiE
+         6wJufX4XCIukc1YKxAJkJLTLfyxPFAmKPtPPWBuSLtO6FN5R+uCSk3BJwoiU/W9wxq56
+         03ZHBsEqAVrXYCifoEWDctVJ/J29S9wtiTfNCBj/2eErODmRC1XdrPo+FJyGvyElghyJ
+         D8e31WqCIaISYQ0IKvhqHckuLL+ALeSEruUlyaq8/OqNoFEvJ1MEXyeMsP0dJzkxJKoq
+         q5yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=QxvB5zhcmMCmsEmz42AGBb9LKLykoB0qkc+n27okF9U=;
-        b=NBU4BV4Y52315ueDenU04hOlDZ7yPAD006w3crs8T/gd6zVjvHtbDiBPyCocj4QaIc
-         QbcQnsB+sh2KTEG+dSKU5ujAXrmm7scDt5tgKy6cw8XCpDdMZt/lfEwejIt7wFCsQcgm
-         gbiwDXAWXUeoh+qHD+esw8Nwtue2xe5DGld/v0zTC2/NlJP1kD2ZmuIuHBxXO2Le0oXY
-         kqIxP8Tnb+dD9exYD1ayDTCquHHrZfZfZFKBrUVc5+un5Q8VlUcucg2JEEDQS2cAFnH8
-         QSY+zhlIHCNeblOBhhOjzY8WP24VuwIBDNRocrfr0CWkodxzjFHrh8O/wXbfbGyhqlVB
-         +LJQ==
-X-Gm-Message-State: AOAM530B9uFkqKo6SKkzbu0JqIF8NBaNI5cBDhBY66MFcUoBXpXJN5aZ
-        jwpNCawaHSPZJEQ3D46RoQ8FId9MofM=
-X-Google-Smtp-Source: ABdhPJyBJJW8ta6uqN30Jzhj1K2htHRikMUpYi3bflx8dLecDiYkRA6MbmPOKplJ2LSNPSEyioU97g==
-X-Received: by 2002:ac8:735a:: with SMTP id q26mr15092970qtp.5.1615082625033;
-        Sat, 06 Mar 2021 18:03:45 -0800 (PST)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id j1sm5058669qti.55.2021.03.06.18.03.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 18:03:44 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id C40C127C0054;
-        Sat,  6 Mar 2021 21:03:43 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Sat, 06 Mar 2021 21:03:43 -0500
-X-ME-Sender: <xms:fTREYN4WcYAXuv1L7V1ho_t4lxFY2EWynqW5xLW3eR_NGaiy_hKJ1w>
-    <xme:fTREYK5MUCt43gzOXE-Oa_womMBScxCN0O8Z4Boq_8lVLlAqJr3H2zPkOPq0ieK3L
-    Rl71ynyCC_FZIKg1g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtledggeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtudenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpedtfefgfeeuleevvedtheejgeetueejkeeujeethfeiteekffehvdevveff
-    jefgteenucfkphepudefuddruddtjedrudegjedruddvieenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhht
-    hhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquh
-    hnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:fTREYEdS3SHh1RmwWFN02nYrk42Hx1YDq7whkGLaZNM0aSTAzQE7rg>
-    <xmx:fTREYGI-f_ONBmyRJTgTqblQMjJRYfQfgisVA24GiNilRO-HLIU0WA>
-    <xmx:fTREYBJg1bm6BN6TNSfn4SCp0ZFxWGZyw1dE3ATwJF-yUougxhBllQ>
-    <xmx:fzREYJ_v6cZJBRCabx8tHeMQGezwGdhqGUX5zmtb6JwH2Pfc1fJWcw>
-Received: from localhost (unknown [131.107.147.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7F2B21080064;
-        Sat,  6 Mar 2021 21:03:41 -0500 (EST)
-Date:   Sun, 7 Mar 2021 10:02:32 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, schuchmann@schleissheimer.de
-Subject: Re: [PATCH] leds: trigger: fix potential deadlock with libata
-Message-ID: <YEQ0ONQCwVUd0wmc@boqun-archlinux>
-References: <20201102104152.GG9930@xps-13-7390>
- <20210306203954.ya5oqgkdalcw45c4@pengutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2wLUmejhcVRcqc+rAjZMStnlGz+fratQopF1EIC76k4=;
+        b=prVfhaUOLfwO1wLASnZ8VO2ZbFF2Q46HSYrpj358cdpfIynR/NBQX7XP8eylKWOPgF
+         5yRWI8mObP0hheWyu6TiRChoso43gY2zykMiDE2Vn2zYNpjC5HzpkQF7WFtVxXpf8LN7
+         BFYNv1HSEvdnyUx8ZIzRkjjfzcudUezorZ71SdGcbZnhmiykAHkn2Ldgd5dNjj6Ce7Sg
+         ljSngcB71RcFQyoSFJVUDC6bhFvrl2pj7JAGH9UrtMvF48Uzsn5+GHjI7XNONMGfxF3J
+         ALlnhQCmfZnq1f9DhcOSHKqYyuP5KaFtP/rpopqFTYaBV/7BhhOXT5SvD7rvOn28BZsd
+         3qdg==
+X-Gm-Message-State: AOAM531yb+UG5q3dcfX4gvmPK+CXfMZAMC5j9sVNiNO/xU1bYxqQWzYs
+        MAbt7qY4nYr7Bcn9a9ZJYAK+1eUIPFtSsOIkICjbrCbVj6EaJuRN
+X-Google-Smtp-Source: ABdhPJwAqKweDEd+pxpKfoQCzGiTgN/Z0cGTtZjqwUxAVO0H88pV6opbajSQ5mlvsTykHNIysMu4x1bsrAbclHmDses=
+X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr2572301edd.78.1615083377192;
+ Sat, 06 Mar 2021 18:16:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210306203954.ya5oqgkdalcw45c4@pengutronix.de>
+References: <20210305120903.166929741@linuxfoundation.org>
+In-Reply-To: <20210305120903.166929741@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sun, 7 Mar 2021 07:46:06 +0530
+Message-ID: <CA+G9fYvu8RgxGFwr3J4W5NjZLkukYh1SM6-_+2-1dot13Y2s6w@mail.gmail.com>
+Subject: Re: [PATCH 5.11 000/104] 5.11.4-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 06, 2021 at 09:39:54PM +0100, Marc Kleine-Budde wrote:
-> Hello *,
-> 
-> On 02.11.2020 11:41:52, Andrea Righi wrote:
-> > We have the following potential deadlock condition:
-> > 
-> >  ========================================================
-> >  WARNING: possible irq lock inversion dependency detected
-> >  5.10.0-rc2+ #25 Not tainted
-> >  --------------------------------------------------------
-> >  swapper/3/0 just changed the state of lock:
-> >  ffff8880063bd618 (&host->lock){-...}-{2:2}, at: ata_bmdma_interrupt+0x27/0x200
-> >  but this lock took another, HARDIRQ-READ-unsafe lock in the past:
-> >   (&trig->leddev_list_lock){.+.?}-{2:2}
-> > 
-> >  and interrupts could create inverse lock ordering between them.
-> 
-> [...]
-> 
-> > ---
-> >  drivers/leds/led-triggers.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/leds/led-triggers.c b/drivers/leds/led-triggers.c
-> > index 91da90cfb11d..16d1a93a10a8 100644
-> > --- a/drivers/leds/led-triggers.c
-> > +++ b/drivers/leds/led-triggers.c
-> > @@ -378,14 +378,15 @@ void led_trigger_event(struct led_trigger *trig,
-> >  			enum led_brightness brightness)
-> >  {
-> >  	struct led_classdev *led_cdev;
-> > +	unsigned long flags;
-> >  
-> >  	if (!trig)
-> >  		return;
-> >  
-> > -	read_lock(&trig->leddev_list_lock);
-> > +	read_lock_irqsave(&trig->leddev_list_lock, flags);
-> >  	list_for_each_entry(led_cdev, &trig->led_cdevs, trig_list)
-> >  		led_set_brightness(led_cdev, brightness);
-> > -	read_unlock(&trig->leddev_list_lock);
-> > +	read_unlock_irqrestore(&trig->leddev_list_lock, flags);
-> >  }
-> >  EXPORT_SYMBOL_GPL(led_trigger_event);
-> 
-> meanwhile this patch hit v5.10.x stable and caused a performance
-> degradation on our use case:
-> 
-> It's an embedded ARM system, 4x Cortex A53, with an SPI attached CAN
-> controller. CAN stands for Controller Area Network and here used to
-> connect to some automotive equipment. Over CAN an ISOTP (a CAN-specific
-> Transport Protocol) transfer is running. With this patch, we see CAN
-> frames delayed for ~6ms, the usual gap between CAN frames is 240µs.
-> 
-> Reverting this patch, restores the old performance.
-> 
-> What is the best way to solve this dilemma? Identify the critical path
-> in our use case? Is there a way we can get around the irqsave in
-> led_trigger_event()?
-> 
+On Fri, 5 Mar 2021 at 17:55, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.11.4 release.
+> There are 104 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.11.4-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.11.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Probably, we can change from rwlock to rcu here, POC code as follow,
-only compile tested. Marc, could you see whether this help the
-performance on your platform? Please note that I haven't test it in a
-running kernel and I'm not that familir with led subsystem, so use it
-with caution ;-)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-(While at it, I think maybe we miss the leddev_list_lock in net/mac80211
-in the patch)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Regards,
-Boqun
-------->8
-diff --git a/drivers/leds/led-triggers.c b/drivers/leds/led-triggers.c
-index 4e7b78a84149..ae68ccab6cc9 100644
---- a/drivers/leds/led-triggers.c
-+++ b/drivers/leds/led-triggers.c
-@@ -171,10 +171,12 @@ int led_trigger_set(struct led_classdev *led_cdev, struct led_trigger *trig)
- 
- 	/* Remove any existing trigger */
- 	if (led_cdev->trigger) {
--		write_lock_irqsave(&led_cdev->trigger->leddev_list_lock, flags);
--		list_del(&led_cdev->trig_list);
--		write_unlock_irqrestore(&led_cdev->trigger->leddev_list_lock,
-+		spin_lock_irqsave(&led_cdev->trigger->leddev_list_lock, flags);
-+		list_del_rcu(&led_cdev->trig_list);
-+		spin_unlock_irqrestore(&led_cdev->trigger->leddev_list_lock,
- 			flags);
-+		/* Wait for the readers gone */
-+		synchronize_rcu();
- 		cancel_work_sync(&led_cdev->set_brightness_work);
- 		led_stop_software_blink(led_cdev);
- 		if (led_cdev->trigger->deactivate)
-@@ -186,9 +188,9 @@ int led_trigger_set(struct led_classdev *led_cdev, struct led_trigger *trig)
- 		led_set_brightness(led_cdev, LED_OFF);
- 	}
- 	if (trig) {
--		write_lock_irqsave(&trig->leddev_list_lock, flags);
--		list_add_tail(&led_cdev->trig_list, &trig->led_cdevs);
--		write_unlock_irqrestore(&trig->leddev_list_lock, flags);
-+		spin_lock_irqsave(&trig->leddev_list_lock, flags);
-+		list_add_tail_rcu(&led_cdev->trig_list, &trig->led_cdevs);
-+		spin_unlock_irqrestore(&trig->leddev_list_lock, flags);
- 		led_cdev->trigger = trig;
- 
- 		if (trig->activate)
-@@ -223,9 +225,12 @@ int led_trigger_set(struct led_classdev *led_cdev, struct led_trigger *trig)
- 		trig->deactivate(led_cdev);
- err_activate:
- 
--	write_lock_irqsave(&led_cdev->trigger->leddev_list_lock, flags);
--	list_del(&led_cdev->trig_list);
--	write_unlock_irqrestore(&led_cdev->trigger->leddev_list_lock, flags);
-+	spin_lock_irqsave(&led_cdev->trigger->leddev_list_lock, flags);
-+	list_del_rcu(&led_cdev->trig_list);
-+	spin_unlock_irqrestore(&led_cdev->trigger->leddev_list_lock, flags);
-+
-+	/* XXX could use call_rcu() here? */
-+	synchronize_rcu();
- 	led_cdev->trigger = NULL;
- 	led_cdev->trigger_data = NULL;
- 	led_set_brightness(led_cdev, LED_OFF);
-@@ -285,7 +290,7 @@ int led_trigger_register(struct led_trigger *trig)
- 	struct led_classdev *led_cdev;
- 	struct led_trigger *_trig;
- 
--	rwlock_init(&trig->leddev_list_lock);
-+	spin_lock_init(&trig->leddev_list_lock);
- 	INIT_LIST_HEAD(&trig->led_cdevs);
- 
- 	down_write(&triggers_list_lock);
-@@ -378,15 +383,14 @@ void led_trigger_event(struct led_trigger *trig,
- 			enum led_brightness brightness)
- {
- 	struct led_classdev *led_cdev;
--	unsigned long flags;
- 
- 	if (!trig)
- 		return;
- 
--	read_lock_irqsave(&trig->leddev_list_lock, flags);
--	list_for_each_entry(led_cdev, &trig->led_cdevs, trig_list)
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(led_cdev, &trig->led_cdevs, trig_list)
- 		led_set_brightness(led_cdev, brightness);
--	read_unlock_irqrestore(&trig->leddev_list_lock, flags);
-+	rcu_read_unlock();
- }
- EXPORT_SYMBOL_GPL(led_trigger_event);
- 
-@@ -397,20 +401,19 @@ static void led_trigger_blink_setup(struct led_trigger *trig,
- 			     int invert)
- {
- 	struct led_classdev *led_cdev;
--	unsigned long flags;
- 
- 	if (!trig)
- 		return;
- 
--	read_lock_irqsave(&trig->leddev_list_lock, flags);
--	list_for_each_entry(led_cdev, &trig->led_cdevs, trig_list) {
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(led_cdev, &trig->led_cdevs, trig_list) {
- 		if (oneshot)
- 			led_blink_set_oneshot(led_cdev, delay_on, delay_off,
- 					      invert);
- 		else
- 			led_blink_set(led_cdev, delay_on, delay_off);
- 	}
--	read_unlock_irqrestore(&trig->leddev_list_lock, flags);
-+	rcu_read_unlock();
- }
- 
- void led_trigger_blink(struct led_trigger *trig,
-diff --git a/include/linux/leds.h b/include/linux/leds.h
-index 6a8d6409c993..5acc0e8a9f18 100644
---- a/include/linux/leds.h
-+++ b/include/linux/leds.h
-@@ -356,7 +356,7 @@ struct led_trigger {
- 	struct led_hw_trigger_type *trigger_type;
- 
- 	/* LEDs under control by this trigger (for simple triggers) */
--	rwlock_t	  leddev_list_lock;
-+	spinlock_t	  leddev_list_lock;
- 	struct list_head  led_cdevs;
- 
- 	/* Link to next registered trigger */
-diff --git a/net/mac80211/led.c b/net/mac80211/led.c
-index b275c8853074..5ec5070fe210 100644
---- a/net/mac80211/led.c
-+++ b/net/mac80211/led.c
-@@ -283,10 +283,10 @@ static void tpt_trig_timer(struct timer_list *t)
- 		}
- 	}
- 
--	read_lock(&local->tpt_led.leddev_list_lock);
-+	rcu_read_lock();
- 	list_for_each_entry(led_cdev, &local->tpt_led.led_cdevs, trig_list)
- 		led_blink_set(led_cdev, &on, &off);
--	read_unlock(&local->tpt_led.leddev_list_lock);
-+	rcu_read_unlock();
- }
- 
- const char *
-@@ -349,10 +349,10 @@ static void ieee80211_stop_tpt_led_trig(struct ieee80211_local *local)
- 	tpt_trig->running = false;
- 	del_timer_sync(&tpt_trig->timer);
- 
--	read_lock(&local->tpt_led.leddev_list_lock);
-+	rcu_read_lock();
- 	list_for_each_entry(led_cdev, &local->tpt_led.led_cdevs, trig_list)
- 		led_set_brightness(led_cdev, LED_OFF);
--	read_unlock(&local->tpt_led.leddev_list_lock);
-+	rcu_read_unlock();
- }
- 
- void ieee80211_mod_tpt_led_trig(struct ieee80211_local *local,
+NOTE:
+LTP pty test case hangup01 is getting PASS on this version.
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.11.4-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.11.y
+git commit: f598f183ed0a259f541fe8479bbadcc20c89c7a9
+git describe: v5.11.3-105-gf598f183ed0a
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11=
+.y/build/v5.11.3-105-gf598f183ed0a
+
+No regressions (compared to build v5.11.3)
+
+
+fixes (compared to build 5.11.3)
+------------------
+  ltp-pty-tests:
+    * hangup01
+
+
+Ran 45135 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-64k_page_size
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-bpf
+* kselftest-intel_pstate
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* perf
+* v4l2-compliance
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* kselftest-android
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lkdtm
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* ltp-controllers-tests
+* ltp-open-posix-tests
+* ltp-sched-tests
+* kvm-unit-tests
+* fwts
+* kunit
+* rcutorture
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
