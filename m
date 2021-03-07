@@ -2,217 +2,951 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A2D330134
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 14:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C69E330151
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 14:43:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbhCGNZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 08:25:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbhCGNYu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 08:24:50 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FE1C06174A;
-        Sun,  7 Mar 2021 05:24:50 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id f12so8504362wrx.8;
-        Sun, 07 Mar 2021 05:24:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:references:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aoQCQxfYrJhsDppqEQCGpKQO31vQ8nMQSN5uxsYQeEI=;
-        b=MeF1eJe5FABxzb0tKWSuGAzLZJLTRTXMMU2+MUjAQXX4ggbPEjG4HnEnggAWk/jtrp
-         Nd7DaFU0Dp742+ergMafwcx/0ovFSNSp/LRY71RYTrNkJ5Qi7tRjEsfNWSnczwK6U/TW
-         P6g/8oZ0ItUjcG6OvQP2CoA1onKtP3cTaNA5Ts2QjwBy/UWRakVp75yBcoCPE7GDiRlZ
-         jCApTWTBfd1rq1nadKdVU+KemmTj7NeJyC2MbNvV+MGFAN4gt6VVHwUi9TtxE4A0vroV
-         GjoQLCpaf/EYpyTfvQUeiiBuYuMeme9BDlfI6JfLSVheyM3QDE0OFXaHcKA69wohx4AC
-         Ajjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aoQCQxfYrJhsDppqEQCGpKQO31vQ8nMQSN5uxsYQeEI=;
-        b=nwnMOAScrzkKtOQvknLjq7W85tilOPToGLHshcDk5QNguRgSqGsyZ1tKBMhgM13OE/
-         NIeJk+plShSswBnh5ekkLRBJ09PLjdtfxeWSbYpGi5BpBpvZhriHH1ItXzlRMljAmuxf
-         jCqoVOns7Tyovhlrgvq5nm9pENoeDNk6NV0577W3I0V6SAUYgM80uExzpkjYGLOm04+Z
-         x0980S8GeikcbewAvmfiEGZLxrXrzBaUceH/uqj/MY2P3bQcer2VSOy3yJyEDbQGNlNS
-         2o98aeiftblBFU0bS5cJiPqyD614KuwlTPvPnWuFWVPqgxCf7PQfiIBchmMSYEtQHvCK
-         IkzQ==
-X-Gm-Message-State: AOAM530EtRBWI/+u7OrmNGtPn6RqLOgy4NdeKiV72eREruiBk/t50fvR
-        5PKYqEan2GYPBX6AHRL4OjI=
-X-Google-Smtp-Source: ABdhPJw0shq5dZvjCALMIoU4qO2e5H/8cQPpiU1qdWR9tJW1z1gpGAHRkkcDOWvta+YTKJCLkyxEZQ==
-X-Received: by 2002:a5d:4ac4:: with SMTP id y4mr18037199wrs.86.1615123489258;
-        Sun, 07 Mar 2021 05:24:49 -0800 (PST)
-Received: from [192.168.8.114] ([148.252.132.144])
-        by smtp.gmail.com with ESMTPSA id l22sm13562834wrb.4.2021.03.07.05.24.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Mar 2021 05:24:48 -0800 (PST)
-Subject: Re: [syzbot] possible deadlock in io_sq_thread_finish
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     syzbot <syzbot+ac39856cb1b332dbbdda@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000430bf505bcef3b00@google.com>
- <824f3c6e-9ae7-af14-fac5-2448afa7446a@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <282ce2ab-1429-815c-c11f-e3e9d36ef750@gmail.com>
-Date:   Sun, 7 Mar 2021 13:20:53 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S231408AbhCGNnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 08:43:16 -0500
+Received: from mout.gmx.net ([212.227.17.21]:48565 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230272AbhCGNm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 08:42:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1615124521;
+        bh=yBo7hGCSzN1cx8Cw6x+gmnMXafaZYnF6cZpWUcCnFjw=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=e+VGYaPh1V8utWRjSzAaZf7vesjkpi4NR9TeuP1sdttN0YSFAQkir2NPMMX/60t4D
+         hDf+2UujimHyf+ipspGXkl5S6sGB95CBEF9sPblz9ALIYR1E3GtABSRCR51LTp+tLH
+         gYuX+5ddOidCaP2WSSePV1/kpKe0lZK24pvj0VvU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.229.153]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MY6Cb-1lFokG212D-00YNOi; Sun, 07 Mar 2021 14:42:01 +0100
+From:   John Wood <john.wood@gmx.com>
+To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
+Cc:     John Wood <john.wood@gmx.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: [PATCH v6 6/8] selftests/brute: Add tests for the Brute LSM
+Date:   Sun,  7 Mar 2021 12:30:29 +0100
+Message-Id: <20210307113031.11671-7-john.wood@gmx.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210307113031.11671-1-john.wood@gmx.com>
+References: <20210307113031.11671-1-john.wood@gmx.com>
 MIME-Version: 1.0
-In-Reply-To: <824f3c6e-9ae7-af14-fac5-2448afa7446a@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:mvsxY7Ykuor4unsAnNlbbu6SaElApBmWwMDgxWVYAVGrNsbkNwB
+ twwjS+0aY/v1rceXHNaW+TVHs5pSECLlSTzG71xBBNgC8cszd9QuVtnhlEYztEKOr8Jv58Y
+ S09yd+BrusjdSJgHyfJ9+adidmb5SWl7nbb9f0THB2MSBH4yTBcY4SHYAt6nMDKQkinXd8v
+ Ojg/ExjwXqTBMQhRwMAMA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0sqsvWMK2H0=:cdWoY0iZPtfGybVenbtWtp
+ 7vg6VPWaMTbFdshKHt0gCwWOlx0alCoMGgqpVufZkWNeJhL9QG5PkC6lCF4AMSIy4Eol8phVE
+ nvqXAYnly6a/QooFeGl5zlmVBBcJrcProYKwjadp/Ie5ybJtCSyM54qYieXCXLcRmgRJV17U6
+ 8kBq4pyyCAyDlCDm6qHo6Cvt8g+BPwHzR/Gkm3QKidZeAOAzOdJQEcA43Ftr6Bb/kS2wugCuv
+ qei/MQDdBcPFh5BGIv3fB5ROYZS4/K1hiy21jG2fNLTONu5yohlCl5rFkKaqtsSZdTPbiamq9
+ 9VaLFCEZYWQrLFhohmrxI8lQIB/qxDwbDCEX7AtoyMxzBZSVK8licraT22KpAtT5r2Dx6w+7c
+ pobaXDv/pBfe+iUt6DT4/jSchMotJT2+I39iPHzPYWcAIaBXRdf5CtA+lTAO/zKPSyC/u25JR
+ mIZndYNWL3kHqVur/ywtQOotUTQKgGbkJo1n9B+GR5ctzM51pD72/ugp/MaFqOZGzGKNspSZI
+ 8LmoCEtqgRQyBmTrdoxvVYjPROrx5Qw8t/Pv66JiNNozD+W2pKvWLtoW7gvK3uQnwQJNzVSr3
+ KEf8xZ7BUp2zEdblDC+MHdkLJUCBfTp0wPu/8b/Gpb1CluwHKnP+0CW0BHU6FTervjIpxIDHg
+ XLBeE7e9wCZeGsg3ikPs+JJv80tt9nCqo1xQJqhV1Nbqpq9Z7KOzOtjHvPUK5iGMmqeW6xWo2
+ VJh5GSL9VjSzeewb3/26B80Kakiy2jkf3PJnD2djt6+/m1QbbbCUM6YJxnlwB6RdYkP0zQn2b
+ TzhBEyebj1Y0xOBIjNt6HEETo9JHwfjUpw0mFW8XSV2NsNrCcljceATmeeEMJp6FARGc053gN
+ PjVAnGg9YVQ0ttfUAnqA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/03/2021 12:39, Pavel Begunkov wrote:
-> On 07/03/2021 09:49, syzbot wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    a38fd874 Linux 5.12-rc2
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=143ee02ad00000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=db9c6adb4986f2f2
->> dashboard link: https://syzkaller.appspot.com/bug?extid=ac39856cb1b332dbbdda
->>
->> Unfortunately, I don't have any reproducer for this issue yet.
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+ac39856cb1b332dbbdda@syzkaller.appspotmail.com
-> 
-> Legit error, park() might take an sqd lock, and then we take it again.
-> I'll patch it up
+Add tests to check the brute LSM functionality and cover fork/exec brute
+force attacks crossing the following privilege boundaries:
 
-I was wrong, it looks fine, io_put_sq_data() and io_sq_thread_park()
-don't nest. I wonder if that's a false positive due to conditional
-locking as below
+1.- setuid process
+2.- privilege changes
+3.- network to local
 
-if (sqd->thread == current)
-	return;
-mutex_lock(&sqd->lock);
+Also, as a first step check that fork/exec brute force attacks without
+crossing any privilege boundariy already commented doesn't trigger the
+detection and mitigation stage.
 
-> 
->>
->> ============================================
->> WARNING: possible recursive locking detected
->> 5.12.0-rc2-syzkaller #0 Not tainted
->> --------------------------------------------
->> kworker/u4:7/7615 is trying to acquire lock:
->> ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_stop fs/io_uring.c:7099 [inline]
->> ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_put_sq_data fs/io_uring.c:7115 [inline]
->> ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_finish+0x408/0x650 fs/io_uring.c:7139
->>
->> but task is already holding lock:
->> ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park fs/io_uring.c:7088 [inline]
->> ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park+0x63/0xc0 fs/io_uring.c:7082
->>
->> other info that might help us debug this:
->>  Possible unsafe locking scenario:
->>
->>        CPU0
->>        ----
->>   lock(&sqd->lock);
->>   lock(&sqd->lock);
->>
->>  *** DEADLOCK ***
->>
->>  May be due to missing lock nesting notation
->>
->> 3 locks held by kworker/u4:7/7615:
->>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
->>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
->>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
->>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
->>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
->>  #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2246
->>  #1: ffffc900023a7da8 ((work_completion)(&ctx->exit_work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
->>  #2: ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park fs/io_uring.c:7088 [inline]
->>  #2: ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park+0x63/0xc0 fs/io_uring.c:7082
->>
->> stack backtrace:
->> CPU: 1 PID: 7615 Comm: kworker/u4:7 Not tainted 5.12.0-rc2-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> Workqueue: events_unbound io_ring_exit_work
->> Call Trace:
->>  __dump_stack lib/dump_stack.c:79 [inline]
->>  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
->>  print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
->>  check_deadlock kernel/locking/lockdep.c:2872 [inline]
->>  validate_chain kernel/locking/lockdep.c:3661 [inline]
->>  __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4900
->>  lock_acquire kernel/locking/lockdep.c:5510 [inline]
->>  lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
->>  __mutex_lock_common kernel/locking/mutex.c:946 [inline]
->>  __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1093
->>  io_sq_thread_stop fs/io_uring.c:7099 [inline]
->>  io_put_sq_data fs/io_uring.c:7115 [inline]
->>  io_sq_thread_finish+0x408/0x650 fs/io_uring.c:7139
->>  io_ring_ctx_free fs/io_uring.c:8408 [inline]
->>  io_ring_exit_work+0x82/0x9a0 fs/io_uring.c:8539
->>  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
->>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
->>  kthread+0x3b1/0x4a0 kernel/kthread.c:292
->>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->>
->>
->> ---
->> This report is generated by a bot. It may contain errors.
->> See https://goo.gl/tpsmEJ for more information about syzbot.
->> syzbot engineers can be reached at syzkaller@googlegroups.com.
->>
->> syzbot will keep track of this issue. See:
->> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->>
-> 
+All the fork brute force attacks are carried out via the "exec" app to
+avoid the triggering of the "brute" LSM over the shell script running
+the tests.
 
--- 
-Pavel Begunkov
+Signed-off-by: John Wood <john.wood@gmx.com>
+=2D--
+ tools/testing/selftests/Makefile         |   1 +
+ tools/testing/selftests/brute/.gitignore |   2 +
+ tools/testing/selftests/brute/Makefile   |   5 +
+ tools/testing/selftests/brute/config     |   1 +
+ tools/testing/selftests/brute/exec.c     |  44 ++
+ tools/testing/selftests/brute/test.c     | 507 +++++++++++++++++++++++
+ tools/testing/selftests/brute/test.sh    | 226 ++++++++++
+ 7 files changed, 786 insertions(+)
+ create mode 100644 tools/testing/selftests/brute/.gitignore
+ create mode 100644 tools/testing/selftests/brute/Makefile
+ create mode 100644 tools/testing/selftests/brute/config
+ create mode 100644 tools/testing/selftests/brute/exec.c
+ create mode 100644 tools/testing/selftests/brute/test.c
+ create mode 100755 tools/testing/selftests/brute/test.sh
+
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Ma=
+kefile
+index 6c575cf34a71..d4cf9e1c0a6d 100644
+=2D-- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -2,6 +2,7 @@
+ TARGETS =3D arm64
+ TARGETS +=3D bpf
+ TARGETS +=3D breakpoints
++TARGETS +=3D brute
+ TARGETS +=3D capabilities
+ TARGETS +=3D cgroup
+ TARGETS +=3D clone3
+diff --git a/tools/testing/selftests/brute/.gitignore b/tools/testing/self=
+tests/brute/.gitignore
+new file mode 100644
+index 000000000000..1ccc45251a1b
+=2D-- /dev/null
++++ b/tools/testing/selftests/brute/.gitignore
+@@ -0,0 +1,2 @@
++exec
++test
+diff --git a/tools/testing/selftests/brute/Makefile b/tools/testing/selfte=
+sts/brute/Makefile
+new file mode 100644
+index 000000000000..52662d0b484c
+=2D-- /dev/null
++++ b/tools/testing/selftests/brute/Makefile
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: GPL-2.0
++CFLAGS +=3D -Wall -O2
++TEST_PROGS :=3D test.sh
++TEST_GEN_FILES :=3D exec test
++include ../lib.mk
+diff --git a/tools/testing/selftests/brute/config b/tools/testing/selftest=
+s/brute/config
+new file mode 100644
+index 000000000000..3587b7bf6c23
+=2D-- /dev/null
++++ b/tools/testing/selftests/brute/config
+@@ -0,0 +1 @@
++CONFIG_SECURITY_FORK_BRUTE=3Dy
+diff --git a/tools/testing/selftests/brute/exec.c b/tools/testing/selftest=
+s/brute/exec.c
+new file mode 100644
+index 000000000000..1bbe72f6e4bd
+=2D-- /dev/null
++++ b/tools/testing/selftests/brute/exec.c
+@@ -0,0 +1,44 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <libgen.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <unistd.h>
++
++static __attribute__((noreturn)) void error_failure(const char *message)
++{
++	perror(message);
++	exit(EXIT_FAILURE);
++}
++
++#define PROG_NAME basename(argv[0])
++
++int main(int argc, char **argv)
++{
++	pid_t pid;
++	int status;
++
++	if (argc < 2) {
++		printf("Usage: %s <EXECUTABLE>\n", PROG_NAME);
++		exit(EXIT_FAILURE);
++	}
++
++	pid =3D fork();
++	if (pid < 0)
++		error_failure("fork");
++
++	/* Child process */
++	if (!pid) {
++		execve(argv[1], &argv[1], NULL);
++		error_failure("execve");
++	}
++
++	/* Parent process */
++	pid =3D waitpid(pid, &status, 0);
++	if (pid < 0)
++		error_failure("waitpid");
++
++	return EXIT_SUCCESS;
++}
+diff --git a/tools/testing/selftests/brute/test.c b/tools/testing/selftest=
+s/brute/test.c
+new file mode 100644
+index 000000000000..44c32f446dca
+=2D-- /dev/null
++++ b/tools/testing/selftests/brute/test.c
+@@ -0,0 +1,507 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <arpa/inet.h>
++#include <errno.h>
++#include <libgen.h>
++#include <pwd.h>
++#include <signal.h>
++#include <stdbool.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/socket.h>
++#include <sys/time.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <unistd.h>
++
++static const char *message =3D "message";
++
++enum mode {
++	MODE_NONE,
++	MODE_CRASH,
++	MODE_SERVER_CRASH,
++	MODE_CLIENT,
++};
++
++enum crash_after {
++	CRASH_AFTER_NONE,
++	CRASH_AFTER_FORK,
++	CRASH_AFTER_EXEC,
++};
++
++enum signal_from {
++	SIGNAL_FROM_NONE,
++	SIGNAL_FROM_USER,
++	SIGNAL_FROM_KERNEL,
++};
++
++struct args {
++	uint32_t ip;
++	uint16_t port;
++	int counter;
++	long timeout;
++	enum mode mode;
++	enum crash_after crash_after;
++	enum signal_from signal_from;
++	unsigned char has_counter : 1;
++	unsigned char has_change_priv : 1;
++	unsigned char has_ip : 1;
++	unsigned char has_port : 1;
++	unsigned char has_timeout : 1;
++};
++
++#define OPT_STRING "hm:c:s:n:Ca:p:t:"
++
++static void usage(const char *prog)
++{
++	printf("Usage: %s <OPTIONS>\n", prog);
++	printf("OPTIONS:\n");
++	printf("  -h: Show this help and exit. Optional.\n");
++	printf("  -m (crash | server_crash | client): Mode. Required.\n");
++	printf("Options for crash mode:\n");
++	printf("  -c (fork | exec): Crash after. Optional.\n");
++	printf("  -s (user | kernel): Signal from. Required.\n");
++	printf("  -n counter: Number of crashes.\n");
++	printf("              Required if the option -c is used.\n");
++	printf("              Not used without the option -c.\n");
++	printf("              Range from 1 to INT_MAX.\n");
++	printf("  -C: Change privileges before crash. Optional.\n");
++	printf("Options for server_crash mode:\n");
++	printf("  -a ip: Ip v4 address to accept. Required.\n");
++	printf("  -p port: Port number. Required.\n");
++	printf("           Range from 1 to UINT16_MAX.\n");
++	printf("  -t secs: Accept timeout. Required.\n");
++	printf("           Range from 1 to LONG_MAX.\n");
++	printf("  -c (fork | exec): Crash after. Required.\n");
++	printf("  -s (user | kernel): Signal from. Required.\n");
++	printf("  -n counter: Number of crashes. Required.\n");
++	printf("              Range from 1 to INT_MAX.\n");
++	printf("Options for client mode:\n");
++	printf("  -a ip: Ip v4 address to connect. Required.\n");
++	printf("  -p port: Port number. Required.\n");
++	printf("           Range from 1 to UINT16_MAX.\n");
++	printf("  -t secs: Connect timeout. Required.\n");
++	printf("           Range from 1 to LONG_MAX.\n");
++}
++
++static __attribute__((noreturn)) void info_failure(const char *message,
++						   const char *prog)
++{
++	printf("%s\n", message);
++	usage(prog);
++	exit(EXIT_FAILURE);
++}
++
++static enum mode get_mode(const char *text, const char *prog)
++{
++	if (!strcmp(text, "crash"))
++		return MODE_CRASH;
++
++	if (!strcmp(text, "server_crash"))
++		return MODE_SERVER_CRASH;
++
++	if (!strcmp(text, "client"))
++		return MODE_CLIENT;
++
++	info_failure("Invalid mode option [-m].", prog);
++}
++
++static enum crash_after get_crash_after(const char *text, const char *pro=
+g)
++{
++	if (!strcmp(text, "fork"))
++		return CRASH_AFTER_FORK;
++
++	if (!strcmp(text, "exec"))
++		return CRASH_AFTER_EXEC;
++
++	info_failure("Invalid crash after option [-c].", prog);
++}
++
++static enum signal_from get_signal_from(const char *text, const char *pro=
+g)
++{
++	if (!strcmp(text, "user"))
++		return SIGNAL_FROM_USER;
++
++	if (!strcmp(text, "kernel"))
++		return SIGNAL_FROM_KERNEL;
++
++	info_failure("Invalid signal from option [-s]", prog);
++}
++
++static int get_counter(const char *text, const char *prog)
++{
++	int counter;
++
++	counter =3D atoi(text);
++	if (counter > 0)
++		return counter;
++
++	info_failure("Invalid counter option [-n].", prog);
++}
++
++static __attribute__((noreturn)) void error_failure(const char *message)
++{
++	perror(message);
++	exit(EXIT_FAILURE);
++}
++
++static uint32_t get_ip(const char *text, const char *prog)
++{
++	int ret;
++	uint32_t ip;
++
++	ret =3D inet_pton(AF_INET, text, &ip);
++	if (!ret)
++		info_failure("Invalid ip option [-a].", prog);
++	else if (ret < 0)
++		error_failure("inet_pton");
++
++	return ip;
++}
++
++static uint16_t get_port(const char *text, const char *prog)
++{
++	long port;
++
++	port =3D atol(text);
++	if ((port > 0) && (port <=3D UINT16_MAX))
++		return htons(port);
++
++	info_failure("Invalid port option [-p].", prog);
++}
++
++static long get_timeout(const char *text, const char *prog)
++{
++	long timeout;
++
++	timeout =3D atol(text);
++	if (timeout > 0)
++		return timeout;
++
++	info_failure("Invalid timeout option [-t].", prog);
++}
++
++static void check_args(const struct args *args, const char *prog)
++{
++	if (args->mode =3D=3D MODE_CRASH && args->crash_after !=3D CRASH_AFTER_N=
+ONE &&
++	    args->signal_from !=3D SIGNAL_FROM_NONE && args->has_counter &&
++	    !args->has_ip && !args->has_port && !args->has_timeout)
++		return;
++
++	if (args->mode =3D=3D MODE_CRASH && args->signal_from !=3D SIGNAL_FROM_N=
+ONE &&
++	    args->crash_after =3D=3D CRASH_AFTER_NONE && !args->has_counter &&
++	    !args->has_ip && !args->has_port && !args->has_timeout)
++		return;
++
++	if (args->mode =3D=3D MODE_SERVER_CRASH && args->has_ip && args->has_por=
+t &&
++	    args->has_timeout && args->crash_after !=3D CRASH_AFTER_NONE &&
++	    args->signal_from !=3D SIGNAL_FROM_NONE && args->has_counter &&
++	    !args->has_change_priv)
++		return;
++
++	if (args->mode =3D=3D MODE_CLIENT && args->has_ip && args->has_port &&
++	    args->has_timeout && args->crash_after =3D=3D CRASH_AFTER_NONE &&
++	    args->signal_from =3D=3D SIGNAL_FROM_NONE && !args->has_counter &&
++	    !args->has_change_priv)
++		return;
++
++	info_failure("Invalid use of options.", prog);
++}
++
++static uid_t get_non_root_uid(void)
++{
++	struct passwd *pwent;
++	uid_t uid;
++
++	while (true) {
++		errno =3D 0;
++		pwent =3D getpwent();
++		if (!pwent) {
++			if (errno) {
++				perror("getpwent");
++				endpwent();
++				exit(EXIT_FAILURE);
++			}
++			break;
++		}
++
++		if (pwent->pw_uid) {
++			uid =3D pwent->pw_uid;
++			endpwent();
++			return uid;
++		}
++	}
++
++	endpwent();
++	printf("A user different of root is needed.\n");
++	exit(EXIT_FAILURE);
++}
++
++static inline void do_sigsegv(void)
++{
++	int *p =3D NULL;
++	*p =3D 0;
++}
++
++static void do_sigkill(void)
++{
++	int ret;
++
++	ret =3D kill(getpid(), SIGKILL);
++	if (ret)
++		error_failure("kill");
++}
++
++static void crash(enum signal_from signal_from, bool change_priv)
++{
++	int ret;
++
++	if (change_priv) {
++		ret =3D setuid(get_non_root_uid());
++		if (ret)
++			error_failure("setuid");
++	}
++
++	if (signal_from =3D=3D SIGNAL_FROM_KERNEL)
++		do_sigsegv();
++
++	do_sigkill();
++}
++
++static void execve_crash(char *const argv[])
++{
++	execve(argv[0], argv, NULL);
++	error_failure("execve");
++}
++
++static void exec_crash_user(void)
++{
++	char *const argv[] =3D {
++		"./test", "-m", "crash", "-s", "user", NULL,
++	};
++
++	execve_crash(argv);
++}
++
++static void exec_crash_user_change_priv(void)
++{
++	char *const argv[] =3D {
++		"./test", "-m", "crash", "-s", "user", "-C", NULL,
++	};
++
++	execve_crash(argv);
++}
++
++static void exec_crash_kernel(void)
++{
++	char *const argv[] =3D {
++		"./test", "-m", "crash", "-s", "kernel", NULL,
++	};
++
++	execve_crash(argv);
++}
++
++static void exec_crash_kernel_change_priv(void)
++{
++	char *const argv[] =3D {
++		"./test", "-m", "crash", "-s", "kernel", "-C", NULL,
++	};
++
++	execve_crash(argv);
++}
++
++static void exec_crash(enum signal_from signal_from, bool change_priv)
++{
++	if (signal_from =3D=3D SIGNAL_FROM_USER && !change_priv)
++		exec_crash_user();
++	if (signal_from =3D=3D SIGNAL_FROM_USER && change_priv)
++		exec_crash_user_change_priv();
++	if (signal_from =3D=3D SIGNAL_FROM_KERNEL && !change_priv)
++		exec_crash_kernel();
++	if (signal_from =3D=3D SIGNAL_FROM_KERNEL && change_priv)
++		exec_crash_kernel_change_priv();
++}
++
++static void do_crash(enum crash_after crash_after, enum signal_from signa=
+l_from,
++		     int counter, bool change_priv)
++{
++	pid_t pid;
++	int status;
++
++	if (crash_after =3D=3D CRASH_AFTER_NONE)
++		crash(signal_from, change_priv);
++
++	while (counter > 0) {
++		pid =3D fork();
++		if (pid < 0)
++			error_failure("fork");
++
++		/* Child process */
++		if (!pid) {
++			if (crash_after =3D=3D CRASH_AFTER_FORK)
++				crash(signal_from, change_priv);
++
++			exec_crash(signal_from, change_priv);
++		}
++
++		/* Parent process */
++		counter -=3D 1;
++		pid =3D waitpid(pid, &status, 0);
++		if (pid < 0)
++			error_failure("waitpid");
++	}
++}
++
++static __attribute__((noreturn)) void error_close_failure(const char *mes=
+sage,
++							  int fd)
++{
++	perror(message);
++	close(fd);
++	exit(EXIT_FAILURE);
++}
++
++static void do_server(uint32_t ip, uint16_t port, long accept_timeout)
++{
++	int sockfd;
++	int ret;
++	struct sockaddr_in address;
++	struct timeval timeout;
++	int newsockfd;
++
++	sockfd =3D socket(AF_INET, SOCK_STREAM, 0);
++	if (sockfd < 0)
++		error_failure("socket");
++
++	address.sin_family =3D AF_INET;
++	address.sin_addr.s_addr =3D ip;
++	address.sin_port =3D port;
++
++	ret =3D bind(sockfd, (const struct sockaddr *)&address, sizeof(address))=
+;
++	if (ret)
++		error_close_failure("bind", sockfd);
++
++	ret =3D listen(sockfd, 1);
++	if (ret)
++		error_close_failure("listen", sockfd);
++
++	timeout.tv_sec =3D accept_timeout;
++	timeout.tv_usec =3D 0;
++	ret =3D setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO,
++			 (const struct timeval *)&timeout, sizeof(timeout));
++	if (ret)
++		error_close_failure("setsockopt", sockfd);
++
++	newsockfd =3D accept(sockfd, NULL, NULL);
++	if (newsockfd < 0)
++		error_close_failure("accept", sockfd);
++
++	close(sockfd);
++	close(newsockfd);
++}
++
++static void do_client(uint32_t ip, uint16_t port, long connect_timeout)
++{
++	int sockfd;
++	int ret;
++	struct timeval timeout;
++	struct sockaddr_in address;
++
++	sockfd =3D socket(AF_INET, SOCK_STREAM, 0);
++	if (sockfd < 0)
++		error_failure("socket");
++
++	timeout.tv_sec =3D connect_timeout;
++	timeout.tv_usec =3D 0;
++	ret =3D setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO,
++			 (const struct timeval *)&timeout, sizeof(timeout));
++	if (ret)
++		error_close_failure("setsockopt", sockfd);
++
++	address.sin_family =3D AF_INET;
++	address.sin_addr.s_addr =3D ip;
++	address.sin_port =3D port;
++
++	ret =3D connect(sockfd, (const struct sockaddr *)&address,
++		      sizeof(address));
++	if (ret)
++		error_close_failure("connect", sockfd);
++
++	ret =3D write(sockfd, message, strlen(message));
++	if (ret < 0)
++		error_close_failure("write", sockfd);
++
++	close(sockfd);
++}
++
++#define PROG_NAME basename(argv[0])
++
++int main(int argc, char **argv)
++{
++	int opt;
++	struct args args =3D {
++		.mode =3D MODE_NONE,
++		.crash_after =3D CRASH_AFTER_NONE,
++		.signal_from =3D SIGNAL_FROM_NONE,
++		.has_counter =3D false,
++		.has_change_priv =3D false,
++		.has_ip =3D false,
++		.has_port =3D false,
++		.has_timeout =3D false,
++	};
++
++	while ((opt =3D getopt(argc, argv, OPT_STRING)) !=3D -1) {
++		switch (opt) {
++		case 'h':
++			usage(PROG_NAME);
++			return EXIT_SUCCESS;
++		case 'm':
++			args.mode =3D get_mode(optarg, PROG_NAME);
++			break;
++		case 'c':
++			args.crash_after =3D get_crash_after(optarg, PROG_NAME);
++			break;
++		case 's':
++			args.signal_from =3D get_signal_from(optarg, PROG_NAME);
++			break;
++		case 'n':
++			args.counter =3D get_counter(optarg, PROG_NAME);
++			args.has_counter =3D true;
++			break;
++		case 'C':
++			args.has_change_priv =3D true;
++			break;
++		case 'a':
++			args.ip =3D get_ip(optarg, PROG_NAME);
++			args.has_ip =3D true;
++			break;
++		case 'p':
++			args.port =3D get_port(optarg, PROG_NAME);
++			args.has_port =3D true;
++			break;
++		case 't':
++			args.timeout =3D get_timeout(optarg, PROG_NAME);
++			args.has_timeout =3D true;
++			break;
++		default:
++			usage(PROG_NAME);
++			return EXIT_FAILURE;
++		}
++	}
++
++	check_args(&args, PROG_NAME);
++
++	if (args.mode =3D=3D MODE_CRASH) {
++		do_crash(args.crash_after, args.signal_from, args.counter,
++			 args.has_change_priv);
++	} else if (args.mode =3D=3D MODE_SERVER_CRASH) {
++		do_server(args.ip, args.port, args.timeout);
++		do_crash(args.crash_after, args.signal_from, args.counter,
++			 false);
++	} else if (args.mode =3D=3D MODE_CLIENT) {
++		do_client(args.ip, args.port, args.timeout);
++	}
++
++	return EXIT_SUCCESS;
++}
+diff --git a/tools/testing/selftests/brute/test.sh b/tools/testing/selftes=
+ts/brute/test.sh
+new file mode 100755
+index 000000000000..f53f26ae5b96
+=2D-- /dev/null
++++ b/tools/testing/selftests/brute/test.sh
+@@ -0,0 +1,226 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++
++TCID=3D"test.sh"
++
++KSFT_PASS=3D0
++KSFT_FAIL=3D1
++KSFT_SKIP=3D4
++
++errno=3D$KSFT_PASS
++
++check_root()
++{
++	local uid=3D$(id -u)
++	if [ $uid -ne 0 ]; then
++		echo $TCID: must be run as root >&2
++		exit $KSFT_SKIP
++	fi
++}
++
++count_fork_matches()
++{
++	dmesg | grep "brute: Fork brute force attack detected" | wc -l
++}
++
++assert_equal()
++{
++	local val1=3D$1
++	local val2=3D$2
++
++	if [ $val1 -eq $val2 ]; then
++		echo "$TCID: $message [PASS]"
++	else
++		echo "$TCID: $message [FAIL]"
++		errno=3D$KSFT_FAIL
++	fi
++}
++
++test_fork_user()
++{
++	COUNTER=3D20
++
++	old_count=3D$(count_fork_matches)
++	./exec test -m crash -c fork -s user -n $COUNTER
++	new_count=3D$(count_fork_matches)
++
++	message=3D"Fork attack (user signals, no bounds crossed)"
++	assert_equal $old_count $new_count
++}
++
++test_fork_kernel()
++{
++	old_count=3D$(count_fork_matches)
++	./exec test -m crash -c fork -s kernel -n $COUNTER
++	new_count=3D$(count_fork_matches)
++
++	message=3D"Fork attack (kernel signals, no bounds crossed)"
++	assert_equal $old_count $new_count
++}
++
++count_exec_matches()
++{
++	dmesg | grep "brute: Exec brute force attack detected" | wc -l
++}
++
++test_exec_user()
++{
++	old_count=3D$(count_exec_matches)
++	./test -m crash -c exec -s user -n $COUNTER
++	new_count=3D$(count_exec_matches)
++
++	message=3D"Exec attack (user signals, no bounds crossed)"
++	assert_equal $old_count $new_count
++}
++
++test_exec_kernel()
++{
++	old_count=3D$(count_exec_matches)
++	./test -m crash -c exec -s kernel -n $COUNTER
++	new_count=3D$(count_exec_matches)
++
++	message=3D"Exec attack (kernel signals, no bounds crossed)"
++	assert_equal $old_count $new_count
++}
++
++assert_not_equal()
++{
++	local val1=3D$1
++	local val2=3D$2
++
++	if [ $val1 -ne $val2 ]; then
++		echo $TCID: $message [PASS]
++	else
++		echo $TCID: $message [FAIL]
++		errno=3D$KSFT_FAIL
++	fi
++}
++
++test_fork_kernel_setuid()
++{
++	old_count=3D$(count_fork_matches)
++	chmod u+s test
++	./exec test -m crash -c fork -s kernel -n $COUNTER
++	chmod u-s test
++	new_count=3D$(count_fork_matches)
++
++	message=3D"Fork attack (kernel signals, setuid binary)"
++	assert_not_equal $old_count $new_count
++}
++
++test_exec_kernel_setuid()
++{
++	old_count=3D$(count_exec_matches)
++	chmod u+s test
++	./test -m crash -c exec -s kernel -n $COUNTER
++	chmod u-s test
++	new_count=3D$(count_exec_matches)
++
++	message=3D"Exec attack (kernel signals, setuid binary)"
++	assert_not_equal $old_count $new_count
++}
++
++test_fork_kernel_change_priv()
++{
++	old_count=3D$(count_fork_matches)
++	./exec test -m crash -c fork -s kernel -n $COUNTER -C
++	new_count=3D$(count_fork_matches)
++
++	message=3D"Fork attack (kernel signals, change privileges)"
++	assert_not_equal $old_count $new_count
++}
++
++test_exec_kernel_change_priv()
++{
++	old_count=3D$(count_exec_matches)
++	./test -m crash -c exec -s kernel -n $COUNTER -C
++	new_count=3D$(count_exec_matches)
++
++	message=3D"Exec attack (kernel signals, change privileges)"
++	assert_not_equal $old_count $new_count
++}
++
++network_ns_setup()
++{
++	local vnet_name=3D$1
++	local veth_name=3D$2
++	local ip_src=3D$3
++	local ip_dst=3D$4
++
++	ip netns add $vnet_name
++	ip link set $veth_name netns $vnet_name
++	ip -n $vnet_name addr add $ip_src/24 dev $veth_name
++	ip -n $vnet_name link set $veth_name up
++	ip -n $vnet_name route add $ip_dst/24 dev $veth_name
++}
++
++network_setup()
++{
++	VETH0_NAME=3Dveth0
++	VNET0_NAME=3Dvnet0
++	VNET0_IP=3D10.0.1.0
++	VETH1_NAME=3Dveth1
++	VNET1_NAME=3Dvnet1
++	VNET1_IP=3D10.0.2.0
++
++	ip link add $VETH0_NAME type veth peer name $VETH1_NAME
++	network_ns_setup $VNET0_NAME $VETH0_NAME $VNET0_IP $VNET1_IP
++	network_ns_setup $VNET1_NAME $VETH1_NAME $VNET1_IP $VNET0_IP
++}
++
++test_fork_kernel_network_to_local()
++{
++	INADDR_ANY=3D0.0.0.0
++	PORT=3D65535
++	TIMEOUT=3D5
++
++	old_count=3D$(count_fork_matches)
++	ip netns exec $VNET0_NAME ./exec test -m server_crash -a $INADDR_ANY \
++		-p $PORT -t $TIMEOUT -c fork -s kernel -n $COUNTER &
++	sleep 1
++	ip netns exec $VNET1_NAME ./test -m client -a $VNET0_IP -p $PORT \
++		-t $TIMEOUT
++	sleep 1
++	new_count=3D$(count_fork_matches)
++
++	message=3D"Fork attack (kernel signals, network to local)"
++	assert_not_equal $old_count $new_count
++}
++
++test_exec_kernel_network_to_local()
++{
++	old_count=3D$(count_exec_matches)
++	ip netns exec $VNET0_NAME ./test -m server_crash -a $INADDR_ANY \
++		-p $PORT -t $TIMEOUT -c exec -s kernel -n $COUNTER &
++	sleep 1
++	ip netns exec $VNET1_NAME ./test -m client -a $VNET0_IP -p $PORT \
++		-t $TIMEOUT
++	sleep 1
++	new_count=3D$(count_exec_matches)
++
++	message=3D"Exec attack (kernel signals, network to local)"
++	assert_not_equal $old_count $new_count
++}
++
++network_cleanup()
++{
++	ip netns del $VNET0_NAME >/dev/null 2>&1
++	ip netns del $VNET1_NAME >/dev/null 2>&1
++	ip link delete $VETH0_NAME >/dev/null 2>&1
++	ip link delete $VETH1_NAME >/dev/null 2>&1
++}
++
++check_root
++test_fork_user
++test_fork_kernel
++test_exec_user
++test_exec_kernel
++test_fork_kernel_setuid
++test_exec_kernel_setuid
++test_fork_kernel_change_priv
++test_exec_kernel_change_priv
++network_setup
++test_fork_kernel_network_to_local
++test_exec_kernel_network_to_local
++network_cleanup
++exit $errno
+=2D-
+2.25.1
+
