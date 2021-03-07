@@ -2,98 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381F732FE49
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 02:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9012C32FE4E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 02:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhCGBPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 20:15:38 -0500
-Received: from m12-16.163.com ([220.181.12.16]:52614 "EHLO m12-16.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229801AbhCGBPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 20:15:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=0PQOv
-        2/hQx64gECYG05guj9Z2VJN6/F73EZBhLsxdYQ=; b=ma60aVLE7woVTmjlokm8V
-        Usq2vijoW7yYkjAqyPaVvyNRHsoZ0wUuhaGyOto2SAV40b2sK66yfCIfCWBB5OuX
-        vyg8pMrYBLbefbixCHhkirzvPuoCDrgslsmzbyhgJjbd1LT4wj2fj/msHWiDfaoU
-        8yYYCmGr0n2EWtvkJGFETE=
-Received: from [192.168.31.187] (unknown [36.170.36.204])
-        by smtp12 (Coremail) with SMTP id EMCowAAnKk7yKERgk+T+fA--.43990S2;
-        Sun, 07 Mar 2021 09:14:27 +0800 (CST)
-Subject: Re: [PATCH] xhci: Remove unused value len from xhci_unmap_temp_buf
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhang Kun <zhangkun@cdjrlc.com>
-References: <20210306120644.74406-1-zhangkun4jr@163.com>
- <YEOs5w8AYutM27/u@kroah.com>
-From:   Zhangkun <zhangkun4jr@163.com>
-Message-ID: <3ad81fd6-e88e-f55b-fe82-ac7804bc354c@163.com>
-Date:   Sun, 7 Mar 2021 09:14:26 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230086AbhCGBST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 20:18:19 -0500
+Received: from mail-qt1-f172.google.com ([209.85.160.172]:43156 "EHLO
+        mail-qt1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230053AbhCGBSF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 20:18:05 -0500
+Received: by mail-qt1-f172.google.com with SMTP id l14so2185207qtr.10;
+        Sat, 06 Mar 2021 17:18:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=L2b25z/IaYQj4qXr6EBnNHfy1oGsb8L5IXw+1eFrXEk=;
+        b=XTP4IOcwoXIxOSTQuW0ZpPuIVWmZ4lK7dEAy7BAWlIYo+5RZ7a5JHlorIozbMKTplE
+         HEZfAiOxi8OV17vlKSQc7YZQ6hc/4eYL5CrQ3kH4sZyb4cWA+7CqH9uQniugvrjM3nWP
+         SyFBUW1nNPVCFK5P2PEKeXhEKL859bDNeqWWXPNA7EE4d/JZYZZl54t++07zkPb8Ib72
+         gu4tbCR26nV2hNKuwjb1g+YZOrkpAj+1v+hlqHggzVgCsxLp+mlWDJPw8TVab63owwOY
+         B02ehUIQ8JzY9+Hr8XND4kHi6HgkfCiylkDbF/kpkJ6NxYjGYqnaZVoANuA4EWUY9PP7
+         M3PA==
+X-Gm-Message-State: AOAM531R8x4dUFUgkS/K8e7Cqmiu2NqDHbuy6Dh2DqGfZbvLnrhjSPen
+        FMgvI4bnggoh78sMBwKPg/k+KoARMrJsZYEW
+X-Google-Smtp-Source: ABdhPJy5UpugTBIUvUPYV+bKOYYknMsymvxTPXUqPw3z+eGIJp30YlXptyA+8RfSAwhv2ay9u7DmGQ==
+X-Received: by 2002:ac8:b4b:: with SMTP id m11mr15714636qti.254.1615079884953;
+        Sat, 06 Mar 2021 17:18:04 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id r67sm4799808qkd.93.2021.03.06.17.18.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 17:18:04 -0800 (PST)
+Date:   Sun, 7 Mar 2021 02:18:01 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: acpiphp:  Fixed coding style
+Message-ID: <YEQpyWPgAI8az5gO@rocinante>
+References: <20210301072145.19018-1-chakravarthikulkarni2021@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YEOs5w8AYutM27/u@kroah.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: EMCowAAnKk7yKERgk+T+fA--.43990S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Zr48KFWUKryruFy3GF18AFb_yoW8Wr47pF
-        s8Ka1YkFs5trZFkasrZanavFyrta1xJrykKrWIya45XFZxCFnIqF97WFyfKrnxWr4fGr1I
-        vF4UXayrWw1Dua7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bc4EiUUUUU=
-X-Originating-IP: [36.170.36.204]
-X-CM-SenderInfo: x2kd0whnxqkyru6rljoofrz/1tbirAVOtVr7sfJfFgAAs5
+Content-Disposition: inline
+In-Reply-To: <20210301072145.19018-1-chakravarthikulkarni2021@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/7/21 12:25 AM, Greg Kroah-Hartman wrote:
-> On Sat, Mar 06, 2021 at 08:06:44PM +0800, zhangkun4jr@163.com wrote:
->> From: Zhang Kun <zhangkun@cdjrlc.com>
->>
->> The value assigned to len by sg_pcopy_from_buffer() never used for
->> anything, so remove it.
->>
->> Signed-off-by: Zhang Kun <zhangkun@cdjrlc.com>
->> ---
->>  drivers/usb/host/xhci.c | 3 +--
->>  1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
->> index bd27bd670104..6ebda89d476c 100644
->> --- a/drivers/usb/host/xhci.c
->> +++ b/drivers/usb/host/xhci.c
->> @@ -1335,7 +1335,6 @@ static bool xhci_urb_temp_buffer_required(struct usb_hcd *hcd,
->>  
->>  static void xhci_unmap_temp_buf(struct usb_hcd *hcd, struct urb *urb)
->>  {
->> -	unsigned int len;
->>  	unsigned int buf_len;
->>  	enum dma_data_direction dir;
->>  
->> @@ -1351,7 +1350,7 @@ static void xhci_unmap_temp_buf(struct usb_hcd *hcd, struct urb *urb)
->>  				 dir);
->>  
->>  	if (usb_urb_dir_in(urb))
->> -		len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs,
->> +		sg_pcopy_from_buffer(urb->sg, urb->num_sgs,
->>  					   urb->transfer_buffer,
->>  					   buf_len,
->>  					   0);
-> 
-> SHouldn't this be checked instead of ignored?
->
+Hi,
 
-Hi, Greg.
-Considering your tips I checked sg_pcopy_from_buffer(). it copys data
-from urb->transfer_buffer to urb->sg, and only returns 0 or the 
-'number of copied bytes', and seems to has no other exception branchs
-that need to be checked. So I think it should be ingnored.
+Thank you for sending the patch over.  Few suggestions below.
 
-It may also be that I missed something, if that's the case, please
-correct me.
+There seem to be an extra space in the subject line.
 
-Thanks,
+> In this commit fixed coding style for braces and comments.
 
-Zhang
+Where these coding style changes suggested by a tool?  For example, was it
+something like checkpatch.pl?  If so, then it would be prudent to
+mention that the script found these for future reference.
 
+[...]
+> -	struct list_head funcs;		/* one slot may have different
+> -					   objects (i.e. for each function) */
+> +	struct list_head funcs;		/* one slot may have different */
+> +					/* objects (i.e. for each function) */
+[...]
+
+Above would be a single line commit that has been made to with within
+the line length rules, as otherwise the line would be too long.
+
+This is not necessarily something that we ought to fix, see for example:
+  https://elixir.bootlin.com/linux/v5.11.3/source/include/linux/pci.h
+
+[...]
+> -struct acpiphp_attention_info
+> -{
+> +struct acpiphp_attention_info {
+>  	int (*set_attn)(struct hotplug_slot *slot, u8 status);
+>  	int (*get_attn)(struct hotplug_slot *slot, u8 *status);
+>  	struct module *owner;
+[...]
+
+Nice catch!
+
+Generally, you would also need to your full name when providing your
+"Signed-off-by:" following the style that has been widely accepted.  See
+git log for how it would normally look like, and also have a look at the
+following for some general guidance on how to submit patches:
+
+  https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+
+Krzysztof
