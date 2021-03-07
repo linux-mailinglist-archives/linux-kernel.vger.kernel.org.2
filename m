@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDEDF32FFDB
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 10:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D3D32FFDE
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 10:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbhCGJSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 04:18:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230070AbhCGJSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 04:18:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31EDB65135;
-        Sun,  7 Mar 2021 09:18:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615108686;
-        bh=hmbvo4CsBfdIYvP8uNbcauFppXo+TwHppHp6RrtgvqY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dMMrjfx5hV1WA1fNztS+ezPiQfSOxtEWJ0fdAo4twFhkWET8svomz9cbgO9bwiH6I
-         Bzp336EEY5Ma1a1DJU0ojjGpYZvfclmwTD2izNEQfjDVRVzTJiZASBkB48UIt3gA8t
-         eWDonlL5sCoShpOHP21ng8Hpokhk+g8DfATaTFJak+EnZ/WhRxEzbKvkWqoEZqJxT2
-         zdyBGGIp5XAsB/rDHIlHgnM8dXxb2A/TdwYE/Sm0yX3SkFOIaD1wLMKnRypLMiKIkt
-         eO43SS0qASn6+q62Pp+AMYe3WzQ196sHi5zjqZ/uqvWvB4i47mWGpxQ/8ByTd74kVU
-         fHKIKR+rblzCg==
-Date:   Sun, 7 Mar 2021 11:18:03 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     Jia-Ju Bai <baijiaju1990@gmail.com>, kvalo@codeaurora.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ath: ath6kl: fix error return code of
- ath6kl_htc_rx_bundle()
-Message-ID: <YESaSwoGRxGvrggv@unreal>
-References: <20210307090757.22617-1-baijiaju1990@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210307090757.22617-1-baijiaju1990@gmail.com>
+        id S231402AbhCGJVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 04:21:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230070AbhCGJUd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 04:20:33 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8ABC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 01:20:33 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id o38so4426950pgm.9
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 01:20:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=c4bUo1XFYPqAeWFc5nQ4FKN414jxkX238K1R/ykzSZ0=;
+        b=D7UhJ7EnN9e5KT1lZ91iZj61RL26XDi8obkAgdhqzDnNcwkKNLsaf8VqM3RWRjtWt5
+         OdPE8Bc2svyUlL1HrlfidK5ckxDvUAqoVtXcGzvRKCiXXYMeG1K57dunTWAtcY9u5NGR
+         MczLfdo6LenbQugvzgRKNStdiXaObz5Du/XvUzxkic0qsOzctUgB4IfA0Ed3/psuU4VK
+         gJbl7EET9zA2itrQEFE+Vip00b8UNbLXLufTw3KOWrPXcE2YroffGvC6oqdJ/1HzFTYJ
+         gnmBpnURiqgSCjxKezNt8vtmq20VB8Sg7zxDRoTuUHUJzo2Ep0qMQGqrjPY/uzreQSCF
+         N24g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=c4bUo1XFYPqAeWFc5nQ4FKN414jxkX238K1R/ykzSZ0=;
+        b=oR/5YEqi7Udqhl8tPK/OHWqqR2elNnVUlxxeBxS45TF42eOf89qYVi99m/IJkSxf/d
+         Qt3PHbGvU04fi2VFNG2DvDNHqr2gnvDy8/1NDPCh55su2AwTC8lujxffIeJlJXHVxtW0
+         gwO2ozupMMEy4CHQMloxAriKOWLwvVLeO5zZb+GPvH+ZuEULhB1u6/QlBIkEzc5E1ABj
+         RU9x7pWSIGEKtyHpN99eege3zGg5XbWQiry1lJlEMZoV+w7/3krOR4wWlHgDcuvpmI5f
+         u9GU3ITg4sGsYkWohrcD+4oULK4dCSena/VhtSOpjRtvl2PRxFBoV8fLmYgADI5hjltm
+         fGfA==
+X-Gm-Message-State: AOAM531Jp+fGWvB7XFl1zFQLdEmZ3GauKGRcL9h6GC3/Km31cRfluhdN
+        +WmWZFgddS6IwYVVw6vg6Pw=
+X-Google-Smtp-Source: ABdhPJz1uPwCUfKa/qYEPfhyrW47W1tOAJ6N5pgPD/1Mb7yG5oWsxd78yWCbc1nuD6bFQeJS1n/6/w==
+X-Received: by 2002:a63:e109:: with SMTP id z9mr15927732pgh.5.1615108833244;
+        Sun, 07 Mar 2021 01:20:33 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.66])
+        by smtp.gmail.com with ESMTPSA id o3sm6825678pgm.60.2021.03.07.01.20.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 01:20:32 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, yebin10@huawei.com,
+        luben.tuikov@amd.com, Likun.Gao@amd.com, Prike.Liang@amd.com,
+        avg@FreeBSD.org
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] gpu: drm: amd: amdgpu: fix error return code of amdgpu_acpi_init()
+Date:   Sun,  7 Mar 2021 01:20:10 -0800
+Message-Id: <20210307092010.23117-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 01:07:57AM -0800, Jia-Ju Bai wrote:
-> When hif_scatter_req_get() returns NULL to scat_req, no error return
-> code of ath6kl_htc_rx_bundle() is assigned.
-> To fix this bug, status is assigned with -EINVAL in this case.
->
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-> ---
->  drivers/net/wireless/ath/ath6kl/htc_mbox.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/ath/ath6kl/htc_mbox.c b/drivers/net/wireless/ath/ath6kl/htc_mbox.c
-> index 998947ef63b6..3f8857d19a0c 100644
-> --- a/drivers/net/wireless/ath/ath6kl/htc_mbox.c
-> +++ b/drivers/net/wireless/ath/ath6kl/htc_mbox.c
-> @@ -1944,8 +1944,10 @@ static int ath6kl_htc_rx_bundle(struct htc_target *target,
->
->  	scat_req = hif_scatter_req_get(target->dev->ar);
->
-> -	if (scat_req == NULL)
-> +	if (scat_req == NULL) {
-> +		status = -EINVAL;
+Add error return code in error hanlding code of amdgpu_acpi_init().
 
-I'm not sure about it.
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-David. Jakub,
-Please be warned that patches from this guy are not so great.
-I looked on 4 patches and 3 of them were wrong (2 in RDMA and 1 for mlx5)
-plus this patch most likely is incorrect too.
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
+index 8155c54392c8..156f30d5a2c0 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
+@@ -788,12 +788,15 @@ int amdgpu_acpi_init(struct amdgpu_device *adev)
+ 
+ 	/* Probe for ATIF, and initialize it if found */
+ 	atif_handle = amdgpu_atif_probe_handle(handle);
+-	if (!atif_handle)
++	if (!atif_handle) {
++		ret = -EINVAL;
+ 		goto out;
++	}
+ 
+ 	atif = kzalloc(sizeof(*atif), GFP_KERNEL);
+ 	if (!atif) {
+ 		DRM_WARN("Not enough memory to initialize ATIF\n");
++		ret = -ENOMEM;
+ 		goto out;
+ 	}
+ 	atif->handle = atif_handle;
+@@ -803,6 +806,7 @@ int amdgpu_acpi_init(struct amdgpu_device *adev)
+ 	if (ret) {
+ 		DRM_DEBUG_DRIVER("Call to ATIF verify_interface failed: %d\n", ret);
+ 		kfree(atif);
++		ret = -EINVAL;
+ 		goto out;
+ 	}
+ 	adev->atif = atif;
+-- 
+2.17.1
 
-Thanks
-
->  		goto fail_rx_pkt;
-> +	}
->
->  	for (i = 0; i < n_scat_pkt; i++) {
->  		int pad_len;
-> --
-> 2.17.1
->
