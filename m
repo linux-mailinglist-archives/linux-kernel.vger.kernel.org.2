@@ -2,115 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A121D32FF80
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 08:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C4E32FF83
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 08:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhCGHes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 02:34:48 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:36885 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbhCGHeO (ORCPT
+        id S230404AbhCGHgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 02:36:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229971AbhCGHgG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 02:34:14 -0500
-Received: by mail-io1-f72.google.com with SMTP id a18so5273022ioo.4
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 23:34:14 -0800 (PST)
+        Sun, 7 Mar 2021 02:36:06 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE5AC06174A;
+        Sat,  6 Mar 2021 23:36:06 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id kx1so1400373pjb.3;
+        Sat, 06 Mar 2021 23:36:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uKTFoNSndRX4SlCjlrIyTvDGYlDZG2N55rMO+ELI0qU=;
+        b=I8BG7lVXrEj5VoT6+CQqfwf5C4c/3lOvXYEWsknxk+BWaRH6VyTJ6sewTkGebGljQR
+         kd6pQ95DiYbhsuEvALprxkGG8o+wJf7ZxdM90IbSYZQ81cfj1c+tx+pLPH23YwcsgKXo
+         zKmCaAC6GnyKDbFr5gjFzWhHjjsfkctvxa1ATgh8FwVDb2C/td676eMXM0qo7tbIWhjW
+         XA+WocJXsnuQmyZffeirde1KddG6NFFPRuZrdZiUWxxMyNMA3OgAK+Q5+vwdbTlv6oNQ
+         JN0BougCMjz13oIS1jGbPh3f5Vc/uSkmaGQkue8aIIbMvfqjzkVpaHxCOoBMZHjtFmCe
+         8h3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=WBQ/EAYCbN0tLwutD0WrUqw4VY+LDOs0Bm/BlJkcyZw=;
-        b=jGZpR9aqrhfVN2Thx5g+7ACmwNiMv+CM5gumbK25vC0kCwXGLTJkpSFMk/UtSjK+NZ
-         96PJ5uU4rDYlYLeU9HnMbzBQKayZTpb5HIOzYH/jXeeKwGLC4XQrroXa/4UI4HoJBEpB
-         CFoMxtV8VEXeX7NeUk/NEHtA71aOSkIZ5iEW3IRFQJwHzMQ5WNEY+grKMuMZ+4a4AFXb
-         Flxno2c6ho/gTkGTr7kM/Lpq5YGTtoEPkDeuJ4bFzkQVWDl2TM287oLc9QekGxteoimy
-         l8J0FbziTueluIeO0yPmVtxPCwJFJIWPnTjRQfe8E+nKVDn7WPeC/zivUtOKo4sWa4FV
-         20rw==
-X-Gm-Message-State: AOAM5339WJ/cb8o61AUHe+TIOBur9LZeeciCjfY8xAhYZsIBsro88Z4R
-        +EStsd5TC136ooKnMUqJyWgz2A1W8hEo8jgnaA8IeQsqmCUO
-X-Google-Smtp-Source: ABdhPJxgpQsWEf/5SsXz2WjydRJQf7N1i7LbrLl4oJ4qPP87uszQI27mICsw3SfpRxX5NWE55yvfpjnWIDsS5dHGrBwN3xXTqjmd
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uKTFoNSndRX4SlCjlrIyTvDGYlDZG2N55rMO+ELI0qU=;
+        b=IaC3noZD6qMCw2c71QFN+0kV8TOxHewEsxswu9G9yq31MdoiDphRlnuvhclTb09t+7
+         YclWwxeFgtSUfqlBkiN+foFWWzJX5V5h/dMHCXSJhc569hGUkHs2Mrp2xTHnRM2cpcfQ
+         1pVLYqWUSdeS4Fer5bLYlO+Cnr+76LM/Hm/7QnZr0PWSut7WwGLJz5pg0tN1HA+nq4h7
+         K9T44qBLUCnRUw1aMo5k86eBgBMOEIf2ORN2M6a94K5DXKZtVeo7ObehB4EEAcw16j6Q
+         QYCNuXZLqMa9W95Rnw4aNtRZbpRnc8x0yaXdYYT6RBb/0rADefZ0VJTN7NhV+n5ZazQp
+         xZAw==
+X-Gm-Message-State: AOAM532vIwVJTZOofqE0BZOQeiEMGQ5HS79kEHrFRY9v8Ct+lkkPR1eD
+        YZHnWBxHea2Ros3tQJIe5Kfzhyjp4KwzwpuS
+X-Google-Smtp-Source: ABdhPJxi677DhB/Abs4FPlKBS1Vi6AMpM5RLakMx4cIvbV9WE3AFgIWFIzOw/0cDKEBaOF29/oWLkw==
+X-Received: by 2002:a17:90a:5d09:: with SMTP id s9mr18166436pji.172.1615102566122;
+        Sat, 06 Mar 2021 23:36:06 -0800 (PST)
+Received: from ?IPv6:2405:201:600d:a089:7154:efa8:e27f:8a00? ([2405:201:600d:a089:7154:efa8:e27f:8a00])
+        by smtp.gmail.com with ESMTPSA id e12sm6782956pjj.23.2021.03.06.23.36.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Mar 2021 23:36:05 -0800 (PST)
+Subject: Re: [RFC v3] scripts: kernel-doc: fix typedef support for
+ struct/union parsing
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <CAKXUXMzHPnM=ie06ZGuFXyJ7RcRjYomjyASbp3ND9-Mb2Es+2w@mail.gmail.com>
+ <20210225145033.11431-1-yashsri421@gmail.com>
+ <20210306043548.GO2723601@casper.infradead.org>
+ <CAKXUXMwD_ZZA7EJaxZBRfMDEvwd4Ghsj2vy9KCfj0R-yx2_K0Q@mail.gmail.com>
+ <6a75c9f4-460f-f83e-7fe2-5a3a4c64232b@gmail.com>
+ <20210306152001.GP2723601@casper.infradead.org>
+From:   Aditya <yashsri421@gmail.com>
+Message-ID: <a4d42880-4a91-e5ca-5096-bef498481039@gmail.com>
+Date:   Sun, 7 Mar 2021 13:06:01 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:db15:: with SMTP id t21mr14298466ioc.133.1615102454214;
- Sat, 06 Mar 2021 23:34:14 -0800 (PST)
-Date:   Sat, 06 Mar 2021 23:34:14 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000f35a405bced58e3@google.com>
-Subject: [syzbot] general protection fault in bt_accept_unlink (2)
-From:   syzbot <syzbot+582be673ab4f59f68c5e@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210306152001.GP2723601@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 6/3/21 8:50 pm, Matthew Wilcox wrote:
+> On Sat, Mar 06, 2021 at 01:18:38PM +0530, Aditya wrote:
+>> On 6/3/21 11:55 am, Lukas Bulwahn wrote:
+>>> I agree. That might be a suitable clean-up to keep the code for
+>>> functions and struct/union parsing similar in style/spirit.
+>>>
+>>> Aditya, would you like to create a patch for that?
+>>
+>> Sure Lukas.
+>> I have a doubt though, Can't we use a single expression separated by
+>> "|" here, instead of multiple lines? i.e.,
+>>
+>> $x =~
+>> s/__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)\s*//;
+>>
+>>
+>> Probably we could do something similar for dump_function, i.e.,
+>> -    $prototype =~ s/^static +//;
+>> -    $prototype =~ s/^extern +//;
+>> -    $prototype =~ s/^asmlinkage +//;
+>> -    $prototype =~ s/^inline +//;
+>> -    $prototype =~ s/^__inline__ +//;
+>> -    $prototype =~ s/^__inline +//;
+>> -    $prototype =~ s/^__always_inline +//;
+>> -    $prototype =~ s/^noinline +//;
+>>
+>> +    $prototype =~
+>> s/^(?:static|extern|asmlinkage|__?inline__?|__always_inline|noinline) +//;
+>> And so on for other regexps.
+>>
+>> What do you think?
+> 
+> I think there's a tradeoff between speed / compactness and readability.
+> As someone who doesn't know perl particularly well, I can look at the
+> series of lines and say "Oh, it's stripping out these unwanted things".
+> Your one line, while undoubtedly more efficient, is considerably less
+> easy to understand.
+> 
+> Maybe there's another way to do it that's more efficient while not
+> sacrificing the readability?
+> 
+> Also, would your suggestion work for 'static inline void foo(void)'?
+> I think it needs to remove multiple occurrences of the things in the
+> regex.  
 
-syzbot found the following issue on:
+Ah, I get it.
 
-HEAD commit:    95b39f07 net: ethernet: mtk-star-emac: fix wrong unmap in ..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=13658a5cd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e2d5ba72abae4f14
-dashboard link: https://syzkaller.appspot.com/bug?extid=582be673ab4f59f68c5e
+But maybe that's what the ?: on the beginning is for?
+> 
 
-Unfortunately, I don't have any reproducer for this issue yet.
+No, "?:" is just to use this regex for matching, without capturing.
+So, the regex will just remove any of those 'starting' occurrences,
+consequently, "static inline" occurrence will probably not be removed.
+I think the reason for using multiple lines for substitution in
+dump_function is for the same reason, ie, subsequent substitution.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+582be673ab4f59f68c5e@syzkaller.appspotmail.com
+But for dump_struct, it is probably not desired, i.e., subsequent
+substitution/removal. Also, for the same reason, using it with
+dump_struct may cause unwelcomed discrepancies, or cause the user to
+understand that here multiple substitutions are required, but is not so.
+So, I think that we should use a single expression substitution for
+dump_struct, at best. But am not sure if that is required, as
+currently also we are not capturing this part of the regex, as well
+as, matching only at certain position of the definition expression.
 
-general protection fault, probably for non-canonical address 0xf7775c0000001777: 0000 [#1] PREEMPT SMP KASAN
-KASAN: maybe wild-memory-access in range [0xbbbb00000000bbb8-0xbbbb00000000bbbf]
-CPU: 0 PID: 6057 Comm: kworker/0:6 Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events l2cap_chan_timeout
-RIP: 0010:__list_del_entry_valid+0x81/0xf0 lib/list_debug.c:51
-Code: 0f 84 af d4 08 05 48 b8 22 01 00 00 00 00 ad de 49 39 c4 0f 84 b0 d4 08 05 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 75 51 49 8b 14 24 48 39 ea 0f 85 67 d4 08 05 49 8d 7d
-RSP: 0018:ffffc90002bafb28 EFLAGS: 00010a06
-RAX: dffffc0000000000 RBX: ffff8880283424b8 RCX: 0000000000000000
-RDX: 1777600000001777 RSI: ffffffff87ebecff RDI: ffff8880283424c0
-RBP: ffff8880283424b8 R08: ffffffff8a7af760 R09: ffffffff87f99626
-R10: 0000000000000004 R11: 0000000000000005 R12: bbbb00000000bbbb
-R13: bb00000000000000 R14: ffff888028341020 R15: 0000000000000005
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000002349848 CR3: 0000000018f19000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __list_del_entry include/linux/list.h:132 [inline]
- list_del_init include/linux/list.h:204 [inline]
- bt_accept_unlink+0x35/0x2f0 net/bluetooth/af_bluetooth.c:187
- l2cap_sock_teardown_cb+0x197/0x660 net/bluetooth/l2cap_sock.c:1542
- l2cap_chan_del+0xbc/0xa80 net/bluetooth/l2cap_core.c:618
- l2cap_chan_close+0x1bc/0xaf0 net/bluetooth/l2cap_core.c:823
- l2cap_chan_timeout+0x17e/0x2f0 net/bluetooth/l2cap_core.c:436
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Modules linked in:
----[ end trace 7d7f7782958a606a ]---
-RIP: 0010:__list_del_entry_valid+0x81/0xf0 lib/list_debug.c:51
-Code: 0f 84 af d4 08 05 48 b8 22 01 00 00 00 00 ad de 49 39 c4 0f 84 b0 d4 08 05 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 75 51 49 8b 14 24 48 39 ea 0f 85 67 d4 08 05 49 8d 7d
-RSP: 0018:ffffc90002bafb28 EFLAGS: 00010a06
-RAX: dffffc0000000000 RBX: ffff8880283424b8 RCX: 0000000000000000
-RDX: 1777600000001777 RSI: ffffffff87ebecff RDI: ffff8880283424c0
-RBP: ffff8880283424b8 R08: ffffffff8a7af760 R09: ffffffff87f99626
-R10: 0000000000000004 R11: 0000000000000005 R12: bbbb00000000bbbb
-R13: bb00000000000000 R14: ffff888028341020 R15: 0000000000000005
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f53667bf000 CR3: 000000002623d000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+But I am curious to what others think about this.
+Will be happy to work on this patch :)
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks
+Aditya
