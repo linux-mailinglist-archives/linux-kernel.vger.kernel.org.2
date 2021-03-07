@@ -2,140 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0444933002A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 11:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40AC0330032
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 11:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbhCGKvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 05:51:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39398 "EHLO
+        id S231590AbhCGK7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 05:59:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230111AbhCGKua (ORCPT
+        with ESMTP id S230111AbhCGK7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 05:50:30 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59123C06174A;
-        Sun,  7 Mar 2021 02:50:30 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id c131so7016829ybf.7;
-        Sun, 07 Mar 2021 02:50:30 -0800 (PST)
+        Sun, 7 Mar 2021 05:59:08 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8238DC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 02:59:07 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id u4so14699617lfs.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 02:59:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VuSNp8ohCEDTVNqOLRIMNo7zaXhyGLF+pvmM+1TvWQg=;
-        b=g2GpQyn+lSSG941waxTRsJNyYVrlP+w4Z1byHE6B11GbHqF1ij4Bg+3I5KpB4EDgnJ
-         B1tgnEyQS9XTafRwNoYit2OUoYikss0E8qxrfxoHpQn1gFLoPve9mA1vQG7k4sIXfIrg
-         P61/iE60aSupZHVQvUlJI9Ur+a0QKCnV15iGyjV1Jha5drAiZCIpkdli9fNG26Fb94Xa
-         QXHsELSumBNe2xMCPUo+8P8WiR3q3pLFbzeEGiFA81GG3iYBYHQ+1ba7iqWZxCvIT1FL
-         Q3590rHIW6CDAtURAlGI2zF9VoDzbk0mSxIwoR5Yj+/qZkvE1CdBeKlLz31zLzom+1Fq
-         vE1Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fAA4TPPCDGkT+Tya7F36DqMx6N0BmhqLnwdwo3XPN1I=;
+        b=j6atcfc1psN5Tz+4WxpRYvcbaOb5cUdpU2mTeXew96BDlBhCTI2zMLpiMZdpFW31kf
+         Z3T7fGkK2wmlRamJ4ReGoJOGJniv/oc8Oy2X/ZlaqtmYRkRWRB8gc0natK8ctq/ud88r
+         /ntGLH/i+02eCf4W1/U2z7cDulZkXVJMdg/Yk/GofqT2PDhwn88+toqYsZdNGJm5tolp
+         knqkmaf3j7/lGJ63WuhZBR9G6OmoMsluPdD8jybF1rzmM3NeGlfZt/XAOlKphAkF/gTR
+         TPkUCwiZQM5CsovCWOXe+IXVv7jnEp7wnYIWU0gnbsNybNemZHdWIlqEYxeiMlmm4qOj
+         1g7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VuSNp8ohCEDTVNqOLRIMNo7zaXhyGLF+pvmM+1TvWQg=;
-        b=BHrciYPuwnHULU7Z7DjMNcILrzoSVRQ/BCbhXuuCdb3ECZheicpm2Tx426JEGHGLCh
-         hZnuEz6HwJ7Mfcm9r+5uTQ87/kbk6OTlti9+pkVOsUx01LmXXfCXT6kNRyUWyuPJbF8A
-         ymITV2IjNc4BWxyxAsJnmdb6xE5ApIo7gQf2/lphGfvwRzYhVwBzKfM/9hKhS/j1T9TF
-         SP41vo0/G3Vrb3z/x6gCuNACL9FvqZibWXJcFMPMnKqUcfDYVMrAaDFFvGMgSb1Z1C8w
-         zV+2zUtqW2TVOlS6nh/m2li8/QIpV+PAyj/DEi1jYX38NVkWungaU/BVUd9XYk9GZKTu
-         /hJw==
-X-Gm-Message-State: AOAM530BwKwXKw+4545SL+QevnthenTaRSeyjuTk082HaQ+FqPw8Q/dT
-        lofBOUAKDkL0Z82/ft2o6ZxkpMHDS7fOmnh7iMI=
-X-Google-Smtp-Source: ABdhPJxMe+8aOlcrc2X9rehsYaYuitly26CDn6yA8BqexdDs5ZwoiRRL4LwO3ovwBuua1q6WRcnqBSheWy4yYWrWaK0=
-X-Received: by 2002:a25:ab82:: with SMTP id v2mr26092512ybi.97.1615114229379;
- Sun, 07 Mar 2021 02:50:29 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fAA4TPPCDGkT+Tya7F36DqMx6N0BmhqLnwdwo3XPN1I=;
+        b=MTj+5L8OWBuQysk93B/SCmWF/y2YUf1j3LifYxeBbrVCLv0VJFfnNnyDrve5VuwBI1
+         ACNBH7OvauSJeQJr6WLPFCEkp8O1wxulcpEjw20t5SQ6FsYJigaVqLGIr4op0srspinU
+         JczpJ32vEybVcUdmLczufNl1FxC+Q1BGsvxSwGs0MK34fkN9kXdGp9XNt+IWqxxNz7JN
+         ryFRTjLZ5OJ4HR6ov0PzCOAYwxfd8cGid5YZCJJKlpGV0Z7NE0PnPbywxRaJxmRsDFp3
+         AfnHINBOf+8xxhxUSUR/uNKVnOLrs6b6r+KDTHU2ggtI7yCtzs2cLRbeyWfdZ01xP4pK
+         MsXA==
+X-Gm-Message-State: AOAM533zpviNX7AjhCNtYQ/R7hM4y9uI8HVbrVI0mCaQpKh/tv46TbBU
+        giYMjFkq4G0UvHu6Q25ZQGdqMh2RZi4=
+X-Google-Smtp-Source: ABdhPJy+OsC5NwTORRSLVfXZvtFhxe1uPGBorKGwbuijT5Cg2P3OclGEYk92MH+ymBFTpnXfVGijDA==
+X-Received: by 2002:a05:6512:39d5:: with SMTP id k21mr11067828lfu.142.1615114746056;
+        Sun, 07 Mar 2021 02:59:06 -0800 (PST)
+Received: from localhost.localdomain (cable-hki-50dc98-67.dhcp.inet.fi. [80.220.152.67])
+        by smtp.gmail.com with ESMTPSA id e9sm1044213ljj.52.2021.03.07.02.59.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 02:59:05 -0800 (PST)
+From:   Hassan Shahbazi <h.shahbazi.git@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Hassan Shahbazi <h.shahbazi.git@gmail.com>
+Subject: [PATCH] drivers: tty: vt: vt.c: fix NULL dereference crash
+Date:   Sun,  7 Mar 2021 12:56:43 +0200
+Message-Id: <20210307105642.112572-1-h.shahbazi.git@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210305094107.13743-1-vincent.whitchurch@axis.com>
-In-Reply-To: <20210305094107.13743-1-vincent.whitchurch@axis.com>
-From:   Shyam Prasad N <nspmangalore@gmail.com>
-Date:   Sun, 7 Mar 2021 16:20:18 +0530
-Message-ID: <CANT5p=rB2=DvjtpmVy803emWpuzsy-C2+d4wqQ5g_9fJ8+a5Cw@mail.gmail.com>
-Subject: Re: [PATCH] CIFS: Prevent error log on spurious oplock break
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     Pavel Shilovsky <pshilov@microsoft.com>,
-        Steve French <sfrench@samba.org>, kernel@axis.com,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
+Fix a NULL deference crash on hiding the cursor.
 
-The reason for rejecting the request maybe a number of things like:
-corrupted request, stale request (for some old session), or for a
-wrong handle.
-I don't think we should treat any of these cases as a success.
+Reported by: syzbot
+https://syzkaller.appspot.com/bug?id=defb47bf56e1c14d5687280c7bb91ce7b608b94b
 
-Also, from the MS-SMB2 documentation:
-https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-smb2/4f35576a-6f3b-40f0-a832-1c30b0afccb3
+Signed-off-by: Hassan Shahbazi <h.shahbazi.git@gmail.com>
+---
+ drivers/tty/vt/vt.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-"The client MUST locate the file in the GlobalFileTable using the
-LeaseKey in the Lease Break Notification. If a file is not found, no
-further processing is required."
-
-So I don't think we should be changing the logic here.
-If SMB v1 had a different behaviour, we should check if that is as per
-the protocol documentation. If not, change it.
-
-Regards,
-Shyam
-
-On Fri, Mar 5, 2021 at 3:12 PM Vincent Whitchurch
-<vincent.whitchurch@axis.com> wrote:
->
-> The SMB1 version of ->is_oplock_break() returns true even if the FileId
-> is not found, as long as the oplock break notification message structure
-> itself appears to be valid.  A true return value makes
-> cifs_demultiplex_thread() to not print an error message for such
-> packets.
->
-> However, the SMB2 version returns false in such cases, leading to an
-> error "No task to wake, unknown frame received!" followed by a hexdump
-> of the packet header being printed by cifs_demultiplex_thread().
->
-> Note that before commit fa9c2362497fbd64788063288d ("CIFS: Fix SMB2
-> oplock break processing"), SMB2 also returned true for the case where a
-> connection was found but the FileId was not, but it's not clear to me if
-> that commit really intended to change the behaviour of the error prints.
->
-> Change the behaviour of SMB2 to be the same as SMB1 and avoid the error
-> messages for these packets which we ignore as per the spec.
->
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> ---
->  fs/cifs/smb2misc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/cifs/smb2misc.c b/fs/cifs/smb2misc.c
-> index 60d4bd1eae2b..3ea3bda64083 100644
-> --- a/fs/cifs/smb2misc.c
-> +++ b/fs/cifs/smb2misc.c
-> @@ -679,7 +679,7 @@ smb2_is_valid_lease_break(char *buffer)
->         }
->         spin_unlock(&cifs_tcp_ses_lock);
->         cifs_dbg(FYI, "Can not process lease break - no lease matched\n");
-> -       return false;
-> +       return true;
->  }
->
->  bool
-> @@ -755,7 +755,7 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
->         }
->         spin_unlock(&cifs_tcp_ses_lock);
->         cifs_dbg(FYI, "Can not process oplock break for non-existent connection\n");
-> -       return false;
-> +       return true;
->  }
->
->  void
-> --
-> 2.28.0
->
-
-
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 284b07224c55..8c3e83c81341 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -904,7 +904,9 @@ static void hide_cursor(struct vc_data *vc)
+ 	if (vc_is_sel(vc))
+ 		clear_selection();
+ 
+-	vc->vc_sw->con_cursor(vc, CM_ERASE);
++	if (vc->vc_sw)
++		vc->vc_sw->con_cursor(vc, CM_ERASE);
++
+ 	hide_softcursor(vc);
+ }
+ 
 -- 
-Regards,
-Shyam
+2.26.2
+
