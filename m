@@ -2,96 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7772E330284
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 16:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D535330286
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 16:19:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbhCGPRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 10:17:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhCGPQ4 (ORCPT
+        id S231757AbhCGPSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 10:18:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22309 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231700AbhCGPSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 10:16:56 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B85C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 07:16:55 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id d15so8732871wrv.5
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 07:16:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Scv4zOxnnaBWjmmeFnXouZuxffp8iOuoaC+fdqy3lIY=;
-        b=ItW9oetdiV0wMrdC06hYWVYy2gpAZTrLucIo11WuKMMD/YsXG1Tlbh9Nk+0Nb4M7DR
-         5dPpMvaGObcv72eDcM27XwOnmymUfmp9IwPHzeIBpossxUx3kANeS06o/vcuZSlZPoCu
-         9whHTk6jMLwDdeFvCDh76EXSn3mZgcDFbzxaRIXPACzqErJUvMrPjnghdSLq5Zt5iRgF
-         l1FTTMN9zQd2Q5WnFt7xSer5IhiEQDEUq4iWHOjYA9jiZQBmyvPThW01jCnd4iWot9Bs
-         XiMQ82jzvmShHVNpfMrIutV3955tuUkhc59Ta2aTIwhqsT2mW0YQfGpagOXiicehcYtd
-         Rasw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Scv4zOxnnaBWjmmeFnXouZuxffp8iOuoaC+fdqy3lIY=;
-        b=O8OlJ3G6GFctvyjsyaf0/h/TFwH8hGXJELlpPuHNjoIKQKzsUcBxMK9NgGW38UxqoM
-         70hi+qHr+bFrtBoWGeU2rwG8AMw3MKPijfuba4Y+X/glRAU9eh3n3svPuGmnwRCR+4Yr
-         b6yZotNMjaR2U11vg2t0LktqqS2yiSIiqD8eEiBBKfy9M+cklg5gUq0PJcNbB2rPSPl8
-         KYors9ho0r0C279nimYqgGQmUj63Bsf27NCpRBFAjegkOutcJ8njH4uJ61ty04J0vSwx
-         Gxs7a7rgwUBgw4i+mSG9uUjdlux+IOgCHcAGoP51jD2PhxtphZ1U0g3IAeI1bF6cp0xD
-         Nmig==
-X-Gm-Message-State: AOAM531o0XDXx28V4ArE42LrZNSAClTROdwaiPc2Sw4p7Tx02F+spFOR
-        NUL/VkhFb/VoSUxK211NECOAfQ==
-X-Google-Smtp-Source: ABdhPJy4/Gv6hoeTSP5rG9IcgL5vO+gB0zbIhPU7httEX/JsGYIX9KI3EIrBztYAj7uFswp3kksIAg==
-X-Received: by 2002:a5d:67cf:: with SMTP id n15mr18407451wrw.95.1615130214477;
-        Sun, 07 Mar 2021 07:16:54 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:b087:286:c426:25b5? ([2a01:e34:ed2f:f020:b087:286:c426:25b5])
-        by smtp.googlemail.com with ESMTPSA id a17sm13939652wmj.9.2021.03.07.07.16.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Mar 2021 07:16:54 -0800 (PST)
-Subject: Re: [PATCH v3 1/4] devfreq: Register devfreq as a cooling device on
- demand
-To:     Chanwoo Choi <cwchoi00@gmail.com>
-Cc:     Lukasz Luba <lukasz.luba@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Steven Price <steven.price@arm.com>,
+        Sun, 7 Mar 2021 10:18:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615130303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hpOIohiqtQVCBBLhP65zCevaj+cVWLKqGokojSmTLAg=;
+        b=XXGSsd7RlScBgOPu5/zw+29fnfKz1QYYDEjh45Zrxdhc9yhtFIXCKb7+pUnYXG+5nPmTNG
+        1FgE2VgYblLZ5cEqRGnHqJL+lao+zPfcACoboGrOr6MYteSAoBlSeo6e313hSKQgdoOveg
+        eDcI1bfiyELYuQDuROyroSNW2tXj9o8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-531-gM2Il1E3P52STFI3cndV2w-1; Sun, 07 Mar 2021 10:18:19 -0500
+X-MC-Unique: gM2Il1E3P52STFI3cndV2w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 051B9107465C;
+        Sun,  7 Mar 2021 15:18:17 +0000 (UTC)
+Received: from x1.localdomain (ovpn-112-90.ams2.redhat.com [10.36.112.90])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0265C60BF1;
+        Sun,  7 Mar 2021 15:18:13 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Lee Jones <lee.jones@linaro.org>,
         MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-References: <20210307094519.9032-1-daniel.lezcano@linaro.org>
- <CAGTfZH3jFJ8CaJ1Yg=oxhVSYVDULWr83iPokL+tut8mKgSufFA@mail.gmail.com>
- <76b5b6bc-952b-aa7c-025b-3eeb2ca23c79@linaro.org>
- <587ae86e-158d-8ffa-319c-66f397f5a218@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <5bedc08e-8f46-925a-4840-dafbacd6cd39@linaro.org>
-Date:   Sun, 7 Mar 2021 16:16:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH v4 resend 00/13] MFD/extcon/ASoC: Rework arizona codec jack-detect support
+Date:   Sun,  7 Mar 2021 16:17:54 +0100
+Message-Id: <20210307151807.35201-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <587ae86e-158d-8ffa-319c-66f397f5a218@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/03/2021 16:14, Chanwoo Choi wrote:
-> On 21. 3. 7. 오후 11:28, Daniel Lezcano wrote:
+Hi All,
 
-[ ... ]
+Here is v4 of my series to rework the arizona codec jack-detect support
+to use the snd_soc_jack helpers instead of direct extcon reporting.
 
-> Thanks. And, please add 'PM /' prefix for patch in order to
-> keep the consistent patch title format.
-> 
-> PM / devfreq: Register devfreq as a cooling device on demand
+As discussed before here is a resend rebased on 5.12-rc2, making sure that
+all patches this depends on are in place.
 
-Sure, thanks
+Lee, can you pick-up patches 1-6 through the MFD tree and then send a
+pull-req to Mark so that Mark can merge the Asoc parts throught the ASoC
+tree ?
+
+Patches 2-6 touch drivers/extcon, these all have an Ack from Chanwoo Choi
+for merging these through the MFD tree.
+
+Here is some more generic info on this series from the previous
+cover-letter:
+
+This is done by reworking the extcon driver into an arizona-jackdet
+library and then modifying the codec drivers to use that directly,
+replacing the old separate extcon child-devices and extcon-driver.
+
+This brings the arizona-codec jack-detect handling inline with how
+all other ASoC codec driver do this. This was developed and tested on
+a Lenovo Yoga Tablet 1051L with a WM5102 codec.
+
+This was also tested by Charles Keepax, one of the Cirrus Codec folks.
+
+Regards,
+
+Hans
+
+
+Hans de Goede (13):
+  mfd: arizona: Drop arizona-extcon cells
+  extcon: arizona: Fix some issues when HPDET IRQ fires after the jack
+    has been unplugged
+  extcon: arizona: Fix various races on driver unbind
+  extcon: arizona: Fix flags parameter to the gpiod_get("wlf,micd-pol")
+    call
+  extcon: arizona: Always use pm_runtime_get_sync() when we need the
+    device to be awake
+  ASoC/extcon: arizona: Move arizona jack code to
+    sound/soc/codecs/arizona-jack.c
+  ASoC: arizona-jack: Move jack-detect variables to struct arizona_priv
+  ASoC: arizona-jack: Use arizona->dev for runtime-pm
+  ASoC: arizona-jack: convert into a helper library for codec drivers
+  ASoC: arizona-jack: Use snd_soc_jack to report jack events
+  ASoC: arizona-jack: Cleanup logging
+  ASoC: arizona: Make the wm5102, wm5110, wm8997 and wm8998 drivers use
+    the new jack library
+  ASoC: Intel: bytcr_wm5102: Add jack detect support
+
+ MAINTAINERS                                   |   3 +-
+ drivers/extcon/Kconfig                        |   8 -
+ drivers/extcon/Makefile                       |   1 -
+ drivers/mfd/arizona-core.c                    |  20 -
+ sound/soc/codecs/Makefile                     |   2 +-
+ .../soc/codecs/arizona-jack.c                 | 577 +++++++-----------
+ sound/soc/codecs/arizona.h                    |  44 ++
+ sound/soc/codecs/wm5102.c                     |  12 +-
+ sound/soc/codecs/wm5110.c                     |  12 +-
+ sound/soc/codecs/wm8997.c                     |  14 +-
+ sound/soc/codecs/wm8998.c                     |   9 +
+ sound/soc/intel/boards/bytcr_wm5102.c         |  28 +-
+ 12 files changed, 325 insertions(+), 405 deletions(-)
+ rename drivers/extcon/extcon-arizona.c => sound/soc/codecs/arizona-jack.c (76%)
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.30.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
