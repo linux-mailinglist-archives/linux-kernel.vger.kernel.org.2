@@ -2,102 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D3D32FFDE
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 10:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C6232FFE7
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 10:31:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbhCGJVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 04:21:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
+        id S230416AbhCGJbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 04:31:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhCGJUd (ORCPT
+        with ESMTP id S229619AbhCGJbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 04:20:33 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8ABC06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 01:20:33 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id o38so4426950pgm.9
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 01:20:33 -0800 (PST)
+        Sun, 7 Mar 2021 04:31:09 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62059C06174A;
+        Sun,  7 Mar 2021 01:31:09 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id j12so5111160pfj.12;
+        Sun, 07 Mar 2021 01:31:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=c4bUo1XFYPqAeWFc5nQ4FKN414jxkX238K1R/ykzSZ0=;
-        b=D7UhJ7EnN9e5KT1lZ91iZj61RL26XDi8obkAgdhqzDnNcwkKNLsaf8VqM3RWRjtWt5
-         OdPE8Bc2svyUlL1HrlfidK5ckxDvUAqoVtXcGzvRKCiXXYMeG1K57dunTWAtcY9u5NGR
-         MczLfdo6LenbQugvzgRKNStdiXaObz5Du/XvUzxkic0qsOzctUgB4IfA0Ed3/psuU4VK
-         gJbl7EET9zA2itrQEFE+Vip00b8UNbLXLufTw3KOWrPXcE2YroffGvC6oqdJ/1HzFTYJ
-         gnmBpnURiqgSCjxKezNt8vtmq20VB8Sg7zxDRoTuUHUJzo2Ep0qMQGqrjPY/uzreQSCF
-         N24g==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=qyR07YDqUgRUKmk3fTa/Vt5RDMJrIvpFOr8PG+miymA=;
+        b=MfkgjOKnOVYLO3SuNni18rv4q5P5WwP9LauVxNPe0365fqeYG2qbTKJdCG1zWOFm96
+         qykaMHjkggeb5xmSn67OMHMBmPZHtBChA+ljSAwPp8Vk8bjisZ8m4BCwKEs8mYLXqz/t
+         He4L4SYLkJwgP8NBB01hKm+DXy9TcA1bWyFuh+LRNxdCszIf0wMddCu8hF+/N0yUmcrd
+         9SwEel14qIO7MJozGfKVN1Bfv2nbKxaUykL5Ea0QM3lTdOvYCVkFFqgDGRJu0nH08q0H
+         QSZb6ITpmrmKGe4f/8j0X6ue58DxKl8cRIrkQKvbvBZrXyRFAFljitEiUOGVyj01p+3L
+         jtfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=c4bUo1XFYPqAeWFc5nQ4FKN414jxkX238K1R/ykzSZ0=;
-        b=oR/5YEqi7Udqhl8tPK/OHWqqR2elNnVUlxxeBxS45TF42eOf89qYVi99m/IJkSxf/d
-         Qt3PHbGvU04fi2VFNG2DvDNHqr2gnvDy8/1NDPCh55su2AwTC8lujxffIeJlJXHVxtW0
-         gwO2ozupMMEy4CHQMloxAriKOWLwvVLeO5zZb+GPvH+ZuEULhB1u6/QlBIkEzc5E1ABj
-         RU9x7pWSIGEKtyHpN99eege3zGg5XbWQiry1lJlEMZoV+w7/3krOR4wWlHgDcuvpmI5f
-         u9GU3ITg4sGsYkWohrcD+4oULK4dCSena/VhtSOpjRtvl2PRxFBoV8fLmYgADI5hjltm
-         fGfA==
-X-Gm-Message-State: AOAM531Jp+fGWvB7XFl1zFQLdEmZ3GauKGRcL9h6GC3/Km31cRfluhdN
-        +WmWZFgddS6IwYVVw6vg6Pw=
-X-Google-Smtp-Source: ABdhPJz1uPwCUfKa/qYEPfhyrW47W1tOAJ6N5pgPD/1Mb7yG5oWsxd78yWCbc1nuD6bFQeJS1n/6/w==
-X-Received: by 2002:a63:e109:: with SMTP id z9mr15927732pgh.5.1615108833244;
-        Sun, 07 Mar 2021 01:20:33 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.66])
-        by smtp.gmail.com with ESMTPSA id o3sm6825678pgm.60.2021.03.07.01.20.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 01:20:32 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=qyR07YDqUgRUKmk3fTa/Vt5RDMJrIvpFOr8PG+miymA=;
+        b=EgSUq6yslcdiIZt/Sdfrfr6hF5mb9CMweZJYGGyJ0Md5fM9m89LNDIEJmCk+ph1EG6
+         VAmZ6zsgKnHN5R9MCw6TNvq9RQQTXQngd95mYAJhy76D4lOUJ/h090Bq2gFSZicqo4ZK
+         P0eFVUxu5bcFuepB1oTj1brdk1dj6o1xPzJQLES72dZRk2/OAY2wUOb5HWPY6DnwiYET
+         8NFpM2/mR1prFSCRp2ZUKExZ592yRar7mNY7mI2xAIONuFnhrBSUlLrJOIUlZ0DZRQUh
+         CHVWTes0hvCmSSZAvCZRBfVA+/3ghaMMMwM8kGs0bNU+K7z/ZD/uLH2QOwBsdw6vsllj
+         rkPA==
+X-Gm-Message-State: AOAM532aj4hpRtK4uRp33VOWx4EShGyYq7L3n/4M6+xghonv6GgyCjSX
+        uGpRQ8P10yxpoEmVRjI5CxN5gvOujnefAi3t
+X-Google-Smtp-Source: ABdhPJyD789MXxrFH1qFfdzEM4OXwC82uAqHFu8di0W3snf8KvjlhGvwm1lv77tVUwmmnx8gPFHZhg==
+X-Received: by 2002:a62:e502:0:b029:1e4:d7c3:5c59 with SMTP id n2-20020a62e5020000b02901e4d7c35c59mr16529517pff.51.1615109468420;
+        Sun, 07 Mar 2021 01:31:08 -0800 (PST)
+Received: from [10.74.0.22] ([45.135.186.99])
+        by smtp.gmail.com with ESMTPSA id 142sm7203548pfz.196.2021.03.07.01.31.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Mar 2021 01:31:07 -0800 (PST)
+Subject: Re: [PATCH] ath: ath6kl: fix error return code of
+ ath6kl_htc_rx_bundle()
+To:     Leon Romanovsky <leon@kernel.org>, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     kvalo@codeaurora.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210307090757.22617-1-baijiaju1990@gmail.com>
+ <YESaSwoGRxGvrggv@unreal>
 From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, yebin10@huawei.com,
-        luben.tuikov@amd.com, Likun.Gao@amd.com, Prike.Liang@amd.com,
-        avg@FreeBSD.org
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] gpu: drm: amd: amdgpu: fix error return code of amdgpu_acpi_init()
-Date:   Sun,  7 Mar 2021 01:20:10 -0800
-Message-Id: <20210307092010.23117-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+Message-ID: <a55172ad-bf40-0110-8ef3-326001ecd13e@gmail.com>
+Date:   Sun, 7 Mar 2021 17:31:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <YESaSwoGRxGvrggv@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add error return code in error hanlding code of amdgpu_acpi_init().
+Hi Leon,
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+I am quite sorry for my incorrect patches...
+My static analysis tool reports some possible bugs about error handling 
+code, and thus I write some patches for the bugs that seem to be true in 
+my opinion.
+Because I am not familiar with many device drivers, some of my reported 
+bugs can be false positives...
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-index 8155c54392c8..156f30d5a2c0 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-@@ -788,12 +788,15 @@ int amdgpu_acpi_init(struct amdgpu_device *adev)
- 
- 	/* Probe for ATIF, and initialize it if found */
- 	atif_handle = amdgpu_atif_probe_handle(handle);
--	if (!atif_handle)
-+	if (!atif_handle) {
-+		ret = -EINVAL;
- 		goto out;
-+	}
- 
- 	atif = kzalloc(sizeof(*atif), GFP_KERNEL);
- 	if (!atif) {
- 		DRM_WARN("Not enough memory to initialize ATIF\n");
-+		ret = -ENOMEM;
- 		goto out;
- 	}
- 	atif->handle = atif_handle;
-@@ -803,6 +806,7 @@ int amdgpu_acpi_init(struct amdgpu_device *adev)
- 	if (ret) {
- 		DRM_DEBUG_DRIVER("Call to ATIF verify_interface failed: %d\n", ret);
- 		kfree(atif);
-+		ret = -EINVAL;
- 		goto out;
- 	}
- 	adev->atif = atif;
--- 
-2.17.1
 
+Best wishes,
+Jia-Ju Bai
+
+On 2021/3/7 17:18, Leon Romanovsky wrote:
+> On Sun, Mar 07, 2021 at 01:07:57AM -0800, Jia-Ju Bai wrote:
+>> When hif_scatter_req_get() returns NULL to scat_req, no error return
+>> code of ath6kl_htc_rx_bundle() is assigned.
+>> To fix this bug, status is assigned with -EINVAL in this case.
+>>
+>> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+>> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+>> ---
+>>   drivers/net/wireless/ath/ath6kl/htc_mbox.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath6kl/htc_mbox.c b/drivers/net/wireless/ath/ath6kl/htc_mbox.c
+>> index 998947ef63b6..3f8857d19a0c 100644
+>> --- a/drivers/net/wireless/ath/ath6kl/htc_mbox.c
+>> +++ b/drivers/net/wireless/ath/ath6kl/htc_mbox.c
+>> @@ -1944,8 +1944,10 @@ static int ath6kl_htc_rx_bundle(struct htc_target *target,
+>>
+>>   	scat_req = hif_scatter_req_get(target->dev->ar);
+>>
+>> -	if (scat_req == NULL)
+>> +	if (scat_req == NULL) {
+>> +		status = -EINVAL;
+> I'm not sure about it.
+>
+> David. Jakub,
+> Please be warned that patches from this guy are not so great.
+> I looked on 4 patches and 3 of them were wrong (2 in RDMA and 1 for mlx5)
+> plus this patch most likely is incorrect too.
+>
