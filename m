@@ -2,88 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9E532FFCE
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 10:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1F432FFD0
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 10:13:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhCGJIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 04:08:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhCGJIJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 04:08:09 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C2CC06174A;
-        Sun,  7 Mar 2021 01:08:08 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id u11so3431766plg.13;
-        Sun, 07 Mar 2021 01:08:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Z5qBeDr73mu1Ohkca0kOr2L7Gmyz2MrOVp0HQy/wugc=;
-        b=lcE0KkdSv2Ghm7BZvnD5M7N25DsTIlsHNdJhND3axG20OJEXaQvWuYTzTbBbteRTdL
-         dVwm1ay15zRv59FsOotVdVWm+bGocg++UT2ZLXQtEFoYtdQNEZl6pzB9vD/raIef/pmp
-         NZl96AEeZNSxmsMSC7f/otCCHeV+ZutIgbQnlMmScK15QkZQB/lRuIpqD5XVJtZtmrWS
-         VORfZ7zb/vVhuUBz200A0UaYqWCaT8mvEOOuvFOh12u6Jq7TSZV/cer/K5dN5pn5+l0R
-         wW1LIeIgrTIB3Li/XoXUodfs5L0voveGlc2fafGeqMx0Ee405WsKotDazr1FmOUoUzek
-         6qig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Z5qBeDr73mu1Ohkca0kOr2L7Gmyz2MrOVp0HQy/wugc=;
-        b=TkHk4KbHxa4ne2PGW7ZALJv0MkTDM5ZsigiX+w3MxO2CaFEtazduIKU8dk8v66u5ez
-         H+85/dce2WzfRPrYATdFlN6qXMeC1QT7DFMtqE/HL3DZvCu4+MJJ4C7vsiE0OYjBoBm2
-         w0DIN7eR0IWF9cAlsoREdgFja/+HovRG4gUKgJnESOpnEBT3wqZxwNiCj6vYIjjoUwFH
-         UEidoHHAso1cpt24bHv2W/KwZ8uE6W/9cBk+J2E8/ClCyU5rQwgZGxFSmhfQJDE6E+j/
-         8pGEdKL9KDB4P+9hLwK2XFMFmDUUFg1XdiUCoXJ11AvyrGwwXHPTLO8QgeXoMdYrtBsu
-         v1CA==
-X-Gm-Message-State: AOAM533VhTuOCFYqSIdJE+b4/rbSylAm1MtKXPCLaj1wmnhPkNCuq6tn
-        PTvBqbxCCg+4crmVoO+Nr8Ez3XP+LlE6lmv9
-X-Google-Smtp-Source: ABdhPJyUZMWW/XQh/XPTCutpNf98E6TOQK9R+90dXDRFagLwTxSwMH7n953OClbRyV5kPLZ5+DWZmw==
-X-Received: by 2002:a17:902:9691:b029:e3:dd4b:f6bb with SMTP id n17-20020a1709029691b02900e3dd4bf6bbmr15801956plp.77.1615108088407;
-        Sun, 07 Mar 2021 01:08:08 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.66])
-        by smtp.gmail.com with ESMTPSA id t5sm6600065pgl.89.2021.03.07.01.08.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 01:08:07 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] ath: ath6kl: fix error return code of ath6kl_htc_rx_bundle()
-Date:   Sun,  7 Mar 2021 01:07:57 -0800
-Message-Id: <20210307090757.22617-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S230344AbhCGJM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 04:12:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230442AbhCGJMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 04:12:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B997C65115;
+        Sun,  7 Mar 2021 09:12:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615108329;
+        bh=64r1NergPuPwb4MswX5BqdZcz+kmHeInEtFiaz12t+c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sE4QM8B/N17NFBd0/E/whSAxXfVofIBAnL4vW3rfMh5KikYswO5+H1s4w2oLL8B49
+         UFYo5pc722XhN9jIdnj1QTjXl2lOuPM74HX4wbxFtdLbIJ5d/6FMP5QpH+Lf7e7FUS
+         hupoKdSFgCvxdIOgms/Lhysow3PjBv7SSFsbMh7lpTAvby1AoW/JANvlb7JbR9CsJM
+         Kp1fYswJ+zq+JX6rD1oh0hpbFljsI+jTIOf8zrdlG6XYA7r2kPPulhaJS9CyBdV8J6
+         ucS0xdguq7QP3lnhrG5dMJqV5iQjsyN5L+0KnP0bzlB7pTeIQKcz9U6T1JJcN7rIej
+         7rR+sArHGx2Aw==
+Date:   Sun, 7 Mar 2021 11:12:05 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc:     bharat@chelsio.com, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] infiniband: hw: cxgb4: fix error return code of
+ pass_open_rpl()
+Message-ID: <YESY5fG5a8sCRiS7@unreal>
+References: <20210306135317.17803-1-baijiaju1990@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210306135317.17803-1-baijiaju1990@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When hif_scatter_req_get() returns NULL to scat_req, no error return
-code of ath6kl_htc_rx_bundle() is assigned.
-To fix this bug, status is assigned with -EINVAL in this case.
+On Sat, Mar 06, 2021 at 05:53:17AM -0800, Jia-Ju Bai wrote:
+> When ep is NULL, no error code of pass_open_rpl() is returned.
+> To fix this bug, pass_open_rpl() returns -EINVAL in this case.
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- drivers/net/wireless/ath/ath6kl/htc_mbox.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath6kl/htc_mbox.c b/drivers/net/wireless/ath/ath6kl/htc_mbox.c
-index 998947ef63b6..3f8857d19a0c 100644
---- a/drivers/net/wireless/ath/ath6kl/htc_mbox.c
-+++ b/drivers/net/wireless/ath/ath6kl/htc_mbox.c
-@@ -1944,8 +1944,10 @@ static int ath6kl_htc_rx_bundle(struct htc_target *target,
- 
- 	scat_req = hif_scatter_req_get(target->dev->ar);
- 
--	if (scat_req == NULL)
-+	if (scat_req == NULL) {
-+		status = -EINVAL;
- 		goto fail_rx_pkt;
-+	}
- 
- 	for (i = 0; i < n_scat_pkt; i++) {
- 		int pad_len;
--- 
-2.17.1
-
+Why do you think that this is an error?
+>
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> ---
+>  drivers/infiniband/hw/cxgb4/cm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+> index 8769e7aa097f..773d3805bb25 100644
+> --- a/drivers/infiniband/hw/cxgb4/cm.c
+> +++ b/drivers/infiniband/hw/cxgb4/cm.c
+> @@ -2382,7 +2382,7 @@ static int pass_open_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
+>
+>  	if (!ep) {
+>  		pr_warn("%s stid %d lookup failure!\n", __func__, stid);
+> -		goto out;
+> +		return -EINVAL;
+>  	}
+>  	pr_debug("ep %p status %d error %d\n", ep,
+>  		 rpl->status, status2errno(rpl->status));
+> --
+> 2.17.1
+>
