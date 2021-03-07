@@ -2,71 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FE633029A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 16:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E75303302A6
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 16:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbhCGPTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 10:19:40 -0500
-Received: from mga12.intel.com ([192.55.52.136]:15647 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232033AbhCGPTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 10:19:21 -0500
-IronPort-SDR: rcwVF1zsDWWfeydQ/onW8Q1t7k1DFqOO6V6HjdFh7is5vmZLV2snJ1iMeExH8+32o6TV9mDP9Z
- 8Nx8zFLfjWrA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="167172190"
-X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
-   d="scan'208";a="167172190"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 07:19:21 -0800
-IronPort-SDR: VBQ85G5YYI/WVTz2b41mxqzXqF0+ssZMx7MQbDyrg3QsWTdTEwQLosgUq9Ov6r51Cb94QFKhyQ
- E0ZQT8/IMYEw==
-X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
-   d="scan'208";a="409008502"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 07:19:21 -0800
-Date:   Sun, 7 Mar 2021 07:19:20 -0800
-From:   Andi Kleen <ak@linux.intel.com>
-To:     John Wood <john.wood@gmx.com>
-Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v5 7/8] Documentation: Add documentation for the Brute LSM
-Message-ID: <20210307151920.GR472138@tassilo.jf.intel.com>
-References: <20210227153013.6747-1-john.wood@gmx.com>
- <20210227153013.6747-8-john.wood@gmx.com>
- <878s78dnrm.fsf@linux.intel.com>
- <20210302183032.GA3049@ubuntu>
+        id S231286AbhCGPXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 10:23:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230246AbhCGPXS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 10:23:18 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7879C06174A;
+        Sun,  7 Mar 2021 07:23:17 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id x10so6932937qkm.8;
+        Sun, 07 Mar 2021 07:23:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZPQ3DeJRL8XtDGmuX7K2vCZNv7d4zbvPHFELytuIbHk=;
+        b=uvofaxe0GRs3uRjoYWs+Ja0VGYA4ytfA1NjZxKEue9d3DuArYABdzkbbv4sRiDLgcg
+         Nnd4lKyOId8z7Na0AMNzBT/anp8EhsnCPm6UV0WuCdifcTU/T1nzirZxCoR74f+vlNhc
+         zOcBJIUpz3SOBrufb1zAcOUUldmturCSbNiN57y4DPoI5ytOvq9UtSc2Qr3xjVovffEB
+         NqY40vG8pmrhNXEw2SF/ZjJ1tZvwYSmDwFxWrjMV57BYT6OMRsnRo2fB/knKwSN8Q7Fm
+         bTMcFwNoBBMpD/dQCJg1ZXJZSr5EQ+7x6OoQ9zPXDXvnyhf+vW/NE/ZTs9mxMyFTyezQ
+         Kdpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZPQ3DeJRL8XtDGmuX7K2vCZNv7d4zbvPHFELytuIbHk=;
+        b=Fr9l/LdgLfodjqkRaVOs0l6yPg3DQ2YSPYyOdsCefv98Gan+4AI23+4/Qkry5f0RcH
+         dopdpxuq8x4huD7aZEnSUdn5UJCBUDoechoc2l8A3ZcSG4TcWAya/6QlS/MgLpyGtxK/
+         z6BQNf8F4HW6r6LWsc0ZIszTK2Iu/A7N2o5GXwOVGtv0tY8OQR5QIdbYawSikouQsV+q
+         iQSygLmv8v0ZT65NHiEAKeYWoO8UnfGQvyWXwv/S7D1/2mn4ovWlyei5i2s+jkZx3ksV
+         BckUhVMBafwY0jKy5z1xN5ey4tVe5Pj5fh0ddA+VN1XGFC9k8i/Zou4NW2mpdpGZgpy0
+         BAJw==
+X-Gm-Message-State: AOAM531RRM3Cf5b5Zojh/RcQ5DpwXgLcKnPagaJvdbjhFJ91Ae5p67YF
+        sqLC4y2fF762/O/1D3OdreGLxMkvOp5PkKiyosNqjQt/
+X-Google-Smtp-Source: ABdhPJwzWdk+YMq0oT+K8PvSrlQNsKsWKJbl7BwPPtXgX+k/1EkARuX+8QtcrysN03VJb2EI1EcxNlkpE25capOx7bM=
+X-Received: by 2002:a37:46c5:: with SMTP id t188mr17569564qka.47.1615130596833;
+ Sun, 07 Mar 2021 07:23:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302183032.GA3049@ubuntu>
+References: <20210213122143.19240-1-orsonzhai@gmail.com> <20210213122143.19240-2-orsonzhai@gmail.com>
+In-Reply-To: <20210213122143.19240-2-orsonzhai@gmail.com>
+From:   Baolin Wang <baolin.wang7@gmail.com>
+Date:   Sun, 7 Mar 2021 23:23:15 +0800
+Message-ID: <CADBw62q2VFPP+P8XabPsKXMf0RuCeUFzbMwcauwH0UFZOj_YzA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] mailbox: sprd: Introduce refcnt when clients
+ requests/free channels
+To:     Orson Zhai <orsonzhai@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Haidong Yao <yaohaidong369@gmail.com>,
+        Orson Zhai <orson.zhai@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for the late answer. I somehow missed your email earlier.
+On Sat, Feb 13, 2021 at 8:22 PM Orson Zhai <orsonzhai@gmail.com> wrote:
+>
+> From: Orson Zhai <orson.zhai@unisoc.com>
+>
+> Unisoc mailbox has no way to be enabled/disabled for any single channel.
+> They can only be set to startup or shutdown as a whole device at same time.
+>
+> Add a variable to count references to avoid mailbox FIFO being reset
+> unexpectedly when clients are requesting or freeing channels.
+>
+> Also add a lock to dismiss possible conflicts from register r/w in
+> different startup or shutdown threads. And fix the crash problem when early
+> interrupts come from channel which has not been requested by client yet.
+>
+> Fixes: ca27fc26cd22 ("mailbox: sprd: Add Spreadtrum mailbox driver")
+> Signed-off-by: Orson Zhai <orson.zhai@unisoc.com>
 
-> As a mitigation method, all the offending tasks involved in the attack are
-> killed. Or in other words, all the tasks that share the same statistics
-> (statistics showing a fast crash rate) are killed.
+Sorry for the late reply. LGTM.
+Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
 
-So systemd will just restart the network daemon and then the attack works
-again?
+> ---
+>  drivers/mailbox/sprd-mailbox.c | 43 +++++++++++++++++++++++-----------
+>  1 file changed, 29 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/mailbox/sprd-mailbox.c b/drivers/mailbox/sprd-mailbox.c
+> index f6fab24ae8a9..920de7b9dce1 100644
+> --- a/drivers/mailbox/sprd-mailbox.c
+> +++ b/drivers/mailbox/sprd-mailbox.c
+> @@ -60,6 +60,8 @@ struct sprd_mbox_priv {
+>         struct clk              *clk;
+>         u32                     outbox_fifo_depth;
+>
+> +       struct mutex            lock;
+> +       u32                     refcnt;
+>         struct mbox_chan        chan[SPRD_MBOX_CHAN_MAX];
+>  };
+>
+> @@ -115,7 +117,11 @@ static irqreturn_t sprd_mbox_outbox_isr(int irq, void *data)
+>                 id = readl(priv->outbox_base + SPRD_MBOX_ID);
+>
+>                 chan = &priv->chan[id];
+> -               mbox_chan_received_data(chan, (void *)msg);
+> +               if (chan->cl)
+> +                       mbox_chan_received_data(chan, (void *)msg);
+> +               else
+> +                       dev_warn_ratelimited(priv->dev,
+> +                                   "message's been dropped at ch[%d]\n", id);
+>
+>                 /* Trigger to update outbox FIFO pointer */
+>                 writel(0x1, priv->outbox_base + SPRD_MBOX_TRIGGER);
+> @@ -215,18 +221,22 @@ static int sprd_mbox_startup(struct mbox_chan *chan)
+>         struct sprd_mbox_priv *priv = to_sprd_mbox_priv(chan->mbox);
+>         u32 val;
+>
+> -       /* Select outbox FIFO mode and reset the outbox FIFO status */
+> -       writel(0x0, priv->outbox_base + SPRD_MBOX_FIFO_RST);
+> +       mutex_lock(&priv->lock);
+> +       if (priv->refcnt++ == 0) {
+> +               /* Select outbox FIFO mode and reset the outbox FIFO status */
+> +               writel(0x0, priv->outbox_base + SPRD_MBOX_FIFO_RST);
+>
+> -       /* Enable inbox FIFO overflow and delivery interrupt */
+> -       val = readl(priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+> -       val &= ~(SPRD_INBOX_FIFO_OVERFLOW_IRQ | SPRD_INBOX_FIFO_DELIVER_IRQ);
+> -       writel(val, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+> +               /* Enable inbox FIFO overflow and delivery interrupt */
+> +               val = readl(priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+> +               val &= ~(SPRD_INBOX_FIFO_OVERFLOW_IRQ | SPRD_INBOX_FIFO_DELIVER_IRQ);
+> +               writel(val, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+>
+> -       /* Enable outbox FIFO not empty interrupt */
+> -       val = readl(priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> -       val &= ~SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ;
+> -       writel(val, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> +               /* Enable outbox FIFO not empty interrupt */
+> +               val = readl(priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> +               val &= ~SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ;
+> +               writel(val, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> +       }
+> +       mutex_unlock(&priv->lock);
+>
+>         return 0;
+>  }
+> @@ -235,9 +245,13 @@ static void sprd_mbox_shutdown(struct mbox_chan *chan)
+>  {
+>         struct sprd_mbox_priv *priv = to_sprd_mbox_priv(chan->mbox);
+>
+> -       /* Disable inbox & outbox interrupt */
+> -       writel(SPRD_INBOX_FIFO_IRQ_MASK, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+> -       writel(SPRD_OUTBOX_FIFO_IRQ_MASK, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> +       mutex_lock(&priv->lock);
+> +       if (--priv->refcnt == 0) {
+> +               /* Disable inbox & outbox interrupt */
+> +               writel(SPRD_INBOX_FIFO_IRQ_MASK, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+> +               writel(SPRD_OUTBOX_FIFO_IRQ_MASK, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> +       }
+> +       mutex_unlock(&priv->lock);
+>  }
+>
+>  static const struct mbox_chan_ops sprd_mbox_ops = {
+> @@ -266,6 +280,7 @@ static int sprd_mbox_probe(struct platform_device *pdev)
+>                 return -ENOMEM;
+>
+>         priv->dev = dev;
+> +       mutex_init(&priv->lock);
+>
+>         /*
+>          * The Spreadtrum mailbox uses an inbox to send messages to the target
+> --
+> 2.17.1
+>
 
-Or if it's a interactive login you log in again.
 
-I think it might be useful even with these limitations, but it would
-be good to spell out the limitations of the method more clearly.
-
-I suspect to be useful it'll likely need some user space configuration
-changes too.
-
--Andi
+-- 
+Baolin Wang
