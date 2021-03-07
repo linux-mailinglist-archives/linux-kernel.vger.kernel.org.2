@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47733302DB
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 17:03:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068C53302E0
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 17:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbhCGQCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 11:02:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232383AbhCGQCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 11:02:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B322650FA;
-        Sun,  7 Mar 2021 16:02:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615132932;
-        bh=W3DWtdKbzB/Ewq0JXP5uIPr5sVdrpUWScZRv+BpwOOQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uvTAugzrUQYpKuCcE5EB2V7uskUn7uQ1kw3Ti9BBAyqQTmqLgQKYlYnumatE5cRFc
-         TxVpaDX8t7wop24oROmlUS96NMdVeY7PBHDIW/T3WSmx/aCPFFh9v3xHu0e6GSI/Rx
-         ViYKo1BNlVsFC65pNKLgytdDsWIOhzT8pO1yqotAUcGPJGH0Nj83z5XIkuCh3gzRaP
-         RCvB3K4RyMw+BKYpyVQxCNekIzPX2+xiiY9/RoaX+oINmRapsa/7H7PofVuHzmkqdE
-         iMY49sccaS1j16kG5oQvyCvriltmludfQy+PNzABu+/0WPz+XC05tDuL+SaC1iYVBI
-         NrHiOR3ly/7qQ==
-Received: by mail-oi1-f176.google.com with SMTP id x78so8416232oix.1;
-        Sun, 07 Mar 2021 08:02:12 -0800 (PST)
-X-Gm-Message-State: AOAM530y6b8oPrrVJXGClw9xhwoqQGy/mg1Cjs168qlZpXpvZdilevcY
-        QxGhW2KOMGlKtNwmvWNCSSg2hvTE1tOXKtV04i4=
-X-Google-Smtp-Source: ABdhPJzpPsfCCAkRmVKn193+pHQBjk17f8dkofO2rKwjX7TbuYoBS5vX7tmjl8lFu8yM18ZXMOLeGO7Q06knumxhjeE=
-X-Received: by 2002:aca:5e85:: with SMTP id s127mr13583208oib.67.1615132931842;
- Sun, 07 Mar 2021 08:02:11 -0800 (PST)
+        id S232223AbhCGQOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 11:14:16 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:39488 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232377AbhCGQOA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 11:14:00 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id DA7101C0B76; Sun,  7 Mar 2021 17:13:57 +0100 (CET)
+Date:   Sun, 7 Mar 2021 17:13:57 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, hdegoede@redhat.com
+Cc:     Andrea Righi <andrea.righi@canonical.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, schuchmann@schleissheimer.de
+Subject: Re: [PATCH] leds: trigger: fix potential deadlock with libata
+Message-ID: <20210307161357.GA2933@duo.ucw.cz>
+References: <20201102104152.GG9930@xps-13-7390>
+ <20210306203954.ya5oqgkdalcw45c4@pengutronix.de>
 MIME-Version: 1.0
-References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-22-marcan@marcan.st>
- <CAHp75Vc+t9_FNHZ0xYNaJ1+Ny+FFeZKA79abxV2NAsZvpBh3Bg@mail.gmail.com>
- <535ff48e-160e-4ba4-23ac-54e478a2f3ee@marcan.st> <CAHp75Vd_kwdjbus3iq_39+p_xRk3rum2ek3nLLFbBDzMwggnKA@mail.gmail.com>
- <05ccc09f-ffea-71cd-4288-beed3020bd45@marcan.st> <d33fffec-28bd-99b2-a8b1-cc83b628e4b3@canonical.com>
-In-Reply-To: <d33fffec-28bd-99b2-a8b1-cc83b628e4b3@canonical.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sun, 7 Mar 2021 17:01:55 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0o4NHjXZ+ePj_Xpcw6ZmonoiR1dfkcsv=3i1JBEF4arA@mail.gmail.com>
-Message-ID: <CAK8P3a0o4NHjXZ+ePj_Xpcw6ZmonoiR1dfkcsv=3i1JBEF4arA@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 21/27] tty: serial: samsung_tty: IRQ rework
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Hector Martin <marcan@marcan.st>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="J/dobhs11T7y2rNN"
+Content-Disposition: inline
+In-Reply-To: <20210306203954.ya5oqgkdalcw45c4@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 7, 2021 at 12:34 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
-> On 05/03/2021 17:29, Hector Martin wrote:
-> > On 06/03/2021 01.20, Andy Shevchenko wrote:
-> >>> I am just splitting an
-> >>> existing function into two, where one takes the lock and the other does
-> >>> the work. Do you mean using a different locking function? I'm not
-> >>> entirely sure what you're suggesting.
-> >>
-> >> Yes, as a prerequisite
-> >>
-> >> spin_lock_irqsave -> spin_lock().
-> >
-> > Krzysztof, is this something you want in this series? I was trying to
-> > avoid logic changes to the non-Apple paths.
->
-> I don't quite get the need for such change (the code will be still
-> called in interrupt handler, right?), but assuming the "why?" is
-> properly documented, it can be a separate patch here.
 
-This is only for readability: the common rule is to not disable
-interrupts when they are already disabled, so a reader might wonder
-if this instance of the handler is special in some case that it might
-be called with interrupts enabled.
+--J/dobhs11T7y2rNN
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-There is also a small overhead in accessing the global irq mask
-register on some architectures, but for a uart that does not make
-any difference of course.
+Hi!
 
-While I'm generally in favor of that kind of cleanup, I'd also
-prefer to leave it out of this series -- once you get into details
-like this the series gets harder to review.
+> > --- a/drivers/leds/led-triggers.c
+> > +++ b/drivers/leds/led-triggers.c
+> > @@ -378,14 +378,15 @@ void led_trigger_event(struct led_trigger *trig,
+> >  			enum led_brightness brightness)
+> >  {
+> >  	struct led_classdev *led_cdev;
+> > +	unsigned long flags;
+> > =20
+> >  	if (!trig)
+> >  		return;
+> > =20
+> > -	read_lock(&trig->leddev_list_lock);
+> > +	read_lock_irqsave(&trig->leddev_list_lock, flags);
+> >  	list_for_each_entry(led_cdev, &trig->led_cdevs, trig_list)
+> >  		led_set_brightness(led_cdev, brightness);
+> > -	read_unlock(&trig->leddev_list_lock);
+> > +	read_unlock_irqrestore(&trig->leddev_list_lock, flags);
+> >  }
+> >  EXPORT_SYMBOL_GPL(led_trigger_event);
+>=20
+> meanwhile this patch hit v5.10.x stable and caused a performance
+> degradation on our use case:
+>=20
+> It's an embedded ARM system, 4x Cortex A53, with an SPI attached CAN
+> controller. CAN stands for Controller Area Network and here used to
+> connect to some automotive equipment. Over CAN an ISOTP (a CAN-specific
+> Transport Protocol) transfer is running. With this patch, we see CAN
+> frames delayed for ~6ms, the usual gap between CAN frames is 240=B5s.
+>=20
+> Reverting this patch, restores the old performance.
+>=20
+> What is the best way to solve this dilemma? Identify the critical path
+> in our use case? Is there a way we can get around the irqsave in
+> led_trigger_event()?
 
-        Arnd
+Hans was pushing for this patch, perhaps he has some ideas...
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--J/dobhs11T7y2rNN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYET7xQAKCRAw5/Bqldv6
+8vKIAKDCxR0yuLq5ex211qqLUpFiWAZK+ACfc2M1gGpIsYkKLbgDIDuOujybruM=
+=/uEM
+-----END PGP SIGNATURE-----
+
+--J/dobhs11T7y2rNN--
