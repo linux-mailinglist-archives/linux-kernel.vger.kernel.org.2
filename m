@@ -2,120 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8F8330021
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 11:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0444933002A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 11:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhCGKgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 05:36:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36396 "EHLO
+        id S231537AbhCGKvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 05:51:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231325AbhCGKga (ORCPT
+        with ESMTP id S230111AbhCGKua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 05:36:30 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956FCC06174A;
-        Sun,  7 Mar 2021 02:36:30 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id f12so8186979wrx.8;
-        Sun, 07 Mar 2021 02:36:30 -0800 (PST)
+        Sun, 7 Mar 2021 05:50:30 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59123C06174A;
+        Sun,  7 Mar 2021 02:50:30 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id c131so7016829ybf.7;
+        Sun, 07 Mar 2021 02:50:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QUAGgQ+GCSEMKdmjw8dHGrKRA1a4GuPIKYGKPGuNTkI=;
-        b=NcLsOwyuZxWHoQPJrRmBfNOlGHj+UD4HB+xhzzUjurOMM6CDdbhVkYXxj2W8RoVvHo
-         PDgjDbRcwVehlJZycAQY801wI1dpbti9gfuZxRFcyQaJffE4doD0AOFLiJYblxlb/Yf+
-         W3nlPbDzafY99Ioo9lv6Qcsz2yTDQ60DHT9MrSCJq/xlcPxYOZPYn9YSE2jLjLnDKXBx
-         GIjq5oi6IG54erMX42Z+TFORd+0gtG+iFEti8sWdG7UA0XmXADq9Js2NsOLcbiTtDyav
-         C786jQHanihPoiwsUV3sN2i0FBGOpKgu6zK/oSPR20F1n68Gt0x4azPwc0AUKBYC389N
-         VNNw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VuSNp8ohCEDTVNqOLRIMNo7zaXhyGLF+pvmM+1TvWQg=;
+        b=g2GpQyn+lSSG941waxTRsJNyYVrlP+w4Z1byHE6B11GbHqF1ij4Bg+3I5KpB4EDgnJ
+         B1tgnEyQS9XTafRwNoYit2OUoYikss0E8qxrfxoHpQn1gFLoPve9mA1vQG7k4sIXfIrg
+         P61/iE60aSupZHVQvUlJI9Ur+a0QKCnV15iGyjV1Jha5drAiZCIpkdli9fNG26Fb94Xa
+         QXHsELSumBNe2xMCPUo+8P8WiR3q3pLFbzeEGiFA81GG3iYBYHQ+1ba7iqWZxCvIT1FL
+         Q3590rHIW6CDAtURAlGI2zF9VoDzbk0mSxIwoR5Yj+/qZkvE1CdBeKlLz31zLzom+1Fq
+         vE1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QUAGgQ+GCSEMKdmjw8dHGrKRA1a4GuPIKYGKPGuNTkI=;
-        b=Y2ZmGCzmgsphtihSXrqPFFkJ2NjYK3jmwwB97X5x8qy3D0YrNPqkMWlxTwswqks4a2
-         I59igp+i7H7jKABJFh9Erbiudi1s5nNeXsZIj5Duh6mqySbbjbLBPZmmyrc3btBAn6DH
-         /yVR6p30GF1EgsaMYUrLHmR1V58KcSYiZPM3jWUK0I9nWk0MwSVunDcwkc5OVrnqmLSH
-         aOntqUCIofM0Ukyoiu6GWuv4r5yVpL4ReWs2SR7mfiEp9KLES5IhY3rgg1X3C3vYHnS2
-         FPoKsSt2m5tnqq/25d0Hwq3fuaqEmRcllE/I+BASquR0cU2a2+jY3peq2XohsokHKKXe
-         MYIg==
-X-Gm-Message-State: AOAM532uT2QRw6rM93qt/gDK89e2RGP8tKKBulTHjVTAxfUXk0UZNWtz
-        J0XNfCtc3zG1iUcdpsNd0Lp2gxGOry0mtA==
-X-Google-Smtp-Source: ABdhPJzGMvdqpeuWDWa/seuVgiTG3Xn6d1iiAfETy4rAbCTVCKOwItLngRjiu17YCxDYXem4Zmercw==
-X-Received: by 2002:a5d:4ac4:: with SMTP id y4mr17495668wrs.86.1615113389054;
-        Sun, 07 Mar 2021 02:36:29 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f1f:bb00:98ed:522e:af2a:b86a? (p200300ea8f1fbb0098ed522eaf2ab86a.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:98ed:522e:af2a:b86a])
-        by smtp.googlemail.com with ESMTPSA id d85sm13342172wmd.15.2021.03.07.02.36.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Mar 2021 02:36:28 -0800 (PST)
-Subject: Re: [PATCH] ath: ath6kl: fix error return code of
- ath6kl_htc_rx_bundle()
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     kvalo@codeaurora.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210307090757.22617-1-baijiaju1990@gmail.com>
- <YESaSwoGRxGvrggv@unreal> <a55172ad-bf40-0110-8ef3-326001ecd13e@gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <8e28cbdd-55f0-0479-04ee-22f5266ce0ac@gmail.com>
-Date:   Sun, 7 Mar 2021 11:36:19 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VuSNp8ohCEDTVNqOLRIMNo7zaXhyGLF+pvmM+1TvWQg=;
+        b=BHrciYPuwnHULU7Z7DjMNcILrzoSVRQ/BCbhXuuCdb3ECZheicpm2Tx426JEGHGLCh
+         hZnuEz6HwJ7Mfcm9r+5uTQ87/kbk6OTlti9+pkVOsUx01LmXXfCXT6kNRyUWyuPJbF8A
+         ymITV2IjNc4BWxyxAsJnmdb6xE5ApIo7gQf2/lphGfvwRzYhVwBzKfM/9hKhS/j1T9TF
+         SP41vo0/G3Vrb3z/x6gCuNACL9FvqZibWXJcFMPMnKqUcfDYVMrAaDFFvGMgSb1Z1C8w
+         zV+2zUtqW2TVOlS6nh/m2li8/QIpV+PAyj/DEi1jYX38NVkWungaU/BVUd9XYk9GZKTu
+         /hJw==
+X-Gm-Message-State: AOAM530BwKwXKw+4545SL+QevnthenTaRSeyjuTk082HaQ+FqPw8Q/dT
+        lofBOUAKDkL0Z82/ft2o6ZxkpMHDS7fOmnh7iMI=
+X-Google-Smtp-Source: ABdhPJxMe+8aOlcrc2X9rehsYaYuitly26CDn6yA8BqexdDs5ZwoiRRL4LwO3ovwBuua1q6WRcnqBSheWy4yYWrWaK0=
+X-Received: by 2002:a25:ab82:: with SMTP id v2mr26092512ybi.97.1615114229379;
+ Sun, 07 Mar 2021 02:50:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <a55172ad-bf40-0110-8ef3-326001ecd13e@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210305094107.13743-1-vincent.whitchurch@axis.com>
+In-Reply-To: <20210305094107.13743-1-vincent.whitchurch@axis.com>
+From:   Shyam Prasad N <nspmangalore@gmail.com>
+Date:   Sun, 7 Mar 2021 16:20:18 +0530
+Message-ID: <CANT5p=rB2=DvjtpmVy803emWpuzsy-C2+d4wqQ5g_9fJ8+a5Cw@mail.gmail.com>
+Subject: Re: [PATCH] CIFS: Prevent error log on spurious oplock break
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     Pavel Shilovsky <pshilov@microsoft.com>,
+        Steve French <sfrench@samba.org>, kernel@axis.com,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.03.2021 10:31, Jia-Ju Bai wrote:
-> Hi Leon,
-> 
-> I am quite sorry for my incorrect patches...
-> My static analysis tool reports some possible bugs about error handling code, and thus I write some patches for the bugs that seem to be true in my opinion.
-> Because I am not familiar with many device drivers, some of my reported bugs can be false positives...
+Hi Vincent,
 
-Then, before posting a patch for a driver, get familiar with it to
-an extent that you can identify false positives. Relying on others
-to detect the false positives is not the best approach.
+The reason for rejecting the request maybe a number of things like:
+corrupted request, stale request (for some old session), or for a
+wrong handle.
+I don't think we should treat any of these cases as a success.
 
-> 
-> 
-> Best wishes,
-> Jia-Ju Bai
-> 
-> On 2021/3/7 17:18, Leon Romanovsky wrote:
->> On Sun, Mar 07, 2021 at 01:07:57AM -0800, Jia-Ju Bai wrote:
->>> When hif_scatter_req_get() returns NULL to scat_req, no error return
->>> code of ath6kl_htc_rx_bundle() is assigned.
->>> To fix this bug, status is assigned with -EINVAL in this case.
->>>
->>> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
->>> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
->>> ---
->>>   drivers/net/wireless/ath/ath6kl/htc_mbox.c | 4 +++-
->>>   1 file changed, 3 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/wireless/ath/ath6kl/htc_mbox.c b/drivers/net/wireless/ath/ath6kl/htc_mbox.c
->>> index 998947ef63b6..3f8857d19a0c 100644
->>> --- a/drivers/net/wireless/ath/ath6kl/htc_mbox.c
->>> +++ b/drivers/net/wireless/ath/ath6kl/htc_mbox.c
->>> @@ -1944,8 +1944,10 @@ static int ath6kl_htc_rx_bundle(struct htc_target *target,
->>>
->>>       scat_req = hif_scatter_req_get(target->dev->ar);
->>>
->>> -    if (scat_req == NULL)
->>> +    if (scat_req == NULL) {
->>> +        status = -EINVAL;
->> I'm not sure about it.
->>
->> David. Jakub,
->> Please be warned that patches from this guy are not so great.
->> I looked on 4 patches and 3 of them were wrong (2 in RDMA and 1 for mlx5)
->> plus this patch most likely is incorrect too.
->>
+Also, from the MS-SMB2 documentation:
+https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-smb2/4f35576a-6f3b-40f0-a832-1c30b0afccb3
 
+"The client MUST locate the file in the GlobalFileTable using the
+LeaseKey in the Lease Break Notification. If a file is not found, no
+further processing is required."
+
+So I don't think we should be changing the logic here.
+If SMB v1 had a different behaviour, we should check if that is as per
+the protocol documentation. If not, change it.
+
+Regards,
+Shyam
+
+On Fri, Mar 5, 2021 at 3:12 PM Vincent Whitchurch
+<vincent.whitchurch@axis.com> wrote:
+>
+> The SMB1 version of ->is_oplock_break() returns true even if the FileId
+> is not found, as long as the oplock break notification message structure
+> itself appears to be valid.  A true return value makes
+> cifs_demultiplex_thread() to not print an error message for such
+> packets.
+>
+> However, the SMB2 version returns false in such cases, leading to an
+> error "No task to wake, unknown frame received!" followed by a hexdump
+> of the packet header being printed by cifs_demultiplex_thread().
+>
+> Note that before commit fa9c2362497fbd64788063288d ("CIFS: Fix SMB2
+> oplock break processing"), SMB2 also returned true for the case where a
+> connection was found but the FileId was not, but it's not clear to me if
+> that commit really intended to change the behaviour of the error prints.
+>
+> Change the behaviour of SMB2 to be the same as SMB1 and avoid the error
+> messages for these packets which we ignore as per the spec.
+>
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> ---
+>  fs/cifs/smb2misc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/cifs/smb2misc.c b/fs/cifs/smb2misc.c
+> index 60d4bd1eae2b..3ea3bda64083 100644
+> --- a/fs/cifs/smb2misc.c
+> +++ b/fs/cifs/smb2misc.c
+> @@ -679,7 +679,7 @@ smb2_is_valid_lease_break(char *buffer)
+>         }
+>         spin_unlock(&cifs_tcp_ses_lock);
+>         cifs_dbg(FYI, "Can not process lease break - no lease matched\n");
+> -       return false;
+> +       return true;
+>  }
+>
+>  bool
+> @@ -755,7 +755,7 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
+>         }
+>         spin_unlock(&cifs_tcp_ses_lock);
+>         cifs_dbg(FYI, "Can not process oplock break for non-existent connection\n");
+> -       return false;
+> +       return true;
+>  }
+>
+>  void
+> --
+> 2.28.0
+>
+
+
+-- 
+Regards,
+Shyam
