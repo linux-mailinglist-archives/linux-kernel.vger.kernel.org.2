@@ -2,104 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2F0330101
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 13:47:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4667B330103
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 13:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhCGMrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 07:47:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230260AbhCGMqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 07:46:30 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2949650FA;
-        Sun,  7 Mar 2021 12:46:28 +0000 (UTC)
-Date:   Sun, 7 Mar 2021 12:46:25 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Evgeny Boger <boger@wirenboard.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Quentin Schulz <quentin.schulz@free-electrons.com>,
-        Quentin Schulz <quentin.schulz@bootlin.com>
-Subject: Re: [PATCH] iio: adc: axp20x_adc: fix charging current reporting on
- AXP22x
-Message-ID: <20210307124625.08109dea@archlinux>
-In-Reply-To: <20210306235238.30379-1-boger@wirenboard.com>
-References: <20210306235238.30379-1-boger@wirenboard.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230344AbhCGMsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 07:48:07 -0500
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:43175 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230401AbhCGMsH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 07:48:07 -0500
+Received: by mail-lj1-f175.google.com with SMTP id m11so11372652lji.10;
+        Sun, 07 Mar 2021 04:48:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=pS91TVubDXPfoLE+zHFY8up3UAZ9cKyAzw2iFYtmJDs=;
+        b=tzLyui6P6jLu9hKxGpKfFjLL8OTKSDRxvATcwVfIDqIzyFZvyVI3e9wLeRS7bXqcZD
+         KZhEkCaR+YwXVmHScpCZifDqH1f9xpo8fb/3HzTwT7O45DJ8KEm785YRCcAlusXYuFot
+         MzHkhVz0Art3tuJDoaoPmRWIoFLcsTFZbRjjKvaB4D5ff+Ap/BJDFDYKqiCLdxlaW9DF
+         X4VUMq2MkCrnph8gu4U/hkrkmBb3twwYiRzpAcJwJcnwhGa/9O1hlNKhJjYXOYPNpS8X
+         cWo2hBj8INWJnMKFfXx9+drtzI0f21chjkFPCm1UJX1jXjLhx9P7yrhZLNTAtYNYZaiR
+         4nWQ==
+X-Gm-Message-State: AOAM531hPlH5XI29JP3FWIArO7KCKrtAX9hJCzmEyj8kJp7jMYiNpkud
+        FnPkVaoFXfZpmeJDuKCE3sOrxceCpHvNLg==
+X-Google-Smtp-Source: ABdhPJwl6T4EABq4ZegT2Vo1E8BSommGW7fJmYqOF2zTXzp3Tkd3k/7mNwPiQwEqL3nEAKvjHOjeLQ==
+X-Received: by 2002:a2e:9791:: with SMTP id y17mr10475704lji.343.1615121285388;
+        Sun, 07 Mar 2021 04:48:05 -0800 (PST)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id 192sm1073773ljj.95.2021.03.07.04.48.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Mar 2021 04:48:04 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id f1so14945059lfu.3;
+        Sun, 07 Mar 2021 04:48:04 -0800 (PST)
+X-Received: by 2002:a19:2216:: with SMTP id i22mr11229884lfi.57.1615121284671;
+ Sun, 07 Mar 2021 04:48:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210306141528.18925-1-baijiaju1990@gmail.com>
+In-Reply-To: <20210306141528.18925-1-baijiaju1990@gmail.com>
+Reply-To: wens@csie.org
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Sun, 7 Mar 2021 20:47:53 +0800
+X-Gmail-Original-Message-ID: <CAGb2v660_jsK565dN4D2wSTmGjt1WUnHRkMOG7vzaqgZwY-Zeg@mail.gmail.com>
+Message-ID: <CAGb2v660_jsK565dN4D2wSTmGjt1WUnHRkMOG7vzaqgZwY-Zeg@mail.gmail.com>
+Subject: Re: [PATCH] media: platform: sunxi: sun6i-csi: fix error return code
+ of sun6i_video_start_streaming()
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc:     Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  7 Mar 2021 02:52:38 +0300
-Evgeny Boger <boger@wirenboard.com> wrote:
+On Sat, Mar 6, 2021 at 10:15 PM Jia-Ju Bai <baijiaju1990@gmail.com> wrote:
+>
+> When sun6i_video_remote_subdev() returns NULL to subdev, no error return
+> code of sun6i_video_start_streaming() is assigned.
+> To fix this bug, ret is assigned with -EINVAL in this case.
+>
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-> Both the charging and discharging currents on AXP22x are stored as
-> 12-bit integers, in accordance with the datasheet.
-> It's also confirmed by vendor BSP (axp20x_adc.c:axp22_icharge_to_mA).
-> 
-> The scale factor of 0.5 is never mentioned in datasheet, nor in the
-> vendor source code. I think it was here to compensate for
-> erroneous additional bit in register width.
-> 
-> Tested on custom A40i+AXP221s board with external ammeter as
-> a reference.
-> 
-> Signed-off-by: Evgeny Boger <boger@wirenboard.com>
+This should have the tag:
 
-+CC Quentin's bootlin address.
+Fixes: 5cc7522d8965 ("media: sun6i: Add support for Allwinner CSI V3s")
 
-One comment inline,
+Please try to add them when fixing bugs. And this should also be tagged
+for stable, so
 
-Jonathan
+Cc: <stable@kernel.org>
 
-> ---
->  drivers/iio/adc/axp20x_adc.c | 14 ++------------
->  1 file changed, 2 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/axp20x_adc.c b/drivers/iio/adc/axp20x_adc.c
-> index 3e0c0233b431..8db6699c20c3 100644
-> --- a/drivers/iio/adc/axp20x_adc.c
-> +++ b/drivers/iio/adc/axp20x_adc.c
-> @@ -253,17 +253,7 @@ static int axp22x_adc_raw(struct iio_dev *indio_dev,
->  	struct axp20x_adc_iio *info = iio_priv(indio_dev);
->  	int size;
->  
-> -	/*
-> -	 * N.B.: Unlike the Chinese datasheets tell, the charging current is
-> -	 * stored on 12 bits, not 13 bits. Only discharging current is on 13
-> -	 * bits.
-> -	 */
-> -	if (chan->type == IIO_CURRENT && chan->channel == AXP22X_BATT_DISCHRG_I)
-> -		size = 13;
-> -	else
-> -		size = 12;
-> -
-> -	*val = axp20x_read_variable_width(info->regmap, chan->address, size);
-> +	*val = axp20x_read_variable_width(info->regmap, chan->address, 12);
->  	if (*val < 0)
->  		return *val;
->  
-> @@ -387,7 +377,7 @@ static int axp22x_adc_scale(struct iio_chan_spec const *chan, int *val,
->  
->  	case IIO_CURRENT:
->  		*val = 0;
-> -		*val2 = 500000;
-> +		*val2 = 1000000;
->  		return IIO_VAL_INT_PLUS_MICRO;
-		*val = 1;
-		return IIO_VAL_INT;
+Otherwise,
 
-Should work if the scale factor is 1.
-Note that we could just have reported the channel as _processed in the first place, but
-given we didn't better to keep the ABI the same and just have a noop scale factor.
-
->  
->  	case IIO_TEMP:
-
+Acked-by: Chen-Yu Tsai <wens@csie.org>
