@@ -2,111 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E50330063
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 12:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B5B330065
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 12:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbhCGLgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 06:36:33 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:49516 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbhCGLgS (ORCPT
+        id S230176AbhCGLi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 06:38:29 -0500
+Received: from relay04.th.seeweb.it ([5.144.164.165]:58805 "EHLO
+        relay04.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230289AbhCGLhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 06:36:18 -0500
-Received: from mail-ed1-f72.google.com ([209.85.208.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lIrgX-0001pK-8B
-        for linux-kernel@vger.kernel.org; Sun, 07 Mar 2021 11:34:57 +0000
-Received: by mail-ed1-f72.google.com with SMTP id r19so3166520edv.3
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 03:34:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Op5mu56rLKVeXZ5BYHLLFs3XBf2gdeKehd8++u/6LDA=;
-        b=Ae1lyzG7wcREDsqaVx/+1xFnP933KjMpUUR1Vc6JCs7FSI1wzK2cKDxJ3e837RfuLw
-         8av/qQIjI/eFatGeEDURnwNNJvjWa20eOLnduQlM4+mFvXGx1OTSfW0Ie8Fqt487DE6z
-         A3sYP7aWRWjVYlT2knPTScfWvGb0h/j4Oq8pro5OoQropPdqwC0/zqsZ6PI3aFhDvDe5
-         OgRahP5dc6zAQIlE6eWJ8gjwlMoWZGKdsEGMP9KlYIGMMlA6bTejitqW3jthSpv1dbJ0
-         edpiJCIxhF/xs98+ie3sMVvC0d605plqvQoRUJUobDa0Kz2CHT0G5De1SPB9atT55XXv
-         yGuw==
-X-Gm-Message-State: AOAM532oKo/p+yKzqM8sEw7nw6RPqU39TlEFD45Z4DsvNTT+UppT46kw
-        PTt1sW9ghtl5uxrzAV/ECn3yFnI+Ibd/L8XFyZhTFt6x+qLDWAG/ReYp2GENeABcNfdJ9scYCYE
-        H5IsaHsdThOqsT0Y83AO5/GrEbkxw+lXXiCUEoi5QwQ==
-X-Received: by 2002:a50:fa04:: with SMTP id b4mr17812458edq.293.1615116896809;
-        Sun, 07 Mar 2021 03:34:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwN50SNAvRJvyv1TTGSoHps9ZM3d2RwZosjPBjKJrezHq2PpQu4f0MDG5tTUROmsW8Jne4o4A==
-X-Received: by 2002:a50:fa04:: with SMTP id b4mr17812435edq.293.1615116896694;
-        Sun, 07 Mar 2021 03:34:56 -0800 (PST)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id g25sm5016167edp.95.2021.03.07.03.34.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Mar 2021 03:34:56 -0800 (PST)
-Subject: Re: [RFT PATCH v3 21/27] tty: serial: samsung_tty: IRQ rework
-To:     Hector Martin <marcan@marcan.st>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
+        Sun, 7 Mar 2021 06:37:19 -0500
+Received: from localhost.localdomain (abac94.neoplus.adsl.tpnet.pl [83.6.166.94])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id B0C891F50F;
+        Sun,  7 Mar 2021 12:37:11 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         "David S. Miller" <davem@davemloft.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210304213902.83903-1-marcan@marcan.st>
- <20210304213902.83903-22-marcan@marcan.st>
- <CAHp75Vc+t9_FNHZ0xYNaJ1+Ny+FFeZKA79abxV2NAsZvpBh3Bg@mail.gmail.com>
- <535ff48e-160e-4ba4-23ac-54e478a2f3ee@marcan.st>
- <CAHp75Vd_kwdjbus3iq_39+p_xRk3rum2ek3nLLFbBDzMwggnKA@mail.gmail.com>
- <05ccc09f-ffea-71cd-4288-beed3020bd45@marcan.st>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <d33fffec-28bd-99b2-a8b1-cc83b628e4b3@canonical.com>
-Date:   Sun, 7 Mar 2021 12:34:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] brcmfmac: Add support for BCM43596 PCIe Wi-Fi
+Date:   Sun,  7 Mar 2021 12:35:45 +0100
+Message-Id: <20210307113550.7720-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <05ccc09f-ffea-71cd-4288-beed3020bd45@marcan.st>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/03/2021 17:29, Hector Martin wrote:
-> On 06/03/2021 01.20, Andy Shevchenko wrote:
->>> I am just splitting an
->>> existing function into two, where one takes the lock and the other does
->>> the work. Do you mean using a different locking function? I'm not
->>> entirely sure what you're suggesting.
->>
->> Yes, as a prerequisite
->>
->> spin_lock_irqsave -> spin_lock().
-> 
-> Krzysztof, is this something you want in this series? I was trying to 
-> avoid logic changes to the non-Apple paths.
+Add support for BCM43596 dual-band AC chip, found in
+SONY Xperia X Performance, XZ and XZs smartphones (and
+*possibly* other devices from other manufacturers).
+The chip doesn't require any special handling and seems to work
+just fine OOTB.
 
-I don't quite get the need for such change (the code will be still
-called in interrupt handler, right?), but assuming the "why?" is
-properly documented, it can be a separate patch here.
+PCIe IDs taken from: https://github.com/sonyxperiadev/kernel/commit/9e43fefbac8e43c3d7792e73ca52a052dd86d7e3.patch
 
-Best regards,
-Krzysztof
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c       | 2 ++
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c       | 4 ++++
+ drivers/net/wireless/broadcom/brcm80211/include/brcm_hw_ids.h | 4 ++++
+ 3 files changed, 10 insertions(+)
+
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
+index 45037decba40..38ca0517f3cf 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
+@@ -723,6 +723,7 @@ static u32 brcmf_chip_tcm_rambase(struct brcmf_chip_priv *ci)
+ 	case BRCM_CC_43666_CHIP_ID:
+ 		return 0x200000;
+ 	case BRCM_CC_4359_CHIP_ID:
++	case BRCM_CC_43596_CHIP_ID:
+ 		return (ci->pub.chiprev < 9) ? 0x180000 : 0x160000;
+ 	case BRCM_CC_4364_CHIP_ID:
+ 	case CY_CC_4373_CHIP_ID:
+@@ -1411,6 +1412,7 @@ bool brcmf_chip_sr_capable(struct brcmf_chip *pub)
+ 		reg = chip->ops->read32(chip->ctx, addr);
+ 		return (reg & CC_SR_CTL0_ENABLE_MASK) != 0;
+ 	case BRCM_CC_4359_CHIP_ID:
++	case BRCM_CC_43596_CHIP_ID:
+ 	case CY_CC_43012_CHIP_ID:
+ 		addr = CORE_CC_REG(pmu->base, retention_ctl);
+ 		reg = chip->ops->read32(chip->ctx, addr);
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+index ad79e3b7e74a..da604fa17f94 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+@@ -71,6 +71,7 @@ static const struct brcmf_firmware_mapping brcmf_pcie_fwnames[] = {
+ 	BRCMF_FW_ENTRY(BRCM_CC_43570_CHIP_ID, 0xFFFFFFFF, 43570),
+ 	BRCMF_FW_ENTRY(BRCM_CC_4358_CHIP_ID, 0xFFFFFFFF, 4358),
+ 	BRCMF_FW_ENTRY(BRCM_CC_4359_CHIP_ID, 0xFFFFFFFF, 4359),
++	BRCMF_FW_ENTRY(BRCM_CC_43596_CHIP_ID, 0xFFFFFFFF, 4359),
+ 	BRCMF_FW_ENTRY(BRCM_CC_4364_CHIP_ID, 0xFFFFFFFF, 4364),
+ 	BRCMF_FW_ENTRY(BRCM_CC_4365_CHIP_ID, 0x0000000F, 4365B),
+ 	BRCMF_FW_ENTRY(BRCM_CC_4365_CHIP_ID, 0xFFFFFFF0, 4365C),
+@@ -2107,6 +2108,9 @@ static const struct pci_device_id brcmf_pcie_devid_table[] = {
+ 	BRCMF_PCIE_DEVICE(BRCM_PCIE_43570_DEVICE_ID),
+ 	BRCMF_PCIE_DEVICE(BRCM_PCIE_4358_DEVICE_ID),
+ 	BRCMF_PCIE_DEVICE(BRCM_PCIE_4359_DEVICE_ID),
++	BRCMF_PCIE_DEVICE(BRCM_PCIE_43596_DEVICE_ID),
++	BRCMF_PCIE_DEVICE(BRCM_PCIE_43596_2G_DEVICE_ID),
++	BRCMF_PCIE_DEVICE(BRCM_PCIE_43596_5G_DEVICE_ID),
+ 	BRCMF_PCIE_DEVICE(BRCM_PCIE_43602_DEVICE_ID),
+ 	BRCMF_PCIE_DEVICE(BRCM_PCIE_43602_2G_DEVICE_ID),
+ 	BRCMF_PCIE_DEVICE(BRCM_PCIE_43602_5G_DEVICE_ID),
+diff --git a/drivers/net/wireless/broadcom/brcm80211/include/brcm_hw_ids.h b/drivers/net/wireless/broadcom/brcm80211/include/brcm_hw_ids.h
+index 00309b272a0e..03542c096e40 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/include/brcm_hw_ids.h
++++ b/drivers/net/wireless/broadcom/brcm80211/include/brcm_hw_ids.h
+@@ -43,6 +43,7 @@
+ #define BRCM_CC_43570_CHIP_ID		43570
+ #define BRCM_CC_4358_CHIP_ID		0x4358
+ #define BRCM_CC_4359_CHIP_ID		0x4359
++#define BRCM_CC_43596_CHIP_ID		43596
+ #define BRCM_CC_43602_CHIP_ID		43602
+ #define BRCM_CC_4364_CHIP_ID		0x4364
+ #define BRCM_CC_4365_CHIP_ID		0x4365
+@@ -72,6 +73,9 @@
+ #define BRCM_PCIE_43570_DEVICE_ID	0x43d9
+ #define BRCM_PCIE_4358_DEVICE_ID	0x43e9
+ #define BRCM_PCIE_4359_DEVICE_ID	0x43ef
++#define BRCM_PCIE_43596_DEVICE_ID	0x4415
++#define BRCM_PCIE_43596_2G_DEVICE_ID	0x4416
++#define BRCM_PCIE_43596_5G_DEVICE_ID	0x4417
+ #define BRCM_PCIE_43602_DEVICE_ID	0x43ba
+ #define BRCM_PCIE_43602_2G_DEVICE_ID	0x43bb
+ #define BRCM_PCIE_43602_5G_DEVICE_ID	0x43bc
+-- 
+2.30.1
+
