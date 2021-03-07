@@ -2,185 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CA0330307
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 17:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5921233030C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 17:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232544AbhCGQmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 11:42:32 -0500
-Received: from mga05.intel.com ([192.55.52.43]:54070 "EHLO mga05.intel.com"
+        id S232513AbhCGQqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 11:46:33 -0500
+Received: from mout.gmx.net ([212.227.17.22]:43785 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231314AbhCGQl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 11:41:58 -0500
-IronPort-SDR: 57Fwx3EjUly+XPxMdumj6zxsP5nRS3eHU53kp2hEim9uZTKw3tC7sgf4GGpRxPNEybSVnS26ZV
- thEN5FFpUW/w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="272934129"
-X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
-   d="scan'208";a="272934129"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 08:41:58 -0800
-IronPort-SDR: BRzGmaH8AyIY3fHpPcKkekgIjLSIDJucUZM2kQIMhbaRP3jm+2LjsGVhWJx5ORUKvqKJjnTDLb
- EbcHMyCk8qcA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
-   d="scan'208";a="437207600"
-Received: from lkp-server01.sh.intel.com (HELO 3e992a48ca98) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 07 Mar 2021 08:41:56 -0800
-Received: from kbuild by 3e992a48ca98 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lIwTc-0000XP-9l; Sun, 07 Mar 2021 16:41:56 +0000
-Date:   Mon, 08 Mar 2021 00:41:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 5dd4b5a92030f013e9c4f1739c65b742e471d854
-Message-ID: <6045022e.fxu0mza4CAN0Cfvk%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231314AbhCGQqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 11:46:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1615135535;
+        bh=m9XhPyfhUktKluj+d5az9WgQg1jKZwtAqzqW4H/daMA=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=YCYdzORzNOi6MnehCKw+A4Rp+5K1Try1iiZAU59Yrq0d+9iTHodgb7rOmrk83kLuO
+         CI/Xj3SE4qFPdTzelLlDZzHUychoXZAlqxRfkD/pv/kwQVYArNT7KBr+1G9p5ljoj3
+         g645m6Bo6TzYwhHEnzCG92Wt/kNHL7jq3vcT9K2g=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([83.52.229.153]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MORAU-1l7UUS3arG-00Psmb; Sun, 07
+ Mar 2021 17:45:35 +0100
+Date:   Sun, 7 Mar 2021 17:45:20 +0100
+From:   John Wood <john.wood@gmx.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     John Wood <john.wood@gmx.com>, Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: Re: [PATCH v5 7/8] Documentation: Add documentation for the Brute LSM
+Message-ID: <20210307164520.GA16296@ubuntu>
+References: <20210227153013.6747-1-john.wood@gmx.com>
+ <20210227153013.6747-8-john.wood@gmx.com>
+ <878s78dnrm.fsf@linux.intel.com>
+ <20210302183032.GA3049@ubuntu>
+ <20210307151920.GR472138@tassilo.jf.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210307151920.GR472138@tassilo.jf.intel.com>
+X-Provags-ID: V03:K1:Bpg8ecpXFdvHz2NTQ76aeUXnn3ebPIJR0iLA7tatogSidBfsxSV
+ 4SgSun31Mi/jnuNe7K1dWzD4qB3YzuQ7kXm9bcDBLxKE6V+JH2hFIflBXckaihD+V/HQLzb
+ k6DMrnhRmpLRKPGHsTmOhtSCqMRNLvxKZPNWH9iZd+LBJcNzkmnB3C9vIN8wizSz4oP2fDN
+ W6QzSlRLxi8hQXHomYE8Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:S4iu+TLq6+k=:cn7zr2cbd64QhgaHruVpDi
+ 92EY7RwkplFbzCm8vX7Qkw13ckEDjIumAzNCXHKM+NHSF9H/lkg5/bc8nH0oGi2+u1bElldOz
+ +H4+XyCaTUqW+xn4uwI+HV4NrV/AM0AK1+E45BCtoabD5YHADGLg/R8xcGbqb82twuDOpWv0q
+ egHw7y8F1A1xiy0r+TsSb5C9EJFgBIZ+CP3b/yP5x1FxgM1RRePGLbPPTQH52kaBs9/eOoCSC
+ AeqrU+8mIKBUiNY4SYMWXVebNnW6d/e9N3i8PP/aEzCPSG8htmRU/7t0AolMFZ3X0pvJ4GCkg
+ M3PSFiSGBAa7nYQy6OUxYDKwI4KnKvRf1nofEYaOFQu/oWzuqm85bNoQshs6eC1uhmHP76ycc
+ VglZ+xK83QuDJ7jflF8jYkDDHaP9e/XGI91gkIOSpvLgvN8wLdn25M/obdui40EHFkRX4pr68
+ Sbf2oUl4+Tc4+kv9EV8fDBa4ExEXHiPf85LjSb/Um/UcyniZbSzT6QeOTUZ/sLAW2xkH1incy
+ 4vz8N67HdHaoz6VIi/FPGDCzdskzGaT4aUZdioG89MiqQ0Nj0tMRpYH+/L8lRSQnvN3DCdt9/
+ eJKj5JTmlXkP6rIZEhJ9THJTKcbFXpr8tt0fJfnF/Vfv5z6aU6YbAJ4nLNubFEoIc4Ptfy/7Y
+ kPbaQx6crwg0GUCHTYb46STMdyrf7fP6XoRfpcsS8GXAfsQnvYxWe3lTs6OvyA2LRls5bvG2D
+ TcpGKAeHXssIPxO0k9sjLhVh/0ErY6J75suV0l5hK9t1KCoE9XBPAlBPkgNSJ+6tNYDdMRPkS
+ rTdIAllPsN80q3ZmuVvknlaykBQgCYx29gMjr9YAyTXsdSRqe8SD63beZhzLCNmfdW/dGnVF4
+ +8YXLR6XHGIh4cqlQNAA==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 5dd4b5a92030f013e9c4f1739c65b742e471d854  torture: Add prototype kvm-remote.sh script
+On Sun, Mar 07, 2021 at 07:19:20AM -0800, Andi Kleen wrote:
+> Sorry for the late answer. I somehow missed your email earlier.
+>
+> > As a mitigation method, all the offending tasks involved in the attack=
+ are
+> > killed. Or in other words, all the tasks that share the same statistic=
+s
+> > (statistics showing a fast crash rate) are killed.
+>
+> So systemd will just restart the network daemon and then the attack work=
+s
+> again?
 
-elapsed time: 720m
+Sorry, but I think my last explanation is not clear enough. If the network
+daemon crashes repeatedly in a short period of time it will trigger a brut=
+e
+force attack through the fork system call. Then this daemon and all the fo=
+rk
+processes created from it will be killed. If the systemd restart the netwo=
+rk
+daemon and it will crash again, then the systemd will be killed. I think t=
+his
+way the attack is fully mitigated.
 
-configs tested: 123
-configs skipped: 2
+> Or if it's a interactive login you log in again.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+First the login will be killed (if it fails with a fatal signal) and if it=
+ is
+restarted, the process that exec() it again will be killed. In this case I=
+ think
+that the threat is also completely mitigated.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                        clps711x_defconfig
-arc                              allyesconfig
-parisc                              defconfig
-powerpc                    klondike_defconfig
-sh                            titan_defconfig
-xtensa                    smp_lx200_defconfig
-sh                           se7705_defconfig
-arc                          axs101_defconfig
-powerpc                    mvme5100_defconfig
-h8300                    h8300h-sim_defconfig
-mips                            e55_defconfig
-arm                        multi_v7_defconfig
-powerpc                    ge_imp3a_defconfig
-arm                         hackkit_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arc                         haps_hs_defconfig
-powerpc                      arches_defconfig
-sh                          rsk7264_defconfig
-arm                         bcm2835_defconfig
-mips                     decstation_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                          pcm027_defconfig
-arm                          lpd270_defconfig
-riscv                    nommu_k210_defconfig
-sparc                            allyesconfig
-mips                        maltaup_defconfig
-sh                        sh7785lcr_defconfig
-sh                          r7780mp_defconfig
-parisc                generic-64bit_defconfig
-powerpc                      bamboo_defconfig
-arc                           tb10x_defconfig
-ia64                                defconfig
-sparc                       sparc64_defconfig
-mips                           ci20_defconfig
-s390                       zfcpdump_defconfig
-mips                     cu1000-neo_defconfig
-arm                        keystone_defconfig
-nios2                            alldefconfig
-sh                   sh7724_generic_defconfig
-xtensa                    xip_kc705_defconfig
-m68k                            q40_defconfig
-mips                           rs90_defconfig
-arm                          pxa3xx_defconfig
-powerpc                      pasemi_defconfig
-arc                      axs103_smp_defconfig
-mips                  decstation_64_defconfig
-powerpc                     tqm8560_defconfig
-microblaze                          defconfig
-mips                         tb0219_defconfig
-powerpc                     redwood_defconfig
-m68k                          sun3x_defconfig
-sh                        apsh4ad0a_defconfig
-mips                       rbtx49xx_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210307
-i386                 randconfig-a003-20210307
-i386                 randconfig-a002-20210307
-i386                 randconfig-a004-20210307
-i386                 randconfig-a006-20210307
-i386                 randconfig-a001-20210307
-x86_64               randconfig-a013-20210307
-x86_64               randconfig-a016-20210307
-x86_64               randconfig-a015-20210307
-x86_64               randconfig-a014-20210307
-x86_64               randconfig-a012-20210307
-x86_64               randconfig-a011-20210307
-i386                 randconfig-a016-20210307
-i386                 randconfig-a012-20210307
-i386                 randconfig-a013-20210307
-i386                 randconfig-a014-20210307
-i386                 randconfig-a011-20210307
-i386                 randconfig-a015-20210307
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+> I think it might be useful even with these limitations, but it would
+> be good to spell out the limitations of the method more clearly.
+>
+> I suspect to be useful it'll likely need some user space configuration
+> changes too.
 
-clang tested configs:
-x86_64               randconfig-a006-20210307
-x86_64               randconfig-a001-20210307
-x86_64               randconfig-a004-20210307
-x86_64               randconfig-a005-20210307
-x86_64               randconfig-a002-20210307
-x86_64               randconfig-a003-20210307
+In the v2 version there were some sysctl attributes to fine tuning the
+detection. The following two paragraph are extracted from the documentatio=
+n
+patch of this version:
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+To customize the detection's sensibility there are two new sysctl attribut=
+es
+that allow to set the last crashes timestamps list size and the applicatio=
+n
+crash period threshold (in milliseconds). Both are accessible through the
+following files respectively.
+
+/proc/sys/kernel/brute/timestamps_list_size
+/proc/sys/kernel/brute/crash_period_threshold
+
+However, Kees Cook suggested that if we narrow the attack detection focusi=
+ng in
+the crossing of privilege boundaries and signals delivered only by the ker=
+nel,
+it seems not necessary the customization of this feature by the user. I ag=
+gree
+with that.
+
+>
+> -Andi
+
+I have sent a v6 version with the documentation improved.
+
+Thanks for your comments,
+John Wood
