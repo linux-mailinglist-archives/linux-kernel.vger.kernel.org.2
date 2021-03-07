@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B59330233
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 15:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0FE330236
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 15:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbhCGOuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 09:50:13 -0500
-Received: from mga03.intel.com ([134.134.136.65]:18833 "EHLO mga03.intel.com"
+        id S231533AbhCGOuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 09:50:15 -0500
+Received: from mga11.intel.com ([192.55.52.93]:56746 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231256AbhCGOtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231143AbhCGOtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 7 Mar 2021 09:49:55 -0500
-IronPort-SDR: 44lMZA6Wxg0+6yWFzm+oyuoEsmIqGCJdhUSnkfs4iDpElF/DfOcmEybtKuKaiHEl23pulsReuP
- YtejF9SttS6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="187958195"
+IronPort-SDR: pboOWs2BM8sdiKvdK/1baHNwpxkJ+x1DOvgvSBdiowcphVzNrZQFHa7pOIIaem65TLSDKW9PhA
+ ZK4EVoZGX4mw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="184532815"
 X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
-   d="scan'208";a="187958195"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 06:49:55 -0800
-IronPort-SDR: Xna3jLeLq5mHqjueaMqnkXG/ngthUEMjWlzDszLnoCYaz5CuODXnOcuzqIP1r+k6g0A6IFsR5M
- 2v/kVytPQGhA==
+   d="scan'208";a="184532815"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 06:49:55 -0800
+IronPort-SDR: uaJGvrNo6tmVGPFL0CY0yLuy8s5I9SbQiFTrxCVABngag8f/zf7L5Zu5Zfaj1krXkLHWtvDCrM
+ xsvPUHzPvtqw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
-   d="scan'208";a="430054325"
+   d="scan'208";a="446849808"
 Received: from lkp-server01.sh.intel.com (HELO 3e992a48ca98) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 07 Mar 2021 06:49:53 -0800
+  by orsmga001.jf.intel.com with ESMTP; 07 Mar 2021 06:49:53 -0800
 Received: from kbuild by 3e992a48ca98 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lIujB-0000UV-5V; Sun, 07 Mar 2021 14:49:53 +0000
-Date:   Sun, 07 Mar 2021 22:49:22 +0800
+        id 1lIujB-0000UM-2q; Sun, 07 Mar 2021 14:49:53 +0000
+Date:   Sun, 07 Mar 2021 22:49:24 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/core] BUILD SUCCESS
- bdb1050ee1faaec1e78c15de8b1959176f26c655
-Message-ID: <6044e7f2.eCuM/Rx/bamc6BwE%lkp@intel.com>
+Subject: [tip:tip] BUILD SUCCESS 0e16f466004d7f04296b9676a712a32a12367d1f
+Message-ID: <6044e7f4.p9v4dID6a4xrTg/x%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +42,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
-branch HEAD: bdb1050ee1faaec1e78c15de8b1959176f26c655  ath10k: Detect conf_mutex held ath10k_drain_tx() calls
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tip
+branch HEAD: 0e16f466004d7f04296b9676a712a32a12367d1f  tip: Remove stale branches
 
-elapsed time: 743m
+elapsed time: 742m
 
-configs tested: 135
+configs tested: 134
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -70,11 +69,16 @@ parisc                              defconfig
 powerpc                    klondike_defconfig
 sh                            titan_defconfig
 xtensa                    smp_lx200_defconfig
+sh                           se7705_defconfig
+arc                          axs101_defconfig
+powerpc                    mvme5100_defconfig
+h8300                    h8300h-sim_defconfig
+mips                            e55_defconfig
+arm                        multi_v7_defconfig
 arm                       aspeed_g4_defconfig
 powerpc                      pasemi_defconfig
 mips                      malta_kvm_defconfig
 arm                         lubbock_defconfig
-mips                            e55_defconfig
 powerpc                      ppc44x_defconfig
 powerpc                    ge_imp3a_defconfig
 arm                         hackkit_defconfig
@@ -91,11 +95,6 @@ riscv                    nommu_k210_defconfig
 sparc                            allyesconfig
 mips                        maltaup_defconfig
 sh                        sh7785lcr_defconfig
-arc                          axs101_defconfig
-powerpc                  mpc866_ads_defconfig
-mips                        workpad_defconfig
-powerpc                 mpc8313_rdb_defconfig
-mips                      loongson3_defconfig
 sh                          r7780mp_defconfig
 parisc                generic-64bit_defconfig
 powerpc                      bamboo_defconfig
@@ -106,7 +105,6 @@ mips                           ci20_defconfig
 s390                       zfcpdump_defconfig
 mips                     cu1000-neo_defconfig
 arm                        keystone_defconfig
-sh                           se7705_defconfig
 nios2                            alldefconfig
 sh                   sh7724_generic_defconfig
 xtensa                    xip_kc705_defconfig
