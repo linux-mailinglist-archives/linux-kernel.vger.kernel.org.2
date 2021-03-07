@@ -2,77 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91DFF33044C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 20:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3205A330459
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 20:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhCGTeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 14:34:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39424 "EHLO
+        id S232723AbhCGTlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 14:41:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbhCGTdn (ORCPT
+        with ESMTP id S231274AbhCGTkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 14:33:43 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9105C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 11:33:43 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id y131so5876424oia.8
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 11:33:43 -0800 (PST)
+        Sun, 7 Mar 2021 14:40:47 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2000C06174A;
+        Sun,  7 Mar 2021 11:40:42 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id t25so5017516pga.2;
+        Sun, 07 Mar 2021 11:40:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=nRPME6RRQ9b7ICvhUjbg9BTYJvs9wblgEZFEby9YZYU=;
-        b=g6y7vgTxAienL7uzAI1HClk/W4IDNoQek7WAwsp8MWSyb1r9qsW+psWcR6XMCtO4Sz
-         1yGT7S6Zz/JjsAVMfiiLTfvmwprGp9M3xienMROaAWfAcXowT/p72UO/hGvxUfyDxfgN
-         WMi5puAQsij6LxsFZHI7vC51ZBIhoM4CCfmEkoTMEvYLGIVwyc4uF5R3rrTRKY6CYlCD
-         HsrTTs+E7GAD3lmMghn95VUuuNIAGEd0B8jA8x49QdXpO9Ivu/8d6VKTpR471ZWBkwfN
-         UFGwM+abuW6aAWArfl1BJ//n6VYlOJFCadFWW5JzC3rwKsfNqKXG30+VkyfiZ0Umg57S
-         k+Ig==
+        bh=Bnz5/dN9339RrRu3KShS6i5PlP1+9kZIaFyxkuBBjkw=;
+        b=OKQDl/rd3jQpKdyMnlFZX94JTf3btMFgEma6CEAi81UmMgYa1PQFvXWw+W99wBpfxf
+         9svETjt4h0dCHWpG0fsIrHucaSQ0upRRpQkYobe9uNcyKRIOCOyyxK3FpK+jcSD7i43F
+         6iTjZQ3Ld2juqcm2yaEEs9OrZhY4rxFF2Tasuu9+YJl9Z0oAMGhQW2a0rcxiBuMRsPXK
+         VsLYVZJIjSCcM0U3/pLFr3BVvBUxE4iTxpezJbRo4oVeH1cmtr8ItgG00EFuPdE2Tbyw
+         JNaztQoJdjfz7QvUfU9IjsAp1g2DKRkZMFbEzuFL6/HgvBdKyapS8ITKlWkEGs8iJf6U
+         6KhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=nRPME6RRQ9b7ICvhUjbg9BTYJvs9wblgEZFEby9YZYU=;
-        b=K7e9juovWqXNuGf0wXuf+v7yzeccL392XsuvCznWY8rbIfj+UTs0mzYdGnV3J1ILFv
-         TmN3UAp8A9rdm+eBacPmv0gU63nPOtai/gUv1H66FEL6ucRMoAPpCcyKjZWFKBKcvqq3
-         CDntgnTMsfBVPJ0A6I1Vh15wtlhsiQJ3fkj4Jp4Kn2MhGWuUC1uRZ+DS6AdYAG5uMtEq
-         6QJUpcu5zP0mTpwJEjU7uPqs+QROZVomqw9oiL3G61Jdagk7+R//1CVxXWnuKJ6Tfvte
-         RQTjupYf/ZbR4V5RoFExMPSllO8Xk9xncOSQHkMWQNysS599cDUKsAsdQP6zHBPVXyA9
-         7Jqw==
-X-Gm-Message-State: AOAM533F9WCwVuFspb5Mbp689k27mjBAh5E/zJsXOdqopypB3Dz0BJlu
-        ixcVQkMd0d5zimASabmuT2YNwTBR2OitJjNTC5Q=
-X-Google-Smtp-Source: ABdhPJwB1hhKerZ6l68nRuNgLXxUV5t1hiOlI4uC+4Nys8UY8m/8uvNwPAfWUB8NYZu6kKZxlErdO7B+cwmpwI3wYsI=
-X-Received: by 2002:aca:f50d:: with SMTP id t13mr14551955oih.89.1615145622760;
- Sun, 07 Mar 2021 11:33:42 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bnz5/dN9339RrRu3KShS6i5PlP1+9kZIaFyxkuBBjkw=;
+        b=WIt23HN5WFpAjFbZkuAPusZpNznEaRH3etnkcgAog4YLMm7c1o+VuJOXcw5UMbrQ2V
+         ExZGlL1QJKJssE4NGn4eupu6gXFmAN7WBzSxnY/nwhE6H6FQ1D75m3z2CuNWbimvR8ZI
+         QMG0lGeSYHwZnjF59vBM7KCdCpovFwZC4uRL2XHsF/J5mQrTc1DMd2JAE6pVOmLT1j1g
+         lV2/oa8B4Mdkrc36dNiO9KNugAh1K1+Bwc4BrbfAEJJ+hsZrXZ+xbsjZXTownKldlUhk
+         SDEZvuY6XR2VMNY8KhcTDDY9heyONzy+bREf5oI5+f53Sa+MYwiQyCg86x5yNp/Pfoy6
+         bUhQ==
+X-Gm-Message-State: AOAM530Kgyy/UcmAymCOtnfhxw/huqFN68Y755TWQfTdrf/SjAu4ndN8
+        EfMiGpSUu4ZSdM37eoW070I=
+X-Google-Smtp-Source: ABdhPJzlgEx9VvSFRTnYchQfsNnVN79V8qoZ3yUHMgGknD5BN4oTG2YOABEz1g3WfpbnWHtlg8FtTQ==
+X-Received: by 2002:aa7:92cb:0:b029:1f1:542f:2b2b with SMTP id k11-20020aa792cb0000b02901f1542f2b2bmr12294563pfa.31.1615146042241;
+        Sun, 07 Mar 2021 11:40:42 -0800 (PST)
+Received: from z640-arch.lan ([2602:3f:e6a6:5d00::678])
+        by smtp.gmail.com with ESMTPSA id t22sm8629087pjo.45.2021.03.07.11.40.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 11:40:41 -0800 (PST)
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Mike Rapoport <rppt@kernel.org>,
+        Youling Tang <tangyouling@loongson.cn>
+Cc:     Tobias Wolf <dev-NTEO@vplace.de>,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Marcin Nowakowski <marcin.nowakowski@mips.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH] MIPS: fix memory reservation for non-usermem setups
+Date:   Sun,  7 Mar 2021 11:40:30 -0800
+Message-Id: <20210307194030.8007-1-ilya.lipnitskiy@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Received: by 2002:a4a:a5c6:0:0:0:0:0 with HTTP; Sun, 7 Mar 2021 11:33:42 -0800 (PST)
-Reply-To: georgemike7031@gmail.com
-From:   george mike <fiacregnansa@gmail.com>
-Date:   Sun, 7 Mar 2021 20:33:42 +0100
-Message-ID: <CANUG11843tQZzifzCU6sU+ROzGj5jdCT+nuhFhejs8=ouvonaw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vHallo
+From: Tobias Wolf <dev-NTEO@vplace.de>
 
-Ich hei=C3=9Fe George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte=
- dir anbieten
-engster Verwandter meines Klienten. Sie erben die Gesamtsumme (8,5
-Millionen US-Dollar).
-Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
+Commit 67a3ba25aa95 ("MIPS: Fix incorrect mem=X@Y handling") introduced a new
+issue for rt288x where "PHYS_OFFSET" is 0x0 but the calculated "ramstart" is
+not. As the prerequisite of custom memory map has been removed, this results
+in the full memory range of 0x0 - 0x8000000 to be marked as reserved for this
+platform.
 
-Mein Klient ist ein Staatsangeh=C3=B6riger Ihres Landes, der mit seiner
-Frau bei einem Autounfall ums Leben gekommen ist
-und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, w=C3=A4hrend
-50% davon berechtigt sind
-Sein f=C3=BCr dich.
-F=C3=BCr weitere Informationen wenden Sie sich bitte an meine private
-E-Mail-Adresse: georgemike7031@gmail.com
+This patch adds the originally intended prerequisite again.
 
-Vielen Dank im Voraus,
-Herr George Mike,
+This patch has been present in OpenWrt tree for over 2 years:
+https://git.openwrt.org/?p=openwrt/openwrt.git;a=commit;h=93bfafb8dc209f153022796d9e747149e66cc29e
+
+Fixes: 67a3ba25aa95 ("MIPS: Fix incorrect mem=X@Y handling")
+Signed-off-by: Tobias Wolf <dev-NTEO@vplace.de>
+[Reword commit message]
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc: Marcin Nowakowski <marcin.nowakowski@mips.com>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+---
+ arch/mips/kernel/setup.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 279be0153f8b..97e3a0db651b 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -251,6 +251,8 @@ static unsigned long __init init_initrd(void)
+  * Initialize the bootmem allocator. It also setup initrd related data
+  * if needed.
+  */
++static int usermem __initdata;
++
+ #if defined(CONFIG_SGI_IP27) || (defined(CONFIG_CPU_LOONGSON64) && defined(CONFIG_NUMA))
+ 
+ static void __init bootmem_init(void)
+@@ -290,7 +292,7 @@ static void __init bootmem_init(void)
+ 	/*
+ 	 * Reserve any memory between the start of RAM and PHYS_OFFSET
+ 	 */
+-	if (ramstart > PHYS_OFFSET)
++	if (usermem && ramstart > PHYS_OFFSET)
+ 		memblock_reserve(PHYS_OFFSET, ramstart - PHYS_OFFSET);
+ 
+ 	if (PFN_UP(ramstart) > ARCH_PFN_OFFSET) {
+@@ -338,8 +340,6 @@ static void __init bootmem_init(void)
+ 
+ #endif	/* CONFIG_SGI_IP27 */
+ 
+-static int usermem __initdata;
+-
+ static int __init early_parse_mem(char *p)
+ {
+ 	phys_addr_t start, size;
+-- 
+2.30.1
+
