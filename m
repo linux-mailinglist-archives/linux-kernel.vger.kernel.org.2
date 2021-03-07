@@ -2,260 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2919A32FE6D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 03:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 604B632FE6F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 03:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhCGCQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 21:16:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbhCGCQT (ORCPT
+        id S229950AbhCGCTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 21:19:49 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:51792 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230005AbhCGCTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 21:16:19 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEB9C06175F
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 18:16:18 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id d13so9269807edp.4
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 18:16:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2wLUmejhcVRcqc+rAjZMStnlGz+fratQopF1EIC76k4=;
-        b=R9cms9de9UeuR0CiH0ytJw9WpeNwHpeOjmccfGr0e06l0DDz6dJOZAGtCHmr7Pfg+G
-         GrpZfbcrKP3HGB/7tWn/2+xD1LUlaGD9QBbKT1V71rugJSph48F/JqlDG5SHTFGuZQiE
-         6wJufX4XCIukc1YKxAJkJLTLfyxPFAmKPtPPWBuSLtO6FN5R+uCSk3BJwoiU/W9wxq56
-         03ZHBsEqAVrXYCifoEWDctVJ/J29S9wtiTfNCBj/2eErODmRC1XdrPo+FJyGvyElghyJ
-         D8e31WqCIaISYQ0IKvhqHckuLL+ALeSEruUlyaq8/OqNoFEvJ1MEXyeMsP0dJzkxJKoq
-         q5yw==
+        Sat, 6 Mar 2021 21:19:18 -0500
+Received: by mail-io1-f70.google.com with SMTP id i19so4851569ioh.18
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 18:19:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2wLUmejhcVRcqc+rAjZMStnlGz+fratQopF1EIC76k4=;
-        b=prVfhaUOLfwO1wLASnZ8VO2ZbFF2Q46HSYrpj358cdpfIynR/NBQX7XP8eylKWOPgF
-         5yRWI8mObP0hheWyu6TiRChoso43gY2zykMiDE2Vn2zYNpjC5HzpkQF7WFtVxXpf8LN7
-         BFYNv1HSEvdnyUx8ZIzRkjjfzcudUezorZ71SdGcbZnhmiykAHkn2Ldgd5dNjj6Ce7Sg
-         ljSngcB71RcFQyoSFJVUDC6bhFvrl2pj7JAGH9UrtMvF48Uzsn5+GHjI7XNONMGfxF3J
-         ALlnhQCmfZnq1f9DhcOSHKqYyuP5KaFtP/rpopqFTYaBV/7BhhOXT5SvD7rvOn28BZsd
-         3qdg==
-X-Gm-Message-State: AOAM531yb+UG5q3dcfX4gvmPK+CXfMZAMC5j9sVNiNO/xU1bYxqQWzYs
-        MAbt7qY4nYr7Bcn9a9ZJYAK+1eUIPFtSsOIkICjbrCbVj6EaJuRN
-X-Google-Smtp-Source: ABdhPJwAqKweDEd+pxpKfoQCzGiTgN/Z0cGTtZjqwUxAVO0H88pV6opbajSQ5mlvsTykHNIysMu4x1bsrAbclHmDses=
-X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr2572301edd.78.1615083377192;
- Sat, 06 Mar 2021 18:16:17 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=E4jE1c0vu05pJVwh2PUr/mLeZRPgNa1jNXmZ5KuT2/o=;
+        b=j+9dXSDy6oInkf9GahyLjf70dnkKNeAK8NYWRMYn3+ADol9z70r1PKUMasN9gt6JJh
+         mXJF47t6t67LGWoEzbKoeQdfJvmsMw1ptpu8/7bseAjd7vC8p0bqz/QX0YDX+2cEb5Ev
+         YF9yAL5ZwEmBhkDUWXmnLDdMKbM+SRH4+en/4i+LGTqaYmZX09PPrGhTxO7JX+tUSa8w
+         zcndaPDyzFSDiUWjlxpkxlrRQVAJD/d1vLPPrxQ5VLPHtRKsD8unr6maQTO++7Igtbta
+         Cpf+qDIzG9xBZpW3hRB3Eu+DrjwTlF9BP94FAUEd/mWPoO+Wsj8wMvX7IDxKfACnVac+
+         bI8g==
+X-Gm-Message-State: AOAM531Duds+hl8DaraInc/6Q0shTbR13bQZHhdSE8UsNVCE6WqrrT93
+        I5yw2z93LmjLaJxasCCfh1k/nRBEzqqcznsXIGV2zs3HQZ9E
+X-Google-Smtp-Source: ABdhPJwZqqJpz/Se5pan5wMIeAGD4jKzPHQyu/7FBcYZyzdPR6YGNciGYFMlzlaTHqR4B916tfv+sn7/BBVFIC6eLpjuAW2SD3eE
 MIME-Version: 1.0
-References: <20210305120903.166929741@linuxfoundation.org>
-In-Reply-To: <20210305120903.166929741@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sun, 7 Mar 2021 07:46:06 +0530
-Message-ID: <CA+G9fYvu8RgxGFwr3J4W5NjZLkukYh1SM6-_+2-1dot13Y2s6w@mail.gmail.com>
-Subject: Re: [PATCH 5.11 000/104] 5.11.4-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
+X-Received: by 2002:a05:6602:80d:: with SMTP id z13mr13225336iow.17.1615083557615;
+ Sat, 06 Mar 2021 18:19:17 -0800 (PST)
+Date:   Sat, 06 Mar 2021 18:19:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bc002505bce8f18b@google.com>
+Subject: [syzbot] general protection fault in klist_iter_exit
+From:   syzbot <syzbot+e690c969b19e84332c36@syzkaller.appspotmail.com>
+To:     bodefang@126.com, davem@davemloft.net, geliangtang@gmail.com,
+        kuba@kernel.org, laniel_francis@privacyrequired.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Mar 2021 at 17:55, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.11.4 release.
-> There are 104 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.11.4-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hello,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+syzbot found the following issue on:
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+HEAD commit:    d310ec03 Merge tag 'perf-core-2021-02-17' of git://git.ker..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1350c796d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2b8307379601586a
+dashboard link: https://syzkaller.appspot.com/bug?extid=e690c969b19e84332c36
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1480f5b6d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e826dad00000
 
-NOTE:
-LTP pty test case hangup01 is getting PASS on this version.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e690c969b19e84332c36@syzkaller.appspotmail.com
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.11.4-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.11.y
-git commit: f598f183ed0a259f541fe8479bbadcc20c89c7a9
-git describe: v5.11.3-105-gf598f183ed0a
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11=
-.y/build/v5.11.3-105-gf598f183ed0a
-
-No regressions (compared to build v5.11.3)
-
-
-fixes (compared to build 5.11.3)
-------------------
-  ltp-pty-tests:
-    * hangup01
+general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+CPU: 0 PID: 3882 Comm: kworker/0:3 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events netlink_sock_destruct_work
+RIP: 0010:klist_iter_exit+0x21/0x80 lib/klist.c:313
+Code: 66 0f 1f 84 00 00 00 00 00 41 54 55 53 48 89 fb e8 24 30 98 fd 48 8d 6b 08 48 b8 00 00 00 00 00 fc ff df 48 89 ea 48 c1 ea 03 <80> 3c 02 00 75 40 4c 8b 63 08 4d 85 e4 74 2e e8 fb 2f 98 fd 31 f6
+RSP: 0018:ffffc9000312fbf8 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: ffffffff83daa98c RDI: 0000000000000000
+RBP: 0000000000000008 R08: 0000000000000000 R09: ffffffff8d6fc867
+R10: fffffbfff1adf90c R11: 1ffffffff1ede8aa R12: ffff888143cb7540
+R13: 0000000000000000 R14: ffff88801bce1520 R15: ffff8880b9c34980
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2a3562f1f0 CR3: 0000000017103000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ nfc_device_iter_exit net/nfc/nfc.h:121 [inline]
+ nfc_genl_dump_devices_done+0x31/0x50 net/nfc/netlink.c:639
+ genl_lock_done+0x8d/0x100 net/netlink/genetlink.c:636
+ netlink_sock_destruct+0x96/0x2b0 net/netlink/af_netlink.c:398
+ __sk_destruct+0x4b/0x900 net/core/sock.c:1795
+ sk_destruct+0xbd/0xe0 net/core/sock.c:1839
+ __sk_free+0xef/0x3d0 net/core/sock.c:1850
+ sk_free+0x78/0xa0 net/core/sock.c:1861
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
 
-Ran 45135 total tests in the following environments and test suites.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-64k_page_size
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-bpf
-* kselftest-intel_pstate
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* perf
-* v4l2-compliance
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* kselftest-android
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lkdtm
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* ltp-controllers-tests
-* ltp-open-posix-tests
-* ltp-sched-tests
-* kvm-unit-tests
-* fwts
-* kunit
-* rcutorture
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
