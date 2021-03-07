@@ -2,158 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B035B32FE51
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 02:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BC632FE55
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 02:33:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhCGBVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 20:21:41 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51248 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229853AbhCGBVU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 20:21:20 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12712fQF190420;
-        Sat, 6 Mar 2021 20:21:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=G5mSRo0y5jOHQ4SXS4quhgDX4tam3PZzn1nNJxhlcSo=;
- b=S08sys6rivGCNZFAvih1RzaTteVf8UsXNCivpW3FcxpOc10CQNu2D7vYhAY21kEfqzkp
- oDFfqzmNT0mfDgka+RTr0Jigvu2CwFWpUBoQBwVuQ+pOqZXJ7ZcnX2h5YmMsgDZE4Pk1
- K+u1W0AAqiggRgMn3gntgGnxykZn7isBhhtxhUEDO6z3N3k6cf6OAspwKITGdw0nA8e8
- Dr3UOf+goLBCMksm/8MGUj6jmzWvcVmL5JkgOtw3O8qrJjdEMMKMT3X0erroY1qRCj3E
- AHgtIyZKY4x+cPpwU08hi3j45fa7mQ5yLDxdXSqPU6UNhZBxIytaJMFTW0nSpI9dM2Fa vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 374gk549yb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 06 Mar 2021 20:21:04 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12712gOL190496;
-        Sat, 6 Mar 2021 20:21:04 -0500
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 374gk549y6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 06 Mar 2021 20:21:04 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1271Gih8005996;
-        Sun, 7 Mar 2021 01:21:03 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma02dal.us.ibm.com with ESMTP id 3741c8pjg3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 07 Mar 2021 01:21:03 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1271L1JN38535614
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 7 Mar 2021 01:21:02 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E28AD136055;
-        Sun,  7 Mar 2021 01:21:01 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DFDD5136053;
-        Sun,  7 Mar 2021 01:21:00 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Sun,  7 Mar 2021 01:21:00 +0000 (GMT)
-Subject: Re: [PATCH v10 3/9] crypto: Add math to support fast NIST P384
-To:     Vitaly Chikunov <vt@altlinux.org>
-Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, herbert@gondor.apana.org.au,
-        dhowells@redhat.com, zohar@linux.ibm.com,
-        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Saulo Alessandre <saulo.alessandre@tse.jus.br>
-References: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
- <20210305005203.3547587-4-stefanb@linux.vnet.ibm.com>
- <20210306192553.lxy5w262g2vs2hvv@altlinux.org>
- <9ac456d7-a5e1-9e42-5d34-7dc1c70082e0@linux.ibm.com>
- <20210307000310.ytes6la73x5bkori@altlinux.org>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <340a3176-05a2-6a4a-7c19-6c2aa2667083@linux.ibm.com>
-Date:   Sat, 6 Mar 2021 20:21:00 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S230047AbhCGBaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 20:30:08 -0500
+Received: from mga03.intel.com ([134.134.136.65]:15735 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229853AbhCGB34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 20:29:56 -0500
+IronPort-SDR: EmCywJxNHHi3GyJ/oX42h32dFqp9p8e2ypKSgfYaHxxNdrafhiNE4K7pAkNVdir984kNERMWOY
+ v65HN8Jz+DKg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9915"; a="187905001"
+X-IronPort-AV: E=Sophos;i="5.81,229,1610438400"; 
+   d="scan'208";a="187905001"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2021 17:29:56 -0800
+IronPort-SDR: kjfkKp/zoz/cApiLCsgiS7Jb+CRh0QbFdqzzvyC94W/NnthsnUr1kGdScZapLqmG3LVqNoU3TJ
+ C9ws8YY2xpAA==
+X-IronPort-AV: E=Sophos;i="5.81,229,1610438400"; 
+   d="scan'208";a="446713628"
+Received: from mcohen2-mobl1.amr.corp.intel.com (HELO [10.209.169.118]) ([10.209.169.118])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2021 17:29:55 -0800
+Subject: Re: [RFC][PATCH 1/2] x86: remove duplicate TSC DEADLINE MSR
+ definitions
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, peterz@infradead.org
+References: <20200305174706.0D6B8EE4@viggo.jf.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <20863084-52ec-0e5f-e15e-5beadee5f259@intel.com>
+Date:   Sat, 6 Mar 2021 17:29:55 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210307000310.ytes6la73x5bkori@altlinux.org>
-Content-Type: text/plain; charset=koi8-r; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200305174706.0D6B8EE4@viggo.jf.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-06_08:2021-03-03,2021-03-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015
- impostorscore=0 priorityscore=1501 adultscore=0 bulkscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103070004
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/6/21 7:03 PM, Vitaly Chikunov wrote:
-> Stefan,
->
-> On Sat, Mar 06, 2021 at 06:29:18PM -0500, Stefan Berger wrote:
->> On 3/6/21 2:25 PM, Vitaly Chikunov wrote:
->>> On Thu, Mar 04, 2021 at 07:51:57PM -0500, Stefan Berger wrote:
->>>> From: Saulo Alessandre <saulo.alessandre@tse.jus.br>
->>>>
->>>> * crypto/ecc.c
->>>>     - add vli_mmod_fast_384
->>>>     - change some routines to pass ecc_curve forward until vli_mmod_fast
->>>>
->>>> * crypto/ecc.h
->>>>     - add ECC_CURVE_NIST_P384_DIGITS
->>>>     - change ECC_MAX_DIGITS to P384 size
->>>>
->>>> Signed-off-by: Saulo Alessandre <saulo.alessandre@tse.jus.br>
->>>> Tested-by: Stefan Berger <stefanb@linux.ibm.com>
->>>> ---
->>>>    crypto/ecc.c | 266 +++++++++++++++++++++++++++++++++++++--------------
->>>>    crypto/ecc.h |   3 +-
->>>>    2 files changed, 194 insertions(+), 75 deletions(-)
->>>>
->>>> diff --git a/crypto/ecc.c b/crypto/ecc.c
->>>> index f6cef5a7942d..c125576cda6b 100644
->>>> --- a/crypto/ecc.c
->>>> +++ b/crypto/ecc.c
->>>> @@ -778,18 +778,133 @@ static void vli_mmod_fast_256(u64 *result, const u64 *product,
->>>>    ...
->>>>    /* Computes result = product % curve_prime for different curve_primes.
->>>>     *
->>>>     * Note that curve_primes are distinguished just by heuristic check and
->>>>     * not by complete conformance check.
->>>>     */
->>>>    static bool vli_mmod_fast(u64 *result, u64 *product,
->>>> -			  const u64 *curve_prime, unsigned int ndigits)
->>>> +			  const struct ecc_curve *curve)
->>>>    {
->>>>    	u64 tmp[2 * ECC_MAX_DIGITS];
->>>> +	const u64 *curve_prime = curve->p;
->>>> +	const unsigned int ndigits = curve->g.ndigits;
->>>> -	/* Currently, both NIST primes have -1 in lowest qword. */
->>>> -	if (curve_prime[0] != -1ull) {
->>>> +	/* Currently, all NIST have name nist_.* */
->>>> +	if (strncmp(curve->name, "nist_", 5) != 0) {
->>> I am not sure, but maybe this strncmp should not be optimized somehow,
->>> since vli_mmod_fast could be called quite frequently. Perhaps by integer
->>> algo id or even callback?
->> Should be optimized or should not be? You seem to say both.
-> Excuse me for the typo. I meant "should be optimized". I think, maybe
-> it's time to add algo selector id (for the case statement, for example
-> instead of `switch (ndigits)') or just callback for a low level mmod
-> function.
->
-> If you think this would not impact performance then nevermind.
+On 3/5/20 9:47 AM, Dave Hansen wrote:
+> There are two definitions for the TSC deadline MSR in msr-index.h,
+> one with an underscore and one without.  Axe one of them and move
+> all the references over to the other one.
+> 
+> Cc: x86@kernel.org
+> Cc: Peter Zijlstra <peterz@infradead.org>
 
-I think it would only be a few cycles. Of course we could introduce a 
-flag to indicate nist functions (rather than using strncmp on the name) 
-or work with the callbacks (only for the nist functions?) as you 
-mentioned, but maybe that's something we could do after? Either way we 
-would have to pass the ecc_curve pointer all the way into vli_mmod_fast. 
-So this change here is preparing for this as well.
+Better late than never:
 
- š Stefan
-
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 
