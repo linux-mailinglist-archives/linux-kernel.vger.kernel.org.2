@@ -2,63 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9603302BE
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 16:47:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 088663302C1
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 16:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbhCGPq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 10:46:57 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:41541 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S231486AbhCGPqq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 10:46:46 -0500
-Received: (qmail 103982 invoked by uid 1000); 7 Mar 2021 10:46:45 -0500
-Date:   Sun, 7 Mar 2021 10:46:45 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [xhci] usb 4-1: reset SuperSpeed Gen 1 USB device number 2 using
- xhci_hcd
-Message-ID: <20210307154645.GA103559@rowland.harvard.edu>
-References: <CA+icZUUFGh5CWH-UJK4T-h_Qd2KNnOCrGuT8fg0+Fvjm0C2kbg@mail.gmail.com>
- <20210305193003.GE48113@rowland.harvard.edu>
- <CA+icZUXUAVAusGBKSAtUEN1kH2PLchpi0cU+w-m67QznA7+F4A@mail.gmail.com>
- <20210305194745.GF48113@rowland.harvard.edu>
- <CA+icZUXEWh6G-Bm9-2F1X=S=ZYog37PiaMWHUjZWs1g-KDOqJg@mail.gmail.com>
- <CA+icZUUBpB9UFEypCFmCYc2grUC11QESNwj0_cXfut9fx0JOQA@mail.gmail.com>
- <20210306165808.GD74411@rowland.harvard.edu>
- <CA+icZUWXBtOo+7TBGHFA=aKBs5o9hy3Po6NM0EPssu6y4SOZsQ@mail.gmail.com>
- <CA+icZUXcYY53DxpMRQmveuwUv0QVV7rtRorbxWUaVujJZuCB-A@mail.gmail.com>
- <CA+icZUUyNQN_CEwJcTY887GOeWknz4h29b+XdY0FqUKVJD7cfQ@mail.gmail.com>
+        id S231807AbhCGPtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 10:49:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231757AbhCGPsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 10:48:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 150226501E;
+        Sun,  7 Mar 2021 15:48:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615132091;
+        bh=5yvD+KY+8EPQZt/w8bdUCmccJ4Sa3wYz47atB6Adspo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BEIYmI2pCH6ogHRa1T1M6mUw25P61nFCAc9xjnsiSg7K797IGZFe4JwjQ04DYEW9N
+         RUp724ezxmDlyPw9/XTVvVpvKUnLf1avj9GcN0at1i9PbSbaSBmw7hPUPUDNtrK/vn
+         4cz6M/cOVBSv58I8nCzVeu5hmDQ6e+TUFUlXVPFY=
+Date:   Sun, 7 Mar 2021 16:48:09 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     Ronald Warsow <rwarsow@gmx.de>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: stable kernel checksumming fails
+Message-ID: <YET1uTT61awy0X6S@kroah.com>
+References: <d58ab27a-78ad-1119-79ac-2a1fbcd3527a@gmx.de>
+ <YETm+6sQqek6kY/A@kroah.com>
+ <20210307154354.qbbsy355d5zfubnf@chatter.i7.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+icZUUyNQN_CEwJcTY887GOeWknz4h29b+XdY0FqUKVJD7cfQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210307154354.qbbsy355d5zfubnf@chatter.i7.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 06, 2021 at 09:49:00PM +0100, Sedat Dilek wrote:
+On Sun, Mar 07, 2021 at 10:43:54AM -0500, Konstantin Ryabitsev wrote:
+> On Sun, Mar 07, 2021 at 03:45:15PM +0100, Greg KH wrote:
+> > > checksumming the downloaded kernel manually gives an "Okay" though.
+> > > 
+> > > 
+> > > is this just me (on Fedora 33) ?
+> > 
+> > Fails for me on Arch:
+> > 
+> > Verifying checksum on linux-5.11.4.tar.xz
+> > /usr/bin/sha256sum: /home/gregkh/Downloads/linux-tarball-verify.gZo313NCk.untrusted/sha256sums.txt: no properly formatted SHA256 checksum lines found
+> > FAILED to verify the downloaded tarball checksum
+> > 
+> > 
+> > Konstantin, anything change recently?
+> 
+> I think it's just cache invalidation problems. I've committed a tiny change to
+> the script that always grabs that file from the origin servers instead of
+> going via the CDN.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git/commit/?id=71e570c5f090b5740e323f98504bf38592785b49
+> 
+> This should sidestep the problem.
+> 
+> -K
 
-> For testing purposes, I stopped these systemd services:
-> 
-> 1. systemctl stop smartmontools.service
-> 
-> 2. systemctl stop udisks2.service
-> 
-> Last seen xhci-reset:
-> 
-> [Sat Mar  6 21:37:40 2021] SCSI ioctl error, cmd 85, prog pool-udisksd
-> 
-> So, that every 10min xhci-reset was caused by pool-udisksd from udisks2.service.
+Nice, fixed it for me, thanks!
 
-You have found the cause of your problem!  Great!
+Ronald, does it now work for you too?
 
-And now, obviously order to fix the problem, you'll have to look into 
-the udisks2 service.  Maybe you can configure it so that it won't send 
-the problem-causing commands.
-
-Alan Stern
+greg k-h
