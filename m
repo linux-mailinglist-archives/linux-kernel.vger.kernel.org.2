@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD22033022A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 15:40:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B5133022C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 15:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbhCGOjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 09:39:10 -0500
-Received: from mga07.intel.com ([134.134.136.100]:17102 "EHLO mga07.intel.com"
+        id S231521AbhCGOjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 09:39:12 -0500
+Received: from mga14.intel.com ([192.55.52.115]:38606 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231472AbhCGOiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231479AbhCGOiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 7 Mar 2021 09:38:54 -0500
-IronPort-SDR: v/LzS8tZHce7wTgoT2XkP2Bt0fZPSGZ9R5/Raha3Ra0xfX3WbGBuQhesRFFNQOeJtefGOyiWN1
- 3yAOkgISfBIQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="251931365"
+IronPort-SDR: BA01QxPQ70yk6MpDdlaWR9trNFgSoWRLp9Bda/JiozgDPeuQ9o6lZQvH5R7QnRgAIteesyZTGh
+ IHDVxd49H4vA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="187263589"
 X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
-   d="scan'208";a="251931365"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 06:38:53 -0800
-IronPort-SDR: eTIBxqwMyYDMK5I36fF7HxJDxqDg+0L/MNNQOktJHn0rwvGxcqhWrGOUT8jdilQLSSOVdACc92
- ofJtUq1skMMw==
+   d="scan'208";a="187263589"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 06:38:54 -0800
+IronPort-SDR: /htoBYHir8AsW1bu5XvJGx4G5xKDIYQUE4Jl5fulwCu3fJHmtLJjw7ut7gafIdSLz69/hmHovy
+ upjuswj1zhtA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
-   d="scan'208";a="598523938"
+   d="scan'208";a="437186250"
 Received: from lkp-server01.sh.intel.com (HELO 3e992a48ca98) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 07 Mar 2021 06:38:52 -0800
+  by FMSMGA003.fm.intel.com with ESMTP; 07 Mar 2021 06:38:52 -0800
 Received: from kbuild by 3e992a48ca98 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lIuYV-0000TY-NJ; Sun, 07 Mar 2021 14:38:51 +0000
-Date:   Sun, 07 Mar 2021 22:38:28 +0800
+        id 1lIuYV-0000Td-TL; Sun, 07 Mar 2021 14:38:51 +0000
+Date:   Sun, 07 Mar 2021 22:38:33 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/urgent] BUILD SUCCESS
- eca8f0c80a005aea84df507a446fc0154fc55a32
-Message-ID: <6044e564.6UU8UFNIVA3iZqTz%lkp@intel.com>
+Subject: [tip:perf/urgent] BUILD SUCCESS
+ afbef30149587ad46f4780b1e0cc5e219745ce90
+Message-ID: <6044e569.Qs4YWIC7NpZNVnQB%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/urgent
-branch HEAD: eca8f0c80a005aea84df507a446fc0154fc55a32  hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/urgent
+branch HEAD: afbef30149587ad46f4780b1e0cc5e219745ce90  perf/x86/intel: Set PERF_ATTACH_SCHED_CB for large PEBS and LBR
 
 elapsed time: 731m
 
-configs tested: 129
+configs tested: 124
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -66,16 +66,16 @@ powerpc                          g5_defconfig
 xtensa                    smp_lx200_defconfig
 csky                             alldefconfig
 arm                         orion5x_defconfig
-mips                           gcw0_defconfig
-sh                           se7724_defconfig
-arc                        nsim_700_defconfig
-powerpc                     mpc83xx_defconfig
-mips                  decstation_64_defconfig
 arm                       aspeed_g4_defconfig
 mips                      malta_kvm_defconfig
 arm                         lubbock_defconfig
 mips                            e55_defconfig
 powerpc                      ppc44x_defconfig
+powerpc                    ge_imp3a_defconfig
+arm                         hackkit_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arc                         haps_hs_defconfig
+powerpc                      arches_defconfig
 sh                          rsk7264_defconfig
 arm                         bcm2835_defconfig
 mips                     decstation_defconfig
@@ -88,18 +88,13 @@ mips                        maltaup_defconfig
 sh                        sh7785lcr_defconfig
 mips                  maltasmvp_eva_defconfig
 powerpc                     ep8248e_defconfig
-powerpc                      arches_defconfig
 powerpc                     sbc8548_defconfig
 parisc                generic-32bit_defconfig
 powerpc                     tqm8555_defconfig
 sh                          r7780mp_defconfig
-arc                 nsimosci_hs_smp_defconfig
 parisc                generic-64bit_defconfig
 powerpc                      bamboo_defconfig
 arc                           tb10x_defconfig
-s390                       zfcpdump_defconfig
-mips                     cu1000-neo_defconfig
-arm                        keystone_defconfig
 sh                           se7705_defconfig
 nios2                            alldefconfig
 sh                   sh7724_generic_defconfig
