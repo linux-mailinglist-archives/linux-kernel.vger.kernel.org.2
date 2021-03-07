@@ -2,152 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3469232FFFA
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 10:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1891B32FFFE
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 10:52:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhCGJpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 04:45:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231325AbhCGJpl (ORCPT
+        id S229753AbhCGJtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 04:49:43 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:46997 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229872AbhCGJtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 04:45:41 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB85C06175F
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 01:45:40 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id 7so8140674wrz.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 01:45:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=lZkNk3yYW/8ijhrD082tSx7qBCi8O3cbnVc/FrlwdlU=;
-        b=rwqG0rGjDKgDJMDgyrPuL6fMMJ8FUmrimYfMpceWe9MkQbKAflo6IkH5SMQ0xZy9XR
-         opslnX4VVS00yl+S+cZsjXsVGexmEyL/1aA+2mQLXU/Hx63HARlTApMASp9/RIjQON8i
-         5sbeykvJEJzSN1AcprCRE+EgUGP90baUMv+1YStLGuOU7ffiFtNElY+IKz13LxrRnlgp
-         U1MW5w7tJbgVHjKiv5xn25VEvnNCzvjsyzZ77TsZy3ox3BgXwJt4C6mCUT+NjK6I5B5n
-         7bf3hQMhcHKcA1rS+DUGAwqAdw+cwpt2L6p1hDgO7x2nR3dMJvZM8DeCAD8gLhyASedW
-         tu9A==
+        Sun, 7 Mar 2021 04:49:22 -0500
+Received: by mail-io1-f70.google.com with SMTP id w8so5334635iox.13
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 01:49:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=lZkNk3yYW/8ijhrD082tSx7qBCi8O3cbnVc/FrlwdlU=;
-        b=YCvvQdbbjouWyJ9mx4B09UXttPvsiyrQrYf+1+QTLqk9wmcxiot+s+DDwrIBcibsIv
-         +IKAabdgNJqwI2sOu3cUVvjtROVl7RbX9YQzyrnKFkg9/GG1DVMLmsCSAUaV2WFopRMK
-         dgLZ7lgyWhMsyG01s/JqERUHneq1oZoBpSfyf62OBuW1lD2IOG0E+xNB0pKTEOOBjaYl
-         7i+M0dntROhLI3d+JudL80M52Lmb8C/7a+/iyoNdV1TowaMnLSsZg0dow9KpZAGeGk3b
-         sOkXpBiTTtOhH3CFVEW0lhbDAalEiLlMkeGa6ayUnwj1TvoLPiS0IunYL8C+LuD6YSEO
-         sTwA==
-X-Gm-Message-State: AOAM531bS2rE+Cn2mWascn36q5e8x9Qtw2M0CHONjSAM8dyA87tDoIR+
-        YaJu8FNvhcX28R78jNrqM+KJwA==
-X-Google-Smtp-Source: ABdhPJw99kGB8EMsZs3YEBktotNiQ5Quc/vbCuOVi/jHeofv++Ue1b0c6UMEtbJqQj4ihMOuVRQoVw==
-X-Received: by 2002:a5d:5043:: with SMTP id h3mr17350887wrt.120.1615110339583;
-        Sun, 07 Mar 2021 01:45:39 -0800 (PST)
-Received: from localhost.localdomain (lns-bzn-59-82-252-141-80.adsl.proxad.net. [82.252.141.80])
-        by smtp.gmail.com with ESMTPSA id z7sm12790737wrt.70.2021.03.07.01.45.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 01:45:39 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     cwchoi00@gmail.com
-Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, steven.price@arm.com,
-        Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS FOR LIMA),
-        lima@lists.freedesktop.org (moderated list:DRM DRIVERS FOR LIMA)
-Subject: [PATCH v3 4/4] devfreq/drivers/lima: Use devfreq cooling device registration
-Date:   Sun,  7 Mar 2021 10:45:18 +0100
-Message-Id: <20210307094519.9032-4-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210307094519.9032-1-daniel.lezcano@linaro.org>
-References: <20210307094519.9032-1-daniel.lezcano@linaro.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=V07qsaGEoHXexYmfa3BXedCZSaCtnYmBs8rqfZyeYlI=;
+        b=ZBFIgURuL/xkuOSYY1LxNhOgaDDY9NZdqf/F/HAb8KPD8aIB3pbSCtLdX7eLVMKGjv
+         Ijgp/2qUayuY23j2lW8a8jsta5QLuuQvgUrDQN5d/ZGJo2c6sQRkJtCMKpc9RGPACs7A
+         ycK8i5uRKB8Rsu2qtyu+tfMjtXIoleOtqAoP3YUmW/0VUQ6Ob636AoTYhN8mhPvA6h+t
+         BFAvgnJm4g5g+zv3LHf29vZXyFKISVnNBefzjmF7eVtv2RHy68P0Vpr+IeoFnkTLl0rs
+         srQqjrBhh7kHoWO3YV/IKxRUJ8KQi9gCpQPU2Pr/Mtba7Mop3B6K1td1LcG65y6KZ7RO
+         DzJA==
+X-Gm-Message-State: AOAM531++a6HBYyklK7TRRNAKLUngCvSNItF7WPu/OkLeu1Mjyd35gMp
+        qwxv0Ftm8O3eJddNbrTpki7mTPozEsIwhqvw48kkOqtQUCdO
+X-Google-Smtp-Source: ABdhPJwkMgrO8DdTP9D02PdvTssCcIDOHdhMWUcL6D8tNcsYsyvMCXFxrbUITUzQjhzJDzcuxmb9r/VYn5+q4srYatU+tzgtMvom
+MIME-Version: 1.0
+X-Received: by 2002:a02:1702:: with SMTP id 2mr18006148jah.43.1615110561007;
+ Sun, 07 Mar 2021 01:49:21 -0800 (PST)
+Date:   Sun, 07 Mar 2021 01:49:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000430bf505bcef3b00@google.com>
+Subject: [syzbot] possible deadlock in io_sq_thread_finish
+From:   syzbot <syzbot+ac39856cb1b332dbbdda@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The devfreq core code is able to register the devfreq device as a
-cooling device if the 'is_cooling_device' flag is set in the profile.
+Hello,
 
-Use this flag and remove the cooling device registering code.
+syzbot found the following issue on:
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+HEAD commit:    a38fd874 Linux 5.12-rc2
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=143ee02ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=db9c6adb4986f2f2
+dashboard link: https://syzkaller.appspot.com/bug?extid=ac39856cb1b332dbbdda
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ac39856cb1b332dbbdda@syzkaller.appspotmail.com
+
+============================================
+WARNING: possible recursive locking detected
+5.12.0-rc2-syzkaller #0 Not tainted
+--------------------------------------------
+kworker/u4:7/7615 is trying to acquire lock:
+ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_stop fs/io_uring.c:7099 [inline]
+ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_put_sq_data fs/io_uring.c:7115 [inline]
+ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_finish+0x408/0x650 fs/io_uring.c:7139
+
+but task is already holding lock:
+ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park fs/io_uring.c:7088 [inline]
+ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park+0x63/0xc0 fs/io_uring.c:7082
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&sqd->lock);
+  lock(&sqd->lock);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+3 locks held by kworker/u4:7/7615:
+ #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888010469138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2246
+ #1: ffffc900023a7da8 ((work_completion)(&ctx->exit_work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
+ #2: ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park fs/io_uring.c:7088 [inline]
+ #2: ffff888144a02870 (&sqd->lock){+.+.}-{3:3}, at: io_sq_thread_park+0x63/0xc0 fs/io_uring.c:7082
+
+stack backtrace:
+CPU: 1 PID: 7615 Comm: kworker/u4:7 Not tainted 5.12.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events_unbound io_ring_exit_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
+ check_deadlock kernel/locking/lockdep.c:2872 [inline]
+ validate_chain kernel/locking/lockdep.c:3661 [inline]
+ __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4900
+ lock_acquire kernel/locking/lockdep.c:5510 [inline]
+ lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
+ __mutex_lock_common kernel/locking/mutex.c:946 [inline]
+ __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1093
+ io_sq_thread_stop fs/io_uring.c:7099 [inline]
+ io_put_sq_data fs/io_uring.c:7115 [inline]
+ io_sq_thread_finish+0x408/0x650 fs/io_uring.c:7139
+ io_ring_ctx_free fs/io_uring.c:8408 [inline]
+ io_ring_exit_work+0x82/0x9a0 fs/io_uring.c:8539
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+
 ---
- drivers/gpu/drm/lima/lima_devfreq.c | 14 +-------------
- drivers/gpu/drm/lima/lima_devfreq.h |  2 --
- 2 files changed, 1 insertion(+), 15 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/gpu/drm/lima/lima_devfreq.c b/drivers/gpu/drm/lima/lima_devfreq.c
-index 5686ad4aaf7c..86aea1bdc4f4 100644
---- a/drivers/gpu/drm/lima/lima_devfreq.c
-+++ b/drivers/gpu/drm/lima/lima_devfreq.c
-@@ -7,7 +7,6 @@
-  */
- #include <linux/clk.h>
- #include <linux/devfreq.h>
--#include <linux/devfreq_cooling.h>
- #include <linux/device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_opp.h>
-@@ -84,17 +83,13 @@ static struct devfreq_dev_profile lima_devfreq_profile = {
- 	.polling_ms = 50, /* ~3 frames */
- 	.target = lima_devfreq_target,
- 	.get_dev_status = lima_devfreq_get_dev_status,
-+	.is_cooling_device = true,
- };
- 
- void lima_devfreq_fini(struct lima_device *ldev)
- {
- 	struct lima_devfreq *devfreq = &ldev->devfreq;
- 
--	if (devfreq->cooling) {
--		devfreq_cooling_unregister(devfreq->cooling);
--		devfreq->cooling = NULL;
--	}
--
- 	if (devfreq->devfreq) {
- 		devm_devfreq_remove_device(ldev->dev, devfreq->devfreq);
- 		devfreq->devfreq = NULL;
-@@ -110,7 +105,6 @@ void lima_devfreq_fini(struct lima_device *ldev)
- 
- int lima_devfreq_init(struct lima_device *ldev)
- {
--	struct thermal_cooling_device *cooling;
- 	struct device *dev = ldev->dev;
- 	struct opp_table *opp_table;
- 	struct devfreq *devfreq;
-@@ -173,12 +167,6 @@ int lima_devfreq_init(struct lima_device *ldev)
- 
- 	ldevfreq->devfreq = devfreq;
- 
--	cooling = of_devfreq_cooling_register(dev->of_node, devfreq);
--	if (IS_ERR(cooling))
--		dev_info(dev, "Failed to register cooling device\n");
--	else
--		ldevfreq->cooling = cooling;
--
- 	return 0;
- 
- err_fini:
-diff --git a/drivers/gpu/drm/lima/lima_devfreq.h b/drivers/gpu/drm/lima/lima_devfreq.h
-index 2d9b3008ce77..c43a2069e5d3 100644
---- a/drivers/gpu/drm/lima/lima_devfreq.h
-+++ b/drivers/gpu/drm/lima/lima_devfreq.h
-@@ -9,7 +9,6 @@
- 
- struct devfreq;
- struct opp_table;
--struct thermal_cooling_device;
- 
- struct lima_device;
- 
-@@ -17,7 +16,6 @@ struct lima_devfreq {
- 	struct devfreq *devfreq;
- 	struct opp_table *clkname_opp_table;
- 	struct opp_table *regulators_opp_table;
--	struct thermal_cooling_device *cooling;
- 
- 	ktime_t busy_time;
- 	ktime_t idle_time;
--- 
-2.17.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
