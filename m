@@ -2,70 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C42633025A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 15:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39ECE330267
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 16:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232208AbhCGOzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 09:55:41 -0500
-Received: from mga17.intel.com ([192.55.52.151]:5870 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231638AbhCGOzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 09:55:11 -0500
-IronPort-SDR: 8BF7a2thKp+AI9GPQa9A7KmXGmQtYpUjA3h/PRH1SHnVl8M0SHKhaRjBdJZ943QvSSroZYIv8v
- EBJNAiljK7Cg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="167813508"
-X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
-   d="scan'208";a="167813508"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 06:55:10 -0800
-IronPort-SDR: hJcCWhI3iMAVs/doR0Mcqjyh77c7+fRAhii0EaYF7ejoZhBceH49AlxoWdcmA5x9pfSAkErqDr
- /no3oG3Hsy0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
-   d="scan'208";a="437189149"
-Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by FMSMGA003.fm.intel.com with ESMTP; 07 Mar 2021 06:55:10 -0800
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     "Shuah Khan" <shuah@kernel.org>, "Tony Luck" <tony.luck@intel.com>,
-        "Reinette Chatre" <reinette.chatre@intel.com>,
-        "Babu Moger" <babu.moger@amd.com>
-Cc:     "linux-kselftest" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH v5 21/21] selftests/resctrl: Create .gitignore to include resctrl_tests
-Date:   Sun,  7 Mar 2021 14:55:02 +0000
-Message-Id: <20210307145502.2916364-22-fenghua.yu@intel.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210307145502.2916364-1-fenghua.yu@intel.com>
-References: <20210307145502.2916364-1-fenghua.yu@intel.com>
+        id S231741AbhCGPAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 10:00:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231258AbhCGPAZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 10:00:25 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADF1C06174A;
+        Sun,  7 Mar 2021 07:00:24 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id dm26so10807178edb.12;
+        Sun, 07 Mar 2021 07:00:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=tK3D7yjk9Hj3Ps1I1v43ujhrrVGQwWkl1RCv5uCMAHQ=;
+        b=bspNffffsnVhQBnQUMPaI3cCZPkTCXb8hcB8RzDjVP63YK3mGqzCyDUipFuNESZ0BT
+         zyDh6f7zz94zKDq0qTRFj+U7Gx25X22u3VXi70IXEMWFC/joRDQzDkuGE/yFHTF5LK0G
+         rUlSBB34D6ZuIbfCQmR9Rb7/GB6oBCQNTO+CfoVC4cgNL8U/icP9/4VUrxXuAP8YWySp
+         d2DSRR69g5ztE7ENaM4Itdydc1SyxER823J2+9sFP9tmY+CdrRB7IRrjm8JKhHaWs0tK
+         3CnF5/G5IB6C0ESLTZSu8RPDMYOnG7m93ItlIJ8NAHQak6UVkJim3FppzoVNpNM/bNB2
+         VwPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=tK3D7yjk9Hj3Ps1I1v43ujhrrVGQwWkl1RCv5uCMAHQ=;
+        b=mYlZNEcZcjR+pW3NtO6dn3kuDfUGQmm14qfGmCMFl49VIASetDISi3mWkQy39D4MFw
+         VSDrOTDRAB6wCVsYDufQKMXYbMIXmdC83PQVgXVLjfNvIItTy/ZOMP3VapX4R1+gvyQ2
+         vvTEyT/G9XuKGQLXokeDgsPt3XxctBrjA3xK80PS0+lW+UIlsiRfCtCRMqEdgYGGrURl
+         0btVcrW/+2A0MaZTcKFG/U8bMVa4E1Cf1yf/d7gKIVBitBWYqmcnOZkGnRd8X3w8wRbS
+         +MWcdMMXYYUAlDAH+i2L8T4XEgkX9SqYZpVB3qY3y/7wKZWKOhxU0s+0NqKGaJOK8eso
+         Dh+g==
+X-Gm-Message-State: AOAM533381uQNqlx8kbWjMX6z1MMdcg4ChffZOFeU0ewVCRUod6ZLYYB
+        egouM5QeAmwL7PR3lIQp2NE=
+X-Google-Smtp-Source: ABdhPJzI0+1FOr6rWPD9DIJ0k7fn0QFArC8QJEQ6604yTyFxtXl0WI89GnWCXXOpg5b058I8maQwoA==
+X-Received: by 2002:a05:6402:c0f:: with SMTP id co15mr17775180edb.373.1615129217591;
+        Sun, 07 Mar 2021 07:00:17 -0800 (PST)
+Received: from [192.168.1.2] (host-87-242-23-58.prtelecom.hu. [87.242.23.58])
+        by smtp.gmail.com with ESMTPSA id m7sm5209000ejk.52.2021.03.07.07.00.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Mar 2021 07:00:16 -0800 (PST)
+Subject: Re: [PATCH AUTOSEL 5.11 09/12] nvme-pci: mark Kingston SKC2000 as not
+ supporting the deepest power state
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210307135746.967418-1-sashal@kernel.org>
+ <20210307135746.967418-9-sashal@kernel.org>
+From:   =?UTF-8?B?QsO2c3rDtnJtw6lueWkgWm9sdMOhbg==?= <zboszor@gmail.com>
+Message-ID: <6333d353-25c2-2cd3-e0c8-0dd39e31bfcd@gmail.com>
+Date:   Sun, 7 Mar 2021 16:00:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <20210307135746.967418-9-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create .gitignore to hold the test file resctrl_tests generated after
-compiling.
+Hi,
 
-Suggested-by: Shuah Khan <shuah@kernel.org>
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
----
-Change Log:
-v5:
-- Add this patch (Shuah)
+2021. 03. 07. 14:57 keltezéssel, Sasha Levin írta:
+> From: Zoltán Böszörményi <zboszor@gmail.com>
+>
+> [ Upstream commit dc22c1c058b5c4fe967a20589e36f029ee42a706 ]
+>
+> My 2TB SKC2000 showed the exact same symptoms that were provided
+> in 538e4a8c57 ("nvme-pci: avoid the deepest sleep state on
+> Kingston A2000 SSDs"), i.e. a complete NVME lockup that needed
+> cold boot to get it back.
+>
+> According to some sources, the A2000 is simply a rebadged
+> SKC2000 with a slightly optimized firmware.
+>
+> Adding the SKC2000 PCI ID to the quirk list with the same workaround
+> as the A2000 made my laptop survive a 5 hours long Yocto bootstrap
+> buildfest which reliably triggered the SSD lockup previously.
+>
+> Signed-off-by: Zoltán Böszörményi <zboszor@gmail.com>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
- tools/testing/selftests/resctrl/.gitignore | 2 ++
- 1 file changed, 2 insertions(+)
- create mode 100644 tools/testing/selftests/resctrl/.gitignore
+Thanks for picking it up for stable.
 
-diff --git a/tools/testing/selftests/resctrl/.gitignore b/tools/testing/selftests/resctrl/.gitignore
-new file mode 100644
-index 000000000000..ab68442b6bc8
---- /dev/null
-+++ b/tools/testing/selftests/resctrl/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+resctrl_tests
--- 
-2.30.1
+May I suggest to include it in 5.10.x as well?
+Originally this patch was tested on 5.10.17.
+
+Best regards,
+Zoltán Böszörményi
+
+> ---
+>   drivers/nvme/host/pci.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+> index 7a38d764b486..14c5b52400ef 100644
+> --- a/drivers/nvme/host/pci.c
+> +++ b/drivers/nvme/host/pci.c
+> @@ -3262,6 +3262,8 @@ static const struct pci_device_id nvme_id_table[] = {
+>   		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
+>   	{ PCI_DEVICE(0x1d97, 0x2263),   /* SPCC */
+>   		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
+> +	{ PCI_DEVICE(0x2646, 0x2262),   /* KINGSTON SKC2000 NVMe SSD */
+> +		.driver_data = NVME_QUIRK_NO_DEEPEST_PS, },
+>   	{ PCI_DEVICE(0x2646, 0x2263),   /* KINGSTON A2000 NVMe SSD  */
+>   		.driver_data = NVME_QUIRK_NO_DEEPEST_PS, },
+>   	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2001),
 
