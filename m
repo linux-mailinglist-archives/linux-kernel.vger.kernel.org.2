@@ -2,152 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F9B33040E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 19:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C545330410
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 19:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbhCGSwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 13:52:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbhCGSvr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 13:51:47 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3164AC06175F
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 10:51:47 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo2425874wmq.4
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 10:51:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=lZkNk3yYW/8ijhrD082tSx7qBCi8O3cbnVc/FrlwdlU=;
-        b=dUczLlRtPi6GFZOr508UaxiYaO0yZ4r9MUeEXfzW3hreTYSlxeo1+b7ngfUiVx42v6
-         GFKFds08mpubQmKkfNrIFhnwnMU+/xogJRhp1B19uV1P6LOqUAAOfWkvoGv8Wz/q+OLP
-         JwMxtmbLyohe859codg0DWPyCOr/gRSNB64qgc+aTVO05qc9rou/DQ/b6ARY5KUWrcnr
-         WGCnm4ytZmzKra0Al/uAh6vPzKqYdEBU8Zj8WuYLmRxkqax60a9mk1Hs4synIWVlGwoI
-         9QJZtwtk9OEssbJgPS9X4vg3dqHFn0xOtyqFa3UnVvaupKU0XBBjEswFDIzNLq2k1Kf7
-         Wtqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=lZkNk3yYW/8ijhrD082tSx7qBCi8O3cbnVc/FrlwdlU=;
-        b=pygaJcTyN4kbp7jBcE5/9R4zamSJbxptrZhQKmO/Dr/y3ozlGGPAGxud3WAAwe4FXj
-         9ivMHOsN3rQ9+1S81d/GgsIq6OtJbaGFR00kPE4Q6FSXv6OuyzKduniJ+R+HWps/O+EJ
-         +3hNAXcdEpI1J4PjcyWCb6+xK+DOlwW2SFcOQpH0OmPOlRtMgPVtp0ThDQYTE3AR+RmE
-         kOV8G85NcVjYK5pX2zdDBchYbxBV/gzXBMMgWlaYV0wwdxss2qBCUzrw4F1ptAZZQ+J/
-         5Xkhp18lt7YGPTeSQW94oXqP3+pW2h9Hk6ovajygxJOa3k8uHKLW4Ca/sUgCxXnyNWw2
-         eAQg==
-X-Gm-Message-State: AOAM533ByJO/Q8VPgyCosKRm7eu2J3LHqPcQLKaWiDoGg7PqaSr8gCPL
-        cCPg6H9ehoao5WVvNLFoGBey5A==
-X-Google-Smtp-Source: ABdhPJw7zRqDTtln8kCNCqMqvZNX1pG3+4zNqJfXoAASdGT4ByKjiUbvEBcid+QAZi1YYWqtYSP3OA==
-X-Received: by 2002:a05:600c:2247:: with SMTP id a7mr19090730wmm.131.1615143105859;
-        Sun, 07 Mar 2021 10:51:45 -0800 (PST)
-Received: from localhost.localdomain (lns-bzn-59-82-252-141-80.adsl.proxad.net. [82.252.141.80])
-        by smtp.gmail.com with ESMTPSA id v5sm14842965wmh.2.2021.03.07.10.51.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 10:51:45 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     cwchoi00@gmail.com
-Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, steven.price@arm.com,
-        Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS FOR LIMA),
-        lima@lists.freedesktop.org (moderated list:DRM DRIVERS FOR LIMA)
-Subject: [PATCH v4 4/4] devfreq/drivers/lima: Use devfreq cooling device registration
-Date:   Sun,  7 Mar 2021 19:51:37 +0100
-Message-Id: <20210307185137.24925-4-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210307185137.24925-1-daniel.lezcano@linaro.org>
-References: <20210307185137.24925-1-daniel.lezcano@linaro.org>
+        id S231928AbhCGSwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 13:52:41 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:55638 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231612AbhCGSw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 13:52:29 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5C70C1A0848;
+        Sun,  7 Mar 2021 19:52:28 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 506BE1A0833;
+        Sun,  7 Mar 2021 19:52:28 +0100 (CET)
+Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 0B9492030D;
+        Sun,  7 Mar 2021 19:52:28 +0100 (CET)
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Abel Vesa <abel.vesa@nxp.com>
+Subject: [PATCH] clk: Call clk_core_enable_lock variant when lock is needed
+Date:   Sun,  7 Mar 2021 20:52:08 +0200
+Message-Id: <1615143128-6141-1-git-send-email-abel.vesa@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The devfreq core code is able to register the devfreq device as a
-cooling device if the 'is_cooling_device' flag is set in the profile.
+Instead of locking explicitly every time, call the clk_core_enable_lock
+variant.
 
-Use this flag and remove the cooling device registering code.
-
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
 ---
- drivers/gpu/drm/lima/lima_devfreq.c | 14 +-------------
- drivers/gpu/drm/lima/lima_devfreq.h |  2 --
- 2 files changed, 1 insertion(+), 15 deletions(-)
+ drivers/clk/clk.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/lima/lima_devfreq.c b/drivers/gpu/drm/lima/lima_devfreq.c
-index 5686ad4aaf7c..86aea1bdc4f4 100644
---- a/drivers/gpu/drm/lima/lima_devfreq.c
-+++ b/drivers/gpu/drm/lima/lima_devfreq.c
-@@ -7,7 +7,6 @@
-  */
- #include <linux/clk.h>
- #include <linux/devfreq.h>
--#include <linux/devfreq_cooling.h>
- #include <linux/device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_opp.h>
-@@ -84,17 +83,13 @@ static struct devfreq_dev_profile lima_devfreq_profile = {
- 	.polling_ms = 50, /* ~3 frames */
- 	.target = lima_devfreq_target,
- 	.get_dev_status = lima_devfreq_get_dev_status,
-+	.is_cooling_device = true,
- };
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 5052541..fd37773 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -2078,12 +2078,8 @@ static void clk_change_rate(struct clk_core *core)
+ 		return;
  
- void lima_devfreq_fini(struct lima_device *ldev)
- {
- 	struct lima_devfreq *devfreq = &ldev->devfreq;
- 
--	if (devfreq->cooling) {
--		devfreq_cooling_unregister(devfreq->cooling);
--		devfreq->cooling = NULL;
--	}
+ 	if (core->flags & CLK_SET_RATE_UNGATE) {
+-		unsigned long flags;
 -
- 	if (devfreq->devfreq) {
- 		devm_devfreq_remove_device(ldev->dev, devfreq->devfreq);
- 		devfreq->devfreq = NULL;
-@@ -110,7 +105,6 @@ void lima_devfreq_fini(struct lima_device *ldev)
+ 		clk_core_prepare(core);
+-		flags = clk_enable_lock();
+-		clk_core_enable(core);
+-		clk_enable_unlock(flags);
++		clk_core_enable_lock(core);
+ 	}
  
- int lima_devfreq_init(struct lima_device *ldev)
- {
--	struct thermal_cooling_device *cooling;
- 	struct device *dev = ldev->dev;
- 	struct opp_table *opp_table;
- 	struct devfreq *devfreq;
-@@ -173,12 +167,6 @@ int lima_devfreq_init(struct lima_device *ldev)
- 
- 	ldevfreq->devfreq = devfreq;
- 
--	cooling = of_devfreq_cooling_register(dev->of_node, devfreq);
--	if (IS_ERR(cooling))
--		dev_info(dev, "Failed to register cooling device\n");
--	else
--		ldevfreq->cooling = cooling;
+ 	if (core->new_parent && core->new_parent != core->parent) {
+@@ -3564,8 +3560,6 @@ static int __clk_core_init(struct clk_core *core)
+ 	 * reparenting clocks
+ 	 */
+ 	if (core->flags & CLK_IS_CRITICAL) {
+-		unsigned long flags;
 -
- 	return 0;
+ 		ret = clk_core_prepare(core);
+ 		if (ret) {
+ 			pr_warn("%s: critical clk '%s' failed to prepare\n",
+@@ -3573,9 +3567,7 @@ static int __clk_core_init(struct clk_core *core)
+ 			goto out;
+ 		}
  
- err_fini:
-diff --git a/drivers/gpu/drm/lima/lima_devfreq.h b/drivers/gpu/drm/lima/lima_devfreq.h
-index 2d9b3008ce77..c43a2069e5d3 100644
---- a/drivers/gpu/drm/lima/lima_devfreq.h
-+++ b/drivers/gpu/drm/lima/lima_devfreq.h
-@@ -9,7 +9,6 @@
- 
- struct devfreq;
- struct opp_table;
--struct thermal_cooling_device;
- 
- struct lima_device;
- 
-@@ -17,7 +16,6 @@ struct lima_devfreq {
- 	struct devfreq *devfreq;
- 	struct opp_table *clkname_opp_table;
- 	struct opp_table *regulators_opp_table;
--	struct thermal_cooling_device *cooling;
- 
- 	ktime_t busy_time;
- 	ktime_t idle_time;
+-		flags = clk_enable_lock();
+-		ret = clk_core_enable(core);
+-		clk_enable_unlock(flags);
++		ret = clk_core_enable_lock(core);
+ 		if (ret) {
+ 			pr_warn("%s: critical clk '%s' failed to enable\n",
+ 			       __func__, core->name);
 -- 
-2.17.1
+2.7.4
 
