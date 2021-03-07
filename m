@@ -2,91 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40AC0330032
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 11:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00EC133003B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 12:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbhCGK7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 05:59:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230111AbhCGK7I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 05:59:08 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8238DC06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 02:59:07 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id u4so14699617lfs.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 02:59:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fAA4TPPCDGkT+Tya7F36DqMx6N0BmhqLnwdwo3XPN1I=;
-        b=j6atcfc1psN5Tz+4WxpRYvcbaOb5cUdpU2mTeXew96BDlBhCTI2zMLpiMZdpFW31kf
-         Z3T7fGkK2wmlRamJ4ReGoJOGJniv/oc8Oy2X/ZlaqtmYRkRWRB8gc0natK8ctq/ud88r
-         /ntGLH/i+02eCf4W1/U2z7cDulZkXVJMdg/Yk/GofqT2PDhwn88+toqYsZdNGJm5tolp
-         knqkmaf3j7/lGJ63WuhZBR9G6OmoMsluPdD8jybF1rzmM3NeGlfZt/XAOlKphAkF/gTR
-         TPkUCwiZQM5CsovCWOXe+IXVv7jnEp7wnYIWU0gnbsNybNemZHdWIlqEYxeiMlmm4qOj
-         1g7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fAA4TPPCDGkT+Tya7F36DqMx6N0BmhqLnwdwo3XPN1I=;
-        b=MTj+5L8OWBuQysk93B/SCmWF/y2YUf1j3LifYxeBbrVCLv0VJFfnNnyDrve5VuwBI1
-         ACNBH7OvauSJeQJr6WLPFCEkp8O1wxulcpEjw20t5SQ6FsYJigaVqLGIr4op0srspinU
-         JczpJ32vEybVcUdmLczufNl1FxC+Q1BGsvxSwGs0MK34fkN9kXdGp9XNt+IWqxxNz7JN
-         ryFRTjLZ5OJ4HR6ov0PzCOAYwxfd8cGid5YZCJJKlpGV0Z7NE0PnPbywxRaJxmRsDFp3
-         AfnHINBOf+8xxhxUSUR/uNKVnOLrs6b6r+KDTHU2ggtI7yCtzs2cLRbeyWfdZ01xP4pK
-         MsXA==
-X-Gm-Message-State: AOAM533zpviNX7AjhCNtYQ/R7hM4y9uI8HVbrVI0mCaQpKh/tv46TbBU
-        giYMjFkq4G0UvHu6Q25ZQGdqMh2RZi4=
-X-Google-Smtp-Source: ABdhPJy+OsC5NwTORRSLVfXZvtFhxe1uPGBorKGwbuijT5Cg2P3OclGEYk92MH+ymBFTpnXfVGijDA==
-X-Received: by 2002:a05:6512:39d5:: with SMTP id k21mr11067828lfu.142.1615114746056;
-        Sun, 07 Mar 2021 02:59:06 -0800 (PST)
-Received: from localhost.localdomain (cable-hki-50dc98-67.dhcp.inet.fi. [80.220.152.67])
-        by smtp.gmail.com with ESMTPSA id e9sm1044213ljj.52.2021.03.07.02.59.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 02:59:05 -0800 (PST)
-From:   Hassan Shahbazi <h.shahbazi.git@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        Hassan Shahbazi <h.shahbazi.git@gmail.com>
-Subject: [PATCH] drivers: tty: vt: vt.c: fix NULL dereference crash
-Date:   Sun,  7 Mar 2021 12:56:43 +0200
-Message-Id: <20210307105642.112572-1-h.shahbazi.git@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S231633AbhCGLLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 06:11:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231604AbhCGLLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 06:11:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FF6B65178;
+        Sun,  7 Mar 2021 11:11:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615115480;
+        bh=DdBCAEAIObtfum+vUgIZNMguOAnEOjO5lK5mark4Q6A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Tvum+ff9kljBRcCOZwXlZwi1A/7FwCh6B2Ee2bVfTVmDxnLb3wV/3vrh0eWSD8KHa
+         DbL743YGImkWiYdjCRUGHKhCGFXaaL/HQrYJEZK4JNKjFZL58kuqfw8RiPKiNMeDIQ
+         pZNXBqn4Mm0PfACeRR7mdMJcx4PZyUafxkMvcQew=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.260
+Date:   Sun,  7 Mar 2021 12:11:16 +0100
+Message-Id: <161511547663204@kroah.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a NULL deference crash on hiding the cursor.
+I'm announcing the release of the 4.4.260 kernel.
 
-Reported by: syzbot
-https://syzkaller.appspot.com/bug?id=defb47bf56e1c14d5687280c7bb91ce7b608b94b
+All users of the 4.4 kernel series must upgrade.
 
-Signed-off-by: Hassan Shahbazi <h.shahbazi.git@gmail.com>
----
- drivers/tty/vt/vt.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 284b07224c55..8c3e83c81341 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -904,7 +904,9 @@ static void hide_cursor(struct vc_data *vc)
- 	if (vc_is_sel(vc))
- 		clear_selection();
- 
--	vc->vc_sw->con_cursor(vc, CM_ERASE);
-+	if (vc->vc_sw)
-+		vc->vc_sw->con_cursor(vc, CM_ERASE);
-+
- 	hide_softcursor(vc);
- }
- 
--- 
-2.26.2
+thanks,
+
+greg k-h
+
+------------
+
+ Documentation/filesystems/sysfs.txt     |    8 -
+ Makefile                                |    2 
+ arch/arm/xen/p2m.c                      |   35 ++++++-
+ arch/x86/kernel/module.c                |    1 
+ arch/x86/kernel/reboot.c                |    9 +
+ arch/x86/tools/relocs.c                 |   12 +-
+ arch/x86/xen/p2m.c                      |   44 ++++++++-
+ drivers/block/zram/zram_drv.c           |    2 
+ drivers/media/usb/uvc/uvc_driver.c      |    7 +
+ drivers/media/v4l2-core/v4l2-ioctl.c    |   19 +---
+ drivers/mmc/host/sdhci-esdhc-imx.c      |    3 
+ drivers/net/usb/qmi_wwan.c              |    1 
+ drivers/net/wireless/ath/ath10k/mac.c   |   15 ---
+ drivers/net/wireless/iwlwifi/pcie/tx.c  |    4 
+ drivers/net/wireless/ti/wl12xx/main.c   |    3 
+ drivers/net/wireless/ti/wlcore/main.c   |   15 ---
+ drivers/net/wireless/ti/wlcore/wlcore.h |    3 
+ drivers/net/xen-netback/netback.c       |   12 ++
+ drivers/scsi/libiscsi.c                 |  148 ++++++++++++++++----------------
+ drivers/scsi/scsi_transport_iscsi.c     |   38 ++++++--
+ drivers/staging/fwserial/fwserial.c     |    2 
+ drivers/staging/most/aim-sound/sound.c  |    2 
+ drivers/tty/vt/consolemap.c             |    2 
+ fs/jfs/jfs_filsys.h                     |    1 
+ fs/jfs/jfs_mount.c                      |   10 ++
+ fs/sysfs/file.c                         |   55 +++++++++++
+ fs/xfs/xfs_iops.c                       |    2 
+ include/linux/sysfs.h                   |   16 +++
+ include/linux/zsmalloc.h                |    2 
+ kernel/futex.c                          |   24 ++---
+ mm/hugetlb.c                            |   28 +++---
+ mm/page_io.c                            |   11 --
+ mm/swapfile.c                           |    2 
+ mm/zsmalloc.c                           |   17 ++-
+ net/bluetooth/amp.c                     |    3 
+ net/core/pktgen.c                       |    2 
+ net/core/skbuff.c                       |   14 ++-
+ scripts/Makefile                        |    9 +
+ 38 files changed, 389 insertions(+), 194 deletions(-)
+
+Chris Leech (2):
+      scsi: iscsi: Ensure sysfs attributes are limited to PAGE_SIZE
+      scsi: iscsi: Verify lengths on passthrough PDUs
+
+Christian Gromm (1):
+      staging: most: sound: add sanity check for function argument
+
+Di Zhu (1):
+      pktgen: fix misuse of BUG_ON() in pktgen_thread_worker()
+
+Dinghao Liu (1):
+      staging: fwserial: Fix error handling in fwserial_create
+
+Fangrui Song (1):
+      x86/build: Treat R_386_PLT32 relocation as R_386_PC32
+
+Frank Li (1):
+      mmc: sdhci-esdhc-imx: fix kernel panic when remove module
+
+Gopal Tiwari (1):
+      Bluetooth: Fix null pointer dereference in amp_read_loc_assoc_final_data
+
+Greg Kroah-Hartman (1):
+      Linux 4.4.260
+
+Heiner Kallweit (1):
+      x86/reboot: Add Zotac ZBOX CI327 nano PCI reboot quirk
+
+Jan Beulich (2):
+      Xen/gnttab: handle p2m update errors on a per-slot basis
+      xen-netback: respect gnttab_map_refs()'s return value
+
+Jens Axboe (1):
+      swap: fix swapfile read/write offset
+
+Jiri Slaby (1):
+      vt/consolemap: do font sum unsigned
+
+Joe Perches (1):
+      sysfs: Add sysfs_emit and sysfs_emit_at to format sysfs output
+
+Lech Perczak (1):
+      net: usb: qmi_wwan: support ZTE P685M modem
+
+Lee Duncan (1):
+      scsi: iscsi: Restrict sessions and handles to admin capabilities
+
+Li Xinhai (1):
+      mm/hugetlb.c: fix unnecessary address expansion of pmd sharing
+
+Marco Elver (1):
+      net: fix up truesize of cloned skb in skb_prepare_for_shift()
+
+Miaoqing Pan (1):
+      ath10k: fix wmi mgmt tx queue full due to race condition
+
+Mike Kravetz (1):
+      hugetlb: fix update_and_free_page contig page struct assumption
+
+Nobuhiro Iwamatsu (1):
+      iwlwifi: pcie: fix to correct null check
+
+Randy Dunlap (1):
+      JFS: more checks for invalid superblock
+
+Ricardo Ribalda (1):
+      media: uvcvideo: Allow entities with no pads
+
+Rokudo Yan (1):
+      zsmalloc: account the number of compacted pages correctly
+
+Rolf Eike Beer (2):
+      scripts: use pkg-config to locate libcrypto
+      scripts: set proper OpenSSL include dir also for sign-file
+
+Sakari Ailus (1):
+      media: v4l: ioctl: Fix memory leak in video_usercopy
+
+Thomas Gleixner (1):
+      futex: Ensure the correct return value from futex_lock_pi()
+
+Tony Lindgren (1):
+      wlcore: Fix command execute failure 19 for wl12xx
+
+Yumei Huang (1):
+      xfs: Fix assert failure in xfs_setattr_size()
 
