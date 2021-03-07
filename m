@@ -2,131 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B5B330065
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 12:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E922330066
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 12:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhCGLi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 06:38:29 -0500
-Received: from relay04.th.seeweb.it ([5.144.164.165]:58805 "EHLO
-        relay04.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbhCGLhT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 06:37:19 -0500
-Received: from localhost.localdomain (abac94.neoplus.adsl.tpnet.pl [83.6.166.94])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id B0C891F50F;
-        Sun,  7 Mar 2021 12:37:11 +0100 (CET)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] brcmfmac: Add support for BCM43596 PCIe Wi-Fi
-Date:   Sun,  7 Mar 2021 12:35:45 +0100
-Message-Id: <20210307113550.7720-1-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.30.1
+        id S230242AbhCGLia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 06:38:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230155AbhCGLhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 06:37:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 445E664E40;
+        Sun,  7 Mar 2021 11:37:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615117056;
+        bh=aFiFsi6ZCYNCNHXCjqZOMxbk8+mJyhc0p4yM4WOYk+w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vxZGgVrl7s0Cnuwr211ySN3J8YCmoIADiWuNyeviyz4cq+pBdvNBld8DXAjjoR9lf
+         wFHQUVMSDACw1IpjEacgt4+gutS/Lv3ZEOcv4adscyb8NfTTEE6yH0XVGdWsbQ8796
+         CS3Sagh+l90Klt/0DCLF+o8oxsgvPwfcQ6YXpssI=
+Date:   Sun, 7 Mar 2021 12:37:34 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Subject: Re: [PATCH 5.11 000/104] 5.11.4-rc1 review
+Message-ID: <YES6/mv/ju9oR1bM@kroah.com>
+References: <20210305120903.166929741@linuxfoundation.org>
+ <CA+G9fYvu8RgxGFwr3J4W5NjZLkukYh1SM6-_+2-1dot13Y2s6w@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYvu8RgxGFwr3J4W5NjZLkukYh1SM6-_+2-1dot13Y2s6w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for BCM43596 dual-band AC chip, found in
-SONY Xperia X Performance, XZ and XZs smartphones (and
-*possibly* other devices from other manufacturers).
-The chip doesn't require any special handling and seems to work
-just fine OOTB.
+On Sun, Mar 07, 2021 at 07:46:06AM +0530, Naresh Kamboju wrote:
+> On Fri, 5 Mar 2021 at 17:55, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.11.4 release.
+> > There are 104 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.4-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> Results from Linaro’s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
+> 
+> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-PCIe IDs taken from: https://github.com/sonyxperiadev/kernel/commit/9e43fefbac8e43c3d7792e73ca52a052dd86d7e3.patch
+thanks for testing them all and helping with the tty regression.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c       | 2 ++
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c       | 4 ++++
- drivers/net/wireless/broadcom/brcm80211/include/brcm_hw_ids.h | 4 ++++
- 3 files changed, 10 insertions(+)
-
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
-index 45037decba40..38ca0517f3cf 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
-@@ -723,6 +723,7 @@ static u32 brcmf_chip_tcm_rambase(struct brcmf_chip_priv *ci)
- 	case BRCM_CC_43666_CHIP_ID:
- 		return 0x200000;
- 	case BRCM_CC_4359_CHIP_ID:
-+	case BRCM_CC_43596_CHIP_ID:
- 		return (ci->pub.chiprev < 9) ? 0x180000 : 0x160000;
- 	case BRCM_CC_4364_CHIP_ID:
- 	case CY_CC_4373_CHIP_ID:
-@@ -1411,6 +1412,7 @@ bool brcmf_chip_sr_capable(struct brcmf_chip *pub)
- 		reg = chip->ops->read32(chip->ctx, addr);
- 		return (reg & CC_SR_CTL0_ENABLE_MASK) != 0;
- 	case BRCM_CC_4359_CHIP_ID:
-+	case BRCM_CC_43596_CHIP_ID:
- 	case CY_CC_43012_CHIP_ID:
- 		addr = CORE_CC_REG(pmu->base, retention_ctl);
- 		reg = chip->ops->read32(chip->ctx, addr);
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-index ad79e3b7e74a..da604fa17f94 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-@@ -71,6 +71,7 @@ static const struct brcmf_firmware_mapping brcmf_pcie_fwnames[] = {
- 	BRCMF_FW_ENTRY(BRCM_CC_43570_CHIP_ID, 0xFFFFFFFF, 43570),
- 	BRCMF_FW_ENTRY(BRCM_CC_4358_CHIP_ID, 0xFFFFFFFF, 4358),
- 	BRCMF_FW_ENTRY(BRCM_CC_4359_CHIP_ID, 0xFFFFFFFF, 4359),
-+	BRCMF_FW_ENTRY(BRCM_CC_43596_CHIP_ID, 0xFFFFFFFF, 4359),
- 	BRCMF_FW_ENTRY(BRCM_CC_4364_CHIP_ID, 0xFFFFFFFF, 4364),
- 	BRCMF_FW_ENTRY(BRCM_CC_4365_CHIP_ID, 0x0000000F, 4365B),
- 	BRCMF_FW_ENTRY(BRCM_CC_4365_CHIP_ID, 0xFFFFFFF0, 4365C),
-@@ -2107,6 +2108,9 @@ static const struct pci_device_id brcmf_pcie_devid_table[] = {
- 	BRCMF_PCIE_DEVICE(BRCM_PCIE_43570_DEVICE_ID),
- 	BRCMF_PCIE_DEVICE(BRCM_PCIE_4358_DEVICE_ID),
- 	BRCMF_PCIE_DEVICE(BRCM_PCIE_4359_DEVICE_ID),
-+	BRCMF_PCIE_DEVICE(BRCM_PCIE_43596_DEVICE_ID),
-+	BRCMF_PCIE_DEVICE(BRCM_PCIE_43596_2G_DEVICE_ID),
-+	BRCMF_PCIE_DEVICE(BRCM_PCIE_43596_5G_DEVICE_ID),
- 	BRCMF_PCIE_DEVICE(BRCM_PCIE_43602_DEVICE_ID),
- 	BRCMF_PCIE_DEVICE(BRCM_PCIE_43602_2G_DEVICE_ID),
- 	BRCMF_PCIE_DEVICE(BRCM_PCIE_43602_5G_DEVICE_ID),
-diff --git a/drivers/net/wireless/broadcom/brcm80211/include/brcm_hw_ids.h b/drivers/net/wireless/broadcom/brcm80211/include/brcm_hw_ids.h
-index 00309b272a0e..03542c096e40 100644
---- a/drivers/net/wireless/broadcom/brcm80211/include/brcm_hw_ids.h
-+++ b/drivers/net/wireless/broadcom/brcm80211/include/brcm_hw_ids.h
-@@ -43,6 +43,7 @@
- #define BRCM_CC_43570_CHIP_ID		43570
- #define BRCM_CC_4358_CHIP_ID		0x4358
- #define BRCM_CC_4359_CHIP_ID		0x4359
-+#define BRCM_CC_43596_CHIP_ID		43596
- #define BRCM_CC_43602_CHIP_ID		43602
- #define BRCM_CC_4364_CHIP_ID		0x4364
- #define BRCM_CC_4365_CHIP_ID		0x4365
-@@ -72,6 +73,9 @@
- #define BRCM_PCIE_43570_DEVICE_ID	0x43d9
- #define BRCM_PCIE_4358_DEVICE_ID	0x43e9
- #define BRCM_PCIE_4359_DEVICE_ID	0x43ef
-+#define BRCM_PCIE_43596_DEVICE_ID	0x4415
-+#define BRCM_PCIE_43596_2G_DEVICE_ID	0x4416
-+#define BRCM_PCIE_43596_5G_DEVICE_ID	0x4417
- #define BRCM_PCIE_43602_DEVICE_ID	0x43ba
- #define BRCM_PCIE_43602_2G_DEVICE_ID	0x43bb
- #define BRCM_PCIE_43602_5G_DEVICE_ID	0x43bc
--- 
-2.30.1
-
+greg k-h
