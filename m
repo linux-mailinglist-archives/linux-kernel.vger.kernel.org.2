@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5BE3302B0
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 16:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE47C3302BA
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 16:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbhCGPY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 10:24:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230488AbhCGPYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 10:24:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6801765004;
-        Sun,  7 Mar 2021 15:24:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615130674;
-        bh=v6Hpp6iOc56BzTgKF0Lqlq7f36GA6UOn7qkPYeygLDs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o6t0vl1XcJjABVvkwrDtqIn65aMIJLWlZ+nmr8ab6DZR/FskYnSQHoMXgM8bYpvjx
-         aZzeCCIQLPLclXQ3vkrCVeCGbCdrBobrVFuIXY6mpG4qype9tqbCEHi/HhV8e0kUtz
-         Wb1TJoCLJL4EHeel7y0nywBZMkfJV7jxGcYYBULw=
-Date:   Sun, 7 Mar 2021 16:24:31 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Jing Xiangfeng <jingxiangfeng@huawei.com>, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, rppt@kernel.org, lorenzo.pieralisi@arm.com,
-        guohanjun@huawei.com, sudeep.holla@arm.com, rjw@rjwysocki.net,
-        lenb@kernel.org, song.bao.hua@hisilicon.com, ardb@kernel.org,
-        anshuman.khandual@arm.com, bhelgaas@google.com, guro@fb.com,
-        robh+dt@kernel.org, stable@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, frowand.list@gmail.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        wangkefeng.wang@huawei.com
-Subject: Re: [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide ZONE_DMA
-Message-ID: <YETwL6QGWFyJTAzk@kroah.com>
-References: <20210303073319.2215839-1-jingxiangfeng@huawei.com>
- <YEDkmj6cchMPAq2h@kroah.com>
- <9bc396116372de5b538d71d8f9ae9c3259f1002e.camel@suse.de>
- <YEDr/lYZHew88/Ip@kroah.com>
- <827b317d7f5da6e048806922098291faacdb19f9.camel@suse.de>
+        id S231522AbhCGPoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 10:44:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231486AbhCGPn6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 10:43:58 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A54C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 07:43:58 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id cw15so3439626qvb.11
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 07:43:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mS9UpdncXR9MHS9h0T1Gw/f6CT9PrQN5whsC1DFrt58=;
+        b=JI4hpgQn2neHm+ucZNu7Sc0ssuhAAXw5z2xpe8MrP9/QGMCL8F2Jrmydi2lGClUwOc
+         eaW564aDHdpZSV9xAm1s31EJ9PwQ1cDE42oKanEQMv5J+LdFOd3X/DxdhDr41JHbsQ9r
+         jPjuPBI5IwhsAntBnIHdsB6M84CcIxT9dZ3a0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mS9UpdncXR9MHS9h0T1Gw/f6CT9PrQN5whsC1DFrt58=;
+        b=Kr+GuhJMZS9D//aYfuUrY2F4779CTJ7EWT1NkZ/6wXahQtsHzleVvWQGZ1VpawR/WD
+         g2eFc1tcKvNEQvWDX4Gig741z1A90VVm+gnruW9AlasfylGyVqSW199MUGQSDeA3pkvL
+         sVvGNDnrfdZR3fWzYUeXJFgYViOScgmXndzx/asAT7cPb6xYbdJH0aDpBB2Ms97dE1gm
+         7GjCDvsempzSTQsReBOK+cE17jqqC2GG98JZFI0FeQbNJ5/QFhtkGLUJMcMGIGQEMjkz
+         C3MJzQVRBaHPG6hVFm0gZubrUNtTDZRLrvEF/ZVzUpjGoFR1P5u98XuQfKGvf8W4hU9j
+         RbLA==
+X-Gm-Message-State: AOAM530+jVS5LvEKZkSaWDOPF8E81CDHJ5VqkkW/kCR57d0vebdx/JuB
+        MvdKyGy+NyVu7Xdentvk3TbShg==
+X-Google-Smtp-Source: ABdhPJyk/u0kCKWpXzQjHEBQuzPQEuAe09XUCapT+8tWJ8cJzeHmYbLVyt7Ra/WmF8Z+gQRtlLxAEQ==
+X-Received: by 2002:a05:6214:1c45:: with SMTP id if5mr17365111qvb.9.1615131837280;
+        Sun, 07 Mar 2021 07:43:57 -0800 (PST)
+Received: from chatter.i7.local (bras-base-mtrlpq5031w-grc-32-216-209-220-18.dsl.bell.ca. [216.209.220.18])
+        by smtp.gmail.com with ESMTPSA id d24sm5849982qko.54.2021.03.07.07.43.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 07:43:56 -0800 (PST)
+Date:   Sun, 7 Mar 2021 10:43:54 -0500
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Ronald Warsow <rwarsow@gmx.de>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: stable kernel checksumming fails
+Message-ID: <20210307154354.qbbsy355d5zfubnf@chatter.i7.local>
+References: <d58ab27a-78ad-1119-79ac-2a1fbcd3527a@gmx.de>
+ <YETm+6sQqek6kY/A@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <827b317d7f5da6e048806922098291faacdb19f9.camel@suse.de>
+In-Reply-To: <YETm+6sQqek6kY/A@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 04:09:28PM +0100, Nicolas Saenz Julienne wrote:
-> On Thu, 2021-03-04 at 15:17 +0100, Greg KH wrote:
-> > On Thu, Mar 04, 2021 at 03:05:32PM +0100, Nicolas Saenz Julienne wrote:
-> > > Hi Greg.
-> > > 
-> > > On Thu, 2021-03-04 at 14:46 +0100, Greg KH wrote:
-> > > > On Wed, Mar 03, 2021 at 03:33:12PM +0800, Jing Xiangfeng wrote:
-> > > > > Using two distinct DMA zones turned out to be problematic. Here's an
-> > > > > attempt go back to a saner default.
-> > > > 
-> > > > What problem does this solve?  How does this fit into the stable kernel
-> > > > rules?
-> > > 
-> > > We changed the way we setup memory zones in arm64 in order to cater for
-> > > Raspberry Pi 4's weird DMA constraints: ZONE_DMA spans the lower 1GB of memory
-> > > and ZONE_DMA32 the rest of the 32bit address space. Since you can't allocate
-> > > memory that crosses zone boundaries, this broke crashkernel allocations on big
-> > > machines. This series fixes all this by parsing the HW description and checking
-> > > for DMA constrained buses. When not found, the unnecessary zone creation is
-> > > skipped.
+On Sun, Mar 07, 2021 at 03:45:15PM +0100, Greg KH wrote:
+> > checksumming the downloaded kernel manually gives an "Okay" though.
 > > 
-> > What kernel/commit caused this "breakage"?
+> > 
+> > is this just me (on Fedora 33) ?
 > 
-> 1a8e1cef7603 arm64: use both ZONE_DMA and ZONE_DMA32
+> Fails for me on Arch:
+> 
+> Verifying checksum on linux-5.11.4.tar.xz
+> /usr/bin/sha256sum: /home/gregkh/Downloads/linux-tarball-verify.gZo313NCk.untrusted/sha256sums.txt: no properly formatted SHA256 checksum lines found
+> FAILED to verify the downloaded tarball checksum
+> 
+> 
+> Konstantin, anything change recently?
 
-Thanks for the info, all now queued up.
+I think it's just cache invalidation problems. I've committed a tiny change to
+the script that always grabs that file from the origin servers instead of
+going via the CDN.
 
-greg k-h
+https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git/commit/?id=71e570c5f090b5740e323f98504bf38592785b49
+
+This should sidestep the problem.
+
+-K
