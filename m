@@ -2,142 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D88F3304CA
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 22:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 709E93304CE
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 22:20:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233014AbhCGVO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 16:14:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231397AbhCGVOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 16:14:40 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 380A965155;
-        Sun,  7 Mar 2021 21:14:39 +0000 (UTC)
-Date:   Sun, 7 Mar 2021 16:14:37 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Chen <peter.chen@kernel.org>
-Cc:     Pawel Laszczak <pawell@cadence.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jacob Wen <jian.w.wen@oracle.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 0/2] tracing: Detect unsafe dereferencing of pointers
- from trace events
-Message-ID: <20210307161437.4c00cd4a@gandalf.local.home>
-In-Reply-To: <20210307040142.GA2930@b29397-desktop>
-References: <20210226185909.100032746@goodmis.org>
-        <CAHk-=wiWF=ah_q1HBVUth2vuBx2TieN8U331y5FhXiehX-+=TQ@mail.gmail.com>
-        <20210227141802.5c9aca91@oasis.local.home>
-        <20210227190831.56956c80@oasis.local.home>
-        <BYAPR07MB5381637CFA12C3988CA06550DD9A9@BYAPR07MB5381.namprd07.prod.outlook.com>
-        <20210302082355.GA8633@nchen>
-        <20210302095605.7b2881cd@gandalf.local.home>
-        <20210307040142.GA2930@b29397-desktop>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233032AbhCGVTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 16:19:34 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:52631 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231397AbhCGVTQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 16:19:16 -0500
+Received: by mail-il1-f198.google.com with SMTP id e16so6082566ile.19
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 13:19:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=b/8/TV2Ggjpg+ciG7XgCGRcOg8HJPj1kV6+Ap5MX/CY=;
+        b=V6xc+sSmNSxxRWMC0+k3Lu/L9w6Y1caxivwEA64YVx32/gq4nYY+pEn25FRMbq//RY
+         m0DChZcl7SQ9YIYGtQmRvMJPpSp3I8vFDFs6TzZ6shPtGATTML3XJIvY+wktzZTcSc9j
+         C0naUk5c2a7hLMZoDMt0b/R6F7b+bDlBM58k/EoKIY0i1bp7y0ybhGTKE/t7kv+KAehS
+         grEvwYM94UxOEXWeXwBHEJolqWaAbDW7cf289gJs2NzKq1sMxk9q13J7EEJMhBuvTLLQ
+         ttBprAyu1iM4p9SfqNVpxy4C809LHiigfAm0zeDUWZ2KU5MtxgcM/oB+E/nERTg+HamX
+         DmMQ==
+X-Gm-Message-State: AOAM532PTHeFeckbmiJ7ZYnoJL+a2pdudI+go9TDO6YekFqeErzkEKmo
+        03XI8xTxB65k5k2kkAjL+tZlumJekE/Ozm9iM05wCdpr0iTz
+X-Google-Smtp-Source: ABdhPJzVhPF7jKxv/Gv5CpH0beyGmos+xXQz4bdA1lIez7e9mXZ+ZdPvXbH+SB7jIW9HhFKClnjp9qGTs18I8A5WpZu9DoHsR/AR
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a5e:8610:: with SMTP id z16mr15515017ioj.57.1615151955861;
+ Sun, 07 Mar 2021 13:19:15 -0800 (PST)
+Date:   Sun, 07 Mar 2021 13:19:15 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000096659005bcf8de0c@google.com>
+Subject: [syzbot] general protection fault in btf_type_id_size
+From:   syzbot <syzbot+8bab8ed346746e7540e8@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, daniel@iogearbox.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 7 Mar 2021 12:01:42 +0800
-Peter Chen <peter.chen@kernel.org> wrote:
+Hello,
 
-> On 21-03-02 09:56:05, Steven Rostedt wrote:
-> > On Tue, 2 Mar 2021 16:23:55 +0800
-> > Peter Chen <peter.chen@kernel.org> wrote:
-> > 
-> > s it looks like it uses %pa which IIUC from the printk code, it  
-> > > > >> dereferences the pointer to find it's virtual address. The event has
-> > > > >> this as the field:
-> > > > >>
-> > > > >>                 __field(struct cdns3_trb *, start_trb_addr)
-> > > > >>
-> > > > >> Assigns it with:
-> > > > >>
-> > > > >>                 __entry->start_trb_addr = req->trb;
-> > > > >>
-> > > > >> And prints that with %pa, which will dereference pointer at the time of
-> > > > >> reading, where the address in question may no longer be around. That
-> > > > >> looks to me as a potential bug.    
-> > > 
-> > > Steven, thanks for reporting. Do you mind sending patch to fix it?
-> > > If you have no time to do it, I will do it later.
-> > >   
-> > 
-> > I would have already fixed it, but I wasn't exactly sure how this is used.
-> > 
-> > In Documentation/core-api/printk-formats.rst we have:
-> > 
-> >    Physical address types phys_addr_t
-> >    ----------------------------------
-> > 
-> >    ::
-> > 
-> >            %pa[p]  0x01234567 or 0x0123456789abcdef
-> > 
-> >    For printing a phys_addr_t type (and its derivatives, such as
-> >    resource_size_t) which can vary based on build options, regardless of the
-> >    width of the CPU data path.
-> > 
-> > So it only looks like it is used to for the size of the pointer.
-> > 
-> > I guess something like this might work:
-> > 
-> > diff --git a/drivers/usb/cdns3/cdns3-trace.h b/drivers/usb/cdns3/cdns3-trace.h
-> > index 8648c7a7a9dd..d3b8624fc427 100644
-> > --- a/drivers/usb/cdns3/cdns3-trace.h
-> > +++ b/drivers/usb/cdns3/cdns3-trace.h
-> > @@ -214,7 +214,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
-> >  		__field(int, no_interrupt)
-> >  		__field(int, start_trb)
-> >  		__field(int, end_trb)
-> > -		__field(struct cdns3_trb *, start_trb_addr)
-> > +		__field(phys_addr_t, start_trb_addr)
-> >  		__field(int, flags)
-> >  		__field(unsigned int, stream_id)
-> >  	),
-> > @@ -230,7 +230,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
-> >  		__entry->no_interrupt = req->request.no_interrupt;
-> >  		__entry->start_trb = req->start_trb;
-> >  		__entry->end_trb = req->end_trb;
-> > -		__entry->start_trb_addr = req->trb;
-> > +		__entry->start_trb_addr = *(const phys_addr_t *)req->trb;
-> >  		__entry->flags = req->flags;
-> >  		__entry->stream_id = req->request.stream_id;
-> >  	),
-> > @@ -244,7 +244,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
-> >  		__entry->status,
-> >  		__entry->start_trb,
-> >  		__entry->end_trb,
-> > -		__entry->start_trb_addr,
-> > +		/* %pa dereferences */ &__entry->start_trb_addr,
-> >  		__entry->flags,
-> >  		__entry->stream_id
-> >  	)
-> > 
-> > 
-> > Can you please test it? I don't have the hardware, but I also want to make
-> > sure I don't break anything.
-> > 
-> > Thanks,
-> >   
-> 
-> Since the virtual address for req->trb is NULL before using it. It will
-> trigger below oops using your change. There is already index
-> (start_trb/end_trb) for which TRB it has handled, it is not necessary
-> to trace information for its physical address. I decide to delete this
-> trace entry, thanks for reporting it.
+syzbot found the following issue on:
 
-Thanks for fixing / removing it. But I should have added a NULL check before
-dereferencing, because that's what the vsnprintf() code does.
+HEAD commit:    6185266c selftests/bpf: Mask bpf_csum_diff() return value ..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=14fd4ff2d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e2d5ba72abae4f14
+dashboard link: https://syzkaller.appspot.com/bug?extid=8bab8ed346746e7540e8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139778aed00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158426dad00000
 
--- Steve
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8bab8ed346746e7540e8@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
+CPU: 0 PID: 8380 Comm: syz-executor429 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:btf_resolved_type_id kernel/bpf/btf.c:1770 [inline]
+RIP: 0010:btf_type_id_size+0x40e/0x960 kernel/bpf/btf.c:1811
+Code: 48 c1 e9 03 80 3c 11 00 0f 85 17 05 00 00 49 8b 47 10 44 29 f3 48 8d 1c 98 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 ec
+RSP: 0018:ffffc90000fffd18 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: 0000000000000014 RCX: 1ffff11003a70482
+RDX: 0000000000000002 RSI: ffffffff818b12f3 RDI: ffff88801d382410
+RBP: ffff88801d382400 R08: 0000000000000005 R09: ffffffff818b114a
+R10: ffffffff818b128e R11: 000000000000000a R12: 0000000000000000
+R13: dffffc0000000000 R14: 0000000000000000 R15: ffff88801d382400
+FS:  0000000000ad5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004ae0f0 CR3: 0000000024fca000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ map_check_btf kernel/bpf/syscall.c:757 [inline]
+ map_create kernel/bpf/syscall.c:860 [inline]
+ __do_sys_bpf+0x4000/0x4f00 kernel/bpf/syscall.c:4370
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43ff09
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc5f435ef8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 000000000001053e RCX: 000000000043ff09
+RDX: 0000000000000040 RSI: 0000000020000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 00007ffc5f436098 R09: 00007ffc5f436098
+R10: 00007ffc5f436098 R11: 0000000000000246 R12: 00007ffc5f435f0c
+R13: 431bde82d7b634db R14: 00000000004ae018 R15: 0000000000400488
+Modules linked in:
+---[ end trace a4216c6ef2fa85f5 ]---
+RIP: 0010:btf_resolved_type_id kernel/bpf/btf.c:1770 [inline]
+RIP: 0010:btf_type_id_size+0x40e/0x960 kernel/bpf/btf.c:1811
+Code: 48 c1 e9 03 80 3c 11 00 0f 85 17 05 00 00 49 8b 47 10 44 29 f3 48 8d 1c 98 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 ec
+RSP: 0018:ffffc90000fffd18 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: 0000000000000014 RCX: 1ffff11003a70482
+RDX: 0000000000000002 RSI: ffffffff818b12f3 RDI: ffff88801d382410
+RBP: ffff88801d382400 R08: 0000000000000005 R09: ffffffff818b114a
+R10: ffffffff818b128e R11: 000000000000000a R12: 0000000000000000
+R13: dffffc0000000000 R14: 0000000000000000 R15: ffff88801d382400
+FS:  0000000000ad5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004ae0f0 CR3: 0000000024fca000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
