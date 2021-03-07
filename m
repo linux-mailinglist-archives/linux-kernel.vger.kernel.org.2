@@ -2,163 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DBF33051F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 00:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C100330527
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 00:06:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbhCGXAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 18:00:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55116 "EHLO
+        id S233250AbhCGXGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 18:06:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231761AbhCGW7v (ORCPT
+        with ESMTP id S233244AbhCGXFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 17:59:51 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69098C06174A;
-        Sun,  7 Mar 2021 14:59:51 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id r5so3789647qvv.9;
-        Sun, 07 Mar 2021 14:59:51 -0800 (PST)
+        Sun, 7 Mar 2021 18:05:39 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE84C06175F;
+        Sun,  7 Mar 2021 15:05:36 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id l2so5229137pgb.1;
+        Sun, 07 Mar 2021 15:05:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tz+Rio/qaBic+aovNFslXXjVD5rlN4szJOCvAjzCYNo=;
-        b=LAip6MWhqrpHv6FbsHmbe9TeCsbS9XsE3DAY9h4aPKjPZkHGz9NsEUjwmOjlmmjo0W
-         mYnepG/G9afo9XxR2mmmiDCQuTFhLBBMDSo0b8dXjNqHr34mCuIDCKcv//LQJpGp3voZ
-         Qd3Kqu+F1/wTcB0zbSitohqWB3qsVQGxGslQX0t97h+P4fcR8JDcGnuMMnphFKPMDnC6
-         JoQITKylnqQ1n+4NPrv3cPv955idAnox8kQHaWuI+msdAXQflbW476bzUFvTHa6vwGhl
-         x5ZXAfPtxM0waZJrXMx4LJadT6eCILg0iC39VrM6eg5MaarLZJ9VPIrCF0YwRgaDGXb+
-         qrmA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XtRSM0w13Qb1yabD0yvOGJiUG6gT2e1c0aSLnOFytzc=;
+        b=qqpw7VXyGhTyjQDiNWQvy+fZqojgqjErZm6pCLbKaMo8BltCZW6n83L/4NHkQIyw1l
+         OG7wEU7XsaVivWPrzL6iXfy9zkcKDb1+0O+TLlwapo13/SWW/t5DgpIFrhNf7lHlL9gY
+         TG5rism1NvCMTSY8XFbDRtnbJMge7ptt+7CxawGKg83tKY94uZFnxAWYnSy4TQ2jORsS
+         k5jBXiFjEijqKa+VstXfHUP+VdQzUn7z3TzHpP75lyhJdYPSG0yNbRcZ3efCB9KkN7L5
+         qR0pM0qSQauu9u/WlgIoiJVlwAzexoZzczYVRGOJTCKIzPL+yQX8JTVuUQRjYo95a/mV
+         BlUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=tz+Rio/qaBic+aovNFslXXjVD5rlN4szJOCvAjzCYNo=;
-        b=Mh58L2jG+1lhtuc0ax71X/SYq079hxmxVFa9xBaRTaZFWFLSnrPYaYUmGb/bH3il3h
-         QuaygaDrrlOmJHcfk4h3SnfBHkHHJC6g58CVy8HU1YZyfrNNGtyN08Z3Xds2f0yVM1Yt
-         Y7eLBD4UEYvaFQ3tsBgdJQCBwYr6SQdF5Ha1ajxLf2zLzRP24q1ykojkEKvXiA8zgk0l
-         gmoDn32G8/4lmYxNSqvy4nFIfvvrMRHdfqqEOGszUqSnbxc39zr/aRzoUwj4cJ1FAD8p
-         iFbdml64HOqZa99Zl+F0ZvsLqXwEF6dtmUIzEjVQgmRz7zGBkaV/OUprhIw3mkCfszc5
-         U5Og==
-X-Gm-Message-State: AOAM5309kWJzTyawy2gDQNZzLhXd+A9QiD/yoaBjUJZYLluYZe9wv2CQ
-        BVaHOfbIO1Ke1Wqz+o4b2W0=
-X-Google-Smtp-Source: ABdhPJzCqKz4z+SnhCp7URvSEg72/QYhB65laBYJwIv/RefdITneNey+x+JC9WRIjcsSmL4jADNwCQ==
-X-Received: by 2002:a0c:c583:: with SMTP id a3mr18331302qvj.15.1615157990018;
-        Sun, 07 Mar 2021 14:59:50 -0800 (PST)
-Received: from OpenSuse ([156.146.37.209])
-        by smtp.gmail.com with ESMTPSA id d2sm6560241qkk.42.2021.03.07.14.59.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XtRSM0w13Qb1yabD0yvOGJiUG6gT2e1c0aSLnOFytzc=;
+        b=X9w1qUzNk7+zrIormjQmOrYc2RzmsCHMPwE2Iwxv2+uhSpPry7vCCGv/XO+zFCZ6sF
+         RuyH7qQRrqqZSb5IfUZuLHV/8XlJ63F+2fj9ImNBGcEOss4kMKnSOWrd25bC3HhLZl1J
+         7/caq/90dy0nmLQ7FPs1TvaBYahSMyQ2BeXXC2Vzw9zV415x2XDo3M5oIAXM3tlMVvwM
+         lpDiIBhVcGPbJ7KKjwQKvOIEqSDHQpo3QMMAzlgI/jgOdzax6iH584eJu8Vx2Evoxws9
+         1ddDf2TTkWkyAKbn7oeQnC04IaUxIIcK1HK7roTacJWRM9NDX+38oJ1wn6QwKRiO/+Ej
+         7N1Q==
+X-Gm-Message-State: AOAM531ZDoeWkLXKRGxIojOQlX6LWeuURJlWYrpJpEswWAiq+qCAWo7s
+        ZpYPwjyMC3PucGSE/3GiZLE=
+X-Google-Smtp-Source: ABdhPJynFdhgChyPxLEfnQ6VKIMDURJUnkeggRhI6GHFju/IlzJvlb/bAyyPTr80X2b7bq4l9ZresA==
+X-Received: by 2002:a63:ec50:: with SMTP id r16mr17631072pgj.451.1615158335573;
+        Sun, 07 Mar 2021 15:05:35 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:bc9b:5ab2:d763:15bc])
+        by smtp.gmail.com with ESMTPSA id x1sm8369251pje.40.2021.03.07.15.05.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 14:59:48 -0800 (PST)
-Date:   Mon, 8 Mar 2021 04:29:41 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Ronald Warsow <rwarsow@gmx.de>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: stable kernel checksumming fails
-Message-ID: <YEVa3dLvugd4+9Cv@OpenSuse>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Ronald Warsow <rwarsow@gmx.de>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <d58ab27a-78ad-1119-79ac-2a1fbcd3527a@gmx.de>
- <YETm+6sQqek6kY/A@kroah.com>
+        Sun, 07 Mar 2021 15:05:34 -0800 (PST)
+Date:   Sun, 7 Mar 2021 15:05:31 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Subject: Re: [PATCH v1 2/2] iio: adc: add ADC driver for the TI TSC2046
+ controller
+Message-ID: <YEVcO/NeKzBsFEdL@google.com>
+References: <20210305133813.27967-1-o.rempel@pengutronix.de>
+ <20210305133813.27967-3-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="i3HbxQlc7lFrG8j3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YETm+6sQqek6kY/A@kroah.com>
+In-Reply-To: <20210305133813.27967-3-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Oleksij,
 
---i3HbxQlc7lFrG8j3
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+On Fri, Mar 05, 2021 at 02:38:13PM +0100, Oleksij Rempel wrote:
+> +
+> +	/* TODO: remove IRQ_NOAUTOEN after needed patches are mainline */
+> +	irq_set_status_flags(spi->irq, IRQ_NOAUTOEN);
+> +	ret = devm_request_threaded_irq(dev, spi->irq,
+> +					NULL,
+> +					&tsc2046_adc_irq,
+> +					IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+> +					name, indio_dev);
 
-On 15:45 Sun 07 Mar 2021, Greg KH wrote:
->On Sun, Mar 07, 2021 at 03:10:49PM +0100, Ronald Warsow wrote:
->> hello
->>
->> getting stable kernels with this script:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/mricon/korg-helpers.git/tree/get-verified-tarball
->>
->>
->> fails since the last 2 (?) stable releases with (last lines):
->>
->> ...
->>
->> + /usr/bin/curl -L -o
->> /home/ron/Downloads/linux-tarball-verify.1GiZid5WT.untrusted/linux-5.11.4.tar.xz
->> https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.11.4.tar.xz
->>   % Total    % Received % Xferd  Average Speed   Time    Time     Time
->> Current
->>                                  Dload  Upload   Total   Spent    Left
->> Speed
->> 100  112M  100  112M    0     0  5757k      0  0:00:19  0:00:19 --:--:--
->> 5938k
->>
->> pushd ${TMPDIR} >/dev/null
->> + pushd /home/ron/Downloads/linux-tarball-verify.1GiZid5WT.untrusted
->> echo "Verifying checksum on linux-${VER}.tar.xz"
->> + echo 'Verifying checksum on linux-5.11.4.tar.xz'
->> Verifying checksum on linux-5.11.4.tar.xz
->> if ! ${SHA256SUMBIN} -c ${SHACHECK}; then
->>     echo "FAILED to verify the downloaded tarball checksum"
->>     popd >/dev/null
->>     rm -rf ${TMPDIR}
->>     exit 1
->> fi
->> + /usr/bin/sha256sum -c
->> /home/ron/Downloads/linux-tarball-verify.1GiZid5WT.untrusted/sha256sums.txt
->> /usr/bin/sha256sum:
->> /home/ron/Downloads/linux-tarball-verify.1GiZid5WT.untrusted/sha256sums.txt:
->> no properly formatted SHA256 checksum lines found
->> + echo 'FAILED to verify the downloaded tarball checksum'
->> FAILED to verify the downloaded tarball checksum
->> + popd
->> + rm -rf /home/ron/Downloads/linux-tarball-verify.1GiZid5WT.untrusted
->> + exit 1
->>
->>
->> checksumming the downloaded kernel manually gives an "Okay" though.
->>
->>
->> is this just me (on Fedora 33) ?
->
->Fails for me on Arch:
->
->Verifying checksum on linux-5.11.4.tar.xz
->/usr/bin/sha256sum: /home/gregkh/Downloads/linux-tarball-verify.gZo313NCk.untrusted/sha256sums.txt: no properly formatted SHA256 checksum lines found
->FAILED to verify the downloaded tarball checksum
->
-I can confirm it works alright with me on OpenSuse Tumbleweed and Slackware
-...yet to test on others....Debian....Arch and Gentoo ...
->
+I'd recommend dropping IRQF_TRIGGER_LOW and only using IRQF_ONESHOT and
+rely on the platform (ACPI, DT) to specify trigger polarity according to
+how device is wired in a given system. In general I believe newer
+drivers should not specify interrupt triggers themselves.
 
-Oh btw ...sometimes I got that specific error because of lack of dns
-propogation to dns stuff in some reason...
+Thanks.
 
-
->Konstantin, anything change recently?
->
-
---i3HbxQlc7lFrG8j3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBFWtcACgkQsjqdtxFL
-KRXtWwf+IMe1Li8fBwRLDuOOuZYdeSaki/BPoJdOZ5qBuxoIkSF1BOgj8Mj8D5JJ
-SuzZ8HkWop0AUJBj0Uhd1XOPmfG1Agul5/P96jqh0Izl1c2AEXBFk3vfHwnrPK4O
-qoq49VhlgKI7xny6lzxUt5uPWW6nbRel86Cn+4WM9FAeTYE1gMJ9KMqWPRh0UWw2
-opjxGpRIyplpItUrslq3rSbOqz6Capr1tEbY8cgmbVI7272LoZmblfJN9sRQXQ9a
-9n/qp73ODjU64gH5hfk9oNY1W+yCbmB6oPCOsJWvgmgdQuE7ycuiMU26tq+Bd8Es
-oaJvY4X8pU66trcYB5wp/0VVzC9IZA==
-=7Uho
------END PGP SIGNATURE-----
-
---i3HbxQlc7lFrG8j3--
+-- 
+Dmitry
