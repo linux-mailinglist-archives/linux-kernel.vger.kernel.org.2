@@ -2,153 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0D033001C
+	by mail.lfdr.de (Postfix) with ESMTP id A6E1D33001D
 	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 11:26:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhCGKZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 05:25:59 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:52641 "EHLO ozlabs.org"
+        id S231646AbhCGK0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 05:26:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231433AbhCGKZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 05:25:30 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dtd0130Q9z9sWR;
-        Sun,  7 Mar 2021 21:25:21 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1615112728;
-        bh=hMKwh7hEcwIBqNKCtk0+MyIjBHtgNsyOwIbRteSfweo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=rCTs3h4Z1aAWefFUxdsb6qEbsAQ9n3GsfumGz1+BzZIJ5oGOnB+uzPYS+2gY32fcE
-         yM5omZz/LNxX0P/FLwwc62a6+aH4v5uGP86znhD1gYl3CmIY9hqwaJ2+y+ehTE1Wwi
-         6kVMmEZSeQenhex5ajkuSv0eftLw3ZHtih23/FIH094UVAM105Is8CMJa5/HQbahbW
-         gv+rPhllTIuv58CM47KwmlqfV55AJQbYtzDQpaxtVyr5bClnZbb/q3eeGHHXCHhfPw
-         9YjGlLi6jXMEE5lbYaUSXsXidUIiC5Ruv38TiMoECF3I6Yi5tW6I6CuZDCzbh03Si3
-         gv0xweYueFP9g==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     atrajeev@linux.vnet.ibm.com, christophe.leroy@csgroup.eu,
-        feng.tang@intel.com, gregkh@linuxfoundation.org, groug@kaod.org,
-        jniethe5@gmail.com, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, ljp@linux.ibm.com,
-        npiggin@gmail.com, peterz@infradead.org, uwe@kleine-koenig.org
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.12-2 tag
-Date:   Sun, 07 Mar 2021 21:25:16 +1100
-Message-ID: <87mtvfqn03.fsf@mpe.ellerman.id.au>
+        id S231440AbhCGKZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 05:25:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA9C165161
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 10:25:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615112734;
+        bh=5argcPxIQ145L+A9+bYHb1SXgS8fgArICXY045nS7+Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NRQzOJXMDza1bEKhuY3iC98my8yPJcwG1iD7wEXrJGzR1DidHZRTev0La0ienOy6B
+         g+dNciyDv4XFnZiJOJyQtaRq8d6yjZb9BM0txrY1HnQBgGX6hzew1MbW0RDDWWE86G
+         gzF/EWgGVHZzFh7jrO3BBY77bm+7IRZuQ7KNJ0dV7nG7UvZin4TggXWM6klFU0TQnI
+         /7iaqLg0hCNQLC1UZp8n6DedEFDwAu++v46LGuQQKldHRiXPGkYeL+yKibKr9FknKQ
+         BqNb4ZX4GrI/P1fs1/DJZGZXQKpfgLWqHFawFISHpf3ggQleP+vVuOgMI782hZ4ad/
+         j4w4vAJYuKIHw==
+Received: by mail-ot1-f45.google.com with SMTP id j22so506123otp.2
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 02:25:34 -0800 (PST)
+X-Gm-Message-State: AOAM532KTxMNzhLyDzo6NMcQflOHNuux/cIhfytng0ka30j9d5f6ZPkC
+        0SVOeI7P/HEy9SIrJr1NvEoNEci9SbxUJdIgJjM=
+X-Google-Smtp-Source: ABdhPJwGHt2AIg8h4ogt+UzuGvMzmeLzjoDNtPF/3XtiaKmHPPlsJ0bDC5mtDjHRfTGE2tLnGjfoLEH9FYCY3W33YsA=
+X-Received: by 2002:a9d:503:: with SMTP id 3mr5936406otw.77.1615112734063;
+ Sun, 07 Mar 2021 02:25:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210303170932.1838634-1-jthierry@redhat.com> <20210303170932.1838634-14-jthierry@redhat.com>
+In-Reply-To: <20210303170932.1838634-14-jthierry@redhat.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sun, 7 Mar 2021 11:25:23 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEt36b6oPAz8wtpig+WBNCGaWhWcKQiAAfOBC2a5O0iVA@mail.gmail.com>
+Message-ID: <CAMj1kXEt36b6oPAz8wtpig+WBNCGaWhWcKQiAAfOBC2a5O0iVA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 13/13] objtool: arm64: Enable stack validation for arm64
+To:     Julien Thierry <jthierry@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, ycote@redhat.com,
+        Raphael Gault <raphael.gault@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On Wed, 3 Mar 2021 at 18:10, Julien Thierry <jthierry@redhat.com> wrote:
+>
+> From: Raphael Gault <raphael.gault@arm.com>
+>
+> Add build option to run stack validation at compile time.
+>
+> When requiring stack validation, jump tables are disabled as it
+> simplifies objtool analysis (without having to introduce unreliable
+> artifacs). In local testing, this does not appear to significaly
+> affect final binary size nor system performance.
+>
+> Signed-off-by: Raphael Gault <raphael.gault@arm.com>
+> Signed-off-by: Julien Thierry <jthierry@redhat.com>
+> ---
+>  arch/arm64/Kconfig  | 1 +
+>  arch/arm64/Makefile | 4 ++++
+>  2 files changed, 5 insertions(+)
+>
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 1f212b47a48a..928323c03318 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -187,6 +187,7 @@ config ARM64
+>         select MMU_GATHER_RCU_TABLE_FREE
+>         select HAVE_RSEQ
+>         select HAVE_STACKPROTECTOR
+> +       select HAVE_STACK_VALIDATION
+>         select HAVE_SYSCALL_TRACEPOINTS
+>         select HAVE_KPROBES
+>         select HAVE_KRETPROBES
+> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+> index 5b84aec31ed3..b819fb2e8eda 100644
+> --- a/arch/arm64/Makefile
+> +++ b/arch/arm64/Makefile
+> @@ -136,6 +136,10 @@ ifeq ($(CONFIG_DYNAMIC_FTRACE_WITH_REGS),y)
+>    CC_FLAGS_FTRACE := -fpatchable-function-entry=2
+>  endif
+>
+> +ifeq ($(CONFIG_STACK_VALIDATION),y)
+> +KBUILD_CFLAGS  += -fno-jump-tables
+> +endif
+> +
 
-Hi Linus,
+This is a bit misleading: the Kconfig option in question is selected
+automatically in all cases, so jump tables are always disabled.
 
-Please pull powerpc fixes for 5.12:
+However, I think disabling jump tables make sense anyway, at least
+when building the relocatable kernel for KASLR: we currently don't use
+-fpic/fpie in that case when building the vmlinux objects (because we
+don't want/need GOT tables), and so jump tables are emitted using
+absolute addresses, which induce some space overhead in the image. (24
+bytes of RELA data per absolute address)
 
-The following changes since commit fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8:
-
-  Linux 5.12-rc1 (2021-02-28 16:05:19 -0800)
-
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/po=
-werpc-5.12-2
-
-for you to fetch changes up to 5c88a17e15795226b56d83f579cbb9b7a4864f79:
-
-  powerpc/sstep: Fix VSX instruction emulation (2021-03-02 22:41:51 +1100)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.12 #2
-
-One non-fix, the conversion of vio_driver->remove() to return void, which
-touches various powerpc specific drivers.
-
-Fix the privilege checks we do in our perf handling, which could cause soft=
-/hard
-lockups in some configurations.
-
-Fix a bug with IRQ affinity seen on kdump kernels when CPU 0 is offline in =
-the
-second kernel.
-
-Fix missed page faults after mprotect(..., PROT_NONE) on 603 (32-bit).
-
-Fix a bug in our VSX (vector) instruction emulation, which should only be s=
-een
-when doing VSX ops to cache inhibited mappings.
-
-Three commits fixing various build issues with obscure configurations.
-
-Thanks to:
-  Athira Rajeev, C=C3=A9dric Le Goater, Christophe Leroy, Christoph Plattne=
-r, Greg
-  Kurz, Jordan Niethe, Laurent Vivier, Ravi Bangoria, Tyrel Datwyler, Uwe
-  Kleine-K=C3=B6nig.
-
-- ------------------------------------------------------------------
-Athira Rajeev (1):
-      powerpc/perf: Fix handling of privilege level checks in perf interrup=
-t context
-
-Christophe Leroy (3):
-      powerpc/603: Fix protection of user pages mapped with PROT_NONE
-      powerpc/syscall: Force inlining of __prep_irq_for_enabled_exit()
-      powerpc: Force inlining of mmu_has_feature to fix build failure
-
-Greg Kurz (1):
-      powerpc/pseries: Don't enforce MSI affinity with kdump
-
-Jordan Niethe (1):
-      powerpc/sstep: Fix VSX instruction emulation
-
-Michael Ellerman (1):
-      powerpc/4xx: Fix build errors from mfdcr()
-
-Uwe Kleine-K=C3=B6nig (1):
-      vio: make remove callback return void
+... unless I am missing something, and jump tables can/will be emitted
+as relative, even when not compiling in PIC mode?
 
 
- arch/powerpc/include/asm/dcr-native.h    |  8 +++----
- arch/powerpc/include/asm/mmu.h           |  4 ++--
- arch/powerpc/include/asm/vio.h           |  2 +-
- arch/powerpc/kernel/head_book3s_32.S     |  9 ++++---
- arch/powerpc/kernel/interrupt.c          |  2 +-
- arch/powerpc/lib/sstep.c                 |  4 ++--
- arch/powerpc/perf/core-book3s.c          |  4 ++--
- arch/powerpc/platforms/pseries/msi.c     | 25 ++++++++++++++++++--
- arch/powerpc/platforms/pseries/vio.c     |  7 +++---
- drivers/char/hw_random/pseries-rng.c     |  3 +--
- drivers/char/tpm/tpm_ibmvtpm.c           |  4 +---
- drivers/crypto/nx/nx-842-pseries.c       |  4 +---
- drivers/crypto/nx/nx.c                   |  4 +---
- drivers/misc/ibmvmc.c                    |  4 +---
- drivers/net/ethernet/ibm/ibmveth.c       |  4 +---
- drivers/net/ethernet/ibm/ibmvnic.c       |  5 +---
- drivers/scsi/ibmvscsi/ibmvfc.c           |  3 +--
- drivers/scsi/ibmvscsi/ibmvscsi.c         |  4 +---
- drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c |  4 +---
- drivers/tty/hvc/hvcs.c                   |  4 +---
- 20 files changed, 55 insertions(+), 53 deletions(-)
------BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmBEqeAACgkQUevqPMjh
-pYALkRAAhMzfrU//Dw1pykwjlJhF6TccHSjmLh5y5V3qq95yXdhogx/XamGsuxZx
-s0hAET3La+2HC75ZVtLbfDct1ZuFNUAqR7n/pyPINTqhAYPeB9VoVRSl7nLL8U19
-dhxPKmtb1dBvEQFxtBO7Q5dka3S33sc1dX/ATqhXNeHpEgsN6FT99qOXzOHo3VdR
-X/i+yXIoTh72f565sxxW/Ca2apy0cfdwwAwsK+S63s9Sxmsx+sF3mtY/rZs04rzg
-JzsI14empb8nvz8EUJfk+In4uk9+BZxRF92OTGHvCkp6ptv+JtYT2A4h/JWnr0Vq
-kS40Xwqwa62tvevUgKYcjSvaCsoC5sTaETqV/5WPIIKvXjVe5DMoZWv/JqOGRGHF
-i4IbnIBEXYodcKaRto7/yNFgCvaInKjVHC1qX46ft809mfRIJlz0akUNwvIl8nRa
-o479MJpBVtSf+3e491InY26RCpwaBmEB2KM3pR30TZV4jFSWZN55cnJuVW1wj0Gg
-b1ObTrjJ/WjnIDUxLN2Hq4f60RWWhfxJtq9IplnWNM9kPx9AJRaUvlzS0Z2A7yFa
-eSNCJlV2aXhJUGOYhVM7FMgHd0HcmF00LC22X+mfxlKbAEm1ys9VmoFPhtnkUMLX
-menb5yEDGlVq+bDa0ChBUYmFx8jHbyF88YRo16TmtutW4trAr4I=3D
-=3Dlgtl
------END PGP SIGNATURE-----
+
+
+>  # Default value
+>  head-y         := arch/arm64/kernel/head.o
+>
+> --
+> 2.25.4
+>
