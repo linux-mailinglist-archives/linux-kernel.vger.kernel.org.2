@@ -2,110 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8974F330497
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 21:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE8A3304A1
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 21:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232944AbhCGUak convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 7 Mar 2021 15:30:40 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:57509 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232888AbhCGUaP (ORCPT
+        id S232950AbhCGUkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 15:40:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231732AbhCGUjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 15:30:15 -0500
-Received: from mail-ed1-f72.google.com ([209.85.208.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lJ02X-0004J6-VC
-        for linux-kernel@vger.kernel.org; Sun, 07 Mar 2021 20:30:14 +0000
-Received: by mail-ed1-f72.google.com with SMTP id r19so3686353edv.3
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 12:30:13 -0800 (PST)
+        Sun, 7 Mar 2021 15:39:36 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76BCC06174A;
+        Sun,  7 Mar 2021 12:39:35 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso1928791pjb.4;
+        Sun, 07 Mar 2021 12:39:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ksneqLZ9zvuj+Q9Pi6/GCANghUOfFQNIq6D+RQ8519s=;
+        b=gsBwdgKy0qJ/sWj2BknIzEzST332yyHdoW5xYOtq9fWcfHflnhmaGhq2v6q3a4IYmj
+         4m0L+gBQsxS6lqDfeq7qXVpJa/1xFLnOtrpduuYufDMwijEVDsiVCTrifmiuqRHxy4D7
+         hLPkAgOp1xjPHPBPLFjlvyGFa7ikTYDXjMVWzPUK/5feTbTPDv+eJWQhQcsrNEjHQIp6
+         xh2gqgD09F6/3L4HXirWiqukMjWmlgiMFw0TDgmAeTr9NHY8yVNQyppk+HAKOREQHwFZ
+         79dWlj2kWlC85Y2y3L72bZ8CmWcgy+y7cDQG3rf24DBn73gv54r1lQ9diZdY+lzLWWdG
+         BNDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=linVnUsAuRvopkT8+cc4aPzS8ei6dMsnrAAlNuxD3Vg=;
-        b=ZA8WwNOoS65TId16Mjn9/Kvp7ldrvhH0paDSjTLjMoqj3zooGLyqtYeC1U6EaeTvpU
-         AEgKTsVPfNDXhnh73kf8+zTcHzniHAXFyCsC2Imo7IiqmxXLrxm97HTvXWCjQPm69RnV
-         9GnQS6sr3Qz/s4KJOMJL3hZH92sVYxpvhFVQNauyew114veG9dtDQYFLFtZn6+FZgTfA
-         xSPsZo7RKroYDePH+SeQ4/NLdYYOPKI+axNmpd2wYbXnXqHsTAWWeFgPSzFtLeujFT7I
-         LaZ1I7TOwHzHTnkdB9JLGnfg8Wb1hBiqenJbM99KpYJayhMMQDAmfz1XDWA6u5kVEonk
-         KW5A==
-X-Gm-Message-State: AOAM532RzUU7pBE2p1RCZejx3tFKYBHY5boxPv6PPyFWv6MQQYXMq3mb
-        P//wKAOWfVFEh2tQB1Vyvuz4U534sIMs7h19BHv02ks5jPHNqb9r6SquGl9ws8qztQJyWcqmIgF
-        8pmNGoUscezakfOYE9PKe1/njABjV/EiyydHg+sV+rg==
-X-Received: by 2002:aa7:ce1a:: with SMTP id d26mr19144222edv.206.1615149013742;
-        Sun, 07 Mar 2021 12:30:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzyuO7zfNCQa4wffaBAkwM2HqU9slERv1JFTpTZyinaoxNp7ZnfInaLxSBY3fiWu1MbSBfJDw==
-X-Received: by 2002:aa7:ce1a:: with SMTP id d26mr19144200edv.206.1615149013496;
-        Sun, 07 Mar 2021 12:30:13 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id b4sm6354332edh.40.2021.03.07.12.30.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 12:30:12 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-X-Google-Original-From: Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Sun, 7 Mar 2021 21:30:11 +0100
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: Re: [PATCH v3 2/3] ARM: dts: exynos: Add assigned clock parent to
- CMU in Exynos4412 Odroid
-Message-ID: <20210307203011.zeylib7afgvc5zhd@kozik-lap>
-References: <20200906142146.21266-1-krzk@kernel.org>
- <20200906142146.21266-2-krzk@kernel.org>
- <CGME20200911150351eucas1p1c678e3ae20e49209dbf19c000ea033f4@eucas1p1.samsung.com>
- <20200911145403.GC15290@kozik-lap>
- <d53d0b67-2368-1434-ab00-fb37b1e824a6@samsung.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ksneqLZ9zvuj+Q9Pi6/GCANghUOfFQNIq6D+RQ8519s=;
+        b=sAzzl0ww9gGcTOGzkzgfrv8fsGsVOCkwWkZrsKcPyhU0rrthrEe2vBR2UTi/9MrNEt
+         LuVFOKYGkJ9fbRZIxblBd+l4Veyaq1FFARG9qwX8pl5DzJLLv5pRvBoql++5f0eprRVf
+         kl60x419A8GBrul7HnUvk2RqWoUvDPX2s5GK7z5RU8YbSSp4vZsq49jOj2dDKkNmNxin
+         cW8Lgr7jAxqSdVgSW6yNN9rZMkrdjmqGdHw7Hzb1jv5AXyXyiHHqnkYaJp4rUvj21S/O
+         yjQm6ajHlTF0MUR3CVSrXTA6TKUVKSz2cUdDcSnWHCSa2J4TNC5+sP5Z+pTaEQ/NXIUF
+         uMfg==
+X-Gm-Message-State: AOAM531vpV+zKi/10qhzhHJdy0XPeUo6h/Qq3O0wGIYtDzkDoxOE5K7n
+        AV0MWNrsVgoPEpZHI3vvEy3TQk77hVSeepgGMCw=
+X-Google-Smtp-Source: ABdhPJxlj04alWLqhDKdUE58NU9W7umO8MwZXqbfilTz4/eiKjejZ6M4QMIuwTi82BfFMcr9ywapb7y/aJ9mm6zMO+c=
+X-Received: by 2002:a17:902:d2c1:b029:e5:ccfe:1e93 with SMTP id
+ n1-20020a170902d2c1b02900e5ccfe1e93mr17949404plc.0.1615149575234; Sun, 07 Mar
+ 2021 12:39:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <d53d0b67-2368-1434-ab00-fb37b1e824a6@samsung.com>
+References: <20210222130735.1313443-1-djrscally@gmail.com> <20210222130735.1313443-2-djrscally@gmail.com>
+ <CAHp75VfPuDjt=ZfHkwErF7_6Ks6wpqXO8mtq-2KjV+mU_PXFtg@mail.gmail.com> <615bad5e-6e68-43c9-dd0b-f26d2832d52f@gmail.com>
+In-Reply-To: <615bad5e-6e68-43c9-dd0b-f26d2832d52f@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 7 Mar 2021 22:39:18 +0200
+Message-ID: <CAHp75Vc2iwvh1RiYmQDPSvgNvGT_gBcGTK67F+MhWgXyoxqn0A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] ACPI: scan: Extend acpi_walk_dep_device_list()
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Rajmohan Mani <rajmohan.mani@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>, me@fabwu.ch,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        devel@acpica.org, "Rafael J . Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:42:40AM +0200, Marek Szyprowski wrote:
-> Hi Krzysztof,
-> 
-> On 11.09.2020 16:54, Krzysztof Kozlowski wrote:
-> > On Sun, Sep 06, 2020 at 04:21:45PM +0200, Krzysztof Kozlowski wrote:
-> >> Commit 68605101460e ("ARM: dts: exynos: Add support for audio over HDMI
-> >> for Odroid X/X2/U3") added assigned clocks under Clock Management Unit.
-> >>
-> >> However the dtschema expects "clocks" property if "assigned-clocks" are
-> >> used.  Add reference to input clock, the parent used in
-> >> "assigned-clock-parents" to silence the dtschema warnings:
-> >>
-> >>    arch/arm/boot/dts/exynos4412-odroidu3.dt.yaml: clock-controller@10030000: 'clocks' is a dependency of 'assigned-clocks'
-> >>
-> > Applied.
-> 
-> This patch breaks operation of clocks on Odroid X2/U3:
-> 
-> # dmesg | grep clk
-> [    0.000000] exynos_clkout_init: failed to register clkout clock
-> [    0.000000] Exynos4x12 clocks: sclk_apll = 1000000000, sclk_mpll = 
-> 800000000
->                  sclk_epll = 45158401, sclk_vpll = 350000000, arm_clk = 
-> 1000000000
-> [    2.569484] usb3503 0-0008: unable to request refclk (-517)
-> [    2.848718] s3c-sdhci 12530000.sdhci: clock source 2: mmc_busclk.2 
-> (50000000 Hz)
-> [    3.373850] usb3503 0-0008: unable to request refclk (-517)
-> [    3.542777] usb3503 0-0008: unable to request refclk (-517)
-> [    3.544005] usb3503 0-0008: unable to request refclk (-517)
-> [    3.559223] usb3503 0-0008: unable to request refclk (-517)
-> 
-> Please revert or drop if possible.
+On Sun, Mar 7, 2021 at 3:36 PM Daniel Scally <djrscally@gmail.com> wrote:
+> On 22/02/2021 13:34, Andy Shevchenko wrote:
+> > On Mon, Feb 22, 2021 at 3:12 PM Daniel Scally <djrscally@gmail.com> wrote:
+> >> The acpi_walk_dep_device_list() is not as generalisable as its name
+> >> implies, serving only to decrement the dependency count for each
+> >> dependent device of the input. Extend the function to instead accept
+> >> a callback which can be applied to all the dependencies in acpi_dep_list.
+> >> Replace all existing calls to the function with calls to a wrapper, passing
+> >> a callback that applies the same dependency reduction.
+> > The code looks okay to me, if it was the initial idea, feel free to add
+> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>
+>
+> Thank you!
+>
+>
+> >> + */
+> >> +void acpi_dev_flag_dependency_met(acpi_handle handle)
+> >> +{
+> > Since it's acpi_dev_* namespace, perhaps it should take struct acpi_device here?
+>
+>
+> I can do this, but I avoided it because in most of the uses in the
+> kernel currently there's no struct acpi_device, they're just passing
+> ACPI_HANDLE(dev) instead, so I'd need to get the adev with
+> ACPI_COMPANION() in each place. It didn't seem worth it...but happy to
+> do it if you'd prefer it that way?
 
-I re-applied this one (it was once reverted), as clkout was converted to
-proper driver. My Odroid U3 boots fine now with this patch.
+I see, let Rafael decide then. I'm not pushing here.
 
-Best regards,
-Krzysztof
+-- 
+With Best Regards,
+Andy Shevchenko
