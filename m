@@ -2,89 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F45E32FFA7
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 09:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C09F932FFAF
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 09:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231256AbhCGIfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 03:35:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38130 "EHLO
+        id S231301AbhCGIkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 03:40:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230023AbhCGIe7 (ORCPT
+        with ESMTP id S230344AbhCGIjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 03:34:59 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3A0C06174A;
-        Sun,  7 Mar 2021 00:34:59 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id o38so4388862pgm.9;
-        Sun, 07 Mar 2021 00:34:59 -0800 (PST)
+        Sun, 7 Mar 2021 03:39:44 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB6EC06175F
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 00:39:44 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id i14so1435059pjz.4
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 00:39:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Ztm3kMmO9foaT7tkUJFO2YdMILbFbAnDhEHXV2g/J4w=;
-        b=NJfBKm+6Po22NyGTrZqqEVmEdEdNe+GTidqjmEHd716kY6jxMvgBzSwkpnaTI77CtW
-         JWHi8stDcqW/bJtC7/luFcI9f5Os5LmJw4snh6bikdIqOEfLSmNcMikTolRd6wotD34V
-         J03OhLtLPoMP9pP21hYJN1+VS+pTxPuzwmQ8y6+fIlyLAMZLtfqiESrd6NxOdK0EeaDp
-         AadGekm+9mRbu8OzMoqhwZcevH4jFMi837azJda0h/u4EcgC0kh2huL0y00kRyYWXfah
-         aEcUQLsfXJ92j0FmJajL6EUu0r55zhbzpULw5a539NaMcaYXYr/BHoX4c7/RHGf5zTEM
-         cM7Q==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5+ZIdAEa9OwEkxgFcDiKNp4vM+KvSh13doJNbkRyCBk=;
+        b=xhjBKjSuF4exEfCWDp7cl5chAnIppGTTfOErwDX9TjXEDszpoQHxnheS0lDw/Px0GD
+         auYjkp6xPVobYtnb3S5RJvK1McAT4Kx8vX4xO0J6pWGev71nx7MLrRcp9ZqpAlqWMnk8
+         41yZTr35QJIAv3pOKBlvutH6ZCYXbZ15BFgpzWEx2GQ9Uan85hsZnr/bHfrhoWR3tJma
+         m/nPKyAxWAJDS1igXcKnuHQqeOB5PMan3Ob/2UMVY0BpFi3ftw1E3U45qkzFTRrU9FYD
+         +ykdzS8Ay9pxLZL1cZRHxyvyJaE+C2SsxklsIxZOcXdbIZMFb3GflqrqWxIcpuSctdqQ
+         3/mQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Ztm3kMmO9foaT7tkUJFO2YdMILbFbAnDhEHXV2g/J4w=;
-        b=WxnZL9fKQmMMytzb7BeM1eGe935vCvA1nfsM34pU7bWET8THaqYl/Fi6M+PB54zaGi
-         3IS+18G0OPpM/a+AgVL+b8hzvazeJ5ZlcVwXrDjpvVIbhg+eWIr0RS+oNz06ngNkYNvx
-         EI/qqVVW7OXLJulzt0anMFnp4ro+Y2yf4mDbdvBKDPwnXyGOseLfVpg7gz9kgchMPb5B
-         DWxfVp5Pg7JuvN/ZZ48wLZHzWFvcgLftOFKYcNTr/AdiQlFcAWI4M5KUbYBepmy0hj0f
-         ZB1Wjth0HG+Kux+JV8DbZyTxvxDH8jfP0mV3ysHf0aDTTILN3HjodJjJukjBEHBWljzf
-         thzw==
-X-Gm-Message-State: AOAM532AxyqYRbzp8w1F3h4xh17UtrHfgN5L4MsWMBbrDzJnnZUJHKVM
-        6cgIAXARnPR3LlgnS4xX62s=
-X-Google-Smtp-Source: ABdhPJybCcPmwbuOYWbrYhW2kHIrHuCrDvfX/nvpR5jnAaXI3Xa0YmksH8Y+lKaOZJmJeoyoy7h3+Q==
-X-Received: by 2002:a65:524b:: with SMTP id q11mr15570433pgp.207.1615106098837;
-        Sun, 07 Mar 2021 00:34:58 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.66])
-        by smtp.gmail.com with ESMTPSA id h6sm6747519pfv.84.2021.03.07.00.34.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 00:34:58 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     amitkarwar@gmail.com, siva8118@gmail.com, kvalo@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] rsi: fix error return code of rsi_load_9116_firmware()
-Date:   Sun,  7 Mar 2021 00:34:45 -0800
-Message-Id: <20210307083445.21322-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5+ZIdAEa9OwEkxgFcDiKNp4vM+KvSh13doJNbkRyCBk=;
+        b=LqQblhAXkcDZj/FDJcA9/Fn2esmjy52y4RcaUdGnA80/MTbW/5BEyjCzLW1KCYfxCv
+         rq/gYmQafnbvKb8cD2c74as8z2A8l3cZVMhVrApWWAkz1K7R/cGE8ReYGSDqgMVZB0b3
+         +WSYi34f86S+LmvCetV/AYzwgzpywl2krDfXjZxfNJHrIeVWExYjKmPnaUGiQl2VIy1c
+         Led6V3y0NsThzfoeuLCfbz2qnlAqD09vHrtB8F1NBtYVRoIH3lN+tJnRyjANuD2uy7IA
+         X0okKoPDrPQEXc4+UElg+vnG6xxkMkKL4UogrRJwl4tJDw44Ch8mSr7yW9FM0W0iGACX
+         QPEA==
+X-Gm-Message-State: AOAM532d7Wr0pBmsdUAtjzp+FNXxA3rHHmS64zUv0CA2Fz0eBXXJg08i
+        k4BRKvXOjDOYspCkhLRCX6q4PeMFIBe7SZPn3egI1Q==
+X-Google-Smtp-Source: ABdhPJzYu4GAe2KZbj6JGQ3TjLW4bhjtDiKLF8LYik5ilaN940EpS0CUXvYX1AmTwVvRaeE70SCqKvP8wVhLrFQc8B8=
+X-Received: by 2002:a17:90a:778a:: with SMTP id v10mr18672246pjk.229.1615106383749;
+ Sun, 07 Mar 2021 00:39:43 -0800 (PST)
+MIME-Version: 1.0
+References: <20210225132130.26451-1-songmuchun@bytedance.com>
+ <20210225132130.26451-6-songmuchun@bytedance.com> <20210307081857.GE1223287@balbir-desktop>
+In-Reply-To: <20210307081857.GE1223287@balbir-desktop>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sun, 7 Mar 2021 16:39:07 +0800
+Message-ID: <CAMZfGtUjDj8e9tW2dum+JSMo-BQ5YwPo+Am4ixndkMKaCuG4gQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v17 5/9] mm: hugetlb: set the PageHWPoison
+ to the raw error page
+To:     Balbir Singh <bsingharora@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kmemdup() returns NULL to ta_firmware, no error return code of
-rsi_load_9116_firmware() is assigned.
-To fix this bug, status is assigned with -ENOMEM in this case.
+On Sun, Mar 7, 2021 at 4:19 PM Balbir Singh <bsingharora@gmail.com> wrote:
+>
+> On Thu, Feb 25, 2021 at 09:21:26PM +0800, Muchun Song wrote:
+> > Because we reuse the first tail vmemmap page frame and remap it
+> > with read-only, we cannot set the PageHWPosion on some tail pages.
+> > So we can use the head[4].private (There are at least 128 struct
+> > page structures associated with the optimized HugeTLB page, so
+> > using head[4].private is safe) to record the real error page index
+> > and set the raw error page PageHWPoison later.
+> >
+>
+> Does the hardcoding of 4 come from HUGETLB_CGROUP_MIN_ORDER, if so
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- drivers/net/wireless/rsi/rsi_91x_hal.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Yes.
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_hal.c b/drivers/net/wireless/rsi/rsi_91x_hal.c
-index ce9892152f4d..32ecb8b3d6c5 100644
---- a/drivers/net/wireless/rsi/rsi_91x_hal.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_hal.c
-@@ -1038,8 +1038,10 @@ static int rsi_load_9116_firmware(struct rsi_hw *adapter)
- 	}
- 
- 	ta_firmware = kmemdup(fw_entry->data, fw_entry->size, GFP_KERNEL);
--	if (!ta_firmware)
-+	if (!ta_firmware) {
-+		status = -ENOMEM;
- 		goto fail_release_fw;
-+	}
- 	fw_p = ta_firmware;
- 	instructions_sz = fw_entry->size;
- 	rsi_dbg(INFO_ZONE, "FW Length = %d bytes\n", instructions_sz);
--- 
-2.17.1
+> do we need to hardcode 4? Also, I am not sure about the comment
+> on safety and 128 struct pages
 
+We can set head[4].private only if free_vmemmap_pages_per_hpage(h)
+returns true. In this case, there are 128 struct page structures (we reserve
+2 pages as vmemmap pages, so 2 * 4KB / sizeof(struct page) == 128) that
+can be used. Instead of hardcode, I introduce another patch to make the
+code more readable. Please refer to patch #8 in this series.
+
+Thanks.
+
+>
+> Balbir
+>
