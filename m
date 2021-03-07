@@ -2,171 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C526E330088
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 12:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F30330052
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 12:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhCGLy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 06:54:26 -0500
-Received: from mout.gmx.net ([212.227.15.15]:33417 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230111AbhCGLxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 06:53:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1615117999;
-        bh=0mOFH/whRcxwCCNf1FaCVfPgq3zuoVr5XMs4msmzXEk=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=fP/89F57Uvd6wz+HXrnrALfcyL2tIGkyzmhTNPThCqx+itY8xekbKfuA28nl94+TQ
-         E5HlyuaL6bc6hTgQWg3oBN0itIesNWk+9gUA+8Bl8N5foEjA7HbrrX+LCBZQ1eMIV1
-         /x1QkIefOuiI/1UK1JssrmXh+Pn6WpbsAbswIJqI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.229.153]) by mail.gmx.net
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1N1fn0-1llM6Y3f1U-0120pu; Sun, 07 Mar 2021 12:53:19 +0100
-From:   John Wood <john.wood@gmx.com>
-To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
-Cc:     John Wood <john.wood@gmx.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: [PATCH v6 1/8] security: Add LSM hook at the point where a task gets a fatal signal
-Date:   Sun,  7 Mar 2021 12:30:24 +0100
-Message-Id: <20210307113031.11671-2-john.wood@gmx.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210307113031.11671-1-john.wood@gmx.com>
-References: <20210307113031.11671-1-john.wood@gmx.com>
+        id S229904AbhCGLdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 06:33:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229791AbhCGLdf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 06:33:35 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D50C06174A;
+        Sun,  7 Mar 2021 03:33:35 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id j12so5215712pfj.12;
+        Sun, 07 Mar 2021 03:33:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QE9e3qNn83WSUIE3jJrl7w+oJ+JiRqDPe+H/RVHlaiQ=;
+        b=jAqGFUpvVIshblWcz1U92JGc/yzMRSJnQ4RRDb9E+TnPJHyE4UOL9UoKFi75TxovVB
+         BIk2hgvalBp3AZZdnAhoV5pLUklMWp0Zv75MJN/3FxoSrdksVVm9ekwCfGby/38kK9gU
+         xHDuASCH7ESLCeiiZJ2I67O3ABlNd0ECKi7jaQvv8WpzfIWEjsWkMQhfw9yQTEaHc69t
+         P2M8ao0YjlE6w8ibGYsBk2g5IeRgd9uYGqX+DRULmictZtgj7zhPwVsaM0VqH+/LNW9U
+         e+cG7skQI5UOcDqc0E7Ej0hyPZaj+igV9qICRgsIOF20HXFh+ZN09JiR9X0wai147vT/
+         SmXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QE9e3qNn83WSUIE3jJrl7w+oJ+JiRqDPe+H/RVHlaiQ=;
+        b=mktKYtDLn4HLLYJwNE4zu81Nrx9Tghvo8VvoJm47bu027nYDdKrq50x3jIki/Smx5F
+         oj31PIEK3IhW1a57uBnQWK4aBeZJtfh1HiYW6+f/+EyXolPhyVrLqBV2O4LgDf2tZeut
+         hRlp22mk+as2DTlmch3BfeGFJDppOFEI4qrR2eYXBscm0JEhitaidXceAuDwOdyvkQ0S
+         KaGA2OD4AYGA9QqDYrSGrECn/Zww4Fxrk7LVzDqs7MbzlitFsg1zK5vpwVgUyEP9oY5p
+         mHyR7yxxZNcNLieDUl950rQDisvCF4gjdSJ4fK5v+KAB1UYwjbRLqhsGX9Jc53h9mtXv
+         3/ug==
+X-Gm-Message-State: AOAM533xboWAf8FM2z9e3vEBs8kjDEP1Ubjo35roQ4k2oky5jSavZM65
+        MLCalgZlrdwenv0p99ksF0A=
+X-Google-Smtp-Source: ABdhPJxTGMQM2ns0X8ie7NcjXNv+b1/ikFV/9hVY8e25+Uro7slGW55TB38Ver9fiekPS5XUH7f6vQ==
+X-Received: by 2002:a63:5a02:: with SMTP id o2mr16054504pgb.202.1615116814913;
+        Sun, 07 Mar 2021 03:33:34 -0800 (PST)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:8b48:4689:855d:ef6b])
+        by smtp.gmail.com with ESMTPSA id r10sm7100110pfq.216.2021.03.07.03.33.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 03:33:34 -0800 (PST)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     Martin Schiller <ms@dev.tdt.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net] net: lapbether: Remove netif_start_queue / netif_stop_queue
+Date:   Sun,  7 Mar 2021 03:33:07 -0800
+Message-Id: <20210307113309.443631-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:gjW1lxsS4O/k5Sf+wMA+VJHoZ1qM11KXQETBYwid34I0oYBNmr2
- C/OqkV5z9INlzUtp7FYtQoLqydzU9bhhstzt50l8ENfqMYH+YOzd2coK6Ju4El8FUXOa3jk
- xoXo4At48nMaIfEd8BXPlo1qQgeF1V41qKMoF/n8RLOOh1DVoHmG7gmpe0GuFxNDdSnwhOf
- IPMxaFSEsnB5la6LeBgQg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ekdqLgRPggU=:Ry3SJ1lEftaEQFRP1dW004
- uegRYmgq1qD2F4CQCDaE7r+J9EhwabNP4PICLFAgl6soYo+l8mXoPmdC9ekLhwasJtBdrvAGY
- b+e/6RctVObiuiI4ZFxtV1ZdKulXUTfx7HYTSyz3JCom9/bUK8KADSdusoYMeQcEyHCu8na33
- Ztv+Ii532DUvsRg+m/90I/m9WjYZyB5oBqQn67wPVvlcG2Na4j6uy9kw55JIu5b+21o2BCMkl
- jnG2shzC9TKnKrLlLkNeYe2om9jDscUubUB8K5p4PIcGRKoN4n2z1eSJTzDIcJHyrKv2V71oQ
- b03jo20VqZf1P7BQ/p4af0PK8YtH/Hilxit2mALEEzuqvXZSeGpnv9FANijUJdvtwisKc+zqk
- 13ni2mxgVi6k20SjoEkm5xC64NAcjjfpty9bTjPGLErpO59llY6SD2MGPbXv1YcTTzxYi186+
- 9Wm0kkoJWYYXtwxm9WdHkiY4VkQi6qDCU42rON5ZK9vHPaVv243kxc1CNLfipEVH7BUhUAEJx
- tvE81noKEfMRsGDCCX5miAuQM2Ic/OhogDViU9idzkMXmu3wct8fmtTjBmaN+kXAkxkRgt/Ck
- 30nNbmaqPxoyuPDbXVhFR2zEXekxCfNbQtyPddaDuLFr1n1/kUH8pppjEmzd9O1MNK/1RaNzj
- wjsPh0SUprrbiirIbd1svYdTKGDFgPZ5zNvVaMlslBFmmJHT0NUdrhf8xMKn02NspdFE5Qx0F
- LNtJWPrMLw3QJVsIcQAbtT3IIS1IgcF3zyfa+dWHjk6xQRGbiUqmgOcqJYZn1RFiEyA7H5Nro
- QMuBa0NKqhuJpdfukUba3qGp6zdR7ZO9p5mvD6nog76zbwIOx+3dBzUELxh98zNG0AegAMska
- +x8XVkaPzKh9hILDyJVA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a security hook that allows a LSM to be notified when a task gets a
-fatal signal. This patch is a previous step on the way to compute the
-task crash period by the "brute" LSM (linux security module to detect
-and mitigate fork brute force attack against vulnerable userspace
-processes).
+For the devices in this driver, the default qdisc is "noqueue",
+because their "tx_queue_len" is 0.
 
-Signed-off-by: John Wood <john.wood@gmx.com>
-=2D--
- include/linux/lsm_hook_defs.h | 1 +
- include/linux/lsm_hooks.h     | 4 ++++
- include/linux/security.h      | 4 ++++
- kernel/signal.c               | 1 +
- security/security.c           | 5 +++++
- 5 files changed, 15 insertions(+)
+In function "__dev_queue_xmit" in "net/core/dev.c", devices with the
+"noqueue" qdisc are specially handled. Packets are transmitted without
+being queued after a "dev->flags & IFF_UP" check. However, it's possible
+that even if this check succeeds, "ops->ndo_stop" may still have already
+been called. This is because in "__dev_close_many", "ops->ndo_stop" is
+called before clearing the "IFF_UP" flag.
 
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index 477a597db013..0208df0955fa 100644
-=2D-- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -220,6 +220,7 @@ LSM_HOOK(int, -ENOSYS, task_prctl, int option, unsigne=
-d long arg2,
- 	 unsigned long arg3, unsigned long arg4, unsigned long arg5)
- LSM_HOOK(void, LSM_RET_VOID, task_to_inode, struct task_struct *p,
- 	 struct inode *inode)
-+LSM_HOOK(void, LSM_RET_VOID, task_fatal_signal, const kernel_siginfo_t *s=
-iginfo)
- LSM_HOOK(int, 0, ipc_permission, struct kern_ipc_perm *ipcp, short flag)
- LSM_HOOK(void, LSM_RET_VOID, ipc_getsecid, struct kern_ipc_perm *ipcp,
- 	 u32 *secid)
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index fb7f3193753d..beedaa6ee745 100644
-=2D-- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -784,6 +784,10 @@
-  *	security attributes, e.g. for /proc/pid inodes.
-  *	@p contains the task_struct for the task.
-  *	@inode contains the inode structure for the inode.
-+ * @task_fatal_signal:
-+ *	This hook allows security modules to be notified when a task gets a
-+ *	fatal signal.
-+ *	@siginfo contains the signal information.
-  *
-  * Security hooks for Netlink messaging.
-  *
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 8aeebd6646dc..e4025a13630f 100644
-=2D-- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -430,6 +430,7 @@ int security_task_kill(struct task_struct *p, struct k=
-ernel_siginfo *info,
- int security_task_prctl(int option, unsigned long arg2, unsigned long arg=
-3,
- 			unsigned long arg4, unsigned long arg5);
- void security_task_to_inode(struct task_struct *p, struct inode *inode);
-+void security_task_fatal_signal(const kernel_siginfo_t *siginfo);
- int security_ipc_permission(struct kern_ipc_perm *ipcp, short flag);
- void security_ipc_getsecid(struct kern_ipc_perm *ipcp, u32 *secid);
- int security_msg_msg_alloc(struct msg_msg *msg);
-@@ -1165,6 +1166,9 @@ static inline int security_task_prctl(int option, un=
-signed long arg2,
- static inline void security_task_to_inode(struct task_struct *p, struct i=
-node *inode)
- { }
+If we call "netif_stop_queue" in "ops->ndo_stop", then it's possible in
+"__dev_queue_xmit", it sees the "IFF_UP" flag is present, and then it
+checks "netif_xmit_stopped" and finds that the queue is already stopped.
+In this case, it will complain that:
+"Virtual device ... asks to queue packet!"
 
-+static inline void security_task_fatal_signal(const kernel_siginfo_t *sig=
-info)
-+{ }
-+
- static inline int security_ipc_permission(struct kern_ipc_perm *ipcp,
- 					  short flag)
- {
-diff --git a/kernel/signal.c b/kernel/signal.c
-index ba4d1ef39a9e..d279df338f45 100644
-=2D-- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2750,6 +2750,7 @@ bool get_signal(struct ksignal *ksig)
- 		/*
- 		 * Anything else is fatal, maybe with a core dump.
- 		 */
-+		security_task_fatal_signal(&ksig->info);
- 		current->flags |=3D PF_SIGNALED;
+To prevent "__dev_queue_xmit" from generating this complaint, we should
+not call "netif_stop_queue" in "ops->ndo_stop".
 
- 		if (sig_kernel_coredump(signr)) {
-diff --git a/security/security.c b/security/security.c
-index 5ac96b16f8fa..d9cf653a4e70 100644
-=2D-- a/security/security.c
-+++ b/security/security.c
-@@ -1840,6 +1840,11 @@ void security_task_to_inode(struct task_struct *p, =
-struct inode *inode)
- 	call_void_hook(task_to_inode, p, inode);
+We also don't need to call "netif_start_queue" in "ops->ndo_open",
+because after a netdev is allocated and registered, the
+"__QUEUE_STATE_DRV_XOFF" flag is initially not set, so there is no need
+to call "netif_start_queue" to clear it.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+---
+ drivers/net/wan/lapbether.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
+index 605fe555e157..c3372498f4f1 100644
+--- a/drivers/net/wan/lapbether.c
++++ b/drivers/net/wan/lapbether.c
+@@ -292,7 +292,6 @@ static int lapbeth_open(struct net_device *dev)
+ 		return -ENODEV;
+ 	}
+ 
+-	netif_start_queue(dev);
+ 	return 0;
  }
-
-+void security_task_fatal_signal(const kernel_siginfo_t *siginfo)
-+{
-+	call_void_hook(task_fatal_signal, siginfo);
-+}
-+
- int security_ipc_permission(struct kern_ipc_perm *ipcp, short flag)
+ 
+@@ -300,8 +299,6 @@ static int lapbeth_close(struct net_device *dev)
  {
- 	return call_int_hook(ipc_permission, 0, ipcp, flag);
-=2D-
-2.25.1
+ 	int err;
+ 
+-	netif_stop_queue(dev);
+-
+ 	if ((err = lapb_unregister(dev)) != LAPB_OK)
+ 		pr_err("lapb_unregister error: %d\n", err);
+ 
+-- 
+2.27.0
 
