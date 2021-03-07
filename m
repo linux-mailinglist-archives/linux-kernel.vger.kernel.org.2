@@ -2,71 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EF03303F7
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 19:38:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2543303FD
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 19:47:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbhCGShF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 13:37:05 -0500
-Received: from mail-lf1-f45.google.com ([209.85.167.45]:34005 "EHLO
-        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231514AbhCGShC (ORCPT
+        id S231520AbhCGSq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 13:46:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230323AbhCGSp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 13:37:02 -0500
-Received: by mail-lf1-f45.google.com with SMTP id v9so15950816lfa.1;
-        Sun, 07 Mar 2021 10:37:00 -0800 (PST)
+        Sun, 7 Mar 2021 13:45:58 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654D5C06174A;
+        Sun,  7 Mar 2021 10:45:58 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id n132so7654856iod.0;
+        Sun, 07 Mar 2021 10:45:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hki0Hl2tbnajpF3gwCuqdLTb9AKHzRLxw38xL8ZoUXw=;
+        b=Sb/khIF9MfxVP6p4cPQczN/OI7N1MNMAuG5XUyqSXrrpri2fNBztyxP76LfdxvLbFY
+         VTSFG5DJipyJ7E2KRm5IYmApFqXIHDNZlPHLvsbyUMazms59dUB+x1r6/8q0Lre7bhzp
+         bYT2uxiAStzG7yETo2yyxZVDJ1mPAOhI/NGZ1QNsPgBo9nAB6Ahe5+vazJuMZaqC5QBj
+         9ltkp8FcVc+Q/qWLiLxUx+qkQqSPlUvVCs1sPGSGpOi4C/iKbdIbfELqUXPTOSib1OGX
+         tFIGhlL07pn6XrLcoW9Hh3M/gbYKhxpIljPQBBPHIzph2aCoSyd36+K9D5akPU9XWe8Q
+         nqFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ThbITLkHOU2/dQSeUt335dQeSvRoHsbaI5Fk6bsL6es=;
-        b=uTXnV3OArt5NUjL81bGOMCd5xjBq7325jkIb5YCaLaSyZXytZqC/9WqNh6eDBbMHR1
-         ni6FggMAIQ78hbgJSxTuJlxkXwoRWPtrNocAhg+TccezrydFsooogrMqb4GGUhrxoP1o
-         S3fs7MCClZaFQrFZDz7ZcsvOrGRsIrAYoMJNBM0KKl7wgO28plwnCM7ZWeKST6asyuYO
-         ao6vM4bigO5C8Bqm55VdhfZYxOzv2Apww8DaMjD+kfxzxEb0WEWcittGXR8xE4co1msu
-         zQ1jEL8RWrurlTCL577U4K3PvaaN1MmZrBlPguUYV0S2XUY+BvQODkRsXtoybj1sUWah
-         qTmA==
-X-Gm-Message-State: AOAM5325ywLlCv0AgGQdI+OiubnQNL9sX7996vUQHLoEwVBctPlfKv68
-        8rugwmyB4Fdm/EpRLzjJi9w=
-X-Google-Smtp-Source: ABdhPJwzkmkqC/Pw8HWTIEHGBNMbMZdlHNa4mm3nBRwXwyxM6V/4OrZHbwQtOm9tb4iSU0SGC7jDEQ==
-X-Received: by 2002:ac2:4465:: with SMTP id y5mr12100641lfl.70.1615142219485;
-        Sun, 07 Mar 2021 10:36:59 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id g2sm1179250ljk.15.2021.03.07.10.36.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 10:36:58 -0800 (PST)
-Date:   Sun, 7 Mar 2021 19:36:57 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        minghuan.Lian@nxp.com, mingkai.hu@nxp.com, roy.zang@nxp.com,
-        robh@kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] pci/controller/dwc: convert comma to semicolon
-Message-ID: <YEUdSZpwzg0k5z2+@rocinante>
-References: <20201216131944.14990-1-zhengyongjun3@huawei.com>
- <20210106190722.GA1327553@bjorn-Precision-5520>
- <20210115113654.GA22508@e121166-lin.cambridge.arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hki0Hl2tbnajpF3gwCuqdLTb9AKHzRLxw38xL8ZoUXw=;
+        b=blzLPwNoj6gE+CrhrN8PXTOan3UzzVWwvQ6XCQjc54LyPBT6+/CNbtANsaRQJKJGBg
+         fz0NZBbPUa01GiQ5UAcgt+foyQlYTJ5ZTE7IIC4vd1vxLE7fLyyHZhqeaMskWH9wI0nD
+         13gQVSFZHhE3izSAvc+laJoFgOMJxsKenGFpJwOrJDsHb3G7Ny2Tqo56EBV/pz3PAcih
+         +v7ffH8nvEWGQq/WEhcWBNM19C3olR59vEXlYDWc+s9dwwnpDNxVCpbUfyI/Drt5ihN7
+         JUK3SMp40mpzNdDE8/SCIPUNA/i5LSiEt3nHgjBTPHLQJcUVkcbSkxFdgofnu7NtnwZE
+         6WPw==
+X-Gm-Message-State: AOAM532lRYhCP5ssWx3Axw6FrCSvQPrfeDTqLhC6Qt1w/qM5+/cWHXXP
+        v+D3JpGWkGLQ8KgQ60FOlqTT8o9hfMRwP0T0OuM=
+X-Google-Smtp-Source: ABdhPJwVvVV/1Z3jl/xAzB/0UAqCQ1OUSJzdqdTxTjtQD0CO0ZXsppwaV1aTMv2pihP4s6xd/iy3hHlva27p0JCH0q8=
+X-Received: by 2002:a5d:8416:: with SMTP id i22mr15237919ion.32.1615142757584;
+ Sun, 07 Mar 2021 10:45:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210115113654.GA22508@e121166-lin.cambridge.arm.com>
+References: <20201123144017.18311-1-alexandru.ardelean@analog.com>
+ <20210221162905.65be88d0@archlinux> <408e9b87-0528-141a-1fa6-ca8c2a0b1c69@collabora.com>
+ <20210307115941.18badb2e@archlinux>
+In-Reply-To: <20210307115941.18badb2e@archlinux>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Sun, 7 Mar 2021 20:45:46 +0200
+Message-ID: <CA+U=DsoLuj0bVAG92iDxTcg=aLGAnzaSiT-+_n=HkFzedGzS6Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] iio: cros_ec: do an early exit if not physical_device case
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Benson Leung <bleung@chromium.org>, groeck@chromium.org,
+        Gwendal Grignou <gwendal@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, Mar 7, 2021 at 1:59 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Tue, 2 Mar 2021 11:46:06 +0100
+> Enric Balletbo i Serra <enric.balletbo@collabora.com> wrote:
+>
+> > Hi all,
+> >
+> > On 21/2/21 17:29, Jonathan Cameron wrote:
+> > > On Mon, 23 Nov 2020 16:40:16 +0200
+> > > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+> > >
+> > >> This whole code-block was put under one big if() condition/block.
+> > >> This change does an early return if the 'physical_device' boolean is false,
+> > >> thus unindenting the block by one level.
+> > >>
+> > >> No other functional change has been done.
+> > >>
+> > >> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > > @Gwendal, others  This series from Alex has been outstanding for a while
+> > > but may well still apply.
+> > > Ideally looking for an ack.
+> > >
+> >
+> > This looks good to me.
+> >
+> > Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>
+> Hi Enric, Ack or both patches or just this one?
+>
+> @Alex, series needs a rebase.  I'm not totally sure what's changed.
+> If you don't get to it I'll do it at somepoint but unlikely to
+> be terribly soon!
 
-[...]
-> I would request NXP maintainers to take this patch, rewrite it as
-> Bjorn requested and resend it as fast as possible, this is a very
-> relevant fix.
-[...]
+It's likely that it's that iio_device_attach_buffer() went away and
+the block got replaced by devm_iio_kfifo_buffer_setup().
+I'll re-spin it.
+I dropped this set from my main work branch because I didn't know if
+it was forgotten, and rebasing it with every change on
+devm_iio_kfifo_buffer_setup() and
+devm_iio_triggered_buffer_setup_ext() became annoying.
+But it shouldn't be hard to re-spin.
 
-Looking at the state of the pci-layerscape-ep.c file in Linus' tree,
-this still hasn't been fixed, and it has been a while.
-
-NXP folks, are you intend to pick this up?  Do let us know.
-
-Krzysztof
+>
+> Jonathan
+>
+> >
+> > Thanks,
+> >  Enric
+> >
+> > > Thanks,
+> > >
+> > > Jonathan
+> > >
+> > >> ---
+> > >>  .../cros_ec_sensors/cros_ec_sensors_core.c    | 161 +++++++++---------
+> > >>  1 file changed, 81 insertions(+), 80 deletions(-)
+> > >>
+> > >> diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> > >> index 5c6c4e6fec9b..9470014936f2 100644
+> > >> --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> > >> +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> > >> @@ -287,89 +287,90 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
+> > >>
+> > >>    indio_dev->name = pdev->name;
+> > >>
+> > >> -  if (physical_device) {
+> > >> -          state->param.cmd = MOTIONSENSE_CMD_INFO;
+> > >> -          state->param.info.sensor_num = sensor_platform->sensor_num;
+> > >> -          ret = cros_ec_motion_send_host_cmd(state, 0);
+> > >> -          if (ret) {
+> > >> -                  dev_warn(dev, "Can not access sensor info\n");
+> > >> +  if (!physical_device)
+> > >> +          return 0;
+> > >> +
+> > >> +  state->param.cmd = MOTIONSENSE_CMD_INFO;
+> > >> +  state->param.info.sensor_num = sensor_platform->sensor_num;
+> > >> +  ret = cros_ec_motion_send_host_cmd(state, 0);
+> > >> +  if (ret) {
+> > >> +          dev_warn(dev, "Can not access sensor info\n");
+> > >> +          return ret;
+> > >> +  }
+> > >> +  state->type = state->resp->info.type;
+> > >> +  state->loc = state->resp->info.location;
+> > >> +
+> > >> +  /* Set sign vector, only used for backward compatibility. */
+> > >> +  memset(state->sign, 1, CROS_EC_SENSOR_MAX_AXIS);
+> > >> +
+> > >> +  for (i = CROS_EC_SENSOR_X; i < CROS_EC_SENSOR_MAX_AXIS; i++)
+> > >> +          state->calib[i].scale = MOTION_SENSE_DEFAULT_SCALE;
+> > >> +
+> > >> +  /* 0 is a correct value used to stop the device */
+> > >> +  if (state->msg->version < 3) {
+> > >> +          get_default_min_max_freq(state->resp->info.type,
+> > >> +                                   &frequencies[1],
+> > >> +                                   &frequencies[2],
+> > >> +                                   &state->fifo_max_event_count);
+> > >> +  } else {
+> > >> +          frequencies[1] = state->resp->info_3.min_frequency;
+> > >> +          frequencies[2] = state->resp->info_3.max_frequency;
+> > >> +          state->fifo_max_event_count =
+> > >> +              state->resp->info_3.fifo_max_event_count;
+> > >> +  }
+> > >> +  for (i = 0; i < ARRAY_SIZE(frequencies); i++) {
+> > >> +          state->frequencies[2 * i] = frequencies[i] / 1000;
+> > >> +          state->frequencies[2 * i + 1] =
+> > >> +                  (frequencies[i] % 1000) * 1000;
+> > >> +  }
+> > >> +
+> > >> +  if (cros_ec_check_features(ec, EC_FEATURE_MOTION_SENSE_FIFO)) {
+> > >> +          /*
+> > >> +           * Create a software buffer, feed by the EC FIFO.
+> > >> +           * We can not use trigger here, as events are generated
+> > >> +           * as soon as sample_frequency is set.
+> > >> +           */
+> > >> +          struct iio_buffer *buffer;
+> > >> +
+> > >> +          buffer = devm_iio_kfifo_allocate(dev);
+> > >> +          if (!buffer)
+> > >> +                  return -ENOMEM;
+> > >> +
+> > >> +          iio_device_attach_buffer(indio_dev, buffer);
+> > >> +          indio_dev->modes = INDIO_BUFFER_SOFTWARE;
+> > >> +
+> > >> +          ret = cros_ec_sensorhub_register_push_data(
+> > >> +                          sensor_hub, sensor_platform->sensor_num,
+> > >> +                          indio_dev, push_data);
+> > >> +          if (ret)
+> > >>                    return ret;
+> > >> -          }
+> > >> -          state->type = state->resp->info.type;
+> > >> -          state->loc = state->resp->info.location;
+> > >>
+> > >> -          /* Set sign vector, only used for backward compatibility. */
+> > >> -          memset(state->sign, 1, CROS_EC_SENSOR_MAX_AXIS);
+> > >> +          ret = devm_add_action_or_reset(
+> > >> +                          dev, cros_ec_sensors_core_clean, pdev);
+> > >> +          if (ret)
+> > >> +                  return ret;
+> > >>
+> > >> -          for (i = CROS_EC_SENSOR_X; i < CROS_EC_SENSOR_MAX_AXIS; i++)
+> > >> -                  state->calib[i].scale = MOTION_SENSE_DEFAULT_SCALE;
+> > >> -
+> > >> -          /* 0 is a correct value used to stop the device */
+> > >> -          if (state->msg->version < 3) {
+> > >> -                  get_default_min_max_freq(state->resp->info.type,
+> > >> -                                           &frequencies[1],
+> > >> -                                           &frequencies[2],
+> > >> -                                           &state->fifo_max_event_count);
+> > >> -          } else {
+> > >> -                  frequencies[1] = state->resp->info_3.min_frequency;
+> > >> -                  frequencies[2] = state->resp->info_3.max_frequency;
+> > >> -                  state->fifo_max_event_count =
+> > >> -                      state->resp->info_3.fifo_max_event_count;
+> > >> -          }
+> > >> -          for (i = 0; i < ARRAY_SIZE(frequencies); i++) {
+> > >> -                  state->frequencies[2 * i] = frequencies[i] / 1000;
+> > >> -                  state->frequencies[2 * i + 1] =
+> > >> -                          (frequencies[i] % 1000) * 1000;
+> > >> -          }
+> > >> -
+> > >> -          if (cros_ec_check_features(ec, EC_FEATURE_MOTION_SENSE_FIFO)) {
+> > >> -                  /*
+> > >> -                   * Create a software buffer, feed by the EC FIFO.
+> > >> -                   * We can not use trigger here, as events are generated
+> > >> -                   * as soon as sample_frequency is set.
+> > >> -                   */
+> > >> -                  struct iio_buffer *buffer;
+> > >> -
+> > >> -                  buffer = devm_iio_kfifo_allocate(dev);
+> > >> -                  if (!buffer)
+> > >> -                          return -ENOMEM;
+> > >> -
+> > >> -                  iio_device_attach_buffer(indio_dev, buffer);
+> > >> -                  indio_dev->modes = INDIO_BUFFER_SOFTWARE;
+> > >> -
+> > >> -                  ret = cros_ec_sensorhub_register_push_data(
+> > >> -                                  sensor_hub, sensor_platform->sensor_num,
+> > >> -                                  indio_dev, push_data);
+> > >> -                  if (ret)
+> > >> -                          return ret;
+> > >> -
+> > >> -                  ret = devm_add_action_or_reset(
+> > >> -                                  dev, cros_ec_sensors_core_clean, pdev);
+> > >> -                  if (ret)
+> > >> -                          return ret;
+> > >> -
+> > >> -                  /* Timestamp coming from FIFO are in ns since boot. */
+> > >> -                  ret = iio_device_set_clock(indio_dev, CLOCK_BOOTTIME);
+> > >> -                  if (ret)
+> > >> -                          return ret;
+> > >> -          } else {
+> > >> -                  const struct attribute **fifo_attrs;
+> > >> -
+> > >> -                  if (has_hw_fifo)
+> > >> -                          fifo_attrs = cros_ec_sensor_fifo_attributes;
+> > >> -                  else
+> > >> -                          fifo_attrs = NULL;
+> > >> -
+> > >> -                  /*
+> > >> -                   * The only way to get samples in buffer is to set a
+> > >> -                   * software trigger (systrig, hrtimer).
+> > >> -                   */
+> > >> -                  ret = devm_iio_triggered_buffer_setup_ext(
+> > >> -                                  dev, indio_dev, NULL, trigger_capture,
+> > >> -                                  NULL, fifo_attrs);
+> > >> -                  if (ret)
+> > >> -                          return ret;
+> > >> -          }
+> > >> +          /* Timestamp coming from FIFO are in ns since boot. */
+> > >> +          ret = iio_device_set_clock(indio_dev, CLOCK_BOOTTIME);
+> > >> +          if (ret)
+> > >> +                  return ret;
+> > >> +  } else {
+> > >> +          const struct attribute **fifo_attrs;
+> > >> +
+> > >> +          if (has_hw_fifo)
+> > >> +                  fifo_attrs = cros_ec_sensor_fifo_attributes;
+> > >> +          else
+> > >> +                  fifo_attrs = NULL;
+> > >> +
+> > >> +          /*
+> > >> +           * The only way to get samples in buffer is to set a
+> > >> +           * software trigger (systrig, hrtimer).
+> > >> +           */
+> > >> +          ret = devm_iio_triggered_buffer_setup_ext(
+> > >> +                          dev, indio_dev, NULL, trigger_capture,
+> > >> +                          NULL, fifo_attrs);
+> > >> +          if (ret)
+> > >> +                  return ret;
+> > >>    }
+> > >>
+> > >>    return 0;
+> > >
+>
