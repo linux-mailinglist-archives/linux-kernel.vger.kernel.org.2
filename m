@@ -2,61 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DEE233006B
+	by mail.lfdr.de (Postfix) with ESMTP id F037A33006C
 	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 12:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhCGLjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 06:39:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60916 "EHLO mail.kernel.org"
+        id S230342AbhCGLjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 06:39:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230198AbhCGLhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 06:37:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7872E64FCC;
-        Sun,  7 Mar 2021 11:37:54 +0000 (UTC)
+        id S230155AbhCGLio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 06:38:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 816FA64FCC;
+        Sun,  7 Mar 2021 11:38:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615117075;
-        bh=38duZBm0F47o5nZhY69bfHxeJMiTkBH1qvyVSK6kols=;
+        s=korg; t=1615117124;
+        bh=52A57wW6aRnAHSI/SU6mwLqt3+p/2rCLskgNvcPy+EY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BVwlm2dFqtgr6i9ZPkXKzFhUPYkIPIpIm0K5i/0aIo6z4lM5DzTzHucINL7DAEIEo
-         7a0Q3Jazg2mZTCsSTUqz/BSmv1ls9sPo1lOTqSsF8zY1pVaJ3s6oLRpPBNe9/T7w42
-         AyLlANk46VCclH6QSXLI2poaXfsLzI/Z6zRKsGNE=
-Date:   Sun, 7 Mar 2021 12:37:52 +0100
+        b=Cf+HO/62w2zBXeudmYjSzMqny7rhJCLylFIY9ItW0KlruboGHoQSQCFx1byKqpstV
+         A0qbLctNE7trW3GuwjTg8GZRlXp3GHkh7DkfHjDBQLvoiJisS7W5k5/DpYJvASw3SH
+         oncB8825T9YLddPc/bT1poP8sKWMTyNN5e718dFU=
+Date:   Sun, 7 Mar 2021 12:38:42 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
+To:     Samuel Zou <zou_wei@huawei.com>
 Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.11 000/104] 5.11.4-rc1 review
-Message-ID: <YES7ELO2Fqfo1LtW@kroah.com>
-References: <20210305120903.166929741@linuxfoundation.org>
- <20210306163956.GA26313@roeck-us.net>
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/102] 5.10.21-rc1 review
+Message-ID: <YES7QrvKHWPKOo9W@kroah.com>
+References: <20210305120903.276489876@linuxfoundation.org>
+ <8d4fbde6-b004-2874-af2d-a10f20be4993@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210306163956.GA26313@roeck-us.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8d4fbde6-b004-2874-af2d-a10f20be4993@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 06, 2021 at 08:39:56AM -0800, Guenter Roeck wrote:
-> On Fri, Mar 05, 2021 at 01:20:05PM +0100, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.11.4 release.
-> > There are 104 patches in this series, all will be posted as a response
+On Sat, Mar 06, 2021 at 02:25:44PM +0800, Samuel Zou wrote:
+> 
+> 
+> On 2021/3/5 20:20, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.21 release.
+> > There are 102 patches in this series, all will be posted as a response
 > > to this one.  If anyone has any issues with these being applied, please
 > > let me know.
 > > 
 > > Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
 > > Anything received after that time might be too late.
 > > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.21-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
 > 
-> Build results:
-> 	total: 155 pass: 155 fail: 0
-> Qemu test results:
-> 	total: 435 pass: 435 fail: 0
+> Our test CI monitored the 5.10.21-rc1, and compile failure on arm64:
 > 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+> Kernel repo:
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> Branch: linux-5.10.y
+> Arch: arm64/x86
+> Version: 5.10.21-rc1+
+> Commit: 80aaabbaf433294d1f075981fa3785d7f4b55159
+> Compiler: gcc version 7.3.0 (GCC)
+> 
+> 
+> arm64 (compile failure)
+> --------------------------------------------------------------------
+> Kernel build failed, error log:
+> kernel/rcu/tree.c:683:2: error: implicit declaration of function
+> ‘IRQ_WORK_INIT’; did you mean ‘QSTR_INIT’?
+> [-Werror=implicit-function-declaration]
+>   IRQ_WORK_INIT(late_wakeup_func);
+>   ^~~~~~~~~~~~~
+>   QSTR_INIT
+> kernel/rcu/tree.c:683:2: error: invalid initializer
+> 
+> 
+> x86 (No kernel failures)
+> --------------------------------------------------------------------
+> Testcase Result Summary:
+> total_num: 4716
+> succeed_num: 4714
+> failed_num: 2
+> timeout_num: 0
+> 
+> Tested-by: Hulk Robot <hulkci@huawei.com>
 
-Thanks for testing all of these.
+Thanks for testing and letting me know.
 
 greg k-h
