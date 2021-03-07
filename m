@@ -2,126 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239BF330504
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 23:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6336330510
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 23:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhCGWal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 17:30:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbhCGWaa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 17:30:30 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C497BC06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 14:30:29 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id u1so10553087ybu.14
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 14:30:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=/dBG0yzSXzaEP6wMxF8WVCUzDpcnQDtjFnGEznOQX/s=;
-        b=UWzHK5JD0jUddhVg2gtrM9KROWDj/CbEKimn+q4kgOYXPCwWDxoFugo11FmZ3cysNr
-         wlvu9QYl8N2iMJ5fjHGAK+ELj+KqGlWLf6palIGL1N0ubRKGpZTlc+Q92A494HHN5laI
-         p1a1c1catOsgPQ2tvE3mvKCgN1Nq2nHcELza21SvHZxwssx7glYkU1YknloO9910jgJI
-         qbrjrwJc9g4gpD6hAZtBYqIGM6+RlFZSGqAVRvE4L/lo1yxHjZRugqMhTaeLRZcCfwf/
-         gqa77N7+4ik92luA4iraU4dd7jh57MOQCDx4rzxwm7Yu+JPMN2pJHmSCvwOWxDr0Q3sE
-         7chA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=/dBG0yzSXzaEP6wMxF8WVCUzDpcnQDtjFnGEznOQX/s=;
-        b=PA8T6AgOCjv6z7f2ni3z42Om5XnAT5NWtncGBKZF2F8wHUNAcZzAclW0jTvRy4GWO6
-         JtrkCUJu9Y3UhWZpD2/u5sbRI/KmJcjpDTDWIl+8l5iyuFYLTBZU3ZcFgTlFT7lv1jSU
-         Md1452DyoTtdlYl/mwx5XVjOAQB9FE9XN0VUra5XTRRupDKnh683DjV4luDF8Ptg4mA1
-         r1aRv4OVgYo4C+QtYNiz+cBLIrMY5dZhoqgyoXC5nBpmjOYofK6WfOPws2ra2xL/VafE
-         liexsk//P0DYi3SzlVb1/Uep3UqoqMq0R2fzqKTZVXHPkrXqsEdqXpC1WjvxWSoRD7ET
-         4deg==
-X-Gm-Message-State: AOAM530tOrmuqNQ/j4xcGzcsbdNjQnf+qUMofPc/3aYeDHQA+NUfZGiQ
-        Y/Exg+pxquOrDCt+Eqa2IVcXTUTUAlZ2
-X-Google-Smtp-Source: ABdhPJwsYZzwXptjNwlzQryIbwpIEMnHOv6VOApg2GBKnTQas/Dhz8jbZZ4u/jD+wbomQDqeQHCD45YZ3YTN
-Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:54a7:6d37:d773:a2ec])
- (user=irogers job=sendgmr) by 2002:a25:7613:: with SMTP id
- r19mr29172005ybc.212.1615156228902; Sun, 07 Mar 2021 14:30:28 -0800 (PST)
-Date:   Sun,  7 Mar 2021 14:30:24 -0800
-Message-Id: <20210307223024.4081067-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH] tools include: Add __sum16 and __wsum definitions.
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S229740AbhCGWth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 17:49:37 -0500
+Received: from mga01.intel.com ([192.55.52.88]:56668 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230341AbhCGWta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 17:49:30 -0500
+IronPort-SDR: BnzbvP2aDztsaDgXS93ybRq/dDYA0BFtnfY0bfEdB01WLPamV8yB7vsqvudOOcROnjV/2sXxs1
+ 2Wi7sGMhPk9Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="207691650"
+X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
+   d="scan'208";a="207691650"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 14:49:29 -0800
+IronPort-SDR: kI7WKMsUaHp8xr+jCSAFZ0FdFoCwULV7M9gLBlJsmWaz/EJwASfeeWwLM1z8tjh0vOApz7L7lx
+ cNQXdVnUFSaQ==
+X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
+   d="scan'208";a="375870368"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 14:49:28 -0800
+Date:   Sun, 7 Mar 2021 14:49:27 -0800
+From:   Andi Kleen <ak@linux.intel.com>
+To:     John Wood <john.wood@gmx.com>
+Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: Re: [PATCH v5 7/8] Documentation: Add documentation for the Brute LSM
+Message-ID: <20210307224927.GT472138@tassilo.jf.intel.com>
+References: <20210227153013.6747-1-john.wood@gmx.com>
+ <20210227153013.6747-8-john.wood@gmx.com>
+ <878s78dnrm.fsf@linux.intel.com>
+ <20210302183032.GA3049@ubuntu>
+ <20210307151920.GR472138@tassilo.jf.intel.com>
+ <20210307164520.GA16296@ubuntu>
+ <20210307172540.GS472138@tassilo.jf.intel.com>
+ <20210307180541.GA17108@ubuntu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210307180541.GA17108@ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds definitions available in the uapi version.
+On Sun, Mar 07, 2021 at 07:05:41PM +0100, John Wood wrote:
+> On Sun, Mar 07, 2021 at 09:25:40AM -0800, Andi Kleen wrote:
+> > > processes created from it will be killed. If the systemd restart the network
+> > > daemon and it will crash again, then the systemd will be killed. I think this
+> > > way the attack is fully mitigated.
+> >
+> > Wouldn't that panic the system? Killing init is usually a panic.
+> 
+> The mitigation acts only over the process that crashes (network daemon) and the
+> process that exec() it (systemd). This mitigation don't go up in the processes
+> tree until reach the init process.
 
-Explanation:
-In the kernel include of types.h the uapi version is included.
-In tools the uapi/linux/types.h and linux/types.h are distinct.
-For BPF programs a definition of __wsum is needed by the generated
-bpf_helpers.h. The definition comes either from a generated vmlinux.h or
-from <linux/types.h> that may be transitively included from bpf.h. The
-perf build prefers linux/types.h over uapi/linux/types.h for
-<linux/types.h>*. To allow tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
-to compile with the same include path used for perf then these
-definitions are necessary.
+Most daemons have some supervisor that respawns them when they crash. 
+(maybe read up on "supervisor trees" if you haven't, it's a standard concept)
 
-There is likely a wider conversation about exactly how types.h should be
-specified and the include order used by the perf build - it is somewhat
-confusing that tools/include/uapi/linux/bpf.h is using the non-uapi
-types.h.
+That's usually (but not) always init, as in systemd. There might be something
+inbetween it and init, but likely init would respawn the something in between
+it it. One of the main tasks of init is to respawn things under it.
 
-*see tools/perf/Makefile.config:
-...
-INC_FLAGS += -I$(srctree)/tools/include/
-INC_FLAGS += -I$(srctree)/tools/arch/$(SRCARCH)/include/uapi
-INC_FLAGS += -I$(srctree)/tools/include/uapi
-...
-The include directories are scanned from left-to-right:
-https://gcc.gnu.org/onlinedocs/gcc/Directory-Options.html
-As tools/include/linux/types.h appears before
-tools/include/uapi/linux/types.h then I say it is preferred.
+If you have a supervisor tree starting from init the kill should eventually
+travel up to init.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/include/linux/types.h | 3 +++
- 1 file changed, 3 insertions(+)
+At least that's the theory. Do you have some experiments that show
+this doesn't happen?
 
-diff --git a/tools/include/linux/types.h b/tools/include/linux/types.h
-index e9c5a215837d..6e14a533ab4e 100644
---- a/tools/include/linux/types.h
-+++ b/tools/include/linux/types.h
-@@ -61,6 +61,9 @@ typedef __u32 __bitwise __be32;
- typedef __u64 __bitwise __le64;
- typedef __u64 __bitwise __be64;
- 
-+typedef __u16 __bitwise __sum16;
-+typedef __u32 __bitwise __wsum;
-+
- typedef struct {
- 	int counter;
- } atomic_t;
--- 
-2.30.1.766.gb4fecdf3b7-goog
+> 
+> Note: I am a kernel newbie and I don't know if the systemd is init. Sorry if it
+> is a stupid question. AFAIK systemd is not the init process (the first process
+> that is executed) but I am not sure.
 
+At least the part of systemd that respawns is often (but not always) init.
+
+> 
+> >
+> > > > Or if it's a interactive login you log in again.
+> > >
+> > > First the login will be killed (if it fails with a fatal signal) and if it is
+> > > restarted, the process that exec() it again will be killed. In this case I think
+> > > that the threat is also completely mitigated.
+> >
+> > Okay so sshd will be killed. And if it gets restarted eventually init,
+> > so panic again.
+> 
+> In this scenario the process that exec() the login will be killed (sshd
+> process). But I think that sshd is not the init process. So no panic.
+
+sshd would be respawned by the supervisor, which is likely init.
+
+> > That's a fairly drastic consequence because even without panic
+> > it means nobody can fix the system anymore without a console.
+> 
+> So, you suggest that the mitigation method for the brute force attack through
+> the execve system call should be different (not kill the process that exec).
+> Any suggestions would be welcome to improve this feature.
+
+If the system is part of some cluster, then panicing on attack or failure
+could be a reasonable reaction. Some other system in the cluster should
+take over. There's also a risk that all the systems get taken
+out quickly one by one, in this case you might still need something
+like the below.
+
+But it's something that would need to be very carefully considered
+for the environment.
+
+The other case is when there isn't some fallback, as in a standalone
+machine.
+
+It could be only used when the supervisor daemons are aware of it.
+Often they already have respawn limits, but would need to make sure they
+trigger before your algorithm trigger. Or maybe some way to opt-out 
+per process.  Then the DoS would be only against that process, but
+not everything on the machine. 
+
+So I think it needs more work on the user space side for most usages.
+
+-Andi
