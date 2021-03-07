@@ -2,97 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9012C32FE4E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 02:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B035B32FE51
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 02:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbhCGBST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 20:18:19 -0500
-Received: from mail-qt1-f172.google.com ([209.85.160.172]:43156 "EHLO
-        mail-qt1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbhCGBSF (ORCPT
+        id S230124AbhCGBVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 20:21:41 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51248 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229853AbhCGBVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 20:18:05 -0500
-Received: by mail-qt1-f172.google.com with SMTP id l14so2185207qtr.10;
-        Sat, 06 Mar 2021 17:18:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L2b25z/IaYQj4qXr6EBnNHfy1oGsb8L5IXw+1eFrXEk=;
-        b=XTP4IOcwoXIxOSTQuW0ZpPuIVWmZ4lK7dEAy7BAWlIYo+5RZ7a5JHlorIozbMKTplE
-         HEZfAiOxi8OV17vlKSQc7YZQ6hc/4eYL5CrQ3kH4sZyb4cWA+7CqH9uQniugvrjM3nWP
-         SyFBUW1nNPVCFK5P2PEKeXhEKL859bDNeqWWXPNA7EE4d/JZYZZl54t++07zkPb8Ib72
-         gu4tbCR26nV2hNKuwjb1g+YZOrkpAj+1v+hlqHggzVgCsxLp+mlWDJPw8TVab63owwOY
-         B02ehUIQ8JzY9+Hr8XND4kHi6HgkfCiylkDbF/kpkJ6NxYjGYqnaZVoANuA4EWUY9PP7
-         M3PA==
-X-Gm-Message-State: AOAM531R8x4dUFUgkS/K8e7Cqmiu2NqDHbuy6Dh2DqGfZbvLnrhjSPen
-        FMgvI4bnggoh78sMBwKPg/k+KoARMrJsZYEW
-X-Google-Smtp-Source: ABdhPJy5UpugTBIUvUPYV+bKOYYknMsymvxTPXUqPw3z+eGIJp30YlXptyA+8RfSAwhv2ay9u7DmGQ==
-X-Received: by 2002:ac8:b4b:: with SMTP id m11mr15714636qti.254.1615079884953;
-        Sat, 06 Mar 2021 17:18:04 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id r67sm4799808qkd.93.2021.03.06.17.18.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 17:18:04 -0800 (PST)
-Date:   Sun, 7 Mar 2021 02:18:01 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: acpiphp:  Fixed coding style
-Message-ID: <YEQpyWPgAI8az5gO@rocinante>
-References: <20210301072145.19018-1-chakravarthikulkarni2021@gmail.com>
+        Sat, 6 Mar 2021 20:21:20 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12712fQF190420;
+        Sat, 6 Mar 2021 20:21:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=G5mSRo0y5jOHQ4SXS4quhgDX4tam3PZzn1nNJxhlcSo=;
+ b=S08sys6rivGCNZFAvih1RzaTteVf8UsXNCivpW3FcxpOc10CQNu2D7vYhAY21kEfqzkp
+ oDFfqzmNT0mfDgka+RTr0Jigvu2CwFWpUBoQBwVuQ+pOqZXJ7ZcnX2h5YmMsgDZE4Pk1
+ K+u1W0AAqiggRgMn3gntgGnxykZn7isBhhtxhUEDO6z3N3k6cf6OAspwKITGdw0nA8e8
+ Dr3UOf+goLBCMksm/8MGUj6jmzWvcVmL5JkgOtw3O8qrJjdEMMKMT3X0erroY1qRCj3E
+ AHgtIyZKY4x+cPpwU08hi3j45fa7mQ5yLDxdXSqPU6UNhZBxIytaJMFTW0nSpI9dM2Fa vw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 374gk549yb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 06 Mar 2021 20:21:04 -0500
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12712gOL190496;
+        Sat, 6 Mar 2021 20:21:04 -0500
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 374gk549y6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 06 Mar 2021 20:21:04 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1271Gih8005996;
+        Sun, 7 Mar 2021 01:21:03 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma02dal.us.ibm.com with ESMTP id 3741c8pjg3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 07 Mar 2021 01:21:03 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1271L1JN38535614
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 7 Mar 2021 01:21:02 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E28AD136055;
+        Sun,  7 Mar 2021 01:21:01 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DFDD5136053;
+        Sun,  7 Mar 2021 01:21:00 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Sun,  7 Mar 2021 01:21:00 +0000 (GMT)
+Subject: Re: [PATCH v10 3/9] crypto: Add math to support fast NIST P384
+To:     Vitaly Chikunov <vt@altlinux.org>
+Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        dhowells@redhat.com, zohar@linux.ibm.com,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Saulo Alessandre <saulo.alessandre@tse.jus.br>
+References: <20210305005203.3547587-1-stefanb@linux.vnet.ibm.com>
+ <20210305005203.3547587-4-stefanb@linux.vnet.ibm.com>
+ <20210306192553.lxy5w262g2vs2hvv@altlinux.org>
+ <9ac456d7-a5e1-9e42-5d34-7dc1c70082e0@linux.ibm.com>
+ <20210307000310.ytes6la73x5bkori@altlinux.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <340a3176-05a2-6a4a-7c19-6c2aa2667083@linux.ibm.com>
+Date:   Sat, 6 Mar 2021 20:21:00 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210301072145.19018-1-chakravarthikulkarni2021@gmail.com>
+In-Reply-To: <20210307000310.ytes6la73x5bkori@altlinux.org>
+Content-Type: text/plain; charset=koi8-r; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-06_08:2021-03-03,2021-03-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015
+ impostorscore=0 priorityscore=1501 adultscore=0 bulkscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103070004
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 3/6/21 7:03 PM, Vitaly Chikunov wrote:
+> Stefan,
+>
+> On Sat, Mar 06, 2021 at 06:29:18PM -0500, Stefan Berger wrote:
+>> On 3/6/21 2:25 PM, Vitaly Chikunov wrote:
+>>> On Thu, Mar 04, 2021 at 07:51:57PM -0500, Stefan Berger wrote:
+>>>> From: Saulo Alessandre <saulo.alessandre@tse.jus.br>
+>>>>
+>>>> * crypto/ecc.c
+>>>>     - add vli_mmod_fast_384
+>>>>     - change some routines to pass ecc_curve forward until vli_mmod_fast
+>>>>
+>>>> * crypto/ecc.h
+>>>>     - add ECC_CURVE_NIST_P384_DIGITS
+>>>>     - change ECC_MAX_DIGITS to P384 size
+>>>>
+>>>> Signed-off-by: Saulo Alessandre <saulo.alessandre@tse.jus.br>
+>>>> Tested-by: Stefan Berger <stefanb@linux.ibm.com>
+>>>> ---
+>>>>    crypto/ecc.c | 266 +++++++++++++++++++++++++++++++++++++--------------
+>>>>    crypto/ecc.h |   3 +-
+>>>>    2 files changed, 194 insertions(+), 75 deletions(-)
+>>>>
+>>>> diff --git a/crypto/ecc.c b/crypto/ecc.c
+>>>> index f6cef5a7942d..c125576cda6b 100644
+>>>> --- a/crypto/ecc.c
+>>>> +++ b/crypto/ecc.c
+>>>> @@ -778,18 +778,133 @@ static void vli_mmod_fast_256(u64 *result, const u64 *product,
+>>>>    ...
+>>>>    /* Computes result = product % curve_prime for different curve_primes.
+>>>>     *
+>>>>     * Note that curve_primes are distinguished just by heuristic check and
+>>>>     * not by complete conformance check.
+>>>>     */
+>>>>    static bool vli_mmod_fast(u64 *result, u64 *product,
+>>>> -			  const u64 *curve_prime, unsigned int ndigits)
+>>>> +			  const struct ecc_curve *curve)
+>>>>    {
+>>>>    	u64 tmp[2 * ECC_MAX_DIGITS];
+>>>> +	const u64 *curve_prime = curve->p;
+>>>> +	const unsigned int ndigits = curve->g.ndigits;
+>>>> -	/* Currently, both NIST primes have -1 in lowest qword. */
+>>>> -	if (curve_prime[0] != -1ull) {
+>>>> +	/* Currently, all NIST have name nist_.* */
+>>>> +	if (strncmp(curve->name, "nist_", 5) != 0) {
+>>> I am not sure, but maybe this strncmp should not be optimized somehow,
+>>> since vli_mmod_fast could be called quite frequently. Perhaps by integer
+>>> algo id or even callback?
+>> Should be optimized or should not be? You seem to say both.
+> Excuse me for the typo. I meant "should be optimized". I think, maybe
+> it's time to add algo selector id (for the case statement, for example
+> instead of `switch (ndigits)') or just callback for a low level mmod
+> function.
+>
+> If you think this would not impact performance then nevermind.
 
-Thank you for sending the patch over.  Few suggestions below.
+I think it would only be a few cycles. Of course we could introduce a 
+flag to indicate nist functions (rather than using strncmp on the name) 
+or work with the callbacks (only for the nist functions?) as you 
+mentioned, but maybe that's something we could do after? Either way we 
+would have to pass the ecc_curve pointer all the way into vli_mmod_fast. 
+So this change here is preparing for this as well.
 
-There seem to be an extra space in the subject line.
+ š Stefan
 
-> In this commit fixed coding style for braces and comments.
 
-Where these coding style changes suggested by a tool?  For example, was it
-something like checkpatch.pl?  If so, then it would be prudent to
-mention that the script found these for future reference.
-
-[...]
-> -	struct list_head funcs;		/* one slot may have different
-> -					   objects (i.e. for each function) */
-> +	struct list_head funcs;		/* one slot may have different */
-> +					/* objects (i.e. for each function) */
-[...]
-
-Above would be a single line commit that has been made to with within
-the line length rules, as otherwise the line would be too long.
-
-This is not necessarily something that we ought to fix, see for example:
-  https://elixir.bootlin.com/linux/v5.11.3/source/include/linux/pci.h
-
-[...]
-> -struct acpiphp_attention_info
-> -{
-> +struct acpiphp_attention_info {
->  	int (*set_attn)(struct hotplug_slot *slot, u8 status);
->  	int (*get_attn)(struct hotplug_slot *slot, u8 *status);
->  	struct module *owner;
-[...]
-
-Nice catch!
-
-Generally, you would also need to your full name when providing your
-"Signed-off-by:" following the style that has been widely accepted.  See
-git log for how it would normally look like, and also have a look at the
-following for some general guidance on how to submit patches:
-
-  https://www.kernel.org/doc/html/latest/process/submitting-patches.html
-
-Krzysztof
