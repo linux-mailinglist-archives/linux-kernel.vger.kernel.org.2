@@ -2,94 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9C9330147
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 14:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5655330159
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 14:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhCGNk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 08:40:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37494 "EHLO mail.kernel.org"
+        id S231434AbhCGNqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 08:46:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231393AbhCGNkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 08:40:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 955E66509B;
-        Sun,  7 Mar 2021 13:40:02 +0000 (UTC)
+        id S231414AbhCGNqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 08:46:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBCEC650F8;
+        Sun,  7 Mar 2021 13:46:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615124404;
-        bh=KAdEzK9L5PScgpNAXea/SaJwnc31diz8Kc4lZDKBNQI=;
+        s=k20201202; t=1615124765;
+        bh=1co50NjPL1MpdbAsROTZX7lUcqwvoBSj87RB1dQ/LDY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ODp56EExQBe5YBqwFMwKZFkQS82V2r/lVxi3enrxB8rg7DOX/AeqQWV90hw2t2GCH
-         FxSLhQxMhKAufgWdvnAgMRx+w2rKi9PaQbqhNwHbHOHI1nxyc8w7wp8XGezbB6vvr3
-         DB8asULJ3DNPWARceFOaoTuKJBYftGTAsur8kEFDnCnf9zRIJNTRGp9kazg+oanhIw
-         E9ThWB9iY3acPTle3GhyNQgapKYxZHkyqnGImKRFdbuTB28dhYIy6Tr0lkDAtAcIvj
-         7UFEqNAd4m8ORMoVl0ry2ib3j9ZMCUjmJkHge6xwtrMKK4uBs3X+TkkV0VFC7uGbWP
-         J9gPRfV6qU5KA==
-Date:   Sun, 7 Mar 2021 21:39:59 +0800
+        b=VP85u86qQVJAwMoBrbGx3QgM/yz2L8AkmM+RO6RT8FXuhz+XXO1vcVfXZ12gvdlw7
+         IJvDOJS2nVWjxk7PAtnahklIaauwhkVdaLxgY1Eeo+2Yla7bYKrejoLAOpdZo+IEKf
+         TxARdo5iD28QgFI1J+2cuzExl8uK0GI7IwiAoZvizg0D1UkeJJCImoXZqVJR1XNlWO
+         9nabOM3M8LepnHrYBI/oCqtlA9F5EKiVLz+GV9PqnTGRSZIbWsPjpbrgCUGDR/sXtL
+         FjDE6t6TeSSNda5jk+AdugiG0Q4FDraEfDhyMsNgBEWideUS56damgQm5McQHQPtri
+         yqokhytv0AL5w==
+Date:   Sun, 7 Mar 2021 21:45:58 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     robh@kernel.org, festevam@gmail.com, kernel@pengutronix.de,
-        linux-imx@nxp.com, krzk@kernel.org, kernel@puri.sm,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Angus Ainslie <angus@akkea.ca>
-Subject: Re: [PATCH v3 4/5] arm64: dts: librem5: protect some partitions of
- the nor-flash
-Message-ID: <20210307133958.GH543@dragon>
-References: <20210219100439.9428-1-martin.kepplinger@puri.sm>
- <20210219100439.9428-5-martin.kepplinger@puri.sm>
+To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Martin Kepplinger <martink@posteo.de>,
+        "Angus Ainslie (Purism)" <angus@akkea.ca>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Walle <michael@walle.cc>,
+        Max Krummenacher <max.oss.09@gmail.com>,
+        Nishanth Menon <nm@ti.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/6] arm64: dts: librem5-devkit: Improve audio support
+Message-ID: <20210307134557.GI543@dragon>
+References: <cover.1613905396.git.agx@sigxcpu.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210219100439.9428-5-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1613905396.git.agx@sigxcpu.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 11:04:38AM +0100, Martin Kepplinger wrote:
-> From: Angus Ainslie <angus@akkea.ca>
+On Sun, Feb 21, 2021 at 12:07:05PM +0100, Guido Günther wrote:
+> So far only headphone output worked. Thesse patches add support for the
+> built in speaker and mic, allow a headset microphone to work and wire up jack
+> detection so audio output can switch to headphones automatically.  They also
+> adjust the card name to match the board not the codec, similar what's done for
+> the Librem 5.
 > 
-> These sections should be read only as they contain important data.
+> Patches are against next-20210210 but also apply against Shawn's imx-dt64-5.12
 > 
-> Signed-off-by: Angus Ainslie <angus@akkea.ca>
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> ---
->  .../boot/dts/freescale/imx8mq-librem5.dtsi      | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-> index c2bbbdeb93e3..d39ae27c8e42 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-> @@ -258,6 +258,23 @@
->  		compatible = "jedec,spi-nor";
->  		reg = <0>;
->  		spi-max-frequency = <1000000>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +
-> +		partition@0 {
-> +			label = "protected0";
-> +			reg = <0x0 0x30000>;
-> +			read-only;
-> +		};
-> +		partition@30000 {
-> +			label = "protected1";
-> +			reg = <0x30000 0x10000>;
-> +			read-only;
-> +		};
+> Guido Günther (6):
+>   arm64: dts: librem5-devkit: Use a less generic codec name
+>   arm64: dts: librem5-devkit: Add speaker amplifier
+>   arm64: dts: librem5-devkit: "Drop Line In Jack"
+>   arm64: defconfig: Enable asoc simple mux
+>   arm64: dts: librem5-devkit: Add mux for built-in vs headset mic
+>   arm64: dts: librem5-devkit: Move headphone detection to sound card
 
-Please have a newline between nodes.
-
-I fixed it up when applying.
-
-Shawn
-
-> +		partition@40000 {
-> +			label = "rw";
-> +			reg = <0x40000 0x1C0000>;
-> +		};
->  	};
->  };
->  
-> -- 
-> 2.20.1
-> 
+Applied all, thanks.
