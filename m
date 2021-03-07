@@ -2,65 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E513304FD
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 23:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 239BF330504
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 23:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhCGW1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 17:27:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48198 "EHLO
+        id S229955AbhCGWal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 17:30:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhCGW1Q (ORCPT
+        with ESMTP id S229740AbhCGWaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 17:27:16 -0500
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 246E1C06174A;
-        Sun,  7 Mar 2021 14:27:16 -0800 (PST)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id C3DD792009C; Sun,  7 Mar 2021 23:27:14 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id B7ACC92009B;
-        Sun,  7 Mar 2021 23:27:14 +0100 (CET)
-Date:   Sun, 7 Mar 2021 23:27:14 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: Re: [PATCH v2] MIPS: kernel: Reserve exception base early to prevent
- corruption
-In-Reply-To: <20210307214740.blgsti6mr546bm43@mobilestation>
-Message-ID: <alpine.DEB.2.21.2103072317320.51127@angie.orcam.me.uk>
-References: <20210306082910.3472-1-tsbogend@alpha.franken.de> <20210307200612.6ftvptnj4txaf2uy@mobilestation> <20210307212001.GA7835@alpha.franken.de> <20210307214740.blgsti6mr546bm43@mobilestation>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Sun, 7 Mar 2021 17:30:30 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C497BC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 14:30:29 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id u1so10553087ybu.14
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 14:30:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=/dBG0yzSXzaEP6wMxF8WVCUzDpcnQDtjFnGEznOQX/s=;
+        b=UWzHK5JD0jUddhVg2gtrM9KROWDj/CbEKimn+q4kgOYXPCwWDxoFugo11FmZ3cysNr
+         wlvu9QYl8N2iMJ5fjHGAK+ELj+KqGlWLf6palIGL1N0ubRKGpZTlc+Q92A494HHN5laI
+         p1a1c1catOsgPQ2tvE3mvKCgN1Nq2nHcELza21SvHZxwssx7glYkU1YknloO9910jgJI
+         qbrjrwJc9g4gpD6hAZtBYqIGM6+RlFZSGqAVRvE4L/lo1yxHjZRugqMhTaeLRZcCfwf/
+         gqa77N7+4ik92luA4iraU4dd7jh57MOQCDx4rzxwm7Yu+JPMN2pJHmSCvwOWxDr0Q3sE
+         7chA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=/dBG0yzSXzaEP6wMxF8WVCUzDpcnQDtjFnGEznOQX/s=;
+        b=PA8T6AgOCjv6z7f2ni3z42Om5XnAT5NWtncGBKZF2F8wHUNAcZzAclW0jTvRy4GWO6
+         JtrkCUJu9Y3UhWZpD2/u5sbRI/KmJcjpDTDWIl+8l5iyuFYLTBZU3ZcFgTlFT7lv1jSU
+         Md1452DyoTtdlYl/mwx5XVjOAQB9FE9XN0VUra5XTRRupDKnh683DjV4luDF8Ptg4mA1
+         r1aRv4OVgYo4C+QtYNiz+cBLIrMY5dZhoqgyoXC5nBpmjOYofK6WfOPws2ra2xL/VafE
+         liexsk//P0DYi3SzlVb1/Uep3UqoqMq0R2fzqKTZVXHPkrXqsEdqXpC1WjvxWSoRD7ET
+         4deg==
+X-Gm-Message-State: AOAM530tOrmuqNQ/j4xcGzcsbdNjQnf+qUMofPc/3aYeDHQA+NUfZGiQ
+        Y/Exg+pxquOrDCt+Eqa2IVcXTUTUAlZ2
+X-Google-Smtp-Source: ABdhPJwsYZzwXptjNwlzQryIbwpIEMnHOv6VOApg2GBKnTQas/Dhz8jbZZ4u/jD+wbomQDqeQHCD45YZ3YTN
+Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:54a7:6d37:d773:a2ec])
+ (user=irogers job=sendgmr) by 2002:a25:7613:: with SMTP id
+ r19mr29172005ybc.212.1615156228902; Sun, 07 Mar 2021 14:30:28 -0800 (PST)
+Date:   Sun,  7 Mar 2021 14:30:24 -0800
+Message-Id: <20210307223024.4081067-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH] tools include: Add __sum16 and __wsum definitions.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Mar 2021, Serge Semin wrote:
+This adds definitions available in the uapi version.
 
-> > some of them are not R2 (SB1), others are. So best bet would be to
-> > simply reserve the first 0x1000 bytes for every CPU and special handling
-> > for the BMIPS case. Does this cover all cases ?
-> 
-> I can't say for sure whether it will cover all the cases/platforms. I
-> visually analysed all the
-> board_{nmi_handler,ejtag_handler,ebase,cache_error}_setup callbacks
-> implementation in MIPS arch to create the list above. Exception vectors or
-> some other stuff can be setup in some other platform-specific manner. But at
-> least reserving a memory below PAGE_SIZE would get the situation partly back
-> to before the memory below the kernel stopped being reserved. Hopefully
-> one page will be enough for the platforms, which relied on that rule. The
-> rest or them sooner or later will manifest itself as it has happened with
-> Broadcom.
+Explanation:
+In the kernel include of types.h the uapi version is included.
+In tools the uapi/linux/types.h and linux/types.h are distinct.
+For BPF programs a definition of __wsum is needed by the generated
+bpf_helpers.h. The definition comes either from a generated vmlinux.h or
+from <linux/types.h> that may be transitively included from bpf.h. The
+perf build prefers linux/types.h over uapi/linux/types.h for
+<linux/types.h>*. To allow tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
+to compile with the same include path used for perf then these
+definitions are necessary.
 
- I think reserving up to 64KiB might be a bit excessive on one hand while 
-having the size of the reservation depend on configured PAGE_SIZE could be 
-too unpredictable on the other.  I think 4KiB is a good compromise and I'd 
-leave anything else for platform maintainers to sort out.
+There is likely a wider conversation about exactly how types.h should be
+specified and the include order used by the perf build - it is somewhat
+confusing that tools/include/uapi/linux/bpf.h is using the non-uapi
+types.h.
 
-  Maciej
+*see tools/perf/Makefile.config:
+...
+INC_FLAGS += -I$(srctree)/tools/include/
+INC_FLAGS += -I$(srctree)/tools/arch/$(SRCARCH)/include/uapi
+INC_FLAGS += -I$(srctree)/tools/include/uapi
+...
+The include directories are scanned from left-to-right:
+https://gcc.gnu.org/onlinedocs/gcc/Directory-Options.html
+As tools/include/linux/types.h appears before
+tools/include/uapi/linux/types.h then I say it is preferred.
+
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/include/linux/types.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/tools/include/linux/types.h b/tools/include/linux/types.h
+index e9c5a215837d..6e14a533ab4e 100644
+--- a/tools/include/linux/types.h
++++ b/tools/include/linux/types.h
+@@ -61,6 +61,9 @@ typedef __u32 __bitwise __be32;
+ typedef __u64 __bitwise __le64;
+ typedef __u64 __bitwise __be64;
+ 
++typedef __u16 __bitwise __sum16;
++typedef __u32 __bitwise __wsum;
++
+ typedef struct {
+ 	int counter;
+ } atomic_t;
+-- 
+2.30.1.766.gb4fecdf3b7-goog
+
