@@ -2,349 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1535632FF49
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 07:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4163632FF4B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 07:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbhCGGgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 01:36:21 -0500
-Received: from mail-mw2nam10on2061.outbound.protection.outlook.com ([40.107.94.61]:29281
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229964AbhCGGfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 01:35:51 -0500
+        id S230078AbhCGGlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 01:41:15 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:60813 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229814AbhCGGlL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 01:41:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1615099278; x=1646635278;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=4tcouaGaCpQCaukMW0Fg+80Ujit3Z6zMHk/kxROKcXM=;
+  b=Rg5hSOToeNdB0NNYXx3+vxLbVfi+tapYrVZst8dTNNCGCgQ5WZhZBz8L
+   ZlwKjdJFhdtAeoxqPyjOMjdVknigIovne+z/YquHh4WVu6wLcVkCVFeg0
+   umfSXWf2QfoIkU8zvDuYluakEp7hQXZMi5AULRw4WqHy/L+pjr2O8sfQ3
+   wPESq1r7nLLJeR+flVnlO8k8hlzMQv3kA4sNgSZ+nmT2CdGJl9h2znPSH
+   JBBtpdyQOje+cPxovZG3+y8NOA6CAoB2r14Ox02MYDh8bA96ARz2GdTXj
+   iccS6sw8RThI4LVIF8grGvAX+CTFjU1frcSFDYv4VjUrcLEaOtycc+4iU
+   g==;
+IronPort-SDR: kOBME9F4og8CyEIvLN3uIC+mA17c2freAM9y+oVDHSaPG7YFDlCDGFbin9I79NSIQ0LA6SESph
+ TFjE8YJzXjTygckFiR8Wlgc+3w4xe6hFOeVDPJACSR1O2UNEKPhgYbEIfFXG6zy14PDexfepsi
+ 2oPqNFPCHNFdbpgaA0esGv2Lx/I4t5kxUFVJKjN3wRSCw9WWUwVK4YXbsOXj0ayQXr+kZuUmlr
+ PHP/tCB+VMXsW17vLRag5J0QzOYDnbGnWKJsHcMNZd3oq2bEGa8TzsoE57ZzHeCnd6H4e0NP8N
+ Yto=
+X-IronPort-AV: E=Sophos;i="5.81,229,1610380800"; 
+   d="scan'208";a="265858368"
+Received: from mail-co1nam11lp2169.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.169])
+  by ob1.hgst.iphmx.com with ESMTP; 07 Mar 2021 14:41:16 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AItMVVsAgQejE4rHW3GpglGZi+98zFOYDl3g6uysFK6e4lCBoSzDvXcuIeCXEfh65gZ31Dwos6gyC5JM89ZF9+Qta1NdVMfIGOLX6+DmKBLwA11GJapMGezeLDIyOzm5zqMItwN7R/VU5uTglCJa7r1rGfpTGNjdTl5sOQ565ycHn9JQ9XU0oR+UnmBJfEX+PaC+12QKOOaRNDYAAIy6t5ZT+JD7CtTXcEKafnufBNZId/V7T19zg3s0mMiLQP/wxX7dYXFbWHKNzW6X9Z7nMpDUmh0N06j+usIWWV4G89ecS7Bz+8tz2LACJo7SYZV3LDLfIi+3cQPRv19qClEZsA==
+ b=niSHfL5omeP6AGpYroe5eamDkwpOXYY3c+rbsZY0luAouW8PYC04U5zREnmiYfXxlKTd73O7C4rlQw+g/llJINQcDclNEuczd5+s+UcpTlBUECLRf5zkC5GT2wATevtYgBsAubzt35efP9rdCcaAebdBmQvLqC4O1rM0gLYu3TcPUyevKIHjq/wrQL3fbLPmiRDFqbeTzWoOkhZpEls1OHfN3k6bjaPqebFA3EpXFGYpie+nUerOYwm8FxsIMNhit+jNEaNbavSV4siULE0l6tikjuZJ+UL/AouHBcztpd6Z1f/TR96Rh1UJdosoKQIu+EYh5dxheSsTjaxOX6jKsA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3kLbt34xz5n1HCJcYrU0vmLKxSXdSGX/yxSb8kzS7Pg=;
- b=ha3fMVRtPSiKuERaxOCSlnS5zfX9Au9jcjGOmkOaxsgfhN4b6ubyPlBc9kIDrvt7SQ0NAN/n1LgHpju94WiYu9TSARsYPgKX/2H3jy4SRgLkCrjpi1iuKNiIJ34oifA3QkqmZ+7zrPqxcqzvR0CH+hLVdzQHuFKXtOlfFe67YMah7gHFKNXyYLLi1oRLPFYAbkI6TTtsUr+byd4YSHaEGN8SzuWZjc3W+Of2BEgcdHp1CpAXdeIt1B5EDhJAYsogI1DG28eGvSHvDLgROQ/ZrgKMtGD3RZapE+ObI/U/0ibXyJSf2k7ywy9iu4rIwsoMUMp48F0FWRo2akcHon8VGg==
+ bh=wocrEIAUzxjzaxuFn7qfgoxBTcvXImx//fmJYztEG6o=;
+ b=nFQTeDLlXURKiu1CQyG68l8s/UqHj5e+7czlcuhowBHabIlqwgbBQnKPXRJ4GfsmxVVF7q8lk1185uV7rw/SeKv28JSfK8X8iY8mWrq+zigS430GhY2hkq+3ig6DLhurJ2kPn5r+SBCth4oMKVZA+Ww43WN/LJ5JoVqlHcXHOkjCaX7S41nEFj9/qHECpLXHOduBSKg/ZVly0qEsY1FxwhLeGGjitLPIqfTNQSaJiQxnJYf+vUumPG7d1iwzA88IIaMZwDazaxv0TEyiLy+f+cCkRv8S9EUq3atLD4s89NKq5M39eiJhJBpJQT8h2hsW7LAsBMuBzktXMFb5QWYARQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3kLbt34xz5n1HCJcYrU0vmLKxSXdSGX/yxSb8kzS7Pg=;
- b=xzKwQMOpvIG6AhtC7BwzIRMImFQk24WkD92U2uA4u0TsLUZDsk02GQjCXGC2jlmGye0vt+qTX0+/79WkkxM5GzIlj7GwjVKeSYJ/jQIcuqYIso0urxGiwm/YEScHD+j1g60N35/EJAOse2BxpP/uw2x2Xnzu6xu90I86owbfvbw=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB4719.namprd12.prod.outlook.com (2603:10b6:805:e9::25)
- by SN6PR12MB2814.namprd12.prod.outlook.com (2603:10b6:805:72::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Sun, 7 Mar
- 2021 06:35:48 +0000
-Received: from SN6PR12MB4719.namprd12.prod.outlook.com
- ([fe80::c32:245b:4812:ee03]) by SN6PR12MB4719.namprd12.prod.outlook.com
- ([fe80::c32:245b:4812:ee03%3]) with mapi id 15.20.3912.024; Sun, 7 Mar 2021
- 06:35:47 +0000
-From:   Rijo Thomas <Rijo-john.Thomas@amd.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Rijo Thomas <Rijo-john.Thomas@amd.com>,
-        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
-        op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] tee: amdtee: unload TA only when its refcount becomes 0
-Date:   Sun,  7 Mar 2021 12:05:01 +0530
-Message-Id: <4fafc43b8b6bb779fea87ecc5579afaab8a5f3ad.1615097779.git.Rijo-john.Thomas@amd.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [165.204.156.251]
-X-ClientProxiedBy: MA1PR01CA0130.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:35::24) To SN6PR12MB4719.namprd12.prod.outlook.com
- (2603:10b6:805:e9::25)
+ bh=wocrEIAUzxjzaxuFn7qfgoxBTcvXImx//fmJYztEG6o=;
+ b=h1ssTYW7XvYjxIXs9fN9Q8rSS1HV+Dmr/RjMu211+tnTexf6Wn90W1vHm4XN/pDIVn8tbxs8ENxM4gpaS74zKrVvfjharnZpDw0aHjWgVQ1rJqurivQYvYn0cs00tmQqVL8GqmqZITFUqutAfFtFhmXLCoc1gtonv8ZcJAi4vQY=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB6576.namprd04.prod.outlook.com (2603:10b6:5:20d::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3912.17; Sun, 7 Mar 2021 06:41:07 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66%3]) with mapi id 15.20.3890.035; Sun, 7 Mar 2021
+ 06:41:07 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] scsi: ufs: fix error return code of
+ ufshcd_populate_vreg()
+Thread-Topic: [PATCH] scsi: ufs: fix error return code of
+ ufshcd_populate_vreg()
+Thread-Index: AQHXEZwvRopTDhfxZkyg2no8INMi66p4FQYw
+Date:   Sun, 7 Mar 2021 06:41:07 +0000
+Message-ID: <DM6PR04MB65751ACC25699CD1DB6229CEFC949@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210305084718.12108-1-baijiaju1990@gmail.com>
+In-Reply-To: <20210305084718.12108-1-baijiaju1990@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 29bb0073-71a5-4380-1c46-08d8e133fce1
+x-ms-traffictypediagnostic: DM6PR04MB6576:
+x-microsoft-antispam-prvs: <DM6PR04MB6576B241D23474201E0257D2FC949@DM6PR04MB6576.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:378;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kvPoUUcUepQDj4Edx/EyaZ92zclu//2Z21eGtjcHhyLCHWmPxLRuzwVM4gugSVD4bXp7jmfXihfNMFjCDdJKJpUY5v5ELJ9cfAZkQ/SbAsIVemUKBJpy2Ja5us3jKemCnfVrT/mNILi0NkomOCzcM0853h3/Jb6GJJcejLx/lRsOHCsUD6RAQOI0CYTe1LKCM7s7yfG61wk2HKxWc8P8vHQFl2xuR+O4K14hcFo2VFm7P83cEEy1jGGeIc8+9bORAu/4FlRRKtvndqNgDnrzN0wYWqG+XjaTAwDOXwC4aA9rzGdoBL5UC0B+Mu3pd357Ao536g/rPZes7ALCE/Ee3zbuaPk97rEX4Eh5AaSC5K3kvUz93CbLj9niOQbHWFiboefXe8Auj6LPjq/r4Rj0IP5Qr/CO4jYuC/qzuo3GpwZFcyK1exr1WGWfNpiw2vwfgS/3awByOgGVijgiDB45wCX77H6CThbhJj6tqWOa611WQQDOaH+Wzn3iu0SBpu77Q3/eqvdNS8B514jet3k86A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(136003)(376002)(39850400004)(478600001)(8936002)(54906003)(66556008)(64756008)(4326008)(52536014)(76116006)(7696005)(66476007)(8676002)(5660300002)(71200400001)(316002)(66946007)(6506007)(66446008)(26005)(7416002)(2906002)(110136005)(55016002)(9686003)(33656002)(186003)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Pt+Y+6PHvtlUXYoD3O4KsSDzcp/4UYRovetT5v3k5QbIu4wey5W4xoD9O5Cw?=
+ =?us-ascii?Q?pI9aFNzTWoWYW7n26qMVXVgtfIRL9/lDYAlKlOqi8PPzcT1IQkQHTAoTzdeD?=
+ =?us-ascii?Q?Qvr6qGZfzMFqzcjJPIrZaAVJSmsmcTHEMyrOECegihK/UBxeT9dBjUNVAyYs?=
+ =?us-ascii?Q?HcvgD3S7VSrNH8KW+1f21RlqSPXpqIMW6vcL956JEqvURafYE07irB5g74NF?=
+ =?us-ascii?Q?RdeI14dGp6HkmcywpDjPiDol5UiyivSeyST3bsS4ckWxfKSEqNTpzSf37lZN?=
+ =?us-ascii?Q?vv/m6BSNySr+ccU2vvkCRNQbo7Yh7zFlxrDUezL0guWJ2NoRDWn/AWjxOth+?=
+ =?us-ascii?Q?9Y5KQDZhFlaQDeEv16b/B6WUWa8ldWJvjHBY1UZvlISfpmnhqaGDzquK1gce?=
+ =?us-ascii?Q?YrOEaejc+dcBY1PT+ciH6SDHntyNEvoiFu7etJL3R/nQAPaGKZyXFGw9Hq/S?=
+ =?us-ascii?Q?KDbvYZKVnt89E3rw+j0rxakjJGyW+3gTV9WfvobJjmKQlXaNDb4d749nIQ5L?=
+ =?us-ascii?Q?2xPEgX5xHA74f4q6ww531/B4psysF/6GptKzfg620wSIDlmRT9+MoWL5JZyJ?=
+ =?us-ascii?Q?IU6qbCn+ACLN4TD/MCkJIJZ5tJuIvAZvxnpH0x2hjq/9a2exBO2FVa9YhzL3?=
+ =?us-ascii?Q?q0H07C0IEcfejpnzZZ8QmMCIl5XjYelCfWd5CU5lH0851wyIRxkqwujz8UGN?=
+ =?us-ascii?Q?xJY0tYAP6hJNhl4vJJr19IPxOT5iy1EWieCqNKbhWda5UR8PAarv6940JATW?=
+ =?us-ascii?Q?NGxVZ/aQoea57brR3NLZFjfno7ybI9C16qQhAw2xE2mDPsVJuY/s+VwrmJMg?=
+ =?us-ascii?Q?AyKFuA7D4ClhMCr5TKJQ1E4j4pi0zCOU4sm/wk85kpZut1/oqviH36zsX55H?=
+ =?us-ascii?Q?bEjlvucn1a8uLQaky/MjyLHWcT/V0wtsgndqHasTNwgmRXbEvh9p6I0IxKF0?=
+ =?us-ascii?Q?FGtdWplYJXB8tHg353kbkUmEsidvdkqd0ieiHwdpX0torbH4w1KSBeqJIzOy?=
+ =?us-ascii?Q?oMB/A3VFyp0JGEYa0wgNAUdUH9xJWmsHbve8dQpePEp1959N33T1O6gmFNbw?=
+ =?us-ascii?Q?fe8YEWMWNQ4pQt6dVI7eyJf6aSaXwLGRWP0lRITbLnTnOtM0RSNLHMVlHxZs?=
+ =?us-ascii?Q?gWxSmRPafen4JRB6BaRiy95dczjS51yUIP48RDaIoTreQfBi0pf1B5tS+hsW?=
+ =?us-ascii?Q?Pmo3nx4yG4nmgvypk3/B8V9NvhEjD8SUJVbSkoF3a1THsXPiKU+vHbVi7VuK?=
+ =?us-ascii?Q?nKefdlylUqgwUZIQcyMaBVxja5jspR9pxsk/QgQ5saayEl9+GVYQz2JeZFuK?=
+ =?us-ascii?Q?XDPSmrLiwc81fHDYcmLKecFu?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from andbang6.amd.com (165.204.156.251) by MA1PR01CA0130.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:35::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Sun, 7 Mar 2021 06:35:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 81766b6f-fdf2-4b79-0c81-08d8e1333e06
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2814:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB2814845316D472DB1742A165CF949@SN6PR12MB2814.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:311;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 77Sh6itRkba1cQOvrbmVLvvo+f/Tey/HxtyM/JvyAq5MgEYtIfJYOXCmcV+WGVnMhYUFKMbyb0C7UnP8mnHW22PVazsEZyfnETU21hUvt0veq244gJnJfoQE4Jrknw5nmUoFgXiM2zYTz/0pgp95UikRV2irrhLcRcdHpDHMnzl7rpAu4tqwJER9sf3z9vMv0gXVpEkq6/UU9kHPnWmI0/9q01r9LmErCxl7ltsvFN8JtNrrxg6HXU80VR1ZPVI76Qi5uvIr5MzyQWJjqGHPX7hr59kbLMqfFmMIi6YohtW+QTVHnPfYTMfTXZZJ8+F53uYJp4ttM8vI4ZkgEC8eHuxFx6wtDJGVFnAxnbQrLno+PFjrZMurPqTeHqMpz9Ivoiz/0JwGhlqNjHG2mzFPmitrsDrR2eHFQ0CNOZL9Trlq+xWpQMVUopkKzacFBjafijap+OlDRQxfTrOK8t15wI5QITBs1D+ZhU/09sYDCkiaR3zlDqHTFNYmVYF3e1kYvmfVC8GGn02E02w9xPWOxw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB4719.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(366004)(396003)(376002)(83380400001)(6666004)(316002)(86362001)(478600001)(8676002)(36756003)(4326008)(6486002)(8936002)(7696005)(66946007)(66556008)(2906002)(186003)(26005)(956004)(2616005)(66476007)(110136005)(54906003)(5660300002)(52116002)(16526019);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?5DKBltETMOoLSoNAbmkDNRkCrJT73NL2l6iPpkO+gwN9EEI1TZxEDfLX2oY4?=
- =?us-ascii?Q?+El7KWGK/Xxpdv3xGQCqaaGYxHKIfp3r4DBut7haUuXslzAAkHf28aQs2E/C?=
- =?us-ascii?Q?e1IM5N0xja4pQR2UB+6CfJ1dVbCdrbq+/rliSsMn/FqSUsa7cbIaj7RDVFPo?=
- =?us-ascii?Q?ORPgpvolRNi8hpC6zOgZdpdpRV7t0jcvZI6wthbyAbIBdMycq21e6SzT1ki6?=
- =?us-ascii?Q?KwngQ0K8r7FZrQJ+BafE7JBXZcmwLY9mPwHFOzrpN3XEX8awF1MIzOA28oFl?=
- =?us-ascii?Q?YQTSaCVh75eYxZ329/EZ/63l3BshPRAGN0Y5G4NtkkjngsyiZeQTw7clZMti?=
- =?us-ascii?Q?knm2JoStUqnt5wnKlylmzfsGQMrAWuuBhtbtbyJt6k47lDxbZZ8qHWwzUT5Q?=
- =?us-ascii?Q?cPI3YxGcajFecaoyItDYeJ0qu/MLoDXhNYNZ1+QNZHtkCyg66E5Abg+QOtWd?=
- =?us-ascii?Q?wIFefokGJ61rdYxiEyYVaHF0EGi2VG3PhHgCE+XUuWv54O+iBWieE1cU3GjF?=
- =?us-ascii?Q?66a9tOaRQbE2qe47n1VNTTpy8MGFcglB6w4IUhN4r9jbPAQP4Io9afGdF/PF?=
- =?us-ascii?Q?sIA7foKMYjBzbjCHZiX2W2WwqdHPMHSvQqsKzIbPh5DwHxIXLmZWdOxa/NA1?=
- =?us-ascii?Q?++zUw6tQEg9xqSQ0P7MyvQTMQEPeXx8AQHbyqPLObfrKDpVDRjTLV+wNmy9Y?=
- =?us-ascii?Q?n1sjpDdam0dRJ8KfxAthIJmGka6Xuz5iL0z1cZngRfWNL/C62ODEBmw6QGRQ?=
- =?us-ascii?Q?bLcXWWuO8veMK5kxnA9e6iqacXQz7JbCki7Z5tvkrwyIsASMW5OIG3i8zKpG?=
- =?us-ascii?Q?AbOtStNM2Z/Apvp2s2OcmRP0XlKXUjWOt6lVJUXUQ4uhAjvhc/1m6xQSvqms?=
- =?us-ascii?Q?fUia4ucnJKKC4D+5uQYJKqJWDw18VVgoeXLiVyrcbGWG1GLHRXKPLVWw0JTp?=
- =?us-ascii?Q?s1/036TpOJhrbT3h7M0tBsfPS0Fry6psruldMpeRviTxYAdwYioDFlyjg/Ca?=
- =?us-ascii?Q?CHTOmxPj65Ewx2h4scHkhN97aZEhM5Sf70cXfbK2NFkXTL5oWlpe+sjQfaK2?=
- =?us-ascii?Q?O9x9yqYwgV/pWX/5nK2uig8PWHfDXTJaLV9ht+TFuDAIb7lREC8ji6zFagbp?=
- =?us-ascii?Q?xw6MVYjrt248NTdpGiRT/7NdPMuW7gYidB28015rJymOyuVCmdCpxdbMdHyi?=
- =?us-ascii?Q?0fC9eA6ZSlhgamG1waFC7uu+b8XXaCUe4uDb2Yk9rmuFxUG38x0eHXZiq3fU?=
- =?us-ascii?Q?NRcIWHSdZ5RPC/5hBYHV/tovb7/QV3s2YSICb3PMytpLrbMPx0Jv/JrV83Yc?=
- =?us-ascii?Q?qDsvTxZv595x8uvwBYBOjdd+?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 81766b6f-fdf2-4b79-0c81-08d8e1333e06
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB4719.namprd12.prod.outlook.com
+X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2021 06:35:47.6978
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29bb0073-71a5-4380-1c46-08d8e133fce1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2021 06:41:07.3485
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ErjXfsH0Kg4pAzXQRCN3GdfvIR1J4Zihg8pwx7phxb0iwES0jNv+hiD6BiCuZWuapcH8o8hGXoILb93Wme6Udg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2814
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RdlG6+/CSQ36f5jKvkkjE8L8gCnf+Zaj0ybsO8r5Psr+o6v22q4HR0WJdm+AOyTZn5jVv1BY69r50A9RhqILsg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6576
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Same Trusted Application (TA) can be loaded in multiple TEE contexts.
+>=20
+> When np is NULL or of_parse_phandle() returns NULL, no error return code
+> of ufshcd_populate_vreg() is assigned.
+> To fix this bug, ret is assigned with -EINVAL or -ENOENT as error return
+> code.
+This changes the flow of ufshcd_parse_regulator_info so you need to:
+a) get a tested-by tag and indicate which platform & devices you used, and
+b) explain further why ufshcd_parse_regulator_info doesn't no longer allow
+     some of the regulators not to be set via DT, which is the current stat=
+e.
 
-If it is a single instance TA, the TA should not get unloaded from AMD
-Secure Processor, while it is still in use in another TEE context.
+Thanks,
+Avri
 
-Therefore reference count TA and unload it when the count becomes zero.
-
-Fixes: 757cc3e9ff1d ("tee: add AMD-TEE driver")
-Reviewed-by: Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>
-Signed-off-by: Rijo Thomas <Rijo-john.Thomas@amd.com>
----
- drivers/tee/amdtee/amdtee_private.h | 13 +++++
- drivers/tee/amdtee/call.c           | 73 +++++++++++++++++++++++++++--
- drivers/tee/amdtee/core.c           | 15 +++---
- 3 files changed, 92 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/tee/amdtee/amdtee_private.h b/drivers/tee/amdtee/amdtee_private.h
-index 337c8d82f74e..6d0f7062bb87 100644
---- a/drivers/tee/amdtee/amdtee_private.h
-+++ b/drivers/tee/amdtee/amdtee_private.h
-@@ -21,6 +21,7 @@
- #define TEEC_SUCCESS			0x00000000
- #define TEEC_ERROR_GENERIC		0xFFFF0000
- #define TEEC_ERROR_BAD_PARAMETERS	0xFFFF0006
-+#define TEEC_ERROR_OUT_OF_MEMORY	0xFFFF000C
- #define TEEC_ERROR_COMMUNICATION	0xFFFF000E
- 
- #define TEEC_ORIGIN_COMMS		0x00000002
-@@ -93,6 +94,18 @@ struct amdtee_shm_data {
- 	u32     buf_id;
- };
- 
-+/**
-+ * struct amdtee_ta_data - Keeps track of all TAs loaded in AMD Secure
-+ *			   Processor
-+ * @ta_handle:	Handle to TA loaded in TEE
-+ * @refcount:	Reference count for the loaded TA
-+ */
-+struct amdtee_ta_data {
-+	struct list_head list_node;
-+	u32 ta_handle;
-+	u32 refcount;
-+};
-+
- #define LOWER_TWO_BYTE_MASK	0x0000FFFF
- 
- /**
-diff --git a/drivers/tee/amdtee/call.c b/drivers/tee/amdtee/call.c
-index 096dd4d92d39..e10601417ea3 100644
---- a/drivers/tee/amdtee/call.c
-+++ b/drivers/tee/amdtee/call.c
-@@ -121,15 +121,69 @@ static int amd_params_to_tee_params(struct tee_param *tee, u32 count,
- 	return ret;
- }
- 
-+static DEFINE_MUTEX(ta_refcount_mutex);
-+static struct list_head ta_list = LIST_HEAD_INIT(ta_list);
-+
-+static u32 get_ta_refcount(u32 ta_handle)
-+{
-+	struct amdtee_ta_data *ta_data;
-+	u32 count = 0;
-+
-+	/* Caller must hold a mutex */
-+	list_for_each_entry(ta_data, &ta_list, list_node)
-+		if (ta_data->ta_handle == ta_handle)
-+			return ++ta_data->refcount;
-+
-+	ta_data = kzalloc(sizeof(*ta_data), GFP_KERNEL);
-+	if (ta_data) {
-+		ta_data->ta_handle = ta_handle;
-+		ta_data->refcount = 1;
-+		count = ta_data->refcount;
-+		list_add(&ta_data->list_node, &ta_list);
-+	}
-+
-+	return count;
-+}
-+
-+static u32 put_ta_refcount(u32 ta_handle)
-+{
-+	struct amdtee_ta_data *ta_data;
-+	u32 count = 0;
-+
-+	/* Caller must hold a mutex */
-+	list_for_each_entry(ta_data, &ta_list, list_node)
-+		if (ta_data->ta_handle == ta_handle) {
-+			count = --ta_data->refcount;
-+			if (count == 0) {
-+				list_del(&ta_data->list_node);
-+				kfree(ta_data);
-+				break;
-+			}
-+		}
-+
-+	return count;
-+}
-+
- int handle_unload_ta(u32 ta_handle)
- {
- 	struct tee_cmd_unload_ta cmd = {0};
--	u32 status;
-+	u32 status, count;
- 	int ret;
- 
- 	if (!ta_handle)
- 		return -EINVAL;
- 
-+	mutex_lock(&ta_refcount_mutex);
-+
-+	count = put_ta_refcount(ta_handle);
-+
-+	if (count) {
-+		pr_debug("unload ta: not unloading %u count %u\n",
-+			 ta_handle, count);
-+		ret = -EBUSY;
-+		goto unlock;
-+	}
-+
- 	cmd.ta_handle = ta_handle;
- 
- 	ret = psp_tee_process_cmd(TEE_CMD_ID_UNLOAD_TA, (void *)&cmd,
-@@ -137,8 +191,12 @@ int handle_unload_ta(u32 ta_handle)
- 	if (!ret && status != 0) {
- 		pr_err("unload ta: status = 0x%x\n", status);
- 		ret = -EBUSY;
-+	} else {
-+		pr_debug("unloaded ta handle %u\n", ta_handle);
- 	}
- 
-+unlock:
-+	mutex_unlock(&ta_refcount_mutex);
- 	return ret;
- }
- 
-@@ -357,14 +415,23 @@ int handle_load_ta(void *data, u32 size, struct tee_ioctl_open_session_arg *arg)
- 	cmd.low_addr = lower_32_bits(blob);
- 	cmd.size = size;
- 
-+	mutex_lock(&ta_refcount_mutex);
-+
- 	ret = psp_tee_process_cmd(TEE_CMD_ID_LOAD_TA, (void *)&cmd,
- 				  sizeof(cmd), &arg->ret);
- 	if (ret) {
- 		arg->ret_origin = TEEC_ORIGIN_COMMS;
- 		arg->ret = TEEC_ERROR_COMMUNICATION;
--	} else {
--		set_session_id(cmd.ta_handle, 0, &arg->session);
-+	} else if (arg->ret == TEEC_SUCCESS) {
-+		ret = get_ta_refcount(cmd.ta_handle);
-+		if (!ret) {
-+			arg->ret_origin = TEEC_ORIGIN_COMMS;
-+			arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
-+		} else {
-+			set_session_id(cmd.ta_handle, 0, &arg->session);
-+		}
- 	}
-+	mutex_unlock(&ta_refcount_mutex);
- 
- 	pr_debug("load TA: TA handle = 0x%x, RO = 0x%x, ret = 0x%x\n",
- 		 cmd.ta_handle, arg->ret_origin, arg->ret);
-diff --git a/drivers/tee/amdtee/core.c b/drivers/tee/amdtee/core.c
-index 8a6a8f30bb42..da6b88e80dc0 100644
---- a/drivers/tee/amdtee/core.c
-+++ b/drivers/tee/amdtee/core.c
-@@ -59,10 +59,9 @@ static void release_session(struct amdtee_session *sess)
- 			continue;
- 
- 		handle_close_session(sess->ta_handle, sess->session_info[i]);
-+		handle_unload_ta(sess->ta_handle);
- 	}
- 
--	/* Unload Trusted Application once all sessions are closed */
--	handle_unload_ta(sess->ta_handle);
- 	kfree(sess);
- }
- 
-@@ -224,8 +223,6 @@ static void destroy_session(struct kref *ref)
- 	struct amdtee_session *sess = container_of(ref, struct amdtee_session,
- 						   refcount);
- 
--	/* Unload the TA from TEE */
--	handle_unload_ta(sess->ta_handle);
- 	mutex_lock(&session_list_mutex);
- 	list_del(&sess->list_node);
- 	mutex_unlock(&session_list_mutex);
-@@ -238,7 +235,7 @@ int amdtee_open_session(struct tee_context *ctx,
- {
- 	struct amdtee_context_data *ctxdata = ctx->data;
- 	struct amdtee_session *sess = NULL;
--	u32 session_info;
-+	u32 session_info, ta_handle;
- 	size_t ta_size;
- 	int rc, i;
- 	void *ta;
-@@ -259,11 +256,14 @@ int amdtee_open_session(struct tee_context *ctx,
- 	if (arg->ret != TEEC_SUCCESS)
- 		goto out;
- 
-+	ta_handle = get_ta_handle(arg->session);
-+
- 	mutex_lock(&session_list_mutex);
- 	sess = alloc_session(ctxdata, arg->session);
- 	mutex_unlock(&session_list_mutex);
- 
- 	if (!sess) {
-+		handle_unload_ta(ta_handle);
- 		rc = -ENOMEM;
- 		goto out;
- 	}
-@@ -277,6 +277,7 @@ int amdtee_open_session(struct tee_context *ctx,
- 
- 	if (i >= TEE_NUM_SESSIONS) {
- 		pr_err("reached maximum session count %d\n", TEE_NUM_SESSIONS);
-+		handle_unload_ta(ta_handle);
- 		kref_put(&sess->refcount, destroy_session);
- 		rc = -ENOMEM;
- 		goto out;
-@@ -289,12 +290,13 @@ int amdtee_open_session(struct tee_context *ctx,
- 		spin_lock(&sess->lock);
- 		clear_bit(i, sess->sess_mask);
- 		spin_unlock(&sess->lock);
-+		handle_unload_ta(ta_handle);
- 		kref_put(&sess->refcount, destroy_session);
- 		goto out;
- 	}
- 
- 	sess->session_info[i] = session_info;
--	set_session_id(sess->ta_handle, i, &arg->session);
-+	set_session_id(ta_handle, i, &arg->session);
- out:
- 	free_pages((u64)ta, get_order(ta_size));
- 	return rc;
-@@ -329,6 +331,7 @@ int amdtee_close_session(struct tee_context *ctx, u32 session)
- 
- 	/* Close the session */
- 	handle_close_session(ta_handle, session_info);
-+	handle_unload_ta(ta_handle);
- 
- 	kref_put(&sess->refcount, destroy_session);
- 
--- 
-2.17.1
+>=20
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> ---
+>  drivers/scsi/ufs/ufshcd-pltfrm.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-p=
+ltfrm.c
+> index 1a69949a4ea1..9f11c416a919 100644
+> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
+> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+> @@ -113,6 +113,7 @@ static int ufshcd_populate_vreg(struct device *dev,
+> const char *name,
+>=20
+>         if (!np) {
+>                 dev_err(dev, "%s: non DT initialization\n", __func__);
+> +               ret =3D -EINVAL;
+>                 goto out;
+>         }
+>=20
+> @@ -120,6 +121,7 @@ static int ufshcd_populate_vreg(struct device *dev,
+> const char *name,
+>         if (!of_parse_phandle(np, prop_name, 0)) {
+>                 dev_info(dev, "%s: Unable to find %s regulator, assuming =
+enabled\n",
+>                                 __func__, prop_name);
+> +               ret =3D -ENOENT;
+>                 goto out;
+>         }
+>=20
+> --
+> 2.17.1
 
