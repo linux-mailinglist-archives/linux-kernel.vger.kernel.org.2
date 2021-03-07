@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967AD33036E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 18:48:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C79D330377
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 18:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbhCGRrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 12:47:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230516AbhCGRrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 12:47:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F1DC64DE4;
-        Sun,  7 Mar 2021 17:47:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615139271;
-        bh=X9ZICFTVUWzZQfgOZGaQJI/dmApG7ttu6AciY08zep0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1SRmA3+jxQYOwCBHYVUEThJu3rOodIigTtYlLfkvayoeU9efyqK32Q2ouN4ob/6ma
-         cpczQ0Y+IfN+tLsoHICpvivms1z6O5wqli2agcNAq/5XjUlNw+bdE5rJndtkOwh8kH
-         VduX95ojDO0if3XeFkMfFO5cw5FRYTYxGhJUFO6c=
-Date:   Sun, 7 Mar 2021 18:47:48 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Chris.Paterson2@renesas.com, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/102] 5.10.21-rc1 review
-Message-ID: <YEURxE02KkuUYDTN@kroah.com>
-References: <20210305120903.276489876@linuxfoundation.org>
- <20210305221030.GB27686@amd>
- <20210307171824.GA22500@amd>
+        id S231545AbhCGRzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 12:55:03 -0500
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:35744 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231140AbhCGRyX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 12:54:23 -0500
+Received: by mail-wr1-f48.google.com with SMTP id l12so9003477wry.2;
+        Sun, 07 Mar 2021 09:54:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hQIrCN/YRAQaIM0XHUHOXnwhCxwofjceFx6bnlKYcVQ=;
+        b=JQLWnYiI9eNiPXkQ3ZMFrqo9C0HiWopDj68hHCfS+Gou62ZklbFHN1v8tsQAK8U7H2
+         6YCwE8YBcn2HIuuil/aFrUFcZOeEb60IFRke9oR9a9ftTUum2N3vZEd9pqNZ+uJ0Wcv/
+         4r6uWp2hYVoLawxfjWo2dEcFD/R9oz6NKPo8AJB8ZcjbVR62iW9c9o7gB9iWa2N/8vYi
+         VyRWXix+XM3RJlHW+geCUw16ahBBHKEMd4oD3V2p/y/ehmuEPf6IqEs2KJ9/R+g49h0r
+         e++uzgazJO8jQsz9vHfUoVj+hqpngMXJsCMahk5+6TfSxdTCQcqMMqz6I5BxdWk9uQKY
+         2qag==
+X-Gm-Message-State: AOAM531FZ4laC6oYeI1pOly+4TrffLXpG5N3RR3nYavccsUUGVmBp7FJ
+        S7CsCZFQU1e+0ACDvho5YxLUK5f0MaCC3A==
+X-Google-Smtp-Source: ABdhPJz5KR1N4kt9T40oQb6XmR22tL4GpbMr1j5JwlYg5uCoOO6M++s7e6nap4mofmUQ5H87wsXTqg==
+X-Received: by 2002:adf:cf11:: with SMTP id o17mr10432794wrj.391.1615139662504;
+        Sun, 07 Mar 2021 09:54:22 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id b15sm14734557wmd.41.2021.03.07.09.54.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 09:54:22 -0800 (PST)
+Date:   Sun, 7 Mar 2021 18:54:20 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Zhangfei Gao <zhangfei.gao@linaro.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        jean-philippe <jean-philippe@linaro.org>,
+        kenneth-lee-2012@foxmail.com, wangzhou1@hisilicon.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] PCI: set dma-can-stall for HiSilicon chip
+Message-ID: <YEUTTEHYx0ZxB3Ia@rocinante>
+References: <1610960316-28935-1-git-send-email-zhangfei.gao@linaro.org>
+ <1610960316-28935-4-git-send-email-zhangfei.gao@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210307171824.GA22500@amd>
+In-Reply-To: <1610960316-28935-4-git-send-email-zhangfei.gao@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 06:18:25PM +0100, Pavel Machek wrote:
-> Hi!
-> 
-> > > This is the start of the stable review cycle for the 5.10.21 release.
-> > > There are 102 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > 
-> > Here situation is similar to 4.4
-> > 
-> > [   27.349919] <LAVA_SIGNAL_TESTCASE TEST_CASE_ID=CVE-2017-5715 RESULT=fail>
-> > Received signal: <TESTCASE> TEST_CASE_ID=CVE-2017-5715 RESULT=fail
-> > 
-> > So I see some kind of failure, and this time I suspect real kernel
-> > problem.
-> > 
-> > https://lava.ciplatform.org/scheduler/job/171825
-> > 
-> > 4.19 has similar problem:
-> > 
-> > https://lava.ciplatform.org/scheduler/job/171812
-> > 
-> > Again, Ccing Chris, but it looks like something is wrong there.
-> 
-> It went away after I reran the tests, and the old tests failed due to
-> timeout. So it looks like server with qemu was overloaded or something
-> like that. There are still failures, but they are "boards not
-> available" kind, so not a kernel problem.
-> 
-> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-5.10.y
-> 
-> Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+Hi,
 
-Thanks for tracking this down and letting me know.
+[...]
+> Property dma-can-stall depends on patchset
+> https://lore.kernel.org/linux-iommu/20210108145217.2254447-1-jean-philippe@linaro.org/
+[...]
 
-greg k-h
+If you plan to post another version of this patch to include the above
+link into the commit message or reference to the commit itself, as
+Jean-Philippe's series can already be included in the mainline (since it
+has been a while now from when this series was originally posted), then
+I have a favour to ask - would you also be able to also capitalise the
+subject line (so that it's consistent) and change "chip" to "chips"
+since there are two you mention in the commit message.
+
+Thank you!
+
+Krzysztof
