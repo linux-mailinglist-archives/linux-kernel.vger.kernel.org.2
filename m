@@ -2,189 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5C833046B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 21:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6604733046D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 21:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbhCGUFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 15:05:46 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:15733 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232771AbhCGUFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 15:05:08 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615147508; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=IxY87TkcBXJLArBxT0QZ7WhSmWbWr1Xr/5/ZNFC3rN4=; b=PO8UsDr6tR7OnM+vzS0BCF+rjHxQ/Gr7F+xFB/j2ZCs8wvSKPPiOGpzOojQsHisxnqD5He2o
- UsIsq444OCgy+tXs86YznehAirXlFNNb+Tb8POaXRGik7YBLTZSmam/+Yd2xAxsPW8XWu7ex
- vsa0hgkZ4mcILIrk5y4kf0qqIWk=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 604531e42a5e6d1bfa906235 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 07 Mar 2021 20:04:52
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4C87EC43461; Sun,  7 Mar 2021 20:04:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_RED autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.110.12.79] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6A256C433C6;
-        Sun,  7 Mar 2021 20:04:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6A256C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v3 1/2] usb: dwc3: Trigger a GCTL soft reset when
- switching modes in DRD
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, Yu Chen <chenyu56@huawei.com>,
-        Tejas Joglekar <Tejas.Joglekar@synopsys.com>,
-        Yang Fei <fei.yang@intel.com>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Jun Li <lijun.kernel@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Roger Quadros <rogerq@ti.com>
-References: <20210108015115.27920-1-john.stultz@linaro.org>
- <87bldzwr6x.fsf@kernel.org>
- <CALAqxLWdWj9=a-7NGDzJyrfyRABwKnJM7EQo3Zm+k9JqAhPz+g@mail.gmail.com>
- <d95d0971-624e-a0e6-ac72-6ee3b1fb1106@synopsys.com>
- <06a44245-4f2f-69ba-fe46-b88a19f585c2@codeaurora.org>
- <a33f7c33-f95d-60c3-70f2-4b37fcf8bac5@synopsys.com>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <fa5cc67e-3873-e6d9-8727-d160740b027e@codeaurora.org>
-Date:   Sun, 7 Mar 2021 12:04:47 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S232818AbhCGUGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 15:06:54 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:55708 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232812AbhCGUGg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 15:06:36 -0500
+Date:   Sun, 7 Mar 2021 23:06:12 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, <linux-mips@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH v2] MIPS: kernel: Reserve exception base early to prevent
+ corruption
+Message-ID: <20210307200612.6ftvptnj4txaf2uy@mobilestation>
+References: <20210306082910.3472-1-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
-In-Reply-To: <a33f7c33-f95d-60c3-70f2-4b37fcf8bac5@synopsys.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210306082910.3472-1-tsbogend@alpha.franken.de>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Thomas.
+I thought we'd discuss it in v1, but since you've sent v2 please see
+my comment below.
 
-
-On 3/6/2021 3:41 PM, Thinh Nguyen wrote:
-> Wesley Cheng wrote:
->>
->> On 1/8/2021 4:44 PM, Thinh Nguyen wrote:
->>> Hi,
->>>
->>> John Stultz wrote:
->>>> On Fri, Jan 8, 2021 at 4:26 AM Felipe Balbi <balbi@kernel.org> wrote:
->>>>> Hi,
->>>>>
->>>>> John Stultz <john.stultz@linaro.org> writes:
->>>>>> From: Yu Chen <chenyu56@huawei.com>
->>>>>>
->>>>>> Just resending this, as discussion died out a bit and I'm not
->>>>>> sure how to make further progress. See here for debug data that
->>>>>> was requested last time around:
->>>>>>   https://urldefense.com/v3/__https://lore.kernel.org/lkml/CALAqxLXdnaUfJKx0aN9xWwtfWVjMWigPpy2aqsNj56yvnbU80g@mail.gmail.com/__;!!A4F2R9G_pg!LNzuprAeg-O80SgolYkIkW4-ne-M-yLWCDUY9MygAIrQC398Z6gRJ9wnsnlqd3w$ 
->>>>>>
->>>>>> With the current dwc3 code on the HiKey960 we often see the
->>>>>> COREIDLE flag get stuck off in __dwc3_gadget_start(), which
->>>>>> seems to prevent the reset irq and causes the USB gadget to
->>>>>> fail to initialize.
->>>>>>
->>>>>> We had seen occasional initialization failures with older
->>>>>> kernels but with recent 5.x era kernels it seemed to be becoming
->>>>>> much more common, so I dug back through some older trees and
->>>>>> realized I dropped this quirk from Yu Chen during upstreaming
->>>>>> as I couldn't provide a proper rational for it and it didn't
->>>>>> seem to be necessary. I now realize I was wrong.
->>>>>>
->>>>>> After resubmitting the quirk, Thinh Nguyen pointed out that it
->>>>>> shouldn't be a quirk at all and it is actually mentioned in the
->>>>>> programming guide that it should be done when switching modes
->>>>>> in DRD.
->>>>>>
->>>>>> So, to avoid these !COREIDLE lockups seen on HiKey960, this
->>>>>> patch issues GCTL soft reset when switching modes if the
->>>>>> controller is in DRD mode.
->>>>>>
->>>>>> Cc: Felipe Balbi <balbi@kernel.org>
->>>>>> Cc: Tejas Joglekar <tejas.joglekar@synopsys.com>
->>>>>> Cc: Yang Fei <fei.yang@intel.com>
->>>>>> Cc: YongQin Liu <yongqin.liu@linaro.org>
->>>>>> Cc: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
->>>>>> Cc: Thinh Nguyen <thinhn@synopsys.com>
->>>>>> Cc: Jun Li <lijun.kernel@gmail.com>
->>>>>> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->>>>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>>>>> Cc: linux-usb@vger.kernel.org
->>>>>> Signed-off-by: Yu Chen <chenyu56@huawei.com>
->>>>>> Signed-off-by: John Stultz <john.stultz@linaro.org>
->>>>>> ---
->>>>>> v2:
->>>>>> * Rework to always call the GCTL soft reset in DRD mode,
->>>>>>   rather then using a quirk as suggested by Thinh Nguyen
->>>>>>
->>>>>> v3:
->>>>>> * Move GCTL soft reset under the spinlock as suggested by
->>>>>>   Thinh Nguyen
->>>>> Because this is such an invasive change, I would prefer that we get
->>>>> Tested-By tags from a good fraction of the users before applying these
->>>>> two changes.
->>>> I'm happy to reach out to folks to try to get that. Though I'm
->>>> wondering if it would be better to put it behind a dts quirk flag, as
->>>> originally proposed?
->>>>    https://urldefense.com/v3/__https://lore.kernel.org/lkml/20201021181803.79650-1-john.stultz@linaro.org/__;!!A4F2R9G_pg!LNzuprAeg-O80SgolYkIkW4-ne-M-yLWCDUY9MygAIrQC398Z6gRJ9wnRWITZfc$ 
->>>>
->>>> That way folks can enable it for devices as they need?
->>>>
->>>> Again, I'm not trying to force this in as-is, just mostly sending it
->>>> out again for discussion to understand what other approach might work.
->>>>
->>>> thanks
->>>> -john
->>> A quirk would imply something is broken/diverged from the design right?
->>> But it's not the case here, and at least this is needed for HiKey960.
->>> Also, I think Rob will be ok with not adding 1 more quirk to the dwc3
->>> devicetree. :)
->>>
->>> BR,
->>> Thinh
->>>
->> Hi All,
->>
->> Sorry for jumping in, but I checked the SNPS v1.90a databook, and that
->> seemed to remove the requirement for the GCTL.softreset before writing
->> to PRTCAPDIR.  Should we consider adding a controller version/IP check?
->>
+On Sat, Mar 06, 2021 at 09:29:09AM +0100, Thomas Bogendoerfer wrote:
+> BMIPS is one of the few platforms that do change the exception base.
+> After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
+> with kernel_end") we started seeing BMIPS boards fail to boot with the
+> built-in FDT being corrupted.
 > 
-> Hi Wesley,
+> Before the cited commit, early allocations would be in the [kernel_end,
+> RAM_END] range, but after commit they would be within [RAM_START +
+> PAGE_SIZE, RAM_END].
 > 
-> From what I see in the v1.90a databook and others, the flow remains the
-> same. I need to check internally, but I'm not aware of the change.
+> The custom exception base handler that is installed by
+> bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
+> memory region allocated by unflatten_and_copy_device_tree() thus
+> corrupting the FDT used by the kernel.
 > 
-Hi Thinh,
+> To fix this, we need to perform an early reservation of the custom
+> exception space. So we reserve it already in cpu_probe() for the CPUs
+> where this is fixed. For CPU with an ebase config register allocation
+> of exception space will be done in trap_init().
+> 
+> Huge thanks to Serget for analysing and proposing a solution to this
+> issue.
+> 
+> Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
+> Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> ---
+> Changes in v2:
+>  - do only memblock reservation in reserve_exception_space()
+>  - reserve 0..0x400 for all CPUs without ebase register and
+>    to addtional reserve_exception_space for BMIPS CPUs
+> 
+>  arch/mips/include/asm/traps.h    |  3 +++
+>  arch/mips/kernel/cpu-probe.c     |  7 +++++++
+>  arch/mips/kernel/cpu-r3k-probe.c |  3 +++
+>  arch/mips/kernel/traps.c         | 10 +++++-----
+>  4 files changed, 18 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
+> index 6aa8f126a43d..b710e76c9c65 100644
+> --- a/arch/mips/include/asm/traps.h
+> +++ b/arch/mips/include/asm/traps.h
+> @@ -24,8 +24,11 @@ extern void (*board_ebase_setup)(void);
+>  extern void (*board_cache_error_setup)(void);
+>  
+>  extern int register_nmi_notifier(struct notifier_block *nb);
+> +extern void reserve_exception_space(phys_addr_t addr, unsigned long size);
+>  extern char except_vec_nmi[];
+>  
+> +#define VECTORSPACING 0x100	/* for EI/VI mode */
+> +
+>  #define nmi_notifier(fn, pri)						\
+>  ({									\
+>  	static struct notifier_block fn##_nb = {			\
+> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+> index 9a89637b4ecf..b565bc4b900d 100644
+> --- a/arch/mips/kernel/cpu-probe.c
+> +++ b/arch/mips/kernel/cpu-probe.c
+> @@ -26,6 +26,7 @@
+>  #include <asm/elf.h>
+>  #include <asm/pgtable-bits.h>
+>  #include <asm/spram.h>
+> +#include <asm/traps.h>
+>  #include <linux/uaccess.h>
+>  
+>  #include "fpu-probe.h"
+> @@ -1628,6 +1629,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+>  		c->cputype = CPU_BMIPS3300;
+>  		__cpu_name[cpu] = "Broadcom BMIPS3300";
+>  		set_elf_platform(cpu, "bmips3300");
+> +		reserve_exception_space(0x400, VECTORSPACING * 64);
+>  		break;
+>  	case PRID_IMP_BMIPS43XX: {
+>  		int rev = c->processor_id & PRID_REV_MASK;
+> @@ -1638,6 +1640,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+>  			__cpu_name[cpu] = "Broadcom BMIPS4380";
+>  			set_elf_platform(cpu, "bmips4380");
+>  			c->options |= MIPS_CPU_RIXI;
+> +			reserve_exception_space(0x400, VECTORSPACING * 64);
+>  		} else {
+>  			c->cputype = CPU_BMIPS4350;
+>  			__cpu_name[cpu] = "Broadcom BMIPS4350";
+> @@ -1654,6 +1657,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+>  			__cpu_name[cpu] = "Broadcom BMIPS5000";
+>  		set_elf_platform(cpu, "bmips5000");
+>  		c->options |= MIPS_CPU_ULRI | MIPS_CPU_RIXI;
+> +		reserve_exception_space(0x1000, VECTORSPACING * 64);
+>  		break;
+>  	}
+>  }
+> @@ -2133,6 +2137,9 @@ void cpu_probe(void)
+>  	if (cpu == 0)
+>  		__ua_limit = ~((1ull << cpu_vmbits) - 1);
+>  #endif
 
-Hmmm, can you help check the register description for the PRTCAPDIR on
-your v1.90a databook?  (Table 1-19 Fields for Register: GCTL (Continued)
-Pg73)  When we compared the sequence in the description there to the
-previous versions it removed the GCTL.softreset.  If it still shows up
-on yours, then maybe my v1.90a isn't the final version?
+> +
+> +	if (cpu_has_mips_r2_r6)
+> +		reserve_exception_space(0, 0x400);
 
-Thanks
-Wesley Cheng
+Are you sure it shouldn't be (!cpu_has_mips_r2_r6)?. What I see here
+contradicts to what is said in Changelog v2.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Anyway regarding the problem in general. AFAICS the next code uses the
+lowest memory to place some specific exception handlers:
+board_cache_error_setup pointer:
+  arch/mips/mm/c-r4k.c: r4k_cache_error_setup() - SiByte CPUs: CPU_SB1, CPU_SB1A (up to 0x180)
+  arch/mips/mm/c-octeon.c: octeon_cache_error_setup() - Cavium CPU: CPU_CAVIUM_OCTEON (up to 0x180)
+board_nmi_handler_setup pointer:
+  arch/mips/kernel/smp-bmips.c: bmips_nmi_handler_setup() - Broadcom CPU: CPU_BMIPS (up to 0x400)
+  arch/mips/loongson2ef/common/init.c: mips_nmi_setup() - Loongson 2E CPU: MACH_LOONGSON2EF (up to 0x400)
+  arch/mips/loongson64/init.c: mips_nmi_setup() - Loongson 64 CPU: MACH_LOONGSON64 (up to 0x400, VEIC:0xB00)
+  arch/mips/mti-malta/malta-init.c: mips_nmi_setup() - Malta CPU: MIPS_MALTA (up to 0x400, VEIC: 0xB00)
+  arch/mips/pistachio/init.c: mips_nmi_setup() - Pistachio CPU: MACH_PISTACHIO (up to 0x400, VEIC: 0xB00)
+board_ejtag_handler_setup:
+  arch/mips/mti-malta/malta-init.c: mips_ejtag_setup() - Malta CPU: MIPS_MALTA (up to 0x380, VEIC: 0xa80)
+  arch/mips/pistachio/init.c: mips_ejtag_setup() - Pistachio CPU: MACH_PISTACHIO (up to 0x380, VEIC: 0xa80)
+bmips_ebase_setup:
+  arch/mips/kernel/smp-bmips.c: bmips_ebase_setup() - Broadcom CPU: CPU_BMIPS (up to 0x400 - NMI/reset, and 0x1000 - normal)
+plat_mem_setup:
+  arch/mips/bmips/setup.c: bcm63xx_fixup_cpu1() - Broadcom CPU: CPU_BMIPS (up to 0x220)
+  
+
+Are you sure all of them have "cpu_has_mips_r2_r6" macro returning
+true (false) in order to safely use the lowest region in accordance
+with the conditional statement you've added? Moreover some of them rely on
+having a memory reserved up to 0x1000, which seems like not covered
+by the reservations added in this patch. For instance in accordance
+with the log provided by Florian in the bug-report, Broadcom CPU 5000
+has cpu_has_mips_r2_r6 macro returning false. So if you are sure in
+having the positive conditional statement in (cpu_has_mips_r2_r6)
+we'll end up having unreserved the lowest memory region there.
+As I said in a comment to v1 of course it doesn't matter for the early
+allocations since memblock expels first memory page from
+allocation-procedure. But we can't be sure that won't get changed in
+future, and I don't really know whether the buddy allocator omits that
+memory too. So IMHO at least for consistency we need to reserve it.
+
+I've just realized me and Paul already had a discussion related with
+this problem in a framework of a patch submitted by me about two years
+ago:
+https://lore.kernel.org/lkml/20190423224748.3765-6-fancer.lancer@gmail.com/T/#m39dff0410543cac23f5c215a537a8fd0f11057cc
+To say it shortly that's how the memory below the kernel stopped being
+reserved and the reservation in trap_init() was added:
+https://lore.kernel.org/linux-mips/20190430225216.7164-1-paul.burton@mips.com/T/#m455942ee26de86aa9eaee37bf45bb49e75388d80
+Although we didn't realize it wasn't enough... So in two years the
+problem manifested itself.
+
+I don't really know a firm solution in this case. At least SiByte,
+Loongson 2E/F and Broadcom won't have MIPS R2-R6 ISA support/flag set,
+so they need to have a memory below 0x400 or 0x1000 reserved. Moreover
+Malta and Pistachio CPUs have MIPS R2(-R6) support so they will
+allocate a memory for vectored exceptions, but at the same time they
+set fixed vectors for NMI and eJTAG below 0x400 or 0x1000 phys memory
+(Though they may reserve that memory via /memreserve/ DT node).
+God knows how many older CPUs also relied on having the lowest memory
+range reserved. All of that makes me thinking, that I shouldn't have
+just removed the reservation of the memory below kernel. Instead it
+might have been better to at least reserve the lowest page for each
+CPU or at least reserve a whole page for (!cpu_has_mips_r2_r6) CPUs
+as Paul originally suggested:
+https://lore.kernel.org/lkml/20190423224748.3765-6-fancer.lancer@gmail.com/T/#m0ca7ee2af4558e249cfe6d724e913b9cd629484e
+but for some reason changed to 1KB (0x400) in his series. What do you
+think?
+
+-Sergey
+
+>  }
+>  
+>  void cpu_report(void)
+> diff --git a/arch/mips/kernel/cpu-r3k-probe.c b/arch/mips/kernel/cpu-r3k-probe.c
+> index abdbbe8c5a43..af654771918c 100644
+> --- a/arch/mips/kernel/cpu-r3k-probe.c
+> +++ b/arch/mips/kernel/cpu-r3k-probe.c
+> @@ -21,6 +21,7 @@
+>  #include <asm/fpu.h>
+>  #include <asm/mipsregs.h>
+>  #include <asm/elf.h>
+> +#include <asm/traps.h>
+>  
+>  #include "fpu-probe.h"
+>  
+> @@ -158,6 +159,8 @@ void cpu_probe(void)
+>  		cpu_set_fpu_opts(c);
+>  	else
+>  		cpu_set_nofpu_opts(c);
+> +
+> +	reserve_exception_space(0, 0x400);
+>  }
+>  
+>  void cpu_report(void)
+> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+> index e0352958e2f7..808b8b61ded1 100644
+> --- a/arch/mips/kernel/traps.c
+> +++ b/arch/mips/kernel/traps.c
+> @@ -2009,13 +2009,16 @@ void __noreturn nmi_exception_handler(struct pt_regs *regs)
+>  	nmi_exit();
+>  }
+>  
+> -#define VECTORSPACING 0x100	/* for EI/VI mode */
+> -
+>  unsigned long ebase;
+>  EXPORT_SYMBOL_GPL(ebase);
+>  unsigned long exception_handlers[32];
+>  unsigned long vi_handlers[64];
+>  
+> +void reserve_exception_space(phys_addr_t addr, unsigned long size)
+> +{
+> +	memblock_reserve(addr, size);
+> +}
+> +
+>  void __init *set_except_vector(int n, void *addr)
+>  {
+>  	unsigned long handler = (unsigned long) addr;
+> @@ -2367,10 +2370,7 @@ void __init trap_init(void)
+>  
+>  	if (!cpu_has_mips_r2_r6) {
+>  		ebase = CAC_BASE;
+> -		ebase_pa = virt_to_phys((void *)ebase);
+>  		vec_size = 0x400;
+> -
+> -		memblock_reserve(ebase_pa, vec_size);
+>  	} else {
+>  		if (cpu_has_veic || cpu_has_vint)
+>  			vec_size = 0x200 + VECTORSPACING*64;
+> -- 
+> 2.29.2
+> 
