@@ -2,300 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2543303FD
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 19:47:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE694330409
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 19:54:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbhCGSq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 13:46:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57510 "EHLO
+        id S231657AbhCGSwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 13:52:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbhCGSp6 (ORCPT
+        with ESMTP id S231560AbhCGSvn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 13:45:58 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654D5C06174A;
-        Sun,  7 Mar 2021 10:45:58 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id n132so7654856iod.0;
-        Sun, 07 Mar 2021 10:45:58 -0800 (PST)
+        Sun, 7 Mar 2021 13:51:43 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B1BC06175F
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 10:51:42 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id a25-20020a1cf0190000b029010b1cbe2dd0so2426521wmb.2
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 10:51:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hki0Hl2tbnajpF3gwCuqdLTb9AKHzRLxw38xL8ZoUXw=;
-        b=Sb/khIF9MfxVP6p4cPQczN/OI7N1MNMAuG5XUyqSXrrpri2fNBztyxP76LfdxvLbFY
-         VTSFG5DJipyJ7E2KRm5IYmApFqXIHDNZlPHLvsbyUMazms59dUB+x1r6/8q0Lre7bhzp
-         bYT2uxiAStzG7yETo2yyxZVDJ1mPAOhI/NGZ1QNsPgBo9nAB6Ahe5+vazJuMZaqC5QBj
-         9ltkp8FcVc+Q/qWLiLxUx+qkQqSPlUvVCs1sPGSGpOi4C/iKbdIbfELqUXPTOSib1OGX
-         tFIGhlL07pn6XrLcoW9Hh3M/gbYKhxpIljPQBBPHIzph2aCoSyd36+K9D5akPU9XWe8Q
-         nqFw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=Y2nnNS+GqT7TJyAzMEoj0JTe1ldgAoF/8NSEWFXeM7o=;
+        b=XEQinZBvw40UemIVFSBuR4zO0PnieCrZhqNTiebm5YknyluAW+Qcf9Th1X6qlAp+Km
+         1loBQ1rTmQQIvAOJD9S1K/mZIe27BCd+bS5NfrD46SUPrDGvMLBs9ysvTqEPTueWYKTi
+         fLTZkYWtw4HKxtS5z/GYZDdd1yv3H8B6MyIHguleBb8sVKZkyiUqpP2yJNDa/emhWrIB
+         3y0zvTXSlWkNpjCowItRt3ThbHtJYxndEfiJtEZY95LtYpv8CLbYF0zFDdUZt9KAmtIl
+         jkNutdkdD/eZ0hUr58UOrXv6Odu4x57f9EugppBGsx1tezPGKMMIVYmGpPIkGtut00BB
+         8nag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hki0Hl2tbnajpF3gwCuqdLTb9AKHzRLxw38xL8ZoUXw=;
-        b=blzLPwNoj6gE+CrhrN8PXTOan3UzzVWwvQ6XCQjc54LyPBT6+/CNbtANsaRQJKJGBg
-         fz0NZBbPUa01GiQ5UAcgt+foyQlYTJ5ZTE7IIC4vd1vxLE7fLyyHZhqeaMskWH9wI0nD
-         13gQVSFZHhE3izSAvc+laJoFgOMJxsKenGFpJwOrJDsHb3G7Ny2Tqo56EBV/pz3PAcih
-         +v7ffH8nvEWGQq/WEhcWBNM19C3olR59vEXlYDWc+s9dwwnpDNxVCpbUfyI/Drt5ihN7
-         JUK3SMp40mpzNdDE8/SCIPUNA/i5LSiEt3nHgjBTPHLQJcUVkcbSkxFdgofnu7NtnwZE
-         6WPw==
-X-Gm-Message-State: AOAM532lRYhCP5ssWx3Axw6FrCSvQPrfeDTqLhC6Qt1w/qM5+/cWHXXP
-        v+D3JpGWkGLQ8KgQ60FOlqTT8o9hfMRwP0T0OuM=
-X-Google-Smtp-Source: ABdhPJwVvVV/1Z3jl/xAzB/0UAqCQ1OUSJzdqdTxTjtQD0CO0ZXsppwaV1aTMv2pihP4s6xd/iy3hHlva27p0JCH0q8=
-X-Received: by 2002:a5d:8416:: with SMTP id i22mr15237919ion.32.1615142757584;
- Sun, 07 Mar 2021 10:45:57 -0800 (PST)
-MIME-Version: 1.0
-References: <20201123144017.18311-1-alexandru.ardelean@analog.com>
- <20210221162905.65be88d0@archlinux> <408e9b87-0528-141a-1fa6-ca8c2a0b1c69@collabora.com>
- <20210307115941.18badb2e@archlinux>
-In-Reply-To: <20210307115941.18badb2e@archlinux>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Sun, 7 Mar 2021 20:45:46 +0200
-Message-ID: <CA+U=DsoLuj0bVAG92iDxTcg=aLGAnzaSiT-+_n=HkFzedGzS6Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] iio: cros_ec: do an early exit if not physical_device case
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Benson Leung <bleung@chromium.org>, groeck@chromium.org,
-        Gwendal Grignou <gwendal@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Y2nnNS+GqT7TJyAzMEoj0JTe1ldgAoF/8NSEWFXeM7o=;
+        b=nn92LeS7/2VOuOernJ6clpw8xx3LEKHViFwuVaDmr12TkVfgLD82n2H0lC/dovTcjw
+         myoijBVY9QA3P/NIx+1yTA+4/nJvBkIFCVhdrgTgedBVy0BB0yh9wftlbowBRMFywg9g
+         xHppTicAYX5zWuldKaj3VjD4wWVYWJazG2rSAm0Igr2hCWRU4v4RbEjkmqSNMv/CAg7/
+         Ry3Ph+QsRTDCzIFphaoMBL45QuQVJDHeLtTLyJyPucXOTVBjU1QeLgpE3YymbY3kA3m/
+         4b1CJ2RjPUU8wjnP5F1Lc6ZVrrvLU7O7a3yQc4B+gZHHrXuxefCvGje0APiJEhsm28uN
+         +AVw==
+X-Gm-Message-State: AOAM533x2s6l5wm8ZtWP02mQtCk9ZL4tvcOS/EzkvAEqRncn7N9q/kEM
+        NNEuonIioQBQUz9u6nBI/fthyw==
+X-Google-Smtp-Source: ABdhPJxPa1cKfmS4DGjawfyyfLw4AFQi3uDDzViTul/rXsL+C7IFPZJFOn6jby2a5idBqxriDOPXGQ==
+X-Received: by 2002:a7b:c188:: with SMTP id y8mr18282898wmi.76.1615143101395;
+        Sun, 07 Mar 2021 10:51:41 -0800 (PST)
+Received: from localhost.localdomain (lns-bzn-59-82-252-141-80.adsl.proxad.net. [82.252.141.80])
+        by smtp.gmail.com with ESMTPSA id v5sm14842965wmh.2.2021.03.07.10.51.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 10:51:41 -0800 (PST)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     cwchoi00@gmail.com
+Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, steven.price@arm.com,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Subject: [PATCH v4 1/4] devfreq: Register devfreq as a cooling device on demand
+Date:   Sun,  7 Mar 2021 19:51:34 +0100
+Message-Id: <20210307185137.24925-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 7, 2021 at 1:59 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Tue, 2 Mar 2021 11:46:06 +0100
-> Enric Balletbo i Serra <enric.balletbo@collabora.com> wrote:
->
-> > Hi all,
-> >
-> > On 21/2/21 17:29, Jonathan Cameron wrote:
-> > > On Mon, 23 Nov 2020 16:40:16 +0200
-> > > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-> > >
-> > >> This whole code-block was put under one big if() condition/block.
-> > >> This change does an early return if the 'physical_device' boolean is false,
-> > >> thus unindenting the block by one level.
-> > >>
-> > >> No other functional change has been done.
-> > >>
-> > >> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > > @Gwendal, others  This series from Alex has been outstanding for a while
-> > > but may well still apply.
-> > > Ideally looking for an ack.
-> > >
-> >
-> > This looks good to me.
-> >
-> > Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->
-> Hi Enric, Ack or both patches or just this one?
->
-> @Alex, series needs a rebase.  I'm not totally sure what's changed.
-> If you don't get to it I'll do it at somepoint but unlikely to
-> be terribly soon!
+Currently the default behavior is to manually having the devfreq
+backend to register themselves as a devfreq cooling device.
 
-It's likely that it's that iio_device_attach_buffer() went away and
-the block got replaced by devm_iio_kfifo_buffer_setup().
-I'll re-spin it.
-I dropped this set from my main work branch because I didn't know if
-it was forgotten, and rebasing it with every change on
-devm_iio_kfifo_buffer_setup() and
-devm_iio_triggered_buffer_setup_ext() became annoying.
-But it shouldn't be hard to re-spin.
+Instead of adding the code in the drivers for the thermal cooling
+device registering, let's provide a flag in the devfreq's profile to
+tell the common devfreq code to register the newly created devfreq as
+a cooling device.
 
->
-> Jonathan
->
-> >
-> > Thanks,
-> >  Enric
-> >
-> > > Thanks,
-> > >
-> > > Jonathan
-> > >
-> > >> ---
-> > >>  .../cros_ec_sensors/cros_ec_sensors_core.c    | 161 +++++++++---------
-> > >>  1 file changed, 81 insertions(+), 80 deletions(-)
-> > >>
-> > >> diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > >> index 5c6c4e6fec9b..9470014936f2 100644
-> > >> --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > >> +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > >> @@ -287,89 +287,90 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
-> > >>
-> > >>    indio_dev->name = pdev->name;
-> > >>
-> > >> -  if (physical_device) {
-> > >> -          state->param.cmd = MOTIONSENSE_CMD_INFO;
-> > >> -          state->param.info.sensor_num = sensor_platform->sensor_num;
-> > >> -          ret = cros_ec_motion_send_host_cmd(state, 0);
-> > >> -          if (ret) {
-> > >> -                  dev_warn(dev, "Can not access sensor info\n");
-> > >> +  if (!physical_device)
-> > >> +          return 0;
-> > >> +
-> > >> +  state->param.cmd = MOTIONSENSE_CMD_INFO;
-> > >> +  state->param.info.sensor_num = sensor_platform->sensor_num;
-> > >> +  ret = cros_ec_motion_send_host_cmd(state, 0);
-> > >> +  if (ret) {
-> > >> +          dev_warn(dev, "Can not access sensor info\n");
-> > >> +          return ret;
-> > >> +  }
-> > >> +  state->type = state->resp->info.type;
-> > >> +  state->loc = state->resp->info.location;
-> > >> +
-> > >> +  /* Set sign vector, only used for backward compatibility. */
-> > >> +  memset(state->sign, 1, CROS_EC_SENSOR_MAX_AXIS);
-> > >> +
-> > >> +  for (i = CROS_EC_SENSOR_X; i < CROS_EC_SENSOR_MAX_AXIS; i++)
-> > >> +          state->calib[i].scale = MOTION_SENSE_DEFAULT_SCALE;
-> > >> +
-> > >> +  /* 0 is a correct value used to stop the device */
-> > >> +  if (state->msg->version < 3) {
-> > >> +          get_default_min_max_freq(state->resp->info.type,
-> > >> +                                   &frequencies[1],
-> > >> +                                   &frequencies[2],
-> > >> +                                   &state->fifo_max_event_count);
-> > >> +  } else {
-> > >> +          frequencies[1] = state->resp->info_3.min_frequency;
-> > >> +          frequencies[2] = state->resp->info_3.max_frequency;
-> > >> +          state->fifo_max_event_count =
-> > >> +              state->resp->info_3.fifo_max_event_count;
-> > >> +  }
-> > >> +  for (i = 0; i < ARRAY_SIZE(frequencies); i++) {
-> > >> +          state->frequencies[2 * i] = frequencies[i] / 1000;
-> > >> +          state->frequencies[2 * i + 1] =
-> > >> +                  (frequencies[i] % 1000) * 1000;
-> > >> +  }
-> > >> +
-> > >> +  if (cros_ec_check_features(ec, EC_FEATURE_MOTION_SENSE_FIFO)) {
-> > >> +          /*
-> > >> +           * Create a software buffer, feed by the EC FIFO.
-> > >> +           * We can not use trigger here, as events are generated
-> > >> +           * as soon as sample_frequency is set.
-> > >> +           */
-> > >> +          struct iio_buffer *buffer;
-> > >> +
-> > >> +          buffer = devm_iio_kfifo_allocate(dev);
-> > >> +          if (!buffer)
-> > >> +                  return -ENOMEM;
-> > >> +
-> > >> +          iio_device_attach_buffer(indio_dev, buffer);
-> > >> +          indio_dev->modes = INDIO_BUFFER_SOFTWARE;
-> > >> +
-> > >> +          ret = cros_ec_sensorhub_register_push_data(
-> > >> +                          sensor_hub, sensor_platform->sensor_num,
-> > >> +                          indio_dev, push_data);
-> > >> +          if (ret)
-> > >>                    return ret;
-> > >> -          }
-> > >> -          state->type = state->resp->info.type;
-> > >> -          state->loc = state->resp->info.location;
-> > >>
-> > >> -          /* Set sign vector, only used for backward compatibility. */
-> > >> -          memset(state->sign, 1, CROS_EC_SENSOR_MAX_AXIS);
-> > >> +          ret = devm_add_action_or_reset(
-> > >> +                          dev, cros_ec_sensors_core_clean, pdev);
-> > >> +          if (ret)
-> > >> +                  return ret;
-> > >>
-> > >> -          for (i = CROS_EC_SENSOR_X; i < CROS_EC_SENSOR_MAX_AXIS; i++)
-> > >> -                  state->calib[i].scale = MOTION_SENSE_DEFAULT_SCALE;
-> > >> -
-> > >> -          /* 0 is a correct value used to stop the device */
-> > >> -          if (state->msg->version < 3) {
-> > >> -                  get_default_min_max_freq(state->resp->info.type,
-> > >> -                                           &frequencies[1],
-> > >> -                                           &frequencies[2],
-> > >> -                                           &state->fifo_max_event_count);
-> > >> -          } else {
-> > >> -                  frequencies[1] = state->resp->info_3.min_frequency;
-> > >> -                  frequencies[2] = state->resp->info_3.max_frequency;
-> > >> -                  state->fifo_max_event_count =
-> > >> -                      state->resp->info_3.fifo_max_event_count;
-> > >> -          }
-> > >> -          for (i = 0; i < ARRAY_SIZE(frequencies); i++) {
-> > >> -                  state->frequencies[2 * i] = frequencies[i] / 1000;
-> > >> -                  state->frequencies[2 * i + 1] =
-> > >> -                          (frequencies[i] % 1000) * 1000;
-> > >> -          }
-> > >> -
-> > >> -          if (cros_ec_check_features(ec, EC_FEATURE_MOTION_SENSE_FIFO)) {
-> > >> -                  /*
-> > >> -                   * Create a software buffer, feed by the EC FIFO.
-> > >> -                   * We can not use trigger here, as events are generated
-> > >> -                   * as soon as sample_frequency is set.
-> > >> -                   */
-> > >> -                  struct iio_buffer *buffer;
-> > >> -
-> > >> -                  buffer = devm_iio_kfifo_allocate(dev);
-> > >> -                  if (!buffer)
-> > >> -                          return -ENOMEM;
-> > >> -
-> > >> -                  iio_device_attach_buffer(indio_dev, buffer);
-> > >> -                  indio_dev->modes = INDIO_BUFFER_SOFTWARE;
-> > >> -
-> > >> -                  ret = cros_ec_sensorhub_register_push_data(
-> > >> -                                  sensor_hub, sensor_platform->sensor_num,
-> > >> -                                  indio_dev, push_data);
-> > >> -                  if (ret)
-> > >> -                          return ret;
-> > >> -
-> > >> -                  ret = devm_add_action_or_reset(
-> > >> -                                  dev, cros_ec_sensors_core_clean, pdev);
-> > >> -                  if (ret)
-> > >> -                          return ret;
-> > >> -
-> > >> -                  /* Timestamp coming from FIFO are in ns since boot. */
-> > >> -                  ret = iio_device_set_clock(indio_dev, CLOCK_BOOTTIME);
-> > >> -                  if (ret)
-> > >> -                          return ret;
-> > >> -          } else {
-> > >> -                  const struct attribute **fifo_attrs;
-> > >> -
-> > >> -                  if (has_hw_fifo)
-> > >> -                          fifo_attrs = cros_ec_sensor_fifo_attributes;
-> > >> -                  else
-> > >> -                          fifo_attrs = NULL;
-> > >> -
-> > >> -                  /*
-> > >> -                   * The only way to get samples in buffer is to set a
-> > >> -                   * software trigger (systrig, hrtimer).
-> > >> -                   */
-> > >> -                  ret = devm_iio_triggered_buffer_setup_ext(
-> > >> -                                  dev, indio_dev, NULL, trigger_capture,
-> > >> -                                  NULL, fifo_attrs);
-> > >> -                  if (ret)
-> > >> -                          return ret;
-> > >> -          }
-> > >> +          /* Timestamp coming from FIFO are in ns since boot. */
-> > >> +          ret = iio_device_set_clock(indio_dev, CLOCK_BOOTTIME);
-> > >> +          if (ret)
-> > >> +                  return ret;
-> > >> +  } else {
-> > >> +          const struct attribute **fifo_attrs;
-> > >> +
-> > >> +          if (has_hw_fifo)
-> > >> +                  fifo_attrs = cros_ec_sensor_fifo_attributes;
-> > >> +          else
-> > >> +                  fifo_attrs = NULL;
-> > >> +
-> > >> +          /*
-> > >> +           * The only way to get samples in buffer is to set a
-> > >> +           * software trigger (systrig, hrtimer).
-> > >> +           */
-> > >> +          ret = devm_iio_triggered_buffer_setup_ext(
-> > >> +                          dev, indio_dev, NULL, trigger_capture,
-> > >> +                          NULL, fifo_attrs);
-> > >> +          if (ret)
-> > >> +                  return ret;
-> > >>    }
-> > >>
-> > >>    return 0;
-> > >
->
+Suggested-by: Chanwoo Choi <cwchoi00@gmail.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+---
+ V4:
+   - Replaced thermal_cooling_device_unregister() by
+     devfreq_cooling_unregister()
+ V3:
+   - Rebased on linux-pm branch without units.h
+   - Set the cdev to NULL in case of error
+   - Added description for the cdev field in the devfreq structure
+ V2:
+   - Added is_cooling_device boolean in profile structure
+   - Register cooling device when the is_cooling_device boolean is set
+   - Remove devfreq cooling device registration in the backend drivers
+ V1:
+   - Register devfreq as a cooling device unconditionnally
+---
+ drivers/devfreq/devfreq.c | 13 +++++++++++++
+ include/linux/devfreq.h   |  8 ++++++++
+ 2 files changed, 21 insertions(+)
+
+diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+index bf3047896e41..8a535d4d6083 100644
+--- a/drivers/devfreq/devfreq.c
++++ b/drivers/devfreq/devfreq.c
+@@ -11,6 +11,7 @@
+ #include <linux/kmod.h>
+ #include <linux/sched.h>
+ #include <linux/debugfs.h>
++#include <linux/devfreq_cooling.h>
+ #include <linux/errno.h>
+ #include <linux/err.h>
+ #include <linux/init.h>
+@@ -26,6 +27,7 @@
+ #include <linux/hrtimer.h>
+ #include <linux/of.h>
+ #include <linux/pm_qos.h>
++#include <linux/thermal.h>
+ #include "governor.h"
+ 
+ #define CREATE_TRACE_POINTS
+@@ -935,6 +937,15 @@ struct devfreq *devfreq_add_device(struct device *dev,
+ 
+ 	mutex_unlock(&devfreq_list_lock);
+ 
++	if (devfreq->profile->is_cooling_device) {
++		devfreq->cdev = devfreq_cooling_em_register(devfreq, NULL);
++		if (IS_ERR(devfreq->cdev)) {
++			dev_info(dev, "Failed to register devfreq "
++				 "cooling device\n");
++			devfreq->cdev = NULL;
++		}
++	}
++
+ 	return devfreq;
+ 
+ err_init:
+@@ -960,6 +971,8 @@ int devfreq_remove_device(struct devfreq *devfreq)
+ 	if (!devfreq)
+ 		return -EINVAL;
+ 
++	devfreq_cooling_unregister(devfreq->cdev);
++
+ 	if (devfreq->governor) {
+ 		devfreq->governor->event_handler(devfreq,
+ 						 DEVFREQ_GOV_STOP, NULL);
+diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
+index 26ea0850be9b..aba7ace11b72 100644
+--- a/include/linux/devfreq.h
++++ b/include/linux/devfreq.h
+@@ -98,11 +98,15 @@ struct devfreq_dev_status {
+  * @freq_table:		Optional list of frequencies to support statistics
+  *			and freq_table must be generated in ascending order.
+  * @max_state:		The size of freq_table.
++ *
++ * @is_cooling_device: A self-explanatory boolean giving the device a
++ *                     cooling effect property.
+  */
+ struct devfreq_dev_profile {
+ 	unsigned long initial_freq;
+ 	unsigned int polling_ms;
+ 	enum devfreq_timer timer;
++	bool is_cooling_device;
+ 
+ 	int (*target)(struct device *dev, unsigned long *freq, u32 flags);
+ 	int (*get_dev_status)(struct device *dev,
+@@ -156,6 +160,7 @@ struct devfreq_stats {
+  * @suspend_count:	 suspend requests counter for a device.
+  * @stats:	Statistics of devfreq device behavior
+  * @transition_notifier_list: list head of DEVFREQ_TRANSITION_NOTIFIER notifier
++ * @cdev:	Cooling device pointer if the devfreq has cooling property
+  * @nb_min:		Notifier block for DEV_PM_QOS_MIN_FREQUENCY
+  * @nb_max:		Notifier block for DEV_PM_QOS_MAX_FREQUENCY
+  *
+@@ -198,6 +203,9 @@ struct devfreq {
+ 
+ 	struct srcu_notifier_head transition_notifier_list;
+ 
++	/* Pointer to the cooling device if used for thermal mitigation */
++	struct thermal_cooling_device *cdev;
++
+ 	struct notifier_block nb_min;
+ 	struct notifier_block nb_max;
+ };
+-- 
+2.17.1
+
