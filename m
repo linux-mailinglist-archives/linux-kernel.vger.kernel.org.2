@@ -2,133 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250A732FF9A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 09:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D4F32FF9D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 09:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbhCGIVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 03:21:23 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:39270 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbhCGIVF (ORCPT
+        id S230453AbhCGI06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 03:26:58 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:49519 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230045AbhCGI05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 03:21:05 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 59AEB1C0B76; Sun,  7 Mar 2021 09:20:58 +0100 (CET)
-Date:   Sun, 7 Mar 2021 09:20:57 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chris.Paterson2@renesas.com, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: qemu meltdown test failure was Re: [PATCH 4.4 00/30] 4.4.260-rc1
- review
-Message-ID: <20210307082057.GA18813@amd>
-References: <20210305120849.381261651@linuxfoundation.org>
- <20210305220634.GA27686@amd>
- <YEM4d6O+6Jfw3RH/@kroah.com>
- <20210307000403.GB10472@amd>
+        Sun, 7 Mar 2021 03:26:57 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id B21CF5C006B;
+        Sun,  7 Mar 2021 03:26:56 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Sun, 07 Mar 2021 03:26:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=jxwJJ9
+        i6ZcX5oVq2qFQ4h2Wu0auDbV9Z1EGDLuAIfxU=; b=ICEkr3PjMHQ//0w76QPfYm
+        IBFc7T2zSQtDhdpVudaMQChn1sA4qJhIVo1HfeS/AhtL1NVD9sZLnG6ubwpdXtFW
+        zFdqFpegTBZ5BC26Etat+acfhAe5lYI2PXNPawN+bS/yIpbaKFnmrOYqvdQFUQud
+        uQU8btFWqgK68kVw4NE/w9he4j4ayJpp7cBDj7Vm7IeTtohyIVvfusxvor6BzEuw
+        gA+HBaP1f+oN4zysdmAdDD4lLiLqmOeCzQIdC+4QvykVWxNekSHs2ZkM+YY40hqY
+        8wcA6SlnasBMxoHK0lnO4DeASo+SIcD2x/5AozAomvWP8AkPBT0DxNcbnTd4bQWw
+        ==
+X-ME-Sender: <xms:UI5EYBuQ-ftuPUgtzZp08N4fu8vkb3rfOVzQuXA6aBzocnFUICgv3A>
+    <xme:UI5EYKe5lAu-hLjZramXFPywhYLic4ov4wnsCrovmcnMlbXmFwMwIAjDEhKcVZ-Pq
+    00oQad4NNC9zJU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtledgudduhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
+    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
+    htvghrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudeh
+    leetnecukfhppeekgedrvddvledrudehfedrgeegnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:UI5EYExuc3xomR4WHK03SrqY4itvKcVF-yxpjClscZASkmxEzb8JmA>
+    <xmx:UI5EYIOqMY0ACBAibShIPOT_kvFvH6RTsLM8KyPFBsqAASMtJ9I_Kg>
+    <xmx:UI5EYB8QX8Ql18_uKJ1Ef5hYptBeNrUcgK9SipzkroqV867Q95VpmA>
+    <xmx:UI5EYNZLWDQwbK2so159Y1FPqe_CjHpF3M1iTbKXnIFFJNkrYoXvOw>
+Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
+        by mail.messagingengine.com (Postfix) with ESMTPA id EE5BF24005B;
+        Sun,  7 Mar 2021 03:26:55 -0500 (EST)
+Date:   Sun, 7 Mar 2021 10:26:52 +0200
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Jia-Ju Bai <baijiaju1990@gmail.com>, jiri@nvidia.com,
+        idosch@nvidia.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: mellanox: mlxsw: fix error return code of
+ mlxsw_sp_router_nve_promote_decap()
+Message-ID: <YESOTOZIgAw2uwcd@shredder.lan>
+References: <20210306140705.18517-1-baijiaju1990@gmail.com>
+ <b735ad44-be13-2449-4c14-ebf2304fa3e9@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="azLHFNyN32YCQGCU"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210307000403.GB10472@amd>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <b735ad44-be13-2449-4c14-ebf2304fa3e9@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Mar 06, 2021 at 03:32:39PM +0100, Heiner Kallweit wrote:
+> On 06.03.2021 15:07, Jia-Ju Bai wrote:
+> > When fib_entry is NULL, no error return code of
+> > mlxsw_sp_router_nve_promote_decap() is assigned.
+> > To fix this bug, err is assigned with -EINVAL in this case.
+> > 
+> Again, are you sure this is a bug? To me it looks like it is
+> intentional to not return an error code if fib_entry is NULL.
+> Please don't blindly trust the robot results, there may
+> always be false positives.
 
---azLHFNyN32YCQGCU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, it is OK not to return an error. There is even a comment above the
+call to mlxsw_sp_router_ip2me_fib_entry_find():
 
-Hi!
+/* It is valid to create a tunnel with a local IP and only later
+ * assign this IP address to a local interface
+ */
 
-> > > Ok, so we ran some tests.
-> > >=20
-> > > And they failed:
-> > >=20
-> > > https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/=
-1075959449
-> > >=20
-> > > [   26.785861] <LAVA_SIGNAL_TESTCASE TEST_CASE_ID=3DCVE-2018-3639 RES=
-ULT=3Dfail>
-> > > Received signal: <TESTCASE> TEST_CASE_ID=3DCVE-2018-3639 RESULT=3Dfail
-> > >=20
-> > > Testcase name is spectre-meltdown-checker... Failing on qemu? Somehow
-> > > strange, but it looks like real test failure.
-
-This is pointer to the pipeline:
-
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelines/2=
-65992696
-
-> First let me try 7d472e4a11d6a2fb1c492b02c7d7dacd3297bbf4 --
-> v4.4.257-cip54. That is
-> https://gitlab.com/cip-project/cip-kernel/linux-cip/-/pipelines/266532179
-> ... Qemu is OKAY.
->=20
-> add3ff3730919447a7519fede0b8554132e0f8d5 Merge remote-tracking branch
-> 'stable/queue/4.4' in to v4.4.260-bisect. Results will be at
-> https://gitlab.com/cip-project/cip-kernel/linux-cip/-/pipelines/266534478
-> ... ... still pending.
-
-Qemu is okay here, too.
-
-> test 266539168       8c461bb103f89696576945ad9cb376df34fa9d28 xen-netback=
-: respect gnttab_map_refs()'s return value
-
-Qemu is ok.
-
-> test 266538760       1efe86b456816c95485c65cf9ba46a5bff8a241e staging: fw=
-serial: Fix error handling in fwserial_create
-
-Qemu is ok.
-
-> test 266539768       8b4bc0f97fdd13b08c2436aad01bd4515d07f93a iwlwifi: pc=
-ie: fix to correct null check
-								Pavel
-Qemu is ok.
-
-https://gitlab.com/cip-project/cip-kernel/linux-cip/-/pipelines/266539768
-
-So... failure apparently went away when trying to
-bisect. That's.... strange? Aha, except that it looks like the same
-"suceeded" tests still have failures in them:
-
-https://lava.ciplatform.org/scheduler/job/173186
-
-[   26.224557] <LAVA_SIGNAL_TESTCASE TEST_CASE_ID=3DCVE-2017-5715
-RESULT=3Dfail>
-Received signal: <TESTCASE> TEST_CASE_ID=3DCVE-2017-5715 RESULT=3Dfail
-
-=2E..I guess those fails are expected, then? And qemu tests on
--stable-rc are really failing on timeouts. ... Hmm, let's just re-run
-the tests.
-
-I'm still not sure, but it looks like a test failure now.
-
-Best regards,
-
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---azLHFNyN32YCQGCU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmBEjOkACgkQMOfwapXb+vJSawCgqzPUaxWoCbbt4lqBbSqzYHfz
-5YIAn300t/XybF+CBlfvxUd8lng7PiCs
-=sF+b
------END PGP SIGNATURE-----
-
---azLHFNyN32YCQGCU--
+> 
+> > Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> > Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> > ---
+> >  drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+> > index 9ce90841f92d..7b260e25df1b 100644
+> > --- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+> > +++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+> > @@ -1981,8 +1981,10 @@ int mlxsw_sp_router_nve_promote_decap(struct mlxsw_sp *mlxsw_sp, u32 ul_tb_id,
+> >  	fib_entry = mlxsw_sp_router_ip2me_fib_entry_find(mlxsw_sp, ul_tb_id,
+> >  							 ul_proto, ul_sip,
+> >  							 type);
+> > -	if (!fib_entry)
+> > +	if (!fib_entry) {
+> > +		err = -EINVAL;
+> >  		goto out;
+> > +	}
+> >  
+> >  	fib_entry->decap.tunnel_index = tunnel_index;
+> >  	fib_entry->type = MLXSW_SP_FIB_ENTRY_TYPE_NVE_DECAP;
+> > 
+> 
