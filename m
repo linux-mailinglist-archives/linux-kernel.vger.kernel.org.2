@@ -2,148 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5872C32FE76
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 03:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C1C32FE79
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 03:28:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhCGCZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 21:25:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230005AbhCGCZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 21:25:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8191464FF0;
-        Sun,  7 Mar 2021 02:25:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615083918;
-        bh=S6WUpjoSEoqdZcEDlaFPSR66FdKOqh3DN9zUenNHBho=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GPF9ZLKvsA9TElGF5fM9CASwJMPYicM7Gsq5B4QgSfNW2lWZQi5FbhDUsX5WmGbUx
-         KsT8fKazFFUg+grRKSPsjqmn4Y7ydNu73bM7ah6F+rpsh8Lf8X5VYpvFaJO8EmlG8r
-         5Yyoi+gPaGvB53Uo9/T1cggH/92ybq71+1DlIpSqcF8121vjW2+OHoPKr4YMQj0bQk
-         txRNmTT80i8+hO0DPECc6RTIwu/p79RJJKgCmpn1r+D/ywrsPkwyzALALOB5UiEuc7
-         +mvQLNZrJqDNHbRbWqWh/WJKlfMZHkWfpTwNXBksutBIcBl88sxzcvcgdPucDCqJDK
-         +TWl4ZDT37L/A==
-From:   guoren@kernel.org
-To:     arnd@arndb.de, guoren@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Greentime Hu <greentime.hu@sifive.com>
-Subject: [PATCH 2/2] riscv: Enable generic clockevent broadcast
-Date:   Sun,  7 Mar 2021 10:24:46 +0800
-Message-Id: <20210307022446.63732-2-guoren@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210307022446.63732-1-guoren@kernel.org>
-References: <20210307022446.63732-1-guoren@kernel.org>
+        id S230244AbhCGC0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 21:26:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230212AbhCGC0n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Mar 2021 21:26:43 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36595C06175F
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 18:26:34 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id hs11so12725978ejc.1
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 18:26:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lt1/9JTwfyg5MlGxotiAzxizfTr7MWqSxJd8m5gWyQ4=;
+        b=mAp/jMjt+wykUF9v0ykgFLz6PTNOpNQM9blQ9DF7bZde2jZfA00XCsQgtKBfTSlYce
+         tSoUerIqxJ2owjF0hHWIN2ZZ4xL89n2gPFU8CmPLG4iOzFcUwlgwVsRIeFyzmReMrPlE
+         fjvVZ/rACyvd4pvKigRLg+U1cqjAv9utGPsBMmPuEF1GqWxf+eGcj/FICqg2HzY4Wq79
+         5pXBVeoOJfrssd+SuaOUABEegepSZFmpQiwUogTQ4l0YW8csCQr0WlBgLQQmv28qWkW0
+         CXxKHRXmlBQ3XZOSxLhDLgG3PQHZVaY+hDiwjewWjWTFrbgLgQKj0VGKMa7QtmVIKYc0
+         I24w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lt1/9JTwfyg5MlGxotiAzxizfTr7MWqSxJd8m5gWyQ4=;
+        b=NRH2yJtuj+Ia8+qA7/GjyBFqw1fdBpySEri8IGjbrdlYo/GnhW9ZGfKWtNF8jwESYy
+         qCKrn7+WxPORbuDWLPimNIFslcEZKjxvY1F5Un/wJXDBjSvEpFAfzsqsxLIPCIGIfZKo
+         d5Hm8MK2iWwt9TxmHH6PniEo0XNAkINImBYGbnPmr7gmfV9Rh2iorT5GMf5ASIZwQ+yF
+         RgBHdfIdX2HNWnVS4re+Ok93tYPq3uTmtvCa4MNVCFff925thkVO2KL7LogHxmj+7IHD
+         slA6IVHZfG8S+gEGZFqJbCCWUaH4ge1sGBgTIxerGpwU0+ZC8wpSBpcGL8BReqPcB0CA
+         qfTQ==
+X-Gm-Message-State: AOAM531/XNsreTP//TOa2/EtiIhjP4Dlv5bG8615wYSxeOW5r3iXf/wK
+        65R06J+EcDpTZl2jI9wUSHBVgDtMimcECOPGe2FR/Q==
+X-Google-Smtp-Source: ABdhPJx8IoQDh6tDArpeRCCsLfc89KTCbSDAKu2HG3fXgbu3oeb40U29dutBzbfy3rP8PChF3CqMv51puBcOXIeNaRY=
+X-Received: by 2002:a17:906:444d:: with SMTP id i13mr8726833ejp.170.1615083992065;
+ Sat, 06 Mar 2021 18:26:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210305120851.255002428@linuxfoundation.org>
+In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sun, 7 Mar 2021 07:56:21 +0530
+Message-ID: <CA+G9fYs98KrYbhoWM3RzSPEe5-nQWZO0cYUqT5a4X3e9AvD+iA@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/41] 4.9.260-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+On Fri, 5 Mar 2021 at 18:12, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.260 release.
+> There are 41 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.260-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-When percpu-timers are stopped by deep power saving mode, we
-need system timer help to broadcast IPI_TIMER.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-This is first introduced by broken x86 hardware, where the local apic
-timer stops in C3 state. But many other architectures(powerpc, mips,
-arm, hexagon, openrisc, sh) have supported the infrastructure to
-deal with Power Management issues.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Anup Patel <anup.patel@wdc.com>
-Cc: Atish Patra <atish.patra@wdc.com>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Greentime Hu <greentime.hu@sifive.com>
----
- arch/riscv/Kconfig      |  2 ++
- arch/riscv/kernel/smp.c | 16 ++++++++++++++++
- 2 files changed, 18 insertions(+)
+Summary
+------------------------------------------------------------------------
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 85d626b8ce5e..8637e7344abe 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -28,6 +28,7 @@ config RISCV
- 	select ARCH_HAS_SET_DIRECT_MAP
- 	select ARCH_HAS_SET_MEMORY
- 	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
-+	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
- 	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
-@@ -39,6 +40,7 @@ config RISCV
- 	select EDAC_SUPPORT
- 	select GENERIC_ARCH_TOPOLOGY if SMP
- 	select GENERIC_ATOMIC64 if !64BIT
-+	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
- 	select GENERIC_EARLY_IOREMAP
- 	select GENERIC_GETTIMEOFDAY if HAVE_GENERIC_VDSO
- 	select GENERIC_IOREMAP
-diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-index ea028d9e0d24..8325d33411d8 100644
---- a/arch/riscv/kernel/smp.c
-+++ b/arch/riscv/kernel/smp.c
-@@ -9,6 +9,7 @@
-  */
- 
- #include <linux/cpu.h>
-+#include <linux/clockchips.h>
- #include <linux/interrupt.h>
- #include <linux/module.h>
- #include <linux/profile.h>
-@@ -27,6 +28,7 @@ enum ipi_message_type {
- 	IPI_CALL_FUNC,
- 	IPI_CPU_STOP,
- 	IPI_IRQ_WORK,
-+	IPI_TIMER,
- 	IPI_MAX
- };
- 
-@@ -176,6 +178,12 @@ void handle_IPI(struct pt_regs *regs)
- 			irq_work_run();
- 		}
- 
-+#ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
-+		if (ops & (1 << IPI_TIMER)) {
-+			stats[IPI_TIMER]++;
-+			tick_receive_broadcast();
-+		}
-+#endif
- 		BUG_ON((ops >> IPI_MAX) != 0);
- 
- 		/* Order data access and bit testing. */
-@@ -192,6 +200,7 @@ static const char * const ipi_names[] = {
- 	[IPI_CALL_FUNC]		= "Function call interrupts",
- 	[IPI_CPU_STOP]		= "CPU stop interrupts",
- 	[IPI_IRQ_WORK]		= "IRQ work interrupts",
-+	[IPI_TIMER]		= "Timer broadcast interrupts",
- };
- 
- void show_ipi_stats(struct seq_file *p, int prec)
-@@ -217,6 +226,13 @@ void arch_send_call_function_single_ipi(int cpu)
- 	send_ipi_single(cpu, IPI_CALL_FUNC);
- }
- 
-+#ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
-+void tick_broadcast(const struct cpumask *mask)
-+{
-+	send_ipi_mask(mask, IPI_TIMER);
-+}
-+#endif
-+
- void smp_send_stop(void)
- {
- 	unsigned long timeout;
--- 
-2.25.1
+kernel: 4.9.260-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.9.y
+git commit: e118f9b98b963e03939869e5953a52351352f216
+git describe: v4.9.259-42-ge118f9b98b96
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
+y/build/v4.9.259-42-ge118f9b98b96
 
+No regressions (compared to build v4.9.259)
+
+No fixes (compared to build v4.9.259)
+
+
+Ran 39259 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-64k_page_size
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-intel_pstate
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* fwts
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* libhugetlbfs
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* network-basic-tests
+* kvm-unit-tests
+* ltp-open-posix-tests
+* kselftest-vm
+* kselftest-kexec
+* kselftest-x86
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
