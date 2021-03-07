@@ -2,224 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C1C32FE79
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 03:28:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2168F32FE7F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Mar 2021 04:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbhCGC0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Mar 2021 21:26:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44702 "EHLO
+        id S230083AbhCGDM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Mar 2021 22:12:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbhCGC0n (ORCPT
+        with ESMTP id S230045AbhCGDMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Mar 2021 21:26:43 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36595C06175F
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 18:26:34 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id hs11so12725978ejc.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 18:26:34 -0800 (PST)
+        Sat, 6 Mar 2021 22:12:40 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B00EC06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Mar 2021 19:12:29 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id mz6-20020a17090b3786b02900c16cb41d63so1260741pjb.2
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Mar 2021 19:12:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lt1/9JTwfyg5MlGxotiAzxizfTr7MWqSxJd8m5gWyQ4=;
-        b=mAp/jMjt+wykUF9v0ykgFLz6PTNOpNQM9blQ9DF7bZde2jZfA00XCsQgtKBfTSlYce
-         tSoUerIqxJ2owjF0hHWIN2ZZ4xL89n2gPFU8CmPLG4iOzFcUwlgwVsRIeFyzmReMrPlE
-         fjvVZ/rACyvd4pvKigRLg+U1cqjAv9utGPsBMmPuEF1GqWxf+eGcj/FICqg2HzY4Wq79
-         5pXBVeoOJfrssd+SuaOUABEegepSZFmpQiwUogTQ4l0YW8csCQr0WlBgLQQmv28qWkW0
-         CXxKHRXmlBQ3XZOSxLhDLgG3PQHZVaY+hDiwjewWjWTFrbgLgQKj0VGKMa7QtmVIKYc0
-         I24w==
+        d=penguintechs.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=oiRhle4TTum29WBndw3nlIp4Qv2NDLxbnTie42IDOu4=;
+        b=NmPk+Kxg1z7kuzVBw3tqljeRtZKghfrQkQc54IbKIUjCljpfFAoNUe6EED0099ejIT
+         axeNugqurE27yihRz7oj6uWLk7iiLVvsJko9xYVMDv7dDcGhFwq3IfNehPGbyqiBydWV
+         qPz6qOd/AZY3BUYULTpuQ9AyQLI5irCodk7gA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lt1/9JTwfyg5MlGxotiAzxizfTr7MWqSxJd8m5gWyQ4=;
-        b=NRH2yJtuj+Ia8+qA7/GjyBFqw1fdBpySEri8IGjbrdlYo/GnhW9ZGfKWtNF8jwESYy
-         qCKrn7+WxPORbuDWLPimNIFslcEZKjxvY1F5Un/wJXDBjSvEpFAfzsqsxLIPCIGIfZKo
-         d5Hm8MK2iWwt9TxmHH6PniEo0XNAkINImBYGbnPmr7gmfV9Rh2iorT5GMf5ASIZwQ+yF
-         RgBHdfIdX2HNWnVS4re+Ok93tYPq3uTmtvCa4MNVCFff925thkVO2KL7LogHxmj+7IHD
-         slA6IVHZfG8S+gEGZFqJbCCWUaH4ge1sGBgTIxerGpwU0+ZC8wpSBpcGL8BReqPcB0CA
-         qfTQ==
-X-Gm-Message-State: AOAM531/XNsreTP//TOa2/EtiIhjP4Dlv5bG8615wYSxeOW5r3iXf/wK
-        65R06J+EcDpTZl2jI9wUSHBVgDtMimcECOPGe2FR/Q==
-X-Google-Smtp-Source: ABdhPJx8IoQDh6tDArpeRCCsLfc89KTCbSDAKu2HG3fXgbu3oeb40U29dutBzbfy3rP8PChF3CqMv51puBcOXIeNaRY=
-X-Received: by 2002:a17:906:444d:: with SMTP id i13mr8726833ejp.170.1615083992065;
- Sat, 06 Mar 2021 18:26:32 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oiRhle4TTum29WBndw3nlIp4Qv2NDLxbnTie42IDOu4=;
+        b=QBE55fB1lWQxxKAX7kdcZDUtulknKtSoSgEACacOgHNY/Ntpk8r2hFkNN/l1gbSkuB
+         Cw9C9/x1kZw4cd9D5fjujBb1s6IOiEZmT0uWl1joIjSlPJiXIdy4E2CYBX8GOzEsm4k3
+         2o0qnTfp+ld7rGr+wbIe/e27JZOUd0YVd0zy7s6yIkwtis+RGKFAomB5WGmlsvspWNH7
+         issHzIRgCqzxHwQmXtyQ5bJvQldMf8r1RmU4feaA3gGA44msR3i2y9HI932opw5XQgr6
+         Azo5kbGgX2mXb64VBILimJa2JNcCsrMrrQWiDPdpk2Vmq4Xs7GpSe8h0zotIatqeCQHz
+         PRFw==
+X-Gm-Message-State: AOAM530upoq2OZDugQnUZk2c/aadzH8D8RxUffeff22n4Sx1DQvEfd5d
+        4fKh9qAlr6uQYlKyb4HZRsXHNg==
+X-Google-Smtp-Source: ABdhPJyTwPvdlRukE8dmyMuxmUCWUcOVgAe4lw67VL5ziFeAgfWeZFDGN9TdazTssdzF+wunVzgrGw==
+X-Received: by 2002:a17:90a:d311:: with SMTP id p17mr17904181pju.43.1615086748344;
+        Sat, 06 Mar 2021 19:12:28 -0800 (PST)
+Received: from braindead.localdomain (c-71-202-115-154.hsd1.ca.comcast.net. [71.202.115.154])
+        by smtp.gmail.com with ESMTPSA id s194sm6329911pfs.57.2021.03.06.19.12.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Mar 2021 19:12:27 -0800 (PST)
+From:   Wren Turkal <wt@penguintechs.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Wren Turkal <wt@penguintechs.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Expose the bus kernel docs to the build docs.
+Date:   Sat,  6 Mar 2021 19:12:19 -0800
+Message-Id: <20210307031219.53800-1-wt@penguintechs.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210307014445.GT2723601@casper.infradead.org>
+References: <20210307014445.GT2723601@casper.infradead.org>
 MIME-Version: 1.0
-References: <20210305120851.255002428@linuxfoundation.org>
-In-Reply-To: <20210305120851.255002428@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sun, 7 Mar 2021 07:56:21 +0530
-Message-ID: <CA+G9fYs98KrYbhoWM3RzSPEe5-nQWZO0cYUqT5a4X3e9AvD+iA@mail.gmail.com>
-Subject: Re: [PATCH 4.9 00/41] 4.9.260-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Mar 2021 at 18:12, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.9.260 release.
-> There are 41 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 07 Mar 2021 12:08:39 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.260-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Before, the bus type related APIs that were defined in the
+include/linux/device/bus.h were not referenced anywhere in the docs, so
+I linked it to the bus types api documentation.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Signed-off-by: Wren Turkal <wt@penguintechs.org>
+---
+ Documentation/driver-api/driver-model/bus.rst | 8 ++++++++
+ Documentation/driver-api/infrastructure.rst   | 3 +--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+diff --git a/Documentation/driver-api/driver-model/bus.rst b/Documentation/driver-api/driver-model/bus.rst
+index 016b15a6e8ea..6bed459b87cc 100644
+--- a/Documentation/driver-api/driver-model/bus.rst
++++ b/Documentation/driver-api/driver-model/bus.rst
+@@ -1,3 +1,5 @@
++.. _bus_types:
++
+ =========
+ Bus Types
+ =========
+@@ -144,3 +146,9 @@ sysfs directory using::
+ 
+ 	int bus_create_file(struct bus_type *, struct bus_attribute *);
+ 	void bus_remove_file(struct bus_type *, struct bus_attribute *);
++
++Fucntions and Structures
++========================
++
++.. kernel-doc:: include/linux/device/bus.h
++.. kernel-doc:: drivers/base/bus.c
+diff --git a/Documentation/driver-api/infrastructure.rst b/Documentation/driver-api/infrastructure.rst
+index 683bd460e222..eb2a2c9e3c0c 100644
+--- a/Documentation/driver-api/infrastructure.rst
++++ b/Documentation/driver-api/infrastructure.rst
+@@ -41,8 +41,7 @@ Device Drivers Base
+ .. kernel-doc:: drivers/base/platform.c
+    :export:
+ 
+-.. kernel-doc:: drivers/base/bus.c
+-   :export:
++:ref:`bus_types`
+ 
+ Device Drivers DMA Management
+ -----------------------------
+-- 
+2.30.1
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.9.260-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.9.y
-git commit: e118f9b98b963e03939869e5953a52351352f216
-git describe: v4.9.259-42-ge118f9b98b96
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
-y/build/v4.9.259-42-ge118f9b98b96
-
-No regressions (compared to build v4.9.259)
-
-No fixes (compared to build v4.9.259)
-
-
-Ran 39259 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-64k_page_size
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-intel_pstate
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* fwts
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* libhugetlbfs
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* network-basic-tests
-* kvm-unit-tests
-* ltp-open-posix-tests
-* kselftest-vm
-* kselftest-kexec
-* kselftest-x86
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
