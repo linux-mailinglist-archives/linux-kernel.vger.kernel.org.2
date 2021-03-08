@@ -2,99 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA1933175F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D42C331769
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhCHTeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:34:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50056 "EHLO mail.kernel.org"
+        id S231479AbhCHTgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:36:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230075AbhCHTdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:33:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEC1165287
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 19:33:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615232031;
-        bh=DM0rKDaLb7B/JShd7XPcETbrdwDndqNLTREc2OMkJWo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KDRj/mXQmuAt4KfsI9B52LLS2Kp5PIsmOyUCzyzXEON6+rFu9lKtul/CmcHloxTtB
-         A+7dZYUsagSvQUE1TBI4rMBXZ27zBbv0rDH/tU0MQzf/LZlVUivtqtVSTc2ixqKh8d
-         IXhfMObEfuvpwDxUiTyY2pBj2uBePEDOBiQMurZ09BYMIndseWmYtyTeV9Dy1vwHoD
-         Rxnl2zgKB5UU33zye7TQBpXg7HZY4txRhC1bs4tE5Cbcglt1UkVsazPFfUoBRvOUXV
-         Q9Eqlr9g3ruRYcr9vPC6Z6Ly7d+wjTh80RaxG0z97BJOGGFmQC0C+SR1bLbNJHE7MT
-         hI4quyeUkAKLg==
-Received: by mail-ot1-f48.google.com with SMTP id j8so10419586otc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 11:33:51 -0800 (PST)
-X-Gm-Message-State: AOAM532b4fzqdP3rOaMxrn/CMeLa2T9NqM5Z5BGmD8a/wq1hbWZp45Wx
-        PCSe9spqsOS3QU6igqy72mxmRxNkGzKzJBJMRP8=
-X-Google-Smtp-Source: ABdhPJx2iehk1VgS7ag9nTJiTmLtuyCadIeJmEJ4CBdyRKvl5jJisQ7/TsKYnLdY99mC500mvmJStI3bl+HkwR1kRXc=
-X-Received: by 2002:a05:6830:148c:: with SMTP id s12mr3450789otq.251.1615232031118;
- Mon, 08 Mar 2021 11:33:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20210308153359.2513446-1-arnd@kernel.org> <176cae4d-33bc-1d51-a7d7-58eeeea5180e@amd.com>
- <CAK8P3a0nUKSJ2+knM6+REp8HXRFbz5-DmNRAusezkT+XzZQa7Q@mail.gmail.com> <92a6c999-c20a-2311-4e31-209a2d9229ed@amd.com>
-In-Reply-To: <92a6c999-c20a-2311-4e31-209a2d9229ed@amd.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 8 Mar 2021 20:33:34 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1SRubvaPzn2020Nc_SsL8xBW7ODGOGtF_4UYASGqTq-w@mail.gmail.com>
-Message-ID: <CAK8P3a1SRubvaPzn2020Nc_SsL8xBW7ODGOGtF_4UYASGqTq-w@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdkfd: fix build error with missing AMD_IOMMU_V2
-To:     Felix Kuehling <felix.kuehling@amd.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Philip Yang <philip.yang@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S229790AbhCHTgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 14:36:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AEAE65290;
+        Mon,  8 Mar 2021 19:36:10 +0000 (UTC)
+From:   Clark Williams <williams@redhat.com>
+Subject: [ANNOUNCE] 4.14.224-rt107
+Date:   Mon, 08 Mar 2021 19:33:59 -0000
+Message-ID: <161523203964.1591892.770429705933119269@puck.lan>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 8:11 PM Felix Kuehling <felix.kuehling@amd.com> wrote:
->
-> Am 2021-03-08 um 2:05 p.m. schrieb Arnd Bergmann:
-> > On Mon, Mar 8, 2021 at 5:24 PM Felix Kuehling <felix.kuehling@amd.com> wrote:
-> >> The driver build should work without IOMMUv2. In amdkfd/Makefile, we
-> >> have this condition:
-> >>
-> >> ifneq ($(CONFIG_AMD_IOMMU_V2),)
-> >> AMDKFD_FILES += $(AMDKFD_PATH)/kfd_iommu.o
-> >> endif
-> >>
-> >> In amdkfd/kfd_iommu.h we define inline stubs of the functions that are
-> >> causing your link-failures if IOMMU_V2 is not enabled:
-> >>
-> >> #if defined(CONFIG_AMD_IOMMU_V2_MODULE) || defined(CONFIG_AMD_IOMMU_V2)
-> >> ... function declarations ...
-> >> #else
-> >> ... stubs ...
-> >> #endif
-> > Right, that is the problem I tried to explain in my patch description.
-> >
-> > Should we just drop the 'imply' then and add a proper dependency like this?
-> >
-> >       depends on DRM_AMDGPU && (X86_64 || ARM64 || PPC64)
-> >       depends on AMD_IOMMU_V2=y || DRM_AMDGPU=m
-> >
-> > I can send a v2 after some testing if you prefer this version.
->
-> No. My point is, there should not be a hard dependency. The build should
-> work without CONFIG_AMD_IOMMU_V2. I don't understand why it's not
-> working for you. It looks like you're building kfd_iommu.o, which should
-> not be happening when AMD_IOMMU_V2 is not enabled. The condition in
-> amdkfd/Makefile should make sure that kfd_iommu.o doesn't get built with
-> your kernel config.
+Hello RT-list!
 
-Again, as I explained in the changelog text, AMD_IOMMU_V2 configured as
-a loadable module, while AMDGPU is configured as built-in.
+I'm pleased to announce the 4.14.224-rt107 stable release.
 
-The causes a link failure for the vmlinux file, because the linker cannot
-resolve addresses of loadable modules at compile time -- they have
-not been loaded yet.
+Note that there was a futex/mutex code collision when I merge v4.14.218. I believe
+that it's fixed correctly but anyone with suspicions about futex/mutex behavior
+in this release, that's where I'd start looking.
 
-      Arnd
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v4.14-rt
+  Head SHA1: fd06bf8d39083ae08e14e5629bd23b1355eb358b
+
+Or to build 4.14.224-rt107 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.224.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.224-rt107.patch.xz
+
+
+You can also build from 4.14.215-rt105 by applying the incremental patch:
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/incr/patch-4.14.215-rt105-rt107.patch.xz
+
+Enjoy!
+Clark
+
