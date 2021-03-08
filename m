@@ -2,346 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F11331351
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:25:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F80331354
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhCHQYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:24:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhCHQYb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:24:31 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35B8C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 08:24:30 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id w11so12079873wrr.10
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 08:24:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IOyvlLCqYFrpnxgwF1LxML8x1YXFbGS+oZXfnAp6uWQ=;
-        b=jD8zkG1KsXG2tdxGqQsZ0hjAs50mAR0ckkJKMePIA+Or2l7lhLqBkczziFY46UHbUw
-         7w6Ufq8XcRInJ36C+cXjs6OZAEPHtqZ9G8Ms5y9ZyBmcKe5imccM8bqsou0I4mxRzScg
-         MEorGoTEtr2WR1y/MjAzhK2idqck8V2ISqs8rIymvm43MS3J48XXrPS2lMzmY5zfSArU
-         htjtwpejfvDNrkRinnmYX2lH1QAsdyP1E8vcZw71ZE4FgrNNpPsgMXkfEtRkY7txCJka
-         uStG8DhAB6lwdJox2orfu7inIAnwWvwXFo47nJcZHObk6ilV2Z/F8oavAWi6fUsJIntg
-         N8ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IOyvlLCqYFrpnxgwF1LxML8x1YXFbGS+oZXfnAp6uWQ=;
-        b=X6m46IZNioLrKOujMkUc5wHKToI3fEYQnIGpZj3nHKlvpUgBfsXSJRdwbErnHetrpS
-         ecdnOXx7EKOwIK2IHlipAVRd/gWlvZVwYXPSSVq4sS+ftPGbDirIA1hptrYtGZdOcXRz
-         XIUVX3l8/E52iNtCdLZ86e8i/VzRP2xSRgH6m+ReXNobRtiasFTKkf7WByI99TIS3GAc
-         0rn44zJ70+xIaNw2ydhGqzWPS7rk7RgHnSuxe7hRvtn1tM5/eRbIJaGgXpG3AtBMVNXJ
-         F9jKI8Z0GLTOYH+rrzqYu4B9zr+O58/sg6DZo0JrLMV+AJ05qXDmDLeWyjTxzvbYZ+lL
-         Tdhg==
-X-Gm-Message-State: AOAM532okdK8qq0dvwkis/r1vehyWyCA0mqNJ6+sm0t9T2i8ZpIDeonD
-        w/j1AEzCFVIS4SUp1Yo12uL6uA==
-X-Google-Smtp-Source: ABdhPJx9b6qZatEQR7khHhnrRSHlnnD/iShA8Hdrqg1bRKFwz3aNuoBvYiRXwGLhmVE62GEv0IASjA==
-X-Received: by 2002:a5d:47ab:: with SMTP id 11mr23754002wrb.153.1615220669148;
-        Mon, 08 Mar 2021 08:24:29 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:9d1d:b6a0:d116:531b])
-        by smtp.gmail.com with ESMTPSA id g5sm4195360wrq.30.2021.03.08.08.24.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 08:24:28 -0800 (PST)
-Date:   Mon, 8 Mar 2021 17:24:22 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] kasan, mm: integrate slab init_on_alloc with
- HW_TAGS
-Message-ID: <YEZPttHc1Jw6ksYa@elver.google.com>
-References: <cover.1615218180.git.andreyknvl@google.com>
- <027a5988eb8de20cee1595e65a754072fdfcdb1c.1615218180.git.andreyknvl@google.com>
+        id S230144AbhCHQZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:25:16 -0500
+Received: from mail-bn7nam10on2059.outbound.protection.outlook.com ([40.107.92.59]:9259
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230050AbhCHQYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 11:24:50 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cRrOfSWrwzJWJ3rQneliCKi+4GfiQBc5jvVGySxNP44WwVFBQ8Wo94vhsNjJsNlDReMAqWKm+Mo6/RSXmuHCHuGZ7YTraba1o6iZZJ8GEb6GE3X0lytYXXFke123ryCZh4s4PWiu/pYK7Va0MrDy7fBFxyw9vdlzjrxwUu0jHkoTMg1uT0o0cRybjN19c7ESsJhSZMnfs6LiBfbf0E8DvsEWBz4gzrFfo8X3p4Q+EugZ08g73nYTTjhk0EaeyOq7Lec+0mlgrEAbiSkKy+Do8GwCKBArpE57dYg17faSnna0V/dy9CxShHxvg9d3q0OYyCQ7NensAZdKzxsWfZ7jMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7R/Fe1jdY1rNJaHR3PGcwJx1r6WV7g3RnZk+YCTihpA=;
+ b=Ncfn73fdkvypKra114dFmZPSrF3k+5lGzCUAi8k8/fc1kbLSZo/orgzIR06MXgE9/eQEPXfUbLzwQbFNwWCJENXx82Uz9g7Qsrj8PlyYtzk1dTb55rOZ5uU5Q7BHdVhibj7alnIYXfVptkt2lJtshXW0IWJNvylpYJQqaiIRuaKktw3PAocbjJdzrXpUGDjGkaJuvrSVvZzKYPGypiUK/wo2MHJcMk2uajmvgxjlTM/NpAnZc204tCaVpW2Vk6DdTAXEc+toWqBtfliBpDLlzFp/4o/mSgy6DkJjBrmtnOoUXdmPpv1PhsritgM0s7BqL0HOrtwrE92haicU86a+Cw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7R/Fe1jdY1rNJaHR3PGcwJx1r6WV7g3RnZk+YCTihpA=;
+ b=DrFhtXvhOMhL0EMvwadLSwfTBvSzCrcCAKT/La+RsJkQfX2JxDtviMyMc8J3i6cEtqnzhnz/gOmnuKIPXJHUBCtPqRFBJhMnPs8yvGgihMY12vv74y7OxqBpywnmHbk/rTdwmgpJcDvV26VrvocBfJxuJm/mK6KiY37ukAutiLE=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BL0PR12MB4948.namprd12.prod.outlook.com (2603:10b6:208:1cc::20)
+ by BL0PR12MB2451.namprd12.prod.outlook.com (2603:10b6:207:4e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Mon, 8 Mar
+ 2021 16:24:47 +0000
+Received: from BL0PR12MB4948.namprd12.prod.outlook.com
+ ([fe80::ec8d:851e:525d:a6ab]) by BL0PR12MB4948.namprd12.prod.outlook.com
+ ([fe80::ec8d:851e:525d:a6ab%9]) with mapi id 15.20.3784.031; Mon, 8 Mar 2021
+ 16:24:47 +0000
+Subject: Re: [PATCH] drm/amdkfd: fix build error with missing AMD_IOMMU_V2
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Colin Ian King <colin.king@canonical.com>,
+        Philip Yang <philip.yang@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20210308153359.2513446-1-arnd@kernel.org>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Message-ID: <176cae4d-33bc-1d51-a7d7-58eeeea5180e@amd.com>
+Date:   Mon, 8 Mar 2021 11:24:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20210308153359.2513446-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [142.117.121.176]
+X-ClientProxiedBy: YT1PR01CA0149.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2f::28) To BL0PR12MB4948.namprd12.prod.outlook.com
+ (2603:10b6:208:1cc::20)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <027a5988eb8de20cee1595e65a754072fdfcdb1c.1615218180.git.andreyknvl@google.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.100] (142.117.121.176) by YT1PR01CA0149.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2f::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.26 via Frontend Transport; Mon, 8 Mar 2021 16:24:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 10706afb-a621-4419-9f73-08d8e24eb0d9
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2451:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB245178EE7E40C6528245EA0392939@BL0PR12MB2451.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4ZD7p/5BxGKXHi4Ph0fLSwWYZstsB8wt/MGTCWMkRAd6yPLwdGnwC9Aso3mw/io1OVyLt3S2eGULjMFwvCJ6MzoBlQP/hP5ZpZ1AwbS4MynOsKqio+Il/lv/0AQ/6FGBwtAQQoR5re8DALiOqXDkisZ5LBVswzEY2VQDlMOaAa3IcI5INwoEKSwYltHs995eIeOEjjT4bDH6mP0Jqjzf01X6fxMOVOVw7Xr1t1voDv2jCep55inn4v1TPzBnr+TTmDnlp29svW4gUjLMv8gREAhfJ7mw0UWW5N0sJkzX+gX2FiVilIOnJ2hDxjLxV7J6gCNpRc7nhKFT3H7FqR6z9JmKVF/u21FFqoD2owLctsg4Aaa4F4xXtTQfnsnUbB3wlLXIrXHnj113fGsyLiZEkc26V1oeuBmCWzkyK4xJfVfNHEjpnqiW5v6onKaIJJ3NnWux6DV+av7w+jwnD6gQPa4wMwm+ZglQCmD/RTIJ0bEPTiR7DHPtwtzBsv6qCWvavwK9V+RPH+YAwqg6VrBKyJ6rBTUxcp8/lg0LfUiwxgyLYOTruEQB/XCbLx43H1WqfgK88jvuSTvHdOteIa0GTU+0C3Q/xVRojRulVwjwcYI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB4948.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(39860400002)(136003)(396003)(346002)(956004)(110136005)(86362001)(66476007)(36756003)(52116002)(31696002)(2616005)(16576012)(26005)(5660300002)(54906003)(6486002)(66556008)(4326008)(8676002)(31686004)(66946007)(83380400001)(8936002)(478600001)(16526019)(186003)(2906002)(44832011)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZWpBNG5icXhFaUF0cUYwbzBGUklyQ054VDRLVlVnekFmM01aRlJyOGVtd2F4?=
+ =?utf-8?B?NmdQVDR1WFdyMHByNytSUDZOcG9XckN3Q3Z0UWlkQXdZa3VVaW9YVHo1cSsz?=
+ =?utf-8?B?aUJlOVhZV1JKQ1J3M2ZWbytZay9xRzlJSzY0VGpCVW5kdWVVL0htaWFHQ2Fq?=
+ =?utf-8?B?MFNhM0dhY0RxNmFQZVNrUk5FaGtyT0lwckxKSkNtMWJpalVWSUJDanQrb1Ns?=
+ =?utf-8?B?bGJMNVpPb3R6aFNvcVNCbWFMWktlZUgzVmoyR29LcXo4aEdoSmVHN1M2aXU0?=
+ =?utf-8?B?SG94MjB0a3JETWZQTHVlRVAzQW9VOWxlYjluaE44VldZOHRDRkZISy9RZmZK?=
+ =?utf-8?B?cktoMjZHeFRPZElwWWFGQXdpY1JublkxSzlzQzNEaVhDVk1PWDN4YmNIcGJQ?=
+ =?utf-8?B?bWFlalNpR3BnZk10VVMrZjN4VDVXMk9xcVU3ZUFVSGZ2b1Bzc2QwM1hpdTRv?=
+ =?utf-8?B?SnNVUzRZeWNidnl5RStIaEcwblhxMzI1emxVd0NyRGlIODIzZkJCbitJeG9Z?=
+ =?utf-8?B?c25ZaTdLVGlRNDdKdTFpVEJtVmJCaWRGbzhUMjBoMmRySDZtTGduYW8xWEhK?=
+ =?utf-8?B?N21xTUw3WDNpTE4xczBnc1M2dU1QMTUrMlMvcHdSMG8rdWRYQXRtb1B2Vnp2?=
+ =?utf-8?B?emlTcEVuZFBmNHAveEVkcmJOWWJ4OGVJMm5pQUZNQUFjdllsRFFiTjdqYml6?=
+ =?utf-8?B?VWZxZWtQME15VGswampNWS9iUEM4bEZ0ZEQ3THgwRFQwVmZlWkRZbDU4TUZi?=
+ =?utf-8?B?dElIbHZkbzE3RldVYXUydWJTemF3dnF2K0s5Y1lPT0pYQWhwQ3pVWjdGY0V4?=
+ =?utf-8?B?Z0FnR0VILzc3dEJjUytJNHBxMmphcDNYeWR4bGJMdWRNc2lUZ1FuRUxuRFRR?=
+ =?utf-8?B?cUgyaS9nRUg3WHdiMVNPNXdJWmZzSTBiTzl2WTBqVDI2UXdxMFlWdnFhSEZw?=
+ =?utf-8?B?blgwOHNLN1E1ZFdHNDNEaEZUZmV4Q2hXcmJ4WDR1a09rRkVSMCtVQS96NTQy?=
+ =?utf-8?B?Q0xLZkZsK0lyMlRTOW1naFp1aXlzOVBnYnFvRURrOGR0ZDZYU1NyenJWVWEw?=
+ =?utf-8?B?QlNsL05iQzJldlNhcDk4U3R3WEpnVngwQnhXakFma1duRTE5dWt1RmJselRO?=
+ =?utf-8?B?UE9JcTVvb2tjbmpoZko1ZDZ3V0RnZGxWTjg1TmQ0M2o1eXdUTU94SzBkSk9H?=
+ =?utf-8?B?b0xXRzF1NVlaSHA1d0ttRGVxM3EyanpLWkx6ckhGSzJCM2x4c3dTODlFVXNy?=
+ =?utf-8?B?R0lLUFNaMHNZcTNnbVpkN2NEeEV2ZXRCbFNxWSt3VWlCZ1B0anM3RkFRaldx?=
+ =?utf-8?B?enNHa2ZHZmdIQ3RPZHFUR2h0SmtlMkN6Tlc1NURQdHZNSm9nUkNwMWJSaExm?=
+ =?utf-8?B?MU1tellJemdQTTFuT2dIanF2L1kyYXR3OUNkNzdheXVrSE5paGdjKzZXVHFm?=
+ =?utf-8?B?ZVJHWW9Va3hMeE1oUmFpMDJmQXVTdjd1Q0FENkNmdkVEYzJRT1dvTDllNHQr?=
+ =?utf-8?B?Q01ydzByeTF1UFRhMWRyN2xWUlM3WXJ2RU00Y0pzN0p4QmdpTGtRckhnc2du?=
+ =?utf-8?B?U3Y0QXMzRDk3VnM5K3Q2S0l2dHlrQUZQdW5HdHMwV0F5N3JKbmNQend1MU1h?=
+ =?utf-8?B?ZDBFZis0UVRHMXB1TnN4OCtZcEZ4K3hhOFZOVFc0MVlRWWs0UUdjY2lBY2sr?=
+ =?utf-8?B?VEhCZ0ZHb2ZWcFptemsyK0JTejBJNHc4WFZKUFJpWUt3UGRiVjFmdVB5VzlK?=
+ =?utf-8?Q?A+seudvXByXoGV80/ZhtHIL2mjg4fKFMRUMQ5lE?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10706afb-a621-4419-9f73-08d8e24eb0d9
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB4948.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 16:24:47.6906
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Y7XMu9efW2SDQzZJQgPkUiagnhUJUc5DONgxkuB1CdsMq7LRHHvIDqxbSzpbmY6eYY6jeKhUfEFwA7uHtGKE4Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2451
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 04:55PM +0100, Andrey Konovalov wrote:
-> This change uses the previously added memory initialization feature
-> of HW_TAGS KASAN routines for slab memory when init_on_alloc is enabled.
-> 
-> With this change, memory initialization memset() is no longer called
-> when both HW_TAGS KASAN and init_on_alloc are enabled. Instead, memory
-> is initialized in KASAN runtime.
-> 
-> The memory initialization memset() is moved into slab_post_alloc_hook()
-> that currently directly follows the initialization loop. A new argument
-> is added to slab_post_alloc_hook() that indicates whether to initialize
-> the memory or not.
+The driver build should work without IOMMUv2. In amdkfd/Makefile, we
+have this condition:
 
-This is a pretty intrusive change to the internal slab APIs. However, I
-think this is a positive cleanup, removing some code duplication, so I
-hope this is the right thing to do.
+ifneq ($(CONFIG_AMD_IOMMU_V2),)
+AMDKFD_FILES += $(AMDKFD_PATH)/kfd_iommu.o
+endif
 
-> To avoid discrepancies with which memory gets initialized that can be
-> caused by future changes, both KASAN hook and initialization memset()
-> are put together and a warning comment is added.
-> 
-> Combining setting allocation tags with memory initialization improves
-> HW_TAGS KASAN performance when init_on_alloc is enabled.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+In amdkfd/kfd_iommu.h we define inline stubs of the functions that are
+causing your link-failures if IOMMU_V2 is not enabled:
 
-Reviewed-by: Marco Elver <elver@google.com>
+#if defined(CONFIG_AMD_IOMMU_V2_MODULE) || defined(CONFIG_AMD_IOMMU_V2)
+... function declarations ...
+#else
+... stubs ...
+#endif
 
-The code looks fine to me, but there are some non-obvious changes to the
-internal slab APIs, so I'd wait a bit more to see if we missed
-something.
+Regards,
+  Felix
 
+Am 2021-03-08 um 10:33 a.m. schrieb Arnd Bergmann:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Using 'imply AMD_IOMMU_V2' does not guarantee that the driver can link
+> against the exported functions. If the GPU driver is built-in but the
+> IOMMU driver is a loadable module, the kfd_iommu.c file is indeed
+> built but does not work:
+>
+> x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_bind_process_to_device':
+> kfd_iommu.c:(.text+0x516): undefined reference to `amd_iommu_bind_pasid'
+> x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_unbind_process':
+> kfd_iommu.c:(.text+0x691): undefined reference to `amd_iommu_unbind_pasid'
+> x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_suspend':
+> kfd_iommu.c:(.text+0x966): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0x97f): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0x9a4): undefined reference to `amd_iommu_free_device'
+> x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_resume':
+> kfd_iommu.c:(.text+0xa9a): undefined reference to `amd_iommu_init_device'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0xadc): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0xaff): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0xc72): undefined reference to `amd_iommu_bind_pasid'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0xe08): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0xe26): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0xe42): undefined reference to `amd_iommu_free_device'
+>
+> Use a stronger 'select' instead.
+>
+> Fixes: 64d1c3a43a6f ("drm/amdkfd: Centralize IOMMUv2 code and make it conditional")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  include/linux/kasan.h |  8 ++++----
->  mm/kasan/common.c     |  4 ++--
->  mm/slab.c             | 28 +++++++++++++---------------
->  mm/slab.h             | 17 +++++++++++++----
->  mm/slub.c             | 27 +++++++++++----------------
->  5 files changed, 43 insertions(+), 41 deletions(-)
-> 
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index c89613caa8cf..85f2a8786606 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -226,12 +226,12 @@ static __always_inline void kasan_slab_free_mempool(void *ptr)
->  }
+>  drivers/gpu/drm/amd/amdkfd/Kconfig | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdkfd/Kconfig b/drivers/gpu/drm/amd/amdkfd/Kconfig
+> index f02c938f75da..91f85dfb7ba6 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/Kconfig
+> +++ b/drivers/gpu/drm/amd/amdkfd/Kconfig
+> @@ -5,8 +5,9 @@
 >  
->  void * __must_check __kasan_slab_alloc(struct kmem_cache *s,
-> -				       void *object, gfp_t flags);
-> +				       void *object, gfp_t flags, bool init);
->  static __always_inline void * __must_check kasan_slab_alloc(
-> -				struct kmem_cache *s, void *object, gfp_t flags)
-> +		struct kmem_cache *s, void *object, gfp_t flags, bool init)
->  {
->  	if (kasan_enabled())
-> -		return __kasan_slab_alloc(s, object, flags);
-> +		return __kasan_slab_alloc(s, object, flags, init);
->  	return object;
->  }
->  
-> @@ -320,7 +320,7 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object)
->  static inline void kasan_kfree_large(void *ptr) {}
->  static inline void kasan_slab_free_mempool(void *ptr) {}
->  static inline void *kasan_slab_alloc(struct kmem_cache *s, void *object,
-> -				   gfp_t flags)
-> +				   gfp_t flags, bool init)
->  {
->  	return object;
->  }
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 6107c795611f..7ea747b18c26 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -428,7 +428,7 @@ static void set_alloc_info(struct kmem_cache *cache, void *object,
->  }
->  
->  void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
-> -					void *object, gfp_t flags)
-> +					void *object, gfp_t flags, bool init)
->  {
->  	u8 tag;
->  	void *tagged_object;
-> @@ -453,7 +453,7 @@ void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
->  	 * Unpoison the whole object.
->  	 * For kmalloc() allocations, kasan_kmalloc() will do precise poisoning.
->  	 */
-> -	kasan_unpoison(tagged_object, cache->object_size, false);
-> +	kasan_unpoison(tagged_object, cache->object_size, init);
->  
->  	/* Save alloc info (if possible) for non-kmalloc() allocations. */
->  	if (kasan_stack_collection_enabled())
-> diff --git a/mm/slab.c b/mm/slab.c
-> index 51fd424e0d6d..936dd686dec9 100644
-> --- a/mm/slab.c
-> +++ b/mm/slab.c
-> @@ -3216,6 +3216,7 @@ slab_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid, size_t orig_
->  	void *ptr;
->  	int slab_node = numa_mem_id();
->  	struct obj_cgroup *objcg = NULL;
-> +	bool init = false;
->  
->  	flags &= gfp_allowed_mask;
->  	cachep = slab_pre_alloc_hook(cachep, &objcg, 1, flags);
-> @@ -3254,12 +3255,10 @@ slab_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid, size_t orig_
->    out:
->  	local_irq_restore(save_flags);
->  	ptr = cache_alloc_debugcheck_after(cachep, flags, ptr, caller);
-> -
-> -	if (unlikely(slab_want_init_on_alloc(flags, cachep)) && ptr)
-> -		memset(ptr, 0, cachep->object_size);
-> +	init = slab_want_init_on_alloc(flags, cachep);
->  
->  out_hooks:
-> -	slab_post_alloc_hook(cachep, objcg, flags, 1, &ptr);
-> +	slab_post_alloc_hook(cachep, objcg, flags, 1, &ptr, init);
->  	return ptr;
->  }
->  
-> @@ -3301,6 +3300,7 @@ slab_alloc(struct kmem_cache *cachep, gfp_t flags, size_t orig_size, unsigned lo
->  	unsigned long save_flags;
->  	void *objp;
->  	struct obj_cgroup *objcg = NULL;
-> +	bool init = false;
->  
->  	flags &= gfp_allowed_mask;
->  	cachep = slab_pre_alloc_hook(cachep, &objcg, 1, flags);
-> @@ -3317,12 +3317,10 @@ slab_alloc(struct kmem_cache *cachep, gfp_t flags, size_t orig_size, unsigned lo
->  	local_irq_restore(save_flags);
->  	objp = cache_alloc_debugcheck_after(cachep, flags, objp, caller);
->  	prefetchw(objp);
-> -
-> -	if (unlikely(slab_want_init_on_alloc(flags, cachep)) && objp)
-> -		memset(objp, 0, cachep->object_size);
-> +	init = slab_want_init_on_alloc(flags, cachep);
->  
->  out:
-> -	slab_post_alloc_hook(cachep, objcg, flags, 1, &objp);
-> +	slab_post_alloc_hook(cachep, objcg, flags, 1, &objp, init);
->  	return objp;
->  }
->  
-> @@ -3542,18 +3540,18 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
->  
->  	cache_alloc_debugcheck_after_bulk(s, flags, size, p, _RET_IP_);
->  
-> -	/* Clear memory outside IRQ disabled section */
-> -	if (unlikely(slab_want_init_on_alloc(flags, s)))
-> -		for (i = 0; i < size; i++)
-> -			memset(p[i], 0, s->object_size);
-> -
-> -	slab_post_alloc_hook(s, objcg, flags, size, p);
-> +	/*
-> +	 * memcg and kmem_cache debug support and memory initialization.
-> +	 * Done outside of the IRQ disabled section.
-> +	 */
-> +	slab_post_alloc_hook(s, objcg, flags, size, p,
-> +				slab_want_init_on_alloc(flags, s));
->  	/* FIXME: Trace call missing. Christoph would like a bulk variant */
->  	return size;
->  error:
->  	local_irq_enable();
->  	cache_alloc_debugcheck_after_bulk(s, flags, i, p, _RET_IP_);
-> -	slab_post_alloc_hook(s, objcg, flags, i, p);
-> +	slab_post_alloc_hook(s, objcg, flags, i, p, false);
->  	__kmem_cache_free_bulk(s, i, p);
->  	return 0;
->  }
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 076582f58f68..c6f0e55a674a 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -506,15 +506,24 @@ static inline struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
->  }
->  
->  static inline void slab_post_alloc_hook(struct kmem_cache *s,
-> -					struct obj_cgroup *objcg,
-> -					gfp_t flags, size_t size, void **p)
-> +					struct obj_cgroup *objcg, gfp_t flags,
-> +					size_t size, void **p, bool init)
->  {
->  	size_t i;
->  
->  	flags &= gfp_allowed_mask;
-> +
-> +	/*
-> +	 * As memory initialization might be integrated into KASAN,
-> +	 * kasan_slab_alloc and initialization memset must be
-> +	 * kept together to avoid discrepancies in behavior.
-> +	 *
-> +	 * As p[i] might get tagged, memset and kmemleak hook come after KASAN.
-> +	 */
->  	for (i = 0; i < size; i++) {
-> -		p[i] = kasan_slab_alloc(s, p[i], flags);
-> -		/* As p[i] might get tagged, call kmemleak hook after KASAN. */
-> +		p[i] = kasan_slab_alloc(s, p[i], flags, init);
-> +		if (p[i] && init && !kasan_has_integrated_init())
-> +			memset(p[i], 0, s->object_size);
->  		kmemleak_alloc_recursive(p[i], s->object_size, 1,
->  					 s->flags, flags);
->  	}
-> diff --git a/mm/slub.c b/mm/slub.c
-> index e26c274b4657..f53df23760e3 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2822,6 +2822,7 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
->  	struct page *page;
->  	unsigned long tid;
->  	struct obj_cgroup *objcg = NULL;
-> +	bool init = false;
->  
->  	s = slab_pre_alloc_hook(s, &objcg, 1, gfpflags);
->  	if (!s)
-> @@ -2899,12 +2900,10 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
->  	}
->  
->  	maybe_wipe_obj_freeptr(s, object);
-> -
-> -	if (unlikely(slab_want_init_on_alloc(gfpflags, s)) && object)
-> -		memset(kasan_reset_tag(object), 0, s->object_size);
-> +	init = slab_want_init_on_alloc(gfpflags, s);
->  
->  out:
-> -	slab_post_alloc_hook(s, objcg, gfpflags, 1, &object);
-> +	slab_post_alloc_hook(s, objcg, gfpflags, 1, &object, init);
->  
->  	return object;
->  }
-> @@ -3356,20 +3355,16 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
->  	c->tid = next_tid(c->tid);
->  	local_irq_enable();
->  
-> -	/* Clear memory outside IRQ disabled fastpath loop */
-> -	if (unlikely(slab_want_init_on_alloc(flags, s))) {
-> -		int j;
-> -
-> -		for (j = 0; j < i; j++)
-> -			memset(kasan_reset_tag(p[j]), 0, s->object_size);
-> -	}
-> -
-> -	/* memcg and kmem_cache debug support */
-> -	slab_post_alloc_hook(s, objcg, flags, size, p);
-> +	/*
-> +	 * memcg and kmem_cache debug support and memory initialization.
-> +	 * Done outside of the IRQ disabled fastpath loop.
-> +	 */
-> +	slab_post_alloc_hook(s, objcg, flags, size, p,
-> +				slab_want_init_on_alloc(flags, s));
->  	return i;
->  error:
->  	local_irq_enable();
-> -	slab_post_alloc_hook(s, objcg, flags, i, p);
-> +	slab_post_alloc_hook(s, objcg, flags, i, p, false);
->  	__kmem_cache_free_bulk(s, i, p);
->  	return 0;
->  }
-> @@ -3579,7 +3574,7 @@ static void early_kmem_cache_node_alloc(int node)
->  	init_object(kmem_cache_node, n, SLUB_RED_ACTIVE);
->  	init_tracking(kmem_cache_node, n);
->  #endif
-> -	n = kasan_slab_alloc(kmem_cache_node, n, GFP_KERNEL);
-> +	n = kasan_slab_alloc(kmem_cache_node, n, GFP_KERNEL, false);
->  	page->freelist = get_freepointer(kmem_cache_node, n);
->  	page->inuse = 1;
->  	page->frozen = 0;
-> -- 
-> 2.30.1.766.gb4fecdf3b7-goog
-> 
+>  config HSA_AMD
+>  	bool "HSA kernel driver for AMD GPU devices"
+> -	depends on DRM_AMDGPU && (X86_64 || ARM64 || PPC64)
+> -	imply AMD_IOMMU_V2 if X86_64
+> +	depends on DRM_AMDGPU && ((X86_64 && IOMMU_SUPPORT && ACPI) || ARM64 || PPC64)
+> +	select AMD_IOMMU if X86_64
+> +	select AMD_IOMMU_V2 if X86_64
+>  	select HMM_MIRROR
+>  	select MMU_NOTIFIER
+>  	select DRM_AMDGPU_USERPTR
