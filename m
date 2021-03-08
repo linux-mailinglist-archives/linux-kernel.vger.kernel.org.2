@@ -2,183 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3F8331052
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:04:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC1E331059
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhCHOES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 09:04:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229848AbhCHOEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:04:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8206F64EBC;
-        Mon,  8 Mar 2021 14:04:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615212240;
-        bh=E1p7ETbjo4cfMPaI3vXRnRJoJxKJzun0W2n67A7eow4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QtR5QVRpLfOz0bim/vdh8qduvyb+P64c5oDctr1Kc1SbnxPiGtubTojmJQbxlNC90
-         H9k3ur/telJzc8ORujkgR/jBPqC1JH+5gr6Fp1J4VSmJWF/lP9NxFa8Eo7xTt8WaBh
-         Qs1VqnP1n9pCkjh4GkMZOh7thjL78Ti6e2EyC+3lWHpsGqy62xgN7AVkBkLdVcESxl
-         vfQ6ljG6XZAWXMV/1oItTkkb6o2HMZaL+Bp+Nhkj6coKuQ3NtQnGgmIlQm/hb/L0tP
-         lhwDn9aLAU4T67KRUQv8+eCNfZO9zKNLD4+NosvHIlELW9XqKoqr62yJDGM4uf5L1Y
-         KNFuA02Mf8PKQ==
-Received: by earth.universe (Postfix, from userid 1000)
-        id 742BE3C0C95; Mon,  8 Mar 2021 15:03:58 +0100 (CET)
-Date:   Mon, 8 Mar 2021 15:03:58 +0100
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        devicetree@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mtd@lists.infradead.org, NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv1 1/6] rtc: m41t80: add support for protected clock
-Message-ID: <20210308140358.diolcpbaq7gow3y4@earth.universe>
-References: <20210222171247.97609-1-sebastian.reichel@collabora.com>
- <20210222171247.97609-2-sebastian.reichel@collabora.com>
- <YDQgLTPE0E+/1Cwv@piout.net>
- <YDQhgkftoW4J9AtY@piout.net>
- <20210223012657.bbp5u65nw4tpcjgd@earth.universe>
- <20210306195645.GA1112592@robh.at.kernel.org>
+        id S230476AbhCHOFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 09:05:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230033AbhCHOFC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 09:05:02 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76373C06174A;
+        Mon,  8 Mar 2021 06:05:02 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id y124-20020a1c32820000b029010c93864955so3878809wmy.5;
+        Mon, 08 Mar 2021 06:05:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u0rxkzcpEQymr2WKgLCpuC2S/8N0HG0Aoqtpouow3H4=;
+        b=PaX5YYLCSMMUiQETtB0dVNpVssXBosDEtg/oMphDxy4Q6eDv6Gsx0vfy0jcqRrCcfH
+         i5VUvlsUz8xyhMfM3RpJjtZ4eldJdvWOjyiYnaHQu+CSU6RF7EgGBbbct+HFCnY2nnnj
+         XLUKkKQdnhFLmVCIV4ptbzVspk9M+f5mrFXrBUw2aCsRM5a5U7LyCTYUOyqaKWknMC1A
+         i6SDfkTjEFMv4FotCQjVvt9Lk6F+vCUvDwCkOWqex3QmmvkH6wDT3Eu6CsRqCapQn0K5
+         TP3rWwj5x0vESs98HaFZo9FBhLljY5X1I3VgiKZ24WT7A2KDh5zyYXDJc5qWzab3ZtAI
+         n/5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u0rxkzcpEQymr2WKgLCpuC2S/8N0HG0Aoqtpouow3H4=;
+        b=JMbbnkIRVwLa5Y7VnCM0AS5pfSyj/s01goE8g/3/dgQISsqX5dKYjI2s49NJxzuHnr
+         p1gKz/qBzH552NnWjyw4QAyX2fZlapguPbG4SsDqcQxsFFXXD3rfWRRUN2Ex7uaPv27D
+         gqHPOD72I/YKJmj4FQ3dmKDugAedN3d0Oy8kBYXN/uRF05HcqjuuNmM62N4alyMmmUTS
+         ajhx3DC5XzSn4J66TWsHmk6E2A/QM5qey8efI3fHgt/YiehN8REKTuT1PSnkHvKYhl5i
+         V52gKTEWXYPO8HJiOwMcQifucD9b1KxK3ckiVJ8nUO/kCIG/Xz3daIsXi+IYnC9BVYZ8
+         zXfA==
+X-Gm-Message-State: AOAM533pfolbmdE5I+k1xl1r+KkoOzQLw1VMVxpuW3OPkZG0Bx46fY/9
+        5Tjki7piLRjbS4o1gaSg/dluZPodXXkYKKyGbTI=
+X-Google-Smtp-Source: ABdhPJySxZcF2LBkg+JoYZ/p2nuMDUJ0PxOWgO75l+dbeMUnrpiO23sIxaWNg38e8MPIA9xbc3XNOUyhSLTUN9OfvwQ=
+X-Received: by 2002:a7b:c442:: with SMTP id l2mr22396841wmi.69.1615212301078;
+ Mon, 08 Mar 2021 06:05:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tz3no5iwp6fmwznd"
-Content-Disposition: inline
-In-Reply-To: <20210306195645.GA1112592@robh.at.kernel.org>
+References: <20210305190608.1834164-1-david.e.box@linux.intel.com>
+In-Reply-To: <20210305190608.1834164-1-david.e.box@linux.intel.com>
+From:   Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+Date:   Mon, 8 Mar 2021 09:04:33 -0500
+Message-ID: <CAE2upjSkN6R_MNxNOwT+sTREGXRq0RVehnG3gCD5Wx9_-D41vg@mail.gmail.com>
+Subject: Re: [PATCH] platform/x86: intel_pmc: Ignore GBE LTR on Tiger Lake platforms
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     hdegoede@redhat.com, mgross@linux.intel.com,
+        sasha.neftin@intel.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi David
 
---tz3no5iwp6fmwznd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Overall, it looks like the right thing to do but i have a few
+comments. See below.
 
-Hi,
+On Fri, Mar 5, 2021 at 2:07 PM David E. Box <david.e.box@linux.intel.com> wrote:
+>
+> Due to a HW limitation, the Latency Tolerance Reporting (LTR) value
+> programmed in the Tiger Lake GBE controller is not large enough to allow
+> the platform to enter Package C10, which in turn prevents the platform from
+> achieving its low power target during suspend-to-idle.  Ignore the GBE LTR
+> value on Tiger Lake. LTR ignore functionality is currently performed solely
+> by a debugfs write call. Split out the LTR code into its own function that
+> can be called by both the debugfs writer and by this work around.
+>
 
-On Sat, Mar 06, 2021 at 11:56:45AM -0800, Rob Herring wrote:
-> On Tue, Feb 23, 2021 at 02:26:57AM +0100, Sebastian Reichel wrote:
-> > On Mon, Feb 22, 2021 at 10:26:26PM +0100, Alexandre Belloni wrote:
-> > > On 22/02/2021 22:20:47+0100, Alexandre Belloni wrote:
-> > > > On 22/02/2021 18:12:42+0100, Sebastian Reichel wrote:
-> > > > > Congatec's QMX6 system on module (SoM) uses a m41t62 as RTC. The
-> > > > > modules SQW clock output defaults to 32768 Hz. This behaviour is
-> > > > > used to provide the i.MX6 CKIL clock. Once the RTC driver is prob=
-ed,
-> > > > > the clock is disabled and all i.MX6 functionality depending on
-> > > > > the 32 KHz clock has undefined behaviour. On systems using hardwa=
-re
-> > > > > watchdog it seems to likely trigger a lot earlier than configured.
-> > > > >=20
-> > > > > The proper solution would be to describe this dependency in DT,
-> > > > > but that will result in a deadlock. The kernel will see, that
-> > > > > i.MX6 system clock needs the RTC clock and do probe deferral.
-> > > > > But the i.MX6 I2C module never becomes usable without the i.MX6
-> > > > > CKIL clock and thus the RTC's clock will not be probed. So from
-> > > > > the kernel's perspective this is a chicken-and-egg problem.
-> > > > >=20
-> > > >=20
-> > > > Reading the previous paragraph, I was going to suggest describing t=
-he
-> > > > dependency and wondering whether this would cause a circular depend=
-ency.
-> > > > I guess this will keep being an issue for clocks on an I2C or SPI b=
-us...
-> >=20
-> > Yes, it is a circular dependency on this particular system on
-> > module. It only works because the RTC enables the clock by
-> > default. The i.MX6 CKIL is expected to be always enabled.
->=20
-> I think you should describe the circular clocking and then provide a way=
-=20
-> to break the dependency.
+I presume this must be the last resort to use such quirk and you've
+already considered a user space tuning program or fw patch is not an
+option on this generation of SOCs.
 
-This is very much not trivial. The clock is required during early
-initialization of the i.MX. At this point we are far from probing
-I2C drivers and without the I2C driver the clock is not registered.
-The current i.MX code expects the system clocks to be fixed clocks,
-since they must be enabled before any code is executed (incl.
-bootloader) and must never be disabled. From a HW design point of
-view it does not make sense to have a SW controllable clock for it,
-since it just adds extra cost. I believe for QMX6 it is only SW
-controllable, because that avoids the need for an extra crystal.
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> Reviewed-by: Sasha Neftin <sasha.neftin@intel.com>
+> Cc: intel-wired-lan@lists.osuosl.org
+> ---
+>  drivers/platform/x86/intel_pmc_core.c | 55 ++++++++++++++++++++-------
+>  1 file changed, 42 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
+> index ee2f757515b0..ab31eb646a1a 100644
+> --- a/drivers/platform/x86/intel_pmc_core.c
+> +++ b/drivers/platform/x86/intel_pmc_core.c
+> @@ -863,34 +863,45 @@ static int pmc_core_pll_show(struct seq_file *s, void *unused)
+>  }
+>  DEFINE_SHOW_ATTRIBUTE(pmc_core_pll);
+>
+> -static ssize_t pmc_core_ltr_ignore_write(struct file *file,
+> -                                        const char __user *userbuf,
+> -                                        size_t count, loff_t *ppos)
+> +static int pmc_core_write_ltr_ignore(u32 value)
 
-So how is the clock framework supposed to know, that it can ignore
-the clock during registration? I see the following options:
+This sounds a bit confusing with pmc_core_ltr_ignore_write.
 
-1. My solution is the simplest one. Keep i.MX clock code the same
-   (it assumes a fixed-clock being used for CKIL) and avoid
-   registering RTC clock. This basically means the RTC is considered
-   to be a fixed-clock on this system, which is what the HW designers
-   seemed to have in mind (vendor kernel for the QMX6 is old enough
-   (4.9.x) to not to have CLK feature in the RTC driver. Vendor
-   U-Boot also does not touch the RTC. Booting mainline kernel once
-   bricks QMX6 boards until RTC battery is removed, so one could
-   actually argue addition of the CLK feature in 1373e77b4f10 (4.13)
-   is a regression). Currently Qualcomm device uses "protected-clocks"
-   for FW controlled clocks where Linux would crash the system by
-   trying to access them. IMHO the RTC is similar, since disabling
-   or modifying its frequency on QMX6 results in undefined behaviour
-   and possibly system crash.
+>  {
+>         struct pmc_dev *pmcdev = &pmc;
+>         const struct pmc_reg_map *map = pmcdev->map;
+> -       u32 val, buf_size, fd;
+> -       int err;
+> -
+> -       buf_size = count < 64 ? count : 64;
+> -
+> -       err = kstrtou32_from_user(userbuf, buf_size, 10, &val);
+> -       if (err)
+> -               return err;
+> +       u32 fd;
 
-2. Make i.MX clock code use the RTC as CKIL clock provider, but
-   ignore it somehow. I see three sub-options:
+lets just call it value
 
-2.1. Add a property 'boot-enabled' to the RTC node, so that the
-     clock framework is aware of clock being enabled. This can
-     be used to satisfy clock dependencies somehow.
+> +       int err = 0;
+>
+>         mutex_lock(&pmcdev->lock);
+>
+> -       if (val > map->ltr_ignore_max) {
+> +       if (fls(value) > map->ltr_ignore_max) {
 
-2.2. The RTC device is not probed without I2C bus, but the driver
-     could also register a fake clock purely based on DT
-     information by adding some early init hook and take over
-     the clock once the I2C part is being probed. I think this
-     is a bad idea regarding maintainability of the driver.
-     Also for systems not using the RTC clock, the early clock
-     registration is basically wrong: If the kernel disables
-     the RTC it will stay disabled across boots if the RTC has
-     a backup battery. Basically we cannot imply anything from
-     the RTC compatible value alone.
+I am not sure why you're considering a bit position here. We rather
+use absolute value for this and we already preserve (OR) previously
+programmed LTR while changing to the new desired value.  Current
+modification would allow users to supply even bigger values than the
+MAX IP ignore allowed. This can be useful when you want to ignore more
+than 1 IP at a time but that's not how we usually use it for debug.
+This is more for a user space debug script to deal with.
+https://01.org/blogs/rajneesh/2019/using-power-management-controller-drivers-debug-low-power-platform-states
 
-2.3 The i.MX core code could request CKIL with some flag, that
-    it's fine to have an unresolvable clock and just expect it
-    to be boot-enabled. The rationale would be, that CKIL must
-    be always-enabled.
+>                 err = -EINVAL;
+>                 goto out_unlock;
+>         }
+>
+>         fd = pmc_core_reg_read(pmcdev, map->ltr_ignore_offset);
+> -       fd |= (1U << val);
+> +       fd |= value;
+>         pmc_core_reg_write(pmcdev, map->ltr_ignore_offset, fd);
+>
+>  out_unlock:
+>         mutex_unlock(&pmcdev->lock);
+> +
+> +       return err;
+> +}
+> +
+> +static ssize_t pmc_core_ltr_ignore_write(struct file *file,
+> +                                        const char __user *userbuf,
+> +                                        size_t count, loff_t *ppos)
+> +{
+> +       u32 buf_size, val;
+> +       int err;
+> +
+> +       buf_size = count < 64 ? count : 64;
+> +
+> +       err = kstrtou32_from_user(userbuf, buf_size, 10, &val);
+> +       if (err)
+> +               return err;
+> +
+> +       err = pmc_core_write_ltr_ignore(1U << val);
+> +
+>         return err == 0 ? count : err;
+>  }
+>
+> @@ -1189,6 +1200,15 @@ static int quirk_xtal_ignore(const struct dmi_system_id *id)
+>         return 0;
+>  }
+>
+> +static int quirk_ltr_ignore(u32 val)
+> +{
+> +       int err;
+> +
+> +       err = pmc_core_write_ltr_ignore(val);
+> +
+> +       return err;
+> +}
+> +
+>  static const struct dmi_system_id pmc_core_dmi_table[]  = {
+>         {
+>         .callback = quirk_xtal_ignore,
+> @@ -1244,6 +1264,15 @@ static int pmc_core_probe(struct platform_device *pdev)
+>         pmcdev->pmc_xram_read_bit = pmc_core_check_read_lock_bit();
+>         dmi_check_system(pmc_core_dmi_table);
+>
+> +       /*
+> +        * On TGL, due to a hardware limitation, the GBE LTR blocks PC10 when
+> +        * a cable is attached. Tell the PMC to ignore it.
+> +        */
+> +       if (pmcdev->map == &tgl_reg_map) {
+> +               dev_dbg(&pdev->dev, "ignoring GBE LTR\n");
+> +               quirk_ltr_ignore(1U << 3);
 
-> It's a somewhat common issue.
+Can this be made a part of *_reg_map itself if intended to be used for
+more future platforms? Otherwise we just leave it as a one time quirk.
 
-It is? This only works, because one can treat the RTC's clock
-output like a fixed clock by not messing around with it.
+> +       }
+> +
+>         pmc_core_dbgfs_register(pmcdev);
+>
+>         device_initialized = true;
+> --
+> 2.25.1
+>
 
--- Sebastian
 
---tz3no5iwp6fmwznd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBGLsQACgkQ2O7X88g7
-+ppYag//VqCs0DzfkeAZpa06OpqMBRfRplqZWf6IlhyET4qXikZHjob95UJcdPuT
-EQ26LP3hKVnN2BE36R2sVifMQ5LixPbWsb/iFw21kIDFdbjhagyI6sotvpd/96N9
-hPEbc8ifVNAr/407a/sW5OzC9seCqW9DO9Xt35IPRyIOPZHj9eUBa1hS+1stC0Q1
-2EqtwU5dkxY/aQDT/50riSszhggjhMS5ITmKXDzQe0dQizYIPIixn1+v6B7CAt8k
-1sWIdZiyt3PPd4fm5F8dvtEirkmG5Wjkv9UQVdi+30RHuJfK5ONIISl2gREbjPL6
-vQSHEfqz6iQYWiwZN4t21opDnloT+wh5ljNghlpnIyeAPcQSfiWN89qUZ3A639+I
-0VxlHLxs0EfLWdNXVxnUW1zXO6EVjhGB8KnSPQic2EFcJNrId8yejK0e6GBsZ6fc
-i6mIonybZnSy7rwnkapkfsJ77CA/Uq3Jvb9PI7WgxA/PljLejUue5Plce2b/iJpZ
-Bus/MtIloeZzBqCTFTa8gCArgYxPB06ROpCM/gvjqmx1/XGVervqJXdChT7Wbk+8
-0KQEkXoz+POcUJemu0OUYsvOW5jTNlkotqrweY4Qdyx/0/VuA1HXEEQQ6J3NBf1x
-qI2tYZkqjU5R2rnSbhvcnxMPnfwL3MwL9gm7iTvf6wUvEz8iP6c=
-=vlxG
------END PGP SIGNATURE-----
-
---tz3no5iwp6fmwznd--
+-- 
+Thanks,
+Rajneesh
