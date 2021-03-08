@@ -2,112 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6DED330639
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 04:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD2033063F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 04:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232535AbhCHDCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 22:02:00 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:47520 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232580AbhCHDBj (ORCPT
+        id S232604AbhCHDLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 22:11:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231573AbhCHDLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 22:01:39 -0500
-X-UUID: 9660dc14640741cc9b7fe0fdb9a97424-20210308
-X-UUID: 9660dc14640741cc9b7fe0fdb9a97424-20210308
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1241873775; Mon, 08 Mar 2021 11:01:34 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 8 Mar 2021 11:01:33 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 8 Mar 2021 11:01:33 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     <maz@kernel.org>, Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-CC:     <daniel@thingy.jp>, <jason@lakedaemon.net>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
-        <tglx@linutronix.de>, <yj.chiang@mediatek.com>
-Subject: Re: [PATCH] irqchip/irq-mst: Support polarity configuration
-Date:   Mon, 8 Mar 2021 11:01:01 +0800
-Message-ID: <20210308030102.5161-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <874khorux9.wl-maz@kernel.org>
-References: <874khorux9.wl-maz@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        Sun, 7 Mar 2021 22:11:12 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0789CC06174A;
+        Sun,  7 Mar 2021 19:11:11 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id o10so5527190pgg.4;
+        Sun, 07 Mar 2021 19:11:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=DhMvXCk0sXJv+GDmGzzD6QP4j5FriOS751Xaxos7THU=;
+        b=dQ2qjwkwafeKbLS7P1d7TVuwiAe7RfloRuMYtxyGLbYYW0a882yUD+8RtMsrDnuiYr
+         MfUjzkerg/E7fVXVnauJtI4lLgYo5Q8JzpQnBeEcnX5LaxWwJ58w6+xIAFfIJpWWpnFe
+         TCVHKfrTWIeZUtaiVh8mg/SndK2QZCrLEN3sQj542lYZhIxvEaXja9WChc5CsUNynalH
+         zdeb3Nzgv6EO/EsBlnFlVSmjM/lXKhRNEBSywWelK7dXEFREJ4jdYxMDKPZ172Jph94n
+         nbXsZGhizxb3SA9sCkDUP1+th0cQXd3PZ26YyzMVfrHrReRIE9fQR0kGc6hgvJitFd69
+         jw4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=DhMvXCk0sXJv+GDmGzzD6QP4j5FriOS751Xaxos7THU=;
+        b=tRQqqYwP/cAbA7Ev9UnUAvZOCE5TSuAL1iuT2wIL1Uv6zPdVog8MbEIU01rnry++oQ
+         QJONVxhDWwsSXDDEsUNlbNefXw3YlgLz4EMTVij29bctYXgFrZmldb+Vzarm41Hr9s31
+         yRm22362WiG3tqg9aeNTi9YoyZTrYCHbKhmLcua9G+9WBNQ2ZsH/wIMFUy6cyBns45cy
+         eQ5XfWVOlOgLm2hR6a5mC8pXwUC/8VomqG0Tbm9rGTcekm+qytpl6pa4kEZqxWs693Bg
+         d9JC7FWa9X6hyC6QrlEYhMYLmpGyAjCUjWD3z1sQXHFa2Hz2MIc0G463oGfrUKOWl5Lz
+         6iew==
+X-Gm-Message-State: AOAM530SFhSZvwungyvDd9ogTWWapfqUbJULEowJs2n1QacTguCHfiIH
+        yrVjZXxbV67vDfoEl3NO+yY=
+X-Google-Smtp-Source: ABdhPJwt6HpSwZaIkpTZ+kCj4NevJvGdmTCcaMRcVUVvGpTHruPZU8qx90emf0Qmmidr7U4C72+TuA==
+X-Received: by 2002:a63:5c63:: with SMTP id n35mr18585291pgm.26.1615173071435;
+        Sun, 07 Mar 2021 19:11:11 -0800 (PST)
+Received: from localhost.localdomain ([45.135.186.99])
+        by smtp.gmail.com with ESMTPSA id g12sm8754793pjd.57.2021.03.07.19.11.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 19:11:11 -0800 (PST)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+To:     j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] net: bonding: fix error return code of bond_neigh_init()
+Date:   Sun,  7 Mar 2021 19:11:02 -0800
+Message-Id: <20210308031102.26730-1-baijiaju1990@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+When slave is NULL or slave_ops->ndo_neigh_setup is NULL, no error
+return code of bond_neigh_init() is assigned.
+To fix this bug, ret is assigned with -EINVAL in these cases.
 
-> > 
-> > Support irq polarity configuration and save and restore the config
-> > when system suspend and resume.
-> > 
-> > Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-> > ---
-> >  drivers/irqchip/irq-mst-intc.c | 87 ++++++++++++++++++++++++++++++++--
-> >  1 file changed, 84 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/irqchip/irq-mst-intc.c b/drivers/irqchip/irq-mst-intc.c
-> > index 143657b0cf28..979a4d55bcb1 100644
-> > --- a/drivers/irqchip/irq-mst-intc.c
-> > +++ b/drivers/irqchip/irq-mst-intc.c
-> > @@ -13,15 +13,25 @@
-> >  #include <linux/of_irq.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/spinlock.h>
-> > +#include <linux/syscore_ops.h>
-> >  
-> > -#define INTC_MASK	0x0
-> > -#define INTC_EOI	0x20
-> > +#define INTC_MASK		0x0
-> > +#define INTC_REV_POLARITY	0x10
-> > +#define INTC_EOI		0x20
-> > +
-> > +#ifdef CONFIG_PM_SLEEP
-> > +static LIST_HEAD(mst_intc_list);
-> > +#endif
-> >  
-> >  struct mst_intc_chip_data {
-> >  	raw_spinlock_t	lock;
-> >  	unsigned int	irq_start, nr_irqs;
-> >  	void __iomem	*base;
-> >  	bool		no_eoi;
-> > +#ifdef CONFIG_PM_SLEEP
-> > +	struct list_head entry;
-> > +	u16 saved_polarity_conf[DIV_ROUND_UP(64, 16)];
-> 
-> Where is this 64 coming from?
+Fixes: 9e99bfefdbce ("bonding: fix bond_neigh_init()")
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+---
+ drivers/net/bonding/bond_main.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-The maximum number of interrupts a mst-intc supports is 64 in
-Mstar and Mediatek SoCs now.
-So I just use the maximum number of interrupts here.
+diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+index 74cbbb22470b..456315bef3a8 100644
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -3978,11 +3978,15 @@ static int bond_neigh_init(struct neighbour *n)
+ 
+ 	rcu_read_lock();
+ 	slave = bond_first_slave_rcu(bond);
+-	if (!slave)
++	if (!slave) {
++		ret = -EINVAL;
+ 		goto out;
++	}
+ 	slave_ops = slave->dev->netdev_ops;
+-	if (!slave_ops->ndo_neigh_setup)
++	if (!slave_ops->ndo_neigh_setup) {
++		ret = -EINVAL;
+ 		goto out;
++	}
+ 
+ 	/* TODO: find another way [1] to implement this.
+ 	 * Passing a zeroed structure is fragile,
+-- 
+2.17.1
 
-> 
-> > +#endif
-> >  };
-> >  
-> >  static void mst_set_irq(struct irq_data *d, u32 offset)
-> > @@ -78,6 +88,16 @@ static void mst_intc_eoi_irq(struct irq_data *d)
-> >  	irq_chip_eoi_parent(d);
-> >  }
-> >  
-> > +static int mst_irq_chip_set_type(struct irq_data *data, unsigned int type)
-> > +{
-> > +	if (type == IRQ_TYPE_LEVEL_LOW) {
-> > +		mst_set_irq(data, INTC_REV_POLARITY);
-> > +		type = IRQ_TYPE_LEVEL_HIGH;
-> > +	}
-> 
-> If you are introducing a irq_set_type callback, you need to return an
-> error for the settings you don't handle.
-
-Got it, thanks for the comment.
-I will add it in the next patch.
