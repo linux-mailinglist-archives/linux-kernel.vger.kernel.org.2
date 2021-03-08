@@ -2,130 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8A233127C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1435331277
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhCHPp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 10:45:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42302 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230051AbhCHPp0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 10:45:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 92D10AE05;
-        Mon,  8 Mar 2021 15:45:24 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id AFD17DA81B; Mon,  8 Mar 2021 16:43:26 +0100 (CET)
-Date:   Mon, 8 Mar 2021 16:43:26 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.11 03/12] btrfs: subpage: fix the false data
- csum mismatch error
-Message-ID: <20210308154326.GB7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Sasha Levin <sashal@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210307135746.967418-1-sashal@kernel.org>
- <20210307135746.967418-3-sashal@kernel.org>
+        id S230111AbhCHPp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 10:45:27 -0500
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:43707 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229829AbhCHPpX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 10:45:23 -0500
+Received: by mail-ot1-f46.google.com with SMTP id v12so9572523ott.10;
+        Mon, 08 Mar 2021 07:45:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mbsT3/Ouni6Vb8m0SK7QpZ24XnBIwdODUDVR1OBNjiQ=;
+        b=U+ZWC1eKnbbsrZdMotLrIujg6APWVI89ngEuYnHIIkNokj+upzR2POx/LY1jlJyvb9
+         aVFUzVXGnOwIOvG0I7DG49gElIhRAWMGx9PO7yligRjIOENkTJdWkovypGGKBuMYzmdC
+         ZZlUQLazT5HLT0SdHjDVzn788RIGIz4yPB2NnU4jPyyba6PGbvoTdpqPwvzBCiZq+Phy
+         yZYmoiyNHy1Hqb5sP6SRvmfOPW5fTv7uFlUKWxlqRil4JwcSUz69jM7ZSC5q3+NCENio
+         Ex/X5obHfGhIIWYZ9eIqENaqewcuDB8DXkiIm9vdpuVIhlnFEkEpKMtbrvo1U8cXQ/Co
+         cixQ==
+X-Gm-Message-State: AOAM532grdNzwD+nperLfnMN8xtQx1qdMX/rGo5oJDlh77KM/VjO4pxH
+        HyvkmQBdMY89i8LJUyfW3mripsKOpzluGaei4ac5Z/yk49E=
+X-Google-Smtp-Source: ABdhPJyYRGPWxgE1CdRhcwvN59TkRBBYu/cz9uZ2p7vV3ktihFVU1XAMr9A7W3yNtRhrv5M+i/rFQDQrAZWoYS3O4Sg=
+X-Received: by 2002:a05:6830:1e03:: with SMTP id s3mr9783834otr.321.1615218322615;
+ Mon, 08 Mar 2021 07:45:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210307135746.967418-3-sashal@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20210222130735.1313443-1-djrscally@gmail.com> <20210222130735.1313443-2-djrscally@gmail.com>
+ <CAHp75VfPuDjt=ZfHkwErF7_6Ks6wpqXO8mtq-2KjV+mU_PXFtg@mail.gmail.com>
+ <615bad5e-6e68-43c9-dd0b-f26d2832d52f@gmail.com> <CAHp75Vc2iwvh1RiYmQDPSvgNvGT_gBcGTK67F+MhWgXyoxqn0A@mail.gmail.com>
+ <CAJZ5v0ijOhT3PVm6-gqnqycE-YZhD00dGbtK1UEV5nfrOF5Obw@mail.gmail.com> <YEYtME2AxpXBq6iF@smile.fi.intel.com>
+In-Reply-To: <YEYtME2AxpXBq6iF@smile.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 8 Mar 2021 16:45:07 +0100
+Message-ID: <CAJZ5v0i+suMNWhUc=v0pnpabS-Ew-CMeSH945JB0YKnQAbi4Wg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] ACPI: scan: Extend acpi_walk_dep_device_list()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Rajmohan Mani <rajmohan.mani@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>, me@fabwu.ch,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 08:57:37AM -0500, Sasha Levin wrote:
-> From: Qu Wenruo <wqu@suse.com>
-> 
-> [ Upstream commit c28ea613fafad910d08f67efe76ae552b1434e44 ]
-> 
-> [BUG]
-> When running fstresss, we can hit strange data csum mismatch where the
-> on-disk data is in fact correct (passes scrub).
-> 
-> With some extra debug info added, we have the following traces:
-> 
->   0482us: btrfs_do_readpage: root=5 ino=284 offset=393216, submit force=0 pgoff=0 iosize=8192
->   0494us: btrfs_do_readpage: root=5 ino=284 offset=401408, submit force=0 pgoff=8192 iosize=4096
->   0498us: btrfs_submit_data_bio: root=5 ino=284 bio first bvec=393216 len=8192
->   0591us: btrfs_do_readpage: root=5 ino=284 offset=405504, submit force=0 pgoff=12288 iosize=36864
->   0594us: btrfs_submit_data_bio: root=5 ino=284 bio first bvec=401408 len=4096
->   0863us: btrfs_submit_data_bio: root=5 ino=284 bio first bvec=405504 len=36864
->   0933us: btrfs_verify_data_csum: root=5 ino=284 offset=393216 len=8192
->   0967us: btrfs_do_readpage: root=5 ino=284 offset=442368, skip beyond isize pgoff=49152 iosize=16384
->   1047us: btrfs_verify_data_csum: root=5 ino=284 offset=401408 len=4096
->   1163us: btrfs_verify_data_csum: root=5 ino=284 offset=405504 len=36864
->   1290us: check_data_csum: !!! root=5 ino=284 offset=438272 pg_off=45056 !!!
->   7387us: end_bio_extent_readpage: root=5 ino=284 before pending_read_bios=0
-> 
-> [CAUSE]
-> Normally we expect all submitted bio reads to only touch the range we
-> specified, and under subpage context, it means we should only touch the
-> range specified in each bvec.
-> 
-> But in data read path, inside end_bio_extent_readpage(), we have page
-> zeroing which only takes regular page size into consideration.
-> 
-> This means for subpage if we have an inode whose content looks like below:
-> 
->   0       16K     32K     48K     64K
->   |///////|       |///////|       |
-> 
->   |//| = data needs to be read from disk
->   |  | = hole
-> 
-> And i_size is 64K initially.
-> 
-> Then the following race can happen:
-> 
-> 		T1		|		T2
-> --------------------------------+--------------------------------
-> btrfs_do_readpage()		|
-> |- isize = 64K;			|
-> |  At this time, the isize is 	|
-> |  64K				|
-> |				|
-> |- submit_extent_page()		|
-> |  submit previous assembled bio|
-> |  assemble bio for [0, 16K)	|
-> |				|
-> |- submit_extent_page()		|
->    submit read bio for [0, 16K) |
->    assemble read bio for	|
->    [32K, 48K)			|
->  				|
-> 				| btrfs_setsize()
-> 				| |- i_size_write(, 16K);
-> 				|    Now i_size is only 16K
-> end_io() for [0K, 16K)		|
-> |- end_bio_extent_readpage()	|
->    |- btrfs_verify_data_csum()  |
->    |  No csum error		|
->    |- i_size = 16K;		|
->    |- zero_user_segment(16K,	|
->       PAGE_SIZE);		|
->       !!! We zeroed range	|
->       !!! [32K, 48K)		|
-> 				| end_io for [32K, 48K)
-> 				| |- end_bio_extent_readpage()
-> 				|    |- btrfs_verify_data_csum()
-> 				|       ! CSUM MISMATCH !
-> 				|       ! As the range is zeroed now !
-> 
-> [FIX]
-> To fix the problem, make end_bio_extent_readpage() to only zero the
-> range of bvec.
-> 
-> The bug only affects subpage read-write support, as for full read-only
-> mount we can't change i_size thus won't hit the race condition.
+On Mon, Mar 8, 2021 at 2:57 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Mon, Mar 08, 2021 at 02:36:27PM +0100, Rafael J. Wysocki wrote:
+> > On Sun, Mar 7, 2021 at 9:39 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Sun, Mar 7, 2021 at 3:36 PM Daniel Scally <djrscally@gmail.com> wrote:
+> > > > On 22/02/2021 13:34, Andy Shevchenko wrote:
+> > > > > On Mon, Feb 22, 2021 at 3:12 PM Daniel Scally <djrscally@gmail.com> wrote:
+> > > > >> The acpi_walk_dep_device_list() is not as generalisable as its name
+> > > > >> implies, serving only to decrement the dependency count for each
+> > > > >> dependent device of the input. Extend the function to instead accept
+> > > > >> a callback which can be applied to all the dependencies in acpi_dep_list.
+> > > > >> Replace all existing calls to the function with calls to a wrapper, passing
+> > > > >> a callback that applies the same dependency reduction.
+> > > > > The code looks okay to me, if it was the initial idea, feel free to add
+> > > > > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>
+> ...
+>
+> > > > >> +void acpi_dev_flag_dependency_met(acpi_handle handle)
+>
+> > > > > Since it's acpi_dev_* namespace, perhaps it should take struct acpi_device here?
+> > > >
+> > > > I can do this, but I avoided it because in most of the uses in the
+> > > > kernel currently there's no struct acpi_device, they're just passing
+> > > > ACPI_HANDLE(dev) instead, so I'd need to get the adev with
+> > > > ACPI_COMPANION() in each place. It didn't seem worth it...
+> >
+> > It may not even be possible sometimes, because that function may be
+> > called before creating all of the struct acpi_device objects (like in
+> > the case of deferred enumeration).
+> >
+> > > > but happy to
+> > > > do it if you'd prefer it that way?
+> > >
+> > > I see, let Rafael decide then. I'm not pushing here.
+> >
+> > Well, it's a matter of correctness.
+>
+> Looking at your above comment it is indeed. Thanks for clarification!
 
-Please drop this patch from autosel because of the above, this is in a
-feature that's in progress and does not affect regular filesystems.
+Well, actually, the struct device for the object passed to this
+function should be there already, because otherwise it wouldn't make
+sense to update the list.  So my comment above is not really
+applicable to this particular device and the function could take a
+struct acpi_device pointer argument.  Sorry for the confusion.
+
+> But should we have acpi_dev_*() namespace for this function if it takes handle?
+
+It takes a device object handle.
+
+Anyway, as per the above, it can take a struct acpi_device pointer
+argument in which case the "acpi_dev_" prefix should be fine.
+
+> For time being nothing better than following comes to my mind:
+>
+> __acpi_dev_flag_dependency_met() => __acpi_flag_device_dependency_met()
+> acpi_dev_flag_dependency_met() => acpi_flag_device_dependency_met()
+
+The above said, the name is somewhat confusing overall IMV.
+
+Something like acpi_dev_clear_dependencies() might be better.
+
+So lets make it something like
+
+void acpi_dev_clear_dependencies(struct acpi_device *supplier);
