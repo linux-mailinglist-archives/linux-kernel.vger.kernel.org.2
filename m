@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4EB331A2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC37331A34
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbhCHWaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 17:30:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48826 "EHLO
+        id S231572AbhCHWbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 17:31:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhCHW34 (ORCPT
+        with ESMTP id S231542AbhCHWae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 17:29:56 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC8ACC06174A;
-        Mon,  8 Mar 2021 14:29:55 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id w65so12733857oie.7;
-        Mon, 08 Mar 2021 14:29:55 -0800 (PST)
+        Mon, 8 Mar 2021 17:30:34 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC888C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 14:30:33 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id 2so18167044ljr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 14:30:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hGlsdkJu1W2sJUs3QO8VEczlnXVYXOCy18Ok9D/ssU4=;
-        b=AJ276aoiHbwTsBKH2gTC3bFt1Fci4IAWMOEzmySEEoBri+mRlwIkeYuW1J885Sh0xO
-         a3LMmj3tqLOvFUvC2QTgvCK8UbwLFmyxhyIxcZ0BMQMYOk4POITwPCHFf4hOvYPBAWus
-         n0HnsR5jJ4Zuw0yLojpzFnvL4VtPnNxKi9moRHb8fTmWsEbZ5jix49cYRsMCMTwOooWb
-         3CZzikWJtF9csT010/Cq1C2hQo+mu6YJnUjrr1qxEGOPR/Y63QV8YUTYvzCxwoSsOAuw
-         oJXcxz+tO616+A8mirZLc7Bb1k36pzeeq1GEpZQ04t1A+LgU0w/hcGn7vltifL0WDCqM
-         EPNQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WoLvoqCPKCkOsmIcg5MKSJ6KfR4gV0s8s1BqSsMK/PE=;
+        b=daMTkMxExpOEyDR71hH3bgm71wkysgZF1gUWDs4oS5yLiTZ/SgUH0p9F9VO1etuK+t
+         CcT3NH1o6zxHROADi/kPoX80BwyN/cUZf67nV6XlxgbM1uL0rBdhdHHt1wykDGWvBJGi
+         GEHJu2CrvF2GcAFPZNsEmxuHoliQ/C+yDF/39SCnb+lt86punjGBxOfiVQdfSVKu/iU1
+         atR/FKBDJ42ebSD+DafVi2SrbIfJgD2p2RWDjSjtfoXfjNphnJy3MJcYJdvFYmXA77Oc
+         GyuvpLLWEZIrJRuAe3c07Pxzztq0HZghrBvweNaiY3M9K1Bl0dXmxa4RJo1ClL5xsRrJ
+         7lYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hGlsdkJu1W2sJUs3QO8VEczlnXVYXOCy18Ok9D/ssU4=;
-        b=Ka1PIdkj7toVAkjgWzK6IFDoXIUWvjVKlG1Gi96wcmCvC9UqD+PJpPjLTaL4mZoa9X
-         iJSJxv+0Yn2AQ+2jCi/oCy9aUG7xjAinaiHEjVp8PiBqOC6/eFP3sw2gqmXGro2QLJ49
-         IrpMbLMJLvt+VgYcxj2K2ZaK3Yest7fhfe44E6xkpfW87wdyBNi/PGrGOrWiwXgZkhjy
-         Bmv1Q6G533AOD8d76ijrVmlpWH+sklP62RbKUGOavG8bY3yvAJkxRetBYs7QLZ6Rb1LV
-         4CxbzBNlrYu6YE8Y+QNgLap8Mqr4l/2u3t2f6PHiIkL9GVV9l/Uxj48xvlxyyDSCY5RM
-         vGgw==
-X-Gm-Message-State: AOAM530kTZ8BlXnEST2KCd+if3jVMqXnH4l7IiSZmCydGJptJ22cA+em
-        WkL6v6j3I2JRw3pxjXpOqp4=
-X-Google-Smtp-Source: ABdhPJzmRJZHQUmUwV+gFs8cvSFl1bA6JucpLLuIpIlaSD79YaYILFZHmGV6tDFQHTE3mCxCxjJH2g==
-X-Received: by 2002:a05:6808:bc3:: with SMTP id o3mr824329oik.134.1615242595406;
-        Mon, 08 Mar 2021 14:29:55 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m8sm2936523otl.50.2021.03.08.14.29.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 08 Mar 2021 14:29:55 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 8 Mar 2021 14:29:53 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.11 00/44] 5.11.5-rc1 review
-Message-ID: <20210308222953.GC185990@roeck-us.net>
-References: <20210308122718.586629218@linuxfoundation.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WoLvoqCPKCkOsmIcg5MKSJ6KfR4gV0s8s1BqSsMK/PE=;
+        b=jSAzEDnwjhBIUCzTby1eFodzRBp2EaK+aasu432Mb+jHPKPZOAzHpU8mTnPz6o/oQA
+         CS3B2TGNVU5vB7HdV/jBgFrO9LCwE+3ixa1teQ4p0PjVwiAPYJXsir1ENjrZdbN+tNSP
+         RU7zqo9wlWY8DpdR98ZjQ7Ch16035SulL0w+YLPCSQiBf/i4C00A7Ad135jaaZE7/lto
+         D46k187T8j6O/umcxNYXRtOdueRv+FB2i4RLzO2Eq4hc8a3iOqucM4upM2bzLepa5mKM
+         wMhP1gjASPEBXK8U08XqOKj/Eh/4xO230hCRWIZxf9eEXMSDbXmu8FTZtEoF3ac5dOsb
+         dxgw==
+X-Gm-Message-State: AOAM5314azgNbsoJAkxFY85eGxH93a0SkP/LWC9ShD2tETFAPSMcp1C3
+        nzM66mfXp6jGNszhFWkbS0E=
+X-Google-Smtp-Source: ABdhPJwRpxdqXdwbqZtWvsCHEeA5CN5U4vXKh3BSiYs9hryGoNTmpcO9cz0CDXI7OxvZmobC4pCTtg==
+X-Received: by 2002:a2e:8895:: with SMTP id k21mr15112594lji.510.1615242632284;
+        Mon, 08 Mar 2021 14:30:32 -0800 (PST)
+Received: from localhost.localdomain ([94.103.235.167])
+        by smtp.gmail.com with ESMTPSA id u10sm1501707lfl.111.2021.03.08.14.30.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 14:30:31 -0800 (PST)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     perex@perex.cz, tiwai@suse.com, kai.heng.feng@canonical.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH next 0/2] fixes for sound: usb:
+Date:   Tue,  9 Mar 2021 01:29:26 +0300
+Message-Id: <cover.1615242183.git.paskripkin@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308122718.586629218@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 01:34:38PM +0100, gregkh@linuxfoundation.org wrote:
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> This is the start of the stable review cycle for the 5.11.5 release.
-> There are 44 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 10 Mar 2021 12:27:05 +0000.
-> Anything received after that time might be too late.
-> 
+This small patch series fixes 2 errors from commit 9799110825db
+("ALSA: usb-audio: Disable USB autosuspend properly in setup_disable_autosuspend()").
+One of them was reported by syzbot, but second one appeared while testing fixes for the first one.
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 435 pass: 435 fail: 0
+Pavel Skripkin (2):
+  sound: usb: fix NULL ptr dereference in usb_audio_probe
+  sound: usb: fix use after free in usb_audio_disconnect
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+ sound/usb/card.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Guenter
+-- 
+2.25.1
+
