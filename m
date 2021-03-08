@@ -2,74 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C23331668
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA3933166C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:44:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhCHSmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:42:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57348 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230075AbhCHSm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:42:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27C406521D;
-        Mon,  8 Mar 2021 18:42:26 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 18:42:15 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] arm64: kasan: fix page_alloc tagging with DEBUG_VIRTUAL
-Message-ID: <20210308184214.GI15644@arm.com>
-References: <4b55b35202706223d3118230701c6a59749d9b72.1615219501.git.andreyknvl@google.com>
+        id S230439AbhCHSn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:43:29 -0500
+Received: from mail-il1-f176.google.com ([209.85.166.176]:42864 "EHLO
+        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229818AbhCHSnM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 13:43:12 -0500
+Received: by mail-il1-f176.google.com with SMTP id p10so9765432ils.9;
+        Mon, 08 Mar 2021 10:43:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Jh7iFjBHPDZdJduTxw8HFwjFLedtkUjhMnAcCxAiD+A=;
+        b=FT4/zlWVeRqW+92kpCAiPVkZ2OWIPupHGf1BkWMSgI8lcl5msntMIACCyCKPGjHJVw
+         GTby1lzTiItF/748ZnqY7HJk8C7Y5z7CTciDMNFXqJ4c24FHj/4tN3PBmYYcxV/HG5nx
+         cKE7osXxcU/US0ayEsJys9VBHffFk+9PvjgIkF01apBzbKdnVTD/bbrpQd8a+MtbRkyo
+         bW4wi6avnDZBYQpkkYCwnmgJJPBF/2NhS9yDytJURQe9ErFJHLFO2un6BB+3DUr9yOFT
+         wvbBh3fz0ubyyrA+0COzNZuCS6W6YXFQjeDBRAHSF89xlYKhBtTuihAQ1hKDa4czNMkR
+         eqKA==
+X-Gm-Message-State: AOAM531JveVe2upXqI4CA3aHjrtUlVWDUyDRv16yXYUXm3MjaCS8k1vu
+        0cesKJXJ/JaIBH69axw1ug==
+X-Google-Smtp-Source: ABdhPJxVRU/h8AM9ikcethHPFJPjX66VEBWGDEcbM/g4PtT9ad3HXxLNZYvqCwDFsrGUsFXuPt1KOg==
+X-Received: by 2002:a92:c567:: with SMTP id b7mr21930432ilj.25.1615228991466;
+        Mon, 08 Mar 2021 10:43:11 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id e2sm6383747iov.26.2021.03.08.10.43.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 10:43:10 -0800 (PST)
+Received: (nullmailer pid 2766749 invoked by uid 1000);
+        Mon, 08 Mar 2021 18:43:08 -0000
+Date:   Mon, 8 Mar 2021 11:43:08 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vivek Unune <npcomplete13@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH stblinux.git 1/2] dt-bindings: firmware: add Broadcom's
+ NVRAM memory mapping
+Message-ID: <20210308184308.GA2762703@robh.at.kernel.org>
+References: <20210302074405.18998-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <4b55b35202706223d3118230701c6a59749d9b72.1615219501.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210302074405.18998-1-zajec5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 05:10:23PM +0100, Andrey Konovalov wrote:
-> When CONFIG_DEBUG_VIRTUAL is enabled, the default page_to_virt() macro
-> implementation from include/linux/mm.h is used. That definition doesn't
-> account for KASAN tags, which leads to no tags on page_alloc allocations.
+On Tue, Mar 02, 2021 at 08:44:04AM +0100, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> Provide an arm64-specific definition for page_to_virt() when
-> CONFIG_DEBUG_VIRTUAL is enabled that takes care of KASAN tags.
+> NVRAM structure contains device data and can be accessed using MMIO.
 > 
-> Fixes: 2813b9c02962 ("kasan, mm, arm64: tag non slab memory allocated via pagealloc")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 > ---
->  arch/arm64/include/asm/memory.h | 5 +++++
->  1 file changed, 5 insertions(+)
+>  .../bindings/firmware/brcm,nvram.yaml         | 41 +++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/firmware/brcm,nvram.yaml
 > 
-> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-> index c759faf7a1ff..0aabc3be9a75 100644
-> --- a/arch/arm64/include/asm/memory.h
-> +++ b/arch/arm64/include/asm/memory.h
-> @@ -328,6 +328,11 @@ static inline void *phys_to_virt(phys_addr_t x)
->  #define ARCH_PFN_OFFSET		((unsigned long)PHYS_PFN_OFFSET)
->  
->  #if !defined(CONFIG_SPARSEMEM_VMEMMAP) || defined(CONFIG_DEBUG_VIRTUAL)
-> +#define page_to_virt(x)	({						\
-> +	__typeof__(x) __page = x;					\
-> +	void *__addr = __va(page_to_phys(__page));			\
-> +	(void *)__tag_set((const void *)__addr, page_kasan_tag(__page));\
-> +})
->  #define virt_to_page(x)		pfn_to_page(virt_to_pfn(x))
+> diff --git a/Documentation/devicetree/bindings/firmware/brcm,nvram.yaml b/Documentation/devicetree/bindings/firmware/brcm,nvram.yaml
+> new file mode 100644
+> index 000000000000..12af8e2e7c9c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/firmware/brcm,nvram.yaml
+> @@ -0,0 +1,41 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/firmware/brcm,nvram.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Broadcom's NVRAM
+> +
+> +maintainers:
+> +  - Rafał Miłecki <rafal@milecki.pl>
+> +
+> +description: |
+> +  NVRAM is a structure containing device specific environment variables.
+> +  It is used for storing device configuration, booting parameters and
+> +  calibration data.
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+The structure of the data is fully discoverable just from a genericish 
+'brcm,nvram'?
+
+And it's a dedicated memory outside of regular RAM?
+
+> +
+> +  It's required very early in booting process and so is made available
+> +  using memory mapping.
+> +
+> +  NVRAM can be found on Broadcom BCM47xx MIPS, Northstar ARM Cortex-A9
+> +  and some more devices.
+> +
+> +properties:
+> +  compatible:
+> +    const: brcm,nvram
+> +
+> +  reg:
+> +    description: memory region with NVRAM data
+> +    maxItems: 1
+> +
+> +required:
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    nvram@1e000000 {
+> +         compatible = "brcm,nvram";
+> +         reg = <0x1e000000 0x10000>;
+> +    };
+> -- 
+> 2.26.2
+> 
