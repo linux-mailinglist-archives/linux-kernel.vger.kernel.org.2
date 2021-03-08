@@ -2,71 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C10B331423
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 847DF331430
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhCHRHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 12:07:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230078AbhCHRHM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:07:12 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CC0C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 09:07:12 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id s17so4905506qvr.12
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 09:07:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=EblZlOcQGK8z6anJtR6PZYpQeQfLqGWuG6ThBPHjPSY=;
-        b=i1xUzOnLlYnea7hrZsC1YpnnJEfBvz0bBiNrW0mddE30DwURf/+rOcFgYuzoJIBsbb
-         7xqXpyEZRvqEwldLrcMow9q790KTNsK8cu0x7VhYGj34jcrwJNzQ3lOqaFIxhsVFvhiw
-         ReLUorD6PBW2RxPLT0eHTZX8g7gypIOGsIFZ5GDVs6OoceqKb12oD8pBdFiVKJNFdGuE
-         buXvQCpaThgv3vRha6UQtVQ0zDP2JPWcKPhJSrIslBCqo2DFqOoy5jHCOnORN+3hrrbk
-         X59qohmTkjhOBNGwIIiqEIqCXPBE6DpsxG5V3q4Tfj8+hA3GeJuFwi7gVV+t041WgZoc
-         00aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=EblZlOcQGK8z6anJtR6PZYpQeQfLqGWuG6ThBPHjPSY=;
-        b=RppPpCT4F0l/TRNe2I5aaNAbOHzTcZkuPFHGYmHE123p+S71+rz7xNky3EfBYYkHnK
-         x+pbfBorfq9+IKGcqYqK0dCSkc7ep7gXSEh7d8DWzHHov1q67QLaeMj4WGpHBP9kZARl
-         JYmGJSwFYPv0tlkTKaihmikJC2a3j880kix7LLxSarRO7b89/tjlG0ZHpfV2Z8AXHwtq
-         pVJMppU+toBkoswRFOh31bU4rASix2F6qYZHMHzPuezgPTk6chWWFICFaxkjFtt0J8lN
-         NxumRmPgwvZd5enwiRWqIS0bpYBI/zQURW2eE+uFIN151by021BV5cHmaR23lJ2UO/sc
-         CBnA==
-X-Gm-Message-State: AOAM532v47TA30t1uBYnkrhawle6W5FxWjbJco72uQjNx15bv7kR++zO
-        2PQfK0AhhbZxXf5J6yllS8qlaVg6UDqRht1mEUo=
-X-Google-Smtp-Source: ABdhPJxzFmtTdT1GIfRpQHcBqy1/vtAl5cYM/+xYITt5AOjhmhnLyKXpC1ffCTLCHrO/eH5BoNuNEuq7wqq+a04tcrY=
-X-Received: by 2002:a0c:e84d:: with SMTP id l13mr21659689qvo.28.1615223231477;
- Mon, 08 Mar 2021 09:07:11 -0800 (PST)
+        id S230125AbhCHRJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:09:25 -0500
+Received: from mga07.intel.com ([134.134.136.100]:26559 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229646AbhCHRJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 12:09:06 -0500
+IronPort-SDR: RnA5kG6rr08ZXHFJWRy/dljkq7hrqhzRyjGktwqnCQUb1Z26rMoSmANq7hvyCG/dahyQkRRA62
+ Cbp60FX3iAxw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="252095713"
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="252095713"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 09:08:50 -0800
+IronPort-SDR: ZOFpuvo8wwoBwmhfusA6vab8NUDVYUz7znmPbV+a/enelrBrvSyn/dIMbg4aIiQB7ps1iX6XLT
+ GXSoZ51lLs8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="408295193"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 08 Mar 2021 09:08:48 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 2665A147; Mon,  8 Mar 2021 19:08:45 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>
+Subject: [PATCH v2 1/1] pinctrl: intel: Show the GPIO base calculation explicitly
+Date:   Mon,  8 Mar 2021 19:08:42 +0200
+Message-Id: <20210308170842.88555-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Received: by 2002:ac8:111:0:0:0:0:0 with HTTP; Mon, 8 Mar 2021 09:07:10 -0800 (PST)
-Reply-To: sroomf70@gmail.com
-From:   "Mr. Idris Desmond" <idrisdesmond11@gmail.com>
-Date:   Mon, 8 Mar 2021 09:07:10 -0800
-Message-ID: <CALR4jF5G2tyrN6Jp1p+cOvw3HNZLGWnHnWVbR5Mis0cWq7pvUQ@mail.gmail.com>
-Subject: Good Day,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+During the split of intel_pinctrl_add_padgroups(), the _by_size() variant
+missed the GPIO base calculations and hence made unable to retrieve proper
+GPIO number.
+
+Assign the gpio_base explicitly in _by_size() variant.
+
+While at it, differentiate NOMAP case with the rest in _by_gpps() variant.
+
+Fixes: 036e126c72eb ("pinctrl: intel: Split intel_pinctrl_add_padgroups() for better maintenance")
+Reported-and-tested-by: Maximilian Luz <luzmaximilian@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+---
+v2: added tag and Cc'ed to stable@ (Mika)
+ drivers/pinctrl/intel/pinctrl-intel.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
+index 8085782cd8f9..7283203861ae 100644
+--- a/drivers/pinctrl/intel/pinctrl-intel.c
++++ b/drivers/pinctrl/intel/pinctrl-intel.c
+@@ -1357,6 +1357,7 @@ static int intel_pinctrl_add_padgroups_by_gpps(struct intel_pinctrl *pctrl,
+ 				gpps[i].gpio_base = 0;
+ 				break;
+ 			case INTEL_GPIO_BASE_NOMAP:
++				break;
+ 			default:
+ 				break;
+ 		}
+@@ -1393,6 +1394,7 @@ static int intel_pinctrl_add_padgroups_by_size(struct intel_pinctrl *pctrl,
+ 		gpps[i].size = min(gpp_size, npins);
+ 		npins -= gpps[i].size;
+ 
++		gpps[i].gpio_base = gpps[i].base;
+ 		gpps[i].padown_num = padown_num;
+ 
+ 		/*
 -- 
-Hello,
-From Mr. Idris Desmond, have you Receive the Fund that was paid to
-your account? please, do not hesitate to reply as soon as possible as
-to enable this Bank make the balance transfer into your nominated
-account. awaiting your urgent notification.
+2.30.1
 
-Thanks
-Mr. Idris Desmond,
-Foreign Remittance
-
-Best regards
-Prof. Dr Diane
-Head of Foreign Operation
