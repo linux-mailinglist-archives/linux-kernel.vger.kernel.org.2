@@ -2,123 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BC4330F44
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47889330F3C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhCHNdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 08:33:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229938AbhCHNdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 08:33:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 698D3651D3;
-        Mon,  8 Mar 2021 13:32:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615210379;
-        bh=9Oy8Kr7h1XrM7oHDvEf/k+4xnP3nO5tcMZHjgyT26ZQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=foyho+2PTum7XJIDNKfVlg1/oSVzBU9+v8SQJVMjzXIh1zhnofnhNSYaZUK0mvq3s
-         b4nHEeCj9XjD+H+zUGljNLo/9RLJNHJO8gkllDyy+a5TXVpu3DIbe7mKME5v1kja+t
-         QBWfAG4M9CP135Ub06Bt1jMXtI8SKfBgnLn50dHSTL4L8p1yqpvq8ZwegyTTSEk+zJ
-         8CE8aF4BxTJdVZbJl+tbQM84wy0ywKPG0rZ0uRZ8dnItsiCeI3/IUVV+pXj6VcqqtU
-         nQNr0LzlTADP40qA1bTHrwzauEEktTlOvsZ2hVVeFKUR9zuzxLHVTzlJMjrhTzpK6S
-         jC2FO3bTvMRFg==
-Date:   Mon, 8 Mar 2021 13:31:49 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Sangmoon Kim <sangmoon.kim@samsung.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, jordan.lim@samsung.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Gavin Shan <gshan@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: traps: add tracepoints for unusal exception cases
-Message-ID: <20210308133149.GA4656@sirena.org.uk>
-References: <CGME20210305124537epcas1p1930302083680f1b1cf87e37630556460@epcas1p1.samsung.com>
- <20210305123635.27492-1-sangmoon.kim@samsung.com>
+        id S230150AbhCHNc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 08:32:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230250AbhCHNcS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 08:32:18 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42895C06174A;
+        Mon,  8 Mar 2021 05:32:18 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id 2so16088537ljr.5;
+        Mon, 08 Mar 2021 05:32:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Eep1QcznjPuYsexkb4E/ZfaTf97lrmmqC3yW5OUegjs=;
+        b=B/1bmCGRRuXpC7NVzINvwDzAHg6sA1EMBkFPT7WvGyiqa+mVp833/AI2mt2mMVvE1r
+         +xHxG+jrJiBiJIgKz7XcYLlUEtql21p9EFVk3jI2ZBO9mJaZDTBsLGKQbzWa7Alpp5dx
+         QaeaQmKryyHF0JtOd2QTxfBUWFPlIxyH/1h4gnG6U8H3Mue/MrIFlB23ihn0TNZ/10lr
+         SUqPnTUgH3e/iE/pa3wBbISmNE9PpsqZ7X1EefLH9pOuOh06EePyOYevCnMbqTA0LsSL
+         avel9J8MwYfMLpzUWuuu4jVHRKnwDnD0KSzShHXsfF+LjNvvEKhub+Vo4x9owjsXcIPU
+         u8MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Eep1QcznjPuYsexkb4E/ZfaTf97lrmmqC3yW5OUegjs=;
+        b=uUCZkTfIqdXt/vO8Lth4v9SOHQ+jJaWwLqp3DOCFEHibEYz9f1KXu/dQB5oHhJvKse
+         QDLE8t3VERt7Dh9Fi5uh3LlyUnImUc20RVMAFNLdYr5Sf7Pk9Y2PNPMmsx+JY0fdHogy
+         FUUnBYPhaip5bQnE8wH1OFUXJbD1qHUPgKiSy+IRtrWD/8uIfRfaILFSrot8Xc/rXBCI
+         zp/fmcaPIX0lI62XDqutptd3VgsU+SEV1T586y0+rYErXnwrzTdo80lkqwSh7dUeDz+x
+         JhW3ieJYoa3nnPQpw1P6BFMyCOW0T9Zx+y2x+dNo+zJyJPSYPnEeDrm8of8/omx7A/vc
+         MVOQ==
+X-Gm-Message-State: AOAM533lHFaQGITV+Rc3tUCFCS9623lTlISiamjl0MuXjVGNfKSUskXs
+        J0n+BDeDQkkQsmW/xYJHgSE=
+X-Google-Smtp-Source: ABdhPJzScDlDq/qIK+QD1GR7aQMtVguQKejzQ1InCUAPUJ0aH0u6GnQJBEb0iN9THzJ0dmsdgfqZQg==
+X-Received: by 2002:a2e:8e78:: with SMTP id t24mr14312383ljk.161.1615210336796;
+        Mon, 08 Mar 2021 05:32:16 -0800 (PST)
+Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.googlemail.com with ESMTPSA id i22sm1499138ljg.37.2021.03.08.05.32.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Mar 2021 05:32:16 -0800 (PST)
+Subject: Re: [PATCH v2 3/3] dt-bindings: mtd: Document use of nvmem-partitions
+ compatible
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Richard Weinberger <richard@nod.at>, devicetree@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mtd@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+References: <20210216212638.28382-1-ansuelsmth@gmail.com>
+ <20210216212638.28382-4-ansuelsmth@gmail.com>
+ <ee596471-db9b-43e4-c085-9bd938101587@gmail.com>
+ <YEUHsoC4V+H6PCHL@Ansuel-xps.localdomain>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Message-ID: <6e1ef2eb-adb4-4341-f671-0d21fadda3e9@gmail.com>
+Date:   Mon, 8 Mar 2021 14:32:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
-Content-Disposition: inline
-In-Reply-To: <20210305123635.27492-1-sangmoon.kim@samsung.com>
-X-Cookie: Am I SHOPLIFTING?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YEUHsoC4V+H6PCHL@Ansuel-xps.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07.03.2021 18:04, Ansuel Smith wrote:
+> On Mon, Mar 08, 2021 at 10:48:32AM +0100, Rafał Miłecki wrote:
+>> On 16.02.2021 22:26, Ansuel Smith wrote:
+>>> Document nvmem-partitions compatible used to treat mtd partitions as a
+>>> nvmem provider.
+>>
+>> I'm just wondering if "nvmem-partitions" is accurate enough. Partitions
+>> bit sounds a bit ambiguous in the mtd context.
+>>
+>> What do you think about "mtd-nvmem-cells" or just "nvmem-cells"?
+> 
+> I read somewhere that mtd is not so standard so "nvmem-cells" should be the
+> right compatible.
+> To sum up, with v2 I should change the compatible name and just push the
+> 2 and 3 patch. (waiting your fix to be accepted) Correct?
 
---Qxx1br4bt0+wmkIi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm also quite sure you're fine to send V2 now, if you just let
+maintainers know (e.g. in a comment below a --- tear line) that it
+depends on the:
+[PATCH] mtd: parsers: ofpart: limit parsing of deprecated DT syntax
 
-On Fri, Mar 05, 2021 at 09:36:30PM +0900, Sangmoon Kim wrote:
-
-> When kernel panic occurs, a kernel module can use either the
-> panic_notifier or die_notifier to obtain the debugging information.
-
-> However, in case of these exceptions like do_undefinstr(), regs and
-> esr data are not passed on. Although a module might be able to find
-> those data in the console messages, parsing text messages is very
-> expensive behavior for a module especially on mobile devices.
-
-> These bare tracepoints allow a module to probe regs and esr information
-> for debugging purpose. _tp suffix comes from bare tracepoints of
-> sched/core.c
-
-This use case sounds a lot like what the enterprise and Android people
-do via pstore - it seems like it would be better for this to integrate
-via the interfaces that other systems are using for similar purposes and
-then ensure that whatever information is useful is getting passed
-through in a format that makes sense.  That'd be more structured and
-more readily usable by a wider range of systems than something that's
-more of a building block, going via the trace infrastructure seems like
-a bit of an indirection.
-
-> @@ -832,6 +846,7 @@ void __noreturn arm64_serror_panic(struct pt_regs *re=
-gs, u32 esr)
->  	if (regs)
->  		__show_regs(regs);
-> =20
-> +	trace_traps_serror_panic_tp(regs, esr);
->  	nmi_panic(regs, "Asynchronous SError Interrupt");
-
-One of the concerns people have with adding tracepoints is that they can
-end up defining ABI so if we *are* going to add any then we need to
-think carefully about how they're defined.  As things currently stand
-they'll pass in the full pt_regs struct which includes not only what's
-defined by the hardware but also additional software defined information
-we store along with it like the stackframe which would be even more of a
-problem if it ends up getting used by someone in a way that ends up as
-ABI.  These are defined as bare tracehooks which does mitigate against
-things ending up getting used in ways that cause problems but people are
-still going to worry about things ending up getting relied on one way or
-another.
-
-That said it's not clear to me that this will record anything beyond the
-pointer directly in the trace buffer so the value might not be useful
-for terribly long, that itself feels like it might not be as robust an
-interface as it should be.
-
---Qxx1br4bt0+wmkIi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBGJ0QACgkQJNaLcl1U
-h9DSHwf+KF0FUBNraZjSJH0LKhgVabREZDAIk49+0JDFJ3gxP3ZFmZvbYrzq3TtY
-nf+q2IsxMY2GIBNfr5QcjbT6DRU4OCJHv5iel7NH0fyJlwvIKTDRziA5pydoMUn4
-nP5x1FdGvHi4GO7cmi7FQ3uB43jencWcDGIi1Pwz1Hppe1wSnmcdffapBCZmkcEk
-eS4kZmklNElayMTdVYSukcUwI+V4gJTkKQNfGkACSFc2dWq0yLqgb62kL7mmhdXp
-5RhKBxz4snpjXwiNiBbkgU0wUwF77vSm5hs2eJQu10e9vul3d/1zFrIDPLWX09sr
-0VWy+6st5LjE4F79ooXkzyyL97LFgw==
-=wHoA
------END PGP SIGNATURE-----
-
---Qxx1br4bt0+wmkIi--
+In other words: you don't need to wait for my patch to get accepted.
