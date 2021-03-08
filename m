@@ -2,54 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BE73312D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F6B3312D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:04:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbhCHQEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:04:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38960 "EHLO mail.kernel.org"
+        id S230458AbhCHQER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:04:17 -0500
+Received: from mga14.intel.com ([192.55.52.115]:16665 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230075AbhCHQDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:03:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9875065210;
-        Mon,  8 Mar 2021 16:03:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615219424;
-        bh=PBmEbgMiN3pUGiaxEnpqYz1pmhYI5EG78UjJ+zTCa34=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NcWexvUdUGzNuljFAKt4fG1oCKJyzBczFAtB8+g0gDNqIo3suCYS8hcUyItWj1WgC
-         YE5J1Wauy0loF0JQdDbudC7sEd5zCV6eYhEgKTgzx4mCxoCQD3iFCWNyrxqDP68Y1c
-         MTSoyBck2RU5OWWsFfNAxjmXsvp9+7iiGnQrB8dkBh3sG1cS78DUNEbYCf3Oc3oWbL
-         D3JBQ15AywqQuZ4fJyWciTSGIMZz7xhkzC4/4seW7Kog0XWj0ChEDFzah/mjXVROSo
-         XylHnTySjGqGDAdgnlbBsHBNVmDcjr7z69oEMKc66j/TxKyeJcRK91KTmHZ1GedeC1
-         4XTqKpPLor6ZQ==
-Date:   Mon, 8 Mar 2021 18:03:40 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Zhu Lingshan <lingshan.zhu@intel.com>
-Cc:     jasowang@redhat.com, mst@redhat.com, lulu@redhat.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 4/4] vDPA/ifcvf: remove the version number string
-Message-ID: <YEZK3JF1hdSvfIzi@unreal>
-References: <20210308083525.382514-1-lingshan.zhu@intel.com>
- <20210308083525.382514-5-lingshan.zhu@intel.com>
+        id S230200AbhCHQEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 11:04:04 -0500
+IronPort-SDR: AnMju5dDiFZXcLyIPB/Y7tMn/8OTRnMtADhh6yBu1ynM+SqBI8hoGdeBgQbIB3Iz1S0JCy4Qiz
+ sd5UrQ9BVbyw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="187417777"
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="187417777"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 08:04:03 -0800
+IronPort-SDR: oArg1YrvPkI/vKbk+xDakXU2Chg+VproKHC99GVZyEv8tK9wp+Rs+d1CKXUVeDrF2vkrBA1aBL
+ HAMj/zUlf68Q==
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="385895120"
+Received: from arohrbax-mobl.amr.corp.intel.com ([10.209.91.130])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 08:03:49 -0800
+Message-ID: <31028f589e27e246bb3b4b693caeb0b8eae3a285.camel@linux.intel.com>
+Subject: Re: [PATCH v1 1/3] HID: intel-ish-hid: Drop if block with an always
+ false condition
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 08 Mar 2021 08:03:49 -0800
+In-Reply-To: <nycvar.YFH.7.76.2103081107250.12405@cbobk.fhfr.pm>
+References: <20210206151348.14530-1-uwe@kleine-koenig.org>
+         <nycvar.YFH.7.76.2103081107250.12405@cbobk.fhfr.pm>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308083525.382514-5-lingshan.zhu@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 04:35:25PM +0800, Zhu Lingshan wrote:
-> This commit removes the version number string, using kernel
-> version is enough.
->
-> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
-> ---
->  drivers/vdpa/ifcvf/ifcvf_main.c | 2 --
->  1 file changed, 2 deletions(-)
->
+On Mon, 2021-03-08 at 11:07 +0100, Jiri Kosina wrote:
+> On Sat, 6 Feb 2021, Uwe Kleine-König wrote:
+> 
+> > A remove callback is only ever called for a bound device. So there
+> > is no
+> > need to check for device or driver being NULL.
+> 
+> Srinivas, any objections to this patchset? The cleanups look good to
+> me. 
+Sorry, I missed this series.
+No objection for taking these patches.
 
 Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Srinivas
+
+
+> Thanks,
+> 
+
