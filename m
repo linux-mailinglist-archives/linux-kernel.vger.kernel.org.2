@@ -2,134 +2,481 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC17C331751
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18246331752
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhCHTb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:31:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40084 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231395AbhCHTaz (ORCPT
+        id S231458AbhCHTba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:31:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231418AbhCHTbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:30:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615231854;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jT4Hj8BeYnoF98JbUFi2MpJbJ0BKhyhcjPIfynVz8ls=;
-        b=YUog9A2B57F4N8HMumS69W9y7UY4W2bZtM4X1kW5olWRNMTmPIKIL/Xs1WYqY55BVaSJxI
-        IEqNKKNscjqp/Kz6DnFVHtBeQjxAVodZ4sCV6DIdP3jhzKJGXvAsYKKGV5rWpyxA0ugMZX
-        KfoWSCnHfTBdfEJTMKr5uAHgttaw8gY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-294-JoIuuXzyPTujjwvPCg_RtA-1; Mon, 08 Mar 2021 14:30:50 -0500
-X-MC-Unique: JoIuuXzyPTujjwvPCg_RtA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CDC657;
-        Mon,  8 Mar 2021 19:30:48 +0000 (UTC)
-Received: from [10.36.113.123] (ovpn-113-123.ams2.redhat.com [10.36.113.123])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 576AF5D6D5;
-        Mon,  8 Mar 2021 19:30:46 +0000 (UTC)
-Subject: Re: [PATCH] mm: huge_memory: a new debugfs interface for splitting
- THP tests.
-To:     Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        David Rientjes <rientjes@google.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>
-References: <20210308152221.28555-1-zi.yan@sent.com>
- <79458c46-b4b9-332b-77f7-44371502cbeb@redhat.com>
- <AD0AFA61-8DCF-467D-B961-ACFA1D33828C@nvidia.com>
- <8039e1d7-3442-f133-f4f6-fe934f02122e@redhat.com>
- <9A4EF5F7-1BFF-4F8D-80B8-B559C05635BE@nvidia.com>
- <CAHbLzkofsc4_wEGmMFKwkUrc1pg4Y7iZZ9QKAXggiyg8RuOMqA@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <c530e051-9292-1b2c-3036-70fc1eac3bfa@redhat.com>
-Date:   Mon, 8 Mar 2021 20:30:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 8 Mar 2021 14:31:04 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003A5C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 11:31:03 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 124-20020a1c00820000b029010b871409cfso4495608wma.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 11:31:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FJGw9zgRtDKLHehZSmdYv5asUdiD7hT7NhmyXsPnRE0=;
+        b=aDhQOW8BHZ+r44b0NZgjVuCbFY18ZYwsrY5EF4yJPMEanAyyhsuNu1Nd/quVecskPe
+         Uvs7U1enw1WR3f4RwYvqMDBNq6BTgmtxvDBXDYZkbzgtY3VG3x2VpJ7OSzImnjO/jaAf
+         xtei512BE9yE8mXafnBlfPthFCXkTnSxDy3d1C1pjaVZrL3pDqSK2u3MIV27Ow1NOEP9
+         aYC4k0jVN+0T9rEXEmb1ZtljeB5xdezy/TJ1jeFv4044ux0ld/JJjl/8CJ0J5ms+IGAX
+         +9h+/mjm6izsmYgB6Va8sCm5elDPZCaJn7M+L6quXw61O6a8cOJ70zlGM/09vhzQyBjS
+         P+uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FJGw9zgRtDKLHehZSmdYv5asUdiD7hT7NhmyXsPnRE0=;
+        b=S+vKpAC+qo+7qh6z4zk1CEPBGcbFSDgU7WgiW+epYR2Kgw1BV5nOsKmJkWcs62uu+J
+         C0GdFEZmjLfxg/MxMck+79DlkfXLZedRsbqBjl9BO0VzOfGf0yNRTsxELdfJ7BATnxMN
+         4uEPW1rKcDqCSikLCH9a+1lkkyrFyUCCAlvzEFqdISuoCsipraC2VfTQl2iimU/YRR1E
+         Brz9hI53R7lFCtbTVVk/2bvOmGJr/5NPEFrIT+yawYn9ugEWK9DbIVicoVfctxbS+ZtW
+         3NmhIL22URJJ3OkDONLxmCBswBFQuehK03bHglpjENW3igo4jgWM6VpJoPXg7H3LTbDg
+         U5MA==
+X-Gm-Message-State: AOAM532+ZSGYVre6uhSR0V33eUlRN7bXctbbkO+2UxNhgTbQLuOKfOn/
+        7XuxfqR34eR1hwrpjuEb5NaytQ==
+X-Google-Smtp-Source: ABdhPJzQjuQs2znHYkvJr44uOdV/gca2JIn/wZN5zifWgmZ8wA6iL5/tep/K9y/BramFbF0UbizFXA==
+X-Received: by 2002:a05:600c:224e:: with SMTP id a14mr321612wmm.57.1615231862525;
+        Mon, 08 Mar 2021 11:31:02 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8499:4f69:106b:da0? ([2a01:e34:ed2f:f020:8499:4f69:106b:da0])
+        by smtp.googlemail.com with ESMTPSA id r10sm364203wmh.45.2021.03.08.11.31.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Mar 2021 11:31:02 -0800 (PST)
+Subject: Re: [PATCH 1/5] powercap/drivers/dtpm: Encapsulate even more the code
+To:     rafael@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Lukasz Luba <Lukasz.Luba@arm.com>
+References: <20210301212149.22877-1-daniel.lezcano@linaro.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <f5a4be4d-b003-2751-7758-ef2c58e3fbbc@linaro.org>
+Date:   Mon, 8 Mar 2021 20:31:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzkofsc4_wEGmMFKwkUrc1pg4Y7iZZ9QKAXggiyg8RuOMqA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210301212149.22877-1-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.03.21 20:11, Yang Shi wrote:
-> On Mon, Mar 8, 2021 at 11:01 AM Zi Yan <ziy@nvidia.com> wrote:
->>
->> On 8 Mar 2021, at 13:11, David Hildenbrand wrote:
->>
->>> On 08.03.21 18:49, Zi Yan wrote:
->>>> On 8 Mar 2021, at 11:17, David Hildenbrand wrote:
->>>>
->>>>> On 08.03.21 16:22, Zi Yan wrote:
->>>>>> From: Zi Yan <ziy@nvidia.com>
->>>>>>
->>>>>> By writing "<pid>,<vaddr_start>,<vaddr_end>" to
->>>>>> <debugfs>/split_huge_pages_in_range_pid, THPs in the process with the
->>>>>> given pid and virtual address range are split. It is used to test
->>>>>> split_huge_page function. In addition, a selftest program is added to
->>>>>> tools/testing/selftests/vm to utilize the interface by splitting
->>>>>> PMD THPs and PTE-mapped THPs.
->>>>>
->>>>> Won't something like
->>>>>
->>>>> 1. MADV_HUGEPAGE
->>>>>
->>>>> 2. Access memory
->>>>>
->>>>> 3. MADV_NOHUGEPAGE
->>>>>
->>>>> Have a similar effect? What's the benefit of this?
->>>>
->>>> Thanks for checking the patch.
->>>>
->>>> No, MADV_NOHUGEPAGE just replaces VM_HUGEPAGE with VM_NOHUGEPAGE,
->>>> nothing else will be done.
->>>
->>> Ah, okay - maybe my memory was tricking me. There is some s390x KVM code that forces MADV_NOHUGEPAGE and force-splits everything.
->>>
->>> I do wonder, though, if this functionality would be worth a proper user interface (e.g., madvise), though. There might be actual benefit in having this as a !debug interface.
->>>
->>> I think you aware of the discussion in https://lkml.kernel.org/r/d098c392-273a-36a4-1a29-59731cdf5d3d@google.com
->>
->> Yes. Thanks for bringing this up.
->>
->>>
->>> If there will be an interface to collapse a THP -- "this memory area is worth extra performance now by collapsing a THP if possible" -- it might also be helpful to have the opposite functionality -- "this memory area is not worth a THP, rather use that somehwere else".
->>>
->>> MADV_HUGE_COLLAPSE vs. MADV_HUGE_SPLIT
->>
->> I agree that MADV_HUGE_SPLIT would be useful as the opposite of COLLAPSE when user might just want PAGESIZE mappings.
->> Right now, HUGE_SPLIT is implicit from mapping changes like mprotect or MADV_DONTNEED.
-> 
-> IMHO, it sounds not very useful. MADV_DONTNEED would split PMD for any
-> partial THP. If the range covers the whole THP, the whole THP is going
-> to be freed anyway. All other places in kernel which need split THP
-> have been covered. So I didn't realize any usecase from userspace for
-> just splitting PMD to PTEs.
 
-THP are a limited resource. So indicating which virtual memory regions 
-are not performance sensitive right now (e.g., cold pages in a databse) 
-and not worth a THP might be quite valuable, no?
+On 01/03/2021 22:21, Daniel Lezcano wrote:
+> In order to increase the self-encapsulation of the dtpm generic code,
+> the following changes are adding a power update ops to the dtpm
+> ops. That allows the generic code to call directly the dtpm backend
+> function to update the power values.
+> 
+> The power update function does compute the power characteristics when
+> the function is invoked. In the case of the CPUs, the power
+> consumption depends on the number of online CPUs. The online CPUs mask
+> is not up to date at CPUHP_AP_ONLINE_DYN state in the tear down
+> callback. That is the reason why the online / offline are at separate
+> state. As there is already an existing state for DTPM, this one is
+> only moved to the DEAD state, so there is no addition of new state
+> with these changes.
+> 
+> That simplifies the code for the next changes and results in a more
+> self-encapsulated code.
+> 
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+
+Is there any comment on this series ?
+
+> ---
+>  drivers/powercap/dtpm.c     |  54 ++++++++--------
+>  drivers/powercap/dtpm_cpu.c | 124 +++++++++++++-----------------------
+>  include/linux/cpuhotplug.h  |   2 +-
+>  include/linux/dtpm.h        |   3 +-
+>  4 files changed, 76 insertions(+), 107 deletions(-)
+> 
+> diff --git a/drivers/powercap/dtpm.c b/drivers/powercap/dtpm.c
+> index c2185ec5f887..1085dccf9c58 100644
+> --- a/drivers/powercap/dtpm.c
+> +++ b/drivers/powercap/dtpm.c
+> @@ -116,8 +116,6 @@ static void __dtpm_sub_power(struct dtpm *dtpm)
+>  		parent->power_limit -= dtpm->power_limit;
+>  		parent = parent->parent;
+>  	}
+> -
+> -	__dtpm_rebalance_weight(root);
+>  }
+>  
+>  static void __dtpm_add_power(struct dtpm *dtpm)
+> @@ -130,45 +128,45 @@ static void __dtpm_add_power(struct dtpm *dtpm)
+>  		parent->power_limit += dtpm->power_limit;
+>  		parent = parent->parent;
+>  	}
+> +}
+> +
+> +static int __dtpm_update_power(struct dtpm *dtpm)
+> +{
+> +	int ret;
+> +
+> +	__dtpm_sub_power(dtpm);
+>  
+> -	__dtpm_rebalance_weight(root);
+> +	ret = dtpm->ops->upt_power_uw(dtpm);
+> +	if (ret)
+> +		pr_err("Failed to update power for '%s': %d\n",
+> +		       dtpm->zone.name, ret);
+> +
+> +	if (!test_bit(DTPM_POWER_LIMIT_FLAG, &dtpm->flags))
+> +		dtpm->power_limit = dtpm->power_max;
+> +
+> +	__dtpm_add_power(dtpm);
+> +
+> +	if (root)
+> +		__dtpm_rebalance_weight(root);
+> +
+> +	return ret;
+>  }
+>  
+>  /**
+>   * dtpm_update_power - Update the power on the dtpm
+>   * @dtpm: a pointer to a dtpm structure to update
+> - * @power_min: a u64 representing the new power_min value
+> - * @power_max: a u64 representing the new power_max value
+>   *
+>   * Function to update the power values of the dtpm node specified in
+>   * parameter. These new values will be propagated to the tree.
+>   *
+>   * Return: zero on success, -EINVAL if the values are inconsistent
+>   */
+> -int dtpm_update_power(struct dtpm *dtpm, u64 power_min, u64 power_max)
+> +int dtpm_update_power(struct dtpm *dtpm)
+>  {
+> -	int ret = 0;
+> +	int ret;
+>  
+>  	mutex_lock(&dtpm_lock);
+> -
+> -	if (power_min == dtpm->power_min && power_max == dtpm->power_max)
+> -		goto unlock;
+> -
+> -	if (power_max < power_min) {
+> -		ret = -EINVAL;
+> -		goto unlock;
+> -	}
+> -
+> -	__dtpm_sub_power(dtpm);
+> -
+> -	dtpm->power_min = power_min;
+> -	dtpm->power_max = power_max;
+> -	if (!test_bit(DTPM_POWER_LIMIT_FLAG, &dtpm->flags))
+> -		dtpm->power_limit = power_max;
+> -
+> -	__dtpm_add_power(dtpm);
+> -
+> -unlock:
+> +	ret = __dtpm_update_power(dtpm);
+>  	mutex_unlock(&dtpm_lock);
+>  
+>  	return ret;
+> @@ -436,6 +434,7 @@ int dtpm_register(const char *name, struct dtpm *dtpm, struct dtpm *parent)
+>  
+>  	if (dtpm->ops && !(dtpm->ops->set_power_uw &&
+>  			   dtpm->ops->get_power_uw &&
+> +			   dtpm->ops->upt_power_uw &&
+>  			   dtpm->ops->release))
+>  		return -EINVAL;
+>  
+> @@ -455,7 +454,8 @@ int dtpm_register(const char *name, struct dtpm *dtpm, struct dtpm *parent)
+>  		root = dtpm;
+>  	}
+>  
+> -	__dtpm_add_power(dtpm);
+> +	if (dtpm->ops && !dtpm->ops->upt_power_uw(dtpm))
+> +		__dtpm_add_power(dtpm);
+>  
+>  	pr_info("Registered dtpm node '%s' / %llu-%llu uW, \n",
+>  		dtpm->zone.name, dtpm->power_min, dtpm->power_max);
+> diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
+> index 51c366938acd..aff79c649345 100644
+> --- a/drivers/powercap/dtpm_cpu.c
+> +++ b/drivers/powercap/dtpm_cpu.c
+> @@ -14,6 +14,8 @@
+>   * The CPU hotplug is supported and the power numbers will be updated
+>   * if a CPU is hot plugged / unplugged.
+>   */
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+>  #include <linux/cpumask.h>
+>  #include <linux/cpufreq.h>
+>  #include <linux/cpuhotplug.h>
+> @@ -23,8 +25,6 @@
+>  #include <linux/slab.h>
+>  #include <linux/units.h>
+>  
+> -static struct dtpm *__parent;
+> -
+>  static DEFINE_PER_CPU(struct dtpm *, dtpm_per_cpu);
+>  
+>  struct dtpm_cpu {
+> @@ -32,57 +32,16 @@ struct dtpm_cpu {
+>  	int cpu;
+>  };
+>  
+> -/*
+> - * When a new CPU is inserted at hotplug or boot time, add the power
+> - * contribution and update the dtpm tree.
+> - */
+> -static int power_add(struct dtpm *dtpm, struct em_perf_domain *em)
+> -{
+> -	u64 power_min, power_max;
+> -
+> -	power_min = em->table[0].power;
+> -	power_min *= MICROWATT_PER_MILLIWATT;
+> -	power_min += dtpm->power_min;
+> -
+> -	power_max = em->table[em->nr_perf_states - 1].power;
+> -	power_max *= MICROWATT_PER_MILLIWATT;
+> -	power_max += dtpm->power_max;
+> -
+> -	return dtpm_update_power(dtpm, power_min, power_max);
+> -}
+> -
+> -/*
+> - * When a CPU is unplugged, remove its power contribution from the
+> - * dtpm tree.
+> - */
+> -static int power_sub(struct dtpm *dtpm, struct em_perf_domain *em)
+> -{
+> -	u64 power_min, power_max;
+> -
+> -	power_min = em->table[0].power;
+> -	power_min *= MICROWATT_PER_MILLIWATT;
+> -	power_min = dtpm->power_min - power_min;
+> -
+> -	power_max = em->table[em->nr_perf_states - 1].power;
+> -	power_max *= MICROWATT_PER_MILLIWATT;
+> -	power_max = dtpm->power_max - power_max;
+> -
+> -	return dtpm_update_power(dtpm, power_min, power_max);
+> -}
+> -
+>  static u64 set_pd_power_limit(struct dtpm *dtpm, u64 power_limit)
+>  {
+>  	struct dtpm_cpu *dtpm_cpu = dtpm->private;
+> -	struct em_perf_domain *pd;
+> +	struct em_perf_domain *pd = em_cpu_get(dtpm_cpu->cpu);
+>  	struct cpumask cpus;
+>  	unsigned long freq;
+>  	u64 power;
+>  	int i, nr_cpus;
+>  
+> -	pd = em_cpu_get(dtpm_cpu->cpu);
+> -
+>  	cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
+> -
+>  	nr_cpus = cpumask_weight(&cpus);
+>  
+>  	for (i = 0; i < pd->nr_perf_states; i++) {
+> @@ -113,6 +72,7 @@ static u64 get_pd_power_uw(struct dtpm *dtpm)
+>  
+>  	pd = em_cpu_get(dtpm_cpu->cpu);
+>  	freq = cpufreq_quick_get(dtpm_cpu->cpu);
+> +
+>  	cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
+>  	nr_cpus = cpumask_weight(&cpus);
+>  
+> @@ -128,6 +88,27 @@ static u64 get_pd_power_uw(struct dtpm *dtpm)
+>  	return 0;
+>  }
+>  
+> +static int upt_pd_power_uw(struct dtpm *dtpm)
+> +{
+> +	struct dtpm_cpu *dtpm_cpu = dtpm->private;
+> +	struct em_perf_domain *em = em_cpu_get(dtpm_cpu->cpu);
+> +	struct cpumask cpus;
+> +	int nr_cpus;
+> +
+> +	cpumask_and(&cpus, cpu_online_mask, to_cpumask(em->cpus));
+> +	nr_cpus = cpumask_weight(&cpus);
+> +
+> +	dtpm->power_min = em->table[0].power;
+> +	dtpm->power_min *= MICROWATT_PER_MILLIWATT;
+> +	dtpm->power_min *= nr_cpus;
+> +
+> +	dtpm->power_max = em->table[em->nr_perf_states - 1].power;
+> +	dtpm->power_max *= MICROWATT_PER_MILLIWATT;
+> +	dtpm->power_max *= nr_cpus;
+> +
+> +	return 0;
+> +}
+> +
+>  static void pd_release(struct dtpm *dtpm)
+>  {
+>  	struct dtpm_cpu *dtpm_cpu = dtpm->private;
+> @@ -141,37 +122,25 @@ static void pd_release(struct dtpm *dtpm)
+>  static struct dtpm_ops dtpm_ops = {
+>  	.set_power_uw = set_pd_power_limit,
+>  	.get_power_uw = get_pd_power_uw,
+> +	.upt_power_uw = upt_pd_power_uw,
+>  	.release = pd_release,
+>  };
+>  
+>  static int cpuhp_dtpm_cpu_offline(unsigned int cpu)
+>  {
+> -	struct cpufreq_policy *policy;
+> +	struct cpumask cpus;
+>  	struct em_perf_domain *pd;
+>  	struct dtpm *dtpm;
+>  
+> -	policy = cpufreq_cpu_get(cpu);
+> -
+> -	if (!policy)
+> -		return 0;
+> -
+>  	pd = em_cpu_get(cpu);
+>  	if (!pd)
+>  		return -EINVAL;
+>  
+> -	dtpm = per_cpu(dtpm_per_cpu, cpu);
+> -
+> -	power_sub(dtpm, pd);
+> -
+> -	if (cpumask_weight(policy->cpus) != 1)
+> -		return 0;
+> -
+> -	for_each_cpu(cpu, policy->related_cpus)
+> -		per_cpu(dtpm_per_cpu, cpu) = NULL;
+> +	cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
+>  
+> -	dtpm_unregister(dtpm);
+> +	dtpm = per_cpu(dtpm_per_cpu, cpu);
+>  
+> -	return 0;
+> +	return dtpm_update_power(dtpm);
+>  }
+>  
+>  static int cpuhp_dtpm_cpu_online(unsigned int cpu)
+> @@ -184,7 +153,6 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
+>  	int ret = -ENOMEM;
+>  
+>  	policy = cpufreq_cpu_get(cpu);
+> -
+>  	if (!policy)
+>  		return 0;
+>  
+> @@ -194,7 +162,7 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
+>  
+>  	dtpm = per_cpu(dtpm_per_cpu, cpu);
+>  	if (dtpm)
+> -		return power_add(dtpm, pd);
+> +		return dtpm_update_power(dtpm);
+>  
+>  	dtpm = dtpm_alloc(&dtpm_ops);
+>  	if (!dtpm)
+> @@ -210,27 +178,20 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
+>  	for_each_cpu(cpu, policy->related_cpus)
+>  		per_cpu(dtpm_per_cpu, cpu) = dtpm;
+>  
+> -	sprintf(name, "cpu%d", dtpm_cpu->cpu);
+> +	sprintf(name, "cpu%d-cpufreq", dtpm_cpu->cpu);
+>  
+> -	ret = dtpm_register(name, dtpm, __parent);
+> +	ret = dtpm_register(name, dtpm, NULL);
+>  	if (ret)
+>  		goto out_kfree_dtpm_cpu;
+>  
+> -	ret = power_add(dtpm, pd);
+> -	if (ret)
+> -		goto out_dtpm_unregister;
+> -
+>  	ret = freq_qos_add_request(&policy->constraints,
+>  				   &dtpm_cpu->qos_req, FREQ_QOS_MAX,
+>  				   pd->table[pd->nr_perf_states - 1].frequency);
+>  	if (ret)
+> -		goto out_power_sub;
+> +		goto out_dtpm_unregister;
+>  
+>  	return 0;
+>  
+> -out_power_sub:
+> -	power_sub(dtpm, pd);
+> -
+>  out_dtpm_unregister:
+>  	dtpm_unregister(dtpm);
+>  	dtpm_cpu = NULL;
+> @@ -248,10 +209,17 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
+>  
+>  int dtpm_register_cpu(struct dtpm *parent)
+>  {
+> -	__parent = parent;
+> +	int ret;
+>  
+> -	return cpuhp_setup_state(CPUHP_AP_DTPM_CPU_ONLINE,
+> -				 "dtpm_cpu:online",
+> -				 cpuhp_dtpm_cpu_online,
+> -				 cpuhp_dtpm_cpu_offline);
+> +	ret = cpuhp_setup_state(CPUHP_AP_DTPM_CPU_DEAD, "dtpm_cpu:offline",
+> +				NULL, cpuhp_dtpm_cpu_offline);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "dtpm_cpu:online",
+> +				cpuhp_dtpm_cpu_online, NULL);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 0;
+>  }
+> diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+> index ee09a39627d6..fcb2967fb5ba 100644
+> --- a/include/linux/cpuhotplug.h
+> +++ b/include/linux/cpuhotplug.h
+> @@ -61,6 +61,7 @@ enum cpuhp_state {
+>  	CPUHP_LUSTRE_CFS_DEAD,
+>  	CPUHP_AP_ARM_CACHE_B15_RAC_DEAD,
+>  	CPUHP_PADATA_DEAD,
+> +	CPUHP_AP_DTPM_CPU_DEAD,
+>  	CPUHP_WORKQUEUE_PREP,
+>  	CPUHP_POWER_NUMA_PREPARE,
+>  	CPUHP_HRTIMERS_PREPARE,
+> @@ -193,7 +194,6 @@ enum cpuhp_state {
+>  	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 30,
+>  	CPUHP_AP_X86_HPET_ONLINE,
+>  	CPUHP_AP_X86_KVM_CLK_ONLINE,
+> -	CPUHP_AP_DTPM_CPU_ONLINE,
+>  	CPUHP_AP_ACTIVE,
+>  	CPUHP_ONLINE,
+>  };
+> diff --git a/include/linux/dtpm.h b/include/linux/dtpm.h
+> index e80a332e3d8a..d29be6a0e513 100644
+> --- a/include/linux/dtpm.h
+> +++ b/include/linux/dtpm.h
+> @@ -29,6 +29,7 @@ struct dtpm {
+>  struct dtpm_ops {
+>  	u64 (*set_power_uw)(struct dtpm *, u64);
+>  	u64 (*get_power_uw)(struct dtpm *);
+> +	int (*upt_power_uw)(struct dtpm *);
+>  	void (*release)(struct dtpm *);
+>  };
+>  
+> @@ -62,7 +63,7 @@ static inline struct dtpm *to_dtpm(struct powercap_zone *zone)
+>  	return container_of(zone, struct dtpm, zone);
+>  }
+>  
+> -int dtpm_update_power(struct dtpm *dtpm, u64 power_min, u64 power_max);
+> +int dtpm_update_power(struct dtpm *dtpm);
+>  
+>  int dtpm_release_zone(struct powercap_zone *pcz);
+>  
+> 
+
 
 -- 
-Thanks,
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-David / dhildenb
-
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
