@@ -2,199 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0BA330CB9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BCB330CC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbhCHLvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 06:51:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbhCHLu4 (ORCPT
+        id S231601AbhCHLxa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Mar 2021 06:53:30 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2653 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231126AbhCHLxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 06:50:56 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633B9C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 03:50:56 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id a188so7017119pfb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 03:50:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0vln9EeLOexpgifVFX5SnMvpXYPQ0jk7HPzWLNd3SCw=;
-        b=Ng4TH0X20pZ4V6qkg+lmxqdE1kprsBQDAKhtFupR6sUJVBSpV0GgCOZApoxghZZf9u
-         FzqRGHT91dVCowiiZiYw1urn5SjsNoz3+++FIakLNbp50LtCTj4zQIoGrWzqv5ClUnRO
-         8blTesxPEBYbvOO90UTpBFyMmbYq7hwwwJieCRWsQ78T9B437hFSHedQmQAuyIhH8jE9
-         9SEF0zmlX8QO7o4w0UxsMh9BFgUwBvlv28dUxqiT/KzexXXMdkro0LlVoN36muz7Ev7K
-         T0a7j7+w+mYTgLuNoeokLDozL0UHGLqEQCsxnoL+Ezz+NsjzYkuommeJwZB3sIVRCdNC
-         ZD2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0vln9EeLOexpgifVFX5SnMvpXYPQ0jk7HPzWLNd3SCw=;
-        b=QpclqFDC/3LKKsORSE6qkLf8Y2tEPIgX6P4eOtXXJK0pCCOBhWInt534E8TvVIgp2l
-         XumEXYLfuUcnX4Mw1LHa3T4Ix9GrdWKVFOTsnjtyw2KHBujobayjs5xnt3SHD4lp4wvI
-         gA8UCS2WIaIAbgpkEgvRCh5JDG7RTVaKYTC+zCo2TUks94wwNPJogcqbfP1Z6ba+fLoz
-         Fx4rspakCfx03nwyl3berUiDb4gQ0zaAQ7pvzo9qDI7rw/pBGMMQHzzlFXvBjksk2zm2
-         /UGi+O5S2g7w09TBAdYjVwApitEZ5jpQmVNzitjbedl/kxPRNaBflyRqUE3Wgn3FL/+L
-         uolg==
-X-Gm-Message-State: AOAM530Rt0UtCD/jS2CDN+4A9/Iwjf9R4ZpDBT29yB4ZIQND7t8V6T7B
-        WxLmhNpfHSX/pThg/gDD+co4aQ==
-X-Google-Smtp-Source: ABdhPJy10PIihlEledowd6Ix+nPJYamm3Yx9G7BCVAnmfEUD7yD4MIvgwD55+qTOkkUYPRx44xwEgQ==
-X-Received: by 2002:a63:cd09:: with SMTP id i9mr20627701pgg.407.1615204255913;
-        Mon, 08 Mar 2021 03:50:55 -0800 (PST)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id a19sm10020833pff.186.2021.03.08.03.50.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Mar 2021 03:50:55 -0800 (PST)
-Date:   Mon, 8 Mar 2021 17:20:53 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Beata Michalska <beata.michalska@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org
-Subject: Re: [PATCH] opp: Invalidate current opp when draining the opp list
-Message-ID: <20210308115053.ua2gfo6kfnfjslyd@vireshk-i7>
-References: <1614870454-18709-1-git-send-email-beata.michalska@arm.com>
- <20210305042401.gktrgach4dzxp7on@vireshk-i7>
- <418fc3cb-d5ec-9216-269a-e055e78718e5@arm.com>
+        Mon, 8 Mar 2021 06:53:18 -0500
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DvGny6TXWz67wrR;
+        Mon,  8 Mar 2021 19:48:54 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 8 Mar 2021 12:53:15 +0100
+Received: from localhost (10.47.81.42) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 8 Mar 2021
+ 11:53:15 +0000
+Date:   Mon, 8 Mar 2021 11:52:03 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Sa, Nuno" <Nuno.Sa@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>
+CC:     "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        "zzzzArdelean, zzzzAlexandru" <alexandru.Ardelean@analog.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>
+Subject: Re: [PATCH v3 0/6] iio: Add output buffer support
+Message-ID: <20210308115203.00006230@Huawei.com>
+In-Reply-To: <CY4PR03MB26318300B44C07A5890067B499939@CY4PR03MB2631.namprd03.prod.outlook.com>
+References: <20210219124012.92897-1-alexandru.ardelean@analog.com>
+        <20210221120106.00ae1078@archlinux>
+        <BN8PR03MB497724AAAFA43E6555554DC98E969@BN8PR03MB4977.namprd03.prod.outlook.com>
+        <20210306173449.06f2f32b@archlinux>
+        <CY4PR03MB26318300B44C07A5890067B499939@CY4PR03MB2631.namprd03.prod.outlook.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <418fc3cb-d5ec-9216-269a-e055e78718e5@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.47.81.42]
+X-ClientProxiedBy: lhreml720-chm.china.huawei.com (10.201.108.71) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-03-21, 13:55, Beata Michalska wrote:
-> Actually, that one might be problematic: by the time the
-> _opp_table_kref_release is being reached, the opp pointed to
-> by current_opp may no longer be valid.
-> _opp_remove_all_static and/or dev_pm_opp_remove_all_dynamic
-> will release all the opps by going through opp_table->opp_list.
-> It will drop the reference for each opp on the list, until
-> the list gets empty(for given opp type), which means,
-> all the opps will actually get released
-> (only upon _opp_kref_release the opp will get removed
-> from the list).
+On Mon, 8 Mar 2021 10:07:05 +0000
+"Sa, Nuno" <Nuno.Sa@analog.com> wrote:
 
-Sorry for missing the context completely, I get it now.
+> > -----Original Message-----
+> > From: Jonathan Cameron <jic23@kernel.org>
+> > Sent: Saturday, March 6, 2021 6:35 PM
+> > To: Hennerich, Michael <Michael.Hennerich@analog.com>
+> > Cc: zzzzArdelean, zzzzAlexandru <alexandru.Ardelean@analog.com>;
+> > linux-kernel@vger.kernel.org; linux-iio@vger.kernel.org;
+> > lars@metafoo.de; Sa, Nuno <Nuno.Sa@analog.com>; Bogdan, Dragos
+> > <Dragos.Bogdan@analog.com>
+> > Subject: Re: [PATCH v3 0/6] iio: Add output buffer support
+> > 
+> > On Fri, 5 Mar 2021 08:57:08 +0000
+> > "Hennerich, Michael" <Michael.Hennerich@analog.com> wrote:
+> >   
+> > > Hi Jonathan and others,
+> > >
+> > > With output/dac buffer support the semantics of the scan_element  
+> > type may change.  
+> > >
+> > > Today the Format is [be|le]:[s|u]bits/storagebitsXrepeat[>>shift].
+> > >
+> > > While shift (if specified) is the shift that needs to be applied prior to  
+> > masking out unused bits.  
+> > >
+> > > So far so good and it sounds universal.
+> > >
+> > > However, we use the right shift (operator) for that, which makes  
+> > sense for capture devices.  
+> > > For output devices the more logical operator would be the left shift.
+> > >
+> > > I'm not proposing a new Format here. I just want to get some  
+> > agreement that for an output device  
+> > >  
+> > > le:s12/16>>4  
+> > >
+> > > is understood as a left shift of 4, since the unused bits are then on  
+> > the LSB.
+> > 
+> > Good question. Guess I wasn't thinking ahead when I came up with
+> > that :)
+> > 
+> > I'm not sure I'd mind if we did decide to define a new format for
+> > output
+> > buffers. Feels like it should be easy to do.
+> > 
+> > What do others think?
+> >   
+> 
+> I guess the most straight forward thing would be just to add a 'shift_l' variable
+> to 'struct scan_type'' and make sure either 'shift_l' or 'shift' is defined and then
+> properly export either ">>" or "<<" to userspace?
 
-This is what I have applied instead, please see if it breaks anything
-or works as expected.
+Given we already know it's an output channel, can we not just use that
+to make the decision?
 
--------------------------8<-------------------------
+Jonathan
 
-From: Beata Michalska <beata.michalska@arm.com>
-Date: Thu, 4 Mar 2021 15:07:34 +0000
-Subject: [PATCH] opp: Invalidate current opp when draining the opp list
+> 
+> - Nuno Sá 
+> 
 
-The current_opp when set, grabs additional reference on the opp,
-which is then supposed to be dropped upon releasing the opp table.
-
-Still both dev_pm_opp_remove_table and dev_pm_opp_remove_all_dynamic
-will completely drain the OPPs list, including dropping the additional
-reference on current_opp because they run until the time list gets
-empty.
-
-This will lead releasing the current_opp one more time when the OPP
-table gets removed and so will raise ref counting issues.
-
-Fix that by making sure we don't release the extra reference to the
-current_opp.
-
-Fixes: 81c4d8a3c414 ("opp: Keep track of currently programmed OPP")
-Signed-off-by: Beata Michalska <beata.michalska@arm.com>
-[ Viresh: Rewrite _opp_drain_list() to not drop the extra count instead
-	  of depending on reference counting. Update commit log and
-	  other minor changes. ]
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/opp/core.c | 52 +++++++++++++++++++++++++++++-----------------
- 1 file changed, 33 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index c2689386a906..3cc0a1b82adc 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -1502,10 +1502,38 @@ static struct dev_pm_opp *_opp_get_next(struct opp_table *opp_table,
- 	return opp;
- }
- 
--bool _opp_remove_all_static(struct opp_table *opp_table)
-+/*
-+ * Can't remove the OPP from under the lock, debugfs removal needs to happen
-+ * lock less to avoid circular dependency issues. This must be called without
-+ * the opp_table->lock held.
-+ */
-+static int _opp_drain_list(struct opp_table *opp_table, bool dynamic)
- {
--	struct dev_pm_opp *opp;
-+	struct dev_pm_opp *opp, *current_opp = NULL;
-+	int count = 0;
-+
-+	while ((opp = _opp_get_next(opp_table, dynamic))) {
-+		if (opp_table->current_opp == opp) {
-+			/*
-+			 * Reached at current OPP twice, no other OPPs left. The
-+			 * last reference to current_opp is dropped from
-+			 * _opp_table_kref_release().
-+			 */
-+			if (current_opp)
-+				break;
-+
-+			current_opp = opp;
-+		}
-+
-+		dev_pm_opp_put(opp);
-+		count++;
-+	}
-+
-+	return count;
-+}
- 
-+bool _opp_remove_all_static(struct opp_table *opp_table)
-+{
- 	mutex_lock(&opp_table->lock);
- 
- 	if (!opp_table->parsed_static_opps) {
-@@ -1520,13 +1548,7 @@ bool _opp_remove_all_static(struct opp_table *opp_table)
- 
- 	mutex_unlock(&opp_table->lock);
- 
--	/*
--	 * Can't remove the OPP from under the lock, debugfs removal needs to
--	 * happen lock less to avoid circular dependency issues.
--	 */
--	while ((opp = _opp_get_next(opp_table, false)))
--		dev_pm_opp_put(opp);
--
-+	_opp_drain_list(opp_table, false);
- 	return true;
- }
- 
-@@ -1539,21 +1561,13 @@ bool _opp_remove_all_static(struct opp_table *opp_table)
- void dev_pm_opp_remove_all_dynamic(struct device *dev)
- {
- 	struct opp_table *opp_table;
--	struct dev_pm_opp *opp;
--	int count = 0;
-+	int count;
- 
- 	opp_table = _find_opp_table(dev);
- 	if (IS_ERR(opp_table))
- 		return;
- 
--	/*
--	 * Can't remove the OPP from under the lock, debugfs removal needs to
--	 * happen lock less to avoid circular dependency issues.
--	 */
--	while ((opp = _opp_get_next(opp_table, true))) {
--		dev_pm_opp_put(opp);
--		count++;
--	}
-+	count = _opp_drain_list(opp_table, true);
- 
- 	/* Drop the references taken by dev_pm_opp_add() */
- 	while (count--)
