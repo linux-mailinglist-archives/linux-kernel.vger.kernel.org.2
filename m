@@ -2,91 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3697331821
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:09:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9FD331822
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhCHUIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:08:55 -0500
-Received: from mail-il1-f178.google.com ([209.85.166.178]:39356 "EHLO
-        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbhCHUIv (ORCPT
+        id S231709AbhCHUJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:09:29 -0500
+Received: from mail-io1-f42.google.com ([209.85.166.42]:44136 "EHLO
+        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231651AbhCHUJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:08:51 -0500
-Received: by mail-il1-f178.google.com with SMTP id d5so10027254iln.6;
-        Mon, 08 Mar 2021 12:08:50 -0800 (PST)
+        Mon, 8 Mar 2021 15:09:12 -0500
+Received: by mail-io1-f42.google.com with SMTP id 81so11322606iou.11;
+        Mon, 08 Mar 2021 12:09:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=89JRuh9tQEQ6fMlveO5xtA5I/16pwqBqFySAsay3IKY=;
-        b=oTWU7csCQosim9rN8U+eyb0WdqmBbQyIfnTYo6H8PkI30ARWsbdG4DuXiqkgrgn7/m
-         NiNSSjxYTvfyuOnfJG++d31XbtMty4170CHdH7tPUn5DJbevadbaTvXizsTfcLbtw1L9
-         AftcbBhaSubxnivbjE8PdvYoZe9Uo5+YuABupkazGpHWGyjEOiBFpz7fZ+nwfO1fWcPf
-         M7Chh54mmsi/knQwf6KMrYh41W9lStpZmBLCm9EQttV+eu7H4n/csjj/lmslPX8njour
-         md3DmVTRXj68JXNP8/2EqvJKDpqWJoLYGTPuX3d5mFaa1CHygv9HO53BcaFsixK7TXFP
-         fcyg==
-X-Gm-Message-State: AOAM530memOi7VRQmmtCH+3JUypqAbXil8+zpnUP1R/+BtKQ45/JTCrM
-        T8uQkfNz36Or9/0zbXMz2g==
-X-Google-Smtp-Source: ABdhPJzxiaNR6oqsqybVnTWQJpRAagmn1BRONpJwC44uPTv4w+VvgAh7BNmETS8Lx8C9BXE/DJ1/8g==
-X-Received: by 2002:a92:d5d2:: with SMTP id d18mr3972946ilq.50.1615234130405;
-        Mon, 08 Mar 2021 12:08:50 -0800 (PST)
+        bh=ptwI/1/c53nyotk+pbKQGECBYh7OexR+9dDajvWsfZ0=;
+        b=X4ux3vPvLlAo19WwHoKaPoUr/BfuAES164OvfQ6tW32qoOPZypc/EEjM27PruKPvAn
+         k0rtCXZRziD8fYeL55YO/r8RpLHHMw/1+jD3XIN4T10TS+ws0tBP3vdS2S4clDHnpuF7
+         5Q7XF0OdsSP9prs9GtTeWZHEJbX1qoMxvlQU+3wqWL1ayCNd2v6kf4If0GtzbX8As4O5
+         Veiyty12PP7GcxDz/G8LRj757R+dApco5cxHb0YyvfePrqjH0IH5Z4BTMQ3iCOlxgHs4
+         zttcCZXnUoi0u/xdztu8LHUs4PcppfumPICAvw5pyhJzlYn22TIgVenxX/fitnr/XvYe
+         YBrA==
+X-Gm-Message-State: AOAM530RlqZSH+H321bPrD3/iBlRErl5JjJ9cRJ1cCrivzqC/RhiNdsG
+        RlNE9takIH7mQKWSzTQv+w==
+X-Google-Smtp-Source: ABdhPJylflcBzA4Zn9arxcgFiZ0zj+LfI5/OQQC1eU3Tl5w3rfpAsk30G9VjrMRSq836NkMBMdBAmA==
+X-Received: by 2002:a6b:ed08:: with SMTP id n8mr19792099iog.197.1615234151829;
+        Mon, 08 Mar 2021 12:09:11 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id k3sm6428250ioj.35.2021.03.08.12.08.48
+        by smtp.gmail.com with ESMTPSA id q14sm6404521ilv.63.2021.03.08.12.09.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 12:08:49 -0800 (PST)
-Received: (nullmailer pid 2879384 invoked by uid 1000);
-        Mon, 08 Mar 2021 20:08:47 -0000
-Date:   Mon, 8 Mar 2021 13:08:47 -0700
+        Mon, 08 Mar 2021 12:09:11 -0800 (PST)
+Received: (nullmailer pid 2879991 invoked by uid 1000);
+        Mon, 08 Mar 2021 20:09:09 -0000
+Date:   Mon, 8 Mar 2021 13:09:09 -0700
 From:   Rob Herring <robh@kernel.org>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     p.zabel@pengutronix.de, peng.fan@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-rockchip@lists.infradead.org, shawnguo@kernel.org,
-        mchehab@kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, dan.carpenter@oracle.com, kernel@collabora.com,
-        gregkh@linuxfoundation.org, kernel@pengutronix.de,
-        devicetree@vger.kernel.org, wens@csie.org, festevam@gmail.com,
-        s.hauer@pengutronix.de, ezequiel@collabora.com,
-        hverkuil-cisco@xs4all.nl, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
-        jernej.skrabec@siol.net
-Subject: Re: [PATCH v4 10/11] dt-bindings: media: nxp,imx8mq-vpu: Update
- bindings
-Message-ID: <20210308200847.GA2879333@robh.at.kernel.org>
-References: <20210303113952.178519-1-benjamin.gaignard@collabora.com>
- <20210303113952.178519-11-benjamin.gaignard@collabora.com>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        swboyd@chromium.org, devicetree@vger.kernel.org,
+        bjorn.andersson@linaro.org
+Subject: Re: [PATCH v2 01/14] dt-bindings: arm: qcom: Document sc7280 SoC and
+ board
+Message-ID: <20210308200909.GA2879953@robh.at.kernel.org>
+References: <1614773878-8058-1-git-send-email-rnayak@codeaurora.org>
+ <1614773878-8058-2-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210303113952.178519-11-benjamin.gaignard@collabora.com>
+In-Reply-To: <1614773878-8058-2-git-send-email-rnayak@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 03 Mar 2021 12:39:51 +0100, Benjamin Gaignard wrote:
-> The current bindings seem to make the assumption that the
-> two VPUs hardware blocks (G1 and G2) are only one set of
-> registers.
-> After implementing the VPU reset driver and G2 decoder driver
-> it shows that all the VPUs are independent and don't need to
-> know about the registers of the other blocks.
-> Remove from the bindings the need to set all blocks register
-> but keep reg-names property because removing it from the driver
-> may affect other variants.
+On Wed, 03 Mar 2021 17:47:45 +0530, Rajendra Nayak wrote:
+> Document the sc7280 SoC and the IDP board bindings
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 > ---
-> version 4:
-> - rebase the change on top of VPU reset patches:
->   https://www.spinics.net/lists/arm-kernel/msg878440.html
-> 
-> version 2:
-> - be more verbose about why I change the bindings
-> Keep in mind that series comes after: https://www.spinics.net/lists/arm-kernel/msg875766.html
-> without that review and ack it won't work
-> 
->  .../bindings/media/nxp,imx8mq-vpu.yaml        | 46 ++++++++++++-------
->  1 file changed, 30 insertions(+), 16 deletions(-)
+>  Documentation/devicetree/bindings/arm/qcom.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
