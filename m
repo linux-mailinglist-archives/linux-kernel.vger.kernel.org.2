@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F751330682
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 04:45:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E90B330692
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 04:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbhCHDpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 22:45:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
+        id S234003AbhCHDx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 22:53:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233957AbhCHDox (ORCPT
+        with ESMTP id S232604AbhCHDwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 22:44:53 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8C8C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 19:44:53 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id n9so4609659pgi.7
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 19:44:53 -0800 (PST)
+        Sun, 7 Mar 2021 22:52:49 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2BDC06174A;
+        Sun,  7 Mar 2021 19:52:49 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id fu20so2284115pjb.2;
+        Sun, 07 Mar 2021 19:52:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
-        bh=YX0/RvzShai54+m5e8gpa/XV7NCeU+beFMIjwOYIdPk=;
-        b=AmnygrS9u5m2MqHnyc1e1uqPPp2ggexPHVnMPApIVY/c72+aex6WWtTenZV/DIlK/u
-         J/FHl8Vpgq2RRvA4w/WjfkZg8tVhmCAhna09IP7GzngaSlkpV3htsth2QrkRV+Daug4z
-         VjE+yVLA7+EeXy51jqjwgFfth/3e9TGM3CcR2+Z72Ap7cibEWkIWVtV0SFBbL4A3ZQ66
-         /0OOiGMBVPa9CpVkwCQHKPBWX61EvQcYaQId1+WdMD0EQQJghLEFOpN2E9DHkqdBx0PF
-         Z6/TJMBzwlBWC3iyJe3C8NT/GtqCURo7J8ax/8qmgCvtI43/BnQ+xdkpi9LlO6cAvBX+
-         I3Ng==
+        bh=f7RIVNoogGg6Yzyzf9tYT+saaS2pPENRI1a3e4spOmc=;
+        b=NsdL93mgY334JXDHUmA6k5oMm0RMUneWVRCe6PrS3ozbbRU7FNtnkui8RuoqY3iilj
+         l9cZUZYVGEaEly+O6L18d5SBC68Of1rskzwOgWKq9h73wSSr1bwAH4i/SRLkolZXEceg
+         fDRvekUVl/NAbKScRFUbLKtlS/LNrbykx89EbEjLVUXMqLlDZG6nmjdEx/k4wokIbUEU
+         km8rw8KkWIglkj+LZS5rdfGA3MRLpgkWThhu6/OVUUJU76MVhmipvkU3g7kkxkoBhw7v
+         3P7FSHeNiiFBicbN7SdivSEzy1rI8L6EWLjhLs95nRKjTZjixg/EzXS0awoelvYzpNZ/
+         AftQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=YX0/RvzShai54+m5e8gpa/XV7NCeU+beFMIjwOYIdPk=;
-        b=OQwBNlI7jz/wLWGgq04hh8q9beDefkQGEv31SrntsYk3egSR5qYZ2eZYJyJErycvBA
-         V05Cly6Ci3U9iIXf2Icc7feDE3hMjlyRxiaHKDyShkI4CthJkmhHtEeiuvKTJxKaFKnT
-         wxYqEL79jJeI/l6pPzdR13XS8Bms2GlaHjWAs+qiiBDaHYK/sJPUQBkdk1/xFQJqoxXI
-         xV37MhFohzIy89IdgoTZ/iIumvNVuZtWHzP+ud2/wl+RuMf49uuOCP1zZZNEl/LI8N+X
-         +nkcC0Qw4zgfkFtwbyk3b/cCzihiLS4ek+d9hOonPgrj5NRUwE+Ts71sjLH2clZmQwGh
-         OhXg==
-X-Gm-Message-State: AOAM531IBVSJ97lCejeFTnrQne9Z/U/7f7DhQSJshGEDnjcoFO6fb2cs
-        8YIYOGeVDFXietM10E0jSkMgPRhoh4PNZvg6
-X-Google-Smtp-Source: ABdhPJwVD4Bjl8EINQJF4uJSsLs+sl1XRJxE604ZyR8rAVnWTYhd079SSnJgXdIHw/fuDKs354RDkQ==
-X-Received: by 2002:aa7:96ab:0:b029:1f6:2d3:3c91 with SMTP id g11-20020aa796ab0000b02901f602d33c91mr3669962pfk.10.1615175093269;
-        Sun, 07 Mar 2021 19:44:53 -0800 (PST)
+        bh=f7RIVNoogGg6Yzyzf9tYT+saaS2pPENRI1a3e4spOmc=;
+        b=EZpsKUQSGY7sWAGXBuXpFdryo88w+PNAHkwv5A1mJY/rzIyQOYZ7TnR9fQxEb7aV5P
+         MopGWPfY6suMeocTu/sKjnqThBx0L4UHAfVmyFJJjubtPr4d1zt3qDTuUyxfAPK/KYZf
+         CGziqGsisgoS3G4V7FV5PEoYDZej+fQWaQk58oDvULJx8gBrHs3Qq2peRAm6bNqRU9BY
+         0Uezot0OTtY1fIH9W3ok3JykDyzLizGkaUPq+se0UPkh8ZuULarjcsnakjlLl7W16nYi
+         DELF17012kTCKokSrpESqVBycpJ1bsbxMCxp4xWUvL1BijUhAuQQ2Ukpbz5nZd92PxHw
+         I0Dw==
+X-Gm-Message-State: AOAM532VbuoJdZvdiTuJRpRyrKHg49h2Y4kt4gu9V/gNgJ5U7DwR27Wq
+        Jzkwp/+PjINYVb/9MCTjFW5r3I7UHuADSTkJ
+X-Google-Smtp-Source: ABdhPJy58rtPLlHCK8JXmOc3AIdTE5FcyDD6AZGUxrrVgVLslWs2zmk+BQuwTiAOZO0JiOsfGK0WMw==
+X-Received: by 2002:a17:90a:cf8f:: with SMTP id i15mr19375031pju.22.1615175569059;
+        Sun, 07 Mar 2021 19:52:49 -0800 (PST)
 Received: from localhost.localdomain ([45.135.186.99])
-        by smtp.gmail.com with ESMTPSA id i22sm9077748pjz.56.2021.03.07.19.44.50
+        by smtp.gmail.com with ESMTPSA id 186sm8788042pfx.132.2021.03.07.19.52.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 19:44:52 -0800 (PST)
+        Sun, 07 Mar 2021 19:52:48 -0800 (PST)
 From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        chris.packham@alliedtelesis.co.nz,
-        Sergey.Semin@baikalelectronics.ru
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] mtd: maps: fix error return code of physmap_flash_remove()
-Date:   Sun,  7 Mar 2021 19:44:46 -0800
-Message-Id: <20210308034446.3052-1-baijiaju1990@gmail.com>
+To:     sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [PATCH] scsi: mpt3sas: fix error return code of mpt3sas_base_attach()
+Date:   Sun,  7 Mar 2021 19:52:41 -0800
+Message-Id: <20210308035241.3288-1-baijiaju1990@gmail.com>
 X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When platform_get_drvdata() returns NULL to info, no error return code
-of physmap_flash_remove() is assigned.
-To fix this bug, err is assigned with -EINVAL in this case
+When kzalloc() returns NULL, no error return code of
+mpt3sas_base_attach() is assigned.
+To fix this bug, r is assigned with -ENOMEM in this case.
 
-Fixes: 73566edf9b91 ("[MTD] Convert physmap to platform driver")
+Fixes: c696f7b83ede ("scsi: mpt3sas: Implement device_remove_in_progress check in IOCTL path")
 Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
 Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 ---
- drivers/mtd/maps/physmap-core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/scsi/mpt3sas/mpt3sas_base.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-index 001ed5deb622..4f63b8430c71 100644
---- a/drivers/mtd/maps/physmap-core.c
-+++ b/drivers/mtd/maps/physmap-core.c
-@@ -69,8 +69,10 @@ static int physmap_flash_remove(struct platform_device *dev)
- 	int i, err = 0;
- 
- 	info = platform_get_drvdata(dev);
--	if (!info)
-+	if (!info) {
-+		err = -EINVAL;
- 		goto out;
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
+index ac066f86bb14..ac0eef975f17 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_base.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
+@@ -7806,14 +7806,18 @@ mpt3sas_base_attach(struct MPT3SAS_ADAPTER *ioc)
+ 		ioc->pend_os_device_add_sz++;
+ 	ioc->pend_os_device_add = kzalloc(ioc->pend_os_device_add_sz,
+ 	    GFP_KERNEL);
+-	if (!ioc->pend_os_device_add)
++	if (!ioc->pend_os_device_add) {
++		r = -ENOMEM;
+ 		goto out_free_resources;
 +	}
  
- 	if (info->cmtd) {
- 		err = mtd_device_unregister(info->cmtd);
+ 	ioc->device_remove_in_progress_sz = ioc->pend_os_device_add_sz;
+ 	ioc->device_remove_in_progress =
+ 		kzalloc(ioc->device_remove_in_progress_sz, GFP_KERNEL);
+-	if (!ioc->device_remove_in_progress)
++	if (!ioc->device_remove_in_progress) {
++		r = -ENOMEM;
+ 		goto out_free_resources;
++	}
+ 
+ 	ioc->fwfault_debug = mpt3sas_fwfault_debug;
+ 
 -- 
 2.17.1
 
