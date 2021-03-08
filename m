@@ -2,101 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C46893317B5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFA73317B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:50:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231684AbhCHTtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:49:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231734AbhCHTss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:48:48 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6ED5364F11;
-        Mon,  8 Mar 2021 19:48:45 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 19:48:41 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Jyoti Bhayana <jbhayana@google.com>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Enrico Granata <egranata@google.com>,
-        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
-        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
-        Peter Hilber <Peter.hilber@opensynergy.com>,
-        Ankit Arora <ankitarora@google.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v6 1/1] iio/scmi: Adding support for IIO SCMI Based
- Sensors
-Message-ID: <20210308194841.525ed61f@archlinux>
-In-Reply-To: <20210308042842.e6qr4xxp5tl5ahos@bogus>
-References: <20210212172235.507028-1-jbhayana@google.com>
-        <20210212172235.507028-2-jbhayana@google.com>
-        <20210221144616.4eef6a79@archlinux>
-        <CA+=V6c1aKy1nPDMJ+mhB6drUEs6T7SVKon8chH++6Zv1dkv+GA@mail.gmail.com>
-        <20210308042842.e6qr4xxp5tl5ahos@bogus>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231539AbhCHTuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:50:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhCHTuB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 14:50:01 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B15C06174A;
+        Mon,  8 Mar 2021 11:50:00 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id u4so17669149ljh.6;
+        Mon, 08 Mar 2021 11:50:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lOnYTHVN2hanDBabSqYrW+ieOq1UWygtoR8Sx8gbqOs=;
+        b=SFpbJlLtAcXarFIezpYYW10MWKsw7ruJhp3J/+z00YzqX67C0TgSN9Hbdi+hIcqHln
+         XDEtBkq+LhYSKFW3j0VQ5dd67fjWZn6rZt/wwOz3R3jwaHhIOcT4jOWC+SS5jEZrIDLV
+         kxZAGdKbmgr1WSsiGlDMgluoQ5rfgUhxESLgv/NBJlvINScduCJL4iw0yS2rFAkFRokW
+         An5ADZdVAV5ZAfVVvlWOGaUbw6uFsLN5Gfuw925lDhFn/ZwkkNW4eSE8CwqXtNs/0LCn
+         xarTdDHR/O4xY5Oosmn48ttEG/1+CcH1LkiA6HXWXd7vdB1lK2dMfUjgcLdfMbSn95Zn
+         7fcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lOnYTHVN2hanDBabSqYrW+ieOq1UWygtoR8Sx8gbqOs=;
+        b=jC9um9nsRsbWOYgo/xeVbN0XuR8hLwSnpb5IQKmMK3COVX1IZh51dYVioAyrYur8XR
+         dYFPOP1XU/E2QIi2x5e8swLDlF85xbnQ9Ib1gn3kZ5ebN5WmUC15pqDMhMK8Pz6mRuwW
+         hRoDWsOhsfBfFCwWvbPe3uRWW7RVpbrKpo1X5BbIDPI/dLTAQIZeExkchlwM32v4EmO3
+         6V6Ugw1YSRMm82lqOW1skAngg1/y9t7UZjZJAibaogLy5rr5dsRcs/AZvb8qTU6HIm2B
+         Re7yQ1WfvT5eLT8tD14KJR3Tjrd8ajwvbbNeW5+kMF79OQlCg7O4ORlgaZHeD1G8LmSV
+         LruQ==
+X-Gm-Message-State: AOAM531ku0JES8pn92QgTSgbbTzBDgHiCaFWLlucJtKKm+/kh1XkH+Yi
+        DP80yAY2C+nCVqIm7Qz2JUhbTEpqsx9vug==
+X-Google-Smtp-Source: ABdhPJybTX4Habt2hE8eoMXT5qwSTZrGUcOXx9626ySUxFHuDqwA2CvvBcBGmOAMVaR5a86J5rG7Gg==
+X-Received: by 2002:a2e:2a85:: with SMTP id q127mr14642963ljq.379.1615232999372;
+        Mon, 08 Mar 2021 11:49:59 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id j14sm655017lfb.41.2021.03.08.11.49.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 11:49:59 -0800 (PST)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Zhang Qiang <qiang.zhang@windriver.com>
+Subject: [PATCH 1/2] kvfree_rcu: Release a page cache under memory pressure
+Date:   Mon,  8 Mar 2021 20:49:49 +0100
+Message-Id: <20210308194950.12320-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Mar 2021 04:28:42 +0000
-Sudeep Holla <sudeep.holla@arm.com> wrote:
+From: Zhang Qiang <qiang.zhang@windriver.com>
 
-> Hi Jonathan,
-> 
-> On Tue, Feb 23, 2021 at 10:30:37AM -0800, Jyoti Bhayana wrote:
-> > Hi Jonathan,
-> >
-> > Thanks for the detailed and careful review of this patch. Good to hear
-> > that v7 is not required.   Please find below answers to your
-> > questions. Looking forward to seeing this patch merged in the next
-> > cycle. Thanks for your help in making this happen.
-> >  
-> 
-> Any update on this ? Please share the branch with is patch so that I
-> can pull and ask Cristian to make his changes on top.
-Running a bit behind at the moment.
+Add a drain_page_cache() function to drain a per-cpu page cache.
+The reason behind of it is a system can run into a low memory
+condition, in that case a page shrinker can ask for its users
+to free their caches in order to get extra memory available for
+other needs in a system.
 
-Anyhow, there should now be an ib-iio-scmi-5.12-rc1 branch
-on https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git
+When a system hits such condition, a page cache is drained for
+all CPUs in a system. Apart of that a page cache work is delayed
+with 5 seconds interval until a memory pressure disappears.
 
-Includes making the various long long local variables explicitly
-s64 and u64 as relevant.
+Co-developed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+---
+ kernel/rcu/tree.c | 59 ++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 51 insertions(+), 8 deletions(-)
 
-Based on the rc1 that eats babies so handle with care :)
-
-I've also merge this into the togreg branch of iio.git.
-As explained above that wasn't entirely trivial so Jyoti
-please take a quick look and check that changes are fine.
-Pushed out as testing to let the autobuilders poke at it.
-Assuming they don't find anything, it should be fine
-for Sudeep to merge that ib and everything will unwind
-nicely in Linus' tree next cycle.
-
-There is a bit of an ongoing discussion of an earlier patch
-in the IIO tree, so I might end up redoing this merge
-if I need to rebase to sort that out, but I'll make sure
-the diff is the same (git ID might change).
-
-Thanks,
-
-Jonathan
-
-> 
-> --
-> Regards,
-> Sudeep
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 2c9cf4df942c..9c8cfb01e9a6 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3163,7 +3163,7 @@ struct kfree_rcu_cpu {
+ 	bool initialized;
+ 	int count;
+ 
+-	struct work_struct page_cache_work;
++	struct delayed_work page_cache_work;
+ 	atomic_t work_in_progress;
+ 	struct hrtimer hrtimer;
+ 
+@@ -3175,6 +3175,17 @@ static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
+ 	.lock = __RAW_SPIN_LOCK_UNLOCKED(krc.lock),
+ };
+ 
++// A page shrinker can ask for freeing extra pages
++// to get them available for other needs in a system.
++// Usually it happens under low memory condition, in
++// that case hold on a bit with page cache filling.
++static bool backoff_page_cache_fill;
++
++// 5 seconds delay. That is long enough to reduce
++// an interfering and racing with a shrinker where
++// the cache is drained.
++#define PAGE_CACHE_FILL_DELAY (5 * HZ)
++
+ static __always_inline void
+ debug_rcu_bhead_unqueue(struct kvfree_rcu_bulk_data *bhead)
+ {
+@@ -3229,6 +3240,26 @@ put_cached_bnode(struct kfree_rcu_cpu *krcp,
+ 
+ }
+ 
++static int
++drain_page_cache(struct kfree_rcu_cpu *krcp)
++{
++	unsigned long flags;
++	struct llist_node *page_list, *pos, *n;
++	int freed = 0;
++
++	raw_spin_lock_irqsave(&krcp->lock, flags);
++	page_list = llist_del_all(&krcp->bkvcache);
++	krcp->nr_bkv_objs = 0;
++	raw_spin_unlock_irqrestore(&krcp->lock, flags);
++
++	llist_for_each_safe(pos, n, page_list) {
++		free_page((unsigned long)pos);
++		freed++;
++	}
++
++	return freed;
++}
++
+ /*
+  * This function is invoked in workqueue context after a grace period.
+  * It frees all the objects queued on ->bhead_free or ->head_free.
+@@ -3419,7 +3450,7 @@ schedule_page_work_fn(struct hrtimer *t)
+ 	struct kfree_rcu_cpu *krcp =
+ 		container_of(t, struct kfree_rcu_cpu, hrtimer);
+ 
+-	queue_work(system_highpri_wq, &krcp->page_cache_work);
++	queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, 0);
+ 	return HRTIMER_NORESTART;
+ }
+ 
+@@ -3428,7 +3459,7 @@ static void fill_page_cache_func(struct work_struct *work)
+ 	struct kvfree_rcu_bulk_data *bnode;
+ 	struct kfree_rcu_cpu *krcp =
+ 		container_of(work, struct kfree_rcu_cpu,
+-			page_cache_work);
++			page_cache_work.work);
+ 	unsigned long flags;
+ 	bool pushed;
+ 	int i;
+@@ -3457,10 +3488,14 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+ {
+ 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+ 			!atomic_xchg(&krcp->work_in_progress, 1)) {
+-		hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
+-			HRTIMER_MODE_REL);
+-		krcp->hrtimer.function = schedule_page_work_fn;
+-		hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
++		if (xchg(&backoff_page_cache_fill, false)) {
++			queue_delayed_work(system_wq,
++				&krcp->page_cache_work, PAGE_CACHE_FILL_DELAY);
++		} else {
++			hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++			krcp->hrtimer.function = schedule_page_work_fn;
++			hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
++		}
+ 	}
+ }
+ 
+@@ -3612,14 +3647,20 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+ {
+ 	int cpu;
+ 	unsigned long count = 0;
++	unsigned long flags;
+ 
+ 	/* Snapshot count of all CPUs */
+ 	for_each_possible_cpu(cpu) {
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		count += READ_ONCE(krcp->count);
++
++		raw_spin_lock_irqsave(&krcp->lock, flags);
++		count += krcp->nr_bkv_objs;
++		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 	}
+ 
++	WRITE_ONCE(backoff_page_cache_fill, true);
+ 	return count;
+ }
+ 
+@@ -3634,6 +3675,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		count = krcp->count;
++		count += drain_page_cache(krcp);
++
+ 		raw_spin_lock_irqsave(&krcp->lock, flags);
+ 		if (krcp->monitor_todo)
+ 			kfree_rcu_drain_unlock(krcp, flags);
+@@ -4608,7 +4651,7 @@ static void __init kfree_rcu_batch_init(void)
+ 		}
+ 
+ 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+-		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
++		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
+ 		krcp->initialized = true;
+ 	}
+ 	if (register_shrinker(&kfree_rcu_shrinker))
+-- 
+2.20.1
 
