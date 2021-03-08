@@ -2,92 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B52133194F
+	by mail.lfdr.de (Postfix) with ESMTP id 1F96A33194E
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:21:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbhCHVVC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Mar 2021 16:21:02 -0500
-Received: from aposti.net ([89.234.176.197]:42810 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229650AbhCHVU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 16:20:56 -0500
-Date:   Mon, 08 Mar 2021 21:20:29 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 1/3] dt-bindings/timer: ingenic: Add compatible strings
- for JZ4760(B)
-To:     Rob Herring <robh@kernel.org>
-Cc:     od@zcrc.me, Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Message-Id: <5Y5OPQ.S54VI8HHK9HS2@crapouillou.net>
-In-Reply-To: <20210308173932.GA2679461@robh.at.kernel.org>
-References: <20210307171553.72591-1-paul@crapouillou.net>
-        <20210308173932.GA2679461@robh.at.kernel.org>
+        id S230440AbhCHVVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 16:21:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhCHVUp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 16:20:45 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E977C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 13:20:45 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id y124-20020a1c32820000b029010c93864955so4667689wmy.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 13:20:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wu9oEK/xAOW3gNEBHL714OoOhpYk6t+OPca6LRUekWk=;
+        b=l+N+aBZyBLQ84Xc2qonMKfPS7O2smDSRBs6+j/Tq2b3Ps9waqqMvbHOyDBtXY7n7n1
+         h/7wW0CY7KT571n+Z4GG4Zyqv0isfcXDMwhXnbptQzeon+Ta6g1motpUHYUN3esxRyGt
+         x6TMzBHcCdnqkAEGDvHJeikOnGZypc4Px8eOHjOW2iW5aYbdJbC3m+9JtZEPbDlkVv5A
+         bNeqEg01ga04gIcbpSUfuH+h9xK9if5xYdqX8zwjb0JFOPKr2gfiUPCif1GMepnctB5C
+         Aposko2oQsUOU5tEt6caJTYEAQ+CQ3y2nnJGP7L0BTwptJelxdjUrtOsJVlq5LO2fy/d
+         3QXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wu9oEK/xAOW3gNEBHL714OoOhpYk6t+OPca6LRUekWk=;
+        b=uklpCxKTMMwC8H/qLAGvYxcb8LeLTEjlRqS216IHiUTkYzilbCJka0fM+6gBsUxP0J
+         4Aamc8FjptrveDG8UvmzpkA9CQ5DN372XQHCfFumDa146x8TszWDro1sMsJLjsqmJCE8
+         5q70/GDgw9rVd0cJbPphGni5DvGXfXBLh23Ld6FGaY9yVY6LQHrDT6DFESdBxZ3fN7+f
+         Hv2RDeWP4iL50rmSuTOAlqLraLLjeksTZe01e/FLMq35lEX9rRuoWpA91pyRTZJZC3Bv
+         Z1oD4B8lpYoHtS9N+fCF+zlvftCOErep+0JU5f5/F/qXyiMANxY6FbESPDOxX1WLPBn9
+         o4NA==
+X-Gm-Message-State: AOAM533w2HXiT7ZMWzgedpLYYAdxILNvYy6LGA18yioO4qEZVl8CMwuE
+        dQnHIPI8BHUcSgD1GP/6FdffPA==
+X-Google-Smtp-Source: ABdhPJx4Cn7xkmyuZRQVCSGlOMwAkEiRCQzXKjWNe05h+eRzWC3kXIdu9sKh+xq62pqoDghjIdy2eA==
+X-Received: by 2002:a7b:c2a9:: with SMTP id c9mr683024wmk.116.1615238444034;
+        Mon, 08 Mar 2021 13:20:44 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8499:4f69:106b:da0? ([2a01:e34:ed2f:f020:8499:4f69:106b:da0])
+        by smtp.googlemail.com with ESMTPSA id k12sm15190906wrx.7.2021.03.08.13.20.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Mar 2021 13:20:43 -0800 (PST)
+Subject: Re: [PATCH 1/5] powercap/drivers/dtpm: Encapsulate even more the code
+To:     Lukasz Luba <lukasz.luba@arm.com>, rafael@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20210301212149.22877-1-daniel.lezcano@linaro.org>
+ <f5a4be4d-b003-2751-7758-ef2c58e3fbbc@linaro.org>
+ <2d5e7eff-ae9d-2c67-3f49-89cb006b4a1b@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <a6374a41-1e4b-e1f0-4c68-17dcae105f8b@linaro.org>
+Date:   Mon, 8 Mar 2021 22:20:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <2d5e7eff-ae9d-2c67-3f49-89cb006b4a1b@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 08/03/2021 20:55, Lukasz Luba wrote:
+> Hi Daniel,
+> 
+> On 3/8/21 7:31 PM, Daniel Lezcano wrote:
+>>
+>> On 01/03/2021 22:21, Daniel Lezcano wrote:
+>>> In order to increase the self-encapsulation of the dtpm generic code,
+>>> the following changes are adding a power update ops to the dtpm
+>>> ops. That allows the generic code to call directly the dtpm backend
+>>> function to update the power values.
+>>>
+>>> The power update function does compute the power characteristics when
+>>> the function is invoked. In the case of the CPUs, the power
+>>> consumption depends on the number of online CPUs. The online CPUs mask
+>>> is not up to date at CPUHP_AP_ONLINE_DYN state in the tear down
+>>> callback. That is the reason why the online / offline are at separate
+>>> state. As there is already an existing state for DTPM, this one is
+>>> only moved to the DEAD state, so there is no addition of new state
+>>> with these changes.
+>>>
+>>> That simplifies the code for the next changes and results in a more
+>>> self-encapsulated code.
+>>>
+>>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>>
+>> Is there any comment on this series ?
+> 
+> If you can wait 1 day, I will review it tomorrow...
+
+Sure, thanks
+
+  -- Daniel
 
 
-Le lun. 8 mars 2021 à 10:39, Rob Herring <robh@kernel.org> a écrit :
-> On Sun, 07 Mar 2021 17:15:51 +0000, Paul Cercueil wrote:
->>  Add compatible strings to support the system timer, clocksource, 
->> OST,
->>  watchdog and PWM blocks of the JZ4760 and JZ4760B SoCs.
->> 
->>  Newer SoCs which behave like the JZ4760 or JZ4760B now see their
->>  compatible string require a fallback compatible string that 
->> corresponds
->>  to one of these two SoCs.
->> 
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->>   .../bindings/timer/ingenic,tcu.yaml           | 28 
->> ++++++++++++++-----
->>   1 file changed, 21 insertions(+), 7 deletions(-)
->> 
-> 
-> My bot found errors running 'make dt_binding_check' on your patch:
-> 
-> yamllint warnings/errors:
-> ./Documentation/devicetree/bindings/timer/ingenic,tcu.yaml:62:13: 
-> [warning] wrong indentation: expected 14 but found 12 (indentation)
-> ./Documentation/devicetree/bindings/timer/ingenic,tcu.yaml:201:17: 
-> [warning] wrong indentation: expected 18 but found 16 (indentation)
-> 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/timer/ingenic,tcu.example.dt.yaml: 
-> timer@10002000: timer@e0:compatible: 'oneOf' conditional failed, one 
-> must be fixed:
-> 	['ingenic,jz4770-ost'] is too short
-> 	'ingenic,jz4770-ost' is not one of ['ingenic,jz4725b-ost', 
-> 'ingenic,jz4760b-ost']
-> 	'ingenic,jz4760-ost' was expected
-> 	From schema: 
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/timer/ingenic,tcu.yaml
+-- 
+<http://www.linaro.org/> Linaro.org â”‚ Open source software for ARM SoCs
 
-Totally my fault, looks like I didn't check the bindings before sending 
-the patchset. I'll V2.
-
--Paul
-
-> See https://patchwork.ozlabs.org/patch/1448709
-> 
-> This check can fail if there are any dependencies. The base for a 
-> patch
-> series is generally the most recent rc1.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up 
-> to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
-
-
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
