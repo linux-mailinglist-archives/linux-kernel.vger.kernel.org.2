@@ -2,130 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6248A33062B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:55:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FA833062D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:55:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233872AbhCHCxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 21:53:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38774 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233903AbhCHCxh (ORCPT
+        id S233884AbhCHCy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 21:54:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233877AbhCHCyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 21:53:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615172017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VWTExvkpL3xvnU71XBjAtEuJZDgLR8SWFyWHBwfA6EQ=;
-        b=NeFIMR2yfHF3+4MuiO5FwpyiPUG5IyGRgBLDScJclKGgd039CwiMa2LcU/N53YdVvTZVy4
-        BBtx4mgNHdLE3NdwPPf7OPqt8yrN1heKKYrESpnbN06Fudz0qfX3bSTLvwK+yoirrbx9Yb
-        feD+O2nnJTxWF7oVZkS3p7GHLt46974=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-441-lX5C2eSqOmOk0EQ0k1P4LQ-1; Sun, 07 Mar 2021 21:53:33 -0500
-X-MC-Unique: lX5C2eSqOmOk0EQ0k1P4LQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 56770100CF64;
-        Mon,  8 Mar 2021 02:53:32 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-193.pek2.redhat.com [10.72.13.193])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A45766F988;
-        Mon,  8 Mar 2021 02:53:26 +0000 (UTC)
-Subject: Re: [PATCH 2/3] vDPA/ifcvf: enable Intel C5000X-PL virtio-net for
- vDPA
-To:     Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
-        lulu@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210305142000.18521-1-lingshan.zhu@intel.com>
- <20210305142000.18521-3-lingshan.zhu@intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <e36ac9d6-2fd9-44fe-3477-ef6ddf22429a@redhat.com>
-Date:   Mon, 8 Mar 2021 10:53:25 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
+        Sun, 7 Mar 2021 21:54:09 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A271C06174A;
+        Sun,  7 Mar 2021 18:54:09 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id t29so6113513pfg.11;
+        Sun, 07 Mar 2021 18:54:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=mFSkViZXOvwmWAhS7tYtXVJXwXatkvhNxjoAxYZhg/s=;
+        b=kVXg1qiK64BM/wA9A7kLXmNiANwfY4X+x1YJKBrZhjJCIA/ykx1/eo7t4eYZ5+zdSG
+         HOOvd2b4YUXuJPZoE9FtYYkHGQEDFsgf+C6mvh9O8GkJ8PhnS2tyM997uvonql1MdAYk
+         Jawd4oAPGfvip0k4Aivcrb2c2ZmfAYkI0BbsEdb9v6mqdTlVylV6wbAfvqmdE727vtMp
+         Rk+AW4RtICpdAaIdclEBFJhS99W+e05lXKXjztvA/iYDI2Enoo+nYPu5iEABs0h+VCnc
+         QNwfIdu3SDhTon8GS8J/feJu/QERJ7cCBRWcpqAfml1tZwJh2G2fTx3bxkMtfY7XeUdz
+         Al8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=mFSkViZXOvwmWAhS7tYtXVJXwXatkvhNxjoAxYZhg/s=;
+        b=B1sgddbtbuUb0ZbOikCrkAQ6x9if6+yVkoaXXA0PoC450Y8XHjit8zU5mdi84673GQ
+         4u/ab0SEBpBQQD6pK8FUmWXTc7iRCN0/93fbatzT9cB9c7x3q+hON+E8XJUZzIZnWXel
+         mC8DkbadJbWReQRR6wRVdr3nGamZICm+tlhQIWHqMYenEMzHTbokLTtdi6QmW9fFWTm5
+         eFsvCnZlauhxy2KrcgakdS6nO2oL0jprpDjG9iv37GNqLvbblPHvGwqOcxBce1qUfumR
+         rWcUnP9IK1WgfO394Nzo+6mGPbe1xkJrTsc98vZpCfHkbLhofi5wzEmnv7QBYWfLbQLk
+         xjUA==
+X-Gm-Message-State: AOAM532EKyYFUy3lXBByhZTspPgNidOPk3wjyfaoBdt+7C8ECbnsRkdR
+        C+yzPB+bGaYH2/vUqwBoYF70XmrSeHdWb4cS
+X-Google-Smtp-Source: ABdhPJy9xhOPu5/0+XQIwwNkR0Bjtnppnsbuz9fr0degL00AQ1ak0eHSEVkDa9SRlaehrCCCxwFs2g==
+X-Received: by 2002:a62:2786:0:b029:1ee:afe7:6bfb with SMTP id n128-20020a6227860000b02901eeafe76bfbmr18715044pfn.14.1615172048618;
+        Sun, 07 Mar 2021 18:54:08 -0800 (PST)
+Received: from [10.187.1.26] ([45.135.186.66])
+        by smtp.gmail.com with ESMTPSA id g22sm2447811pju.30.2021.03.07.18.54.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Mar 2021 18:54:08 -0800 (PST)
+Subject: Re: [PATCH] media: platform: sunxi: sun6i-csi: fix error return code
+ of sun6i_video_start_streaming()
+To:     wens@csie.org
+Cc:     Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210306141528.18925-1-baijiaju1990@gmail.com>
+ <CAGb2v660_jsK565dN4D2wSTmGjt1WUnHRkMOG7vzaqgZwY-Zeg@mail.gmail.com>
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+Message-ID: <ad3e4bd5-9db9-da04-37fa-b7fe5d9d431e@gmail.com>
+Date:   Mon, 8 Mar 2021 10:54:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20210305142000.18521-3-lingshan.zhu@intel.com>
+In-Reply-To: <CAGb2v660_jsK565dN4D2wSTmGjt1WUnHRkMOG7vzaqgZwY-Zeg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2021/3/5 10:19 下午, Zhu Lingshan wrote:
-> This commit enabled Intel FPGA SmartNIC C5000X-PL virtio-net
-> for vDPA.
-> C5000X-PL vendor id 0x1AF4, device id 0x1000,
-> subvendor id 0x8086, sub device id 0x0001
+
+On 2021/3/7 20:47, Chen-Yu Tsai wrote:
+> On Sat, Mar 6, 2021 at 10:15 PM Jia-Ju Bai <baijiaju1990@gmail.com> wrote:
+>> When sun6i_video_remote_subdev() returns NULL to subdev, no error return
+>> code of sun6i_video_start_streaming() is assigned.
+>> To fix this bug, ret is assigned with -EINVAL in this case.
+>>
+>> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+>> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> This should have the tag:
 >
-> To distinguish C5000X-PL from other ifcvf driven devices,
-> the original ifcvf device is named "N3000".
+> Fixes: 5cc7522d8965 ("media: sun6i: Add support for Allwinner CSI V3s")
 >
-> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
-> ---
->   drivers/vdpa/ifcvf/ifcvf_base.h | 13 +++++++++----
->   drivers/vdpa/ifcvf/ifcvf_main.c | 13 +++++++++----
->   2 files changed, 18 insertions(+), 8 deletions(-)
+> Please try to add them when fixing bugs. And this should also be tagged
+> for stable, so
 >
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h b/drivers/vdpa/ifcvf/ifcvf_base.h
-> index 64696d63fe07..794d1505d857 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
-> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
-> @@ -18,10 +18,15 @@
->   #include <uapi/linux/virtio_config.h>
->   #include <uapi/linux/virtio_pci.h>
->   
-> -#define IFCVF_VENDOR_ID		0x1AF4
-> -#define IFCVF_DEVICE_ID		0x1041
-> -#define IFCVF_SUBSYS_VENDOR_ID	0x8086
-> -#define IFCVF_SUBSYS_DEVICE_ID	0x001A
-> +#define N3000_VENDOR_ID		0x1AF4
-> +#define N3000_DEVICE_ID		0x1041
-> +#define N3000_SUBSYS_VENDOR_ID	0x8086
-> +#define N3000_SUBSYS_DEVICE_ID	0x001A
+> Cc: <stable@kernel.org>
+>
+> Otherwise,
+>
+> Acked-by: Chen-Yu Tsai <wens@csie.org>
+
+Thanks for the advice :)
+I will add the fixes and stable tags in my future patches.
 
 
-Patch looks good, I wonder if it's better to do the rename separately.
-
-Thanks
-
-
-> +
-> +#define C5000X_PL_VENDOR_ID		0x1AF4
-> +#define C5000X_PL_DEVICE_ID		0x1000
-> +#define C5000X_PL_SUBSYS_VENDOR_ID	0x8086
-> +#define C5000X_PL_SUBSYS_DEVICE_ID	0x0001
->   
->   #define IFCVF_SUPPORTED_FEATURES \
->   		((1ULL << VIRTIO_NET_F_MAC)			| \
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-> index e501ee07de17..fd5befc5cbcc 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
-> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-> @@ -480,10 +480,15 @@ static void ifcvf_remove(struct pci_dev *pdev)
->   }
->   
->   static struct pci_device_id ifcvf_pci_ids[] = {
-> -	{ PCI_DEVICE_SUB(IFCVF_VENDOR_ID,
-> -		IFCVF_DEVICE_ID,
-> -		IFCVF_SUBSYS_VENDOR_ID,
-> -		IFCVF_SUBSYS_DEVICE_ID) },
-> +	{ PCI_DEVICE_SUB(N3000_VENDOR_ID,
-> +			 N3000_DEVICE_ID,
-> +			 N3000_SUBSYS_VENDOR_ID,
-> +			 N3000_SUBSYS_DEVICE_ID) },
-> +	{ PCI_DEVICE_SUB(C5000X_PL_VENDOR_ID,
-> +			 C5000X_PL_DEVICE_ID,
-> +			 C5000X_PL_SUBSYS_VENDOR_ID,
-> +			 C5000X_PL_SUBSYS_DEVICE_ID) },
-> +
->   	{ 0 },
->   };
->   MODULE_DEVICE_TABLE(pci, ifcvf_pci_ids);
-
+Best wishes,
+Jia-Ju Bai
