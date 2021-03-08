@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120183317F8
+	by mail.lfdr.de (Postfix) with ESMTP id 464E13317FB
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbhCHT7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:59:51 -0500
-Received: from mail-pg1-f172.google.com ([209.85.215.172]:39180 "EHLO
-        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbhCHT70 (ORCPT
+        id S231556AbhCHT7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:59:52 -0500
+Received: from mail-il1-f179.google.com ([209.85.166.179]:36712 "EHLO
+        mail-il1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231156AbhCHT7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:59:26 -0500
-Received: by mail-pg1-f172.google.com with SMTP id x29so7119878pgk.6;
-        Mon, 08 Mar 2021 11:59:26 -0800 (PST)
+        Mon, 8 Mar 2021 14:59:37 -0500
+Received: by mail-il1-f179.google.com with SMTP id g9so9993620ilc.3;
+        Mon, 08 Mar 2021 11:59:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OEgorovdQsjkjU9qNekIDia6GRBVJARi8Jz71Iix888=;
-        b=H5Y+/i7ruuKh0UvHGT3wk64OF2eHFJfohAb8v8hjXR28zLK8ThA+nPofQdqE0t5P+Y
-         9B0BmKmx230WtzzHU18lJCPy+sCC7mYT2iOYjB64CxpdKmnSZhQVLNCblxiwuyr3ZOVG
-         YrK1G4vg0XqF8SlJ5UiQNcZl9eNB9d/QmSmTksoUPW69HEbkTHL9RIRJatchkC62yjtl
-         +zg++LoN0J7MzUAEZnzlGSGj+YxUiz7WbY03Lie1hJ3TLqDqFGK7dW4D9bn40ohUNgn7
-         Xh8aSr9OzO9LWls7wdUSO14Etj2AWEUFyTXQdl7xtXKAHopAAmES5q7rhGT+Er3T6goU
-         4owg==
-X-Gm-Message-State: AOAM531cuzY77w+BekSKLrBilpOyOfkpcJxm0PZiAylQH61fGNupHXad
-        1422U7mHiBLfAvH9dw0GF40=
-X-Google-Smtp-Source: ABdhPJzQyZ82aCuUVMiC4SsPlaY0Ixw9qU7ADHahR5G9nnjByuE2qAnpH+xAJlgki0Zs+Ik3cO/guw==
-X-Received: by 2002:aa7:881a:0:b029:1f1:6148:15c3 with SMTP id c26-20020aa7881a0000b02901f1614815c3mr14667561pfo.30.1615233565986;
-        Mon, 08 Mar 2021 11:59:25 -0800 (PST)
-Received: from [192.168.51.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id y29sm6529501pfp.206.2021.03.08.11.59.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 11:59:25 -0800 (PST)
-Subject: Re: [RFC PATCH v3 3/3] blk-mq: Lockout tagset iterator when exiting
- elevator
-To:     John Garry <john.garry@huawei.com>, hare@suse.de,
-        ming.lei@redhat.com, axboe@kernel.dk, hch@lst.de
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pragalla@codeaurora.org, kashyap.desai@broadcom.com,
-        yuyufen@huawei.com
-References: <1614957294-188540-1-git-send-email-john.garry@huawei.com>
- <1614957294-188540-4-git-send-email-john.garry@huawei.com>
- <48a3cf78-3f6d-c13c-bca2-1f8277817b45@acm.org>
- <9c9360bf-7ca9-5c8f-c61d-441044f9c78f@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <784a3686-cb54-561d-740c-30e0b3f46df8@acm.org>
-Date:   Mon, 8 Mar 2021 11:59:23 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GqDh2Qw9bvKqO+4ChtY2bB/9DV3UecEqn0ZpKAEpLuY=;
+        b=HOFLnpOli+TdxgoVsiqAtMnWLNlzz2SWEusa9+X0KsvfDRktmtTf4HQAMo8XrmGnBV
+         Capp83M5nOwgnSAYzZS9tsWNT4TO/GrhO8asvXVSJWUblLjKuVDyeCwZZiLONet8DQYW
+         RxpsDZoYG8PJ6NJIesSgsoaZGfgNCfYvqNDhtFQ+rY2XhCjr0SFrrEu+ul+nXqRcYajD
+         OOFdDyaWL+1UAxoBg9AtagQzfSAgfmoruZGilrPtxpe582NPV5H7L+PjQB88vA+VqrM7
+         e/aG6YZJBsIzSe+6sWTU87JoEsE1mSrXJA6HFp1dqBqw1yfQC7gPKu/QWf9k31N8LyZt
+         wM0A==
+X-Gm-Message-State: AOAM530nUx4bOWtX/KtuKJqu3Fti0P4ykdKebk2d5VuvZPQcTYkGnN1F
+        EPP/1vOShvc3LC4UTDEFQA==
+X-Google-Smtp-Source: ABdhPJyx5uFJKP1ycPT1i1rI+Sb5Lk5WOsXuArM9P+0sDw4HHOeqtk3Mh8kasfTGdny/BZlWtG+FYw==
+X-Received: by 2002:a92:b003:: with SMTP id x3mr23053380ilh.15.1615233577302;
+        Mon, 08 Mar 2021 11:59:37 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id d3sm6726124ilo.32.2021.03.08.11.59.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 11:59:36 -0800 (PST)
+Received: (nullmailer pid 2867128 invoked by uid 1000);
+        Mon, 08 Mar 2021 19:59:34 -0000
+Date:   Mon, 8 Mar 2021 12:59:34 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Steen Hegelund <steen.hegelund@microchip.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 3/3] arm64: dts: reset: add microchip sparx5 switch
+ reset driver
+Message-ID: <20210308195934.GA2855503@robh.at.kernel.org>
+References: <20210303081158.684532-1-steen.hegelund@microchip.com>
+ <20210303081158.684532-4-steen.hegelund@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <9c9360bf-7ca9-5c8f-c61d-441044f9c78f@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303081158.684532-4-steen.hegelund@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/8/21 3:17 AM, John Garry wrote:
-> On 06/03/2021 04:43, Bart Van Assche wrote:
->> On 3/5/21 7:14 AM, John Garry wrote:
->>> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
->>> index 7ff1b20d58e7..5950fee490e8 100644
->>> --- a/block/blk-mq-tag.c
->>> +++ b/block/blk-mq-tag.c
->>> @@ -358,11 +358,16 @@ void blk_mq_tagset_busy_iter(struct 
->>> blk_mq_tag_set *tagset,
->>>   {
->>>       int i;
->>> +    if (!atomic_inc_not_zero(&tagset->iter_usage_counter))
->>> +        return;
->>> +
->>>       for (i = 0; i < tagset->nr_hw_queues; i++) {
->>>           if (tagset->tags && tagset->tags[i])
->>>               __blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
->>>                             BT_TAG_ITER_STARTED);
->>>       }
->>> +
->>> +    atomic_dec(&tagset->iter_usage_counter);
->>>   }
->>>   EXPORT_SYMBOL(blk_mq_tagset_busy_iter);
+On Wed, Mar 03, 2021 at 09:11:58AM +0100, Steen Hegelund wrote:
+> This provides reset driver support for the Microchip Sparx5 PCB134 and
+> PCB135 reference boards.
+
+This still looks like an incompatible change with no explanation.
+
+What happens on an old kernel that expects "microchip,sparx5-chip-reset" 
+and doesn't understand "microchip,sparx5-switch-reset"?
+
 > 
-> Hi Bart,
+> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> ---
+>  arch/arm64/boot/dts/microchip/sparx5.dtsi | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
->> This changes the behavior of blk_mq_tagset_busy_iter(). What will e.g.
->> happen if the mtip driver calls blk_mq_tagset_busy_iter(&dd->tags,
->> mtip_abort_cmd, dd) concurrently with another blk_mq_tagset_busy_iter()
->> call and if that causes all mtip_abort_cmd() calls to be skipped?
+> diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> index 380281f312d8..dc3ada5cf9fc 100644
+> --- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> +++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> @@ -132,9 +132,12 @@ mux: mux-controller {
+>  			};
+>  		};
+>  
+> -		reset@611010008 {
+> -			compatible = "microchip,sparx5-chip-reset";
+> +		reset: reset-controller@611010008 {
+> +			compatible = "microchip,sparx5-switch-reset";
+>  			reg = <0x6 0x11010008 0x4>;
+> +			reg-names = "gcb";
+> +			#reset-cells = <1>;
+> +			cpu-syscon = <&cpu_ctrl>;
+>  		};
+>  
+>  		uart0: serial@600100000 {
+> -- 
+> 2.30.1
 > 
-> I'm not sure that I understand this problem you describe. So if 
-> blk_mq_tagset_busy_iter(&dd->tags, mtip_abort_cmd, dd) is called, either 
-> can happen:
-> a. normal operation, iter_usage_counter initially holds >= 1, and then 
-> iter_usage_counter is incremented in blk_mq_tagset_busy_iter() and we 
-> iter the busy tags. Any parallel call to blk_mq_tagset_busy_iter() will 
-> also increase iter_usage_counter.
-> b. we're switching IO scheduler. In this scenario, first we quiesce all 
-> queues. After that, there should be no active requests. At that point, 
-> we ensure any calls to blk_mq_tagset_busy_iter() are finished and block 
-> (or discard may be a better term) any more calls. Blocking any more 
-> calls should be safe as there are no requests to iter. atomic_cmpxchg() 
-> is used to set iter_usage_counter to 0, blocking any more calls.
-
-
-Hi John,
-
-My concern is about the insertion of the early return statement in 
-blk_mq_tagset_busy_iter(). Although most blk_mq_tagset_busy_iter() 
-callers can handle skipping certain blk_mq_tagset_busy_iter() calls 
-(e.g. when gathering statistics), I'm not sure this is safe for all 
-blk_mq_tagset_busy_iter() callers. The example I cited is an example of 
-a blk_mq_tagset_busy_iter() call with side effects.
-
-The mtip driver allocates one tag set per request queue so quiescing 
-queues should be sufficient to address my concern for the mtip driver.
-
-The NVMe core and SCSI core however share a single tag set across 
-multiple namespaces / LUNs. In the error path of nvme_rdma_setup_ctrl() 
-I found a call to nvme_cancel_tagset(). nvme_cancel_tagset() calls 
-blk_mq_tagset_busy_iter(ctrl->tagset, nvme_cancel_request, ctrl). I'm 
-not sure it is safe to skip the nvme_cancel_request() calls if the I/O 
-scheduler for another NVMe namespace is being modified.
-
-Thanks,
-
-Bart.
