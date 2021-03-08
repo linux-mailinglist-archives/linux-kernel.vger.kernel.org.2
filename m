@@ -2,170 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE60331A5D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D19E331A5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbhCHWnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 17:43:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59702 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230343AbhCHWmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 17:42:51 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B728465287;
-        Mon,  8 Mar 2021 22:42:50 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lJOaO-000R26-JZ; Mon, 08 Mar 2021 22:42:48 +0000
-Date:   Mon, 08 Mar 2021 22:42:47 +0000
-Message-ID: <87zgzdqnbs.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel@lists.infradead.org,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        id S230050AbhCHWpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 17:45:15 -0500
+Received: from mail-io1-f51.google.com ([209.85.166.51]:42901 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhCHWpB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 17:45:01 -0500
+Received: by mail-io1-f51.google.com with SMTP id u20so11784431iot.9;
+        Mon, 08 Mar 2021 14:45:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=lZgUQhRzAvx6dVNDN3Ys+ZgzhnR1xJquKzCwU/hFfN0=;
+        b=Fb6NeClYaSZHkIGb6ULN/IMqyqOal6WhwsPRERpSPNoC9ulkfBF9ZcHnnzUjUz0AdU
+         02HaRDtysTmWoGR4tHeL/NX9x/7nLvnHpvmGHHmzm1eJ7Qa1hd94TBzMIZinU10G0DLn
+         EYE9YMzQCZbrMgEFOpFhzJZeShtVFilegfxas6ddbU8u2Aq+h+2pCw1vuamJ5VFy+snd
+         aDi7lLrserJX0rppcPPuppXBzQMQ3g1uoDTn8OeerTiRx24Inbv46TpsUHMgRjdFkajo
+         aEMalp6RVwc6G5OoGfJQBTP9k1XrFa2QD5x/8+OlQ+JFc6/NfzY8trQj6Y5RE2g8rmU3
+         LvSg==
+X-Gm-Message-State: AOAM532Ye79wgzA8cl+jQr2t131/r8tCYkjxSMZ9drAnEJJGn0lZVg8B
+        9bX03HGsOdFD6v9ElDUpOg==
+X-Google-Smtp-Source: ABdhPJwRkqUd1yGkV2KUlGFAmf+n59+RV3xMlmplsOHk7Xl4QS05wuAsSd7P1wxH+AEn2sCekgF1DA==
+X-Received: by 2002:a05:6602:280f:: with SMTP id d15mr19614939ioe.127.1615243500936;
+        Mon, 08 Mar 2021 14:45:00 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id k12sm6778557ios.2.2021.03.08.14.44.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 14:45:00 -0800 (PST)
+Received: (nullmailer pid 3087734 invoked by uid 1000);
+        Mon, 08 Mar 2021 22:44:58 -0000
+Date:   Mon, 8 Mar 2021 15:44:58 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Michael Walle <michael@walle.cc>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFT PATCH v3 06/27] dt-bindings: timer: arm,arch_timer: Add interrupt-names support
-In-Reply-To: <20210308203841.GA2906683@robh.at.kernel.org>
-References: <20210304213902.83903-1-marcan@marcan.st>
-        <20210304213902.83903-7-marcan@marcan.st>
-        <20210308203841.GA2906683@robh.at.kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: robh@kernel.org, marcan@marcan.st, linux-arm-kernel@lists.infradead.org, arnd@kernel.org, olof@lixom.net, krzk@kernel.org, mark.kettenis@xs4all.nl, tony@atomide.com, mohamed.mediouni@caramail.com, stan@corellium.com, graf@amazon.com, will@kernel.org, linus.walleij@linaro.org, mark.rutland@arm.com, andy.shevchenko@gmail.com, gregkh@linuxfoundation.org, corbet@lwn.net, catalin.marinas@arm.com, hch@infradead.org, davem@davemloft.net, devicetree@vger.kernel.org, linux-serial@vger.kernel.org, linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 04/15] dt-bindings: add BCM6328 pincontroller binding
+ documentation
+Message-ID: <20210308224458.GA3077562@robh.at.kernel.org>
+References: <20210306155712.4298-1-noltari@gmail.com>
+ <20210306155712.4298-5-noltari@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210306155712.4298-5-noltari@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Mar 2021 20:38:41 +0000,
-Rob Herring <robh@kernel.org> wrote:
+On Sat, Mar 06, 2021 at 04:57:01PM +0100, Álvaro Fernández Rojas wrote:
+> Add binding documentation for the pincontrol core found in BCM6328 SoCs.
 > 
-> On Fri, Mar 05, 2021 at 06:38:41AM +0900, Hector Martin wrote:
-> > Not all platforms provide the same set of timers/interrupts, and Linux
-> > only needs one (plus kvm/guest ones); some platforms are working around
-> > this by using dummy fake interrupts. Implementing interrupt-names allows
-> > the devicetree to specify an arbitrary set of available interrupts, so
-> > the timer code can pick the right one.
-> > 
-> > This also adds the hyp-virt timer/interrupt, which was previously not
-> > expressed in the fixed 4-interrupt form.
-> > 
-> > Signed-off-by: Hector Martin <marcan@marcan.st>
-> > ---
-> >  .../devicetree/bindings/timer/arm,arch_timer.yaml  | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/timer/arm,arch_timer.yaml b/Documentation/devicetree/bindings/timer/arm,arch_timer.yaml
-> > index 2c75105c1398..ebe9b0bebe41 100644
-> > --- a/Documentation/devicetree/bindings/timer/arm,arch_timer.yaml
-> > +++ b/Documentation/devicetree/bindings/timer/arm,arch_timer.yaml
-> > @@ -34,11 +34,25 @@ properties:
-> >                - arm,armv8-timer
-> >  
-> >    interrupts:
-> > +    minItems: 1
-> > +    maxItems: 5
-> >      items:
-> >        - description: secure timer irq
-> >        - description: non-secure timer irq
-> >        - description: virtual timer irq
-> >        - description: hypervisor timer irq
-> > +      - description: hypervisor virtual timer irq
-> > +
-> > +  interrupt-names:
-> > +    minItems: 1
-> > +    maxItems: 5
-> > +    items:
-> > +      enum:
-> > +        - phys-secure
-> > +        - phys
-> > +        - virt
-> > +        - hyp-phys
-> > +        - hyp-virt
+> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+> Co-developed-by: Jonas Gorski <jonas.gorski@gmail.com>
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> ---
+>  v5: change Documentation to dt-bindings in commit title
+>  v4: no changes
+>  v3: add new gpio node
+>  v2: remove interrupts
 > 
-> phys-secure and hyp-phys is not very consistent. secure-phys or sec-phys 
-> instead?
+>  .../pinctrl/brcm,bcm6328-pinctrl.yaml         | 171 ++++++++++++++++++
+>  1 file changed, 171 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinctrl.yaml
 > 
-> This allows any order which is not ideal (unfortunately json-schema 
-> doesn't have a way to define order with optional entries in the middle). 
-> How many possible combinations are there which make sense? If that's a 
-> reasonable number, I'd rather see them listed out.
+> diff --git a/Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinctrl.yaml
+> new file mode 100644
+> index 000000000000..d4e3c7897f19
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/brcm,bcm6328-pinctrl.yaml
+> @@ -0,0 +1,171 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/brcm,bcm6328-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Broadcom BCM6328 pin controller
+> +
+> +maintainers:
+> +  - Álvaro Fernández Rojas <noltari@gmail.com>
+> +  - Jonas Gorski <jonas.gorski@gmail.com>
+> +
+> +description: |+
+> +  The pin controller node should be the child of a syscon node.
+> +
+> +  Refer to the the bindings described in
+> +  Documentation/devicetree/bindings/mfd/syscon.yaml
+> +
+> +properties:
+> +  compatible:
+> +    const: brcm,bcm6328-pinctrl
+> +
+> +patternProperties:
+> +  '^gpio$':
 
-The available of interrupts are a function of the number of security
-states, privileged exception levels and architecture revisions, as
-described in D11.1.1:
+Not a pattern, move to 'properties'
 
-<quote>
-- An EL1 physical timer.
-- A Non-secure EL2 physical timer.
-- An EL3 physical timer.
-- An EL1 virtual timer.
-- A Non-secure EL2 virtual timer.
-- A Secure EL2 virtual timer.
-- A Secure EL2 physical timer.
-</quote>
+> +    type: object
+> +    properties:
+> +      compatible:
+> +        const: brcm,bcm6328-gpio
+> +
+> +      data:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: |
+> +          Offset in the register map for the data register (in bytes).
+> +
+> +      dirout:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: |
+> +          Offset in the register map for the dirout register (in bytes).
+> +
+> +      gpio-controller: true
+> +
+> +      "#gpio-cells":
+> +        const: 2
+> +
+> +      gpio-ranges:
+> +        maxItems: 1
+> +
+> +    required:
+> +      - gpio-controller
+> +      - gpio-ranges
+> +      - '#gpio-cells'
+> +
+> +  '^.*$':
+> +    if:
+> +      type: object
+> +    then:
 
-* Single security state, EL1 only, ARMv7 & ARMv8.0+ (assumed NS):
-  - physical, virtual
+Instead of this hack (which shouldn't work because 'gpio' is also a 
+node), use some defined node name pattern (e.g. '-pins$')
 
-* Single security state, EL1 + EL2, ARMv7 & ARMv8.0 (assumed NS)
-  - physical, virtual, hyp physical
+You need an 'additionalProperties: false' at this level.
 
-* Single security state, EL1 + EL2, ARMv8.1+ (assumed NS)
-  - physical, virtual, hyp physical, hyp virtual
+> +      properties:
+> +        function:
+> +          $ref: "/schemas/types.yaml#/definitions/string"
 
-* Two security states, EL1 + EL3, ARMv7 & ARMv8.0+:
-  - secure physical, physical, virtual
+Reference the pinctrl schemas which define these properties.
 
-* Two security states, EL1 + EL2 + EL3, ARMv7 & ARMv8.0
-  - secure physical, physical, virtual, hyp physical
+> +          enum: [ serial_led_data, serial_led_clk, inet_act_led, pcie_clkreq,
+> +                  led, ephy0_act_led, ephy1_act_led, ephy2_act_led,
+> +                  ephy3_act_led, hsspi_cs1, usb_device_port, usb_host_port ]
+> +
+> +        pins:
+> +          $ref: "/schemas/types.yaml#/definitions/string"
+> +          enum: [ gpio6, gpio7, gpio11, gpio16, gpio17, gpio18, gpio19,
+> +                  gpio20, gpio25, gpio26, gpio27, gpio28, hsspi_cs1,
+> +                  usb_port1 ]
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    gpio_cntl@10000080 {
+> +      compatible = "syscon", "simple-mfd";
 
-* Two security states, EL1 + EL2 + EL3, ARMv8.1+
-  - secure physical, physical, virtual, hyp physical, hyp virtual
+syscon needs a specific compatible for the SoC block.
 
-* Two security states, EL1 + EL2 + S-EL2 + EL3, ARMv8.4+
-  - secure physical, physical, virtual, hyp physical, hyp virtual,
-    secure hyp physical, secure hyp virtual
+What else is in this block besides pinctrl?
 
-Nobody has seen the last combination in the wild (that is, outside of
-a SW model).
+> +      reg = <0x10000080 0x80>;
+> +
+> +      pinctrl: pinctrl {
+> +        compatible = "brcm,bcm6328-pinctrl";
 
-I'm really not convinced we want to express this kind of complexity in
-the binding (each of the 7 cases), specially given that we don't
-encode the underlying HW architecture level or number of exception
-levels anywhere, and have ho way to validate such information.
+Is there a register range of just pinctrl registers? If so, add 'reg' 
+and define the sub-range.
 
-Thanks,
 
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+> +
+> +        gpio {
+> +          compatible = "brcm,bcm6328-gpio";
+> +          data = <0xc>;
+> +          dirout = <0x4>;
+> +
+> +          gpio-controller;
+> +          gpio-ranges = <&pinctrl 0 0 32>;
+> +          #gpio-cells = <2>;
+> +        };
+> +
+> +        pinctrl_serial_led: serial_led {
+> +          pinctrl_serial_led_data: serial_led_data {
+> +            function = "serial_led_data";
+> +            pins = "gpio6";
+> +          };
+> +
+> +          pinctrl_serial_led_clk: serial_led_clk {
+> +            function = "serial_led_clk";
+> +            pins = "gpio7";
+> +          };
+> +        };
+> +
+> +        pinctrl_inet_act_led: inet_act_led {
+> +          function = "inet_act_led";
+> +          pins = "gpio11";
+> +        };
+> +
+> +        pinctrl_pcie_clkreq: pcie_clkreq {
+> +          function = "pcie_clkreq";
+> +          pins = "gpio16";
+> +        };
+> +
+> +        pinctrl_ephy0_spd_led: ephy0_spd_led {
+> +          function = "led";
+> +          pins = "gpio17";
+> +        };
+> +
+> +        pinctrl_ephy1_spd_led: ephy1_spd_led {
+> +          function = "led";
+> +          pins = "gpio18";
+> +        };
+> +
+> +        pinctrl_ephy2_spd_led: ephy2_spd_led {
+> +          function = "led";
+> +          pins = "gpio19";
+> +        };
+> +
+> +        pinctrl_ephy3_spd_led: ephy3_spd_led {
+> +          function = "led";
+> +          pins = "gpio20";
+> +        };
+> +
+> +        pinctrl_ephy0_act_led: ephy0_act_led {
+> +          function = "ephy0_act_led";
+> +          pins = "gpio25";
+> +        };
+> +
+> +        pinctrl_ephy1_act_led: ephy1_act_led {
+> +          function = "ephy1_act_led";
+> +          pins = "gpio26";
+> +        };
+> +
+> +        pinctrl_ephy2_act_led: ephy2_act_led {
+> +          function = "ephy2_act_led";
+> +          pins = "gpio27";
+> +        };
+> +
+> +        pinctrl_ephy3_act_led: ephy3_act_led {
+> +          function = "ephy3_act_led";
+> +          pins = "gpio28";
+> +        };
+> +
+> +        pinctrl_hsspi_cs1: hsspi_cs1 {
+> +          function = "hsspi_cs1";
+> +          pins = "hsspi_cs1";
+> +        };
+> +
+> +        pinctrl_usb_port1_device: usb_port1_device {
+> +          function = "usb_device_port";
+> +          pins = "usb_port1";
+> +        };
+> +
+> +        pinctrl_usb_port1_host: usb_port1_host {
+> +          function = "usb_host_port";
+> +          pins = "usb_port1";
+> +        };
+> +      };
+> +    };
+> -- 
+> 2.20.1
+> 
