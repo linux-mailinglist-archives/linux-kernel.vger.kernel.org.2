@@ -2,251 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003773319B5
+	by mail.lfdr.de (Postfix) with ESMTP id 839303319B4
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232055AbhCHVu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 16:50:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57285 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232037AbhCHVuA (ORCPT
+        id S232000AbhCHVu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 16:50:28 -0500
+Received: from mail-io1-f44.google.com ([209.85.166.44]:36104 "EHLO
+        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhCHVty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 16:50:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615240199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RAa72pVdIFvN9TtnoqB8dYU4KzANd01qCZAe6yxIHp0=;
-        b=Qu6O6si2neB8hMXCgv2M1Xd1WtPFMtaUeNqWfskzV2hjEM7atU89Uh/xdXT6DFjpikUZBM
-        guFMQi93qB0DC5v76vjSP77yzm1ZAhIN6wSjYez5JJTbIf0ZlsbNzOSTvUhFeL81ryWRzu
-        yFCP/pJ+5KhMBAjClu1IxchPi3iRAhg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-2fEasTi1OZ-7yRhIqB4uJg-1; Mon, 08 Mar 2021 16:49:57 -0500
-X-MC-Unique: 2fEasTi1OZ-7yRhIqB4uJg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6207A108BD06;
-        Mon,  8 Mar 2021 21:49:56 +0000 (UTC)
-Received: from gimli.home (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 96B805D9CD;
-        Mon,  8 Mar 2021 21:49:49 +0000 (UTC)
-Subject: [PATCH v1 14/14] vfio: Cleanup use of bare unsigned
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     alex.williamson@redhat.com
-Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jgg@nvidia.com, peterx@redhat.com
-Date:   Mon, 08 Mar 2021 14:49:49 -0700
-Message-ID: <161524018910.3480.774661659452044338.stgit@gimli.home>
-In-Reply-To: <161523878883.3480.12103845207889888280.stgit@gimli.home>
-References: <161523878883.3480.12103845207889888280.stgit@gimli.home>
-User-Agent: StGit/0.21-2-g8ef5
+        Mon, 8 Mar 2021 16:49:54 -0500
+Received: by mail-io1-f44.google.com with SMTP id n14so11687154iog.3;
+        Mon, 08 Mar 2021 13:49:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Aopk2xA4zD/bXMuGz7qZQmTI9QDAmCg2/YOh8hW5b/0=;
+        b=UtwLhXfV2cse5r8/G6vm2VCOSGyUPJULNDJXbSg0vvd+yt0zwroAt7SSsiU66gD0QT
+         IgdKoWuMlTTTHWwB01AfCZWRtyuDjFGGMV7SdAogDu8NViSsFheXiX4RNLd80I05uaPU
+         2od1XgmVAoZO/FvMEsvlo3R8OCeJcxhuGakaGN+kgyp0AW2vakAWQb7jliOa5A32uIZq
+         4M2Ur7lIvNyk0V0c3YF6wufGsfHuMSwKKLC1tEo4K3OGgYn6ZqIpFOaiFB0KZNqO/Uwg
+         pxJg9Xs3FnQNOFoxnhn7B0r9vez6LrdaTHOEbthgpnYQ94iRlhykI8H0MRwBk0KCE5qp
+         kgoQ==
+X-Gm-Message-State: AOAM532jdhWv80QwLGAjLfE9qtTdtn5mlGPKNQKhDETjBizyGT7RPJDP
+        X/CvM9HU4EXOjJldvFUVGg==
+X-Google-Smtp-Source: ABdhPJz4X8nedqPUFZXhmT/nr+nyG6cyHJpqU/AUG5gmHwFE1jAgJvvym0gu44LweRh8c7GRY2E0Ig==
+X-Received: by 2002:a05:6602:2497:: with SMTP id g23mr20165160ioe.22.1615240193189;
+        Mon, 08 Mar 2021 13:49:53 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id k8sm6514522ilu.4.2021.03.08.13.49.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 13:49:52 -0800 (PST)
+Received: (nullmailer pid 3014339 invoked by uid 1000);
+        Mon, 08 Mar 2021 21:49:50 -0000
+Date:   Mon, 8 Mar 2021 14:49:50 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Nadeem Athani <nadeem@cadence.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH v3 1/7] dt-bindings: PCI: pci-ep: Add binding to specify
+ virtual function
+Message-ID: <20210308214950.GA3010566@robh.at.kernel.org>
+References: <20210305050410.9201-1-kishon@ti.com>
+ <20210305050410.9201-2-kishon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305050410.9201-2-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace with 'unsigned int'.
+On Fri, Mar 05, 2021 at 10:34:04AM +0530, Kishon Vijay Abraham I wrote:
+> Add binding to specify virtual function (associated with each physical
+> function) in endpoint mode.
+> 
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  Documentation/devicetree/bindings/pci/pci-ep.yaml | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/pci-ep.yaml b/Documentation/devicetree/bindings/pci/pci-ep.yaml
+> index 7847bbcd4a03..b8d5406f94ce 100644
+> --- a/Documentation/devicetree/bindings/pci/pci-ep.yaml
+> +++ b/Documentation/devicetree/bindings/pci/pci-ep.yaml
+> @@ -23,6 +23,15 @@ properties:
+>      default: 1
+>      maximum: 255
+>  
+> +  max-virtual-functions:
+> +    description: Array representing the number of virtual functions corresponding to each physical
+> +      function
+> +    $ref: /schemas/types.yaml#/definitions/uint8-array
+> +    minItems: 1
+> +    maxItems: 255
+> +    items:
+> +      maximum: 255
 
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
----
- drivers/vfio/pci/vfio_pci_intrs.c             |   42 ++++++++++++++-----------
- drivers/vfio/pci/vfio_pci_private.h           |    4 +-
- drivers/vfio/platform/vfio_platform_irq.c     |   21 +++++++------
- drivers/vfio/platform/vfio_platform_private.h |    4 +-
- 4 files changed, 39 insertions(+), 32 deletions(-)
+No need for maximum, as that is already the case for uint8.
 
-diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
-index 869dce5f134d..67de58d67908 100644
---- a/drivers/vfio/pci/vfio_pci_intrs.c
-+++ b/drivers/vfio/pci/vfio_pci_intrs.c
-@@ -364,8 +364,8 @@ static int vfio_msi_set_vector_signal(struct vfio_pci_device *vdev,
- 	return 0;
- }
- 
--static int vfio_msi_set_block(struct vfio_pci_device *vdev, unsigned start,
--			      unsigned count, int32_t *fds, bool msix)
-+static int vfio_msi_set_block(struct vfio_pci_device *vdev, unsigned int start,
-+			      unsigned int count, int32_t *fds, bool msix)
- {
- 	int i, j, ret = 0;
- 
-@@ -418,8 +418,9 @@ static void vfio_msi_disable(struct vfio_pci_device *vdev, bool msix)
-  * IOCTL support
-  */
- static int vfio_pci_set_intx_unmask(struct vfio_pci_device *vdev,
--				    unsigned index, unsigned start,
--				    unsigned count, uint32_t flags, void *data)
-+				    unsigned int index, unsigned int start,
-+				    unsigned int count, uint32_t flags,
-+				    void *data)
- {
- 	if (!is_intx(vdev) || start != 0 || count != 1)
- 		return -EINVAL;
-@@ -445,8 +446,9 @@ static int vfio_pci_set_intx_unmask(struct vfio_pci_device *vdev,
- }
- 
- static int vfio_pci_set_intx_mask(struct vfio_pci_device *vdev,
--				  unsigned index, unsigned start,
--				  unsigned count, uint32_t flags, void *data)
-+				  unsigned int index, unsigned int start,
-+				  unsigned int count, uint32_t flags,
-+				  void *data)
- {
- 	if (!is_intx(vdev) || start != 0 || count != 1)
- 		return -EINVAL;
-@@ -465,8 +467,9 @@ static int vfio_pci_set_intx_mask(struct vfio_pci_device *vdev,
- }
- 
- static int vfio_pci_set_intx_trigger(struct vfio_pci_device *vdev,
--				     unsigned index, unsigned start,
--				     unsigned count, uint32_t flags, void *data)
-+				     unsigned int index, unsigned int start,
-+				     unsigned int count, uint32_t flags,
-+				     void *data)
- {
- 	if (is_intx(vdev) && !count && (flags & VFIO_IRQ_SET_DATA_NONE)) {
- 		vfio_intx_disable(vdev);
-@@ -508,8 +511,9 @@ static int vfio_pci_set_intx_trigger(struct vfio_pci_device *vdev,
- }
- 
- static int vfio_pci_set_msi_trigger(struct vfio_pci_device *vdev,
--				    unsigned index, unsigned start,
--				    unsigned count, uint32_t flags, void *data)
-+				    unsigned int index, unsigned int start,
-+				    unsigned int count, uint32_t flags,
-+				    void *data)
- {
- 	int i;
- 	bool msix = (index == VFIO_PCI_MSIX_IRQ_INDEX) ? true : false;
-@@ -614,8 +618,9 @@ static int vfio_pci_set_ctx_trigger_single(struct eventfd_ctx **ctx,
- }
- 
- static int vfio_pci_set_err_trigger(struct vfio_pci_device *vdev,
--				    unsigned index, unsigned start,
--				    unsigned count, uint32_t flags, void *data)
-+				    unsigned int index, unsigned int start,
-+				    unsigned int count, uint32_t flags,
-+				    void *data)
- {
- 	if (index != VFIO_PCI_ERR_IRQ_INDEX || start != 0 || count > 1)
- 		return -EINVAL;
-@@ -625,8 +630,9 @@ static int vfio_pci_set_err_trigger(struct vfio_pci_device *vdev,
- }
- 
- static int vfio_pci_set_req_trigger(struct vfio_pci_device *vdev,
--				    unsigned index, unsigned start,
--				    unsigned count, uint32_t flags, void *data)
-+				    unsigned int index, unsigned int start,
-+				    unsigned int count, uint32_t flags,
-+				    void *data)
- {
- 	if (index != VFIO_PCI_REQ_IRQ_INDEX || start != 0 || count > 1)
- 		return -EINVAL;
-@@ -636,11 +642,11 @@ static int vfio_pci_set_req_trigger(struct vfio_pci_device *vdev,
- }
- 
- int vfio_pci_set_irqs_ioctl(struct vfio_pci_device *vdev, uint32_t flags,
--			    unsigned index, unsigned start, unsigned count,
--			    void *data)
-+			    unsigned int index, unsigned int start,
-+			    unsigned int count, void *data)
- {
--	int (*func)(struct vfio_pci_device *vdev, unsigned index,
--		    unsigned start, unsigned count, uint32_t flags,
-+	int (*func)(struct vfio_pci_device *vdev, unsigned int index,
-+		    unsigned int start, unsigned int count, uint32_t flags,
- 		    void *data) = NULL;
- 
- 	switch (index) {
-diff --git a/drivers/vfio/pci/vfio_pci_private.h b/drivers/vfio/pci/vfio_pci_private.h
-index 49a60585cf9c..93f47044e2e5 100644
---- a/drivers/vfio/pci/vfio_pci_private.h
-+++ b/drivers/vfio/pci/vfio_pci_private.h
-@@ -153,8 +153,8 @@ void vfio_pci_intx_mask(struct vfio_pci_device *vdev);
- void vfio_pci_intx_unmask(struct vfio_pci_device *vdev);
- 
- int vfio_pci_set_irqs_ioctl(struct vfio_pci_device *vdev,
--			    uint32_t flags, unsigned index,
--			    unsigned start, unsigned count, void *data);
-+			    uint32_t flags, unsigned int index,
-+			    unsigned int start, unsigned int count, void *data);
- 
- ssize_t vfio_pci_config_rw(struct vfio_pci_device *vdev, char __user *buf,
- 			   size_t count, loff_t *ppos, bool iswrite);
-diff --git a/drivers/vfio/platform/vfio_platform_irq.c b/drivers/vfio/platform/vfio_platform_irq.c
-index c5b09ec0a3c9..90d87ab44131 100644
---- a/drivers/vfio/platform/vfio_platform_irq.c
-+++ b/drivers/vfio/platform/vfio_platform_irq.c
-@@ -39,8 +39,8 @@ static int vfio_platform_mask_handler(void *opaque, void *unused)
- }
- 
- static int vfio_platform_set_irq_mask(struct vfio_platform_device *vdev,
--				      unsigned index, unsigned start,
--				      unsigned count, uint32_t flags,
-+				      unsigned int index, unsigned int start,
-+				      unsigned int count, uint32_t flags,
- 				      void *data)
- {
- 	if (start != 0 || count != 1)
-@@ -99,8 +99,8 @@ static int vfio_platform_unmask_handler(void *opaque, void *unused)
- }
- 
- static int vfio_platform_set_irq_unmask(struct vfio_platform_device *vdev,
--					unsigned index, unsigned start,
--					unsigned count, uint32_t flags,
-+					unsigned int index, unsigned int start,
-+					unsigned int count, uint32_t flags,
- 					void *data)
- {
- 	if (start != 0 || count != 1)
-@@ -216,8 +216,8 @@ static int vfio_set_trigger(struct vfio_platform_device *vdev, int index,
- }
- 
- static int vfio_platform_set_irq_trigger(struct vfio_platform_device *vdev,
--					 unsigned index, unsigned start,
--					 unsigned count, uint32_t flags,
-+					 unsigned int index, unsigned int start,
-+					 unsigned int count, uint32_t flags,
- 					 void *data)
- {
- 	struct vfio_platform_irq *irq = &vdev->irqs[index];
-@@ -254,11 +254,12 @@ static int vfio_platform_set_irq_trigger(struct vfio_platform_device *vdev,
- }
- 
- int vfio_platform_set_irqs_ioctl(struct vfio_platform_device *vdev,
--				 uint32_t flags, unsigned index, unsigned start,
--				 unsigned count, void *data)
-+				 uint32_t flags, unsigned int index,
-+				 unsigned int start, unsigned int count,
-+				 void *data)
- {
--	int (*func)(struct vfio_platform_device *vdev, unsigned index,
--		    unsigned start, unsigned count, uint32_t flags,
-+	int (*func)(struct vfio_platform_device *vdev, unsigned int index,
-+		    unsigned int start, unsigned int count, uint32_t flags,
- 		    void *data) = NULL;
- 
- 	switch (flags & VFIO_IRQ_SET_ACTION_TYPE_MASK) {
-diff --git a/drivers/vfio/platform/vfio_platform_private.h b/drivers/vfio/platform/vfio_platform_private.h
-index 2aa12d41f9c6..09870bf07e95 100644
---- a/drivers/vfio/platform/vfio_platform_private.h
-+++ b/drivers/vfio/platform/vfio_platform_private.h
-@@ -86,8 +86,8 @@ int vfio_platform_irq_init(struct vfio_platform_device *vdev);
- void vfio_platform_irq_cleanup(struct vfio_platform_device *vdev);
- 
- int vfio_platform_set_irqs_ioctl(struct vfio_platform_device *vdev,
--				 uint32_t flags, unsigned index,
--				 unsigned start, unsigned count,
-+				 uint32_t flags, unsigned int index,
-+				 unsigned int start, unsigned int count,
- 				 void *data);
- 
- void __vfio_platform_register_reset(struct vfio_platform_reset_node *n);
+With that dropped,
 
+Reviewed-by: Rob Herring <robh@kernel.org>
