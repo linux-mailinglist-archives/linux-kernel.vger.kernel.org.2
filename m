@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55203331AF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 00:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 956B9331AF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 00:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhCHX3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 18:29:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhCHX3U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 18:29:20 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51280C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 15:29:20 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id y13so4765757pfr.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 15:29:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CmfxbJbsR32j2stPZTCAVs668uTJmv8SU8V0tORla8k=;
-        b=loMSgpyCPFx0qqhEygDCduyPFZcBermyVhL9olczMSLnaHjD/dewtfsl3m0CMLrPKW
-         HXffVL050IlTqPDH4XUokC47IidmWHhOUHXb7DL2WP7BTYVoXWLpJlrhtF5DTg83tahq
-         Z++bWV0GgCBfSIqO1csGQ3rGm1M8ID4CYAaO4VzebEqfnBSL2hsEuqZ7ekbj5Cb5FCKA
-         mKM0S4UCyPIWPUNlTPZrj3//ayV+tgpuO3/LxPKjm9ImwrhQUZfa6gfUgwVwDjzlGhDd
-         nucwhzOM8f2Dr8woxq8Awiml9V8mwXXMyVWntouwPKeia7Fu7QnUaYe/4BrxpjLWsu9T
-         XKxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CmfxbJbsR32j2stPZTCAVs668uTJmv8SU8V0tORla8k=;
-        b=WY9kOLg6i+CHBetjeegQoxmNdUZkt3u2Eyv57jOn4nKsG/czSvqzsMZCuGjTWMZ9t9
-         M41s80h6ol17Y5fl0/2THqFeiHpD1qPggwz9IALxu4LQPq0TqhLcug2sHv9gTeKYD0kq
-         JPDochxi4wTG418Zo1X+bjeCoD6YfB2EB12iwM5i9XhYvSBm02R2bgsqUuJ80Wo1qu51
-         9ILZej2adyV/0PnX2ZczE0JxQmXimdHRKRjxbc1q8F2bWnZdDz0Qs5roWMCQUg0NFKwl
-         iCp2q5jsOOrgA1F5Sm88FUkpzER4vSIsJI2XpX1jU93ukc9IqrAHxCulfuMvlTioYAi3
-         hgdw==
-X-Gm-Message-State: AOAM530Y9Uha458ZWwU1luhYrJWpUEbv31SKMaM3e+K8Nwc5wTfIWK2T
-        oamXqlj5ecTr7IQjDF+NrJR7bg==
-X-Google-Smtp-Source: ABdhPJxpn6GHNZAPqETOhgrPoqObmFdwbzRNeB6gxDD3X7bTKOUHCY3nYHX3mMJ+o0dP5thKkYD4ew==
-X-Received: by 2002:a63:e22:: with SMTP id d34mr22551523pgl.264.1615246159344;
-        Mon, 08 Mar 2021 15:29:19 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:8:847a:d8b5:e2cc])
-        by smtp.gmail.com with ESMTPSA id y6sm11950866pfm.99.2021.03.08.15.29.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 15:29:18 -0800 (PST)
-Date:   Mon, 8 Mar 2021 15:29:12 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     syzbot <syzbot+3c2bc6358072ede0f11b@syzkaller.appspotmail.com>
-Cc:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, pbonzini@redhat.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
-Subject: Re: [syzbot] WARNING in kvm_wait
-Message-ID: <YEazSAsa2l6KQZwL@google.com>
-References: <0000000000003912cf05bd0cdd75@google.com>
+        id S231515AbhCHXaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 18:30:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229471AbhCHXaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 18:30:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id D32BB6527D;
+        Mon,  8 Mar 2021 23:30:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615246207;
+        bh=8gZXx9QO4EzwmFshOMlCezfnEJ6cCSECVYl2qIl2V+o=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=R6Jo1NQ+n0uib6ZLbroLr0q3GqKuuvG69uGF7FwTohxl5YurepHECk+He46sCEGa0
+         HpUFoZB3tXBctUdZe8HNw407cYt40e5wq+zhI9y3nqJHtRjEdTM9ndRvUDgniysSCo
+         P4qmQFCT8fwVXY9s0ZP96TgDMAsmmpnEcA2ys7ADo3eJpNplzmmL/7k0eMHE6iKgEz
+         U/2j91fPpkhXdj/I2jk10hqUrtyITPzjXglrblnQsOflazlCoe7P3AD++W7r41k/LL
+         MKR58kNJult8NNAgeNL/8C0R89XUnXHxbMziYehnuDVsBvkRf37P2FkIj0qTkOI9zw
+         2I3zjrGI+OZeg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C2E8F6098E;
+        Mon,  8 Mar 2021 23:30:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000003912cf05bd0cdd75@google.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 0/3] fix a couple of atm->phy_data related issues
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161524620779.17053.16108996062074686102.git-patchwork-notify@kernel.org>
+Date:   Mon, 08 Mar 2021 23:30:07 +0000
+References: <20210308032529.435224-1-ztong0001@gmail.com>
+In-Reply-To: <20210308032529.435224-1-ztong0001@gmail.com>
+To:     Tong Zhang <ztong0001@gmail.com>
+Cc:     3chas3@gmail.com, linux-atm-general@lists.sourceforge.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    a38fd874 Linux 5.12-rc2
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14158fdad00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=db9c6adb4986f2f2
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3c2bc6358072ede0f11b
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1096d35cd00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16bf1e52d00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+3c2bc6358072ede0f11b@syzkaller.appspotmail.com
+Hello:
 
-Wanpeng has a patch posted to fix this[*], is there a way to retroactively point
-syzbot at that fix?
+This series was applied to netdev/net.git (refs/heads/master):
 
-[*] https://lkml.kernel.org/r/1614057902-23774-1-git-send-email-wanpengli@tencent.com
+On Sun,  7 Mar 2021 22:25:27 -0500 you wrote:
+> there are two drivers(zatm and idt77252) using PRIV() (i.e. atm->phy_data)
+> to store private data, but the driver happens to populate wrong
+> pointers: atm->dev_data. which actually cause null-ptr-dereference in
+> following PRIV(dev). This patch series attemps to fix those two issues
+> along with a typo in atm struct.
+> 
+> Tong Zhang (3):
+>   atm: fix a typo in the struct description
+>   atm: uPD98402: fix incorrect allocation
+>   atm: idt77252: fix null-ptr-dereference
+> 
+> [...]
+
+Here is the summary with links:
+  - [1/3] atm: fix a typo in the struct description
+    https://git.kernel.org/netdev/net/c/1019d7923d9d
+  - [2/3] atm: uPD98402: fix incorrect allocation
+    https://git.kernel.org/netdev/net/c/3153724fc084
+  - [3/3] atm: idt77252: fix null-ptr-dereference
+    https://git.kernel.org/netdev/net/c/4416e98594dc
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
