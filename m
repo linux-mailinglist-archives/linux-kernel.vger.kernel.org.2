@@ -2,98 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C293313F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4D533140F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:05:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhCHQ7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:59:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbhCHQ7e (ORCPT
+        id S230125AbhCHREe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:04:34 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53884 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229650AbhCHRET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:59:34 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1368C06174A;
-        Mon,  8 Mar 2021 08:59:33 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id i14so3363216pjz.4;
-        Mon, 08 Mar 2021 08:59:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=od17LthaoolvduGrwEslwJAbWVL76D58PWjWt93m25I=;
-        b=Eu0ZFxAf8fLpO0VRDDgSezt3y+zK89Bk4tHm6dfudcikaJ0N66dDvaQHiM7HTV7da/
-         dnHyXZtQecFwTH5u4i6NHRXKbyjAvA5rAVhlRHvcYjfMWuGKKmFybuwfDzzJavxQAHKf
-         X867rws97ZzCS17T2QnscA+YtK+n15raEJDRxCVIyQLC2QHGpKOswlAY3dQ/XMFkdo+N
-         hphKu31ApDg9Xtt3r0VM/B5xz2ZiOrEhE80xqig7hlHmeZfOuNZOT1KVpspRaMo8R2mL
-         tgSmCg3Uz2yqPK9I7T+lYPD6Zgh2HSqkXqIWk1scFIj9J/2nQPQkoT2tBPzOhngUpc2W
-         V3xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=od17LthaoolvduGrwEslwJAbWVL76D58PWjWt93m25I=;
-        b=HSLSPEy2+WkC77NIKIyx3tz+pK3GqIVE/xxQZz/DTsuTAwHK/RvCgw8H5IKizTFu33
-         mY4LoILt0NivdeawnSixRjhGWjw+iygVxK3G65n9yY4jGK3yh3VA72PGOcHM9qxMvY6G
-         RksTua9Y9b5LgLVAxZBPJuIokZTy9dxu6gJ9FOnus8CADFrfBkx9pVglgloc1xj6VTam
-         I3mMIpjL26C4gchdsjn4lAArgcn8oEEA9ZAyTURT+2wzNGuOWdrgys0KVwxry5/4vMqR
-         SYfauV4SBDws/psSijiOKx15q0T43j1xJ6IGNyEXb+uu7Y3J0vYHaXVPekVj+HpcnKGg
-         TXrg==
-X-Gm-Message-State: AOAM531GA10TvrFXnnZVRas1g50Fv236BkXf5nXcFUG0dHU2eCPxZkCi
-        859rMhMdAw9nTe9CGfVeDGgGHiH3JBc=
-X-Google-Smtp-Source: ABdhPJxOQGexRKcYjZkdWkm6DPyfDf+9UFttOhkGVMPP78A5iNTjqF1OWkXsvL7Ua8sXSudkVCbzEg==
-X-Received: by 2002:a17:90b:fce:: with SMTP id gd14mr25038689pjb.64.1615222773136;
-        Mon, 08 Mar 2021 08:59:33 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id k15sm4591635pgt.23.2021.03.08.08.59.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 08:59:32 -0800 (PST)
-Subject: Re: [PATCH 5.4 00/22] 5.4.104-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210308122714.391917404@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <56ae0d93-3e08-1799-6b4b-46f621c62811@gmail.com>
-Date:   Mon, 8 Mar 2021 08:59:30 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.0
+        Mon, 8 Mar 2021 12:04:19 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 128H3sGJ125483;
+        Mon, 8 Mar 2021 12:04:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=j3z0BrGwRD1VmA8bd9vyTkFINn0wCAo42neIz5HC674=;
+ b=ob5SVBsJ5cVnWL0bq2cx2uOBadY2j3EAteR1bS+7/+l5GOtmEKA0tBeQTkWv1AhNfRJy
+ x3MbNm+AuCbrDB4Q1fFDycHwsJXZz5SiaqWEOcqUbyB6EsVk+IRISg/5/AdPBqTnMGHN
+ mx4uEu5GOZ5LMmxrbXQe9+KGeLCOf3+a5M/Rs6b+zFSrDyM68rRgXIprS/ZzeBc3p6bo
+ Jy15xqPJZ352hlij/JnfXJ8MzYF8e1WY86A3Eop+bSKZL6rzvVluqGG2hPW547OUQIB3
+ 9j0D0mgg9g7Q9Gk0ta4C0E8dE9DbnRsh+ThKMC9OTjEQ+4gD9RnD1ioqU/lD1cs3lHcV nw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 375qh6rkku-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Mar 2021 12:04:06 -0500
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 128H404r125898;
+        Mon, 8 Mar 2021 12:04:05 -0500
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 375qh6rjqg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Mar 2021 12:04:05 -0500
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 128Gaqkp015654;
+        Mon, 8 Mar 2021 17:00:07 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma01wdc.us.ibm.com with ESMTP id 3741c883b0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Mar 2021 17:00:07 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 128H06Xw42664236
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 8 Mar 2021 17:00:06 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 26BD813605E;
+        Mon,  8 Mar 2021 17:00:06 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 93254136068;
+        Mon,  8 Mar 2021 17:00:05 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon,  8 Mar 2021 17:00:05 +0000 (GMT)
+Subject: Re: [PATCH v11 02/10] crypto: Add support for ECDSA signature
+ verification
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        dhowells@redhat.com, zohar@linux.ibm.com, jarkko@kernel.org
+Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org
+References: <20210305205956.3594375-1-stefanb@linux.vnet.ibm.com>
+ <20210305205956.3594375-3-stefanb@linux.vnet.ibm.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <8d7b4ee1-cf71-ce2d-abaf-2ad1e472f1af@linux.ibm.com>
+Date:   Mon, 8 Mar 2021 12:00:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210308122714.391917404@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210305205956.3594375-3-stefanb@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-08_14:2021-03-08,2021-03-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 bulkscore=0 phishscore=0 priorityscore=1501 suspectscore=0
+ mlxscore=0 spamscore=0 impostorscore=0 adultscore=0 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103080091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/5/21 3:59 PM, Stefan Berger wrote:
+> diff --git a/crypto/Kconfig b/crypto/Kconfig
+> index a367fcfeb5d4..a31df40591f5 100644
+> --- a/crypto/Kconfig
+> +++ b/crypto/Kconfig
+> @@ -247,6 +247,16 @@ config CRYPTO_ECDH
+>   	help
+>   	  Generic implementation of the ECDH algorithm
+>   
+> @@ -70,6 +72,30 @@ struct ecc_curve {
+>   	u64 *b;
+>   };
+>   
+> +/**
+> + * ecc_swap_digits() - Copy ndigits from big endian array to native array
+> + * @in:       Input array
+> + * @out:      Output array
+> + * @ndigits:  Number of digits to copy
+> + */
+> +static inline void ecc_swap_digits(const u64 *in, u64 *out, unsigned int ndigits)
+> +{
+> +	const __be64 *src = (__force __be64 *)in;
+> +	int i;
+> +
+> +	for (i = 0; i < ndigits; i++)
+> +		out[i] = be64_to_cpu(src[ndigits - 1 - i]);
+> +}
+> +
+> +/**
+> + * ecc_get_curve()  - Get a curve given its curve_id
+> + *
+
+There's still an additional empty line here (as is the case with other 
+existing functions in this file). I will fix this one in v12.
 
 
-On 3/8/2021 4:30 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.104 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 10 Mar 2021 12:27:05 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.104-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
-
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
