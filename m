@@ -2,91 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10A63318C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA113318CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhCHUmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:42:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34400 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231252AbhCHUm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:42:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B45F64F09;
-        Mon,  8 Mar 2021 20:42:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1615236148;
-        bh=Q+729RpzRWiSDmoA11m7P/RlPUtuXJidEKu+QeR4f/0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=1yponGFO48b8sMeILoThXvXh9tf+Ef1H/UzKG0/b/7o2Tw5lIezwZ2bJ2+wEX3UmW
-         vWfMeRlABfpwkoSlKzsWMqpPj/dFDXrIv2GV+x7cF1oHNKP+peFF1aLwYYyLFGi/Uj
-         Z1hV9D/lK3y7sTFlvnWV6ocaAoI4OZqCDyjut2S8=
-Date:   Mon, 8 Mar 2021 12:42:27 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Zhou Guanghui <zhouguanghui1@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        hannes@cmpxchg.org, hughd@google.com,
-        kirill.shutemov@linux.intel.com, npiggin@gmail.com, ziy@nvidia.com,
-        wangkefeng.wang@huawei.com, guohanjun@huawei.com,
-        dingtianhong@huawei.com, chenweilong@huawei.com,
-        rui.xiang@huawei.com
-Subject: Re: [PATCH v2 2/2] mm/memcg: set memcg when split page
-Message-Id: <20210308124227.f9b343f006d26ba8d47a959c@linux-foundation.org>
-In-Reply-To: <YEXjQsUVCGuPM7Yi@dhcp22.suse.cz>
-References: <20210304074053.65527-1-zhouguanghui1@huawei.com>
-        <20210304074053.65527-3-zhouguanghui1@huawei.com>
-        <YEIblNv0BMITFzYO@dhcp22.suse.cz>
-        <20210305155840.4bb6dea4fb473d9ffbe49c99@linux-foundation.org>
-        <YEXjQsUVCGuPM7Yi@dhcp22.suse.cz>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231265AbhCHUn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:43:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhCHUn0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 15:43:26 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56736C06174A;
+        Mon,  8 Mar 2021 12:43:26 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 75B23E7B;
+        Mon,  8 Mar 2021 21:43:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615236204;
+        bh=eUIxsi6KUQOw5q47XWeSrdAkbyfhRraA71IbHa9KDhY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lJhlDVqUrAmPMxbo24TtmerInhAUXJLZaYnFraZ2XCkmvBAJATYIs9i1t1BE9Lk0k
+         fb9L467HOf4vTHEbdlOR5LnBULflEuzWb+cU5MsFGvJI/kbFsptv1cpB+cHK4ddugF
+         H2Sb8UI3Q2n057EJoJi1R2O9WUnyXMi/uzLNxvFE=
+Date:   Mon, 8 Mar 2021 22:42:53 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Parshuram Raju Thombare <pthombar@cadence.com>
+Cc:     "robert.foss@linaro.org" <robert.foss@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "a.hajda@samsung.com" <a.hajda@samsung.com>,
+        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "nikhil.nd@ti.com" <nikhil.nd@ti.com>,
+        "kishon@ti.com" <kishon@ti.com>,
+        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        Milind Parab <mparab@cadence.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: drm/bridge: MHDP8546 bridge binding
+ changes for HDCP
+Message-ID: <YEaMTbJ7Wx7otX2k@pendragon.ideasonboard.com>
+References: <1614597685-4192-1-git-send-email-pthombar@cadence.com>
+ <1614597746-4563-1-git-send-email-pthombar@cadence.com>
+ <YD0LKg3Jl5nauMqF@pendragon.ideasonboard.com>
+ <DM5PR07MB319661E8BFEB251CE17AF587C19A9@DM5PR07MB3196.namprd07.prod.outlook.com>
+ <YD0WAMySrv53lxFR@pendragon.ideasonboard.com>
+ <DM5PR07MB319628C858F667D9E5058904C1999@DM5PR07MB3196.namprd07.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <DM5PR07MB319628C858F667D9E5058904C1999@DM5PR07MB3196.namprd07.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Mar 2021 09:41:38 +0100 Michal Hocko <mhocko@suse.com> wrote:
+Hi Parshuram,
 
-> On Fri 05-03-21 15:58:40, Andrew Morton wrote:
-> > On Fri, 5 Mar 2021 12:52:52 +0100 Michal Hocko <mhocko@suse.com> wrote:
-> > 
-> > > On Thu 04-03-21 07:40:53, Zhou Guanghui wrote:
-> > > > As described in the split_page function comment, for the non-compound
-> > > > high order page, the sub-pages must be freed individually. If the
-> > > > memcg of the fisrt page is valid, the tail pages cannot be uncharged
-> > > > when be freed.
-> > > > 
-> > > > For example, when alloc_pages_exact is used to allocate 1MB continuous
-> > > > physical memory, 2MB is charged(kmemcg is enabled and __GFP_ACCOUNT is
-> > > > set). When make_alloc_exact free the unused 1MB and free_pages_exact
-> > > > free the applied 1MB, actually, only 4KB(one page) is uncharged.
-> > > > 
-> > > > Therefore, the memcg of the tail page needs to be set when split page.
-> > > > 
-> > > 
-> > > As already mentioned there are at least two explicit users of
-> > > __GFP_ACCOUNT with alloc_exact_pages added recently. It would be good to
-> > > mention that explicitly and maybe even mention 7efe8ef274024 resp.
-> > > c419621873713 so that it is clear this is not just a theoretical issue.
-> > 
-> > I added
-> > 
-> > : Michel:
-> > : 
-> > : There are at least two explicit users of __GFP_ACCOUNT with
-> > : alloc_exact_pages added recently.  See 7efe8ef274024 ("KVM: arm64:
-> > : Allocate stage-2 pgd pages with GFP_KERNEL_ACCOUNT") and c419621873713
-> > : ("KVM: s390: Add memcg accounting to KVM allocations"), so this is not
-> > : just a theoretical issue.
-> > 
-> > And should we cc:stable on this one?
+On Tue, Mar 02, 2021 at 12:53:50PM +0000, Parshuram Raju Thombare wrote:
+> Hi Laurent,
 > 
-> Somebody more familiar with iommu dma allocation layer should have a
-> look as well (__iommu_dma_alloc_pages) so that we know whether there are
-> kernels outside of the above two ones mentioned above that need a fix.
-> But in general this sounds like a good fit for the stable tree.
+> >>> Is this a property of the hardware, that is, are there multiple versions
+> >>> of this IP core covered by the same compatible string that support HDCP
+> >>> 1.4 only, DHCP 2.2 only or both ? Or is it a way to select what a given
+> >>> system will offer ?[]
+> >>
+> >> MHDP hardware supports both HDCP 2.2 and 1.4. So, this is a way
+> >> to select the version of HDCP, system wish to support.
+> >
+> > Then I'm not sure this qualifies as a DT property, which should describe
+> > the system, not configure it. A way for userspace to configure this
+> > would be better.
+> 
+> Since this is for source device, I am not sure how useful it is to allow
+> user to change HDCP version supported. I think doing it in DTS
+> gives more control over HDCP to system designer/integrator.
 
-OK.  I reversed the order of these two patches so we don't need to
-burden -stable with a cosmetic rename.
+But how would they do so ? What would be the rationale for selecting a
+particular version in DT ?
 
+I'm not thinking about giving control of this parameter to the end-user,
+but in the context of an embedded system, it may be useful to select
+which HDCP versions to offer based on different constraints at runtime.
+This really seems like a system configuration parameter to me, not a
+system description.
+
+-- 
+Regards,
+
+Laurent Pinchart
