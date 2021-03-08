@@ -2,126 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A2733132F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:17:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71FF2331332
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:17:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbhCHQQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:16:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231226AbhCHQQO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:16:14 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAA6C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 08:16:14 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo4153333wmq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 08:16:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dUhsdpgyKbkw4pWWzlPQlJO0EnmBV3jJKURQm4/QkFA=;
-        b=Nff/mQrlyV5ROAurVkLSqXKFuMVDszocw7rDWhPBnR1Ok/wDmBLCS7nSDiGVDCozIp
-         80abNeWluZ3qJunraTaWeTDrTS6QZ55A1JrT+eOXxLY/VB8r0lVPL4S2vI9JqXfUw0Qg
-         jb+a3xx6pBIAaJX274bWbRkLGTLpBwGJCgCj/mU7Jh1LVVmhvZbA1Yfo5a594wVROqUF
-         cbvNKf6TSIj9Cebzvjd+bnKKtgJfjwRW4lwN84X4C8ewFjkxdJsneCURVdlOu38mHCCF
-         LGW4Eqinvni1b7sguCO8y/yy0KD8f0vs5HY7l6zV1f0csCm/Z6QNTZIXx80Spfy2uVhK
-         r2KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dUhsdpgyKbkw4pWWzlPQlJO0EnmBV3jJKURQm4/QkFA=;
-        b=lsuFjqWyXnwK4UOIpJ98WS1AI99YH1VOMGmixcAD5c77DNHJxTHmQswqheTHNaItW9
-         G0rxBB9MBvlSKgqufx49bYAgbBfvaDJLsHagVkXL2h/BIdjOSAssXh5maJVa82es4sdP
-         LKSmGo5oPdMt/VDu3U65sfruLhsJKQGmAqoFMHN2hcpQ02OR6rVbb1cfxC7gthsvKx0U
-         b0zXkuMB7+N0qNKZvchRTYpRsZ5w5qjq6z7KmUFzDGZZI8eG62xyjqyaXgo9ee7ujd9j
-         ZWxsWV1uuQxv/3YaoUOScKbLkpUCRg/h53IeEfJF0dhRe89W8yBG5OWyzX1BcSC9w8GC
-         /5Bg==
-X-Gm-Message-State: AOAM533hRexwY140c/Oakn2lHUUIZQe4o5WN435j/I7hLGcvrKIiWRhj
-        U+0yA2uugL03XuF9Tn2eJnWK2g==
-X-Google-Smtp-Source: ABdhPJx+IiBiziHQQ87PcUBmZFUJZZod0kR9YdAx8gqEn3DHUhj10eGtKcUpB9mxBAwo+eSgd3bZaQ==
-X-Received: by 2002:a1c:c282:: with SMTP id s124mr22525795wmf.99.1615220172820;
-        Mon, 08 Mar 2021 08:16:12 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id n6sm20123107wmd.27.2021.03.08.08.16.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Mar 2021 08:16:12 -0800 (PST)
-Subject: Re: [PATCH v3 8/9] soundwire: qcom: add auto enumeration support
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        vkoul@kernel.org
-Cc:     yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20210308134957.16024-1-srinivas.kandagatla@linaro.org>
- <20210308134957.16024-9-srinivas.kandagatla@linaro.org>
- <ab00438b-dbb9-e6c6-019a-d50494e5dee1@linux.intel.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <6050461e-5594-6272-e0ef-2ebdc271d809@linaro.org>
-Date:   Mon, 8 Mar 2021 16:16:11 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S230476AbhCHQRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:17:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231128AbhCHQQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 11:16:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 740E56521B;
+        Mon,  8 Mar 2021 16:16:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615220218;
+        bh=cW8t7xuDTgs4FwnpsppxTtiL2Zc2bKlDJBhJ+T5cif8=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=idQje9Be807E9KD5TrZ2QN5fQpB4W8O/cC7UcgUJR+oTpdJs+kiouq8xbBRKB2eR1
+         96m122FwGzxie4GwagllIPFZ4s8lFrSAmzyH2IT/IuIVRJbTnKt2/14I6gPXJ3DU1G
+         rym3rO2vWV9ChrPX1UAG+2JOPFQz2VmVGEmoawgN1TANMHp2mXRliZaNx1L0Vywe4d
+         Zf1fo3PMoZkmfRGJYn7xIGdGwCd0mrR0InvKgnOYf1CEcqssbiAl4BjE9R8aCDtiSL
+         nCLHRNcJ/zX6BvmH9fQD2evdAtxuAQVmKogUw/RqB/IVcSZRp0n11r+HLvQXTkJuEI
+         kVuGOXO2TlfcQ==
+Date:   Mon, 8 Mar 2021 17:16:54 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+cc:     =?ISO-8859-15?Q?Uwe_Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/3] HID: intel-ish-hid: Drop if block with an always
+ false condition
+In-Reply-To: <31028f589e27e246bb3b4b693caeb0b8eae3a285.camel@linux.intel.com>
+Message-ID: <nycvar.YFH.7.76.2103081716200.12405@cbobk.fhfr.pm>
+References: <20210206151348.14530-1-uwe@kleine-koenig.org>  <nycvar.YFH.7.76.2103081107250.12405@cbobk.fhfr.pm> <31028f589e27e246bb3b4b693caeb0b8eae3a285.camel@linux.intel.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <ab00438b-dbb9-e6c6-019a-d50494e5dee1@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 8 Mar 2021, Srinivas Pandruvada wrote:
 
+> > > A remove callback is only ever called for a bound device. So there
+> > > is no
+> > > need to check for device or driver being NULL.
+> > 
+> > Srinivas, any objections to this patchset? The cleanups look good to
+> > me. 
+> Sorry, I missed this series.
+> No objection for taking these patches.
 
-On 08/03/2021 15:56, Pierre-Louis Bossart wrote:
-> 
->> +static int qcom_swrm_enumerate(struct sdw_bus *bus)
->> +{
->> +    struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
->> +    struct sdw_slave *slave, *_s;
->> +    struct sdw_slave_id id;
->> +    u32 val1, val2;
->> +    bool found;
->> +    u64 addr;
->> +    int i;
->> +    char *buf1 = (char *)&val1, *buf2 = (char *)&val2;
->> +
->> +    for (i = 1; i <= SDW_MAX_DEVICES; i++) {
->> +        /*SCP_Devid5 - Devid 4*/
->> +        ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_1(i), &val1);
->> +
->> +        /*SCP_Devid3 - DevId 2 Devid 1 Devid 0*/
->> +        ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_2(i), &val2);
->> +
->> +        if (!val1 && !val2)
->> +            break;
->> +
->> +        addr = buf2[1] | (buf2[0] << 8) | (buf1[3] << 16) |
->> +            ((u64)buf1[2] << 24) | ((u64)buf1[1] << 32) |
->> +            ((u64)buf1[0] << 40);
->> +
->> +        sdw_extract_slave_id(bus, addr, &id);
->> +        found = false;
->> +        /* Now compare with entries */
->> +        list_for_each_entry_safe(slave, _s, &bus->slaves, node) {
->> +            if (sdw_compare_devid(slave, id) == 0) {
->> +                u32 status = qcom_swrm_get_n_device_status(ctrl, i);
->> +
->> +                found = true;
->> +                if (status == SDW_SLAVE_ATTACHED) {
->> +                    slave->dev_num = i;
->> +                    mutex_lock(&bus->bus_lock);
->> +                    set_bit(i, bus->assigned);
->> +                    mutex_unlock(&bus->bus_lock);
->> +
->> +                }
-> 
-> you haven't changed that part, if the device is not in DT we should 
-> still set bus->assigned::i
+Thanks. Applied with your Acked-by:
+If you disagree with that interpretation of your statement above, please 
+holler :)
 
-My bad! I missed it again!
+Thanks,
 
-Will fix it in next spin!
+-- 
+Jiri Kosina
+SUSE Labs
 
-
---srini
