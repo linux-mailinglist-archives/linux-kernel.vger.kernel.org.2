@@ -2,136 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251173309BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B4E3309BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:51:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhCHIr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 03:47:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39182 "EHLO
+        id S229459AbhCHIup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 03:50:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhCHIrg (ORCPT
+        with ESMTP id S229458AbhCHIuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 03:47:36 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B141BC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 00:47:36 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id j14-20020a17090a588eb02900cefe2daa2cso1113881pji.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 00:47:36 -0800 (PST)
+        Mon, 8 Mar 2021 03:50:44 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F8EC06174A;
+        Mon,  8 Mar 2021 00:50:43 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id lr13so18656087ejb.8;
+        Mon, 08 Mar 2021 00:50:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=bKan0MbvNXWRj+HWXY8826SQQxFg7KQ0T970T1h/cKU=;
-        b=mfgn/E41neDc4PfgZmzViMn1STcXOagr3u8Z6HPIN/QIJlv6ZGG3yxwFEjuLTLN8hY
-         kjvofJ7Q8kG/W3vAxEfJbIQnMH5Ok35nQGOlXoWdeNyKD5QcWBj/ke+xk1y3TURP2TKt
-         LVxwXkRz9vNLhLnPM1TRp1n/YVFMg9ACKinUaG/0PZHk99VJaBTeKrdgfW4e6FDZtXIA
-         0+zCJZ0WTl8skMntt2OcUw6U38Xh5Ocyp4JGdduUVrPzQKUjqu1SgiwxTw1FZ4D/cMf/
-         B0GUdijmRQKn5II/5bzO1RvSWf3jyl22d67pxgbBorMhyzScY7oseDpJlHUxRZhVuNlC
-         3Z6Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=32H/9kq3kkSKIKkC6rU2T+kJc+RIITmk29bb5zIT9oI=;
+        b=KIaCm3pHjqR7urou0oY5u7V1njgbFztsypDixLXkQI0JsQeGbPNrSN9X3vPk6QOuNx
+         VnsX5BVJBzcjB/2khvP8baPNXzjMoieUTFr/P2U+WyBfDWu5N/IHG8UvVv380/RBTTSw
+         mP5VN/RZ/0RK257r2w9XCeY4z2t4Ejpc/WLTROXxjeXtoaDP5tY6OoAq2xGQ2OKtFXGQ
+         4OvA+tokBNZTusVVIugxkDg6+nzwCsmXnoeUqlf3UKUDCHsgiHGkkJpQ6FbnFYOqpHzM
+         YHBOFYssopaaPZweAVzoIm5mvgNAb4w65I3WauIoi2XUCIIP6LKwdPyY5XM/Sy6DkWg+
+         I1hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=bKan0MbvNXWRj+HWXY8826SQQxFg7KQ0T970T1h/cKU=;
-        b=gqkzhc8GLTb9yNv8TuE+b4hJtpxuxn34+G+WFFinc6Q5lY3qmBwSEOzMHT+opJA1LC
-         num9WoXP8vcvOWP7QE0OmVT9ds8CFRHVr1NKyz5IwoRt9lXlxZPAOIwEgKmC6KvfdUa2
-         Cfo/+sZgvonTXVG/ccg5cB4/y1hz7DLt08h+zIJDIqLfeCwIaKgZvkFK1wG02TPDmvts
-         gy26xa45QKJkgmERxIDTehnBvy4+ZE/2JW6TITiAFWkrpEG8V5j1i0zOoUpdQIpWnQWf
-         KKzHeolTBYt7MV2vx0v8Yo/StzdHwGicICyq6EjrV1JyeO2ZvVjzd0A6e6xTtlOfmINI
-         73/A==
-X-Gm-Message-State: AOAM532ycWm4UmnlgTojCN/nKaGo2I8ns7VGEfU5Ndc5e+5yEQ35M0GS
-        yAaBRPYeW3Ksvv41Bu694Jc=
-X-Google-Smtp-Source: ABdhPJy6Fh2uzNFRAMPVazacmcmCjtcORGUIi0dKs5WsrmwrZ7Mkz2vwL4S8o03vMyCfLzXvv2SB1A==
-X-Received: by 2002:a17:90a:3b0e:: with SMTP id d14mr24269268pjc.198.1615193256337;
-        Mon, 08 Mar 2021 00:47:36 -0800 (PST)
-Received: from localhost (58-6-239-121.tpgi.com.au. [58.6.239.121])
-        by smtp.gmail.com with ESMTPSA id r13sm9446545pfh.159.2021.03.08.00.47.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 00:47:35 -0800 (PST)
-Date:   Mon, 08 Mar 2021 18:47:30 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v5 05/22] powerpc/irq: Add helper to set regs->softe
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
-        <5f37d1177a751fdbca79df461d283850ca3a34a2.1612796617.git.christophe.leroy@csgroup.eu>
-        <1612832745.vhjk6358hf.astroid@bobo.none>
-        <5987787e-ee80-ed0e-0c34-9884f6aad3c5@csgroup.eu>
-        <1612856863.0x6ebz3hce.astroid@bobo.none>
-        <d243672c-ea47-2d0c-bfe4-e6eed5460868@csgroup.eu>
-In-Reply-To: <d243672c-ea47-2d0c-bfe4-e6eed5460868@csgroup.eu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=32H/9kq3kkSKIKkC6rU2T+kJc+RIITmk29bb5zIT9oI=;
+        b=ax0gO7ncexZycw2CKzY02egWGylYcAQNmdnuMfKNANa2h78CtGcnZaESxXuV7BRrux
+         ISJG/K4dvp/krdHMd6HUWDHP91byKvbWtp3u1f4ZkTNJdyoKOcciHVjpgouRZTJ5vkEO
+         HS4YL+j79V7WCHwnj789nJiYSamwze+Ad3W3jT/UMg/5J7AJSFZ29G6TScce+YzuzLXk
+         KZmV0S/iTxOEmYLIIO4cMQTunMBeDQdZmAXKbPfLeSSBMBnYl9KHDDDF7g8guFGJkRkp
+         DgYFPd4MdhpE4oZNk/d8Jsm8+DknFzdPvTPs/SnYMST4OYQRwN9muL5wndEowtHhdx+m
+         Iklw==
+X-Gm-Message-State: AOAM533P1pvpfRIEt2cpjnSpRQrd7NzI8n7zhqIO+ri2eVh/CkDSBRbR
+        +bF9/i3lyfBcVv9/7KhK3Pnk3WgqaCRF1x7aBww=
+X-Google-Smtp-Source: ABdhPJyHK1zsY+M9ptcXWeAhgfGYn+JUy3cLX12D8KVwzBqaClqjEVyBfEFjDKMY5XH78exAfT4lMM1YQvXeu4+xjMg=
+X-Received: by 2002:a17:906:b80c:: with SMTP id dv12mr14187321ejb.110.1615193442483;
+ Mon, 08 Mar 2021 00:50:42 -0800 (PST)
 MIME-Version: 1.0
-Message-Id: <1615193040.e8vkjfd7b9.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <CAH+2xPCmZNW0ct8XoBmAnd0QK53guv2e4HLn40NvWrEA7pj3qw@mail.gmail.com>
+ <CAH+2xPCkKRhXJSqMx7kzsO53JwXbrmYPLLL-_ANO9waNJREDWA@mail.gmail.com>
+ <777991bb72f8842e3e730f9b600b2086478f5d36.camel@suse.com> <CAH+2xPAB4bWN9NiTQr4WggUX6eDXzMikzYJySx3sAj3Ho3AdxA@mail.gmail.com>
+ <b71b85a588c3e27d2de129723468263d932ab435.camel@suse.com> <CAH+2xPA4yUwbcOaO4OH-LaAwC820ZoFmAf_eUdf6+xgiTPWz8g@mail.gmail.com>
+In-Reply-To: <CAH+2xPA4yUwbcOaO4OH-LaAwC820ZoFmAf_eUdf6+xgiTPWz8g@mail.gmail.com>
+From:   Bruno Thomsen <bruno.thomsen@gmail.com>
+Date:   Mon, 8 Mar 2021 09:50:26 +0100
+Message-ID: <CAH+2xPC0sbqvsiBgsemHxrmE=JgnuOK6mzJ6pQ_G-ihqswAvPQ@mail.gmail.com>
+Subject: Re: usb: cdc-acm: BUG kmalloc-128 Poison overwritten
+To:     Oliver Neukum <oneukum@suse.com>
+Cc:     linux-usb@vger.kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Bruno Thomsen <bth@kamstrup.com>,
+        Lars Alex Pedersen <laa@kamstrup.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of March 5, 2021 6:54 pm:
->=20
->=20
-> Le 09/02/2021 =C3=A0 08:49, Nicholas Piggin a =C3=A9crit=C2=A0:
->> Excerpts from Christophe Leroy's message of February 9, 2021 4:18 pm:
->>>
->>>
->>> Le 09/02/2021 =C3=A0 02:11, Nicholas Piggin a =C3=A9crit=C2=A0:
->>>> Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
->>>>> regs->softe doesn't exist on PPC32.
->>>>>
->>>>> Add irq_soft_mask_regs_set_state() helper to set regs->softe.
->>>>> This helper will void on PPC32.
->>>>>
->>>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>>>> ---
->>>>
->>>> You could do the same with the kuap_ functions to change some ifdefs
->>>> to IS_ENABLED.
->>>>
->>>> That's just my preference but if you prefer this way I guess that's
->>>> okay.
->>>>
->>>
->>>
->>> That's also my preference on the long term.
->>>
->>> Here it is ephemeral, I have a follow up series implementing interrupt =
-exit/entry in C and getting
->>> rid of all the assembly kuap hence getting rid of those ifdefs.
->>=20
->> I thought it might have been because you hate ifdef more tha most :)
->>  =20
->>> The issue I see when using IS_ENABLED() is that you have to indent to t=
-he right, then you interfere
->>> with the file history and 'git blame'
->>=20
->> Valid point if it's just going to indent back the other way in your next
->> series.
->>=20
->>> Thanks for reviewing my series and looking forward to your feedback on =
-my series on the interrupt
->>> entry/exit that I will likely release later today.
->>=20
->> Cool, I'm eager to see them.
->>=20
->=20
-> Hi Nick, have you been able to look at it ?
->=20
-> https://patchwork.ozlabs.org/project/linuxppc-dev/cover/cover.1612864003.=
-git.christophe.leroy@csgroup.eu/
+Den fre. 26. feb. 2021 kl. 15.14 skrev Bruno Thomsen <bruno.thomsen@gmail.com>:
+>
+> Den tor. 25. feb. 2021 kl. 10.57 skrev Oliver Neukum <oneukum@suse.com>:
+> >
+> > Am Mittwoch, den 24.02.2021, 16:21 +0100 schrieb Bruno Thomsen:
+> >
+> > Hi,
+> >
+> > > No, this is not a regression from 5.10. It seems that many attempts to
+> > > fix cdc-acm in the 5.x kernel series have failed to fix the root cause of
+> > > these oops. I have not seen this on 4.14 and 4.19, but I have observed
+> > > it on at least 5.3 and newer kernels in slight variations.
+> > > I guess this is because cdc-acm is very common in the embedded
+> > > ARM world and rarely used on servers or laptops. Combined with
+> > > ARM devices still commonly use 4.x LTS kernels. Not sure if
+> > > hardening options on the kernel has increased change of reproducing
+> > > oops.
+> >
+> > OK, so this is not an additional problem.
+> > According to your logs, an URB that should have been killed wasn't.
+>
+> Thanks for looking into this bug rapport.
+>
+> > > I am ready to test new patches and will continue to report oops
+> >
+> > Could you test the attached patches?
+>
+> Yes, I am already running tests on the patches.
+> I have not seen any oops yet and it seems the USB cdc-acm driver is still
+> working as intended.
+>
+> The only notable trace I have seen is this new error from the cdc-acm driver
+> but everything kept on working.
+> kernel: cdc_acm 1-1.1:1.7: acm_start_wb - usb_submit_urb(write bulk) failed: -19
+>
+> Other then that I see this common error (should probably be a warning) during
+> device enumeration:
+> kernel: cdc_acm 1-1.2:1.0: failed to set dtr/rts
+>
+> I will post an update next week when the patches have survived some
+> more runtime.
 
-Hi Christophe,
+Tested-by: Bruno Thomsen <bruno.thomsen@gmail.com>
 
-I had a look at it, it's mostly ppc32 code which I don't know well but=20
-it looks like a very nice cleanup and it's good to be sharing the C
-code here. All the common code changes look fine to me.
+I have not observed any oops with patches applied. Patches have seen
+more than 10 weeks of runtime testing across multiple devices.
 
-I'll take a closer look if you can rebase and repost the series I need=20
-to create a tree and base 64e conversion on top of yours as they touch
-the same common places.
-
-Thanks,
-Nick
+/Bruno
