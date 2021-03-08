@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65509330654
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 04:20:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C89F5330657
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 04:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233905AbhCHDU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 22:20:27 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:13865 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbhCHDUR (ORCPT
+        id S232392AbhCHD0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 22:26:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230410AbhCHD0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 22:20:17 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Dv3T15rNxz7kKK;
-        Mon,  8 Mar 2021 11:18:29 +0800 (CST)
-Received: from [10.174.178.215] (10.174.178.215) by smtp.huawei.com
- (10.3.19.203) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 8 Mar 2021
- 11:20:04 +0800
-Subject: Re: [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide ZONE_DMA
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-References: <20210303073319.2215839-1-jingxiangfeng@huawei.com>
- <YEDkmj6cchMPAq2h@kroah.com>
- <9bc396116372de5b538d71d8f9ae9c3259f1002e.camel@suse.de>
- <YEDr/lYZHew88/Ip@kroah.com>
- <827b317d7f5da6e048806922098291faacdb19f9.camel@suse.de>
- <YETwL6QGWFyJTAzk@kroah.com>
-CC:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <akpm@linux-foundation.org>, <paul.walmsley@sifive.com>,
-        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>, <rppt@kernel.org>,
-        <lorenzo.pieralisi@arm.com>, <guohanjun@huawei.com>,
-        <sudeep.holla@arm.com>, <rjw@rjwysocki.net>, <lenb@kernel.org>,
-        <song.bao.hua@hisilicon.com>, <ardb@kernel.org>,
-        <anshuman.khandual@arm.com>, <bhelgaas@google.com>, <guro@fb.com>,
-        <robh+dt@kernel.org>, <stable@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <frowand.list@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-riscv@lists.infradead.org>,
-        <wangkefeng.wang@huawei.com>
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-Message-ID: <604597E3.5000605@huawei.com>
-Date:   Mon, 8 Mar 2021 11:20:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        Sun, 7 Mar 2021 22:26:00 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758B6C06174A;
+        Sun,  7 Mar 2021 19:26:00 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id d9so4011924qvo.3;
+        Sun, 07 Mar 2021 19:26:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GIzXTjeuPHO40MXssf5KZd6/6C9TGxusOUAlnIGcvHE=;
+        b=AgRLgjqZHKsyKjb+AftRNWp4BPKN/k+aiuMr91Am8OVnUcUy2HD/e750Ir2bdKcAbH
+         q78V3oraIIcGmEAhdLT9if+bcb0vDcTSDvMRkHJNuG0rxsCZiEezrRUzRGESq4b37yXy
+         mGw3kzRr1LL2yteNSwmO2Z2XflfF3ElGFhZv2c6yw1W8g6GQNTLyHVehUV+q6bxfdBaV
+         QmKMh8uNYv97h27a9p2lOQdCojRPcHaW5t8Fllqubm5Zs9XO/qkhmKxjtQFTMhBlWcYU
+         IHfe+MYUBXQN3myd6WDZ2Xl09r7RIDGaMKSyKQw3RF4NUty5PUF82ktvVUy2jUvv0N9P
+         XsBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GIzXTjeuPHO40MXssf5KZd6/6C9TGxusOUAlnIGcvHE=;
+        b=XVBwqRb5g5sN0wYc/wuJLIQU9hI0XrDn8+9EPPmH4oV6AsGCbhISDPyDQVCy0tTA+E
+         sQoM22b8TKmvoqBOOhVYmcX6UquT4g1leDz032HfRPTH1OxsuZtiuaULK7DJ+cghr7NK
+         pV89DuVX/cFkP3K0ca5ym0LLVBpxsOEskb2cqNLqSg2zGsK2whwAUMD6sJQ74YrmpGbg
+         C2YIxtgMGuKch81MS+sUKSmb6X0HjtIZiBm3tFDvH1N/rNXDNDoiI/TFsSsygZTPAXA1
+         JHivmSXYsDVoQzrR+6XFXdNgudg+lLXdE93gB4jGVlkew3XOCotDVmUlp31lLEkXS4w/
+         TBhQ==
+X-Gm-Message-State: AOAM532hkNiWMy9ckwQNI33fZlDK7EotUSaFg/ltfHD6J4hS3qYh7n1D
+        rhEqS8K1bEeb3LviXz7RRcA=
+X-Google-Smtp-Source: ABdhPJx/vH+DfLRUFC5u8+OnSy9VUf9GVdXWVAz/zDBls6i16eINMBDenl1PZcD97tFbOGuUFrV5WQ==
+X-Received: by 2002:a0c:f890:: with SMTP id u16mr19466777qvn.21.1615173959433;
+        Sun, 07 Mar 2021 19:25:59 -0800 (PST)
+Received: from tong-desktop.local ([2601:5c0:c200:27c6:99a3:37aa:84df:4276])
+        by smtp.googlemail.com with ESMTPSA id r7sm339725qtm.88.2021.03.07.19.25.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 19:25:59 -0800 (PST)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Chas Williams <3chas3@gmail.com>,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ztong0001@gmail.com
+Subject: [PATCH 0/3] fix a couple of atm->phy_data related issues
+Date:   Sun,  7 Mar 2021 22:25:27 -0500
+Message-Id: <20210308032529.435224-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YETwL6QGWFyJTAzk@kroah.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.215]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+there are two drivers(zatm and idt77252) using PRIV() (i.e. atm->phy_data)
+to store private data, but the driver happens to populate wrong
+pointers: atm->dev_data. which actually cause null-ptr-dereference in 
+following PRIV(dev). This patch series attemps to fix those two issues
+along with a typo in atm struct.
 
+Tong Zhang (3):
+  atm: fix a typo in the struct description
+  atm: uPD98402: fix incorrect allocation
+  atm: idt77252: fix null-ptr-dereference
 
-On 2021/3/7 23:24, Greg KH wrote:
-> On Thu, Mar 04, 2021 at 04:09:28PM +0100, Nicolas Saenz Julienne wrote:
->> On Thu, 2021-03-04 at 15:17 +0100, Greg KH wrote:
->>> On Thu, Mar 04, 2021 at 03:05:32PM +0100, Nicolas Saenz Julienne wrote:
->>>> Hi Greg.
->>>>
->>>> On Thu, 2021-03-04 at 14:46 +0100, Greg KH wrote:
->>>>> On Wed, Mar 03, 2021 at 03:33:12PM +0800, Jing Xiangfeng wrote:
->>>>>> Using two distinct DMA zones turned out to be problematic. Here's an
->>>>>> attempt go back to a saner default.
->>>>> What problem does this solve?  How does this fit into the stable kernel
->>>>> rules?
->>>> We changed the way we setup memory zones in arm64 in order to cater for
->>>> Raspberry Pi 4's weird DMA constraints: ZONE_DMA spans the lower 1GB of memory
->>>> and ZONE_DMA32 the rest of the 32bit address space. Since you can't allocate
->>>> memory that crosses zone boundaries, this broke crashkernel allocations on big
->>>> machines. This series fixes all this by parsing the HW description and checking
->>>> for DMA constrained buses. When not found, the unnecessary zone creation is
->>>> skipped.
->>> What kernel/commit caused this "breakage"?
->> 1a8e1cef7603 arm64: use both ZONE_DMA and ZONE_DMA32
-> Thanks for the info, all now queued up.
-There is a fix in 5.11. Please consider applying the following commit to 
-5.10.y:
+ drivers/atm/idt77105.c | 4 ++--
+ drivers/atm/uPD98402.c | 2 +-
+ include/linux/atmdev.h | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-aed5041ef9a3 of: unittest: Fix build on architectures without 
-CONFIG_OF_ADDRES
-
-Thanks
-
->
-> greg k-h
-> .
->
+-- 
+2.25.1
 
