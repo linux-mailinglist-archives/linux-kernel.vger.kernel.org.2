@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5E433061B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66740330619
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233804AbhCHCwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 21:52:51 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:39748 "EHLO
+        id S233797AbhCHCwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 21:52:50 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:39766 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232413AbhCHCw2 (ORCPT
+        with ESMTP id S232418AbhCHCw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 7 Mar 2021 21:52:28 -0500
-X-UUID: 266da1618fa74eda999a27d193b1c2a6-20210308
-X-UUID: 266da1618fa74eda999a27d193b1c2a6-20210308
+X-UUID: 6a25938fd8ea4e82aa939eab03597b58-20210308
+X-UUID: 6a25938fd8ea4e82aa939eab03597b58-20210308
 Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
         (envelope-from <chunfeng.yun@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 152931882; Mon, 08 Mar 2021 10:52:25 +0800
+        with ESMTP id 532533733; Mon, 08 Mar 2021 10:52:25 +0800
 Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
  mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 8 Mar 2021 10:52:24 +0800
+ 15.0.1497.2; Mon, 8 Mar 2021 10:52:25 +0800
 Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 8 Mar 2021 10:52:23 +0800
+ Transport; Mon, 8 Mar 2021 10:52:24 +0800
 From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -38,9 +38,9 @@ CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
         Eddie Hung <eddie.hung@mediatek.com>,
         Sergei Shtylyov <sergei.shtylyov@gmail.com>,
         Alan Stern <stern@rowland.harvard.edu>
-Subject: [PATCH v2 12/18] usb: xhci-mtk: rebuild the way to get bandwidth domain
-Date:   Mon, 8 Mar 2021 10:52:01 +0800
-Message-ID: <de618970301702c57bd352bf87df48bc17c699dd.1615170625.git.chunfeng.yun@mediatek.com>
+Subject: [PATCH v2 13/18] usb: xhci-mtk: add some schedule error number
+Date:   Mon, 8 Mar 2021 10:52:02 +0800
+Message-ID: <9771f44093053b581e9c4be4b7fb68d9fcecad08.1615170625.git.chunfeng.yun@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
 In-Reply-To: <d287899e6beb2fc1bfb8900c75a872f628ecde55.1615170625.git.chunfeng.yun@mediatek.com>
 References: <d287899e6beb2fc1bfb8900c75a872f628ecde55.1615170625.git.chunfeng.yun@mediatek.com>
@@ -51,119 +51,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rebuild the function get_bw_index(), get the bandwidth domain
-directly instead its index of domain array.
+This is used to provide more information about which case
+causes bandwidth schedule failure.
 
 Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
 v2: no changes
 ---
- drivers/usb/host/xhci-mtk-sch.c | 29 +++++++++++------------------
- 1 file changed, 11 insertions(+), 18 deletions(-)
+ drivers/usb/host/xhci-mtk-sch.c | 44 ++++++++++++++++++++++++++-------
+ 1 file changed, 35 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
-index bad99580fb68..9e77bbd8e7f7 100644
+index 9e77bbd8e7f7..7b45441f2606 100644
 --- a/drivers/usb/host/xhci-mtk-sch.c
 +++ b/drivers/usb/host/xhci-mtk-sch.c
-@@ -57,7 +57,7 @@ static u32 get_bw_boundary(enum usb_device_speed speed)
- }
+@@ -25,6 +25,13 @@
+  */
+ #define TT_MICROFRAMES_MAX 9
  
- /*
--* get the index of bandwidth domains array which @ep belongs to.
-+* get the bandwidth domain which @ep belongs to.
- *
- * the bandwidth domain array is saved to @sch_array of struct xhci_hcd_mtk,
- * each HS root port is treated as a single bandwidth domain,
-@@ -68,9 +68,11 @@ static u32 get_bw_boundary(enum usb_device_speed speed)
- * so the bandwidth domain array is organized as follow for simplification:
- * SSport0-OUT, SSport0-IN, ..., SSportX-OUT, SSportX-IN, HSport0, ..., HSportY
- */
--static int get_bw_index(struct xhci_hcd *xhci, struct usb_device *udev,
--	struct usb_host_endpoint *ep)
-+static struct mu3h_sch_bw_info *
-+get_bw_info(struct xhci_hcd_mtk *mtk, struct usb_device *udev,
-+	    struct usb_host_endpoint *ep)
++/* schedule error type */
++#define ESCH_SS_Y6		1001
++#define ESCH_SS_OVERLAP		1002
++#define ESCH_CS_OVERFLOW	1003
++#define ESCH_BW_OVERFLOW	1004
++#define ESCH_FIXME		1005
++
+ /* mtk scheduler bitmasks */
+ #define EP_BPKTS(p)	((p) & 0x7f)
+ #define EP_BCSCOUNT(p)	(((p) & 0x7) << 8)
+@@ -32,6 +39,24 @@
+ #define EP_BOFFSET(p)	((p) & 0x3fff)
+ #define EP_BREPEAT(p)	(((p) & 0x7fff) << 16)
+ 
++static char *sch_error_string(int err_num)
++{
++	switch (err_num) {
++	case ESCH_SS_Y6:
++		return "Can't schedule Start-Split in Y6";
++	case ESCH_SS_OVERLAP:
++		return "Can't find a suitable Start-Split location";
++	case ESCH_CS_OVERFLOW:
++		return "The last Complete-Split is greater than 7";
++	case ESCH_BW_OVERFLOW:
++		return "Bandwidth exceeds the maximum limit";
++	case ESCH_FIXME:
++		return "FIXME, to be resolved";
++	default:
++		return "Unknown";
++	}
++}
++
+ static int is_fs_or_ls(enum usb_device_speed speed)
  {
-+	struct xhci_hcd *xhci = hcd_to_xhci(mtk->hcd);
- 	struct xhci_virt_device *virt_dev;
- 	int bw_index;
- 
-@@ -86,7 +88,7 @@ static int get_bw_index(struct xhci_hcd *xhci, struct usb_device *udev,
- 		bw_index = virt_dev->real_port + xhci->usb3_rhub.num_ports - 1;
+ 	return speed == USB_SPEED_FULL || speed == USB_SPEED_LOW;
+@@ -412,7 +437,7 @@ static int check_fs_bus_bw(struct mu3h_sch_ep_info *sch_ep, int offset)
+ 		for (j = 0; j < sch_ep->cs_count; j++) {
+ 			tmp = tt->fs_bus_bw[base + j] + sch_ep->bw_cost_per_microframe;
+ 			if (tmp > FS_PAYLOAD_MAX)
+-				return -ERANGE;
++				return -ESCH_BW_OVERFLOW;
+ 		}
  	}
  
--	return bw_index;
-+	return &mtk->sch_array[bw_index];
- }
+@@ -437,11 +462,11 @@ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
+ 		 * must never schedule Start-Split in Y6
+ 		 */
+ 		if (!(start_ss == 7 || last_ss < 6))
+-			return -ERANGE;
++			return -ESCH_SS_Y6;
  
- static u32 get_esit(struct xhci_ep_ctx *ep_ctx)
-@@ -722,14 +724,11 @@ void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
- 	struct xhci_hcd_mtk *mtk = hcd_to_mtk(hcd);
- 	struct xhci_hcd *xhci;
- 	struct xhci_virt_device *virt_dev;
--	struct mu3h_sch_bw_info *sch_array;
- 	struct mu3h_sch_bw_info *sch_bw;
- 	struct mu3h_sch_ep_info *sch_ep, *tmp;
--	int bw_index;
+ 		for (i = 0; i < sch_ep->cs_count; i++)
+ 			if (test_bit(offset + i, tt->ss_bit_map))
+-				return -ERANGE;
++				return -ESCH_SS_OVERLAP;
  
- 	xhci = hcd_to_xhci(hcd);
- 	virt_dev = xhci->devs[udev->slot_id];
--	sch_array = mtk->sch_array;
+ 	} else {
+ 		u32 cs_count = DIV_ROUND_UP(sch_ep->maxpkt, FS_PAYLOAD_MAX);
+@@ -451,14 +476,14 @@ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
+ 		 * must never schedule Start-Split in Y6
+ 		 */
+ 		if (start_ss == 6)
+-			return -ERANGE;
++			return -ESCH_SS_Y6;
  
- 	xhci_dbg(xhci, "%s() type:%d, speed:%d, mpks:%d, dir:%d, ep:%p\n",
- 		__func__, usb_endpoint_type(&ep->desc), udev->speed,
-@@ -739,8 +738,7 @@ void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
- 	if (!need_bw_sch(ep, udev->speed, !!virt_dev->tt_info))
- 		return;
+ 		/* one uframe for ss + one uframe for idle */
+ 		start_cs = (start_ss + 2) % 8;
+ 		last_cs = start_cs + cs_count - 1;
  
--	bw_index = get_bw_index(xhci, udev, ep);
--	sch_bw = &sch_array[bw_index];
-+	sch_bw = get_bw_info(mtk, udev, ep);
+ 		if (last_cs > 7)
+-			return -ERANGE;
++			return -ESCH_CS_OVERFLOW;
  
- 	list_for_each_entry_safe(sch_ep, tmp, &sch_bw->bw_ep_list, endpoint) {
- 		if (sch_ep->ep == ep) {
-@@ -758,13 +756,12 @@ int xhci_mtk_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
- 	struct xhci_virt_device *virt_dev = xhci->devs[udev->slot_id];
- 	struct mu3h_sch_bw_info *sch_bw;
- 	struct mu3h_sch_ep_info *sch_ep, *tmp;
--	int bw_index, ret;
-+	int ret;
+ 		if (sch_ep->ep_type == ISOC_IN_EP)
+ 			extra_cs_count = (last_cs == 7) ? 1 : 2;
+@@ -470,7 +495,7 @@ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
+ 			cs_count = 7; /* HW limit */
  
- 	xhci_dbg(xhci, "%s() udev %s\n", __func__, dev_name(&udev->dev));
+ 		if (test_bit(offset, tt->ss_bit_map))
+-			return -ERANGE;
++			return -ESCH_SS_OVERLAP;
  
- 	list_for_each_entry(sch_ep, &mtk->bw_ep_chk_list, endpoint) {
--		bw_index = get_bw_index(xhci, udev, sch_ep->ep);
--		sch_bw = &mtk->sch_array[bw_index];
-+		sch_bw = get_bw_info(mtk, udev, sch_ep->ep);
+ 		sch_ep->cs_count = cs_count;
+ 		/* one for ss, the other for idle */
+@@ -562,7 +587,7 @@ static int check_sch_bw(struct mu3h_sch_bw_info *sch_bw,
+ 	u32 esit_boundary;
+ 	u32 min_num_budget;
+ 	u32 min_cs_count;
+-	int ret;
++	int ret = 0;
+ 
+ 	/*
+ 	 * Search through all possible schedule microframes.
+@@ -597,7 +622,7 @@ static int check_sch_bw(struct mu3h_sch_bw_info *sch_bw,
+ 	bw_boundary = get_bw_boundary(sch_ep->speed);
+ 	/* check bandwidth */
+ 	if (min_bw > bw_boundary)
+-		return -ERANGE;
++		return ret ? ret : -ESCH_BW_OVERFLOW;
+ 
+ 	sch_ep->offset = min_index;
+ 	sch_ep->cs_count = min_cs_count;
+@@ -765,7 +790,8 @@ int xhci_mtk_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
  
  		ret = check_sch_bw(sch_bw, sch_ep);
  		if (ret) {
-@@ -778,9 +775,7 @@ int xhci_mtk_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
- 		struct usb_host_endpoint *ep = sch_ep->ep;
- 		unsigned int ep_index = xhci_get_endpoint_index(&ep->desc);
- 
--		bw_index = get_bw_index(xhci, udev, ep);
--		sch_bw = &mtk->sch_array[bw_index];
--
-+		sch_bw = get_bw_info(mtk, udev, ep);
- 		list_move_tail(&sch_ep->endpoint, &sch_bw->bw_ep_list);
- 
- 		ep_ctx = xhci_get_ep_ctx(xhci, virt_dev->in_ctx, ep_index);
-@@ -805,13 +800,11 @@ void xhci_mtk_reset_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
- 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
- 	struct mu3h_sch_bw_info *sch_bw;
- 	struct mu3h_sch_ep_info *sch_ep, *tmp;
--	int bw_index;
- 
- 	xhci_dbg(xhci, "%s() udev %s\n", __func__, dev_name(&udev->dev));
- 
- 	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_chk_list, endpoint) {
--		bw_index = get_bw_index(xhci, udev, sch_ep->ep);
--		sch_bw = &mtk->sch_array[bw_index];
-+		sch_bw = get_bw_info(mtk, udev, sch_ep->ep);
- 		destroy_sch_ep(udev, sch_bw, sch_ep);
+-			xhci_err(xhci, "Not enough bandwidth!\n");
++			xhci_err(xhci, "Not enough bandwidth! (%s)\n",
++				 sch_error_string(-ret));
+ 			return -ENOSPC;
+ 		}
  	}
- 
 -- 
 2.18.0
 
