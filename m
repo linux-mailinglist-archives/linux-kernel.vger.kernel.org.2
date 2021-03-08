@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E099933182D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:11:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8415F33182F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhCHUKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:10:32 -0500
-Received: from mail-io1-f53.google.com ([209.85.166.53]:36372 "EHLO
-        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231857AbhCHUKF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:10:05 -0500
-Received: by mail-io1-f53.google.com with SMTP id n14so11385688iog.3;
-        Mon, 08 Mar 2021 12:10:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7EAFq/viqyqIPyoEX+zk4xe6NhJ32ufPCo/HyaU0d6o=;
-        b=WoyzyFUjHlnlctOIVCd+cvdDUcYgTk2gDV6tAj3wu2nwDB2+qo88f/wMotEBxxWlyY
-         EBfVdpq+XNyvZfo2y/C6L00++WuTGkJ6LY9DxNnJ+Q9P0x+GyaGexHuaYNhpxQzo/bM9
-         /DbSZvH4kjMhnH8q7lihb/2OG8rY7bOPY4+3Ud21I09NZE5SpFRfET3I/vy+4PUaWaCh
-         C2akQf8BbSdXMjNiBpzivXrT6LsAAjyppOPrPLllhv2k9BuDkB40RG5JDRtZJ6ccKOzl
-         dSO0A6smX/aTC93s9/3Sb2oboi2Pm8MYN13QP/K83S8CCk6zU/zahfIgqwXjftKitBwR
-         rNkQ==
-X-Gm-Message-State: AOAM533W+QDf7+7j1IpA1iXDcU7A5sNCxLoAQmtE8Mwx0av4tRRhxeLY
-        tmBs45pGEfLsS7To0WmGcw==
-X-Google-Smtp-Source: ABdhPJxV74FVfrNcz/+KDeunaCCiPGF1Jb3oFoZ7w14TDd0tz/13IxvKO6XdQeChyCJhKpE1+a6k1w==
-X-Received: by 2002:a02:230d:: with SMTP id u13mr25030047jau.53.1615234204460;
-        Mon, 08 Mar 2021 12:10:04 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id e4sm6553733ilc.47.2021.03.08.12.10.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 12:10:03 -0800 (PST)
-Received: (nullmailer pid 2881476 invoked by uid 1000);
-        Mon, 08 Mar 2021 20:10:01 -0000
-Date:   Mon, 8 Mar 2021 13:10:01 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     agross@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, swboyd@chromium.org,
-        bjorn.andersson@linaro.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: Re: [PATCH v2 07/14] dt-bindings: arm-smmu: Add compatible for
- SC7280 SoC
-Message-ID: <20210308201001.GA2881445@robh.at.kernel.org>
-References: <1614773878-8058-1-git-send-email-rnayak@codeaurora.org>
- <1614773878-8058-8-git-send-email-rnayak@codeaurora.org>
+        id S231931AbhCHUKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:10:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231877AbhCHUKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 15:10:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7AA4B65268;
+        Mon,  8 Mar 2021 20:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615234208;
+        bh=AV3+nIv0sMZvuZgFrXPxb8Y5CZAM7XZr/UwG2xegoac=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=kwKy0inigudlECCZYgf8kCMfUNkUpMfvhQKO+pCkPtspC/2aVLFAxPFXNroIi2Yq+
+         5JnBlEFk1sk/U7OahVsjoqYhB5DuTQWxkJ/MNxcKtmlbF3aUYEWJnCnezIPGo/Pv7m
+         751/ED/A53K8rJiiwGnxZ2jF9V3ENvRiXAugBp0prU0t5F36MSnLy8dEtRos27nn77
+         v18NkWYgNQ5csHZ58ZjyhAZmA3x+9RD6H/vp42HNzZ9OpVPEB32YZbDLfqUenx8dXn
+         DwaHtKL/OMwItnxCRmayM/wReF0yhsdCKI4Mk0+w4PHcQ+5mtQ3fdc5wpCdiIQuC9L
+         HXr74jPeQnB4w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6AA43609E6;
+        Mon,  8 Mar 2021 20:10:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614773878-8058-8-git-send-email-rnayak@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/3] net: davicom: Fix regulator not turned off on failed
+ probe
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161523420843.27243.17192886779484123674.git-patchwork-notify@kernel.org>
+Date:   Mon, 08 Mar 2021 20:10:08 +0000
+References: <20210307131749.14960-1-paul@crapouillou.net>
+In-Reply-To: <20210307131749.14960-1-paul@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, od@zcrc.me,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 03 Mar 2021 17:47:51 +0530, Rajendra Nayak wrote:
-> From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> 
-> Add the SoC specific compatible for SC7280 implementing
-> arm,mmu-500.
-> 
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+Hello:
 
-Acked-by: Rob Herring <robh@kernel.org>
+This series was applied to netdev/net.git (refs/heads/master):
+
+On Sun,  7 Mar 2021 13:17:47 +0000 you wrote:
+> When the probe fails or requests to be defered, we must disable the
+> regulator that was previously enabled.
+> 
+> Fixes: 7994fe55a4a2 ("dm9000: Add regulator and reset support to dm9000")
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/net/ethernet/davicom/dm9000.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+
+Here is the summary with links:
+  - [1/3] net: davicom: Fix regulator not turned off on failed probe
+    https://git.kernel.org/netdev/net/c/ac88c531a5b3
+  - [2/3] net: davicom: Fix regulator not turned off on driver removal
+    https://git.kernel.org/netdev/net/c/cf9e60aa69ae
+  - [3/3] net: davicom: Use platform_get_irq_optional()
+    https://git.kernel.org/netdev/net/c/2e2696223676
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
