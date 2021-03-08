@@ -2,109 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F403306DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 05:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EAC3306E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 05:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232457AbhCHEfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 23:35:14 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25906 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233843AbhCHEfA (ORCPT
+        id S234180AbhCHEgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 23:36:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234181AbhCHEgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 23:35:00 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12842W9O019901;
-        Sun, 7 Mar 2021 23:33:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=TXBED8z4I094JXl5OSVos1ZKTFdMDQ2Tq24XC5ZPlWM=;
- b=UDIWQrLVfJLlMhp03cNUNtY6kqV7aJuhn9hX3pEZ7sKBtssrDnU6t/DTIa0rZi0q3jfz
- UN7LBQtSI3Rt6WCmlK+Q2VcVXNuqaU5TXybLH7niIemMkG69DVmVmCQYXiFAi7jEnl9R
- NbqtfUQ0UrcGOCp1IC8tE8ihCtviBRsHo1Dvwiepsz5W/KrfL2AKVO8I1TDr2HwBpa9u
- Rnt709sxzIxPQf88H04gkXIb0KjCPvVtcVCDD1x+q2Z2zPs8APntBEDsrB8eLtprocBh
- f2ydkHa+9UY4CyHp5ZHMh04gQoP5Lnh5HTnPjhPGMNtqDCf7M4OjDTbsA6lflt8Bym06 0Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37583158n0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 07 Mar 2021 23:33:54 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1284Nohv092896;
-        Sun, 7 Mar 2021 23:33:54 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37583158mb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 07 Mar 2021 23:33:54 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1284WUqt030826;
-        Mon, 8 Mar 2021 04:33:52 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3741c89fya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Mar 2021 04:33:51 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1284Xnqg37618144
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 8 Mar 2021 04:33:49 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E455A42049;
-        Mon,  8 Mar 2021 04:33:48 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 88EC742041;
-        Mon,  8 Mar 2021 04:33:46 +0000 (GMT)
-Received: from [9.102.1.31] (unknown [9.102.1.31])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  8 Mar 2021 04:33:46 +0000 (GMT)
-Subject: Re: [PATCH v4] powerpc/uprobes: Validation for prefixed instruction
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc:     mpe@ellerman.id.au, oleg@redhat.com, rostedt@goodmis.org,
-        paulus@samba.org, jniethe5@gmail.com, naveen.n.rao@linux.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        christophe.leroy@csgroup.eu
-References: <20210305115433.140769-1-ravi.bangoria@linux.ibm.com>
-From:   Sandipan Das <sandipan@linux.ibm.com>
-Message-ID: <fcbf618d-453e-b6ab-a41f-f69157ec1504@linux.ibm.com>
-Date:   Mon, 8 Mar 2021 10:03:45 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Sun, 7 Mar 2021 23:36:15 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE878C06175F
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 20:36:14 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id lr10-20020a17090b4b8ab02900dd61b95c5eso15812pjb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 20:36:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=frFr0rEwZ1mvFx0ODNHz2Mn0uGUh3IUayStZXkwe3Y4=;
+        b=oS/pZFhfYsLgWpBMD4U3ondO/K8Dlcn5ex9y+wNgTIJbS6v2IOE/SRXl2p6TL8OFGv
+         HUJ1yNbIbYQxJthZQA0Cm41Dx593QLs7qhSoqDrKX9xkwfgHh4TxVYaqB8iyI/q18WOX
+         Kj1yLcZRMuMVX0nYsESD3NORPOnyM9AtN9Gic=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=frFr0rEwZ1mvFx0ODNHz2Mn0uGUh3IUayStZXkwe3Y4=;
+        b=MxIlqZ697UpbsTU7WlQ5Ipt/27fRLady9rMVjNIfusbThSljpmclf/JD8nTvJ+jnLK
+         HW0i7FqWm44oHyuYIhYnXA5/kmbNOIrip1/HdOXWGGdLcI4PtuySf9yQ8mlrD2Z58SWS
+         dSdiHd323sHipuZ85BWC9UiBHihaL/fln4/GahCc6TpZjfJkAAeq/dbqaeyCQkKC97RO
+         5ZqV3zpZEDO5Cj6NxaI5T4LfmtYCp9ynMWFdfg9PUzSdLDyLiGUFwyoJbOoQ2pa6zX9k
+         VVlZOgVlEjYYzGTBskpLLI/2SuDG3dirbbFyrr62EU/YlcONP34bRUnveojTJGVOudw3
+         0b4Q==
+X-Gm-Message-State: AOAM533H1IMf/X+a3e8jiERMZwTHz2O5bPdahbJ76SAkoHfQk2JG3YJD
+        PLDzKQDoYl1A11NecyLfRDVRKw==
+X-Google-Smtp-Source: ABdhPJzjTHgZfblSCwgJ8vilflebyR1Y+UKGgoiG73tGWtfd+EgXsnrLI5gUCZ/UqbMJyjDyZQpraw==
+X-Received: by 2002:a17:90a:1049:: with SMTP id y9mr22687217pjd.173.1615178174280;
+        Sun, 07 Mar 2021 20:36:14 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:5da1:da1b:5bcf:2d46])
+        by smtp.gmail.com with ESMTPSA id q2sm8191562pfu.215.2021.03.07.20.36.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 20:36:13 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-i2c@vger.kernel.org
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [PATCH v16 0/2] add power control in i2c
+Date:   Mon,  8 Mar 2021 12:36:05 +0800
+Message-Id: <20210308043607.957156-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 MIME-Version: 1.0
-In-Reply-To: <20210305115433.140769-1-ravi.bangoria@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-08_01:2021-03-03,2021-03-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- clxscore=1011 priorityscore=1501 suspectscore=0 malwarescore=0
- adultscore=0 lowpriorityscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103080018
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Although in the most platforms, the power of eeprom
+and i2c are alway on, some platforms disable the
+eeprom and i2c power in order to meet low power request.
 
-On 05/03/21 5:24 pm, Ravi Bangoria wrote:
-> As per ISA 3.1, prefixed instruction should not cross 64-byte
-> boundary. So don't allow Uprobe on such prefixed instruction.
-> 
-> There are two ways probed instruction is changed in mapped pages.
-> First, when Uprobe is activated, it searches for all the relevant
-> pages and replace instruction in them. In this case, if that probe
-> is on the 64-byte unaligned prefixed instruction, error out
-> directly. Second, when Uprobe is already active and user maps a
-> relevant page via mmap(), instruction is replaced via mmap() code
-> path. But because Uprobe is invalid, entire mmap() operation can
-> not be stopped. In this case just print an error and continue.
-> 
-> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-> Acked-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> ---
-> v3: https://lore.kernel.org/r/20210304050529.59391-1-ravi.bangoria@linux.ibm.com
-> v3->v4:
->   - CONFIG_PPC64 check was not required, remove it.
->   - Use SZ_ macros instead of hardcoded numbers.
-> 
+This patch add the pm_runtime ops to control power to
+support all platforms.
 
-Acked-by: Sandipan Das <sandipan@linux.ibm.com>
+Changes since v15:
+ - Squash the fix[1] for v15.
+[1] https://patchwork.ozlabs.org/project/linux-i2c/patch/20200522101327.13456-1-m.szyprowski@samsung.com/
+
+Changes since v14:
+ - change the return value in normal condition
+ - access the variable after NULL pointer checking
+ - add ack tag
+
+Changes since v13:
+ - fixup some logic error
+
+Changes since v12:
+ - rebase onto v5.7-rc1
+ - change the property description in binding
+
+Changes since v11:
+ - use suspend_late/resume_early instead of suspend/resume
+ - rebase onto v5.6-rc1
+
+Changes since v10:
+ - fixup some worng codes
+
+Changes since v9:
+ - fixup build error
+ - remove redundant code
+
+Changes since v8:
+ - fixup some wrong code
+ - remove redundant message
+
+        [... snip ...]
+
+Bibby Hsieh (2):
+  dt-binding: i2c: add bus-supply property
+  i2c: core: support bus regulator controlling in adapter
+
+ Documentation/devicetree/bindings/i2c/i2c.txt |  3 +
+ drivers/i2c/i2c-core-base.c                   | 93 +++++++++++++++++++
+ include/linux/i2c.h                           |  2 +
+ 3 files changed, 98 insertions(+)
+
+-- 
+2.30.1.766.gb4fecdf3b7-goog
+
