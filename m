@@ -2,125 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2EF330BE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:02:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46253330BE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhCHLBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 06:01:22 -0500
-Received: from esa12.hc1455-7.c3s2.iphmx.com ([139.138.37.100]:48439 "EHLO
-        esa12.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229711AbhCHLAz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 06:00:55 -0500
-X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Mar 2021 06:00:54 EST
-IronPort-SDR: Ly2bHpMIEcKUHTOhTQzCmDBtOIMjFxq+pJkKOvIrddxSSEQfYmBkmbS5lqk43tdnufhHKZdlyX
- l9MOEC1b20to/Hd8W0Pan+giVmjEwWycBxDLFuXzZyLX0UQOW+4yRjPclCnZtY66B+i0+0Mvne
- kPAJQyci8M1l1WbLob/7rJosPbx9lNyzch9R8VDYXJfTO92uoR6SAeqfpRmcVCA6F19941bcig
- Z7AghswVNrm7VB/Wdi0D2KJ8CdyMSi6ygFHEDGkDJXzg6jQ8SEmeIV/k3trdEHZvTzBTqub1Uo
- JBU=
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="2099866"
-X-IronPort-AV: E=Sophos;i="5.81,232,1610377200"; 
-   d="scan'208";a="2099866"
-Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
-  by esa12.hc1455-7.c3s2.iphmx.com with ESMTP; 08 Mar 2021 19:53:46 +0900
-Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com [192.168.83.64])
-        by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 01D411F5142
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 19:53:46 +0900 (JST)
-Received: from yto-om3.fujitsu.com (yto-om3.o.css.fujitsu.com [10.128.89.164])
-        by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 50E09C9CE5
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 19:53:45 +0900 (JST)
-Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
-        by yto-om3.fujitsu.com (Postfix) with ESMTP id 3FB354005E9C0;
-        Mon,  8 Mar 2021 19:53:45 +0900 (JST)
-From:   Shunsuke Nakamura <nakamura.shun@fujitsu.com>
-To:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
-        leo.yan@linaro.org, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v9 0/2] perf vendor events: Support PMU events for A64FX
-Date:   Mon,  8 Mar 2021 19:53:39 +0900
-Message-Id: <20210308105342.746940-1-nakamura.shun@fujitsu.com>
-X-Mailer: git-send-email 2.25.1
+        id S231139AbhCHLDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 06:03:12 -0500
+Received: from mga06.intel.com ([134.134.136.31]:27634 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229575AbhCHLDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 06:03:01 -0500
+IronPort-SDR: 3USx/fzR8heP2OtperS8d6UETOCcNe8iYb1uyfY+ntCkwROyYDBKkk6IysiALIoQR4uW6nE5/C
+ HwbmZ1WShApg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="249386909"
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="249386909"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 03:03:00 -0800
+IronPort-SDR: KqOhvw4BOdQfevTSuPcgjToCzWaEhlpQE8tAP9dfVlQcmPI1WcVX3Ao5A9K08t19rvzjRAOwPz
+ FlaT+pvrt4Kw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="508891391"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 08 Mar 2021 03:02:57 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 08 Mar 2021 13:02:56 +0200
+Date:   Mon, 8 Mar 2021 13:02:56 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v1] usb: typec: tcpci: Check ROLE_CONTROL while
+ interpreting CC_STATUS
+Message-ID: <YEYEYKqUgnaijOmP@kuha.fi.intel.com>
+References: <20210304070931.1947316-1-badhri@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304070931.1947316-1-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series supports A64FX PMU event v1.2.
+On Wed, Mar 03, 2021 at 11:09:31PM -0800, Badhri Jagan Sridharan wrote:
+> While interpreting CC_STATUS, ROLE_CONTROL has to be read to make
+> sure that CC1/CC2 is not forced presenting Rp/Rd.
+> 
+> >From the TCPCI spec:
+> 
+> 4.4.5.2 ROLE_CONTROL (Normative):
+> The TCPM shall write B6 (DRP) = 0b and B3..0 (CC1/CC2) if it wishes
+> to control the Rp/Rd directly instead of having the TCPC perform
+> DRP toggling autonomously. When controlling Rp/Rd directly, the
+> TCPM writes to B3..0 (CC1/CC2) each time it wishes to change the
+> CC1/CC2 values. This control is used for TCPM-TCPC implementing
+> Source or Sink only as well as when a connection has been detected
+> via DRP toggling but the TCPM wishes to attempt Try.Src or Try.Snk.
+> 
+> Table 4-22. CC_STATUS Register Definition:
+> If (ROLE_CONTROL.CC1 = Rd) or ConnectResult=1)
+> 00b: SNK.Open (Below maximum vRa)
+> 01b: SNK.Default (Above minimum vRd-Connect)
+> 10b: SNK.Power1.5 (Above minimum vRd-Connect) Detects Rp-1.5A
+> 11b: SNK.Power3.0 (Above minimum vRd-Connect) Detects Rp-3.0A
+> 
+> If (ROLE_CONTROL.CC2=Rd) or (ConnectResult=1)
+> 00b: SNK.Open (Below maximum vRa)
+> 01b: SNK.Default (Above minimum vRd-Connect)
+> 10b: SNK.Power1.5 (Above minimum vRd-Connect) Detects Rp 1.5A
+> 11b: SNK.Power3.0 (Above minimum vRd-Connect) Detects Rp 3.0A
+> 
+> Fixes: 74e656d6b0551 ("staging: typec: Type-C Port Controller
+> Interface driver (tcpci)")
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-The first patch add more common and microarchitecture events.
-This patch is based on john's patch [1].
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-The second patch adds PMU events for A64FX.
+> ---
+>  drivers/usb/typec/tcpm/tcpci.c | 21 ++++++++++++++++++---
+>  1 file changed, 18 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
+> index a27deb0b5f03..027afd7dfdce 100644
+> --- a/drivers/usb/typec/tcpm/tcpci.c
+> +++ b/drivers/usb/typec/tcpm/tcpci.c
+> @@ -24,6 +24,15 @@
+>  #define	AUTO_DISCHARGE_PD_HEADROOM_MV		850
+>  #define	AUTO_DISCHARGE_PPS_HEADROOM_MV		1250
+>  
+> +#define tcpc_presenting_cc1_rd(reg) \
+> +	(!(TCPC_ROLE_CTRL_DRP & (reg)) && \
+> +	 (((reg) & (TCPC_ROLE_CTRL_CC1_MASK << TCPC_ROLE_CTRL_CC1_SHIFT)) == \
+> +	  (TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_CC1_SHIFT)))
+> +#define tcpc_presenting_cc2_rd(reg) \
+> +	(!(TCPC_ROLE_CTRL_DRP & (reg)) && \
+> +	 (((reg) & (TCPC_ROLE_CTRL_CC2_MASK << TCPC_ROLE_CTRL_CC2_SHIFT)) == \
+> +	  (TCPC_ROLE_CTRL_CC_RD << TCPC_ROLE_CTRL_CC2_SHIFT)))
+> +
 
+Couldn't you handle that with a single macro by concatenating the CC
+line numbers?
 
-Changes in v8:
- - Merge 'perf vendor events arm64: Add Fujitsu A64FX pmu event' and
-   'perf vendor events arm64: Add "_" to the event name, which starts with a number'
+>  struct tcpci {
+>  	struct device *dev;
+>  
+> @@ -178,19 +187,25 @@ static int tcpci_get_cc(struct tcpc_dev *tcpc,
+>  			enum typec_cc_status *cc1, enum typec_cc_status *cc2)
+>  {
+>  	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
+> -	unsigned int reg;
+> +	unsigned int reg, role_control;
+>  	int ret;
+>  
+> +	ret = regmap_read(tcpci->regmap, TCPC_ROLE_CTRL, &role_control);
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	ret = regmap_read(tcpci->regmap, TCPC_CC_STATUS, &reg);
+>  	if (ret < 0)
+>  		return ret;
+>  
+>  	*cc1 = tcpci_to_typec_cc((reg >> TCPC_CC_STATUS_CC1_SHIFT) &
+>  				 TCPC_CC_STATUS_CC1_MASK,
+> -				 reg & TCPC_CC_STATUS_TERM);
+> +				 reg & TCPC_CC_STATUS_TERM ||
+> +				 tcpc_presenting_cc1_rd(role_control));
+>  	*cc2 = tcpci_to_typec_cc((reg >> TCPC_CC_STATUS_CC2_SHIFT) &
+>  				 TCPC_CC_STATUS_CC2_MASK,
+> -				 reg & TCPC_CC_STATUS_TERM);
+> +				 reg & TCPC_CC_STATUS_TERM ||
+> +				 tcpc_presenting_cc2_rd(role_control));
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.30.1.766.gb4fecdf3b7-goog
 
-Changes in v7:
- - Rename an event name that starts with a number.
- - Drop 'perf tools: Add lexical definition of event name'.
- - Drop 'perf test: Add test for event name starting with a number'.
-
-Changes in v6:
- - Add test to the second patch.
- - Add Acked-by tag to the third patch.
- - Add Reviewed-by tag to the third patch.
-
-Changes in v5:
- - Removed john's patch [1] from this patch series.
- - Added the missing Reviewed-by tag to the patch.
- - Fixed the base of the patch series.[2]
- - Changed subject from fix to added.
-
-Changes in v4:
- - Add arm64 to the subjects of the second and fourth patches.
- - Add reference URLs to the body of the second patch.
-
-Changes in v3:
- - Add linux-arm-kernel mailing list to cc.
-
-Changes in v2:
- - Added armv8-common-and-microarch based on John's patch.[1]
- - Fixed A64FX Json to refer to standard events in armv8-common-and-microarch.
-
-[1] https://lore.kernel.org/lkml/1611835236-34696-3-git-send-email-john.garry@huawei.com/
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf/core
-
-
-Shunsuke Nakamura (2):
-  perf vendor events arm64: Add more common and uarch events
-  perf vendor events arm64: Add Fujitsu A64FX pmu event
-
- .../arm64/armv8-common-and-microarch.json     | 228 ++++++++++++++++++
- .../arch/arm64/fujitsu/a64fx/branch.json      |   8 +
- .../arch/arm64/fujitsu/a64fx/bus.json         |  62 +++++
- .../arch/arm64/fujitsu/a64fx/cache.json       | 128 ++++++++++
- .../arch/arm64/fujitsu/a64fx/cycle.json       |   5 +
- .../arch/arm64/fujitsu/a64fx/exception.json   |  29 +++
- .../arch/arm64/fujitsu/a64fx/instruction.json | 131 ++++++++++
- .../arch/arm64/fujitsu/a64fx/memory.json      |   8 +
- .../arch/arm64/fujitsu/a64fx/other.json       | 188 +++++++++++++++
- .../arch/arm64/fujitsu/a64fx/pipeline.json    | 194 +++++++++++++++
- .../arch/arm64/fujitsu/a64fx/sve.json         | 110 +++++++++
- tools/perf/pmu-events/arch/arm64/mapfile.csv  |   1 +
- 12 files changed, 1092 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/branch.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/bus.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cache.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cycle.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/exception.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/instruction.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/memory.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/sve.json
+thanks,
 
 -- 
-2.25.1
-
+heikki
