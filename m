@@ -2,87 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245DE330860
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 07:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA0E330862
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 07:45:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234995AbhCHGnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 01:43:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235045AbhCHGm6 (ORCPT
+        id S234957AbhCHGo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 01:44:56 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:10080 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhCHGot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 01:42:58 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D51AC06174A;
-        Sun,  7 Mar 2021 22:42:58 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id s16so4373570plr.9;
-        Sun, 07 Mar 2021 22:42:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ODgkqx4pNeJ6A9xIx1+aI4dlTAb9Gpe0ejgF29HEIfk=;
-        b=LM8gwnrjgswn/vWyVxVAEljwIlFgjuQFE/1uxZ4lzYO5Lr/DZ319KAz2ixUuVy6Xf3
-         yztij+p69jUhyp75XLlnQola2FEvFtk/nerfjwh4kJmWsv/ZKGlXPPJigG5RRLfO8Mph
-         e3j9Qfjkx3OsQdDr7pdFj/U/NifroFGWbssHxz1D8MQ00CvbNjSyIs/KsSxvZKjGRsds
-         PDbC4GZ19+EiFp37E/PbvGmbd0QFGWoCAyDjFNCVC5fSFn+HrReThhXxIGM2/pdxUKaN
-         qN4d42Jgv6lSQr1/jwCCFbO+UPREelCwZtZMd6ORNpVyJi2RPYD+WoPw+UiY83QmCh3h
-         H/FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ODgkqx4pNeJ6A9xIx1+aI4dlTAb9Gpe0ejgF29HEIfk=;
-        b=pAWdW3QoLaJx+U8TylhcRRS7JHhSiFlhB2WAgipd7A4LozxTjVD9q+ZS8uPR7S/5mZ
-         iWJKvDWfjELeWb0hsdm+tnu573EIAgwZ8f/zQY+XzZGCcFJPaDfcLHmkB1zpXdvBEVik
-         VO/9qZZBNKAi++C7XkIwttw9lBjFB8RTDX9i2qY12UBDT5TcUooVKMNj7d2PI0liufpq
-         msIjphY4nsHTVVPvHhiGN/q33y1Fv3wFgIH530PHthnE1zFRQgoe/P4Y5Zjfu8HgbrUL
-         XUWJmEPkTnx8GCPbIYkk1P7g0RRq8+k+vKylr6suFi3doYN+vW8nsW6JTyLz2xkq139D
-         Mo1A==
-X-Gm-Message-State: AOAM530MCBqGQEYScsDZ5g8VLCr4JPywcAdPkgLb6SLC5vs6ER4Y/Es3
-        3qrtkkGXXsT2u1ETLn4L85XCr2jsrScI0o92
-X-Google-Smtp-Source: ABdhPJxbJGuwvYp5m37Td+Zd9pm+Y8TY9TO2AIXXXeV5YlTVQpVuoVoDcqLXAPXsL8YFMzTAPU7Gfg==
-X-Received: by 2002:a17:90b:1105:: with SMTP id gi5mr22931041pjb.26.1615185777606;
-        Sun, 07 Mar 2021 22:42:57 -0800 (PST)
-Received: from localhost ([113.92.199.103])
-        by smtp.gmail.com with ESMTPSA id n126sm2972018pgn.66.2021.03.07.22.42.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 22:42:57 -0800 (PST)
-From:   Jianhui Zhao <zhaojh329@gmail.com>
-To:     linux-doc@vger.kernel.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, corbet@lwn.net,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jianhui Zhao <zhaojh329@gmail.com>
-Subject: [PATCH] docs: gpu: fix typo
-Date:   Mon,  8 Mar 2021 14:42:50 +0800
-Message-Id: <20210308064250.3681707-1-zhaojh329@gmail.com>
+        Mon, 8 Mar 2021 01:44:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1615185889; x=1646721889;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=1PWokqeLlK1wLdbrnNsyo72LALUZ8gy162Bk7d98kqE=;
+  b=oM7tuXWeruyp12yTgmI+cw3zZZptP2EG4/Li3SQSPJmzixrkiEltNPCC
+   nNys6VbztbrE97EjMO3kHs1utMwao71hkvg1yP1ac2y67ha0mNzgUgANO
+   qoPEFo9W3zhMLCQMbeCtWXTRATxhjrhdsVLhnS5Hp5TXUPDz/KmKiZy95
+   YatMIBuZ31d5wTAs424uJFw7bseXRSGPZoROvo0/gl+FWxC7eFC+Oa54l
+   cUPyZpKnPJIa09BKLZKT7ygP4RlLvxbDmuYwrt4cpCs6/nbyUGD/9fSVF
+   OhjLyyEEG1SqNMUhO9k2bt2xY3Y5oIWgS6wtWXsoEUkcKXUVohkCMT1mz
+   g==;
+IronPort-SDR: DengQCPIAECU3j2WnDHB3JWU+eHFKML132SiCCEHA59Rtg784uuNi+74a2rZYl4vA49tjFkHEu
+ KAOL8G4J7p8w+r/06FGwzsPomZ6cDToIebqJiELkmvEWafwMoanEAWM0FvjBrsr+aEx2HFJLQF
+ npZ6JX0PSfu865S8vd2WtY6sw2R+hSC4I/5Si6D3n7Nphh2ZNua0m0oH4rx3OTRXRzgvC6r2Bk
+ K8QMlmVQbEzjVtNZ25CJPqLHRklzSq8pHn+bLTxQOe9pBEyYngqYdxMUqGdhELJHswENCjSql7
+ gLg=
+X-IronPort-AV: E=Sophos;i="5.81,231,1610434800"; 
+   d="scan'208";a="112311694"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Mar 2021 23:44:48 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sun, 7 Mar 2021 23:44:48 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Sun, 7 Mar 2021 23:44:46 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Richard Weinberger <richard@nod.at>,
+        Lee Jones <lee.jones@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v1 1/1] mtd: spi-nor: intel-spi: Move platform data header to x85 subfolder
+Date:   Mon, 8 Mar 2021 08:44:45 +0200
+Message-ID: <161518567740.71282.5118491437409807533.b4-ty@microchip.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210304140820.56692-1-andriy.shevchenko@linux.intel.com>
+References: <20210304140820.56692-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Jianhui Zhao <zhaojh329@gmail.com>
----
- Documentation/gpu/todo.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, 4 Mar 2021 16:08:20 +0200, Andy Shevchenko wrote:
+> In order to group x86 related platform data move intel-spi.h to x85 folder.
+> 
+> While at it, remove duplicate inclusion in C file.
 
-diff --git a/Documentation/gpu/todo.rst b/Documentation/gpu/todo.rst
-index 40ccac61137e..b7f1acb355f5 100644
---- a/Documentation/gpu/todo.rst
-+++ b/Documentation/gpu/todo.rst
-@@ -700,7 +700,7 @@ Outside DRM
- Convert fbdev drivers to DRM
- ----------------------------
- 
--There are plenty of fbdev drivers for older hardware. Some hwardware has
-+There are plenty of fbdev drivers for older hardware. Some hardware has
- become obsolete, but some still provides good(-enough) framebuffers. The
- drivers that are still useful should be converted to DRM and afterwards
- removed from fbdev.
+
+s/x85/x86 in subject and commit description and applied to spi-nor/next. 
+Thanks!
+
+[1/1] mtd: spi-nor: intel-spi: Move platform data header to x85 subfolder
+      https://git.kernel.org/mtd/c/ae2177cf318d
+
+Best regards,
 -- 
-2.25.1
-
+Tudor Ambarus <tudor.ambarus@microchip.com>
