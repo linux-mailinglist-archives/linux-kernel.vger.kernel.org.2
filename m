@@ -2,132 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019C9330B4A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B85330B4E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhCHKdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 05:33:43 -0500
-Received: from mga11.intel.com ([192.55.52.93]:65129 "EHLO mga11.intel.com"
+        id S230002AbhCHKes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 05:34:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231195AbhCHKd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:33:29 -0500
-IronPort-SDR: EoydsZvAOwv0Ae03kvTUtA2gJzc0phExPZxqM8zqv/9V/LPeZ2ipYiaXCGG9awQiRVsIFFpPaT
- gXRMOLbcWhOw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="184639094"
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="184639094"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 02:33:28 -0800
-IronPort-SDR: HhyRFaji92hkYH/IcTXTNVLyKx6k6Odu/UMT+FJ39Nx8CtWciGdUn4pWzakHR/WhgpUNa5PyfH
- lQDyY3cFkM6w==
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="385807735"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 02:33:26 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lJDCV-00An4O-2k; Mon, 08 Mar 2021 12:33:23 +0200
-Date:   Mon, 8 Mar 2021 12:33:23 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Marco Elver <elver@google.com>
-Cc:     linux-kernel@vger.kernel.org, vbabka@suse.cz, timur@kernel.org,
-        pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/2] lib/vsprintf: reduce space taken by no_hash_pointers
- warning
-Message-ID: <YEX9c+Sx/TGvFTCY@smile.fi.intel.com>
-References: <20210305194206.3165917-1-elver@google.com>
- <20210305194206.3165917-2-elver@google.com>
+        id S230141AbhCHKeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 05:34:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C79EE651A0;
+        Mon,  8 Mar 2021 10:34:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615199662;
+        bh=il5gjKv5nFrmXLaqBOsBHP0tYcf64xT7wsvxbySe+Ys=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=pxCQ3idglu1Twhu90qaVVIJwbZ8YIazmslSyOVxRAO1CWrWESm3zIqtaDZVnMt8qa
+         RUsIAOfDV1oyNY3voqDP4XSfR8U51B3dsIPS/e95br6GxKEHg09a+O2iO3n+MopwnB
+         kJ2SngXhKxbjFUnC+Necs1LsD4GR52pzpEsC0Yq1YZzoVeBM3RUoL4bM95ooK0CsV9
+         4W2y4w74fFu6Y8qOFFvu3UqvsO3O1yMAPN+j/640Rgd8ys1Om3SuJsm7C0pnt/0nIe
+         8fwk7pqQnQl1G1dcpCI7iCICeybr9255VyoQsyBhi46FbwJXbP8f4aZKj0C1AynAeu
+         xxwivenn3tpHQ==
+Date:   Mon, 8 Mar 2021 11:34:18 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>
+cc:     benjamin.tissoires@redhat.com, rydberg@bitmath.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hid: hid-alps: fix error return code in
+ alps_input_configured()
+In-Reply-To: <20210304131957.7089-1-baijiaju1990@gmail.com>
+Message-ID: <nycvar.YFH.7.76.2103081134130.12405@cbobk.fhfr.pm>
+References: <20210304131957.7089-1-baijiaju1990@gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305194206.3165917-2-elver@google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 08:42:06PM +0100, Marco Elver wrote:
-> Move the no_hash_pointers warning string into __initconst section, so
-> that it is discarded after init. Remove common start/end characters.
-> Also remove repeated lines from the array, since the compiler can't
-> remove duplicate strings for us since the array must appear in
-> __initconst as defined.
+On Thu, 4 Mar 2021, Jia-Ju Bai wrote:
+
+> When input_register_device() fails, no error return code is assigned.
+> To fix this bug, ret is assigned with -ENOENT as error return code.
 > 
-> Note, a similar message appears in kernel/trace/trace.c, but compiling
-> the feature is guarded by CONFIG_TRACING. It is not immediately obvious
-> if a space-concious kernel would prefer CONFIG_TRACING=n. Therefore, it
-> makes sense to keep the message for no_hash_pointers as __initconst, and
-> not move the NOTICE-printing to a common function.
-
-This seems to have 2-in-1 patch. Care to split?
-Feel free to add
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-to the __initconst part, but the rest.
-
-
-> Link: https://lkml.kernel.org/r/CAMuHMdULKZCJevVJcp7TxzLdWLjsQPhE8hqxhnztNi9bjT_cEw@mail.gmail.com
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Marco Elver <elver@google.com>
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 > ---
->  lib/vsprintf.c | 30 +++++++++++++++++-------------
->  1 file changed, 17 insertions(+), 13 deletions(-)
+>  drivers/hid/hid-alps.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index 4a14889ccb35..1095689c9c97 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -2094,26 +2094,30 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
->  bool no_hash_pointers __ro_after_init;
->  EXPORT_SYMBOL_GPL(no_hash_pointers);
+> diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
+> index 3feaece13ade..6b665931147d 100644
+> --- a/drivers/hid/hid-alps.c
+> +++ b/drivers/hid/hid-alps.c
+> @@ -761,6 +761,7 @@ static int alps_input_configured(struct hid_device *hdev, struct hid_input *hi)
 >  
-> +static const char no_hash_pointers_warning[8][55] __initconst = {
-> +	"******************************************************",
-> +	"   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   ",
-> +	" This system shows unhashed kernel memory addresses   ",
-> +	" via the console, logs, and other interfaces. This    ",
-> +	" might reduce the security of your system.            ",
-> +	" If you see this message and you are not debugging    ",
-> +	" the kernel, report this immediately to your system   ",
-> +	" administrator!                                       ",
-> +};
-> +
->  static int __init no_hash_pointers_enable(char *str)
->  {
-> +	/* Indices into no_hash_pointers_warning; -1 is an empty line. */
-> +	const int lines[] = { 0, 1, -1, 2, 3, 4, -1, 5, 6, 7, -1, 1, 0 };
-> +	int i;
-> +
->  	if (no_hash_pointers)
->  		return 0;
->  
->  	no_hash_pointers = true;
->  
-> -	pr_warn("**********************************************************\n");
-> -	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> -	pr_warn("**                                                      **\n");
-> -	pr_warn("** This system shows unhashed kernel memory addresses   **\n");
-> -	pr_warn("** via the console, logs, and other interfaces. This    **\n");
-> -	pr_warn("** might reduce the security of your system.            **\n");
-> -	pr_warn("**                                                      **\n");
-> -	pr_warn("** If you see this message and you are not debugging    **\n");
-> -	pr_warn("** the kernel, report this immediately to your system   **\n");
-> -	pr_warn("** administrator!                                       **\n");
-> -	pr_warn("**                                                      **\n");
-> -	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> -	pr_warn("**********************************************************\n");
-> +	for (i = 0; i < ARRAY_SIZE(lines); i++)
-> +		pr_warn("**%54s**\n", i == -1 ? "" : no_hash_pointers_warning[lines[i]]);
->  
->  	return 0;
->  }
-> -- 
-> 2.30.1.766.gb4fecdf3b7-goog
-> 
+>  		if (input_register_device(data->input2)) {
+>  			input_free_device(input2);
+> +			ret = -ENOENT;
+>  			goto exit;
+>  		}
+>  	}
+
+Applied, thanks.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Jiri Kosina
+SUSE Labs
 
