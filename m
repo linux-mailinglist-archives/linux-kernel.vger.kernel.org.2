@@ -2,106 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1C0331728
+	by mail.lfdr.de (Postfix) with ESMTP id 8E29333172C
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbhCHTXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:23:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbhCHTXC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:23:02 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2833FC061760
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 11:23:02 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id hs11so22653451ejc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 11:23:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O5hm6aHK8+K1Uogp8/qJt3hNGrKpWyW0WQaeRio5Q8A=;
-        b=TDedw5QVb9bgoxauwP+/OGfYJGObXA0ByQkjCJSSQrS2iCpc1a8qr0/xxLjEWCJ5dj
-         3QQP7JKMsHMkFex5umK1Usd8muY6HMrHv4z4Sx5Uvt7hvuj9dGlrVh+q4Jefpx0MT46+
-         7QvtnA1P5iSn+pmgxNr03XoFdiTS87LdwGaPguXPHiWwJlmBxXH1x87XWAwJUFBiQ45M
-         ypv1dAz3f2CQ7mTbChiMm5iQJR+5MNfS8PYfZZk5sH/ciwaF79Y8AuGhobVIIKXAJ0q8
-         wabCkxNVQ8X3xuVAl/JgPny5GorlIVmPhEOy38rPd2Z0RaEYyvwyoKRim615b2ygZS0S
-         Qpyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O5hm6aHK8+K1Uogp8/qJt3hNGrKpWyW0WQaeRio5Q8A=;
-        b=fbJeDR9Z/WxQzSkRcHg1wlFo+aMvhX6sxDUgU4nQkoEHZ4m804rOkGIfr0U2b9yZId
-         Wwq4rrirTwzy3+x7EebgI3VjqL/LCxhusT2mY0NjbV3ta0NuTSLPzqHMpo36TuJeCg0N
-         Y7Za4ca8USDE8OdvxR55DY0q2vBCRuUzQ9EQL/J5H9fZHz2W2IZAaekOr379MOPW3chd
-         yojViU7P6TPjYEQOCShznRp7Fm+ljwzzHbLHmctjEAY4gboD3Rkp1b3spyvlGHGUhlQS
-         H9MGSU+8P7Gdtfl/0o8+C9Q6LiE5RkfhUAoYcHoXIzmWTltI6k3iTpS8DUmcOEkQH+I9
-         Q2DQ==
-X-Gm-Message-State: AOAM533/5N7KP9Yo9mD7FcsR576U59BaJ+9LgDm4sX/T8lLKxieJZej2
-        GmuC7oHASg5dexyVhNubGvSDp64fKp5+TTvzoKoXyg==
-X-Google-Smtp-Source: ABdhPJypPPr/xuf9LRgK9t/szYCa+1qZSOmBNIq3CvaYF8+xtRCD8J3V2cw8H+R8RASkwpKC8ecMCSCP8b3t3qhyRi4=
-X-Received: by 2002:a17:906:bb06:: with SMTP id jz6mr16303394ejb.429.1615231380809;
- Mon, 08 Mar 2021 11:23:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20210304201253.14652-1-andriy.shevchenko@linux.intel.com> <CAJZ5v0gR=gN2ROo9JSOGHokw5imscMBwDERni8X83p0eWt634w@mail.gmail.com>
-In-Reply-To: <CAJZ5v0gR=gN2ROo9JSOGHokw5imscMBwDERni8X83p0eWt634w@mail.gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 8 Mar 2021 20:22:49 +0100
-Message-ID: <CAMpxmJUQ3r0YCeQvPq=SW57w-5BLtoTO1_bv=2uw6CX_1-EXcQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/5] gpiolib: switch to fwnode in the core
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+        id S230475AbhCHTXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:23:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230173AbhCHTXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 14:23:01 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A81FC6529E;
+        Mon,  8 Mar 2021 19:23:00 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lJLT0-000P9i-FB; Mon, 08 Mar 2021 19:22:58 +0000
+Date:   Mon, 08 Mar 2021 19:22:57 +0000
+Message-ID: <87zgzdxxf2.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        LAKML <linux-arm-kernel@lists.infradead.org>,
+        KVM <kvm@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] irqchip/gic-v4.1: Disable vSGI upon (GIC CPUIF < v4.1) detection
+In-Reply-To: <20210302102744.12692-2-lorenzo.pieralisi@arm.com>
+References: <0201111162841.3151-1-lorenzo.pieralisi@arm.com>
+        <20210302102744.12692-1-lorenzo.pieralisi@arm.com>
+        <20210302102744.12692-2-lorenzo.pieralisi@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: lorenzo.pieralisi@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 7:22 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Thu, Mar 4, 2021 at 9:13 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > GPIO library uses of_node and fwnode in the core in non-unified way.
-> > The series cleans this up and improves IRQ domain creation for non-OF cases
-> > where currently the names of the domain are 'unknown'.
-> >
-> > This has been tested on Intel Galileo Gen 2.
-> >
-> > In v3:
-> > - fix subtle bug in gpiod_count
-> > - make irq_domain_add_simple() static inline (Marc)
-> >
-> > In v2:
-> > - added a new patch due to functionality in irq_comain_add_simple() (Linus)
-> > - tagged patches 2-4 (Linus)
-> > - Cc'ed to Rafael
-> >
-> > Andy Shevchenko (5):
-> >   irqdomain: Introduce irq_domain_create_simple() API
-> >   gpiolib: Unify the checks on fwnode type
-> >   gpiolib: Move of_node operations to gpiolib-of and correct fwnode use
-> >   gpiolib: Introduce acpi_gpio_dev_init() and call it from core
-> >   gpiolib: Reuse device's fwnode to create IRQ domain
->
-> [1-4/5] applied as 5.13 material and I have a minor comment regarding
-> the last patch (will send separately).
->
-> Thanks!
+Hi Lorenzo,
 
-Hi Rafael!
+On Tue, 02 Mar 2021 10:27:44 +0000,
+Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> wrote:
+> 
+> GIC CPU interfaces versions predating GIC v4.1 were not built to
+> accommodate vINTID within the vSGI range; as reported in the GIC
+> specifications (8.2 "Changes to the CPU interface"), it is
+> CONSTRAINED UNPREDICTABLE to deliver a vSGI to a PE with
+> ID_AA64PFR0_EL1.GIC < b0011.
+> 
+> Check the GIC CPUIF version by reading the SYS_ID_AA64_PFR0_EL1.
+> 
+> Disable vSGIs if a CPUIF version < 4.1 is detected to prevent using
+> vSGIs on systems where they may misbehave.
+> 
+> Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> ---
+>  arch/arm64/kvm/vgic/vgic-mmio-v3.c     |  4 ++--
+>  arch/arm64/kvm/vgic/vgic-v3.c          |  3 ++-
+>  drivers/irqchip/irq-gic-v3-its.c       |  6 +++++-
+>  drivers/irqchip/irq-gic-v3.c           | 22 ++++++++++++++++++++++
+>  include/kvm/arm_vgic.h                 |  1 +
+>  include/linux/irqchip/arm-gic-common.h |  2 ++
+>  include/linux/irqchip/arm-gic-v3.h     |  1 +
+>  7 files changed, 35 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> index 15a6c98ee92f..66548cd2a715 100644
+> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> @@ -86,7 +86,7 @@ static unsigned long vgic_mmio_read_v3_misc(struct kvm_vcpu *vcpu,
+>  		}
+>  		break;
+>  	case GICD_TYPER2:
+> -		if (kvm_vgic_global_state.has_gicv4_1)
+> +		if (kvm_vgic_global_state.has_gicv4_1_vsgi)
+>  			value = GICD_TYPER2_nASSGIcap;
+>  		break;
+>  	case GICD_IIDR:
+> @@ -119,7 +119,7 @@ static void vgic_mmio_write_v3_misc(struct kvm_vcpu *vcpu,
+>  		dist->enabled = val & GICD_CTLR_ENABLE_SS_G1;
+>  
+>  		/* Not a GICv4.1? No HW SGIs */
+> -		if (!kvm_vgic_global_state.has_gicv4_1)
+> +		if (!kvm_vgic_global_state.has_gicv4_1_vsgi)
+>  			val &= ~GICD_CTLR_nASSGIreq;
+>  
+>  		/* Dist stays enabled? nASSGIreq is RO */
+> diff --git a/arch/arm64/kvm/vgic/vgic-v3.c b/arch/arm64/kvm/vgic/vgic-v3.c
+> index 52915b342351..57b73100e8cc 100644
+> --- a/arch/arm64/kvm/vgic/vgic-v3.c
+> +++ b/arch/arm64/kvm/vgic/vgic-v3.c
+> @@ -533,7 +533,7 @@ int vgic_v3_map_resources(struct kvm *kvm)
+>  		return ret;
+>  	}
+>  
+> -	if (kvm_vgic_global_state.has_gicv4_1)
+> +	if (kvm_vgic_global_state.has_gicv4_1_vsgi)
+>  		vgic_v4_configure_vsgis(kvm);
+>  
+>  	return 0;
+> @@ -589,6 +589,7 @@ int vgic_v3_probe(const struct gic_kvm_info *info)
+>  	if (info->has_v4) {
+>  		kvm_vgic_global_state.has_gicv4 = gicv4_enable;
+>  		kvm_vgic_global_state.has_gicv4_1 = info->has_v4_1 && gicv4_enable;
+> +		kvm_vgic_global_state.has_gicv4_1_vsgi = info->has_v4_1_vsgi && gicv4_enable;
+>  		kvm_info("GICv4%s support %sabled\n",
+>  			 kvm_vgic_global_state.has_gicv4_1 ? ".1" : "",
+>  			 gicv4_enable ? "en" : "dis");
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+> index ed46e6057e33..ee2a2ca27d5c 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -5412,7 +5412,11 @@ int __init its_init(struct fwnode_handle *handle, struct rdists *rdists,
+>  	if (has_v4 & rdists->has_vlpis) {
+>  		const struct irq_domain_ops *sgi_ops;
+>  
+> -		if (has_v4_1)
+> +		/*
+> +		 * Enable vSGIs only if the ITS and the
+> +		 * GIC CPUIF support them.
+> +		 */
+> +		if (has_v4_1 && rdists->has_vsgi_cpuif)
+>  			sgi_ops = &its_sgi_domain_ops;
+>  		else
+>  			sgi_ops = NULL;
 
-AFAICT this should go through the GPIO tree as usual. Any reason for
-you to pick these patches this time?
+This doesn't seem right. If you pass NULL for the SGI ops, you also
+lose the per-VPE doorbells and stick to the terrible GICv4.0 behaviour
+(see the use of has_v4_1() in irq-gic-v4.c). I don't think that is
+what you really want.
 
-Bartosz
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index eb0ee356a629..fd6cd9a5de34 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -31,6 +31,21 @@
+>  
+>  #include "irq-gic-common.h"
+>  
+> +#ifdef CONFIG_ARM64
+> +#include <asm/cpufeature.h>
+> +
+> +static inline bool gic_cpuif_has_vsgi(void)
+> +{
+> +	unsigned long fld, reg = read_sanitised_ftr_reg(SYS_ID_AA64PFR0_EL1);
+> +
+> +	fld = cpuid_feature_extract_unsigned_field(reg, ID_AA64PFR0_GIC_SHIFT);
+> +
+> +	return fld >= 0x3;
+> +}
+> +#else
+> +static inline bool gic_cpuif_has_vsgi(void) { return false; }
+> +#endif
+
+Why do we need to expose this in the GICv3 driver instead of the GICv4
+code? At the moment, you track this state:
+
+- in gic_data.rdists.has_vsgi_cpuif
+- indirectly in gic_v3_kvm_info.has_v4_1_vsgi
+- indirectly in kvm_vgic_global_state.has_gicv4_1_vsgi
+
+Can't we simplify the logic and track it *once*? Or even better, just
+evaluate it when required? I hacked the following stuff based on your
+patch (untested). What do you think?
+
+Thanks,
+
+	M.
+
+diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+index 15a6c98ee92f..2f1b156021a6 100644
+--- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
++++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+@@ -86,7 +86,7 @@ static unsigned long vgic_mmio_read_v3_misc(struct kvm_vcpu *vcpu,
+ 		}
+ 		break;
+ 	case GICD_TYPER2:
+-		if (kvm_vgic_global_state.has_gicv4_1)
++		if (kvm_vgic_global_state.has_gicv4_1 && gic_cpuif_has_vsgi())
+ 			value = GICD_TYPER2_nASSGIcap;
+ 		break;
+ 	case GICD_IIDR:
+@@ -119,7 +119,7 @@ static void vgic_mmio_write_v3_misc(struct kvm_vcpu *vcpu,
+ 		dist->enabled = val & GICD_CTLR_ENABLE_SS_G1;
+ 
+ 		/* Not a GICv4.1? No HW SGIs */
+-		if (!kvm_vgic_global_state.has_gicv4_1)
++		if (!kvm_vgic_global_state.has_gicv4_1 || !gic_cpuif_has_vsgi())
+ 			val &= ~GICD_CTLR_nASSGIreq;
+ 
+ 		/* Dist stays enabled? nASSGIreq is RO */
+diff --git a/drivers/irqchip/irq-gic-v4.c b/drivers/irqchip/irq-gic-v4.c
+index 5d1dc9915272..864fa9bbda4c 100644
+--- a/drivers/irqchip/irq-gic-v4.c
++++ b/drivers/irqchip/irq-gic-v4.c
+@@ -87,17 +87,37 @@ static struct irq_domain *gic_domain;
+ static const struct irq_domain_ops *vpe_domain_ops;
+ static const struct irq_domain_ops *sgi_domain_ops;
+ 
++#ifdef CONFIG_ARM64
++#include <asm/cpufeature.h>
++
++bool gic_cpuif_has_vsgi(void)
++{
++	unsigned long fld, reg = read_sanitised_ftr_reg(SYS_ID_AA64PFR0_EL1);
++
++	fld = cpuid_feature_extract_unsigned_field(reg, ID_AA64PFR0_GIC_SHIFT);
++
++	return fld >= 0x3;
++}
++#else
++bool gic_cpuif_has_vsgi(void) { }
++#endif
++
+ static bool has_v4_1(void)
+ {
+ 	return !!sgi_domain_ops;
+ }
+ 
++static bool has_v4_1_sgi(void)
++{
++	return has_v4_1() && gic_cpuif_has_vsgi();
++}
++
+ static int its_alloc_vcpu_sgis(struct its_vpe *vpe, int idx)
+ {
+ 	char *name;
+ 	int sgi_base;
+ 
+-	if (!has_v4_1())
++	if (!has_v4_1_sgi())
+ 		return 0;
+ 
+ 	name = kasprintf(GFP_KERNEL, "GICv4-sgi-%d", task_pid_nr(current));
+@@ -182,7 +202,7 @@ static void its_free_sgi_irqs(struct its_vm *vm)
+ {
+ 	int i;
+ 
+-	if (!has_v4_1())
++	if (!has_v4_1_sgi())
+ 		return;
+ 
+ 	for (i = 0; i < vm->nr_vpes; i++) {
+diff --git a/include/linux/irqchip/arm-gic-v4.h b/include/linux/irqchip/arm-gic-v4.h
+index 943c3411ca10..2c63375bbd43 100644
+--- a/include/linux/irqchip/arm-gic-v4.h
++++ b/include/linux/irqchip/arm-gic-v4.h
+@@ -145,4 +145,6 @@ int its_init_v4(struct irq_domain *domain,
+ 		const struct irq_domain_ops *vpe_ops,
+ 		const struct irq_domain_ops *sgi_ops);
+ 
++bool gic_cpuif_has_vsgi(void);
++
+ #endif
+
+-- 
+Without deviation from the norm, progress is not possible.
