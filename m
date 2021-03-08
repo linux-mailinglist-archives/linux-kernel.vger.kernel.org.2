@@ -2,144 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B5F3315B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A53EF3315B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbhCHSQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:16:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229893AbhCHSQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:16:01 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59F33652B8;
-        Mon,  8 Mar 2021 18:16:00 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 13:15:58 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org
-Subject: Re: [RFC PATCH 1/5] tracing: Define new ftrace event "func_repeats"
-Message-ID: <20210308131558.6ee6f98e@gandalf.local.home>
-In-Reply-To: <6f4083f2-6c71-e404-9000-b08ff94ab328@gmail.com>
-References: <20210304090141.207309-1-y.karadz@gmail.com>
-        <20210304090141.207309-2-y.karadz@gmail.com>
-        <20210304113809.5c2ccceb@gandalf.local.home>
-        <6f4083f2-6c71-e404-9000-b08ff94ab328@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230522AbhCHSRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:17:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230517AbhCHSQm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 13:16:42 -0500
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37177C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 10:16:42 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id g46so2403210ooi.9
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 10:16:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RRpVWdGZmpXzNxOD/XVu2j6LVoCAQEL9B4W4DbjgOgc=;
+        b=oANctcJtCCsLCz0IpAdOXsegOQ7gLwg64DHHOw9UqyLf7kDCOA57BGhXrSBMR2Vmjr
+         fMxD16DdIoZXSnUdJHGyOzjIll4TUKZ74NH76C+8xSaPKjP1H3r9Gub8E8UA1g88LvXW
+         Befq2stmL3dOMDTTOTfxaZHSYhbfgWspbJecaMTTCcgdLmaJGeg8ZN4+gCMOm299kT/E
+         F5DgNsob9ik0D1y1ppLRXMdew78Q1Fo7rGDb/VCl5UtFDD2YrZFNqjf/SNwdLvFmVNiU
+         I6v1ZGOYNzsqaaiAovzS8O0AaLTardC3/GEh1542wxa8EflL/jSGdRUmdBhGAtDuBQPL
+         S5SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RRpVWdGZmpXzNxOD/XVu2j6LVoCAQEL9B4W4DbjgOgc=;
+        b=QRHN4VciP8TEsimiYNHqeoNE+BsMpXs9ZAyRHVrH9/jMwEUpsB51e+AiKCY6/gTu8n
+         2PlKCw+l4WTCkdkComUX1rrP8je8+rR66tLMtoJ92/skdIn8NbmfOVCMxkvc5kTG8lgP
+         MqdIB10vQuid/jVBHhKF44VNKGvClvP67ZCA46GjmUSz6s1qd4t/nfCed69SJXAyG4sc
+         KYQGNahSnmI7K0+PgTD7XpFz15KTPxZJt6eNbVitE5wJ5r2ezI7F0MSrIsCNv+bOBgGp
+         kRZBXbqZONAU19MLRiU/7X9ta0vWE5OIU++HaCY+lerR3FJ2VzSZNcStLbMD417x5KKL
+         nJ1A==
+X-Gm-Message-State: AOAM531YUVGtyRvEemtjrlwfBuT6jUnp3rxNdi+3qKaF2dJ/We3FqBue
+        4VmFzG4zOCk17r6co077lDUqFQ==
+X-Google-Smtp-Source: ABdhPJyNqBH0M63DeQztwtpNL2Ukge0utegg4wOaj4jao9b9whsrPFrs1xZsgnz/4EGRJLDE7bbwqw==
+X-Received: by 2002:a4a:6c19:: with SMTP id q25mr19549105ooc.42.1615227401600;
+        Mon, 08 Mar 2021 10:16:41 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c20sm2449191oiw.18.2021.03.08.10.16.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 10:16:41 -0800 (PST)
+Date:   Mon, 8 Mar 2021 12:16:39 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] pinctrl: qcom: spmi-gpio: Add support for PM8350 and
+ friends
+Message-ID: <YEZqB9luwyh8B+d3@builder.lan>
+References: <20210308164845.3210393-1-vkoul@kernel.org>
+ <20210308164845.3210393-2-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308164845.3210393-2-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Mar 2021 16:57:29 +0200
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+On Mon 08 Mar 10:48 CST 2021, Vinod Koul wrote:
 
-> > If we had:
-> > 
-> >             <...>-37      [004] ...1  2022.303820: gc_worker <-process_one_work
-> >             <...>-37      [004] ...1  2022.303820: ___might_sleep <-gc_worker
-> >             <...>-37      [004] ...1  2022.303831: ___might_sleep <-gc_worker (last ts: 2022.303828 repeats: 127)
-> >             <...>-37      [004] ...1  2022.303831: queue_delayed_work_on <-process_one_work
-> > 
-> > We would know the last time __might_sleep was called.
-> > 
-> > That is, not only should we save the ip and pip in the trace_func_repeats
-> > structure, but we should also be storing the last time stamp of the last
-> > function event that repeated. Otherwise the above looks like the last
-> > __might_sleep called above happened when the queue_delayed_work_on
-> > happened, where that may not be the case.  
+> Add support for the PM8350, PM8350B, PM8350C, PMK8350, PMR735A and
+> PMR735B GPIO support to the Qualcomm PMIC GPIO driver.
 > 
-> If we store the last timestamp, this means we will need to use 
-> additional 64b on the buffer, every time we record the "func_repeats" 
-> event. This looks like an overkill to me.
-> Can we store only the duration of the repeats (the difference between 
-> the timestamp)? This way we can use less memory at the price of having 
-> one extra arithmetic operation.
-> Alternative approach can be to store only the least-significant bits of 
-> the timestamp.
+
+Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/pinctrl/qcom/pinctrl-spmi-gpio.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> What do you think?
-
-I like the way you're thinking ;-)
-
-Let's take a look at the current event sizes.
-
-The function event is defined as:
-
-name: function
-ID: 1
-format:
-	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
-	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
-	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
-	field:int common_pid;	offset:4;	size:4;	signed:1;
-
-	field:unsigned long ip;	offset:8;	size:8;	signed:0;
-	field:unsigned long parent_ip;	offset:16;	size:8;	signed:0;
-
-Showing that it's total size is 24 bytes (offset:16 + size:8)
-
-and your current repeat event has:
-
-ID: 17
-format:
-	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
-	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
-	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
-	field:int common_pid;	offset:4;	size:4;	signed:1;
-
-	field:unsigned long ip;	offset:8;	size:8;	signed:0;
-	field:unsigned long pip;	offset:16;	size:8;	signed:0;
-	field:unsigned long count;	offset:24;	size:8;	signed:0;
-
-Which is 32 bytes. Adding another 8 would make it 40. It's bigger than one
-function event, but still smaller than two, and adding just 4 bytes is
-still some size more than a single function event.
-
-Since this event is new, we could even do another trick (one that the
-preemptirq events do:
-
-ID: 434
-format:
-	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
-	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
-	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
-	field:int common_pid;	offset:4;	size:4;	signed:1;
-
-	field:s32 caller_offs;	offset:8;	size:4;	signed:1;
-	field:s32 parent_offs;	offset:12;	size:4;	signed:1;
-
-print fmt: "caller=%pS parent=%pS", (void *)((unsigned long)(_stext) + REC->caller_offs), (void *)((unsigned long)(_stext) + REC->parent_offs)
-
-The (_stext) is defined in /proc/kallsyms:
-
-# grep stext /proc/kallsyms 
-ffffffff8d000000 T _stext
-
-And the offsets are off of that, which we could do the same thing here.
-
-	field:s32 ip;	offset:8;	size:4;	signed:1;
-	field:s32 pip;	offset:12;	size:4;	signed:1;
-	field:s16 count;	offset:20;	size:2;	signed:1;
-	field:u16 top_ts;	offset:22;	size:2; signed:0;
-	field:u32 bottom_ts;	offset:24;	size:4; signed:0;
-
-By putting count down to 2 bytes. Having more than 64K repeats is
-probably not going to happen, and if it does, we could inject this more
-than once ;-)
-
-And as all events must be 4 byte aligned, we could use 6 bytes for the
-offset, giving us: 2^40 bits instead of just 2^32 bits, that is, making the
-time go from 4 seconds (2^32 nanoseconds) to 18 minutes (2^40 nanoseconds).
-
-I would grab the time stamp after saving the event to make sure that it
-doesn't go backwards. It may be a little racy (if an interrupt comes in
-between), but it's still a "best effort" approach.
-
--- Steve
-
+> diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+> index 9801c717e311..c2b9f2e152bb 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+> @@ -1127,6 +1127,12 @@ static const struct of_device_id pmic_gpio_of_match[] = {
+>  	{ .compatible = "qcom,pm8150b-gpio", .data = (void *) 12 },
+>  	/* pm8150l has 12 GPIOs with holes on 7 */
+>  	{ .compatible = "qcom,pm8150l-gpio", .data = (void *) 12 },
+> +	{ .compatible = "qcom,pm8350-gpio", .data = (void *) 10 },
+> +	{ .compatible = "qcom,pm8350b-gpio", .data = (void *) 8 },
+> +	{ .compatible = "qcom,pm8350c-gpio", .data = (void *) 9 },
+> +	{ .compatible = "qcom,pmk8350-gpio", .data = (void *) 4 },
+> +	{ .compatible = "qcom,pmr735a-gpio", .data = (void *) 4 },
+> +	{ .compatible = "qcom,pmr735b-gpio", .data = (void *) 4 },
+>  	{ .compatible = "qcom,pm6150-gpio", .data = (void *) 10 },
+>  	{ .compatible = "qcom,pm6150l-gpio", .data = (void *) 12 },
+>  	/* pmx55 has 11 GPIOs with holes on 3, 7, 10, 11 */
+> -- 
+> 2.26.2
+> 
