@@ -2,76 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50023305CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA343305C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:05:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233666AbhCHCHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 21:07:44 -0500
-Received: from mga18.intel.com ([134.134.136.126]:11593 "EHLO mga18.intel.com"
+        id S233630AbhCHCFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 21:05:01 -0500
+Received: from mga12.intel.com ([192.55.52.136]:2937 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233640AbhCHCHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 21:07:30 -0500
-IronPort-SDR: sC6LTNmax546DQWPK7T1AupliIMXHaBGOVY9TyBAX/p5cLuNf6annEJuhLNOWFuj5HZhS/xpOL
- SHFUdY/jGdzA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="175566479"
+        id S233621AbhCHCEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 21:04:50 -0500
+IronPort-SDR: QDjZHh80w5usulcVD4nmQNXBgjI5TR5YMkQG3fMjuYGfzGxmkBPJ74y2eQdj7nepxXHF1pTI2B
+ ONwtDsFgqC6A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="167217197"
 X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
-   d="scan'208";a="175566479"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 18:07:29 -0800
-IronPort-SDR: UdQgNuwx5+ufsJ4dlq+lt4nLz79o1bEti5AcVcisLcTvMff4/Zi7EFkWaOBGKy/4+B2g0cwYdZ
- ou0Nno+JiegA==
+   d="scan'208";a="167217197"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 18:04:49 -0800
+IronPort-SDR: 4wMCu484bymhPCt38FRPrZMm5BRpiun8evNWvpAjDv2vknwvLEdZKPS5jLwOUW/ESnMke43Mq2
+ npDRkogcIG/g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
-   d="scan'208";a="430183307"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 07 Mar 2021 18:07:27 -0800
-Cc:     baolu.lu@linux.intel.com, Will Deacon <will@kernel.org>,
-        ashok.raj@intel.com, kevin.tian@intel.com, jacob.jun.pan@intel.com,
-        yi.l.liu@intel.com, sanjay.k.kumar@intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] iommu/vt-d: Remove WO permissions on second-level
- paging entries
-To:     Joerg Roedel <joro@8bytes.org>
-References: <20210225062654.2864322-1-baolu.lu@linux.intel.com>
- <20210225062654.2864322-3-baolu.lu@linux.intel.com>
- <20210304122623.GD26414@8bytes.org>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <c7bffaee-6c3c-3254-a71a-d66d023d1e58@linux.intel.com>
-Date:   Mon, 8 Mar 2021 09:58:26 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210304122623.GD26414@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+   d="scan'208";a="598675223"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by fmsmga006.fm.intel.com with ESMTP; 07 Mar 2021 18:04:47 -0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     gregkh@linuxfoundation.org, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com
+Subject: [PATCH v12 0/2] UIO support for dfl devices
+Date:   Mon,  8 Mar 2021 09:59:34 +0800
+Message-Id: <1615168776-8553-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
+This patchset supports some dfl device drivers written in userspace.
 
-On 3/4/21 8:26 PM, Joerg Roedel wrote:
-> On Thu, Feb 25, 2021 at 02:26:51PM +0800, Lu Baolu wrote:
->> When the first level page table is used for IOVA translation, it only
->> supports Read-Only and Read-Write permissions. The Write-Only permission
->> is not supported as the PRESENT bit (implying Read permission) should
->> always set. When using second level, we still give separate permissions
->> that allows WriteOnly which seems inconsistent and awkward. There is no
->> use case we can think off, hence remove that configuration to make it
->> consistent.
-> 
-> No use-case for WriteOnly mappings? How about DMA_FROM_DEVICE mappings?
-> 
+There are some Q&A about why UIO driver is needed in v11:
 
-The statement of no use case is not correct. Sorry about it.
+From Greg:
+  Why are you saying that an ethernet driver should be using the UIO
+  interface?
 
-As we have moved to use first level for IOVA translation, the first
-level page table entry only provides RO and RW permissions. So if any
-device driver specifies DMA_FROM_DEVICE attribution, it will get RW
-permission in the page table. This patch aims to make the permissions
-of second level and first level consistent. No impact on the use of
-DMA_FROM_DEVICE attribution.
+  And why can't you use the existing UIO drivers that bind to memory
+  regions specified by firmware?  Without an interrupt being used, why is
+  UIO needed at all?
 
-Best regards,
-baolu
+From Moritz:
+  Essentially I see two options:
+  - Have a DFL bus driver instantiate a platform driver (uio_pdrv_genirq)
+    which I *think* you described above?
+  - What this patch implements -- a UIO driver on the DFL bus
+
+  These FPGA devices can on the fly change their contents and -- even if
+  just for test -- being able to expose a bunch of registers via UIO can
+  be extremely useful.
+
+  Whether a device should expose registers or not should be up to the
+  implemeneter of the FPGA design I think (policy). This patch (or the
+  previous version) provides a mechanism to do so via DFL.
+
+  This is similar in nature to uio_pdrv_genirq on a DT based platform, to
+  expose the registers you instantiate the DT node.
+
+  Re-implementing a new driver for each of these instances doesn't seem
+  desirable and tying DFL as enumeration mechanism to UIO seems like a
+  good compromise for enabling this kind of functionality.
+
+  Note this is *not* an attempt to bypass the network stack or other
+  existing subsystems.
+
+See the original message in:
+  https://lore.kernel.org/linux-fpga/YDvQ8aO8v3NhLKzx@epycbox.lan/T/#m66ba2c96848e3dea38d1a4f16dfea3cb291f7975
+
+
+From Yilun:
+  The ETH GROUP IP is not designed as the full functional ethernet
+  controller. It is specially developed for the Intel N3000 NIC. Since it
+  is an FPGA based card, it is designed for the users to runtime reload
+  part of the MAC layer logic developed by themselves, while the ETH GROUP
+  is another part of the MAC which is not expected to be reloaded by
+  customers, but it provides some configurations for software to work with
+  the user logic.
+
+  So I category the feature as the devices that "designed for specific
+  purposes and does not fit into one of the standard kernel subsystems".
+  Some related description could be found in Patch #2, to illustrate why
+  using UIO for some DFL devices.
+
+  There are now UIO drivers for PCI or platform devices, but in this case
+  we are going to export a DFL(Device Feature List) bus device to
+  userspace, a DFL driver for UIO is needed to bind to it.
+
+See the original message in:
+  https://lore.kernel.org/linux-fpga/YDvQ8aO8v3NhLKzx@epycbox.lan/T/#m91b303fd61485644353fad1e1e9c11d528844684
+
+
+Xu Yilun (2):
+  uio: uio_dfl: add userspace i/o driver for DFL bus
+  Documentation: fpga: dfl: Add description for DFL UIO support
+
+ Documentation/fpga/dfl.rst | 26 ++++++++++++++++++
+ MAINTAINERS                |  1 +
+ drivers/uio/Kconfig        | 17 ++++++++++++
+ drivers/uio/Makefile       |  1 +
+ drivers/uio/uio_dfl.c      | 66 ++++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 111 insertions(+)
+ create mode 100644 drivers/uio/uio_dfl.c
+
+-- 
+2.7.4
+
