@@ -2,178 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFECC3314AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 377923314AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhCHRX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 12:23:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231136AbhCHRXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:23:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E798F650E0;
-        Mon,  8 Mar 2021 17:23:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615224194;
-        bh=+JBDZq0kglZnqWBv7oJ3A3xQci9eK+6Cq7z8wX1ATnI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YXFJLZu1tEJMcTJGIn28HDUT/LM3GWp58/iKiRM1t3bs2F6Jp62yBfb3ibj1Hq5EB
-         86PqtW8UeZsdiUgwPaDMYdmbVtoFHNAv/jyihrd5Yz6RaZNM3Y7e5e7dJ2+//5PuT2
-         hV4SFOVk7FDLgf4KGv7SP5iwb/lEot/7rUIw/8l4=
-Date:   Mon, 8 Mar 2021 18:23:11 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Al Cooper <alcooperx@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v4 2/2] serial: 8250: Add new 8250-core based Broadcom
- STB driver
-Message-ID: <YEZdf9pgcauzr0Aa@kroah.com>
-References: <20210308170522.4272-1-alcooperx@gmail.com>
- <20210308170522.4272-3-alcooperx@gmail.com>
+        id S231203AbhCHRX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:23:28 -0500
+Received: from mail-io1-f52.google.com ([209.85.166.52]:40194 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhCHRXV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 12:23:21 -0500
+Received: by mail-io1-f52.google.com with SMTP id i8so10762436iog.7;
+        Mon, 08 Mar 2021 09:23:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t87CCa35bqPyH+5rtehXh9/9TmKJVxVWgeAklXE4G9w=;
+        b=JIIfgWYUPphtYUHNOzHspEeLPnoTc4brx6QR9AWZHrRkDhuIZmAhdI/Ym3mW0PHuLi
+         yHmW4LShMwb9OCftFLysKxzcHUP7dLUb5i/dL3FiMvHuh4JEZf/H3K6dSBMMdf09ZRxF
+         OmNixuA2IXcQtm+LH1WJhqCva6RExfpg9dwf3x7aWGFVODIV7eb2xunZnyUqcuU84NdZ
+         HrVvsxGTVQEY7qr69e7zV5hQDKH5lwV4KinyHvBrkzxuo5k8Xf1FwYo40VVcUCovNDdA
+         GhQMnPmAxzRr28dZNy+hub2gxdnP1Yqwhmib9+Nb/ZzlWKiYpmvozHV+o3A/UNCxIm44
+         SMtg==
+X-Gm-Message-State: AOAM5337/mji/kKPpUDA5EGO4vxjG3WAqwG6mbrQgWl4vYJmEk55TI5f
+        FLu+bFeZ48TZewGj72LmTg==
+X-Google-Smtp-Source: ABdhPJwWpjx/LAtFOUHhB6Mb5nbd8qSM0nlIGMyripcZWJpKoFzXah9JI1UE8tDmOeBEHk/3qrkLSQ==
+X-Received: by 2002:a6b:c997:: with SMTP id z145mr18975688iof.36.1615224201004;
+        Mon, 08 Mar 2021 09:23:21 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id x2sm6479656ilj.31.2021.03.08.09.23.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 09:23:20 -0800 (PST)
+Received: (nullmailer pid 2657444 invoked by uid 1000);
+        Mon, 08 Mar 2021 17:23:16 -0000
+Date:   Mon, 8 Mar 2021 10:23:16 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org,
+        angelogioacchino.delregno@somainline.org,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        dri-devel@lists.freedesktop.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, martin.botka@somainline.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        Jingoo Han <jingoohan1@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marijn.suijten@somainline.org
+Subject: Re: [PATCH 1/2] dt-bindings: leds: backlight: qcom-wled: Add PMI8994
+ compatible
+Message-ID: <20210308172316.GA2657398@robh.at.kernel.org>
+References: <20210228124106.135812-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308170522.4272-3-alcooperx@gmail.com>
+In-Reply-To: <20210228124106.135812-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 12:05:22PM -0500, Al Cooper wrote:
-> +static void brcmuart_init_debugfs(struct brcmuart_priv *priv,
-> +				  const char *device)
-> +{
-> +	priv->debugfs_dir = debugfs_create_dir(device, brcmuart_debugfs_root);
-> +	priv->debugfs_file = debugfs_create_file("stats", 0444,
-> +						 priv->debugfs_dir,
-> +						 priv,
-> +						 &debugfs_stats_fops);
+On Sun, 28 Feb 2021 13:41:04 +0100, Konrad Dybcio wrote:
+> Document the newly added PMI8994 compatible.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> ---
+>  Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-No need to save this file *, you never do anything with it.
-
-> +}
-> +
-> +
-> +static int brcmuart_probe(struct platform_device *pdev)
-> +{
-> +	struct resource *regs;
-> +	struct device_node *np = pdev->dev.of_node;
-> +	const struct of_device_id *of_id = NULL;
-> +	struct uart_8250_port *new_port;
-> +	struct device *dev = &pdev->dev;
-> +	struct brcmuart_priv *priv;
-> +	struct clk *baud_mux_clk;
-> +	struct uart_8250_port up;
-> +	struct resource *irq;
-> +	void __iomem *membase = 0;
-> +	resource_size_t mapbase = 0;
-> +	u32 clk_rate = 0;
-> +	int ret;
-> +	int x;
-> +	int dma_irq;
-> +	static const char * const reg_names[REGS_MAX] = {
-> +		"uart", "dma_rx", "dma_tx", "dma_intr2", "dma_arb"
-> +	};
-> +
-> +	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-> +	if (!irq) {
-> +		dev_err(dev, "missing irq\n");
-> +		return -EINVAL;
-> +	}
-> +	priv = devm_kzalloc(dev, sizeof(struct brcmuart_priv),
-> +			GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	of_id = of_match_node(brcmuart_dt_ids, np);
-> +	if (!of_id || !of_id->data)
-> +		priv->rate_table = brcmstb_rate_table;
-> +	else
-> +		priv->rate_table = of_id->data;
-> +
-> +	for (x = 0; x < REGS_MAX; x++) {
-> +		regs = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-> +						reg_names[x]);
-> +		if (!regs)
-> +			break;
-> +		priv->regs[x] =	devm_ioremap(dev, regs->start,
-> +					     resource_size(regs));
-> +		if (IS_ERR(priv->regs[x]))
-> +			return PTR_ERR(priv->regs[x]);
-> +		if (x == REGS_8250) {
-> +			mapbase = regs->start;
-> +			membase = priv->regs[x];
-> +		}
-> +	}
-> +
-> +	/* We should have just the uart base registers or all the registers */
-> +	if (x != 1 && x != REGS_MAX) {
-> +		dev_warn(dev, "%s registers not specified\n", reg_names[x]);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* if the DMA registers were specified, try to enable DMA */
-> +	if (x > REGS_DMA_RX) {
-> +		if (brcmuart_arbitration(priv, 1) == 0) {
-> +			u32 txrev = 0;
-> +			u32 rxrev = 0;
-> +
-> +			txrev = udma_readl(priv, REGS_DMA_RX, UDMA_RX_REVISION);
-> +			rxrev = udma_readl(priv, REGS_DMA_TX, UDMA_TX_REVISION);
-> +			if ((txrev >= UDMA_TX_REVISION_REQUIRED) &&
-> +				(rxrev >= UDMA_RX_REVISION_REQUIRED)) {
-> +
-> +				/* Enable the use of the DMA hardware */
-> +				priv->dma_enabled = true;
-> +			} else {
-> +				brcmuart_arbitration(priv, 0);
-> +				dev_err(dev,
-> +					"Unsupported DMA Hardware Revision\n");
-> +			}
-> +		} else {
-> +			dev_err(dev,
-> +				"Timeout arbitrating for UART DMA hardware\n");
-> +		}
-> +	}
-> +
-> +	of_property_read_u32(np, "clock-frequency", &clk_rate);
-> +
-> +	/* See if a Baud clock has been specified */
-> +	baud_mux_clk = of_clk_get_by_name(np, "sw_baud");
-> +	if (IS_ERR(baud_mux_clk)) {
-> +		if (PTR_ERR(baud_mux_clk) == -EPROBE_DEFER)
-> +			return -EPROBE_DEFER;
-> +		dev_info(dev, "BAUD MUX clock not specified\n");
-> +	} else {
-> +		dev_info(dev, "BAUD MUX clock found\n");
-
-These are not "info" messages, make them dev_dbg() please.
-
-> +		ret = clk_prepare_enable(baud_mux_clk);
-> +		if (ret)
-> +			return ret;
-> +		priv->baud_mux_clk = baud_mux_clk;
-> +		init_real_clk_rates(dev, priv);
-> +		clk_rate = priv->default_mux_rate;
-> +	}
-> +
-> +	if (clk_rate == 0) {
-> +		dev_err(dev, "clock-frequency or clk not defined\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	dev_info(dev, "DMA is %senabled\n", priv->dma_enabled ? "" : "not ");
-
-When a driver is working properly, no need to say anything in the kernel
-log.
-
-This should be dev_info().
-
-Much better overall, thanks for making the changes.
-
-thanks,
-
-greg k-h
+Acked-by: Rob Herring <robh@kernel.org>
