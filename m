@@ -2,104 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E91AA3319CB
+	by mail.lfdr.de (Postfix) with ESMTP id 769683319CA
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbhCHV4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 16:56:23 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:56725 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230047AbhCHVzs (ORCPT
+        id S231445AbhCHV4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 16:56:21 -0500
+Received: from mail-io1-f53.google.com ([209.85.166.53]:43368 "EHLO
+        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230242AbhCHVzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 16:55:48 -0500
-Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 29E148289A3;
-        Tue,  9 Mar 2021 08:55:36 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lJNqh-000HG4-6L; Tue, 09 Mar 2021 08:55:35 +1100
-Date:   Tue, 9 Mar 2021 08:55:35 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Amir Goldstein <amir73il@gmail.com>, linux-cachefs@redhat.com,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-afs@lists.infradead.org,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: fscache: Redesigning the on-disk cache
-Message-ID: <20210308215535.GA63242@dread.disaster.area>
-References: <CAOQ4uxhxwKHLT559f8v5aFTheKgPUndzGufg0E58rkEqa9oQ3Q@mail.gmail.com>
- <2653261.1614813611@warthog.procyon.org.uk>
- <517184.1615194835@warthog.procyon.org.uk>
+        Mon, 8 Mar 2021 16:55:46 -0500
+Received: by mail-io1-f53.google.com with SMTP id f20so11647951ioo.10;
+        Mon, 08 Mar 2021 13:55:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8ybSs0Ob1LnKKtK1l56OcRUxFWnlW7UjT4LMddyAcCg=;
+        b=ON5EmnNH2z/PtndfSwlAW3uRzVWUWqN6rqdTu1PMDnfR+dWnmWT19H74qORLyarxza
+         ACH5jeDPvjXr+5mpFdWDGdP3VJqMZr6cWB3+87wUbKlz1eINyEV0O6GiHZiYJYlpdFVm
+         MeEQlsm+6yLAyqMN4BBAghEXBMo9F2artR5VNDWMkqp4FmI8dAcmkb3R//RyxFGIHXrt
+         wcick+1DHN2ig+bV+pvNUCvTLOwq7ZnLEQkWKNzM1EUDMhiVbcWECZY+qsZsvveUwpyX
+         sW9C25vjcjzy/E2QucRno/PpBCx9FH8ujtaO5FMSNpOMwkeRNY4TvtST0UvfIhnoSDq9
+         5Clg==
+X-Gm-Message-State: AOAM530cqUAk+4GEr6TheFvxC2wS/ECPXhq3D/WZwmDTJDVlKC3WFffG
+        3YyZAMhb0nXDrlnum7VGb5PxB3yiuA==
+X-Google-Smtp-Source: ABdhPJw+jYeeh0yZbRALgdv7Gt8iRqqYLmuyeQTqZhBuwAR0PKY+7idLLPnkGXg1qCg1b3ucyVLr+g==
+X-Received: by 2002:a5e:9612:: with SMTP id a18mr20092046ioq.209.1615240545783;
+        Mon, 08 Mar 2021 13:55:45 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id k14sm6509122iob.34.2021.03.08.13.55.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 13:55:45 -0800 (PST)
+Received: (nullmailer pid 3022527 invoked by uid 1000);
+        Mon, 08 Mar 2021 21:55:43 -0000
+Date:   Mon, 8 Mar 2021 14:55:43 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
+Cc:     jic23@kernel.org, lars@metafoo.de, pmeerw@pmeerw.net,
+        denis.ciocca@st.com, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        grygorii.tertychnyi@leica-geosystems.com,
+        andrey.zhizhikin@leica-geosystems.com
+Subject: Re: [PATCH 1/2] dt-bindings: iio: st,st-sensors.yaml New iis2mdc
+ bindings
+Message-ID: <20210308215543.GA3019487@robh.at.kernel.org>
+References: <20210305070536.2880-1-Qing-wu.Li@leica-geosystems.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <517184.1615194835@warthog.procyon.org.uk>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
-        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
-        a=kj9zAlcOel0A:10 a=dESyimp9J3IA:10 a=pGLkceISAAAA:8 a=7-415B0cAAAA:8
-        a=tj5_YPy7viIAn9pg2yAA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20210305070536.2880-1-Qing-wu.Li@leica-geosystems.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 09:13:55AM +0000, David Howells wrote:
-> Amir Goldstein <amir73il@gmail.com> wrote:
+On Fri, Mar 05, 2021 at 07:05:35AM +0000, LI Qingwu wrote:
+> Add support for ST magnetometer lsm303ah,sm303dac and iis2mdc.
+> The patch tested with IIS2MDC instrument.
 > 
-> > >  (0a) As (0) but using SEEK_DATA/SEEK_HOLE instead of bmap and opening the
-> > >       file for every whole operation (which may combine reads and writes).
-> > 
-> > I read that NFSv4 supports hole punching, so when using ->bmap() or SEEK_DATA
-> > to keep track of present data, it's hard to distinguish between an
-> > invalid cached range and a valid "cached hole".
+> Signed-off-by: LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
+> ---
+>  Documentation/devicetree/bindings/iio/st,st-sensors.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> I wasn't exactly intending to permit caching over NFS.  That leads to fun
-> making sure that the superblock you're caching isn't the one that has the
-> cache in it.
+> diff --git a/Documentation/devicetree/bindings/iio/st,st-sensors.yaml b/Documentation/devicetree/bindings/iio/st,st-sensors.yaml
+> index db291a9390b7..6fd61ffde72b 100644
+> --- a/Documentation/devicetree/bindings/iio/st,st-sensors.yaml
+> +++ b/Documentation/devicetree/bindings/iio/st,st-sensors.yaml
+> @@ -66,6 +66,11 @@ properties:
+>        - st,lis3mdl-magn
+>        - st,lis2mdl
+>        - st,lsm9ds1-magn
+> +      - st,lsm303ah_magn
+> +      - st,ism303dac_magn
+> +      - st,iis2mdc_magn
+> +      - st,lsm303agr_magn
+> +      - st,lis2mdl_magn
+
+s/_/-/
+
+Though if magnetometer is the only function of these devices, then the 
+part number only should be enough and '_magn' is redundant.
+
+>          # Pressure sensors
+>        - st,lps001wp-press
+>        - st,lps25h-press
+> -- 
+> 2.17.1
 > 
-> However, we will need to handle hole-punching being done on a cached netfs,
-> even if that's just to completely invalidate the cache for that file.
-> 
-> > With ->fiemap() you can at least make the distinction between a non existing
-> > and an UNWRITTEN extent.
-> 
-> I can't use that for XFS, Ext4 or btrfs, I suspect.  Christoph and Dave's
-> assertion is that the cache can't rely on the backing filesystem's metadata
-> because these can arbitrarily insert or remove blocks of zeros to bridge or
-> split extents.
-
-Well, that's not the big problem. The issue that makes FIEMAP
-unusable for determining if there is user data present in a file is
-that on-disk extent maps aren't exactly coherent with in-memory user
-data state.
-
-That is, we can have a hole on disk with delalloc user data in
-memory.  There's user data in the file, just not on disk. Same goes
-for unwritten extents - there can be dirty data in memory over an
-unwritten extent, and it won't get converted to written until the
-data is written back and the filesystem runs a conversion
-transaction.
-
-So, yeah, if you use FIEMAP to determine where data lies in a file
-that is being actively modified, you're going get corrupt data
-sooner rather than later.  SEEK_HOLE/DATA are coherent with in
-memory user data, so don't have this problem.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
