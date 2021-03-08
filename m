@@ -2,121 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFF6331716
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F9B331723
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbhCHTRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:17:08 -0500
-Received: from mga18.intel.com ([134.134.136.126]:7497 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229701AbhCHTQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:16:58 -0500
-IronPort-SDR: 5AZ4rRs3TrWafxpM/u/BgdhIL8TIp1a6FDAbZOEzFlTWaA8OoZXNwX6/ZhGXS9N9lApSXxj2Ba
- iDZE99IrCD9A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="175704374"
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="175704374"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 11:16:57 -0800
-IronPort-SDR: xCEhKGvn12MnWivwFnLJwGcSstpYUBabTQLIVR+SWBzzbKV+opX+SgcBGE/inQcgN8s8i3qkGz
- h2+dCiGfnQSg==
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="437595267"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 11:16:53 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lJLN4-00AtQQ-HD; Mon, 08 Mar 2021 21:16:50 +0200
-Date:   Mon, 8 Mar 2021 21:16:50 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com,
-        henning.schild@siemens.com
-Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
- support library
-Message-ID: <YEZ4IitUa+I9HM5F@smile.fi.intel.com>
-References: <20210308122020.57071-4-andriy.shevchenko@linux.intel.com>
- <20210308185212.GA1790506@bjorn-Precision-5520>
+        id S231226AbhCHTU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:20:56 -0500
+Received: from mail-il1-f182.google.com ([209.85.166.182]:39342 "EHLO
+        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229730AbhCHTUn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 14:20:43 -0500
+Received: by mail-il1-f182.google.com with SMTP id d5so9893383iln.6;
+        Mon, 08 Mar 2021 11:20:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1L6btlnZFWT2wUztSO9tevXV6NJv+ZeIlELKczZZaFw=;
+        b=fiBkEUwIBB2ZVI4HgXNGwSh5aYF0eU2WpWUEtsMn9N2qAwIZ+/k3qfXi9n5RoZr3Q7
+         SQHMmOsyIhdoNxEayvuoSas6YiH57naDQ6CoW6Af8UOHDFw3rDn0jJ1TvmXV7XraiksP
+         5A1yp5VlZNAprxBvmJOoqcN5dW5n7KzqIp06Jgd99k+DvCnO5x8d4iY0/szF/3v6tuUN
+         2sMRQTnL6kHo/qIz7dZjQVblqq3HySJQGM4tG6bxkIBXpULEAcvs/b7mW7+hKTPBsE4M
+         O6CguMWDa9N+JKFewtcjvIo2W86GULccvbr4LXaJ9BRdkpznfrWQ1lGEpIKC5xCpSQee
+         yXAQ==
+X-Gm-Message-State: AOAM532MXfbcSBj13rFIOpBhChWztK8iyvFD/EGEntVjQfQgqkZnu6/r
+        dcXaN6Orp8+7bje4Nwfk0l3nIS+HHw==
+X-Google-Smtp-Source: ABdhPJxNZi/akTGS5KF27FuIlkC3rfNJTzbmnPnH89Rfz7vgq18ujwtUCYa7gJdG40A1z3VSgdqRRA==
+X-Received: by 2002:a92:c102:: with SMTP id p2mr21010388ile.227.1615231242427;
+        Mon, 08 Mar 2021 11:20:42 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id a4sm3426705iow.55.2021.03.08.11.20.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 11:20:41 -0800 (PST)
+Received: (nullmailer pid 2816246 invoked by uid 1000);
+        Mon, 08 Mar 2021 19:20:40 -0000
+Date:   Mon, 8 Mar 2021 12:20:40 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Martin Devera <devik@eaxlabs.cz>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jiri Slaby <jirislaby@kernel.org>, Le Ray <erwan.leray@st.com>,
+        fabrice.gasnier@foss.st.com, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: serial: Add rx-tx-swap to stm32-usart
+Message-ID: <20210308192040.GA2807217@robh.at.kernel.org>
+References: <aeefa74e-fa19-6c31-5240-0f14fca89298@foss.st.com>
+ <20210302190303.28630-1-devik@eaxlabs.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308185212.GA1790506@bjorn-Precision-5520>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210302190303.28630-1-devik@eaxlabs.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 12:52:12PM -0600, Bjorn Helgaas wrote:
-> On Mon, Mar 08, 2021 at 02:20:16PM +0200, Andy Shevchenko wrote:
-> > From: Jonathan Yong <jonathan.yong@intel.com>
-> > 
-> > There is already one and at least one more user is coming which
-> > requires an access to Primary to Sideband bridge (P2SB) in order to
-> > get IO or MMIO bar hidden by BIOS. Create a library to access P2SB
-> > for x86 devices.
+On Tue, Mar 02, 2021 at 08:03:02PM +0100, Martin Devera wrote:
+> Add new rx-tx-swap property to allow for RX & TX pin swapping.
 > 
-> Can you include a spec reference?
-
-I'm not sure I have a public link to the spec. It's the 100 Series PCH [1].
-The document number to look for is 546955 [2] and there actually a bit of
-information about this.
-
-> I'm trying to figure out why this
-> belongs in drivers/pci/.  It looks very device-specific.
-
-Because it's all about access to PCI configuration spaces of the (hidden)
-devices.
-
-[1]: https://ark.intel.com/content/www/us/en/ark/products/series/98456/intel-100-series-desktop-chipsets.html
-[2]: https://medium.com/@jacksonchen_43335/bios-gpio-p2sb-70e9b829b403
-
-...
-
-> > +config PCI_P2SB
-> > +	bool "Primary to Sideband (P2SB) bridge access support"
-> > +	depends on PCI && X86
-> > +	help
-> > +	  The Primary to Sideband bridge is an interface to some PCI
-> > +	  devices connected through it. In particular, SPI NOR
-> > +	  controller in Intel Apollo Lake SoC is one of such devices.
+> Signed-off-by: Martin Devera <devik@eaxlabs.cz>
+> ---
+>  .../devicetree/bindings/serial/st,stm32-uart.yaml  | 32 +++++++++++++++-------
+>  1 file changed, 22 insertions(+), 10 deletions(-)
 > 
-> This doesn't sound like a "bridge".  If it's a bridge, what's on the
-> primary (upstream) side?  What's on the secondary side?  What
-> resources are passed through the bridge, i.e., what transactions does
-> it transfer from one side to the other?
+> diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+> index 8631678283f9..6eab2debebb5 100644
+> --- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+> +++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+> @@ -9,9 +9,6 @@ maintainers:
+>  
+>  title: STMicroelectronics STM32 USART bindings
+>  
+> -allOf:
+> -  - $ref: rs485.yaml
+> -
+>  properties:
+>    compatible:
+>      enum:
+> @@ -40,6 +37,10 @@ properties:
+>  
+>    uart-has-rtscts: true
+>  
+> +  rx-tx-swap:
+> +    type: boolean
+> +    maxItems: 1
 
-It's a confusion terminology here. It's a Bridge according to the spec, but
-it is *not* a PCI Bridge as you may had a first impression.
+Type is boolean, but 'maxItems' applies to arrays.
 
-...
+In any case, this is already defined in serial.yaml, so just 
+'rx-tx-swap: true' here.
 
-> > +	/* Unhide the P2SB device */
-> > +	pci_bus_write_config_byte(bus, df, P2SBC_HIDE_BYTE, 0);
-> > +
-> > +	/* Read the first BAR of the device in question */
-> > +	__pci_bus_read_base(bus, devfn, pci_bar_unknown, mem, PCI_BASE_ADDRESS_0, true);
-> 
-> I don't get this.  Apparently this normally hidden device is consuming
-> PCI address space.  The PCI core needs to know about this.  If it
-> doesn't, the PCI core may assign this space to another device.
+> +
+>    dmas:
+>      minItems: 1
+>      maxItems: 2
+> @@ -66,13 +67,24 @@ properties:
+>    linux,rs485-enabled-at-boot-time: true
+>    rs485-rx-during-tx: true
+>  
+> -if:
+> -  required:
+> -    - st,hw-flow-ctrl
+> -then:
+> -  properties:
+> -    cts-gpios: false
+> -    rts-gpios: false
+> +allOf:
 
-Right, it returns all 1:s to any request so PCI core *thinks* it's plugged off
-(like D3cold or so).
+And add '- $ref: serial.yaml#' here.
 
-> > +	/* Hide the P2SB device */
-> > +	pci_bus_write_config_byte(bus, df, P2SBC_HIDE_BYTE, P2SBC_HIDE_BIT);
+> +  - $ref: rs485.yaml
+> +  - if:
+> +      required:
+> +        - st,hw-flow-ctrl
+> +    then:
+> +      properties:
+> +        cts-gpios: false
+> +        rts-gpios: false
+> +  - if:
+> +      required:
+> +        - rx-tx-swap
+> +    then:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - st,stm32f7-uart
+> +            - st,stm32h7-uart
 
--- 
-With Best Regards,
-Andy Shevchenko
+The normal pattern is the 'if' has compatible. You can put the other 
+compatible strings in the if, and then 'then' is:
+
+then:
+  properties:
+    rx-tx-swap: false
 
 
+Rob
