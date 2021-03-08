@@ -2,143 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6351A3318C1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E7C3318C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbhCHUkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:40:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
+        id S229815AbhCHUlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:41:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbhCHUk3 (ORCPT
+        with ESMTP id S230156AbhCHUkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:40:29 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88303C06174A;
-        Mon,  8 Mar 2021 12:40:29 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id w11so12869930wrr.10;
-        Mon, 08 Mar 2021 12:40:29 -0800 (PST)
+        Mon, 8 Mar 2021 15:40:53 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA967C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 12:40:52 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id c16so5462691ply.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 12:40:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=o+/dpOFXV6mbnRPaa86MvmeRPVIsGW4+sgQ7UqPkyUk=;
-        b=i9q0Gzq3zGFl6wNaPAxhQ1Wi0FqVf60X5CcXgP3rKsQuOfxkx7dC5sbgciNwGXNAD2
-         9lSVAS1HtuurSJGNxFkKy/NrOdlKx9DxexPyh6b5Eamjih382ibC6pov5WJJ8/PwLtR9
-         3dbFcZf3lG46L+ZNmCcahce/Hke41wBD0bJ66qtBWd1Qtl1H8Gu+TRjuwhmH7Ey6H2B8
-         uJO1kl97PTebKz2Hser77wWtXMskadF+55O/B2eAz7v/UWLs0EPB95T9QZNbXqIPQGtn
-         EMj50GGV1UopVKp/QcKlplfCV3vJs3OpJ3HpOF1FPAN5HiUcFogt7DDcP8h+O+ivUItd
-         wV2w==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YieL4r+TN+gn7WlBHT97uAGWLZ5+RH9FuBAcVj4s06U=;
+        b=ZFGEV3DPNQZz37SL1BXfQkCq19S9we9dg+Cy44D92qHZPJ9reMhamBLz2Pam8qT77S
+         SGT9QYiesdFSexslHwU9naxYNHyljqxxbRs5YFvPAGNOETxfFZ21N0oCU8a03261XyVz
+         IiOGbfRSo3FMXbevkMgJTXUZC6pUm1rUBrbb2BMH0HaL9tSnHKjGw+e87pqOIxL9bUsQ
+         /cZRNaK1CiVXM/h/X0XpBYN6a6iw6uDG+TZ0k8ryt3VhHyMFIxLFaXNpquZ1JGdOQYkn
+         z8YTagHXadjU9hp4ThfgAqAIsOiTcAmAGM1V5y3xjAnvFvAkuF2+EBzrt7GXArFYBhfy
+         /R5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=o+/dpOFXV6mbnRPaa86MvmeRPVIsGW4+sgQ7UqPkyUk=;
-        b=kkMIugTaudqprGq5fL06K1R/BQ3gflS6cRE+ohDdrfFUQM8C70vrL+AFDS60oOiVW8
-         i9GmVdrIuGFDUgdCfqNTl/kt7kSl1tQb8phlxtDsSA8I6gFCz+4Gv2Jjfa8nK9ZFbpif
-         Pgg7gmx8+batyZHXOgzzxXGKiHu1MWYc9CEUaRFJRPPYpmvRbCtCpgYzpMXqVYGuIHSJ
-         PuuB/OwiI96TKc+LhJZwf9vR+FKq8L3Vxrt+74/jO6mAHIzaNb3AuHmxMLV4GtX/8doU
-         snHj81oCfEzSNDjXThsg0RI5hkt+1Ghwgi8AtOLuGr1Z9cXDcO1CV/dHY/+fFsY9vkE+
-         9ouw==
-X-Gm-Message-State: AOAM530s9hpQpdXiYsGoRj8Pant+0jWCBN72wZmn7CWCpvSBPJZrJxp9
-        xopChfvsffD7KuHGQJyijtM=
-X-Google-Smtp-Source: ABdhPJxhGvSvYgGNZNFtcF5uW2ZNoDAv+znKgthZfkcniHOKbaebYxXoanzndIP4HxAd/l8+6kXvxg==
-X-Received: by 2002:a05:6000:1546:: with SMTP id 6mr24364251wry.398.1615236028247;
-        Mon, 08 Mar 2021 12:40:28 -0800 (PST)
-Received: from [192.168.1.211] ([2.26.187.30])
-        by smtp.gmail.com with ESMTPSA id w6sm21630328wrl.49.2021.03.08.12.40.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 12:40:27 -0800 (PST)
-Subject: Re: [PATCH v3 1/6] ACPI: scan: Extend acpi_walk_dep_device_list()
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Mani, Rajmohan" <rajmohan.mani@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        andy.shevchenko@linux.intel.com,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>, me@fabwu.ch,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
-References: <20210222130735.1313443-1-djrscally@gmail.com>
- <20210222130735.1313443-2-djrscally@gmail.com>
- <CAJZ5v0ib+3oScz2CuFNQdTvo16_fGYgfppZjpVZbtMC-2FK-2w@mail.gmail.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <74e27b1f-b1aa-de84-7832-e76b3207bddc@gmail.com>
-Date:   Mon, 8 Mar 2021 20:40:26 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YieL4r+TN+gn7WlBHT97uAGWLZ5+RH9FuBAcVj4s06U=;
+        b=CYlKgqRFA3BFxojA+0KvUYV4FkVcnIL7aw3vWMR93hh4mQtja2xFyFGvwALTmHyOrN
+         6zrojYwdk/aN2wvs1qXFFE0hlPydl5fNik1LheT81nATzod7oITktsKikpZApTT2iP/q
+         Y1VactUdfgR17Kd7ZyT4BZqcUiL41cye54JKdb+OakPH7e0K2wusxMpichQzc9vHd1+t
+         Qh1c8WF8V2Yiwlh3HxdyZPGZy3L/2TtTyMu+GJolooaFJT2ZUDvd0UEnOlhWieVQ1LR9
+         kz/eyyvZt9WGFSa69HdH8PYzEMSBtHg5kdStsxK/+I6U4e4r7aw5L+yOad7JUyXlLdiD
+         GNIw==
+X-Gm-Message-State: AOAM5338aXqVWjy8kqKpN7KRgI0MspLLSuLwB5S5U9jtj7CPHMkDcZXA
+        o7f4S6dDQi4WsvI04ppOM4Z9tQ==
+X-Google-Smtp-Source: ABdhPJzcDQa65JtsCO7brDxr9Rg9TeLDEn0f6G2jrZtRXgde7MiweWhKYfiIc1B5lQfqL6h5LdfVaw==
+X-Received: by 2002:a17:902:7287:b029:e5:bd05:4a97 with SMTP id d7-20020a1709027287b02900e5bd054a97mr22397043pll.27.1615236052207;
+        Mon, 08 Mar 2021 12:40:52 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:8:847a:d8b5:e2cc])
+        by smtp.gmail.com with ESMTPSA id gw20sm230132pjb.3.2021.03.08.12.40.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 12:40:51 -0800 (PST)
+Date:   Mon, 8 Mar 2021 12:40:44 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Xu, Like" <like.xu@intel.com>, Dmitry Vyukov <dvyukov@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+        "Thomas Gleixner
+        (x86/pti/timer/core/smp/irq/perf/efi/locking/ras/objtool)
+        (x86@kernel.org)" <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH] x86/perf: Fix guest_get_msrs static call if there is no
+ PMU
+Message-ID: <YEaLzKWd0wAmdqvs@google.com>
+References: <20210305223331.4173565-1-seanjc@google.com>
+ <053d0a22-394d-90d0-8d3b-3cd37ca3f378@intel.com>
+ <YEXmILSHDNDuMk/N@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0ib+3oScz2CuFNQdTvo16_fGYgfppZjpVZbtMC-2FK-2w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEXmILSHDNDuMk/N@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael
+On Mon, Mar 08, 2021, Peter Zijlstra wrote:
+> On Mon, Mar 08, 2021 at 10:25:59AM +0800, Xu, Like wrote:
+> > On 2021/3/6 6:33, Sean Christopherson wrote:
+> > > Handle a NULL x86_pmu.guest_get_msrs at invocation instead of patching
+> > > in perf_guest_get_msrs_nop() during setup.  If there is no PMU, setup
+> > 
+> > "If there is no PMU" ...
+> 
+> Then you shouldn't be calling this either ofcourse :-)
 
-On 08/03/2021 17:46, Rafael J. Wysocki wrote:
->> +void acpi_walk_dep_device_list(acpi_handle handle,
->> +                              int (*callback)(struct acpi_dep_data *, void *),
->> +                              void *data)
->> +{
->> +       struct acpi_dep_data *dep, *tmp;
->> +       int ret;
->> +
->>         mutex_lock(&acpi_dep_list_lock);
->>         list_for_each_entry_safe(dep, tmp, &acpi_dep_list, node) {
->>                 if (dep->supplier == handle) {
->> -                       acpi_bus_get_device(dep->consumer, &adev);
->> -                       if (!adev)
->> -                               continue;
->> -
->> -                       adev->dep_unmet--;
->> -                       if (!adev->dep_unmet)
->> -                               acpi_bus_attach(adev, true);
-> The above code in the mainline has changed recently, so you need to
-> rebase the above and adjust for the change of behavior.
+This effectively is KVM's check to find out there is no PMU.  I certainly don't
+want to replicate the switch statement in init_hw_perf_events(), plus whatever
+is buried in check_hw_exists().  The alternative would be to add X86_FEATURE_PMU
+so that KVM can easily check for PMU existence.  I don't really see the point
+though, as bare metal KVM, where we really care about performance, is likely to
+have a functional PMU, and if it doesn't then I doubt whoever is running KVM
+cares much about performance.
 
+> > > @@ -671,7 +671,11 @@ void x86_pmu_disable_all(void)
+> > >   struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
+> > >   {
+> > > -	return static_call(x86_pmu_guest_get_msrs)(nr);
+> > > +	if (x86_pmu.guest_get_msrs)
+> > > +		return static_call(x86_pmu_guest_get_msrs)(nr);
+> > 
+> > How about using "static_call_cond" per commit "452cddbff7" ?
+> 
+> Given the one user in atomic_switch_perf_msrs() that should work because
+> it doesn't seem to care about nr_msrs when !msrs.
 
-Yeah, I'll rebase onto 5.12-rc2 before next submission.
+Uh, that commit quite cleary says:
 
->
->> -
->> -                       list_del(&dep->node);
->> -                       kfree(dep);
->> +                       ret = callback(dep, data);
->> +                       if (ret)
->> +                               break;
->>                 }
->>         }
->>         mutex_unlock(&acpi_dep_list_lock);
->>  }
->>  EXPORT_SYMBOL_GPL(acpi_walk_dep_device_list);
->>
->> +/**
->> + * acpi_dev_flag_dependency_met() - Inform consumers of @handle that the device
->> + *                                 is now active
-> No parens here, please, and make it fit one line.
->
-> Also the description should be something like "Clear dependencies on
-> the given device."
+   NOTE: this is 'obviously' limited to functions with a 'void' return type.
 
+Even if we somehow bypass the (void) cast, IIUC it will compile to a single
+'ret',  and return whatever happens to be in RAX, not NULL as is needed.
 
-OK - no problem
-
+> Still, it calling atomic_switch_perf_msrs() and
+> intel_pmu_lbr_is_enabled() when there isn't a PMU at all is of course, a
