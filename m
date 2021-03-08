@@ -2,188 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C884330B84
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0418330B88
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:44:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbhCHKn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230165AbhCHKn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 05:43:57 -0500
+Received: from mail-lj1-f170.google.com ([209.85.208.170]:43490 "EHLO
+        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231395AbhCHKn3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Mar 2021 05:43:29 -0500
-Received: from mail-bn8nam11on2050.outbound.protection.outlook.com ([40.107.236.50]:36065
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230519AbhCHKnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:43:10 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=atASTpSUWf/WCNeTyOgUWuqz+MIV/RpDfmrVUf3WoAnzjnTlGFXo2kjkIYbCx8HEqSyL3e6dvHPB/q7SkF9HcA7dCocf/RdQvbhEqxyEZEiKcve4sRKW+S+4fGasVbO5l0DdKSx3Tj0lymgK3chvxWId8BKL0lcUnS6OwPKaxMUIKcaFLQ1sLqNkyJiaWxB4Yr2h5fhlzjFgjTX5hFWJaGbGKQZPgsnlnsiXFVsQVWfxRDkwfeF+Y8LATbXxGIZUkUf5wjwhZ21SI9KU/RjKcpzcn85i7bj9F0XcQo6OqRtwBZynpg3bkTXtbKA2nnP2HPWvBln/TRnUu1tbJoNXAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HRrTQHfu0ZFRc/pYjqZvOmvTsKN1s6Lu9adk08Srijw=;
- b=DQNZToqV6V9H9Etj/Tb/flgkufBg46FgEq8KE8JDtT32OWe4D9HXUXFbF58VsYEug9KfmvZCXv+IpCkd3AaCVqs6Az6j300kubcmmf2KfBEghiMO+ZzSWXLrJJedFUDPlxCKM7zsrFs6Yv34/RwicFsaKP1EAzua+FQF09FHWvGiwOWAKkaezQYJ8fBRuzgcfCH9dSf9FL3aEjH77kdNmHNZ6C2cCYcs6r1YH9XBGe0DKLFjVXQydkIfdlwJFQhjVXhKWtr99v7liDoSvkLYwB4C8KfIN5HagXLduhpJGj4mZfUaBvMAOl0Tk8rsJeF4/WRHWcOea6RLHUN1zruTPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=arm.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HRrTQHfu0ZFRc/pYjqZvOmvTsKN1s6Lu9adk08Srijw=;
- b=lYUC1QI3jtM+4i4AEMoy/wFzGxCS6LDXCofDbdiB7dDl1054ad5vbiFSP9JYh3MPv9aynk6aLlM6X/qr7rID66HbOvkKt8vAom4UhPIJFanPchvBX0j+0OJ30ce259XfbJKp48sEgvDvboDkJTK0Bfva1krOMXygut5NGyec4/8=
-Received: from MW4PR04CA0331.namprd04.prod.outlook.com (2603:10b6:303:8a::6)
- by DM6PR12MB2716.namprd12.prod.outlook.com (2603:10b6:5:49::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Mon, 8 Mar
- 2021 10:43:05 +0000
-Received: from CO1NAM11FT060.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:8a:cafe::65) by MW4PR04CA0331.outlook.office365.com
- (2603:10b6:303:8a::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
- Transport; Mon, 8 Mar 2021 10:43:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT060.mail.protection.outlook.com (10.13.175.132) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3890.19 via Frontend Transport; Mon, 8 Mar 2021 10:43:04 +0000
-Received: from [10.25.79.200] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 8 Mar
- 2021 10:42:59 +0000
-Subject: Re: [PATCH] PCI: tegra: Disable PTM capabilities for EP mode
-To:     Vidya Sagar <vidyas@nvidia.com>, Bjorn Helgaas <helgaas@kernel.org>
-CC:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
-        <lorenzo.pieralisi@arm.com>, <amurray@thegoodpenguin.co.uk>,
-        <bhelgaas@google.com>, <kishon@ti.com>, <thierry.reding@gmail.com>,
-        <Jisheng.Zhang@synaptics.com>, <jonathanh@nvidia.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>,
-        <oop.singh@gmail.com>
-References: <20210305121934.GA1067436@bjorn-Precision-5520>
- <81c84df2-e52b-7713-5026-c3e0a27376bd@nvidia.com>
-From:   Om Prakash Singh <omp@nvidia.com>
-Message-ID: <26834aba-4d45-6da4-0548-1fb61e684b59@nvidia.com>
-Date:   Mon, 8 Mar 2021 16:12:55 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+Received: by mail-lj1-f170.google.com with SMTP id m11so15414454lji.10;
+        Mon, 08 Mar 2021 02:43:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=or8/OvmRdpTwfghphxRxbPIJB/A4waJX4oL1SuGdJow=;
+        b=O7Q/E7U2OWhVcf6XZYB0mO2XIMVhAOQ49ItiN+f2Ihx7nKV7SHBxFJVkN7tZfmAxwh
+         hCuDKixQk7LYLC0HVW9mmggeYN+sdfMxKE3Jh7kFQ25IZjSMM9g1bKB+Aw0XNKr/2fmX
+         4FTHive7vKF75B9jMbqAHoKaHl1BLDB6r8PXst+IVab0pnNmGF6hTMZ1yOueTl3fR/Qn
+         SEj3x42tcUOF091KnawA1non1tDHAANvfY4GFwUxM2qoSMDWLmGubO9Zlpm3Ol6G/WkM
+         XoYEW5UzAC32o2jhbFv8nyaKo4+ECYdxswtSBwWB6BXs8hx7GgiNN3fxoLkNNUFhUZOu
+         o2Sw==
+X-Gm-Message-State: AOAM531a0U0scG7RzHwcK8FNkCJ84lh2XM3ldNrsbbNEuNqNJizFMFXQ
+        0T/p/UM/LJLP74CI7ya57hQ=
+X-Google-Smtp-Source: ABdhPJwMjfyu7zp9wmHo32ZpgM2TYuqj4LEUZfzQ3wITD37TsZ7f9i4m4iy78FMLqtdzJdjwXkLneQ==
+X-Received: by 2002:a2e:9704:: with SMTP id r4mr13291480lji.486.1615200207580;
+        Mon, 08 Mar 2021 02:43:27 -0800 (PST)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
+        by smtp.gmail.com with ESMTPSA id y22sm1447103ljg.32.2021.03.08.02.43.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 02:43:27 -0800 (PST)
+Date:   Mon, 8 Mar 2021 12:43:21 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org
+Subject: [PATCH v3 08/15] gpio: support ROHM BD71815 GPOs
+Message-ID: <b32fe64bb9a6167f62704e3e9cf4a2c010f51adc.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-In-Reply-To: <81c84df2-e52b-7713-5026-c3e0a27376bd@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3d21c63a-3b01-46ad-a457-08d8e21ef466
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2716:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2716DE2B0AD2A3FA8B82B8E2DA939@DM6PR12MB2716.namprd12.prod.outlook.com>
-X-MS-Exchange-Transport-Forked: True
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YB6v1jXGTgGiKe6LwXa5m1pJnmb4axyntCsLy/1+SO6aJWLyXXFl6bEqi/D1uqo34T8wkInM1tO+xZ+FoEl1RTc3BF5jMb9UHU7fN/37EmiFKCpPXTu6f1xaxYUaedavss4RsB+9Ri4TcljhjkOSZXsumZOyohov0AK7NylnEfcfqdgOEw3NK4bVNgSauvTZrSLqXPJ8ZZfC+87FffNHbZ09CmoMa8MiI45uCbfCbo2udAX9iVKhGhhEM04jE+fxUvzSDNE6bg8CkTEIwTK+qorLvF/tZTUHauHQEQOOljz/MgnnoZ42/v0cc+bfoygdUEc6GXODqXqSOOIzcm3SEbVRn844G/gsZ2RyPSWJAnz5Zz91rZJc4vPuDogXTW69jfJZh4fCUwFbSMgCdmrFv5rxtjI1swF6wBXH2/YMOZvZesPkE66mN1bbXsdLjKO+u/7AeL+OWCOBoxBDYrfINg9mC+OmBWErNVZ9SwhQO5TyZ0SPSDRpcLDi4cRD1KaSFoQExC8vmIHDsP0eweHTyHqJ6KM2Q0CVSLikuJG4eWV7npR+Tx3jU4/OavvpwGxzPJUzEzisCTzPwywSSDZfsR0faNV/uIf/VgJCerRubIiL0yKvq3BB1vAn4xDydAfibVllPEI5m59h+WknmEoFro7BrD0HtdnOPkgGi8cdA/dTkGmlrrpjgQ44FxcOXwHAIKLkOuXcIklV+U4Rl5CZ0g==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(346002)(396003)(46966006)(36840700001)(2616005)(36756003)(2906002)(36860700001)(31686004)(5660300002)(426003)(8676002)(53546011)(356005)(16576012)(336012)(7416002)(47076005)(8936002)(31696002)(70586007)(54906003)(316002)(6666004)(86362001)(26005)(82310400003)(34020700004)(186003)(83380400001)(7636003)(4326008)(16526019)(70206006)(82740400003)(36906005)(478600001)(110136005)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 10:43:04.9149
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3d21c63a-3b01-46ad-a457-08d8e21ef466
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT060.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2716
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/5/2021 11:43 PM, Vidya Sagar wrote:
-> 
-> 
-> On 3/5/2021 5:49 PM, Bjorn Helgaas wrote:
->> External email: Use caution opening links or attachments
->>
->>
->> On Fri, Mar 05, 2021 at 01:42:34PM +0530, Om Prakash Singh wrote:
->>> PCIe EP compliance expect PTM capabilities (ROOT_CAPABLE, RES_CAPABLE,
->>> CLK_GRAN) to be disabled.
->>
->> I guess this is just enforcing the PCIe spec requirements that only
->> Root Ports, RCRBs, and Switches are allowed to set the PTM Responder
->> Capable bit, and that the Local Clock Granularity is RsvdP if PTM Root
->> Capable is zero?  (PCIe r5.0, sec 7.9.16.2)
->>
->> Should this be done more generally somewhere in the dwc code as
->> opposed to in the tegra code?
-> Agree.
->
-I'll take care of this in next patch version
- 
->>
->>> Signed-off-by: Om Prakash Singh <omp@nvidia.com>
->>> ---
->>>   drivers/pci/controller/dwc/pcie-tegra194.c | 17 ++++++++++++++++-
->>>   include/uapi/linux/pci_regs.h              |  1 +
->>>   2 files changed, 17 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
->>> index 6fa216e..a588312 100644
->>> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
->>> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
->>> @@ -1639,7 +1639,7 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
->>>        struct dw_pcie *pci = &pcie->pci;
->>>        struct dw_pcie_ep *ep = &pci->ep;
->>>        struct device *dev = pcie->dev;
->>> -     u32 val;
->>> +     u32 val, ptm_cap_base = 0;
->>
->> Unnecessary init.
->>
->>>        int ret;
->>>
->>>        if (pcie->ep_state == EP_STATE_ENABLED)
->>> @@ -1760,6 +1760,21 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
->>>                                                      PCI_CAP_ID_EXP);
->>>        clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
->>>
->>> +     /* Disable PTM root and responder capability */
->>> +     ptm_cap_base = dw_pcie_find_ext_capability(&pcie->pci,
->>> +                                                PCI_EXT_CAP_ID_PTM);
->>> +     if (ptm_cap_base) {
->>> +             dw_pcie_dbi_ro_wr_en(pci);
->>> +             val = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
->>> +             val &= ~PCI_PTM_CAP_ROOT;
->>> +             dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, val);
->>> +
->>> +             val = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
->>> +             val &= ~(PCI_PTM_CAP_RES | PCI_PTM_GRANULARITY_MASK);
-> Why can't this be clubbed with "val &= ~PCI_PTM_CAP_ROOT;" ?
->
-This cannot be clubbed as PTM root capability needs to disable first before disabling responded capability 
- 
->>> +             dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, val);
->>> +             dw_pcie_dbi_ro_wr_dis(pci);
->>> +     }
->>> +
->>>        val = (ep->msi_mem_phys & MSIX_ADDR_MATCH_LOW_OFF_MASK);
->>>        val |= MSIX_ADDR_MATCH_LOW_OFF_EN;
->>>        dw_pcie_writel_dbi(pci, MSIX_ADDR_MATCH_LOW_OFF, val);
->>> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
->>> index e709ae8..9dd6f8d 100644
->>> --- a/include/uapi/linux/pci_regs.h
->>> +++ b/include/uapi/linux/pci_regs.h
->>> @@ -1050,6 +1050,7 @@
->>>   /* Precision Time Measurement */
->>>   #define PCI_PTM_CAP                  0x04        /* PTM Capability */
->>>   #define  PCI_PTM_CAP_REQ             0x00000001  /* Requester capable */
->>> +#define  PCI_PTM_CAP_RES             0x00000002  /* Responder capable */
->>>   #define  PCI_PTM_CAP_ROOT            0x00000004  /* Root capable */
->>>   #define  PCI_PTM_GRANULARITY_MASK    0x0000FF00  /* Clock granularity */
->>>   #define PCI_PTM_CTRL                 0x08        /* PTM Control */
->>> -- 
->>> 2.7.4
->>>
+Support GPO(s) found from ROHM BD71815 power management IC. The IC has two
+GPO pins but only one is properly documented in data-sheet. The driver
+exposes by default only the documented GPO. The second GPO is connected to
+E5 pin and is marked as GND in data-sheet. Control for this undocumented
+pin can be enabled using a special DT property.
 
+This driver is derived from work by Peter Yang <yanglsh@embest-tech.com>
+although not so much of original is left.
+
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+Changes since v2:
+  - minor clean-ups / styling suggested by Bartosz
+ drivers/gpio/Kconfig        |  10 ++
+ drivers/gpio/Makefile       |   1 +
+ drivers/gpio/gpio-bd71815.c | 176 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 187 insertions(+)
+ create mode 100644 drivers/gpio/gpio-bd71815.c
+
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index e3607ec4c2e8..d3b3de514f6e 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -1105,6 +1105,16 @@ config GPIO_BD70528
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called gpio-bd70528.
+ 
++config GPIO_BD71815
++	tristate "ROHM BD71815 PMIC GPIO support"
++	depends on MFD_ROHM_BD71828
++	help
++	  Support for GPO(s) on ROHM BD71815 PMIC. There are two GPOs
++	  available on the ROHM PMIC.
++
++	  This driver can also be built as a module. If so, the module
++	  will be called gpio-bd71815.
++
+ config GPIO_BD71828
+ 	tristate "ROHM BD71828 GPIO support"
+ 	depends on MFD_ROHM_BD71828
+diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+index c58a90a3c3b1..4c12f31db31f 100644
+--- a/drivers/gpio/Makefile
++++ b/drivers/gpio/Makefile
+@@ -39,6 +39,7 @@ obj-$(CONFIG_GPIO_ATH79)		+= gpio-ath79.o
+ obj-$(CONFIG_GPIO_BCM_KONA)		+= gpio-bcm-kona.o
+ obj-$(CONFIG_GPIO_BCM_XGS_IPROC)	+= gpio-xgs-iproc.o
+ obj-$(CONFIG_GPIO_BD70528)		+= gpio-bd70528.o
++obj-$(CONFIG_GPIO_BD71815)		+= gpio-bd71815.o
+ obj-$(CONFIG_GPIO_BD71828)		+= gpio-bd71828.o
+ obj-$(CONFIG_GPIO_BD9571MWV)		+= gpio-bd9571mwv.o
+ obj-$(CONFIG_GPIO_BRCMSTB)		+= gpio-brcmstb.o
+diff --git a/drivers/gpio/gpio-bd71815.c b/drivers/gpio/gpio-bd71815.c
+new file mode 100644
+index 000000000000..5552a23c8e53
+--- /dev/null
++++ b/drivers/gpio/gpio-bd71815.c
+@@ -0,0 +1,176 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Support to GPOs on ROHM BD71815
++ */
++
++#include <linux/gpio/driver.h>
++#include <linux/init.h>
++#include <linux/irq.h>
++/* For the BD71815 register definitions */
++#include <linux/mfd/rohm-bd71815.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++
++struct bd71815_gpio {
++	struct gpio_chip chip;
++	struct device *dev;
++	struct regmap *regmap;
++	/*
++	 * Sigh. The BD71815 and BD71817 were originally designed to support two
++	 * GPO pins. At some point it was noticed the second GPO pin which is
++	 * the E5 pin located at the center of IC is hard to use on PCB (due to
++	 * the location). It was decided to not promote this second GPO and pin
++	 * is marked as GND on the data-sheet. The functionality is still there
++	 * though! I guess driving GPO connected to ground is a bad idea. Thus
++	 * we do not support it by default. OTOH - the original driver written
++	 * by colleagues at Embest did support controlling this second GPO. It
++	 * is thus possible this is used in some of the products.
++	 *
++	 * This driver does not by default support configuring this second GPO
++	 * but allows using it by providing the DT property
++	 * "rohm,enable-hidden-gpo".
++	 */
++	bool e5_pin_is_gpo;
++};
++
++static int bd71815gpo_get(struct gpio_chip *chip, unsigned int offset)
++{
++	struct bd71815_gpio *bd71815 = gpiochip_get_data(chip);
++	int ret = 0;
++	int val;
++
++	ret = regmap_read(bd71815->regmap, BD71815_REG_GPO, &val);
++	if (ret)
++		return ret;
++
++	return (val >> offset) & 1;
++}
++
++static void bd71815gpo_set(struct gpio_chip *chip, unsigned int offset,
++			   int value)
++{
++	struct bd71815_gpio *bd71815 = gpiochip_get_data(chip);
++	int ret, bit;
++
++	if (!bd71815->e5_pin_is_gpo && offset)
++		return;
++
++	bit = BIT(offset);
++
++	if (value)
++		ret = regmap_set_bits(bd71815->regmap, BD71815_REG_GPO, bit);
++	else
++		ret = regmap_clear_bits(bd71815->regmap, BD71815_REG_GPO, bit);
++
++	if (ret)
++		dev_warn(bd71815->dev, "failed to toggle GPO\n");
++}
++
++static int bd71815_gpio_set_config(struct gpio_chip *chip, unsigned int offset,
++				   unsigned long config)
++{
++	struct bd71815_gpio *bdgpio = gpiochip_get_data(chip);
++
++	if (!bdgpio->e5_pin_is_gpo && offset)
++		return -EOPNOTSUPP;
++
++	switch (pinconf_to_config_param(config)) {
++	case PIN_CONFIG_DRIVE_OPEN_DRAIN:
++		return regmap_update_bits(bdgpio->regmap,
++					  BD71815_REG_GPO,
++					  BD71815_GPIO_DRIVE_MASK << offset,
++					  BD71815_GPIO_OPEN_DRAIN << offset);
++	case PIN_CONFIG_DRIVE_PUSH_PULL:
++		return regmap_update_bits(bdgpio->regmap,
++					  BD71815_REG_GPO,
++					  BD71815_GPIO_DRIVE_MASK << offset,
++					  BD71815_GPIO_CMOS << offset);
++	default:
++		break;
++	}
++	return -EOPNOTSUPP;
++}
++
++/* BD71815 GPIO is actually GPO */
++static int bd71815gpo_direction_get(struct gpio_chip *gc, unsigned int offset)
++{
++	return GPIO_LINE_DIRECTION_OUT;
++}
++
++/* Template for GPIO chip */
++static const struct gpio_chip bd71815gpo_chip = {
++	.label			= "bd71815",
++	.owner			= THIS_MODULE,
++	.get			= bd71815gpo_get,
++	.get_direction		= bd71815gpo_direction_get,
++	.set			= bd71815gpo_set,
++	.set_config		= bd71815_gpio_set_config,
++	.can_sleep		= 1,
++};
++
++static int gpo_bd71815_probe(struct platform_device *pdev)
++{
++	int ret;
++	struct bd71815_gpio *g;
++	struct device *dev;
++	struct device *parent;
++
++	/*
++	 * Bind devm lifetime to this platform device => use dev for devm.
++	 * also the prints should originate from this device.
++	 */
++	dev = &pdev->dev;
++	/* The device-tree and regmap come from MFD => use parent for that */
++	parent = dev->parent;
++
++	g = devm_kzalloc(dev, sizeof(*g), GFP_KERNEL);
++	if (!g)
++		return -ENOMEM;
++
++	g->e5_pin_is_gpo = of_property_read_bool(parent->of_node,
++						 "rohm,enable-hidden-gpo");
++	g->chip = bd71815gpo_chip;
++	g->chip.base = -1;
++
++	if (g->e5_pin_is_gpo)
++		g->chip.ngpio = 2;
++	else
++		g->chip.ngpio = 1;
++
++	g->chip.parent = parent;
++	g->chip.of_node = parent->of_node;
++	g->regmap = dev_get_regmap(parent, NULL);
++	g->dev = dev;
++
++	ret = devm_gpiochip_add_data(dev, &g->chip, g);
++	if (ret < 0) {
++		dev_err(dev, "could not register gpiochip, %d\n", ret);
++		return ret;
++	}
++
++	return ret;
++}
++static const struct platform_device_id bd7181x_gpo_id[] = {
++	{ "bd71815-gpo" },
++	{ },
++};
++MODULE_DEVICE_TABLE(platform, bd7181x_gpo_id);
++
++static struct platform_driver gpo_bd71815_driver = {
++	.driver = {
++		.name	= "bd71815-gpo",
++		.owner	= THIS_MODULE,
++	},
++	.probe		= gpo_bd71815_probe,
++	.id_table	= bd7181x_gpo_id,
++};
++
++module_platform_driver(gpo_bd71815_driver);
++
++/* Note:  this hardware lives inside an I2C-based multi-function device. */
++MODULE_ALIAS("platform:bd71815-gpo");
++
++MODULE_AUTHOR("Peter Yang <yanglsh@embest-tech.com>");
++MODULE_DESCRIPTION("GPO interface for BD71815");
++MODULE_LICENSE("GPL");
+-- 
+2.25.4
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
