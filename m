@@ -2,121 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7DF331410
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B858331414
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhCHREf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 12:04:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229904AbhCHRE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:04:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0382B6522C;
-        Mon,  8 Mar 2021 17:04:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615223069;
-        bh=jTPd/R2IcG/q8yWtov6si/pOz9VHOAJXbe8eW4LlU+Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=T1efKG2784L/un1cdV6OCA2fxfIJ5Z071EsgFzk5a2rbjZFoqMILbv8C3XrykkjvL
-         TRJm/PYRe1lNbcPAtXU0gFG8pDGB6LscEgn6c44axqR76/xyVo0pQ+OZq5U8b373tY
-         SJWy+Pqyxf/9zVSZnA8DOY3ZGeCHBid1+kH0HWspsaEX+YzRGJRvN/4n4mjKkQWO+/
-         IOek8ZgqOGx7lg3xezv9nnfJ9tZ0jvMEicFcUz7uz2KGk2xWm9k9LybfkC8kvvkK6/
-         T/IDtxzRI5zoR04yRP4Dnc4RFQfJdjEK89dbiiny5ehfe0FNk2INEkaeilvhYp+tr5
-         GEMa9/ZTlA53A==
-Received: by mail-ed1-f47.google.com with SMTP id m9so15785852edd.5;
-        Mon, 08 Mar 2021 09:04:28 -0800 (PST)
-X-Gm-Message-State: AOAM5312B7y28jd08HgQcr0RHB7jXJJswp3EC4uW/x+8ywsaho8xveOa
-        tPVU8hdBQ91CmjyNwgN3gbL++pokSoJXQonYfQ==
-X-Google-Smtp-Source: ABdhPJxczdvK/qV3FEN5Qjf5LIKC2Y4tY0TDZ07L6U+SSEImjQdZGi6RQyutAsEb2IrV9+zVcIueWtbphsShO/EfFJA=
-X-Received: by 2002:a50:fe17:: with SMTP id f23mr23703776edt.258.1615223067558;
- Mon, 08 Mar 2021 09:04:27 -0800 (PST)
+        id S230412AbhCHRFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:05:09 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:32978 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230320AbhCHRE6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 12:04:58 -0500
+Received: from mail-wr1-f69.google.com ([209.85.221.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lJJJR-0002p7-Cz
+        for linux-kernel@vger.kernel.org; Mon, 08 Mar 2021 17:04:57 +0000
+Received: by mail-wr1-f69.google.com with SMTP id z17so5081751wrv.23
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 09:04:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BXtq859FRQFtajUaYN/vsNNVk2NCapuaGNff+HIq1fU=;
+        b=bW5IlF3UCtXmrzgZwGeRdIvpokLp444c4GKyVnyRO5zEUbe59DsqI2guvb+Psr2ceI
+         CVz0J+N/YDQreZFvNF2ck5rk0kK7lXRy2xmlm7MZBdSHF9bDn9+b09U+zMno1II+AxUK
+         TgoEgmewGKNqyn6tfeERu71Xb/8BOOEwIXN5hPoVJj02n3+0GnS0blYtwKAFJgezwlC7
+         l4VsdVadlBMOLc3d6rhabOrLYqmOnh2kgzSih2WWW0wL7fsYI1dVqmaccQuAOXh60oqk
+         1CdeONYXVNgtfjisqntIMBm6QHY757ixggjVo5YXGqemIEyFrC1jorTecDMCVDaiD+Ao
+         Re0g==
+X-Gm-Message-State: AOAM5324z/trQ2Lyh5QMop4mdomCis+GoYcYLRFTC7HvoApgYMPvy3EO
+        +wTmooOXL2i1okhgSPPOqUz+Iduq0pBK4PQd/jJ6kJkn+A0ueUg1Hy3wwhOZekxV6ZM409FlYhy
+        SC1nQp1NhVfRUEfjGEdvFz5fUHySTkmIAjv/z11E4jw==
+X-Received: by 2002:a05:600c:2282:: with SMTP id 2mr23166404wmf.93.1615223097148;
+        Mon, 08 Mar 2021 09:04:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxLrFBqic+DPXYmImXzmYhbuZCgb6qkVJhkld52yZQWkqYiOpDyptEHqsQ82up1jI+m7+KO/w==
+X-Received: by 2002:a05:600c:2282:: with SMTP id 2mr23166377wmf.93.1615223096907;
+        Mon, 08 Mar 2021 09:04:56 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id v2sm13166218wru.85.2021.03.08.09.04.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 09:04:56 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+X-Google-Original-From: Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Mon, 8 Mar 2021 18:04:54 +0100
+To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        arm@kernel.org, soc@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>
+Cc:     "Paul J. Murphy" <paul.j.murphy@intel.com>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [RESEND PATCH 00/10] arm64: dts: intel: socfpga: minor cleanups
+Message-ID: <20210308170454.sbeylw5istqeglfl@kozik-lap>
+References: <20210308162228.62614-1-krzk@kernel.org>
 MIME-Version: 1.0
-References: <20210303193305.924384-1-paul@crapouillou.net> <CAL_JsqLfkjC4c4PYfm6yJLZMH-5WaKA_mr9ziJ1J63UohcgRCw@mail.gmail.com>
- <20210306084513.GA5453@alpha.franken.de> <CAL_JsqK0_M18gnoYFyTyf_OaQgbmbYYyoAr-WaFCzzsmFuFeFg@mail.gmail.com>
- <20210306225855.GA3574@alpha.franken.de>
-In-Reply-To: <20210306225855.GA3574@alpha.franken.de>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 8 Mar 2021 10:04:15 -0700
-X-Gmail-Original-Message-ID: <CAL_Jsq+m0uwgo_-phR_zAz6ZfiSAr=JMXMaFsW-tPv_kXV+3fA@mail.gmail.com>
-Message-ID: <CAL_Jsq+m0uwgo_-phR_zAz6ZfiSAr=JMXMaFsW-tPv_kXV+3fA@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: boot/compressed: Copy DTB to aligned address
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Paul Cercueil <paul@crapouillou.net>, od@zcrc.me,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210308162228.62614-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 6, 2021 at 3:59 PM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
->
-> On Sat, Mar 06, 2021 at 02:35:21PM -0700, Rob Herring wrote:
-> > On Sat, Mar 6, 2021 at 1:45 AM Thomas Bogendoerfer
-> > <tsbogend@alpha.franken.de> wrote:
-> > >
-> > > On Wed, Mar 03, 2021 at 02:37:55PM -0600, Rob Herring wrote:
-> > > > On Wed, Mar 3, 2021 at 1:33 PM Paul Cercueil <paul@crapouillou.net> wrote:
-> > > > >
-> > > > > Since 5.12-rc1, the Device Tree blob must now be properly aligned.
-> > > >
-> > > > I had checked the other built-in cases as microblaze broke too, but
-> > > > missed some of the many ways MIPS can have a dtb. Appended and
-> > > > built-in DTBs were supposed to be temporary. :(
-> > >
-> > > and a fdt can also be provided by firmware. And according to spec
-> > > there is no aligmnet requirement. So this whole change will break
-> > > then. What was the reason for the whole churn ?
+On Mon, Mar 08, 2021 at 05:22:18PM +0100, Krzysztof Kozlowski wrote:
+> Hi Arnd and Olof,
+> 
+> This is just a resend of previous patch. Since I did not get replies
+> from Intel maintainers, I assume this could go via soc tree directly.
 
-Actually, that is wrong. The spec defines the alignment (from
-flattened format appendix):
+Actually it is my bad because I think I skipped Dinh Nguyen. Let me
+resend it one more time, hopefully to proper address.
 
-"Alignment
-
-For the data in the memory reservation and structure blocks to be used
-without unaligned memory accesses, they shall lie at suitably aligned
-memory addresses. Specifically, the memory reservation block shall be
-aligned to an 8-byte boundary and the structure block to a 4-byte
-boundary.
-
-Furthermore, the devicetree blob as a whole can be relocated without
-destroying the alignment of the subblocks.
-
-As described in the previous sections, the structure and strings
-blocks shall have aligned offsets from the beginning of the devicetree
-blob. To ensure the in-memory alignment of the blocks, it is
-sufficient to ensure that the devicetree as a whole is loaded at an
-address aligned to the largest alignment of any of the subblocks, that
-is, to an 8-byte boundary. A |spec| compliant boot program shall load
-the devicetree blob at such an aligned address before passing it to
-the client program. If an |spec| client program relocates the
-devicetree blob in memory, it should only do so to another 8-byte
-aligned address."
-
-
-> > There was a long discussion on devicetree-compiler list a few months
-> > ago. In summary, a while back libfdt switched to accessors from raw
-> > pointer accesses to avoid any possible unaligned accesses (is MIPS
-> > always okay with unaligned accesses?).
->
-> no, it will trap unaligned accesses, that's the reason for Paul's problem.
->
-> > This was determined to be a
-> > performance regression and an overkill as the DT structure itself
-> > should always be naturally aligned if the dtb is 64-bit aligned. I
-> > think 32-bit aligned has some possible misaligned accesses.
->
-> the access macros are using *(unsigned long long *), which isn't
-> even nice for 32bit CPUs...
-
-Where are those?
-
-> > As part of this, a dtb alignment check was added. So worst case, we
-> > could disable that if need be.
->
-> yeah, or override fdt32/64_to_cpu, if I understood the code correctly.
-
-No, fdt32/64_to_cpu don't dereference the pointer.
-
-Rob
+Best regards,
+Krzysztof
