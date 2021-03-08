@@ -2,84 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9E2330D0F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F95330D11
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhCHMEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:04:33 -0500
-Received: from foss.arm.com ([217.140.110.172]:36840 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229965AbhCHMET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:04:19 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AC600D6E;
-        Mon,  8 Mar 2021 04:04:18 -0800 (PST)
-Received: from [10.57.19.192] (unknown [10.57.19.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CCB353F70D;
-        Mon,  8 Mar 2021 04:04:16 -0800 (PST)
-Subject: Re: [PATCH v5 1/4] PM / devfreq: Register devfreq as a cooling device
- on demand
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     cwchoi00@gmail.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, steven.price@arm.com,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-References: <20210308091646.28096-1-daniel.lezcano@linaro.org>
- <c6d6781a-759c-0361-aaaa-28a625e4809b@arm.com>
- <bd6c8e7f-e626-b6f4-65b9-f7ea96098677@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <c33ea5f5-1f0e-d081-5f8d-9319536ca215@arm.com>
-Date:   Mon, 8 Mar 2021 12:04:14 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S231789AbhCHMFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:05:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231659AbhCHMEp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 07:04:45 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3E8C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 04:04:44 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id u4so15742203ljh.6
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 04:04:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=PofKU5fYnxxOMgDa7t33J+cuJBqENnTThP7WGOHCZv0=;
+        b=cWKXRDEg9DF0vSw0nmIT+Q3dQhbsxAYl9CH/93CahPPQg3c1sF9wfhPuVbcoA+W9zN
+         5zLqENvPWNDHihvL5Yrn+qyIVgtABZlt13RUT0I/Bo40CqW04XCi8F44+u57qWpehevv
+         feecPzQX/SEqFX74RLyVVwaG/xjShciCDfTnLf9yDm7jq7yeIOJCyfZkc9mjQ6/2jKDg
+         8uYqxeslEtmflGwBRQuob2nmKrPP2oXC6k87K5+7Ow498/lruUqduP5KTV2SKN8uP6+A
+         lKics7ODvAzuGOQ08WwRNlY2zv4GTfxhgr1KB5VS1dKp3PC52CZhb+2DUMwtY55uzk5X
+         DAWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=PofKU5fYnxxOMgDa7t33J+cuJBqENnTThP7WGOHCZv0=;
+        b=gkMrJrr+hNzZnAfwxcaHVS3bvccUE3Twt9zGDoqY+s+H4yXaQdYONB67XxoCuUFRDA
+         xaVO0iIVBlsPCd1W/CnqkxtwYol/OJI4WKNBlDLMaG9zTuDmqhvfiCw6YNTe8+cRAxCr
+         ymijehgE6Im6mrX7/87KhCqidfob2vSxSL8/I7RwlzKgaGjs1xPzS3GfWx8SLYFcFv9+
+         hBb8rn0qCOK5mTamaeIEzsccnw0gajkzhfgIkB0iex1GQWBsZJr7cd6Z/rADINMidrx6
+         /am91NEa3uKImRwg/qUXAK8ibGJqIKVkAY1e8YnJXDnXTj97+p/Y5C1XVuqPX+uSx+nV
+         U33g==
+X-Gm-Message-State: AOAM5314zdVvXcbpNGycu4plXDy0f6b389njAsrkK6s8lIazfTbAjFtr
+        HSpz9w7+pCYLXkHRodtgsM9Haw==
+X-Google-Smtp-Source: ABdhPJyKsYUK3p1THrKqpc10r4ZRrHOtC5I98vqFKGBhDSdvsbrXiZL6WVtGkFDNJDhvtWWNR/7vyw==
+X-Received: by 2002:a2e:9098:: with SMTP id l24mr8532795ljg.150.1615205083214;
+        Mon, 08 Mar 2021 04:04:43 -0800 (PST)
+Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
+        by smtp.gmail.com with ESMTPSA id e30sm1330671lfc.261.2021.03.08.04.04.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 04:04:42 -0800 (PST)
+Date:   Mon, 8 Mar 2021 13:04:41 +0100
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Phong Hoang <phong.hoang.wz@renesas.com>
+Subject: Re: [PATCH] clocksource: sh_cmt: use CMTOUT_IE only when supported
+Message-ID: <YEYS2YZF3xcyzQpf@oden.dyn.berto.se>
+References: <20210305132859.8208-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-In-Reply-To: <bd6c8e7f-e626-b6f4-65b9-f7ea96098677@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210305132859.8208-1-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Wolfram,
 
+Thanks for your patch.
 
-On 3/8/21 12:00 PM, Daniel Lezcano wrote:
-> On 08/03/2021 10:53, Lukasz Luba wrote:
->> Hi Daniel,
->>
->> In general the approach is good. If there is a special GPU driver, which
->> would like to provide 'struct devfreq_cooling_power *' it would leave
->> 'is_cooling_device=false' and register manually:
->> devfreq_cooling_em_register(df, dfc_power);
->>
->> Please find only a few minor comments below.
->>
->>
->> On 3/8/21 9:16 AM, Daniel Lezcano wrote:
->>> Currently the default behavior is to manually having the devfreq
->>> backend to register themselves as a devfreq cooling device.
->>>
->>> Instead of adding the code in the drivers for the thermal cooling
->>> device registering, let's provide a flag in the devfreq's profile to
->>> tell the common devfreq code to register the newly created devfreq as
->>> a cooling device.
->>>
->>> Suggested-by: Chanwoo Choi <cwchoi00@gmail.com>
->>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->>> ---
+On 2021-03-05 14:28:59 +0100, Wolfram Sang wrote:
+> CMTOUT_IE is only supported for older SoCs. Newer SoCs shall not set
+> this bit. So, add a version check.
 > 
-> [ ... ]
-> 
->>> +Â Â Â  struct thermal_cooling_device *cdev;
->>
->> The linux/thermal.h for 'cdev' would be needed in this header.
-> 
-> May be just a forward declaration ?
-> 
-> struct thermal_cooling_device;
+> Reported-by: Phong Hoang <phong.hoang.wz@renesas.com>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Make sense
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
 
+> ---
+> 
+> Confirmed with datasheets and could successfully repeat Niklas' CMT
+> tests on an R-Car M3N based Salvator-XS.
+> 
+>  drivers/clocksource/sh_cmt.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/clocksource/sh_cmt.c b/drivers/clocksource/sh_cmt.c
+> index c98f8851fd68..3b53c6cb1da9 100644
+> --- a/drivers/clocksource/sh_cmt.c
+> +++ b/drivers/clocksource/sh_cmt.c
+> @@ -143,6 +143,7 @@ struct sh_cmt_device {
+>  #define SH_CMT32_CMCSR_SSIE		(1 << 10)
+>  #define SH_CMT32_CMCSR_CMS		(1 << 9)
+>  #define SH_CMT32_CMCSR_CMM		(1 << 8)
+> +/* CMTOUT_IE only for SH_CMT_32BIT and SH_CMT_48BIT */
+>  #define SH_CMT32_CMCSR_CMTOUT_IE	(1 << 7)
+>  #define SH_CMT32_CMCSR_CMR_NONE		(0 << 4)
+>  #define SH_CMT32_CMCSR_CMR_DMA		(1 << 4)
+> @@ -339,8 +340,9 @@ static int sh_cmt_enable(struct sh_cmt_channel *ch)
+>  		sh_cmt_write_cmcsr(ch, SH_CMT16_CMCSR_CMIE |
+>  				   SH_CMT16_CMCSR_CKS512);
+>  	} else {
+> -		sh_cmt_write_cmcsr(ch, SH_CMT32_CMCSR_CMM |
+> -				   SH_CMT32_CMCSR_CMTOUT_IE |
+> +		u32 cmtout = ch->cmt->info->model <= SH_CMT_48BIT ?
+> +			      SH_CMT32_CMCSR_CMTOUT_IE : 0;
+> +		sh_cmt_write_cmcsr(ch, cmtout | SH_CMT32_CMCSR_CMM |
+>  				   SH_CMT32_CMCSR_CMR_IRQ |
+>  				   SH_CMT32_CMCSR_CKS_RCLK8);
+>  	}
+> -- 
+> 2.29.2
+> 
+
+-- 
 Regards,
-Lukasz
+Niklas Söderlund
