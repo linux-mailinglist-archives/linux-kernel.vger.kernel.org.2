@@ -2,80 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E233A330DA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 930C9330DB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:32:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhCHMbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:31:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40308 "EHLO mail.kernel.org"
+        id S231301AbhCHMbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:31:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229471AbhCHMai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:30:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F08F64EBC;
-        Mon,  8 Mar 2021 12:30:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615206637;
-        bh=1H+Rm/HRG67SRYINbJHS0oBbjsuz6H5MGQm5tGIaYFY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MCYCjX1qI/amv05iG1pOVraEyQbDL7c8JkAHZXAn5fZTq3/07MUrnj6WTsu98QxLe
-         n62PZ9raXTxm/AQ41k467h4Bg+ADvJOEubp17IumUlXXtBHhlOkFzuHbi7ALd6GVCq
-         0FrRClAfaxMhHzcx1MYoDSfaxOQuD8VDdUrtHBHHvcZhwkIC/GrW0O9BGSsPFrqCdc
-         4wBS2Ej9jvsUbFVsHDKY7opIFNp3/9C8p8SS8OtWzEr5j87QhEUdVfe46/1YlsITwO
-         aVx4v8tvSz3maHY/CRPaiP3XjGbJBPrOJUbSh3tT1RSiVMewS7IA+W8whHmtgxZmKn
-         GtPOLwC+wGfRQ==
-Date:   Mon, 8 Mar 2021 20:30:31 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org, DTML <devicetree@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 00/10] Add peripheral support for imx8mm-nitrogen-r2
- board
-Message-ID: <20210308123030.GA11246@dragon>
-References: <20210223191652.436397-1-adrien.grassein@gmail.com>
- <20210308004616.GM543@dragon>
- <CABkfQAHkJ=4Zwhbz0MxhbedK71JzaaQFXR5tN1k=8JmDysGGjA@mail.gmail.com>
+        id S230039AbhCHMbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 07:31:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09BE2651C9;
+        Mon,  8 Mar 2021 12:31:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615206670;
+        bh=MsoXZ++coynfHRAlKz8xGmRnEMj5Maq2CkQhJ50YcX4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ENSpt4MUcxI1ghIPdjz2AyANREET+hcej00FFrM5PnxvEsMQdod5KVOQCheBqBSZ5
+         TLRHjjmylUEHOn9hTNue1Iqi8LzQjIEyYBbImNz2My6RmqfXl8ZhgdFcG/rFcEx/mz
+         N9jV/5rRQ17Kf4C0HovI5KzTH2w2FGqxrOVPllPU=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 5.4 14/22] crypto - shash: reduce minimum alignment of shash_desc structure
+Date:   Mon,  8 Mar 2021 13:30:31 +0100
+Message-Id: <20210308122715.084969942@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210308122714.391917404@linuxfoundation.org>
+References: <20210308122714.391917404@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABkfQAHkJ=4Zwhbz0MxhbedK71JzaaQFXR5tN1k=8JmDysGGjA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 12:54:05PM +0100, Adrien Grassein wrote:
-> Le lun. 8 mars 2021 à 01:46, Shawn Guo <shawnguo@kernel.org> a écrit :
-> >
-> > On Tue, Feb 23, 2021 at 08:16:43PM +0100, Adrien Grassein wrote:
-> > > Adrien Grassein (10):
-> > >   arm64: dts: imx8mm-nitrogen-r2: add wifi/bt chip
-> > >   arm64: dts: imx8mm-nitrogen-r2: rework USDHC1
-> > >   arm64: dts: imx8mm-nitrogen-r2: add USB support
-> > >   arm64: dts: imx8mm-nitrogen-r2: add espi2 support
-> > >   arm64: dts: imx8mm-nitrogen-r2: add UARTs
-> > >   arm64: dts: imx8mm-nitrogen-r2: rework UART 2
-> > >   arm64: dts: imx8mm-nitrogen-r2: add PWMs
-> > >   arm64: dts: imx8mm-nitrogen-r2: add FlexSPI
-> > >   arm64: dts: imx8mm-nitrogen-r2: add audio
-> > >   arm64: defconfig: Enable wm8960 audio driver.
-> >
-> > Applied all, thanks.
-> 
-> Thanks,
-> 
-> But I think you missed one (arm64: dts: imx8mm-nitrogen-r2: add espi2
-> support) that I don't see on your tree.
+From: Ard Biesheuvel <ardb@kernel.org>
 
-Hmm, looks like it did not get posted. 
+commit 660d2062190db131d2feaf19914e90f868fe285c upstream.
 
-https://lore.kernel.org/linux-arm-kernel/20210223191652.436397-1-adrien.grassein@gmail.com/
+Unlike many other structure types defined in the crypto API, the
+'shash_desc' structure is permitted to live on the stack, which
+implies its contents may not be accessed by DMA masters. (This is
+due to the fact that the stack may be located in the vmalloc area,
+which requires a different virtual-to-physical translation than the
+one implemented by the DMA subsystem)
 
-Shawn
+Our definition of CRYPTO_MINALIGN_ATTR is based on ARCH_KMALLOC_MINALIGN,
+which may take DMA constraints into account on architectures that support
+non-cache coherent DMA such as ARM and arm64. In this case, the value is
+chosen to reflect the largest cacheline size in the system, in order to
+ensure that explicit cache maintenance as required by non-coherent DMA
+masters does not affect adjacent, unrelated slab allocations. On arm64,
+this value is currently set at 128 bytes.
+
+This means that applying CRYPTO_MINALIGN_ATTR to struct shash_desc is both
+unnecessary (as it is never used for DMA), and undesirable, given that it
+wastes stack space (on arm64, performing the alignment costs 112 bytes in
+the worst case, and the hole between the 'tfm' and '__ctx' members takes
+up another 120 bytes, resulting in an increased stack footprint of up to
+232 bytes.) So instead, let's switch to the minimum SLAB alignment, which
+does not take DMA constraints into account.
+
+Note that this is a no-op for x86.
+
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ include/crypto/hash.h  |    8 ++++----
+ include/linux/crypto.h |    9 ++++++---
+ 2 files changed, 10 insertions(+), 7 deletions(-)
+
+--- a/include/crypto/hash.h
++++ b/include/crypto/hash.h
+@@ -141,7 +141,7 @@ struct ahash_alg {
+ 
+ struct shash_desc {
+ 	struct crypto_shash *tfm;
+-	void *__ctx[] CRYPTO_MINALIGN_ATTR;
++	void *__ctx[] __aligned(ARCH_SLAB_MINALIGN);
+ };
+ 
+ #define HASH_MAX_DIGESTSIZE	 64
+@@ -154,9 +154,9 @@ struct shash_desc {
+ 
+ #define HASH_MAX_STATESIZE	512
+ 
+-#define SHASH_DESC_ON_STACK(shash, ctx)				  \
+-	char __##shash##_desc[sizeof(struct shash_desc) +	  \
+-		HASH_MAX_DESCSIZE] CRYPTO_MINALIGN_ATTR; \
++#define SHASH_DESC_ON_STACK(shash, ctx)					     \
++	char __##shash##_desc[sizeof(struct shash_desc) + HASH_MAX_DESCSIZE] \
++		__aligned(__alignof__(struct shash_desc));		     \
+ 	struct shash_desc *shash = (struct shash_desc *)__##shash##_desc
+ 
+ /**
+--- a/include/linux/crypto.h
++++ b/include/linux/crypto.h
+@@ -130,9 +130,12 @@
+  * The macro CRYPTO_MINALIGN_ATTR (along with the void * type in the actual
+  * declaration) is used to ensure that the crypto_tfm context structure is
+  * aligned correctly for the given architecture so that there are no alignment
+- * faults for C data types.  In particular, this is required on platforms such
+- * as arm where pointers are 32-bit aligned but there are data types such as
+- * u64 which require 64-bit alignment.
++ * faults for C data types.  On architectures that support non-cache coherent
++ * DMA, such as ARM or arm64, it also takes into account the minimal alignment
++ * that is required to ensure that the context struct member does not share any
++ * cachelines with the rest of the struct. This is needed to ensure that cache
++ * maintenance for non-coherent DMA (cache invalidation in particular) does not
++ * affect data that may be accessed by the CPU concurrently.
+  */
+ #define CRYPTO_MINALIGN ARCH_KMALLOC_MINALIGN
+ 
+
+
