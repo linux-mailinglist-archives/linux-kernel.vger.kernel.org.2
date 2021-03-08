@@ -2,50 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD3B331A54
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A488331A45
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231296AbhCHWl6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Mar 2021 17:41:58 -0500
-Received: from mail.univ.net.ua ([91.202.128.107]:35311 "EHLO mail.univ.net.ua"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230343AbhCHWln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 17:41:43 -0500
-X-Greylist: delayed 343 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Mar 2021 17:41:41 EST
-Received: from [192.168.8.100] (197.185.109.94) by mail.univ.net.ua
- (91.202.128.107) with Microsoft SMTP Server id 14.3.339.0; Tue, 9 Mar 2021
- 00:35:48 +0200
-Content-Type: text/plain; charset="iso-8859-1"
+        id S229650AbhCHWhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 17:37:36 -0500
+Received: from mail-il1-f180.google.com ([209.85.166.180]:38360 "EHLO
+        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhCHWhF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 17:37:05 -0500
+Received: by mail-il1-f180.google.com with SMTP id f10so10372726ilq.5;
+        Mon, 08 Mar 2021 14:37:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3dLMMP8YVFanvhztQxNx4iDhoqpBSkRxNSdLZrUSaMU=;
+        b=PnWvSqLAx1RZMZLIaAueg2LclCnPGscxDtVeFBCjPdZNJmAW0ZtiRp1kC7Gw/XE83V
+         PYCmK2KLQ0DdJLHDl11SJt6GkcPP5qlm8p73tBpocIMVDkdvQixSyw1Q2VvfFerA5X97
+         zAFWSiXqyQuNEpRpPWZKmekeWv0XUztzK4kHsmF4EQok8N28j4ITOb+encv4kT2lS0uG
+         iIXN7h0TzVvRvMRiDvPtN7HAXp9GxiJCaTIE0ZvjxvvwAxi4TzKkO/Fb1wxt7tp8M9ue
+         ffu7PNfB/RWjZoJKTd2TXZZgVwXqicpYmtbB9mjyfE4RDBPc+gO25J/sfL1TNad32R9U
+         pwag==
+X-Gm-Message-State: AOAM533OUxQMfHFHFLjBfR9Gxeu2Iaj0BgAKTqhu0KvLczR6h/vpDtxs
+        Qf0D8am3n1cD/MmcbUM0EA==
+X-Google-Smtp-Source: ABdhPJzwROtVDIemWk+ORF19QQGMFuJsdHV81+jeRApSNDoD1IBDJSI0eN3G68U0lJPCbPwj/Bv7Kg==
+X-Received: by 2002:a05:6e02:802:: with SMTP id u2mr20982193ilm.298.1615243024712;
+        Mon, 08 Mar 2021 14:37:04 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id o19sm6721995ioh.47.2021.03.08.14.37.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 14:37:03 -0800 (PST)
+Received: (nullmailer pid 3077404 invoked by uid 1000);
+        Mon, 08 Mar 2021 22:37:02 -0000
+Date:   Mon, 8 Mar 2021 15:37:02 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     peng.fan@oss.nxp.com
+Cc:     kernel@pengutronix.de, matthias.bgg@gmail.com,
+        Peng Fan <peng.fan@nxp.com>, agross@kernel.org,
+        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
+        o.rempel@pengutronix.de, mathieu.poirier@linaro.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        festevam@gmail.com, linux-kernel@vger.kernel.org,
+        s.hauer@pengutronix.de, paul@crapouillou.net, shawnguo@kernel.org,
+        ohad@wizery.com, linux-remoteproc@vger.kernel.org,
+        patrice.chotard@st.com
+Subject: Re: [PATCH V13 02/10] dt-bindings: remoteproc: imx_rproc: add
+ i.MX8MQ/M support
+Message-ID: <20210308223702.GA3077368@robh.at.kernel.org>
+References: <1615029865-23312-1-git-send-email-peng.fan@oss.nxp.com>
+ <1615029865-23312-3-git-send-email-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Invitation to Bid
-To:     Recipients <tkachenko_nt@univ.net.ua>
-From:   Pfizer <tkachenko_nt@univ.net.ua>
-Date:   Tue, 9 Mar 2021 00:34:56 +0200
-Reply-To: <a.bourla@aol.com>
-Message-ID: <280fc463-e37e-4c0b-b96e-f88f0407c656@MAIL.univ.net.ua>
-X-Originating-IP: [197.185.109.94]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615029865-23312-3-git-send-email-peng.fan@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Day Sir/Ms,
+On Sat, 06 Mar 2021 19:24:17 +0800, peng.fan@oss.nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Add i.MX8MQ/M support, also include mailbox for rpmsg/virtio usage.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  .../bindings/remoteproc/fsl,imx-rproc.yaml    | 31 ++++++++++++++++++-
+>  1 file changed, 30 insertions(+), 1 deletion(-)
+> 
 
-We are please to invite you or your company to quote the following item listed
-below:
-
-Product/Model No: AU829L Altitude and Level Control Valves
-MPodel No: AU829L
-Qty. 30 units
-
-Compulsory, Kindly send your quotation to: E-mail:bourlaa@aol.com  for immediate approval.
-
-Kind Regards,
-Albert Bourla
-PFIZER B.V Supply Chain Manager
-Tel: +31(0)208080 880
-E-mail: bourlaa@aol.com
-ADDRESS: Rivium Westlaan 142, 2909 LD
-Capelle aan den IJssel, Netherlands
- 
+Reviewed-by: Rob Herring <robh@kernel.org>
