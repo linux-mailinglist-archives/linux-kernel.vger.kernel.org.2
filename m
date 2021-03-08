@@ -2,190 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDD3330AA2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81815330AA5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:55:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhCHJyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 04:54:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:35130 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231151AbhCHJx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 04:53:58 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D421331B;
-        Mon,  8 Mar 2021 01:53:57 -0800 (PST)
-Received: from [10.57.19.192] (unknown [10.57.19.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 188F03F73C;
-        Mon,  8 Mar 2021 01:53:55 -0800 (PST)
-Subject: Re: [PATCH v5 1/4] PM / devfreq: Register devfreq as a cooling device
- on demand
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     cwchoi00@gmail.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, steven.price@arm.com,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-References: <20210308091646.28096-1-daniel.lezcano@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <c6d6781a-759c-0361-aaaa-28a625e4809b@arm.com>
-Date:   Mon, 8 Mar 2021 09:53:54 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S231314AbhCHJys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 04:54:48 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:46493 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231295AbhCHJya (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 04:54:30 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id D819622246;
+        Mon,  8 Mar 2021 10:54:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1615197269;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mvygtkil7ta1nozc09CcL7f9MLw8A5Zp+hHf8eHw7v0=;
+        b=Ye/rqwKUxNumwFtS7Qw0eWMlNbKg02NQEwnkqh6XRnIQxigDXjBotwb6MkmQ6mvMQ1h6Ye
+        7ch5bpimuMjVl1eYIMgC4/vSuq7God5Q48m4dUZ7X9UbnMTooanMqiPhBxgnjX80nkrIyy
+        A5qEh8B6MpeBInvZIJQ0e/Y6bEz0pNg=
 MIME-Version: 1.0
-In-Reply-To: <20210308091646.28096-1-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 08 Mar 2021 10:54:28 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc:     p.yadav@ti.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com
+Subject: Re: [PATCH] MAINTAINERS: Add Michael and Pratyush as designated
+ reviewers for SPI NOR
+In-Reply-To: <20210308092333.80521-1-tudor.ambarus@microchip.com>
+References: <20210308092333.80521-1-tudor.ambarus@microchip.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <87d94fa3b49a568f2c20ebcd9f1ab935@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
-
-In general the approach is good. If there is a special GPU driver, which
-would like to provide 'struct devfreq_cooling_power *' it would leave
-'is_cooling_device=false' and register manually:
-devfreq_cooling_em_register(df, dfc_power);
-
-Please find only a few minor comments below.
-
-
-On 3/8/21 9:16 AM, Daniel Lezcano wrote:
-> Currently the default behavior is to manually having the devfreq
-> backend to register themselves as a devfreq cooling device.
+Am 2021-03-08 10:23, schrieb Tudor Ambarus:
+> It's already been the case for some time that Michael and Pratyush
+> are reviewing SPI NOR patches. Update MAINTAINERS to reflect reality.
 > 
-> Instead of adding the code in the drivers for the thermal cooling
-> device registering, let's provide a flag in the devfreq's profile to
-> tell the common devfreq code to register the newly created devfreq as
-> a cooling device.
-> 
-> Suggested-by: Chanwoo Choi <cwchoi00@gmail.com>
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->   V5:
->     - Changed subject prefix by:  PM / devfreq
->   V4:
->     - Replaced thermal_cooling_device_unregister() by
->       devfreq_cooling_unregister()
->   V3:
->     - Rebased on linux-pm branch without units.h
->     - Set the cdev to NULL in case of error
->     - Added description for the cdev field in the devfreq structure
->   V2:
->     - Added is_cooling_device boolean in profile structure
->     - Register cooling device when the is_cooling_device boolean is set
->     - Remove devfreq cooling device registration in the backend drivers
->   V1:
->     - Register devfreq as a cooling device unconditionnally
-> ---
->   drivers/devfreq/devfreq.c | 13 +++++++++++++
->   include/linux/devfreq.h   |  8 ++++++++
->   2 files changed, 21 insertions(+)
-> 
-> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-> index bf3047896e41..8a535d4d6083 100644
-> --- a/drivers/devfreq/devfreq.c
-> +++ b/drivers/devfreq/devfreq.c
-> @@ -11,6 +11,7 @@
->   #include <linux/kmod.h>
->   #include <linux/sched.h>
->   #include <linux/debugfs.h>
-> +#include <linux/devfreq_cooling.h>
->   #include <linux/errno.h>
->   #include <linux/err.h>
->   #include <linux/init.h>
-> @@ -26,6 +27,7 @@
->   #include <linux/hrtimer.h>
->   #include <linux/of.h>
->   #include <linux/pm_qos.h>
-> +#include <linux/thermal.h>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Since the unregister is now called from devfreq_cooling.h, this header
-here is not needed. It might rather be moved into the devfreq.h
-where there is this new field: 'cdev' if we are going to use something
-from it.
-
->   #include "governor.h"
->   
->   #define CREATE_TRACE_POINTS
-> @@ -935,6 +937,15 @@ struct devfreq *devfreq_add_device(struct device *dev,
->   
->   	mutex_unlock(&devfreq_list_lock);
->   
-> +	if (devfreq->profile->is_cooling_device) {
-> +		devfreq->cdev = devfreq_cooling_em_register(devfreq, NULL);
-> +		if (IS_ERR(devfreq->cdev)) {
-> +			dev_info(dev, "Failed to register devfreq "
-> +				 "cooling device\n");
-
-I would skip this print. Not every kernel config has DEVFREQ_THERMAL set
-and the value ERR_PTR(-EINVAL) from header would be returned in such
-case.
-Inside the devfreq_cooling_em_register() (and others) there are prints
-showing that something wrong happen and would be triggered if compiled.
-
-> +			devfreq->cdev = NULL;
-> +		}
-> +	}
-> +
->   	return devfreq;
->   
->   err_init:
-> @@ -960,6 +971,8 @@ int devfreq_remove_device(struct devfreq *devfreq)
->   	if (!devfreq)
->   		return -EINVAL;
->   
-> +	devfreq_cooling_unregister(devfreq->cdev);
-> +
->   	if (devfreq->governor) {
->   		devfreq->governor->event_handler(devfreq,
->   						 DEVFREQ_GOV_STOP, NULL);
-> diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
-> index 26ea0850be9b..aba7ace11b72 100644
-> --- a/include/linux/devfreq.h
-> +++ b/include/linux/devfreq.h
-> @@ -98,11 +98,15 @@ struct devfreq_dev_status {
->    * @freq_table:		Optional list of frequencies to support statistics
->    *			and freq_table must be generated in ascending order.
->    * @max_state:		The size of freq_table.
-> + *
-> + * @is_cooling_device: A self-explanatory boolean giving the device a
-> + *                     cooling effect property.
->    */
->   struct devfreq_dev_profile {
->   	unsigned long initial_freq;
->   	unsigned int polling_ms;
->   	enum devfreq_timer timer;
-> +	bool is_cooling_device;
->   
->   	int (*target)(struct device *dev, unsigned long *freq, u32 flags);
->   	int (*get_dev_status)(struct device *dev,
-> @@ -156,6 +160,7 @@ struct devfreq_stats {
->    * @suspend_count:	 suspend requests counter for a device.
->    * @stats:	Statistics of devfreq device behavior
->    * @transition_notifier_list: list head of DEVFREQ_TRANSITION_NOTIFIER notifier
-> + * @cdev:	Cooling device pointer if the devfreq has cooling property
->    * @nb_min:		Notifier block for DEV_PM_QOS_MIN_FREQUENCY
->    * @nb_max:		Notifier block for DEV_PM_QOS_MAX_FREQUENCY
->    *
-> @@ -198,6 +203,9 @@ struct devfreq {
->   
->   	struct srcu_notifier_head transition_notifier_list;
->   
-> +	/* Pointer to the cooling device if used for thermal mitigation */
-> +	struct thermal_cooling_device *cdev;
-
-The linux/thermal.h for 'cdev' would be needed in this header.
-
-> +
->   	struct notifier_block nb_min;
->   	struct notifier_block nb_max;
->   };
-> 
-
-With this small changes:
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-
-Regards,
-Lukasz
+Acked-by: Michael Walle <michael@walle.cc>
