@@ -2,216 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941DA3314AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1681A331473
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhCHRXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 12:23:24 -0500
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:49588 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230502AbhCHRW6 (ORCPT
+        id S230455AbhCHRTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:19:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhCHRSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:22:58 -0500
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJJWG-0042it-IU; Mon, 08 Mar 2021 17:18:12 +0000
-Date:   Mon, 8 Mar 2021 17:18:12 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Palash Oswal <oswalpalash@gmail.com>
-Cc:     akpm@linux-foundation.org, dave@stgolabs.net,
-        keescook@chromium.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, peterz@infradead.org, rppt@linux.vnet.ibm.com,
-        sds@tycho.nsa.gov, syzkaller-bugs@googlegroups.com
-Subject: Re: kernel panic: Attempted to kill init!
-Message-ID: <YEZcVKbPzfMVK2aK@zeniv-ca.linux.org.uk>
-References: <CAGyP=7dpTbbj39uO37YrNMg9h4Nzmkszc3MoZg9n8ALir_A52g@mail.gmail.com>
+        Mon, 8 Mar 2021 12:18:35 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A173C06174A;
+        Mon,  8 Mar 2021 09:18:35 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id v13so15836201edw.9;
+        Mon, 08 Mar 2021 09:18:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QpRX9dp3uicxVv487h+YjKRAB2MLML02Fr523RHwB5s=;
+        b=mHa/jW+vlyasWldZBY6HZM513XUl/gya5pGtS+wXqYOpOxqp7uAihBmTeVdjXGiIKO
+         b36Ncucl/Q8dEgXFGvPwsjS0sIjGXGblBiE27wnryuI/cg+N82dP8U/eMwKPHl1k9zwc
+         mWZIKBkHRaQLp0tq/OfSIMNRKX3MOSW6DVo/ae4U88h7iE1nSoWaywWkqVgFkSGx9P7U
+         OU98Sb6+tw+NZLk/PuX8YflzyeTcyViT7Azjlqyd8+sh9b2m+yxdxvTeS715/sfX/JjO
+         zMrByMSKf/F5SPNOYeDW48ri7LElmh9qGLuabSu9XuvGGPmblCpJBp5TrsPy4Dp2Spqk
+         6ekg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QpRX9dp3uicxVv487h+YjKRAB2MLML02Fr523RHwB5s=;
+        b=JfNRHhDIaP43aZ78jDq9i1isHVjBonx+0MCuR2poI/dV6xOUo6hZTH5xtDBIWeZ5B+
+         TOs8nV/aEns48e/4DXuCueE6kne2ywIeTu8BHs2vfCgmy2h+HzGBtVAlA55nN0A86AoB
+         WQ82D/lZVIt+NZOIqPo+xdcOfZ45y18gtiEYhJQN3aRMhrMP1Oc0VLNr/SQHR/x9Sm1X
+         Eh8EGLJ9kE2Juu2ZgQjkblL31NtH6GmEu64zGyDS9XkYSL3ryxbIZNuJ9siGfD33gF+x
+         iNaw4ERdkAgpK0eQdQTFGkxLqn5VjA+XJ/wvIHT0P/20qI4nE5oGTiULDRbwVmwHuzwD
+         FI3Q==
+X-Gm-Message-State: AOAM532VqzZkhm0aFIdIPMVPQukF6S05LxG+2M/kYbf/eCaqRqWQEi95
+        BT693NvwwBpmtupfEc7cyPU=
+X-Google-Smtp-Source: ABdhPJwkvSPZSwD1j5sECQgHvEdWtfLEdfmXXdY2vdntniG6pn8yWoVCqpYkNaSqUnHUswEE9/Pv1g==
+X-Received: by 2002:aa7:cd6a:: with SMTP id ca10mr23422692edb.7.1615223913709;
+        Mon, 08 Mar 2021 09:18:33 -0800 (PST)
+Received: from localhost.localdomain ([81.18.95.223])
+        by smtp.gmail.com with ESMTPSA id r5sm7457714eds.49.2021.03.08.09.18.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 09:18:33 -0800 (PST)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Edgar Bernardi Righi <edgar.righi@lsitec.org.br>
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH 0/6] Improve clock support for Actions S500 SoC
+Date:   Mon,  8 Mar 2021 19:18:25 +0200
+Message-Id: <cover.1615221459.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGyP=7dpTbbj39uO37YrNMg9h4Nzmkszc3MoZg9n8ALir_A52g@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 10:06:10PM +0530, Palash Oswal wrote:
-> I was running syzkaller and I found the following issue :
-> Head Commit : 27e543cca13fab05689b2d0d61d200a83cfb00b6 ( v5.11.2 )
-> Git Tree : stable
-> 
-> Console Logs:
-> Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> CPU: 0 PID: 1 Comm: systemd Not tainted 5.11.2 #13
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0xb2/0xe4 lib/dump_stack.c:120
->  panic+0x196/0x502 kernel/panic.c:231
->  do_exit.cold+0x70/0x108 kernel/exit.c:794
->  do_group_exit+0x78/0x120 kernel/exit.c:922
->  get_signal+0x22e/0xd60 kernel/signal.c:2773
->  arch_do_signal_or_restart+0xef/0x890 arch/x86/kernel/signal.c:811
->  handle_signal_work kernel/entry/common.c:147 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
->  exit_to_user_mode_prepare+0x102/0x190 kernel/entry/common.c:201
->  irqentry_exit_to_user_mode+0x9/0x20 kernel/entry/common.c:307
->  irqentry_exit+0x19/0x30 kernel/entry/common.c:395
->  exc_page_fault+0xc3/0x240 arch/x86/mm/fault.c:1509
->  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:580
-> RIP: 0033:0x7feb52656f10
-> Code: Unable to access opcode bytes at RIP 0x7feb52656ee6.
-> RSP: 002b:00007ffec42704b8 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: 00005604dc566f40 RCX: 00007feb526872e3
-> RDX: 00007ffec4270640 RSI: 00007ffec4270770 RDI: 0000000000000007
-> RBP: 0000000000000007 R08: 35237084f6f94f9c R09: 0000000000001410
-> R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffec4a6ed00
-> R13: 0000000000000001 R14: ffffffffffffffff R15: 0000000000000002
-> Dumping ftrace buffer:
->    (ftrace buffer empty)
-> Kernel Offset: disabled
-> Rebooting in 1 seconds..
-> 
-> Syzkaller reproducer:
-> # {Threaded:false Collide:false Repeat:false RepeatTimes:0 Procs:1
-> Slowdown:1 Sandbox: Fault:false FaultCall:-1 FaultNth:0 Leak:false
-> NetInjection:false NetDevices:false NetReset:false Cgroups:false
-> BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false USB:false
-> VhciInjection:false Wifi:false IEEE802154:false Sysctl:false
-> UseTmpDir:false HandleSegv:false Repro:false Trace:false}
-> r0 = creat(&(0x7f00000001c0)='./file0\x00', 0x0)
-> open_by_handle_at(r0,
-> &(0x7f0000000000)=ANY=[@ANYBLOB="0a000000020000004b0d"], 0x2f00)
-> 
-> 
-> C reproducer:
-> // autogenerated by syzkaller (https://github.com/google/syzkaller)
-> 
-> #define _GNU_SOURCE
-> 
-> #include <endian.h>
-> #include <stdint.h>
-> #include <stdio.h>
-> #include <stdlib.h>
-> #include <string.h>
-> #include <sys/syscall.h>
-> #include <sys/types.h>
-> #include <unistd.h>
-> 
-> uint64_t r[1] = {0xffffffffffffffff};
-> 
-> int main(void)
-> {
->   syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
->   syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
->   syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
->   intptr_t res = 0;
->   memcpy((void*)0x200001c0, "./file0\000", 8);
->   res = syscall(__NR_creat, 0x200001c0ul, 0ul);
->   if (res != -1)
->     r[0] = res;
->   memcpy((void*)0x20000000, "\x0a\x00\x00\x00\x02\x00\x00\x00\x4b\x0d", 10);
->   syscall(__NR_open_by_handle_at, r[0], 0x20000000ul, 0x2f00ul);
->   return 0;
-> }
-> 
-> This reproducer only worked on the syzkaller instance disk image that
-> I was using. I am adding the syzkaller report from a second instance
-> for the same issue:
-> Report #2
-> Syzkaller hit 'kernel panic: Attempted to kill init!' bug.
-> 
-> Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> CPU: 1 PID: 1 Comm: systemd Not tainted 5.11.2 #5
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> 1.13.0-1ubuntu1.1 04/01/2014
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0xb9/0xef lib/dump_stack.c:120
->  panic+0x196/0x502 kernel/panic.c:231
->  do_exit.cold+0x89/0x113 kernel/exit.c:794
->  do_group_exit+0x78/0x120 kernel/exit.c:922
->  get_signal+0x230/0xd70 kernel/signal.c:2773
->  arch_do_signal_or_restart+0xef/0x890 arch/x86/kernel/signal.c:811
->  handle_signal_work kernel/entry/common.c:147 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
->  exit_to_user_mode_prepare+0x115/0x1a0 kernel/entry/common.c:201
->  irqentry_exit_to_user_mode+0x9/0x20 kernel/entry/common.c:307
->  irqentry_exit+0x19/0x30 kernel/entry/common.c:395
->  exc_page_fault+0xc3/0x240 arch/x86/mm/fault.c:1509
->  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:580
-> RIP: 0033:0x7f51a89bc320
-> Code: Unable to access opcode bytes at RIP 0x7f51a89bc2f6.
-> RSP: 002b:00007ffca659b7f8 EFLAGS: 00010246
-> RAX: 00007f51a9de3ee0 RBX: 00007ffca659b8a0 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: 00007ffca659b8a0 RDI: 0000000000000011
-> RBP: 0000000000000007 R08: 0000000000000008 R09: 0000559120f63478
-> R10: 0000559120f63440 R11: 0000000000000246 R12: 0000559120f63440
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000002
-> Dumping ftrace buffer:
->    (ftrace buffer empty)
-> Kernel Offset: disabled
-> Rebooting in 1 seconds..
-> 
-> 
-> Syzkaller reproducer:
-> # {Threaded:false Collide:false Repeat:false RepeatTimes:0 Procs:1
-> Slowdown:1 Sandbox: Fault:false FaultCall:-1 FaultNth:0 Leak:false
-> NetInjection:false NetDevices:false NetReset:false Cgroups:false
-> BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false USB:false
-> VhciInjection:false Wifi:false IEEE802154:false Sysctl:false
-> UseTmpDir:false HandleSegv:false Repro:false Trace:false}
-> r0 = creat(&(0x7f0000000040)='./file0\x00', 0x0)
-> open_by_handle_at(r0,
-> &(0x7f0000000080)=ANY=[@ANYBLOB="2700000001000000d10b"], 0x2f00)
-> 
-> 
-> C reproducer:
-> // autogenerated by syzkaller (https://github.com/google/syzkaller)
-> 
-> #define _GNU_SOURCE
-> 
-> #include <endian.h>
-> #include <stdint.h>
-> #include <stdio.h>
-> #include <stdlib.h>
-> #include <string.h>
-> #include <sys/syscall.h>
-> #include <sys/types.h>
-> #include <unistd.h>
-> 
-> uint64_t r[1] = {0xffffffffffffffff};
-> 
-> int main(void)
-> {
-> syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
-> syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
-> syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
-> intptr_t res = 0;
-> memcpy((void*)0x20000040, "./file0\000", 8);
-> res = syscall(__NR_creat, 0x20000040ul, 0ul);
-> if (res != -1)
-> r[0] = res;
-> memcpy((void*)0x20000080, "\x27\x00\x00\x00\x01\x00\x00\x00\xd1\x0b", 10);
-> syscall(__NR_open_by_handle_at, r[0], 0x20000080ul, 0x2f00ul);
-> return 0;
-> }
-> 
-> If someone wants to trigger this on their syzkaller set-up, try
-> running the following syzkaller config:
->  + enable_syscalls: ["creat","open_by_handle_at"],
-> 
-> A similar issue was also previously reported by syzkaller
-> https://groups.google.com/g/syzkaller-bugs/c/EFmi5gTSMx8/m/jpt3fMPLAwAJ
-> which was closed due to the lack of reproducibility.
-> 
-> Kernel build config :
-> https://gist.github.com/oswalpalash/18e847d6e24e3452bc811526fd6f76bb
+While working on a driver to support the Actions Semi Owl Ethernet MAC,
+I found and fixed some issues on the existing implementation of the S500
+SoC clock subsystem and, additionally, I added two missing clocks.
 
-Not much information to go by...  Obvious questions:
-	1) does it get to do_handle_open() on that test?
-	2) how far in handle_to_path() does it get?
+Thanks,
+Cristi
 
-I'd suggest to add printk(KERN_ERR "got to %d", __LINE__); in fs/fhandle.c at
-	beginning of do_handle_open()
-	right before each copy_from_user() in handle_to_path()
-	right before and right after the call of do_handle_to_path() (in the same)
-and try your reproducers on the resulting kernel.
+Cristian Ciocaltea (6):
+  clk: actions: Fix UART clock dividers on Owl S500 SoC
+  clk: actions: Fix SD clocks factor table on Owl S500 SoC
+  clk: actions: Fix bisp_factor_table based clocks on Owl S500 SoC
+  clk: actions: Fix AHPPREDIV-H-AHB clock chain on Owl S500 SoC
+  dt-bindings: clock: Add NIC and ETHERNET bindings for Actions S500 SoC
+  clk: actions: Add NIC and ETHERNET clock support for Actions S500 SoC
+
+ drivers/clk/actions/owl-s500.c               | 99 +++++++++++++-------
+ include/dt-bindings/clock/actions,s500-cmu.h |  6 +-
+ 2 files changed, 70 insertions(+), 35 deletions(-)
+
+-- 
+2.30.1
+
