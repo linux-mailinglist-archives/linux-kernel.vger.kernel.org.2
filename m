@@ -2,119 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F363310AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F293310B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbhCHOVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 09:21:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55054 "EHLO
+        id S230446AbhCHOWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 09:22:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbhCHOU5 (ORCPT
+        with ESMTP id S230212AbhCHOVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:20:57 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D67BC06174A;
-        Mon,  8 Mar 2021 06:20:57 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id v2so8239346lft.9;
-        Mon, 08 Mar 2021 06:20:56 -0800 (PST)
+        Mon, 8 Mar 2021 09:21:55 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C84C06174A;
+        Mon,  8 Mar 2021 06:21:54 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id l12so11647448wry.2;
+        Mon, 08 Mar 2021 06:21:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0qSqLyKBzw4nb8j17jU5SupuAgYw/Y4EGFPBpUKaihs=;
-        b=H1L0Z5d54+bKkv1NMZjlGMdv2lvvIaogWTE4at+h3hahV4w7UFyPR7pcmfObjw2SQQ
-         9K0qL4nLHig0eSQpmZzm6K5Vy2/VwG39JxGa29NIRBlEsRLCeTGHsO9OFpq6RiQ9++7l
-         eoJ5nB1iV47JAXv2LLW0YwiqsqvtVmypkSXlG6MNAQzSomEJZJCIdc+vh1rVQ62JL/2y
-         dWv+qMyUjBhA6MH8CJpwAJ35KwXVjBgR3KKtSTVD6LCRIlRiwz5UcYEich/+TuZybcs2
-         T27tgfeWT9FtKn+gMEKmMx5zg2LkuKixR50cY9tkIloCU6c4H+3oFTFcGzNYAMF9xq4f
-         8+vQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=llTHel6Tau+2wt9oH3Ox8lQza6rjfyc6wVJ3sfruCT8=;
+        b=ktXfmaT1JBfUylKJF3pAHwWC089SQJ3xX4kZGjdgl32VWtVke2QvnWziNw9i0brCX5
+         6ycc21AUWWgl75pdc3mJ4y+HhlYfwwQPsPWU4tut9f+QdU4DsDEuJLN7kalEr91K/WK6
+         Gt61Eid3eSqk2k92ADR21hxJlISRKTFWp7I2LnefYbO8uBi1K1YkB23nXYxWmp0/Nr+c
+         f/ny5OxjCRRLAY1WxDnLBuMaZFwhCbzBDOzXD/t/EnqVICy9M9hYau5y7cBoBtfioasC
+         z0W85vzAIZ4QU1QNW1qzAjB6XYepv4mfon4QajugKTA5qo9dsoWMCaEpgc0E3hF5leTf
+         JFkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0qSqLyKBzw4nb8j17jU5SupuAgYw/Y4EGFPBpUKaihs=;
-        b=XR9bHxy/gOo0qrNOI+3HWxW8sMT387hHuEHy6+b4pv5r91Vr0M95ND9pVK9bLqlDE5
-         BnCxgbvcdInceuRkNFp/xO2iZ35jTOIR7INKSltSU4PsQusLY+zCsscZy9cUMgRHggDP
-         8pzVhpyLwg3VQ430O49cEKLGC5Z+FaGxi2ZMt+/6324WZa2Vdo1QGOqrR6T28MJSKa8r
-         PC/GzdSr3h8qymB+8ZncRCwqNi9rLKxkq+Azk3NGPl+9LLSL+IHT8rhHkWZ6e3XB7B6l
-         JfkCBrGYqZs9ZNOJwGGfxfnwkdWReLyrDjypzMaYeULqeufR8Mw5K9BE0xBBPVHowaU0
-         d2Og==
-X-Gm-Message-State: AOAM531tylGJStEkX0Z97aR5AM1MqsISh9sAwPJCe/8FObB5eRSJFDPL
-        Ii+mzQnO/ohwPHEc1ST7aX0=
-X-Google-Smtp-Source: ABdhPJznNPgojN/nObRq+gs8Ca5XApc8sug9k/GrLjNKYrfLSpPuBe0IYA6WM0BuWX8Ci3xWPlXlhQ==
-X-Received: by 2002:a19:ac42:: with SMTP id r2mr5176532lfc.548.1615213255627;
-        Mon, 08 Mar 2021 06:20:55 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id v10sm1367316lfb.238.2021.03.08.06.20.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 06:20:54 -0800 (PST)
-Subject: Re: [PATCH v13 1/2] drm/tegra: dc: Support memory bandwidth
- management
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20210302124445.29444-1-digetx@gmail.com>
- <20210302124445.29444-2-digetx@gmail.com>
- <20210303230827.GA22628@qmqm.qmqm.pl>
- <1b352c7e-cc72-ba08-32ba-08c05cc3aa03@gmail.com>
- <20210305230222.GA28867@qmqm.qmqm.pl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <5cc7aaa9-1168-64ba-f311-2f27038dcf4a@gmail.com>
-Date:   Mon, 8 Mar 2021 17:20:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=llTHel6Tau+2wt9oH3Ox8lQza6rjfyc6wVJ3sfruCT8=;
+        b=EWMWn/C9dKvhOu1x8IGevad73mWrKLbF/TA4OxVf0Z7PeWQx/0J7Lrq93qheW+l4FB
+         7/hLU/t1q85qlvxoknFPdteKB+SBVVsiAfdnMJLFGIQ4ARcIUsPUEL3/cHfPGLOyIWVg
+         dRfugekaJVYpfMeyXowqgmhXPhAOo0h2QFD05MszXdMonC7x/YuFhuLGKUbrycnJtZZ0
+         KeKiEb01zu7PZK/A6rsimT4i9qg/KAFVHdwNLldJealqORkwRY+fuwQ5f6IdnSL7wyqn
+         mZsi/ZaPqHkPE+s6wENSRgK+FBfs4PeWQbYWyS8XagK0y/bhcQnAowMySHOclnRQWFWM
+         21bA==
+X-Gm-Message-State: AOAM533ZR/v6+iGBf4FvQrDYuDVPNWi54fy1mGsbdQJBmhcvQsbtwCvf
+        g+z5G7/O9/GRnLs/b0Xgtn4=
+X-Google-Smtp-Source: ABdhPJwvOEFuopemwNn4jZEhHn4qLjY6VlvhMsyBLxHU4tZ/21Mg2qSMjrhIQa/cNb8n0DM49nOMiA==
+X-Received: by 2002:adf:ef4a:: with SMTP id c10mr22463339wrp.427.1615213313349;
+        Mon, 08 Mar 2021 06:21:53 -0800 (PST)
+Received: from localhost ([168.61.80.221])
+        by smtp.gmail.com with ESMTPSA id h20sm18102481wmp.38.2021.03.08.06.21.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Mar 2021 06:21:52 -0800 (PST)
+From:   =?UTF-8?q?Antti=20J=C3=A4rvinen?= <antti.jarvinen@gmail.com>
+To:     kw@linux.com
+Cc:     alex.williamson@redhat.com, antti.jarvinen@gmail.com,
+        bhelgaas@google.com, helgaas@kernel.org, kishon@ti.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        m-karicheri2@ti.com
+Subject: [PATCH v3] PCI: Add quirk for preventing bus reset on TI C667X
+Date:   Mon,  8 Mar 2021 14:21:30 +0000
+Message-Id: <20210308142130.13835-1-antti.jarvinen@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <YEQcyBVLIaGWb4sk@rocinante>
+References: <YEQcyBVLIaGWb4sk@rocinante>
 MIME-Version: 1.0
-In-Reply-To: <20210305230222.GA28867@qmqm.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-06.03.2021 02:02, Michał Mirosław пишет:
-> On Fri, Mar 05, 2021 at 12:45:51AM +0300, Dmitry Osipenko wrote:
->> 04.03.2021 02:08, Michał Mirosław пишет:
->>> On Tue, Mar 02, 2021 at 03:44:44PM +0300, Dmitry Osipenko wrote:
->>>> Display controller (DC) performs isochronous memory transfers, and thus,
->>>> has a requirement for a minimum memory bandwidth that shall be fulfilled,
->>>> otherwise framebuffer data can't be fetched fast enough and this results
->>>> in a DC's data-FIFO underflow that follows by a visual corruption.
-> [...]
->>>> +	/*
->>>> +	 * Horizontal downscale takes extra bandwidth which roughly depends
->>>> +	 * on the scaled width.
->>>> +	 */
->>>> +	if (src_w > dst_w)
->>>> +		mul = (src_w - dst_w) * bpp / 2048 + 1;
->>>> +	else
->>>> +		mul = 1;
->>>
->>> Does it really need more bandwidth to scale down? Does it read the same
->>> data multiple times just to throw it away?
->> The hardware isn't optimized for downscale, it indeed takes more
->> bandwidth. You'll witness a severe underflow of plane's memory FIFO
->> buffer on trying to downscale 1080p plane to 50x50.
-> [...]
-> 
-> In your example, does it really need 16x the bandwidth compared to
-> no scaling case?  The naive way to implement downscaling would be to read
-> all the pixels and only take every N-th.  Maybe the problem is that in
-> downscaling mode the latency requirements are tighter?  Why would bandwidth
-> required be proportional to a difference between the widths (instead e.g.
-> to src/dst or dst*cacheline_size)?
+Some TI KeyStone C667X devices do no support bus/hot reset. Its PCIESS
+automatically disables LTSSM when secondary bus reset is received and
+device stops working. Prevent bus reset by adding quirk_no_bus_reset to
+the device. With this change device can be assigned to VMs with VFIO,
+but it will leak state between VMs.
 
-Seems you're right, it's actually not the bandwidth. Recently I added
-memory client statistics gathering support to grate-kernel for Tegra20
-and it shows that the consumed bandwidth is actually lower when plane is
-downscaled.
+Reference: https://e2e.ti.com/support/processors/f/791/t/954382
+Signed-off-by: Antti Järvinen <antti.jarvinen@gmail.com>
+---
+ drivers/pci/quirks.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-So it should be the latency, which depends on memory frequency, and
-thus, on bandwidth. I'll try to improve comment to the code in the next
-version, thanks.
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 653660e3ba9e..d9201ad1ca39 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3578,6 +3578,16 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
+  */
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
+ 
++/*
++ * Some TI keystone C667X devices do no support bus/hot reset.
++ * Its PCIESS automatically disables LTSSM when secondary bus reset is
++ * received and device stops working. Prevent bus reset by adding
++ * quirk_no_bus_reset to the device. With this change device can be
++ * assigned to VMs with VFIO, but it will leak state between VMs.
++ * Reference https://e2e.ti.com/support/processors/f/791/t/954382
++ */
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_TI, 0xb005, quirk_no_bus_reset);
++
+ static void quirk_no_pm_reset(struct pci_dev *dev)
+ {
+ 	/*
+-- 
+2.17.1
+
