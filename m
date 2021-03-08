@@ -2,155 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA34331850
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 945FD331855
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhCHUSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:18:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhCHUSc (ORCPT
+        id S230033AbhCHUUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:20:13 -0500
+Received: from mail-io1-f43.google.com ([209.85.166.43]:45923 "EHLO
+        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhCHUTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:18:32 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA326C06174A;
-        Mon,  8 Mar 2021 12:18:31 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id h10so16664363edl.6;
-        Mon, 08 Mar 2021 12:18:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=xEus+DE8Y+6Hz6uQIfLVbNTiNLnC290XtZObCVJPizs=;
-        b=EUVXoExh+Sb7GQH0WJBF5KGZnJitXfHwiaDIy6OqIYHVHSMsE6NID/Dk7v9elZrL6n
-         zdORUiumYCV3BCuMKSntef+syeMrVg9KsSwm3StkbqdR7HZE/Pad+HWOWrBkOfg8L5+8
-         i82xbDS+amkMh/WqZG1p70eWrMvppel8joPTAj7xLH56LXvjv0j8n5j78N8K02pI2Jw8
-         OyK5PQVFDWKWJouNCkY8vat1MWuDI/Z+Zqbk295UzLnV9GB0JJeqpM0hQ0xxVvZ6nPG3
-         xhTCmGExBmO2TN9GT/YUXdQZ13BADFWkSOGKe0QAwqGJ+luzfvs5UnkxxWLYzlWrzCQ2
-         5UGQ==
+        Mon, 8 Mar 2021 15:19:48 -0500
+Received: by mail-io1-f43.google.com with SMTP id a7so11347980iok.12;
+        Mon, 08 Mar 2021 12:19:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xEus+DE8Y+6Hz6uQIfLVbNTiNLnC290XtZObCVJPizs=;
-        b=kpKa4bXenBLoVTkcCHCeLZkD1aLOXyZttmUFGFZvhdjYOyTm2ihksvOLkb61srK4MQ
-         g3lLhrTqBMLVz2f82i8LssYwqRolmTiFDfLDxxybhlHfGty4Q9KGIrm+cHCLdfMFG20U
-         NEPEzyrW1KmnyVNC2oQr9ElUgHeGts1SLuaL8dSAOTQJriW77MhDyk84SjRQ6bI+fU4g
-         zaNrOy3OSwiEBhFgJbnmEGiL6YlXx2dZ37Pvonbb1XNnToFDG68AX3Z8UZqh0f/tGGiy
-         wvCgDqVzyK6B8oqHcQSs9Ypy6sMzflZh9/3veiL70sNnHpCdwoYjH30ZnQSPwz+ZBfiS
-         xx0g==
-X-Gm-Message-State: AOAM532OHGPsS4EjBktbnq4O9/zRy7oxyOC+oGKCLRIP/01BR6rUkrnG
-        53yn+XjpoPPj+sBVKajX70yR5+wWNgUC/gQ1xbo=
-X-Google-Smtp-Source: ABdhPJw5NWT9CCgMIQc0lxRIDTONwFmO58W+E2Y3C5NdaO4UczGWnwZti6R+vaARQCjY4NUrZjX7RTqffmarYubxta4=
-X-Received: by 2002:aa7:c403:: with SMTP id j3mr321346edq.137.1615234710445;
- Mon, 08 Mar 2021 12:18:30 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NcG6ZqO4p6QZgXbPCgWzjprzED+TuNKHh2ID9qjkO6M=;
+        b=OvIL3qEgxQkY3ssNAIbuxwEH+rvOStk9zugf1TjHF2in0Tu+HSZhtLXZIjdyeoMxft
+         snyxmUuJ1fWEE1U6GXAUImHlocTAAiR7lh6z8KQCRJNdwG1sjEXpLYWVfBsYl77mvGf9
+         fynPykHiCqEXfuW1xpFSCMVRRM++zTSbRhpk8OUS+ro/pQ3XL6MSBGUyBMeupcOMAywI
+         4FwwXteHpCYsXHHeKjyKZzljrsQmREYwppInj5uOGxKdERhExpNttZB3A3IYo3T4Nv2E
+         0MMreDqLVMa+uZ9rY3U+ve4l6xwCmh/a01rmOfkw5Q9BIPz2OGsQeyPHa+Rmzzu+cdTq
+         o8Vw==
+X-Gm-Message-State: AOAM5337sSwIXBHFlpA9Ga6m+LQv2fdwEyKqS/VMyQeSphb9wGb4ulkp
+        4PrutO1XVzTlX+rElXvtvA==
+X-Google-Smtp-Source: ABdhPJy/ZGuyoAd9MktEIjw1VXRRagJzg7rGusa9KJa5EvGqsBJyUHx7q4jtGsbflpahG8+vLwaFjA==
+X-Received: by 2002:a05:6602:82:: with SMTP id h2mr20489812iob.20.1615234787570;
+        Mon, 08 Mar 2021 12:19:47 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id a14sm6394626ilj.39.2021.03.08.12.19.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 12:19:46 -0800 (PST)
+Received: (nullmailer pid 2894804 invoked by uid 1000);
+        Mon, 08 Mar 2021 20:19:44 -0000
+Date:   Mon, 8 Mar 2021 13:19:44 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Nava kishore Manne <nava.manne@xilinx.com>
+Cc:     mdf@kernel.org, trix@redhat.com, michal.simek@xilinx.com,
+        gregkh@linuxfoundation.org, jolly.shah@xilinx.com,
+        rajan.vaja@xilinx.com, arnd@arndb.de, manish.narani@xilinx.com,
+        amit.sunil.dhamne@xilinx.com, tejas.patel@xilinx.com,
+        linux-fpga@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        chinnikishore369@gmail.com,
+        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+Subject: Re: [PATCH v3 2/3] dt-bindings: fpga: Add binding doc for versal
+ fpga manager
+Message-ID: <20210308201944.GA2886704@robh.at.kernel.org>
+References: <20210304070224.22346-1-nava.manne@xilinx.com>
+ <20210304070224.22346-3-nava.manne@xilinx.com>
 MIME-Version: 1.0
-References: <20210308152221.28555-1-zi.yan@sent.com> <79458c46-b4b9-332b-77f7-44371502cbeb@redhat.com>
- <AD0AFA61-8DCF-467D-B961-ACFA1D33828C@nvidia.com> <8039e1d7-3442-f133-f4f6-fe934f02122e@redhat.com>
- <9A4EF5F7-1BFF-4F8D-80B8-B559C05635BE@nvidia.com> <CAHbLzkofsc4_wEGmMFKwkUrc1pg4Y7iZZ9QKAXggiyg8RuOMqA@mail.gmail.com>
- <c530e051-9292-1b2c-3036-70fc1eac3bfa@redhat.com>
-In-Reply-To: <c530e051-9292-1b2c-3036-70fc1eac3bfa@redhat.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 8 Mar 2021 12:18:18 -0800
-Message-ID: <CAHbLzkqjeLZ2ZK=m3+nBqcM366gtq=Ug-=ALiSmnpi+FyZfjZQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: huge_memory: a new debugfs interface for splitting
- THP tests.
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Zi Yan <ziy@nvidia.com>, Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        David Rientjes <rientjes@google.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304070224.22346-3-nava.manne@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 11:30 AM David Hildenbrand <david@redhat.com> wrote:
->
-> On 08.03.21 20:11, Yang Shi wrote:
-> > On Mon, Mar 8, 2021 at 11:01 AM Zi Yan <ziy@nvidia.com> wrote:
-> >>
-> >> On 8 Mar 2021, at 13:11, David Hildenbrand wrote:
-> >>
-> >>> On 08.03.21 18:49, Zi Yan wrote:
-> >>>> On 8 Mar 2021, at 11:17, David Hildenbrand wrote:
-> >>>>
-> >>>>> On 08.03.21 16:22, Zi Yan wrote:
-> >>>>>> From: Zi Yan <ziy@nvidia.com>
-> >>>>>>
-> >>>>>> By writing "<pid>,<vaddr_start>,<vaddr_end>" to
-> >>>>>> <debugfs>/split_huge_pages_in_range_pid, THPs in the process with =
-the
-> >>>>>> given pid and virtual address range are split. It is used to test
-> >>>>>> split_huge_page function. In addition, a selftest program is added=
- to
-> >>>>>> tools/testing/selftests/vm to utilize the interface by splitting
-> >>>>>> PMD THPs and PTE-mapped THPs.
-> >>>>>
-> >>>>> Won't something like
-> >>>>>
-> >>>>> 1. MADV_HUGEPAGE
-> >>>>>
-> >>>>> 2. Access memory
-> >>>>>
-> >>>>> 3. MADV_NOHUGEPAGE
-> >>>>>
-> >>>>> Have a similar effect? What's the benefit of this?
-> >>>>
-> >>>> Thanks for checking the patch.
-> >>>>
-> >>>> No, MADV_NOHUGEPAGE just replaces VM_HUGEPAGE with VM_NOHUGEPAGE,
-> >>>> nothing else will be done.
-> >>>
-> >>> Ah, okay - maybe my memory was tricking me. There is some s390x KVM c=
-ode that forces MADV_NOHUGEPAGE and force-splits everything.
-> >>>
-> >>> I do wonder, though, if this functionality would be worth a proper us=
-er interface (e.g., madvise), though. There might be actual benefit in havi=
-ng this as a !debug interface.
-> >>>
-> >>> I think you aware of the discussion in https://lkml.kernel.org/r/d098=
-c392-273a-36a4-1a29-59731cdf5d3d@google.com
-> >>
-> >> Yes. Thanks for bringing this up.
-> >>
-> >>>
-> >>> If there will be an interface to collapse a THP -- "this memory area =
-is worth extra performance now by collapsing a THP if possible" -- it might=
- also be helpful to have the opposite functionality -- "this memory area is=
- not worth a THP, rather use that somehwere else".
-> >>>
-> >>> MADV_HUGE_COLLAPSE vs. MADV_HUGE_SPLIT
-> >>
-> >> I agree that MADV_HUGE_SPLIT would be useful as the opposite of COLLAP=
-SE when user might just want PAGESIZE mappings.
-> >> Right now, HUGE_SPLIT is implicit from mapping changes like mprotect o=
-r MADV_DONTNEED.
-> >
-> > IMHO, it sounds not very useful. MADV_DONTNEED would split PMD for any
-> > partial THP. If the range covers the whole THP, the whole THP is going
-> > to be freed anyway. All other places in kernel which need split THP
-> > have been covered. So I didn't realize any usecase from userspace for
-> > just splitting PMD to PTEs.
->
-> THP are a limited resource. So indicating which virtual memory regions
-> are not performance sensitive right now (e.g., cold pages in a databse)
-> and not worth a THP might be quite valuable, no?
+On Thu, Mar 04, 2021 at 12:32:23PM +0530, Nava kishore Manne wrote:
+> From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+> 
+> This patch adds binding doc for versal fpga manager driver.
 
-Such functionality could be achieved by MADV_COLD or MADV_PAGEOUT,
-right? Then a subsequent call to MADV_NOHUGEPAGE would prevent from
-collapsing or allocating THP for that area.
+Why do you need a DT entry for this? Can't the Versal firmware driver 
+instantiate the fpga-mgr device?
 
->
-> --
-> Thanks,
->
-> David / dhildenb
->
+> 
+> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+> Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+> ---
+> Changes for v2:
+>                 -Fixed file format and syntax issues.
+> Changes for v3:
+>                 -Removed unwated extra spaces.
+> 
+>  .../bindings/fpga/xlnx,versal-fpga.yaml       | 33 +++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml b/Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
+> new file mode 100644
+> index 000000000000..fec6144766fe
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
+> @@ -0,0 +1,33 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/fpga/xlnx,versal-fpga.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Xilinx Versal FPGA driver.
+> +
+> +maintainers:
+> +  - Nava kishore Manne <nava.manne@xilinx.com>
+> +
+> +description: |
+> +  Device Tree Versal FPGA bindings for the Versal SoC, controlled
+> +  using firmware interface.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - xlnx,versal-fpga
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    versal_fpga: fpga {
+> +         compatible = "xlnx,versal-fpga";
+> +    };
+> +
+> +...
+> -- 
+> 2.18.0
+> 
