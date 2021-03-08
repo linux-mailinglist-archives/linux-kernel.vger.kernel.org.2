@@ -2,77 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5872D33125A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:36:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA34C331262
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhCHPgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 10:36:13 -0500
-Received: from mga11.intel.com ([192.55.52.93]:46195 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229821AbhCHPgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 10:36:08 -0500
-IronPort-SDR: T/jzm5ekm7G7kb3w/vWln+K79bRWAuJ9dLiTl9RDAZm7JHywFwQjbAiU6A4neujWWMWBGG7xW9
- l9Cme0P2TW+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="184687237"
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="184687237"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 07:36:04 -0800
-IronPort-SDR: H+LKcMc4tq8UM/ho9ms7idR2V26uKk6ASKgTiCHCT7PAcnMYF6Rv7fcI62aO0obnCvQ+u0HbvE
- f4bkWLH/JMzQ==
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="508960716"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 07:36:01 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lJHvL-00Aqdb-DP; Mon, 08 Mar 2021 17:35:59 +0200
-Date:   Mon, 8 Mar 2021 17:35:59 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "pinctrl: intel: Split
- intel_pinctrl_add_padgroups() for better maintenance"
-Message-ID: <YEZEX+BCw21O6rmT@smile.fi.intel.com>
-References: <20210308152505.3762055-1-luzmaximilian@gmail.com>
+        id S229646AbhCHPht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 10:37:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229627AbhCHPhU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 10:37:20 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B7FFC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 07:37:20 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id u8so10310344ior.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 07:37:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=telus.net; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vI4y95dsjFP6QvXsKyX146AWKFu5fhgoOrqLZ5xUPaM=;
+        b=VBWYtLwykkl/MOGhHmAwY6+1Xo8NMHaFtFRCZwK5WzH5Wc6uQ+UzoFn6ITSISbkf33
+         Zll0FyCBFBVfbWlFLZrg4XIpR2L2kjtyyROyS4MBiFMsmfivMXjh9JOmwHdJBQxpj4c8
+         nssaXOX6ykQf+pAiKZNC0ZIXX7f+IYf5A+67vrhN+zcxFkstsCn3+2MyoVgRlrejZdWt
+         tr+p8oSNw6GdTxmWYtXnYkkbHADHs6DRDcK0Lvz2oBSSJ6sTJpdONgoPUMUxKrn3FzeY
+         09ThTnUHi8JdXdV8aVq0/cPBf9ZZDE1BWzMgyYn0qKFGJ6WQYGIQ6IqJZ2tJVX/v1c7w
+         UCnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vI4y95dsjFP6QvXsKyX146AWKFu5fhgoOrqLZ5xUPaM=;
+        b=ojXEapsNls2VMzwye/bk+1IoXhiFYVAUn0v/007PoYM91L0wrwsyjsFqgmm3z2JFJA
+         UogUXyH3jFBNE2wgmkPc9/KTrEjQsgG36DLFXOmssFz/pWKvZ8/brPhFmqP5PWCffRn6
+         rSjma3so6h2FiSF1HcDN8vjPLC/AeDnDU8mYvqAxV9ZTEiCQQfmmRXYBwTNwc0ZVMk7p
+         54GpnSfs1ye+fyBbrwkqukkKFI0w8zHpAROkZGvZ/liuCNaaTv8Exm/yhd5iBiydV9oO
+         pGdSgm44QHQfLGlAXgYFZ8sPRdRDM83cVPuh/bCOGENv6xDmc+WiZEiaLlpeUyOvDTIf
+         F1Nw==
+X-Gm-Message-State: AOAM531OVIUAmeSyT0FYwi37r6sNri/PJ3djhJjUnsuUgWGKpMFCWPDd
+        JZ1g9ynIzNI/U7OTDP43Dq79KYHPCn6eG4RTFK4zjQ==
+X-Google-Smtp-Source: ABdhPJzGzK8xS81w2BDW7XmKJkK0rNjv0i1fW08iiTAa43J6AE48WY+//YmW/grhe9T7pkVntYzO/y4DhuZ0pkKPDNU=
+X-Received: by 2002:a5d:9e09:: with SMTP id h9mr19820742ioh.178.1615217839515;
+ Mon, 08 Mar 2021 07:37:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308152505.3762055-1-luzmaximilian@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <1f6d32e14f121a8ccf8807b8343597c3ae88c7d2.1587196252.git.yu.c.chen@intel.com>
+ <20210308134957.23852-1-youling257@gmail.com>
+In-Reply-To: <20210308134957.23852-1-youling257@gmail.com>
+From:   Doug Smythies <dsmythies@telus.net>
+Date:   Mon, 8 Mar 2021 07:37:07 -0800
+Message-ID: <CAAYoRsXec2eq=t-pSn5TOqNt0G6kfZCKkDuEhCnX5SgL0zgkBg@mail.gmail.com>
+Subject: Re: [3/3,v3] tools/power turbostat: Enable accumulate RAPL display
+To:     youling257 <youling257@gmail.com>
+Cc:     yu.c.chen@intel.com, lenb@kernel.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, dsmythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 04:25:05PM +0100, Maximilian Luz wrote:
-> Following commit 036e126c72eb ("pinctrl: intel: Split
-> intel_pinctrl_add_padgroups() for better maintenance"),
-> gpiochip_get_desc() is broken on some Kaby Lake R devices (specifically
-> a Microsoft Surface Book 2), returning -EINVAL for GPIOs that in reality
-> should be there (they are defined in ACPI and have been accessible
-> previously). Due to this, gpiod_get() fails with -ENOENT.
-> 
-> Reverting this commit fixes that issue and the GPIOs in question are
-> accessible again.
+On Mon, Mar 8, 2021 at 5:50 AM youling257 <youling257@gmail.com> wrote:
+>
+> this cause turbostat not work on amd cpu.
+>
+> root@localhost:~# /turbostat
+> turbostat version 20.09.30 - Len Brown <lenb@kernel.org>
+> CPUID(0): AuthenticAMD 0xd CPUID levels; 0x8000001f xlevels; family:model:stepping 0x17:18:1 (23:24:1)
 
-I would like to have more information.
-Can you enable PINCTRL and GPIO debug options in the kernel, and show dmesg
-output (when kernel command line has 'ignore_loglevel' option) for both working
-and non-working cases?
-
-Also if it's possible to have DSDT.dsl of the device in question along with
-output of `grep -H 15 /sys/bus/acpi/devices/*/status`.
-
-> There is probably a better option than straight up reverting this, so
-> consider this more of a bug-report.
-
-Indeed.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+There are already two fixes for this in the queue.
+https://marc.info/?l=linux-pm&m=161382097503925&w=2
+https://marc.info/?l=linux-pm&m=161141701219263&w=2
