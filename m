@@ -2,184 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7C3330B58
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D44F330B5B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbhCHKf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 05:35:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230165AbhCHKfj (ORCPT
+        id S231246AbhCHKga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 05:36:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22617 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230453AbhCHKgK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:35:39 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2197FC06174A;
-        Mon,  8 Mar 2021 02:35:39 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id s1so8336930ilh.12;
-        Mon, 08 Mar 2021 02:35:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uW22BUdu/SRB8yiALOfrH1UfupHMNVrmOHvwUHBy06I=;
-        b=GqBBRDbCEj38iFW0MXTGa0/KJ45ZgACFsDGi2tbJhwbhi8YCBsFTUewKjtDfNp6Yos
-         dUIJZWXuF8v2CNFNVWJh4WgmIKrT+3Lb9ujeIW6xTDVGr4N+GEVCG3LZerTkiUSV2MTj
-         kWEMcxe0bnQj74mMC1jLhQNsS+BGT6QRJKtMXgZUCcgAQR9V8IRYbp70NATj8rhwtrbi
-         fIGmQaNhUCUhmSCrYNDfTQTbZM7TDR7pgRTkZmUzpkC0TrpqdbCTm8Tr2OwR3gLoRDOV
-         tKhDerYxOi4FCnL9jMMFNJKyJIIDsxy2W0SwENtt832lcuHi5xAwBk4BozKEyXRMkcE2
-         /TJA==
+        Mon, 8 Mar 2021 05:36:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615199770;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RMwsh4rVWEMwbXiqVdffM9tN14wTQl3j4nwiD5Xat2g=;
+        b=CuXB7CamyDHkWi+z01CmYCCEWM6OlgpIdQJG2L+aKL3j3/tuCFTJf0/6JaV8nFcZPNjcoX
+        /6QRcouZtQgirBdAPI5hJUU1FKLKOaexiyZb9m1qFV1u9hOu/+S9wNaqdkvGM7D69moIMN
+        3FXyDdQNnOCVXeObhrRo0eSVoRfoHS4=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-470-etBBFHQnNVWdI-y7UfQlNw-1; Mon, 08 Mar 2021 05:36:08 -0500
+X-MC-Unique: etBBFHQnNVWdI-y7UfQlNw-1
+Received: by mail-ej1-f70.google.com with SMTP id gn30so3825747ejc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 02:36:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uW22BUdu/SRB8yiALOfrH1UfupHMNVrmOHvwUHBy06I=;
-        b=t21Pxuolgf+IB6Ol+SWHr838XK5g98/jJ3eZCS2UJA4nWqg3KRLIm7Y35qD/8ExpZP
-         blXRaoikgeG7sRbHywpl06Cm8ST00o0Kgm++cOz0JDPV210yLxm7V6uLqgYmDzO7M91y
-         +0NZlntNZqATd7mj07PoVtOu9QRxnyqEA/2NYNObtILnWZ9/Ac9i4Ss+y5lmrFNax35Y
-         tBpIgIBECE4HxkINzyHU1ndX5kA5WR4HrGXQRm/jpa+5Qs14IK2EP114rHRavnDRD3G7
-         /am8dnd21MJZ6jy9WMrv6wo0FfvNknWSMiWlxcaKGHjkG5MBGNcFmhG8ux2wGzIGaBbZ
-         bBig==
-X-Gm-Message-State: AOAM530OU9MQph9O7QJ9kbV/za5B7StwGacjW/55DdarC+qg2wvHI5sP
-        LrBpJ+cLjcsUBb69H64Rtss9/YvK78XyQEgIUC0=
-X-Google-Smtp-Source: ABdhPJxyjk22aaxo3sgf/QuqQ+LLIuxfb1TXrgGa/WsZBq/b3dbCGqGi/0c5jlTKv2ACVTB9EU8+B0z9poenvesX45o=
-X-Received: by 2002:a92:c010:: with SMTP id q16mr20835009ild.250.1615199738508;
- Mon, 08 Mar 2021 02:35:38 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RMwsh4rVWEMwbXiqVdffM9tN14wTQl3j4nwiD5Xat2g=;
+        b=k61c3HPxxd0jZKeuS+ZkZuPY2yCKtjMxvqDJEC2TEFLw1qN6KAW4t95csNhw6GRRS0
+         qlpkpFMEFikNCTW7nbTuLhaKLa7y+ekfJO3E1i1SgBMxx3xpV+rq0jQuvqy6HTF4OjRw
+         W2cuXSpktVLeLBUvJ69sFjGqinIhZgyMiBilQXMhgxr7r4OJodbLhMLBsov+YwJsQZzM
+         ZCr/zWuzgCe1FRuPs+hvID/j3koQ1pBr62Fet3spmVy0tlqS1V77w/qy9WUnWCTi37JX
+         lp7wmRuX9cIPQbYrxfj+qfpo+BOWwSThDjJXQWs+RHaFCKRuZl+kpktIhyb9MuhNWHsL
+         llMQ==
+X-Gm-Message-State: AOAM532eqtqiXUq5aPstuyADeNqjyHGh9REX7JEWCRiNg5OcuRgwAon3
+        K33pDsfGYWcI2bvjwAo/8Zi9UV/QRUmbuwzn0wXau97mHvex0mvGKyf5OjK4Bk75ZvduCmJheU/
+        8v0wp9LXG2UyS3qGhOFwXiUQV
+X-Received: by 2002:a05:6402:b2d:: with SMTP id bo13mr21218120edb.120.1615199767203;
+        Mon, 08 Mar 2021 02:36:07 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzGb4nLGRHcHCuZOPQfMFnx/n+Fm0RfscsbxImZfY5iHcNsmrWFVj/zvrFYrXj/ZtdpY9I8hg==
+X-Received: by 2002:a05:6402:b2d:: with SMTP id bo13mr21218084edb.120.1615199766786;
+        Mon, 08 Mar 2021 02:36:06 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id jx22sm6318527ejc.105.2021.03.08.02.36.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Mar 2021 02:36:06 -0800 (PST)
+Subject: Re: linux-next: Fixes tag needs some work in the drivers-x86 tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mark Gross <mark.gross@intel.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210308170623.1304b12a@canb.auug.org.au>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <7919164f-b5dc-3081-b7f0-5746235c7358@redhat.com>
+Date:   Mon, 8 Mar 2021 11:36:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <2653261.1614813611@warthog.procyon.org.uk> <CAOQ4uxhxwKHLT559f8v5aFTheKgPUndzGufg0E58rkEqa9oQ3Q@mail.gmail.com>
- <517184.1615194835@warthog.procyon.org.uk>
-In-Reply-To: <517184.1615194835@warthog.procyon.org.uk>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Mon, 8 Mar 2021 12:35:27 +0200
-Message-ID: <CAOQ4uxjYWprb7trvamCx+DaP2yn8HCaZeZx1dSvPyFH2My303w@mail.gmail.com>
-Subject: Re: fscache: Redesigning the on-disk cache
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-cachefs@redhat.com, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-afs@lists.infradead.org,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210308170623.1304b12a@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 11:14 AM David Howells <dhowells@redhat.com> wrote:
->
-> Amir Goldstein <amir73il@gmail.com> wrote:
->
-> > >  (0a) As (0) but using SEEK_DATA/SEEK_HOLE instead of bmap and opening the
-> > >       file for every whole operation (which may combine reads and writes).
-> >
-> > I read that NFSv4 supports hole punching, so when using ->bmap() or SEEK_DATA
-> > to keep track of present data, it's hard to distinguish between an
-> > invalid cached range and a valid "cached hole".
->
-> I wasn't exactly intending to permit caching over NFS.  That leads to fun
-> making sure that the superblock you're caching isn't the one that has the
-> cache in it.
->
-> However, we will need to handle hole-punching being done on a cached netfs,
-> even if that's just to completely invalidate the cache for that file.
->
-> > With ->fiemap() you can at least make the distinction between a non existing
-> > and an UNWRITTEN extent.
->
-> I can't use that for XFS, Ext4 or btrfs, I suspect.  Christoph and Dave's
-> assertion is that the cache can't rely on the backing filesystem's metadata
-> because these can arbitrarily insert or remove blocks of zeros to bridge or
-> split extents.
->
-> > You didn't say much about crash consistency or durability requirements of the
-> > cache. Since cachefiles only syncs the cache on shutdown, I guess you
-> > rely on the hosting filesystem to provide the required ordering guarantees.
->
-> There's an xattr on each file in the cache to record the state.  I use this
-> mark a cache file "open".  If, when I look up a file, the file is marked open,
-> it is just discarded at the moment.
->
-> Now, there are two types of data stored in the cache: data that has to be
-> stored as a single complete blob and is replaced as such (e.g. symlinks and
-> AFS dirs) and data that might be randomly modified (e.g. regular files).
->
-> For the former, I have code, though in yet another branch, that writes this in
-> a tmpfile, sets the xattrs and then uses vfs_link(LINK_REPLACE) to cut over.
->
-> For the latter, that's harder to do as it would require copying the data to
-> the tmpfile before we're allowed to modify it.  However, if it's possible to
-> create a tmpfile that's a CoW version of a data file, I could go down that
-> route.
->
-> But after I've written and sync'd the data, I set the xattr to mark the file
-> not open.  At the moment I'm doing this too lazily, only doing it when a netfs
-> file gets evicted or when the cache gets withdrawn, but I really need to add a
-> queue of objects to be sealed as they're closed.  The balance is working out
-> how often to do the sealing as something like a shell script can do a lot of
-> consecutive open/write/close ops.
->
+Hi,
 
-You could add an internal vfs API wait_for_multiple_inodes_to_be_synced().
-For example, xfs keeps the "LSN" on each inode, so once the transaction
-with some LSN has been committed, all the relevant inodes, if not dirty, can
-be declared as synced, without having to call fsync() on any file and without
-having to force transaction commit or any IO at all.
+On 3/8/21 7:06 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> In commit
+> 
+>   b5b5ff84fd93 ("platform/surface: aggregator: Make SSAM_DEFINE_SYNC_REQUEST_x define static functions")
+> 
+> Fixes tag
+> 
+>   Fixes: 510c8114fc74 ("platform/surface: Add platform profile driver")
+> 
+> has these problem(s):
+> 
+>   - Target SHA1 does not exist
+> 
+> Maybe you meant
+> 
+> Fixes: b78b4982d763 ("platform/surface: Add platform profile driver")
 
-Since fscache takes care of submitting the IO, and it shouldn't care about any
-specific time that the data/metadata hits the disk(?), you can make use of the
-existing periodic writeback and rolling transaction commit and only ever need
-to wait for that to happen before marking cache files "closed".
+Yeah, this was caused by rebasing my branches from v5.12-rc1 as base to v5.12-rc2 as base,
+I've fixed this now, thank you for the report.
 
-There was a discussion about fsyncing a range of files on LSFMM [1].
-In the last comment on the article dchinner argues why we already have that
-API (and now also with io_uring(), but AFAIK, we do not have a useful
-wait_for_sync() API. And it doesn't need to be exposed to userspace at all.
+Regards,
 
-[1] https://lwn.net/Articles/789024/
+Hans
 
-> > Anyway, how are those ordering requirements going to be handled when entire
-> > indexing is in a file? You'd practically need to re-implement a filesystem
->
-> Yes, the though has occurred to me too.  I would be implementing a "simple"
-> filesystem - and we have lots of those:-/.  The most obvious solution is to
-> use the backing filesystem's metadata - except that that's not possible.
->
-> > journal or only write cache updates to a temp file that can be discarded at
-> > any time?
->
-> It might involve keeping a bitmap of "open" blocks.  Those blocks get
-> invalidated when the cache restarts.  The simplest solution would be to wipe
-> the entire cache in such a situation, but that goes against one of the
-> important features I want out of it.
->
-> Actually, a journal of open and closed blocks might be better, though all I
-> really need to store for each block is a 32-bit number.
->
-> It's a particular problem if I'm doing DIO to the data storage area but
-> buffering the changes to the metadata.  Further, the metadata and data might
-> be on different media, just to add to the complexity.
->
-> Another possibility is only to cull blocks when the parent file is culled.
-> That probably makes more sense as, as long as the file is registered culled on
-> disk first and I don't reuse the file slot too quickly, I can write to the
-> data store before updating the metadata.
->
-
-If I were you, I would try to avoid re-implementing a journaled filesystem or
-a database for fscache and try to make use of crash consistency guarantees
-that filesystems already provide.
-Namely, use the data dependency already provided by temp files.
-It doesn't need to be one temp file per cached file.
-
-Always easier said than done ;-)
-
-Thanks,
-Amir.
