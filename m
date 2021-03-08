@@ -2,76 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E481331196
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C4333119D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhCHPDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 10:03:51 -0500
-Received: from foss.arm.com ([217.140.110.172]:39252 "EHLO foss.arm.com"
+        id S231143AbhCHPFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 10:05:01 -0500
+Received: from mga07.intel.com ([134.134.136.100]:15430 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229468AbhCHPDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 10:03:33 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A77431B;
-        Mon,  8 Mar 2021 07:03:33 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.51.12])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 918373F73C;
-        Mon,  8 Mar 2021 07:03:30 -0800 (PST)
-Date:   Mon, 8 Mar 2021 15:03:20 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/mm: Fix __enable_mmu() for new TGRAN range values
-Message-ID: <20210308150232.GA14159@C02TD0UTHF1T.local>
-References: <1614954969-14338-1-git-send-email-anshuman.khandual@arm.com>
- <20210305145111.GA78884@C02TD0UTHF1T.local>
- <1f339512-34ac-9779-e534-bee6698b99aa@arm.com>
- <20210308133053.GA26128@willie-the-truck>
+        id S230511AbhCHPEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 10:04:51 -0500
+IronPort-SDR: rZXrXVlEH8dOYTpNPu2rpQ1mXm9l2LUgSpqJq0Oy68NQxddSdKgYDGSugP07WmRUQEpLI3IoF8
+ mk6qoq20BDAw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="252070636"
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="252070636"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 07:04:50 -0800
+IronPort-SDR: J8GNzHfLKcDEkk426TkXPTJpLuMsSrSi0ZePPgzJPGYWw6fHHNIpqpY8ioVeonKngALCCJk50S
+ Wxqg+2kLC99Q==
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="519965026"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 07:04:47 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lJHR6-00AqJ3-6h; Mon, 08 Mar 2021 17:04:44 +0200
+Date:   Mon, 8 Mar 2021 17:04:44 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v2 09/12] gpio: sim: new testing module
+Message-ID: <YEY9DFk6NEcnEWGE@smile.fi.intel.com>
+References: <20210304102452.21726-1-brgl@bgdev.pl>
+ <20210304102452.21726-10-brgl@bgdev.pl>
+ <YEDdbfbM9abHJpIO@smile.fi.intel.com>
+ <CAMRc=MdRxXzoZuyLs-24dXfOft=OQqDneTHa4-ZKqFE1kMBWcg@mail.gmail.com>
+ <YEIE1nG8lZ4V2MXq@smile.fi.intel.com>
+ <CAMRc=MekGnK17rYf3Bx_UHumVVrpmJphOnMfO352NB9SaOJCGw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308133053.GA26128@willie-the-truck>
+In-Reply-To: <CAMRc=MekGnK17rYf3Bx_UHumVVrpmJphOnMfO352NB9SaOJCGw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 01:30:53PM +0000, Will Deacon wrote:
-> On Sun, Mar 07, 2021 at 05:24:21PM +0530, Anshuman Khandual wrote:
-> > On 3/5/21 8:21 PM, Mark Rutland wrote:
-> > > On Fri, Mar 05, 2021 at 08:06:09PM +0530, Anshuman Khandual wrote:
+On Mon, Mar 08, 2021 at 03:23:31PM +0100, Bartosz Golaszewski wrote:
+> On Fri, Mar 5, 2021 at 11:15 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Thu, Mar 04, 2021 at 09:15:29PM +0100, Bartosz Golaszewski wrote:
+> > > On Thu, Mar 4, 2021 at 2:15 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > On Thu, Mar 04, 2021 at 11:24:49AM +0100, Bartosz Golaszewski wrote:
+> > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-> > >> +#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_DEFAULT	0x0
-> > >> +#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_NONE	0x1
-> > >> +#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_MIN	0x2
-> > >> +#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_MAX	0x7
+> > > > > +
+> > > > > +     /*
+> > > > > +      * FIXME If anyone knows a better way to parse that - please let me
+> > > > > +      * know.
+> > > > > +      */
+> > > >
+> > > > If comma can be replaced with ' ' (space) then why not to use next_arg() from
+> > > > cmdline.c? I.o.w. do you have strong opinion why should we use comma here?
+> > > >
 > > >
-> > > The TGRAN2 fields doesn't quite follow the usual ID scheme rules, so how
-> > > do we deteremine the max value? Does the ARM ARM say anything in
-> > > particular about them, like we do for some of the PMU ID fields?
-> > 
-> > Did not find anything in ARM ARM, regarding what scheme TGRAN2 fields
-> > actually follow. I had arrived at more restrictive 0x7 value, like the
-> > usual signed fields as the TGRAN4 fields definitely do not follow the
-> > unsigned ID scheme. Would restricting max value to 0x3 (i.e LPA2) be a
-> > better option instead ?
+> > > My opinion is not very strong but I wanted to make the list of names
+> > > resemble what we pass to the gpio-line-names property in device tree.
+> > > Doesn't next_arg() react differently to string of the form: "foo=bar"?
+> >
+> > It's ambiguous here.
+> >
+> > So, the strings '"foo=bar"' and 'foo=bar' (w/o single quotes!) are indeed
+> > parsed differently, i.e.
+> >         '"foo=bar"' -> 'foo=bar',
+> > while
+> >         "foo=bar" -> 'foo' + 'bar'.
+> >
 > 
-> I don't think it helps much, as TGRAN64_2 doesn't even define 0x3.
-> 
-> So I think this patch is probably the best we can do, but the Arm ARM could
-> really do with describing the scheme here.
+> IMO '"foo", "bar", "", "foobar"' looks better than '"foo" "bar" ""
+> "foobar"' and I'm also not sure next_arg will understand an empty
+> quote?
 
-I agree, and I've filed a ticket internally to try to get this cleaned
-up.
+I guess it understands it. But I agree that comma-separated it would look
+better.
 
-I suspect that the answer is that these are basically unsigned, with
-0x2-0xf indicating presence, but I can't guarantee that.
+> If you're not objecting strongly, then I would prefer my version.
 
-Thanks,
-Mark.
+I have strong opinion not to open code "yet another parser".
+
+So, grepping on 'strsep(.*, ",")' shows a lot of code that wants something like
+this. Interesting are the net/9p cases. This in particular pointed out to
+lib/parser.c which in turn shows promising match_strlcpy() / match_strdup(). I
+haven't looked deeply though.
+
+That said, I agree that next_arg() is not the best here.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
