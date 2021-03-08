@@ -2,78 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEA6331AEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 00:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55203331AF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 00:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbhCHXV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 18:21:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59676 "EHLO
+        id S230457AbhCHX3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 18:29:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhCHXUw (ORCPT
+        with ESMTP id S229471AbhCHX3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 18:20:52 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE8EC06174A;
-        Mon,  8 Mar 2021 15:20:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2C5j2UcjDYW9mYgwyHgqIe6Gz5l4DgveyBW595u9faQ=; b=u+am1ZJapiahZOpG2Rwq/AVvg0
-        oMfCYqTuZ4G+EEFNf60psslnnYYQ0bbgF+NILXiFCOjwDyIgbjxuoiEcZQv00o0WYpJH1isO6VRiC
-        xYhhvDFUoAUq9mIBi134gw3MfadH7JZ8AY9yEPnnUaxdK/iPAhg4iMyVH2wp4QF2zZ8pHolQggvnC
-        xkstHI6NejffxlN2RUIbiVQHfFT1cY1WUrPkEUFw5zfKwYkey4uzhSAMgcQE82RxexMMQ0BxHPpoW
-        X5J5LxbtGQdKzueTczFA09whN8xNZpVy9+J6I+M7eNGql2/XixHhZefyZteV2oaZFdcbjk91b7H/G
-        FOm50ufw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJPAg-00GbJf-5O; Mon, 08 Mar 2021 23:20:22 +0000
-Date:   Mon, 8 Mar 2021 23:20:18 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Amir Goldstein <amir73il@gmail.com>, linux-cachefs@redhat.com,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-afs@lists.infradead.org,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: Metadata writtenback notification? -- was Re: fscache:
- Redesigning the on-disk cache
-Message-ID: <20210308232018.GG3479805@casper.infradead.org>
-References: <CAOQ4uxjYWprb7trvamCx+DaP2yn8HCaZeZx1dSvPyFH2My303w@mail.gmail.com>
- <2653261.1614813611@warthog.procyon.org.uk>
- <CAOQ4uxhxwKHLT559f8v5aFTheKgPUndzGufg0E58rkEqa9oQ3Q@mail.gmail.com>
- <517184.1615194835@warthog.procyon.org.uk>
- <584529.1615202921@warthog.procyon.org.uk>
- <20210308223247.GB63242@dread.disaster.area>
+        Mon, 8 Mar 2021 18:29:20 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51280C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 15:29:20 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id y13so4765757pfr.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 15:29:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CmfxbJbsR32j2stPZTCAVs668uTJmv8SU8V0tORla8k=;
+        b=loMSgpyCPFx0qqhEygDCduyPFZcBermyVhL9olczMSLnaHjD/dewtfsl3m0CMLrPKW
+         HXffVL050IlTqPDH4XUokC47IidmWHhOUHXb7DL2WP7BTYVoXWLpJlrhtF5DTg83tahq
+         Z++bWV0GgCBfSIqO1csGQ3rGm1M8ID4CYAaO4VzebEqfnBSL2hsEuqZ7ekbj5Cb5FCKA
+         mKM0S4UCyPIWPUNlTPZrj3//ayV+tgpuO3/LxPKjm9ImwrhQUZfa6gfUgwVwDjzlGhDd
+         nucwhzOM8f2Dr8woxq8Awiml9V8mwXXMyVWntouwPKeia7Fu7QnUaYe/4BrxpjLWsu9T
+         XKxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CmfxbJbsR32j2stPZTCAVs668uTJmv8SU8V0tORla8k=;
+        b=WY9kOLg6i+CHBetjeegQoxmNdUZkt3u2Eyv57jOn4nKsG/czSvqzsMZCuGjTWMZ9t9
+         M41s80h6ol17Y5fl0/2THqFeiHpD1qPggwz9IALxu4LQPq0TqhLcug2sHv9gTeKYD0kq
+         JPDochxi4wTG418Zo1X+bjeCoD6YfB2EB12iwM5i9XhYvSBm02R2bgsqUuJ80Wo1qu51
+         9ILZej2adyV/0PnX2ZczE0JxQmXimdHRKRjxbc1q8F2bWnZdDz0Qs5roWMCQUg0NFKwl
+         iCp2q5jsOOrgA1F5Sm88FUkpzER4vSIsJI2XpX1jU93ukc9IqrAHxCulfuMvlTioYAi3
+         hgdw==
+X-Gm-Message-State: AOAM530Y9Uha458ZWwU1luhYrJWpUEbv31SKMaM3e+K8Nwc5wTfIWK2T
+        oamXqlj5ecTr7IQjDF+NrJR7bg==
+X-Google-Smtp-Source: ABdhPJxpn6GHNZAPqETOhgrPoqObmFdwbzRNeB6gxDD3X7bTKOUHCY3nYHX3mMJ+o0dP5thKkYD4ew==
+X-Received: by 2002:a63:e22:: with SMTP id d34mr22551523pgl.264.1615246159344;
+        Mon, 08 Mar 2021 15:29:19 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:8:847a:d8b5:e2cc])
+        by smtp.gmail.com with ESMTPSA id y6sm11950866pfm.99.2021.03.08.15.29.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 15:29:18 -0800 (PST)
+Date:   Mon, 8 Mar 2021 15:29:12 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     syzbot <syzbot+3c2bc6358072ede0f11b@syzkaller.appspotmail.com>
+Cc:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
+Subject: Re: [syzbot] WARNING in kvm_wait
+Message-ID: <YEazSAsa2l6KQZwL@google.com>
+References: <0000000000003912cf05bd0cdd75@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308223247.GB63242@dread.disaster.area>
+In-Reply-To: <0000000000003912cf05bd0cdd75@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 09:32:47AM +1100, Dave Chinner wrote:
-> On Mon, Mar 08, 2021 at 11:28:41AM +0000, David Howells wrote:
-> >      Possibly it's sufficient to just clear the excess page space before
-> >      writing, but that doesn't necessarily stop a writable mmap from
-> >      scribbling on it.
+On Mon, Mar 08, 2021, syzbot wrote:
+> Hello,
 > 
-> We can't stop mmap from scribbling in it. All filesystems have this
-> problem, so to prevent data leaks we have to zero the post-eof tail
-> region on every write of the EOF block, anyway.
+> syzbot found the following issue on:
+> 
+> HEAD commit:    a38fd874 Linux 5.12-rc2
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14158fdad00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=db9c6adb4986f2f2
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3c2bc6358072ede0f11b
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1096d35cd00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16bf1e52d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+3c2bc6358072ede0f11b@syzkaller.appspotmail.com
 
-That's certainly one approach.  Another would be to zero it during the I/O
-completion handler.  It depends whether you can trust the last writer or
-not (eg what do we do with an isofs file that happens to contain garbage
-after the last byte in the file?)
+Wanpeng has a patch posted to fix this[*], is there a way to retroactively point
+syzbot at that fix?
+
+[*] https://lkml.kernel.org/r/1614057902-23774-1-git-send-email-wanpengli@tencent.com
