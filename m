@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9A2331017
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B1F33101D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbhCHNzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 08:55:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbhCHNww (ORCPT
+        id S229790AbhCHN4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 08:56:18 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:47773 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230144AbhCHNzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 08:52:52 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91653C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 05:52:51 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id y124-20020a1c32820000b029010c93864955so3852068wmy.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 05:52:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=mAbW74EMUf5j7pN3HSEP9JBqZuh9lykiHoIS2j3ZlgI=;
-        b=Si3n2lgNxGMINJRyTI09ux/FEkCMdC7JTyUEVuR8ZVQwsDAix6lGj8GagwFP63H4SM
-         lhKYvCnAXejkhyOBSiwvLUoJY7Q4lrXvDmyr6ExnEbjtGVy0ihp6SPpfnAnh2o6+sL18
-         kM7gH/p6UJOvShEdnA8g/kvLFCO4ltEF40vEZgV+lJRFdhnWttUK7S7719t7a+DO5srh
-         /reRQFBAmVJ3HNnzJIxakG1AVaLWAucuJpEZXDdr1HH1qcnRlg3RwnrcEX8QhsdQ2BKK
-         HrNxRa8N9aL7vSMoq0Ptm8QtXlD5Cdcwx6Ip6/85kiWrXrp9BlL4E8PHdWluXE3bblIZ
-         kV/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=mAbW74EMUf5j7pN3HSEP9JBqZuh9lykiHoIS2j3ZlgI=;
-        b=lmTiporWC74SQe/IZg7esXfjo4L0K3LvLXLobbRaeu0NW6Bdy4QsosM1h+5A5Os5Fn
-         31spc07pArTTEMLhqpKofzLqPxYism+v4k3UhkPOe8HI5wMEazXYK+rd9IQc6NYDmghx
-         +zliWloMhv4h9dMZeTcLpHB/7kD9i7alKrzy5pq2cp/hgWhVbeLHNN2zn9CTJxOTTvFz
-         LAtEND6FYrBBfqyK8f2FfSob3l7wkIEYEEYN+wMZBlbUdSAYsnrRLtUVmgSYRnctlFnS
-         mu+cDBjjk2Z7fTcCzywJJR9gH/p6RdaFGZkrA+aF7DS3S7/bjPjG5q6HTvQYVVoNqs5r
-         ojmQ==
-X-Gm-Message-State: AOAM530dvHDujHHogxoUeZEfHdYFfNwv955VpsMIeXip7In6tB503QfP
-        1Ur6EFgU+JcuMNhJvQ9hm7Vv3w==
-X-Google-Smtp-Source: ABdhPJziCqyIo3Fj4IEaQq8j3EcFiOAamlbg5Tya8yc2OA08bcxejAjBLqEYbsgF7kGxCIg2UcjTXw==
-X-Received: by 2002:a1c:c906:: with SMTP id f6mr21824541wmb.128.1615211570330;
-        Mon, 08 Mar 2021 05:52:50 -0800 (PST)
-Received: from dell ([91.110.221.130])
-        by smtp.gmail.com with ESMTPSA id z2sm22515850wrm.0.2021.03.08.05.52.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 05:52:49 -0800 (PST)
-Date:   Mon, 8 Mar 2021 13:52:47 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Hulk Robot <hulkci@huawei.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] mfd: arizona: Make some symbols static
-Message-ID: <20210308135247.GG4931@dell>
-References: <20210210075626.1096193-1-weiyongjun1@huawei.com>
+        Mon, 8 Mar 2021 08:55:14 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-78-9v-ZWzc2NtaRpvNO-H1ysQ-1; Mon, 08 Mar 2021 13:53:06 +0000
+X-MC-Unique: 9v-ZWzc2NtaRpvNO-H1ysQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 8 Mar 2021 13:53:05 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 8 Mar 2021 13:53:05 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Alex Elder' <elder@linaro.org>,
+        "subashab@codeaurora.org" <subashab@codeaurora.org>,
+        "stranche@codeaurora.org" <stranche@codeaurora.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>
+CC:     "sharathv@codeaurora.org" <sharathv@codeaurora.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "evgreen@chromium.org" <evgreen@chromium.org>,
+        "cpratapa@codeaurora.org" <cpratapa@codeaurora.org>,
+        "elder@kernel.org" <elder@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net-next v2 5/6] net: qualcomm: rmnet: don't use C
+ bit-fields in rmnet checksum trailer
+Thread-Topic: [PATCH net-next v2 5/6] net: qualcomm: rmnet: don't use C
+ bit-fields in rmnet checksum trailer
+Thread-Index: AQHXEjcvEK7MzxmURkq987v/iEpZqap54riQgAA5xoCAAAJq8A==
+Date:   Mon, 8 Mar 2021 13:53:05 +0000
+Message-ID: <a2954816677f4ae1b27e4cb8e38da0a1@AcuMS.aculab.com>
+References: <20210306031550.26530-1-elder@linaro.org>
+ <20210306031550.26530-6-elder@linaro.org>
+ <ebe1bf51902e49458cfdd685790c4350@AcuMS.aculab.com>
+ <956ca2dd-d15e-ce40-e3b4-56b0f5bf2154@linaro.org>
+In-Reply-To: <956ca2dd-d15e-ce40-e3b4-56b0f5bf2154@linaro.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210210075626.1096193-1-weiyongjun1@huawei.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021, Wei Yongjun wrote:
+Li4uDQo+ID4+IC0JaWYgKCFjc3VtX3RyYWlsZXItPnZhbGlkKSB7DQo+ID4+ICsJaWYgKCF1OF9n
+ZXRfYml0cyhjc3VtX3RyYWlsZXItPmZsYWdzLCBNQVBfQ1NVTV9ETF9WQUxJRF9GTUFTSykpIHsN
+Cj4gPg0KPiA+IElzIHRoYXQganVzdCBhbiBvdmVyY29tcGxpY2F0ZWQgd2F5IG9mIHNheWluZzoN
+Cj4gPiAJaWYgKCEoY3N1bV90cmFpbGVyLT5mbGFncyAmIE1BUF9DU1VNX0RMX1ZBTElEX0ZNQVNL
+KSkgew0KPiANCj4gWWVzIGl0IGlzLiAgSSBkZWZpbmVkIGFuZCB1c2VkIGFsbCB0aGUgZmllbGQg
+bWFza3MgaW4gYQ0KPiBjb25zaXN0ZW50IHdheSwgYnV0IEkgZG8gdGhpbmsgaXQgd2lsbCByZWFk
+IGJldHRlciB0aGUNCj4gd2F5IHlvdSBzdWdnZXN0LiAgQmpvcm4gYWxzbyBhc2tlZCBtZSBwcml2
+YXRlbHkgd2hldGhlcg0KPiBHRU5NQVNLKDE1LCAxNSkgd2FzIGp1c3QgdGhlIHNhbWUgYXMgQklU
+KDE1KSAoaXQgaXMpLg0KPiANCj4gSSB3aWxsIHBvc3QgdmVyc2lvbiAzIG9mIHRoZSBzZXJpZXMs
+IGlkZW50aWZ5aW5nIHdoaWNoDQo+IGZpZWxkcyBhcmUgc2luZ2xlIGJpdC9Cb29sZWFuLiAgRm9y
+IHRob3NlIEkgd2lsbCBkZWZpbmUNCj4gdGhlIHZhbHVlIHVzaW5nIEJJVCgpIGFuZCB3aWxsIHNl
+dC9leHRyYWN0IHVzaW5nIHNpbXBsZQ0KPiBBTkQvT1Igb3BlcmF0b3JzLiAgSSB3b24ndCB1c2Ug
+dGhlIF9GTUFTSyBzdWZmaXggb24gc3VjaA0KPiBmaWVsZHMuDQoNCkV2ZW4gZm9yIHRoZSBjaGVj
+a3N1bSBvZmZzZXQgYSBzaW1wbGUgJ29mZnNldCA8PCBDT05TVEFOVCcNCmlzIGVub3VnaC4NCklm
+IGl0IGlzIHRoZSBib3R0b20gYml0cyB0aGVuIGV2ZW4gdGhhdCBpc24ndCByZWFsbHkgbmVlZGVk
+Lg0KWW91IG1pZ2h0IHdhbnQgdG8gbWFzayBvZmYgaGlnaCBiaXRzIC0gYnV0IHRoYXQgaXMgYW4g
+ZXJyb3INCnBhdGggdGhhdCBuZWVkcyB0byBoYXZlIGJlZW4gY2hlY2tlZCBlYXJsaWVyLg0KDQoJ
+RGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1v
+dW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEz
+OTczODYgKFdhbGVzKQ0K
 
-> The sparse tool complains as follows:
-> 
-> drivers/mfd/arizona-spi.c:28:31: warning:
->  symbol 'reset_gpios' was not declared. Should it be static?
-> drivers/mfd/arizona-spi.c:29:31: warning:
->  symbol 'ldoena_gpios' was not declared. Should it be static?
-> 
-> Those symbols are not used outside of arizona-spi.c, so this
-> commit marks them static.
-> 
-> Fixes: e933836744a2 ("mfd: arizona: Add support for ACPI enumeration of WM5102 connected over SPI")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
->  drivers/mfd/arizona-spi.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-
-Applied, thanks.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
