@@ -2,163 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B002330A8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D36D330A93
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231149AbhCHJuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 04:50:54 -0500
-Received: from foss.arm.com ([217.140.110.172]:35012 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229711AbhCHJul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 04:50:41 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62C2DD6E;
-        Mon,  8 Mar 2021 01:50:41 -0800 (PST)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E9833F73C;
-        Mon,  8 Mar 2021 01:50:39 -0800 (PST)
-Subject: Re: [PATCH v5 1/4] PM / devfreq: Register devfreq as a cooling device
- on demand
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, cwchoi00@gmail.com
-Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-References: <20210308091646.28096-1-daniel.lezcano@linaro.org>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <ffed675b-4edd-26e8-1147-08ab200a651a@arm.com>
-Date:   Mon, 8 Mar 2021 09:51:23 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210308091646.28096-1-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S231190AbhCHJwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 04:52:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231202AbhCHJvd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 04:51:33 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67926C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 01:51:33 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id a18so10674653wrc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 01:51:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=+G3FrRFu9LNWKFjF3mvuFBF1Z6whzll6UPpQw6o1RMU=;
+        b=oCZDuwnfC5NL1NcfVpNUQIqILApB7oIaVDsflwsOvwcQfVpYuQvcM4FIc0AVtS7MB7
+         FAtZS7ukGqo0f6Cp1P7/MNTkA9JGH3U28o0RVXJzA65vuzhA4XrWUwVk+jZ0EQURMgXY
+         gKe6IqX7naHflMZZN8hpm8hjPCSa9e0qETlBvN19JDLdcnQkHNejkmxaBmzumOsmWUcy
+         vVvMQW9O41B107+zof6PZ/yGpJuasl48S/WHPkLjJV59fFNvvUq0LHd2rdJ6zFiTL1WW
+         go9jT+qI6HcUkd3fGuU2WcbM5QQoRdbjpkqsGWzh6TKJRtXmwrLQU6EucPDIn7Wczzxf
+         uN7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+G3FrRFu9LNWKFjF3mvuFBF1Z6whzll6UPpQw6o1RMU=;
+        b=m1dExSVrd6XjHluhODyVLpf8zOxBqt6PhnzulwcjQ9qFQ1ekWUQOu3HyFQdeAFqDUT
+         NWg6ZojWiM90ffeQcTFPu1Gh49jH0WlLO8UnAFwoAX+XCSRcpNevbhzb9bXhPdwf9mv/
+         cQ+QXlBjcXgKMmpJqHVfutvRjzb9CoSr++dD6CEKacsAirxPNCik5S1W98KY2AEe6JXc
+         CENsJS5bkunlI32+JUUbGzuyw1JvyYdSy0S2zXIKCJEYZHbCPVUqbmD+C/0PnQlOFn2a
+         adagyCZwDg5X89khbkBcBY0UMNUao3t16eUZO6oJCJ2VundKTKgYwlNY1VTW9+5BEIPx
+         +Kiw==
+X-Gm-Message-State: AOAM530LVllE+rjyv9qWxww1QEQyfQYwTRn/Y/LTsGyDWIAhmVbZjfF4
+        Pwlmdv+QzFOFzMRuvYMW8J0guKYBtMH47w==
+X-Google-Smtp-Source: ABdhPJz973dd9NFengBsgLpznb3kVDIH97oR/FBBHDWMYkQVfUGweDOcnZzz7l812eO2itwBV4p2Lg==
+X-Received: by 2002:a5d:5411:: with SMTP id g17mr22137267wrv.194.1615197091528;
+        Mon, 08 Mar 2021 01:51:31 -0800 (PST)
+Received: from localhost.localdomain ([163.172.76.58])
+        by smtp.googlemail.com with ESMTPSA id 12sm18187731wmw.43.2021.03.08.01.51.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 01:51:31 -0800 (PST)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     davem@davemloft.net
+Cc:     linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org,
+        Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH] sparc: sparc64_defconfig: remove duplicate CONFIGs
+Date:   Mon,  8 Mar 2021 09:51:26 +0000
+Message-Id: <20210308095126.8514-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/03/2021 09:16, Daniel Lezcano wrote:
-> Currently the default behavior is to manually having the devfreq
-> backend to register themselves as a devfreq cooling device.
-> 
-> Instead of adding the code in the drivers for the thermal cooling
-> device registering, let's provide a flag in the devfreq's profile to
-> tell the common devfreq code to register the newly created devfreq as
-> a cooling device.
-> 
-> Suggested-by: Chanwoo Choi <cwchoi00@gmail.com>
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->   V5:
->     - Changed subject prefix by:  PM / devfreq
->   V4:
->     - Replaced thermal_cooling_device_unregister() by
->       devfreq_cooling_unregister()
->   V3:
->     - Rebased on linux-pm branch without units.h
->     - Set the cdev to NULL in case of error
->     - Added description for the cdev field in the devfreq structure
->   V2:
->     - Added is_cooling_device boolean in profile structure
->     - Register cooling device when the is_cooling_device boolean is set
->     - Remove devfreq cooling device registration in the backend drivers
->   V1:
->     - Register devfreq as a cooling device unconditionnally
-> ---
->   drivers/devfreq/devfreq.c | 13 +++++++++++++
->   include/linux/devfreq.h   |  8 ++++++++
->   2 files changed, 21 insertions(+)
-> 
-> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-> index bf3047896e41..8a535d4d6083 100644
-> --- a/drivers/devfreq/devfreq.c
-> +++ b/drivers/devfreq/devfreq.c
-> @@ -11,6 +11,7 @@
->   #include <linux/kmod.h>
->   #include <linux/sched.h>
->   #include <linux/debugfs.h>
-> +#include <linux/devfreq_cooling.h>
->   #include <linux/errno.h>
->   #include <linux/err.h>
->   #include <linux/init.h>
-> @@ -26,6 +27,7 @@
->   #include <linux/hrtimer.h>
->   #include <linux/of.h>
->   #include <linux/pm_qos.h>
-> +#include <linux/thermal.h>
->   #include "governor.h"
->   
->   #define CREATE_TRACE_POINTS
-> @@ -935,6 +937,15 @@ struct devfreq *devfreq_add_device(struct device *dev,
->   
->   	mutex_unlock(&devfreq_list_lock);
->   
-> +	if (devfreq->profile->is_cooling_device) {
-> +		devfreq->cdev = devfreq_cooling_em_register(devfreq, NULL);
-> +		if (IS_ERR(devfreq->cdev)) {
-> +			dev_info(dev, "Failed to register devfreq "
-> +				 "cooling device\n");
+After my patch there is CONFIG_ATA defined twice.
+Remove the duplicate one.
+Same problem for CONFIG_HAPPYMEAL, except I added as builtin for boot
+test with NFS.
 
-Please don't split strings across multiple lines (it makes grepping for 
-them harder). With that fixed:
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: a57cdeb369ef ("sparc: sparc64_defconfig: add necessary configs for qemu")
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+ arch/sparc/configs/sparc64_defconfig | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Reviewed-by: Steven Price <steven.price@arm.com>
-
-> +			devfreq->cdev = NULL;
-> +		}
-> +	}
-> +
->   	return devfreq;
->   
->   err_init:
-> @@ -960,6 +971,8 @@ int devfreq_remove_device(struct devfreq *devfreq)
->   	if (!devfreq)
->   		return -EINVAL;
->   
-> +	devfreq_cooling_unregister(devfreq->cdev);
-> +
->   	if (devfreq->governor) {
->   		devfreq->governor->event_handler(devfreq,
->   						 DEVFREQ_GOV_STOP, NULL);
-> diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
-> index 26ea0850be9b..aba7ace11b72 100644
-> --- a/include/linux/devfreq.h
-> +++ b/include/linux/devfreq.h
-> @@ -98,11 +98,15 @@ struct devfreq_dev_status {
->    * @freq_table:		Optional list of frequencies to support statistics
->    *			and freq_table must be generated in ascending order.
->    * @max_state:		The size of freq_table.
-> + *
-> + * @is_cooling_device: A self-explanatory boolean giving the device a
-> + *                     cooling effect property.
->    */
->   struct devfreq_dev_profile {
->   	unsigned long initial_freq;
->   	unsigned int polling_ms;
->   	enum devfreq_timer timer;
-> +	bool is_cooling_device;
->   
->   	int (*target)(struct device *dev, unsigned long *freq, u32 flags);
->   	int (*get_dev_status)(struct device *dev,
-> @@ -156,6 +160,7 @@ struct devfreq_stats {
->    * @suspend_count:	 suspend requests counter for a device.
->    * @stats:	Statistics of devfreq device behavior
->    * @transition_notifier_list: list head of DEVFREQ_TRANSITION_NOTIFIER notifier
-> + * @cdev:	Cooling device pointer if the devfreq has cooling property
->    * @nb_min:		Notifier block for DEV_PM_QOS_MIN_FREQUENCY
->    * @nb_max:		Notifier block for DEV_PM_QOS_MAX_FREQUENCY
->    *
-> @@ -198,6 +203,9 @@ struct devfreq {
->   
->   	struct srcu_notifier_head transition_notifier_list;
->   
-> +	/* Pointer to the cooling device if used for thermal mitigation */
-> +	struct thermal_cooling_device *cdev;
-> +
->   	struct notifier_block nb_min;
->   	struct notifier_block nb_max;
->   };
-> 
+diff --git a/arch/sparc/configs/sparc64_defconfig b/arch/sparc/configs/sparc64_defconfig
+index 148f44b33890..12a4fb0bd52a 100644
+--- a/arch/sparc/configs/sparc64_defconfig
++++ b/arch/sparc/configs/sparc64_defconfig
+@@ -93,7 +93,7 @@ CONFIG_NETDEVICES=y
+ CONFIG_NET_ETHERNET=y
+ CONFIG_MII=m
+ CONFIG_SUNLANCE=m
+-CONFIG_HAPPYMEAL=m
++CONFIG_HAPPYMEAL=y
+ CONFIG_SUNGEM=m
+ CONFIG_SUNVNET=m
+ CONFIG_LDMVSW=m
+@@ -234,9 +234,7 @@ CONFIG_CRYPTO_TWOFISH=m
+ CONFIG_CRC16=m
+ CONFIG_LIBCRC32C=m
+ CONFIG_VCC=m
+-CONFIG_ATA=y
+ CONFIG_PATA_CMD64X=y
+-CONFIG_HAPPYMEAL=y
+ CONFIG_IP_PNP=y
+ CONFIG_IP_PNP_DHCP=y
+ CONFIG_DEVTMPFS=y
+-- 
+2.26.2
 
