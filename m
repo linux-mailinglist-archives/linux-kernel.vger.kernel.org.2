@@ -2,182 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40BF331859
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68412331860
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhCHUVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:21:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57974 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230034AbhCHUVQ (ORCPT
+        id S230094AbhCHUW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:22:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhCHUWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:21:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615234876;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CnOdrg+zuN9I7icqeoUJJHRaYHJ2yvJy7iK4d/+2Nsg=;
-        b=AoreMP4kOHgSacddJE5MP9qB1wpjtDHyIv/rFMrgkjyUkUaP1q8gqVy11cAZyPnZM38J0A
-        0Yz2xNjvX6fxTXNNfapUf0KhFKO+ig4Eh4x8PkgeU0PPgcmraMpOjrLLfZpPp5hWWCMh4W
-        cykGIwqhX+taZdaAf5Z0MnIXcQ341yE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-600-vZ1m_1qkM9Gr4lbC7TDRGA-1; Mon, 08 Mar 2021 15:21:14 -0500
-X-MC-Unique: vZ1m_1qkM9Gr4lbC7TDRGA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 68B4180432E;
-        Mon,  8 Mar 2021 20:21:12 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E00860855;
-        Mon,  8 Mar 2021 20:21:07 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 13:21:06 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Zeng Tao <prime.zeng@hisilicon.com>
-Cc:     <linuxarm@huawei.com>, Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Michel Lespinasse <walken@google.com>,
-        "Jann Horn" <jannh@google.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH] vfio/pci: make the vfio_pci_mmap_fault reentrant
-Message-ID: <20210308132106.49da42e2@omen.home.shazbot.org>
-In-Reply-To: <1615201890-887-1-git-send-email-prime.zeng@hisilicon.com>
-References: <1615201890-887-1-git-send-email-prime.zeng@hisilicon.com>
+        Mon, 8 Mar 2021 15:22:33 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D0FC06174A;
+        Mon,  8 Mar 2021 12:22:33 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id m9so16649831edd.5;
+        Mon, 08 Mar 2021 12:22:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3p1K7qixRZDMiRKjRkwZnb9DrzcEb8jXcbBFm53rg9s=;
+        b=Caln3dMvsxXDLD71Ze56UjGJP3p+B/XeWTIG8AYVUOuupr1rf1sJw1TIqhfR59BNZF
+         3HyEP9un1YcjnDN7H7aNTIq4yv1s/RY+zFF25Akb/W334PqjR+VFZD4A1kYOmzLVNVV4
+         s9ER+BzJUHFPwnuePf/jfuPlHPW3S+51L3RtuSawnNe+roneB9K+1mDIkuc7FP4jre/7
+         jPSIhyyC3o11Gica68KKnO7LGbw5lHpYZTgPVfV67B5gu4YITK8ikiFR27oj4GcgMImS
+         uZKCHayfX9zATHeBQ8yCHiqpFBpgw7v+p1/tta6COdbfrz8mPpRoMPtJ5DkCZqq1KXj4
+         Q/Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3p1K7qixRZDMiRKjRkwZnb9DrzcEb8jXcbBFm53rg9s=;
+        b=QR3bXqlQn8NyLaHympsnsNvU7TmPL4m6QLG3DHFybqYgpDkPnQJIyUGNqxR2MtGbcA
+         BiDePHYNMqRBU4MDF1ZxVV5eILQKG4K86fLSBskaW388IrgF88eHdNb/INarlf2j6Ebx
+         Vng0I/tKVEtvuwErU14mE1kl2WmrQLAZmZTySGbQn8/RM9VKDwugmEU6tIcam/sSoeeC
+         Q+Lhch7Iq/U5uAetR6HwGJP0J4drotRM9hkGBjOa+edKKUcD/ovK0TmnVstl+YpK+N9H
+         WT3hERfQCv8RTkXCJHA/dU0qmNf+3H3qj+lhZh064zS5+cPGX3TvqnnXGYdJGlwyyPdP
+         hQWQ==
+X-Gm-Message-State: AOAM5301T7LrkhFDtJG4oy1X7ua/g6c/jmc1mciJ64aGGXnPe7aVZJU1
+        LU/+4ew18m7JeQlRprpSHapT7QsbOxAehFyBV+U=
+X-Google-Smtp-Source: ABdhPJxXgBHFmRBDWrSq58/rlEQ8Ee4ZYwQpZFrx6BX5YlFLoXsxQiEQinIj3MRdqqPCbruqA0NCUhzrpVL24ERXIcY=
+X-Received: by 2002:a50:8f42:: with SMTP id 60mr363572edy.168.1615234952188;
+ Mon, 08 Mar 2021 12:22:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210217001322.2226796-1-shy828301@gmail.com> <20210217001322.2226796-6-shy828301@gmail.com>
+ <CALvZod75fge=B9LNg_sxbCiwDZjjtn8A9Q2HzU_R6rcg551o6Q@mail.gmail.com> <YEZVhNhGqV33lPo9@carbon.dhcp.thefacebook.com>
+In-Reply-To: <YEZVhNhGqV33lPo9@carbon.dhcp.thefacebook.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 8 Mar 2021 12:22:20 -0800
+Message-ID: <CAHbLzkr2KWZA2e34DNjqnK6H-Ai8ox-f7iOET6OumZArYTB8JQ@mail.gmail.com>
+Subject: Re: [v8 PATCH 05/13] mm: vmscan: use kvfree_rcu instead of call_rcu
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Shakeel Butt <shakeelb@google.com>, paulmck@kernel.org,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Mar 2021 19:11:26 +0800
-Zeng Tao <prime.zeng@hisilicon.com> wrote:
+On Mon, Mar 8, 2021 at 8:49 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Sun, Mar 07, 2021 at 10:13:04PM -0800, Shakeel Butt wrote:
+> > On Tue, Feb 16, 2021 at 4:13 PM Yang Shi <shy828301@gmail.com> wrote:
+> > >
+> > > Using kvfree_rcu() to free the old shrinker_maps instead of call_rcu().
+> > > We don't have to define a dedicated callback for call_rcu() anymore.
+> > >
+> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > > ---
+> > >  mm/vmscan.c | 7 +------
+> > >  1 file changed, 1 insertion(+), 6 deletions(-)
+> > >
+> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > > index 2e753c2516fa..c2a309acd86b 100644
+> > > --- a/mm/vmscan.c
+> > > +++ b/mm/vmscan.c
+> > > @@ -192,11 +192,6 @@ static inline int shrinker_map_size(int nr_items)
+> > >         return (DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long));
+> > >  }
+> > >
+> > > -static void free_shrinker_map_rcu(struct rcu_head *head)
+> > > -{
+> > > -       kvfree(container_of(head, struct memcg_shrinker_map, rcu));
+> > > -}
+> > > -
+> > >  static int expand_one_shrinker_map(struct mem_cgroup *memcg,
+> > >                                    int size, int old_size)
+> > >  {
+> > > @@ -219,7 +214,7 @@ static int expand_one_shrinker_map(struct mem_cgroup *memcg,
+> > >                 memset((void *)new->map + old_size, 0, size - old_size);
+> > >
+> > >                 rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, new);
+> > > -               call_rcu(&old->rcu, free_shrinker_map_rcu);
+> > > +               kvfree_rcu(old);
+> >
+> > Please use kvfree_rcu(old, rcu) instead of kvfree_rcu(old). The single
+> > param can call synchronize_rcu().
+>
+> Oh, I didn't know about this difference. Thank you for noticing!
 
-> We have met the following error when test with DPDK testpmd:
-> [ 1591.733256] kernel BUG at mm/memory.c:2177!
-> [ 1591.739515] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
-> [ 1591.747381] Modules linked in: vfio_iommu_type1 vfio_pci vfio_virqfd vfio pv680_mii(O)
-> [ 1591.760536] CPU: 2 PID: 227 Comm: lcore-worker-2 Tainted: G O 5.11.0-rc3+ #1
-> [ 1591.770735] Hardware name:  , BIOS HixxxxFPGA 1P B600 V121-1
-> [ 1591.778872] pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
-> [ 1591.786134] pc : remap_pfn_range+0x214/0x340
-> [ 1591.793564] lr : remap_pfn_range+0x1b8/0x340
-> [ 1591.799117] sp : ffff80001068bbd0
-> [ 1591.803476] x29: ffff80001068bbd0 x28: 0000042eff6f0000
-> [ 1591.810404] x27: 0000001100910000 x26: 0000001300910000
-> [ 1591.817457] x25: 0068000000000fd3 x24: ffffa92f1338e358
-> [ 1591.825144] x23: 0000001140000000 x22: 0000000000000041
-> [ 1591.832506] x21: 0000001300910000 x20: ffffa92f141a4000
-> [ 1591.839520] x19: 0000001100a00000 x18: 0000000000000000
-> [ 1591.846108] x17: 0000000000000000 x16: ffffa92f11844540
-> [ 1591.853570] x15: 0000000000000000 x14: 0000000000000000
-> [ 1591.860768] x13: fffffc0000000000 x12: 0000000000000880
-> [ 1591.868053] x11: ffff0821bf3d01d0 x10: ffff5ef2abd89000
-> [ 1591.875932] x9 : ffffa92f12ab0064 x8 : ffffa92f136471c0
-> [ 1591.883208] x7 : 0000001140910000 x6 : 0000000200000000
-> [ 1591.890177] x5 : 0000000000000001 x4 : 0000000000000001
-> [ 1591.896656] x3 : 0000000000000000 x2 : 0168044000000fd3
-> [ 1591.903215] x1 : ffff082126261880 x0 : fffffc2084989868
-> [ 1591.910234] Call trace:
-> [ 1591.914837]  remap_pfn_range+0x214/0x340
-> [ 1591.921765]  vfio_pci_mmap_fault+0xac/0x130 [vfio_pci]
-> [ 1591.931200]  __do_fault+0x44/0x12c
-> [ 1591.937031]  handle_mm_fault+0xcc8/0x1230
-> [ 1591.942475]  do_page_fault+0x16c/0x484
-> [ 1591.948635]  do_translation_fault+0xbc/0xd8
-> [ 1591.954171]  do_mem_abort+0x4c/0xc0
-> [ 1591.960316]  el0_da+0x40/0x80
-> [ 1591.965585]  el0_sync_handler+0x168/0x1b0
-> [ 1591.971608]  el0_sync+0x174/0x180
-> [ 1591.978312] Code: eb1b027f 540000c0 f9400022 b4fffe02 (d4210000)
-> 
-> The cause is that the vfio_pci_mmap_fault function is not reentrant, if
-> multiple threads access the same address which will lead to a page fault
-> at the same time, we will have the above error.
-> 
-> Fix the issue by making the vfio_pci_mmap_fault reentrant, and there is
-> another issue that when the io_remap_pfn_range fails, we need to undo
-> the __vfio_pci_add_vma, fix it by moving the __vfio_pci_add_vma down
-> after the io_remap_pfn_range.
-> 
-> Fixes: 11c4cd07ba11 ("vfio-pci: Fault mmaps to enable vma tracking")
-> Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
-> ---
->  drivers/vfio/pci/vfio_pci.c | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> index 65e7e6b..6928c37 100644
-> --- a/drivers/vfio/pci/vfio_pci.c
-> +++ b/drivers/vfio/pci/vfio_pci.c
-> @@ -1613,6 +1613,7 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
->  	struct vm_area_struct *vma = vmf->vma;
->  	struct vfio_pci_device *vdev = vma->vm_private_data;
->  	vm_fault_t ret = VM_FAULT_NOPAGE;
-> +	unsigned long pfn;
->  
->  	mutex_lock(&vdev->vma_lock);
->  	down_read(&vdev->memory_lock);
-> @@ -1623,18 +1624,23 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
->  		goto up_out;
->  	}
->  
-> -	if (__vfio_pci_add_vma(vdev, vma)) {
-> -		ret = VM_FAULT_OOM;
-> +	if (!follow_pfn(vma, vma->vm_start, &pfn)) {
->  		mutex_unlock(&vdev->vma_lock);
->  		goto up_out;
->  	}
->  
-> -	mutex_unlock(&vdev->vma_lock);
-
-
-If I understand correctly, I think you're using (perhaps slightly
-abusing) the vma_lock to extend the serialization of the vma_list
-manipulation to include io_remap_pfn_range() such that you can test
-whether the pte has already been populated using follow_pfn().  In that
-case we return VM_FAULT_NOPAGE without trying to repopulate the page
-and therefore avoid the BUG_ON in remap_pte_range() triggered by trying
-to overwrite an existing pte, and less importantly, a duplicate vma in
-our list.  I wonder if use of follow_pfn() is still strongly
-discouraged for this use case.
-
-I'm surprised that it's left to the fault handler to provide this
-serialization, is this because we're filling the entire vma rather than
-only the faulting page?
-
-As we move to unmap_mapping_range()[1] we remove all of the complexity
-of managing a list of vmas to zap based on whether device memory is
-enabled, including the vma_lock.  Are we going to need to replace that
-with another lock here, or is there a better approach to handling
-concurrency of this fault handler?  Jason/Peter?  Thanks,
-
-Alex
-
-[1]https://lore.kernel.org/kvm/161401267316.16443.11184767955094847849.stgit@gimli.home/
-
->  
->  	if (io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
-> -			       vma->vm_end - vma->vm_start, vma->vm_page_prot))
-> +			       vma->vm_end - vma->vm_start, vma->vm_page_prot)) {
->  		ret = VM_FAULT_SIGBUS;
-> +		mutex_unlock(&vdev->vma_lock);
-> +		goto up_out;
-> +	}
-> +
-> +	if (__vfio_pci_add_vma(vdev, vma))
-> +		ret = VM_FAULT_OOM;
->  
-> +	mutex_unlock(&vdev->vma_lock);
->  up_out:
->  	up_read(&vdev->memory_lock);
->  	return ret;
-
+BTW, I think I could keep you and Kirill's acked-by with this change
+(using two params form kvfree_rcu) since the change seems trivial.
