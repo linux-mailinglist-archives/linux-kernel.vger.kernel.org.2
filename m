@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250B83307B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 06:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B4E3307B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 06:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234382AbhCHFua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 00:50:30 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:37641 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232576AbhCHFuR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 00:50:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1615182617; x=1646718617;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=LqAcY+32EdnZhxrdLJEG7sjrBzhN9AgldB87W29Jsis=;
-  b=aEb1yLLnCU7usCtrDUtKroJYNBNk2dTM+7syGUOdA9EbYDGFHP0jUCtL
-   6+ERWO7hP8WI3YDCtMi5OKr9o23xU0VdERQSc6bD8c3A/Say2f2Ve0CUg
-   xPH369hatuJLI0MLZv4zAGuH+g42KLId8TB3Aa8vWJuY9UOwZT9UK/M71
-   1uau79mZ4LeU5Y9PeFUlEqHkzYMA7AMXFNnaybCJhNaIPPSiMHqieTu7M
-   IZRSiYxMRVGkh+LmPX6cR/zRrOKrxH3dR8Na/wVEMOGM8iDOOryzeJGoY
-   YALSGEFUHhpE7EGXRHDxf95N5hrSGvcaxq/7YL5NkIBFzqmlVdRVgPVWb
-   Q==;
-IronPort-SDR: qafOGCVQhzScUwI46hyOv/CXGTT2fL02YDZq7sE1BubwFoQvUdwj5/Idn8ZXoEFrvDp9RI4vTF
- xfmvZ3xcFr7hAK2+SC7EyiuzwNtaxIwg+A5AeA7WEhCw5AUCSVAbeQwNDdTIbewKmFtEMIAGWk
- BHikmYHzOzynLOReEFgTI10uNvZqyYa7APkNW4RArITS0wQb+HxXpW57oj56AhoweJFf24qn2j
- XlrgSsyEEq/sRf4MSO5WplMR/SUC1Yl5lzxGIs1mMaPik8j58hTK2Q+rnpmpj4WauJb50CXXnV
- cVA=
-X-IronPort-AV: E=Sophos;i="5.81,231,1610434800"; 
-   d="scan'208";a="109103564"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Mar 2021 22:50:16 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 7 Mar 2021 22:50:15 -0700
-Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Sun, 7 Mar 2021 22:50:14 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <linux-mtd@lists.infradead.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        <linux-kernel@vger.kernel.org>,
-        "Richard Weinberger" <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "Shuhao Mai" <shuhao.mai.1990@gmail.com>
-CC:     Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH v2] mtd: spi-nor: winbond: Add support for w25q512jvq
-Date:   Mon, 8 Mar 2021 07:50:11 +0200
-Message-ID: <161518259586.63466.11466749485988604375.b4-ty@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210208075303.4200-1-shuhao.mai.1990@gmail.com>
-References: <20201111014556.6579-1-shuhao.mai.1990@gmail.com> <20210208075303.4200-1-shuhao.mai.1990@gmail.com>
+        id S234523AbhCHFvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 00:51:03 -0500
+Received: from foss.arm.com ([217.140.110.172]:59960 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232576AbhCHFum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 00:50:42 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E430DED1;
+        Sun,  7 Mar 2021 21:50:41 -0800 (PST)
+Received: from bogus (unknown [10.57.15.109])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95B443F73C;
+        Sun,  7 Mar 2021 21:50:38 -0800 (PST)
+Date:   Mon, 8 Mar 2021 05:50:30 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        lukasz.luba@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, thara.gopinath@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+Subject: Re: [PATCH v6 02/37] firmware: arm_scmi: introduce protocol handle
+ definitions
+Message-ID: <20210308055030.ljgyybawujmaf2gg@bogus>
+References: <20210202221555.41167-1-cristian.marussi@arm.com>
+ <20210202221555.41167-3-cristian.marussi@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202221555.41167-3-cristian.marussi@arm.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Feb 2021 15:53:03 +0800, Shuhao Mai wrote:
-> Add support for w25q512jvq. This is of the same series chip with
-> w25q256jv, which is already supported, but with size doubled and
-> different JEDEC ID.
+On Tue, Feb 02, 2021 at 10:15:20PM +0000, Cristian Marussi wrote:
+> Add basic protocol handles definitions and private data helpers support.
 > 
-> Tested on Intel whitley platform with dd from/to the flash for
-> read/write respectly, and flash_erase for erasing the flash.
+> A protocol handle identifies a protocol instance initialized against a
+> specific handle; it embeds all the references to the core SCMI xfer methods
+> that will be needed by a protocol implementation to build and send its own
+> protocol specific messages using common core methods.
+> 
+> As such, in the interface, a protocol handle will be passed down from the
+> core to the protocol specific initialization callback at init time.
+> 
+> Anyway at this point only definitions are introduced, all protocols
+> initialization code and SCMI drivers probing is still based on the old
+> interface, so no functional change.
+> 
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> ---
+>  drivers/firmware/arm_scmi/common.h | 59 ++++++++++++++++++++++++++++++
+>  drivers/firmware/arm_scmi/driver.c | 45 +++++++++++++++++++++++
+>  2 files changed, 104 insertions(+)
+> 
 
-Applied to spi-nor/next, thanks!
+[...]
 
-[1/1] mtd: spi-nor: winbond: Add support for w25q512jvq
-      https://git.kernel.org/mtd/c/ff013330fbdb
+> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> index ed94efbecd61..2328a468bbd1 100644
+> --- a/drivers/firmware/arm_scmi/driver.c
+> +++ b/drivers/firmware/arm_scmi/driver.c
 
-Best regards,
--- 
-Tudor Ambarus <tudor.ambarus@microchip.com>
+[...]
+
+>  /**
+>   * scmi_get_protocol_instance  - Protocol initialization helper.
+>   * @handle: A reference to the SCMI platform instance.
+> @@ -588,6 +629,10 @@ scmi_get_protocol_instance(struct scmi_handle *handle, u8 protocol_id)
+>  
+>  		pi->gid = gid;
+>  		pi->proto = proto;
+> +		pi->handle = handle;
+> +		pi->ph.dev = handle->dev;
+> +		pi->ph.set_priv = scmi_set_protocol_priv;
+> +		pi->ph.get_priv = scmi_get_protocol_priv;
+
+
+Sorry missed this in earlier patch. Not a must, but I prefer if you can move
+all these initialisation into separate functions so that scmi_get_protocol_instance
+can be simplified to read.
+
+if (pi)
+	increment refcount
+else
+	scmi_get_protocol
+	alloc and init protocol instance
+	register events
+
+How about some thing like above ?
+
+--
+Regards,
+Sudeep
