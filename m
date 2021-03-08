@@ -2,101 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFDE331A36
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E8D331A41
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:33:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbhCHWbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 17:31:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231730AbhCHWbI (ORCPT
+        id S231834AbhCHWdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 17:33:10 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:40412 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229627AbhCHWcv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 17:31:08 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CFEC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 14:31:08 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id p21so23629820lfu.11
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 14:31:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mgVtVDJ4J9ZfP2mfzS736WoTsMup5fvgpbnXS5Fe3a8=;
-        b=M+wVnP/KB8I6w466Y9xFPc5hUX+YdtfnLVnYCpM9Kp7Cw6dUrl6pRvJhajm5PjYBxT
-         SfeJj6wvAM0tR+tYPY6aqBtQ9MxgQZHO5ph34MNOveLyXa+aSY2yvVB8XBLGg95SJdmI
-         iVyIZB5ajJ/CNZkE8Pcvcv8bSsk8vtURxkpCGi7DFoKCcB54czUnVA3+sIAKdxQkWjR/
-         FBewIzUOuhD98dNY9UMPnWC4aCfcIGj+krz6tT7KLwvwsMAnUd1halJIn32yvhAHPRqd
-         UvNETUESRmdktnLcZkEHNZ2SShn+E4gmRb5M/TJ9OEA+FUWmqBG+x+UqoV2q07fcnxVR
-         /UeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mgVtVDJ4J9ZfP2mfzS736WoTsMup5fvgpbnXS5Fe3a8=;
-        b=kfDzXov4+BsZOHPvuP47LlJqS0vup9xg4y5mZIvqhazUSpOzLPmedSYgIlXoAGJUzn
-         4AQCy4FRy0f8GXmHFMPQc2ONCP/0ck7nqbw2QdeZ1j+w0MqIE1PJ0mW+kvQtqpzd/aVp
-         +Y+/y4xFDBR++7yo9ONEe+tjJbCC00TimKphr7zK+ocjWn6lnBzXykUdYnuGa8SVUN+w
-         tsVlY2i+q17covKxubf5S5IDL9xk2l1zdHnnjlasPI4IlFfTimq7HfCoHr7hPHPy2Z9z
-         b3IWuFh54zSYPnnfvPanLM/M0EYtqNR3bJo9RuEMNIB0AK/u10YO99tnB+iOTI26hAgk
-         RN/g==
-X-Gm-Message-State: AOAM532ap+XESjhDI7jrfpBDEu8UYQJuvaxUiGVdS13OMdRslPikw6Ur
-        QLYZfTiYwEk+GQAw4njld40=
-X-Google-Smtp-Source: ABdhPJyI2CGVBw+yoGGPeeq2F338VAm8dTNAgH2Rp77EGChXVrzx4AfEj/iTJrw9Uv3K00xIkYVeMA==
-X-Received: by 2002:a19:ef02:: with SMTP id n2mr14976923lfh.141.1615242666898;
-        Mon, 08 Mar 2021 14:31:06 -0800 (PST)
-Received: from localhost.localdomain ([94.103.235.167])
-        by smtp.gmail.com with ESMTPSA id p13sm1653426ljg.116.2021.03.08.14.31.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 14:31:06 -0800 (PST)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     perex@perex.cz, tiwai@suse.com, kai.heng.feng@canonical.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH next 2/2] sound: usb: fix use after free in usb_audio_disconnect
-Date:   Tue,  9 Mar 2021 01:30:57 +0300
-Message-Id: <16da19126ff461e5e64a9aec648cce28fb8ed73e.1615242183.git.paskripkin@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1615242183.git.paskripkin@gmail.com>
-References: <cover.1615242183.git.paskripkin@gmail.com>
+        Mon, 8 Mar 2021 17:32:51 -0500
+Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 3A2521041A91;
+        Tue,  9 Mar 2021 09:32:48 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lJOQh-000IZX-At; Tue, 09 Mar 2021 09:32:47 +1100
+Date:   Tue, 9 Mar 2021 09:32:47 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Amir Goldstein <amir73il@gmail.com>, linux-cachefs@redhat.com,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-afs@lists.infradead.org,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Subject: Re: Metadata writtenback notification? -- was Re: fscache:
+ Redesigning the on-disk cache
+Message-ID: <20210308223247.GB63242@dread.disaster.area>
+References: <CAOQ4uxjYWprb7trvamCx+DaP2yn8HCaZeZx1dSvPyFH2My303w@mail.gmail.com>
+ <2653261.1614813611@warthog.procyon.org.uk>
+ <CAOQ4uxhxwKHLT559f8v5aFTheKgPUndzGufg0E58rkEqa9oQ3Q@mail.gmail.com>
+ <517184.1615194835@warthog.procyon.org.uk>
+ <584529.1615202921@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <584529.1615202921@warthog.procyon.org.uk>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
+        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
+        a=kj9zAlcOel0A:10 a=dESyimp9J3IA:10 a=pGLkceISAAAA:8 a=07d9gI8wAAAA:8
+        a=7-415B0cAAAA:8 a=fLlyUv8SAob-akP86owA:9 a=CjuIK1q_8ugA:10
+        a=e2CUPOnPG4QKp8I52DXD:22 a=biEYGPWJfzWAr4FL6Ov7:22
+        a=BPzZvq435JnGatEyYwdK:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The problem was in wrong "if" placement. chip->quirk_type is freed
-in snd_card_free_when_closed(), but inside if statement it's accesed.
+On Mon, Mar 08, 2021 at 11:28:41AM +0000, David Howells wrote:
+> Amir Goldstein <amir73il@gmail.com> wrote:
+> 
+> > > But after I've written and sync'd the data, I set the xattr to mark the
+> > > file not open.  At the moment I'm doing this too lazily, only doing it
+> > > when a netfs file gets evicted or when the cache gets withdrawn, but I
+> > > really need to add a queue of objects to be sealed as they're closed.  The
+> > > balance is working out how often to do the sealing as something like a
+> > > shell script can do a lot of consecutive open/write/close ops.
+> > 
+> > You could add an internal vfs API wait_for_multiple_inodes_to_be_synced().
+> > For example, xfs keeps the "LSN" on each inode, so once the transaction
+> > with some LSN has been committed, all the relevant inodes, if not dirty, can
+> > be declared as synced, without having to call fsync() on any file and without
+> > having to force transaction commit or any IO at all.
+> > 
+> > Since fscache takes care of submitting the IO, and it shouldn't care about any
+> > specific time that the data/metadata hits the disk(?), you can make use of the
+> > existing periodic writeback and rolling transaction commit and only ever need
+> > to wait for that to happen before marking cache files "closed".
+> > 
+> > There was a discussion about fsyncing a range of files on LSFMM [1].
+> > In the last comment on the article dchinner argues why we already have that
+> > API (and now also with io_uring(), but AFAIK, we do not have a useful
+> > wait_for_sync() API. And it doesn't need to be exposed to userspace at all.
+> > 
+> > [1] https://lwn.net/Articles/789024/
+> 
+> This sounds like an interesting idea.  Actually, what I probably want is a
+> notification to say that a particular object has been completely sync'd to
+> disk, metadata and all.
 
-Fixes: 9799110825db ("ALSA: usb-audio: Disable USB autosuspend properly in setup_disable_autosuspend()"
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- sound/usb/card.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+This isn't hard to do yourself in the kernel. All it takes is a
+workqueue to run vfs_fsync() calls asynchronously and for the work
+to queue a local notification/wakeup when the fsync completes...
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 3fd1743513b5..b6f4c0848e66 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -907,6 +907,9 @@ static void usb_audio_disconnect(struct usb_interface *intf)
- 		}
- 	}
- 
-+	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND)
-+		usb_enable_autosuspend(interface_to_usbdev(intf));
-+
- 	chip->num_interfaces--;
- 	if (chip->num_interfaces <= 0) {
- 		usb_chip[chip->index] = NULL;
-@@ -915,9 +918,6 @@ static void usb_audio_disconnect(struct usb_interface *intf)
- 	} else {
- 		mutex_unlock(&register_mutex);
- 	}
--
--	if (chip->quirk_type & QUIRK_SETUP_DISABLE_AUTOSUSPEND)
--		usb_enable_autosuspend(interface_to_usbdev(intf));
- }
- 
- /* lock the shutdown (disconnect) task and autoresume */
+That's all aio_fsync() does - the notification it queues on
+completion is the AIO completion event for userspace - so I think
+you could do this in about 50 lines of code if you really needed
+it...
+
+> However, there are some performance problems are arising in my fscache-iter
+> branch:
+> 
+>  (1) It's doing a lot of synchronous metadata operations (tmpfile, truncate,
+>      setxattr).
+
+Async pipelines using unbound workqueues are your friend.
+> 
+>  (2) It's retaining a lot of open file structs on cache files.  Cachefiles
+>      opens the file when it's first asked to access it and retains that till
+>      the cookie is relinquished or the cache withdrawn (the file* doesn't
+>      contribute to ENFILE/EMFILE but it still eats memory).
+
+Sounds similar to the problem that the NFSd open file cache solves.
+(fs/nfsd/filecache.c)
+
+>  (3) Trimming excess data from the end of the cache file.  The problem with
+>      using DIO to write to the cache is that the write has to be rounded up to
+>      a multiple of the backing fs DIO blocksize,
+
+Actually, a multiple of the logical sector size of the backing
+device behind the backing filesystem.
+
+>      but if the file is truncated
+>      larger, that excess data now becomes part of the file.
+
+Keep the actual file size in your tracking xattr.
+
+>      Possibly it's sufficient to just clear the excess page space before
+>      writing, but that doesn't necessarily stop a writable mmap from
+>      scribbling on it.
+
+We can't stop mmap from scribbling in it. All filesystems have this
+problem, so to prevent data leaks we have to zero the post-eof tail
+region on every write of the EOF block, anyway.
+
+>  (4) Committing outstanding cache metadata at cache withdrawal or netfs
+>      unmount.  I've previously mentioned this: it ends up with a whole slew of
+>      synchronous metadata changes being committed to the cache in one go
+>      (truncates, fallocates, fsync, xattrs, unlink+link of tmpfile) - and this
+>      can take quite a long time.  The cache needs to be more proactive in
+>      getting stuff committed as it goes along.
+
+Workqueues give you an easy mechanism for async dispatch and
+concurrency for synchronous operations. This is a largely solved
+problem...
+
+>  (5) Attaching to an object requires a pathwalk to it (normally only two
+>      steps) and then reading various xattrs on it - all synchronous, but can
+>      be punted to a background threadpool.
+
+a.k.a. punting to a workqueue :)
+
+Cheers,
+
+Dave.
 -- 
-2.25.1
-
+Dave Chinner
+david@fromorbit.com
