@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3883317AF
+	by mail.lfdr.de (Postfix) with ESMTP id E84E83317B0
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:48:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhCHTsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:48:02 -0500
-Received: from mga05.intel.com ([192.55.52.43]:50671 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231243AbhCHTrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:47:48 -0500
-IronPort-SDR: Awl+Pyo/H8dVm2wjNxSoqH2dhqlgsaU2wCNRIRp7Gn+J5KvfWdWgxFNuNNKvo7sgEVTNgTdPfr
- 4t2bKmhK1wrg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="273122731"
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="273122731"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 11:47:48 -0800
-IronPort-SDR: WOrCr/EqVp4x85cVw8oQ1HycY/InT6iNHA86LctH221jXzosfr12XCVnXT7H06dpcJKIKTCRZi
- 9DhoNBcArcgQ==
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="509034146"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 11:47:48 -0800
-Date:   Mon, 8 Mar 2021 11:47:46 -0800
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        kevin.tian@intel.com, jacob.jun.pan@intel.com, yi.l.liu@intel.com,
-        sanjay.k.kumar@intel.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH 2/5] iommu/vt-d: Remove WO permissions on second-level
- paging entries
-Message-ID: <20210308194746.GA15436@otc-nc-03>
-References: <20210225062654.2864322-1-baolu.lu@linux.intel.com>
- <20210225062654.2864322-3-baolu.lu@linux.intel.com>
- <20210304122623.GD26414@8bytes.org>
- <c7bffaee-6c3c-3254-a71a-d66d023d1e58@linux.intel.com>
+        id S231607AbhCHTsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:48:04 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:38466 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231300AbhCHTr6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 14:47:58 -0500
+Received: by mail-ot1-f51.google.com with SMTP id a17so10440956oto.5;
+        Mon, 08 Mar 2021 11:47:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R9a4r2KV/20IK9Xvdp/DQVl6ypaKqIrZBBr+oBc+pes=;
+        b=qeHWiC3jwKjgxTg2epReYBN0kUkww/ytgdnuKNl2XteCaCL3GJXhUi03CVzcx5/yo0
+         ZzSTPWxjLpug9caBhraEsMp5mTG4Pn+4oa96OpCM/48sQXaWNXBpPlnhEQxzZPC/xiLG
+         cJY18PkByHG8jwgAnqBJDZ8NtIeqiNoWdZ3tHCkrrDgqGRBQdCw/M4ZXkOTwhGauY0R8
+         u0uGXZM2CwmQ8LO8/d2gU/diVimOMgjAGCdAixNBbJow0P8fDASGfHZSssscynchLBLT
+         0NNT+Ceqml5/3ALKYYzdMqzSiG3xqYed2QhGn6e53wJ/7h5+te7XATCnG/BBiLoUx3nu
+         4d8Q==
+X-Gm-Message-State: AOAM5322ibJhsIWj9MU9mOTmTI36Abeqfd9acrl7YU4rVVjb7Kh2Og79
+        oMSn/TDIoZh4lXj5SOeBGcJgWe9bYKVXMAMR/98=
+X-Google-Smtp-Source: ABdhPJydFsK+bWDOUjzC43e6UcRCZWiDxCR+hne6xllZcsO/ByGbq3TvcGrc0npVj0y2Cag+SgmB0kL3sDZ9dg0I+S8=
+X-Received: by 2002:a05:6830:1057:: with SMTP id b23mr21883025otp.206.1615232877974;
+ Mon, 08 Mar 2021 11:47:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c7bffaee-6c3c-3254-a71a-d66d023d1e58@linux.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20210308194535.66394-1-andriy.shevchenko@linux.intel.com> <20210308194535.66394-7-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210308194535.66394-7-andriy.shevchenko@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 8 Mar 2021 20:47:47 +0100
+Message-ID: <CAJZ5v0gUDtpJE0Byw765yFr-5nOsxjPd5tH8_PGsr-gVZ-XSog@mail.gmail.com>
+Subject: Re: [PATCH v5 6/6] gpiolib: Fold conditionals into a simple ternary operator
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg
+On Mon, Mar 8, 2021 at 8:45 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> It's quite spread code to initialize IRQ domain options.
+> Let's fold it into a simple oneliner.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-On Mon, Mar 08, 2021 at 09:58:26AM +0800, Lu Baolu wrote:
-> Hi Joerg,
-> 
-> On 3/4/21 8:26 PM, Joerg Roedel wrote:
-> >On Thu, Feb 25, 2021 at 02:26:51PM +0800, Lu Baolu wrote:
-> >>When the first level page table is used for IOVA translation, it only
-> >>supports Read-Only and Read-Write permissions. The Write-Only permission
-> >>is not supported as the PRESENT bit (implying Read permission) should
-> >>always set. When using second level, we still give separate permissions
-> >>that allows WriteOnly which seems inconsistent and awkward. There is no
-> >>use case we can think off, hence remove that configuration to make it
-> >>consistent.
-> >
-> >No use-case for WriteOnly mappings? How about DMA_FROM_DEVICE mappings?
-> >
-> 
-> The statement of no use case is not correct. Sorry about it.
-> 
-> As we have moved to use first level for IOVA translation, the first
-> level page table entry only provides RO and RW permissions. So if any
-> device driver specifies DMA_FROM_DEVICE attribution, it will get RW
-> permission in the page table. This patch aims to make the permissions
-> of second level and first level consistent. No impact on the use of
-> DMA_FROM_DEVICE attribution.
-> 
+Please see the comments I've just sent:
 
-That is the primary motivation, given that we have moved to 1st level for
-general IOVA, first level doesn't have a WO mapping. I didn't know enough
-about the history to determine if a WO without a READ is very useful. I
-guess the ZLR was invented to support those cases without a READ in PCIe. I
+https://lore.kernel.org/linux-acpi/CAJZ5v0gpNzyBDKfBXoBYskUXs15GrZAe-E2vzhSEu2Nrj7wa7g@mail.gmail.com/T/#u
 
-Early Intel IOMMU's didn't handle ZLR properly, until we fixed it in the
-next generation. It just seemed opposite to the CPU page-tables, and we
-wanted to have consistent behavior. After moving to 1st level, we don't
-want things to work sometimes, and break if we use 2nd level for the same
-mappings.
-
-Hope this helps
-
-Cheers,
-Ashok
+> ---
+>  drivers/gpio/gpiolib.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index afee48e7dd41..8c5ce377accc 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -1458,7 +1458,7 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
+>  {
+>         struct fwnode_handle *fwnode = dev_fwnode(&gc->gpiodev->dev);
+>         struct irq_chip *irqchip = gc->irq.chip;
+> -       const struct irq_domain_ops *ops = NULL;
+> +       const struct irq_domain_ops *ops;
+>         unsigned int type;
+>         unsigned int i;
+>
+> @@ -1496,11 +1496,7 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
+>                         return ret;
+>         } else {
+>                 /* Some drivers provide custom irqdomain ops */
+> -               if (gc->irq.domain_ops)
+> -                       ops = gc->irq.domain_ops;
+> -
+> -               if (!ops)
+> -                       ops = &gpiochip_domain_ops;
+> +               ops = gc->irq.domain_ops ?: &gpiochip_domain_ops;
+>                 gc->irq.domain = irq_domain_create_simple(fwnode,
+>                         gc->ngpio,
+>                         gc->irq.first,
+> --
+> 2.30.1
+>
