@@ -2,80 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937153307BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 07:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D866A3307C1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 07:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234559AbhCHGEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 01:04:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232471AbhCHGDg (ORCPT
+        id S234602AbhCHGGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 01:06:00 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:36604 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232576AbhCHGFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 01:03:36 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93F8C06174A;
-        Sun,  7 Mar 2021 22:03:33 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dv77Q2bwbz9sWF;
-        Mon,  8 Mar 2021 17:03:30 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1615183410;
-        bh=GFXWEsmq8fqIrfJpmZDA51hRRs+14qe2ORZUfq9J02U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mOPq0Gm+abyiGkdY8R+v0ZLhQZ5j1VkW6d+2bD16dPVpwM+/18qvQiDRHHOoIDIuj
-         PyvgjFENwYh8s77zWRMGkPZ/0wKDYCixVce/eVXhYY7W0x0s80HT2gy0U6ilfYvlWZ
-         kY2Ild0MBkMtJFdalNlNTizvJeMH1DGSEMOdKgNfrOOzrEGR60kXeWRSX8kkJaTmHT
-         /nlR66mJ7JQHwuQur6qfn1fN3Ya7cGHk3nNCJseRn0r8dOLILujDcVBZWoOnYxJFLf
-         FzeAAqpcTEY/kOfhWFXAroMjHeHTzo5d+fPAwj6EJDXExr9JwcbEmud3lg16mCiLji
-         PiifEkJ5uIWzw==
-Date:   Mon, 8 Mar 2021 17:03:27 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the rcu tree
-Message-ID: <20210308170327.3fc9badd@canb.auug.org.au>
+        Mon, 8 Mar 2021 01:05:51 -0500
+X-UUID: 771a5c14809345cd926a2fa294aed30a-20210308
+X-UUID: 771a5c14809345cd926a2fa294aed30a-20210308
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1330262926; Mon, 08 Mar 2021 14:05:42 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 8 Mar 2021 14:05:40 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 8 Mar 2021 14:05:40 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <yj.chiang@mediatek.com>, Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
+        Daniel Palmer <daniel@thingy.jp>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v2] irqchip/irq-mst: Support polarity configuration
+Date:   Mon, 8 Mar 2021 14:05:38 +0800
+Message-ID: <20210308060538.11164-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/iWT9OnWeUoD_58rFWiUhWb3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/iWT9OnWeUoD_58rFWiUhWb3
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Support irq polarity configuration and save and restore the config
+when system suspend and resume.
 
-Hi all,
+Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+---
+ drivers/irqchip/irq-mst-intc.c | 90 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 87 insertions(+), 3 deletions(-)
 
-Commit
+diff --git a/drivers/irqchip/irq-mst-intc.c b/drivers/irqchip/irq-mst-intc.c
+index 143657b0cf28..841b9b1c2699 100644
+--- a/drivers/irqchip/irq-mst-intc.c
++++ b/drivers/irqchip/irq-mst-intc.c
+@@ -13,15 +13,25 @@
+ #include <linux/of_irq.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
++#include <linux/syscore_ops.h>
+ 
+-#define INTC_MASK	0x0
+-#define INTC_EOI	0x20
++#define INTC_MASK		0x0
++#define INTC_REV_POLARITY	0x10
++#define INTC_EOI		0x20
++
++#ifdef CONFIG_PM_SLEEP
++static LIST_HEAD(mst_intc_list);
++#endif
+ 
+ struct mst_intc_chip_data {
+ 	raw_spinlock_t	lock;
+ 	unsigned int	irq_start, nr_irqs;
+ 	void __iomem	*base;
+ 	bool		no_eoi;
++#ifdef CONFIG_PM_SLEEP
++	struct list_head entry;
++	u16 saved_polarity_conf[DIV_ROUND_UP(64, 16)];
++#endif
+ };
+ 
+ static void mst_set_irq(struct irq_data *d, u32 offset)
+@@ -78,6 +88,19 @@ static void mst_intc_eoi_irq(struct irq_data *d)
+ 	irq_chip_eoi_parent(d);
+ }
+ 
++static int mst_irq_chip_set_type(struct irq_data *data, unsigned int type)
++{
++	if (type != IRQ_TYPE_LEVEL_LOW && type != IRQ_TYPE_LEVEL_HIGH)
++		return -EINVAL;
++
++	if (type == IRQ_TYPE_LEVEL_LOW) {
++		mst_set_irq(data, INTC_REV_POLARITY);
++		type = IRQ_TYPE_LEVEL_HIGH;
++	}
++
++	return irq_chip_set_type_parent(data, type);
++}
++
+ static struct irq_chip mst_intc_chip = {
+ 	.name			= "mst-intc",
+ 	.irq_mask		= mst_intc_mask_irq,
+@@ -87,13 +110,62 @@ static struct irq_chip mst_intc_chip = {
+ 	.irq_set_irqchip_state	= irq_chip_set_parent_state,
+ 	.irq_set_affinity	= irq_chip_set_affinity_parent,
+ 	.irq_set_vcpu_affinity	= irq_chip_set_vcpu_affinity_parent,
+-	.irq_set_type		= irq_chip_set_type_parent,
++	.irq_set_type		= mst_irq_chip_set_type,
+ 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
+ 	.flags			= IRQCHIP_SET_TYPE_MASKED |
+ 				  IRQCHIP_SKIP_SET_WAKE |
+ 				  IRQCHIP_MASK_ON_SUSPEND,
+ };
+ 
++#ifdef CONFIG_PM_SLEEP
++static void mst_intc_polarity_save(struct mst_intc_chip_data *cd)
++{
++	int i;
++	void __iomem *addr = cd->base + INTC_REV_POLARITY;
++
++	for (i = 0; i < DIV_ROUND_UP(cd->nr_irqs, 16); i++)
++		cd->saved_polarity_conf[i] = readw_relaxed(addr + i * 4);
++}
++
++static void mst_intc_polarity_restore(struct mst_intc_chip_data *cd)
++{
++	int i;
++	void __iomem *addr = cd->base + INTC_REV_POLARITY;
++
++	for (i = 0; i < DIV_ROUND_UP(cd->nr_irqs, 16); i++)
++		writew_relaxed(cd->saved_polarity_conf[i], addr + i * 4);
++}
++
++static void mst_irq_resume(void)
++{
++	struct mst_intc_chip_data *cd;
++
++	list_for_each_entry(cd, &mst_intc_list, entry)
++		mst_intc_polarity_restore(cd);
++}
++
++static int mst_irq_suspend(void)
++{
++	struct mst_intc_chip_data *cd;
++
++	list_for_each_entry(cd, &mst_intc_list, entry)
++		mst_intc_polarity_save(cd);
++	return 0;
++}
++
++static struct syscore_ops mst_irq_syscore_ops = {
++	.suspend	= mst_irq_suspend,
++	.resume		= mst_irq_resume,
++};
++
++static int __init mst_irq_pm_init(void)
++{
++	register_syscore_ops(&mst_irq_syscore_ops);
++	return 0;
++}
++late_initcall(mst_irq_pm_init);
++#endif
++
+ static int mst_intc_domain_translate(struct irq_domain *d,
+ 				     struct irq_fwspec *fwspec,
+ 				     unsigned long *hwirq,
+@@ -145,6 +217,14 @@ static int mst_intc_domain_alloc(struct irq_domain *domain, unsigned int virq,
+ 	parent_fwspec = *fwspec;
+ 	parent_fwspec.fwnode = domain->parent->fwnode;
+ 	parent_fwspec.param[1] = cd->irq_start + hwirq;
++
++	/*
++	 * If the irq signal is active low, configure it to active high
++	 * to meet GIC SPI spec in mst_irq_chip_set_type via REV_POLARITY bit
++	 */
++	if (fwspec->param[2] == IRQ_TYPE_LEVEL_LOW)
++		parent_fwspec.param[2] = IRQ_TYPE_LEVEL_HIGH;
++
+ 	return irq_domain_alloc_irqs_parent(domain, virq, nr_irqs, &parent_fwspec);
+ }
+ 
+@@ -193,6 +273,10 @@ static int __init mst_intc_of_init(struct device_node *dn,
+ 		return -ENOMEM;
+ 	}
+ 
++#ifdef CONFIG_PM_SLEEP
++	INIT_LIST_HEAD(&cd->entry);
++	list_add_tail(&cd->entry, &mst_intc_list);
++#endif
+ 	return 0;
+ }
+ 
+-- 
+2.18.0
 
-  3e90d423e754 ("EXP net: phy: make mdio_bus_phy_suspend/resume as __maybe_=
-unused")
-
-is missing a Signed-off-by from its committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/iWT9OnWeUoD_58rFWiUhWb3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBFvi8ACgkQAVBC80lX
-0Gz37wgAhDB6GNJfRTaQphdfzOFby1Bxd5rvjlwMT69PREAWNCMrlUUNcYGiKh0W
-UqP+28xhpkaiZAOXkFB+wWzYsdufFb2K5DsaGBX2uA8BaeFBzzF0jXeetVKGSu8+
-mS5aCJNVk2I2aKgrd2QbLrxx0ozkJi2/n6/jOzOL49Ds7Pr2SOIn3leBCTNGgbWO
-e1h2GiWNDWmNDTvzvnaD9FWnF8QqnS81SmQ6Su/TrF2X36eiUM+13prZuGUnrmYH
-NcSPms93eFim9sYO0ObAxzs7vuKnuoAMSlQ+gQEEjhtH7pbVlOk4JJI0Db3mNR0/
-b3E3NZZ0+bXPWDaO6a00i1GEg8nSAw==
-=tSk/
------END PGP SIGNATURE-----
-
---Sig_/iWT9OnWeUoD_58rFWiUhWb3--
