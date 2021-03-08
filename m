@@ -2,74 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D289C331A19
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:19:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7D0331A1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbhCHWS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 17:18:28 -0500
-Received: from mail-io1-f48.google.com ([209.85.166.48]:43129 "EHLO
-        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhCHWSI (ORCPT
+        id S231195AbhCHWTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 17:19:02 -0500
+Received: from mail-io1-f52.google.com ([209.85.166.52]:37851 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhCHWTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 17:18:08 -0500
-Received: by mail-io1-f48.google.com with SMTP id f20so11710466ioo.10;
-        Mon, 08 Mar 2021 14:18:08 -0800 (PST)
+        Mon, 8 Mar 2021 17:19:01 -0500
+Received: by mail-io1-f52.google.com with SMTP id p16so11767217ioj.4;
+        Mon, 08 Mar 2021 14:19:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=wx4ykw+Mg1Sx5cReqaI6/4gAQsxP+twcUD8HPMAYwI4=;
-        b=ahSx/A34/YvcD7+oUta9zptRpERa00gYtoidrXT5b5YerIiSlmw465irWA0p3tdgP9
-         NnOme4no+HPUqfE3aKInoT9nMjq9bn904hF4XKZ7KWJjE08pllvMQE3yr0/W1EQLbThf
-         gSgnq1+qifSQx9PDg/QZxZpfOq8f4wx3QfjhQctD5kzrqpvE3Mb5uGAJDI6sGgEuF4OO
-         JfSEX0pZJLGN9m2P46uHl6d/7Pk+USPnKOK/pizKvT4ZOeXPGV1PbPWEVedzsZnYmZCr
-         ue4R13fA+d882nns4bWo7AVSSw7ZBgVcwsf1V5dCBXb+tvp+nxPabJFoWWhcO2dAblWM
-         Vr/w==
-X-Gm-Message-State: AOAM532TwEvcgXHH3ZWdwLHiurcg6VEjf40QR9ALMal1gutlT+x+oMGO
-        jM04CiOTrniTsP7pgZWxfA==
-X-Google-Smtp-Source: ABdhPJxXtaIt5ClP4xRuy34oKH2NZYE3f4/dzqQyq0Tp+P6ZcDxlss6Koanr74iFxEHxKfJJOgyqcg==
-X-Received: by 2002:a5d:9152:: with SMTP id y18mr19816198ioq.117.1615241888143;
-        Mon, 08 Mar 2021 14:18:08 -0800 (PST)
+        bh=qHQgmbkDSDDiTfT1yKEjfyTu70sGJ/CC8y8c/laS3OA=;
+        b=fYlxrL7C78t9DpGgQeJ1j1T2fTYyEVvJV2h+oaTwsjtgSjalSM6mQs646PcTP/LGhp
+         jaJ2nrVbvt++yKKEdkRsWYbmXk2xFzLAAr8+saOnov0B3SHnjhUJHu2OR5tY9wyYR97r
+         ZqTkS2Yb1dk+QCSA+3E+OLOzhM3wFkLaVw+u7cPChhsL/hbJefagXlmVLRtVdWK6W3Mq
+         w8cTvxme0qpecVOcA5X39w/UxVCzlWrkMg9Y9IowaEjnzD44r4PvZvZsnoIaUk/sFXoc
+         SZ8Q8qnUzaxQMjfgKVwbm+eFVQgHOz2GKjJ8NQRGU7YBTECFTFh61Ilf1lBqembI8p65
+         90Rg==
+X-Gm-Message-State: AOAM533pZvuaK4BcCAXs+7/4bXvnjqcj6s+JsQcUqoA1JM9mipg9ss0W
+        VFr9mt3mlMvMrmEtJVfTAliQKIuNTg==
+X-Google-Smtp-Source: ABdhPJyM5IoP7Vk3u1eUoLTcIXjzHXxloDJ+hkBtL+K7NrawTvImnquE6lkD56P0RQI4/iTwE2V8kA==
+X-Received: by 2002:a02:2412:: with SMTP id f18mr25820196jaa.142.1615241940654;
+        Mon, 08 Mar 2021 14:19:00 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id g3sm6556571ile.10.2021.03.08.14.18.06
+        by smtp.gmail.com with ESMTPSA id 23sm7028534iog.45.2021.03.08.14.18.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 14:18:07 -0800 (PST)
-Received: (nullmailer pid 3052148 invoked by uid 1000);
-        Mon, 08 Mar 2021 22:18:05 -0000
-Date:   Mon, 8 Mar 2021 15:18:05 -0700
+        Mon, 08 Mar 2021 14:18:59 -0800 (PST)
+Received: (nullmailer pid 3053387 invoked by uid 1000);
+        Mon, 08 Mar 2021 22:18:58 -0000
+Date:   Mon, 8 Mar 2021 15:18:58 -0700
 From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
+To:     Vincent Knecht <vincent.knecht@mailoo.org>
+Cc:     devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH v1 1/2] dt-bindings:iio:adc: add documentation for TI
- TSC2046 controller
-Message-ID: <20210308221805.GA3052089@robh.at.kernel.org>
-References: <20210305133813.27967-1-o.rempel@pengutronix.de>
- <20210305133813.27967-2-o.rempel@pengutronix.de>
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        linux-input@vger.kernel.org, Michael Srba <Michael.Srba@seznam.cz>,
+        Henrik Rydberg <rydberg@bitmath.org>
+Subject: Re: [PATCH v6 1/2] dt-bindings: input/touchscreen: add bindings for
+ msg2638
+Message-ID: <20210308221858.GA3053334@robh.at.kernel.org>
+References: <20210305153815.126937-1-vincent.knecht@mailoo.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210305133813.27967-2-o.rempel@pengutronix.de>
+In-Reply-To: <20210305153815.126937-1-vincent.knecht@mailoo.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 05 Mar 2021 14:38:12 +0100, Oleksij Rempel wrote:
-> Add a binding documentation for the TI TSC2046 touchscreen controllers
-> ADC functionality.
+On Fri, 05 Mar 2021 16:38:04 +0100, Vincent Knecht wrote:
+> This adds dts bindings for the mstar msg2638 touchscreen.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
 > ---
->  .../bindings/iio/adc/ti,tsc2046.yaml          | 52 +++++++++++++++++++
->  1 file changed, 52 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,tsc2046.yaml
+> Changed in v6:
+> - change touchscreen-size-x/y values in example section to reflect
+>   scaling removal in driver (Dmitry)
+> - add Linus W. Reviewed-by
+> Changed in v5: nothing
+> Changed in v4:
+> - don't use wildcards in compatible strings (Rob H)
+> - rename from msg26xx to msg2638
+> - rename example pinctrl-0 to &ts_int_reset_default for consistency
+> Changed in v3:
+> - added `touchscreen-size-x: true` and `touchscreen-size-y: true` properties
+> Changed in v2:
+> - changed M-Star to MStar in title line
+> - changed reset gpio to active-low in example section
+> ---
+>  .../input/touchscreen/mstar,msg2638.yaml      | 69 +++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/mstar,msg2638.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
