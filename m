@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DC4331164
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:56:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39245331166
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhCHOzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 09:55:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34436 "EHLO
+        id S231539AbhCHOzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 09:55:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231255AbhCHOze (ORCPT
+        with ESMTP id S230511AbhCHOzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:55:34 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF60C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 06:55:33 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id v13so15119118edw.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 06:55:33 -0800 (PST)
+        Mon, 8 Mar 2021 09:55:35 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CC1C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 06:55:35 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id w9so15066346edt.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 06:55:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=deviqon.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XWoEzbGml88OxuqmQAcHOjUJ4xDFJxJMYhsbSvaYG8g=;
-        b=CoZuzgDrGpFtj904f5wOt4pdQ3n8fg5dy/GPRYq1rjTInXfpz2xhI8+8Vv5wPkV1Wo
-         wFX3oGQAjFIvlBNmhZJ6fvY9t8B76uKfz9sUj97rgWhDoIbGS6iSPrjfUOlCwHUfbIq2
-         K2xcYmyB0aJUZyDJKKQ7UH544n9eeotYnTRliWp+P5UoX8W6F0lJnEflhgMhQNkWhd/s
-         jHmpOQSIJXngWEOS0/6cemKhknyqXFEoxIrmGi11LpEyqZFY4UFQrV6uMwKSNbTfyNYK
-         y71Ayez3+y21aI3oCrN+NZrk0zuVw2hZTTO0N+2evfe6jGpnUg8nBLo9mqvI+E7W5rOb
-         npUA==
+        bh=Io9v2GBIlHI+Tmp+Muo2ozOuxnB5JlN/m/peVkSOoQk=;
+        b=KN8oqTz03n4iXKtuJ5qi9J7eiFCSjzNROABDY6Gb/MplICzu3i5V03YptgmpTTumx9
+         qzHGrgq8fs8JGet9Odv3isiqA2BAEwaSruGVQmS9a+mZpNXFpeE4VcGYKpq2SjITIXEr
+         iZu8cMKqFXc0GNaf9S/tP3IfDJqMyEWVlwbxUYbisZoe8tFawpRpLzcdVzwhbtNF+qfh
+         oh5qVIsYJBFymQreVC72K8pfrXlBDUp9vpAjjD5DhQNe9vKsYc0LarvZp9YPPAvTNQ6k
+         bUkDxp4231M2aHh4lz1mTKmik9470JWb/d4AGTx8NT+lMZyzE4h4Q/QHCx3Q8heZ+6Wu
+         Pn4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XWoEzbGml88OxuqmQAcHOjUJ4xDFJxJMYhsbSvaYG8g=;
-        b=SVmJ0mfjgAPJHXJLw6HemCUimuW96fIk3vTsSTgkAt/b90jpRYlS5eCKfsf/AygJbY
-         NZaRmIWAsci73iTKnQ19SeiNHqnpzWj5ITqRgqKNWg2FMsN/2UMcIhssoEE6ye7uR0Xf
-         v+b5UE4aPxl2Q46r5dXn0/zuZH1VDsxb73KpU0Tb73gclmNTF4BMcuoc3TCUD92Tqr0h
-         Rf84W3O0QIAL2MFTFqVsFwbpyxukjbVYuVZIWIWhYRhRHwBDBZthf8mfgA+XXAmnlZfW
-         1gBd+hZ033WnwZSiYqOb5D/u5XelAMOqvWB38A29UOXqAp4Aal6noPzUPsWHs1nL4pxE
-         c00w==
-X-Gm-Message-State: AOAM533qP/dykBdtccHSNLdvdB+zPo4OKhFywaOVh1ktBF/XZk+hKr1d
-        YFaiWWfGSOyR0FE2LV5y8eDC2UjU445GkJE2
-X-Google-Smtp-Source: ABdhPJwUcJ3SUmtLrEEaeqoD1Jfg434VvxyQqtPpgiiJeOCIL6JkqcZQQAQ8evRVIMOkpgIhXEKA1w==
-X-Received: by 2002:aa7:c1d5:: with SMTP id d21mr21943395edp.167.1615215332510;
-        Mon, 08 Mar 2021 06:55:32 -0800 (PST)
+        bh=Io9v2GBIlHI+Tmp+Muo2ozOuxnB5JlN/m/peVkSOoQk=;
+        b=TKZptO9o9Dkx62IXzim91fUlfXF/g7Ev1mIOZp+4yyoZZrhZXU3v39tmnhUl+F86XJ
+         cpP5AV+3g8ixxXjn2NrvE7Kvyu543tKbRpMA+/Fr9iowG0C7U+pV8eaNhnAJhODfiU+Y
+         XrKfoQzHNV/9cWTevuJE/Okodq6lIryTr9/cF3knwJXGO+wStgxGVNxylEm5OzgZDbnr
+         YLJrJYjRLS0xmXmJg6nc92D7njaH+TG9z8E8JjrE8bevOE3B4JGDnq5DUatxNzn0xPAO
+         u7YWLF7AqaK+iiikC2PHsjmvJPpTW5PwXtGnVMgLOkJBCuqHgosaM1BCHsTBGE/nkFxM
+         isaw==
+X-Gm-Message-State: AOAM531pC4e+pY46HHGpuHmwsFTMWsI+YVIRkrrwblx9iozWkKgr9ogT
+        j3ocOrbOOFH2tzjI8APUOIIcgAVV8aAQyyuZ
+X-Google-Smtp-Source: ABdhPJzOxDsiKTJZFzssNH71mhV3dmH3qpwIBVJVNeEVFcuravA0h+m9Fy72NPjkwyy5NAtefvkZcw==
+X-Received: by 2002:a05:6402:2076:: with SMTP id bd22mr22161922edb.378.1615215333831;
+        Mon, 08 Mar 2021 06:55:33 -0800 (PST)
 Received: from localhost.localdomain ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id bt14sm7411234edb.92.2021.03.08.06.55.31
+        by smtp.gmail.com with ESMTPSA id bt14sm7411234edb.92.2021.03.08.06.55.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 06:55:32 -0800 (PST)
+        Mon, 08 Mar 2021 06:55:33 -0800 (PST)
 From:   Alexandru Ardelean <aardelean@deviqon.com>
 To:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
         greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
@@ -57,9 +57,9 @@ Cc:     broonie@kernel.org, gregkh@linuxfoundation.org, elder@kernel.org,
         f.fainelli@gmail.com, ldewangan@nvidia.com,
         thierry.reding@gmail.com, jonathanh@nvidia.com, linux@deviqon.com,
         Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH 05/10] spi: spi-tegra20-flash: don't check 'delay_usecs' field for spi transfer
-Date:   Mon,  8 Mar 2021 16:54:57 +0200
-Message-Id: <20210308145502.1075689-6-aardelean@deviqon.com>
+Subject: [PATCH 06/10] staging: greybus: spilib: use 'spi_delay_to_ns' for getting xfer delay
+Date:   Mon,  8 Mar 2021 16:54:58 +0200
+Message-Id: <20210308145502.1075689-7-aardelean@deviqon.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210308145502.1075689-1-aardelean@deviqon.com>
 References: <20210308145502.1075689-1-aardelean@deviqon.com>
@@ -69,32 +69,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'delay_usecs' field was handled for backwards compatibility in case
-there were some users that still configured SPI delay transfers with
-this field.
+The intent is the removal of the 'delay_usecs' field from the
+spi_transfer struct, as there is a 'delay' field that does the same
+thing.
 
-They should all be removed by now. So we can remove the 'delay_usecs'
-handling in this driver.
+The spi_delay_to_ns() can be used to get the transfer delay. It works by
+using the 'delay_usecs' field first (if it is non-zero), and finally
+uses the 'delay' field.
+
+Since the 'delay_usecs' field is going away, this change makes use of the
+spi_delay_to_ns() function. This also means dividing the return value of
+the function by 1000, to convert it to microseconds.
+To prevent any potential faults when converting to microseconds and since
+the result of spi_delay_to_ns() is int, the delay is being computed in 32
+bits and then clamped between 0 & U16_MAX.
 
 Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 ---
- drivers/spi/spi-tegra20-sflash.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/staging/greybus/spilib.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-tegra20-sflash.c b/drivers/spi/spi-tegra20-sflash.c
-index cfb7de737937..2888d8a8dc6d 100644
---- a/drivers/spi/spi-tegra20-sflash.c
-+++ b/drivers/spi/spi-tegra20-sflash.c
-@@ -341,8 +341,7 @@ static int tegra_sflash_transfer_one_message(struct spi_master *master,
- 			goto exit;
- 		}
- 		msg->actual_length += xfer->len;
--		if (xfer->cs_change &&
--		    (xfer->delay_usecs || xfer->delay.value)) {
-+		if (xfer->cs_change && xfer->delay.value) {
- 			tegra_sflash_writel(tsd, tsd->def_command_reg,
- 					SPI_COMMAND);
- 			spi_transfer_delay_exec(xfer);
+diff --git a/drivers/staging/greybus/spilib.c b/drivers/staging/greybus/spilib.c
+index 672d540d3365..30655153df6a 100644
+--- a/drivers/staging/greybus/spilib.c
++++ b/drivers/staging/greybus/spilib.c
+@@ -245,6 +245,7 @@ static struct gb_operation *gb_spi_operation_create(struct gb_spilib *spi,
+ 	/* Fill in the transfers array */
+ 	xfer = spi->first_xfer;
+ 	while (msg->state != GB_SPI_STATE_OP_DONE) {
++		int xfer_delay;
+ 		if (xfer == spi->last_xfer)
+ 			xfer_len = spi->last_xfer_size;
+ 		else
+@@ -259,7 +260,9 @@ static struct gb_operation *gb_spi_operation_create(struct gb_spilib *spi,
+ 
+ 		gb_xfer->speed_hz = cpu_to_le32(xfer->speed_hz);
+ 		gb_xfer->len = cpu_to_le32(xfer_len);
+-		gb_xfer->delay_usecs = cpu_to_le16(xfer->delay_usecs);
++		xfer_delay = spi_delay_to_ns(&xfer->delay, xfer) / 1000;
++		xfer_delay = clamp_t(u16, xfer_delay, 0, U16_MAX);
++		gb_xfer->delay_usecs = cpu_to_le16(xfer_delay);
+ 		gb_xfer->cs_change = xfer->cs_change;
+ 		gb_xfer->bits_per_word = xfer->bits_per_word;
+ 
 -- 
 2.29.2
 
