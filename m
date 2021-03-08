@@ -2,173 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B198C330E9F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C875E330EA5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:49:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbhCHMqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:46:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50368 "EHLO mail.kernel.org"
+        id S229742AbhCHMtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:49:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54596 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229697AbhCHMqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:46:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D481C651FC;
-        Mon,  8 Mar 2021 12:46:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615207573;
-        bh=EmPbvP31FO4CQ1gnsMfb4yOYcyyKbW6zA6cc/EyQbBQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y1wmwl4ngiq0/xsZR5mXhTTZ6KM8bWFDCw7KJEqHLm3+aiGnl3Rg1C7h/dXRFf4Dj
-         jTp80OT6gJLcvPVUg7zMbQk8Go7AfsUXrsUio2A/YpCdDV3JtQN4XOFHX/LnZizsS/
-         pjz5zzaBdKkHEX8iGi3OAucIUiLZ8gOi2hzKeRm5/TGkPSCo5mCxka1PHdY2TsEIeo
-         pfYyEg6teQ7O+G5cuUzimzKJuR8l7DMT2cHRKAhiQpy6xCWeqX0F4K6iu8cFWfhE0T
-         rLFyhdy64JRNLdAVmvMtFk4ltKlSpWL9FUspLsQ+uyw3QyBYuhONpD41vsFRpzHsv/
-         6TbamoaBPiu6Q==
-Date:   Mon, 8 Mar 2021 12:46:07 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, tabba@google.com,
-        mark.rutland@arm.com, dbrazdil@google.com, mate.toth-pal@arm.com,
-        seanjc@google.com, robh+dt@kernel.org
-Subject: Re: [PATCH v3 29/32] KVM: arm64: Wrap the host with a stage 2
-Message-ID: <20210308124606.GA25879@willie-the-truck>
-References: <20210302150002.3685113-1-qperret@google.com>
- <20210302150002.3685113-30-qperret@google.com>
- <20210305192905.GE23633@willie-the-truck>
- <YEXs1cOlmhHg4u8x@google.com>
+        id S229528AbhCHMtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 07:49:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615207752; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I3MA4O9DPW7El1WvYUSmQ4/nQjjkpDOwqQCrp1Pj6HE=;
+        b=r9PKsI+ds0ZUgOainH1rJRz753YW+3pgUswiqXlZU6WuyUF/tz9RrM7Fbqdv3kreUXNfZK
+        rFySYes+vasGUysSslddJeY+oFcyHLOim7Y18mRDUAEwwd0mSZkfPys2wXFp9lrBZ0p5AG
+        Wu9hBRt+9I78DaBoELb7hG8e0C2Fz/g=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DCEC4AC0C;
+        Mon,  8 Mar 2021 12:49:11 +0000 (UTC)
+Date:   Mon, 8 Mar 2021 13:49:11 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
+Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
+Message-ID: <YEYdR8azcawau9Rl@dhcp22.suse.cz>
+References: <YC+ErI8KIJV4Wd7u@dhcp22.suse.cz>
+ <YD50pcPuwV456vwm@google.com>
+ <YEEES/K8cNi8qOJe@google.com>
+ <d83a03dd-fdff-ed62-a2ad-77b25d8249f0@redhat.com>
+ <YEEJf0itS/8vn8Iy@google.com>
+ <d3095ead-a762-61cd-0990-702e14e03d10@redhat.com>
+ <YEEUq8ZRn4WyYWVx@google.com>
+ <c08662f3-6ae1-4fb5-1c4f-840a70fad035@redhat.com>
+ <YEEi1+TREGBElE5H@google.com>
+ <YEEle5xBAc7FUDNI@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YEXs1cOlmhHg4u8x@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YEEle5xBAc7FUDNI@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 09:22:29AM +0000, Quentin Perret wrote:
-> On Friday 05 Mar 2021 at 19:29:06 (+0000), Will Deacon wrote:
-> > On Tue, Mar 02, 2021 at 02:59:59PM +0000, Quentin Perret wrote:
-> > > +static __always_inline void __load_host_stage2(void)
-> > > +{
-> > > +	if (static_branch_likely(&kvm_protected_mode_initialized))
-> > > +		__load_stage2(&host_kvm.arch.mmu, host_kvm.arch.vtcr);
-> > > +	else
-> > > +		write_sysreg(0, vttbr_el2);
-> > 
-> > I realise you've just moved the code, but why is this needed? All we've
-> > done is point the stage-2 ttb at 0x0 (i.e. we haven't disabled anything).
+On Thu 04-03-21 10:22:51, Minchan Kim wrote:
+[...]
+> How about this?
 > 
-> Right, but that is also used for tlb maintenance operations, e.g.
-> __tlb_switch_to_host() and friends.
-
-Good point, the VMID is needed in that situation.
-
-> > > +int __pkvm_prot_finalize(void)
-> > > +{
-> > > +	struct kvm_s2_mmu *mmu = &host_kvm.arch.mmu;
-> > > +	struct kvm_nvhe_init_params *params = this_cpu_ptr(&kvm_init_params);
-> > > +
-> > > +	params->vttbr = kvm_get_vttbr(mmu);
-> > > +	params->vtcr = host_kvm.arch.vtcr;
-> > > +	params->hcr_el2 |= HCR_VM;
-> > > +	if (cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))
-> > > +		params->hcr_el2 |= HCR_FWB;
-> > > +	kvm_flush_dcache_to_poc(params, sizeof(*params));
-> > > +
-> > > +	write_sysreg(params->hcr_el2, hcr_el2);
-> > > +	__load_stage2(&host_kvm.arch.mmu, host_kvm.arch.vtcr);
-> > 
-> > AFAICT, there's no ISB here. Do we need one before the TLB invalidation?
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 238d0fc232aa..489e557b9390 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -8481,7 +8481,8 @@ static inline void dump_migrate_failure_pages(struct list_head *page_list)
 > 
-> You mean for the ARM64_WORKAROUND_SPECULATIVE_AT case? __load_stage2()
-> should already add one for me no?
+>  /* [start, end) must belong to a single zone. */
+>  static int __alloc_contig_migrate_range(struct compact_control *cc,
+> -                                       unsigned long start, unsigned long end)
+> +                                       unsigned long start, unsigned long end,
+> +                                       bool nofail)
 
-__load_stage2() _only_ has the ISB if ARM64_WORKAROUND_SPECULATIVE_AT is
-present, whereas I think you need one unconditionall here so that the
-system register write has taken effect before the TLB invalidation.
+This sounds like a very bad idea to me. Your nofail definition might
+differ from what we actually define as __GFP_NOFAIL but I do not think
+this interface should ever promise anything that strong.
+Sure movable, cma regions should effectively never fail but there will
+never be any _guarantee_ for that.
 
-It's similar to the comment at the end of __tlb_switch_to_guest().
+Earlier in the discussion I have suggested dynamic debugging facility.
+Documentation/admin-guide/dynamic-debug-howto.rst. Have you tried to
+look into that direction?
 
-Having said that, I do worry that ARM64_WORKAROUND_SPECULATIVE_AT probably
-needs a closer look in the world of pKVM, since it currently special-cases
-the host.
+>  {
+>         /* This function is based on compact_zone() from compaction.c. */
+>         unsigned int nr_reclaimed;
+> @@ -8522,7 +8523,8 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+>                                 NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
+>         }
+>         if (ret < 0) {
+> -               dump_migrate_failure_pages(&cc->migratepages);
+> +               if (ret == -EBUSY && nofail)
+> +                       dump_migrate_failure_pages(&cc->migratepages);
+>                 putback_movable_pages(&cc->migratepages);
+>                 return ret;
+>         }
+> @@ -8610,7 +8612,9 @@ int alloc_contig_range(unsigned long start, unsigned long end,
+>          * allocated.  So, if we fall through be sure to clear ret so that
+>          * -EBUSY is not accidentally used or returned to caller.
+>          */
+> -       ret = __alloc_contig_migrate_range(&cc, start, end);
+> +       ret = __alloc_contig_migrate_range(&cc, start, end,
+> +                                       migratetype == CMA ||
+> +                                       zone_idx(cc.zone) == ZONE_MOVABLE);
+>         if (ret && ret != -EBUSY)
+>                 goto done;
+>         ret =0;
 
-> > > +	__tlbi(vmalls12e1is);
-> > > +	dsb(ish);
-> > 
-> > Given that the TLB is invalidated on the boot path, please can you add
-> > a comment here about the stale entries which you need to invalidate?
-> 
-> Sure -- that is for HCR bits cached in TLBs for VMID 0. Thinking about
-> it I could probably reduce the tlbi scope as well.
-> 
-> > Also, does this need to be inner-shareable? I thought this function ran on
-> > each CPU.
-> 
-> Hmm, correct, nsh should do.
-
-Cool, then you can do that for both the TLBI and the DSB instructions (and
-please add a comment that the invalidation is due to the HCR bits).
-
-> > > +static void host_stage2_unmap_dev_all(void)
-> > > +{
-> > > +	struct kvm_pgtable *pgt = &host_kvm.pgt;
-> > > +	struct memblock_region *reg;
-> > > +	u64 addr = 0;
-> > > +	int i;
-> > > +
-> > > +	/* Unmap all non-memory regions to recycle the pages */
-> > > +	for (i = 0; i < hyp_memblock_nr; i++, addr = reg->base + reg->size) {
-> > > +		reg = &hyp_memory[i];
-> > > +		kvm_pgtable_stage2_unmap(pgt, addr, reg->base - addr);
-> > > +	}
-> > > +	kvm_pgtable_stage2_unmap(pgt, addr, ULONG_MAX);
-> > 
-> > Is this just going to return -ERANGE?
-> 
-> Hrmpf, yes, that wants BIT(pgt->ia_bits) I think. And that wants testing
-> as well, clearly.
-
-Agreed, maybe it's worth checking the return value.
-
-> > > +static int host_stage2_idmap(u64 addr)
-> > > +{
-> > > +	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W;
-> > > +	struct kvm_mem_range range;
-> > > +	bool is_memory = find_mem_range(addr, &range);
-> > > +	struct hyp_pool *pool = is_memory ? &host_s2_mem : &host_s2_dev;
-> > > +	int ret;
-> > > +
-> > > +	if (is_memory)
-> > > +		prot |= KVM_PGTABLE_PROT_X;
-> > > +
-> > > +	hyp_spin_lock(&host_kvm.lock);
-> > > +	ret = kvm_pgtable_stage2_idmap_greedy(&host_kvm.pgt, addr, prot,
-> > > +					      &range, pool);
-> > > +	if (is_memory || ret != -ENOMEM)
-> > > +		goto unlock;
-> > > +	host_stage2_unmap_dev_all();
-> > > +	ret = kvm_pgtable_stage2_idmap_greedy(&host_kvm.pgt, addr, prot,
-> > > +					      &range, pool);
-> > 
-> > I find this _really_ hard to reason about, as range is passed by reference
-> > and we don't reset it after the first call returns -ENOMEM for an MMIO
-> > mapping. Maybe some commentary on why it's still valid here?
-> 
-> Sure, I'll add something. FWIW, that is intended -- -ENOMEM can only be
-> caused by the call to kvm_pgtable_stage2_map() which leaves the range
-> untouched. So, as long as we don't release the lock, the range returned
-> by the first call to kvm_pgtable_stage2_idmap_greedy() should still be
-> valid. I suppose I could call kvm_pgtable_stage2_map() directly the
-> second time to make it obvious but I thought this would expose the
-> internal of kvm_pgtable_stage2_idmap_greedy() a little bit too much.
-
-I can see it both ways, but updating the kerneldoc for
-kvm_pgtable_stage2_idmap_greedy() to state in which cases the range is
-updated and how would be helpful. It just says "negative error code on
-failure" at the moment.
-
-Will
+-- 
+Michal Hocko
+SUSE Labs
