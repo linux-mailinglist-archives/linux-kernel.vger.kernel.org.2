@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB303319BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:54:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6C33319BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:55:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhCHVxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 16:53:38 -0500
-Received: from mail-il1-f182.google.com ([209.85.166.182]:41148 "EHLO
-        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbhCHVxZ (ORCPT
+        id S230063AbhCHVym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 16:54:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229821AbhCHVyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 16:53:25 -0500
-Received: by mail-il1-f182.google.com with SMTP id c10so10266044ilo.8;
-        Mon, 08 Mar 2021 13:53:24 -0800 (PST)
+        Mon, 8 Mar 2021 16:54:35 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACEE8C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 13:54:35 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id h18so10308569ils.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 13:54:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=GNLTGxZ+PGEgCtQ07tCHVYDPGMZAAUZM3wb03hEyBGI=;
+        b=OUsXkkm/iM61PqExkw2FZ5NzrO2UW9PyP2gd1nPnsml4VXLjlGIbDUHXX7beB5vKJg
+         8qkf2PGsh1YTQ1uq/AR2FDt2/TBc003S5O4Z44bf0/iB/tQHH4/mf7GI/4Z2roHhW9Ez
+         eOG2dA3d9n9ftmcIf0p4e853GQK8yVL37w8Iho25Iwd74PP2YNFVZa/9omxTuIO6eC/m
+         1dFuJ6y9a52zbhpADv8iFtwYa9IXYEehn9Qx7bM4SgmVrOlIaK5uSYptSAd5gTNIUGHF
+         nXxt1z7tINVy8HW9OEoYyNV+C9PdUMB9JdHQhRm0Sp8jSAb52Pa3moyRIwPuW3CkNeGV
+         gqow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=LX5PpicIOZawGnwZFfoDpkcC/MADa83hSMM3P3xoxmo=;
-        b=dzCm9T5PtHkGXEvDTDcc3nmTv8pqEKwYiMVB5WLzQ/4yWKCAApgqYLy/SnQUTzTfpC
-         izYADNWNgEQDbPe6G6NDLtaefP65WlO9vSB+cBZHAz45zUn2r/J1+qP4aGvzVPHY63jx
-         iUPvPTvot+TlHHd5O9unTRq8LsIOu3dL+MbnSgOfJInd3TK0XdqQUx2OMqyTuQhAItvv
-         7g3f1Tw8rghSG0rXyiGS5eMaz/H5LPyxOKhiMQyvLMDo1r20gjkf9Q3XwEo/QuWLlBFb
-         /BYl5WSMcvbbfPd/TZmEoE51SbJwDzKeQC0fxnnTuONuZRRHMMdWHdqK3WPjqiHSUY/o
-         hB0g==
-X-Gm-Message-State: AOAM530Oi/+1cR56dCVoeQGfRSrmkkShCxGQuGbaTa+u1OVz/SbaQIv8
-        o6cQoPi2lTuP/IIywbNDYA==
-X-Google-Smtp-Source: ABdhPJyN7vXM8TddFG1CDCKGglHi9zZzgm+iG3VF4UQDAI4HFs6mqLB3lobOg7yIiXWp5nsUuZjtLw==
-X-Received: by 2002:a05:6e02:1c2a:: with SMTP id m10mr21383555ilh.17.1615240404507;
-        Mon, 08 Mar 2021 13:53:24 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id u15sm6845506iln.84.2021.03.08.13.53.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 13:53:24 -0800 (PST)
-Received: (nullmailer pid 3019369 invoked by uid 1000);
-        Mon, 08 Mar 2021 21:53:22 -0000
-Date:   Mon, 8 Mar 2021 14:53:22 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Scott Branden <sbranden@broadcom.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Tian Tao <tiantao6@hisilicon.com>, Ray Jui <rjui@broadcom.com>,
-        Matt Mackall <mpm@selenic.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/3] dt-bindings: rng: bcm2835: document reset support
-Message-ID: <20210308215322.GA3019335@robh.at.kernel.org>
-References: <20210305070132.2986-1-noltari@gmail.com>
- <20210305070132.2986-3-noltari@gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=GNLTGxZ+PGEgCtQ07tCHVYDPGMZAAUZM3wb03hEyBGI=;
+        b=QIQ+UOPtzjJq068QdGP+asryJ6jnzI635oINYjRd1LzA/LmscZ/SyZUpoE/35Tu940
+         gAlNQsWsNPMS5DBveS7NV+2+/cfkqaPQQp80k4kTx6HoXwW/MwuaUYTSE9bELQHDANRm
+         KQkYU2lgyhBZB/TzD4FhCpv7O0aOfrVFL9W7dtvLhDEIYFE8LZYw0Gh78Iure/odsw9T
+         rSmPdkF5Htfnjbns6qgmT0uOuYhGe3GCEdKJhDaoIYFwJTSVncW3wGxAXcoR+JMl4WJD
+         iEOxgZGs6vaHYtjQWnrvkSDuMFeenAjxKD4FBzbtEIwKXYkbkiknvvYMnBdW0ThFFcqK
+         +Zxw==
+X-Gm-Message-State: AOAM530W8FZHl7YxszJhY+Xsh+lpKroqEFrvl/SI/BVfZhdNeaYEjiTZ
+        h7df27BTgpbfqAazCKTsG7BP0ceqafA+b+9B1Q==
+X-Google-Smtp-Source: ABdhPJyOJ5yEXV2TclZLya8MkV34Eg5GoYdF+y7A4uoMRbcC+0tDGQI/QcvSbqVyb97MkWkrtyK6f1B6+jBYdaWQWUU=
+X-Received: by 2002:a05:6e02:1b8c:: with SMTP id h12mr22283165ili.254.1615240474359;
+ Mon, 08 Mar 2021 13:54:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210305070132.2986-3-noltari@gmail.com>
+Received: by 2002:a02:3f11:0:0:0:0:0 with HTTP; Mon, 8 Mar 2021 13:54:33 -0800 (PST)
+Reply-To: shannonmccraney2019@gmail.com
+From:   "Sgt,Shannon Mccraney" <alasanahmad300@gmail.com>
+Date:   Tue, 9 Mar 2021 02:24:33 +0430
+Message-ID: <CAAhE2CpDMbnLt+Yu3jh5CRRnz5+cukjTovC5QsyhLN=_X5PafA@mail.gmail.com>
+Subject: I need an urgent help from you
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 05 Mar 2021 08:01:31 +0100, Álvaro Fernández Rojas wrote:
-> brcm,bcm6368-rng controllers require resetting the IPSEC clock in order to get
-> a functional RNG.
-> 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> ---
->  v6: fix dt-bindings warnings.
->  v5: no changes.
->  v4: pass dt_binding_check.
->  v3: make resets required if brcm,bcm6368-rng.
->  v2: document reset support.
-> 
->  .../devicetree/bindings/rng/brcm,bcm2835.yaml         | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
+--=20
+Hello Darling,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I am happy to have you here as a friend, i hope all is well with you,
+and how are you enjoying your day over there in your country?
+
+My name is Sergeant ,Shannon Mccraney. I=E2=80=99m 29 years  an orphan my
+parents died when I was five years old nobody to help me,I send you my
+business proposal with tears and sorrow,Please let this not be a
+surprised message to you, i am single. I'm an Nurse in America
+military but i am presently in Afghanistan for the fight against
+terrorism and peace keeping.knowing you may lead us into good things
+in life or something else with you, it's my pleasure meeting you.
+
+I need an urgent help from you i have in my possession the sum of
+$3.5million USD Which I made here in Afghanistan ,I deposited this
+money with a Red Cross agent,I want you to stand as my beneficiary
+receive the fund keep it safe so that as soon as am through with my
+mission here in Afghanistan, You will assist me to invest it in a good
+profitable Venture or you keep it for me until I arrive your country,
+I will give You 40% of the total money for your assistance after you
+have receive The money.
+
+I will like to get acquainted with you. I am loving, honest and caring
+person with a good sense of humor despite my profession. I enjoy
+reading, working, traveling, meeting new people and knowing their way
+of life, I enjoy watching the sea waves and the beauty of the
+mountains and everything that nature has to offer. Please tell me more
+about you, your likes and dislike, it is very nice to know and be your
+friend, wishing you all the best, thank you as i still wait to read
+from you.
+
+I want us to be close, because i need someone to be sharing ideas with
+here. I believe we will be best of friends. I will also be happy to
+come over to your country during my leave very soon. I shall keep you
+updated as we proceed in the transaction business. Take good care of
+yourself.your urgent reply is needed for more details.
+
+Best Regards
+Sergeant,Shannon Mccraney.
