@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28694330C9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:41:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D78F8330C9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhCHLlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 06:41:16 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:45398 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbhCHLlC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 06:41:02 -0500
-Date:   Mon, 08 Mar 2021 11:41:00 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615203661;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7nwDCLHhhwHRnil5SA8c4cMC244WlNuluCG1JbTYoiM=;
-        b=REydwh/rVh1lyHcanAd2ReZm9MuGmBepREAyDYm9I4FxF/2tvZ/uZoVrziF5aQ6xb4fWJM
-        sdryUrLpQKT/7irxXJ6U1I3AH1HvZaW8mgDJCNzewZVTi0lS2xeKfTghrlMvY12LjIRCB7
-        CnvEq/oeLD7HtbAaD+gYeHbHSLwSG70zwibgqXRp6Os9bokxVxzFuviOmC6PtbOS7lnN4l
-        Ghc9SUppKfvHvKS/AndDTtUSrDk/B5AlEqGxwNUgbhphQXxCwwsCs1Z8fffthREGjJ7dCN
-        cFffZJYCnK7XVqTZKfKisgUB1cR/0Q3bzZRwxZZkDFZmAWwnSLI5Ie8vKkLaVA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615203661;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7nwDCLHhhwHRnil5SA8c4cMC244WlNuluCG1JbTYoiM=;
-        b=y1ITC2/0h6klA7WBXfSyPV5blLeJi1cqhL0KLPL3dmhuf9w/TQDGY6DPBlkWQJF8lb9mch
-        MKIERXjmGvRlRyDw==
-From:   "tip-bot2 for Mike Travis" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/platform] x86/platform/uv: Set section block size for
- hubless architectures
-Cc:     Mike Travis <mike.travis@hpe.com>, Borislav Petkov <bp@suse.de>,
-        Steve Wahl <steve.wahl@hpe.com>, Russ Anderson <rja@hpe.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210305162853.299892-1-mike.travis@hpe.com>
-References: <20210305162853.299892-1-mike.travis@hpe.com>
+        id S230039AbhCHLpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 06:45:11 -0500
+Received: from mga12.intel.com ([192.55.52.136]:50435 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229604AbhCHLpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 06:45:10 -0500
+IronPort-SDR: zMLxAtgMNZTdZYY5WHzhjgk4eahQIj3cxWZ8BRXI3FddeJ4DWrzKyzCRjH+Syn5cDHR8nSyMbW
+ f63hEZ9RX+Sg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="167283889"
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="167283889"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 03:45:10 -0800
+IronPort-SDR: lnUJFFXJ6/McTO6eNQriqJBp7TBvHjcQbyf9rXe9zb9M61dzhj4ClGP6Wj1daydc9wc72yPJVe
+ 4Lowz5WDtg6w==
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="508900360"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 03:45:08 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lJEJu-00Ao5j-9c; Mon, 08 Mar 2021 13:45:06 +0200
+Date:   Mon, 8 Mar 2021 13:45:06 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marek Vasut <marex@denx.de>,
+        Roman Guskov <rguskov@dh-electronics.com>
+Subject: Re: [PATCH v1 1/1] gpiolib: Read "gpio-line-names" from a firmware
+ node
+Message-ID: <YEYOQqFch8yTE2SZ@smile.fi.intel.com>
+References: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
+ <CAMpxmJVjdeW5978U--4KDCVr9gtu603gq04j2Zo0ohRi1rURZg@mail.gmail.com>
+ <CAHp75Vf9XbZ4S-2aqfQafaw8jJrW3oVQYEw06roi3zOBKRMmOA@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <161520366063.398.17015803098326869178.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vf9XbZ4S-2aqfQafaw8jJrW3oVQYEw06roi3zOBKRMmOA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/platform branch of tip:
+On Sun, Mar 07, 2021 at 06:14:49PM +0200, Andy Shevchenko wrote:
+> On Sun, Mar 7, 2021 at 4:22 PM Bartosz Golaszewski
+> <bgolaszewski@baylibre.com> wrote:
+> > On Fri, Mar 5, 2021 at 1:02 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > >
+> > > On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
+> > > see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
+> > > pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
+> > > and iterates over all of its DT subnodes when registering each GPIO
+> > > bank gpiochip. Each gpiochip has:
+> > >
+> > >   - gpio_chip.parent = dev,
+> > >     where dev is the device node of the pin controller
+> > >   - gpio_chip.of_node = np,
+> > >     which is the OF node of the GPIO bank
+> > >
+> > > Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
+> > > i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
+> > >
+> > > The original code behaved correctly, as it extracted the "gpio-line-names"
+> > > from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
+> > >
+> > > To achieve the same behaviour, read property from the firmware node.
 
-Commit-ID:     6840a150b9daf35e4d21ab9780d0a03b4ed74a5b
-Gitweb:        https://git.kernel.org/tip/6840a150b9daf35e4d21ab9780d0a03b4ed74a5b
-Author:        Mike Travis <mike.travis@hpe.com>
-AuthorDate:    Fri, 05 Mar 2021 10:28:53 -06:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 08 Mar 2021 12:17:53 +01:00
+...
 
-x86/platform/uv: Set section block size for hubless architectures
+> > Did you run the OF unit tests on this? The check for the parent dev
+> > was added after a bug was reported that was only triggered in unit
+> > tests.
+> 
+> Parent is not used anymore. But I can run unittests next week (or if
+> you know that they are failing now, can you please show the failure?).
 
-Commit
+For the record:
+[   40.587868] ### dt-test ### end of unittest - 190 passed, 0 failed
 
-  bbbd2b51a2aa ("x86/platform/UV: Use new set memory block size function")
+If you have tests failed, we need more information about what line fails, etc.
 
-added a call to set the block size value that is needed by the kernel
-to set the boundaries in the section list. This was done for UV Hubbed
-systems but missed in the UV Hubless setup. Fix that mistake by adding
-that same set call for hubless systems, which support the same NVRAMs
-and Intel BIOS, thus the same problem occurs.
+-- 
+With Best Regards,
+Andy Shevchenko
 
- [ bp: Massage commit message. ]
 
-Fixes: bbbd2b51a2aa ("x86/platform/UV: Use new set memory block size function")
-Signed-off-by: Mike Travis <mike.travis@hpe.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
-Reviewed-by: Russ Anderson <rja@hpe.com>
-Link: https://lkml.kernel.org/r/20210305162853.299892-1-mike.travis@hpe.com
----
- arch/x86/kernel/apic/x2apic_uv_x.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index 52bc217..c9ddd23 100644
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -1671,6 +1671,9 @@ static __init int uv_system_init_hubless(void)
- 	if (rc < 0)
- 		return rc;
- 
-+	/* Set section block size for current node memory */
-+	set_block_size();
-+
- 	/* Create user access node */
- 	if (rc >= 0)
- 		uv_setup_proc_files(1);
