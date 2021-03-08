@@ -2,286 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2E433189D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 178B033189F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbhCHUa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:30:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbhCHUao (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:30:44 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10503C06174A;
-        Mon,  8 Mar 2021 12:30:44 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id r17so22964621ejy.13;
-        Mon, 08 Mar 2021 12:30:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bng89PIihxzY7Jr/zcM+BtxNNqk4o89SmQXzo/gPHmU=;
-        b=QbbEPERB65dedudzcs6DWkwg4Eeg+TXLOZVdLXE+Z11qwfm/V27fEwxC0aajud/bO8
-         OssuGoTO0ZOTHAt2lMpfldVhx4eW4eYr7X/vG+sqfTBb8SXsM9Cdi7vt78ste/laRmZ/
-         Sy6qUd5Mb1SMV2LwDYVFZk5NYrjSfOYVcV+Y0FoEzeckY/V2hgkLrqO79sbWUOUEWa7M
-         9S8VRymQaWCaZDY7QeDRkkLe2MXE6SvSNZX0ON8VWtW36GRXV20Gd/0WSMeLbHTyL6dO
-         eG3z0+WsVSQE1SNBtSXHesZAgflfqMon+fR1yIcDjHAAXcUSRTAe6xQB8QIrZ4jVjzbB
-         3yfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bng89PIihxzY7Jr/zcM+BtxNNqk4o89SmQXzo/gPHmU=;
-        b=OpEWKu0idawIWILRcYdJfvqMEsojB+FiqRYsCkBDeNV3ZiLQ1XiFrIkf6t0dqRA2Lt
-         MpF3QJ+lOAfUrksWO1KTLbG8e5KkKXuS02ywO8l5pr6CtCG9X1rKp5Bpfn2tTUKIus9A
-         d/25stq2ok1ap7+ZorTIJbc64PGBw4SbM4OnVTXapcSHmT8j4pF3WxTncy8+Uwbc0wZQ
-         IUxbU0s0Ur/Ax16Ax+qfjOS5OwNZreoecrwUeoUeKZQ5WDozmE6QPydzVp11doY6lXA4
-         /g5hZp5cu+fPOGCjv4k++1/AKtO5FENyLsCGqq/S2eIQsKCx8ClYyCHW87D1CbCvf7YB
-         DS6g==
-X-Gm-Message-State: AOAM531M2wsapkbOpnvFIEhs+VXamO7yxTitenyRuWTP6nQ4BQ6DNueb
-        eu35UcIHHkGI4S7lNrsCIgA2p83UI6r76QuOXhU=
-X-Google-Smtp-Source: ABdhPJzJlbz1w5x5vBQyV7pYVy8xLV2kFyoZQT9beTonyOQejIZGGntxjfdW0Lbwx5eSoklWTZgDc7Z05Hn65RuUIxw=
-X-Received: by 2002:a17:906:304a:: with SMTP id d10mr16667995ejd.507.1615235442779;
- Mon, 08 Mar 2021 12:30:42 -0800 (PST)
+        id S231184AbhCHUbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:31:33 -0500
+Received: from mga11.intel.com ([192.55.52.93]:8496 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229575AbhCHUbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 15:31:22 -0500
+IronPort-SDR: u3TtpV4ZS6tmSsy8615/wrAogWoEoOO5FJv73sXuKxtKb7Ku0K/g4E0QPRBTdkGSYRnY759exg
+ qLyhtpqcCXzw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="184738983"
+X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
+   d="scan'208";a="184738983"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 12:31:21 -0800
+IronPort-SDR: 6DD67P3qdHW1Jh8D1KN5wLd2C9MpjLjWb7jiU5Jwf7cgIDHPW0Z3ovMMRFNovCbXbV+QYNqus2
+ VJh9BUjVBysQ==
+X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
+   d="scan'208";a="369533241"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 12:31:19 -0800
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id AA0456365;
+        Mon,  8 Mar 2021 12:31:19 -0800 (PST)
+Date:   Mon, 8 Mar 2021 12:31:19 -0800
+From:   mark gross <mgross@linux.intel.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        peng.fan@nxp.com, shawnguo@kernel.org, jassisinghbrar@gmail.com,
+        linux-kernel@vger.kernel.org,
+        Seamus Kelly <seamus.kelly@intel.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 19/34] xlink-core: Add xlink core device tree bindings
+Message-ID: <20210308203119.GB138795@linux.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20210212222304.110194-1-mgross@linux.intel.com>
+ <20210212222304.110194-20-mgross@linux.intel.com>
+ <20210305210300.GB622142@robh.at.kernel.org>
 MIME-Version: 1.0
-References: <20210217001322.2226796-1-shy828301@gmail.com> <20210217001322.2226796-10-shy828301@gmail.com>
- <CALvZod6R=cEwK+AND+E3CG3LrWViNjWDd0dy-Brz1MhJWyJ+ZQ@mail.gmail.com>
-In-Reply-To: <CALvZod6R=cEwK+AND+E3CG3LrWViNjWDd0dy-Brz1MhJWyJ+ZQ@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 8 Mar 2021 12:30:31 -0800
-Message-ID: <CAHbLzkq6TG4pV2Ro5yMWZ0wKsSPH5bJf+8Kj7W1JpWMa_V68HA@mail.gmail.com>
-Subject: Re: [v8 PATCH 09/13] mm: vmscan: add per memcg shrinker nr_deferred
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305210300.GB622142@robh.at.kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 11:12 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Tue, Feb 16, 2021 at 4:13 PM Yang Shi <shy828301@gmail.com> wrote:
-> >
-> > Currently the number of deferred objects are per shrinker, but some slabs, for example,
-> > vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
-> >
-> > The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
-> > excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
-> > may suffer from over shrink, excessive reclaim latency, etc.
-> >
-> > For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
-> > heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
-> > might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
-> >
-> > We observed this hit in our production environment which was running vfs heavy workload
-> > shown as the below tracing log:
-> >
-> > <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> > nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
-> > cache items 246404277 delta 31345 total_scan 123202138
-> > <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> > nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
-> > last shrinker return val 123186855
-> >
-> > The vfs cache and page cache ratio was 10:1 on this machine, and half of caches were dropped.
-> > This also resulted in significant amount of page caches were dropped due to inodes eviction.
-> >
-> > Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
-> > better isolation.
-> >
-> > When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
-> > would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
-> >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+On Fri, Mar 05, 2021 at 03:03:00PM -0600, Rob Herring wrote:
+> On Fri, Feb 12, 2021 at 02:22:49PM -0800, mgross@linux.intel.com wrote:
+> > From: Seamus Kelly <seamus.kelly@intel.com>
+> > 
+> > Add device tree bindings for keembay-xlink.
+> > 
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: devicetree@vger.kernel.org
+> > Reviewed-by: Mark Gross <mgross@linux.intel.com>
+> > Signed-off-by: Mark Gross <mgross@linux.intel.com>
+> > Signed-off-by: Seamus Kelly <seamus.kelly@intel.com>
 > > ---
-> >  include/linux/memcontrol.h |  7 +++--
-> >  mm/vmscan.c                | 60 ++++++++++++++++++++++++++------------
-> >  2 files changed, 46 insertions(+), 21 deletions(-)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 4c9253896e25..c457fc7bc631 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -93,12 +93,13 @@ struct lruvec_stat {
-> >  };
-> >
-> >  /*
-> > - * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
-> > - * which have elements charged to this memcg.
-> > + * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
-> > + * shrinkers, which have elements charged to this memcg.
-> >   */
-> >  struct shrinker_info {
-> >         struct rcu_head rcu;
-> > -       unsigned long map[];
-> > +       atomic_long_t *nr_deferred;
-> > +       unsigned long *map;
-> >  };
-> >
-> >  /*
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index a1047ea60ecf..fcb399e18fc3 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -187,11 +187,17 @@ static DECLARE_RWSEM(shrinker_rwsem);
-> >  #ifdef CONFIG_MEMCG
-> >  static int shrinker_nr_max;
-> >
-> > +/* The shrinker_info is expanded in a batch of BITS_PER_LONG */
-> >  static inline int shrinker_map_size(int nr_items)
-> >  {
-> >         return (DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long));
-> >  }
-> >
-> > +static inline int shrinker_defer_size(int nr_items)
-> > +{
-> > +       return (round_up(nr_items, BITS_PER_LONG) * sizeof(atomic_long_t));
-> > +}
+> >  .../bindings/misc/intel,keembay-xlink.yaml    | 29 +++++++++++++++++++
+> >  1 file changed, 29 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml b/Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
+> > new file mode 100644
+> > index 000000000000..5ac2e7fa5b5e
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
+> > @@ -0,0 +1,29 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +# Copyright (c) Intel Corporation. All rights reserved.
+> > +%YAML 1.2
+> > +---
+> > +$id: "http://devicetree.org/schemas/misc/intel,keembay-xlink.yaml#"
+> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 > > +
-> >  static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
-> >                                                      int nid)
-> >  {
-> > @@ -200,10 +206,12 @@ static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
-> >  }
-> >
-> >  static int expand_one_shrinker_info(struct mem_cgroup *memcg,
-> > -                                   int size, int old_size)
-> > +                                   int map_size, int defer_size,
-> > +                                   int old_map_size, int old_defer_size)
-> >  {
-> >         struct shrinker_info *new, *old;
-> >         int nid;
-> > +       int size = map_size + defer_size;
-> >
-> >         for_each_node(nid) {
-> >                 old = shrinker_info_protected(memcg, nid);
-> > @@ -215,9 +223,16 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
-> >                 if (!new)
-> >                         return -ENOMEM;
-> >
-> > -               /* Set all old bits, clear all new bits */
-> > -               memset(new->map, (int)0xff, old_size);
-> > -               memset((void *)new->map + old_size, 0, size - old_size);
-> > +               new->nr_deferred = (atomic_long_t *)(new + 1);
-> > +               new->map = (void *)new->nr_deferred + defer_size;
+> > +title: Intel Keem Bay xlink
 > > +
-> > +               /* map: set all old bits, clear all new bits */
-> > +               memset(new->map, (int)0xff, old_map_size);
-> > +               memset((void *)new->map + old_map_size, 0, map_size - old_map_size);
-> > +               /* nr_deferred: copy old values, clear all new values */
-> > +               memcpy(new->nr_deferred, old->nr_deferred, old_defer_size);
-> > +               memset((void *)new->nr_deferred + old_defer_size, 0,
-> > +                      defer_size - old_defer_size);
-> >
-> >                 rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
-> >                 kvfree_rcu(old);
-> > @@ -232,9 +247,6 @@ void free_shrinker_info(struct mem_cgroup *memcg)
-> >         struct shrinker_info *info;
-> >         int nid;
-> >
-> > -       if (mem_cgroup_is_root(memcg))
-> > -               return;
-> > -
-> >         for_each_node(nid) {
-> >                 pn = mem_cgroup_nodeinfo(memcg, nid);
-> >                 info = shrinker_info_protected(memcg, nid);
-> > @@ -247,12 +259,12 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
-> >  {
-> >         struct shrinker_info *info;
-> >         int nid, size, ret = 0;
-> > -
-> > -       if (mem_cgroup_is_root(memcg))
-> > -               return 0;
->
-> Can you please comment on the consequences on allowing to allocate
-> shrinker_info for root memcg? Why didn't we do that before but now it
-> is fine (or maybe required)? Please add the explanation in the commit
-> message.
-
-Before the patchset shrinker_info just tracks shrinker_maps which is
-not required for root memcg. But the newly added nr_deferred is needed
-in root memcg otherwise the nr_deferred work would get lost once the
-memcgs are reparented to root.
-
-How's about adding the below paragraph to the commit log:
-
-"To preserve nr_deferred when reparenting memcgs to root, root memcg
-needs shrinker_info allocated too."
-
->
-> > +       int map_size, defer_size = 0;
-> >
-> >         down_write(&shrinker_rwsem);
-> > -       size = shrinker_map_size(shrinker_nr_max);
-> > +       map_size = shrinker_map_size(shrinker_nr_max);
-> > +       defer_size = shrinker_defer_size(shrinker_nr_max);
-> > +       size = map_size + defer_size;
-> >         for_each_node(nid) {
-> >                 info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
-> >                 if (!info) {
-> > @@ -260,6 +272,8 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
-> >                         ret = -ENOMEM;
-> >                         break;
-> >                 }
-> > +               info->nr_deferred = (atomic_long_t *)(info + 1);
-> > +               info->map = (void *)info->nr_deferred + defer_size;
-> >                 rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, info);
-> >         }
-> >         up_write(&shrinker_rwsem);
-> > @@ -267,15 +281,21 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
-> >         return ret;
-> >  }
-> >
-> > +static inline bool need_expand(int nr_max)
-> > +{
-> > +       return round_up(nr_max, BITS_PER_LONG) >
-> > +              round_up(shrinker_nr_max, BITS_PER_LONG);
-> > +}
+> > +maintainers:
+> > +  - Seamus Kelly <seamus.kelly@intel.com>
 > > +
-> >  static int expand_shrinker_info(int new_id)
-> >  {
-> > -       int size, old_size, ret = 0;
-> > +       int ret = 0;
-> >         int new_nr_max = new_id + 1;
-> > +       int map_size, defer_size = 0;
-> > +       int old_map_size, old_defer_size = 0;
-> >         struct mem_cgroup *memcg;
-> >
-> > -       size = shrinker_map_size(new_nr_max);
-> > -       old_size = shrinker_map_size(shrinker_nr_max);
-> > -       if (size <= old_size)
-> > +       if (!need_expand(new_nr_max))
-> >                 goto out;
-> >
-> >         if (!root_mem_cgroup)
-> > @@ -283,11 +303,15 @@ static int expand_shrinker_info(int new_id)
-> >
-> >         lockdep_assert_held(&shrinker_rwsem);
-> >
-> > +       map_size = shrinker_map_size(new_nr_max);
-> > +       defer_size = shrinker_defer_size(new_nr_max);
-> > +       old_map_size = shrinker_map_size(shrinker_nr_max);
-> > +       old_defer_size = shrinker_defer_size(shrinker_nr_max);
+> > +description: |
+> > +  The Keem Bay xlink driver enables the communication/control sub-system
+> > +  for internal and external communications to the Intel Keem Bay SoC.
 > > +
-> >         memcg = mem_cgroup_iter(NULL, NULL, NULL);
-> >         do {
-> > -               if (mem_cgroup_is_root(memcg))
-> > -                       continue;
-> > -               ret = expand_one_shrinker_info(memcg, size, old_size);
-> > +               ret = expand_one_shrinker_info(memcg, map_size, defer_size,
-> > +                                              old_map_size, old_defer_size);
-> >                 if (ret) {
-> >                         mem_cgroup_iter_break(NULL, memcg);
-> >                         goto out;
-> > --
-> > 2.26.2
-> >
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - items:
+> > +          - const: intel,keembay-xlink
+> > +
+> > +additionalProperties: False
+> > +
+> > +examples:
+> > +  - |
+> > +    xlink {
+> > +        compatible = "intel,keembay-xlink";
+> 
+> A node with only a compatible is almost always abusing DT just to 
+> instantiate your driver.
+
+Is it normal to make drivers that want to abuse DT in this way platform
+devices?
+
+Any advice would be welcome and helful.
+
+thanks!
+
+--mark
