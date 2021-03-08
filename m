@@ -2,136 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55A2331704
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:12:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FC1331708
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhCHTLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:11:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33822 "EHLO
+        id S229904AbhCHTMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:12:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230327AbhCHTLk (ORCPT
+        with ESMTP id S231255AbhCHTMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:11:40 -0500
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AE4C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 11:11:40 -0800 (PST)
-Received: by mail-vs1-xe33.google.com with SMTP id s8so5441730vsc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 11:11:40 -0800 (PST)
+        Mon, 8 Mar 2021 14:12:20 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A161EC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 11:12:19 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id t9so17496441ljt.8
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 11:12:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=i+YqN6/BonSiVeAMXE6BrX07AcSfEu2bZuI4K6dyeGs=;
-        b=tFRWlYBz4jdkgSvYUFFKinpnZ3qnIXEvIzqUU35H9pO1jXTOZwk8RP5RrRgFBeNEJv
-         sAO470V+mT9+QqFSC8x2BZq9U5lR+ZlXRHRQv/rJEPEJvZzj7ZIuTTkddFZccZY9wQwy
-         KXH8ouKYfrsPaZOTXgc/oMGxcefX66NNvbDBOdS5nbsoX0VjAKwPuLErSGCfumOb/u4M
-         cysthcPnmqyBN+WGFLMu7IAkPecQZdLoHC8IW1Wk2WqNuuETiFuJW6HuewYBashgATr2
-         zJwMK7I52szFFGyrNJnEbIxKE0dlyepaDoWOiKIAhgmNk7ZOrM+Cmapbz7Rv7WGCsJNd
-         blpw==
+        bh=6lphpwLFld/gj6xJlJyOO7lHoVH9+/eeuknXpn9es+U=;
+        b=A85oOlhvLmMYG+jDFsWRVBu/cnZwePzqql9t9WBFBx59OqZJoMWuCF0MWN9qj2rV5E
+         hAid/1yrUHgklq8XGGnk8xeZqN//wbDPaTxY5WI70oXoxb2B8sfXFQvzk0HHsp6tuU25
+         i6uABvQNuaaSGXKGfUFhqxTaYDdODGfRXdMa/FMvenEXGfwFueCPgNK/kBiImTAm37MI
+         3urV6N0IFcmQO9ZBWJkdYDiy9LBIltrkDNqf0F6kXk6S8qWPG1QJV452AeNOa4ySLjC6
+         dmi5ErtSe99XmVMiYpeQzPcZ5I1jGf2U/hZyijvvW+/27B0Ey1671eTcG4SRn+IXoU1Y
+         OB1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=i+YqN6/BonSiVeAMXE6BrX07AcSfEu2bZuI4K6dyeGs=;
-        b=Tfxk4xZDVQ7weWNReDshFodkPAz6SFTn3QEDwDNP81+EzLQiGQ6/prLcnqoElrOg71
-         3/EayYGFtf66w6fszrvryLIc+j/W00nh/eniYTi+iRuzAzNUFSJMU51Sl/Wo+/U5zOb+
-         CDlwkIhyLyhNNabNyYQpCsBzNaA/GWOKMNUTSgMsBmnQzf/3ynDOPvFqCa7aTB52InuA
-         dGHXl0pWYABPaL4fpxB+n4io6UftAV0TNsdgsxT9eht2z2+ImR7kge7LoNlr9rqRTcMx
-         4029GNjlstX8Lx+GNUYao0cShje9otlwZyehIRefN3oZuMGtGFuVFmuAImy7tYgivOpu
-         E5VA==
-X-Gm-Message-State: AOAM5321L06Rqo1CjuSl9i5Ce8IMINDLfeTX7b+qr/3zB50mcLLy9Pjl
-        7IFGxKFEyjiuwujaJKesLC24kasgk0Xw8wFljl8Dag==
-X-Google-Smtp-Source: ABdhPJwnBwBvByMLaIc5q/vWlaZhIdfejCcE6Rc7+VJQZPrDZSWBcMhnJFLT4Ta/n0CH+Z1KOLJAyR6HbDJ4B2g+v2s=
-X-Received: by 2002:a67:5ec1:: with SMTP id s184mr13870317vsb.36.1615230699312;
- Mon, 08 Mar 2021 11:11:39 -0800 (PST)
+        bh=6lphpwLFld/gj6xJlJyOO7lHoVH9+/eeuknXpn9es+U=;
+        b=fJokcyVjjUS7OD9+JjvW6A9KURjUHBOewCseS35dWbrl9nJpEd/qHdF1XhWCPcw4xy
+         +QELpt9d6DdaN8nbI+1M+YXJg6WvfgxeX5hZCJFn9/S7WZMx27MWy1f/D+t9J0y28bu7
+         VQaHslpKvuPSG9f3a8J6vfZZcKj1fYKWll3Jgm5OjztqEG0UvTAoW8hWVFupIvdLKqW9
+         N14hMSQ+hBMEgm8ec7jferz/AkbA9QrKxM7FN9p/JfYJiNvrwqBj2GcW3zGCzLffVjRs
+         gL44wAgtIam5/kOZnUopXjfnl7bfAiUzICEmtebEQ58qqefTPQEhE6YOTcjxpCsNBPy0
+         R3VQ==
+X-Gm-Message-State: AOAM5312xNSwa54oNN2c7UI92esrJrTiskrbf6/UqMxHFV6JsHKqX8nA
+        IOnKHmTnGLgpe+4F8+srIE2o+Tv3VSaJpC3qE1a4/w==
+X-Google-Smtp-Source: ABdhPJzQmw14vkzJ3AJMLh+464Tumni34U9qtfTufyTIa2fwlW6C3qDAs1zNSWlUwqMQyuGoJ9X56V1I9hofuVbt+Mc=
+X-Received: by 2002:a2e:8084:: with SMTP id i4mr11438404ljg.122.1615230737841;
+ Mon, 08 Mar 2021 11:12:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20210303183333.46543-1-masahiroy@kernel.org> <CAKwvOdkhZGv_q9vgDdYY44OrbzmMD_E+GL3SyOk-jQ0kdXtMzg@mail.gmail.com>
-In-Reply-To: <CAKwvOdkhZGv_q9vgDdYY44OrbzmMD_E+GL3SyOk-jQ0kdXtMzg@mail.gmail.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Mon, 8 Mar 2021 11:11:28 -0800
-Message-ID: <CABCJKudmzK=AhtMpZt6X3BDG7NHmf9C6ncEt9JJAv+uto14qXQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] kbuild: remove LLVM=1 test from HAS_LTO_CLANG
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>,
+References: <20210217001322.2226796-1-shy828301@gmail.com> <20210217001322.2226796-10-shy828301@gmail.com>
+In-Reply-To: <20210217001322.2226796-10-shy828301@gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 8 Mar 2021 11:12:03 -0800
+Message-ID: <CALvZod6R=cEwK+AND+E3CG3LrWViNjWDd0dy-Brz1MhJWyJ+ZQ@mail.gmail.com>
+Subject: Re: [v8 PATCH 09/13] mm: vmscan: add per memcg shrinker nr_deferred
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 12:47 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Tue, Feb 16, 2021 at 4:13 PM Yang Shi <shy828301@gmail.com> wrote:
 >
-> + Sami
+> Currently the number of deferred objects are per shrinker, but some slabs, for example,
+> vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
 >
-> On Wed, Mar 3, 2021 at 10:34 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > This guarding is wrong. As Documentation/kbuild/llvm.rst notes, LLVM=1
-> > switches the default of tools, but you can still override CC, LD, etc.
-> > individually.
-> >
-> > BTW, LLVM is not 1/0 flag. If LLVM is not passed in, it is empty.
+> The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
+> excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
+> may suffer from over shrink, excessive reclaim latency, etc.
 >
-> Do we have the same problem with LLVM_IAS?  LGTM otherwise, but wanted
-> to check that before signing off.
+> For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
+> heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
+> might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
 >
-> (Also, the rest of the patches in this series seem more related to
-> DWARFv5 cleanups; this patch seems orthogonal while those are a
-> visible progression).
+> We observed this hit in our production environment which was running vfs heavy workload
+> shown as the below tracing log:
 >
-> >
-> > Non-zero return code is all treated as failure anyway.
-> >
-> > So, $(success,test $(LLVM) -eq 1) and $(success,test "$(LLVM)" = 1)
-> > works equivalently in the sense that both are expanded to 'n' if LLVM
-> > is not given. The difference is that the former internally fails due
-> > to syntax error.
-> >
-> >   $ test ${LLVM} -eq 1
-> >   bash: test: -eq: unary operator expected
-> >   $ echo $?
-> >   2
-> >
-> >   $ test "${LLVM}" -eq 1
-> >   bash: test: : integer expression expected
-> >   $ echo $?
-> >   2
-> >
-> >   $ test "${LLVM}" = 1
-> >   echo $?
-> >   1
-> >
-> >   $ test -n "${LLVM}"
-> >   $ echo $?
-> >   1
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  arch/Kconfig | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/arch/Kconfig b/arch/Kconfig
-> > index 2bb30673d8e6..2af10ebe5ed0 100644
-> > --- a/arch/Kconfig
-> > +++ b/arch/Kconfig
-> > @@ -632,7 +632,6 @@ config HAS_LTO_CLANG
-> >         def_bool y
-> >         # Clang >= 11: https://github.com/ClangBuiltLinux/linux/issues/510
-> >         depends on CC_IS_CLANG && CLANG_VERSION >= 110000 && LD_IS_LLD
-> > -       depends on $(success,test $(LLVM) -eq 1)
+> <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
+> cache items 246404277 delta 31345 total_scan 123202138
+> <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
+> last shrinker return val 123186855
 >
-> IIRC, we needed some other LLVM utilities like llvm-nm and llvm-ar,
-> which are checked below. So I guess we can still support CC=clang
-> AR=llvm-ar NM=llvm-nm, and this check is redundant.
+> The vfs cache and page cache ratio was 10:1 on this machine, and half of caches were dropped.
+> This also resulted in significant amount of page caches were dropped due to inodes eviction.
+>
+> Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
+> better isolation.
+>
+> When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
+> would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
+>
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> ---
+>  include/linux/memcontrol.h |  7 +++--
+>  mm/vmscan.c                | 60 ++++++++++++++++++++++++++------------
+>  2 files changed, 46 insertions(+), 21 deletions(-)
+>
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 4c9253896e25..c457fc7bc631 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -93,12 +93,13 @@ struct lruvec_stat {
+>  };
+>
+>  /*
+> - * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
+> - * which have elements charged to this memcg.
+> + * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
+> + * shrinkers, which have elements charged to this memcg.
+>   */
+>  struct shrinker_info {
+>         struct rcu_head rcu;
+> -       unsigned long map[];
+> +       atomic_long_t *nr_deferred;
+> +       unsigned long *map;
+>  };
+>
+>  /*
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index a1047ea60ecf..fcb399e18fc3 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -187,11 +187,17 @@ static DECLARE_RWSEM(shrinker_rwsem);
+>  #ifdef CONFIG_MEMCG
+>  static int shrinker_nr_max;
+>
+> +/* The shrinker_info is expanded in a batch of BITS_PER_LONG */
+>  static inline int shrinker_map_size(int nr_items)
+>  {
+>         return (DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long));
+>  }
+>
+> +static inline int shrinker_defer_size(int nr_items)
+> +{
+> +       return (round_up(nr_items, BITS_PER_LONG) * sizeof(atomic_long_t));
+> +}
+> +
+>  static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
+>                                                      int nid)
+>  {
+> @@ -200,10 +206,12 @@ static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
+>  }
+>
+>  static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+> -                                   int size, int old_size)
+> +                                   int map_size, int defer_size,
+> +                                   int old_map_size, int old_defer_size)
+>  {
+>         struct shrinker_info *new, *old;
+>         int nid;
+> +       int size = map_size + defer_size;
+>
+>         for_each_node(nid) {
+>                 old = shrinker_info_protected(memcg, nid);
+> @@ -215,9 +223,16 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+>                 if (!new)
+>                         return -ENOMEM;
+>
+> -               /* Set all old bits, clear all new bits */
+> -               memset(new->map, (int)0xff, old_size);
+> -               memset((void *)new->map + old_size, 0, size - old_size);
+> +               new->nr_deferred = (atomic_long_t *)(new + 1);
+> +               new->map = (void *)new->nr_deferred + defer_size;
+> +
+> +               /* map: set all old bits, clear all new bits */
+> +               memset(new->map, (int)0xff, old_map_size);
+> +               memset((void *)new->map + old_map_size, 0, map_size - old_map_size);
+> +               /* nr_deferred: copy old values, clear all new values */
+> +               memcpy(new->nr_deferred, old->nr_deferred, old_defer_size);
+> +               memset((void *)new->nr_deferred + old_defer_size, 0,
+> +                      defer_size - old_defer_size);
+>
+>                 rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
+>                 kvfree_rcu(old);
+> @@ -232,9 +247,6 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+>         struct shrinker_info *info;
+>         int nid;
+>
+> -       if (mem_cgroup_is_root(memcg))
+> -               return;
+> -
+>         for_each_node(nid) {
+>                 pn = mem_cgroup_nodeinfo(memcg, nid);
+>                 info = shrinker_info_protected(memcg, nid);
+> @@ -247,12 +259,12 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+>  {
+>         struct shrinker_info *info;
+>         int nid, size, ret = 0;
+> -
+> -       if (mem_cgroup_is_root(memcg))
+> -               return 0;
 
-I'm fine with removing the check, but the idea here was to just make
-it slightly harder for people to accidentally use a mismatched
-toolchain, even though checking for LLVM=1 doesn't stop them from
-doing so anyway. But yes, the only LLVM tools required in addition to
-the compiler and the linker are llvm-ar and llvm-nm.
+Can you please comment on the consequences on allowing to allocate
+shrinker_info for root memcg? Why didn't we do that before but now it
+is fine (or maybe required)? Please add the explanation in the commit
+message.
 
-Sami
+> +       int map_size, defer_size = 0;
+>
+>         down_write(&shrinker_rwsem);
+> -       size = shrinker_map_size(shrinker_nr_max);
+> +       map_size = shrinker_map_size(shrinker_nr_max);
+> +       defer_size = shrinker_defer_size(shrinker_nr_max);
+> +       size = map_size + defer_size;
+>         for_each_node(nid) {
+>                 info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
+>                 if (!info) {
+> @@ -260,6 +272,8 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+>                         ret = -ENOMEM;
+>                         break;
+>                 }
+> +               info->nr_deferred = (atomic_long_t *)(info + 1);
+> +               info->map = (void *)info->nr_deferred + defer_size;
+>                 rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, info);
+>         }
+>         up_write(&shrinker_rwsem);
+> @@ -267,15 +281,21 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+>         return ret;
+>  }
+>
+> +static inline bool need_expand(int nr_max)
+> +{
+> +       return round_up(nr_max, BITS_PER_LONG) >
+> +              round_up(shrinker_nr_max, BITS_PER_LONG);
+> +}
+> +
+>  static int expand_shrinker_info(int new_id)
+>  {
+> -       int size, old_size, ret = 0;
+> +       int ret = 0;
+>         int new_nr_max = new_id + 1;
+> +       int map_size, defer_size = 0;
+> +       int old_map_size, old_defer_size = 0;
+>         struct mem_cgroup *memcg;
+>
+> -       size = shrinker_map_size(new_nr_max);
+> -       old_size = shrinker_map_size(shrinker_nr_max);
+> -       if (size <= old_size)
+> +       if (!need_expand(new_nr_max))
+>                 goto out;
+>
+>         if (!root_mem_cgroup)
+> @@ -283,11 +303,15 @@ static int expand_shrinker_info(int new_id)
+>
+>         lockdep_assert_held(&shrinker_rwsem);
+>
+> +       map_size = shrinker_map_size(new_nr_max);
+> +       defer_size = shrinker_defer_size(new_nr_max);
+> +       old_map_size = shrinker_map_size(shrinker_nr_max);
+> +       old_defer_size = shrinker_defer_size(shrinker_nr_max);
+> +
+>         memcg = mem_cgroup_iter(NULL, NULL, NULL);
+>         do {
+> -               if (mem_cgroup_is_root(memcg))
+> -                       continue;
+> -               ret = expand_one_shrinker_info(memcg, size, old_size);
+> +               ret = expand_one_shrinker_info(memcg, map_size, defer_size,
+> +                                              old_map_size, old_defer_size);
+>                 if (ret) {
+>                         mem_cgroup_iter_break(NULL, memcg);
+>                         goto out;
+> --
+> 2.26.2
+>
