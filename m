@@ -2,77 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E734F330FB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8698A330FC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbhCHNk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 08:40:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229701AbhCHNkr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 08:40:47 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE31C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 05:40:47 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id z128so9130953qkc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 05:40:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XmXU+4B3Yh05wPO2dTCkwdtjQSLG4/1qvxif7cROYeQ=;
-        b=pvHQei8+E+5HPL6xfSHqPN9aNzy2vUJNGtq6VVgd2f2btP4+58I254GZfQEVWsF1zF
-         nQmzPa/2jebHoP51nncWLcvUg3PjEHS9sYWr4uxKMCzGpgjRXyuZNnt1Qs6DNAS9xjHV
-         foZuvFg47ynVVCgiWZ4ytQWS/9vBNik9ibJw8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XmXU+4B3Yh05wPO2dTCkwdtjQSLG4/1qvxif7cROYeQ=;
-        b=KkTZxuZNB4qk151moO0Ho65VQ3mNO5AtvwLqOrUB5gtINGg0MlM49EyoIbnCs586ie
-         PBk+q27XedKAdKKvqWrR+MFsl320V7xHe75trOl7Fj9dLh+XLqrmhzaMsPYKw+c2rl2y
-         l16AGpKa2pWTZJGraAIXVfpRFPErPmhPAQFsmZiku6ZRiz8VK8sQXcpIy7RN7OT+omdD
-         +FqrAJ6nu9XLk2Wx81SgP1U/Q7FJVEo3YZKmQgQWEz5WE7w9CMVdJ7ybVugN2pBmBJ6V
-         f673t2xnrNkoGrgMWOLek10B8hwalL1Gumj6BtPBxvznlkolSxpYhkTc1ZnEXdCn6ucm
-         d9qg==
-X-Gm-Message-State: AOAM5305x8Fub+I0/CsMfI4w732b3NhgVytryRPTV9BKgaNZ3vFONGAz
-        dXkEbD+bjtHwkwU/FVonbBXQbmk01WCht/1x57gjlA==
-X-Google-Smtp-Source: ABdhPJwicXanOfSurZr872caF2q06P/DdnLaFBVEUAiV9z7HyChhULk1R9gqs4uIAdFKoOTMr46m4YqxGaYNy3hXV+o=
-X-Received: by 2002:a37:bd84:: with SMTP id n126mr20169728qkf.54.1615210846918;
- Mon, 08 Mar 2021 05:40:46 -0800 (PST)
+        id S230228AbhCHNmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 08:42:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229505AbhCHNlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 08:41:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 298E065100;
+        Mon,  8 Mar 2021 13:41:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615210897;
+        bh=VJUKujo7WxafrOc8jPvmlgV1PGGLFcyoKaimjk+JkbI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qafNv49/9sAq64knyWCJuaryRmCy9UedUNxRal+C/ORVyFogRcMJRyGS6b0VLyt5S
+         l01/0XZfBjpNbq6jHvpykfvYPVkFMd2qZtjtzWGQc1lg5CQDexK2mxUs3JLP+LwAqB
+         k7D2CL5uLJNWGspYwGDTN/TSDBsHjNsPx2LhCLPQnhqxr7a3gsbDmBMojuGXfNHS4J
+         QWap0loHYZ5ZP3a3U1BDc9FLL/VfmXHiPJmzpXK5oDjw0OZEJTypjQXbxQe9iTpNOS
+         M4yN+b7zxO4CMywHcI79NyziACG2PlZMToQcyCg25B8mA7wQKvvsYPc6vSIUPvPept
+         Qx8dDNfmVnsMQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1234940647; Mon,  8 Mar 2021 10:41:34 -0300 (-03)
+Date:   Mon, 8 Mar 2021 10:41:34 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] tools include: Add __sum16 and __wsum definitions.
+Message-ID: <YEYpjqar4SW08CTK@kernel.org>
+References: <20210307223024.4081067-1-irogers@google.com>
+ <4aa2a66d-b8e4-adfe-8b61-615d98012a65@iogearbox.net>
 MIME-Version: 1.0
-References: <20210308060538.11164-1-mark-pk.tsai@mediatek.com>
-In-Reply-To: <20210308060538.11164-1-mark-pk.tsai@mediatek.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Mon, 8 Mar 2021 22:40:36 +0900
-Message-ID: <CAFr9PXmiR9Wo9HxhRLj-k6+O5qu-uLSTCvQRqW-Yqgkk8YK-Tw@mail.gmail.com>
-Subject: Re: [PATCH v2] irqchip/irq-mst: Support polarity configuration
-To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        =?UTF-8?B?WUogQ2hpYW5nICjmsZ/oi7HmnbAp?= <yj.chiang@mediatek.com>,
-        Daniel Palmer <daniel@thingy.jp>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4aa2a66d-b8e4-adfe-8b61-615d98012a65@iogearbox.net>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark-PK,
+Em Mon, Mar 08, 2021 at 02:37:32PM +0100, Daniel Borkmann escreveu:
+> On 3/7/21 11:30 PM, Ian Rogers wrote:
+> > This adds definitions available in the uapi version.
+> > 
+> > Explanation:
+> > In the kernel include of types.h the uapi version is included.
+> > In tools the uapi/linux/types.h and linux/types.h are distinct.
+> > For BPF programs a definition of __wsum is needed by the generated
+> > bpf_helpers.h. The definition comes either from a generated vmlinux.h or
+> > from <linux/types.h> that may be transitively included from bpf.h. The
+> > perf build prefers linux/types.h over uapi/linux/types.h for
+> > <linux/types.h>*. To allow tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
+> > to compile with the same include path used for perf then these
+> > definitions are necessary.
+> > 
+> > There is likely a wider conversation about exactly how types.h should be
+> > specified and the include order used by the perf build - it is somewhat
+> > confusing that tools/include/uapi/linux/bpf.h is using the non-uapi
+> > types.h.
+> > 
+> > *see tools/perf/Makefile.config:
+> > ...
+> > INC_FLAGS += -I$(srctree)/tools/include/
+> > INC_FLAGS += -I$(srctree)/tools/arch/$(SRCARCH)/include/uapi
+> > INC_FLAGS += -I$(srctree)/tools/include/uapi
+> > ...
+> > The include directories are scanned from left-to-right:
+> > https://gcc.gnu.org/onlinedocs/gcc/Directory-Options.html
+> > As tools/include/linux/types.h appears before
+> > tools/include/uapi/linux/types.h then I say it is preferred.
+> > 
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> 
+> Given more related to perf build infra, I presume Arnaldo would pick
+> this one up?
 
-On Mon, 8 Mar 2021 at 15:05, Mark-PK Tsai <mark-pk.tsai@mediatek.com> wrote:
-> +static int mst_irq_chip_set_type(struct irq_data *data, unsigned int type)
-> +{
-> +       if (type != IRQ_TYPE_LEVEL_LOW && type != IRQ_TYPE_LEVEL_HIGH)
-> +               return -EINVAL;
-> +
+I'll process it.
 
-Does this mean we can't do rising or falling edge interrupts?
-
-Thanks,
-
-Daniel
+- Arnaldo
