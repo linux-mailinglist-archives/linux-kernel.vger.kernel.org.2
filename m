@@ -2,100 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B4E3307B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 06:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 937153307BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 07:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234523AbhCHFvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 00:51:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:59960 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232576AbhCHFum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 00:50:42 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E430DED1;
-        Sun,  7 Mar 2021 21:50:41 -0800 (PST)
-Received: from bogus (unknown [10.57.15.109])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95B443F73C;
-        Sun,  7 Mar 2021 21:50:38 -0800 (PST)
-Date:   Mon, 8 Mar 2021 05:50:30 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        lukasz.luba@arm.com, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
-        etienne.carriere@linaro.org, thara.gopinath@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-Subject: Re: [PATCH v6 02/37] firmware: arm_scmi: introduce protocol handle
- definitions
-Message-ID: <20210308055030.ljgyybawujmaf2gg@bogus>
-References: <20210202221555.41167-1-cristian.marussi@arm.com>
- <20210202221555.41167-3-cristian.marussi@arm.com>
+        id S234559AbhCHGEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 01:04:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232471AbhCHGDg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 01:03:36 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93F8C06174A;
+        Sun,  7 Mar 2021 22:03:33 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dv77Q2bwbz9sWF;
+        Mon,  8 Mar 2021 17:03:30 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1615183410;
+        bh=GFXWEsmq8fqIrfJpmZDA51hRRs+14qe2ORZUfq9J02U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mOPq0Gm+abyiGkdY8R+v0ZLhQZ5j1VkW6d+2bD16dPVpwM+/18qvQiDRHHOoIDIuj
+         PyvgjFENwYh8s77zWRMGkPZ/0wKDYCixVce/eVXhYY7W0x0s80HT2gy0U6ilfYvlWZ
+         kY2Ild0MBkMtJFdalNlNTizvJeMH1DGSEMOdKgNfrOOzrEGR60kXeWRSX8kkJaTmHT
+         /nlR66mJ7JQHwuQur6qfn1fN3Ya7cGHk3nNCJseRn0r8dOLILujDcVBZWoOnYxJFLf
+         FzeAAqpcTEY/kOfhWFXAroMjHeHTzo5d+fPAwj6EJDXExr9JwcbEmud3lg16mCiLji
+         PiifEkJ5uIWzw==
+Date:   Mon, 8 Mar 2021 17:03:27 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the rcu tree
+Message-ID: <20210308170327.3fc9badd@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202221555.41167-3-cristian.marussi@arm.com>
-User-Agent: NeoMutt/20171215
+Content-Type: multipart/signed; boundary="Sig_/iWT9OnWeUoD_58rFWiUhWb3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 10:15:20PM +0000, Cristian Marussi wrote:
-> Add basic protocol handles definitions and private data helpers support.
-> 
-> A protocol handle identifies a protocol instance initialized against a
-> specific handle; it embeds all the references to the core SCMI xfer methods
-> that will be needed by a protocol implementation to build and send its own
-> protocol specific messages using common core methods.
-> 
-> As such, in the interface, a protocol handle will be passed down from the
-> core to the protocol specific initialization callback at init time.
-> 
-> Anyway at this point only definitions are introduced, all protocols
-> initialization code and SCMI drivers probing is still based on the old
-> interface, so no functional change.
-> 
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> ---
->  drivers/firmware/arm_scmi/common.h | 59 ++++++++++++++++++++++++++++++
->  drivers/firmware/arm_scmi/driver.c | 45 +++++++++++++++++++++++
->  2 files changed, 104 insertions(+)
-> 
+--Sig_/iWT9OnWeUoD_58rFWiUhWb3
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-[...]
+Hi all,
 
-> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> index ed94efbecd61..2328a468bbd1 100644
-> --- a/drivers/firmware/arm_scmi/driver.c
-> +++ b/drivers/firmware/arm_scmi/driver.c
+Commit
 
-[...]
+  3e90d423e754 ("EXP net: phy: make mdio_bus_phy_suspend/resume as __maybe_=
+unused")
 
->  /**
->   * scmi_get_protocol_instance  - Protocol initialization helper.
->   * @handle: A reference to the SCMI platform instance.
-> @@ -588,6 +629,10 @@ scmi_get_protocol_instance(struct scmi_handle *handle, u8 protocol_id)
->  
->  		pi->gid = gid;
->  		pi->proto = proto;
-> +		pi->handle = handle;
-> +		pi->ph.dev = handle->dev;
-> +		pi->ph.set_priv = scmi_set_protocol_priv;
-> +		pi->ph.get_priv = scmi_get_protocol_priv;
+is missing a Signed-off-by from its committer.
 
+--=20
+Cheers,
+Stephen Rothwell
 
-Sorry missed this in earlier patch. Not a must, but I prefer if you can move
-all these initialisation into separate functions so that scmi_get_protocol_instance
-can be simplified to read.
+--Sig_/iWT9OnWeUoD_58rFWiUhWb3
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-if (pi)
-	increment refcount
-else
-	scmi_get_protocol
-	alloc and init protocol instance
-	register events
+-----BEGIN PGP SIGNATURE-----
 
-How about some thing like above ?
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBFvi8ACgkQAVBC80lX
+0Gz37wgAhDB6GNJfRTaQphdfzOFby1Bxd5rvjlwMT69PREAWNCMrlUUNcYGiKh0W
+UqP+28xhpkaiZAOXkFB+wWzYsdufFb2K5DsaGBX2uA8BaeFBzzF0jXeetVKGSu8+
+mS5aCJNVk2I2aKgrd2QbLrxx0ozkJi2/n6/jOzOL49Ds7Pr2SOIn3leBCTNGgbWO
+e1h2GiWNDWmNDTvzvnaD9FWnF8QqnS81SmQ6Su/TrF2X36eiUM+13prZuGUnrmYH
+NcSPms93eFim9sYO0ObAxzs7vuKnuoAMSlQ+gQEEjhtH7pbVlOk4JJI0Db3mNR0/
+b3E3NZZ0+bXPWDaO6a00i1GEg8nSAw==
+=tSk/
+-----END PGP SIGNATURE-----
 
---
-Regards,
-Sudeep
+--Sig_/iWT9OnWeUoD_58rFWiUhWb3--
