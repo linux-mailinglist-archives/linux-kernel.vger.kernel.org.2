@@ -2,189 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F272331837
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB2033183B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhCHULI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:11:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
+        id S231886AbhCHUMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:12:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231989AbhCHUKj (ORCPT
+        with ESMTP id S231590AbhCHULk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:10:39 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19BB5C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 12:10:37 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id m6so7966416pfk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 12:10:37 -0800 (PST)
+        Mon, 8 Mar 2021 15:11:40 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C4CC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 12:11:40 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so3799898pjg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 12:11:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=xPFMLoj2F6TtO1NAQHMq/f8945ZzfGt/3DgWTXdAj0g=;
-        b=M9E+IHk89I8eNnqjwfESrLabLlldPwprehs9Fu0kEX+iIm4DnP+DqBIjh9n3CDIp8J
-         CZbv/vfqhDdZdVunJxyiBUYfzWWiU2zNQzV2bVRkzce2Wn9Ya13Ey5V5kEcsrQmO+dSN
-         5crevqOytZpCzZrp5kKvg14TWROofRczp0DGM=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=inJpvYK1YMJnyEUoM1LxpFGBkfU9djOOCnPiOu1eiZI=;
+        b=UrnslPo3nSqw83+2HmcT3KLPcfVkAD/fOuRoClq0tEi5b1nPZQ+3UWQJGh+TTYMkO3
+         1l//NE/z+ViHMOe4opx92Z1rX8R737mfuIDKis8alBfBv8zr1usyEImqY+xU7IOCup/u
+         P1tZDd37vCs9jl4a55n7VKMRlZN8yOfzVjK1IERWlHRUNQ3+Ny29I/bP33c9hGlUQsOp
+         iClpBzZlj4n5j9WpJ79lAnfKfrdgxMz2J3xraiUpKpMe0ZRtioTXX714pOaahczmh14E
+         drfFdQomsrNSV4bHDNdakjbYE4MV32lUf9XWALzfc2103pgqESyDBF1UITmhobXop/CY
+         2BVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=xPFMLoj2F6TtO1NAQHMq/f8945ZzfGt/3DgWTXdAj0g=;
-        b=hYBDuH7CK2fk809/vKRGc4AwCma6KRCHuHiJa/x8YtT26YVKMv6Sd8f7sqTGCehdaY
-         coX+pwrwYgFQUXsP+eL7Kkzjbsk3u+xMITrIuPNRmR8LmpOHWnyM1tli6sWWu+/a25t9
-         Obroy5+hgpd/ICkYq0ovABj38tMqTzMqaI3GvTPjBGJX4M8yXGAUwhifa+S3eGPMQhQz
-         SH6TH3+LOy9VN/eooaic4wM+1iIwTRZxjlXrIajbQWPNhd1b/jJRqFS/O/Jd2a6farEw
-         ypCW9uziksoc/EZbKM5wMhzQuFhUfDIAwCS7rDjjfZHLFRLgeri4zw46/eYOcM0+i9xJ
-         sz3A==
-X-Gm-Message-State: AOAM530vpvRQ3zG0kWmLIQ8w96qfFiayeMVJLITSfcxR3RLnV2ROjRcj
-        CAXixzn6RQUc8WeLCQ3CkQeCNQ==
-X-Google-Smtp-Source: ABdhPJwI5uUEmo7YVa9wdMgCuV3dAIjzuKb5MtQnnxXquYUaa99ftRhNmZeClPAxCox8kL7VsbMHgw==
-X-Received: by 2002:a05:6a00:2cd:b029:1f4:c3db:4191 with SMTP id b13-20020a056a0002cdb02901f4c3db4191mr8352176pft.71.1615234236329;
-        Mon, 08 Mar 2021 12:10:36 -0800 (PST)
-Received: from lbrmn-lnxub113.ric.broadcom.net ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id x4sm3977153pfn.134.2021.03.08.12.10.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 12:10:35 -0800 (PST)
-Subject: Re: [PATCH] ASoC: bcm: add missing call to of_node_put()
-To:     Yang Li <yang.lee@linux.alibaba.com>, perex@perex.cz
-Cc:     tiwai@suse.com, rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com
-References: <1615187934-39505-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <29d19f50-599f-fb9c-65e8-78fa5a30728f@broadcom.com>
-Date:   Mon, 8 Mar 2021 12:10:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=inJpvYK1YMJnyEUoM1LxpFGBkfU9djOOCnPiOu1eiZI=;
+        b=OpHB0IRTOZ/pRh2CvD2cVwKtisqWXzjiDmGoOEPTQSx0/rTbYL/t2JEUHqduQiCaPG
+         2bR0quvi89ovFIYHjquxJGqPiHN5Y2CT5KOTbCGwzcvBPsH6M7sb4hfUUJmPmbGU42SQ
+         UxmTPT+eTkJ3Vsx+AL42WFdu7vSLjqJH3GEcAxy3//LoADv0tXgSIEe/v/+teA4ktI7/
+         M0UEn8fJHFi7iitrkdda1sl9XGHJTiqK4ll2EMDlAApnWuT/faOoFRfC6gPH9A1P4Iy/
+         xDkNXwWg3eGnuisNqBpAYTdoQmJe3emtdIvKVohoMIzXAC/qckB1mhwuvlSp0hCEopqO
+         c3YA==
+X-Gm-Message-State: AOAM5314zvTJJSnbzvhrEncoRKu5Gq7fzPTI47dSA0s7HcLPhlIil43y
+        swAFeOiowKoxIhrVBUwrPR+IPg==
+X-Google-Smtp-Source: ABdhPJy85xPIDDDXOyiIL5nJi99l75uOA7O+Owc3vNcVsIW4vP5vCrIbUh9jUooS/eFV8AukhWK40A==
+X-Received: by 2002:a17:903:102:b029:e5:fc29:de83 with SMTP id y2-20020a1709030102b02900e5fc29de83mr15275757plc.31.1615234299359;
+        Mon, 08 Mar 2021 12:11:39 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:8:847a:d8b5:e2cc])
+        by smtp.gmail.com with ESMTPSA id n5sm11072730pfq.44.2021.03.08.12.11.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 12:11:38 -0800 (PST)
+Date:   Mon, 8 Mar 2021 12:11:32 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
+Subject: Re: [PATCH 20/24] KVM: x86/mmu: Use a dedicated bit to track
+ shadow/MMU-present SPTEs
+Message-ID: <YEaE9K/dAjImXv0f@google.com>
+References: <20210225204749.1512652-1-seanjc@google.com>
+ <20210225204749.1512652-21-seanjc@google.com>
+ <42917119-b43a-062b-6c09-13b988f7194b@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <1615187934-39505-1-git-send-email-yang.lee@linux.alibaba.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000e8cd2705bd0c066e"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <42917119-b43a-062b-6c09-13b988f7194b@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000e8cd2705bd0c066e
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-
-Hi Yang,
-
-On 2021-03-07 11:18 p.m., Yang Li wrote:
-> In one of the error paths of the for_each_child_of_node() loop,
-> add missing call to of_node_put().
+On Mon, Mar 08, 2021, Tom Lendacky wrote:
+> On 2/25/21 2:47 PM, Sean Christopherson wrote:
+> > Introduce MMU_PRESENT to explicitly track which SPTEs are "present" from
+> > the MMU's perspective.  Checking for shadow-present SPTEs is a very
+> > common operation for the MMU, particularly in hot paths such as page
+> > faults.  With the addition of "removed" SPTEs for the TDP MMU,
+> > identifying shadow-present SPTEs is quite costly especially since it
+> > requires checking multiple 64-bit values.
+> > 
+> > On 64-bit KVM, this reduces the footprint of kvm.ko's .text by ~2k bytes.
+> > On 32-bit KVM, this increases the footprint by ~200 bytes, but only
+> > because gcc now inlines several more MMU helpers, e.g. drop_parent_pte().
+> > 
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >   arch/x86/kvm/mmu/spte.c |  8 ++++----
+> >   arch/x86/kvm/mmu/spte.h | 11 ++++++++++-
+> >   2 files changed, 14 insertions(+), 5 deletions(-)
 > 
-> Fix the following coccicheck warning:
-> ./sound/soc/bcm/cygnus-ssp.c:1346:1-33: WARNING: Function
-> "for_each_available_child_of_node" should have of_node_put() before
-> return around line 1352.
+> I'm trying to run a guest on my Rome system using the queue branch, but
+> I'm encountering an error that I bisected to this commit. In the guest
+> (during OVMF boot) I see:
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  sound/soc/bcm/cygnus-ssp.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> error: kvm run failed Invalid argument
+> RAX=0000000000000000 RBX=00000000ffc12792 RCX=000000007f58401a RDX=000000007faaf808
+> RSI=0000000000000010 RDI=00000000ffc12792 RBP=00000000ffc12792 RSP=000000007faaf740
+> R8 =0000000000000792 R9 =000000007faaf808 R10=00000000ffc12793 R11=00000000000003f8
+> R12=0000000000000010 R13=0000000000000000 R14=000000007faaf808 R15=0000000000000012
+> RIP=000000007f6e9a90 RFL=00000246 [---Z-P-] CPL=0 II=0 A20=1 SMM=0 HLT=0
+> ES =0030 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+> CS =0038 0000000000000000 ffffffff 00a09b00 DPL=0 CS64 [-RA]
+> SS =0030 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+> DS =0030 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+> FS =0030 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+> GS =0030 0000000000000000 ffffffff 00c09300 DPL=0 DS   [-WA]
+> LDT=0000 0000000000000000 0000ffff 00008200 DPL=0 LDT
+> TR =0000 0000000000000000 0000ffff 00008b00 DPL=0 TSS64-busy
+> GDT=     000000007f5ee698 00000047
+> IDT=     000000007f186018 00000fff
+> CR0=80010033 CR2=0000000000000000 CR3=000000007f801000 CR4=00000668
+> DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000 
+> DR6=00000000ffff0ff0 DR7=0000000000000400
+> EFER=0000000000000d00
+> Code=22 00 00 e8 c0 e6 ff ff 48 83 c4 20 45 84 ed 74 07 fb eb 04 <44> 88 65 00 58 5b 5d 41 5c 41 5d c3 55 48 0f af 3d 1b 37 00 00 be 20 00 00 00 48 03 3d 17
 > 
-> diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
-> index 6e634b4..aa16a23 100644
-> --- a/sound/soc/bcm/cygnus-ssp.c
-> +++ b/sound/soc/bcm/cygnus-ssp.c
-> @@ -1348,8 +1348,10 @@ static int cygnus_ssp_probe(struct platform_device *pdev)
->  					&cygnus_ssp_dai[active_port_count]);
->  
->  		/* negative is err, 0 is active and good, 1 is disabled */
-> -		if (err < 0)
-> +		if (err < 0) {
-> +			of_node_put(child_node);
-If such is needed in probe what about the other child_nodes in for_each_child_of_node loop that have already been parsed and succeeded.  Do they need additional cleanup as well?
->  			return err;
-> +		}
->  		else if (!err) {
->  			dev_dbg(dev, "Activating DAI: %s\n",
->  				cygnus_ssp_dai[active_port_count].name);
+> On the hypervisor, I see the following:
 > 
+> [   55.886136] get_mmio_spte: detect reserved bits on spte, addr 0xffc12792, dump hierarchy:
+> [   55.895284] ------ spte 0x1344a0827 level 4.
+> [   55.900059] ------ spte 0x134499827 level 3.
+> [   55.904877] ------ spte 0x165bf0827 level 2.
+> [   55.909651] ------ spte 0xff800ffc12817 level 1.
 
+Ah fudge.  I know what's wrong.  The MMIO generation uses bit 11, which means
+is_shadow_present_pte() can get a false positive on high MMIO generations.  This
+particular error can be squashed by explicitly checking for MMIO sptes in
+get_mmio_spte(), but I'm guessing there are other flows where a false positive
+is fatal (probably the __pte_list_remove bug below...).  The safe thing to do is
+to steal bit 11 from MMIO SPTEs so that shadow present PTEs are the only thing
+that sets that bit.
 
---000000000000e8cd2705bd0c066e
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+I'll reproduce by stuffing the MMIO generation and get a patch posted.  Sorry :-/
 
-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
-cRe0CRXA7ypOJSgxO/nOOyQoaJxT7CGg1npOeSpPjEuc3fE4xum3l0nvU85hj6MlKZu43hokdBh0
-D0nLyyhEwlR3AC/msdff/UGbM/JR9vk812RP4m/aNWZFJwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUOhjEpl04Sz9dh5MI82E1
-V39lM/owDQYJKoZIhvcNAQELBQADggEBAA7Rlypx/esz/iq1yA4+KW7uwV/aBY344BWcXt6I+SNK
-VwFBgFWfLj5vaEud9TVv2fPSiaHJo0umemOJk+43QD+bsoqmgcFXd21PrOt7Jjs+jjVED9VC5kJq
-S4NNKUkS+BqijJwSegtVygrc/atrIlJbjI21q4qpemUo5fgwqCNm++BmBGTI8yA09vtGSNDRN42k
-lLX9hl3iEj5SBgkQqCbbnoE+ZjjKfqt7ED166WhgyQWNrl39yLcvLj+JRUB3RuvXKZjH0NQEEBII
-wZBDSkyneykLt3CBNIhSCTxKM6OWxVp936ALSa5K9FNy00TeWSpokR6NmzaW8VD/EjTgvqAxggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgx9oXSJpKniO4dS
-Gk8wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIC/f+OcDcOVaPLl4K9t/MaroSruV
-GrqkQW1Am3/qYhBdMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDMwODIwMTAzNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQAM19OFMlX+qUMAxby92eRMUyieZpDwb9ip/yJ9fZvqLTjp
-7VPFILN8Y3eEdkpryUcllLksktguBeR+M4OvWn852cqmXvSmplLAXLlJzRoAvUx2hWsnP+2f8t0T
-EbGlKUOMtUXSLfoarCyb4Vz2Y/B0CSLr7WumQGel0VwL3wiPWyoHIYmZD19z0m9UTFlVpiYXJ+8j
-d/X67hLHceVP84iKABDshhYZMk0gAI3mum1VBVzt2Xm/w4HA8h+yxNbi9M2Ip8Gh5a3hdDc4YB6j
-t9pE2HVyjBuqbZR3K1wI+JD9FfBTDuwigkjqAuo7ghe70oj4D0YKjVpNw9Eco1RoMjGc
---000000000000e8cd2705bd0c066e--
+> When I kill the guest, I get a kernel panic:
+> 
+> [   95.539683] __pte_list_remove: 0000000040567a6a 0->BUG
+> [   95.545481] kernel BUG at arch/x86/kvm/mmu/mmu.c:896!
