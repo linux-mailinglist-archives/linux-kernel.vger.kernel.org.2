@@ -2,106 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32212331A6D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D78D331A78
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhCHWwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 17:52:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32475 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231176AbhCHWvv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 17:51:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615243910;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hWBOwAebpQRB0wNXn8a6DM63MP2+UfsxZ4n4z5ZRkG4=;
-        b=BhR+8wfIOmqwxdXgWfiOxjB0MJPDx/suWEd7zaq6Bz2wmX6Bvpkgs9ix4rnmpBeZhRJdCl
-        Acty3xhhWiLc9NjvK60e8IlaXjTnn0qx5Z+qJsGfR1E81VE8jTZvMT3ZM4PpFErMShl9vE
-        iI+B2I44GWUCxFU5AEYv6uPBKuvnnvU=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-392-XL9hDCpZPoGTv-q5xjpbqw-1; Mon, 08 Mar 2021 17:51:49 -0500
-X-MC-Unique: XL9hDCpZPoGTv-q5xjpbqw-1
-Received: by mail-ej1-f70.google.com with SMTP id e13so4727655ejd.21
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 14:51:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hWBOwAebpQRB0wNXn8a6DM63MP2+UfsxZ4n4z5ZRkG4=;
-        b=q/EMQ/yuPpDZPm9xAx4Rfcd4jFHYSVex8t2ELMG7g+OM+wH8/qUp9XYC4YzXMSRS3I
-         rUaRRjOjy0Bhsj6XC+7tAfwpESYo/cfMBpm+f2V9JVRZKg8kVN+8yifHGh4pGdtd1UGc
-         031YJP8gO7EkZZXzYCeeUMKU/i5hAretbCvBlSFiMlCmqdPplnsVUHuWnrxr2DDFtH8H
-         Rw2iNu9FUzNsDKiOKSiGclYvoF7RQOHV1F5RRxVM2WaT05k8vbfE40HxslyHSdtDPLIZ
-         yRvIp/H45B/YWjidAq0ypw3CTKcm1ClP92WTv0JTIbarwCWbfoOvqSNHhJtJ7nF3N6UW
-         Bz5g==
-X-Gm-Message-State: AOAM532CF9DwakD6U4Z7st2d7USG+cwq4v4D8/G27JJESdDxF1fKP3Vr
-        pq9XbEeOjqZvXV2GKTv3zvSSmCEDsRiUDYBYhAuX9wLOIMH9F6tO/oyH2uU04MbEvUytnS1e03y
-        pRIP0lxMUCRCheHh0hHu3dGp0
-X-Received: by 2002:a17:906:110d:: with SMTP id h13mr17391841eja.357.1615243907815;
-        Mon, 08 Mar 2021 14:51:47 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxtoSI5zhutYPdc14J0CbwqHgr5iKUdl1vCcbKfFfSZbY+nDqpwijXzf4JQTz2RWDSGh8vUrw==
-X-Received: by 2002:a17:906:110d:: with SMTP id h13mr17391833eja.357.1615243907690;
-        Mon, 08 Mar 2021 14:51:47 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id cw14sm8224396edb.8.2021.03.08.14.51.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 14:51:47 -0800 (PST)
-Subject: Re: [PATCH 03/28] KVM: nSVM: inject exceptions via
- svm_check_nested_events
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        vkuznets@redhat.com, mlevitsk@redhat.com,
-        Jim Mattson <jmattson@google.com>
-References: <YELdblXaKBTQ4LGf@google.com>
- <fc2b0085-eb0f-dbab-28c2-a244916c655f@redhat.com>
- <YEZUhbBtNjWh0Zka@google.com>
- <006be822-697e-56d5-84a7-fa51f5087a34@redhat.com>
- <YEaMhHG7ylvTpoYD@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <30846470-28e2-c05d-21c7-9ad5631bf821@redhat.com>
-Date:   Mon, 8 Mar 2021 23:51:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230047AbhCHWzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 17:55:33 -0500
+Received: from mga06.intel.com ([134.134.136.31]:47552 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230070AbhCHWzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 17:55:06 -0500
+IronPort-SDR: u5FvrUpMBY+glSji7AYiaKv0IuFBy/159IaXnZPBZgFo328mbpgHpRRtkUiuaDPiwGAAqNqb6w
+ 8F4502+Lj0EQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="249497618"
+X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
+   d="scan'208";a="249497618"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 14:55:06 -0800
+IronPort-SDR: oQApYD2RhFTBNoUxIwaYGlt9r/UtUis8L6rQ9q+cmeRxxjcoj0h5t6gU/8ypfCnWW20R0xZrEP
+ zs1ToNjAKFUQ==
+X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
+   d="scan'208";a="409476776"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 14:55:05 -0800
+Date:   Mon, 8 Mar 2021 14:55:04 -0800
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
+        <naoya.horiguchi@nec.com>
+Cc:     Aili Yao <yaoaili@kingsoft.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
+Subject: [PATCH] mm/memory-failure: Use a mutex to avoid memory_failure()
+ races
+Message-ID: <20210308225504.GA233893@agluck-desk2.amr.corp.intel.com>
+References: <20210304101653.546a9da1@alex-virtual-machine>
+ <20210304121941.667047c3@alex-virtual-machine>
+ <20210304144524.795872d7@alex-virtual-machine>
+ <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
+ <20210305093016.40c87375@alex-virtual-machine>
+ <20210305093656.6c262b19@alex-virtual-machine>
+ <20210305221143.GA220893@agluck-desk2.amr.corp.intel.com>
+ <20210308064558.GA3617@hori.linux.bs1.fc.nec.co.jp>
+ <3690ece2101d428fb9067fcd2a423ff8@intel.com>
+ <20210308223839.GA21886@hori.linux.bs1.fc.nec.co.jp>
 MIME-Version: 1.0
-In-Reply-To: <YEaMhHG7ylvTpoYD@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308223839.GA21886@hori.linux.bs1.fc.nec.co.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/03/21 21:43, Sean Christopherson wrote:
-> On Mon, Mar 08, 2021, Paolo Bonzini wrote:
->> On 08/03/21 17:44, Sean Christopherson wrote:
->>> VMCALL is also probably ok
->>> in most scenarios, but patching L2's code from L0 KVM is sketchy.
->>
->> I agree that patching is sketchy and I'll send a patch.  However...
->>
->>>> The same is true for the VMware #GP interception case.
->>>
->>> I highly doubt that will ever work out as intended for the modified IO #GP
->>> behavior.  The only way emulating #GP in L2 is correct if L1 wants to pass
->>> through the capabilities to L2, i.e. the I/O access isn't intercepted by L1.
->>> That seems unlikely.
->>
->> ... not all hypervisors trap everything.  In particular in this case the
->> VMCS12 I/O permission bitmap should be consulted (which we do in
->> vmx_check_intercept_io), but if the I/O is not trapped by L1 it should
->> bypass the IOPL and TSS-bitmap checks in my opinion.
-> 
-> I agree, _if_ it's not trapped.  But bypassing the checks when it is trapped is
-> clearly wrong.
+There can be races when multiple CPUs consume poison from the same
+page. The first into memory_failure() atomically sets the HWPoison
+page flag and begins hunting for tasks that map this page. Eventually
+it invalidates those mappings and may send a SIGBUS to the affected
+tasks.
 
-You can still trap #GP unconditionally and run the emulator. The 
-intercept check will (or should) handle it.
+But while all that work is going on, other CPUs see a "success"
+return code from memory_failure() and so they believe the error
+has been handled and continue executing.
 
-Paolo
+Fix by wrapping most of the internal parts of memory_failure() in
+a mutex.
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+---
+ mm/memory-failure.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 24210c9bd843..c1509f4b565e 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1381,6 +1381,8 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+ 	return rc;
+ }
+ 
++static DEFINE_MUTEX(mf_mutex);
++
+ /**
+  * memory_failure - Handle memory failure of a page.
+  * @pfn: Page Number of the corrupted page
+@@ -1424,12 +1426,18 @@ int memory_failure(unsigned long pfn, int flags)
+ 		return -ENXIO;
+ 	}
+ 
++	mutex_lock(&mf_mutex);
++
+ try_again:
+-	if (PageHuge(p))
+-		return memory_failure_hugetlb(pfn, flags);
++	if (PageHuge(p)) {
++		res = memory_failure_hugetlb(pfn, flags);
++		goto out2;
++	}
++
+ 	if (TestSetPageHWPoison(p)) {
+ 		pr_err("Memory failure: %#lx: already hardware poisoned\n",
+ 			pfn);
++		mutex_unlock(&mf_mutex);
+ 		return 0;
+ 	}
+ 
+@@ -1463,9 +1471,11 @@ int memory_failure(unsigned long pfn, int flags)
+ 				res = MF_FAILED;
+ 			}
+ 			action_result(pfn, MF_MSG_BUDDY, res);
++			mutex_unlock(&mf_mutex);
+ 			return res == MF_RECOVERED ? 0 : -EBUSY;
+ 		} else {
+ 			action_result(pfn, MF_MSG_KERNEL_HIGH_ORDER, MF_IGNORED);
++			mutex_unlock(&mf_mutex);
+ 			return -EBUSY;
+ 		}
+ 	}
+@@ -1473,6 +1483,7 @@ int memory_failure(unsigned long pfn, int flags)
+ 	if (PageTransHuge(hpage)) {
+ 		if (try_to_split_thp_page(p, "Memory Failure") < 0) {
+ 			action_result(pfn, MF_MSG_UNSPLIT_THP, MF_IGNORED);
++			mutex_unlock(&mf_mutex);
+ 			return -EBUSY;
+ 		}
+ 		VM_BUG_ON_PAGE(!page_count(p), p);
+@@ -1517,6 +1528,7 @@ int memory_failure(unsigned long pfn, int flags)
+ 		num_poisoned_pages_dec();
+ 		unlock_page(p);
+ 		put_page(p);
++		mutex_unlock(&mf_mutex);
+ 		return 0;
+ 	}
+ 	if (hwpoison_filter(p)) {
+@@ -1524,6 +1536,7 @@ int memory_failure(unsigned long pfn, int flags)
+ 			num_poisoned_pages_dec();
+ 		unlock_page(p);
+ 		put_page(p);
++		mutex_unlock(&mf_mutex);
+ 		return 0;
+ 	}
+ 
+@@ -1559,6 +1572,8 @@ int memory_failure(unsigned long pfn, int flags)
+ 	res = identify_page_state(pfn, p, page_flags);
+ out:
+ 	unlock_page(p);
++out2:
++	mutex_unlock(&mf_mutex);
+ 	return res;
+ }
+ EXPORT_SYMBOL_GPL(memory_failure);
+-- 
+2.29.2
 
