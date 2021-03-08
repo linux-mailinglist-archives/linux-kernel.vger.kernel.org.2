@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C875E330EA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:49:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D56330EA9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbhCHMtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:49:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54596 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229528AbhCHMtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:49:13 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615207752; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I3MA4O9DPW7El1WvYUSmQ4/nQjjkpDOwqQCrp1Pj6HE=;
-        b=r9PKsI+ds0ZUgOainH1rJRz753YW+3pgUswiqXlZU6WuyUF/tz9RrM7Fbqdv3kreUXNfZK
-        rFySYes+vasGUysSslddJeY+oFcyHLOim7Y18mRDUAEwwd0mSZkfPys2wXFp9lrBZ0p5AG
-        Wu9hBRt+9I78DaBoELb7hG8e0C2Fz/g=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DCEC4AC0C;
-        Mon,  8 Mar 2021 12:49:11 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 13:49:11 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
-Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
-Message-ID: <YEYdR8azcawau9Rl@dhcp22.suse.cz>
-References: <YC+ErI8KIJV4Wd7u@dhcp22.suse.cz>
- <YD50pcPuwV456vwm@google.com>
- <YEEES/K8cNi8qOJe@google.com>
- <d83a03dd-fdff-ed62-a2ad-77b25d8249f0@redhat.com>
- <YEEJf0itS/8vn8Iy@google.com>
- <d3095ead-a762-61cd-0990-702e14e03d10@redhat.com>
- <YEEUq8ZRn4WyYWVx@google.com>
- <c08662f3-6ae1-4fb5-1c4f-840a70fad035@redhat.com>
- <YEEi1+TREGBElE5H@google.com>
- <YEEle5xBAc7FUDNI@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEEle5xBAc7FUDNI@google.com>
+        id S229528AbhCHMu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:50:28 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:38742 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229818AbhCHMuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 07:50:13 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxedSBHUZggvkWAA--.28765S2;
+        Mon, 08 Mar 2021 20:50:09 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH] MIPS: Check __clang__ to avoid performance influence with GCC in csum_tcpudp_nofold()
+Date:   Mon,  8 Mar 2021 20:50:07 +0800
+Message-Id: <1615207807-29972-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxedSBHUZggvkWAA--.28765S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFWUCFWUGr18uw4DZr45Awb_yoW8Wry3pF
+        4qkr92grWvqryUG343Ar42g3s8ur48Gr92vrnIg3Wjva98Xw13WryfKw13WFyxJ395Aa4f
+        uFWfWrn8Jrn2kw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW5JwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUr8nnUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 04-03-21 10:22:51, Minchan Kim wrote:
-[...]
-> How about this?
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 238d0fc232aa..489e557b9390 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8481,7 +8481,8 @@ static inline void dump_migrate_failure_pages(struct list_head *page_list)
-> 
->  /* [start, end) must belong to a single zone. */
->  static int __alloc_contig_migrate_range(struct compact_control *cc,
-> -                                       unsigned long start, unsigned long end)
-> +                                       unsigned long start, unsigned long end,
-> +                                       bool nofail)
+The asm code in csum_tcpudp_nofold() is performance-critical, I am sorry
+for the poorly considered implementation about the performance influence
+with GCC in the commit 198688edbf77 ("MIPS: Fix inline asm input/output
+type mismatch in checksum.h used with Clang").
 
-This sounds like a very bad idea to me. Your nofail definition might
-differ from what we actually define as __GFP_NOFAIL but I do not think
-this interface should ever promise anything that strong.
-Sure movable, cma regions should effectively never fail but there will
-never be any _guarantee_ for that.
+With this patch, we can build successfully by both GCC and Clang,
+at the same time, we can avoid the potential performance influence
+with GCC.
 
-Earlier in the discussion I have suggested dynamic debugging facility.
-Documentation/admin-guide/dynamic-debug-howto.rst. Have you tried to
-look into that direction?
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/include/asm/checksum.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
->  {
->         /* This function is based on compact_zone() from compaction.c. */
->         unsigned int nr_reclaimed;
-> @@ -8522,7 +8523,8 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
->                                 NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
->         }
->         if (ret < 0) {
-> -               dump_migrate_failure_pages(&cc->migratepages);
-> +               if (ret == -EBUSY && nofail)
-> +                       dump_migrate_failure_pages(&cc->migratepages);
->                 putback_movable_pages(&cc->migratepages);
->                 return ret;
->         }
-> @@ -8610,7 +8612,9 @@ int alloc_contig_range(unsigned long start, unsigned long end,
->          * allocated.  So, if we fall through be sure to clear ret so that
->          * -EBUSY is not accidentally used or returned to caller.
->          */
-> -       ret = __alloc_contig_migrate_range(&cc, start, end);
-> +       ret = __alloc_contig_migrate_range(&cc, start, end,
-> +                                       migratetype == CMA ||
-> +                                       zone_idx(cc.zone) == ZONE_MOVABLE);
->         if (ret && ret != -EBUSY)
->                 goto done;
->         ret =0;
-
+diff --git a/arch/mips/include/asm/checksum.h b/arch/mips/include/asm/checksum.h
+index 1e6c135..64d353e 100644
+--- a/arch/mips/include/asm/checksum.h
++++ b/arch/mips/include/asm/checksum.h
+@@ -130,7 +130,9 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+ 					__u32 len, __u8 proto,
+ 					__wsum sum)
+ {
++#ifdef __clang__
+ 	unsigned long tmp = (__force unsigned long)sum;
++#endif
+ 
+ 	__asm__(
+ 	"	.set	push		# csum_tcpudp_nofold\n"
+@@ -159,7 +161,11 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+ 	"	addu	%0, $1		\n"
+ #endif
+ 	"	.set	pop"
++#ifdef __clang__
+ 	: "=r" (tmp)
++#else
++	: "=r" (sum)
++#endif
+ 	: "0" ((__force unsigned long)daddr),
+ 	  "r" ((__force unsigned long)saddr),
+ #ifdef __MIPSEL__
+@@ -169,7 +175,11 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+ #endif
+ 	  "r" ((__force unsigned long)sum));
+ 
++#ifdef __clang__
+ 	return (__force __wsum)tmp;
++#else
++	return sum;
++#endif
+ }
+ #define csum_tcpudp_nofold csum_tcpudp_nofold
+ 
 -- 
-Michal Hocko
-SUSE Labs
+2.1.0
+
