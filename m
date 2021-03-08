@@ -2,256 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8FF330BDD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2EF330BE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbhCHK6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 05:58:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhCHK6N (ORCPT
+        id S230517AbhCHLBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 06:01:22 -0500
+Received: from esa12.hc1455-7.c3s2.iphmx.com ([139.138.37.100]:48439 "EHLO
+        esa12.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229711AbhCHLAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:58:13 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D41AC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 02:58:12 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id dx17so19407087ejb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 02:58:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cakLU/eCVibA/iJUsPZ/Q2ABgxzfNfr1tJxKBYGIySk=;
-        b=BTBqBrUFxR1nwyCuWnwC6e1DEERyTpTbaHk6owBxXjbWU8CuECLmKi/NSs11fNl5Y3
-         AIl8cgQMkcD9RjzQdWnPRmKqiHZq3fRxJpmt622AOYG56b2bh0ANSFaWDHLCiy1mX0Wv
-         uXvc7B+2HAr5i12uyVLydPXvt68rQ/I4AolZfgaJ0JoE0q4m6Pv8WYZCg1xahdh/7ndv
-         QWI9fmOHAnEmFdHCE8FuWyhZpmI/HQIn3sHcRu+LXm6nxzspXtR6VYB65duFImKgDdzk
-         1BVaA2tOV8qZEonKP9+uuHoWLleK+dlHk+77+fER0jXob7Wm4To0+KkBfQiFKF/aif8F
-         iicA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cakLU/eCVibA/iJUsPZ/Q2ABgxzfNfr1tJxKBYGIySk=;
-        b=NDhfPCaYRbJCeNEsNJfubzEDD51lUNn5Wla6ETA5y1KXWfpvp7+DLBW1Qd1sdGRzbD
-         3iYML+q0py2IRpVxhfLC1HwmCqGnV3wYZMwzaKlb3S2GxjJhUGvfE+0hORNBeRTE4KQu
-         toRWjgr5Wmbst8mmKqdpZRn8uR3+7OXm+gLsAUM27DZlRum44zFVoXNfnv370Kmv77hF
-         RWLyLG+XNHEEx3dtLJkNGtnzWVyMBzPQzA+VfrPmKVQLkuX4xPGb7zZ87RvoRLAIaNIb
-         PnUzuICS73BGbvrTeSXsKoVDNrpbLDHugTzLemM7L+MC/TfDfmDxorDZF08hriVN/I//
-         +nxA==
-X-Gm-Message-State: AOAM5312zZW+kq9bQmJJ4REup7kg2pJm+LwnJTR9qe66U4G9vkoarFqp
-        Sd7MzSMEHTginiqZjsEhRbO7QlWTFbPaSXYk7uzPzNqVT/Q=
-X-Google-Smtp-Source: ABdhPJyh7cYNblznEQDzmgBCp9FhnkGIWSgzPhPC3Nx9KFcWWRsdhoOzb1arlNSmU6ZCa/pt47xg+BRBvMZeZsH2CFw=
-X-Received: by 2002:a17:906:d938:: with SMTP id rn24mr15092670ejb.87.1615201091145;
- Mon, 08 Mar 2021 02:58:11 -0800 (PST)
+        Mon, 8 Mar 2021 06:00:55 -0500
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Mar 2021 06:00:54 EST
+IronPort-SDR: Ly2bHpMIEcKUHTOhTQzCmDBtOIMjFxq+pJkKOvIrddxSSEQfYmBkmbS5lqk43tdnufhHKZdlyX
+ l9MOEC1b20to/Hd8W0Pan+giVmjEwWycBxDLFuXzZyLX0UQOW+4yRjPclCnZtY66B+i0+0Mvne
+ kPAJQyci8M1l1WbLob/7rJosPbx9lNyzch9R8VDYXJfTO92uoR6SAeqfpRmcVCA6F19941bcig
+ Z7AghswVNrm7VB/Wdi0D2KJ8CdyMSi6ygFHEDGkDJXzg6jQ8SEmeIV/k3trdEHZvTzBTqub1Uo
+ JBU=
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="2099866"
+X-IronPort-AV: E=Sophos;i="5.81,232,1610377200"; 
+   d="scan'208";a="2099866"
+Received: from unknown (HELO yto-r3.gw.nic.fujitsu.com) ([218.44.52.219])
+  by esa12.hc1455-7.c3s2.iphmx.com with ESMTP; 08 Mar 2021 19:53:46 +0900
+Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com [192.168.83.64])
+        by yto-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 01D411F5142
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 19:53:46 +0900 (JST)
+Received: from yto-om3.fujitsu.com (yto-om3.o.css.fujitsu.com [10.128.89.164])
+        by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 50E09C9CE5
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 19:53:45 +0900 (JST)
+Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
+        by yto-om3.fujitsu.com (Postfix) with ESMTP id 3FB354005E9C0;
+        Mon,  8 Mar 2021 19:53:45 +0900 (JST)
+From:   Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+To:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
+        leo.yan@linaro.org, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v9 0/2] perf vendor events: Support PMU events for A64FX
+Date:   Mon,  8 Mar 2021 19:53:39 +0900
+Message-Id: <20210308105342.746940-1-nakamura.shun@fujitsu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210304102452.21726-9-brgl@bgdev.pl> <CAMuHMdXRK5=w1-Z=EbM60Sf2bLY1EiVaxbZjMP+XyQ3g7nBpZw@mail.gmail.com>
- <YEHs3CxWnusWklME@kroah.com> <CAMRc=MddDb+nakgEM+Xeqm=rMMkkWO2EDekD36EoPJashYP88w@mail.gmail.com>
- <YEHyDUQ3V7Pl6+TU@kroah.com> <CAMRc=Md7FeQAd4Syh685+jyZAq2QStBNoo0ACQxrSB=4N6d3dg@mail.gmail.com>
- <YEIG0u8Vg3e6ZBhz@kroah.com> <CAMRc=Meznt=5m_4OnSRf04xHsUy39hH7S7_8ftZaHq6GD-taEw@mail.gmail.com>
- <YEIVi8aDSEukrK7E@kroah.com> <CAMRc=MeNBt=J2LkDAYKhd9iQJCfyTvAxBKmJZ7vjVUOmYjexLg@mail.gmail.com>
- <YEJH0J6czwpNlZAg@kroah.com>
-In-Reply-To: <YEJH0J6czwpNlZAg@kroah.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 8 Mar 2021 11:58:00 +0100
-Message-ID: <CAMRc=McbqH27Xwqhwk0yvN5fhMFhGn=gPHi13QE2+WsWvFDETA@mail.gmail.com>
-Subject: Re: [PATCH v2 08/12] drivers: export device_is_bound()
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>, Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 4:01 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Mar 05, 2021 at 03:20:27PM +0100, Bartosz Golaszewski wrote:
-> > On Fri, Mar 5, 2021 at 12:27 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Fri, Mar 05, 2021 at 11:58:18AM +0100, Bartosz Golaszewski wrote:
-> > > > On Fri, Mar 5, 2021 at 11:24 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Fri, Mar 05, 2021 at 10:16:10AM +0100, Bartosz Golaszewski wrote:
-> > > > > > On Fri, Mar 5, 2021 at 9:55 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > > > >
-> > > > > > > On Fri, Mar 05, 2021 at 09:45:41AM +0100, Bartosz Golaszewski wrote:
-> > > > > > > > On Fri, Mar 5, 2021 at 9:34 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > > > > > >
-> > > > > > > > > On Fri, Mar 05, 2021 at 09:18:30AM +0100, Geert Uytterhoeven wrote:
-> > > > > > > > > > CC Greg
-> > > > > > > > > >
-> > > > > > > > > > On Thu, Mar 4, 2021 at 11:30 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> > > > > > > > > > >
-> > > > > > > > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > > > > > > > > >
-> > > > > > > > > > > Export the symbol for device_is_bound() so that we can use it in gpio-sim
-> > > > > > > > > > > to check if the simulated GPIO chip is bound before fetching its driver
-> > > > > > > > > > > data from configfs callbacks in order to retrieve the name of the GPIO
-> > > > > > > > > > > chip device.
-> > > > > > > > > > >
-> > > > > > > > > > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > > > > > > > > > ---
-> > > > > > > > > > >  drivers/base/dd.c | 1 +
-> > > > > > > > > > >  1 file changed, 1 insertion(+)
-> > > > > > > > > > >
-> > > > > > > > > > > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> > > > > > > > > > > index 9179825ff646..c62c02e3490a 100644
-> > > > > > > > > > > --- a/drivers/base/dd.c
-> > > > > > > > > > > +++ b/drivers/base/dd.c
-> > > > > > > > > > > @@ -353,6 +353,7 @@ bool device_is_bound(struct device *dev)
-> > > > > > > > > > >  {
-> > > > > > > > > > >         return dev->p && klist_node_attached(&dev->p->knode_driver);
-> > > > > > > > > > >  }
-> > > > > > > > > > > +EXPORT_SYMBOL_GPL(device_is_bound);
-> > > > > > > > >
-> > > > > > > > > No.  Please no.  Why is this needed?  Feels like someone is doing
-> > > > > > > > > something really wrong...
-> > > > > > > > >
-> > > > > > > > > NACK.
-> > > > > > > > >
-> > > > > > > >
-> > > > > > > > I should have Cc'ed you the entire series, my bad.
-> > > > > > > >
-> > > > > > > > This is the patch that uses this change - it's a new, improved testing
-> > > > > > > > module for GPIO using configfs & sysfs as you (I think) suggested a
-> > > > > > > > while ago:
-> > > > > > > >
-> > > > > > > > https://lkml.org/lkml/2021/3/4/355
-> > > > > > > >
-> > > > > > > > The story goes like this: committing the configfs item registers a
-> > > > > > > > platform device.
-> > > > > > >
-> > > > > > > Ick, no, stop there, that's not a "real" device, please do not abuse
-> > > > > > > platform devices like that, you all know I hate this :(
-> > > > > > >
-> > > > > > > Use the virtbus code instead perhaps?
-> > > > > > >
-> > > > > >
-> > > > > > I have no idea what virtbus is and grepping for it only returns three
-> > > > > > hits in: ./drivers/pci/iov.c and it's a function argument.
-> > > > > >
-> > > > > > If it stands for virtual bus then for sure it sounds like the right
-> > > > > > thing but I need to find more info on this.
-> > > > >
-> > > > > Sorry, wrong name, see Documentation/driver-api/auxiliary_bus.rst for
-> > > > > the details.  "virtbus" was what I think about it as that was my
-> > > > > original name for it, but it eventually got merged with a different
-> > > > > name.
-> > > > >
-> >
-> > Unless I'm not seeing something - it completely doesn't look like the
-> > right solution. This auxiliary bus sounds like MFD with extra steps.
-> > Its aim seems to be to provide virtual devices for sub-modules of real
-> > devices.
-> >
-> > What I have here really is a dummy device for which no HW exists.
->
-> Then just use a "normal" virtual device.  We have loads of them.  But if
-> you want to bind a "driver" to it, then use the aux bus please.  Do NOT
-> abuse a platform device for this.
->
-> > Also: while the preferred way is to use configfs to instantiate these
-> > simulated devices, then can still be registered from device-tree (this
-> > is a feature that was requested and eventually implemented in
-> > gpio-mockup which we want to phase out so we can't just drop it).
-> > AFAIK only platform devices can be populated from DT.
->
-> If you really are using DT, then ok, a platform device can be used, but
-> you didn't say that :)
->
+This patch series supports A64FX PMU event v1.2.
 
-My bad. Yes we need to use DT. And platform device does sound like the
-best approach.
+The first patch add more common and microarchitecture events.
+This patch is based on john's patch [1].
 
-> > I guess we could create something like a "virtual bus" that would be
-> > there for devices that don't exist on any physical bus but this would
-> > end up in big part being the same thing as platform devices.
->
-> That's what the aux bus code is there for.  So maybe you do need to use
-> it.
->
+The second patch adds PMU events for A64FX.
 
-I'm fine with that if it can be instantiated from DT but it doesn't seem so.
 
-> > > > > > > > As far as I understand - there's no guarantee that
-> > > > > > > > the device will be bound to a driver before the commit callback (or
-> > > > > > > > more specifically platform_device_register_full() in this case)
-> > > > > > > > returns so the user may try to retrieve the name of the device
-> > > > > > > > immediately (normally user-space should wait for the associated uevent
-> > > > > > > > but nobody can force that) by doing:
-> > > > > > > >
-> > > > > > > > mv /sys/kernel/config/gpio-sim/pending/foo /sys/kernel/config/gpio-sim/live/
-> > > > > > > > cat /sys/kernel/config/gpio-sim/live/foo/dev_name
-> > > > > > > >
-> > > > > > > > If the device is not bound at this point, we'll have a crash in the
-> > > > > > > > kernel as opposed to just returning -ENODEV.
-> > > > > > >
-> > > > > > > How will the kernel crash?  What has created the dev_name sysfs file
-> > > > > > > before it is possible to be read from?  That feels like the root
-> > > > > > > problem.
-> > > > > > >
-> > > > > >
-> > > > > > It's not sysfs - it's in configfs. Each chip has a read-only configfs
-> > > > > > attribute that returns the name of the device - I don't really have a
-> > > > > > better idea to map the configfs items to devices that committing
-> > > > > > creates.
-> > > > >
-> > > > > Same question, why are you exporting a configfs attribute that can not
-> > > > > be read from?  Only export it when your driver is bound to the device.
-> > > > >
-> > > >
-> > > > The device doesn't know anything about configfs. Why would it? The
-> > > > configuration of a GPIO chip can't be changed after it's instantiated,
-> > > > this is why we have committable items.
-> > > >
-> > > > We export a directory in configfs: gpio-sim -> user creates a new
-> > > > directory (item) in gpio-sim/pending/foo and it's not tied to any
-> > > > device yet but exports attributes which we use to configure the device
-> > > > (label, number of lines, line names etc.), then we mv
-> > > > gpio-sim/pending/foo gpio-sim/live and this is when the device gets
-> > > > created and registered with the subsystem. We take all the configured
-> > > > attributes and put them into device properties for both the driver and
-> > > > gpiolib core (for standard properties) to read - just like we would
-> > > > with a regular GPIO driver because this is the goal: test the core
-> > > > code.
-> > >
-> > > Ok, but they why are you trying to have dev_name be an exported thing?
-> > > I don't understand an attribute here that is visable but can not be read
-> > > from.
-> > >
-> >
-> > Because once the associated configfs item is committed and the device
-> > created, it will become readable. The list of attributes is fixed in
-> > configfs. I'm not sure what the better approach would be - return
-> > "none" if the device handle is NULL?
->
-> Sounds reasonable, I don't know how configfs works, it's been a decade
-> since I last touched it.
->
-> > > And why not just use the default device name function: dev_name(), which
-> > > will always return a string that will work no matter if the device is
-> > > bound to a driver or not.
-> > >
-> >
-> > I can do this but then it's possible that user-space gets the name of
-> > the device which doesn't exist in sysfs. I guess we can mention that
-> > in the documentation.
->
-> Device names can change over time, nothing new there.
->
+Changes in v8:
+ - Merge 'perf vendor events arm64: Add Fujitsu A64FX pmu event' and
+   'perf vendor events arm64: Add "_" to the event name, which starts with a number'
 
-Ok will change in v3. I'll Cc you next time.
+Changes in v7:
+ - Rename an event name that starts with a number.
+ - Drop 'perf tools: Add lexical definition of event name'.
+ - Drop 'perf test: Add test for event name starting with a number'.
 
-Bart
+Changes in v6:
+ - Add test to the second patch.
+ - Add Acked-by tag to the third patch.
+ - Add Reviewed-by tag to the third patch.
+
+Changes in v5:
+ - Removed john's patch [1] from this patch series.
+ - Added the missing Reviewed-by tag to the patch.
+ - Fixed the base of the patch series.[2]
+ - Changed subject from fix to added.
+
+Changes in v4:
+ - Add arm64 to the subjects of the second and fourth patches.
+ - Add reference URLs to the body of the second patch.
+
+Changes in v3:
+ - Add linux-arm-kernel mailing list to cc.
+
+Changes in v2:
+ - Added armv8-common-and-microarch based on John's patch.[1]
+ - Fixed A64FX Json to refer to standard events in armv8-common-and-microarch.
+
+[1] https://lore.kernel.org/lkml/1611835236-34696-3-git-send-email-john.garry@huawei.com/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf/core
+
+
+Shunsuke Nakamura (2):
+  perf vendor events arm64: Add more common and uarch events
+  perf vendor events arm64: Add Fujitsu A64FX pmu event
+
+ .../arm64/armv8-common-and-microarch.json     | 228 ++++++++++++++++++
+ .../arch/arm64/fujitsu/a64fx/branch.json      |   8 +
+ .../arch/arm64/fujitsu/a64fx/bus.json         |  62 +++++
+ .../arch/arm64/fujitsu/a64fx/cache.json       | 128 ++++++++++
+ .../arch/arm64/fujitsu/a64fx/cycle.json       |   5 +
+ .../arch/arm64/fujitsu/a64fx/exception.json   |  29 +++
+ .../arch/arm64/fujitsu/a64fx/instruction.json | 131 ++++++++++
+ .../arch/arm64/fujitsu/a64fx/memory.json      |   8 +
+ .../arch/arm64/fujitsu/a64fx/other.json       | 188 +++++++++++++++
+ .../arch/arm64/fujitsu/a64fx/pipeline.json    | 194 +++++++++++++++
+ .../arch/arm64/fujitsu/a64fx/sve.json         | 110 +++++++++
+ tools/perf/pmu-events/arch/arm64/mapfile.csv  |   1 +
+ 12 files changed, 1092 insertions(+)
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/branch.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/bus.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cycle.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/exception.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/instruction.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/memory.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/sve.json
+
+-- 
+2.25.1
+
