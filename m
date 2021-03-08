@@ -2,154 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F26330D2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E0C330D36
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhCHMPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:15:23 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:16115 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229773AbhCHMPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:15:01 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DvHMw3qc5z9tysJ;
-        Mon,  8 Mar 2021 13:14:52 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id dEqMcPH0WQ-Z; Mon,  8 Mar 2021 13:14:52 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DvHMw2x4tz9tyrs;
-        Mon,  8 Mar 2021 13:14:52 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B36388B7B3;
-        Mon,  8 Mar 2021 13:14:57 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 2JHGHDJHPda4; Mon,  8 Mar 2021 13:14:57 +0100 (CET)
-Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6D2AE8B7B1;
-        Mon,  8 Mar 2021 13:14:57 +0100 (CET)
-Subject: Re: [PATCH v1 12/15] powerpc/uaccess: Refactor get/put_user() and
- __get/put_user()
-To:     kernel test robot <lkp@intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Evgeniy Polyakov <zbr@ioremap.net>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Cc:     kbuild-all@01.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
-References: <3c174edb80d2d37af6b08c637b09268f675e5371.1614275314.git.christophe.leroy@csgroup.eu>
- <202103071822.4cXbH0Xp-lkp@intel.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <bfb95917-2b84-59f2-7f22-22fd6d63d09a@csgroup.eu>
-Date:   Mon, 8 Mar 2021 13:14:57 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230142AbhCHMSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:18:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229899AbhCHMSk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 07:18:40 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DE4C06174A;
+        Mon,  8 Mar 2021 04:18:40 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so2872044pjq.5;
+        Mon, 08 Mar 2021 04:18:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=YAXKN+M7RiXauqKPlpwwPF5/+9T43D/VSBuQ/SxYg+Q=;
+        b=OlZYRvLGgiZ9wASSofTwGg1/h0GFMAJGkqxbUk8fiy20a87MzdKZO0jgIQfYqjkEdg
+         6DPrxap3vbe+Ez8+WttOG85amANhYao39tRdQNlHi9errZ8PBYNV06l/MCWC+XWO5DMD
+         TWcqS0ATPMZEuAG1TNU0UssUj+ROwXlp3qkzfaq4Ye5wdoSGEh0KDV0ux/CTKY046msN
+         JcEUlChmpRJ62PQ3URoiLs42shsUwhBNmKz4gGZw+GaoPaZnOKq7umUvm1M+dHhelT0C
+         u/G2hjtxTOsQ00sLKi1eRIU/WKgshFUTdXgiYWRSZYGbBIT4+VNYHUWiUfUsesdQ7HCV
+         A5WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=YAXKN+M7RiXauqKPlpwwPF5/+9T43D/VSBuQ/SxYg+Q=;
+        b=KKx1+rijKk+LNbzmLXErZoV5qBHoKvpKMv87NWFHfF+ZOEKw4y+0QZKfG7pf4ImPYJ
+         yBQyygzPNBJkoE/xeq1Y+M1Y57gPvNRj9b7bj2rAkyaSn7tY4awQgoCSl1+uexZQeq1l
+         TWXwMHi8fr02r60semnobi8wJRRqD/kh4P+XcQKwf290BorfgCwlmeBsn2oANdg2Vuzu
+         FHb2Va+p6bX5SR2t7jy/n2KIAqPc64Bgr9oyD6MeKWU+q8Zs4mTRWMbiZnXu5j8nkBsh
+         sZr1p+6i3lbbovZpgNhlzcvqSsr9fJ9cfvOU3zrp5ODu3a5ay92I5A7bRAKo6PA/9S9A
+         s0eg==
+X-Gm-Message-State: AOAM531TWQqbfuJTlflD0My5Wd94fGAs3nn6usbqHEONAm4M5ft1dwn4
+        6RLzjhcMBa2vRbCKbAepr/c=
+X-Google-Smtp-Source: ABdhPJwIIi0atO+VXpmRTnuF/TsVxDXBuqZligjIdqjh8wcUTNz9rNO1cmJOV54B3x9M1ZwSrYd22Q==
+X-Received: by 2002:a17:902:14e:b029:e4:9648:83e6 with SMTP id 72-20020a170902014eb02900e4964883e6mr20254700plb.68.1615205919667;
+        Mon, 08 Mar 2021 04:18:39 -0800 (PST)
+Received: from [10.74.0.134] ([45.135.186.99])
+        by smtp.gmail.com with ESMTPSA id il6sm10398952pjb.56.2021.03.08.04.18.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Mar 2021 04:18:39 -0800 (PST)
+Subject: Re: [PATCH] net: ieee802154: fix error return code of dgram_sendmsg()
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alex.aring@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, stefan@datenfreihafen.org
+References: <20210308093106.9748-1-baijiaju1990@gmail.com>
+ <d373b42c-0057-48b3-4667-bfa53a99f040@gmail.com>
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+Message-ID: <3634b7c6-340b-3d6d-ccce-c2a95319ca9e@gmail.com>
+Date:   Mon, 8 Mar 2021 20:18:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <202103071822.4cXbH0Xp-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <d373b42c-0057-48b3-4667-bfa53a99f040@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Evgeniy for W1 Dallas
-+Alex & Christian for RADEON
-
-Le 07/03/2021 à 11:23, kernel test robot a écrit :
-> Hi Christophe,
-> 
-> I love your patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on powerpc/next]
-> [also build test WARNING on v5.12-rc2 next-20210305]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Christophe-Leroy/powerpc-Cleanup-of-uaccess-h/20210226-015715
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
-> config: powerpc-randconfig-s031-20210307 (attached as .config)
-> compiler: powerpc-linux-gcc (GCC) 9.3.0
-> reproduce:
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # apt-get install sparse
->          # sparse version: v0.6.3-245-gacc5c298-dirty
->          # https://github.com/0day-ci/linux/commit/449bdbf978936e67e4919be8be0eec3e490a65e2
->          git remote add linux-review https://github.com/0day-ci/linux
->          git fetch --no-tags linux-review Christophe-Leroy/powerpc-Cleanup-of-uaccess-h/20210226-015715
->          git checkout 449bdbf978936e67e4919be8be0eec3e490a65e2
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=powerpc
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
 
 
-The mentioned patch is not the source of the problem, it only allows to spot it.
+On 2021/3/8 18:19, Heiner Kallweit wrote:
+> On 08.03.2021 10:31, Jia-Ju Bai wrote:
+>> When sock_alloc_send_skb() returns NULL to skb, no error return code of
+>> dgram_sendmsg() is assigned.
+>> To fix this bug, err is assigned with -ENOMEM in this case.
+>>
+> Please stop sending such nonsense. Basically all such patches you
+> sent so far are false positives. You have to start thinking,
+> don't blindly trust your robot.
+> In the case here the err variable is populated by sock_alloc_send_skb().
 
-Christophe
+Ah, sorry, it is my fault :(
+I did not notice that the err variable is populated by 
+sock_alloc_send_skb().
+I will think more carefully before sending patches.
 
-> 
-> 
-> "sparse warnings: (new ones prefixed by >>)"
->>> drivers/w1/slaves/w1_ds28e04.c:342:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char [noderef] __user *_pu_addr @@     got char *buf @@
->     drivers/w1/slaves/w1_ds28e04.c:342:13: sparse:     expected char [noderef] __user *_pu_addr
->     drivers/w1/slaves/w1_ds28e04.c:342:13: sparse:     got char *buf
->>> drivers/w1/slaves/w1_ds28e04.c:356:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const [noderef] __user *_gu_addr @@     got char const *buf @@
->     drivers/w1/slaves/w1_ds28e04.c:356:13: sparse:     expected char const [noderef] __user *_gu_addr
->     drivers/w1/slaves/w1_ds28e04.c:356:13: sparse:     got char const *buf
-> --
->     drivers/gpu/drm/radeon/radeon_ttm.c:933:21: sparse: sparse: cast removes address space '__user' of expression
->     drivers/gpu/drm/radeon/radeon_ttm.c:933:21: sparse: sparse: cast removes address space '__user' of expression
->>> drivers/gpu/drm/radeon/radeon_ttm.c:933:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned int [noderef] __user *_pu_addr @@     got unsigned int [usertype] * @@
->     drivers/gpu/drm/radeon/radeon_ttm.c:933:21: sparse:     expected unsigned int [noderef] __user *_pu_addr
->     drivers/gpu/drm/radeon/radeon_ttm.c:933:21: sparse:     got unsigned int [usertype] *
->     drivers/gpu/drm/radeon/radeon_ttm.c:933:21: sparse: sparse: cast removes address space '__user' of expression
-> 
-> vim +342 drivers/w1/slaves/w1_ds28e04.c
-> 
-> fa33a65a9cf7e2 Greg Kroah-Hartman 2013-08-21  338
-> fa33a65a9cf7e2 Greg Kroah-Hartman 2013-08-21  339  static ssize_t crccheck_show(struct device *dev, struct device_attribute *attr,
-> fa33a65a9cf7e2 Greg Kroah-Hartman 2013-08-21  340  			     char *buf)
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  341  {
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26 @342  	if (put_user(w1_enable_crccheck + 0x30, buf))
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  343  		return -EFAULT;
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  344
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  345  	return sizeof(w1_enable_crccheck);
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  346  }
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  347
-> fa33a65a9cf7e2 Greg Kroah-Hartman 2013-08-21  348  static ssize_t crccheck_store(struct device *dev, struct device_attribute *attr,
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  349  			      const char *buf, size_t count)
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  350  {
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  351  	char val;
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  352
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  353  	if (count != 1 || !buf)
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  354  		return -EINVAL;
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  355
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26 @356  	if (get_user(val, buf))
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  357  		return -EFAULT;
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  358
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  359  	/* convert to decimal */
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  360  	val = val - 0x30;
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  361  	if (val != 0 && val != 1)
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  362  		return -EINVAL;
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  363
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  364  	/* set the new value */
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  365  	w1_enable_crccheck = val;
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  366
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  367  	return sizeof(w1_enable_crccheck);
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  368  }
-> fbf7f7b4e2ae40 Markus Franke      2012-05-26  369
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+By the way, I wonder how to report and discuss possible bugs that I am 
+not quite sure of?
+Some people told me that sending patches is better than reporting bugs 
+via Bugzilla, so I write the patches of these possible bugs...
+Do you have any advice?
+
+Thanks a lot!
+
+
+Best wishes,
+Jia-Ju Bai
+>
+>> Fixes: 78f821b64826 ("ieee802154: socket: put handling into one file")
+>> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+>> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+>> ---
+>>   net/ieee802154/socket.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/net/ieee802154/socket.c b/net/ieee802154/socket.c
+>> index a45a0401adc5..a750b37c7e73 100644
+>> --- a/net/ieee802154/socket.c
+>> +++ b/net/ieee802154/socket.c
+>> @@ -642,8 +642,10 @@ static int dgram_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+>>   	skb = sock_alloc_send_skb(sk, hlen + tlen + size,
+>>   				  msg->msg_flags & MSG_DONTWAIT,
+>>   				  &err);
+>> -	if (!skb)
+>> +	if (!skb) {
+>> +		err = -ENOMEM;
+>>   		goto out_dev;
+>> +	}
+>>   
+>>   	skb_reserve(skb, hlen);
+>>   
+>>
+
