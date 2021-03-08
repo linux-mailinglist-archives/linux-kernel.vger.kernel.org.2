@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B56B330971
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D01C330977
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbhCHIeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 03:34:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44356 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230095AbhCHIe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 03:34:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615192466; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TxNbQKNdS8Bk5nTMx7iGX1d+YD0DAigE/GiZ5gzAA50=;
-        b=ZZ1a1HjC/nl8Om4mducww6VRiweUKlyk0AOG02UpuuhFQ9flgmUuu2fbSXN5LH08nRxxKO
-        tTHr2mRvYFWxQJldGJ07bAPb+pWXp2p1YhZHxCaZL+bFbOl4c9jdprGg3zF6hzEoILQDqN
-        Hcn1CbQo/4NBBgG4C9KubCoKFiBQVo0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 47679AC0C;
-        Mon,  8 Mar 2021 08:34:26 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 09:34:17 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] mm: Fix dropped memcg from mem cgroup soft limit
- tree
-Message-ID: <YEXhfJhmXrLuxGWB@dhcp22.suse.cz>
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
- <YC68Xo9+R2msn/ul@dhcp22.suse.cz>
- <72cb8618-73af-ce08-d5d5-30cab30755a3@linux.intel.com>
- <YEH1xF8xm9MCsQ+q@dhcp22.suse.cz>
- <087bed0e-5b5f-0e25-c247-7fcb34de1513@linux.intel.com>
+        id S231626AbhCHIgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 03:36:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230125AbhCHIfk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 03:35:40 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00CEC06174A;
+        Mon,  8 Mar 2021 00:35:39 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5E2648A3;
+        Mon,  8 Mar 2021 09:35:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1615192536;
+        bh=WDZupoFFnNhIFYFmfE1Z4g7GUN7Xt55IBvQe7FlXbQ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uj0J9hgv2jAXrd8A7CnIhzAF38nCavZwtt2m5BUXoZ1XPuFFcxHRtY8EDaXFcQaVp
+         nsyDn4imRpsTHZjiePZaTS9RwncNCgAX/1lm7/snYa5gFIKnAF0q6YaZLv7TYvbfpi
+         FX/sInY8OgUHTsldIxTos9dXmL98SZk9f3KLKJ0U=
+Date:   Mon, 8 Mar 2021 10:35:04 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     quanyang.wang@windriver.com
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: zynqmp: Add compatible strings for si5328
+Message-ID: <YEXhuGeMoXbfWI6I@pendragon.ideasonboard.com>
+References: <20210308070843.2096992-1-quanyang.wang@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <087bed0e-5b5f-0e25-c247-7fcb34de1513@linux.intel.com>
+In-Reply-To: <20210308070843.2096992-1-quanyang.wang@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 05-03-21 11:07:59, Tim Chen wrote:
-> 
-> 
-> On 3/5/21 1:11 AM, Michal Hocko wrote:
-> > On Thu 04-03-21 09:35:08, Tim Chen wrote:
-> >>
-> >>
-> >> On 2/18/21 11:13 AM, Michal Hocko wrote:
-> >>
-> >>>
-> >>> Fixes: 4e41695356fb ("memory controller: soft limit reclaim on contention")
-> >>> Acked-by: Michal Hocko <mhocko@suse.com>
-> >>>
-> >>> Thanks!
-> >>>> ---
-> >>>>  mm/memcontrol.c | 6 +++++-
-> >>>>  1 file changed, 5 insertions(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> >>>> index ed5cc78a8dbf..a51bf90732cb 100644
-> >>>> --- a/mm/memcontrol.c
-> >>>> +++ b/mm/memcontrol.c
-> >>>> @@ -3505,8 +3505,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
-> >>>>  			loop > MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS))
-> >>>>  			break;
-> >>>>  	} while (!nr_reclaimed);
-> >>>> -	if (next_mz)
-> >>>> +	if (next_mz) {
-> >>>> +		spin_lock_irq(&mctz->lock);
-> >>>> +		__mem_cgroup_insert_exceeded(next_mz, mctz, excess);
-> >>>> +		spin_unlock_irq(&mctz->lock);
-> >>>>  		css_put(&next_mz->memcg->css);
-> >>>> +	}
-> >>>>  	return nr_reclaimed;
-> >>>>  }
-> >>>>  
-> >>>> -- 
-> >>>> 2.20.1
-> >>>
-> >>
-> >> Mel,
-> >>
-> >> Reviewing this patch a bit more, I realize that there is a chance that the removed
-> >> next_mz could be inserted back to the tree from a memcg_check_events
-> >> that happen in between.  So we need to make sure that the next_mz
-> >> is indeed off the tree and update the excess value before adding it
-> >> back.  Update the patch to the patch below.
-> > 
-> > This scenario is certainly possible but it shouldn't really matter much
-> > as __mem_cgroup_insert_exceeded bails out when the node is on the tree
-> > already.
-> > 
-> 
-> Makes sense. We should still update the excess value with
-> 
-> +		excess = soft_limit_excess(next_mz->memcg);
-> +		__mem_cgroup_insert_exceeded(next_mz, mctz, excess);
-> 
-> before doing insertion.  The excess value was recorded from previous
-> mz in the loop and needs to be updated to that of next_mz.
+Hi Quanyang,
 
-Yes. Sorry, I have missed that part previously.
+Thank you for the patch.
+
+On Mon, Mar 08, 2021 at 03:08:43PM +0800, quanyang.wang@windriver.com wrote:
+> From: Quanyang Wang <quanyang.wang@windriver.com>
+> 
+> The function of_i2c_get_board_info will call of_modalias_node to check
+> if a device_node contains "compatible" string. So let's assign the
+> proper string "silabs,si5328" to clock-generator@69's compatible
+> property to eliminate the error info as below:
+
+As far as I can tell, "silabs,si5328" isn't documented in
+Documentation/devicetree/bindings/. We need DT bindings before making
+use of the compatible string.
+
+> i2c i2c-10: of_i2c: modalias failure on /axi/i2c@ff030000/i2c-mux@74/i2c@4/clock-generator@69
+> i2c i2c-10: Failed to create I2C device for /axi/i2c@ff030000/i2c-mux@74/i2c@4/clock-generator@69
+> 
+> Fixes: 82a7ebf00224 ("arm64: dts: zynqmp: Add DT description for si5328 for zcu102/zcu106")
+> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+> ---
+>  arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts | 1 +
+>  arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts | 1 +
+>  2 files changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
+> index 12e8bd48dc8c..a73841ad24ce 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
+> @@ -590,6 +590,7 @@ si5328: clock-generator@69 {/* SI5328 - u20 */
+>  				#address-cells = <1>;
+>  				#size-cells = <0>;
+>  				#clock-cells = <1>;
+> +				compatible = "silabs,si5328";
+>  				clocks = <&refhdmi>;
+>  				clock-names = "xtal";
+>  				clock-output-names = "si5328";
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
+> index 18771e868399..24ce64364d63 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
+> @@ -591,6 +591,7 @@ si5328: clock-generator@69 {/* SI5328 - u20 */
+>  				#address-cells = <1>;
+>  				#size-cells = <0>;
+>  				#clock-cells = <1>;
+> +				compatible = "silabs,si5328";
+>  				clocks = <&refhdmi>;
+>  				clock-names = "xtal";
+>  				clock-output-names = "si5328";
+
 -- 
-Michal Hocko
-SUSE Labs
+Regards,
+
+Laurent Pinchart
