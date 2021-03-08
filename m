@@ -2,150 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCFF33073A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 06:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AFD33073C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 06:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234375AbhCHFVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 00:21:23 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:31351 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232565AbhCHFVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 00:21:17 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615180877; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=On2mi/7W7Su/V+3JcCXfzENs8FDIIHK/FTwZ3xaUj+0=; b=OrUunjbKbdMh7Vuy53shdBogRmEY4XZQuC+TgWvxEq/Bc+YfpgkF7iHz6HU5eq7SU9qvHG/W
- 3+dWTZukzObxpqW5uTngIaH+aDs6XXUws25yLUx+2BU12vdjstWi2M7j6JnYD7ubIcX/6JNB
- oj42X3qQGB8NaXsgSH/h4eBWXPY=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 6045b4472a5e6d1bfab92a30 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Mar 2021 05:21:11
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EE9DCC433C6; Mon,  8 Mar 2021 05:21:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.79.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 83B81C433CA;
-        Mon,  8 Mar 2021 05:21:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 83B81C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-Subject: Re: [PATCH v2 05/14] arm64: dts: qcom: sc7280: Add RSC and PDC
- devices
-To:     Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1614773878-8058-1-git-send-email-rnayak@codeaurora.org>
- <1614773878-8058-6-git-send-email-rnayak@codeaurora.org>
- <161481625091.1478170.8810587061043612400@swboyd.mtv.corp.google.com>
- <31bf64c5-26a4-dc23-3769-df7a7559083b@codeaurora.org>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <ac4f5cf8-0bf0-b7c3-2d50-ae7d48cbc885@codeaurora.org>
-Date:   Mon, 8 Mar 2021 10:51:04 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S234397AbhCHFWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 00:22:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234377AbhCHFWS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 00:22:18 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76F7C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 21:22:15 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id t16so8069609ott.3
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 21:22:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rfkP+RUBC/I5TihxB9dtySzi9ltoQb0x3qn6GVvaR/w=;
+        b=Ejb8pOslvl56wuvJOKDmLjU14IIQBlenT4w1dk85WLaRKr82GSMOTstLgdC5HUtJpW
+         SKhaBcSEllDbRpgs0sPDY511HQu6XQ3GANeJclNF83pbmNRaAkha+SeiEOEfj30iMeYV
+         to4cax8gozbuj/4UV+thu3Fa18YXcs8WCqUxeSjaVsmTLMqBYQ44PDgRVqdAV/PHmv4a
+         Eb4l9oOGGlaFWM6d3H943Iz2uNXGCyKH0iZ9fJa0dGYpGihBa+UrmBVFvGU6LNjsDRZp
+         /9v2aQOeQ0N/NcImh55+XWFcDy4IK+uI990krioykZVSSWtT/igqWI1+u0yiQOUfHRiv
+         JEIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rfkP+RUBC/I5TihxB9dtySzi9ltoQb0x3qn6GVvaR/w=;
+        b=Jndj/1kLI4smicJjEPaSYhvmmuYUt1kAXv6/WSJAjpcGdeIMd7yW4w0FNQnGtDLIFW
+         mYAQ5l7hxP5Dmmy13rI0EYIl/G0+S+WhqcpM8CBl+HYrpbhomL2JZ3XlFqx4fKhCVY5k
+         Q8czWa9XJop5cJmU/El/6NtYO5x2PYi0akEJK7KBet6GVaa4h+6Vdm/FG9fK4af1iNdn
+         kYoi5Wevm7UQVcx0bK426hVFznG9F20dlqFxf4m2iMA/pePaTq/Uyh7oSGGkBWlvA/GP
+         HTHj0NqtAWScU+J1r8zmD1CF9g2H5lQIRP3/jfcOoMMxVUaqEDlptxdHrHLLvgbFeuaG
+         Jn/g==
+X-Gm-Message-State: AOAM530PukI4BppNyVZ2va3TLVCqlqCIA2M7ljiy653YJklQb1Yg4FYY
+        7lT0BJk/m/n7amRK+Uth8igeLZR3hEs=
+X-Google-Smtp-Source: ABdhPJydbu3dKG3UxgHGRDTOT5Lc6Zl669C2qObnlmBunK35CSyfd3QQsQFm6bvwCRFrHweLgRoeag==
+X-Received: by 2002:a05:6830:139a:: with SMTP id d26mr4890092otq.256.1615180935123;
+        Sun, 07 Mar 2021 21:22:15 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a7sm2198352oon.8.2021.03.07.21.22.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 07 Mar 2021 21:22:14 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 7 Mar 2021 21:22:13 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.12-rc2
+Message-ID: <20210308052213.GA201328@roeck-us.net>
+References: <CAHk-=whH-stL2zLCf02HZaOeQgS4oGa7eEiHeYZGj-orK-PX0g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <31bf64c5-26a4-dc23-3769-df7a7559083b@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whH-stL2zLCf02HZaOeQgS4oGa7eEiHeYZGj-orK-PX0g@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Mar 05, 2021 at 05:54:10PM -0800, Linus Torvalds wrote:
+> Ok, so this is a couple of days early, but rc1 had the nasty swapfile
+> issue, so I'm just accelerating rc2 a bit.
+> 
+> Outside of the swapfile IO offset fix, the only other thing that
+> stands out is some io_uring thread handling re-organization, which not
+> only solved a few fundamental issues, but actually made the code
+> smaller and simpler too.
+> 
+> Other than that it all looks pretty normal: drivers dominate (with
+> sound being most notable, with the ASoC Intel SOF support being split
+> up sanely). But there's some btrfs work, kvm, iscsi, etc. A few random
+> things all over.
+> 
+> Shortlog appended for your viewing pleasure, and I sincerely hope (and
+> believe) that rc2 is in a lot better shape than rc1 was.
+> 
 
-On 3/5/2021 11:12 AM, Rajendra Nayak wrote:
->
-> On 3/4/2021 5:34 AM, Stephen Boyd wrote:
->> Quoting Rajendra Nayak (2021-03-03 04:17:49)
->>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>> index 4a56d9c..21c2399 100644
->>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>> @@ -30,6 +31,18 @@
->>>                  };
->>>          };
->>>   +       reserved_memory: reserved-memory {
->>
->> Do we plan to use this label at any point? I'd prefer we remove this
->> until it becomes useful.
->
-> sure, i'll drop it
->
->>
->>> +               #address-cells = <2>;
->>> +               #size-cells = <2>;
->>> +               ranges;
->>> +
->>> +               aop_cmd_db_mem: memory@80860000 {
->>> +                       reg = <0x0 0x80860000 0x0 0x20000>;
->>> +                       compatible = "qcom,cmd-db";
->>> +                       no-map;
->>> +               };
->>> +       };
->>> +
->>>          cpus {
->>>                  #address-cells = <2>;
->>>                  #size-cells = <0>;
->>> @@ -203,6 +229,7 @@
->>>                          interrupt-controller;
->>>                          #interrupt-cells = <2>;
->>>                          gpio-ranges = <&tlmm 0 0 175>;
->>> +                       wakeup-parent = <&pdc>;
->>>                            qup_uart5_default: qup-uart5-default {
->>>                                  pins = "gpio46", "gpio47";
->>> @@ -287,6 +314,23 @@
->>>                                  status = "disabled";
->>>                          };
->>>                  };
->>> +
->>> +               apps_rsc: rsc@18200000 {
->>
->> Any better name than 'rsc'? Maybe 'power-controller'?
->
-> hmm, Maulik, any thoughts? This would perhaps need the bindings docs
-> to be updated as well (and maybe the existing platform DTs using rsc too)
+At least it survives my tests.
 
-I think we should be good with rsc (resource-state-coordinator). RSC 
-itself don't do any resource power management.
+Build results:
+	total: 151 pass: 151 fail: 0
+Qemu test results:
+	total: 435 pass: 435 fail: 0
 
-Thanks,
-Maulik
->
->>
->>> +                       compatible = "qcom,rpmh-rsc";
->>> +                       reg = <0 0x18200000 0 0x10000>,
->>> +                             <0 0x18210000 0 0x10000>,
->>> +                             <0 0x18220000 0 0x10000>;
->>> +                       reg-names = "drv-0", "drv-1", "drv-2";
->>> +                       interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
->>> +                                    <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
->>> +                                    <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
->>> +                       qcom,tcs-offset = <0xd00>;
->>> +                       qcom,drv-id = <2>;
->>> +                       qcom,tcs-config = <ACTIVE_TCS 2>,
->>> +                                         <SLEEP_TCS 3>,
->>> +                                         <WAKE_TCS 3>,
->>> +                                         <CONTROL_TCS 1>;
->>> +               };
->>>          };
->
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
-
+Guenter
