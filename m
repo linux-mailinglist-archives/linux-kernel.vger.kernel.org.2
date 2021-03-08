@@ -2,159 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771DE33117B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2CD33117D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:58:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbhCHO5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 09:57:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34778 "EHLO
+        id S230525AbhCHO5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 09:57:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231295AbhCHO5A (ORCPT
+        with ESMTP id S231601AbhCHO5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:57:00 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0F0C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 06:57:00 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lJHJZ-000549-3n; Mon, 08 Mar 2021 15:56:57 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:743f:a98a:1069:4286])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 3E2A55F0CBC;
-        Mon,  8 Mar 2021 14:56:54 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 15:56:53 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Andrea Righi <andrea.righi@canonical.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, schuchmann@schleissheimer.de
-Subject: Re: [PATCH] leds: trigger: fix potential deadlock with libata
-Message-ID: <20210308145653.mechsganlrvpzyym@pengutronix.de>
-References: <20201102104152.GG9930@xps-13-7390>
- <20210306203954.ya5oqgkdalcw45c4@pengutronix.de>
- <YEQ0ONQCwVUd0wmc@boqun-archlinux>
+        Mon, 8 Mar 2021 09:57:32 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12C5C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 06:57:31 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id bm21so20939810ejb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 06:57:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LD+oPeQow1xVqc+HYD3DbwSbqmX9ue85IWBHHpJuobw=;
+        b=GtnxKeg5pWb7G0664knn8bzR+jM+QGQrMvuGjUWUS9jkFlbNiHsz14qFTYPzJp6EZz
+         Ssg+OMxyyjcoBRMJooXiuVd7xbawDNTvl0YJWkT1jkZWJSLwAE1veBG54E6y6oQhAglE
+         q3FH132kxpzA1yc9k5+XcFVNbD9zrFGOt2kSO1TAreE9ATuSU9r0y2VyvFLkNGatZ/I9
+         s8Kv+QvrSOJsPe3/R4VFH+xv1vNe3gOf13aUilLwC6KHAJo5zinhjHNKjfKNGotlSK99
+         szM/mWCwYMATYjXVuo0rFniu9A509+wkRDqo4zYBOS2wP8j+K7jpEeT7bp/6y2DsSooW
+         Db1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LD+oPeQow1xVqc+HYD3DbwSbqmX9ue85IWBHHpJuobw=;
+        b=D2k5n9hS7qFvAMlgAKIrc9pH/TDxO7eg/dGVx5SX37La/TCLMDtlq+NrenBgCVmsdc
+         q5bAw734UXILqSVy8HFb63eI7K62r+k+tPrLg+ctfNdoj/LsolSCmjuKnCt0Ilu+N3ew
+         Xc7wfFC/G5j2olimpvRiCGXjvFpprbEOb6bn0KgcX9GgiQ4SC0xs0OKHCu+2rSuXrSdC
+         W94QySIWLP+F9wghzaiyExu4x4tROKo9jGxbMiePz6IDwyVoum+fwoX/JZEqmApKjfKc
+         ere3y2ADagfBhLHGE5ujNTfikSVtIEhZXow/ppu5z4WEKUyWYME3D05dSrunMW1ZQg02
+         l8MA==
+X-Gm-Message-State: AOAM532ydnsF1n4lLmQgRB6GRt9wknw0TrxMaoDcADcpw+vTaqQmbXdP
+        wkq+idh/CaazzOUdI/JJ/zCoF7Y/w76OFQ==
+X-Google-Smtp-Source: ABdhPJyPz38GNLJw/gUpUETnESwxtpjS0ipnaXJFjeJdU+mU+A9NPb6q0cHEm74X3OTJPzFT8iR4XA==
+X-Received: by 2002:a17:906:c051:: with SMTP id bm17mr15064968ejb.21.1615215450451;
+        Mon, 08 Mar 2021 06:57:30 -0800 (PST)
+Received: from [192.168.0.109] ([84.40.73.174])
+        by smtp.gmail.com with ESMTPSA id cw14sm7553068edb.8.2021.03.08.06.57.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Mar 2021 06:57:30 -0800 (PST)
+Subject: Re: [RFC PATCH 1/5] tracing: Define new ftrace event "func_repeats"
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org
+References: <20210304090141.207309-1-y.karadz@gmail.com>
+ <20210304090141.207309-2-y.karadz@gmail.com>
+ <20210304113809.5c2ccceb@gandalf.local.home>
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Message-ID: <6f4083f2-6c71-e404-9000-b08ff94ab328@gmail.com>
+Date:   Mon, 8 Mar 2021 16:57:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gp7ccw4en57i62vl"
-Content-Disposition: inline
-In-Reply-To: <YEQ0ONQCwVUd0wmc@boqun-archlinux>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210304113809.5c2ccceb@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---gp7ccw4en57i62vl
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 4.03.21 г. 18:38, Steven Rostedt wrote:
+> On Thu,  4 Mar 2021 11:01:37 +0200
+> "Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+> 
+> Thanks Yordan for doing this!
+> 
+> I have some comments below.
+> 
 
-On 07.03.2021 10:02:32, Boqun Feng wrote:
-> On Sat, Mar 06, 2021 at 09:39:54PM +0100, Marc Kleine-Budde wrote:
-> > Hello *,
-> >=20
-> > On 02.11.2020 11:41:52, Andrea Righi wrote:
-> > > We have the following potential deadlock condition:
-> > >=20
-> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > >  WARNING: possible irq lock inversion dependency detected
-> > >  5.10.0-rc2+ #25 Not tainted
-> > >  --------------------------------------------------------
-> > >  swapper/3/0 just changed the state of lock:
-> > >  ffff8880063bd618 (&host->lock){-...}-{2:2}, at: ata_bmdma_interrupt+=
-0x27/0x200
-> > >  but this lock took another, HARDIRQ-READ-unsafe lock in the past:
-> > >   (&trig->leddev_list_lock){.+.?}-{2:2}
-> > >=20
-> > >  and interrupts could create inverse lock ordering between them.
-> >=20
-> > [...]
-> >=20
-> > > ---
-> > >  drivers/leds/led-triggers.c | 5 +++--
-> > >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/drivers/leds/led-triggers.c b/drivers/leds/led-triggers.c
-> > > index 91da90cfb11d..16d1a93a10a8 100644
-> > > --- a/drivers/leds/led-triggers.c
-> > > +++ b/drivers/leds/led-triggers.c
-> > > @@ -378,14 +378,15 @@ void led_trigger_event(struct led_trigger *trig,
-> > >  			enum led_brightness brightness)
-> > >  {
-> > >  	struct led_classdev *led_cdev;
-> > > +	unsigned long flags;
-> > > =20
-> > >  	if (!trig)
-> > >  		return;
-> > > =20
-> > > -	read_lock(&trig->leddev_list_lock);
-> > > +	read_lock_irqsave(&trig->leddev_list_lock, flags);
-> > >  	list_for_each_entry(led_cdev, &trig->led_cdevs, trig_list)
-> > >  		led_set_brightness(led_cdev, brightness);
-> > > -	read_unlock(&trig->leddev_list_lock);
-> > > +	read_unlock_irqrestore(&trig->leddev_list_lock, flags);
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(led_trigger_event);
-> >=20
-> > meanwhile this patch hit v5.10.x stable and caused a performance
-> > degradation on our use case:
-> >=20
-> > It's an embedded ARM system, 4x Cortex A53, with an SPI attached CAN
-> > controller. CAN stands for Controller Area Network and here used to
-> > connect to some automotive equipment. Over CAN an ISOTP (a CAN-specific
-> > Transport Protocol) transfer is running. With this patch, we see CAN
-> > frames delayed for ~6ms, the usual gap between CAN frames is 240=C2=B5s.
-> >=20
-> > Reverting this patch, restores the old performance.
-> >=20
-> > What is the best way to solve this dilemma? Identify the critical path
-> > in our use case? Is there a way we can get around the irqsave in
-> > led_trigger_event()?
-> >=20
->=20
-> Probably, we can change from rwlock to rcu here, POC code as follow,
-> only compile tested. Marc, could you see whether this help the
-> performance on your platform? Please note that I haven't test it in a
-> running kernel and I'm not that familir with led subsystem, so use it
-> with caution ;-)
->=20
-> (While at it, I think maybe we miss the leddev_list_lock in net/mac80211
-> in the patch)
+Hi Steven,
 
-I can confirm, this patch basically restores the old performance.
+Thank you very much for looking into this!
 
-Marc
+Your suggestion makes perfect sense. I only have one clarifying question 
+below.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+>> diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
+>> index 4547ac59da61..8007f9b6417f 100644
+>> --- a/kernel/trace/trace_entries.h
+>> +++ b/kernel/trace/trace_entries.h
+>> @@ -338,3 +338,19 @@ FTRACE_ENTRY(hwlat, hwlat_entry,
+>>   		 __entry->nmi_total_ts,
+>>   		 __entry->nmi_count)
+>>   );
+>> +
+>> +FTRACE_ENTRY(func_repeats, func_repeats_entry,
+>> +
+>> +	TRACE_FUNC_REPEATS,
+>> +
+>> +	F_STRUCT(
+>> +		__field(	unsigned long,	ip	)
+>> +		__field(	unsigned long,	pip	)
+>> +		__field(	unsigned long,	count	)
+>> +	),
+>> +
+>> +	F_printk(" %ps <-%ps\t(repeats:%lu)",
+>> +		 (void *)__entry->ip,
+>> +		 (void *)__entry->pip,
+>> +		 __entry->count)
+> 
+> After playing with this a little, I realized that we should also store the
+> last timestamp as well. I think that would be interesting information.
+> 
+>             <...>-37      [004] ...1  2022.303820: gc_worker <-process_one_work
+>             <...>-37      [004] ...1  2022.303820: ___might_sleep <-gc_worker
+>             <...>-37      [004] ...1  2022.303831: ___might_sleep <-gc_worker (repeats: 127)
+>             <...>-37      [004] ...1  2022.303831: queue_delayed_work_on <-process_one_work
+> 
+> The above shows that __might_sleep() was called 128 times, but what I don't
+> get from the above, is when that last call was made. You'll see that the
+> timestamp for the repeat output is the same as the next function shown
+> (queue_delayed_work_on()). But the timestamp for the last call to
+> __might_sleep() is lost, and the repeat event ends up being written when
+> it is detected that there are no more repeats.
+> 
+> If we had:
+> 
+>             <...>-37      [004] ...1  2022.303820: gc_worker <-process_one_work
+>             <...>-37      [004] ...1  2022.303820: ___might_sleep <-gc_worker
+>             <...>-37      [004] ...1  2022.303831: ___might_sleep <-gc_worker (last ts: 2022.303828 repeats: 127)
+>             <...>-37      [004] ...1  2022.303831: queue_delayed_work_on <-process_one_work
+> 
+> We would know the last time __might_sleep was called.
+> 
+> That is, not only should we save the ip and pip in the trace_func_repeats
+> structure, but we should also be storing the last time stamp of the last
+> function event that repeated. Otherwise the above looks like the last
+> __might_sleep called above happened when the queue_delayed_work_on
+> happened, where that may not be the case.
 
---gp7ccw4en57i62vl
-Content-Type: application/pgp-signature; name="signature.asc"
+If we store the last timestamp, this means we will need to use 
+additional 64b on the buffer, every time we record the "func_repeats" 
+event. This looks like an overkill to me.
+Can we store only the duration of the repeats (the difference between 
+the timestamp)? This way we can use less memory at the price of having 
+one extra arithmetic operation.
+Alternative approach can be to store only the least-significant bits of 
+the timestamp.
 
------BEGIN PGP SIGNATURE-----
+What do you think?
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBGOzIACgkQqclaivrt
-76nW3Qf/eyK3mOUT5t9BpkibwM2Ud0Kra3YZ+jvIg3UtRx4w2CmcSXpG2n77/EZv
-S7hHXDnAoqDdPtTRFl+WW6idddlzTA/psg1ODQgyug6UzlEUR0za2vWePVsCLv47
-vyIkJ5pe6SY/Ddi3/1eJgrZhjNNQa6fkOjKztGIYdzCY6gCMgZvUfb31qi2YOXZ5
-FNl9gLy4TvygC2NCV28YbUsRwPNDHA3Qw8E9IJJFoLAfqQG/YFWhM1uONk98hMqO
-kgqdMJIBGYLVcrCnnlMTECAE/DasLl9mIT8PbeiE6S+EMwymd+RDjXTg1ZBurKj1
-KlCuP3BhmQBLtsiqpVIOiQxSBPcZfg==
-=kDN4
------END PGP SIGNATURE-----
+Best regards,
+Yordan
 
---gp7ccw4en57i62vl--
+> 
+> -- Steve
+> 
+> 
