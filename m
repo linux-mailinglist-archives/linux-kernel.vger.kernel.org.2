@@ -2,186 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C043306B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 05:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 944C23306C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 05:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbhCHD76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 22:59:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35019 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232420AbhCHD7Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 22:59:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615175964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TGiugw84K0yAazMlXfQCN5eRxZQb5KNF3VYCr/dWXMU=;
-        b=f4XyS8Z0ekXl8iXdU+zMKP/a8yWwNo9QmN9NeXILQhxIvTsq6aPBZk5qiz4kZP4W+Yn8hn
-        btnhJOx2RsoIyJGHcEki+Lnv3Ercr6JoyfcGQLmV2zymfnAAOTSc7VmkGPzgcswMivwU+t
-        2ubcT7IqxaVOpE+PX9cYi/mX9RXzx2s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-403-oxtmNiEiPm-Tepl0IYgO_w-1; Sun, 07 Mar 2021 22:59:20 -0500
-X-MC-Unique: oxtmNiEiPm-Tepl0IYgO_w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7556226860;
-        Mon,  8 Mar 2021 03:59:19 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-193.pek2.redhat.com [10.72.13.193])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F7B55B4B3;
-        Mon,  8 Mar 2021 03:59:13 +0000 (UTC)
-Subject: Re: [RFC PATCH 10/10] vhost/vdpa: return configuration bytes read and
- written to user space
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>
-References: <20210216094454.82106-1-sgarzare@redhat.com>
- <20210216094454.82106-11-sgarzare@redhat.com>
- <4d682ff2-9663-d6ac-d5bf-616b2bf96e1a@redhat.com>
- <20210302140654.ybmjqui5snp5wxym@steredhat>
- <5cf852b1-1279-20e9-516d-30f876e0162d@redhat.com>
- <20210305083712.atfrlpq6bkjrf6pd@steredhat>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <ec8dba28-820b-4948-999e-439e268b536c@redhat.com>
-Date:   Mon, 8 Mar 2021 11:59:12 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
+        id S234115AbhCHEGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 23:06:19 -0500
+Received: from mail-eopbgr80050.outbound.protection.outlook.com ([40.107.8.50]:43141
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232465AbhCHEFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 23:05:45 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PlYOSc5mKaDKvJcXC0pW4dSZ/Vwgc6LcsHdN+HSBmxe6RKFvz7GH4m9Tdh1c5kLCfnueTCmCwIyQ1iUN95i0EmPy/GoiN6enpFD2Yi4mBf+L9tYberZwNx8vLnrE3CQNC8DMhKXhzORcDYhau0b1kgYMvb0fBraZjfwctNgdhLCZ7b99PjVki69fQ6AQY3PtXLJSjLw31oQJx/K2Etjug3eeK8geRetrnylMW/mgJpF5mtk6tGzJV3O+c9yPjpiAdEKzgMdQF2y8a1l3xGyWDhbwULYoJd5sYJCli+JbYXkla5+2dKRtGxIqZS9xQYJPIFPRq5eqKmgW282klUrM9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kDu/fEvRn6x3WKFDb2VMctxPyFlhfFHHjNh0W8DORAE=;
+ b=C1lW3+Vmw3XIs+JGu6RTS5pTxK4bTtHFTmQ3BvYtrF1Z4OshujpVFrxW8dVllAYjHis5oAfLYWwuGQsXVjqAfE7ngoI4DAlBaNlroJIGhC4NkClgen2wWBffhGDqvOregTwB07CeBM3KezuxN8apjJw3Quq+2NgpVGEyQgvPrnqKE6/8dhkUOBza32tneqSjbuOWv1Dr123Anl6ZPqDOo7RpPu9ma2hkz88HVk7vXqLZ0EKCNnHvyDIOymdKsxbk8F21EjODkkGF35SoVZtXL6j+m7C+mTCoZOYz4COQbQKui3Vhz78TeN9L+aRTfKXuc8JF1I75plDn1Xf2sRZCnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kDu/fEvRn6x3WKFDb2VMctxPyFlhfFHHjNh0W8DORAE=;
+ b=BnpisS8S3Ge8usb0c+kuq5OW+DbwMrX5bk9LP55Q8ed/dmbsgnRk1MOZn8Zg2OTuOKY/QXX4duFsWHfERlX45/XX1Vy3Rb2CaEBhkXB+3mR3UHcUh7erF4i7YrvAbuQTuaG2VFZs+AxPsfuODr+KUdyUOkydNbR2mlTMK2+u1XI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+ by VI1PR04MB3310.eurprd04.prod.outlook.com (2603:10a6:802:11::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.27; Mon, 8 Mar
+ 2021 04:05:43 +0000
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3912.027; Mon, 8 Mar 2021
+ 04:05:43 +0000
+From:   Liu Ying <victor.liu@nxp.com>
+To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org,
+        a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, airlied@linux.ie, daniel@ffwll.ch,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, agx@sigxcpu.org,
+        robert.chiras@nxp.com, martin.kepplinger@puri.sm,
+        robert.foss@linaro.org
+Subject: [PATCH v4 0/5] phy: phy-fsl-imx8-mipi-dphy: Add i.MX8qxp LVDS PHY mode support
+Date:   Mon,  8 Mar 2021 11:52:16 +0800
+Message-Id: <1615175541-29009-1-git-send-email-victor.liu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: HK2PR04CA0088.apcprd04.prod.outlook.com
+ (2603:1096:202:15::32) To VI1PR04MB3983.eurprd04.prod.outlook.com
+ (2603:10a6:803:4c::16)
 MIME-Version: 1.0
-In-Reply-To: <20210305083712.atfrlpq6bkjrf6pd@steredhat>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by HK2PR04CA0088.apcprd04.prod.outlook.com (2603:1096:202:15::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3912.17 via Frontend Transport; Mon, 8 Mar 2021 04:05:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e0fdc639-656b-4f0a-1722-08d8e1e7715f
+X-MS-TrafficTypeDiagnostic: VI1PR04MB3310:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB33103E024C066A8C35B2C08098939@VI1PR04MB3310.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: r1Xd0ZQKHkiijbRWVGB31EiM/5aX5DX5mWqWIKFzpPRbBNJUbrwtv1NIVpKmR3HOzcrfAVaSjoLzV0BYQDO+oQFItNMGV3fr92YLVk+8yKS9e8Cr8NMUkRdxeavNCl58LxRZ33F0MRdosWXQgCvjhOjr+AYb8sYuqYX3/EL72pov19Q07ZwTKX+xfWCv24JnVYdYawOEiHnistORDDPIMkZ8U/0fTcyJEXipBo0GEn6fi9Ea8NoM5oyeq+6smNMp25RPmuBrk9LUUcwxwas5ldw3xEONaLo+cESLeGbCVaEskBm1K1vSQcRwMO91yLSyWUfbZjlDw2kkhJlD8Ham/EPrHI6U+8Ns8PHmxxIysobICSIDhvA1SpAxkQ81CJcKwqyW0YqBB11ITDEqoFD3xuuZh3NTt6dP5SVJXzZJqPhFpFl/6yqKm25xaiRbDSvp1om0hUCJ8fwpMhiybOjwKGNiJ+pdRQykXhfvSmQt9YHlEIZ3MVorO+MLQ0+rAjOqtbP0YxNck8aZbnjR5uVl2KZ0j0MSGoujXp0sl5eaus/sRANNNj4dpTI+vFEkOkYTwBFB0fQMN0gz4bUB5N04ww==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(396003)(366004)(346002)(66556008)(186003)(16526019)(478600001)(66946007)(2906002)(316002)(66476007)(26005)(5660300002)(52116002)(8936002)(6666004)(6486002)(36756003)(8676002)(6512007)(7416002)(4326008)(956004)(6506007)(83380400001)(2616005)(86362001)(69590400012);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?zAjObtTkPJ5sbn7tZPoeZxNml31KmtH+0Tf8UV3oR/yz9qth4IIVjfQdkAzy?=
+ =?us-ascii?Q?vbSnHlXjS4Pow8VSrvdHgCxh3beXpmkrjqtTGA/gixEFCHWlJhBtm37bqdio?=
+ =?us-ascii?Q?yoS4vqPqxIKsBRMyL4WaAjUPHYtpXr+R7rHkvgW8/mrwBLcJDmwy1whY2reo?=
+ =?us-ascii?Q?2YNvwsbFpM24RorIsm/ZxAhNF7gOcu/jMyCAFxZy7Mt7nIpgY5KJZ5ZXAXxm?=
+ =?us-ascii?Q?XNrbCEG2zZfohTo2G4wPAZKUdBdlrNyAFCofwh402XhAtMT7MQWSy63rwFih?=
+ =?us-ascii?Q?3hJv3xLEHJ90Ljrr7TskJqx/7gSjmaHqOet7N37TJoqbQDTBZ9GrUXnh63pN?=
+ =?us-ascii?Q?TGUYjnO4dOn4LSTlXWDa9sHqaCYAU6fYwtBmzonIoOXBbS5ZbvF/ByXRZuX0?=
+ =?us-ascii?Q?RxnGFMN+V85WPBT2Cpkcanel80t3TS83ovzmGtDJihpmUwIUkTZMJ4tOzXCV?=
+ =?us-ascii?Q?UmtqEVNWnTmfO7nqfDaHrtLNBQ69kWGgLSzwCM5jGWKHEK00fliZ+dlXvwAQ?=
+ =?us-ascii?Q?QpayP+C9fjr/dAkwLBfQbEY3zvoZVWqywGX4AgHT6vDibu3CABIQCyc+MfkL?=
+ =?us-ascii?Q?G4E3iPVDXHVuu26qvB9Nq7PxJ+JKVkRbvnFEsDdKBObAct4sl6Wnigt8lKOv?=
+ =?us-ascii?Q?nle2oY8/nGPk+WMyTwSNGapE7s8eD/lsg57V7JfwxzqEbqN2jVomTN+nvGSt?=
+ =?us-ascii?Q?9AfVxom1RA3TTCI8R2NT/fDt5/bWgEzc8iI1/SooIBlMptdlGvvx79v4IKnQ?=
+ =?us-ascii?Q?Pv5s8NSPFf96rU/0A2Z6RtZ8y7Y2H3NKaDturGc2HRTD4Ny0NbHdZpTqxlkN?=
+ =?us-ascii?Q?f5Jd4MNTgcdAHx7b8OO1iJAL1QikjTv8MIDsbsqDPCJNc5U+WYeods6ar/nA?=
+ =?us-ascii?Q?+kb9euBzLhWWh5lDaoDHZ5WHDVUJW4LqmNe/nLlZeR8VdjCXEcN6Kvam7Nl4?=
+ =?us-ascii?Q?tkPpyIMZIToGVRYge/gdu+8zRxydnJk8pPZxA73HqUO86ussqETVLuNZthRd?=
+ =?us-ascii?Q?HSUShGbqAsYJTAvi8IKzkET4l+3p0q7GNX/4CvaIcJ5dVWjdBNY1tuZClU7W?=
+ =?us-ascii?Q?W4+0Xc0BvlmnxYiOqyiSF0tebQmX1lkQ2Ewq0zASDa83sdXSMbS9HZ0S3fXy?=
+ =?us-ascii?Q?KOqiVQ4noJzEoUV5sRGnUn6Bm6bsMpvRS98jBTLSwLf1b+yBKUKVlZDRcNqM?=
+ =?us-ascii?Q?cVRcabSonF6E2T9nLIJZMJGuDR8W/046iN/mGtWEM9JBAjoixKTEA6Mg2qWN?=
+ =?us-ascii?Q?HJ81gI2qzCNirrSAWa0YdXqMS768YjkR5ekdoUwHdYwiHyelS4QniN/BorwL?=
+ =?us-ascii?Q?sjRu5X10/HM2I44NCSgUYhHV?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e0fdc639-656b-4f0a-1722-08d8e1e7715f
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 04:05:43.1066
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hWdlz6hbTR8iytfVKVfypDBXbKeZOsvjbsBycIHrn+mN9uh/ML10F0Py0XVF9Zaql4Un8/WbjD5Dpyu6/ynJ+w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3310
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 2021/3/5 4:37 下午, Stefano Garzarella wrote:
-> On Thu, Mar 04, 2021 at 04:31:22PM +0800, Jason Wang wrote:
->>
->> On 2021/3/2 10:06 下午, Stefano Garzarella wrote:
->>> On Tue, Mar 02, 2021 at 12:05:35PM +0800, Jason Wang wrote:
->>>>
->>>> On 2021/2/16 5:44 下午, Stefano Garzarella wrote:
->>>>> vdpa_get_config() and vdpa_set_config() now return the amount
->>>>> of bytes read and written, so let's return them to the user space.
->>>>>
->>>>> We also modify vhost_vdpa_config_validate() to return 0 (bytes read
->>>>> or written) instead of an error, when the buffer length is 0.
->>>>>
->>>>> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
->>>>> ---
->>>>>  drivers/vhost/vdpa.c | 26 +++++++++++++++-----------
->>>>>  1 file changed, 15 insertions(+), 11 deletions(-)
->>>>>
->>>>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->>>>> index 21eea2be5afa..b754c53171a7 100644
->>>>> --- a/drivers/vhost/vdpa.c
->>>>> +++ b/drivers/vhost/vdpa.c
->>>>> @@ -191,9 +191,6 @@ static ssize_t 
->>>>> vhost_vdpa_config_validate(struct vhost_vdpa *v,
->>>>>      struct vdpa_device *vdpa = v->vdpa;
->>>>>      u32 size = vdpa->config->get_config_size(vdpa);
->>>>> -    if (c->len == 0)
->>>>> -        return -EINVAL;
->>>>> -
->>>>>      return min(c->len, size);
->>>>>  }
->>>>> @@ -204,6 +201,7 @@ static long vhost_vdpa_get_config(struct 
->>>>> vhost_vdpa *v,
->>>>>      struct vhost_vdpa_config config;
->>>>>      unsigned long size = offsetof(struct vhost_vdpa_config, buf);
->>>>>      ssize_t config_size;
->>>>> +    long ret;
->>>>>      u8 *buf;
->>>>>      if (copy_from_user(&config, c, size))
->>>>> @@ -217,15 +215,18 @@ static long vhost_vdpa_get_config(struct 
->>>>> vhost_vdpa *v,
->>>>>      if (!buf)
->>>>>          return -ENOMEM;
->>>>> -    vdpa_get_config(vdpa, config.off, buf, config_size);
->>>>> -
->>>>> -    if (copy_to_user(c->buf, buf, config_size)) {
->>>>> -        kvfree(buf);
->>>>> -        return -EFAULT;
->>>>> +    ret = vdpa_get_config(vdpa, config.off, buf, config_size);
->>>>> +    if (ret < 0) {
->>>>> +        ret = -EFAULT;
->>>>> +        goto out;
->>>>>      }
->>>>> +    if (copy_to_user(c->buf, buf, config_size))
->>>>> +        ret = -EFAULT;
->>>>> +
->>>>> +out:
->>>>>      kvfree(buf);
->>>>> -    return 0;
->>>>> +    return ret;
->>>>>  }
->>>>>  static long vhost_vdpa_set_config(struct vhost_vdpa *v,
->>>>> @@ -235,6 +236,7 @@ static long vhost_vdpa_set_config(struct 
->>>>> vhost_vdpa *v,
->>>>>      struct vhost_vdpa_config config;
->>>>>      unsigned long size = offsetof(struct vhost_vdpa_config, buf);
->>>>>      ssize_t config_size;
->>>>> +    long ret;
->>>>>      u8 *buf;
->>>>>      if (copy_from_user(&config, c, size))
->>>>> @@ -248,10 +250,12 @@ static long vhost_vdpa_set_config(struct 
->>>>> vhost_vdpa *v,
->>>>>      if (IS_ERR(buf))
->>>>>          return PTR_ERR(buf);
->>>>> -    vdpa_set_config(vdpa, config.off, buf, config_size);
->>>>> +    ret = vdpa_set_config(vdpa, config.off, buf, config_size);
->>>>> +    if (ret < 0)
->>>>> +        ret = -EFAULT;
->>>>>      kvfree(buf);
->>>>> -    return 0;
->>>>> +    return ret;
->>>>>  }
->>>>
->>>>
->>>> So I wonder whether it's worth to return the number of bytes since 
->>>> we can't propogate the result to driver or driver doesn't care 
->>>> about that.
->>>
->>> Okay, but IIUC user space application that issue 
->>> VHOST_VDPA_GET_CONFIG ioctl can use the return value.
->>
->>
->> Yes, but it looks to it's too late to change since it's a userspace 
->> noticble behaviour.
->
-> Yeah, this is a good point.
-> I looked at QEMU and we only check if the value is not negative, so it 
-> should work, but for other applications it could be a real change.
->
-> Do we leave it as is?
+This series adds i.MX8qxp LVDS PHY mode support for the Mixel PHY in the
+Freescale i.MX8qxp SoC.
+
+The Mixel PHY is MIPI DPHY + LVDS PHY combo, which can works in either
+MIPI DPHY mode or LVDS PHY mode.  The PHY mode is controlled by i.MX8qxp
+SCU firmware.  The PHY driver would call a SCU function to configure the
+mode.
+
+The PHY driver is already supporting the Mixel MIPI DPHY in i.MX8mq SoC,
+where it appears to be a single MIPI DPHY.
 
 
-Yes, I think we'd better be conservative here.
+Patch 1/5 sets PHY mode in the Northwest Logic MIPI DSI host controller
+bridge driver, since i.MX8qxp SoC embeds this controller IP to support
+MIPI DSI displays together with the Mixel PHY.
 
-Thanks
+Patch 2/5 allows LVDS PHYs to be configured through the generic PHY functions
+and through a custom structure added to the generic PHY configuration union.
+
+Patch 3/5 converts mixel,mipi-dsi-phy plain text dt binding to json-schema.
+
+Patch 4/5 adds dt binding support for the Mixel combo PHY in i.MX8qxp SoC.
+
+Patch 5/5 adds the i.MX8qxp LVDS PHY mode support in the Mixel PHY driver.
 
 
->
->>
->>
->>>
->>> Should we change also 'struct virtio_config_ops' to propagate this 
->>> value also to virtio drivers?
->>
->>
->> I think not, the reason is the driver doesn't expect the get()/set() 
->> can fail...
->
-> Got it.
->
-> Thanks,
-> Stefano
->
+Welcome comments, thanks.
+
+v3->v4:
+* Add all R-b tags recieved from v3 on relevant patches and respin. (Robert)
+
+v2->v3:
+* Improve readability of mixel_dphy_set_mode() in the Mixel PHY driver. (Guido)
+* Improve the 'clock-names' property in the PHY dt binding.
+
+v1->v2:
+* Convert mixel,mipi-dsi-phy plain text dt binding to json-schema. (Guido)
+* Print invalid PHY mode in dmesg from the Mixel PHY driver. (Guido)
+* Add Guido's R-b tag on the patch for the nwl-dsi drm bridge driver.
+
+Liu Ying (5):
+  drm/bridge: nwl-dsi: Set PHY mode in nwl_dsi_enable()
+  phy: Add LVDS configuration options
+  dt-bindings: phy: Convert mixel,mipi-dsi-phy to json-schema
+  dt-bindings: phy: mixel: mipi-dsi-phy: Add Mixel combo PHY support for
+    i.MX8qxp
+  phy: freescale: phy-fsl-imx8-mipi-dphy: Add i.MX8qxp LVDS PHY mode
+    support
+
+ .../devicetree/bindings/phy/mixel,mipi-dsi-phy.txt |  29 ---
+ .../bindings/phy/mixel,mipi-dsi-phy.yaml           | 107 ++++++++
+ drivers/gpu/drm/bridge/nwl-dsi.c                   |   6 +
+ drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c     | 269 ++++++++++++++++++++-
+ include/linux/phy/phy-lvds.h                       |  48 ++++
+ include/linux/phy/phy.h                            |   4 +
+ 6 files changed, 423 insertions(+), 40 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml
+ create mode 100644 include/linux/phy/phy-lvds.h
+
+-- 
+2.7.4
 
