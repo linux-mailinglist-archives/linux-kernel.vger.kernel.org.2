@@ -2,59 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585C53308D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 08:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F18133308DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 08:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbhCHHem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 02:34:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:33240 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232097AbhCHHed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 02:34:33 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9CB25ED1;
-        Sun,  7 Mar 2021 23:34:32 -0800 (PST)
-Received: from bogus (unknown [10.57.15.109])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0437B3F70D;
-        Sun,  7 Mar 2021 23:34:28 -0800 (PST)
-Date:   Mon, 8 Mar 2021 07:34:25 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        lukasz.luba@arm.com, james.quinlan@broadcom.com,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
-        etienne.carriere@linaro.org, thara.gopinath@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-Subject: Re: [PATCH v6 36/37] firmware: arm_scmi: add protocol modularization
- support
-Message-ID: <20210308073425.g7zkpoamxu2m67tj@bogus>
-References: <20210202221555.41167-1-cristian.marussi@arm.com>
- <20210202221555.41167-37-cristian.marussi@arm.com>
+        id S235222AbhCHHfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 02:35:47 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:57033 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232682AbhCHHf3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 02:35:29 -0500
+Received: from fsav102.sakura.ne.jp (fsav102.sakura.ne.jp [27.133.134.229])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 1287ZMOp086406;
+        Mon, 8 Mar 2021 16:35:22 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav102.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp);
+ Mon, 08 Mar 2021 16:35:22 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 1287ZLra086388
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Mon, 8 Mar 2021 16:35:22 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 4/6] usbip: fix stub_dev usbip_sockfd_store() races
+ leading to gpf
+To:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org,
+        valentina.manea.m@gmail.com, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1615171203.git.skhan@linuxfoundation.org>
+ <268a0668144d5ff36ec7d87fdfa90faf583b7ccc.1615171203.git.skhan@linuxfoundation.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <05aed75a-4a81-ef59-fc4f-6007f18e7839@i-love.sakura.ne.jp>
+Date:   Mon, 8 Mar 2021 16:35:22 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202221555.41167-37-cristian.marussi@arm.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <268a0668144d5ff36ec7d87fdfa90faf583b7ccc.1615171203.git.skhan@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 10:15:54PM +0000, Cristian Marussi wrote:
-> Extend SCMI protocols accounting mechanism to address possible module
-> usage and add the support to possibly define new protocols as loadable
-> modules.
->
-> Keep Standard protocols built into the SCMI core.
->
+On 2021/03/08 12:53, Shuah Khan wrote:
+> Fix the above problems:
+> - Stop using kthread_get_run() macro to create/start threads.
+> - Create threads and get task struct reference.
+> - Add kthread_create() failure handling and bail out.
+> - Hold usbip_device lock to update local and shared states after
+>   creating rx and tx threads.
+> - Update usbip_device status to SDEV_ST_USED.
+> - Update usbip_device tcp_socket, sockfd, tcp_rx, and tcp_tx
+> - Start threads after usbip_device (tcp_socket, sockfd, tcp_rx, tcp_tx,
+>   and status) is complete.
 
-The changes look good, however without any users I am bit hesitant to add
-this yet. However if you think it is hard to maintain it outside the tree
-until first user gets merged, we can merge provided we test this every
-release. Let me know your thoughts.
+No, the whole usbip_sockfd_store() etc. should be serialized using a mutex,
+for two different threads can open same file and write the same content at
+the same moment. This results in seeing SDEV_ST_AVAILABLE and creating two
+threads and overwiting global variables and setting SDEV_ST_USED and starting
+two threads by each of two thread, which will later fail to call kthread_stop()
+on one of two thread because global variables are overwritten.
 
-Also any comment from users requesting this would be useful.
+kthread_crate() (which involves GFP_KERNEL allocation) can take long time
+enough to hit
 
---
-Regards,
-Sudeep
+  usbip_sockfd_store() must perform
+
+      if (sdev->ud.status != SDEV_ST_AVAILABLE) {
+        /* misc assignments for attach operation */
+        sdev->ud.status = SDEV_ST_USED;
+      }
+
+  under a lock, or multiple ud->tcp_{tx,rx} are created (which will later
+  cause a crash like [1]) and refcount on ud->tcp_socket is leaked when
+  usbip_sockfd_store() is concurrently called.
+
+problem. That's why my patch introduced usbip_event_mutex lock.
+
