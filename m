@@ -2,158 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF9D331779
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704E5331783
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:44:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhCHTlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:41:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231154AbhCHTld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:41:33 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 685B965287;
-        Mon,  8 Mar 2021 19:41:32 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 14:41:31 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ovidiu Panait <ovidiu.panait@windriver.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        mingo@redhat.com, christian@brauner.io
-Subject: Re: [PATCH] mm, tracing: improve rss_stat tracepoint message
-Message-ID: <20210308144131.7b7df9cd@gandalf.local.home>
-In-Reply-To: <20210308185000.14052-1-ovidiu.panait@windriver.com>
-References: <20210308185000.14052-1-ovidiu.panait@windriver.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231400AbhCHTnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:43:45 -0500
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:44540 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231254AbhCHTnb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 14:43:31 -0500
+Received: by mail-ot1-f50.google.com with SMTP id f33so10373331otf.11;
+        Mon, 08 Mar 2021 11:43:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0HNv84JQX4/NDOa1VknCFUJOHmOgLmHruHi0GFdspBM=;
+        b=aeBM5iYD7UaH2PeOSmAluyCqdVqfp0FOH2A6edyaTIH4RIlDVfrzStdJQFgNE+AHPt
+         Qiiy78tgplaMDuzXx0HcfjoRw4gj9RhV7L/pwxeeC8GydtjoIQJn2NU9F9IRi6mIi8bJ
+         G5elkeP2PheybFfgf9g3VUWLGtB9AG4I6huO+HesiPZ57Q8LN/qDmmfj4UWPOdl+GtVB
+         bgw6IM6DdYevtfT7W6rdaM9S03vcHom5fiYMv3OWIFOjZhS/lTer1Ynsk9SgoXoXJRsV
+         fZC1gZyaRdcGpTArn3cAznIUj9Wczi5qDfF+f/Vx+Ao4fhgqIXQfFA8cipjK4HCrkXil
+         l9vg==
+X-Gm-Message-State: AOAM530YeTYXN5Sq/pqSZoVVKQGHea3TSCNONgUoK7qGmpofVFtiWHMq
+        V/oLNI5bJkpGRkJo9MBrZbPz/M6ES3jUxcl/4PKR1U0xAdY=
+X-Google-Smtp-Source: ABdhPJzL6lY/qcC5OhuUgViwDJUUZATGQDB3Js0xiIq7lQ4DaLMY3aCTs4rH9So5NyhbrV8nc3COFSmyA3td9hidQFA=
+X-Received: by 2002:a05:6830:1057:: with SMTP id b23mr21869147otp.206.1615232610761;
+ Mon, 08 Mar 2021 11:43:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210308193146.65585-1-andriy.shevchenko@linux.intel.com> <20210308193146.65585-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210308193146.65585-2-andriy.shevchenko@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 8 Mar 2021 20:43:19 +0100
+Message-ID: <CAJZ5v0gpNzyBDKfBXoBYskUXs15GrZAe-E2vzhSEu2Nrj7wa7g@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] gpiolib: Fold conditionals into simple ternary operator
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  8 Mar 2021 20:50:00 +0200
-Ovidiu Panait <ovidiu.panait@windriver.com> wrote:
-
-> Adjust the rss_stat tracepoint to print the name of the resident page type
-> that got updated(e.g. MM_ANONPAGES/MM_FILEPAGES), rather than the numeric
-> index corresponding to it(the __entry->member value):
-> 
-> Before this patch:
-> ------------------
-> rss_stat: mm_id=1216113068 curr=0 member=1 size=28672B
-> rss_stat: mm_id=1216113068 curr=0 member=1 size=0B
-> rss_stat: mm_id=534402304 curr=1 member=0 size=188416B
-> rss_stat: mm_id=534402304 curr=1 member=1 size=40960B
-> 
-> After this patch:
-> -----------------
-> rss_stat: mm_id=1726253524 curr=1 type=MM_ANONPAGES size=40960B
-> rss_stat: mm_id=1726253524 curr=1 type=MM_FILEPAGES size=663552B
-> rss_stat: mm_id=1726253524 curr=1 type=MM_ANONPAGES size=65536B
-> rss_stat: mm_id=1726253524 curr=1 type=MM_FILEPAGES size=647168B
-> 
-> Also, make the resident_page_types[] array in kernel/fork.c non-static so
-> that it can be reused from tracing code.
-> 
-> Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+On Mon, Mar 8, 2021 at 8:33 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> It's quite spread code to initialize IRQ domain options.
+> Let's fold it into a simple oneliner.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  include/linux/mm.h          | 2 ++
->  include/trace/events/kmem.h | 5 +++--
->  kernel/fork.c               | 2 +-
->  3 files changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 89fca443e6f1..7916112d5952 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -3141,5 +3141,7 @@ void mem_dump_obj(void *object);
->  static inline void mem_dump_obj(void *object) {}
->  #endif
->  
-> +extern const char * const resident_page_types[];
-> +
->  #endif /* __KERNEL__ */
->  #endif /* _LINUX_MM_H */
-> diff --git a/include/trace/events/kmem.h b/include/trace/events/kmem.h
-> index 3a60b6b6db32..623506917cd0 100644
-> --- a/include/trace/events/kmem.h
-> +++ b/include/trace/events/kmem.h
-> @@ -5,6 +5,7 @@
->  #if !defined(_TRACE_KMEM_H) || defined(TRACE_HEADER_MULTI_READ)
->  #define _TRACE_KMEM_H
->  
-> +#include <linux/mm.h>
->  #include <linux/types.h>
->  #include <linux/tracepoint.h>
->  #include <trace/events/mmflags.h>
-> @@ -365,10 +366,10 @@ TRACE_EVENT(rss_stat,
->  		__entry->size = (count << PAGE_SHIFT);
->  	),
->  
-> -	TP_printk("mm_id=%u curr=%d member=%d size=%ldB",
-> +	TP_printk("mm_id=%u curr=%d type=%s size=%ldB",
->  		__entry->mm_id,
->  		__entry->curr,
-> -		__entry->member,
-> +		resident_page_types[__entry->member],
+> v4: new patch (see changelog of previous one)
+>  drivers/gpio/gpiolib.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index afee48e7dd41..8c5ce377accc 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -1458,7 +1458,7 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
+>  {
+>         struct fwnode_handle *fwnode = dev_fwnode(&gc->gpiodev->dev);
+>         struct irq_chip *irqchip = gc->irq.chip;
+> -       const struct irq_domain_ops *ops = NULL;
+> +       const struct irq_domain_ops *ops;
 
-This will be useless for user space tools that parse the raw data.
+It looks like the ops local var is redundant.
 
-The correct way is to have before this:
+>         unsigned int type;
+>         unsigned int i;
+>
+> @@ -1496,11 +1496,7 @@ static int gpiochip_add_irqchip(struct gpio_chip *gc,
+>                         return ret;
+>         } else {
+>                 /* Some drivers provide custom irqdomain ops */
+> -               if (gc->irq.domain_ops)
+> -                       ops = gc->irq.domain_ops;
+> -
+> -               if (!ops)
+> -                       ops = &gpiochip_domain_ops;
+> +               ops = gc->irq.domain_ops ?: &gpiochip_domain_ops;
+>                 gc->irq.domain = irq_domain_create_simple(fwnode,
+>                         gc->ngpio,
+>                         gc->irq.first,
 
-#define TRACE_MM_PAGES		\
-	EM(MM_FILEPAGES)	\
-	EM(MM_ANONPAGES)	\
-	EM(MM_SWAPENTS)		\	
-	EMe(MM_SHMEMPAGES)
+Because this can be
 
-#undef EM
-#undef EMe
+gc->irq.domain = irq_domain_add_simple(np,
+                        gc->ngpio,
+                        gc->irq.first,
+                        gc->irq.domain_ops ?: &gpiochip_domain_ops,
+                        gc);
 
-#define EM(a)	TRACE_DEFINE_ENUM(a);
-#define EMe(a)	TRACE_DEFINE_ENUM(a);
-
-TRACE_MM_PAGES
-
-#undef EM
-#undef EMe
-
-#define EM(a)	{ a, #a },
-#define EMe(a)	{ a, #a }
-
-
-Then you can have:
-
-	TP_printk("mm_id=%u curr=%d type=%s size=%1dB",
-		__entry->mm_id,
-		__entry->curr,
-		__print_symbolic(__entry->member,
-			TRACE_MM_PAGES),
->  		__entry->size)
->  	);
->  #endif /* _TRACE_KMEM_H */
-
-
-And then this will work fine for user space as well.
-
-Other events have done this, for example, see
-include/trace/events/writeback.h
-
--- Steve
-
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index d3171e8e88e5..b30fe8ca56b3 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -128,7 +128,7 @@ static int max_threads;		/* tunable limit on nr_threads */
->  
->  #define NAMED_ARRAY_INDEX(x)	[x] = __stringify(x)
->  
-> -static const char * const resident_page_types[] = {
-> +const char * const resident_page_types[] = {
->  	NAMED_ARRAY_INDEX(MM_FILEPAGES),
->  	NAMED_ARRAY_INDEX(MM_ANONPAGES),
->  	NAMED_ARRAY_INDEX(MM_SWAPENTS),
-
+(modulo white space / formatting) and this is the only place where ops
+is used in this function.
