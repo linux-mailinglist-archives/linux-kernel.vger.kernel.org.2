@@ -2,224 +2,637 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878BB331589
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:10:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C5833158D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhCHSJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:09:30 -0500
-Received: from foss.arm.com ([217.140.110.172]:41786 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231171AbhCHSJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:09:17 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8850AD6E;
-        Mon,  8 Mar 2021 10:09:16 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.51.12])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2346E3F71B;
-        Mon,  8 Mar 2021 10:09:12 -0800 (PST)
-Date:   Mon, 8 Mar 2021 18:09:10 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
+        id S230050AbhCHSLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:11:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36032 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229790AbhCHSLM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 13:11:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615227071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lau0KCrU5rk1uFgf49IRoEEl6x6yihR3pFnAoa7SaiA=;
+        b=ae5iJ7WUYfwQ5lCNJA3TuO0uh1AKAcWLy/uozATLVsgGqRkTpxLNnOvNxgSjg7ASiRglcJ
+        g7qvARqsL/JcNYEWewhmtAF7lVG6EnvB4GuIF655qB5GyoRb/POFVsu+wqV9190JmI9z76
+        Ulq+zL2idL/bvF9xZITAgjKoyB5amyU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-154-MZoEKGOqPnCPJWU9a60fMQ-1; Mon, 08 Mar 2021 13:11:07 -0500
+X-MC-Unique: MZoEKGOqPnCPJWU9a60fMQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A300E1842143;
+        Mon,  8 Mar 2021 18:11:05 +0000 (UTC)
+Received: from [10.36.113.123] (ovpn-113-123.ams2.redhat.com [10.36.113.123])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3D6DA6062F;
+        Mon,  8 Mar 2021 18:11:02 +0000 (UTC)
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: Re: [PATCH v14 5/8] arm64: mte: Enable TCO in functions that can
- read beyond buffer limits
-Message-ID: <20210308180910.GB17002@C02TD0UTHF1T.local>
-References: <20210308161434.33424-1-vincenzo.frascino@arm.com>
- <20210308161434.33424-6-vincenzo.frascino@arm.com>
+        Shuah Khan <shuah@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        David Rientjes <rientjes@google.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>
+References: <20210308152221.28555-1-zi.yan@sent.com>
+ <79458c46-b4b9-332b-77f7-44371502cbeb@redhat.com>
+ <AD0AFA61-8DCF-467D-B961-ACFA1D33828C@nvidia.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH] mm: huge_memory: a new debugfs interface for splitting
+ THP tests.
+Message-ID: <8039e1d7-3442-f133-f4f6-fe934f02122e@redhat.com>
+Date:   Mon, 8 Mar 2021 19:11:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308161434.33424-6-vincenzo.frascino@arm.com>
+In-Reply-To: <AD0AFA61-8DCF-467D-B961-ACFA1D33828C@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 04:14:31PM +0000, Vincenzo Frascino wrote:
-> load_unaligned_zeropad() and __get/put_kernel_nofault() functions can
-> read passed some buffer limits which may include some MTE granule with a
-> different tag.
-
-s/passed/past/
-
-> When MTE async mode is enable, the load operation crosses the boundaries
-
-s/enabel/enabled/
-
-> and the next granule has a different tag the PE sets the TFSR_EL1.TF1 bit
-> as if an asynchronous tag fault is happened.
+On 08.03.21 18:49, Zi Yan wrote:
+> On 8 Mar 2021, at 11:17, David Hildenbrand wrote:
 > 
-> Enable Tag Check Override (TCO) in these functions  before the load and
-> disable it afterwards to prevent this to happen.
+>> On 08.03.21 16:22, Zi Yan wrote:
+>>> From: Zi Yan <ziy@nvidia.com>
+>>>
+>>> By writing "<pid>,<vaddr_start>,<vaddr_end>" to
+>>> <debugfs>/split_huge_pages_in_range_pid, THPs in the process with the
+>>> given pid and virtual address range are split. It is used to test
+>>> split_huge_page function. In addition, a selftest program is added to
+>>> tools/testing/selftests/vm to utilize the interface by splitting
+>>> PMD THPs and PTE-mapped THPs.
+>>
+>> Won't something like
+>>
+>> 1. MADV_HUGEPAGE
+>>
+>> 2. Access memory
+>>
+>> 3. MADV_NOHUGEPAGE
+>>
+>> Have a similar effect? What's the benefit of this?
 > 
-> Note: The same condition can be hit in MTE sync mode but we deal with it
-> through the exception handling.
-> In the current implementation, mte_async_mode flag is set only at boot
-> time but in future kasan might acquire some runtime features that
-> that change the mode dynamically, hence we disable it when sync mode is
-> selected for future proof.
+> Thanks for checking the patch.
 > 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Reported-by: Branislav Rankov <Branislav.Rankov@arm.com>
-> Tested-by: Branislav Rankov <Branislav.Rankov@arm.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> ---
->  arch/arm64/include/asm/uaccess.h        | 24 ++++++++++++++++++++++++
->  arch/arm64/include/asm/word-at-a-time.h |  4 ++++
->  arch/arm64/kernel/mte.c                 | 22 ++++++++++++++++++++++
->  3 files changed, 50 insertions(+)
+> No, MADV_NOHUGEPAGE just replaces VM_HUGEPAGE with VM_NOHUGEPAGE,
+> nothing else will be done.
+
+Ah, okay - maybe my memory was tricking me. There is some s390x KVM code 
+that forces MADV_NOHUGEPAGE and force-splits everything.
+
+I do wonder, though, if this functionality would be worth a proper user 
+interface (e.g., madvise), though. There might be actual benefit in 
+having this as a !debug interface.
+
+I think you aware of the discussion in 
+https://lkml.kernel.org/r/d098c392-273a-36a4-1a29-59731cdf5d3d@google.com
+
+
+If there will be an interface to collapse a THP -- "this memory area is 
+worth extra performance now by collapsing a THP if possible" -- it might 
+also be helpful to have the opposite functionality -- "this memory area 
+is not worth a THP, rather use that somehwere else".
+
+MADV_HUGE_COLLAPSE vs. MADV_HUGE_SPLIT
+
+Just a thought.
+
 > 
-> diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
-> index 0deb88467111..a857f8f82aeb 100644
-> --- a/arch/arm64/include/asm/uaccess.h
-> +++ b/arch/arm64/include/asm/uaccess.h
-> @@ -188,6 +188,26 @@ static inline void __uaccess_enable_tco(void)
->  				 ARM64_MTE, CONFIG_KASAN_HW_TAGS));
->  }
->  
-> +/* Whether the MTE asynchronous mode is enabled. */
-> +DECLARE_STATIC_KEY_FALSE(mte_async_mode);
+> Without this, we do not have a way of splitting a specific THP
+> (the compound page) via any user interface for debugging.
+> We can only write to <debugfs>/split_huge_pages to split all THPs
+> in the system, which has an unwanted effect on the whole system
+> and can overwhelm us with a lot of information. This new debugfs
+> interface provides a more precise method.
+> 
+>>>
+>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>>> ---
+>>>    mm/huge_memory.c                              |  98 ++++++
+>>>    mm/internal.h                                 |   1 +
+>>>    mm/migrate.c                                  |   2 +-
+>>>    tools/testing/selftests/vm/.gitignore         |   1 +
+>>>    tools/testing/selftests/vm/Makefile           |   1 +
+>>>    .../selftests/vm/split_huge_page_test.c       | 318 ++++++++++++++++++
+>>>    6 files changed, 420 insertions(+), 1 deletion(-)
+>>>    create mode 100644 tools/testing/selftests/vm/split_huge_page_test.c
+>>>
+>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>> index 395c75111d33..818172f887bf 100644
+>>> --- a/mm/huge_memory.c
+>>> +++ b/mm/huge_memory.c
+>>> @@ -7,6 +7,7 @@
+>>>     #include <linux/mm.h>
+>>>    #include <linux/sched.h>
+>>> +#include <linux/sched/mm.h>
+>>>    #include <linux/sched/coredump.h>
+>>>    #include <linux/sched/numa_balancing.h>
+>>>    #include <linux/highmem.h>
+>>> @@ -2971,10 +2972,107 @@ static int split_huge_pages_set(void *data, u64 val)
+>>>    DEFINE_DEBUGFS_ATTRIBUTE(split_huge_pages_fops, NULL, split_huge_pages_set,
+>>>    		"%llu\n");
+>>>   +static ssize_t split_huge_pages_in_range_pid_write(struct file *file,
+>>> +		const char __user *buf, size_t count, loff_t *ppops)
+>>> +{
+>>> +	static DEFINE_MUTEX(mutex);
+>>> +	ssize_t ret;
+>>> +	char input_buf[80]; /* hold pid, start_vaddr, end_vaddr */
+>>> +	int pid;
+>>> +	unsigned long vaddr_start, vaddr_end, addr;
+>>> +	nodemask_t task_nodes;
+>>> +	struct mm_struct *mm;
+>>> +	unsigned long total = 0, split = 0;
+>>> +
+>>> +	ret = mutex_lock_interruptible(&mutex);
+>>> +	if (ret)
+>>> +		return ret;
+>>> +
+>>> +	ret = -EFAULT;
+>>> +
+>>> +	memset(input_buf, 0, 80);
+>>> +	if (copy_from_user(input_buf, buf, min_t(size_t, count, 80)))
+>>> +		goto out;
+>>> +
+>>> +	input_buf[79] = '\0';
+>>> +	ret = sscanf(input_buf, "%d,0x%lx,0x%lx", &pid, &vaddr_start, &vaddr_end);
+>>> +	if (ret != 3) {
+>>> +		ret = -EINVAL;
+>>> +		goto out;
+>>> +	}
+>>> +	vaddr_start &= PAGE_MASK;
+>>> +	vaddr_end &= PAGE_MASK;
+>>> +
+>>> +	ret = strlen(input_buf);
+>>> +	pr_debug("split huge pages in pid: %d, vaddr: [%lx - %lx]\n",
+>>> +		 pid, vaddr_start, vaddr_end);
+>>> +
+>>> +	mm = find_mm_struct(pid, &task_nodes);
+>>> +	if (IS_ERR(mm)) {
+>>> +		ret = -EINVAL;
+>>> +		goto out;
+>>> +	}
+>>> +
+>>> +	mmap_read_lock(mm);
+>>> +	/*
+>>> +	 * always increase addr by PAGE_SIZE, since we could have a PTE page
+>>> +	 * table filled with PTE-mapped THPs, each of which is distinct.
+>>> +	 */
+>>> +	for (addr = vaddr_start; addr < vaddr_end; addr += PAGE_SIZE) {
+>>> +		struct vm_area_struct *vma = find_vma(mm, addr);
+>>> +		unsigned int follflags;
+>>> +		struct page *page;
+>>> +
+>>> +		if (!vma || addr < vma->vm_start || !vma_migratable(vma))
+>>> +			break;
+>>> +
+>>> +		/* FOLL_DUMP to ignore special (like zero) pages */
+>>> +		follflags = FOLL_GET | FOLL_DUMP;
+>>> +		page = follow_page(vma, addr, follflags);
+>>> +
+>>> +		if (IS_ERR(page))
+>>> +			break;
+>>> +		if (!page)
+>>> +			break;
+>>> +
+>>> +		if (!is_transparent_hugepage(page))
+>>> +			continue;
+>>> +
+>>> +		total++;
+>>> +		if (!can_split_huge_page(compound_head(page), NULL))
+>>> +			continue;
+>>> +
+>>> +		if (!trylock_page(page))
+>>> +			continue;
+>>> +
+>>> +		if (!split_huge_page(page))
+>>> +			split++;
+>>> +
+>>> +		unlock_page(page);
+>>> +		put_page(page);
+>>> +	}
+>>> +	mmap_read_unlock(mm);
+>>> +	mmput(mm);
+>>> +
+>>> +	pr_debug("%lu of %lu THP split\n", split, total);
+>>> +out:
+>>> +	mutex_unlock(&mutex);
+>>> +	return ret;
+>>> +
+>>> +}
+>>> +
+>>> +static const struct file_operations split_huge_pages_in_range_pid_fops = {
+>>> +	.owner	 = THIS_MODULE,
+>>> +	.write	 = split_huge_pages_in_range_pid_write,
+>>> +	.llseek  = no_llseek,
+>>> +};
+>>> +
+>>>    static int __init split_huge_pages_debugfs(void)
+>>>    {
+>>>    	debugfs_create_file("split_huge_pages", 0200, NULL, NULL,
+>>>    			    &split_huge_pages_fops);
+>>> +	debugfs_create_file("split_huge_pages_in_range_pid", 0200, NULL, NULL,
+>>> +			    &split_huge_pages_in_range_pid_fops);
+>>>    	return 0;
+>>>    }
+>>>    late_initcall(split_huge_pages_debugfs);
+>>> diff --git a/mm/internal.h b/mm/internal.h
+>>> index 9902648f2206..1659d00100ef 100644
+>>> --- a/mm/internal.h
+>>> +++ b/mm/internal.h
+>>> @@ -623,4 +623,5 @@ struct migration_target_control {
+>>>    	gfp_t gfp_mask;
+>>>    };
+>>>   +struct mm_struct *find_mm_struct(pid_t pid, nodemask_t *mem_nodes);
+>>>    #endif	/* __MM_INTERNAL_H */
+>>> diff --git a/mm/migrate.c b/mm/migrate.c
+>>> index 62b81d5257aa..ce5f213debb2 100644
+>>> --- a/mm/migrate.c
+>>> +++ b/mm/migrate.c
+>>> @@ -1913,7 +1913,7 @@ static int do_pages_stat(struct mm_struct *mm, unsigned long nr_pages,
+>>>    	return nr_pages ? -EFAULT : 0;
+>>>    }
+>>>   -static struct mm_struct *find_mm_struct(pid_t pid, nodemask_t *mem_nodes)
+>>> +struct mm_struct *find_mm_struct(pid_t pid, nodemask_t *mem_nodes)
+>>>    {
+>>>    	struct task_struct *task;
+>>>    	struct mm_struct *mm;
+>>> diff --git a/tools/testing/selftests/vm/.gitignore b/tools/testing/selftests/vm/.gitignore
+>>> index 9a35c3f6a557..1f651e85ed60 100644
+>>> --- a/tools/testing/selftests/vm/.gitignore
+>>> +++ b/tools/testing/selftests/vm/.gitignore
+>>> @@ -22,3 +22,4 @@ map_fixed_noreplace
+>>>    write_to_hugetlbfs
+>>>    hmm-tests
+>>>    local_config.*
+>>> +split_huge_page_test
+>>> diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
+>>> index d42115e4284d..4cbc91d6869f 100644
+>>> --- a/tools/testing/selftests/vm/Makefile
+>>> +++ b/tools/testing/selftests/vm/Makefile
+>>> @@ -42,6 +42,7 @@ TEST_GEN_FILES += on-fault-limit
+>>>    TEST_GEN_FILES += thuge-gen
+>>>    TEST_GEN_FILES += transhuge-stress
+>>>    TEST_GEN_FILES += userfaultfd
+>>> +TEST_GEN_FILES += split_huge_page_test
+>>>     ifeq ($(MACHINE),x86_64)
+>>>    CAN_BUILD_I386 := $(shell ./../x86/check_cc.sh $(CC) ../x86/trivial_32bit_program.c -m32)
+>>> diff --git a/tools/testing/selftests/vm/split_huge_page_test.c b/tools/testing/selftests/vm/split_huge_page_test.c
+>>> new file mode 100644
+>>> index 000000000000..8ea8000fda62
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/vm/split_huge_page_test.c
+>>> @@ -0,0 +1,318 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +/*
+>>> + * A test of splitting PMD THPs and PTE-mapped THPs from a specified virtual
+>>> + * address range in a process via <debugfs>/split_huge_pages_in_range_pid
+>>> + * interface.
+>>> + */
+>>> +
+>>> +#define _GNU_SOURCE
+>>> +#include <stdio.h>
+>>> +#include <stdlib.h>
+>>> +#include "numa.h"
+>>> +#include <unistd.h>
+>>> +#include <errno.h>
+>>> +#include <inttypes.h>
+>>> +#include <string.h>
+>>> +#include <sys/types.h>
+>>> +#include <sys/stat.h>
+>>> +#include <fcntl.h>
+>>> +#include <sys/mman.h>
+>>> +#include <sys/time.h>
+>>> +#include <sys/wait.h>
+>>> +#include <malloc.h>
+>>> +#include <stdbool.h>
+>>> +
+>>> +uint64_t pagesize;
+>>> +unsigned int pageshift;
+>>> +uint64_t pmd_pagesize;
+>>> +
+>>> +#define PMD_SIZE_PATH "/sys/kernel/mm/transparent_hugepage/hpage_pmd_size"
+>>> +#define SPLIT_DEBUGFS "/sys/kernel/debug/split_huge_pages_in_range_pid"
+>>> +#define SMAP_PATH "/proc/self/smaps"
+>>> +#define INPUT_MAX 80
+>>> +
+>>> +#define PFN_MASK     ((1UL<<55)-1)
+>>> +#define KPF_THP      (1UL<<22)
+>>> +
+>>> +int is_backed_by_thp(char *vaddr, int pagemap_file, int kpageflags_file)
+>>> +{
+>>> +	uint64_t paddr;
+>>> +	uint64_t page_flags;
+>>> +
+>>> +	if (pagemap_file) {
+>>> +		pread(pagemap_file, &paddr, sizeof(paddr),
+>>> +			((long)vaddr >> pageshift) * sizeof(paddr));
+>>> +
+>>> +		if (kpageflags_file) {
+>>> +			pread(kpageflags_file, &page_flags, sizeof(page_flags),
+>>> +				(paddr & PFN_MASK) * sizeof(page_flags));
+>>> +
+>>> +			return !!(page_flags & KPF_THP);
+>>> +		}
+>>> +	}
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +
+>>> +static uint64_t read_pmd_pagesize(void)
+>>> +{
+>>> +	int fd;
+>>> +	char buf[20];
+>>> +	ssize_t num_read;
+>>> +
+>>> +	fd = open(PMD_SIZE_PATH, O_RDONLY);
+>>> +	if (fd == -1) {
+>>> +		perror("Open hpage_pmd_size failed");
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +	num_read = read(fd, buf, 19);
+>>> +	if (num_read < 1) {
+>>> +		close(fd);
+>>> +		perror("Read hpage_pmd_size failed");
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +	buf[num_read] = '\0';
+>>> +	close(fd);
+>>> +
+>>> +	return strtoul(buf, NULL, 10);
+>>> +}
+>>> +
+>>> +static int write_file(const char *path, const char *buf, size_t buflen)
+>>> +{
+>>> +	int fd;
+>>> +	ssize_t numwritten;
+>>> +
+>>> +	fd = open(path, O_WRONLY);
+>>> +	if (fd == -1)
+>>> +		return 0;
+>>> +
+>>> +	numwritten = write(fd, buf, buflen - 1);
+>>> +	close(fd);
+>>> +	if (numwritten < 1)
+>>> +		return 0;
+>>> +
+>>> +	return (unsigned int) numwritten;
+>>> +}
+>>> +
+>>> +static void write_debugfs(int pid, uint64_t vaddr_start, uint64_t vaddr_end)
+>>> +{
+>>> +	char input[INPUT_MAX];
+>>> +	int ret;
+>>> +
+>>> +	ret = snprintf(input, INPUT_MAX, "%d,0x%lx,0x%lx", pid, vaddr_start,
+>>> +			vaddr_end);
+>>> +	if (ret >= INPUT_MAX) {
+>>> +		printf("%s: Debugfs input is too long\n", __func__);
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +
+>>> +	if (!write_file(SPLIT_DEBUGFS, input, ret + 1)) {
+>>> +		perror(SPLIT_DEBUGFS);
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +}
+>>> +
+>>> +#define MAX_LINE_LENGTH 500
+>>> +
+>>> +static bool check_for_pattern(FILE *fp, const char *pattern, char *buf)
+>>> +{
+>>> +	while (fgets(buf, MAX_LINE_LENGTH, fp) != NULL) {
+>>> +		if (!strncmp(buf, pattern, strlen(pattern)))
+>>> +			return true;
+>>> +	}
+>>> +	return false;
+>>> +}
+>>> +
+>>> +static uint64_t check_huge(void *addr)
+>>> +{
+>>> +	uint64_t thp = 0;
+>>> +	int ret;
+>>> +	FILE *fp;
+>>> +	char buffer[MAX_LINE_LENGTH];
+>>> +	char addr_pattern[MAX_LINE_LENGTH];
+>>> +
+>>> +	ret = snprintf(addr_pattern, MAX_LINE_LENGTH, "%08lx-",
+>>> +		       (unsigned long) addr);
+>>> +	if (ret >= MAX_LINE_LENGTH) {
+>>> +		printf("%s: Pattern is too long\n", __func__);
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +
+>>> +
+>>> +	fp = fopen(SMAP_PATH, "r");
+>>> +	if (!fp) {
+>>> +		printf("%s: Failed to open file %s\n", __func__, SMAP_PATH);
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +	if (!check_for_pattern(fp, addr_pattern, buffer))
+>>> +		goto err_out;
+>>> +
+>>> +	/*
+>>> +	 * Fetch the AnonHugePages: in the same block and check the number of
+>>> +	 * hugepages.
+>>> +	 */
+>>> +	if (!check_for_pattern(fp, "AnonHugePages:", buffer))
+>>> +		goto err_out;
+>>> +
+>>> +	if (sscanf(buffer, "AnonHugePages:%10ld kB", &thp) != 1) {
+>>> +		printf("Reading smap error\n");
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +
+>>> +err_out:
+>>> +	fclose(fp);
+>>> +	return thp;
+>>> +}
+>>> +
+>>> +void split_pmd_thp(void)
+>>> +{
+>>> +	char *one_page;
+>>> +	size_t len = 4 * pmd_pagesize;
+>>> +	uint64_t thp_size;
+>>> +	size_t i;
+>>> +
+>>> +	one_page = memalign(pmd_pagesize, len);
+>>> +
+>>> +	madvise(one_page, len, MADV_HUGEPAGE);
+>>> +
+>>> +	for (i = 0; i < len; i++)
+>>> +		one_page[i] = (char)i;
+>>> +
+>>> +	thp_size = check_huge(one_page);
+>>> +	if (!thp_size) {
+>>> +		printf("No THP is allocatd");
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +
+>>> +	/* split all possible huge pages */
+>>> +	write_debugfs(getpid(), (uint64_t)one_page, (uint64_t)one_page + len);
+>>> +
+>>> +	for (i = 0; i < len; i++)
+>>> +		if (one_page[i] != (char)i) {
+>>> +			printf("%ld byte corrupted\n", i);
+>>> +			exit(EXIT_FAILURE);
+>>> +		}
+>>> +
+>>> +
+>>> +	thp_size = check_huge(one_page);
+>>> +	if (thp_size) {
+>>> +		printf("Still %ld kB AnonHugePages not split\n", thp_size);
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +
+>>> +	printf("Split huge pages successful\n");
+>>> +	free(one_page);
+>>> +}
+>>> +
+>>> +void split_pte_mapped_thp(void)
+>>> +{
+>>> +	char *one_page, *pte_mapped, *pte_mapped2;
+>>> +	size_t len = 4 * pmd_pagesize;
+>>> +	uint64_t thp_size;
+>>> +	size_t i;
+>>> +	const char *pagemap_template = "/proc/%d/pagemap";
+>>> +	const char *kpageflags_proc = "/proc/kpageflags";
+>>> +	char pagemap_proc[255];
+>>> +	int pagemap_fd;
+>>> +	int kpageflags_fd;
+>>> +
+>>> +	if (snprintf(pagemap_proc, 255, pagemap_template, getpid()) < 0) {
+>>> +		perror("get pagemap proc error");
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +	pagemap_fd = open(pagemap_proc, O_RDONLY);
+>>> +
+>>> +	if (pagemap_fd == -1) {
+>>> +		perror("read pagemap:");
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +
+>>> +	kpageflags_fd = open(kpageflags_proc, O_RDONLY);
+>>> +
+>>> +	if (kpageflags_fd == -1) {
+>>> +		perror("read kpageflags:");
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +
+>>> +	one_page = mmap((void *)(1UL << 30), len, PROT_READ | PROT_WRITE,
+>>> +			MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+>>> +
+>>> +	madvise(one_page, len, MADV_HUGEPAGE);
+>>> +
+>>> +	for (i = 0; i < len; i++)
+>>> +		one_page[i] = (char)i;
+>>> +
+>>> +	thp_size = check_huge(one_page);
+>>> +	if (!thp_size) {
+>>> +		printf("No THP is allocatd");
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +
+>>> +	pte_mapped = mremap(one_page, pagesize, pagesize, MREMAP_MAYMOVE);
+>>> +
+>>> +	for (i = 1; i < 4; i++) {
+>>> +		pte_mapped2 = mremap(one_page + pmd_pagesize * i + pagesize * i,
+>>> +				     pagesize, pagesize,
+>>> +				     MREMAP_MAYMOVE|MREMAP_FIXED,
+>>> +				     pte_mapped + pagesize * i);
+>>> +		if (pte_mapped2 == (char *)-1) {
+>>> +			perror("mremap failed");
+>>> +			exit(EXIT_FAILURE);
+>>> +		}
+>>> +	}
+>>> +
+>>> +	/* smap does not show THPs after mremap, use kpageflags instead */
+>>> +	thp_size = 0;
+>>> +	for (i = 0; i < pagesize * 4; i++)
+>>> +		if (i % pagesize == 0 &&
+>>> +		    is_backed_by_thp(&pte_mapped[i], pagemap_fd, kpageflags_fd))
+>>> +			thp_size++;
+>>> +
+>>> +	if (thp_size != 4) {
+>>> +		printf("Some THPs are missing during mremap\n");
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +
+>>> +	/* split all possible huge pages */
+>>> +	write_debugfs(getpid(), (uint64_t)pte_mapped,
+>>> +		      (uint64_t)pte_mapped + pagesize * 4);
+>>> +
+>>> +	/* smap does not show THPs after mremap, use kpageflags instead */
+>>> +	thp_size = 0;
+>>> +	for (i = 0; i < pagesize * 4; i++) {
+>>> +		if (pte_mapped[i] != (char)i) {
+>>> +			printf("%ld byte corrupted\n", i);
+>>> +			exit(EXIT_FAILURE);
+>>> +		}
+>>> +		if (i % pagesize == 0 &&
+>>> +		    is_backed_by_thp(&pte_mapped[i], pagemap_fd, kpageflags_fd))
+>>> +			thp_size++;
+>>> +	}
+>>> +
+>>> +	if (thp_size) {
+>>> +		printf("Still %ld THPs not split\n", thp_size);
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +
+>>> +	printf("Split PTE-mapped huge pages successful\n");
+>>> +	munmap(one_page, len);
+>>> +	close(pagemap_fd);
+>>> +	close(kpageflags_fd);
+>>> +}
+>>> +
+>>> +int main(int argc, char **argv)
+>>> +{
+>>> +	if (geteuid() != 0) {
+>>> +		printf("Please run the benchmark as root\n");
+>>> +		exit(EXIT_FAILURE);
+>>> +	}
+>>> +
+>>> +	pagesize = getpagesize();
+>>> +	pageshift = ffs(pagesize) - 1;
+>>> +	pmd_pagesize = read_pmd_pagesize();
+>>> +
+>>> +	split_pmd_thp();
+>>> +	split_pte_mapped_thp();
+>>> +
+>>> +	return 0;
+>>> +}
+>>>
+>>
+>>
+>> -- 
+>> Thanks,
+>>
+>> David / dhildenb
+> 
+> 
+> —
+> Best Regards,
+> Yan Zi
+> 
 
-Can we please hide this behind something like:
 
-static inline bool system_uses_mte_async_mode(void)
-{
-	return IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&
-		static_branch_unlikely(&mte_async_mode);
-}
-
-... like we do for system_uses_ttbr0_pan()?
-
-That way the callers are easier to read, and kernels built without
-CONFIG_KASAN_HW_TAGS don't have the static branch at all. I reckon you
-can put that in one of hte mte headers and include it where needed.
-
+-- 
 Thanks,
-Mark.
 
-> +
-> +/*
-> + * These functions disable tag checking only if in MTE async mode
-> + * since the sync mode generates exceptions synchronously and the
-> + * nofault or load_unaligned_zeropad can handle them.
-> + */
-> +static inline void __uaccess_disable_tco_async(void)
-> +{
-> +	if (static_branch_unlikely(&mte_async_mode))
-> +		 __uaccess_disable_tco();
-> +}
-> +
-> +static inline void __uaccess_enable_tco_async(void)
-> +{
-> +	if (static_branch_unlikely(&mte_async_mode))
-> +		__uaccess_enable_tco();
-> +}
-> +
->  static inline void uaccess_disable_privileged(void)
->  {
->  	__uaccess_disable_tco();
-> @@ -307,8 +327,10 @@ do {									\
->  do {									\
->  	int __gkn_err = 0;						\
->  									\
-> +	__uaccess_enable_tco_async();					\
->  	__raw_get_mem("ldr", *((type *)(dst)),				\
->  		      (__force type *)(src), __gkn_err);		\
-> +	__uaccess_disable_tco_async();					\
->  	if (unlikely(__gkn_err))					\
->  		goto err_label;						\
->  } while (0)
-> @@ -380,8 +402,10 @@ do {									\
->  do {									\
->  	int __pkn_err = 0;						\
->  									\
-> +	__uaccess_enable_tco_async();					\
->  	__raw_put_mem("str", *((type *)(src)),				\
->  		      (__force type *)(dst), __pkn_err);		\
-> +	__uaccess_disable_tco_async();					\
->  	if (unlikely(__pkn_err))					\
->  		goto err_label;						\
->  } while(0)
-> diff --git a/arch/arm64/include/asm/word-at-a-time.h b/arch/arm64/include/asm/word-at-a-time.h
-> index 3333950b5909..c62d9fa791aa 100644
-> --- a/arch/arm64/include/asm/word-at-a-time.h
-> +++ b/arch/arm64/include/asm/word-at-a-time.h
-> @@ -55,6 +55,8 @@ static inline unsigned long load_unaligned_zeropad(const void *addr)
->  {
->  	unsigned long ret, offset;
->  
-> +	__uaccess_enable_tco_async();
-> +
->  	/* Load word from unaligned pointer addr */
->  	asm(
->  	"1:	ldr	%0, %3\n"
-> @@ -76,6 +78,8 @@ static inline unsigned long load_unaligned_zeropad(const void *addr)
->  	: "=&r" (ret), "=&r" (offset)
->  	: "r" (addr), "Q" (*(unsigned long *)addr));
->  
-> +	__uaccess_disable_tco_async();
-> +
->  	return ret;
->  }
->  
-> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> index fa755cf94e01..1ad9be4c8376 100644
-> --- a/arch/arm64/kernel/mte.c
-> +++ b/arch/arm64/kernel/mte.c
-> @@ -26,6 +26,10 @@ u64 gcr_kernel_excl __ro_after_init;
->  
->  static bool report_fault_once = true;
->  
-> +/* Whether the MTE asynchronous mode is enabled. */
-> +DEFINE_STATIC_KEY_FALSE(mte_async_mode);
-> +EXPORT_SYMBOL_GPL(mte_async_mode);
-> +
->  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
->  {
->  	pte_t old_pte = READ_ONCE(*ptep);
-> @@ -118,12 +122,30 @@ static inline void __mte_enable_kernel(const char *mode, unsigned long tcf)
->  
->  void mte_enable_kernel_sync(void)
->  {
-> +	/*
-> +	 * Make sure we enter this function when no PE has set
-> +	 * async mode previously.
-> +	 */
-> +	WARN_ONCE(static_key_enabled(&mte_async_mode),
-> +			"MTE async mode enabled system wide!");
-> +
->  	__mte_enable_kernel("synchronous", SCTLR_ELx_TCF_SYNC);
->  }
->  
->  void mte_enable_kernel_async(void)
->  {
->  	__mte_enable_kernel("asynchronous", SCTLR_ELx_TCF_ASYNC);
-> +
-> +	/*
-> +	 * MTE async mode is set system wide by the first PE that
-> +	 * executes this function.
-> +	 *
-> +	 * Note: If in future KASAN acquires a runtime switching
-> +	 * mode in between sync and async, this strategy needs
-> +	 * to be reviewed.
-> +	 */
-> +	if (!static_branch_unlikely(&mte_async_mode))
-> +		static_branch_enable(&mte_async_mode);
->  }
->  
->  void mte_set_report_once(bool state)
-> -- 
-> 2.30.0
-> 
+David / dhildenb
+
