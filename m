@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81E233149A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F25433149B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhCHRWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 12:22:18 -0500
-Received: from mga03.intel.com ([134.134.136.65]:6750 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230301AbhCHRVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:21:49 -0500
-IronPort-SDR: UbgkGT9IRSG+Lolmy8HHJ7wpugYxleHGlHxsH/dpJWgvBx0FgUatPSauclF2wb25sx95Pq2WXu
- 5YeMAXQP6mgQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="188121581"
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="188121581"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 09:21:48 -0800
-IronPort-SDR: PR9cYkJIz9YxvF4N3z3Sbz3bfOm9dckVQUfzFdGIl+JspCU0hEFdbOS6e4IDfWkfutDeyeve7g
- 4On0VsWMaIhw==
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="447198966"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 09:21:46 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lJJZg-00Arp4-2q; Mon, 08 Mar 2021 19:21:44 +0200
-Date:   Mon, 8 Mar 2021 19:21:44 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>, stable@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>
-Subject: Re: [PATCH v2 1/1] pinctrl: intel: Show the GPIO base calculation
- explicitly
-Message-ID: <YEZdKLY2loUg66Ti@smile.fi.intel.com>
-References: <20210308170842.88555-1-andriy.shevchenko@linux.intel.com>
+        id S229646AbhCHRWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:22:19 -0500
+Received: from mail-il1-f177.google.com ([209.85.166.177]:33477 "EHLO
+        mail-il1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhCHRV4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 12:21:56 -0500
+Received: by mail-il1-f177.google.com with SMTP id e2so9566129ilu.0;
+        Mon, 08 Mar 2021 09:21:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I9C+IFyr33dAu9Kqcftozrt07hiCQ7Ix1pjgeavX26Q=;
+        b=jc4Qst6TASQDMFtitz0DtEa0TVZELxFZBzI/prz4sMwlhzZICJ65nzM8XzfxCxErx5
+         83l2A2ico26yIENBAFzQxHYJNIXUwB/a1Qi2+4QvcGqxVAufD2uwzqEXRmtn/50cGKdG
+         N2QBDIiT8g/cSJ7wYmJiERkcMhAt9CuW+NbFRFbTDWzt8gbi79uN61VdSnQoTZ+7cEO0
+         TPE/U49jPm8wh+PF61eCLC2+TTyO6v/saP4oj2EiKJ4Xs/lfcAiQYmNinQG05yJ1dU64
+         FrJehEWCFN48kFNnvCJDpY61lR0TmwhmkTiJ2ME/9b8A1GCV2VXjka9eVgcx1sJpSPAD
+         NTtQ==
+X-Gm-Message-State: AOAM532xcmVwndcuPyhn+dqHSkwXDKbsjALK4MNQRx9CgGHXeeQ8fw+8
+        Q4yOcfMnu9xXJPqgfiUr7VzJ6WMdhg==
+X-Google-Smtp-Source: ABdhPJzSGdpR3ERyKpm3ixPrSK/LkiqVL91XK7jo+nbZKT9ATyTGtIJ4/k8iwQSs/INijl6TegVgUQ==
+X-Received: by 2002:a92:c641:: with SMTP id 1mr22296948ill.94.1615224115555;
+        Mon, 08 Mar 2021 09:21:55 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id w13sm6392957ilg.48.2021.03.08.09.21.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 09:21:54 -0800 (PST)
+Received: (nullmailer pid 2655238 invoked by uid 1000);
+        Mon, 08 Mar 2021 17:21:53 -0000
+Date:   Mon, 8 Mar 2021 10:21:53 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, linux-clk@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: misc: add binding for generic ripple
+ counter
+Message-ID: <20210308172153.GA2505339@robh.at.kernel.org>
+References: <20210226141411.2517368-1-linux@rasmusvillemoes.dk>
+ <20210226141411.2517368-2-linux@rasmusvillemoes.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308170842.88555-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210226141411.2517368-2-linux@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 07:08:42PM +0200, Andy Shevchenko wrote:
-> During the split of intel_pinctrl_add_padgroups(), the _by_size() variant
-> missed the GPIO base calculations and hence made unable to retrieve proper
-> GPIO number.
-> 
-> Assign the gpio_base explicitly in _by_size() variant.
-> 
-> While at it, differentiate NOMAP case with the rest in _by_gpps() variant.
+On Fri, Feb 26, 2021 at 03:14:10PM +0100, Rasmus Villemoes wrote:
+> While a ripple counter can not usually be interfaced with (directly)
+> from software, it may still be a crucial component in a board
+> layout. To prevent its input clock from being disabled by the clock
+> core because it apparently has no consumer, one needs to be able to
+> represent that consumer in DT.
 
-Meanwhile pushed to my review and testing queue, thanks!
+I'm okay with this as it is describing h/w, but we already 
+'protected-clocks' property which should work.
 
-> Fixes: 036e126c72eb ("pinctrl: intel: Split intel_pinctrl_add_padgroups() for better maintenance")
-> Reported-and-tested-by: Maximilian Luz <luzmaximilian@gmail.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> 
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 > ---
-> v2: added tag and Cc'ed to stable@ (Mika)
->  drivers/pinctrl/intel/pinctrl-intel.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  Documentation/devicetree/bindings/misc/ripple-ctr.txt | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/misc/ripple-ctr.txt
 > 
-> diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
-> index 8085782cd8f9..7283203861ae 100644
-> --- a/drivers/pinctrl/intel/pinctrl-intel.c
-> +++ b/drivers/pinctrl/intel/pinctrl-intel.c
-> @@ -1357,6 +1357,7 @@ static int intel_pinctrl_add_padgroups_by_gpps(struct intel_pinctrl *pctrl,
->  				gpps[i].gpio_base = 0;
->  				break;
->  			case INTEL_GPIO_BASE_NOMAP:
-> +				break;
->  			default:
->  				break;
->  		}
-> @@ -1393,6 +1394,7 @@ static int intel_pinctrl_add_padgroups_by_size(struct intel_pinctrl *pctrl,
->  		gpps[i].size = min(gpp_size, npins);
->  		npins -= gpps[i].size;
->  
-> +		gpps[i].gpio_base = gpps[i].base;
->  		gpps[i].padown_num = padown_num;
->  
->  		/*
+> diff --git a/Documentation/devicetree/bindings/misc/ripple-ctr.txt b/Documentation/devicetree/bindings/misc/ripple-ctr.txt
+> new file mode 100644
+> index 000000000000..1497d3a237a7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/misc/ripple-ctr.txt
+> @@ -0,0 +1,8 @@
+> +Generic ripple counter
+> +
+> +A ripple counter is a simple component that can for example be used to
+> +delay propagation of a signal.
+> +
+> +Required properties:
+> +- compatible: Must be "linux,ripple-ctr".
+
+Nothing linux specific about this.
+
+> +- clocks: Input clock specifier. Refer to common clock bindings.
 > -- 
-> 2.30.1
+> 2.29.2
 > 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
