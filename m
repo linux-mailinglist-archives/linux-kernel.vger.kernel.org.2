@@ -2,85 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC8B330872
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 07:51:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C670330873
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 07:51:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhCHGvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 01:51:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42494 "EHLO
+        id S235063AbhCHGvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 01:51:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbhCHGuz (ORCPT
+        with ESMTP id S235024AbhCHGvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 01:50:55 -0500
-X-Greylist: delayed 125479 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 07 Mar 2021 22:50:55 PST
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746F6C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 22:50:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=i0gmFpOVEqM0E4dUnLDzKTfLkWMoQgTTzY2+cl6n74s=; b=TwFIgrncW+ysQNb28Noc7ELeyQ
-        jIU/0GL4pRe+3oVJqDTRlbgfJkva/8n96qvNL0GcOSl8nk1/vLkrrkJ8QiuXJ1a34avriDS2wo6Ep
-        nvbZCmRfaiqfroxwUjCHOkyZtt6TwxlbBLtVRRSP0xC40frr2H3dh/5PQ4ywjWLdZE3bARz6BX+pr
-        tkMU5FllgHO5VPse75hjIo0Ab1Ys/lDkO6TMTKO7FOlehTBzzjmZFW78/Yz+VtEP4FzR2HMEAfZTU
-        24HAwKW73+kdLBoHs6ZgSNtsRaf1+a4HZhcyU9fR8e/E2lQVqqf55gTy19CwhqW5VjbhhB1Qq7D9T
-        QXOGECZQ==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJ9j7-000UYr-5y; Mon, 08 Mar 2021 06:50:50 +0000
-Subject: Re: [PATCH] sound: soc: codecs: Fix a spello in the file wm8955.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        kuninori.morimoto.gx@renesas.com, gustavoars@kernel.org,
-        ckeepax@opensource.cirrus.com, peter.ujfalusi@ti.com,
-        patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <20210306115151.31759-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <5a19f291-d5be-b30a-ae79-f1c5ce290164@infradead.org>
-Date:   Sun, 7 Mar 2021 22:50:44 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 8 Mar 2021 01:51:02 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E44C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 22:51:01 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id n16so19321939lfb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 22:51:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XEEJ+NdSVotCeqOa+J0COpT2uyZAFkgzUKOtpl6kuio=;
+        b=F9c7bLbzgQ+8AYmdfA1AkrCB6L1QzKFDLjf4b4vHcDr+ssS3aVm2cBRN1LdkV1krdv
+         HS2O7dX5fB34ToDTGIj39/XCOMDOXlk6btG2pnerTcMVHyTWtZR5ixl/blfarcignyS3
+         +IlHiOU/PU4bFXiLZXFyge51AKxcP1UjpQ7uxb70O94dI/3A0+n/A/7aNc64odxP7f6Q
+         sjCoNRS6EhXCYajVkUbSghZ8Vjq4YMCIJlSyC5F7TFz665iqs/hK33VqhutDMGkeeogF
+         UaKhDcLS4+IWuAY7A/HQcvese9vOC3jZUBru0WKHjyCleFsBRZlfZrgyqSmDN+xKlH6C
+         54VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XEEJ+NdSVotCeqOa+J0COpT2uyZAFkgzUKOtpl6kuio=;
+        b=RMzR6t+UYXWMm4oDpRncsQjFrdRlcx46AWZfRhgccV7IglCrOsNKsYBxT5bmMjyV12
+         OD7ziXJYGQRLuAr49IIDQx2rQn0xTZkb9gI3ffN5Etclu1B0CaPj6GRXYKzBUWRoG8mb
+         j40QfnJtkkXl1+sO6V0xJLIQ9rAY/9gWzgQ0d3P9YliMIFZyd7AUuMR5AJ0buOC9KzS2
+         kuq5d3UVg4ZYn6PyOIgUqAG89/A2e2igWiod83vvU5tq8Umou7vWS/DGn1KV2L4ADm4L
+         p1evSsguIm26VMoNFjbOtfz9z/dJ3Fh2NI+AQY9RDO/XiSeVnfYJB/MxKqjId+FKxXEV
+         z7Bg==
+X-Gm-Message-State: AOAM531Mm1I3ICXabjy6o4dR+oAYf6mf2rIf0Zo5wnbNSasnBNC8fpI0
+        4NQtQ2A6DW8mQjHITBj4ZQgWZiPBZ6U0pYgzrYjqjw==
+X-Google-Smtp-Source: ABdhPJzf6blD5ezRDhly1I/2fKBsQ+75DEo7x3d66Mo8vY3YgWSuuREy3y5AvMLnQkVnWNakublLDD8up0FeOqQLjus=
+X-Received: by 2002:a05:6512:39c9:: with SMTP id k9mr13229164lfu.432.1615186260215;
+ Sun, 07 Mar 2021 22:51:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210306115151.31759-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210217001322.2226796-1-shy828301@gmail.com> <20210217001322.2226796-7-shy828301@gmail.com>
+In-Reply-To: <20210217001322.2226796-7-shy828301@gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Sun, 7 Mar 2021 22:50:46 -0800
+Message-ID: <CALvZod6KH7f5FaEcDg4NvhSdeuPjVQK1HHwHppV+vbcittLi2Q@mail.gmail.com>
+Subject: Re: [v8 PATCH 06/13] mm: memcontrol: rename shrinker_map to shrinker_info
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/6/21 3:51 AM, Bhaskar Chowdhury wrote:
-> 
-> s/sortd/sorted/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+On Tue, Feb 16, 2021 at 4:13 PM Yang Shi <shy828301@gmail.com> wrote:
+>
+> The following patch is going to add nr_deferred into shrinker_map, the change will
+> make shrinker_map not only include map anymore, so rename it to "memcg_shrinker_info".
+> And this should make the patch adding nr_deferred cleaner and readable and make
+> review easier.  Also remove the "memcg_" prefix.
+>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+> Acked-by: Roman Gushchin <guro@fb.com>
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-> ---
->  sound/soc/codecs/wm8955.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/codecs/wm8955.c b/sound/soc/codecs/wm8955.c
-> index 513df47bd87d..538bb8b0db39 100644
-> --- a/sound/soc/codecs/wm8955.c
-> +++ b/sound/soc/codecs/wm8955.c
-> @@ -151,7 +151,7 @@ static int wm8955_pll_factors(struct device *dev,
->  	/* The oscilator should run at should be 90-100MHz, and
->  	 * there's a divide by 4 plus an optional divide by 2 in the
->  	 * output path to generate the system clock.  The clock table
-> -	 * is sortd so we should always generate a suitable target. */
-> +	 * is sorted so we should always generate a suitable target. */
->  	target = Fout * 4;
->  	if (target < 90000000) {
->  		pll->outdiv = 1;
-> --
-> 2.26.2
-> 
-
-
--- 
-~Randy
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
