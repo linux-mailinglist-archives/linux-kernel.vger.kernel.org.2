@@ -2,227 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDC2330C64
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7F1330C69
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:30:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbhCHL33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 06:29:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20527 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229965AbhCHL2y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 06:28:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615202934;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fl2MWGAcY5BbmiIvDIGebdX2XvBppoO5EAECGMxonAU=;
-        b=PQDt82oN3U5nk8arqCfMOogHueYwT6Xi6/Eck7fvb4ryjZ10jA4TbsuDBNQq8/7E3mSeNA
-        gziK67NhgH8DrcxxZfa+e7gzZ/i+hdDH8YrHFMwZxVWAiMu/znRqUSat9oK/LDEIrKpDiL
-        kQ7ofahCF6iX6w4jrpeByphOm8/UgFY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-251-HhcYaZeaNNCawHZ5I0Rf6A-1; Mon, 08 Mar 2021 06:28:52 -0500
-X-MC-Unique: HhcYaZeaNNCawHZ5I0Rf6A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBF5F1018F74;
-        Mon,  8 Mar 2021 11:28:49 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-79.rdu2.redhat.com [10.10.112.79])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6BF3E5D756;
-        Mon,  8 Mar 2021 11:28:42 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAOQ4uxjYWprb7trvamCx+DaP2yn8HCaZeZx1dSvPyFH2My303w@mail.gmail.com>
-References: <CAOQ4uxjYWprb7trvamCx+DaP2yn8HCaZeZx1dSvPyFH2My303w@mail.gmail.com> <2653261.1614813611@warthog.procyon.org.uk> <CAOQ4uxhxwKHLT559f8v5aFTheKgPUndzGufg0E58rkEqa9oQ3Q@mail.gmail.com> <517184.1615194835@warthog.procyon.org.uk>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     dhowells@redhat.com, linux-cachefs@redhat.com,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-afs@lists.infradead.org,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Subject: Metadata writtenback notification? -- was Re: fscache: Redesigning the on-disk cache
+        id S231816AbhCHL34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 06:29:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229627AbhCHL3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 06:29:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD39A651CD;
+        Mon,  8 Mar 2021 11:29:39 +0000 (UTC)
+Date:   Mon, 8 Mar 2021 11:29:37 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Veronika Kabatova <vkabatov@redhat.com>
+Subject: Re: [PATCH V3 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based
+ memory
+Message-ID: <20210308112936.GD15644@arm.com>
+References: <1614921898-4099-1-git-send-email-anshuman.khandual@arm.com>
+ <1614921898-4099-2-git-send-email-anshuman.khandual@arm.com>
+ <20210305181322.GI23855@arm.com>
+ <e446810c-2020-9f21-79ba-6ede473447da@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <584528.1615202921.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Mon, 08 Mar 2021 11:28:41 +0000
-Message-ID: <584529.1615202921@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e446810c-2020-9f21-79ba-6ede473447da@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Amir Goldstein <amir73il@gmail.com> wrote:
+On Fri, Mar 05, 2021 at 07:24:21PM +0100, David Hildenbrand wrote:
+> On 05.03.21 19:13, Catalin Marinas wrote:
+> > On Fri, Mar 05, 2021 at 10:54:57AM +0530, Anshuman Khandual wrote:
+> > > pfn_valid() validates a pfn but basically it checks for a valid struct page
+> > > backing for that pfn. It should always return positive for memory ranges
+> > > backed with struct page mapping. But currently pfn_valid() fails for all
+> > > ZONE_DEVICE based memory types even though they have struct page mapping.
+> > > 
+> > > pfn_valid() asserts that there is a memblock entry for a given pfn without
+> > > MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
+> > > that they do not have memblock entries. Hence memblock_is_map_memory() will
+> > > invariably fail via memblock_search() for a ZONE_DEVICE based address. This
+> > > eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
+> > > to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
+> > > into the system via memremap_pages() called from a driver, their respective
+> > > memory sections will not have SECTION_IS_EARLY set.
+> > > 
+> > > Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
+> > > regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
+> > > for firmware reserved memory regions. memblock_is_map_memory() can just be
+> > > skipped as its always going to be positive and that will be an optimization
+> > > for the normal hotplug memory. Like ZONE_DEVICE based memory, all normal
+> > > hotplugged memory too will not have SECTION_IS_EARLY set for their sections
+> > > 
+> > > Skipping memblock_is_map_memory() for all non early memory sections would
+> > > fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
+> > > performance for normal hotplug memory as well.
+> > > 
+> > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > Cc: Will Deacon <will@kernel.org>
+> > > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > > Cc: Robin Murphy <robin.murphy@arm.com>
+> > > Cc: linux-arm-kernel@lists.infradead.org
+> > > Cc: linux-kernel@vger.kernel.org
+> > > Acked-by: David Hildenbrand <david@redhat.com>
+> > > Fixes: 73b20c84d42d ("arm64: mm: implement pte_devmap support")
+> > > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > > ---
+> > >   arch/arm64/mm/init.c | 12 ++++++++++++
+> > >   1 file changed, 12 insertions(+)
+> > > 
+> > > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> > > index 0ace5e68efba..5920c527845a 100644
+> > > --- a/arch/arm64/mm/init.c
+> > > +++ b/arch/arm64/mm/init.c
+> > > @@ -230,6 +230,18 @@ int pfn_valid(unsigned long pfn)
+> > >   	if (!valid_section(__pfn_to_section(pfn)))
+> > >   		return 0;
+> > > +
+> > > +	/*
+> > > +	 * ZONE_DEVICE memory does not have the memblock entries.
+> > > +	 * memblock_is_map_memory() check for ZONE_DEVICE based
+> > > +	 * addresses will always fail. Even the normal hotplugged
+> > > +	 * memory will never have MEMBLOCK_NOMAP flag set in their
+> > > +	 * memblock entries. Skip memblock search for all non early
+> > > +	 * memory sections covering all of hotplug memory including
+> > > +	 * both normal and ZONE_DEVICE based.
+> > > +	 */
+> > > +	if (!early_section(__pfn_to_section(pfn)))
+> > > +		return pfn_section_valid(__pfn_to_section(pfn), pfn);
+> > 
+> > Would something like this work instead:
+> > 
+> > 	if (online_device_section(ms))
+> > 		return 1;
+> > 
+> > to avoid the assumptions around early_section()?
+> 
+> Please keep online section logic out of pfn valid logic. Tow different
+> things. (and rather not diverge too much from generic pfn_valid() - we want
+> to achieve the opposite in the long term, merging both implementations)
 
-> > But after I've written and sync'd the data, I set the xattr to mark th=
-e
-> > file not open.  At the moment I'm doing this too lazily, only doing it
-> > when a netfs file gets evicted or when the cache gets withdrawn, but I
-> > really need to add a queue of objects to be sealed as they're closed. =
- The
-> > balance is working out how often to do the sealing as something like a
-> > shell script can do a lot of consecutive open/write/close ops.
-> =
+I think I misread the code. I was looking for a new flag to check like
+SECTION_IS_DEVICE instead of assuming that !SECTION_IS_EARLY means
+device or mhp.
 
-> You could add an internal vfs API wait_for_multiple_inodes_to_be_synced(=
-).
-> For example, xfs keeps the "LSN" on each inode, so once the transaction
-> with some LSN has been committed, all the relevant inodes, if not dirty,=
- can
-> be declared as synced, without having to call fsync() on any file and wi=
-thout
-> having to force transaction commit or any IO at all.
-> =
+Anyway, staring at this code for a bit more, I came to the conclusion
+that the logic in Anshuman's patches is fairly robust - we only need to
+check for memblock_is_map_memory() if early_section() as that's the only
+case where we can have MEMBLOCK_NOMAP. Maybe the comment above should be
+re-written a bit and avoid the ZONE_DEVICE and hotplugged memory
+details altogether.
 
-> Since fscache takes care of submitting the IO, and it shouldn't care abo=
-ut any
-> specific time that the data/metadata hits the disk(?), you can make use =
-of the
-> existing periodic writeback and rolling transaction commit and only ever=
- need
-> to wait for that to happen before marking cache files "closed".
-> =
-
-> There was a discussion about fsyncing a range of files on LSFMM [1].
-> In the last comment on the article dchinner argues why we already have t=
-hat
-> API (and now also with io_uring(), but AFAIK, we do not have a useful
-> wait_for_sync() API. And it doesn't need to be exposed to userspace at a=
-ll.
-> =
-
-> [1] https://lwn.net/Articles/789024/
-
-This sounds like an interesting idea.  Actually, what I probably want is a
-notification to say that a particular object has been completely sync'd to
-disk, metadata and all.
-
-I'm not sure that io_uring is particularly usable from within the kernel,
-though.
-
-> If I were you, I would try to avoid re-implementing a journaled filesyst=
-em or
-> a database for fscache and try to make use of crash consistency guarante=
-es
-> that filesystems already provide.
-> Namely, use the data dependency already provided by temp files.
-> It doesn't need to be one temp file per cached file.
-> =
-
-> Always easier said than done ;-)
-
-Yes.
-
-There are a number of considerations I have to deal with, and they're some=
-what
-at odds with each other:
-
- (1) I need to record what data I have stored from a file.
-
- (2) I need to record where I stored the data.
-
- (3) I need to make sure that I don't see old data.
-
- (4) I need to make sure that I don't see data in the wrong file.
-
- (5) I need to make sure I lose as little as possible on a crash.
-
- (6) I want to be able to record what changes were made in the event we're
-     disconnected from the server.
-
-For my fscache-iter branch, (1) is done with a map in an xattr, but I only
-cache up to 1G in a file at the moment; (2), (4) and, to some extent (5), =
-are
-handled by the backing fs; (3) is handled by tagging the file and storing
-coherency data in in an xattr (though tmpfiles are used on full invalidati=
-on).
-(6) is not yet supported.
-
-For upstream, (1), (2), (4) and to some extent (5) are handled through the
-backing fs.  (3) is handled by storing coherency data in an xattr and
-truncating the file on invalidation; (6) is not yet supported.
-
-However, there are some performance problems are arising in my fscache-ite=
-r
-branch:
-
- (1) It's doing a lot of synchronous metadata operations (tmpfile, truncat=
-e,
-     setxattr).
-
- (2) It's retaining a lot of open file structs on cache files.  Cachefiles
-     opens the file when it's first asked to access it and retains that ti=
-ll
-     the cookie is relinquished or the cache withdrawn (the file* doesn't
-     contribute to ENFILE/EMFILE but it still eats memory).
-
-     I can mitigate this by closing much sooner, perhaps opening the file =
-for
-     each operation - but at the cost of having to spend time doing more o=
-pens
-     and closes.  What's in upstream gets away without having to do open/c=
-lose
-     for reads because it calls readpage.
-
-     Alternatively, I can have a background file closer - which requires a=
-n
-     LRU queue.  This could be combined with a file "sealer".
-
-     Deferred writeback on the netfs starting writes to the cache makes th=
-is
-     more interesting as I have to retain the interest on the cache object
-     beyond the netfs file being closed.
-
- (3) Trimming excess data from the end of the cache file.  The problem wit=
-h
-     using DIO to write to the cache is that the write has to be rounded u=
-p to
-     a multiple of the backing fs DIO blocksize, but if the file is trunca=
-ted
-     larger, that excess data now becomes part of the file.
-
-     Possibly it's sufficient to just clear the excess page space before
-     writing, but that doesn't necessarily stop a writable mmap from
-     scribbling on it.
-
- (4) Committing outstanding cache metadata at cache withdrawal or netfs
-     unmount.  I've previously mentioned this: it ends up with a whole sle=
-w of
-     synchronous metadata changes being committed to the cache in one go
-     (truncates, fallocates, fsync, xattrs, unlink+link of tmpfile) - and =
-this
-     can take quite a long time.  The cache needs to be more proactive in
-     getting stuff committed as it goes along.
-
- (5) Attaching to an object requires a pathwalk to it (normally only two
-     steps) and then reading various xattrs on it - all synchronous, but c=
-an
-     be punted to a background threadpool.
-
-Amongst the reasons I was considering moving to an index and a single data=
-file
-is to replace the path-lookup step for each object and the xattr reads to
-looking in a single file and to reduce the number of open files in the cac=
-he
-at any one time to around four.
-
-David
-
+-- 
+Catalin
