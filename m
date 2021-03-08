@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF5F33192E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A457331937
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhCHVQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 16:16:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229901AbhCHVPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 16:15:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 490CD64FA9;
-        Mon,  8 Mar 2021 21:15:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615238134;
-        bh=wgi4ixB+/HuhHipnwGcBia2Ldp0HKcclvEzilpijVm4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vp5XNZZWupcAon7ycuZxhO7fdD2GjZ8HsVG6KAu7YXzNE6CSumTw86o0jjNTElkGD
-         rQYw5+VvLDkJDdLCYHkjpMowycO6SFULV4NTRwVwYYkc1IkQoybBhprFpFD/XMuorc
-         i+fQGkTvzlJ1ITGbAGJ52+3bS7n9mpe40E9TBPWo9Wv++IadsEJi5UvyL8WviVu575
-         vwoE2yz0fVotco38m9DDWDpUIl2b8j0iJlcWw63XuStiKo+fnEmw+zss+NXLvz+IIu
-         WsMe3eIfnTZNF9a0VB2m6juQNa4Qp99U3XR0wCrJinT6YRzgNsIL+r/Y5Y3rbvni/c
-         5JSH7Tp28mFWA==
-Date:   Mon, 8 Mar 2021 15:15:32 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Marius Zachmann <mail@mariuszachmann.de>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH RESEND][next] hwmon: (corsair-cpro) Fix fall-through
- warnings for Clang
-Message-ID: <20210308211532.GB214076@embeddedor>
-References: <20210305095359.GA141682@embeddedor>
- <107682713.BXpLqza3Di@marius>
+        id S231151AbhCHVRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 16:17:11 -0500
+Received: from mail-io1-f53.google.com ([209.85.166.53]:38880 "EHLO
+        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhCHVQ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 16:16:57 -0500
+Received: by mail-io1-f53.google.com with SMTP id k2so11572605ioh.5;
+        Mon, 08 Mar 2021 13:16:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wENDCdWaSuNo/9lFklZ0lZUQIRPa8gqGgWLSaGo2ihY=;
+        b=g6+AaLvntMqexDPFcKpwGaDMZIPvSEm+x3DaYXZx0NDZGp61E/a15Hlv4vFz3k9jQH
+         aDrBGhzZeRNHv29BaNDnBz1lNYZXbr9kvQnGz32KnZI57aWEis7hxOXrbKnpSgfTChVU
+         07rLnmjtqwnCuOBez+C1uGOj7AuCt4wkGU0pAPLztFkiXVRGKlMqoJQFw7ACocl/O+D4
+         nZ6TbdMa0/fCiCoHcN9X8ygWrgegKcytcS8mb13sEprvNUEt2h7sWoKKvJh2qA4VEtWL
+         /GtHu77cBawea0UoF1RD4T+3NjFvW0fVM4Bt/4ov/hOK2oNkdLcWlTZNbDglZCh0JXVK
+         pMyA==
+X-Gm-Message-State: AOAM531VyuIa9W8vV58pgkFHAV34srtkYGlH87Gxfty5VwppI9Hq9UXe
+        lWcthTRI2d4Q+0gmcKibkg==
+X-Google-Smtp-Source: ABdhPJxM6BeOQdAzQkQ3yg2K05EvksZzTVIx2JLACJFRTq+Zv0djbKLPxzbB8aPacgz5KAoO9UbdNA==
+X-Received: by 2002:a6b:e312:: with SMTP id u18mr20265529ioc.58.1615238216808;
+        Mon, 08 Mar 2021 13:16:56 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id t9sm6728380iln.61.2021.03.08.13.16.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 13:16:56 -0800 (PST)
+Received: (nullmailer pid 2970565 invoked by uid 1000);
+        Mon, 08 Mar 2021 21:16:53 -0000
+Date:   Mon, 8 Mar 2021 14:16:53 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        devicetree@vger.kernel.org, Olof Johansson <olof@lixom.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexander Graf <graf@amazon.com>, linux-doc@vger.kernel.org,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Arnd Bergmann <arnd@kernel.org>, linux-serial@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Stan Skowronek <stan@corellium.com>
+Subject: Re: [RFT PATCH v3 15/27] dt-bindings: interrupt-controller: Add DT
+ bindings for apple-aic
+Message-ID: <20210308211653.GA2970507@robh.at.kernel.org>
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-16-marcan@marcan.st>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <107682713.BXpLqza3Di@marius>
+In-Reply-To: <20210304213902.83903-16-marcan@marcan.st>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 06, 2021 at 11:39:35AM +0100, Marius Zachmann wrote:
-> On 06.03.21 at 10:53:59 CET, Gustavo A. R. Silva wrote
-> > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> > by explicitly adding a break statement instead of letting the code fall
-> > through to the next case.
-> > 
-> > Link: https://github.com/KSPP/linux/issues/115
-> > Acked-by: Guenter Roeck <linux@roeck-us.net>
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+On Fri, 05 Mar 2021 06:38:50 +0900, Hector Martin wrote:
+> AIC is the Apple Interrupt Controller found on Apple ARM SoCs, such as
+> the M1.
 > 
-> Acked-by: Marius Zachmann <mail@mariuszachmann.de>
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+>  .../interrupt-controller/apple,aic.yaml       | 88 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  .../interrupt-controller/apple-aic.h          | 15 ++++
+>  3 files changed, 104 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+>  create mode 100644 include/dt-bindings/interrupt-controller/apple-aic.h
+> 
 
-Thanks, Marius.
-
---
-Gustavo
-
-> 
-> > ---
-> >  drivers/hwmon/corsair-cpro.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/hwmon/corsair-cpro.c b/drivers/hwmon/corsair-cpro.c
-> > index 591929ec217a..fa6aa4fc8b52 100644
-> > --- a/drivers/hwmon/corsair-cpro.c
-> > +++ b/drivers/hwmon/corsair-cpro.c
-> > @@ -310,6 +310,7 @@ static int ccp_write(struct device *dev, enum hwmon_sensor_types type,
-> >  		default:
-> >  			break;
-> >  		}
-> > +		break;
-> >  	default:
-> >  		break;
-> >  	}
-> > 
-> 
-> 
-> 
-> 
+Reviewed-by: Rob Herring <robh@kernel.org>
