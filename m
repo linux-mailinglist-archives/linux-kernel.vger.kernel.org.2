@@ -2,152 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1442330F4B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F31330F34
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhCHNdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 08:33:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhCHNdL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 08:33:11 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D99C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 05:33:10 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so2785729wmq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 05:33:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=lZkNk3yYW/8ijhrD082tSx7qBCi8O3cbnVc/FrlwdlU=;
-        b=M/AD+I7vDYIzgXiPb3lGfvD8fpS3TPgKXz/BSkCm+skoOnnl/gAtfI1w4j+QJsWeFl
-         ePthrlbIuh1GdQT/WEhUZODbL3oaBbUcItYBvmMNxcx2U/xnwJ0ssS9zDlLI6XCdK2iS
-         Xtu2+cSnY83dPBhyU02NiIxl7LffDP3pqfxmBmBf0tPEWRca4ZXonoE/eC+gVZ21axiP
-         TpxTmVLhB9rbiHstnBOxXTi1J+7o9JtBNnpIyGJINsD14apy1O7HWiBb4ZlzMvCHS9kw
-         6Ex1kW75fTtzaOND2JUJYKL84jVK1THIDMTkWHfXgkrmA3swY24Ldfp3hkVO/dOPyYiU
-         U7Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=lZkNk3yYW/8ijhrD082tSx7qBCi8O3cbnVc/FrlwdlU=;
-        b=NbUp+g+v/V97wOi24DR4Pg+CSRYKk7ngAZ00dhlr0Z74/e1ROmkmrYakh4KIKfFKZk
-         L9NmTn1a996fBmLh2yP5tuPxYZfXrE7w0eLd1tW8iUvnRAqTCTDdoJhaunVUzerChQqx
-         ovz21fqNuwxfnW03xvZm3Xz2yuKUsOsr5gUQzLO0r/2t6oGvwSlI8AoPafJITkDq/cjo
-         6Gx75Iugs2JhpeLAYdpZ3cix5ulWmkZ5SRPwAaAqWJrsUekfbHLCcfxmmFd+0z2dDhqd
-         x994fjysWNZ9JOreTs2JTaiQOKr8YeryWKIUYAPycKOsCHTJufJU3CD5l0+8qVAhvxH1
-         hxtw==
-X-Gm-Message-State: AOAM532ABV49DywEw30j9kf/hunlz5mtnHOOD5f+vt9gU0Gpnp2l+HD2
-        6I1LlxWLnlJc7myI4bP8A8L6nw==
-X-Google-Smtp-Source: ABdhPJwnioQkiEp3+z6Qv31ROIXRxQ4ReAnXp3xN6rJWgiz/US1JMbhImjsoxKyasPz/cuJFA1YWnw==
-X-Received: by 2002:a05:600c:210a:: with SMTP id u10mr14186060wml.147.1615210389361;
-        Mon, 08 Mar 2021 05:33:09 -0800 (PST)
-Received: from localhost.localdomain (lns-bzn-59-82-252-141-80.adsl.proxad.net. [82.252.141.80])
-        by smtp.gmail.com with ESMTPSA id m11sm18942665wrz.40.2021.03.08.05.33.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 05:33:09 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     cwchoi00@gmail.com
-Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, steven.price@arm.com,
-        Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS FOR LIMA),
-        lima@lists.freedesktop.org (moderated list:DRM DRIVERS FOR LIMA)
-Subject: [PATCH v6 4/4] PM / devfreq: lima: Use devfreq cooling device registration
-Date:   Mon,  8 Mar 2021 14:30:40 +0100
-Message-Id: <20210308133041.10516-4-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210308133041.10516-1-daniel.lezcano@linaro.org>
-References: <20210308133041.10516-1-daniel.lezcano@linaro.org>
+        id S230056AbhCHNbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 08:31:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229575AbhCHNa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 08:30:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA44964DA3;
+        Mon,  8 Mar 2021 13:30:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615210258;
+        bh=pEXNet6N/egXd7wBXv+XZqh8Z0VGXmL8Y0GWpDXYgSU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cKyWPlExbizCNVfKpN0ou+bCV20Y4lb3vpBkQS2Vmo3MZrrlJQh/iUsAO0JLf7oom
+         Aflt8QGqmFYVUY8Zoiag1rK2aK5nf7xwG+EThpUDEqEjn6MScpRvXvHbMLGDeywvrw
+         WWiK5i+VSUsi8FHgLgoDTguaw2tETYur8CDLJvxvop3CT1bE01EW2xjxsh8OQ4qdXj
+         GwOH4MfOsamqJ4lC32GoG/POx0M8kDUF82rFM3HPT6hBlwnQ+glrbXy0A7BO3OfZGU
+         4cUoYzdmvTf2bToG82yD3eHRe2YFbLqF1oklALbm0QeZuNe7ARB0QrZ1vjAHnhVRDX
+         9nL4V2qDnHBug==
+Date:   Mon, 8 Mar 2021 13:30:53 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        James Morse <james.morse@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/mm: Fix __enable_mmu() for new TGRAN range values
+Message-ID: <20210308133053.GA26128@willie-the-truck>
+References: <1614954969-14338-1-git-send-email-anshuman.khandual@arm.com>
+ <20210305145111.GA78884@C02TD0UTHF1T.local>
+ <1f339512-34ac-9779-e534-bee6698b99aa@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f339512-34ac-9779-e534-bee6698b99aa@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The devfreq core code is able to register the devfreq device as a
-cooling device if the 'is_cooling_device' flag is set in the profile.
+On Sun, Mar 07, 2021 at 05:24:21PM +0530, Anshuman Khandual wrote:
+> 
+> 
+> On 3/5/21 8:21 PM, Mark Rutland wrote:
+> > On Fri, Mar 05, 2021 at 08:06:09PM +0530, Anshuman Khandual wrote:
+> >> From: James Morse <james.morse@arm.com>
+> >>
+> >> As per ARM ARM DDI 0487G.a, when FEAT_LPA2 is implemented, ID_AA64MMFR0_EL1
+> >> might contain a range of values to describe supported translation granules
+> >> (4K and 16K pages sizes in particular) instead of just enabled or disabled
+> >> values. This changes __enable_mmu() function to handle complete acceptable
+> >> range of values (depending on whether the field is signed or unsigned) now
+> >> represented with ID_AA64MMFR0_TGRAN_SUPPORTED_[MIN..MAX] pair. While here,
+> >> also fix similar situations in EFI stub and KVM as well.
+> >>
+> >> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> >> Cc: Will Deacon <will@kernel.org>
+> >> Cc: Marc Zyngier <maz@kernel.org>
+> >> Cc: James Morse <james.morse@arm.com>
+> >> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> >> Cc: Ard Biesheuvel <ardb@kernel.org>
+> >> Cc: Mark Rutland <mark.rutland@arm.com>
+> >> Cc: linux-arm-kernel@lists.infradead.org
+> >> Cc: kvmarm@lists.cs.columbia.edu
+> >> Cc: linux-efi@vger.kernel.org
+> >> Cc: linux-kernel@vger.kernel.org
+> >> Signed-off-by: James Morse <james.morse@arm.com>
+> >> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> >> ---
+> >>  arch/arm64/include/asm/sysreg.h           | 20 ++++++++++++++------
+> >>  arch/arm64/kernel/head.S                  |  6 ++++--
+> >>  arch/arm64/kvm/reset.c                    | 23 ++++++++++++-----------
+> >>  drivers/firmware/efi/libstub/arm64-stub.c |  2 +-
+> >>  4 files changed, 31 insertions(+), 20 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> >> index dfd4edb..d4a5fca9 100644
+> >> --- a/arch/arm64/include/asm/sysreg.h
+> >> +++ b/arch/arm64/include/asm/sysreg.h
+> >> @@ -796,6 +796,11 @@
+> >>  #define ID_AA64MMFR0_PARANGE_48		0x5
+> >>  #define ID_AA64MMFR0_PARANGE_52		0x6
+> >>  
+> >> +#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_DEFAULT	0x0
+> >> +#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_NONE	0x1
+> >> +#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_MIN	0x2
+> >> +#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_MAX	0x7
+> >
+> > The TGRAN2 fields doesn't quite follow the usual ID scheme rules, so how
+> > do we deteremine the max value? Does the ARM ARM say anything in
+> > particular about them, like we do for some of the PMU ID fields?
+> 
+> Did not find anything in ARM ARM, regarding what scheme TGRAN2 fields
+> actually follow. I had arrived at more restrictive 0x7 value, like the
+> usual signed fields as the TGRAN4 fields definitely do not follow the
+> unsigned ID scheme. Would restricting max value to 0x3 (i.e LPA2) be a
+> better option instead ?
 
-Use this flag and remove the cooling device registering code.
+I don't think it helps much, as TGRAN64_2 doesn't even define 0x3.
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/gpu/drm/lima/lima_devfreq.c | 14 +-------------
- drivers/gpu/drm/lima/lima_devfreq.h |  2 --
- 2 files changed, 1 insertion(+), 15 deletions(-)
+So I think this patch is probably the best we can do, but the Arm ARM could
+really do with describing the scheme here.
 
-diff --git a/drivers/gpu/drm/lima/lima_devfreq.c b/drivers/gpu/drm/lima/lima_devfreq.c
-index 5686ad4aaf7c..86aea1bdc4f4 100644
---- a/drivers/gpu/drm/lima/lima_devfreq.c
-+++ b/drivers/gpu/drm/lima/lima_devfreq.c
-@@ -7,7 +7,6 @@
-  */
- #include <linux/clk.h>
- #include <linux/devfreq.h>
--#include <linux/devfreq_cooling.h>
- #include <linux/device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_opp.h>
-@@ -84,17 +83,13 @@ static struct devfreq_dev_profile lima_devfreq_profile = {
- 	.polling_ms = 50, /* ~3 frames */
- 	.target = lima_devfreq_target,
- 	.get_dev_status = lima_devfreq_get_dev_status,
-+	.is_cooling_device = true,
- };
- 
- void lima_devfreq_fini(struct lima_device *ldev)
- {
- 	struct lima_devfreq *devfreq = &ldev->devfreq;
- 
--	if (devfreq->cooling) {
--		devfreq_cooling_unregister(devfreq->cooling);
--		devfreq->cooling = NULL;
--	}
--
- 	if (devfreq->devfreq) {
- 		devm_devfreq_remove_device(ldev->dev, devfreq->devfreq);
- 		devfreq->devfreq = NULL;
-@@ -110,7 +105,6 @@ void lima_devfreq_fini(struct lima_device *ldev)
- 
- int lima_devfreq_init(struct lima_device *ldev)
- {
--	struct thermal_cooling_device *cooling;
- 	struct device *dev = ldev->dev;
- 	struct opp_table *opp_table;
- 	struct devfreq *devfreq;
-@@ -173,12 +167,6 @@ int lima_devfreq_init(struct lima_device *ldev)
- 
- 	ldevfreq->devfreq = devfreq;
- 
--	cooling = of_devfreq_cooling_register(dev->of_node, devfreq);
--	if (IS_ERR(cooling))
--		dev_info(dev, "Failed to register cooling device\n");
--	else
--		ldevfreq->cooling = cooling;
--
- 	return 0;
- 
- err_fini:
-diff --git a/drivers/gpu/drm/lima/lima_devfreq.h b/drivers/gpu/drm/lima/lima_devfreq.h
-index 2d9b3008ce77..c43a2069e5d3 100644
---- a/drivers/gpu/drm/lima/lima_devfreq.h
-+++ b/drivers/gpu/drm/lima/lima_devfreq.h
-@@ -9,7 +9,6 @@
- 
- struct devfreq;
- struct opp_table;
--struct thermal_cooling_device;
- 
- struct lima_device;
- 
-@@ -17,7 +16,6 @@ struct lima_devfreq {
- 	struct devfreq *devfreq;
- 	struct opp_table *clkname_opp_table;
- 	struct opp_table *regulators_opp_table;
--	struct thermal_cooling_device *cooling;
- 
- 	ktime_t busy_time;
- 	ktime_t idle_time;
--- 
-2.17.1
-
+Will
