@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423243312FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7D33312EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbhCHQJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:09:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41558 "EHLO mail.kernel.org"
+        id S231139AbhCHQIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:08:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231176AbhCHQIt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:08:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD30A65229;
-        Mon,  8 Mar 2021 16:08:48 +0000 (UTC)
+        id S230486AbhCHQI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 11:08:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EE6E65210;
+        Mon,  8 Mar 2021 16:08:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615219729;
-        bh=5ZxenuEnRxfzPre9OG6r5woaetmVVzyp01P71cOUEI4=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=FlP3VA9ZKepWg5/F6l/C/wKWBfJzj9FxaAunQX3+vEqURInAj96aiv8xsqsgsq5Pv
-         HeMN9+xB83ZcXUUPLp0lYWRkxIuOWiib2suX57+Ln+8qQrjNXXcDPWsecbP/awBS/G
-         6W9WExFp0U7axoirXf2YZWbyHNyYwCMeMRl+jNfw6SiTKij9h+gQdN5LUs+Ry+RamR
-         URb9rK9r26AscFSaWq22Y0MfMniaaXSDYY9kJcPSHpJQZjeP1YpRWpVNk2ZXAanTYV
-         muiFv8kdewRqCaLhZO974KRku0L4rMOoD7XMRjYYywi8QwZBvVsFD9yK2r7ULqEztl
-         fIBMwUDdUDKcQ==
+        s=k20201202; t=1615219707;
+        bh=dp5CLRZ/qcCLRBLFiX1Elejcb5Arx4EDlbEp0HHDH1Y=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=LfdzLPPbq9W7CZ7v8EHQghN3CFK/Zuhx8Ptho+UIORomAXGE68s+X9ZyN4SceEvh1
+         8Br2eVy6SLaJb0vC7ecRnFhW++wAvubKpCz42XKOablLrp73rEVHca9J6/dMgr6zGR
+         2Fyy2H0/RTOfVG3jkCVcfSiLYjYCAoH5MXTA+xRVLnkeUeOZ4YOwuCOJGT/sWsvURn
+         wuh1Wc7dDzKQitA5V3AO41N1U/CyYFGcHJhZNTPj3AIGSrfuAOwXh9oi5XtB/QdyGn
+         MDNCyBiceExcVP9s9Um6vT2rp3sTFJjMu2M1abXdD6g1WHdkGeCxzgEi59002NVdG5
+         jpuMJEOK7JsDA==
 From:   Mark Brown <broonie@kernel.org>
-To:     festevam@gmail.com, lgirdwood@gmail.com,
-        sebastian.krzyszkowiak@puri.sm, linux-kernel@vger.kernel.org,
-        perex@perex.cz, ckeepax@opensource.cirrus.com,
-        gustavoars@kernel.org, patches@opensource.cirrus.com,
-        alsa-devel@alsa-project.org, tiwai@suse.com,
-        kuninori.morimoto.gx@renesas.com,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
-In-Reply-To: <1615170877-25918-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1615170877-25918-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH v2] ASoC: wm8962: Relax bit clock divider searching
-Message-Id: <161521960849.9621.6433725701226320562.b4-ty@kernel.org>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>, perex@perex.cz,
+        timur@kernel.org, nicoleotsuka@gmail.com, tiwai@suse.com,
+        Xiubo.Lee@gmail.com
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <20210302125002.23900-1-tangbin@cmss.chinamobile.com>
+References: <20210302125002.23900-1-tangbin@cmss.chinamobile.com>
+Subject: Re: [PATCH] ASoC: fsl_xcvr: Use devm_platform_ioremap_resource_byname() to simplify code
+Message-Id: <161521960849.9621.15073900533403359434.b4-ty@kernel.org>
 Date:   Mon, 08 Mar 2021 16:06:48 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -43,15 +41,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Mar 2021 10:34:37 +0800, Shengjiu Wang wrote:
-> With S20_3LE format case, the sysclk = rate * 384,
-> the bclk = rate * 20 * 2, there is no proper bclk divider
-> for 384 / 40, because current condition needs exact match.
-> So driver fails to configure the clocking:
-> 
-> wm8962 3-001a: Unsupported BCLK ratio 9
-> 
-> [...]
+On Tue, 2 Mar 2021 20:50:02 +0800, Tang Bin wrote:
+> In this function, devm_platform_ioremap_resource_byname() should be
+> suitable to simplify code.
 
 Applied to
 
@@ -59,8 +51,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: wm8962: Relax bit clock divider searching
-      commit: 51309c5bec7cfe567a00a667adbffea444845543
+[1/1] ASoC: fsl_xcvr: Use devm_platform_ioremap_resource_byname() to simplify code
+      commit: c5f48a78e0cb950eb821af36b8790b794cc745b1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
