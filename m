@@ -2,135 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5289433181C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3697331821
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231601AbhCHUHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:07:53 -0500
-Received: from mail-il1-f176.google.com ([209.85.166.176]:45479 "EHLO
-        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231464AbhCHUHs (ORCPT
+        id S231617AbhCHUIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:08:55 -0500
+Received: from mail-il1-f178.google.com ([209.85.166.178]:39356 "EHLO
+        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231515AbhCHUIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:07:48 -0500
-Received: by mail-il1-f176.google.com with SMTP id s1so9984718ilh.12;
-        Mon, 08 Mar 2021 12:07:48 -0800 (PST)
+        Mon, 8 Mar 2021 15:08:51 -0500
+Received: by mail-il1-f178.google.com with SMTP id d5so10027254iln.6;
+        Mon, 08 Mar 2021 12:08:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Hb9MlUCruG+kWO1lKH57/wKc+G9ftT/gzGlYNA3L+cY=;
-        b=JkJ/VNkRafUxVKCF0seLnBDooS6tEx29CKQ0VzGsekx+BS9ySnbP0CoIKjxeSssH4Y
-         xX3QLTeqZmaB00kDOizCifPOb6/0hxvQnvrrOrHWOtGsQI3oDCgjydlME8lF6GfpuRKn
-         LdbHkiw8+PDOVv7Y94KKYZW0smtrnSg4OSi8YOuP0+kyR1y2HmjLTB+HW/9IfuLR2lMp
-         AK8s/wD0w9pPcky1uv6RGBADSugwephBE74e7TIdPYvXE+X96++6gYmeR2c+ZFygQery
-         LtDEz7arQ5wk/A3jVXs089x1D4HFzVjg47pkodcTVW3RUhDwMn/JAr6+RCfxVgUH9Giy
-         yLyA==
-X-Gm-Message-State: AOAM532Tw3Vht8fbGjixG3BBaCMmF+6PNbbh2nGncaJ0NXNg5aeoIPm5
-        AA4VhwLMj8uMVBOHZD94hw==
-X-Google-Smtp-Source: ABdhPJxJSPHeVH4KC5FKA9esv3cMQl9/CgiicCpLVF3hxcpaQHUSFrOy1AD0/tRq282E/iRzM+XXBw==
-X-Received: by 2002:a05:6e02:1be6:: with SMTP id y6mr20569869ilv.145.1615234068215;
-        Mon, 08 Mar 2021 12:07:48 -0800 (PST)
+        bh=89JRuh9tQEQ6fMlveO5xtA5I/16pwqBqFySAsay3IKY=;
+        b=oTWU7csCQosim9rN8U+eyb0WdqmBbQyIfnTYo6H8PkI30ARWsbdG4DuXiqkgrgn7/m
+         NiNSSjxYTvfyuOnfJG++d31XbtMty4170CHdH7tPUn5DJbevadbaTvXizsTfcLbtw1L9
+         AftcbBhaSubxnivbjE8PdvYoZe9Uo5+YuABupkazGpHWGyjEOiBFpz7fZ+nwfO1fWcPf
+         M7Chh54mmsi/knQwf6KMrYh41W9lStpZmBLCm9EQttV+eu7H4n/csjj/lmslPX8njour
+         md3DmVTRXj68JXNP8/2EqvJKDpqWJoLYGTPuX3d5mFaa1CHygv9HO53BcaFsixK7TXFP
+         fcyg==
+X-Gm-Message-State: AOAM530memOi7VRQmmtCH+3JUypqAbXil8+zpnUP1R/+BtKQ45/JTCrM
+        T8uQkfNz36Or9/0zbXMz2g==
+X-Google-Smtp-Source: ABdhPJzxiaNR6oqsqybVnTWQJpRAagmn1BRONpJwC44uPTv4w+VvgAh7BNmETS8Lx8C9BXE/DJ1/8g==
+X-Received: by 2002:a92:d5d2:: with SMTP id d18mr3972946ilq.50.1615234130405;
+        Mon, 08 Mar 2021 12:08:50 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id b20sm6421949iod.22.2021.03.08.12.07.46
+        by smtp.gmail.com with ESMTPSA id k3sm6428250ioj.35.2021.03.08.12.08.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 12:07:47 -0800 (PST)
-Received: (nullmailer pid 2877901 invoked by uid 1000);
-        Mon, 08 Mar 2021 20:07:46 -0000
-Date:   Mon, 8 Mar 2021 13:07:46 -0700
+        Mon, 08 Mar 2021 12:08:49 -0800 (PST)
+Received: (nullmailer pid 2879384 invoked by uid 1000);
+        Mon, 08 Mar 2021 20:08:47 -0000
+Date:   Mon, 8 Mar 2021 13:08:47 -0700
 From:   Rob Herring <robh@kernel.org>
-To:     Vic Wu <vic.wu@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: mediatek - remove obsolete documentation
-Message-ID: <20210308200746.GA2870408@robh.at.kernel.org>
-References: <20210303093950.20309-1-vic.wu@mediatek.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     p.zabel@pengutronix.de, peng.fan@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-rockchip@lists.infradead.org, shawnguo@kernel.org,
+        mchehab@kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, dan.carpenter@oracle.com, kernel@collabora.com,
+        gregkh@linuxfoundation.org, kernel@pengutronix.de,
+        devicetree@vger.kernel.org, wens@csie.org, festevam@gmail.com,
+        s.hauer@pengutronix.de, ezequiel@collabora.com,
+        hverkuil-cisco@xs4all.nl, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
+        jernej.skrabec@siol.net
+Subject: Re: [PATCH v4 10/11] dt-bindings: media: nxp,imx8mq-vpu: Update
+ bindings
+Message-ID: <20210308200847.GA2879333@robh.at.kernel.org>
+References: <20210303113952.178519-1-benjamin.gaignard@collabora.com>
+ <20210303113952.178519-11-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210303093950.20309-1-vic.wu@mediatek.com>
+In-Reply-To: <20210303113952.178519-11-benjamin.gaignard@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 05:39:50PM +0800, Vic Wu wrote:
-> The crypto mediatek driver has been replaced by the inside-secure driver now.
-> Remove DT bindings documentation and update crypto engine nodes to the mt7623.dtsi files.
-
-Wrap lines.
-
+On Wed, 03 Mar 2021 12:39:51 +0100, Benjamin Gaignard wrote:
+> The current bindings seem to make the assumption that the
+> two VPUs hardware blocks (G1 and G2) are only one set of
+> registers.
+> After implementing the VPU reset driver and G2 decoder driver
+> it shows that all the VPUs are independent and don't need to
+> know about the registers of the other blocks.
+> Remove from the bindings the need to set all blocks register
+> but keep reg-names property because removing it from the driver
+> may affect other variants.
 > 
-> Signed-off-by: Vic Wu <vic.wu@mediatek.com>
-> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 > ---
->  Documentation/devicetree/bindings/crypto/mediatek-crypto.txt       | 25 -------------------
->  arch/arm/boot/dts/mt7623.dtsi                 |  8 +++---
->  2 files changed, 3 insertions(+), 30 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
+> version 4:
+> - rebase the change on top of VPU reset patches:
+>   https://www.spinics.net/lists/arm-kernel/msg878440.html
 > 
-> diff --git a/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt b/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
-> deleted file mode 100644
-> index 450da3661cad..000000000000
-> --- a/Documentation/devicetree/bindings/crypto/mediatek-crypto.txt
-> +++ /dev/null
-> @@ -1,25 +0,0 @@
-> -MediaTek cryptographic accelerators
-> -
-> -Required properties:
-> -- compatible: Should be "mediatek,eip97-crypto"
-> -- reg: Address and length of the register set for the device
-> -- interrupts: Should contain the five crypto engines interrupts in numeric
-> -	order. These are global system and four descriptor rings.
-> -- clocks: the clock used by the core
-> -- clock-names: Must contain "cryp".
-> -- power-domains: Must contain a reference to the PM domain.
-> -
-> -
-> -Example:
-> -	crypto: crypto@1b240000 {
-> -		compatible = "mediatek,eip97-crypto";
-> -		reg = <0 0x1b240000 0 0x20000>;
-> -		interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_LOW>,
-> -			     <GIC_SPI 83 IRQ_TYPE_LEVEL_LOW>,
-> -			     <GIC_SPI 84 IRQ_TYPE_LEVEL_LOW>,
-> -			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>,
-> -			     <GIC_SPI 97 IRQ_TYPE_LEVEL_LOW>;
-> -		clocks = <&ethsys CLK_ETHSYS_CRYPTO>;
-> -		clock-names = "cryp";
-> -		power-domains = <&scpsys MT2701_POWER_DOMAIN_ETH>;
-> -	};
-> diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dtsi
-> index aea6809500d7..25e3f3b04123 100644
-> --- a/arch/arm/boot/dts/mt7623.dtsi
-> +++ b/arch/arm/boot/dts/mt7623.dtsi
-> @@ -949,16 +949,14 @@
->  	};
->  
->  	crypto: crypto@1b240000 {
-> -		compatible = "mediatek,eip97-crypto";
-> +		compatible = "inside-secure,safexcel-eip97";
+> version 2:
+> - be more verbose about why I change the bindings
+> Keep in mind that series comes after: https://www.spinics.net/lists/arm-kernel/msg875766.html
+> without that review and ack it won't work
+> 
+>  .../bindings/media/nxp,imx8mq-vpu.yaml        | 46 ++++++++++++-------
+>  1 file changed, 30 insertions(+), 16 deletions(-)
+> 
 
-Please read what the new binding says about this compatible string.
-
->  		reg = <0 0x1b240000 0 0x20000>;
->  		interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_LOW>,
->  			     <GIC_SPI 83 IRQ_TYPE_LEVEL_LOW>,
->  			     <GIC_SPI 84 IRQ_TYPE_LEVEL_LOW>,
-> -			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>,
-> -			     <GIC_SPI 97 IRQ_TYPE_LEVEL_LOW>;
-> +			     <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>;
-
-Where did the extra interrupt go?
-
-> +		interrupt-names = "ring0", "ring1", "ring2", "ring3";
->  		clocks = <&ethsys CLK_ETHSYS_CRYPTO>;
-> -		clock-names = "cryp";
-> -		power-domains = <&scpsys MT2701_POWER_DOMAIN_ETH>;
-
-Suddenly the h/w is not in a power domain?
-
-Seems to me 'mediatek,eip97-crypto' should be added to the common driver 
-without having a dts change.
-
-Rob
+Reviewed-by: Rob Herring <robh@kernel.org>
