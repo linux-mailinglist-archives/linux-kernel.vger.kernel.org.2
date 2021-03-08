@@ -2,183 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839F2331774
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44444331776
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbhCHTj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:39:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
+        id S231313AbhCHTkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:40:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhCHTi5 (ORCPT
+        with ESMTP id S229650AbhCHTj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:38:57 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3880C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 11:38:57 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id t9so216810pjl.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 11:38:57 -0800 (PST)
+        Mon, 8 Mar 2021 14:39:29 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78825C06174A;
+        Mon,  8 Mar 2021 11:39:29 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id a17so10415184oto.5;
+        Mon, 08 Mar 2021 11:39:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oGgvzxSEVzGMv9hJsuMbZZPA81UiDu2S98SM5UXuHSY=;
-        b=oGwASirtb25XQKLKhUlJMiHEmcgHOUnJa19bZvTXG4obYrQ9mmKeDxIrSm7l9KqjwP
-         M71UBOTJQl4OUUXHtNSqsXpv6FgfIFgvDZ3E9qqw0LECNwKBJZ5OlY/1EXShCwjkN+HG
-         k1G+Fg3nTG0dtPkjBVY3oo5uVuJ1+SjkCDdsqRnbALGfEciAxebqfpz9y76nFUz0PyKf
-         sPKxvcjc60bHWxBgaaDvWeph1dZVlx/n0OT30a6qq6cwCkjn5ZS4oU9MmX/aOFccBh4w
-         mzXkDeslBsRtqZrW7S6nBbdCeEUE3D3qzyg39r83PcUucVIrCOkStIhw2qJ+FBiKcZ3z
-         uY+g==
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fchs7bSeiqCmhuaprvM6DnK2VYhgG5gbLzQ0p1oAtqw=;
+        b=Tw4VdLX4zEoX1X2Xe36F0gHuMEm1YXzcIopl22XhsDucKZQ/ztsB7ronV9tBwOQ2RN
+         QyFyd4l+fbqV45EKLng3Q2D+DTRLQ+bbZQzkB2wQGks2G//5zVOmOZHaPvuZqmvTbEQm
+         ZFQ2AiH0LTvXQDdPGXsWVlurhxzSsxcekKXgjeWdXjNbzBqu/N91aZhk20S5bP1xiqRm
+         k2S8+VdNl/PB3TkJMYj1/4SmKV0C+fhc8h/n1mQ2lLTmC2wUtfq+6tvgjb+YKmqh9OFi
+         puZtXoirQeG6CVhkL7N3n+DJaZis5Upmt1zgORwqzK+wsfj6n2wi0jFFOpiMaUFznoLh
+         QvFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=oGgvzxSEVzGMv9hJsuMbZZPA81UiDu2S98SM5UXuHSY=;
-        b=BC0/hkUsnbtxS0yyYY9SeEXS8+28XYeBgFSf/ptX8PmL2uKdhdUetZaWNZOEmQoklx
-         kwjmaqDlWfYFKhfc/ji6z328mEwYNlITSHcNpwx2Obmh/F3tFlVuyXBwmhcqjdExLWzB
-         vZMs+LJaW7IFEQlQ3ro6hvsA2dJcKJUKmRdHWXhp9jgKwQTfzjKrH8OBu2ljD9W5tifp
-         88qb0yHcvEVfXYYAMViYH5HEgRbIuKEhwq7ujqRMMcv8d6W7ra22gaOIOWvk0NCjLCg6
-         XoV+NYcResf028NtgNUoRaojiFXbNQ42zbuZ/d5NvhMvKP2qGpTAHqI+euiAIBkQ48Qd
-         zurA==
-X-Gm-Message-State: AOAM532AYl8XwcgSA5eSfBNL4joz1avK4Rbpspfx34BzGruSqNp5NYee
-        lItsXdFgQ+ZxXWG2k1EpPW8=
-X-Google-Smtp-Source: ABdhPJyh47gJVq1rLi+44C+x5oieiZvgxQBVfQiQ4UYAeb1UXcYim2HtT/1gYdQmwn8uTu6AVw02Cg==
-X-Received: by 2002:a17:90a:fb47:: with SMTP id iq7mr473483pjb.159.1615232337090;
-        Mon, 08 Mar 2021 11:38:57 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:4ccc:acdd:25da:14d1])
-        by smtp.gmail.com with ESMTPSA id 64sm11044083pfd.174.2021.03.08.11.38.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 11:38:56 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Mon, 8 Mar 2021 11:38:53 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     kernel test robot <oliver.sang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     0day robot <lkp@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>, surenb@google.com,
-        joaodias@google.com, willy@infradead.org
-Subject: Re: [mm]  9ddc8abf03:
- BUG:KASAN:null-ptr-deref_in_lockdep_init_map_type
-Message-ID: <YEZ9Tb4oJng85mH9@google.com>
-References: <20210304161704.3056806-1-minchan@kernel.org>
- <20210308152620.GE4324@xsang-OptiPlex-9020>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=fchs7bSeiqCmhuaprvM6DnK2VYhgG5gbLzQ0p1oAtqw=;
+        b=S/3dkKRcOyFGGsK8rLbIliMLgnpGLZ/6j+ounJpijLfU67XY1rP/grBnYZPAnBg8oq
+         O4EuVZMR00FDBKtsxCIZ+0/dYpnrHY1Nw9EATYyb+Ae7d8EGmGncbufxweg3/j0Q68r/
+         RBshNl3Dgws6h6rucf8FqlvTYsrFR7I5VRcLr43Y2niIpDBVRX23p2K2rYxxTc5xpuW8
+         hEqK5FWwX5t6+ylWSCDcFbZhB+4s5p50iaolBh7A+KIUG0udVZHNuf2cyFjhS6IGK944
+         CpXGWH6ecNveyxkcM25ORw1gHDGSDe8/9yJuJ3JfNiQKrkZikMA3sMp+nvbAvMMLtJHY
+         U5Ww==
+X-Gm-Message-State: AOAM53008uOdtwJ/vvERtlEb1O4WmozFuphISsCZdYmT9uV00R/Jp1H3
+        jUiLMwUmpbGIPrPM2wzTcevT04+Vqv8=
+X-Google-Smtp-Source: ABdhPJwR8xXSWsiou78MEUS6QZ3+WEa9F5CAGtBR8McuUFZvFrhvrv8cAdvR/WTSFKZizPx7bZG3HQ==
+X-Received: by 2002:a9d:4e14:: with SMTP id p20mr13439516otf.94.1615232368599;
+        Mon, 08 Mar 2021 11:39:28 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f29sm2942544ots.22.2021.03.08.11.39.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Mar 2021 11:39:27 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v1 0/2] Watchdog Core Global Parameters
+To:     Flavio Suligoi <f.suligoi@asem.it>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210308112151.716315-1-f.suligoi@asem.it>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <d47fcc00-58fa-5850-7599-74644b34e39f@roeck-us.net>
+Date:   Mon, 8 Mar 2021 11:39:25 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308152620.GE4324@xsang-OptiPlex-9020>
+In-Reply-To: <20210308112151.716315-1-f.suligoi@asem.it>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 11:26:20PM +0800, kernel test robot wrote:
+On 3/8/21 3:21 AM, Flavio Suligoi wrote:
+> This patch series add a new way to consider the module parameters for the
+> watchdog module.
 > 
-> Greeting,
+> Instead of adding this kind of module parameters independently to each
+> driver, the best solution is declaring each feature only once,
+> in the watchdog core.
 > 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: 9ddc8abf031750362cda61a9fb8a28be8871eaae ("[PATCH v4] mm: cma: support sysfs")
-> url: https://github.com/0day-ci/linux/commits/Minchan-Kim/mm-cma-support-sysfs/20210305-002050
-> base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git f69d02e37a85645aa90d18cacfff36dba370f797
-> 
-> in testcase: trinity
-> version: trinity-i386-4d2343bd-1_20200320
-> with following parameters:
-> 
-> 	group: group-01
-> 
-> test-description: Trinity is a linux system call fuzz tester.
-> test-url: http://codemonkey.org.uk/projects/trinity/
-> 
-> 
-> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> 
-> +-------------------------------------------------------------------------+------------+------------+
-> |                                                                         | f69d02e37a | 9ddc8abf03 |
-> +-------------------------------------------------------------------------+------------+------------+
-> | BUG:KASAN:null-ptr-deref_in_lockdep_init_map_type                       | 0          | 12         |
-> | BUG:kernel_NULL_pointer_dereference,address                             | 0          | 12         |
-> | Oops:#[##]                                                              | 0          | 12         |
-> | RIP:lockdep_init_map_type                                               | 0          | 12         |
-> +-------------------------------------------------------------------------+------------+------------+
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> 
-> 
-> [   16.842917] BUG: KASAN: null-ptr-deref in lockdep_init_map_type (kbuild/src/consumer/kernel/locking/lockdep.c:4654) 
-> [   16.844311] Write of size 8 at addr 0000000000000030 by task swapper/0/1
-> [   16.844311]
-> [   16.844311] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc1-00023-g9ddc8abf0317 #1
-> [   16.844311] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> [   16.844311] Call Trace:
-> [   16.844311] dump_stack (kbuild/src/consumer/lib/dump_stack.c:122) 
-> [   16.844311] ? lockdep_init_map_type (kbuild/src/consumer/kernel/locking/lockdep.c:4654) 
-> [   16.844311] kasan_report.cold (kbuild/src/consumer/mm/kasan/report.c:403 kbuild/src/consumer/mm/kasan/report.c:416) 
-> [   16.844311] ? lockdep_init_map_type (kbuild/src/consumer/kernel/locking/lockdep.c:4654) 
-> [   16.844311] lockdep_init_map_type (kbuild/src/consumer/kernel/locking/lockdep.c:4654) 
-> [   16.844311] __raw_spin_lock_init (kbuild/src/consumer/kernel/locking/spinlock_debug.c:26) 
-> [   16.844311] cma_sysfs_init (kbuild/src/consumer/mm/cma_sysfs.c:91) 
-> [   16.844311] ? cma_debugfs_init (kbuild/src/consumer/mm/cma_sysfs.c:74) 
-> [   16.844311] do_one_initcall (kbuild/src/consumer/init/main.c:1226) 
-> [   16.844311] ? perf_trace_initcall_level (kbuild/src/consumer/init/main.c:1217) 
-> [   16.844311] ? rcu_read_lock_sched_held (kbuild/src/consumer/kernel/rcu/update.c:125) 
-> [   16.844311] ? trace_event_raw_event_rcu_torture_read (kbuild/src/consumer/kernel/rcu/update.c:120) 
-> [   16.844311] ? write_comp_data (kbuild/src/consumer/kernel/kcov.c:218) 
-> [   16.844311] ? __sanitizer_cov_trace_pc (kbuild/src/consumer/kernel/kcov.c:197) 
-> [   16.844311] kernel_init_freeable (kbuild/src/consumer/init/main.c:1298 kbuild/src/consumer/init/main.c:1315 kbuild/src/consumer/init/main.c:1335 kbuild/src/consumer/init/main.c:1537) 
-> [   16.844311] ? console_on_rootfs (kbuild/src/consumer/init/main.c:1503) 
-> [   16.844311] ? tracer_hardirqs_on (kbuild/src/consumer/kernel/trace/trace_irqsoff.c:57 kbuild/src/consumer/kernel/trace/trace_irqsoff.c:610) 
-> [   16.844311] ? mark_held_locks (kbuild/src/consumer/kernel/locking/lockdep.c:4067) 
-> [   16.844311] ? rest_init (kbuild/src/consumer/init/main.c:1421) 
-> [   16.844311] kernel_init (kbuild/src/consumer/init/main.c:1426) 
-> [   16.844311] ret_from_fork (kbuild/src/consumer/arch/x86/entry/entry_64.S:300) 
-> [   16.844311] ==================================================================
-> [   16.844311] Disabling lock debugging due to kernel taint
-> [   16.844425] BUG: kernel NULL pointer dereference, address: 0000000000000030
-> [   16.845925] #PF: supervisor write access in kernel mode
-> [   16.847149] #PF: error_code(0x0002) - not-present page
-> [   16.848311] PGD 0 P4D 0
-> [   16.848311] Oops: 0002 [#1] SMP KASAN PTI
-> [   16.848311] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G    B             5.12.0-rc1-00023-g9ddc8abf0317 #1
 
+I agree to and like the idea, but I don't see the point of letting drivers
+opt in or opt out. This adds a lot of complexity for little if any gain.
 
-From 758182a763fbc0fbd6b5e143ca64a4eb31d22a1a Mon Sep 17 00:00:00 2001
-From: Minchan Kim <minchan@kernel.org>
-Date: Mon, 8 Mar 2021 11:33:47 -0800
-Subject: [PATCH] mm: cma: fix ZERO_SIZE_PTR check
+Guenter
 
-If there is no cma instance, cma_area_count will be zero and
-kmalloc_arrary will return ZERO_SITE_PTR instead of NULL.
-
-Use ZERO_OR_NULL_PTR to check both cases.
-
-Link: https://lore.kernel.org/linux-mm/20210308152620.GE4324@xsang-OptiPlex-9020/
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
- mm/cma_sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
-index 67b63167eaf5..fdcb952ff13f 100644
---- a/mm/cma_sysfs.c
-+++ b/mm/cma_sysfs.c
-@@ -81,7 +81,7 @@ static int __init cma_sysfs_init(void)
- 
- 	cma_stats = kmalloc_array(cma_area_count, sizeof(struct cma_stat),
- 				GFP_KERNEL|__GFP_ZERO);
--	if (!cma_stats)
-+	if (ZERO_OR_NULL_PTR(cma_stats))
- 		goto out;
- 
- 	do {
--- 
-2.30.1.766.gb4fecdf3b7-goog
+> Additionally, I added a implementation example of this "global" parameters
+> using the module "wdat_wdt"
+> 
+> In details:
+> 
+> ===============================
+> Watchdog Core Global Parameters
+> ===============================
+> 
+> Information for watchdog kernel modules developers.
+> 
+> Introduction
+> ============
+> 
+> Different watchdog modules frequently require the same type of parameters
+> (for example: *timeout*, *nowayout* feature, *start_enabled* to start the
+> watchdog on module insertion, etc.).
+> Instead of adding this kind of module parameters independently to each
+> driver, the best solution is declaring each feature only once,
+> in the watchdog core.
+> 
+> In this way, each driver can read these "global" parameters and then,
+> if needed, can implement them, according to the particular hw watchdog
+> characteristic.
+> 
+> Using this approach, it is possible reduce some duplicate code in the *new*
+> watchdog drivers and simplify the code maintenance.  Moreover, the code
+> will be clearer, since the same kind of parameters are often called
+> with different names (see Documentation/watchdog/watchdog-parameters.rst).
+> Obviously, for compatibility reasons, we cannot remove the already existing
+> parameters from the code of the various watchdog modules, but we can use
+> this "global" approach for the new watchdog drivers.
+> 
+> 
+> Global parameters declaration
+> ==============================
+> 
+> The global parameters data structure is declared in
+> include/linux/watchdog.h, as::
+> 
+> 	struct watchdog_global_parameters_struct {
+> 		int timeout;
+> 		int ioport;
+> 		int irq;
+> 		unsigned long features;
+> 		/* Bit numbers for features flags */
+> 		#define WDOG_GLOBAL_PARAM_VERBOSE	0
+> 		#define WDOG_GLOBAL_PARAM_TEST_MODE	1
+> 		#define WDOG_GLOBAL_PARAM_START_ENABLED	2
+> 		#define WDOG_GLOBAL_PARAM_NOWAYOUT	3
+> 	};
+> 
+> The variable "feature" is a bitwise flags container, to store boolean
+> features, such as:
+> 
+> * nowayout
+> * start_enable
+> * etc...
+> 
+> Other variables can be added, to store some numerical values and other data
+> required.
+> 
+> The global parameters are declared (as usual for the module parameters)
+> in the first part of drivers/watchdog/watchdog_core.c file.
+> The above global data structure is then managed by the function
+> *void global_parameters_init()*, in the same file.
+> 
+> Global parameters use
+> =====================
+> 
+> Each watchdog driver, to check if one of the global parameters is enabled,
+> can use the corresponding in-line function declared in
+> include/linux/watchdog.h.
+> At the moment the following functions are ready to use:
+> 
+> * watchdog_global_param_verbose_enabled()
+> * watchdog_global_param_test_mode_enabled()
+> * watchdog_global_param_start_enabled()
+> * watchdog_global_param_nowayout_enabled()
+> 
+> 
+> 
+> Flavio Suligoi (2):
+>   watchdog: add global watchdog kernel module parameters structure
+>   watchdog: wdat: add start_enable global parameter
+> 
+>  Documentation/watchdog/index.rst              |  1 +
+>  .../watchdog-core-global-parameters.rst       | 74 +++++++++++++++++++
+>  drivers/watchdog/watchdog_core.c              | 74 +++++++++++++++++++
+>  drivers/watchdog/wdat_wdt.c                   |  2 +
+>  include/linux/watchdog.h                      | 42 +++++++++++
+>  5 files changed, 193 insertions(+)
+>  create mode 100644 Documentation/watchdog/watchdog-core-global-parameters.rst
+> 
 
