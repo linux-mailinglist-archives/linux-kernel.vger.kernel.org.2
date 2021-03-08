@@ -2,65 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8B2331456
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:15:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EDE4331464
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbhCHROs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 12:14:48 -0500
-Received: from muru.com ([72.249.23.125]:41138 "EHLO muru.com"
+        id S230250AbhCHRSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:18:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229580AbhCHRO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:14:28 -0500
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 7368280D4;
-        Mon,  8 Mar 2021 17:15:06 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 19:14:21 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFT PATCH v3 06/27] dt-bindings: timer: arm,arch_timer: Add
- interrupt-names support
-Message-ID: <YEZbbe7dFIuPja3u@atomide.com>
-References: <20210304213902.83903-1-marcan@marcan.st>
- <20210304213902.83903-7-marcan@marcan.st>
+        id S229690AbhCHRR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 12:17:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 540B5650E5;
+        Mon,  8 Mar 2021 17:17:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615223875;
+        bh=Fu/JGQBOiy86rBvW7ExIkK3fJm6AQtgCbYoK8Wp/T5Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W58Q16HEqezuZm4pRNseTZXtJurVK4AuXQNxhvNLEXaYXTDY+FbesGFvspu+sbZyh
+         1QKQZZ80woTEYZS21WQWhOgtpW/V+4oo91z398FqSkZ3GXiD4JD7x7hKiQIj3zOLAu
+         LfgtUigscTWrnHO3AM0fGK6phRYYzZzOI9mKlaCPF+8ReM3itkSrzHmEgKFYGEylf0
+         8ggp3HN0RaET4G4lYgwSHEFE7iMUb/SeKjPH3YWeJ3y8CW59lONIlFVJ5n3Oa0Qd9U
+         nI157hZsvKka1mUgw19OiTpqrFJ3Dm+D86qIC2ww0/6D/82pbxsF4yz14y9jOcGNLs
+         p+aPvW/ZXX3AA==
+Date:   Mon, 8 Mar 2021 17:16:44 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Wolfram Sang <wsa@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-i2c@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v16 2/2] i2c: core: support bus regulator controlling in
+ adapter
+Message-ID: <20210308171644.GE4656@sirena.org.uk>
+References: <20210308043607.957156-1-hsinyi@chromium.org>
+ <20210308043607.957156-3-hsinyi@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sfyO1m2EN8ZOtJL6"
 Content-Disposition: inline
-In-Reply-To: <20210304213902.83903-7-marcan@marcan.st>
+In-Reply-To: <20210308043607.957156-3-hsinyi@chromium.org>
+X-Cookie: Am I SHOPLIFTING?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Hector Martin <marcan@marcan.st> [210304 21:40]:
-> Not all platforms provide the same set of timers/interrupts, and Linux
-> only needs one (plus kvm/guest ones); some platforms are working around
-> this by using dummy fake interrupts. Implementing interrupt-names allows
-> the devicetree to specify an arbitrary set of available interrupts, so
-> the timer code can pick the right one.
-> 
-> This also adds the hyp-virt timer/interrupt, which was previously not
-> expressed in the fixed 4-interrupt form.
 
-I like this one too:
+--sfyO1m2EN8ZOtJL6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reviewed-by: Tony Lindgren <tony@atomide.com>
+On Mon, Mar 08, 2021 at 12:36:07PM +0800, Hsin-Yi Wang wrote:
+
+> +	adap->bus_regulator = devm_regulator_get(&adap->dev, "bus");
+> +	if (IS_ERR(adap->bus_regulator)) {
+> +		res = PTR_ERR(adap->bus_regulator);
+> +		goto out_reg;
+> +	}
+
+Idiomatically supplies should be named as they are by the chip datasheet
+rather than just a generic name like this, and I'm guessing that systems
+that have supplies like this will often already have something
+requesting the supply (eg, it's quite common for consumer drivers to do
+this) under that name.  I can see this being a useful thing to factor
+out into the core but it seems like it'd be better to have it enabled by
+having the controllers (or devices) pass a supply name (or possibly
+requested regulator) to the core rather than by just hard coding a name
+in the core so bindings look as expected.
+
+I do also wonder if it's better to put the feature on the clients rather
+than the controller, I don't think it makes much difference though.
+
+--sfyO1m2EN8ZOtJL6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBGW/sACgkQJNaLcl1U
+h9DCqQf5AWoY9ts6hYYjbt4Rs4LUqzM+fet/NEq8b74WOnZgN0CV/Z14n1897bb6
+NfPqKzN5/+39WvYaZN5Bm3DUG7DDbwtvzJY7Xhi33xDkvbE+EFNQH0CbGlE3CdbV
+N5uGr7oYe7fhTzbj28R6Edv1Lc3ZRLR8iMlDGeA04KVgbXg3qP8lowfPkr+GqxjQ
+f5ja8ZTnbG8DvmGAa4x8XT+B7WQ3EIFoeO9O2PiAjAHn0EY6h5EFPxaLJQ+1F6Rf
+Fbtl11qFb/NaefGgEAYN17x2bn+8p1cDv4k6ljOUt07h2alTleDouzbQLQfNzQjH
+oVohYzF4E6HpXzMqJkv7S3p46VrJwQ==
+=VKuM
+-----END PGP SIGNATURE-----
+
+--sfyO1m2EN8ZOtJL6--
