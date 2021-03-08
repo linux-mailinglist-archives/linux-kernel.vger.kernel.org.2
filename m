@@ -2,112 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68412331860
+	by mail.lfdr.de (Postfix) with ESMTP id B783E331861
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbhCHUW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:22:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhCHUWd (ORCPT
+        id S230425AbhCHUW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:22:58 -0500
+Received: from mail-io1-f49.google.com ([209.85.166.49]:42521 "EHLO
+        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229965AbhCHUW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:22:33 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D0FC06174A;
-        Mon,  8 Mar 2021 12:22:33 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id m9so16649831edd.5;
-        Mon, 08 Mar 2021 12:22:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3p1K7qixRZDMiRKjRkwZnb9DrzcEb8jXcbBFm53rg9s=;
-        b=Caln3dMvsxXDLD71Ze56UjGJP3p+B/XeWTIG8AYVUOuupr1rf1sJw1TIqhfR59BNZF
-         3HyEP9un1YcjnDN7H7aNTIq4yv1s/RY+zFF25Akb/W334PqjR+VFZD4A1kYOmzLVNVV4
-         s9ER+BzJUHFPwnuePf/jfuPlHPW3S+51L3RtuSawnNe+roneB9K+1mDIkuc7FP4jre/7
-         jPSIhyyC3o11Gica68KKnO7LGbw5lHpYZTgPVfV67B5gu4YITK8ikiFR27oj4GcgMImS
-         uZKCHayfX9zATHeBQ8yCHiqpFBpgw7v+p1/tta6COdbfrz8mPpRoMPtJ5DkCZqq1KXj4
-         Q/Qw==
+        Mon, 8 Mar 2021 15:22:56 -0500
+Received: by mail-io1-f49.google.com with SMTP id u20so11377259iot.9;
+        Mon, 08 Mar 2021 12:22:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3p1K7qixRZDMiRKjRkwZnb9DrzcEb8jXcbBFm53rg9s=;
-        b=QR3bXqlQn8NyLaHympsnsNvU7TmPL4m6QLG3DHFybqYgpDkPnQJIyUGNqxR2MtGbcA
-         BiDePHYNMqRBU4MDF1ZxVV5eILQKG4K86fLSBskaW388IrgF88eHdNb/INarlf2j6Ebx
-         Vng0I/tKVEtvuwErU14mE1kl2WmrQLAZmZTySGbQn8/RM9VKDwugmEU6tIcam/sSoeeC
-         Q+Lhch7Iq/U5uAetR6HwGJP0J4drotRM9hkGBjOa+edKKUcD/ovK0TmnVstl+YpK+N9H
-         WT3hERfQCv8RTkXCJHA/dU0qmNf+3H3qj+lhZh064zS5+cPGX3TvqnnXGYdJGlwyyPdP
-         hQWQ==
-X-Gm-Message-State: AOAM5301T7LrkhFDtJG4oy1X7ua/g6c/jmc1mciJ64aGGXnPe7aVZJU1
-        LU/+4ew18m7JeQlRprpSHapT7QsbOxAehFyBV+U=
-X-Google-Smtp-Source: ABdhPJxXgBHFmRBDWrSq58/rlEQ8Ee4ZYwQpZFrx6BX5YlFLoXsxQiEQinIj3MRdqqPCbruqA0NCUhzrpVL24ERXIcY=
-X-Received: by 2002:a50:8f42:: with SMTP id 60mr363572edy.168.1615234952188;
- Mon, 08 Mar 2021 12:22:32 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jfi2aPqw0ChJqx8vxxHvr5nY7+u1FCowOmUR1NpI1Xk=;
+        b=stmLfwruVP27ntFEKhod8eIDAYp5uZzO1aED+TyfJk87uNLd5BQN64acRovwhiYvXz
+         pq5AqSozm4BG/MSIWdQpZ6Al9mPgKzEhHR/YoLOKOH+/UorG1YpIcUeWMV6dB+AMopV9
+         FQfLUbUwmVflGN39IQPwIy/LUDybGC7Hb3M77umwgOz2Dt0piRLVzVC0YvLDmFNeRdzy
+         tyCdQnc81ir0bNzees4YL+3p+khc9RgtVa4U6yOZdHakyRx1kZQ8xIhZDPms5hA/OBhY
+         BoNM26gxLi2FjybZQmb17jNnuqBHPxiToyLlw+IABAyOJMYRq32dWLXY2RWj3237nHt4
+         Fuvg==
+X-Gm-Message-State: AOAM532Yor4zAegIGzXMGobruwnEgXCt1A73KpDMcWi/MzE4DpB9FpsY
+        feVEuuWFVCOnMOzdBA/Mug==
+X-Google-Smtp-Source: ABdhPJxQfWFWuxQMzuNGDXRT8YnjCNfgHq5hSq5MQJMX+6MHhJRomQb5K0FHQNafxooMET8AsrT7Xg==
+X-Received: by 2002:a05:6638:140e:: with SMTP id k14mr9938401jad.31.1615234975633;
+        Mon, 08 Mar 2021 12:22:55 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id i67sm6548510ioa.3.2021.03.08.12.22.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 12:22:55 -0800 (PST)
+Received: (nullmailer pid 2899522 invoked by uid 1000);
+        Mon, 08 Mar 2021 20:22:53 -0000
+Date:   Mon, 8 Mar 2021 13:22:53 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        devicetree@vger.kernel.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-amarula@amarulasolutions.com,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v4 1/2] dt-bindings: display: bridge: Add Chipone ICN6211
+ bindings
+Message-ID: <20210308202253.GA2899425@robh.at.kernel.org>
+References: <20210304092133.21717-1-jagan@amarulasolutions.com>
 MIME-Version: 1.0
-References: <20210217001322.2226796-1-shy828301@gmail.com> <20210217001322.2226796-6-shy828301@gmail.com>
- <CALvZod75fge=B9LNg_sxbCiwDZjjtn8A9Q2HzU_R6rcg551o6Q@mail.gmail.com> <YEZVhNhGqV33lPo9@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YEZVhNhGqV33lPo9@carbon.dhcp.thefacebook.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 8 Mar 2021 12:22:20 -0800
-Message-ID: <CAHbLzkr2KWZA2e34DNjqnK6H-Ai8ox-f7iOET6OumZArYTB8JQ@mail.gmail.com>
-Subject: Re: [v8 PATCH 05/13] mm: vmscan: use kvfree_rcu instead of call_rcu
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Shakeel Butt <shakeelb@google.com>, paulmck@kernel.org,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304092133.21717-1-jagan@amarulasolutions.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 8:49 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Sun, Mar 07, 2021 at 10:13:04PM -0800, Shakeel Butt wrote:
-> > On Tue, Feb 16, 2021 at 4:13 PM Yang Shi <shy828301@gmail.com> wrote:
-> > >
-> > > Using kvfree_rcu() to free the old shrinker_maps instead of call_rcu().
-> > > We don't have to define a dedicated callback for call_rcu() anymore.
-> > >
-> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > > ---
-> > >  mm/vmscan.c | 7 +------
-> > >  1 file changed, 1 insertion(+), 6 deletions(-)
-> > >
-> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > > index 2e753c2516fa..c2a309acd86b 100644
-> > > --- a/mm/vmscan.c
-> > > +++ b/mm/vmscan.c
-> > > @@ -192,11 +192,6 @@ static inline int shrinker_map_size(int nr_items)
-> > >         return (DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long));
-> > >  }
-> > >
-> > > -static void free_shrinker_map_rcu(struct rcu_head *head)
-> > > -{
-> > > -       kvfree(container_of(head, struct memcg_shrinker_map, rcu));
-> > > -}
-> > > -
-> > >  static int expand_one_shrinker_map(struct mem_cgroup *memcg,
-> > >                                    int size, int old_size)
-> > >  {
-> > > @@ -219,7 +214,7 @@ static int expand_one_shrinker_map(struct mem_cgroup *memcg,
-> > >                 memset((void *)new->map + old_size, 0, size - old_size);
-> > >
-> > >                 rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, new);
-> > > -               call_rcu(&old->rcu, free_shrinker_map_rcu);
-> > > +               kvfree_rcu(old);
-> >
-> > Please use kvfree_rcu(old, rcu) instead of kvfree_rcu(old). The single
-> > param can call synchronize_rcu().
->
-> Oh, I didn't know about this difference. Thank you for noticing!
+On Thu, 04 Mar 2021 14:51:32 +0530, Jagan Teki wrote:
+> ICN6211 is MIPI-DSI to RGB Converter bridge from Chipone.
+> 
+> It has a flexible configuration of MIPI DSI signal input and
+> produces RGB565, RGB666, RGB888 output format.
+> 
+> Add dt-bingings for it.
+> 
+> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> ---
+> Changes for v4:
+> - fixed Laurent comments
+> - added regulators
+> - replace reset with EN
+> - fixed warnings pointed by Robert
+> Changes for v3:
+> - updated to new dt-bindings style
+> 
+>  .../display/bridge/chipone,icn6211.yaml       | 99 +++++++++++++++++++
+>  MAINTAINERS                                   |  5 +
+>  2 files changed, 104 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml
+> 
 
-BTW, I think I could keep you and Kirill's acked-by with this change
-(using two params form kvfree_rcu) since the change seems trivial.
+Reviewed-by: Rob Herring <robh@kernel.org>
