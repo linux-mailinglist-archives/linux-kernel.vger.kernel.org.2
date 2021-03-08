@@ -2,149 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E16AC330EDA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:07:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 495E7330EE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhCHNGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 08:06:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhCHNGV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 08:06:21 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E47C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 05:06:21 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id a9so9027546qkn.13
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 05:06:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3JrrXwWADSgvZgB68bLvoI/RkxNlWv5mnUS3xpDfwl4=;
-        b=Gb85a/xfbYipZ66rmq5YfwkxhoHqFWepT63E+GvRuUqHGBP9QKT/JwHd9xTvZk67V0
-         TB+K0xafNKXaLpozFHhRHJ24wQseaEvt5p60ZgxhAagERKJabXNopDKh0PXCMsO37TIC
-         m2JuRFKF+xvuV/KF1HZBxa6517JTOO5R9xl7U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3JrrXwWADSgvZgB68bLvoI/RkxNlWv5mnUS3xpDfwl4=;
-        b=CRn2YnD0KXkufTnoCyU/4VDbjAIg3aMyiKhFt3O/4ad4oSV8PQrRno9FqLSGilUsYi
-         +uNy34ZO/WdU1O9jaancZmyihQIZ7O45HPmX2zqkUpMV2QdaRmrhgumj5CRTTD7jYXol
-         0qK6t126uIEV4yoi81WRDhYFk/lKXaznkcZHpx06QlPu/hhsZN38E8XMYzgG/xoRvR/G
-         FYCXoGbSR7FNW3yRSmyqjCCR9sueZ4XkcaNknIfcymIXqYOyKTXT+gPMlIe2MjQ66TgK
-         96BaHBWP5mI1RSBBEPn394SqgRuqsdyPoZFZSwDQg002DZNtdD5S8NmLhjhTkWRajtI3
-         d8cw==
-X-Gm-Message-State: AOAM532QlgGgxHTAj1QJy1WR2/dKEMnO6tpxUlgg/HpbAYuwULO6jNnk
-        EOs8kebyijNC/4jilRI1jVn/5o1OjlL60L1M8QPE2Q==
-X-Google-Smtp-Source: ABdhPJz1u6cjSQ5e7n4Is4pIA/0ot62WSzGvhjIAL0Y7umbZvEOpHs1XdA1hQNrNmLBC0ZnuULrizRg6UlL8RU4rCys=
-X-Received: by 2002:a05:620a:228:: with SMTP id u8mr20259137qkm.443.1615208780474;
- Mon, 08 Mar 2021 05:06:20 -0800 (PST)
+        id S229872AbhCHNIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 08:08:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:37774 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229971AbhCHNIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 08:08:32 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B7E831B;
+        Mon,  8 Mar 2021 05:08:32 -0800 (PST)
+Received: from [10.57.55.135] (unknown [10.57.55.135])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A68693F71B;
+        Mon,  8 Mar 2021 05:08:30 -0800 (PST)
+Subject: Re: [PATCH] iommu/dma: Resurrect the "forcedac" option
+To:     John Garry <john.garry@huawei.com>, joro@8bytes.org
+Cc:     iommu@lists.linux-foundation.org, dwmw2@infradead.org,
+        baolu.lu@linux.intel.com, murphyt7@tcd.ie,
+        thunder.leizhen@huawei.com, will@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <7eece8e0ea7bfbe2cd0e30789e0d46df573af9b0.1614961776.git.robin.murphy@arm.com>
+ <76a931ab-fd2a-284e-61ef-9e26bceb4890@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <3b1d1dea-ebba-f811-06af-d26a8061d678@arm.com>
+Date:   Mon, 8 Mar 2021 13:08:25 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210305120930.14297-1-mark-pk.tsai@mediatek.com>
- <CAFr9PXmDp7UwWnT+49Yciy-gvYiQOd3cus0W_QnGKm-LqziHCg@mail.gmail.com>
- <875z24rvaz.wl-maz@kernel.org> <30c45ccea273461ca9552cef01b75de2@mtkmbs05n2.mediatek.inc>
-In-Reply-To: <30c45ccea273461ca9552cef01b75de2@mtkmbs05n2.mediatek.inc>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Mon, 8 Mar 2021 22:06:05 +0900
-Message-ID: <CAFr9PXkK+L0kpEfJsQMVa0R9P3jMDJFHQKCR8jaCuL=Um6G=gQ@mail.gmail.com>
-Subject: Re: [PATCH] irqchip/irq-mst: Support polarity configuration
-To:     =?UTF-8?B?TWFyay1QSyBUc2FpICjolKHmspvliZsp?= 
-        <Mark-PK.Tsai@mediatek.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Daniel Palmer <daniel@thingy.jp>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        =?UTF-8?B?WUogQ2hpYW5nICjmsZ/oi7HmnbAp?= <yj.chiang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <76a931ab-fd2a-284e-61ef-9e26bceb4890@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark-PK,
+On 2021-03-05 17:41, John Garry wrote:
+> On 05/03/2021 16:32, Robin Murphy wrote:
+>> In converting intel-iommu over to the common IOMMU DMA ops, it quietly
+>> lost the functionality of its "forcedac" option. Since this is a handy
+>> thing both for testing and for performance optimisation on certain
+>> platforms, reimplement it under the common IOMMU parameter namespace.
+>>
+>> For the sake of fixing the inadvertent breakage of the Intel-specific
+>> parameter, remove the dmar_forcedac remnants and hook it up as an alias
+>> while documenting the transition to the new common parameter.
+>>
+> 
+> Do you think that having a kconfig option to control the default for 
+> this can help identify the broken platforms which rely on forcedac=0? 
+> But seems a bit trivial for that, though.
 
-On Mon, 8 Mar 2021 at 11:42, Mark-PK Tsai (=E8=94=A1=E6=B2=9B=E5=89=9B)
-<Mark-PK.Tsai@mediatek.com> wrote:
-> > It seems like the polarity of interrupts is always the same between the=
- MStar intc and the GIC? Low level interrupts are handled in the mstar intc=
- and become high level interrupts to the GIC?
-> > I think for the Mstar MSC313(e) and SigmaStar chips all of the internal=
- interrupts are high level so I never noticed this behaviour.
-> > I can't remember seeing anything that handled this in the MStar kernel =
-code I looked at.
-> > Is this specific to a certain chip or does it apply for everything with=
- this intc?
->
-> I suppose Mstar SoCs also need this patch which depends on what kind of i=
-nterrupt source the HW designer wire to this intc.
-> If an interrupt source is active low, we need to set the corresponding bi=
-t to reverse the polarity to meet GIC SPI requirement as Marc mentioned.
+I think it's still a sizeable can of worms - unlike, say, 
+ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT, we can't actually tell when things 
+have gone awry and explicitly call it out. While I was getting the 
+dma-ranges right on my Juno, everything broke differently - the SATA 
+controller fails gracefully; the ethernet controller got the kernel tied 
+up somewhere (to the point that the USB keyboard died) once it tried to 
+brink up the link, but was at least spewing regular timeout backtraces 
+that implicated the networking layer; having an (unused) NVMe plugged in 
+simply wedged the boot process early on with no hint whatsoever of why.
 
-That makes sense. Looking back at the original MStar driver again they
-did handle reversing the polarity but they passed the original
-polarity through to the GIC too.
-So maybe it never worked properly. :)
-
-I think I can test this with GPIOs that are wired into the mstar intc
-on the MStar/SigmaStar chips. I'll get back to you with how that works
-out.
+TBH I'm not really sure what the best way forward is in terms of trying 
+to weed out platforms that would need quirking. Our discussion just 
+reminded me of this option and that it had gone AWOL, so bringing it 
+back to be potentially *some* use to everyone seems justifiable on its own.
 
 Thanks,
+Robin.
 
-Daniel
-
-
-
->
-> > The register values being lost if the chip goes into suspend to memory =
-makes sense for the MStar chips too I think as everything that is not in th=
-e "pmsleep" register group seems to be lost.
->
-> There are mask and eoi bits I did not handle here.
-> That's because kernel will handle the mask and eoi status when system goi=
-ng to suspend/resume in suspend_device_irqs/ resume_device_irqs.
-> And all the irqs of Mstar intc are masked by default when the IP powered =
-on.
->
->
-> Best regards,
-> Mark-PK Tsai
->
->
-> -----Original Message-----
-> From: Marc Zyngier [mailto:maz@kernel.org]
-> Sent: Sunday, March 7, 2021 2:28 AM
-> To: Daniel Palmer <daniel@0x0f.com>
-> Cc: Mark-PK Tsai (=E8=94=A1=E6=B2=9B=E5=89=9B) <Mark-PK.Tsai@mediatek.com=
->; Daniel Palmer <daniel@thingy.jp>; Thomas Gleixner <tglx@linutronix.de>; =
-Jason Cooper <jason@lakedaemon.net>; Matthias Brugger <matthias.bgg@gmail.c=
-om>; Linux Kernel Mailing List <linux-kernel@vger.kernel.org>; linux-arm-ke=
-rnel <linux-arm-kernel@lists.infradead.org>; linux-mediatek@lists.infradead=
-.org; YJ Chiang (=E6=B1=9F=E8=8B=B1=E6=9D=B0) <yj.chiang@mediatek.com>
-> Subject: Re: [PATCH] irqchip/irq-mst: Support polarity configuration
->
-> On Sat, 06 Mar 2021 17:06:51 +0000,
-> Daniel Palmer <daniel@0x0f.com> wrote:
-> >
-> > Hi Mark-PK,
-> >
-> > I'm trying to understand the logic behind the changes.
-> > It seems like the polarity of interrupts is always the same between
-> > the MStar intc and the GIC? Low level interrupts are handled in the
-> > mstar intc and become high level interrupts to the GIC?
->
-> That's because the GIC only supports level-high input interrupts when the=
-y are level triggered (and rising edge when edge triggered).
->
+> 
+> Or are we bothered (finding them)?
+> 
 > Thanks,
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+> john
+> 
+>> Fixes: c588072bba6b ("iommu/vt-d: Convert intel iommu driver to the 
+>> iommu ops")
+>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+>> ---
+>>   Documentation/admin-guide/kernel-parameters.txt | 15 ++++++++-------
+>>   drivers/iommu/dma-iommu.c                       | 13 ++++++++++++-
+>>   drivers/iommu/intel/iommu.c                     |  5 ++---
+>>   include/linux/dma-iommu.h                       |  2 ++
+>>   4 files changed, 24 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/kernel-parameters.txt 
+>> b/Documentation/admin-guide/kernel-parameters.txt
+>> index 04545725f187..835f810f2f26 100644
+>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+>> @@ -1869,13 +1869,6 @@
+>>               bypassed by not enabling DMAR with this option. In
+>>               this case, gfx device will use physical address for
+>>               DMA.
+>> -        forcedac [X86-64]
+>> -            With this option iommu will not optimize to look
+>> -            for io virtual address below 32-bit forcing dual
+>> -            address cycle on pci bus for cards supporting greater
+>> -            than 32-bit addressing. The default is to look
+>> -            for translation below 32-bit and if not available
+>> -            then look in the higher range.
+>>           strict [Default Off]
+>>               With this option on every unmap_single operation will
+>>               result in a hardware IOTLB flush operation as opposed
+>> @@ -1964,6 +1957,14 @@
+>>           nobypass    [PPC/POWERNV]
+>>               Disable IOMMU bypass, using IOMMU for PCI devices.
+>> +    iommu.forcedac=    [ARM64, X86] Control IOVA allocation for PCI 
+>> devices.
+>> +            Format: { "0" | "1" }
+>> +            0 - Try to allocate a 32-bit DMA address first, before
+>> +              falling back to the full range if needed.
+>> +            1 - Allocate directly from the full usable range,
+>> +              forcing Dual Address Cycle for PCI cards supporting
+>> +              greater than 32-bit addressing.
+>> +
+>>       iommu.strict=    [ARM64] Configure TLB invalidation behaviour
+>>               Format: { "0" | "1" }
+>>               0 - Lazy mode.
+>> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+>> index 9ab6ee22c110..260bf3de1992 100644
+>> --- a/drivers/iommu/dma-iommu.c
+>> +++ b/drivers/iommu/dma-iommu.c
+>> @@ -52,6 +52,17 @@ struct iommu_dma_cookie {
+>>   };
+>>   static DEFINE_STATIC_KEY_FALSE(iommu_deferred_attach_enabled);
+>> +bool iommu_dma_forcedac __read_mostly;
+>> +
+>> +static int __init iommu_dma_forcedac_setup(char *str)
+>> +{
+>> +    int ret = kstrtobool(str, &iommu_dma_forcedac);
+>> +
+>> +    if (!ret && iommu_dma_forcedac)
+>> +        pr_info("Forcing DAC for PCI devices\n");
+>> +    return ret;
+>> +}
+>> +early_param("iommu.forcedac", iommu_dma_forcedac_setup);
+>>   void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
+>>           struct iommu_domain *domain)
+>> @@ -438,7 +449,7 @@ static dma_addr_t iommu_dma_alloc_iova(struct 
+>> iommu_domain *domain,
+>>           dma_limit = min(dma_limit, (u64)domain->geometry.aperture_end);
+>>       /* Try to get PCI devices a SAC address */
+>> -    if (dma_limit > DMA_BIT_MASK(32) && dev_is_pci(dev))
+>> +    if (dma_limit > DMA_BIT_MASK(32) && !iommu_dma_forcedac && 
+>> dev_is_pci(dev))
+>>           iova = alloc_iova_fast(iovad, iova_len,
+>>                          DMA_BIT_MASK(32) >> shift, false);
+>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+>> index ee0932307d64..1c32522220bc 100644
+>> --- a/drivers/iommu/intel/iommu.c
+>> +++ b/drivers/iommu/intel/iommu.c
+>> @@ -360,7 +360,6 @@ int intel_iommu_enabled = 0;
+>>   EXPORT_SYMBOL_GPL(intel_iommu_enabled);
+>>   static int dmar_map_gfx = 1;
+>> -static int dmar_forcedac;
+>>   static int intel_iommu_strict;
+>>   static int intel_iommu_superpage = 1;
+>>   static int iommu_identity_mapping;
+>> @@ -451,8 +450,8 @@ static int __init intel_iommu_setup(char *str)
+>>               dmar_map_gfx = 0;
+>>               pr_info("Disable GFX device mapping\n");
+>>           } else if (!strncmp(str, "forcedac", 8)) {
+>> -            pr_info("Forcing DAC for PCI devices\n");
+>> -            dmar_forcedac = 1;
+>> +            pr_warn("intel_iommu=forcedac deprecated; use 
+>> iommu.forcedac instead\n");
+>> +            iommu_dma_forcedac = true;
+>>           } else if (!strncmp(str, "strict", 6)) {
+>>               pr_info("Disable batched IOTLB flush\n");
+>>               intel_iommu_strict = 1;
+>> diff --git a/include/linux/dma-iommu.h b/include/linux/dma-iommu.h
+>> index 706b68d1359b..13d1f4c14d7b 100644
+>> --- a/include/linux/dma-iommu.h
+>> +++ b/include/linux/dma-iommu.h
+>> @@ -40,6 +40,8 @@ void iommu_dma_get_resv_regions(struct device *dev, 
+>> struct list_head *list);
+>>   void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
+>>           struct iommu_domain *domain);
+>> +extern bool iommu_dma_forcedac;
+>> +
+>>   #else /* CONFIG_IOMMU_DMA */
+>>   struct iommu_domain;
+>>
+> 
