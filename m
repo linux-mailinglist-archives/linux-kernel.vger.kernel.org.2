@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C6D331065
+	by mail.lfdr.de (Postfix) with ESMTP id AB9DC331066
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhCHOID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 09:08:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52140 "EHLO
+        id S230227AbhCHOIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 09:08:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhCHOHc (ORCPT
+        with ESMTP id S229848AbhCHOHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:07:32 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CA9C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 06:07:31 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id e23so6127255wmh.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 06:07:31 -0800 (PST)
+        Mon, 8 Mar 2021 09:07:48 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17616C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 06:07:48 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id d15so11607719wrv.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 06:07:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=M7jM+0OrLB6QVDekXKRCuxohSVO4XVKq9e2g8QLuZEk=;
-        b=JKj9LoZRxAfQh7cEqSLhIKQh/UA1UElKuo8gXh9cdrgdlqG7SRxWSmc8HrJjFa3ZbI
-         kBQo6E30YZQ71/IGFjckY+/grHawNmWlCn0d9nRQ3PRyGtxSX5OU3EQ60Vl58DFHvMob
-         6Ao78f0qkPNCRSU1U/7k2eMqkBaIhqnLEHwh8wMfWEqRV2KFkpZml7Zz9e/Db2414CuW
-         Z+S3USY6kEQHFezV8HtuQiajbOogXx/OyDwBQp5rJQDh99WllmgdcPE0v3MLYt1N1ohp
-         q/E340akbnY2t4IZmkycncvaePMiJJgqAlusSBYhgkZjvWcHw3Ulx0JQ9ed6zkTp7oFB
-         Y96Q==
+        bh=67p4kVEdQcLqsqeRNFk9Be2uM7oDzD/JRQWZyk0AvmY=;
+        b=kncpZpypUCLKk3aF15ZYEnmqI/KTHACwNEMW6S5FT9TYje5pJ/VXRcHoaA5Rag0KmT
+         +II1YZIE1PH12BMWDXGlqKqSclkTnnVehfrO7HSrzSPty+cySja4pzqRwSxM1heE7hQi
+         gEdU66nlyTc571ouyggnGeOo4Ztb+puOYZ+OaseXrwMAsUK2nAICNgqPhrhpt2O62LOI
+         XuyZPvSJ/i2Y3IpSAVRSPLpZzxb5ZHc1p+/C+uH7wVtPMV3FSDIvIHwsWVAVk4BrNRCz
+         2a4Ud4kI4lGjNEDACBvEHnNaKvN4QyIbvUbADhQUWSjgU2+kRBXeiG9fqJijnuCn9yyz
+         GVrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=M7jM+0OrLB6QVDekXKRCuxohSVO4XVKq9e2g8QLuZEk=;
-        b=p8IR8bPOhJ/ZoPQRF723R/CUv3JTGBEuaFzG+MjLlKlNFbwaFY7vMU1rCnJbyl5BAc
-         BNgCujJR+CowBN4ur5knYUVZJEmr0l+SgwHZQw+utfIJPcrwoCfSt4aTuVJXyXcnQXRy
-         T5zFkoxpPpEoznR8DdGU4m/eQj/wiq2/7MpPHRUVvWhvg9arCIPUF+Tpar+lk7elXJCK
-         VMWVv+TOuc6maB9pqz0EBLAJzzQYd8OF8CwVmev0qS/rTO3rXAs/3/SlKTYxJHpDGR6D
-         PQGedVUlbOakr+KZtWLWymQwYQHuQW1VbU1Quy3F2CkwjbNPpcqA8g3UIbPHg8M/CQd+
-         1Jng==
-X-Gm-Message-State: AOAM533Ti476XTiVhFYFON6PKwEG/aJgLozdCDtR1K25oSToHUwQHMMx
-        OpUEc+pxJLdl9PvwLSzdHCBfJg==
-X-Google-Smtp-Source: ABdhPJwrfpHBVYwqwNBazvKTeYv7H+uCi1xwvL7RQyspYP5YQia6RfoUlYer3crNxyAHHHRkl2Tb9Q==
-X-Received: by 2002:a05:600c:22cd:: with SMTP id 13mr22002039wmg.90.1615212450276;
-        Mon, 08 Mar 2021 06:07:30 -0800 (PST)
+        bh=67p4kVEdQcLqsqeRNFk9Be2uM7oDzD/JRQWZyk0AvmY=;
+        b=Pf+qXLgEh1ArucWdNkkr83Q0hIY1rso8pYtSr215GRa6clQtj+dmWeDbnK72t0Htf7
+         BbMtVddOvnTs68Z6zYbPE/LUtKQUlSqpuT+nYURBUa1+/4dFp4ahrnryD3x8HQhwpUiX
+         xWVeTrACDj7pKGc35UwI0sACgoGGjurLGYyeyjw5ySWXI55EqlS8qP3fAVCGvpbxIIMg
+         j1qIJcR8jk/ppOiJ+aDuUpZGgta0txnoqToevjBDDO8RqDysUyJ5ispcI179XKKPIb1g
+         JsBl8cD8QesAEBGSp8QuUiDtkfgNBw689Gjg7gR3LIvDXV2ci2h0rk2GAv2FrG/VpijR
+         3E8Q==
+X-Gm-Message-State: AOAM533p4R2250C17/99hVwo+jOJzNte9WA/d5Uw+n5zQzrBXi0unc3c
+        +GsnFhz9yT1FIArhDI9aS8u/sA==
+X-Google-Smtp-Source: ABdhPJyrNSEKao0oh/Ds9oN0i3eOUKR+2NZcXAzKeV9pu6rKMUFDYYkK0htjHP+3MbpphcEVt5pn3A==
+X-Received: by 2002:adf:ec46:: with SMTP id w6mr22706119wrn.213.1615212466860;
+        Mon, 08 Mar 2021 06:07:46 -0800 (PST)
 Received: from dell ([91.110.221.130])
-        by smtp.gmail.com with ESMTPSA id i8sm20864325wry.90.2021.03.08.06.07.29
+        by smtp.gmail.com with ESMTPSA id b131sm19226315wmb.34.2021.03.08.06.07.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 06:07:29 -0800 (PST)
-Date:   Mon, 8 Mar 2021 14:07:28 +0000
+        Mon, 08 Mar 2021 06:07:46 -0800 (PST)
+Date:   Mon, 8 Mar 2021 14:07:44 +0000
 From:   Lee Jones <lee.jones@linaro.org>
 To:     Luca Ceresoli <luca@lucaceresoli.net>
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
@@ -57,30 +57,32 @@ Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>, linux-gpio@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] mfd: lp87565: remove unused define
-Message-ID: <20210308140728.GI4931@dell>
+Subject: Re: [PATCH 3/3] mfd: lp87565: move LP87565_regulator_id to .c file
+Message-ID: <20210308140744.GJ4931@dell>
 References: <20210219223910.1831-1-luca@lucaceresoli.net>
- <20210219223910.1831-2-luca@lucaceresoli.net>
+ <20210219223910.1831-3-luca@lucaceresoli.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210219223910.1831-2-luca@lucaceresoli.net>
+In-Reply-To: <20210219223910.1831-3-luca@lucaceresoli.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, 19 Feb 2021, Luca Ceresoli wrote:
 
-> This define appears incorrect, but it is completely unused so it can be
-> removed.
+> This enum is used only internally to the regulator driver for buck indexes.
 > 
 > Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
 > ---
->  include/linux/mfd/lp87565.h | 3 ---
->  1 file changed, 3 deletions(-)
+>  drivers/regulator/lp87565-regulator.c | 11 +++++++++++
+>  include/linux/mfd/lp87565.h           | 11 -----------
+>  2 files changed, 11 insertions(+), 11 deletions(-)
 
-Applied, thanks.
+For my own reference (apply this as-is to your sign-off block):
+
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 
 -- 
 Lee Jones [李琼斯]
