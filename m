@@ -2,78 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B1633164C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99ADD331652
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhCHSjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:39:09 -0500
-Received: from mail-io1-f47.google.com ([209.85.166.47]:43923 "EHLO
-        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231249AbhCHSiv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:38:51 -0500
-Received: by mail-io1-f47.google.com with SMTP id f20so11019736ioo.10;
-        Mon, 08 Mar 2021 10:38:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vzkfcBGh7P+3bfy1FsKTmuA9EtwsLrw7/lKLRVRQBX0=;
-        b=AMHLQdMLjGxaR6AdwxWNFSyaV/9DggXfNkfAlVt+X59WnxuqThZYwwvLli08FI2raA
-         +kIsKHWQQTyO7K+kfi+wZ3ZK79xv2MtU2DyBieIlYY3uLTETUxfd67+P+llyTXLYnKAk
-         eTNKhYESFh51VOjL+A0qx5tyNSTMh/UYpU9PfU7Anie9PSSmF2tOFOaawvdnML0ejZIB
-         ThQT6+vDTeqwEwxoyiNAM39k4WDPCASHCjBnjR4JE5vsBAT4O07guVHIKW9FKO/bqByI
-         3ZEguE2vZKriHh0SOcL8rq4R49FNRjQwEAomaOZieF49V3jNyCzGny+yEkjIh4YtScLp
-         HEiQ==
-X-Gm-Message-State: AOAM532KefiC3LQv3u07qaygBCk1CSGPG4Tw1Vx9xg3CjuHk7AzKo2Sf
-        Wzmh8eBiZXhFLkFxJ6ersOTAzC7ReA==
-X-Google-Smtp-Source: ABdhPJwmF14ikEMZXnQAtX0RfcialPVky2Q8Ob0oT7+HCxv+jgTqMb2EH4jQceofAvOrGqFFocgcEA==
-X-Received: by 2002:a05:6638:1648:: with SMTP id a8mr24511056jat.25.1615228730570;
-        Mon, 08 Mar 2021 10:38:50 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id f9sm6241138ilu.36.2021.03.08.10.38.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 10:38:49 -0800 (PST)
-Received: (nullmailer pid 2760823 invoked by uid 1000);
-        Mon, 08 Mar 2021 18:38:47 -0000
-Date:   Mon, 8 Mar 2021 11:38:47 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Henry Chen <henryc.chen@mediatek.com>
-Cc:     James Liao <jamesjj.liao@mediatek.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Arvin Wang <arvin.wang@mediatek.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        linux-pm@vger.kernel.org, Ryan Case <ryandcase@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Boichat <drinkcat@google.com>,
-        linux-kernel@vger.kernel.org, Fan Chen <fan.chen@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH V9 01/12] dt-bindings: soc: Add dvfsrc driver bindings
-Message-ID: <20210308183847.GA2760789@robh.at.kernel.org>
-References: <1614656863-8530-1-git-send-email-henryc.chen@mediatek.com>
- <1614656863-8530-2-git-send-email-henryc.chen@mediatek.com>
+        id S231329AbhCHSjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:39:42 -0500
+Received: from mail-bn8nam11on2083.outbound.protection.outlook.com ([40.107.236.83]:48770
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231220AbhCHSjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 13:39:24 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ieGdVQU1OihAgWVaOCFfnJjF9opJC4bmklupYDJ6QcbiZEDAQQyRquYhdu9HBux7xVA3ZeTTV8FS339cyBsFh/c0+CoM7NyC2Pg61Vt8w50+TrJ2qOoCDiavtJXH6H4xc+WdsjweZTec2y8cMOP2TDrf+SPQVhQw9wOayKx4ob6tqX9ZLh2U8OfoqHKVHrwqNm8yPGdYSvIEg07q0YOG+J8nMYSoMLtZF5sTr5JwLH4bDK+BOLHKI8W4ekEVAoe80d6cspwiPi+CbYauDD+AJaxvtNC1TQ7Z9weerZ0WwYPDKims1gOgXdFIGtNAQVGDdD3diJEEA5xtZfxIaKqM9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sOKFWlUk5jJS/g4RQ/98blBj3OKqTPfH1UfZLB0K2DY=;
+ b=luG+iPqYDe/IlDP53JfRj7quYXo358yAmBcGZSzNC5HBDd36qtpS18/m14oVkbsqbcbf5/lcCPRU3fGhnwV1vgj+jQRJF2BhEqgTxJyTmIahbRE7AETYGxz76XOUlA/SljBIh20+LfiAJbw3kT3K+VVrNcsmbnvcVs31aVoze2dTo0dQppLVdx52Tq4Rz8UhJWHsIQLA1VCEsag5wXJVQz7rw721TfdTny4sV7HaFCAK/q9x1v1H2rSLWFkEhM4n0Skx5y7T+jmL/U/IhKl6CGCnO6aru1Jt5OKnEdXBpShtIf7cOuvaaJxn8i+0M3YbEN2AmhAp9xXSbvcNdHTvEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sOKFWlUk5jJS/g4RQ/98blBj3OKqTPfH1UfZLB0K2DY=;
+ b=1l8vEJH6c8xH7qr5I2ZLE6LeaILzxOr7HjWMYpLZoqBShTQ95afKEiEACiLI8hkux+fjvPRk0UZ2hCgxQTOUPtRglKFLjL1zXEifCzsqWpvRABc07/opQKW0MQJIqu831nbbRx5C14DFc2TLrAYYF19HhLB+oy7B96RQNE6PwpY=
+Received: from DM6PR12CA0007.namprd12.prod.outlook.com (2603:10b6:5:1c0::20)
+ by DM6PR12MB2972.namprd12.prod.outlook.com (2603:10b6:5:39::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Mon, 8 Mar
+ 2021 18:39:21 +0000
+Received: from DM6NAM11FT060.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:1c0:cafe::14) by DM6PR12CA0007.outlook.office365.com
+ (2603:10b6:5:1c0::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
+ Transport; Mon, 8 Mar 2021 18:39:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT060.mail.protection.outlook.com (10.13.173.63) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3912.17 via Frontend Transport; Mon, 8 Mar 2021 18:39:20 +0000
+Received: from rcampbell-test.nvidia.com (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 8 Mar 2021 18:39:19 +0000
+Subject: Re: [PATCH v4 3/8] mm/rmap: Split try_to_munlock from try_to_unmap
+To:     Alistair Popple <apopple@nvidia.com>, <linux-mm@kvack.org>,
+        <nouveau@lists.freedesktop.org>, <bskeggs@redhat.com>,
+        <akpm@linux-foundation.org>
+CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <jhubbard@nvidia.com>, <jglisse@redhat.com>
+References: <20210304061645.29747-1-apopple@nvidia.com>
+ <20210304061645.29747-4-apopple@nvidia.com>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <547dda23-ac57-559e-664f-172e3d6749d5@nvidia.com>
+Date:   Mon, 8 Mar 2021 10:39:19 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614656863-8530-2-git-send-email-henryc.chen@mediatek.com>
+In-Reply-To: <20210304061645.29747-4-apopple@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a9e55d94-475e-4d51-0dad-08d8e2617cb8
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2972:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2972A04FA8D153A49E3BDAD3C2939@DM6PR12MB2972.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: R8wvwHtCoQLUkCbg46v4rf0+RWDrI597HYidIRsmgI/w6ht8f2clSMcdSXdSx+DE/zPV3+vx5cSwfZHRu1ha66RYuFCrXazMF9WHX6V0KKxXGs3MUoTYfdaCUfb4ZKitwl58LRyj+fk/SB11NxsM/crWuL1C8NF4sJKg0EDytwf07u/EVxTdgewn+6FtXbP3hnZS4N8434wChvZrSGipVfum/lL6UsbnKV0vPUgBrVItUxGGfYf3fRjePrV798TpyqXIECyyOwbeQwmhI1Xl9Y3nIN03FDl5fFhN+jDPZ5C2sEajH5xH0nIaYFOi8/vKVdjlXSMYn0HTWURNLPeSWqAvrZWkEv1Cwsao1VMy78/jiUxm9yKSC9OwEXdCjvMPG8J8TRwLCFZgh5inEYL+qjlzGDTXUNj6wmUzX8LdKcAs8cEVB9UTHySCmHGIT5SN1PMO4l4Ws+KDnTkJjaQ0hIj5SHpLZPVbZ9O3tGlhJ2nUb739WQ2kbofKGNPAjVC6LAitzgnfPCcPhrZHydaDVzaVvQ2kj6q7Bj7YTxUQ/Aobh2LkWB1PnrV95eVZcVLS0fvc6AGYnUplx+ax7DEmYdKB9pdNlLUEoX2g6cU3KQHB6g8+7NLnrfGdP4CmbJo/Vuz8ndql8NqUT1Ad/nZcWRpgyy74IALWLWMXOHQt1sPnnOEAv/uEtyBHbKpULHz6InvLte/gd9fgwn4a08KyRxPyAG9uHsnf3dfqlPeXB+M=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(396003)(39860400002)(46966006)(36840700001)(4744005)(70206006)(7696005)(53546011)(7636003)(34020700004)(31696002)(8936002)(31686004)(82310400003)(86362001)(36756003)(356005)(5660300002)(83380400001)(70586007)(478600001)(8676002)(47076005)(336012)(26005)(2616005)(82740400003)(426003)(186003)(4326008)(36860700001)(16526019)(316002)(36906005)(54906003)(110136005)(2906002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 18:39:20.4037
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a9e55d94-475e-4d51-0dad-08d8e2617cb8
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT060.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2972
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 02 Mar 2021 11:47:32 +0800, Henry Chen wrote:
-> Document the binding for enabling dvfsrc on MediaTek SoC.
-> 
-> Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
-> ---
->  .../devicetree/bindings/soc/mediatek/dvfsrc.yaml   | 67 ++++++++++++++++++++++
->  include/dt-bindings/interconnect/mtk,mt8183-emi.h  | 21 +++++++
->  2 files changed, 88 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/mediatek/dvfsrc.yaml
->  create mode 100644 include/dt-bindings/interconnect/mtk,mt8183-emi.h
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On 3/3/21 10:16 PM, Alistair Popple wrote:
+> The behaviour of try_to_unmap_one() is difficult to follow because it
+> performs different operations based on a fairly large set of flags used
+> in different combinations.
+> 
+> TTU_MUNLOCK is one such flag. However it is exclusively used by
+> try_to_munlock() which specifies no other flags. Therefore rather than
+> overload try_to_unmap_one() with unrelated behaviour split this out into
+> it's own function and remove the flag.
+> 
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+
+Looks good to me.
+Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
