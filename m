@@ -2,89 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4B533124F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D35E533124D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhCHPeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 10:34:09 -0500
-Received: from mail-wr1-f49.google.com ([209.85.221.49]:36833 "EHLO
-        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbhCHPdr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 10:33:47 -0500
-Received: by mail-wr1-f49.google.com with SMTP id u14so11927585wri.3;
-        Mon, 08 Mar 2021 07:33:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=i+KaqBArGrcmWeeQo+LRChoEEGt1m5jdSKpkz2jdjGk=;
-        b=I0hD+CtKW2J8DH5Fvn/d72BMUpaQV4VAJK/rP58nQfZ04s2auC7ZOKVQV8Q1Z2nKnO
-         QH/SnjMx6yNORoftr3cSi9/6ZqVF8blDaND83PZfCQzzOUj5lHBBxL0WBesXrbjOlWij
-         29S2EuOrAHEXHMpFwj0KzJzTXtNmJB8jA3LMVq7nmgXEnMsGB0BOJVtv8dzRVjZ3RqQV
-         Z+sGl4y99jD6IHCb+YIULXHbvanO1oZwTWsSBUFRtR9gsPmzo4xgKdS1SiPQq/QT5uQ0
-         FysAWSSC/Wx9U8h66+KyeUJD0z91Fr5YOH/912c0lHWGPVysTMml3s0A63Uj67x0UXfZ
-         lAfA==
-X-Gm-Message-State: AOAM532kEt6hH7kojM8qOfg6jiK5AMUa4+e4tJbWBaqgsI3gqaeaELaM
-        jiq0y2TVZs9/dsq/5N7ttTE=
-X-Google-Smtp-Source: ABdhPJxBQRqa0w3cM4cekeuH3vmdFevqhQo4oTYO/W4p1i1qbyBfANAdzeGt3ihm6F+3WVlyh3q6cg==
-X-Received: by 2002:adf:e481:: with SMTP id i1mr8092291wrm.63.1615217626282;
-        Mon, 08 Mar 2021 07:33:46 -0800 (PST)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id c11sm19177739wrs.28.2021.03.08.07.33.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 07:33:44 -0800 (PST)
-Subject: Re: [PATCH] power: supply: max8997_charger: make EXTCON dependency
- unconditional
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Timon Baetz <timon.baetz@protonmail.com>
+        id S230476AbhCHPeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 10:34:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229646AbhCHPeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 10:34:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 480D265208;
+        Mon,  8 Mar 2021 15:34:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615217644;
+        bh=6ZFTD883CvBSmMqN/Qn0YcbtxAfTIp2pR0HqlUwwxUk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qcjdMkkOzYpyZlVyeCTa4QwDG22pfrIIAUHqaDOST/To4vn2qSsht+isxl6/P1Rbw
+         ZUuwUFXOwb3aknq5pmSWo0M3uqK7Bzl+XzmI9E1Fn1px9xB90Jf4zoWOfLcGDoRAjq
+         zviCOGwGSfY/CnNEtANwWZf8dh+L7I3e2VwWW3D3hjcHjT3pOltzNSi7QBXf4+zkv4
+         3YCjFFNFqq21AUCf5U7U3srByanSbiZSXUHrpp3NJt4SnJE2gDGPkdg9shd83khhti
+         UGzHU0OaYx03XjAAeTZrlGDXSvGnn3vGuFjx21cp4Z5lSVA1ThpKbUykvN1J9uXkgi
+         bxFSO9367lE2g==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Oded Gabbay <oded.gabbay@gmail.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chanwoo Choi <cw00.choi@samsung.com>
-References: <20210308152935.2263935-1-arnd@kernel.org>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Message-ID: <12c5050f-feb3-e07f-45d2-5e89b678841a@kernel.org>
-Date:   Mon, 8 Mar 2021 16:33:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Colin Ian King <colin.king@canonical.com>,
+        Philip Yang <philip.yang@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amdkfd: fix build error with missing AMD_IOMMU_V2
+Date:   Mon,  8 Mar 2021 16:33:50 +0100
+Message-Id: <20210308153359.2513446-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210308152935.2263935-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/03/2021 16:29, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Some of the extcon interfaces have a fallback implementation that can
-> be used when EXTCON is disabled, but some others do not, causing a
-> build failure:
-> 
-> drivers/power/supply/max8997_charger.c:261:9: error: implicit declaration of function 'devm_extcon_register_notifier_all' [-Werror,-Wimplicit-function-declaration]
->                 ret = devm_extcon_register_notifier_all(&pdev->dev, charger->edev,
->                       ^
-> drivers/power/supply/max8997_charger.c:261:9: note: did you mean 'devm_extcon_register_notifier'?
-> include/linux/extcon.h:263:19: note: 'devm_extcon_register_notifier' declared here
-> static inline int devm_extcon_register_notifier(struct device *dev,
-> 
-> I assume there is no reason to actually build this driver without extcon
-> support, so a hard dependency is the easiest fix. Alternatively the
-> header file could be extended to provide additional inline stubs.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Hi Arnd,
+Using 'imply AMD_IOMMU_V2' does not guarantee that the driver can link
+against the exported functions. If the GPU driver is built-in but the
+IOMMU driver is a loadable module, the kfd_iommu.c file is indeed
+built but does not work:
 
-Thanks for the patch but I think I got it covered with:
-https://lore.kernel.org/lkml/20210215100610.19911-2-cw00.choi@samsung.com/
-(sent via extcon tree).
+x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_bind_process_to_device':
+kfd_iommu.c:(.text+0x516): undefined reference to `amd_iommu_bind_pasid'
+x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_unbind_process':
+kfd_iommu.c:(.text+0x691): undefined reference to `amd_iommu_unbind_pasid'
+x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_suspend':
+kfd_iommu.c:(.text+0x966): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0x97f): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0x9a4): undefined reference to `amd_iommu_free_device'
+x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_resume':
+kfd_iommu.c:(.text+0xa9a): undefined reference to `amd_iommu_init_device'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xadc): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xaff): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xc72): undefined reference to `amd_iommu_bind_pasid'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xe08): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xe26): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xe42): undefined reference to `amd_iommu_free_device'
 
-Did you experience a new/different issue?
+Use a stronger 'select' instead.
 
-Best regards,
-Krzysztof
+Fixes: 64d1c3a43a6f ("drm/amdkfd: Centralize IOMMUv2 code and make it conditional")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpu/drm/amd/amdkfd/Kconfig | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdkfd/Kconfig b/drivers/gpu/drm/amd/amdkfd/Kconfig
+index f02c938f75da..91f85dfb7ba6 100644
+--- a/drivers/gpu/drm/amd/amdkfd/Kconfig
++++ b/drivers/gpu/drm/amd/amdkfd/Kconfig
+@@ -5,8 +5,9 @@
+ 
+ config HSA_AMD
+ 	bool "HSA kernel driver for AMD GPU devices"
+-	depends on DRM_AMDGPU && (X86_64 || ARM64 || PPC64)
+-	imply AMD_IOMMU_V2 if X86_64
++	depends on DRM_AMDGPU && ((X86_64 && IOMMU_SUPPORT && ACPI) || ARM64 || PPC64)
++	select AMD_IOMMU if X86_64
++	select AMD_IOMMU_V2 if X86_64
+ 	select HMM_MIRROR
+ 	select MMU_NOTIFIER
+ 	select DRM_AMDGPU_USERPTR
+-- 
+2.29.2
+
