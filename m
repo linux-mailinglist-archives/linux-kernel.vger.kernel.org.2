@@ -2,83 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B8D3313CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8743D3313D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:51:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhCHQt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:49:26 -0500
-Received: from mga07.intel.com ([134.134.136.100]:24714 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229701AbhCHQtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:49:18 -0500
-IronPort-SDR: 49jO2p3SBEq0G2YSzBv518NuJXTEEE7UA9l7vo/KVjgbBNwn3miTGhG7dlHJDV4rryqGIvBVi1
- bgv5UJsl4XtA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="252091658"
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="252091658"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 08:49:18 -0800
-IronPort-SDR: 1W/47mG3zvkWr4PTUfxIvDb2TyCYtp/6P6ryksukLDIcejkN5GAjUi9hqkxLIUPntPiEmh89L+
- +p7GA86ZZomg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="402886480"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 08 Mar 2021 08:49:16 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 7F71E147; Mon,  8 Mar 2021 18:49:16 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>
-Subject: [PATCH v1 1/1] pinctrl: intel: Show the GPIO base calculation explicitly
-Date:   Mon,  8 Mar 2021 18:49:10 +0200
-Message-Id: <20210308164910.87286-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
+        id S230078AbhCHQvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:51:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhCHQuy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 11:50:54 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1151CC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 08:50:54 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id r15-20020a05600c35cfb029010e639ca09eso4217522wmq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 08:50:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=csdGRTC/fqgxsx3MqD2CY30jxKKY88IrwPuEZV8x6Ik=;
+        b=DX98jyr5QLOmJ8E7yGn6bjv/PpieA9Cosj5ziznlKkeYgIlkJgCfrI0YrEgh0j8I6/
+         twMC2UTSK3Z1ow3Kg345iexCRbOdFO2B/f8UzcxqaaKGs4kLepGlpue2mnXWMo5u89GI
+         PKatd4km02S4zeQap6wAKbamucP7/ijFuuZGdlCDH4hzu8xcLT6nXY0yGS06xYW9QUOq
+         7YRR+PERcI7f3pfmIEdEvU9zTB9TdYviHHQFYUId/RdzTCs0T5t29AdLqQWFQ1TyqbwT
+         zJ43clxhaQ9Od+geafT84c4b1f+5fT395Ovnee2HEqyyO2cHO6waLoXu1/b/NjhC1NwJ
+         iGow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=csdGRTC/fqgxsx3MqD2CY30jxKKY88IrwPuEZV8x6Ik=;
+        b=L+n9qCsXRbZri7SN38AZrGfbcnRH/8me0wT/I1hQqQlDX7uya2V0Cu+FfEltfmX5ZD
+         U72nkWUuGJqoWeifc/tRdQsqBjIe9nHX1Q50nM9bPg7nLhmQxKY6PsIi9jSitbFLq+Ak
+         LDnCkxNzX+UPTZeuWGmv+axN7U0wjAoFFxhnTUoKDhiWu9/BUwKuCLNRhpZWig/K9RfM
+         gqlILSoG+SzqEL6Uxwp74t/fD4sttBjLpViSlZVTyykUCkAxJd37s8oHCYJHMv1uzwC5
+         gErm/j4wkSjeaIgimttrDw1b/iXtiaE0x6MF/zDSJ85l4mdQNPlUxq2Mc70ifTuGXrtb
+         iQXQ==
+X-Gm-Message-State: AOAM530Avx4xN4j3emAIyburCx+Xu2n5V35y+/DTmKlDur9Hmg0WFeJC
+        4QXBe9W2OIaZb+NtNFwP1ENXuA==
+X-Google-Smtp-Source: ABdhPJwiGAFh2Sq055ZPR+B0t2Vb4lvtPttu/FfPEwa5HdoRsCuHmy/uMDSJ943qk0DgZb+bSLnPhg==
+X-Received: by 2002:a7b:c2aa:: with SMTP id c10mr22868798wmk.101.1615222252666;
+        Mon, 08 Mar 2021 08:50:52 -0800 (PST)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id b15sm20536789wmd.41.2021.03.08.08.50.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 08:50:52 -0800 (PST)
+Date:   Mon, 8 Mar 2021 16:50:50 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     nouveau@lists.freedesktop.org,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        James Jones <jajones@nvidia.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Dave Airlie <airlied@redhat.com>
+Subject: Re: [PATCH] drm/nouveau/kms/nve4-nv108: Limit cursors to 128x128
+Message-ID: <20210308165050.qhhf5aqdcldet5p6@maple.lan>
+References: <20210305015242.740590-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305015242.740590-1-lyude@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During the split of intel_pinctrl_add_padgroups(), the _by_size() variant
-missed the GPIO base calculations and hence made unable to retrieve proper
-GPIO number.
+On Thu, Mar 04, 2021 at 08:52:41PM -0500, Lyude Paul wrote:
+> While Kepler does technically support 256x256 cursors, it turns out that
+> Kepler actually has some additional requirements for scanout surfaces that
+> we're not enforcing correctly, which aren't present on Maxwell and later.
+> Cursor surfaces must always use small pages (4K), and overlay surfaces must
+> always use large pages (128K).
+> 
+> Fixing this correctly though will take a bit more work: as we'll need to
+> add some code in prepare_fb() to move cursor FBs in large pages to small
+> pages, and vice-versa for overlay FBs. So until we have the time to do
+> that, just limit cursor surfaces to 128x128 - a size small enough to always
+> default to small pages.
+> 
+> This means small ovlys are still broken on Kepler, but it is extremely
+> unlikely anyone cares about those anyway :).
+> 
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Fixes: d3b2f0f7921c ("drm/nouveau/kms/nv50-: Report max cursor size to userspace")
+> Cc: <stable@vger.kernel.org> # v5.11+
 
-Assign the gpio_base explicitly in _by_size() variant.
+I was experiencing problems with the mouse cursor on my system in v5.11
+and after a bisect to help me search the web I found my way to this
+patch, which fixed the problem for me.
 
-While at it, differentiate NOMAP case with the rest in _by_gpps() variant.
+Mine is an Armv8 system but there is nothing particularly exotic from a
+graphics card or software point of view: Debian bullseye/wayland
+(gnome-shell 3.38.3, mesa-20.3.4) running on a GT-710.
 
-Fixes: 036e126c72eb ("pinctrl: intel: Split intel_pinctrl_add_padgroups() for better maintenance")
-Reported-and-tested-by: Maximilian Luz <luzmaximilian@gmail.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/pinctrl/intel/pinctrl-intel.c | 2 ++
- 1 file changed, 2 insertions(+)
+However FWIW:
+Tested-by: Daniel Thompson <daniel.thompson@linaro.org>
 
-diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
-index e015345bf8f4..795d60d9ebba 100644
---- a/drivers/pinctrl/intel/pinctrl-intel.c
-+++ b/drivers/pinctrl/intel/pinctrl-intel.c
-@@ -1356,6 +1356,7 @@ static int intel_pinctrl_add_padgroups_by_gpps(struct intel_pinctrl *pctrl,
- 				gpps[i].gpio_base = 0;
- 				break;
- 			case INTEL_GPIO_BASE_NOMAP:
-+				break;
- 			default:
- 				break;
- 		}
-@@ -1392,6 +1393,7 @@ static int intel_pinctrl_add_padgroups_by_size(struct intel_pinctrl *pctrl,
- 		gpps[i].size = min(gpp_size, npins);
- 		npins -= gpps[i].size;
- 
-+		gpps[i].gpio_base = gpps[i].base;
- 		gpps[i].padown_num = padown_num;
- 
- 		/*
--- 
-2.30.1
 
+Daniel.
+
+
+> ---
+>  drivers/gpu/drm/nouveau/dispnv50/disp.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> index 196612addfd6..1c9c0cdf85db 100644
+> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> @@ -2693,9 +2693,20 @@ nv50_display_create(struct drm_device *dev)
+>  	else
+>  		nouveau_display(dev)->format_modifiers = disp50xx_modifiers;
+>  
+> -	if (disp->disp->object.oclass >= GK104_DISP) {
+> +	/* FIXME: 256x256 cursors are supported on Kepler, however unlike Maxwell and later
+> +	 * generations Kepler requires that we use small pages (4K) for cursor scanout surfaces. The
+> +	 * proper fix for this is to teach nouveau to migrate fbs being used for the cursor plane to
+> +	 * small page allocations in prepare_fb(). When this is implemented, we should also force
+> +	 * large pages (128K) for ovly fbs in order to fix Kepler ovlys.
+> +	 * But until then, just limit cursors to 128x128 - which is small enough to avoid ever using
+> +	 * large pages.
+> +	 */
+> +	if (disp->disp->object.oclass >= GM107_DISP) {
+>  		dev->mode_config.cursor_width = 256;
+>  		dev->mode_config.cursor_height = 256;
+> +	} else if (disp->disp->object.oclass >= GK104_DISP) {
+> +		dev->mode_config.cursor_width = 128;
+> +		dev->mode_config.cursor_height = 128;
+>  	} else {
+>  		dev->mode_config.cursor_width = 64;
+>  		dev->mode_config.cursor_height = 64;
+> -- 
+> 2.29.2
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
