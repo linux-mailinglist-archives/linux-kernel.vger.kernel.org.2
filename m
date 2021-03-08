@@ -2,178 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621FF330D53
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43885330D57
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:21:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbhCHMU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:20:58 -0500
-Received: from mga12.intel.com ([192.55.52.136]:52723 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230202AbhCHMUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:20:46 -0500
-IronPort-SDR: 1Rl+bd2TLNR9ttBtL1kKFcWj04rY79Md8U3SVQFg3mavBmvfRrQLWtrkxbXhauWDVqAWjig5G8
- FDdiKFc6+HWA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="167288062"
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="167288062"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 04:20:46 -0800
-IronPort-SDR: 7KV5jbUKmEKHOclGAFqIRsLBCRwD041e9V+1NC7Oz4tSjFWlUGJNzteYGelNMghzFBmIRttzCS
- S9Pg8+TiCmiA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="447120674"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 08 Mar 2021 04:20:42 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 451C25BD; Mon,  8 Mar 2021 14:20:38 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Cc:     Jean Delvare <jdelvare@suse.com>, Peter Tyser <ptyser@xes-inc.com>,
-        hdegoede@redhat.com, henning.schild@siemens.com
-Subject: [PATCH v1 7/7] i2c: i801: convert to use common P2SB accessor
-Date:   Mon,  8 Mar 2021 14:20:20 +0200
-Message-Id: <20210308122020.57071-8-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
-References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
+        id S231633AbhCHMV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:21:26 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:27294 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231286AbhCHMU4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 07:20:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1615206055;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cBQoSFK3Iw49+JMmsX3eKbeije319M2h4dI7j5gBgnU=;
+        b=YwrLzpTZfbyUleVMqPvNF6Tltg6bi3XIzB9EvpCm/hWd4HukHErCjOyWDLmYkqQgXCxcCb
+        sVzcTwXFZo82bff4HboKhsFqc3/RQbDjAh+3mxXFIPtmzCeF/jUmtHqel2+JlRh06xzkl7
+        PaHVyX56gpETf0FA8N14fO2+DhzAjdE=
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur05lp2168.outbound.protection.outlook.com [104.47.17.168])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-29-Gpz_E2PEN2ezD-5D3GdaEA-1; Mon, 08 Mar 2021 13:20:54 +0100
+X-MC-Unique: Gpz_E2PEN2ezD-5D3GdaEA-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iluz0uaisXdHwvtpF5szt/8nS2y9ik/IbHM4yQTCQwwG0JsT7emcbn4Q2diRRutFUxbb+Ivc/M/eyFrp0y6L6hPiAZYdS7v0v1lEsaFbNEbGXAOGFwGG2nuOn2SK3skpil/60z5LCjf/r/0vR8t8p2DyJNLxbyTYc0H1pYF1Z6ami/oiE6vGw2q7OW6mC+aWfRj+Iq5bEqBcPTWfQ9AUuFa1sAoWzzKOG6svR0VXZ0+RPfE25Ee0TZbpCzuYJosKwNn9S9iz3qHJbrFLFXZeGSfMi6G+Hai7aqwTNM2iHgYIri7ykic75dmeHkQr49Ny/Bf80of1P5w+gAnImxrRaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cBQoSFK3Iw49+JMmsX3eKbeije319M2h4dI7j5gBgnU=;
+ b=ZmnDgwFUaz7kS0cSg8L1rlCOVdFV0JW2S/t2GskzGxlZSRKKiKVdNdM5Z0vaCptbmUovkpTYi7Ad6A9NCRcROsoFC9UikdgJQDVZ7x7fquPR0r13d3Rkh6ZtjjkURdXv5ARNTsqEDekshSWjH6u1AcRDn7rruoFpdykI2JS08N34y1AGwkJeH09e/ROQaGmCGVlXXwPKwLkdeekZEmJhM7IRuag+MHtiX8oGSCAOGEIqz59wdm0A+HjSyWPm1+0CziDyLBtOvfCsuYLnm7WDclaXJk1Qges6EoeyOQIr3TWG9JfEZSOyCH54Nl1oxbiZ+w/ovSxYZ/+65R1KVnXg0A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR0402MB3359.eurprd04.prod.outlook.com (2603:10a6:803:3::28)
+ by VI1PR0402MB3359.eurprd04.prod.outlook.com (2603:10a6:803:3::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.28; Mon, 8 Mar
+ 2021 12:20:52 +0000
+Received: from VI1PR0402MB3359.eurprd04.prod.outlook.com
+ ([fe80::9c1d:89de:a08e:ccc9]) by VI1PR0402MB3359.eurprd04.prod.outlook.com
+ ([fe80::9c1d:89de:a08e:ccc9%4]) with mapi id 15.20.3890.037; Mon, 8 Mar 2021
+ 12:20:52 +0000
+From:   =?utf-8?Q?Aur=C3=A9lien?= Aptel <aaptel@suse.com>
+To:     Shyam Prasad N <nspmangalore@gmail.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     Pavel Shilovsky <pshilov@microsoft.com>,
+        Steve French <sfrench@samba.org>, kernel@axis.com,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] CIFS: Prevent error log on spurious oplock break
+In-Reply-To: <CANT5p=rB2=DvjtpmVy803emWpuzsy-C2+d4wqQ5g_9fJ8+a5Cw@mail.gmail.com>
+References: <20210305094107.13743-1-vincent.whitchurch@axis.com>
+ <CANT5p=rB2=DvjtpmVy803emWpuzsy-C2+d4wqQ5g_9fJ8+a5Cw@mail.gmail.com>
+Date:   Mon, 08 Mar 2021 13:20:51 +0100
+Message-ID: <871rcpx2e4.fsf@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [2003:fa:70b:4a04:48fe:21ee:1b19:31ad]
+X-ClientProxiedBy: GV0P278CA0013.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:710:26::23) To VI1PR0402MB3359.eurprd04.prod.outlook.com
+ (2603:10a6:803:3::28)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2003:fa:70b:4a04:48fe:21ee:1b19:31ad) by GV0P278CA0013.CHEP278.PROD.OUTLOOK.COM (2603:10a6:710:26::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Mon, 8 Mar 2021 12:20:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 104a8006-467e-48eb-3dab-08d8e22c9db3
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3359:
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB33591721A5D1CBF494E668E5A8939@VI1PR0402MB3359.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: G/ZbvVVKZ3aU7/zH/ZZomReNfi5dvBn6gJ2O6fXrpxhSYKD2wa2+H5X6iVz3Ilraf6809tOET8JzBvUjdOrOLryoJoLlzI/BblIoFZU9RIBaghr9QIJwLwcqhRZ0G2hjvPGUtqey/mfJ7b1debmj7EGZSLJnPQxOcbMeCpRDgUbL3rv8AhCLJK13FNjXRd6jnaxSgqjOKguARUntFBPN5TYAd9DCp6CYSDnCzhSBWlYPMBJrCzuzfsuN8MXDM3gnOh9gwR2JQHV7zau7Ggg576F92l9tOTbfelvx2zuVx02rqlP4X19dx1d5Jt4qvP9Ia/KmlyR0Qj7rvEr0Cz+GbD8YdHQkED/LqmtbkTWcSYWZ+Zx+xUGrdWUYeOdVn1J9fZSaXb26jJkqkV8LZUMmkngRMq/c7VFZxJql8qFJYzLEHTzJmAXIk1L30NjseCbiKiB5U9y6j0iG5ca37W/vj0pxaL9j3AITPJw4MX5AWBYeeD4GDLDcGUSYgyXbqoGoRrGLW/V9NKx/pF/21E7ehg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(396003)(376002)(366004)(39860400002)(5660300002)(186003)(86362001)(4326008)(66556008)(66946007)(66476007)(478600001)(2906002)(36756003)(6496006)(16526019)(83380400001)(54906003)(66574015)(6486002)(8936002)(2616005)(8676002)(316002)(110136005)(52116002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RG9QcTJhTG4xcWJLQ09RNGlZaHYwR1JPUGF6NFpzRVIrYlpVU3hwZWNGSmlZ?=
+ =?utf-8?B?RXJaSnJNMjh1cDJpQXNjdmVuRFZ6ZkNhNGJCU3pJQlBmdklQNWNVcGJVVDEx?=
+ =?utf-8?B?Ujd4SjluVU1BSlVic05ueFdIZCtOTVduSGFzQ3FRUVhSQ3NWenI5L1RlTy8z?=
+ =?utf-8?B?bUVnOXFOVTZhWU91VmVHZmdwRDdVdEcvWjJJYWlOTDJWenh1bWNXUTg3Y1lu?=
+ =?utf-8?B?SmEvcGJYR3NWbjhiQXI0M2hUZGRMN0dLUWwyaDlFRTA4c2VqeU9FSUhvL3lN?=
+ =?utf-8?B?SFNaUW9UMGJrTjBlZUhlTXV6MTdFV052dnlvNnJJT0tDdnlZbHFjODNSVHZh?=
+ =?utf-8?B?eWtVMU9vQy9hOERybFZ0NTg0NW9PWFFGRnhoVkhjSTRNRVViQklEWFF2ZlFX?=
+ =?utf-8?B?SkEwSk1GUW9teEg3WWswOWxlUXNrV2hRVHFDTGdDZVNiS2twRFovSURUejl5?=
+ =?utf-8?B?N0Znck94WFlvYmkwMWtBVWNJR0V4Uy9uNkc2UnJVWXV2aThLYU02ZWE2MGVr?=
+ =?utf-8?B?cjR3c29pN3lrL0dsTEJuZXMyaU1hb3JSSi9KeGFKV3BNY1ZmNkVoWTJWUTBE?=
+ =?utf-8?B?ejRYMzNudFJEV3BwOXB1MlRpUjZqc04vK1JmTkFJdE1aeEx2dDVSaTkrOUxC?=
+ =?utf-8?B?NDE0aDJEV0plZC8yaDZnOTZCUSs2TTZKU0pzMTFjb1MvTnM2UllGTkM0Tk1I?=
+ =?utf-8?B?SnZBUXY4L2F2UjVmMXVxR1dIL0JYTzV2eGNKT1RSRC9OanI0Q08wdVlhM0I2?=
+ =?utf-8?B?Vk0zSzJMQS9PYXFCenpSUUcvQjlUWkNjVUxrOTh0SzBuWFErTjFYcE9TWmxO?=
+ =?utf-8?B?cHYwME1wUXkxQS9KN0RyK0hoRnJvZ1g2QTVXTFI4K2V5MXEwSnpja2M1SnFN?=
+ =?utf-8?B?ZHVTSXRXZFRaUm1pTzZUUG5NYnhtZDJTOUszUFBkOHV2bTdxaXFCMzgzanhx?=
+ =?utf-8?B?NzZwU0RPaUFzcS94cjhWSHQrRVVaQUZUa2g5WWpoRHVZUkZybkFoS1RQN2hE?=
+ =?utf-8?B?ejg1cmFVRkRxdUp3SVhDUFlJU0ZzU3drNjNzeVpZYXdIV3pWZnc4ZCtBejlX?=
+ =?utf-8?B?OEE4RlU3aXRsYkdZQmgyd05Eb1M4TmFSU0h0Nis3Yi8zK05uTEN1MzhsMllr?=
+ =?utf-8?B?Y1NYMjROZ3p1dDl4YWZ2bE55VWp0eG5BMnFHaEFiUDA2Z0dPM2JEV0NQMmRi?=
+ =?utf-8?B?ZDNuMXV0Qm9OT1RLUmJvNGUrS2VldnhNZVNlaHRDT05IWnpuVHlkSU9rQTZv?=
+ =?utf-8?B?Wi85RFlsSzhuMmI4bEpKbm1oZUxHVHFjS0VJcGY2RHlCdnEyNko4MEtISDBS?=
+ =?utf-8?B?V0ExYmUrNUVaclhsZnVyRi9LRmszSVc2MTJOVFE1K01rbDRqbVczK0REUnVQ?=
+ =?utf-8?B?Mi9WUW5DMTNUNmJJb2NFc041TTVCRzQrdG9Wc2dQSlo2OUU1ZzN0SlVLMDRz?=
+ =?utf-8?B?L09TRkFFRDlCcndtYnNWVzNoaWhQc05sWEl1RGJXTVNlcjdZTUUxdGpIeUx5?=
+ =?utf-8?B?bk9BYk96VnNGNUtkQ1A5MjJIczd2dVorQThDSTFsbzI5bU80NHg4V1k1eUtM?=
+ =?utf-8?B?cCs5ekZlaUNnaFZkazdaZjZ0NFFmTktmQkQvNlMvQmlCUnpFZzBtckl6YlZE?=
+ =?utf-8?B?b2hBSGhXZmZEbEdlbjkxV1NPakUveXdYVjQ5SnNPMmJ3UXRXOXJRS0tsdC90?=
+ =?utf-8?B?MUVuOFl4OTdxTnA4NTVMYzZmYUZXYVhmeVdQcWRjdUpvQ1pEdTI3anJkeHVy?=
+ =?utf-8?B?SGRHbHoxQzVsWmhTQUptZlVBTGpZTFhyS3N2bW1aeUpEdEpRMlN3VHdhZ2Vs?=
+ =?utf-8?B?dS9qN2loRWtwcWp5OEZkK0lXMDN5aVdyaTh2UUplNmppakJrNXhiVHhGblVB?=
+ =?utf-8?Q?NxLwVE4+ym9y6?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 104a8006-467e-48eb-3dab-08d8e22c9db3
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3359.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 12:20:52.6272
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gnM1FWHoZOr8NSBExFNR+O/u4vtEJ1eLA60VHtrwonFlWn9cr+fDTn72ullOfhTi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3359
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we have a common P2SB accessor in tree we may use it instead of
-open coded variants.
+Shyam Prasad N <nspmangalore@gmail.com> writes:
+> So I don't think we should be changing the logic here.
 
-Replace custom code by pci_p2sb_bar() call.
+I would tend to agree.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/i2c/busses/Kconfig    |  1 +
- drivers/i2c/busses/i2c-i801.c | 40 ++++++++---------------------------
- drivers/pci/pci-p2sb.c        |  6 ++++++
- 3 files changed, 16 insertions(+), 31 deletions(-)
+> If SMB v1 had a different behaviour, we should check if that is as per
+> the protocol documentation. If not, change it.
 
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index 05ebf7546e3f..ffd3007f888c 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -101,6 +101,7 @@ config I2C_HIX5HD2
- config I2C_I801
- 	tristate "Intel 82801 (ICH/PCH)"
- 	depends on PCI
-+	select PCI_P2SB if X86
- 	select CHECK_SIGNATURE if X86 && DMI
- 	select I2C_SMBUS
- 	help
-diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
-index 4acee6f9e5a3..23b43de9786a 100644
---- a/drivers/i2c/busses/i2c-i801.c
-+++ b/drivers/i2c/busses/i2c-i801.c
-@@ -90,6 +90,7 @@
- #include <linux/interrupt.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/pci-p2sb.h>
- #include <linux/kernel.h>
- #include <linux/stddef.h>
- #include <linux/delay.h>
-@@ -136,7 +137,6 @@
- #define TCOBASE		0x050
- #define TCOCTL		0x054
- 
--#define SBREG_BAR		0x10
- #define SBREG_SMBCTRL		0xc6000c
- #define SBREG_SMBCTRL_DNV	0xcf000c
- 
-@@ -1524,52 +1524,30 @@ static const struct itco_wdt_platform_data spt_tco_platform_data = {
- 	.version = 4,
- };
- 
--static DEFINE_SPINLOCK(p2sb_spinlock);
--
- static struct platform_device *
- i801_add_tco_spt(struct i801_priv *priv, struct pci_dev *pci_dev,
- 		 struct resource *tco_res)
- {
- 	struct resource *res;
- 	unsigned int devfn;
--	u64 base64_addr;
--	u32 base_addr;
--	u8 hidden;
-+	int ret;
- 
- 	/*
- 	 * We must access the NO_REBOOT bit over the Primary to Sideband
--	 * bridge (P2SB). The BIOS prevents the P2SB device from being
--	 * enumerated by the PCI subsystem, so we need to unhide/hide it
--	 * to lookup the P2SB BAR.
-+	 * bridge (P2SB).
- 	 */
--	spin_lock(&p2sb_spinlock);
- 
- 	devfn = PCI_DEVFN(PCI_SLOT(pci_dev->devfn), 1);
- 
--	/* Unhide the P2SB device, if it is hidden */
--	pci_bus_read_config_byte(pci_dev->bus, devfn, 0xe1, &hidden);
--	if (hidden)
--		pci_bus_write_config_byte(pci_dev->bus, devfn, 0xe1, 0x0);
--
--	pci_bus_read_config_dword(pci_dev->bus, devfn, SBREG_BAR, &base_addr);
--	base64_addr = base_addr & 0xfffffff0;
--
--	pci_bus_read_config_dword(pci_dev->bus, devfn, SBREG_BAR + 0x4, &base_addr);
--	base64_addr |= (u64)base_addr << 32;
--
--	/* Hide the P2SB device, if it was hidden before */
--	if (hidden)
--		pci_bus_write_config_byte(pci_dev->bus, devfn, 0xe1, hidden);
--	spin_unlock(&p2sb_spinlock);
--
- 	res = &tco_res[1];
-+	ret = pci_p2sb_bar(pci_dev, devfn, res);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
- 	if (pci_dev->device == PCI_DEVICE_ID_INTEL_DNV_SMBUS)
--		res->start = (resource_size_t)base64_addr + SBREG_SMBCTRL_DNV;
-+		res->start += SBREG_SMBCTRL_DNV;
- 	else
--		res->start = (resource_size_t)base64_addr + SBREG_SMBCTRL;
--
--	res->end = res->start + 3;
--	res->flags = IORESOURCE_MEM;
-+		res->start += SBREG_SMBCTRL;
- 
- 	return platform_device_register_resndata(&pci_dev->dev, "iTCO_wdt", -1,
- 					tco_res, 2, &spt_tco_platform_data,
-diff --git a/drivers/pci/pci-p2sb.c b/drivers/pci/pci-p2sb.c
-index 68d7dad48cdb..7f6bc7d4482a 100644
---- a/drivers/pci/pci-p2sb.c
-+++ b/drivers/pci/pci-p2sb.c
-@@ -22,6 +22,12 @@
- 
- static const struct x86_cpu_id p2sb_cpu_ids[] = {
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT,	PCI_DEVFN(13, 0)),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT_D,	PCI_DEVFN(31, 1)),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT_D,	PCI_DEVFN(31, 1)),
-+	X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE,		PCI_DEVFN(31, 1)),
-+	X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE_L,		PCI_DEVFN(31, 1)),
-+	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE,		PCI_DEVFN(31, 1)),
-+	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_L,		PCI_DEVFN(31, 1)),
- 	{}
- };
- 
--- 
-2.30.1
+I think the main difference is that SMBv1 doesn't have the concept of
+lease keys. I think lease keys were added to handle cases like this:
+
+case a)
+
+client: >> send create+lease (key=3DXYZ). I don't know the file fid yet
+
+server: local open & concurent open (create response not sent yet!)
+
+server: << send oplockbreak key=3DXYZ
+client: dont know the fid, but i can match the lease key with a request
+        I made, so it's valid
+
+server: << send create response (fid=3D123)
+client: I know the fid now
+
+case b)
+
+client: >> send create+lease (key=3DXYZ)
+server: << open file, send create response (fid=3D123)
+
+client: >> close file, release file ressources, send close fid=3D123
+server: before receiving close, concurrent open happens
+server: << send oplock break (key=3DXYZ)
+server: << send close
+client: depending on the order the response are processed, I might not
+        process oplock because i don't know this file! I already closed
+        it. But I know this lease key
+
+Without client-generated lease keys you cannot match things you don't
+have an FID for (because you haven't received it yet, or because it was
+closed). And FIDs can be reused and point to different files.
+
+Cheers,
+--=20
+Aur=C3=A9lien Aptel / SUSE Labs Samba Team
+GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg, D=
+E
+GF: Felix Imend=C3=B6rffer, Mary Higgins, Sri Rasiah HRB 247165 (AG M=C3=BC=
+nchen)
 
