@@ -2,110 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6A0331385
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C24B5331388
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:36:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbhCHQfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:35:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48588 "EHLO mail.kernel.org"
+        id S229690AbhCHQgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:36:03 -0500
+Received: from mga17.intel.com ([192.55.52.151]:31798 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229971AbhCHQfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:35:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E834965227;
-        Mon,  8 Mar 2021 16:35:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615221320;
-        bh=aB3ELpHAsNqPMSU1NTeVXZu4tkER3Fw968tuBoPwCbA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UWctiQnaYW8/k1Yb9drt1Gx33SIx53VEr9QUvBFtO++cSktio2IJ0zfV/ewCRZarp
-         336YuKkMtHXRSuYBavY39s4mbcMYiHtBWr+sRvWGZ5lHGSrbfP2i3cT6bD3IXB5dK9
-         XG0wo0LtPIgiU1G/ZSF3cH7a/ODuX4Kng0qGTuOltSSMi8YqXBiBF/+fT0PUpovADG
-         83SbF/T2HmBE5FmqBDw1IlC7Fjl6d5Uw9lO45d1PRrtuH7UwKIwqi7eTN8EMhz3x95
-         Z7z0loOP+g5/iO2/WDVCxGD5NF44agOCV8FrKagw7dGRiIx0vYS9+tRbTqTzhu1BTI
-         sZ5LT0LmUIgug==
-Date:   Mon, 8 Mar 2021 16:35:16 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Yanan Wang <wangyanan55@huawei.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-Subject: Re: [PATCH 1/2] KVM: arm64: Distinguish cases of allocating memcache
- more precisely
-Message-ID: <20210308163515.GB26561@willie-the-truck>
-References: <20210125141044.380156-1-wangyanan55@huawei.com>
- <20210125141044.380156-2-wangyanan55@huawei.com>
+        id S229459AbhCHQfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 11:35:45 -0500
+IronPort-SDR: MAFuZstgiFWPCSb+5dFfh1wTu5D3MfLjSXssUp8uqdrgzeQc05FNJosceiiZBCXywUir/6wW+Y
+ bxv6QyF5vI1A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="167974030"
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="167974030"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 08:35:45 -0800
+IronPort-SDR: YiJNZGNGSZNsZsmLEzU/9Lnz/d1uyF5tA289sbh6idydDGnR7J6p+q8sDvRcA4hdR68XtPbFr4
+ yBQyHWUTt7fw==
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="402882554"
+Received: from arohrbax-mobl.amr.corp.intel.com ([10.209.91.130])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 08:35:45 -0800
+Message-ID: <aa32083cdc9a08b502ab23ef0235f5b648e4c438.camel@linux.intel.com>
+Subject: Re: [PATCH v1 1/3] HID: intel-ish-hid: Drop if block with an always
+ false condition
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 08 Mar 2021 08:35:44 -0800
+In-Reply-To: <nycvar.YFH.7.76.2103081716200.12405@cbobk.fhfr.pm>
+References: <20210206151348.14530-1-uwe@kleine-koenig.org>
+         <nycvar.YFH.7.76.2103081107250.12405@cbobk.fhfr.pm>
+         <31028f589e27e246bb3b4b693caeb0b8eae3a285.camel@linux.intel.com>
+         <nycvar.YFH.7.76.2103081716200.12405@cbobk.fhfr.pm>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125141044.380156-2-wangyanan55@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 10:10:43PM +0800, Yanan Wang wrote:
-> With a guest translation fault, we don't really need the memcache pages
-> when only installing a new entry to the existing page table or replacing
-> the table entry with a block entry. And with a guest permission fault,
-> we also don't need the memcache pages for a write_fault in dirty-logging
-> time if VMs are not configured with huge mappings.
+On Mon, 2021-03-08 at 17:16 +0100, Jiri Kosina wrote:
+> On Mon, 8 Mar 2021, Srinivas Pandruvada wrote:
 > 
-> The cases where allocations from memcache are required can be much more
-> precisely distinguished by comparing fault_granule and vma_pagesize.
+> > > > A remove callback is only ever called for a bound device. So
+> > > > there
+> > > > is no
+> > > > need to check for device or driver being NULL.
+> > > 
+> > > Srinivas, any objections to this patchset? The cleanups look good
+> > > to
+> > > me. 
+> > Sorry, I missed this series.
+> > No objection for taking these patches.
 > 
-> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
-> ---
->  arch/arm64/kvm/mmu.c | 25 ++++++++++++-------------
->  1 file changed, 12 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 7d2257cc5438..8e8549ea1d70 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -820,19 +820,6 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  	gfn = fault_ipa >> PAGE_SHIFT;
->  	mmap_read_unlock(current->mm);
->  
-> -	/*
-> -	 * Permission faults just need to update the existing leaf entry,
-> -	 * and so normally don't require allocations from the memcache. The
-> -	 * only exception to this is when dirty logging is enabled at runtime
-> -	 * and a write fault needs to collapse a block entry into a table.
-> -	 */
-> -	if (fault_status != FSC_PERM || (logging_active && write_fault)) {
-> -		ret = kvm_mmu_topup_memory_cache(memcache,
-> -						 kvm_mmu_cache_min_pages(kvm));
-> -		if (ret)
-> -			return ret;
-> -	}
-> -
->  	mmu_seq = vcpu->kvm->mmu_notifier_seq;
->  	/*
->  	 * Ensure the read of mmu_notifier_seq happens before we call
-> @@ -898,6 +885,18 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  	else if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))
->  		prot |= KVM_PGTABLE_PROT_X;
->  
-> +	/*
-> +	 * Allocations from the memcache are required only when granule of the
-> +	 * lookup level where a guest fault happened exceeds the vma_pagesize,
-> +	 * which means new page tables will be created in the fault handlers.
-> +	 */
-> +	if (fault_granule > vma_pagesize) {
-> +		ret = kvm_mmu_topup_memory_cache(memcache,
-> +						 kvm_mmu_cache_min_pages(kvm));
-> +		if (ret)
-> +			return ret;
-> +	}
+> Thanks. Applied with your Acked-by:
+> If you disagree with that interpretation of your statement above,
+> please 
+> holler :)
+I agree. 
+For record:
+Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-This feels like it could bite us in future as the code evolves but people
-forget to reconsider this check. Maybe it would be better to extend this
-patch so that we handle getting -ENOMEM back and try a second time after
-topping up the memcache?
+Thanks,
+Srinivas
 
-Will
+> 
+> Thanks,
+> 
+
