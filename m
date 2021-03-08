@@ -2,70 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5131A331805
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2F633188F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbhCHUAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:00:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231594AbhCHUAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:00:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2838265208;
-        Mon,  8 Mar 2021 20:00:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615233609;
-        bh=gYilhKMT4uMiqPSmKpTt9npQLao11WlenqaMT8OiUgM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=L+U2ETbUOaxZ8GnvSr/c5aHPX5XZWPcNDjGzaTaNHU+nh0yFq7yoi+O2hSh96Og9I
-         GoWsdsnpIFHQWOqYeW7w0XQ0TFK+VcU/pcHAof+A2so6pYDv0IOjCnDenMr9/PjED0
-         TMwXp5IOXFAroqkD9WzjzXtkmEjn1wgooOdXFgqeP5pmkY0La0RSxHBtKhOHVENctA
-         tOgOHbLzkQ0CVac12yTmYE/mlDd26utzvbYTCVHRn/yd1dNfl7j7wf7I5YtxblndsH
-         psK4fsHSdK3rwXlPvbY0WnywGrHtA0PMVD1SWMiMGDGZm61H9SSOiuaPk7gs6nYl6I
-         oMhxInr0nqVFg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 155D0609E6;
-        Mon,  8 Mar 2021 20:00:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231699AbhCHU2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:28:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231506AbhCHU2Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 15:28:16 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F34C06174A;
+        Mon,  8 Mar 2021 12:28:16 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id mj10so22980245ejb.5;
+        Mon, 08 Mar 2021 12:28:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NvadRTyAu2bEatgntz1xTlD/+6CQIU+QXTtOxiL9MKw=;
+        b=R3qxIbr3UgiLtn1YDTg5ZL8C8NoVeG7eQEpYzYraQxiKyZe2CHRiTFdOtgslbKG14I
+         Rc7r70128QSamfdv/gH3JQD3ywkUVtx/0oVjqrIc9yWNGsWnpz5Ro7bxeyKu3IOUhdGC
+         Cz5cqDqK+f+rgF7Fj70uwi6pfNNX9Ha56x6BC21Nh306ahrPzn0X/M1iRwMaTOghIdNU
+         4dznjLtyuOBDVeQP0Dwy0PDnhrvMwANGp1jYWxviTIsfe1NB8HXxYdIPo3JCWFn0BNMZ
+         pB85XeWez9+7apPn9IzxJoR0FcJpMWZG4OxoJ08QeftPfz7DXyqrzMRcUAcRq5S+k0Ye
+         6drQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NvadRTyAu2bEatgntz1xTlD/+6CQIU+QXTtOxiL9MKw=;
+        b=cw79Yb36nOIZwDa2ms0swKOmB6VUV/JtM8k1Lyq4m9pTv11M8VAGjZ3w/nRSL9Jpt9
+         nT8/aOP01HJZyc58bCV7ecyaKEnnfgW6exUgEWOf9YL+PGiZ5SXq5FcroYGOAR+d8kZs
+         d1fC1hq0hxQ2HcX+N5stvQsWDtPPyjfksbLuqjuXlhAeWTw4uBJFRVTUWWg8SjbC7Vn0
+         G7VrEpSG1Gm0OHL2bpLZSw9k35PmpZCkwCrIGAc6j1pYUNqFiIKFgEYrz9gCB0YnNV8q
+         BEtTpnzNdPuXFgvGo/ro64grHeBMcqu7cy1/XOT1qbmUuxLRdG6LIR+xYS4AdgZQRP9Q
+         swmQ==
+X-Gm-Message-State: AOAM532EHkiCIIsln5waFxntSX+Tbn3Oz8xAaJsj+j+XR0n8iKbXK6rS
+        01ZeoYIEZT2qgcuyN5fglIg=
+X-Google-Smtp-Source: ABdhPJxpY0jUBKzaAkFqi8ozlLFtpXzb8704Bf70GDoclXb/s+d9vZUg1OIVmD1Q282elH1zahm1RQ==
+X-Received: by 2002:a17:906:2db2:: with SMTP id g18mr17131388eji.73.1615235294986;
+        Mon, 08 Mar 2021 12:28:14 -0800 (PST)
+Received: from Ansuel-xps.localdomain (host-95-247-48-130.retail.telecomitalia.it. [95.247.48.130])
+        by smtp.googlemail.com with ESMTPSA id c18sm7624483edu.20.2021.03.08.12.28.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 12:28:14 -0800 (PST)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] mtd: core: add nvmem-cells compatible to parse mtd as nvmem cells
+Date:   Mon,  8 Mar 2021 02:18:44 +0100
+Message-Id: <20210308011853.19360-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: usb: cdc_ncm: emit dev_err on error paths
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161523360908.22994.16878269283650305469.git-patchwork-notify@kernel.org>
-Date:   Mon, 08 Mar 2021 20:00:09 +0000
-References: <20210306221232.3382941-1-grundler@chromium.org>
-In-Reply-To: <20210306221232.3382941-1-grundler@chromium.org>
-To:     Grant Grundler <grundler@chromium.org>
-Cc:     oneukum@suse.com, kuba@kernel.org, roland@kernel.org,
-        nic_swsd@realtek.com, netdev@vger.kernel.org, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, andrew@lunn.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Partitions that contains the nvmem-cells compatible will register
+their direct subonodes as nvmem cells and the node will be treated as a
+nvmem provider.
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+Depends on [PATCH] mtd: parsers: ofpart: limit parsing of deprecated DT syntax
+---
+ drivers/mtd/mtdcore.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-On Sat,  6 Mar 2021 14:12:31 -0800 you wrote:
-> Several error paths in bind/probe code will only emit
-> output using dev_dbg. But if we are going to fail the
-> bind/probe, emit related output with "err" priority.
-> 
-> Signed-off-by: Grant Grundler <grundler@chromium.org>
-> ---
->  drivers/net/usb/cdc_ncm.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next] net: usb: cdc_ncm: emit dev_err on error paths
-    https://git.kernel.org/netdev/net/c/492bbe7f8a43
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 2d6423d89a17..ac1b4f176a17 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -531,6 +531,7 @@ static int mtd_nvmem_reg_read(void *priv, unsigned int offset,
+ 
+ static int mtd_nvmem_add(struct mtd_info *mtd)
+ {
++	struct device_node *node = mtd_get_of_node(mtd);
+ 	struct nvmem_config config = {};
+ 
+ 	config.id = -1;
+@@ -543,7 +544,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
+ 	config.stride = 1;
+ 	config.read_only = true;
+ 	config.root_only = true;
+-	config.no_of_node = true;
++	config.no_of_node = !of_device_is_compatible(node, "nvmem-cells");
+ 	config.priv = mtd;
+ 
+ 	mtd->nvmem = nvmem_register(&config);
+-- 
+2.30.0
 
