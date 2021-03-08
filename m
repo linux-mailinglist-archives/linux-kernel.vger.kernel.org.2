@@ -2,344 +2,412 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29176330A8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C107330A83
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbhCHJux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 04:50:53 -0500
-Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:15346 "EHLO
-        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230511AbhCHJuc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 04:50:32 -0500
-Received: from pps.filterd (m0170389.ppops.net [127.0.0.1])
-        by mx0a-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1289XFF4031668;
-        Mon, 8 Mar 2021 04:49:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=smtpout1;
- bh=zS62iHTGwdWi780p8D0AE9zzfKr0+22+TkeLRR+LrwU=;
- b=rUu4AfbqipLtgx520SiPq1tsnveJ7yjN5YyRKSHAKaV/T/l7blRNgaun0EqHvPVnjKvb
- EbNgl9O3VvXQkB+nqKA4S35mODf3PYSjPpHCPqWe8p07Z3WyzUlwTM86EPCJ3irxcLcm
- 6M+RGxNQS5ff73FoEAvI2rky7Rm+4nDW7HGSjIKMHroR8vKn87A9UaEF8tDDMbMWDKgN
- 0jKvELtKpDAhJiL4NnbzNWKeBSV2T79sUNGW7fIdQ1VLATEEQk+5Yeiviu0vw4/1N5/U
- JjdtWpbG6qA5YF0D0qudV9pugxVqJS7EJ+uBU1GhXIpq99bIUCToM21+sS/+TRIq8pvD pw== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0a-00154904.pphosted.com with ESMTP id 3746mrktkt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Mar 2021 04:49:19 -0500
-Received: from pps.filterd (m0090351.ppops.net [127.0.0.1])
-        by mx0b-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1289UnpE078028;
-        Mon, 8 Mar 2021 04:49:19 -0500
-Received: from nam04-sn1-obe.outbound.protection.outlook.com (mail-sn1nam04lp2058.outbound.protection.outlook.com [104.47.44.58])
-        by mx0b-00154901.pphosted.com with ESMTP id 374quk43e0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Mar 2021 04:49:19 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H7I3bgrwSJnBCeWkTcgj9jHpGx1PJVI8nOSY7jUtPKx1wnFBZzuoPGRc55YKvImfjx/w70Csmk8svh6/9n28kfFAPv4F6thAYxnCuUziIq8c5f62A7sX5AnaMcJKsvo/Va7CP8OOQC1XoGuWcsVYEyr+4eQ+EWQ0LTOY9SJYYwkWT0H02PRp2M7qa5E4Q8pgk/IbDaVguAOefCt+64uCDt/RFyF9B1FQZEEu8Py5qu7gtkxOPriCOtUzzRLFuTWHSKI1zBtvjZ48rz8zTUmRUFp4MgfZ2e+cJY7XFld5euKEnv6CZfffW5F1XLXYTQN7mvNuO6yuFyJVaq1qQFTYDQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zS62iHTGwdWi780p8D0AE9zzfKr0+22+TkeLRR+LrwU=;
- b=JRpT4FrBuNiZfY9VXBw9bQrzsHDZzH6y8fIuFYgjVAZOCUrrZZNPkezkZc17h4aN/KNOCnTBpp8kqJB9iKfFk1BoKcPVYDqJPsR8BBYkNywIKll+IZDtW7vQAVKcCd193IXro0+orVTTQixGXqiWYQxg0KOCqJAsanJVAGwL1qIxijFme6UWikSmyCqBozUhtw8EHKWd92qHPgnujFCH/RU5TZM/6AcWGdDz8zM5zM+cP0p0bAO+hI83UysoUMJ92kF3Gdz5labAaSOUwiWIZlzmnAntQrBKGe5eiA5xGjrmzR0BOJoVE9jONSyjyGy8EbH+Ak0XxozoxW95jdt36A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
- dkim=pass header.d=dell.com; arc=none
-Received: from SJ0PR19MB4528.namprd19.prod.outlook.com (2603:10b6:a03:28a::6)
- by SJ0PR19MB4764.namprd19.prod.outlook.com (2603:10b6:a03:2ec::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Mon, 8 Mar
- 2021 09:49:17 +0000
-Received: from SJ0PR19MB4528.namprd19.prod.outlook.com
- ([fe80::50bf:f1c3:9600:fe6b]) by SJ0PR19MB4528.namprd19.prod.outlook.com
- ([fe80::50bf:f1c3:9600:fe6b%8]) with mapi id 15.20.3890.038; Mon, 8 Mar 2021
- 09:49:17 +0000
-From:   "Yuan, Perry" <Perry.Yuan@dell.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "pobrn@protonmail.com" <pobrn@protonmail.com>,
-        "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>
-CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Subject: RE: [PATCH v4 1/2] platform/x86: dell-privacy: Add support for Dell
- hardware privacy
-Thread-Topic: [PATCH v4 1/2] platform/x86: dell-privacy: Add support for Dell
- hardware privacy
-Thread-Index: AQHXDn6k5wL8X7p9nkSEGx5tlL+jsqpvMTMAgAqBXeA=
-Date:   Mon, 8 Mar 2021 09:49:17 +0000
-Message-ID: <SJ0PR19MB4528E7C88C955D2EE96CE3B484939@SJ0PR19MB4528.namprd19.prod.outlook.com>
-References: <20210301093753.16300-1-Perry_Yuan@Dell.com>
- <551e30d2-0211-f3cb-fbb8-ee5b2f22a851@linux.intel.com>
-In-Reply-To: <551e30d2-0211-f3cb-fbb8-ee5b2f22a851@linux.intel.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=Dell.com;
-x-originating-ip: [163.244.246.215]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d0edd158-3da5-4e3e-1eaa-08d8e21770de
-x-ms-traffictypediagnostic: SJ0PR19MB4764:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR19MB47640F8B429EE3034264077F84939@SJ0PR19MB4764.namprd19.prod.outlook.com>
-x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lMmQBPHAaBbVYvsLfUotTv7V7c6BDlXBjXwTZBiRmRlnmgYYM2jvhP/l+OfYwyxl+H+0hBiBJRYgYo7TQ3IA3dUrJ5QegsA1UfToLOu/N6N/ZjmbPf5iRCvvfiFpgEB51UC7e3bQpAunTk0IOjZQV8k/N/G8+U2x54zdTQz5KGIBTSsswD38/s+fDquc5UFvz9QJHp4O2JYvwuLmrLanxfNn978FjIMVe7K6TkW1Ay4UQs4dS7DR2GMVMyjlWHXoFKi+0oSDdfnoCJFq/EuZVSp/8oLAUi42CUndnsi4Z8mBU/B4Wo8uswwrb6fPjOBewCg6Xy6smBQBM/GCJSkp5fxuMaIhozPR01oLtjzOqfp7+h/6l9hcotjIipHjXbbNpNQEuj11AwUsp0NlnBvp4851SDcux53X1rgtSBZ0QMwOzXAkbay4ChS3ZqjkeH++oQQCMxGKssGJ40yA6Fad9/bhrB3BClKOZnqQ4WRUYpj+6CwchyIun4YPngY3yjQWUaxg3VCvfuppm1AiFO0rsA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR19MB4528.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(39860400002)(346002)(396003)(2906002)(786003)(86362001)(83380400001)(66574015)(186003)(66556008)(26005)(478600001)(9686003)(66476007)(66946007)(7696005)(54906003)(64756008)(7416002)(6636002)(110136005)(4326008)(5660300002)(33656002)(71200400001)(8676002)(76116006)(55016002)(53546011)(316002)(6506007)(66446008)(8936002)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?bU13clNpdWJwT0lnYWhuRUNxS0xCNlEzMk10bzdTUDV6b0V6ZXlCY2E4bmd3?=
- =?utf-8?B?NmF5a0NQSFkwZVRjbXg1REdUV3Z0bENGRC92S3RNVjZVYjh0Z2JaM2VBaWpL?=
- =?utf-8?B?R2N5WUx6Z3QrMDBjc1pEK0hkUlRGY2wzVlExQ1duRy9xMS9Ya1Q2blh2c0dP?=
- =?utf-8?B?d1pxYlZ3bENwYmh0TmNGTmhWVGdvakx6TWxDUEdSbitmS3ZYZFIvWS9DNGls?=
- =?utf-8?B?WXVNbjZTMHVrb2w0bWlYKy9ZcS9vQmZBVERHNTM1dnRZWXBXMlRnUy8yMDlj?=
- =?utf-8?B?ZURwKzVoR3Y1UDkrZyt1QkZqMDQ0TGpuR3lIeTFKTVdlbkFFMW1MT2hFSUdI?=
- =?utf-8?B?TW5ENm5FRkRzcTg2S0hySCtOUGVNbzZ3UlcvN0V1YUd1REh2ZE9Zdk1RbEc2?=
- =?utf-8?B?UWpZMVVBUjVkekVhUjNEcGtFUFVRU09DMThWWGgwM3FQc01BakprTE5jTy9I?=
- =?utf-8?B?SHVTUXNGOW50TTRsdjRRTmQ5ZVJRV1h3bnN5VWFUOHYrVTVHMUgzcmJRUnhV?=
- =?utf-8?B?eGtVRndoaHhySGN5OHJuWmpNZ1VEbmdvb0dUVi9sKzJDMmRSZVc5M05hQW9z?=
- =?utf-8?B?azVwUURkUHlZZUpnN0RQQ0hwZEtwVGpSVTBNNmljZXVnUlBKY2Z6ZGZoVmVy?=
- =?utf-8?B?VzVKQnMyRGpDblpMQUs0dUpFR3ZQMGhMc1E1L2h6aUZrZjR2RUlkZmJ1bHQx?=
- =?utf-8?B?NW1FMmU1WDg1Rml1Qlp6V2ZVb2hzcHpJd0UwTDBCVSs0aVh6RG12NzdrVDJh?=
- =?utf-8?B?NmdhQU9sRWQwN1V2NnE0YXFldzFoL2ZRcGc4OFZQa2laWTdzSjZTOVE2WjdV?=
- =?utf-8?B?S3NVS1VlZ3lmNW9RYkNqd0xVZUVOeWVjNkxSS24wQThaZ0s2ZHZHR3BZYUw1?=
- =?utf-8?B?ZXRKMVhzZUtNZ0JPRkJXNWQzUnA0b2l4MDZMSXBFRTBhOUw1ejk1V1c1M2w0?=
- =?utf-8?B?NWk3YlZSbkVjTTE4dGhPV0Z0c29kenNtb0pKWkFwbEQ3eW41RDZxdXkzd1Y1?=
- =?utf-8?B?M1pRUzMxTlN1MHBuN1Biak5BRGVtdjF5VEU3eTFNbTJ3OWhydkJoQjFFMU9E?=
- =?utf-8?B?NXZqZ2htRjRXaDh6ZDlvODRJMjdEYS9pdTB3cm1XMUNHamUvOElMMXRRWXNh?=
- =?utf-8?B?UGxmbDUyYnRseWxXMGM2R0QxNmpoQ00xQTYzakVHM1kvQlFVKzErTlFxeVpV?=
- =?utf-8?B?TDh3dDh0VTN3T3AzNmRFbVpRT1VobnVZZVFrVGtqbHNNaTV3Ryt5bHU1V3E5?=
- =?utf-8?B?WW9QdGpJeXZjZFFnU3FkWDRrYnljYzJlcXFKcXpWYXdLVnc3TGFYdjJLNXFz?=
- =?utf-8?B?VTZCeUdDTFN6RGNjb2wxRzN0MzRQMlo5T1NnTXN4bUtZMWtQRHZJbkk4REVq?=
- =?utf-8?B?K0xLRldGckZVOGtvdEo1YitrV3NCYjJwOGg2S0JEZzRXM21wUWllVjZXZGdL?=
- =?utf-8?B?T2wrMG1qNTVBU2dFeG10WGp3REJjYWdoQlhmQjVGdm5rbGp2Zk9pWUZkeEV2?=
- =?utf-8?B?bS9HdFlRMDVJT1VVd043TXkwYVIwSFRYR3FaRWthV0wxc1o3SXVSMUZXMVUx?=
- =?utf-8?B?cDVLQTlGZmwwd0xnZmpkZFF2cmh0M3JLeU84TldBV2FjK0N5L1dpejZSbmpH?=
- =?utf-8?B?a0NoRFJ1QW91aHNhQm1jMTc1UEVGT1p6TXdIekduZWg0ZC9KOWRHOFYvMFJR?=
- =?utf-8?B?WjNuN2UrUlA3RVl1dUZXeVFHYURBbVlZTExlM0hoaW1xNEZJNWZxU1ZNMnZp?=
- =?utf-8?Q?9Vkn9L368KP2k3mOjdH8PFWAIf44PNQB2+kQSEj?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S230461AbhCHJts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 04:49:48 -0500
+Received: from foss.arm.com ([217.140.110.172]:34980 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230455AbhCHJth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 04:49:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CD9CD6E;
+        Mon,  8 Mar 2021 01:49:37 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C85833F73C;
+        Mon,  8 Mar 2021 01:49:35 -0800 (PST)
+Date:   Mon, 8 Mar 2021 09:49:28 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 06/11] kentry: Simplify the common syscall API
+Message-ID: <20210308094928.GB7951@C02TD0UTHF1T.local>
+References: <cover.1614884673.git.luto@kernel.org>
+ <71443459ef325bcadf171b78cbac6abc9d873e44.1614884673.git.luto@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Dell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR19MB4528.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d0edd158-3da5-4e3e-1eaa-08d8e21770de
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Mar 2021 09:49:17.7490
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GIZV2C6JH/sfR6H7sBWxNIHtlbUNtVbJLa5KMwEHp4NWzfLK4kETi0RcrHUcwPrClxIvsfxxJlWIJ7lsX6fi/g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR19MB4764
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-08_04:2021-03-08,2021-03-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- spamscore=0 impostorscore=0 suspectscore=0 lowpriorityscore=0
- priorityscore=1501 mlxscore=0 clxscore=1015 phishscore=0 bulkscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103080050
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 spamscore=0
- mlxlogscore=999 phishscore=0 adultscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103080050
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71443459ef325bcadf171b78cbac6abc9d873e44.1614884673.git.luto@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gUGllcnJlOg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFBp
-ZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+
-DQo+IFNlbnQ6IE1vbmRheSwgTWFyY2ggMSwgMjAyMSAxMDoyOCBQTQ0KPiBUbzogWXVhbiwgUGVy
-cnk7IHBvYnJuQHByb3Rvbm1haWwuY29tOyBvZGVyX2NoaW91QHJlYWx0ZWsuY29tOw0KPiBwZXJl
-eEBwZXJleC5jejsgdGl3YWlAc3VzZS5jb207IGhkZWdvZWRlQHJlZGhhdC5jb207DQo+IG1ncm9z
-c0BsaW51eC5pbnRlbC5jb207IExpbW9uY2llbGxvLCBNYXJpbw0KPiBDYzogbGdpcmR3b29kQGdt
-YWlsLmNvbTsgYnJvb25pZUBrZXJuZWwub3JnOyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7
-DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IHBsYXRmb3JtLWRyaXZlci14ODZAdmdl
-ci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjQgMS8yXSBwbGF0Zm9ybS94ODY6
-IGRlbGwtcHJpdmFjeTogQWRkIHN1cHBvcnQgZm9yIERlbGwNCj4gaGFyZHdhcmUgcHJpdmFjeQ0K
-PiANCj4gDQo+IFtFWFRFUk5BTCBFTUFJTF0NCj4gDQo+IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL3BsYXRmb3JtL3g4Ni9NYWtlZmlsZQ0KPiA+IGIvZHJpdmVycy9wbGF0Zm9ybS94ODYvTWFr
-ZWZpbGUgaW5kZXggNTgxNDc1ZjU5ODE5Li4xOGM0MzA0NTZkZTcNCj4gPiAxMDA2NDQNCj4gPiAt
-LS0gYS9kcml2ZXJzL3BsYXRmb3JtL3g4Ni9NYWtlZmlsZQ0KPiA+ICsrKyBiL2RyaXZlcnMvcGxh
-dGZvcm0veDg2L01ha2VmaWxlDQo+ID4gQEAgLTUxLDcgKzUxLDkgQEAgb2JqLSQoQ09ORklHX0RF
-TExfV01JX0RFU0NSSVBUT1IpCSs9DQo+IGRlbGwtd21pLWRlc2NyaXB0b3Iubw0KPiA+ICAgb2Jq
-LSQoQ09ORklHX0RFTExfV01JX0FJTykJCSs9IGRlbGwtd21pLWFpby5vDQo+ID4gICBvYmotJChD
-T05GSUdfREVMTF9XTUlfTEVEKQkJKz0gZGVsbC13bWktbGVkLm8NCj4gPiAgIG9iai0kKENPTkZJ
-R19ERUxMX1dNSV9TWVNNQU4pCQkrPSBkZWxsLXdtaS1zeXNtYW4vDQo+ID4gLQ0KPiA+ICtvYmot
-JChDT05GSUdfREVMTF9QUklWQUNZKSAgICAgICAgICAgICAgKz0gZGVsbC1wcml2YWN5Lm8NCj4g
-PiArZGVsbC1wcml2YWN5LW9ianMgICAgICAgICAgICAgICAgICAgICAgIDo9IGRlbGwtcHJpdmFj
-eS13bWkubyBcDQo+ID4gKwkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRlbGwt
-cHJpdmFjeS1hY3BpLm8NCj4gPiAgICMgRnVqaXRzdQ0KPiA+ICAgb2JqLSQoQ09ORklHX0FNSUxP
-X1JGS0lMTCkJKz0gYW1pbG8tcmZraWxsLm8NCj4gPiAgIG9iai0kKENPTkZJR19GVUpJVFNVX0xB
-UFRPUCkJKz0gZnVqaXRzdS1sYXB0b3Aubw0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BsYXRm
-b3JtL3g4Ni9kZWxsLWxhcHRvcC5jDQo+ID4gYi9kcml2ZXJzL3BsYXRmb3JtL3g4Ni9kZWxsLWxh
-cHRvcC5jDQo+ID4gaW5kZXggNzBlZGM1YmIzYTE0Li5lYzBkY2M3ZmMxN2MgMTAwNjQ0DQo+ID4g
-LS0tIGEvZHJpdmVycy9wbGF0Zm9ybS94ODYvZGVsbC1sYXB0b3AuYw0KPiA+ICsrKyBiL2RyaXZl
-cnMvcGxhdGZvcm0veDg2L2RlbGwtbGFwdG9wLmMNCj4gPiBAQCAtMzEsNiArMzEsOCBAQA0KPiA+
-ICAgI2luY2x1ZGUgImRlbGwtcmJ0bi5oIg0KPiA+ICAgI2luY2x1ZGUgImRlbGwtc21iaW9zLmgi
-DQo+ID4NCj4gPiArI2luY2x1ZGUgImRlbGwtcHJpdmFjeS13bWkuaCINCj4gPiArDQo+ID4gICBz
-dHJ1Y3QgcXVpcmtfZW50cnkgew0KPiA+ICAgCWJvb2wgdG91Y2hwYWRfbGVkOw0KPiA+ICAgCWJv
-b2wga2JkX2xlZF9ub3RfcHJlc2VudDsNCj4gPiBAQCAtOTAsMTAgKzkyLDEyIEBAIHN0YXRpYyBz
-dHJ1Y3QgcmZraWxsICp3aWZpX3Jma2lsbDsNCj4gPiAgIHN0YXRpYyBzdHJ1Y3QgcmZraWxsICpi
-bHVldG9vdGhfcmZraWxsOw0KPiA+ICAgc3RhdGljIHN0cnVjdCByZmtpbGwgKnd3YW5fcmZraWxs
-Ow0KPiA+ICAgc3RhdGljIGJvb2wgZm9yY2VfcmZraWxsOw0KPiA+ICtzdGF0aWMgYm9vbCBoYXNf
-cHJpdmFjeTsNCj4gPg0KPiA+ICAgbW9kdWxlX3BhcmFtKGZvcmNlX3Jma2lsbCwgYm9vbCwgMDQ0
-NCk7DQo+ID4gICBNT0RVTEVfUEFSTV9ERVNDKGZvcmNlX3Jma2lsbCwgImVuYWJsZSByZmtpbGwg
-b24gbm9uIHdoaXRlbGlzdGVkDQo+ID4gbW9kZWxzIik7DQo+ID4NCj4gPiArDQo+IA0KPiBzcHVy
-aW91cyBsaW5lIGNoYW5nZQ0KSSBqdXN0IHdhbnQgdG8gbWFrZSB0aGVtIHNlcGFyYXRlIHdpdGgg
-bW9yZSBzcGFjZSAuDQpJZiBpdCBjYXVzZSBjb25jZXJuLCBJIHdpbGwgcmVtb3RlIHRoZSBsaW5l
-IGluIFY1Lg0KDQo+IA0KPiA+ICAgc3RhdGljIGNvbnN0IHN0cnVjdCBkbWlfc3lzdGVtX2lkIGRl
-bGxfZGV2aWNlX3RhYmxlW10gX19pbml0Y29uc3QgPSB7DQo+ID4gICAJew0KPiA+ICAgCQkuaWRl
-bnQgPSAiRGVsbCBsYXB0b3AiLA0KPiA+IEBAIC0yMjA1LDExICsyMjA5LDE3IEBAIHN0YXRpYyBp
-bnQgX19pbml0IGRlbGxfaW5pdCh2b2lkKQ0KPiA+ICAgCWRlbGxfbGFwdG9wX3JlZ2lzdGVyX25v
-dGlmaWVyKCZkZWxsX2xhcHRvcF9ub3RpZmllcik7DQo+ID4NCj4gPiAgIAlpZiAoZGVsbF9zbWJp
-b3NfZmluZF90b2tlbihHTE9CQUxfTUlDX01VVEVfRElTQUJMRSkgJiYNCj4gPiAtCSAgICBkZWxs
-X3NtYmlvc19maW5kX3Rva2VuKEdMT0JBTF9NSUNfTVVURV9FTkFCTEUpKSB7DQo+ID4gLQkJbWlj
-bXV0ZV9sZWRfY2Rldi5icmlnaHRuZXNzID0NCj4gbGVkdHJpZ19hdWRpb19nZXQoTEVEX0FVRElP
-X01JQ01VVEUpOw0KPiA+IC0JCXJldCA9IGxlZF9jbGFzc2Rldl9yZWdpc3RlcigmcGxhdGZvcm1f
-ZGV2aWNlLT5kZXYsDQo+ICZtaWNtdXRlX2xlZF9jZGV2KTsNCj4gPiAtCQlpZiAocmV0IDwgMCkN
-Cj4gPiAtCQkJZ290byBmYWlsX2xlZDsNCj4gPiArDQo+IAlkZWxsX3NtYmlvc19maW5kX3Rva2Vu
-KEdMT0JBTF9NSUNfTVVURV9FTkFCTEUpKSB7DQo+IA0KPiBub3Qgc3VyZSB3aHkgeW91IGNoYW5n
-ZWQgdGhlIGFsaWdubWVudD8NClRoZSBwcmV2aW91cyBhbGlnbm1lbnQgaXMgYSBsaXR0bGUgbm90
-IGNvcnJlY3QuDQpTbyBJIGFkanVzdCBpdA0KSWYgaXQgY2F1c2UgY29uY2Vybiwgd2lsbCByZXN0
-b3JlIGl0IHRvIG9yaWdpbmFsIHNoYXBlLg0KDQo+IA0KPiA+ICsJCWlmICghcHJpdmFjeV92YWxp
-ZCkNCj4gPiArCQkJaGFzX3ByaXZhY3kgPSB0cnVlOw0KPiA+ICsJCWVsc2UNCj4gPiArCQkJaGFz
-X3ByaXZhY3kgPSBmYWxzZTsNCj4gPiArCQlpZiAoIWhhc19wcml2YWN5KSB7DQo+ID4gKwkJCW1p
-Y211dGVfbGVkX2NkZXYuYnJpZ2h0bmVzcyA9DQo+IGxlZHRyaWdfYXVkaW9fZ2V0KExFRF9BVURJ
-T19NSUNNVVRFKTsNCj4gPiArCQkJcmV0ID0gbGVkX2NsYXNzZGV2X3JlZ2lzdGVyKCZwbGF0Zm9y
-bV9kZXZpY2UtPmRldiwNCj4gJm1pY211dGVfbGVkX2NkZXYpOw0KPiA+ICsJCQlpZiAocmV0IDwg
-MCkNCj4gPiArCQkJCWdvdG8gZmFpbF9sZWQ7DQo+ID4gKwkJfQ0KPiA+ICAgCX0NCj4gPg0KPiA+
-ICAgCWlmIChhY3BpX3ZpZGVvX2dldF9iYWNrbGlnaHRfdHlwZSgpICE9IGFjcGlfYmFja2xpZ2h0
-X3ZlbmRvcikNCj4gDQo+ID4gK3N0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIGRlbGxfcHJp
-dmFjeV9wbGF0Zm9ybV9kcnYgPSB7DQo+ID4gKwkuZHJpdmVyID0gew0KPiA+ICsJCS5uYW1lID0g
-UFJJVkFDWV9QTEFURk9STV9OQU1FLA0KPiA+ICsJfSwNCj4gPiArCS5wcm9iZSA9IGRlbGxfcHJp
-dmFjeV9hY3BpX3Byb2JlLA0KPiA+ICsJLnJlbW92ZSA9IGRlbGxfcHJpdmFjeV9hY3BpX3JlbW92
-ZSwNCj4gPiArfTsNCj4gPiArDQo+ID4gK2ludCBfX2luaXQgZGVsbF9wcml2YWN5X2FjcGlfaW5p
-dCh2b2lkKSB7DQo+ID4gKwlpbnQgZXJyOw0KPiA+ICsJc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
-cGRldjsNCj4gPiArDQo+ID4gKwlpZiAoIXdtaV9oYXNfZ3VpZChERUxMX1BSSVZBQ1lfR1VJRCkp
-DQo+ID4gKwkJcmV0dXJuIC1FTk9ERVY7DQo+ID4gKw0KPiA+ICsJcHJpdmFjeV9hY3BpID0ga3ph
-bGxvYyhzaXplb2YoKnByaXZhY3lfYWNwaSksIEdGUF9LRVJORUwpOw0KPiA+ICsJaWYgKCFwcml2
-YWN5X2FjcGkpDQo+ID4gKwkJcmV0dXJuIC1FTk9NRU07DQo+ID4gKw0KPiA+ICsJZXJyID0gcGxh
-dGZvcm1fZHJpdmVyX3JlZ2lzdGVyKCZkZWxsX3ByaXZhY3lfcGxhdGZvcm1fZHJ2KTsNCj4gPiAr
-CWlmIChlcnIpDQo+ID4gKwkJZ290byBwZHJ2X2VycjsNCj4gPiArDQo+ID4gKwlwZGV2ID0gcGxh
-dGZvcm1fZGV2aWNlX3JlZ2lzdGVyX3NpbXBsZSgNCj4gPiArCQkJUFJJVkFDWV9QTEFURk9STV9O
-QU1FLA0KPiBQTEFURk9STV9ERVZJRF9OT05FLCBOVUxMLCAwKTsNCj4gPiArCWlmIChJU19FUlIo
-cGRldikpIHsNCj4gPiArCQllcnIgPSBQVFJfRVJSKHBkZXYpOw0KPiA+ICsJCWdvdG8gcGRldl9l
-cnI7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJcmV0dXJuIDA7DQo+ID4gKw0KPiA+ICtwZGV2X2Vy
-cjoNCj4gPiArCXBsYXRmb3JtX2RldmljZV91bnJlZ2lzdGVyKHBkZXYpOw0KPiA+ICtwZHJ2X2Vy
-cjoNCj4gPiArCWtmcmVlKHByaXZhY3lfYWNwaSk7DQo+ID4gKwlyZXR1cm4gZXJyOw0KPiA+ICt9
-DQo+IA0KPiBkb24ndCB5b3UgbmVlZCBzb21lIHNvcnQgb2YgZGV2aWNlX2luaXRjYWxsKCkgdG8g
-bG9hZCB0aGlzIG1vZHVsZSBvbiBzdGFydHVwPw0KDQoNClRoZSBkcml2ZXIgZGVsbF9wcml2YWN5
-X2FjcGlfaW5pdCAgd2lsbCBiZSBjYWxsZWQgZnJvbSBkZWxsLXByaXZhY3ktd21pLmMgLCBTbyB0
-aGlzIGRyaXZlciBmaWxlIHdpbGwgbm90IHN0YXJ0IHRvIHJlZ2lzdGVyIGJ5IGl0c2VsZiAuDQpU
-aGUgd2hvbGUgZHJpdmVyIGluaXQgZW50cnkgaXMgY29udHJvbGxlZCBieSBkZWxsLXByaXZhY3kt
-d21pLmMgDQoNCg0KDQo+IA0KPiA+ICt2b2lkIGRlbGxfcHJpdmFjeV9wcm9jZXNzX2V2ZW50KGlu
-dCB0eXBlLCBpbnQgY29kZSwgaW50IHN0YXR1cykgew0KPiA+ICsJc3RydWN0IHByaXZhY3lfd21p
-X2RhdGEgKnByaXY7DQo+ID4gKwljb25zdCBzdHJ1Y3Qga2V5X2VudHJ5ICprZXk7DQo+ID4gKw0K
-PiA+ICsJbXV0ZXhfbG9jaygmbGlzdF9tdXRleCk7DQo+ID4gKwlwcml2ID0gbGlzdF9maXJzdF9l
-bnRyeV9vcl9udWxsKCZ3bWlfbGlzdCwNCj4gPiArCQkJc3RydWN0IHByaXZhY3lfd21pX2RhdGEs
-DQo+ID4gKwkJCWxpc3QpOw0KPiA+ICsJaWYgKCFwcml2KSB7DQo+ID4gKwkJcHJfZXJyKCJkZWxs
-IHByaXZhY3kgcHJpdiBpcyBOVUxMXG4iKTsNCj4gPiArCQlnb3RvIGVycm9yOw0KPiA+ICsJfQ0K
-PiA+ICsJa2V5ID0gc3BhcnNlX2tleW1hcF9lbnRyeV9mcm9tX3NjYW5jb2RlKHByaXYtPmlucHV0
-X2RldiwgKHR5cGUNCj4gPDwgMTYpIHwgY29kZSk7DQo+ID4gKwlpZiAoIWtleSkgew0KPiA+ICsJ
-CWRldl9kYmcoJnByaXYtPndkZXYtPmRldiwgIlVua25vd24ga2V5IHdpdGggdHlwZSAweCUwNHgN
-Cj4gYW5kIGNvZGUgMHglMDR4IHByZXNzZWRcbiIsDQo+ID4gKwkJCQl0eXBlLCBjb2RlKTsNCj4g
-PiArCQlnb3RvIGVycm9yOw0KPiA+ICsJfQ0KPiA+ICsJc3dpdGNoIChjb2RlKSB7DQo+ID4gKwlj
-YXNlIERFTExfUFJJVkFDWV9UWVBFX0FVRElPOiAvKiBNaWMgbXV0ZSAqLw0KPiA+ICsJCXByaXYt
-Pmxhc3Rfc3RhdHVzID0gc3RhdHVzOw0KPiA+ICsJCXNwYXJzZV9rZXltYXBfcmVwb3J0X2VudHJ5
-KHByaXYtPmlucHV0X2Rldiwga2V5LCAxLCB0cnVlKTsNCj4gPiArCQlicmVhazsNCj4gPiArCWNh
-c2UgREVMTF9QUklWQUNZX1RZUEVfQ0FNRVJBOiAvKiBDYW1lcmEgbXV0ZSAqLw0KPiA+ICsJCXBy
-aXYtPmxhc3Rfc3RhdHVzID0gc3RhdHVzOw0KPiA+ICsJCXNwYXJzZV9rZXltYXBfcmVwb3J0X2Vu
-dHJ5KHByaXYtPmlucHV0X2Rldiwga2V5LCAxLCB0cnVlKTsNCj4gPiArCQlicmVhazsNCj4gDQo+
-IFlvdSBhcmUgZG9pbmcgdGhlIHNhbWUgdGhpbmdzIHR3aWNlLCBzbyBncm91cCB0aGUgdHdvIGNh
-c2VzOg0KSW4gbmVhciBmdXR1cmUsIEkgYW0gIGdvaW5nICB0byBhZGQgc29tZSBkaWZmZXJlbnQg
-ZXZlbnQgaGFuZGxlIGNvZGVzIGZvciB0aGUgQXVkaW8gYW5kIENhbWVyYS4NCkN1cnJlbnRseSB0
-aGUgQ2FtZXJhIGlzIGp1c3QgcmVwb3J0aW5nIHRoZSBzYW1lIGV2ZW50IHRvIHVzZXIgc3BhY2Ug
-bGlrZSBhdWRpbyBkb3NlLg0KDQoNCj4gDQo+IAljYXNlIERFTExfUFJJVkFDWV9UWVBFX0FVRElP
-OiAvKiBNaWMgbXV0ZSAqLw0KPiAJY2FzZSBERUxMX1BSSVZBQ1lfVFlQRV9DQU1FUkE6IC8qIENh
-bWVyYSBtdXRlICovDQo+IAkJcHJpdi0+bGFzdF9zdGF0dXMgPSBzdGF0dXM7DQo+IAkJc3BhcnNl
-X2tleW1hcF9yZXBvcnRfZW50cnkocHJpdi0+aW5wdXRfZGV2LCBrZXksIDEsIHRydWUpOw0KPiAJ
-CWJyZWFrOw0KPiANCj4gPiArCWRlZmF1bHQ6DQo+ID4gKwkJCWRldl9kYmcoJnByaXYtPndkZXYt
-PmRldiwgInVua25vd24gZXZlbnQgdHlwZQ0KPiAweCUwNHggMHglMDR4IiwNCj4gPiArCQkJCQl0
-eXBlLCBjb2RlKTsNCj4gDQo+IGFsaWdubWVudD8NCldpbGwgZml4IGl0IGluIFY1DQo+IA0KPiA+
-ICsJfQ0KPiA+ICtlcnJvcjoNCj4gPiArCW11dGV4X3VubG9jaygmbGlzdF9tdXRleCk7DQo+ID4g
-K30NCj4gPiArRVhQT1JUX1NZTUJPTF9HUEwoZGVsbF9wcml2YWN5X3Byb2Nlc3NfZXZlbnQpOw0K
-PiANCj4gPiArc3RhdGljIGludCBkZWxsX3ByaXZhY3lfd21pX3Byb2JlKHN0cnVjdCB3bWlfZGV2
-aWNlICp3ZGV2LCBjb25zdCB2b2lkDQo+ID4gKypjb250ZXh0KSB7DQo+ID4gKwlzdHJ1Y3QgcHJp
-dmFjeV93bWlfZGF0YSAqcHJpdjsNCj4gPiArCXN0cnVjdCBrZXlfZW50cnkgKmtleW1hcDsNCj4g
-PiArCWludCByZXQsIGk7DQo+ID4gKw0KPiA+ICsJcHJpdiA9IGRldm1fa3phbGxvYygmd2Rldi0+
-ZGV2LCBzaXplb2YoKnByaXYpLCBHRlBfS0VSTkVMKTsNCj4gPiArCWlmICghcHJpdikNCj4gPiAr
-CQlyZXR1cm4gLUVOT01FTTsNCj4gPiArDQo+ID4gKwlkZXZfc2V0X2RydmRhdGEoJndkZXYtPmRl
-diwgcHJpdik7DQo+ID4gKwlwcml2LT53ZGV2ID0gd2RldjsNCj4gPiArCS8qIGNyZWF0ZSBldmRl
-diBwYXNzaW5nIGludGVyZmFjZSAqLw0KPiA+ICsJcHJpdi0+aW5wdXRfZGV2ID0gZGV2bV9pbnB1
-dF9hbGxvY2F0ZV9kZXZpY2UoJndkZXYtPmRldik7DQo+ID4gKwlpZiAoIXByaXYtPmlucHV0X2Rl
-dikNCj4gPiArCQlyZXR1cm4gLUVOT01FTTsNCj4gPiArCS8qIHJlbWFwIHRoZSB3bWkga2V5bWFw
-IGV2ZW50IHRvIG5ldyBrZXltYXAgKi8NCj4gPiArCWtleW1hcCA9IGtjYWxsb2MoQVJSQVlfU0la
-RShkZWxsX3dtaV9rZXltYXBfdHlwZV8wMDEyKSwNCj4gPiArCQkJc2l6ZW9mKHN0cnVjdCBrZXlf
-ZW50cnkpLCBHRlBfS0VSTkVMKTsNCj4gPiArCWlmICgha2V5bWFwKSB7DQo+ID4gKwkJcmV0ID0g
-LUVOT01FTTsNCj4gPiArCQlnb3RvIGVycl9mcmVlX2RldjsNCj4gPiArCX0NCj4gPiArCS8qIHJl
-bWFwIHRoZSBrZXltYXAgY29kZSB3aXRoIERlbGwgcHJpdmFjeSBrZXkgdHlwZSAweDEyIGFzIHBy
-ZWZpeA0KPiA+ICsJICogS0VZX01JQ01VVEUgc2NhbmNvZGUgd2lsbCBiZSByZXBvcnRlZCBhcyAw
-eDEyMDAwMQ0KPiA+ICsJICovDQo+ID4gKwlmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRShkZWxs
-X3dtaV9rZXltYXBfdHlwZV8wMDEyKTsgaSsrKSB7DQo+ID4gKwkJa2V5bWFwW2ldID0gZGVsbF93
-bWlfa2V5bWFwX3R5cGVfMDAxMltpXTsNCj4gPiArCQlrZXltYXBbaV0uY29kZSB8PSAoMHgwMDEy
-IDw8IDE2KTsNCj4gPiArCX0NCj4gPiArCXJldCA9IHNwYXJzZV9rZXltYXBfc2V0dXAocHJpdi0+
-aW5wdXRfZGV2LCBrZXltYXAsIE5VTEwpOw0KPiA+ICsJaWYgKHJldCkNCj4gPiArCQlyZXR1cm4g
-cmV0Ow0KPiA+ICsJcHJpdi0+aW5wdXRfZGV2LT5kZXYucGFyZW50ID0gJndkZXYtPmRldjsNCj4g
-PiArCXByaXYtPmlucHV0X2Rldi0+bmFtZSA9ICJEZWxsIFByaXZhY3kgRHJpdmVyIjsNCj4gPiAr
-CXByaXYtPmlucHV0X2Rldi0+aWQuYnVzdHlwZSA9IEJVU19IT1NUOw0KPiA+ICsJaWYgKGlucHV0
-X3JlZ2lzdGVyX2RldmljZShwcml2LT5pbnB1dF9kZXYpKSB7DQo+ID4gKwkJcHJfZGVidWcoImlu
-cHV0X3JlZ2lzdGVyX2RldmljZSBmYWlsZWQgdG8gcmVnaXN0ZXIhXG4iKTsNCj4gPiArCQlnb3Rv
-IGVycl9mcmVlX2tleW1hcDsNCj4gPiArCX0NCj4gPiArCW11dGV4X2xvY2soJmxpc3RfbXV0ZXgp
-Ow0KPiA+ICsJbGlzdF9hZGRfdGFpbCgmcHJpdi0+bGlzdCwgJndtaV9saXN0KTsNCj4gPiArCW11
-dGV4X3VubG9jaygmbGlzdF9tdXRleCk7DQo+ID4gKw0KPiA+ICsJaWYgKGdldF9jdXJyZW50X3N0
-YXR1cyhwcml2LT53ZGV2KSkNCj4gPiArCQlnb3RvIGVycl9mcmVlX2lucHV0Ow0KPiA+ICsNCj4g
-PiArCXJldCA9IGRldm1fZGV2aWNlX2FkZF9ncm91cCgmd2Rldi0+ZGV2LA0KPiAmcHJpdmFjeV9h
-dHRyaWJ1dGVfZ3JvdXApOw0KPiA+ICsJaWYgKHJldCkNCj4gPiArCQlnb3RvIGVycl9mcmVlX2lu
-cHV0Ow0KPiA+ICsNCj4gPiArCWtmcmVlKGtleW1hcCk7DQo+ID4gKwlyZXR1cm4gMDsNCj4gPiAr
-DQo+ID4gK2Vycl9mcmVlX2lucHV0Og0KPiA+ICsJaW5wdXRfdW5yZWdpc3Rlcl9kZXZpY2UocHJp
-di0+aW5wdXRfZGV2KTsNCj4gPiArZXJyX2ZyZWVfa2V5bWFwOg0KPiA+ICsJcHJpdmFjeV92YWxp
-ZCA9IC1FTk9ERVY7DQo+ID4gKwlrZnJlZShrZXltYXApOw0KPiA+ICtlcnJfZnJlZV9kZXY6DQo+
-ID4gKwlpbnB1dF9mcmVlX2RldmljZShwcml2LT5pbnB1dF9kZXYpOw0KPiANCj4gcHJpdi0+aW5w
-dXRfZGV2IGlzIGFsbG9jYXRlZCB3aXRoIGRldm1fLCBzbyB3aHkgZG8geW91IG5lZWQgdG8gZG8N
-Cj4gYW55dGhpbmcgd2l0aCBpdD8gdGhhdCBzZWVtcyBsaWtlIGEgbWlzcy4NCg0KWUVTLCAgSXQg
-ZG9zZSBub3QgbmVlZCB0byBmcmVlIHRoZSBkZXZpY2UgbWVtb3J5LCB3aWxsIGZpeCB0aGlzIGlu
-IFY1DQoNCg0KPiANCj4gPiArCXJldHVybiByZXQ7DQo+ID4gK30NCj4gPiArDQo+IA0KPiA+ICAg
-TU9EVUxFX0FVVEhPUigiTWF0dGhldyBHYXJyZXR0IDxtamdAcmVkaGF0LmNvbT4iKTsNCj4gPiAg
-IE1PRFVMRV9BVVRIT1IoIlBhbGkgUm9ow6FyIDxwYWxpQGtlcm5lbC5vcmc+Iik7DQo+ID4gQEAg
-LTM4MSw2ICszODMsNyBAQCBzdGF0aWMgdm9pZCBkZWxsX3dtaV9ub3RpZnkoc3RydWN0IHdtaV9k
-ZXZpY2UNCj4gKndkZXYsDQo+ID4gICAJdTE2ICpidWZmZXJfZW50cnksICpidWZmZXJfZW5kOw0K
-PiA+ICAgCWFjcGlfc2l6ZSBidWZmZXJfc2l6ZTsNCj4gPiAgIAlpbnQgbGVuLCBpOw0KPiA+ICsJ
-aW50IGVycjsNCj4gPg0KPiA+ICAgCWlmIChvYmotPnR5cGUgIT0gQUNQSV9UWVBFX0JVRkZFUikg
-ew0KPiA+ICAgCQlwcl93YXJuKCJiYWQgcmVzcG9uc2UgdHlwZSAleFxuIiwgb2JqLT50eXBlKTsN
-Cj4gPiBAQCAtNDI3LDEwICs0MzAsOSBAQCBzdGF0aWMgdm9pZCBkZWxsX3dtaV9ub3RpZnkoc3Ry
-dWN0IHdtaV9kZXZpY2UNCj4gKndkZXYsDQo+ID4NCj4gPiAgIAkJc3dpdGNoIChidWZmZXJfZW50
-cnlbMV0pIHsNCj4gPiAgIAkJY2FzZSAweDAwMDA6IC8qIE9uZSBrZXkgcHJlc3NlZCBvciBldmVu
-dCBvY2N1cnJlZCAqLw0KPiA+IC0JCWNhc2UgMHgwMDEyOiAvKiBFdmVudCB3aXRoIGV4dGVuZGVk
-IGRhdGEgb2NjdXJyZWQgKi8NCj4gPiAgIAkJCWlmIChsZW4gPiAyKQ0KPiA+ICAgCQkJCWRlbGxf
-d21pX3Byb2Nlc3Nfa2V5KHdkZXYsIGJ1ZmZlcl9lbnRyeVsxXSwNCj4gPiAtCQkJCQkJICAgICBi
-dWZmZXJfZW50cnlbMl0pOw0KPiA+ICsJCQkJCQlidWZmZXJfZW50cnlbMl0pOw0KPiANCj4ga2Vl
-cCB0aGUgYWxpZ25tZW50Pw0KDQpXaWxsIGNoZWNrIHRoZSBsaW5lIGFuZCBmaXggaXQgaW4gVjUN
-Cg0KPiANCj4gPiAgIAkJCS8qIEV4dGVuZGVkIGRhdGEgaXMgY3VycmVudGx5IGlnbm9yZWQgKi8N
-Cj4gPiAgIAkJCWJyZWFrOw0KPiA+ICAgCQljYXNlIDB4MDAxMDogLyogU2VxdWVuY2Ugb2Yga2V5
-cyBwcmVzc2VkICovDQo+ID4gQEAgLTQzOSw2ICs0NDEsMTcgQEAgc3RhdGljIHZvaWQgZGVsbF93
-bWlfbm90aWZ5KHN0cnVjdCB3bWlfZGV2aWNlDQo+ICp3ZGV2LA0KPiA+ICAgCQkJCWRlbGxfd21p
-X3Byb2Nlc3Nfa2V5KHdkZXYsIGJ1ZmZlcl9lbnRyeVsxXSwNCj4gPiAgIAkJCQkJCSAgICAgYnVm
-ZmVyX2VudHJ5W2ldKTsNCj4gPiAgIAkJCWJyZWFrOw0KPiA+ICsJCWNhc2UgMHgwMDEyOg0KPiA+
-ICsJCQllcnIgPSBkZWxsX3ByaXZhY3lfc3RhdGUoKTsNCj4gPiArCQkJaWYgKGVyciA9PSAwKSB7
-DQo+ID4gKwkJCQlkZWxsX3ByaXZhY3lfcHJvY2Vzc19ldmVudChidWZmZXJfZW50cnlbMV0sDQo+
-ID4gKwkJCQkJCWJ1ZmZlcl9lbnRyeVszXSwNCj4gYnVmZmVyX2VudHJ5WzRdKTsNCj4gPiArCQkJ
-fSBlbHNlIHsNCj4gPiArCQkJCWlmIChsZW4gPiAyKQ0KPiA+ICsJCQkJCWRlbGxfd21pX3Byb2Nl
-c3Nfa2V5KHdkZXYsDQo+IGJ1ZmZlcl9lbnRyeVsxXSwNCj4gPiArCQkJCQkJYnVmZmVyX2VudHJ5
-WzJdKTsNCj4gPiArCQkJfQ0KPiA+ICsJCQlicmVhazsNCj4gPiAgIAkJZGVmYXVsdDogLyogVW5r
-bm93biBldmVudCAqLw0KPiA+ICAgCQkJcHJfaW5mbygiVW5rbm93biBXTUkgZXZlbnQgdHlwZSAw
-eCV4XG4iLA0KPiA+ICAgCQkJCShpbnQpYnVmZmVyX2VudHJ5WzFdKTsNCj4gPg0K
+On Thu, Mar 04, 2021 at 11:05:59AM -0800, Andy Lutomirski wrote:
+> The new common syscall API had a large and confusing API surface.  Simplify
+> it.  Now there is exactly one way to use it.  It's a bit more verbose than
+> the old way for the simple x86_64 native case, but it's much easier to use
+> right, and the diffstat should speak for itself.
+> 
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+
+I think that having this more verbose is going to make it easier to
+handle ABI warts that differ across architectures, so:
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
+
+> ---
+>  arch/x86/entry/common.c      | 57 +++++++++++++++---------
+>  include/linux/entry-common.h | 86 ++++++------------------------------
+>  kernel/entry/common.c        | 57 +++---------------------
+>  3 files changed, 54 insertions(+), 146 deletions(-)
+> 
+> diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+> index ef1c65938a6b..8710b2300b8d 100644
+> --- a/arch/x86/entry/common.c
+> +++ b/arch/x86/entry/common.c
+> @@ -38,9 +38,12 @@
+>  #ifdef CONFIG_X86_64
+>  __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
+>  {
+> -	nr = syscall_enter_from_user_mode(regs, nr);
+> -
+> +	kentry_enter_from_user_mode(regs);
+> +	local_irq_enable();
+>  	instrumentation_begin();
+> +
+> +	nr = kentry_syscall_begin(regs, nr);
+> +
+>  	if (likely(nr < NR_syscalls)) {
+>  		nr = array_index_nospec(nr, NR_syscalls);
+>  		regs->ax = sys_call_table[nr](regs);
+> @@ -52,8 +55,12 @@ __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
+>  		regs->ax = x32_sys_call_table[nr](regs);
+>  #endif
+>  	}
+> +
+> +	kentry_syscall_end(regs);
+> +
+> +	local_irq_disable();
+>  	instrumentation_end();
+> -	syscall_exit_to_user_mode(regs);
+> +	kentry_exit_to_user_mode(regs);
+>  }
+>  #endif
+>  
+> @@ -83,33 +90,34 @@ __visible noinstr void do_int80_syscall_32(struct pt_regs *regs)
+>  {
+>  	unsigned int nr = syscall_32_enter(regs);
+>  
+> +	kentry_enter_from_user_mode(regs);
+> +	local_irq_enable();
+> +	instrumentation_begin();
+> +
+>  	/*
+>  	 * Subtlety here: if ptrace pokes something larger than 2^32-1 into
+>  	 * orig_ax, the unsigned int return value truncates it.  This may
+>  	 * or may not be necessary, but it matches the old asm behavior.
+>  	 */
+> -	nr = (unsigned int)syscall_enter_from_user_mode(regs, nr);
+> -	instrumentation_begin();
+> -
+> +	nr = (unsigned int)kentry_syscall_begin(regs, nr);
+>  	do_syscall_32_irqs_on(regs, nr);
+> +	kentry_syscall_end(regs);
+>  
+> +	local_irq_disable();
+>  	instrumentation_end();
+> -	syscall_exit_to_user_mode(regs);
+> +	kentry_exit_to_user_mode(regs);
+>  }
+>  
+>  static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
+>  {
+>  	unsigned int nr = syscall_32_enter(regs);
+> +	bool ret;
+>  	int res;
+>  
+> -	/*
+> -	 * This cannot use syscall_enter_from_user_mode() as it has to
+> -	 * fetch EBP before invoking any of the syscall entry work
+> -	 * functions.
+> -	 */
+> -	syscall_enter_from_user_mode_prepare(regs);
+> -
+> +	kentry_enter_from_user_mode(regs);
+> +	local_irq_enable();
+>  	instrumentation_begin();
+> +
+>  	/* Fetch EBP from where the vDSO stashed it. */
+>  	if (IS_ENABLED(CONFIG_X86_64)) {
+>  		/*
+> @@ -126,21 +134,23 @@ static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
+>  	if (res) {
+>  		/* User code screwed up. */
+>  		regs->ax = -EFAULT;
+> -
+> -		instrumentation_end();
+> -		local_irq_disable();
+> -		irqentry_exit_to_user_mode(regs);
+> -		return false;
+> +		ret = false;
+> +		goto out;
+>  	}
+>  
+>  	/* The case truncates any ptrace induced syscall nr > 2^32 -1 */
+> -	nr = (unsigned int)syscall_enter_from_user_mode_work(regs, nr);
+> +	nr = (unsigned int)kentry_syscall_begin(regs, nr);
+>  
+>  	/* Now this is just like a normal syscall. */
+>  	do_syscall_32_irqs_on(regs, nr);
+>  
+> +	kentry_syscall_end(regs);
+> +	ret = true;
+> +
+> +out:
+> +	local_irq_disable();
+>  	instrumentation_end();
+> -	syscall_exit_to_user_mode(regs);
+> +	kentry_exit_to_user_mode(regs);
+>  	return true;
+>  }
+>  
+> @@ -233,8 +243,11 @@ __visible void noinstr ret_from_fork(struct task_struct *prev,
+>  		user_regs->ax = 0;
+>  	}
+>  
+> +	kentry_syscall_end(user_regs);
+> +
+> +	local_irq_disable();
+>  	instrumentation_end();
+> -	syscall_exit_to_user_mode(user_regs);
+> +	kentry_exit_to_user_mode(user_regs);
+>  }
+>  
+>  #ifdef CONFIG_XEN_PV
+> diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+> index fd2d7c35670a..5287c6c15a66 100644
+> --- a/include/linux/entry-common.h
+> +++ b/include/linux/entry-common.h
+> @@ -119,31 +119,12 @@ static inline __must_check int arch_syscall_enter_tracehook(struct pt_regs *regs
+>  void enter_from_user_mode(struct pt_regs *regs);
+>  
+>  /**
+> - * syscall_enter_from_user_mode_prepare - Establish state and enable interrupts
+> - * @regs:	Pointer to currents pt_regs
+> - *
+> - * Invoked from architecture specific syscall entry code with interrupts
+> - * disabled. The calling code has to be non-instrumentable. When the
+> - * function returns all state is correct, interrupts are enabled and the
+> - * subsequent functions can be instrumented.
+> - *
+> - * This handles lockdep, RCU (context tracking) and tracing state, i.e.
+> - * the functionality provided by enter_from_user_mode().
+> - *
+> - * This is invoked when there is extra architecture specific functionality
+> - * to be done between establishing state and handling user mode entry work.
+> - */
+> -void syscall_enter_from_user_mode_prepare(struct pt_regs *regs);
+> -
+> -/**
+> - * syscall_enter_from_user_mode_work - Check and handle work before invoking
+> - *				       a syscall
+> + * kentry_syscall_begin - Prepare to invoke a syscall handler
+>   * @regs:	Pointer to currents pt_regs
+>   * @syscall:	The syscall number
+>   *
+>   * Invoked from architecture specific syscall entry code with interrupts
+> - * enabled after invoking syscall_enter_from_user_mode_prepare() and extra
+> - * architecture specific work.
+> + * enabled after kentry_enter_from_usermode or a similar function.
+>   *
+>   * Returns: The original or a modified syscall number
+>   *
+> @@ -152,32 +133,16 @@ void syscall_enter_from_user_mode_prepare(struct pt_regs *regs);
+>   * syscall_set_return_value() first.  If neither of those are called and -1
+>   * is returned, then the syscall will fail with ENOSYS.
+>   *
+> + * After calling kentry_syscall_begin(), regardless of the return value,
+> + * the caller must call kentry_syscall_end().
+> + *
+>   * It handles the following work items:
+>   *
+>   *  1) syscall_work flag dependent invocations of
+>   *     arch_syscall_enter_tracehook(), __secure_computing(), trace_sys_enter()
+>   *  2) Invocation of audit_syscall_entry()
+>   */
+> -long syscall_enter_from_user_mode_work(struct pt_regs *regs, long syscall);
+> -
+> -/**
+> - * syscall_enter_from_user_mode - Establish state and check and handle work
+> - *				  before invoking a syscall
+> - * @regs:	Pointer to currents pt_regs
+> - * @syscall:	The syscall number
+> - *
+> - * Invoked from architecture specific syscall entry code with interrupts
+> - * disabled. The calling code has to be non-instrumentable. When the
+> - * function returns all state is correct, interrupts are enabled and the
+> - * subsequent functions can be instrumented.
+> - *
+> - * This is combination of syscall_enter_from_user_mode_prepare() and
+> - * syscall_enter_from_user_mode_work().
+> - *
+> - * Returns: The original or a modified syscall number. See
+> - * syscall_enter_from_user_mode_work() for further explanation.
+> - */
+> -long syscall_enter_from_user_mode(struct pt_regs *regs, long syscall);
+> +long kentry_syscall_begin(struct pt_regs *regs, long syscall);
+>  
+>  /**
+>   * local_irq_enable_exit_to_user - Exit to user variant of local_irq_enable()
+> @@ -317,28 +282,16 @@ static inline void arch_syscall_exit_tracehook(struct pt_regs *regs, bool step)
+>  void exit_to_user_mode(void);
+>  
+>  /**
+> - * syscall_exit_to_user_mode_work - Handle work before returning to user mode
+> + * kentry_syscall_end - Finish syscall processing
+>   * @regs:	Pointer to currents pt_regs
+>   *
+> - * Same as step 1 and 2 of syscall_exit_to_user_mode() but without calling
+> - * exit_to_user_mode() to perform the final transition to user mode.
+>   *
+> - * Calling convention is the same as for syscall_exit_to_user_mode() and it
+> - * returns with all work handled and interrupts disabled. The caller must
+> - * invoke exit_to_user_mode() before actually switching to user mode to
+> - * make the final state transitions. Interrupts must stay disabled between
+> - * return from this function and the invocation of exit_to_user_mode().
+> - */
+> -void syscall_exit_to_user_mode_work(struct pt_regs *regs);
+> -
+> -/**
+> - * syscall_exit_to_user_mode - Handle work before returning to user mode
+> - * @regs:	Pointer to currents pt_regs
+> + * This must be called after arch code calls kentry_syscall_begin()
+> + * and invoking a syscall handler, if any.  This must also be called when
+> + * returning from fork() to user mode, since return-from-fork is considered
+> + * to be a syscall return.
+>   *
+> - * Invoked with interrupts enabled and fully valid regs. Returns with all
+> - * work handled, interrupts disabled such that the caller can immediately
+> - * switch to user mode. Called from architecture specific syscall and ret
+> - * from fork code.
+> + * Called with IRQs on.  Returns with IRQs still on.
+>   *
+>   * The call order is:
+>   *  1) One-time syscall exit work:
+> @@ -346,21 +299,8 @@ void syscall_exit_to_user_mode_work(struct pt_regs *regs);
+>   *      - audit
+>   *	- syscall tracing
+>   *	- tracehook (single stepping)
+> - *
+> - *  2) Preparatory work
+> - *	- Exit to user mode loop (common TIF handling). Invokes
+> - *	  arch_exit_to_user_mode_work() for architecture specific TIF work
+> - *	- Architecture specific one time work arch_exit_to_user_mode_prepare()
+> - *	- Address limit and lockdep checks
+> - *
+> - *  3) Final transition (lockdep, tracing, context tracking, RCU), i.e. the
+> - *     functionality in exit_to_user_mode().
+> - *
+> - * This is a combination of syscall_exit_to_user_mode_work() (1,2) and
+> - * exit_to_user_mode(). This function is preferred unless there is a
+> - * compelling architectural reason to use the seperate functions.
+>   */
+> -void syscall_exit_to_user_mode(struct pt_regs *regs);
+> +void kentry_syscall_end(struct pt_regs *regs);
+>  
+>  /**
+>   * kentry_enter_from_user_mode - Establish state before invoking the irq handler
+> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> index 269766a8f981..800ad406431b 100644
+> --- a/kernel/entry/common.c
+> +++ b/kernel/entry/common.c
+> @@ -80,44 +80,19 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
+>  	return ret ? : syscall;
+>  }
+>  
+> -static __always_inline long
+> -__syscall_enter_from_user_work(struct pt_regs *regs, long syscall)
+> +long kentry_syscall_begin(struct pt_regs *regs, long syscall)
+>  {
+>  	unsigned long work = READ_ONCE(current_thread_info()->syscall_work);
+>  
+> +	CT_WARN_ON(ct_state() != CONTEXT_KERNEL);
+> +	lockdep_assert_irqs_enabled();
+> +
+>  	if (work & SYSCALL_WORK_ENTER)
+>  		syscall = syscall_trace_enter(regs, syscall, work);
+>  
+>  	return syscall;
+>  }
+>  
+> -long syscall_enter_from_user_mode_work(struct pt_regs *regs, long syscall)
+> -{
+> -	return __syscall_enter_from_user_work(regs, syscall);
+> -}
+> -
+> -noinstr long syscall_enter_from_user_mode(struct pt_regs *regs, long syscall)
+> -{
+> -	long ret;
+> -
+> -	__enter_from_user_mode(regs);
+> -
+> -	instrumentation_begin();
+> -	local_irq_enable();
+> -	ret = __syscall_enter_from_user_work(regs, syscall);
+> -	instrumentation_end();
+> -
+> -	return ret;
+> -}
+> -
+> -noinstr void syscall_enter_from_user_mode_prepare(struct pt_regs *regs)
+> -{
+> -	__enter_from_user_mode(regs);
+> -	instrumentation_begin();
+> -	local_irq_enable();
+> -	instrumentation_end();
+> -}
+> -
+>  /* See comment for exit_to_user_mode() in entry-common.h */
+>  static __always_inline void __exit_to_user_mode(void)
+>  {
+> @@ -218,7 +193,7 @@ static inline bool report_single_step(unsigned long work)
+>  /*
+>   * If SYSCALL_EMU is set, then the only reason to report is when
+>   * TIF_SINGLESTEP is set (i.e. PTRACE_SYSEMU_SINGLESTEP).  This syscall
+> - * instruction has been already reported in syscall_enter_from_user_mode().
+> + * instruction has been already reported in kentry_syscall_begin().
+>   */
+>  static inline bool report_single_step(unsigned long work)
+>  {
+> @@ -261,7 +236,7 @@ static void syscall_exit_work(struct pt_regs *regs, unsigned long work)
+>   * Syscall specific exit to user mode preparation. Runs with interrupts
+>   * enabled.
+>   */
+> -static void syscall_exit_to_user_mode_prepare(struct pt_regs *regs)
+> +void kentry_syscall_end(struct pt_regs *regs)
+>  {
+>  	unsigned long work = READ_ONCE(current_thread_info()->syscall_work);
+>  	unsigned long nr = syscall_get_nr(current, regs);
+> @@ -284,26 +259,6 @@ static void syscall_exit_to_user_mode_prepare(struct pt_regs *regs)
+>  		syscall_exit_work(regs, work);
+>  }
+>  
+> -static __always_inline void __syscall_exit_to_user_mode_work(struct pt_regs *regs)
+> -{
+> -	syscall_exit_to_user_mode_prepare(regs);
+> -	local_irq_disable_exit_to_user();
+> -	exit_to_user_mode_prepare(regs);
+> -}
+> -
+> -void syscall_exit_to_user_mode_work(struct pt_regs *regs)
+> -{
+> -	__syscall_exit_to_user_mode_work(regs);
+> -}
+> -
+> -__visible noinstr void syscall_exit_to_user_mode(struct pt_regs *regs)
+> -{
+> -	instrumentation_begin();
+> -	__syscall_exit_to_user_mode_work(regs);
+> -	instrumentation_end();
+> -	__exit_to_user_mode();
+> -}
+> -
+>  noinstr void kentry_enter_from_user_mode(struct pt_regs *regs)
+>  {
+>  	__enter_from_user_mode(regs);
+> -- 
+> 2.29.2
+> 
