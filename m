@@ -2,209 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62FD9331131
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E93331140
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbhCHOrW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Mar 2021 09:47:22 -0500
-Received: from aposti.net ([89.234.176.197]:47378 "EHLO aposti.net"
+        id S229650AbhCHOwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 09:52:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229697AbhCHOq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:46:57 -0500
-Date:   Mon, 08 Mar 2021 14:46:26 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 2/2] mmc: jz4740: Add support for monitoring PLL clock
- rate changes
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     od@zcrc.me, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-Message-Id: <EPNNPQ.GYRRY95IUVFU@crapouillou.net>
-In-Reply-To: <20210307170742.70949-3-paul@crapouillou.net>
-References: <20210307170742.70949-1-paul@crapouillou.net>
-        <20210307170742.70949-3-paul@crapouillou.net>
+        id S229690AbhCHOwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 09:52:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F904650ED;
+        Mon,  8 Mar 2021 14:52:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615215135;
+        bh=zcV5XaYvoMhf2mkCNLmmjTPaR/kS4dnjNFn8LytabeQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HJycUihYXsVc3M2fN+5uqgcNjbvzNBBzVFPfVB8agtPfyWQC9d0ky+hWK1+kVhf3s
+         biRThEXrxbtENvO/pF0gKDJ+IYI1OOFD1oICpzIIrerrRYv6gSFnimlbiTcToGxseQ
+         cKzQQWlNFjqOVSNKU917uJ7++gL/8KvyVrTKd91+8Bp4uz8Z7epA9p2nRJHE7lWI+J
+         j5b7QGZ0EjlRqvhh7H3l0ytMM2aRg6yppMBKoTxFYh/dAj//z/iLi+0AsU8a83qqcw
+         5QXcdeqRwr0WZCz3KIQCThmfZVgj1IkhzhaxHDjY98dAYkGfuMWiwBpEo9LHyeY4mU
+         oPUMBKnM7Mu7g==
+Date:   Mon, 8 Mar 2021 14:52:09 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V5 1/2] topology: Allow multiple entities to provide
+ sched_freq_tick() callback
+Message-ID: <20210308145209.GA26458@willie-the-truck>
+References: <cover.1614580695.git.viresh.kumar@linaro.org>
+ <a34f549bc75eecd4804aebb7b7794b45769eccf0.1614580695.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a34f549bc75eecd4804aebb7b7794b45769eccf0.1614580695.git.viresh.kumar@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le dim. 7 mars 2021 à 17:07, Paul Cercueil <paul@crapouillou.net> a 
-écrit :
-> The main PLL can have its rate changed at any moment. To keep the MMC
-> clock running at a rate that fits the specifications, we need to
-> recompute the MMC clock rate every time the PLL rate changes.
+On Mon, Mar 01, 2021 at 12:21:17PM +0530, Viresh Kumar wrote:
+> This patch attempts to make it generic enough so other parts of the
+> kernel can also provide their own implementation of scale_freq_tick()
+> callback, which is called by the scheduler periodically to update the
+> per-cpu freq_scale variable.
 > 
-> Use a mutex to ensure that the MMC is idle before performing the PLL 
-> and
-> MMC rate changes.
+> The implementations now need to provide 'struct scale_freq_data' for the
+> CPUs for which they have hardware counters available, and a callback
+> gets registered for each possible CPU in a per-cpu variable.
 > 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> The arch specific (or ARM AMU) counters are updated to adapt to this and
+> they take the highest priority if they are available, i.e. they will be
+> used instead of CPPC based counters for example.
+> 
+> The special code to rebuild the sched domains, in case invariance status
+> change for the system, is moved out of arm64 specific code and is added
+> to arch_topology.c.
+> 
+> Note that this also defines SCALE_FREQ_SOURCE_CPUFREQ but doesn't use it
+> and it is added to show that cpufreq is also acts as source of
+> information for FIE and will be used by default if no other counters are
+> supported for a platform.
+> 
+> Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> Tested-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->  drivers/mmc/host/jz4740_mmc.c | 70 
-> ++++++++++++++++++++++++++++++++++-
->  1 file changed, 69 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mmc/host/jz4740_mmc.c 
-> b/drivers/mmc/host/jz4740_mmc.c
-> index b3c636edbb46..1197b8c6b6ed 100644
-> --- a/drivers/mmc/host/jz4740_mmc.c
-> +++ b/drivers/mmc/host/jz4740_mmc.c
-> @@ -18,6 +18,7 @@
->  #include <linux/mmc/host.h>
->  #include <linux/mmc/slot-gpio.h>
->  #include <linux/module.h>
-> +#include <linux/mutex.h>
->  #include <linux/of_device.h>
->  #include <linux/pinctrl/consumer.h>
->  #include <linux/platform_device.h>
-> @@ -149,6 +150,10 @@ struct jz4740_mmc_host {
->  	struct platform_device *pdev;
->  	struct clk *clk;
-> 
-> +	atomic_t clk_mutex_count;
-> +	struct mutex clk_mutex;
-> +	struct notifier_block clock_nb;
-> +
->  	enum jz4740_mmc_version version;
-> 
->  	int irq;
-> @@ -338,6 +343,9 @@ static void jz4740_mmc_pre_request(struct 
-> mmc_host *mmc,
->  	struct jz4740_mmc_host *host = mmc_priv(mmc);
->  	struct mmc_data *data = mrq->data;
-> 
-> +	if (atomic_inc_and_test(&host->clk_mutex_count))
-> +		mutex_lock(&host->clk_mutex);
+>  arch/arm64/include/asm/topology.h |  10 +--
+>  arch/arm64/kernel/topology.c      | 105 +++++++++++-------------------
+>  drivers/base/arch_topology.c      |  85 ++++++++++++++++++++++--
+>  include/linux/arch_topology.h     |  14 +++-
+>  4 files changed, 134 insertions(+), 80 deletions(-)
 
-There's an obvious race here, let me rewrite this using the proper 
-locking mechanism.
+For the arm64 bits:
 
--Paul
+Acked-by: Will Deacon <will@kernel.org>
 
+However...
+
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index de8587cc119e..8f62dbf93f67 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -21,17 +21,94 @@
+>  #include <linux/sched.h>
+>  #include <linux/smp.h>
+>  
+> +static DEFINE_PER_CPU(struct scale_freq_data *, sft_data);
+> +static struct cpumask scale_freq_counters_mask;
+> +static bool scale_freq_invariant;
 > +
->  	if (!host->use_dma)
->  		return;
-> 
-> @@ -353,6 +361,9 @@ static void jz4740_mmc_post_request(struct 
-> mmc_host *mmc,
->  	struct jz4740_mmc_host *host = mmc_priv(mmc);
->  	struct mmc_data *data = mrq->data;
-> 
-> +	if (atomic_dec_return(&host->clk_mutex_count) == -1)
-> +		mutex_unlock(&host->clk_mutex);
-> +
->  	if (data && data->host_cookie != COOKIE_UNMAPPED)
->  		jz4740_mmc_dma_unmap(host, data);
-> 
-> @@ -955,6 +966,48 @@ static const struct mmc_host_ops jz4740_mmc_ops 
-> = {
->  	.enable_sdio_irq = jz4740_mmc_enable_sdio_irq,
->  };
-> 
-> +static inline struct jz4740_mmc_host *
-> +jz4740_mmc_nb_get_priv(struct notifier_block *nb)
+> +static bool supports_scale_freq_counters(const struct cpumask *cpus)
 > +{
-> +	return container_of(nb, struct jz4740_mmc_host, clock_nb);
+> +	return cpumask_subset(cpus, &scale_freq_counters_mask);
 > +}
 > +
-> +static struct clk *jz4740_mmc_get_parent_clk(struct clk *clk)
-> +{
-> +	/*
-> +	 * Return the first clock above the one that will effectively modify
-> +	 * its rate when clk_set_rate(clk) is called.
-> +	 */
-> +	clk = clk_get_first_to_set_rate(clk);
-> +
-> +	return clk_get_parent(clk);
-> +}
-> +
-> +static int jz4740_mmc_update_clk(struct notifier_block *nb,
-> +				 unsigned long action,
-> +				 void *data)
-> +{
-> +	struct jz4740_mmc_host *host = jz4740_mmc_nb_get_priv(nb);
+>  bool topology_scale_freq_invariant(void)
+>  {
+>  	return cpufreq_supports_freq_invariance() ||
+> -	       arch_freq_counters_available(cpu_online_mask);
+> +	       supports_scale_freq_counters(cpu_online_mask);
+>  }
+>  
+> -__weak bool arch_freq_counters_available(const struct cpumask *cpus)
+> +static void update_scale_freq_invariant(bool status)
+>  {
+> -	return false;
+> +	if (scale_freq_invariant == status)
+> +		return;
 > +
 > +	/*
-> +	 * PLL may have changed its frequency; our clock may be running 
-> above
-> +	 * spec. Wait until MMC is idle (using host->clk_mutex) before 
-> changing
-> +	 * the PLL clock, and after it's done, reset our clock rate.
+> +	 * Task scheduler behavior depends on frequency invariance support,
+> +	 * either cpufreq or counter driven. If the support status changes as
+> +	 * a result of counter initialisation and use, retrigger the build of
+> +	 * scheduling domains to ensure the information is propagated properly.
 > +	 */
+> +	if (topology_scale_freq_invariant() == status) {
+> +		scale_freq_invariant = status;
+> +		rebuild_sched_domains_energy();
+> +	}
+>  }
 > +
-> +	switch (action) {
-> +	case PRE_RATE_CHANGE:
-> +		mutex_lock(&host->clk_mutex);
-> +		break;
-> +	default:
-> +		clk_set_rate(host->clk, host->mmc->f_max);
-> +		mutex_unlock(&host->clk_mutex);
-> +		break;
+> +void topology_set_scale_freq_source(struct scale_freq_data *data,
+> +				    const struct cpumask *cpus)
+> +{
+> +	struct scale_freq_data *sfd;
+> +	int cpu;
+> +
+> +	/*
+> +	 * Avoid calling rebuild_sched_domains() unnecessarily if FIE is
+> +	 * supported by cpufreq.
+> +	 */
+> +	if (cpumask_empty(&scale_freq_counters_mask))
+> +		scale_freq_invariant = topology_scale_freq_invariant();
+> +
+> +	for_each_cpu(cpu, cpus) {
+> +		sfd = per_cpu(sft_data, cpu);
+> +
+> +		/* Use ARCH provided counters whenever possible */
+> +		if (!sfd || sfd->source != SCALE_FREQ_SOURCE_ARCH) {
+> +			per_cpu(sft_data, cpu) = data;
+> +			cpumask_set_cpu(cpu, &scale_freq_counters_mask);
+> +		}
 > +	}
 > +
-> +	return NOTIFY_OK;
+> +	update_scale_freq_invariant(true);
+> +}
+> +EXPORT_SYMBOL_GPL(topology_set_scale_freq_source);
+
+I don't get why you need to export this in this patch. The arm64 topology
+code is never built as a module.
+
+> +
+> +void topology_clear_scale_freq_source(enum scale_freq_source source,
+> +				      const struct cpumask *cpus)
+> +{
+> +	struct scale_freq_data *sfd;
+> +	int cpu;
+> +
+> +	for_each_cpu(cpu, cpus) {
+> +		sfd = per_cpu(sft_data, cpu);
+> +
+> +		if (sfd && sfd->source == source) {
+> +			per_cpu(sft_data, cpu) = NULL;
+> +			cpumask_clear_cpu(cpu, &scale_freq_counters_mask);
+> +		}
+> +	}
+> +
+> +	update_scale_freq_invariant(false);
+> +}
+> +EXPORT_SYMBOL_GPL(topology_clear_scale_freq_source);
+
+Same here.
+
+> +
+> +void topology_scale_freq_tick(void)
+> +{
+> +	struct scale_freq_data *sfd = *this_cpu_ptr(&sft_data);
+> +
+> +	if (sfd)
+> +		sfd->set_freq_scale();
 > +}
 > +
->  static const struct of_device_id jz4740_mmc_of_match[] = {
->  	{ .compatible = "ingenic,jz4740-mmc", .data = (void *) 
-> JZ_MMC_JZ4740 },
->  	{ .compatible = "ingenic,jz4725b-mmc", .data = (void 
-> *)JZ_MMC_JZ4725B },
-> @@ -971,6 +1024,7 @@ static int jz4740_mmc_probe(struct 
-> platform_device* pdev)
->  	struct mmc_host *mmc;
->  	struct jz4740_mmc_host *host;
->  	const struct of_device_id *match;
-> +	struct clk *parent_clk;
-> 
->  	mmc = mmc_alloc_host(sizeof(struct jz4740_mmc_host), &pdev->dev);
->  	if (!mmc) {
-> @@ -1058,12 +1112,24 @@ static int jz4740_mmc_probe(struct 
-> platform_device* pdev)
->  		goto err_free_irq;
->  	host->use_dma = !ret;
-> 
-> +	atomic_set(&host->clk_mutex_count, -1);
-> +	mutex_init(&host->clk_mutex);
-> +	host->clock_nb.notifier_call = jz4740_mmc_update_clk;
-> +
-> +	parent_clk = jz4740_mmc_get_parent_clk(host->clk);
-> +
-> +	ret = clk_notifier_register(parent_clk, &host->clock_nb);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Unable to register clock notifier\n");
-> +		goto err_release_dma;
-> +	}
-> +
->  	platform_set_drvdata(pdev, host);
->  	ret = mmc_add_host(mmc);
-> 
->  	if (ret) {
->  		dev_err(&pdev->dev, "Failed to add mmc host: %d\n", ret);
-> -		goto err_release_dma;
-> +		goto err_unregister_clk_notifier;
->  	}
->  	dev_info(&pdev->dev, "Ingenic SD/MMC card driver registered\n");
-> 
-> @@ -1074,6 +1140,8 @@ static int jz4740_mmc_probe(struct 
-> platform_device* pdev)
-> 
->  	return 0;
-> 
-> +err_unregister_clk_notifier:
-> +	clk_notifier_unregister(parent_clk, &host->clock_nb);
->  err_release_dma:
->  	if (host->use_dma)
->  		jz4740_mmc_release_dma_channels(host);
-> --
-> 2.30.1
-> 
+>  DEFINE_PER_CPU(unsigned long, freq_scale) = SCHED_CAPACITY_SCALE;
+> +EXPORT_SYMBOL_GPL(freq_scale);
 
+And here. This one probably wants a less generic name as well if it's going
+to be exported.
 
+Will
