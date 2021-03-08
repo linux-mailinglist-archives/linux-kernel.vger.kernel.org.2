@@ -2,134 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756983313FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7DF331410
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:05:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhCHRBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 12:01:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhCHRBO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:01:14 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1609C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 09:01:14 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so4234680pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 09:01:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ru9F9a1RhouEc909fqeCnbgCPw/G1uUji7fWjGwbaOg=;
-        b=KKzp7+2SxHvXKPm1hyNkSAS7wxCgpnIjs1BUg20f0lPhBFp1IwyvcGE9m1bS56w7pk
-         UOjdqzl9K9fIHu/lWBWufp7mPBkQL5/ZPaNhkgX0mnrNbbNwsr0mYEscwDYCxRLT3pCL
-         UU03On7NfppXE3EzohKRuSxc6kX8F6v+nwYrrmnhSjPDTF3rAfBk3ks50GkR3mkBFzmB
-         CHhl8v2QyvstKFf7hBguIfVwJo5soU/Kxszgf6qVx0lOUBN792/5QGQafjrbxg3W7WlZ
-         82jem2xrjSmHToTgIkT4PNW+7XsduwkpKileEg8U9OtO8Mktf2mepoCjyKGENpI7N3ha
-         Rq4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Ru9F9a1RhouEc909fqeCnbgCPw/G1uUji7fWjGwbaOg=;
-        b=n723w3aQwz12Rk1Md+f1QURYgIMnQNeHXvEpuqhr1NB5BWfKh3Z0mN1qVFg1niLN92
-         syYRJ9gAkLVaafeTQDbU3D2H7o/khFvrxdobz9vQ3t98w8ukUG5lCg8ao89sTD1UHuuh
-         NP71MRILok5gqVbnugj33aPOojBl2dJgS5p9qp706Cec4o6+eUbFpZFeMumrXZj7SKW+
-         2TL48inCAZWcp9z5RKmFtzXjkQbZuUONXM4qADWQeJRB/MMpYp4z9E9dFAgNTJfC9e78
-         wR+sdIpErLTSOTgv+S43wGxc/S0YsRcZKWQW428QepzuftYCSX2FJCqhSMIiKLH8dU19
-         XAbw==
-X-Gm-Message-State: AOAM5312LVbqjCnz3Y1/Fxzz923moooMf9IjQ7pf3/0T0iqy1N29NBKY
-        JeD9JAwitzWcVrNHeggs9Zk=
-X-Google-Smtp-Source: ABdhPJzEHivhZGe0/lB4cl+Z6AdcbpAosHSCSJInwdwzqUhIxbU10GipAmvszvlmpOIPX/dWtTH4Rg==
-X-Received: by 2002:a17:90a:a10c:: with SMTP id s12mr3800865pjp.166.1615222874153;
-        Mon, 08 Mar 2021 09:01:14 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:4ccc:acdd:25da:14d1])
-        by smtp.gmail.com with ESMTPSA id y9sm4956495pfl.201.2021.03.08.09.01.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 09:01:12 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Mon, 8 Mar 2021 09:01:10 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
-Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
-Message-ID: <YEZYVkWV+qygPkT3@google.com>
-References: <c08662f3-6ae1-4fb5-1c4f-840a70fad035@redhat.com>
- <YEEi1+TREGBElE5H@google.com>
- <YEEle5xBAc7FUDNI@google.com>
- <YEYdR8azcawau9Rl@dhcp22.suse.cz>
- <c1461e51-7ad0-7fb5-9dc2-7f7c5cdf128f@redhat.com>
- <YEYwdjvYGiZ4crMt@dhcp22.suse.cz>
- <9f7b4b8a-5317-e382-7f21-01667e017982@redhat.com>
- <YEZF81vXGR8TX8sE@dhcp22.suse.cz>
- <YEZJk8YpUypT7q/j@google.com>
- <YEZPG+9ql2j8O9QS@dhcp22.suse.cz>
+        id S230286AbhCHREf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:04:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229904AbhCHRE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 12:04:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0382B6522C;
+        Mon,  8 Mar 2021 17:04:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615223069;
+        bh=jTPd/R2IcG/q8yWtov6si/pOz9VHOAJXbe8eW4LlU+Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=T1efKG2784L/un1cdV6OCA2fxfIJ5Z071EsgFzk5a2rbjZFoqMILbv8C3XrykkjvL
+         TRJm/PYRe1lNbcPAtXU0gFG8pDGB6LscEgn6c44axqR76/xyVo0pQ+OZq5U8b373tY
+         SJWy+Pqyxf/9zVSZnA8DOY3ZGeCHBid1+kH0HWspsaEX+YzRGJRvN/4n4mjKkQWO+/
+         IOek8ZgqOGx7lg3xezv9nnfJ9tZ0jvMEicFcUz7uz2KGk2xWm9k9LybfkC8kvvkK6/
+         T/IDtxzRI5zoR04yRP4Dnc4RFQfJdjEK89dbiiny5ehfe0FNk2INEkaeilvhYp+tr5
+         GEMa9/ZTlA53A==
+Received: by mail-ed1-f47.google.com with SMTP id m9so15785852edd.5;
+        Mon, 08 Mar 2021 09:04:28 -0800 (PST)
+X-Gm-Message-State: AOAM5312B7y28jd08HgQcr0RHB7jXJJswp3EC4uW/x+8ywsaho8xveOa
+        tPVU8hdBQ91CmjyNwgN3gbL++pokSoJXQonYfQ==
+X-Google-Smtp-Source: ABdhPJxczdvK/qV3FEN5Qjf5LIKC2Y4tY0TDZ07L6U+SSEImjQdZGi6RQyutAsEb2IrV9+zVcIueWtbphsShO/EfFJA=
+X-Received: by 2002:a50:fe17:: with SMTP id f23mr23703776edt.258.1615223067558;
+ Mon, 08 Mar 2021 09:04:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEZPG+9ql2j8O9QS@dhcp22.suse.cz>
+References: <20210303193305.924384-1-paul@crapouillou.net> <CAL_JsqLfkjC4c4PYfm6yJLZMH-5WaKA_mr9ziJ1J63UohcgRCw@mail.gmail.com>
+ <20210306084513.GA5453@alpha.franken.de> <CAL_JsqK0_M18gnoYFyTyf_OaQgbmbYYyoAr-WaFCzzsmFuFeFg@mail.gmail.com>
+ <20210306225855.GA3574@alpha.franken.de>
+In-Reply-To: <20210306225855.GA3574@alpha.franken.de>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 8 Mar 2021 10:04:15 -0700
+X-Gmail-Original-Message-ID: <CAL_Jsq+m0uwgo_-phR_zAz6ZfiSAr=JMXMaFsW-tPv_kXV+3fA@mail.gmail.com>
+Message-ID: <CAL_Jsq+m0uwgo_-phR_zAz6ZfiSAr=JMXMaFsW-tPv_kXV+3fA@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: boot/compressed: Copy DTB to aligned address
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Paul Cercueil <paul@crapouillou.net>, od@zcrc.me,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 05:21:47PM +0100, Michal Hocko wrote:
-> On Mon 08-03-21 07:58:11, Minchan Kim wrote:
-> [...]
-> > It's the dynamic debugging facility
-> > to enable only when admin want to use it. Otherwise, it's nop
-> > unless is't not enabled. Furthermore, it doesn't need to invent
-> > custom dump_page implementation(including dump_page_owner) by
-> > chaning pr_debug.
-> > Could you clarify your requirement?
-> > 
-> > https://lore.kernel.org/linux-mm/YEEUq8ZRn4WyYWVx@google.com/
-> 
-> I am not really sure this is the right way to enable dynamic logging.
-> Maybe it is. I thought we can go with something as simple as pr_debug.
-> You are right that we do not have dump_page with the kernel log level.
-> This is rather annoying but a) do we need a full dump_page functionality
+On Sat, Mar 6, 2021 at 3:59 PM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Sat, Mar 06, 2021 at 02:35:21PM -0700, Rob Herring wrote:
+> > On Sat, Mar 6, 2021 at 1:45 AM Thomas Bogendoerfer
+> > <tsbogend@alpha.franken.de> wrote:
+> > >
+> > > On Wed, Mar 03, 2021 at 02:37:55PM -0600, Rob Herring wrote:
+> > > > On Wed, Mar 3, 2021 at 1:33 PM Paul Cercueil <paul@crapouillou.net> wrote:
+> > > > >
+> > > > > Since 5.12-rc1, the Device Tree blob must now be properly aligned.
+> > > >
+> > > > I had checked the other built-in cases as microblaze broke too, but
+> > > > missed some of the many ways MIPS can have a dtb. Appended and
+> > > > built-in DTBs were supposed to be temporary. :(
+> > >
+> > > and a fdt can also be provided by firmware. And according to spec
+> > > there is no aligmnet requirement. So this whole change will break
+> > > then. What was the reason for the whole churn ?
 
-Most parts I take care of are
+Actually, that is wrong. The spec defines the alignment (from
+flattened format appendix):
 
-        pr_warn("page:%p refcount:%d mapcount:%d mapping:%p index:%#lx pfn:%#lx\n",
-                        page, page_ref_count(head), mapcount, mapping,
-                        page_to_pgoff(page), page_to_pfn(page));
+"Alignment
 
-        pr_warn("%sflags: %#lx(%pGp)%s\n", type, head->flags, &head->flags,
-                page_cma ? " CMA" : "");
+For the data in the memory reservation and structure blocks to be used
+without unaligned memory accesses, they shall lie at suitably aligned
+memory addresses. Specifically, the memory reservation block shall be
+aligned to an 8-byte boundary and the structure block to a 4-byte
+boundary.
+
+Furthermore, the devicetree blob as a whole can be relocated without
+destroying the alignment of the subblocks.
+
+As described in the previous sections, the structure and strings
+blocks shall have aligned offsets from the beginning of the devicetree
+blob. To ensure the in-memory alignment of the blocks, it is
+sufficient to ensure that the devicetree as a whole is loaded at an
+address aligned to the largest alignment of any of the subblocks, that
+is, to an 8-byte boundary. A |spec| compliant boot program shall load
+the devicetree blob at such an aligned address before passing it to
+the client program. If an |spec| client program relocates the
+devicetree blob in memory, it should only do so to another 8-byte
+aligned address."
 
 
-And dump_page_owner which was super helpful to find GUP places.
+> > There was a long discussion on devicetree-compiler list a few months
+> > ago. In summary, a while back libfdt switched to accessors from raw
+> > pointer accesses to avoid any possible unaligned accesses (is MIPS
+> > always okay with unaligned accesses?).
+>
+> no, it will trap unaligned accesses, that's the reason for Paul's problem.
+>
+> > This was determined to be a
+> > performance regression and an overkill as the DT structure itself
+> > should always be naturally aligned if the dtb is 64-bit aligned. I
+> > think 32-bit aligned has some possible misaligned accesses.
+>
+> the access macros are using *(unsigned long long *), which isn't
+> even nice for 32bit CPUs...
 
-Looks like most of dump_pages.
+Where are those?
 
-> and b) can we make it log level aware with the dynamic debug
-> infrastructure preserved? If not then then an explicit handling is
+> > As part of this, a dtb alignment check was added. So worst case, we
+> > could disable that if need be.
+>
+> yeah, or override fdt32/64_to_cpu, if I understood the code correctly.
 
-If we could make aware of loglevel, we need to enable each by each IOW.
-IOW, what we want to enable is mm/page_alloc.c #1492 line, for example.
+No, fdt32/64_to_cpu don't dereference the pointer.
 
-However, we should enable 
-  mm/debug.c # 88 line
-  mm/debug.c # 102 line
-  mm/debug.c # 121 line
-mm/page_owner.c # 448 line
-mm/page_owner.c # 450 line
-kernel/stacktrace.c #32 line
-
-And so on. Furthermore, user should be aware of that how the kernel code
-is changed for those all sites and reconfigure and follow new added
-code.
-
-So, I choosed explict handling.
-
-> probably the only way and this should be reviewed by people who are more
-> familiar with that framework than me.
-
-> -- 
-> Michal Hocko
-> SUSE Labs
+Rob
