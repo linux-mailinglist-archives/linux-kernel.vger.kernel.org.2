@@ -2,102 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D44F330B5B
+	by mail.lfdr.de (Postfix) with ESMTP id 69AD1330B5C
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhCHKga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 05:36:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22617 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230453AbhCHKgK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:36:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615199770;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RMwsh4rVWEMwbXiqVdffM9tN14wTQl3j4nwiD5Xat2g=;
-        b=CuXB7CamyDHkWi+z01CmYCCEWM6OlgpIdQJG2L+aKL3j3/tuCFTJf0/6JaV8nFcZPNjcoX
-        /6QRcouZtQgirBdAPI5hJUU1FKLKOaexiyZb9m1qFV1u9hOu/+S9wNaqdkvGM7D69moIMN
-        3FXyDdQNnOCVXeObhrRo0eSVoRfoHS4=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-etBBFHQnNVWdI-y7UfQlNw-1; Mon, 08 Mar 2021 05:36:08 -0500
-X-MC-Unique: etBBFHQnNVWdI-y7UfQlNw-1
-Received: by mail-ej1-f70.google.com with SMTP id gn30so3825747ejc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 02:36:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RMwsh4rVWEMwbXiqVdffM9tN14wTQl3j4nwiD5Xat2g=;
-        b=k61c3HPxxd0jZKeuS+ZkZuPY2yCKtjMxvqDJEC2TEFLw1qN6KAW4t95csNhw6GRRS0
-         qlpkpFMEFikNCTW7nbTuLhaKLa7y+ekfJO3E1i1SgBMxx3xpV+rq0jQuvqy6HTF4OjRw
-         W2cuXSpktVLeLBUvJ69sFjGqinIhZgyMiBilQXMhgxr7r4OJodbLhMLBsov+YwJsQZzM
-         ZCr/zWuzgCe1FRuPs+hvID/j3koQ1pBr62Fet3spmVy0tlqS1V77w/qy9WUnWCTi37JX
-         lp7wmRuX9cIPQbYrxfj+qfpo+BOWwSThDjJXQWs+RHaFCKRuZl+kpktIhyb9MuhNWHsL
-         llMQ==
-X-Gm-Message-State: AOAM532eqtqiXUq5aPstuyADeNqjyHGh9REX7JEWCRiNg5OcuRgwAon3
-        K33pDsfGYWcI2bvjwAo/8Zi9UV/QRUmbuwzn0wXau97mHvex0mvGKyf5OjK4Bk75ZvduCmJheU/
-        8v0wp9LXG2UyS3qGhOFwXiUQV
-X-Received: by 2002:a05:6402:b2d:: with SMTP id bo13mr21218120edb.120.1615199767203;
-        Mon, 08 Mar 2021 02:36:07 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzGb4nLGRHcHCuZOPQfMFnx/n+Fm0RfscsbxImZfY5iHcNsmrWFVj/zvrFYrXj/ZtdpY9I8hg==
-X-Received: by 2002:a05:6402:b2d:: with SMTP id bo13mr21218084edb.120.1615199766786;
-        Mon, 08 Mar 2021 02:36:06 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id jx22sm6318527ejc.105.2021.03.08.02.36.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 02:36:06 -0800 (PST)
-Subject: Re: linux-next: Fixes tag needs some work in the drivers-x86 tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mark Gross <mark.gross@intel.com>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210308170623.1304b12a@canb.auug.org.au>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <7919164f-b5dc-3081-b7f0-5746235c7358@redhat.com>
-Date:   Mon, 8 Mar 2021 11:36:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231295AbhCHKgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 05:36:31 -0500
+Received: from mga05.intel.com ([192.55.52.43]:3862 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230509AbhCHKgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 05:36:21 -0500
+IronPort-SDR: 4yDqy6j7gckXdQNz4bp/3o+wAk7WhJOWTWI2XNC+32krhy77CMmC0q3QYC3qy3tvpGI5fiEDEv
+ 65lC3n/HOE1Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="273030995"
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="273030995"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 02:36:20 -0800
+IronPort-SDR: F/1tHXKoUuYJoSj1vET/P39iSfcxr6gAmmaBL4uxggB7xrBpV52uG5RCHjQ1AHPTfPJtN2//s2
+ 6utCjr5uMptw==
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="447093347"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 02:36:18 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lJDFI-00An5y-AW; Mon, 08 Mar 2021 12:36:16 +0200
+Date:   Mon, 8 Mar 2021 12:36:16 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v1 1/1] device property: Add test cases for
+ fwnode_property_count_*() APIs
+Message-ID: <YEX+INKSPAzAcvFg@smile.fi.intel.com>
+References: <20210212162539.86850-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210308170623.1304b12a@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212162539.86850-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Feb 12, 2021 at 06:25:39PM +0200, Andy Shevchenko wrote:
+> Add test cases for fwnode_property_count_*() APIs.
+> 
+> While at it, modify the arrays of integers to be size of non-power-of-2
+> for better test coverage and decreasing stack usage.
 
-On 3/8/21 7:06 AM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> In commit
-> 
->   b5b5ff84fd93 ("platform/surface: aggregator: Make SSAM_DEFINE_SYNC_REQUEST_x define static functions")
-> 
-> Fixes tag
-> 
->   Fixes: 510c8114fc74 ("platform/surface: Add platform profile driver")
-> 
-> has these problem(s):
-> 
->   - Target SHA1 does not exist
-> 
-> Maybe you meant
-> 
-> Fixes: b78b4982d763 ("platform/surface: Add platform profile driver")
+Any comments on this?
 
-Yeah, this was caused by rebasing my branches from v5.12-rc1 as base to v5.12-rc2 as base,
-I've fixed this now, thank you for the report.
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/base/test/property-entry-test.c | 50 +++++++++++++++++++++++--
+>  1 file changed, 46 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/base/test/property-entry-test.c b/drivers/base/test/property-entry-test.c
+> index abe03315180f..3a4f755c483c 100644
+> --- a/drivers/base/test/property-entry-test.c
+> +++ b/drivers/base/test/property-entry-test.c
+> @@ -27,6 +27,9 @@ static void pe_test_uints(struct kunit *test)
+>  	node = fwnode_create_software_node(entries, NULL);
+>  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, node);
+>  
+> +	error = fwnode_property_count_u8(node, "prop-u8");
+> +	KUNIT_EXPECT_EQ(test, error, 1);
+> +
+>  	error = fwnode_property_read_u8(node, "prop-u8", &val_u8);
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)val_u8, 8);
+> @@ -48,6 +51,9 @@ static void pe_test_uints(struct kunit *test)
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)val_u16, 16);
+>  
+> +	error = fwnode_property_count_u16(node, "prop-u16");
+> +	KUNIT_EXPECT_EQ(test, error, 1);
+> +
+>  	error = fwnode_property_read_u16_array(node, "prop-u16", array_u16, 1);
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)array_u16[0], 16);
+> @@ -65,6 +71,9 @@ static void pe_test_uints(struct kunit *test)
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)val_u32, 32);
+>  
+> +	error = fwnode_property_count_u32(node, "prop-u32");
+> +	KUNIT_EXPECT_EQ(test, error, 1);
+> +
+>  	error = fwnode_property_read_u32_array(node, "prop-u32", array_u32, 1);
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)array_u32[0], 32);
+> @@ -82,6 +91,9 @@ static void pe_test_uints(struct kunit *test)
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)val_u64, 64);
+>  
+> +	error = fwnode_property_count_u64(node, "prop-u64");
+> +	KUNIT_EXPECT_EQ(test, error, 1);
+> +
+>  	error = fwnode_property_read_u64_array(node, "prop-u64", array_u64, 1);
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)array_u64[0], 64);
+> @@ -95,15 +107,19 @@ static void pe_test_uints(struct kunit *test)
+>  	error = fwnode_property_read_u64_array(node, "no-prop-u64", array_u64, 1);
+>  	KUNIT_EXPECT_NE(test, error, 0);
+>  
+> +	/* Count 64-bit values as 16-bit */
+> +	error = fwnode_property_count_u16(node, "prop-u64");
+> +	KUNIT_EXPECT_EQ(test, error, 4);
+> +
+>  	fwnode_remove_software_node(node);
+>  }
+>  
+>  static void pe_test_uint_arrays(struct kunit *test)
+>  {
+> -	static const u8 a_u8[16] = { 8, 9 };
+> -	static const u16 a_u16[16] = { 16, 17 };
+> -	static const u32 a_u32[16] = { 32, 33 };
+> -	static const u64 a_u64[16] = { 64, 65 };
+> +	static const u8 a_u8[10] = { 8, 9 };
+> +	static const u16 a_u16[10] = { 16, 17 };
+> +	static const u32 a_u32[10] = { 32, 33 };
+> +	static const u64 a_u64[10] = { 64, 65 };
+>  	static const struct property_entry entries[] = {
+>  		PROPERTY_ENTRY_U8_ARRAY("prop-u8", a_u8),
+>  		PROPERTY_ENTRY_U16_ARRAY("prop-u16", a_u16),
+> @@ -126,6 +142,9 @@ static void pe_test_uint_arrays(struct kunit *test)
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)val_u8, 8);
+>  
+> +	error = fwnode_property_count_u8(node, "prop-u8");
+> +	KUNIT_EXPECT_EQ(test, error, 10);
+> +
+>  	error = fwnode_property_read_u8_array(node, "prop-u8", array_u8, 1);
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)array_u8[0], 8);
+> @@ -148,6 +167,9 @@ static void pe_test_uint_arrays(struct kunit *test)
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)val_u16, 16);
+>  
+> +	error = fwnode_property_count_u16(node, "prop-u16");
+> +	KUNIT_EXPECT_EQ(test, error, 10);
+> +
+>  	error = fwnode_property_read_u16_array(node, "prop-u16", array_u16, 1);
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)array_u16[0], 16);
+> @@ -170,6 +192,9 @@ static void pe_test_uint_arrays(struct kunit *test)
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)val_u32, 32);
+>  
+> +	error = fwnode_property_count_u32(node, "prop-u32");
+> +	KUNIT_EXPECT_EQ(test, error, 10);
+> +
+>  	error = fwnode_property_read_u32_array(node, "prop-u32", array_u32, 1);
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)array_u32[0], 32);
+> @@ -192,6 +217,9 @@ static void pe_test_uint_arrays(struct kunit *test)
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)val_u64, 64);
+>  
+> +	error = fwnode_property_count_u64(node, "prop-u64");
+> +	KUNIT_EXPECT_EQ(test, error, 10);
+> +
+>  	error = fwnode_property_read_u64_array(node, "prop-u64", array_u64, 1);
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_EQ(test, (int)array_u64[0], 64);
+> @@ -210,6 +238,14 @@ static void pe_test_uint_arrays(struct kunit *test)
+>  	error = fwnode_property_read_u64_array(node, "no-prop-u64", array_u64, 1);
+>  	KUNIT_EXPECT_NE(test, error, 0);
+>  
+> +	/* Count 64-bit values as 16-bit */
+> +	error = fwnode_property_count_u16(node, "prop-u64");
+> +	KUNIT_EXPECT_EQ(test, error, 40);
+> +
+> +	/* Other way around */
+> +	error = fwnode_property_count_u64(node, "prop-u16");
+> +	KUNIT_EXPECT_EQ(test, error, 2);
+> +
+>  	fwnode_remove_software_node(node);
+>  }
+>  
+> @@ -239,6 +275,9 @@ static void pe_test_strings(struct kunit *test)
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_STREQ(test, str, "single");
+>  
+> +	error = fwnode_property_string_array_count(node, "str");
+> +	KUNIT_EXPECT_EQ(test, error, 1);
+> +
+>  	error = fwnode_property_read_string_array(node, "str", strs, 1);
+>  	KUNIT_EXPECT_EQ(test, error, 1);
+>  	KUNIT_EXPECT_STREQ(test, strs[0], "single");
+> @@ -258,6 +297,9 @@ static void pe_test_strings(struct kunit *test)
+>  	KUNIT_EXPECT_EQ(test, error, 0);
+>  	KUNIT_EXPECT_STREQ(test, str, "");
+>  
+> +	error = fwnode_property_string_array_count(node, "strs");
+> +	KUNIT_EXPECT_EQ(test, error, 2);
+> +
+>  	error = fwnode_property_read_string_array(node, "strs", strs, 3);
+>  	KUNIT_EXPECT_EQ(test, error, 2);
+>  	KUNIT_EXPECT_STREQ(test, strs[0], "string-a");
+> -- 
+> 2.30.0
+> 
 
-Regards,
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Hans
 
