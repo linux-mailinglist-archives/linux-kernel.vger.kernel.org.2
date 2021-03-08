@@ -2,192 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AFF330A3F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:25:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE1A330A46
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhCHJZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 04:25:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55400 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230192AbhCHJYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 04:24:50 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 09460AC0C;
-        Mon,  8 Mar 2021 09:24:49 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Mike Rapoport <rppt@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Kamal Dasu <kdasu.kdev@gmail.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Subject: [PATCH v3] MIPS: kernel: Reserve exception base early to prevent corruption
-Date:   Mon,  8 Mar 2021 10:24:47 +0100
-Message-Id: <20210308092447.13073-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.29.2
+        id S230097AbhCHJ14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 04:27:56 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:13866 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230051AbhCHJ1X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 04:27:23 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DvCcb5M8Wz8tyT;
+        Mon,  8 Mar 2021 17:25:35 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 8 Mar 2021 17:27:13 +0800
+From:   Yicong Yang <yangyicong@hisilicon.com>
+To:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <yangyicong@hisilicon.com>
+Subject: [PATCH] sched/topology: Fix a typo in pr_err()
+Date:   Mon, 8 Mar 2021 17:24:56 +0800
+Message-ID: <1615195496-13980-1-git-send-email-yangyicong@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BMIPS is one of the few platforms that do change the exception base.
-After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
-with kernel_end") we started seeing BMIPS boards fail to boot with the
-built-in FDT being corrupted.
+Fix a typo 'borken' to 'broken' in pr_err().
 
-Before the cited commit, early allocations would be in the [kernel_end,
-RAM_END] range, but after commit they would be within [RAM_START +
-PAGE_SIZE, RAM_END].
-
-The custom exception base handler that is installed by
-bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
-memory region allocated by unflatten_and_copy_device_tree() thus
-corrupting the FDT used by the kernel.
-
-To fix this, we need to perform an early reservation of the custom
-exception space. Additional we reserve the first 4k (1k for R3k) for
-either normal exception vector space (legacy CPUs) or special vectors
-like cache exceptions.
-
-Huge thanks to Serge for analysing and proposing a solution to this
-issue.
-
-Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
-Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
-Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 ---
-Changes in v3:
- - always reserve the first 4k for all CPUs (1k for R3k)
+ kernel/sched/topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes in v2:
- - do only memblock reservation in reserve_exception_space()
- - reserve 0..0x400 for all CPUs without ebase register and
-   to addtional reserve_exception_space for BMIPS CPUs
-
- arch/mips/include/asm/traps.h    |  3 +++
- arch/mips/kernel/cpu-probe.c     |  6 ++++++
- arch/mips/kernel/cpu-r3k-probe.c |  3 +++
- arch/mips/kernel/traps.c         | 10 +++++-----
- 4 files changed, 17 insertions(+), 5 deletions(-)
-
-diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
-index 6aa8f126a43d..b710e76c9c65 100644
---- a/arch/mips/include/asm/traps.h
-+++ b/arch/mips/include/asm/traps.h
-@@ -24,8 +24,11 @@ extern void (*board_ebase_setup)(void);
- extern void (*board_cache_error_setup)(void);
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 09d3504..c42e388 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -1906,7 +1906,7 @@ static struct sched_domain *build_sched_domain(struct sched_domain_topology_leve
  
- extern int register_nmi_notifier(struct notifier_block *nb);
-+extern void reserve_exception_space(phys_addr_t addr, unsigned long size);
- extern char except_vec_nmi[];
- 
-+#define VECTORSPACING 0x100	/* for EI/VI mode */
-+
- #define nmi_notifier(fn, pri)						\
- ({									\
- 	static struct notifier_block fn##_nb = {			\
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index 9a89637b4ecf..b71892064f27 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -26,6 +26,7 @@
- #include <asm/elf.h>
- #include <asm/pgtable-bits.h>
- #include <asm/spram.h>
-+#include <asm/traps.h>
- #include <linux/uaccess.h>
- 
- #include "fpu-probe.h"
-@@ -1628,6 +1629,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
- 		c->cputype = CPU_BMIPS3300;
- 		__cpu_name[cpu] = "Broadcom BMIPS3300";
- 		set_elf_platform(cpu, "bmips3300");
-+		reserve_exception_space(0x400, VECTORSPACING * 64);
- 		break;
- 	case PRID_IMP_BMIPS43XX: {
- 		int rev = c->processor_id & PRID_REV_MASK;
-@@ -1638,6 +1640,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
- 			__cpu_name[cpu] = "Broadcom BMIPS4380";
- 			set_elf_platform(cpu, "bmips4380");
- 			c->options |= MIPS_CPU_RIXI;
-+			reserve_exception_space(0x400, VECTORSPACING * 64);
- 		} else {
- 			c->cputype = CPU_BMIPS4350;
- 			__cpu_name[cpu] = "Broadcom BMIPS4350";
-@@ -1654,6 +1657,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
- 			__cpu_name[cpu] = "Broadcom BMIPS5000";
- 		set_elf_platform(cpu, "bmips5000");
- 		c->options |= MIPS_CPU_ULRI | MIPS_CPU_RIXI;
-+		reserve_exception_space(0x1000, VECTORSPACING * 64);
- 		break;
- 	}
- }
-@@ -2133,6 +2137,8 @@ void cpu_probe(void)
- 	if (cpu == 0)
- 		__ua_limit = ~((1ull << cpu_vmbits) - 1);
- #endif
-+
-+	reserve_exception_space(0, 0x1000);
- }
- 
- void cpu_report(void)
-diff --git a/arch/mips/kernel/cpu-r3k-probe.c b/arch/mips/kernel/cpu-r3k-probe.c
-index abdbbe8c5a43..af654771918c 100644
---- a/arch/mips/kernel/cpu-r3k-probe.c
-+++ b/arch/mips/kernel/cpu-r3k-probe.c
-@@ -21,6 +21,7 @@
- #include <asm/fpu.h>
- #include <asm/mipsregs.h>
- #include <asm/elf.h>
-+#include <asm/traps.h>
- 
- #include "fpu-probe.h"
- 
-@@ -158,6 +159,8 @@ void cpu_probe(void)
- 		cpu_set_fpu_opts(c);
- 	else
- 		cpu_set_nofpu_opts(c);
-+
-+	reserve_exception_space(0, 0x400);
- }
- 
- void cpu_report(void)
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index e0352958e2f7..808b8b61ded1 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -2009,13 +2009,16 @@ void __noreturn nmi_exception_handler(struct pt_regs *regs)
- 	nmi_exit();
- }
- 
--#define VECTORSPACING 0x100	/* for EI/VI mode */
--
- unsigned long ebase;
- EXPORT_SYMBOL_GPL(ebase);
- unsigned long exception_handlers[32];
- unsigned long vi_handlers[64];
- 
-+void reserve_exception_space(phys_addr_t addr, unsigned long size)
-+{
-+	memblock_reserve(addr, size);
-+}
-+
- void __init *set_except_vector(int n, void *addr)
- {
- 	unsigned long handler = (unsigned long) addr;
-@@ -2367,10 +2370,7 @@ void __init trap_init(void)
- 
- 	if (!cpu_has_mips_r2_r6) {
- 		ebase = CAC_BASE;
--		ebase_pa = virt_to_phys((void *)ebase);
- 		vec_size = 0x400;
--
--		memblock_reserve(ebase_pa, vec_size);
- 	} else {
- 		if (cpu_has_veic || cpu_has_vint)
- 			vec_size = 0x200 + VECTORSPACING*64;
+ 		if (!cpumask_subset(sched_domain_span(child),
+ 				    sched_domain_span(sd))) {
+-			pr_err("BUG: arch topology borken\n");
++			pr_err("BUG: arch topology broken\n");
+ #ifdef CONFIG_SCHED_DEBUG
+ 			pr_err("     the %s domain not a subset of the %s domain\n",
+ 					child->name, sd->name);
 -- 
-2.29.2
+2.8.1
 
