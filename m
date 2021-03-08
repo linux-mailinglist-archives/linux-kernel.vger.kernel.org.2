@@ -2,102 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70244330801
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 07:14:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 465FF330806
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 07:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234825AbhCHGNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 01:13:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234795AbhCHGNU (ORCPT
+        id S234829AbhCHGUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 01:20:35 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:19309 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234827AbhCHGU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 01:13:20 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 068C3C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 22:13:19 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id m22so19146742lfg.5
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 22:13:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5zuLyIMtTu9vDSB4XkfAbZ0uX4PD6RfhA/3r6OaoQnI=;
-        b=r6Qi4/4arJHvPgvhwoboibouvpk0NWSX8MipZS8QZ+BrdZdxwLBJKUDwMfgmWSW8Yu
-         OZH2B04mSUrDBog35HKb+a26mrY/JSo/rqgSYqxxjkElj0TqI93KxvK8mDOdBk4yZ7J4
-         X/0C1ExrYOpYy5hiIVH9AbKIOyHIhFTpjKjr+hIOCJRuZ+ncLhH7CbLiEcOvouFEaks8
-         ShgECUbJ2CftJDm7mTfytGlC3iYLnz1LyTBoe8LmYjmUAUctAzwe0brhEZqv408a/h58
-         shgs2HrLbuotvQ96Mkx66y73Bhm7sRyhj8qZJ3j4bk8muAJ9YVm+P3RmqRFS57fU58zb
-         pGIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5zuLyIMtTu9vDSB4XkfAbZ0uX4PD6RfhA/3r6OaoQnI=;
-        b=CKA7/DNtYk3uFDbbXZd/cFWIi4DGTRbSlUmsjdICr5rAvRr42swZO8Dq6cgrONEWAv
-         Al8wJEDtMI6awxvB6F0DCrmLy8L/+rB1leGbqEJHbUuJoSxHoUonBdXNFjPacUaA3Wx2
-         BBmV+NR5zUi3AkDDyX3jrkbfMt9ueTA2sisWLFCCPVRGRYCoWlPk/CH27O4wV+cNxRrC
-         SnAlqxGfACYz1grwY5EvVl0aMJblWJnnt8w9ysvNUqlrI18nRYYrHjsE3sfvk7oxSpBr
-         V5Jj2oOvi1okYZ2fFi/AyTg0JIvisHwgDDhXtc7FZyYmI72fhjnP3xmuHSWRnQyQesPV
-         xhfg==
-X-Gm-Message-State: AOAM533FOkasjkaWnFSBG3df9T8lutZMrj3d+fi1P021u3gBln4zqpKX
-        eTXdILzYsiWJJgJy4WLwAe2nSTuIqDA/a2gezx3OcA==
-X-Google-Smtp-Source: ABdhPJxc0v63Dy8DvVAk/DYaLK47IbF3fY9fLvX7nIB1BSkKIxNiS3PvWjGKhbB+E2Joya7ljUn0FqeLRBf/8nKdAng=
-X-Received: by 2002:a05:6512:6c6:: with SMTP id u6mr13260075lff.347.1615183998124;
- Sun, 07 Mar 2021 22:13:18 -0800 (PST)
+        Mon, 8 Mar 2021 01:20:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1615184428; x=1646720428;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=cNUFkLLEIoqMFqJYVsIH5x0g/HfTKJzj54C+4PKLThg=;
+  b=eZrMAk1MO8A1crcrcsiT83lyhot9n7/JJfFubARBuvFAe5sta6orDGol
+   GEnObT4j0lt0j5COVLAChL5/Y281BAY3ZZhY4+t++E2jKkXEDuSqsNWfS
+   ELQyeDSW1FdA14jQBfqk9HBblNg1iVxtX7g0868F+3wJSLO4vgrNzHqIj
+   2TCVF1qZwY7teIaT/K3nM+0+wwO+Hfef2oJSCatdlX4exj9pnBIMFIQ5p
+   PTXM9ZXeh9Jls2b8IwNrRlDXVWJTLAleMdmtoZCHMHKIn92pQLaWKY0as
+   V7kCIbFERTANhQzlgs+QEdBhnXhEQiuapMYgalYU6RW4vAgcm/zhser3T
+   g==;
+IronPort-SDR: aX6ADHPrVJgGoouxDLpihNnVrEy9CnJZ98dVe27lxuws4xFq/CU+TasJHDh3PcmY8F0e5g+Rei
+ Zj6W8u5y70V26DGMrcM3mxNajvNOIrW2zgCbnoY/yDRnqT1RveoUuACy1wftxSWBGULJDRyx7w
+ 6Q1MabkGlTERjouHkBO2+6Y4ZjsykEm3HqJ8zIMwmt+jBZ9EtIK+KKbo84qaTUhHWYK/ekhAlC
+ N9tErH0dHFo0rlmFJfLgS9GCPJopC702GouQoV40tHAQN1QTBdijGZHPJI1yE1nut6VT6t5BvS
+ aq0=
+X-IronPort-AV: E=Sophos;i="5.81,231,1610434800"; 
+   d="scan'208";a="46622120"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Mar 2021 23:20:28 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sun, 7 Mar 2021 23:20:28 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Sun, 7 Mar 2021 23:20:26 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        "Michael Walle" <michael@walle.cc>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        "Vignesh Raghavendra" <vigneshr@ti.com>
+Subject: Re: [PATCH] mtd: spi-nor: use is_power_of_2()
+Date:   Mon, 8 Mar 2021 08:20:24 +0200
+Message-ID: <161518441282.69910.7961092195039294624.b4-ty@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210305234552.19204-1-michael@walle.cc>
+References: <20210305234552.19204-1-michael@walle.cc>
 MIME-Version: 1.0
-References: <20210217001322.2226796-1-shy828301@gmail.com> <20210217001322.2226796-6-shy828301@gmail.com>
-In-Reply-To: <20210217001322.2226796-6-shy828301@gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Sun, 7 Mar 2021 22:13:04 -0800
-Message-ID: <CALvZod75fge=B9LNg_sxbCiwDZjjtn8A9Q2HzU_R6rcg551o6Q@mail.gmail.com>
-Subject: Re: [v8 PATCH 05/13] mm: vmscan: use kvfree_rcu instead of call_rcu
-To:     Yang Shi <shy828301@gmail.com>, paulmck@kernel.org
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 4:13 PM Yang Shi <shy828301@gmail.com> wrote:
->
-> Using kvfree_rcu() to free the old shrinker_maps instead of call_rcu().
-> We don't have to define a dedicated callback for call_rcu() anymore.
->
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> ---
->  mm/vmscan.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
->
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 2e753c2516fa..c2a309acd86b 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -192,11 +192,6 @@ static inline int shrinker_map_size(int nr_items)
->         return (DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long));
->  }
->
-> -static void free_shrinker_map_rcu(struct rcu_head *head)
-> -{
-> -       kvfree(container_of(head, struct memcg_shrinker_map, rcu));
-> -}
-> -
->  static int expand_one_shrinker_map(struct mem_cgroup *memcg,
->                                    int size, int old_size)
->  {
-> @@ -219,7 +214,7 @@ static int expand_one_shrinker_map(struct mem_cgroup *memcg,
->                 memset((void *)new->map + old_size, 0, size - old_size);
->
->                 rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, new);
-> -               call_rcu(&old->rcu, free_shrinker_map_rcu);
-> +               kvfree_rcu(old);
+On Sat, 6 Mar 2021 00:45:52 +0100, Michael Walle wrote:
+> There is already a function to check if an integer is a power of 2. Use
+> it.
 
-Please use kvfree_rcu(old, rcu) instead of kvfree_rcu(old). The single
-param can call synchronize_rcu().
+Applied to spi-nor/next, thanks!
+
+[1/1] mtd: spi-nor: use is_power_of_2()
+      https://git.kernel.org/mtd/c/04fc298c7d08
+
+Best regards,
+-- 
+Tudor Ambarus <tudor.ambarus@microchip.com>
