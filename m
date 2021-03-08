@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B4733152E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A166A331530
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhCHRsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 12:48:17 -0500
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:27430
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230429AbhCHRrx (ORCPT
+        id S230475AbhCHRst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:48:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230522AbhCHRsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:47:53 -0500
-X-IronPort-AV: E=Sophos;i="5.81,232,1610406000"; 
-   d="scan'208";a="375128978"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 18:47:19 +0100
-Date:   Mon, 8 Mar 2021 18:47:19 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Denis Efremov <efremov@linux.com>, kbuild-all@01.org
-Subject: [PATCH] tty: max310x: fix flexible_array.cocci warnings
-Message-ID: <alpine.DEB.2.22.394.2103081845010.15810@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 8 Mar 2021 12:48:39 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85D8C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 09:48:38 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id e7so22433154lft.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 09:48:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=giD8jSsyZJtO1DBnfL0AaLcvwbpWQ52I68uSxFCyz/k=;
+        b=QPpLMFgSpH9WgV4NcTrB7d+hZtjE/5GT3F2G644kSvUU9b3EGps3rmRAaXpJdfSNrw
+         nBbGd4eLyVIbdTkY7G9viNOngWpUPb8hF3N6jNc8xSGecRsOjJJ18VOIDrclO79YnIej
+         M+KgZzdCA1b5KoWhpxEZz0iXTRSimI/UDdN7cNiISFBjW9ksoNl6GN+FvNbU8wYWq6zk
+         h7K3H4Ih+dZSluL+jMFMYRNXk+3Nv02Ztvu/bvSes259hNSUnyW9tNlloRckDhyGcL26
+         +f9oprjrH1qwP+ILRdp54S1RPGcKQvitB+ByslpCOaMXBdB3UJXh/MvLiCoFJH04MSVA
+         Y7Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=giD8jSsyZJtO1DBnfL0AaLcvwbpWQ52I68uSxFCyz/k=;
+        b=LetvLWO0+dOYuc+j9Z05imNOW8AsszYwVncc1/IZTKPBbxB6NYlGSisqheluWDiHTz
+         kG6oPfdCLf5FSIZn5/lyeissmiXdCdoVfRkz0E1c6sUw0gsBinlEG1ZLcWppRVoC96C5
+         ZglaGadkFSsVFi6miMb6n2KL07uJD80iMpg793RqSnU3GLslNU47/8GhA+RucMy2W2qa
+         82Do7SW3KTWRkMT2UkAuejeAQaQahijwRMwin8Q8I5rugkiLT4USGEpU3IKlxJVU7OZr
+         Vb9+BD23JIkWuWZ7cbICcimkyXMmDRk3J29vPBPDVIjGvwLdz0Rb37X6JxeiNcCdo+ZS
+         iP3w==
+X-Gm-Message-State: AOAM53037WrPNvoqL7Le61Db0NPtF1OaZWzrEf5qgsnHz+K5iDgC5QQY
+        Tkqy5Llj1KrEWO1m+7OetVFHRGuX0aR8jhLYYDRHUg==
+X-Google-Smtp-Source: ABdhPJw7Hi0i7dAd1dfvZWz3HJ1oxl9iDjYmhMQmd2hfeQvGJcpHO+DIsojeXKaCQlDDTS3CbgYU6Vn1r2LSkTkJuX0=
+X-Received: by 2002:a05:6512:6c6:: with SMTP id u6mr14739762lff.347.1615225717126;
+ Mon, 08 Mar 2021 09:48:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210217001322.2226796-1-shy828301@gmail.com> <20210217001322.2226796-9-shy828301@gmail.com>
+In-Reply-To: <20210217001322.2226796-9-shy828301@gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 8 Mar 2021 09:48:22 -0800
+Message-ID: <CALvZod7AJ9EAxDhDU-MddFieO9n6C4gEbbR=sprmRWvLJpHo_A@mail.gmail.com>
+Subject: Re: [v8 PATCH 08/13] mm: vmscan: use a new flag to indicate shrinker
+ is registered
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On Tue, Feb 16, 2021 at 4:13 PM Yang Shi <shy828301@gmail.com> wrote:
+>
+> Currently registered shrinker is indicated by non-NULL shrinker->nr_deferred.
+> This approach is fine with nr_deferred at the shrinker level, but the following
+> patches will move MEMCG_AWARE shrinkers' nr_deferred to memcg level, so their
+> shrinker->nr_deferred would always be NULL.  This would prevent the shrinkers
+> from unregistering correctly.
+>
+> Remove SHRINKER_REGISTERING since we could check if shrinker is registered
+> successfully by the new flag.
+>
+> Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
 
-Zero-length and one-element arrays are deprecated, see
-Documentation/process/deprecated.rst
-Flexible-array members should be used instead.
-
-Generated by: scripts/coccinelle/misc/flexible_array.cocci
-
-Fixes: 7b36c1398fb6 ("coccinelle: misc: add flexible_array.cocci script")
-CC: Denis Efremov <efremov@linux.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
----
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   144c79ef33536b4ecb4951e07dbc1f2b7fa99d32
-commit: 7b36c1398fb63f9c38cc83dc75f143d2e5995062 coccinelle: misc: add flexible_array.cocci script
-:::::: branch date: 6 hours ago
-:::::: commit date: 5 months ago
-
- max310x.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -273,7 +273,7 @@ struct max310x_port {
- #ifdef CONFIG_GPIOLIB
- 	struct gpio_chip	gpio;
- #endif
--	struct max310x_one	p[0];
-+	struct max310x_one	p[];
- };
-
- static struct uart_driver max310x_uart = {
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
