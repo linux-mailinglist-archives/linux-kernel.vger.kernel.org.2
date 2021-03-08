@@ -2,122 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F62331181
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D10331183
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbhCHO6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 09:58:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34970 "EHLO
+        id S231167AbhCHO6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 09:58:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231295AbhCHO5w (ORCPT
+        with ESMTP id S231296AbhCHO63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:57:52 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF05EC06174A;
-        Mon,  8 Mar 2021 06:57:51 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id ga23-20020a17090b0397b02900c0b81bbcd4so3118845pjb.0;
-        Mon, 08 Mar 2021 06:57:51 -0800 (PST)
+        Mon, 8 Mar 2021 09:58:29 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4277EC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 06:58:29 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id o7so8117523qtw.7
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 06:58:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1v0ao3b2/Ux4Trc+2qyo6Snq2zmvaCA06fjB7BxQBtk=;
-        b=UN2m03gJoZakMr0gOlQjQr5POq2Jz4sA0ztlFhKdsp4HXOGelbToq5jKRqnI3v7zjc
-         TVRSriUUvtKcFRhvvKGNdcmkwyI/o3i5ZzMytKZaF1m7DznLjrZ8iJCqLWYmgJnjuV3L
-         mTQArkXhtOCZxDqQEGN7AxVsZTZL4ah2L8Uh9Cp1OrQQgVe2fpmMYPzG0w/sfLvv96yO
-         56x52+9LalsUGPXMQ9bwE7fM/f7ybD/qobWl3ryinOVUrWnrQnoaHThwxojB8VgJ0h2D
-         BdFrVGbwBMi/tCtYP27qFCuVTn6pG64SMtEwJEcOSie7MTdvPvfR5V5OmFVncRm1i4R9
-         xB0w==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=BxhzP0W+qvkeGdKa9mCwOIPGRH/6WApGqekyUBkmdsU=;
+        b=CY88Hxf2Z8/gwTvCyBxUyuzMp7CoVm0G6k9lqiClBdaCH8B5QSel2N2Mj5PLm0i3yT
+         Hqvloxqbm9lRHA6jBiv/OWaskMEaPGN+1X+POacMZcPwB0m699GyZlTZnfpZbVkH/D8r
+         XM4GR0+EFi/Fv45w2TSAKL7nwGE8yTLUFS5AixCu+fjtSz41gcxDUOo21IUJdspNEp13
+         ewzp80BiD5xk0THgDQCxFULqm6xCJemMN/4iEmTcDHN3vS8rGKtG3skn1wdaO42YSiaz
+         H/n5YdB6s79G30DRpGrJarKGHI0X3p9oLJikdt69GK7B01LI5G+VV/i3sIZFhzKBbToP
+         zP9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1v0ao3b2/Ux4Trc+2qyo6Snq2zmvaCA06fjB7BxQBtk=;
-        b=dVva7WWv86XP5l8ZxqUZbzAghRfrGXm7Z2QYpQ+SQjUE7P3l+tS2h2Za6Bqc5Bzstn
-         V5bXhnTul7Y6duQuFjj0d7uV+raZVB4H89pqgmD8lz3d6bIlwsawmDdjNqkFoqLDmZ4C
-         XBm7XP7xnPrV3GijBNmMhwkuJ2Bzx3vE+T/24JpgL4efZgLh4eiHMSsFN6EmArO9IiKu
-         MfbKZ/XFrywC98xJmcAA330ATCpGILuOGKgwCbmzMNCB40lvxXfy3ayqAH3kLajEV3gq
-         9TXO89rIBvUR01Kq+BK+8KBKk6tGZS3WNn0GHpHgPMhkbkVQfd3K+1jfG3V7x34Q43lf
-         9YxA==
-X-Gm-Message-State: AOAM530GSInHEGhMA+wZ7MYoYderLV5/8vFLUVxpGJ4tPvDKSmginjPh
-        0aC47mlhFdtxIPmFSOH/fUU37LMGHrmyxLIkOVs=
-X-Google-Smtp-Source: ABdhPJwWLAcn/zCc7JnKH0rPVVA2UFQqpno+iYzLW3XAAZ6juSRPbxlixiAKwoAOG82N4Y3z+Z9QJAbVtiVxxrJMbRk=
-X-Received: by 2002:a17:902:70c7:b029:e3:71cf:33d2 with SMTP id
- l7-20020a17090270c7b02900e371cf33d2mr21445892plt.21.1615215471340; Mon, 08
- Mar 2021 06:57:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20210218052654.28995-1-calvin.johnson@oss.nxp.com>
- <20210218052654.28995-11-calvin.johnson@oss.nxp.com> <CAHp75VdpvTN2R-FTb81GnwvAr_eoprEhsOMx+akukaDNBrptsQ@mail.gmail.com>
- <20210308140936.GA2740@lsv03152.swis.in-blr01.nxp.com>
-In-Reply-To: <20210308140936.GA2740@lsv03152.swis.in-blr01.nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 8 Mar 2021 16:57:35 +0200
-Message-ID: <CAHp75Vc2OtScGFhCL7QiRsakrQAZYE6Wz-0qzmz5uB63cjieQw@mail.gmail.com>
-Subject: Re: [net-next PATCH v6 10/15] net: mdio: Add ACPI support code for mdio
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=BxhzP0W+qvkeGdKa9mCwOIPGRH/6WApGqekyUBkmdsU=;
+        b=KF/0C/X3JIt+CBjmCb0u8khvguKo7Z2ZjQgr+73PfkoxQyJ2894Ph2lURHyTXBaAE1
+         Zh1Fk69aJA9OGWBeCoFnrey6PKDRjO/UbC0pteyqazln5cbejHwWM4SKtSBD3LfpM13c
+         2NbPy+dEHXZPkMJCF1cLkwz1NMkdsx6A/47S7YRo6l/FxvBoT5Eqbu0VNkASznTTzOBr
+         8xZ6EltZDu69AddMPze2yLX4XH+yCYznRIAZgVeXsuE+LjG7cxwqqrQ/acWePfyfLCFw
+         L9zaOUj01mOcaq70zPpS4/siNZ0LEaVzIU9V2BKD1bWBJ6mKge4Smd5pnU7iaXj/OYaZ
+         4zBw==
+X-Gm-Message-State: AOAM53329psmjuvToRteOatFiuPYcPMknCmu/mMlbQ0JmqLbfojvrNMN
+        1pTWV/Em8BKnRYPWZEHvivRdm6MvP0Ttd6pp
+X-Google-Smtp-Source: ABdhPJyIR50ri0LAWjT90EsKXlRruxnqF4NWGe0j6wHw7WPZvJUWWmFvWXg60/U+OgeRpKTWkVSKKitaM0gH1zUr
+Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:85fb:aac9:69ed:e574])
+ (user=andreyknvl job=sendgmr) by 2002:a0c:b418:: with SMTP id
+ u24mr20842991qve.20.1615215508348; Mon, 08 Mar 2021 06:58:28 -0800 (PST)
+Date:   Mon,  8 Mar 2021 15:58:21 +0100
+Message-Id: <59e75426241dbb5611277758c8d4d6f5f9298dac.1615215441.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH] kasan: fix KASAN_STACK dependency for HW_TAGS
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 4:11 PM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
-> On Thu, Feb 18, 2021 at 05:08:05PM +0200, Andy Shevchenko wrote:
-> > On Thu, Feb 18, 2021 at 7:28 AM Calvin Johnson
-> > <calvin.johnson@oss.nxp.com> wrote:
+There's a runtime failure when running HW_TAGS-enabled kernel built with
+GCC on hardware that doesn't support MTE. GCC-built kernels always have
+CONFIG_KASAN_STACK enabled, even though stack instrumentation isn't
+supported by HW_TAGS. Having that config enabled causes KASAN to issue
+MTE-only instructions to unpoison kernel stacks, which causes the failure.
 
-> > > Define acpi_mdiobus_register() to Register mii_bus and create PHYs for
-> > > each ACPI child node.
-> >
-> > > +#include <linux/acpi.h>
-> > > +#include <linux/acpi_mdio.h>
-> >
-> > Perhaps it's better to provide the headers that this file is direct
-> > user of, i.e.
-> >  bits.h
-> >  dev_printk.h
->
-> Looks like device.h needs to be used instead of dev_printk.h. Please
-> let me know if you've a different opinion.
+Fix the issue by disallowing CONFIG_KASAN_STACK when HW_TAGS is used.
 
-I don't see the user of device.h. dev_printk.h is definitely in use here...
-Do you see a user for device.h? Which line in your code requires it?
+(The commit that introduced CONFIG_KASAN_HW_TAGS specified proper
+ dependency for CONFIG_KASAN_STACK_ENABLE but not for CONFIG_KASAN_STACK.)
 
-It might be that I don't see something quite obvious...
+Fixes: 6a63a63ff1ac ("kasan: introduce CONFIG_KASAN_HW_TAGS")
+Cc: stable@vger.kernel.org
+Reported-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+---
+ lib/Kconfig.kasan | 1 +
+ 1 file changed, 1 insertion(+)
 
-> >  module.h
-> >  types.h
-> >
-> > The rest seems fine because they are guaranteed to be included by
-> > acpi.h (IIUC about fwnode API and acpi_mdio includes MDIO PHY APIs).
-
-
-
+diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+index 624ae1df7984..fba9909e31b7 100644
+--- a/lib/Kconfig.kasan
++++ b/lib/Kconfig.kasan
+@@ -156,6 +156,7 @@ config KASAN_STACK_ENABLE
+ 
+ config KASAN_STACK
+ 	int
++	depends on KASAN_GENERIC || KASAN_SW_TAGS
+ 	default 1 if KASAN_STACK_ENABLE || CC_IS_GCC
+ 	default 0
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.30.1.766.gb4fecdf3b7-goog
+
