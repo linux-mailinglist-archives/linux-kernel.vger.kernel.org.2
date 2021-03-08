@@ -2,110 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F123330DD0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E67330E34
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhCHMdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:33:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhCHMcl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:32:41 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F21C06174A;
-        Mon,  8 Mar 2021 04:32:37 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id ci14so19950730ejc.7;
-        Mon, 08 Mar 2021 04:32:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DyaNixOD/7IKoYOEQqBQtYom5s9K0U3gpxDD086XhLY=;
-        b=E3H2VrwL8yCwHpkkbz34PSIbGWXgXJU+Cx/Uwifr00+VEJATQCGjY+4OfvU8gQq2Lu
-         K0vMaITat7mtcctIB7ahH3G18mQVy/TcK+APGbtpoLoxmUTaVdieswsxvA4YiKW+TuKI
-         muF6YCCEUr3VjbVDWX9h3zf0ylcHVq2c8F1iI1SsK5aIvcFq3fNXRp9Cxg0u6PwP7KeX
-         rfcYWGtTdzaZqYjL8CHI4HJb61j+MU36xYpxUJmuWYZfnjXcTyNqpRkcMBY+YyL/ssxj
-         Z8dxuqsEnMW3zS2W/Q5ZU+K8r5VFn02h2VRROlogG7KNWR00XV3r1h7Ici8IKq3Cr5Gv
-         4YpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DyaNixOD/7IKoYOEQqBQtYom5s9K0U3gpxDD086XhLY=;
-        b=lrspLe8wVeAkE2BjQ7cTZa+FMb5CHwDa9AkEEc9lKBzNYrgs6nHaegCQIone/Yb5f5
-         NPF6UjLiku8KmhiNIv76Nwokccy/2hf5GY1D71LKhDQZ5HHtUxpm0cUZ3j2ohpCaLPsu
-         OueAtNMSmoSEVCzPECNh521VSHGLQ36MOasBhu1LkcWuNXvsjeNb9VgK5p0sj1HFMHrN
-         gbMFg+N7lGwO89Dq8eiKFLzoG15qm35GNLA1DK6UMQT6W3u7SgrxB4ildK7Lb1/WSZed
-         dGqbqgzH5cfO2M89OFm5tNyJuGPeZJBBFOH/uOiTZUYf/pasr1IiuPcIs7j5uSkZDH5L
-         cQJw==
-X-Gm-Message-State: AOAM532l3e5H8tlSw6OJ82Zh3SDXRnegcMBuzBskZC6c88t8pdVGq64l
-        pIt6f0VX+LenqAUCGmbzwWxNb/tGUaS7f2TMG/JCSbh5OLQ=
-X-Google-Smtp-Source: ABdhPJzRhu8t1n6m7FXXvNXMx/YrqhDeyO4dO8yMAe0ED0b9Tp/q0lZBc+K+xtf9ARyPF6M/jbyZC4obNIuQvvAeiEU=
-X-Received: by 2002:a17:906:d9c9:: with SMTP id qk9mr14451619ejb.504.1615206755625;
- Mon, 08 Mar 2021 04:32:35 -0800 (PST)
+        id S232155AbhCHMfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:35:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232032AbhCHMf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 07:35:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23CE3651CF;
+        Mon,  8 Mar 2021 12:35:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615206929;
+        bh=9sX9tFREOjCaTTspYu2FDmQy7Aa0xl5EfhceXgBOSRU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DIJjungmtIX+w9Sj73bkVZMeCgIVWaVrGyH/EYkcjXfEYrh6/ZknUWDq5FEfdbkOd
+         4WaT27uGr2EmyWDvi2tslFCtR3veu4FUKEa3BXxesKUE9IwOyp0SWOiNrO/+Jk0oJ1
+         ZoUz6JNmIGb19UXVmKK7j1vImyK1r3QdNH712SAs=
+From:   gregkh@linuxfoundation.org
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 5.11 00/44] 5.11.5-rc1 review
+Date:   Mon,  8 Mar 2021 13:34:38 +0100
+Message-Id: <20210308122718.586629218@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210223191652.436397-1-adrien.grassein@gmail.com>
- <20210308004616.GM543@dragon> <CABkfQAHkJ=4Zwhbz0MxhbedK71JzaaQFXR5tN1k=8JmDysGGjA@mail.gmail.com>
- <20210308123030.GA11246@dragon>
-In-Reply-To: <20210308123030.GA11246@dragon>
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Date:   Mon, 8 Mar 2021 13:32:24 +0100
-Message-ID: <CABkfQAGBXopCMO2gsNk6WxE3D47wbXbqEMePC0RZs8T3FxXG=w@mail.gmail.com>
-Subject: Re: [PATCH v4 00/10] Add peripheral support for imx8mm-nitrogen-r2 board
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org, DTML <devicetree@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.11.5-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.11.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.11.5-rc1
+X-KernelTest-Deadline: 2021-03-10T12:27+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le lun. 8 mars 2021 =C3=A0 13:30, Shawn Guo <shawnguo@kernel.org> a =C3=A9c=
-rit :
->
-> On Mon, Mar 08, 2021 at 12:54:05PM +0100, Adrien Grassein wrote:
-> > Le lun. 8 mars 2021 =C3=A0 01:46, Shawn Guo <shawnguo@kernel.org> a =C3=
-=A9crit :
-> > >
-> > > On Tue, Feb 23, 2021 at 08:16:43PM +0100, Adrien Grassein wrote:
-> > > > Adrien Grassein (10):
-> > > >   arm64: dts: imx8mm-nitrogen-r2: add wifi/bt chip
-> > > >   arm64: dts: imx8mm-nitrogen-r2: rework USDHC1
-> > > >   arm64: dts: imx8mm-nitrogen-r2: add USB support
-> > > >   arm64: dts: imx8mm-nitrogen-r2: add espi2 support
-> > > >   arm64: dts: imx8mm-nitrogen-r2: add UARTs
-> > > >   arm64: dts: imx8mm-nitrogen-r2: rework UART 2
-> > > >   arm64: dts: imx8mm-nitrogen-r2: add PWMs
-> > > >   arm64: dts: imx8mm-nitrogen-r2: add FlexSPI
-> > > >   arm64: dts: imx8mm-nitrogen-r2: add audio
-> > > >   arm64: defconfig: Enable wm8960 audio driver.
-> > >
-> > > Applied all, thanks.
-> >
-> > Thanks,
-> >
-> > But I think you missed one (arm64: dts: imx8mm-nitrogen-r2: add espi2
-> > support) that I don't see on your tree.
->
-> Hmm, looks like it did not get posted.
->
-> https://lore.kernel.org/linux-arm-kernel/20210223191652.436397-1-adrien.g=
-rassein@gmail.com/
->
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Oh sorry, my bad.
-I will repost this patch alone.
+This is the start of the stable review cycle for the 5.11.5 release.
+There are 44 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-> Shawn
+Responses should be made by Wed, 10 Mar 2021 12:27:05 +0000.
+Anything received after that time might be too late.
 
-Thanks,
-Adrien
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.5-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+and the diffstat can be found below.
+
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.11.5-rc1
+
+Heiner Kallweit <hkallweit1@gmail.com>
+    r8169: fix resuming from suspend on RTL8105e if machine runs on battery
+
+Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+    tomoyo: recognize kernel threads correctly
+
+Naohiro Aota <naohiro.aota@wdc.com>
+    btrfs: zoned: use sector_t for zone sectors
+
+Zenghui Yu <yuzenghui@huawei.com>
+    iommu/vt-d: Fix status code for Allocate/Free PASID command
+
+Lu Baolu <baolu.lu@linux.intel.com>
+    iommu: Don't use lazy flush for untrusted device
+
+Nicolin Chen <nicoleotsuka@gmail.com>
+    iommu/tegra-smmu: Fix mc errors on tegra124-nyan
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    rsxx: Return -EFAULT if copy_to_user() fails
+
+Jens Axboe <axboe@kernel.dk>
+    ia64: don't call handle_signal() unless there's actually a signal queued
+
+Chen Jun <chenjun102@huawei.com>
+    ftrace: Have recordmcount use w8 to read relp->r_info in arm64_is_fake_mcount
+
+Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+    ALSA: hda: intel-nhlt: verify config type
+
+YueHaibing <yuehaibing@huawei.com>
+    IB/mlx5: Add missing error code
+
+Julian Braha <julianbraha@gmail.com>
+    RDMA/rxe: Fix missing kconfig dependency on CRYPTO
+
+Saeed Mahameed <saeedm@nvidia.com>
+    RDMA/cm: Fix IRQ restore in ib_send_cm_sidr_rep
+
+Nicolas MURE <nicolas.mure2019@gmail.com>
+    ALSA: usb-audio: Fix Pioneer DJM devices URB_CONTROL request direction to set samplerate
+
+Colin Ian King <colin.king@canonical.com>
+    ALSA: ctxfi: cthw20k2: fix mask on conf to allow 4 bits
+
+Ard Biesheuvel <ardb@kernel.org>
+    crypto - shash: reduce minimum alignment of shash_desc structure
+
+Kevin Wang <kevin1.wang@amd.com>
+    drm/amdgpu: fix parameter error of RREG32_PCIE() in amdgpu_regs_pcie
+
+Alex Deucher <alexander.deucher@amd.com>
+    drm/amdgpu: Only check for S0ix if AMD_PMC is configured
+
+Asher.Song <Asher.Song@amd.com>
+    drm/amdgpu:disable VCN for Navi12 SKU
+
+Evan Quan <evan.quan@amd.com>
+    drm/amd/pm: correct Arcturus mmTHM_BACO_CNTL register address
+
+Milan Broz <gmazyland@gmail.com>
+    dm verity: fix FEC for RS roots unaligned to block size
+
+Mikulas Patocka <mpatocka@redhat.com>
+    dm bufio: subtract the number of initial sectors in dm_bufio_get_device_size
+
+Jens Axboe <axboe@kernel.dk>
+    io_uring: ignore double poll add on the same waitqueue head
+
+Steven Rostedt (VMware) <rostedt@goodmis.org>
+    ring-buffer: Force before_stamp and write_stamp to be different on discard
+
+Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+    PM: runtime: Update device status before letting suppliers suspend
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: fix warning when creating a directory with smack enabled
+
+Nikolay Borisov <nborisov@suse.com>
+    btrfs: unlock extents in btrfs_zero_range in case of quota reservation errors
+
+Boris Burkov <boris@bur.io>
+    btrfs: fix spurious free_space_tree remount warning
+
+Nikolay Borisov <nborisov@suse.com>
+    btrfs: free correct amount of space in btrfs_delayed_inode_reserve_metadata
+
+Dan Carpenter <dancarpenter@oracle.com>
+    btrfs: validate qgroup inherit for SNAP_CREATE_V2 ioctl
+
+Nikolay Borisov <nborisov@suse.com>
+    btrfs: fix race between extent freeing/allocation when using bitmaps
+
+Josef Bacik <josef@toxicpanda.com>
+    btrfs: tree-checker: do not error out if extent ref hash doesn't match
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: fix stale data exposure after cloning a hole with NO_HOLES enabled
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: fix race between swap file activation and snapshot creation
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: fix race between writes to swap files and scrub
+
+Ira Weiny <ira.weiny@intel.com>
+    btrfs: fix raid6 qstripe kmap
+
+Josef Bacik <josef@toxicpanda.com>
+    btrfs: avoid double put of block group when emptying cluster
+
+Jarkko Sakkinen <jarkko@kernel.org>
+    tpm, tpm_tis: Decorate tpm_get_timeouts() with request_locality()
+
+Lukasz Majczak <lma@semihalf.com>
+    tpm, tpm_tis: Decorate tpm_tis_gen_interrupt() with request_locality()
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: usb-audio: Allow modifying parameters with succeeding hw_params calls
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: usb-audio: Drop bogus dB range in too low level
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: usb-audio: Don't abort even if the clock rate differs
+
+Andrea Fagiani <andfagiani@gmail.com>
+    ALSA: usb-audio: use Corsair Virtuoso mapping for Corsair Virtuoso SE
+
+Chris Chiu <chris.chiu@canonical.com>
+    ALSA: hda/realtek: Enable headset mic of Acer SWIFT with ALC256
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                       |  4 +-
+ arch/ia64/kernel/signal.c                      |  3 +-
+ drivers/base/power/runtime.c                   | 62 +++++++++++++---------
+ drivers/block/rsxx/core.c                      |  8 +--
+ drivers/char/tpm/tpm_tis_core.c                | 30 +++++++++--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c       |  3 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c    |  4 +-
+ drivers/gpu/drm/amd/amdgpu/nv.c                |  6 ++-
+ drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c | 15 ++++--
+ drivers/infiniband/core/cm.c                   |  5 +-
+ drivers/infiniband/hw/mlx5/devx.c              |  4 +-
+ drivers/infiniband/sw/rxe/Kconfig              |  1 +
+ drivers/iommu/dma-iommu.c                      | 15 +++---
+ drivers/iommu/intel/pasid.h                    |  4 +-
+ drivers/iommu/tegra-smmu.c                     | 72 +++++++++++++++++++++++++-
+ drivers/md/dm-bufio.c                          |  4 ++
+ drivers/md/dm-verity-fec.c                     | 23 ++++----
+ drivers/net/ethernet/realtek/r8169_main.c      |  2 +
+ fs/btrfs/block-group.c                         | 33 +++++++++++-
+ fs/btrfs/block-group.h                         |  9 ++++
+ fs/btrfs/ctree.h                               |  5 ++
+ fs/btrfs/delayed-inode.c                       |  2 +-
+ fs/btrfs/file.c                                |  5 +-
+ fs/btrfs/free-space-cache.c                    | 14 ++---
+ fs/btrfs/inode.c                               | 40 ++++++++++++--
+ fs/btrfs/ioctl.c                               | 19 ++++++-
+ fs/btrfs/raid56.c                              | 21 ++++----
+ fs/btrfs/reflink.c                             | 18 +++++++
+ fs/btrfs/scrub.c                               |  9 +++-
+ fs/btrfs/super.c                               |  4 +-
+ fs/btrfs/tree-checker.c                        | 16 ++----
+ fs/btrfs/xattr.c                               | 31 +++++++++--
+ fs/btrfs/zoned.c                               |  4 +-
+ fs/io_uring.c                                  |  3 ++
+ include/crypto/hash.h                          |  8 +--
+ include/linux/crypto.h                         |  9 ++--
+ include/sound/intel-nhlt.h                     |  5 ++
+ kernel/trace/ring_buffer.c                     | 11 ++++
+ scripts/recordmcount.c                         |  2 +-
+ security/tomoyo/network.c                      |  2 +-
+ sound/hda/intel-nhlt.c                         | 54 +++++++++++++++----
+ sound/pci/ctxfi/cthw20k2.c                     |  2 +-
+ sound/pci/hda/patch_realtek.c                  | 13 +++++
+ sound/usb/clock.c                              |  8 +--
+ sound/usb/mixer.c                              | 11 ++++
+ sound/usb/mixer_maps.c                         | 10 ++++
+ sound/usb/pcm.c                                | 12 +++--
+ sound/usb/quirks.c                             |  2 +-
+ 48 files changed, 507 insertions(+), 140 deletions(-)
+
+
