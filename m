@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F5E330C84
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:36:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6525330C87
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbhCHLgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 06:36:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
+        id S229578AbhCHLhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 06:37:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhCHLfv (ORCPT
+        with ESMTP id S229604AbhCHLhH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 06:35:51 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BACCFC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 03:35:50 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id l11so7673722wrp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 03:35:50 -0800 (PST)
+        Mon, 8 Mar 2021 06:37:07 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12993C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 03:37:07 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id w7so5840690wmb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 03:37:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=n76nfuOBIjU7qAbRDmCDHWm6PPfYsZij7NB352EcUzw=;
-        b=HBtYHyjx3R8sAh1g0JTXqYEhfSBQGh+QOYfBM17TQ4AfCH0UvMyGAPSsVD5l5WTXoP
-         TVch0Z9onV0dEC4voOzOA880zZI5Y2zzegC9+xea4M+S0VwAdVOzmCBXmcbAtUdl5ww7
-         m7XlNz3uDCOyBRGWdU1qNOZbwhgjWQZ0yzGZGIanX1naV0pCneI7wTBPbrmfchwqe/Cr
-         PC+W/CYgkx3pnmycF2Z8GmruPtLiGCdXVhe32D1EQGSLo3QLqoInsA5mw/AiS5p9GlF2
-         BdXk4UV2puDSYZGPD1VsRzFXLMhAcDdiNXfQM4YejLEP4uCR7CVjkJ3/1xwV3omktFpk
-         v+cA==
+        bh=87FdZea+iM/dFONNBtDahO6WoHLjdEMssDM4fhYdjyg=;
+        b=jlVBStZqs8WQUraCWHSwKyJt6Qve0w4rI9lCnnim7Qm6Zz9AyojesiTCvj9xOTpCa3
+         zVtt7D2hb4XbqwjHCQ+Ka4aYXQSZOXo1dKJ0umpbH/ed/PgNWUbi+VfeZhCbz789/b89
+         12XUqVbSmElzPSp3wkaniTtAe7eyT7bSuI1Kcb1NDxArgKuFyPNuverTuqkjKW4/6G5d
+         YgVq6WclS8de7RzQnfvzg/o7BDodxBjUnAWYxPaurh1JaYSLEYXdCHpEFYV5pRKLbeyj
+         E1ziPjYCWelATZ/n136yNY5/rLHwfm9Qz8uMYK60cvRAO/polXcD2qRPpau+caurITHV
+         xwZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=n76nfuOBIjU7qAbRDmCDHWm6PPfYsZij7NB352EcUzw=;
-        b=PXSxXcXXUjT+aPGdUdRmjrKiLm5QQnloniChetm5eAmwlPfJxWSDpEbq3ZZnNws27G
-         5mGNbzHZlvHvZq7WJs9gEhj33zDEhhQa5WIBaH7j6JivuyTSVNN9ZuGzcOcMvOYyNXfj
-         U10CT2jObJiYK8VcLyFaegn4qMOg2cZxp0a8jpWwv70dOWnuMPpIFa+5ZU8GSAIg4Bzq
-         J2voyU6r/y0SsGdJxHMIWRPR6BRxLbmDAHQud9pnsEgf3SEdwTSPry6euSSZ5Mu4x4wR
-         IwErXPnO7r0XAfYgtHwHbONoVEtL/H/ld4zDAkV/18/GT5lKj7nTS8OmKvB1oFwKGt1U
-         qg6g==
-X-Gm-Message-State: AOAM532FzL3X+1n+Cc3wRdfPjqfUHAYOZ4jPRTMz/0h5+TiyDI3G6izl
-        AfyeAVlv64tgk9ZNur6InTAEtg==
-X-Google-Smtp-Source: ABdhPJxMfAr4eyqNvBmo+DXLzoDkFVP/cs32MpO8fNMX87DCcc85Czkwdr48UugDnKbAS9PjF5Fy/A==
-X-Received: by 2002:a05:6000:192:: with SMTP id p18mr22136031wrx.403.1615203349305;
-        Mon, 08 Mar 2021 03:35:49 -0800 (PST)
+        bh=87FdZea+iM/dFONNBtDahO6WoHLjdEMssDM4fhYdjyg=;
+        b=ZkaU4ni59ktwUZr13LIEfSBELZkci56LCCBJTUgAR8j2KkYrmkYefrPHVbmaFWecfz
+         OGvR+YH/Pr35E4qf/gpjILpXUg4+xFqHE/IjmrJ55cDbU6kDILmbccjyP5NSt49z4Wwc
+         jb13PbARbFkfdGcjVTpXL63oD2dL+zIAAvAIoG/HOnc8ZKwO64rMXTTUhqGk6xGqJDoy
+         J/Gp6lqt2Qg14XwkVfpkZyMc+q0R812Dse05dAhOp7Gyr6CFv3SHBcq6WOPjVSAmJPfp
+         s4uy80BkBLqokpAU0gdqxvQKUcduOp5LCOs1Yi5D03Hm2JPB59yx641MYZFC9XTc5s6o
+         qapg==
+X-Gm-Message-State: AOAM532IGzQ40rEM9ml2dh5jGzcE20UIuEN75Ard327r6r+1dwjuEJyW
+        Xhomf1BT5f9YeR31eTz8vB943Q==
+X-Google-Smtp-Source: ABdhPJxeOjaQHVun5YbiM2V9rDOzEj+A75H/TI2A+ePs46qmxN3wauRLCAyHBGq9k5JV3IidA6cS5g==
+X-Received: by 2002:a7b:c119:: with SMTP id w25mr21264635wmi.127.1615203425609;
+        Mon, 08 Mar 2021 03:37:05 -0800 (PST)
 Received: from elver.google.com ([2a00:79e0:15:13:9d1d:b6a0:d116:531b])
-        by smtp.gmail.com with ESMTPSA id o7sm18219797wrs.16.2021.03.08.03.35.47
+        by smtp.gmail.com with ESMTPSA id p14sm18252588wmc.30.2021.03.08.03.37.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 03:35:48 -0800 (PST)
-Date:   Mon, 8 Mar 2021 12:35:42 +0100
+        Mon, 08 Mar 2021 03:37:04 -0800 (PST)
+Date:   Mon, 8 Mar 2021 12:36:59 +0100
 From:   Marco Elver <elver@google.com>
 To:     Andrey Konovalov <andreyknvl@google.com>
 Cc:     Alexander Potapenko <glider@google.com>,
@@ -64,14 +64,14 @@ Cc:     Alexander Potapenko <glider@google.com>,
         Kevin Brodsky <kevin.brodsky@arm.com>,
         kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] kasan, mm: integrate page_alloc init with HW_TAGS
-Message-ID: <YEYMDn/9zQI8g+3o@elver.google.com>
+Subject: Re: [PATCH 4/5] kasan, mm: integrate slab init_on_alloc with HW_TAGS
+Message-ID: <YEYMWynJ3SdDhV8u@elver.google.com>
 References: <cover.1614989433.git.andreyknvl@google.com>
- <a7f1d687b0550182c7f5b4a47c277a61425af65f.1614989433.git.andreyknvl@google.com>
+ <b8cc85d5cc9818b72e543d8034ce38acce0c0300.1614989433.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a7f1d687b0550182c7f5b4a47c277a61425af65f.1614989433.git.andreyknvl@google.com>
+In-Reply-To: <b8cc85d5cc9818b72e543d8034ce38acce0c0300.1614989433.git.andreyknvl@google.com>
 User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -79,201 +79,262 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Sat, Mar 06, 2021 at 01:15AM +0100, Andrey Konovalov wrote:
 > This change uses the previously added memory initialization feature
-> of HW_TAGS KASAN routines for page_alloc memory when init_on_alloc/free
-> is enabled.
+> of HW_TAGS KASAN routines for slab memory when init_on_alloc is enabled.
 > 
-> With this change, kernel_init_free_pages() is no longer called when
-> both HW_TAGS KASAN and init_on_alloc/free are enabled. Instead, memory
+> With this change, memory initialization memset() is no longer called
+> when both HW_TAGS KASAN and init_on_alloc are enabled. Instead, memory
 > is initialized in KASAN runtime.
 > 
+> The memory initialization memset() is moved into slab_post_alloc_hook()
+> that currently directly follows the initialization loop. A new argument
+> is added to slab_post_alloc_hook() that indicates whether to initialize
+> the memory or not.
+> 
 > To avoid discrepancies with which memory gets initialized that can be
-> caused by future changes, both KASAN and kernel_init_free_pages() hooks
+> caused by future changes, both KASAN hook and initialization memset()
 > are put together and a warning comment is added.
 > 
-> This patch changes the order in which memory initialization and page
-> poisoning hooks are called. This doesn't lead to any side-effects, as
-> whenever page poisoning is enabled, memory initialization gets disabled.
-> 
 > Combining setting allocation tags with memory initialization improves
-> HW_TAGS KASAN performance when init_on_alloc/free is enabled.
+> HW_TAGS KASAN performance when init_on_alloc is enabled.
 > 
 > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 > ---
->  include/linux/kasan.h | 16 ++++++++--------
->  mm/kasan/common.c     |  8 ++++----
->  mm/mempool.c          |  4 ++--
->  mm/page_alloc.c       | 37 ++++++++++++++++++++++++++-----------
->  4 files changed, 40 insertions(+), 25 deletions(-)
+>  include/linux/kasan.h |  8 ++++----
+>  mm/kasan/common.c     |  4 ++--
+>  mm/slab.c             | 28 +++++++++++++---------------
+>  mm/slab.h             | 17 +++++++++++++----
+>  mm/slub.c             | 27 +++++++++++----------------
+>  5 files changed, 43 insertions(+), 41 deletions(-)
 > 
 > diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index 1d89b8175027..4c0f414a893b 100644
+> index 4c0f414a893b..bb756f6c73b5 100644
 > --- a/include/linux/kasan.h
 > +++ b/include/linux/kasan.h
-> @@ -120,20 +120,20 @@ static __always_inline void kasan_unpoison_range(const void *addr, size_t size)
->  		__kasan_unpoison_range(addr, size);
+> @@ -216,12 +216,12 @@ static __always_inline void kasan_slab_free_mempool(void *ptr)
 >  }
 >  
-> -void __kasan_alloc_pages(struct page *page, unsigned int order);
-> +void __kasan_alloc_pages(struct page *page, unsigned int order, bool init);
->  static __always_inline void kasan_alloc_pages(struct page *page,
-> -						unsigned int order)
-> +						unsigned int order, bool init)
+>  void * __must_check __kasan_slab_alloc(struct kmem_cache *s,
+> -				       void *object, gfp_t flags);
+> +				       void *object, gfp_t flags, bool init);
+>  static __always_inline void * __must_check kasan_slab_alloc(
+> -				struct kmem_cache *s, void *object, gfp_t flags)
+> +		struct kmem_cache *s, void *object, gfp_t flags, bool init)
 >  {
 >  	if (kasan_enabled())
-> -		__kasan_alloc_pages(page, order);
-> +		__kasan_alloc_pages(page, order, init);
+> -		return __kasan_slab_alloc(s, object, flags);
+> +		return __kasan_slab_alloc(s, object, flags, init);
+>  	return object;
 >  }
 >  
-> -void __kasan_free_pages(struct page *page, unsigned int order);
-> +void __kasan_free_pages(struct page *page, unsigned int order, bool init);
->  static __always_inline void kasan_free_pages(struct page *page,
-> -						unsigned int order)
-> +						unsigned int order, bool init)
+> @@ -306,7 +306,7 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object)
+>  static inline void kasan_kfree_large(void *ptr) {}
+>  static inline void kasan_slab_free_mempool(void *ptr) {}
+>  static inline void *kasan_slab_alloc(struct kmem_cache *s, void *object,
+> -				   gfp_t flags)
+> +				   gfp_t flags, bool init)
 >  {
->  	if (kasan_enabled())
-> -		__kasan_free_pages(page, order);
-> +		__kasan_free_pages(page, order, init);
+>  	return object;
 >  }
->  
->  void __kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
-> @@ -282,8 +282,8 @@ static inline slab_flags_t kasan_never_merge(void)
->  	return 0;
->  }
->  static inline void kasan_unpoison_range(const void *address, size_t size) {}
-> -static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
-> -static inline void kasan_free_pages(struct page *page, unsigned int order) {}
-> +static inline void kasan_alloc_pages(struct page *page, unsigned int order, bool init) {}
-> +static inline void kasan_free_pages(struct page *page, unsigned int order, bool init) {}
->  static inline void kasan_cache_create(struct kmem_cache *cache,
->  				      unsigned int *size,
->  				      slab_flags_t *flags) {}
 > diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 316f7f8cd8e6..6107c795611f 100644
+> index 6107c795611f..7ea747b18c26 100644
 > --- a/mm/kasan/common.c
 > +++ b/mm/kasan/common.c
-> @@ -97,7 +97,7 @@ slab_flags_t __kasan_never_merge(void)
->  	return 0;
+> @@ -428,7 +428,7 @@ static void set_alloc_info(struct kmem_cache *cache, void *object,
 >  }
 >  
-> -void __kasan_alloc_pages(struct page *page, unsigned int order)
-> +void __kasan_alloc_pages(struct page *page, unsigned int order, bool init)
+>  void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
+> -					void *object, gfp_t flags)
+> +					void *object, gfp_t flags, bool init)
 >  {
 >  	u8 tag;
->  	unsigned long i;
-> @@ -108,14 +108,14 @@ void __kasan_alloc_pages(struct page *page, unsigned int order)
->  	tag = kasan_random_tag();
->  	for (i = 0; i < (1 << order); i++)
->  		page_kasan_tag_set(page + i, tag);
-> -	kasan_unpoison(page_address(page), PAGE_SIZE << order, false);
-> +	kasan_unpoison(page_address(page), PAGE_SIZE << order, init);
+>  	void *tagged_object;
+> @@ -453,7 +453,7 @@ void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
+>  	 * Unpoison the whole object.
+>  	 * For kmalloc() allocations, kasan_kmalloc() will do precise poisoning.
+>  	 */
+> -	kasan_unpoison(tagged_object, cache->object_size, false);
+> +	kasan_unpoison(tagged_object, cache->object_size, init);
+>  
+>  	/* Save alloc info (if possible) for non-kmalloc() allocations. */
+>  	if (kasan_stack_collection_enabled())
+> diff --git a/mm/slab.c b/mm/slab.c
+> index 51fd424e0d6d..936dd686dec9 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -3216,6 +3216,7 @@ slab_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid, size_t orig_
+>  	void *ptr;
+>  	int slab_node = numa_mem_id();
+>  	struct obj_cgroup *objcg = NULL;
+> +	bool init = false;
+>  
+>  	flags &= gfp_allowed_mask;
+>  	cachep = slab_pre_alloc_hook(cachep, &objcg, 1, flags);
+> @@ -3254,12 +3255,10 @@ slab_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid, size_t orig_
+>    out:
+>  	local_irq_restore(save_flags);
+>  	ptr = cache_alloc_debugcheck_after(cachep, flags, ptr, caller);
+> -
+> -	if (unlikely(slab_want_init_on_alloc(flags, cachep)) && ptr)
+> -		memset(ptr, 0, cachep->object_size);
+> +	init = slab_want_init_on_alloc(flags, cachep);
+>  
+>  out_hooks:
+> -	slab_post_alloc_hook(cachep, objcg, flags, 1, &ptr);
+> +	slab_post_alloc_hook(cachep, objcg, flags, 1, &ptr, init);
+>  	return ptr;
 >  }
 >  
-> -void __kasan_free_pages(struct page *page, unsigned int order)
-> +void __kasan_free_pages(struct page *page, unsigned int order, bool init)
+> @@ -3301,6 +3300,7 @@ slab_alloc(struct kmem_cache *cachep, gfp_t flags, size_t orig_size, unsigned lo
+>  	unsigned long save_flags;
+>  	void *objp;
+>  	struct obj_cgroup *objcg = NULL;
+> +	bool init = false;
+>  
+>  	flags &= gfp_allowed_mask;
+>  	cachep = slab_pre_alloc_hook(cachep, &objcg, 1, flags);
+> @@ -3317,12 +3317,10 @@ slab_alloc(struct kmem_cache *cachep, gfp_t flags, size_t orig_size, unsigned lo
+>  	local_irq_restore(save_flags);
+>  	objp = cache_alloc_debugcheck_after(cachep, flags, objp, caller);
+>  	prefetchw(objp);
+> -
+> -	if (unlikely(slab_want_init_on_alloc(flags, cachep)) && objp)
+> -		memset(objp, 0, cachep->object_size);
+> +	init = slab_want_init_on_alloc(flags, cachep);
+>  
+>  out:
+> -	slab_post_alloc_hook(cachep, objcg, flags, 1, &objp);
+> +	slab_post_alloc_hook(cachep, objcg, flags, 1, &objp, init);
+>  	return objp;
+>  }
+>  
+> @@ -3542,18 +3540,18 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
+>  
+>  	cache_alloc_debugcheck_after_bulk(s, flags, size, p, _RET_IP_);
+>  
+> -	/* Clear memory outside IRQ disabled section */
+> -	if (unlikely(slab_want_init_on_alloc(flags, s)))
+> -		for (i = 0; i < size; i++)
+> -			memset(p[i], 0, s->object_size);
+> -
+> -	slab_post_alloc_hook(s, objcg, flags, size, p);
+> +	/*
+> +	 * memcg and kmem_cache debug support and memory initialization.
+> +	 * Done outside of the IRQ disabled section.
+> +	 */
+> +	slab_post_alloc_hook(s, objcg, flags, size, p,
+> +				slab_want_init_on_alloc(flags, s));
+>  	/* FIXME: Trace call missing. Christoph would like a bulk variant */
+>  	return size;
+>  error:
+>  	local_irq_enable();
+>  	cache_alloc_debugcheck_after_bulk(s, flags, i, p, _RET_IP_);
+> -	slab_post_alloc_hook(s, objcg, flags, i, p);
+> +	slab_post_alloc_hook(s, objcg, flags, i, p, false);
+>  	__kmem_cache_free_bulk(s, i, p);
+>  	return 0;
+>  }
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 076582f58f68..0116a314cd21 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -506,15 +506,24 @@ static inline struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
+>  }
+>  
+>  static inline void slab_post_alloc_hook(struct kmem_cache *s,
+> -					struct obj_cgroup *objcg,
+> -					gfp_t flags, size_t size, void **p)
+> +					struct obj_cgroup *objcg, gfp_t flags,
+> +					size_t size, void **p, bool init)
 >  {
->  	if (likely(!PageHighMem(page)))
->  		kasan_poison(page_address(page), PAGE_SIZE << order,
-> -			     KASAN_FREE_PAGE, false);
-> +			     KASAN_FREE_PAGE, init);
->  }
+>  	size_t i;
 >  
->  /*
-> diff --git a/mm/mempool.c b/mm/mempool.c
-> index 79959fac27d7..fe19d290a301 100644
-> --- a/mm/mempool.c
-> +++ b/mm/mempool.c
-> @@ -106,7 +106,7 @@ static __always_inline void kasan_poison_element(mempool_t *pool, void *element)
->  	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
->  		kasan_slab_free_mempool(element);
->  	else if (pool->alloc == mempool_alloc_pages)
-> -		kasan_free_pages(element, (unsigned long)pool->pool_data);
-> +		kasan_free_pages(element, (unsigned long)pool->pool_data, false);
->  }
->  
->  static void kasan_unpoison_element(mempool_t *pool, void *element)
-> @@ -114,7 +114,7 @@ static void kasan_unpoison_element(mempool_t *pool, void *element)
->  	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
->  		kasan_unpoison_range(element, __ksize(element));
->  	else if (pool->alloc == mempool_alloc_pages)
-> -		kasan_alloc_pages(element, (unsigned long)pool->pool_data);
-> +		kasan_alloc_pages(element, (unsigned long)pool->pool_data, false);
->  }
->  
->  static __always_inline void add_element(mempool_t *pool, void *element)
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 0efb07b5907c..175bdb36d113 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -396,14 +396,14 @@ static DEFINE_STATIC_KEY_TRUE(deferred_pages);
->   * initialization is done, but this is not likely to happen.
->   */
->  static inline void kasan_free_nondeferred_pages(struct page *page, int order,
-> -							fpi_t fpi_flags)
-> +						bool init, fpi_t fpi_flags)
->  {
->  	if (static_branch_unlikely(&deferred_pages))
->  		return;
->  	if (!IS_ENABLED(CONFIG_KASAN_GENERIC) &&
->  			(fpi_flags & FPI_SKIP_KASAN_POISON))
->  		return;
-> -	kasan_free_pages(page, order);
-> +	kasan_free_pages(page, order, init);
->  }
->  
->  /* Returns true if the struct page for the pfn is uninitialised */
-> @@ -455,12 +455,12 @@ defer_init(int nid, unsigned long pfn, unsigned long end_pfn)
->  }
->  #else
->  static inline void kasan_free_nondeferred_pages(struct page *page, int order,
-> -							fpi_t fpi_flags)
-> +						bool init, fpi_t fpi_flags)
->  {
->  	if (!IS_ENABLED(CONFIG_KASAN_GENERIC) &&
->  			(fpi_flags & FPI_SKIP_KASAN_POISON))
->  		return;
-> -	kasan_free_pages(page, order);
-> +	kasan_free_pages(page, order, init);
->  }
->  
->  static inline bool early_page_uninitialised(unsigned long pfn)
-> @@ -1242,6 +1242,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
->  			unsigned int order, bool check_free, fpi_t fpi_flags)
->  {
->  	int bad = 0;
-> +	bool init;
->  
->  	VM_BUG_ON_PAGE(PageTail(page), page);
->  
-> @@ -1299,16 +1300,21 @@ static __always_inline bool free_pages_prepare(struct page *page,
->  		debug_check_no_obj_freed(page_address(page),
->  					   PAGE_SIZE << order);
->  	}
-> -	if (want_init_on_free())
-> -		kernel_init_free_pages(page, 1 << order);
->  
->  	kernel_poison_pages(page, 1 << order);
->  
->  	/*
+>  	flags &= gfp_allowed_mask;
+> +
+> +	/*
 > +	 * As memory initialization is integrated with hardware tag-based
-> +	 * KASAN, kasan_free_pages and kernel_init_free_pages must be
+> +	 * KASAN, kasan_slab_alloc and initialization memset must be
 > +	 * kept together to avoid discrepancies in behavior.
 > +	 *
->  	 * With hardware tag-based KASAN, memory tags must be set before the
->  	 * page becomes unavailable via debug_pagealloc or arch_free_page.
->  	 */
-> -	kasan_free_nondeferred_pages(page, order, fpi_flags);
-> +	init = want_init_on_free();
-> +	if (init && !IS_ENABLED(CONFIG_KASAN_HW_TAGS))
+> +	 * As p[i] might get tagged, memset and kmemleak hook come after KASAN.
+> +	 */
+>  	for (i = 0; i < size; i++) {
+> -		p[i] = kasan_slab_alloc(s, p[i], flags);
+> -		/* As p[i] might get tagged, call kmemleak hook after KASAN. */
+> +		p[i] = kasan_slab_alloc(s, p[i], flags, init);
+> +		if (p[i] && init && !IS_ENABLED(CONFIG_KASAN_HW_TAGS))
 
-Doing the !IS_ENABLED(CONFIG_KASAN_HW_TAGS) check is awkward, and
-assumes internal knowledge of the KASAN implementation and how all
-current and future architectures that support HW_TAGS work.
+Same as the other patch, it seems awkward to have
+!IS_ENABLED(CONFIG_KASAN_HW_TAGS) rather than a kasan_*() helper that
+returns this information.
 
-Could we instead add a static inline helper to <linux/kasan.h>, e.g.
-kasan_supports_init() or so?
-
-That way, these checks won't grow uncontrollable if a future
-architecture implements HW_TAGS but not init.
-
-Thanks,
--- Marco
+> +			memset(p[i], 0, s->object_size);
+>  		kmemleak_alloc_recursive(p[i], s->object_size, 1,
+>  					 s->flags, flags);
+>  	}
+> diff --git a/mm/slub.c b/mm/slub.c
+> index e26c274b4657..f53df23760e3 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2822,6 +2822,7 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
+>  	struct page *page;
+>  	unsigned long tid;
+>  	struct obj_cgroup *objcg = NULL;
+> +	bool init = false;
+>  
+>  	s = slab_pre_alloc_hook(s, &objcg, 1, gfpflags);
+>  	if (!s)
+> @@ -2899,12 +2900,10 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
+>  	}
+>  
+>  	maybe_wipe_obj_freeptr(s, object);
+> -
+> -	if (unlikely(slab_want_init_on_alloc(gfpflags, s)) && object)
+> -		memset(kasan_reset_tag(object), 0, s->object_size);
+> +	init = slab_want_init_on_alloc(gfpflags, s);
+>  
+>  out:
+> -	slab_post_alloc_hook(s, objcg, gfpflags, 1, &object);
+> +	slab_post_alloc_hook(s, objcg, gfpflags, 1, &object, init);
+>  
+>  	return object;
+>  }
+> @@ -3356,20 +3355,16 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
+>  	c->tid = next_tid(c->tid);
+>  	local_irq_enable();
+>  
+> -	/* Clear memory outside IRQ disabled fastpath loop */
+> -	if (unlikely(slab_want_init_on_alloc(flags, s))) {
+> -		int j;
+> -
+> -		for (j = 0; j < i; j++)
+> -			memset(kasan_reset_tag(p[j]), 0, s->object_size);
+> -	}
+> -
+> -	/* memcg and kmem_cache debug support */
+> -	slab_post_alloc_hook(s, objcg, flags, size, p);
+> +	/*
+> +	 * memcg and kmem_cache debug support and memory initialization.
+> +	 * Done outside of the IRQ disabled fastpath loop.
+> +	 */
+> +	slab_post_alloc_hook(s, objcg, flags, size, p,
+> +				slab_want_init_on_alloc(flags, s));
+>  	return i;
+>  error:
+>  	local_irq_enable();
+> -	slab_post_alloc_hook(s, objcg, flags, i, p);
+> +	slab_post_alloc_hook(s, objcg, flags, i, p, false);
+>  	__kmem_cache_free_bulk(s, i, p);
+>  	return 0;
+>  }
+> @@ -3579,7 +3574,7 @@ static void early_kmem_cache_node_alloc(int node)
+>  	init_object(kmem_cache_node, n, SLUB_RED_ACTIVE);
+>  	init_tracking(kmem_cache_node, n);
+>  #endif
+> -	n = kasan_slab_alloc(kmem_cache_node, n, GFP_KERNEL);
+> +	n = kasan_slab_alloc(kmem_cache_node, n, GFP_KERNEL, false);
+>  	page->freelist = get_freepointer(kmem_cache_node, n);
+>  	page->inuse = 1;
+>  	page->frozen = 0;
+> -- 
+> 2.30.1.766.gb4fecdf3b7-goog
+> 
