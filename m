@@ -2,114 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7EF0330AEB
+	by mail.lfdr.de (Postfix) with ESMTP id BAEA3330AED
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbhCHKOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 05:14:20 -0500
-Received: from foss.arm.com ([217.140.110.172]:35374 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231866AbhCHKNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:13:51 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4642531B;
-        Mon,  8 Mar 2021 02:13:51 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 201D53F73C;
-        Mon,  8 Mar 2021 02:13:49 -0800 (PST)
-Date:   Mon, 8 Mar 2021 10:13:47 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: Re: [PATCH v3 08/11] entry: Make CONFIG_DEBUG_ENTRY available
- outside x86
-Message-ID: <20210308101347.GD7951@C02TD0UTHF1T.local>
-References: <cover.1614884673.git.luto@kernel.org>
- <d5b13da88adf4e732a07fe709263e572cb5ca8de.1614884673.git.luto@kernel.org>
+        id S231920AbhCHKOV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Mar 2021 05:14:21 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:22566 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231890AbhCHKOB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 05:14:01 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-110-PpHoh6FVONySBAbh2ICMKA-1; Mon, 08 Mar 2021 10:13:58 +0000
+X-MC-Unique: PpHoh6FVONySBAbh2ICMKA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 8 Mar 2021 10:13:56 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 8 Mar 2021 10:13:56 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Alex Elder' <elder@linaro.org>,
+        "subashab@codeaurora.org" <subashab@codeaurora.org>,
+        "stranche@codeaurora.org" <stranche@codeaurora.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>
+CC:     "sharathv@codeaurora.org" <sharathv@codeaurora.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "evgreen@chromium.org" <evgreen@chromium.org>,
+        "cpratapa@codeaurora.org" <cpratapa@codeaurora.org>,
+        "elder@kernel.org" <elder@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net-next v2 5/6] net: qualcomm: rmnet: don't use C
+ bit-fields in rmnet checksum trailer
+Thread-Topic: [PATCH net-next v2 5/6] net: qualcomm: rmnet: don't use C
+ bit-fields in rmnet checksum trailer
+Thread-Index: AQHXEjcvEK7MzxmURkq987v/iEpZqap54riQ
+Date:   Mon, 8 Mar 2021 10:13:56 +0000
+Message-ID: <ebe1bf51902e49458cfdd685790c4350@AcuMS.aculab.com>
+References: <20210306031550.26530-1-elder@linaro.org>
+ <20210306031550.26530-6-elder@linaro.org>
+In-Reply-To: <20210306031550.26530-6-elder@linaro.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d5b13da88adf4e732a07fe709263e572cb5ca8de.1614884673.git.luto@kernel.org>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 11:06:01AM -0800, Andy Lutomirski wrote:
-> In principle, the generic entry code is generic, and the goal is to use it
-> in many architectures once it settles down more.  Move CONFIG_DEBUG_ENTRY
-> to the generic config so that it can be used in the generic entry code and
-> not just in arch/x86.
+From: Alex Elder
+> Sent: 06 March 2021 03:16
 > 
-> Disable it on arm64.  arm64 uses some but not all of the kentry
-> code, and trying to debug the resulting state machine will be painful.
-> arm64 can turn it back on when it starts using the entire generic
-> path.
-
-Can we make this depend on CONFIG_GENERIC_ENTRY instead of !ARM64?
-That'd be more in line with "use the generic entry code, get the generic
-functionality". Note that arm64 doesn't select CONFIG_GENERIC_ENTRY
-today.
-
-I see that s390 selects CONFIG_GENERIC_ENTRY, and either way this will
-enable DEBUG_ENTRY for them, so it'd ve worth checking whether this is
-ok for them.
-
-Sven, thoughts?
-
-Thanks,
-Mark.
-
+> Replace the use of C bit-fields in the rmnet_map_dl_csum_trailer
+> structure with a single one-byte field, using constant field masks
+> to encode or get at embedded values.
 > 
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
->  arch/x86/Kconfig.debug | 10 ----------
->  lib/Kconfig.debug      | 11 +++++++++++
->  2 files changed, 11 insertions(+), 10 deletions(-)
+>  .../ethernet/qualcomm/rmnet/rmnet_map_data.c    |  2 +-
+>  include/linux/if_rmnet.h                        | 17 +++++++----------
+>  2 files changed, 8 insertions(+), 11 deletions(-)
 > 
-> diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
-> index 80b57e7f4947..a5a52133730c 100644
-> --- a/arch/x86/Kconfig.debug
-> +++ b/arch/x86/Kconfig.debug
-> @@ -170,16 +170,6 @@ config CPA_DEBUG
->  	help
->  	  Do change_page_attr() self-tests every 30 seconds.
->  
-> -config DEBUG_ENTRY
-> -	bool "Debug low-level entry code"
-> -	depends on DEBUG_KERNEL
-> -	help
-> -	  This option enables sanity checks in x86's low-level entry code.
-> -	  Some of these sanity checks may slow down kernel entries and
-> -	  exits or otherwise impact performance.
-> -
-> -	  If unsure, say N.
-> -
->  config DEBUG_NMI_SELFTEST
->  	bool "NMI Selftest"
->  	depends on DEBUG_KERNEL && X86_LOCAL_APIC
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 7937265ef879..76549c8afa8a 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1411,6 +1411,17 @@ config CSD_LOCK_WAIT_DEBUG
->  
->  endmenu # lock debugging
->  
-> +config DEBUG_ENTRY
-> +	bool "Debug low-level entry code"
-> +	depends on DEBUG_KERNEL
-> +	depends on !ARM64
-> +	help
-> +	  This option enables sanity checks in the low-level entry code.
-> +	  Some of these sanity checks may slow down kernel entries and
-> +	  exits or otherwise impact performance.
-> +
-> +	  If unsure, say N.
-> +
->  config TRACE_IRQFLAGS
->  	depends on TRACE_IRQFLAGS_SUPPORT
->  	bool
-> -- 
-> 2.29.2
+> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+> index 3291f252d81b0..29d485b868a65 100644
+> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+> @@ -365,7 +365,7 @@ int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 len)
 > 
+>  	csum_trailer = (struct rmnet_map_dl_csum_trailer *)(skb->data + len);
+> 
+> -	if (!csum_trailer->valid) {
+> +	if (!u8_get_bits(csum_trailer->flags, MAP_CSUM_DL_VALID_FMASK)) {
+
+Is that just an overcomplicated way of saying:
+	if (!(csum_trailer->flags & MAP_CSUM_DL_VALID_FMASK)) {
+
+    David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
