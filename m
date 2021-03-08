@@ -2,179 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FE43307A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 06:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F8F3307A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 06:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234598AbhCHFmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 00:42:03 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:47200 "EHLO fornost.hmeau.com"
+        id S234601AbhCHFnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 00:43:52 -0500
+Received: from mga02.intel.com ([134.134.136.20]:23519 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234459AbhCHFlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 00:41:46 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lJ8e4-00015E-AL; Mon, 08 Mar 2021 16:41:33 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 08 Mar 2021 16:41:32 +1100
-Date:   Mon, 8 Mar 2021 16:41:32 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [PATCH] crypto: aegis128 - Move simd prototypes into aegis.h
-Message-ID: <20210308054132.GA14854@gondor.apana.org.au>
-References: <202102280353.5krQC7aq-lkp@intel.com>
+        id S234459AbhCHFnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 00:43:37 -0500
+IronPort-SDR: KLv9ehSV3/gJ0l9Y2cROpynbJ75YsHDAp4QtuCg3mFl89Vi7dVBlj63kmWwqPI8Lv3IEbp7PkF
+ zD19qsXBDtqQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="175081843"
+X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
+   d="scan'208";a="175081843"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 21:43:36 -0800
+IronPort-SDR: NtrqViryP86Vw4W3pRl+OQyWQXdENR/3Jx1LkW4B3PmE9P/knbk5JWoec6miaBeoDoXpAjSsGX
+ TVoNW287NJZA==
+X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
+   d="scan'208";a="402696119"
+Received: from sneftin-mobl.ger.corp.intel.com (HELO [10.185.168.83]) ([10.185.168.83])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 21:43:34 -0800
+Subject: Re: [Intel-wired-lan] [PATCH] e1000e: Fix error handling in
+ e1000_set_d0_lplu_state_82571
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+References: <20210228094424.7884-1-dinghao.liu@zju.edu.cn>
+From:   "Neftin, Sasha" <sasha.neftin@intel.com>
+Message-ID: <57bae851-e735-d015-114b-aeacd602f623@intel.com>
+Date:   Mon, 8 Mar 2021 07:43:26 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202102280353.5krQC7aq-lkp@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210228094424.7884-1-dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 03:14:55AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   5695e51619745d4fe3ec2506a2f0cd982c5e27a4
-> commit: a4397635afea5d127548d64e0055ed471ef2d5be crypto: aegis128 - provide a SIMD implementation based on NEON intrinsics
-> date:   1 year, 6 months ago
-> config: arm64-randconfig-r035-20210226 (attached as .config)
-> compiler: aarch64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a4397635afea5d127548d64e0055ed471ef2d5be
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout a4397635afea5d127548d64e0055ed471ef2d5be
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arm64 
+On 2/28/2021 11:44, Dinghao Liu wrote:
+> There is one e1e_wphy() call in e1000_set_d0_lplu_state_82571
+> that we have caught its return value but lack further handling.
+> Check and terminate the execution flow just like other e1e_wphy()
+> in this function.
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>   drivers/net/ethernet/intel/e1000e/82571.c | 2 ++
+>   1 file changed, 2 insertions(+)
 > 
-> All warnings (new ones prefixed by >>):
+> diff --git a/drivers/net/ethernet/intel/e1000e/82571.c b/drivers/net/ethernet/intel/e1000e/82571.c
+> index 88faf05e23ba..0b1e890dd583 100644
+> --- a/drivers/net/ethernet/intel/e1000e/82571.c
+> +++ b/drivers/net/ethernet/intel/e1000e/82571.c
+> @@ -899,6 +899,8 @@ static s32 e1000_set_d0_lplu_state_82571(struct e1000_hw *hw, bool active)
+>   	} else {
+>   		data &= ~IGP02E1000_PM_D0_LPLU;
+>   		ret_val = e1e_wphy(hw, IGP02E1000_PHY_POWER_MGMT, data);
+> +		if (ret_val)
+> +			return ret_val;
+>   		/* LPLU and SmartSpeed are mutually exclusive.  LPLU is used
+>   		 * during Dx states where the power conservation is most
+>   		 * important.  During driver activity we should enable
 > 
-> >> crypto/aegis128-neon.c:17:6: warning: no previous prototype for 'crypto_aegis128_have_simd' [-Wmissing-prototypes]
->       17 | bool crypto_aegis128_have_simd(void)
->          |      ^~~~~~~~~~~~~~~~~~~~~~~~~
-
----8<---
-This patch fixes missing prototype warnings in crypto/aegis128-neon.c.
-
-Fixes: a4397635afea ("crypto: aegis128 - provide a SIMD...")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-
-diff --git a/crypto/aegis.h b/crypto/aegis.h
-index 6920ebe77679..6ef9c174c973 100644
---- a/crypto/aegis.h
-+++ b/crypto/aegis.h
-@@ -21,9 +21,28 @@ union aegis_block {
- 	u8 bytes[AEGIS_BLOCK_SIZE];
- };
- 
-+struct aegis_state;
-+
-+extern int aegis128_have_aes_insn;
-+
- #define AEGIS_BLOCK_ALIGN (__alignof__(union aegis_block))
- #define AEGIS_ALIGNED(p) IS_ALIGNED((uintptr_t)p, AEGIS_BLOCK_ALIGN)
- 
-+bool crypto_aegis128_have_simd(void);
-+void crypto_aegis128_update_simd(struct aegis_state *state, const void *msg);
-+void crypto_aegis128_init_simd(struct aegis_state *state,
-+			       const union aegis_block *key,
-+			       const u8 *iv);
-+void crypto_aegis128_encrypt_chunk_simd(struct aegis_state *state, u8 *dst,
-+					const u8 *src, unsigned int size);
-+void crypto_aegis128_decrypt_chunk_simd(struct aegis_state *state, u8 *dst,
-+					const u8 *src, unsigned int size);
-+int crypto_aegis128_final_simd(struct aegis_state *state,
-+			       union aegis_block *tag_xor,
-+			       unsigned int assoclen,
-+			       unsigned int cryptlen,
-+			       unsigned int authsize);
-+
- static __always_inline void crypto_aegis_block_xor(union aegis_block *dst,
- 						   const union aegis_block *src)
- {
-diff --git a/crypto/aegis128-core.c b/crypto/aegis128-core.c
-index 89dc1c559689..c4f1bfa1d04f 100644
---- a/crypto/aegis128-core.c
-+++ b/crypto/aegis128-core.c
-@@ -58,21 +58,6 @@ static bool aegis128_do_simd(void)
- 	return false;
- }
- 
--bool crypto_aegis128_have_simd(void);
--void crypto_aegis128_update_simd(struct aegis_state *state, const void *msg);
--void crypto_aegis128_init_simd(struct aegis_state *state,
--			       const union aegis_block *key,
--			       const u8 *iv);
--void crypto_aegis128_encrypt_chunk_simd(struct aegis_state *state, u8 *dst,
--					const u8 *src, unsigned int size);
--void crypto_aegis128_decrypt_chunk_simd(struct aegis_state *state, u8 *dst,
--					const u8 *src, unsigned int size);
--int crypto_aegis128_final_simd(struct aegis_state *state,
--			       union aegis_block *tag_xor,
--			       unsigned int assoclen,
--			       unsigned int cryptlen,
--			       unsigned int authsize);
--
- static void crypto_aegis128_update(struct aegis_state *state)
- {
- 	union aegis_block tmp;
-diff --git a/crypto/aegis128-neon.c b/crypto/aegis128-neon.c
-index 94d591a002a4..a7856915ec85 100644
---- a/crypto/aegis128-neon.c
-+++ b/crypto/aegis128-neon.c
-@@ -30,7 +30,7 @@ bool crypto_aegis128_have_simd(void)
- 	return IS_ENABLED(CONFIG_ARM64);
- }
- 
--void crypto_aegis128_init_simd(union aegis_block *state,
-+void crypto_aegis128_init_simd(struct aegis_state *state,
- 			       const union aegis_block *key,
- 			       const u8 *iv)
- {
-@@ -39,14 +39,14 @@ void crypto_aegis128_init_simd(union aegis_block *state,
- 	kernel_neon_end();
- }
- 
--void crypto_aegis128_update_simd(union aegis_block *state, const void *msg)
-+void crypto_aegis128_update_simd(struct aegis_state *state, const void *msg)
- {
- 	kernel_neon_begin();
- 	crypto_aegis128_update_neon(state, msg);
- 	kernel_neon_end();
- }
- 
--void crypto_aegis128_encrypt_chunk_simd(union aegis_block *state, u8 *dst,
-+void crypto_aegis128_encrypt_chunk_simd(struct aegis_state *state, u8 *dst,
- 					const u8 *src, unsigned int size)
- {
- 	kernel_neon_begin();
-@@ -54,7 +54,7 @@ void crypto_aegis128_encrypt_chunk_simd(union aegis_block *state, u8 *dst,
- 	kernel_neon_end();
- }
- 
--void crypto_aegis128_decrypt_chunk_simd(union aegis_block *state, u8 *dst,
-+void crypto_aegis128_decrypt_chunk_simd(struct aegis_state *state, u8 *dst,
- 					const u8 *src, unsigned int size)
- {
- 	kernel_neon_begin();
-@@ -62,7 +62,7 @@ void crypto_aegis128_decrypt_chunk_simd(union aegis_block *state, u8 *dst,
- 	kernel_neon_end();
- }
- 
--int crypto_aegis128_final_simd(union aegis_block *state,
-+int crypto_aegis128_final_simd(struct aegis_state *state,
- 			       union aegis_block *tag_xor,
- 			       unsigned int assoclen,
- 			       unsigned int cryptlen,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Good for me.
+Acked-by: Sasha Neftin <sasha.neftin@intel.com>
