@@ -2,113 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707D73314F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 232FB3314FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:37:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhCHRde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 12:33:34 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:29338 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230211AbhCHRdV (ORCPT
+        id S229955AbhCHRgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:36:55 -0500
+Received: from mail-io1-f46.google.com ([209.85.166.46]:44118 "EHLO
+        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229463AbhCHRgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:33:21 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-114-VZLpIMkBOySF_toWHzBKNQ-1; Mon, 08 Mar 2021 17:33:17 +0000
-X-MC-Unique: VZLpIMkBOySF_toWHzBKNQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 8 Mar 2021 17:33:17 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 8 Mar 2021 17:33:17 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Zebediah Figura' <zfigura@codeweavers.com>,
-        =?utf-8?B?QW5kcsOpIEFsbWVpZGE=?= <andrealmeid@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-CC:     "kernel@collabora.com" <kernel@collabora.com>,
-        "krisman@collabora.com" <krisman@collabora.com>,
-        "pgriffais@valvesoftware.com" <pgriffais@valvesoftware.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "malteskarupke@fastmail.fm" <malteskarupke@fastmail.fm>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "corbet@lwn.net" <corbet@lwn.net>
-Subject: RE: [RFC PATCH v2 00/13] Add futex2 syscall
-Thread-Topic: [RFC PATCH v2 00/13] Add futex2 syscall
-Thread-Index: AQHXFDasHACUUxYyXUab2jknvqbfD6p6VuaA
-Date:   Mon, 8 Mar 2021 17:33:17 +0000
-Message-ID: <27f3db94ae674d69889301f515ddf483@AcuMS.aculab.com>
-References: <20210304004219.134051-1-andrealmeid@collabora.com>
- <2421ca75-5688-61c6-c0ac-02e55e7272a3@codeweavers.com>
-In-Reply-To: <2421ca75-5688-61c6-c0ac-02e55e7272a3@codeweavers.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 8 Mar 2021 12:36:18 -0500
+Received: by mail-io1-f46.google.com with SMTP id 81so10785482iou.11;
+        Mon, 08 Mar 2021 09:36:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JBA6up/vPaAHWMxjZYEnP/CnL1gFfsdNRmBXWfPosnI=;
+        b=AFQ+LRpaxQXCV4wBUJbiribmlFkG9en2yPL0jyK5fKGQDARrIc++DYg8/fTL85OFEU
+         FcMmNB36YOKmzHn+gbjwooZ42kpnpTo/rJ/LTMlDnDCH011dK3jNycE/QYU/dU2WOYYZ
+         itv6RtQOo6E0KnS9pH/BWhtrjxqRXYomJSM0lF2ZlWKagroi2E7OIbTMW1A8j7Uwt0A2
+         G9KKe04Foylz5IXX8QSsDh6DBC0XA1AHaC/0sr4TE7gFGk44FlvkMWmFjTc3dFvl/OgI
+         2wHx2A11wRZi67dD2QIe9PYHlQR9ebrFWaWlL9YEORIH51PC3qJws0fJKndgqifkCsc7
+         dVXA==
+X-Gm-Message-State: AOAM530fj2LF73Fok4Q7YaYIaWXpB5s5wjhpMtHDFPNau5znh03pu+wz
+        e3MzWS25Sa57r5LdRSL0Tg==
+X-Google-Smtp-Source: ABdhPJyJaGJBruRnAkdq1spRqZqtn2RV1GOv+7vhvyAfJFtvmSgGafdf13MYdJGctj/hpQjFitOtMg==
+X-Received: by 2002:a6b:5c0d:: with SMTP id z13mr19258278ioh.6.1615224977961;
+        Mon, 08 Mar 2021 09:36:17 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id y18sm6506926ili.16.2021.03.08.09.36.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 09:36:17 -0800 (PST)
+Received: (nullmailer pid 2674975 invoked by uid 1000);
+        Mon, 08 Mar 2021 17:36:15 -0000
+Date:   Mon, 8 Mar 2021 10:36:15 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Parshuram Thombare <pthombar@cadence.com>
+Cc:     robert.foss@linaro.org, laurent.pinchart@ideasonboard.com,
+        airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        a.hajda@samsung.com, narmstrong@baylibre.com, nikhil.nd@ti.com,
+        kishon@ti.com, sjakhade@cadence.com, mparab@cadence.com
+Subject: Re: [PATCH v2 1/2] dt-bindings: drm/bridge: MHDP8546 bridge binding
+ changes for HDCP
+Message-ID: <20210308173615.GA2668115@robh.at.kernel.org>
+References: <1614597685-4192-1-git-send-email-pthombar@cadence.com>
+ <1614597746-4563-1-git-send-email-pthombar@cadence.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614597746-4563-1-git-send-email-pthombar@cadence.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCkZyb206IFplYmVkaWFoIEZpZ3VyYQ0KPiBTZW50OiAwOCBNYXJjaCAyMDIxIDE2OjE4DQo+
-IA0KPiBPbiAzLzMvMjEgNjo0MiBQTSwgQW5kcsOpIEFsbWVpZGEgd3JvdGU6DQo+ID4gICAqKiBU
-aGUgd2FpdCBvbiBtdWx0aXBsZSBwcm9ibGVtDQo+ID4NCj4gPiAgIFRoZSB1c2UgY2FzZSBsaWVz
-IGluIHRoZSBXaW5lIGltcGxlbWVudGF0aW9uIG9mIHRoZSBXaW5kb3dzIE5UIGludGVyZmFjZQ0K
-PiA+ICAgV2FpdE11bHRpcGxlT2JqZWN0cy4gVGhpcyBXaW5kb3dzIEFQSSBmdW5jdGlvbiBhbGxv
-d3MgYSB0aHJlYWQgdG8gc2xlZXANCj4gPiAgIHdhaXRpbmcgb24gdGhlIGZpcnN0IG9mIGEgc2V0
-IG9mIGV2ZW50IHNvdXJjZXMgKG11dGV4ZXMsIHRpbWVycywgc2lnbmFsLA0KPiA+ICAgY29uc29s
-ZSBpbnB1dCwgZXRjKSB0byBzaWduYWwuICBDb25zaWRlcmluZyB0aGlzIGlzIGEgcHJpbWl0aXZl
-DQo+ID4gICBzeW5jaHJvbml6YXRpb24gb3BlcmF0aW9uIGZvciBXaW5kb3dzIGFwcGxpY2F0aW9u
-cywgYmVpbmcgYWJsZSB0byBxdWlja2x5DQo+ID4gICBzaWduYWwgZXZlbnRzIG9uIHRoZSBwcm9k
-dWNlciBzaWRlLCBhbmQgcXVpY2tseSBnbyB0byBzbGVlcCBvbiB0aGUNCj4gPiAgIGNvbnN1bWVy
-IHNpZGUgaXMgZXNzZW50aWFsIGZvciBnb29kIHBlcmZvcm1hbmNlIG9mIHRob3NlIHJ1bm5pbmcg
-b3ZlciBXaW5lLg0KPiANCj4gSXQncyBwcm9iYWJseSB3b3J0aCBwb2ludGluZyBvdXQsIGZvciBi
-ZXR0ZXIgb3IgZm9yIHdvcnNlLCB3aGlsZSB0aGlzIGlzDQo+ICphKiB1c2UgY2FzZSwgaXQncyBh
-bHNvIGxpbWl0ZWQgdG8gYW4gb3V0LW9mLXRyZWUgcGF0Y2ggc2V0L2ZvcmtlZA0KPiB2ZXJzaW9u
-cyBvZiBXaW5lLiBJJ20gY3VycmVudGx5IHdvcmtpbmcgb24gYSBkaWZmZXJlbnQgYXBwcm9hY2gg
-dGhhdA0KPiBzaG91bGQgYmUgdXBzdHJlYW1hYmxlIHRvIFdpbmUgcHJvcGVyLCBhcyBkZXRhaWxl
-ZCBpbiBbMV0uDQo+IA0KPiBbMV0NCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC9mNGNj
-MWEzOC0xNDQxLTYyZjgtNDdlNC0wYzY3ZjVhZDFkNDNAY29kZXdlYXZlcnMuY29tLw0KDQoqIE50
-UHVsc2VFdmVudCBjYW4ndCB3b3JrIHJpZ2h0LiBXZSBiYWRseSBlbXVsYXRlIGl0IGJ5IHNldHRp
-bmcgYW5kIHRoZW4NCmltbWVkaWF0ZWx5IHJlc2V0dGluZyB0aGUgZXZlbnQsIGJ1dCBkdWUgdG8g
-dGhlIGFib3ZlIGdhcCBiZXR3ZWVuIHBvbGwoKQ0KYW5kIHJlYWQoKSwgbW9zdCB0aHJlYWRzIGVu
-ZCB1cCBtaXNzaW5nIHRoZSB3YWtldXAgYW55d2F5Lg0KDQpBcyB5b3Ugc3RhdGVkIGxhdGVyIFB1
-bHNlRXZlbnQoKSBpcyBjb21wbGV0ZWx5IGJyb2tlbiBhbnl3YXkuDQpBdCBsZWFzdCBvbmUgb2Yg
-dGhlIHByb2JsZW1zIGlzIHRoYXQgaW4gb3JkZXIgdG8gY29tcGxldGUgYW4gYXN5bmMgaW8NCihh
-bmQgYWxsIGlvIGlzIGFzeW5jKSB0byBmaW5hbCAnY29weV90b191c2VyJyBtdXN0IGJlIGRvbmUg
-aW4gdGhlDQpjb250ZXh0IG9mIHRoZSBpbml0aWF0aW5nIHRocmVhZC4NClNvIGlmIHRoZSB0aHJl
-YWQgaXMgaW4gV2FpdE11bHRpcGxlT2JqZWN0cyAoaXQgdXN1YWxseSBpcykgYW5kIGFuIGFzeW5j
-IGlvDQpjb21wbGV0ZXMgKGVnIHJlY2VpdmUgZGF0YSBvbiBhIFRDUCBjb25uZWN0aW9uKSB0aGUg
-dGhyZWFkIHN0b3BzIHdhaXRpbmcNCndoaWxlIHRoZSBpbyBjb21wbGV0aW9uIGNhbGxiYWNrIGlz
-IGRvbmUuDQpJZiBhIHB1bHNlRXZlbnQgaGFwcGVucyBkdXJpbmcgdGhhdCB3aW5kb3cgdGhlbiBp
-dCBpcyBsb3N0Lg0KDQpNaW5kIHlvdSB0aGVyZSB3YXMgKG1heWJlIGlzIHN0aWxsKSBhIGJ1ZyBp
-biBXTU8gb24gNjRiaXQgd2luZG93cw0KdGhhdCBtZWFucyB0aGUgcHJvY2VzcyBjb21wbGV0ZWx5
-IG1pc3NlcyBpbyBjb21wbGV0aW9uIGNhbGxiYWNrcw0KaWYgKEkgdGhpbmspIHRoZXkgaGFwcGVu
-IHdoaWxlIHRoZSBwcm9jZXNzIGlzIGJlaW5nIHNjaGVkdWxlZC4NClRoZXJlIGlzIGEgbG9vcCBp
-biBXTU8gLSB0aGF0IGZhaWxzIHRvIHJlY292ZXIgYmVjYXVzZSBpbnRlcnJ1cHRzDQphcmUgZGlz
-YWJsZWQgYW5kIGEgMzAgc2Vjb25kIHRpbWVyIHRoYXQgdW5ibG9ja3MgdGhpbmdzLg0KSSBoYWQg
-dG8gYWRkIGNvZGUgdG8gd3JpdGUgdG8gdGhlIGlvYXBpYyB0byByZXF1ZXN0IHRoZSBoYXJkd2Fy
-ZQ0KaW50ZXJydXB0IHRvIHVuYmxvY2sgZXZlcnl0aGluZyA6LSkNCg0KCURhdmlkDQoNCi0NClJl
-Z2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0
-b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykN
-Cg==
+On Mon, Mar 01, 2021 at 12:22:26PM +0100, Parshuram Thombare wrote:
+> Add binding changes for HDCP in the MHDP8546 DPI/DP bridge binding.
+> This binding is not used in any upstreamed DTS yet, so changing
+> index of property 'j721e-intg' should not affect anything.
 
+TI folks might disagree, but weren't Cc'ed.
+
+> 
+> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
+> ---
+>  .../display/bridge/cdns,mhdp8546.yaml         | 29 ++++++++++++-------
+>  1 file changed, 19 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
+> index 63427878715e..5fdadadaac16 100644
+> --- a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
+> +++ b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
+> @@ -17,21 +17,24 @@ properties:
+>        - ti,j721e-mhdp8546
+>  
+>    reg:
+> -    minItems: 1
+> -    maxItems: 2
+> +    minItems: 2
+> +    maxItems: 3
+>      items:
+>        - description:
+>            Register block of mhdptx apb registers up to PHY mapped area (AUX_CONFIG_P).
+>            The AUX and PMA registers are not part of this range, they are instead
+>            included in the associated PHY.
+> +      - description:
+> +          Register block of mhdptx sapb registers.
+>        - description:
+>            Register block for DSS_EDP0_INTG_CFG_VP registers in case of TI J7 SoCs.
+>  
+>    reg-names:
+> -    minItems: 1
+> -    maxItems: 2
+> +    minItems: 2
+> +    maxItems: 3
+>      items:
+>        - const: mhdptx
+> +      - const: mhdptx-sapb
+>        - const: j721e-intg
+>  
+>    clocks:
+> @@ -53,6 +56,11 @@ properties:
+>    power-domains:
+>      maxItems: 1
+>  
+> +  hdcp-config:
+> +    maxItems: 1
+> +    description:
+> +      HDCP version supported. Bit [0]:HDCP2.2 [1]:HDCP1.4.
+
+2.2 is not backwards compatible with 1.4? What's the setting if not 
+present? Maybe just a 'disable 2.2 boolean' if that's the non-common 
+case.
+
+In any case, it needs a type and constraints on the values.
+
+
+> +
+>    interrupts:
+>      maxItems: 1
+>  
+> @@ -98,15 +106,15 @@ allOf:
+>      then:
+>        properties:
+>          reg:
+> -          minItems: 2
+> +          minItems: 3
+>          reg-names:
+> -          minItems: 2
+> +          minItems: 3
+>      else:
+>        properties:
+>          reg:
+> -          maxItems: 1
+> +          maxItems: 2
+>          reg-names:
+> -          maxItems: 1
+> +          maxItems: 2
+>  
+>  required:
+>    - compatible
+> @@ -129,8 +137,9 @@ examples:
+>  
+>          mhdp: dp-bridge@f0fb000000 {
+>              compatible = "cdns,mhdp8546";
+> -            reg = <0xf0 0xfb000000 0x0 0x1000000>;
+> -            reg-names = "mhdptx";
+> +            reg = <0xf0 0xfb000000 0x0 0x1000000>,
+> +                  <0x0 0x4f48000 0x0 0x74>;
+> +            reg-names = "mhdptx", "mhdptx-sapb";
+>              clocks = <&mhdp_clock>;
+>              phys = <&dp_phy>;
+>              phy-names = "dpphy";
+> -- 
+> 2.25.1
+> 
