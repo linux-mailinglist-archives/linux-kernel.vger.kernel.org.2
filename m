@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD2033063F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 04:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E76330641
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 04:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232604AbhCHDLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 22:11:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231573AbhCHDLM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 22:11:12 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0789CC06174A;
-        Sun,  7 Mar 2021 19:11:11 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id o10so5527190pgg.4;
-        Sun, 07 Mar 2021 19:11:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=DhMvXCk0sXJv+GDmGzzD6QP4j5FriOS751Xaxos7THU=;
-        b=dQ2qjwkwafeKbLS7P1d7TVuwiAe7RfloRuMYtxyGLbYYW0a882yUD+8RtMsrDnuiYr
-         MfUjzkerg/E7fVXVnauJtI4lLgYo5Q8JzpQnBeEcnX5LaxWwJ58w6+xIAFfIJpWWpnFe
-         TCVHKfrTWIeZUtaiVh8mg/SndK2QZCrLEN3sQj542lYZhIxvEaXja9WChc5CsUNynalH
-         zdeb3Nzgv6EO/EsBlnFlVSmjM/lXKhRNEBSywWelK7dXEFREJ4jdYxMDKPZ172Jph94n
-         nbXsZGhizxb3SA9sCkDUP1+th0cQXd3PZ26YyzMVfrHrReRIE9fQR0kGc6hgvJitFd69
-         jw4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=DhMvXCk0sXJv+GDmGzzD6QP4j5FriOS751Xaxos7THU=;
-        b=tRQqqYwP/cAbA7Ev9UnUAvZOCE5TSuAL1iuT2wIL1Uv6zPdVog8MbEIU01rnry++oQ
-         QJONVxhDWwsSXDDEsUNlbNefXw3YlgLz4EMTVij29bctYXgFrZmldb+Vzarm41Hr9s31
-         yRm22362WiG3tqg9aeNTi9YoyZTrYCHbKhmLcua9G+9WBNQ2ZsH/wIMFUy6cyBns45cy
-         eQ5XfWVOlOgLm2hR6a5mC8pXwUC/8VomqG0Tbm9rGTcekm+qytpl6pa4kEZqxWs693Bg
-         d9JC7FWa9X6hyC6QrlEYhMYLmpGyAjCUjWD3z1sQXHFa2Hz2MIc0G463oGfrUKOWl5Lz
-         6iew==
-X-Gm-Message-State: AOAM530SFhSZvwungyvDd9ogTWWapfqUbJULEowJs2n1QacTguCHfiIH
-        yrVjZXxbV67vDfoEl3NO+yY=
-X-Google-Smtp-Source: ABdhPJwt6HpSwZaIkpTZ+kCj4NevJvGdmTCcaMRcVUVvGpTHruPZU8qx90emf0Qmmidr7U4C72+TuA==
-X-Received: by 2002:a63:5c63:: with SMTP id n35mr18585291pgm.26.1615173071435;
-        Sun, 07 Mar 2021 19:11:11 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.99])
-        by smtp.gmail.com with ESMTPSA id g12sm8754793pjd.57.2021.03.07.19.11.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 19:11:11 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] net: bonding: fix error return code of bond_neigh_init()
-Date:   Sun,  7 Mar 2021 19:11:02 -0800
-Message-Id: <20210308031102.26730-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S232607AbhCHDMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 22:12:31 -0500
+Received: from mga01.intel.com ([192.55.52.88]:27506 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233747AbhCHDM3 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 22:12:29 -0500
+IronPort-SDR: EsYBUCm/LHNzbZK0V/Eff0Ns3CdwF5NZSkOX66Mjp0/Hg5BhbrBUVHNORyRfJv/qc/9HU90lH5
+ /dlp/4we4Bvw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="207713935"
+X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
+   d="scan'208";a="207713935"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 19:12:29 -0800
+IronPort-SDR: AHnCYmQlv7gqcgE4RTlN7wroWPxv1oFeIRQNsaYgT0qYdwqDe5khzB5+iQ8yNHetFhglDNulww
+ UGQRXaP/K7kQ==
+X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
+   d="scan'208";a="402654636"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 19:12:27 -0800
+Subject: Re: [PATCH v2] perf pmu: Validate raw event with sysfs exported
+ format bits
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210305005625.14987-1-yao.jin@linux.intel.com>
+ <YEPUJze6AUpNb8nr@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <4677dda8-6a3b-1908-775e-3510091abda5@linux.intel.com>
+Date:   Mon, 8 Mar 2021 11:12:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <YEPUJze6AUpNb8nr@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When slave is NULL or slave_ops->ndo_neigh_setup is NULL, no error
-return code of bond_neigh_init() is assigned.
-To fix this bug, ret is assigned with -EINVAL in these cases.
+Hi Jiri,
 
-Fixes: 9e99bfefdbce ("bonding: fix bond_neigh_init()")
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- drivers/net/bonding/bond_main.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+On 3/7/2021 3:12 AM, Jiri Olsa wrote:
+> actualy we do have bitmap_scnprintf, which is already doing the
+> printing in a nice way.. we could use it like below, only compile
+> tested
+> 
+> jirka
+> 
+> 
+> ---
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index 31e975b75766..37ca5eee2667 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -1818,7 +1818,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
+>   {
+>   	struct perf_pmu_format *format;
+>   	__u64 masks = 0, bits;
+> -	struct strbuf buf = STRBUF_INIT;
+> +	char buf[50];
+>   	unsigned int i;
+>   
+>   	list_for_each_entry(format, &pmu->format, list)	{
+> @@ -1836,25 +1836,15 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
+>   	 * Kernel doesn't export any valid format bits.
+>   	 */
+>   	if (masks == 0)
+> -		goto out;
+> +		return;
+>   
+>   	bits = config & ~masks;
+>   	if (bits == 0)
+> -		goto out;
+> -
+> -	for_each_set_bit(i, (unsigned long *)&bits, sizeof(bits) * 8)
+> -		strbuf_addf(&buf, " %d", i);
+> +		return;
+>   
+> -	if (name) {
+> -		pr_warning("WARNING: event '%s' not valid (bits%s of config "
+> -			   "'%llx' not supported by kernel)!\n",
+> -			   name, buf.buf, config);
+> -	} else {
+> -		pr_warning("WARNING: event not valid (bits%s of config "
+> -			   "'%llx' not supported by kernel)!\n",
+> -			   buf.buf, config);
+> -	}
+> +	bitmap_scnprintf((unsigned long *)&bits, sizeof(bits) * 8, buf, sizeof(buf));
+>   
+> -out:
+> -	strbuf_release(&buf);
+> +	pr_warning("WARNING: event '%s' not valid (bits%s of config "
+> +		   "'%llx' not supported by kernel)!\n",
+> +		   name ?: "N/A", buf, config);
+>   }
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 74cbbb22470b..456315bef3a8 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -3978,11 +3978,15 @@ static int bond_neigh_init(struct neighbour *n)
- 
- 	rcu_read_lock();
- 	slave = bond_first_slave_rcu(bond);
--	if (!slave)
-+	if (!slave) {
-+		ret = -EINVAL;
- 		goto out;
-+	}
- 	slave_ops = slave->dev->netdev_ops;
--	if (!slave_ops->ndo_neigh_setup)
-+	if (!slave_ops->ndo_neigh_setup) {
-+		ret = -EINVAL;
- 		goto out;
-+	}
- 
- 	/* TODO: find another way [1] to implement this.
- 	 * Passing a zeroed structure is fragile,
--- 
-2.17.1
+The bitmap_scnprintf works fine. Yes, it's really better than original 'strbuf' way, thanks!
 
+BTW, I added "Co-developed-by: Jiri Olsa <jolsa@redhat.com>" in v3, but the patch checking shows the 
+warning:
+
+WARNING: Co-developed-by and Signed-off-by: name/email do not match
+#76:
+Co-developed-by: Jiri Olsa <jolsa@redhat.com>
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+
+I'm not sure if this warning is important or not, but anyway I add the line to v3. Thanks for your 
+help！
+
+Jin Yao
