@@ -2,66 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E532E33149E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 914DE3314AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbhCHRWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 12:22:52 -0500
-Received: from mail-il1-f180.google.com ([209.85.166.180]:36817 "EHLO
-        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhCHRW1 (ORCPT
+        id S230126AbhCHRX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:23:26 -0500
+Received: from mail-io1-f54.google.com ([209.85.166.54]:33931 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhCHRXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:22:27 -0500
-Received: by mail-il1-f180.google.com with SMTP id g9so9531693ilc.3;
-        Mon, 08 Mar 2021 09:22:27 -0800 (PST)
+        Mon, 8 Mar 2021 12:23:06 -0500
+Received: by mail-io1-f54.google.com with SMTP id o11so10802886iob.1;
+        Mon, 08 Mar 2021 09:23:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=X9ydJ7FmAW3txncN0dBhxkpB3+hhJPyuhe3NuQo+X1M=;
-        b=cXrVTuAQcGfV86R1HaCFur2rPQGJC1Yi4v5CLqrBci2zhW6bXUrRX7TUuIftFyQ/nE
-         ozbcutHJ29uFFH+CbMMJipTXLdK9lWlb6Q3a6w3VstVxuGr8Lc3NwCkUDC97fQLh/A7f
-         83nPWyybcGz9MOQ2m5ZASBVGOSBJoJ9Itu5+NvJpULxJbr0PFnIr51++2CH2/IzMQyJf
-         Mkt7tYEpmxu+vAVRuhwy4w+mHHl/nxmtYBvq/rTWrLDVikTWYQ2m3Q+c1btcuV1/jiBU
-         qOuyAHkpGdk8HStRIosaVEsAq0LiTIyn9ZuoBrxnLalfmqpFf2Bhhd8r7tTRppfgmUNo
-         dDYQ==
-X-Gm-Message-State: AOAM533e7yA1BKtkyTDh+cpJdo9brlaUPUYVJi9+3nz8JmJkB9Q6UuXz
-        70I2+hG9u0c+PHLDjmuNlw==
-X-Google-Smtp-Source: ABdhPJyvejW5S+6hAR4SMK+ayD29ZyxVUaI3u2P/Hw1rzkn6j325EMRmao72L9ZNPTCNU7zLfXTKhA==
-X-Received: by 2002:a92:cd0c:: with SMTP id z12mr21481018iln.109.1615224146696;
-        Mon, 08 Mar 2021 09:22:26 -0800 (PST)
+        bh=RQjWqFD5wtkyfUIW1WZ9F3A9s4yaC+w0TsogpotfHXw=;
+        b=YJqLXI+y1UycUiGHy7us+1mEtGNxS5TYtrlcqV52nobLZZWZgM5X/C8YdbLDW6UpfN
+         0BLw3Q5cw/iJ3oTHCPuekVryQS0dbZJvJ2Rgrvl2jjG6yYkqKKKJO4utHq4yTOo2QBix
+         SgRSeM1uT5SuKCSJt/NKPDV14RuqoX3NZJv8URmiFricGS647eM+STzxtbc7aJDa7hCe
+         h9Vc2RvRrhScy2LqRKKYBE03OOTw00tUTon+DTbn3A1m20LTewVzoTGqYZrff21C2fkt
+         I1o8EyqYyZbUOWPkZ5jjjIKtLdPDvKSwii2O2XftU2Pn31EfcOXwxzcV5ji8JLsK/W52
+         RO9w==
+X-Gm-Message-State: AOAM533E9BQoFCPjTcayuhG1+pNLAhsPRUvOnbA2dA1DtXmjhKf+hdZM
+        SYCWL2FJmIQ0pbjS0PKI6g==
+X-Google-Smtp-Source: ABdhPJwzjYZQ0iKrMYwPPyOUdQ4fQgPZWbVP5rBhyfkE9htYbReu0KOKQeZYX+M1L1juH8ezO0Mfag==
+X-Received: by 2002:a5e:c809:: with SMTP id y9mr19991612iol.192.1615224185972;
+        Mon, 08 Mar 2021 09:23:05 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id u14sm6276831ilv.0.2021.03.08.09.22.25
+        by smtp.gmail.com with ESMTPSA id c16sm6471107ils.2.2021.03.08.09.23.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 09:22:25 -0800 (PST)
-Received: (nullmailer pid 2656083 invoked by uid 1000);
-        Mon, 08 Mar 2021 17:22:24 -0000
-Date:   Mon, 8 Mar 2021 10:22:24 -0700
+        Mon, 08 Mar 2021 09:23:05 -0800 (PST)
+Received: (nullmailer pid 2657013 invoked by uid 1000);
+        Mon, 08 Mar 2021 17:23:02 -0000
+Date:   Mon, 8 Mar 2021 10:23:02 -0700
 From:   Rob Herring <robh@kernel.org>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Keerthy <j-keerthy@ti.com>
-Subject: Re: [PATCH 1/2] dt-bindings: mfd: lp875xx: add optional reset GPIO
-Message-ID: <20210308172224.GA2656034@robh.at.kernel.org>
-References: <20210226142852.19632-1-luca@lucaceresoli.net>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     Amit Kucheria <amitk@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        martin.botka@somainline.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, marijn.suijten@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Zhang Rui <rui.zhang@intel.com>, linux-arm-msm@vger.kernel.org,
+        phone-devel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 15/41] arm64: dts: qcom: sdm630: Add TSENS node
+Message-ID: <20210308172302.GA2656960@robh.at.kernel.org>
+References: <20210226200414.167762-1-konrad.dybcio@somainline.org>
+ <20210226200414.167762-16-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210226142852.19632-1-luca@lucaceresoli.net>
+In-Reply-To: <20210226200414.167762-16-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Feb 2021 15:28:51 +0100, Luca Ceresoli wrote:
-> Document the LP8756x-Q1 and LP87524-Q1 ICs reset pin.
+On Fri, 26 Feb 2021 21:03:45 +0100, Konrad Dybcio wrote:
+> This will enable temperature reporting for various SoC
+> components.
 > 
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
->  Documentation/devicetree/bindings/mfd/ti,lp87524-q1.yaml | 4 ++++
->  Documentation/devicetree/bindings/mfd/ti,lp87561-q1.yaml | 4 ++++
->  Documentation/devicetree/bindings/mfd/ti,lp87565-q1.yaml | 4 ++++
->  3 files changed, 12 insertions(+)
+>  .../devicetree/bindings/thermal/qcom-tsens.yaml       |  1 +
+>  arch/arm64/boot/dts/qcom/sdm630.dtsi                  | 11 +++++++++++
+>  2 files changed, 12 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
