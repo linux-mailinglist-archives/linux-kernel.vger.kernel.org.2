@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED69D330C24
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:20:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 330EF330C31
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:21:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbhCHLUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 06:20:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbhCHLTq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 06:19:46 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645B6C06174A;
-        Mon,  8 Mar 2021 03:19:46 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id a188so6970810pfb.4;
-        Mon, 08 Mar 2021 03:19:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QXafaz860vZHBHuJqEnkqblU6EnLSJb2Ehubz6QWDrQ=;
-        b=Y9PmCOTCxxCYAX3cGr/tbsv5rsXNfU7tuAJrKXtmtOD/bSaHsawKV4tpy9vJgNGicJ
-         ZCK3gIxLiXJiNStUT9xxSWe83Y2BUeaW+7r6k4FMmo88GLK5Fmvs893u/qMWYtFrX5RV
-         lEQui5CVldXUaF62hzjU3kQQ552CxNfjEMQG3gQ0RWqAkdqReViawyrtbcSyLgBCiAaH
-         Wr/hHeikpFZuym2YkN2JFe9etaT5E1pWBs2wWdY9W7J+Cq/jnkiV5NLcOWOgxzyX5N4L
-         U8iI1wbZBxjxPlkJxQHjngSc9uBweICop+5+G3h/+6wchTR12qvCcYn438MV0v1XufDN
-         6X0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QXafaz860vZHBHuJqEnkqblU6EnLSJb2Ehubz6QWDrQ=;
-        b=D8YyrhBSnIc55WTjCQxSphyQXympr7uauNgc3S7AqRCedU2S+Z/HNzWcQd/jstSjJ0
-         kYdw1ymDt7gBdDvhNf4NF9E7RY6pomYMo+8QpHL6UrMMK8z3/31ztEuyCxW7w6jL0wn0
-         5gaKKkdCGAcorcnGOgt9iE9yT0ulmHXUkO3xb87hZvhUSsEBxwzZie1+O7DJ1S7zfzri
-         lxNKpWe4QQUXV8+5YUYe2U4r61xNioNWcotnA+P9uD3O1flCDoMRyGQqpiFJqKUdSDkS
-         WzzqYePQUqla46FbpodWNmkkTcwkrDeHi/fg51tUMxWX3wvVhMJD9Hz2a1yScF2Wn5qq
-         +ChQ==
-X-Gm-Message-State: AOAM531HE43iMlISBsByHj8DSJeekzxnXDDCe804sB1isVPB/rN5Ttwj
-        Omgs4oBorLvp7CI2LhGsnJ0=
-X-Google-Smtp-Source: ABdhPJx1VYk8ZbupgprPeIewnbMD11y7ooEo+2SaiZbs+mGK9YxmStLlFYkudlyZ1FWN9yjd2ZHT+g==
-X-Received: by 2002:a63:f648:: with SMTP id u8mr19579765pgj.270.1615202385930;
-        Mon, 08 Mar 2021 03:19:45 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id p184sm9813872pgp.13.2021.03.08.03.19.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 03:19:45 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: xiong.zhenwu@zte.com.cn
-To:     paul@paul-moore.com
-Cc:     stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        omosnace@redhat.com, nramas@linux.microsoft.com,
-        tyhicks@linux.microsoft.com, xiong.zhenwu@zte.com.cn,
-        selinux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] security/selinux/include/: fix misspellings using codespell tool
-Date:   Mon,  8 Mar 2021 03:19:39 -0800
-Message-Id: <20210308111939.261079-1-xiong.zhenwu@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231852AbhCHLVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 06:21:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231784AbhCHLVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 06:21:02 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BCA0650F2;
+        Mon,  8 Mar 2021 11:21:01 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lJDwY-000JZJ-8b; Mon, 08 Mar 2021 11:20:58 +0000
+Date:   Mon, 08 Mar 2021 11:20:57 +0000
+Message-ID: <87a6rdzyau.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFT PATCH v3 08/27] asm-generic/io.h:  Add a non-posted variant of ioremap()
+In-Reply-To: <20210304213902.83903-9-marcan@marcan.st>
+References: <20210304213902.83903-1-marcan@marcan.st>
+        <20210304213902.83903-9-marcan@marcan.st>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: marcan@marcan.st, linux-arm-kernel@lists.infradead.org, robh@kernel.org, arnd@kernel.org, olof@lixom.net, krzk@kernel.org, mark.kettenis@xs4all.nl, tony@atomide.com, mohamed.mediouni@caramail.com, stan@corellium.com, graf@amazon.com, will@kernel.org, linus.walleij@linaro.org, mark.rutland@arm.com, andy.shevchenko@gmail.com, gregkh@linuxfoundation.org, corbet@lwn.net, catalin.marinas@arm.com, hch@infradead.org, davem@davemloft.net, devicetree@vger.kernel.org, linux-serial@vger.kernel.org, linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
+On Thu, 04 Mar 2021 21:38:43 +0000,
+Hector Martin <marcan@marcan.st> wrote:
+> 
+> ARM64 currently defaults to posted MMIO (nGnRnE), but some devices
+> require the use of non-posted MMIO (nGnRE). Introduce a new ioremap()
+> variant to handle this case. ioremap_np() is aliased to ioremap() by
+> default on arches that do not implement this variant.
+> 
+> sparc64 is the only architecture that needs to be touched directly,
+> because it includes neither of the generic io.h or iomap.h headers.
+> 
+> This adds the IORESOURCE_MEM_NONPOSTED flag, which maps to this
+> variant and marks a given resource as requiring non-posted mappings.
+> This is implemented in the resource system because it is a SoC-level
+> requirement, so existing drivers do not need special-case code to pick
+> this ioremap variant.
+> 
+> Then this is implemented in devres by introducing devm_ioremap_np(),
+> and making devm_ioremap_resource() automatically select this variant
+> when the resource has the IORESOURCE_MEM_NONPOSTED flag set.
+> 
+> Signed-off-by: Hector Martin <marcan@marcan.st>
 
-A typo is f out by codespell tool in 422th line of security.h:
+Acked-by: Marc Zyngier <maz@kernel.org>
 
-$ codespell ./security/selinux/include/ 
-./security.h:422: thie  ==> the, this
+	M.
 
-Fix a typo found by codespell.
-
-Signed-off-by: Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
----
- security/selinux/include/security.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/security/selinux/include/security.h b/security/selinux/include/security.h
-index 6fe25300b89d..7130c9648ad1 100644
---- a/security/selinux/include/security.h
-+++ b/security/selinux/include/security.h
-@@ -419,7 +419,7 @@ extern struct page *selinux_kernel_status_page(struct selinux_state *state);
- 
- #define SELINUX_KERNEL_STATUS_VERSION	1
- struct selinux_kernel_status {
--	u32	version;	/* version number of thie structure */
-+	u32	version;	/* version number of the structure */
- 	u32	sequence;	/* sequence number of seqlock logic */
- 	u32	enforcing;	/* current setting of enforcing mode */
- 	u32	policyload;	/* times of policy reloaded */
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
