@@ -2,164 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64A2330549
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 01:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6480333054F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 01:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233343AbhCHATu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 19:19:50 -0500
-Received: from mga09.intel.com ([134.134.136.24]:24347 "EHLO mga09.intel.com"
+        id S233363AbhCHA2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 19:28:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233140AbhCHATs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 19:19:48 -0500
-IronPort-SDR: a/M46oz+X+wyWfD+ZWC7Bup7D8ye69tnBy3yJyUd6zT4m972BCH+qxufcDmbq58HhvwZLvZ0Ni
- 4LXiJE6fVN6Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="188050462"
-X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
-   d="scan'208";a="188050462"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 16:19:47 -0800
-IronPort-SDR: UtVXiISl8EFaf9+qhQXIn/32pNp9zHSWSlUG76nsU+B2jJrKNXBfUs5ddH62ZfxOMcKsedkr16
- kim8wm8e3Yew==
-X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
-   d="scan'208";a="402615283"
-Received: from ggkanher-mobl4.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.252.142.177])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 16:19:43 -0800
-Date:   Mon, 8 Mar 2021 13:19:41 +1300
-From:   Kai Huang <kai.huang@intel.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, <kvm@vger.kernel.org>,
-        <x86@kernel.org>, <linux-sgx@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <seanjc@google.com>,
-        <jarkko@kernel.org>, <luto@kernel.org>, <dave.hansen@intel.com>,
-        <rick.p.edgecombe@intel.com>, <haitao.huang@intel.com>,
-        <pbonzini@redhat.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
-        <hpa@zytor.com>, <jethro@fortanix.com>, <b.thiel@posteo.de>
-Subject: Re: [PATCH 06/25] x86/cpu/intel: Allow SGX virtualization without
- Launch Control support
-Message-Id: <20210308131941.56eacf7b318c7e1ae96f295a@intel.com>
-In-Reply-To: <20210308125026.08ece7c1f99406a14812715e@intel.com>
-References: <cover.1614590788.git.kai.huang@intel.com>
-        <12541888ae9ac7f517582aa64d9153feede7aed4.1614590788.git.kai.huang@intel.com>
-        <20210305172957.GE2685@zn.tnic>
-        <20210308125026.08ece7c1f99406a14812715e@intel.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233353AbhCHA1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 19:27:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68B7D64FB7;
+        Mon,  8 Mar 2021 00:27:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615163275;
+        bh=SiK+/6MIOgzcJ2vpx7jERuI8qZ6eOOkh6x7rUIsEf3s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t8jKtxKemmtg15tBCd70bVQXQL68TquyZyM4OY8xfr8YoMSP8PUVybBiH+iaJqcwV
+         trA5jZXvZG+BkeX+fjw9AfTtqpU86sbiB1avdS9mq8U+k4sBWH+M8kSNjpS3kVaGBR
+         3D97DpnQ5L/Z0ely8o2zJvSTaBv8zpGP3jQhZp5fmU0JxGdMguKBOK5nwJEb7myVm0
+         ejkrLzbIii7sqj75DV/sqyalgCM0N81lzc0TQrADrSbevQ67H/R/jJG67Cu23F3Cwq
+         vMKF+8Nn7WDIvABog23nHUku2UkOg1mKDuPDCZkZdFWErn6a/Nf4FekSOCWTMFEOUa
+         bZOrzVS0zD5Bw==
+Date:   Mon, 8 Mar 2021 08:27:49 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
+Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] arm64: dts: imx8m: add pmu node
+Message-ID: <20210308002748.GJ543@dragon>
+References: <20210223031445.8577-1-alice.guo@oss.nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223031445.8577-1-alice.guo@oss.nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Mar 2021 12:50:26 +1300 Kai Huang wrote:
-> On Fri, 5 Mar 2021 18:29:57 +0100 Borislav Petkov wrote:
-> > On Mon, Mar 01, 2021 at 10:45:02PM +1300, Kai Huang wrote:
-> > > From: Sean Christopherson <sean.j.christopherson@intel.com>
-> > > 
-> > > The kernel will currently disable all SGX support if the hardware does
-> > > not support launch control.  Make it more permissive to allow SGX
-> > > virtualization on systems without Launch Control support.  This will
-> > > allow KVM to expose SGX to guests that have less-strict requirements on
-> > > the availability of flexible launch control.
-> > > 
-> > > Improve error message to distinguish between three cases.  There are two
-> > > cases where SGX support is completely disabled:
-> > > 1) SGX has been disabled completely by the BIOS
-> > > 2) SGX LC is locked by the BIOS.  Bare-metal support is disabled because
-> > >    of LC unavailability.  SGX virtualization is unavailable (because of
-> > >    Kconfig).
-> > > One where it is partially available:
-> > > 3) SGX LC is locked by the BIOS.  Bare-metal support is disabled because
-> > >    of LC unavailability.  SGX virtualization is supported.
-> > > 
-> > > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> > > Co-developed-by: Kai Huang <kai.huang@intel.com>
-> > > Acked-by: Dave Hansen <dave.hansen@intel.com>
-> > > Signed-off-by: Kai Huang <kai.huang@intel.com>
-> > > ---
-> > >  arch/x86/kernel/cpu/feat_ctl.c | 57 ++++++++++++++++++++++++++--------
-> > >  1 file changed, 44 insertions(+), 13 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/kernel/cpu/feat_ctl.c b/arch/x86/kernel/cpu/feat_ctl.c
-> > > index 27533a6e04fa..96c370284913 100644
-> > > --- a/arch/x86/kernel/cpu/feat_ctl.c
-> > > +++ b/arch/x86/kernel/cpu/feat_ctl.c
-> > > @@ -105,7 +105,8 @@ early_param("nosgx", nosgx);
-> > >  void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
-> > >  {
-> > >  	bool tboot = tboot_enabled();
-> > > -	bool enable_sgx;
-> > > +	bool enable_sgx_any, enable_sgx_kvm, enable_sgx_driver;
-> > > +	bool enable_vmx;
-> > >  	u64 msr;
-> > 
-> > The preferred ordering of variable declarations at the beginning of a
-> > function is reverse fir tree order::
-> > 
-> > 	struct long_struct_name *descriptive_name;
-> > 	unsigned long foo, bar;
-> > 	unsigned int tmp;
-> > 	int ret;
-> > 
+On Tue, Feb 23, 2021 at 11:14:45AM +0800, Alice Guo (OSS) wrote:
+> From: Alice Guo <alice.guo@nxp.com>
 > 
-> Will do.
+> Adding pmu node supports to use perf tool to monitor the CPU performance
+> of the inmate cell when enabling Jailhouse and running dual Linux OS.
 > 
-> Since as you suggested, enable_sgx_any will be removed, and initializing
-> enable_sgx_driver/kvm will be moved into the if () statement, I think we should
-> explicitly initialize them here. How about below?
-> 
-> 	bool enable_sgx_kvm = enable_sgx_driver = false;
+> Signed-off-by: Alice Guo <alice.guo@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8mm-evk-inmate.dts | 7 +++++++
 
-Sorry my bad, should be:
+Upstream doesn't have this file.
 
-	bool enable_sgx_kvm = false, enable_sgx_driver = false;
+Shawn
 
-> 	bool tboot = tboot_enabled();
-> 	bool enable_vmx;
-> 	...
+>  arch/arm64/boot/dts/freescale/imx8mn-evk-inmate.dts | 8 ++++++++
+>  arch/arm64/boot/dts/freescale/imx8mp-evk-inmate.dts | 8 ++++++++
+>  arch/arm64/boot/dts/freescale/imx8mq-evk-inmate.dts | 7 +++++++
+>  4 files changed, 30 insertions(+)
 > 
-> > 
-> > >  	if (rdmsrl_safe(MSR_IA32_FEAT_CTL, &msr)) {
-> > > @@ -114,13 +115,21 @@ void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
-> > >  		return;
-> > >  	}
-> > >  
-> > > +	enable_vmx = cpu_has(c, X86_FEATURE_VMX) &&
-> > > +		     IS_ENABLED(CONFIG_KVM_INTEL);
-> > > +
-> > >  	/*
-> > > -	 * Enable SGX if and only if the kernel supports SGX and Launch Control
-> > > -	 * is supported, i.e. disable SGX if the LE hash MSRs can't be written.
-> > > +	 * Separate out SGX driver enabling from KVM.  This allows KVM
-> > > +	 * guests to use SGX even if the kernel SGX driver refuses to
-> > > +	 * use it.  This happens if flexible Faunch Control is not
-> > > +	 * available.
-> > >  	 */
-> > > -	enable_sgx = cpu_has(c, X86_FEATURE_SGX) &&
-> > > -		     cpu_has(c, X86_FEATURE_SGX_LC) &&
-> > > -		     IS_ENABLED(CONFIG_X86_SGX);
-> > > +	enable_sgx_any = cpu_has(c, X86_FEATURE_SGX) &&
-> > > +			 IS_ENABLED(CONFIG_X86_SGX);
-> > > +	enable_sgx_driver = enable_sgx_any &&
-> > > +			    cpu_has(c, X86_FEATURE_SGX_LC);
-> > > +	enable_sgx_kvm = enable_sgx_any && enable_vmx &&
-> > > +			  IS_ENABLED(CONFIG_X86_SGX_KVM);
-> > 
-> > That enable_sgx_any use looks weird. You can get rid of it:
-> > 
-> > 	if (cpu_has(c, X86_FEATURE_SGX) && IS_ENABLED(CONFIG_X86_SGX)) {
-> > 		enable_sgx_driver = cpu_has(c, X86_FEATURE_SGX_LC);
-> > 		enable_sgx_kvm    = enable_vmx && IS_ENABLED(CONFIG_X86_SGX_KVM);
-> > 	}
-> > 
-> > and yap, let longer lines stick out.
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-inmate.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-inmate.dts
+> index fe9d96131045..6afccc2c140e 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm-evk-inmate.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-inmate.dts
+> @@ -48,6 +48,13 @@
+>  		};
+>  	};
 > 
-> Thanks. Will do.
+> +	pmu {
+> +		compatible = "arm,armv8-pmuv3";
+> +		interrupts = <GIC_PPI 7
+> +			     (GIC_CPU_MASK_SIMPLE(6) | IRQ_TYPE_LEVEL_HIGH)>;
+> +		interrupt-affinity = <&A53_2>, <&A53_3>;
+> +	};
+> +
+>  	psci {
+>  		compatible = "arm,psci-1.0";
+>  		method = "smc";
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-inmate.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-inmate.dts
+> index 584c1fa19f56..f2434ad369dc 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mn-evk-inmate.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-inmate.dts
+> @@ -48,6 +48,14 @@
+>  		};
+>  	};
 > 
-> > 
-> > Thx.
-> > 
-> > -- 
-> > Regards/Gruss,
-> >     Boris.
-> > 
-> > https://people.kernel.org/tglx/notes-about-netiquette
+> +	pmu {
+> +		compatible = "arm,armv8-pmuv3";
+> +		interrupt-parent = <&gic>;
+> +		interrupts = <GIC_PPI 7
+> +			     (GIC_CPU_MASK_SIMPLE(6) | IRQ_TYPE_LEVEL_HIGH)>;
+> +		interrupt-affinity = <&A53_2>, <&A53_3>;
+> +	};
+> +
+>  	psci {
+>  		compatible = "arm,psci-1.0";
+>  		method = "smc";
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk-inmate.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk-inmate.dts
+> index 277ef70f2903..be538f510340 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp-evk-inmate.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp-evk-inmate.dts
+> @@ -48,6 +48,14 @@
+>  		};
+>  	};
+> 
+> +	pmu {
+> +		compatible = "arm,armv8-pmuv3";
+> +		interrupt-parent = <&gic>;
+> +		interrupts = <GIC_PPI 7
+> +			     (GIC_CPU_MASK_SIMPLE(6) | IRQ_TYPE_LEVEL_HIGH)>;
+> +		interrupt-affinity = <&A53_2>, <&A53_3>;
+> +	};
+> +
+>  	psci {
+>  		compatible = "arm,psci-1.0";
+>  		method = "smc";
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-evk-inmate.dts b/arch/arm64/boot/dts/freescale/imx8mq-evk-inmate.dts
+> index b1db63cdb98c..57e0ab2bf4d3 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mq-evk-inmate.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mq-evk-inmate.dts
+> @@ -48,6 +48,13 @@
+>  		};
+>  	};
+> 
+> +	pmu {
+> +		compatible = "arm,cortex-a53-pmu";
+> +		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
+> +		interrupt-parent = <&gic>;
+> +		interrupt-affinity = <&A53_2>, <&A53_3>;
+> +	};
+> +
+>  	psci {
+>  		compatible = "arm,psci-1.0";
+>  		method = "smc";
+> --
+> 2.17.1
+> 
