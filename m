@@ -2,73 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637713313F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C293313F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:00:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbhCHQ7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:59:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230075AbhCHQ6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:58:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E424E6522C;
-        Mon,  8 Mar 2021 16:58:49 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 16:58:47 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] arm64: kasan: allow to init memory when setting
- tags
-Message-ID: <20210308165847.GF15644@arm.com>
-References: <cover.1615218180.git.andreyknvl@google.com>
- <755161094eac5b0fc15273d609c78a459d4d07b9.1615218180.git.andreyknvl@google.com>
+        id S230143AbhCHQ7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:59:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229893AbhCHQ7e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 11:59:34 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1368C06174A;
+        Mon,  8 Mar 2021 08:59:33 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id i14so3363216pjz.4;
+        Mon, 08 Mar 2021 08:59:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=od17LthaoolvduGrwEslwJAbWVL76D58PWjWt93m25I=;
+        b=Eu0ZFxAf8fLpO0VRDDgSezt3y+zK89Bk4tHm6dfudcikaJ0N66dDvaQHiM7HTV7da/
+         dnHyXZtQecFwTH5u4i6NHRXKbyjAvA5rAVhlRHvcYjfMWuGKKmFybuwfDzzJavxQAHKf
+         X867rws97ZzCS17T2QnscA+YtK+n15raEJDRxCVIyQLC2QHGpKOswlAY3dQ/XMFkdo+N
+         hphKu31ApDg9Xtt3r0VM/B5xz2ZiOrEhE80xqig7hlHmeZfOuNZOT1KVpspRaMo8R2mL
+         tgSmCg3Uz2yqPK9I7T+lYPD6Zgh2HSqkXqIWk1scFIj9J/2nQPQkoT2tBPzOhngUpc2W
+         V3xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=od17LthaoolvduGrwEslwJAbWVL76D58PWjWt93m25I=;
+        b=HSLSPEy2+WkC77NIKIyx3tz+pK3GqIVE/xxQZz/DTsuTAwHK/RvCgw8H5IKizTFu33
+         mY4LoILt0NivdeawnSixRjhGWjw+iygVxK3G65n9yY4jGK3yh3VA72PGOcHM9qxMvY6G
+         RksTua9Y9b5LgLVAxZBPJuIokZTy9dxu6gJ9FOnus8CADFrfBkx9pVglgloc1xj6VTam
+         I3mMIpjL26C4gchdsjn4lAArgcn8oEEA9ZAyTURT+2wzNGuOWdrgys0KVwxry5/4vMqR
+         SYfauV4SBDws/psSijiOKx15q0T43j1xJ6IGNyEXb+uu7Y3J0vYHaXVPekVj+HpcnKGg
+         TXrg==
+X-Gm-Message-State: AOAM531GA10TvrFXnnZVRas1g50Fv236BkXf5nXcFUG0dHU2eCPxZkCi
+        859rMhMdAw9nTe9CGfVeDGgGHiH3JBc=
+X-Google-Smtp-Source: ABdhPJxOQGexRKcYjZkdWkm6DPyfDf+9UFttOhkGVMPP78A5iNTjqF1OWkXsvL7Ua8sXSudkVCbzEg==
+X-Received: by 2002:a17:90b:fce:: with SMTP id gd14mr25038689pjb.64.1615222773136;
+        Mon, 08 Mar 2021 08:59:33 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id k15sm4591635pgt.23.2021.03.08.08.59.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Mar 2021 08:59:32 -0800 (PST)
+Subject: Re: [PATCH 5.4 00/22] 5.4.104-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210308122714.391917404@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <56ae0d93-3e08-1799-6b4b-46f621c62811@gmail.com>
+Date:   Mon, 8 Mar 2021 08:59:30 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <755161094eac5b0fc15273d609c78a459d4d07b9.1615218180.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210308122714.391917404@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 04:55:14PM +0100, Andrey Konovalov wrote:
-> @@ -68,10 +69,16 @@ static inline void mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
->  		 * 'asm volatile' is required to prevent the compiler to move
->  		 * the statement outside of the loop.
->  		 */
-> -		asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
-> -			     :
-> -			     : "r" (curr)
-> -			     : "memory");
-> +		if (init)
-> +			asm volatile(__MTE_PREAMBLE "stzg %0, [%0]"
-> +				     :
-> +				     : "r" (curr)
-> +				     : "memory");
-> +		else
-> +			asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
-> +				     :
-> +				     : "r" (curr)
-> +				     : "memory");
->  
->  		curr += MTE_GRANULE_SIZE;
->  	} while (curr != end);
 
-Is 'init' always a built-in constant here? If not, checking it once
-outside the loop may be better (or check the code generation, maybe the
-compiler is smart enough).
 
+On 3/8/2021 4:30 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.104 release.
+> There are 22 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 10 Mar 2021 12:27:05 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.104-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Catalin
+Florian
