@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6693330B05
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B42D9330B06
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbhCHKWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 05:22:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23194 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231295AbhCHKWN (ORCPT
+        id S231231AbhCHKW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 05:22:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231153AbhCHKWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:22:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615198933;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+kdbU7D0Cs1nqJnhH9OV4K0Ddqhr5xVnkk7eSjOjWfo=;
-        b=Yt5+ZokzS7FkYiK9SOFGQtP5JmXrg/l8PUvPLp43TysJSAR2AEPPhAoSacxLqmcN62L03f
-        L6QbNHsechPNKbFL4kq6vNw3/kWIeoC+YmhxGbr8MuqvpQPYUJ3Y4pWqtvoiM7SIPJboWl
-        g+47mLKQRZpFUXFQiAwz3sbpjLOVJu0=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-490-ZxuRFkGmMIukY74HPX7abg-1; Mon, 08 Mar 2021 05:22:08 -0500
-X-MC-Unique: ZxuRFkGmMIukY74HPX7abg-1
-Received: by mail-pl1-f197.google.com with SMTP id f13so4323310plj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 02:22:08 -0800 (PST)
+        Mon, 8 Mar 2021 05:22:51 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B53C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 02:22:51 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id kx1so2756810pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 02:22:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZYIHvck8Wqs9hpNy/KAZ+iWG7AzyxCt+S8U+aZRsEuA=;
+        b=jLy49ffwvy9I8Kiiej4yQBBWan23Hi+xkGjNBQa6L1XqbNoDVg/LKj4/GblTgggzLQ
+         SyyLsI/MTr/0fy9JyW1uM4BovONFNOrSI+TVY4oiEHjTycPSPaWDcQIFJrsKQ1OBQQcc
+         UxvSPa1DQG+kgIPUFv2pttYXIkyqwYsbn8nh7SA21+rGv9qhzjySQsZ97f9T1qyFlcw9
+         QydkzEISbGAXJZGlGeOfk3OuvUvRGo9CCGtZoDsQytmEMpiRwcupTNZC+/2Dom82GDi5
+         zGO1KlPgvljakxaSAtddLw8wuVJVTOMMZ6D/+ffqmLSLZNmYLHvaM17/d3zU9WiEhrGW
+         RILw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+kdbU7D0Cs1nqJnhH9OV4K0Ddqhr5xVnkk7eSjOjWfo=;
-        b=t+O4PEGcDfVp6IOlCCuIJuU4xQ2NF2v7Kk9TrtvpbWe4cmQBEYJEu0wKfTGPnvtkLX
-         tlbc4gmGcl2GGcd1H3piaSg7ctgGqqbaLNb0dEjvj4jGAdNjbzvCE241LkSm6On8fc8F
-         PKj3yR/9Lo4njYzYyOkQaFFUkIwfcsNHKdsMo3Di+KvyI0gR18qRuX5U4HhJIbAFIju9
-         Yx1l6sOE+iIUUbQgrBbQ03CrNywt89hWgmdQ26FG0dwSDzjboJeSCo1mjkNZhYpIyee0
-         f/MROtZl1tHvqSzJznyQoURdDOYyR9qKaoNcCt6jzSehbvxWz4erPqVimzXPYNxQRMoL
-         7Bjg==
-X-Gm-Message-State: AOAM5307pJlBVrKnuEDF1hjtiDttKQyCfXeQn/IK2CSQH2qGcFmLxaDN
-        B9H195PTXQx6ZMGXY9tM99coqg1I/V2e5AMQyyL8hJn2mGni616lzTuB/w1nSSr0trucTFSPjqk
-        sEJTAZpuoW/nL1wdjcVFP9WKvopAYFTZImfN2Y19f
-X-Received: by 2002:a17:902:7006:b029:e3:dd4d:85ac with SMTP id y6-20020a1709027006b02900e3dd4d85acmr20267956plk.41.1615198927346;
-        Mon, 08 Mar 2021 02:22:07 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzq49tQ7a54VntS9SC7qB4EcD5e9RLI11vUrjuafOhf+clmiNfTExsZvf5goIHxqniIWvr47LYYg8jQ0aa4Bn4=
-X-Received: by 2002:a17:902:7006:b029:e3:dd4d:85ac with SMTP id
- y6-20020a1709027006b02900e3dd4d85acmr20267932plk.41.1615198927109; Mon, 08
- Mar 2021 02:22:07 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=ZYIHvck8Wqs9hpNy/KAZ+iWG7AzyxCt+S8U+aZRsEuA=;
+        b=mJXG081KZC5ja1eXY4DhoyakQhEs1W+/TCot3es9SqmboRy/eRxv7Q8ZS332k6bLrp
+         Ts+GPIchn4MvX43kW+kQJiLqMGq82jX7bgLPt+uGgPX3ldpN+cDlQ4UxC68DVnLJPK+Y
+         KUEtMz3fVGIQ2jXOPc6l1DnhgpJSIisA0oa7a1jGcc8teY4wFi0aCnQ+GmAgsOzdYXn5
+         XMFXCt9+WhV4223gte0i0vU1jE5GYfuTHYyPh7oAgNNdSLdYiFDOWZvFBDs7o1WQKFDM
+         HZeZ5ImDgY9wQxoC+YoBf7MWYLNOTOf+KRQRz4pMF0Tk8tL0Q2eWUEM5RhRdoe0KFIxs
+         csEA==
+X-Gm-Message-State: AOAM532bpl2lIDwhO7Vi2xRhX8HGstXHJmTFkjRkAWk9gz3lCcnCrUIM
+        c6+nB6Qs3YesrVLRiRK7Yp9K/NV+IpG3ykCkXio=
+X-Google-Smtp-Source: ABdhPJz4KmtkGs7piNazFBXXEYHkh7rjv7GAFUadt9SRlU/al2zZQGdUXaT1k/1yw0T9wdXnaqbPavhN/wj7V3KVXm0=
+X-Received: by 2002:a17:902:d2c1:b029:e5:ccfe:1e93 with SMTP id
+ n1-20020a170902d2c1b02900e5ccfe1e93mr20309142plc.0.1615198970648; Mon, 08 Mar
+ 2021 02:22:50 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1613582014.git.nabijaczleweli@nabijaczleweli.xyz> <nycvar.YFH.7.76.2103081114580.12405@cbobk.fhfr.pm>
-In-Reply-To: <nycvar.YFH.7.76.2103081114580.12405@cbobk.fhfr.pm>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Mon, 8 Mar 2021 11:21:56 +0100
-Message-ID: <CAO-hwJJj0KRCOYPmpNEmU1oVD+SNNYn9+BoGxnPbSthFuCxK9w@mail.gmail.com>
-Subject: Re: [PATCH 0/4] Stylus-on-touchscreen device support
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     =?UTF-8?B?0L3QsNCx?= <nabijaczleweli@nabijaczleweli.xyz>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <20210305183948.37738-1-andriy.shevchenko@linux.intel.com>
+ <20210305221951.GC2896@zn.tnic> <CAHp75VdoGShdAQFkx5PR-H6=csRA_ReaerDg6iy54AMJF+kaOg@mail.gmail.com>
+ <20210308101719.GA12818@zn.tnic>
+In-Reply-To: <20210308101719.GA12818@zn.tnic>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 8 Mar 2021 12:22:34 +0200
+Message-ID: <CAHp75Vc=AvArhekQSufNA+0OsxnsQikmignNt7=+h_t5=Ks_6Q@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] scripts/decodecode: Decode 32-bit code correctly
+ on x86_64
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
-
-On Mon, Mar 8, 2021 at 11:15 AM Jiri Kosina <jikos@kernel.org> wrote:
+On Mon, Mar 8, 2021 at 12:17 PM Borislav Petkov <bp@suse.de> wrote:
 >
-> On Wed, 17 Feb 2021, =D0=BD=D0=B0=D0=B1 wrote:
+> On Mon, Mar 08, 2021 at 11:59:34AM +0200, Andy Shevchenko wrote:
+> > It works, but... The question here is why the script behaviour depends
+> > so much on the architecture in question (by environment). ARM stuff is
+> > using traditional ARCH (and that's what I have expected to work),
+> > while x86 has a set of other variables.
+> > So, I have to rephrase the commit message then and do actually an
+> > alias when ARCH is set in a certain way, Would it be better?
 >
-> > This patchset adds support for stylus-on-touchscreen devices as found o=
-n
-> > the OneMix 3 Pro and Dell Inspiron 15 7000 2-in-1 (7591), among others;
-> > with it, they properly behave like a drawing tablet.
-> >
-> > Patches 2 and 4 funxionally depend on patch 1.
-> > Patch 4 needs patch 3 to apply.
-> >
-> > The output of this patchset and the need for a kernel, rather than
-> > userspace, patch was previously discussed here:
-> >   https://gitlab.freedesktop.org/libinput/libinput/-/merge_requests/558=
-#note_792834
-> >
-> > Ahelenia Ziemia=C5=84ska (4):
-> >   HID: multitouch: require Finger field to mark Win8 reports as MT
-> >   HID: multitouch: set Stylus suffix for Stylus-application devices, to=
-o
-> >   HID: input: replace outdated HID numbers+comments with macros
-> >   HID: input: work around Win8 stylus-on-touchscreen reporting
-> >
-> >  drivers/hid/hid-input.c      | 47 +++++++++++++++++++++++++++++++++---
-> >  drivers/hid/hid-multitouch.c | 18 ++++++++------
-> >  2 files changed, 55 insertions(+), 10 deletions(-)
+> No, I have no clue what you're trying to accomplish. You wanted to
+> supply ARCH when decoding a 32-bit oops because you expected ARCH to
+> work...?
+
+Yes.
+
+> AFLAGS has always been there, ARM folks added ARCH AFAIR. Also, you need
+> AFLAGS to compile the snippet in the correct bitsize.
 >
-> Benjamin, this patchset looks good to me; do you have any objections on
-> queuing it for 5.13?
+> And there's a usage note at the beginning of the script and I always
+> read it to make sure I'm using it right.
 >
+> So what's the problem again?
 
-Please hold on this one. I am pretty sure this should break the test
-suite but couldn't have the chance to get to it. Will pop this one up
-in TODO list.
+Inconsistency.
+For the ARM we have to provide ARCH, for x86 a variety of all the flags.
 
-Cheers,
-Benjamin
-
+-- 
+With Best Regards,
+Andy Shevchenko
