@@ -2,49 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6989B330B65
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E00CE330B69
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:40:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbhCHKjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 05:39:41 -0500
-Received: from mail-lj1-f174.google.com ([209.85.208.174]:33670 "EHLO
-        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhCHKjf (ORCPT
+        id S231250AbhCHKkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 05:40:16 -0500
+Received: from mail-lj1-f173.google.com ([209.85.208.173]:42028 "EHLO
+        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230490AbhCHKjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:39:35 -0500
-Received: by mail-lj1-f174.google.com with SMTP id h4so15452825ljl.0;
-        Mon, 08 Mar 2021 02:39:35 -0800 (PST)
+        Mon, 8 Mar 2021 05:39:53 -0500
+Received: by mail-lj1-f173.google.com with SMTP id k12so15415578ljg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 02:39:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=T/h53cvHrez6oLaNKwTtFOxPE3VDr5f8n3VLG5jkT/Y=;
-        b=kdGpNprmjdCm0TQU0VJ2BsQhaI+rXyGjRmqnsG8P0LQUEoJHISU3eEFLqOny9UVHVU
-         D77s+V53/+d/smmNa7bAM6vQsyB9DMAY/uBS6fyjoam+0XH+Zc9WA7X5hnnn8cEEa4QJ
-         x3zr7O7wshEugVWVWiNq/dt5Tkqy7CSA/Y9DN75c9MclkGe0K+9KqQrw8jKySBXe0Skl
-         Uc9ekwKnVZ9fErEghhsr37SAiJstGfAJyNZyNea/kF3+SXRVZX18iYBdKc+Ms2ikLHhL
-         hfjXBBr6waOGRiCQdiEtwtHSNSTt+I1o2f6+9u7uhNpXFPDpCd9P7L3nRWaZ3oG5UbZ9
-         oCPQ==
-X-Gm-Message-State: AOAM532xu99jJfvgaXX4GtCRM2OA3d13q2CiGveEeCSLwXixgyDhqmXm
-        IHnGkyappVl/DOVk51fQoa8=
-X-Google-Smtp-Source: ABdhPJznSBKdBoIOgR4JzOvgOw1EVM9UK33YlRQd5O97pvNWBERc6z9j3lOLRumx7iSw9wJeaL4hGA==
-X-Received: by 2002:a2e:b4b1:: with SMTP id q17mr13663385ljm.497.1615199974566;
-        Mon, 08 Mar 2021 02:39:34 -0800 (PST)
+        bh=e06ZaYZ6OKoWNRWe6xUMRn3QQo4xa5wGmSryFRO0uJg=;
+        b=Ntq08GdGRoZo91iHHO+ckUU0cm13CWf8zMobiFwqRWtEwJCgr4XguQFOPAqG4yFm2W
+         so/V6AEe72tyCd2/VHSNb3GYkXLc9dI7QwFm21UVUffodKP5g9f/5s7ERxeD8al8EkjP
+         js8WuuRGRWs1pkw8f0qq1OhGJPkimZrqHcon03OG79Djod4nScmTOKzOT41DuUYLu6n5
+         CqMw+U8rnW5VCqtjNczT4lZJkVqDY2GRGxXQs2eh9jCx9ZYorjGVSqEqDLU/qKjus6Yi
+         IVOShDVdBQZGMuE5XFVtuIZyVntwPToju1iBmV8vHoXxchZux7IMXjoAqmqJHfsztbVP
+         VVzg==
+X-Gm-Message-State: AOAM532h1rMojOXPam4AEuMzRAm6A8An8T3Bb/1d3n8ZrBDHMcgLIPAl
+        bgniyrFXXdi2GvBVPHyzlSaUlsmaVzI=
+X-Google-Smtp-Source: ABdhPJyCVcglBYGoPqQrfLMeLluzHxWJQzfcrzEXNfUDtxDA/MQnNk+46rB1C8H9WGgtSEajrIxdOg==
+X-Received: by 2002:a2e:7618:: with SMTP id r24mr13409001ljc.420.1615199992207;
+        Mon, 08 Mar 2021 02:39:52 -0800 (PST)
 Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id f26sm1308950lfe.118.2021.03.08.02.39.33
+        by smtp.gmail.com with ESMTPSA id j144sm1306812lfj.241.2021.03.08.02.39.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 02:39:34 -0800 (PST)
-Date:   Mon, 8 Mar 2021 12:39:27 +0200
+        Mon, 08 Mar 2021 02:39:51 -0800 (PST)
+Date:   Mon, 8 Mar 2021 12:39:46 +0200
 From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
 Cc:     Lee Jones <lee.jones@linaro.org>,
         Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-rtc@vger.kernel.org
-Subject: [PATCH v3 01/15] rtc: bd70528: Do not require parent data
-Message-ID: <76f86737e84e39288baf737ac2f3d7f05cfcea79.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com
+Subject: [PATCH v3 02/15] mfd: bd718x7: simplify by cleaning unnecessary
+ device data
+Message-ID: <c8421f445f578b300ad8fd9f6bda23c8cf8b6b09.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
 References: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -54,233 +52,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ROHM BD71828 and BD71815 RTC drivers only need the regmap
-pointer from parent. Regmap can be obtained via dev_get_regmap()
-so do not require parent to populate driver data for that.
+Most ROHM PMIC sub-devices only use the regmap pointer from
+parent device. They can obtain this by dev_get_regamap so in
+most cases the MFD device does not need to allocate and populate
+the driver data. Simplify drivers by removing this.
 
-BD70528 on the other hand requires parent data to access the
-watchdog so leave the parent data for BD70528 here for now.
+The BD70528 still needs the access to watchdog mutex so keep
+rohm_regmap_dev in use on BD70528 RTC and WDG drivers for now.
 
 Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/rtc/rtc-bd70528.c | 67 ++++++++++++++++++---------------------
- 1 file changed, 31 insertions(+), 36 deletions(-)
+ drivers/mfd/rohm-bd718x7.c       | 43 ++++++++++++--------------------
+ include/linux/mfd/rohm-bd718x7.h | 13 ----------
+ 2 files changed, 16 insertions(+), 40 deletions(-)
 
-diff --git a/drivers/rtc/rtc-bd70528.c b/drivers/rtc/rtc-bd70528.c
-index 17cb67f5bf6e..fb4476bb5ab6 100644
---- a/drivers/rtc/rtc-bd70528.c
-+++ b/drivers/rtc/rtc-bd70528.c
-@@ -52,6 +52,7 @@ struct bd70528_rtc_alm {
+diff --git a/drivers/mfd/rohm-bd718x7.c b/drivers/mfd/rohm-bd718x7.c
+index c32c1b6c98fa..bfd81f78beae 100644
+--- a/drivers/mfd/rohm-bd718x7.c
++++ b/drivers/mfd/rohm-bd718x7.c
+@@ -91,9 +91,9 @@ static const struct regmap_config bd718xx_regmap_config = {
+ 	.cache_type = REGCACHE_RBTREE,
+ };
  
- struct bd70528_rtc {
- 	struct rohm_regmap_dev *parent;
-+	struct regmap *regmap;
- 	struct device *dev;
- 	u8 reg_time_start;
- 	bool has_rtc_timers;
-@@ -234,9 +235,8 @@ static int bd71828_set_alarm(struct device *dev, struct rtc_wkalrm *a)
- 	int ret;
- 	struct bd71828_rtc_alm alm;
- 	struct bd70528_rtc *r = dev_get_drvdata(dev);
--	struct rohm_regmap_dev *parent = r->parent;
- 
--	ret = regmap_bulk_read(parent->regmap, BD71828_REG_RTC_ALM_START,
-+	ret = regmap_bulk_read(r->regmap, BD71828_REG_RTC_ALM_START,
- 			       &alm, sizeof(alm));
- 	if (ret) {
- 		dev_err(dev, "Failed to read alarm regs\n");
-@@ -250,7 +250,7 @@ static int bd71828_set_alarm(struct device *dev, struct rtc_wkalrm *a)
- 	else
- 		alm.alm_mask |= BD70528_MASK_ALM_EN;
- 
--	ret = regmap_bulk_write(parent->regmap, BD71828_REG_RTC_ALM_START,
-+	ret = regmap_bulk_write(r->regmap, BD71828_REG_RTC_ALM_START,
- 				&alm, sizeof(alm));
- 	if (ret)
- 		dev_err(dev, "Failed to set alarm time\n");
-@@ -265,17 +265,16 @@ static int bd70528_set_alarm(struct device *dev, struct rtc_wkalrm *a)
- 	struct bd70528_rtc_alm alm;
- 	int ret;
- 	struct bd70528_rtc *r = dev_get_drvdata(dev);
--	struct rohm_regmap_dev *parent = r->parent;
- 
--	ret = regmap_bulk_read(parent->regmap, BD70528_REG_RTC_WAKE_START,
--			       &wake, sizeof(wake));
-+	ret = regmap_bulk_read(r->regmap, BD70528_REG_RTC_WAKE_START, &wake,
-+			       sizeof(wake));
- 	if (ret) {
- 		dev_err(dev, "Failed to read wake regs\n");
- 		return ret;
- 	}
- 
--	ret = regmap_bulk_read(parent->regmap, BD70528_REG_RTC_ALM_START,
--			       &alm, sizeof(alm));
-+	ret = regmap_bulk_read(r->regmap, BD70528_REG_RTC_ALM_START, &alm,
-+			       sizeof(alm));
- 	if (ret) {
- 		dev_err(dev, "Failed to read alarm regs\n");
- 		return ret;
-@@ -292,15 +291,14 @@ static int bd70528_set_alarm(struct device *dev, struct rtc_wkalrm *a)
- 		wake.ctrl &= ~BD70528_MASK_WAKE_EN;
- 	}
- 
--	ret = regmap_bulk_write(parent->regmap,
--				BD70528_REG_RTC_WAKE_START, &wake,
-+	ret = regmap_bulk_write(r->regmap, BD70528_REG_RTC_WAKE_START, &wake,
- 				sizeof(wake));
- 	if (ret) {
- 		dev_err(dev, "Failed to set wake time\n");
- 		return ret;
- 	}
--	ret = regmap_bulk_write(parent->regmap, BD70528_REG_RTC_ALM_START,
--				&alm, sizeof(alm));
-+	ret = regmap_bulk_write(r->regmap, BD70528_REG_RTC_ALM_START, &alm,
-+				sizeof(alm));
- 	if (ret)
- 		dev_err(dev, "Failed to set alarm time\n");
- 
-@@ -312,9 +310,8 @@ static int bd71828_read_alarm(struct device *dev, struct rtc_wkalrm *a)
- 	int ret;
- 	struct bd71828_rtc_alm alm;
- 	struct bd70528_rtc *r = dev_get_drvdata(dev);
--	struct rohm_regmap_dev *parent = r->parent;
- 
--	ret = regmap_bulk_read(parent->regmap, BD71828_REG_RTC_ALM_START,
-+	ret = regmap_bulk_read(r->regmap, BD71828_REG_RTC_ALM_START,
- 			       &alm, sizeof(alm));
- 	if (ret) {
- 		dev_err(dev, "Failed to read alarm regs\n");
-@@ -336,10 +333,9 @@ static int bd70528_read_alarm(struct device *dev, struct rtc_wkalrm *a)
- 	struct bd70528_rtc_alm alm;
- 	int ret;
- 	struct bd70528_rtc *r = dev_get_drvdata(dev);
--	struct rohm_regmap_dev *parent = r->parent;
- 
--	ret = regmap_bulk_read(parent->regmap, BD70528_REG_RTC_ALM_START,
--			       &alm, sizeof(alm));
-+	ret = regmap_bulk_read(r->regmap, BD70528_REG_RTC_ALM_START, &alm,
-+			       sizeof(alm));
- 	if (ret) {
- 		dev_err(dev, "Failed to read alarm regs\n");
- 		return ret;
-@@ -360,14 +356,12 @@ static int bd70528_set_time_locked(struct device *dev, struct rtc_time *t)
- 	int ret, tmpret, old_states;
- 	struct bd70528_rtc_data rtc_data;
- 	struct bd70528_rtc *r = dev_get_drvdata(dev);
--	struct rohm_regmap_dev *parent = r->parent;
- 
- 	ret = bd70528_disable_rtc_based_timers(r, &old_states);
- 	if (ret)
- 		return ret;
- 
--	tmpret = regmap_bulk_read(parent->regmap,
--				  r->reg_time_start, &rtc_data,
-+	tmpret = regmap_bulk_read(r->regmap, r->reg_time_start, &rtc_data,
- 				  sizeof(rtc_data));
- 	if (tmpret) {
- 		dev_err(dev, "Failed to read RTC time registers\n");
-@@ -375,8 +369,7 @@ static int bd70528_set_time_locked(struct device *dev, struct rtc_time *t)
- 	}
- 	tm2rtc(t, &rtc_data);
- 
--	tmpret = regmap_bulk_write(parent->regmap,
--				   r->reg_time_start, &rtc_data,
-+	tmpret = regmap_bulk_write(r->regmap, r->reg_time_start, &rtc_data,
- 				   sizeof(rtc_data));
- 	if (tmpret) {
- 		dev_err(dev, "Failed to set RTC time\n");
-@@ -410,13 +403,11 @@ static int bd70528_set_time(struct device *dev, struct rtc_time *t)
- static int bd70528_get_time(struct device *dev, struct rtc_time *t)
+-static int bd718xx_init_press_duration(struct bd718xx *bd718xx)
++static int bd718xx_init_press_duration(struct regmap *regmap,
++				       struct device *dev)
  {
- 	struct bd70528_rtc *r = dev_get_drvdata(dev);
--	struct rohm_regmap_dev *parent = r->parent;
- 	struct bd70528_rtc_data rtc_data;
+-	struct device* dev = bd718xx->chip.dev;
+ 	u32 short_press_ms, long_press_ms;
+ 	u32 short_press_value, long_press_value;
  	int ret;
- 
- 	/* read the RTC date and time registers all at once */
--	ret = regmap_bulk_read(parent->regmap,
--			       r->reg_time_start, &rtc_data,
-+	ret = regmap_bulk_read(r->regmap, r->reg_time_start, &rtc_data,
- 			       sizeof(rtc_data));
- 	if (ret) {
- 		dev_err(dev, "Failed to read RTC time (err %d)\n", ret);
-@@ -443,7 +434,7 @@ static int bd70528_alm_enable(struct device *dev, unsigned int enabled)
- 		dev_err(dev, "Failed to change wake state\n");
- 		goto out_unlock;
- 	}
--	ret = regmap_update_bits(r->parent->regmap, BD70528_REG_RTC_ALM_MASK,
-+	ret = regmap_update_bits(r->regmap, BD70528_REG_RTC_ALM_MASK,
- 				 BD70528_MASK_ALM_EN, enableval);
- 	if (ret)
- 		dev_err(dev, "Failed to change alarm state\n");
-@@ -462,7 +453,7 @@ static int bd71828_alm_enable(struct device *dev, unsigned int enabled)
- 	if (!enabled)
- 		enableval = 0;
- 
--	ret = regmap_update_bits(r->parent->regmap, BD71828_REG_RTC_ALM0_MASK,
-+	ret = regmap_update_bits(r->regmap, BD71828_REG_RTC_ALM0_MASK,
- 				 BD70528_MASK_ALM_EN, enableval);
- 	if (ret)
- 		dev_err(dev, "Failed to change alarm state\n");
-@@ -498,7 +489,6 @@ static int bd70528_probe(struct platform_device *pdev)
- {
- 	struct bd70528_rtc *bd_rtc;
- 	const struct rtc_class_ops *rtc_ops;
--	struct rohm_regmap_dev *parent;
- 	const char *irq_name;
- 	int ret;
- 	struct rtc_device *rtc;
-@@ -508,20 +498,25 @@ static int bd70528_probe(struct platform_device *pdev)
- 	u8 hour_reg;
- 	enum rohm_chip_type chip = platform_get_device_id(pdev)->driver_data;
- 
--	parent = dev_get_drvdata(pdev->dev.parent);
--	if (!parent) {
--		dev_err(&pdev->dev, "No MFD driver data\n");
--		return -EINVAL;
--	}
- 	bd_rtc = devm_kzalloc(&pdev->dev, sizeof(*bd_rtc), GFP_KERNEL);
- 	if (!bd_rtc)
- 		return -ENOMEM;
- 
--	bd_rtc->parent = parent;
-+	bd_rtc->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-+	if (!bd_rtc->regmap) {
-+		dev_err(&pdev->dev, "No regmap\n");
-+		return -EINVAL;
-+	}
-+
- 	bd_rtc->dev = &pdev->dev;
- 
- 	switch (chip) {
- 	case ROHM_CHIP_TYPE_BD70528:
-+		bd_rtc->parent = dev_get_drvdata(pdev->dev.parent);
-+		if (!bd_rtc->parent) {
-+			dev_err(&pdev->dev, "No MFD data\n");
-+			return -EINVAL;
-+		}
- 		irq_name = "bd70528-rtc-alm";
- 		bd_rtc->has_rtc_timers = true;
- 		bd_rtc->reg_time_start = BD70528_REG_RTC_START;
-@@ -547,7 +542,7 @@ static int bd70528_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, bd_rtc);
- 
--	ret = regmap_read(parent->regmap, hour_reg, &hr);
-+	ret = regmap_read(bd_rtc->regmap, hour_reg, &hr);
- 
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to reag RTC clock\n");
-@@ -595,7 +590,7 @@ static int bd70528_probe(struct platform_device *pdev)
- 	 *  from sub-registers when IRQ is disabled or freed.
- 	 */
- 	if (enable_main_irq) {
--		ret = regmap_update_bits(parent->regmap,
-+		ret = regmap_update_bits(bd_rtc->regmap,
- 				 BD70528_REG_INT_MAIN_MASK,
- 				 BD70528_INT_RTC_MASK, 0);
+@@ -102,8 +102,7 @@ static int bd718xx_init_press_duration(struct bd718xx *bd718xx)
+ 				   &short_press_ms);
+ 	if (!ret) {
+ 		short_press_value = min(15u, (short_press_ms + 250) / 500);
+-		ret = regmap_update_bits(bd718xx->chip.regmap,
+-					 BD718XX_REG_PWRONCONFIG0,
++		ret = regmap_update_bits(regmap, BD718XX_REG_PWRONCONFIG0,
+ 					 BD718XX_PWRBTN_PRESS_DURATION_MASK,
+ 					 short_press_value);
  		if (ret) {
+@@ -116,8 +115,7 @@ static int bd718xx_init_press_duration(struct bd718xx *bd718xx)
+ 				   &long_press_ms);
+ 	if (!ret) {
+ 		long_press_value = min(15u, (long_press_ms + 500) / 1000);
+-		ret = regmap_update_bits(bd718xx->chip.regmap,
+-					 BD718XX_REG_PWRONCONFIG1,
++		ret = regmap_update_bits(regmap, BD718XX_REG_PWRONCONFIG1,
+ 					 BD718XX_PWRBTN_PRESS_DURATION_MASK,
+ 					 long_press_value);
+ 		if (ret) {
+@@ -132,7 +130,8 @@ static int bd718xx_init_press_duration(struct bd718xx *bd718xx)
+ static int bd718xx_i2c_probe(struct i2c_client *i2c,
+ 			    const struct i2c_device_id *id)
+ {
+-	struct bd718xx *bd718xx;
++	struct regmap *regmap;
++	struct regmap_irq_chip_data *irq_data;
+ 	int ret;
+ 	unsigned int chip_type;
+ 	struct mfd_cell *mfd;
+@@ -142,13 +141,6 @@ static int bd718xx_i2c_probe(struct i2c_client *i2c,
+ 		dev_err(&i2c->dev, "No IRQ configured\n");
+ 		return -EINVAL;
+ 	}
+-
+-	bd718xx = devm_kzalloc(&i2c->dev, sizeof(struct bd718xx), GFP_KERNEL);
+-
+-	if (!bd718xx)
+-		return -ENOMEM;
+-
+-	bd718xx->chip_irq = i2c->irq;
+ 	chip_type = (unsigned int)(uintptr_t)
+ 		    of_device_get_match_data(&i2c->dev);
+ 	switch (chip_type) {
+@@ -164,29 +156,26 @@ static int bd718xx_i2c_probe(struct i2c_client *i2c,
+ 		dev_err(&i2c->dev, "Unknown device type");
+ 		return -EINVAL;
+ 	}
+-	bd718xx->chip.dev = &i2c->dev;
+-	dev_set_drvdata(&i2c->dev, bd718xx);
+ 
+-	bd718xx->chip.regmap = devm_regmap_init_i2c(i2c,
+-						    &bd718xx_regmap_config);
+-	if (IS_ERR(bd718xx->chip.regmap)) {
++	regmap = devm_regmap_init_i2c(i2c, &bd718xx_regmap_config);
++	if (IS_ERR(regmap)) {
+ 		dev_err(&i2c->dev, "regmap initialization failed\n");
+-		return PTR_ERR(bd718xx->chip.regmap);
++		return PTR_ERR(regmap);
+ 	}
+ 
+-	ret = devm_regmap_add_irq_chip(&i2c->dev, bd718xx->chip.regmap,
+-				       bd718xx->chip_irq, IRQF_ONESHOT, 0,
+-				       &bd718xx_irq_chip, &bd718xx->irq_data);
++	ret = devm_regmap_add_irq_chip(&i2c->dev, regmap, i2c->irq,
++				       IRQF_ONESHOT, 0, &bd718xx_irq_chip,
++				       &irq_data);
+ 	if (ret) {
+ 		dev_err(&i2c->dev, "Failed to add irq_chip\n");
+ 		return ret;
+ 	}
+ 
+-	ret = bd718xx_init_press_duration(bd718xx);
++	ret = bd718xx_init_press_duration(regmap, &i2c->dev);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = regmap_irq_get_virq(bd718xx->irq_data, BD718XX_INT_PWRBTN_S);
++	ret = regmap_irq_get_virq(irq_data, BD718XX_INT_PWRBTN_S);
+ 
+ 	if (ret < 0) {
+ 		dev_err(&i2c->dev, "Failed to get the IRQ\n");
+@@ -195,9 +184,9 @@ static int bd718xx_i2c_probe(struct i2c_client *i2c,
+ 
+ 	button.irq = ret;
+ 
+-	ret = devm_mfd_add_devices(bd718xx->chip.dev, PLATFORM_DEVID_AUTO,
++	ret = devm_mfd_add_devices(&i2c->dev, PLATFORM_DEVID_AUTO,
+ 				   mfd, cells, NULL, 0,
+-				   regmap_irq_get_domain(bd718xx->irq_data));
++				   regmap_irq_get_domain(irq_data));
+ 	if (ret)
+ 		dev_err(&i2c->dev, "Failed to create subdevices\n");
+ 
+diff --git a/include/linux/mfd/rohm-bd718x7.h b/include/linux/mfd/rohm-bd718x7.h
+index bee2474a8f9f..df2918198d37 100644
+--- a/include/linux/mfd/rohm-bd718x7.h
++++ b/include/linux/mfd/rohm-bd718x7.h
+@@ -310,17 +310,4 @@ enum {
+ 	BD718XX_PWRBTN_LONG_PRESS_15S
+ };
+ 
+-struct bd718xx {
+-	/*
+-	 * Please keep this as the first member here as some
+-	 * drivers (clk) supporting more than one chip may only know this
+-	 * generic struct 'struct rohm_regmap_dev' and assume it is
+-	 * the first chunk of parent device's private data.
+-	 */
+-	struct rohm_regmap_dev chip;
+-
+-	int chip_irq;
+-	struct regmap_irq_chip_data *irq_data;
+-};
+-
+ #endif /* __LINUX_MFD_BD718XX_H__ */
 -- 
 2.25.4
 
