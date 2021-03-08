@@ -2,86 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E28330616
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C16C33062F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233769AbhCHCwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 21:52:44 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13446 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232406AbhCHCwY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 21:52:24 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Dv2sC28CJzjWWH;
-        Mon,  8 Mar 2021 10:50:55 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 8 Mar 2021
- 10:52:20 +0800
-Subject: Re: [PATCH v2] erofs: fix bio->bi_max_vecs behavior change
-To:     Gao Xiang <hsiangkao@redhat.com>
-CC:     Gao Xiang <hsiangkao@aol.com>, <linux-erofs@lists.ozlabs.org>,
-        Chao Yu <chao@kernel.org>, <linux-kernel@vger.kernel.org>,
-        Martin DEVERA <devik@eaxlabs.cz>
-References: <20210306033109.28466-1-hsiangkao@aol.com>
- <20210306040438.8084-1-hsiangkao@aol.com>
- <6525c63c-a6e2-8c39-6c9a-1ca9b54632d8@huawei.com>
- <20210308023650.GA3537842@xiangao.remote.csb>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <7a96c4f3-128b-6248-b25c-a838ef16a4e5@huawei.com>
-Date:   Mon, 8 Mar 2021 10:52:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <20210308023650.GA3537842@xiangao.remote.csb>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+        id S232543AbhCHCy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 21:54:57 -0500
+Received: from mail-am6eur05on2080.outbound.protection.outlook.com ([40.107.22.80]:8462
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233955AbhCHCyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 21:54:49 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EnoPqSPWm5scTR1zyUFot1xlVnNYFZSYEmM4RLSRfkl4bXCDQOVxCExDunVZHu5P55LgTtG/ON4AxfXHmroFBT+AXbrPYv8AWoojLmbityM6mP+6Xumf8VwDqBHPnn43zqZLl9pd5VDJ9zMC/Yu10KgKu7XLbWlYI5m/F4GotOlQsr2xPzzvVcFn+5oCHGOsTDPiA1xDtJzZzYfJXudOTt8keUiw1wv4HLXugCRqngaBdsrjsMP3IZjDHaJxA28Wx88MunPBCKP6QJscUOb5THRm7NPSYQSz/7xzDSapuRXqNHQyDZMsCw6ZAefndFWLAjn6Vp/zschN8eNZPX6DBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4vTCTKuqudHM63WNBiq0dEtaM3+qkgHBWsY5NcdTxd0=;
+ b=L99ONO/7A0oVlv8Mob0vIrA1pJkSM5Q9KHLdrqe7JI0vIz9JDzCG8kZhInPNGxPLQ1N+tZ8mECuUazbghBV/liECu7JAEf6vv4EwfHmuX8mq+LCmkTDN0l6XFgh44bGDLiDDOukxCU0tFVcdmWThBMJR50HWQX6gug/UTz6ZhlaX0se8dyEnP1+ec5wZ7gYlN4blQvzt5PJ/VjCzmyyqnxCeKLh6qvSwZ36AhTKkgdRUQ1tZxCt2suRNUoR5Ma/mwxnMIXhfwE5/sTN1PxC8KsLTWkKatUbWtDi44F8Ewl0n1Vq3FOZnUfKktH0znvo4Zyx0XwzjEOoDpCLUMEs8yQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4vTCTKuqudHM63WNBiq0dEtaM3+qkgHBWsY5NcdTxd0=;
+ b=EfGKrBOvcRkJs9n6pKnzh4COiawhSiXc/XDishkb8JRl8i5XPfEgDlyAjxMKyfLVit0qAuYijRMcWWD9cPjYXsgOIOJnwChARjcF7CshUvDVT88nAJswis1KCDLnkF6skhgfGm5SQL+rMp0Pb/dMhTlitkJnRGdWlpwrymS5wXU=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+ by VE1PR04MB7344.eurprd04.prod.outlook.com (2603:10a6:800:1a1::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.19; Mon, 8 Mar
+ 2021 02:54:46 +0000
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3912.027; Mon, 8 Mar 2021
+ 02:54:46 +0000
+Message-ID: <95188cbe469c657047cdee846098e9c9c118f3e2.camel@nxp.com>
+Subject: Re: [PATCH v3 2/5] phy: Add LVDS configuration options
+From:   Liu Ying <victor.liu@nxp.com>
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>, kishon@ti.com,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de,
+        Fabio Estevam <festevam@gmail.com>, linux-imx@nxp.com,
+        agx@sigxcpu.org, robert.chiras@nxp.com, martin.kepplinger@puri.sm
+Date:   Mon, 08 Mar 2021 10:53:15 +0800
+In-Reply-To: <CAG3jFyvJZkVRs4NnDmPmGk-Qkr0voyvf3JNvKFAKDyxcCNR3Cw@mail.gmail.com>
+References: <1607651182-12307-1-git-send-email-victor.liu@nxp.com>
+         <1607651182-12307-3-git-send-email-victor.liu@nxp.com>
+         <CAG3jFyvJZkVRs4NnDmPmGk-Qkr0voyvf3JNvKFAKDyxcCNR3Cw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: HKAPR04CA0002.apcprd04.prod.outlook.com
+ (2603:1096:203:d0::12) To VI1PR04MB3983.eurprd04.prod.outlook.com
+ (2603:10a6:803:4c::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from blueberry.ap.freescale.net (119.31.174.66) by HKAPR04CA0002.apcprd04.prod.outlook.com (2603:1096:203:d0::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Mon, 8 Mar 2021 02:54:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: fc8caac5-308a-4c77-6028-08d8e1dd880d
+X-MS-TrafficTypeDiagnostic: VE1PR04MB7344:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB73444707D7914BD38B4B7BA298939@VE1PR04MB7344.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nLTayPXjcG6x5E+0/knL7nGIH0TBOY3eiugePbyiH0GdwUorP/45HdeVhFY7K7wmizQnqp2HvTCN3h5h0R0TUkq/37SThEOy1ZbaF6NOOh7SVIbsOE9+942PbxfOBZFLT9rGqZ2HsrzPXEZj9pSwhHxW8jK4Y56kiWQ62Y38Exmb3n2Bs57yjLOHegWsLKO9Wmjc06Vr+zkgtgbBz1dfuF4zQv+sXiWQO31+XRP25Oe0Jfq1UDUazOS5+hr0B1kKq4arXTjZG2YEptONCgIH6SnAg3E2f0c9UziMfLNoPN+xNBh7nywL9L1apufDnhma3e9vWVHv1iVr+RNrFFVG5Hgn3N7PYEvZbYG5y8ofl/cSSdD52LKhiSHxs4sKhVTZhWC+tHjj5AoX9yhfVY1V28WWEFzecdxoG/eTY0z9OvYRsA4jtuJChvTl0dUypG13dAhLoQeDJfSmui86bHfds53S8egpA9Pb+gMuMMonsdJ3qEMmpdUbwushLYmvsAR3SL+jpygHOzGDu4N64PHdCw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(136003)(39860400002)(376002)(316002)(16526019)(26005)(4326008)(6666004)(8936002)(54906003)(6512007)(186003)(83380400001)(6486002)(6506007)(36756003)(66946007)(66556008)(8676002)(2906002)(956004)(66476007)(2616005)(478600001)(52116002)(6916009)(5660300002)(86362001)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aEk1Y1VEZVZsRFI1clJ3S1NDeFFDcVAzWlRwak9YTjlYalZndG9zZUNTdElj?=
+ =?utf-8?B?cFJJSy95UDRWR1BGYThuT1lhSkJMcEk3TjlyT1RXWm13WGFZNEsrMkRzdVVN?=
+ =?utf-8?B?UEdXenF5dXJ0NGZLSCtnd2VhcUlxeWJIcVpTcFFSTzNtc01GWkNKRGEzcGJo?=
+ =?utf-8?B?ZjJDWTBvaGtRdEFXaUVrVjFkVmdGSmxtWlduUTkxdEVnd1NBRTIyNW1ZVFhs?=
+ =?utf-8?B?QUVwVFdicFM5M28rb05kckZnSzRzclFsQU5WTUNqdlpBaWZmSDBHbEZ3am9l?=
+ =?utf-8?B?VUpOR0MyOU5USiszdzA5QkFNWk1pRUk1QklNQUlrZ3VTUFlRL0c5THA4aVNP?=
+ =?utf-8?B?c09RTU9zSXJzT1B1SURSRVRBdmtldGJtK285L0VkOHpCTHEwbHdXSktheEoz?=
+ =?utf-8?B?My84MktGUWFDYWFKMDFSbWpxc3ZMUzJRcDNoSnUwNUVMNDJTeUZmbzNCQXJG?=
+ =?utf-8?B?akpRc2U0SVhhL0RxdnNSdmg5bHIxYi9qQlgrTDhza0VNclVKL0Y3VXRmay95?=
+ =?utf-8?B?QmowN0NBY3lhUnBqUU9XQXdYSXkxSHNqZFZWZStlb2VUaFZmY0VwTUp5dkNN?=
+ =?utf-8?B?WHM5SVlJZkpUcUMzRDFrWjBFMTcrU3pyY2FzcHcwVW1ZSkVYMERkSlRGRW5o?=
+ =?utf-8?B?eHdoYzh5K0t1TWw1dGllcFFHcUVWcWpWVHlrbk1mUC9oRUFqaTQ3SGZqM1hm?=
+ =?utf-8?B?VnVRWGh1KzZmY2drcUdIUjBBR1ZxSG02aDJDUzBOdzByZWZydjFGTzlJMEJM?=
+ =?utf-8?B?WWdhSG93d21sdkhJbUZwV1Y4YVIzU1g4OFhOUDJaUkZ1Z1hyWXpPUm9JZXBE?=
+ =?utf-8?B?RzVZSVMrblNEYkp0UXd1cFFFVysyd25iMkFuS3ZxNExGWHBkQUZpRkF2MlZE?=
+ =?utf-8?B?MjJveDFmeUxuMjZzdDQrQUZyaHdXYUEvY0Q5VGJqTjBRandqZWpvSkFHd3p1?=
+ =?utf-8?B?YUxoUm5YeGdFNkoxSzRsM3l0ckxob1BNZTZ2TWcwelI4aS8vbHF1c1Y4eXdD?=
+ =?utf-8?B?eGlDOEF5YjNqNXB2bzJEditIalBMbTRXK0ZVQmNKL2x4cW9XNU1Uak9Hb1Ez?=
+ =?utf-8?B?dXQyckZLR1JUZnpnRXJkUnQvQ09IbDNUZ2dwT3BpK0VoV0tOOFd4ZGpxVVli?=
+ =?utf-8?B?Smo1L2I0ME9EZ1I4WEd1U010TmlISjFjaEIvKzlZTFI0MWNldkg2VWw4Vi9u?=
+ =?utf-8?B?aUorWU9IZVFjK29OSldRNWlRWXlhQXFrbzF4d0YveFlzRGlaVVROTm5EOFpU?=
+ =?utf-8?B?cXh3QnJ4L1hSRDRSamc4NDlLY1BmdURiencrT3pUTERUVjF6eHZ3b1V6TmxU?=
+ =?utf-8?B?ODN6dmJnTElCbkpnWVB3MEhoZFZrZWVLc052eWpwRDJ1TDMwTDUxaXNHY0pI?=
+ =?utf-8?B?K2dYdUpJbit4WkVHT0JZSklkQ3MyZHBlU1JvZ1R6ZTFPdWw0bUxpZU80allY?=
+ =?utf-8?B?Q2oraEIyZ0xsRTFOM1B4cmZrOW84Vy9Kc2Q4YUJZaXpOMmVubEEyYndiYm50?=
+ =?utf-8?B?NXpYVVZ4aEM4V1k0elp4Uk43WmwwcXZLNE81ODJxYWszMHcwek82MVR2bVdj?=
+ =?utf-8?B?STFORklPaUY2aEZLSFErWEM1RlppQjk2SG1LMzhmejRGUEtZbk1MK01HeGkw?=
+ =?utf-8?B?UmZKZFZrc09UMkcwQnpHWmJVR1ZCbWs4ZUV5TVJXdUp1anFGbDh3MGlHUlht?=
+ =?utf-8?B?VDVha2ZTb2VZS1VTWktNdWpYcVF6WXo3cUtHU2svRXNZSDQrcGY1eFRpTVJV?=
+ =?utf-8?Q?+FV16QcdIkUZRDSVf6pUmg/iS+E9L2QBAsQnYGP?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc8caac5-308a-4c77-6028-08d8e1dd880d
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 02:54:46.4412
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dUguIGO2oiY7I7CokILHy/O+CPg/iTJBkR/kG+MnViG+UraElHqlK/MX/VD7RsJL9q0oseCMsWNcgC/+N7vOOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7344
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/8 10:36, Gao Xiang wrote:
-> Hi Chao,
+On Fri, 2021-03-05 at 16:03 +0100, Robert Foss wrote:
+> Hey Liu,
 > 
-> On Mon, Mar 08, 2021 at 09:29:30AM +0800, Chao Yu wrote:
->> On 2021/3/6 12:04, Gao Xiang wrote:
->>> From: Gao Xiang <hsiangkao@redhat.com>
->>>
->>> Martin reported an issue that directory read could be hung on the
->>> latest -rc kernel with some certain image. The root cause is that
->>> commit baa2c7c97153 ("block: set .bi_max_vecs as actual allocated
->>> vector number") changes .bi_max_vecs behavior. bio->bi_max_vecs
->>> is set as actual allocated vector number rather than the requested
->>> number now.
->>>
->>> Let's avoid using .bi_max_vecs completely instead.
->>>
->>> Reported-by: Martin DEVERA <devik@eaxlabs.cz>
->>> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
->>
->> Looks good to me, btw, it needs to Cc stable mailing list?
->>
->> Reviewed-by: Chao Yu <yuchao0@huawei.com>
->>
-> 
-> Thanks for your review. <= 5.11 kernels are not impacted.
-> For now, this only impacts 5.12-rc due to a bio behavior
-> change (see commit baa2c7c97153). So personally I think
-> just leave as it is is fine.
+> This patch seems to be included in both this series and the "Add some
+> DRM bridge drivers support for i.MX8qm/qxp SoCs" series. Instead of
+> having the two series have a conflict I would suggest either merging
+> them (if that makes sense) or removing this patch from one of them and
+> explicitly stating that there is a dependency on the other series.
 
-Okay, so that's fine if you send pull request before 5.12 formal release. ;)
-
-Thanks,
+I choose not to merge them, because they are self-contained
+respectively and splitting them makes the patch number(14) of the "Add
+some DRM bridge drivers support for i.MX8qm/qxp SoCs" series look
+better.  I guess this series will land prior to the other one, so I
+would drop this patch from that series and state the dependency
+there(actually, I mentioned I also sent this patch via this series
+there).
 
 > 
-> Thanks,
-> Gao Xiang
+> (the patch itself still looks good though :) )
+
+Thanks for your review :)
+
+Liu Ying
+
 > 
->> Thanks,
->>
-> 
-> .
-> 
+> On Fri, 11 Dec 2020 at 02:56, Liu Ying <victor.liu@nxp.com> wrote:
+> > This patch allows LVDS PHYs to be configured through
+> > the generic functions and through a custom structure
+> > added to the generic union.
+> > 
+> > The parameters added here are based on common LVDS PHY
+> > implementation practices.  The set of parameters
+> > should cover all potential users.
+> > 
+> > Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Cc: NXP Linux Team <linux-imx@nxp.com>
+> > Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> > ---
+> > v2->v3:
+> > * No change.
+> > 
+> > v1->v2:
+> > * No change.
+> > 
+> >  include/linux/phy/phy-lvds.h | 48 ++++++++++++++++++++++++++++++++++++++++++++
+> >  include/linux/phy/phy.h      |  4 ++++
+> >  2 files changed, 52 insertions(+)
+> >  create mode 100644 include/linux/phy/phy-lvds.h
+> > 
+> > diff --git a/include/linux/phy/phy-lvds.h b/include/linux/phy/phy-lvds.h
+> > new file mode 100644
+> > index 00000000..1b5b9d6
+> > --- /dev/null
+> > +++ b/include/linux/phy/phy-lvds.h
+> > @@ -0,0 +1,48 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright 2020 NXP
+> > + */
+> > +
+> > +#ifndef __PHY_LVDS_H_
+> > +#define __PHY_LVDS_H_
+> > +
+> > +/**
+> > + * struct phy_configure_opts_lvds - LVDS configuration set
+> > + *
+> > + * This structure is used to represent the configuration state of a
+> > + * LVDS phy.
+> > + */
+> > +struct phy_configure_opts_lvds {
+> > +       /**
+> > +        * @bits_per_lane_and_dclk_cycle:
+> > +        *
+> > +        * Number of bits per data lane and differential clock cycle.
+> > +        */
+> > +       unsigned int bits_per_lane_and_dclk_cycle;
+> > +
+> > +       /**
+> > +        * @differential_clk_rate:
+> > +        *
+> > +        * Clock rate, in Hertz, of the LVDS differential clock.
+> > +        */
+> > +       unsigned long differential_clk_rate;
+> > +
+> > +       /**
+> > +        * @lanes:
+> > +        *
+> > +        * Number of active, consecutive, data lanes, starting from
+> > +        * lane 0, used for the transmissions.
+> > +        */
+> > +       unsigned int lanes;
+> > +
+> > +       /**
+> > +        * @is_slave:
+> > +        *
+> > +        * Boolean, true if the phy is a slave which works together
+> > +        * with a master phy to support dual link transmission,
+> > +        * otherwise a regular phy or a master phy.
+> > +        */
+> > +       bool is_slave;
+> > +};
+> > +
+> > +#endif /* __PHY_LVDS_H_ */
+> > diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+> > index e435bdb..d450b44 100644
+> > --- a/include/linux/phy/phy.h
+> > +++ b/include/linux/phy/phy.h
+> > @@ -17,6 +17,7 @@
+> >  #include <linux/regulator/consumer.h>
+> > 
+> >  #include <linux/phy/phy-dp.h>
+> > +#include <linux/phy/phy-lvds.h>
+> >  #include <linux/phy/phy-mipi-dphy.h>
+> > 
+> >  struct phy;
+> > @@ -51,10 +52,13 @@ enum phy_mode {
+> >   *             the MIPI_DPHY phy mode.
+> >   * @dp:                Configuration set applicable for phys supporting
+> >   *             the DisplayPort protocol.
+> > + * @lvds:      Configuration set applicable for phys supporting
+> > + *             the LVDS phy mode.
+> >   */
+> >  union phy_configure_opts {
+> >         struct phy_configure_opts_mipi_dphy     mipi_dphy;
+> >         struct phy_configure_opts_dp            dp;
+> > +       struct phy_configure_opts_lvds          lvds;
+> >  };
+> > 
+> >  /**
+> > --
+> > 2.7.4
+> > 
+
