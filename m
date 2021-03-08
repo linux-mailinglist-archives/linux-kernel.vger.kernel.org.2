@@ -2,147 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A356331788
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:45:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B0A33178A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbhCHTos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:44:48 -0500
-Received: from mail-dm6nam11on2085.outbound.protection.outlook.com ([40.107.223.85]:14560
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230373AbhCHToq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:44:46 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gAYNsOBnD9K5j69ZJklHkEVi0VpZHBJPqe8Jufrj5CssrOMafXJUWKcdTRbrEbOJFU/s2crRrjYRJk0VM/ErktJwaIt5KE46MfdW08TZJUzksC9LOUMRNBk6DleCmQYoMSNMT0M2qzvTF/1izzP3wNtQJPKVYKQDEKKGBZaTD2AmHFzXpJ5VC45qQE8Un4mdfVkzXKUPrLskqFFb1IfbjIS2f/wEUa3GFHLYXEIRLltxRNr9iApJsc5yoKoOP4VhSsHsSRjbZh0gcNCdcsT/LrmSRNhiwwD5u5+E6efQd/m9jXrg9lDbdWQlalt2S3tkAO5iVchMUPlDp2o4oP/lkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jXuweIGZpD1rAhThKm38YbhcqQzcbfCPzUVNuMMHetw=;
- b=Hmvzvu/HdgxHB4BS6yrQhECzhGkwNKTVlJIYeDrNuYUhG8vQz+yudofJE72XFLSGmXnsGD1n8r8cz/dY02YHhqAEr643/LB4yEZfgyt6vdHoYUWsS2VRKoAKK0Vpocy+urgXWKj2F+3YVW7hc+gG+rm0rjxOQ83rrtc0z47p+W6SWdhcFf4a4QFdQU4QXie44mMWbwo0g2wECfUvjQj8LhGHPdKDOxTaZoDWR3fTCGDPTsJQm0klzdFsTys7SIK9xlEXzwBoA6vgSPOaCgTNBVu6df7il5BF67Kk4fHnADsslXMDxD/OAmMUD7CTZlQmC9eOhbbhgjgyHiCvncrfoA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jXuweIGZpD1rAhThKm38YbhcqQzcbfCPzUVNuMMHetw=;
- b=vzCe6fH/JRQN44a0pSXfUMc/FX5IiaIRpXA1KM8zAC9g1auma6fGY57wcD65/624vI8vdF4rXHYNMZ6BdPqQjCIIKvh2WXAAoLbORdefDrsIEC26UZoTS12KoEWT6SdsbSmIlDYQKv6jPosxnUO97IvLkcCnCCdXv4gSQ0VzB/Q=
-Received: from BN6PR2001CA0004.namprd20.prod.outlook.com
- (2603:10b6:404:b4::14) by DM6PR12MB3753.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.29; Mon, 8 Mar
- 2021 19:44:43 +0000
-Received: from BN8NAM11FT039.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:b4:cafe::46) by BN6PR2001CA0004.outlook.office365.com
- (2603:10b6:404:b4::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
- Transport; Mon, 8 Mar 2021 19:44:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT039.mail.protection.outlook.com (10.13.177.169) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3912.17 via Frontend Transport; Mon, 8 Mar 2021 19:44:42 +0000
-Received: from rcampbell-test.nvidia.com (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 8 Mar 2021 19:44:42 +0000
-Subject: Re: [PATCH v4 5/8] mm: Device exclusive memory access
-To:     Alistair Popple <apopple@nvidia.com>, <linux-mm@kvack.org>,
-        <nouveau@lists.freedesktop.org>, <bskeggs@redhat.com>,
-        <akpm@linux-foundation.org>
-CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <jhubbard@nvidia.com>, <jglisse@redhat.com>
-References: <20210304061645.29747-1-apopple@nvidia.com>
- <20210304061645.29747-6-apopple@nvidia.com>
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <ac380c1c-20f4-7c5b-dc5b-be6e1e970921@nvidia.com>
-Date:   Mon, 8 Mar 2021 11:44:41 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231452AbhCHTpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:45:21 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:47760 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229813AbhCHTpS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 14:45:18 -0500
+Date:   Mon, 08 Mar 2021 19:45:16 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615232717;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e7mUrlC1VI2Dam+YB5vP4PsbdUDIxzpEbEKAa4UKsZY=;
+        b=yuX0bY59P5ovD2U2OEXSXNvJYUop0VppeqjqZeTyXImCr1t1gZh576aBh/VsXEOR/+yb3V
+        OVaPo6m/MJ+eDELzbe5/Zhk6W0yYLqoBSqexDB/LegKwwDabDX+uJ4qcsXqHBHN7NB/L6M
+        i5fSlmX3Xo77erR7yxACp/eSdbLKn4ZqAvXEMqsCLxdcFpF8+PQTUbekghTVWScx1lVJ31
+        JeLwrlt8CHOstnNySWh4vfuUlGSzEzT9Qeies7H8mF0+ZFTB0UwzPCEMHbM9la99uAYp6r
+        ggG1DGbeUVyFH6wxxPePJSkSSWBP5EDddNga0MHWCRbGR+Nt+ve6mWwUlFeNmQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615232717;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e7mUrlC1VI2Dam+YB5vP4PsbdUDIxzpEbEKAa4UKsZY=;
+        b=D/sovxAy9NLPUrJX+IF9GOR55F9k+iHikCbZx9MlIKNpastThkNokzaJMNQb8fIsb0aXp3
+        6uHu6unvd+MmiZAg==
+From:   "tip-bot2 for Tom Lendacky" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/seves] x86/virtio: Have SEV guests enforce restricted
+ virtio memory access
+Cc:     kernel test robot <lkp@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: =?utf-8?q?=3Cb46e0211f77ca1831f11132f969d470a6ffc9267=2E16148?=
+ =?utf-8?q?97610=2Egit=2Ethomas=2Elendacky=40amd=2Ecom=3E?=
+References: =?utf-8?q?=3Cb46e0211f77ca1831f11132f969d470a6ffc9267=2E161489?=
+ =?utf-8?q?7610=2Egit=2Ethomas=2Elendacky=40amd=2Ecom=3E?=
 MIME-Version: 1.0
-In-Reply-To: <20210304061645.29747-6-apopple@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Message-ID: <161523271617.398.12783069066955429974.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0e57866a-420e-4c5e-84d3-08d8e26a9eb7
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3753:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3753817C745F0553B51F6963C2939@DM6PR12MB3753.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PoIZenOI0j9Hb2gEfsRmlyXP4qbH/OX0ioNmtrcpelMEqWnTQPd5PDphRkNa3VEnwfHgW0OiSUq1ICYR4R/8QsDiuHM8crQP9geDNEPU//3U0+j233vDQWhLS+ifiQ+871Ash19UD1Lsmf4I3TSr4gvm6wsfpk9zJF93mBu+otO+B2RpyCfcG648JpQP/aRPlCRZolo0FLxf6yffXFGofag4IEuwRuRxI68Hei+WjAW2iijzvDuXlixkK2IhXILMT7yL+YCVuKY3XEwNYCjhLHPcfdljhDv0HpieRRHx32GKSRgbWY8L/vMEvTKgD6nZjiPPN6Qz8UomYx4IwzhnE679lDSina5h4aMTUIwqoUSmH5K7kMJC6uKTMxY18aPuF0wcxWwY9+jkVC1n/7xkdg/QZpJru+qUF9ZvgkOColx8Ulxjm43EFjO7q9/hyAslvKteZEQQw77pqXN2cvB7J8uBwsmASf7XHJjEXfx+5CbWYikuJ6sWxGbopwZnQEsaQi9L3gyfY4Q5TfW2aIi+lKvY7Je8O3KvyqOc/wCnGP9ve/KjFoMMp4WMRLoym5uD7nLlS+v5Jh13Tg7iosVinwu+YgZ8voN70AUk34lfOtbpxcb41FH+VlbYYkx2jFUcQRVluzaR36YRa4MByGEgZ7ktyXnyvJbrxMOFvXm9jx2po6dD/ese6zYoZ9DENbNQAguK3l9ARch6lJj/md4iBQ==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(346002)(46966006)(36840700001)(70586007)(54906003)(4326008)(316002)(110136005)(7636003)(70206006)(36860700001)(82740400003)(426003)(8676002)(36906005)(2906002)(336012)(8936002)(478600001)(2616005)(47076005)(34020700004)(86362001)(26005)(356005)(5660300002)(186003)(16526019)(7696005)(36756003)(53546011)(31696002)(83380400001)(82310400003)(31686004)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 19:44:42.8654
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e57866a-420e-4c5e-84d3-08d8e26a9eb7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT039.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3753
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/seves branch of tip:
 
-On 3/3/21 10:16 PM, Alistair Popple wrote:
-> Some devices require exclusive write access to shared virtual
-> memory (SVM) ranges to perform atomic operations on that memory. This
-> requires CPU page tables to be updated to deny access whilst atomic
-> operations are occurring.
-> 
-> In order to do this introduce a new swap entry
-> type (SWP_DEVICE_EXCLUSIVE). When a SVM range needs to be marked for
-> exclusive access by a device all page table mappings for the particular
-> range are replaced with device exclusive swap entries. This causes any
-> CPU access to the page to result in a fault.
-> 
-> Faults are resovled by replacing the faulting entry with the original
-> mapping. This results in MMU notifiers being called which a driver uses
-> to update access permissions such as revoking atomic access. After
-> notifiers have been called the device will no longer have exclusive
-> access to the region.
-> 
-> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+Commit-ID:     229164175ff0c61ff581e6bf37fbfcb608b6e9bb
+Gitweb:        https://git.kernel.org/tip/229164175ff0c61ff581e6bf37fbfcb608b6e9bb
+Author:        Tom Lendacky <thomas.lendacky@amd.com>
+AuthorDate:    Thu, 04 Mar 2021 16:40:11 -06:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 08 Mar 2021 20:41:33 +01:00
 
-I see in the next two patches how make_device_exclusive_entry() and
-check_device_exclusive_range() are used. This points out a similar
-problem that migrate_vma_setup() had before I added the
-mmu_notifier_range_init_migrate() helper to pass a cookie from
-migrate_vma_setup() to the invalidation callback so the device driver
-could ignore an invalidation callback triggered by the caller and thus
-resulting in a deadlock or having to invalidate device PTEs that
-wouldn't be migrating.
+x86/virtio: Have SEV guests enforce restricted virtio memory access
 
-I think you can eliminate the need for check_device_exclusive_range() in
-the same way by adding a "void *" pointer to make_device_exclusive_entry()
-and passing that through to try_to_protect(), setting rmap_walk_control rwc.arg
-and then passing arg to mmu_notifier_range_init_migrate().
-Although, maybe it would be better to define a new
-mmu_notifier_range_init_exclusive() and event type MMU_NOTIFY_EXCLUSIVE so
-that a device driver can revoke atomic/exclusive access but keep read/write
-access to other parts of the page.
+An SEV guest requires that virtio devices use the DMA API to allow the
+hypervisor to successfully access guest memory as needed.
 
-I thought about how make_device_exclusive_entry() is similar to hmm_range_fault()
-and whether it would be possible to add a new HMM_PFN_REQ_EXCLUSIVE flag but I
-see that make_device_exclusive_entry() returns the pages locked and with an
-additional get_page() reference. This doesn't fit well with the other
-hmm_range_fault() entries being returned as a "snapshot" so having a different
-API makes sense. I think it would be useful to add a HMM_PFN_EXCLUSIVE flag so
-that snapshots of the page tables can at least report that a page is exclusively
-being accessed by *some* device. Unfortunately, there is no pgmap pointer to be
-able to tell which device has exclusive access (since any struct page could be
-exclusively accessed, not just device private ones).
+The VIRTIO_F_VERSION_1 and VIRTIO_F_ACCESS_PLATFORM features tell virtio
+to use the DMA API. Add arch_has_restricted_virtio_memory_access() for
+x86, to fail the device probe if these features have not been set for the
+device when running as an SEV guest.
+
+ [ bp: Fix -Wmissing-prototypes warning
+   Reported-by: kernel test robot <lkp@intel.com> ]
+
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/b46e0211f77ca1831f11132f969d470a6ffc9267.1614897610.git.thomas.lendacky@amd.com
+---
+ arch/x86/Kconfig          | 1 +
+ arch/x86/mm/mem_encrypt.c | 6 ++++++
+ 2 files changed, 7 insertions(+)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 2792879..e80e726 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1518,6 +1518,7 @@ config AMD_MEM_ENCRYPT
+ 	select ARCH_USE_MEMREMAP_PROT
+ 	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
+ 	select INSTRUCTION_DECODER
++	select ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
+ 	help
+ 	  Say yes to enable support for the encryption of system memory.
+ 	  This requires an AMD processor that supports Secure Memory
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index 4b01f7d..f3eb53f 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -19,6 +19,7 @@
+ #include <linux/kernel.h>
+ #include <linux/bitops.h>
+ #include <linux/dma-mapping.h>
++#include <linux/virtio_config.h>
+ 
+ #include <asm/tlbflush.h>
+ #include <asm/fixmap.h>
+@@ -484,3 +485,8 @@ void __init mem_encrypt_init(void)
+ 	print_mem_encrypt_feature_info();
+ }
+ 
++int arch_has_restricted_virtio_memory_access(void)
++{
++	return sev_active();
++}
++EXPORT_SYMBOL_GPL(arch_has_restricted_virtio_memory_access);
