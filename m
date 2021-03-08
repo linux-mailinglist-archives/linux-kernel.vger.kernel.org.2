@@ -2,162 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D78D331A78
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96340331A7F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:56:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbhCHWzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 17:55:33 -0500
-Received: from mga06.intel.com ([134.134.136.31]:47552 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230070AbhCHWzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 17:55:06 -0500
-IronPort-SDR: u5FvrUpMBY+glSji7AYiaKv0IuFBy/159IaXnZPBZgFo328mbpgHpRRtkUiuaDPiwGAAqNqb6w
- 8F4502+Lj0EQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="249497618"
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="249497618"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 14:55:06 -0800
-IronPort-SDR: oQApYD2RhFTBNoUxIwaYGlt9r/UtUis8L6rQ9q+cmeRxxjcoj0h5t6gU/8ypfCnWW20R0xZrEP
- zs1ToNjAKFUQ==
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="409476776"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 14:55:05 -0800
-Date:   Mon, 8 Mar 2021 14:55:04 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
-        <naoya.horiguchi@nec.com>
-Cc:     Aili Yao <yaoaili@kingsoft.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
-Subject: [PATCH] mm/memory-failure: Use a mutex to avoid memory_failure()
- races
-Message-ID: <20210308225504.GA233893@agluck-desk2.amr.corp.intel.com>
-References: <20210304101653.546a9da1@alex-virtual-machine>
- <20210304121941.667047c3@alex-virtual-machine>
- <20210304144524.795872d7@alex-virtual-machine>
- <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
- <20210305093016.40c87375@alex-virtual-machine>
- <20210305093656.6c262b19@alex-virtual-machine>
- <20210305221143.GA220893@agluck-desk2.amr.corp.intel.com>
- <20210308064558.GA3617@hori.linux.bs1.fc.nec.co.jp>
- <3690ece2101d428fb9067fcd2a423ff8@intel.com>
- <20210308223839.GA21886@hori.linux.bs1.fc.nec.co.jp>
+        id S231243AbhCHW4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 17:56:10 -0500
+Received: from mail-io1-f41.google.com ([209.85.166.41]:46922 "EHLO
+        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229655AbhCHWz4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 17:55:56 -0500
+Received: by mail-io1-f41.google.com with SMTP id u8so11785140ior.13;
+        Mon, 08 Mar 2021 14:55:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6xLykOfAllLruOHyBLWMIQxo1ZRSm2qdesc+Rm3KDTo=;
+        b=dJG937RxIGysbFtVpJigW33PhFNhRs/ue68ZSy4+VuBfOm2eDpLk3eIAV919kMBNE5
+         ZBiYRHudzQMHf0fde+OJmEHlcSdyICziKm2PJ9L7SPnwKKHV2iFrUXA8cttOjGeQWAV3
+         IgYMq2R+q5CRNq5pJM+eOE1zB8YAFMk2vaDdsZ8Bto/ZJw1qcpL7gH5elhJZw0eAKufD
+         FzAmrFqWDLL66HHGSO3FFqlkF135abJcrg6KmR4hjl5gGK1pfJYcuz8CSv7mciHkYxIH
+         MpnRRYX215hJASwyMEw39I6mRu17dhA0Z7+Y+uQRexJpY8gc/czJMW4BjWeNDkcnnm1T
+         yhrg==
+X-Gm-Message-State: AOAM531Q3p4seZZlR2Iq/ESXobcKpkuA6HpQXTfKzoOCDDGFdiRkAJKl
+        kGyyWImAIS5DJwI413mAgg==
+X-Google-Smtp-Source: ABdhPJxgeW+f58tcaUK15KRvBIwF2tFD0pHXrnxDECAuwSHZ7sTDJEkg2+tfViLQGuduC6I8RJQNEQ==
+X-Received: by 2002:a05:6638:12cf:: with SMTP id v15mr25119345jas.77.1615244156258;
+        Mon, 08 Mar 2021 14:55:56 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id s8sm6494741ilv.76.2021.03.08.14.55.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 14:55:55 -0800 (PST)
+Received: (nullmailer pid 3102714 invoked by uid 1000);
+        Mon, 08 Mar 2021 22:55:53 -0000
+Date:   Mon, 8 Mar 2021 15:55:53 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        john@phrozen.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, neil@brown.name,
+        devel@driverdev.osuosl.org, tsbogend@alpha.franken.de,
+        linux-clk@vger.kernel.org, sboyd@kernel.org
+Subject: Re: [PATCH v10 2/6] dt: bindings: add mt7621-sysc device tree
+ binding documentation
+Message-ID: <20210308225553.GA3102663@robh.at.kernel.org>
+References: <20210307070426.15933-1-sergio.paracuellos@gmail.com>
+ <20210307070426.15933-3-sergio.paracuellos@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308223839.GA21886@hori.linux.bs1.fc.nec.co.jp>
+In-Reply-To: <20210307070426.15933-3-sergio.paracuellos@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There can be races when multiple CPUs consume poison from the same
-page. The first into memory_failure() atomically sets the HWPoison
-page flag and begins hunting for tasks that map this page. Eventually
-it invalidates those mappings and may send a SIGBUS to the affected
-tasks.
+On Sun, 07 Mar 2021 08:04:22 +0100, Sergio Paracuellos wrote:
+> Adds device tree binding documentation for clocks in the
+> MT7621 SOC.
+> 
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> ---
+>  .../bindings/clock/mediatek,mt7621-sysc.yaml  | 68 +++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-sysc.yaml
+> 
 
-But while all that work is going on, other CPUs see a "success"
-return code from memory_failure() and so they believe the error
-has been handled and continue executing.
-
-Fix by wrapping most of the internal parts of memory_failure() in
-a mutex.
-
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- mm/memory-failure.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 24210c9bd843..c1509f4b565e 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1381,6 +1381,8 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
- 	return rc;
- }
- 
-+static DEFINE_MUTEX(mf_mutex);
-+
- /**
-  * memory_failure - Handle memory failure of a page.
-  * @pfn: Page Number of the corrupted page
-@@ -1424,12 +1426,18 @@ int memory_failure(unsigned long pfn, int flags)
- 		return -ENXIO;
- 	}
- 
-+	mutex_lock(&mf_mutex);
-+
- try_again:
--	if (PageHuge(p))
--		return memory_failure_hugetlb(pfn, flags);
-+	if (PageHuge(p)) {
-+		res = memory_failure_hugetlb(pfn, flags);
-+		goto out2;
-+	}
-+
- 	if (TestSetPageHWPoison(p)) {
- 		pr_err("Memory failure: %#lx: already hardware poisoned\n",
- 			pfn);
-+		mutex_unlock(&mf_mutex);
- 		return 0;
- 	}
- 
-@@ -1463,9 +1471,11 @@ int memory_failure(unsigned long pfn, int flags)
- 				res = MF_FAILED;
- 			}
- 			action_result(pfn, MF_MSG_BUDDY, res);
-+			mutex_unlock(&mf_mutex);
- 			return res == MF_RECOVERED ? 0 : -EBUSY;
- 		} else {
- 			action_result(pfn, MF_MSG_KERNEL_HIGH_ORDER, MF_IGNORED);
-+			mutex_unlock(&mf_mutex);
- 			return -EBUSY;
- 		}
- 	}
-@@ -1473,6 +1483,7 @@ int memory_failure(unsigned long pfn, int flags)
- 	if (PageTransHuge(hpage)) {
- 		if (try_to_split_thp_page(p, "Memory Failure") < 0) {
- 			action_result(pfn, MF_MSG_UNSPLIT_THP, MF_IGNORED);
-+			mutex_unlock(&mf_mutex);
- 			return -EBUSY;
- 		}
- 		VM_BUG_ON_PAGE(!page_count(p), p);
-@@ -1517,6 +1528,7 @@ int memory_failure(unsigned long pfn, int flags)
- 		num_poisoned_pages_dec();
- 		unlock_page(p);
- 		put_page(p);
-+		mutex_unlock(&mf_mutex);
- 		return 0;
- 	}
- 	if (hwpoison_filter(p)) {
-@@ -1524,6 +1536,7 @@ int memory_failure(unsigned long pfn, int flags)
- 			num_poisoned_pages_dec();
- 		unlock_page(p);
- 		put_page(p);
-+		mutex_unlock(&mf_mutex);
- 		return 0;
- 	}
- 
-@@ -1559,6 +1572,8 @@ int memory_failure(unsigned long pfn, int flags)
- 	res = identify_page_state(pfn, p, page_flags);
- out:
- 	unlock_page(p);
-+out2:
-+	mutex_unlock(&mf_mutex);
- 	return res;
- }
- EXPORT_SYMBOL_GPL(memory_failure);
--- 
-2.29.2
-
+Reviewed-by: Rob Herring <robh@kernel.org>
