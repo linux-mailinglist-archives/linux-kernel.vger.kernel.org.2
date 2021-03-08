@@ -2,38 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 731AB331113
+	by mail.lfdr.de (Postfix) with ESMTP id EE03A331114
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:40:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhCHOkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 09:40:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46520 "EHLO mail.kernel.org"
+        id S231256AbhCHOkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 09:40:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231329AbhCHOkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:40:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FAFA61580;
-        Mon,  8 Mar 2021 14:40:10 +0000 (UTC)
+        id S229497AbhCHOkP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 09:40:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA34661582;
+        Mon,  8 Mar 2021 14:40:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615214411;
-        bh=m1dVzWSBJKjH22zY5iMvVafCm5lfI/d2JHxfxjGzPyE=;
+        s=k20201202; t=1615214415;
+        bh=K/1K4HRPKtaKVEB+lIie78zkxFTzX6qA1JfgBRMt65I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fNSr5IEGa+lPl9XIRD3yECyHS++N34cgDypwDeMfMlLOgaP22D3LWNJiApaocg7Sn
-         kVaba/dA5PCMyFVK81rLgq9SeFAEFBP9fGuyX3mJdnwEaGuvPYdPlLxe53XC+FOUfn
-         Lq2R9QXPcFGjtCwP25UEz89Yespw32L93Eth4jzsQIgb9E8s3rq1iwhAWVgsUG7Xpv
-         B5UMQu/sFxfxPNUv3dJXcTle+vi+3K9cLvAmNi6cfIEUSCtqE/JsbDEs3/GEzX9WF9
-         FE2O+MhQyNhrZSBbDdc5kF/HuvPz1jCsOL6OsRvyH/uAi58iTFg03Grz1N8I48HuMz
-         PEv10hZ0tX8oA==
+        b=gGke4BzWPboM7g+iopMjg3Wb7f17G9u2GOrrU+1XQqYGo88DAIScur4zcA4iZD6uW
+         1Jm4CPZg7Hij3d3C5+vpTDVWPT/8qx7Kb3AF4T0T2jCmZF19lnO/hnEI2MOC855zxm
+         xHTcuh534pRFjA03/9PYwATtDg+jx992fn3w+UuwGx7oyWRC239QTTFX3ci1ASE3C8
+         0KOq+8BR7Qh+d+k2gkFte6lMsBRjGms2sqQG2CrknjPnWGFRwUxTSgwq1RltuMRQK1
+         uGg6vLGtsSoQfRq3J4MuX9w9PSn3e/OCF+N9uhQ627eIqU/Cj7eqP3m0rAE52cpcxf
+         KpjU7rjkOC4rw==
 From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
+To:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
 Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/mm: Drop THP conditionality from FORCE_MAX_ZONEORDER
-Date:   Mon,  8 Mar 2021 14:40:03 +0000
-Message-Id: <161520863494.990143.2143741403146543610.b4-ty@kernel.org>
+        Rob Herring <robh@kernel.org>, Max Uvarov <muvarov@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Doug Anderson <dianders@chromium.org>
+Subject: Re: [PATCH v2 0/2] Fix arm64 CONFIG_CMDLINE handling and remove CMDLINE_EXTEND
+Date:   Mon,  8 Mar 2021 14:40:04 +0000
+Message-Id: <161520819535.987997.16087215537245942596.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1614597914-28565-1-git-send-email-anshuman.khandual@arm.com>
-References: <1614597914-28565-1-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <20210303134927.18975-1-will@kernel.org>
+References: <20210303134927.18975-1-will@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,51 +49,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Mar 2021 16:55:14 +0530, Anshuman Khandual wrote:
-> Currently without THP being enabled, MAX_ORDER via FORCE_MAX_ZONEORDER gets
-> reduced to 11, which falls below HUGETLB_PAGE_ORDER for certain 16K and 64K
-> page size configurations. This is problematic which throws up the following
-> warning during boot as pageblock_order via HUGETLB_PAGE_ORDER order exceeds
-> MAX_ORDER.
+On Wed, 3 Mar 2021 13:49:25 +0000, Will Deacon wrote:
+> This is version two of the series I previously posted here:
 > 
-> WARNING: CPU: 7 PID: 127 at mm/vmstat.c:1092 __fragmentation_index+0x58/0x70
-> Modules linked in:
-> CPU: 7 PID: 127 Comm: kswapd0 Not tainted 5.12.0-rc1-00005-g0221e3101a1 #237
-> Hardware name: linux,dummy-virt (DT)
-> pstate: 20400005 (nzCv daif +PAN -UAO -TCO BTYPE=--)
-> pc : __fragmentation_index+0x58/0x70
-> lr : fragmentation_index+0x88/0xa8
-> sp : ffff800016ccfc00
-> x29: ffff800016ccfc00 x28: 0000000000000000
-> x27: ffff800011fd4000 x26: 0000000000000002
-> x25: ffff800016ccfda0 x24: 0000000000000002
-> x23: 0000000000000640 x22: ffff0005ffcb5b18
-> x21: 0000000000000002 x20: 000000000000000d
-> x19: ffff0005ffcb3980 x18: 0000000000000004
-> x17: 0000000000000001 x16: 0000000000000019
-> x15: ffff800011ca7fb8 x14: 00000000000002b3
-> x13: 0000000000000000 x12: 00000000000005e0
-> x11: 0000000000000003 x10: 0000000000000080
-> x9 : ffff800011c93948 x8 : 0000000000000000
-> x7 : 0000000000000000 x6 : 0000000000007000
-> x5 : 0000000000007944 x4 : 0000000000000032
-> x3 : 000000000000001c x2 : 000000000000000b
-> x1 : ffff800016ccfc10 x0 : 000000000000000d
-> Call trace:
-> __fragmentation_index+0x58/0x70
-> compaction_suitable+0x58/0x78
-> wakeup_kcompactd+0x8c/0xd8
-> balance_pgdat+0x570/0x5d0
-> kswapd+0x1e0/0x388
-> kthread+0x154/0x158
-> ret_from_fork+0x10/0x30
+> 	https://lore.kernel.org/r/20210225125921.13147-1-will@kernel.org
+> 
+> The main change since v1 is that, rather than "fix" the FDT code to
+> follow the documented behaviour for CMDLINE_EXTEND, I've opted to remove
+> the thing entirely for arm64 while a less ambiguous and generic
+> replacement is developed, probably based on either [1] or [2].
 > 
 > [...]
 
 Applied to arm64 (for-next/fixes), thanks!
 
-[1/1] arm64/mm: Drop THP conditionality from FORCE_MAX_ZONEORDER
-      https://git.kernel.org/arm64/c/79cc2ed5a716
+[1/2] arm64: cpufeatures: Fix handling of CONFIG_CMDLINE for idreg overrides
+      https://git.kernel.org/arm64/c/df304c2d0dfd
+[2/2] arm64: Drop support for CMDLINE_EXTEND
+      https://git.kernel.org/arm64/c/cae118b6acc3
 
 Cheers,
 -- 
