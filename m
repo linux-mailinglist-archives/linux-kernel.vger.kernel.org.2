@@ -2,62 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B92330AF8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3295C330AFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhCHKRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 05:17:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42654 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229458AbhCHKRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:17:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C6F57AD87;
-        Mon,  8 Mar 2021 10:17:23 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 11:17:19 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v1 1/1] scripts/decodecode: Decode 32-bit code correctly
- on x86_64
-Message-ID: <20210308101719.GA12818@zn.tnic>
-References: <20210305183948.37738-1-andriy.shevchenko@linux.intel.com>
- <20210305221951.GC2896@zn.tnic>
- <CAHp75VdoGShdAQFkx5PR-H6=csRA_ReaerDg6iy54AMJF+kaOg@mail.gmail.com>
+        id S230409AbhCHKTO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Mar 2021 05:19:14 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:32242 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229754AbhCHKSp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 05:18:45 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-134-G7sto4gPP-KccM4BdtnMIA-1; Mon, 08 Mar 2021 10:18:42 +0000
+X-MC-Unique: G7sto4gPP-KccM4BdtnMIA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 8 Mar 2021 10:18:40 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 8 Mar 2021 10:18:40 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Alex Elder' <elder@linaro.org>,
+        "subashab@codeaurora.org" <subashab@codeaurora.org>,
+        "stranche@codeaurora.org" <stranche@codeaurora.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>
+CC:     "sharathv@codeaurora.org" <sharathv@codeaurora.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "evgreen@chromium.org" <evgreen@chromium.org>,
+        "cpratapa@codeaurora.org" <cpratapa@codeaurora.org>,
+        "elder@kernel.org" <elder@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel test robot" <lkp@intel.com>
+Subject: RE: [PATCH net-next v2 6/6] net: qualcomm: rmnet: don't use C
+ bit-fields in rmnet checksum header
+Thread-Topic: [PATCH net-next v2 6/6] net: qualcomm: rmnet: don't use C
+ bit-fields in rmnet checksum header
+Thread-Index: AQHXEjc7/Zo1a5kRlEyGQ6znWO97Lap545RA
+Date:   Mon, 8 Mar 2021 10:18:40 +0000
+Message-ID: <498c301f517749fdbc9d3ff5529d71a6@AcuMS.aculab.com>
+References: <20210306031550.26530-1-elder@linaro.org>
+ <20210306031550.26530-7-elder@linaro.org>
+In-Reply-To: <20210306031550.26530-7-elder@linaro.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VdoGShdAQFkx5PR-H6=csRA_ReaerDg6iy54AMJF+kaOg@mail.gmail.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 11:59:34AM +0200, Andy Shevchenko wrote:
-> It works, but... The question here is why the script behaviour depends
-> so much on the architecture in question (by environment). ARM stuff is
-> using traditional ARCH (and that's what I have expected to work),
-> while x86 has a set of other variables.
-> So, I have to rephrase the commit message then and do actually an
-> alias when ARCH is set in a certain way, Would it be better?
+From: Alex Elder
+> Sent: 06 March 2021 03:16
+> 
+> Replace the use of C bit-fields in the rmnet_map_ul_csum_header
+> structure with a single two-byte (big endian) structure member,
+> and use field masks to encode or get values within it.
+> 
+> Previously rmnet_map_ipv4_ul_csum_header() would update values in
+> the host byte-order fields, and then forcibly fix their byte order
+> using a combination of byte order operations and types.
+> 
+> Instead, just compute the value that needs to go into the new
+> structure member and save it with a simple byte-order conversion.
+> 
+> Make similar simplifications in rmnet_map_ipv6_ul_csum_header().
+> 
+> Finally, in rmnet_map_checksum_uplink_packet() a set of assignments
+> zeroes every field in the upload checksum header.  Replace that with
+> a single memset() operation.
+> 
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+> v2: Fixed to use u16_encode_bits() instead of be16_encode_bits().
+> 
+>  .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 34 ++++++-------------
+>  include/linux/if_rmnet.h                      | 21 ++++++------
+>  2 files changed, 21 insertions(+), 34 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+> index 29d485b868a65..b76ad48da7325 100644
+> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+> @@ -198,23 +198,19 @@ rmnet_map_ipv4_ul_csum_header(void *iphdr,
+>  			      struct rmnet_map_ul_csum_header *ul_header,
+>  			      struct sk_buff *skb)
+>  {
+> -	__be16 *hdr = (__be16 *)ul_header;
+>  	struct iphdr *ip4h = iphdr;
+>  	u16 offset;
+> +	u16 val;
+> 
+>  	offset = skb_transport_header(skb) - (unsigned char *)iphdr;
+>  	ul_header->csum_start_offset = htons(offset);
+> 
+> -	ul_header->csum_insert_offset = skb->csum_offset;
+> -	ul_header->csum_enabled = 1;
+> +	val = u16_encode_bits(1, MAP_CSUM_UL_ENABLED_FMASK);
+>  	if (ip4h->protocol == IPPROTO_UDP)
+> -		ul_header->udp_ind = 1;
+> -	else
+> -		ul_header->udp_ind = 0;
+> +		val |= u16_encode_bits(1, MAP_CSUM_UL_UDP_FMASK);
+> +	val |= u16_encode_bits(skb->csum_offset, MAP_CSUM_UL_OFFSET_FMASK);
+> 
+> -	/* Changing remaining fields to network order */
+> -	hdr++;
+> -	*hdr = htons((__force u16)*hdr);
+> +	ul_header->csum_info = htons(val);
 
-No, I have no clue what you're trying to accomplish. You wanted to
-supply ARCH when decoding a 32-bit oops because you expected ARCH to
-work...?
+Isn't this potentially misaligned?
 
-AFLAGS has always been there, ARM folks added ARCH AFAIR. Also, you need
-AFLAGS to compile the snippet in the correct bitsize.
+	David
 
-And there's a usage note at the beginning of the script and I always
-read it to make sure I'm using it right.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-So what's the problem again?
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
