@@ -2,183 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A26331041
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE8E331083
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:12:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhCHN7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 08:59:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhCHN7X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 08:59:23 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC97C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 05:59:23 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id u20so9965167iot.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 05:59:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RrfFrVlJXrD0qlVjZppxY1yxenrTchbettf2aSdQaoQ=;
-        b=UHirQizG++bUj/EOjI+wCV2Ab1bzTkXKpjtnVK6ONN0TS+vXlx/IX7v0k4YLWbRmTq
-         QRTiyF1XAsBx4l+SKdGcwdlXr9B6S2o6UiOb4QKgzHeuK3nwh9QFbYylp/9LxyGkmkeS
-         jXP+YNL5ThIBd/tUO/yAZXqHb6WfCs2tZExjy2jWGSp3hIPq5nC6RRZKOoShw7GdLxoe
-         7r1CJHaBsU3uTQnW0oRPxINy07kxCUWuXAL+FHF32qBeJWexXDORUlLoIXJyjCE98MCY
-         NRQyBwt8zGiaX3W90kD/HjWjAeKoXkviB2CYQGMeJkz8wIOXEqSUzWfej+04w/Q7/XJf
-         EPCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RrfFrVlJXrD0qlVjZppxY1yxenrTchbettf2aSdQaoQ=;
-        b=UwPE0oWEdlNTrZtvg+ggCE4RFWUm4txS/vt1QMRxsKwC7ZBlt8yVH7XOGPRYmZlm4V
-         vA85eg3/PtGnhHHf8pHftFOFeZ7OsGq+b7Zs1xFk5zUZ/g5m2OPdSrsvLQ6SlkEFpVXI
-         wK7g0D75xMkmEbfCw52y+CRQRhb9AD5vPBL/zM+xWq/q30lL102Qum/1veXZw36F0LE0
-         J0csMGBA/uXTUyrWac/Vv7hzwtTCLH0EKf0MZrYwHBJaKlwA1v6dcc+0i5ykP9sXc2s9
-         fLRl4oojlixHXfAdzfdWAvcG7FjA6P/NV0BaqSe/Zf86N1ZjGq/aWKRCxWQEaR4+94WG
-         MElQ==
-X-Gm-Message-State: AOAM532JzW62nTpTVhL4b5MsabCNkQZjnkdUPxw9RpE1PcfMjk9dtGmH
-        05nNhUZqxk9+uJxktZBxtW33LA==
-X-Google-Smtp-Source: ABdhPJzm3b7hFrpCi3p3+IRNVknzQES2Mgs6fipheAGA/fi/jiGjK3ASQFSsSkWL+gAHYiuTwD6Q1Q==
-X-Received: by 2002:a02:294e:: with SMTP id p75mr23126028jap.34.1615211962310;
-        Mon, 08 Mar 2021 05:59:22 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id v19sm6261456ilj.60.2021.03.08.05.59.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 05:59:21 -0800 (PST)
-Subject: Re: [PATCH net-next v2 6/6] net: qualcomm: rmnet: don't use C
- bit-fields in rmnet checksum header
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "subashab@codeaurora.org" <subashab@codeaurora.org>,
-        "stranche@codeaurora.org" <stranche@codeaurora.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>
-Cc:     "sharathv@codeaurora.org" <sharathv@codeaurora.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "evgreen@chromium.org" <evgreen@chromium.org>,
-        "cpratapa@codeaurora.org" <cpratapa@codeaurora.org>,
-        "elder@kernel.org" <elder@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-References: <20210306031550.26530-1-elder@linaro.org>
- <20210306031550.26530-7-elder@linaro.org>
- <498c301f517749fdbc9d3ff5529d71a6@AcuMS.aculab.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <cc8e3bb0-81f0-070b-5b70-342dc172a1a2@linaro.org>
-Date:   Mon, 8 Mar 2021 07:59:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231226AbhCHOM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 09:12:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231184AbhCHOLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 09:11:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80586650F2;
+        Mon,  8 Mar 2021 14:11:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615212714;
+        bh=7NQYViq1K/ArxZ0PMXgM0Mljqh1vleJSjOTVqm6z4SU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LMqKuem1vPWCxyhbPs5R71G600fCYN8q3kVVffh7HuPIYcB40JECDTJk9XRNJhYP/
+         WOIPMlAQZhGCe4JkO5k9XTmaB1KQnX4IYNDSOZ0vSIRXz5+kRwhRYuURuwG7Y8Mad9
+         BmIgiD81rtE4nAbJzRND5KuSPhbh2qNqVmWEJInM=
+Date:   Mon, 8 Mar 2021 14:21:15 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "Gong, Sishuai" <sishuai@purdue.edu>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 5.10 031/102] net: fix dev_ifsioc_locked() race condition
+Message-ID: <YEYky4Lkd7CBWPT3@kroah.com>
+References: <20210305120903.276489876@linuxfoundation.org>
+ <20210305120904.814003997@linuxfoundation.org>
+ <20210308125057.GA19538@duo.ucw.cz>
 MIME-Version: 1.0
-In-Reply-To: <498c301f517749fdbc9d3ff5529d71a6@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308125057.GA19538@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/8/21 4:18 AM, David Laight wrote:
-> From: Alex Elder
->> Sent: 06 March 2021 03:16
->>
->> Replace the use of C bit-fields in the rmnet_map_ul_csum_header
->> structure with a single two-byte (big endian) structure member,
->> and use field masks to encode or get values within it.
->>
->> Previously rmnet_map_ipv4_ul_csum_header() would update values in
->> the host byte-order fields, and then forcibly fix their byte order
->> using a combination of byte order operations and types.
->>
->> Instead, just compute the value that needs to go into the new
->> structure member and save it with a simple byte-order conversion.
->>
->> Make similar simplifications in rmnet_map_ipv6_ul_csum_header().
->>
->> Finally, in rmnet_map_checksum_uplink_packet() a set of assignments
->> zeroes every field in the upload checksum header.  Replace that with
->> a single memset() operation.
->>
->> Signed-off-by: Alex Elder <elder@linaro.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> ---
->> v2: Fixed to use u16_encode_bits() instead of be16_encode_bits().
->>
->>   .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 34 ++++++-------------
->>   include/linux/if_rmnet.h                      | 21 ++++++------
->>   2 files changed, 21 insertions(+), 34 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
->> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
->> index 29d485b868a65..b76ad48da7325 100644
->> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
->> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
->> @@ -198,23 +198,19 @@ rmnet_map_ipv4_ul_csum_header(void *iphdr,
->>   			      struct rmnet_map_ul_csum_header *ul_header,
->>   			      struct sk_buff *skb)
->>   {
->> -	__be16 *hdr = (__be16 *)ul_header;
->>   	struct iphdr *ip4h = iphdr;
->>   	u16 offset;
->> +	u16 val;
->>
->>   	offset = skb_transport_header(skb) - (unsigned char *)iphdr;
->>   	ul_header->csum_start_offset = htons(offset);
->>
->> -	ul_header->csum_insert_offset = skb->csum_offset;
->> -	ul_header->csum_enabled = 1;
->> +	val = u16_encode_bits(1, MAP_CSUM_UL_ENABLED_FMASK);
->>   	if (ip4h->protocol == IPPROTO_UDP)
->> -		ul_header->udp_ind = 1;
->> -	else
->> -		ul_header->udp_ind = 0;
->> +		val |= u16_encode_bits(1, MAP_CSUM_UL_UDP_FMASK);
->> +	val |= u16_encode_bits(skb->csum_offset, MAP_CSUM_UL_OFFSET_FMASK);
->>
->> -	/* Changing remaining fields to network order */
->> -	hdr++;
->> -	*hdr = htons((__force u16)*hdr);
->> +	ul_header->csum_info = htons(val);
+On Mon, Mar 08, 2021 at 01:50:57PM +0100, Pavel Machek wrote:
+> Hi!
 > 
-> Isn't this potentially misaligned?
-
-At first I thought you were talking about column alignment.
-
-The short answer:  Yes (at least it's possible)!  And
-that's a problem elsewhere in the driver.  I noticed
-that before and confirmed that unaligned accesses *do*
-occur in this driver.
-
-I would want to fix that comprehensively (and separate
-from this patch), and not just in this one spot.  I have
-not done it because I am not set up to readily test the
-change; unaligned access does not cause a fault on aarch64
-(or at least on the platforms I'm using).
-
-Sort of related, I have been meaning to eliminate the
-pointless __aligned(1) tags on rmnet structures defined
-in <linux/if_rmnet.h>.  It wouldn't hurt to use __packed,
-though I think they're all 4 or 8 bytes naturally anyway.
-Perhaps marking them __aligned(4) would help identify
-potential unaligned accesses?
-
-Anyway, assuming you're not talking about tab stops, yes
-it's possible this assignment is misaligned.  But it's a
-bigger problem than what you point out.  I will take this
-as a sign that I'm not the only one who has this concern,
-meaning I should maybe bump the priority on getting this
-alignment thing fixed.
-
-					-Alex
-
+> > commit 3b23a32a63219f51a5298bc55a65ecee866e79d0 upstream.
+> > 
+> > dev_ifsioc_locked() is called with only RCU read lock, so when
+> > there is a parallel writer changing the mac address, it could
+> > get a partially updated mac address, as shown below:
+> > 
+> > Thread 1			Thread 2
+> > // eth_commit_mac_addr_change()
+> > memcpy(dev->dev_addr, addr->sa_data, ETH_ALEN);
+> > 				// dev_ifsioc_locked()
+> > 				memcpy(ifr->ifr_hwaddr.sa_data,
+> > 					dev->dev_addr,...);
+> > 
+> > Close this race condition by guarding them with a RW semaphore,
+> > like netdev_get_name(). We can not use seqlock here as it does not
 > 
-> 	David
+> I guess it may fix a race, but... does it leak kernel stack data to
+> userland?
 > 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+> 
+> > +++ b/drivers/net/tap.c
+> > @@ -1093,10 +1093,9 @@ static long tap_ioctl(struct file *file,
+> >  			return -ENOLINK;
+> >  		}
+> >  		ret = 0;
+> > -		u = tap->dev->type;
+> > +		dev_get_mac_address(&sa, dev_net(tap->dev), tap->dev->name);
+> >  		if (copy_to_user(&ifr->ifr_name, tap->dev->name, IFNAMSIZ) ||
+> > -		    copy_to_user(&ifr->ifr_hwaddr.sa_data, tap->dev->dev_addr, ETH_ALEN) ||
+> > -		    put_user(u, &ifr->ifr_hwaddr.sa_family))
+> > +		    copy_to_user(&ifr->ifr_hwaddr, &sa, sizeof(sa)))
+> >  			ret = -EFAULT;
+> >  		tap_put_tap_dev(tap);
+> >  		rtnl_unlock();
+> 
+> We copy whole "struct sockaddr".
+> 
+> > +int dev_get_mac_address(struct sockaddr *sa, struct net *net, char *dev_name)
+> > +{
+> > +	size_t size = sizeof(sa->sa_data);
+> > +	struct net_device *dev;
+> > +	int ret = 0;
+> ...
+> > +	if (!dev->addr_len)
+> > +		memset(sa->sa_data, 0, size);
+> > +	else
+> > +		memcpy(sa->sa_data, dev->dev_addr,
+> > +		       min_t(size_t, size, dev->addr_len));
+> 
+> But we only coppied dev->addr_len bytes in.
+> 
+> This would be very simple way to plug the leak.
+> 
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+> 
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 75ca6c6d01d6..b67ff23a1f0d 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -8714,11 +8714,9 @@ int dev_get_mac_address(struct sockaddr *sa, struct net *net, char *dev_name)
+>  		ret = -ENODEV;
+>  		goto unlock;
+>  	}
+> -	if (!dev->addr_len)
+> -		memset(sa->sa_data, 0, size);
+> -	else
+> -		memcpy(sa->sa_data, dev->dev_addr,
+> -		       min_t(size_t, size, dev->addr_len));
+> +	memset(sa->sa_data, 0, size);
+> +	memcpy(sa->sa_data, dev->dev_addr,
+> +	       min_t(size_t, size, dev->addr_len));
+>  	sa->sa_family = dev->type;
+>  
+>  unlock:
 > 
 
+Please submit this change properly to the networking developers, they
+are not going to pick anything up this way.
+
+greg k-h
