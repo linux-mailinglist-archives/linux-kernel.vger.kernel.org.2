@@ -2,208 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA193308CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 08:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C65C3308CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 08:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232062AbhCHH3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 02:29:22 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:28159 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230502AbhCHH24 (ORCPT
+        id S235183AbhCHH3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 02:29:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230502AbhCHH3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 02:28:56 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210308072854euoutp019a0805c9f4046b396a397859f3c2a543~qTWoxy1jk0843408434euoutp01a
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 07:28:54 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210308072854euoutp019a0805c9f4046b396a397859f3c2a543~qTWoxy1jk0843408434euoutp01a
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1615188534;
-        bh=oBpZln5qiDejv5kQaND8AYIWrqvXLzr/UBBUs/vZ4To=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=GeIdGtf7GbqdQXp2+9offQThsT8Hca4RWDC6GVXPeFGCXuBRrlg86+qIEZuzgerTg
-         qSxRIMa/yR0ZJYi0yxR0Vh6jn9lyZHtB5jMaQXHAVqVym9+95bsfTe/ppihzfYXwDj
-         quSagANoyYKUL8K3/qf5c5c2JH8XAShZH0A0v/js=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210308072854eucas1p2b7c0c00616da71ed45206e1c1ec79036~qTWoM3gon2297222972eucas1p2D;
-        Mon,  8 Mar 2021 07:28:54 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 51.E0.09439.632D5406; Mon,  8
-        Mar 2021 07:28:54 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210308072853eucas1p20558eaf4a2e231806b5fdac206afc03f~qTWnqsjIQ0292002920eucas1p2g;
-        Mon,  8 Mar 2021 07:28:53 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210308072853eusmtrp2964d578e9e1afa5fe9c0402202b63063~qTWnp4Ukn1966019660eusmtrp2y;
-        Mon,  8 Mar 2021 07:28:53 +0000 (GMT)
-X-AuditID: cbfec7f5-c1bff700000024df-2d-6045d2363dfd
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 04.D9.08696.532D5406; Mon,  8
-        Mar 2021 07:28:53 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210308072852eusmtip1f385660e11b584c7118cc8680649f583~qTWm-phSn2288922889eusmtip1i;
-        Mon,  8 Mar 2021 07:28:52 +0000 (GMT)
-Subject: Re: [PATCH v3] amba: Remove deferred device addition
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <077fcc5b-cd09-d587-6906-d10bcc991eaf@samsung.com>
-Date:   Mon, 8 Mar 2021 08:28:52 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.7.1
+        Mon, 8 Mar 2021 02:29:51 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC62C06174A;
+        Sun,  7 Mar 2021 23:29:51 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id e2so8006688ilu.0;
+        Sun, 07 Mar 2021 23:29:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h5H5nrzuIR4RcW9BVBgG2vSdDrTaNCUfMiVLT/XwqOc=;
+        b=YCchU6mhDYHgeH5o6551EHQ+B6MKrjCQDFfFrKsrhyt45/U6eFsJnFveDQ18c8a+Wk
+         gDAHF8Y+XBe22CRvtbwtT1hVMsP/MXb6TFThGZRgV2eb5j+liYrf8cl3JmZhHiufG9jI
+         DUnXluDMYL20qaYDPA2M8bPQec+fH/9oGqaTntcJGSD4gMLr4frd+59JdByTLYhS0Dwp
+         XAORzaZ6XoZOjpup1gZFDU8U4RwQn/oVECOs4fINYlGBrsUzmPm+xZtkcogPzXS3mZsT
+         fNLhCijGs0NffUPqsq2HHJzQg5bjUyZKIdIR4lIEu31dBXgSW0LhjxVvinXZFYZMciy5
+         xQ2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h5H5nrzuIR4RcW9BVBgG2vSdDrTaNCUfMiVLT/XwqOc=;
+        b=X2Z40iRoFjDGG/SRYsEEf5G+mEclpQ/AJZxft2KQiTNvZMz9yXV1scRfKc1tvNyQle
+         NW9iyzWpGY/65gQb7cHJxRVToEaXaytzIvF44X5L+UtHAWL2i97HFLjYFSWLzvMfTbCm
+         wNRMgoJO/lUFZmxdLQPbsMajOWDnobt6ZUpHAj9lK2nbBQ6sE4QLsVUNLXNrWabalCuP
+         n9Ni9OykecfhmSCbxmWzXOuuujURgGdwbhVUPMlOHRy92kJ5mQQ/1XWqo8mhhExuvKNa
+         9UKxojEwhY5vt5Y00AM/iUvnH3ZtpKmMAmybWOIjNKgF455TfIDjtG/KuesVyHjevT4B
+         aINQ==
+X-Gm-Message-State: AOAM5329b98imCfVFw2mkI8xzwhA1KSs2yk9ZxZRINQokB+q0J99phoB
+        CnhPufhgf/Fpnr4WLToqlJXdmoF/z/Yj0MBkkzwbU11ss5FOEQ==
+X-Google-Smtp-Source: ABdhPJxVMi5Iel6Yepp+LvSP6+4j3MNAp44x5tWsfICBiLno8T8Qz21Ge1yEOgcaRnMZ5eJDGmf4WvF3VoN8g4YFitg=
+X-Received: by 2002:a05:6e02:138f:: with SMTP id d15mr19153485ilo.217.1615188590479;
+ Sun, 07 Mar 2021 23:29:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAGETcx87v5=jDqCmdJL9VShAv+OzOGyF43mahxdk9A-RzNJYkA@mail.gmail.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNKsWRmVeSWpSXmKPExsWy7djPc7pml1wTDCY95rCYO3sSo8WZ37oW
-        O7aLWEz5s5zJ4vKuOWwWh6buZbTYNms5m8XdeydYLP7v2cFu0XXoL5vF8lM7WCyOrw134PHY
-        tnsbq8eaeWsYPS5fu8jsMfGsrseCTaUem1Z1snncubaHzaP/r4HH5tPVHp83yQVwRXHZpKTm
-        ZJalFunbJXBlnL1/lK1gqVzFwy37WRoYT0t0MXJySAiYSCw9NJW9i5GLQ0hgBaPEt81drBDO
-        F0aJCfsXQGU+M0q8X7iPEa5l3RMWiMRyRonWsyuZIZyPQC3f5rOCVAkL2Eq82/8crENEQEti
-        07XHYB3MAieZJXqb1oMl2AQMJbredrGB2LwCdhKXG1cxgdgsAioSi3smM4PYogJJEn9/32SC
-        qBGUODkTZDUnB6dAoETr6R9gNrOAvMT2t3OYIWxxiVtP5jOBLJMQmM8pcfF4MzPE3S4SX7su
-        sEHYwhKvjm9hh7BlJP7vhGloZpR4eG4tO4TTwyhxuWkG1NfWEnfO/QLq5gBaoSmxfpc+RNhR
-        Yt/958wgYQkBPokbbwUhjuCTmLRtOlSYV6KjTQiiWk1i1vF1cGsPXrjEPIFRaRaS12YheWcW
-        kndmIexdwMiyilE8tbQ4Nz212DgvtVyvODG3uDQvXS85P3cTIzC9nf53/OsOxhWvPuodYmTi
-        YDzEKMHBrCTC29vjnCDEm5JYWZValB9fVJqTWnyIUZqDRUmcd9fWNfFCAumJJanZqakFqUUw
-        WSYOTqkGpvzfS75NvLCodeW0Vxq1569/+DhV817gvcaJv29aHy4ptSs8f2/hkovnJpsZVZ7h
-        YXv4dPtyhqmT5wkqCP5j4ziTWXbm/pTrXC7LT1wpXMmn+605MMAnmdlS4DrLqpeXV5yq2/ZB
-        eEGwftKLr0IXZsS0Xj1Ws3qPg3qsrPWnvCNKeZoifCEXOQ2fnE8TVBHTlGRJeFTKwVxlecZc
-        7WPSG7umKR856/nWiua+yHTdGZr4/f2qeUVHQz1SKkL15hRNrQ/el8vWyrWt5Itf+16GNNWK
-        CnbLK8sPbVfStFb4f6eq41oL/zrBK0HizLESkcJ5jXE5ObHyNsn/olcaZDq+Kd2fwpS1565u
-        ldEVt3xfJZbijERDLeai4kQANXXg+d4DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDIsWRmVeSWpSXmKPExsVy+t/xu7qml1wTDFb1K1vMnT2J0eLMb12L
-        HdtFLKb8Wc5kcXnXHDaLQ1P3Mlpsm7WczeLuvRMsFv/37GC36Dr0l81i+akdLBbH14Y78Hhs
-        272N1WPNvDWMHpevXWT2mHhW12PBplKPTas62TzuXNvD5tH/18Bj8+lqj8+b5AK4ovRsivJL
-        S1IVMvKLS2yVog0tjPQMLS30jEws9QyNzWOtjEyV9O1sUlJzMstSi/TtEvQyzt4/ylawVK7i
-        4Zb9LA2MpyW6GDk5JARMJJaue8LSxcjFISSwlFHix+UWFoiEjMTJaQ2sELawxJ9rXWwQRe8Z
-        Jb59mc8EkhAWsJV4t/85I4gtIqAlsenaY7BJzAKnmSV+r3nNDpIQEuhmkvjfrQBiswkYSnS9
-        BZnEycErYCdxuXEV2CAWARWJxT2TmUFsUYEkifXTbzJB1AhKnJz5BOwiToFAidbTP8BsZgEz
-        iXmbHzJD2PIS29/OgbLFJW49mc80gVFoFpL2WUhaZiFpmYWkZQEjyypGkdTS4tz03GIjveLE
-        3OLSvHS95PzcTYzAaN527OeWHYwrX33UO8TIxMF4iFGCg1lJhLe3xzlBiDclsbIqtSg/vqg0
-        J7X4EKMp0D8TmaVEk/OB6SSvJN7QzMDU0MTM0sDU0sxYSZzX5MiaeCGB9MSS1OzU1ILUIpg+
-        Jg5OqQYmvn2bt0WfPHLO837AqxV+K+qPHy2TLbeRMFB+Wh9Z1rDn6vZD3tuvbbK+pzzj7TED
-        mz17zockeEeY7WdOuxXwp3l/56P/K868v2r0MiFB8pPFtH0mXkaMBQmdcSy6MjZz93x67qf0
-        XmEGe7VV8PnCSymeP4T9XZoVneU/dr/4+y2ppF7iybknTxMrHpWKmXh/WOnWLVZ9+d3qqdOb
-        uw2/9WpbKDGX+mr7id0ULy0//EbgttEy/muZecezW7/vTGdWF9DfelRqWk//EZMv9qI9nk/z
-        917KYG4MYl7lGLGcMYeHi7Pists5WTcuwblmJXeqZGUyeLf25zFdVGK7v5Yh8WHG2xl79/Un
-        rF0YN0uJpTgj0VCLuag4EQCnP/3jbwMAAA==
-X-CMS-MailID: 20210308072853eucas1p20558eaf4a2e231806b5fdac206afc03f
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210304195109eucas1p1779060378305d0f9a1eb0c7ddefd1db3
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210304195109eucas1p1779060378305d0f9a1eb0c7ddefd1db3
-References: <CGME20210304195109eucas1p1779060378305d0f9a1eb0c7ddefd1db3@eucas1p1.samsung.com>
-        <20210304195101.3843496-1-saravanak@google.com>
-        <30b4141e-11bd-45a2-b890-fddf444548ea@samsung.com>
-        <CAGETcx87v5=jDqCmdJL9VShAv+OzOGyF43mahxdk9A-RzNJYkA@mail.gmail.com>
+References: <20210306164710.9944-1-ardeleanalex@gmail.com> <20210307185444.32924-1-ardeleanalex@gmail.com>
+In-Reply-To: <20210307185444.32924-1-ardeleanalex@gmail.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Mon, 8 Mar 2021 09:29:39 +0200
+Message-ID: <CA+U=DsoutVL5yeV_piZLJBSkUrMwTRZurUqW=mrZ-S-=LVw2VQ@mail.gmail.com>
+Subject: Re: [PATCH v2] iio: buffer: fix use-after-free for attached_buffers array
+To:     linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
-
-On 05.03.2021 19:02, Saravana Kannan wrote:
-> On Fri, Mar 5, 2021 at 3:45 AM Marek Szyprowski
-> <m.szyprowski@samsung.com> wrote:
->> On 04.03.2021 20:51, Saravana Kannan wrote:
->>> The uevents generated for an amba device need PID and CID information
->>> that's available only when the amba device is powered on, clocked and
->>> out of reset. So, if those resources aren't available, the information
->>> can't be read to generate the uevents. To workaround this requirement,
->>> if the resources weren't available, the device addition was deferred and
->>> retried periodically.
->>>
->>> However, this deferred addition retry isn't based on resources becoming
->>> available. Instead, it's retried every 5 seconds and causes arbitrary
->>> probe delays for amba devices and their consumers.
->>>
->>> Also, maintaining a separate deferred-probe like mechanism is
->>> maintenance headache.
->>>
->>> With this commit, instead of deferring the device addition, we simply
->>> defer the generation of uevents for the device and probing of the device
->>> (because drivers needs PID and CID to match) until the PID and CID
->>> information can be read. This allows us to delete all the amba specific
->>> deferring code and also avoid the arbitrary probing delays.
->>>
->>> Cc: Rob Herring <robh@kernel.org>
->>> Cc: Ulf Hansson <ulf.hansson@linaro.org>
->>> Cc: John Stultz <john.stultz@linaro.org>
->>> Cc: Saravana Kannan <saravanak@google.com>
->>> Cc: Linus Walleij <linus.walleij@linaro.org>
->>> Cc: Sudeep Holla <sudeep.holla@arm.com>
->>> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
->>> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
->>> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
->>> Cc: Russell King <linux@armlinux.org.uk>
->>> Signed-off-by: Saravana Kannan <saravanak@google.com>
->>> ---
->>>
->>> v1 -> v2:
->>> - Dropped RFC tag
->>> - Complete rewrite to not use stub devices.
->>> v2 -> v3:
->>> - Flipped the if() condition for hard-coded periphids.
->>> - Added a stub driver to handle the case where all amba drivers are
->>>     modules loaded by uevents.
->>> - Cc Marek after I realized I forgot to add him.
->>>
->>> Marek,
->>>
->>> Would you mind testing this? It looks okay with my limited testing.
->> It looks it works fine on my test systems. I've checked current
->> linux-next and this patch. You can add:
->>
->> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Hi Marek,
+On Sun, Mar 7, 2021 at 8:55 PM Alexandru Ardelean
+<ardeleanalex@gmail.com> wrote:
 >
-> Thanks! Does your test set up have amda drivers that are loaded based
-> on uevents? That's the one I couldn't test.
-
-I've checked both, the built-in and all amba drivers compiled as 
-modules, loaded by udev. Both works fine here.
-
->> I've briefly scanned the code and I'm curious how does it work. Does it
->> depend on the recently introduced "fw_devlink=on" feature? I don't see
->> other mechanism, which would trigger matching amba device if pm domains,
->> clocks or resets were not available on time to read pid/cid while adding
->> a device...
-> No, it does not depend on fw_devlink or device links in any way.
+> Thanks to Lars for finding this.
+> The free of the 'attached_buffers' array should be done as late as
+> possible. This change moves it to iio_buffers_put(), which looks like
+> the best place for it, since it takes place right before the IIO device
+> data is free'd.
+> The free of this array will be handled by calling iio_device_free().
+> The iio_buffers_put() function is renamed to iio_device_detach_buffers()
+> since the role of this function changes a bit.
 >
-> When a device is attempted to be probed (when it's added or during
-> deferred probe), it's matched with all the drivers on the bus.
-> When a new driver is registered to a bus, all devices in that bus are
-> matched with the driver to see if they'll work together.
-> That's how match is called. And match() can return -EPROBE_DEFER and
-> that'll cause the device to be put in the deferred probe list by
-> driver core.
+> It looks like this issue was ocurring on the error path of
+> iio_buffers_alloc_sysfs_and_mask() and in
+> iio_buffers_free_sysfs_and_mask()
 >
-> The tricky part in this patch was the uevent handling and the
-> chicken-and-egg issue I talk about in the comments.
+> Added a comment in the doc-header of iio_device_attach_buffer() to
+> mention how this will be free'd in case anyone is reading the code
+> and becoming confused about it.
+>
+> Fixes: 36f3118c414d ("iio: buffer: introduce support for attaching more IIO buffers")
+> Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+> Signed-off-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+> ---
 
-Thanks for the explanation. This EPROBE_DEFER support in match() 
-callback must be something added after I crafted that periodic retry 
-based workaround.
+Forgot the changelog.
 
-Best regards
+Changelog v1 -> v2:
+* rename iio_buffers_put() -> iio_device_detach_buffers()
 
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+>  drivers/iio/iio_core.h            | 4 ++--
+>  drivers/iio/industrialio-buffer.c | 9 +++++----
+>  drivers/iio/industrialio-core.c   | 2 +-
+>  3 files changed, 8 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
+> index 062fe16c6c49..8f4a9b264962 100644
+> --- a/drivers/iio/iio_core.h
+> +++ b/drivers/iio/iio_core.h
+> @@ -77,7 +77,7 @@ void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev);
+>
+>  void iio_disable_all_buffers(struct iio_dev *indio_dev);
+>  void iio_buffer_wakeup_poll(struct iio_dev *indio_dev);
+> -void iio_buffers_put(struct iio_dev *indio_dev);
+> +void iio_device_detach_buffers(struct iio_dev *indio_dev);
+>
+>  #else
+>
+> @@ -93,7 +93,7 @@ static inline void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev) {}
+>
+>  static inline void iio_disable_all_buffers(struct iio_dev *indio_dev) {}
+>  static inline void iio_buffer_wakeup_poll(struct iio_dev *indio_dev) {}
+> -static inline void iio_buffers_put(struct iio_dev *indio_dev) {}
+> +static inline void iio_device_detach_buffers(struct iio_dev *indio_dev) {}
+>
+>  #endif
+>
+> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> index 1a415e97174e..1ff7f731b044 100644
+> --- a/drivers/iio/industrialio-buffer.c
+> +++ b/drivers/iio/industrialio-buffer.c
+> @@ -326,7 +326,7 @@ void iio_buffer_init(struct iio_buffer *buffer)
+>  }
+>  EXPORT_SYMBOL(iio_buffer_init);
+>
+> -void iio_buffers_put(struct iio_dev *indio_dev)
+> +void iio_device_detach_buffers(struct iio_dev *indio_dev)
+>  {
+>         struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
+>         struct iio_buffer *buffer;
+> @@ -336,6 +336,8 @@ void iio_buffers_put(struct iio_dev *indio_dev)
+>                 buffer = iio_dev_opaque->attached_buffers[i];
+>                 iio_buffer_put(buffer);
+>         }
+> +
+> +       kfree(iio_dev_opaque->attached_buffers);
+>  }
+>
+>  static ssize_t iio_show_scan_index(struct device *dev,
+> @@ -1764,7 +1766,6 @@ int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+>                 buffer = iio_dev_opaque->attached_buffers[unwind_idx];
+>                 __iio_buffer_free_sysfs_and_mask(buffer);
+>         }
+> -       kfree(iio_dev_opaque->attached_buffers);
+>         return ret;
+>  }
+>
+> @@ -1786,8 +1787,6 @@ void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev)
+>                 buffer = iio_dev_opaque->attached_buffers[i];
+>                 __iio_buffer_free_sysfs_and_mask(buffer);
+>         }
+> -
+> -       kfree(iio_dev_opaque->attached_buffers);
+>  }
+>
+>  /**
+> @@ -2062,6 +2061,8 @@ static int iio_buffer_mmap(struct file *filep, struct vm_area_struct *vma)
+>   * This function attaches a buffer to a IIO device. The buffer stays attached to
+>   * the device until the device is freed. For legacy reasons, the first attached
+>   * buffer will also be assigned to 'indio_dev->buffer'.
+> + * The array allocated here, will be free'd via the iio_device_detach_buffers()
+> + * call which is handled by the iio_device_free().
+>   */
+>  int iio_device_attach_buffer(struct iio_dev *indio_dev,
+>                              struct iio_buffer *buffer)
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index d74fbac908df..3be5f75c2846 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -1587,7 +1587,7 @@ static void iio_dev_release(struct device *device)
+>         iio_device_unregister_eventset(indio_dev);
+>         iio_device_unregister_sysfs(indio_dev);
+>
+> -       iio_buffers_put(indio_dev);
+> +       iio_device_detach_buffers(indio_dev);
+>
+>         ida_simple_remove(&iio_ida, indio_dev->id);
+>         kfree(iio_dev_opaque);
+> --
+> 2.25.1
+>
