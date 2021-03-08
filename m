@@ -2,83 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B2D3316F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:06:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C1E3316FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:10:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhCHTF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:05:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229701AbhCHTFn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:05:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6005265296
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 19:05:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615230343;
-        bh=R1rZmVaVvjoZHSq0MeocIwyK7X5t9Cgt5fsNcUmcg0w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vQ85r2gJhzWZyS3Z1Gzr29JNh8EbH0qMgxZ9jya/fCUyWXfvtdt48O6UpSHSB/gvN
-         ZKcdaAoD1wuApWyzJIuj96JOgDmAmpTa2w8C2L7Wc5nDGrp8K7eji0pTuaudKDcsXG
-         +MZm3M6fj3nrvq4WNDwIoCN0TQQ57axE2xZIGWyiGI9N01VKp+6MvDLRJXelfE0Whr
-         shrFaVnIogkBWlyBKnku4IUfqAweDPsMVpPi1s2gbIsI2VLJb/haLqZ/sopiQgane4
-         PoLYZIEGR/Zfv4xaca1Woh9/lODGkAb9oBFTcZFsU7EL1Q7qahG5vn2nUYF98DXy8e
-         7heL5AhQV7SOw==
-Received: by mail-ot1-f53.google.com with SMTP id j8so10331233otc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 11:05:43 -0800 (PST)
-X-Gm-Message-State: AOAM531wosBIqznUqOrUThF1e69Pmu9lsYRQzfexivE57daYG4v2i/ad
-        /nH3P35tjPUp+9YXVHOQ7opZseW2hPdGkDfaHo0=
-X-Google-Smtp-Source: ABdhPJxO5GgsPMAdySatZEpnLT5ES1NNv5sH2i/FK9scIBoJLHmJYX1m+WNKtYZ9Jv1tGw1FZ/zrD77JQAREU7zsxeA=
-X-Received: by 2002:a05:6830:148c:: with SMTP id s12mr3345826otq.251.1615230342591;
- Mon, 08 Mar 2021 11:05:42 -0800 (PST)
+        id S230453AbhCHTJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:09:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48155 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229813AbhCHTJE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 14:09:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615230543;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pBhajOJHrx3P1bFfpTnaW+JD8S792IZZwlNpIQC5Q0g=;
+        b=Wa4JJmEsSW657KZboi0NuNYCQXrcQKQCtgdmsY34DNdoKDodEQNsFhO+K82qcz6gnXw3Am
+        bYFm5nlw2LlXa7zv3+yRNJKop2+0AW3SkmncBdXUTIvmnY6QEqvJD0OH5QYAXX3wWi5faE
+        px3MGm5oi5ZdKAjrcO5E9eXxvseaqnQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-285-mfpi1OsCPjKSNXMW3mY4Qw-1; Mon, 08 Mar 2021 14:09:02 -0500
+X-MC-Unique: mfpi1OsCPjKSNXMW3mY4Qw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E8114801814;
+        Mon,  8 Mar 2021 19:08:59 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9B45F19C79;
+        Mon,  8 Mar 2021 19:08:53 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210308185410.GE7284@fieldses.org>
+References: <20210308185410.GE7284@fieldses.org> <CAOQ4uxhxwKHLT559f8v5aFTheKgPUndzGufg0E58rkEqa9oQ3Q@mail.gmail.com> <2653261.1614813611@warthog.procyon.org.uk> <517184.1615194835@warthog.procyon.org.uk>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     dhowells@redhat.com, Amir Goldstein <amir73il@gmail.com>,
+        linux-cachefs@redhat.com, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-afs@lists.infradead.org,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Subject: Re: fscache: Redesigning the on-disk cache
 MIME-Version: 1.0
-References: <20210308153359.2513446-1-arnd@kernel.org> <176cae4d-33bc-1d51-a7d7-58eeeea5180e@amd.com>
-In-Reply-To: <176cae4d-33bc-1d51-a7d7-58eeeea5180e@amd.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 8 Mar 2021 20:05:25 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0nUKSJ2+knM6+REp8HXRFbz5-DmNRAusezkT+XzZQa7Q@mail.gmail.com>
-Message-ID: <CAK8P3a0nUKSJ2+knM6+REp8HXRFbz5-DmNRAusezkT+XzZQa7Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdkfd: fix build error with missing AMD_IOMMU_V2
-To:     Felix Kuehling <felix.kuehling@amd.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Philip Yang <philip.yang@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <19638.1615230532.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 08 Mar 2021 19:08:52 +0000
+Message-ID: <19639.1615230532@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 5:24 PM Felix Kuehling <felix.kuehling@amd.com> wrote:
->
-> The driver build should work without IOMMUv2. In amdkfd/Makefile, we
-> have this condition:
->
-> ifneq ($(CONFIG_AMD_IOMMU_V2),)
-> AMDKFD_FILES += $(AMDKFD_PATH)/kfd_iommu.o
-> endif
->
-> In amdkfd/kfd_iommu.h we define inline stubs of the functions that are
-> causing your link-failures if IOMMU_V2 is not enabled:
->
-> #if defined(CONFIG_AMD_IOMMU_V2_MODULE) || defined(CONFIG_AMD_IOMMU_V2)
-> ... function declarations ...
-> #else
-> ... stubs ...
-> #endif
+J. Bruce Fields <bfields@fieldses.org> wrote:
 
-Right, that is the problem I tried to explain in my patch description.
+> On Mon, Mar 08, 2021 at 09:13:55AM +0000, David Howells wrote:
+> > Amir Goldstein <amir73il@gmail.com> wrote:
+> > > With ->fiemap() you can at least make the distinction between a non =
+existing
+> > > and an UNWRITTEN extent.
+> > =
 
-Should we just drop the 'imply' then and add a proper dependency like this?
+> > I can't use that for XFS, Ext4 or btrfs, I suspect.  Christoph and Dav=
+e's
+> > assertion is that the cache can't rely on the backing filesystem's met=
+adata
+> > because these can arbitrarily insert or remove blocks of zeros to brid=
+ge or
+> > split extents.
+> =
 
-      depends on DRM_AMDGPU && (X86_64 || ARM64 || PPC64)
-      depends on AMD_IOMMU_V2=y || DRM_AMDGPU=m
+> Could you instead make some sort of explicit contract with the
+> filesystem?  Maybe you'd flag it at mkfs time and query for it before
+> allowing a filesystem to be used for fscache.  You don't need every
+> filesystem to support fscache, right, just one acceptable one?
 
-I can send a v2 after some testing if you prefer this version.
+I've asked about that, but the filesystem maintainers are reluctant to do
+that.
 
-        Arnd
+Something might be possible in ext4 using direct access to jbd2, though I
+don't know exactly what facilities that offers.
+
+David
+
