@@ -2,63 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D42C331769
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 822D4331761
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231479AbhCHTgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:36:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229790AbhCHTgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:36:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AEAE65290;
-        Mon,  8 Mar 2021 19:36:10 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.14.224-rt107
-Date:   Mon, 08 Mar 2021 19:33:59 -0000
-Message-ID: <161523203964.1591892.770429705933119269@puck.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>
+        id S229701AbhCHTfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:35:42 -0500
+Received: from mail-pf1-f181.google.com ([209.85.210.181]:34252 "EHLO
+        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230173AbhCHTfO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 14:35:14 -0500
+Received: by mail-pf1-f181.google.com with SMTP id m6so7907556pfk.1;
+        Mon, 08 Mar 2021 11:35:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aqpkkYWGnOlTlzWLy40cJ0EmokNsDDvU2Mb4GyPS4Mg=;
+        b=NK/GUx3R+lvj5/5s7sEqEXllJ3H0xkuFVUrjX5PGd9iM/NW4Kr4zU4iHPFLWwbdfjw
+         PCqzggC/p6fQusJVwb/kchxsiTxSeTyPvryGKl7XT3HuamAM6K3Eizh7niJ606Nz2S0a
+         fVuc35m33uSv0ehKr4yP+ivIEeJhVJJWflQ8ypV8BkI00tLDlczBFnlmqPlDCExKhcF6
+         A3Ekq8Dn4MKApfsMtKJrs3aU9CA+vN/cDEM0JGWT9+dcnCyZ1cYGG7StIjYb3KS5pNHq
+         kulKPGM+6qjm0/VUH3hv4KkJLdPhyR0l8whRCBdGDDaPPONtSyxSmVTzwq1vS4Serjvm
+         FWdA==
+X-Gm-Message-State: AOAM5305E0GGg+Vg53SRHiotrQlzcqfxo5rJ2/Q9op+C6uQACblH1xi6
+        Ts9lw5lF03qmSZBHjbRspN3TUXNI90U=
+X-Google-Smtp-Source: ABdhPJyys2y6Oghr6FgnxHSnbk0vV9AazIS4kJDgos6RFCLPrPRCbuaZWIxac9CkC2nxz/dGrtMIBw==
+X-Received: by 2002:a62:6304:0:b029:1c0:d62d:d213 with SMTP id x4-20020a6263040000b02901c0d62dd213mr22523518pfb.79.1615232114106;
+        Mon, 08 Mar 2021 11:35:14 -0800 (PST)
+Received: from [192.168.51.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id t12sm82201pga.85.2021.03.08.11.35.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Mar 2021 11:35:13 -0800 (PST)
+Subject: Re: [RFC PATCH v3 2/3] blk-mq: Freeze and quiesce all queues for
+ tagset in elevator_exit()
+To:     John Garry <john.garry@huawei.com>, hare@suse.de,
+        ming.lei@redhat.com, axboe@kernel.dk, hch@lst.de
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pragalla@codeaurora.org, kashyap.desai@broadcom.com,
+        yuyufen@huawei.com
+References: <1614957294-188540-1-git-send-email-john.garry@huawei.com>
+ <1614957294-188540-3-git-send-email-john.garry@huawei.com>
+ <52618092-07ca-ecb5-320f-957af26ab146@acm.org>
+ <3c6cbe11-ac31-9a47-0096-17fbd584b83e@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <072178c2-a112-8f35-8f60-e5c1396561d7@acm.org>
+Date:   Mon, 8 Mar 2021 11:35:11 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <3c6cbe11-ac31-9a47-0096-17fbd584b83e@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+On 3/8/21 2:50 AM, John Garry wrote:
+> Please let me know further thoughts.
 
-I'm pleased to announce the 4.14.224-rt107 stable release.
+Hi John,
 
-Note that there was a futex/mutex code collision when I merge v4.14.218. I believe
-that it's fixed correctly but anyone with suspicions about futex/mutex behavior
-in this release, that's where I'd start looking.
+My guess is that it is safe to nest these two locks. I was asking 
+because I had not found any information about the nesting in the patch 
+description.
 
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.14-rt
-  Head SHA1: fd06bf8d39083ae08e14e5629bd23b1355eb358b
-
-Or to build 4.14.224-rt107 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.224.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.224-rt107.patch.xz
-
-
-You can also build from 4.14.215-rt105 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/incr/patch-4.14.215-rt105-rt107.patch.xz
-
-Enjoy!
-Clark
-
+Bart.
