@@ -2,125 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA96330D0B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:03:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9E2330D0F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbhCHMC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:02:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbhCHMCr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:02:47 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124C1C06174A;
-        Mon,  8 Mar 2021 04:02:47 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id y67so7073083pfb.2;
-        Mon, 08 Mar 2021 04:02:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jlusgLjbLKUTAaP82nwfxxVRLneDG0S3dn7MKQ5uqQM=;
-        b=AC/7yM68lti9c3ma6GRYkZHCqxY18TVJx6TlAzforETOsZcAandJdLTzfFeIB6R0Rh
-         SxAm7dXNu3QrnjZrpk+AWTZ7GbZ33D6VxUDP+yDUTrBy9Nk16ZlYp+rpb8eAi4+eELQF
-         1etohEM3QB5MVgkpxQUh6HRyZTF6XbpOXmz/8HuhF/vJMYsJVQ+L6yeA+er1fMzMph34
-         ncdkbKHGZIhvxyhLuTth5LyqOZswcZbXFl8J7asTlFnPh9x+SoxUTnCWEaLiXpeZL3lS
-         q4YoZgTM5g7iv8y8FdU/VMjzze3TFl2Ic9Vrbj02f515mzYjHNTqxNn58hC8apYYJ8FF
-         Iy6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jlusgLjbLKUTAaP82nwfxxVRLneDG0S3dn7MKQ5uqQM=;
-        b=rDHntY2Mev8f+5fm2CAqtUh1EnYcmDJpUpeqzYBLjrEGav6tQlfPz4El8rTUXy49w9
-         SFi1cC1imTosCDSEDAOgCe0rhSO0h68n0Q4ww+yQhddF1jTL9gvoEqdtdLmu0H147tK6
-         CQafEJPM/a/UE/GPKva3qwwA8qNLIVQD7nCy8xjOVBgPqKVxx1F8FMze8GUVMFWW9GIo
-         fdHhY16zyY4I4WbLMFKUcFBtrZqwvJv2fptcILBAFS0Uxgq4GQ0vwuLe1zFhYuFSYSPR
-         xr0s6L8fubTlqrcXgEPnLSLE97yBgUfRmVjLnNMrvoT5/n3QCAX9RTw2OFstWfpo3chY
-         PK4w==
-X-Gm-Message-State: AOAM531kvEjGhxDpN8ACbpb15LZTUpdm9FhNtojTtCN9VrX4g9sF/DhI
-        78tsm7k/xZ/x2w7FGHUaFpW/BvXVoNwlLxVq8lc=
-X-Google-Smtp-Source: ABdhPJykVLNhDhqQhXCcqXCmdA5Au+rowhNnrtIiQx35C+rH8rgT4Wo9r/DwSPnYYy9FT7AFGX87SD/h3Lz7e6itYyY=
-X-Received: by 2002:a62:7c43:0:b029:1ef:20ce:ba36 with SMTP id
- x64-20020a627c430000b02901ef20ceba36mr19910116pfc.40.1615204966584; Mon, 08
- Mar 2021 04:02:46 -0800 (PST)
+        id S231159AbhCHMEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:04:33 -0500
+Received: from foss.arm.com ([217.140.110.172]:36840 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229965AbhCHMET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 07:04:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AC600D6E;
+        Mon,  8 Mar 2021 04:04:18 -0800 (PST)
+Received: from [10.57.19.192] (unknown [10.57.19.192])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CCB353F70D;
+        Mon,  8 Mar 2021 04:04:16 -0800 (PST)
+Subject: Re: [PATCH v5 1/4] PM / devfreq: Register devfreq as a cooling device
+ on demand
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     cwchoi00@gmail.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, steven.price@arm.com,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+References: <20210308091646.28096-1-daniel.lezcano@linaro.org>
+ <c6d6781a-759c-0361-aaaa-28a625e4809b@arm.com>
+ <bd6c8e7f-e626-b6f4-65b9-f7ea96098677@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <c33ea5f5-1f0e-d081-5f8d-9319536ca215@arm.com>
+Date:   Mon, 8 Mar 2021 12:04:14 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-17-marcan@marcan.st>
- <CAHp75Vco_rcjHJ4THLZ8CJP=yX2fesfAo_tOY8zohfSmTLEVgw@mail.gmail.com> <875z21zwy2.wl-maz@kernel.org>
-In-Reply-To: <875z21zwy2.wl-maz@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 8 Mar 2021 14:02:29 +0200
-Message-ID: <CAHp75Vcgy1rB0LHHb+=mruAc-M-rGdfS0UnMh4xU1xkLxOycFA@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 16/27] irqchip/apple-aic: Add support for the Apple
- Interrupt Controller
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <bd6c8e7f-e626-b6f4-65b9-f7ea96098677@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 1:50 PM Marc Zyngier <maz@kernel.org> wrote:
-> On Fri, 05 Mar 2021 15:05:08 +0000,
-> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-...
 
-> > > +#define TIMER_FIRING(x)                                                        \
-> > > +       (((x) & (ARCH_TIMER_CTRL_ENABLE | ARCH_TIMER_CTRL_IT_MASK |            \
-> > > +                ARCH_TIMER_CTRL_IT_STAT)) ==                                  \
-> > > +        (ARCH_TIMER_CTRL_ENABLE | ARCH_TIMER_CTRL_IT_STAT))
-> >
-> > It's a bit hard to read. Perhaps
-> >
-> > #define FOO_MASK  (_ENABLE | _STAT)
-> > #define _FIRING ... (FOO_MASK | _MASK == FOO_MASK)
->
-> The expression above is a direct translation of the architecture
-> reference manual, and I'd rather not have that hidden behind a bunch
-> of obscure macros.
+On 3/8/21 12:00 PM, Daniel Lezcano wrote:
+> On 08/03/2021 10:53, Lukasz Luba wrote:
+>> Hi Daniel,
+>>
+>> In general the approach is good. If there is a special GPU driver, which
+>> would like to provide 'struct devfreq_cooling_power *' it would leave
+>> 'is_cooling_device=false' and register manually:
+>> devfreq_cooling_em_register(df, dfc_power);
+>>
+>> Please find only a few minor comments below.
+>>
+>>
+>> On 3/8/21 9:16 AM, Daniel Lezcano wrote:
+>>> Currently the default behavior is to manually having the devfreq
+>>> backend to register themselves as a devfreq cooling device.
+>>>
+>>> Instead of adding the code in the drivers for the thermal cooling
+>>> device registering, let's provide a flag in the devfreq's profile to
+>>> tell the common devfreq code to register the newly created devfreq as
+>>> a cooling device.
+>>>
+>>> Suggested-by: Chanwoo Choi <cwchoi00@gmail.com>
+>>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>>> ---
+> 
+> [ ... ]
+> 
+>>> +    struct thermal_cooling_device *cdev;
+>>
+>> The linux/thermal.h for 'cdev' would be needed in this header.
+> 
+> May be just a forward declaration ?
+> 
+> struct thermal_cooling_device;
 
-OK!
+Make sense
 
-...
-
-> > > +       irqc->hw_domain = irq_domain_create_linear(of_node_to_fwnode(node),
-> > > +                                                  irqc->nr_hw + AIC_NR_FIQ,
-> > > +                                                  &aic_irq_domain_ops, irqc);
-> >
-> > If you are sure it will be always OF-only, why not to use
-> > irq_domain_add_linear()?
->
-> The OF-only API is deprecated, and there is no point in using it for
-> *new* code, specially when things like IPI allocation require the use
-> of the modern API. For arm64 root controllers, that's the way to go.
-
-Good to know, thanks!
-
--- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+Lukasz
