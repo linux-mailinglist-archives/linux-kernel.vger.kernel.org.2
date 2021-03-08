@@ -2,167 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2353312D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:05:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D3D33312EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbhCHQEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:04:43 -0500
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:51906 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbhCHQEb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:04:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1615219471; x=1646755471;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=+AelMi3v18s6+/y1BQYDbI2IpSHlRy2T4ik8Uc3Ym70=;
-  b=bG+4hnas4YNJk3w/HmOqvVeY0XcC9WLfWavRcwA2XepyTLkOrvzF0iai
-   qatRTWUCuFwcmPL13liOMq6b3hZDBLKEn609oeBiZ4QUDZtAFZf1du0fh
-   3GZCBys2dLCTpJOKocAejwqKPfdsmp3hC7WO0ylPiEvILECqQyA1Y+oxh
-   U=;
-X-IronPort-AV: E=Sophos;i="5.81,232,1610409600"; 
-   d="scan'208";a="92508455"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-807d4a99.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 08 Mar 2021 16:04:19 +0000
-Received: from EX13MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-807d4a99.us-east-1.amazon.com (Postfix) with ESMTPS id 9E5F4A1F36;
-        Mon,  8 Mar 2021 16:04:08 +0000 (UTC)
-Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
- EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 8 Mar 2021 16:04:08 +0000
-Received: from Alexanders-MacBook-Air.local (10.43.162.131) by
- EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 8 Mar 2021 16:04:00 +0000
-Subject: Re: [PATCH v8] drivers/misc: sysgenid: add system generation id
- driver
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Adrian Catangiu <acatan@amazon.com>
-CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <qemu-devel@nongnu.org>, <kvm@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>, <rdunlap@infradead.org>,
-        <arnd@arndb.de>, <ebiederm@xmission.com>, <rppt@kernel.org>,
-        <0x7f454c46@gmail.com>, <borntraeger@de.ibm.com>,
-        <Jason@zx2c4.com>, <jannh@google.com>, <w@1wt.eu>,
-        <colmmacc@amazon.com>, <luto@kernel.org>, <tytso@mit.edu>,
-        <ebiggers@kernel.org>, <dwmw@amazon.co.uk>, <bonzini@gnu.org>,
-        <sblbir@amazon.com>, <raduweis@amazon.com>, <corbet@lwn.net>,
-        <mst@redhat.com>, <mhocko@kernel.org>, <rafael@kernel.org>,
-        <pavel@ucw.cz>, <mpe@ellerman.id.au>, <areber@redhat.com>,
-        <ovzxemul@gmail.com>, <avagin@gmail.com>,
-        <ptikhomirov@virtuozzo.com>, <gil@azul.com>, <asmehra@redhat.com>,
-        <dgunigun@redhat.com>, <vijaysun@ca.ibm.com>, <oridgar@gmail.com>,
-        <ghammer@redhat.com>
-References: <1615213083-29869-1-git-send-email-acatan@amazon.com>
- <YEY2b1QU5RxozL0r@kroah.com>
-From:   Alexander Graf <graf@amazon.com>
-Message-ID: <a61c976f-b362-bb60-50a5-04073360e702@amazon.com>
-Date:   Mon, 8 Mar 2021 17:03:58 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
+        id S230455AbhCHQId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:08:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230135AbhCHQIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 11:08:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9222C65227;
+        Mon,  8 Mar 2021 16:08:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615219690;
+        bh=unytn+VSFwHvrGycVScysAQggJb+07mg32CXgmA3230=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=AC/5wj6rCiHqmZOu+V+al9aRJa/YRfEPp+AQmUI59iGaO/tu2VAqoR6W514lViPzD
+         B6iJHAqbb+DyCaiZr1P9oQfKCxCq2uaX7qccwBULyY38Gj7ASVXlycFDH699zktapL
+         n8aYATlNx1zrDimYNFUryWVafSPUf8OEvJegvt9F7sWiHQW/3VzQXuxXLeZ1u6e3Qv
+         eK9d5F6p61UwUrM77Zw/L96l5yL5YnAEsiTL0JtDPnWw5D71ApRuhGzClt7bfrNdnc
+         cGYxjr2i+fG6QmBdJ10tpkfsRtxDHAjJPOd3pCZ+gwhWCpxkiBd5MXX9hAyl1wH5yW
+         +Lk7HEs2/Ab6Q==
+From:   Mark Brown <broonie@kernel.org>
+To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
+Cc:     Banajit Goswami <bgoswami@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:QCOM AUDIO ASoC DRIVERS" 
+        <alsa-devel@alsa-project.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20210305005049.24726-1-jonathan@marek.ca>
+References: <20210305005049.24726-1-jonathan@marek.ca>
+Subject: Re: [PATCH] ASoC: codecs: lpass-wsa-macro: fix RX MIX input controls
+Message-Id: <161521960847.9621.10965090880693667383.b4-ty@kernel.org>
+Date:   Mon, 08 Mar 2021 16:06:48 +0000
 MIME-Version: 1.0
-In-Reply-To: <YEY2b1QU5RxozL0r@kroah.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.162.131]
-X-ClientProxiedBy: EX13D19UWA003.ant.amazon.com (10.43.160.170) To
- EX13D20UWC001.ant.amazon.com (10.43.162.244)
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 4 Mar 2021 19:50:48 -0500, Jonathan Marek wrote:
+> Attempting to use the RX MIX path at 48kHz plays at 96kHz, because these
+> controls are incorrectly toggling the first bit of the register, which
+> is part of the FS_RATE field.
+> 
+> Fix the problem by using the same method used by the "WSA RX_MIX EC0_MUX"
+> control, which is to use SND_SOC_NOPM as the register and use an enum in
+> the shift field instead.
 
+Applied to
 
-On 08.03.21 15:36, Greg KH wrote:
-> =
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> On Mon, Mar 08, 2021 at 04:18:03PM +0200, Adrian Catangiu wrote:
->> +static struct miscdevice sysgenid_misc =3D {
->> +     .minor =3D MISC_DYNAMIC_MINOR,
->> +     .name =3D "sysgenid",
->> +     .fops =3D &fops,
->> +};
-> =
+Thanks!
 
-> Much cleaner, but:
-> =
+[1/1] ASoC: codecs: lpass-wsa-macro: fix RX MIX input controls
+      commit: 810c4ac485e9de34624469a1c5ad1453699b993c
 
->> +static int __init sysgenid_init(void)
->> +{
->> +     int ret;
->> +
->> +     sysgenid_data.map_buf =3D get_zeroed_page(GFP_KERNEL);
->> +     if (!sysgenid_data.map_buf)
->> +             return -ENOMEM;
->> +
->> +     atomic_set(&sysgenid_data.generation_counter, 0);
->> +     atomic_set(&sysgenid_data.outdated_watchers, 0);
->> +     init_waitqueue_head(&sysgenid_data.read_waitq);
->> +     init_waitqueue_head(&sysgenid_data.outdated_waitq);
->> +     spin_lock_init(&sysgenid_data.lock);
->> +
->> +     ret =3D misc_register(&sysgenid_misc);
->> +     if (ret < 0) {
->> +             pr_err("misc_register() failed for sysgenid\n");
->> +             goto err;
->> +     }
->> +
->> +     return 0;
->> +
->> +err:
->> +     free_pages(sysgenid_data.map_buf, 0);
->> +     sysgenid_data.map_buf =3D 0;
->> +
->> +     return ret;
->> +}
->> +
->> +static void __exit sysgenid_exit(void)
->> +{
->> +     misc_deregister(&sysgenid_misc);
->> +     free_pages(sysgenid_data.map_buf, 0);
->> +     sysgenid_data.map_buf =3D 0;
->> +}
->> +
->> +module_init(sysgenid_init);
->> +module_exit(sysgenid_exit);
-> =
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-> So you do this for any bit of hardware that happens to be out there?
-> Will that really work?  You do not have any hwid to trigger off of to
-> know that this is a valid device you can handle?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-The interface is already useful in a pure container context where the =
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-generation change request is triggered by software.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-And yes, there are hardware triggers, but Michael was quite unhappy =
-
-about potential races between VMGenID change and SysGenID change and =
-
-thus wanted to ideally separate the interfaces. So we went ahead and =
-
-isolated the SysGenID one, as it's already useful as is.
-
-Hardware drivers to inject change events into SysGenID can then follow =
-
-later, for all different hardware platforms. But SysGenID as in this =
-
-patch is a completely hardware agnostic concept.
-
-
-Alex
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+Thanks,
+Mark
