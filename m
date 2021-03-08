@@ -2,112 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BB33313AB
+	by mail.lfdr.de (Postfix) with ESMTP id 50B443313AC
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhCHQpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:45:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58112 "EHLO
+        id S230416AbhCHQpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:45:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbhCHQoe (ORCPT
+        with ESMTP id S229790AbhCHQpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:44:34 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03375C06174A;
-        Mon,  8 Mar 2021 08:44:34 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id mm21so21624813ejb.12;
-        Mon, 08 Mar 2021 08:44:33 -0800 (PST)
+        Mon, 8 Mar 2021 11:45:01 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99562C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 08:45:01 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id x7so4106457pfi.7
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 08:45:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=k4yPiipdcGeKd+M/IZAL87Xyy/rETZBOWCxC+IVw9EY=;
-        b=a0MSuRDkaXpy6rJQgBLcag52i53ajjIP2lXtcVG04NGykzbH1mSWchF3n1w0t8KdZF
-         IDvwoHtgnS6ZOsnadl0CH0G6Q9rKjesXBO6sedeYjU2lqkRFzcyI/BtpDSKSN+Gxto+z
-         +QVm5+57l6LEu1PnbXA5tHAwLhOhiO7qZBWMbKyuJ+8QMEKyljX1+20l8BrQqKdx7gZQ
-         lJb/TlN55ZG7In7tsH7wTyXQeC3MLGIyuFlXPBBgHXG8CLJIm7jCIKR85RvfYIIrbcQq
-         noSCfZkDhJW1XN4ti+fgbcnfqUAkxE8OhWqXckaVARVMlrs2VICEhk1gnlOmdy2V8ucO
-         mazA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iLW4p27vj1YK1a09zBC63IOwGVQvzr8I/pdVVsxQoyM=;
+        b=dJZZA9KySyT/iRgRCP0Bhl/FyT1PTnP/oQUROzUdCz+27QozfYk7TXX3YQCM1EvzQG
+         5d4NpSsLN4yoBZn9fI503M9osDOH0wP8LNqMgzcs8RLaS0oJHApG34uA/xCSOZPkz4JV
+         GV4Cj6BYqCOGclsSZYFqPcPbJljYX/z5blhYgMYoWbgk5jSVRNg2dE2XTVvRYDj1eYq8
+         sS0NlmK535hFtBP6wGrugEb+tfREvIB2q9j+lukvtG24NPCKcear49qahGnu6ycmujlz
+         jFva29bsCuU3W6X+/t+plwrbT3AZzvep6sQvaGjKuVfFlmN/YTy+oYpfzTz5F8tosPnU
+         Hb9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k4yPiipdcGeKd+M/IZAL87Xyy/rETZBOWCxC+IVw9EY=;
-        b=g+p2nmg5z8ib/Wc/+erOOS9IpMFOWhwZcKQHuT6kRpu4Od6Ei/LTfHPnlKuaC0eNrZ
-         E/tjE7Y8WVdZPKy9qvSBvlOyoJ8llfRBuTCD+nnvhjbzbZfeW1lf0N62z3awvcnvDptV
-         EkY+4OX/R11id9RjNMCeuUsBP6GGo98ew0Lj7ZxqwZppx7cKkBVVmtQAzDE8MQ6r+Mur
-         lObY5As5HoeMeqi/lbWhhde+QElHdl5rvivN8G38o15nrrhm+n3JxMwX0fcRj9ubo4Hr
-         hZuIrQrNQ+w2y7v4B8ymwlYqB2rQWGLM7Y51sZ4tZ/dFH11sJJc/VWnI0DnA/LQ5PnuT
-         y3Eg==
-X-Gm-Message-State: AOAM533iwMiUl0woZDXdCvatIJJJmQaCVcYcugEGM1ZdrPstWyDF+TeU
-        CCjWUIeTBDwCFwadN+u+9e/0hnTZz2r87w==
-X-Google-Smtp-Source: ABdhPJwd0EOoQBdIPXD7CX7HAz8i2NRT3+8TLA4QBvP2duKDmuPv8T10eXelR0sSLk166dnfzjLvWQ==
-X-Received: by 2002:a17:906:a44f:: with SMTP id cb15mr15636323ejb.420.1615221872351;
-        Mon, 08 Mar 2021 08:44:32 -0800 (PST)
-Received: from [10.17.0.16] ([37.58.58.229])
-        by smtp.gmail.com with ESMTPSA id p3sm6889878ejd.7.2021.03.08.08.44.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 08:44:31 -0800 (PST)
-Subject: Re: [PATCH] Revert "pinctrl: intel: Split
- intel_pinctrl_add_padgroups() for better maintenance"
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210308152505.3762055-1-luzmaximilian@gmail.com>
- <YEZEX+BCw21O6rmT@smile.fi.intel.com>
- <c306b082-f97a-96d8-1291-78ff14c4ea88@gmail.com>
- <CAHp75Vd9N_U7NobAwpYkqGoOCVNYbBSTkZ1vpgziOfgAf=c0wQ@mail.gmail.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <84a81a3f-cda4-6d0e-ee4d-700b4223b2ee@gmail.com>
-Date:   Mon, 8 Mar 2021 17:44:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iLW4p27vj1YK1a09zBC63IOwGVQvzr8I/pdVVsxQoyM=;
+        b=kdsuU1F6kNkXgceYXnTmoaXM7qGFXfQxIRWf0c3daY6FenCE+RoBhO7xMedvvMHjeV
+         2LY1KC2WE4Byxk4gsBYDVHlK2rayltsHGUxY/HFACRoXvbNagLj7JrohL8ifcSNA6NYd
+         ViSUzml/cjT27Kang/niZd+0/KkWZKkCDNtD/x40sYFQ7FLGnNLLt3yXwjxGknLm9T48
+         mxezPZiPBriUHVco4JwLUVVMnG9stJMsMIsPtFNGjHhHb2CsDUoxlxQguduKyODKN8BY
+         uuzTibMj5XcGCSwMSch1gaZMN69JBnxix2HTzcs23qioXf9zL8kImsQmF9CEZNEm4RjP
+         sGZA==
+X-Gm-Message-State: AOAM533SqS6q2noZiCIUiDzg58uLQibby3XDINhe+uoTsQP5j9/93qWX
+        8oP6IlbSZkoh/k4UB3aCKhqpKbsnPmxanA==
+X-Google-Smtp-Source: ABdhPJzAMQaZlNN78AIZD+iQDC84gC+nH7X+yEPa0HdKTiYuCoy0T1DJbj4B0JnxU0+HRmdEu0K7lA==
+X-Received: by 2002:a63:461d:: with SMTP id t29mr20862531pga.192.1615221900941;
+        Mon, 08 Mar 2021 08:45:00 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:cc8b:42a0:da69:7e82])
+        by smtp.gmail.com with ESMTPSA id y8sm11651516pfe.36.2021.03.08.08.44.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 08:45:00 -0800 (PST)
+Date:   Mon, 8 Mar 2021 08:44:53 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        vkuznets@redhat.com, mlevitsk@redhat.com,
+        Jim Mattson <jmattson@google.com>
+Subject: Re: [PATCH 03/28] KVM: nSVM: inject exceptions via
+ svm_check_nested_events
+Message-ID: <YEZUhbBtNjWh0Zka@google.com>
+References: <YELdblXaKBTQ4LGf@google.com>
+ <fc2b0085-eb0f-dbab-28c2-a244916c655f@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vd9N_U7NobAwpYkqGoOCVNYbBSTkZ1vpgziOfgAf=c0wQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fc2b0085-eb0f-dbab-28c2-a244916c655f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/8/21 5:42 PM, Andy Shevchenko wrote:
-> On Mon, Mar 8, 2021 at 6:34 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
->>
->> On 3/8/21 4:35 PM, Andy Shevchenko wrote:
->>> On Mon, Mar 08, 2021 at 04:25:05PM +0100, Maximilian Luz wrote:
->>>> Following commit 036e126c72eb ("pinctrl: intel: Split
->>>> intel_pinctrl_add_padgroups() for better maintenance"),
->>>> gpiochip_get_desc() is broken on some Kaby Lake R devices (specifically
->>>> a Microsoft Surface Book 2), returning -EINVAL for GPIOs that in reality
->>>> should be there (they are defined in ACPI and have been accessible
->>>> previously). Due to this, gpiod_get() fails with -ENOENT.
->>>>
->>>> Reverting this commit fixes that issue and the GPIOs in question are
->>>> accessible again.
->>>
->>> I would like to have more information.
->>> Can you enable PINCTRL and GPIO debug options in the kernel, and show dmesg
->>> output (when kernel command line has 'ignore_loglevel' option) for both working
->>> and non-working cases?
->>
->> Sure.
->>
->> Here are dmesg logs for:
->>
->>    - Kernel v5.12-rc2 (not working): https://paste.ubuntu.com/p/HVZybcvQDH/
+On Sat, Mar 06, 2021, Paolo Bonzini wrote:
+> On 06/03/21 02:39, Sean Christopherson wrote:
+> > Unless KVM (L0) knowingly wants to override L1, e.g. KVM_GUESTDBG_* cases, KVM
+> > shouldn't do a damn thing except forward the exception to L1 if L1 wants the
+> > exception.
+> > 
+> > ud_interception() and gp_interception() do quite a bit before forwarding the
+> > exception, and in the case of #UD, it's entirely possible the #UD will never get
+> > forwarded to L1.  #GP is even more problematic because it's a contributory
+> > exception, and kvm_multiple_exception() is not equipped to check and handle
+> > nested intercepts before vectoring the exception, which means KVM will
+> > incorrectly escalate a #GP->#DF and #GP->#DF->Triple Fault instead of exiting
+> > to L1.  That's a wee bit problematic since KVM also has a soon-to-be-fixed bug
+> > where it kills L1 on a Triple Fault in L2...
 > 
-> Thanks!
-> 
-> Yeah, yeah... Please, test my patch, I am quite sure it will fix the issue.
+> I agree with the #GP problem, but this is on purpose.  For example, if L1
+> CPUID has MOVBE and it is being emulated via #UD, L1 would be right to set
+> MOVBE in L2's CPUID and expect it not to cause a #UD.
 
+The opposite is also true, since KVM has no way of knowing what CPU model L1 has
+exposed to L2.  Though admittedly hiding MOVBE is a rather contrived case.  But,
+the other EmulateOnUD instructions that don't have an intercept condition,
+SYSENTER, SYSEXIT, SYSCALL, and VMCALL, are also suspect.  SYS* will mostly do
+the right thing, though it's again technically possible that KVM  will do the
+wrong thing since KVM doesn't know L2's CPU model.  VMCALL is also probably ok
+in most scenarios, but patching L2's code from L0 KVM is sketchy.
 
-It does indeed, thanks again!
+> The same is true for the VMware #GP interception case.
 
-Regards,
-Max
+I highly doubt that will ever work out as intended for the modified IO #GP
+behavior.  The only way emulating #GP in L2 is correct if L1 wants to pass
+through the capabilities to L2, i.e. the I/O access isn't intercepted by L1.
+That seems unlikely.  If the I/O is is intercepted by L1, bypassing the IOPL and
+TSS-bitmap checks is wrong and will cause L1 to emulate I/O for L2 userspace
+that should never be allowed.  Odds are there isn't a corresponding emulated
+port in L1, i.e. there's no major security flaw, but it's far from good
+behavior.
+
+I can see how some of the instructions will kinda sorta work, but IMO forwading
+them to L1 is much safer, even if it means that L1 will see faults that should
+be impossible.  At least for KVM-on-KVM, those spurious faults are benign since
+L1 likely also knows how to emulate the #UD and #GP instructions.
