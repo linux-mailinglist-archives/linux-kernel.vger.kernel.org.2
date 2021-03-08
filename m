@@ -2,94 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C1733126C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8A233127C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhCHPnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 10:43:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39306 "EHLO mx2.suse.de"
+        id S230144AbhCHPp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 10:45:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42302 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhCHPmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 10:42:46 -0500
+        id S230051AbhCHPp0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 10:45:26 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615218165; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PSwAr01wd8o8Gcv7XoZ8VHOldRlri/BnhPEeNOyHtBc=;
-        b=kOCeT9ZjJ57p59c0D18mLh85tj1k/zY1lAzk/tqohe4PTVOW9pCHNrOAzxSZ66Fx+c1rbU
-        9n12STBBoSSmTvK7t7UK7pN7SsPXjPeX+eiF9R36bUFqIlacqTkxBp9nrAR3+G39hXaf5M
-        Y4UkVEToPD7Vn2xo+NU1rOrYKrLzmUM=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A20A8AE05;
-        Mon,  8 Mar 2021 15:42:45 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 16:42:43 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
-Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
-Message-ID: <YEZF81vXGR8TX8sE@dhcp22.suse.cz>
-References: <YEEJf0itS/8vn8Iy@google.com>
- <d3095ead-a762-61cd-0990-702e14e03d10@redhat.com>
- <YEEUq8ZRn4WyYWVx@google.com>
- <c08662f3-6ae1-4fb5-1c4f-840a70fad035@redhat.com>
- <YEEi1+TREGBElE5H@google.com>
- <YEEle5xBAc7FUDNI@google.com>
- <YEYdR8azcawau9Rl@dhcp22.suse.cz>
- <c1461e51-7ad0-7fb5-9dc2-7f7c5cdf128f@redhat.com>
- <YEYwdjvYGiZ4crMt@dhcp22.suse.cz>
- <9f7b4b8a-5317-e382-7f21-01667e017982@redhat.com>
+        by mx2.suse.de (Postfix) with ESMTP id 92D10AE05;
+        Mon,  8 Mar 2021 15:45:24 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id AFD17DA81B; Mon,  8 Mar 2021 16:43:26 +0100 (CET)
+Date:   Mon, 8 Mar 2021 16:43:26 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.11 03/12] btrfs: subpage: fix the false data
+ csum mismatch error
+Message-ID: <20210308154326.GB7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Sasha Levin <sashal@kernel.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210307135746.967418-1-sashal@kernel.org>
+ <20210307135746.967418-3-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9f7b4b8a-5317-e382-7f21-01667e017982@redhat.com>
+In-Reply-To: <20210307135746.967418-3-sashal@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 08-03-21 15:13:35, David Hildenbrand wrote:
-> On 08.03.21 15:11, Michal Hocko wrote:
-> > On Mon 08-03-21 14:22:12, David Hildenbrand wrote:
-> > > On 08.03.21 13:49, Michal Hocko wrote:
-> > [...]
-> > > > Earlier in the discussion I have suggested dynamic debugging facility.
-> > > > Documentation/admin-guide/dynamic-debug-howto.rst. Have you tried to
-> > > > look into that direction?
-> > > 
-> > > Did you see the previous mail this is based on:
-> > > 
-> > > https://lkml.kernel.org/r/YEEUq8ZRn4WyYWVx@google.com
-> > > 
-> > > I agree that "nofail" is misleading. Rather something like
-> > > "dump_on_failure", just a better name :)
-> > 
-> > Yeah, I have read through the email thread. I just do not get why we
-> > cannot make it pr_debug() and add -DDYNAMIC_DEBUG_MODULE for
-> > page_alloc.c (I haven't checked whether that is possible for built in
-> > compile units, maybe it is not but from a quick seems it should).
-> > 
-> > I really do not like this to be a part of the API. alloc_contig_range is
+On Sun, Mar 07, 2021 at 08:57:37AM -0500, Sasha Levin wrote:
+> From: Qu Wenruo <wqu@suse.com>
 > 
-> Which API?
-
-Any level of the alloc_contig_range api because I strongly suspect that
-once there is something on the lower levels there will be a push to have
-it in the directly consumed api as well. Besides that I think this is
-just a wrong way to approach the problem.
-
-> It does not affect alloc_contig_range() itself, it's used
-> internally only. Sure, we could simply pr_debug() for each and every
-> migration failure. As long as it's default-disabled, sure.
+> [ Upstream commit c28ea613fafad910d08f67efe76ae552b1434e44 ]
 > 
-> I do agree that we should look into properly including this into the dynamic
-> debugging ifrastructure.
+> [BUG]
+> When running fstresss, we can hit strange data csum mismatch where the
+> on-disk data is in fact correct (passes scrub).
+> 
+> With some extra debug info added, we have the following traces:
+> 
+>   0482us: btrfs_do_readpage: root=5 ino=284 offset=393216, submit force=0 pgoff=0 iosize=8192
+>   0494us: btrfs_do_readpage: root=5 ino=284 offset=401408, submit force=0 pgoff=8192 iosize=4096
+>   0498us: btrfs_submit_data_bio: root=5 ino=284 bio first bvec=393216 len=8192
+>   0591us: btrfs_do_readpage: root=5 ino=284 offset=405504, submit force=0 pgoff=12288 iosize=36864
+>   0594us: btrfs_submit_data_bio: root=5 ino=284 bio first bvec=401408 len=4096
+>   0863us: btrfs_submit_data_bio: root=5 ino=284 bio first bvec=405504 len=36864
+>   0933us: btrfs_verify_data_csum: root=5 ino=284 offset=393216 len=8192
+>   0967us: btrfs_do_readpage: root=5 ino=284 offset=442368, skip beyond isize pgoff=49152 iosize=16384
+>   1047us: btrfs_verify_data_csum: root=5 ino=284 offset=401408 len=4096
+>   1163us: btrfs_verify_data_csum: root=5 ino=284 offset=405504 len=36864
+>   1290us: check_data_csum: !!! root=5 ino=284 offset=438272 pg_off=45056 !!!
+>   7387us: end_bio_extent_readpage: root=5 ino=284 before pending_read_bios=0
+> 
+> [CAUSE]
+> Normally we expect all submitted bio reads to only touch the range we
+> specified, and under subpage context, it means we should only touch the
+> range specified in each bvec.
+> 
+> But in data read path, inside end_bio_extent_readpage(), we have page
+> zeroing which only takes regular page size into consideration.
+> 
+> This means for subpage if we have an inode whose content looks like below:
+> 
+>   0       16K     32K     48K     64K
+>   |///////|       |///////|       |
+> 
+>   |//| = data needs to be read from disk
+>   |  | = hole
+> 
+> And i_size is 64K initially.
+> 
+> Then the following race can happen:
+> 
+> 		T1		|		T2
+> --------------------------------+--------------------------------
+> btrfs_do_readpage()		|
+> |- isize = 64K;			|
+> |  At this time, the isize is 	|
+> |  64K				|
+> |				|
+> |- submit_extent_page()		|
+> |  submit previous assembled bio|
+> |  assemble bio for [0, 16K)	|
+> |				|
+> |- submit_extent_page()		|
+>    submit read bio for [0, 16K) |
+>    assemble read bio for	|
+>    [32K, 48K)			|
+>  				|
+> 				| btrfs_setsize()
+> 				| |- i_size_write(, 16K);
+> 				|    Now i_size is only 16K
+> end_io() for [0K, 16K)		|
+> |- end_bio_extent_readpage()	|
+>    |- btrfs_verify_data_csum()  |
+>    |  No csum error		|
+>    |- i_size = 16K;		|
+>    |- zero_user_segment(16K,	|
+>       PAGE_SIZE);		|
+>       !!! We zeroed range	|
+>       !!! [32K, 48K)		|
+> 				| end_io for [32K, 48K)
+> 				| |- end_bio_extent_readpage()
+> 				|    |- btrfs_verify_data_csum()
+> 				|       ! CSUM MISMATCH !
+> 				|       ! As the range is zeroed now !
+> 
+> [FIX]
+> To fix the problem, make end_bio_extent_readpage() to only zero the
+> range of bvec.
+> 
+> The bug only affects subpage read-write support, as for full read-only
+> mount we can't change i_size thus won't hit the race condition.
 
-Yeah, unless we learn this is not feasible for some reason, which I do
-not see right now, then let's just make it pr_debug with the runtime
-control.
--- 
-Michal Hocko
-SUSE Labs
+Please drop this patch from autosel because of the above, this is in a
+feature that's in progress and does not affect regular filesystems.
