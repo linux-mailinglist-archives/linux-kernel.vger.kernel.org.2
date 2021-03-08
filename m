@@ -2,99 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D56330EA9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FAA330EAF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229528AbhCHMu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:50:28 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:38742 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229818AbhCHMuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:50:13 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxedSBHUZggvkWAA--.28765S2;
-        Mon, 08 Mar 2021 20:50:09 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH] MIPS: Check __clang__ to avoid performance influence with GCC in csum_tcpudp_nofold()
-Date:   Mon,  8 Mar 2021 20:50:07 +0800
-Message-Id: <1615207807-29972-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9AxedSBHUZggvkWAA--.28765S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFWUCFWUGr18uw4DZr45Awb_yoW8Wry3pF
-        4qkr92grWvqryUG343Ar42g3s8ur48Gr92vrnIg3Wjva98Xw13WryfKw13WFyxJ395Aa4f
-        uFWfWrn8Jrn2kw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW5JwCF
-        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
-        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
-        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
-        1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUr8nnUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S229904AbhCHMve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:51:34 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45980 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhCHMvA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 07:51:00 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 40AAE1C0B76; Mon,  8 Mar 2021 13:50:58 +0100 (CET)
+Date:   Mon, 8 Mar 2021 13:50:57 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "Gong, Sishuai" <sishuai@purdue.edu>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 5.10 031/102] net: fix dev_ifsioc_locked() race condition
+Message-ID: <20210308125057.GA19538@duo.ucw.cz>
+References: <20210305120903.276489876@linuxfoundation.org>
+ <20210305120904.814003997@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="M9NhX3UHpAaciwkO"
+Content-Disposition: inline
+In-Reply-To: <20210305120904.814003997@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The asm code in csum_tcpudp_nofold() is performance-critical, I am sorry
-for the poorly considered implementation about the performance influence
-with GCC in the commit 198688edbf77 ("MIPS: Fix inline asm input/output
-type mismatch in checksum.h used with Clang").
 
-With this patch, we can build successfully by both GCC and Clang,
-at the same time, we can avoid the potential performance influence
-with GCC.
+--M9NhX3UHpAaciwkO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/include/asm/checksum.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Hi!
 
-diff --git a/arch/mips/include/asm/checksum.h b/arch/mips/include/asm/checksum.h
-index 1e6c135..64d353e 100644
---- a/arch/mips/include/asm/checksum.h
-+++ b/arch/mips/include/asm/checksum.h
-@@ -130,7 +130,9 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
- 					__u32 len, __u8 proto,
- 					__wsum sum)
- {
-+#ifdef __clang__
- 	unsigned long tmp = (__force unsigned long)sum;
-+#endif
- 
- 	__asm__(
- 	"	.set	push		# csum_tcpudp_nofold\n"
-@@ -159,7 +161,11 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
- 	"	addu	%0, $1		\n"
- #endif
- 	"	.set	pop"
-+#ifdef __clang__
- 	: "=r" (tmp)
-+#else
-+	: "=r" (sum)
-+#endif
- 	: "0" ((__force unsigned long)daddr),
- 	  "r" ((__force unsigned long)saddr),
- #ifdef __MIPSEL__
-@@ -169,7 +175,11 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
- #endif
- 	  "r" ((__force unsigned long)sum));
- 
-+#ifdef __clang__
- 	return (__force __wsum)tmp;
-+#else
-+	return sum;
-+#endif
- }
- #define csum_tcpudp_nofold csum_tcpudp_nofold
- 
--- 
-2.1.0
+> commit 3b23a32a63219f51a5298bc55a65ecee866e79d0 upstream.
+>=20
+> dev_ifsioc_locked() is called with only RCU read lock, so when
+> there is a parallel writer changing the mac address, it could
+> get a partially updated mac address, as shown below:
+>=20
+> Thread 1			Thread 2
+> // eth_commit_mac_addr_change()
+> memcpy(dev->dev_addr, addr->sa_data, ETH_ALEN);
+> 				// dev_ifsioc_locked()
+> 				memcpy(ifr->ifr_hwaddr.sa_data,
+> 					dev->dev_addr,...);
+>=20
+> Close this race condition by guarding them with a RW semaphore,
+> like netdev_get_name(). We can not use seqlock here as it does not
 
+I guess it may fix a race, but... does it leak kernel stack data to
+userland?
+
+
+> +++ b/drivers/net/tap.c
+> @@ -1093,10 +1093,9 @@ static long tap_ioctl(struct file *file,
+>  			return -ENOLINK;
+>  		}
+>  		ret =3D 0;
+> -		u =3D tap->dev->type;
+> +		dev_get_mac_address(&sa, dev_net(tap->dev), tap->dev->name);
+>  		if (copy_to_user(&ifr->ifr_name, tap->dev->name, IFNAMSIZ) ||
+> -		    copy_to_user(&ifr->ifr_hwaddr.sa_data, tap->dev->dev_addr, ETH_ALE=
+N) ||
+> -		    put_user(u, &ifr->ifr_hwaddr.sa_family))
+> +		    copy_to_user(&ifr->ifr_hwaddr, &sa, sizeof(sa)))
+>  			ret =3D -EFAULT;
+>  		tap_put_tap_dev(tap);
+>  		rtnl_unlock();
+
+We copy whole "struct sockaddr".
+
+> +int dev_get_mac_address(struct sockaddr *sa, struct net *net, char *dev_=
+name)
+> +{
+> +	size_t size =3D sizeof(sa->sa_data);
+> +	struct net_device *dev;
+> +	int ret =3D 0;
+=2E..
+> +	if (!dev->addr_len)
+> +		memset(sa->sa_data, 0, size);
+> +	else
+> +		memcpy(sa->sa_data, dev->dev_addr,
+> +		       min_t(size_t, size, dev->addr_len));
+
+But we only coppied dev->addr_len bytes in.
+
+This would be very simple way to plug the leak.
+
+Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 75ca6c6d01d6..b67ff23a1f0d 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -8714,11 +8714,9 @@ int dev_get_mac_address(struct sockaddr *sa, struct =
+net *net, char *dev_name)
+ 		ret =3D -ENODEV;
+ 		goto unlock;
+ 	}
+-	if (!dev->addr_len)
+-		memset(sa->sa_data, 0, size);
+-	else
+-		memcpy(sa->sa_data, dev->dev_addr,
+-		       min_t(size_t, size, dev->addr_len));
++	memset(sa->sa_data, 0, size);
++	memcpy(sa->sa_data, dev->dev_addr,
++	       min_t(size_t, size, dev->addr_len));
+ 	sa->sa_family =3D dev->type;
+=20
+ unlock:
+
+Best regards,
+								Pavel
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--M9NhX3UHpAaciwkO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYEYdsQAKCRAw5/Bqldv6
+8nb3AJwI4RyTgXXMivPUGXjUuWw+FiC/KQCgkfPE8IKJm7cFXpoNCW5MS931Ar8=
+=wGL7
+-----END PGP SIGNATURE-----
+
+--M9NhX3UHpAaciwkO--
