@@ -2,137 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F063309A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:43:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA473309AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232276AbhCHImp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 03:42:45 -0500
-Received: from mail-lf1-f41.google.com ([209.85.167.41]:36102 "EHLO
-        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbhCHIma (ORCPT
+        id S232161AbhCHInJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 03:43:09 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16844 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232199AbhCHImr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 03:42:30 -0500
-Received: by mail-lf1-f41.google.com with SMTP id f1so19743291lfu.3;
-        Mon, 08 Mar 2021 00:42:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S5kFGyZzdj7+9ana+CylbHpDJ5vAWDz6vl9rTM9ymI4=;
-        b=Fdf5pmemwEYZFjH8pfruc5m4T9s4i/Qmt75yQIz3klrRtQEsMDTQjhxiF8h1wV8RwW
-         3EOojSQl0rZn7upPYJejLPil87ot0N0+KG0nv6UP937UAJBxsGgjxCIKfyJ+ZJYEPv3t
-         F+2XOfNh1X0V+ozaZyLa0xnhNfzCOb1DeNMUWlkZprFqLvq663ZHH/oazbAoHgKI4At/
-         aY39LRownQTImcvgMnkgtsPj5AhVpBnNEkCVgGHBOAzr6hgeyHow1uDkcvz6u1jSoLdC
-         trHoJTGx3vGLTmVYYwydPbxjHkB1I40OPDag6ch90AOyM6+g5rM7QsG1ZNVpghrdpVCx
-         LhCQ==
-X-Gm-Message-State: AOAM533mhe6OChciso/zX8oyMOI50dKrx8+wn06AdoK/fVW09Y7GROGl
-        dnOLoXJJXQtVVVmRDykJ9zWSnmp773Q=
-X-Google-Smtp-Source: ABdhPJwOyrJUv4ZaAz9pTaag+sO8qvX2pRjUb1hD8810+gOPW8HaPdm2YpiZfdyFtFMdympDnxOk8w==
-X-Received: by 2002:a19:ab0a:: with SMTP id u10mr14590171lfe.540.1615192949523;
-        Mon, 08 Mar 2021 00:42:29 -0800 (PST)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id q16sm1274808lfu.153.2021.03.08.00.42.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 00:42:29 -0800 (PST)
-Date:   Mon, 8 Mar 2021 10:42:23 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: [RFC PATCH v2 5/8] platform/x86: gpd pocket fan: Clean-up by using
- managed work init
-Message-ID: <8145029a07864bfbd6a41acae66a36dbd51f0b30.1615187284.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1615187284.git.matti.vaittinen@fi.rohmeurope.com>
+        Mon, 8 Mar 2021 03:42:47 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1288YITF196471;
+        Mon, 8 Mar 2021 03:42:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=zWXYuhMFZhSwUgA+a72tpYVWBXlkWy3QgwyVRBRPdss=;
+ b=TDo9jn3AT0s0Dw4B631RWwGrehUFEzXrQwSoeZxAJOEO9wDOQhCd9sBBSkXPUIC2RSYL
+ j8R63xLwRr6rEW6WHooX9zNOAoRR06mco3i5xaqJdBscSK/YTd96s21k0RMEnX/2n20p
+ 2gcY5DSNIaF5wK6yDWHngDdO41oLJu5o9cGv1yharfeRvlQFRI8QLXtTEVxlfUsjcQ+q
+ g5jllrCY3wyy3JAhtbsabxU1mkiQGkHt9hj0FKv9oIYwxv6T1G00Vyexs8wKKfQQA6/t
+ /1qWNcme8CXEDIzPg8ZfdWnFTq45cIwFAw0SSqDw7foJJIvuYJTBYqY2sYSYkLTCVI0U DQ== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37596qs9e6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Mar 2021 03:42:43 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1288bI5C030568;
+        Mon, 8 Mar 2021 08:42:41 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 3741c8guka-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Mar 2021 08:42:41 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1288gcIN43974952
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 8 Mar 2021 08:42:38 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ACCDE11C052;
+        Mon,  8 Mar 2021 08:42:38 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C1DC311C04A;
+        Mon,  8 Mar 2021 08:42:37 +0000 (GMT)
+Received: from oc6604088431.ibm.com (unknown [9.145.158.35])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  8 Mar 2021 08:42:37 +0000 (GMT)
+Subject: Re: [RFC 1/1] s390/pci: expose a PCI device's UID as its index
+To:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Narendra K <narendra_k@dell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stefan Raspl <raspl@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org
+References: <20210303095250.1360007-1-schnelle@linux.ibm.com>
+ <20210303095250.1360007-2-schnelle@linux.ibm.com>
+ <YEU7iFjxNxQK3ldc@rocinante>
+ <c714ca55-7189-e196-7b8d-f02da555b399@linux.ibm.com>
+From:   Viktor Mihajlovski <mihajlov@linux.ibm.com>
+Message-ID: <e2f45e3e-210b-0b98-c8bd-bbe6609b85f1@linux.ibm.com>
+Date:   Mon, 8 Mar 2021 09:42:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1615187284.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <c714ca55-7189-e196-7b8d-f02da555b399@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-08_02:2021-03-08,2021-03-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=947
+ impostorscore=0 suspectscore=0 clxscore=1011 malwarescore=0 phishscore=0
+ spamscore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103080045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Few drivers implement remove call-back only for ensuring a delayed
-work gets cancelled prior driver removal. Clean-up these by switching
-to use devm_delayed_work_autocancel() instead.
 
-This change is compile-tested only. All testing is appreciated.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- drivers/platform/x86/gpd-pocket-fan.c | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/platform/x86/gpd-pocket-fan.c b/drivers/platform/x86/gpd-pocket-fan.c
-index 5b516e4c2bfb..7a20f68ae206 100644
---- a/drivers/platform/x86/gpd-pocket-fan.c
-+++ b/drivers/platform/x86/gpd-pocket-fan.c
-@@ -6,6 +6,7 @@
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/devm-helpers.h>
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
-@@ -124,7 +125,7 @@ static void gpd_pocket_fan_force_update(struct gpd_pocket_fan_data *fan)
- static int gpd_pocket_fan_probe(struct platform_device *pdev)
- {
- 	struct gpd_pocket_fan_data *fan;
--	int i;
-+	int i, ret;
- 
- 	for (i = 0; i < ARRAY_SIZE(temp_limits); i++) {
- 		if (temp_limits[i] < 20000 || temp_limits[i] > 90000) {
-@@ -152,7 +153,10 @@ static int gpd_pocket_fan_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	fan->dev = &pdev->dev;
--	INIT_DELAYED_WORK(&fan->work, gpd_pocket_fan_worker);
-+	ret = devm_delayed_work_autocancel(&pdev->dev, &fan->work,
-+					   gpd_pocket_fan_worker);
-+	if (ret)
-+		return ret;
- 
- 	/* Note this returns a "weak" reference which we don't need to free */
- 	fan->dts0 = thermal_zone_get_zone_by_name("soc_dts0");
-@@ -177,14 +181,6 @@ static int gpd_pocket_fan_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int gpd_pocket_fan_remove(struct platform_device *pdev)
--{
--	struct gpd_pocket_fan_data *fan = platform_get_drvdata(pdev);
--
--	cancel_delayed_work_sync(&fan->work);
--	return 0;
--}
--
- #ifdef CONFIG_PM_SLEEP
- static int gpd_pocket_fan_suspend(struct device *dev)
- {
-@@ -215,7 +211,6 @@ MODULE_DEVICE_TABLE(acpi, gpd_pocket_fan_acpi_match);
- 
- static struct platform_driver gpd_pocket_fan_driver = {
- 	.probe	= gpd_pocket_fan_probe,
--	.remove	= gpd_pocket_fan_remove,
- 	.driver	= {
- 		.name			= "gpd_pocket_fan",
- 		.acpi_match_table	= gpd_pocket_fan_acpi_match,
--- 
-2.25.4
-
+On 3/8/21 8:02 AM, Niklas Schnelle wrote:
+> 
+> 
+> On 3/7/21 9:46 PM, Krzysztof Wilczyński wrote:
+>> Hi Niklas,
+>>
+>> [...]
+>>> +static ssize_t index_show(struct device *dev,
+>>> +			  struct device_attribute *attr, char *buf)
+>>> +{
+>>> +	struct zpci_dev *zdev = to_zpci(to_pci_dev(dev));
+>>> +	u32 index = ~0;
+>>> +
+>>> +	if (zpci_unique_uid)
+>>> +		index = zdev->uid;
+>>> +
+>>> +	return sprintf(buf, "%u\n", index);
+>> [...]
+>>
+>> Would it be possible to use the new sysfs_emit() rather than sprintf()
+>> even though the zpci_attr macro and still use mio_enabled_show() still
+>> would use sprintf().  What do you think?
+>>
+>> See https://www.kernel.org/doc/html/latest/filesystems/sysfs.html for
+>> the changes in the internal API.
+>>
+>> Krzysztof
+>>
+> 
+> Of course that makes sense and thanks for pointing me to this API!
+> @Viktor, may I carry your R-b over?
+> 
+Sure, please go ahead.
+> I'll also update the other attributes in a clean up patch.
+> 
+> Thanks,
+> Niklas
+> 
 
 -- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+Kind Regards,
+    Viktor
