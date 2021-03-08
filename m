@@ -2,85 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B73331308
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE7F331309
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhCHQKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:10:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50718 "EHLO
+        id S230078AbhCHQKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:10:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbhCHQK2 (ORCPT
+        with ESMTP id S230143AbhCHQKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:10:28 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52107C06174A;
-        Mon,  8 Mar 2021 08:10:28 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id w34so5625195pga.8;
-        Mon, 08 Mar 2021 08:10:28 -0800 (PST)
+        Mon, 8 Mar 2021 11:10:31 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5B5C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 08:10:30 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id b18so8294993qtt.6
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 08:10:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bLihrFP9ef1intAZ6HuUoGTvydum2h7Yfm6pyCMQ/Kc=;
-        b=G8LMTF5NbwNMrQ4dIzlJFLr2P681NNL8dsdxSPUw94bm5nyHoSFoOyb793Ivhr/qjL
-         rzDFg5GntR3fQgwgeLWoPy1P/rOWIri7EAW5ERwdr0nZOU8roWBvzYmO7xRYAJE8Scf4
-         32D1seigYgZi6xv/whMWo5yTlSomF95QOhtab3RoYYNYJwAXybaANKA81V895VY3clBv
-         ZhfsSqg/5euJQfiLa6xryXtabc4L+wob7A2zKqYx1SMdn3SwykxRwESq5p4hk1YpMj4Y
-         Pbvvlay1A9d8b3zg27f8/fSbw841CYffWWf9HNhwaULl3F+3AGqhJbHZ5CVTSfyVHlid
-         ViGg==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=oHoXOsuCgC7xf9AhbyLfG6oKwbjtqz3UKDIdpKdyom4=;
+        b=f9G5VYb61NRmKnzQ+kJ/qIpehGxvh6Tl91nXblnBclVVfILnCqa4K859ACPoRgJlB8
+         BoM3WccpS5s0XNN/J9e7i1yxAqR54D7Q8KhM6bWU3bfToS0R9THLQiJSiN2y/7s0jDhG
+         IQx8aMiHoG9fuvf6Jb5LTJ40gTRJ52IIZR37dYZPfL4l2oaPXd+1MIEd3LWw9fihHBKV
+         IwJ7AwEc1xgXPB8PeOlXUPLcQT8OBnuAt4C0L/Xl5l2sDfLhXTDapGBbAgZL+eaOOTif
+         0v7C7icnv33OwwWvsffPMTXY8frYoUw0gygqncQxcPFTxHvyLA3bQ/l9yoACAqebGhzx
+         Omhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bLihrFP9ef1intAZ6HuUoGTvydum2h7Yfm6pyCMQ/Kc=;
-        b=PVGlVIjvKA05yOCqkkdvteGALPh0BQcKsYzbqOsvEJkZfd2aJzcZGRVwtXWF/Tdl0W
-         pfrXrbGwZSupLlJZrZ8ioyFdYwyv/xuP1Td29EmE3WazDyJetRUcy9A837qw1s4m7RXb
-         T8QZvvhJ3Ptzbah7c8v7RD1Iz6HCksC8AJVZRwALgFQNo9+QtOOjin13FNnlo3BbRBpA
-         Kxuj4Z6Lz4hvj3NsoetE7heulQjsssBRhNT12SqLQ5lHseuDqHZvHLORkHeV0TCEQS5j
-         MU0AlyTFHP7G6m78HXJlM2iPEZoOXT8jj9x+XjjQM/85PPWxXfcfVB1AxEksAc04bidr
-         QtIw==
-X-Gm-Message-State: AOAM530BBiASKuNePFxBK8VIDT9Igsj+MyChQ1IBQj5serbCLHk3w7kP
-        GeRmY29qHOm+/AHhmIWU6hPhSWRUJuDW9fJwNhY=
-X-Google-Smtp-Source: ABdhPJynIPsr6KzP+Tw3Jc7eZEkg8opYtFCVOE/lnnQs4Nquj9YZ5DuYXQ4VIaD3QOBtuRvHr5QXeGjZLwJBRhdvQk8=
-X-Received: by 2002:a62:528e:0:b029:1f5:c5ee:a487 with SMTP id
- g136-20020a62528e0000b02901f5c5eea487mr6108239pfb.7.1615219827872; Mon, 08
- Mar 2021 08:10:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20210308152935.2263935-1-arnd@kernel.org> <CAHp75VcMAWFCOFEXizuOvDZs=qDSYndH=Y9RhgLdjb9547Op+Q@mail.gmail.com>
-In-Reply-To: <CAHp75VcMAWFCOFEXizuOvDZs=qDSYndH=Y9RhgLdjb9547Op+Q@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 8 Mar 2021 18:10:11 +0200
-Message-ID: <CAHp75Vc0dgD0m12BRzjv=Ldn0hxxY3geR8HswgwoMeYBz_fVFA@mail.gmail.com>
-Subject: Re: [PATCH] power: supply: max8997_charger: make EXTCON dependency unconditional
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Timon Baetz <timon.baetz@protonmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=oHoXOsuCgC7xf9AhbyLfG6oKwbjtqz3UKDIdpKdyom4=;
+        b=m2pRBuiIyC5KCEoiaDXQzU6m5ekvVYTJxdxPPBdmJn1mT6lEn0fwQw6ARKxEPyz3Te
+         QtXwFL52v8cL7me5XVllzAJXb0DQErv/9ay2IRChFuzN7gmFU9oAGL28YUkvg4lhMkdI
+         IPxIh0dowz+BggSiEjA0NYTDNhEooInBP+wheqr9iXYclUUuhSUD73nMDEFyJs0DLe78
+         19xrJlrstmq4OvVXlxdzDt/J+3txMIfIEstExpqOfeXXfpPKV4I81KkzgIE/YOFwsOWx
+         BU74UWfg4RS3y6leCtYWdvzYcNsjXioNlRMR2eHuGbMxMSXFkd/yjMlCtWxME4GZIP3h
+         bGSg==
+X-Gm-Message-State: AOAM532Vbhrb/q35hMp76rVKw4cgHPbyDp3pGuwlq2yohiNfZopJlCjW
+        SfHCy9Ab+6pnhoALqhgpYopicgXWtOTWjRh4
+X-Google-Smtp-Source: ABdhPJzK8pae1qjyFps8+oVppA/0pZjgQL3oiraxl7iLzIThic5NbHNq9hzZeXogGGytNeUHqmd0t1gVKDVN4Mck
+Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:85fb:aac9:69ed:e574])
+ (user=andreyknvl job=sendgmr) by 2002:a0c:f890:: with SMTP id
+ u16mr21837557qvn.21.1615219829599; Mon, 08 Mar 2021 08:10:29 -0800 (PST)
+Date:   Mon,  8 Mar 2021 17:10:23 +0100
+Message-Id: <4b55b35202706223d3118230701c6a59749d9b72.1615219501.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH] arm64: kasan: fix page_alloc tagging with DEBUG_VIRTUAL
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 6:06 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Mon, Mar 8, 2021 at 5:29 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> > -       depends on EXTCON || !EXTCON
->
-> I stumbled over this.
-> What is the point of having this line at all?
-> What magic trick does it serve for?
+When CONFIG_DEBUG_VIRTUAL is enabled, the default page_to_virt() macro
+implementation from include/linux/mm.h is used. That definition doesn't
+account for KASAN tags, which leads to no tags on page_alloc allocations.
 
-Okay, it seems I can answer my question: it requires extcon to be
-built-in when the driver is built-in. I often saw similar written
-slightly differently.
+Provide an arm64-specific definition for page_to_virt() when
+CONFIG_DEBUG_VIRTUAL is enabled that takes care of KASAN tags.
 
+Fixes: 2813b9c02962 ("kasan, mm, arm64: tag non slab memory allocated via pagealloc")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+---
+ arch/arm64/include/asm/memory.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-
+diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+index c759faf7a1ff..0aabc3be9a75 100644
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -328,6 +328,11 @@ static inline void *phys_to_virt(phys_addr_t x)
+ #define ARCH_PFN_OFFSET		((unsigned long)PHYS_PFN_OFFSET)
+ 
+ #if !defined(CONFIG_SPARSEMEM_VMEMMAP) || defined(CONFIG_DEBUG_VIRTUAL)
++#define page_to_virt(x)	({						\
++	__typeof__(x) __page = x;					\
++	void *__addr = __va(page_to_phys(__page));			\
++	(void *)__tag_set((const void *)__addr, page_kasan_tag(__page));\
++})
+ #define virt_to_page(x)		pfn_to_page(virt_to_pfn(x))
+ #else
+ #define page_to_virt(x)	({						\
 -- 
-With Best Regards,
-Andy Shevchenko
+2.30.1.766.gb4fecdf3b7-goog
+
