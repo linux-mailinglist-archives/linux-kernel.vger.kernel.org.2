@@ -2,243 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8B43309E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 398D43309EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhCHJDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 04:03:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
+        id S230143AbhCHJDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 04:03:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbhCHJCy (ORCPT
+        with ESMTP id S229848AbhCHJDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 04:02:54 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E77C06174A;
-        Mon,  8 Mar 2021 01:02:53 -0800 (PST)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 661831F4500B;
-        Mon,  8 Mar 2021 09:02:51 +0000 (GMT)
-Date:   Mon, 8 Mar 2021 10:02:47 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Daniele.Palmas@telit.com,
-        bjorn.andersson@linaro.org
-Subject: Re: [PATCH v4 3/3] mtd: rawnand: qcom: Add support for secure
- regions in NAND memory
-Message-ID: <20210308100247.4aba657c@collabora.com>
-In-Reply-To: <20210308054447.28418-4-manivannan.sadhasivam@linaro.org>
-References: <20210308054447.28418-1-manivannan.sadhasivam@linaro.org>
-        <20210308054447.28418-4-manivannan.sadhasivam@linaro.org>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Mon, 8 Mar 2021 04:03:37 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC616C06174A;
+        Mon,  8 Mar 2021 01:03:36 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id r25so15062935ljk.11;
+        Mon, 08 Mar 2021 01:03:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iLeRlBmTDyCAsTtvGgkGakyTgoKVV6RwqZdxUSlPe74=;
+        b=jAG88HQ1gGvKAQrdokSZ6lq58KB5HfHEZigPfPRatjqptXiT04NyK9I/lxe1lGHSZZ
+         2cUABb6AXlyJLmK9Ihl1YeiJfgsccrTqYZL/Nwan6F/3VxWqmzCh2UKr08OS5XpMAMNJ
+         dKCHbaElhag0rDmSiY8kFc06bC+oSc6613ctvMH+7oGm3zzxm5K5kQWaFU/qtmPmlBu6
+         P/hY4DyG2o3VoQf2wyp70QZ0xPa8seoG+Vbfya+3VBIm9VyZrs9Fci4r/EcOBa39EoXN
+         8hT4wfTwIBhC3dnvS1wRLs711DPrW2FHKyJ5pD77lxFoqyo2A8VEu8vWYI0FUS711zno
+         d0Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iLeRlBmTDyCAsTtvGgkGakyTgoKVV6RwqZdxUSlPe74=;
+        b=HIJEYHv2MvA0vbcq/45q00rgZS6xjbO6ctea1n4vPVRBZ8tpjMbXRbplgjxu9wEnSF
+         EveDTL6Yyt91MKUGHtxi/JOGaLxRbLSXgdXkmaY1/T6E29GpnL0T38KTt2Xc7cNWJYyZ
+         SkSamVEr3qFwNFgA0GdLz6AaiAjWoKizK3Rmr+/PuhrZ0SLoACLbYspkKfhpvmwrznQC
+         Y4OlWL05LHSL6ZBg3ZwQ47dmEVtuNHKyJ5CZSz67IuW359cfoJ1ab9QRDCDBlCpNLRkv
+         UhwZhrpplApDIJtoAEoVooTdqPAPCXNYeXn36FtP5n2RziRGUurVCxpUP98ftW/ddrPR
+         8wuQ==
+X-Gm-Message-State: AOAM531O02qPBu0UPSu/g5BllAKVIqG49/mw5GwH7z0HOIieCFwf5/Js
+        cD1Y11BU4e+6SxKcwmgk5NM=
+X-Google-Smtp-Source: ABdhPJwOI5MWe+FpjV37DWs4H0uKB+n84vTLiGLZRAH4Dv8A80FjvV37Ibvc3jinAyesL0eu4ghErQ==
+X-Received: by 2002:a2e:96cd:: with SMTP id d13mr13552714ljj.213.1615194215285;
+        Mon, 08 Mar 2021 01:03:35 -0800 (PST)
+Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.gmail.com with ESMTPSA id t13sm1410346ljk.47.2021.03.08.01.03.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 01:03:34 -0800 (PST)
+From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivek Unune <npcomplete13@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH  mips/linux.git 0/5] firmware: bcm47xx_nvram: refactor finding & reading NVRAM
+Date:   Mon,  8 Mar 2021 10:03:15 +0100
+Message-Id: <20210308090320.9765-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  8 Mar 2021 11:14:47 +0530
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
+From: Rafał Miłecki <rafal@milecki.pl>
 
-> On a typical end product, a vendor may choose to secure some regions in
-> the NAND memory which are supposed to stay intact between FW upgrades.
-> The access to those regions will be blocked by a secure element like
-> Trustzone. So the normal world software like Linux kernel should not
-> touch these regions (including reading).
-> 
-> The regions are declared using a NAND chip DT property,
-> "secure-regions". So let's make use of this property and skip
-> access to the secure regions present in a system.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/mtd/nand/raw/qcom_nandc.c | 72 +++++++++++++++++++++++++++----
->  1 file changed, 63 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> index 87c23bb320bf..8027f7cb32be 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -431,6 +431,11 @@ struct qcom_nand_controller {
->   * @cfg0, cfg1, cfg0_raw..:	NANDc register configurations needed for
->   *				ecc/non-ecc mode for the current nand flash
->   *				device
-> + *
-> + * @sec_regions:		Array representing the secure regions in the
-> + *				NAND chip
-> + *
-> + * @nr_sec_regions:		Number of secure regions in the NAND chip
->   */
->  struct qcom_nand_host {
->  	struct nand_chip chip;
-> @@ -453,6 +458,9 @@ struct qcom_nand_host {
->  	u32 ecc_bch_cfg;
->  	u32 clrflashstatus;
->  	u32 clrreadstatus;
-> +
-> +	u32 *sec_regions;
-> +	u8 nr_sec_regions;
->  };
->  
->  /*
-> @@ -662,16 +670,27 @@ static void nandc_set_reg(struct qcom_nand_controller *nandc, int offset,
->  }
->  
->  /* helper to configure address register values */
-> -static void set_address(struct qcom_nand_host *host, u16 column, int page)
-> +static int set_address(struct qcom_nand_host *host, u16 column, int page)
->  {
->  	struct nand_chip *chip = &host->chip;
->  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> +	u32 offs = page << chip->page_shift;
-> +	int i, j;
-> +
-> +	/* Skip touching the secure regions if present */
-> +	for (i = 0, j = 0; i < host->nr_sec_regions; i++, j += 2) {
-> +		if (offs >= host->sec_regions[j] &&
-> +		    (offs <= host->sec_regions[j] + host->sec_regions[j + 1]))
-> +			return -EIO;
-> +	}
+This patchset refactors driver part finding and reading NVRAM.
 
-Hm, not sure that's a good idea to make this check part of
-set_address(). Looks like set_address() can be used for ONFI page
-access too, and you definitely don't want to block those
-requests. I'd recommend having a separate helper that you can call from
-qcom_nandc_{read,write}_{oob,page,page_raw}().
+It been tested on BCM4706. Updated code checks the same offsets as
+before. Driver still finds & copies NVRAM content.
 
->  
->  	if (chip->options & NAND_BUSWIDTH_16)
->  		column >>= 1;
->  
->  	nandc_set_reg(nandc, NAND_ADDR0, page << 16 | column);
->  	nandc_set_reg(nandc, NAND_ADDR1, page >> 16 & 0xff);
-> +
-> +	return 0;
->  }
->  
->  /*
-> @@ -1491,13 +1510,13 @@ static void qcom_nandc_command(struct nand_chip *chip, unsigned int command,
->  		WARN_ON(column != 0);
->  
->  		host->use_ecc = true;
-> -		set_address(host, 0, page_addr);
-> +		ret = set_address(host, 0, page_addr);
->  		update_rw_regs(host, ecc->steps, true);
->  		break;
->  
->  	case NAND_CMD_SEQIN:
->  		WARN_ON(column != 0);
-> -		set_address(host, 0, page_addr);
-> +		ret = set_address(host, 0, page_addr);
->  		break;
->  
->  	case NAND_CMD_PAGEPROG:
-> @@ -1615,7 +1634,10 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
->  	host->use_ecc = false;
->  
->  	clear_bam_transaction(nandc);
-> -	set_address(host, host->cw_size * cw, page);
-> +	ret = set_address(host, host->cw_size * cw, page);
-> +	if (ret)
-> +		return ret;
-> +
->  	update_rw_regs(host, 1, true);
->  	config_nand_page_read(nandc);
->  
-> @@ -1943,7 +1965,10 @@ static int copy_last_cw(struct qcom_nand_host *host, int page)
->  	/* prepare a clean read buffer */
->  	memset(nandc->data_buffer, 0xff, size);
->  
-> -	set_address(host, host->cw_size * (ecc->steps - 1), page);
-> +	ret = set_address(host, host->cw_size * (ecc->steps - 1), page);
-> +	if (ret)
-> +		return ret;
-> +
->  	update_rw_regs(host, 1, true);
->  
->  	config_nand_single_cw_page_read(nandc, host->use_ecc);
-> @@ -2005,12 +2030,16 @@ static int qcom_nandc_read_oob(struct nand_chip *chip, int page)
->  	struct qcom_nand_host *host = to_qcom_nand_host(chip);
->  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
->  	struct nand_ecc_ctrl *ecc = &chip->ecc;
-> +	int ret;
->  
->  	clear_read_regs(nandc);
->  	clear_bam_transaction(nandc);
->  
->  	host->use_ecc = true;
-> -	set_address(host, 0, page);
-> +	ret = set_address(host, 0, page);
-> +	if (ret)
-> +		return ret;
-> +
->  	update_rw_regs(host, ecc->steps, true);
->  
->  	return read_page_ecc(host, NULL, chip->oob_poi, page);
-> @@ -2188,7 +2217,10 @@ static int qcom_nandc_write_oob(struct nand_chip *chip, int page)
->  	mtd_ooblayout_get_databytes(mtd, nandc->data_buffer + data_size, oob,
->  				    0, mtd->oobavail);
->  
-> -	set_address(host, host->cw_size * (ecc->steps - 1), page);
-> +	ret = set_address(host, host->cw_size * (ecc->steps - 1), page);
-> +	if (ret)
-> +		return ret;
-> +
->  	update_rw_regs(host, 1, false);
->  
->  	config_nand_page_write(nandc);
-> @@ -2267,7 +2299,10 @@ static int qcom_nandc_block_markbad(struct nand_chip *chip, loff_t ofs)
->  
->  	/* prepare write */
->  	host->use_ecc = false;
-> -	set_address(host, host->cw_size * (ecc->steps - 1), page);
-> +	ret = set_address(host, host->cw_size * (ecc->steps - 1), page);
-> +	if (ret)
-> +		return ret;
-> +
->  	update_rw_regs(host, 1, false);
->  
->  	config_nand_page_write(nandc);
-> @@ -2830,7 +2865,8 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
->  	struct nand_chip *chip = &host->chip;
->  	struct mtd_info *mtd = nand_to_mtd(chip);
->  	struct device *dev = nandc->dev;
-> -	int ret;
-> +	struct property *prop;
-> +	int ret, length, nr_elem;
->  
->  	ret = of_property_read_u32(dn, "reg", &host->cs);
->  	if (ret) {
-> @@ -2872,6 +2908,24 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
->  	/* set up initial status value */
->  	host->status = NAND_STATUS_READY | NAND_STATUS_WP;
->  
-> +	/*
-> +	 * Look for secure regions in the NAND chip. These regions are supposed
-> +	 * to be protected by a secure element like Trustzone. So the read/write
-> +	 * accesses to these regions will be blocked in the runtime by this
-> +	 * driver.
-> +	 */
-> +	prop = of_find_property(dn, "secure-regions", &length);
-> +	if (prop) {
-> +		nr_elem = length / sizeof(u32);
-> +		host->nr_sec_regions = nr_elem / 2;
-> +
-> +		host->sec_regions = devm_kcalloc(dev, nr_elem, sizeof(u32), GFP_KERNEL);
-> +		if (!host->sec_regions)
-> +			return -ENOMEM;
-> +
-> +		of_property_read_u32_array(dn, "secure-regions", host->sec_regions, nr_elem);
-> +	}
-> +
->  	ret = nand_scan(chip, 1);
->  	if (ret)
->  		return ret;
+It's a new patchset replacing previous single-patch attempt:
+[PATCH V2 mips/linux.git] firmware: bcm47xx_nvram: refactor finding & reading NVRAM
+
+Rafał Miłecki (5):
+  firmware: bcm47xx_nvram: rename finding function and its variables
+  firmware: bcm47xx_nvram: add helper checking for NVRAM
+  firmware: bcm47xx_nvram: extract code copying NVRAM
+  firmware: bcm47xx_nvram: look for NVRAM with for instead of while
+  firmware: bcm47xx_nvram: inline code checking NVRAM size
+
+ drivers/firmware/broadcom/bcm47xx_nvram.c | 92 ++++++++++++-----------
+ 1 file changed, 47 insertions(+), 45 deletions(-)
+
+-- 
+2.26.2
 
