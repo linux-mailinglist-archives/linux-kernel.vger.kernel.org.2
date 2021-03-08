@@ -2,85 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7977330CBA
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0BA330CB9
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbhCHLvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 06:51:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50386 "EHLO
+        id S231560AbhCHLvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 06:51:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbhCHLvB (ORCPT
+        with ESMTP id S231220AbhCHLu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 06:51:01 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1155C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 03:51:01 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id h22so8869485otr.6
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 03:51:01 -0800 (PST)
+        Mon, 8 Mar 2021 06:50:56 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633B9C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 03:50:56 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id a188so7017119pfb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 03:50:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JbNCPfQ/roqFMvfDVCK/GyRFnn05PPWL4s16p+iljKg=;
-        b=PS5NN6DUCqMOBqLWOEzdWpTZ1Sa2R2WYZiakOxUSdiElm9ZJ51RzEwsj0Ri+e5mWB5
-         Z9QPG1HJ1heIOFlZ8fKe9ous/pi9AthiInarCnWhq3jNCckqZxQhdVl3RfMwTSZlY5lG
-         g8EujUVi0mv784njAV974o/XliCTbz2kP0WzBue966M2Ph26LxCmuaMTMeX3Wyr7Shi2
-         3U0Lf60BVYrWwo++9+QTKa1uy/lybK/U62qYhPklSlO1fuZLz0oDmm9PsP05qLSWsxSc
-         hkwEY+R8vWqQb9uTTIx4pv3ne9D6w/9PJlq67hJ7MRdIxNszM1NQI7n0F6pLsTyo+FZ1
-         lUNA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0vln9EeLOexpgifVFX5SnMvpXYPQ0jk7HPzWLNd3SCw=;
+        b=Ng4TH0X20pZ4V6qkg+lmxqdE1kprsBQDAKhtFupR6sUJVBSpV0GgCOZApoxghZZf9u
+         FzqRGHT91dVCowiiZiYw1urn5SjsNoz3+++FIakLNbp50LtCTj4zQIoGrWzqv5ClUnRO
+         8blTesxPEBYbvOO90UTpBFyMmbYq7hwwwJieCRWsQ78T9B437hFSHedQmQAuyIhH8jE9
+         9SEF0zmlX8QO7o4w0UxsMh9BFgUwBvlv28dUxqiT/KzexXXMdkro0LlVoN36muz7Ev7K
+         T0a7j7+w+mYTgLuNoeokLDozL0UHGLqEQCsxnoL+Ezz+NsjzYkuommeJwZB3sIVRCdNC
+         ZD2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JbNCPfQ/roqFMvfDVCK/GyRFnn05PPWL4s16p+iljKg=;
-        b=n1xyV87o1pZgMm7Ws8lrGnO3qF6fkOZrv5UkjP/VF3EW6lpwAvDHzTVZ8TcrMs14xW
-         H2s/sffoKGr4317p5LBzhp6eEqU6dsRzPouzTDKuIGp8LBd1hfCTgAmIPnvshOcnGTnq
-         DFcRbfDPcPnW3OgU3FbTAlyS1erxBQ8htZJAfADVdtSYAp+JzrRaaCjDuA8h/yMH/bm+
-         5h3ouu54VBPrly2QYXgLBJdGzMYNf397dxy6toaRoP8ZH8VX/Sr9cSbPmyk2skZj0Y5w
-         tmdOaoFgbv7UqdQHLkoadbyTK+Jl2Am2sWDXhhEVye6sjOECQ91yjG3D2T8DWg2zBpyL
-         aYJA==
-X-Gm-Message-State: AOAM530ApEMCtzre+F4r/WU5Ds3ddAy9xsjexExLdEGOvOe0vRXODNXg
-        sh0cfBENqsBI2xtxCEcSRbJya7HEA7CtfYXZGIU9mQ==
-X-Google-Smtp-Source: ABdhPJxLE3Qt3UCz8nFg87Y8EMVRDCfGsHytH1+xHqDhtFTMg/s/NlcmgHBCSeyLFs9ITxbykj8dOdiW0wmu2C2pqEU=
-X-Received: by 2002:a9d:644a:: with SMTP id m10mr19849951otl.233.1615204260958;
- Mon, 08 Mar 2021 03:51:00 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0vln9EeLOexpgifVFX5SnMvpXYPQ0jk7HPzWLNd3SCw=;
+        b=QpclqFDC/3LKKsORSE6qkLf8Y2tEPIgX6P4eOtXXJK0pCCOBhWInt534E8TvVIgp2l
+         XumEXYLfuUcnX4Mw1LHa3T4Ix9GrdWKVFOTsnjtyw2KHBujobayjs5xnt3SHD4lp4wvI
+         gA8UCS2WIaIAbgpkEgvRCh5JDG7RTVaKYTC+zCo2TUks94wwNPJogcqbfP1Z6ba+fLoz
+         Fx4rspakCfx03nwyl3berUiDb4gQ0zaAQ7pvzo9qDI7rw/pBGMMQHzzlFXvBjksk2zm2
+         /UGi+O5S2g7w09TBAdYjVwApitEZ5jpQmVNzitjbedl/kxPRNaBflyRqUE3Wgn3FL/+L
+         uolg==
+X-Gm-Message-State: AOAM530Rt0UtCD/jS2CDN+4A9/Iwjf9R4ZpDBT29yB4ZIQND7t8V6T7B
+        WxLmhNpfHSX/pThg/gDD+co4aQ==
+X-Google-Smtp-Source: ABdhPJy10PIihlEledowd6Ix+nPJYamm3Yx9G7BCVAnmfEUD7yD4MIvgwD55+qTOkkUYPRx44xwEgQ==
+X-Received: by 2002:a63:cd09:: with SMTP id i9mr20627701pgg.407.1615204255913;
+        Mon, 08 Mar 2021 03:50:55 -0800 (PST)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id a19sm10020833pff.186.2021.03.08.03.50.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Mar 2021 03:50:55 -0800 (PST)
+Date:   Mon, 8 Mar 2021 17:20:53 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Beata Michalska <beata.michalska@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org
+Subject: Re: [PATCH] opp: Invalidate current opp when draining the opp list
+Message-ID: <20210308115053.ua2gfo6kfnfjslyd@vireshk-i7>
+References: <1614870454-18709-1-git-send-email-beata.michalska@arm.com>
+ <20210305042401.gktrgach4dzxp7on@vireshk-i7>
+ <418fc3cb-d5ec-9216-269a-e055e78718e5@arm.com>
 MIME-Version: 1.0
-References: <cover.1614989433.git.andreyknvl@google.com> <a7f1d687b0550182c7f5b4a47c277a61425af65f.1614989433.git.andreyknvl@google.com>
- <YEYMDn/9zQI8g+3o@elver.google.com>
-In-Reply-To: <YEYMDn/9zQI8g+3o@elver.google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 8 Mar 2021 12:50:49 +0100
-Message-ID: <CANpmjNM+CoExcw=19VOtXT5KMnSboTUCska1tmR_WZVMeE49sQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] kasan, mm: integrate page_alloc init with HW_TAGS
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <418fc3cb-d5ec-9216-269a-e055e78718e5@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Mar 2021 at 12:35, Marco Elver <elver@google.com> wrote:
-[...]
-> Could we instead add a static inline helper to <linux/kasan.h>, e.g.
-> kasan_supports_init() or so?
+On 05-03-21, 13:55, Beata Michalska wrote:
+> Actually, that one might be problematic: by the time the
+> _opp_table_kref_release is being reached, the opp pointed to
+> by current_opp may no longer be valid.
+> _opp_remove_all_static and/or dev_pm_opp_remove_all_dynamic
+> will release all the opps by going through opp_table->opp_list.
+> It will drop the reference for each opp on the list, until
+> the list gets empty(for given opp type), which means,
+> all the opps will actually get released
+> (only upon _opp_kref_release the opp will get removed
+> from the list).
 
-Hmm, KASAN certainly "supports" memory initialization always. So maybe
-"kasan_has_accelerated_init()" is more accurate?  I leave it to you to
-decide what the best option is.
+Sorry for missing the context completely, I get it now.
 
-Thanks,
--- Marco
+This is what I have applied instead, please see if it breaks anything
+or works as expected.
+
+-------------------------8<-------------------------
+
+From: Beata Michalska <beata.michalska@arm.com>
+Date: Thu, 4 Mar 2021 15:07:34 +0000
+Subject: [PATCH] opp: Invalidate current opp when draining the opp list
+
+The current_opp when set, grabs additional reference on the opp,
+which is then supposed to be dropped upon releasing the opp table.
+
+Still both dev_pm_opp_remove_table and dev_pm_opp_remove_all_dynamic
+will completely drain the OPPs list, including dropping the additional
+reference on current_opp because they run until the time list gets
+empty.
+
+This will lead releasing the current_opp one more time when the OPP
+table gets removed and so will raise ref counting issues.
+
+Fix that by making sure we don't release the extra reference to the
+current_opp.
+
+Fixes: 81c4d8a3c414 ("opp: Keep track of currently programmed OPP")
+Signed-off-by: Beata Michalska <beata.michalska@arm.com>
+[ Viresh: Rewrite _opp_drain_list() to not drop the extra count instead
+	  of depending on reference counting. Update commit log and
+	  other minor changes. ]
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/opp/core.c | 52 +++++++++++++++++++++++++++++-----------------
+ 1 file changed, 33 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index c2689386a906..3cc0a1b82adc 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -1502,10 +1502,38 @@ static struct dev_pm_opp *_opp_get_next(struct opp_table *opp_table,
+ 	return opp;
+ }
+ 
+-bool _opp_remove_all_static(struct opp_table *opp_table)
++/*
++ * Can't remove the OPP from under the lock, debugfs removal needs to happen
++ * lock less to avoid circular dependency issues. This must be called without
++ * the opp_table->lock held.
++ */
++static int _opp_drain_list(struct opp_table *opp_table, bool dynamic)
+ {
+-	struct dev_pm_opp *opp;
++	struct dev_pm_opp *opp, *current_opp = NULL;
++	int count = 0;
++
++	while ((opp = _opp_get_next(opp_table, dynamic))) {
++		if (opp_table->current_opp == opp) {
++			/*
++			 * Reached at current OPP twice, no other OPPs left. The
++			 * last reference to current_opp is dropped from
++			 * _opp_table_kref_release().
++			 */
++			if (current_opp)
++				break;
++
++			current_opp = opp;
++		}
++
++		dev_pm_opp_put(opp);
++		count++;
++	}
++
++	return count;
++}
+ 
++bool _opp_remove_all_static(struct opp_table *opp_table)
++{
+ 	mutex_lock(&opp_table->lock);
+ 
+ 	if (!opp_table->parsed_static_opps) {
+@@ -1520,13 +1548,7 @@ bool _opp_remove_all_static(struct opp_table *opp_table)
+ 
+ 	mutex_unlock(&opp_table->lock);
+ 
+-	/*
+-	 * Can't remove the OPP from under the lock, debugfs removal needs to
+-	 * happen lock less to avoid circular dependency issues.
+-	 */
+-	while ((opp = _opp_get_next(opp_table, false)))
+-		dev_pm_opp_put(opp);
+-
++	_opp_drain_list(opp_table, false);
+ 	return true;
+ }
+ 
+@@ -1539,21 +1561,13 @@ bool _opp_remove_all_static(struct opp_table *opp_table)
+ void dev_pm_opp_remove_all_dynamic(struct device *dev)
+ {
+ 	struct opp_table *opp_table;
+-	struct dev_pm_opp *opp;
+-	int count = 0;
++	int count;
+ 
+ 	opp_table = _find_opp_table(dev);
+ 	if (IS_ERR(opp_table))
+ 		return;
+ 
+-	/*
+-	 * Can't remove the OPP from under the lock, debugfs removal needs to
+-	 * happen lock less to avoid circular dependency issues.
+-	 */
+-	while ((opp = _opp_get_next(opp_table, true))) {
+-		dev_pm_opp_put(opp);
+-		count++;
+-	}
++	count = _opp_drain_list(opp_table, true);
+ 
+ 	/* Drop the references taken by dev_pm_opp_add() */
+ 	while (count--)
