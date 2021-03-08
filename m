@@ -2,120 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E7C3318C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:41:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8DD3318C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhCHUlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:41:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbhCHUkx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:40:53 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA967C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 12:40:52 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id c16so5462691ply.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 12:40:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YieL4r+TN+gn7WlBHT97uAGWLZ5+RH9FuBAcVj4s06U=;
-        b=ZFGEV3DPNQZz37SL1BXfQkCq19S9we9dg+Cy44D92qHZPJ9reMhamBLz2Pam8qT77S
-         SGT9QYiesdFSexslHwU9naxYNHyljqxxbRs5YFvPAGNOETxfFZ21N0oCU8a03261XyVz
-         IiOGbfRSo3FMXbevkMgJTXUZC6pUm1rUBrbb2BMH0HaL9tSnHKjGw+e87pqOIxL9bUsQ
-         /cZRNaK1CiVXM/h/X0XpBYN6a6iw6uDG+TZ0k8ryt3VhHyMFIxLFaXNpquZ1JGdOQYkn
-         z8YTagHXadjU9hp4ThfgAqAIsOiTcAmAGM1V5y3xjAnvFvAkuF2+EBzrt7GXArFYBhfy
-         /R5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YieL4r+TN+gn7WlBHT97uAGWLZ5+RH9FuBAcVj4s06U=;
-        b=CYlKgqRFA3BFxojA+0KvUYV4FkVcnIL7aw3vWMR93hh4mQtja2xFyFGvwALTmHyOrN
-         6zrojYwdk/aN2wvs1qXFFE0hlPydl5fNik1LheT81nATzod7oITktsKikpZApTT2iP/q
-         Y1VactUdfgR17Kd7ZyT4BZqcUiL41cye54JKdb+OakPH7e0K2wusxMpichQzc9vHd1+t
-         Qh1c8WF8V2Yiwlh3HxdyZPGZy3L/2TtTyMu+GJolooaFJT2ZUDvd0UEnOlhWieVQ1LR9
-         kz/eyyvZt9WGFSa69HdH8PYzEMSBtHg5kdStsxK/+I6U4e4r7aw5L+yOad7JUyXlLdiD
-         GNIw==
-X-Gm-Message-State: AOAM5338aXqVWjy8kqKpN7KRgI0MspLLSuLwB5S5U9jtj7CPHMkDcZXA
-        o7f4S6dDQi4WsvI04ppOM4Z9tQ==
-X-Google-Smtp-Source: ABdhPJzcDQa65JtsCO7brDxr9Rg9TeLDEn0f6G2jrZtRXgde7MiweWhKYfiIc1B5lQfqL6h5LdfVaw==
-X-Received: by 2002:a17:902:7287:b029:e5:bd05:4a97 with SMTP id d7-20020a1709027287b02900e5bd054a97mr22397043pll.27.1615236052207;
-        Mon, 08 Mar 2021 12:40:52 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:8:847a:d8b5:e2cc])
-        by smtp.gmail.com with ESMTPSA id gw20sm230132pjb.3.2021.03.08.12.40.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 12:40:51 -0800 (PST)
-Date:   Mon, 8 Mar 2021 12:40:44 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Xu, Like" <like.xu@intel.com>, Dmitry Vyukov <dvyukov@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-        "Thomas Gleixner
-        (x86/pti/timer/core/smp/irq/perf/efi/locking/ras/objtool)
-        (x86@kernel.org)" <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH] x86/perf: Fix guest_get_msrs static call if there is no
- PMU
-Message-ID: <YEaLzKWd0wAmdqvs@google.com>
-References: <20210305223331.4173565-1-seanjc@google.com>
- <053d0a22-394d-90d0-8d3b-3cd37ca3f378@intel.com>
- <YEXmILSHDNDuMk/N@hirez.programming.kicks-ass.net>
+        id S231127AbhCHUlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:41:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34248 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230458AbhCHUlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 15:41:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A37365272;
+        Mon,  8 Mar 2021 20:41:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615236091;
+        bh=xOjktTqUitc+u1lOxtaIEmtkCUS5Jbq0EmElj0l8lV0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q10DS0UtjUUmLvXYNaUX3vwPngvfe7lurRbXNzKnAiWlO7g1p9N2VaaXLXNkiGHk5
+         isvxwEDp7HIiUqCiKNjdc9QltPw735qpEpZ1TvcfuHzsSDgjtX28Lk7KC1aJmMsLRa
+         ibfaGioCMssSiSasd5VfrJZ+ClxHRugUZquKR4P2UPxBJ7RKH7fnnf3GorIDhjt45n
+         AKUkLRLxuInqHpLM5XlxOOLiavSlM/hZpC0/wIf4f9EL8kcDte3CDInpGrxvBcrEa2
+         GVIi0B4qgto4IBfgHynXSihi6bK95g8MpkSah8oTfWV8z4ZYnlEfB+0w0dRtAAaR1m
+         SV3b9kR09lL8A==
+Date:   Mon, 8 Mar 2021 14:41:29 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     James Bottomley <jejb@linux.ibm.com>
+Cc:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2][next] scsi: mpt3sas: Replace one-element array with
+ flexible-array in struct _MPI2_CONFIG_PAGE_IO_UNIT_3
+Message-ID: <20210308204129.GA214076@embeddedor>
+References: <20210202235118.GA314410@embeddedor>
+ <20210308193237.GA212624@embeddedor>
+ <88d9dda39a70df25b48e72247b9752d3dc5e2e8d.camel@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YEXmILSHDNDuMk/N@hirez.programming.kicks-ass.net>
+In-Reply-To: <88d9dda39a70df25b48e72247b9752d3dc5e2e8d.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021, Peter Zijlstra wrote:
-> On Mon, Mar 08, 2021 at 10:25:59AM +0800, Xu, Like wrote:
-> > On 2021/3/6 6:33, Sean Christopherson wrote:
-> > > Handle a NULL x86_pmu.guest_get_msrs at invocation instead of patching
-> > > in perf_guest_get_msrs_nop() during setup.  If there is no PMU, setup
+On Mon, Mar 08, 2021 at 12:12:59PM -0800, James Bottomley wrote:
+> On Mon, 2021-03-08 at 13:32 -0600, Gustavo A. R. Silva wrote:
+> > Hi all,
 > > 
-> > "If there is no PMU" ...
+> > Friendly ping: who can review/take this, please?
 > 
-> Then you shouldn't be calling this either ofcourse :-)
+> Well, before embarking on a huge dynamic update, let's ask Broadcom the
+> simpler question of why isn't MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX simply
+> set to 36?  There's no dynamic allocation of anything in the current
+> code ... it's all hard coded to allocate 36 entries.  If there's no
+> need for anything dynamic then the kzalloc could become 
 
-This effectively is KVM's check to find out there is no PMU.  I certainly don't
-want to replicate the switch statement in init_hw_perf_events(), plus whatever
-is buried in check_hw_exists().  The alternative would be to add X86_FEATURE_PMU
-so that KVM can easily check for PMU existence.  I don't really see the point
-though, as bare metal KVM, where we really care about performance, is likely to
-have a functional PMU, and if it doesn't then I doubt whoever is running KVM
-cares much about performance.
+Yeah; and if that is the case, then there is no even need for kzalloc()
+at all, and it can be replaced by memset():
 
-> > > @@ -671,7 +671,11 @@ void x86_pmu_disable_all(void)
-> > >   struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
-> > >   {
-> > > -	return static_call(x86_pmu_guest_get_msrs)(nr);
-> > > +	if (x86_pmu.guest_get_msrs)
-> > > +		return static_call(x86_pmu_guest_get_msrs)(nr);
-> > 
-> > How about using "static_call_cond" per commit "452cddbff7" ?
+diff --git a/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h b/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
+index 43a3bf8ff428..d00431f553e1 100644
+--- a/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
++++ b/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
+@@ -992,7 +992,7 @@ typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_1 {
+  *one and check the value returned for GPIOCount at runtime.
+  */
+ #ifndef MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX
+-#define MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX    (1)
++#define MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX    (36)
+ #endif
+
+ typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_3 {
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+index 44f9a05db94e..23fcf29bfd67 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+@@ -3203,7 +3203,7 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
+ {
+        struct Scsi_Host *shost = class_to_shost(cdev);
+        struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
+-       Mpi2IOUnitPage3_t *io_unit_pg3 = NULL;
++       Mpi2IOUnitPage3_t io_unit_pg3;
+        Mpi2ConfigReply_t mpi_reply;
+        u16 backup_rail_monitor_status = 0;
+        u16 ioc_status;
+@@ -3221,16 +3221,10 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
+                goto out;
+
+        /* allocate upto GPIOVal 36 entries */
+-       sz = offsetof(Mpi2IOUnitPage3_t, GPIOVal) + (sizeof(u16) * 36);
+-       io_unit_pg3 = kzalloc(sz, GFP_KERNEL);
+-       if (!io_unit_pg3) {
+-               rc = -ENOMEM;
+-               ioc_err(ioc, "%s: failed allocating memory for iounit_pg3: (%d) bytes\n",
+-                       __func__, sz);
+-               goto out;
+-       }
++       sz = sizeof(io_unit_pg3);
++       memset(&io_unit_pg3, 0, sz);
+
+-       if (mpt3sas_config_get_iounit_pg3(ioc, &mpi_reply, io_unit_pg3, sz) !=
++       if (mpt3sas_config_get_iounit_pg3(ioc, &mpi_reply, &io_unit_pg3, sz) !=
+            0) {
+                ioc_err(ioc, "%s: failed reading iounit_pg3\n",
+                        __func__);
+@@ -3246,19 +3240,18 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
+                goto out;
+        }
+
+-       if (io_unit_pg3->GPIOCount < 25) {
+-               ioc_err(ioc, "%s: iounit_pg3->GPIOCount less than 25 entries, detected (%d) entries\n",
+-                       __func__, io_unit_pg3->GPIOCount);
++       if (io_unit_pg3.GPIOCount < 25) {
++               ioc_err(ioc, "%s: iounit_pg3.GPIOCount less than 25 entries, detected (%d) entries\n",
++                       __func__, io_unit_pg3.GPIOCount);
+                rc = -EINVAL;
+                goto out;
+        }
+
+        /* BRM status is in bit zero of GPIOVal[24] */
+-       backup_rail_monitor_status = le16_to_cpu(io_unit_pg3->GPIOVal[24]);
++       backup_rail_monitor_status = le16_to_cpu(io_unit_pg3.GPIOVal[24]);
+        rc = snprintf(buf, PAGE_SIZE, "%d\n", (backup_rail_monitor_status & 1));
+
+  out:
+-       kfree(io_unit_pg3);
+        mutex_unlock(&ioc->pci_access_mutex);
+        return rc;
+ }
+
 > 
-> Given the one user in atomic_switch_perf_msrs() that should work because
-> it doesn't seem to care about nr_msrs when !msrs.
+> 	io_unit_pg3 = kzalloc(sizeof(*io_unit_pg3), GFP_KERNEL);
+>
 
-Uh, that commit quite cleary says:
-
-   NOTE: this is 'obviously' limited to functions with a 'void' return type.
-
-Even if we somehow bypass the (void) cast, IIUC it will compile to a single
-'ret',  and return whatever happens to be in RAX, not NULL as is needed.
-
-> Still, it calling atomic_switch_perf_msrs() and
-> intel_pmu_lbr_is_enabled() when there isn't a PMU at all is of course, a
+Thanks
+--
+Gustavo
