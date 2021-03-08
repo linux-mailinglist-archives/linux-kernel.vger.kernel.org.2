@@ -2,116 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 178B033189F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9843F3318A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhCHUbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:31:33 -0500
-Received: from mga11.intel.com ([192.55.52.93]:8496 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229575AbhCHUbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:31:22 -0500
-IronPort-SDR: u3TtpV4ZS6tmSsy8615/wrAogWoEoOO5FJv73sXuKxtKb7Ku0K/g4E0QPRBTdkGSYRnY759exg
- qLyhtpqcCXzw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="184738983"
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="184738983"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 12:31:21 -0800
-IronPort-SDR: 6DD67P3qdHW1Jh8D1KN5wLd2C9MpjLjWb7jiU5Jwf7cgIDHPW0Z3ovMMRFNovCbXbV+QYNqus2
- VJh9BUjVBysQ==
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="369533241"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 12:31:19 -0800
-Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id AA0456365;
-        Mon,  8 Mar 2021 12:31:19 -0800 (PST)
-Date:   Mon, 8 Mar 2021 12:31:19 -0800
-From:   mark gross <mgross@linux.intel.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        peng.fan@nxp.com, shawnguo@kernel.org, jassisinghbrar@gmail.com,
-        linux-kernel@vger.kernel.org,
-        Seamus Kelly <seamus.kelly@intel.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 19/34] xlink-core: Add xlink core device tree bindings
-Message-ID: <20210308203119.GB138795@linux.intel.com>
-Reply-To: mgross@linux.intel.com
-References: <20210212222304.110194-1-mgross@linux.intel.com>
- <20210212222304.110194-20-mgross@linux.intel.com>
- <20210305210300.GB622142@robh.at.kernel.org>
+        id S229829AbhCHUcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:32:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229848AbhCHUcO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 15:32:14 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C019C06174A;
+        Mon,  8 Mar 2021 12:32:14 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DvVPm2292z9sW8;
+        Tue,  9 Mar 2021 07:32:12 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1615235532;
+        bh=od+CU7GK+sQqhVAAqCYOK4lCYgWJK9s3sKp5/lrinoI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OfOF+sLzazfOa0AAy9O+DrgvpabA/foNhSY2ElWKddSqJdp/htcSpX7bi8L9ChTSS
+         sK13uMKHfWfHpCokw/MxJWMLUN+PRcJ2qM53JzA1h/LAnnU7TfOI0NMkWjwDUXRokl
+         dlnhykDrrp0U3vfPkXNHj8vuAxnOJ0FK0wpGDmagB4tl9BTyAQ0phBbhAxy2lvfUcl
+         nRSenkcAgMfCqD1WYrzr4U/mEYOgYbAR2n5Gt4MmWfWeJVR5fAjo9G8h+C19NLk6lr
+         NRgpvIQF1yCkVG97QsWZxBiMbfujYcVnraywBP6eh+mZRS8alcXM0eIVRXmPuwvh5b
+         Pck0ND2I1X5Gw==
+Date:   Tue, 9 Mar 2021 07:32:11 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the
+ gpio-brgl-fixes tree
+Message-ID: <20210309073211.392a838d@canb.auug.org.au>
+In-Reply-To: <20210309072620.656e8078@canb.auug.org.au>
+References: <20210309072620.656e8078@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210305210300.GB622142@robh.at.kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/=0gUaMUgvU7yV+1SWsKpqeC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 03:03:00PM -0600, Rob Herring wrote:
-> On Fri, Feb 12, 2021 at 02:22:49PM -0800, mgross@linux.intel.com wrote:
-> > From: Seamus Kelly <seamus.kelly@intel.com>
-> > 
-> > Add device tree bindings for keembay-xlink.
-> > 
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: devicetree@vger.kernel.org
-> > Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> > Signed-off-by: Mark Gross <mgross@linux.intel.com>
-> > Signed-off-by: Seamus Kelly <seamus.kelly@intel.com>
-> > ---
-> >  .../bindings/misc/intel,keembay-xlink.yaml    | 29 +++++++++++++++++++
-> >  1 file changed, 29 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml b/Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
-> > new file mode 100644
-> > index 000000000000..5ac2e7fa5b5e
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
-> > @@ -0,0 +1,29 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +# Copyright (c) Intel Corporation. All rights reserved.
-> > +%YAML 1.2
-> > +---
-> > +$id: "http://devicetree.org/schemas/misc/intel,keembay-xlink.yaml#"
-> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> > +
-> > +title: Intel Keem Bay xlink
-> > +
-> > +maintainers:
-> > +  - Seamus Kelly <seamus.kelly@intel.com>
-> > +
-> > +description: |
-> > +  The Keem Bay xlink driver enables the communication/control sub-system
-> > +  for internal and external communications to the Intel Keem Bay SoC.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
-> > +      - items:
-> > +          - const: intel,keembay-xlink
-> > +
-> > +additionalProperties: False
-> > +
-> > +examples:
-> > +  - |
-> > +    xlink {
-> > +        compatible = "intel,keembay-xlink";
-> 
-> A node with only a compatible is almost always abusing DT just to 
-> instantiate your driver.
+--Sig_/=0gUaMUgvU7yV+1SWsKpqeC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Is it normal to make drivers that want to abuse DT in this way platform
-devices?
+Hi all,
 
-Any advice would be welcome and helful.
+On Tue, 9 Mar 2021 07:26:20 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> Commits
+>=20
+>   eb441337c714 ("gpio: pca953x: Set IRQ type when handle Intel Galileo Ge=
+n 2")
+>   809390219fb9 ("gpiolib: acpi: Allow to find GpioInt() resource by name =
+and index")
+>   62d5247d239d ("gpiolib: acpi: Add ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk=
+")
+>   6e5d5791730b ("gpiolib: acpi: Add missing IRQF_ONESHOT")
+>=20
+> are missing a Signed-off-by from their committers.
 
-thanks!
+This also applies to the gpio-intel-fixes tree (since it is now headed
+by the same commit as the gpio-brgl-fixes tree).
 
---mark
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/=0gUaMUgvU7yV+1SWsKpqeC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBGicsACgkQAVBC80lX
+0GyCLwf/U++SIi7lHQqdGIelIR+3JOgJKgUJp3in8iGgHkGYSoJJjMwZ+g18eFTD
+2isb8QxFiSFjUmAX6e9nd0PJDixMRhwtoXZJYWPg6Bv+H8DHPMJCJgeakEGAP8l0
+Qh8VTCnwtZJq9HbcF+NaJFuPp/+EAGMITVEiUzLRLCZ/H0u+xtLttMZ2Jm6l4pXs
+QSEQ7iqPaW9gFgo2+wWP+Z5B7v9v0p4ZukmMyhQ5GJt1ccKWugtcbwLFXPww5zBg
++1oPEftYuRjLKlxY6NQPmCqptEChvvffgEJO5RRWNgFd1HQxZ3wB2npT4nBUJkut
+9OlVrtjbRyViDuzTRr7o5m5pPOsDWw==
+=vz4P
+-----END PGP SIGNATURE-----
+
+--Sig_/=0gUaMUgvU7yV+1SWsKpqeC--
