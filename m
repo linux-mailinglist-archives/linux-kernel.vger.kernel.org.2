@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90CFC331944
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:19:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B52133194F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:21:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbhCHVSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 16:18:50 -0500
-Received: from mail-il1-f174.google.com ([209.85.166.174]:39729 "EHLO
-        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbhCHVSo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 16:18:44 -0500
-Received: by mail-il1-f174.google.com with SMTP id d5so10210300iln.6;
-        Mon, 08 Mar 2021 13:18:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uFKF7Ehal8qDNFKzZWjamQRwuD7KmoXBh34xqd+Th3c=;
-        b=DYeGhNetYZOGjuhsIAIbW2FZMKOCf6eCI80xs6nFPfQdsi16+HRXnI+afr7pP6NQS5
-         CD00xKj6c2zsi23mLn6eZCQtFbtiukDc4jldWeLyFJnPqbd0qDlwgXfP+qUdJbCYesJK
-         46FrAY5jLL8aTPKO2au0ih3+13vnTIhKvQMV1BPWGspfSRuztL1TVmt/v4GIH1VcOz5H
-         FkC0mxI34q3rr2wioB6BW/UHhMSuA3lVc3tAYizs9d00nU6RUE+Brj5PgAqr1tgJS1Hk
-         /ORjvsVG/aGJ8F6PdXfAxcLzr4XiSpFU6xQqP2OZ3VAjGeGeT2WEHg8RhprebS6yILKA
-         aO4A==
-X-Gm-Message-State: AOAM533Slf6AgOQt9tvS6lkFoBJjmOYFCjKLlG0UHNNwdwI4QD6akfti
-        0FT91jEqZ28VDE0SeXwUDg==
-X-Google-Smtp-Source: ABdhPJxBOnxGY1CT6tf1GLE6+NPZR6ZqtVKILY/ZQTQhNtWjUOj8w6IHuDTiedg4e85U+B8ac9mjAA==
-X-Received: by 2002:a92:b003:: with SMTP id x3mr23330447ilh.15.1615238323858;
-        Mon, 08 Mar 2021 13:18:43 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id x6sm6495412ioh.19.2021.03.08.13.18.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 13:18:43 -0800 (PST)
-Received: (nullmailer pid 2973128 invoked by uid 1000);
-        Mon, 08 Mar 2021 21:18:40 -0000
-Date:   Mon, 8 Mar 2021 14:18:40 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-samsung-soc@vger.kernel.org,
-        Stan Skowronek <stan@corellium.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Olof Johansson <olof@lixom.net>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Alexander Graf <graf@amazon.com>, linux-serial@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [RFT PATCH v3 26/27] dt-bindings: display: Add
- apple,simple-framebuffer
-Message-ID: <20210308211840.GA2973077@robh.at.kernel.org>
-References: <20210304213902.83903-1-marcan@marcan.st>
- <20210304213902.83903-27-marcan@marcan.st>
+        id S231308AbhCHVVC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Mar 2021 16:21:02 -0500
+Received: from aposti.net ([89.234.176.197]:42810 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229650AbhCHVU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 16:20:56 -0500
+Date:   Mon, 08 Mar 2021 21:20:29 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 1/3] dt-bindings/timer: ingenic: Add compatible strings
+ for JZ4760(B)
+To:     Rob Herring <robh@kernel.org>
+Cc:     od@zcrc.me, Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Message-Id: <5Y5OPQ.S54VI8HHK9HS2@crapouillou.net>
+In-Reply-To: <20210308173932.GA2679461@robh.at.kernel.org>
+References: <20210307171553.72591-1-paul@crapouillou.net>
+        <20210308173932.GA2679461@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304213902.83903-27-marcan@marcan.st>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 05 Mar 2021 06:39:01 +0900, Hector Martin wrote:
-> Apple SoCs run firmware that sets up a simplefb-compatible framebuffer
-> for us. Add a compatible for it, and two missing supported formats.
-> 
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  .../devicetree/bindings/display/simple-framebuffer.yaml      | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
+Le lun. 8 mars 2021 à 10:39, Rob Herring <robh@kernel.org> a écrit :
+> On Sun, 07 Mar 2021 17:15:51 +0000, Paul Cercueil wrote:
+>>  Add compatible strings to support the system timer, clocksource, 
+>> OST,
+>>  watchdog and PWM blocks of the JZ4760 and JZ4760B SoCs.
+>> 
+>>  Newer SoCs which behave like the JZ4760 or JZ4760B now see their
+>>  compatible string require a fallback compatible string that 
+>> corresponds
+>>  to one of these two SoCs.
+>> 
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>>   .../bindings/timer/ingenic,tcu.yaml           | 28 
+>> ++++++++++++++-----
+>>   1 file changed, 21 insertions(+), 7 deletions(-)
+>> 
+> 
+> My bot found errors running 'make dt_binding_check' on your patch:
+> 
+> yamllint warnings/errors:
+> ./Documentation/devicetree/bindings/timer/ingenic,tcu.yaml:62:13: 
+> [warning] wrong indentation: expected 14 but found 12 (indentation)
+> ./Documentation/devicetree/bindings/timer/ingenic,tcu.yaml:201:17: 
+> [warning] wrong indentation: expected 18 but found 16 (indentation)
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/timer/ingenic,tcu.example.dt.yaml: 
+> timer@10002000: timer@e0:compatible: 'oneOf' conditional failed, one 
+> must be fixed:
+> 	['ingenic,jz4770-ost'] is too short
+> 	'ingenic,jz4770-ost' is not one of ['ingenic,jz4725b-ost', 
+> 'ingenic,jz4760b-ost']
+> 	'ingenic,jz4760-ost' was expected
+> 	From schema: 
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/timer/ingenic,tcu.yaml
+
+Totally my fault, looks like I didn't check the bindings before sending 
+the patchset. I'll V2.
+
+-Paul
+
+> See https://patchwork.ozlabs.org/patch/1448709
+> 
+> This check can fail if there are any dependencies. The base for a 
+> patch
+> series is generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up 
+> to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit.
+
+
