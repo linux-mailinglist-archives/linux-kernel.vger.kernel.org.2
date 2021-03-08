@@ -2,143 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85D2330978
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 037C533097B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231730AbhCHIgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 03:36:12 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:21180 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbhCHIfn (ORCPT
+        id S231203AbhCHIhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 03:37:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25629 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231153AbhCHIhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 03:35:43 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210308083542euoutp01d51e39c2892e2f041475f0ec88d1ac8e~qUQ81BEmW1630016300euoutp01p
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 08:35:42 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210308083542euoutp01d51e39c2892e2f041475f0ec88d1ac8e~qUQ81BEmW1630016300euoutp01p
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1615192542;
-        bh=1odrDJQ0gKxVXkh98uvHyrhkQv488xo+DiMLCYTYL8U=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=nusga9mcFHx18mxeDfSu9hB92byPY5tnFS0x4U5h/KSPaTU6+NYAZTznE2n1n+3SH
-         d+3xKWeOa/UzUa8NM0eR5GgJezeE5FDH2+UPg6pxD/MSCE3VBJEG1bPys51YT6ts8l
-         +5/WC/gzrWtspZxVfgX/EnqAlGwjwkWB6X6GtG6E=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210308083541eucas1p1fbc7596d0a08ac8aaee00d3c7d477055~qUQ8pkTbT2370723707eucas1p10;
-        Mon,  8 Mar 2021 08:35:41 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id F5.EB.09452.DD1E5406; Mon,  8
-        Mar 2021 08:35:41 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210308083541eucas1p1a8f772f12006ee6082b900c1a82aa298~qUQ8XDNuz0362503625eucas1p16;
-        Mon,  8 Mar 2021 08:35:41 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210308083541eusmtrp21460c9628dfd7957dfdea362caf11f82~qUQ8WZRFY2311623116eusmtrp2T;
-        Mon,  8 Mar 2021 08:35:41 +0000 (GMT)
-X-AuditID: cbfec7f2-a9fff700000024ec-5f-6045e1ddf7dd
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 15.24.08705.DD1E5406; Mon,  8
-        Mar 2021 08:35:41 +0000 (GMT)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210308083541eusmtip128db5ff869e1cd9f6676b19bc2151280~qUQ8J1UCk2919429194eusmtip1O;
-        Mon,  8 Mar 2021 08:35:41 +0000 (GMT)
-From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-Subject: [PATCH] rtc: ds1307: set uie_unsupported if no interrupt is
- available
-Date:   Mon,  8 Mar 2021 09:35:37 +0100
-Message-Id: <20210305174411.9657-1-l.stelmach@samsung.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 8 Mar 2021 03:37:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615192652;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VSeZk3InN/9j9fIXKRvmBsyCrTSCQ5Gd7zaa1tggq28=;
+        b=YCBMDaWTyTqyPEwWHRpFGcYD/dCouA21QRN5PqpKNHYdul0MGmQak5JliHTbbHpmqju42m
+        nmEHig6ugBmlTpIEZzz5X5pIaQeQXkqJB7H4RGP5GSKMeQLkD5ISMIMreDJen2g4+1VuTh
+        ayzCAc/sLE1R1RNKGWRsjtyKudNvw7U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-150-pNJuItIwPwCPGRE46QMh_g-1; Mon, 08 Mar 2021 03:37:25 -0500
+X-MC-Unique: pNJuItIwPwCPGRE46QMh_g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3FF3E804333;
+        Mon,  8 Mar 2021 08:37:24 +0000 (UTC)
+Received: from [10.36.113.123] (ovpn-113-123.ams2.redhat.com [10.36.113.123])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C94C861F2B;
+        Mon,  8 Mar 2021 08:37:21 +0000 (UTC)
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1615174073-10520-1-git-send-email-anshuman.khandual@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [RFC] mm: Enable generic pfn_valid() to handle early sections
+ with memmap holes
+Message-ID: <745496f5-e099-8780-e42e-f347b55e8476@redhat.com>
+Date:   Mon, 8 Mar 2021 09:37:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Organization: Samsung R&D Institute Poland
+In-Reply-To: <1615174073-10520-1-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKIsWRmVeSWpSXmKPExsWy7djPc7p3H7omGNw5YGpx89AKRovLu+aw
-        OTB59G1ZxejxeZNcAFMUl01Kak5mWWqRvl0CV8bB338ZCzZzV/Q+7WdsYFzA2cXIwSEhYCLx
-        baFoFyMnh5DACkaJA+sruhi5gOwvjBI3v+9kgnA+M0rMWLeYDaQKpGHDuW/sEInljBKT+1+x
-        QrQ/Z5RoPqUOYrMJOEr0Lz0BFhcRUJDY3PsMzGYWsJeYOOs/2CBhgQCJWYuvgMVZBFQlds58
-        xARyEa+AncTSA5YQu+Ql2pdvByvnFRCUODnzCQuIzS+gJbGm6ToLxEh5ieats5lB7pEQaOWQ
-        2LC8kRWi2UViUucLRghbWOLV8S3sELaMxP+d85kgvq+XmDzJDKK3h1Fi25wfLBA11hJ3zv1i
-        A6lhFtCUWL9LHyLsKHH7/lJmiFY+iRtvBSFO4JOYtG06VJhXoqNNCKJaRWJd/x6ogVISva9W
-        QB3jIfHk73yWCYyKs5A8NgvJM7MQ9i5gZF7FKJ5aWpybnlpsmJdarlecmFtcmpeul5yfu4kR
-        mBJO/zv+aQfj3Fcf9Q4xMnEwHmKU4GBWEuHt7XFOEOJNSaysSi3Kjy8qzUktPsQozcGiJM67
-        avaaeCGB9MSS1OzU1ILUIpgsEwenVAOT7v1aRWeGwAfXJny9uvbwSoZrG9kY6msT42+9bUtX
-        uPo67EhfjN99ZbclLJxZdj/VEip/fDy7+xbfJqsItb2Wc6PC/rNEHXR1+Dlj24kJlzeHO3n/
-        925wdA+bZx3gW/B0jo+rrviJmiCZmV2WwUUTRbZv2OPiWxbG2bF439P6F4/7zPROL+kNUOKL
-        ea/f8G9HzRz+xAm/TOa90qo+K13yzezMLT7e9ka5UpObviYGb2s7PJZm7chy6i9MMY5v1vo8
-        6eh2H+Wje7q3xBSs1xc4GX3eQ9+u7dn+ue/9T/h9r2hPuD3PomiupdGJl6dy+6bHNhuuWWO3
-        sFxOqXbGlLMqNttVQyr0/j8+U3VwSoUSS3FGoqEWc1FxIgCsEJrzeAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrALMWRmVeSWpSXmKPExsVy+t/xu7p3H7omGFzfLm9x89AKRovLu+aw
-        OTB59G1ZxejxeZNcAFOUnk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5rJWRqZK+nU1K
-        ak5mWWqRvl2CXsbB338ZCzZzV/Q+7WdsYFzA2cXIySEhYCKx4dw39i5GLg4hgaWMEmtnLWHu
-        YuQASkhJrJybDlEjLPHnWhcbRM1TRol9H+awgSTYBBwl+peeYAWxRQQUJDb3PgOzmQXsJSbO
-        +s8GMkdYwE9i+lxxkDCLgKrEzpmPmEBsXoFyiYV3vjNDzJeXaF++nQ0iLihxcuYTFpBWZgF1
-        ifXzhEDC/AJaEmuarrNATJeXaN46m3kCo8AsJB2zEDpmIalawMi8ilEktbQ4Nz232FCvODG3
-        uDQvXS85P3cTIzCotx37uXkH47xXH/UOMTJxMB5ilOBgVhLh7e1xThDiTUmsrEotyo8vKs1J
-        LT7EaAr0wURmKdHkfGBc5ZXEG5oZmBqamFkamFqaGSuJ826duyZeSCA9sSQ1OzW1ILUIpo+J
-        g1OqgSnNw+HxI7HTZud3SoX/spm5RNuj3+NHsFDhTK8UiRo59QTxvjNbxW3LzKuzlCsXa8pO
-        aKl5bWu41iagd6nGcccbjm8916xmc1lTrrSflfvQUqvPM9nO7qsoZ791tTPl4syZsRH6qy51
-        zVHSXBXSuCj39JX++eV92YsX2X0r3Tz/7cuJQU8TtblmhL81XeoRrrO36n20jIOHp/7hqPnr
-        Uv9/unHOu9BjT8uxJL/MzjOnZEJWrTL+qXokYu1fZY+P9if0umP3FK5ep+6qmbksbeqm82zZ
-        AQv/LT1qPzV6Wdf8wqRUfaaVdheZEgTe9MnpSbdVr3uwRsw7ml3u//lOx91Hvn5tjN0Ra1Vp
-        EsMzWYmlOCPRUIu5qDgRAHMuc37zAgAA
-X-CMS-MailID: 20210308083541eucas1p1a8f772f12006ee6082b900c1a82aa298
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210308083541eucas1p1a8f772f12006ee6082b900c1a82aa298
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210308083541eucas1p1a8f772f12006ee6082b900c1a82aa298
-References: <CGME20210308083541eucas1p1a8f772f12006ee6082b900c1a82aa298@eucas1p1.samsung.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 08.03.21 04:27, Anshuman Khandual wrote:
+> Platforms like arm and arm64 have redefined pfn_valid() because their early
+> memory sections might have contained memmap holes caused by memblock areas
+> tagged with MEMBLOCK_NOMAP, which should be skipped while validating a pfn
+> for struct page backing. This scenario could be captured with a new option
+> CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES and then generic pfn_valid() can be
+> improved to accommodate such platforms. This reduces overall code footprint
+> and also improves maintainability.
+> 
+> Commit 4f5b0c178996 ("arm, arm64: move free_unused_memmap() to generic mm")
+> had used CONFIG_HAVE_ARCH_PFN_VALID to gate free_unused_memmap(), which in
+> turn had expanded its scope to new platforms like arc and m68k. Rather lets
+> restrict back the scope for free_unused_memmap() to arm and arm64 platforms
+> using this new config option i.e CONFIG_HAVE_EARLY_SECTION_MEMMAP.
+> 
+> While here, it exports the symbol memblock_is_map_memory() to build drivers
+> that depend on pfn_valid() but does not have the required visibility. After
+> this new config is in place, just drop CONFIG_HAVE_ARCH_PFN_VALID from both
+> arm and arm64 platforms.
+> 
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> This applies on 5.12-rc2 along with arm64 pfn_valid() fix patches [1] and
+> has been lightly tested on the arm64 platform. The idea to represent this
+> unique situation on the arm and arm64 platforms with a config option was
+> proposed by David H during an earlier discussion [2]. This still does not
+> build on arm platform due to pfn_valid() resolution errors. Nonetheless
+> wanted to get some early feedback whether the overall approach here, is
+> acceptable or not.
 
-For an RTC without an IRQ assigned rtc_update_irq_enable() should
-return -EINVAL.  It will, when uie_unsupported is set.
+It might make sense to keep the arm variant for now. The arm64 variant 
+is where the magic happens and where we missed updates when working on 
+the generic variant.
 
-Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
----
- drivers/rtc/rtc-ds1307.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+The generic variant really only applies to 64bit targets where we have 
+SPARSEMEM. See x86 as an example.
 
-diff --git a/drivers/rtc/rtc-ds1307.c b/drivers/rtc/rtc-ds1307.c
-index cd8e438bc9c4..b08a9736fa77 100644
---- a/drivers/rtc/rtc-ds1307.c
-+++ b/drivers/rtc/rtc-ds1307.c
-@@ -1973,13 +1973,6 @@ static int ds1307_probe(struct i2c_client *client,
- 	if (IS_ERR(ds1307->rtc))
- 		return PTR_ERR(ds1307->rtc);
- 
--	if (ds1307_can_wakeup_device && !want_irq) {
--		dev_info(ds1307->dev,
--			 "'wakeup-source' is set, request for an IRQ is disabled!\n");
--		/* We cannot support UIE mode if we do not have an IRQ line */
--		ds1307->rtc->uie_unsupported = 1;
--	}
--
- 	if (want_irq) {
- 		err = devm_request_threaded_irq(ds1307->dev, client->irq, NULL,
- 						chip->irq_handler ?: ds1307_irq,
-@@ -1993,6 +1986,13 @@ static int ds1307_probe(struct i2c_client *client,
- 		} else {
- 			dev_dbg(ds1307->dev, "got IRQ %d\n", client->irq);
- 		}
-+	} else {
-+		if (ds1307_can_wakeup_device)
-+			dev_info(ds1307->dev,
-+				 "'wakeup-source' is set, request for an IRQ is disabled!\n");
-+
-+		/* We cannot support UIE mode if we do not have an IRQ line */
-+		ds1307->rtc->uie_unsupported = 1;
- 	}
- 
- 	ds1307->rtc->ops = chip->rtc_ops ?: &ds13xx_rtc_ops;
+[...]
+
+>   /*
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 47946cec7584..93532994113f 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -1409,8 +1409,23 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+>   }
+>   #endif
+>   
+> +bool memblock_is_map_memory(phys_addr_t addr);
+> +
+>   #ifndef CONFIG_HAVE_ARCH_PFN_VALID
+>   static inline int pfn_valid(unsigned long pfn)
+> +{
+> +	phys_addr_t addr = PFN_PHYS(pfn);
+> +
+> +	/*
+> +	 * Ensure the upper PAGE_SHIFT bits are clear in the
+> +	 * pfn. Else it might lead to false positives when
+> +	 * some of the upper bits are set, but the lower bits
+> +	 * match a valid pfn.
+> +	 */
+> +	if (PHYS_PFN(addr) != pfn)
+> +		return 0;
+
+I think this should be fine for other archs as well.
+
+> +
+> +#ifdef CONFIG_SPARSEMEM
+
+Why do we need the ifdef now? If that's to cover the arm case, then 
+please consider the arm64 case only for now.
+
+>   {
+>   	struct mem_section *ms;
+>   
+> @@ -1423,7 +1438,14 @@ static inline int pfn_valid(unsigned long pfn)
+>   	 * Traditionally early sections always returned pfn_valid() for
+>   	 * the entire section-sized span.
+>   	 */
+> -	return early_section(ms) || pfn_section_valid(ms, pfn);
+> +	if (early_section(ms))
+> +		return IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ?
+> +			memblock_is_map_memory(pfn << PAGE_SHIFT) : 1;
+> +
+> +	return pfn_section_valid(ms, pfn);
+> +}
+> +#endif
+> +	return 1;
+>   }
+>   #endif
+>   
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index 24c045b24b95..0ec20f661b3f 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -135,6 +135,16 @@ config HAVE_FAST_GUP
+>   config ARCH_KEEP_MEMBLOCK
+>   	bool
+>   
+> +config HAVE_EARLY_SECTION_MEMMAP_HOLES
+> +	depends on ARCH_KEEP_MEMBLOCK && SPARSEMEM_VMEMMAP
+> +	def_bool n
+> +	help
+> +	  Early sections on certain platforms might have portions which are
+> +	  not backed with struct page mapping as their memblock entries are
+> +	  marked with MEMBLOCK_NOMAP. When subscribed, this option enables
+> +	  specific handling for those memory sections in certain situations
+> +	  such as pfn_valid().
+> +
+>   # Keep arch NUMA mapping infrastructure post-init.
+>   config NUMA_KEEP_MEMINFO
+>   	bool
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index afaefa8fc6ab..d9fa2e62ab7a 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -1744,6 +1744,7 @@ bool __init_memblock memblock_is_map_memory(phys_addr_t addr)
+>   		return false;
+>   	return !memblock_is_nomap(&memblock.memory.regions[i]);
+>   }
+> +EXPORT_SYMBOL(memblock_is_map_memory);
+>   
+>   int __init_memblock memblock_search_pfn_nid(unsigned long pfn,
+>   			 unsigned long *start_pfn, unsigned long *end_pfn)
+> @@ -1926,7 +1927,7 @@ static void __init free_unused_memmap(void)
+>   	unsigned long start, end, prev_end = 0;
+>   	int i;
+>   
+> -	if (!IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) ||
+> +	if (!IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ||
+>   	    IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
+>   		return;
+>   
+> 
+
+With
+
+commit 1f90a3477df3ff1a91e064af554cdc887c8f9e5e
+Author: Dan Williams <dan.j.williams@intel.com>
+Date:   Thu Feb 25 17:17:05 2021 -0800
+
+     mm: teach pfn_to_online_page() about ZONE_DEVICE section collisions
+
+(still in -next I think)
+
+You'll also have to take care of pfn_to_online_page().
+
 -- 
-2.26.2
+Thanks,
+
+David / dhildenb
 
