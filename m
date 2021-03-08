@@ -2,120 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5AB330E8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 886E4330E96
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhCHMki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:40:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60896 "EHLO
+        id S229704AbhCHMnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:43:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhCHMkH (ORCPT
+        with ESMTP id S229457AbhCHMmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:40:07 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471D2C06174A;
-        Mon,  8 Mar 2021 04:40:07 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id a18so11238321wrc.13;
-        Mon, 08 Mar 2021 04:40:07 -0800 (PST)
+        Mon, 8 Mar 2021 07:42:51 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF91C06174A;
+        Mon,  8 Mar 2021 04:42:51 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id 2so15889441ljr.5;
+        Mon, 08 Mar 2021 04:42:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2LA8/5m2YlrOTBqAtldyUhtslhzmNNTEthEphR9Wf3U=;
-        b=OvE22xB7IoQp92L1rLiZDQFrmcE4kZ7XEoi11rTKRRuOyKVoLLApoWt69ApJwNmeBV
-         SXAg0QplnyQg6cK5WJ35WN2VmxG2Nr+Uab/71x5uqtBu/pPPASh1HcyGCZBM1xJVQuwc
-         6NjHfBOYJjuE6v/uoVcJvxVE3zYLgd/dE+kCQi3dpOouo4Lr82aGjWcKJy1oroGND/os
-         b2eTdXOhceRs7uDPqnVtHv7HoHMZBRzSkS9/T9s5T7VAhjXF6nqcKGh0+zuh8aYqTzWp
-         LDBGYb9I5Lr5sDTtIWsGHW3us4BmtUIOW8lmibNqe7tuup3u2uu8TZ/u/HPiIFtdgloi
-         DI4Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=76ddE+8cbPtUkDVYon6UBU5B401mQDob7OOEc8vXh1I=;
+        b=C3Wqg2NrLknqa+1NPIk7kXMkaDqdgVDi/OUlwJUV9MDtoRtEyA99KdeAzQfs1/4jcg
+         yz3Mi92Odji1y3IiURNKpiBH99hgWFlhMz5/oAOA7z18HvfirvE7v/zDHbJ9fIFbxStd
+         YtNDAD395hDx6Deccp9VvO2YQ38B4YUB0WAeZZzlSWv2W+3KhF7O6hCKVyVOAb7TMSHG
+         ib5uj7BXmEgsJbCXCcNbER/YejqRc6T8RuTffSDXsn+1lp1XQaoIOEXrup6sfSTNN16F
+         wflH/jB3otq71unwznNUecFlzUG4pF8lo0oIN87zt3gNLqdusjW+bI9cScCvt6aX+aZy
+         OQpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2LA8/5m2YlrOTBqAtldyUhtslhzmNNTEthEphR9Wf3U=;
-        b=VKq1kQrHp4Szr991sCoZKilw6PP/cuHbgw3V20WFUkO6zFBiVIXI9hNT9JjuuQmhq6
-         9VjCn9RXB5ve+t7GRfTJPif6XmpJrnM+yciH3v8D0Mz6P9pdymkJEbROc/maN1s025s4
-         rBn64MoGYC9X4koB5DGyz7AjAnuxVtQcPN8LzFPWG3UxXTa3aGhKeb4AgL0ssRx2WeWk
-         fidCMnbIZkR65sBGK33IOb5np+6HevWtmKR3K0b1aiKW9pWl14l8YgJy3UyEZzxRlsbj
-         gUBGtCP4LU/o7zJzhtqpLmmJcp9jANgBpThkj8cv/7V6yMG3mt2UCW4+ueW4YIJiI9RJ
-         a5bg==
-X-Gm-Message-State: AOAM533rlnXVGaGSBbfSdNUQ9Vr3c1sgTB+vBd1aZ9TFYhAB5RE/fUSC
-        ENstW07wUkk+TqQURBPtq12L6cVUUHmCTQ==
-X-Google-Smtp-Source: ABdhPJyPXZFgr74KWhYqrwQAfu6ypmutgoyrZvk0cEkhUOKdZnfinoX8GmOPAmjrsoV6ozjqGo+kjw==
-X-Received: by 2002:a5d:640b:: with SMTP id z11mr22123835wru.327.1615207205841;
-        Mon, 08 Mar 2021 04:40:05 -0800 (PST)
-Received: from adgra-XPS-15-9570.home (2a01cb0008bd270095bc7625808eade0.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:95bc:7625:808e:ade0])
-        by smtp.gmail.com with ESMTPSA id l4sm12206118wrt.60.2021.03.08.04.40.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 04:40:05 -0800 (PST)
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     devicetree@vger.kernel.org, will@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, linux-kernel@vger.kernel.org,
-        krzk@kernel.org, robh+dt@kernel.org, linux-imx@nxp.com,
-        kernel@pengutronix.de, catalin.marinas@arm.com, festevam@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH 1/1] arm64: dts: imx8mm-nitrogen-r2: add espi2 support
-Date:   Mon,  8 Mar 2021 13:39:58 +0100
-Message-Id: <20210308123958.254116-2-adrien.grassein@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210308123958.254116-1-adrien.grassein@gmail.com>
-References: <20210308123958.254116-1-adrien.grassein@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=76ddE+8cbPtUkDVYon6UBU5B401mQDob7OOEc8vXh1I=;
+        b=Of+HvWeKjPws7ZAbau6uBulWo//NyVdZJ98V1k6sy8WSnLqQtakMvNvAw+mT3Y+ZSr
+         ut58UTsJoXZd0Yx9RA2FoNwjoU1Ac0xKUOQeOXiexI9KlMG5T5571o0c8d0prupdOSr6
+         vSwl93+smhvlER6vaJtk9visg4ffQraU7IFzFVbsPotv8xxi1AIU0nRIFdaBAXVzL3M3
+         wizt5+n1nTBHOLPnyvj9arK0RUFU4PYi1E913hooKuItLK7SGKCJQutTdTrDqNCY935I
+         5zFdYGlx2meuzE15jnZc75MjF2pT05NLNvqi9BVynjjZsckXeEzhIlEMFPOMjsDrSBn3
+         MKhg==
+X-Gm-Message-State: AOAM530JZIuczWgOSRw4giePFmgL2hY4y1y1GXkJ5hb2eHUB7FTylpt7
+        w0EaA7ReEufgDMvnlqBRvZg+x56Sue3kbmn8+CI=
+X-Google-Smtp-Source: ABdhPJztGmn4KqEP6K8B8gkXMyidtT19fts+kq8Tp6ZFZ78qtC+JITRKxSg1o0EFb29fgreO80WwhbPvmrfrpefaFn8=
+X-Received: by 2002:a2e:9a4e:: with SMTP id k14mr14004204ljj.116.1615207369938;
+ Mon, 08 Mar 2021 04:42:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210308123958.254116-1-adrien.grassein@gmail.com> <20210308123958.254116-2-adrien.grassein@gmail.com>
+In-Reply-To: <20210308123958.254116-2-adrien.grassein@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 8 Mar 2021 09:42:38 -0300
+Message-ID: <CAOMZO5AnLBawY9UwVa8nqdBPicyfp47_0CG38p82DRdOEYAO6w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] arm64: dts: imx8mm-nitrogen-r2: add espi2 support
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Will Deacon <will@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the description for espi support.
+Hi Adrien,
 
-Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- .../boot/dts/freescale/imx8mm-nitrogen-r2.dts | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
+On Mon, Mar 8, 2021 at 9:40 AM Adrien Grassein
+<adrien.grassein@gmail.com> wrote:
+>
+> Add the description for espi support.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts b/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
-index 4f4cf7df5a5a..0c5949b40eeb 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
-@@ -52,6 +52,19 @@ &A53_3 {
- 	cpu-supply = <&reg_buck3>;
- };
- 
-+/* J15 */
-+&ecspi2 {
-+	assigned-clocks = <&clk IMX8MM_CLK_ECSPI2>;
-+	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_40M>;
-+	assigned-clock-rates = <40000000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi2>;
-+	cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+};
-+
- &fec1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_fec1>;
-@@ -286,6 +299,15 @@ &iomuxc {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_hog>;
- 
-+	pinctrl_ecspi2: ecspi2grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_ECSPI2_SS0_GPIO5_IO13	0x140
-+			MX8MM_IOMUXC_ECSPI2_MISO_ECSPI2_MISO	0x19
-+			MX8MM_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK	0x19
-+			MX8MM_IOMUXC_ECSPI2_MOSI_ECSPI2_MOSI	0x19
-+		>;
-+	};
-+
- 	pinctrl_fec1: fec1grp {
- 		fsl,pins = <
- 			MX8MM_IOMUXC_ENET_MDC_ENET1_MDC			0x3
--- 
-2.25.1
+Nit: In the subject and commit log, it should be ecspi2 instead of espi.
 
+With that fixed:
+
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
