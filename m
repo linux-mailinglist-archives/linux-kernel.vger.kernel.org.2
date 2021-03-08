@@ -2,81 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA9B3305DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1FB3305DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbhCHCZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 21:25:45 -0500
-Received: from smtp23.cstnet.cn ([159.226.251.23]:46056 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230046AbhCHCZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 21:25:28 -0500
-Received: from localhost.localdomain (unknown [124.16.141.241])
-        by APP-03 (Coremail) with SMTP id rQCowAD3_0f+ikVgNHPHAQ--.53308S2;
-        Mon, 08 Mar 2021 10:25:03 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     rostedt@goodmis.org, Viktor.Rosendahl@bmw.de,
-        colin.king@canonical.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2] tracing/tools: Remove unneeded semicolon
-Date:   Mon,  8 Mar 2021 02:24:59 +0000
-Message-Id: <20210308022459.59881-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: rQCowAD3_0f+ikVgNHPHAQ--.53308S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtF4UGFW5tF43AF45tw17Awb_yoWDtwbEkw
-        13ta17tF98Krnakrs7tF43Xry8uw17XFs7GanrtFZrXryrX3s8JFyYv3yDur47urZFv3Wa
-        k3ZxC3WIkr17ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbw8YjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC2
-        0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
-        0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
-        14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20x
-        vaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
-        6r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07bOoGdUUUUU=
-X-Originating-IP: [124.16.141.241]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQcOA102Z+9G-wAAsZ
+        id S233535AbhCHC0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 21:26:18 -0500
+Received: from mga17.intel.com ([192.55.52.151]:24107 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233441AbhCHC0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 21:26:07 -0500
+IronPort-SDR: n0yWkPXabg+f8BJCFVkga4mR3hVF2IHVMZIMBQK0xDW6w4TEKZ47QWAbD3gVxNpVUWlhhNVRir
+ UXRQ01zvXkyw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="167861023"
+X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
+   d="scan'208";a="167861023"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 18:26:07 -0800
+IronPort-SDR: agRF+I/ATsQ+wOLFCyQguMyFtP39FdHEbbtUCNQ4kVrRdL1zfbuCIGmdxjtbJzIv5mfZJZ5jKy
+ uJOFLBk8tgAA==
+X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
+   d="scan'208";a="409126690"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 18:26:01 -0800
+Subject: Re: [PATCH] x86/perf: Fix guest_get_msrs static call if there is no
+ PMU
+To:     Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Thomas Gleixner
+         "(x86/pti/timer/core/smp/irq/perf/efi/locking/ras/objtool)"
+         "(x86@kernel.org)" <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+References: <20210305223331.4173565-1-seanjc@google.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <053d0a22-394d-90d0-8d3b-3cd37ca3f378@intel.com>
+Date:   Mon, 8 Mar 2021 10:25:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210305223331.4173565-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix semicolon.cocci warning:
-tools/tracing/latency/latency-collector.c:1021:2-3: Unneeded semicolon
+On 2021/3/6 6:33, Sean Christopherson wrote:
+> Handle a NULL x86_pmu.guest_get_msrs at invocation instead of patching
+> in perf_guest_get_msrs_nop() during setup.  If there is no PMU, setup
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
-Changes since v2:
-- Fix another instance of superfluous semicolon.
----
- tools/tracing/latency/latency-collector.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+"If there is no PMU" ...
 
-diff --git a/tools/tracing/latency/latency-collector.c b/tools/tracing/latency/latency-collector.c
-index b69de9263ee6..3a2e6bb781a8 100644
---- a/tools/tracing/latency/latency-collector.c
-+++ b/tools/tracing/latency/latency-collector.c
-@@ -1018,7 +1018,7 @@ static long go_to_sleep(const struct entry *req)
- 		cond_timedwait(&printstate.cond, &printstate.mutex, &future);
- 		if (time_has_passed(&future))
- 			break;
--	};
-+	}
- 
- 	if (printstate_has_new_req_arrived(req))
- 		delay = -1;
-@@ -1941,7 +1941,7 @@ static void scan_arguments(int argc, char *argv[])
- 			if (value < 0) {
- 				warnx("TIME must be >= 0\n");
- 				show_usage();
--				;
-+				exit(0);
- 			}
- 			trace_enable = true;
- 			use_random_sleep = true;
--- 
-2.17.1
+How to set up this kind of environment,
+and what changes are needed in .config or boot parameters ?
+
+> bails before updating the static calls, leaving x86_pmu.guest_get_msrs
+> NULL and thus a complete nop.
+
+> Ultimately, this causes VMX abort on
+> VM-Exit due to KVM putting random garbage from the stack into the MSR
+> load list.
+>
+> Fixes: abd562df94d1 ("x86/perf: Use static_call for x86_pmu.guest_get_msrs")
+> Cc: Like Xu <like.xu@linux.intel.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: kvm@vger.kernel.org
+> Reported-by: Dmitry Vyukov <dvyukov@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/events/core.c | 16 +++++-----------
+>   1 file changed, 5 insertions(+), 11 deletions(-)
+>
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 6ddeed3cd2ac..ff874461f14c 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -671,7 +671,11 @@ void x86_pmu_disable_all(void)
+>   
+>   struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
+>   {
+> -	return static_call(x86_pmu_guest_get_msrs)(nr);
+> +	if (x86_pmu.guest_get_msrs)
+> +		return static_call(x86_pmu_guest_get_msrs)(nr);
+
+How about using "static_call_cond" per commit "452cddbff7" ?
+
+> +
+> +	*nr = 0;
+> +	return NULL;
+>   }
+>   EXPORT_SYMBOL_GPL(perf_guest_get_msrs);
+>   
+> @@ -1944,13 +1948,6 @@ static void _x86_pmu_read(struct perf_event *event)
+>   	x86_perf_event_update(event);
+>   }
+>   
+> -static inline struct perf_guest_switch_msr *
+> -perf_guest_get_msrs_nop(int *nr)
+> -{
+> -	*nr = 0;
+> -	return NULL;
+> -}
+> -
+>   static int __init init_hw_perf_events(void)
+>   {
+>   	struct x86_pmu_quirk *quirk;
+> @@ -2024,9 +2021,6 @@ static int __init init_hw_perf_events(void)
+>   	if (!x86_pmu.read)
+>   		x86_pmu.read = _x86_pmu_read;
+>   
+> -	if (!x86_pmu.guest_get_msrs)
+> -		x86_pmu.guest_get_msrs = perf_guest_get_msrs_nop;
+> -
+>   	x86_pmu_static_call_update();
+>   
+>   	/*
 
