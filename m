@@ -2,123 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7327A331248
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4B533124F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbhCHPdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 10:33:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230150AbhCHPdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 10:33:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F28D56526A;
-        Mon,  8 Mar 2021 15:33:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615217604;
-        bh=UdgGpH5wigD4IDua1jI0Goj5nN066h+PRHihFx2waQY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=q7OA0wqvAqQ/DPTVQ5yPBYKh3QOKEgYVJc/zfgupO+rvPAuhdHTnzdGOnmt73HJQ3
-         gS2efyZ2zIvJ3j+fpB+2AHpFYtAQbntLL3hOh+h3RhjsuJEtycG5+8YqTOJ4SOVzZZ
-         OfMJIOVDHXR38lFFE2hYCizVE53huLTBgO2KEkrkWnbad/CWlcXxifwSXwijz4xI/d
-         J3b6Htz08n43ghbK3pmUnnAMwX0g3MoXSEbryI7Ex3BffKRY6Sb0oYKXzpjaxEB1G8
-         1CVf/xYxuG8bDYhFcOJhKsEdXho9ka58QwILGAwT+EBRVMUUDmDofr/P0nh+UCy6kt
-         ix8JOz166XrxA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Noam Stolero <noams@nvidia.com>, Tal Gilboa <talgi@nvidia.com>
+        id S230439AbhCHPeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 10:34:09 -0500
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:36833 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229971AbhCHPdr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 10:33:47 -0500
+Received: by mail-wr1-f49.google.com with SMTP id u14so11927585wri.3;
+        Mon, 08 Mar 2021 07:33:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=i+KaqBArGrcmWeeQo+LRChoEEGt1m5jdSKpkz2jdjGk=;
+        b=I0hD+CtKW2J8DH5Fvn/d72BMUpaQV4VAJK/rP58nQfZ04s2auC7ZOKVQV8Q1Z2nKnO
+         QH/SnjMx6yNORoftr3cSi9/6ZqVF8blDaND83PZfCQzzOUj5lHBBxL0WBesXrbjOlWij
+         29S2EuOrAHEXHMpFwj0KzJzTXtNmJB8jA3LMVq7nmgXEnMsGB0BOJVtv8dzRVjZ3RqQV
+         Z+sGl4y99jD6IHCb+YIULXHbvanO1oZwTWsSBUFRtR9gsPmzo4xgKdS1SiPQq/QT5uQ0
+         FysAWSSC/Wx9U8h66+KyeUJD0z91Fr5YOH/912c0lHWGPVysTMml3s0A63Uj67x0UXfZ
+         lAfA==
+X-Gm-Message-State: AOAM532kEt6hH7kojM8qOfg6jiK5AMUa4+e4tJbWBaqgsI3gqaeaELaM
+        jiq0y2TVZs9/dsq/5N7ttTE=
+X-Google-Smtp-Source: ABdhPJxBQRqa0w3cM4cekeuH3vmdFevqhQo4oTYO/W4p1i1qbyBfANAdzeGt3ihm6F+3WVlyh3q6cg==
+X-Received: by 2002:adf:e481:: with SMTP id i1mr8092291wrm.63.1615217626282;
+        Mon, 08 Mar 2021 07:33:46 -0800 (PST)
+Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id c11sm19177739wrs.28.2021.03.08.07.33.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Mar 2021 07:33:44 -0800 (PST)
+Subject: Re: [PATCH] power: supply: max8997_charger: make EXTCON dependency
+ unconditional
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Timon Baetz <timon.baetz@protonmail.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Roi Dayan <roid@nvidia.com>, Vlad Buslov <vladbu@nvidia.com>,
-        Paul Blakey <paulb@nvidia.com>, Oz Shlomo <ozsh@mellanox.com>,
-        Eli Cohen <eli@mellanox.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Maor Dickman <maord@nvidia.com>,
-        Tariq Toukan <tariqt@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] net/mlx5e: allocate 'indirection_rqt' buffer dynamically
-Date:   Mon,  8 Mar 2021 16:32:57 +0100
-Message-Id: <20210308153318.2486939-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chanwoo Choi <cw00.choi@samsung.com>
+References: <20210308152935.2263935-1-arnd@kernel.org>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Message-ID: <12c5050f-feb3-e07f-45d2-5e89b678841a@kernel.org>
+Date:   Mon, 8 Mar 2021 16:33:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210308152935.2263935-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 08/03/2021 16:29, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Some of the extcon interfaces have a fallback implementation that can
+> be used when EXTCON is disabled, but some others do not, causing a
+> build failure:
+> 
+> drivers/power/supply/max8997_charger.c:261:9: error: implicit declaration of function 'devm_extcon_register_notifier_all' [-Werror,-Wimplicit-function-declaration]
+>                 ret = devm_extcon_register_notifier_all(&pdev->dev, charger->edev,
+>                       ^
+> drivers/power/supply/max8997_charger.c:261:9: note: did you mean 'devm_extcon_register_notifier'?
+> include/linux/extcon.h:263:19: note: 'devm_extcon_register_notifier' declared here
+> static inline int devm_extcon_register_notifier(struct device *dev,
+> 
+> I assume there is no reason to actually build this driver without extcon
+> support, so a hard dependency is the easiest fix. Alternatively the
+> header file could be extended to provide additional inline stubs.
 
-Increasing the size of the indirection_rqt array from 128 to 256 bytes
-pushed the stack usage of the mlx5e_hairpin_fill_rqt_rqns() function
-over the warning limit when building with clang and CONFIG_KASAN:
+Hi Arnd,
 
-drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:970:1: error: stack frame size of 1180 bytes in function 'mlx5e_tc_add_nic_flow' [-Werror,-Wframe-larger-than=]
+Thanks for the patch but I think I got it covered with:
+https://lore.kernel.org/lkml/20210215100610.19911-2-cw00.choi@samsung.com/
+(sent via extcon tree).
 
-Using dynamic allocation here is safe because the caller does the
-same, and it reduces the stack usage of the function to just a few
-bytes.
+Did you experience a new/different issue?
 
-Fixes: 1dd55ba2fb70 ("net/mlx5e: Increase indirection RQ table size to 256")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-index 0da69b98f38f..66f98618dc13 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -445,12 +445,16 @@ static void mlx5e_hairpin_destroy_transport(struct mlx5e_hairpin *hp)
- 	mlx5_core_dealloc_transport_domain(hp->func_mdev, hp->tdn);
- }
- 
--static void mlx5e_hairpin_fill_rqt_rqns(struct mlx5e_hairpin *hp, void *rqtc)
-+static int mlx5e_hairpin_fill_rqt_rqns(struct mlx5e_hairpin *hp, void *rqtc)
- {
--	u32 indirection_rqt[MLX5E_INDIR_RQT_SIZE], rqn;
-+	u32 *indirection_rqt, rqn;
- 	struct mlx5e_priv *priv = hp->func_priv;
- 	int i, ix, sz = MLX5E_INDIR_RQT_SIZE;
- 
-+	indirection_rqt = kzalloc(sz, GFP_KERNEL);
-+	if (!indirection_rqt)
-+		return -ENOMEM;
-+
- 	mlx5e_build_default_indir_rqt(indirection_rqt, sz,
- 				      hp->num_channels);
- 
-@@ -462,6 +466,9 @@ static void mlx5e_hairpin_fill_rqt_rqns(struct mlx5e_hairpin *hp, void *rqtc)
- 		rqn = hp->pair->rqn[ix];
- 		MLX5_SET(rqtc, rqtc, rq_num[i], rqn);
- 	}
-+
-+	kfree(indirection_rqt);
-+	return 0;
- }
- 
- static int mlx5e_hairpin_create_indirect_rqt(struct mlx5e_hairpin *hp)
-@@ -482,12 +489,15 @@ static int mlx5e_hairpin_create_indirect_rqt(struct mlx5e_hairpin *hp)
- 	MLX5_SET(rqtc, rqtc, rqt_actual_size, sz);
- 	MLX5_SET(rqtc, rqtc, rqt_max_size, sz);
- 
--	mlx5e_hairpin_fill_rqt_rqns(hp, rqtc);
-+	err = mlx5e_hairpin_fill_rqt_rqns(hp, rqtc);
-+	if (err)
-+		goto out;
- 
- 	err = mlx5_core_create_rqt(mdev, in, inlen, &hp->indir_rqt.rqtn);
- 	if (!err)
- 		hp->indir_rqt.enabled = true;
- 
-+out:
- 	kvfree(in);
- 	return err;
- }
--- 
-2.29.2
-
+Best regards,
+Krzysztof
