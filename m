@@ -2,115 +2,421 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF0B3315CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E393315C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbhCHSV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:21:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50880 "EHLO
+        id S230301AbhCHSUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:20:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbhCHSVN (ORCPT
+        with ESMTP id S229972AbhCHSUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:21:13 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0543FC06174A;
-        Mon,  8 Mar 2021 10:21:13 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id 16so6221606pfn.5;
-        Mon, 08 Mar 2021 10:21:13 -0800 (PST)
+        Mon, 8 Mar 2021 13:20:06 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80195C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 10:20:06 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id x135so7463611oia.9
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 10:20:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hBOkMyS1macfI4cKuiTKwW9+cz6HPPxEVuM+uYm8K2I=;
-        b=ChY86Kj0kiVAvmNp/QhMzfyis9kegc+WALLTv5GsGEgF+OjuE31mz/BQtiVTFPfaKJ
-         7z0++Lu+dqkex7rHWOlEqCZJlOZ3F1SaV6yO+Vmrh1JLUG7qxAFPV9CxsAJe5A5Ql073
-         kspQKdLijKU1Q6kcO/ZkeiYndmgdtSn+5Cgrr2owLyVZJSBO2Zi14WZhKCnZZDW2e3pQ
-         ETtIOeF1PXTKdIg638uw5NpKiFXHlv/cB2QVMLtQX2AeQLfldEe+NkPjCQjQ+UG9q/F1
-         zAc22VyqZX/HdBXSsVP1F/rbCy/fyzhRi0TD7zI9hXsOuLClLFBMMLj/+ZKg+d3duCwV
-         6nhA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VoplltavvQvjqO2pQUpgJwxuAAm+xc+f9ES5iF441f0=;
+        b=K2mFi1suPaX7ZXrcKjQAMIFHnP1xvkz7utO/L3oKYnnIMjCaDrCeXGkyAhmzBwvtMp
+         ams39Bzi3ATW32eMI+R9h1igk7rXnnrzonck5nx7+7lzGHahXNc8wIEd2LwL3NuUOrkR
+         tRjYqg1WiOV7KDrAw8zfgTXkIv0WAM8ybHyxU53eZ5fOBvWyhVqe8Nt2eqYmpieEouLd
+         MOttetx0w9akI5S62yZKOSAvzEev+ukY/W4mdkk05VoEAhUDTy+sj1VrqD0hjHAxVbFJ
+         M0rhwbB8lvXXu/eIOMsJsYnsOo+M3oREc5bkcujXsC51f1CSQrAt8oKKZRDLKBWcznZ6
+         0yzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=hBOkMyS1macfI4cKuiTKwW9+cz6HPPxEVuM+uYm8K2I=;
-        b=pLzdZGd3T6IiuVwaxUHnmloD+fVlK4vFvtYMId1qorylZAtBJVkM9XzsK7YPTvbYfc
-         6xe0lRknQbX5gZnq02A+BZFm4I3ew/oAl6SFb597WyT8jLdN6B6f8U2+chlKIVLEuMRz
-         yq7gpNadg16g7lccxojb/9rnO1F23KgI/9Gkr9sBKKbxwIhpJlMMybbh34HPEoi/ymd7
-         PDDUAiToRziQUwjif/BMrf4xMZQxHRKqEuXgZLyZEXlvUBPGbJCzh9e1fTjUMsnS/Fk3
-         FuwHSb3h/HtAwM+l21bKJADvveCpuLuZNtsGwwOXUdawKj9cyRBWNrzjy+B6UZxvTIE4
-         8DUQ==
-X-Gm-Message-State: AOAM531BhpSxS24abg2+ygyN9qM1T0Vi4TlmAcEOuqgsryKitpIylTkf
-        ESXfwtw7RLv4/4VMyq9kOvo=
-X-Google-Smtp-Source: ABdhPJxBiYtzEL/WY2aAOOJ+1e8P8oP1A7uUeTX4MIye9BbkaYL+MZielgx5wCAjI5AlqJraEHoZ7A==
-X-Received: by 2002:a62:5344:0:b029:1c7:eeea:8bad with SMTP id h65-20020a6253440000b02901c7eeea8badmr116901pfb.1.1615227672523;
-        Mon, 08 Mar 2021 10:21:12 -0800 (PST)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id c24sm68356pjv.18.2021.03.08.10.21.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 10:21:12 -0800 (PST)
-Subject: Re: [PATCH v3] MIPS: kernel: Reserve exception base early to prevent
- corruption
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mike Rapoport <rppt@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Kamal Dasu <kdasu.kdev@gmail.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-References: <20210308092447.13073-1-tsbogend@alpha.franken.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <95d12091-d3b0-3034-98ed-9ad73ef21a3b@gmail.com>
-Date:   Mon, 8 Mar 2021 10:21:10 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        bh=VoplltavvQvjqO2pQUpgJwxuAAm+xc+f9ES5iF441f0=;
+        b=ok0kiQ2BXAtdouvlXi18+rWcdiFKWg1/N+AJD/x2XTaL2iQlyGbV4B8T4n0iq37bQu
+         ZQAViSyMegxF5VkmNSkEcpudEIZpOyGdrS3NXquiQoGA8Fnnlcx5+v76PQAaXNPZBI7y
+         knLNFwDGV2Enui8Q2PH+KKV62pELRWHeZ4PWPXT9dpQS5Z0BWMZ9NhYjFT3pDdWeZzkH
+         pKQpWb6UWA0kam4zlu5kqsWWFQhXp1+YGugtHL7H6tid8Z0QmuAz0czK+rFagzdYJaXN
+         pYI1BvrVHL30S54AXaJ6cLz41x2297RDp3BcBzUFrbxCj/PeOQVL41r6wqsNpCXmie//
+         8K6w==
+X-Gm-Message-State: AOAM533/rb18S/xrAzcLxSDfdGXBkkIfxzCpRQ2AsR75NSVjOasLbTCP
+        8HN9ULsRcBscyZD8AGLf3EZUtA==
+X-Google-Smtp-Source: ABdhPJzl3RGlcRqjLZOB3gnherYm/PGLkjTuylDtvEkNTCsOP6YPr5wUxBVAK5LQA9K7o3UWOa2WxQ==
+X-Received: by 2002:a54:4196:: with SMTP id 22mr67007oiy.137.1615227605780;
+        Mon, 08 Mar 2021 10:20:05 -0800 (PST)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id r16sm598295oic.29.2021.03.08.10.20.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 10:20:05 -0800 (PST)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>
+Subject: [PATCH v2] arm64: dts: qcom: Introduce SM8350 HDK
+Date:   Mon,  8 Mar 2021 10:21:13 -0800
+Message-Id: <20210308182113.1284966-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210308092447.13073-1-tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/8/21 1:24 AM, Thomas Bogendoerfer wrote:
-> BMIPS is one of the few platforms that do change the exception base.
-> After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
-> with kernel_end") we started seeing BMIPS boards fail to boot with the
-> built-in FDT being corrupted.
-> 
-> Before the cited commit, early allocations would be in the [kernel_end,
-> RAM_END] range, but after commit they would be within [RAM_START +
-> PAGE_SIZE, RAM_END].
-> 
-> The custom exception base handler that is installed by
-> bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
-> memory region allocated by unflatten_and_copy_device_tree() thus
-> corrupting the FDT used by the kernel.
-> 
-> To fix this, we need to perform an early reservation of the custom
-> exception space. Additional we reserve the first 4k (1k for R3k) for
-> either normal exception vector space (legacy CPUs) or special vectors
-> like cache exceptions.
-> 
-> Huge thanks to Serge for analysing and proposing a solution to this
-> issue.
-> 
-> Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
-> Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
-> Changes in v3:
->  - always reserve the first 4k for all CPUs (1k for R3k)
-> 
-> Changes in v2:
->  - do only memblock reservation in reserve_exception_space()
->  - reserve 0..0x400 for all CPUs without ebase register and
->    to addtional reserve_exception_space for BMIPS CPUs
+Add initial DTS for the Snapdragon 888 Mobile Hardware Development Kit,
+aka SM8350 HDK. This initial version describes debug UART, UFS storage,
+the three USB connectors and remoteprocs.
 
-Thomas, do you mind CC'ing me for subsequent versions so you can get a
-chance to have a Tested-by tag? Thank you!
+Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+Changes since v1:
+- Added 'regulator-allow-set-load' to UFS regulators
+- Fixed copy-paste error in comment about PINCTRL overrides
+
+ arch/arm64/boot/dts/qcom/Makefile       |   1 +
+ arch/arm64/boot/dts/qcom/sm8350-hdk.dts | 319 ++++++++++++++++++++++++
+ 2 files changed, 320 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/sm8350-hdk.dts
+
+diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+index 549a7a2151d4..aa40ff8bf025 100644
+--- a/arch/arm64/boot/dts/qcom/Makefile
++++ b/arch/arm64/boot/dts/qcom/Makefile
+@@ -59,4 +59,5 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-mtp.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-hdk.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-mtp.dtb
++dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-hdk.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-mtp.dtb
+diff --git a/arch/arm64/boot/dts/qcom/sm8350-hdk.dts b/arch/arm64/boot/dts/qcom/sm8350-hdk.dts
+new file mode 100644
+index 000000000000..f23a0cf3f7b7
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8350-hdk.dts
+@@ -0,0 +1,319 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/*
++ * Copyright (c) 2020-2021, Linaro Limited
++ */
++
++/dts-v1/;
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
++#include "sm8350.dtsi"
++
++/ {
++	model = "Qualcomm Technologies, Inc. SM8350 HDK";
++	compatible = "qcom,sm8350-hdk", "qcom,sm8350";
++
++	aliases {
++		serial0 = &uart2;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	vph_pwr: vph-pwr-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "vph_pwr";
++		regulator-min-microvolt = <3700000>;
++		regulator-max-microvolt = <3700000>;
++
++		regulator-always-on;
++		regulator-boot-on;
++	};
++};
++
++&adsp {
++	status = "okay";
++	firmware-name = "qcom/sm8350/adsp.mbn";
++};
++
++&apps_rsc {
++	pm8350-rpmh-regulators {
++		compatible = "qcom,pm8350-rpmh-regulators";
++		qcom,pmic-id = "b";
++
++		vdd-s1-supply = <&vph_pwr>;
++		vdd-s2-supply = <&vph_pwr>;
++		vdd-s3-supply = <&vph_pwr>;
++		vdd-s4-supply = <&vph_pwr>;
++		vdd-s5-supply = <&vph_pwr>;
++		vdd-s6-supply = <&vph_pwr>;
++		vdd-s7-supply = <&vph_pwr>;
++		vdd-s8-supply = <&vph_pwr>;
++		vdd-s9-supply = <&vph_pwr>;
++		vdd-s10-supply = <&vph_pwr>;
++		vdd-s11-supply = <&vph_pwr>;
++		vdd-s12-supply = <&vph_pwr>;
++
++		vdd-l1-l4-supply = <&vreg_s11b_0p95>;
++		vdd-l2-l7-supply = <&vreg_bob>;
++		vdd-l3-l5-supply = <&vreg_bob>;
++		vdd-l6-l9-l10-supply = <&vreg_s11b_0p95>;
++
++		vreg_s10b_1p8: smps10 {
++			regulator-name = "vreg_s10b_1p8";
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		vreg_s11b_0p95: smps11 {
++			regulator-name = "vreg_s11b_0p95";
++			regulator-min-microvolt = <952000>;
++			regulator-max-microvolt = <952000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		vreg_s12b_1p25: smps12 {
++			regulator-name = "vreg_s12b_1p25";
++			regulator-min-microvolt = <1256000>;
++			regulator-max-microvolt = <1256000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		vreg_l1b_0p88: ldo1 {
++			regulator-name = "vreg_l1b_0p88";
++			regulator-min-microvolt = <912000>;
++			regulator-max-microvolt = <920000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		vreg_l2b_3p07: ldo2 {
++			regulator-name = "vreg_l2b_3p07";
++			regulator-min-microvolt = <3072000>;
++			regulator-max-microvolt = <3072000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		vreg_l3b_0p9: ldo3 {
++			regulator-name = "vreg_l3b_0p9";
++			regulator-min-microvolt = <904000>;
++			regulator-max-microvolt = <904000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		vreg_l5b_0p88: ldo5 {
++			regulator-name = "vreg_l5b_0p88";
++			regulator-min-microvolt = <880000>;
++			regulator-max-microvolt = <888000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++			regulator-allow-set-load;
++		};
++
++		vreg_l6b_1p2: ldo6 {
++			regulator-name = "vreg_l6b_1p2";
++			regulator-min-microvolt = <1200000>;
++			regulator-max-microvolt = <1208000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++			regulator-allow-set-load;
++		};
++
++		vreg_l7b_2p96: ldo7 {
++			regulator-name = "vreg_l7b_2p96";
++			regulator-min-microvolt = <2504000>;
++			regulator-max-microvolt = <2504000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++			regulator-allow-set-load;
++		};
++
++		vreg_l9b_1p2: ldo9 {
++			regulator-name = "vreg_l9b_1p2";
++			regulator-min-microvolt = <1200000>;
++			regulator-max-microvolt = <1200000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++			regulator-allow-set-load;
++		};
++	};
++
++	pm8350c-rpmh-regulators {
++		compatible = "qcom,pm8350c-rpmh-regulators";
++		qcom,pmic-id = "c";
++
++		vdd-s1-supply = <&vph_pwr>;
++		vdd-s2-supply = <&vph_pwr>;
++		vdd-s3-supply = <&vph_pwr>;
++		vdd-s4-supply = <&vph_pwr>;
++		vdd-s5-supply = <&vph_pwr>;
++		vdd-s6-supply = <&vph_pwr>;
++		vdd-s7-supply = <&vph_pwr>;
++		vdd-s8-supply = <&vph_pwr>;
++		vdd-s9-supply = <&vph_pwr>;
++		vdd-s10-supply = <&vph_pwr>;
++
++		vdd-l1-l12-supply = <&vreg_s1c_1p86>;
++		vdd-l2-l8-supply = <&vreg_s1c_1p86>;
++		vdd-l3-l4-l5-l7-l13-supply = <&vreg_bob>;
++		vdd-l6-l9-l11-supply = <&vreg_bob>;
++		vdd-l10-supply = <&vreg_s12b_1p25>;
++
++		vdd-bob-supply = <&vph_pwr>;
++
++		vreg_s1c_1p86: smps1 {
++			regulator-name = "vreg_s1c_1p86";
++			regulator-min-microvolt = <1856000>;
++			regulator-max-microvolt = <1880000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		vreg_bob: bob {
++			regulator-name = "vreg_bob";
++			regulator-min-microvolt = <3008000>;
++			regulator-max-microvolt = <3960000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_AUTO>;
++		};
++
++		vreg_l1c_1p8: ldo1 {
++			regulator-name = "vreg_l1c_1p8";
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		vreg_l2c_1p8: ldo2 {
++			regulator-name = "vreg_l2c_1p8";
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		vreg_l6c_1p8: ldo6 {
++			regulator-name = "vreg_l6c_1p8";
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <2960000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		vreg_l9c_2p96: ldo9 {
++			regulator-name = "vreg_l9c_2p96";
++			regulator-min-microvolt = <2960000>;
++			regulator-max-microvolt = <3008000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		vreg_l10c_1p2: ldo10 {
++			regulator-name = "vreg_l10c_1p2";
++			regulator-min-microvolt = <1200000>;
++			regulator-max-microvolt = <1200000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++	};
++};
++
++&cdsp {
++	status = "okay";
++	firmware-name = "qcom/sm8350/cdsp.mbn";
++};
++
++&mpss {
++	status = "okay";
++	firmware-name = "qcom/sm8350/modem.mbn";
++};
++
++&qupv3_id_1 {
++	status = "okay";
++};
++
++&slpi {
++	status = "okay";
++	firmware-name = "qcom/sm8350/slpi.mbn";
++};
++
++&tlmm {
++	gpio-reserved-ranges = <52 8>;
++};
++
++&uart2 {
++	status = "okay";
++};
++
++&ufs_mem_hc {
++	status = "okay";
++
++	reset-gpios = <&tlmm 203 GPIO_ACTIVE_LOW>;
++
++	vcc-supply = <&vreg_l7b_2p96>;
++	vcc-max-microamp = <800000>;
++	vccq-supply = <&vreg_l9b_1p2>;
++	vccq-max-microamp = <900000>;
++};
++
++&ufs_mem_phy {
++	status = "okay";
++
++	vdda-phy-supply = <&vreg_l5b_0p88>;
++	vdda-max-microamp = <91600>;
++	vdda-pll-supply = <&vreg_l6b_1p2>;
++	vdda-pll-max-microamp = <19000>;
++};
++
++&usb_1 {
++	status = "okay";
++};
++
++&usb_1_dwc3 {
++	/* TODO: Define USB-C connector properly */
++	dr_mode = "peripheral";
++};
++
++&usb_1_hsphy {
++	status = "okay";
++
++	vdda-pll-supply = <&vreg_l5b_0p88>;
++	vdda18-supply = <&vreg_l1c_1p8>;
++	vdda33-supply = <&vreg_l2b_3p07>;
++};
++
++&usb_1_qmpphy {
++	status = "okay";
++
++	vdda-phy-supply = <&vreg_l6b_1p2>;
++	vdda-pll-supply = <&vreg_l1b_0p88>;
++};
++
++&usb_2 {
++	status = "okay";
++};
++
++&usb_2_dwc3 {
++	dr_mode = "host";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&usb_hub_enabled_state>;
++};
++
++&usb_2_hsphy {
++	status = "okay";
++
++	vdda-pll-supply = <&vreg_l5b_0p88>;
++	vdda18-supply = <&vreg_l1c_1p8>;
++	vdda33-supply = <&vreg_l2b_3p07>;
++};
++
++&usb_2_qmpphy {
++	status = "okay";
++
++	vdda-phy-supply = <&vreg_l6b_1p2>;
++	vdda-pll-supply = <&vreg_l5b_0p88>;
++};
++
++/* PINCTRL - additions to nodes defined in sm8350.dtsi */
++
++&tlmm {
++	usb_hub_enabled_state: usb-hub-enabled-state {
++		pins = "gpio42";
++		function = "gpio";
++
++		drive-strength = <2>;
++		output-low;
++	};
++};
 -- 
-Florian
+2.29.2
+
