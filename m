@@ -2,100 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E683313DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:53:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1EA3313E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbhCHQwh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Mar 2021 11:52:37 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:42564 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229893AbhCHQw0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:52:26 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-282-p8F5T5RLMuythNy9As2n-g-1; Mon, 08 Mar 2021 16:52:23 +0000
-X-MC-Unique: p8F5T5RLMuythNy9As2n-g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 8 Mar 2021 16:52:24 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 8 Mar 2021 16:52:24 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Tiezhu Yang' <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: RE: [PATCH] MIPS: Check __clang__ to avoid performance influence with
- GCC in csum_tcpudp_nofold()
-Thread-Topic: [PATCH] MIPS: Check __clang__ to avoid performance influence
- with GCC in csum_tcpudp_nofold()
-Thread-Index: AQHXFBmyTl3JNAv/2UywLmyfFV7Ivap6TYNg
-Date:   Mon, 8 Mar 2021 16:52:24 +0000
-Message-ID: <8d61574e815a4cf098d21eb4d749be0f@AcuMS.aculab.com>
-References: <1615207807-29972-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1615207807-29972-1-git-send-email-yangtiezhu@loongson.cn>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S229463AbhCHQyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:54:44 -0500
+Received: from mga01.intel.com ([192.55.52.88]:34620 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229790AbhCHQyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 11:54:43 -0500
+IronPort-SDR: 898Xm2NgKOIHwiVJ3iaYeL2/igbzwnruKElMWUXt4FANA0LKougCVeyQ6CSnoE8NJwvVMtTyOH
+ aT8nSNwoYtJg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="207831945"
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="207831945"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 08:54:43 -0800
+IronPort-SDR: pbFnx7iBOrbMc2QALC+mxcPEvXgco+DtPPXnpBxnGJEXO8ORlqKUl8v7VeObfdKSR1zv+kH540
+ W9wM4FhOcuSA==
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="447192324"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 08:54:42 -0800
+Date:   Mon, 8 Mar 2021 08:54:37 -0800
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf auxtrace: Fix auxtrace queue conflict
+Message-ID: <20210308165437.GA203350@tassilo.jf.intel.com>
+References: <20210308151143.18338-1-adrian.hunter@intel.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308151143.18338-1-adrian.hunter@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tiezhu Yang
-> Sent: 08 March 2021 12:50
+On Mon, Mar 08, 2021 at 05:11:43PM +0200, Adrian Hunter wrote:
+> The only requirement of an auxtrace queue is that the buffers are in
+> time order.  That is achieved by making separate queues for separate
+> perf buffer or AUX area buffer mmaps.
 > 
-> The asm code in csum_tcpudp_nofold() is performance-critical, I am sorry
-> for the poorly considered implementation about the performance influence
-> with GCC in the commit 198688edbf77 ("MIPS: Fix inline asm input/output
-> type mismatch in checksum.h used with Clang").
+> That generally means a separate queue per cpu for per-cpu contexts,
+> and a separate queue per thread for per-task contexts.
 > 
-> With this patch, we can build successfully by both GCC and Clang,
-> at the same time, we can avoid the potential performance influence
-> with GCC.
+> When buffers are added to a queue, perf checks that the buffer cpu
+> and thread id (tid) match the queue cpu and thread id.
 > 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  arch/mips/include/asm/checksum.h | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+> However, generally, that need not be true, and perf will queue
+> buffers correctly anyway, so the check is not needed.
 > 
-> diff --git a/arch/mips/include/asm/checksum.h b/arch/mips/include/asm/checksum.h
-> index 1e6c135..64d353e 100644
-> --- a/arch/mips/include/asm/checksum.h
-> +++ b/arch/mips/include/asm/checksum.h
-> @@ -130,7 +130,9 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
->  					__u32 len, __u8 proto,
->  					__wsum sum)
->  {
-> +#ifdef __clang__
->  	unsigned long tmp = (__force unsigned long)sum;
-> +#endif
+> In addition, the check gets erroneously hit when using sample mode
+> to trace multiple threads.
+> 
+> Consequently, fix that case by removing the check.
 
-What happens if you make the above:
-#ifdef __clang__
-	unsigned long tmp = (__force unsigned long)sum;
-#else
-	__wsum tmp = sum;
-#endif
-	
-and then leave the rest of the function the same for both compilers.
-Maybe do s/sum/sum_in/,s/tmp/sum/ to reduce the changes.
+Thanks!
 
-	David
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-Andi
