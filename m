@@ -2,135 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C703309AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3CD3309B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232303AbhCHInn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 03:43:43 -0500
-Received: from mail-lf1-f53.google.com ([209.85.167.53]:43458 "EHLO
-        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231629AbhCHInY (ORCPT
+        id S232087AbhCHIpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 03:45:15 -0500
+Received: from mail-ua1-f46.google.com ([209.85.222.46]:42742 "EHLO
+        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhCHIo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 03:43:24 -0500
-Received: by mail-lf1-f53.google.com with SMTP id d3so19681630lfg.10;
-        Mon, 08 Mar 2021 00:43:23 -0800 (PST)
+        Mon, 8 Mar 2021 03:44:59 -0500
+Received: by mail-ua1-f46.google.com with SMTP id o20so3069276uaj.9;
+        Mon, 08 Mar 2021 00:44:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ufjH8UXytToswCfYagSqIAjTWmllgUhOGrl0yZoSiKw=;
-        b=XXkHb6+WCWfwJb9A8v/lO1MJONztlKuzPJ73RFM0StzHis5VjVT3S9Vo235Z1imX3R
-         NLOYYNLVkvkBmvZDPWh12B2k2QOzx81GsGaD1FBL3G/4+iDTcxhJbPccGqoLF8flwN7W
-         HtI5fUZBU3nZSlBUItJ1EuEpT1y4391ywnl55vNXBA5hjJefqGMv3UjYrttaGcrLI7gy
-         oQdvx60gbr/sqYgiv0b2gLOpyI85s+Eld9ynmMmhQ7tKesnMdewzSDzEKYo1R2QOqnC1
-         cQaSVhTQt8QNHa5mnNo2cH/NF3ve/yjHItTC9rUal6ASmWBcCf9GJwhhPlLvm0c2jhNb
-         5+9g==
-X-Gm-Message-State: AOAM532Oorn8yxh3F+8V5xlEWEGtdhucys5C0DLcjwo4NCq1vbs57jNk
-        c3rnWlzLUT8faU85T+MzGlw=
-X-Google-Smtp-Source: ABdhPJzsooBoCEMkMrGt+rNFS5VhSKpxeb3jqdVpf1Dfmq0VCuxcNAnJstSaPcK1ooyoRTGLkZn1qg==
-X-Received: by 2002:a05:6512:405:: with SMTP id u5mr13229589lfk.574.1615193003216;
-        Mon, 08 Mar 2021 00:43:23 -0800 (PST)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id f26sm1275775lfe.118.2021.03.08.00.43.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 00:43:22 -0800 (PST)
-Date:   Mon, 8 Mar 2021 10:43:16 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: [RFC PATCH v2 8/8] watchdog: retu_wdt: Clean-up by using managed
- work init
-Message-ID: <8c1a5a62490b6a3d165784ce9ad07b9ab6e13e53.1615187284.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1615187284.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=owwCORv4BLcbVhC0xUWnywi72Tinq+aKifrHa6Yxlwk=;
+        b=DfFN5tzVebpqH9V4aVu8y39QLy4hQia0S1X7xpDuvkO5ZKzKUDisg7od0idva4HTiO
+         YFusHB2R84Ng2YXqkPbjjoLGjTo0E4tvOBZBKjVPucg3OqGOoNx9uo0Cx/VKa/hEWOHg
+         ChOHlol7HTNLkJMpGt1ZdxRHGj9GJJrU75pF1I09L+ZX3ltCxOsRfx/U+H5Np4Z/2x8g
+         84euQlp7r3XkHum0zHn1Mhyb/GspLRldKMAGIPxHnLy8wr22TKal+uHrX1dGoVReD5+W
+         Jzj42WGtipr1foPmt9jfrli9DCGO0UM59uBXUzubCNkeY8xJAi9V0zox9uxzNLu0QZ+x
+         EnxQ==
+X-Gm-Message-State: AOAM531zgUM0HZ0KMH8MUUu1OKmIaPJQc32vnb81PO9oTnBYb8fwa7Pw
+        V1WhxGGJ19R8o52wQmEY7q7cF/6SyMWIFlAl4nY=
+X-Google-Smtp-Source: ABdhPJwUy62f9DERQowQ18mItx2Zii9uEg/QPjkhnBgQYWSZ5SJULZvhgURvHyFEEjTAIa2B8JtqsWG3243hodmNh1k=
+X-Received: by 2002:ab0:6045:: with SMTP id o5mr12332739ual.100.1615193098661;
+ Mon, 08 Mar 2021 00:44:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1615187284.git.matti.vaittinen@fi.rohmeurope.com>
+References: <20210305142359.11992-1-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20210305142359.11992-1-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Mar 2021 09:44:47 +0100
+Message-ID: <CAMuHMdUibg-bv_pwXf3v-KNpKMv-bZGtur0=AOgWahnMGQBmZw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: timer: renesas,tmu: add r8a779a0 TMU support
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Few drivers implement remove call-back only for ensuring a delayed
-work gets cancelled prior driver removal. Clean-up these by switching
-to use devm_delayed_work_autocancel() instead.
+On Fri, Mar 5, 2021 at 3:25 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-This change is compile-tested only. All testing is appreciated.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- drivers/watchdog/retu_wdt.c | 22 ++++++----------------
- 1 file changed, 6 insertions(+), 16 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/drivers/watchdog/retu_wdt.c b/drivers/watchdog/retu_wdt.c
-index 258dfcf9cbda..2b9017e1cd91 100644
---- a/drivers/watchdog/retu_wdt.c
-+++ b/drivers/watchdog/retu_wdt.c
-@@ -8,6 +8,7 @@
-  * Rewritten by Aaro Koskinen.
-  */
- 
-+#include <linux/devm-helpers.h>
- #include <linux/slab.h>
- #include <linux/errno.h>
- #include <linux/device.h>
-@@ -127,9 +128,12 @@ static int retu_wdt_probe(struct platform_device *pdev)
- 	wdev->rdev		= rdev;
- 	wdev->dev		= &pdev->dev;
- 
--	INIT_DELAYED_WORK(&wdev->ping_work, retu_wdt_ping_work);
-+	ret = devm_delayed_work_autocancel(&pdev->dev, &wdev->ping_work,
-+					   retu_wdt_ping_work);
-+	if (ret)
-+		return ret;
- 
--	ret = watchdog_register_device(retu_wdt);
-+	ret = devm_watchdog_register_device(&pdev->dev, retu_wdt);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -138,25 +142,11 @@ static int retu_wdt_probe(struct platform_device *pdev)
- 	else
- 		retu_wdt_ping_enable(wdev);
- 
--	platform_set_drvdata(pdev, retu_wdt);
--
--	return 0;
--}
--
--static int retu_wdt_remove(struct platform_device *pdev)
--{
--	struct watchdog_device *wdog = platform_get_drvdata(pdev);
--	struct retu_wdt_dev *wdev = watchdog_get_drvdata(wdog);
--
--	watchdog_unregister_device(wdog);
--	cancel_delayed_work_sync(&wdev->ping_work);
--
- 	return 0;
- }
- 
- static struct platform_driver retu_wdt_driver = {
- 	.probe		= retu_wdt_probe,
--	.remove		= retu_wdt_remove,
- 	.driver		= {
- 		.name	= "retu-wdt",
- 	},
--- 
-2.25.4
-
+                        Geert
 
 -- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
