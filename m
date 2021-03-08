@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B72330AC7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B249330AD9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbhCHKCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 05:02:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231607AbhCHKCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:02:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52B8A64EB2;
-        Mon,  8 Mar 2021 10:02:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615197724;
-        bh=SXbYLOSUSP4sHbGkOmmiltf76FOjmslDqPsc96yLRbc=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=YLSRTTw7zz9ROpgP3mmjVFmHVosQ1YUd3QY7hF6cE7A0vqoX7O7BDqzoeF+o6TQpR
-         WWsMXV5Tdc3zpiuBr5akbecBG0j1TClnDPcBKoITJjK+dcXXRvgoTmg36+TzhWSQL7
-         FxZzM5Z1NnqazCnn/JPmQqME2TGy+Boevoy1Oyx9vtDRX2kHe6CA50Ojd/Ripplv5o
-         WiTBrZwD4q3S6GcGffM+hfvTGDm3VEwPkpdIPzCkgQ25g59++FFVGrc+TUirnsatPi
-         8zV33EvBCBIx/EZAvq0DF/ORirSauEI96XeGgHYm9c/cDTuGj4OO7YsNjfKDPeLJY+
-         hZx7zPTxSVfrw==
-Date:   Mon, 8 Mar 2021 11:02:01 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Shou-Chieh Hsu <shouchieh@chromium.org>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Shou-Chieh Hsu <shouchieh@google.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH] HID: google: add don USB id
-In-Reply-To: <20210302115754.1.Ieb3e07a8f6c1d8b912c12d5801f1af20735c3430@changeid>
-Message-ID: <nycvar.YFH.7.76.2103081101510.12405@cbobk.fhfr.pm>
-References: <20210302115754.1.Ieb3e07a8f6c1d8b912c12d5801f1af20735c3430@changeid>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S231756AbhCHKIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 05:08:50 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51312 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231757AbhCHKIf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 05:08:35 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 128A3UkX009810;
+        Mon, 8 Mar 2021 04:03:30 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615197810;
+        bh=BWvL4Cr1ZKgQ/f6q2AUSU2PkTWuHi0CFrxYQThL4B4A=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=uaHO7COVhsb9ICQ48tIBfw7xDW3+k+lMvZaS6O++l9Ort07xG0JluNI65/8DK87AJ
+         hBp3vQ9YrVtVsAeYCrmlzRZfSctIVesFwk/zmWyZFKsynB3UP6nFM19InGLpnToiu0
+         bkgby75EZUyT/Z/k9RZ4JM5/04ltFy8uFh5r+cps=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 128A3Uod097615
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 8 Mar 2021 04:03:30 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 8 Mar
+ 2021 04:03:30 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 8 Mar 2021 04:03:30 -0600
+Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 128A3RQq093760;
+        Mon, 8 Mar 2021 04:03:28 -0600
+Subject: Re: [PATCH] MAINTAINERS: Add Michael and Pratyush as designated
+ reviewers for SPI NOR
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>, <michael@walle.cc>,
+        <p.yadav@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>
+References: <20210308092333.80521-1-tudor.ambarus@microchip.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <a4369f1c-fb59-ae96-42a9-9b6f1a02060a@ti.com>
+Date:   Mon, 8 Mar 2021 15:33:27 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210308092333.80521-1-tudor.ambarus@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Mar 2021, Shou-Chieh Hsu wrote:
 
-> Add 1 additional hammer-like device.
+
+On 3/8/21 2:53 PM, Tudor Ambarus wrote:
+> It's already been the case for some time that Michael and Pratyush
+> are reviewing SPI NOR patches. Update MAINTAINERS to reflect reality.
 > 
-> Signed-off-by: Shou-Chieh Hsu <shouchieh@chromium.org>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 > ---
+
+Acked-by: Vignesh Raghavendra <vigneshr@ti.com>
+
+> Michael, Pratyush, please send your Acked-by tags if you agree.
 > 
->  drivers/hid/hid-google-hammer.c | 2 ++
->  drivers/hid/hid-ids.h           | 1 +
->  2 files changed, 3 insertions(+)
+>  MAINTAINERS | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/hid/hid-google-hammer.c b/drivers/hid/hid-google-hammer.c
-> index d9319622da44..e60c31dd05ff 100644
-> --- a/drivers/hid/hid-google-hammer.c
-> +++ b/drivers/hid/hid-google-hammer.c
-> @@ -573,6 +573,8 @@ static void hammer_remove(struct hid_device *hdev)
->  }
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d92f85ca831d..ba561e5bc6f0 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -16862,6 +16862,8 @@ F:	arch/arm/mach-spear/
 >  
->  static const struct hid_device_id hammer_devices[] = {
-> +	{ HID_DEVICE(BUS_USB, HID_GROUP_GENERIC,
-> +		     USB_VENDOR_ID_GOOGLE, USB_DEVICE_ID_GOOGLE_DON) },
->  	{ HID_DEVICE(BUS_USB, HID_GROUP_GENERIC,
->  		     USB_VENDOR_ID_GOOGLE, USB_DEVICE_ID_GOOGLE_HAMMER) },
->  	{ HID_DEVICE(BUS_USB, HID_GROUP_GENERIC,
-> diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-> index e42aaae3138f..0b4929258478 100644
-> --- a/drivers/hid/hid-ids.h
-> +++ b/drivers/hid/hid-ids.h
-> @@ -493,6 +493,7 @@
->  #define USB_DEVICE_ID_GOOGLE_MASTERBALL	0x503c
->  #define USB_DEVICE_ID_GOOGLE_MAGNEMITE	0x503d
->  #define USB_DEVICE_ID_GOOGLE_MOONBALL	0x5044
-> +#define USB_DEVICE_ID_GOOGLE_DON	0x5050
->  
->  #define USB_VENDOR_ID_GOTOP		0x08f2
->  #define USB_DEVICE_ID_SUPER_Q2		0x007f
-
-Applied, thanks.
-
--- 
-Jiri Kosina
-SUSE Labs
-
+>  SPI NOR SUBSYSTEM
+>  M:	Tudor Ambarus <tudor.ambarus@microchip.com>
+> +R:	Michael Walle <michael@walle.cc>
+> +R:	Pratyush Yadav <p.yadav@ti.com>
+>  L:	linux-mtd@lists.infradead.org
+>  S:	Maintained
+>  W:	http://www.linux-mtd.infradead.org/
+> 
