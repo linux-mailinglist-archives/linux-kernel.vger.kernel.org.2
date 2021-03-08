@@ -2,175 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8223A33197F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CD0331980
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhCHVo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 16:44:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21323 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229938AbhCHVoY (ORCPT
+        id S230458AbhCHVpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 16:45:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229740AbhCHVoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 16:44:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615239863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TJsn949M8n9WGSdMpDiEtGlLtK0SvJQUpKO/vJJsrkM=;
-        b=DMFxgFskSijqlPKvzzptEk7euOb1ArSYBno02VEnKpHtAwh4Rjm/QboO0LGzjnUbXd26GS
-        Ib65kFB9GOawYv7B9jJEpjwSE+Co2vlq3eoyw8+Q5m/hsGAcrzM7wHwGJA6kEBfwLCJnSL
-        YJu5PQZ9y4eQVRch4bd9bFw7zBpgmEU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-349-yi7wvKP0OJ6TuQuCr0Z2KA-1; Mon, 08 Mar 2021 16:44:20 -0500
-X-MC-Unique: yi7wvKP0OJ6TuQuCr0Z2KA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA6201085932;
-        Mon,  8 Mar 2021 21:44:17 +0000 (UTC)
-Received: from starship (unknown [10.35.206.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4D7505C27C;
-        Mon,  8 Mar 2021 21:44:15 +0000 (UTC)
-Message-ID: <25a4d6e1f267e70aa94876e261634165a1422ed6.camel@redhat.com>
-Subject: Re: [PATCH] KVM: SVM: Connect 'npt' module param to KVM's internal
- 'npt_enabled'
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 08 Mar 2021 23:44:14 +0200
-In-Reply-To: <YEZceKJLrFwt93AA@google.com>
-References: <20210305021637.3768573-1-seanjc@google.com>
-         <106d2e650647408a901dfbec53f1b89cc36b2906.camel@redhat.com>
-         <YEZceKJLrFwt93AA@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Mon, 8 Mar 2021 16:44:46 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E0DC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 13:44:46 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id d16so3334660oic.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 13:44:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FnfgAUbDVZeNGV7YSOf7CHMyIPf11X/pivOxwIJfz2U=;
+        b=TSSG5A/hAXDZ3Gg2dIHVcjUUsjRUNiVSvLBrL0SBFArOAAcGXLO1YUH+K5qfrCjk36
+         CGDzpY4dRxotUuZwB6QdyN5hqlO4A9wHQxkA4kQP8QKhvAyVC5QO2tPcimXv4q83/vId
+         3VRHjzYSaKAyavvUfGYdzKNryAhBRfV1saWL+z30j1QxQ90B9ZcS0dxeuEhYbPOxo11l
+         fiC/u4qVHoDcCSvIPm2kQTdtIb6xyA+GubYCmcxij9gHAwur2VbMjVOyQVE60JBmkbQ8
+         U6zA4HDzNx4/Ea8kIGPY1tvwM3N0503y57XABxebCbUiXns5Crxz2N5yDqYSXaZZtxuI
+         2jXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FnfgAUbDVZeNGV7YSOf7CHMyIPf11X/pivOxwIJfz2U=;
+        b=lmHvLKam+Yno74KpG0w4ZNLYaLlKUwJ+U/hyagOibcsn4Gy+aR5EjTZ7AOvoZsMH9/
+         oygZTYRGjtlDoGOX04keqcSn8umrEd8Uly3Um+A8p+FK5uKcAXs8mu1FU7SdkgbZtwZT
+         yL+9x7Ll0nPmiOuabENNw4iUe6NRckecej1D2r6mlsVlvJj89cZqqgL7slG7EtFokOkM
+         VSVxZhwHchtK8d6/Dnw7pvY8GyxgpR7XEHbGdjpc3jpsTXUwA8oORk2Uj/zXXQtA3SOr
+         WkH8k8346utIABphHOCVnXf5OIV6ooSyO96v0+JRL7nMau6YNQtNE3GsMfx+DeFOo3DX
+         ixFg==
+X-Gm-Message-State: AOAM533SEEiy/Pv+1UwZ8DIcea4DlbMC12KxAIZ/zCofe7fQby/Y89fI
+        UCVtbKMoqewuH7JSMhG/ReTh6CxK4cnrxLPp9pk=
+X-Google-Smtp-Source: ABdhPJzTV0MKG2bplLclx3EsQ/iIXSwzsj9SXfn6g3FatPK6uFrfqWxnwZ7Vw9XFr5SbhoPcMlN5X0RLizmg2dI9/Bw=
+X-Received: by 2002:a05:6808:f15:: with SMTP id m21mr673052oiw.123.1615239885798;
+ Mon, 08 Mar 2021 13:44:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210306104720.215738-1-zhang.yunkai@zte.com.cn>
+In-Reply-To: <20210306104720.215738-1-zhang.yunkai@zte.com.cn>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 8 Mar 2021 16:44:34 -0500
+Message-ID: <CADnq5_OPcTeFb1Onr=Haz3BHroG==9TzmD3F65ENNebe-iW_=Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: remove duplicate include in amdgpu_dm.c
+To:     menglong8.dong@gmail.com
+Cc:     "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Zhang Yunkai <zhang.yunkai@zte.com.cn>,
+        Dave Airlie <airlied@linux.ie>,
+        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-03-08 at 09:18 -0800, Sean Christopherson wrote:
-> On Mon, Mar 08, 2021, Maxim Levitsky wrote:
-> > On Thu, 2021-03-04 at 18:16 -0800, Sean Christopherson wrote:
-> > > Directly connect the 'npt' param to the 'npt_enabled' variable so that
-> > > runtime adjustments to npt_enabled are reflected in sysfs.  Move the
-> > > !PAE restriction to a runtime check to ensure NPT is forced off if the
-> > > host is using 2-level paging, and add a comment explicitly stating why
-> > > NPT requires a 64-bit kernel or a kernel with PAE enabled.
-> > 
-> > Let me ask a small question for a personal itch.
-> > 
-> > Do you think it is feasable to allow the user to enable npt/ept per guest?
-> > (the default should still of course come from npt module parameter)
-> 
-> Feasible, yes.  Worth the extra maintenance, probably not.  It's a niche use
-> case, and only viable if you have a priori knowledge of the guest being run.
-> I doubt there are more than a few people in the world that meet those criteria,
-> and want to run multiple VMs, and also care deeply about the performance
-> degregation of the other VMs.
-I understand.
-On one of weekends when I am bored I probably implement it anyway,
-and post it upstream. I don't count on getting this merged.
+Applied.  Thanks!
 
-It just that I often run VMs which I don't want to stop, and sometimes I want
-to boot my retro VM which is finally working but I need for that
-to reload KVM and disable NPT.
+Alex
 
-> 
-> > This weekend I checked it a bit and I think that it shouldn't be hard
-> > to do.
-> > 
-> > There are some old and broken OSes which can't work with npt=1
-> > https://blog.stuffedcow.net/2015/08/win9x-tlb-invalidation-bug/
-> > https://blog.stuffedcow.net/2015/08/pagewalk-coherence/
-> > 
-> > I won't be surprised if some other old OSes
-> > are affected by this as well knowing from the above 
-> > that on Intel the MMU speculates less and doesn't
-> > break their assumptions up to today.
-> > (This is tested to be true on my Kabylake laptop)
-> 
-> Heh, I would be quite surprised if Intel CPUs speculate less.  I wouldn't be
-> surprised if the old Windows behavior got grandfathered into Intel CPUs because
-> the buggy behavior worked on old CPUs and so must continue to work on new CPUs.
-
-Yes, this sounds exactly what did happen. Besides we might not care but other
-hypervisors are often sold as a means to run very old software, and that includes
-very old operation systems. 
-So Intel might have kept this working for that reason as well, 
-while AMD didn't have time to care for an obvious OS bug which is 
-even given as an example of what not to do in the manual.
-
-> 
-> > In addition to that, on semi-unrelated note,
-> > our shadowing MMU also shows up the exact same issue since it
-> > also caches translations in form of unsync MMU pages.
-> > 
-> > But I can (and did disable) this using a hack (see below)
-> > and this finally made my win98 "hobby" guest actually work fine 
-> > on AMD for me.
-> > 
-> > I am also thinking to make this "sync" mmu mode to be 
-> > another module param (this can also be useful for debug,
-> > see below)
-> > What do you think?
-> > 
-> > On yet another semi-unrelated note,
-> > A "sync" mmu mode affects another bug I am tracking,
-> > but I don't yet understand why:
-> > 
-> > I found out that while windows 10 doesn't boot at all with 
-> > disabled tdp on the host (npt/ept - I tested both) 
-> >  the "sync" mmu mode does make it work.
-> 
-> Intel and AMD?  Or just AMD?  If both architectures fail, this definitely needs
-> to be debugged and fixed.  Given the lack of bug reports, most KVM users
-> obviously don't care about TDP=0, but any bug in the unsync code likely affects
-> nested TDP as well, which far more people do care about.
-
-Both Intel and AMD in exactly the same way. 
-Win10 fails to boot always, with various blue screens or just
-hangs. With 'sync' mmu hack it slow but boots always.
-
-It even boots nested (very slow) with TDP disabled on host.
-(with my fix for booting nested guests on AMD with TDP disabled on the host)
-
-Note that otherwise this isn't related to nesting, I just boot a regular win10 guest.
-I also see this happen with several different win10 VMs.
-
-
-> 
-> > I was also able to reproduce a crash on Linux 
-> > (but only with nested migration loop)
-> 
-> With or without TDP enabled?
-Without TDP enabled. I also was able to reproduce this on both Intel and AMD.
-
-For this case as Linux does seem to boot, I did run my nested migration test,
-and its is the nested guest that crashes, but also most likely not related to
-nesting as no TDP was enabled on the host (L0)
-
-With sync mmu I wasn't able to make anything crash (I think though that I 
-tested this case only on AMD so far)
-
-I also did *lot* of various hacks to mmu code.
-(like to avoid any prefetching, sync everything on every cr0/cr3/cr4 write,
-flush the real TLB on each guest entry, and stuff like that, and nothing seemes to help).
-
-
-Best regards,
-	Maxim Levitsky
-
-> 
-
-
+On Sat, Mar 6, 2021 at 5:48 AM <menglong8.dong@gmail.com> wrote:
+>
+> From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+>
+> 'drm/drm_hdcp.h' included in 'amdgpu_dm.c' is duplicated.
+> It is also included in the 79th line.
+>
+> Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+> ---
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 3e1fd1e7d09f..fee46fbcb0b7 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -44,7 +44,6 @@
+>  #include "amdgpu_dm.h"
+>  #ifdef CONFIG_DRM_AMD_DC_HDCP
+>  #include "amdgpu_dm_hdcp.h"
+> -#include <drm/drm_hdcp.h>
+>  #endif
+>  #include "amdgpu_pm.h"
+>
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
