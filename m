@@ -2,125 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB18331984
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC0D331986
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbhCHVqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 16:46:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbhCHVpo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 16:45:44 -0500
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB14C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 13:45:44 -0800 (PST)
-Received: by mail-oo1-xc2b.google.com with SMTP id l5so2549810ooj.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 13:45:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=98cBjcjhuYHRPD7k85MY8DSxP3E150dqHIpXKr7a8vo=;
-        b=HTNVHer2R1dsIR8ja17XwqWKWkEQRomuKKAFZBtej5KqVJPPaJjh28B5dI+v3ASXR2
-         Aiv4Df+7C9OYzaNZHFfEV7OyVLMD/GCAKrX2XgeBkZR8XhdUlLMUBp1m+JAxlex/3Iqn
-         oVw1bJsQ9Yz92eDMa0jL0yO5FGrSR+AKD8XtJ8dZs8q4lm0v+/hWFc0ppMpgXCSsvwaF
-         Q7SjKCYgtt+P+wLA8P1GpH9pVEL8H9ghqHDUuZG23dE2RdsbT155L/w/tS2dS71I8N47
-         poEQCJUjZPp6EtDjiCw9e1lfpinSouLeV//1U6NZBIfOsY8SU3W9o0tZchFSv9wzX21M
-         spDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=98cBjcjhuYHRPD7k85MY8DSxP3E150dqHIpXKr7a8vo=;
-        b=TKesf2pE2HjUUz9Tyew+p7lDwavsgoFq3evkFnSqOwIxz+rh95BRIiUGQx1awnt8/C
-         vyb0Xfbl/cCx2UCgtOyjF9XMfUuIfFPfUzPaEkyvRIrXVNvFPHPSkNwN4RIT+mRdAFXE
-         gVwPW6XAkcyIq5LoQWaIHVNWGdwQlKb68oGhDvTpKragt20EXpbggEEMdW87UFhDkAZt
-         jY5HUcmwUjZ9UBDJmmPmMUgx1m22lqM8/KoSkWp2d3+5emN1fQhNbpM7xibOhbqoATwm
-         WKcndTxN2dOIfKz/LdxFL4o+DN5fPiE7dZs9oevXY+Znrrkn7UHK7JSWzHP5zAQaPQY3
-         NXqw==
-X-Gm-Message-State: AOAM5301B4zaXx1nBZ9QnFrVEl7SXh6EO344ChzrKtfDXUEaUdVZ2y7G
-        z3rhCdbXRiUoFb2mhNkBQ4qjItCF1fonH9ar0S0=
-X-Google-Smtp-Source: ABdhPJwpsHutLCgDMpdVA+x2+rqBtCCg/0khVtNykRTxJz6fzAakSBg9LGgIAsGNhNJObjtkA57rNQ/RQJlxHyshSQQ=
-X-Received: by 2002:a4a:d155:: with SMTP id o21mr19817235oor.72.1615239944232;
- Mon, 08 Mar 2021 13:45:44 -0800 (PST)
+        id S231129AbhCHVqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 16:46:40 -0500
+Received: from mga05.intel.com ([192.55.52.43]:59814 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230227AbhCHVqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 16:46:09 -0500
+IronPort-SDR: B5BfdzVELFeXuc0ei0jP881xpC2yejmY7xv0AUR+cY2ZcRkEFWPEAFIL5JBjOYxQX4gkYI+XZj
+ hCm74We0GaoQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="273136671"
+X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
+   d="scan'208";a="273136671"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 13:46:08 -0800
+IronPort-SDR: av0sKWOYau6s6d1swTN7BWeVgPq3oopzECLt1zc/06mbPLQKb4uSXX12ehtGidmFX4YQT9Fmsz
+ F2r7MAjtiJfw==
+X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
+   d="scan'208";a="376253165"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.186.31]) ([10.209.186.31])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 13:46:08 -0800
+Subject: Re: [PATCH 2/2] sigaction.2: wfix - Clarify si_addr description.
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-man@vger.kernel.org,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org
+References: <20210226172634.26905-1-yu-cheng.yu@intel.com>
+ <20210226172634.26905-3-yu-cheng.yu@intel.com>
+ <20210308212936.GD12548@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <40c3c4cc-e135-1355-51ee-4d0f16e47e71@intel.com>
+Date:   Mon, 8 Mar 2021 13:46:07 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210306110525.216316-1-zhang.yunkai@zte.com.cn>
-In-Reply-To: <20210306110525.216316-1-zhang.yunkai@zte.com.cn>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 8 Mar 2021 16:45:33 -0500
-Message-ID: <CADnq5_Mxeg2jpzPkQ1f8ugEyB7j9U1hp6+_3xsY-0LuA7yTwaw@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: remove duplicate include in dcn21 and gpio
-To:     menglong8.dong@gmail.com
-Cc:     "Leo (Sunpeng) Li" <sunpeng.li@amd.com>, isabel.zhang@amd.com,
-        Sung Lee <sung.lee@amd.com>,
-        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        "Cheng, Tony" <Tony.Cheng@amd.com>,
-        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Zhang Yunkai <zhang.yunkai@zte.com.cn>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, Wyatt Wood <wyatt.wood@amd.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Krunoslav Kovac <Krunoslav.Kovac@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Anthony Koo <Anthony.Koo@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210308212936.GD12548@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On 3/8/2021 1:30 PM, Borislav Petkov wrote:
+> On Fri, Feb 26, 2021 at 09:26:34AM -0800, Yu-cheng Yu wrote:
+>> SIGSEGV fills si_addr only for memory access faults.  Add a note to clarify.
+>>
+>> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+>> Cc: Alejandro Colomar <alx.manpages@gmail.com>
+>> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
+>> Cc: Andy Lutomirski <luto@kernel.org>
+>> Cc: Borislav Petkov <bp@alien8.de>
+>> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+>> Cc: Florian Weimer <fweimer@redhat.com>
+>> Cc: "H.J. Lu" <hjl.tools@gmail.com>
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: linux-api@vger.kenel.org
+>> Link: https://lore.kernel.org/linux-api/20210217222730.15819-7-yu-cheng.yu@intel.com/
+>> ---
+>>   man2/sigaction.2 | 7 ++++++-
+>>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/man2/sigaction.2 b/man2/sigaction.2
+>> index 49a30f11e..bea884a23 100644
+>> --- a/man2/sigaction.2
+>> +++ b/man2/sigaction.2
+>> @@ -467,7 +467,7 @@ and
+>>   .BR SIGTRAP
+>>   fill in
+>>   .I si_addr
+>> -with the address of the fault.
+>> +with the address of the fault (see notes).
+>>   On some architectures,
+>>   these signals also fill in the
+>>   .I si_trapno
+>> @@ -955,6 +955,11 @@ It is not possible to block
+>>   .IR sa_mask ).
+>>   Attempts to do so are silently ignored.
+>>   .PP
+>> +In a
+>> +.B SIGSEGV,
+>> +if the fault is a memory access fault, si_addr is filled with the address
+>> +causing the fault, otherwise it is not filled.
+> 
+> "... otherwise it is uninitialized." or "zeroed" or whatever...
+> 
+> And I'm having trouble figuring out why do you need to clarify this?
+> 
+> Because of this sentence:
+> 
+>         * SIGILL,  SIGFPE, SIGSEGV, SIGBUS, and SIGTRAP fill in si_addr with the address
+>           of the fault.  On some architectures, these signals also fill in the si_trapno
+>           field.
+> 
+> ?
 
-Alex
+I think the sentence above is vague, but probably for the reason that 
+each arch is different.  Maybe this patch is unnecessary and can be dropped?
 
-On Sat, Mar 6, 2021 at 6:05 AM <menglong8.dong@gmail.com> wrote:
+> 
+> If so, did you audit all architectures whether si_addr is populated only
+> on memory access faults or is this something POSIX dictates or what's
+> up? Because the sigaction(2) manpage is arch-agnostic and this is a
+> rather strong assertion.
+> 
+> What am I missing?
+> 
+> Thx.
 >
-> From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
->
-> 'dce110_resource.h' included in 'dcn21_resource.c' is duplicated.
-> 'hw_gpio.h' included in 'hw_factory_dce110.c' is duplicated.
->
-> Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
-> ---
->  drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c         | 1 -
->  .../gpu/drm/amd/display/dc/gpio/dce110/hw_factory_dce110.c    | 4 ----
->  2 files changed, 5 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-> index 072f8c880924..8a6a965751e8 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-> @@ -61,7 +61,6 @@
->  #include "dcn21/dcn21_dccg.h"
->  #include "dcn21_hubbub.h"
->  #include "dcn10/dcn10_resource.h"
-> -#include "dce110/dce110_resource.h"
->  #include "dce/dce_panel_cntl.h"
->
->  #include "dcn20/dcn20_dwb.h"
-> diff --git a/drivers/gpu/drm/amd/display/dc/gpio/dce110/hw_factory_dce110.c b/drivers/gpu/drm/amd/display/dc/gpio/dce110/hw_factory_dce110.c
-> index 66e4841f41e4..ca335ea60412 100644
-> --- a/drivers/gpu/drm/amd/display/dc/gpio/dce110/hw_factory_dce110.c
-> +++ b/drivers/gpu/drm/amd/display/dc/gpio/dce110/hw_factory_dce110.c
-> @@ -48,10 +48,6 @@
->  #define REGI(reg_name, block, id)\
->         mm ## block ## id ## _ ## reg_name
->
-> -#include "../hw_gpio.h"
-> -#include "../hw_ddc.h"
-> -#include "../hw_hpd.h"
-> -
->  #include "reg_helper.h"
->  #include "../hpd_regs.h"
->
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
