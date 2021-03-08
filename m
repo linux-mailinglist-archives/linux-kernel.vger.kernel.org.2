@@ -2,181 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DAB13315A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFAE3315AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhCHSPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:15:30 -0500
-Received: from foss.arm.com ([217.140.110.172]:41854 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230299AbhCHSPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:15:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 283E8D6E;
-        Mon,  8 Mar 2021 10:15:00 -0800 (PST)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B8C283F71B;
-        Mon,  8 Mar 2021 10:14:58 -0800 (PST)
-Date:   Mon, 8 Mar 2021 18:14:49 +0000
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org
-Subject: Re: [PATCH] opp: Invalidate current opp when draining the opp list
-Message-ID: <20210308181446.GA26783@e120325.cambridge.arm.com>
-References: <1614870454-18709-1-git-send-email-beata.michalska@arm.com>
- <20210305042401.gktrgach4dzxp7on@vireshk-i7>
- <418fc3cb-d5ec-9216-269a-e055e78718e5@arm.com>
- <20210308115053.ua2gfo6kfnfjslyd@vireshk-i7>
+        id S231143AbhCHSPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:15:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230116AbhCHSPQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 13:15:16 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F4BC06174A;
+        Mon,  8 Mar 2021 10:15:16 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id mm21so22183872ejb.12;
+        Mon, 08 Mar 2021 10:15:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g/bzyPjovQ9TJfpqIkZJGibSjbqLtnRGGO1V2kB7/2Q=;
+        b=oT47EDYu5ZrDjIsPLw10d/GmM4ySkio4jkFzzhG3F1k2nUmyG4zpwIg9brdLIjhvH7
+         qQurFccmVjEpKc5/3/eeY+4IEo1je2kAdN8RMsGWgswPfZb+3T8oSRWQtnNeNNfdWjhP
+         0A1rR8InatWETyJvi00eTrVWuScMq/s38yA80bWk7hvcAoWsYdci6cI5m7P0wHbSJyzb
+         a3Lv2ZdqVlYr6S0bNxxgcOFaruzl/LaWJhdD5mSzEhqx0A/ID5uknvSuW16TpX5XeDsP
+         mXCNbqMQgxSSvwm2z5mqFNbOeKOYXS1siv4Gi/c1GzEDhpbpqv6dun/zFyYpfm4+K7pt
+         rCNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g/bzyPjovQ9TJfpqIkZJGibSjbqLtnRGGO1V2kB7/2Q=;
+        b=n9yDtv+Wb6KpkZENS/Juvp+hOpFUAiiW7HdDpVimsyC3AUFm7eJi/URX8LKXx8nK9I
+         f3IZCnRnxnXt6NGoGoO/jNGGZWNA37TZPkdg6kuRgebooqXPHZ33YlRhPk1ht2A9w80C
+         I0WD3sSld1Al6z12MDO+KhGaAZBcFOedcsvSvldUjZ4aP8CBea+ufHsiKkwHqgaCyUdB
+         ZVNuSnhfSZXtL+qvaCvgU2ifzWlSuGpUnnWNTKnTyp+CyVUEsRjHLx+VoRtTQxtOmmC1
+         eV0NVlD0ll5yGV4ym07r2XQ8PWF1rAn4iP+eyizgJGTx7+kdOuO+/szfgD/ZoGD5gZqb
+         OkOQ==
+X-Gm-Message-State: AOAM531zegPxF8G7Z5pKAals/xeEVlRLhKhZUHiN8BdTbBXU1xqPGhSC
+        KutNXC70hAkQxgLe8oTQ8homtWke3Oelgw5zV/8=
+X-Google-Smtp-Source: ABdhPJzEtTVkv8kuvlaSOiCjwhpHgBuYuDk4ONeS1aBsrVoMOmnjPFX7SSO1+yQH37wno17IK5bLkfwFj6HxNQFjjLA=
+X-Received: by 2002:a17:906:789:: with SMTP id l9mr15985654ejc.161.1615227315315;
+ Mon, 08 Mar 2021 10:15:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308115053.ua2gfo6kfnfjslyd@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210217001322.2226796-1-shy828301@gmail.com> <20210217001322.2226796-6-shy828301@gmail.com>
+ <CALvZod75fge=B9LNg_sxbCiwDZjjtn8A9Q2HzU_R6rcg551o6Q@mail.gmail.com> <20210308145444.GN2696@paulmck-ThinkPad-P72>
+In-Reply-To: <20210308145444.GN2696@paulmck-ThinkPad-P72>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 8 Mar 2021 10:15:03 -0800
+Message-ID: <CAHbLzkoxVkzYDbFY4DmsQrj+8jv9xbsWAjdRHgKbgNgc0xWaqw@mail.gmail.com>
+Subject: Re: [v8 PATCH 05/13] mm: vmscan: use kvfree_rcu instead of call_rcu
+To:     paulmck@kernel.org
+Cc:     Shakeel Butt <shakeelb@google.com>, Roman Gushchin <guro@fb.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 05:20:53PM +0530, Viresh Kumar wrote:
-> On 05-03-21, 13:55, Beata Michalska wrote:
-> > Actually, that one might be problematic: by the time the
-> > _opp_table_kref_release is being reached, the opp pointed to
-> > by current_opp may no longer be valid.
-> > _opp_remove_all_static and/or dev_pm_opp_remove_all_dynamic
-> > will release all the opps by going through opp_table->opp_list.
-> > It will drop the reference for each opp on the list, until
-> > the list gets empty(for given opp type), which means,
-> > all the opps will actually get released
-> > (only upon _opp_kref_release the opp will get removed
-> > from the list).
-> 
-> Sorry for missing the context completely, I get it now.
-> 
-> This is what I have applied instead, please see if it breaks anything
-> or works as expected.
-> 
-> -------------------------8<-------------------------
-> 
-> From: Beata Michalska <beata.michalska@arm.com>
-> Date: Thu, 4 Mar 2021 15:07:34 +0000
-> Subject: [PATCH] opp: Invalidate current opp when draining the opp list
-> 
-> The current_opp when set, grabs additional reference on the opp,
-> which is then supposed to be dropped upon releasing the opp table.
-> 
-> Still both dev_pm_opp_remove_table and dev_pm_opp_remove_all_dynamic
-> will completely drain the OPPs list, including dropping the additional
-> reference on current_opp because they run until the time list gets
-> empty.
-> 
-> This will lead releasing the current_opp one more time when the OPP
-> table gets removed and so will raise ref counting issues.
-> 
-> Fix that by making sure we don't release the extra reference to the
-> current_opp.
-> 
-> Fixes: 81c4d8a3c414 ("opp: Keep track of currently programmed OPP")
-> Signed-off-by: Beata Michalska <beata.michalska@arm.com>
-> [ Viresh: Rewrite _opp_drain_list() to not drop the extra count instead
-> 	  of depending on reference counting. Update commit log and
-> 	  other minor changes. ]
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  drivers/opp/core.c | 52 +++++++++++++++++++++++++++++-----------------
->  1 file changed, 33 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index c2689386a906..3cc0a1b82adc 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -1502,10 +1502,38 @@ static struct dev_pm_opp *_opp_get_next(struct opp_table *opp_table,
->  	return opp;
->  }
->  
-> -bool _opp_remove_all_static(struct opp_table *opp_table)
-> +/*
-> + * Can't remove the OPP from under the lock, debugfs removal needs to happen
-> + * lock less to avoid circular dependency issues. This must be called without
-> + * the opp_table->lock held.
-> + */
-> +static int _opp_drain_list(struct opp_table *opp_table, bool dynamic)
->  {
-> -	struct dev_pm_opp *opp;
-> +	struct dev_pm_opp *opp, *current_opp = NULL;
-> +	int count = 0;
-> +
-> +	while ((opp = _opp_get_next(opp_table, dynamic))) {
-> +		if (opp_table->current_opp == opp) {
-> +			/*
-> +			 * Reached at current OPP twice, no other OPPs left. The
-> +			 * last reference to current_opp is dropped from
-> +			 * _opp_table_kref_release().
-> +			 */
-> +			if (current_opp)
-> +				break;
-> +
-> +			current_opp = opp;
-> +		}
-Having a quick look at the code ...
-Shouldn't the current_opp be moved at the end of the list ?
-Otherwise there is a risk of leaving unreferenced opps (and opp_table).
-Might be also worth adding warning (?)
+On Mon, Mar 8, 2021 at 6:54 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Sun, Mar 07, 2021 at 10:13:04PM -0800, Shakeel Butt wrote:
+> > On Tue, Feb 16, 2021 at 4:13 PM Yang Shi <shy828301@gmail.com> wrote:
+> > >
+> > > Using kvfree_rcu() to free the old shrinker_maps instead of call_rcu().
+> > > We don't have to define a dedicated callback for call_rcu() anymore.
+> > >
+> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > > ---
+> > >  mm/vmscan.c | 7 +------
+> > >  1 file changed, 1 insertion(+), 6 deletions(-)
+> > >
+> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > > index 2e753c2516fa..c2a309acd86b 100644
+> > > --- a/mm/vmscan.c
+> > > +++ b/mm/vmscan.c
+> > > @@ -192,11 +192,6 @@ static inline int shrinker_map_size(int nr_items)
+> > >         return (DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long));
+> > >  }
+> > >
+> > > -static void free_shrinker_map_rcu(struct rcu_head *head)
+> > > -{
+> > > -       kvfree(container_of(head, struct memcg_shrinker_map, rcu));
+> > > -}
+> > > -
+> > >  static int expand_one_shrinker_map(struct mem_cgroup *memcg,
+> > >                                    int size, int old_size)
+> > >  {
+> > > @@ -219,7 +214,7 @@ static int expand_one_shrinker_map(struct mem_cgroup *memcg,
+> > >                 memset((void *)new->map + old_size, 0, size - old_size);
+> > >
+> > >                 rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, new);
+> > > -               call_rcu(&old->rcu, free_shrinker_map_rcu);
+> > > +               kvfree_rcu(old);
+> >
+> > Please use kvfree_rcu(old, rcu) instead of kvfree_rcu(old). The single
+> > param can call synchronize_rcu().
+>
+> Especially given that you already have the ->rcu field that the
+> two-argument form requires.
+>
+> The reason for using the single-argument form is when you have lots of
+> little data structures, such that getting rid of that rcu_head structure
+> is valuable enough to be worth the occasional call to synchronize_rcu().
+> However, please note that this call to synchronize_rcu() happens only
+> under OOM conditions.
 
-    WARN_ONCE(!list_is_singular())
+Thanks, Shakeel and Paul. I didn't realize the difference. Will use
+the two params form in the new version.
 
-
----
-BR
-B.
-> +
-> +		dev_pm_opp_put(opp);
-> +		count++;
-> +	}
-> +
-> +	return count;
-> +}
->  
-> +bool _opp_remove_all_static(struct opp_table *opp_table)
-> +{
->  	mutex_lock(&opp_table->lock);
->  
->  	if (!opp_table->parsed_static_opps) {
-> @@ -1520,13 +1548,7 @@ bool _opp_remove_all_static(struct opp_table *opp_table)
->  
->  	mutex_unlock(&opp_table->lock);
->  
-> -	/*
-> -	 * Can't remove the OPP from under the lock, debugfs removal needs to
-> -	 * happen lock less to avoid circular dependency issues.
-> -	 */
-> -	while ((opp = _opp_get_next(opp_table, false)))
-> -		dev_pm_opp_put(opp);
-> -
-> +	_opp_drain_list(opp_table, false);
->  	return true;
->  }
->  
-> @@ -1539,21 +1561,13 @@ bool _opp_remove_all_static(struct opp_table *opp_table)
->  void dev_pm_opp_remove_all_dynamic(struct device *dev)
->  {
->  	struct opp_table *opp_table;
-> -	struct dev_pm_opp *opp;
-> -	int count = 0;
-> +	int count;
->  
->  	opp_table = _find_opp_table(dev);
->  	if (IS_ERR(opp_table))
->  		return;
->  
-> -	/*
-> -	 * Can't remove the OPP from under the lock, debugfs removal needs to
-> -	 * happen lock less to avoid circular dependency issues.
-> -	 */
-> -	while ((opp = _opp_get_next(opp_table, true))) {
-> -		dev_pm_opp_put(opp);
-> -		count++;
-> -	}
-> +	count = _opp_drain_list(opp_table, true);
->  
->  	/* Drop the references taken by dev_pm_opp_add() */
->  	while (count--)
+>
+>                                                         Thanx, Paul
