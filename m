@@ -2,171 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B286D330CB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7977330CBA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbhCHLuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 06:50:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49391 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229972AbhCHLub (ORCPT
+        id S231651AbhCHLvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 06:51:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231362AbhCHLvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 06:50:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615204231;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O0TFSYLha6a0vpq1M3uSXuHRS2yOwWaJYpG7AjZVTwo=;
-        b=GvBDUw6woAkWCBS0LRJlgKqEyRkdNgLOfxfU9BVssErthj58H0VMiq0Pcv8JlwM/DmtFhz
-        Ncom9CS2uKKO7VkwDuaZWCqCbv5qFsHzdYQFeeS6I7U9ANc7e1NMt4cGYtXYnvGRd4uvGv
-        bmibKlZ+gqHiVIcpQCFDDtkafYY2ctU=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-536-j6ASyqCRN3iYLIo6JpnOkQ-1; Mon, 08 Mar 2021 06:50:29 -0500
-X-MC-Unique: j6ASyqCRN3iYLIo6JpnOkQ-1
-Received: by mail-wm1-f69.google.com with SMTP id s192so4856764wme.6
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 03:50:29 -0800 (PST)
+        Mon, 8 Mar 2021 06:51:01 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1155C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 03:51:01 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id h22so8869485otr.6
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 03:51:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JbNCPfQ/roqFMvfDVCK/GyRFnn05PPWL4s16p+iljKg=;
+        b=PS5NN6DUCqMOBqLWOEzdWpTZ1Sa2R2WYZiakOxUSdiElm9ZJ51RzEwsj0Ri+e5mWB5
+         Z9QPG1HJ1heIOFlZ8fKe9ous/pi9AthiInarCnWhq3jNCckqZxQhdVl3RfMwTSZlY5lG
+         g8EujUVi0mv784njAV974o/XliCTbz2kP0WzBue966M2Ph26LxCmuaMTMeX3Wyr7Shi2
+         3U0Lf60BVYrWwo++9+QTKa1uy/lybK/U62qYhPklSlO1fuZLz0oDmm9PsP05qLSWsxSc
+         hkwEY+R8vWqQb9uTTIx4pv3ne9D6w/9PJlq67hJ7MRdIxNszM1NQI7n0F6pLsTyo+FZ1
+         lUNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O0TFSYLha6a0vpq1M3uSXuHRS2yOwWaJYpG7AjZVTwo=;
-        b=Eyu2OeKdwsGyt1hoYMgMaP6ZywN7bJ70drMizwuGdsK9acedpf48RsNHJ1n3J0IQl1
-         lqzdP2TkAQV9Mg+pp24Uafu2XqNU1AwOFxB/vnwJMlzA3oMIuoLMlk8xXvlSH802+p/K
-         ElRSpPfvamdrX9/opYRDFqYmWvizx+nwAG40CC6rOug8qQyNP6RXJadiyLOi2akLlwCs
-         uQ0BcUzTzp7M8u9GlRvQ1j9AqjM5LFLi8y1d3GNh6nczdvRok0VslZ2qBkNZQR1k1gIs
-         t9ebQASpcnRTq74UGAfmK26p3IH5PgWMr08cLDHSvmkA5LVLuvu9dTjOOrlekICjzO+L
-         cE2g==
-X-Gm-Message-State: AOAM532J55wjK7uV7mfiKEK2YJQRwUpexCdhCaauEaAt0tDpqlw815Tb
-        lLAJBl21zwyFgH5VdQpNcUWLurrhU1DwK/H2AW6tqYLqKISN9TM3b81y+1rCke8+orWyL1axwkI
-        QG/7LS4JAkdcD6Zf4fyHKyE7l
-X-Received: by 2002:a5d:4dd2:: with SMTP id f18mr22511953wru.366.1615204228215;
-        Mon, 08 Mar 2021 03:50:28 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwJfXvs2sG6TtEy9A4UyNy1PtgCnl/jo51idx7hQhuh6QVMESxcW2SeBdv1/Mfl+RV0rw6hyw==
-X-Received: by 2002:a5d:4dd2:: with SMTP id f18mr22511935wru.366.1615204228004;
-        Mon, 08 Mar 2021 03:50:28 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id e8sm19283591wme.14.2021.03.08.03.50.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 03:50:27 -0800 (PST)
-Subject: Re: [PATCH v4 00/11] KVM: VMX: Clean up Hyper-V PV TLB flush
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <20210305183123.3978098-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f1edcb01-41f5-d26f-e8d6-0dbd09a1eb89@redhat.com>
-Date:   Mon, 8 Mar 2021 12:50:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JbNCPfQ/roqFMvfDVCK/GyRFnn05PPWL4s16p+iljKg=;
+        b=n1xyV87o1pZgMm7Ws8lrGnO3qF6fkOZrv5UkjP/VF3EW6lpwAvDHzTVZ8TcrMs14xW
+         H2s/sffoKGr4317p5LBzhp6eEqU6dsRzPouzTDKuIGp8LBd1hfCTgAmIPnvshOcnGTnq
+         DFcRbfDPcPnW3OgU3FbTAlyS1erxBQ8htZJAfADVdtSYAp+JzrRaaCjDuA8h/yMH/bm+
+         5h3ouu54VBPrly2QYXgLBJdGzMYNf397dxy6toaRoP8ZH8VX/Sr9cSbPmyk2skZj0Y5w
+         tmdOaoFgbv7UqdQHLkoadbyTK+Jl2Am2sWDXhhEVye6sjOECQ91yjG3D2T8DWg2zBpyL
+         aYJA==
+X-Gm-Message-State: AOAM530ApEMCtzre+F4r/WU5Ds3ddAy9xsjexExLdEGOvOe0vRXODNXg
+        sh0cfBENqsBI2xtxCEcSRbJya7HEA7CtfYXZGIU9mQ==
+X-Google-Smtp-Source: ABdhPJxLE3Qt3UCz8nFg87Y8EMVRDCfGsHytH1+xHqDhtFTMg/s/NlcmgHBCSeyLFs9ITxbykj8dOdiW0wmu2C2pqEU=
+X-Received: by 2002:a9d:644a:: with SMTP id m10mr19849951otl.233.1615204260958;
+ Mon, 08 Mar 2021 03:51:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210305183123.3978098-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1614989433.git.andreyknvl@google.com> <a7f1d687b0550182c7f5b4a47c277a61425af65f.1614989433.git.andreyknvl@google.com>
+ <YEYMDn/9zQI8g+3o@elver.google.com>
+In-Reply-To: <YEYMDn/9zQI8g+3o@elver.google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 8 Mar 2021 12:50:49 +0100
+Message-ID: <CANpmjNM+CoExcw=19VOtXT5KMnSboTUCska1tmR_WZVMeE49sQ@mail.gmail.com>
+Subject: Re: [PATCH 3/5] kasan, mm: integrate page_alloc init with HW_TAGS
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/03/21 19:31, Sean Christopherson wrote:
-> Clean up KVM's PV TLB flushing when running with EPT on Hyper-V, i.e. as
-> a nested VMM.  No real goal in mind other than the sole patch in v1, which
-> is a minor change to avoid a future mixup when TDX also wants to define
-> .remote_flush_tlb.  Everything else is opportunistic clean up.
-> 
-> NOTE: Based on my NPT+SME bug fix series[*] due to multiple conflicts with
->        non-trivial resolutions.
-> 
-> [*] https://lkml.kernel.org/r/20210305011101.3597423-1-seanjc@google.com
-> 
-> 
-> Patch 1 legitimately tested on VMX and SVM (including i386).  Patches 2+
-> smoke tested by hacking usage of the relevant flows without actually
-> routing to the Hyper-V hypercalls (partial hack-a-patch below).
-> 
-> -static inline int hv_remote_flush_root_ept(hpa_t root_ept,
-> +static inline int hv_remote_flush_root_ept(struct kvm *kvm, hpa_t root_ept,
->                                             struct kvm_tlb_range *range)
->   {
-> -       if (range)
-> -               return hyperv_flush_guest_mapping_range(root_ept,
-> -                               kvm_fill_hv_flush_list_func, (void *)range);
-> -       else
-> -               return hyperv_flush_guest_mapping(root_ept);
-> +       if (range) {
-> +               kvm_make_all_cpus_request(kvm, KVM_REQ_TLB_FLUSH);
-> +               return 0;
-> +       }
-> +
-> +       return -ENOMEM;
->   }
->   
->   static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
-> @@ -7753,8 +7754,7 @@ static __init int hardware_setup(void)
->                  vmx_x86_ops.update_cr8_intercept = NULL;
->   
->   #if IS_ENABLED(CONFIG_HYPERV)
-> -       if (ms_hyperv.nested_features & HV_X64_NESTED_GUEST_MAPPING_FLUSH
-> -           && enable_ept) {
-> +       if (enable_ept) {
->                  vmx_x86_ops.tlb_remote_flush = hv_remote_flush_tlb;
->                  vmx_x86_ops.tlb_remote_flush_with_range =
->                                  hv_remote_flush_tlb_with_range;
-> 
-> v4:
->    - Rebased to kvm/queue, commit fe5f0041c026 ("KVM/SVM: Move vmenter.S
->      exception fixups out of line"), plus the aforementioned series.
->    - Don't grab PCID for nested_cr3 (NPT). [Paolo]
->    - Collect reviews. [Vitaly]
-> 
-> v3:
->    - https://lkml.kernel.org/r/20201027212346.23409-1-sean.j.christopherson@intel.com
->    - Add a patch to pass the root_hpa instead of pgd to vmx_load_mmu_pgd()
->      and retrieve the active PCID only when necessary.  [Vitaly]
->    - Selectively collects reviews (skipped a few due to changes). [Vitaly]
->    - Explicitly invalidate hv_tlb_eptp instead of leaving it valid when
->      the mismatch tracker "knows" it's invalid. [Vitaly]
->    - Change the last patch to use "hv_root_ept" instead of "hv_tlb_pgd"
->      to better reflect what is actually being tracked.
-> 
-> v2:
->    - Rewrite everything.
->    - https://lkml.kernel.org/r/20201020215613.8972-1-sean.j.christopherson@intel.com
-> 
-> v1: ???
-> 
-> Sean Christopherson (11):
->    KVM: x86: Get active PCID only when writing a CR3 value
->    KVM: VMX: Track common EPTP for Hyper-V's paravirt TLB flush
->    KVM: VMX: Stash kvm_vmx in a local variable for Hyper-V paravirt TLB
->      flush
->    KVM: VMX: Fold Hyper-V EPTP checking into it's only caller
->    KVM: VMX: Do Hyper-V TLB flush iff vCPU's EPTP hasn't been flushed
->    KVM: VMX: Invalidate hv_tlb_eptp to denote an EPTP mismatch
->    KVM: VMX: Don't invalidate hv_tlb_eptp if the new EPTP matches
->    KVM: VMX: Explicitly check for hv_remote_flush_tlb when loading pgd
->    KVM: VMX: Define Hyper-V paravirt TLB flush fields iff Hyper-V is
->      enabled
->    KVM: VMX: Skip additional Hyper-V TLB EPTP flushes if one fails
->    KVM: VMX: Track root HPA instead of EPTP for paravirt Hyper-V TLB
->      flush
-> 
->   arch/x86/include/asm/kvm_host.h |   4 +-
->   arch/x86/kvm/mmu.h              |   4 +-
->   arch/x86/kvm/svm/svm.c          |  10 ++-
->   arch/x86/kvm/vmx/vmx.c          | 134 ++++++++++++++++++--------------
->   arch/x86/kvm/vmx/vmx.h          |  19 ++---
->   5 files changed, 92 insertions(+), 79 deletions(-)
-> 
+On Mon, 8 Mar 2021 at 12:35, Marco Elver <elver@google.com> wrote:
+[...]
+> Could we instead add a static inline helper to <linux/kasan.h>, e.g.
+> kasan_supports_init() or so?
 
-Huh, I was sure I had queued this already for 5.12.  Well, done so now.
+Hmm, KASAN certainly "supports" memory initialization always. So maybe
+"kasan_has_accelerated_init()" is more accurate?  I leave it to you to
+decide what the best option is.
 
-Paolo
-
+Thanks,
+-- Marco
