@@ -2,163 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DB9331B18
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 00:44:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9015A331B1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 00:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhCHXoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 18:44:14 -0500
-Received: from mail-mw2nam10on2047.outbound.protection.outlook.com ([40.107.94.47]:32908
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231890AbhCHXn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 18:43:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DQk6S/g1TtAM+iYCtF3dL1nCCvoxgkcfOMC+kxdk04ldaZBAt8rzh7zF+T6UhernPZikrdaYHLQHFR8TSDVMFo1bkukfnW+r3PiixSgkqLI48lFu3xoDqL3c2Sb1ftaRwnyN9FEjOoZ1J8cn4LUeOkJbgrNjMMrHIlROiozOUqt//w7LUi2ek1ykV2kra0gq2Tuj1dbNIbN1WftPJQEt5xQQGQIQlH70X4MHCQcOJi1bvk21KOu2t1xJaj2cUUP6v7vMjz0p/78B2WmRLBptGbXJ7fGJtA2qA82MrSvN7fmHEpeTJNiJxsBY50H2hX7FzLoKG7+dcagxJJJPfbN7XA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zp5mvbfcSUd3F+SmOAs+VgtjVP/yYB6dfkgipGLivkQ=;
- b=Du8INTPDh0JLhz+CbcJ9EiFXslxRBrLV4RddUr/L5GMILWAwcKmkGWUE6kVYs8I5dnUP/AKUSbKMQfWZCdYOku3GhkUQqlNGcNPm4uuOFagq9b2zRiuA4FsPxOfC/sX/mnAWbfCOCAlGYwu/0gJElUXYlXkn5vLFrTLpBko/5sTzb1rzd8LEmKw0L8ik6MBNWbyJCDvktF/7p9TNGIbKjDl8YTmU7YIFmHIKgdnfZuSvQn1sNXhxRkDLmMVOylhYJB2r2qbQBzWGhNOt74NUXO2yCCnktZiZ7yE+9yaAFPihs7wC5Yb1ybDe8JHX0z3GD4NN/kb6m7R1XK21VrtU1w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zp5mvbfcSUd3F+SmOAs+VgtjVP/yYB6dfkgipGLivkQ=;
- b=xIdXNew44VXQeBh2KxktXU2tfyTAP+FaVKa40Nvj2uI8k57ryYzF2uW1CbIDkkiyjAwm35bbWAR1dbVPSGX3e2kLLZlZ5QvW5ZDxI6G4qL52624BsBgaAapW5gEzscJXgciOlHZ8jq0+OXiotAp1uEXOW+OA4DJOuSWPfw5m3y0=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1340.namprd12.prod.outlook.com (2603:10b6:3:76::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Mon, 8 Mar
- 2021 23:43:56 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3912.027; Mon, 8 Mar 2021
- 23:43:55 +0000
-Date:   Mon, 8 Mar 2021 19:43:53 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Zeng Tao <prime.zeng@hisilicon.com>, linuxarm@huawei.com,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
+        id S231749AbhCHXpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 18:45:50 -0500
+Received: from mga02.intel.com ([134.134.136.20]:13657 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231463AbhCHXpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 18:45:42 -0500
+IronPort-SDR: OXjJDEUwXJktBNDbmDZ9375KYelFuGPuOYq64J5w/CLulbpyIFxwZ3L9RhM6U81704xELIv6nR
+ WPM57vpnE3VA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="175235353"
+X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
+   d="gz'50?scan'50,208,50";a="175235353"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 15:45:41 -0800
+IronPort-SDR: uI7IGFnSgr0mqu/ufbrzPcezKy6IvzTLIFrUGhFxeL55gJefH9ySGdIkdmA/ag+D2zxkbm0DAl
+ jfTkroN1RVBQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
+   d="gz'50?scan'50,208,50";a="447302425"
+Received: from lkp-server01.sh.intel.com (HELO 3e992a48ca98) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 08 Mar 2021 15:45:38 -0800
+Received: from kbuild by 3e992a48ca98 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lJPZB-0001Dw-An; Mon, 08 Mar 2021 23:45:37 +0000
+Date:   Tue, 9 Mar 2021 07:44:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     kbuild-all@01.org, Michal Hocko <mhocko@suse.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio/pci: make the vfio_pci_mmap_fault reentrant
-Message-ID: <20210308234353.GB4247@nvidia.com>
-References: <1615201890-887-1-git-send-email-prime.zeng@hisilicon.com>
- <20210308132106.49da42e2@omen.home.shazbot.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308132106.49da42e2@omen.home.shazbot.org>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BLAPR03CA0068.namprd03.prod.outlook.com
- (2603:10b6:208:329::13) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 1/2] kvfree_rcu: Release a page cache under memory
+ pressure
+Message-ID: <202103090709.f6v9Wy9f-lkp@intel.com>
+References: <20210308194950.12320-1-urezki@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0068.namprd03.prod.outlook.com (2603:10b6:208:329::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Mon, 8 Mar 2021 23:43:54 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lJPXV-009rih-JU; Mon, 08 Mar 2021 19:43:53 -0400
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e82dd155-79fa-4d04-3e3a-08d8e28c091d
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1340:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB13404FB235682A54CA8B7C80C2939@DM5PR12MB1340.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v1zqKW3T8/AkFxMG2MNyaPxQNwpUx8a9LtZuUEkKy74VyC5hqOxp4AUiLFbfc1nJP3R9XYLxqwZCFnIG3J54JmbRdenXQpXrwxl5TItbtBGMptIsGPPDgqkweuHvfZ7fshTql82X1IkBE2lgnIb7s7PwkxqcHxVxRUaTt9Au1PLo6A3ivoLURfLRwr98w+dt4BmMb56ehP0iV07hnWPdJ6pAlR7ZBHhTv7Bs4lBL2b+Gb1tbdWqiVxnderNJywr2Ia1CTHDuPiD0VTg03WZD91NCgzhe3XiFMkCf6jhnN1eMBRP/xiBUl3WPnFqD0mxMmoOfHsiCBomnciOdbC3TBzB5LMrAWfgrlpB9aNQdH4zyH0ACbB4eEaZ5ZO9Kt4ON0c9xxRCgQPoLuStGSwREWqUu8S/hx532VWRV+OGhHfVPRMfMlqnOvMdcCOl9j+LMQmc8RUiwe6Y7RGFojaLpgNsVJOLI1EapOM1g/srsg4fZbBRV8SEQKqRNFOyetC4ve/nv7yImb6b6/T7AJoc3/A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(136003)(346002)(376002)(1076003)(86362001)(426003)(8936002)(2616005)(478600001)(83380400001)(8676002)(26005)(186003)(9786002)(9746002)(4326008)(6916009)(54906003)(7416002)(316002)(33656002)(2906002)(5660300002)(36756003)(66946007)(66476007)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?4+8gqGpIw8b4H4FALzq65dhKvRv4GcHICoSctk6yBBQSZKO8VIB4EBwysUwk?=
- =?us-ascii?Q?gb+tp5PdPw+zkHKjPxczXqwlkMEDjwHt9Q5zFjFt0B+CvYGGusPvet+2XfvY?=
- =?us-ascii?Q?TkZxV1yO82sHAxPaXZWNnCqDip0zOmSymRpgigafsiXqmHAfpTtyHTi7vZ4e?=
- =?us-ascii?Q?2LLQ/+8IwNP5m0KA85W+DCLn2hZ6Cy5NrHeC03Muq8/XP6anxZiMYeH+Eye4?=
- =?us-ascii?Q?vwBkHL2xvbupPoGwCxQnhjfe+HZsywL9XHGepLYTYwOU1IzQDkptPmflHiRX?=
- =?us-ascii?Q?U6El7LRaGeM8iDVLWlJ82LL7dilIt5x98QEALdq0zUh/T3swXlrcWqbQUz3u?=
- =?us-ascii?Q?SKUwDONByWlByYp6Z563rJTTKC/13vBsrAIsn5osdLFYvX0E8lRcOglcKj4B?=
- =?us-ascii?Q?u5pVh0Scr7RSrissBNDWOfj1J1fjfLlmgfGA5Op/cibu6vFaE1eTa6X78pao?=
- =?us-ascii?Q?aW83QMrBL4WZZTxfrqgbIQrvIBRGAzs1aSQ5f3wNEIqx1YQTRQRffnrwnHNA?=
- =?us-ascii?Q?UALKjbuUju12y1TH+3rB0+OzFOif83YdgzrVi5vbosgM1UGDdACUBMICUmaG?=
- =?us-ascii?Q?wuU3VesBAwSG54MTeb/ASS53Gd5g8Y3ZY75NX+dDDQb+r2hRBqSwEs7UGE1R?=
- =?us-ascii?Q?WKNOZCYudZlrY1EtkgoE5ae7NY8yZnEyJ4wFW0f9B3fvz4yCDqXrNl1TcVNM?=
- =?us-ascii?Q?POAiUPY+PKQbYZn6o/cYwZJkvIst0fviEBu/ER8U3iezRdSa+6WzGqfEcMxd?=
- =?us-ascii?Q?Rma5BsSWJQOTjDhmEzqnesN0Pu8j7FV8G+JYvjOYk01LqYJpdPUtvROJ9aK3?=
- =?us-ascii?Q?3tSuWkoUpqvWL+mIX897gmCvZzLkvtmCD1sX2GUXSUSX7JhIcJkt4dnEdKwg?=
- =?us-ascii?Q?H86Icqss/RL9Z2YWYhUpIWISNscB+1ZJ7CE9aFkTGNG4hGRutf9QlXmKh4o0?=
- =?us-ascii?Q?2hjggpRrqdAU1Lt3LTdQUyHFU6y5Z3sLrlRfEefglGlvJWjQb0Lb9Ml73XmC?=
- =?us-ascii?Q?XP49oLB0MOqZlxaJ9rZFJgwC/DZvLdIgp6dg+mC1S26Lry+t/ul7gsAqZokw?=
- =?us-ascii?Q?04f7iJ6InIUS+CAtHU2UmRG5d5ZKj3pRfOTWlA3kBWL9i1kBKSY/VuMq0ExV?=
- =?us-ascii?Q?P6UqPap3/OyA6mZ3WeuXoa/eep01Q4c8+h+rdsK6bnd/1O26oU9RrsEj5pXY?=
- =?us-ascii?Q?qb6o/kw6vnR+Z15pbTdIEokqHiafLSmJbxoqbQLAfz+/qicGEA3ILQg0ZmOM?=
- =?us-ascii?Q?6aN6CFeILJtfSFj3JBrXUuDM3Au9choq9EngBB/yyn0JyfssubcAFY6nyF4L?=
- =?us-ascii?Q?ykCPEo1YkroAFMmxrbkUHFkvsNIAL91BhU+L+s+0JBmzTA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e82dd155-79fa-4d04-3e3a-08d8e28c091d
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 23:43:55.4532
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wRfs6C8hMj+6Z8piAJOBnWLI89MSrdpqUcLGRoF5uBdOfR8xZyaJjAhJLIl7yGgE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1340
+Content-Type: multipart/mixed; boundary="DocE+STaALJfprDB"
+Content-Disposition: inline
+In-Reply-To: <20210308194950.12320-1-urezki@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 01:21:06PM -0700, Alex Williamson wrote:
-> > diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> > index 65e7e6b..6928c37 100644
-> > +++ b/drivers/vfio/pci/vfio_pci.c
-> > @@ -1613,6 +1613,7 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
-> >  	struct vm_area_struct *vma = vmf->vma;
-> >  	struct vfio_pci_device *vdev = vma->vm_private_data;
-> >  	vm_fault_t ret = VM_FAULT_NOPAGE;
-> > +	unsigned long pfn;
-> >  
-> >  	mutex_lock(&vdev->vma_lock);
-> >  	down_read(&vdev->memory_lock);
-> > @@ -1623,18 +1624,23 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
-> >  		goto up_out;
-> >  	}
-> >  
-> > -	if (__vfio_pci_add_vma(vdev, vma)) {
-> > -		ret = VM_FAULT_OOM;
-> > +	if (!follow_pfn(vma, vma->vm_start, &pfn)) {
-> >  		mutex_unlock(&vdev->vma_lock);
-> >  		goto up_out;
 
-Gah, no new follow_pfn users please we are trying to delete this
-stuff..
+--DocE+STaALJfprDB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I believe the right fix is to change the fault handler to use
-vmf_insert_pfn_prot() which has all the right locking/etc
+Hi "Uladzislau,
 
-The 
-> I'm surprised that it's left to the fault handler to provide this
-> serialization, is this because we're filling the entire vma rather than
-> only the faulting page?
+Thank you for the patch! Yet something to improve:
 
-I think it is because remap_pfn is not intended to be called from a
-fault handler. The fault handler APIs seem to be named vmf_* ..
+[auto build test ERROR on rcu/dev]
+[also build test ERROR on linux/master linus/master v5.12-rc2 next-20210305]
+[cannot apply to hnaz-linux-mm/master]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-If you want to use remap API it has to be done and managed outside the
-fault handler. Ie when the MMIO transitions from valid->invalid vfio-pci
-wipes the address space, when it transitions from invalid->valid it
-calls remap_pfn. vfio-pci provides its own locking to protect these
-state transitions. fault simply always triggers sigbus
+url:    https://github.com/0day-ci/linux/commits/Uladzislau-Rezki-Sony/kvfree_rcu-Release-a-page-cache-under-memory-pressure/20210309-035155
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
+config: arc-defconfig (attached as .config)
+compiler: arc-elf-gcc (GCC) 9.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/d1c3a54d06b2b088b2a7b4e7f2a0a85bcbfbf53a
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Uladzislau-Rezki-Sony/kvfree_rcu-Release-a-page-cache-under-memory-pressure/20210309-035155
+        git checkout d1c3a54d06b2b088b2a7b4e7f2a0a85bcbfbf53a
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arc 
 
-I recall we discussed this design when you made the original patches
-but I don't completely recall why it ended this way, however I think
-the reason might disappear after the address_space conversion in your
-other series.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Jason
+All errors (new ones prefixed by >>):
+
+   arc-elf-ld: kernel/rcu/tree.o: in function `kvfree_call_rcu':
+>> tree.c:(.text+0x291a): undefined reference to `__xchg_bad_pointer'
+>> arc-elf-ld: tree.c:(.text+0x291a): undefined reference to `__xchg_bad_pointer'
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--DocE+STaALJfprDB
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+8ojfs2q7V+z3PKal8f9/F0JSDnONAAA=
+
+--DocE+STaALJfprDB--
