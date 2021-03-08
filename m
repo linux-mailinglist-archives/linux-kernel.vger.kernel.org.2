@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1AD03318F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4B83318FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhCHVA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 16:00:56 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:46444 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229446AbhCHVAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 16:00:42 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lJMzV-009sh5-SP; Mon, 08 Mar 2021 22:00:37 +0100
-Date:   Mon, 8 Mar 2021 22:00:37 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     jonas.gorski@gmail.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] net: mdio: Add BCM6368 MDIO mux bus controller
-Message-ID: <YEaQdXwrmVekXp4G@lunn.ch>
-References: <20210308184102.3921-1-noltari@gmail.com>
- <20210308184102.3921-3-noltari@gmail.com>
+        id S229730AbhCHVCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 16:02:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhCHVCB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 16:02:01 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BE3C06174A;
+        Mon,  8 Mar 2021 13:02:01 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id v14so312695pgq.2;
+        Mon, 08 Mar 2021 13:02:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EfA28O/UsViP+yPLk+j0rLpQWpebcKOAsJiqskjZxXc=;
+        b=sK+yWK70ZHNSJmaL2ofWWUqCWFkE7WFerRIeyuSI/6B+xPw6APL/2/tncdwTcP2DRn
+         IPOWAJGVGA5dkMw1I62xYWV0kcAm2rWmJvSGjM0UdKCfN546Mm/f5b/jpOFFslwVr7/I
+         9ZkARM5NhwxB03N5M6WtjdbBmm93F7WSjxDt5jOxWegC6dyFYjS4z/Hrnk/TSxvsBOLd
+         JEs7MxKFfBOEUopLh4Jxplj3kLM09u/yq4oVFP1QNMFe06kidhVp+qB8V5s/Hd+jKkW0
+         XUI2kKuuwscUseAOknon1C57+TT4s7wy9T/AMr4/ZUdMLBqAzW/mmNOZcw9ia4VX46/2
+         ySCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EfA28O/UsViP+yPLk+j0rLpQWpebcKOAsJiqskjZxXc=;
+        b=iXvvoDZDYtQUl/dFVgemhW+c6ae5f1tL97wV5Ddb/sZ6KfdJEosBt9rMuem+qalpau
+         PUezW+eXZS1ir1SrP6rpTC9ha2IYNi6398dsNPDOEp+DQoqJhFUx0MqBQy1pv0oyibZS
+         F7Fd6t4lkK2vRDHnziMe+e9Gth9kv3MHXAr8m7PnoKemCiXB1lYhH8GLj6/Zxbun+uZi
+         UcqWfToedwgqln2S7qN+YwOTN+Vf0NJ2P7ryVdDcG6fegFr561wUAxT/qxFJXszuIJJU
+         8rr6PXcfuUUo4JoLuRkoyjK6eKFp063WuKQxOSfFbLNP+XEnUovNy9Xlv8lT96JOain9
+         L3eQ==
+X-Gm-Message-State: AOAM530St9LGXmtA5wD20fGawywVDTo23AWdJn0bpI7oTyxaz9z5yaqx
+        kxcMY0QIxuanFwufepOFqj2e7aodZJg7E7+u4A0=
+X-Google-Smtp-Source: ABdhPJxVM01lybOdYwckGRoBjfKBf6vBKHhaBl9GWPCZE2wFJgtwn9WuQ+iwgS/3gF0lF2S6Uc2LtMK4qwQA9MTqMT0=
+X-Received: by 2002:a63:ce15:: with SMTP id y21mr22299306pgf.4.1615237321252;
+ Mon, 08 Mar 2021 13:02:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308184102.3921-3-noltari@gmail.com>
+References: <20210309072620.656e8078@canb.auug.org.au> <20210309073211.392a838d@canb.auug.org.au>
+In-Reply-To: <20210309073211.392a838d@canb.auug.org.au>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 8 Mar 2021 23:01:44 +0200
+Message-ID: <CAHp75Ve2qGd5fFC9ztaEk9d+YBa-aTu-gMn_9dRUbpkWGY9YTw@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the
+ gpio-brgl-fixes tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static int bcm6368_mdiomux_probe(struct platform_device *pdev)
-> +{
-> +	struct bcm6368_mdiomux_desc *md;
-> +	struct mii_bus *bus;
-> +	struct resource *res;
-> +	int rc;
-> +
-> +	md = devm_kzalloc(&pdev->dev, sizeof(*md), GFP_KERNEL);
-> +	if (!md)
-> +		return -ENOMEM;
-> +	md->dev = &pdev->dev;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res)
-> +		return -EINVAL;
-> +
-> +	/* Just ioremap, as this MDIO block is usually integrated into an
-> +	 * Ethernet MAC controller register range
-> +	 */
-> +	md->base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
-> +	if (!md->base) {
-> +		dev_err(&pdev->dev, "failed to ioremap register\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	md->mii_bus = devm_mdiobus_alloc(&pdev->dev);
-> +	if (!md->mii_bus) {
-> +		dev_err(&pdev->dev, "mdiomux bus alloc failed\n");
-> +		return ENOMEM;
-> +	}
-> +
-> +	bus = md->mii_bus;
-> +	bus->priv = md;
-> +	bus->name = "BCM6368 MDIO mux bus";
-> +	snprintf(bus->id, MII_BUS_ID_SIZE, "%s-%d", pdev->name, pdev->id);
-> +	bus->parent = &pdev->dev;
-> +	bus->read = bcm6368_mdiomux_read;
-> +	bus->write = bcm6368_mdiomux_write;
-> +	bus->phy_mask = 0x3f;
-> +	bus->dev.of_node = pdev->dev.of_node;
-> +
-> +	rc = mdiobus_register(bus);
-> +	if (rc) {
-> +		dev_err(&pdev->dev, "mdiomux registration failed\n");
-> +		return rc;
-> +	}
+On Mon, Mar 8, 2021 at 10:34 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> On Tue, 9 Mar 2021 07:26:20 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Commits
+> >
+> >   eb441337c714 ("gpio: pca953x: Set IRQ type when handle Intel Galileo Gen 2")
+> >   809390219fb9 ("gpiolib: acpi: Allow to find GpioInt() resource by name and index")
+> >   62d5247d239d ("gpiolib: acpi: Add ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk")
+> >   6e5d5791730b ("gpiolib: acpi: Add missing IRQF_ONESHOT")
+> >
+> > are missing a Signed-off-by from their committers.
+>
+> This also applies to the gpio-intel-fixes tree (since it is now headed
+> by the same commit as the gpio-brgl-fixes tree).
 
-So this is different to all the other mux drivers. Normally there is
-an MDIO driver. And there is a mux driver. Two separate drivers. The
-mux driver uses a phandle to reference the MDIO driver. Here we have
-both in one driver.
+I rebased my branch according to Linus, but I have decided to take
+directly Bart's tree.
+So when original will be fixed I'll fix mine.
 
-Does this MDIO bus device exist as a standalone device? Without the
-mux? If silicon does exist like that, having two separate drivers
-would be better.
+Thanks!
 
-     Andrew
+P.S. Bart, you may simply merge my tag even on top of v5.12-rc2. It
+will save you time and keep the original SHA IDs.
+
+-- 
+With Best Regards,
+Andy Shevchenko
