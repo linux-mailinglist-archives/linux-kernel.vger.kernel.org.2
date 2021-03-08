@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E929330B01
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:20:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6693330B05
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhCHKUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 05:20:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbhCHKUF (ORCPT
+        id S231129AbhCHKWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 05:22:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23194 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231295AbhCHKWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:20:05 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F998C06174A;
-        Mon,  8 Mar 2021 02:20:05 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id d15so10831514wrv.5;
-        Mon, 08 Mar 2021 02:20:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5FyddfYk6kKr/3zvxDS0VxAq0/NkeI1fTb/fX0lhdjQ=;
-        b=VNu2vtDmLmzQJwF4ZyTj8wObBxKSsE82/oOXMgl6E3jKOhli0nYm0p9ir6Pdmv+8+0
-         kNOXWuutxJh9KiHrdwuEVwytOHAOmG1gX89A8XkQcaGvAVRUgDsEY+xSMcQbIrKahyNv
-         VmhHfiWrWglKX5OXr0HnRIDHBbEC1Z30DWvn5kcF1QNc7Hd4a4xsIZwpxWxe/p22lu5R
-         Ed/DgbFFI4Bt9cehYSktW9xmeHPIGXCRAfQowteFDKa/4SpnvMXz/XnQtHutpVAJpj73
-         GcHgfoDFjE25pHn6MRZq7F47x8NrAImuJthqjOflUVnYOXYzr6s9yLcSKY2Ft3qOZi+W
-         HZlA==
+        Mon, 8 Mar 2021 05:22:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615198933;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+kdbU7D0Cs1nqJnhH9OV4K0Ddqhr5xVnkk7eSjOjWfo=;
+        b=Yt5+ZokzS7FkYiK9SOFGQtP5JmXrg/l8PUvPLp43TysJSAR2AEPPhAoSacxLqmcN62L03f
+        L6QbNHsechPNKbFL4kq6vNw3/kWIeoC+YmhxGbr8MuqvpQPYUJ3Y4pWqtvoiM7SIPJboWl
+        g+47mLKQRZpFUXFQiAwz3sbpjLOVJu0=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-490-ZxuRFkGmMIukY74HPX7abg-1; Mon, 08 Mar 2021 05:22:08 -0500
+X-MC-Unique: ZxuRFkGmMIukY74HPX7abg-1
+Received: by mail-pl1-f197.google.com with SMTP id f13so4323310plj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 02:22:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5FyddfYk6kKr/3zvxDS0VxAq0/NkeI1fTb/fX0lhdjQ=;
-        b=nsF54KPjaXZgP2Bhm4YC91Pbt8VKibsYpu2n4JPgiJVKY/P0q7r1cYxHUdBpO8cuHX
-         3C9WlwZR1+ApO+nIVbuxKBNHHBxW3ONKZXx54/fGV7AsDMBrv+Qj6lFF/fBiWqFj2Cjx
-         Z9j7iqjiOKF180CVgCc741WelfT4KfSdWc4Q+Thih1tXnpaYy6dBXJwPw2TGkxquSwal
-         x5e42FvkgDiStkW6NMVcP9I/IwKhOO3k0T2YFtSJs9fFXBR90uEeVQeN790mSTMohASR
-         WV8xx7bIfxNYbCPr3ydFZXS8U++JdfwlsmNUCu5B0tmBBgIIOD7mXxu+QoOtZYAL5w31
-         p7gw==
-X-Gm-Message-State: AOAM532WuLJZaSvgTfGWkG0Wi4lF+RLwF8LXambMAuzBkM9VyGsxIEBQ
-        hiByrTKJUHFgi47G3XUHiJkaaC6p+DoBSA==
-X-Google-Smtp-Source: ABdhPJzCwrBCqqyIGM7tUOvJJ3q8im0e+1PCOS7GVSQC0rnBjVBVUcOR0NiLmcaAa5nAlh2dufPzqg==
-X-Received: by 2002:adf:aa08:: with SMTP id p8mr21664879wrd.232.1615198803547;
-        Mon, 08 Mar 2021 02:20:03 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f1f:bb00:95fd:bec9:ac6f:f944? (p200300ea8f1fbb0095fdbec9ac6ff944.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:95fd:bec9:ac6f:f944])
-        by smtp.googlemail.com with ESMTPSA id v2sm11306241wru.85.2021.03.08.02.20.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 02:20:03 -0800 (PST)
-Subject: Re: [PATCH] net: ieee802154: fix error return code of dgram_sendmsg()
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc:     linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alex.aring@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, stefan@datenfreihafen.org
-References: <20210308093106.9748-1-baijiaju1990@gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <d373b42c-0057-48b3-4667-bfa53a99f040@gmail.com>
-Date:   Mon, 8 Mar 2021 11:19:57 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+kdbU7D0Cs1nqJnhH9OV4K0Ddqhr5xVnkk7eSjOjWfo=;
+        b=t+O4PEGcDfVp6IOlCCuIJuU4xQ2NF2v7Kk9TrtvpbWe4cmQBEYJEu0wKfTGPnvtkLX
+         tlbc4gmGcl2GGcd1H3piaSg7ctgGqqbaLNb0dEjvj4jGAdNjbzvCE241LkSm6On8fc8F
+         PKj3yR/9Lo4njYzYyOkQaFFUkIwfcsNHKdsMo3Di+KvyI0gR18qRuX5U4HhJIbAFIju9
+         Yx1l6sOE+iIUUbQgrBbQ03CrNywt89hWgmdQ26FG0dwSDzjboJeSCo1mjkNZhYpIyee0
+         f/MROtZl1tHvqSzJznyQoURdDOYyR9qKaoNcCt6jzSehbvxWz4erPqVimzXPYNxQRMoL
+         7Bjg==
+X-Gm-Message-State: AOAM5307pJlBVrKnuEDF1hjtiDttKQyCfXeQn/IK2CSQH2qGcFmLxaDN
+        B9H195PTXQx6ZMGXY9tM99coqg1I/V2e5AMQyyL8hJn2mGni616lzTuB/w1nSSr0trucTFSPjqk
+        sEJTAZpuoW/nL1wdjcVFP9WKvopAYFTZImfN2Y19f
+X-Received: by 2002:a17:902:7006:b029:e3:dd4d:85ac with SMTP id y6-20020a1709027006b02900e3dd4d85acmr20267956plk.41.1615198927346;
+        Mon, 08 Mar 2021 02:22:07 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzq49tQ7a54VntS9SC7qB4EcD5e9RLI11vUrjuafOhf+clmiNfTExsZvf5goIHxqniIWvr47LYYg8jQ0aa4Bn4=
+X-Received: by 2002:a17:902:7006:b029:e3:dd4d:85ac with SMTP id
+ y6-20020a1709027006b02900e3dd4d85acmr20267932plk.41.1615198927109; Mon, 08
+ Mar 2021 02:22:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210308093106.9748-1-baijiaju1990@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1613582014.git.nabijaczleweli@nabijaczleweli.xyz> <nycvar.YFH.7.76.2103081114580.12405@cbobk.fhfr.pm>
+In-Reply-To: <nycvar.YFH.7.76.2103081114580.12405@cbobk.fhfr.pm>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Mon, 8 Mar 2021 11:21:56 +0100
+Message-ID: <CAO-hwJJj0KRCOYPmpNEmU1oVD+SNNYn9+BoGxnPbSthFuCxK9w@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Stylus-on-touchscreen device support
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     =?UTF-8?B?0L3QsNCx?= <nabijaczleweli@nabijaczleweli.xyz>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.03.2021 10:31, Jia-Ju Bai wrote:
-> When sock_alloc_send_skb() returns NULL to skb, no error return code of
-> dgram_sendmsg() is assigned.
-> To fix this bug, err is assigned with -ENOMEM in this case.
-> 
+Hi Jiri,
 
-Please stop sending such nonsense. Basically all such patches you
-sent so far are false positives. You have to start thinking,
-don't blindly trust your robot.
-In the case here the err variable is populated by sock_alloc_send_skb().
+On Mon, Mar 8, 2021 at 11:15 AM Jiri Kosina <jikos@kernel.org> wrote:
+>
+> On Wed, 17 Feb 2021, =D0=BD=D0=B0=D0=B1 wrote:
+>
+> > This patchset adds support for stylus-on-touchscreen devices as found o=
+n
+> > the OneMix 3 Pro and Dell Inspiron 15 7000 2-in-1 (7591), among others;
+> > with it, they properly behave like a drawing tablet.
+> >
+> > Patches 2 and 4 funxionally depend on patch 1.
+> > Patch 4 needs patch 3 to apply.
+> >
+> > The output of this patchset and the need for a kernel, rather than
+> > userspace, patch was previously discussed here:
+> >   https://gitlab.freedesktop.org/libinput/libinput/-/merge_requests/558=
+#note_792834
+> >
+> > Ahelenia Ziemia=C5=84ska (4):
+> >   HID: multitouch: require Finger field to mark Win8 reports as MT
+> >   HID: multitouch: set Stylus suffix for Stylus-application devices, to=
+o
+> >   HID: input: replace outdated HID numbers+comments with macros
+> >   HID: input: work around Win8 stylus-on-touchscreen reporting
+> >
+> >  drivers/hid/hid-input.c      | 47 +++++++++++++++++++++++++++++++++---
+> >  drivers/hid/hid-multitouch.c | 18 ++++++++------
+> >  2 files changed, 55 insertions(+), 10 deletions(-)
+>
+> Benjamin, this patchset looks good to me; do you have any objections on
+> queuing it for 5.13?
+>
 
-> Fixes: 78f821b64826 ("ieee802154: socket: put handling into one file")
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-> ---
->  net/ieee802154/socket.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/ieee802154/socket.c b/net/ieee802154/socket.c
-> index a45a0401adc5..a750b37c7e73 100644
-> --- a/net/ieee802154/socket.c
-> +++ b/net/ieee802154/socket.c
-> @@ -642,8 +642,10 @@ static int dgram_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
->  	skb = sock_alloc_send_skb(sk, hlen + tlen + size,
->  				  msg->msg_flags & MSG_DONTWAIT,
->  				  &err);
-> -	if (!skb)
-> +	if (!skb) {
-> +		err = -ENOMEM;
->  		goto out_dev;
-> +	}
->  
->  	skb_reserve(skb, hlen);
->  
-> 
+Please hold on this one. I am pretty sure this should break the test
+suite but couldn't have the chance to get to it. Will pop this one up
+in TODO list.
+
+Cheers,
+Benjamin
 
