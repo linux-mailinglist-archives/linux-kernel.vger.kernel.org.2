@@ -2,119 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C2D3313A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4957D3313A8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhCHQm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:42:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
+        id S229580AbhCHQoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:44:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230165AbhCHQmw (ORCPT
+        with ESMTP id S230075AbhCHQne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:42:52 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35FDFC06174A;
-        Mon,  8 Mar 2021 08:42:52 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id i8so10607175iog.7;
-        Mon, 08 Mar 2021 08:42:52 -0800 (PST)
+        Mon, 8 Mar 2021 11:43:34 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A41ACC06174A;
+        Mon,  8 Mar 2021 08:43:33 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id v13so15674127edw.9;
+        Mon, 08 Mar 2021 08:43:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BNlx4YPfM1nidlUove0a2nwdF4iPwX2FX54lO9BqECo=;
-        b=PrcHqWM7PnbSdR1uQ2JziJWlKjjLrk2YVlkPA6r/nL9C/TPD9MIerRj2HQKQ71IvB5
-         JZU4S05UPtRRGfcpGqJtEnZv4A7oASYA2vliIUFOdfFaoWy2tITkB2UETbyZ9QQ6EjCJ
-         KUjWfSANCUvDkJYwX9160gXx8laQ8HA5OFt9Jcjv63VLYFq7e7Q7812gxrMeSAx9Rc2y
-         HCRy9naWrSGM4I0ISYuLtmW5rYiX/RKy0a7rg7uJfNC5W8IkWhZ/hbIcpLkATg8bTaaJ
-         uwcj/UHKS1bqp8Qf7+5Jddb55e5G5zDtBp/9y3nZBfCZAl3WYaW4VhQ234YZY1hBZPuw
-         G+Kg==
+        bh=iGxmjsIAakhmO1Hbo5Yb6Y5dOSTb27I2CbUQX1758Ts=;
+        b=Ry1e2Rf3a8g1vzMPXYIQOL1BU6bl/06FtiosR2eBVJYYK5QQY6rQ7fvlCXq0TXLvUR
+         7//Oo2Myji89onUWloaBWZN94O+lgV0bZdybia5Y+dO9BKQQxbgQ+1sBWjFuZqU4xkKe
+         LOzsJqtee1cDZg/k2Df4IfIJkpa6Nwo0/aeZvxpFAGhk2z9jXEt3gi8DAmgoq2BZDWc+
+         L8Ch1vH90jo+ewcYvFKQ6OHqH1zXI1guRj8aGbzCABKYJzwsGNhNxZ5lmK1cmboKTYZD
+         ynIHrDLvmFaV24lAa+tHswN+8plMdXr0x6o4qZp0j7MQeI4/v6TQnKL5X5RQASHMnz2K
+         7odQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=BNlx4YPfM1nidlUove0a2nwdF4iPwX2FX54lO9BqECo=;
-        b=kNLzruWJJepRVn7Ab6CavNZY2IxmyDii6tACNCzPSnjg+c6p0ZLuA62YSyy79+e8KO
-         zJuOVPzRMXfrzMm5v9PO+iDIen9ieCr84F9PCN/0Kto1Htvya9R2B3aX67/Q8DOzQUGt
-         6bwOaWy33x8wOP9dwPvwHFbjd2kQCOISCwwMxU8temcnblSuXtZSB/kizFEpCI9YWJuE
-         ty/gcN69hBvom0jNPs3gKHChcJBhwJZz+Zqyvymd3Fpb9GXoHkd5J1+KAe/O7trHwV0U
-         djiIz/tk5NQ6oSYaqNc3dU9N9gSvgH3t4bSe7ttewb/YroclLFzwOoLz4X3ujccg8YoV
-         0Yxw==
-X-Gm-Message-State: AOAM5322MNDtyg3rcVBUvMykMQiNZ+YsVqgqFpOvhSIA7gYClLO0feyd
-        BQ5ua3/SiY8oybJW7VDk+p0=
-X-Google-Smtp-Source: ABdhPJzIqKfSoF0sdk0JhHyfLAp1Hk3pGQs1ueevQq3Q58YZsgerxVcRu7ZhXkyZOXOPDB84Yy0r/g==
-X-Received: by 2002:a6b:7302:: with SMTP id e2mr19112165ioh.106.1615221771648;
-        Mon, 08 Mar 2021 08:42:51 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([8.48.134.40])
-        by smtp.googlemail.com with ESMTPSA id k10sm6291465iop.42.2021.03.08.08.42.50
+        bh=iGxmjsIAakhmO1Hbo5Yb6Y5dOSTb27I2CbUQX1758Ts=;
+        b=Sr4xjs2pq2cHhLQsozqgQgU39gvBBd0hsJ3JEtos++yxq8OvdbPBDeIcLmolyapsa4
+         yJA8d8b4ToWEgIYAHlFhEY0zXdRMGjfrWCUyMUUWQIqsMr5StpF1NhcT9XlZv4LZ6ISI
+         xfKCH57a/1tf3jJo5aTwyCdRV8NPR4od15gyeU9lvNd6qRz4xLtTU3TbQJbgvChXDwQ+
+         fs7tgZVe/pBhVrjXDadW5qxqPwTi3ScINol7dLY8SSm2W0n25/u9yFvew3OWUJGjP8ge
+         l9cC3S2YRU4c5KBpUfFBMkCUy1BGFzCZjEMuAhRG+1HuavY4d5YwHDhOIvUboD6/DcST
+         ykOw==
+X-Gm-Message-State: AOAM532Cu0Ezhla4p3z27nVT7P1eg444kZOcYtj+TRqNzepGuDl3xX/0
+        8Gxn7OlCEPQhbp281Rz/KgXIF1UtXKBKvQ==
+X-Google-Smtp-Source: ABdhPJzPXJNaNJrGVmw3pcedTWs6uWQzyEN3nl/3xaol7FjsSWFQOaSjKwpQ0np/X7lCMVBY/Nk5+w==
+X-Received: by 2002:a50:fc94:: with SMTP id f20mr23166663edq.370.1615221812090;
+        Mon, 08 Mar 2021 08:43:32 -0800 (PST)
+Received: from [10.17.0.16] ([37.58.58.229])
+        by smtp.gmail.com with ESMTPSA id l1sm6764823eje.12.2021.03.08.08.43.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 08:42:51 -0800 (PST)
-Subject: Re: [PATCH v2 2/2] net: avoid infinite loop in mpls_gso_segment when
- mpls_hlen == 0
-To:     Balazs Nemeth <bnemeth@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        virtualization@lists.linux-foundation.org
-References: <cover.1615199056.git.bnemeth@redhat.com>
- <85e04e1e6367f19c8f538d145b32f5bb93788d8a.1615199056.git.bnemeth@redhat.com>
- <CA+FuTSdWSCzkB7sDn+_0Oxy8JqmqL=nsQXP_3bnb4Xdd=0A=KQ@mail.gmail.com>
- <718e4f13-31a8-037c-9725-08ae3cd93ccd@gmail.com>
- <543ebc518aa31f04bb6a85b66f37d984ede4b031.camel@redhat.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <f1fc417e-946b-6e92-3650-865834c289f3@gmail.com>
-Date:   Mon, 8 Mar 2021 09:42:49 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
+        Mon, 08 Mar 2021 08:43:31 -0800 (PST)
+Subject: Re: [PATCH] Revert "pinctrl: intel: Split
+ intel_pinctrl_add_padgroups() for better maintenance"
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210308152505.3762055-1-luzmaximilian@gmail.com>
+ <YEZEX+BCw21O6rmT@smile.fi.intel.com> <YEZRbO3uJQmsCZO9@smile.fi.intel.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <241a8d75-c0d7-0045-49ee-22072e8588b8@gmail.com>
+Date:   Mon, 8 Mar 2021 17:43:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <543ebc518aa31f04bb6a85b66f37d984ede4b031.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YEZRbO3uJQmsCZO9@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/8/21 9:26 AM, Balazs Nemeth wrote:
-> On Mon, 2021-03-08 at 09:17 -0700, David Ahern wrote:
->> On 3/8/21 9:07 AM, Willem de Bruijn wrote:
->>>> diff --git a/net/mpls/mpls_gso.c b/net/mpls/mpls_gso.c
->>>> index b1690149b6fa..cc1b6457fc93 100644
->>>> --- a/net/mpls/mpls_gso.c
->>>> +++ b/net/mpls/mpls_gso.c
->>>> @@ -27,7 +27,7 @@ static struct sk_buff *mpls_gso_segment(struct
->>>> sk_buff *skb,
->>>>
->>>>         skb_reset_network_header(skb);
->>>>         mpls_hlen = skb_inner_network_header(skb) -
->>>> skb_network_header(skb);
->>>> -       if (unlikely(!pskb_may_pull(skb, mpls_hlen)))
->>>> +       if (unlikely(!mpls_hlen || !pskb_may_pull(skb,
->>>> mpls_hlen)))
->>>>                 goto out;
+On 3/8/21 5:31 PM, Andy Shevchenko wrote:
+> On Mon, Mar 08, 2021 at 05:35:59PM +0200, Andy Shevchenko wrote:
+>> On Mon, Mar 08, 2021 at 04:25:05PM +0100, Maximilian Luz wrote:
+>>> Following commit 036e126c72eb ("pinctrl: intel: Split
+>>> intel_pinctrl_add_padgroups() for better maintenance"),
+>>> gpiochip_get_desc() is broken on some Kaby Lake R devices (specifically
+>>> a Microsoft Surface Book 2), returning -EINVAL for GPIOs that in reality
+>>> should be there (they are defined in ACPI and have been accessible
+>>> previously). Due to this, gpiod_get() fails with -ENOENT.
 >>>
->>> Good cathc. Besides length zero, this can be more strict: a label
->>> is
->>> 4B, so mpls_hlen needs to be >= 4B.
->>>
->>> Perhaps even aligned to 4B, too, but not if there may be other
->>> encap on top.
->>>
->>> Unfortunately there is no struct or type definition that we can use
->>> a
->>> sizeof instead of open coding the raw constant.
->>>
+>>> Reverting this commit fixes that issue and the GPIOs in question are
+>>> accessible again.
 >>
->> MPLS_HLEN can be used here.
+>> I would like to have more information.
+>> Can you enable PINCTRL and GPIO debug options in the kernel, and show dmesg
+>> output (when kernel command line has 'ignore_loglevel' option) for both working
+>> and non-working cases?
 >>
+>> Also if it's possible to have DSDT.dsl of the device in question along with
+>> output of `grep -H 15 /sys/bus/acpi/devices/*/status`.
+>>
+>>> There is probably a better option than straight up reverting this, so
+>>> consider this more of a bug-report.
+>>
+>> Indeed.
 > 
-> What about sizeof(struct mpls_label), like in net/ipv4/tunnel4.c?
+> 
+> Can you test if the below helps (probably you have to apply it by editing
+> the file manually):
+> 
+> --- a/drivers/pinctrl/intel/pinctrl-intel.c
+> +++ b/drivers/pinctrl/intel/pinctrl-intel.c
+> @@ -1392,6 +1392,7 @@ static int intel_pinctrl_add_padgroups_by_size(struct intel_pinctrl *pctrl,
+>   	gpps[i].size = min(gpp_size, npins);
+>   	npins -= gpps[i].size;
+>   
+> +	gpps[i].gpio_base = gpps[i].base;
+>   	gpps[i].padown_num = padown_num;
+>   
 > 
 
-I was thinking MPLS_HLEN because of its consistent use with skb
-manipulations. net/mpls code uses mpls_shim_hdr over mpls_label.
+That does fix the issue! Thanks for the fast response and fix!
 
-Looks like the MPLS code could use some cleanups to make this consistent.
+Regards,
+Max
