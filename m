@@ -2,190 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495E7330EE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8110E330EF0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:14:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhCHNIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 08:08:52 -0500
-Received: from foss.arm.com ([217.140.110.172]:37774 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229971AbhCHNIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 08:08:32 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B7E831B;
-        Mon,  8 Mar 2021 05:08:32 -0800 (PST)
-Received: from [10.57.55.135] (unknown [10.57.55.135])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A68693F71B;
-        Mon,  8 Mar 2021 05:08:30 -0800 (PST)
-Subject: Re: [PATCH] iommu/dma: Resurrect the "forcedac" option
-To:     John Garry <john.garry@huawei.com>, joro@8bytes.org
-Cc:     iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        baolu.lu@linux.intel.com, murphyt7@tcd.ie,
-        thunder.leizhen@huawei.com, will@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <7eece8e0ea7bfbe2cd0e30789e0d46df573af9b0.1614961776.git.robin.murphy@arm.com>
- <76a931ab-fd2a-284e-61ef-9e26bceb4890@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <3b1d1dea-ebba-f811-06af-d26a8061d678@arm.com>
-Date:   Mon, 8 Mar 2021 13:08:25 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229790AbhCHNOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 08:14:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229938AbhCHNOR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 08:14:17 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC86C06174A;
+        Mon,  8 Mar 2021 05:14:17 -0800 (PST)
+Date:   Mon, 08 Mar 2021 13:14:13 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615209254;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bG+8bRCtIWTt596+cIzOC2I/EluPtoyFGTzry5chudI=;
+        b=kwqk5RPmNZkQh+Jg91sKJjx0gkAT5t4QaFDZTHj9TMOFMdnZabyMy4VirT2cewY06iig1p
+        8aPrSkL39+3uXK6xlPR7T6JOSnAJAm0/XasipSwXD7JT27BvmyDT9o1HZB5bD4XUefb4HD
+        vtYYCWtlQ2GA8npQylMXcJCH5/iktlaXzIy9ZEycU9xNF+lOnu5pmKNiSDeybf0bhEm/T9
+        ATgTUN3YMaGuELZMHOmU7Ix+Hdw96DO7r9Gf9NxT7C54qFq1hyJ2G9XRy7Ps8UJhYGkCVw
+        NwlEOiDJ/6CqP8DN80t4lC5d3O9FEAQHayAYGFD1FFmgUyH68ebDBVWJhiqwIw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615209254;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bG+8bRCtIWTt596+cIzOC2I/EluPtoyFGTzry5chudI=;
+        b=nSiBoOPtgMebgYeCOKgd76vQscRTN/blMdrSlFc1p0mw78yjRfDQvAIS1U39jWiD+vkNZZ
+        EZ+QB5ioQZJR/aCQ==
+From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/core] x86/entry/32: Remove leftover macros after
+ stackprotector cleanups
+Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <b1543116f0f0e68f1763d90d5f7fcec27885dff5.1613243844.git.luto@kernel.org>
+References: <b1543116f0f0e68f1763d90d5f7fcec27885dff5.1613243844.git.luto@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <76a931ab-fd2a-284e-61ef-9e26bceb4890@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Message-ID: <161520925390.398.2550200626715817720.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-05 17:41, John Garry wrote:
-> On 05/03/2021 16:32, Robin Murphy wrote:
->> In converting intel-iommu over to the common IOMMU DMA ops, it quietly
->> lost the functionality of its "forcedac" option. Since this is a handy
->> thing both for testing and for performance optimisation on certain
->> platforms, reimplement it under the common IOMMU parameter namespace.
->>
->> For the sake of fixing the inadvertent breakage of the Intel-specific
->> parameter, remove the dmar_forcedac remnants and hook it up as an alias
->> while documenting the transition to the new common parameter.
->>
-> 
-> Do you think that having a kconfig option to control the default for 
-> this can help identify the broken platforms which rely on forcedac=0? 
-> But seems a bit trivial for that, though.
+The following commit has been merged into the x86/core branch of tip:
 
-I think it's still a sizeable can of worms - unlike, say, 
-ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT, we can't actually tell when things 
-have gone awry and explicitly call it out. While I was getting the 
-dma-ranges right on my Juno, everything broke differently - the SATA 
-controller fails gracefully; the ethernet controller got the kernel tied 
-up somewhere (to the point that the USB keyboard died) once it tried to 
-brink up the link, but was at least spewing regular timeout backtraces 
-that implicated the networking layer; having an (unused) NVMe plugged in 
-simply wedged the boot process early on with no hint whatsoever of why.
+Commit-ID:     d0962f2b24c99889a386f0658c71535f56358f77
+Gitweb:        https://git.kernel.org/tip/d0962f2b24c99889a386f0658c71535f56358f77
+Author:        Andy Lutomirski <luto@kernel.org>
+AuthorDate:    Sat, 13 Feb 2021 11:19:45 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 08 Mar 2021 13:27:31 +01:00
 
-TBH I'm not really sure what the best way forward is in terms of trying 
-to weed out platforms that would need quirking. Our discussion just 
-reminded me of this option and that it had gone AWOL, so bringing it 
-back to be potentially *some* use to everyone seems justifiable on its own.
+x86/entry/32: Remove leftover macros after stackprotector cleanups
 
-Thanks,
-Robin.
+Now that nonlazy-GS mode is gone, remove the macros from entry_32.S
+that obfuscated^Wabstracted GS handling.  The assembled output is
+identical before and after this patch.
 
-> 
-> Or are we bothered (finding them)?
-> 
-> Thanks,
-> john
-> 
->> Fixes: c588072bba6b ("iommu/vt-d: Convert intel iommu driver to the 
->> iommu ops")
->> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
->> ---
->>   Documentation/admin-guide/kernel-parameters.txt | 15 ++++++++-------
->>   drivers/iommu/dma-iommu.c                       | 13 ++++++++++++-
->>   drivers/iommu/intel/iommu.c                     |  5 ++---
->>   include/linux/dma-iommu.h                       |  2 ++
->>   4 files changed, 24 insertions(+), 11 deletions(-)
->>
->> diff --git a/Documentation/admin-guide/kernel-parameters.txt 
->> b/Documentation/admin-guide/kernel-parameters.txt
->> index 04545725f187..835f810f2f26 100644
->> --- a/Documentation/admin-guide/kernel-parameters.txt
->> +++ b/Documentation/admin-guide/kernel-parameters.txt
->> @@ -1869,13 +1869,6 @@
->>               bypassed by not enabling DMAR with this option. In
->>               this case, gfx device will use physical address for
->>               DMA.
->> -        forcedac [X86-64]
->> -            With this option iommu will not optimize to look
->> -            for io virtual address below 32-bit forcing dual
->> -            address cycle on pci bus for cards supporting greater
->> -            than 32-bit addressing. The default is to look
->> -            for translation below 32-bit and if not available
->> -            then look in the higher range.
->>           strict [Default Off]
->>               With this option on every unmap_single operation will
->>               result in a hardware IOTLB flush operation as opposed
->> @@ -1964,6 +1957,14 @@
->>           nobypass    [PPC/POWERNV]
->>               Disable IOMMU bypass, using IOMMU for PCI devices.
->> +    iommu.forcedac=    [ARM64, X86] Control IOVA allocation for PCI 
->> devices.
->> +            Format: { "0" | "1" }
->> +            0 - Try to allocate a 32-bit DMA address first, before
->> +              falling back to the full range if needed.
->> +            1 - Allocate directly from the full usable range,
->> +              forcing Dual Address Cycle for PCI cards supporting
->> +              greater than 32-bit addressing.
->> +
->>       iommu.strict=    [ARM64] Configure TLB invalidation behaviour
->>               Format: { "0" | "1" }
->>               0 - Lazy mode.
->> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
->> index 9ab6ee22c110..260bf3de1992 100644
->> --- a/drivers/iommu/dma-iommu.c
->> +++ b/drivers/iommu/dma-iommu.c
->> @@ -52,6 +52,17 @@ struct iommu_dma_cookie {
->>   };
->>   static DEFINE_STATIC_KEY_FALSE(iommu_deferred_attach_enabled);
->> +bool iommu_dma_forcedac __read_mostly;
->> +
->> +static int __init iommu_dma_forcedac_setup(char *str)
->> +{
->> +    int ret = kstrtobool(str, &iommu_dma_forcedac);
->> +
->> +    if (!ret && iommu_dma_forcedac)
->> +        pr_info("Forcing DAC for PCI devices\n");
->> +    return ret;
->> +}
->> +early_param("iommu.forcedac", iommu_dma_forcedac_setup);
->>   void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
->>           struct iommu_domain *domain)
->> @@ -438,7 +449,7 @@ static dma_addr_t iommu_dma_alloc_iova(struct 
->> iommu_domain *domain,
->>           dma_limit = min(dma_limit, (u64)domain->geometry.aperture_end);
->>       /* Try to get PCI devices a SAC address */
->> -    if (dma_limit > DMA_BIT_MASK(32) && dev_is_pci(dev))
->> +    if (dma_limit > DMA_BIT_MASK(32) && !iommu_dma_forcedac && 
->> dev_is_pci(dev))
->>           iova = alloc_iova_fast(iovad, iova_len,
->>                          DMA_BIT_MASK(32) >> shift, false);
->> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->> index ee0932307d64..1c32522220bc 100644
->> --- a/drivers/iommu/intel/iommu.c
->> +++ b/drivers/iommu/intel/iommu.c
->> @@ -360,7 +360,6 @@ int intel_iommu_enabled = 0;
->>   EXPORT_SYMBOL_GPL(intel_iommu_enabled);
->>   static int dmar_map_gfx = 1;
->> -static int dmar_forcedac;
->>   static int intel_iommu_strict;
->>   static int intel_iommu_superpage = 1;
->>   static int iommu_identity_mapping;
->> @@ -451,8 +450,8 @@ static int __init intel_iommu_setup(char *str)
->>               dmar_map_gfx = 0;
->>               pr_info("Disable GFX device mapping\n");
->>           } else if (!strncmp(str, "forcedac", 8)) {
->> -            pr_info("Forcing DAC for PCI devices\n");
->> -            dmar_forcedac = 1;
->> +            pr_warn("intel_iommu=forcedac deprecated; use 
->> iommu.forcedac instead\n");
->> +            iommu_dma_forcedac = true;
->>           } else if (!strncmp(str, "strict", 6)) {
->>               pr_info("Disable batched IOTLB flush\n");
->>               intel_iommu_strict = 1;
->> diff --git a/include/linux/dma-iommu.h b/include/linux/dma-iommu.h
->> index 706b68d1359b..13d1f4c14d7b 100644
->> --- a/include/linux/dma-iommu.h
->> +++ b/include/linux/dma-iommu.h
->> @@ -40,6 +40,8 @@ void iommu_dma_get_resv_regions(struct device *dev, 
->> struct list_head *list);
->>   void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
->>           struct iommu_domain *domain);
->> +extern bool iommu_dma_forcedac;
->> +
->>   #else /* CONFIG_IOMMU_DMA */
->>   struct iommu_domain;
->>
-> 
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/b1543116f0f0e68f1763d90d5f7fcec27885dff5.1613243844.git.luto@kernel.org
+---
+ arch/x86/entry/entry_32.S | 43 +-------------------------------------
+ 1 file changed, 2 insertions(+), 41 deletions(-)
+
+diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
+index eb0cb66..bee9101 100644
+--- a/arch/x86/entry/entry_32.S
++++ b/arch/x86/entry/entry_32.S
+@@ -53,35 +53,6 @@
+ 
+ #define PTI_SWITCH_MASK         (1 << PAGE_SHIFT)
+ 
+-/*
+- * User gs save/restore
+- *
+- * This is leftover junk from CONFIG_X86_32_LAZY_GS.  A subsequent patch
+- * will remove it entirely.
+- */
+- /* unfortunately push/pop can't be no-op */
+-.macro PUSH_GS
+-	pushl	$0
+-.endm
+-.macro POP_GS pop=0
+-	addl	$(4 + \pop), %esp
+-.endm
+-.macro POP_GS_EX
+-.endm
+-
+- /* all the rest are no-op */
+-.macro PTGS_TO_GS
+-.endm
+-.macro PTGS_TO_GS_EX
+-.endm
+-.macro GS_TO_REG reg
+-.endm
+-.macro REG_TO_PTGS reg
+-.endm
+-.macro SET_KERNEL_GS reg
+-.endm
+-
+-
+ /* Unconditionally switch to user cr3 */
+ .macro SWITCH_TO_USER_CR3 scratch_reg:req
+ 	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
+@@ -234,7 +205,7 @@
+ .macro SAVE_ALL pt_regs_ax=%eax switch_stacks=0 skip_gs=0 unwind_espfix=0
+ 	cld
+ .if \skip_gs == 0
+-	PUSH_GS
++	pushl	$0
+ .endif
+ 	pushl	%fs
+ 
+@@ -259,9 +230,6 @@
+ 	movl	$(__USER_DS), %edx
+ 	movl	%edx, %ds
+ 	movl	%edx, %es
+-.if \skip_gs == 0
+-	SET_KERNEL_GS %edx
+-.endif
+ 	/* Switch to kernel stack if necessary */
+ .if \switch_stacks > 0
+ 	SWITCH_TO_KERNEL_STACK
+@@ -300,7 +268,7 @@
+ 1:	popl	%ds
+ 2:	popl	%es
+ 3:	popl	%fs
+-	POP_GS \pop
++	addl	$(4 + \pop), %esp	/* pop the unused "gs" slot */
+ 	IRET_FRAME
+ .pushsection .fixup, "ax"
+ 4:	movl	$0, (%esp)
+@@ -313,7 +281,6 @@
+ 	_ASM_EXTABLE(1b, 4b)
+ 	_ASM_EXTABLE(2b, 5b)
+ 	_ASM_EXTABLE(3b, 6b)
+-	POP_GS_EX
+ .endm
+ 
+ .macro RESTORE_ALL_NMI cr3_reg:req pop=0
+@@ -928,7 +895,6 @@ SYM_FUNC_START(entry_SYSENTER_32)
+ 	movl	PT_EIP(%esp), %edx	/* pt_regs->ip */
+ 	movl	PT_OLDESP(%esp), %ecx	/* pt_regs->sp */
+ 1:	mov	PT_FS(%esp), %fs
+-	PTGS_TO_GS
+ 
+ 	popl	%ebx			/* pt_regs->bx */
+ 	addl	$2*4, %esp		/* skip pt_regs->cx and pt_regs->dx */
+@@ -964,7 +930,6 @@ SYM_FUNC_START(entry_SYSENTER_32)
+ 	jmp	1b
+ .popsection
+ 	_ASM_EXTABLE(1b, 2b)
+-	PTGS_TO_GS_EX
+ 
+ .Lsysenter_fix_flags:
+ 	pushl	$X86_EFLAGS_FIXED
+@@ -1106,11 +1071,7 @@ SYM_CODE_START_LOCAL_NOALIGN(handle_exception)
+ 	SAVE_ALL switch_stacks=1 skip_gs=1 unwind_espfix=1
+ 	ENCODE_FRAME_POINTER
+ 
+-	/* fixup %gs */
+-	GS_TO_REG %ecx
+ 	movl	PT_GS(%esp), %edi		# get the function address
+-	REG_TO_PTGS %ecx
+-	SET_KERNEL_GS %ecx
+ 
+ 	/* fixup orig %eax */
+ 	movl	PT_ORIG_EAX(%esp), %edx		# get the error code
