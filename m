@@ -2,287 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B9633099D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 809853309A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbhCHImK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 03:42:10 -0500
-Received: from mail-lj1-f169.google.com ([209.85.208.169]:38118 "EHLO
-        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232285AbhCHIlu (ORCPT
+        id S232049AbhCHImh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 03:42:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232308AbhCHImC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 03:41:50 -0500
-Received: by mail-lj1-f169.google.com with SMTP id 2so15039006ljr.5;
-        Mon, 08 Mar 2021 00:41:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yNHMbYhXYTuAKxP9i1xwQyQREgRd6XRSSDqTIHsn6qA=;
-        b=oWcpp84zCCZeR9jN9IDxeoxr4BuTpH7e6ZLVY1A26MmMOYdSokdMmfO39eDMOzz4Ov
-         UDTzr0my+L9OVAmP+y1iNoRi0Aocjhph5t9Gvy4tX7cGEoaxScTNBtFaDCEEr/efZuAW
-         cT3VTMvRcbBNQDC/+d5u2j09biygCt0HN5AxrPTscLipwfoNqbJChXZwPEHuOBnHsXNF
-         e+kx/UYZtsAo0IiISQhgE0Fu+qywE9eUtd/zLad6FP+N8wszTShrn/nCtEFK0oa6K0eY
-         4g13Wcbc07+L5BIiYEPTXwIoF69QBvubqo316hmRhrsHh+aKS5LXVLhQlcLQtU9LEwbh
-         eMNA==
-X-Gm-Message-State: AOAM531hA4OP4cwmRtv6uxCzAJae5W/kJYPd7nhJ3rvq7JE68y6pz3XR
-        xfA0rGwXz4erRsQjSXc4xx0=
-X-Google-Smtp-Source: ABdhPJxxJYwPEatTEqoNV7r1QTHh+FfYBSStOdEinM7L9rqqf3WCdh+NL9d2vhaANtH3jmK5xhK2Lw==
-X-Received: by 2002:a2e:b7c1:: with SMTP id p1mr13068513ljo.198.1615192908801;
-        Mon, 08 Mar 2021 00:41:48 -0800 (PST)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id c27sm1282633lfh.146.2021.03.08.00.41.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 00:41:48 -0800 (PST)
-Date:   Mon, 8 Mar 2021 10:41:41 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: [RFC PATCH v2 3/8] extconn: Clean-up few drivers by using managed
- work init
-Message-ID: <9aa7661da4b54929a35b6635693807102d99684b.1615187284.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1615187284.git.matti.vaittinen@fi.rohmeurope.com>
+        Mon, 8 Mar 2021 03:42:02 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AD0C06174A;
+        Mon,  8 Mar 2021 00:42:02 -0800 (PST)
+Date:   Mon, 08 Mar 2021 08:41:59 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615192920;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D9GLWPYB039oXIqQ0+COytv+cfzKuLpFofoSTbPlScI=;
+        b=ePP8SKQJW+YSicSbp1lwJKErW4Gcmbl6e9vP09nlp1Iik8mOCFRF0SxQSuf/JJsqSRzKSW
+        DaBIrGMML/Z5W85VUw6XmMXD5pKvbHQJTIYKaITTvhKMIryGAQUSVfJA+yaT1W45tDt8Sf
+        Fws23Am/JH4H9uPe0i6uuHSP3hlnUZe05GPOsmAXp2QujSadR2Mp3It+hqbAcTJaFGwwtr
+        QGjO00s93JWUNNax5l86/bE8ySDFlos9PZDGsSp4wjXewoFZWrCbioaq/KRKGwCT6CRnlX
+        7h3lMEGhYztSrYNEEau024BaRxr8aa6gUSccugjEjYfKW++JhNorh3tj1DbJjg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615192920;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D9GLWPYB039oXIqQ0+COytv+cfzKuLpFofoSTbPlScI=;
+        b=7febrdizmaM1mCPsM/DB7VAwjYMs1IaN/T2wkgAziOVM3DaRW3hYeUTF1grKwS4rAsziab
+        YZmN7c3eyquJWtCg==
+From:   "tip-bot2 for Anna-Maria Behnsen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/urgent] hrtimer: Update softirq_expires_next correctly
+ after __hrtimer_get_next_event()
+Cc:     Mikael Beckius <mikael.beckius@windriver.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Anna-Maria Behnsen" <anna-maria@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210223160240.27518-1-anna-maria@linutronix.de>
+References: <20210223160240.27518-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1615187284.git.matti.vaittinen@fi.rohmeurope.com>
+Message-ID: <161519291918.398.6154996042324189382.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Few drivers implement remove call-back only for ensuring a delayed
-work gets cancelled prior driver removal. Clean-up these by switching
-to use devm_delayed_work_autocancel() instead.
+The following commit has been merged into the timers/urgent branch of tip:
 
-Additionally, this helps avoiding mixing devm and manual resource
-management and cleans up a (theoretical?) bug from extconn-palmas.c
-and extcon-qcom-spmi-misc.c where (devm managed)IRQ might schedule
-new work item after wq was cleaned at remove().
+Commit-ID:     46eb1701c046cc18c032fa68f3c8ccbf24483ee4
+Gitweb:        https://git.kernel.org/tip/46eb1701c046cc18c032fa68f3c8ccbf24483ee4
+Author:        Anna-Maria Behnsen <anna-maria@linutronix.de>
+AuthorDate:    Tue, 23 Feb 2021 17:02:40 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 08 Mar 2021 09:37:01 +01:00
 
-This change is compile-tested only. All testing is appreciated.
+hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+hrtimer_force_reprogram() and hrtimer_interrupt() invokes
+__hrtimer_get_next_event() to find the earliest expiry time of hrtimer
+bases. __hrtimer_get_next_event() does not update
+cpu_base::[softirq_]_expires_next to preserve reprogramming logic. That
+needs to be done at the callsites.
+
+hrtimer_force_reprogram() updates cpu_base::softirq_expires_next only when
+the first expiring timer is a softirq timer and the soft interrupt is not
+activated. That's wrong because cpu_base::softirq_expires_next is left
+stale when the first expiring timer of all bases is a timer which expires
+in hard interrupt context. hrtimer_interrupt() does never update
+cpu_base::softirq_expires_next which is wrong too.
+
+That becomes a problem when clock_settime() sets CLOCK_REALTIME forward and
+the first soft expiring timer is in the CLOCK_REALTIME_SOFT base. Setting
+CLOCK_REALTIME forward moves the clock MONOTONIC based expiry time of that
+timer before the stale cpu_base::softirq_expires_next.
+
+cpu_base::softirq_expires_next is cached to make the check for raising the
+soft interrupt fast. In the above case the soft interrupt won't be raised
+until clock monotonic reaches the stale cpu_base::softirq_expires_next
+value. That's incorrect, but what's worse it that if the softirq timer
+becomes the first expiring timer of all clock bases after the hard expiry
+timer has been handled the reprogramming of the clockevent from
+hrtimer_interrupt() will result in an interrupt storm. That happens because
+the reprogramming does not use cpu_base::softirq_expires_next, it uses
+__hrtimer_get_next_event() which returns the actual expiry time. Once clock
+MONOTONIC reaches cpu_base::softirq_expires_next the soft interrupt is
+raised and the storm subsides.
+
+Change the logic in hrtimer_force_reprogram() to evaluate the soft and hard
+bases seperately, update softirq_expires_next and handle the case when a
+soft expiring timer is the first of all bases by comparing the expiry times
+and updating the required cpu base fields. Split this functionality into a
+separate function to be able to use it in hrtimer_interrupt() as well
+without copy paste.
+
+Fixes: 5da70160462e ("hrtimer: Implement support for softirq based hrtimers")
+Reported-by: Mikael Beckius <mikael.beckius@windriver.com>
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Mikael Beckius <mikael.beckius@windriver.com>
+Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20210223160240.27518-1-anna-maria@linutronix.de
 ---
- drivers/extcon/extcon-gpio.c           | 15 ++++-----------
- drivers/extcon/extcon-intel-int3496.c  | 16 ++++------------
- drivers/extcon/extcon-palmas.c         | 17 ++++++-----------
- drivers/extcon/extcon-qcom-spmi-misc.c | 17 ++++++-----------
- 4 files changed, 20 insertions(+), 45 deletions(-)
+ kernel/time/hrtimer.c | 60 +++++++++++++++++++++++++++---------------
+ 1 file changed, 39 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/extcon/extcon-gpio.c b/drivers/extcon/extcon-gpio.c
-index c211222f5d0c..4105df74f2b0 100644
---- a/drivers/extcon/extcon-gpio.c
-+++ b/drivers/extcon/extcon-gpio.c
-@@ -9,6 +9,7 @@
-  * (originally switch class is supported)
-  */
- 
-+#include <linux/devm-helpers.h>
- #include <linux/extcon-provider.h>
- #include <linux/gpio/consumer.h>
- #include <linux/init.h>
-@@ -112,7 +113,9 @@ static int gpio_extcon_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		return ret;
- 
--	INIT_DELAYED_WORK(&data->work, gpio_extcon_work);
-+	ret = devm_delayed_work_autocancel(dev, &data->work, gpio_extcon_work);
-+	if (ret)
-+		return ret;
- 
- 	/*
- 	 * Request the interrupt of gpio to detect whether external connector
-@@ -131,15 +134,6 @@ static int gpio_extcon_probe(struct platform_device *pdev)
- 	return 0;
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 743c852..788b9d1 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -546,8 +546,11 @@ static ktime_t __hrtimer_next_event_base(struct hrtimer_cpu_base *cpu_base,
  }
  
--static int gpio_extcon_remove(struct platform_device *pdev)
--{
--	struct gpio_extcon_data *data = platform_get_drvdata(pdev);
--
--	cancel_delayed_work_sync(&data->work);
--
--	return 0;
--}
--
- #ifdef CONFIG_PM_SLEEP
- static int gpio_extcon_resume(struct device *dev)
- {
-@@ -158,7 +152,6 @@ static SIMPLE_DEV_PM_OPS(gpio_extcon_pm_ops, NULL, gpio_extcon_resume);
- 
- static struct platform_driver gpio_extcon_driver = {
- 	.probe		= gpio_extcon_probe,
--	.remove		= gpio_extcon_remove,
- 	.driver		= {
- 		.name	= "extcon-gpio",
- 		.pm	= &gpio_extcon_pm_ops,
-diff --git a/drivers/extcon/extcon-intel-int3496.c b/drivers/extcon/extcon-intel-int3496.c
-index 80c9abcc3f97..fb527c23639e 100644
---- a/drivers/extcon/extcon-intel-int3496.c
-+++ b/drivers/extcon/extcon-intel-int3496.c
-@@ -11,6 +11,7 @@
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/devm-helpers.h>
- #include <linux/extcon-provider.h>
- #include <linux/gpio/consumer.h>
- #include <linux/interrupt.h>
-@@ -101,7 +102,9 @@ static int int3496_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	data->dev = dev;
--	INIT_DELAYED_WORK(&data->work, int3496_do_usb_id);
-+	ret = devm_delayed_work_autocancel(dev, &data->work, int3496_do_usb_id);
-+	if (ret)
-+		return ret;
- 
- 	data->gpio_usb_id = devm_gpiod_get(dev, "id", GPIOD_IN);
- 	if (IS_ERR(data->gpio_usb_id)) {
-@@ -155,16 +158,6 @@ static int int3496_probe(struct platform_device *pdev)
- 	return 0;
+ /*
+- * Recomputes cpu_base::*next_timer and returns the earliest expires_next but
+- * does not set cpu_base::*expires_next, that is done by hrtimer_reprogram.
++ * Recomputes cpu_base::*next_timer and returns the earliest expires_next
++ * but does not set cpu_base::*expires_next, that is done by
++ * hrtimer[_force]_reprogram and hrtimer_interrupt only. When updating
++ * cpu_base::*expires_next right away, reprogramming logic would no longer
++ * work.
+  *
+  * When a softirq is pending, we can ignore the HRTIMER_ACTIVE_SOFT bases,
+  * those timers will get run whenever the softirq gets handled, at the end of
+@@ -588,6 +591,37 @@ __hrtimer_get_next_event(struct hrtimer_cpu_base *cpu_base, unsigned int active_
+ 	return expires_next;
  }
  
--static int int3496_remove(struct platform_device *pdev)
--{
--	struct int3496_data *data = platform_get_drvdata(pdev);
--
--	devm_free_irq(&pdev->dev, data->usb_id_irq, data);
--	cancel_delayed_work_sync(&data->work);
--
--	return 0;
--}
--
- static const struct acpi_device_id int3496_acpi_match[] = {
- 	{ "INT3496" },
- 	{ }
-@@ -177,7 +170,6 @@ static struct platform_driver int3496_driver = {
- 		.acpi_match_table = int3496_acpi_match,
- 	},
- 	.probe = int3496_probe,
--	.remove = int3496_remove,
- };
- 
- module_platform_driver(int3496_driver);
-diff --git a/drivers/extcon/extcon-palmas.c b/drivers/extcon/extcon-palmas.c
-index a2852bcc5f0d..d2c1a8b89c08 100644
---- a/drivers/extcon/extcon-palmas.c
-+++ b/drivers/extcon/extcon-palmas.c
-@@ -9,6 +9,7 @@
-  * Author: Hema HK <hemahk@ti.com>
-  */
- 
-+#include <linux/devm-helpers.h>
- #include <linux/module.h>
- #include <linux/interrupt.h>
- #include <linux/platform_device.h>
-@@ -237,7 +238,11 @@ static int palmas_usb_probe(struct platform_device *pdev)
- 			palmas_usb->sw_debounce_jiffies = msecs_to_jiffies(debounce);
- 	}
- 
--	INIT_DELAYED_WORK(&palmas_usb->wq_detectid, palmas_gpio_id_detect);
-+	status = devm_delayed_work_autocancel(&pdev->dev,
-+					      &palmas_usb->wq_detectid,
-+					      palmas_gpio_id_detect);
-+	if (status)
-+		return status;
- 
- 	palmas->usb = palmas_usb;
- 	palmas_usb->palmas = palmas;
-@@ -359,15 +364,6 @@ static int palmas_usb_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int palmas_usb_remove(struct platform_device *pdev)
--{
--	struct palmas_usb *palmas_usb = platform_get_drvdata(pdev);
--
--	cancel_delayed_work_sync(&palmas_usb->wq_detectid);
--
--	return 0;
--}
--
- #ifdef CONFIG_PM_SLEEP
- static int palmas_usb_suspend(struct device *dev)
- {
-@@ -422,7 +418,6 @@ static const struct of_device_id of_palmas_match_tbl[] = {
- 
- static struct platform_driver palmas_usb_driver = {
- 	.probe = palmas_usb_probe,
--	.remove = palmas_usb_remove,
- 	.driver = {
- 		.name = "palmas-usb",
- 		.of_match_table = of_palmas_match_tbl,
-diff --git a/drivers/extcon/extcon-qcom-spmi-misc.c b/drivers/extcon/extcon-qcom-spmi-misc.c
-index 6b836ae62176..74d57d951b68 100644
---- a/drivers/extcon/extcon-qcom-spmi-misc.c
-+++ b/drivers/extcon/extcon-qcom-spmi-misc.c
-@@ -7,6 +7,7 @@
-  * Stephen Boyd <stephen.boyd@linaro.org>
-  */
- 
-+#include <linux/devm-helpers.h>
- #include <linux/extcon-provider.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
-@@ -80,7 +81,11 @@ static int qcom_usb_extcon_probe(struct platform_device *pdev)
- 	}
- 
- 	info->debounce_jiffies = msecs_to_jiffies(USB_ID_DEBOUNCE_MS);
--	INIT_DELAYED_WORK(&info->wq_detcable, qcom_usb_extcon_detect_cable);
++static ktime_t hrtimer_update_next_event(struct hrtimer_cpu_base *cpu_base)
++{
++	ktime_t expires_next, soft = KTIME_MAX;
 +
-+	ret = devm_delayed_work_autocancel(dev, &info->wq_detcable,
-+					   qcom_usb_extcon_detect_cable);
-+	if (ret)
-+		return ret;
- 
- 	info->irq = platform_get_irq_byname(pdev, "usb_id");
- 	if (info->irq < 0)
-@@ -105,15 +110,6 @@ static int qcom_usb_extcon_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int qcom_usb_extcon_remove(struct platform_device *pdev)
--{
--	struct qcom_usb_extcon_info *info = platform_get_drvdata(pdev);
--
--	cancel_delayed_work_sync(&info->wq_detcable);
--
--	return 0;
--}
--
- #ifdef CONFIG_PM_SLEEP
- static int qcom_usb_extcon_suspend(struct device *dev)
++	/*
++	 * If the soft interrupt has already been activated, ignore the
++	 * soft bases. They will be handled in the already raised soft
++	 * interrupt.
++	 */
++	if (!cpu_base->softirq_activated) {
++		soft = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_SOFT);
++		/*
++		 * Update the soft expiry time. clock_settime() might have
++		 * affected it.
++		 */
++		cpu_base->softirq_expires_next = soft;
++	}
++
++	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_HARD);
++	/*
++	 * If a softirq timer is expiring first, update cpu_base->next_timer
++	 * and program the hardware with the soft expiry time.
++	 */
++	if (expires_next > soft) {
++		cpu_base->next_timer = cpu_base->softirq_next_timer;
++		expires_next = soft;
++	}
++
++	return expires_next;
++}
++
+ static inline ktime_t hrtimer_update_base(struct hrtimer_cpu_base *base)
  {
-@@ -149,7 +145,6 @@ MODULE_DEVICE_TABLE(of, qcom_usb_extcon_dt_match);
+ 	ktime_t *offs_real = &base->clock_base[HRTIMER_BASE_REALTIME].offset;
+@@ -628,23 +662,7 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
+ {
+ 	ktime_t expires_next;
  
- static struct platform_driver qcom_usb_extcon_driver = {
- 	.probe		= qcom_usb_extcon_probe,
--	.remove		= qcom_usb_extcon_remove,
- 	.driver		= {
- 		.name	= "extcon-pm8941-misc",
- 		.pm	= &qcom_usb_extcon_pm_ops,
--- 
-2.25.4
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+-	/*
+-	 * Find the current next expiration time.
+-	 */
+-	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
+-
+-	if (cpu_base->next_timer && cpu_base->next_timer->is_soft) {
+-		/*
+-		 * When the softirq is activated, hrtimer has to be
+-		 * programmed with the first hard hrtimer because soft
+-		 * timer interrupt could occur too late.
+-		 */
+-		if (cpu_base->softirq_activated)
+-			expires_next = __hrtimer_get_next_event(cpu_base,
+-								HRTIMER_ACTIVE_HARD);
+-		else
+-			cpu_base->softirq_expires_next = expires_next;
+-	}
++	expires_next = hrtimer_update_next_event(cpu_base);
+ 
+ 	if (skip_equal && expires_next == cpu_base->expires_next)
+ 		return;
+@@ -1644,8 +1662,8 @@ retry:
+ 
+ 	__hrtimer_run_queues(cpu_base, now, flags, HRTIMER_ACTIVE_HARD);
+ 
+-	/* Reevaluate the clock bases for the next expiry */
+-	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
++	/* Reevaluate the clock bases for the [soft] next expiry */
++	expires_next = hrtimer_update_next_event(cpu_base);
+ 	/*
+ 	 * Store the new expiry value so the migration code can verify
+ 	 * against it.
