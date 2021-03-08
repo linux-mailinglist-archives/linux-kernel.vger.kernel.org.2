@@ -2,427 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C6C331871
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48533331854
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhCHUYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:24:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbhCHUXi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:23:38 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C7BCC06174A;
-        Mon,  8 Mar 2021 12:23:38 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id x7so4504171pfi.7;
-        Mon, 08 Mar 2021 12:23:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UNnD5A2xjf0DDevYifsPJ2VYuM0wT2W9sk6dcoHUNL4=;
-        b=LpwQa9N/yrh7ph45kpJzOFeqgEfDzUOdvwyjtcf82/ddol7mIDrDCBIllmLqXtDb6q
-         +I0RU7eWMJJRKKXZlouggedcFx251KknXI8IGe2VOsSwpw4IJx71pO8CbmdfmLmHHc5n
-         DLkhsQ0fjU8kq9WsMyZp3wuW128KkAHLcU153ESDVQiBpYBjN/Jr+QH1EWmPivTRjk9W
-         Vxb3jtAp6MkvhS2LejNoNPYgyRzuA6NJ2on5C1OED1/ap5Z7TcbZ5LfEBJ7NDlkxxJuA
-         rd1lvLokqQ5slLfGRERuImfTCRYZ+JS2ygCX423bAqDcXIqQIO8QF6Fb+eUAWadwqdX0
-         yFTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UNnD5A2xjf0DDevYifsPJ2VYuM0wT2W9sk6dcoHUNL4=;
-        b=ZmGKgdjxmuR2qH6EbCVHdvwfJqkOif+l7VLVLV/jrM/jnHHilNwWX1lVtewvFsoWt6
-         9mgA8hbjJqnPopj/Z+vpoKnvgGC9nxk1FwU7hYDU+eM7pKNNuCvd5NIcPs+MuDWn/iV6
-         zh+ZpOLIwbA8VBBv1TUl0HzilumuQy/PUUwamccU8MDhqrNpdk6DhnBJxESn9l0fUk77
-         kQ24Ju1KgJ5RdYE02whAUm8BpHP+dDo96Tncj0uFlGiFTOqEXvH8dgq9NeJ0RnvaKz/6
-         6iLiXn+BjBgFg44uN1qzPvE+txxsvFqCZMndvTH2nAL8z6PS1zPuyQZymHd/EDb2X6hC
-         0n8A==
-X-Gm-Message-State: AOAM530IjHjQhm1fcFsHFQ5MQiwcG0wMFEljCSih8A4h3cwPZ3uSOQrW
-        6RguGhbxwK23BOd+l5RTMLI=
-X-Google-Smtp-Source: ABdhPJzJs0YFonUz8B6M79/Lgl6ZyC8uw4DmtKpWHeBc1bsE7aDkR9C1DRSbwyCxmJEh6N8ya72cIQ==
-X-Received: by 2002:a65:5a0a:: with SMTP id y10mr21573341pgs.122.1615235017666;
-        Mon, 08 Mar 2021 12:23:37 -0800 (PST)
-Received: from varodek.localdomain ([223.233.103.31])
-        by smtp.gmail.com with ESMTPSA id m3sm10262962pgk.47.2021.03.08.12.23.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 12:23:37 -0800 (PST)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Kishon Vijay Abraham <kishon@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Praneeth Bajjuri <praneeth@ti.com>,
-        Gowtham Tammana <g-tammana@ti.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        id S230078AbhCHUUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:20:14 -0500
+Received: from mga04.intel.com ([192.55.52.120]:27580 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229575AbhCHUUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 15:20:09 -0500
+IronPort-SDR: SrujMP6x7kuOTwTvpAKuAt9rOAip9kmz/kCqc5MLd5wLamLSVn9fej00oJ7zX8thPX9ivPnwL3
+ lgCa8WEgWdzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="185713798"
+X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
+   d="scan'208";a="185713798"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 12:20:09 -0800
+IronPort-SDR: Jx4SpPoXYyH0UBNvH9d/29Q1bE9+Tc5qZqB8UtL+uAwKeyu3P0gYs9q0f3x5hiqylNuAnHXiY7
+ nm3NC7Jg3sig==
+X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
+   d="scan'208";a="430496246"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 12:20:08 -0800
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id AC8E86365;
+        Mon,  8 Mar 2021 12:20:08 -0800 (PST)
+Date:   Mon, 8 Mar 2021 12:20:08 -0800
+From:   mark gross <mgross@linux.intel.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        peng.fan@nxp.com, shawnguo@kernel.org, jassisinghbrar@gmail.com,
         linux-kernel@vger.kernel.org,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Vaibhav Gupta <v_gupta@ti.com>
-Subject: [PATCH v1 3/3] crypto: sa2ul: Add support for AM64
-Date:   Tue,  9 Mar 2021 01:50:05 +0530
-Message-Id: <20210308202005.243228-4-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210308202005.243228-1-vaibhavgupta40@gmail.com>
-References: <20210308202005.243228-1-vaibhavgupta40@gmail.com>
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 04/34] dt-bindings: Add bindings for Keem Bay IPC
+ driver
+Message-ID: <20210308202008.GA138795@linux.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20210212222304.110194-1-mgross@linux.intel.com>
+ <20210212222304.110194-5-mgross@linux.intel.com>
+ <20210305210140.GA622142@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305210140.GA622142@robh.at.kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+On Fri, Mar 05, 2021 at 03:01:40PM -0600, Rob Herring wrote:
+> On Fri, Feb 12, 2021 at 02:22:34PM -0800, mgross@linux.intel.com wrote:
+> > From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> > 
+> > Add DT binding documentation for the Intel Keem Bay IPC driver, which
+> 
+> Bindings are for h/w blocks, not drivers. From a binding perspective, I 
+> don't really care what the driver architecture for some OS looks like. I 
+> continue to not understand what this h/w looks like. A block diagram 
+> would help as would understanding what blocks have multiple clients 
+> (mailboxes and xlink in particular).
+I'm working to gather this info.
 
-The sa2ul module in am64 have limited support for algorithms, and the
-priv and priv_id used on the platform is different compared to AM654 or
-j721e.
+thanks!
 
-Use match data to get the SoC specific information and use it throughout
-the driver.
+--mark
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Vaibhav Gupta <v_gupta@ti.com>
----
- drivers/crypto/sa2ul.c | 131 +++++++++++++++++++++++++++++------------
- drivers/crypto/sa2ul.h |   4 ++
- 2 files changed, 96 insertions(+), 39 deletions(-)
-
-diff --git a/drivers/crypto/sa2ul.c b/drivers/crypto/sa2ul.c
-index 6107bfea862d..8a17ab8af444 100644
---- a/drivers/crypto/sa2ul.c
-+++ b/drivers/crypto/sa2ul.c
-@@ -69,8 +69,24 @@
- /* Max Authentication tag size */
- #define SA_MAX_AUTH_TAG_SZ 64
- 
--#define PRIV_ID	0x1
--#define PRIV	0x1
-+enum sa_algo_id {
-+	SA_ALG_CBC_AES = 0,
-+	SA_ALG_EBC_AES,
-+	SA_ALG_CBC_DES3,
-+	SA_ALG_ECB_DES3,
-+	SA_ALG_SHA1,
-+	SA_ALG_SHA256,
-+	SA_ALG_SHA512,
-+	SA_ALG_AUTHENC_SHA1_AES,
-+	SA_ALG_AUTHENC_SHA256_AES,
-+};
-+
-+struct sa_match_data {
-+	u8 priv;
-+	u8 priv_id;
-+	u32 supported_algos;
-+	bool skip_engine_control;
-+};
- 
- static struct device *sa_k3_dev;
- 
-@@ -696,8 +712,9 @@ static void sa_dump_sc(u8 *buf, dma_addr_t dma_addr)
- }
- 
- static
--int sa_init_sc(struct sa_ctx_info *ctx, const u8 *enc_key,
--	       u16 enc_key_sz, const u8 *auth_key, u16 auth_key_sz,
-+int sa_init_sc(struct sa_ctx_info *ctx, const struct sa_match_data *match_data,
-+	       const u8 *enc_key, u16 enc_key_sz,
-+	       const u8 *auth_key, u16 auth_key_sz,
- 	       struct algo_data *ad, u8 enc, u32 *swinfo)
- {
- 	int enc_sc_offset = 0;
-@@ -732,8 +749,8 @@ int sa_init_sc(struct sa_ctx_info *ctx, const u8 *enc_key,
- 	sc_buf[SA_CTX_SCCTL_OWNER_OFFSET] = 0;
- 	memcpy(&sc_buf[2], &sc_id, 2);
- 	sc_buf[4] = 0x0;
--	sc_buf[5] = PRIV_ID;
--	sc_buf[6] = PRIV;
-+	sc_buf[5] = match_data->priv_id;
-+	sc_buf[6] = match_data->priv;
- 	sc_buf[7] = 0x0;
- 
- 	/* Prepare context for encryption engine */
-@@ -892,8 +909,8 @@ static int sa_cipher_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 		return ret;
- 
- 	/* Setup Encryption Security Context & Command label template */
--	if (sa_init_sc(&ctx->enc, key, keylen, NULL, 0, ad, 1,
--		       &ctx->enc.epib[1]))
-+	if (sa_init_sc(&ctx->enc, ctx->dev_data->match_data, key, keylen, NULL, 0,
-+		       ad, 1, &ctx->enc.epib[1]))
- 		goto badkey;
- 
- 	cmdl_len = sa_format_cmdl_gen(&cfg,
-@@ -905,8 +922,8 @@ static int sa_cipher_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 	ctx->enc.cmdl_size = cmdl_len;
- 
- 	/* Setup Decryption Security Context & Command label template */
--	if (sa_init_sc(&ctx->dec, key, keylen, NULL, 0, ad, 0,
--		       &ctx->dec.epib[1]))
-+	if (sa_init_sc(&ctx->dec, ctx->dev_data->match_data, key, keylen, NULL, 0,
-+		       ad, 0, &ctx->dec.epib[1]))
- 		goto badkey;
- 
- 	cfg.enc_eng_id = ad->enc_eng.eng_id;
-@@ -1446,9 +1463,10 @@ static int sa_sha_setup(struct sa_tfm_ctx *ctx, struct  algo_data *ad)
- 	cfg.akey = NULL;
- 	cfg.akey_len = 0;
- 
-+	ctx->dev_data = dev_get_drvdata(sa_k3_dev);
- 	/* Setup Encryption Security Context & Command label template */
--	if (sa_init_sc(&ctx->enc, NULL, 0, NULL, 0, ad, 0,
--		       &ctx->enc.epib[1]))
-+	if (sa_init_sc(&ctx->enc, ctx->dev_data->match_data, NULL, 0, NULL, 0,
-+		       ad, 0, &ctx->enc.epib[1]))
- 		goto badkey;
- 
- 	cmdl_len = sa_format_cmdl_gen(&cfg,
-@@ -1716,6 +1734,7 @@ static int sa_cra_init_aead(struct crypto_aead *tfm, const char *hash,
- 	int ret;
- 
- 	memzero_explicit(ctx, sizeof(*ctx));
-+	ctx->dev_data = data;
- 
- 	ctx->shash = crypto_alloc_shash(hash, 0, CRYPTO_ALG_NEED_FALLBACK);
- 	if (IS_ERR(ctx->shash)) {
-@@ -1817,8 +1836,8 @@ static int sa_aead_setkey(struct crypto_aead *authenc,
- 	cfg.akey_len = keys.authkeylen;
- 
- 	/* Setup Encryption Security Context & Command label template */
--	if (sa_init_sc(&ctx->enc, keys.enckey, keys.enckeylen,
--		       keys.authkey, keys.authkeylen,
-+	if (sa_init_sc(&ctx->enc, ctx->dev_data->match_data, keys.enckey,
-+		       keys.enckeylen, keys.authkey, keys.authkeylen,
- 		       ad, 1, &ctx->enc.epib[1]))
- 		return -EINVAL;
- 
-@@ -1831,8 +1850,8 @@ static int sa_aead_setkey(struct crypto_aead *authenc,
- 	ctx->enc.cmdl_size = cmdl_len;
- 
- 	/* Setup Decryption Security Context & Command label template */
--	if (sa_init_sc(&ctx->dec, keys.enckey, keys.enckeylen,
--		       keys.authkey, keys.authkeylen,
-+	if (sa_init_sc(&ctx->dec, ctx->dev_data->match_data, keys.enckey,
-+		       keys.enckeylen, keys.authkey, keys.authkeylen,
- 		       ad, 0, &ctx->dec.epib[1]))
- 		return -EINVAL;
- 
-@@ -1950,7 +1969,7 @@ static int sa_aead_decrypt(struct aead_request *req)
- }
- 
- static struct sa_alg_tmpl sa_algs[] = {
--	{
-+	[SA_ALG_CBC_AES] = {
- 		.type = CRYPTO_ALG_TYPE_SKCIPHER,
- 		.alg.skcipher = {
- 			.base.cra_name		= "cbc(aes)",
-@@ -1973,7 +1992,7 @@ static struct sa_alg_tmpl sa_algs[] = {
- 			.decrypt		= sa_decrypt,
- 		}
- 	},
--	{
-+	[SA_ALG_EBC_AES] = {
- 		.type = CRYPTO_ALG_TYPE_SKCIPHER,
- 		.alg.skcipher = {
- 			.base.cra_name		= "ecb(aes)",
-@@ -1995,7 +2014,7 @@ static struct sa_alg_tmpl sa_algs[] = {
- 			.decrypt		= sa_decrypt,
- 		}
- 	},
--	{
-+	[SA_ALG_CBC_DES3] = {
- 		.type = CRYPTO_ALG_TYPE_SKCIPHER,
- 		.alg.skcipher = {
- 			.base.cra_name		= "cbc(des3_ede)",
-@@ -2018,7 +2037,7 @@ static struct sa_alg_tmpl sa_algs[] = {
- 			.decrypt		= sa_decrypt,
- 		}
- 	},
--	{
-+	[SA_ALG_ECB_DES3] = {
- 		.type = CRYPTO_ALG_TYPE_SKCIPHER,
- 		.alg.skcipher = {
- 			.base.cra_name		= "ecb(des3_ede)",
-@@ -2040,7 +2059,7 @@ static struct sa_alg_tmpl sa_algs[] = {
- 			.decrypt		= sa_decrypt,
- 		}
- 	},
--	{
-+	[SA_ALG_SHA1] = {
- 		.type = CRYPTO_ALG_TYPE_AHASH,
- 		.alg.ahash = {
- 			.halg.base = {
-@@ -2069,7 +2088,7 @@ static struct sa_alg_tmpl sa_algs[] = {
- 			.import			= sa_sha_import,
- 		},
- 	},
--	{
-+	[SA_ALG_SHA256] = {
- 		.type = CRYPTO_ALG_TYPE_AHASH,
- 		.alg.ahash = {
- 			.halg.base = {
-@@ -2098,7 +2117,7 @@ static struct sa_alg_tmpl sa_algs[] = {
- 			.import			= sa_sha_import,
- 		},
- 	},
--	{
-+	[SA_ALG_SHA512] = {
- 		.type = CRYPTO_ALG_TYPE_AHASH,
- 		.alg.ahash = {
- 			.halg.base = {
-@@ -2127,7 +2146,7 @@ static struct sa_alg_tmpl sa_algs[] = {
- 			.import			= sa_sha_import,
- 		},
- 	},
--	{
-+	[SA_ALG_AUTHENC_SHA1_AES] = {
- 		.type	= CRYPTO_ALG_TYPE_AEAD,
- 		.alg.aead = {
- 			.base = {
-@@ -2154,7 +2173,7 @@ static struct sa_alg_tmpl sa_algs[] = {
- 			.decrypt = sa_aead_decrypt,
- 		},
- 	},
--	{
-+	[SA_ALG_AUTHENC_SHA256_AES] = {
- 		.type	= CRYPTO_ALG_TYPE_AEAD,
- 		.alg.aead = {
- 			.base = {
-@@ -2185,13 +2204,19 @@ static struct sa_alg_tmpl sa_algs[] = {
- };
- 
- /* Register the algorithms in crypto framework */
--static void sa_register_algos(const struct device *dev)
-+static void sa_register_algos(struct sa_crypto_data *dev_data)
- {
-+	const struct sa_match_data *match_data = dev_data->match_data;
-+	struct device *dev = dev_data->dev;
- 	char *alg_name;
- 	u32 type;
- 	int i, err;
- 
- 	for (i = 0; i < ARRAY_SIZE(sa_algs); i++) {
-+		/* Skip unsupported algos */
-+		if (!(match_data->supported_algos & BIT(i)))
-+			continue;
-+
- 		type = sa_algs[i].type;
- 		if (type == CRYPTO_ALG_TYPE_SKCIPHER) {
- 			alg_name = sa_algs[i].alg.skcipher.base.cra_name;
-@@ -2329,14 +2354,39 @@ static int sa_link_child(struct device *dev, void *data)
- 	return 0;
- }
- 
-+static struct sa_match_data am654_match_data = {
-+	.priv = 1,
-+	.priv_id = 1,
-+	.supported_algos = GENMASK(SA_ALG_AUTHENC_SHA256_AES, 0),
-+};
-+
-+static struct sa_match_data am64_match_data = {
-+	.priv = 0,
-+	.priv_id = 0,
-+	.supported_algos = BIT(SA_ALG_CBC_AES) |
-+			   BIT(SA_ALG_EBC_AES) |
-+			   BIT(SA_ALG_SHA256) |
-+			   BIT(SA_ALG_SHA512) |
-+			   BIT(SA_ALG_AUTHENC_SHA256_AES),
-+	.skip_engine_control = true,
-+};
-+
-+static const struct of_device_id of_match[] = {
-+	{ .compatible = "ti,j721e-sa2ul", .data = &am654_match_data, },
-+	{ .compatible = "ti,am654-sa2ul", .data = &am654_match_data, },
-+	{ .compatible = "ti,am64-sa2ul", .data = &am64_match_data, },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, of_match);
-+
- static int sa_ul_probe(struct platform_device *pdev)
- {
-+	const struct of_device_id *match;
- 	struct device *dev = &pdev->dev;
- 	struct device_node *node = dev->of_node;
- 	struct resource *res;
- 	static void __iomem *saul_base;
- 	struct sa_crypto_data *dev_data;
--	u32 val;
- 	int ret;
- 
- 	dev_data = devm_kzalloc(dev, sizeof(*dev_data), GFP_KERNEL);
-@@ -2362,18 +2412,28 @@ static int sa_ul_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto disable_pm_runtime;
- 
-+	match = of_match_node(of_match, dev->of_node);
-+	if (!match) {
-+		dev_err(dev, "No compatible match found\n");
-+		return -ENODEV;
-+	}
-+	dev_data->match_data = match->data;
-+
- 	spin_lock_init(&dev_data->scid_lock);
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	saul_base = devm_ioremap_resource(dev, res);
- 
- 	dev_data->base = saul_base;
--	val = SA_EEC_ENCSS_EN | SA_EEC_AUTHSS_EN | SA_EEC_CTXCACH_EN |
--	    SA_EEC_CPPI_PORT_IN_EN | SA_EEC_CPPI_PORT_OUT_EN |
--	    SA_EEC_TRNG_EN;
- 
--	writel_relaxed(val, saul_base + SA_ENGINE_ENABLE_CONTROL);
-+	if (!dev_data->match_data->skip_engine_control) {
-+		u32 val = SA_EEC_ENCSS_EN | SA_EEC_AUTHSS_EN | SA_EEC_CTXCACH_EN |
-+			  SA_EEC_CPPI_PORT_IN_EN | SA_EEC_CPPI_PORT_OUT_EN |
-+			  SA_EEC_TRNG_EN;
- 
--	sa_register_algos(dev);
-+		writel_relaxed(val, saul_base + SA_ENGINE_ENABLE_CONTROL);
-+	}
-+
-+	sa_register_algos(dev_data);
- 
- 	ret = of_platform_populate(node, NULL, NULL, &pdev->dev);
- 	if (ret)
-@@ -2419,13 +2479,6 @@ static int sa_ul_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static const struct of_device_id of_match[] = {
--	{.compatible = "ti,j721e-sa2ul",},
--	{.compatible = "ti,am654-sa2ul",},
--	{},
--};
--MODULE_DEVICE_TABLE(of, of_match);
--
- static struct platform_driver sa_ul_driver = {
- 	.probe = sa_ul_probe,
- 	.remove = sa_ul_remove,
-diff --git a/drivers/crypto/sa2ul.h b/drivers/crypto/sa2ul.h
-index f597ddecde34..ed66d1f111db 100644
---- a/drivers/crypto/sa2ul.h
-+++ b/drivers/crypto/sa2ul.h
-@@ -171,9 +171,12 @@ struct sa_tfm_ctx;
- #define SA_UNSAFE_DATA_SZ_MIN	240
- #define SA_UNSAFE_DATA_SZ_MAX	256
- 
-+struct sa_match_data;
-+
- /**
-  * struct sa_crypto_data - Crypto driver instance data
-  * @base: Base address of the register space
-+ * @soc_data: Pointer to SoC specific data
-  * @pdev: Platform device pointer
-  * @sc_pool: security context pool
-  * @dev: Device pointer
-@@ -189,6 +192,7 @@ struct sa_tfm_ctx;
-  */
- struct sa_crypto_data {
- 	void __iomem *base;
-+	const struct sa_match_data *match_data;
- 	struct platform_device	*pdev;
- 	struct dma_pool		*sc_pool;
- 	struct device *dev;
--- 
-2.30.1
-
+> 
+> > enables communication between the Computing Sub-System (CSS) and the
+> > Multimedia Sub-System (MSS) of the Intel Movidius SoC code named Keem
+> > Bay.
+> > 
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: devicetree@vger.kernel.org
+> > Reviewed-by: Mark Gross <mgross@linux.intel.com>
+> > Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> > Signed-off-by: Mark Gross <mgross@linux.intel.com>
+> > ---
+> >  .../bindings/soc/intel/intel,keembay-ipc.yaml | 45 +++++++++++++++++++
+> >  1 file changed, 45 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+> > new file mode 100644
+> > index 000000000000..586fe73f4cd4
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+> > @@ -0,0 +1,45 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +# Copyright (C) 2020 Intel Corporation
+> > +%YAML 1.2
+> > +---
+> > +$id: "http://devicetree.org/schemas/soc/intel/intel,keembay-ipc.yaml#"
+> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> > +
+> > +title: Keem Bay IPC
+> > +
+> > +maintainers:
+> > +  - Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> > +
+> > +description:
+> > +  The Keem Bay IPC driver enables Inter-Processor Communication (IPC) with the
+> > +  Visual Processor Unit (VPU) embedded in the Intel Movidius SoC code named
+> > +  Keem Bay.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: intel,keembay-ipc
+> > +
+> > +  memory-region:
+> > +    items:
+> > +      - description:
+> > +          Reserved memory region used by the CPU to allocate IPC packets.
+> > +      - description:
+> > +          Reserved memory region used by the VPU to allocate IPC packets.
+> > +
+> > +  mboxes:
+> > +    description: VPU IPC Mailbox.
+> > +
+> > +required:
+> > +  - compatible
+> > +  - memory-region
+> > +  - mboxes
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    ipc {
+> > +          compatible = "intel,keembay-ipc";
+> > +          memory-region = <&ipc_cpu_reserved>, <&ipc_vpu_reserved>;
+> > +          mboxes = <&vpu_ipc_mbox 0>;
+> > +    };
+> > -- 
+> > 2.17.1
+> > 
