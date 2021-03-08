@@ -2,234 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607E833157A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0569F33157C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhCHSHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:07:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47780 "EHLO
+        id S230476AbhCHSHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:07:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbhCHSG6 (ORCPT
+        with ESMTP id S230200AbhCHSG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Mar 2021 13:06:58 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AA5C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 10:06:58 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so3441111pjc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 10:06:58 -0800 (PST)
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D182BC06174A;
+        Mon,  8 Mar 2021 10:06:58 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id g27so10951069iox.2;
+        Mon, 08 Mar 2021 10:06:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FCoQQe6qSwrfqgd3qEOzXrTKGrS+9FdkbkwaZQjnWyA=;
-        b=EImqdiUBJ+tprda7YfqaWhFRqDVz9ryw95HyqpXC0QRJ4ftaPtJxP8os21xT2W2TQZ
-         V2j8GSarAekfSwUNCFK789tuU7oip9UPXlsiNTQ4xvMy/qIYJhDBTY7sRsIt2753feRw
-         L8vVCms/mHMOg0yZQ9FDiarWQJcqPNQD7jOE/CiVvxOXtmc2M770kj3WIy8IQlWjbPmM
-         Wkhb9Nvf5idJEVxtm4JLgxyDdtRuTwvPF7XjXr4jxkIN7w6ANq4YXouEQy8Azb+tHorr
-         buNi3nasxHrRRyQzrDf4maTsMx4EHSvtFfmPsO3j8b3wRiK+4EMkw/cRN3G4e8SD9Hid
-         znZg==
+         :cc;
+        bh=a5Hm2E9xMiJsF3r9LgfWYN1cF8yPtl0Xpa3GPsNgwtc=;
+        b=nM8Ijxyr9oynWDkK1QblS0EW/cK64bTJqE37qMvO7Q7ysw0HPq711m0wbgIQwa7QVr
+         K8cgWFJ+dQUy/x9nbaNaz3ed2TaBiHBkSG9FnMxoGwfzovV7AIZLvuWPS75qb7Z+LqhB
+         L6LmFBVmMPvAe19HDr/bqDwT0wjlH1SQp9D3bAgQPSY1207bk7If15vP3s1kQdAdeF1f
+         paXcyxcZNcmC3DvoO/zAYjyIFUc/jXkhdYiIGaMQ4IWSHm/JVq0SOO5w2PXymbKeq3Fo
+         XkXkw28m8mPaZrMzEbZNh+Yd1a2mFamVqW0uyCbqe3lguJQMPtvye/lqosTxGCPji1Vi
+         +Mdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FCoQQe6qSwrfqgd3qEOzXrTKGrS+9FdkbkwaZQjnWyA=;
-        b=jYRVzVdqvlE2lQgHnS7TFMXYtqvm8y6BO8hdi+Cuty4Z6qpt7yWgLeC4SSRH5/0uV7
-         k0MItEc3HQmjpCXsxgW++rCkncrvMBzS8PW/TQlYXbaECXMyQKAz+N8SCKctBeZW7W2z
-         F+VgVSjj51d7uE8lSSWDyLhzO5ST2s+UCFu5siynGgRbVC6RT7rfzjF8/apfoyeFovE8
-         YFPYOkq2MXRg/H3RnPas0HWUv+px4mCGaCz3jSauaHfguHPhOSf40zDtTgC4UTMWBINr
-         TEM3JJZswbHHPKuZrKIGyAKNfnk1YCPUoBDa9K3kGHeewZ0vWrxzRNYCvR+XvhKr9SPo
-         8W/Q==
-X-Gm-Message-State: AOAM531mTSgQQ56vBsU5z9HcTGzDyzzPWG3llvqHYQrL6/LpkGIgK+dF
-        /a+kurTeTzU15ZGH8E1wESTjwlUoV1dmxqmtUbaZyQ==
-X-Google-Smtp-Source: ABdhPJwe1qAb01loXOzfjJCGx8c9J7P5S+jvM49t5+56HOWkG3JPGL9lKnVzP5Un8wfNpsZg0qMqUcFs4j5Vsyjgdk8=
-X-Received: by 2002:a17:90a:c918:: with SMTP id v24mr82113pjt.182.1615226817785;
- Mon, 08 Mar 2021 10:06:57 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=a5Hm2E9xMiJsF3r9LgfWYN1cF8yPtl0Xpa3GPsNgwtc=;
+        b=jyBBtavDpIoFTnkxZGmi6ex/w0leyWIjUPl7f/xIZaPUnqQ+6zQFWYQfipq01TOSvo
+         pSleIWiBovWu1HnY1cdjYljVOGZjNPV2XkkSQ69R8iRh1Dgvju35YzFyJkvKKGmU53D6
+         RRKvqKHyiHYfURh53PM8nHbwbUZiDCx7IXHre8XVmNT2uy7ekyNy+aB4FaEVcyx0aXjV
+         tYAnndT7uTABtKgISNmfSjQ5r/ZWd632cw5UnYPFMwVYN0C2x5l5kgUUZLwqntHOPfZs
+         sfSNzoHv4qORy4QqagleGXSNOZLJBrPgUlFQZifoXU8C3eyMp8kcR3Fkd50vc+ZjA7gY
+         x4Eg==
+X-Gm-Message-State: AOAM5330E6QK/jAYRj+2OBgtSDLe3h5Jqn25RcQ9XiPmf5IKJBtmXYm3
+        EikxJ5I6LTuOZYXS+/LhcbP56dgadnR6xliRdSvq+uMkEKM=
+X-Google-Smtp-Source: ABdhPJyM2l2FJbQDgzmTqzq2xOaqrwrACq9EpMU37ex1xIQjv+vq6F2T5Za4qHPWXb0QlSymS3G5Pbhx3dUfjE/tHUU=
+X-Received: by 2002:a5e:8e41:: with SMTP id r1mr19984346ioo.5.1615226818154;
+ Mon, 08 Mar 2021 10:06:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20210308170651.919148-1-kaleshsingh@google.com> <a51dfd94-185a-63f1-3dba-84dcbe94cb56@amd.com>
-In-Reply-To: <a51dfd94-185a-63f1-3dba-84dcbe94cb56@amd.com>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Mon, 8 Mar 2021 13:06:46 -0500
-Message-ID: <CAC_TJvefj4COgvT=1JCfRCF-dP5k8kXE-n8A-oEFKH_CKnGusA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v6 1/2] procfs: Allow reading fdinfo with PTRACE_MODE_READ
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Jann Horn <jannh@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>, Helge Deller <deller@gmx.de>,
-        James Morris <jamorris@linux.microsoft.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+References: <20210308032529.435224-1-ztong0001@gmail.com> <CAKgT0UftdTobwgA6hi=CdOfQ+1fdozhPs89fDmapbvcp7jLASw@mail.gmail.com>
+ <CAA5qM4BG2PNvvLFDngQRe4kBL5zATUOnaHt_-2s7Y47CcJF+bA@mail.gmail.com>
+In-Reply-To: <CAA5qM4BG2PNvvLFDngQRe4kBL5zATUOnaHt_-2s7Y47CcJF+bA@mail.gmail.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Mon, 8 Mar 2021 10:06:46 -0800
+Message-ID: <CAKgT0UeqMEiv9vvsRE+3Wb0e9-f8E_n3QWEHGmu32bza_W5=Sw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] fix a couple of atm->phy_data related issues
+To:     Tong Zhang <ztong0001@gmail.com>
+Cc:     Chas Williams <3chas3@gmail.com>,
+        linux-atm-general@lists.sourceforge.net,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 12:54 PM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 08.03.21 um 18:06 schrieb Kalesh Singh:
-> > Android captures per-process system memory state when certain low memor=
-y
-> > events (e.g a foreground app kill) occur, to identify potential memory
-> > hoggers. In order to measure how much memory a process actually consume=
-s,
-> > it is necessary to include the DMA buffer sizes for that process in the
-> > memory accounting. Since the handle to DMA buffers are raw FDs, it is
-> > important to be able to identify which processes have FD references to
-> > a DMA buffer.
-> >
-> > Currently, DMA buffer FDs can be accounted using /proc/<pid>/fd/* and
-> > /proc/<pid>/fdinfo -- both are only readable by the process owner,
-> > as follows:
-> >    1. Do a readlink on each FD.
-> >    2. If the target path begins with "/dmabuf", then the FD is a dmabuf=
- FD.
-> >    3. stat the file to get the dmabuf inode number.
-> >    4. Read/ proc/<pid>/fdinfo/<fd>, to get the DMA buffer size.
-> >
-> > Accessing other processes' fdinfo requires root privileges. This limits
-> > the use of the interface to debugging environments and is not suitable
-> > for production builds.  Granting root privileges even to a system proce=
-ss
-> > increases the attack surface and is highly undesirable.
-> >
-> > Since fdinfo doesn't permit reading process memory and manipulating
-> > process state, allow accessing fdinfo under PTRACE_MODE_READ_FSCRED.
-> >
-> > Suggested-by: Jann Horn <jannh@google.com>
-> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
->
-> Both patches are Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com=
->
+Hi Tong,
 
-Thanks Christian.
+Is this direct-assigned hardware or is QEMU being used to emulate the
+hardware here? Admittedly I don't know that much about ATM, so I am
+not sure when/if those phys would have gone out of production. However
+since the code dates back to 2005 I am guessing it is on the old side.
 
+Ultimately the decision is up to Chas. However if there has been code
+in place for this long that would trigger this kind of null pointer
+dereference then it kind of points to the fact that those phys have
+probably not been in use since at least back when Linus switched over
+to git in 2005.
+
+Thanks,
+
+- Alex
+
+On Mon, Mar 8, 2021 at 9:55 AM Tong Zhang <ztong0001@gmail.com> wrote:
 >
-> > ---
-> > Hi everyone,
-> >
-> > The initial posting of this patch can be found at [1].
-> > I didn't receive any feedback last time, so resending here.
-> > Would really appreciate any constructive comments/suggestions.
-> >
-> > Thanks,
-> > Kalesh
-> >
-> > [1] https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2=
-Flore.kernel.org%2Fr%2F20210208155315.1367371-1-kaleshsingh%40google.com%2F=
-&amp;data=3D04%7C01%7Cchristian.koenig%40amd.com%7C38c98420f0564e15117f08d8=
-e2549ff5%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637508200431130855%7C=
-Unknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiL=
-CJXVCI6Mn0%3D%7C1000&amp;sdata=3DdeJBlAk6%2BEQkfAC8iRK95xhV1%2FiO9Si%2Bylc5=
-Z0QzzrM%3D&amp;reserved=3D0
-> >
-> > Changes in v2:
-> >    - Update patch description
-> >   fs/proc/base.c |  4 ++--
-> >   fs/proc/fd.c   | 15 ++++++++++++++-
-> >   2 files changed, 16 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/fs/proc/base.c b/fs/proc/base.c
-> > index 3851bfcdba56..fd46d8dd0cf4 100644
-> > --- a/fs/proc/base.c
-> > +++ b/fs/proc/base.c
-> > @@ -3159,7 +3159,7 @@ static const struct pid_entry tgid_base_stuff[] =
-=3D {
-> >       DIR("task",       S_IRUGO|S_IXUGO, proc_task_inode_operations, pr=
-oc_task_operations),
-> >       DIR("fd",         S_IRUSR|S_IXUSR, proc_fd_inode_operations, proc=
-_fd_operations),
-> >       DIR("map_files",  S_IRUSR|S_IXUSR, proc_map_files_inode_operation=
-s, proc_map_files_operations),
-> > -     DIR("fdinfo",     S_IRUSR|S_IXUSR, proc_fdinfo_inode_operations, =
-proc_fdinfo_operations),
-> > +     DIR("fdinfo",     S_IRUGO|S_IXUGO, proc_fdinfo_inode_operations, =
-proc_fdinfo_operations),
-> >       DIR("ns",         S_IRUSR|S_IXUGO, proc_ns_dir_inode_operations, =
-proc_ns_dir_operations),
-> >   #ifdef CONFIG_NET
-> >       DIR("net",        S_IRUGO|S_IXUGO, proc_net_inode_operations, pro=
-c_net_operations),
-> > @@ -3504,7 +3504,7 @@ static const struct inode_operations proc_tid_com=
-m_inode_operations =3D {
-> >    */
-> >   static const struct pid_entry tid_base_stuff[] =3D {
-> >       DIR("fd",        S_IRUSR|S_IXUSR, proc_fd_inode_operations, proc_=
-fd_operations),
-> > -     DIR("fdinfo",    S_IRUSR|S_IXUSR, proc_fdinfo_inode_operations, p=
-roc_fdinfo_operations),
-> > +     DIR("fdinfo",    S_IRUGO|S_IXUGO, proc_fdinfo_inode_operations, p=
-roc_fdinfo_operations),
-> >       DIR("ns",        S_IRUSR|S_IXUGO, proc_ns_dir_inode_operations, p=
-roc_ns_dir_operations),
-> >   #ifdef CONFIG_NET
-> >       DIR("net",        S_IRUGO|S_IXUGO, proc_net_inode_operations, pro=
-c_net_operations),
-> > diff --git a/fs/proc/fd.c b/fs/proc/fd.c
-> > index 07fc4fad2602..6a80b40fd2fe 100644
-> > --- a/fs/proc/fd.c
-> > +++ b/fs/proc/fd.c
-> > @@ -6,6 +6,7 @@
-> >   #include <linux/fdtable.h>
-> >   #include <linux/namei.h>
-> >   #include <linux/pid.h>
-> > +#include <linux/ptrace.h>
-> >   #include <linux/security.h>
-> >   #include <linux/file.h>
-> >   #include <linux/seq_file.h>
-> > @@ -72,6 +73,18 @@ static int seq_show(struct seq_file *m, void *v)
-> >
-> >   static int seq_fdinfo_open(struct inode *inode, struct file *file)
-> >   {
-> > +     bool allowed =3D false;
-> > +     struct task_struct *task =3D get_proc_task(inode);
-> > +
-> > +     if (!task)
-> > +             return -ESRCH;
-> > +
-> > +     allowed =3D ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS);
-> > +     put_task_struct(task);
-> > +
-> > +     if (!allowed)
-> > +             return -EACCES;
-> > +
-> >       return single_open(file, seq_show, inode);
-> >   }
-> >
-> > @@ -308,7 +321,7 @@ static struct dentry *proc_fdinfo_instantiate(struc=
-t dentry *dentry,
-> >       struct proc_inode *ei;
-> >       struct inode *inode;
-> >
-> > -     inode =3D proc_pid_make_inode(dentry->d_sb, task, S_IFREG | S_IRU=
-SR);
-> > +     inode =3D proc_pid_make_inode(dentry->d_sb, task, S_IFREG | S_IRU=
-GO);
-> >       if (!inode)
-> >               return ERR_PTR(-ENOENT);
-> >
+> Hi Alex,
+> attached is the kernel log for zatm(uPD98402) -- I also have
+> idt77252's log -- which is similar to this one --
+> I think it makes sense to drop if no one is actually using it --
+> - Tong
 >
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
+> [    5.740774] BUG: KASAN: null-ptr-deref in uPD98402_start+0x5e/0x219
+> [uPD98402]
+> [    5.741179] Write of size 4 at addr 000000000000002c by task modprobe/96
+> [    5.741548]
+> [    5.741637] CPU: 0 PID: 96 Comm: modprobe Not tainted 5.12.0-rc2-dirty #71
+> [    5.742017] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+> BIOS rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014
+> [    5.742635] Call Trace:
+> [    5.742775]  dump_stack+0x8a/0xb5
+> [    5.742966]  kasan_report.cold+0x10f/0x111
+> [    5.743197]  ? uPD98402_start+0x5e/0x219 [uPD98402]
+> [    5.743473]  uPD98402_start+0x5e/0x219 [uPD98402]
+> [    5.743739]  zatm_init_one+0x10b5/0x1311 [zatm]
+> [    5.743998]  ? zatm_int.cold+0x30/0x30 [zatm]
+> [    5.744246]  ? _raw_write_lock_irqsave+0xd0/0xd0
+> [    5.744507]  ? __mutex_lock_slowpath+0x10/0x10
+> [    5.744757]  ? _raw_spin_unlock_irqrestore+0xd/0x20
+> [    5.745030]  ? zatm_int.cold+0x30/0x30 [zatm]
+> [    5.745278]  local_pci_probe+0x6f/0xb0
+> [    5.745492]  pci_device_probe+0x171/0x240
+> [    5.745718]  ? pci_device_remove+0xe0/0xe0
+> [    5.745949]  ? kernfs_create_link+0xb6/0x110
+> [    5.746190]  ? sysfs_do_create_link_sd.isra.0+0x76/0xe0
+> [    5.746482]  really_probe+0x161/0x420
+> [    5.746691]  driver_probe_device+0x6d/0xd0
+> [    5.746923]  device_driver_attach+0x82/0x90
+> [    5.747158]  ? device_driver_attach+0x90/0x90
+> [    5.747402]  __driver_attach+0x60/0x100
+> [    5.747621]  ? device_driver_attach+0x90/0x90
+> [    5.747864]  bus_for_each_dev+0xe1/0x140
+> [    5.748075]  ? subsys_dev_iter_exit+0x10/0x10
+> [    5.748320]  ? klist_node_init+0x61/0x80
+> [    5.748542]  bus_add_driver+0x254/0x2a0
+> [    5.748760]  driver_register+0xd3/0x150
+> [    5.748977]  ? 0xffffffffc0030000
+> [    5.749163]  do_one_initcall+0x84/0x250
+> [    5.749380]  ? trace_event_raw_event_initcall_finish+0x150/0x150
+> [    5.749714]  ? _raw_spin_unlock_irqrestore+0xd/0x20
+> [    5.749987]  ? create_object+0x395/0x510
+> [    5.750210]  ? kasan_unpoison+0x21/0x50
+> [    5.750427]  do_init_module+0xf8/0x350
+> [    5.750640]  load_module+0x40c5/0x4410
+> [    5.750854]  ? module_frob_arch_sections+0x20/0x20
+> [    5.751123]  ? kernel_read_file+0x1cd/0x3e0
+> [    5.751364]  ? __do_sys_finit_module+0x108/0x170
+> [    5.751628]  __do_sys_finit_module+0x108/0x170
+> [    5.751879]  ? __ia32_sys_init_module+0x40/0x40
+> [    5.752126]  ? file_open_root+0x200/0x200
+> [    5.752353]  ? do_sys_open+0x85/0xe0
+> [    5.752556]  ? filp_open+0x50/0x50
+> [    5.752750]  ? fpregs_assert_state_consistent+0x4d/0x60
+> [    5.753042]  ? exit_to_user_mode_prepare+0x2f/0x130
+> [    5.753316]  do_syscall_64+0x33/0x40
+> [    5.753519]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [    5.753802] RIP: 0033:0x7ff64032dcf7
+>  ff c3 48 c7 c6 01 00 00 00 e9 a1
+> [    5.755029] RSP: 002b:00007ffd250ea358 EFLAGS: 00000246 ORIG_RAX:
+> 0000000000000139
+> [    5.755449] RAX: ffffffffffffffda RBX: 0000000001093a70 RCX: 00007ff64032dcf7
+> [    5.755847] RDX: 0000000000000000 RSI: 00000000010929e0 RDI: 0000000000000003
+> [    5.756242] RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000001
+> [    5.756635] R10: 00007ff640391300 R11: 0000000000000246 R12: 00000000010929e0
+> [    5.757029] R13: 0000000000000000 R14: 0000000001092dd0 R15: 0000000000000001
 >
+> On Mon, Mar 8, 2021 at 12:47 PM Alexander Duyck
+> <alexander.duyck@gmail.com> wrote:
+> >
+> > On Mon, Mar 8, 2021 at 12:39 AM Tong Zhang <ztong0001@gmail.com> wrote:
+> > >
+> > > there are two drivers(zatm and idt77252) using PRIV() (i.e. atm->phy_data)
+> > > to store private data, but the driver happens to populate wrong
+> > > pointers: atm->dev_data. which actually cause null-ptr-dereference in
+> > > following PRIV(dev). This patch series attemps to fix those two issues
+> > > along with a typo in atm struct.
+> > >
+> > > Tong Zhang (3):
+> > >   atm: fix a typo in the struct description
+> > >   atm: uPD98402: fix incorrect allocation
+> > >   atm: idt77252: fix null-ptr-dereference
+> > >
+> > >  drivers/atm/idt77105.c | 4 ++--
+> > >  drivers/atm/uPD98402.c | 2 +-
+> > >  include/linux/atmdev.h | 2 +-
+> > >  3 files changed, 4 insertions(+), 4 deletions(-)
+> >
+> > For the 2 phys you actually seen null pointer dereferences or are your
+> > changes based on just code review?
+> >
+> > I ask because it seems like this code has been this way since 2005 and
+> > in the case of uPD98402_start the code doesn't seem like it should
+> > function the way it was as PRIV is phy_data and there being issues
+> > seems pretty obvious since the initialization of things happens
+> > immediately after the allocation.
+> >
+> > I'm just wondering if it might make more sense to drop the code if it
+> > hasn't been run in 15+ years rather than updating it?
