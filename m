@@ -2,167 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28F7330D69
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1803B330D98
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhCHMXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:23:02 -0500
-Received: from mail-vs1-f43.google.com ([209.85.217.43]:38791 "EHLO
-        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232026AbhCHMWw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:22:52 -0500
-Received: by mail-vs1-f43.google.com with SMTP id e21so2709358vsh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 04:22:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tLC/tgI64EEsWSU2GUD0WY3ILds+TQ6RTHmx4L/R/8s=;
-        b=NDPtbZvUqJ+0kZcEGgK1MJUiqw/emjlUOXHFmBMslVZaOygmJ+7vdkaokChd/+ADZZ
-         ad7q8v8L1wNQO8NP96Ble7tZy2oCXsU8AYdsJl/FNuvWfX9y757+WW90ueID5OGEqfrR
-         x45BKgAL0dGAQhqJ2eIedTO7VJVXeCDaYTlvGI//cxlHYElqUmQEcAv1MBa8YYQ5+2wH
-         aPkI8C24bSLH2tEh5iBeDrLhb/43p4wHXk2vr947ueJMGlrpQplAvm1Eldsfi6IKV7BB
-         n1YJLlh84cGe1818RhZ6TbKzc0xVM6gEMtcJ8E/MbwQEAJJ6jRBkkSYqPr1WuNUoxMES
-         qJbw==
-X-Gm-Message-State: AOAM531lllFnLNJ4rpAj0wHsKL9nP/8ZQpUtr12nqLRkvBRkPkY25z5Q
-        cPP9eJzWULQnnWeMbxxIf6zO0Q5nC7fxqOM6SF8=
-X-Google-Smtp-Source: ABdhPJxmNBbkgCiHQ4+r/cRZ/et+7Ff7jGGXBLH7sL1NfISu4mKEJu/dnBKW04brnl6oUESlUWmRHD9wPdlNS+5WATo=
-X-Received: by 2002:a67:fe90:: with SMTP id b16mr13045613vsr.40.1615206172118;
- Mon, 08 Mar 2021 04:22:52 -0800 (PST)
-MIME-Version: 1.0
-References: <20210305194206.3165917-1-elver@google.com> <20210305194206.3165917-2-elver@google.com>
- <YEX5fyB16dF6N4Iu@alley>
-In-Reply-To: <YEX5fyB16dF6N4Iu@alley>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 8 Mar 2021 13:22:40 +0100
-Message-ID: <CAMuHMdUDqcWfE67g2ah-JyL3H9-G_5nrtQLyq0A3OXTKPFXv6w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] lib/vsprintf: reduce space taken by no_hash_pointers warning
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Marco Elver <elver@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Timur Tabi <timur@kernel.org>,
+        id S231624AbhCHM3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:29:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40372 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229901AbhCHM2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 07:28:53 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615206531; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Pj0+lsoXMYSDviFMNu3CfGDulAqhBZd0duxurV0jt/k=;
+        b=ullbjypHk4a2OSdXRZBXV7LzXx1wRPq0P3DUkuf3g00TxnX2Kvmikn2mvZgT5yu1bK+GT9
+        Pb18L02feaPu+UmwjPoQNvBkbpJDORl8H6ArZ/XWAobYvxZmsd1kHtOeWcA3mN+bVvHI/I
+        evXt2ltyGZ054ZgETkOoGM4IjjxGEog=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EE520ADCD;
+        Mon,  8 Mar 2021 12:28:50 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, virtualization@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+        kvm@vger.kernel.org, clang-built-linux@googlegroups.com
+Cc:     Juergen Gross <jgross@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Content-Type: text/plain; charset="UTF-8"
+        Ard Biesheuvel <ardb@kernel.org>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: [PATCH v5 00/12] x86: major paravirt cleanup
+Date:   Mon,  8 Mar 2021 13:28:32 +0100
+Message-Id: <20210308122844.30488-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Petr,
+This is a major cleanup of the paravirt infrastructure aiming at
+eliminating all custom code patching via paravirt patching.
 
-On Mon, Mar 8, 2021 at 11:16 AM Petr Mladek <pmladek@suse.com> wrote:
-> On Fri 2021-03-05 20:42:06, Marco Elver wrote:
-> > Move the no_hash_pointers warning string into __initconst section, so
-> > that it is discarded after init. Remove common start/end characters.
-> > Also remove repeated lines from the array, since the compiler can't
-> > remove duplicate strings for us since the array must appear in
-> > __initconst as defined.
-> >
-> > Note, a similar message appears in kernel/trace/trace.c, but compiling
-> > the feature is guarded by CONFIG_TRACING. It is not immediately obvious
-> > if a space-concious kernel would prefer CONFIG_TRACING=n. Therefore, it
-> > makes sense to keep the message for no_hash_pointers as __initconst, and
-> > not move the NOTICE-printing to a common function.
-> >
-> > Link: https://lkml.kernel.org/r/CAMuHMdULKZCJevVJcp7TxzLdWLjsQPhE8hqxhnztNi9bjT_cEw@mail.gmail.com
-> > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Signed-off-by: Marco Elver <elver@google.com>
-> > ---
-> >  lib/vsprintf.c | 30 +++++++++++++++++-------------
-> >  1 file changed, 17 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> > index 4a14889ccb35..1095689c9c97 100644
-> > --- a/lib/vsprintf.c
-> > +++ b/lib/vsprintf.c
-> > @@ -2094,26 +2094,30 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
-> >  bool no_hash_pointers __ro_after_init;
-> >  EXPORT_SYMBOL_GPL(no_hash_pointers);
-> >
-> > +static const char no_hash_pointers_warning[8][55] __initconst = {
-> > +     "******************************************************",
-> > +     "   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   ",
-> > +     " This system shows unhashed kernel memory addresses   ",
-> > +     " via the console, logs, and other interfaces. This    ",
-> > +     " might reduce the security of your system.            ",
-> > +     " If you see this message and you are not debugging    ",
-> > +     " the kernel, report this immediately to your system   ",
-> > +     " administrator!                                       ",
-> > +};
-> > +
-> >  static int __init no_hash_pointers_enable(char *str)
-> >  {
-> > +     /* Indices into no_hash_pointers_warning; -1 is an empty line. */
-> > +     const int lines[] = { 0, 1, -1, 2, 3, 4, -1, 5, 6, 7, -1, 1, 0 };
-> > +     int i;
-> > +
-> >       if (no_hash_pointers)
-> >               return 0;
-> >
-> >       no_hash_pointers = true;
-> >
-> > -     pr_warn("**********************************************************\n");
-> > -     pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> > -     pr_warn("**                                                      **\n");
-> > -     pr_warn("** This system shows unhashed kernel memory addresses   **\n");
-> > -     pr_warn("** via the console, logs, and other interfaces. This    **\n");
-> > -     pr_warn("** might reduce the security of your system.            **\n");
-> > -     pr_warn("**                                                      **\n");
-> > -     pr_warn("** If you see this message and you are not debugging    **\n");
-> > -     pr_warn("** the kernel, report this immediately to your system   **\n");
-> > -     pr_warn("** administrator!                                       **\n");
-> > -     pr_warn("**                                                      **\n");
-> > -     pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> > -     pr_warn("**********************************************************\n");
-> > +     for (i = 0; i < ARRAY_SIZE(lines); i++)
-> > +             pr_warn("**%54s**\n", i == -1 ? "" : no_hash_pointers_warning[lines[i]]);
->
-> Is this worth it, please? Could anyone provide some numbers how
+This is achieved by using ALTERNATIVE instead, leading to the ability
+to give objtool access to the patched in instructions.
 
-Yeah, the code indeed starts to look a bit cumbersome...
+In order to remove most of the 32-bit special handling from pvops the
+time related operations are switched to use static_call() instead.
 
-> the kernel size increases between releases?
+At the end of this series all paravirt patching has to do is to
+replace indirect calls with direct ones. In a further step this could
+be switched to static_call(), too.
 
-I'd say 20 KiB per release, on average.
+Changes in V5:
+- patches 1-5 of V4 dropped, as already applied
+- new patches 1+3
+- fixed patch 2
+- split V4 patch 8 into patches 4+5
+- use flag byte instead of negative feature bit for "not feature"
 
-> The number of code lines is basically just growing. The same is true
-> for the amount of printed messages.
+Changes in V4:
+- fixed several build failures
+- removed objtool patch, as objtool patches are in tip now
+- added patch 1 for making usage of static_call easier
+- even more cleanup
 
-Yeah, we keep on adding more messages.
-But do we really need to print a message of 13 lines?
-If you consider this critical for security, perhaps it should use pr_crit(),
-or pr_alert()? But please don't print more than a single line.
+Changes in V3:
+- added patches 7 and 12
+- addressed all comments
 
-<sarcastic>
-Perhaps it should print a URL to a message instead, like the
-"software license" option in Android systems and apps?
-</sarcastic>
+Changes in V2:
+- added patches 5-12
 
-> This patch is saving some lines of text that might be effectively
-> compressed. But it adds some code and array with indexes. Does it
-> make any significant imrovement in the compressed kernel image?
->
-> Geert was primary concerned about the runtime memory consuption.
-> It will be solved by the  __initconst. The rest affects only
-> the size of the compressed image on disk.
+Juergen Gross (12):
+  staticcall: move struct static_call_key definition to
+    static_call_types.h
+  x86/paravirt: switch time pvops functions to use static_call()
+  x86/alternative: drop feature parameter from ALTINSTR_REPLACEMENT()
+  x86/alternative: support not-feature
+  x86/alternative: support ALTERNATIVE_TERNARY
+  x86: add new features for paravirt patching
+  x86/paravirt: remove no longer needed 32-bit pvops cruft
+  x86/paravirt: simplify paravirt macros
+  x86/paravirt: switch iret pvops to ALTERNATIVE
+  x86/paravirt: add new macros PVOP_ALT* supporting pvops in
+    ALTERNATIVEs
+  x86/paravirt: switch functions with custom code to ALTERNATIVE
+  x86/paravirt: have only one paravirt patch function
 
-I'm actually concerned about both.  Platforms (and boot loaders) may
-have limitations for kernel image size, too.
-Static memory consumption is also more easily measured, so I tend
-to run bloat-o-meter, and dive into anything that adds more than 1 KiB.
-And yes, this message is a low-hanging fruit...
-
-Gr{oetje,eeting}s,
-
-                        Geert
+ arch/arm/include/asm/paravirt.h               |  14 +-
+ arch/arm/kernel/paravirt.c                    |   9 +-
+ arch/arm64/include/asm/paravirt.h             |  14 +-
+ arch/arm64/kernel/paravirt.c                  |  13 +-
+ arch/x86/Kconfig                              |   1 +
+ arch/x86/entry/entry_32.S                     |   4 +-
+ arch/x86/entry/entry_64.S                     |   2 +-
+ arch/x86/include/asm/alternative-asm.h        |  10 +
+ arch/x86/include/asm/alternative.h            |  28 ++-
+ arch/x86/include/asm/cpufeature.h             |   2 +
+ arch/x86/include/asm/cpufeatures.h            |   2 +
+ arch/x86/include/asm/irqflags.h               |   7 +-
+ arch/x86/include/asm/mshyperv.h               |   2 +-
+ arch/x86/include/asm/paravirt.h               | 167 +++++++-------
+ arch/x86/include/asm/paravirt_types.h         | 210 +++++++-----------
+ arch/x86/kernel/Makefile                      |   3 +-
+ arch/x86/kernel/alternative.c                 |  37 ++-
+ arch/x86/kernel/asm-offsets.c                 |   7 -
+ arch/x86/kernel/cpu/vmware.c                  |   5 +-
+ arch/x86/kernel/kvm.c                         |   2 +-
+ arch/x86/kernel/kvmclock.c                    |   2 +-
+ arch/x86/kernel/paravirt-spinlocks.c          |   9 +
+ arch/x86/kernel/paravirt.c                    |  78 ++-----
+ arch/x86/kernel/paravirt_patch.c              |  99 ---------
+ arch/x86/kernel/tsc.c                         |   2 +-
+ arch/x86/xen/enlighten_pv.c                   |   4 +-
+ arch/x86/xen/time.c                           |  11 +-
+ drivers/xen/time.c                            |   3 +-
+ include/linux/static_call.h                   |  18 --
+ include/linux/static_call_types.h             |  18 ++
+ tools/include/linux/static_call_types.h       |  18 ++
+ tools/objtool/arch/x86/include/arch/special.h |   6 +-
+ 32 files changed, 339 insertions(+), 468 deletions(-)
+ delete mode 100644 arch/x86/kernel/paravirt_patch.c
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.26.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
