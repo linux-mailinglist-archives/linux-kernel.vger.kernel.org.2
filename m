@@ -2,192 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 997D03309E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC923309DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhCHJDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 04:03:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
+        id S229938AbhCHJCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 04:02:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbhCHJDC (ORCPT
+        with ESMTP id S229551AbhCHJBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 04:03:02 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2287CC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 01:03:02 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so342054wmj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 01:03:02 -0800 (PST)
+        Mon, 8 Mar 2021 04:01:44 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C838FC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 01:01:43 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id f22-20020a7bc8d60000b029010c024a1407so3306337wml.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 01:01:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VduCoy9cY/POZZOiEWzngRwLsbws5z84iVhRIR40VNU=;
-        b=x2smg4jRl66r5msS9Ra8Bf5luC9Q4x3G6RAvuNOlXyTD3q3j34dQ5a3PbDZUa2fju7
-         oNgDc6xvV0BdxK33za3HYCXXCD8jIzgTCtH1HOFRGXMnEBXk/Ysh8wCSsz12OOD6Z/R7
-         JVfPefEYX1rYHDt4Tm9vzgz+nS7pQqxU7slmSukfGLTqmytPq/UZ5JPZ+TFSpovNCLQC
-         fvg0KsYnt15PF4DiWfEJzIXIOrHq0aqn4/wEXosQ8KeUzv82BYLr+uiU1S033OPH2ZgO
-         oYHQ1yIZ8Fe1WcUNa7N+hcs1Wtw2KLKogoaAZ5wHa6usk0GDk+m86y2UO+6vkdcQbXT0
-         wBdg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=MUaH7+fr5vYVOb9hsqFBaWwMCQH5+tHHSDiOUUhLamc=;
+        b=QJaLoZ8d9LOLKJTQLV6D9acDSJDuvg7olRz0pvRYF5GXK6I8kgTthkCcex6G5Omj0p
+         DuQXi0RDWDojkKX3Qy8CJfyyVCcTvfSw++94ohX2saG2oxzYsfD5RSgp/5m1kiNQEvam
+         PhC0NNBC796PWDISX0Nos/3E8/YXAAbkRSBPA4BKO28pbu1xO9JxcUhLYDFla4qThRC0
+         nWPQMZ1qgbnmGV0Ny/VIQ3AGUmU9BiqglHvtxXHu5Cj66+ZnprSYcNnd/EuPR9WhMxmm
+         GPkVzcnHzJzUQWJ711jMKKI0rBLiwVqdt3mpN7Na2Rjs7MPhs2dm0lngbMO8Jx00C34Z
+         dnrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=VduCoy9cY/POZZOiEWzngRwLsbws5z84iVhRIR40VNU=;
-        b=slBnBn3sv6JiG6G7qaq/T2ZEFokW8jIuZR4gpp3RVd62OELOXoOxQPmAgXjh3KDw8k
-         pAS1KcRdU5xwOD73DvE85WI8u5tsL4QD3OK7tfJVsL2pW5WPMz07FO5zA5XShBt/2YHR
-         VtyLPsJz7VtqyTGJLfaYs7BhEhUC0zoyf1Q7z12VHMwmIGfBMPLfsf6x5/sGSmTmKNWc
-         3a2WGRnHKbMfLxB08VUQQwzzgfKRC2TWp/IU30gk76PfZ1T8h1Nx2u+OMBCrP8kgJSHs
-         iucQiQySmswLKGhzU23qq6J9AwT7NO2AhYOBTyvhAXCjOIs2UZCMEWXny3BNvtPlbokP
-         jlIA==
-X-Gm-Message-State: AOAM533qqDE6nNb0ZL7wBGBOJRyJ2nWGcWFuTIdJvdzhsMsEtAOao8ON
-        8c1uZRa+u26NXxLlyOG2V3fk/A==
-X-Google-Smtp-Source: ABdhPJw647ZQzOe1DVLylHSEYurbHed+mUA4hUQ1dLTxvO2puE2ijCTTxgq1I+MpUWWgSlIZkuJ7FQ==
-X-Received: by 2002:a7b:c842:: with SMTP id c2mr21301749wml.100.1615194180723;
-        Mon, 08 Mar 2021 01:03:00 -0800 (PST)
-Received: from [192.168.1.10] ([88.164.51.138])
-        by smtp.gmail.com with ESMTPSA id y10sm17441439wrl.19.2021.03.08.01.02.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 01:03:00 -0800 (PST)
-Subject: Re: [PATCH] drm: meson_drv add shutdown function
-To:     Artem Lapkin <email2tema@gmail.com>
-Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        christianshewitt@gmail.com, art@khadas.com, nick@khadas.com,
-        gouwa@khadas.com
-References: <20210302042202.3728113-1-art@khadas.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- ZaTUOEkgIor5losDrePdPgE=
-Organization: Baylibre
-Message-ID: <c8570873-d518-16c2-b66c-36d9dba07db5@baylibre.com>
-Date:   Mon, 8 Mar 2021 10:00:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=MUaH7+fr5vYVOb9hsqFBaWwMCQH5+tHHSDiOUUhLamc=;
+        b=WeklzccMBkx/RrcEBtjDyn7A0SyQqhi/sYxA69bIpmDa3SUsTdvGGDhkt/5G5FLzP/
+         ncgAev4xXn1s0dh1RiXBuNnVtuV13ADCLhhl+cW4WxNBVaxFVVuKGjMLYww3WCWJtJey
+         42iQ3+mOtGUThYUZrUR5jSDpIkZtLeUGeeHVrYjTQKi3yqWSTq9bzSiLISa4utP9C+VZ
+         yhMvytFGf3ZxLuNxtu4iWQFF0oBtPdSjhJ39P15KkK6C9T99xU8LwE8usN63vca9zEVN
+         PsaBxNKx0IyfkRZzh+1cSsfsSAsMD0j4ZHgDaPIavFux8YUurk6430ZhreS6fSM4i3go
+         kJ0A==
+X-Gm-Message-State: AOAM5322Q2MwR9fxH7TabU3LdW/ET79SrNw3Tx1JIX6g/RuvClmCr012
+        PWlpONnLTtWb7OenCwDfAAe1rQ==
+X-Google-Smtp-Source: ABdhPJyFZrtFhtFuOYvUfQcTY5j5EJfCFALswDW1ZlVQUOcNFYFOJ88E8/oirRiM1lLro33elITSsQ==
+X-Received: by 2002:a1c:cc14:: with SMTP id h20mr20932255wmb.14.1615194102495;
+        Mon, 08 Mar 2021 01:01:42 -0800 (PST)
+Received: from dell ([91.110.221.130])
+        by smtp.gmail.com with ESMTPSA id x25sm18433888wmj.14.2021.03.08.01.01.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 01:01:41 -0800 (PST)
+Date:   Mon, 8 Mar 2021 09:01:24 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     linux-kernel@vger.kernel.org, trix@redhat.com,
+        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
+        lgoncalv@redhat.com, hao.wu@intel.com
+Subject: Re: [PATCH v3 0/4] Some improvement for Intel MAX 10 MFD drivers
+Message-ID: <20210308090124.GA4931@dell>
+References: <1614578385-26955-1-git-send-email-yilun.xu@intel.com>
+ <20210308020454.GA32151@yilunxu-OptiPlex-7050>
 MIME-Version: 1.0
-In-Reply-To: <20210302042202.3728113-1-art@khadas.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210308020454.GA32151@yilunxu-OptiPlex-7050>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/03/2021 05:22, Artem Lapkin wrote:
-> Problem: random stucks on reboot stage about 1/20 stuck/reboots
-> // debug kernel log
-> [    4.496660] reboot: kernel restart prepare CMD:(null)
-> [    4.498114] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown begin
-> [    4.503949] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown domain 0:VPU...
-> ...STUCK...
-> 
-> Solution: add shutdown function to meson_drm driver 
-> // debug kernel log
-> [    5.231896] reboot: kernel restart prepare CMD:(null)
-> [    5.246135] [drm:meson_drv_shutdown]
-> ...
-> [    5.259271] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown begin
-> [    5.274688] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown domain 0:VPU...
-> [    5.338331] reboot: Restarting system
-> [    5.358293] psci: PSCI_0_2_FN_SYSTEM_RESET reboot_mode:0 cmd:(null)
-> bl31 reboot reason: 0xd
-> bl31 reboot reason: 0x0
-> system cmd  1.
-> ...REBOOT...
-> 
-> Tested: on VIM1 VIM2 VIM3 VIM3L khadas sbcs - 1000+ successful reboots
-> and Odroid boards, WeTek Play2 (GXBB)
-> 
+On Mon, 08 Mar 2021, Xu Yilun wrote:
 
-Fixes: bbbe775ec5b5 ("drm: Add support for Amlogic Meson Graphic Controller")
+> Hi Lee:
+> 
+> Could you please help on review this patchset? They are some
+> improvements for intel-m10-bmc MFD driver.
 
-> Tested-by: Christian Hewitt <christianshewitt@gmail.com>
-> Signed-off-by: Artem Lapkin <art@khadas.com>
-> 
-> ---
->  drivers/gpu/drm/meson/meson_drv.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
-> index 42c5d3246..693bb1293 100644
-> --- a/drivers/gpu/drm/meson/meson_drv.c
-> +++ b/drivers/gpu/drm/meson/meson_drv.c
-> @@ -482,6 +482,16 @@ static int meson_probe_remote(struct platform_device *pdev,
->  	return count;
->  }
->  
-> +static void meson_drv_shutdown(struct platform_device *pdev)
-> +{
-> +	struct meson_drm *priv = dev_get_drvdata(&pdev->dev);
-> +	struct drm_device *drm = priv->drm;
-> +
-> +	DRM_DEBUG_DRIVER("\n");
-> +	drm_kms_helper_poll_fini(drm);
-> +	drm_atomic_helper_shutdown(drm);
-> +}
-> +
->  static int meson_drv_probe(struct platform_device *pdev)
->  {
->  	struct component_match *match = NULL;
-> @@ -553,6 +563,7 @@ static const struct dev_pm_ops meson_drv_pm_ops = {
->  
->  static struct platform_driver meson_drm_platform_driver = {
->  	.probe      = meson_drv_probe,
-> +	.shutdown   = meson_drv_shutdown,
->  	.driver     = {
->  		.name	= "meson-drm",
->  		.of_match_table = dt_match,
-> 
+Please don't send contentless pings 1 week after submitting a set.
 
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
+Also please refrain from top-posting.
+
+This patch is on my TO-REVIEW list.
+
+Unfortunately, since I work in reverse chronological order, you just
+pushed the set to the back of the list.
+
+If after a suitable period, usually around 2 weeks, you think your
+submission has been missed, please submit a [RESEND] instead.
+
+> On Mon, Mar 01, 2021 at 01:59:41PM +0800, Xu Yilun wrote:
+> > This patchset is some improvements for intel-m10-bmc and its subdevs.
+> > 
+> > Main changes from v1:
+> > - Add a patch (#2) to simplify the definition of the legacy version reg.
+> > - Add a patch (#4), add entry in MAINTAINERS for intel-m10-bmc mfd driver
+> >   and the subdev drivers.
+> > 
+> > Main changes from v2:
+> > - Add Tom Rix as the reviewer for intel-m10-bmc mfd driver and the subdev
+> >   drivers.
+> > - Rebased to 5.12-rc1
+> > 
+> > 
+> > Matthew Gerlach (1):
+> >   mfd: intel-m10-bmc: Add access table configuration to the regmap
+> > 
+> > Xu Yilun (3):
+> >   mfd: intel-m10-bmc: Fix the register access range
+> >   mfd: intel-m10-bmc: Simplify the legacy version reg definition
+> >   MAINTAINERS: Add entry for Intel MAX 10 mfd driver
+> > 
+> >  MAINTAINERS                       | 10 ++++++++++
+> >  drivers/mfd/intel-m10-bmc.c       | 25 ++++++++++++++++++-------
+> >  include/linux/mfd/intel-m10-bmc.h |  7 +++++--
+> >  3 files changed, 33 insertions(+), 9 deletions(-)
+> > 
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
