@@ -2,199 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E93331140
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2401A331145
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhCHOwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 09:52:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229690AbhCHOwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:52:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F904650ED;
-        Mon,  8 Mar 2021 14:52:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615215135;
-        bh=zcV5XaYvoMhf2mkCNLmmjTPaR/kS4dnjNFn8LytabeQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HJycUihYXsVc3M2fN+5uqgcNjbvzNBBzVFPfVB8agtPfyWQC9d0ky+hWK1+kVhf3s
-         biRThEXrxbtENvO/pF0gKDJ+IYI1OOFD1oICpzIIrerrRYv6gSFnimlbiTcToGxseQ
-         cKzQQWlNFjqOVSNKU917uJ7++gL/8KvyVrTKd91+8Bp4uz8Z7epA9p2nRJHE7lWI+J
-         j5b7QGZ0EjlRqvhh7H3l0ytMM2aRg6yppMBKoTxFYh/dAj//z/iLi+0AsU8a83qqcw
-         5QXcdeqRwr0WZCz3KIQCThmfZVgj1IkhzhaxHDjY98dAYkGfuMWiwBpEo9LHyeY4mU
-         oPUMBKnM7Mu7g==
-Date:   Mon, 8 Mar 2021 14:52:09 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V5 1/2] topology: Allow multiple entities to provide
- sched_freq_tick() callback
-Message-ID: <20210308145209.GA26458@willie-the-truck>
-References: <cover.1614580695.git.viresh.kumar@linaro.org>
- <a34f549bc75eecd4804aebb7b7794b45769eccf0.1614580695.git.viresh.kumar@linaro.org>
+        id S231201AbhCHOw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 09:52:56 -0500
+Received: from mail-lj1-f170.google.com ([209.85.208.170]:38158 "EHLO
+        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229848AbhCHOwe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 09:52:34 -0500
+Received: by mail-lj1-f170.google.com with SMTP id 2so16430696ljr.5;
+        Mon, 08 Mar 2021 06:52:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
+         :content-transfer-encoding;
+        bh=WMzNMKgHpa+G4HfW7zckj8ZWhc6jqMkyy2g0cwRIC6c=;
+        b=fx8y8KPu2rvhOv5Rwkb54AOm6RQOqMegmJ0sMwK3T/xQ1dzZbE7bp76NJB8vNQrpAi
+         +GF8Pk1j0fHmzKXDatmOMKJ4oyOVXYtwfQfb1AL1Ibjb7EP4QsCxFAxqsBDyAhl90vCs
+         v+2YGtCGxm9bUHVgC+RmAKR1fOizoyQZwamxEH3EnVtCq5hRM1uFJhWB4zBQRWAF++Ai
+         7sZebmLB0CXlnyHHp6WGIgNkJIZmNuYJIK7QJTODOtVuocRPkM4Uo/JGw7JIo9f7sOjr
+         wa/BA0sRlGtMpA4sWI+jwuyUAO2sDQ84NcTqkECoCgb3wAJWJgyVtBxmzOwudj1IKhAZ
+         r2Wg==
+X-Gm-Message-State: AOAM532fw9a618d9DGgIFJKykHMUtVCg1CafL7zRjMkiGnih3M84QQR3
+        B8+QWOq2u3VH3HPJdAYl9MI=
+X-Google-Smtp-Source: ABdhPJz9K+inMO0/ELRvxkwbW9NLe79/FhnmG+R8exnZE/rZkEedkN2TdnmorwlqfccJWiMG2wd7ug==
+X-Received: by 2002:a2e:3206:: with SMTP id y6mr13673463ljy.208.1615215152340;
+        Mon, 08 Mar 2021 06:52:32 -0800 (PST)
+Received: from dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
+        by smtp.gmail.com with ESMTPSA id z11sm1376445lfd.98.2021.03.08.06.52.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 06:52:31 -0800 (PST)
+Message-ID: <29daa037a8097aeac032206480c0249bdd5d9e25.camel@fi.rohmeurope.com>
+Subject: Re: [PATCH v8 2/6] mfd: Support ROHM BD9576MUF and BD9573MUF
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-watchdog@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        linux-renesas-soc@vger.kernel.org
+In-Reply-To: <20210308133614.GD4931@dell>
+References: <cover.1613031055.git.matti.vaittinen@fi.rohmeurope.com>
+         <560b9748094392493ebf7af11b6cc558776c4fd5.1613031055.git.matti.vaittinen@fi.rohmeurope.com>
+         <20210308133614.GD4931@dell>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a34f549bc75eecd4804aebb7b7794b45769eccf0.1614580695.git.viresh.kumar@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Date:   Mon, 08 Mar 2021 16:52:22 +0200
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 12:21:17PM +0530, Viresh Kumar wrote:
-> This patch attempts to make it generic enough so other parts of the
-> kernel can also provide their own implementation of scale_freq_tick()
-> callback, which is called by the scheduler periodically to update the
-> per-cpu freq_scale variable.
+Hello Lee,
+
+On Mon, 2021-03-08 at 13:36 +0000, Lee Jones wrote:
+> On Thu, 11 Feb 2021, Matti Vaittinen wrote:
 > 
-> The implementations now need to provide 'struct scale_freq_data' for the
-> CPUs for which they have hardware counters available, and a callback
-> gets registered for each possible CPU in a per-cpu variable.
+> > Add core support for ROHM BD9576MUF and BD9573MUF PMICs which are
+> > mainly used to power the R-Car series processors.
+> > 
+> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> > ---
+> > Changes:
+> >  - Comments fixed based on suggestions from Lee
+> >  - Name of regulator cell changed as suggested by Lee
+> >  - Renamed MFD cell variables for better readability
+> >  - Aligned header definitions for better readability
+> > 
+> >  drivers/mfd/Kconfig              |  11 ++++
+> >  drivers/mfd/Makefile             |   1 +
+> >  drivers/mfd/rohm-bd9576.c        | 109
+> > +++++++++++++++++++++++++++++++
+> >  include/linux/mfd/rohm-bd957x.h  |  59 +++++++++++++++++
+> >  include/linux/mfd/rohm-generic.h |   2 +
+> >  5 files changed, 182 insertions(+)
+> >  create mode 100644 drivers/mfd/rohm-bd9576.c
+> >  create mode 100644 include/linux/mfd/rohm-bd957x.h
+> > 
+> > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > index bdfce7b15621..53c7c96283bd 100644
+> > --- a/drivers/mfd/Kconfig
+> > +++ b/drivers/mfd/Kconfig
+> > @@ -1998,6 +1998,17 @@ config MFD_ROHM_BD71828
+> >  	  Also included is a Coulomb counter, a real-time clock (RTC),
+> > and
+> >  	  a 32.768 kHz clock gate.
+> >  
+> > +config MFD_ROHM_BD957XMUF
+> > +	tristate "ROHM BD9576MUF and BD9573MUF Power Management ICs"
+> > +	depends on I2C=y
+> > +	depends on OF
+> > +	select REGMAP_I2C
+> > +	select MFD_CORE
+> > +	help
+> > +	  Select this option to get support for the ROHM BD9576MUF and
+> > +	  BD9573MUF Power Management ICs. BD9576 and BD9573 are
+> > primarily
+> > +	  designed to be used to power R-Car series processors.
+> > +
+> >  config MFD_STM32_LPTIMER
+> >  	tristate "Support for STM32 Low-Power Timer"
+> >  	depends on (ARCH_STM32 && OF) || COMPILE_TEST
+> > diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> > index 14fdb188af02..e58fae024bb2 100644
+> > --- a/drivers/mfd/Makefile
+> > +++ b/drivers/mfd/Makefile
+> > @@ -262,6 +262,7 @@ obj-$(CONFIG_RAVE_SP_CORE)	+= rave-sp.o
+> >  obj-$(CONFIG_MFD_ROHM_BD70528)	+= rohm-bd70528.o
+> >  obj-$(CONFIG_MFD_ROHM_BD71828)	+= rohm-bd71828.o
+> >  obj-$(CONFIG_MFD_ROHM_BD718XX)	+= rohm-bd718x7.o
+> > +obj-$(CONFIG_MFD_ROHM_BD957XMUF)	+= rohm-bd9576.o
+> >  obj-$(CONFIG_MFD_STMFX) 	+= stmfx.o
+> >  obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
+> >  
+> > diff --git a/drivers/mfd/rohm-bd9576.c b/drivers/mfd/rohm-bd9576.c
+> > new file mode 100644
+> > index 000000000000..efd439677c9e
+> > --- /dev/null
+> > +++ b/drivers/mfd/rohm-bd9576.c
+> > @@ -0,0 +1,109 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * Copyright (C) 2020 ROHM Semiconductors
 > 
-> The arch specific (or ARM AMU) counters are updated to adapt to this and
-> they take the highest priority if they are available, i.e. they will be
-> used instead of CPPC based counters for example.
+> If you get a chance, could you please update these?
+
+I'll respin the series as I'll add designated initializers for MFD
+regulator array cell as you suggested. So I'll update this at the same
+time.
+
 > 
-> The special code to rebuild the sched domains, in case invariance status
-> change for the system, is moved out of arm64 specific code and is added
-> to arch_topology.c.
+> > + * ROHM BD9576MUF and BD9573MUF PMIC driver
+> > + */
 > 
-> Note that this also defines SCALE_FREQ_SOURCE_CPUFREQ but doesn't use it
-> and it is added to show that cpufreq is also acts as source of
-> information for FIE and will be used by default if no other counters are
-> supported for a platform.
+> For my own reference (apply this as-is to your sign-off block):
 > 
-> Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Tested-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  arch/arm64/include/asm/topology.h |  10 +--
->  arch/arm64/kernel/topology.c      | 105 +++++++++++-------------------
->  drivers/base/arch_topology.c      |  85 ++++++++++++++++++++++--
->  include/linux/arch_topology.h     |  14 +++-
->  4 files changed, 134 insertions(+), 80 deletions(-)
+>   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> 
 
-For the arm64 bits:
 
-Acked-by: Will Deacon <will@kernel.org>
-
-However...
-
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index de8587cc119e..8f62dbf93f67 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -21,17 +21,94 @@
->  #include <linux/sched.h>
->  #include <linux/smp.h>
->  
-> +static DEFINE_PER_CPU(struct scale_freq_data *, sft_data);
-> +static struct cpumask scale_freq_counters_mask;
-> +static bool scale_freq_invariant;
-> +
-> +static bool supports_scale_freq_counters(const struct cpumask *cpus)
-> +{
-> +	return cpumask_subset(cpus, &scale_freq_counters_mask);
-> +}
-> +
->  bool topology_scale_freq_invariant(void)
->  {
->  	return cpufreq_supports_freq_invariance() ||
-> -	       arch_freq_counters_available(cpu_online_mask);
-> +	       supports_scale_freq_counters(cpu_online_mask);
->  }
->  
-> -__weak bool arch_freq_counters_available(const struct cpumask *cpus)
-> +static void update_scale_freq_invariant(bool status)
->  {
-> -	return false;
-> +	if (scale_freq_invariant == status)
-> +		return;
-> +
-> +	/*
-> +	 * Task scheduler behavior depends on frequency invariance support,
-> +	 * either cpufreq or counter driven. If the support status changes as
-> +	 * a result of counter initialisation and use, retrigger the build of
-> +	 * scheduling domains to ensure the information is propagated properly.
-> +	 */
-> +	if (topology_scale_freq_invariant() == status) {
-> +		scale_freq_invariant = status;
-> +		rebuild_sched_domains_energy();
-> +	}
->  }
-> +
-> +void topology_set_scale_freq_source(struct scale_freq_data *data,
-> +				    const struct cpumask *cpus)
-> +{
-> +	struct scale_freq_data *sfd;
-> +	int cpu;
-> +
-> +	/*
-> +	 * Avoid calling rebuild_sched_domains() unnecessarily if FIE is
-> +	 * supported by cpufreq.
-> +	 */
-> +	if (cpumask_empty(&scale_freq_counters_mask))
-> +		scale_freq_invariant = topology_scale_freq_invariant();
-> +
-> +	for_each_cpu(cpu, cpus) {
-> +		sfd = per_cpu(sft_data, cpu);
-> +
-> +		/* Use ARCH provided counters whenever possible */
-> +		if (!sfd || sfd->source != SCALE_FREQ_SOURCE_ARCH) {
-> +			per_cpu(sft_data, cpu) = data;
-> +			cpumask_set_cpu(cpu, &scale_freq_counters_mask);
-> +		}
-> +	}
-> +
-> +	update_scale_freq_invariant(true);
-> +}
-> +EXPORT_SYMBOL_GPL(topology_set_scale_freq_source);
-
-I don't get why you need to export this in this patch. The arm64 topology
-code is never built as a module.
-
-> +
-> +void topology_clear_scale_freq_source(enum scale_freq_source source,
-> +				      const struct cpumask *cpus)
-> +{
-> +	struct scale_freq_data *sfd;
-> +	int cpu;
-> +
-> +	for_each_cpu(cpu, cpus) {
-> +		sfd = per_cpu(sft_data, cpu);
-> +
-> +		if (sfd && sfd->source == source) {
-> +			per_cpu(sft_data, cpu) = NULL;
-> +			cpumask_clear_cpu(cpu, &scale_freq_counters_mask);
-> +		}
-> +	}
-> +
-> +	update_scale_freq_invariant(false);
-> +}
-> +EXPORT_SYMBOL_GPL(topology_clear_scale_freq_source);
-
-Same here.
-
-> +
-> +void topology_scale_freq_tick(void)
-> +{
-> +	struct scale_freq_data *sfd = *this_cpu_ptr(&sft_data);
-> +
-> +	if (sfd)
-> +		sfd->set_freq_scale();
-> +}
-> +
->  DEFINE_PER_CPU(unsigned long, freq_scale) = SCHED_CAPACITY_SCALE;
-> +EXPORT_SYMBOL_GPL(freq_scale);
-
-And here. This one probably wants a less generic name as well if it's going
-to be exported.
-
-Will
