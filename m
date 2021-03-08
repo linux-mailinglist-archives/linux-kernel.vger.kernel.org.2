@@ -2,119 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F563305E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:27:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C833305E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233585AbhCHC1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 21:27:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233666AbhCHC1N (ORCPT
+        id S231136AbhCHCap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 21:30:45 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:37464 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231134AbhCHCa2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 21:27:13 -0500
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43592C06175F
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 18:27:13 -0800 (PST)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 84FD0891AE;
-        Mon,  8 Mar 2021 15:27:09 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1615170429;
-        bh=8TTBWL5utY8uZBsZ4tFU35d2pW7P5yfQ2UnFv+biqjw=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=GZN8oS/5i1bbZaQIE7DkfSyPoTe76Uhi5rzI8ucUba1VdcOb1yFHTCFu2NXZ0EEBz
-         pvIdpDOJJ+P/eq6i1+gIuLt7+d++N3MRCi7XfUe0Zjg3cp7L1tHbpdeTVybKYiIDdB
-         o28UaEtmq8cCYySTKjKgnFDnMge/sJFd7PC5fFGOcNuQLXmkIt5AG3QFfa7rFBHorh
-         J3aNLiMreqEvh1Lph5C9cC+b7GQCcOjBPL60T1egqRiu7u0aJAuymnZmmSkvVBQG9a
-         Gx7OG3uLb8zlS0pr0VpVG7+4WeQYmPPTbPmZ9rtNvlEbfc2c7GXGldY8awlVSIL1/k
-         r2En9West3/PQ==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60458b7d0001>; Mon, 08 Mar 2021 15:27:09 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Mon, 8 Mar 2021 15:27:09 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.012; Mon, 8 Mar 2021 15:27:09 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        "jdelvare@suse.com" <jdelvare@suse.com>
-CC:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: Errant readings on LM81 with T2080 SoC
-Thread-Topic: Errant readings on LM81 with T2080 SoC
-Thread-Index: AQHXE6SbssdAOSHgwE+zIRhtn11Sk6p4Y2sAgAAgcAA=
-Date:   Mon, 8 Mar 2021 02:27:08 +0000
-Message-ID: <4a1b1494-df96-2d8c-9323-beb2c2ba706b@alliedtelesis.co.nz>
-References: <8e0a88ba-01e9-9bc1-c78b-20f26ce27d12@alliedtelesis.co.nz>
- <96d660bc-17ab-4e0e-9a94-bce1737a8da1@roeck-us.net>
-In-Reply-To: <96d660bc-17ab-4e0e-9a94-bce1737a8da1@roeck-us.net>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <FAFDE576A0F6124782240ADE8CFC3BF3@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Sun, 7 Mar 2021 21:30:28 -0500
+Received: by mail-il1-f200.google.com with SMTP id g3so6378349ild.4
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 18:30:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=bxTzn20sw0YqGPnteZcFUQodhglpJ7rCkRvt/JGA98w=;
+        b=XuQ5fLeNvfNomu/VFtvQqojPlkzhQIsFT96U3MMzW8Eqp0/KkbMRJffvVuoeOcpDzG
+         r6S28r1GgrDsulz9gSY7cWh1ExTtJAtRjQTkI+EyIlkLwJstz0//pxsJoN+5160Xk9Ba
+         cRklz9hNYpGFBA7ga71X0XUegpD9wg5VmGya5ycSn9OQHU7rNYnCEqXQT3HOaTJx7veT
+         MyYaj9vHyRuVuzYiYIbs4M5OgcIO3ISlB7G/R/WsYa+ljsyNsG431piLRYmaeXPpGGLs
+         ejupRrixIGy7h6Z81cIJlgICRYVHH+hTSpcLkWZb2/VDXu/FB4OaU+kxKtQPXcPaN2wY
+         /Nxg==
+X-Gm-Message-State: AOAM531YPNrScx1Iui+ZU+iYJRVoP3JEn9clK905K+26z4NHrfFu+GTg
+        aXRqo5Q93he743n+W/46t54jaKT5v94Yq8Me8UJfcs0Xwvds
+X-Google-Smtp-Source: ABdhPJzr6F69xiYl85TA2EDzpPaEUsnYs2z1zwMY6xt6rXuRW0WGjtsXN11doPLldAFW/KoiyC1CvLZbQtSFkHJAaen3IMTUnSxu
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=NoFIIjjUkg5N47f6R0kA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+X-Received: by 2002:a02:971a:: with SMTP id x26mr20900603jai.61.1615170627920;
+ Sun, 07 Mar 2021 18:30:27 -0800 (PST)
+Date:   Sun, 07 Mar 2021 18:30:27 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000087674b05bcfd37a0@google.com>
+Subject: [syzbot] WARNING: ODEBUG bug in net_dm_cmd_trace
+From:   syzbot <syzbot+779559d6503f3a56213d@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, nhorman@tuxdriver.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiA4LzAzLzIxIDE6MzEgcG0sIEd1ZW50ZXIgUm9lY2sgd3JvdGU6DQo+IE9uIDMvNy8yMSAy
-OjUyIFBNLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPj4gSGksDQo+Pg0KPj4gSSd2ZSBnb3QgYSBz
-eXN0ZW0gdXNpbmcgYSBQb3dlclBDIFQyMDgwIFNvQyBhbmQgYW1vbmcgb3RoZXIgdGhpbmdzIGhh
-cw0KPj4gYW4gTE04MSBod21vbiBjaGlwLg0KPj4NCj4+IFVuZGVyIGEgaGlnaCBDUFUgbG9hZCB3
-ZSBzZWUgZXJyYW50IHJlYWRpbmdzIGZyb20gdGhlIExNODEgYXMgd2VsbCBhcw0KPj4gYWN0dWFs
-IGZhaWx1cmVzLiBJdCdzIHRoZSBlcnJhbnQgcmVhZGluZ3MgdGhhdCBjYXVzZSB0aGUgbW9zdCBj
-b25jZXJuDQo+PiBzaW5jZSB3ZSBjYW4gZWFzaWx5IGlnbm9yZSB0aGUgcmVhZCBlcnJvcnMgaW4g
-b3VyIG1vbml0b3JpbmcgYXBwbGljYXRpb24NCj4+IChhbHRob3VnaCBpdCB3b3VsZCBiZSBiZXR0
-ZXIgaWYgdGhleSB3ZXJlbid0IHRoZXJlIGF0IGFsbCkuDQo+Pg0KPj4gSSdtIGFibGUgdG8gcmVw
-cm9kdWNlIHRoaXMgd2l0aCBhIHRlc3QgYXBwbGljYXRpb25bMF0gdGhhdCBhcnRpZmljaWFsbHkN
-Cj4+IGNyZWF0ZXMgYSBoaWdoIENQVSBsb2FkIHRoZW4gYnkgcmVwZWF0ZWRseSBjaGVja2luZyBm
-b3IgdGhlIGFsbC0xcw0KPj4gdmFsdWVzIGZyb20gdGhlIExNODEgZGF0YXNoZWV0WzFdKHBhZ2Ug
-MTcpLiBUaGUgYWxsLTFzIHJlYWRpbmdzIHN0aWNrDQo+PiBvdXQgYXMgdGhleSBhcmUgb2J2aW91
-c2x5IGhpZ2hlciB0aGFuIHRoZSB2b2x0YWdlIHJhaWxzIHRoYXQgYXJlDQo+PiBjb25uZWN0ZWQg
-YW5kIGRpc2FncmVlIHdpdGggbWVhc3VyZW1lbnRzIHRha2VuIHdpdGggYSBtdWx0aW1ldGVyLg0K
-Pj4NCj4+IEhlcmUncyB0aGUgb3V0cHV0IGZyb20gbXkgZGV2aWNlDQo+Pg0KPj4gW3Jvb3RAbGlu
-dXhib3ggfl0jIGNwdWxvYWQgOTAmDQo+PiBbcm9vdEBsaW51eGJveCB+XSMgKHdoaWxlIHRydWU7
-IGRvIGNhdCAvc3lzL2NsYXNzL2h3bW9uL2h3bW9uMC9pbipfaW5wdXQNCj4+IHwgZ3JlcCAnMzMy
-MFx8NDM4M1x8NjY0MVx8MTU5MzBcfDM1ODYnOyBzbGVlcCAxOyBkb25lKSYNCj4+IDM1ODYNCj4+
-IDM1ODYNCj4+IGNhdDogcmVhZCBlcnJvcjogTm8gc3VjaCBkZXZpY2Ugb3IgYWRkcmVzcw0KPj4g
-Y2F0OiByZWFkIGVycm9yOiBObyBzdWNoIGRldmljZSBvciBhZGRyZXNzDQo+PiAzMzIwDQo+PiAz
-MzIwDQo+PiAzNTg2DQo+PiAzNTg2DQo+PiA2NjQxDQo+PiA2NjQxDQo+PiA0MzgzDQo+PiA0Mzgz
-DQo+Pg0KPj4gRnVuZGFtZW50YWxseSBJIHRoaW5rIHRoaXMgaXMgYSBwcm9ibGVtIHdpdGggdGhl
-IGZhY3QgdGhhdCB0aGUgTE04MSBpcw0KPj4gYW4gU01CdXMgZGV2aWNlIGJ1dCB0aGUgVDIwODAg
-KGFuZCBvdGhlciBGcmVlc2NhbGUgU29DcykgdXNlcyBpMmMgYW5kIHdlDQo+PiBlbXVsYXRlIFNN
-QnVzLiBJIHN1c3BlY3QgdGhlIGVycmFudCByZWFkaW5ncyBhcmUgd2hlbiB3ZSBkb24ndCBnZXQg
-cm91bmQNCj4+IHRvIGNvbXBsZXRpbmcgdGhlIHJlYWQgd2l0aGluIHRoZSB0aW1lb3V0IHNwZWNp
-ZmllZCBieSB0aGUgU01CdXMNCj4+IHNwZWNpZmljYXRpb24uIERlcGVuZGluZyBvbiB3aGVuIHRo
-YXQgaGFwcGVucyB3ZSBlaXRoZXIgZmFpbCB0aGUNCj4+IHRyYW5zZmVyIG9yIGludGVycHJldCB0
-aGUgcmVzdWx0IGFzIGFsbC0xcy4NCj4+DQo+IFRoYXQgaXMgcXVpdGUgdW5saWtlbHkuIE1hbnkg
-c2Vuc29yIGNoaXBzIGFyZSBTTUJ1cyBjaGlwcyBjb25uZWN0ZWQgdG8NCj4gaTJjIGJ1c3Nlcy4g
-SXQgaXMgbXVjaCBtb3JlIGxpa2VseSB0aGF0IHRoZXJlIGlzIGEgYnVnIGluIHRoZSBUMjA4MCBp
-MmMgZHJpdmVyLA0KPiB0aGF0IHRoZSBjaGlwIGRvZXNuJ3QgbGlrZSB0aGUgYnVsayByZWFkIGNv
-bW1hbmQgaXNzdWVkIHRocm91Z2ggcmVnbWFwLCB0aGF0DQo+IHRoZSBjaGlwIGhhcyBwcm9ibGVt
-cyB3aXRoIHRoZSBpMmMgYnVzIHNwZWVkLCBvciB0aGF0IHRoZSBpMmMgYnVzIGlzIG5vaXN5Lg0K
-UGVyaGFwcyBzb21ldGhpbmcgZ2V0cyB1cHNldCB3aGVuIGludGVycnVwdCBwcm9jZXNzaW5nIGlz
-IGRlbGF5ZWQgDQpiZWNhdXNlIG9mIENQVSBsb2FkLiBJIGRvbid0IHNlZSB0aGUgcHJvYmxlbSB3
-aGVuIHRoZXJlIGlzbid0IGEgQ1BVIGxvYWQgDQpzbyBJIHRoaW5rIHRoYXQgZWxpbWluYXRlcyBi
-b2FyZCBpc3N1ZXMuDQo+IEluIHRoaXMgY29udGV4dCwgdGhlICJObyBzdWNoIGRldmljZSBvciBh
-ZGRyZXNzIiByZXNwb25zZXMgYXJlIHZlcnkgc3VzcGljaW91cy4NCj4gVGhvc2UgYXJlIHJlcG9y
-dGVkIGJ5IHRoZSBpMmMgZHJpdmVyLCBub3QgYnkgdGhlIGh3bW9uIGRyaXZlciwgYW5kIHN1Z2dl
-c3QNCj4gdGhhdCB0aGUgY2hpcCBkaWQgbm90IHJlc3BvbmQgdG8gYSByZWFkIHJlcXVlc3QuIE1h
-eWJlIGl0IGhlbHBzIHRvIGVuYWJsZQ0KPiBkZWJ1Z2dpbmcgdG8gdGhlIGkyYyBkcml2ZXIgdG8g
-c2VlIGlmIGl0IHJlcG9ydHMgYW55dGhpbmcgdXNlZnVsLiBFdmVuDQo+IGJldHRlciBtaWdodCBi
-ZSB0byBjb25uZWN0IGFuIGkyYyBidXMgYW5hbHl6ZXIgdG8gdGhlIGkyYyBidXMgYW5kIGNoZWNr
-DQo+IHdoYXQgaXMgZ29pbmcgb24uDQpUaGF0J3MgZnJvbSAtRU5YSU8gd2hpY2ggaXMgdXNlZCBp
-biBvbmx5IG9uZSBwbGFjZSBpbiBpMmMtbXBjLmMuIEknbGwgDQplbmFibGUgc29tZSBkZWJ1ZyBh
-bmQgc2VlIHdoYXQgd2UgZ2V0Lg0KPg0KPiBHdWVudGVy
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    d310ec03 Merge tag 'perf-core-2021-02-17' of git://git.ker..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=108adb32d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2b8307379601586a
+dashboard link: https://syzkaller.appspot.com/bug?extid=779559d6503f3a56213d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12ad095cd00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+779559d6503f3a56213d@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+ODEBUG: init active (active state 0) object type: timer_list hint: sched_send_work+0x0/0x60 include/linux/list.h:135
+WARNING: CPU: 1 PID: 8649 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Modules linked in:
+CPU: 1 PID: 8649 Comm: syz-executor.0 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd 40 4c bf 89 4c 89 ee 48 c7 c7 40 40 bf 89 e8 64 79 fa 04 <0f> 0b 83 05 15 e0 ff 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
+RSP: 0018:ffffc900021df438 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
+RDX: ffff888020cd1bc0 RSI: ffffffff815b4c85 RDI: fffff5200043be79
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815ade9e R11: 0000000000000000 R12: ffffffff896d8ea0
+R13: ffffffff89bf4540 R14: ffffffff8161d660 R15: ffffffff900042b0
+FS:  00007f73bb69e700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7a4370f470 CR3: 000000001334a000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __debug_object_init+0x524/0xd10 lib/debugobjects.c:588
+ debug_timer_init kernel/time/timer.c:722 [inline]
+ debug_init kernel/time/timer.c:770 [inline]
+ init_timer_key+0x2d/0x340 kernel/time/timer.c:814
+ net_dm_trace_on_set net/core/drop_monitor.c:1111 [inline]
+ set_all_monitor_traces net/core/drop_monitor.c:1188 [inline]
+ net_dm_monitor_start net/core/drop_monitor.c:1295 [inline]
+ net_dm_cmd_trace+0x720/0x1220 net/core/drop_monitor.c:1339
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2348
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2402
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2435
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x465ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f73bb69e188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465ef9
+RDX: 0000000000000800 RSI: 0000000020000500 RDI: 0000000000000005
+RBP: 00007f73bb69e1d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 00007ffdb1c8cb0f R14: 00007f73bb69e300 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
