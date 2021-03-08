@@ -2,347 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4ED3309CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6CC3309CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbhCHIzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 03:55:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229730AbhCHIzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 03:55:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B1286512B;
-        Mon,  8 Mar 2021 08:55:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615193731;
-        bh=xeRiQVf63bgvMiO+oMrfKyo0hTZkH5wfH9/A0hwrA1Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ItPBu5yQtjiL34Pzy62badWBS2P1p1PXauvsdenEdbc0l++1ZexIsz8e0Ga1eV39d
-         9jmfGssAj7CKVset7kHh3bu6s6zMJG2NzlvJ9WMCJnkbPBm4RaLu/A0cKlShTXcmda
-         UhWEWjtRnQ67BHtNclIupI2v2SEfwF3S3yFK3whVkTeQgwXoO9SGLHA2DLYd0ga18R
-         fSVHCK7EkX/g5QKyhNwMTPXkcYnyXgw4UFOaRUM8xPTCavQTn6i1pjhCpaePrFrzgJ
-         P4IDlSgIRfjp2BbWhholKWL+HoZWpx4GfZ1RQtwgCGA9XPIgxoMjRGIFkjeImF3Mos
-         QnL2zRAHKhfOA==
-Date:   Mon, 8 Mar 2021 10:55:23 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC] mm: Enable generic pfn_valid() to handle early sections
- with memmap holes
-Message-ID: <YEXme5SI+GxsYli8@kernel.org>
-References: <1615174073-10520-1-git-send-email-anshuman.khandual@arm.com>
+        id S229697AbhCHI4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 03:56:41 -0500
+Received: from emcscan.emc.com.tw ([192.72.220.5]:36509 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhCHI43 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 03:56:29 -0500
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="39695777"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 08 Mar 2021 16:56:17 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(9041:0:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Mon, 08 Mar 2021 16:56:15 +0800 (CST)
+Received: from 192.168.33.11
+        by webmail.emc.com.tw with Mail2000 ESMTP Server V7.00(2472:3:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Mon, 08 Mar 2021 16:56:14 +0800 (CST)
+From:   "jingle" <jingle.wu@emc.com.tw>
+To:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>
+Cc:     "'linux-kernel'" <linux-kernel@vger.kernel.org>,
+        "'linux-input'" <linux-input@vger.kernel.org>,
+        "'phoenix'" <phoenix@emc.com.tw>,
+        "'dave.wang'" <dave.wang@emc.com.tw>,
+        "'josh.chen'" <josh.chen@emc.com.tw>
+References: <20210226073537.4926-1-jingle.wu@emc.com.tw> <YDx8M4Rhdi8hW4EO@google.com> <1614647097.9201.jingle.wu@emc.com.tw> <YEGBeWHRfL4gN9pX@google.com> <004f01d7115e$3ba005e0$b2e011a0$@emc.com.tw> <YEGJ7z479pqyBW1w@google.com> <005401d71161$ef9b20e0$ced162a0$@emc.com.tw> <YEWXcV62YpxbBp9P@google.com>
+In-Reply-To: <YEWXcV62YpxbBp9P@google.com>
+Subject: RE: [PATCH] Input: elan_i2c - Reduce the resume time for new dev ices
+Date:   Mon, 8 Mar 2021 16:56:14 +0800
+Message-ID: <005d01d713f8$e4b715a0$ae2540e0$@emc.com.tw>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615174073-10520-1-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AQGs01cKeSW+WSlGkCw6sJc3Mb/pawH5MxoQAdwxvXACK2QSBAIRtt8MAkDeqHgCB6X1vAJFybuVqllCnIA=
+Content-Language: zh-tw
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcMDYwMTFcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy0yMjRmZmM4OS03ZmVjLTExZWItOGUwZi1mMDc5NTk2OWU3NWVcYW1lLXRlc3RcMjI0ZmZjOGItN2ZlYy0xMWViLThlMGYtZjA3OTU5NjllNzVlYm9keS50eHQiIHN6PSI2OTMwIiB0PSIxMzI1OTY2NzM3Mzk3NjQ4NDEiIGg9IjJySndkL0J5eUNSOTIyQlc3TlcrVngrVDRWcz0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
+Hi Dmitry:
 
-On Mon, Mar 08, 2021 at 08:57:53AM +0530, Anshuman Khandual wrote:
-> Platforms like arm and arm64 have redefined pfn_valid() because their early
-> memory sections might have contained memmap holes caused by memblock areas
-> tagged with MEMBLOCK_NOMAP, which should be skipped while validating a pfn
-> for struct page backing. This scenario could be captured with a new option
-> CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES and then generic pfn_valid() can be
-> improved to accommodate such platforms. This reduces overall code footprint
-> and also improves maintainability.
+1. missing "i<" 
++	u32 quirks = 0;
++	int i;
++
++	for (i = 0; ARRAY_SIZE(elan_i2c_quirks); i++) {
 
-I wonder whether arm64 would still need to free parts of its memmap after
-the section size was reduced. Maybe the pain of arm64::pfn_valid() is not
-worth the memory savings anymore?
+-> for (i = 0; i<ARRAY_SIZE(elan_i2c_quirks); i++) {
 
-> Commit 4f5b0c178996 ("arm, arm64: move free_unused_memmap() to generic mm")
-> had used CONFIG_HAVE_ARCH_PFN_VALID to gate free_unused_memmap(), which in
-> turn had expanded its scope to new platforms like arc and m68k. Rather lets
-> restrict back the scope for free_unused_memmap() to arm and arm64 platforms
-> using this new config option i.e CONFIG_HAVE_EARLY_SECTION_MEMMAP.
-
-The whole point of 4f5b0c178996 was to let arc and m68k to free unused
-memory map with FLATMEM so they won't need DISCONTIGMEM or SPARSEMEM. So
-whatever implementation there will be for arm/arm64, please keep arc and
-m68k functionally intact.
+2. elan_resume () funtion are different with at Chromeos driver.
+@@ -1384,7 +1422,7 @@ static int __maybe_unused elan_resume(struct device
+*dev)
+ 		goto err;
+ 	}
  
-> While here, it exports the symbol memblock_is_map_memory() to build drivers
-> that depend on pfn_valid() but does not have the required visibility. After
-> this new config is in place, just drop CONFIG_HAVE_ARCH_PFN_VALID from both
-> arm and arm64 platforms.
->
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> This applies on 5.12-rc2 along with arm64 pfn_valid() fix patches [1] and
-> has been lightly tested on the arm64 platform. The idea to represent this
-> unique situation on the arm and arm64 platforms with a config option was
-> proposed by David H during an earlier discussion [2]. This still does not
-> build on arm platform due to pfn_valid() resolution errors. Nonetheless
-> wanted to get some early feedback whether the overall approach here, is
-> acceptable or not.
-> 
-> [1] https://patchwork.kernel.org/project/linux-mm/list/?series=442433 
-> [2] https://lore.kernel.org/linux-arm-kernel/4b282848-d2d7-6156-4726-ce974b2dff41@redhat.com/
-> 
->  arch/arm/Kconfig              |  2 +-
->  arch/arm/include/asm/page.h   |  4 ----
->  arch/arm/mm/init.c            | 13 -----------
->  arch/arm64/Kconfig            |  2 +-
->  arch/arm64/include/asm/page.h |  2 --
->  arch/arm64/mm/init.c          | 41 -----------------------------------
->  include/linux/mmzone.h        | 24 +++++++++++++++++++-
->  mm/Kconfig                    | 10 +++++++++
->  mm/memblock.c                 |  3 ++-
->  9 files changed, 37 insertions(+), 64 deletions(-)
-> 
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index 853aab5ab327..8b1d3089baa6 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -71,7 +71,6 @@ config ARM
->  	select HAVE_ARCH_KGDB if !CPU_ENDIAN_BE32 && MMU
->  	select HAVE_ARCH_KASAN if MMU && !XIP_KERNEL
->  	select HAVE_ARCH_MMAP_RND_BITS if MMU
-> -	select HAVE_ARCH_PFN_VALID
->  	select HAVE_ARCH_SECCOMP
->  	select HAVE_ARCH_SECCOMP_FILTER if AEABI && !OABI_COMPAT
->  	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
-> @@ -84,6 +83,7 @@ config ARM
->  	select HAVE_DMA_CONTIGUOUS if MMU
->  	select HAVE_DYNAMIC_FTRACE if !XIP_KERNEL && !CPU_ENDIAN_BE32 && MMU
->  	select HAVE_DYNAMIC_FTRACE_WITH_REGS if HAVE_DYNAMIC_FTRACE
-> +	select HAVE_EARLY_SECTION_MEMMAP_HOLES
->  	select HAVE_EFFICIENT_UNALIGNED_ACCESS if (CPU_V6 || CPU_V6K || CPU_V7) && MMU
->  	select HAVE_EXIT_THREAD
->  	select HAVE_FAST_GUP if ARM_LPAE
-> diff --git a/arch/arm/include/asm/page.h b/arch/arm/include/asm/page.h
-> index 11b058a72a5b..7e3189083bd7 100644
-> --- a/arch/arm/include/asm/page.h
-> +++ b/arch/arm/include/asm/page.h
-> @@ -153,10 +153,6 @@ extern void copy_page(void *to, const void *from);
->  
->  typedef struct page *pgtable_t;
->  
-> -#ifdef CONFIG_HAVE_ARCH_PFN_VALID
-> -extern int pfn_valid(unsigned long);
-> -#endif
-> -
->  #include <asm/memory.h>
->  
->  #endif /* !__ASSEMBLY__ */
-> diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-> index 828a2561b229..9131ef4e599e 100644
-> --- a/arch/arm/mm/init.c
-> +++ b/arch/arm/mm/init.c
-> @@ -121,19 +121,6 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max_low,
->  	free_area_init(max_zone_pfn);
->  }
->  
-> -#ifdef CONFIG_HAVE_ARCH_PFN_VALID
-> -int pfn_valid(unsigned long pfn)
-> -{
-> -	phys_addr_t addr = __pfn_to_phys(pfn);
-> -
-> -	if (__phys_to_pfn(addr) != pfn)
-> -		return 0;
-> -
-> -	return memblock_is_map_memory(addr);
-> -}
-> -EXPORT_SYMBOL(pfn_valid);
-> -#endif
-> -
->  static bool arm_memblock_steal_permitted = true;
->  
->  phys_addr_t __init arm_memblock_steal(phys_addr_t size, phys_addr_t align)
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 1f212b47a48a..2ee48bdf9dc1 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -144,7 +144,6 @@ config ARM64
->  	select HAVE_ARCH_KGDB
->  	select HAVE_ARCH_MMAP_RND_BITS
->  	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
-> -	select HAVE_ARCH_PFN_VALID
->  	select HAVE_ARCH_PREL32_RELOCATIONS
->  	select HAVE_ARCH_SECCOMP_FILTER
->  	select HAVE_ARCH_STACKLEAK
-> @@ -167,6 +166,7 @@ config ARM64
->  		if $(cc-option,-fpatchable-function-entry=2)
->  	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
->  		if DYNAMIC_FTRACE_WITH_REGS
-> +	select HAVE_EARLY_SECTION_MEMMAP_HOLES
->  	select HAVE_EFFICIENT_UNALIGNED_ACCESS
->  	select HAVE_FAST_GUP
->  	select HAVE_FTRACE_MCOUNT_RECORD
-> diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
-> index 012cffc574e8..635a030a3826 100644
-> --- a/arch/arm64/include/asm/page.h
-> +++ b/arch/arm64/include/asm/page.h
-> @@ -37,8 +37,6 @@ void copy_highpage(struct page *to, struct page *from);
->  
->  typedef struct page *pgtable_t;
->  
-> -extern int pfn_valid(unsigned long);
-> -
->  #include <asm/memory.h>
->  
->  #endif /* !__ASSEMBLY__ */
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 3685e12aba9b..2cba4347aef2 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -217,47 +217,6 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
->  	free_area_init(max_zone_pfns);
->  }
->  
-> -int pfn_valid(unsigned long pfn)
-> -{
-> -	phys_addr_t addr = PFN_PHYS(pfn);
-> -
-> -	/*
-> -	 * Ensure the upper PAGE_SHIFT bits are clear in the
-> -	 * pfn. Else it might lead to false positives when
-> -	 * some of the upper bits are set, but the lower bits
-> -	 * match a valid pfn.
-> -	 */
-> -	if (PHYS_PFN(addr) != pfn)
-> -		return 0;
-> -
-> -#ifdef CONFIG_SPARSEMEM
-> -{
-> -	struct mem_section *ms;
-> -
-> -	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
-> -		return 0;
-> -
-> -	ms = __pfn_to_section(pfn);
-> -	if (!valid_section(ms))
-> -		return 0;
-> -
-> -	/*
-> -	 * ZONE_DEVICE memory does not have the memblock entries.
-> -	 * memblock_is_map_memory() check for ZONE_DEVICE based
-> -	 * addresses will always fail. Even the normal hotplugged
-> -	 * memory will never have MEMBLOCK_NOMAP flag set in their
-> -	 * memblock entries. Skip memblock search for all non early
-> -	 * memory sections covering all of hotplug memory including
-> -	 * both normal and ZONE_DEVICE based.
-> -	 */
-> -	if (!early_section(ms))
-> -		return pfn_section_valid(ms, pfn);
-> -}
-> -#endif
-> -	return memblock_is_map_memory(addr);
-> -}
-> -EXPORT_SYMBOL(pfn_valid);
-> -
->  static phys_addr_t memory_limit = PHYS_ADDR_MAX;
->  
->  /*
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 47946cec7584..93532994113f 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -1409,8 +1409,23 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
->  }
->  #endif
->  
-> +bool memblock_is_map_memory(phys_addr_t addr);
-> +
->  #ifndef CONFIG_HAVE_ARCH_PFN_VALID
->  static inline int pfn_valid(unsigned long pfn)
-> +{
-> +	phys_addr_t addr = PFN_PHYS(pfn);
-> +
-> +	/*
-> +	 * Ensure the upper PAGE_SHIFT bits are clear in the
-> +	 * pfn. Else it might lead to false positives when
-> +	 * some of the upper bits are set, but the lower bits
-> +	 * match a valid pfn.
-> +	 */
-> +	if (PHYS_PFN(addr) != pfn)
-> +		return 0;
-> +
-> +#ifdef CONFIG_SPARSEMEM
->  {
->  	struct mem_section *ms;
->  
-> @@ -1423,7 +1438,14 @@ static inline int pfn_valid(unsigned long pfn)
->  	 * Traditionally early sections always returned pfn_valid() for
->  	 * the entire section-sized span.
->  	 */
-> -	return early_section(ms) || pfn_section_valid(ms, pfn);
-> +	if (early_section(ms))
-> +		return IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ?
-> +			memblock_is_map_memory(pfn << PAGE_SHIFT) : 1;
-> +
-> +	return pfn_section_valid(ms, pfn);
-> +}
-> +#endif
-> +	return 1;
->  }
->  #endif
->  
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index 24c045b24b95..0ec20f661b3f 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -135,6 +135,16 @@ config HAVE_FAST_GUP
->  config ARCH_KEEP_MEMBLOCK
->  	bool
->  
-> +config HAVE_EARLY_SECTION_MEMMAP_HOLES
-> +	depends on ARCH_KEEP_MEMBLOCK && SPARSEMEM_VMEMMAP
-> +	def_bool n
-> +	help
-> +	  Early sections on certain platforms might have portions which are
-> +	  not backed with struct page mapping as their memblock entries are
-> +	  marked with MEMBLOCK_NOMAP. When subscribed, this option enables
-> +	  specific handling for those memory sections in certain situations
-> +	  such as pfn_valid().
-> +
->  # Keep arch NUMA mapping infrastructure post-init.
->  config NUMA_KEEP_MEMINFO
->  	bool
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index afaefa8fc6ab..d9fa2e62ab7a 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -1744,6 +1744,7 @@ bool __init_memblock memblock_is_map_memory(phys_addr_t addr)
->  		return false;
->  	return !memblock_is_nomap(&memblock.memory.regions[i]);
->  }
-> +EXPORT_SYMBOL(memblock_is_map_memory);
->  
->  int __init_memblock memblock_search_pfn_nid(unsigned long pfn,
->  			 unsigned long *start_pfn, unsigned long *end_pfn)
-> @@ -1926,7 +1927,7 @@ static void __init free_unused_memmap(void)
->  	unsigned long start, end, prev_end = 0;
->  	int i;
->  
-> -	if (!IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) ||
-> +	if (!IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ||
->  	    IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
->  		return;
->  
-> -- 
-> 2.20.1
-> 
+-	error = elan_initialize(data);
++	error = elan_initialize(data, data->quirks &
+ETP_QUIRK_QUICK_WAKEUP);
+ 	if (error)
+ 		dev_err(dev, "initialize when resuming failed: %d\n",
+error);
 
--- 
-Sincerely yours,
-Mike.
+-> https://chromium.googlesource.com/chromiumos/third_party/kernel/+/ref
+-> s/heads/chromeos-5.4/drivers/input/mouse/elan_i2c_core.c#1434
+-> error = elan_initialize(data);  this code is in elan_reactivate()
+function at Chromeos driver.
+-> Will this change affect cherrypick from linux kernel to chromeos?
+
+THANKS
+JINGLE
+
+-----Original Message-----
+From: 'Dmitry Torokhov' [mailto:dmitry.torokhov@gmail.com] 
+Sent: Monday, March 08, 2021 11:18 AM
+To: jingle
+Cc: 'linux-kernel'; 'linux-input'; 'phoenix'; 'dave.wang'; 'josh.chen'
+Subject: Re: [PATCH] Input: elan_i2c - Reduce the resume time for new dev
+ices
+
+Hi Jingle,
+
+On Fri, Mar 05, 2021 at 09:50:35AM +0800, jingle wrote:
+> HI Dmitry:
+> 
+> 1. You mean to let all devices ignore skipping reset/sleep part of 
+> device initialization?
+> 2. The test team found that some old firmware will have errors 
+> (invalid report etc...), so ELAN can only ensure that the new device 
+> can meet the newer parts.
+
+I see. OK, fair enough.
+
+I would prefer if we were more explicit about when we skip resetting the
+device, what do you think about the version of your patch below?
+
+Thanks.
+
+--
+Dmitry
+
+
+Input: elan_i2c - reduce the resume time for new devices
+
+From: Jingle Wu <jingle.wu@emc.com.tw>
+
+Newer controllers, such as Voxel, Delbin, Magple, Bobba and others, do not
+need to be reset after issuing power-on command, and skipping reset saves
+at least 100ms from resume time.
+
+Note that if first attempt of re-initializing device fails we will not be
+skipping reset on the subsequent ones.
+
+Signed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
+Link: https://lore.kernel.org/r/20210226073537.4926-1-jingle.wu@emc.com.tw
+Patchwork-Id: 12105967
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ drivers/input/mouse/elan_i2c.h      |    5 +++
+ drivers/input/mouse/elan_i2c_core.c |   58
++++++++++++++++++++++++++++++------
+ 2 files changed, 53 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/input/mouse/elan_i2c.h b/drivers/input/mouse/elan_i2c.h
+index e12da5b024b0..838b3b346316 100644
+--- a/drivers/input/mouse/elan_i2c.h
++++ b/drivers/input/mouse/elan_i2c.h
+@@ -55,6 +55,11 @@
+ #define ETP_FW_PAGE_SIZE_512	512
+ #define ETP_FW_SIGNATURE_SIZE	6
+ 
++#define ETP_PRODUCT_ID_DELBIN	0x00C2
++#define ETP_PRODUCT_ID_VOXEL	0x00BF
++#define ETP_PRODUCT_ID_MAGPIE	0x0120
++#define ETP_PRODUCT_ID_BOBBA	0x0121
++
+ struct i2c_client;
+ struct completion;
+ 
+diff --git a/drivers/input/mouse/elan_i2c_core.c
+b/drivers/input/mouse/elan_i2c_core.c
+index bef73822315d..51a65f6bf1e3 100644
+--- a/drivers/input/mouse/elan_i2c_core.c
++++ b/drivers/input/mouse/elan_i2c_core.c
+@@ -46,6 +46,9 @@
+ #define ETP_FINGER_WIDTH	15
+ #define ETP_RETRY_COUNT		3
+ 
++/* quirks to control the device */
++#define ETP_QUIRK_QUICK_WAKEUP	BIT(0)
++
+ /* The main device structure */
+ struct elan_tp_data {
+ 	struct i2c_client	*client;
+@@ -90,8 +93,38 @@ struct elan_tp_data {
+ 	bool			baseline_ready;
+ 	u8			clickpad;
+ 	bool			middle_button;
++
++	u32			quirks;		/* Various quirks */
+ };
+ 
++static u32 elan_i2c_lookup_quirks(u16 ic_type, u16 product_id)
++{
++	static const struct {
++		u16 ic_type;
++		u16 product_id;
++		u32 quirks;
++	} elan_i2c_quirks[] = {
++		{ 0x0D, ETP_PRODUCT_ID_DELBIN, ETP_QUIRK_QUICK_WAKEUP },
++		{ 0x10, ETP_PRODUCT_ID_VOXEL, ETP_QUIRK_QUICK_WAKEUP },
++		{ 0x14, ETP_PRODUCT_ID_MAGPIE, ETP_QUIRK_QUICK_WAKEUP },
++		{ 0x14, ETP_PRODUCT_ID_BOBBA, ETP_QUIRK_QUICK_WAKEUP },
++	};
++	u32 quirks = 0;
++	int i;
++
++	for (i = 0; ARRAY_SIZE(elan_i2c_quirks); i++) {
++		if (elan_i2c_quirks[i].ic_type == ic_type &&
++		    elan_i2c_quirks[i].product_id == product_id) {
++			quirks = elan_i2c_quirks[i].quirks;
++		}
++	}
++
++	if (ic_type >= 0x0D && product_id >= 0x123)
++		quirks |= ETP_QUIRK_QUICK_WAKEUP;
++
++	return quirks;
++}
++
+ static int elan_get_fwinfo(u16 ic_type, u8 iap_version, u16
+*validpage_count,
+ 			   u32 *signature_address, u16 *page_size)
+ {
+@@ -258,16 +291,18 @@ static int elan_check_ASUS_special_fw(struct
+elan_tp_data *data)
+ 	return false;
+ }
+ 
+-static int __elan_initialize(struct elan_tp_data *data)
++static int __elan_initialize(struct elan_tp_data *data, bool skip_reset)
+ {
+ 	struct i2c_client *client = data->client;
+ 	bool woken_up = false;
+ 	int error;
+ 
+-	error = data->ops->initialize(client);
+-	if (error) {
+-		dev_err(&client->dev, "device initialize failed: %d\n",
+error);
+-		return error;
++	if (!skip_reset) {
++		error = data->ops->initialize(client);
++		if (error) {
++			dev_err(&client->dev, "device initialize failed:
+%d\n", error);
++			return error;
++		}
+ 	}
+ 
+ 	error = elan_query_product(data);
+@@ -311,16 +346,17 @@ static int __elan_initialize(struct elan_tp_data
+*data)
+ 	return 0;
+ }
+ 
+-static int elan_initialize(struct elan_tp_data *data)
++static int elan_initialize(struct elan_tp_data *data, bool skip_reset)
+ {
+ 	int repeat = ETP_RETRY_COUNT;
+ 	int error;
+ 
+ 	do {
+-		error = __elan_initialize(data);
++		error = __elan_initialize(data, skip_reset);
+ 		if (!error)
+ 			return 0;
+ 
++		skip_reset = false;
+ 		msleep(30);
+ 	} while (--repeat > 0);
+ 
+@@ -357,6 +393,8 @@ static int elan_query_device_info(struct elan_tp_data
+*data)
+ 	if (error)
+ 		return error;
+ 
++	data->quirks = elan_i2c_lookup_quirks(data->ic_type,
+data->product_id);
++
+ 	error = elan_get_fwinfo(data->ic_type, data->iap_version,
+ 				&data->fw_validpage_count,
+ 				&data->fw_signature_address,
+@@ -546,7 +584,7 @@ static int elan_update_firmware(struct elan_tp_data
+*data,
+ 		data->ops->iap_reset(client);
+ 	} else {
+ 		/* Reinitialize TP after fw is updated */
+-		elan_initialize(data);
++		elan_initialize(data, false);
+ 		elan_query_device_info(data);
+ 	}
+ 
+@@ -1247,7 +1285,7 @@ static int elan_probe(struct i2c_client *client,
+ 	}
+ 
+ 	/* Initialize the touchpad. */
+-	error = elan_initialize(data);
++	error = elan_initialize(data, false);
+ 	if (error)
+ 		return error;
+ 
+@@ -1384,7 +1422,7 @@ static int __maybe_unused elan_resume(struct device
+*dev)
+ 		goto err;
+ 	}
+ 
+-	error = elan_initialize(data);
++	error = elan_initialize(data, data->quirks &
+ETP_QUIRK_QUICK_WAKEUP);
+ 	if (error)
+ 		dev_err(dev, "initialize when resuming failed: %d\n",
+error);
+ 
+
