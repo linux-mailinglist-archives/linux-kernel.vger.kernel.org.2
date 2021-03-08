@@ -2,290 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AAD331491
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E81E233149A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhCHRVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 12:21:14 -0500
-Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:2180 "EHLO
-        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230116AbhCHRU7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:20:59 -0500
-Received: from pps.filterd (m0170389.ppops.net [127.0.0.1])
-        by mx0a-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 128GvOMN023505;
-        Mon, 8 Mar 2021 12:20:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=smtpout1;
- bh=g9E6PAbrhhI1LfNvNOsn6AwNsWET2U0veRINIAi3YYs=;
- b=vgh8sCCBLiRIWill63yemKmm1LmzU2N85FAlW7mdgmGCl2LadB/vVYg1YL0TcfMRxWn0
- rTqzxN3aWg3RI52SHaDR5saQPCc+NwM8y1FS9+UKVtDSqwhHkdiqOfk3ijIHXlPeIgUE
- 7svUMEH0hguwybU9kd9GhRf7w6Uk1gTC/0iBO4GSNXeYtGl6V6WN2lb82WFwSvd866I/
- MobCrGipVP2vkMIvjJ7ZvYULaV57G5fzXav8SC7h4lTG6nnsd8Nv7nv3dSLyzAbYoRMB
- LFDvKDLS03T1+nx749BBEpdUe9T3VABnvN7FOv83kbuHYqn5VPCMJlHfFLjCzozI87xA tg== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0a-00154904.pphosted.com with ESMTP id 3746mrnc2g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Mar 2021 12:20:56 -0500
-Received: from pps.filterd (m0134746.ppops.net [127.0.0.1])
-        by mx0a-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 128GxWEm172346;
-        Mon, 8 Mar 2021 12:20:56 -0500
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-        by mx0a-00154901.pphosted.com with ESMTP id 374qn1j6m6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Mar 2021 12:20:56 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KQLBBM9kZKuf/ws7BxcgffyZ12yjFK/tMCOTT0VJjihDl65LW1wqrBHer1jMrJ/SFE2xZlJCHGoQ0qwRtLBZoRhT+7o4wApmaxoCyhy0rtV1PfGkB1VqazM4ovh68cJMj+ZC5F5KY8rNRn44lrUivYQfqGwHo0mBMRkI5ndymIB5HmNyPnCqwoiTd7WINvP3HvZKbKuSYkLgkareL2ibrcQGcsLg5qzQxsqirfH9ihAHnVIIXIvuoBgmKB+7ulKRGHlCvGzfXaXMMNFy3iYjWj7ATklEuPLGn3c6IxpDc4IABchMD6C2FIvgZuKosoo6SU1oW61KLrEmtlketlWpaQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g9E6PAbrhhI1LfNvNOsn6AwNsWET2U0veRINIAi3YYs=;
- b=UvU4xkJEJe3RpUNYCAaPFs6m4rq0VJZhotLpkhg1Ck9wayTByLNg187BeCi79F3oS8/qTAlY9Gln2rEoGc/XWiTxb6pgwIqu75N+Vyb428kHdYrkPHxOB3O2zm1whYL/VRTkj5vXqbXkxSAU7WQOa6CYkaTsDHc7kORhZQVdub+jDDZv0Y4EB0vBJ4g/3afZAII6BsLDEWeBn8riRqbtCPcQfKCPd2upQnm4Gi2HQKb5mi3A/WoAsKViCVgLV4NboZl1tDlaVUVN/HoUCDDWH2cP0oyhiYTvlG07b5jAaH3nW1f3nWZ5+dB/4YrIoa2k5UeO0GY8ps70I3sNmFuKxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
- dkim=pass header.d=dell.com; arc=none
-Received: from SA1PR19MB4926.namprd19.prod.outlook.com (2603:10b6:806:1a6::18)
- by SN6PR1901MB1999.namprd19.prod.outlook.com (2603:10b6:805:10::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.28; Mon, 8 Mar
- 2021 17:20:51 +0000
-Received: from SA1PR19MB4926.namprd19.prod.outlook.com
- ([fe80::1c92:24d3:b11f:bc50]) by SA1PR19MB4926.namprd19.prod.outlook.com
- ([fe80::1c92:24d3:b11f:bc50%6]) with mapi id 15.20.3912.027; Mon, 8 Mar 2021
- 17:20:51 +0000
-From:   "Limonciello, Mario" <Mario.Limonciello@dell.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>,
-        "irenic.rajneesh@gmail.com" <irenic.rajneesh@gmail.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "sasha.neftin@intel.com" <sasha.neftin@intel.com>
-CC:     "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
-Subject: RE: [PATCH] platform/x86: intel_pmc: Ignore GBE LTR on Tiger Lake
- platforms
-Thread-Topic: [PATCH] platform/x86: intel_pmc: Ignore GBE LTR on Tiger Lake
- platforms
-Thread-Index: AQHXEfLhzYLSroQh8UmKnpvnJJhjqqp6Wj0A
-Date:   Mon, 8 Mar 2021 17:20:51 +0000
-Message-ID: <SA1PR19MB49261823693E915E7D646B07FA939@SA1PR19MB4926.namprd19.prod.outlook.com>
-References: <20210305190608.1834164-1-david.e.box@linux.intel.com>
-In-Reply-To: <20210305190608.1834164-1-david.e.box@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2021-03-08T17:20:07.5927632Z;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=944ee811-ef5c-4a5e-b04c-64056ad7416f;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=Dell.com;
-x-originating-ip: [76.251.167.31]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cc15a46e-e036-47e8-1887-08d8e256860f
-x-ms-traffictypediagnostic: SN6PR1901MB1999:
-x-microsoft-antispam-prvs: <SN6PR1901MB19991CFFE4B0F8BF4D8B28A4FA939@SN6PR1901MB1999.namprd19.prod.outlook.com>
-x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0T8ED2Ed+QdXZPGc6sAQkLAKfg9+tuEo13hQ+RUsMZYNnaMStvj4f15bcUHYG/4GI7c0tvABsvwaxu9OuIEtXVb4+Pqk4BWgJfFbhNlct4FvJecxoZwkwtXer9ylDUpi31sFAJWTI3ukeiXYpmDrqN0Mg6jxumS3TxDQC8W6iRS7xfTv38bKbaOPnLmNixobnf46sNLUUKbYKd6bsD/07Lr34d6hRrCv/z0SpNHtx8ZPUFEF7cdIRssAuw0LZAsXNWp0LC32xiEC1C8k3lxkg4P0vTSG/o6jSPry/RvgnQvncxSaK3DSyiO+N3+0GiW01YdEbrgso4n5TMPVXfJj7LxC1wnXw8fF3G6emFgEAClRmSEeLI2r3CED8AafA6y2qXi9V2OFoVx6uSa0ij9J9tw1CAClrVMOHmJLWudOL1HiKbVhtKvhqlZtdBsqVwcPvPxLlV+LMQxI1IxU4aFkd5jVb58wRAll7Ot1Mz/m+zUbN428v1EbJjSRwjmcxTmOPjI28P9LCrlaoHOv797icw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR19MB4926.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(52536014)(66446008)(64756008)(66556008)(8936002)(26005)(9686003)(5660300002)(7696005)(55016002)(2906002)(6506007)(498600001)(186003)(4326008)(8676002)(71200400001)(86362001)(66946007)(54906003)(76116006)(83380400001)(110136005)(33656002)(66476007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Q2WSmOS7HIOApIZv6wa7zIVCZtuwQStBVH271ev8cBA3CzsWPiCjZskO06Kv?=
- =?us-ascii?Q?7/bv4wiiizc/xJfBdUtWvhk5gHYt3/yhWytwemSK7L9i2zkb3l0vRDJmYP21?=
- =?us-ascii?Q?KLxo30lCoufKTMsk1v99K4T6LGTpDOUmpoV3L5+MtiVuBASYNiEZ3euxfLNZ?=
- =?us-ascii?Q?SLTRwk3yNSXEhiRlIhcHIWWh7m5G+lWsrcWL8CbLHRBi1OdC4+9aBnkyI5T/?=
- =?us-ascii?Q?/GoumgsII0ndCYHorDps2iaM6+lla5LTtHASXut+xIsPShs+mnIEfc1Qf6YY?=
- =?us-ascii?Q?Lf2K5foDGx2qEKH1m8Mv9BrAfgI8s+YcYX7Cf42s1KX9mTCpYw9erXuys8Xi?=
- =?us-ascii?Q?9Ewr8rU7yspCq4LNUjuzplrwswb1RZ7oUGu8mYijaU/wwsZFNCaY+5qnsKTb?=
- =?us-ascii?Q?dUUwFy3AEmA9bdAfnLfg3Ga2/dHGOS97vS23SVy0ARJHK695SbP0oCZ83cz5?=
- =?us-ascii?Q?HsaigZFUdT115j7xQUo2jMk4eRMW14ekp0L8tufu8NenM2YgdK549JToCLcG?=
- =?us-ascii?Q?YFiXfvOVN2SWOscznery+ISHesYeGEr7Hq/8iOfDZu/RVjpq4wplAdSC3mgT?=
- =?us-ascii?Q?KSBdOquFcYNC5MVJX70y6eVzeQGX0mQmMjyMh/O97EFKT/+w/NIoF/huyAul?=
- =?us-ascii?Q?3nDvrUh0stAM9QN/BvMuTeKaDQZV/NuxE1Sw/sV8HGdZlAzaAfhiJey0bXRQ?=
- =?us-ascii?Q?ISCnwTypzLiJkU9i9OoMYGwx2amU0KRcIRGMr+fgeeqZPj9Z92WMALMB7izR?=
- =?us-ascii?Q?N0wcYmsaI20SdNxsYsbp8lQjaY4JR4vyVZNIyzQo0Rfy3TGXygZArDsOvCUl?=
- =?us-ascii?Q?K58n30NtPIZcoryU/JGmaofasCktFutt5lGjjd62dQs6CXNbbByeg8f4R5Sl?=
- =?us-ascii?Q?I8agtHwyLUhphvGW1IuG4IZ33vqU7fR0IYmS0DQgSOKrFIp5etlh4vV3C6F5?=
- =?us-ascii?Q?yZx02aGTPsJuKS9p644BQi4mR0kCC0zJA1icIoZw7B3xMuggwI1NzeKvE90f?=
- =?us-ascii?Q?eTqqIzMh9bON5M5k05kJRIt9yqtNJm3Ov53JpirmNg7FfAxsdvuy3lPqKzxj?=
- =?us-ascii?Q?ThrvSNnI/KtYaMqtjTRf7WTtEneZDt1cywtnbuSVsZcYXTNm38PC6AJxa4Vw?=
- =?us-ascii?Q?Ok/QZEJ9x9xcRT/+K03KAMOLSfz/cjdPFll/j1JOyeibDtUbpzpDYnMFARKS?=
- =?us-ascii?Q?gHyuQDPbeAbavY1lAEOcLf1FCSU1WU5q8b0cuCTavGyxkrRXX3bQHM1XDIVj?=
- =?us-ascii?Q?cKa0FUP8UJJvur8nbnogXcW2ZcyrWgLLgE7YKAy9H5FUPG6/0aoW8ISXLMEd?=
- =?us-ascii?Q?8ByZU+mbGbuMGgczGlAEsKkp?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S230511AbhCHRWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:22:18 -0500
+Received: from mga03.intel.com ([134.134.136.65]:6750 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230301AbhCHRVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 12:21:49 -0500
+IronPort-SDR: UbgkGT9IRSG+Lolmy8HHJ7wpugYxleHGlHxsH/dpJWgvBx0FgUatPSauclF2wb25sx95Pq2WXu
+ 5YeMAXQP6mgQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="188121581"
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="188121581"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 09:21:48 -0800
+IronPort-SDR: PR9cYkJIz9YxvF4N3z3Sbz3bfOm9dckVQUfzFdGIl+JspCU0hEFdbOS6e4IDfWkfutDeyeve7g
+ 4On0VsWMaIhw==
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="447198966"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 09:21:46 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lJJZg-00Arp4-2q; Mon, 08 Mar 2021 19:21:44 +0200
+Date:   Mon, 8 Mar 2021 19:21:44 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>, stable@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>
+Subject: Re: [PATCH v2 1/1] pinctrl: intel: Show the GPIO base calculation
+ explicitly
+Message-ID: <YEZdKLY2loUg66Ti@smile.fi.intel.com>
+References: <20210308170842.88555-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Dell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR19MB4926.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc15a46e-e036-47e8-1887-08d8e256860f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Mar 2021 17:20:51.5672
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SCT0d7KimDwqfez1pqYJVcxiG0+xB/DZRtcLI9pvpybHPLBwkm5t0MzTkKWJalFmSlLtF8gA/RMlzGzoSPjy1hfuvL1ZFfUceDFA+l+mWeg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1901MB1999
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-08_14:2021-03-08,2021-03-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- clxscore=1011 lowpriorityscore=0 priorityscore=1501 adultscore=0
- mlxlogscore=999 malwarescore=0 phishscore=0 impostorscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103080091
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 spamscore=0
- mlxlogscore=999 phishscore=0 adultscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103080091
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308170842.88555-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> [EXTERNAL EMAIL]
->=20
-> Due to a HW limitation, the Latency Tolerance Reporting (LTR) value
-> programmed in the Tiger Lake GBE controller is not large enough to allow
-> the platform to enter Package C10, which in turn prevents the platform fr=
-om
-> achieving its low power target during suspend-to-idle.  Ignore the GBE LT=
-R
-> value on Tiger Lake. LTR ignore functionality is currently performed sole=
-ly
-> by a debugfs write call. Split out the LTR code into its own function tha=
-t
-> can be called by both the debugfs writer and by this work around.
->=20
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Reviewed-by: Sasha Neftin <sasha.neftin@intel.com>
-> Cc: intel-wired-lan@lists.osuosl.org
+On Mon, Mar 08, 2021 at 07:08:42PM +0200, Andy Shevchenko wrote:
+> During the split of intel_pinctrl_add_padgroups(), the _by_size() variant
+> missed the GPIO base calculations and hence made unable to retrieve proper
+> GPIO number.
+> 
+> Assign the gpio_base explicitly in _by_size() variant.
+> 
+> While at it, differentiate NOMAP case with the rest in _by_gpps() variant.
+
+Meanwhile pushed to my review and testing queue, thanks!
+
+> Fixes: 036e126c72eb ("pinctrl: intel: Split intel_pinctrl_add_padgroups() for better maintenance")
+> Reported-and-tested-by: Maximilian Luz <luzmaximilian@gmail.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 > ---
->  drivers/platform/x86/intel_pmc_core.c | 55 ++++++++++++++++++++-------
->  1 file changed, 42 insertions(+), 13 deletions(-)
+> v2: added tag and Cc'ed to stable@ (Mika)
+>  drivers/pinctrl/intel/pinctrl-intel.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
+> index 8085782cd8f9..7283203861ae 100644
+> --- a/drivers/pinctrl/intel/pinctrl-intel.c
+> +++ b/drivers/pinctrl/intel/pinctrl-intel.c
+> @@ -1357,6 +1357,7 @@ static int intel_pinctrl_add_padgroups_by_gpps(struct intel_pinctrl *pctrl,
+>  				gpps[i].gpio_base = 0;
+>  				break;
+>  			case INTEL_GPIO_BASE_NOMAP:
+> +				break;
+>  			default:
+>  				break;
+>  		}
+> @@ -1393,6 +1394,7 @@ static int intel_pinctrl_add_padgroups_by_size(struct intel_pinctrl *pctrl,
+>  		gpps[i].size = min(gpp_size, npins);
+>  		npins -= gpps[i].size;
+>  
+> +		gpps[i].gpio_base = gpps[i].base;
+>  		gpps[i].padown_num = padown_num;
+>  
+>  		/*
+> -- 
+> 2.30.1
+> 
 
-I feel like this driver change causes a weak reference between e1000e and i=
-ntel_pmc_core.
-It would mean significantly different behavior if you use e1000e but don't =
-have PMC module
-available for any reason.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-In this case does it maybe make sense to at least use "imply" in the Kconfi=
-g for e1000e so
-that selecting e1000e gets intel-pmc-core enabled too?
-
->=20
-> diff --git a/drivers/platform/x86/intel_pmc_core.c
-> b/drivers/platform/x86/intel_pmc_core.c
-> index ee2f757515b0..ab31eb646a1a 100644
-> --- a/drivers/platform/x86/intel_pmc_core.c
-> +++ b/drivers/platform/x86/intel_pmc_core.c
-> @@ -863,34 +863,45 @@ static int pmc_core_pll_show(struct seq_file *s, vo=
-id
-> *unused)
->  }
->  DEFINE_SHOW_ATTRIBUTE(pmc_core_pll);
->=20
-> -static ssize_t pmc_core_ltr_ignore_write(struct file *file,
-> -					 const char __user *userbuf,
-> -					 size_t count, loff_t *ppos)
-> +static int pmc_core_write_ltr_ignore(u32 value)
->  {
->  	struct pmc_dev *pmcdev =3D &pmc;
->  	const struct pmc_reg_map *map =3D pmcdev->map;
-> -	u32 val, buf_size, fd;
-> -	int err;
-> -
-> -	buf_size =3D count < 64 ? count : 64;
-> -
-> -	err =3D kstrtou32_from_user(userbuf, buf_size, 10, &val);
-> -	if (err)
-> -		return err;
-> +	u32 fd;
-> +	int err =3D 0;
->=20
->  	mutex_lock(&pmcdev->lock);
->=20
-> -	if (val > map->ltr_ignore_max) {
-> +	if (fls(value) > map->ltr_ignore_max) {
->  		err =3D -EINVAL;
->  		goto out_unlock;
->  	}
->=20
->  	fd =3D pmc_core_reg_read(pmcdev, map->ltr_ignore_offset);
-> -	fd |=3D (1U << val);
-> +	fd |=3D value;
->  	pmc_core_reg_write(pmcdev, map->ltr_ignore_offset, fd);
->=20
->  out_unlock:
->  	mutex_unlock(&pmcdev->lock);
-> +
-> +	return err;
-> +}
-> +
-> +static ssize_t pmc_core_ltr_ignore_write(struct file *file,
-> +					 const char __user *userbuf,
-> +					 size_t count, loff_t *ppos)
-> +{
-> +	u32 buf_size, val;
-> +	int err;
-> +
-> +	buf_size =3D count < 64 ? count : 64;
-> +
-> +	err =3D kstrtou32_from_user(userbuf, buf_size, 10, &val);
-> +	if (err)
-> +		return err;
-> +
-> +	err =3D pmc_core_write_ltr_ignore(1U << val);
-> +
->  	return err =3D=3D 0 ? count : err;
->  }
->=20
-> @@ -1189,6 +1200,15 @@ static int quirk_xtal_ignore(const struct dmi_syst=
-em_id
-> *id)
->  	return 0;
->  }
->=20
-> +static int quirk_ltr_ignore(u32 val)
-> +{
-> +	int err;
-> +
-> +	err =3D pmc_core_write_ltr_ignore(val);
-> +
-> +	return err;
-> +}
-> +
->  static const struct dmi_system_id pmc_core_dmi_table[]  =3D {
->  	{
->  	.callback =3D quirk_xtal_ignore,
-> @@ -1244,6 +1264,15 @@ static int pmc_core_probe(struct platform_device *=
-pdev)
->  	pmcdev->pmc_xram_read_bit =3D pmc_core_check_read_lock_bit();
->  	dmi_check_system(pmc_core_dmi_table);
->=20
-> +	/*
-> +	 * On TGL, due to a hardware limitation, the GBE LTR blocks PC10 when
-> +	 * a cable is attached. Tell the PMC to ignore it.
-> +	 */
-> +	if (pmcdev->map =3D=3D &tgl_reg_map) {
-> +		dev_dbg(&pdev->dev, "ignoring GBE LTR\n");
-> +		quirk_ltr_ignore(1U << 3);
-> +	}
-> +
->  	pmc_core_dbgfs_register(pmcdev);
->=20
->  	device_initialized =3D true;
-> --
-> 2.25.1
 
