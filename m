@@ -2,71 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC68331036
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A26331041
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbhCHN5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 08:57:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229899AbhCHN5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 08:57:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC31E65100;
-        Mon,  8 Mar 2021 13:57:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615211849;
-        bh=If5x3HN/M8OLBSjsY63p6B1WFvmGwPJvtPWrHlYgbBE=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=efTKRUDNcG8eD7VYyt1H1fGSPnt793HUxO6ERVLOHlYOA8QmSmWJ68CW3meth6SBm
-         BPJn3XwHmIi/klnir5PqB29WaTnHjYziGDhqzEXUQmJYGo9RUL81AUfSThPd3lvhWC
-         YoQOTWX2hxrKOrTH7oCGFZs4YHcb2fTPTQPE3GY9LXE5eDTmwP5s2KnwQ79r5omXzx
-         1mAbHG7ni2we9AmJ6mZgl4ZhXg89cyzRgd2s/OOhyzX/1p/mn8erVzCFMmM/sVMyBd
-         LDOfDsiuwHqr0zZrIUlvlOMzN+i9nWPj90prOL86VGK7koIELNzI7Mrk9Y2xnyJVU9
-         xm6Kv+OzJrWKg==
-Date:   Mon, 8 Mar 2021 14:57:27 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-cc:     benjamin.tissoires@redhat.com, rydberg@bitmath.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] HID: wacom: Assign boolean values to a bool variable
-In-Reply-To: <1611128070-59752-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Message-ID: <nycvar.YFH.7.76.2103081457220.12405@cbobk.fhfr.pm>
-References: <1611128070-59752-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S229646AbhCHN7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 08:59:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229528AbhCHN7X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 08:59:23 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC97C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 05:59:23 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id u20so9965167iot.9
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 05:59:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RrfFrVlJXrD0qlVjZppxY1yxenrTchbettf2aSdQaoQ=;
+        b=UHirQizG++bUj/EOjI+wCV2Ab1bzTkXKpjtnVK6ONN0TS+vXlx/IX7v0k4YLWbRmTq
+         QRTiyF1XAsBx4l+SKdGcwdlXr9B6S2o6UiOb4QKgzHeuK3nwh9QFbYylp/9LxyGkmkeS
+         jXP+YNL5ThIBd/tUO/yAZXqHb6WfCs2tZExjy2jWGSp3hIPq5nC6RRZKOoShw7GdLxoe
+         7r1CJHaBsU3uTQnW0oRPxINy07kxCUWuXAL+FHF32qBeJWexXDORUlLoIXJyjCE98MCY
+         NRQyBwt8zGiaX3W90kD/HjWjAeKoXkviB2CYQGMeJkz8wIOXEqSUzWfej+04w/Q7/XJf
+         EPCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RrfFrVlJXrD0qlVjZppxY1yxenrTchbettf2aSdQaoQ=;
+        b=UwPE0oWEdlNTrZtvg+ggCE4RFWUm4txS/vt1QMRxsKwC7ZBlt8yVH7XOGPRYmZlm4V
+         vA85eg3/PtGnhHHf8pHftFOFeZ7OsGq+b7Zs1xFk5zUZ/g5m2OPdSrsvLQ6SlkEFpVXI
+         wK7g0D75xMkmEbfCw52y+CRQRhb9AD5vPBL/zM+xWq/q30lL102Qum/1veXZw36F0LE0
+         J0csMGBA/uXTUyrWac/Vv7hzwtTCLH0EKf0MZrYwHBJaKlwA1v6dcc+0i5ykP9sXc2s9
+         fLRl4oojlixHXfAdzfdWAvcG7FjA6P/NV0BaqSe/Zf86N1ZjGq/aWKRCxWQEaR4+94WG
+         MElQ==
+X-Gm-Message-State: AOAM532JzW62nTpTVhL4b5MsabCNkQZjnkdUPxw9RpE1PcfMjk9dtGmH
+        05nNhUZqxk9+uJxktZBxtW33LA==
+X-Google-Smtp-Source: ABdhPJzm3b7hFrpCi3p3+IRNVknzQES2Mgs6fipheAGA/fi/jiGjK3ASQFSsSkWL+gAHYiuTwD6Q1Q==
+X-Received: by 2002:a02:294e:: with SMTP id p75mr23126028jap.34.1615211962310;
+        Mon, 08 Mar 2021 05:59:22 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id v19sm6261456ilj.60.2021.03.08.05.59.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Mar 2021 05:59:21 -0800 (PST)
+Subject: Re: [PATCH net-next v2 6/6] net: qualcomm: rmnet: don't use C
+ bit-fields in rmnet checksum header
+To:     David Laight <David.Laight@ACULAB.COM>,
+        "subashab@codeaurora.org" <subashab@codeaurora.org>,
+        "stranche@codeaurora.org" <stranche@codeaurora.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>
+Cc:     "sharathv@codeaurora.org" <sharathv@codeaurora.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "evgreen@chromium.org" <evgreen@chromium.org>,
+        "cpratapa@codeaurora.org" <cpratapa@codeaurora.org>,
+        "elder@kernel.org" <elder@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+References: <20210306031550.26530-1-elder@linaro.org>
+ <20210306031550.26530-7-elder@linaro.org>
+ <498c301f517749fdbc9d3ff5529d71a6@AcuMS.aculab.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <cc8e3bb0-81f0-070b-5b70-342dc172a1a2@linaro.org>
+Date:   Mon, 8 Mar 2021 07:59:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <498c301f517749fdbc9d3ff5529d71a6@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021, Jiapeng Zhong wrote:
-
-> Fix the following coccicheck warnings:
+On 3/8/21 4:18 AM, David Laight wrote:
+> From: Alex Elder
+>> Sent: 06 March 2021 03:16
+>>
+>> Replace the use of C bit-fields in the rmnet_map_ul_csum_header
+>> structure with a single two-byte (big endian) structure member,
+>> and use field masks to encode or get values within it.
+>>
+>> Previously rmnet_map_ipv4_ul_csum_header() would update values in
+>> the host byte-order fields, and then forcibly fix their byte order
+>> using a combination of byte order operations and types.
+>>
+>> Instead, just compute the value that needs to go into the new
+>> structure member and save it with a simple byte-order conversion.
+>>
+>> Make similar simplifications in rmnet_map_ipv6_ul_csum_header().
+>>
+>> Finally, in rmnet_map_checksum_uplink_packet() a set of assignments
+>> zeroes every field in the upload checksum header.  Replace that with
+>> a single memset() operation.
+>>
+>> Signed-off-by: Alex Elder <elder@linaro.org>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> ---
+>> v2: Fixed to use u16_encode_bits() instead of be16_encode_bits().
+>>
+>>   .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 34 ++++++-------------
+>>   include/linux/if_rmnet.h                      | 21 ++++++------
+>>   2 files changed, 21 insertions(+), 34 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+>> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+>> index 29d485b868a65..b76ad48da7325 100644
+>> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+>> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+>> @@ -198,23 +198,19 @@ rmnet_map_ipv4_ul_csum_header(void *iphdr,
+>>   			      struct rmnet_map_ul_csum_header *ul_header,
+>>   			      struct sk_buff *skb)
+>>   {
+>> -	__be16 *hdr = (__be16 *)ul_header;
+>>   	struct iphdr *ip4h = iphdr;
+>>   	u16 offset;
+>> +	u16 val;
+>>
+>>   	offset = skb_transport_header(skb) - (unsigned char *)iphdr;
+>>   	ul_header->csum_start_offset = htons(offset);
+>>
+>> -	ul_header->csum_insert_offset = skb->csum_offset;
+>> -	ul_header->csum_enabled = 1;
+>> +	val = u16_encode_bits(1, MAP_CSUM_UL_ENABLED_FMASK);
+>>   	if (ip4h->protocol == IPPROTO_UDP)
+>> -		ul_header->udp_ind = 1;
+>> -	else
+>> -		ul_header->udp_ind = 0;
+>> +		val |= u16_encode_bits(1, MAP_CSUM_UL_UDP_FMASK);
+>> +	val |= u16_encode_bits(skb->csum_offset, MAP_CSUM_UL_OFFSET_FMASK);
+>>
+>> -	/* Changing remaining fields to network order */
+>> -	hdr++;
+>> -	*hdr = htons((__force u16)*hdr);
+>> +	ul_header->csum_info = htons(val);
 > 
-> ./drivers/hid/wacom_wac.c:2536:2-6: WARNING: Assignment of
-> 0/1 to bool variable.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-> ---
->  drivers/hid/wacom_wac.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hid/wacom_wac.c b/drivers/hid/wacom_wac.c
-> index 1bd0eb7..62b0f71 100644
-> --- a/drivers/hid/wacom_wac.c
-> +++ b/drivers/hid/wacom_wac.c
-> @@ -2533,7 +2533,7 @@ static void wacom_wac_finger_slot(struct wacom_wac *wacom_wac,
->  	    !wacom_wac->shared->is_touch_on) {
->  		if (!wacom_wac->shared->touch_down)
->  			return;
-> -		prox = 0;
-> +		prox = false;
->  	}
+> Isn't this potentially misaligned?
 
-Applied, thanks.
+At first I thought you were talking about column alignment.
 
--- 
-Jiri Kosina
-SUSE Labs
+The short answer:  Yes (at least it's possible)!  And
+that's a problem elsewhere in the driver.  I noticed
+that before and confirmed that unaligned accesses *do*
+occur in this driver.
+
+I would want to fix that comprehensively (and separate
+from this patch), and not just in this one spot.  I have
+not done it because I am not set up to readily test the
+change; unaligned access does not cause a fault on aarch64
+(or at least on the platforms I'm using).
+
+Sort of related, I have been meaning to eliminate the
+pointless __aligned(1) tags on rmnet structures defined
+in <linux/if_rmnet.h>.  It wouldn't hurt to use __packed,
+though I think they're all 4 or 8 bytes naturally anyway.
+Perhaps marking them __aligned(4) would help identify
+potential unaligned accesses?
+
+Anyway, assuming you're not talking about tab stops, yes
+it's possible this assignment is misaligned.  But it's a
+bigger problem than what you point out.  I will take this
+as a sign that I'm not the only one who has this concern,
+meaning I should maybe bump the priority on getting this
+alignment thing fixed.
+
+					-Alex
+
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+> 
 
