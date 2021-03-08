@@ -2,121 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142C7331903
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 876EF331902
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhCHVDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 16:03:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58216 "EHLO
+        id S230511AbhCHVDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 16:03:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbhCHVCh (ORCPT
+        with ESMTP id S229446AbhCHVCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 16:02:37 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692C3C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 13:02:37 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id lr10-20020a17090b4b8ab02900dd61b95c5eso1469616pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 13:02:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qVM6aF4+Z0E3PMKrGgvJCjoVZqdQ6xy0HWF9QbJkCLk=;
-        b=RlT5RTElqPa03A8arxVZr3DBMCMCnALPaHiCl6JWLxVKLtkGPv/+ROmOk0tYmq2LOR
-         jxRIU7Oiix/MS2fSCfawkOSKFw4z7nrqaHKK4YufTdVVl+9nSO3Vn6sEx2nI7CKdyJst
-         8xI3so0PhxkzuTwMLYHI1k6T++aWZmMkr2RcVCddGMMz4qTDRvBhMfAxMgvopE/DSRIw
-         CO4anmzLPvzN4UgaOx5+yBiONIkvfxWizbzQGhIo/MwEggk38+NVyhfUJvNatR7cMgbq
-         C7qQ1Ca8ZhBNsAUtlbM6+dAS7xTJlBcBzGURCC7kZPDLiKeAv7/3m+w1EGIF2TDj4gVR
-         SGCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qVM6aF4+Z0E3PMKrGgvJCjoVZqdQ6xy0HWF9QbJkCLk=;
-        b=nJDVaVXaNoPjiPEyVdWfuoTwvXDOKP1eXxO5GZq3zqWQiiMyiWsqHIwnockg/L493J
-         ow90tyF4iNzAP/W7DDhFeGKsm42FRJO+DZpM8KmAsa77yhxW/SaZhiUrJ4CSLLSYrMTn
-         wRaNme3O8id/mbzQqoYMBHRJRXmIsVinT1AK5BCNOmhLO7vhYmnA2rqdCw03opXDYKrv
-         Hde1n2MXPhQ3z85muGPQGZ1KLahG0KM0TjEistPxeSE4qtLB3TrIfoE62rYS0GxAfta9
-         7PBxpXCqBjCMS1DgG/0+wxMNb/KCoowYd/JUXKDhYtiSJJEOEHDKYZ66wYb6wmjgygL1
-         UySg==
-X-Gm-Message-State: AOAM5311xMVoeiflkpzJqsZeyZJhfE3RZ0GHvr6RgUuZmeZQyzwDdRii
-        6CDI6io7XHHJyBsOG8nJAn2VYYKdnAXcida/cxC4Mg==
-X-Google-Smtp-Source: ABdhPJyLdMAXvzF8zJTJyhVhLwce0bXWxv7Hn2L0ZQO4cpRHP+UUi199V4TYicINA1bULiEGm6p7h/Zvc/rdxF1ZQYY=
-X-Received: by 2002:a17:902:8641:b029:e4:7e05:c916 with SMTP id
- y1-20020a1709028641b02900e47e05c916mr21769229plt.57.1615237356824; Mon, 08
- Mar 2021 13:02:36 -0800 (PST)
+        Mon, 8 Mar 2021 16:02:35 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E550DC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 13:02:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=C0RDcISmL6coxbn097zV9gfcDqq0luPUdtiKEigF4hQ=; b=N2VsIT+wdPNzR/tbA29Er6XDgl
+        Q+jIPHVEHrMW+PZLmIr0LhJ/vclfPxgkoJ0nX1NkCHkRpRr3L2oInFOKkLyAZ6CkITFcnx+qiZT6p
+        DE6c3AptaPEv9T0PU8yx/ci3Uxm7CqUFalaKcmZVRQGF1IM9Lep0v4OPr0b/I47UmwRttDuFo10Iy
+        RUSpXaLLQhCTKOHAR9XPBQc3jMhWuor+3Cxo/sStzTOFi11I2dXOS2XRpQ1I9onVixONeXEwsvoN6
+        A0S98AKgeY/kEMkrvrRqiObRAM4LjAEEt1tDe2yOKkjY8r1dTaOTOr4Zqw20UKbPzxRN2uoeKldOz
+        xMvtwT+A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lJN1F-00GGAq-Gz; Mon, 08 Mar 2021 21:02:30 +0000
+Date:   Mon, 8 Mar 2021 21:02:25 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Zhou Guanghui <zhouguanghui1@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, mhocko@suse.com, hannes@cmpxchg.org,
+        hughd@google.com, kirill.shutemov@linux.intel.com,
+        npiggin@gmail.com, ziy@nvidia.com, wangkefeng.wang@huawei.com,
+        guohanjun@huawei.com, dingtianhong@huawei.com,
+        chenweilong@huawei.com, rui.xiang@huawei.com
+Subject: Re: [PATCH v2 2/2] mm/memcg: set memcg when split page
+Message-ID: <20210308210225.GF3479805@casper.infradead.org>
+References: <20210304074053.65527-1-zhouguanghui1@huawei.com>
+ <20210304074053.65527-3-zhouguanghui1@huawei.com>
 MIME-Version: 1.0
-References: <20210308161434.33424-1-vincenzo.frascino@arm.com>
-In-Reply-To: <20210308161434.33424-1-vincenzo.frascino@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon, 8 Mar 2021 22:02:25 +0100
-Message-ID: <CAAeHK+xEc8spQWh9Mz7z-mVQRavD2y84ufnGx6cm-gK3AkJfAw@mail.gmail.com>
-Subject: Re: [PATCH v14 0/8] arm64: ARMv8.5-A: MTE: Add async mode support
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304074053.65527-3-zhouguanghui1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 5:14 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
->
-> This patchset implements the asynchronous mode support for ARMv8.5-A
-> Memory Tagging Extension (MTE), which is a debugging feature that allows
-> to detect with the help of the architecture the C and C++ programmatic
-> memory errors like buffer overflow, use-after-free, use-after-return, etc.
->
-> MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
-> (Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
-> subset of its address space that is multiple of a 16 bytes granule. MTE
-> is based on a lock-key mechanism where the lock is the tag associated to
-> the physical memory and the key is the tag associated to the virtual
-> address.
-> When MTE is enabled and tags are set for ranges of address space of a task,
-> the PE will compare the tag related to the physical memory with the tag
-> related to the virtual address (tag check operation). Access to the memory
-> is granted only if the two tags match. In case of mismatch the PE will raise
-> an exception.
->
-> The exception can be handled synchronously or asynchronously. When the
-> asynchronous mode is enabled:
->   - Upon fault the PE updates the TFSR_EL1 register.
->   - The kernel detects the change during one of the following:
->     - Context switching
->     - Return to user/EL0
->     - Kernel entry from EL1
->     - Kernel exit to EL1
->   - If the register has been updated by the PE the kernel clears it and
->     reports the error.
->
-> The series is based on linux-next/akpm.
->
-> To simplify the testing a tree with the new patches on top has been made
-> available at [1].
->
-> [1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v12.async.akpm
+On Thu, Mar 04, 2021 at 07:40:53AM +0000, Zhou Guanghui wrote:
+> As described in the split_page function comment, for the non-compound
+> high order page, the sub-pages must be freed individually. If the
+> memcg of the fisrt page is valid, the tail pages cannot be uncharged
+> when be freed.
+> 
+> For example, when alloc_pages_exact is used to allocate 1MB continuous
+> physical memory, 2MB is charged(kmemcg is enabled and __GFP_ACCOUNT is
+> set). When make_alloc_exact free the unused 1MB and free_pages_exact
+> free the applied 1MB, actually, only 4KB(one page) is uncharged.
+> 
+> Therefore, the memcg of the tail page needs to be set when split page.
 
-Hi Vincenzo,
+There's another place we need to do this to ...
 
-As previously discussed, here's the tree with tests support added to
-this series:
++++ b/mm/page_alloc.c
+@@ -5081,9 +5081,15 @@ void __free_pages(struct page *page, unsigned int order)
+ {
+        if (put_page_testzero(page))
+                free_the_page(page, order);
+-       else if (!PageHead(page))
+-               while (order-- > 0)
+-                       free_the_page(page + (1 << order), order);
++       else if (!PageHead(page)) {
++               while (order-- > 0) {
++                       struct page *tail = page + (1 << order);
++#ifdef CONFIG_MEMCG
++                       tail->memcg_data = page->memcg_data;
++#endif
++                       free_the_page(tail, order);
++               }
++       }
+ }
+ EXPORT_SYMBOL(__free_pages);
+ 
 
-https://github.com/xairy/linux/tree/vf-v12.async.akpm-tests
-
-Please take a look at the last two patches. Feel free to include them
-into v15 if they look good.
-
-Thanks!
+I wonder if we shouldn't initialise memcg_data on all subsequent pages
+of non-compound allocations instead?  Because I'm not sure this is the
+only place that needs to be fixed.
