@@ -2,89 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E74331055
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D63E3331058
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhCHOEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 09:04:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbhCHOEo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:04:44 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBF5C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 06:04:44 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so917059wmj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 06:04:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=oI6X2MifW0N1KwImsVj+ePRWB3MSjLj4erm+zxgelkc=;
-        b=XVQf3UFOHOTd9CQ30QMqYSt5hbJr64Ndyglt6OHyBhKrkp1rca+y2cd3MyDIutMUH2
-         pvaMccQnEeAoODb+J8REZZelxhYX6r4E10+TO+24wojw4u56YzBqmIDdrpJ16AFCl0mj
-         QjyzF0LMJIMN47NV83DRmfeU2H5ywDby5nRUVeCeWq+qQqehqADGnG+BidpQuxvrtMnG
-         hHieEqlAfhQ5GZSpDp2YAN07Dr8J+aJaWD0Jhvvu9CZ7Uexs4LfJAjDxig6Ntr/KXhcU
-         MEWL6jLx7lqG63PDIvzTvFb/AYezqpzCjSfXNsR5UsPkMZr7mgCdgbbj1i2X1lQuykUp
-         nzyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=oI6X2MifW0N1KwImsVj+ePRWB3MSjLj4erm+zxgelkc=;
-        b=eH03IdN/25nsDvJDoLV0081nAgcx41GQom1qxxttDAlAAK5aahz3YrQ44i19e8J3Ti
-         YEA8dKHuvtJ/lZbjYCD7tMW9P1wpDapWrVHH2HpW7eX/wXedo9L6bbwm5L7jXXxV3HaP
-         8R+cYSSnCwRKA6TxAJym40pMFiC/0BsxFohOeWiawWoxVTi10wwl/YF4ggvu/ogqp/5c
-         UMwUf/zSO+xmZb5aKitjGSuXJoQiiE3rnQmDdlY7FX4bNiTjPas7XXsBUp06HphsGZ3b
-         2sNAgZDxhGOL6Ofw4mxJVa/H8bhvfvlfRlETWtUvfNt0NSjr88ey2ffkdSuXO0TZqEbd
-         h6Gw==
-X-Gm-Message-State: AOAM532PTTSxNGx8CZYwD8TWYqjz5Y5eCdCMsPnkdAnvkGnolTOnMMmq
-        mru+Z51DctCN21PU5t7C3cwOrQ==
-X-Google-Smtp-Source: ABdhPJxcwvKzFlG03y4UwEFL3La1o4zq+/k5j1GZWA57CcjSYNzcbGyHJWBxsiYggRiHDDfzhSfhAA==
-X-Received: by 2002:a1c:e244:: with SMTP id z65mr6212143wmg.130.1615212282984;
-        Mon, 08 Mar 2021 06:04:42 -0800 (PST)
-Received: from dell ([91.110.221.130])
-        by smtp.gmail.com with ESMTPSA id u3sm18835619wrt.82.2021.03.08.06.04.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 06:04:42 -0800 (PST)
-Date:   Mon, 8 Mar 2021 14:04:40 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mfd: lp87565: fix typo in define names
-Message-ID: <20210308140440.GH4931@dell>
-References: <20210219223910.1831-1-luca@lucaceresoli.net>
+        id S230429AbhCHOFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 09:05:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33926 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229580AbhCHOEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 09:04:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8D379ADDB;
+        Mon,  8 Mar 2021 14:04:53 +0000 (UTC)
+Date:   Mon, 8 Mar 2021 15:04:51 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH v3 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <YEYvAzPoaOkrsEaf@localhost.localdomain>
+References: <20210304100002.7740-1-osalvador@suse.de>
+ <20210304100002.7740-2-osalvador@suse.de>
+ <830F715B-82B4-4A13-861F-B3A89327F722@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210219223910.1831-1-luca@lucaceresoli.net>
+In-Reply-To: <830F715B-82B4-4A13-861F-B3A89327F722@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Feb 2021, Luca Ceresoli wrote:
-
-> "GOIO" should be "GPIO" here.
+On Sun, Mar 07, 2021 at 10:16:36PM -0500, Zi Yan wrote:
+> +Mike for hugetlb discussion.
 > 
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-> ---
->  drivers/gpio/gpio-lp87565.c |  6 +++---
->  include/linux/mfd/lp87565.h | 28 ++++++++++++++--------------
->  2 files changed, 17 insertions(+), 17 deletions(-)
+> Just thinking about how it might impact gigantic page allocation like hugetlb.
+> When MHP_MEMMAP_ON_MEMORY is on, memmap pages are placed at the beginning
+> of each hot added memory block, so available PFNs from two consecutive
+> hot added memory blocks are not all contiguous, separated by memmap pages.
+> If the memory block size is <= 1GB, there is no way of reserving gigantic
+> pages for hugetlb during runtime using alloc_contig_pages from any hot
+> added memory. Am I getting this right?
 
-For my own reference (apply this as-is to your sign-off block):
+Yes, that is why it is stated both in boot parameter documentation and
+patch changelog that this feature does not play well in those setups
+where your workload is in need of large contiguous chunks of memory,
+that being gigantic hugetlb or just normal memory.
 
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> I see this implication is documented at the high level in patch 3. Just
+> wonder if we want to be more specific. Or hugetlb is rarely used along
+> with hot-add memory.
+
+I think it is quite normal to see hugetlb and hotplug operations in the
+same environment.
+One thing excludes the other, just need to be careful when it comes to
+potential pitfalls during offline operations.
+
+I guess we could mention hugetlb pages in the documentation, if it feels
+it is necesary.
+
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Oscar Salvador
+SUSE L3
