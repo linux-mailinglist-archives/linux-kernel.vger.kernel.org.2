@@ -2,121 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F95330D11
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4759330D18
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:06:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhCHMFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:05:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
+        id S230522AbhCHMGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:06:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbhCHMEp (ORCPT
+        with ESMTP id S229528AbhCHMGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:04:45 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3E8C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 04:04:44 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id u4so15742203ljh.6
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 04:04:44 -0800 (PST)
+        Mon, 8 Mar 2021 07:06:00 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02DA3C06174A;
+        Mon,  8 Mar 2021 04:06:00 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id n22so5896702wmc.2;
+        Mon, 08 Mar 2021 04:05:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=PofKU5fYnxxOMgDa7t33J+cuJBqENnTThP7WGOHCZv0=;
-        b=cWKXRDEg9DF0vSw0nmIT+Q3dQhbsxAYl9CH/93CahPPQg3c1sF9wfhPuVbcoA+W9zN
-         5zLqENvPWNDHihvL5Yrn+qyIVgtABZlt13RUT0I/Bo40CqW04XCi8F44+u57qWpehevv
-         feecPzQX/SEqFX74RLyVVwaG/xjShciCDfTnLf9yDm7jq7yeIOJCyfZkc9mjQ6/2jKDg
-         8uYqxeslEtmflGwBRQuob2nmKrPP2oXC6k87K5+7Ow498/lruUqduP5KTV2SKN8uP6+A
-         lKics7ODvAzuGOQ08WwRNlY2zv4GTfxhgr1KB5VS1dKp3PC52CZhb+2DUMwtY55uzk5X
-         DAWQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iOFCAy30+hiqnUf4WFGNwRQ7loEwL1IKES//VoWfeRc=;
+        b=OS6fdtLFf28FMBuEz7RzKgcVieehzMpNI89ZzTbO8djWN0jHZEt4s08XHp9fO0dBsD
+         GumP4t6fsmbOWGwO5t9+UCB0mZN5qV5XMOAANGSKvzCiMx054chr2n86TdyH5QKszSpJ
+         Ic4lIrNygkVxme5QCIqxP+/PAotVoWkkRQdhklUWDDYDnZNMARdTki6MFIgbOlblVOjk
+         KKjE/c/099j/AzO6z287BgvXMl68YIwytaAIe5Vyyd4jmtR55DvlGukfSy+EexNtAF+H
+         5sP40L743KcllyoZgWT4dTHCkRhaSnlDI1YRobSKcqgAbxjgxe+3h85x2pZf4nO2AV+W
+         ATjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=PofKU5fYnxxOMgDa7t33J+cuJBqENnTThP7WGOHCZv0=;
-        b=gkMrJrr+hNzZnAfwxcaHVS3bvccUE3Twt9zGDoqY+s+H4yXaQdYONB67XxoCuUFRDA
-         xaVO0iIVBlsPCd1W/CnqkxtwYol/OJI4WKNBlDLMaG9zTuDmqhvfiCw6YNTe8+cRAxCr
-         ymijehgE6Im6mrX7/87KhCqidfob2vSxSL8/I7RwlzKgaGjs1xPzS3GfWx8SLYFcFv9+
-         hBb8rn0qCOK5mTamaeIEzsccnw0gajkzhfgIkB0iex1GQWBsZJr7cd6Z/rADINMidrx6
-         /am91NEa3uKImRwg/qUXAK8ibGJqIKVkAY1e8YnJXDnXTj97+p/Y5C1XVuqPX+uSx+nV
-         U33g==
-X-Gm-Message-State: AOAM5314zdVvXcbpNGycu4plXDy0f6b389njAsrkK6s8lIazfTbAjFtr
-        HSpz9w7+pCYLXkHRodtgsM9Haw==
-X-Google-Smtp-Source: ABdhPJyKsYUK3p1THrKqpc10r4ZRrHOtC5I98vqFKGBhDSdvsbrXiZL6WVtGkFDNJDhvtWWNR/7vyw==
-X-Received: by 2002:a2e:9098:: with SMTP id l24mr8532795ljg.150.1615205083214;
-        Mon, 08 Mar 2021 04:04:43 -0800 (PST)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id e30sm1330671lfc.261.2021.03.08.04.04.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iOFCAy30+hiqnUf4WFGNwRQ7loEwL1IKES//VoWfeRc=;
+        b=ugidH/b4vczlQg3rnk2RtPZ6+d9CJwSyE8tXkzSTLPPbiMQx1pQkbVXj1WpbprZMU5
+         qA+pknOhrTjYInxhY0Bnwp/YrFKOOzCynUMLsQ2cZDFXc+PiU24/hfZkRaDv2jSZ5ILz
+         wh013sb5JgnssjY/tIyn807z2D1/7I6JLjtH8LQyH6PQ/8cOMF+Vg9VgVQD3xPPLLV8Q
+         oboEqTYSVic50SgZRy1u8Afs7ucT0Djl57M5nlBod0JKqOlBlAvzBtosh6Vp6cyW46hX
+         92h1FTCL1z4NcM7H0xZuUUX6VJFOb+orwr4EHq43kGIfo6aWlHQ9vacvLl3mKKgcSXoc
+         B9JQ==
+X-Gm-Message-State: AOAM53256TkJHzR+hYNzlZANU82VxiGPt65p3tTemgXqYlVWg490VFMQ
+        zmr6MgUoGOC4/5J+rmTJEIU=
+X-Google-Smtp-Source: ABdhPJxa1eQWt2HdCMg4PMcsmn5l2Hfzos3rfB4FLAAl9nhOIY6CxiJPmuc4tC8oyR2MENr1SvtORA==
+X-Received: by 2002:a05:600c:22c7:: with SMTP id 7mr22285365wmg.85.1615205158733;
+        Mon, 08 Mar 2021 04:05:58 -0800 (PST)
+Received: from adgra-XPS-15-9570.home (2a01cb0008bd270095bc7625808eade0.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:95bc:7625:808e:ade0])
+        by smtp.gmail.com with ESMTPSA id r7sm19031803wre.25.2021.03.08.04.05.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 04:04:42 -0800 (PST)
-Date:   Mon, 8 Mar 2021 13:04:41 +0100
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Phong Hoang <phong.hoang.wz@renesas.com>
-Subject: Re: [PATCH] clocksource: sh_cmt: use CMTOUT_IE only when supported
-Message-ID: <YEYS2YZF3xcyzQpf@oden.dyn.berto.se>
-References: <20210305132859.8208-1-wsa+renesas@sang-engineering.com>
+        Mon, 08 Mar 2021 04:05:58 -0800 (PST)
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     robert.foss@linaro.org, airlied@linux.ie, daniel@ffwll.ch,
+        a.hajda@samsung.com, robh+dt@kernel.org, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Adrien Grassein <adrien.grassein@gmail.com>
+Subject: [PATCH v7 0/2] Add support of Lontium lt8912 MIPI to HDMI bridge
+Date:   Mon,  8 Mar 2021 13:05:53 +0100
+Message-Id: <20210308120555.252524-1-adrien.grassein@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210305132859.8208-1-wsa+renesas@sang-engineering.com>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+Hi,
+this patch set adds the support of the Lontium lt8912 MIPI to HDMI
+bridge in the kernel.
 
-Thanks for your patch.
+It's only support the video part, not the audio part yet
+since I don't have the datasheet of this component.
+I get the current i2c configuration from Digi and
+Boundary drivers.
+Developed using the DB_DSIHD board from BoundaryDevices.
 
-On 2021-03-05 14:28:59 +0100, Wolfram Sang wrote:
-> CMTOUT_IE is only supported for older SoCs. Newer SoCs shall not set
-> this bit. So, add a version check.
-> 
-> Reported-by: Phong Hoang <phong.hoang.wz@renesas.com>
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Update in v2
+  - Use standard data-lanes instead of a custom prop;
+  - Use hdmi-connector node.
 
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Update in v3
+  - Fix indentation;
+  - Implement missing bridge functions;
+  - Add some comments.
 
-> ---
-> 
-> Confirmed with datasheets and could successfully repeat Niklas' CMT
-> tests on an R-Car M3N based Salvator-XS.
-> 
->  drivers/clocksource/sh_cmt.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clocksource/sh_cmt.c b/drivers/clocksource/sh_cmt.c
-> index c98f8851fd68..3b53c6cb1da9 100644
-> --- a/drivers/clocksource/sh_cmt.c
-> +++ b/drivers/clocksource/sh_cmt.c
-> @@ -143,6 +143,7 @@ struct sh_cmt_device {
->  #define SH_CMT32_CMCSR_SSIE		(1 << 10)
->  #define SH_CMT32_CMCSR_CMS		(1 << 9)
->  #define SH_CMT32_CMCSR_CMM		(1 << 8)
-> +/* CMTOUT_IE only for SH_CMT_32BIT and SH_CMT_48BIT */
->  #define SH_CMT32_CMCSR_CMTOUT_IE	(1 << 7)
->  #define SH_CMT32_CMCSR_CMR_NONE		(0 << 4)
->  #define SH_CMT32_CMCSR_CMR_DMA		(1 << 4)
-> @@ -339,8 +340,9 @@ static int sh_cmt_enable(struct sh_cmt_channel *ch)
->  		sh_cmt_write_cmcsr(ch, SH_CMT16_CMCSR_CMIE |
->  				   SH_CMT16_CMCSR_CKS512);
->  	} else {
-> -		sh_cmt_write_cmcsr(ch, SH_CMT32_CMCSR_CMM |
-> -				   SH_CMT32_CMCSR_CMTOUT_IE |
-> +		u32 cmtout = ch->cmt->info->model <= SH_CMT_48BIT ?
-> +			      SH_CMT32_CMCSR_CMTOUT_IE : 0;
-> +		sh_cmt_write_cmcsr(ch, cmtout | SH_CMT32_CMCSR_CMM |
->  				   SH_CMT32_CMCSR_CMR_IRQ |
->  				   SH_CMT32_CMCSR_CKS_RCLK8);
->  	}
-> -- 
-> 2.29.2
-> 
+Update in v4
+  - Fix bridge ops;
+  - Fix i2c error detection.
+
+Update in v5
+  - Fix lt8912 name (lt8912b instead of lt8912);
+  - Implement HPD via a workaround. In fact I don't have the datasheet
+    of this component yet so I can't say if the configuration of the
+registers is correct or if I have an HW issue on my board. So, I choose
+to implement a fake version of HPD using a workqueue and polling the
+status regularly.
+
+Update in v6
+  - Fix a warning found by "kernel test robot"
+
+Update in v7
+  - Fix HPD logic (via an HW emulation);
+  - HPD from chip is still not working.
+
+Thanks,
+
+Adrien Grassein (2):
+  dt-bindings: display: bridge: Add documentation for LT8912B
+  drm/bridge: Introduce LT8912B DSI to HDMI bridge
+
+ .../display/bridge/lontium,lt8912b.yaml       | 102 +++
+ MAINTAINERS                                   |   6 +
+ drivers/gpu/drm/bridge/Kconfig                |  14 +
+ drivers/gpu/drm/bridge/Makefile               |   1 +
+ drivers/gpu/drm/bridge/lontium-lt8912b.c      | 836 ++++++++++++++++++
+ 5 files changed, 959 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.yaml
+ create mode 100644 drivers/gpu/drm/bridge/lontium-lt8912b.c
 
 -- 
-Regards,
-Niklas Söderlund
+2.25.1
+
