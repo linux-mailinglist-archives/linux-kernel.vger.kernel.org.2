@@ -2,145 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B75330EC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7160D330EC3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhCHM6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:58:03 -0500
-Received: from mga01.intel.com ([192.55.52.88]:14592 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhCHM54 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:57:56 -0500
-IronPort-SDR: qB7c5mIyGQRxaXJHNw7QOAvu1n4fRS3a/kdturSHHnDnS7n+VSReOjgGaLKcq0zfu9hxUUbyMU
- D3ALZIMkEl2w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="207786806"
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="207786806"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 04:57:56 -0800
-IronPort-SDR: KLfwtnP4cQslc8+bjJygTR3OoeonRsGy+kYS6FRmKvSBDKNIjH69/5/I6rHSoWmB46Amay2mLn
- //8H7F5uuEhQ==
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="409289301"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.249.172.44]) ([10.249.172.44])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 04:57:51 -0800
-Subject: Re: [PATCH v3] perf pmu: Validate raw event with sysfs exported
- format bits
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210308031506.23019-1-yao.jin@linux.intel.com>
- <YEX91MTGMU41zeuF@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <c06cdd0d-fee2-ab6d-1d22-49a6590996ea@linux.intel.com>
-Date:   Mon, 8 Mar 2021 20:57:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229740AbhCHM7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:59:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhCHM6x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 07:58:53 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A683C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 04:58:53 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id p10so8693417ils.9
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 04:58:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8pF8uR2V8h6tExgzDgjhyhnOTS0E2IJvDkFMWJdXK5I=;
+        b=N0cGRlMdBVqNyx4WDmWjwO45vvTRmDVJxaprExcasEF2xEdHGrF66N56dbABm+QBTc
+         brq3nRTCBvHvKMNx8XDci0DHryI0ekJZaYC6GAFf1s1GYzzD0SCIlAcuixgcNye9dERk
+         avK/tdva2YJarbrgHCsmqe0GNyKfN9Ro0lXEmqTSsbV7mO7LEZdJNoZPq7ZZ/R7ZNrMV
+         AiQwi9JOV58wxravnVBHx+lyEaBwAJQbDFsohVSjf9+8rNeVf8GFTs8FvKOOChUN38Bt
+         ZE/ZIx7Wk9rT4xkxNoIylYYWS5jhWQCdBryT3B5bauosehiL7M2K33cpPFS2ZJZJ7LXs
+         Xo4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8pF8uR2V8h6tExgzDgjhyhnOTS0E2IJvDkFMWJdXK5I=;
+        b=XnT/pFHQCRZbTuHTUplJ6WsWpyAYU76FZCC/OTs2rdrLmX47mho3NsorBFnH5fTolR
+         62llcr4XFNBe/ajZnF/Ss5FgspAPDXWcr6tl8G30aYdN3fyhIlH/mGrRiMnn4K3rrDrH
+         p2gM9vfAoqO/0UCa51uveEUucBH8sgLV4uy/MsulyzO0t1huwD4W0HJbRFICp076+Re4
+         MFjO6WdnePmka0b92Z+h90lA5/ogto+RRdOoWHcMFkap2AkY3Qh8tqBkEQ8WNqwgTZIg
+         Ss7ru6PUQMj3K8FHdbcLo1U6UWQeeNmhCNjsY1mzlh1ytYRmF4qWa0ECd+Ff4bnwbZ9+
+         /N6w==
+X-Gm-Message-State: AOAM531OasaEkTMvhE+O7QpZQEeRxmUSXjOXtlZ+g7293AxLMEu6XtBr
+        +yYSulnkieVN23BPb2XZsO4rXsODIIImM/7Zq2k=
+X-Google-Smtp-Source: ABdhPJxnOthh8rEnpOwyJbPQH1UBnpi0bSMuLHJwm5eZf8o0XOVpAd0Rjpcqq4ro01yEDaBBjzrMZr3KR1IvHTqWYOI=
+X-Received: by 2002:a92:d981:: with SMTP id r1mr19348478iln.98.1615208332833;
+ Mon, 08 Mar 2021 04:58:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YEX91MTGMU41zeuF@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210308090329.17507-1-heiko.thiery@gmail.com>
+In-Reply-To: <20210308090329.17507-1-heiko.thiery@gmail.com>
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+Date:   Mon, 8 Mar 2021 13:58:41 +0100
+Message-ID: <CAEyMn7bCdzFTWpXBQ8jP-drw_ykXRUhawHMZqXHsHgy-3oD6LA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: configs: Enable PCIe support for imx8mq boards
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Michael Walle <michael@walle.cc>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+Hi all,
 
-On 3/8/2021 6:35 PM, Jiri Olsa wrote:
-> On Mon, Mar 08, 2021 at 11:15:06AM +0800, Jin Yao wrote:
-> 
-> SNIP
-> 
->> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
->> index 44ef28302fc7..03ab1e6d0418 100644
->> --- a/tools/perf/util/pmu.c
->> +++ b/tools/perf/util/pmu.c
->> @@ -1812,3 +1812,39 @@ int perf_pmu__caps_parse(struct perf_pmu *pmu)
->>   
->>   	return nr_caps;
->>   }
->> +
->> +void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
->> +				   char *name)
->> +{
->> +	struct perf_pmu_format *format;
->> +	__u64 masks = 0, bits;
->> +	char buf[100];
->> +	unsigned int i;
->> +
->> +	list_for_each_entry(format, &pmu->format, list)	{
->> +		/*
->> +		 * Skip extra configs such as config1/config2.
->> +		 */
->> +		if (format->value > 0)
->> +			continue;
-> 
-> sorry I did not notice before, but could you please use more direct
-> approach like:
-> 
-> 		if (format->value == PERF_PMU_FORMAT_VALUE_CONFIG) {
-> 			break;
-> 		}
-> 
-> this will be more obvious, also no need for the comment.. I spent some
-> time looking what's the value for ;-)
-> 
-> thanks,
-> jirka
-> 
+Am Mo., 8. M=C3=A4rz 2021 um 10:03 Uhr schrieb Heiko Thiery <heiko.thiery@g=
+mail.com>:
+>
+> Enable PCI_IMX6 to get PCI support for imx8mq boards like imx8mq-evk,
+> imx8mq-kontron-pitx-imx8m and imx8mq-zii-ultra. This increases the image
+> by 64k.
 
-Oh, yes, using PERF_PMU_FORMAT_VALUE_CONFIG is much more obvious. Sorry about that!
+The growth of 64k is not right.
 
-While it can't break the loop, because we need to iterate over the whole list to get the total valid 
-bits. So like:
+Using the support script shows:
 
-if (format->value != PERF_PMU_FORMAT_VALUE_CONFIG)
-	continue;
+$ scripts/bloat-o-meter vmlinux vmlinux.with_pci
+add/remove: 22/2 grow/shrink: 2/0 up/down: 8338/-16 (8322)
+Function                                     old     new   delta
+imx6_pcie_probe                                -    1804   +1804
+imx6_pcie_deassert_core_reset                  -    1356   +1356
+imx6_pcie_of_match                             -    1200   +1200
+imx6_pcie_start_link                           -     692    +692
+imx6_pcie_suspend_noirq                        -     528    +528
+imx6_pcie_init_phy                             -     496    +496
+imx6_pcie_host_init                            -     336    +336
+imx6_pcie_assert_core_reset                    -     332    +332
+pcie_phy_write                                 -     272    +272
+imx6_pcie_driver                               -     200    +200
+imx6_pcie_pm_ops                               -     184    +184
+pcie_phy_read                                  -     168    +168
+imx6_pcie_resume_noirq                         -     156    +156
+pcie_phy_wait_ack                              -     140    +140
+pcie_phy_poll_ack.isra                         -     124    +124
+imx6_pcie_quirk                                -     124    +124
+drvdata                                        -      60     +60
+dw_pcie_ops                                  208     264     +56
+imx6_pcie_init                                 -      40     +40
+imx6_pcie_shutdown                             -      32     +32
+imx6_pcie_host_ops                             -      16     +16
+e843419@0d4b_0001256e_27c4                     -       8      +8
+e843419@0590_00007810_4f0                      -       8      +8
+vermagic                                      76      82      +6
+e843419@0c2e_0001064f_80                       8       -      -8
+e843419@0633_00008212_13c                      8       -      -8
+Total: Before=3D21884381, After=3D21892703, chg +0.04%
 
-Is it right?
 
-I will post v4 tomorrow.
+> Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+> ---
+>  arch/arm64/configs/defconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index d612f633b771..4b7b4a8f1860 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -225,6 +225,7 @@ CONFIG_PCI_HOST_THUNDER_PEM=3Dy
+>  CONFIG_PCI_HOST_THUNDER_ECAM=3Dy
+>  CONFIG_PCIE_ROCKCHIP_HOST=3Dm
+>  CONFIG_PCIE_BRCMSTB=3Dm
+> +CONFIG_PCI_IMX6=3Dy
+>  CONFIG_PCI_LAYERSCAPE=3Dy
+>  CONFIG_PCIE_LAYERSCAPE_GEN4=3Dy
+>  CONFIG_PCI_HISI=3Dy
+> --
+> 2.30.0
+>
 
-Thanks
-Jin Yao
-
->> +
->> +		for_each_set_bit(i, format->bits, PERF_PMU_FORMAT_BITS)
->> +			masks |= 1ULL << i;
->> +	}
->> +
->> +	/*
->> +	 * Kernel doesn't export any valid format bits.
->> +	 */
->> +	if (masks == 0)
->> +		return;
->> +
->> +	bits = config & ~masks;
->> +	if (bits == 0)
->> +		return;
->> +
->> +	bitmap_scnprintf((unsigned long *)&bits, sizeof(bits) * 8, buf, sizeof(buf));
->> +
->> +	pr_warning("WARNING: event '%s' not valid (bits %s of config "
->> +		   "'%llx' not supported by kernel)!\n",
->> +		   name ?: "N/A", buf, config);
->> +}
->> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
->> index 8164388478c6..160b0f561771 100644
->> --- a/tools/perf/util/pmu.h
->> +++ b/tools/perf/util/pmu.h
->> @@ -123,4 +123,7 @@ int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
->>   
->>   int perf_pmu__caps_parse(struct perf_pmu *pmu);
->>   
->> +void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
->> +				   char *name);
->> +
->>   #endif /* __PMU_H */
->> -- 
->> 2.17.1
->>
-> 
+--=20
+Heiko
