@@ -2,93 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6DF330A12
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51133330A1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhCHJOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 04:14:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44886 "EHLO
+        id S229775AbhCHJQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 04:16:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhCHJOK (ORCPT
+        with ESMTP id S229711AbhCHJQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 04:14:10 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE60C06174A;
-        Mon,  8 Mar 2021 01:14:10 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id a24so4545316plm.11;
-        Mon, 08 Mar 2021 01:14:10 -0800 (PST)
+        Mon, 8 Mar 2021 04:16:54 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9F3C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 01:16:53 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so2481030wmq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 01:16:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id;
-        bh=LapUqhPgY5pST1dV0LdNgE6achMdsluxGY9BNdUk6gM=;
-        b=M92hkSmWsEPzlaOkTjyVbMet0gfve3NV9knTG3VWroGQy/URdxilBQ1Eg56nzg3POR
-         GUyn6yTh0v60khwdKLeyyqPdJ4Lt6lPEU2PSQcxotG0KdHaM27R7EDsZsaD9BiadyvOr
-         c2IOPU078wYi8AN0nUzjTQud0bQZRd9STxj8HEwQrn2rcSBRgvlDr9ZyBtfr2CDsNjfi
-         KB03YEPmfFfzC5LiCz/5/XEp6a34bmCCE98cN6ThGWB1jS4G/YQnPUh3YSGiCqOcnqK/
-         Y9VqoTFfkRv0BXfyVheYEt5I3IVfFwOgB9MNV+xsG+41ReG8nB1pyeLntwS52xbByYhG
-         O7kQ==
+        bh=KIiRUMn2zbUAbTCCCaOOS6Ioymx172KJZHR6sOJkB3E=;
+        b=p/CFh9WX6Zn2+eBgka+a2isZ6yuDutvVbcFKrocpz2AG6JzgayQgCHbNasO73R2G3Y
+         a86OlA3iAl8OAqWKJIj7r/5XE0+nyxAnHhwTyK01+WuB4qF5rpcjE0N6jP8fwoem03Yn
+         58yc7n6uebtC64hoM6hTnQJdL+d1Xs+eR2Mdwp6qbyMoyNdX55sKUE6x1XxPPkUWH6nX
+         olcZwE/dpyoYcSuD+8rOBpaP6TtBHUBm5St5ZzdSTlJDvf37Iclz8nM1FxgaeOHl+f6k
+         0bkah0mVPO1cerqyEqmjydxvedbe7Nci1NMMdBs7n/iqkU4/nn70pqBCDlvJLYhnUti8
+         WTsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=LapUqhPgY5pST1dV0LdNgE6achMdsluxGY9BNdUk6gM=;
-        b=nSBUYNzYryMJz8lbjuQP7L+WnEbFgJzooLSsZIe8je2VX31OBcoOCEdpkMFbYzu48G
-         H3uxN4LVFHCgntPWzZIA2vtCPpAlnJ9Yh0pDDF7F9dVQlvBpbgvYYatbuSC/7hM0XUKe
-         KQ/xSWIQFThn4NmvgkhGIf7UG9IKktN9Ng7ex59KCGpdEUyp0SjYLC4vNsl8I+Xy1Obk
-         bjwNxpKofaZz8NM7PGCNxy0/5UX43UY9d5Lvhs4oG0NfPEj0aCFWK7qBf2F9qAxNIwGX
-         HBBwjEMt8CR/ass7yFNDX+YZKM69uDNTob7zfZWmd595uOeyAvGPdoqd8a5IVLAMVIxT
-         VkqA==
-X-Gm-Message-State: AOAM531+QXzree+LNO7g9awC/t4hIZSGgor61+07k13Hy45vwDNz8eM/
-        EOT5WBk9mpANja5q+pIs13E=
-X-Google-Smtp-Source: ABdhPJzlzqOByUyGkswp00tSv/DGdDAYKsCCKsWrYMzRJ35ZT0k6dHCmfyPYcjSXwxqwy2z+KDYQRA==
-X-Received: by 2002:a17:90a:ce0c:: with SMTP id f12mr23879065pju.11.1615194850228;
-        Mon, 08 Mar 2021 01:14:10 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.99])
-        by smtp.gmail.com with ESMTPSA id w8sm9511874pgk.46.2021.03.08.01.14.05
+        bh=KIiRUMn2zbUAbTCCCaOOS6Ioymx172KJZHR6sOJkB3E=;
+        b=CfbSeLdR+l+SbygCpAh/muUq2oo/nozDD1EZI/+gZiWv6J/lOhjumAjGV8DJeSnTqz
+         OmhC9BLUWY+thm8t3K2GnlCCW1dJZjZAYrQGB787akwPqZLegiyurjjpn7/uVyT68UaU
+         VulIhk8QRCd+JFfs88ScyQAJE4Sjv5bGLnBiumijKA4xqBJE3w9AIKJIgVi4PMh5kapJ
+         4UffGlblxcUHBwlu6oZAHsZnrFc6GUqX9T4heDLc6tvVq3diKjYDnXZaUc3S9hPoBrD6
+         dBLS/c82qDvzH8QjiXgDDLH3CY6OU7I1OqwgD1eXdqkm7xGtWfBXUywUWYRq2xeJChlR
+         JVpw==
+X-Gm-Message-State: AOAM5320omatMDTwNYwHf8lCYHi9bPSVh6XtGF2kpyh0iJeqJz/+ze41
+        APk/2rp8glUHn9jPFO/UP+SCNg==
+X-Google-Smtp-Source: ABdhPJwIlH5P7vdRw3H5xgE2pSX3CWLSv4FqlH0LHfZlkeTAxUU7wfokCC4U/j1uHhK7LC2jJQy/oA==
+X-Received: by 2002:a1c:771a:: with SMTP id t26mr21399277wmi.60.1615195012511;
+        Mon, 08 Mar 2021 01:16:52 -0800 (PST)
+Received: from localhost.localdomain (lns-bzn-59-82-252-141-80.adsl.proxad.net. [82.252.141.80])
+        by smtp.gmail.com with ESMTPSA id i17sm6068135wrp.77.2021.03.08.01.16.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 01:14:09 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, loic.poulain@linaro.org,
-        bjorn.andersson@linaro.org, mani@kernel.org,
-        cjhuang@codeaurora.org, necip@google.com, edumazet@google.com,
-        miaoqinglang@huawei.com, dan.carpenter@oracle.com,
-        wenhu.wang@vivo.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] net: qrtr: fix error return code of qrtr_sendmsg()
-Date:   Mon,  8 Mar 2021 01:13:55 -0800
-Message-Id: <20210308091355.8726-1-baijiaju1990@gmail.com>
+        Mon, 08 Mar 2021 01:16:52 -0800 (PST)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     cwchoi00@gmail.com
+Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, steven.price@arm.com,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Subject: [PATCH v5 1/4] PM / devfreq: Register devfreq as a cooling device on demand
+Date:   Mon,  8 Mar 2021 10:16:42 +0100
+Message-Id: <20210308091646.28096-1-daniel.lezcano@linaro.org>
 X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When sock_alloc_send_skb() returns NULL to skb, no error return code of
-qrtr_sendmsg() is assigned.
-To fix this bug, rc is assigned with -ENOMEM in this case.
+Currently the default behavior is to manually having the devfreq
+backend to register themselves as a devfreq cooling device.
 
-Fixes: 194ccc88297a ("net: qrtr: Support decoding incoming v2 packets")
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Instead of adding the code in the drivers for the thermal cooling
+device registering, let's provide a flag in the devfreq's profile to
+tell the common devfreq code to register the newly created devfreq as
+a cooling device.
+
+Suggested-by: Chanwoo Choi <cwchoi00@gmail.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
- net/qrtr/qrtr.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ V5:
+   - Changed subject prefix by:  PM / devfreq
+ V4:
+   - Replaced thermal_cooling_device_unregister() by
+     devfreq_cooling_unregister()
+ V3:
+   - Rebased on linux-pm branch without units.h
+   - Set the cdev to NULL in case of error
+   - Added description for the cdev field in the devfreq structure
+ V2:
+   - Added is_cooling_device boolean in profile structure
+   - Register cooling device when the is_cooling_device boolean is set
+   - Remove devfreq cooling device registration in the backend drivers
+ V1:
+   - Register devfreq as a cooling device unconditionnally
+---
+ drivers/devfreq/devfreq.c | 13 +++++++++++++
+ include/linux/devfreq.h   |  8 ++++++++
+ 2 files changed, 21 insertions(+)
 
-diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
-index b34358282f37..ac2a4a7711da 100644
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -958,8 +958,10 @@ static int qrtr_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- 	plen = (len + 3) & ~3;
- 	skb = sock_alloc_send_skb(sk, plen + QRTR_HDR_MAX_SIZE,
- 				  msg->msg_flags & MSG_DONTWAIT, &rc);
--	if (!skb)
-+	if (!skb) {
-+		rc = -ENOMEM;
- 		goto out_node;
+diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+index bf3047896e41..8a535d4d6083 100644
+--- a/drivers/devfreq/devfreq.c
++++ b/drivers/devfreq/devfreq.c
+@@ -11,6 +11,7 @@
+ #include <linux/kmod.h>
+ #include <linux/sched.h>
+ #include <linux/debugfs.h>
++#include <linux/devfreq_cooling.h>
+ #include <linux/errno.h>
+ #include <linux/err.h>
+ #include <linux/init.h>
+@@ -26,6 +27,7 @@
+ #include <linux/hrtimer.h>
+ #include <linux/of.h>
+ #include <linux/pm_qos.h>
++#include <linux/thermal.h>
+ #include "governor.h"
+ 
+ #define CREATE_TRACE_POINTS
+@@ -935,6 +937,15 @@ struct devfreq *devfreq_add_device(struct device *dev,
+ 
+ 	mutex_unlock(&devfreq_list_lock);
+ 
++	if (devfreq->profile->is_cooling_device) {
++		devfreq->cdev = devfreq_cooling_em_register(devfreq, NULL);
++		if (IS_ERR(devfreq->cdev)) {
++			dev_info(dev, "Failed to register devfreq "
++				 "cooling device\n");
++			devfreq->cdev = NULL;
++		}
 +	}
++
+ 	return devfreq;
  
- 	skb_reserve(skb, QRTR_HDR_MAX_SIZE);
+ err_init:
+@@ -960,6 +971,8 @@ int devfreq_remove_device(struct devfreq *devfreq)
+ 	if (!devfreq)
+ 		return -EINVAL;
  
++	devfreq_cooling_unregister(devfreq->cdev);
++
+ 	if (devfreq->governor) {
+ 		devfreq->governor->event_handler(devfreq,
+ 						 DEVFREQ_GOV_STOP, NULL);
+diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
+index 26ea0850be9b..aba7ace11b72 100644
+--- a/include/linux/devfreq.h
++++ b/include/linux/devfreq.h
+@@ -98,11 +98,15 @@ struct devfreq_dev_status {
+  * @freq_table:		Optional list of frequencies to support statistics
+  *			and freq_table must be generated in ascending order.
+  * @max_state:		The size of freq_table.
++ *
++ * @is_cooling_device: A self-explanatory boolean giving the device a
++ *                     cooling effect property.
+  */
+ struct devfreq_dev_profile {
+ 	unsigned long initial_freq;
+ 	unsigned int polling_ms;
+ 	enum devfreq_timer timer;
++	bool is_cooling_device;
+ 
+ 	int (*target)(struct device *dev, unsigned long *freq, u32 flags);
+ 	int (*get_dev_status)(struct device *dev,
+@@ -156,6 +160,7 @@ struct devfreq_stats {
+  * @suspend_count:	 suspend requests counter for a device.
+  * @stats:	Statistics of devfreq device behavior
+  * @transition_notifier_list: list head of DEVFREQ_TRANSITION_NOTIFIER notifier
++ * @cdev:	Cooling device pointer if the devfreq has cooling property
+  * @nb_min:		Notifier block for DEV_PM_QOS_MIN_FREQUENCY
+  * @nb_max:		Notifier block for DEV_PM_QOS_MAX_FREQUENCY
+  *
+@@ -198,6 +203,9 @@ struct devfreq {
+ 
+ 	struct srcu_notifier_head transition_notifier_list;
+ 
++	/* Pointer to the cooling device if used for thermal mitigation */
++	struct thermal_cooling_device *cdev;
++
+ 	struct notifier_block nb_min;
+ 	struct notifier_block nb_max;
+ };
 -- 
 2.17.1
 
