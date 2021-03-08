@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47DB4331AD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 00:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 661CB331ADA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 00:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbhCHXKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 18:10:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231749AbhCHXKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 18:10:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id BA5B46521F;
-        Mon,  8 Mar 2021 23:10:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615245007;
-        bh=eZsbgmhSp1ZE6xyK39CROnAgKsXeSv0RyunU8E0yTrU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=aZXITx5/C/IkquvkM5fE44yHwDjovy+tu+xFMEzlbfxxABjq0OzRUNGYjA9e+NBdb
-         VCYFkR7y+GmqHVADsyrRGI7lDtfOfKBKIC+DFcka6OBnkFeQE52cex0G+3cE/8SCZB
-         3GW4wpqNMl7nmKSOE3mly9d19qGDQfN1k1lyVNOZjK7BtK2MwPqn/RXIKBGWPQomHY
-         0GgvACan/4JuXVndYM8KB/V7aXa2zRjgy0teCCFoH/5JYRuGpDP9Hkr/Dzx+jUPQ4t
-         Lq0XNG3GciLFKRkW2xaGpSHsbjbNxf4AeFuxtrDOGJ3oOiKbs5xGmH/ockaecwlx0f
-         sbKJYrpTqE0vQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A8213609E6;
-        Mon,  8 Mar 2021 23:10:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231126AbhCHXLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 18:11:45 -0500
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:38050 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhCHXLR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 18:11:17 -0500
+Received: by mail-lj1-f181.google.com with SMTP id 2so18273835ljr.5;
+        Mon, 08 Mar 2021 15:11:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3sLOpMcNZFmK9gLPudJacF0X8QIMSGunlUsiZURia08=;
+        b=U/M2o01m5ZkGabL/lrEBEoghe7baCK9o6LMw5rLZCXxvjaU+pF6bMZlvQ+MFbRbmUB
+         S4IMyELVvobfvq+X3eIYo1PI+mOALvBtFFuqzGkTWSoSFxKM4XV1xaqbbTUer8PnrRc+
+         GWL5Pctataz4Lil6IIcJkp8R45G0NwtUHKUr56C5tzJBlgNFNV3QFFDTdR8aM/oppvIl
+         vPj1K9X2NnBR9P16RrliXttN9FQaugncTjIN9uSzUVvM959OMTOdfpohpeJKbAHi8uHQ
+         rgfu7WD5Q6OTcTiKH73jD5WW1E4jH4W52NhpSgVTmbAYBpk1/SYYyqg7F3e5AI/hNwXA
+         9r3g==
+X-Gm-Message-State: AOAM530ECDFXrjOBoOBDWZzmL2S8MxeiWXUNajogom1RQ8Tbpb6xJiZS
+        G4xALIo+oKtyy+pcSzTO8wo=
+X-Google-Smtp-Source: ABdhPJw7fGZia5J/uUKz7N0Odf2XZ4DoBLJuDwokYYCGkjv0fk8MvIsNwnpeI2Ap5Ssb87Jhb7gG1A==
+X-Received: by 2002:a2e:505d:: with SMTP id v29mr15153535ljd.131.1615245075594;
+        Mon, 08 Mar 2021 15:11:15 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id v80sm1509340lfa.229.2021.03.08.15.11.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 15:11:15 -0800 (PST)
+Date:   Tue, 9 Mar 2021 00:11:14 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] PCI: controller: al: select CONFIG_PCI_ECAM
+Message-ID: <YEavErsucOAkO6Hf@rocinante>
+References: <20210308152501.2135937-1-arnd@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: qrtr: fix error return code of qrtr_sendmsg()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161524500768.8251.10623370492041781396.git-patchwork-notify@kernel.org>
-Date:   Mon, 08 Mar 2021 23:10:07 +0000
-References: <20210308091355.8726-1-baijiaju1990@gmail.com>
-In-Reply-To: <20210308091355.8726-1-baijiaju1990@gmail.com>
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, loic.poulain@linaro.org,
-        bjorn.andersson@linaro.org, mani@kernel.org,
-        cjhuang@codeaurora.org, necip@google.com, edumazet@google.com,
-        miaoqinglang@huawei.com, dan.carpenter@oracle.com,
-        wenhu.wang@vivo.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+In-Reply-To: <20210308152501.2135937-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi,
 
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Mon,  8 Mar 2021 01:13:55 -0800 you wrote:
-> When sock_alloc_send_skb() returns NULL to skb, no error return code of
-> qrtr_sendmsg() is assigned.
-> To fix this bug, rc is assigned with -ENOMEM in this case.
+> Compile-testing this driver without ECAM support results in a link
+> failure:
 > 
-> Fixes: 194ccc88297a ("net: qrtr: Support decoding incoming v2 packets")
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> ld.lld: error: undefined symbol: pci_ecam_map_bus
+> >>> referenced by pcie-al.c
+> >>>               pci/controller/dwc/pcie-al.o:(al_pcie_map_bus) in archive drivers/built-in.a
 > 
-> [...]
+> Select CONFIG_ECAM like the other drivers do.
+[...]
 
-Here is the summary with links:
-  - net: qrtr: fix error return code of qrtr_sendmsg()
-    https://git.kernel.org/netdev/net/c/179d0ba0c454
+Ouch.  Thank you!
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
 
-
+Krzysztof
