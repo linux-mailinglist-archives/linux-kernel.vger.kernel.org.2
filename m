@@ -2,98 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5C833053B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 00:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 957C8330545
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 01:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233316AbhCGXyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 18:54:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231894AbhCGXyS (ORCPT
+        id S233333AbhCHAQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 19:16:32 -0500
+Received: from mr85p00im-zteg06021601.me.com ([17.58.23.187]:38828 "EHLO
+        mr85p00im-zteg06021601.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231648AbhCHAQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 18:54:18 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31964C06174A;
-        Sun,  7 Mar 2021 15:54:18 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id l7so6062204pfd.3;
-        Sun, 07 Mar 2021 15:54:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=8R7+UaAKzntZZEV87N+admABCX8PPQ5Cic70DpQyEY0=;
-        b=cvbo2oY/11KlR6OFS2NCBxNr3WyqdE/7yJGqyU4BRTSafcUADTHpQJDeqQpnapgddH
-         xyjsg+6NNCJsmPIZWsS/5Un1Jp5sZ63+Knel1fcM+j+d157ofWQid1dZ4Z//XRwcBKNK
-         IfDgLFChCtBYj+YXZlq3WpW1uYidj1MCoxlsC5lmoiKtaMR8Tsm/CPxPJkm3o5BMvlYV
-         KU/z/kb2xqnAJzW04QGDm+SWVvG8gA2y9aJ0oTxI7qFup3wPRsSmmGMMQN4As3+uN84h
-         iZ5ylwK3dW41KCe9JjjfPCVRfpqoc8n3Wy/cfxiNFUgzsHA9gq5ZcwMTysXGVXUCLdS+
-         iMrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=8R7+UaAKzntZZEV87N+admABCX8PPQ5Cic70DpQyEY0=;
-        b=MBrQvAXY1S6EWolLcL3seVK92WW+7Te8sGmWAf7VbrjEK3XiRQdQEm8KUM1XJgNqqd
-         6A2FrdRqU8RFmnKuFs7ilHqK2ITGRZRIcsDb66yW9yMOH0XASVt7R+ghnq9j2o5zm1oh
-         Vj5NFZJiTS3k/41gF7AhnhHo59cOvVLgFVd+DG3h6pVPnihPuyWA0fCvnAqMnyXJiK/b
-         6qNHQbDV+v4IqE+2KxidhghV6p5/G1PGmBl7ycfG1cXIMjq6jrO0EpmjuD+yZjGb8EDk
-         Fa3diYXzVwNHXUzhTiPKJBzo7zKovGJNo0jSo7TIrqlmvcSbt5Fdt6NuaeD4j4+NzQTl
-         f3qg==
-X-Gm-Message-State: AOAM533A1PmIWeHDhAPPG4/YjhlfFYQ1Q849Oaol89+PDRFmbclxAWqc
-        Q9i5b1OcOcYTROOZhi30jKg=
-X-Google-Smtp-Source: ABdhPJzQoofHXfA0wxyZK4TDRjzHoMT4QilWOaQ8yg8rd9QR9iJHRM2lZFHRwjdNuMY0wCx84VPXjA==
-X-Received: by 2002:a62:a108:0:b029:1c1:119b:8713 with SMTP id b8-20020a62a1080000b02901c1119b8713mr18843469pff.74.1615161257796;
-        Sun, 07 Mar 2021 15:54:17 -0800 (PST)
-Received: from rayare.domain.name ([106.51.141.71])
-        by smtp.googlemail.com with ESMTPSA id t10sm8542099pjf.30.2021.03.07.15.54.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 15:54:17 -0800 (PST)
-From:   chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
-Cc:     chakravarthikulkarni2021@gmail.com,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: acpiphp: Fixed coding style of open braces and comments
-Date:   Mon,  8 Mar 2021 05:24:01 +0530
-Message-Id: <20210307235401.2011-1-chakravarthikulkarni2021@gmail.com>
-X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
+        Sun, 7 Mar 2021 19:16:04 -0500
+X-Greylist: delayed 337 seconds by postgrey-1.27 at vger.kernel.org; Sun, 07 Mar 2021 19:16:04 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1615162208;
+        bh=X0pWED4lVmNp064KoP7G4XzPfwMx0M4Zvudh3k1W1YQ=;
+        h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:To;
+        b=x9RGv/DsZfbycOAT9j2FSU4hPW8frGR8Y2hDqwYRsj70u+RksF0uFQFmZP1HmOh4N
+         9MIpUKUJnnlHL5k+syS5LkmCclFRaWRlHywFjIjwH/ZvBA3caGDRRpOkZETGjFMjFh
+         mr1q9WOlMKheLqiP/0nmMeuxdesDUh2Fw3NI5RIozxnZ5PkNJG6IBQ6EZU5gKWY8f+
+         zygTkOPU+2cya2g7SqX+UPlBcDS2fNZ1n0DcfC04o5VYRdwMSmN9KY5qzd+BppQbQF
+         ceytL21Cw2OzKaVTNRUcRbXE7M/N4JH69XiLftBUnwMdjC44QlB2xT17mAyegJVxI+
+         EOhHfSsZUm5pQ==
+Received: from tbodt-pro.attlocal.net (99-130-36-163.lightspeed.frokca.sbcglobal.net [99.130.36.163])
+        by mr85p00im-zteg06021601.me.com (Postfix) with ESMTPSA id 016A8400584;
+        Mon,  8 Mar 2021 00:10:07 +0000 (UTC)
+From:   Theodore Dubois <tblodt@icloud.com>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: What clockevents are needed to boot properly?
+Message-Id: <02EC6936-C879-4681-AC37-76DFAA7DA3AC@icloud.com>
+Date:   Sun, 7 Mar 2021 16:10:07 -0800
+Cc:     tglx@linutronix.de
+To:     linux-kernel@vger.kernel.org
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-07_17:2021-03-03,2021-03-07 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ mlxlogscore=657 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2006250000 definitions=main-2103070135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed WARNING and ERROR message provided by ./checkpatch.pl scripts.
+I'm playing around with a new kernel arch and running into problems with =
+properly configuring the clockevents, especially with SMP. Without SMP =
+you can easily set up a clockevents masked to cpu 0, and this seems to =
+work fine. But on SMP this fails silently: high-res timers created on =
+cpu !=3D 0 never fire.
 
-Signed-off-by: chakravarthi kulkarni <chakravarthikulkarni2021@gmail.com>
----
- drivers/pci/hotplug/acpiphp.h | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+The obvious next thing to try would be to set the mask of the =
+clockevents to cpu_possible_mask, but this silently fails as well: the =
+clockevents just doesn't get used at all. There seem to be a lot of =
+drivers in the tree that do this, I'm not sure why it works for those.
 
-diff --git a/drivers/pci/hotplug/acpiphp.h b/drivers/pci/hotplug/acpiphp.h
-index a74b274a8c45..e0964600a78f 100644
---- a/drivers/pci/hotplug/acpiphp.h
-+++ b/drivers/pci/hotplug/acpiphp.h
-@@ -80,8 +80,8 @@ struct acpiphp_bridge {
- struct acpiphp_slot {
- 	struct list_head node;
- 	struct pci_bus *bus;
--	struct list_head funcs;		/* one slot may have different
--					   objects (i.e. for each function) */
-+	struct list_head funcs;		/* one slot may have different */
-+					/* objects (i.e. for each function) */
- 	struct slot *slot;
- 
- 	u8		device;		/* pci device# */
-@@ -148,8 +148,7 @@ static inline struct acpiphp_root_context *to_acpiphp_root_context(struct acpi_h
-  * ACPI has no generic method of setting/getting attention status
-  * this allows for device specific driver registration
-  */
--struct acpiphp_attention_info
--{
-+struct acpiphp_attention_info {
- 	int (*set_attn)(struct hotplug_slot *slot, u8 status);
- 	int (*get_attn)(struct hotplug_slot *slot, u8 *status);
- 	struct module *owner;
--- 
-2.17.1
+Do you have to register a new clockevents for each CPU? I can't find a =
+lot of information on this.
+
+~Theodore
 
