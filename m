@@ -2,126 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE8E331083
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97656331086
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:12:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbhCHOM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 09:12:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39884 "EHLO mail.kernel.org"
+        id S231307AbhCHOMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 09:12:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231184AbhCHOLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:11:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80586650F2;
-        Mon,  8 Mar 2021 14:11:53 +0000 (UTC)
+        id S230426AbhCHOL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 09:11:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECADB651DC;
+        Mon,  8 Mar 2021 14:11:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615212714;
-        bh=7NQYViq1K/ArxZ0PMXgM0Mljqh1vleJSjOTVqm6z4SU=;
+        s=korg; t=1615212716;
+        bh=h+f/lalWFSiDqjzRJFvqnAO+QDGAW3ZQIyuEJL6UcBk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LMqKuem1vPWCxyhbPs5R71G600fCYN8q3kVVffh7HuPIYcB40JECDTJk9XRNJhYP/
-         WOIPMlAQZhGCe4JkO5k9XTmaB1KQnX4IYNDSOZ0vSIRXz5+kRwhRYuURuwG7Y8Mad9
-         BmIgiD81rtE4nAbJzRND5KuSPhbh2qNqVmWEJInM=
-Date:   Mon, 8 Mar 2021 14:21:15 +0100
+        b=bJ/ESAuluWky78q3AUv8jD3kGjkSZ7SsOw7wEKtnfnkWJNWrSp5DFMW1DNfQXEkjy
+         xX+2yTVy/YrPFzSpdTCal34mVRj25y4BtejJjACGSbm9CQCxXusj9wryC5BmxS2SGt
+         a4Kow3FnDrd48qJ+lofHyu6zLAycwncLvRYpPsvg=
+Date:   Mon, 8 Mar 2021 14:25:34 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        "Gong, Sishuai" <sishuai@purdue.edu>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Cong Wang <cong.wang@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 5.10 031/102] net: fix dev_ifsioc_locked() race condition
-Message-ID: <YEYky4Lkd7CBWPT3@kroah.com>
-References: <20210305120903.276489876@linuxfoundation.org>
- <20210305120904.814003997@linuxfoundation.org>
- <20210308125057.GA19538@duo.ucw.cz>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Ikjoon Jang <ikjn@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: [PATCH v2 18/18] usb: common: move function's kerneldoc next to
+ its definition
+Message-ID: <YEYlzuH5JMt/0Qvw@kroah.com>
+References: <d287899e6beb2fc1bfb8900c75a872f628ecde55.1615170625.git.chunfeng.yun@mediatek.com>
+ <c4d2e010ae2bf67cdfa0b55e6d1deb9339d9d3dc.1615170625.git.chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308125057.GA19538@duo.ucw.cz>
+In-Reply-To: <c4d2e010ae2bf67cdfa0b55e6d1deb9339d9d3dc.1615170625.git.chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 01:50:57PM +0100, Pavel Machek wrote:
-> Hi!
+On Mon, Mar 08, 2021 at 10:52:07AM +0800, Chunfeng Yun wrote:
+> Following a general rule, add the kerneldoc for a function next
+> to it's definition, but not next to its declaration in a header
+> file.
 > 
-> > commit 3b23a32a63219f51a5298bc55a65ecee866e79d0 upstream.
-> > 
-> > dev_ifsioc_locked() is called with only RCU read lock, so when
-> > there is a parallel writer changing the mac address, it could
-> > get a partially updated mac address, as shown below:
-> > 
-> > Thread 1			Thread 2
-> > // eth_commit_mac_addr_change()
-> > memcpy(dev->dev_addr, addr->sa_data, ETH_ALEN);
-> > 				// dev_ifsioc_locked()
-> > 				memcpy(ifr->ifr_hwaddr.sa_data,
-> > 					dev->dev_addr,...);
-> > 
-> > Close this race condition by guarding them with a RW semaphore,
-> > like netdev_get_name(). We can not use seqlock here as it does not
-> 
-> I guess it may fix a race, but... does it leak kernel stack data to
-> userland?
-> 
-> 
-> > +++ b/drivers/net/tap.c
-> > @@ -1093,10 +1093,9 @@ static long tap_ioctl(struct file *file,
-> >  			return -ENOLINK;
-> >  		}
-> >  		ret = 0;
-> > -		u = tap->dev->type;
-> > +		dev_get_mac_address(&sa, dev_net(tap->dev), tap->dev->name);
-> >  		if (copy_to_user(&ifr->ifr_name, tap->dev->name, IFNAMSIZ) ||
-> > -		    copy_to_user(&ifr->ifr_hwaddr.sa_data, tap->dev->dev_addr, ETH_ALEN) ||
-> > -		    put_user(u, &ifr->ifr_hwaddr.sa_family))
-> > +		    copy_to_user(&ifr->ifr_hwaddr, &sa, sizeof(sa)))
-> >  			ret = -EFAULT;
-> >  		tap_put_tap_dev(tap);
-> >  		rtnl_unlock();
-> 
-> We copy whole "struct sockaddr".
-> 
-> > +int dev_get_mac_address(struct sockaddr *sa, struct net *net, char *dev_name)
-> > +{
-> > +	size_t size = sizeof(sa->sa_data);
-> > +	struct net_device *dev;
-> > +	int ret = 0;
-> ...
-> > +	if (!dev->addr_len)
-> > +		memset(sa->sa_data, 0, size);
-> > +	else
-> > +		memcpy(sa->sa_data, dev->dev_addr,
-> > +		       min_t(size_t, size, dev->addr_len));
-> 
-> But we only coppied dev->addr_len bytes in.
-> 
-> This would be very simple way to plug the leak.
-> 
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-> 
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 75ca6c6d01d6..b67ff23a1f0d 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -8714,11 +8714,9 @@ int dev_get_mac_address(struct sockaddr *sa, struct net *net, char *dev_name)
->  		ret = -ENODEV;
->  		goto unlock;
->  	}
-> -	if (!dev->addr_len)
-> -		memset(sa->sa_data, 0, size);
-> -	else
-> -		memcpy(sa->sa_data, dev->dev_addr,
-> -		       min_t(size_t, size, dev->addr_len));
-> +	memset(sa->sa_data, 0, size);
-> +	memcpy(sa->sa_data, dev->dev_addr,
-> +	       min_t(size_t, size, dev->addr_len));
->  	sa->sa_family = dev->type;
->  
->  unlock:
-> 
+> Suggested-by: Alan Stern <stern@rowland.harvard.edu>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v2: new patch
 
-Please submit this change properly to the networking developers, they
-are not going to pick anything up this way.
+Thanks for this change, looks great, all now queued up!
 
 greg k-h
