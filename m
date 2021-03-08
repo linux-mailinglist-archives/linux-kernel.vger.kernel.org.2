@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BE83318CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B482B3318D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhCHUoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:44:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231208AbhCHUnz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:43:55 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EC2C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 12:43:55 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id ba1so5466533plb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 12:43:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JCHmoEg1VJCxXwurok5RvQWW77Zv+Hi+TrTBhfG3tOU=;
-        b=VQbnvxaqwj8CRvemi3vkE8V6VJmjTntB0m1/c217PqSaJ2cevn5dorMbRHGhFdNySY
-         9QnF9vDDmIMKPG5/fBtc9sguELN11DKOuA6RwTWrRMKD96GAc6Chji9wxRTYOc+KRts0
-         XZQ4qLSLrJrw3RvxH7JR8Li8H04xOupvvcHhYLSXw1eQG+KFXXG14EegeZ4fgmFyQcbx
-         fBuwpn7LBJ+8OUWgNXhglUlV8oegvVnr4C6JHH6MNrcBd8iB3yGpoSFAHlcc26MJSK49
-         oQmYornvXyQCnfFeEfZNB/xMGk1XiCNngdHc79GhpkMAFVaR1O4lxAZ7ZYDWVP4HgVxi
-         VfZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JCHmoEg1VJCxXwurok5RvQWW77Zv+Hi+TrTBhfG3tOU=;
-        b=U+EoO7esQsVVj9Sn9BKmXBxFTD7ocQ8VtFjlAQ9ShbPseg39ZAImt5ZTX0zWxExRyD
-         3A1VkxtAo0tjR7IXhbE3nmwV3YUZg1LFlyTr9VrSZPKtzxuKbnA7J3X4hrDYj6rHH0wO
-         DZB6CoKaZc6zS46UA3QVKEBjgFNP39YXgGUCok2hbLH9wIZQHKwoHpkBttY4ES8cxkJB
-         9vGU7IzN1DXvWzkGf82x1HvlFmC1by12mqNwr7s/1NWa0QfhykJHLGVIzdQeXCfSplkX
-         Yc9XAB2a4X5al9vtoJj19UJED4b4unoNrBCd7ajVLDQXePjA1OW+nAVI9tbaAmTzaOEK
-         YYVQ==
-X-Gm-Message-State: AOAM533QqU9oGhfSVo+Nw4BBKsXXsBrKyFVnUX6fcL4HOvWZfoXJa8a/
-        +de4h5bf3QkkOtuzrQfcwEOJxnLtHFlLsA==
-X-Google-Smtp-Source: ABdhPJyVtmgVR3mk3bSEErARIRcFRCV/Ebf9KFplqPAtl020JLZVjbC1h9NiCWRKZZO9puYQrpCBjg==
-X-Received: by 2002:a17:90a:8417:: with SMTP id j23mr756073pjn.224.1615236235012;
-        Mon, 08 Mar 2021 12:43:55 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:8:847a:d8b5:e2cc])
-        by smtp.gmail.com with ESMTPSA id ha8sm241837pjb.6.2021.03.08.12.43.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 12:43:54 -0800 (PST)
-Date:   Mon, 8 Mar 2021 12:43:48 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        vkuznets@redhat.com, mlevitsk@redhat.com,
-        Jim Mattson <jmattson@google.com>
-Subject: Re: [PATCH 03/28] KVM: nSVM: inject exceptions via
- svm_check_nested_events
-Message-ID: <YEaMhHG7ylvTpoYD@google.com>
-References: <YELdblXaKBTQ4LGf@google.com>
- <fc2b0085-eb0f-dbab-28c2-a244916c655f@redhat.com>
- <YEZUhbBtNjWh0Zka@google.com>
- <006be822-697e-56d5-84a7-fa51f5087a34@redhat.com>
+        id S230341AbhCHUqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:46:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38516 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229950AbhCHUqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 15:46:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FCF164DF5;
+        Mon,  8 Mar 2021 20:46:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615236371;
+        bh=fJsMy6YyZc0GKNaInkxN1wNn9x/iFUp/YIamYo3r9jI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GstGoT78JFxcmwrLZvbduyxRkkzi3fBn4/2ug3/IqmAiiXC/qScbn1IB1l4LQTSe3
+         BhDMTGvLDckABUwk1+MnssjPMYdAkU0PTrrmwQhtkyw+r1qbuJM6NSejids/mj5rAi
+         Kiq+/4VbA0+8LDY5mhc1/LZi9wwCa1w+ge388GTUqcIL3yH3YGjPL48trvXCRQPzUR
+         qRO6rLigtFBI3biLv9xYgKuqbQv3cpF271T/R8oj0piQYywprrJ3OYm5/mhf0HkJmU
+         FAP4uGMpwOwnkIwV3GWJflWEa8TVwjW9EE8m0hQtYUvsVXpFxZOwL1W8Vc9waTyYN0
+         +6L6Qlp6gZrag==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Philip Yang <philip.yang@amd.com>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [variant b] drm/amdkfd: fix build error with missing AMD_IOMMU_V2
+Date:   Mon,  8 Mar 2021 21:45:49 +0100
+Message-Id: <20210308204606.2634726-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <006be822-697e-56d5-84a7-fa51f5087a34@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021, Paolo Bonzini wrote:
-> On 08/03/21 17:44, Sean Christopherson wrote:
-> > VMCALL is also probably ok
-> > in most scenarios, but patching L2's code from L0 KVM is sketchy.
-> 
-> I agree that patching is sketchy and I'll send a patch.  However...
-> 
-> > > The same is true for the VMware #GP interception case.
-> > 
-> > I highly doubt that will ever work out as intended for the modified IO #GP
-> > behavior.  The only way emulating #GP in L2 is correct if L1 wants to pass
-> > through the capabilities to L2, i.e. the I/O access isn't intercepted by L1.
-> > That seems unlikely.
-> 
-> ... not all hypervisors trap everything.  In particular in this case the
-> VMCS12 I/O permission bitmap should be consulted (which we do in
-> vmx_check_intercept_io), but if the I/O is not trapped by L1 it should
-> bypass the IOPL and TSS-bitmap checks in my opinion.
+From: Arnd Bergmann <arnd@arndb.de>
 
-I agree, _if_ it's not trapped.  But bypassing the checks when it is trapped is
-clearly wrong.
+Using 'imply AMD_IOMMU_V2' does not guarantee that the driver can link
+against the exported functions. If the GPU driver is built-in but the
+IOMMU driver is a loadable module, the kfd_iommu.c file is indeed
+built but does not work:
+
+x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_bind_process_to_device':
+kfd_iommu.c:(.text+0x516): undefined reference to `amd_iommu_bind_pasid'
+x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_unbind_process':
+kfd_iommu.c:(.text+0x691): undefined reference to `amd_iommu_unbind_pasid'
+x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_suspend':
+kfd_iommu.c:(.text+0x966): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0x97f): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0x9a4): undefined reference to `amd_iommu_free_device'
+x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_resume':
+kfd_iommu.c:(.text+0xa9a): undefined reference to `amd_iommu_init_device'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xadc): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xaff): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xc72): undefined reference to `amd_iommu_bind_pasid'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xe08): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xe26): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+x86_64-linux-ld: kfd_iommu.c:(.text+0xe42): undefined reference to `amd_iommu_free_device'
+
+Change the 'imply' to a weak dependency that still allows compiling
+in all other configurations but disallows the configuration that
+causes a link failure.
+
+Fixes: 64d1c3a43a6f ("drm/amdkfd: Centralize IOMMUv2 code and make it conditional")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpu/drm/amd/amdkfd/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/amdkfd/Kconfig b/drivers/gpu/drm/amd/amdkfd/Kconfig
+index f02c938f75da..d01dba2af3bb 100644
+--- a/drivers/gpu/drm/amd/amdkfd/Kconfig
++++ b/drivers/gpu/drm/amd/amdkfd/Kconfig
+@@ -6,7 +6,7 @@
+ config HSA_AMD
+ 	bool "HSA kernel driver for AMD GPU devices"
+ 	depends on DRM_AMDGPU && (X86_64 || ARM64 || PPC64)
+-	imply AMD_IOMMU_V2 if X86_64
++	depends on AMD_IOMMU_V2=y || DRM_AMDGPU=m
+ 	select HMM_MIRROR
+ 	select MMU_NOTIFIER
+ 	select DRM_AMDGPU_USERPTR
+-- 
+2.29.2
+
