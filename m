@@ -2,95 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42D9330B06
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE990330B0F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhCHKW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 05:22:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbhCHKWv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:22:51 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B53C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 02:22:51 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id kx1so2756810pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 02:22:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZYIHvck8Wqs9hpNy/KAZ+iWG7AzyxCt+S8U+aZRsEuA=;
-        b=jLy49ffwvy9I8Kiiej4yQBBWan23Hi+xkGjNBQa6L1XqbNoDVg/LKj4/GblTgggzLQ
-         SyyLsI/MTr/0fy9JyW1uM4BovONFNOrSI+TVY4oiEHjTycPSPaWDcQIFJrsKQ1OBQQcc
-         UxvSPa1DQG+kgIPUFv2pttYXIkyqwYsbn8nh7SA21+rGv9qhzjySQsZ97f9T1qyFlcw9
-         QydkzEISbGAXJZGlGeOfk3OuvUvRGo9CCGtZoDsQytmEMpiRwcupTNZC+/2Dom82GDi5
-         zGO1KlPgvljakxaSAtddLw8wuVJVTOMMZ6D/+ffqmLSLZNmYLHvaM17/d3zU9WiEhrGW
-         RILw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZYIHvck8Wqs9hpNy/KAZ+iWG7AzyxCt+S8U+aZRsEuA=;
-        b=mJXG081KZC5ja1eXY4DhoyakQhEs1W+/TCot3es9SqmboRy/eRxv7Q8ZS332k6bLrp
-         Ts+GPIchn4MvX43kW+kQJiLqMGq82jX7bgLPt+uGgPX3ldpN+cDlQ4UxC68DVnLJPK+Y
-         KUEtMz3fVGIQ2jXOPc6l1DnhgpJSIisA0oa7a1jGcc8teY4wFi0aCnQ+GmAgsOzdYXn5
-         XMFXCt9+WhV4223gte0i0vU1jE5GYfuTHYyPh7oAgNNdSLdYiFDOWZvFBDs7o1WQKFDM
-         HZeZ5ImDgY9wQxoC+YoBf7MWYLNOTOf+KRQRz4pMF0Tk8tL0Q2eWUEM5RhRdoe0KFIxs
-         csEA==
-X-Gm-Message-State: AOAM532bpl2lIDwhO7Vi2xRhX8HGstXHJmTFkjRkAWk9gz3lCcnCrUIM
-        c6+nB6Qs3YesrVLRiRK7Yp9K/NV+IpG3ykCkXio=
-X-Google-Smtp-Source: ABdhPJz4KmtkGs7piNazFBXXEYHkh7rjv7GAFUadt9SRlU/al2zZQGdUXaT1k/1yw0T9wdXnaqbPavhN/wj7V3KVXm0=
-X-Received: by 2002:a17:902:d2c1:b029:e5:ccfe:1e93 with SMTP id
- n1-20020a170902d2c1b02900e5ccfe1e93mr20309142plc.0.1615198970648; Mon, 08 Mar
- 2021 02:22:50 -0800 (PST)
+        id S229805AbhCHK0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 05:26:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229818AbhCHK0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 05:26:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C84FE65101;
+        Mon,  8 Mar 2021 10:26:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615199168;
+        bh=pVTgs4Pr6FSkT+T6A68uw3AFO3E3XyqGrFq4/W3q7Jg=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=hFDa2NSIA4xynalVVl+7CSHSbb8o4J84/UMycbU7vDKY6hfAfFNVOnSbK46ptpAe8
+         ZmlrujQryjveeWqKLJCo4qoRDmL3BkUmq4CTJZsMc/dHb19AhiXOCr7+u47J9bdIsr
+         k/8h/F8jswKearqFx3Ii2l6T99m/LpAJ/4wfe+gRJluY1WvOXkiIY5ib7OetYq9BKL
+         eMl8fJoFWjJc6ctRB0hLj6Df+Z9ZtsdEMSxThigUnalC8e/SntoFH/8+RCDpHhAZoA
+         oZIhwa6HqxoBF8smFXMHksDrcNoVHJowS8D0cAQYh4La2CWDks6Lwoko/Y/pM11Z8V
+         XfzQrsWENETCA==
+Date:   Mon, 8 Mar 2021 11:26:04 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Ye Xiang <xiang.ye@intel.com>
+cc:     jic23@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: intel_ish-hid: HBM: Use connected standby state
+ bit during suspend/resume
+In-Reply-To: <20210303062825.7724-1-xiang.ye@intel.com>
+Message-ID: <nycvar.YFH.7.76.2103081125380.12405@cbobk.fhfr.pm>
+References: <20210303062825.7724-1-xiang.ye@intel.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <20210305183948.37738-1-andriy.shevchenko@linux.intel.com>
- <20210305221951.GC2896@zn.tnic> <CAHp75VdoGShdAQFkx5PR-H6=csRA_ReaerDg6iy54AMJF+kaOg@mail.gmail.com>
- <20210308101719.GA12818@zn.tnic>
-In-Reply-To: <20210308101719.GA12818@zn.tnic>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 8 Mar 2021 12:22:34 +0200
-Message-ID: <CAHp75Vc=AvArhekQSufNA+0OsxnsQikmignNt7=+h_t5=Ks_6Q@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] scripts/decodecode: Decode 32-bit code correctly
- on x86_64
-To:     Borislav Petkov <bp@suse.de>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 12:17 PM Borislav Petkov <bp@suse.de> wrote:
->
-> On Mon, Mar 08, 2021 at 11:59:34AM +0200, Andy Shevchenko wrote:
-> > It works, but... The question here is why the script behaviour depends
-> > so much on the architecture in question (by environment). ARM stuff is
-> > using traditional ARCH (and that's what I have expected to work),
-> > while x86 has a set of other variables.
-> > So, I have to rephrase the commit message then and do actually an
-> > alias when ARCH is set in a certain way, Would it be better?
->
-> No, I have no clue what you're trying to accomplish. You wanted to
-> supply ARCH when decoding a 32-bit oops because you expected ARCH to
-> work...?
+On Wed, 3 Mar 2021, Ye Xiang wrote:
 
-Yes.
+> ISH firmware uses connected standby state bit (CONNECTED_STANDBY_STATE_BIT bit 1)
+> to notify current power state to sensors instead of suspend state bit (bit 0).
+> So send both SUSPEND_STATE_BIT and CONNECTED_STANDBY_STATE_BIT to firmware
+> to be compatible with the previous version.
 
-> AFLAGS has always been there, ARM folks added ARCH AFAIR. Also, you need
-> AFLAGS to compile the snippet in the correct bitsize.
->
-> And there's a usage note at the beginning of the script and I always
-> read it to make sure I'm using it right.
->
-> So what's the problem again?
+Could you please make the changelog more verbose -- namely what 
+user-visible issue this is fixing?
 
-Inconsistency.
-For the ARM we have to provide ARCH, for x86 a variety of all the flags.
+Thanks.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Jiri Kosina
+SUSE Labs
+
