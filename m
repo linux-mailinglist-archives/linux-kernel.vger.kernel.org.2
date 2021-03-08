@@ -2,142 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9513315E5
+	by mail.lfdr.de (Postfix) with ESMTP id AACFF3315E6
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhCHSYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:24:09 -0500
-Received: from mail-dm6nam11on2076.outbound.protection.outlook.com ([40.107.223.76]:42240
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229775AbhCHSXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:23:44 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mOApJggLRepivMckRZCbdGWg8PLPQ6G7yfEcQOw8PbfMSl4fC0FrPyKgNtWbg3U1apLscKK4V6MwrbHHFqFiakx17CR95yn0Bf0PMizNvpGrQrHp1W8FCdKPfZYJaSNKA4/vM/BPTx63rZHffePW8UIqeKLl4uCq2qyxyzruH1FTemD+gXYaGd+rpG7gk/z8eeZX+Ub2KHItdfy9tAZiVhJ1EKR+hIXUOYRxhPdE6JRIwyXJ0G9+5yWyhMJ6ZLM9atncwuSfJxVCvEpbuJ//1FiU1l8hKYRhHAzVKsINHHvW3kpsrz1JE0wskPpRHiLovrdrvjQCN5BhhVK503Cxew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BOyjHZzv38LdhpRmhtoifbdS6BFOY3aKVTfUCe1n9Jc=;
- b=mU6cUjWxjgep2mnm1K4x8+wA60FjjE4LIX9KNyDEYqMEqOgicskN8wLISSPULcfHxOl1VWxWG8+ILrVRP85WCOUUQ6e3ThAeULdgcx3d/+iGjQix833+dLkxEOWftAflNqI31d2Ct9W4fJ/m3tykcGPM6184WPTTeOxak/Y/tVcPX6tcyybhWFf5H5cWCZGuv5rcI4TVhuLMfVh3zaJDTSpHOZhTjCkHoihnVlKNRZsrGRRukd6B+mDk+DcTFrSba7gyiLnMrZBmy3zDNBPvs1HCh4mMUdGpiap6UuhDEN3qO3j3iWzlH99lnjMi0by6hxiUlJQMa+Q+WGoasz9PyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BOyjHZzv38LdhpRmhtoifbdS6BFOY3aKVTfUCe1n9Jc=;
- b=ZtqFOjhexK8S/ob2RPWLYRkrPRnWaakv4jshFU/wcLqDSpjG32mQsEBvZ7YqeWt4O4wymYQK6QyDAgUH2TPr1WPgQ2o67IZ1iAkiWTzxPAwrSsJQ09Yqcnmbku93MwAXmkXRZ/vkheWa+zMwHs9WHa3VjmCWHZNuVE2rVmD+E2w=
-Received: from DM6PR12CA0034.namprd12.prod.outlook.com (2603:10b6:5:1c0::47)
- by MWHPR1201MB0205.namprd12.prod.outlook.com (2603:10b6:301:4e::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.26; Mon, 8 Mar
- 2021 18:23:39 +0000
-Received: from DM6NAM11FT066.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:1c0:cafe::42) by DM6PR12CA0034.outlook.office365.com
- (2603:10b6:5:1c0::47) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
- Transport; Mon, 8 Mar 2021 18:23:39 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT066.mail.protection.outlook.com (10.13.173.179) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3912.17 via Frontend Transport; Mon, 8 Mar 2021 18:23:38 +0000
-Received: from [172.27.13.167] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 8 Mar
- 2021 18:23:35 +0000
-Subject: Re: [PATCH] net/mlx5e: include net/nexthop.h where needed
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        "Leon Romanovsky" <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Dmytro Linkin <dlinkin@nvidia.com>,
-        Vlad Buslov <vladbu@nvidia.com>
-CC:     Arnd Bergmann <arnd@arndb.de>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210308153143.2392122-1-arnd@kernel.org>
-From:   Roi Dayan <roid@nvidia.com>
-Message-ID: <5fd5e630-0db2-f83b-63c8-265c4ac372e8@nvidia.com>
-Date:   Mon, 8 Mar 2021 20:23:32 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231249AbhCHSYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:24:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229818AbhCHSXr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 13:23:47 -0500
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3BBC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 10:23:47 -0800 (PST)
+Received: by mail-ot1-x332.google.com with SMTP id r24so3075716otq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 10:23:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cGHCLycZHBWZ0duqYIFRsUMi3zHTz7IK7hAS4RS/bmg=;
+        b=Rtmi8XZTyOF53wugdQDusYWUDYYyGAE6XTRI+Dt569AF8OKWluaj+P89OlbzbQQF2n
+         eQEf6EoncvhyaMctYdr3y+2yRn1GEBUL3V3cRFiH1aJrCG/CgQfdBJN8W2secDAd2jic
+         9vSAV80F2FujNNWBnLc+lON9u359GJFW6lft05gzgHGsDe03pwpi4/HJMYFySyFdrgOo
+         uGsJXJgQotrkIqx1zV82BwoFFQv/slZVgqREGMrFCSnLQorZGnJ7V/3kTuJ3/eS7nMFV
+         WwO9mGBSd1tK0Z/HF/KFPBGwiyFvW9EIwocW5hVu8ShPIarMhWmU5QC+ZRLcFbtab8n3
+         g6Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cGHCLycZHBWZ0duqYIFRsUMi3zHTz7IK7hAS4RS/bmg=;
+        b=R5Sag3vV6a0bZlj8PfwWib8X8zb/7zJRnzzQfpUpCS/1xOdKxWGFqsUPIv+y93ZTGS
+         oxrJAvKOdfzJiChfUfrZHlyzmAJZSEcLBpaT4Cdb31pvmqXaDWDuYN2zfhpvMm7kHqhh
+         iuP9eWnFTeDlYzkye1Ac17mZpvHbDfvtLa5rnEo0lQ/x0jOW6t+Px/zSnsJVxoFxAnsf
+         q68lQM0XwBFenQ0IdAE0azNOeJtcuGUJOU8pQH7MBxC4hVlLeGZmignQ7W8V5Idsdixh
+         PUaFVoPJIbjEI2lsv5JyJYKAmPlJ+uj5N9Z6YllLEH/fcJZyt8fNQ+4w8Zq52NmjSbhG
+         3zSA==
+X-Gm-Message-State: AOAM533Kk4eG5/+V6xNekg0mjczi5chJqFDp6B8Enq4iRWSOFVGeqPFH
+        H53ZIoukyWPwfE3/i4h1AmZ29Y5ZsJPntUJ3S4bkTcyAAF0gpw==
+X-Google-Smtp-Source: ABdhPJwZw+WGwQktQsPmSG00uOfeZRVrt/a3O7PS93kZvM4f0mGfHsOWemqoCff4Den0OSKEJi46aowYWN+X/Iz+8ro=
+X-Received: by 2002:a9d:644a:: with SMTP id m10mr21357256otl.233.1615227826234;
+ Mon, 08 Mar 2021 10:23:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210308153143.2392122-1-arnd@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0d62fecb-1a7f-4fd2-392a-08d8e25f4b51
-X-MS-TrafficTypeDiagnostic: MWHPR1201MB0205:
-X-Microsoft-Antispam-PRVS: <MWHPR1201MB0205D244E1491112AC6DDAB6B8939@MWHPR1201MB0205.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:126;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9ttofbVBvnsuMVXoIghk+icP+RRdNnJi8GhsEWhpyu/fYmb1CAWXCG/Ked1WssoHGuyItJjF9a0mbp1uUS2Gn3v9+DJwJzQXl4FYleFQfaR4fVCewRQ55FJDdgZgNvGIh4hC8igvuNq52o8id6hugw86xxm3l1KfZgQR4/ph9OvjsTkiU3iItEo6Sl4u36xJGUydObENhePyvMDjoAudol34PamdcRMz3tKWJ58zgEedOdpXRa7N+vNEgG6ez5pj9w185sAFA/MZaeWaDi8yrI4ObjnbKUzI2NrvvwH+PJvraqabcfc9Z62sApwMX70TikdgI6gFn7JPmfTm+BiTyU6hE3mPmcWn/6Y8/YkwmRfZUWsPQkt9/MW0C5YKsBJUC9DRm1lRFyuAflfowwd9Wn7S27m0MKdxz4IMUbKuO7BPAkkSXSbVUbox7/l+yOXfJscR4EWihRwoQyBN32qfuWvODE7Gg13js9TpjDdamJUap8Q/jpcixjWj3coK31oVLsrx2GtyDw1S8LirG6t5UwBrlwTMjLCcfyIP80o/3/UInTQZcFzZoWeJ2nKUS00nSw1mQmKMEpp2JbP1rSWoNn8a15mPJGp0bTWCgK5Tv8nxFS9h4hfSVTgS+LPl6zZnxleMz8slC7UG/SMWxYA4by7L5m1RO9yXh1+UAhW3vR+ZHTMjDK43PrPCNskc+uPW/2FxD5QhYMe593JEmSmE2+t25YL8hk8ISjUvAZpBruU=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(346002)(376002)(46966006)(36840700001)(426003)(7636003)(6636002)(186003)(16526019)(356005)(53546011)(47076005)(83380400001)(70586007)(31696002)(5660300002)(70206006)(6666004)(34020700004)(82310400003)(36756003)(54906003)(36860700001)(2906002)(26005)(86362001)(8676002)(8936002)(4326008)(478600001)(16576012)(110136005)(2616005)(36906005)(336012)(316002)(82740400003)(31686004)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 18:23:38.5190
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d62fecb-1a7f-4fd2-392a-08d8e25f4b51
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT066.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0205
+References: <20210305194206.3165917-1-elver@google.com> <20210305194206.3165917-2-elver@google.com>
+ <YEX5fyB16dF6N4Iu@alley> <CAMuHMdUDqcWfE67g2ah-JyL3H9-G_5nrtQLyq0A3OXTKPFXv6w@mail.gmail.com>
+ <YEZdo0L8otuEJZNW@alley>
+In-Reply-To: <YEZdo0L8otuEJZNW@alley>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 8 Mar 2021 19:23:34 +0100
+Message-ID: <CANpmjNOS86kLPexXBZPwRB9=Ej6RHycJXCw_Z7cskMC+Jwb1Ag@mail.gmail.com>
+Subject: Re: [PATCH 2/2] lib/vsprintf: reduce space taken by no_hash_pointers warning
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Timur Tabi <timur@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 8 Mar 2021 at 18:23, Petr Mladek <pmladek@suse.com> wrote:
+[...]
+> > I'm actually concerned about both.  Platforms (and boot loaders) may
+> > have limitations for kernel image size, too.
+> > Static memory consumption is also more easily measured, so I tend
+> > to run bloat-o-meter, and dive into anything that adds more than 1 KiB.
+> > And yes, this message is a low-hanging fruit...
+>
+> OK, I wondered how big trick does the  __initconst on its own.
+>
+> 1. I compiled kernel without this patchset:
+>
+> $# ll /boot/vmlinux-5.12.0-rc2-default+.bz2
+> -rwxr-xr-x 1 root root 18911364 Mar  8 15:58 /boot/vmlinux-5.12.0-rc2-def=
+ault+.bz2
+>
+> 2. With this patchset:
+>
+> $# ll /boot/vmlinux-5.12.0-rc2-default+.bz2
+> -rwxr-xr-x 1 root root 18910767 Mar  8 16:16 /boot/vmlinux-5.12.0-rc2-def=
+ault+.bz2
+> $# echo $((18910767 - 18911364))
+> -597
+>
+> 3. With the patch below:
+>
+> $# ll /boot/vmlinux-5.12.0-rc2-default+.bz2
+> -rwxr-xr-x 1 root root 18910906 Mar  8 16:58 /boot/vmlinux-5.12.0-rc2-def=
+ault+.bz2
+> $# echo $((18910906 - 18911364))
+> -458
+>
+> This patchset saves 139B more than a simple array.
+>
+>
+> Well, I am a bit confused. I have tried to keep the strings as a
+> static variable outside the function:
+>
+> static const char *no_hash_pointers_warning[] __initconst =3D {
+>         ...
+>
+> and I got the following build error:
+>
+>   CC      lib/vsprintf.o
+> lib/vsprintf.c:2097:20: error: no_hash_pointers_warning causes a section =
+type conflict with __setup_str_no_hash_pointers_enable
+>  static const char *no_hash_pointers_warning[] __initconst =3D {
 
+This does not place the strings themselves into the initconst section,
+but only the array of pointers to them. So, with 13 lines, we're
+merely saving 13*sizeof(char*) after init, which does not resolve
+Geert's problem of runtime overhead.
 
-On 2021-03-08 5:31 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:1510:12: error: implicit declaration of function 'fib_info_nh' [-Werror,-Wimplicit-function-declaration]
->          fib_dev = fib_info_nh(fen_info->fi, 0)->fib_nh_dev;
->                    ^
-> drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:1510:12: note: did you mean 'fib_info_put'?
-> include/net/ip_fib.h:529:20: note: 'fib_info_put' declared here
-> static inline void fib_info_put(struct fib_info *fi)
+To dealloc the string text itself (remove the section), each line must
+be placed into a 'char[N] __initconst' (or 'char [M][N] __initconst'
+if we split the lines).
+
+>                     ^~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from ./include/linux/printk.h:6:0,
+>                  from ./include/linux/kernel.h:16,
+>                  from ./include/linux/clk.h:13,
+>                  from lib/vsprintf.c:22:
+> ./include/linux/init.h:315:20: note: =E2=80=98__setup_str_no_hash_pointer=
+s_enable=E2=80=99 was declared here
+>   static const char __setup_str_##unique_id[] __initconst  \
 >                     ^
-> 
-> Fixes: 8914add2c9e5 ("net/mlx5e: Handle FIB events to update tunnel endpoint device")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
-> index 6a116335bb21..32d06fe94acc 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
-> @@ -2,6 +2,7 @@
->   /* Copyright (c) 2021 Mellanox Technologies. */
->   
->   #include <net/fib_notifier.h>
-> +#include <net/nexthop.h>
->   #include "tc_tun_encap.h"
->   #include "en_tc.h"
->   #include "tc_tun.h"
-> 
+> ./include/linux/init.h:330:2: note: in expansion of macro =E2=80=98__setu=
+p_param=E2=80=99
+>   __setup_param(str, fn, fn, 1)
+>   ^~~~~~~~~~~~~
+> lib/vsprintf.c:2127:1: note: in expansion of macro =E2=80=98early_param=
+=E2=80=99
+>  early_param("no_hash_pointers", no_hash_pointers_enable);
+>  ^~~~~~~~~~~
+>
+>
+> I solved this be defining the array inside the function that is marked
+> __init. But I am not sure if it is the correct solution. And I wonder
+> why the original patch did not have this problem.
+>
+> Also I am curious why the array reduced the size of the binary so
+> significantly in compare with the const strings used as pr_warn()
+> arguments. It might depend on the compression method or???
+>
+>
+> Anyway, here is the patch that works for me and reduced the size of
+> the binary considerably:
+>
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index 4a14889ccb35..af01edae0d86 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -2096,24 +2096,30 @@ EXPORT_SYMBOL_GPL(no_hash_pointers);
+>
+>  static int __init no_hash_pointers_enable(char *str)
+>  {
+> +       int i;
+> +       const char *no_hash_pointers_warning[] =3D {
+> +               "********************************************************=
+**",
+> +               "**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   =
+**",
+> +               "**                                                      =
+**",
+> +               "** This system shows unhashed kernel memory addresses   =
+**",
+> +               "** via the console, logs, and other interfaces. This    =
+**",
+> +               "** might reduce the security of your system.            =
+**",
+> +               "**                                                      =
+**",
+> +               "** If you see this message and you are not debugging    =
+**",
+> +               "** the kernel, report this immediately to your system   =
+**",
+> +               "** administrator!                                       =
+**",
+> +               "**                                                      =
+**",
+> +               "**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   =
+**",
+> +               "********************************************************=
+**",
+> +       };
+> +
 
-Hi,
+This has no __initconst optimization (no runtime savings), and the
+compiler places these strings into the data section and the above
+array is just an array of pointers to them.
 
-I see internally we have a pending commit from Vlad fixing this already,
-with few more fixes. "net/mlx5e: Add missing include"
+>         if (no_hash_pointers)
+>                 return 0;
+>
+>         no_hash_pointers =3D true;
+>
+> -       pr_warn("********************************************************=
+**\n");
+> -       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   =
+**\n");
+> -       pr_warn("**                                                      =
+**\n");
+> -       pr_warn("** This system shows unhashed kernel memory addresses   =
+**\n");
+> -       pr_warn("** via the console, logs, and other interfaces. This    =
+**\n");
+> -       pr_warn("** might reduce the security of your system.            =
+**\n");
+> -       pr_warn("**                                                      =
+**\n");
+> -       pr_warn("** If you see this message and you are not debugging    =
+**\n");
+> -       pr_warn("** the kernel, report this immediately to your system   =
+**\n");
 
-I'll check why it's being held.
+While we're here: This paragraph can be shortened by saying what
+kernel/trace/trace.c says ("..., report this immediately to your
+vendor!") which avoids the "administrator! <lots of wasted spaces>".
 
-Thanks,
-Roi
+> -       pr_warn("** administrator!                                       =
+**\n");
+> -       pr_warn("**                                                      =
+**\n");
+> -       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   =
+**\n");
+> -       pr_warn("********************************************************=
+**\n");
+> +       for (i =3D 0; i < ARRAY_SIZE(no_hash_pointers_warning); i++)
+> +               pr_warn("%s\n", no_hash_pointers_warning[i]);
+
+My guess is that the savings came from repeated calls to pr_warn() and
+reduction in code-size and compression working better.
+
+>         return 0;
+>  }
+>
+>
+> Honestly, I do not want to spend much more time on this. I made the
+> test out of curiosity.
+>
+> Feel free to provide the patch using the array, ideally with some
+> numbers how it helps. But please _avoid_ the indirection via
+>
+>     const int lines[] =3D { 0, 1, -1, 2, 3, 4, -1, 5, 6, 7, -1, 1, 0 };
+
+We can probably do without this, but we'll have duplicated lines
+stored in the initconst section.
+
+> and also _avoid_ all the hardcoded constants, like:
+>
+>       no_hash_pointers_warning[8][55]
+
+We'll need this if we want __initconst. But perhaps we do not have to
+split it by lines, so we can get away with a char[].
+
+> and
+>
+>       pr_warn("**%54s**\n"
+>
+> They are error prone and hard to maintain. Such tricks are not
+> worth it from my POV.
+
+I can send the version with a single 'static char[] __initconst', but
+that version doesn't dedup lines and requires more init memory. I
+don't know if we can make everybody happy here, we have to sacrifice
+something: readability or space.
