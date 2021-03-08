@@ -2,135 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1341B331285
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4DC33128B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:51:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhCHPsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 10:48:38 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:40179 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229459AbhCHPsM (ORCPT
+        id S230050AbhCHPvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 10:51:25 -0500
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:42543 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhCHPvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 10:48:12 -0500
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id AB1B75C0065;
-        Mon,  8 Mar 2021 10:48:11 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Mon, 08 Mar 2021 10:48:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=RnEavwGRxlLSFmOVcdiWgzlkElE
-        f0ZIkYfj/r5zG3Wo=; b=XdreZdBc//ytwXMmasq02zF0VA4DGLNLJb9hV0HRyXd
-        gG77hNpUCuBAkbaxuXNmG+/L6Qeh6eM/AjrUa07DhJ3ELpTMtTzNVNr8+LrUW7+E
-        Q3IQdFvDs+eCo9TMzTHaW1SZcfeO4HPDO5uB/omdKJC8Y9A/FxacmSTT+D47FdOa
-        TT3oxsJUwzPnmWEoTLrJ8q1G8/us3jp4RNhFG8r5gElfZkzveVY6dhhz3jlsLpMf
-        ensOhBaueDaWzV4VZhYOcNiqiqG+uf1DhcYhyP2j2W3HfQW897bjB5eeErrpcaQA
-        JHktSOUjle8WIHikb0HXYW7aCbffAdMAA53BhSB9RKQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=RnEavw
-        GRxlLSFmOVcdiWgzlkElEf0ZIkYfj/r5zG3Wo=; b=gRYJAiztJyXDzLiWkKvVjc
-        0zkkeYDEyvZUZgvl4SeeZbblynI829UL2DnKAPJ2Z7uzfcXXSahlKXuB+xJzYR1n
-        vV3VBsC675yXt6hR7uK3iwNi756bNl4dRIQe2pmWj9p5oKJZMzR4B6ShSU6TKqT+
-        VyIAQia1RNILgnsAewRG+zprTGNjDlhnxjW0FP98vpkKSP7M9dedstvMw1/X4fJM
-        fCkQhfyb5KrNS97bLdofPkaRbkbikoWSmJWa2xgVJZLpLWZXnKaAUkwGrfzIfjXg
-        e8BqCfOz3QfNkP4JP2ZAHAcW3rgBP5LD+MR+mfKq2qCoT4Us4CrAmu/wJmcDPfVA
-        ==
-X-ME-Sender: <xms:OEdGYI4xOgWHKxF8oYJIWM_5kPKMUDd-ReuABU6S25G-HWXC_lozTw>
-    <xme:OEdGYKVj1ma6a787As77OmrSV8oyxCTDD6C7vSFLuMCSIuQjjbsZpLtdceaW7R5kg
-    ANwJQGc072e7DIY18g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddugedgudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepuddvudfhkeekhefgffetffelgffftdehffduffegveetffehueeivddvjedv
-    gfevnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:OUdGYIKn8SFj0xhyGox_ApzXUAtzuSqHkfzpT8NwAfbMQvIBVQI0Xg>
-    <xmx:OUdGYEsFBzAaXp2wpuO6H5LhGdwY3M0YVjZ4DAcTCEgWPWR-zedTMw>
-    <xmx:OUdGYNLbiCCIrQriLzJV4byrEaeLVUDLjIzubQNhB9xeNAerb_zj_g>
-    <xmx:O0dGYIhyqHhqOhj3RZwG4HS5hXiBCcxo_q5bQuMtafdbxTbLViSReA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C051F1080067;
-        Mon,  8 Mar 2021 10:48:08 -0500 (EST)
-Date:   Mon, 8 Mar 2021 16:48:07 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     lee.jones@linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Emilio =?utf-8?B?TMOzcGV6?= <emilio@elopez.com.ar>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Boris BREZILLON <boris.brezillon@free-electrons.com>,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH 1/1] clk: sunxi: Demote non-conformant kernel-doc headers
-Message-ID: <20210308154807.j6llubzzbcxd6b55@gilmour>
-References: <20210303142430.3168703-1-lee.jones@linaro.org>
- <161481702291.1478170.841537456605456317@swboyd.mtv.corp.google.com>
+        Mon, 8 Mar 2021 10:51:01 -0500
+Received: by mail-lf1-f43.google.com with SMTP id v2so8728764lft.9;
+        Mon, 08 Mar 2021 07:51:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
+         :content-transfer-encoding;
+        bh=UrJzfLcCnxaOoFMAc3IPMH6xpm/uARcRnsEzoAN4jHA=;
+        b=Dx0fTIdrXjLLrEGzfmiiXzJ+AHjtlJZbmq/jml6KCXdVXowmz2/o/9HzP58JrgjO7O
+         7w5Tup7PrG4Rr2lGmMjnWekTcj3ncZ4Ok1kBkmShOvcl+FeLXZk5tfWjKYSmbe1xYXJo
+         ISapw9SSIT60+ZwKVxxFEh3C8PUBuh6X9HmThYh+ePcPsKp4D8MREisX9xxPfoAGBvvf
+         Jvy1a5EgjHDy9RU4Vzde6PHw6s5KjP0mvAskhHQ+b4yvVfWFJOLtXLqf1Ftqivlpci7I
+         QdgA/Pq4UO9OANHMj+81W9bD9zASO668rErw9quiDKt6rw1d5VfobeU3+hD9BOJ+Jgnu
+         nLyg==
+X-Gm-Message-State: AOAM532EdjZxS9gpO43Ti97kLON6Abp1X3RyorvfbeOIojmxTXgrNhWm
+        oPb/gwcVgn8gyY6RcK2txAw=
+X-Google-Smtp-Source: ABdhPJxoyXnbpdM/D2fjc5EUGz/Z3ZrzCRGnl9KHOF6ceqpGX4pIJMnb4so3trDy9QAXWzp2l5kFzA==
+X-Received: by 2002:a19:d61a:: with SMTP id n26mr14346288lfg.383.1615218660426;
+        Mon, 08 Mar 2021 07:51:00 -0800 (PST)
+Received: from dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
+        by smtp.gmail.com with ESMTPSA id o11sm1388325lfu.157.2021.03.08.07.50.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 07:51:00 -0800 (PST)
+Message-ID: <7ca68ba756672ab937550f6ffd2b07dbd1b021d1.camel@fi.rohmeurope.com>
+Subject: Re: [PATCH] power: supply: max8997_charger: make EXTCON dependency
+ unconditional
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Timon Baetz <timon.baetz@protonmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210308152935.2263935-1-arnd@kernel.org>
+References: <20210308152935.2263935-1-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cdun35vxb6d37qvr"
-Content-Disposition: inline
-In-Reply-To: <161481702291.1478170.841537456605456317@swboyd.mtv.corp.google.com>
+Date:   Mon, 08 Mar 2021 17:50:54 +0200
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Arnd,
 
---cdun35vxb6d37qvr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, 2021-03-08 at 16:29 +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> I assume there is no reason to actually build this driver without
+> extcon
+> support, so a hard dependency is the easiest fix. Alternatively the
+> header file could be extended to provide additional inline stubs.
 
-On Wed, Mar 03, 2021 at 04:17:02PM -0800, Stephen Boyd wrote:
-> Quoting Lee Jones (2021-03-03 06:24:30)
-> > Headers must describe their parameters.
-> >=20
-> > Fixes the following W=3D1 kernel build warning(s):
-> >=20
-> >  drivers/clk/sunxi/clk-sun9i-core.c:27: warning: Function parameter or =
-member 'req' not described in 'sun9i_a80_get_pll4_factors'
-> >  drivers/clk/sunxi/clk-sun9i-core.c:100: warning: Function parameter or=
- member 'req' not described in 'sun9i_a80_get_gt_factors'
-> >  drivers/clk/sunxi/clk-sun9i-core.c:155: warning: Function parameter or=
- member 'req' not described in 'sun9i_a80_get_ahb_factors'
-> >  drivers/clk/sunxi/clk-sun9i-core.c:235: warning: Function parameter or=
- member 'req' not described in 'sun9i_a80_get_apb1_factors'
-> >  drivers/clk/sunxi/clk-usb.c:22: warning: cannot understand function pr=
-ototype: 'struct usb_reset_data '
-> >  drivers/clk/sunxi/clk-sun6i-ar100.c:26: warning: Function parameter or=
- member 'req' not described in 'sun6i_get_ar100_factors'
-> >=20
-> > Cc: "Emilio L=F3pez" <emilio@elopez.com.ar>
-> > Cc: Michael Turquette <mturquette@baylibre.com>
-> > Cc: Stephen Boyd <sboyd@kernel.org>
-> > Cc: Maxime Ripard <mripard@kernel.org>
-> > Cc: Chen-Yu Tsai <wens@csie.org>
-> > Cc: Jernej Skrabec <jernej.skrabec@siol.net>
-> > Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>
-> > Cc: linux-clk@vger.kernel.org
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
->=20
-> Acked-by: Stephen Boyd <sboyd@kernel.org>
+I am absolutely not insisting this but it would be better if there was
+no hard dependency. I've tried couple of times to do changes to bunch
+of drivers (added some devm-functionality or generic definitions or -
+you name it) and I always end up at least compile-testing changes to
+multiple drivers. I always repeat following:
 
-Applied
+1. Manually hack the Makefiles to compile changed drivers as modules
 
-Maxime
+2. Try CONFIG_COMPLILE_TEST
+ - unfortunately not too widely supported
 
---cdun35vxb6d37qvr
-Content-Type: application/pgp-signature; name="signature.asc"
+3. Manually hack more to get drivers with 'hard dependencies' compiled
+- occasionally ending up to commenting out the calls with dependencies.
 
------BEGIN PGP SIGNATURE-----
+So, if adding the stub is straightforward I'd vote for it.
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYEZHNwAKCRDj7w1vZxhR
-xU79AQCzPtUTayiFwjMgMYuzW273X0qfnDb37uGFa9+2V+439gEAiFJYrZRzfL6R
-1WCIHHBYcwz2hpCP6tXrurZuB9tEIwk=
-=ZcjV
------END PGP SIGNATURE-----
+But I guess you know this quite well so I am just giving my 10 cents -
+decision can be yours :)
 
---cdun35vxb6d37qvr--
+Best Regards
+	Matti Vaittinen
+
+--
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland
+SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+
+Simon says - in Latin please.
+"non cogito me" dixit Rene Descarte, deinde evanescavit
+
+(Thanks for the translation Simon)
+
+
