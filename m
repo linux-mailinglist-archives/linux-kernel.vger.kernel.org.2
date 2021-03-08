@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A073312F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E11B93312E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbhCHQJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:09:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41294 "EHLO mail.kernel.org"
+        id S230439AbhCHQIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:08:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229469AbhCHQId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:08:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8858A65224;
-        Mon,  8 Mar 2021 16:08:32 +0000 (UTC)
+        id S229893AbhCHQH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 11:07:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F2D36521D;
+        Mon,  8 Mar 2021 16:07:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615219713;
-        bh=JV7A9FCjhMwuMmlXCfqQxddIGS3wPZPZjwAOeGbs15c=;
+        s=k20201202; t=1615219678;
+        bh=KpYN8PI6rGont5GCMsXRfQCE5sVoEvl9dlIQ+/e+4nI=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=FKYEhmyFIhBnWq40vKwL8LkMzD7lhL06vlE+F4doSaAHlbKFgmbnOTwZw42eJgMNr
-         LI5++EEs/xtrn/Xa3NGw6SJlaysLL/ivJbLtGtTRZQCQGCdtc4RYJS4cuLXxgQ+048
-         3DObcknD4u57IocmCMDNuS6gYMMWckk+aCBDn3t4QQG0paiybjuvO4FyQEsvAJRcRU
-         57RQWzPhQZtwDfG795/26r3Aj/fBE/FMNRBipVjpHzwiJDbvDK/Xjl41CVKpkAVaNg
-         opDZxNG2+8oSRQjGWMs13tmMIFHdTF1TJbxc1PYBtB8NQUdHIhaB6irnVw92N8CHvU
-         Qk2JSAxZ1Oimw==
+        b=oxyBs0armHmACQCSY6zvCid+PObSGxP5msB5rpVgTWSerdvtpBjgd9xKC8SROTJ22
+         Lh6gnMy1khD3D27x4jG5GLGwhkTyXlo0aeWqtYOhce1jtQIukYJTGHhZnqJeZfohIh
+         8vrKaVokZGxX5DBPqfGdVAg5Mfpug4qflalhC7pS2WDB5W+m48sl+5611mDD8L1q1A
+         VoeSDD+gmoe7yKluxFAcjKQTXpnhH6zSozwGd9TbdCxgKglLFAuhpO4+TB7QhtlN3f
+         Z/u/m352+l1KQ/xrODLui6eD0ysolDAivtDrMFP0Zjvw02QeKpc1XL4zDb2/l97Jze
+         RlHkCnXAgFPBA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Cc:     Banajit Goswami <bgoswami@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:QCOM AUDIO ASoC DRIVERS" 
-        <alsa-devel@alsa-project.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+To:     David Rhodes <david.rhodes@cirrus.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        James Schulman <james.schulman@cirrus.com>,
+        Lucas Tanure <tanureal@opensource.cirrus.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20210304215646.17956-1-jonathan@marek.ca>
-References: <20210304215646.17956-1-jonathan@marek.ca>
-Subject: Re: [PATCH] ASoC: codecs: lpass-va-macro: mute/unmute all active decimators
-Message-Id: <161521960848.9621.4204009948012215992.b4-ty@kernel.org>
+        Takashi Iwai <tiwai@suse.com>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        patches@opensource.cirrus.com
+In-Reply-To: <20210305173442.195740-1-tanureal@opensource.cirrus.com>
+References: <20210305173442.195740-1-tanureal@opensource.cirrus.com>
+Subject: Re: (subset) [PATCH v2 00/15] Report jack and button detection + Capture Support
+Message-Id: <161521960848.9621.15428448037752400716.b4-ty@kernel.org>
 Date:   Mon, 08 Mar 2021 16:06:48 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -45,13 +45,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 16:56:46 -0500, Jonathan Marek wrote:
-> An interface can have multiple decimators enabled, so loop over all active
-> decimators. Otherwise only one channel will be unmuted, and other channels
-> will be zero. This fixes recording from dual DMIC as a single two channel
-> stream.
+On Fri, 5 Mar 2021 17:34:27 +0000, Lucas Tanure wrote:
+> Here is a patch series for reporting to user space jack and button events and
+> add the support for Capture. With some cleanups and fixes along the way.
 > 
-> Also remove the now unused "active_decimator" field.
+> Regards,
+> 
+> Lucas Tanure
+> 
+> [...]
 
 Applied to
 
@@ -59,8 +61,16 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: lpass-va-macro: mute/unmute all active decimators
-      commit: adda199c1ea2bfb02e73829e6f1d374075958c1f
+[01/15] ASoC: cs42l42: Fix Bitclock polarity inversion
+        commit: 97e2b5e5dcd543cd4d85ecb1bfa2a9721a08f411
+[02/15] ASoC: cs42l42: Fix channel width support
+        commit: 3656667e66858fef45017c8e7c73e9918ed23915
+[03/15] ASoC: cs42l42: Fix mixer volume control
+        commit: a2ddc577ee4641889bf105d4d6e05be415bd4462
+[04/15] ASoC: cs42l42: Don't enable/disable regulator at Bias Level
+        commit: 9ad4f9ea976e05d4eba62ea58c7c7c45705b80a1
+[05/15] ASoC: cs42l42: Always wait at least 3ms after reset
+        commit: ddaa9bea4ffaba50f814585f294a5d98641b41ad
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
