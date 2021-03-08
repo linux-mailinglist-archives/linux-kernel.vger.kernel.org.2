@@ -2,130 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E393314BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABAD93314BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhCHRZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 12:25:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231208AbhCHRYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:24:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A52356520F;
-        Mon,  8 Mar 2021 17:24:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615224287;
-        bh=mM7ct2vgRlQeJ6mmmYx4ShAL1KKFFLg9U+ZCmnf0rDA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ox8FtV0m2DJVYbt3iY5k+JsCuBCZYeAax/5KG5HDdHKEeeI8sCl3nSGWG3yxIemTQ
-         zo57Q6vcHbPtuQ3m++iZxB3o17ukYqBu+NyjDs2esBwc2yzujLL0srdvXbrkEFBJBk
-         TuOz/byGz6rgCi4wOlsohTDSEYC+AgfW5dtmIhnk=
-Date:   Mon, 8 Mar 2021 18:24:44 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Alexander Graf <graf@amazon.com>
-Cc:     Adrian Catangiu <acatan@amazon.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, qemu-devel@nongnu.org,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        rdunlap@infradead.org, arnd@arndb.de, ebiederm@xmission.com,
-        rppt@kernel.org, 0x7f454c46@gmail.com, borntraeger@de.ibm.com,
-        Jason@zx2c4.com, jannh@google.com, w@1wt.eu, colmmacc@amazon.com,
-        luto@kernel.org, tytso@mit.edu, ebiggers@kernel.org,
-        dwmw@amazon.co.uk, bonzini@gnu.org, sblbir@amazon.com,
-        raduweis@amazon.com, corbet@lwn.net, mst@redhat.com,
-        mhocko@kernel.org, rafael@kernel.org, pavel@ucw.cz,
-        mpe@ellerman.id.au, areber@redhat.com, ovzxemul@gmail.com,
-        avagin@gmail.com, ptikhomirov@virtuozzo.com, gil@azul.com,
-        asmehra@redhat.com, dgunigun@redhat.com, vijaysun@ca.ibm.com,
-        oridgar@gmail.com, ghammer@redhat.com
-Subject: Re: [PATCH v8] drivers/misc: sysgenid: add system generation id
- driver
-Message-ID: <YEZd3It1llq9ctPN@kroah.com>
-References: <1615213083-29869-1-git-send-email-acatan@amazon.com>
- <YEY2b1QU5RxozL0r@kroah.com>
- <a61c976f-b362-bb60-50a5-04073360e702@amazon.com>
+        id S231266AbhCHRZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:25:04 -0500
+Received: from mail-il1-f172.google.com ([209.85.166.172]:43831 "EHLO
+        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231224AbhCHRYx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 12:24:53 -0500
+Received: by mail-il1-f172.google.com with SMTP id b5so9514839ilq.10;
+        Mon, 08 Mar 2021 09:24:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=R8gKey3dqPPlv14cbiWtlikKVEw7APesOnqMJJKljpo=;
+        b=dma5AT4kasJV1mq4Xip1CUm8H5E7B6T0yy3YFHBJ5tapZUD1kCmzIdFFYU+I4axNnS
+         Xh2d/OOMz7DPq2UDTHP1Ce9vmWsqFYDibqmOA23osn8GQVsMwV3nF6CBZAKyyLycKjah
+         DNCiH7w7KOk36r0TH7ipJbn0Y7X2xIV37AMB25v/weUoEOvm8bEZnNPIbeIHPblu/AKx
+         gasbOePo0+z+jFBDWdZroTCspWNVVW/d7m+2GHFKWQybX2TbiwJkkR9UqT4hYpS5Mw8A
+         RyA+kNFvYhaLaK1UYXOmetkjc98gaD2BWGmDOkSet9KMVwuGB5jzpTMVaw6u/YRngIhC
+         vowA==
+X-Gm-Message-State: AOAM532KwLIPEKmOBKkfD8XUYlM6R3O5N4IvexyUxr0g5f3VH5+VUqHi
+        HSr/2LR44WUoBCXfF4mAng==
+X-Google-Smtp-Source: ABdhPJxagGrSADn7x14IJxmNxUggJ5drrypy3N1weXpB6jWR8dDO41XnCg6MuTz+YTpgSPM8eE7ZMw==
+X-Received: by 2002:a05:6e02:12ac:: with SMTP id f12mr20640279ilr.103.1615224293332;
+        Mon, 08 Mar 2021 09:24:53 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id k23sm6361502iol.36.2021.03.08.09.24.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 09:24:52 -0800 (PST)
+Received: (nullmailer pid 2659624 invoked by uid 1000);
+        Mon, 08 Mar 2021 17:24:50 -0000
+Date:   Mon, 8 Mar 2021 10:24:50 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amarula@amarulasolutions.com, linux-kernel@vger.kernel.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 06/10] dt-bindings: arm: stm32: Add Engicam i.Core
+ STM32MP1 C.TOUCH 2.0
+Message-ID: <20210308172450.GA2659327@robh.at.kernel.org>
+References: <20210228154323.76911-1-jagan@amarulasolutions.com>
+ <20210228154323.76911-7-jagan@amarulasolutions.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a61c976f-b362-bb60-50a5-04073360e702@amazon.com>
+In-Reply-To: <20210228154323.76911-7-jagan@amarulasolutions.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 05:03:58PM +0100, Alexander Graf wrote:
+On Sun, 28 Feb 2021 21:13:19 +0530, Jagan Teki wrote:
+> i.Core STM32MP1 is an EDIMM SoM based on STM32MP157A from Engicam.
 > 
+> C.TOUCH 2.0 is a general purpose carrier board with capacitive
+> touch interface support.
 > 
-> On 08.03.21 15:36, Greg KH wrote:
-> > 
-> > On Mon, Mar 08, 2021 at 04:18:03PM +0200, Adrian Catangiu wrote:
-> > > +static struct miscdevice sysgenid_misc = {
-> > > +     .minor = MISC_DYNAMIC_MINOR,
-> > > +     .name = "sysgenid",
-> > > +     .fops = &fops,
-> > > +};
-> > 
-> > Much cleaner, but:
-> > 
-> > > +static int __init sysgenid_init(void)
-> > > +{
-> > > +     int ret;
-> > > +
-> > > +     sysgenid_data.map_buf = get_zeroed_page(GFP_KERNEL);
-> > > +     if (!sysgenid_data.map_buf)
-> > > +             return -ENOMEM;
-> > > +
-> > > +     atomic_set(&sysgenid_data.generation_counter, 0);
-> > > +     atomic_set(&sysgenid_data.outdated_watchers, 0);
-> > > +     init_waitqueue_head(&sysgenid_data.read_waitq);
-> > > +     init_waitqueue_head(&sysgenid_data.outdated_waitq);
-> > > +     spin_lock_init(&sysgenid_data.lock);
-> > > +
-> > > +     ret = misc_register(&sysgenid_misc);
-> > > +     if (ret < 0) {
-> > > +             pr_err("misc_register() failed for sysgenid\n");
-> > > +             goto err;
-> > > +     }
-> > > +
-> > > +     return 0;
-> > > +
-> > > +err:
-> > > +     free_pages(sysgenid_data.map_buf, 0);
-> > > +     sysgenid_data.map_buf = 0;
-> > > +
-> > > +     return ret;
-> > > +}
-> > > +
-> > > +static void __exit sysgenid_exit(void)
-> > > +{
-> > > +     misc_deregister(&sysgenid_misc);
-> > > +     free_pages(sysgenid_data.map_buf, 0);
-> > > +     sysgenid_data.map_buf = 0;
-> > > +}
-> > > +
-> > > +module_init(sysgenid_init);
-> > > +module_exit(sysgenid_exit);
-> > 
-> > So you do this for any bit of hardware that happens to be out there?
-> > Will that really work?  You do not have any hwid to trigger off of to
-> > know that this is a valid device you can handle?
+> i.Core STM32MP1 needs to mount on top of this Carrier board for
+> creating complete i.Core STM32MP1 C.TOUCH 2.0 board.
 > 
-> The interface is already useful in a pure container context where the
-> generation change request is triggered by software.
+> Add bindings for it.
 > 
-> And yes, there are hardware triggers, but Michael was quite unhappy about
-> potential races between VMGenID change and SysGenID change and thus wanted
-> to ideally separate the interfaces. So we went ahead and isolated the
-> SysGenID one, as it's already useful as is.
+> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> ---
+> Changes for v3:
+> - none
 > 
-> Hardware drivers to inject change events into SysGenID can then follow
-> later, for all different hardware platforms. But SysGenID as in this patch
-> is a completely hardware agnostic concept.
+>  Documentation/devicetree/bindings/arm/stm32/stm32.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
 
-Ok, so what is going to cause this driver to be automatically loaded?
-How will userspace "know" they want this and know to load it?
-
-This really is just a shared memory "driver", it's gotten so small now,
-so why can't this just be a userspace program/server now?  :)
-
-thanks,
-
-greg k-h
+Reviewed-by: Rob Herring <robh@kernel.org>
