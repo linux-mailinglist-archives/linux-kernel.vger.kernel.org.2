@@ -2,157 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1230331B16
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 00:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11DB9331B18
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 00:44:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbhCHXnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 18:43:11 -0500
-Received: from mail-eopbgr1320043.outbound.protection.outlook.com ([40.107.132.43]:26208
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        id S231826AbhCHXoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 18:44:14 -0500
+Received: from mail-mw2nam10on2047.outbound.protection.outlook.com ([40.107.94.47]:32908
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231307AbhCHXmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 18:42:52 -0500
+        id S231890AbhCHXn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 18:43:58 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RsUM1fNj2MI834AtvzdhRCb+2qL3f9UnWRPzWR29W44BT+YmOOiRwwZjKOYegYgfHU6L37ULrU6NMYRPSauL7HH8WfsemqAxk5A8X8kEcpDZKcP8o557VZyA+fH4ftgwNWgKie9ujnk29MZeI8K2zUm7w7xREyV0Un0L3mOi7JH+PNo8Eu/A3SBySGVY5P2yQWhdDRcnsFEoiC4QQ3nwwawEp9POc7VKzomOaeCBvIabcMwTBeiMUM0Oce1N1BYGOdPPKQgZ2nqx5xj3GijGK5ZWmmAX4W4Vs2CGqzHQrplwDZg1gp2z2JB+MczY9VMB52Ac/pOsmcz1EyTHXdVZ/Q==
+ b=DQk6S/g1TtAM+iYCtF3dL1nCCvoxgkcfOMC+kxdk04ldaZBAt8rzh7zF+T6UhernPZikrdaYHLQHFR8TSDVMFo1bkukfnW+r3PiixSgkqLI48lFu3xoDqL3c2Sb1ftaRwnyN9FEjOoZ1J8cn4LUeOkJbgrNjMMrHIlROiozOUqt//w7LUi2ek1ykV2kra0gq2Tuj1dbNIbN1WftPJQEt5xQQGQIQlH70X4MHCQcOJi1bvk21KOu2t1xJaj2cUUP6v7vMjz0p/78B2WmRLBptGbXJ7fGJtA2qA82MrSvN7fmHEpeTJNiJxsBY50H2hX7FzLoKG7+dcagxJJJPfbN7XA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4sbeVvZPvOxX8VhFrUAp6OySwB9TM4k5Rfud+FFWsK8=;
- b=G6H7lnKW2rQKKpJrsvzYQulqwU7PDSpC5QB7dOpqguNBfffVIKAQVrVOcTNhILzmEDeLBT0N99ADPUx5P2kjCM/HuIzM3Ap3b/13i5084XVKZzRkFnNrR5r9eU7Ah8V2Y1vtjAvNNraxUOVdZ0fpyAnsi5gXHewhUQZj+36QCCJzBSsJ+GZOU58BhkeVUooLMjqyytbHtCX2gq/hFFbugAEpAnET2XlKNmZdPgo3L3gdMNvH7Xhvze0YAwNdDKMxd8v64lg5EauNW+G1fxg/gymfEFKPf3kUVpQFhN2GvvG0RCTVE0SRFiqbkc1BHC6x7GBHB7HzuPRkgIV85A7Anw==
+ bh=Zp5mvbfcSUd3F+SmOAs+VgtjVP/yYB6dfkgipGLivkQ=;
+ b=Du8INTPDh0JLhz+CbcJ9EiFXslxRBrLV4RddUr/L5GMILWAwcKmkGWUE6kVYs8I5dnUP/AKUSbKMQfWZCdYOku3GhkUQqlNGcNPm4uuOFagq9b2zRiuA4FsPxOfC/sX/mnAWbfCOCAlGYwu/0gJElUXYlXkn5vLFrTLpBko/5sTzb1rzd8LEmKw0L8ik6MBNWbyJCDvktF/7p9TNGIbKjDl8YTmU7YIFmHIKgdnfZuSvQn1sNXhxRkDLmMVOylhYJB2r2qbQBzWGhNOt74NUXO2yCCnktZiZ7yE+9yaAFPihs7wC5Yb1ybDe8JHX0z3GD4NN/kb6m7R1XK21VrtU1w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
- header.d=nec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4sbeVvZPvOxX8VhFrUAp6OySwB9TM4k5Rfud+FFWsK8=;
- b=ebN8DtBckeJa90H8ADg8NaD3ks65a6V6q+qPzxjO+DEvVvPwE0GaJhQPHCGiPfsmuoLIdcKCQMy4t6QeYuE9CqkKmGMAJgZnYIzLz58cNj7j3l5ZlBEcV8l6UAThzki5rjwIia07w9MUPv7qZZtjUFp+DMrYfRs3spL/N5QjdZg=
-Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
- by TY2PR01MB2091.jpnprd01.prod.outlook.com (2603:1096:404:10::11) with
+ bh=Zp5mvbfcSUd3F+SmOAs+VgtjVP/yYB6dfkgipGLivkQ=;
+ b=xIdXNew44VXQeBh2KxktXU2tfyTAP+FaVKa40Nvj2uI8k57ryYzF2uW1CbIDkkiyjAwm35bbWAR1dbVPSGX3e2kLLZlZ5QvW5ZDxI6G4qL52624BsBgaAapW5gEzscJXgciOlHZ8jq0+OXiotAp1uEXOW+OA4DJOuSWPfw5m3y0=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1340.namprd12.prod.outlook.com (2603:10b6:3:76::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.19; Mon, 8 Mar
- 2021 23:42:41 +0000
-Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
- ([fe80::1552:1791:e07c:1f72]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
- ([fe80::1552:1791:e07c:1f72%7]) with mapi id 15.20.3912.026; Mon, 8 Mar 2021
- 23:42:41 +0000
-From:   =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
-        <naoya.horiguchi@nec.com>
-To:     "Luck, Tony" <tony.luck@intel.com>
-CC:     Aili Yao <yaoaili@kingsoft.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
-Subject: Re: [PATCH] mm/memory-failure: Use a mutex to avoid memory_failure()
- races
-Thread-Topic: [PATCH] mm/memory-failure: Use a mutex to avoid memory_failure()
- races
-Thread-Index: AQHXFG4a6KBUueS0DE2O2dOaNXi1CKp6wJiA
-Date:   Mon, 8 Mar 2021 23:42:41 +0000
-Message-ID: <20210308234240.GA23822@hori.linux.bs1.fc.nec.co.jp>
-References: <20210304121941.667047c3@alex-virtual-machine>
- <20210304144524.795872d7@alex-virtual-machine>
- <20210304235720.GA215567@agluck-desk2.amr.corp.intel.com>
- <20210305093016.40c87375@alex-virtual-machine>
- <20210305093656.6c262b19@alex-virtual-machine>
- <20210305221143.GA220893@agluck-desk2.amr.corp.intel.com>
- <20210308064558.GA3617@hori.linux.bs1.fc.nec.co.jp>
- <3690ece2101d428fb9067fcd2a423ff8@intel.com>
- <20210308223839.GA21886@hori.linux.bs1.fc.nec.co.jp>
- <20210308225504.GA233893@agluck-desk2.amr.corp.intel.com>
-In-Reply-To: <20210308225504.GA233893@agluck-desk2.amr.corp.intel.com>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nec.com;
-x-originating-ip: [165.225.110.205]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 91b83d85-00c0-4a4a-622a-08d8e28bdd68
-x-ms-traffictypediagnostic: TY2PR01MB2091:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TY2PR01MB209102BDF7321BC655666695E7939@TY2PR01MB2091.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qUeepDzDlLdevqLYkFkqya5YOKENVvHK7zZI5TCVCb0KGw8QyPikcBeCBC//2vI0youxKkF3jDMow1IkPER0w15Yit3fkEjs38rtKSn4UP7lTImzJdBJaeadyCsDZuZPO+xd8W/hnpM1HClsGOvhuxz5vyXGkeAwIeF5UiMqwRUBqt4fHggY3UnmyM/SCCLFzxwoQZGlOYMG4mPHX1gQF+qUONI12udjWIgYvkVZR8kkDNvi6oyCWNOHXDqTHDv9CAVf87Ft9XPJGzohm+6UBOXdzgqIn5/jYRaG8K1s9dX+cmFti3uCQgBe+6sVG9zElyFV7uVca67DMo9X6t5FBbU7GpNtDeXFNPM7HZHqYOdm89XpUhPVJasCzo318GgNneTLXkmDehcueo5SDIVUQ/hikc5kDCGqZRw+KhweX3Y2gnrzO8aUq2nVuDi4f9T+cdqhtSjI4iiAQQCKEigfnX5FzI52JYI/kQ8el4tVXsZrtGzcwVKbhvB1PKusPwosO91H3p7PeVOdWT9AXUXkXA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(39860400002)(396003)(33656002)(6512007)(54906003)(8676002)(8936002)(83380400001)(86362001)(76116006)(186003)(66476007)(55236004)(6506007)(9686003)(4744005)(316002)(85182001)(71200400001)(6916009)(4326008)(478600001)(66556008)(1076003)(2906002)(6486002)(7416002)(66446008)(26005)(5660300002)(64756008)(66946007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?iso-2022-jp?B?UjgrTFJaNytLRVlsWTZrV3VPalhtb3JVQWVNYi80eXJUREVDdnZmVzBE?=
- =?iso-2022-jp?B?OGhMRHZhdUxpMGlJY3M2ZWlqNkNRMk1jaTREdHMzTXJ0UDRRV3NvSExn?=
- =?iso-2022-jp?B?QXViZlZnaGpTUnBUSjNveEhNMGNaSUpSZ0JMNFFBZnFsbWpLdkFRVDFy?=
- =?iso-2022-jp?B?cjBxR3BCZld2SU5USGt2TVIvQzVQUWI4STZNeE1tQTllU3lzTnZrOUhp?=
- =?iso-2022-jp?B?R3lZRUlJSDB4b1dnM2p2cWgwUFlTUSs0dGUzL1IvaHNoWmRvKzgzNi9z?=
- =?iso-2022-jp?B?Wm9QWGZjTE53NUlmc3pMU0U0NkhPUWZDUmZxRlJhUmRVT2Zib0plWGlh?=
- =?iso-2022-jp?B?bHVWWDU3T2k1U1l6N1o0OG1YQ3NCd2lZV1dPd1NtdWMxdm1wajRuRGh0?=
- =?iso-2022-jp?B?UElacjRDNjhmU3IzdVpzYzI1R0FqTVBwRTZRYTFwZUtYUUx4Ry8vK1dP?=
- =?iso-2022-jp?B?cHRibkNpRkRKdVh4dWMvbFlObUVmR3FEOUdQK0txYU53TGRPWlluY1Q4?=
- =?iso-2022-jp?B?cTJUejg2S0drcDJsWk5yQXRSYjRkaTJWdkovOWN4Z215ZjNNUHl3ZWxZ?=
- =?iso-2022-jp?B?WU9sR1lHV1Rtd01FUWFjV1g1L3Y4ZnpKSTQvaFlhT3hINU44eVRmZHgz?=
- =?iso-2022-jp?B?ZmM0MW1zUk42cWNtOEhzaFhSVVRpMGxIaUFmU0lKM0hCbzBVN0xDNTQ2?=
- =?iso-2022-jp?B?VTFXbHo4SGJsV21PbzBvdXArSGtYVDBiM0NySExOR0FKcDVmMEYra1A5?=
- =?iso-2022-jp?B?LzFUNW5YRzlwYjRJQ2NuNVdtaVBUSWp6ekJZM25BZHorSllDVU5GTFQx?=
- =?iso-2022-jp?B?NUlQSW9EcjNvWUxqWXlDS21aV3YxYTk3eW1TNDh1a0IwQjVDK05CTytE?=
- =?iso-2022-jp?B?Zm5Dc05GcnVremYwT2Z0L2JkdndUajU2NjdtL25Ha2FPVVlFSnEybTBD?=
- =?iso-2022-jp?B?cnpoQWNGTUt2cVR1MUlBWkp0YnphWU5qaHZJaG9USStlMXp3bGxlYWxz?=
- =?iso-2022-jp?B?S1hGdEZVM1BPb0E4Z2hWb2R4dndPdlJwdnl6L3VtNDV2a0tKb0xRQXA1?=
- =?iso-2022-jp?B?cG9lY3FZQkpDWUJGMUFqK3RaemIxOEhJU0NJY1dQVmZwMW9xR016R0s2?=
- =?iso-2022-jp?B?aUV6V09qbG1RUFJlR3hLT0E1ZG9teE5WZk9kOGs0V0Y5dFFvSWFsbFNi?=
- =?iso-2022-jp?B?ZnluWjhYazFVbGwzVXFRcGE2RHdPVnU1RFdFTFFUU2c0cGVHc3ZveU85?=
- =?iso-2022-jp?B?cS94VytoR3oveFgwMHEwbktZL2RhWm9SOHU3bCtpZ3ZDM3g2TVJpRjNx?=
- =?iso-2022-jp?B?MlJQUE05R3lXaWhOczc3bXp6d3F3WU02ZWpmQi9oZHI0ajhKRlMvL2xk?=
- =?iso-2022-jp?B?L1BwMlJXb2ZwM2VyV1NPdDA0UjMwOEVWNUkzK2U2RVplOHpsZ2JjNTVq?=
- =?iso-2022-jp?B?RVNIdzE5NkM3bkhHdVc0SlV3REZnOTZoNjF4U2NWWGV1Y2NTT3VOQVhy?=
- =?iso-2022-jp?B?YUdrcW1mcllWNDJIbHU4bUlGQUQ4cnVUZFlRdGNBMGt5SFdrQ25Gc0Ez?=
- =?iso-2022-jp?B?NGVGeUpza1Jvd2NPSGJlbFMxWm92VnRpUnBKOFZTTk42cjgrWXBLaXJv?=
- =?iso-2022-jp?B?WmVSMndNMmNOQjNxb1dnY0luRVlkaHJkaEFBZitYZUN3b1ZaeGxVV3lV?=
- =?iso-2022-jp?B?ZmgxekpWQzRwTUdxdHIrRGNuY0JjTGpHK0VLY0tnb2I0WUVUYWFtNmlZ?=
- =?iso-2022-jp?B?aUE3YjFaWjVIVWZaRHhDZDNjWHVkMW9reHJuSy9vMDJlMDNWTlVGYWlM?=
- =?iso-2022-jp?B?L1B0OHVxUStlZVdvRDMxc1k2bzQrRTcrYm5ma2NsZ2VqTEVYUjNtdE5q?=
- =?iso-2022-jp?B?UUNqeEVPRlNQNlNJRlB3emdVY243VzlKcHVNb2RycUJTN01JbW40YVhZ?=
- =?iso-2022-jp?B?V0lzdjZBdEUvVVFuTUV3eWM2WlBDZz09?=
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <9378190265DF474F9AAA164143487F83@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Mon, 8 Mar
+ 2021 23:43:56 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3912.027; Mon, 8 Mar 2021
+ 23:43:55 +0000
+Date:   Mon, 8 Mar 2021 19:43:53 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Zeng Tao <prime.zeng@hisilicon.com>, linuxarm@huawei.com,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Michel Lespinasse <walken@google.com>,
+        Jann Horn <jannh@google.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfio/pci: make the vfio_pci_mmap_fault reentrant
+Message-ID: <20210308234353.GB4247@nvidia.com>
+References: <1615201890-887-1-git-send-email-prime.zeng@hisilicon.com>
+ <20210308132106.49da42e2@omen.home.shazbot.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308132106.49da42e2@omen.home.shazbot.org>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: BLAPR03CA0068.namprd03.prod.outlook.com
+ (2603:10b6:208:329::13) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-X-OriginatorOrg: nec.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0068.namprd03.prod.outlook.com (2603:10b6:208:329::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Mon, 8 Mar 2021 23:43:54 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lJPXV-009rih-JU; Mon, 08 Mar 2021 19:43:53 -0400
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e82dd155-79fa-4d04-3e3a-08d8e28c091d
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1340:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR12MB13404FB235682A54CA8B7C80C2939@DM5PR12MB1340.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: v1zqKW3T8/AkFxMG2MNyaPxQNwpUx8a9LtZuUEkKy74VyC5hqOxp4AUiLFbfc1nJP3R9XYLxqwZCFnIG3J54JmbRdenXQpXrwxl5TItbtBGMptIsGPPDgqkweuHvfZ7fshTql82X1IkBE2lgnIb7s7PwkxqcHxVxRUaTt9Au1PLo6A3ivoLURfLRwr98w+dt4BmMb56ehP0iV07hnWPdJ6pAlR7ZBHhTv7Bs4lBL2b+Gb1tbdWqiVxnderNJywr2Ia1CTHDuPiD0VTg03WZD91NCgzhe3XiFMkCf6jhnN1eMBRP/xiBUl3WPnFqD0mxMmoOfHsiCBomnciOdbC3TBzB5LMrAWfgrlpB9aNQdH4zyH0ACbB4eEaZ5ZO9Kt4ON0c9xxRCgQPoLuStGSwREWqUu8S/hx532VWRV+OGhHfVPRMfMlqnOvMdcCOl9j+LMQmc8RUiwe6Y7RGFojaLpgNsVJOLI1EapOM1g/srsg4fZbBRV8SEQKqRNFOyetC4ve/nv7yImb6b6/T7AJoc3/A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(136003)(346002)(376002)(1076003)(86362001)(426003)(8936002)(2616005)(478600001)(83380400001)(8676002)(26005)(186003)(9786002)(9746002)(4326008)(6916009)(54906003)(7416002)(316002)(33656002)(2906002)(5660300002)(36756003)(66946007)(66476007)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?4+8gqGpIw8b4H4FALzq65dhKvRv4GcHICoSctk6yBBQSZKO8VIB4EBwysUwk?=
+ =?us-ascii?Q?gb+tp5PdPw+zkHKjPxczXqwlkMEDjwHt9Q5zFjFt0B+CvYGGusPvet+2XfvY?=
+ =?us-ascii?Q?TkZxV1yO82sHAxPaXZWNnCqDip0zOmSymRpgigafsiXqmHAfpTtyHTi7vZ4e?=
+ =?us-ascii?Q?2LLQ/+8IwNP5m0KA85W+DCLn2hZ6Cy5NrHeC03Muq8/XP6anxZiMYeH+Eye4?=
+ =?us-ascii?Q?vwBkHL2xvbupPoGwCxQnhjfe+HZsywL9XHGepLYTYwOU1IzQDkptPmflHiRX?=
+ =?us-ascii?Q?U6El7LRaGeM8iDVLWlJ82LL7dilIt5x98QEALdq0zUh/T3swXlrcWqbQUz3u?=
+ =?us-ascii?Q?SKUwDONByWlByYp6Z563rJTTKC/13vBsrAIsn5osdLFYvX0E8lRcOglcKj4B?=
+ =?us-ascii?Q?u5pVh0Scr7RSrissBNDWOfj1J1fjfLlmgfGA5Op/cibu6vFaE1eTa6X78pao?=
+ =?us-ascii?Q?aW83QMrBL4WZZTxfrqgbIQrvIBRGAzs1aSQ5f3wNEIqx1YQTRQRffnrwnHNA?=
+ =?us-ascii?Q?UALKjbuUju12y1TH+3rB0+OzFOif83YdgzrVi5vbosgM1UGDdACUBMICUmaG?=
+ =?us-ascii?Q?wuU3VesBAwSG54MTeb/ASS53Gd5g8Y3ZY75NX+dDDQb+r2hRBqSwEs7UGE1R?=
+ =?us-ascii?Q?WKNOZCYudZlrY1EtkgoE5ae7NY8yZnEyJ4wFW0f9B3fvz4yCDqXrNl1TcVNM?=
+ =?us-ascii?Q?POAiUPY+PKQbYZn6o/cYwZJkvIst0fviEBu/ER8U3iezRdSa+6WzGqfEcMxd?=
+ =?us-ascii?Q?Rma5BsSWJQOTjDhmEzqnesN0Pu8j7FV8G+JYvjOYk01LqYJpdPUtvROJ9aK3?=
+ =?us-ascii?Q?3tSuWkoUpqvWL+mIX897gmCvZzLkvtmCD1sX2GUXSUSX7JhIcJkt4dnEdKwg?=
+ =?us-ascii?Q?H86Icqss/RL9Z2YWYhUpIWISNscB+1ZJ7CE9aFkTGNG4hGRutf9QlXmKh4o0?=
+ =?us-ascii?Q?2hjggpRrqdAU1Lt3LTdQUyHFU6y5Z3sLrlRfEefglGlvJWjQb0Lb9Ml73XmC?=
+ =?us-ascii?Q?XP49oLB0MOqZlxaJ9rZFJgwC/DZvLdIgp6dg+mC1S26Lry+t/ul7gsAqZokw?=
+ =?us-ascii?Q?04f7iJ6InIUS+CAtHU2UmRG5d5ZKj3pRfOTWlA3kBWL9i1kBKSY/VuMq0ExV?=
+ =?us-ascii?Q?P6UqPap3/OyA6mZ3WeuXoa/eep01Q4c8+h+rdsK6bnd/1O26oU9RrsEj5pXY?=
+ =?us-ascii?Q?qb6o/kw6vnR+Z15pbTdIEokqHiafLSmJbxoqbQLAfz+/qicGEA3ILQg0ZmOM?=
+ =?us-ascii?Q?6aN6CFeILJtfSFj3JBrXUuDM3Au9choq9EngBB/yyn0JyfssubcAFY6nyF4L?=
+ =?us-ascii?Q?ykCPEo1YkroAFMmxrbkUHFkvsNIAL91BhU+L+s+0JBmzTA=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e82dd155-79fa-4d04-3e3a-08d8e28c091d
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91b83d85-00c0-4a4a-622a-08d8e28bdd68
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Mar 2021 23:42:41.4613
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 23:43:55.4532
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: nQ9XrKS4AyGNfIZIxq/F8IS+Taw5Q1IodK2JQteABoxud/L2EZkN3nJIaw9dEEg/FqJLEEFbshub41B2uNdqdA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB2091
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wRfs6C8hMj+6Z8piAJOBnWLI89MSrdpqUcLGRoF5uBdOfR8xZyaJjAhJLIl7yGgE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1340
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 02:55:04PM -0800, Luck, Tony wrote:
-> There can be races when multiple CPUs consume poison from the same
-> page. The first into memory_failure() atomically sets the HWPoison
-> page flag and begins hunting for tasks that map this page. Eventually
-> it invalidates those mappings and may send a SIGBUS to the affected
-> tasks.
->=20
-> But while all that work is going on, other CPUs see a "success"
-> return code from memory_failure() and so they believe the error
-> has been handled and continue executing.
->=20
-> Fix by wrapping most of the internal parts of memory_failure() in
-> a mutex.
->=20
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
+On Mon, Mar 08, 2021 at 01:21:06PM -0700, Alex Williamson wrote:
+> > diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+> > index 65e7e6b..6928c37 100644
+> > +++ b/drivers/vfio/pci/vfio_pci.c
+> > @@ -1613,6 +1613,7 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
+> >  	struct vm_area_struct *vma = vmf->vma;
+> >  	struct vfio_pci_device *vdev = vma->vm_private_data;
+> >  	vm_fault_t ret = VM_FAULT_NOPAGE;
+> > +	unsigned long pfn;
+> >  
+> >  	mutex_lock(&vdev->vma_lock);
+> >  	down_read(&vdev->memory_lock);
+> > @@ -1623,18 +1624,23 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
+> >  		goto up_out;
+> >  	}
+> >  
+> > -	if (__vfio_pci_add_vma(vdev, vma)) {
+> > -		ret = VM_FAULT_OOM;
+> > +	if (!follow_pfn(vma, vma->vm_start, &pfn)) {
+> >  		mutex_unlock(&vdev->vma_lock);
+> >  		goto up_out;
 
-Thanks!
+Gah, no new follow_pfn users please we are trying to delete this
+stuff..
 
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>=
+I believe the right fix is to change the fault handler to use
+vmf_insert_pfn_prot() which has all the right locking/etc
+
+The 
+> I'm surprised that it's left to the fault handler to provide this
+> serialization, is this because we're filling the entire vma rather than
+> only the faulting page?
+
+I think it is because remap_pfn is not intended to be called from a
+fault handler. The fault handler APIs seem to be named vmf_* ..
+
+If you want to use remap API it has to be done and managed outside the
+fault handler. Ie when the MMIO transitions from valid->invalid vfio-pci
+wipes the address space, when it transitions from invalid->valid it
+calls remap_pfn. vfio-pci provides its own locking to protect these
+state transitions. fault simply always triggers sigbus
+
+I recall we discussed this design when you made the original patches
+but I don't completely recall why it ended this way, however I think
+the reason might disappear after the address_space conversion in your
+other series.
+
+Jason
