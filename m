@@ -2,98 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11918331679
+	by mail.lfdr.de (Postfix) with ESMTP id 83C4333167A
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:46:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbhCHSqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:46:09 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:35841 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbhCHSpl (ORCPT
+        id S230429AbhCHSqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:46:10 -0500
+Received: from mail-io1-f47.google.com ([209.85.166.47]:40552 "EHLO
+        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230320AbhCHSqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:45:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1615229142; x=1646765142;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=QlZkF/n+OFe4HMXAJQG4MFvDSH2sQBY/KgzRuDuLAfg=;
-  b=q/A+ZmVi+t/NOj2WVfaQd1QqJY/VDc0+Hk676ZHetA+42mSUkW1QN9DQ
-   ww20ysUiYa6pu90klOa2uTsySWeGtc9KG2Uqe8mr8bf8O9ocuq+O5DoVq
-   LSo7jyzuJprhBQ3VD2I8csX7ECdPInkaMRf0N6z1qodYGamC50xcFmzkd
-   xceedd0zzUB7i8G0lWNhLIsfBnVXHepTF7mi9IdmqN5oY77DoJk0c3OUr
-   JQbHGnK5fUD7t+NtTTRE7Dx++yFODNRkUQQ2AkICrpcF1Y/VMYzXw7v2M
-   Dx5/yXlplLoB1aaaCPhATUK7thHgdy28qFWggGJf1VE+FSX2i3yCU+lKY
-   g==;
-IronPort-SDR: Rp+BGoXaDahRqxX8xCPAlHbcB4bTR4j7Ej2EwdYYgGhKAGjEHIXvtDMs7bO27SySllDhE162Ic
- FiQVayUJUcCjX9fzgDRTGMUEmvOpv5GTnCwXuxLoRX9PCCygMNd83UNOGE7uKDZdahHPY1W85L
- LenNozH2KGn9Hc0c3cUjWJsN/rN8q8x6dcgm8+zG0KthwgqxRPAZnHmZajn0c/Qzap2qXqcgPb
- fC+bSa/iH9TD5dwgB/ibFFjFg+oHFmPXJ12C34z7DwiNUimXKfdfIuNr3fkdzwkzxgh6jS4m4C
- xFg=
-X-IronPort-AV: E=Sophos;i="5.81,233,1610434800"; 
-   d="scan'208";a="111918962"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Mar 2021 11:45:40 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 8 Mar 2021 11:45:37 -0700
-Received: from ness.microchip.com (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Mon, 8 Mar 2021 11:45:36 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        <stable@vger.kernel.org>,
-        "Sandeep Sheriker Mallikarjun" 
-        <sandeepsheriker.mallikarjun@microchip.com>
-Subject: [PATCH] ARM: dts: at91: sam9x60: fix mux-mask to match product's datasheet
-Date:   Mon, 8 Mar 2021 19:45:27 +0100
-Message-ID: <20210308184527.33036-1-nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.30.1
+        Mon, 8 Mar 2021 13:46:00 -0500
+Received: by mail-io1-f47.google.com with SMTP id i8so11063296iog.7;
+        Mon, 08 Mar 2021 10:46:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cfN5Nej69V/evaH4omPvCJozqJ9O6z93Ztcf2j8ULsI=;
+        b=PPVV1i1ozxeHPC4GhaHw5N7vq54JxcY6DdBxneSh4KazRqm0ip9r3Re4fJdWe7V0e7
+         FyRMZS8mlvN3FLNp8fjvElBPqxNcYielW96FP2y1DFYorckb0a/OqiZ/UJBqUdaulYE6
+         IipdDGk7B3jlPZ/ht+b5dBirV9/41sdsqr9z0pFtYxuv0+FJeb04UrdUA/CDSRvNf8gG
+         9GmBzIXri/xJ69XP4Xcj5cV0f/p4rSWli440AjhN5q+kVNJZOQP2BEOHRBNspnIEP56/
+         jA22VlUzTSpwKd+xHdbkQ8A4NsOiCYBgDbTJjdQ1Ft0tuXjYCRcZZitYqaSBaxpCZlyU
+         mu/w==
+X-Gm-Message-State: AOAM532NcguSwlZsLMPAYzRTdt00pCgTDuCvsbxQoADixHgkCFaX/hP+
+        YI1Afh25pDUM89nvB9W+eQ==
+X-Google-Smtp-Source: ABdhPJyNM4ptLtRG6sZBwmYG4Kd5v3RNbnKIqIvBMtZLDZ7DZtcfjwttUS2uXhxKILLlZEV5+4uJAA==
+X-Received: by 2002:a02:817:: with SMTP id 23mr24482608jac.23.1615229159689;
+        Mon, 08 Mar 2021 10:45:59 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id y11sm6330111ilv.64.2021.03.08.10.45.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 10:45:59 -0800 (PST)
+Received: (nullmailer pid 2770740 invoked by uid 1000);
+        Mon, 08 Mar 2021 18:45:57 -0000
+Date:   Mon, 8 Mar 2021 11:45:57 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     tglx@linutronix.de, maz@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        nicolas.ferre@microchip.com
+Subject: Re: [PATCH 1/2] dt-bindings: mchp-eic: add bindings
+Message-ID: <20210308184557.GA2768020@robh.at.kernel.org>
+References: <20210302102846.619980-1-claudiu.beznea@microchip.com>
+ <20210302102846.619980-2-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302102846.619980-2-claudiu.beznea@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+On Tue, Mar 02, 2021 at 12:28:45PM +0200, Claudiu Beznea wrote:
+> Add DT bindings for Microchip External Interrupt Controller.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> ---
+>  .../interrupt-controller/mchp,eic.yaml        | 74 +++++++++++++++++++
+>  1 file changed, 74 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mchp,eic.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/mchp,eic.yaml b/Documentation/devicetree/bindings/interrupt-controller/mchp,eic.yaml
+> new file mode 100644
+> index 000000000000..5a927817aa7d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/mchp,eic.yaml
+> @@ -0,0 +1,74 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/interrupt-controller/mchp,eic.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip External Interrupt Controller
+> +
+> +maintainers:
+> +  - Claudiu Beznea <claudiu.beznea@microchip.com>
+> +
+> +description:
+> +  This interrupt controller is found in Microchip SoCs (SAMA7G5) and provides
+> +  support for handling up to 2 external interrupt lines.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - microchip,sama7g5-eic
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  '#interrupt-cells':
+> +    const: 3
+> +    description:
+> +      The first cell is the input IRQ number (between 0 and 1), the second cell
+> +      is the trigger type as defined in interrupt.txt present in this directory
+> +      and the third cell is the glitch filter (1, 2, 4, 8) in clock cycles
+> +
+> +  'interrupts':
 
-Fix the whole mux-mask table according to datasheet for the sam9x60
-product.  Too much functions for pins were disabled leading to
-misunderstandings when enabling more peripherals or taking this table
-as an example for another board.
+Don't need quotes here.
 
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Fixes: 1e5f532c2737 ("ARM: dts: at91: sam9x60: add device tree for soc and board")
-Cc: <stable@vger.kernel.org> # 5.6+
-Cc: Sandeep Sheriker Mallikarjun <sandeepsheriker.mallikarjun@microchip.com>
----
- arch/arm/boot/dts/at91-sam9x60ek.dts | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> +    description: |
+> +      Contains the GIC SPI IRQs mapped to the external interrupt lines. They
+> +      should be specified sequentially from output 0 to output 1.
+> +    minItems: 2
+> +    maxItems: 2
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    const: pclk
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupt-controller
+> +  - '#interrupt-cells'
+> +  - 'interrupts'
 
-diff --git a/arch/arm/boot/dts/at91-sam9x60ek.dts b/arch/arm/boot/dts/at91-sam9x60ek.dts
-index 4c40ae571154..63207c952223 100644
---- a/arch/arm/boot/dts/at91-sam9x60ek.dts
-+++ b/arch/arm/boot/dts/at91-sam9x60ek.dts
-@@ -336,9 +336,9 @@ ethernet-phy@0 {
- &pinctrl {
- 	atmel,mux-mask = <
- 			 /*	A	B	C	*/
--			 0xFFFFFEFF 0xC0E039FF 0xEF00019D	/* pioA */
--			 0x03FFFFFF 0x02FC7E68 0x00780000	/* pioB */
--			 0xffffffff 0xF83FFFFF 0xB800F3FC	/* pioC */
-+			 0xFFFFFFFF 0xFFE03FFF 0xEF00019D	/* pioA */
-+			 0x03FFFFFF 0x02FC7E7F 0x00780000	/* pioB */
-+			 0xffffffff 0xFFFFFFFF 0xF83FFFFF	/* pioC */
- 			 0x003FFFFF 0x003F8000 0x00000000	/* pioD */
- 			 >;
- 
--- 
-2.30.1
+Or here.
 
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/at91.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    eic: eic@e1628000 {
+
+interrupt-controller@...
+
+> +      compatible = "microchip,sama7g5-eic";
+> +      reg = <0xe1628000 0x100>;
+> +      interrupt-parent = <&gic>;
+> +      interrupt-controller;
+> +      #interrupt-cells = <3>;
+> +      interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_HIGH>,
+> +                   <GIC_SPI 154 IRQ_TYPE_LEVEL_HIGH>;
+> +      clocks = <&pmc PMC_TYPE_PERIPHERAL 37>;
+> +      clock-names = "pclk";
+> +    };
+> +
+> +...
+> -- 
+> 2.25.1
+> 
