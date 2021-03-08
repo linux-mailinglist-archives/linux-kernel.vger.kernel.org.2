@@ -2,102 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801F7330CFD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CED0330CE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbhCHMAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:00:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52452 "EHLO
+        id S231558AbhCHMAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:00:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbhCHMAf (ORCPT
+        with ESMTP id S229965AbhCHMAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:00:35 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A547AC06175F;
-        Mon,  8 Mar 2021 04:00:35 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso2986789pjb.3;
-        Mon, 08 Mar 2021 04:00:35 -0800 (PST)
+        Mon, 8 Mar 2021 07:00:24 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5009FC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 04:00:24 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id e10so11109633wro.12
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 04:00:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=+kTmKHq9zv3XGMbtsWeY32mKkijl5gEMIKMC+s/P+Co=;
-        b=DAA7KXeIH95cxgwsQLL5AnnEDn/kBgAQ+5tuUAikWQsPAFy7TklwND3fH5aW5yhbea
-         /op2WHfyZ55X8d5bFjKIed2hk+fjfJDUwD3DQzFSs75mmwSUoSY3WEVq1siy5XaT39RH
-         gz3K6pIOmcCfftym8RWn9eLHtmKhJDiUtUskevuNA340Fjdb52ceRxWBroZCa/aze5oe
-         MTdrD5JXKsVGYKyCcl7ZwPTw+ATAfLC3jxgLF5a+of7I5YfdY9Sq7yw2W/yLycwAkz+/
-         qxEbdkfmyc2e1DsH1/EgZEuPGcocmFxjr3cur+FH/miRxBa5WEj2fvpSBQa4ghGO29mS
-         fBtA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UScq4Ry4BV1D3nVvylBLbHnwm8LDSH9/8urnS48OvlE=;
+        b=oI5QNIlnIG33NqNlfQkK297Hfx5vX+/l84Rk7wJFB7UKvcQpF50Vnt3lwymKoFkJFq
+         grR1s1Im48ws0tnbCKJuH1Ky5HKftCNhpncBnFtLvs796N5fxbmD9hk8wfhbzrL74FL4
+         8o0FRJTSZpwXA4kybaeej54XVvBFqUOv6ZXpLJd4IjfhE9/ICMUKGLWlXihtdOpT+oML
+         jBVnz0zL5fb7pbqgllEyp/fjB3QqXhdeRwfMUg3EMqbkznPrg34sNBnjVhqMow4B8HPE
+         tkfIaMuQtrxvFVS1HV4qNsYeV0/ybzlx9s1Y14KRuLP4azf1H4/xhg0VIY4wwvcqz+3a
+         /64A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=+kTmKHq9zv3XGMbtsWeY32mKkijl5gEMIKMC+s/P+Co=;
-        b=sY6E3DhTFJYHLTefD3TTE2Pc5yhmoIYi1eDqFctWC9X8553E4eTIMKQwhCOKGBLycP
-         b8wEz+FpwJxZ5D87wbfzzQ3lSVCsDdwapQGnyteiHIy2EzmHdspQGFyAxY2BwHQLx5UM
-         ISgsFwwS0LL2mF/HLqsn9D7XGUXo866Js2AZQTY4RHZouECUl3ChbJf+AldVaPatEXBh
-         AcuVMgGaW5wh7UPv2CdBIRJdZHU8ECNORNgpvdEE+5hKBrLvjTbeIK8rHK80YziHfmM5
-         gqBkczgUnU3xJXw7TsynnECLzNNKrGC5hVBccc2Ls844h1Yog5ScosPz1P6qal6ZmwiV
-         9esg==
-X-Gm-Message-State: AOAM532qKLhbkAK0qvGNyQlE121cXAejc52zAqjIwMjB+F5hK4mV2LtP
-        VBcnxRrkDk1sW/XfBcrtd58=
-X-Google-Smtp-Source: ABdhPJwVE1kPLdyQilajTGaqh5C094kYziVCmPwnBjpOwD1mPGva0OdDLYHltV7luoPuAwIjyWDWBQ==
-X-Received: by 2002:a17:902:8641:b029:e4:7e05:c916 with SMTP id y1-20020a1709028641b02900e47e05c916mr19879207plt.57.1615204835304;
-        Mon, 08 Mar 2021 04:00:35 -0800 (PST)
-Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id mp19sm22570855pjb.2.2021.03.08.04.00.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Mar 2021 04:00:35 -0800 (PST)
-From:   brookxu <brookxu.cn@gmail.com>
-To:     paolo.valente@linaro.org, axboe@kernel.dk, tj@kernel.org
-Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 7/8] bfq: remove unnecessary initialization logic
-Date:   Mon,  8 Mar 2021 20:00:20 +0800
-Message-Id: <baf6d16ce98ef609c57a324166219003ab77e30c.1615203034.git.brookxu@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1615203034.git.brookxu@tencent.com>
-References: <cover.1615203034.git.brookxu@tencent.com>
-In-Reply-To: <cover.1615203034.git.brookxu@tencent.com>
-References: <cover.1615203034.git.brookxu@tencent.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UScq4Ry4BV1D3nVvylBLbHnwm8LDSH9/8urnS48OvlE=;
+        b=GvtBoylTpy+/5AFsAmi9HsDNWEXs2rNK262Mob5LzDnm5dJeCRHPB25eKCfOudLhl5
+         pqT2Yo32KEUeOe77Qk0xtvgz32EqR6Y1g8M0BeIQDHkZlpVsrg/TseAItqHt3pJpZWyt
+         LvzSyay5Zg9ww87rAcXFuYpfPiqgbsuIj5tJA1sZed0hm0LCaoejW1S9nUrR8iiy3rXc
+         rX4jZRZQUhTP5PPDFe8ZWHbJJQeDldeATCqCltqLQVWcqWKKeMQFTpRvtNPelS0wFPpU
+         mJCcbZ8rzgjUlCSs40hz5pipDrNkeijb2Hu9Rm4b0unYX+aeapM7Gt3Zdala7VTZ0P2Z
+         E1tA==
+X-Gm-Message-State: AOAM530yMFR59OWaYhgPl8EELYH/f2hj/o1aOfVQN3kayKhM5c3lj85X
+        +M2em5FNt9/EnqM93ZZLSifkIw==
+X-Google-Smtp-Source: ABdhPJxBWzV9hIdD/ppivptyrR1Q/BbH6VDl/2J8QOWvz7pwtbP9BUzgcUex4ERGvaxlxqzx0o7WTA==
+X-Received: by 2002:adf:e38a:: with SMTP id e10mr22674462wrm.37.1615204822703;
+        Mon, 08 Mar 2021 04:00:22 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:60f3:8fc:7d4b:c2d9? ([2a01:e34:ed2f:f020:60f3:8fc:7d4b:c2d9])
+        by smtp.googlemail.com with ESMTPSA id p18sm21700615wro.18.2021.03.08.04.00.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Mar 2021 04:00:22 -0800 (PST)
+Subject: Re: [PATCH v5 1/4] PM / devfreq: Register devfreq as a cooling device
+ on demand
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     cwchoi00@gmail.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, steven.price@arm.com,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+References: <20210308091646.28096-1-daniel.lezcano@linaro.org>
+ <c6d6781a-759c-0361-aaaa-28a625e4809b@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <bd6c8e7f-e626-b6f4-65b9-f7ea96098677@linaro.org>
+Date:   Mon, 8 Mar 2021 13:00:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <c6d6781a-759c-0361-aaaa-28a625e4809b@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+On 08/03/2021 10:53, Lukasz Luba wrote:
+> Hi Daniel,
+> 
+> In general the approach is good. If there is a special GPU driver, which
+> would like to provide 'struct devfreq_cooling_power *' it would leave
+> 'is_cooling_device=false' and register manually:
+> devfreq_cooling_em_register(df, dfc_power);
+> 
+> Please find only a few minor comments below.
+> 
+> 
+> On 3/8/21 9:16 AM, Daniel Lezcano wrote:
+>> Currently the default behavior is to manually having the devfreq
+>> backend to register themselves as a devfreq cooling device.
+>>
+>> Instead of adding the code in the drivers for the thermal cooling
+>> device registering, let's provide a flag in the devfreq's profile to
+>> tell the common devfreq code to register the newly created devfreq as
+>> a cooling device.
+>>
+>> Suggested-by: Chanwoo Choi <cwchoi00@gmail.com>
+>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>> ---
 
-From: Chunguang Xu <brookxu@tencent.com>
+[ ... ]
 
-Since we will initialize sched_data.service_tree[] in
-bfq_init_root_group(), bfq_create_group_hierarchy() can
-ignore this part of the initialization, which can avoid
-repeated initialization.
+>> +    struct thermal_cooling_device *cdev;
+> 
+> The linux/thermal.h for 'cdev' would be needed in this header.
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
----
- block/bfq-cgroup.c | 4 ----
- 1 file changed, 4 deletions(-)
+May be just a forward declaration ?
 
-diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index ab4bc410e635..05054e1b5d97 100644
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -1514,15 +1514,11 @@ void bfqg_and_blkg_put(struct bfq_group *bfqg) {}
- struct bfq_group *bfq_create_group_hierarchy(struct bfq_data *bfqd, int node)
- {
- 	struct bfq_group *bfqg;
--	int i;
- 
- 	bfqg = kmalloc_node(sizeof(*bfqg), GFP_KERNEL | __GFP_ZERO, node);
- 	if (!bfqg)
- 		return NULL;
- 
--	for (i = 0; i < BFQ_IOPRIO_CLASSES; i++)
--		bfqg->sched_data.service_tree[i] = BFQ_SERVICE_TREE_INIT;
--
- 	return bfqg;
- }
- #endif	/* CONFIG_BFQ_GROUP_IOSCHED */
+struct thermal_cooling_device;
+
+>> +
+>>       struct notifier_block nb_min;
+>>       struct notifier_block nb_max;
+>>   };
+>>
+> 
+> With this small changes:
+> 
+> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+> 
+> Regards,
+> Lukasz
+
+
 -- 
-2.30.0
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
