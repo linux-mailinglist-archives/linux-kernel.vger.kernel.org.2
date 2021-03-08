@@ -2,97 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE074331AC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 00:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1390C331AD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 00:10:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhCHXI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 18:08:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbhCHXHw (ORCPT
+        id S231683AbhCHXKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 18:10:01 -0500
+Received: from mail-io1-f45.google.com ([209.85.166.45]:36367 "EHLO
+        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhCHXJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 18:07:52 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62892C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 15:07:52 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id x135so8353340oia.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 15:07:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4hvbKRFY7Gs9YDqGOyz0/NvmnAh1JPz6EfNarEQ6wA8=;
-        b=G674hH9UyzvI0ioSt5BG9expqlepPHZakDtglNtJ5zHcpyc/GmtGTwrnFgcB2qP9rm
-         4PZ3Jqc/kZktu5JHYs1/xTfwjbdNykb0Hay6Rhme+ju/0BFUbMkiUQoaNqbpAmFMDpuQ
-         QY9lCsH61+rJL91wkQ0Bcca/MFDvG9eXHTrzC5Ebb5u5aTQM/nuVdZkdviREq/fFfZIt
-         ogNL0ntfGqyc1ZCeZ8zZUjWu2FdtX7+8CUH+Fv6XJ0m2WKttmicd3C1kZmQMYzfqHMhF
-         x3KfvEdj6wFzQclp85rXq2NLVQId/TdH9WL+57kK+B0nBkLjcA5hoDXRlWYEYt8UogQn
-         005A==
+        Mon, 8 Mar 2021 18:09:56 -0500
+Received: by mail-io1-f45.google.com with SMTP id n14so11894127iog.3;
+        Mon, 08 Mar 2021 15:09:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=4hvbKRFY7Gs9YDqGOyz0/NvmnAh1JPz6EfNarEQ6wA8=;
-        b=SaFJLN30i0g6cPOEkqu0ExZ8H6wf3PslABr94kALIGzePY9FGl5H7AESR5CMJUme4p
-         fGKyndUzUf8Apuv6SWSU76TA9GVXmKEV9+Eg0VAGWg9QZEYQxLSHuBNr+UcFh4xwICXa
-         qh01kn567cE2cDFmpQAtVW3m4u2oIYi6F6RfAOUZRnrUqTdud7oWqzW7ILTZTITaD2Sn
-         lIkAX6G9UYTFiJwchmkkwG2UVflXJifLlbZUUI2+cq7CUCeeIw5RfahUbb9Jtl7Tuwhw
-         GjFWdY15vd1kGI2cOc65vgqX0slMkmiWDUsrC0echr7G6paZfmDymkhUCj6r09TN5ab+
-         u3ZA==
-X-Gm-Message-State: AOAM533XTyVD83982ms3Z1TiWdMhGvqC8EhuUhiGujLVnXcjYOEmttZp
-        S/0VB+BR+evC5na/n2Auy/B52w==
-X-Google-Smtp-Source: ABdhPJxE5DEMhzUk2EXfK4SAN7Gzv+ovKX70wN9qc3D+l1U7WWpQVSjnKb+Y0Q99IB5cclKWi21c1Q==
-X-Received: by 2002:aca:2b13:: with SMTP id i19mr900239oik.148.1615244871809;
-        Mon, 08 Mar 2021 15:07:51 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w7sm2772999oie.7.2021.03.08.15.07.50
+        bh=d9qdA9Y+xT1jiSESbe2fYHu9PMJNDVhY8kjXY15A+T0=;
+        b=BK1KmD+Z6xfRYe7Fa8YxaoNDUM57E8KJGDMlkn5F+eGcqCMtbmWYs8KBbkvXsnoz3x
+         +HtwGd93u2GXTqC1a8kPyKt7ROi2ExYPeEL0JVh1TQL+7eQJftr651DN54pb2UkSDqpa
+         Ab+xJ/aUi1QABUU7B03W6ym7Dvr5+0kQiNCBlKbC9eKNXbbj5LuC5pu/Mrv7DRwraHBv
+         cZeezc8q+C9zEnUxmbf9q01v42I/KCIuu+gHxOOU73ppQv/kocSCB1wm7CzwYQ1c3d7z
+         eK0Gfmg9BK42YHAqGjW5tvIWtK4WwUJHX/2XMUb/tzaxldJVndSaHiw2PaWeMfU02gfv
+         E1vA==
+X-Gm-Message-State: AOAM533cg1djvxwmVdHl5N25DNP8tZa/9eV5DGK+a+/DrVx3zzm3CCp7
+        4jN0ZKBKNw+1KBcWCZnxwe9vGge9/Q==
+X-Google-Smtp-Source: ABdhPJwnPArl8lOuREEmgmFXC1BTCoNu9K/bNxJK1f13pcd1fHZaDB/4EwNahOpKKwS/g95K2Crkkg==
+X-Received: by 2002:a5d:9e47:: with SMTP id i7mr20762814ioi.104.1615244996209;
+        Mon, 08 Mar 2021 15:09:56 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id y18sm6848627ili.16.2021.03.08.15.09.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 15:07:51 -0800 (PST)
-Date:   Mon, 8 Mar 2021 17:07:49 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, Andy Gross <agross@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 34/41] arm64: dts: qcom: sdm630-nile: Configure WCN3990
- Bluetooth
-Message-ID: <YEauRWCv7PENpiIc@builder.lan>
-References: <20210226200414.167762-1-konrad.dybcio@somainline.org>
- <20210226200414.167762-35-konrad.dybcio@somainline.org>
- <71ea4ebd-f446-ede3-7623-ae5b339d7905@somainline.org>
+        Mon, 08 Mar 2021 15:09:55 -0800 (PST)
+Received: (nullmailer pid 3121887 invoked by uid 1000);
+        Mon, 08 Mar 2021 23:09:53 -0000
+Date:   Mon, 8 Mar 2021 16:09:53 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     linux-kernel@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 11/13] dt-bindings: phy: phy-cadence-sierra: Add
+ binding to model Sierra as clock provider
+Message-ID: <20210308230953.GA3121857@robh.at.kernel.org>
+References: <20210308050732.7140-1-kishon@ti.com>
+ <20210308050732.7140-12-kishon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <71ea4ebd-f446-ede3-7623-ae5b339d7905@somainline.org>
+In-Reply-To: <20210308050732.7140-12-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 27 Feb 04:40 CST 2021, Konrad Dybcio wrote:
-
+On Mon, 08 Mar 2021 10:37:30 +0530, Kishon Vijay Abraham I wrote:
+> Add #clock-cells binding to model Sierra as clock provider and include
+> clock IDs for PLL_CMNLC and PLL_CMNLC1.
 > 
-> > From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> 
-> From: Martin Botka <martin.botka@somainline.org>
-> 
-> 
-> That got caught in rebasing madness.. Should any additional mistakes appear, I'll send a V2.
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  .../bindings/phy/phy-cadence-sierra.yaml        | 17 ++++++++++++++++-
+>  include/dt-bindings/phy/phy-cadence.h           |  4 ++++
+>  2 files changed, 20 insertions(+), 1 deletion(-)
 > 
 
-Patches looks good, but I'm a little bit confused about author and s-o-b
-of the once you replied to.
-
-Please respin the whole thing with the proper authors/s-o-b, and I'll be
-happy to apply it.
-
-(And please remember to pick up Rob's ack)
-
-Regards,
-Bjorn
+Reviewed-by: Rob Herring <robh@kernel.org>
