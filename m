@@ -2,114 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79A23306D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 05:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A393306D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 05:29:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234123AbhCHE2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 23:28:22 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38138 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232313AbhCHE14 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 23:27:56 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12843bxa133135;
-        Sun, 7 Mar 2021 23:27:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=NP39ZWoz9Xd3g1UX+nyLKlZg2ptzC85JVgl8ySjGpMg=;
- b=Ls+2TA4BL20oss8ZT3APYSTJf4FJ3jY3G/J9/DG4mbYmIjWyyg8EgqDaYAXP4hZooZcU
- nKVwyrPL9U6oKqzKTthvUGM5gAJ0oEHL2F8UnWHJWgoFW0hI/N7NnvSKRlFLApBQo0Tq
- MohRR7rOXGDv/DcUDgWNvhh9seIt4CXqYs5676Qs48Ns/e1QeSzoPoxhYYPl+gtINBJ+
- 76XcAxQZFjw5X5cy8LWw0+zhxH3W1SneDE0j2U6JHO1qzb1WGwOiZ6GAqEjteoQttDds
- 5rUzlo19FXqRPeHGz1YXNi6F36vTVR6Y2stSXNMiWoz41jFwv63vXr4OgUOGfoTpebNq 3g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3757ww5dpk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 07 Mar 2021 23:27:50 -0500
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12843kaI133704;
-        Sun, 7 Mar 2021 23:27:49 -0500
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3757ww5dpc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 07 Mar 2021 23:27:49 -0500
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1284MpYh023807;
-        Mon, 8 Mar 2021 04:27:48 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma05wdc.us.ibm.com with ESMTP id 3741c93yx3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Mar 2021 04:27:48 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1284Rlka26411308
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 8 Mar 2021 04:27:47 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 577327805C;
-        Mon,  8 Mar 2021 04:27:47 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E057B78063;
-        Mon,  8 Mar 2021 04:27:45 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.80.211.242])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon,  8 Mar 2021 04:27:45 +0000 (GMT)
-Message-ID: <2b90f003bbf8064c2372cba6a61b31cb8dec7a69.camel@linux.ibm.com>
-Subject: Re: [PATCH] scsi: iscsi: Switch to using the new API kobj_to_dev()
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, lduncan@suse.com
-Cc:     cleech@redhat.com, martin.petersen@oracle.com,
-        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Sun, 07 Mar 2021 20:27:44 -0800
-In-Reply-To: <1615174470-45135-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-References: <1615174470-45135-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S234175AbhCHE2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 23:28:55 -0500
+Received: from foss.arm.com ([217.140.110.172]:59154 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234125AbhCHE2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 23:28:51 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 49018D6E;
+        Sun,  7 Mar 2021 20:28:51 -0800 (PST)
+Received: from bogus (unknown [10.57.15.109])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E43873F73C;
+        Sun,  7 Mar 2021 20:28:45 -0800 (PST)
+Date:   Mon, 8 Mar 2021 04:28:42 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Jyoti Bhayana <jbhayana@google.com>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Enrico Granata <egranata@google.com>,
+        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
+        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
+        Peter Hilber <Peter.hilber@opensynergy.com>,
+        Ankit Arora <ankitarora@google.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v6 1/1] iio/scmi: Adding support for IIO SCMI Based
+ Sensors
+Message-ID: <20210308042842.e6qr4xxp5tl5ahos@bogus>
+References: <20210212172235.507028-1-jbhayana@google.com>
+ <20210212172235.507028-2-jbhayana@google.com>
+ <20210221144616.4eef6a79@archlinux>
+ <CA+=V6c1aKy1nPDMJ+mhB6drUEs6T7SVKon8chH++6Zv1dkv+GA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-08_01:2021-03-03,2021-03-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- spamscore=0 clxscore=1011 priorityscore=1501 phishscore=0
- lowpriorityscore=0 bulkscore=0 suspectscore=0 mlxscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103080018
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+=V6c1aKy1nPDMJ+mhB6drUEs6T7SVKon8chH++6Zv1dkv+GA@mail.gmail.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-03-08 at 11:34 +0800, Jiapeng Chong wrote:
-> Fix the following coccicheck warnings:
-> 
-> ./drivers/scsi/scsi_transport_iscsi.c:930:60-61: WARNING opportunity
-> for kobj_to_dev().
+Hi Jonathan,
 
-I have to ask, what is the point of this?  container_of is usually
-pretty safe ... as in it will detect when you screw up the usage.  The
-only real misuse you can get is when the input type has an object of
-the same name and return type and you got confused between two objects
-with this property, but misuses like this resulting in bugs are very,
-very rare.
+On Tue, Feb 23, 2021 at 10:30:37AM -0800, Jyoti Bhayana wrote:
+> Hi Jonathan,
+>
+> Thanks for the detailed and careful review of this patch. Good to hear
+> that v7 is not required.   Please find below answers to your
+> questions. Looking forward to seeing this patch merged in the next
+> cycle. Thanks for your help in making this happen.
+>
 
-Usually we wrap container_of because the wrapping is a bit shorter as
-you can see: kobj_to_dev is about half the size of the container_of
-form ... but is there any other reason to do it?
+Any update on this ? Please share the branch with is patch so that I
+can pull and ask Cristian to make his changes on top.
 
-The problem is that container_of is a standard way of doing cast outs
-in the kernel and we have hundreds of them.  To be precise, in scsi
-alone:
-
-jejb@jarvis:~/git/linux/drivers/scsi> git grep container_of|wc -l
-496
-
-So we really don't want to encourage wrapping them all because the
-churn would be unbelievable and the gain minute.  So why should this
-one case especially be wrapped when we don't want to wrap the others?
-
-James
-
-
+--
+Regards,
+Sudeep
