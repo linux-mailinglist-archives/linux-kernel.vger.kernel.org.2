@@ -2,146 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2A73312AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9663312B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbhCHP5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 10:57:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229790AbhCHP4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 10:56:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B7906523A;
-        Mon,  8 Mar 2021 15:56:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615219006;
-        bh=AMnX0SygVGdsOpsu02CyTU1ONKxzUU3oyic44NgULgI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hDVw4MdENfuLbuKeqvtBWjNwSH2rGzMMF/UVPMnMptRWwixmLjWouenUjUaZVGD/2
-         VDMzOioc+4g7dqsc/yvW88uPL+29CGqQCCcpQzmxLxhV7KMxKvQtgk6ST1Kjl8y1q2
-         duBbBAIERhBaUMUImlm/GCfe1/7FPwjyV+UM9oTNfa1Q/kDnW7sUHWtWfot6bOFk3y
-         1mqTkQCxIg0qqeUjcAZYP5AIzpA3NpprexEMQKdpGNeQYrMHp22XkRRVLOa26628X/
-         y1UFObeUQDmDtkDsdbhoJ2hHWCISQWABVWk7BJg3tO6uwI9Am6lX8TVOpfl/KC4tf3
-         GoDVG1lJDWslw==
-Received: by mail-ed1-f51.google.com with SMTP id d13so15511359edp.4;
-        Mon, 08 Mar 2021 07:56:46 -0800 (PST)
-X-Gm-Message-State: AOAM532tV9yA+5I+6LKx8BpO+aC5xGnjjW7VmpqucMgr5UpNmm19fadp
-        1YCMJyacjIeBcqsG6poivuYRn+lcyBN3HwMcKg==
-X-Google-Smtp-Source: ABdhPJwH/b4ZAsQVcZUHxUxeVuQH7gPalQFtNSoosBJOJIGZEktZbjD5b3DoKZKlUThK2W/ME6qwN0vqO1cuyxhhGEI=
-X-Received: by 2002:a05:6402:c0f:: with SMTP id co15mr22380286edb.373.1615219004932;
- Mon, 08 Mar 2021 07:56:44 -0800 (PST)
+        id S230135AbhCHP6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 10:58:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229463AbhCHP6P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 10:58:15 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 013A6C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 07:58:15 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so3372628pjv.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 07:58:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tV38FDWXIwSDUgFeSjN3RtzjqUjYpkfwAo3PpwIhaxQ=;
+        b=ErBYBePCPB8Z2yrnGCAAmEr6Cx2IqktbakyWcUtYUMjI6dUa9KhCVu0wnQUdWE6ZZO
+         7Q3UnwF/9+sIrG0HMnoiv6PEJNQ/+ipbUzGnjGurIFGinBAtR0wiNA9tiyr7yTrxyXXa
+         rHqcNDg+YIuolXpmnVo4q8bIU1AP8r/As32IgdCvy3bsBN4V57mMbA3xVTMFXyG/4+Va
+         D9aCWYzKuqY9meLE1/CItfgSqsk6vPUu19bg/CG2Y/BAT0nCcYul3xa3lULVeqYB9ahf
+         WgeOvenaXWclypW/0ygdxWVGKtMbR4067LG3lmjCPB273JOVSW+BTYU1wxdbnfmBh6Yg
+         XoSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=tV38FDWXIwSDUgFeSjN3RtzjqUjYpkfwAo3PpwIhaxQ=;
+        b=h2iQkPDSWHG8R3O8XJC0cMKsztRJ3ATYiECvbzL1ju38TgbcS0GrI7BTRZsfqH3YlK
+         SxdnpEIBeD/UMdc34fjkRWwwJ5LNVrF7hXNx9iAF93d5tULHiGP69rLY2aaiP5p6tpmy
+         Y8zAaNuCEowGdPl7DrB0c0sU+TD2aLEbz+F2KgPVIxxuMlHjYvSUoz0But7fAAoD0Nnt
+         h7V2j5nyrWJ3X2uz2SvOm/B5vpXad3+IfVSMM40v+7MUxcQXDCJYX9q/vS80rMDjStxG
+         F0UAUbpPMPw9jfKRaOCdd9pLvM+WaF7+t0GsxSrU2zc6hPYipOC1hVgMyberLXeFWu2e
+         c04Q==
+X-Gm-Message-State: AOAM53055Ky3LAaC/hkaV69OfIodrVlS62f8NHTG1CKOzIer3dg3FpUC
+        VTX1teGES3Nhl1wlepUGXq0=
+X-Google-Smtp-Source: ABdhPJwbWISOhBxGHptp1gqbym0Nispm2/sYDjzuafiWOdybNE26U+RSKaLXfRFGR5LNy22QDvJ4yg==
+X-Received: by 2002:a17:90a:bb8d:: with SMTP id v13mr24192531pjr.12.1615219094528;
+        Mon, 08 Mar 2021 07:58:14 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:4ccc:acdd:25da:14d1])
+        by smtp.gmail.com with ESMTPSA id f21sm9066040pjj.52.2021.03.08.07.58.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 07:58:13 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 8 Mar 2021 07:58:11 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
+Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
+Message-ID: <YEZJk8YpUypT7q/j@google.com>
+References: <d3095ead-a762-61cd-0990-702e14e03d10@redhat.com>
+ <YEEUq8ZRn4WyYWVx@google.com>
+ <c08662f3-6ae1-4fb5-1c4f-840a70fad035@redhat.com>
+ <YEEi1+TREGBElE5H@google.com>
+ <YEEle5xBAc7FUDNI@google.com>
+ <YEYdR8azcawau9Rl@dhcp22.suse.cz>
+ <c1461e51-7ad0-7fb5-9dc2-7f7c5cdf128f@redhat.com>
+ <YEYwdjvYGiZ4crMt@dhcp22.suse.cz>
+ <9f7b4b8a-5317-e382-7f21-01667e017982@redhat.com>
+ <YEZF81vXGR8TX8sE@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-13-marcan@marcan.st>
- <CAL_JsqJF2Hz=4U7FR_GOSjCxqt3dpf-CAWFNfsSrDjDLpHqgCA@mail.gmail.com>
- <6e4880b3-1fb6-0cbf-c1a5-7a46fd9ccf62@marcan.st> <CAK8P3a0Hmwt-ywzS-2eEmqyQ0v2SxLsLxFwfTUoWwbzCrBNhsQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a0Hmwt-ywzS-2eEmqyQ0v2SxLsLxFwfTUoWwbzCrBNhsQ@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 8 Mar 2021 08:56:32 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqJHRM59GC3FjvaGLCELemy1uspnGvTEFH6q0OdyBPVSjA@mail.gmail.com>
-Message-ID: <CAL_JsqJHRM59GC3FjvaGLCELemy1uspnGvTEFH6q0OdyBPVSjA@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
- MMIO as non-posted
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        DTML <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEZF81vXGR8TX8sE@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 2:17 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Fri, Mar 5, 2021 at 7:18 PM Hector Martin <marcan@marcan.st> wrote:
-> >
-> > On 06/03/2021 02.39, Rob Herring wrote:
-> > >> -       return ioremap(res.start, resource_size(&res));
-> > >> +       if (res.flags & IORESOURCE_MEM_NONPOSTED)
-> > >> +               return ioremap_np(res.start, resource_size(&res));
-> > >> +       else
-> > >> +               return ioremap(res.start, resource_size(&res));
-> > >
-> > > This and the devm variants all scream for a ioremap_extended()
-> > > function. IOW, it would be better if the ioremap flavor was a
-> > > parameter. Unless we could implement that just for arm64 first, that's
-> > > a lot of refactoring...
-> >
-> > I agree, but yeah... that's one big refactor to try to do now...
->
-> FWIW, there is ioremap_prot() that Christoph introduced in 2019
-> for a few architectures.  I suppose it would be nice to lift
-> that out architecture specific code and completely replace the
-> unusual variants, leaving only ioremap(), ioremap_prot() and
-> memremap() but dropping the _nc, _cached, _wc, _wt and _np
-> versions in favor of an extensible set of flags.
->
-> Then again, I would not make that a prerequisite for the merge
-> of the M1 support.
->
-> > > What's the code path using these functions on the M1 where we need to
-> > > return 'posted'? It's just downstream PCI mappings (PCI memory space),
-> > > right? Those would never hit these paths because they don't have a DT
-> > > node or if they do the memory space is not part of it. So can't the
-> > > check just be:
-> > >
-> > > bool of_mmio_is_nonposted(struct device_node *np)
-> > > {
-> > >      return np && of_machine_is_compatible("apple,arm-platform");
-> > > }
-> >
-> > Yes; the implementation was trying to be generic, but AIUI we don't need
-> > this on M1 because the PCI mappings don't go through this codepath, and
-> > nothing else needs posted mode. My first hack was something not too
-> > unlike this, then I was going to get rid of apple,arm-platform and just
-> > have this be a generic mechanism with the properties, but then we added
-> > the optimization to not do the lookups on other platforms, and now we're
-> > coming full circle... :-)
->
-> I never liked the idea of having a list of platforms that need a
-> special hack, please let's not go back to that.
+On Mon, Mar 08, 2021 at 04:42:43PM +0100, Michal Hocko wrote:
+> On Mon 08-03-21 15:13:35, David Hildenbrand wrote:
+> > On 08.03.21 15:11, Michal Hocko wrote:
+> > > On Mon 08-03-21 14:22:12, David Hildenbrand wrote:
+> > > > On 08.03.21 13:49, Michal Hocko wrote:
+> > > [...]
+> > > > > Earlier in the discussion I have suggested dynamic debugging facility.
+> > > > > Documentation/admin-guide/dynamic-debug-howto.rst. Have you tried to
+> > > > > look into that direction?
+> > > > 
+> > > > Did you see the previous mail this is based on:
+> > > > 
+> > > > https://lkml.kernel.org/r/YEEUq8ZRn4WyYWVx@google.com
+> > > > 
+> > > > I agree that "nofail" is misleading. Rather something like
+> > > > "dump_on_failure", just a better name :)
+> > > 
+> > > Yeah, I have read through the email thread. I just do not get why we
+> > > cannot make it pr_debug() and add -DDYNAMIC_DEBUG_MODULE for
+> > > page_alloc.c (I haven't checked whether that is possible for built in
+> > > compile units, maybe it is not but from a quick seems it should).
+> > > 
+> > > I really do not like this to be a part of the API. alloc_contig_range is
+> > 
+> > Which API?
+> 
+> Any level of the alloc_contig_range api because I strongly suspect that
+> once there is something on the lower levels there will be a push to have
+> it in the directly consumed api as well. Besides that I think this is
+> just a wrong way to approach the problem.
+> 
+> > It does not affect alloc_contig_range() itself, it's used
+> > internally only. Sure, we could simply pr_debug() for each and every
+> > migration failure. As long as it's default-disabled, sure.
+> > 
+> > I do agree that we should look into properly including this into the dynamic
+> > debugging ifrastructure.
+> 
+> Yeah, unless we learn this is not feasible for some reason, which I do
+> not see right now, then let's just make it pr_debug with the runtime
+> control.
 
-I'm a fan of generic solutions as much as anyone, but not when there's
-a single user. Yes, there could be more, but we haven't seen any yet
-and Apple seems to have a knack for doing special things. I'm pretty
-sure posted vs. non-posted has been a possibility with AXI buses from
-the start, so it's not like this is a new thing we're going to see
-frequently on new platforms.
+What do you see the problem? It's the dynamic debugging facility
+to enable only when admin want to use it. Otherwise, it's nop
+unless is't not enabled. Furthermore, it doesn't need to invent
+custom dump_page implementation(including dump_page_owner) by
+chaning pr_debug.
+Could you clarify your requirement?
 
-A generic property we have to support forever because there's zero
-visibility if someone uses them. At least with something platform
-specific, we know if it's in use or can be removed. That's something I
-just checked recently with some of the PPC irq work-arounds (spoiler:
-yes, those 'old world Mac' are). I'm a bit less worried about this
-aspect given we can probably assume someone will still be using M1
-Macs in 20+ years.
+https://lore.kernel.org/linux-mm/YEEUq8ZRn4WyYWVx@google.com/
 
-The other situation I worry about here is another arch has implicitly
-defaulted to non-posted instead of posted. It could just be non-posted
-was what worked everywhere and Linux couldn't distinguish. Now someone
-sees we have this new posted vs. non-posted handling and can optimize
-some mappings on their platform and we have to have per arch defaults
-(like 'dma-coherent' now).
+Since David agreed to drop nofail option in the API, I will
+keep the URL patch.
 
-Rob
