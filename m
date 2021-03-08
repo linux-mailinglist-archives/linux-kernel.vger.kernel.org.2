@@ -2,67 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87653331310
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A2733132F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbhCHQMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:12:19 -0500
-Received: from mga11.intel.com ([192.55.52.93]:49959 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229737AbhCHQML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:12:11 -0500
-IronPort-SDR: spigiwSSOnak251+RgI1AC3vegnV1fDSh+j/VHWcrCgIRn8+gJfX+ufHWGYVzLvSiJsJECXis3
- dah4wzs7iX7A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="184694040"
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="184694040"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 08:11:46 -0800
-IronPort-SDR: dBobVGOy4zQldOCGM+K1gTE9D4K5BZ7gDOmu8jL0SZY+SaeN0KHAuTU8p+ZNkEqSeV0CKiLPM6
- 88zP1K3w7Kgg==
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="447180097"
-Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.173])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 08:11:43 -0800
-Date:   Tue, 9 Mar 2021 00:15:48 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Doug Smythies <dsmythies@telus.net>,
-        youling257 <youling257@gmail.com>
-Cc:     youling257 <youling257@gmail.com>, lenb@kernel.org,
-        rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
-        Len Brown <len.brown@intel.com>, Chen Yu <yu.c.chen@intel.com>
-Subject: Re: [3/3,v3] tools/power turbostat: Enable accumulate RAPL display
-Message-ID: <20210308161548.GA37664@chenyu-desktop>
-References: <1f6d32e14f121a8ccf8807b8343597c3ae88c7d2.1587196252.git.yu.c.chen@intel.com>
- <20210308134957.23852-1-youling257@gmail.com>
- <CAAYoRsXec2eq=t-pSn5TOqNt0G6kfZCKkDuEhCnX5SgL0zgkBg@mail.gmail.com>
+        id S230522AbhCHQQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:16:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231226AbhCHQQO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 11:16:14 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAA6C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 08:16:14 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo4153333wmq.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 08:16:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dUhsdpgyKbkw4pWWzlPQlJO0EnmBV3jJKURQm4/QkFA=;
+        b=Nff/mQrlyV5ROAurVkLSqXKFuMVDszocw7rDWhPBnR1Ok/wDmBLCS7nSDiGVDCozIp
+         80abNeWluZ3qJunraTaWeTDrTS6QZ55A1JrT+eOXxLY/VB8r0lVPL4S2vI9JqXfUw0Qg
+         jb+a3xx6pBIAaJX274bWbRkLGTLpBwGJCgCj/mU7Jh1LVVmhvZbA1Yfo5a594wVROqUF
+         cbvNKf6TSIj9Cebzvjd+bnKKtgJfjwRW4lwN84X4C8ewFjkxdJsneCURVdlOu38mHCCF
+         LGW4Eqinvni1b7sguCO8y/yy0KD8f0vs5HY7l6zV1f0csCm/Z6QNTZIXx80Spfy2uVhK
+         r2KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dUhsdpgyKbkw4pWWzlPQlJO0EnmBV3jJKURQm4/QkFA=;
+        b=lsuFjqWyXnwK4UOIpJ98WS1AI99YH1VOMGmixcAD5c77DNHJxTHmQswqheTHNaItW9
+         G0rxBB9MBvlSKgqufx49bYAgbBfvaDJLsHagVkXL2h/BIdjOSAssXh5maJVa82es4sdP
+         LKSmGo5oPdMt/VDu3U65sfruLhsJKQGmAqoFMHN2hcpQ02OR6rVbb1cfxC7gthsvKx0U
+         b0zXkuMB7+N0qNKZvchRTYpRsZ5w5qjq6z7KmUFzDGZZI8eG62xyjqyaXgo9ee7ujd9j
+         ZWxsWV1uuQxv/3YaoUOScKbLkpUCRg/h53IeEfJF0dhRe89W8yBG5OWyzX1BcSC9w8GC
+         /5Bg==
+X-Gm-Message-State: AOAM533hRexwY140c/Oakn2lHUUIZQe4o5WN435j/I7hLGcvrKIiWRhj
+        U+0yA2uugL03XuF9Tn2eJnWK2g==
+X-Google-Smtp-Source: ABdhPJx+IiBiziHQQ87PcUBmZFUJZZod0kR9YdAx8gqEn3DHUhj10eGtKcUpB9mxBAwo+eSgd3bZaQ==
+X-Received: by 2002:a1c:c282:: with SMTP id s124mr22525795wmf.99.1615220172820;
+        Mon, 08 Mar 2021 08:16:12 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id n6sm20123107wmd.27.2021.03.08.08.16.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Mar 2021 08:16:12 -0800 (PST)
+Subject: Re: [PATCH v3 8/9] soundwire: qcom: add auto enumeration support
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        vkoul@kernel.org
+Cc:     yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20210308134957.16024-1-srinivas.kandagatla@linaro.org>
+ <20210308134957.16024-9-srinivas.kandagatla@linaro.org>
+ <ab00438b-dbb9-e6c6-019a-d50494e5dee1@linux.intel.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <6050461e-5594-6272-e0ef-2ebdc271d809@linaro.org>
+Date:   Mon, 8 Mar 2021 16:16:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAYoRsXec2eq=t-pSn5TOqNt0G6kfZCKkDuEhCnX5SgL0zgkBg@mail.gmail.com>
+In-Reply-To: <ab00438b-dbb9-e6c6-019a-d50494e5dee1@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Mon, Mar 08, 2021 at 07:37:07AM -0800, Doug Smythies wrote:
-> On Mon, Mar 8, 2021 at 5:50 AM youling257 <youling257@gmail.com> wrote:
-> >
-> > this cause turbostat not work on amd cpu.
-> >
-> > root@localhost:~# /turbostat
-> > turbostat version 20.09.30 - Len Brown <lenb@kernel.org>
-> > CPUID(0): AuthenticAMD 0xd CPUID levels; 0x8000001f xlevels; family:model:stepping 0x17:18:1 (23:24:1)
-> 
-> There are already two fixes for this in the queue.
-> https://marc.info/?l=linux-pm&m=161382097503925&w=2
-> https://marc.info/?l=linux-pm&m=161141701219263&w=2
-Thanks for reporting and pointing this out. I assume these two patches are both fixing the
-same issue? It looks like these two patches should be merged into one:
-1. Bingsong's patch access MSR_PKG_ENERGY_STAT only when RAPL_AMD_F17H is set,
-   which is consistent with the original context.
-2. Bas Nieuwenhuizen's patch also fixes the issue in idx_valid()
-   in case RAPL_PKG was not set but with RAPL_AMD_F17H set.
 
-thanks,
-Chenyu
+
+On 08/03/2021 15:56, Pierre-Louis Bossart wrote:
+> 
+>> +static int qcom_swrm_enumerate(struct sdw_bus *bus)
+>> +{
+>> +    struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
+>> +    struct sdw_slave *slave, *_s;
+>> +    struct sdw_slave_id id;
+>> +    u32 val1, val2;
+>> +    bool found;
+>> +    u64 addr;
+>> +    int i;
+>> +    char *buf1 = (char *)&val1, *buf2 = (char *)&val2;
+>> +
+>> +    for (i = 1; i <= SDW_MAX_DEVICES; i++) {
+>> +        /*SCP_Devid5 - Devid 4*/
+>> +        ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_1(i), &val1);
+>> +
+>> +        /*SCP_Devid3 - DevId 2 Devid 1 Devid 0*/
+>> +        ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_2(i), &val2);
+>> +
+>> +        if (!val1 && !val2)
+>> +            break;
+>> +
+>> +        addr = buf2[1] | (buf2[0] << 8) | (buf1[3] << 16) |
+>> +            ((u64)buf1[2] << 24) | ((u64)buf1[1] << 32) |
+>> +            ((u64)buf1[0] << 40);
+>> +
+>> +        sdw_extract_slave_id(bus, addr, &id);
+>> +        found = false;
+>> +        /* Now compare with entries */
+>> +        list_for_each_entry_safe(slave, _s, &bus->slaves, node) {
+>> +            if (sdw_compare_devid(slave, id) == 0) {
+>> +                u32 status = qcom_swrm_get_n_device_status(ctrl, i);
+>> +
+>> +                found = true;
+>> +                if (status == SDW_SLAVE_ATTACHED) {
+>> +                    slave->dev_num = i;
+>> +                    mutex_lock(&bus->bus_lock);
+>> +                    set_bit(i, bus->assigned);
+>> +                    mutex_unlock(&bus->bus_lock);
+>> +
+>> +                }
+> 
+> you haven't changed that part, if the device is not in DT we should 
+> still set bus->assigned::i
+
+My bad! I missed it again!
+
+Will fix it in next spin!
+
+
+--srini
