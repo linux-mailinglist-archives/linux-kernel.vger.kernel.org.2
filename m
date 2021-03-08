@@ -2,103 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09300330661
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 04:27:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 660C333065D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 04:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233938AbhCHD0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 22:26:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233805AbhCHD0I (ORCPT
+        id S233914AbhCHD0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 22:26:35 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:53933 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230359AbhCHD0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 22:26:08 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4592CC06175F;
-        Sun,  7 Mar 2021 19:26:08 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id f124so8055764qkj.5;
-        Sun, 07 Mar 2021 19:26:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=b3gaboiJgJIOoDpDuaORkzc0Km12UiNYnqNRebiTimg=;
-        b=QG5aVISxQMHCusIBbqG/1x4/jf8PSgsix23YCvIMCYdJaI9Jg4x4S9Fb88c4+VP/Z0
-         i5bK15x4sYmR/uGt0yYlRfrwo0evDmXwMn7u+4SnqfTX5jPsRDqHr1tgI+eoSeHk4vJq
-         ypojmqOgGp7mLg4aJkvKQAiRDe8Uru3HkgYZGkADARI1OhnUTRdX1bnouH2YW2XgWtLT
-         XgmfOohZcIkJ3r0xFfwkRZaWd/uk3qrNe0Rt7dFOPp9qwWtNn3oljSRs1UgZInEcbNom
-         cCVraN81wrXMlVlUP28RhB0RhosE74bktTrFqIu0avC889ub45XnQAtQzDqXytsUuGjp
-         RbSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=b3gaboiJgJIOoDpDuaORkzc0Km12UiNYnqNRebiTimg=;
-        b=NmHeLFImQyf2RRMPszAIostEs1uY4MrcawaKx6is9LskC2SABfiy3pY5SrVZxFT0yw
-         0sU/wWG8jkmz5x8uo4xQPt/QwDndjElCiirGuNt9dk4KHcMbL86oMM2k7wSX9e7m1TZq
-         6S6e52zffhkTvvVucW04w47p4Ug1nod6YEp/D0Ik/KrWWC3fysbtX8QbYXeYlu6RQfM8
-         k4wsQSlToV7tnsX8Qz7I7T4p38bOCwMX08eLasNpdzemhEfu8qhioWq07Et5H2MNqMLU
-         hy1wdCb7Pnn5yTmF4HMuCX26xpqf9tw8HOaXpGWSAaIq6u22JhFazjIVt8P7Z5/zib+k
-         +4zA==
-X-Gm-Message-State: AOAM53380xgc1pPIO39DnoDBJ4cKXoe5RwabiKfYlMP1V8FTXL8IdedD
-        WCF8M/4k4b1CQsXq7x0zWGw=
-X-Google-Smtp-Source: ABdhPJxqaxYFTley5OKVU2kFe1XuBDh0wLvDDLkSokpsCAbW7ZNyWFvf2EyrICy7H1SPrKxg5/Y0Fw==
-X-Received: by 2002:a37:30f:: with SMTP id 15mr19271390qkd.494.1615173967447;
-        Sun, 07 Mar 2021 19:26:07 -0800 (PST)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:99a3:37aa:84df:4276])
-        by smtp.googlemail.com with ESMTPSA id r7sm339725qtm.88.2021.03.07.19.26.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 19:26:07 -0800 (PST)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Chas Williams <3chas3@gmail.com>,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ztong0001@gmail.com
-Subject: [PATCH 3/3] atm: idt77252: fix null-ptr-dereference
-Date:   Sun,  7 Mar 2021 22:25:30 -0500
-Message-Id: <20210308032529.435224-4-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210308032529.435224-1-ztong0001@gmail.com>
-References: <20210308032529.435224-1-ztong0001@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 7 Mar 2021 22:26:00 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UQp6Dbg_1615173956;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UQp6Dbg_1615173956)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 08 Mar 2021 11:25:58 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     jejb@linux.ibm.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] scsi: aha1542: remove unneeded semicolon
+Date:   Mon,  8 Mar 2021 11:25:51 +0800
+Message-Id: <1615173951-34692-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-this one is similar to the phy_data allocation fix in uPD98402, the
-driver allocate the idt77105_priv and store to dev_data but later
-dereference using dev->dev_data, which will cause null-ptr-dereference.
+Fix the following coccicheck warnings:
 
-fix this issue by changing dev_data to phy_data so that PRIV(dev) can
-work correctly.
+./drivers/scsi/aha1542.c:693:2-3: Unneeded semicolon.
+./drivers/scsi/aha1542.c:674:2-3: Unneeded semicolon.
+./drivers/scsi/aha1542.c:656:2-3: Unneeded semicolon.
+./drivers/scsi/aha1542.c:621:2-3: Unneeded semicolon.
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/atm/idt77105.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/aha1542.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/atm/idt77105.c b/drivers/atm/idt77105.c
-index 3c081b6171a8..bfca7b8a6f31 100644
---- a/drivers/atm/idt77105.c
-+++ b/drivers/atm/idt77105.c
-@@ -262,7 +262,7 @@ static int idt77105_start(struct atm_dev *dev)
- {
- 	unsigned long flags;
+diff --git a/drivers/scsi/aha1542.c b/drivers/scsi/aha1542.c
+index 21aab9f..6e34767 100644
+--- a/drivers/scsi/aha1542.c
++++ b/drivers/scsi/aha1542.c
+@@ -618,7 +618,7 @@ static int aha1542_getconfig(struct Scsi_Host *sh)
+ 	default:
+ 		shost_printk(KERN_ERR, sh, "Unable to determine IRQ level.\n");
+ 		return -1;
+-	};
++	}
+ 	sh->this_id = inquiry_result[2] & 7;
+ 	return 0;
+ }
+@@ -653,7 +653,7 @@ static int aha1542_mbenable(struct Scsi_Host *sh)
  
--	if (!(dev->dev_data = kmalloc(sizeof(struct idt77105_priv),GFP_KERNEL)))
-+	if (!(dev->phy_data = kmalloc(sizeof(struct idt77105_priv),GFP_KERNEL)))
- 		return -ENOMEM;
- 	PRIV(dev)->dev = dev;
- 	spin_lock_irqsave(&idt77105_priv_lock, flags);
-@@ -337,7 +337,7 @@ static int idt77105_stop(struct atm_dev *dev)
-                 else
-                     idt77105_all = walk->next;
- 	        dev->phy = NULL;
--                dev->dev_data = NULL;
-+                dev->phy_data = NULL;
-                 kfree(walk);
-                 break;
-             }
+ 		if (aha1542_out(sh->io_port, mbenable_cmd, 3))
+ 			goto fail;
+-	};
++	}
+ 	while (0) {
+ fail:
+ 		shost_printk(KERN_ERR, sh, "Mailbox init failed\n");
+@@ -669,9 +669,9 @@ static int aha1542_query(struct Scsi_Host *sh)
+ 	u8 inquiry_result[4];
+ 	int i;
+ 	i = inb(STATUS(sh->io_port));
+-	if (i & DF) {
++	if (i & DF)
+ 		i = inb(DATA(sh->io_port));
+-	};
++
+ 	aha1542_outb(sh->io_port, CMD_INQUIRY);
+ 	aha1542_in(sh->io_port, inquiry_result, 4, 0);
+ 	if (!wait_mask(INTRFLAGS(sh->io_port), INTRMASK, HACC, 0, 0))
+@@ -690,7 +690,7 @@ static int aha1542_query(struct Scsi_Host *sh)
+ 	if (inquiry_result[0] == 0x43) {
+ 		shost_printk(KERN_INFO, sh, "Emulation mode not supported for AHA-1740 hardware, use aha1740 driver instead.\n");
+ 		return 1;
+-	};
++	}
+ 
+ 	/*
+ 	 * Always call this - boards that do not support extended bios translation
 -- 
-2.25.1
+1.8.3.1
 
