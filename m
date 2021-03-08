@@ -2,182 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C65C3308CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 08:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B0A3308CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 08:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235183AbhCHH3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 02:29:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230502AbhCHH3v (ORCPT
+        id S235200AbhCHHa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 02:30:26 -0500
+Received: from mail-lj1-f174.google.com ([209.85.208.174]:41681 "EHLO
+        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235185AbhCHHaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 02:29:51 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC62C06174A;
-        Sun,  7 Mar 2021 23:29:51 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id e2so8006688ilu.0;
-        Sun, 07 Mar 2021 23:29:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h5H5nrzuIR4RcW9BVBgG2vSdDrTaNCUfMiVLT/XwqOc=;
-        b=YCchU6mhDYHgeH5o6551EHQ+B6MKrjCQDFfFrKsrhyt45/U6eFsJnFveDQ18c8a+Wk
-         gDAHF8Y+XBe22CRvtbwtT1hVMsP/MXb6TFThGZRgV2eb5j+liYrf8cl3JmZhHiufG9jI
-         DUnXluDMYL20qaYDPA2M8bPQec+fH/9oGqaTntcJGSD4gMLr4frd+59JdByTLYhS0Dwp
-         XAORzaZ6XoZOjpup1gZFDU8U4RwQn/oVECOs4fINYlGBrsUzmPm+xZtkcogPzXS3mZsT
-         fNLhCijGs0NffUPqsq2HHJzQg5bjUyZKIdIR4lIEu31dBXgSW0LhjxVvinXZFYZMciy5
-         xQ2Q==
+        Mon, 8 Mar 2021 02:30:21 -0500
+Received: by mail-lj1-f174.google.com with SMTP id t9so14774928ljt.8
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 23:30:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h5H5nrzuIR4RcW9BVBgG2vSdDrTaNCUfMiVLT/XwqOc=;
-        b=X2Z40iRoFjDGG/SRYsEEf5G+mEclpQ/AJZxft2KQiTNvZMz9yXV1scRfKc1tvNyQle
-         NW9iyzWpGY/65gQb7cHJxRVToEaXaytzIvF44X5L+UtHAWL2i97HFLjYFSWLzvMfTbCm
-         wNRMgoJO/lUFZmxdLQPbsMajOWDnobt6ZUpHAj9lK2nbBQ6sE4QLsVUNLXNrWabalCuP
-         n9Ni9OykecfhmSCbxmWzXOuuujURgGdwbhVUPMlOHRy92kJ5mQQ/1XWqo8mhhExuvKNa
-         9UKxojEwhY5vt5Y00AM/iUvnH3ZtpKmMAmybWOIjNKgF455TfIDjtG/KuesVyHjevT4B
-         aINQ==
-X-Gm-Message-State: AOAM5329b98imCfVFw2mkI8xzwhA1KSs2yk9ZxZRINQokB+q0J99phoB
-        CnhPufhgf/Fpnr4WLToqlJXdmoF/z/Yj0MBkkzwbU11ss5FOEQ==
-X-Google-Smtp-Source: ABdhPJxVMi5Iel6Yepp+LvSP6+4j3MNAp44x5tWsfICBiLno8T8Qz21Ge1yEOgcaRnMZ5eJDGmf4WvF3VoN8g4YFitg=
-X-Received: by 2002:a05:6e02:138f:: with SMTP id d15mr19153485ilo.217.1615188590479;
- Sun, 07 Mar 2021 23:29:50 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vSgQKtJu6DhjO0t3OJp5IkI2xLLW3/u/GFWiQflU5N8=;
+        b=qSsPya43u1A+lIPlMwmnGd3cNs91fD5/LRrk5EE28e9DKuaVg5wLVjJpPWzw0Ml2z4
+         f/aFj4/YSJ6z4Q3T2p7s35Ew94TzVlhzBpQSlh/tOSIaniuyKNEOxNadaw+na8D7r3j4
+         E0COYoCot328Jb8OIl8LcUC9ggkA6gWGcab2fYjqfGCd0r/VMUOm7y4V+pexyobzDQAe
+         FIOy7VKA5BIoHnlT02Ljhs6p8rYCUkEsmYN9FOFR6J7t5gyEI8GDpb/hAMbDfEYMesx1
+         GtLxcyXZtYW5eIB+EAN2vvNiLnyVybmrSQOdiOOUuG3YJydxoxRYR5BahbI0HKuUMyII
+         Y5fg==
+X-Gm-Message-State: AOAM5330Mnea8YVuYp84aAp1QFtRp9WIbbUb1vCmmIi3ovdtCP6Dh8eR
+        Hk3nXUCEu4l7U0yAgxRETS4ARwCUCfTyVw==
+X-Google-Smtp-Source: ABdhPJyQPspC+d+wFvk9zkmZuW/Zm4JYF2WiCRCuSTt7kUcoqXOKhyK3SzWrn3Q/iq2PVKb2y/twtA==
+X-Received: by 2002:a2e:94cc:: with SMTP id r12mr12507920ljh.373.1615188620116;
+        Sun, 07 Mar 2021 23:30:20 -0800 (PST)
+Received: from localhost.. (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.googlemail.com with ESMTPSA id b25sm1383897ljo.80.2021.03.07.23.30.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 23:30:19 -0800 (PST)
+From:   Denis Efremov <efremov@linux.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] coccinelle: misc: update uninitialized_var.cocci documentation
+Date:   Mon,  8 Mar 2021 10:30:18 +0300
+Message-Id: <20210308073018.108487-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210306164710.9944-1-ardeleanalex@gmail.com> <20210307185444.32924-1-ardeleanalex@gmail.com>
-In-Reply-To: <20210307185444.32924-1-ardeleanalex@gmail.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Mon, 8 Mar 2021 09:29:39 +0200
-Message-ID: <CA+U=DsoutVL5yeV_piZLJBSkUrMwTRZurUqW=mrZ-S-=LVw2VQ@mail.gmail.com>
-Subject: Re: [PATCH v2] iio: buffer: fix use-after-free for attached_buffers array
-To:     linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 7, 2021 at 8:55 PM Alexandru Ardelean
-<ardeleanalex@gmail.com> wrote:
->
-> Thanks to Lars for finding this.
-> The free of the 'attached_buffers' array should be done as late as
-> possible. This change moves it to iio_buffers_put(), which looks like
-> the best place for it, since it takes place right before the IIO device
-> data is free'd.
-> The free of this array will be handled by calling iio_device_free().
-> The iio_buffers_put() function is renamed to iio_device_detach_buffers()
-> since the role of this function changes a bit.
->
-> It looks like this issue was ocurring on the error path of
-> iio_buffers_alloc_sysfs_and_mask() and in
-> iio_buffers_free_sysfs_and_mask()
->
-> Added a comment in the doc-header of iio_device_attach_buffer() to
-> mention how this will be free'd in case anyone is reading the code
-> and becoming confused about it.
->
-> Fixes: 36f3118c414d ("iio: buffer: introduce support for attaching more IIO buffers")
-> Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-> Signed-off-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-> ---
+Remove the documentation link from the warning message because commit
+3942ea7a10c9 ("deprecated.rst: Remove now removed uninitialized_var")
+removed the section from documentation. Update the rule documentation
+accordingly.
 
-Forgot the changelog.
+Signed-off-by: Denis Efremov <efremov@linux.com>
+---
+ scripts/coccinelle/misc/uninitialized_var.cocci | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-Changelog v1 -> v2:
-* rename iio_buffers_put() -> iio_device_detach_buffers()
+diff --git a/scripts/coccinelle/misc/uninitialized_var.cocci b/scripts/coccinelle/misc/uninitialized_var.cocci
+index 8fa845cefe11..69bbaae47e73 100644
+--- a/scripts/coccinelle/misc/uninitialized_var.cocci
++++ b/scripts/coccinelle/misc/uninitialized_var.cocci
+@@ -1,7 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ ///
+ /// Please, don't reintroduce uninitialized_var().
+-/// From Documentation/process/deprecated.rst:
++///
++/// From Documentation/process/deprecated.rst,
++/// commit 4b19bec97c88 ("docs: deprecated.rst: Add uninitialized_var()"):
+ ///  For any compiler warnings about uninitialized variables, just add
+ ///  an initializer. Using warning-silencing tricks is dangerous as it
+ ///  papers over real bugs (or can in the future), and suppresses unrelated
+@@ -11,6 +13,11 @@
+ ///  obviously redundant, the compiler's dead-store elimination pass will make
+ ///  sure there are no needless variable writes.
+ ///
++/// Later, commit 3942ea7a10c9 ("deprecated.rst: Remove now removed
++/// uninitialized_var") removed this section because all initializations of
++/// this kind were cleaned-up from the kernel. This cocci rule checks that
++/// the macro is not explicitly or implicitly reintroduced.
++///
+ // Confidence: High
+ // Copyright: (C) 2020 Denis Efremov ISPRAS
+ // Options: --no-includes --include-headers
+@@ -40,12 +47,10 @@ position p;
+ p << r.p;
+ @@
+ 
+-coccilib.report.print_report(p[0],
+-  "WARNING this kind of initialization is deprecated (https://www.kernel.org/doc/html/latest/process/deprecated.html#uninitialized-var)")
++coccilib.report.print_report(p[0], "WARNING this kind of initialization is deprecated")
+ 
+ @script:python depends on org@
+ p << r.p;
+ @@
+ 
+-coccilib.org.print_todo(p[0],
+-  "WARNING this kind of initialization is deprecated (https://www.kernel.org/doc/html/latest/process/deprecated.html#uninitialized-var)")
++coccilib.org.print_todo(p[0], "WARNING this kind of initialization is deprecated")
+-- 
+2.26.2
 
->  drivers/iio/iio_core.h            | 4 ++--
->  drivers/iio/industrialio-buffer.c | 9 +++++----
->  drivers/iio/industrialio-core.c   | 2 +-
->  3 files changed, 8 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
-> index 062fe16c6c49..8f4a9b264962 100644
-> --- a/drivers/iio/iio_core.h
-> +++ b/drivers/iio/iio_core.h
-> @@ -77,7 +77,7 @@ void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev);
->
->  void iio_disable_all_buffers(struct iio_dev *indio_dev);
->  void iio_buffer_wakeup_poll(struct iio_dev *indio_dev);
-> -void iio_buffers_put(struct iio_dev *indio_dev);
-> +void iio_device_detach_buffers(struct iio_dev *indio_dev);
->
->  #else
->
-> @@ -93,7 +93,7 @@ static inline void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev) {}
->
->  static inline void iio_disable_all_buffers(struct iio_dev *indio_dev) {}
->  static inline void iio_buffer_wakeup_poll(struct iio_dev *indio_dev) {}
-> -static inline void iio_buffers_put(struct iio_dev *indio_dev) {}
-> +static inline void iio_device_detach_buffers(struct iio_dev *indio_dev) {}
->
->  #endif
->
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index 1a415e97174e..1ff7f731b044 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -326,7 +326,7 @@ void iio_buffer_init(struct iio_buffer *buffer)
->  }
->  EXPORT_SYMBOL(iio_buffer_init);
->
-> -void iio_buffers_put(struct iio_dev *indio_dev)
-> +void iio_device_detach_buffers(struct iio_dev *indio_dev)
->  {
->         struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
->         struct iio_buffer *buffer;
-> @@ -336,6 +336,8 @@ void iio_buffers_put(struct iio_dev *indio_dev)
->                 buffer = iio_dev_opaque->attached_buffers[i];
->                 iio_buffer_put(buffer);
->         }
-> +
-> +       kfree(iio_dev_opaque->attached_buffers);
->  }
->
->  static ssize_t iio_show_scan_index(struct device *dev,
-> @@ -1764,7 +1766,6 @@ int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
->                 buffer = iio_dev_opaque->attached_buffers[unwind_idx];
->                 __iio_buffer_free_sysfs_and_mask(buffer);
->         }
-> -       kfree(iio_dev_opaque->attached_buffers);
->         return ret;
->  }
->
-> @@ -1786,8 +1787,6 @@ void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev)
->                 buffer = iio_dev_opaque->attached_buffers[i];
->                 __iio_buffer_free_sysfs_and_mask(buffer);
->         }
-> -
-> -       kfree(iio_dev_opaque->attached_buffers);
->  }
->
->  /**
-> @@ -2062,6 +2061,8 @@ static int iio_buffer_mmap(struct file *filep, struct vm_area_struct *vma)
->   * This function attaches a buffer to a IIO device. The buffer stays attached to
->   * the device until the device is freed. For legacy reasons, the first attached
->   * buffer will also be assigned to 'indio_dev->buffer'.
-> + * The array allocated here, will be free'd via the iio_device_detach_buffers()
-> + * call which is handled by the iio_device_free().
->   */
->  int iio_device_attach_buffer(struct iio_dev *indio_dev,
->                              struct iio_buffer *buffer)
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index d74fbac908df..3be5f75c2846 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -1587,7 +1587,7 @@ static void iio_dev_release(struct device *device)
->         iio_device_unregister_eventset(indio_dev);
->         iio_device_unregister_sysfs(indio_dev);
->
-> -       iio_buffers_put(indio_dev);
-> +       iio_device_detach_buffers(indio_dev);
->
->         ida_simple_remove(&iio_ida, indio_dev->id);
->         kfree(iio_dev_opaque);
-> --
-> 2.25.1
->
