@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53A83313BE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0343313C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbhCHQsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:48:18 -0500
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:44130 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbhCHQsH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:48:07 -0500
-Received: by mail-wr1-f45.google.com with SMTP id h98so12134713wrh.11;
-        Mon, 08 Mar 2021 08:48:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U1adqiv4BHRB40tWnfMansEdoQfQQILbbIeOdC9S6tk=;
-        b=FwXkidD3iKmwPKHnszqnr+lZfTDenzXay83XPPyVKgsuEIJM38eCyomN4Suc3Cc5/U
-         Lhj8OwlQOnoSJxYVBlt904I38FvhU6RQpMAX4hydSYWTW73xszAsT1OLgb23Xoen9CQB
-         0R75xhYB0iRYCag9KqsqTIhVCXA7EuRuhgV8PXpQW1pFiovbt7dqRs/e4QSfMI0vGwHJ
-         1+onJzqaiPl7JfzM9oB6gh3OvjulbvX9Tw0Pai4+ZLWgNzg6CB/WYz3h9EepqHqKWvO7
-         q2ukNvKW+2Mk4MX59uCvA650xPxOThaChNAPpeVaWPGRlWleKfvp43pgyspiwybAxYVH
-         ozUw==
-X-Gm-Message-State: AOAM530YjsvoNh4ymn4OFltAsSqWvt3tHUVYPr7Q+VXSp2Gp9ieiZJ7x
-        zjcPr9wzMr3jwEkDr+B958o=
-X-Google-Smtp-Source: ABdhPJwl5jsEF+UPUa+28gAA6fYemoVBWxjguS13D/KVUrDj7mt+Ui8LdJgIi90qXpb/S2MAeQOnGA==
-X-Received: by 2002:a5d:63d2:: with SMTP id c18mr23676794wrw.277.1615222085838;
-        Mon, 08 Mar 2021 08:48:05 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id a8sm15336375wmm.46.2021.03.08.08.48.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 08:48:05 -0800 (PST)
-Date:   Mon, 8 Mar 2021 16:48:04 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     sthemmin@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        daniel.lezcano@linaro.org, arnd@arndb.de,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH v3 00/10] Refactor arch specific Hyper-V code
-Message-ID: <20210308164804.eehva2snlwxxworc@liuwe-devbox-debian-v2>
-References: <1614721102-2241-1-git-send-email-mikelley@microsoft.com>
+        id S230409AbhCHQtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:49:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230453AbhCHQs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 11:48:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B85C6518D;
+        Mon,  8 Mar 2021 16:48:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615222136;
+        bh=1sJP0A1ykSZC1GASB0lTJr+JzrmjpwHCZUx6r9lCowk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=j7VmwyqH5W47cGgHc1JQN+T+OHW99tMpBLdgza6daA13dg9pfK7zJJU3De0FDyclS
+         VD46v3CFl01yPtwvJQ4nM7nkgeA+cWj3Wnh6ApTmPtHmChijd3FP4GelGxr6KHvnj/
+         QuAMG/mAg1DDKvdIbBYW2304YuyTyrJQHPIH3wBF1KVzu/ZSp6TwxGAqYAQ6LK4j9N
+         RMGkxjvcs7/woLxTNW+vs9sTqQndq6tk6+nNfXDMd7Iem7Q94mlnWWMnvXJClDDfWu
+         8MtzDboPQRcf7FS75e5bG0TYF2i31o9Qaftbc7uRGeZxbkHOyRofaWNBB4nrQgnIRD
+         u4MIiTfn7os8Q==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: pinctrl: qcom-pmic-gpio: Add pm8350 and friends
+Date:   Mon,  8 Mar 2021 22:18:44 +0530
+Message-Id: <20210308164845.3210393-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614721102-2241-1-git-send-email-mikelley@microsoft.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 01:38:12PM -0800, Michael Kelley wrote:
-[...]
-> Michael Kelley (10):
->   Drivers: hv: vmbus: Move Hyper-V page allocator to arch neutral code
->   x86/hyper-v: Move hv_message_type to architecture neutral module
->   Drivers: hv: Redo Hyper-V synthetic MSR get/set functions
->   Drivers: hv: vmbus: Move hyperv_report_panic_msg to arch neutral code
->   Drivers: hv: vmbus: Handle auto EOI quirk inline
->   Drivers: hv: vmbus: Move handling of VMbus interrupts
->   clocksource/drivers/hyper-v: Handle vDSO differences inline
->   clocksource/drivers/hyper-v: Handle sched_clock differences inline
->   clocksource/drivers/hyper-v: Set clocksource rating based on Hyper-V
->     feature
->   clocksource/drivers/hyper-v: Move handling of STIMER0 interrupts
+Add support for the PM8350, PM8350B, PM8350C, PMK8350, PMR735A and
+PMR735B GPIO support to the Qualcomm PMIC GPIO binding.
 
-Applied to hyperv-next.
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ .../devicetree/bindings/pinctrl/qcom,pmic-gpio.txt   | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Wei.
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+index 7648ab00f4e2..70e119b39c48 100644
+--- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+@@ -27,6 +27,12 @@ PMIC's from Qualcomm.
+ 		    "qcom,pm660l-gpio"
+ 		    "qcom,pm8150-gpio"
+ 		    "qcom,pm8150b-gpio"
++		    "qcom,pm8350-gpio"
++		    "qcom,pm8350b-gpio"
++		    "qcom,pm8350c-gpio"
++		    "qcom,pmk8350-gpio"
++		    "qcom,pmr735a-gpio"
++		    "qcom,pmr735b-gpio"
+ 		    "qcom,pm6150-gpio"
+ 		    "qcom,pm6150l-gpio"
+ 		    "qcom,pmx55-gpio"
+@@ -109,6 +115,12 @@ to specify in a pin configuration subnode:
+ 					     and gpio8)
+ 		    gpio1-gpio12 for pm8150b (holes on gpio3, gpio4, gpio7)
+ 		    gpio1-gpio12 for pm8150l (hole on gpio7)
++		    gpio1-gpio10 for pm8350
++		    gpio1-gpio8 for pm8350b
++		    gpio1-gpio9 for pm8350c
++		    gpio1-gpio4 for pmk8350
++		    gpio1-gpio4 for pmr735a
++		    gpio1-gpio4 for pmr735b
+ 		    gpio1-gpio10 for pm6150
+ 		    gpio1-gpio12 for pm6150l
+ 		    gpio1-gpio11 for pmx55 (holes on gpio3, gpio7, gpio10
+-- 
+2.26.2
+
