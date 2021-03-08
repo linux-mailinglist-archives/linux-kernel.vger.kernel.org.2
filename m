@@ -2,47 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3EC73317FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5131A331805
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbhCHUAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:00:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54852 "EHLO mail.kernel.org"
+        id S231985AbhCHUAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:00:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231617AbhCHUAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231594AbhCHUAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Mar 2021 15:00:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3A1C565290;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2838265208;
         Mon,  8 Mar 2021 20:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1615233609;
-        bh=XqpBxlhRJTBhMT4v5QQ4xn98x+oyKH+32MYaniIe98o=;
+        bh=gYilhKMT4uMiqPSmKpTt9npQLao11WlenqaMT8OiUgM=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=DAwAf9FK3AFyc1P0vmdtubrfdUGZHxcJD94oMkIUd51RbqLTjgDRE+hmQduMh/R71
-         KosB35HTFPbh+D1g/NaBz+KsFPSsrmOsw8/pKLInAsRTc/3dkyJ7fxzYGUg4SkrQMH
-         DK5BOrOscFecwEbnTZrGYp/qpJtfuxcif9Q/ChcWPh0v/GrtAxeibcot5mEXA2iySW
-         WNJsZsmkshUavnGNRrCBAve00fQA8wXo9moLqJyjVAlxfJXDbR1HijCuNMJ2+IeHzL
-         Zc9IQioyf4N2hAHs5wy9qsqOk77UXtAmEyq/9MZxT9B6mArUv/6T9H9GBpOaXjlGlt
-         dakCcPJ5CQlJQ==
+        b=L+U2ETbUOaxZ8GnvSr/c5aHPX5XZWPcNDjGzaTaNHU+nh0yFq7yoi+O2hSh96Og9I
+         GoWsdsnpIFHQWOqYeW7w0XQ0TFK+VcU/pcHAof+A2so6pYDv0IOjCnDenMr9/PjED0
+         TMwXp5IOXFAroqkD9WzjzXtkmEjn1wgooOdXFgqeP5pmkY0La0RSxHBtKhOHVENctA
+         tOgOHbLzkQ0CVac12yTmYE/mlDd26utzvbYTCVHRn/yd1dNfl7j7wf7I5YtxblndsH
+         psK4fsHSdK3rwXlPvbY0WnywGrHtA0PMVD1SWMiMGDGZm61H9SSOiuaPk7gs6nYl6I
+         oMhxInr0nqVFg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 33DA46098E;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 155D0609E6;
         Mon,  8 Mar 2021 20:00:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: hisilicon: hns: fix error return code of
- hns_nic_clear_all_rx_fetch()
+Subject: Re: [PATCH net-next] net: usb: cdc_ncm: emit dev_err on error paths
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161523360920.22994.6884927954646956227.git-patchwork-notify@kernel.org>
+Message-Id: <161523360908.22994.16878269283650305469.git-patchwork-notify@kernel.org>
 Date:   Mon, 08 Mar 2021 20:00:09 +0000
-References: <20210307084012.21584-1-baijiaju1990@gmail.com>
-In-Reply-To: <20210307084012.21584-1-baijiaju1990@gmail.com>
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        davem@davemloft.net, kuba@kernel.org, tariqt@mellanox.com,
-        jesse.brandeburg@intel.com, dinghao.liu@zju.edu.cn,
-        trix@redhat.com, song.bao.hua@hisilicon.com, Jason@zx2c4.com,
-        wanghai38@huawei.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20210306221232.3382941-1-grundler@chromium.org>
+In-Reply-To: <20210306221232.3382941-1-grundler@chromium.org>
+To:     Grant Grundler <grundler@chromium.org>
+Cc:     oneukum@suse.com, kuba@kernel.org, roland@kernel.org,
+        nic_swsd@realtek.com, netdev@vger.kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, andrew@lunn.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -51,19 +47,21 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Sun,  7 Mar 2021 00:40:12 -0800 you wrote:
-> When hns_assemble_skb() returns NULL to skb, no error return code of
-> hns_nic_clear_all_rx_fetch() is assigned.
-> To fix this bug, ret is assigned with -ENOMEM in this case.
+On Sat,  6 Mar 2021 14:12:31 -0800 you wrote:
+> Several error paths in bind/probe code will only emit
+> output using dev_dbg. But if we are going to fail the
+> bind/probe, emit related output with "err" priority.
 > 
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> Signed-off-by: Grant Grundler <grundler@chromium.org>
+> ---
+>  drivers/net/usb/cdc_ncm.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
 > [...]
 
 Here is the summary with links:
-  - net: hisilicon: hns: fix error return code of hns_nic_clear_all_rx_fetch()
-    https://git.kernel.org/netdev/net/c/143c253f42ba
+  - [net-next] net: usb: cdc_ncm: emit dev_err on error paths
+    https://git.kernel.org/netdev/net/c/492bbe7f8a43
 
 You are awesome, thank you!
 --
