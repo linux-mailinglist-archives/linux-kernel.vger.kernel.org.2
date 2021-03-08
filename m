@@ -2,127 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199FD3315EA
+	by mail.lfdr.de (Postfix) with ESMTP id B198C3315EC
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbhCHSYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:24:14 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:36038 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbhCHSXz (ORCPT
+        id S231389AbhCHSYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:24:15 -0500
+Received: from mail-il1-f182.google.com ([209.85.166.182]:38665 "EHLO
+        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230246AbhCHSYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:23:55 -0500
-Received: from mail-wr1-f71.google.com ([209.85.221.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lJKXq-0004Cs-CL
-        for linux-kernel@vger.kernel.org; Mon, 08 Mar 2021 18:23:54 +0000
-Received: by mail-wr1-f71.google.com with SMTP id s10so5196968wre.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 10:23:54 -0800 (PST)
+        Mon, 8 Mar 2021 13:24:00 -0500
+Received: by mail-il1-f182.google.com with SMTP id f10so9716666ilq.5;
+        Mon, 08 Mar 2021 10:24:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PzhmjnnDaBAM6gz8zOmUYx1vx5KSpg9Ds20f5pFImQQ=;
-        b=k9o0Krw+d0EZJ0rWDRwcw7Ky3jD2/0+SSvI2ke1ykafAn6qJJksNfD+1lR/84j/HNx
-         upV1noCDY9WfE9NqMaJCy1FQw7u398G2Aa2v6wGQGud4Y4f/O+ffDd+12C66yG6awbKE
-         WHZwpAN2DPA2U5pnPm0eCh6kNQBjwKEw43TU99eJ0IRITOzhzuhp2ddbrSpzv+phCuik
-         okowpKhtLNYGc9gaSmlWedEJhEyGGE8ka+GmfADyhbQv+L5XOsmrXudkOynNMa5wVDw0
-         0uFFrHvAgAcANUAmEGs3Va8wCaJOFOtypMt03sSOQ1WtpfZ6sq+5qcLtybyMX2oFv9mv
-         kVVQ==
-X-Gm-Message-State: AOAM5334QZABuGkIckXAaI1VKRMPfdbAlTjceamdWgkh9FDMDbKyYxhy
-        XIpKHqcIRNQppXF3pHNKyhCD2lWoO100/OcMBn5WpJ7+M3g+dLFq6sBOazLqH1jY9RQabIpynAj
-        O6xS/QoaQxFhW0ROz6hA/YjCfzF2IWu2h/95aa6idvw==
-X-Received: by 2002:a5d:67cf:: with SMTP id n15mr23826950wrw.95.1615227834162;
-        Mon, 08 Mar 2021 10:23:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx6by2i2b5cJeyKFWf+JvioS4ol4PlyvgX86myQjOefknz3S/le/EI3WF/MNfYVqwAjsZrJTg==
-X-Received: by 2002:a5d:67cf:: with SMTP id n15mr23826942wrw.95.1615227834053;
-        Mon, 08 Mar 2021 10:23:54 -0800 (PST)
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id f22sm158207wmb.31.2021.03.08.10.23.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PLiShrgEDa+YZGxymkcoz3r/gBAUf5KhORptv57Q7PU=;
+        b=F9/tER7lF2kThk6+9NB1wOUNznPI0b2kRlUnRkiudAJZ5BBbR9aTFyvq+pwtL30ncZ
+         oGKgHIkvorkKyWPFtaeTWXaR842kpv5MdlwsYEQtqw3CP+IaS90tNJr8NERKHPpqSFRT
+         3PTOoSIqso9wt0WJIIf9xAIQGTwfq2usm/kSxwmS9k5+qOgqd0KHRuA+KZIMGq0G9+6t
+         xt/j65lS4XLeBhIY3odzo3s93c2qsYnwueA6s9UmGuR5gFHn4Zd52dRot6PnQxMe/+DD
+         vowZxSlkrJgLjO514QabmbqjCdOsSoE++8kLCz9KCqUy8aGGkKvUTpn8m81f3Vo+JoLV
+         PSYw==
+X-Gm-Message-State: AOAM530yxaTAsY2tgLKdo2hqjEzyFin2svWNCgoZm0y6TN9ldC96A+sE
+        VmRUXLngj4OCTrHUU0IbPQ==
+X-Google-Smtp-Source: ABdhPJxwGUCavMylqrxYrtCaf9JyknJB34LVNHlt+wpP3oXmyDFpN7LHxPrWUPGRxrzRYjnckByvUg==
+X-Received: by 2002:a05:6e02:d53:: with SMTP id h19mr21756929ilj.157.1615227839943;
+        Mon, 08 Mar 2021 10:23:59 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id n7sm6636715ile.12.2021.03.08.10.23.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 10:23:53 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 3/3] clk: socfpga: allow compile testing of Stratix 10 / Agilex clocks
-Date:   Mon,  8 Mar 2021 19:23:39 +0100
-Message-Id: <20210308182339.379775-4-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210308182339.379775-1-krzysztof.kozlowski@canonical.com>
-References: <20210308182339.379775-1-krzysztof.kozlowski@canonical.com>
+        Mon, 08 Mar 2021 10:23:59 -0800 (PST)
+Received: (nullmailer pid 2741091 invoked by uid 1000);
+        Mon, 08 Mar 2021 18:23:56 -0000
+Date:   Mon, 8 Mar 2021 11:23:56 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     p.zabel@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, festevam@gmail.com, ezequiel@collabora.com,
+        mchehab@kernel.org, gregkh@linuxfoundation.org,
+        kernel@pengutronix.de, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+Subject: Re: [PATCH v3 1/5] dt-bindings: reset: IMX8MQ VPU reset
+Message-ID: <20210308182356.GB2735443@robh.at.kernel.org>
+References: <20210301151754.104749-1-benjamin.gaignard@collabora.com>
+ <20210301151754.104749-2-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210301151754.104749-2-benjamin.gaignard@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Stratix 10 / Agilex / N5X clocks do not use anything other than OF
-or COMMON_CLK so they should be compile testable on most of the
-platforms.
+On Mon, Mar 01, 2021 at 04:17:50PM +0100, Benjamin Gaignard wrote:
+> Document bindings for IMX8MQ VPU reset hardware block
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+>  .../bindings/reset/fsl,imx8mq-vpu-reset.yaml  | 54 +++++++++++++++++++
+>  include/dt-bindings/reset/imx8mq-vpu-reset.h  | 16 ++++++
+>  2 files changed, 70 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/reset/fsl,imx8mq-vpu-reset.yaml
+>  create mode 100644 include/dt-bindings/reset/imx8mq-vpu-reset.h
+> 
+> diff --git a/Documentation/devicetree/bindings/reset/fsl,imx8mq-vpu-reset.yaml b/Documentation/devicetree/bindings/reset/fsl,imx8mq-vpu-reset.yaml
+> new file mode 100644
+> index 000000000000..00020421c0e3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/reset/fsl,imx8mq-vpu-reset.yaml
+> @@ -0,0 +1,54 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/reset/fsl,imx8mq-vpu-reset.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Freescale i.MX8MQ VPU Reset Controller
+> +
+> +maintainers:
+> +  - Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> +
+> +description: |
+> +  The VPU reset controller is used to reset the video processor
+> +  unit peripherals. Device nodes that need access to reset lines should
+> +  specify them as a reset phandle in their corresponding node as
+> +  specified in reset.txt.
+> +
+> +  For list of all valid reset indices see
+> +    <dt-bindings/reset/imx8mq-vpu-reset.h> for i.MX8MQ.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: fsl,imx8mq-vpu-reset
+> +      - const: syscon
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/clk/Makefile        |  5 +----
- drivers/clk/socfpga/Kconfig | 22 ++++++++++++++++------
- 2 files changed, 17 insertions(+), 10 deletions(-)
+Is there other functionality in the block? If so, add some details in 
+'description' above.
 
-diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-index 12e46b12e587..9b582b3fca34 100644
---- a/drivers/clk/Makefile
-+++ b/drivers/clk/Makefile
-@@ -104,10 +104,7 @@ obj-y					+= renesas/
- obj-$(CONFIG_ARCH_ROCKCHIP)		+= rockchip/
- obj-$(CONFIG_COMMON_CLK_SAMSUNG)	+= samsung/
- obj-$(CONFIG_CLK_SIFIVE)		+= sifive/
--obj-$(CONFIG_ARCH_SOCFPGA)		+= socfpga/
--obj-$(CONFIG_ARCH_AGILEX)		+= socfpga/
--obj-$(CONFIG_ARCH_N5X)			+= socfpga/
--obj-$(CONFIG_ARCH_STRATIX10)		+= socfpga/
-+obj-y					+= socfpga/
- obj-$(CONFIG_PLAT_SPEAR)		+= spear/
- obj-y					+= sprd/
- obj-$(CONFIG_ARCH_STI)			+= st/
-diff --git a/drivers/clk/socfpga/Kconfig b/drivers/clk/socfpga/Kconfig
-index 4922cc35f4cc..de7b3137e215 100644
---- a/drivers/clk/socfpga/Kconfig
-+++ b/drivers/clk/socfpga/Kconfig
-@@ -1,13 +1,23 @@
- # SPDX-License-Identifier: GPL-2.0
-+config COMMON_CLK_SOCFPGA
-+	bool "Intel SoCFPGA family clock support" if COMPILE_TEST
-+	depends on ARCH_AGILEX || ARCH_N5X || ARCH_SOCFPGA || ARCH_STRATIX10 || COMPILE_TEST
-+	default y if ARCH_AGILEX || ARCH_N5X || ARCH_SOCFPGA || ARCH_STRATIX10
-+	help
-+	  Support for the clock controllers present on Intel SoCFPGA and eASIC
-+          devices like Stratix 10, Agilex and N5X eASIC.
-+
-+if COMMON_CLK_SOCFPGA
-+
- config COMMON_CLK_STRATIX10
--	bool
--	# Intel Stratix / Agilex / N5X clock controller support
-+	bool "Intel Stratix / Agilex / N5X clock controller support" if COMPILE_TEST
- 	default y if ARCH_AGILEX || ARCH_N5X || ARCH_STRATIX10
--	depends on ARCH_AGILEX || ARCH_N5X || ARCH_STRATIX10
-+	depends on ARCH_AGILEX || ARCH_N5X || ARCH_STRATIX10 || COMPILE_TEST
- 
- config COMMON_CLK_AGILEX
--	bool
--	# Intel Agilex / N5X clock controller support
-+	bool "Intel Agilex / N5X clock controller support" if COMPILE_TEST
- 	default y if ARCH_AGILEX || ARCH_N5X
--	depends on ARCH_AGILEX || ARCH_N5X
-+	depends on ARCH_AGILEX || ARCH_N5X || COMPILE_TEST
- 	select COMMON_CLK_STRATIX10
-+
-+endif # COMMON_CLK_SOCFPGA
--- 
-2.25.1
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 1
+> +    maxItems: 3
 
+Need to say what each clock is.
+
+> +
+> +  '#reset-cells':
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - '#reset-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/imx8mq-clock.h>
+> +
+> +    vpu-reset@38320000 {
+
+reset-controller@...
+
+> +        compatible = "fsl,imx8mq-vpu-reset", "syscon";
+> +        reg = <0x38320000 0x10000>;
+> +        clocks = <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
+> +        #reset-cells = <1>;
+> +    };
+> diff --git a/include/dt-bindings/reset/imx8mq-vpu-reset.h b/include/dt-bindings/reset/imx8mq-vpu-reset.h
+> new file mode 100644
+> index 000000000000..efcbe18177fe
+> --- /dev/null
+> +++ b/include/dt-bindings/reset/imx8mq-vpu-reset.h
+> @@ -0,0 +1,16 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2021, Collabora
+> + *
+> + * i.MX7 System Reset Controller (SRC) driver
+> + *
+> + * Author: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> + */
+> +
+> +#ifndef DT_BINDINGS_VPU_RESET_IMX8MQ
+> +#define DT_BINDINGS_VPU_RESET_IMX8MQ
+> +
+> +#define IMX8MQ_RESET_VPU_RESET_G1	0
+> +#define IMX8MQ_RESET_VPU_RESET_G2	1
+> +
+> +#endif
+> -- 
+> 2.25.1
+> 
