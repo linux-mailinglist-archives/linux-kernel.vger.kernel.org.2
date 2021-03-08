@@ -2,88 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A427331244
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7327A331248
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhCHPdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 10:33:02 -0500
-Received: from mga05.intel.com ([192.55.52.43]:28110 "EHLO mga05.intel.com"
+        id S230412AbhCHPdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 10:33:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230409AbhCHPc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 10:32:56 -0500
-IronPort-SDR: csqNquLblrlaNYUhwdLyjE9B3x8cELNyG8MPsp8yB8gYqPJvGkOmcuoohdesSIS+qRg0XDmmHw
- q+6bx2+0aRiA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="273076452"
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="273076452"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 07:32:55 -0800
-IronPort-SDR: oC+ntWrJIAsk3CK3yOkmRRVNwsg9G++lUMJCqj9PPtc3AYngnfqVR0a1pifBvpqLAhPcj4FIo1
- 86WDU6ZeME4A==
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="430406229"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 07:32:52 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lJHsH-00Aqc3-7g; Mon, 08 Mar 2021 17:32:49 +0200
-Date:   Mon, 8 Mar 2021 17:32:49 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>, Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 09/12] gpio: sim: new testing module
-Message-ID: <YEZDod11xb0LT043@smile.fi.intel.com>
-References: <20210304102452.21726-1-brgl@bgdev.pl>
- <20210304102452.21726-10-brgl@bgdev.pl>
- <YEDdbfbM9abHJpIO@smile.fi.intel.com>
- <CAMRc=MdRxXzoZuyLs-24dXfOft=OQqDneTHa4-ZKqFE1kMBWcg@mail.gmail.com>
- <YEIE1nG8lZ4V2MXq@smile.fi.intel.com>
- <CAMRc=MekGnK17rYf3Bx_UHumVVrpmJphOnMfO352NB9SaOJCGw@mail.gmail.com>
- <YEY9DFk6NEcnEWGE@smile.fi.intel.com>
- <CAMpxmJVTUfveuaY9yhP5PLXoOdrkYQ2WbE5-P+4XRi3=VdQKjg@mail.gmail.com>
+        id S230150AbhCHPdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 10:33:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F28D56526A;
+        Mon,  8 Mar 2021 15:33:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615217604;
+        bh=UdgGpH5wigD4IDua1jI0Goj5nN066h+PRHihFx2waQY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q7OA0wqvAqQ/DPTVQ5yPBYKh3QOKEgYVJc/zfgupO+rvPAuhdHTnzdGOnmt73HJQ3
+         gS2efyZ2zIvJ3j+fpB+2AHpFYtAQbntLL3hOh+h3RhjsuJEtycG5+8YqTOJ4SOVzZZ
+         OfMJIOVDHXR38lFFE2hYCizVE53huLTBgO2KEkrkWnbad/CWlcXxifwSXwijz4xI/d
+         J3b6Htz08n43ghbK3pmUnnAMwX0g3MoXSEbryI7Ex3BffKRY6Sb0oYKXzpjaxEB1G8
+         1CVf/xYxuG8bDYhFcOJhKsEdXho9ka58QwILGAwT+EBRVMUUDmDofr/P0nh+UCy6kt
+         ix8JOz166XrxA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Noam Stolero <noams@nvidia.com>, Tal Gilboa <talgi@nvidia.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Roi Dayan <roid@nvidia.com>, Vlad Buslov <vladbu@nvidia.com>,
+        Paul Blakey <paulb@nvidia.com>, Oz Shlomo <ozsh@mellanox.com>,
+        Eli Cohen <eli@mellanox.com>,
+        Ariel Levkovich <lariel@nvidia.com>,
+        Maor Dickman <maord@nvidia.com>,
+        Tariq Toukan <tariqt@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH] net/mlx5e: allocate 'indirection_rqt' buffer dynamically
+Date:   Mon,  8 Mar 2021 16:32:57 +0100
+Message-Id: <20210308153318.2486939-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJVTUfveuaY9yhP5PLXoOdrkYQ2WbE5-P+4XRi3=VdQKjg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 04:13:33PM +0100, Bartosz Golaszewski wrote:
-> On Mon, Mar 8, 2021 at 4:05 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Mar 08, 2021 at 03:23:31PM +0100, Bartosz Golaszewski wrote:
+From: Arnd Bergmann <arnd@arndb.de>
 
-...
+Increasing the size of the indirection_rqt array from 128 to 256 bytes
+pushed the stack usage of the mlx5e_hairpin_fill_rqt_rqns() function
+over the warning limit when building with clang and CONFIG_KASAN:
 
-> > I have strong opinion not to open code "yet another parser".
-> >
-> > So, grepping on 'strsep(.*, ",")' shows a lot of code that wants something like
-> > this. Interesting are the net/9p cases. This in particular pointed out to
-> > lib/parser.c which in turn shows promising match_strlcpy() / match_strdup(). I
-> > haven't looked deeply though.
-> >
-> > That said, I agree that next_arg() is not the best here.
-> 
-> Shall we revisit this once it's upstream with a generalization for
-> separating comma separated strings?
+drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:970:1: error: stack frame size of 1180 bytes in function 'mlx5e_tc_add_nic_flow' [-Werror,-Wframe-larger-than=]
 
-How can we guarantee it won't be forgotten?
+Using dynamic allocation here is safe because the caller does the
+same, and it reduces the stack usage of the function to just a few
+bytes.
 
+Fixes: 1dd55ba2fb70 ("net/mlx5e: Increase indirection RQ table size to 256")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+index 0da69b98f38f..66f98618dc13 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -445,12 +445,16 @@ static void mlx5e_hairpin_destroy_transport(struct mlx5e_hairpin *hp)
+ 	mlx5_core_dealloc_transport_domain(hp->func_mdev, hp->tdn);
+ }
+ 
+-static void mlx5e_hairpin_fill_rqt_rqns(struct mlx5e_hairpin *hp, void *rqtc)
++static int mlx5e_hairpin_fill_rqt_rqns(struct mlx5e_hairpin *hp, void *rqtc)
+ {
+-	u32 indirection_rqt[MLX5E_INDIR_RQT_SIZE], rqn;
++	u32 *indirection_rqt, rqn;
+ 	struct mlx5e_priv *priv = hp->func_priv;
+ 	int i, ix, sz = MLX5E_INDIR_RQT_SIZE;
+ 
++	indirection_rqt = kzalloc(sz, GFP_KERNEL);
++	if (!indirection_rqt)
++		return -ENOMEM;
++
+ 	mlx5e_build_default_indir_rqt(indirection_rqt, sz,
+ 				      hp->num_channels);
+ 
+@@ -462,6 +466,9 @@ static void mlx5e_hairpin_fill_rqt_rqns(struct mlx5e_hairpin *hp, void *rqtc)
+ 		rqn = hp->pair->rqn[ix];
+ 		MLX5_SET(rqtc, rqtc, rq_num[i], rqn);
+ 	}
++
++	kfree(indirection_rqt);
++	return 0;
+ }
+ 
+ static int mlx5e_hairpin_create_indirect_rqt(struct mlx5e_hairpin *hp)
+@@ -482,12 +489,15 @@ static int mlx5e_hairpin_create_indirect_rqt(struct mlx5e_hairpin *hp)
+ 	MLX5_SET(rqtc, rqtc, rqt_actual_size, sz);
+ 	MLX5_SET(rqtc, rqtc, rqt_max_size, sz);
+ 
+-	mlx5e_hairpin_fill_rqt_rqns(hp, rqtc);
++	err = mlx5e_hairpin_fill_rqt_rqns(hp, rqtc);
++	if (err)
++		goto out;
+ 
+ 	err = mlx5_core_create_rqt(mdev, in, inlen, &hp->indir_rqt.rqtn);
+ 	if (!err)
+ 		hp->indir_rqt.enabled = true;
+ 
++out:
+ 	kvfree(in);
+ 	return err;
+ }
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.29.2
 
