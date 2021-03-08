@@ -2,83 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1E6330A7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DDA330A82
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbhCHJsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 04:48:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhCHJsf (ORCPT
+        id S230394AbhCHJtq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Mar 2021 04:49:46 -0500
+Received: from mail.kingsoft.com ([114.255.44.146]:46845 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230039AbhCHJtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 04:48:35 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87464C06174A;
-        Mon,  8 Mar 2021 01:48:35 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id p21so19960846lfu.11;
-        Mon, 08 Mar 2021 01:48:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yMPvvaC1VpKQ+IQEg4AP1RTQAfaMhDgcAf2MjnMXhso=;
-        b=XKrsvsrYEOZlVjswIB+hcBruPgK5CRnwqeWBTzS5AXVZ8iFrdMP5ahzdhj6Lu54U6s
-         PF0d4b+fzSRL8xUVrvsyCkVvOqlPFp6UUdww9zA9g2PnnxsIZOmeVwaDPB8sYCBtbhSw
-         ns4O66xw/oNspASfX5f4jYLD4WVVjjrN2or2kbO6Z5s0X0ptW2yt/sEahtE+VHPrkAC8
-         Qjpr5cN9r2uWGI36QSJhTlta8Zs9IjrDLGBwE5jDmhyMP/ryNqURTXX5+pg1NVjRwwP3
-         3bcz+6pXUbVBKN9ij95vJ/WV/hIPd30pv23K+ILFlpDqdMx7Ee75TcUHkM9xTwfpDyJL
-         jFIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yMPvvaC1VpKQ+IQEg4AP1RTQAfaMhDgcAf2MjnMXhso=;
-        b=nm0P3YPehI3mrnsnQ3G94TNthlFbDwIi9wCt6DiXD0zgxMzf4QShWYRev3LAcFTWIh
-         ZMsa6ACSXFcInDmrfj384f2GDmQHEj5Mn2jmjZJv7ou6NfSRidas+gYgju/j6WlYtB+V
-         5KGmPilbIJrBESilf3qN1VqwrLY5/iAlY/daLofTkE2MAt8gVv02cs7I8nDoZSzypfmn
-         0QZjxCiBBuIiyhi7ORqTqcnUF2ZuFUFh+usjbXVhDf8TYLgEvLt8gYtYAVkfZJzQ1V90
-         s4uonRd2UPKAj3lb/FuUNsQ/eFqITfO0PhyogAreqT4sbU1mf7h4ZI+eQAKA6BIBBvoN
-         Hwfw==
-X-Gm-Message-State: AOAM533cDxxv9vT74dkjJUdna36yGPjAo1mJ1tIj3Bm5EnxR9G47zA3k
-        0924I7zI5j2cq0HT6Tp3jeQ=
-X-Google-Smtp-Source: ABdhPJxzpWbGWi4U0nZEVpAIZqLD56P7BXiW9bEVNlH8CrOYd48qYmJL+wwls6N6OqVRNzfDSyR4TQ==
-X-Received: by 2002:a19:6109:: with SMTP id v9mr14344228lfb.546.1615196914072;
-        Mon, 08 Mar 2021 01:48:34 -0800 (PST)
-Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id m3sm1331901lfo.190.2021.03.08.01.48.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 01:48:33 -0800 (PST)
-Subject: Re: [PATCH v2 3/3] dt-bindings: mtd: Document use of nvmem-partitions
- compatible
-To:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Richard Weinberger <richard@nod.at>
-Cc:     devicetree@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mtd@lists.infradead.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20210216212638.28382-1-ansuelsmth@gmail.com>
- <20210216212638.28382-4-ansuelsmth@gmail.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <ee596471-db9b-43e4-c085-9bd938101587@gmail.com>
-Date:   Mon, 8 Mar 2021 10:48:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Mon, 8 Mar 2021 04:49:15 -0500
+X-AuditID: 0a580155-713ff700000550c6-67-6045ebaa5450
+Received: from mail.kingsoft.com (localhost [10.88.1.32])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id 7E.F0.20678.AABE5406; Mon,  8 Mar 2021 17:17:30 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
+ (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Mon, 8 Mar 2021
+ 17:49:12 +0800
+Date:   Mon, 8 Mar 2021 17:49:12 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+CC:     "Luck, Tony" <tony.luck@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        <yangfeng1@kingsoft.com>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, <yaoaili@kingsoft.com>
+Subject: Re: [PATCH v3] x86/fault: Send a SIGBUS to user process always for
+ hwpoison page access.
+Message-ID: <20210308174912.4ac9029a@alex-virtual-machine>
+In-Reply-To: <CALCETrWFXgOtFYycpY7A5Z1yM2oiZwP4sRh4e7Rfu32N85Kxig@mail.gmail.com>
+References: <8d0c76f97f35499f91a2b82d3e7c024d@intel.com>
+        <59469ECC-5316-4074-98EF-52FFF7940818@amacapital.net>
+        <20210303202402.384265a3@alex-virtual-machine>
+        <20210303205129.0a66f7a7@alex-virtual-machine>
+        <CALCETrWFXgOtFYycpY7A5Z1yM2oiZwP4sRh4e7Rfu32N85Kxig@mail.gmail.com>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210216212638.28382-4-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
+ (10.88.1.32)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrAIsWRmVeSWpSXmKPExsXCFcGooLvqtWuCwfLvQhafN/xjs3ixoZ3R
+        YtpGcYvLu+awWdxb85/VYvXaBlaL87vWslpcOrCAyeJi4wFGi+O9B5gsNm+aymzx5sI9Fosf
+        Gx6zOvB6fG/tY/G4/+Yvi8fmFVoei/e8ZPLYtKqTzWPTp0nsHu/OnWP3mHcy0OPF1Y0sHu/3
+        XWXz+LxJzuNEyxfWAJ4oLpuU1JzMstQifbsEroyew+0sBacEKiZfPcnewPiQp4uRk0NCwESi
+        /fYWpi5GLg4hgelMEm1HfrGAJIQEXjJK/Jok2MXIwcEioCKx5T0TSJhNQFVi171ZrCC2iICm
+        xMsp81lAepkFXjJLbHszixkkISyQLHFm0gNGEJtXwEpi/eFrYHFOgUCJTdtesEAsm8kk0f/q
+        H1iCX0BMovfKfyaIi+wl2rYsgmoWlDg58wnYQcxA21q3/2aHsLUlli18zQxxqKLE4SW/2CF6
+        lSSOdM9gg7BjJZbNe8U6gVF4FpJRs5CMmoVk1AJG5lWMLMW56UabGCGRGLqDcUbTR71DjEwc
+        jIcYJTiYlUR4e3ucE4R4UxIrq1KL8uOLSnNSiw8xSnOwKInz7j3mmiAkkJ5YkpqdmlqQWgST
+        ZeLglGpgcrI5oHCji3d3+PtvHBVLN10+stnkmb2xzSOnu6o7oj49lFG/t+6giOcytRvz/C54
+        al4tunCjfFPIyrsL450tvggfZd89pSi5/d3x5xMn/7ju9HKd3u9l+y4pvxI6Z50xX1zr+Jy9
+        H3cVff5+6apD4hPBSc2bM+TKLb44HxLfumya9xmT66u4f2+NUUldPztVMNTzts+BuVPvr6tN
+        2rW3OGrHG8PDbKHPLYO3XZvcMuP4L3573dXJnCanUtNXyRnW8+Q2Pn1h/27G7psz7+7b0vd9
+        +W8N422x7tui5F3YW/jj11sKCWyyFL1dzarOwjf/9ZwX7/pm3n13qIbxTLXAIX4z9uCpfvfl
+        hAUz3Y60rYpTYinOSDTUYi4qTgQA81gYLDMDAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.02.2021 22:26, Ansuel Smith wrote:
-> Document nvmem-partitions compatible used to treat mtd partitions as a
-> nvmem provider.
+On Sun, 7 Mar 2021 11:16:24 -0800
+Andy Lutomirski <luto@amacapital.net> wrote:
 
-I'm just wondering if "nvmem-partitions" is accurate enough. Partitions
-bit sounds a bit ambiguous in the mtd context.
+> > > > >> Some programs may use read(2), write(2), etc as ways to check if
+> > > > >> memory is valid without getting a signal.  They might not want
+> > > > >> signals, which means that this feature might need to be configurable.  
+> > > > >
+> > > > > That sounds like an appalling hack. If users need such a mechanism
+> > > > > we should create some better way to do that.
+> > > > >  
+> > > >
+> > > > Appalling hack or not, it works. So, if we’re going to send a signal to user code that looks like it originated from a bina fide architectural recoverable fault, it needs to be recoverable.  A load from a failed NVDIMM page is such a fault. A *kernel* load is not. So we need to distinguish it somehow.  
+> > >
+> > > Sorry for my previous mis-understanding, and i have some questions:
+> > > if programs use read,write to check if if memory is valid, does it really want to cover the poison case?  
+> 
+> I don't know.
+> 
+> > > When for such a case, an error is returned,  can the program realize it's hwposion issue not other software error and process correctly?  
+> 
+> Again, I don't know.  But changing the API like this seems potentialy
+> dangerous and needs to be done with care.
+> 
+> > >
+> > > if this is the proper action, the original posion flow in current code from read and write need to change too.
+> > >  
+> >
+> > Sorry, another question:
+> >   When programs use read(2), write(2) as ways to check if memory is valid, does it really want to check if the user page the program provided is valid, not the destination or disk space valid?  
+> 
+> They may well be trying to see if their memory is valid.
 
-What do you think about "mtd-nvmem-cells" or just "nvmem-cells"?
+Thanks for your reply, and I don't know what to do.
+For current code, if user program write to a block device(maybe a test try) and if its user copy page corrupt when in kernel copy, the process is killed with a SIGBUS.
+And for the page fault case in this thread, the process is error returned.
+
+-- 
+Thanks!
+Aili Yao
