@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13163313DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E683313DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhCHQwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:52:08 -0500
-Received: from mga06.intel.com ([134.134.136.31]:18037 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229818AbhCHQv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:51:58 -0500
-IronPort-SDR: RWbEuP4Jjbm1SJ/0pYMC8GqkKQB2hEImRPRu7UHuXYV57wiEDu/mKH0XmdtnV5Sf9HpL19TIhD
- EcBN+EeyLsEw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="249443244"
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="249443244"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 08:51:58 -0800
-IronPort-SDR: Ra6tLTStpq8dq36RZhKli0M2oVxfITFaaO3HQz+7ILvFtrtpvijqoqpCk6bbPegkcGxyt+LxRG
- 15Q2Lh7fpluQ==
-X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
-   d="scan'208";a="385909914"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.186.31]) ([10.209.186.31])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 08:51:56 -0800
-Subject: Re: [PATCH v21 10/26] x86/mm: Update pte_modify for _PAGE_COW
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
- <20210217222730.15819-11-yu-cheng.yu@intel.com>
- <20210305142940.GC2685@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <b7105be2-d2de-c318-f6e2-2706e35dd7ce@intel.com>
-Date:   Mon, 8 Mar 2021 08:51:55 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230466AbhCHQwh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Mar 2021 11:52:37 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:42564 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229893AbhCHQw0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 11:52:26 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-282-p8F5T5RLMuythNy9As2n-g-1; Mon, 08 Mar 2021 16:52:23 +0000
+X-MC-Unique: p8F5T5RLMuythNy9As2n-g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 8 Mar 2021 16:52:24 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 8 Mar 2021 16:52:24 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Tiezhu Yang' <yangtiezhu@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: RE: [PATCH] MIPS: Check __clang__ to avoid performance influence with
+ GCC in csum_tcpudp_nofold()
+Thread-Topic: [PATCH] MIPS: Check __clang__ to avoid performance influence
+ with GCC in csum_tcpudp_nofold()
+Thread-Index: AQHXFBmyTl3JNAv/2UywLmyfFV7Ivap6TYNg
+Date:   Mon, 8 Mar 2021 16:52:24 +0000
+Message-ID: <8d61574e815a4cf098d21eb4d749be0f@AcuMS.aculab.com>
+References: <1615207807-29972-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1615207807-29972-1-git-send-email-yangtiezhu@loongson.cn>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210305142940.GC2685@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/5/2021 6:29 AM, Borislav Petkov wrote:
-> On Wed, Feb 17, 2021 at 02:27:14PM -0800, Yu-cheng Yu wrote:
->> @@ -787,16 +802,34 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
->>   	 */
->>   	val &= _PAGE_CHG_MASK;
->>   	val |= check_pgprot(newprot) & ~_PAGE_CHG_MASK;
->> +	val = fixup_dirty_pte(val);
+From: Tiezhu Yang
+> Sent: 08 March 2021 12:50
 > 
-> Do I see it correctly that you can do here and below:
+> The asm code in csum_tcpudp_nofold() is performance-critical, I am sorry
+> for the poorly considered implementation about the performance influence
+> with GCC in the commit 198688edbf77 ("MIPS: Fix inline asm input/output
+> type mismatch in checksum.h used with Clang").
 > 
-> 	/*
-> 	 * Fix up potential shadow stack page flags because the RO, Dirty PTE is
-> 	 * special.
-> 	 */
-> 	if (pte_dirty()) {
-> 		pte_mkclean();
-> 		pte_mkdirty();
-> 	}
+> With this patch, we can build successfully by both GCC and Clang,
+> at the same time, we can avoid the potential performance influence
+> with GCC.
 > 
-> ?
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/mips/include/asm/checksum.h | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/arch/mips/include/asm/checksum.h b/arch/mips/include/asm/checksum.h
+> index 1e6c135..64d353e 100644
+> --- a/arch/mips/include/asm/checksum.h
+> +++ b/arch/mips/include/asm/checksum.h
+> @@ -130,7 +130,9 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+>  					__u32 len, __u8 proto,
+>  					__wsum sum)
+>  {
+> +#ifdef __clang__
+>  	unsigned long tmp = (__force unsigned long)sum;
+> +#endif
 
-Yes, this looks better.  Thanks!
+What happens if you make the above:
+#ifdef __clang__
+	unsigned long tmp = (__force unsigned long)sum;
+#else
+	__wsum tmp = sum;
+#endif
+	
+and then leave the rest of the function the same for both compilers.
+Maybe do s/sum/sum_in/,s/tmp/sum/ to reduce the changes.
 
-> 
-> That fixup thing looks grafted and not like a normal flow to me.
-> 
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
