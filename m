@@ -2,122 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFAE3315AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B5F3315B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhCHSPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:15:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbhCHSPQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:15:16 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F4BC06174A;
-        Mon,  8 Mar 2021 10:15:16 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id mm21so22183872ejb.12;
-        Mon, 08 Mar 2021 10:15:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g/bzyPjovQ9TJfpqIkZJGibSjbqLtnRGGO1V2kB7/2Q=;
-        b=oT47EDYu5ZrDjIsPLw10d/GmM4ySkio4jkFzzhG3F1k2nUmyG4zpwIg9brdLIjhvH7
-         qQurFccmVjEpKc5/3/eeY+4IEo1je2kAdN8RMsGWgswPfZb+3T8oSRWQtnNeNNfdWjhP
-         0A1rR8InatWETyJvi00eTrVWuScMq/s38yA80bWk7hvcAoWsYdci6cI5m7P0wHbSJyzb
-         a3Lv2ZdqVlYr6S0bNxxgcOFaruzl/LaWJhdD5mSzEhqx0A/ID5uknvSuW16TpX5XeDsP
-         mXCNbqMQgxSSvwm2z5mqFNbOeKOYXS1siv4Gi/c1GzEDhpbpqv6dun/zFyYpfm4+K7pt
-         rCNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g/bzyPjovQ9TJfpqIkZJGibSjbqLtnRGGO1V2kB7/2Q=;
-        b=n9yDtv+Wb6KpkZENS/Juvp+hOpFUAiiW7HdDpVimsyC3AUFm7eJi/URX8LKXx8nK9I
-         f3IZCnRnxnXt6NGoGoO/jNGGZWNA37TZPkdg6kuRgebooqXPHZ33YlRhPk1ht2A9w80C
-         I0WD3sSld1Al6z12MDO+KhGaAZBcFOedcsvSvldUjZ4aP8CBea+ufHsiKkwHqgaCyUdB
-         ZVNuSnhfSZXtL+qvaCvgU2ifzWlSuGpUnnWNTKnTyp+CyVUEsRjHLx+VoRtTQxtOmmC1
-         eV0NVlD0ll5yGV4ym07r2XQ8PWF1rAn4iP+eyizgJGTx7+kdOuO+/szfgD/ZoGD5gZqb
-         OkOQ==
-X-Gm-Message-State: AOAM531zegPxF8G7Z5pKAals/xeEVlRLhKhZUHiN8BdTbBXU1xqPGhSC
-        KutNXC70hAkQxgLe8oTQ8homtWke3Oelgw5zV/8=
-X-Google-Smtp-Source: ABdhPJzEtTVkv8kuvlaSOiCjwhpHgBuYuDk4ONeS1aBsrVoMOmnjPFX7SSO1+yQH37wno17IK5bLkfwFj6HxNQFjjLA=
-X-Received: by 2002:a17:906:789:: with SMTP id l9mr15985654ejc.161.1615227315315;
- Mon, 08 Mar 2021 10:15:15 -0800 (PST)
+        id S230412AbhCHSQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:16:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229893AbhCHSQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 13:16:01 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59F33652B8;
+        Mon,  8 Mar 2021 18:16:00 +0000 (UTC)
+Date:   Mon, 8 Mar 2021 13:15:58 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org
+Subject: Re: [RFC PATCH 1/5] tracing: Define new ftrace event "func_repeats"
+Message-ID: <20210308131558.6ee6f98e@gandalf.local.home>
+In-Reply-To: <6f4083f2-6c71-e404-9000-b08ff94ab328@gmail.com>
+References: <20210304090141.207309-1-y.karadz@gmail.com>
+        <20210304090141.207309-2-y.karadz@gmail.com>
+        <20210304113809.5c2ccceb@gandalf.local.home>
+        <6f4083f2-6c71-e404-9000-b08ff94ab328@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210217001322.2226796-1-shy828301@gmail.com> <20210217001322.2226796-6-shy828301@gmail.com>
- <CALvZod75fge=B9LNg_sxbCiwDZjjtn8A9Q2HzU_R6rcg551o6Q@mail.gmail.com> <20210308145444.GN2696@paulmck-ThinkPad-P72>
-In-Reply-To: <20210308145444.GN2696@paulmck-ThinkPad-P72>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 8 Mar 2021 10:15:03 -0800
-Message-ID: <CAHbLzkoxVkzYDbFY4DmsQrj+8jv9xbsWAjdRHgKbgNgc0xWaqw@mail.gmail.com>
-Subject: Re: [v8 PATCH 05/13] mm: vmscan: use kvfree_rcu instead of call_rcu
-To:     paulmck@kernel.org
-Cc:     Shakeel Butt <shakeelb@google.com>, Roman Gushchin <guro@fb.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 6:54 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Sun, Mar 07, 2021 at 10:13:04PM -0800, Shakeel Butt wrote:
-> > On Tue, Feb 16, 2021 at 4:13 PM Yang Shi <shy828301@gmail.com> wrote:
-> > >
-> > > Using kvfree_rcu() to free the old shrinker_maps instead of call_rcu().
-> > > We don't have to define a dedicated callback for call_rcu() anymore.
-> > >
-> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > > ---
-> > >  mm/vmscan.c | 7 +------
-> > >  1 file changed, 1 insertion(+), 6 deletions(-)
-> > >
-> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > > index 2e753c2516fa..c2a309acd86b 100644
-> > > --- a/mm/vmscan.c
-> > > +++ b/mm/vmscan.c
-> > > @@ -192,11 +192,6 @@ static inline int shrinker_map_size(int nr_items)
-> > >         return (DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long));
-> > >  }
-> > >
-> > > -static void free_shrinker_map_rcu(struct rcu_head *head)
-> > > -{
-> > > -       kvfree(container_of(head, struct memcg_shrinker_map, rcu));
-> > > -}
-> > > -
-> > >  static int expand_one_shrinker_map(struct mem_cgroup *memcg,
-> > >                                    int size, int old_size)
-> > >  {
-> > > @@ -219,7 +214,7 @@ static int expand_one_shrinker_map(struct mem_cgroup *memcg,
-> > >                 memset((void *)new->map + old_size, 0, size - old_size);
-> > >
-> > >                 rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, new);
-> > > -               call_rcu(&old->rcu, free_shrinker_map_rcu);
-> > > +               kvfree_rcu(old);
-> >
-> > Please use kvfree_rcu(old, rcu) instead of kvfree_rcu(old). The single
-> > param can call synchronize_rcu().
->
-> Especially given that you already have the ->rcu field that the
-> two-argument form requires.
->
-> The reason for using the single-argument form is when you have lots of
-> little data structures, such that getting rid of that rcu_head structure
-> is valuable enough to be worth the occasional call to synchronize_rcu().
-> However, please note that this call to synchronize_rcu() happens only
-> under OOM conditions.
+On Mon, 8 Mar 2021 16:57:29 +0200
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-Thanks, Shakeel and Paul. I didn't realize the difference. Will use
-the two params form in the new version.
+> > If we had:
+> > 
+> >             <...>-37      [004] ...1  2022.303820: gc_worker <-process_one_work
+> >             <...>-37      [004] ...1  2022.303820: ___might_sleep <-gc_worker
+> >             <...>-37      [004] ...1  2022.303831: ___might_sleep <-gc_worker (last ts: 2022.303828 repeats: 127)
+> >             <...>-37      [004] ...1  2022.303831: queue_delayed_work_on <-process_one_work
+> > 
+> > We would know the last time __might_sleep was called.
+> > 
+> > That is, not only should we save the ip and pip in the trace_func_repeats
+> > structure, but we should also be storing the last time stamp of the last
+> > function event that repeated. Otherwise the above looks like the last
+> > __might_sleep called above happened when the queue_delayed_work_on
+> > happened, where that may not be the case.  
+> 
+> If we store the last timestamp, this means we will need to use 
+> additional 64b on the buffer, every time we record the "func_repeats" 
+> event. This looks like an overkill to me.
+> Can we store only the duration of the repeats (the difference between 
+> the timestamp)? This way we can use less memory at the price of having 
+> one extra arithmetic operation.
+> Alternative approach can be to store only the least-significant bits of 
+> the timestamp.
+> 
+> What do you think?
 
->
->                                                         Thanx, Paul
+I like the way you're thinking ;-)
+
+Let's take a look at the current event sizes.
+
+The function event is defined as:
+
+name: function
+ID: 1
+format:
+	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
+	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
+	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
+	field:int common_pid;	offset:4;	size:4;	signed:1;
+
+	field:unsigned long ip;	offset:8;	size:8;	signed:0;
+	field:unsigned long parent_ip;	offset:16;	size:8;	signed:0;
+
+Showing that it's total size is 24 bytes (offset:16 + size:8)
+
+and your current repeat event has:
+
+ID: 17
+format:
+	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
+	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
+	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
+	field:int common_pid;	offset:4;	size:4;	signed:1;
+
+	field:unsigned long ip;	offset:8;	size:8;	signed:0;
+	field:unsigned long pip;	offset:16;	size:8;	signed:0;
+	field:unsigned long count;	offset:24;	size:8;	signed:0;
+
+Which is 32 bytes. Adding another 8 would make it 40. It's bigger than one
+function event, but still smaller than two, and adding just 4 bytes is
+still some size more than a single function event.
+
+Since this event is new, we could even do another trick (one that the
+preemptirq events do:
+
+ID: 434
+format:
+	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
+	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
+	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
+	field:int common_pid;	offset:4;	size:4;	signed:1;
+
+	field:s32 caller_offs;	offset:8;	size:4;	signed:1;
+	field:s32 parent_offs;	offset:12;	size:4;	signed:1;
+
+print fmt: "caller=%pS parent=%pS", (void *)((unsigned long)(_stext) + REC->caller_offs), (void *)((unsigned long)(_stext) + REC->parent_offs)
+
+The (_stext) is defined in /proc/kallsyms:
+
+# grep stext /proc/kallsyms 
+ffffffff8d000000 T _stext
+
+And the offsets are off of that, which we could do the same thing here.
+
+	field:s32 ip;	offset:8;	size:4;	signed:1;
+	field:s32 pip;	offset:12;	size:4;	signed:1;
+	field:s16 count;	offset:20;	size:2;	signed:1;
+	field:u16 top_ts;	offset:22;	size:2; signed:0;
+	field:u32 bottom_ts;	offset:24;	size:4; signed:0;
+
+By putting count down to 2 bytes. Having more than 64K repeats is
+probably not going to happen, and if it does, we could inject this more
+than once ;-)
+
+And as all events must be 4 byte aligned, we could use 6 bytes for the
+offset, giving us: 2^40 bits instead of just 2^32 bits, that is, making the
+time go from 4 seconds (2^32 nanoseconds) to 18 minutes (2^40 nanoseconds).
+
+I would grab the time stamp after saving the event to make sure that it
+doesn't go backwards. It may be a little racy (if an interrupt comes in
+between), but it's still a "best effort" approach.
+
+-- Steve
+
