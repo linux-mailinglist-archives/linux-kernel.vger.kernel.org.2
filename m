@@ -2,150 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA61330731
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 06:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCFF33073A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 06:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234424AbhCHFI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 00:08:59 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36338 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234352AbhCHFIc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 00:08:32 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12858Rar077337;
-        Sun, 7 Mar 2021 23:08:27 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615180107;
-        bh=+Y00hdZP+qH3GUjqo1BgTa5yanHKcZM8l+fdCNkwrBk=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=gA3eY+1+ymr21oGfHhAxPHO806Ci6caZG8eWEsHwXX2WusNGv0fVh5YbUhPqNtLJC
-         RiJd2UYUcCD5/9umsRCObXPQHc/xPVHZxux3KCp+ix497pTWdg7B5i7FBDCTU5HbSB
-         mT3JkH7W64HaSTGrHzfyx/w7INIrzkQ9krba7Ozg=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12858RL2068871
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 7 Mar 2021 23:08:27 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 7 Mar
- 2021 23:08:27 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Sun, 7 Mar 2021 23:08:27 -0600
-Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12857aLB086547;
-        Sun, 7 Mar 2021 23:08:24 -0600
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Swapnil Jakhade <sjakhade@cadence.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-Subject: [PATCH v5 13/13] phy: cadence: sierra: Enable pll_cmnlc and pll_cmnlc1 clocks
-Date:   Mon, 8 Mar 2021 10:37:32 +0530
-Message-ID: <20210308050732.7140-14-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210308050732.7140-1-kishon@ti.com>
-References: <20210308050732.7140-1-kishon@ti.com>
+        id S234375AbhCHFVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 00:21:23 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:31351 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232565AbhCHFVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 00:21:17 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615180877; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=On2mi/7W7Su/V+3JcCXfzENs8FDIIHK/FTwZ3xaUj+0=; b=OrUunjbKbdMh7Vuy53shdBogRmEY4XZQuC+TgWvxEq/Bc+YfpgkF7iHz6HU5eq7SU9qvHG/W
+ 3+dWTZukzObxpqW5uTngIaH+aDs6XXUws25yLUx+2BU12vdjstWi2M7j6JnYD7ubIcX/6JNB
+ oj42X3qQGB8NaXsgSH/h4eBWXPY=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 6045b4472a5e6d1bfab92a30 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Mar 2021 05:21:11
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EE9DCC433C6; Mon,  8 Mar 2021 05:21:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.79.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 83B81C433CA;
+        Mon,  8 Mar 2021 05:21:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 83B81C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
+Subject: Re: [PATCH v2 05/14] arm64: dts: qcom: sc7280: Add RSC and PDC
+ devices
+To:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1614773878-8058-1-git-send-email-rnayak@codeaurora.org>
+ <1614773878-8058-6-git-send-email-rnayak@codeaurora.org>
+ <161481625091.1478170.8810587061043612400@swboyd.mtv.corp.google.com>
+ <31bf64c5-26a4-dc23-3769-df7a7559083b@codeaurora.org>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <ac4f5cf8-0bf0-b7c3-2d50-ae7d48cbc885@codeaurora.org>
+Date:   Mon, 8 Mar 2021 10:51:04 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <31bf64c5-26a4-dc23-3769-df7a7559083b@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get pll_cmnlc and pll_cmnlc1 optional clocks and enable them.
-This will enable REFRCV/1 in case the pll_cmnlc/1 takes input
-from REFRCV/1 respectively.
+Hi,
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- drivers/phy/cadence/phy-cadence-sierra.c | 40 ++++++++++++++++++++++--
- 1 file changed, 37 insertions(+), 3 deletions(-)
+On 3/5/2021 11:12 AM, Rajendra Nayak wrote:
+>
+> On 3/4/2021 5:34 AM, Stephen Boyd wrote:
+>> Quoting Rajendra Nayak (2021-03-03 04:17:49)
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> index 4a56d9c..21c2399 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> @@ -30,6 +31,18 @@
+>>>                  };
+>>>          };
+>>>   +       reserved_memory: reserved-memory {
+>>
+>> Do we plan to use this label at any point? I'd prefer we remove this
+>> until it becomes useful.
+>
+> sure, i'll drop it
+>
+>>
+>>> +               #address-cells = <2>;
+>>> +               #size-cells = <2>;
+>>> +               ranges;
+>>> +
+>>> +               aop_cmd_db_mem: memory@80860000 {
+>>> +                       reg = <0x0 0x80860000 0x0 0x20000>;
+>>> +                       compatible = "qcom,cmd-db";
+>>> +                       no-map;
+>>> +               };
+>>> +       };
+>>> +
+>>>          cpus {
+>>>                  #address-cells = <2>;
+>>>                  #size-cells = <0>;
+>>> @@ -203,6 +229,7 @@
+>>>                          interrupt-controller;
+>>>                          #interrupt-cells = <2>;
+>>>                          gpio-ranges = <&tlmm 0 0 175>;
+>>> +                       wakeup-parent = <&pdc>;
+>>>                            qup_uart5_default: qup-uart5-default {
+>>>                                  pins = "gpio46", "gpio47";
+>>> @@ -287,6 +314,23 @@
+>>>                                  status = "disabled";
+>>>                          };
+>>>                  };
+>>> +
+>>> +               apps_rsc: rsc@18200000 {
+>>
+>> Any better name than 'rsc'? Maybe 'power-controller'?
+>
+> hmm, Maulik, any thoughts? This would perhaps need the bindings docs
+> to be updated as well (and maybe the existing platform DTs using rsc too)
 
-diff --git a/drivers/phy/cadence/phy-cadence-sierra.c b/drivers/phy/cadence/phy-cadence-sierra.c
-index b80afc11dd5c..16adc6dff04e 100644
---- a/drivers/phy/cadence/phy-cadence-sierra.c
-+++ b/drivers/phy/cadence/phy-cadence-sierra.c
-@@ -768,6 +768,40 @@ static int cdns_sierra_phy_get_clocks(struct cdns_sierra_phy *sp,
- 	return 0;
- }
- 
-+static int cdns_sierra_phy_enable_clocks(struct cdns_sierra_phy *sp)
-+{
-+	int ret;
-+
-+	ret = clk_prepare_enable(sp->input_clks[PHY_CLK]);
-+	if (ret)
-+		return ret;
-+
-+	ret = clk_prepare_enable(sp->output_clks[CDNS_SIERRA_PLL_CMNLC]);
-+	if (ret)
-+		goto err_pll_cmnlc;
-+
-+	ret = clk_prepare_enable(sp->output_clks[CDNS_SIERRA_PLL_CMNLC1]);
-+	if (ret)
-+		goto err_pll_cmnlc1;
-+
-+	return 0;
-+
-+err_pll_cmnlc:
-+	clk_disable_unprepare(sp->input_clks[PHY_CLK]);
-+
-+err_pll_cmnlc1:
-+	clk_disable_unprepare(sp->output_clks[CDNS_SIERRA_PLL_CMNLC]);
-+
-+	return ret;
-+}
-+
-+static void cdns_sierra_phy_disable_clocks(struct cdns_sierra_phy *sp)
-+{
-+	clk_disable_unprepare(sp->output_clks[CDNS_SIERRA_PLL_CMNLC1]);
-+	clk_disable_unprepare(sp->output_clks[CDNS_SIERRA_PLL_CMNLC]);
-+	clk_disable_unprepare(sp->input_clks[PHY_CLK]);
-+}
-+
- static int cdns_sierra_phy_get_resets(struct cdns_sierra_phy *sp,
- 				      struct device *dev)
- {
-@@ -848,7 +882,7 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto unregister_clk;
- 
--	ret = clk_prepare_enable(sp->input_clks[PHY_CLK]);
-+	ret = cdns_sierra_phy_enable_clocks(sp);
- 	if (ret)
- 		goto unregister_clk;
- 
-@@ -925,7 +959,7 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
- 		reset_control_put(sp->phys[i].lnk_rst);
- 	of_node_put(child);
- clk_disable:
--	clk_disable_unprepare(sp->input_clks[PHY_CLK]);
-+	cdns_sierra_phy_disable_clocks(sp);
- 	reset_control_assert(sp->apb_rst);
- unregister_clk:
- 	cdns_sierra_clk_unregister(sp);
-@@ -941,6 +975,7 @@ static int cdns_sierra_phy_remove(struct platform_device *pdev)
- 	reset_control_assert(phy->apb_rst);
- 	pm_runtime_disable(&pdev->dev);
- 
-+	cdns_sierra_phy_disable_clocks(phy);
- 	/*
- 	 * The device level resets will be put automatically.
- 	 * Need to put the subnode resets here though.
-@@ -950,7 +985,6 @@ static int cdns_sierra_phy_remove(struct platform_device *pdev)
- 		reset_control_put(phy->phys[i].lnk_rst);
- 	}
- 
--	clk_disable_unprepare(phy->input_clks[PHY_CLK]);
- 	cdns_sierra_clk_unregister(phy);
- 
- 	return 0;
+I think we should be good with rsc (resource-state-coordinator). RSC 
+itself don't do any resource power management.
+
+Thanks,
+Maulik
+>
+>>
+>>> +                       compatible = "qcom,rpmh-rsc";
+>>> +                       reg = <0 0x18200000 0 0x10000>,
+>>> +                             <0 0x18210000 0 0x10000>,
+>>> +                             <0 0x18220000 0 0x10000>;
+>>> +                       reg-names = "drv-0", "drv-1", "drv-2";
+>>> +                       interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                                    <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
+>>> +                                    <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
+>>> +                       qcom,tcs-offset = <0xd00>;
+>>> +                       qcom,drv-id = <2>;
+>>> +                       qcom,tcs-config = <ACTIVE_TCS 2>,
+>>> +                                         <SLEEP_TCS 3>,
+>>> +                                         <WAKE_TCS 3>,
+>>> +                                         <CONTROL_TCS 1>;
+>>> +               };
+>>>          };
+>
 -- 
-2.17.1
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
 
