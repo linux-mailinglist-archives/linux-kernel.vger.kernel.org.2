@@ -2,79 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24726330B48
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019C9330B4A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbhCHKct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 05:32:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39649 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231592AbhCHKcY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:32:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615199543;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tzgm3Jq54JoBtwEStS2p3zfh75LFir9ok6NSzKhJVag=;
-        b=WjVJ0FIH+3Y7Db+1KAFPx0XyXBmXj49fLVjveTjf0Dl4sfzuRX2CHyo68E5W5U2qcJcg7q
-        ViiYGiho7FculT2xc9zOXnvb0ThkQwi9PyuLuxLtS78+bhMAGbMNlVVrHG/rFO+ksCQ9TO
-        aqFgv+lz8/YF6QFMofIgBg1g3RugkG0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-JIv8FvDnMqW9ja_fv9GHLA-1; Mon, 08 Mar 2021 05:32:21 -0500
-X-MC-Unique: JIv8FvDnMqW9ja_fv9GHLA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 876CE108BD09;
-        Mon,  8 Mar 2021 10:32:20 +0000 (UTC)
-Received: from bnemeth.users.ipa.redhat.com (ovpn-113-99.ams2.redhat.com [10.36.113.99])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8239360D79;
-        Mon,  8 Mar 2021 10:32:18 +0000 (UTC)
-From:   Balazs Nemeth <bnemeth@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        davem@davemloft.net, willemb@google.com,
-        virtualization@lists.linux-foundation.org, bnemeth@redhat.com
-Subject: [PATCH v2 2/2] net: avoid infinite loop in mpls_gso_segment when mpls_hlen == 0
-Date:   Mon,  8 Mar 2021 11:31:26 +0100
-Message-Id: <85e04e1e6367f19c8f538d145b32f5bb93788d8a.1615199056.git.bnemeth@redhat.com>
-In-Reply-To: <cover.1615199056.git.bnemeth@redhat.com>
-References: <cover.1615199056.git.bnemeth@redhat.com>
+        id S231143AbhCHKdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 05:33:43 -0500
+Received: from mga11.intel.com ([192.55.52.93]:65129 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231195AbhCHKd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 05:33:29 -0500
+IronPort-SDR: EoydsZvAOwv0Ae03kvTUtA2gJzc0phExPZxqM8zqv/9V/LPeZ2ipYiaXCGG9awQiRVsIFFpPaT
+ gXRMOLbcWhOw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="184639094"
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="184639094"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 02:33:28 -0800
+IronPort-SDR: HhyRFaji92hkYH/IcTXTNVLyKx6k6Odu/UMT+FJ39Nx8CtWciGdUn4pWzakHR/WhgpUNa5PyfH
+ lQDyY3cFkM6w==
+X-IronPort-AV: E=Sophos;i="5.81,232,1610438400"; 
+   d="scan'208";a="385807735"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 02:33:26 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lJDCV-00An4O-2k; Mon, 08 Mar 2021 12:33:23 +0200
+Date:   Mon, 8 Mar 2021 12:33:23 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Marco Elver <elver@google.com>
+Cc:     linux-kernel@vger.kernel.org, vbabka@suse.cz, timur@kernel.org,
+        pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 2/2] lib/vsprintf: reduce space taken by no_hash_pointers
+ warning
+Message-ID: <YEX9c+Sx/TGvFTCY@smile.fi.intel.com>
+References: <20210305194206.3165917-1-elver@google.com>
+ <20210305194206.3165917-2-elver@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305194206.3165917-2-elver@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A packet with skb_inner_network_header(skb) == skb_network_header(skb)
-and ETH_P_MPLS_UC will prevent mpls_gso_segment from pulling any headers
-from the packet. Subsequently, the call to skb_mac_gso_segment will
-again call mpls_gso_segment with the same packet leading to an infinite
-loop.
+On Fri, Mar 05, 2021 at 08:42:06PM +0100, Marco Elver wrote:
+> Move the no_hash_pointers warning string into __initconst section, so
+> that it is discarded after init. Remove common start/end characters.
+> Also remove repeated lines from the array, since the compiler can't
+> remove duplicate strings for us since the array must appear in
+> __initconst as defined.
+> 
+> Note, a similar message appears in kernel/trace/trace.c, but compiling
+> the feature is guarded by CONFIG_TRACING. It is not immediately obvious
+> if a space-concious kernel would prefer CONFIG_TRACING=n. Therefore, it
+> makes sense to keep the message for no_hash_pointers as __initconst, and
+> not move the NOTICE-printing to a common function.
 
-Signed-off-by: Balazs Nemeth <bnemeth@redhat.com>
----
- net/mpls/mpls_gso.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This seems to have 2-in-1 patch. Care to split?
+Feel free to add
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+to the __initconst part, but the rest.
 
-diff --git a/net/mpls/mpls_gso.c b/net/mpls/mpls_gso.c
-index b1690149b6fa..cc1b6457fc93 100644
---- a/net/mpls/mpls_gso.c
-+++ b/net/mpls/mpls_gso.c
-@@ -27,7 +27,7 @@ static struct sk_buff *mpls_gso_segment(struct sk_buff *skb,
- 
- 	skb_reset_network_header(skb);
- 	mpls_hlen = skb_inner_network_header(skb) - skb_network_header(skb);
--	if (unlikely(!pskb_may_pull(skb, mpls_hlen)))
-+	if (unlikely(!mpls_hlen || !pskb_may_pull(skb, mpls_hlen)))
- 		goto out;
- 
- 	/* Setup inner SKB. */
+
+> Link: https://lkml.kernel.org/r/CAMuHMdULKZCJevVJcp7TxzLdWLjsQPhE8hqxhnztNi9bjT_cEw@mail.gmail.com
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+>  lib/vsprintf.c | 30 +++++++++++++++++-------------
+>  1 file changed, 17 insertions(+), 13 deletions(-)
+> 
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index 4a14889ccb35..1095689c9c97 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -2094,26 +2094,30 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
+>  bool no_hash_pointers __ro_after_init;
+>  EXPORT_SYMBOL_GPL(no_hash_pointers);
+>  
+> +static const char no_hash_pointers_warning[8][55] __initconst = {
+> +	"******************************************************",
+> +	"   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   ",
+> +	" This system shows unhashed kernel memory addresses   ",
+> +	" via the console, logs, and other interfaces. This    ",
+> +	" might reduce the security of your system.            ",
+> +	" If you see this message and you are not debugging    ",
+> +	" the kernel, report this immediately to your system   ",
+> +	" administrator!                                       ",
+> +};
+> +
+>  static int __init no_hash_pointers_enable(char *str)
+>  {
+> +	/* Indices into no_hash_pointers_warning; -1 is an empty line. */
+> +	const int lines[] = { 0, 1, -1, 2, 3, 4, -1, 5, 6, 7, -1, 1, 0 };
+> +	int i;
+> +
+>  	if (no_hash_pointers)
+>  		return 0;
+>  
+>  	no_hash_pointers = true;
+>  
+> -	pr_warn("**********************************************************\n");
+> -	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> -	pr_warn("**                                                      **\n");
+> -	pr_warn("** This system shows unhashed kernel memory addresses   **\n");
+> -	pr_warn("** via the console, logs, and other interfaces. This    **\n");
+> -	pr_warn("** might reduce the security of your system.            **\n");
+> -	pr_warn("**                                                      **\n");
+> -	pr_warn("** If you see this message and you are not debugging    **\n");
+> -	pr_warn("** the kernel, report this immediately to your system   **\n");
+> -	pr_warn("** administrator!                                       **\n");
+> -	pr_warn("**                                                      **\n");
+> -	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> -	pr_warn("**********************************************************\n");
+> +	for (i = 0; i < ARRAY_SIZE(lines); i++)
+> +		pr_warn("**%54s**\n", i == -1 ? "" : no_hash_pointers_warning[lines[i]]);
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.30.1.766.gb4fecdf3b7-goog
+> 
+
 -- 
-2.29.2
+With Best Regards,
+Andy Shevchenko
+
 
