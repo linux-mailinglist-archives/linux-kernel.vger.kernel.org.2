@@ -2,144 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E5533175B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA1933175F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhCHTdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:33:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49710 "EHLO mail.kernel.org"
+        id S231201AbhCHTeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:34:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231219AbhCHTck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:32:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C05F0652A8;
-        Mon,  8 Mar 2021 19:32:39 +0000 (UTC)
+        id S230075AbhCHTdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 14:33:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEC1165287
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 19:33:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615231960;
-        bh=pTZnKtJTe2m07YW60C6Y46vT7s8TcSgE3dn8DlEK4ZA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cTbCe6T3F+3ADUqxrHdZ5K7QXm3AgxEHrBcNKxxEf0G6weNYDeMyxY1zT1K6RGR2M
-         PY5rtwWg7Wzu4YSCG+KLmqghptQDrzlQRUt/UgSziJvJai8sUa9U1bgR/LCbs+JJM3
-         /qzwvDj2fHKEWOjZCUzvZ78xQuu+NgmZsxYusoMSWhAoQjLo89f6+zvSU9Bra0S/Iw
-         vCkJ44fQEXrbxb1xtQKjaR6o2Z2tZSAFNLTvTP00O8+N+vxQCwwFGkNxbajEUIEHTk
-         axNAWJHNUSvGLn6vSjOxsmkYh0INEx7HlGEdJkuciQtuuQkkOKVaQBLhs/cM2WZsNt
-         UDzQOyslAuEFQ==
-Date:   Mon, 8 Mar 2021 13:32:37 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2][next] scsi: mpt3sas: Replace one-element array with
- flexible-array in struct _MPI2_CONFIG_PAGE_IO_UNIT_3
-Message-ID: <20210308193237.GA212624@embeddedor>
-References: <20210202235118.GA314410@embeddedor>
+        s=k20201202; t=1615232031;
+        bh=DM0rKDaLb7B/JShd7XPcETbrdwDndqNLTREc2OMkJWo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KDRj/mXQmuAt4KfsI9B52LLS2Kp5PIsmOyUCzyzXEON6+rFu9lKtul/CmcHloxTtB
+         A+7dZYUsagSvQUE1TBI4rMBXZ27zBbv0rDH/tU0MQzf/LZlVUivtqtVSTc2ixqKh8d
+         IXhfMObEfuvpwDxUiTyY2pBj2uBePEDOBiQMurZ09BYMIndseWmYtyTeV9Dy1vwHoD
+         Rxnl2zgKB5UU33zye7TQBpXg7HZY4txRhC1bs4tE5Cbcglt1UkVsazPFfUoBRvOUXV
+         Q9Eqlr9g3ruRYcr9vPC6Z6Ly7d+wjTh80RaxG0z97BJOGGFmQC0C+SR1bLbNJHE7MT
+         hI4quyeUkAKLg==
+Received: by mail-ot1-f48.google.com with SMTP id j8so10419586otc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 11:33:51 -0800 (PST)
+X-Gm-Message-State: AOAM532b4fzqdP3rOaMxrn/CMeLa2T9NqM5Z5BGmD8a/wq1hbWZp45Wx
+        PCSe9spqsOS3QU6igqy72mxmRxNkGzKzJBJMRP8=
+X-Google-Smtp-Source: ABdhPJx2iehk1VgS7ag9nTJiTmLtuyCadIeJmEJ4CBdyRKvl5jJisQ7/TsKYnLdY99mC500mvmJStI3bl+HkwR1kRXc=
+X-Received: by 2002:a05:6830:148c:: with SMTP id s12mr3450789otq.251.1615232031118;
+ Mon, 08 Mar 2021 11:33:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210202235118.GA314410@embeddedor>
+References: <20210308153359.2513446-1-arnd@kernel.org> <176cae4d-33bc-1d51-a7d7-58eeeea5180e@amd.com>
+ <CAK8P3a0nUKSJ2+knM6+REp8HXRFbz5-DmNRAusezkT+XzZQa7Q@mail.gmail.com> <92a6c999-c20a-2311-4e31-209a2d9229ed@amd.com>
+In-Reply-To: <92a6c999-c20a-2311-4e31-209a2d9229ed@amd.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 8 Mar 2021 20:33:34 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1SRubvaPzn2020Nc_SsL8xBW7ODGOGtF_4UYASGqTq-w@mail.gmail.com>
+Message-ID: <CAK8P3a1SRubvaPzn2020Nc_SsL8xBW7ODGOGtF_4UYASGqTq-w@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdkfd: fix build error with missing AMD_IOMMU_V2
+To:     Felix Kuehling <felix.kuehling@amd.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Philip Yang <philip.yang@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Mon, Mar 8, 2021 at 8:11 PM Felix Kuehling <felix.kuehling@amd.com> wrote:
+>
+> Am 2021-03-08 um 2:05 p.m. schrieb Arnd Bergmann:
+> > On Mon, Mar 8, 2021 at 5:24 PM Felix Kuehling <felix.kuehling@amd.com> wrote:
+> >> The driver build should work without IOMMUv2. In amdkfd/Makefile, we
+> >> have this condition:
+> >>
+> >> ifneq ($(CONFIG_AMD_IOMMU_V2),)
+> >> AMDKFD_FILES += $(AMDKFD_PATH)/kfd_iommu.o
+> >> endif
+> >>
+> >> In amdkfd/kfd_iommu.h we define inline stubs of the functions that are
+> >> causing your link-failures if IOMMU_V2 is not enabled:
+> >>
+> >> #if defined(CONFIG_AMD_IOMMU_V2_MODULE) || defined(CONFIG_AMD_IOMMU_V2)
+> >> ... function declarations ...
+> >> #else
+> >> ... stubs ...
+> >> #endif
+> > Right, that is the problem I tried to explain in my patch description.
+> >
+> > Should we just drop the 'imply' then and add a proper dependency like this?
+> >
+> >       depends on DRM_AMDGPU && (X86_64 || ARM64 || PPC64)
+> >       depends on AMD_IOMMU_V2=y || DRM_AMDGPU=m
+> >
+> > I can send a v2 after some testing if you prefer this version.
+>
+> No. My point is, there should not be a hard dependency. The build should
+> work without CONFIG_AMD_IOMMU_V2. I don't understand why it's not
+> working for you. It looks like you're building kfd_iommu.o, which should
+> not be happening when AMD_IOMMU_V2 is not enabled. The condition in
+> amdkfd/Makefile should make sure that kfd_iommu.o doesn't get built with
+> your kernel config.
 
-Friendly ping: who can review/take this, please?
+Again, as I explained in the changelog text, AMD_IOMMU_V2 configured as
+a loadable module, while AMDGPU is configured as built-in.
 
-Thanks!
---
-Gustavo
+The causes a link failure for the vmlinux file, because the linker cannot
+resolve addresses of loadable modules at compile time -- they have
+not been loaded yet.
 
-On Tue, Feb 02, 2021 at 05:51:18PM -0600, Gustavo A. R. Silva wrote:
-> There is a regular need in the kernel to provide a way to declare having
-> a dynamically sized set of trailing elements in a structure. Kernel code
-> should always use “flexible array members”[1] for these cases. The older
-> style of one-element or zero-length arrays should no longer be used[2].
-> 
-> Refactor the code according to the use of a flexible-array member in
-> struct _MPI2_CONFIG_PAGE_IO_UNIT_3, instead of a one-element array,
-> and use the struct_size() helper to calculate the size for the
-> allocation.
-> 
-> Also, this helps the ongoing efforts to enable -Warray-bounds and fix the
-> following warnings:
-> 
-> drivers/scsi/mpt3sas/mpt3sas_ctl.c:3193:63: warning: array subscript 24
-> is above array bounds of ‘U16[1]’ {aka ‘short unsigned int[1]’}
-> [-Warray-bounds]
-> 
-> [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
-> 
-> Link: https://github.com/KSPP/linux/issues/79
-> Link: https://github.com/KSPP/linux/issues/109
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
-> Changes in v2:
->  - Fix format specifier: use %zu for size_t type.
-> 
->  drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h | 11 +----------
->  drivers/scsi/mpt3sas/mpt3sas_ctl.c   |  6 +++---
->  2 files changed, 4 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h b/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
-> index 43a3bf8ff428..908b0ca63204 100644
-> --- a/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
-> +++ b/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
-> @@ -987,21 +987,12 @@ typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_1 {
->  
->  /*IO Unit Page 3 */
->  
-> -/*
-> - *Host code (drivers, BIOS, utilities, etc.) should leave this define set to
-> - *one and check the value returned for GPIOCount at runtime.
-> - */
-> -#ifndef MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX
-> -#define MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX    (1)
-> -#endif
-> -
->  typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_3 {
->  	MPI2_CONFIG_PAGE_HEADER Header;			 /*0x00 */
->  	U8                      GPIOCount;		 /*0x04 */
->  	U8                      Reserved1;		 /*0x05 */
->  	U16                     Reserved2;		 /*0x06 */
-> -	U16
-> -		GPIOVal[MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX];/*0x08 */
-> +	U16			GPIOVal[];		 /*0x08 */
->  } MPI2_CONFIG_PAGE_IO_UNIT_3,
->  	*PTR_MPI2_CONFIG_PAGE_IO_UNIT_3,
->  	Mpi2IOUnitPage3_t, *pMpi2IOUnitPage3_t;
-> diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-> index c8a0ce18f2c5..ffb21f873058 100644
-> --- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-> +++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-> @@ -3143,7 +3143,7 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
->  	Mpi2ConfigReply_t mpi_reply;
->  	u16 backup_rail_monitor_status = 0;
->  	u16 ioc_status;
-> -	int sz;
-> +	size_t sz;
->  	ssize_t rc = 0;
->  
->  	if (!ioc->is_warpdrive) {
-> @@ -3157,11 +3157,11 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
->  		goto out;
->  
->  	/* allocate upto GPIOVal 36 entries */
-> -	sz = offsetof(Mpi2IOUnitPage3_t, GPIOVal) + (sizeof(u16) * 36);
-> +	sz = struct_size(io_unit_pg3, GPIOVal, 36);
->  	io_unit_pg3 = kzalloc(sz, GFP_KERNEL);
->  	if (!io_unit_pg3) {
->  		rc = -ENOMEM;
-> -		ioc_err(ioc, "%s: failed allocating memory for iounit_pg3: (%d) bytes\n",
-> +		ioc_err(ioc, "%s: failed allocating memory for iounit_pg3: (%zu) bytes\n",
->  			__func__, sz);
->  		goto out;
->  	}
-> -- 
-> 2.27.0
-> 
+      Arnd
