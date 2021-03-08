@@ -2,468 +2,415 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82952330C49
+	by mail.lfdr.de (Postfix) with ESMTP id CDC93330C4A
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 12:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhCHL0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 06:26:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45026 "EHLO
+        id S230034AbhCHL0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 06:26:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhCHL0L (ORCPT
+        with ESMTP id S229965AbhCHL0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 06:26:11 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E7DC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 03:26:10 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id q25so20413829lfc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 03:26:10 -0800 (PST)
+        Mon, 8 Mar 2021 06:26:19 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A62C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 03:26:19 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so613020wmj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 03:26:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9sPqGQI2qo1+Qvnv5nVuJlC/Vaj2S/oB5ql79xHk1CU=;
-        b=xUJ71zmTb1c3kBjnpW/iyNvI+B3qW9HDPoR2kQl/IyUeRoTefKwK1xx9F3jU0yAwpB
-         vJZnlZ73U4QYu11y3peJ8LPKsBgU2AfwxMXqaQ8OPvZXMZFYuXsBcoZpfX+uV3u+wJHW
-         B4nFAl93YHLYcSXMgsf2ypxViSYnsVgVi20tQ36hguSRyWrTN0EgLRKjWRSRj4zoD5WO
-         tftf99gUC/9l8igTZ154QYKX1TAodK4P3/Khzsjp18kWNhapRjURK2eEIC0zDmjSai6k
-         2iofF8qJEVpBt63HRiAIvVPet9FJxdFSLzVJLl3xo/QFvZRXgME+siXVDWMwP2hjVn+p
-         zRqQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=C/TD0CHDy4RoQIxiEpylzxCplnrxE4ZRPieQx5Wj4OY=;
+        b=aHi886dZS/nUhzBaf4/0j6mAsNudK+Zx4FowGzf32D+UUdxcrvHEQF+bmFOtVe3nD2
+         0mNTVh0tVvUSr5e/Vw97tw2bnI8TJbv5GdZG+/lOtVCKHJaBVIKN5S45Rtv+puvmu4yq
+         X/AMpgYiJ1fTEoFNyAR2kt+FDwD4EyALwomE4R2GhLZ9oIm44D+/d31iKvubfwUcE7Jr
+         JLNtU94jTtouvDNv5bfUBuiWm/CujWlTKJDeg0LoukempL1m68u/eTXDt9Msi+WrjO1Y
+         uUBlTRD5pXuCraJdUIcTu1v98MDtIHPyIBEn8ll4+aX6tzoox2js1bsyvPZk7rmUopxT
+         upeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9sPqGQI2qo1+Qvnv5nVuJlC/Vaj2S/oB5ql79xHk1CU=;
-        b=RRhm3/Jrn6hBOPxV4UcYFlZRtyPEGUUC8TXduAKbUSX9F1uPeOF8KyQk6KOjH+QQtu
-         DpTVbb0WGozNY33p37uJTSVg12c2JJ3cVD+3mqNP/mfU94Z95lYRvQOaQSMk2mlUKLav
-         FWCgo9sMoGIEXI6aNoIwI2Dx6wb4vwEv8MEGvxN3sSucmgnWO/YNFJePVLmcoihAFDBh
-         JnqFQhDyww+TPekWhsptDas0nyI4mDWVvDKcEC2szFDgnxkhZSi15UEy/HgjK+EF3E19
-         QTDG0sRuUBIN1cEhO4HsrUi0YDzjFhz9quioypyT8G0PHI2T9kTTo2/wEkaZ9z1MUC09
-         8Fng==
-X-Gm-Message-State: AOAM532mY8s8sFSPYy4W562WZ2R32LHWjgwDLmrukJjdMtWGyKOj/ImD
-        bKLX3q/TPKUMvjhY+m22Rv5IqIOk/LJ3VzjcWRokOTWDgGs=
-X-Google-Smtp-Source: ABdhPJypnRdCAkSaGtAysiUrY2uPmAAKJz5TIcV0lcv5uTpdJt/EEHgmokxkHOoWHp48CAHWt7zXedLXPzMHL3HZr+4=
-X-Received: by 2002:a05:6512:338a:: with SMTP id h10mr14639490lfg.277.1615202768878;
- Mon, 08 Mar 2021 03:26:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20210301225940.16728-1-song.bao.hua@hisilicon.com> <20210301225940.16728-3-song.bao.hua@hisilicon.com>
-In-Reply-To: <20210301225940.16728-3-song.bao.hua@hisilicon.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 8 Mar 2021 12:25:57 +0100
-Message-ID: <CAKfTPtAeCHoYTYrQZK-4MQ1Q5U-CXvt1GfKKb9NCnE62D8h4-g@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 2/3] scheduler: add scheduler level for clusters
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=C/TD0CHDy4RoQIxiEpylzxCplnrxE4ZRPieQx5Wj4OY=;
+        b=kkK9md3DvmdTRh17TtwCycSnhAQStCNuPy2cTpn9wQhEzGBix4pcuXKp0QcKf3LJh0
+         UvsNwiA9YW8/5YOjy1LR1pbKm0g32Qwy4b/tmRqEzIlvlzRA1yLxOxWsmHYx5QQAuWoj
+         K+Wr7xBT59iD3LXTt9N57KpvxDS5Pen8frDfJHXseiDor0ixerb+5vUBgqGfLFF3ci6D
+         47RizZ+3jJQOvPkIoQt1AcumDvEg7jYLo8rEqLUCLBll7eK81WvPacW5/oO/xY7D+sMy
+         0+9lyLn64E3E/zdF8fJoqQnPfcZZJrMcCqTqqHLSynvfpnkkgECxhasxj/7nfqpyd1x4
+         2zJA==
+X-Gm-Message-State: AOAM533/vqkFE//k1+k/zsftMhrZsbPsMXL3SpABJ+WE5EYEA7gQLy/G
+        i7V9Ca5cOfGuf/Lrk0SIHBQl+g==
+X-Google-Smtp-Source: ABdhPJzrQdzoKMttir4gya6hBK6b55TPbqVj8/t5HNUyrH5VP5fiMh6T4cJO3RzDVoBXNTUCIWlLCQ==
+X-Received: by 2002:a05:600c:4ed1:: with SMTP id g17mr13583865wmq.67.1615202777879;
+        Mon, 08 Mar 2021 03:26:17 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:9d1d:b6a0:d116:531b])
+        by smtp.gmail.com with ESMTPSA id j4sm16663555wmo.10.2021.03.08.03.26.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 03:26:17 -0800 (PST)
+Date:   Mon, 8 Mar 2021 12:26:11 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Cc: Len Brown" <lenb@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linuxarm@openeuler.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "xuwei (O)" <xuwei5@huawei.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        yangyicong@huawei.com, x86 <x86@kernel.org>, msys.mizuma@gmail.com,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        LAK <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] kasan: init memory in kasan_(un)poison for HW_TAGS
+Message-ID: <YEYJ0+fmJykM0gjJ@elver.google.com>
+References: <cover.1614989433.git.andreyknvl@google.com>
+ <09ee2b0a0e9578885b2da1c963e9e94154d5d70a.1614989433.git.andreyknvl@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <09ee2b0a0e9578885b2da1c963e9e94154d5d70a.1614989433.git.andreyknvl@google.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Mar 2021 at 00:08, Barry Song <song.bao.hua@hisilicon.com> wrote:
->
-> ARM64 chip Kunpeng 920 has 6 or 8 clusters in each NUMA node, and each
-> cluster has 4 cpus. All clusters share L3 cache data, but each cluster
-> has local L3 tag. On the other hand, each clusters will share some
-> internal system bus. This means cache coherence overhead inside one
-> cluster is much less than the overhead across clusters.
->
-> This patch adds the sched_domain for clusters. On kunpeng 920, without
-> this patch, domain0 of cpu0 would be MC with cpu0~cpu23 with ; with this
-> patch, MC becomes domain1, a new domain0 "CLS" including cpu0-cpu3.
->
-> This will help spread unrelated tasks among clusters, thus decrease the
-> contention and improve the throughput, for example, stream benchmark can
-> improve around 4.3%~6.3% by this patch:
->
-> w/o patch:
-> numactl -N 0 /usr/lib/lmbench/bin/stream -P 12 -M 1024M -N 5
-> STREAM copy latency: 3.36 nanoseconds
-> STREAM copy bandwidth: 57072.50 MB/sec
-> STREAM scale latency: 3.40 nanoseconds
-> STREAM scale bandwidth: 56542.52 MB/sec
-> STREAM add latency: 5.10 nanoseconds
-> STREAM add bandwidth: 56482.83 MB/sec
-> STREAM triad latency: 5.14 nanoseconds
-> STREAM triad bandwidth: 56069.52 MB/sec
->
-> w/ patch:
-> $ numactl -N 0 /usr/lib/lmbench/bin/stream -P 12 -M 1024M -N 5
-> STREAM copy latency: 3.22 nanoseconds
-> STREAM copy bandwidth: 59660.96 MB/sec    ->  +4.5%
-> STREAM scale latency: 3.25 nanoseconds
-> STREAM scale bandwidth: 59002.29 MB/sec   ->  +4.3%
-> STREAM add latency: 4.80 nanoseconds
-> STREAM add bandwidth: 60036.62 MB/sec     ->  +6.3%
-> STREAM triad latency: 4.86 nanoseconds
-> STREAM triad bandwidth: 59228.30 MB/sec   ->  +5.6%
->
-> On the other hand, while doing WAKE_AFFINE, this patch will try to find
-> a core in the target cluster before scanning the whole llc domain. So it
-> helps gather related tasks within one cluster.
+On Sat, Mar 06, 2021 at 01:15AM +0100, Andrey Konovalov wrote:
+> This change adds an argument to kasan_poison() and kasan_unpoison()
+> that allows initializing memory along with setting the tags for HW_TAGS.
+> 
+> Combining setting allocation tags with memory initialization will
+> improve HW_TAGS KASAN performance when init_on_alloc/free is enabled.
+> 
+> This change doesn't integrate memory initialization with KASAN,
+> this is done is subsequent patches in this series.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Could you split this patch in 2 patches ? One for adding a cluster
-sched domain level and one for modifying the wake up path ?
+Reviewed-by: Marco Elver <elver@google.com>
 
-This would ease the review and I would be curious about the impact of
-each feature in the performance. In particular, I'm still not
-convinced that the modification of the wakeup path is the root of the
-hackbench improvement; especially with g=14 where there should not be
-much idle CPUs with 14*40 tasks on at most 32 CPUs.  IIRC, there was
-no obvious improvement with the changes in select_idle_cpu unless you
-hack the behavior to not fall back to llc domain
-
-> we run the below hackbench with different -g parameter from 2 to 14, for
-> each different g, we run the command 10 times and get the average time
-> $ numactl -N 0 hackbench -p -T -l 20000 -g $1
->
-> hackbench will report the time which is needed to complete a certain number
-> of messages transmissions between a certain number of tasks, for example:
-> $ numactl -N 0 hackbench -p -T -l 20000 -g 10
-> Running in threaded mode with 10 groups using 40 file descriptors each
-> (== 400 tasks)
-> Each sender will pass 20000 messages of 100 bytes
-> Time: 8.874
->
-> The below is the result of hackbench w/ and w/o the patch:
-> g=    2      4     6       8      10     12      14
-> w/o: 1.9596 4.0506 5.9654 8.0068 9.8147 11.4900 13.1163
-> w/ : 1.9362 3.9197 5.6570 7.1376 8.5263 10.0512 11.3256
->             +3.3%  +5.2%  +10.9% +13.2%  +12.8%  +13.7%
->
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 > ---
-> -v4:
->   * rebased to tip/sched/core with the latest unified code of select_idle_cpu
->   * also added benchmark data of spreading unrelated tasks
->   * avoided the iteration of sched_domain by moving to static_key(addressing
->     Vincent's comment
->
->  arch/arm64/Kconfig             |  7 +++++
->  include/linux/sched/cluster.h  | 19 ++++++++++++
->  include/linux/sched/sd_flags.h |  9 ++++++
->  include/linux/sched/topology.h |  7 +++++
->  include/linux/topology.h       |  7 +++++
->  kernel/sched/core.c            | 18 ++++++++++++
->  kernel/sched/fair.c            | 66 +++++++++++++++++++++++++++++++++---------
->  kernel/sched/sched.h           |  1 +
->  kernel/sched/topology.c        |  6 ++++
->  9 files changed, 126 insertions(+), 14 deletions(-)
->  create mode 100644 include/linux/sched/cluster.h
->
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index f39568b..158b0fa 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -971,6 +971,13 @@ config SCHED_MC
->           making when dealing with multi-core CPU chips at a cost of slightly
->           increased overhead in some places. If unsure say N here.
->
-> +config SCHED_CLUSTER
-> +       bool "Cluster scheduler support"
-> +       help
-> +         Cluster scheduler support improves the CPU scheduler's decision
-> +         making when dealing with machines that have clusters(sharing internal
-> +         bus or sharing LLC cache tag). If unsure say N here.
-> +
->  config SCHED_SMT
->         bool "SMT scheduler support"
->         help
-> diff --git a/include/linux/sched/cluster.h b/include/linux/sched/cluster.h
-> new file mode 100644
-> index 0000000..ea6c475
-> --- /dev/null
-> +++ b/include/linux/sched/cluster.h
-> @@ -0,0 +1,19 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _LINUX_SCHED_CLUSTER_H
-> +#define _LINUX_SCHED_CLUSTER_H
-> +
-> +#include <linux/static_key.h>
-> +
-> +#ifdef CONFIG_SCHED_CLUSTER
-> +extern struct static_key_false sched_cluster_present;
-> +
-> +static __always_inline bool sched_cluster_active(void)
-> +{
-> +       return static_branch_likely(&sched_cluster_present);
-> +}
-> +#else
-> +static inline bool sched_cluster_active(void) { return false; }
-> +
-> +#endif
-> +
-> +#endif
-> diff --git a/include/linux/sched/sd_flags.h b/include/linux/sched/sd_flags.h
-> index 34b21e9..fc3c894 100644
-> --- a/include/linux/sched/sd_flags.h
-> +++ b/include/linux/sched/sd_flags.h
-> @@ -100,6 +100,15 @@
->  SD_FLAG(SD_SHARE_CPUCAPACITY, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
->
+>  lib/test_kasan.c   |  4 ++--
+>  mm/kasan/common.c  | 28 ++++++++++++++--------------
+>  mm/kasan/generic.c | 12 ++++++------
+>  mm/kasan/kasan.h   | 14 ++++++++------
+>  mm/kasan/shadow.c  | 10 +++++-----
+>  mm/kasan/sw_tags.c |  2 +-
+>  6 files changed, 36 insertions(+), 34 deletions(-)
+> 
+> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+> index e5647d147b35..d77c45edc7cd 100644
+> --- a/lib/test_kasan.c
+> +++ b/lib/test_kasan.c
+> @@ -1044,14 +1044,14 @@ static void match_all_mem_tag(struct kunit *test)
+>  			continue;
+>  
+>  		/* Mark the first memory granule with the chosen memory tag. */
+> -		kasan_poison(ptr, KASAN_GRANULE_SIZE, (u8)tag);
+> +		kasan_poison(ptr, KASAN_GRANULE_SIZE, (u8)tag, false);
+>  
+>  		/* This access must cause a KASAN report. */
+>  		KUNIT_EXPECT_KASAN_FAIL(test, *ptr = 0);
+>  	}
+>  
+>  	/* Recover the memory tag and free. */
+> -	kasan_poison(ptr, KASAN_GRANULE_SIZE, get_tag(ptr));
+> +	kasan_poison(ptr, KASAN_GRANULE_SIZE, get_tag(ptr), false);
+>  	kfree(ptr);
+>  }
+>  
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index b5e08d4cefec..316f7f8cd8e6 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -60,7 +60,7 @@ void kasan_disable_current(void)
+>  
+>  void __kasan_unpoison_range(const void *address, size_t size)
+>  {
+> -	kasan_unpoison(address, size);
+> +	kasan_unpoison(address, size, false);
+>  }
+>  
+>  #if CONFIG_KASAN_STACK
+> @@ -69,7 +69,7 @@ void kasan_unpoison_task_stack(struct task_struct *task)
+>  {
+>  	void *base = task_stack_page(task);
+>  
+> -	kasan_unpoison(base, THREAD_SIZE);
+> +	kasan_unpoison(base, THREAD_SIZE, false);
+>  }
+>  
+>  /* Unpoison the stack for the current task beyond a watermark sp value. */
+> @@ -82,7 +82,7 @@ asmlinkage void kasan_unpoison_task_stack_below(const void *watermark)
+>  	 */
+>  	void *base = (void *)((unsigned long)watermark & ~(THREAD_SIZE - 1));
+>  
+> -	kasan_unpoison(base, watermark - base);
+> +	kasan_unpoison(base, watermark - base, false);
+>  }
+>  #endif /* CONFIG_KASAN_STACK */
+>  
+> @@ -108,14 +108,14 @@ void __kasan_alloc_pages(struct page *page, unsigned int order)
+>  	tag = kasan_random_tag();
+>  	for (i = 0; i < (1 << order); i++)
+>  		page_kasan_tag_set(page + i, tag);
+> -	kasan_unpoison(page_address(page), PAGE_SIZE << order);
+> +	kasan_unpoison(page_address(page), PAGE_SIZE << order, false);
+>  }
+>  
+>  void __kasan_free_pages(struct page *page, unsigned int order)
+>  {
+>  	if (likely(!PageHighMem(page)))
+>  		kasan_poison(page_address(page), PAGE_SIZE << order,
+> -			     KASAN_FREE_PAGE);
+> +			     KASAN_FREE_PAGE, false);
+>  }
+>  
 >  /*
-> + * Domain members share CPU cluster resources (i.e. llc cache tags)
-> + *
-> + * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
-> + *               the cluster resouces (such as llc tags and internal bus)
-> + * NEEDS_GROUPS: Caches are shared between groups.
-> + */
-> +SD_FLAG(SD_SHARE_CLS_RESOURCES, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
-> +
-> +/*
->   * Domain members share CPU package resources (i.e. caches)
+> @@ -251,18 +251,18 @@ void __kasan_poison_slab(struct page *page)
+>  	for (i = 0; i < compound_nr(page); i++)
+>  		page_kasan_tag_reset(page + i);
+>  	kasan_poison(page_address(page), page_size(page),
+> -		     KASAN_KMALLOC_REDZONE);
+> +		     KASAN_KMALLOC_REDZONE, false);
+>  }
+>  
+>  void __kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
+>  {
+> -	kasan_unpoison(object, cache->object_size);
+> +	kasan_unpoison(object, cache->object_size, false);
+>  }
+>  
+>  void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
+>  {
+>  	kasan_poison(object, round_up(cache->object_size, KASAN_GRANULE_SIZE),
+> -			KASAN_KMALLOC_REDZONE);
+> +			KASAN_KMALLOC_REDZONE, false);
+>  }
+>  
+>  /*
+> @@ -351,7 +351,7 @@ static inline bool ____kasan_slab_free(struct kmem_cache *cache,
+>  	}
+>  
+>  	kasan_poison(object, round_up(cache->object_size, KASAN_GRANULE_SIZE),
+> -			KASAN_KMALLOC_FREE);
+> +			KASAN_KMALLOC_FREE, false);
+>  
+>  	if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine))
+>  		return false;
+> @@ -407,7 +407,7 @@ void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
+>  	if (unlikely(!PageSlab(page))) {
+>  		if (____kasan_kfree_large(ptr, ip))
+>  			return;
+> -		kasan_poison(ptr, page_size(page), KASAN_FREE_PAGE);
+> +		kasan_poison(ptr, page_size(page), KASAN_FREE_PAGE, false);
+>  	} else {
+>  		____kasan_slab_free(page->slab_cache, ptr, ip, false);
+>  	}
+> @@ -453,7 +453,7 @@ void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
+>  	 * Unpoison the whole object.
+>  	 * For kmalloc() allocations, kasan_kmalloc() will do precise poisoning.
+>  	 */
+> -	kasan_unpoison(tagged_object, cache->object_size);
+> +	kasan_unpoison(tagged_object, cache->object_size, false);
+>  
+>  	/* Save alloc info (if possible) for non-kmalloc() allocations. */
+>  	if (kasan_stack_collection_enabled())
+> @@ -496,7 +496,7 @@ static inline void *____kasan_kmalloc(struct kmem_cache *cache,
+>  	redzone_end = round_up((unsigned long)(object + cache->object_size),
+>  				KASAN_GRANULE_SIZE);
+>  	kasan_poison((void *)redzone_start, redzone_end - redzone_start,
+> -			   KASAN_KMALLOC_REDZONE);
+> +			   KASAN_KMALLOC_REDZONE, false);
+>  
+>  	/*
+>  	 * Save alloc info (if possible) for kmalloc() allocations.
+> @@ -546,7 +546,7 @@ void * __must_check __kasan_kmalloc_large(const void *ptr, size_t size,
+>  				KASAN_GRANULE_SIZE);
+>  	redzone_end = (unsigned long)ptr + page_size(virt_to_page(ptr));
+>  	kasan_poison((void *)redzone_start, redzone_end - redzone_start,
+> -		     KASAN_PAGE_REDZONE);
+> +		     KASAN_PAGE_REDZONE, false);
+>  
+>  	return (void *)ptr;
+>  }
+> @@ -563,7 +563,7 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
+>  	 * Part of it might already have been unpoisoned, but it's unknown
+>  	 * how big that part is.
+>  	 */
+> -	kasan_unpoison(object, size);
+> +	kasan_unpoison(object, size, false);
+>  
+>  	page = virt_to_head_page(object);
+>  
+> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> index 2e55e0f82f39..53cbf28859b5 100644
+> --- a/mm/kasan/generic.c
+> +++ b/mm/kasan/generic.c
+> @@ -208,11 +208,11 @@ static void register_global(struct kasan_global *global)
+>  {
+>  	size_t aligned_size = round_up(global->size, KASAN_GRANULE_SIZE);
+>  
+> -	kasan_unpoison(global->beg, global->size);
+> +	kasan_unpoison(global->beg, global->size, false);
+>  
+>  	kasan_poison(global->beg + aligned_size,
+>  		     global->size_with_redzone - aligned_size,
+> -		     KASAN_GLOBAL_REDZONE);
+> +		     KASAN_GLOBAL_REDZONE, false);
+>  }
+>  
+>  void __asan_register_globals(struct kasan_global *globals, size_t size)
+> @@ -292,11 +292,11 @@ void __asan_alloca_poison(unsigned long addr, size_t size)
+>  	WARN_ON(!IS_ALIGNED(addr, KASAN_ALLOCA_REDZONE_SIZE));
+>  
+>  	kasan_unpoison((const void *)(addr + rounded_down_size),
+> -			size - rounded_down_size);
+> +			size - rounded_down_size, false);
+>  	kasan_poison(left_redzone, KASAN_ALLOCA_REDZONE_SIZE,
+> -		     KASAN_ALLOCA_LEFT);
+> +		     KASAN_ALLOCA_LEFT, false);
+>  	kasan_poison(right_redzone, padding_size + KASAN_ALLOCA_REDZONE_SIZE,
+> -		     KASAN_ALLOCA_RIGHT);
+> +		     KASAN_ALLOCA_RIGHT, false);
+>  }
+>  EXPORT_SYMBOL(__asan_alloca_poison);
+>  
+> @@ -306,7 +306,7 @@ void __asan_allocas_unpoison(const void *stack_top, const void *stack_bottom)
+>  	if (unlikely(!stack_top || stack_top > stack_bottom))
+>  		return;
+>  
+> -	kasan_unpoison(stack_top, stack_bottom - stack_top);
+> +	kasan_unpoison(stack_top, stack_bottom - stack_top, false);
+>  }
+>  EXPORT_SYMBOL(__asan_allocas_unpoison);
+>  
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 7fbb32234414..823a90d6a0cd 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -331,7 +331,7 @@ static inline u8 kasan_random_tag(void) { return 0; }
+>  
+>  #ifdef CONFIG_KASAN_HW_TAGS
+>  
+> -static inline void kasan_poison(const void *addr, size_t size, u8 value)
+> +static inline void kasan_poison(const void *addr, size_t size, u8 value, bool init)
+>  {
+>  	addr = kasan_reset_tag(addr);
+>  
+> @@ -344,10 +344,10 @@ static inline void kasan_poison(const void *addr, size_t size, u8 value)
+>  	if (WARN_ON(size & KASAN_GRANULE_MASK))
+>  		return;
+>  
+> -	hw_set_mem_tag_range((void *)addr, size, value, false);
+> +	hw_set_mem_tag_range((void *)addr, size, value, init);
+>  }
+>  
+> -static inline void kasan_unpoison(const void *addr, size_t size)
+> +static inline void kasan_unpoison(const void *addr, size_t size, bool init)
+>  {
+>  	u8 tag = get_tag(addr);
+>  
+> @@ -361,7 +361,7 @@ static inline void kasan_unpoison(const void *addr, size_t size)
+>  		return;
+>  	size = round_up(size, KASAN_GRANULE_SIZE);
+>  
+> -	hw_set_mem_tag_range((void *)addr, size, tag, false);
+> +	hw_set_mem_tag_range((void *)addr, size, tag, init);
+>  }
+>  
+>  static inline bool kasan_byte_accessible(const void *addr)
+> @@ -380,22 +380,24 @@ static inline bool kasan_byte_accessible(const void *addr)
+>   * @addr - range start address, must be aligned to KASAN_GRANULE_SIZE
+>   * @size - range size, must be aligned to KASAN_GRANULE_SIZE
+>   * @value - value that's written to metadata for the range
+> + * @init - whether to initialize the memory range (only for hardware tag-based)
 >   *
->   * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
-> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-> index 8f0f778..846fcac 100644
-> --- a/include/linux/sched/topology.h
-> +++ b/include/linux/sched/topology.h
-> @@ -42,6 +42,13 @@ static inline int cpu_smt_flags(void)
->  }
->  #endif
->
-> +#ifdef CONFIG_SCHED_CLUSTER
-> +static inline int cpu_cluster_flags(void)
-> +{
-> +       return SD_SHARE_CLS_RESOURCES | SD_SHARE_PKG_RESOURCES;
-> +}
-> +#endif
-> +
->  #ifdef CONFIG_SCHED_MC
->  static inline int cpu_core_flags(void)
->  {
-> diff --git a/include/linux/topology.h b/include/linux/topology.h
-> index 80d27d7..0b3704a 100644
-> --- a/include/linux/topology.h
-> +++ b/include/linux/topology.h
-> @@ -212,6 +212,13 @@ static inline const struct cpumask *cpu_smt_mask(int cpu)
->  }
->  #endif
->
-> +#if defined(CONFIG_SCHED_CLUSTER) && !defined(cpu_cluster_mask)
-> +static inline const struct cpumask *cpu_cluster_mask(int cpu)
-> +{
-> +       return topology_cluster_cpumask(cpu);
-> +}
-> +#endif
-> +
->  static inline const struct cpumask *cpu_cpu_mask(int cpu)
->  {
->         return cpumask_of_node(cpu_to_node(cpu));
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 88a2e2b..d805e59 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -7797,6 +7797,16 @@ int sched_cpu_activate(unsigned int cpu)
->         if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
->                 static_branch_inc_cpuslocked(&sched_smt_present);
->  #endif
-> +
-> +#ifdef CONFIG_SCHED_CLUSTER
-> +       /*
-> +        * When going up, increment the number of cluster cpus with
-> +        * cluster present.
-> +        */
-> +       if (cpumask_weight(cpu_cluster_mask(cpu)) > 1)
-> +               static_branch_inc_cpuslocked(&sched_cluster_present);
-> +#endif
-> +
->         set_cpu_active(cpu, true);
->
->         if (sched_smp_initialized) {
-> @@ -7873,6 +7883,14 @@ int sched_cpu_deactivate(unsigned int cpu)
->                 static_branch_dec_cpuslocked(&sched_smt_present);
->  #endif
->
-> +#ifdef CONFIG_SCHED_CLUSTER
-> +       /*
-> +        * When going down, decrement the number of cpus with cluster present.
-> +        */
-> +       if (cpumask_weight(cpu_cluster_mask(cpu)) > 1)
-> +               static_branch_dec_cpuslocked(&sched_cluster_present);
-> +#endif
-> +
->         if (!sched_smp_initialized)
->                 return 0;
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 8a8bd7b..3db7b07 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6009,6 +6009,11 @@ static inline int __select_idle_cpu(int cpu)
->         return -1;
->  }
->
-> +#ifdef CONFIG_SCHED_CLUSTER
-> +DEFINE_STATIC_KEY_FALSE(sched_cluster_present);
-> +EXPORT_SYMBOL_GPL(sched_cluster_present);
-> +#endif
-> +
->  #ifdef CONFIG_SCHED_SMT
->  DEFINE_STATIC_KEY_FALSE(sched_smt_present);
->  EXPORT_SYMBOL_GPL(sched_smt_present);
-> @@ -6116,6 +6121,26 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
->
->  #endif /* CONFIG_SCHED_SMT */
->
-> +static inline int _select_idle_cpu(bool smt, struct task_struct *p, int target, struct cpumask *cpus, int *idle_cpu, int *nr)
-> +{
-> +       int cpu, i;
-> +
-> +       for_each_cpu_wrap(cpu, cpus, target) {
-> +               if (smt) {
-> +                       i = select_idle_core(p, cpu, cpus, idle_cpu);
-> +               } else {
-> +                       if (!--*nr)
-> +                               return -1;
-> +                       i = __select_idle_cpu(cpu);
-> +               }
-> +
-> +               if ((unsigned int)i < nr_cpumask_bits)
-> +                       return i;
-> +       }
-> +
-> +       return -1;
-> +}
-> +
->  /*
->   * Scan the LLC domain for idle CPUs; this is dynamically regulated by
->   * comparing the average scan cost (tracked in sd->avg_scan_cost) against the
-> @@ -6124,7 +6149,7 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
->  static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int target)
->  {
->         struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
-> -       int i, cpu, idle_cpu = -1, nr = INT_MAX;
-> +       int i, idle_cpu = -1, nr = INT_MAX;
->         bool smt = test_idle_cores(target, false);
->         int this = smp_processor_id();
->         struct sched_domain *this_sd;
-> @@ -6134,7 +6159,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->         if (!this_sd)
->                 return -1;
->
-> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> +       if (!sched_cluster_active())
-> +               cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> +#ifdef CONFIG_SCHED_CLUSTER
-> +       if (sched_cluster_active())
-> +               cpumask_and(cpus, cpu_cluster_mask(target), p->cpus_ptr);
-> +#endif
->
->         if (sched_feat(SIS_PROP) && !smt) {
->                 u64 avg_cost, avg_idle, span_avg;
-> @@ -6155,24 +6185,32 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->                 time = cpu_clock(this);
->         }
->
-> -       for_each_cpu_wrap(cpu, cpus, target) {
-> -               if (smt) {
-> -                       i = select_idle_core(p, cpu, cpus, &idle_cpu);
-> -                       if ((unsigned int)i < nr_cpumask_bits)
-> -                               return i;
-> +       /* scan cluster before scanning the whole llc */
-> +#ifdef CONFIG_SCHED_CLUSTER
-> +       if (sched_cluster_active()) {
-> +               i = _select_idle_cpu(smt, p, target, cpus, &idle_cpu, &nr);
-> +               if ((unsigned int) i < nr_cpumask_bits) {
-> +                       idle_cpu = i;
-> +                       goto done;
-> +               } else if (nr <= 0)
-> +                       return -1;
->
-> -               } else {
-> -                       if (!--nr)
-> -                               return -1;
-> -                       idle_cpu = __select_idle_cpu(cpu);
-> -                       if ((unsigned int)idle_cpu < nr_cpumask_bits)
-> -                               break;
-> -               }
-> +               cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> +               cpumask_andnot(cpus, cpus, cpu_cluster_mask(target));
->         }
-> +#endif
-> +
-> +       i = _select_idle_cpu(smt, p, target, cpus, &idle_cpu, &nr);
-> +       if ((unsigned int) i < nr_cpumask_bits) {
-> +               idle_cpu = i;
-> +               goto done;
-> +       } else if (nr <= 0)
-> +               return -1;
->
->         if (smt)
->                 set_idle_cores(this, false);
->
-> +done:
->         if (sched_feat(SIS_PROP) && !smt) {
->                 time = cpu_clock(this) - time;
->                 update_avg(&this_sd->avg_scan_cost, time);
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 10a1522..48a020f 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -6,6 +6,7 @@
->
->  #include <linux/sched/autogroup.h>
->  #include <linux/sched/clock.h>
-> +#include <linux/sched/cluster.h>
->  #include <linux/sched/coredump.h>
->  #include <linux/sched/cpufreq.h>
->  #include <linux/sched/cputime.h>
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 09d3504..d019c25 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -1361,6 +1361,7 @@ static void claim_allocations(int cpu, struct sched_domain *sd)
+>   * The size gets aligned to KASAN_GRANULE_SIZE before marking the range.
 >   */
->  #define TOPOLOGY_SD_FLAGS              \
->         (SD_SHARE_CPUCAPACITY   |       \
-> +        SD_SHARE_CLS_RESOURCES |       \
->          SD_SHARE_PKG_RESOURCES |       \
->          SD_NUMA                |       \
->          SD_ASYM_PACKING)
-> @@ -1480,6 +1481,11 @@ static void claim_allocations(int cpu, struct sched_domain *sd)
->  #ifdef CONFIG_SCHED_SMT
->         { cpu_smt_mask, cpu_smt_flags, SD_INIT_NAME(SMT) },
+> -void kasan_poison(const void *addr, size_t size, u8 value);
+> +void kasan_poison(const void *addr, size_t size, u8 value, bool init);
+>  
+>  /**
+>   * kasan_unpoison - mark the memory range as accessible
+>   * @addr - range start address, must be aligned to KASAN_GRANULE_SIZE
+>   * @size - range size, can be unaligned
+> + * @init - whether to initialize the memory range (only for hardware tag-based)
+>   *
+>   * For the tag-based modes, the @size gets aligned to KASAN_GRANULE_SIZE before
+>   * marking the range.
+>   * For the generic mode, the last granule of the memory range gets partially
+>   * unpoisoned based on the @size.
+>   */
+> -void kasan_unpoison(const void *addr, size_t size);
+> +void kasan_unpoison(const void *addr, size_t size, bool init);
+>  
+>  bool kasan_byte_accessible(const void *addr);
+>  
+> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+> index 63f43443f5d7..727ad4629173 100644
+> --- a/mm/kasan/shadow.c
+> +++ b/mm/kasan/shadow.c
+> @@ -69,7 +69,7 @@ void *memcpy(void *dest, const void *src, size_t len)
+>  	return __memcpy(dest, src, len);
+>  }
+>  
+> -void kasan_poison(const void *addr, size_t size, u8 value)
+> +void kasan_poison(const void *addr, size_t size, u8 value, bool init)
+>  {
+>  	void *shadow_start, *shadow_end;
+>  
+> @@ -106,7 +106,7 @@ void kasan_poison_last_granule(const void *addr, size_t size)
+>  }
 >  #endif
-> +
-> +#ifdef CONFIG_SCHED_CLUSTER
-> +       { cpu_clustergroup_mask, cpu_cluster_flags, SD_INIT_NAME(CLS) },
-> +#endif
-> +
->  #ifdef CONFIG_SCHED_MC
->         { cpu_coregroup_mask, cpu_core_flags, SD_INIT_NAME(MC) },
->  #endif
-> --
-> 1.8.3.1
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>  
+> -void kasan_unpoison(const void *addr, size_t size)
+> +void kasan_unpoison(const void *addr, size_t size, bool init)
+>  {
+>  	u8 tag = get_tag(addr);
+>  
+> @@ -129,7 +129,7 @@ void kasan_unpoison(const void *addr, size_t size)
+>  		return;
+>  
+>  	/* Unpoison all granules that cover the object. */
+> -	kasan_poison(addr, round_up(size, KASAN_GRANULE_SIZE), tag);
+> +	kasan_poison(addr, round_up(size, KASAN_GRANULE_SIZE), tag, false);
+>  
+>  	/* Partially poison the last granule for the generic mode. */
+>  	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
+> @@ -344,7 +344,7 @@ void kasan_poison_vmalloc(const void *start, unsigned long size)
+>  		return;
+>  
+>  	size = round_up(size, KASAN_GRANULE_SIZE);
+> -	kasan_poison(start, size, KASAN_VMALLOC_INVALID);
+> +	kasan_poison(start, size, KASAN_VMALLOC_INVALID, false);
+>  }
+>  
+>  void kasan_unpoison_vmalloc(const void *start, unsigned long size)
+> @@ -352,7 +352,7 @@ void kasan_unpoison_vmalloc(const void *start, unsigned long size)
+>  	if (!is_vmalloc_or_module_addr(start))
+>  		return;
+>  
+> -	kasan_unpoison(start, size);
+> +	kasan_unpoison(start, size, false);
+>  }
+>  
+>  static int kasan_depopulate_vmalloc_pte(pte_t *ptep, unsigned long addr,
+> diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
+> index 94c2d33be333..bd0c64d4e4d9 100644
+> --- a/mm/kasan/sw_tags.c
+> +++ b/mm/kasan/sw_tags.c
+> @@ -159,7 +159,7 @@ EXPORT_SYMBOL(__hwasan_storeN_noabort);
+>  
+>  void __hwasan_tag_memory(unsigned long addr, u8 tag, unsigned long size)
+>  {
+> -	kasan_poison((void *)addr, size, tag);
+> +	kasan_poison((void *)addr, size, tag, false);
+>  }
+>  EXPORT_SYMBOL(__hwasan_tag_memory);
+>  
+> -- 
+> 2.30.1.766.gb4fecdf3b7-goog
+> 
