@@ -2,105 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403303315D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:23:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9513315E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbhCHSWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:22:32 -0500
-Received: from mail-io1-f54.google.com ([209.85.166.54]:43305 "EHLO
-        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhCHSWV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:22:21 -0500
-Received: by mail-io1-f54.google.com with SMTP id f20so10960653ioo.10;
-        Mon, 08 Mar 2021 10:22:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Pq15jcwTEBECLbFVPJ1zaHWvf20RZ6s1s9fGsnrhjPg=;
-        b=lLRwUpL1ExD8n0NtZKqqzP1hyst/+ssa2UDnY5eRbn9JOG6NKuPSH6WhTefr2R1Qtb
-         3o7ZTStUKJT/QMsXnNM4FaDjHBnZnWppHqsQxUzUYD27mMiW9E0tU/hOl0e+a1AVnn1b
-         E0nj9Hs3yOjrkLlA2W6Cv9GZrJjsHc5hQBHT0ejUHgx3MhqS1OeBCUYMYgTtJ/6UDfIZ
-         q4AjN7Y72XhciwdvXYSQOGs5YRHGnK1WqWo3XxdDYEidY2dcTRx+YrQV7bxMF8a5Tm+M
-         bI9ER9T0Qah6lX6+Ko/9ujAd02suLRssv7HWUci0jE/MmQ5sQTjkfOdlOGJP2gOl9LKP
-         TTnw==
-X-Gm-Message-State: AOAM531dWoKB8FiGPnho4uzK2xKPpABl6NfnMREz10Wsfkz3CAWAUABj
-        GtsyvZlWo5rkd3pg8JrG4f4KiBbGjg==
-X-Google-Smtp-Source: ABdhPJyUGYEl6elYvRaF78SgykrT1EbiNGGNHSkzsW41shl8b7neRG3JF3Scv/qM1s2j+IT1Cg/MZw==
-X-Received: by 2002:a05:6602:2018:: with SMTP id y24mr12056432iod.74.1615227740322;
-        Mon, 08 Mar 2021 10:22:20 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id r12sm6521797ile.59.2021.03.08.10.22.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 10:22:19 -0800 (PST)
-Received: (nullmailer pid 2738951 invoked by uid 1000);
-        Mon, 08 Mar 2021 18:22:17 -0000
-Date:   Mon, 8 Mar 2021 11:22:17 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     p.zabel@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com, ezequiel@collabora.com,
-        mchehab@kernel.org, gregkh@linuxfoundation.org,
-        kernel@pengutronix.de, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v3 0/5] Reset driver for IMX8MQ VPU hardware block
-Message-ID: <20210308182217.GA2735443@robh.at.kernel.org>
-References: <20210301151754.104749-1-benjamin.gaignard@collabora.com>
+        id S230512AbhCHSYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:24:09 -0500
+Received: from mail-dm6nam11on2076.outbound.protection.outlook.com ([40.107.223.76]:42240
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229775AbhCHSXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 13:23:44 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mOApJggLRepivMckRZCbdGWg8PLPQ6G7yfEcQOw8PbfMSl4fC0FrPyKgNtWbg3U1apLscKK4V6MwrbHHFqFiakx17CR95yn0Bf0PMizNvpGrQrHp1W8FCdKPfZYJaSNKA4/vM/BPTx63rZHffePW8UIqeKLl4uCq2qyxyzruH1FTemD+gXYaGd+rpG7gk/z8eeZX+Ub2KHItdfy9tAZiVhJ1EKR+hIXUOYRxhPdE6JRIwyXJ0G9+5yWyhMJ6ZLM9atncwuSfJxVCvEpbuJ//1FiU1l8hKYRhHAzVKsINHHvW3kpsrz1JE0wskPpRHiLovrdrvjQCN5BhhVK503Cxew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BOyjHZzv38LdhpRmhtoifbdS6BFOY3aKVTfUCe1n9Jc=;
+ b=mU6cUjWxjgep2mnm1K4x8+wA60FjjE4LIX9KNyDEYqMEqOgicskN8wLISSPULcfHxOl1VWxWG8+ILrVRP85WCOUUQ6e3ThAeULdgcx3d/+iGjQix833+dLkxEOWftAflNqI31d2Ct9W4fJ/m3tykcGPM6184WPTTeOxak/Y/tVcPX6tcyybhWFf5H5cWCZGuv5rcI4TVhuLMfVh3zaJDTSpHOZhTjCkHoihnVlKNRZsrGRRukd6B+mDk+DcTFrSba7gyiLnMrZBmy3zDNBPvs1HCh4mMUdGpiap6UuhDEN3qO3j3iWzlH99lnjMi0by6hxiUlJQMa+Q+WGoasz9PyA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BOyjHZzv38LdhpRmhtoifbdS6BFOY3aKVTfUCe1n9Jc=;
+ b=ZtqFOjhexK8S/ob2RPWLYRkrPRnWaakv4jshFU/wcLqDSpjG32mQsEBvZ7YqeWt4O4wymYQK6QyDAgUH2TPr1WPgQ2o67IZ1iAkiWTzxPAwrSsJQ09Yqcnmbku93MwAXmkXRZ/vkheWa+zMwHs9WHa3VjmCWHZNuVE2rVmD+E2w=
+Received: from DM6PR12CA0034.namprd12.prod.outlook.com (2603:10b6:5:1c0::47)
+ by MWHPR1201MB0205.namprd12.prod.outlook.com (2603:10b6:301:4e::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.26; Mon, 8 Mar
+ 2021 18:23:39 +0000
+Received: from DM6NAM11FT066.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:1c0:cafe::42) by DM6PR12CA0034.outlook.office365.com
+ (2603:10b6:5:1c0::47) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
+ Transport; Mon, 8 Mar 2021 18:23:39 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT066.mail.protection.outlook.com (10.13.173.179) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3912.17 via Frontend Transport; Mon, 8 Mar 2021 18:23:38 +0000
+Received: from [172.27.13.167] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 8 Mar
+ 2021 18:23:35 +0000
+Subject: Re: [PATCH] net/mlx5e: include net/nexthop.h where needed
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Dmytro Linkin <dlinkin@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>
+CC:     Arnd Bergmann <arnd@arndb.de>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210308153143.2392122-1-arnd@kernel.org>
+From:   Roi Dayan <roid@nvidia.com>
+Message-ID: <5fd5e630-0db2-f83b-63c8-265c4ac372e8@nvidia.com>
+Date:   Mon, 8 Mar 2021 20:23:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210301151754.104749-1-benjamin.gaignard@collabora.com>
+In-Reply-To: <20210308153143.2392122-1-arnd@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0d62fecb-1a7f-4fd2-392a-08d8e25f4b51
+X-MS-TrafficTypeDiagnostic: MWHPR1201MB0205:
+X-Microsoft-Antispam-PRVS: <MWHPR1201MB0205D244E1491112AC6DDAB6B8939@MWHPR1201MB0205.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:126;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9ttofbVBvnsuMVXoIghk+icP+RRdNnJi8GhsEWhpyu/fYmb1CAWXCG/Ked1WssoHGuyItJjF9a0mbp1uUS2Gn3v9+DJwJzQXl4FYleFQfaR4fVCewRQ55FJDdgZgNvGIh4hC8igvuNq52o8id6hugw86xxm3l1KfZgQR4/ph9OvjsTkiU3iItEo6Sl4u36xJGUydObENhePyvMDjoAudol34PamdcRMz3tKWJ58zgEedOdpXRa7N+vNEgG6ez5pj9w185sAFA/MZaeWaDi8yrI4ObjnbKUzI2NrvvwH+PJvraqabcfc9Z62sApwMX70TikdgI6gFn7JPmfTm+BiTyU6hE3mPmcWn/6Y8/YkwmRfZUWsPQkt9/MW0C5YKsBJUC9DRm1lRFyuAflfowwd9Wn7S27m0MKdxz4IMUbKuO7BPAkkSXSbVUbox7/l+yOXfJscR4EWihRwoQyBN32qfuWvODE7Gg13js9TpjDdamJUap8Q/jpcixjWj3coK31oVLsrx2GtyDw1S8LirG6t5UwBrlwTMjLCcfyIP80o/3/UInTQZcFzZoWeJ2nKUS00nSw1mQmKMEpp2JbP1rSWoNn8a15mPJGp0bTWCgK5Tv8nxFS9h4hfSVTgS+LPl6zZnxleMz8slC7UG/SMWxYA4by7L5m1RO9yXh1+UAhW3vR+ZHTMjDK43PrPCNskc+uPW/2FxD5QhYMe593JEmSmE2+t25YL8hk8ISjUvAZpBruU=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(346002)(376002)(46966006)(36840700001)(426003)(7636003)(6636002)(186003)(16526019)(356005)(53546011)(47076005)(83380400001)(70586007)(31696002)(5660300002)(70206006)(6666004)(34020700004)(82310400003)(36756003)(54906003)(36860700001)(2906002)(26005)(86362001)(8676002)(8936002)(4326008)(478600001)(16576012)(110136005)(2616005)(36906005)(336012)(316002)(82740400003)(31686004)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 18:23:38.5190
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d62fecb-1a7f-4fd2-392a-08d8e25f4b51
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT066.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0205
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 04:17:49PM +0100, Benjamin Gaignard wrote:
-> The two VPUs inside IMX8MQ share the same control block which can be see
-> as a reset hardware block.
-> In order to be able to add the second VPU (for HECV decoding) it will be
-> more handy if the both VPU drivers instance don't have to share the
-> control block registers. This lead to implement it as an independ reset 
-> driver and to change the VPU driver to use it.
-> 
-> Please note that this series break the compatibility between the DTB and
-> kernel. This break is limited to IMX8MQ SoC and is done when the driver
-> is still in staging directory.
 
-As this information will be lost, please put in the binding and dts 
-patch.
 
+On 2021-03-08 5:31 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> version 3:
-> - Fix error in VPU example node
+> drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:1510:12: error: implicit declaration of function 'fib_info_nh' [-Werror,-Wimplicit-function-declaration]
+>          fib_dev = fib_info_nh(fen_info->fi, 0)->fib_nh_dev;
+>                    ^
+> drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:1510:12: note: did you mean 'fib_info_put'?
+> include/net/ip_fib.h:529:20: note: 'fib_info_put' declared here
+> static inline void fib_info_put(struct fib_info *fi)
+>                     ^
 > 
-> version 2:
-> - Document the change in VPU bindings
->  
-> Benjamin Gaignard (5):
->   dt-bindings: reset: IMX8MQ VPU reset
->   dt-bindings: media: IMX8MQ VPU: document reset usage
->   reset: Add reset driver for IMX8MQ VPU block
->   media: hantro: Use reset driver
->   arm64: dts: imx8mq: Use reset driver for VPU hardware block
+> Fixes: 8914add2c9e5 ("net/mlx5e: Handle FIB events to update tunnel endpoint device")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c | 1 +
+>   1 file changed, 1 insertion(+)
 > 
->  .../bindings/media/nxp,imx8mq-vpu.yaml        |  14 +-
->  .../bindings/reset/fsl,imx8mq-vpu-reset.yaml  |  54 ++++++
->  arch/arm64/boot/dts/freescale/imx8mq.dtsi     |  31 +++-
->  drivers/reset/Kconfig                         |   8 +
->  drivers/reset/Makefile                        |   1 +
->  drivers/reset/reset-imx8mq-vpu.c              | 169 ++++++++++++++++++
->  drivers/staging/media/hantro/Kconfig          |   1 +
->  drivers/staging/media/hantro/imx8m_vpu_hw.c   |  61 ++-----
->  include/dt-bindings/reset/imx8mq-vpu-reset.h  |  16 ++
->  9 files changed, 294 insertions(+), 61 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/reset/fsl,imx8mq-vpu-reset.yaml
->  create mode 100644 drivers/reset/reset-imx8mq-vpu.c
->  create mode 100644 include/dt-bindings/reset/imx8mq-vpu-reset.h
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
+> index 6a116335bb21..32d06fe94acc 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
+> @@ -2,6 +2,7 @@
+>   /* Copyright (c) 2021 Mellanox Technologies. */
+>   
+>   #include <net/fib_notifier.h>
+> +#include <net/nexthop.h>
+>   #include "tc_tun_encap.h"
+>   #include "en_tc.h"
+>   #include "tc_tun.h"
 > 
-> -- 
-> 2.25.1
-> 
+
+Hi,
+
+I see internally we have a pending commit from Vlad fixing this already,
+with few more fixes. "net/mlx5e: Add missing include"
+
+I'll check why it's being held.
+
+Thanks,
+Roi
