@@ -2,108 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A00D33123F
+	by mail.lfdr.de (Postfix) with ESMTP id A3B72331240
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhCHPca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 10:32:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbhCHPb6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 10:31:58 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F90C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 07:31:57 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id y124-20020a1c32820000b029010c93864955so4058036wmy.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 07:31:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=dNSasVgKsp25MrPS9CMg73B6ywrRGmCk45MATFRXXyU=;
-        b=i+EuXPys/UBz+2pCyyi4s0IG9bzdHdCQu5/WHztlg+9sX2Fj30x5hCX6OhZTkff6cL
-         8w5vWVmS+haOCBFbPwZt/j26pst/TOYcsyfznhY+dHnODJ3LXkekMUHmEogcQJm6z8hi
-         /dv+cT1frBAQs+grxjefECUw5rE2Ha/fUEpXVssee4RhufrH6R10DKnr0+5R8+w3KA2e
-         Hx+OssHXmoDt4q9EhoFIVi9ldT8kVHWXU44DsMVsAGweBhZXlLRqmZzo7AAHqyLM/Y5O
-         ujuz2y7WHTKwY3ECBwA1CXv+ZNi8n+fXLemru7KYHKpn5O59s7OW4Ms32goUa/Olc4JF
-         UoBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=dNSasVgKsp25MrPS9CMg73B6ywrRGmCk45MATFRXXyU=;
-        b=iEbvQQQ9FF3liTEz7Wrn9ziAaspEhCguiP5LBnvdF3jIGlzi3dwUWy+Wx/HFBlA+gb
-         YeiTrBbKP8vFnZ4e+jiOoiIrFIUexcp7E+/BXAEe1hiklNH7OXlVKwAecwgGbl9P/lNy
-         G/dGyYodfD+HN0c1C0072nR8G+AM/GCP6fGjhzF8NBogK1W2QA4HEoQUrB9aMihjR36R
-         jBgpmy+J2XabshFfKG70CmUyzrYMsFbjTdMLU68lk1OyLkdhVa5U/QOUzZzqq9pD+ADb
-         RV4hlvFlkofiFxzn5JXImA3fTcuvxeZwc3yerlVFSZHkPfU1+7Valv2hQswtWENufi9B
-         ezWg==
-X-Gm-Message-State: AOAM5300CH3rSsEhEEdBBpvFpFWM9eaONm5+r328BnylnSktpLYCNcXa
-        Uh3Ol5dFz4mGAUKllDtW/wUokA==
-X-Google-Smtp-Source: ABdhPJyo5HsRmCNjH5IA/LN6GNYqc8eKdKNCowu0kiU+VpikQjXXdACPd4YH277/uUAdNRcnrzDlgg==
-X-Received: by 2002:a1c:c244:: with SMTP id s65mr22881486wmf.2.1615217516275;
-        Mon, 08 Mar 2021 07:31:56 -0800 (PST)
-Received: from dell ([91.110.221.130])
-        by smtp.gmail.com with ESMTPSA id n23sm15854202wra.71.2021.03.08.07.31.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 07:31:55 -0800 (PST)
-Date:   Mon, 8 Mar 2021 15:31:50 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     linux-kernel@vger.kernel.org, trix@redhat.com,
-        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
-        lgoncalv@redhat.com, hao.wu@intel.com
-Subject: Re: [PATCH v3 0/4] Some improvement for Intel MAX 10 MFD drivers
-Message-ID: <20210308153150.GM4931@dell>
-References: <1614578385-26955-1-git-send-email-yilun.xu@intel.com>
- <20210308020454.GA32151@yilunxu-OptiPlex-7050>
- <20210308090124.GA4931@dell>
- <20210308144233.GB8110@yilunxu-OptiPlex-7050>
+        id S230250AbhCHPcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 10:32:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60478 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229790AbhCHPcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 10:32:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 041506526A;
+        Mon,  8 Mar 2021 15:32:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615217539;
+        bh=Q86KQofgOs8LGcTYRssgtJBsRLc5fpn3UtwJj0yn+KM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kKkxb4vr1CCV3Axd66l/YyiwSjXCNP4S3M6FciIGgAl5BxfVV33+fRcJp0+4t2Upw
+         frdAWTqojIujgU5KhUukBZLrwnuYs6dM85oY/gTFi9SDI+qxmoeKi4uCatcYD5myTZ
+         wazFhaHDh40+SU2lpBzwZzO4Y7LucTG43ZvtjLv/8rFRGosBPm/c8cNZ6vXXrP/Xqn
+         rs6YXIGZxObXZFPrn84gx8w73zXZtsxmS/OAfuxMaYGPuL3pR6fYKEBpLNZBAeQLet
+         YBKiAKp1gQJmC+FrD+/omX2oDqkzXMAmskzKGCmnPsan4hg49oL8LI3txtYGpEIOhq
+         tyWuYC0hcF4ug==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Vinod Koul <vkoul@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] remoteproc: qcom: pil-info: avoid 64-bit division on 32-bit architectures
+Date:   Mon,  8 Mar 2021 16:32:02 +0100
+Message-Id: <20210308153215.2449563-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210308144233.GB8110@yilunxu-OptiPlex-7050>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Mar 2021, Xu Yilun wrote:
+From: Arnd Bergmann <arnd@arndb.de>
 
-> On Mon, Mar 08, 2021 at 09:01:24AM +0000, Lee Jones wrote:
-> > On Mon, 08 Mar 2021, Xu Yilun wrote:
-> > 
-> > > Hi Lee:
-> > > 
-> > > Could you please help on review this patchset? They are some
-> > > improvements for intel-m10-bmc MFD driver.
-> > 
-> > Please don't send contentless pings 1 week after submitting a set.
-> > 
-> > Also please refrain from top-posting.
-> > 
-> > This patch is on my TO-REVIEW list.
-> > 
-> > Unfortunately, since I work in reverse chronological order, you just
-> > pushed the set to the back of the list.
-> > 
-> > If after a suitable period, usually around 2 weeks, you think your
-> > submission has been missed, please submit a [RESEND] instead.
-> 
-> Thanks for clarification, I'll follow it.
-> 
-> I thought my submission was missed cause I didn't got your response
-> since v2 at Jan 26, maybe some misunderstanding, so I'm a little hurry
-> this time. Sorry.
+In some randconfig builds, a 64-bit resource_size_t is used even on
+32-bit architectures, which now leads to a link-time error:
 
-We have plenty of time to get this in.
+ERROR: modpost: "__aeabi_uldivmod" [drivers/remoteproc/qcom_pil_info.ko] undefined!
 
-I'm currently catching-up.  Please bear with me.
+Using the div_u64() helper here. A cast to 32 bits length would also
+work, but for a constant divider there should not be much difference.
 
+Fixes: 549b67da660d ("remoteproc: qcom: Introduce helper to store pil info in IMEM")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/remoteproc/qcom_pil_info.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/remoteproc/qcom_pil_info.c b/drivers/remoteproc/qcom_pil_info.c
+index 5521c4437ffa..95b6b7609a87 100644
+--- a/drivers/remoteproc/qcom_pil_info.c
++++ b/drivers/remoteproc/qcom_pil_info.c
+@@ -56,7 +56,8 @@ static int qcom_pil_info_init(void)
+ 	memset_io(base, 0, resource_size(&imem));
+ 
+ 	_reloc.base = base;
+-	_reloc.num_entries = resource_size(&imem) / PIL_RELOC_ENTRY_SIZE;
++	_reloc.num_entries = div_u64(resource_size(&imem),
++				     PIL_RELOC_ENTRY_SIZE);
+ 
+ 	return 0;
+ }
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.29.2
+
