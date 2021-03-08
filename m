@@ -2,113 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F31330F34
+	by mail.lfdr.de (Postfix) with ESMTP id C5859330F35
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhCHNbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 08:31:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57640 "EHLO mail.kernel.org"
+        id S230113AbhCHNbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 08:31:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229575AbhCHNa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 08:30:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA44964DA3;
-        Mon,  8 Mar 2021 13:30:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615210258;
-        bh=pEXNet6N/egXd7wBXv+XZqh8Z0VGXmL8Y0GWpDXYgSU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cKyWPlExbizCNVfKpN0ou+bCV20Y4lb3vpBkQS2Vmo3MZrrlJQh/iUsAO0JLf7oom
-         Aflt8QGqmFYVUY8Zoiag1rK2aK5nf7xwG+EThpUDEqEjn6MScpRvXvHbMLGDeywvrw
-         WWiK5i+VSUsi8FHgLgoDTguaw2tETYur8CDLJvxvop3CT1bE01EW2xjxsh8OQ4qdXj
-         GwOH4MfOsamqJ4lC32GoG/POx0M8kDUF82rFM3HPT6hBlwnQ+glrbXy0A7BO3OfZGU
-         4cUoYzdmvTf2bToG82yD3eHRe2YFbLqF1oklALbm0QeZuNe7ARB0QrZ1vjAHnhVRDX
-         9nL4V2qDnHBug==
-Date:   Mon, 8 Mar 2021 13:30:53 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        James Morse <james.morse@arm.com>,
+        id S229591AbhCHNbE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 08:31:04 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7206651C2;
+        Mon,  8 Mar 2021 13:31:03 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lJFyP-000L8E-P9; Mon, 08 Mar 2021 13:31:01 +0000
+Date:   Mon, 08 Mar 2021 13:31:00 +0000
+Message-ID: <874khlzsa3.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/mm: Fix __enable_mmu() for new TGRAN range values
-Message-ID: <20210308133053.GA26128@willie-the-truck>
-References: <1614954969-14338-1-git-send-email-anshuman.khandual@arm.com>
- <20210305145111.GA78884@C02TD0UTHF1T.local>
- <1f339512-34ac-9779-e534-bee6698b99aa@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f339512-34ac-9779-e534-bee6698b99aa@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFT PATCH v3 16/27] irqchip/apple-aic: Add support for the Apple Interrupt Controller
+In-Reply-To: <20210304213902.83903-17-marcan@marcan.st>
+References: <20210304213902.83903-1-marcan@marcan.st>
+        <20210304213902.83903-17-marcan@marcan.st>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: marcan@marcan.st, linux-arm-kernel@lists.infradead.org, robh@kernel.org, arnd@kernel.org, olof@lixom.net, krzk@kernel.org, mark.kettenis@xs4all.nl, tony@atomide.com, mohamed.mediouni@caramail.com, stan@corellium.com, graf@amazon.com, will@kernel.org, linus.walleij@linaro.org, mark.rutland@arm.com, andy.shevchenko@gmail.com, gregkh@linuxfoundation.org, corbet@lwn.net, catalin.marinas@arm.com, hch@infradead.org, davem@davemloft.net, devicetree@vger.kernel.org, linux-serial@vger.kernel.org, linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 05:24:21PM +0530, Anshuman Khandual wrote:
+On Thu, 04 Mar 2021 21:38:51 +0000,
+Hector Martin <marcan@marcan.st> wrote:
 > 
+> This is the root interrupt controller used on Apple ARM SoCs such as the
+> M1. This irqchip driver performs multiple functions:
 > 
-> On 3/5/21 8:21 PM, Mark Rutland wrote:
-> > On Fri, Mar 05, 2021 at 08:06:09PM +0530, Anshuman Khandual wrote:
-> >> From: James Morse <james.morse@arm.com>
-> >>
-> >> As per ARM ARM DDI 0487G.a, when FEAT_LPA2 is implemented, ID_AA64MMFR0_EL1
-> >> might contain a range of values to describe supported translation granules
-> >> (4K and 16K pages sizes in particular) instead of just enabled or disabled
-> >> values. This changes __enable_mmu() function to handle complete acceptable
-> >> range of values (depending on whether the field is signed or unsigned) now
-> >> represented with ID_AA64MMFR0_TGRAN_SUPPORTED_[MIN..MAX] pair. While here,
-> >> also fix similar situations in EFI stub and KVM as well.
-> >>
-> >> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> >> Cc: Will Deacon <will@kernel.org>
-> >> Cc: Marc Zyngier <maz@kernel.org>
-> >> Cc: James Morse <james.morse@arm.com>
-> >> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> >> Cc: Ard Biesheuvel <ardb@kernel.org>
-> >> Cc: Mark Rutland <mark.rutland@arm.com>
-> >> Cc: linux-arm-kernel@lists.infradead.org
-> >> Cc: kvmarm@lists.cs.columbia.edu
-> >> Cc: linux-efi@vger.kernel.org
-> >> Cc: linux-kernel@vger.kernel.org
-> >> Signed-off-by: James Morse <james.morse@arm.com>
-> >> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> >> ---
-> >>  arch/arm64/include/asm/sysreg.h           | 20 ++++++++++++++------
-> >>  arch/arm64/kernel/head.S                  |  6 ++++--
-> >>  arch/arm64/kvm/reset.c                    | 23 ++++++++++++-----------
-> >>  drivers/firmware/efi/libstub/arm64-stub.c |  2 +-
-> >>  4 files changed, 31 insertions(+), 20 deletions(-)
-> >>
-> >> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> >> index dfd4edb..d4a5fca9 100644
-> >> --- a/arch/arm64/include/asm/sysreg.h
-> >> +++ b/arch/arm64/include/asm/sysreg.h
-> >> @@ -796,6 +796,11 @@
-> >>  #define ID_AA64MMFR0_PARANGE_48		0x5
-> >>  #define ID_AA64MMFR0_PARANGE_52		0x6
-> >>  
-> >> +#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_DEFAULT	0x0
-> >> +#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_NONE	0x1
-> >> +#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_MIN	0x2
-> >> +#define ID_AA64MMFR0_TGRAN_2_SUPPORTED_MAX	0x7
-> >
-> > The TGRAN2 fields doesn't quite follow the usual ID scheme rules, so how
-> > do we deteremine the max value? Does the ARM ARM say anything in
-> > particular about them, like we do for some of the PMU ID fields?
+> * Handles both IRQs and FIQs
 > 
-> Did not find anything in ARM ARM, regarding what scheme TGRAN2 fields
-> actually follow. I had arrived at more restrictive 0x7 value, like the
-> usual signed fields as the TGRAN4 fields definitely do not follow the
-> unsigned ID scheme. Would restricting max value to 0x3 (i.e LPA2) be a
-> better option instead ?
+> * Drives the AIC peripheral itself (which handles IRQs)
+> 
+> * Dispatches FIQs to downstream hard-wired clients (currently the ARM
+>   timer).
+> 
+> * Implements a virtual IPI multiplexer to funnel multiple Linux IPIs
+>   into a single hardware IPI
+>
 
-I don't think it helps much, as TGRAN64_2 doesn't even define 0x3.
+[...]
 
-So I think this patch is probably the best we can do, but the Arm ARM could
-really do with describing the scheme here.
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> +static void __exception_irq_entry aic_handle_irq(struct pt_regs *regs)
+> +{
+> +	struct aic_irq_chip *ic = aic_irqc;
+> +	u32 event, type, irq;
+> +
+> +	do {
+> +		/*
+> +		 * We cannot use a relaxed read here, as DMA needs to be
+> +		 * ordered with respect to the IRQ firing.
+> +		 */
+> +		event = readl(ic->base + AIC_EVENT);
+> +		type = FIELD_GET(AIC_EVENT_TYPE, event);
+> +		irq = FIELD_GET(AIC_EVENT_NUM, event);
+> +
+> +		if (type == AIC_EVENT_TYPE_HW)
+> +			handle_domain_irq(aic_irqc->hw_domain, irq, regs);
+> +		else if (type == AIC_EVENT_TYPE_IPI && irq == 1)
+> +			aic_handle_ipi(regs);
+> +		else if (event != 0)
+> +			pr_err("Unknown IRQ event %d, %d\n", type, irq);
+> +	} while (event);
+> +
+> +	/*
+> +	 * vGIC maintenance interrupts end up here too, so we need to check
+> +	 * for them separately. Just report and disable vGIC for now, until
+> +	 * we implement this properly.
+> +	 */
+> +	if ((read_sysreg_s(SYS_ICH_HCR_EL2) & ICH_HCR_EN) &&
+> +		read_sysreg_s(SYS_ICH_MISR_EL2) != 0) {
+> +		pr_err("vGIC IRQ fired, disabling.\n");
 
-Will
+Please add a _ratelimited here. Whilst debugging KVM on this machine,
+I ended up with this firing at such a rate that it was impossible to
+do anything useful. Ratelimiting it allowed me to pinpoint the
+problem.
+
+[...]
+
+> +/*
+> + * FIQ irqchip
+> + */
+> +
+> +static void aic_fiq_mask(struct irq_data *d)
+> +{
+> +	/* Only the guest timers have real mask bits, unfortunately. */
+> +	switch (d->hwirq) {
+> +	case AIC_TMR_GUEST_PHYS:
+> +		sysreg_clear_set_s(SYS_APL_VM_TMR_FIQ_ENA_EL1, VM_TMR_FIQ_ENABLE_P, 0);
+> +		break;
+> +	case AIC_TMR_GUEST_VIRT:
+> +		sysreg_clear_set_s(SYS_APL_VM_TMR_FIQ_ENA_EL1, VM_TMR_FIQ_ENABLE_V, 0);
+> +		break;
+> +	}
+> +}
+> +
+> +static void aic_fiq_unmask(struct irq_data *d)
+> +{
+> +	switch (d->hwirq) {
+> +	case AIC_TMR_GUEST_PHYS:
+> +		sysreg_clear_set_s(SYS_APL_VM_TMR_FIQ_ENA_EL1, 0, VM_TMR_FIQ_ENABLE_P);
+> +		break;
+> +	case AIC_TMR_GUEST_VIRT:
+> +		sysreg_clear_set_s(SYS_APL_VM_TMR_FIQ_ENA_EL1, 0, VM_TMR_FIQ_ENABLE_V);
+> +		break;
+> +	}
+> +}
+> +
+> +static void aic_fiq_eoi(struct irq_data *d)
+> +{
+> +	/* We mask to ack (where we can), so we need to unmask at EOI. */
+> +	if (!irqd_irq_disabled(d) && !irqd_irq_masked(d))
+
+Ah, be careful here: irqd_irq_masked() doesn't do what you think it
+does for per-CPU interrupts. It's been on my list to fix for the rVIC
+implementation, but I never got around to doing it, and all decent ICs
+hide this from SW by having a HW-managed mask, similar to what is on
+the IRQ side.
+
+I can see two possibilities:
+
+- you can track the masked state directly and use that instead of
+  these predicates
+
+- you can just drop the masking altogether as this is only useful to a
+  hosted hypervisor (KVM), which will have to do its own masking
+  behind the scenes anyway
+
+> +		aic_fiq_unmask(d);
+> +}
+> +
+
+The rest looks good to me.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
