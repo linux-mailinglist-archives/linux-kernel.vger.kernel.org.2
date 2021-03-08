@@ -2,307 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F9F33191E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C5D331927
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhCHVMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 16:12:15 -0500
-Received: from mail-dm6nam12on2041.outbound.protection.outlook.com ([40.107.243.41]:63941
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231335AbhCHVLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 16:11:45 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c2LNIclTS64VRHArqGl/hTYWddorFJPAf65CYcLRPsqaaSYJ+TTXlwU2UBODG4WCPbzczw2xjbrZEgMVL790PGkqDIudlkXxArToMW6Z8CYZo/ww7qZSZCmv1qyLYEEFU8JzcUoapuXrpvWhdDcQRXRKfk6YWU8EH2fEMY3nJzh0yZ8qBa1q3yC5ZhQl7oXEry12TPwxhJvIISS7NsG6ro6p9lk98G+0YiDS0YHyIKkxFbD8LX4f8BNwt5ijcoI444bAB94uAuKEhysc7Excwe2LtXpClV1Ydh1+BwTdZrxBa5UTks/XJGt9g0n2vvytjSvBU4c04xFX7CtlDSs/yg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j8TQnz52Pmavx40BoPE2qmRh8rlZTt8kkwvMcq7HF5I=;
- b=ZjweuPnM/h6FbJ/ZqGq8y4So/MkOcxq7DPXRtbdCabrE2X3hplGYwE40ycTjcKl8IscwCvanVI63w5vwBSIwIgzQ2SoDeaisJqUJLPWlIR3PyC9V790T/pCQNiJEdqJg816JpYGf/8EnkaDjV7kOMlh2qb8D1if3RPqM33qtYMAcQ0qJ6DnB9tPAmmsuDtLJ6diXWO4ouGPC+kh7pOuOnx3imsjPaHWJPdrP9KDGT6S50rrbitpvFeLfZ7f8Vp9h3xEPjn0M3mxGYzn/JCbXO206xUAsLm9jUtC1LdPjulBvC26oen92Aw77DkdGfLtfppiTnCiPiWLF8WjmAeXM1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j8TQnz52Pmavx40BoPE2qmRh8rlZTt8kkwvMcq7HF5I=;
- b=0iMN1falNlY1/rfuXiHUtDtaD4neL4xTaSc/nMLeWJYEqVjGaFHxzlXuZGwfs6s9jSfx5VYNeWdCh9MoEMymR8D/Wnm21XbHL27mfm2jftwUsZWSE45hcx8yKORoQ0f9prxHsjv2IDytULmIpNbnIEsPr/Q8YVcJOxx8AeHAKvU=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SA0PR12MB4559.namprd12.prod.outlook.com (2603:10b6:806:9e::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Mon, 8 Mar
- 2021 21:11:44 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::30fb:2d6c:a0bf:2f1d]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::30fb:2d6c:a0bf:2f1d%3]) with mapi id 15.20.3890.038; Mon, 8 Mar 2021
- 21:11:43 +0000
-Cc:     brijesh.singh@amd.com, Steve Rutherford <srutherford@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
+        id S231320AbhCHVNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 16:13:21 -0500
+Received: from mail-il1-f178.google.com ([209.85.166.178]:46173 "EHLO
+        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230200AbhCHVNK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 16:13:10 -0500
+Received: by mail-il1-f178.google.com with SMTP id i18so10144329ilq.13;
+        Mon, 08 Mar 2021 13:13:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fcnQ1fWh7dOXc0nPHKWRY8Kcn+PjLMVIQs7p6M7RJ6g=;
+        b=k8eKLvKlIrp4di+2vK8We8o4d/eLNOhj8iy4X+MkoEech2rw6IYludZS7yWxJ/t8kQ
+         gviEk5e/89CM2RtpklnEgPJ9iEZjCp9zp1bC67uSAHfKezRJuwoYimIQRI6sjV7bCWtO
+         x//L4Qig2Flot1vpN4bSioV54HUq3NNo2aDyujUn9Bf1ajfa5+DoE6mipjbrdioqFITL
+         jBxkHQncA49Hx1tQkktgnDAOEJoVbp5auuwPpmMv66EnmNxE6ZpC1D1e4fvPXF/OrGlG
+         IuAmTBV+gWLLGiNm3zD+rXuc6SxFIKVJLrn+rG1rhLjoFz+8IsSP61xGXLMRpRj1uyuP
+         PbEA==
+X-Gm-Message-State: AOAM53388g29eQM1nf9/cFQR8hpmRAjX3i6SAx1gvmS+gv0uvadv6LWS
+        +wbQYKcF7277DDXC29zfvmoZViUXHw==
+X-Google-Smtp-Source: ABdhPJzNitNxfehHw+/PqMAXOmV3ukxp5cvqiLWmITbiKKGn5+NdeNlMiHouIx+cCiR+8uCl4Qckyw==
+X-Received: by 2002:a92:4a10:: with SMTP id m16mr23016369ilf.240.1615237989913;
+        Mon, 08 Mar 2021 13:13:09 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id g14sm6506236ioc.38.2021.03.08.13.13.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 13:13:09 -0800 (PST)
+Received: (nullmailer pid 2965493 invoked by uid 1000);
+        Mon, 08 Mar 2021 21:13:06 -0000
+Date:   Mon, 8 Mar 2021 14:13:06 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Hector Martin <marcan@marcan.st>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
         Will Deacon <will@kernel.org>,
-        Quentin Perret <qperret@google.com>
-Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
- ioctl
-To:     Sean Christopherson <seanjc@google.com>,
-        Ashish Kalra <ashish.kalra@amd.com>
-References: <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
- <YCxrV4u98ZQtInOE@google.com>
- <SN6PR12MB27672FF8358D122EDD8CC0188E859@SN6PR12MB2767.namprd12.prod.outlook.com>
- <20210224175122.GA19661@ashkalra_ubuntu_server> <YDaZacLqNQ4nK/Ex@google.com>
- <20210225202008.GA5208@ashkalra_ubuntu_server>
- <CABayD+cn5e3PR6NtSWLeM_qxs6hKWtjEx=aeKpy=WC2dzPdRLw@mail.gmail.com>
- <20210226140432.GB5950@ashkalra_ubuntu_server> <YDkzibkC7tAYbfFQ@google.com>
- <20210308104014.GA5333@ashkalra_ubuntu_server> <YEaAXXGZH0uSMA3v@google.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <bdf0767f-c2c4-5863-fd0d-352a3f68f7f9@amd.com>
-Date:   Mon, 8 Mar 2021 15:11:41 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
-In-Reply-To: <YEaAXXGZH0uSMA3v@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [70.112.153.56]
-X-ClientProxiedBy: SN6PR04CA0080.namprd04.prod.outlook.com
- (2603:10b6:805:f2::21) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        DTML <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
+ MMIO as non-posted
+Message-ID: <20210308211306.GA2920998@robh.at.kernel.org>
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-13-marcan@marcan.st>
+ <CAL_JsqJF2Hz=4U7FR_GOSjCxqt3dpf-CAWFNfsSrDjDLpHqgCA@mail.gmail.com>
+ <6e4880b3-1fb6-0cbf-c1a5-7a46fd9ccf62@marcan.st>
+ <CAK8P3a0Hmwt-ywzS-2eEmqyQ0v2SxLsLxFwfTUoWwbzCrBNhsQ@mail.gmail.com>
+ <CAL_JsqJHRM59GC3FjvaGLCELemy1uspnGvTEFH6q0OdyBPVSjA@mail.gmail.com>
+ <CAK8P3a0_GBB-VYFO5NaySyBJDN2Ra-WMH4WfFrnzgOejmJVG8g@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN6PR04CA0080.namprd04.prod.outlook.com (2603:10b6:805:f2::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Mon, 8 Mar 2021 21:11:43 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 4f0f5654-daaa-4c6c-dd1c-08d8e276c678
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4559:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB45590D78A4B550A2AFBA5311E5939@SA0PR12MB4559.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iKaYh7aJ7wqj2eA4VcF6sZwWYd+lfNjbn5yK8uAgvFhp4UZlCxRBBKOS4DagY40f8TfFoI4a7IKY15yVKCk4wsLcYKcOQL7Sp5LunAf3e5lYgC0veZMLjBTS/JST9XlKrhRayS4rTgmT9PCv7xazG7PQ6sFS7kGLlFIpO3lqYdBCcjpwVXkn3sAMehQkC7HOMiufNLV3B2nX3H0AZsewdc2KT22LcLmAA5aaoEzLmZxHOG9FymiZIfN09Um6ZuSHfhnCLXxXx3wS7yoIdtuT4NeIwEo7rE4VExCx0JYlxCwS4PNF/dUlkb4etMjtqyxpGgCPIRYl1Ukx1kbkwBeBTVWFANDycGbc6C8NQX0n/UsGceISpleP8OINrAoiSJ13e/SitV+irQb7SBNbVg6MFgG1IlYLq9ievOA4PGIdwJVi5ULNfJrhyK4wefO/hpUM5vB0PZXyhSbJ4Fm3X9i9sMV7k4Fp8MC9UYXDrT86SGIBQqd71KgeAgJJneSn3xcI5/OQAmufUjdh5/BOp6mwIY4oudreNG6Bxw3maWKvbjtxNM2MZkr6vYEFlIFQbWtL/fQhEWQY5vOKQ351nbZeKP0hPNORs4TXGI24y0YHujo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(396003)(346002)(366004)(6506007)(53546011)(83380400001)(31686004)(44832011)(2906002)(54906003)(956004)(2616005)(110136005)(31696002)(86362001)(6636002)(6512007)(5660300002)(316002)(36756003)(6486002)(4326008)(8936002)(66946007)(66476007)(66556008)(478600001)(8676002)(186003)(26005)(52116002)(16526019)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?THJDMDcvSGdSMzVyZUJuUGNmck9JQXN6WkpQYzZNVTJWK0ZlOTFvSERaSldU?=
- =?utf-8?B?NkZYb2NhQ0cxNzBRUUJaVE9Pei9NcDFBUFd5Wm00WndGR1NlRXFPNHZWVThi?=
- =?utf-8?B?cE9rV3JneXBDSXNEbkI1OGF5TldYNERLQ1RGQUo5Nm1NejNjTG5JSmp3ZzhI?=
- =?utf-8?B?cVVLaExjeENxaGNiYldxYVR6clFWVGxGQ1h1OWY1Z05leVRYYWhYNTBFaWhD?=
- =?utf-8?B?amxsSjJGYm5BQnk3YlpnajlWclVYcXdmUTh5SWpncUZuSGFGZzJvb291SE9h?=
- =?utf-8?B?cENHZjkvamc4ZXRmVG14WVNKWEZ5Tlp3RkdaTmFtRE9sTS9UZFJmTHJiTmRJ?=
- =?utf-8?B?VnRtT0NacHFlMVZYaEVXdGRNb1gyUWx1enFlN3FUZlE0SHcvdTI2MUlpZkhm?=
- =?utf-8?B?d2VDeHNNV2dMZUhYQkJzcEx1SVRSOGZITkJOQ1J0QkhTbnZqckI3TUVoOFBx?=
- =?utf-8?B?WnBISXdFZXVNSHJ5V3Rac054SWs5bkZqT2dzU1hqNXlHOVRmZEZyeVQ5OTRD?=
- =?utf-8?B?RUFJTC9SMHB5V1lJTGd1ZGRibUtjdDIvMGZGUmplUENHWDZnQVdtVTE4MDhw?=
- =?utf-8?B?bGpCL2ZJakkxK1RGUzZzZHlMVmxxT2J3cG5sUi9wME1KVUVYVjJkbGRaSW9l?=
- =?utf-8?B?dmlFZkpUczI0cnJIbWdjZFJnTDBtSXM2bkp1K1l5M0tDODhlNXYzb2N6NU13?=
- =?utf-8?B?QUdFMmlvampoN2NvR2NNaTRYNnBteUptc3V6c2JMYld4czliTVBEcjFUMUd2?=
- =?utf-8?B?SEk0Q2JJdWlXcXp2dUlGaW9zUHNKMGl1M28zdTc4ZWc4WmRvL0FSMEUxRXV3?=
- =?utf-8?B?aENIWHl0Tnk4enpvbVNST0NHRzM0SFoxYUlQT3AzMHA3c0RZZWVTeVcybU8v?=
- =?utf-8?B?UmtSK1o0Ym1OWVNlN0FXS29id2ZsOC8ydzdHd3pxQjBYajdmT1Q1UE9ib0Ry?=
- =?utf-8?B?UTU5WU5qamVRQUtGaEdhbkkxQnJYaUZEbFNWcy9pOFhtbXRGdUswSU5LNVlI?=
- =?utf-8?B?aWtKK2s5QnBSRlJTbDk2NVdDZC8waHdCODZKcTVMZWhsWXNwUmRqQVBTRktM?=
- =?utf-8?B?Q0htdjZMMFhVWVRvQTh6Yko0SXJXNnRJeFBwYm1QTWdXbXMwS3g1ZmZEb01M?=
- =?utf-8?B?ckZGeVJGMWt3ZlM1SHJFK0FON0FiSHlmTjR1TkUyRlFMd2lsNEhRLzg5TWc4?=
- =?utf-8?B?RkN2TEQxRGVNazIxN21iMUdDQXZUMTB5OEJOakZBRytoTzA3bXRqYXE4SDNk?=
- =?utf-8?B?TDVCTkVtaDRraDZxWW1VSEJmVDRYM2pnRWZyZTlFVStsTjhMVHRXbkk3VW9h?=
- =?utf-8?B?Rkc1N3FBYXFBQlJiN1JMKzBLY25FbFNwQzg5Z3IrMVhiWXpoSzlnYnlHSkhL?=
- =?utf-8?B?V1NMcFlHNTFIL2R6Vk1OdXNNWlpTcGZmQlRFelNicGpJbVo3U1VrTk1JZWpL?=
- =?utf-8?B?R29oYmVXeU5SelZNaTlCdGo2bXNxTFdTRWJ5UHdvRHdWbzdjcEZ4bGF2UmR6?=
- =?utf-8?B?dDN4TUxUeE9sS1EvS3EvUDNvVlN6N3cvTVlsSC83TmczWnViNnk3cy9wOWNJ?=
- =?utf-8?B?VHNuVW9iSTFORk1tSzI0YkdjSVh0d0QrVHdPMDdUSFlzaWNDVDRKL0NxbEpW?=
- =?utf-8?B?djI1SDcxcU4vR0czZjVpV3B6b29Ub3F0VTNkckg1YndYY0FsWmVQUXBBdnBM?=
- =?utf-8?B?b2pkSHg0YXBzeXJQRkdodmduemRETUVydllYdGcyaEp4aDJaSFNlK0Q5S2xV?=
- =?utf-8?Q?l4Z5rlCBjRSYpHszDS4uGGOQaHAaOa96SEvMKrE?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f0f5654-daaa-4c6c-dd1c-08d8e276c678
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 21:11:43.8824
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gf3KQl8OFiLiba8QJCgTMWM8IPXIma4neHNbP2P2rgLzyJqMs/7i4VPnptKx0BYi8o/ojdksqy5+chq78Cwmsw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4559
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0_GBB-VYFO5NaySyBJDN2Ra-WMH4WfFrnzgOejmJVG8g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 08, 2021 at 09:29:54PM +0100, Arnd Bergmann wrote:
+> On Mon, Mar 8, 2021 at 4:56 PM Rob Herring <robh@kernel.org> wrote:
+> > On Fri, Mar 5, 2021 at 2:17 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> > > On Fri, Mar 5, 2021 at 7:18 PM Hector Martin <marcan@marcan.st> wrote:
+> >
+> > > > > What's the code path using these functions on the M1 where we need to
+> > > > > return 'posted'? It's just downstream PCI mappings (PCI memory space),
+> > > > > right? Those would never hit these paths because they don't have a DT
+> > > > > node or if they do the memory space is not part of it. So can't the
+> > > > > check just be:
+> > > > >
+> > > > > bool of_mmio_is_nonposted(struct device_node *np)
+> > > > > {
+> > > > >      return np && of_machine_is_compatible("apple,arm-platform");
+> > > > > }
+> > > >
+> > > > Yes; the implementation was trying to be generic, but AIUI we don't need
+> > > > this on M1 because the PCI mappings don't go through this codepath, and
+> > > > nothing else needs posted mode. My first hack was something not too
+> > > > unlike this, then I was going to get rid of apple,arm-platform and just
+> > > > have this be a generic mechanism with the properties, but then we added
+> > > > the optimization to not do the lookups on other platforms, and now we're
+> > > > coming full circle... :-)
+> > >
+> > > I never liked the idea of having a list of platforms that need a
+> > > special hack, please let's not go back to that.
+> >
+> > I'm a fan of generic solutions as much as anyone, but not when there's
+> > a single user. Yes, there could be more, but we haven't seen any yet
+> > and Apple seems to have a knack for doing special things. I'm pretty
+> > sure posted vs. non-posted has been a possibility with AXI buses from
+> > the start, so it's not like this is a new thing we're going to see
+> > frequently on new platforms.
+> 
+> Ok, but if we make it a platform specific bit, I would prefer not
+> to do the IORESOURCE_MEM_NONPOSTED flag either but
+> instead keep the logic in the device drivers that call ioremap().
 
-On 3/8/21 1:51 PM, Sean Christopherson wrote:
-> On Mon, Mar 08, 2021, Ashish Kalra wrote:
->> On Fri, Feb 26, 2021 at 09:44:41AM -0800, Sean Christopherson wrote:
->>> +Will and Quentin (arm64)
->>>
->>> Moving the non-KVM x86 folks to bcc, I don't they care about KVM details at this
->>> point.
->>>
->>> On Fri, Feb 26, 2021, Ashish Kalra wrote:
->>>> On Thu, Feb 25, 2021 at 02:59:27PM -0800, Steve Rutherford wrote:
->>>>> On Thu, Feb 25, 2021 at 12:20 PM Ashish Kalra <ashish.kalra@amd.com> wrote:
->>>>> Thanks for grabbing the data!
->>>>>
->>>>> I am fine with both paths. Sean has stated an explicit desire for
->>>>> hypercall exiting, so I think that would be the current consensus.
->>> Yep, though it'd be good to get Paolo's input, too.
->>>
->>>>> If we want to do hypercall exiting, this should be in a follow-up
->>>>> series where we implement something more generic, e.g. a hypercall
->>>>> exiting bitmap or hypercall exit list. If we are taking the hypercall
->>>>> exit route, we can drop the kvm side of the hypercall.
->>> I don't think this is a good candidate for arbitrary hypercall interception.  Or
->>> rather, I think hypercall interception should be an orthogonal implementation.
->>>
->>> The guest, including guest firmware, needs to be aware that the hypercall is
->>> supported, and the ABI needs to be well-defined.  Relying on userspace VMMs to
->>> implement a common ABI is an unnecessary risk.
->>>
->>> We could make KVM's default behavior be a nop, i.e. have KVM enforce the ABI but
->>> require further VMM intervention.  But, I just don't see the point, it would
->>> save only a few lines of code.  It would also limit what KVM could do in the
->>> future, e.g. if KVM wanted to do its own bookkeeping _and_ exit to userspace,
->>> then mandatory interception would essentially make it impossible for KVM to do
->>> bookkeeping while still honoring the interception request.
->>>
->>> However, I do think it would make sense to have the userspace exit be a generic
->>> exit type.  But hey, we already have the necessary ABI defined for that!  It's
->>> just not used anywhere.
->>>
->>> 	/* KVM_EXIT_HYPERCALL */
->>> 	struct {
->>> 		__u64 nr;
->>> 		__u64 args[6];
->>> 		__u64 ret;
->>> 		__u32 longmode;
->>> 		__u32 pad;
->>> 	} hypercall;
->>>
->>>
->>>>> Userspace could also handle the MSR using MSR filters (would need to
->>>>> confirm that).  Then userspace could also be in control of the cpuid bit.
->>> An MSR is not a great fit; it's x86 specific and limited to 64 bits of data.
->>> The data limitation could be fudged by shoving data into non-standard GPRs, but
->>> that will result in truly heinous guest code, and extensibility issues.
->>>
->>> The data limitation is a moot point, because the x86-only thing is a deal
->>> breaker.  arm64's pKVM work has a near-identical use case for a guest to share
->>> memory with a host.  I can't think of a clever way to avoid having to support
->>> TDX's and SNP's hypervisor-agnostic variants, but we can at least not have
->>> multiple KVM variants.
->>>
->> Potentially, there is another reason for in-kernel hypercall handling
->> considering SEV-SNP. In case of SEV-SNP the RMP table tracks the state
->> of each guest page, for instance pages in hypervisor state, i.e., pages
->> with C=0 and pages in guest valid state with C=1.
->>
->> Now, there shouldn't be a need for page encryption status hypercalls on 
->> SEV-SNP as KVM can track & reference guest page status directly using 
->> the RMP table.
-> Relying on the RMP table itself would require locking the RMP table for an
-> extended duration, and walking the entire RMP to find shared pages would be
-> very inefficient.
->
->> As KVM maintains the RMP table, therefore we will need SET/GET type of
->> interfaces to provide the guest page encryption status to userspace.
-> Hrm, somehow I temporarily forgot about SNP and TDX adding their own hypercalls
-> for converting between shared and private.  And in the case of TDX, the hypercall
-> can't be trusted, i.e. is just a hint, otherwise the guest could induce a #MC in
-> the host.
->
-> But, the different guest behavior doesn't require KVM to maintain a list/tree,
-> e.g. adding a dedicated KVM_EXIT_* for notifying userspace of page encryption
-> status changes would also suffice.  
->
-> Actually, that made me think of another argument against maintaining a list in
-> KVM: there's no way to notify userspace that a page's status has changed.
-> Userspace would need to query KVM to do GET_LIST after every GET_DIRTY.
-> Obviously not a huge issue, but it does make migration slightly less efficient.
->
-> On a related topic, there are fatal race conditions that will require careful
-> coordination between guest and host, and will effectively be wired into the ABI.
-> SNP and TDX don't suffer these issues because host awareness of status is atomic
-> with respect to the guest actually writing the page with the new encryption
-> status.
->
-> For SEV live migration...
->
-> If the guest does the hypercall after writing the page, then the guest is hosed
-> if it gets migrated while writing the page (scenario #1):
->
->   vCPU                 Userspace
->   zero_bytes[0:N]
->                        <transfers written bytes as private instead of shared>
-> 		       <migrates vCPU>
->   zero_bytes[N+1:4095]
->   set_shared (dest)
->   kaboom!
+That seems like an orthogonal decision to me.
 
+> This is obviously more work for the drivers, but at least it keeps
+> the common code free of the hack while also allowing drivers to
+> use ioremap_np() intentionally on other platforms.
 
-Maybe I am missing something, this is not any different from a normal
-operation inside a guest. Making a page shared/private in the page table
-does not update the content of the page itself. In your above case, I
-assume zero_bytes[N+1:4095] are written by the destination VM. The
-memory region was private in the source VM page table, so, those writes
-will be performed encrypted. The destination VM later changed the memory
-to shared, but nobody wrote to the memory after it has been transitioned
-to the  shared, so a reader of the memory should get ciphertext and
-unless there was a write after the set_shared (dest).
+I don't agree. The problem is within the interconnect. The device and 
+its driver are unaware of this.
 
+The other idea I had was doing a compatible other than 'simple-bus' for 
+the bus node which could imply non-posted io and any other quirks in 
+Apple's bus implementation. However, something different there means 
+updates in lots of places (schemas, dtc checks, etc.) unless we kept 
+'simple-bus' as a fallback.
 
-> If userspace does GET_DIRTY after GET_LIST, then the host would transfer bad
-> data by consuming a stale list (scenario #2):
->
->   vCPU               Userspace
->                      get_list (from KVM or internally)
->   set_shared (src)
->   zero_page (src)
->                      get_dirty
->                      <transfers private data instead of shared>
->                      <migrates vCPU>
->   kaboom!
+Let's just stick with 'nonposted-mmio', but drop 'posted-mmio'. I'd 
+rather know if and when we need 'posted-mmio'. It does need to be added 
+to the DT spec[1] and schema[2] though (GH PRs are fine for both).
 
+> > The other situation I worry about here is another arch has implicitly
+> > defaulted to non-posted instead of posted. It could just be non-posted
+> > was what worked everywhere and Linux couldn't distinguish. Now someone
+> > sees we have this new posted vs. non-posted handling and can optimize
+> > some mappings on their platform and we have to have per arch defaults
+> > (like 'dma-coherent' now).
+> 
+> I think one of the dark secrets of MMIO is that a lot of drivers
+> get the posted behavior wrong by assuming that a writel() before
+> a spin_unlock() is protected by that unlock. This may in fact work
+> on many architectures but is broken on PCI and on local devices
+> for ARM.
+> 
+> Having a properly working (on non-PCI) ioremap_np() interface
+> would be nice here, as it could be used to document when drivers
+> rely on non-posted behavior, and cause the ioremap to fail when
+> running on architectures that don't support nonposted maps.
 
-I don't remember how things are done in recent Ashish Qemu/KVM patches
-but in previous series, the get_dirty() happens before the querying the
-encrypted state. There was some logic in VMM to resync the encrypted
-bitmap during the final migration stage and perform any additional data
-transfer since last sync.
+Good to know.
 
+Rob
 
-> If both guest and host order things to avoid #1 and #2, the host can still
-> migrate the wrong data (scenario #3):
->
->   vCPU               Userspace
->   set_private
->   zero_bytes[0:4096]
->                      get_dirty
->   set_shared (src)
->                      get_list
->                      <transfers as shared instead of private>
-> 		     <migrates vCPU>
->   set_private (dest)
->   kaboom!
-
-
-Since there was no write to the memory after the set_shared (src), so
-the content of the page should not have changed. After the set_private
-(dest), the caller should be seeing the same content written by the
-zero_bytes[0:4096]
-
-
-> Scenario #3 is unlikely, but plausible, e.g. if the guest bails from its
-> conversion flow for whatever reason, after making the initial hypercall.  Maybe
-> it goes without saying, but to address #3, the guest must consider existing data
-> as lost the instant it tells the host the page has been converted to a different
-> type.
->
->> For the above reason if we do in-kernel hypercall handling for page
->> encryption status (which we probably won't require for SEV-SNP &
->> correspondingly there will be no hypercall exiting),
-> As above, that doesn't preclude KVM from exiting to userspace on conversion.
->
->> then we can implement a standard GET/SET ioctl interface to get/set the guest
->> page encryption status for userspace, which will work across SEV, SEV-ES and
->> SEV-SNP.
+[1] https://github.com/devicetree-org/devicetree-specification
+[2] https://github.com/devicetree-org/dt-schema
