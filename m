@@ -2,126 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1948330740
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 06:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F4C330772
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 06:33:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234426AbhCHFYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 00:24:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52182 "EHLO
+        id S234431AbhCHFcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 00:32:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234401AbhCHFXw (ORCPT
+        with ESMTP id S234289AbhCHFbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 00:23:52 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96DFFC061760
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 21:23:51 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id bm21so17679135ejb.4
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 21:23:51 -0800 (PST)
+        Mon, 8 Mar 2021 00:31:48 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9399CC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 21:31:48 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id fu20so2392797pjb.2
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 21:31:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4vk8NjZWUWMSC21zZsC5XhaD9emmq9PjiDCa5A5wz7c=;
-        b=dmfnCfqpjw4sbFySyQCvKT/bnV1gdfJE//RwUw+/gEad1qlgdXYzLJo6gW07X7BaWi
-         fOhjzy+D1McnNY1FlfUUZ2eVsZX4PMmPnHHnfvK/QcHbludMlyF7P2E7NSHAbcqrf5gm
-         aJ9t9GCUBUf7zQgOZPuMx/DcsYpEXNWI2O0bdl6RCMydWb7xFXo4rl9dJRw0Qhj5rYcP
-         2LxgpXUh4l+i7nWNKqBaapAousEIDyzh4EFeoGR7B+xkGxD2oRsrUJHseSmx3kgzJrJn
-         DP5PrPXZJVUI/wFIKhOVGuOZLzXVvn/Osj8paaq9+KZ4pIoYwDefy+eJcO2VWrZ8JUde
-         amxA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6KPV3/KbWE2HuRXQZJZq+2hlPT8uhIFakoNQQIGrqls=;
+        b=DX9cwjVgBK75Dkwx+YOKuf4B3lGYlteXC/BzinWqNppm9ZMjzbpTMH1Ivs0Tx9GMRF
+         VkhMAIfLQSSE+lJJbbKVfzoqZQoHcNZlgLsAcR5ND6/iJoNKlJVe89V2b68fBwVRKf5C
+         bKTfGm3C49XZbC/62uS5eLjx4lB8ZS1AMxEN2zxCKzvrh7mfTHOMfG+Uvm6IDVaFofES
+         VU18HGQl6e36QdbqgbkP/F4lkbBJ4DC14nqHdDBBeL2i5VwD2GWYA5WKV5PTFKMu40Kk
+         tK/MrA/zkvphtq4g4GcsEF7k0XNoxNA9khe9qiRxCKIHEtqEzcfDteHASfqDsU6FXqyj
+         05CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4vk8NjZWUWMSC21zZsC5XhaD9emmq9PjiDCa5A5wz7c=;
-        b=n9qllvf4pRJUqgiXpNwMtYFU11b2yEcKWfJIs/M3OH2ukR13GHbhEmI/TcGq/pZmbN
-         e4JUbNDdywOmRA4sy7W4Ntuv0X81zNb3kQpBkR8UgwMIcwzbvW+UogC6qWbkrINyr7iJ
-         s8hmc0J2X1ghQVjP0achGdYSdaW5FkFXrSKQsH0H59RjvUPVD38yGnpTEhTP/gcfiK0n
-         P5XiaZf/015xrZXotJ0Fs8bvCxESN7xBVG4XzMK5Ji2aI9k2yjI96pNnAPTSJZvmovVQ
-         lpQccagACfYWn+HFlITi5nVSNWAkHgdQkzt4s/f9Mx/xahmAnSqRqdWABoVTxehWWW+z
-         h4IQ==
-X-Gm-Message-State: AOAM531MjekYDLt9MLpTZ8K18/Lm9KpCxrVnOprumVIdlIt/mJXjz/Q6
-        xOJhsW5R6o41Nco9T16Wh/7vz+d90ITKB5RclrLX9g==
-X-Google-Smtp-Source: ABdhPJxP4YeKftw4Lj6ZQkw1k0hTAM+QWLRj2zfFwlL8QUnJAuQwAg2fpXUMBBNPLZZXJqNMxEP+ZhTef3D9nTDkcKU=
-X-Received: by 2002:a17:906:1bf2:: with SMTP id t18mr13449685ejg.418.1615181030278;
- Sun, 07 Mar 2021 21:23:50 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6KPV3/KbWE2HuRXQZJZq+2hlPT8uhIFakoNQQIGrqls=;
+        b=GpI+jrW/X5i5wYwfM4RgcoHNNkMPzI+gvgewPh9YNsExDCTfzydbWVccpbl/m4NzcP
+         Ix3GyT1TunQSdO44tHQ1m7aBdHU0bQEYGHEh1Bz5w1kDvBlr4u14HXQs2FKYCkQtgfIR
+         uPxNmTCoKS8dfEX2nWi95GYaOxvOvA38cv7lUqSJredTVZ4uhSls8Ul78A28gSuv0flg
+         NFlZjjksJtK3dekJgXrkykjUci24cQKT8kIG+e5+foJlRcJ7P8D2FKCirXP71iVpYKEk
+         P415mp9nJ69xftdhvRsXgRp4LL6EsZ+ehIAmyPpglxTGxEtjMhxzC4mk8dABbEhwHXLn
+         m+dw==
+X-Gm-Message-State: AOAM531EuzYOC67Wzhu3ZOHuW8wx59nBYPYqWA+BVgwyKJEJrnX9k9r3
+        aYRpNuoCrpmFUJxaNhzeBmoT
+X-Google-Smtp-Source: ABdhPJx31x9DVwCjlrBofFQyrwjvdvqlfdUbyu2xgtdfmFEquErlvlidAh6xBqgbkgdBxd/xWYxDsg==
+X-Received: by 2002:a17:90b:4008:: with SMTP id ie8mr22112177pjb.231.1615181507921;
+        Sun, 07 Mar 2021 21:31:47 -0800 (PST)
+Received: from thinkpad ([2409:4072:6e84:fef9:1070:d306:6d0e:bf6b])
+        by smtp.gmail.com with ESMTPSA id h13sm2411179pjv.52.2021.03.07.21.31.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 21:31:47 -0800 (PST)
+Date:   Mon, 8 Mar 2021 11:01:40 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        boris.brezillon@collabora.com
+Subject: Re: [PATCH 2/3] dt-bindings: mtd: Add a property to declare secure
+ regions in Qcom NANDc
+Message-ID: <20210308053140.GA5457@thinkpad>
+References: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
+ <20210222120259.94465-3-manivannan.sadhasivam@linaro.org>
+ <20210305233657.GA839767@robh.at.kernel.org>
 MIME-Version: 1.0
-References: <20210208105530.3072869-1-ruansy.fnst@cn.fujitsu.com>
- <20210208105530.3072869-2-ruansy.fnst@cn.fujitsu.com> <CAPcyv4jqEdPoF5YM+jSYJd74KqRTwbbEum7=moa3=Wyn6UyU9g@mail.gmail.com>
- <OSBPR01MB29207A1C06968705C2FEBACFF4939@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-In-Reply-To: <OSBPR01MB29207A1C06968705C2FEBACFF4939@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Sun, 7 Mar 2021 21:23:47 -0800
-Message-ID: <CAPcyv4iBnWbG0FYw6-K0MaH--rq62s7RY_yoT9rOYWMa94Yakw@mail.gmail.com>
-Subject: Re: [PATCH v3 01/11] pagemap: Introduce ->memory_failure()
-To:     "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        david <david@fromorbit.com>, Christoph Hellwig <hch@lst.de>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305233657.GA839767@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 7, 2021 at 7:38 PM ruansy.fnst@fujitsu.com
-<ruansy.fnst@fujitsu.com> wrote:
->
-> > On Mon, Feb 8, 2021 at 2:55 AM Shiyang Ruan <ruansy.fnst@cn.fujitsu.com> wrote:
-> > >
-> > > When memory-failure occurs, we call this function which is implemented
-> > > by each kind of devices.  For the fsdax case, pmem device driver
-> > > implements it.  Pmem device driver will find out the block device where
-> > > the error page locates in, and try to get the filesystem on this block
-> > > device.  And finally call filesystem handler to deal with the error.
-> > > The filesystem will try to recover the corrupted data if possiable.
-> > >
-> > > Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-> > > ---
-> > >  include/linux/memremap.h | 8 ++++++++
-> > >  1 file changed, 8 insertions(+)
-> > >
-> > > diff --git a/include/linux/memremap.h b/include/linux/memremap.h
-> > > index 79c49e7f5c30..0bcf2b1e20bd 100644
-> > > --- a/include/linux/memremap.h
-> > > +++ b/include/linux/memremap.h
-> > > @@ -87,6 +87,14 @@ struct dev_pagemap_ops {
-> > >          * the page back to a CPU accessible page.
-> > >          */
-> > >         vm_fault_t (*migrate_to_ram)(struct vm_fault *vmf);
-> > > +
-> > > +       /*
-> > > +        * Handle the memory failure happens on one page.  Notify the processes
-> > > +        * who are using this page, and try to recover the data on this page
-> > > +        * if necessary.
-> > > +        */
-> > > +       int (*memory_failure)(struct dev_pagemap *pgmap, unsigned long pfn,
-> > > +                             int flags);
-> > >  };
-> >
-> > After the conversation with Dave I don't see the point of this. If
-> > there is a memory_failure() on a page, why not just call
-> > memory_failure()? That already knows how to find the inode and the
-> > filesystem can be notified from there.
->
-> We want memory_failure() supports reflinked files.  In this case, we are not
-> able to track multiple files from a page(this broken page) because
-> page->mapping,page->index can only track one file.  Thus, I introduce this
-> ->memory_failure() implemented in pmem driver, to call ->corrupted_range()
-> upper level to upper level, and finally find out files who are
-> using(mmapping) this page.
->
+On Fri, Mar 05, 2021 at 05:36:57PM -0600, Rob Herring wrote:
+> On Mon, Feb 22, 2021 at 05:32:58PM +0530, Manivannan Sadhasivam wrote:
+> > On a typical end product, a vendor may choose to secure some regions in
+> > the NAND memory which are supposed to stay intact between FW upgrades.
+> > The access to those regions will be blocked by a secure element like
+> > Trustzone. So the normal world software like Linux kernel should not
+> > touch these regions (including reading).
+> > 
+> > So let's add a property for declaring such secure regions so that the
+> > driver can skip touching them.
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  Documentation/devicetree/bindings/mtd/qcom,nandc.yaml | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > index 84ad7ff30121..7500e20da9c1 100644
+> > --- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > +++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > @@ -48,6 +48,13 @@ patternProperties:
+> >          enum:
+> >            - 512
+> >  
+> > +      qcom,secure-regions:
+> > +        $ref: /schemas/types.yaml#/definitions/uint32-array
+> 
+> Don't you need 64-bit regions potentially? Though 4GB should be enough 
+> for anyone.
+> 
 
-I know the motivation, but this implementation seems backwards. It's
-already the case that memory_failure() looks up the address_space
-associated with a mapping. From there I would expect a new 'struct
-address_space_operations' op to let the fs handle the case when there
-are multiple address_spaces associated with a given file.
+Yes, given the size of current NAND based systems around, I thought 32 bit is
+enough.
+
+> If more than one addr+size, then you need a matrix.
+> 
+
+Okay.
+
+Thanks,
+Mani
+
+> > +        description:
+> > +          Regions in the NAND memory which are protected using a secure element
+> > +          like Trustzone. This property contains the start address and size of
+> > +          the secure regions present (optional).
+> > +
+> >  allOf:
+> >    - $ref: "nand-controller.yaml#"
+> >  
+> > -- 
+> > 2.25.1
+> > 
