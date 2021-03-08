@@ -2,142 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F9B331723
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1C0331728
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 20:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbhCHTU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 14:20:56 -0500
-Received: from mail-il1-f182.google.com ([209.85.166.182]:39342 "EHLO
-        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhCHTUn (ORCPT
+        id S231411AbhCHTXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 14:23:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230481AbhCHTXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:20:43 -0500
-Received: by mail-il1-f182.google.com with SMTP id d5so9893383iln.6;
-        Mon, 08 Mar 2021 11:20:42 -0800 (PST)
+        Mon, 8 Mar 2021 14:23:02 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2833FC061760
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 11:23:02 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id hs11so22653451ejc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 11:23:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O5hm6aHK8+K1Uogp8/qJt3hNGrKpWyW0WQaeRio5Q8A=;
+        b=TDedw5QVb9bgoxauwP+/OGfYJGObXA0ByQkjCJSSQrS2iCpc1a8qr0/xxLjEWCJ5dj
+         3QQP7JKMsHMkFex5umK1Usd8muY6HMrHv4z4Sx5Uvt7hvuj9dGlrVh+q4Jefpx0MT46+
+         7QvtnA1P5iSn+pmgxNr03XoFdiTS87LdwGaPguXPHiWwJlmBxXH1x87XWAwJUFBiQ45M
+         ypv1dAz3f2CQ7mTbChiMm5iQJR+5MNfS8PYfZZk5sH/ciwaF79Y8AuGhobVIIKXAJ0q8
+         wabCkxNVQ8X3xuVAl/JgPny5GorlIVmPhEOy38rPd2Z0RaEYyvwyoKRim615b2ygZS0S
+         Qpyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1L6btlnZFWT2wUztSO9tevXV6NJv+ZeIlELKczZZaFw=;
-        b=fiBkEUwIBB2ZVI4HgXNGwSh5aYF0eU2WpWUEtsMn9N2qAwIZ+/k3qfXi9n5RoZr3Q7
-         SQHMmOsyIhdoNxEayvuoSas6YiH57naDQ6CoW6Af8UOHDFw3rDn0jJ1TvmXV7XraiksP
-         5A1yp5VlZNAprxBvmJOoqcN5dW5n7KzqIp06Jgd99k+DvCnO5x8d4iY0/szF/3v6tuUN
-         2sMRQTnL6kHo/qIz7dZjQVblqq3HySJQGM4tG6bxkIBXpULEAcvs/b7mW7+hKTPBsE4M
-         O6CguMWDa9N+JKFewtcjvIo2W86GULccvbr4LXaJ9BRdkpznfrWQ1lGEpIKC5xCpSQee
-         yXAQ==
-X-Gm-Message-State: AOAM532MXfbcSBj13rFIOpBhChWztK8iyvFD/EGEntVjQfQgqkZnu6/r
-        dcXaN6Orp8+7bje4Nwfk0l3nIS+HHw==
-X-Google-Smtp-Source: ABdhPJxNZi/akTGS5KF27FuIlkC3rfNJTzbmnPnH89Rfz7vgq18ujwtUCYa7gJdG40A1z3VSgdqRRA==
-X-Received: by 2002:a92:c102:: with SMTP id p2mr21010388ile.227.1615231242427;
-        Mon, 08 Mar 2021 11:20:42 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id a4sm3426705iow.55.2021.03.08.11.20.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 11:20:41 -0800 (PST)
-Received: (nullmailer pid 2816246 invoked by uid 1000);
-        Mon, 08 Mar 2021 19:20:40 -0000
-Date:   Mon, 8 Mar 2021 12:20:40 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Martin Devera <devik@eaxlabs.cz>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jiri Slaby <jirislaby@kernel.org>, Le Ray <erwan.leray@st.com>,
-        fabrice.gasnier@foss.st.com, linux-serial@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: serial: Add rx-tx-swap to stm32-usart
-Message-ID: <20210308192040.GA2807217@robh.at.kernel.org>
-References: <aeefa74e-fa19-6c31-5240-0f14fca89298@foss.st.com>
- <20210302190303.28630-1-devik@eaxlabs.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O5hm6aHK8+K1Uogp8/qJt3hNGrKpWyW0WQaeRio5Q8A=;
+        b=fbJeDR9Z/WxQzSkRcHg1wlFo+aMvhX6sxDUgU4nQkoEHZ4m804rOkGIfr0U2b9yZId
+         Wwq4rrirTwzy3+x7EebgI3VjqL/LCxhusT2mY0NjbV3ta0NuTSLPzqHMpo36TuJeCg0N
+         Y7Za4ca8USDE8OdvxR55DY0q2vBCRuUzQ9EQL/J5H9fZHz2W2IZAaekOr379MOPW3chd
+         yojViU7P6TPjYEQOCShznRp7Fm+ljwzzHbLHmctjEAY4gboD3Rkp1b3spyvlGHGUhlQS
+         H9MGSU+8P7Gdtfl/0o8+C9Q6LiE5RkfhUAoYcHoXIzmWTltI6k3iTpS8DUmcOEkQH+I9
+         Q2DQ==
+X-Gm-Message-State: AOAM533/5N7KP9Yo9mD7FcsR576U59BaJ+9LgDm4sX/T8lLKxieJZej2
+        GmuC7oHASg5dexyVhNubGvSDp64fKp5+TTvzoKoXyg==
+X-Google-Smtp-Source: ABdhPJypPPr/xuf9LRgK9t/szYCa+1qZSOmBNIq3CvaYF8+xtRCD8J3V2cw8H+R8RASkwpKC8ecMCSCP8b3t3qhyRi4=
+X-Received: by 2002:a17:906:bb06:: with SMTP id jz6mr16303394ejb.429.1615231380809;
+ Mon, 08 Mar 2021 11:23:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302190303.28630-1-devik@eaxlabs.cz>
+References: <20210304201253.14652-1-andriy.shevchenko@linux.intel.com> <CAJZ5v0gR=gN2ROo9JSOGHokw5imscMBwDERni8X83p0eWt634w@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gR=gN2ROo9JSOGHokw5imscMBwDERni8X83p0eWt634w@mail.gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 8 Mar 2021 20:22:49 +0100
+Message-ID: <CAMpxmJUQ3r0YCeQvPq=SW57w-5BLtoTO1_bv=2uw6CX_1-EXcQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/5] gpiolib: switch to fwnode in the core
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 08:03:02PM +0100, Martin Devera wrote:
-> Add new rx-tx-swap property to allow for RX & TX pin swapping.
-> 
-> Signed-off-by: Martin Devera <devik@eaxlabs.cz>
-> ---
->  .../devicetree/bindings/serial/st,stm32-uart.yaml  | 32 +++++++++++++++-------
->  1 file changed, 22 insertions(+), 10 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> index 8631678283f9..6eab2debebb5 100644
-> --- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> +++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> @@ -9,9 +9,6 @@ maintainers:
->  
->  title: STMicroelectronics STM32 USART bindings
->  
-> -allOf:
-> -  - $ref: rs485.yaml
-> -
->  properties:
->    compatible:
->      enum:
-> @@ -40,6 +37,10 @@ properties:
->  
->    uart-has-rtscts: true
->  
-> +  rx-tx-swap:
-> +    type: boolean
-> +    maxItems: 1
+On Mon, Mar 8, 2021 at 7:22 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Thu, Mar 4, 2021 at 9:13 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > GPIO library uses of_node and fwnode in the core in non-unified way.
+> > The series cleans this up and improves IRQ domain creation for non-OF cases
+> > where currently the names of the domain are 'unknown'.
+> >
+> > This has been tested on Intel Galileo Gen 2.
+> >
+> > In v3:
+> > - fix subtle bug in gpiod_count
+> > - make irq_domain_add_simple() static inline (Marc)
+> >
+> > In v2:
+> > - added a new patch due to functionality in irq_comain_add_simple() (Linus)
+> > - tagged patches 2-4 (Linus)
+> > - Cc'ed to Rafael
+> >
+> > Andy Shevchenko (5):
+> >   irqdomain: Introduce irq_domain_create_simple() API
+> >   gpiolib: Unify the checks on fwnode type
+> >   gpiolib: Move of_node operations to gpiolib-of and correct fwnode use
+> >   gpiolib: Introduce acpi_gpio_dev_init() and call it from core
+> >   gpiolib: Reuse device's fwnode to create IRQ domain
+>
+> [1-4/5] applied as 5.13 material and I have a minor comment regarding
+> the last patch (will send separately).
+>
+> Thanks!
 
-Type is boolean, but 'maxItems' applies to arrays.
+Hi Rafael!
 
-In any case, this is already defined in serial.yaml, so just 
-'rx-tx-swap: true' here.
+AFAICT this should go through the GPIO tree as usual. Any reason for
+you to pick these patches this time?
 
-> +
->    dmas:
->      minItems: 1
->      maxItems: 2
-> @@ -66,13 +67,24 @@ properties:
->    linux,rs485-enabled-at-boot-time: true
->    rs485-rx-during-tx: true
->  
-> -if:
-> -  required:
-> -    - st,hw-flow-ctrl
-> -then:
-> -  properties:
-> -    cts-gpios: false
-> -    rts-gpios: false
-> +allOf:
-
-And add '- $ref: serial.yaml#' here.
-
-> +  - $ref: rs485.yaml
-> +  - if:
-> +      required:
-> +        - st,hw-flow-ctrl
-> +    then:
-> +      properties:
-> +        cts-gpios: false
-> +        rts-gpios: false
-> +  - if:
-> +      required:
-> +        - rx-tx-swap
-> +    then:
-> +      properties:
-> +        compatible:
-> +          enum:
-> +            - st,stm32f7-uart
-> +            - st,stm32h7-uart
-
-The normal pattern is the 'if' has compatible. You can put the other 
-compatible strings in the if, and then 'then' is:
-
-then:
-  properties:
-    rx-tx-swap: false
-
-
-Rob
+Bartosz
