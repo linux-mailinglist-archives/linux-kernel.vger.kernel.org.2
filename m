@@ -2,101 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7078A33108C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D595331091
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:15:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhCHOOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 09:14:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39135 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230124AbhCHONo (ORCPT
+        id S230481AbhCHOOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 09:14:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230142AbhCHOOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:13:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615212823;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vgbBup6Vj344vbeikJWoQwoH+WZLtLaIQQ1FS0zc2MA=;
-        b=EW3wo2cnnyqRZZ2MWzMMfJXuX/hHM6NTj4R9pd76QVI61bYzgsApY9bJscaA2kW6RwAtct
-        rCOBpwPARtG2RcmQ9WJEUkp8k5fILxnCtENFRKKHERyjI26xwlK40emQrjJnDa77lOK/fm
-        iN/F8uIBUEDWK5A2uGqMao6y9LxdYz4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-151-NGWhpdnuNfq0M1wOFgsz6g-1; Mon, 08 Mar 2021 09:13:39 -0500
-X-MC-Unique: NGWhpdnuNfq0M1wOFgsz6g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 09EC9108BD12;
-        Mon,  8 Mar 2021 14:13:38 +0000 (UTC)
-Received: from [10.36.113.123] (ovpn-113-123.ams2.redhat.com [10.36.113.123])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B0C4A60C6E;
-        Mon,  8 Mar 2021 14:13:36 +0000 (UTC)
-Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
-References: <YEEES/K8cNi8qOJe@google.com>
- <d83a03dd-fdff-ed62-a2ad-77b25d8249f0@redhat.com>
- <YEEJf0itS/8vn8Iy@google.com>
- <d3095ead-a762-61cd-0990-702e14e03d10@redhat.com>
- <YEEUq8ZRn4WyYWVx@google.com>
- <c08662f3-6ae1-4fb5-1c4f-840a70fad035@redhat.com>
- <YEEi1+TREGBElE5H@google.com> <YEEle5xBAc7FUDNI@google.com>
- <YEYdR8azcawau9Rl@dhcp22.suse.cz>
- <c1461e51-7ad0-7fb5-9dc2-7f7c5cdf128f@redhat.com>
- <YEYwdjvYGiZ4crMt@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <9f7b4b8a-5317-e382-7f21-01667e017982@redhat.com>
-Date:   Mon, 8 Mar 2021 15:13:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 8 Mar 2021 09:14:32 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986B6C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 06:14:32 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id j14-20020a17090a588eb02900cefe2daa2cso1374343pji.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 06:14:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gw2zAlnEvV8GmMv5rpZu0isYBOrALdBIALM778oYDbQ=;
+        b=PVVo8+KwgkIH14fT6zZn7SWmQIG6hT4lQcWpMRyFkRHYymWycNwu1GmHW8VV1Rn+Ic
+         pjG+NUM0FIOyCuPjuoxCixxmMoy01TmvG2szp96o6F1VmPbucm77SBAjUiMd8MnLnJQm
+         OQxBvMZukbTKCSaEFzRKsATCWKgvQPZX1+djycAP86AB6RHVMqVUTHDkXsI135EY5mto
+         ygdazUk1kuQT2XVPQJDBNdWaBqU8T/EXvs+x83qE+zOzhpXX9PyhA7e/w7fV1OH9iImH
+         GIaA1x74J1U3vQJtwbIbZkyp+Qu+11cZEpRGVMbyGLeqN7DSCzq5Kp2hnQ8dkILChPlY
+         r0lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gw2zAlnEvV8GmMv5rpZu0isYBOrALdBIALM778oYDbQ=;
+        b=soFID7opmRLxHEnfpZk1qe3KoK2J7xg8aMOcaArQtB8dkHkE7RVbTOfG2CFoPKrLzm
+         2ZllSVEmLaz8N+MzbF4Zonxm/7YDyuKPU1WABV6tzwNPLYN6zIL/cmVhnaSFPk+lbzI6
+         9fahA06kDSrGamjMBc6m2VAFzsAryUVJJbwvDM8QuXJQg/pS52tJeg7F9AY5OHMAZugQ
+         cM4rWmBx9qGpizT3CjuigqUyo3BEMnEnCGh88VxVOdZjAWlsnkyQBuJLCdwRmo4aw4CO
+         7N0yQVk1dXTzeYWR8AD+CNugRvucSffrraYQwUGqPcKoEL9VTKzTbcZ2fT2/3cdOx0LP
+         iHEQ==
+X-Gm-Message-State: AOAM530j7shL4rOlhgO8cEeH7jytkug+qOjLw8IPyKUlstu9BiMnZEcO
+        3crZR6d0hgE5X5awOCb/7BPJVVkX4sbLtqgfK/xNuQ==
+X-Google-Smtp-Source: ABdhPJwQLOEsO6igg+U6iMFD+X/dVMrg/U1V1ChGDrskM8X1TXNS6EhiRPpXVDYrHGOap6Ggho8cp4rTMfIaRvHJ3fw=
+X-Received: by 2002:a17:903:31ca:b029:e6:65f:ca87 with SMTP id
+ v10-20020a17090331cab02900e6065fca87mr11507964ple.85.1615212872017; Mon, 08
+ Mar 2021 06:14:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YEYwdjvYGiZ4crMt@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <cover.1614989433.git.andreyknvl@google.com> <a7f1d687b0550182c7f5b4a47c277a61425af65f.1614989433.git.andreyknvl@google.com>
+ <YEYMDn/9zQI8g+3o@elver.google.com>
+In-Reply-To: <YEYMDn/9zQI8g+3o@elver.google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 8 Mar 2021 15:14:21 +0100
+Message-ID: <CAAeHK+zGDDhpzHqBrKcYhY3UvDG8iXfkCBVQ-5Se0QyESpQ91Q@mail.gmail.com>
+Subject: Re: [PATCH 3/5] kasan, mm: integrate page_alloc init with HW_TAGS
+To:     Marco Elver <elver@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.03.21 15:11, Michal Hocko wrote:
-> On Mon 08-03-21 14:22:12, David Hildenbrand wrote:
->> On 08.03.21 13:49, Michal Hocko wrote:
-> [...]
->>> Earlier in the discussion I have suggested dynamic debugging facility.
->>> Documentation/admin-guide/dynamic-debug-howto.rst. Have you tried to
->>> look into that direction?
->>
->> Did you see the previous mail this is based on:
->>
->> https://lkml.kernel.org/r/YEEUq8ZRn4WyYWVx@google.com
->>
->> I agree that "nofail" is misleading. Rather something like
->> "dump_on_failure", just a better name :)
-> 
-> Yeah, I have read through the email thread. I just do not get why we
-> cannot make it pr_debug() and add -DDYNAMIC_DEBUG_MODULE for
-> page_alloc.c (I haven't checked whether that is possible for built in
-> compile units, maybe it is not but from a quick seems it should).
-> 
-> I really do not like this to be a part of the API. alloc_contig_range is
+On Mon, Mar 8, 2021 at 12:35 PM Marco Elver <elver@google.com> wrote:
+>
+> > -     kasan_free_nondeferred_pages(page, order, fpi_flags);
+> > +     init = want_init_on_free();
+> > +     if (init && !IS_ENABLED(CONFIG_KASAN_HW_TAGS))
+>
+> Doing the !IS_ENABLED(CONFIG_KASAN_HW_TAGS) check is awkward, and
+> assumes internal knowledge of the KASAN implementation and how all
+> current and future architectures that support HW_TAGS work.
+>
+> Could we instead add a static inline helper to <linux/kasan.h>, e.g.
+> kasan_supports_init() or so?
+>
+> That way, these checks won't grow uncontrollable if a future
+> architecture implements HW_TAGS but not init.
 
-Which API? It does not affect alloc_contig_range() itself, it's used 
-internally only. Sure, we could simply pr_debug() for each and every 
-migration failure. As long as it's default-disabled, sure.
+Good idea, I'll add a helper in v2.
 
-I do agree that we should look into properly including this into the 
-dynamic debugging ifrastructure.
+> Hmm, KASAN certainly "supports" memory initialization always. So maybe
+> "kasan_has_accelerated_init()" is more accurate?  I leave it to you to
+> decide what the best option is.
 
--- 
-Thanks,
+Let's call it kasan_has_integrated_init().
 
-David / dhildenb
-
+Thanks!
