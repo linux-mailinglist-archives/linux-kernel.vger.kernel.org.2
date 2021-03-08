@@ -2,101 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D35331149
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A53331162
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 15:56:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhCHOzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 09:55:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229697AbhCHOyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 09:54:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D45BA650E6;
-        Mon,  8 Mar 2021 14:54:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615215284;
-        bh=X0lo3Qat103XhQ7n/pn8ZYoJZykAVsMGsMiUCcu70Gg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=spN/4KqC5tfWitVZ0K4hQKMgdT5PR7dE0yZ4vY3o/eTBu+ZJKHDmjX0GRAjR56shy
-         sIBrrKwmWso/Ujqm3NAFRWP+nMmivkGG+eTEaF+1qPy62alkQ281yTtyuaE2EZauCs
-         tWtbEHqaDqapcSrOg0sJ9PshTRbx7bGKEiAV1bwTvO/w0mPFLyZ00S6o6Gqg78SUBL
-         URzO0Fblz7kem2JXTK+9UHraUjl+yXtrT3PxudL2JE9SMAP01qJ9UmTc97H6LNhdD/
-         4yFZkn2E6Q4SttLFGWFWtbonCNKjX2Pp1YIXufEG0eOy3EObsGcLTgKM2IEGPq3yq2
-         YeYAJirKmLHMg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 9C23B35239E1; Mon,  8 Mar 2021 06:54:44 -0800 (PST)
-Date:   Mon, 8 Mar 2021 06:54:44 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [v8 PATCH 05/13] mm: vmscan: use kvfree_rcu instead of call_rcu
-Message-ID: <20210308145444.GN2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210217001322.2226796-1-shy828301@gmail.com>
- <20210217001322.2226796-6-shy828301@gmail.com>
- <CALvZod75fge=B9LNg_sxbCiwDZjjtn8A9Q2HzU_R6rcg551o6Q@mail.gmail.com>
+        id S231452AbhCHOzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 09:55:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229697AbhCHOzb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 09:55:31 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46511C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 06:55:27 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id mj10so20944357ejb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 06:55:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bnsuh0vq+62rnjm7MYYTgLga5GlY2kr+7IxJtOibpCI=;
+        b=N1FVc8Z2tRKpwYH9fL4HKr6THyo8PevHEbp5v/qmeSlrVfPEeD2O4/S67ivryQUiAm
+         aHbIGxNRQCHxify3UOabLTHBV+N4iuRCqJGz1dioXQpq6yiOrHxiTpU1B2/04j7FeGYD
+         naZAz5C88GdXr02+gdOeKgpp+/vPN5i9r6DE6Jevg/trUbSIPqGOA12rwUmXfk/3xlPE
+         gI2iKvVsLM8N4x4iI6yZvqFllB/T5QTPrEFU/UBhAK6dMYmeo9NL18w9OAUhg5WrdFh7
+         CZRO1vh1Gqqw4UoKII36MvrLn7gDqM6bTGT1nTcvH49iRiMerZw5pVKwtsOJqOAfeb6n
+         C3sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bnsuh0vq+62rnjm7MYYTgLga5GlY2kr+7IxJtOibpCI=;
+        b=WFHbtWF2lWduts2Y6OihYjNfgYoejdqUayAjQUPjpWPInW4LxXxnZ14LWsCZSKs7T2
+         uyyFuLGSvS7YkCtpDoIevS0PK6zYU9do757jnhYQMXzN8uYjdS6GmKZTM129niIF7Oul
+         zIlp9l0LpXT9gqzpvToRfacTXv2flpbTgtb9gQ4wqzM323CU3msuC40Fkz7717g5Xt6i
+         TAfjcI5CaQNT8h1pmfVL/23C4EtyiN4rkG2q2KoLzXCzzbpcjfx+o+aih+7kG77sUOFi
+         h/agx4JfsTTfUHuvdqSyeL8FwJ4CRHT+/JRxo5vC0Atpl0rP3tivrGr0MDertlq/V/Ok
+         TtUA==
+X-Gm-Message-State: AOAM531CNKCCwI8+NiylTA0pz8sCyrrVaDTNj8Fg7Y7NDg6xGfRAmkw9
+        W0azMOiXwNtv7mxYYPI6U1B7SQ==
+X-Google-Smtp-Source: ABdhPJycjUzbWfr6Q1XYlchcZzEFGdtIgBWKvfrweQMg1xKHbjHGHXbtsc0WmUKOX45WAIgHuFYsOA==
+X-Received: by 2002:a17:906:3c50:: with SMTP id i16mr15683196ejg.175.1615215325807;
+        Mon, 08 Mar 2021 06:55:25 -0800 (PST)
+Received: from localhost.localdomain ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id bt14sm7411234edb.92.2021.03.08.06.55.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 06:55:25 -0800 (PST)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
+        linux-tegra@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
+Cc:     broonie@kernel.org, gregkh@linuxfoundation.org, elder@kernel.org,
+        johan@kernel.org, vireshk@kernel.org, rmfrfs@gmail.com,
+        f.fainelli@gmail.com, ldewangan@nvidia.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, linux@deviqon.com,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH 00/10] spi: finalize 'delay_usecs' removal/transition
+Date:   Mon,  8 Mar 2021 16:54:52 +0200
+Message-Id: <20210308145502.1075689-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod75fge=B9LNg_sxbCiwDZjjtn8A9Q2HzU_R6rcg551o6Q@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 10:13:04PM -0800, Shakeel Butt wrote:
-> On Tue, Feb 16, 2021 at 4:13 PM Yang Shi <shy828301@gmail.com> wrote:
-> >
-> > Using kvfree_rcu() to free the old shrinker_maps instead of call_rcu().
-> > We don't have to define a dedicated callback for call_rcu() anymore.
-> >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > ---
-> >  mm/vmscan.c | 7 +------
-> >  1 file changed, 1 insertion(+), 6 deletions(-)
-> >
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index 2e753c2516fa..c2a309acd86b 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -192,11 +192,6 @@ static inline int shrinker_map_size(int nr_items)
-> >         return (DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long));
-> >  }
-> >
-> > -static void free_shrinker_map_rcu(struct rcu_head *head)
-> > -{
-> > -       kvfree(container_of(head, struct memcg_shrinker_map, rcu));
-> > -}
-> > -
-> >  static int expand_one_shrinker_map(struct mem_cgroup *memcg,
-> >                                    int size, int old_size)
-> >  {
-> > @@ -219,7 +214,7 @@ static int expand_one_shrinker_map(struct mem_cgroup *memcg,
-> >                 memset((void *)new->map + old_size, 0, size - old_size);
-> >
-> >                 rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, new);
-> > -               call_rcu(&old->rcu, free_shrinker_map_rcu);
-> > +               kvfree_rcu(old);
-> 
-> Please use kvfree_rcu(old, rcu) instead of kvfree_rcu(old). The single
-> param can call synchronize_rcu().
+A while back I started the introduction of the 'spi_delay' data type:
+  https://lore.kernel.org/linux-spi/20190926105147.7839-1-alexandru.ardelean@analog.com/
 
-Especially given that you already have the ->rcu field that the
-two-argument form requires.
+Users of the 'delay_usecs' were removed from drivers.
 
-The reason for using the single-argument form is when you have lots of
-little data structures, such that getting rid of that rcu_head structure
-is valuable enough to be worth the occasional call to synchronize_rcu().
-However, please note that this call to synchronize_rcu() happens only
-under OOM conditions.
+Now it's time to remove the 'delay_usecs' from the SPI subsystem and use
+only the 'delay' field.
 
-							Thanx, Paul
+This changeset adapts all SPI drivers to do without 'delay_usecs'.
+Additionally, for greybus we need to adapt it to use the 'delay' in
+nano-seconds and convert it to micro-seconds.
+
+Alexandru Ardelean (10):
+  spi: spi-axi-spi-engine: remove usage of delay_usecs
+  spi: bcm63xx-spi: don't check 'delay_usecs' field
+  spi: spi-bcm-qspi: replace 'delay_usecs' with 'delay.value' check
+  spi: spi-sh: replace 'delay_usecs' with 'delay.value' in pr_debug
+  spi: spi-tegra20-flash: don't check 'delay_usecs' field for spi
+    transfer
+  staging: greybus: spilib: use 'spi_delay_to_ns' for getting xfer delay
+  spi: spi-falcon: remove check for 'delay_usecs'
+  spi: fsl-espi: remove usage of 'delay_usecs' field
+  spi: core: remove 'delay_usecs' field from spi_transfer
+  spi: docs: update info about 'delay_usecs'
+
+ Documentation/spi/spi-summary.rst |  7 +++++--
+ drivers/spi/spi-axi-spi-engine.c  | 12 ++++--------
+ drivers/spi/spi-bcm-qspi.c        |  2 +-
+ drivers/spi/spi-bcm63xx.c         |  2 +-
+ drivers/spi/spi-falcon.c          |  2 +-
+ drivers/spi/spi-fsl-espi.c        | 17 +++++------------
+ drivers/spi/spi-sh.c              |  4 ++--
+ drivers/spi/spi-tegra20-sflash.c  |  3 +--
+ drivers/spi/spi.c                 |  1 -
+ drivers/staging/greybus/spilib.c  |  5 ++++-
+ include/linux/spi/spi.h           | 12 ------------
+ 11 files changed, 24 insertions(+), 43 deletions(-)
+
+-- 
+2.29.2
+
