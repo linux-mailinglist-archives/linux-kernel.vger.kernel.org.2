@@ -2,238 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494A1331696
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:50:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 510403316CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhCHSty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:49:54 -0500
-Received: from mail-bn7nam10on2077.outbound.protection.outlook.com ([40.107.92.77]:40370
+        id S231256AbhCHSzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:55:15 -0500
+Received: from mail-bn7nam10on2052.outbound.protection.outlook.com ([40.107.92.52]:7360
         "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229730AbhCHStY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:49:24 -0500
+        id S231439AbhCHSyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 13:54:55 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C9hWxUar68/qZt8s5oaTC1Ax9jdV4HLzaLumv1FdaYYog0NxkpwwLrcneIaQ9H2dRgoh14byfs36E80DWLx1sKePgwJJ0fQ+tJ7rr09gZzE8iVmUkum+M7X0aOGSME1EjoFqnrTf9FjC4gDIqXRfbnp1eO5HCaBAPcbSSLB2z11U/DMCVVGYQGGyLZaQ+Urh5QWfk5escn4hCe7UFtEj2uszNN9nqef9C5MFlhkrPs3/ZIhyC6XFl4IsTAPGbtg5TbdX3Sq2lFv/BLkHbEj1a2efFf54WOuC5gNJ2ZHxtdf8EAe9Ime8ndSsCjSVUMYaY679oZxikXpcLCHzKUgqsw==
+ b=RMCx4MsyHvA/fiKwXTSq4DBqAvb42ijdmFwe+TZdas25TyqfWaiJROZ7huwXMsatVJPCBRYYhd5NnB28f0+zN8TBbjKLhM9U58Bw7f7if6BsRzZUr1K4GWXKpQi50kAgbl0x8H9DsTMj9M82Pzs1Kv51WExj7D6KDcbaj2CgCrmPX2xvydJa9shLAgmmK1uQZ+U+FUHVIT6wo2nOVlZJ/Wz6iCkF7E2PCRLLIz6iG0NLblS5fhpU8eroTc9UKsMC//iodmbXRqWcczs3f1L3Y8/hhSpdi9TlkrJx+GzjwtLPm8nbBG1wCXT6Zv3x++OP0eAzO8oWa1vWPPrlrU+psw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mCDe61bF2ecApvXPrh/CKj2Xmjj4phZWX3h1qbTRxRo=;
- b=jQ92d3ft+BlHfXrpdROIoGcnCg9TvCpNINw/TsVci0vJhvLCjh0z0hyR4zUTc5cEtZ7HA3BOY+RI+Qqjo1I5d/KitF3V4QsjVSAEXz8tuHMNI+cJ39w8UjtxwOpIRkMe/Q/8s+v1qGOQrSAvkSaL8tpVB5aTZzuDfZrL0zeVi74yt4gdRhJ2Px48DFCO7m2arvd46R4F0OYZjXszj/e1Mm5PyvcRDJjqKcDt6Y88IOk0ArOIFDUEYBo1gJLI2zsqnr4bEQJgsfK0NKTAvy1KLGMici6P8H2rW61RZJDRNfYS/49Dh+ZKOjSPwPROn+OjAbBEsGWPg3XQUCqCf9G7Rg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=ideasonboard.com smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
+ bh=wLEhBERoq/y0GZFDJKxrpi0K8Z9RvCOHmQyQUK6kPSY=;
+ b=oEAwHVCR03IugW0UxExizAfvJsVZo5SvZhJ6HnASYRfDVzQc4dmyuhJXz6dwDd3DNzDpYvymF4PkY9m993rPxFd905ORKITqUHAA9DEDxzpgXR0Nh1BiIIINvW6wmA8dIDJt16nV08IE8JdgiBEglxY6WGWGp64G55f1iBrgMgYKhBbOZClHyNp98LSMf5gsKDUMbnGgnOyy1X0O+Zr6zO3hZjpqOs50ntYY2Dyo2Zg1dO9Ew54o8TdgWuEjvvZq6s/2yql7y5WHXTVbwMl+hnAmIF35qKZ52Bb30vL4EZFEPpPYlEh1NGfWeiEEdxhPWIOpCJRnmwzE1fP1iQivPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mCDe61bF2ecApvXPrh/CKj2Xmjj4phZWX3h1qbTRxRo=;
- b=B8cF9UHT8T6SI79m49Zz1mIGwW79QHF+CtJBk5eas2bFE0UvdknJqD1i60wDbGXJV/EHWQAShhln/fTlaNGjdZZon4Oa1WRupzq8GB8xZt1Jjxk9YJuqTvH7hb29MJjcT1VC/mM6owc4Oz9zwPK3UxcShf0a4oAd0qt2cyboC00=
-Received: from DM6PR02CA0080.namprd02.prod.outlook.com (2603:10b6:5:1f4::21)
- by MN2PR02MB6237.namprd02.prod.outlook.com (2603:10b6:208:181::29) with
+ bh=wLEhBERoq/y0GZFDJKxrpi0K8Z9RvCOHmQyQUK6kPSY=;
+ b=JhSKfhkC9jsAn/hRF2n/UbqG3F8e/NuvNFvmEt54fabKo2FaipmhjZkV544B4cBEBHcC9speUMZB7s9zkvQO9eOfpLui6bDerQahUtdtx6noDFGscBXZYRiyUtYQKwGkZQT4OQdgbAHNvxZfLLib+ShQwxReHW/ze8DjYqltmQk=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from BL0PR11MB3201.namprd11.prod.outlook.com (2603:10b6:208:6b::21)
+ by MN2PR11MB4661.namprd11.prod.outlook.com (2603:10b6:208:26b::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.26; Mon, 8 Mar
- 2021 18:49:21 +0000
-Received: from DM3NAM02FT007.eop-nam02.prod.protection.outlook.com
- (2603:10b6:5:1f4:cafe::9c) by DM6PR02CA0080.outlook.office365.com
- (2603:10b6:5:1f4::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
- Transport; Mon, 8 Mar 2021 18:49:21 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; ideasonboard.com; dkim=none (message not signed)
- header.d=none;ideasonboard.com; dmarc=pass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- DM3NAM02FT007.mail.protection.outlook.com (10.13.4.88) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3912.25 via Frontend Transport; Mon, 8 Mar 2021 18:49:21 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 8 Mar 2021 10:49:20 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2106.2 via Frontend Transport; Mon, 8 Mar 2021 10:49:20 -0800
-Envelope-to: laurent.pinchart@ideasonboard.com,
- vkoul@kernel.org,
- linux-arm-kernel@lists.infradead.org,
- kishon@ti.com,
- linux-kernel@vger.kernel.org
-Received: from [172.23.64.106] (port=56591 helo=xhdvnc125.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <manish.narani@xilinx.com>)
-        id 1lJKwR-000121-I6; Mon, 08 Mar 2021 10:49:19 -0800
-Received: by xhdvnc125.xilinx.com (Postfix, from userid 16987)
-        id C40C7121261; Tue,  9 Mar 2021 00:19:18 +0530 (IST)
-From:   Manish Narani <manish.narani@xilinx.com>
-To:     <anurag.kumar.vulisha@xilinx.com>,
-        <laurent.pinchart@ideasonboard.com>, <kishon@ti.com>,
-        <vkoul@kernel.org>, <michal.simek@xilinx.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Manish Narani <manish.narani@xilinx.com>
-Subject: [PATCH] phy: zynqmp: Handle the clock enable/disable properly
-Date:   Tue, 9 Mar 2021 00:19:16 +0530
-Message-ID: <1615229356-26237-1-git-send-email-manish.narani@xilinx.com>
-X-Mailer: git-send-email 2.1.1
-MIME-Version: 1.0
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.18; Mon, 8 Mar
+ 2021 18:54:50 +0000
+Received: from BL0PR11MB3201.namprd11.prod.outlook.com
+ ([fe80::5848:fb22:4ea8:9a8d]) by BL0PR11MB3201.namprd11.prod.outlook.com
+ ([fe80::5848:fb22:4ea8:9a8d%3]) with mapi id 15.20.3912.027; Mon, 8 Mar 2021
+ 18:54:50 +0000
+From:   Ovidiu Panait <ovidiu.panait@windriver.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, rostedt@goodmis.org, mingo@redhat.com,
+        christian@brauner.io
+Subject: [PATCH] mm, tracing: improve rss_stat tracepoint message
+Date:   Mon,  8 Mar 2021 20:50:00 +0200
+Message-Id: <20210308185000.14052-1-ovidiu.panait@windriver.com>
+X-Mailer: git-send-email 2.17.1
 Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
+X-Originating-IP: [46.97.150.20]
+X-ClientProxiedBy: VI1PR0401CA0022.eurprd04.prod.outlook.com
+ (2603:10a6:800:4a::32) To BL0PR11MB3201.namprd11.prod.outlook.com
+ (2603:10b6:208:6b::21)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from otp-linux01.wrs.com (46.97.150.20) by VI1PR0401CA0022.eurprd04.prod.outlook.com (2603:10a6:800:4a::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Mon, 8 Mar 2021 18:54:48 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a7c49713-55ff-4684-44d9-08d8e262e2bd
-X-MS-TrafficTypeDiagnostic: MN2PR02MB6237:
-X-Microsoft-Antispam-PRVS: <MN2PR02MB62377C2B294621B0D4BD8A81C1939@MN2PR02MB6237.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:1002;
+X-MS-Office365-Filtering-Correlation-Id: 4718ba47-3104-4e40-1e89-08d8e263a691
+X-MS-TrafficTypeDiagnostic: MN2PR11MB4661:
+X-Microsoft-Antispam-PRVS: <MN2PR11MB4661028BAB30E6274E7619A0FE939@MN2PR11MB4661.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Bnbnzvd+T30oc65BQWR8b2oggatqUCBfHZP3w+0VuuN+nj98SUN0fFkwIQfWBikqBYrwBZJQJVWO+6Qd4GlvnOXYvwv3zY896FVVYKyamQclgPv1JJUE4sskj3pi2HMyvNTuWAvyokRRk8erHxv3bInCemRRUWpHXKPkPUIuw9FPES6EVrft4YN67M+/WIrWsj4nh1l9M67oc6/ErtiSidC1BYkdvzvw3fpDLIwJIBRXESnkq7V0Us0MepIhjBl845NVrrxKxzz5GmVAkHpDfXU0QuMfE8J6ocMofYboop8XA2v1sTvKBOXMzF9bykLmkVnqPf1kr5Scyh0s4b9uha4W3W0vqjuU/TCXF836TvbTncK3cE6jcUJQo2Nx2EMZNgkP3I8tUB9X+/8FrPg7wEHy9NeXdCYclaF0SjKLVuA61AgPd/T66/U1P7ShvhxW/kBr+4xGiVKn5Y7PX34t/lNHdKZmCk1+iKP4bXuQwWxUIsOdHFcK7EI74HZwoDvZ7cldhAgXqfwhnom51AzsBWs2QyZkvG/UIUqKAa/p3Z6QiTm+fchCqANUaZFcCtni8pJgXWrCHauDaf7OR/oePPCKw+0ameY/0U9cJWRG8COOdFzUf1dNrmmGKYteN1Hj34D17j8ECtk7wEz6RuwydrNmAYPbuMdZDfAR09ShtCEaBbdc8P1/mMkBMwZfUuRV
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(396003)(136003)(36840700001)(46966006)(82310400003)(2616005)(82740400003)(336012)(478600001)(426003)(8936002)(44832011)(7636003)(8676002)(110136005)(356005)(4326008)(42186006)(36906005)(186003)(316002)(70586007)(70206006)(54906003)(47076005)(26005)(36756003)(107886003)(5660300002)(6266002)(2906002)(6636002)(36860700001)(83380400001)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 18:49:21.0742
+X-Microsoft-Antispam-Message-Info: u8pQN3qqDk9DZAilpIBQ1+t2aQ0j4TUDlqRotQ6C6ay6I0D0jhDIyPzFlBxcbkG0kGQ/5JFta2FilDlhVLIFXV88s19lecWcHad2iDK4hcWr0FvCCyBfpFb6OMlCAcOHgL3H+x6EJu58AEGpAzZLD0LEKaZbd/Nc+AyftqmFn1v9yIbzMVsOZGt2Ik7+7GYwOgFPBJK3gZEocnB2u0RaiNe3TQn1M6+ZoeXVsToagLTPXYFJIhWn8UX/10xNTXAueJ49o8QuLPcozPWrdo+ty91y0TLKd340o6bT1RHDv6I6pifnQIFxkheoxOxIQbW1lpWVyE7fEHlLQ9lyoD8PBmm2d4Tp1YIQXODnChgtDxm69plO3BIYyeXt5u7VBefmHwUbE3rYFHkM3HwNY3QJbzV96kZSG+QJDMsUwXP78GwkL5XIJ7lHNt1/B759wTqyRXzrwlfIwUH8NZdXjQaUvHHH2h4v1mZWSV5z8gEXBz943oajW5XQhLygYsFHM5aOYdNq3InBARgWqpoP+R4lVQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB3201.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(376002)(366004)(396003)(136003)(346002)(6506007)(8936002)(6666004)(44832011)(26005)(1076003)(6512007)(478600001)(66556008)(66946007)(15650500001)(6916009)(8676002)(86362001)(316002)(6486002)(5660300002)(4326008)(66476007)(52116002)(2616005)(956004)(186003)(83380400001)(16526019)(2906002)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?kJh3pMI9QDcDfDLhcW5whUhjUNfKRgj8mL5++UAaXDtGGhOuCDg8F2Vylpr9?=
+ =?us-ascii?Q?8k7e0HkkKagallS43nJBbYU08CXSJaXyVoU7EudniKD1TQ0NrP2JG7BsABrV?=
+ =?us-ascii?Q?UzC8eBkIGljm7uS8qYMJl+RKunRPVW5uzQgR758wPNA5pdm+njHbtPx6d321?=
+ =?us-ascii?Q?+Li5rhYHPcP/ECC+tkjnlvYs8q0hGmJ2DSGGw1mgJ4UBJ0oJXAnMRSwvv6mp?=
+ =?us-ascii?Q?56ZHSW4UdbORUWz1SrJMTVuJr08YBD5dEYfBKm0fu6KKFw8oM2An+sSka2F5?=
+ =?us-ascii?Q?QdOwFBTXSTmh6ZypsUiYuNofCjjGAUqqUmRhS0Z8J0h5pYDS2KVNgVMfoJS1?=
+ =?us-ascii?Q?YvL2YueJmt9y8AfU5KCptw+f6SQ6up7FeMIPovHpsW3L1ZuKmDbHOEgsDNiS?=
+ =?us-ascii?Q?+P4hUGJxZ7PoiK9/CmbkccjOHgGxHvhdDcHCTnjX2PGR9Qgd9CgSwRHq8gcq?=
+ =?us-ascii?Q?GWUQWqWxXJ2KGn06boUhq4ZKk/Qf4koUOYmeuK3tmeUUnbXxv9WsrpVFzARZ?=
+ =?us-ascii?Q?TR3nxxe3snGjlDUgH/J7HYk7StUAq8xYTIHMiDTcEOxI91YXQ9n+gq18+ujv?=
+ =?us-ascii?Q?WrbbuZjcfs1QknlY8uDYfrlyUk/dn5OSnxVM8YE33ze7aDylxy4ypH1Q76c2?=
+ =?us-ascii?Q?+xCrwshOQ2CAss2w+g/Se/1QWGAH6e7JPbDHDBes0ix5dUjim8H+VBaT6Bk/?=
+ =?us-ascii?Q?5oUC8kXyMKzGBfpg/yMp/tkKHGSf/XLyshXpxbD1UXccRPpZLnrvUlRe3mT3?=
+ =?us-ascii?Q?rszVEfTv+5G9ok2W05f1ZMzIR41udnRulW3u045q7n5HBr0Y1yXK205BapBc?=
+ =?us-ascii?Q?ssyThlUqDRe2JDDIp46ocdcQNHR3X+gVNy3v/opV1zcDjTlHKKW1sFMAW6h+?=
+ =?us-ascii?Q?69ZSEOdoax9p7OLVgBYm3gewgYIz9WW+jJNqGKIyab8+g2pDrxRLVe39GLr7?=
+ =?us-ascii?Q?xJpmXg4f5Bne7npz6bfQqIpXnq4Looy+eEu9qVAkyOQT2OBDNfsnSUj/mzcm?=
+ =?us-ascii?Q?9q2FofyEcfFeWoyWBd1EPmnSjkHvclju41sSBVYYGpbi1QZcLesvSW0q9crc?=
+ =?us-ascii?Q?QIk3jRtY1PHtu4C6zBYJ+Kz5ONraX/S+ksa5gLrMQWlErnvdq6dm5SEBXBUt?=
+ =?us-ascii?Q?tUR9/jZEkfIML0Xve3F1KBmqJCA3VHqk3JwurdW8lVc9Te+sIMQgcFTRcGC0?=
+ =?us-ascii?Q?JW3dl7foOlr6PJhmZtdY4InldzEIGkTg7/Fr4jNCqNLeICLuDa5eCZ7g8N1j?=
+ =?us-ascii?Q?9kC5eET3Z2ho47+3JFikHNpdevo7/LWvQID1pBZhTI5cmBTJzuZ75gyoFkLG?=
+ =?us-ascii?Q?NMGmWCXCGzimh9ornfimZTwz?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4718ba47-3104-4e40-1e89-08d8e263a691
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB3201.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 18:54:49.9601
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7c49713-55ff-4684-44d9-08d8e262e2bd
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT007.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR02MB6237
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mslgMTpvFd+1N/tmvRHvPY83ah+fm8ym1+eyYJoRJ/1/dl1m4LKY11O6g5WKYsTg1cvo/937duf9H0bAFUoYGesGh4gEqIz79x3a+eglAoQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4661
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current driver is not handling the clock enable/disable operations
-properly. The clocks need to be handled correctly by enabling or
-disabling at appropriate places. This patch adds code to handle the
-same.
+Adjust the rss_stat tracepoint to print the name of the resident page type
+that got updated(e.g. MM_ANONPAGES/MM_FILEPAGES), rather than the numeric
+index corresponding to it(the __entry->member value):
 
-Signed-off-by: Manish Narani <manish.narani@xilinx.com>
+Before this patch:
+------------------
+rss_stat: mm_id=1216113068 curr=0 member=1 size=28672B
+rss_stat: mm_id=1216113068 curr=0 member=1 size=0B
+rss_stat: mm_id=534402304 curr=1 member=0 size=188416B
+rss_stat: mm_id=534402304 curr=1 member=1 size=40960B
+
+After this patch:
+-----------------
+rss_stat: mm_id=1726253524 curr=1 type=MM_ANONPAGES size=40960B
+rss_stat: mm_id=1726253524 curr=1 type=MM_FILEPAGES size=663552B
+rss_stat: mm_id=1726253524 curr=1 type=MM_ANONPAGES size=65536B
+rss_stat: mm_id=1726253524 curr=1 type=MM_FILEPAGES size=647168B
+
+Also, make the resident_page_types[] array in kernel/fork.c non-static so
+that it can be reused from tracing code.
+
+Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
 ---
- drivers/phy/xilinx/phy-zynqmp.c | 40 +++++++++++++++++++++++++++++++++++++---
- 1 file changed, 37 insertions(+), 3 deletions(-)
+ include/linux/mm.h          | 2 ++
+ include/trace/events/kmem.h | 5 +++--
+ kernel/fork.c               | 2 +-
+ 3 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/phy/xilinx/phy-zynqmp.c b/drivers/phy/xilinx/phy-zynqmp.c
-index 2b65f84..0ec534e 100644
---- a/drivers/phy/xilinx/phy-zynqmp.c
-+++ b/drivers/phy/xilinx/phy-zynqmp.c
-@@ -219,6 +219,7 @@ struct xpsgtr_dev {
- 	struct mutex gtr_mutex; /* mutex for locking */
- 	struct xpsgtr_phy phys[NUM_LANES];
- 	const struct xpsgtr_ssc *refclk_sscs[NUM_LANES];
-+	struct clk *clk[NUM_LANES];
- 	bool tx_term_fix;
- 	unsigned int saved_icm_cfg0;
- 	unsigned int saved_icm_cfg1;
-@@ -818,11 +819,15 @@ static struct phy *xpsgtr_xlate(struct device *dev,
- static int __maybe_unused xpsgtr_suspend(struct device *dev)
- {
- 	struct xpsgtr_dev *gtr_dev = dev_get_drvdata(dev);
-+	int i;
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 89fca443e6f1..7916112d5952 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -3141,5 +3141,7 @@ void mem_dump_obj(void *object);
+ static inline void mem_dump_obj(void *object) {}
+ #endif
  
- 	/* Save the snapshot ICM_CFG registers. */
- 	gtr_dev->saved_icm_cfg0 = xpsgtr_read(gtr_dev, ICM_CFG0);
- 	gtr_dev->saved_icm_cfg1 = xpsgtr_read(gtr_dev, ICM_CFG1);
- 
-+	for (i = 0; i < ARRAY_SIZE(gtr_dev->clk); i++)
-+		clk_disable(gtr_dev->clk[i]);
++extern const char * const resident_page_types[];
 +
- 	return 0;
- }
+ #endif /* __KERNEL__ */
+ #endif /* _LINUX_MM_H */
+diff --git a/include/trace/events/kmem.h b/include/trace/events/kmem.h
+index 3a60b6b6db32..623506917cd0 100644
+--- a/include/trace/events/kmem.h
++++ b/include/trace/events/kmem.h
+@@ -5,6 +5,7 @@
+ #if !defined(_TRACE_KMEM_H) || defined(TRACE_HEADER_MULTI_READ)
+ #define _TRACE_KMEM_H
  
-@@ -832,6 +837,13 @@ static int __maybe_unused xpsgtr_resume(struct device *dev)
- 	unsigned int icm_cfg0, icm_cfg1;
- 	unsigned int i;
- 	bool skip_phy_init;
-+	int err;
-+
-+	for (i = 0; i < ARRAY_SIZE(gtr_dev->clk); i++) {
-+		err = clk_enable(gtr_dev->clk[i]);
-+		if (err)
-+			return err;
-+	}
++#include <linux/mm.h>
+ #include <linux/types.h>
+ #include <linux/tracepoint.h>
+ #include <trace/events/mmflags.h>
+@@ -365,10 +366,10 @@ TRACE_EVENT(rss_stat,
+ 		__entry->size = (count << PAGE_SHIFT);
+ 	),
  
- 	icm_cfg0 = xpsgtr_read(gtr_dev, ICM_CFG0);
- 	icm_cfg1 = xpsgtr_read(gtr_dev, ICM_CFG1);
-@@ -865,6 +877,7 @@ static const struct dev_pm_ops xpsgtr_pm_ops = {
- static int xpsgtr_get_ref_clocks(struct xpsgtr_dev *gtr_dev)
- {
- 	unsigned int refclk;
-+	int ret;
+-	TP_printk("mm_id=%u curr=%d member=%d size=%ldB",
++	TP_printk("mm_id=%u curr=%d type=%s size=%ldB",
+ 		__entry->mm_id,
+ 		__entry->curr,
+-		__entry->member,
++		resident_page_types[__entry->member],
+ 		__entry->size)
+ 	);
+ #endif /* _TRACE_KMEM_H */
+diff --git a/kernel/fork.c b/kernel/fork.c
+index d3171e8e88e5..b30fe8ca56b3 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -128,7 +128,7 @@ static int max_threads;		/* tunable limit on nr_threads */
  
- 	for (refclk = 0; refclk < ARRAY_SIZE(gtr_dev->refclk_sscs); ++refclk) {
- 		unsigned long rate;
-@@ -882,6 +895,12 @@ static int xpsgtr_get_ref_clocks(struct xpsgtr_dev *gtr_dev)
- 		if (!clk)
- 			continue;
+ #define NAMED_ARRAY_INDEX(x)	[x] = __stringify(x)
  
-+		gtr_dev->clk[refclk] = clk;
-+
-+		ret = clk_prepare_enable(gtr_dev->clk[refclk]);
-+		if (ret)
-+			return ret;
-+
- 		/*
- 		 * Get the spread spectrum (SSC) settings for the reference
- 		 * clock rate.
-@@ -899,11 +918,17 @@ static int xpsgtr_get_ref_clocks(struct xpsgtr_dev *gtr_dev)
- 			dev_err(gtr_dev->dev,
- 				"Invalid rate %lu for reference clock %u\n",
- 				rate, refclk);
--			return -EINVAL;
-+			goto err_clk_put;
- 		}
- 	}
- 
- 	return 0;
-+
-+err_clk_put:
-+	for (refclk = 0; refclk < ARRAY_SIZE(gtr_dev->clk); refclk++)
-+		clk_disable_unprepare(gtr_dev->clk[refclk]);
-+
-+	return -EINVAL;
- }
- 
- static int xpsgtr_probe(struct platform_device *pdev)
-@@ -913,6 +938,7 @@ static int xpsgtr_probe(struct platform_device *pdev)
- 	struct phy_provider *provider;
- 	unsigned int port;
- 	int ret;
-+	int i;
- 
- 	gtr_dev = devm_kzalloc(&pdev->dev, sizeof(*gtr_dev), GFP_KERNEL);
- 	if (!gtr_dev)
-@@ -951,7 +977,8 @@ static int xpsgtr_probe(struct platform_device *pdev)
- 		phy = devm_phy_create(&pdev->dev, np, &xpsgtr_phyops);
- 		if (IS_ERR(phy)) {
- 			dev_err(&pdev->dev, "failed to create PHY\n");
--			return PTR_ERR(phy);
-+			ret = PTR_ERR(phy);
-+			goto err_clk_put;
- 		}
- 
- 		gtr_phy->phy = phy;
-@@ -962,9 +989,16 @@ static int xpsgtr_probe(struct platform_device *pdev)
- 	provider = devm_of_phy_provider_register(&pdev->dev, xpsgtr_xlate);
- 	if (IS_ERR(provider)) {
- 		dev_err(&pdev->dev, "registering provider failed\n");
--		return PTR_ERR(provider);
-+		ret = PTR_ERR(provider);
-+		goto err_clk_put;
- 	}
- 	return 0;
-+
-+err_clk_put:
-+	for (i = 0; i < ARRAY_SIZE(gtr_dev->clk); i++)
-+		clk_disable_unprepare(gtr_dev->clk[i]);
-+
-+	return ret;
- }
- 
- static const struct of_device_id xpsgtr_of_match[] = {
+-static const char * const resident_page_types[] = {
++const char * const resident_page_types[] = {
+ 	NAMED_ARRAY_INDEX(MM_FILEPAGES),
+ 	NAMED_ARRAY_INDEX(MM_ANONPAGES),
+ 	NAMED_ARRAY_INDEX(MM_SWAPENTS),
 -- 
-2.1.1
+2.25.1
 
