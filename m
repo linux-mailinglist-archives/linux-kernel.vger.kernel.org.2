@@ -2,73 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F924330587
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 02:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE74330598
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 02:25:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233498AbhCHA7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 19:59:37 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:63879 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233479AbhCHA7S (ORCPT
+        id S233518AbhCHBZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 20:25:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232273AbhCHBYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 19:59:18 -0500
-Date:   Mon, 08 Mar 2021 00:59:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1615165156;
-        bh=0gcxEy42FQmd+kPIub4gVYl8AFmj0KeLJ8luAEKerPU=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=ipH2ktGu1KG6YP+4/dvQ43VyO741wxvMtJgHJoYUwhvpeW8N/V2aWKaijpHGztzRg
-         HnM/kn+BUvAY3D+pb0wbKiRVnIyp2+BIMltbJWUCX8t0TxU/zLyTfl+2cerS8Bsxem
-         xq4HjPG3wN+56iErz/tQE6Ja20G9F5h/7ecTCwRQ=
-To:     caleb@connolly.tech, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     ejb@linux.ibm.com, stanley.chu@mediatek.com, cang@codeaurora.org,
-        beanhuo@micron.com, jaegeuk@kernel.org, asutoshd@codeaurora.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: [PATCH 3/3] scsi: ufshcd: remove version check
-Message-ID: <20210308005739.1998483-4-caleb@connolly.tech>
-In-Reply-To: <20210308005739.1998483-1-caleb@connolly.tech>
-References: <20210308005739.1998483-1-caleb@connolly.tech>
+        Sun, 7 Mar 2021 20:24:39 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28156C06175F
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 17:24:39 -0800 (PST)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id C5933891AE;
+        Mon,  8 Mar 2021 14:24:34 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1615166674;
+        bh=ABabwrGZph5Afo5RyJHi6FSG681DtoXzWh8yvDMtmxY=;
+        h=From:To:Cc:Subject:Date;
+        b=Ag879LDN87DRqRqwn2EjXNq2A3iwG787V1/fCaA4gc3OlUULBEpDXnMK7ygEEsNbZ
+         Dh+FssSN/BKx8AUPo7sNU/zGV4EpSNLWn+yUibVVGzS+LsboieNXEVWd6LDM+LcvDX
+         KHhYnC8V6dqEM88A9apY43HB3lp0b+aDH+Y18pcMebOu7oOE0do1tAaowUJwnqKXin
+         l4TeRUSpVRjpBGwW9Qx2BcSihzIE5ED8HZHXA+uiNF5lhdGD+uMLrOnDqa4YAW9N97
+         dXliRjv4SxOezvBeCcZvSelNotF0ipYIU8RBtX8MD8HdA3kYmYdsjqd4wqhjMpbTVW
+         dZkMIBeFmOtWw==
+Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B60457cd20000>; Mon, 08 Mar 2021 14:24:34 +1300
+Received: from markto-dl.ws.atlnz.lc (markto-dl.ws.atlnz.lc [10.33.23.25])
+        by smtp (Postfix) with ESMTP id 8FD4713EEFA;
+        Mon,  8 Mar 2021 14:24:46 +1300 (NZDT)
+Received: by markto-dl.ws.atlnz.lc (Postfix, from userid 1155)
+        id 97505340F85; Mon,  8 Mar 2021 14:24:34 +1300 (NZDT)
+From:   Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de
+Cc:     subashab@codeaurora.org, netfilter-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Subject: [PATCH v2 0/3] Don't use RCU for x_tables synchronization
+Date:   Mon,  8 Mar 2021 14:24:10 +1300
+Message-Id: <20210308012413.14383-1-mark.tomlinson@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=dESyimp9J3IA:10 a=VwQbUJbxAAAA:8 a=LRamHRUzJ3vSQRNnU0gA:9 a=AjGcO6oz07-iQ99wixmX:22 a=BPzZvq435JnGatEyYwdK:22
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This check is redundant as all UFS versions are currently supported.
+The patches to change to using RCU synchronization in x_tables cause
+updating tables to be slowed down by an order of magnitude. This has
+been tried before, see https://lore.kernel.org/patchwork/patch/151796/
+and ultimately was rejected. As mentioned in the patch description, a
+different method can be used to ensure ordering of reads/writes. This
+can simply be done by changing from smp_wmb() to smp_mb().
 
-Signed-off-by: Caleb Connolly <caleb@connolly.tech>
----
- drivers/scsi/ufs/ufshcd.c | 4 ----
- 1 file changed, 4 deletions(-)
+changes in v2:
+- Update commit messages only
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 458f0382292f..f2ca9d497a1c 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -9290,10 +9290,6 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *m=
-mio_base, unsigned int irq)
- =09/* Get UFS version supported by the controller */
- =09hba->ufs_version =3D ufshcd_get_ufs_version(hba);
-=20
--=09if (hba->ufs_version < UFSHCI_VER(1, 0))
--=09=09dev_err(hba->dev, "invalid UFS version 0x%x\n",
--=09=09=09hba->ufs_version);
--
- =09/* Get Interrupt bit mask per version */
- =09hba->intr_mask =3D ufshcd_get_intr_mask(hba);
-=20
+Mark Tomlinson (3):
+  Revert "netfilter: x_tables: Update remaining dereference to RCU"
+  Revert "netfilter: x_tables: Switch synchronization to RCU"
+  netfilter: x_tables: Use correct memory barriers.
+
+ include/linux/netfilter/x_tables.h |  7 ++---
+ net/ipv4/netfilter/arp_tables.c    | 16 +++++-----
+ net/ipv4/netfilter/ip_tables.c     | 16 +++++-----
+ net/ipv6/netfilter/ip6_tables.c    | 16 +++++-----
+ net/netfilter/x_tables.c           | 49 +++++++++++++++++++++---------
+ 5 files changed, 60 insertions(+), 44 deletions(-)
+
 --=20
-2.29.2
-
+2.30.1
 
