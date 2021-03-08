@@ -2,46 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9EC331644
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B1633164C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbhCHSiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:38:06 -0500
-Received: from verein.lst.de ([213.95.11.211]:57001 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229646AbhCHShy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:37:54 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5D6C768B02; Mon,  8 Mar 2021 19:37:51 +0100 (CET)
-Date:   Mon, 8 Mar 2021 19:37:51 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Martin Wilck <mwilck@suse.com>
-Cc:     Daniel Wagner <dwagner@suse.de>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] block: Suppress uevent for hidden device when removed
-Message-ID: <20210308183751.GA17380@lst.de>
-References: <20210303171201.8432-1-dwagner@suse.de> <66a9b7ff4958ab990f58a3dad8152d00c59775ce.camel@suse.com>
+        id S231252AbhCHSjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:39:09 -0500
+Received: from mail-io1-f47.google.com ([209.85.166.47]:43923 "EHLO
+        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231249AbhCHSiv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 13:38:51 -0500
+Received: by mail-io1-f47.google.com with SMTP id f20so11019736ioo.10;
+        Mon, 08 Mar 2021 10:38:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vzkfcBGh7P+3bfy1FsKTmuA9EtwsLrw7/lKLRVRQBX0=;
+        b=AMHLQdMLjGxaR6AdwxWNFSyaV/9DggXfNkfAlVt+X59WnxuqThZYwwvLli08FI2raA
+         +kIsKHWQQTyO7K+kfi+wZ3ZK79xv2MtU2DyBieIlYY3uLTETUxfd67+P+llyTXLYnKAk
+         eTNKhYESFh51VOjL+A0qx5tyNSTMh/UYpU9PfU7Anie9PSSmF2tOFOaawvdnML0ejZIB
+         ThQT6+vDTeqwEwxoyiNAM39k4WDPCASHCjBnjR4JE5vsBAT4O07guVHIKW9FKO/bqByI
+         3ZEguE2vZKriHh0SOcL8rq4R49FNRjQwEAomaOZieF49V3jNyCzGny+yEkjIh4YtScLp
+         HEiQ==
+X-Gm-Message-State: AOAM532KefiC3LQv3u07qaygBCk1CSGPG4Tw1Vx9xg3CjuHk7AzKo2Sf
+        Wzmh8eBiZXhFLkFxJ6ersOTAzC7ReA==
+X-Google-Smtp-Source: ABdhPJwmF14ikEMZXnQAtX0RfcialPVky2Q8Ob0oT7+HCxv+jgTqMb2EH4jQceofAvOrGqFFocgcEA==
+X-Received: by 2002:a05:6638:1648:: with SMTP id a8mr24511056jat.25.1615228730570;
+        Mon, 08 Mar 2021 10:38:50 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id f9sm6241138ilu.36.2021.03.08.10.38.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 10:38:49 -0800 (PST)
+Received: (nullmailer pid 2760823 invoked by uid 1000);
+        Mon, 08 Mar 2021 18:38:47 -0000
+Date:   Mon, 8 Mar 2021 11:38:47 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Henry Chen <henryc.chen@mediatek.com>
+Cc:     James Liao <jamesjj.liao@mediatek.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Arvin Wang <arvin.wang@mediatek.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        linux-pm@vger.kernel.org, Ryan Case <ryandcase@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        linux-kernel@vger.kernel.org, Fan Chen <fan.chen@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH V9 01/12] dt-bindings: soc: Add dvfsrc driver bindings
+Message-ID: <20210308183847.GA2760789@robh.at.kernel.org>
+References: <1614656863-8530-1-git-send-email-henryc.chen@mediatek.com>
+ <1614656863-8530-2-git-send-email-henryc.chen@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <66a9b7ff4958ab990f58a3dad8152d00c59775ce.camel@suse.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <1614656863-8530-2-git-send-email-henryc.chen@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 06:30:34PM +0100, Martin Wilck wrote:
-> I wonder if it wouldn't be wiser to remove this code
+On Tue, 02 Mar 2021 11:47:32 +0800, Henry Chen wrote:
+> Document the binding for enabling dvfsrc on MediaTek SoC.
 > 
->         if (disk->flags & GENHD_FL_HIDDEN) {
->                 dev_set_uevent_suppress(ddev, 0);
->                 return;
->         }
+> Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
+> ---
+>  .../devicetree/bindings/soc/mediatek/dvfsrc.yaml   | 67 ++++++++++++++++++++++
+>  include/dt-bindings/interconnect/mtk,mt8183-emi.h  | 21 +++++++
+>  2 files changed, 88 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/mediatek/dvfsrc.yaml
+>  create mode 100644 include/dt-bindings/interconnect/mtk,mt8183-emi.h
 > 
-> from register_disk(). The way you did it now, we would receive neither
-> "add" nor "remove" events in user space, but there might be change
-> events in between ?
 
-Well, we'll need to keep the return.  That being said keepign the
-uevents supressed entirely might be a good idea.
+Reviewed-by: Rob Herring <robh@kernel.org>
