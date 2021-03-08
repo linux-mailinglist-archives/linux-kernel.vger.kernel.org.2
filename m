@@ -2,98 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAEA3330AED
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F27330AF0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbhCHKOV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Mar 2021 05:14:21 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:22566 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231890AbhCHKOB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:14:01 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-110-PpHoh6FVONySBAbh2ICMKA-1; Mon, 08 Mar 2021 10:13:58 +0000
-X-MC-Unique: PpHoh6FVONySBAbh2ICMKA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 8 Mar 2021 10:13:56 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 8 Mar 2021 10:13:56 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Alex Elder' <elder@linaro.org>,
-        "subashab@codeaurora.org" <subashab@codeaurora.org>,
-        "stranche@codeaurora.org" <stranche@codeaurora.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "sharathv@codeaurora.org" <sharathv@codeaurora.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "evgreen@chromium.org" <evgreen@chromium.org>,
-        "cpratapa@codeaurora.org" <cpratapa@codeaurora.org>,
-        "elder@kernel.org" <elder@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next v2 5/6] net: qualcomm: rmnet: don't use C
- bit-fields in rmnet checksum trailer
-Thread-Topic: [PATCH net-next v2 5/6] net: qualcomm: rmnet: don't use C
- bit-fields in rmnet checksum trailer
-Thread-Index: AQHXEjcvEK7MzxmURkq987v/iEpZqap54riQ
-Date:   Mon, 8 Mar 2021 10:13:56 +0000
-Message-ID: <ebe1bf51902e49458cfdd685790c4350@AcuMS.aculab.com>
-References: <20210306031550.26530-1-elder@linaro.org>
- <20210306031550.26530-6-elder@linaro.org>
-In-Reply-To: <20210306031550.26530-6-elder@linaro.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S231940AbhCHKP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 05:15:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231922AbhCHKP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 05:15:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C812365101;
+        Mon,  8 Mar 2021 10:15:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615198529;
+        bh=wgbWGTTj+WOx2Mv0hHVLInOu/ZudIpMB5fyEJeBeqEI=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=OC2K6fiKm+/O3gd/umx4pY8WqhY5UX1qTwFAmAHGa+/WmWf4qe1DDSaV+LSHW52g6
+         Co8Ll2qtDCt0TEbZhtRnS9Q0sh3f7VRcsJ2APJ5vIC6OKkN1fplwHyPlwN32YTT09U
+         8JblUsejgcpTGN79B21v4B0sAMoefOkkIp9GjK0eNdbgORXsoTfTAHlnORoCq7Cxam
+         TReNTAk9xRADDCGS6WbzxaTN9jj7RFbkWjMm2gOPSkAVRgbu0mK5I91+sqjNZptBOf
+         1SePtZQ7zlBmfcxPqGnEhn+uzfLJNK2y1ZMr4io6RVGqeDpZdawtEXGZ2rpO4Si59l
+         Y3ECcmCyxCyuQ==
+Date:   Mon, 8 Mar 2021 11:15:25 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     =?KOI8-R?B?zsHC?= <nabijaczleweli@nabijaczleweli.xyz>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] Stylus-on-touchscreen device support
+In-Reply-To: <cover.1613582014.git.nabijaczleweli@nabijaczleweli.xyz>
+Message-ID: <nycvar.YFH.7.76.2103081114580.12405@cbobk.fhfr.pm>
+References: <cover.1613582014.git.nabijaczleweli@nabijaczleweli.xyz>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder
-> Sent: 06 March 2021 03:16
-> 
-> Replace the use of C bit-fields in the rmnet_map_dl_csum_trailer
-> structure with a single one-byte field, using constant field masks
-> to encode or get at embedded values.
-> 
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  .../ethernet/qualcomm/rmnet/rmnet_map_data.c    |  2 +-
->  include/linux/if_rmnet.h                        | 17 +++++++----------
->  2 files changed, 8 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> index 3291f252d81b0..29d485b868a65 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> @@ -365,7 +365,7 @@ int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 len)
-> 
->  	csum_trailer = (struct rmnet_map_dl_csum_trailer *)(skb->data + len);
-> 
-> -	if (!csum_trailer->valid) {
-> +	if (!u8_get_bits(csum_trailer->flags, MAP_CSUM_DL_VALID_FMASK)) {
+On Wed, 17 Feb 2021, наб wrote:
 
-Is that just an overcomplicated way of saying:
-	if (!(csum_trailer->flags & MAP_CSUM_DL_VALID_FMASK)) {
+> This patchset adds support for stylus-on-touchscreen devices as found on
+> the OneMix 3 Pro and Dell Inspiron 15 7000 2-in-1 (7591), among others;
+> with it, they properly behave like a drawing tablet.
+> 
+> Patches 2 and 4 funxionally depend on patch 1.
+> Patch 4 needs patch 3 to apply.
+> 
+> The output of this patchset and the need for a kernel, rather than
+> userspace, patch was previously discussed here:
+>   https://gitlab.freedesktop.org/libinput/libinput/-/merge_requests/558#note_792834
+> 
+> Ahelenia Ziemiańska (4):
+>   HID: multitouch: require Finger field to mark Win8 reports as MT
+>   HID: multitouch: set Stylus suffix for Stylus-application devices, too
+>   HID: input: replace outdated HID numbers+comments with macros
+>   HID: input: work around Win8 stylus-on-touchscreen reporting
+> 
+>  drivers/hid/hid-input.c      | 47 +++++++++++++++++++++++++++++++++---
+>  drivers/hid/hid-multitouch.c | 18 ++++++++------
+>  2 files changed, 55 insertions(+), 10 deletions(-)
 
-    David
+Benjamin, this patchset looks good to me; do you have any objections on 
+queuing it for 5.13?
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Thanks,
+
+-- 
+Jiri Kosina
+SUSE Labs
 
