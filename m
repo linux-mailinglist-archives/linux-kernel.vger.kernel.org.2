@@ -2,21 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4E13311F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CAF13311FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhCHPTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 10:19:02 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47474 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231325AbhCHPSf (ORCPT
+        id S231732AbhCHPTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 10:19:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231362AbhCHPSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 10:18:35 -0500
+        Mon, 8 Mar 2021 10:18:36 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC4BC06175F;
+        Mon,  8 Mar 2021 07:18:35 -0800 (PST)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: sre)
-        with ESMTPSA id 932AC1F45124
+        with ESMTPSA id 96C561F4512E
 Received: by jupiter.universe (Postfix, from userid 1000)
-        id D96A84800C7; Mon,  8 Mar 2021 16:18:30 +0100 (CET)
+        id DB9C64800C8; Mon,  8 Mar 2021 16:18:30 +0100 (CET)
 From:   Sebastian Reichel <sebastian.reichel@collabora.com>
 To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
         Shawn Guo <shawnguo@kernel.org>,
@@ -27,9 +30,9 @@ To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
 Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         kernel@collabora.com
-Subject: [PATCHv2 2/4] ARM: dts: imx6q-ba16: improve PHY information
-Date:   Mon,  8 Mar 2021 16:18:27 +0100
-Message-Id: <20210308151829.60056-3-sebastian.reichel@collabora.com>
+Subject: [PATCHv2 3/4] ARM: dts: imx: bx50v3: i2c GPIOs are open drain
+Date:   Mon,  8 Mar 2021 16:18:28 +0100
+Message-Id: <20210308151829.60056-4-sebastian.reichel@collabora.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210308151829.60056-1-sebastian.reichel@collabora.com>
 References: <20210308151829.60056-1-sebastian.reichel@collabora.com>
@@ -39,46 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PHY voltage supply information fixing the following kernel message:
+Explicitly mark I2C GPIOs as open drain to fix the following
+kernel message being printed:
 
-2188000.ethernet supply phy not found, using dummy regulator
-
-Also add PHY clock information to avoid depending on the bootloader
-programming correct values.
-
-The bootloader also sets some reserved registers in the PHY as
-advised by Qualcomm, which is not supported by the bindings/kernel
-driver, so the reset GPIO has not been added intentionally.
+enforced open drain please flag it properly in DT/ACPI DSDT/board file
 
 Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 ---
- arch/arm/boot/dts/imx6q-ba16.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/arm/boot/dts/imx6q-bx50v3.dtsi | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6q-ba16.dtsi b/arch/arm/boot/dts/imx6q-ba16.dtsi
-index 826fd51b1d98..6330d75f8f39 100644
---- a/arch/arm/boot/dts/imx6q-ba16.dtsi
-+++ b/arch/arm/boot/dts/imx6q-ba16.dtsi
-@@ -175,7 +175,19 @@ &fec {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_enet>;
- 	phy-mode = "rgmii-id";
-+	phy-supply = <&reg_3p3v>;
-+	phy-handle = <&phy0>;
- 	status = "okay";
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		phy0: ethernet-phy@4 {
-+			reg = <4>;
-+			qca,clk-out-frequency = <125000000>;
-+		};
-+	};
+diff --git a/arch/arm/boot/dts/imx6q-bx50v3.dtsi b/arch/arm/boot/dts/imx6q-bx50v3.dtsi
+index 2a98cc657595..10922375c51e 100644
+--- a/arch/arm/boot/dts/imx6q-bx50v3.dtsi
++++ b/arch/arm/boot/dts/imx6q-bx50v3.dtsi
+@@ -173,8 +173,8 @@ m25_eeprom: m25p80@0 {
+ &i2c1 {
+ 	pinctrl-names = "default", "gpio";
+ 	pinctrl-1 = <&pinctrl_i2c1_gpio>;
+-	sda-gpios = <&gpio5 26 GPIO_ACTIVE_HIGH>;
+-	scl-gpios = <&gpio5 27 GPIO_ACTIVE_HIGH>;
++	sda-gpios = <&gpio5 26 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++	scl-gpios = <&gpio5 27 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+ 
+ 	pca9547: mux@70 {
+ 		compatible = "nxp,pca9547";
+@@ -315,15 +315,15 @@ mux1_i2c8: i2c@7 {
+ &i2c2 {
+ 	pinctrl-names = "default", "gpio";
+ 	pinctrl-1 = <&pinctrl_i2c2_gpio>;
+-	sda-gpios = <&gpio4 13 GPIO_ACTIVE_HIGH>;
+-	scl-gpios = <&gpio4 12 GPIO_ACTIVE_HIGH>;
++	sda-gpios = <&gpio4 13 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++	scl-gpios = <&gpio4 12 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
  };
  
- &hdmi {
+ &i2c3 {
+ 	pinctrl-names = "default", "gpio";
+ 	pinctrl-1 = <&pinctrl_i2c3_gpio>;
+-	sda-gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;
+-	scl-gpios = <&gpio1 3 GPIO_ACTIVE_HIGH>;
++	sda-gpios = <&gpio1 6 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++	scl-gpios = <&gpio1 3 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+ };
+ 
+ &iomuxc {
 -- 
 2.30.1
 
