@@ -2,91 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD289331526
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B4733152E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhCHRrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 12:47:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbhCHRrQ (ORCPT
+        id S230341AbhCHRsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:48:17 -0500
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:27430
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230429AbhCHRrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:47:16 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB37CC06174A;
-        Mon,  8 Mar 2021 09:47:15 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id k2so9612608ili.4;
-        Mon, 08 Mar 2021 09:47:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sMKJhv2mzJOGTerVdFexLl8nyHCo/hJ5Vn7sQjFVS5Y=;
-        b=jR94KJGGxkVVBPT4hgFRPVtMB0iLlfvsXDFnXh74Td+1jWpralwfT2vyDliLDFNTWx
-         3bvYYhGs7Zv4ku7HITInDSZ0vPuVH0dTd2VlCeoGUhx+2OivbOLkm3jYNJ/9TdiMvsWn
-         YBSXK1QP5/BcO0lAGlgmilPSysPZrPxXJdzKHblKz3RcrFM0e5XrA5tGLWyLzcOxWDBQ
-         24uKR8G0DLgS+OQPs/Q2NBtxTQgKOHS/40YrQMD3Bi6FotRjxjQHc4igjpji/GaFuDex
-         FAydP1tYBwTFhm1eLyYX389P/k+sk4TJdAab8N0GpRRJnzHfgOkSM5ugl5sIxM2I5Uuv
-         u8RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sMKJhv2mzJOGTerVdFexLl8nyHCo/hJ5Vn7sQjFVS5Y=;
-        b=L5eRrYuDAsYrJA34OfuHEL7MJ2uKRRTG2aKMmamRx/pfMUZLfplzXyebObEyWzVZ/i
-         cq/IU5sXVdcayWeYvXVxC9XqdA713QfsirrYtX6iZCl/aYe+I/kCgFsNotmWI7pTco/7
-         72DkkaydntifR78RYQpPqrudOpv/AjloICt6jftm7sOpX5RKq29U0z9DiCaPLQltxyrq
-         H6fKMbxsSLZlM4+oeFFgdELb5cc1XC4LyyjkdvV531KQBKeDfefqHCZeSeskSn8teof/
-         0gZ198FHaT89PqbvMJq/h1fAS94dNdsjSJfMGHZeVNTixqQoOoxC+6NwIaJBKdLSbOm8
-         itPw==
-X-Gm-Message-State: AOAM5304sqQBZ9DP8j0+vrH0l3KJ16nV9dEhDn6Y/9kPwTHQdrHTVmzd
-        F8oZ8gS/9+6f/Remh5hDFRETX0wB9Ow7khSjTi1GOxiPhQA=
-X-Google-Smtp-Source: ABdhPJyUhn/AeHgikfhQCvdOnwDbW0ym9SvabMduTSBWo+pC2hxFCegO79I1gn2RqkPVsMI9FVVPhxa/nV7JlhmlHSo=
-X-Received: by 2002:a05:6e02:2196:: with SMTP id j22mr20705311ila.64.1615225635083;
- Mon, 08 Mar 2021 09:47:15 -0800 (PST)
+        Mon, 8 Mar 2021 12:47:53 -0500
+X-IronPort-AV: E=Sophos;i="5.81,232,1610406000"; 
+   d="scan'208";a="375128978"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 18:47:19 +0100
+Date:   Mon, 8 Mar 2021 18:47:19 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Denis Efremov <efremov@linux.com>, kbuild-all@01.org
+Subject: [PATCH] tty: max310x: fix flexible_array.cocci warnings
+Message-ID: <alpine.DEB.2.22.394.2103081845010.15810@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-References: <20210308032529.435224-1-ztong0001@gmail.com>
-In-Reply-To: <20210308032529.435224-1-ztong0001@gmail.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 8 Mar 2021 09:47:04 -0800
-Message-ID: <CAKgT0UftdTobwgA6hi=CdOfQ+1fdozhPs89fDmapbvcp7jLASw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] fix a couple of atm->phy_data related issues
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     Chas Williams <3chas3@gmail.com>,
-        linux-atm-general@lists.sourceforge.net,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 12:39 AM Tong Zhang <ztong0001@gmail.com> wrote:
->
-> there are two drivers(zatm and idt77252) using PRIV() (i.e. atm->phy_data)
-> to store private data, but the driver happens to populate wrong
-> pointers: atm->dev_data. which actually cause null-ptr-dereference in
-> following PRIV(dev). This patch series attemps to fix those two issues
-> along with a typo in atm struct.
->
-> Tong Zhang (3):
->   atm: fix a typo in the struct description
->   atm: uPD98402: fix incorrect allocation
->   atm: idt77252: fix null-ptr-dereference
->
->  drivers/atm/idt77105.c | 4 ++--
->  drivers/atm/uPD98402.c | 2 +-
->  include/linux/atmdev.h | 2 +-
->  3 files changed, 4 insertions(+), 4 deletions(-)
+From: kernel test robot <lkp@intel.com>
 
-For the 2 phys you actually seen null pointer dereferences or are your
-changes based on just code review?
+Zero-length and one-element arrays are deprecated, see
+Documentation/process/deprecated.rst
+Flexible-array members should be used instead.
 
-I ask because it seems like this code has been this way since 2005 and
-in the case of uPD98402_start the code doesn't seem like it should
-function the way it was as PRIV is phy_data and there being issues
-seems pretty obvious since the initialization of things happens
-immediately after the allocation.
+Generated by: scripts/coccinelle/misc/flexible_array.cocci
 
-I'm just wondering if it might make more sense to drop the code if it
-hasn't been run in 15+ years rather than updating it?
+Fixes: 7b36c1398fb6 ("coccinelle: misc: add flexible_array.cocci script")
+CC: Denis Efremov <efremov@linux.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+---
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   144c79ef33536b4ecb4951e07dbc1f2b7fa99d32
+commit: 7b36c1398fb63f9c38cc83dc75f143d2e5995062 coccinelle: misc: add flexible_array.cocci script
+:::::: branch date: 6 hours ago
+:::::: commit date: 5 months ago
+
+ max310x.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -273,7 +273,7 @@ struct max310x_port {
+ #ifdef CONFIG_GPIOLIB
+ 	struct gpio_chip	gpio;
+ #endif
+-	struct max310x_one	p[0];
++	struct max310x_one	p[];
+ };
+
+ static struct uart_driver max310x_uart = {
