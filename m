@@ -2,114 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD61331919
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:11:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0618933191A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhCHVLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 16:11:08 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:40409 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbhCHVKc (ORCPT
+        id S231263AbhCHVLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 16:11:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231335AbhCHVLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 16:10:32 -0500
-Received: by mail-il1-f199.google.com with SMTP id j7so8591653ilu.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 13:10:32 -0800 (PST)
+        Mon, 8 Mar 2021 16:11:18 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE74C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 13:11:18 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id r25so17885447ljk.11
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 13:11:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fheXQogWNqXPedd/D/bL/IATUJjbirprHsz26R2GGZc=;
+        b=bofYdG2VMHC5QgtWzMDbTmAePkLxuPsokECM19WVof+iphMqmzd7vSq9HGjIDrh4pf
+         tbh+j2rva0fKinU4VXkRHMzlgGGQIiQWLfCXvftrZcXXBKeejE7t9zkGDXJb7uacgNc4
+         kon4geP0ZOWvx6i3kexK9MJt4qeXlizwYFlWhXzM/q39yj3vjofPQUR4Zth//ZxUE+Jm
+         6/8VVW+wzjGEOHPrc5h87oFcsdixpA+3ugVP6bJ7PFUo0ayLXGdMGhfkQt3AzjHCOTBN
+         9clEM0QC/SOvF9avCw71YPcEPIToO9tR1sihtPwkn4ndQBrse85HYp3tVHMarqkovLme
+         O4ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=MlrwDWSqQ3VwrUBIGlkHQVvbOROSKag3Yj/DlloiHp8=;
-        b=nRPx9vSswqJkrHx1Hu9LBQ2uHKKN7+YbAH/O6ma7G9PZsIN91OSR+XuFNyAOfyWchp
-         XUlYFUYbpJZBn0nKplt9ApahURmYyj3O2IxYhzYOemnv+EoeVM+WnMSPXUakphpylVFJ
-         /xH5kgzUuE+Qg1PI4MBfj0YUyJ2FoUID12Kitvlq3ck1tkjUAoUrQA7vix1h1DAhVaBG
-         263Mnl8wdcydUTjWigHfBcoivu2Z6lAtv6Q6ldSFJZWtLFms0UJuTzWgnKj99/DgIyCq
-         sCW3jIIUkhzTYV9nGCUo+U7S3juQTBkvD5c4m/fde+HONAVrsh6l8JVVlS+7bOlYhcbT
-         xQaA==
-X-Gm-Message-State: AOAM531g5UBozEtzLRhIZUimBagoN3IUHJguAzJg2w27wHFOCOTBONQ1
-        ylYb+OqRrKn45PYJiKoM1MRFaqMQ5ewVdmNenZb73odaLwt8
-X-Google-Smtp-Source: ABdhPJz9NWIxK779w1caAr5X0rqBsPkfMcXCRwYE4vhhhC94DD97C/JqGZXPqOwGVsWy62RvY9inLUIzwDetwD2yw5w3gWyTBIOR
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fheXQogWNqXPedd/D/bL/IATUJjbirprHsz26R2GGZc=;
+        b=Qc7ZY7429of2dOV4pHofHJhw1nPuTcHvSjUDVGkwYYJYbNrUpUHmL+MgjYgQycRHRE
+         +BP3Q19tkAybDirJeQrEGDwFk7yeL9eKXyCg4hSFUM3eajWyYhUQKdF9D1s6KfUDg3cN
+         uEY4+HoGxdNH2rfKbg+jPb2djxbrxZm1P74EYyCjAOLh54oxBcXm67usBzfnb9c44eE7
+         ahquAItpvi3cFNjmniLOsQwZqhVlLiIyzVf161+cn09Z/PO/oq6dxpJ2S/UtlWfaGtaR
+         9pXKVUjf25EXq6gehPXt8oHW3jmTYNJfCKe0xAm49Gk1pi7YzvWRlL8iwUBZjQGDDIVL
+         A4kg==
+X-Gm-Message-State: AOAM530H9W05L8iXS4vjFmRcPB1RO4u3cB3WdS7CbdecSrKZ6CUVvy25
+        Thdl11WN1/kewaE6ymvP26/eCAKZ+Hcd3MbROGsnoA==
+X-Google-Smtp-Source: ABdhPJxDGJH4/+aRGbwOly/sxB5w5c7gW/5b29K8HWw/hVALIBWRe3U68uFXKXg7WZjziaM8XTiS0NtNerqCf0FklDM=
+X-Received: by 2002:a2e:7d03:: with SMTP id y3mr15321965ljc.0.1615237876494;
+ Mon, 08 Mar 2021 13:11:16 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9c50:: with SMTP id 16mr20624458iof.66.1615237832313;
- Mon, 08 Mar 2021 13:10:32 -0800 (PST)
-Date:   Mon, 08 Mar 2021 13:10:32 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003912cf05bd0cdd75@google.com>
-Subject: [syzbot] WARNING in kvm_wait
-From:   syzbot <syzbot+3c2bc6358072ede0f11b@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, pbonzini@redhat.com, seanjc@google.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
+References: <20210217001322.2226796-1-shy828301@gmail.com> <20210217001322.2226796-10-shy828301@gmail.com>
+ <CALvZod6R=cEwK+AND+E3CG3LrWViNjWDd0dy-Brz1MhJWyJ+ZQ@mail.gmail.com> <CAHbLzkq6TG4pV2Ro5yMWZ0wKsSPH5bJf+8Kj7W1JpWMa_V68HA@mail.gmail.com>
+In-Reply-To: <CAHbLzkq6TG4pV2Ro5yMWZ0wKsSPH5bJf+8Kj7W1JpWMa_V68HA@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 8 Mar 2021 13:11:02 -0800
+Message-ID: <CALvZod7Wd-wBB5tVxCkT3PiqcUmFgTSzm8OLMM0BRMaoPiKArA@mail.gmail.com>
+Subject: Re: [v8 PATCH 09/13] mm: vmscan: add per memcg shrinker nr_deferred
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Mar 8, 2021 at 12:30 PM Yang Shi <shy828301@gmail.com> wrote:
+>
+> On Mon, Mar 8, 2021 at 11:12 AM Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > On Tue, Feb 16, 2021 at 4:13 PM Yang Shi <shy828301@gmail.com> wrote:
+> > >
+> > > Currently the number of deferred objects are per shrinker, but some slabs, for example,
+> > > vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
+> > >
+> > > The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
+> > > excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
+> > > may suffer from over shrink, excessive reclaim latency, etc.
+> > >
+> > > For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
+> > > heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
+> > > might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
+> > >
+> > > We observed this hit in our production environment which was running vfs heavy workload
+> > > shown as the below tracing log:
+> > >
+> > > <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> > > nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
+> > > cache items 246404277 delta 31345 total_scan 123202138
+> > > <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> > > nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
+> > > last shrinker return val 123186855
+> > >
+> > > The vfs cache and page cache ratio was 10:1 on this machine, and half of caches were dropped.
+> > > This also resulted in significant amount of page caches were dropped due to inodes eviction.
+> > >
+> > > Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
+> > > better isolation.
+> > >
+> > > When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
+> > > would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
+> > >
+> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > > ---
+> > >  include/linux/memcontrol.h |  7 +++--
+> > >  mm/vmscan.c                | 60 ++++++++++++++++++++++++++------------
+> > >  2 files changed, 46 insertions(+), 21 deletions(-)
+> > >
+> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > > index 4c9253896e25..c457fc7bc631 100644
+> > > --- a/include/linux/memcontrol.h
+> > > +++ b/include/linux/memcontrol.h
+> > > @@ -93,12 +93,13 @@ struct lruvec_stat {
+> > >  };
+> > >
+> > >  /*
+> > > - * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
+> > > - * which have elements charged to this memcg.
+> > > + * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
+> > > + * shrinkers, which have elements charged to this memcg.
+> > >   */
+> > >  struct shrinker_info {
+> > >         struct rcu_head rcu;
+> > > -       unsigned long map[];
+> > > +       atomic_long_t *nr_deferred;
+> > > +       unsigned long *map;
+> > >  };
+> > >
+> > >  /*
+> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > > index a1047ea60ecf..fcb399e18fc3 100644
+> > > --- a/mm/vmscan.c
+> > > +++ b/mm/vmscan.c
+> > > @@ -187,11 +187,17 @@ static DECLARE_RWSEM(shrinker_rwsem);
+> > >  #ifdef CONFIG_MEMCG
+> > >  static int shrinker_nr_max;
+> > >
+> > > +/* The shrinker_info is expanded in a batch of BITS_PER_LONG */
+> > >  static inline int shrinker_map_size(int nr_items)
+> > >  {
+> > >         return (DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long));
+> > >  }
+> > >
+> > > +static inline int shrinker_defer_size(int nr_items)
+> > > +{
+> > > +       return (round_up(nr_items, BITS_PER_LONG) * sizeof(atomic_long_t));
+> > > +}
+> > > +
+> > >  static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
+> > >                                                      int nid)
+> > >  {
+> > > @@ -200,10 +206,12 @@ static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
+> > >  }
+> > >
+> > >  static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+> > > -                                   int size, int old_size)
+> > > +                                   int map_size, int defer_size,
+> > > +                                   int old_map_size, int old_defer_size)
+> > >  {
+> > >         struct shrinker_info *new, *old;
+> > >         int nid;
+> > > +       int size = map_size + defer_size;
+> > >
+> > >         for_each_node(nid) {
+> > >                 old = shrinker_info_protected(memcg, nid);
+> > > @@ -215,9 +223,16 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+> > >                 if (!new)
+> > >                         return -ENOMEM;
+> > >
+> > > -               /* Set all old bits, clear all new bits */
+> > > -               memset(new->map, (int)0xff, old_size);
+> > > -               memset((void *)new->map + old_size, 0, size - old_size);
+> > > +               new->nr_deferred = (atomic_long_t *)(new + 1);
+> > > +               new->map = (void *)new->nr_deferred + defer_size;
+> > > +
+> > > +               /* map: set all old bits, clear all new bits */
+> > > +               memset(new->map, (int)0xff, old_map_size);
+> > > +               memset((void *)new->map + old_map_size, 0, map_size - old_map_size);
+> > > +               /* nr_deferred: copy old values, clear all new values */
+> > > +               memcpy(new->nr_deferred, old->nr_deferred, old_defer_size);
+> > > +               memset((void *)new->nr_deferred + old_defer_size, 0,
+> > > +                      defer_size - old_defer_size);
+> > >
+> > >                 rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
+> > >                 kvfree_rcu(old);
+> > > @@ -232,9 +247,6 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+> > >         struct shrinker_info *info;
+> > >         int nid;
+> > >
+> > > -       if (mem_cgroup_is_root(memcg))
+> > > -               return;
+> > > -
+> > >         for_each_node(nid) {
+> > >                 pn = mem_cgroup_nodeinfo(memcg, nid);
+> > >                 info = shrinker_info_protected(memcg, nid);
+> > > @@ -247,12 +259,12 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+> > >  {
+> > >         struct shrinker_info *info;
+> > >         int nid, size, ret = 0;
+> > > -
+> > > -       if (mem_cgroup_is_root(memcg))
+> > > -               return 0;
+> >
+> > Can you please comment on the consequences on allowing to allocate
+> > shrinker_info for root memcg? Why didn't we do that before but now it
+> > is fine (or maybe required)? Please add the explanation in the commit
+> > message.
+>
+> Before the patchset shrinker_info just tracks shrinker_maps which is
+> not required for root memcg. But the newly added nr_deferred is needed
+> in root memcg otherwise the nr_deferred work would get lost once the
+> memcgs are reparented to root.
+>
+> How's about adding the below paragraph to the commit log:
+>
+> "To preserve nr_deferred when reparenting memcgs to root, root memcg
+> needs shrinker_info allocated too."
+>
 
-syzbot found the following issue on:
+LGTM and you can add:
 
-HEAD commit:    a38fd874 Linux 5.12-rc2
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14158fdad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=db9c6adb4986f2f2
-dashboard link: https://syzkaller.appspot.com/bug?extid=3c2bc6358072ede0f11b
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1096d35cd00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16bf1e52d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3c2bc6358072ede0f11b@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-raw_local_irq_restore() called with IRQs enabled
-WARNING: CPU: 0 PID: 14236 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-Modules linked in:
-CPU: 0 PID: 14236 Comm: syz-executor143 Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-Code: be ff cc cc cc cc cc cc cc cc cc cc cc 80 3d ac 2b b0 04 00 74 01 c3 48 c7 c7 a0 8f 6b 89 c6 05 9b 2b b0 04 01 e8 f7 cb be ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
-RSP: 0018:ffffc9000c29f9c0 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffffc90000e1b688 RCX: 0000000000000000
-RDX: ffff88801e689bc0 RSI: ffffffff815c0eb5 RDI: fffff52001853f2a
-RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815b9c4e R11: 0000000000000000 R12: 0000000000000003
-R13: fffff520001c36d1 R14: 0000000000000001 R15: ffff8880b9c35f40
-FS:  00000000018ce300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffd79af41d8 CR3: 000000001c373000 CR4: 0000000000350ef0
-Call Trace:
- kvm_wait arch/x86/kernel/kvm.c:860 [inline]
- kvm_wait+0xc9/0xe0 arch/x86/kernel/kvm.c:837
- pv_wait arch/x86/include/asm/paravirt.h:564 [inline]
- pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
- __pv_queued_spin_lock_slowpath+0x8b8/0xb40 kernel/locking/qspinlock.c:508
- pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:554 [inline]
- queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
- queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
- do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
- spin_lock include/linux/spinlock.h:354 [inline]
- futex_wake+0x1b5/0x490 kernel/futex.c:1610
- do_futex+0x326/0x1710 kernel/futex.c:3740
- __do_sys_futex+0x2a2/0x470 kernel/futex.c:3798
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4459c9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd79af41f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004459c9
-RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00000000004ca408
-RBP: 00000000004ca400 R08: 0000000000000000 R09: 0000000000000000
-R10: 00007ffd79bec090 R11: 0000000000000246 R12: 00007ffd79af4230
-R13: 00000000004ca40c R14: 0000000000000001 R15: 00000000004023b0
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
