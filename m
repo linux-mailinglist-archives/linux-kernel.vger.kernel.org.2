@@ -2,87 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFDD3312CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BE73312D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 17:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhCHQDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 11:03:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38752 "EHLO mail.kernel.org"
+        id S230412AbhCHQEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 11:04:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230078AbhCHQC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 11:02:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F74D65228;
-        Mon,  8 Mar 2021 16:02:55 +0000 (UTC)
+        id S230075AbhCHQDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 11:03:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9875065210;
+        Mon,  8 Mar 2021 16:03:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615219375;
-        bh=81L55Ql71/PIDoeyenGJ6E24UkFDnhGsiFqB2FUgnnk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Qu6ApKeYNNZJfwMnHd8RoTXahkePw8+QB0qK26OmfXR7IaZruke3YY5kMz6nVarf9
-         bLQGEdu+k8QV3ujpY0Pa6G69E/rbJaz6y2+atBrAvrMttF/d3JrBNx+1zah0QLd3bN
-         j4YxN1iKuEGudCWxmktHIDl/QkSrgnIAVs40LAA74aZGLPKl0mczlw7zQmbrwQ5Rk0
-         ufEFBVBgUrUnwOxzsxdHvPuZM/pkxxS0vneF2ZSgA+ZaNGMdwpDKOPhXVKoS1FBeeT
-         mz/NcyBQZDv+fJio+zHgK3TPxWQoWt4tbCwVlQVH3ugHXFSX/UUlmoMJkqDMBX91bL
-         ozSLstqZDxNkQ==
-Received: by mail-ot1-f41.google.com with SMTP id f33so9618200otf.11;
-        Mon, 08 Mar 2021 08:02:55 -0800 (PST)
-X-Gm-Message-State: AOAM532xGSTQcgmMk1vY8/lpRWB7yn0QyuNmQZ021Zcbr30QCG3kXQkp
-        JNI9PIkvj1g2ZpksveCx8wmGEHEE8m9g1kviReU=
-X-Google-Smtp-Source: ABdhPJyNkTy8tsZDz8aNPrEjO+pd0M6+WYJzuDmR8+KfsUmhCtClsTL+pKmKL13p3R1++4uqRZ66UycBA+zhOi31Fsk=
-X-Received: by 2002:a05:6830:14c1:: with SMTP id t1mr831083otq.305.1615219375009;
- Mon, 08 Mar 2021 08:02:55 -0800 (PST)
+        s=k20201202; t=1615219424;
+        bh=PBmEbgMiN3pUGiaxEnpqYz1pmhYI5EG78UjJ+zTCa34=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NcWexvUdUGzNuljFAKt4fG1oCKJyzBczFAtB8+g0gDNqIo3suCYS8hcUyItWj1WgC
+         YE5J1Wauy0loF0JQdDbudC7sEd5zCV6eYhEgKTgzx4mCxoCQD3iFCWNyrxqDP68Y1c
+         MTSoyBck2RU5OWWsFfNAxjmXsvp9+7iiGnQrB8dkBh3sG1cS78DUNEbYCf3Oc3oWbL
+         D3JBQ15AywqQuZ4fJyWciTSGIMZz7xhkzC4/4seW7Kog0XWj0ChEDFzah/mjXVROSo
+         XylHnTySjGqGDAdgnlbBsHBNVmDcjr7z69oEMKc66j/TxKyeJcRK91KTmHZ1GedeC1
+         4XTqKpPLor6ZQ==
+Date:   Mon, 8 Mar 2021 18:03:40 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Zhu Lingshan <lingshan.zhu@intel.com>
+Cc:     jasowang@redhat.com, mst@redhat.com, lulu@redhat.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 4/4] vDPA/ifcvf: remove the version number string
+Message-ID: <YEZK3JF1hdSvfIzi@unreal>
+References: <20210308083525.382514-1-lingshan.zhu@intel.com>
+ <20210308083525.382514-5-lingshan.zhu@intel.com>
 MIME-Version: 1.0
-References: <20210308152935.2263935-1-arnd@kernel.org> <12c5050f-feb3-e07f-45d2-5e89b678841a@kernel.org>
-In-Reply-To: <12c5050f-feb3-e07f-45d2-5e89b678841a@kernel.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 8 Mar 2021 17:02:38 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3xEw9yiVY-dDmQEKTSPSXaZJEhXEQ2M=7ZoUA8_P5Qzg@mail.gmail.com>
-Message-ID: <CAK8P3a3xEw9yiVY-dDmQEKTSPSXaZJEhXEQ2M=7ZoUA8_P5Qzg@mail.gmail.com>
-Subject: Re: [PATCH] power: supply: max8997_charger: make EXTCON dependency unconditional
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Timon Baetz <timon.baetz@protonmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308083525.382514-5-lingshan.zhu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 4:33 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+On Mon, Mar 08, 2021 at 04:35:25PM +0800, Zhu Lingshan wrote:
+> This commit removes the version number string, using kernel
+> version is enough.
 >
-> On 08/03/2021 16:29, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > Some of the extcon interfaces have a fallback implementation that can
-> > be used when EXTCON is disabled, but some others do not, causing a
-> > build failure:
-> >
-> > drivers/power/supply/max8997_charger.c:261:9: error: implicit declaration of function 'devm_extcon_register_notifier_all' [-Werror,-Wimplicit-function-declaration]
-> >                 ret = devm_extcon_register_notifier_all(&pdev->dev, charger->edev,
-> >                       ^
-> > drivers/power/supply/max8997_charger.c:261:9: note: did you mean 'devm_extcon_register_notifier'?
-> > include/linux/extcon.h:263:19: note: 'devm_extcon_register_notifier' declared here
-> > static inline int devm_extcon_register_notifier(struct device *dev,
-> >
-> > I assume there is no reason to actually build this driver without extcon
-> > support, so a hard dependency is the easiest fix. Alternatively the
-> > header file could be extended to provide additional inline stubs.
+> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+> ---
+>  drivers/vdpa/ifcvf/ifcvf_main.c | 2 --
+>  1 file changed, 2 deletions(-)
 >
-> Hi Arnd,
->
-> Thanks for the patch but I think I got it covered with:
-> https://lore.kernel.org/lkml/20210215100610.19911-2-cw00.choi@samsung.com/
-> (sent via extcon tree).
->
-> Did you experience a new/different issue?
 
-The patch should be fine and address the problem, I just didn't see it was
-already fixed in linux-next as I'm still testing on mainline (rc2 at
-the moment).
-
-I assume the fix will make it into a future -rc then.
-
-      Arnd
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
