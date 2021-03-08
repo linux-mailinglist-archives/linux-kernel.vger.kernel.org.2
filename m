@@ -2,139 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD32A3309B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 251173309BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 09:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229474AbhCHIr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 03:47:56 -0500
-Received: from mail-dm6nam10on2087.outbound.protection.outlook.com ([40.107.93.87]:46113
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229497AbhCHIrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 03:47:31 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g8CauPjbQIOavQTyqkgMMu4z4FKdM5WpGLz2LmXJOHZ/TQomKxnrdY68Tgj9J/JJSQRoURnX025GQQdw+PTGDdfUMh9h9hTkshdY24hwb7FAK99m7ghoa7GwwSUbisqT2syytRYiOPm8rOYgogfyWS927Zb/7z9LP5uaTwO6nWxrdaJOZaAUTQ0HE62FOnPE7WBsfBrdfclW2LyTrvET7sGNcp93RoM2wY8cEzXzUEyMtbJ+TywMTKm5dEztWgaTDBzD9zdZP77FwSIedwLGBhQCINJ0efCdrl6cYz+PRDzWKr4qtfydDcDQcdnH/XxLHvd20xcpFtvwjOZGQqGFBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rI/1azM/cRm9QxhN1E41j7ZYNCfjo+sFxy4YcO5Vt3U=;
- b=XvZyk9kQzrbxUADVjMq3a7//mv5rCjQ8a9ksRGB16lPEJIkkIj1daMBzDa3zVoqyvxGB9YRDFVmoPSsSFK3J16sR/KVsK8YhDwIQPsR2xflO1+/k+zQygv8AbGHEF79ZYPo3ZJr5JNtCnZl7mmhLetpHobJSF9OCnVhyH3Ul1KFtqHc8WcmISQngpIgvSNlQam7SWU5Q9Lvr82F0iuf6Ns8ynjE3UGUx48bmEPruMC7aflRHCXneqeh5DsbEl6PzltQBS539dy7mc/GSeWstMPJ/vbnB2GVk37QeZgoJwgvKqx+Z1V41I149sxRjIIMxOYQII+hhv/gkWKVFInWj4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
+        id S229591AbhCHIr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 03:47:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhCHIrg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 03:47:36 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B141BC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 00:47:36 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id j14-20020a17090a588eb02900cefe2daa2cso1113881pji.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 00:47:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rI/1azM/cRm9QxhN1E41j7ZYNCfjo+sFxy4YcO5Vt3U=;
- b=DMExs8SM/Gd/BBNxaCbsGMsGFROCKJU2jLT+raAYG70EgWiDvFSheYYTyC5DlfjbWlpEKUDjbWy88FLxy9EKbe24s16bLxXRLulewEuSlKHctIg+YDTveTMoG6FuLZhhREE/Q+saG00Xq8P6jlbeKEKTnFiBQdTv+0jP+5Kbhew=
-Received: from SA9PR13CA0190.namprd13.prod.outlook.com (2603:10b6:806:26::15)
- by SN6PR02MB4862.namprd02.prod.outlook.com (2603:10b6:805:94::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Mon, 8 Mar
- 2021 08:47:27 +0000
-Received: from SN1NAM02FT005.eop-nam02.prod.protection.outlook.com
- (2603:10b6:806:26:cafe::c0) by SA9PR13CA0190.outlook.office365.com
- (2603:10b6:806:26::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.23 via Frontend
- Transport; Mon, 8 Mar 2021 08:47:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT005.mail.protection.outlook.com (10.152.72.117) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3912.25 via Frontend Transport; Mon, 8 Mar 2021 08:47:26 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Mon, 8 Mar 2021 00:47:25 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2106.2 via Frontend Transport; Mon, 8 Mar 2021 00:47:25 -0800
-Envelope-to: michal.simek@xilinx.com,
- linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org,
- krzk@kernel.org,
- robh+dt@kernel.org,
- quanyang.wang@windriver.com,
- laurent.pinchart@ideasonboard.com
-Received: from [172.30.17.109] (port=52264)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1lJBXx-0000Rx-24; Mon, 08 Mar 2021 00:47:25 -0800
-Subject: Re: [PATCH] arm64: dts: zynqmp: Add compatible strings for si5328
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        <quanyang.wang@windriver.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210308070843.2096992-1-quanyang.wang@windriver.com>
- <YEXhuGeMoXbfWI6I@pendragon.ideasonboard.com>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <a577fa2d-eb6c-aada-d460-35304af7b18d@xilinx.com>
-Date:   Mon, 8 Mar 2021 09:47:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=bKan0MbvNXWRj+HWXY8826SQQxFg7KQ0T970T1h/cKU=;
+        b=mfgn/E41neDc4PfgZmzViMn1STcXOagr3u8Z6HPIN/QIJlv6ZGG3yxwFEjuLTLN8hY
+         kjvofJ7Q8kG/W3vAxEfJbIQnMH5Ok35nQGOlXoWdeNyKD5QcWBj/ke+xk1y3TURP2TKt
+         LVxwXkRz9vNLhLnPM1TRp1n/YVFMg9ACKinUaG/0PZHk99VJaBTeKrdgfW4e6FDZtXIA
+         0+zCJZ0WTl8skMntt2OcUw6U38Xh5Ocyp4JGdduUVrPzQKUjqu1SgiwxTw1FZ4D/cMf/
+         B0GUdijmRQKn5II/5bzO1RvSWf3jyl22d67pxgbBorMhyzScY7oseDpJlHUxRZhVuNlC
+         3Z6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=bKan0MbvNXWRj+HWXY8826SQQxFg7KQ0T970T1h/cKU=;
+        b=gqkzhc8GLTb9yNv8TuE+b4hJtpxuxn34+G+WFFinc6Q5lY3qmBwSEOzMHT+opJA1LC
+         num9WoXP8vcvOWP7QE0OmVT9ds8CFRHVr1NKyz5IwoRt9lXlxZPAOIwEgKmC6KvfdUa2
+         Cfo/+sZgvonTXVG/ccg5cB4/y1hz7DLt08h+zIJDIqLfeCwIaKgZvkFK1wG02TPDmvts
+         gy26xa45QKJkgmERxIDTehnBvy4+ZE/2JW6TITiAFWkrpEG8V5j1i0zOoUpdQIpWnQWf
+         KKzHeolTBYt7MV2vx0v8Yo/StzdHwGicICyq6EjrV1JyeO2ZvVjzd0A6e6xTtlOfmINI
+         73/A==
+X-Gm-Message-State: AOAM532ycWm4UmnlgTojCN/nKaGo2I8ns7VGEfU5Ndc5e+5yEQ35M0GS
+        yAaBRPYeW3Ksvv41Bu694Jc=
+X-Google-Smtp-Source: ABdhPJy6Fh2uzNFRAMPVazacmcmCjtcORGUIi0dKs5WsrmwrZ7Mkz2vwL4S8o03vMyCfLzXvv2SB1A==
+X-Received: by 2002:a17:90a:3b0e:: with SMTP id d14mr24269268pjc.198.1615193256337;
+        Mon, 08 Mar 2021 00:47:36 -0800 (PST)
+Received: from localhost (58-6-239-121.tpgi.com.au. [58.6.239.121])
+        by smtp.gmail.com with ESMTPSA id r13sm9446545pfh.159.2021.03.08.00.47.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 00:47:35 -0800 (PST)
+Date:   Mon, 08 Mar 2021 18:47:30 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v5 05/22] powerpc/irq: Add helper to set regs->softe
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+        <5f37d1177a751fdbca79df461d283850ca3a34a2.1612796617.git.christophe.leroy@csgroup.eu>
+        <1612832745.vhjk6358hf.astroid@bobo.none>
+        <5987787e-ee80-ed0e-0c34-9884f6aad3c5@csgroup.eu>
+        <1612856863.0x6ebz3hce.astroid@bobo.none>
+        <d243672c-ea47-2d0c-bfe4-e6eed5460868@csgroup.eu>
+In-Reply-To: <d243672c-ea47-2d0c-bfe4-e6eed5460868@csgroup.eu>
 MIME-Version: 1.0
-In-Reply-To: <YEXhuGeMoXbfWI6I@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c0ef6913-1eb9-4654-5a4e-08d8e20ecd0f
-X-MS-TrafficTypeDiagnostic: SN6PR02MB4862:
-X-Microsoft-Antispam-PRVS: <SN6PR02MB486236FDCC6D22762CC37CE4C6939@SN6PR02MB4862.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 02lvJeq4bu135iHQRXgUrS+Fgy5+keB4cH3OxoxwrHOjjagN8Hxw0WwNq3CSUeJCVfaV+Dg9NIuBsYeCjNwtC28yAC+ZsSisortoByom8oY/ne+nWgYNc12NYHCP+xTCLHM7By6fIdA1p4dthxBtzNz9wYOhCeiHiRAgWoXjtyg8jtH0mRHOCiRslDUjew5xkTVeJj5IlYV4+YusLlMCszjgZEVc5V2MDf4KuO/U52OIQJF913k6cE8ioJQxw6LYdhQKkxbucoyNu65vzIwCF0HpaEYTJg1b903SsFwMQz0jaKaUMXjO+9kTB8Fah/ZAfGmFLqu/pDskMOyJwjJ5GkHx8KO8lttRtdv6nZydN+zvcVOEsHkklsf0MVbJ+nOkEd0tKJdht7Z8RJpEoiOvIl+ukGH0jhLhlowHMDfeTwY6Vgasg/P0xpeoZIUHCcjUwAIuMDBelR7BCkKowb7onRHUhsomzkbA0rf71NSs2nhOf3cfzsDYO0/mjin3qRZ3hZcXZ+t2I0P5ZVU3IcfG3Z26JXdnbQmt0NtP2lQZ8qBxfNlETIBK5MfTu0a1wGM3sf7/73CEuq3ED90FBZhIfsqvy8Mp1sb0RsE8v8huXyP1HfDBLhAhXeyEVEQcvtAesmJL+vfGtQNBgVEVPQj8IL6FC9jRtwmT+05IeRCyVgbl4pzuGzwVh0YCPFSJCNpReIQSwEkFbA1uG8VT0FAfWg==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(346002)(39850400004)(46966006)(36840700001)(8936002)(82740400003)(110136005)(9786002)(31686004)(36756003)(7636003)(356005)(44832011)(4326008)(2616005)(47076005)(316002)(54906003)(36906005)(83380400001)(31696002)(478600001)(6666004)(36860700001)(70586007)(4744005)(5660300002)(70206006)(53546011)(82310400003)(336012)(2906002)(426003)(186003)(8676002)(26005)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 08:47:26.9880
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0ef6913-1eb9-4654-5a4e-08d8e20ecd0f
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT005.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB4862
+Message-Id: <1615193040.e8vkjfd7b9.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Excerpts from Christophe Leroy's message of March 5, 2021 6:54 pm:
+>=20
+>=20
+> Le 09/02/2021 =C3=A0 08:49, Nicholas Piggin a =C3=A9crit=C2=A0:
+>> Excerpts from Christophe Leroy's message of February 9, 2021 4:18 pm:
+>>>
+>>>
+>>> Le 09/02/2021 =C3=A0 02:11, Nicholas Piggin a =C3=A9crit=C2=A0:
+>>>> Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
+>>>>> regs->softe doesn't exist on PPC32.
+>>>>>
+>>>>> Add irq_soft_mask_regs_set_state() helper to set regs->softe.
+>>>>> This helper will void on PPC32.
+>>>>>
+>>>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>>>> ---
+>>>>
+>>>> You could do the same with the kuap_ functions to change some ifdefs
+>>>> to IS_ENABLED.
+>>>>
+>>>> That's just my preference but if you prefer this way I guess that's
+>>>> okay.
+>>>>
+>>>
+>>>
+>>> That's also my preference on the long term.
+>>>
+>>> Here it is ephemeral, I have a follow up series implementing interrupt =
+exit/entry in C and getting
+>>> rid of all the assembly kuap hence getting rid of those ifdefs.
+>>=20
+>> I thought it might have been because you hate ifdef more tha most :)
+>>  =20
+>>> The issue I see when using IS_ENABLED() is that you have to indent to t=
+he right, then you interfere
+>>> with the file history and 'git blame'
+>>=20
+>> Valid point if it's just going to indent back the other way in your next
+>> series.
+>>=20
+>>> Thanks for reviewing my series and looking forward to your feedback on =
+my series on the interrupt
+>>> entry/exit that I will likely release later today.
+>>=20
+>> Cool, I'm eager to see them.
+>>=20
+>=20
+> Hi Nick, have you been able to look at it ?
+>=20
+> https://patchwork.ozlabs.org/project/linuxppc-dev/cover/cover.1612864003.=
+git.christophe.leroy@csgroup.eu/
 
-On 3/8/21 9:35 AM, Laurent Pinchart wrote:
-> Hi Quanyang,
-> 
-> Thank you for the patch.
-> 
-> On Mon, Mar 08, 2021 at 03:08:43PM +0800, quanyang.wang@windriver.com wrote:
->> From: Quanyang Wang <quanyang.wang@windriver.com>
->>
->> The function of_i2c_get_board_info will call of_modalias_node to check
->> if a device_node contains "compatible" string. So let's assign the
->> proper string "silabs,si5328" to clock-generator@69's compatible
->> property to eliminate the error info as below:
-> 
-> As far as I can tell, "silabs,si5328" isn't documented in
-> Documentation/devicetree/bindings/. We need DT bindings before making
-> use of the compatible string.
-> 
+Hi Christophe,
 
-the second option is to remove/comment this node.
+I had a look at it, it's mostly ppc32 code which I don't know well but=20
+it looks like a very nice cleanup and it's good to be sharing the C
+code here. All the common code changes look fine to me.
+
+I'll take a closer look if you can rebase and repost the series I need=20
+to create a tree and base 64e conversion on top of yours as they touch
+the same common places.
 
 Thanks,
-Michal
+Nick
