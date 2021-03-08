@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E740330B74
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E23B1330B76
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:41:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhCHKky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 05:40:54 -0500
-Received: from mail-lj1-f171.google.com ([209.85.208.171]:37494 "EHLO
-        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231204AbhCHKkh (ORCPT
+        id S230488AbhCHKlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 05:41:17 -0500
+Received: from mail-lj1-f174.google.com ([209.85.208.174]:34400 "EHLO
+        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231204AbhCHKk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:40:37 -0500
-Received: by mail-lj1-f171.google.com with SMTP id q14so15444974ljp.4;
-        Mon, 08 Mar 2021 02:40:36 -0800 (PST)
+        Mon, 8 Mar 2021 05:40:58 -0500
+Received: by mail-lj1-f174.google.com with SMTP id i26so3808746ljn.1;
+        Mon, 08 Mar 2021 02:40:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=QTpRDlRs8+jZ8oMjJFWIo9oZV9IGsqbCGi5S8dgOBMs=;
-        b=mF0NaSpbQ4cIg+FX4lzwGwy1UDRU7Qh75AHo4GZLnRpuejkNKVwqXaKM9ERqH8jv40
-         zcgzGoFxl8DEfpyDjnY+Im0WotyHHa4F0P09E0CWHz9O5e9ZV0dgB2IA7BAPFsr43Jds
-         UxHOQSAlhT2ZRGUdH3yf0hHbXx8ZQ1I6YgFZMnfRkCI0/twFQwLlkc1ItWJEcecf+8J1
-         Q8pBYQTLPhSsstAAW+gD2i8PrjCOCZGrJo7j6pgfuwUjANG73Gqex7GSl92LYi9p8TUp
-         GTju+ZrTcPmWHMOHgLoZpyCVYQB7StLK8v/jHan04QTrGETgnvaDVi79JAu+4wBWni5J
-         37bw==
-X-Gm-Message-State: AOAM531n4M1qCfoAoxnyVfHKjToTXT3DsBnJ3g0G65hwy1D7q2wqBh0O
-        GVPigxj7Dv26XnoTgDs3fV0XHXVIXOM=
-X-Google-Smtp-Source: ABdhPJxOOr08G9HYKA+wkqZouaGGSsbRoBhKonZ8phdYp74ZUv1sR8uwPu/5pm0ARscM0BXrItxOQQ==
-X-Received: by 2002:a2e:8159:: with SMTP id t25mr13571691ljg.84.1615200036055;
-        Mon, 08 Mar 2021 02:40:36 -0800 (PST)
+        bh=6Ia4jtgeTi6FD15ReWO86tHBGMdgwA8OFYXZnYi7UhQ=;
+        b=bfL7phDC188FPk/S5FTtMBXOfr59m5XeKvVdP068YXwbhcOXE+OL9B0Qziu71oEiI5
+         OAPJYkzozlgPrc3xIMl7HoU+UbylZaymHJwzQ4V8zGblQRfFQqwM5czXKr8uePHoFuUc
+         BeAXaJ7RZSJtAJ/tNmnEF1pxJUyhmuxExgZtTA3/0UDZkmOKqZWVFrfW73govB7MlBVy
+         c7y8SlWY2ioIbymm9MZb5lNerdEu2OTTbRrX3c8Quzw9lI+0aIdclgD3drk/x+qF3J3t
+         LsE2gjZZLqCctsCRIIdvqNoUzcIhfW+Yl/eW7epmD5SsPXUvjI94WrNNPgVukfTI4LLi
+         UjRA==
+X-Gm-Message-State: AOAM533FJGMJ+KfFp8wdWcyfLW9zbbl/dD1FYSgtaA5QVbgzXfVSKFff
+        ZSPmJJEuA8U4Ed8Vxj4obKo=
+X-Google-Smtp-Source: ABdhPJxakqAIeNpdnQhyNShdTMrIY4qfITqYnZqJr+Fzj7xHV6P+V/e0S0aJeusZiBsnldMiTk7OGg==
+X-Received: by 2002:a2e:8e37:: with SMTP id r23mr13726000ljk.269.1615200057153;
+        Mon, 08 Mar 2021 02:40:57 -0800 (PST)
 Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id f23sm1438970lja.43.2021.03.08.02.40.34
+        by smtp.gmail.com with ESMTPSA id m16sm1315915lfh.109.2021.03.08.02.40.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 02:40:35 -0800 (PST)
-Date:   Mon, 8 Mar 2021 12:40:29 +0200
+        Mon, 08 Mar 2021 02:40:56 -0800 (PST)
+Date:   Mon, 8 Mar 2021 12:40:50 +0200
 From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
 Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
@@ -43,9 +43,8 @@ Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
         Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-power@fi.rohmeurope.com
-Subject: [PATCH v3 04/15] dt_bindings: regulator: Add ROHM BD71815 PMIC
- regulators
-Message-ID: <cf7a2c606af3a5d2367489d9e6b022ec8bc96fa4.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
+Subject: [PATCH v3 05/15] dt_bindings: mfd: Add ROHM BD71815 PMIC
+Message-ID: <790da5fe60eb3bcd190830770866147bbb5f8143.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
 References: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -55,138 +54,228 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add binding documentation for regulators on ROHM BD71815 PMIC.
-5 bucks, 7 LDOs and a boost for LED.
+Document DT bindings for ROHM BD71815.
+
+BD71815 is a single-chip power management IC mainly for battery-powered
+portable devices. The IC integrates 5 bucks, 7 LDOs, a boost driver for
+LED, a battery charger with a Coulomb counter, a real-time clock, a 32kHz
+clock and two general-purpose outputs although only one is documented by
+the data-sheet.
 
 Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../regulator/rohm,bd71815-regulator.yaml     | 116 ++++++++++++++++++
- 1 file changed, 116 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml
+ .../bindings/mfd/rohm,bd71815-pmic.yaml       | 201 ++++++++++++++++++
+ 1 file changed, 201 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd71815-pmic.yaml
 
-diff --git a/Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml b/Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml
+diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd71815-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd71815-pmic.yaml
 new file mode 100644
-index 000000000000..7d0adb74a396
+index 000000000000..fe265bcab50d
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml
-@@ -0,0 +1,116 @@
++++ b/Documentation/devicetree/bindings/mfd/rohm,bd71815-pmic.yaml
+@@ -0,0 +1,201 @@
 +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/regulator/rohm,bd71815-regulator.yaml#
++$id: http://devicetree.org/schemas/mfd/rohm,bd71815-pmic.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: ROHM BD71815 Power Management Integrated Circuit regulators
++title: ROHM BD71815 Power Management Integrated Circuit bindings
 +
 +maintainers:
 +  - Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 +
 +description: |
-+  This module is part of the ROHM BD718215 MFD device. For more details
-+  see Documentation/devicetree/bindings/mfd/rohm,bd71815-pmic.yaml.
-+
-+  The regulator controller is represented as a sub-node of the PMIC node
-+  on the device tree.
-+
-+  The valid names for BD71815 regulator nodes are
-+  buck1, buck2, buck3, buck4, buck5,
-+  ldo1, ldo2, ldo3, ldo4, ldo5,
-+  ldodvref, ldolpsr, wled
++  BD71815AGW is a single-chip power management ICs for battery-powered
++  portable devices. It integrates 5 buck converters, 8 LDOs, a boost driver
++  for LED and a 500 mA single-cell linear charger. Also included is a Coulomb
++  counter, a real-time clock (RTC), and a 32.768 kHz clock gate and two GPOs.
 +
 +properties:
-+  wled:
-+    type: object
++  compatible:
++    const: rohm,bd71815
++
++  reg:
 +    description:
-+      properties for wled regulator
-+    $ref: regulator.yaml#
++      I2C slave address.
++    maxItems: 1
 +
-+    properties:
-+      regulator-name:
-+        const: wled
++  interrupts:
++    maxItems: 1
 +
-+patternProperties:
-+  "^((ldo|buck)[1-5]|ldolpsr|ldodvref)$":
-+    type: object
++  gpio-controller: true
++
++  "#gpio-cells":
++    const: 2
++    description: |
++      The first cell is the pin number and the second cell is used to specify
++      flags. See ../gpio/gpio.txt for more information.
++
++  clocks:
++    maxItems: 1
++
++  "#clock-cells":
++    const: 0
++
++  clock-output-names:
++    const: bd71815-32k-out
++
++  rohm,clkout-open-drain:
++    description: clk32kout mode. Set to 1 for "open-drain" or 0 for "cmos".
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    minimum: 0
++    maximum: 1
++
++  rohm,charger-sense-resistor-ohms:
++    minimum: 10000000
++    maximum: 50000000
++    description: |
++      BD71827 and BD71828 have SAR ADC for measuring charging currents.
++      External sense resistor (RSENSE in data sheet) should be used. If
++      something other but 30MOhm resistor is used the resistance value
++      should be given here in Ohms.
++    default: 30000000
++
++  regulators:
++    $ref: ../regulator/rohm,bd71815-regulator.yaml
 +    description:
-+      Properties for single LDO/BUCK regulator.
-+    $ref: regulator.yaml#
++      List of child nodes that specify the regulators.
 +
-+    properties:
-+      regulator-name:
-+        pattern: "^((ldo|buck)[1-5]|ldolpsr|ldodvref)$"
-+        description:
-+          should be "ldo1", ..., "ldo5", "buck1", ..., "buck5" and "ldolpsr"
-+          for ldolpsr regulator, "ldodvref" for ldodvref reglator.
++  gpio-reserved-ranges:
++    description: |
++      Usage of BD71828 GPIO pins can be changed via OTP. This property can be
++      used to mark the pins which should not be configured for GPIO. Please see
++      the ../gpio/gpio.txt for more information.
 +
-+      rohm,vsel-gpios:
-+        description:
-+          GPIO used to control ldo4 state (when ldo4 is controlled by GPIO).
++  rohm,enable-hidden-gpo:
++    description: |
++      The BD71815 has undocumented GPO at pin E5. Pin is marked as GND at the
++      data-sheet as it's location in the middle of GND pins makes it hard to
++      use on PCB. If your board has managed to use this pin you can enable the
++      second GPO by defining this property. Dont enable this if you are unsure
++      about how the E5 pin is connected on your board.
++    type: boolean
 +
-+      rohm,dvs-run-voltage:
-+        description:
-+          PMIC "RUN" state voltage in uV when PMIC HW states are used. See
-+          comments below for bucks/LDOs which support this. 0 means
-+          regulator should be disabled at RUN state.
-+        $ref: "/schemas/types.yaml#/definitions/uint32"
-+        minimum: 0
-+        maximum: 3300000
-+
-+      rohm,dvs-snvs-voltage:
-+        description:
-+          Whether to keep regulator enabled at "SNVS" state or not.
-+          0 means regulator should be disabled at SNVS state, non zero voltage
-+          keeps regulator enabled. BD71815 does not change voltage level
-+          when PMIC transitions to SNVS.SNVS voltage depends on the previous
-+          state (from which the PMIC transitioned to SNVS).
-+        $ref: "/schemas/types.yaml#/definitions/uint32"
-+        minimum: 0
-+        maximum: 3300000
-+
-+      rohm,dvs-suspend-voltage:
-+        description:
-+          PMIC "SUSPEND" state voltage in uV when PMIC HW states are used. See
-+          comments below for bucks/LDOs which support this. 0 means
-+          regulator should be disabled at SUSPEND state.
-+        $ref: "/schemas/types.yaml#/definitions/uint32"
-+        minimum: 0
-+        maximum: 3300000
-+
-+      rohm,dvs-lpsr-voltage:
-+        description:
-+          PMIC "LPSR" state voltage in uV when PMIC HW states are used. See
-+          comments below for bucks/LDOs which support this. 0 means
-+          regulator should be disabled at LPSR state.
-+        $ref: "/schemas/types.yaml#/definitions/uint32"
-+        minimum: 0
-+        maximum: 3300000
-+
-+        # Bucks 1 and 2 support giving separate voltages for operational states
-+        # (RUN /CLEAN according to data-sheet) and non operational states
-+        # (LPSR/SUSPEND). The voltage is automatically changed when HW
-+        # state changes. Omitting these properties from bucks 1 and 2 leave
-+        # buck voltages to not be toggled by HW state. Enable status may still
-+        # be toggled by state changes depending on HW default settings.
-+        #
-+        # Bucks 3-5 and ldos 1-5 support setting the RUN state voltage here.
-+        # Given RUN voltage is used at all states if regulator is enabled at
-+        # given state.
-+        # Values given for other states are regarded as enable/disable at
-+        # given state (see below).
-+        #
-+        # All regulators except WLED support specifying enable/disable status
-+        # for each of the HW states (RUN/SNVS/SUSPEND/LPSR). HW defaults can
-+        # be overridden by setting voltage to 0 (regulator disabled at given
-+        # state) or non-zero (regulator enabled at given state). Please note
-+        # that setting non zero voltages for bucks 1/2 will also enable voltage
-+        # changes according to state change.
-+
-+    required:
-+      - regulator-name
-+
-+    unevaluatedProperties: false
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - "#clock-cells"
++  - regulators
++  - gpio-controller
++  - "#gpio-cells"
 +
 +additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/leds/common.h>
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        pmic: pmic@4b {
++            compatible = "rohm,bd71815";
++            reg = <0x4b>;
++
++            interrupt-parent = <&gpio1>;
++            interrupts = <29 IRQ_TYPE_LEVEL_LOW>;
++
++            clocks = <&osc 0>;
++            #clock-cells = <0>;
++            clock-output-names = "bd71815-32k-out";
++
++            gpio-controller;
++            #gpio-cells = <2>;
++
++            rohm,charger-sense-resistor-ohms = <10000000>;
++
++            regulators {
++                buck1: buck1 {
++                    regulator-name = "buck1";
++                    regulator-min-microvolt = <800000>;
++                    regulator-max-microvolt = <2000000>;
++                    regulator-always-on;
++                    regulator-ramp-delay = <1250>;
++                    rohm,dvs-run-voltage = <1150000>;
++                    rohm,dvs-suspend-voltage = <950000>;
++                };
++                buck2: buck2 {
++                    regulator-name = "buck2";
++                    regulator-min-microvolt = <800000>;
++                    regulator-max-microvolt = <2000000>;
++                    regulator-always-on;
++                    regulator-ramp-delay = <1250>;
++                    rohm,dvs-run-voltage = <1150000>;
++                    rohm,dvs-suspend-voltage = <950000>;
++                };
++                buck3: buck3 {
++                    regulator-name = "buck3";
++                    regulator-min-microvolt = <1200000>;
++                    regulator-max-microvolt = <2700000>;
++                    regulator-always-on;
++                };
++                buck4: buck4 {
++                    regulator-name = "buck4";
++                    regulator-min-microvolt = <1100000>;
++                    regulator-max-microvolt = <1850000>;
++                    regulator-always-on;
++                };
++                buck5: buck5 {
++                    regulator-name = "buck5";
++                    regulator-min-microvolt = <1800000>;
++                    regulator-max-microvolt = <3300000>;
++                    regulator-always-on;
++                };
++                ldo1: ldo1 {
++                    regulator-name = "ldo1";
++                    regulator-min-microvolt = <800000>;
++                    regulator-max-microvolt = <3300000>;
++                    regulator-always-on;
++                };
++                ldo2: ldo2 {
++                    regulator-name = "ldo2";
++                    regulator-min-microvolt = <800000>;
++                    regulator-max-microvolt = <3300000>;
++                    regulator-always-on;
++                };
++                ldo3: ldo3 {
++                    regulator-name = "ldo3";
++                    regulator-min-microvolt = <800000>;
++                    regulator-max-microvolt = <3300000>;
++                    regulator-always-on;
++                };
++                ldo4: ldo4 {
++                    regulator-name = "ldo4";
++                    regulator-min-microvolt = <800000>;
++                    regulator-max-microvolt = <3300000>;
++                    regulator-always-on;
++                };
++                ldo5: ldo5 {
++                    regulator-name = "ldo5";
++                    regulator-min-microvolt = <800000>;
++                    regulator-max-microvolt = <3300000>;
++                    regulator-always-on;
++                };
++                ldo6: ldodvref {
++                    regulator-name = "ldodvref";
++                    regulator-always-on;
++                };
++                ldo7: ldolpsr {
++                    regulator-name = "ldolpsr";
++                    regulator-always-on;
++                };
++
++                boost: wled {
++                    regulator-name = "wled";
++                    regulator-min-microamp = <10>;
++                    regulator-max-microamp = <25000>;
++                };
++            };
++        };
++    };
 -- 
 2.25.4
 
