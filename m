@@ -2,132 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D453315A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAB13315A8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbhCHSO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:14:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhCHSOq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:14:46 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E050C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 10:14:46 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id n17so1701292plc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 10:14:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=BMzfJiSNckr4c5bJM9oyPQFJf7z3QvS6eYTHskXsafM=;
-        b=DpdsAgQaHmv2JAOZ+bhP4sp1RBYFsEYq+SSfL2bHCxvx4Oa+1ey6LCvKTUtsJX7Hnp
-         hxHAmGtQTiskkXfkKXpXdazG70wERIFgteI6y6U5Fs9wDN8wvPnMrJerRQutlJJLEaRV
-         2ldo+mTCwY3AdiYz6eHD8OhGUuAQFFTvGFRUty6qE5zy2vLNxlNfv9WjSjWWr2/afs5v
-         wWGxPAcQJ/z+ygYio+jqXC3w+rSbJ5EV4g3Mjk2pYiIKza25EBc6YM+pjjFNZ9MRfjN0
-         VzijfTuc+xxMtHYB1ynPtu1wbl/5e7/MM7MVoXYmHpgouhMgUyp5yaiRPeoktmQMtabo
-         N6yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=BMzfJiSNckr4c5bJM9oyPQFJf7z3QvS6eYTHskXsafM=;
-        b=Wls5l0tE+VEQOTj0FSbgwB+qz80vT2yQILuLcHnVHliYw2DTltzMBTG9QC8xoXZEQ+
-         ep0Ooml+uP5/EHbYTSZIxSJ9E5hQh1Tvt+dIyZcxYF64lZgc7PiBCM9r57OkcZ3XdmfW
-         hiILu0rkEK5KJeLa9Rp8vAF9sLx6BRNsL1TGRf2IJVvfppbMvBJzuRuQ4CJRRAsMmeR+
-         bkvGw0tbb3qXz7Rz1UmGdRbmiFR5KAxRfWvgDU38HJxmbJjiwJ5liwRri/qWao46dcy4
-         iUxDimN79ndjoV25iqXMQh6xGToPDHIyFebSLTA6lBoOSSv5M3jDIeA6Z8r4bVIqFpEu
-         BBHg==
-X-Gm-Message-State: AOAM530//rhUaE3iDCI7ap5mJo5XLQkn2HCI1/LQ0wITJ4ShKE8oECIE
-        H0nNEDgLBATemp4UcDSiRiHL6g==
-X-Google-Smtp-Source: ABdhPJwz39/p7xj03gR2pGest2ZPugtBXlw5U3YPRRZUCmiPLFttiRa/JNLUKm+korjrZ+RdYKPd0Q==
-X-Received: by 2002:a17:90a:4894:: with SMTP id b20mr143836pjh.50.1615227286141;
-        Mon, 08 Mar 2021 10:14:46 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:691e:92d:1e16:d5b3? ([2601:646:c200:1ef2:691e:92d:1e16:d5b3])
-        by smtp.gmail.com with ESMTPSA id k27sm11567445pfg.95.2021.03.08.10.14.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 10:14:45 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v3] x86/fault: Send a SIGBUS to user process always for hwpoison page access.
-Date:   Mon, 8 Mar 2021 10:14:44 -0800
-Message-Id: <8F3F763F-59CC-4E25-B4DE-89CD0632F754@amacapital.net>
-References: <20210308174912.4ac9029a@alex-virtual-machine>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        yangfeng1@kingsoft.com, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20210308174912.4ac9029a@alex-virtual-machine>
-To:     Aili Yao <yaoaili@kingsoft.com>
-X-Mailer: iPhone Mail (18D52)
+        id S230490AbhCHSPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:15:30 -0500
+Received: from foss.arm.com ([217.140.110.172]:41854 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230299AbhCHSPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 13:15:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 283E8D6E;
+        Mon,  8 Mar 2021 10:15:00 -0800 (PST)
+Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B8C283F71B;
+        Mon,  8 Mar 2021 10:14:58 -0800 (PST)
+Date:   Mon, 8 Mar 2021 18:14:49 +0000
+From:   Beata Michalska <beata.michalska@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org
+Subject: Re: [PATCH] opp: Invalidate current opp when draining the opp list
+Message-ID: <20210308181446.GA26783@e120325.cambridge.arm.com>
+References: <1614870454-18709-1-git-send-email-beata.michalska@arm.com>
+ <20210305042401.gktrgach4dzxp7on@vireshk-i7>
+ <418fc3cb-d5ec-9216-269a-e055e78718e5@arm.com>
+ <20210308115053.ua2gfo6kfnfjslyd@vireshk-i7>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308115053.ua2gfo6kfnfjslyd@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 08, 2021 at 05:20:53PM +0530, Viresh Kumar wrote:
+> On 05-03-21, 13:55, Beata Michalska wrote:
+> > Actually, that one might be problematic: by the time the
+> > _opp_table_kref_release is being reached, the opp pointed to
+> > by current_opp may no longer be valid.
+> > _opp_remove_all_static and/or dev_pm_opp_remove_all_dynamic
+> > will release all the opps by going through opp_table->opp_list.
+> > It will drop the reference for each opp on the list, until
+> > the list gets empty(for given opp type), which means,
+> > all the opps will actually get released
+> > (only upon _opp_kref_release the opp will get removed
+> > from the list).
+> 
+> Sorry for missing the context completely, I get it now.
+> 
+> This is what I have applied instead, please see if it breaks anything
+> or works as expected.
+> 
+> -------------------------8<-------------------------
+> 
+> From: Beata Michalska <beata.michalska@arm.com>
+> Date: Thu, 4 Mar 2021 15:07:34 +0000
+> Subject: [PATCH] opp: Invalidate current opp when draining the opp list
+> 
+> The current_opp when set, grabs additional reference on the opp,
+> which is then supposed to be dropped upon releasing the opp table.
+> 
+> Still both dev_pm_opp_remove_table and dev_pm_opp_remove_all_dynamic
+> will completely drain the OPPs list, including dropping the additional
+> reference on current_opp because they run until the time list gets
+> empty.
+> 
+> This will lead releasing the current_opp one more time when the OPP
+> table gets removed and so will raise ref counting issues.
+> 
+> Fix that by making sure we don't release the extra reference to the
+> current_opp.
+> 
+> Fixes: 81c4d8a3c414 ("opp: Keep track of currently programmed OPP")
+> Signed-off-by: Beata Michalska <beata.michalska@arm.com>
+> [ Viresh: Rewrite _opp_drain_list() to not drop the extra count instead
+> 	  of depending on reference counting. Update commit log and
+> 	  other minor changes. ]
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/opp/core.c | 52 +++++++++++++++++++++++++++++-----------------
+>  1 file changed, 33 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index c2689386a906..3cc0a1b82adc 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -1502,10 +1502,38 @@ static struct dev_pm_opp *_opp_get_next(struct opp_table *opp_table,
+>  	return opp;
+>  }
+>  
+> -bool _opp_remove_all_static(struct opp_table *opp_table)
+> +/*
+> + * Can't remove the OPP from under the lock, debugfs removal needs to happen
+> + * lock less to avoid circular dependency issues. This must be called without
+> + * the opp_table->lock held.
+> + */
+> +static int _opp_drain_list(struct opp_table *opp_table, bool dynamic)
+>  {
+> -	struct dev_pm_opp *opp;
+> +	struct dev_pm_opp *opp, *current_opp = NULL;
+> +	int count = 0;
+> +
+> +	while ((opp = _opp_get_next(opp_table, dynamic))) {
+> +		if (opp_table->current_opp == opp) {
+> +			/*
+> +			 * Reached at current OPP twice, no other OPPs left. The
+> +			 * last reference to current_opp is dropped from
+> +			 * _opp_table_kref_release().
+> +			 */
+> +			if (current_opp)
+> +				break;
+> +
+> +			current_opp = opp;
+> +		}
+Having a quick look at the code ...
+Shouldn't the current_opp be moved at the end of the list ?
+Otherwise there is a risk of leaving unreferenced opps (and opp_table).
+Might be also worth adding warning (?)
 
-> On Mar 8, 2021, at 1:49 AM, Aili Yao <yaoaili@kingsoft.com> wrote:
->=20
-> =EF=BB=BFOn Sun, 7 Mar 2021 11:16:24 -0800
-> Andy Lutomirski <luto@amacapital.net> wrote:
->=20
->>>>>>> Some programs may use read(2), write(2), etc as ways to check if
->>>>>>> memory is valid without getting a signal.  They might not want
->>>>>>> signals, which means that this feature might need to be configurable=
-. =20
->>>>>>=20
->>>>>> That sounds like an appalling hack. If users need such a mechanism
->>>>>> we should create some better way to do that.
->>>>>>=20
->>>>>=20
->>>>> Appalling hack or not, it works. So, if we=E2=80=99re going to send a s=
-ignal to user code that looks like it originated from a bina fide architectu=
-ral recoverable fault, it needs to be recoverable.  A load from a failed NVD=
-IMM page is such a fault. A *kernel* load is not. So we need to distinguish i=
-t somehow. =20
->>>>=20
->>>> Sorry for my previous mis-understanding, and i have some questions:
->>>> if programs use read,write to check if if memory is valid, does it real=
-ly want to cover the poison case? =20
->>=20
->> I don't know.
->>=20
->>>> When for such a case, an error is returned,  can the program realize it=
-'s hwposion issue not other software error and process correctly? =20
->>=20
->> Again, I don't know.  But changing the API like this seems potentialy
->> dangerous and needs to be done with care.
->>=20
->>>>=20
->>>> if this is the proper action, the original posion flow in current code f=
-rom read and write need to change too.
->>>>=20
->>>=20
->>> Sorry, another question:
->>>  When programs use read(2), write(2) as ways to check if memory is valid=
-, does it really want to check if the user page the program provided is vali=
-d, not the destination or disk space valid? =20
->>=20
->> They may well be trying to see if their memory is valid.
->=20
-> Thanks for your reply, and I don't know what to do.
-> For current code, if user program write to a block device(maybe a test try=
-) and if its user copy page corrupt when in kernel copy, the process is kill=
-ed with a SIGBUS.
-> And for the page fault case in this thread, the process is error returned.=
+    WARN_ONCE(!list_is_singular())
 
 
-Can you point me at that SIGBUS code in a current kernel?
-
->=20
-> --=20
-> Thanks!
-> Aili Yao
+---
+BR
+B.
+> +
+> +		dev_pm_opp_put(opp);
+> +		count++;
+> +	}
+> +
+> +	return count;
+> +}
+>  
+> +bool _opp_remove_all_static(struct opp_table *opp_table)
+> +{
+>  	mutex_lock(&opp_table->lock);
+>  
+>  	if (!opp_table->parsed_static_opps) {
+> @@ -1520,13 +1548,7 @@ bool _opp_remove_all_static(struct opp_table *opp_table)
+>  
+>  	mutex_unlock(&opp_table->lock);
+>  
+> -	/*
+> -	 * Can't remove the OPP from under the lock, debugfs removal needs to
+> -	 * happen lock less to avoid circular dependency issues.
+> -	 */
+> -	while ((opp = _opp_get_next(opp_table, false)))
+> -		dev_pm_opp_put(opp);
+> -
+> +	_opp_drain_list(opp_table, false);
+>  	return true;
+>  }
+>  
+> @@ -1539,21 +1561,13 @@ bool _opp_remove_all_static(struct opp_table *opp_table)
+>  void dev_pm_opp_remove_all_dynamic(struct device *dev)
+>  {
+>  	struct opp_table *opp_table;
+> -	struct dev_pm_opp *opp;
+> -	int count = 0;
+> +	int count;
+>  
+>  	opp_table = _find_opp_table(dev);
+>  	if (IS_ERR(opp_table))
+>  		return;
+>  
+> -	/*
+> -	 * Can't remove the OPP from under the lock, debugfs removal needs to
+> -	 * happen lock less to avoid circular dependency issues.
+> -	 */
+> -	while ((opp = _opp_get_next(opp_table, true))) {
+> -		dev_pm_opp_put(opp);
+> -		count++;
+> -	}
+> +	count = _opp_drain_list(opp_table, true);
+>  
+>  	/* Drop the references taken by dev_pm_opp_add() */
+>  	while (count--)
