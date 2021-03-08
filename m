@@ -2,111 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DAA3305C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E503305C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 03:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbhCHCFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 21:05:36 -0500
-Received: from mga12.intel.com ([192.55.52.136]:2953 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233631AbhCHCFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 21:05:02 -0500
-IronPort-SDR: PhTdNbDYbU7IUCOSeextG/w/LNyETPr6pf9jWGG39GffwgKuUMyEVcWT+Il0byHTaYAPwvmG4c
- IvDHDNbN9u+w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="167217235"
-X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
-   d="scan'208";a="167217235"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 18:05:02 -0800
-IronPort-SDR: OHzTIZK4j0eUyF0TOUDf5U9FBttEMn+WUS3Lltf7bbDxuVCmaHxJ0xYL4Zd6alOUk/+C5yMFpw
- m+9hUzAO2JrA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,231,1610438400"; 
-   d="scan'208";a="598675267"
-Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by fmsmga006.fm.intel.com with ESMTP; 07 Mar 2021 18:05:00 -0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     gregkh@linuxfoundation.org, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com
-Subject: [PATCH v12 2/2] Documentation: fpga: dfl: Add description for DFL UIO support
-Date:   Mon,  8 Mar 2021 09:59:36 +0800
-Message-Id: <1615168776-8553-3-git-send-email-yilun.xu@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1615168776-8553-1-git-send-email-yilun.xu@intel.com>
-References: <1615168776-8553-1-git-send-email-yilun.xu@intel.com>
+        id S233616AbhCHCDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 21:03:53 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:58981 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233603AbhCHCDa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Mar 2021 21:03:30 -0500
+X-UUID: 8bd91272d3124da98a3d0da25188a2dd-20210308
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=h9EFUsdAxVRzuiXK7xWjWP87blcUdQUpQQm0u2fICNw=;
+        b=n491iP+jrdJnh4XyGzeRmrVX+IfLITLtfny/ydVs9HrILSLBFDWlqCK7A23M0cEleivwuUud5MMgbgmYfU5Cz5HxUTJlOA24qdIVw7kNeoifj9KbOICD5nFq2RsCWa/bBOF2Qc6fHx45czldN8cra/pgj1ildZXcSZdmNwjwbLo=;
+X-UUID: 8bd91272d3124da98a3d0da25188a2dd-20210308
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 264082348; Mon, 08 Mar 2021 10:03:25 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs06n1.mediatek.inc
+ (172.21.101.129) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 8 Mar
+ 2021 10:02:23 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 8 Mar 2021 10:02:23 +0800
+Message-ID: <1615168943.32109.8.camel@mhfsdcap03>
+Subject: Re: [PATCH 16/17] usb: common: add function to get interval
+ expressed in us unit
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Alan Stern <stern@rowland.harvard.edu>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Ikjoon Jang <ikjn@chromium.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Eddie Hung <eddie.hung@mediatek.com>
+Date:   Mon, 8 Mar 2021 10:02:23 +0800
+In-Reply-To: <YEJSjJnjXl7f/BP9@kroah.com>
+References: <1614934975-15188-1-git-send-email-chunfeng.yun@mediatek.com>
+         <1614934975-15188-16-git-send-email-chunfeng.yun@mediatek.com>
+         <20210305153312.GA38200@rowland.harvard.edu> <YEJSjJnjXl7f/BP9@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds description for UIO support for dfl devices on DFL
-bus.
-
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-Reviewed-by: Wu Hao <hao.wu@intel.com>
----
-v2: no doc in v1, add it for v2.
-v3: some documentation fixes.
-v4: documentation change since the driver matching is changed.
-v5: no change.
-v6: improve the title of the userspace driver support section.
-    some word improvement.
-v7: rebased to next-20210119
-v8: some doc fixes.
-v9: some doc change since we switch to the driver in drivers/uio.
-v10: no change.
-v11: add description that interrupt support is not implemented yet.
-v12: rebase to 5.12-rc2, no change
----
- Documentation/fpga/dfl.rst | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-index c41ac76..f3a1223 100644
---- a/Documentation/fpga/dfl.rst
-+++ b/Documentation/fpga/dfl.rst
-@@ -7,6 +7,7 @@ Authors:
- - Enno Luebbers <enno.luebbers@intel.com>
- - Xiao Guangrong <guangrong.xiao@linux.intel.com>
- - Wu Hao <hao.wu@intel.com>
-+- Xu Yilun <yilun.xu@intel.com>
- 
- The Device Feature List (DFL) FPGA framework (and drivers according to
- this framework) hides the very details of low layer hardwares and provides
-@@ -530,6 +531,31 @@ Being able to specify more than one DFL per BAR has been considered, but it
- was determined the use case did not provide value.  Specifying a single DFL
- per BAR simplifies the implementation and allows for extra error checking.
- 
-+
-+Userspace driver support for DFL devices
-+========================================
-+The purpose of an FPGA is to be reprogrammed with newly developed hardware
-+components. New hardware can instantiate a new private feature in the DFL, and
-+then present a DFL device in the system. In some cases users may need a
-+userspace driver for the DFL device:
-+
-+* Users may need to run some diagnostic test for their hardware.
-+* Users may prototype the kernel driver in user space.
-+* Some hardware is designed for specific purposes and does not fit into one of
-+  the standard kernel subsystems.
-+
-+This requires direct access to MMIO space and interrupt handling from
-+userspace. The uio_dfl module exposes the UIO device interfaces for this
-+purpose.
-+
-+Currently the uio_dfl driver only supports the Ether Group sub feature, which
-+has no irq in hardware. So the interrupt handling is not added in this driver.
-+
-+UIO_DFL should be selected to enable the uio_dfl module driver. To support a
-+new DFL feature via UIO direct access, its feature id should be added to the
-+driver's id_table.
-+
-+
- Open discussion
- ===============
- FME driver exports one ioctl (DFL_FPGA_FME_PORT_PR) for partial reconfiguration
--- 
-2.7.4
+T24gRnJpLCAyMDIxLTAzLTA1IGF0IDE2OjQ3ICswMTAwLCBHcmVnIEtyb2FoLUhhcnRtYW4gd3Jv
+dGU6DQo+IE9uIEZyaSwgTWFyIDA1LCAyMDIxIGF0IDEwOjMzOjEyQU0gLTA1MDAsIEFsYW4gU3Rl
+cm4gd3JvdGU6DQo+ID4gT24gRnJpLCBNYXIgMDUsIDIwMjEgYXQgMDU6MDI6NTRQTSArMDgwMCwg
+Q2h1bmZlbmcgWXVuIHdyb3RlOg0KPiA+ID4gQWRkIGEgbmV3IGZ1bmN0aW9uIHRvIGNvbnZlcnQg
+YkludGVydmFsIGludG8gdGhlIHRpbWUgZXhwcmVzc2VkDQo+ID4gPiBpbiAxdXMgdW5pdC4NCj4g
+PiA+IA0KPiA+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVk
+aWF0ZWsuY29tPg0KPiA+ID4gLS0tDQo+ID4gDQo+ID4gPiAtLS0gYS9kcml2ZXJzL3VzYi9jb21t
+b24vY29tbW9uLmMNCj4gPiA+ICsrKyBiL2RyaXZlcnMvdXNiL2NvbW1vbi9jb21tb24uYw0KPiA+
+ID4gQEAgLTE2NSw2ICsxNjUsMzkgQEAgZW51bSB1c2JfZHJfbW9kZSB1c2JfZ2V0X2RyX21vZGUo
+c3RydWN0IGRldmljZSAqZGV2KQ0KPiA+ID4gIH0NCj4gPiA+ICBFWFBPUlRfU1lNQk9MX0dQTCh1
+c2JfZ2V0X2RyX21vZGUpOw0KPiA+ID4gIA0KPiA+ID4gK3Vuc2lnbmVkIGludCB1c2JfZGVjb2Rl
+X2ludGVydmFsKGNvbnN0IHN0cnVjdCB1c2JfZW5kcG9pbnRfZGVzY3JpcHRvciAqZXBkLA0KPiA+
+ID4gKwkJCQkgZW51bSB1c2JfZGV2aWNlX3NwZWVkIHNwZWVkKQ0KPiA+ID4gK3sNCj4gPiA+ICsJ
+dW5zaWduZWQgaW50IGludGVydmFsID0gMDsNCj4gPiA+ICsNCj4gPiA+ICsJc3dpdGNoICh1c2Jf
+ZW5kcG9pbnRfdHlwZShlcGQpKSB7DQo+ID4gPiArCWNhc2UgVVNCX0VORFBPSU5UX1hGRVJfQ09O
+VFJPTDoNCj4gPiA+ICsJCS8qIHVmcmFtZXMgcGVyIE5BSyAqLw0KPiA+ID4gKwkJaWYgKHNwZWVk
+ID09IFVTQl9TUEVFRF9ISUdIKQ0KPiA+ID4gKwkJCWludGVydmFsID0gZXBkLT5iSW50ZXJ2YWw7
+DQo+ID4gPiArCQlicmVhazsNCj4gPiA+ICsJY2FzZSBVU0JfRU5EUE9JTlRfWEZFUl9JU09DOg0K
+PiA+ID4gKwkJaW50ZXJ2YWwgPSAxIDw8IChlcGQtPmJJbnRlcnZhbCAtIDEpOw0KPiA+ID4gKwkJ
+YnJlYWs7DQo+ID4gPiArCWNhc2UgVVNCX0VORFBPSU5UX1hGRVJfQlVMSzoNCj4gPiA+ICsJCS8q
+IHVmcmFtZXMgcGVyIE5BSyAqLw0KPiA+ID4gKwkJaWYgKHNwZWVkID09IFVTQl9TUEVFRF9ISUdI
+ICYmIHVzYl9lbmRwb2ludF9kaXJfb3V0KGVwZCkpDQo+ID4gPiArCQkJaW50ZXJ2YWwgPSBlcGQt
+PmJJbnRlcnZhbDsNCj4gPiA+ICsJCWJyZWFrOw0KPiA+ID4gKwljYXNlIFVTQl9FTkRQT0lOVF9Y
+RkVSX0lOVDoNCj4gPiA+ICsJCWlmIChzcGVlZCA+PSBVU0JfU1BFRURfSElHSCkNCj4gPiA+ICsJ
+CQlpbnRlcnZhbCA9IDEgPDwgKGVwZC0+YkludGVydmFsIC0gMSk7DQo+ID4gPiArCQllbHNlDQo+
+ID4gPiArCQkJaW50ZXJ2YWwgPSBlcGQtPmJJbnRlcnZhbDsNCj4gPiA+ICsJCWJyZWFrOw0KPiA+
+ID4gKwl9DQo+ID4gPiArDQo+ID4gPiArCWludGVydmFsICo9IChzcGVlZCA+PSBVU0JfU1BFRURf
+SElHSCkgPyAxMjUgOiAxMDAwOw0KPiA+ID4gKw0KPiA+ID4gKwlyZXR1cm4gaW50ZXJ2YWw7DQo+
+ID4gPiArfQ0KPiA+ID4gK0VYUE9SVF9TWU1CT0xfR1BMKHVzYl9kZWNvZGVfaW50ZXJ2YWwpOw0K
+PiA+IA0KPiA+ID4gLS0tIGEvaW5jbHVkZS9saW51eC91c2IvY2g5LmgNCj4gPiA+ICsrKyBiL2lu
+Y2x1ZGUvbGludXgvdXNiL2NoOS5oDQo+ID4gPiBAQCAtOTAsNiArOTAsMTcgQEAgZXh0ZXJuIGVu
+dW0gdXNiX3NzcF9yYXRlIHVzYl9nZXRfbWF4aW11bV9zc3BfcmF0ZShzdHJ1Y3QgZGV2aWNlICpk
+ZXYpOw0KPiA+ID4gICAqLw0KPiA+ID4gIGV4dGVybiBjb25zdCBjaGFyICp1c2Jfc3RhdGVfc3Ry
+aW5nKGVudW0gdXNiX2RldmljZV9zdGF0ZSBzdGF0ZSk7DQo+ID4gPiAgDQo+ID4gPiArLyoqDQo+
+ID4gPiArICogdXNiX2RlY29kZV9pbnRlcnZhbCAtIERlY29kZSBiSW50ZXJ2YWwgaW50byB0aGUg
+dGltZSBleHByZXNzZWQgaW4gMXVzIHVuaXQNCj4gPiA+ICsgKiBAZXBkOiBUaGUgZGVzY3JpcHRv
+ciBvZiB0aGUgZW5kcG9pbnQNCj4gPiA+ICsgKiBAc3BlZWQ6IFRoZSBzcGVlZCB0aGF0IHRoZSBl
+bmRwb2ludCB3b3JrcyBhcw0KPiA+ID4gKyAqDQo+ID4gPiArICogRnVuY3Rpb24gcmV0dXJucyB0
+aGUgaW50ZXJ2YWwgZXhwcmVzc2VkIGluIDF1cyB1bml0IGZvciBzZXJ2aWNpbmcNCj4gPiA+ICsg
+KiBlbmRwb2ludCBmb3IgZGF0YSB0cmFuc2ZlcnMuDQo+ID4gPiArICovDQo+ID4gPiArdW5zaWdu
+ZWQgaW50IHVzYl9kZWNvZGVfaW50ZXJ2YWwoY29uc3Qgc3RydWN0IHVzYl9lbmRwb2ludF9kZXNj
+cmlwdG9yICplcGQsDQo+ID4gPiArCQkJCSBlbnVtIHVzYl9kZXZpY2Vfc3BlZWQgc3BlZWQpOw0K
+PiA+IA0KPiA+IEFzIGEgZ2VuZXJhbCBydWxlLCBJIGJlbGlldmUgcGVvcGxlIGV4cGVjdCB0byBm
+aW5kIHRoZSBrZXJuZWxkb2MgZm9yIGEgDQo+ID4gZnVuY3Rpb24gbmV4dCB0byB0aGUgZnVuY3Rp
+b24ncyBkZWZpbml0aW9uLCBub3QgbmV4dCB0byB0aGUgZGVjbGFyYXRpb24gDQo+ID4gaW4gYSBo
+ZWFkZXIgZmlsZS4NCj4gDQo+IEkgd2FzIGdvaW5nIHRvIG1ha2UgdGhlIHNhbWUgcmV2aWV3IGNv
+bW1lbnQsIGJ1dCBpZiB5b3UgbG9vayBhYm92ZSB0aGlzDQo+IGluIHRoYXQgZmlsZSwgdGhlcmUn
+cyBvdGhlciBrZXJuZWwgZG9jIGluZm9ybWF0aW9uIGluIHRoZSAuaCBmaWxlLCBzbw0KPiB0aGlz
+IGRvZXMgbWF0Y2ggd2l0aCB0aGUgc3R5bGUgb2YgdGhlIGZpbGUgOigNCj4gDQo+IFdlIGNhbiBm
+aXggdGhhdCBhbGwgdXAgbGF0ZXIuDQpJJ2xsIHByZXBhcmUgYSBwYXRjaA0KDQpUaGFuayB5b3UN
+Cj4gDQo+IHRoYW5rcywNCj4gDQo+IGdyZWcgay1oDQoNCg==
 
