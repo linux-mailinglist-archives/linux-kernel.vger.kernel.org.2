@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE8E3312A7
+	by mail.lfdr.de (Postfix) with ESMTP id DDF023312A8
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 16:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhCHPz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 10:55:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47490 "EHLO
+        id S230143AbhCHPz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 10:55:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbhCHPz2 (ORCPT
+        with ESMTP id S229528AbhCHPz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 10:55:28 -0500
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E33C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 07:55:27 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id z26so5148262wml.4
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 07:55:27 -0800 (PST)
+        Mon, 8 Mar 2021 10:55:29 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7004EC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 07:55:29 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id e9so7930035qvf.21
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 07:55:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=juB8DGQdBNYffoVbxywhM+daO8QsN177ObTD+3lbjn4=;
-        b=IYGKAjXDMJSVlzBt5wsQWuKPfqepugn2ye/clNPwNChaYzYQmDjCP++kWuyxaU000m
-         bZ4A5KTF+MG9oV7vXroOTk1k42clqpYJGZBOfdntVpGEX4R/dOGxAWD30v6NdNfKONjq
-         NL0IOAJcsSwua47kjoRP5fB9CHIL4NpgHl+7okD9TchY42CH7pxCDJ8Qw1rJsA4izPL3
-         fNwWdIKaJ8/Z/We8w+tj9QbafAGDQ8TfCRIvQ5DftP3EJF2Rza8gVINk2yI4SmVrgww2
-         sGCUgXs0UcQOQPrT3uAK5cQli5ObVWD0Y928dSfPgUzu091MyK172AmDCN3FGxSfsYR7
-         0OwA==
+        bh=zCBHdpjDvAH5HFKLaFFW9ex0bLksKjp4z0Uq53dM3gc=;
+        b=YvuLJTYiHSsuWbcy/5lVilsu8YhrlTYvVBdO6/L9foobH+R+hgG1E6iwz2BlOHwgTv
+         v8dvJsWY942NIl0hP/BTdiu0am0sf1qb3DXVRp8lrrthsGXoKf7QSaBdbCwEZ4D94+sm
+         EQxHFExymLnLMHVZWYwPc7YHESCdOxGnV40tMlrbQCt8DIWsuJnm65d4yCDVNl+awZZ8
+         vhAVx2EvY2PgYD9MJdBZUDgtRmybjs3uqnyJQkyrbMTLCkV2RMYwGwZsBakMV3Peu5ay
+         55E1Phebh9FEUqiATKcXA1DErCPxvwt3Q7caXucMgSZ42exbGBBUSZl73be8MiyU2ZtG
+         lYYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=juB8DGQdBNYffoVbxywhM+daO8QsN177ObTD+3lbjn4=;
-        b=FpKm19TrcfcqQvY+XPCjJPIhW+dqNgbTzuxCZ8DB7OZ0d38jT+DxUYaYJOhOf14Bcf
-         D0TxVEh6HH+B8QaiMMcEji8bPGDDgibsvQWI32icHevxEcVpTgAohq8IMeJ+uYVIDVdj
-         ndAxEq0q+GGrXWEHTQHu++cKJfsE809Jv0f4ciSkBvvUtTqPopl1JuinCGREcTu+Aoqc
-         P3JFZHh9DDIbsg6wRHwQ2H0F0dmo/d+g+ReK6/tMODoa41umV/19w/OvoPYEK/qx8VxA
-         4/YSslQC2N2lLCSDBi9RyuPzGnpf5L8kgjEnnqTzgCW2L1X5hU6CcE/woueRcodZj2S/
-         PKSQ==
-X-Gm-Message-State: AOAM532PzGaAOMhQeJsR59/XcIh5PFwO6e6m+1NnlF6NUf4nN9exqjA0
-        v/NicotGbW6D4rYMxcbaQNqUH7AowiLkhIJU
-X-Google-Smtp-Source: ABdhPJweHoWbPdXseqsUVk/nB+qdeBw74xaONxVUB79C7X/vnw4OfrCW3zlwxXGzfLaFnnQZ7D5frzl64Fbo6xVC
+        bh=zCBHdpjDvAH5HFKLaFFW9ex0bLksKjp4z0Uq53dM3gc=;
+        b=l4QlKM3OuLhnd5y0bEdGZiGi5o2Kfefgs3JhqLdsT7ONHAvJcQQLao7f6LvWDq7Lic
+         AJYiKNARvcaK5n2prm7vDW1ZbPFzON/jgrExLtFSVx1SDRlEpoqb7iIGPmPkWUmmJ7Ry
+         CWvLodZRob0Wcw7kbUpw7stNV0+cadl4T9eleFBLDIa88TfVEZUHbMS3YQZPS+jhBZSg
+         45lH7Pf0pBBmmYIR/dnvDro1FuXAfTX+VFc8LGrUvQusmiymuo+SgcHTWlifgfFhwcJr
+         bdYoz9cEoCCMQz7sUUotMD5vAX3FreQ3HRgZcjcndFmBIAfqmFx5o/pfi2lule6V0zqD
+         2uXQ==
+X-Gm-Message-State: AOAM5328llX8M7RYovi8Klx3jv7+LlQxULFlnx0SN5taafOPAqPTuEXe
+        7DaXfq0VC5cKCFH/2nxQ+XX2s4og/g4ZTIXG
+X-Google-Smtp-Source: ABdhPJx3gIRBl7jxMoyOF7HofxsStuWHxF7k1BYLFmdpKR/GdnzjuT6a9gcz5kr5idBcKWqZO2nVLpkqnoFYhJbs
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:85fb:aac9:69ed:e574])
- (user=andreyknvl job=sendgmr) by 2002:a05:600c:284:: with SMTP id
- 4mr23218161wmk.24.1615218926306; Mon, 08 Mar 2021 07:55:26 -0800 (PST)
-Date:   Mon,  8 Mar 2021 16:55:15 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a0c:e788:: with SMTP id
+ x8mr21917279qvn.48.1615218928607; Mon, 08 Mar 2021 07:55:28 -0800 (PST)
+Date:   Mon,  8 Mar 2021 16:55:16 +0100
 In-Reply-To: <cover.1615218180.git.andreyknvl@google.com>
-Message-Id: <26fdddb8b55e4ce65c356c0f3162a38951c871df.1615218180.git.andreyknvl@google.com>
+Message-Id: <731edf3341d50e863a658689c184eb16abda70e6.1615218180.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1615218180.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v2 2/5] kasan: init memory in kasan_(un)poison for HW_TAGS
+Subject: [PATCH v2 3/5] kasan, mm: integrate page_alloc init with HW_TAGS
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -74,337 +74,261 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change adds an argument to kasan_poison() and kasan_unpoison()
-that allows initializing memory along with setting the tags for HW_TAGS.
+This change uses the previously added memory initialization feature
+of HW_TAGS KASAN routines for page_alloc memory when init_on_alloc/free
+is enabled.
 
-Combining setting allocation tags with memory initialization will
-improve HW_TAGS KASAN performance when init_on_alloc/free is enabled.
+With this change, kernel_init_free_pages() is no longer called when
+both HW_TAGS KASAN and init_on_alloc/free are enabled. Instead, memory
+is initialized in KASAN runtime.
 
-This change doesn't integrate memory initialization with KASAN,
-this is done is subsequent patches in this series.
+To avoid discrepancies with which memory gets initialized that can be
+caused by future changes, both KASAN and kernel_init_free_pages() hooks
+are put together and a warning comment is added.
 
-Reviewed-by: Marco Elver <elver@google.com>
+This patch changes the order in which memory initialization and page
+poisoning hooks are called. This doesn't lead to any side-effects, as
+whenever page poisoning is enabled, memory initialization gets disabled.
+
+Combining setting allocation tags with memory initialization improves
+HW_TAGS KASAN performance when init_on_alloc/free is enabled.
+
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- lib/test_kasan.c   |  4 ++--
- mm/kasan/common.c  | 28 ++++++++++++++--------------
- mm/kasan/generic.c | 12 ++++++------
- mm/kasan/kasan.h   | 14 ++++++++------
- mm/kasan/shadow.c  | 10 +++++-----
- mm/kasan/sw_tags.c |  2 +-
- 6 files changed, 36 insertions(+), 34 deletions(-)
+ include/linux/kasan.h | 30 ++++++++++++++++++++++--------
+ mm/kasan/common.c     |  8 ++++----
+ mm/mempool.c          |  4 ++--
+ mm/page_alloc.c       | 37 ++++++++++++++++++++++++++-----------
+ 4 files changed, 54 insertions(+), 25 deletions(-)
 
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index e5647d147b35..d77c45edc7cd 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -1044,14 +1044,14 @@ static void match_all_mem_tag(struct kunit *test)
- 			continue;
- 
- 		/* Mark the first memory granule with the chosen memory tag. */
--		kasan_poison(ptr, KASAN_GRANULE_SIZE, (u8)tag);
-+		kasan_poison(ptr, KASAN_GRANULE_SIZE, (u8)tag, false);
- 
- 		/* This access must cause a KASAN report. */
- 		KUNIT_EXPECT_KASAN_FAIL(test, *ptr = 0);
- 	}
- 
- 	/* Recover the memory tag and free. */
--	kasan_poison(ptr, KASAN_GRANULE_SIZE, get_tag(ptr));
-+	kasan_poison(ptr, KASAN_GRANULE_SIZE, get_tag(ptr), false);
- 	kfree(ptr);
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 1d89b8175027..c89613caa8cf 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -96,6 +96,11 @@ static __always_inline bool kasan_enabled(void)
+ 	return static_branch_likely(&kasan_flag_enabled);
  }
  
++static inline bool kasan_has_integrated_init(void)
++{
++	return kasan_enabled();
++}
++
+ #else /* CONFIG_KASAN_HW_TAGS */
+ 
+ static inline bool kasan_enabled(void)
+@@ -103,6 +108,11 @@ static inline bool kasan_enabled(void)
+ 	return true;
+ }
+ 
++static inline bool kasan_has_integrated_init(void)
++{
++	return false;
++}
++
+ #endif /* CONFIG_KASAN_HW_TAGS */
+ 
+ slab_flags_t __kasan_never_merge(void);
+@@ -120,20 +130,20 @@ static __always_inline void kasan_unpoison_range(const void *addr, size_t size)
+ 		__kasan_unpoison_range(addr, size);
+ }
+ 
+-void __kasan_alloc_pages(struct page *page, unsigned int order);
++void __kasan_alloc_pages(struct page *page, unsigned int order, bool init);
+ static __always_inline void kasan_alloc_pages(struct page *page,
+-						unsigned int order)
++						unsigned int order, bool init)
+ {
+ 	if (kasan_enabled())
+-		__kasan_alloc_pages(page, order);
++		__kasan_alloc_pages(page, order, init);
+ }
+ 
+-void __kasan_free_pages(struct page *page, unsigned int order);
++void __kasan_free_pages(struct page *page, unsigned int order, bool init);
+ static __always_inline void kasan_free_pages(struct page *page,
+-						unsigned int order)
++						unsigned int order, bool init)
+ {
+ 	if (kasan_enabled())
+-		__kasan_free_pages(page, order);
++		__kasan_free_pages(page, order, init);
+ }
+ 
+ void __kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+@@ -277,13 +287,17 @@ static inline bool kasan_enabled(void)
+ {
+ 	return false;
+ }
++static inline bool kasan_has_integrated_init(void)
++{
++	return false;
++}
+ static inline slab_flags_t kasan_never_merge(void)
+ {
+ 	return 0;
+ }
+ static inline void kasan_unpoison_range(const void *address, size_t size) {}
+-static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
+-static inline void kasan_free_pages(struct page *page, unsigned int order) {}
++static inline void kasan_alloc_pages(struct page *page, unsigned int order, bool init) {}
++static inline void kasan_free_pages(struct page *page, unsigned int order, bool init) {}
+ static inline void kasan_cache_create(struct kmem_cache *cache,
+ 				      unsigned int *size,
+ 				      slab_flags_t *flags) {}
 diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index b5e08d4cefec..316f7f8cd8e6 100644
+index 316f7f8cd8e6..6107c795611f 100644
 --- a/mm/kasan/common.c
 +++ b/mm/kasan/common.c
-@@ -60,7 +60,7 @@ void kasan_disable_current(void)
+@@ -97,7 +97,7 @@ slab_flags_t __kasan_never_merge(void)
+ 	return 0;
+ }
  
- void __kasan_unpoison_range(const void *address, size_t size)
+-void __kasan_alloc_pages(struct page *page, unsigned int order)
++void __kasan_alloc_pages(struct page *page, unsigned int order, bool init)
  {
--	kasan_unpoison(address, size);
-+	kasan_unpoison(address, size, false);
- }
- 
- #if CONFIG_KASAN_STACK
-@@ -69,7 +69,7 @@ void kasan_unpoison_task_stack(struct task_struct *task)
- {
- 	void *base = task_stack_page(task);
- 
--	kasan_unpoison(base, THREAD_SIZE);
-+	kasan_unpoison(base, THREAD_SIZE, false);
- }
- 
- /* Unpoison the stack for the current task beyond a watermark sp value. */
-@@ -82,7 +82,7 @@ asmlinkage void kasan_unpoison_task_stack_below(const void *watermark)
- 	 */
- 	void *base = (void *)((unsigned long)watermark & ~(THREAD_SIZE - 1));
- 
--	kasan_unpoison(base, watermark - base);
-+	kasan_unpoison(base, watermark - base, false);
- }
- #endif /* CONFIG_KASAN_STACK */
- 
+ 	u8 tag;
+ 	unsigned long i;
 @@ -108,14 +108,14 @@ void __kasan_alloc_pages(struct page *page, unsigned int order)
  	tag = kasan_random_tag();
  	for (i = 0; i < (1 << order); i++)
  		page_kasan_tag_set(page + i, tag);
--	kasan_unpoison(page_address(page), PAGE_SIZE << order);
-+	kasan_unpoison(page_address(page), PAGE_SIZE << order, false);
+-	kasan_unpoison(page_address(page), PAGE_SIZE << order, false);
++	kasan_unpoison(page_address(page), PAGE_SIZE << order, init);
  }
  
- void __kasan_free_pages(struct page *page, unsigned int order)
+-void __kasan_free_pages(struct page *page, unsigned int order)
++void __kasan_free_pages(struct page *page, unsigned int order, bool init)
  {
  	if (likely(!PageHighMem(page)))
  		kasan_poison(page_address(page), PAGE_SIZE << order,
--			     KASAN_FREE_PAGE);
-+			     KASAN_FREE_PAGE, false);
+-			     KASAN_FREE_PAGE, false);
++			     KASAN_FREE_PAGE, init);
  }
  
  /*
-@@ -251,18 +251,18 @@ void __kasan_poison_slab(struct page *page)
- 	for (i = 0; i < compound_nr(page); i++)
- 		page_kasan_tag_reset(page + i);
- 	kasan_poison(page_address(page), page_size(page),
--		     KASAN_KMALLOC_REDZONE);
-+		     KASAN_KMALLOC_REDZONE, false);
+diff --git a/mm/mempool.c b/mm/mempool.c
+index 79959fac27d7..fe19d290a301 100644
+--- a/mm/mempool.c
++++ b/mm/mempool.c
+@@ -106,7 +106,7 @@ static __always_inline void kasan_poison_element(mempool_t *pool, void *element)
+ 	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
+ 		kasan_slab_free_mempool(element);
+ 	else if (pool->alloc == mempool_alloc_pages)
+-		kasan_free_pages(element, (unsigned long)pool->pool_data);
++		kasan_free_pages(element, (unsigned long)pool->pool_data, false);
  }
  
- void __kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
+ static void kasan_unpoison_element(mempool_t *pool, void *element)
+@@ -114,7 +114,7 @@ static void kasan_unpoison_element(mempool_t *pool, void *element)
+ 	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
+ 		kasan_unpoison_range(element, __ksize(element));
+ 	else if (pool->alloc == mempool_alloc_pages)
+-		kasan_alloc_pages(element, (unsigned long)pool->pool_data);
++		kasan_alloc_pages(element, (unsigned long)pool->pool_data, false);
+ }
+ 
+ static __always_inline void add_element(mempool_t *pool, void *element)
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 0efb07b5907c..aba9cd673eac 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -396,14 +396,14 @@ static DEFINE_STATIC_KEY_TRUE(deferred_pages);
+  * initialization is done, but this is not likely to happen.
+  */
+ static inline void kasan_free_nondeferred_pages(struct page *page, int order,
+-							fpi_t fpi_flags)
++						bool init, fpi_t fpi_flags)
  {
--	kasan_unpoison(object, cache->object_size);
-+	kasan_unpoison(object, cache->object_size, false);
+ 	if (static_branch_unlikely(&deferred_pages))
+ 		return;
+ 	if (!IS_ENABLED(CONFIG_KASAN_GENERIC) &&
+ 			(fpi_flags & FPI_SKIP_KASAN_POISON))
+ 		return;
+-	kasan_free_pages(page, order);
++	kasan_free_pages(page, order, init);
  }
  
- void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
+ /* Returns true if the struct page for the pfn is uninitialised */
+@@ -455,12 +455,12 @@ defer_init(int nid, unsigned long pfn, unsigned long end_pfn)
+ }
+ #else
+ static inline void kasan_free_nondeferred_pages(struct page *page, int order,
+-							fpi_t fpi_flags)
++						bool init, fpi_t fpi_flags)
  {
- 	kasan_poison(object, round_up(cache->object_size, KASAN_GRANULE_SIZE),
--			KASAN_KMALLOC_REDZONE);
-+			KASAN_KMALLOC_REDZONE, false);
+ 	if (!IS_ENABLED(CONFIG_KASAN_GENERIC) &&
+ 			(fpi_flags & FPI_SKIP_KASAN_POISON))
+ 		return;
+-	kasan_free_pages(page, order);
++	kasan_free_pages(page, order, init);
  }
  
- /*
-@@ -351,7 +351,7 @@ static inline bool ____kasan_slab_free(struct kmem_cache *cache,
+ static inline bool early_page_uninitialised(unsigned long pfn)
+@@ -1242,6 +1242,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
+ 			unsigned int order, bool check_free, fpi_t fpi_flags)
+ {
+ 	int bad = 0;
++	bool init;
+ 
+ 	VM_BUG_ON_PAGE(PageTail(page), page);
+ 
+@@ -1299,16 +1300,21 @@ static __always_inline bool free_pages_prepare(struct page *page,
+ 		debug_check_no_obj_freed(page_address(page),
+ 					   PAGE_SIZE << order);
  	}
+-	if (want_init_on_free())
+-		kernel_init_free_pages(page, 1 << order);
  
- 	kasan_poison(object, round_up(cache->object_size, KASAN_GRANULE_SIZE),
--			KASAN_KMALLOC_FREE);
-+			KASAN_KMALLOC_FREE, false);
- 
- 	if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine))
- 		return false;
-@@ -407,7 +407,7 @@ void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
- 	if (unlikely(!PageSlab(page))) {
- 		if (____kasan_kfree_large(ptr, ip))
- 			return;
--		kasan_poison(ptr, page_size(page), KASAN_FREE_PAGE);
-+		kasan_poison(ptr, page_size(page), KASAN_FREE_PAGE, false);
- 	} else {
- 		____kasan_slab_free(page->slab_cache, ptr, ip, false);
- 	}
-@@ -453,7 +453,7 @@ void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
- 	 * Unpoison the whole object.
- 	 * For kmalloc() allocations, kasan_kmalloc() will do precise poisoning.
- 	 */
--	kasan_unpoison(tagged_object, cache->object_size);
-+	kasan_unpoison(tagged_object, cache->object_size, false);
- 
- 	/* Save alloc info (if possible) for non-kmalloc() allocations. */
- 	if (kasan_stack_collection_enabled())
-@@ -496,7 +496,7 @@ static inline void *____kasan_kmalloc(struct kmem_cache *cache,
- 	redzone_end = round_up((unsigned long)(object + cache->object_size),
- 				KASAN_GRANULE_SIZE);
- 	kasan_poison((void *)redzone_start, redzone_end - redzone_start,
--			   KASAN_KMALLOC_REDZONE);
-+			   KASAN_KMALLOC_REDZONE, false);
+ 	kernel_poison_pages(page, 1 << order);
  
  	/*
- 	 * Save alloc info (if possible) for kmalloc() allocations.
-@@ -546,7 +546,7 @@ void * __must_check __kasan_kmalloc_large(const void *ptr, size_t size,
- 				KASAN_GRANULE_SIZE);
- 	redzone_end = (unsigned long)ptr + page_size(virt_to_page(ptr));
- 	kasan_poison((void *)redzone_start, redzone_end - redzone_start,
--		     KASAN_PAGE_REDZONE);
-+		     KASAN_PAGE_REDZONE, false);
- 
- 	return (void *)ptr;
- }
-@@ -563,7 +563,7 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
- 	 * Part of it might already have been unpoisoned, but it's unknown
- 	 * how big that part is.
++	 * As memory initialization might be integrated into KASAN,
++	 * kasan_free_pages and kernel_init_free_pages must be
++	 * kept together to avoid discrepancies in behavior.
++	 *
+ 	 * With hardware tag-based KASAN, memory tags must be set before the
+ 	 * page becomes unavailable via debug_pagealloc or arch_free_page.
  	 */
--	kasan_unpoison(object, size);
-+	kasan_unpoison(object, size, false);
+-	kasan_free_nondeferred_pages(page, order, fpi_flags);
++	init = want_init_on_free();
++	if (init && !kasan_has_integrated_init())
++		kernel_init_free_pages(page, 1 << order);
++	kasan_free_nondeferred_pages(page, order, init, fpi_flags);
  
- 	page = virt_to_head_page(object);
- 
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index 2e55e0f82f39..53cbf28859b5 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -208,11 +208,11 @@ static void register_global(struct kasan_global *global)
+ 	/*
+ 	 * arch_free_page() can make the page's contents inaccessible.  s390
+@@ -2315,17 +2321,26 @@ static bool check_new_pages(struct page *page, unsigned int order)
+ inline void post_alloc_hook(struct page *page, unsigned int order,
+ 				gfp_t gfp_flags)
  {
- 	size_t aligned_size = round_up(global->size, KASAN_GRANULE_SIZE);
++	bool init;
++
+ 	set_page_private(page, 0);
+ 	set_page_refcounted(page);
  
--	kasan_unpoison(global->beg, global->size);
-+	kasan_unpoison(global->beg, global->size, false);
+ 	arch_alloc_page(page, order);
+ 	debug_pagealloc_map_pages(page, 1 << order);
+-	kasan_alloc_pages(page, order);
+-	kernel_unpoison_pages(page, 1 << order);
+-	set_page_owner(page, order, gfp_flags);
  
- 	kasan_poison(global->beg + aligned_size,
- 		     global->size_with_redzone - aligned_size,
--		     KASAN_GLOBAL_REDZONE);
-+		     KASAN_GLOBAL_REDZONE, false);
+-	if (!want_init_on_free() && want_init_on_alloc(gfp_flags))
++	/*
++	 * As memory initialization might be integrated into KASAN,
++	 * kasan_alloc_pages and kernel_init_free_pages must be
++	 * kept together to avoid discrepancies in behavior.
++	 */
++	init = !want_init_on_free() && want_init_on_alloc(gfp_flags);
++	kasan_alloc_pages(page, order, init);
++	if (init && !kasan_has_integrated_init())
+ 		kernel_init_free_pages(page, 1 << order);
++
++	kernel_unpoison_pages(page, 1 << order);
++	set_page_owner(page, order, gfp_flags);
  }
  
- void __asan_register_globals(struct kasan_global *globals, size_t size)
-@@ -292,11 +292,11 @@ void __asan_alloca_poison(unsigned long addr, size_t size)
- 	WARN_ON(!IS_ALIGNED(addr, KASAN_ALLOCA_REDZONE_SIZE));
- 
- 	kasan_unpoison((const void *)(addr + rounded_down_size),
--			size - rounded_down_size);
-+			size - rounded_down_size, false);
- 	kasan_poison(left_redzone, KASAN_ALLOCA_REDZONE_SIZE,
--		     KASAN_ALLOCA_LEFT);
-+		     KASAN_ALLOCA_LEFT, false);
- 	kasan_poison(right_redzone, padding_size + KASAN_ALLOCA_REDZONE_SIZE,
--		     KASAN_ALLOCA_RIGHT);
-+		     KASAN_ALLOCA_RIGHT, false);
- }
- EXPORT_SYMBOL(__asan_alloca_poison);
- 
-@@ -306,7 +306,7 @@ void __asan_allocas_unpoison(const void *stack_top, const void *stack_bottom)
- 	if (unlikely(!stack_top || stack_top > stack_bottom))
- 		return;
- 
--	kasan_unpoison(stack_top, stack_bottom - stack_top);
-+	kasan_unpoison(stack_top, stack_bottom - stack_top, false);
- }
- EXPORT_SYMBOL(__asan_allocas_unpoison);
- 
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 7fbb32234414..823a90d6a0cd 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -331,7 +331,7 @@ static inline u8 kasan_random_tag(void) { return 0; }
- 
- #ifdef CONFIG_KASAN_HW_TAGS
- 
--static inline void kasan_poison(const void *addr, size_t size, u8 value)
-+static inline void kasan_poison(const void *addr, size_t size, u8 value, bool init)
- {
- 	addr = kasan_reset_tag(addr);
- 
-@@ -344,10 +344,10 @@ static inline void kasan_poison(const void *addr, size_t size, u8 value)
- 	if (WARN_ON(size & KASAN_GRANULE_MASK))
- 		return;
- 
--	hw_set_mem_tag_range((void *)addr, size, value, false);
-+	hw_set_mem_tag_range((void *)addr, size, value, init);
- }
- 
--static inline void kasan_unpoison(const void *addr, size_t size)
-+static inline void kasan_unpoison(const void *addr, size_t size, bool init)
- {
- 	u8 tag = get_tag(addr);
- 
-@@ -361,7 +361,7 @@ static inline void kasan_unpoison(const void *addr, size_t size)
- 		return;
- 	size = round_up(size, KASAN_GRANULE_SIZE);
- 
--	hw_set_mem_tag_range((void *)addr, size, tag, false);
-+	hw_set_mem_tag_range((void *)addr, size, tag, init);
- }
- 
- static inline bool kasan_byte_accessible(const void *addr)
-@@ -380,22 +380,24 @@ static inline bool kasan_byte_accessible(const void *addr)
-  * @addr - range start address, must be aligned to KASAN_GRANULE_SIZE
-  * @size - range size, must be aligned to KASAN_GRANULE_SIZE
-  * @value - value that's written to metadata for the range
-+ * @init - whether to initialize the memory range (only for hardware tag-based)
-  *
-  * The size gets aligned to KASAN_GRANULE_SIZE before marking the range.
-  */
--void kasan_poison(const void *addr, size_t size, u8 value);
-+void kasan_poison(const void *addr, size_t size, u8 value, bool init);
- 
- /**
-  * kasan_unpoison - mark the memory range as accessible
-  * @addr - range start address, must be aligned to KASAN_GRANULE_SIZE
-  * @size - range size, can be unaligned
-+ * @init - whether to initialize the memory range (only for hardware tag-based)
-  *
-  * For the tag-based modes, the @size gets aligned to KASAN_GRANULE_SIZE before
-  * marking the range.
-  * For the generic mode, the last granule of the memory range gets partially
-  * unpoisoned based on the @size.
-  */
--void kasan_unpoison(const void *addr, size_t size);
-+void kasan_unpoison(const void *addr, size_t size, bool init);
- 
- bool kasan_byte_accessible(const void *addr);
- 
-diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-index 63f43443f5d7..727ad4629173 100644
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -69,7 +69,7 @@ void *memcpy(void *dest, const void *src, size_t len)
- 	return __memcpy(dest, src, len);
- }
- 
--void kasan_poison(const void *addr, size_t size, u8 value)
-+void kasan_poison(const void *addr, size_t size, u8 value, bool init)
- {
- 	void *shadow_start, *shadow_end;
- 
-@@ -106,7 +106,7 @@ void kasan_poison_last_granule(const void *addr, size_t size)
- }
- #endif
- 
--void kasan_unpoison(const void *addr, size_t size)
-+void kasan_unpoison(const void *addr, size_t size, bool init)
- {
- 	u8 tag = get_tag(addr);
- 
-@@ -129,7 +129,7 @@ void kasan_unpoison(const void *addr, size_t size)
- 		return;
- 
- 	/* Unpoison all granules that cover the object. */
--	kasan_poison(addr, round_up(size, KASAN_GRANULE_SIZE), tag);
-+	kasan_poison(addr, round_up(size, KASAN_GRANULE_SIZE), tag, false);
- 
- 	/* Partially poison the last granule for the generic mode. */
- 	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
-@@ -344,7 +344,7 @@ void kasan_poison_vmalloc(const void *start, unsigned long size)
- 		return;
- 
- 	size = round_up(size, KASAN_GRANULE_SIZE);
--	kasan_poison(start, size, KASAN_VMALLOC_INVALID);
-+	kasan_poison(start, size, KASAN_VMALLOC_INVALID, false);
- }
- 
- void kasan_unpoison_vmalloc(const void *start, unsigned long size)
-@@ -352,7 +352,7 @@ void kasan_unpoison_vmalloc(const void *start, unsigned long size)
- 	if (!is_vmalloc_or_module_addr(start))
- 		return;
- 
--	kasan_unpoison(start, size);
-+	kasan_unpoison(start, size, false);
- }
- 
- static int kasan_depopulate_vmalloc_pte(pte_t *ptep, unsigned long addr,
-diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
-index 94c2d33be333..bd0c64d4e4d9 100644
---- a/mm/kasan/sw_tags.c
-+++ b/mm/kasan/sw_tags.c
-@@ -159,7 +159,7 @@ EXPORT_SYMBOL(__hwasan_storeN_noabort);
- 
- void __hwasan_tag_memory(unsigned long addr, u8 tag, unsigned long size)
- {
--	kasan_poison((void *)addr, size, tag);
-+	kasan_poison((void *)addr, size, tag, false);
- }
- EXPORT_SYMBOL(__hwasan_tag_memory);
- 
+ static void prep_new_page(struct page *page, unsigned int order, gfp_t gfp_flags,
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
