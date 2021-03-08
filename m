@@ -2,116 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60F2330EF4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:15:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A25D6330EFD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 14:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhCHNPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 08:15:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21181 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230047AbhCHNOt (ORCPT
+        id S229899AbhCHNQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 08:16:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229814AbhCHNQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 08:14:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615209289;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=elYv3u6ByCeI5rhesd+IetH8Zfo/QbBmOMDByurjQ5k=;
-        b=e2CDhJgJlkKls08IJeGlK0PP8L0GCQ7VzqxyO8JtuokBqLsnEfh/C4OXc1WVfztBZVHCz+
-        yZIZGO031OhyoaOn20Vr0Os/y6wvxMr0QCm+swu4OtVJfozmHeiyUeDGiN0SEFr4WxK2Ih
-        1jC0vLHYGr6w0kJXkOc/lUJ2SukWe3Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-415-TKbhoZiqO7aEXCm2Xhta3g-1; Mon, 08 Mar 2021 08:14:45 -0500
-X-MC-Unique: TKbhoZiqO7aEXCm2Xhta3g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F5C68018A1;
-        Mon,  8 Mar 2021 13:14:43 +0000 (UTC)
-Received: from krava (unknown [10.40.195.248])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 8517410023AC;
-        Mon,  8 Mar 2021 13:14:41 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 14:14:40 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v3] perf pmu: Validate raw event with sysfs exported
- format bits
-Message-ID: <YEYjQOYI7utqnCq6@krava>
-References: <20210308031506.23019-1-yao.jin@linux.intel.com>
- <YEX91MTGMU41zeuF@krava>
- <c06cdd0d-fee2-ab6d-1d22-49a6590996ea@linux.intel.com>
+        Mon, 8 Mar 2021 08:16:28 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF8FC06175F;
+        Mon,  8 Mar 2021 05:16:28 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id cw15so4503793qvb.11;
+        Mon, 08 Mar 2021 05:16:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mq/RjOi7oMvBkyqqQDEJlkZFAJdUsCm3Qg8+RS8/HSo=;
+        b=BdHyVo3yQuV3DV48f3bJjriWahibIKWTlkYMWIxyjaeMsJ0eLXR8/VVMc34NswrBkC
+         nKHr9BKZyu88I8ghJ6Kz0bzo/xOsVeSY5AW9j3eSukKNb6S9EoyrHqodb/q4uU8cCXcN
+         Po3Jw1pEtrFsNCNXsPE842EFlS8agYdjp/MUiN2RO/1OWj1wtXDqUBtThXJ0hMa3zYgz
+         L6BdI+D+n6aycm+pFueaaDTXSSZycUyibySGKH0sExDhkPr/eT4gnVnPNS+PyzZFXRuo
+         sK39l5TRhwHhFKTo/4rbSyBnSv80SmWhlhrQyai6FZws9G78Ok8rJi2z9Xe+Lv8QsLYJ
+         ECDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mq/RjOi7oMvBkyqqQDEJlkZFAJdUsCm3Qg8+RS8/HSo=;
+        b=TI6L3yG6x0/NQjC3Tlnc1g/IZhUrXF7H1pNloNiogKyDbYxlW1wPheSQPgb37aC4xf
+         ZrGcJbHbphjaAZY0Cm65qP40UtvmmMAsw+U2cwEblU0ixOeRA6AJnzFT1+ln0p/RVX5L
+         r/pSUH5cjUe5Qr1MvdWOdnGwUZAswC+9rwLa/uJThHVIJMS6TODD9UtujFKY0dMO3p2e
+         L+War/hDsokxma7567yz/NE21/y5zWouNJhte9vGLD3YhFGVuQPXTbNu4qwlnB58036D
+         fqDlZ2gfPoMQ/fkrrX3q/Rk60udfEWPiygOofISOWu2oojLcY63/hq1iCxOVr5soT1lD
+         04rw==
+X-Gm-Message-State: AOAM533UvVgUO9iMfX8yMe0xdyT8aPxY5RHJKGKFCtBqcGx95hRzPdoq
+        AYn8RhxGoe5NI1bYY0ESk3YpVAN2r7ohoU2TBwoWmE4LY6o=
+X-Google-Smtp-Source: ABdhPJygKdeW7eWlM9tZB3oGSyuFSBjt6ZqB3nTQwnEAkBjDRdfL3US7UMWjWXaXySP+UvXlKsBkA6VqexayPm1FufM=
+X-Received: by 2002:a05:6214:76f:: with SMTP id f15mr20582682qvz.56.1615209387754;
+ Mon, 08 Mar 2021 05:16:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c06cdd0d-fee2-ab6d-1d22-49a6590996ea@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <1614221563-26822-1-git-send-email-shengjiu.wang@nxp.com>
+ <1614221563-26822-8-git-send-email-shengjiu.wang@nxp.com> <20210306203617.GA1164939@robh.at.kernel.org>
+In-Reply-To: <20210306203617.GA1164939@robh.at.kernel.org>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Mon, 8 Mar 2021 21:16:16 +0800
+Message-ID: <CAA+D8APUVqyRRPc4GDwJqQEcnEPLxQMcZ+VhkbbrOx7hQs1jSA@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] ASoC: dt-bindings: imx-rpmsg: Add binding doc for
+ rpmsg machine driver
+To:     Rob Herring <robh@kernel.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
+        Timur Tabi <timur@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 08:57:49PM +0800, Jin, Yao wrote:
-> Hi Jiri,
-> 
-> On 3/8/2021 6:35 PM, Jiri Olsa wrote:
-> > On Mon, Mar 08, 2021 at 11:15:06AM +0800, Jin Yao wrote:
-> > 
-> > SNIP
-> > 
-> > > diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> > > index 44ef28302fc7..03ab1e6d0418 100644
-> > > --- a/tools/perf/util/pmu.c
-> > > +++ b/tools/perf/util/pmu.c
-> > > @@ -1812,3 +1812,39 @@ int perf_pmu__caps_parse(struct perf_pmu *pmu)
-> > >   	return nr_caps;
-> > >   }
-> > > +
-> > > +void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
-> > > +				   char *name)
-> > > +{
-> > > +	struct perf_pmu_format *format;
-> > > +	__u64 masks = 0, bits;
-> > > +	char buf[100];
-> > > +	unsigned int i;
-> > > +
-> > > +	list_for_each_entry(format, &pmu->format, list)	{
-> > > +		/*
-> > > +		 * Skip extra configs such as config1/config2.
-> > > +		 */
-> > > +		if (format->value > 0)
-> > > +			continue;
-> > 
-> > sorry I did not notice before, but could you please use more direct
-> > approach like:
-> > 
-> > 		if (format->value == PERF_PMU_FORMAT_VALUE_CONFIG) {
-> > 			break;
-> > 		}
-> > 
-> > this will be more obvious, also no need for the comment.. I spent some
-> > time looking what's the value for ;-)
-> > 
-> > thanks,
-> > jirka
-> > 
-> 
-> Oh, yes, using PERF_PMU_FORMAT_VALUE_CONFIG is much more obvious. Sorry about that!
-> 
-> While it can't break the loop, because we need to iterate over the whole
-> list to get the total valid bits. So like:
-> 
-> if (format->value != PERF_PMU_FORMAT_VALUE_CONFIG)
-> 	continue;
-> 
-> Is it right?
+On Sun, Mar 7, 2021 at 4:37 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Thu, Feb 25, 2021 at 10:52:43AM +0800, Shengjiu Wang wrote:
+> > Imx-rpmsg is a new added machine driver for supporting audio on Cortex-M
+> > core. The Cortex-M core will control the audio interface, DMA and audio
+> > codec, setup the pipeline, the audio driver on Cortex-A core side is just
+> > to communitcate with M core, it is a virtual sound card and don't touch
+> > the hardware.
+>
+> This sounds like 1 h/w block (the interface to the cortex-M), your DT
+> should be 1 node. If you need 2 drivers to satisfy the needs of the OS,
+> then instantiate one device from the other device's driver.
+>
 
-sure, what I meant was to process only PERF_PMU_FORMAT_VALUE_CONFIG
-and then call break, because there's no need to iterate further
+Ok, I will change it in v4.
 
-jirka
-
+best regards
+wang shengjiu
