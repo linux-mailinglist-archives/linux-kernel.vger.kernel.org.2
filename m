@@ -2,139 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E103309EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EEE3309E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 10:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbhCHJEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 04:04:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42672 "EHLO
+        id S230078AbhCHJDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 04:03:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbhCHJDs (ORCPT
+        with ESMTP id S229971AbhCHJDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 04:03:48 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B51C06174A;
-        Mon,  8 Mar 2021 01:03:48 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id v9so19872294lfa.1;
-        Mon, 08 Mar 2021 01:03:48 -0800 (PST)
+        Mon, 8 Mar 2021 04:03:37 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AAFBC06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 01:03:37 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id u187so5555853wmg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 01:03:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=f0MkKY1UF1QqFhYKVPwOq+Ju9G4IUVvg4Cjsdu6w/3g=;
-        b=EhqwmCj+hu7PZmHAM0dMG8J+JeLWiEWiHnApd2/aEUepqpPkN+ocEQ0tGtL7TtqAKk
-         4R/zDo7QvDGVtI7/KQCQyQSav0wAR0znPEi12SJ42mLthNUwHuNyP+e2uAEp+i80uNFL
-         rfkQMzBVt36d2q5fQE8y39we7tZjRwFG0iCOowXcMnLmX12463GUEy2Msun90lSGFWAj
-         ufkEQOKX2Y+lNocNAs7E1fxAzZs3UWoBo4P13A6dmlIb1l+/u3upWpixYshykkxIyvNR
-         0jdLr3UwHTM+j0uEupoo0RB/6Evjtxvp7GYw1rOgdgFdqM42U3QWc2z+MvboDEjgk3Sr
-         adoA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wuyZs6M+UzCVfDj2nK0tA2CpdT68UL1xPL9B0b4Wjbc=;
+        b=AFWBxZi7hSnSDe6mZMb4EFVw2s0UVsmV/3Zm4R60eyQKdCQlXLddsXa5e70221H9bg
+         wAVEPi7yNZdMoVvW7LHyv5ZARSne30L3r/QdofaIlmC1MrUXp1JKzWD2FLpfuuJlCmJn
+         AfwirH+iQg5XuxPkndHeM9XcrD+xSOQfIzdsuaCXN/IhDs5KJ8qcyGng/vlUs52rpPfl
+         417Rnk2CpmHxp7BaP8t070u6q6jynus0rJ2FMawbNdWLfVF6+tVo8l2XCRTvv5NJtllR
+         pAo43f50S1G2TiCOAYd170YkJXv4MZqVfN/ZXjlyeoH/s3ErBFKeY00Nbk8vgt1OiYP5
+         6M2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=f0MkKY1UF1QqFhYKVPwOq+Ju9G4IUVvg4Cjsdu6w/3g=;
-        b=azXb5SqkI+l5K07xImwB7xxNUWY5my50jXPIKHMKjvTJg7gwOfjk63h6qcfKIwtWYE
-         TO2Ea+99t6JlhQoTeMsDYj/A4uZjj955PtkQorWxjq0brTH+oxxW/lG+s3kVX6k067Z5
-         gqavVZ5PdXS+Z/7na01/7+rSny3kgCIGHGIq6iF9wzijWw+jpLHvAxyFsUEIxstSZLmm
-         KtfANL7CPrIK6orxCKKeGfTBuvqkkbsWYjv69lnXOiF3KvYC4uwc7rmkUHXRscl8RZ+B
-         e1XYYn6YzxLAHFL4A4liw2xI3C1zSl05IRMmQ83EAVPULVqjhSCGwEThf5BCzo6+xgUe
-         aRdw==
-X-Gm-Message-State: AOAM5311gPAu1c5LWxa70UY0c9/BIw0tPokJi/1nf138rnCve0doBY6n
-        QJLdhYDvFWOzUzMfHakL/y8=
-X-Google-Smtp-Source: ABdhPJwWEq2R/+0DcHcTYmLrCNuBZIc3WgrmH7DSX2vHIJ4hzT2ZRTwShzvw+/dXCIBJs69Rs9pwiQ==
-X-Received: by 2002:a19:2242:: with SMTP id i63mr13237087lfi.643.1615194226928;
-        Mon, 08 Mar 2021 01:03:46 -0800 (PST)
-Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.gmail.com with ESMTPSA id t13sm1410346ljk.47.2021.03.08.01.03.46
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wuyZs6M+UzCVfDj2nK0tA2CpdT68UL1xPL9B0b4Wjbc=;
+        b=K3i9d5Lq6c9Vw4BrsDKUjHThVEUFMVbIY0/zhnZQD/GSsNMIvC8kA3QZC6BxpwCNHW
+         QIA5LpcTAX231vKLFWztq+TBdtQpAiCyDUvhdcFWOxd67ygD3ulq/9jWXMYqOys+q3bU
+         5QSJKHtfnRInxPMOdxEP9TsdulJTALGUyqnGOCA0BgFNifOXv5gFFjhz6PdbbArkccqi
+         NR7AEappGcXJE0NXrwwLlwA2jtGNenaJpbxo0vdFvhSWIfHu7dxFD5kO8IB3FIr3olfL
+         +ry29r2dZu9kJC8gW8MxyHbSXS7KJM2OiFsur2jmeSUXvjswalDSH7DF0mae0bMULptm
+         XzGw==
+X-Gm-Message-State: AOAM533tVrMU8Jyo/IkeM5dihwkGJ5BEEMRTaxPAPDXWsytlAphsXS3M
+        0J3PEDN5zM61YcDv3vspLNg=
+X-Google-Smtp-Source: ABdhPJy/xQ8AjCQdjH88S6wYDSGuP8h58oLTJ4NjjdwvaqvF93GH7qHf2sQLILF2RrTyvrEpE/maTw==
+X-Received: by 2002:a1c:28c1:: with SMTP id o184mr20402728wmo.183.1615194215756;
+        Mon, 08 Mar 2021 01:03:35 -0800 (PST)
+Received: from hthiery.fritz.box (ip1f1322f8.dynamic.kabel-deutschland.de. [31.19.34.248])
+        by smtp.gmail.com with ESMTPSA id j9sm17854477wmi.24.2021.03.08.01.03.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 01:03:46 -0800 (PST)
-From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivek Unune <npcomplete13@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH  mips/linux.git 5/5] firmware: bcm47xx_nvram: inline code checking NVRAM size
-Date:   Mon,  8 Mar 2021 10:03:20 +0100
-Message-Id: <20210308090320.9765-6-zajec5@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210308090320.9765-1-zajec5@gmail.com>
-References: <20210308090320.9765-1-zajec5@gmail.com>
+        Mon, 08 Mar 2021 01:03:35 -0800 (PST)
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Heiko Thiery <heiko.thiery@gmail.com>
+Subject: [PATCH] arm64: configs: Enable PCIe support for imx8mq boards
+Date:   Mon,  8 Mar 2021 10:03:30 +0100
+Message-Id: <20210308090329.17507-1-heiko.thiery@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+Enable PCI_IMX6 to get PCI support for imx8mq boards like imx8mq-evk,
+imx8mq-kontron-pitx-imx8m and imx8mq-zii-ultra. This increases the image
+by 64k.
 
-Separated function was not improving code quality much (or at all).
-Moreover it expected possible flash end address as argument and it was
-returning NVRAM size.
-
-The new code always operates on offsets which means less logic and less
-calculations.
-
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
 ---
- drivers/firmware/broadcom/bcm47xx_nvram.c | 25 +++++++----------------
- 1 file changed, 7 insertions(+), 18 deletions(-)
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/firmware/broadcom/bcm47xx_nvram.c b/drivers/firmware/broadcom/bcm47xx_nvram.c
-index 1d2271b1e07a..bd235833b687 100644
---- a/drivers/firmware/broadcom/bcm47xx_nvram.c
-+++ b/drivers/firmware/broadcom/bcm47xx_nvram.c
-@@ -42,18 +42,6 @@ static bool bcm47xx_nvram_is_valid(void __iomem *nvram)
- 	return ((struct nvram_header *)nvram)->magic == NVRAM_MAGIC;
- }
- 
--static u32 find_nvram_size(void __iomem *end)
--{
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(nvram_sizes); i++) {
--		if (bcm47xx_nvram_is_valid(end - nvram_sizes[i]))
--			return nvram_sizes[i];
--	}
--
--	return 0;
--}
--
- /**
-  * bcm47xx_nvram_copy - copy NVRAM to internal buffer
-  */
-@@ -85,7 +73,7 @@ static int bcm47xx_nvram_find_and_copy(void __iomem *flash_start, size_t res_siz
- {
- 	size_t flash_size;
- 	size_t offset;
--	u32 size;
-+	int i;
- 
- 	if (nvram_len) {
- 		pr_warn("nvram already initialized\n");
-@@ -93,12 +81,13 @@ static int bcm47xx_nvram_find_and_copy(void __iomem *flash_start, size_t res_siz
- 	}
- 
- 	/* TODO: when nvram is on nand flash check for bad blocks first. */
-+
-+	/* Try every possible flash size and check for NVRAM at its end */
- 	for (flash_size = FLASH_MIN; flash_size <= res_size; flash_size <<= 1) {
--		/* Windowed flash access */
--		size = find_nvram_size(flash_start + flash_size);
--		if (size) {
--			offset = flash_size - size;
--			goto found;
-+		for (i = 0; i < ARRAY_SIZE(nvram_sizes); i++) {
-+			offset = flash_size - nvram_sizes[i];
-+			if (bcm47xx_nvram_is_valid(flash_start + offset))
-+				goto found;
- 		}
- 	}
- 
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index d612f633b771..4b7b4a8f1860 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -225,6 +225,7 @@ CONFIG_PCI_HOST_THUNDER_PEM=y
+ CONFIG_PCI_HOST_THUNDER_ECAM=y
+ CONFIG_PCIE_ROCKCHIP_HOST=m
+ CONFIG_PCIE_BRCMSTB=m
++CONFIG_PCI_IMX6=y
+ CONFIG_PCI_LAYERSCAPE=y
+ CONFIG_PCIE_LAYERSCAPE_GEN4=y
+ CONFIG_PCI_HISI=y
 -- 
-2.26.2
+2.30.0
 
