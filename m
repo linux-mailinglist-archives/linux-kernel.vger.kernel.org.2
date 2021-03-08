@@ -2,124 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945FD331855
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:20:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 739A9331865
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhCHUUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:20:13 -0500
-Received: from mail-io1-f43.google.com ([209.85.166.43]:45923 "EHLO
-        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhCHUTs (ORCPT
+        id S230455AbhCHUXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:23:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229848AbhCHUXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:19:48 -0500
-Received: by mail-io1-f43.google.com with SMTP id a7so11347980iok.12;
-        Mon, 08 Mar 2021 12:19:47 -0800 (PST)
+        Mon, 8 Mar 2021 15:23:25 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D654C06174A;
+        Mon,  8 Mar 2021 12:23:25 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id c16so5441304ply.0;
+        Mon, 08 Mar 2021 12:23:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qG07t7pQ2BE3mECuc5WgmJ0bVAVK/y04EepdaVjvc2s=;
+        b=YJc4KV8b+keQ/bom7xZriile+cxCFaXsxvnGKPsml2OGlmAvdDMHMKTBIHRA2dH8aL
+         CJvEt2F4qpsbW3ubKkDbl+T/OR8m1/ZhGJzzS0gP5sFPXDbGNvXBRSe7vPxePHLoaZ9O
+         VGgvDFeDjnzXmkiJcLJucZEXJdhwrNSgYe/gqapdXB5smuDO7FVChnNqrGOCQ91AkMDt
+         MW1XFUUS4mCtAXCx8OWqOvYQ/UV/FZ7c7h8X9FR/YyXlDbGqq3QnJ6sG2dZssLfwqY1Y
+         7hRfeu1JIviDWPK9uVlYlvSNz5oMJ//P2G19cABMPTgJvpLnOZvzKtAMAlgoCwDbxfYF
+         jTnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NcG6ZqO4p6QZgXbPCgWzjprzED+TuNKHh2ID9qjkO6M=;
-        b=OvIL3qEgxQkY3ssNAIbuxwEH+rvOStk9zugf1TjHF2in0Tu+HSZhtLXZIjdyeoMxft
-         snyxmUuJ1fWEE1U6GXAUImHlocTAAiR7lh6z8KQCRJNdwG1sjEXpLYWVfBsYl77mvGf9
-         fynPykHiCqEXfuW1xpFSCMVRRM++zTSbRhpk8OUS+ro/pQ3XL6MSBGUyBMeupcOMAywI
-         4FwwXteHpCYsXHHeKjyKZzljrsQmREYwppInj5uOGxKdERhExpNttZB3A3IYo3T4Nv2E
-         0MMreDqLVMa+uZ9rY3U+ve4l6xwCmh/a01rmOfkw5Q9BIPz2OGsQeyPHa+Rmzzu+cdTq
-         o8Vw==
-X-Gm-Message-State: AOAM5337sSwIXBHFlpA9Ga6m+LQv2fdwEyKqS/VMyQeSphb9wGb4ulkp
-        4PrutO1XVzTlX+rElXvtvA==
-X-Google-Smtp-Source: ABdhPJy/ZGuyoAd9MktEIjw1VXRRagJzg7rGusa9KJa5EvGqsBJyUHx7q4jtGsbflpahG8+vLwaFjA==
-X-Received: by 2002:a05:6602:82:: with SMTP id h2mr20489812iob.20.1615234787570;
-        Mon, 08 Mar 2021 12:19:47 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id a14sm6394626ilj.39.2021.03.08.12.19.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qG07t7pQ2BE3mECuc5WgmJ0bVAVK/y04EepdaVjvc2s=;
+        b=PWOsD5fPcylNoCSCSgkOQDbQX3rCYb6J8e7TzQQchWQMCkO3RC8/T/yxF+xU9pbcFY
+         P0C2Lxp32HR05ShcBW6c0pcgzPVeYErzb97nsap8dOTPKSif9LK6yvCOyQ2HbGTIZr33
+         pFWk4f458OnrkJ1FKXt167x+yHYDT8D+xFlmC3zFxRKEbcDiWOkY3CQRgc8LsmKhMFdE
+         Pq89IaSVfuglTZ79gnJfJCbZsaQyj2zDMP4mtqkVWA/dSQzusJ8nZ00xWqjU6zP/U8dA
+         jK9hj78nkccppH4YbPVON0fwQ2FWgnUEesEIUWQ07aMvaIrDb2sMhzGcS4wcMoE0eae7
+         ufVg==
+X-Gm-Message-State: AOAM533iJymXmEgEmlgHnYMTbpZ8q2Hqzwyh+ImByqv5K8wz46w/PYsZ
+        eXrtP4/pvQaKFoNTE5iGVrg=
+X-Google-Smtp-Source: ABdhPJzlgXaEwI72mV6bjB6rAV9vXtWjGHWPWbwF+Tv0h2yYpOjvArMeKvgkyoBjGAnNzFnX9Qe4rQ==
+X-Received: by 2002:a17:902:6547:b029:e4:547b:77cb with SMTP id d7-20020a1709026547b02900e4547b77cbmr22316668pln.75.1615235004692;
+        Mon, 08 Mar 2021 12:23:24 -0800 (PST)
+Received: from varodek.localdomain ([223.233.103.31])
+        by smtp.gmail.com with ESMTPSA id m3sm10262962pgk.47.2021.03.08.12.23.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 12:19:46 -0800 (PST)
-Received: (nullmailer pid 2894804 invoked by uid 1000);
-        Mon, 08 Mar 2021 20:19:44 -0000
-Date:   Mon, 8 Mar 2021 13:19:44 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Nava kishore Manne <nava.manne@xilinx.com>
-Cc:     mdf@kernel.org, trix@redhat.com, michal.simek@xilinx.com,
-        gregkh@linuxfoundation.org, jolly.shah@xilinx.com,
-        rajan.vaja@xilinx.com, arnd@arndb.de, manish.narani@xilinx.com,
-        amit.sunil.dhamne@xilinx.com, tejas.patel@xilinx.com,
-        linux-fpga@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        chinnikishore369@gmail.com,
-        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-Subject: Re: [PATCH v3 2/3] dt-bindings: fpga: Add binding doc for versal
- fpga manager
-Message-ID: <20210308201944.GA2886704@robh.at.kernel.org>
-References: <20210304070224.22346-1-nava.manne@xilinx.com>
- <20210304070224.22346-3-nava.manne@xilinx.com>
+        Mon, 08 Mar 2021 12:23:24 -0800 (PST)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Kishon Vijay Abraham <kishon@ti.com>, Sekhar Nori <nsekhar@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Praneeth Bajjuri <praneeth@ti.com>,
+        Gowtham Tammana <g-tammana@ti.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/3] Update dt-bindings and sa2ul driver for AM64x SoCs
+Date:   Tue,  9 Mar 2021 01:50:02 +0530
+Message-Id: <20210308202005.243228-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304070224.22346-3-nava.manne@xilinx.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 12:32:23PM +0530, Nava kishore Manne wrote:
-> From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-> 
-> This patch adds binding doc for versal fpga manager driver.
+From: Vaibhav Gupta <v_gupta@ti.com>
 
-Why do you need a DT entry for this? Can't the Versal firmware driver 
-instantiate the fpga-mgr device?
+This patch series aims to modify necessary files before an entry for sa2ul
+can be made in the respective am64 device tree.
 
-> 
-> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
-> Signed-off-by: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-> ---
-> Changes for v2:
->                 -Fixed file format and syntax issues.
-> Changes for v3:
->                 -Removed unwated extra spaces.
-> 
->  .../bindings/fpga/xlnx,versal-fpga.yaml       | 33 +++++++++++++++++++
->  1 file changed, 33 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml b/Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
-> new file mode 100644
-> index 000000000000..fec6144766fe
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
-> @@ -0,0 +1,33 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/fpga/xlnx,versal-fpga.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Xilinx Versal FPGA driver.
-> +
-> +maintainers:
-> +  - Nava kishore Manne <nava.manne@xilinx.com>
-> +
-> +description: |
-> +  Device Tree Versal FPGA bindings for the Versal SoC, controlled
-> +  using firmware interface.
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - xlnx,versal-fpga
-> +
-> +required:
-> +  - compatible
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    versal_fpga: fpga {
-> +         compatible = "xlnx,versal-fpga";
-> +    };
-> +
-> +...
-> -- 
-> 2.18.0
-> 
+Peter Ujfalusi (3):
+  dt-bindings: crypto: ti,sa2ul: Add new compatible for AM64
+  crypto: sa2ul: Support for per channel coherency
+  crypto: sa2ul: Add support for AM64
+
+ .../devicetree/bindings/crypto/ti,sa2ul.yaml  |  40 +++++-
+ drivers/crypto/sa2ul.c                        | 133 ++++++++++++------
+ drivers/crypto/sa2ul.h                        |   4 +
+ 3 files changed, 130 insertions(+), 47 deletions(-)
+
+-- 
+2.30.1
+
