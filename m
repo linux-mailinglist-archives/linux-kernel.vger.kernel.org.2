@@ -2,77 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2447C331974
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2F7331978
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 22:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhCHVjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 16:39:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
+        id S229742AbhCHVlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 16:41:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230327AbhCHVja (ORCPT
+        with ESMTP id S229797AbhCHVlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 16:39:30 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF0CC06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 13:39:30 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso3928099pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 13:39:30 -0800 (PST)
+        Mon, 8 Mar 2021 16:41:05 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8588C06174A;
+        Mon,  8 Mar 2021 13:41:04 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 18so23448093lff.6;
+        Mon, 08 Mar 2021 13:41:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EWvWBXtE6LC0x5+EhuqOJ3oY9GpYiZIHnEJDU3K8dog=;
-        b=V9eyL2u0XJmDG5RNYn9VW90WFHdcLmUmrYjRFb2W/FI5PHN2qvuoIt5fk6pFca77Qr
-         GYVTw1ZGOEblHLF50/wN+6S4KnZVPUBFIVEyw9sjutI1VELk6x0ePk65StCSMbubi6CX
-         ylNgM7vahd33gB3HCxv2YFdQEBdcbYToEXRrM=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vPvKVk+SS2hHuikOj+SudvAPMev+b1p1j/4m7ZYGhKo=;
+        b=j7dl59YCxIjbaePmGicyH0IL8wSIFehvsnSu4VHf3oD+LlDTfRUOC+ntyycels9eMw
+         uBJ/G/k5tXorEv7e0OMMevKbWJTZ4CUd+Ihawwgpdple4k1s9QifXT2Y5ZWidEYNY+Ei
+         W6n+K2tsjEVwavZxy3coJIPEJj+T1FUkk9jzym47vybslfZxu6A7VapFWABYaNNT4ygg
+         p6qNw5tAFEFj5V6kXlNGpIC/1a+zdk9IiMVBOB2nS02xFeWirIG6tLWWfkmqIqc90CR6
+         AST4eYG4lOc8UwzD3oKAxPFUPhH8vYP7rt4AHsIcUs9jYf/o8RgfUT7Z4wg0mhS0geCH
+         q3Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EWvWBXtE6LC0x5+EhuqOJ3oY9GpYiZIHnEJDU3K8dog=;
-        b=AB180OOKVwcCaMhCT0f17VXeV1sM1TrN/py8GpA2Thcijym99BfvySTeSO+cXojtA6
-         KMSHHvbp3Fpp2PRyi3hBZGQkqU2JmYgVhBsS/w06O6WJku9R/C/KbvSxYiDtcDsY/fzk
-         I6J76O7brFxpwv5SwEQQQiF9Nafwjx9u0LoEfNVeNhpDX99GQusKmV2XBG/AQm97hQct
-         Tcp2I6vJDaPj1XlRhsmeWZsF0MkM3Oc23YLnBR1+YeVnKnHB9M1CBcVovy8/XytkEznp
-         C4TUDY8pTJwOYJDKGB5NdMvPHV/fS74Gt0Fvyl7YQdJll2GxwCUH4AOrMixALZS6HdIS
-         gSbg==
-X-Gm-Message-State: AOAM531Bx0gxNvFwyzKdu5529hPieAi03cpZaxtkyGg4wIw6b192FKYa
-        A4Ou/ZmfW+xy4H8yheMMlG1udg==
-X-Google-Smtp-Source: ABdhPJxf/G9ECz/bN816wfYNhj9BXuNY8J89BAuOifZ7SnfHj190OKd5RixxaJ24ptL97/yYoLaveQ==
-X-Received: by 2002:a17:90a:29a3:: with SMTP id h32mr960430pjd.209.1615239570482;
-        Mon, 08 Mar 2021 13:39:30 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id n5sm11149305pfq.44.2021.03.08.13.39.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 13:39:29 -0800 (PST)
-Date:   Mon, 8 Mar 2021 13:39:28 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alistair Delva <adelva@google.com>
-Subject: Re: [PATCH] kbuild: Allow LTO to be selected with KASAN_HW_TAGS
-Message-ID: <202103081339.B18898E@keescook>
-References: <20210308184656.1914947-1-samitolvanen@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vPvKVk+SS2hHuikOj+SudvAPMev+b1p1j/4m7ZYGhKo=;
+        b=E9HrElKFp/6tOpWgsEWcZoB2x6xYQFVMNWTW+Ih8hVzN1Gngn+Vp941DdOqPnbfZWW
+         Lz71h9iib7MN3r4PMRyTHliiqHSQ/o2BZPLKRZmHuvFlZ7s0SdH7KZxLOGcQDnnryQ0k
+         an6IhS8ZLsGAjE6XG6iHMTDq2uQ6OzGesKQo/ARQZjwW7v1PCgU5rlq0I3+SyhYZTie+
+         wDng4Dgt62sxWY/0Sop3JlSpTAbL/cOtFUmjDggvAb/FAEC1tel9O4pFD2vaTfUHS3em
+         ei4Ho1r8VXhOOrdh5lJrtoNMDAc3tpfgXDm+LdoNX3K2Egz51AhRiZQzC6C+l8OZObzP
+         JUQQ==
+X-Gm-Message-State: AOAM531NKYCgkAUPpYiAZu+uor/9DadOMx9ieK+15SV5ToGoR5nCcBp1
+        r7Lyi1/u6wQkky93SElOfsI=
+X-Google-Smtp-Source: ABdhPJzqR/lVxZgOYKYvYpxs6vuK+sR67/oi0vpH2NvowriJbllLHXyn6JVlIjpfC1DDRcLJ1Ke3eQ==
+X-Received: by 2002:ac2:57c6:: with SMTP id k6mr15631546lfo.264.1615239663311;
+        Mon, 08 Mar 2021 13:41:03 -0800 (PST)
+Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.googlemail.com with ESMTPSA id w1sm519860ljw.14.2021.03.08.13.41.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Mar 2021 13:41:02 -0800 (PST)
+Subject: Re: [PATCH stblinux.git 1/2] dt-bindings: firmware: add Broadcom's
+ NVRAM memory mapping
+To:     Rob Herring <robh@kernel.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vivek Unune <npcomplete13@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+References: <20210302074405.18998-1-zajec5@gmail.com>
+ <20210308184308.GA2762703@robh.at.kernel.org>
+ <93f1d985-54ae-9cbe-ef42-9e62b86d2633@gmail.com>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Message-ID: <5f4a50dc-0981-45b4-bb89-d6152689fe2a@gmail.com>
+Date:   Mon, 8 Mar 2021 22:41:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308184656.1914947-1-samitolvanen@google.com>
+In-Reply-To: <93f1d985-54ae-9cbe-ef42-9e62b86d2633@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 10:46:56AM -0800, Sami Tolvanen wrote:
-> While LTO with KASAN is normally not useful, hardware tag-based KASAN
-> can be used also in production kernels with ARM64_MTE. Therefore, allow
-> KASAN_HW_TAGS to be selected together with HAS_LTO_CLANG.
+On 08.03.2021 22:37, Rafał Miłecki wrote:
+> On 08.03.2021 19:43, Rob Herring wrote:
+>> On Tue, Mar 02, 2021 at 08:44:04AM +0100, Rafał Miłecki wrote:
+>>> From: Rafał Miłecki <rafal@milecki.pl>
+>>>
+>>> NVRAM structure contains device data and can be accessed using MMIO.
+>>>
+>>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+>>> ---
+>>>   .../bindings/firmware/brcm,nvram.yaml         | 41 +++++++++++++++++++
+>>>   1 file changed, 41 insertions(+)
+>>>   create mode 100644 Documentation/devicetree/bindings/firmware/brcm,nvram.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/firmware/brcm,nvram.yaml b/Documentation/devicetree/bindings/firmware/brcm,nvram.yaml
+>>> new file mode 100644
+>>> index 000000000000..12af8e2e7c9c
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/firmware/brcm,nvram.yaml
+>>> @@ -0,0 +1,41 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: "http://devicetree.org/schemas/firmware/brcm,nvram.yaml#"
+>>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>>> +
+>>> +title: Broadcom's NVRAM
+>>> +
+>>> +maintainers:
+>>> +  - Rafał Miłecki <rafal@milecki.pl>
+>>> +
+>>> +description: |
+>>> +  NVRAM is a structure containing device specific environment variables.
+>>> +  It is used for storing device configuration, booting parameters and
+>>> +  calibration data.
+>>
+>> The structure of the data is fully discoverable just from a genericish
+>> 'brcm,nvram'?
 > 
-> Reported-by: Alistair Delva <adelva@google.com>
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Yes, NVRAM structure is a header (with magic and length) and a list of
+> key-value pairs separated by \0. If you map memory at given address you
+> should verify magic and start reading key-value pairs.
+> 
+> Content example: foo=bar\0baz=qux\0quux(...)
+> 
+> There is no predefined order of pairs, set of keys or anything similar I
+> could think of. I can't think of anything more worth describing in DT.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Ah, I've just realized, I'm replying to the "firmware" binding patch.
 
--- 
-Kees Cook
+Florian suggested to look at NVMEM subsystem instead. Please kindly check
+[PATCH V2 1/2] dt-bindings: nvmem: add Broadcom's NVRAM
