@@ -2,133 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3295C330AFB
+	by mail.lfdr.de (Postfix) with ESMTP id 7FCA3330AFC
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhCHKTO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Mar 2021 05:19:14 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:32242 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229754AbhCHKSp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:18:45 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-134-G7sto4gPP-KccM4BdtnMIA-1; Mon, 08 Mar 2021 10:18:42 +0000
-X-MC-Unique: G7sto4gPP-KccM4BdtnMIA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 8 Mar 2021 10:18:40 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 8 Mar 2021 10:18:40 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Alex Elder' <elder@linaro.org>,
-        "subashab@codeaurora.org" <subashab@codeaurora.org>,
-        "stranche@codeaurora.org" <stranche@codeaurora.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "sharathv@codeaurora.org" <sharathv@codeaurora.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "evgreen@chromium.org" <evgreen@chromium.org>,
-        "cpratapa@codeaurora.org" <cpratapa@codeaurora.org>,
-        "elder@kernel.org" <elder@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel test robot" <lkp@intel.com>
-Subject: RE: [PATCH net-next v2 6/6] net: qualcomm: rmnet: don't use C
- bit-fields in rmnet checksum header
-Thread-Topic: [PATCH net-next v2 6/6] net: qualcomm: rmnet: don't use C
- bit-fields in rmnet checksum header
-Thread-Index: AQHXEjc7/Zo1a5kRlEyGQ6znWO97Lap545RA
-Date:   Mon, 8 Mar 2021 10:18:40 +0000
-Message-ID: <498c301f517749fdbc9d3ff5529d71a6@AcuMS.aculab.com>
-References: <20210306031550.26530-1-elder@linaro.org>
- <20210306031550.26530-7-elder@linaro.org>
-In-Reply-To: <20210306031550.26530-7-elder@linaro.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S230481AbhCHKTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 05:19:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44616 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230124AbhCHKSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 05:18:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615198730; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lvCIwtYnesXvJRVGzU2hGB/7G7oq37sXw80Pfgizm38=;
+        b=a9QLosKjy8KlfkCHYsZ2OvtJ/ZRgji+TsQ07hrYwcxzXf9fzRx16CvTXdtzoRohFKfxA5y
+        QiiXSp+xAInwnEQJMfC2g/cVAMlTSH+RhjqqvuAVHfCXBIUOJ33t1HkRfczb+iH5izh0gg
+        VdxKNMER9L9bl9z8mlqGPpTp6bdxtpg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8797AAD2B;
+        Mon,  8 Mar 2021 10:18:50 +0000 (UTC)
+Date:   Mon, 8 Mar 2021 11:18:50 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Joe Lawrence <joe.lawrence@redhat.com>
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>, jpoimboe@redhat.com,
+        jikos@kernel.org, mbenes@suse.cz, corbet@lwn.net,
+        live-patching@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH V2] docs: livepatch: Fix a typo and remove the
+ unnecessary gaps in a sentence
+Message-ID: <YEX6Cu0EcVpUklFG@alley>
+References: <20210305100923.3731-1-unixbhaskar@gmail.com>
+ <20210305125600.GM2723601@casper.infradead.org>
+ <YEI0EcR5G53IoYzb@Gentoo>
+ <f8b10ee7-026c-1dc0-fb0c-2a887cd1e953@redhat.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f8b10ee7-026c-1dc0-fb0c-2a887cd1e953@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder
-> Sent: 06 March 2021 03:16
+On Fri 2021-03-05 11:00:10, Joe Lawrence wrote:
+> On 3/5/21 8:37 AM, Bhaskar Chowdhury wrote:
+> > On 12:56 Fri 05 Mar 2021, Matthew Wilcox wrote:
+> > > On Fri, Mar 05, 2021 at 03:39:23PM +0530, Bhaskar Chowdhury wrote:
+> > > > s/varibles/variables/
+> > > > 
+> > > > ...and remove leading spaces from a sentence.
+> > > 
+> > > What do you mean 'leading spaces'?  Separating two sentences with
+> > > one space or two is a matter of personal style, and we do not attempt
+> > > to enforce a particular style in the kernel.
+> > > 
+> > The spaces before the "In" .. nor I am imposing anything , it was peter caught
+> > and told me that it is hanging ..move it to the next line ..so I did. ..
+> > 
 > 
-> Replace the use of C bit-fields in the rmnet_map_ul_csum_header
-> structure with a single two-byte (big endian) structure member,
-> and use field masks to encode or get values within it.
+> Initially I thought the same as Matthew, but after inspecting the diff I
+> realized it was just a line wrap.  Looks fine to me.
 > 
-> Previously rmnet_map_ipv4_ul_csum_header() would update values in
-> the host byte-order fields, and then forcibly fix their byte order
-> using a combination of byte order operations and types.
+> > > >   Sometimes it may not be convenient or possible to allocate shadow
+> > > >   variables alongside their parent objects.  Or a livepatch fix may
+> > > > -require shadow varibles to only a subset of parent object instances.  In
+> > > > +require shadow variables to only a subset of parent object instances.
+> > > 
+> > > wrong preposition, s/to/for/    ..where???
 > 
-> Instead, just compute the value that needs to go into the new
-> structure member and save it with a simple byte-order conversion.
+> Hi Bhaskar,
 > 
-> Make similar simplifications in rmnet_map_ipv6_ul_csum_header().
-> 
-> Finally, in rmnet_map_checksum_uplink_packet() a set of assignments
-> zeroes every field in the upload checksum header.  Replace that with
-> a single memset() operation.
-> 
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
-> v2: Fixed to use u16_encode_bits() instead of be16_encode_bits().
-> 
->  .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 34 ++++++-------------
->  include/linux/if_rmnet.h                      | 21 ++++++------
->  2 files changed, 21 insertions(+), 34 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> index 29d485b868a65..b76ad48da7325 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> @@ -198,23 +198,19 @@ rmnet_map_ipv4_ul_csum_header(void *iphdr,
->  			      struct rmnet_map_ul_csum_header *ul_header,
->  			      struct sk_buff *skb)
->  {
-> -	__be16 *hdr = (__be16 *)ul_header;
->  	struct iphdr *ip4h = iphdr;
->  	u16 offset;
-> +	u16 val;
-> 
->  	offset = skb_transport_header(skb) - (unsigned char *)iphdr;
->  	ul_header->csum_start_offset = htons(offset);
-> 
-> -	ul_header->csum_insert_offset = skb->csum_offset;
-> -	ul_header->csum_enabled = 1;
-> +	val = u16_encode_bits(1, MAP_CSUM_UL_ENABLED_FMASK);
->  	if (ip4h->protocol == IPPROTO_UDP)
-> -		ul_header->udp_ind = 1;
-> -	else
-> -		ul_header->udp_ind = 0;
-> +		val |= u16_encode_bits(1, MAP_CSUM_UL_UDP_FMASK);
-> +	val |= u16_encode_bits(skb->csum_offset, MAP_CSUM_UL_OFFSET_FMASK);
-> 
-> -	/* Changing remaining fields to network order */
-> -	hdr++;
-> -	*hdr = htons((__force u16)*hdr);
-> +	ul_header->csum_info = htons(val);
+> Thanks for spotting, I'd be happy with v2 as is or a v3 if you want to
+> update s/shadow variables to only/shadow variables for only/  but knowing
+> me, I probably repeated the same phrasing elsewhere.  Up to you, thanks.
 
-Isn't this potentially misaligned?
+I could fix these when pushing unless anyone is against it.
 
-	David
+> Acked-by: Joe Lawrence <joe.lawrence@redhat.com>
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Acked-by: Petr Mladek <pmladek@suse.com>
 
+Best Regards,
+Petr
