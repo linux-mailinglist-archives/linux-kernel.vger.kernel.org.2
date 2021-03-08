@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A472C330DC9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22746330DD5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:34:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbhCHMcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:32:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40914 "EHLO mail.kernel.org"
+        id S230440AbhCHMdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:33:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231585AbhCHMbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:31:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB33B651D1;
-        Mon,  8 Mar 2021 12:31:44 +0000 (UTC)
+        id S229730AbhCHMdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 07:33:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CA2C64EBC;
+        Mon,  8 Mar 2021 12:33:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615206705;
-        bh=blshZjJYxv2gDWQ04RvTo2V92nJSnamQ+wQkoJ63Ibo=;
+        s=korg; t=1615206796;
+        bh=Mle7C8j+W2iUBPtcd64eq+LnJOZlvEgWyhclZd1HshQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eLUVy5njIxtGtLPWSEuJrVmkCvZb5t9rirg4GjJl22qMbvTjTMhwTBLfi1uy6Ja7a
-         75TQlr1Sy7lxQ48v4DznkGKTr6G6fLYJ28+ML7XqbW3CxNlU4d8ukjUXXPT/tLWz0e
-         Kbc1W6mOqVjDtAltV8+/28mCA96NjGLKT8Dt2URw=
+        b=cvGqblezeIyvOZFWSBYUdAXvFhsjbbzSfsRcNa2gQOXgjr8mS6sWc0zBTJJcg1Rdq
+         XAe9V7z/7OEabkxiKgcA+I6NitNPqZ35S+YCKq2GFVrMbtdfe2MB7nXj8IQQ6PUNuT
+         4WDeWomgZMp4uXwH+LJNR3XTN4xf91ZVzu44Ef1w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Elaine Zhang <zhangqing@rock-chips.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Elaine Zhang <zhangiqng@rock-chips.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.4 09/22] PM: runtime: Update device status before letting suppliers suspend
-Date:   Mon,  8 Mar 2021 13:30:26 +0100
-Message-Id: <20210308122714.851102724@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Chiu <chris.chiu@canonical.com>,
+        Jian-Hong Pan <jhp@endlessos.org>, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 01/42] ALSA: hda/realtek: Enable headset mic of Acer SWIFT with ALC256
+Date:   Mon,  8 Mar 2021 13:30:27 +0100
+Message-Id: <20210308122718.198363332@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210308122714.391917404@linuxfoundation.org>
-References: <20210308122714.391917404@linuxfoundation.org>
+In-Reply-To: <20210308122718.120213856@linuxfoundation.org>
+References: <20210308122718.120213856@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,122 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Chris Chiu <chris.chiu@canonical.com>
 
-commit 44cc89f764646b2f1f2ea5d1a08b230131707851 upstream.
+commit d0e185616a0331c87ce3aa1d7dfde8df39d6d002 upstream.
 
-Because the PM-runtime status of the device is not updated in
-__rpm_callback(), attempts to suspend the suppliers of the given
-device triggered by rpm_put_suppliers() called by it may fail.
+The Acer SWIFT Swift SF314-54/55 laptops with ALC256 cannot detect
+both the headset mic and the internal mic. Introduce new fixup
+to enable the jack sense and the headset mic. However, the internal
+mic actually connects to Intel SST audio. It still needs Intel SST
+support to make internal mic capture work.
 
-Fix this by making __rpm_callback() update the device's status to
-RPM_SUSPENDED before calling rpm_put_suppliers() if the current
-status of the device is RPM_SUSPENDING and the callback just invoked
-by it has returned 0 (success).
-
-While at it, modify the code in __rpm_callback() to always check
-the device's PM-runtime status under its PM lock.
-
-Link: https://lore.kernel.org/linux-pm/CAPDyKFqm06KDw_p8WXsM4dijDbho4bb6T4k50UqqvR1_COsp8g@mail.gmail.com/
-Fixes: 21d5c57b3726 ("PM / runtime: Use device links")
-Reported-by: Elaine Zhang <zhangqing@rock-chips.com>
-Diagnosed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Tested-by: Elaine Zhang <zhangiqng@rock-chips.com>
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+Acked-by: Jian-Hong Pan <jhp@endlessos.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210226010440.8474-1-chris.chiu@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/power/runtime.c |   62 +++++++++++++++++++++++++------------------
- 1 file changed, 37 insertions(+), 25 deletions(-)
+ sound/pci/hda/patch_realtek.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
---- a/drivers/base/power/runtime.c
-+++ b/drivers/base/power/runtime.c
-@@ -325,22 +325,22 @@ static void rpm_put_suppliers(struct dev
- static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
- 	__releases(&dev->power.lock) __acquires(&dev->power.lock)
- {
--	int retval, idx;
- 	bool use_links = dev->power.links_count > 0;
-+	bool get = false;
-+	int retval, idx;
-+	bool put;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6408,6 +6408,7 @@ enum {
+ 	ALC236_FIXUP_DELL_AIO_HEADSET_MIC,
+ 	ALC282_FIXUP_ACER_DISABLE_LINEOUT,
+ 	ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST,
++	ALC256_FIXUP_ACER_HEADSET_MIC,
+ };
  
- 	if (dev->power.irq_safe) {
- 		spin_unlock(&dev->power.lock);
-+	} else if (!use_links) {
-+		spin_unlock_irq(&dev->power.lock);
- 	} else {
-+		get = dev->power.runtime_status == RPM_RESUMING;
-+
- 		spin_unlock_irq(&dev->power.lock);
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7864,6 +7865,16 @@ static const struct hda_fixup alc269_fix
+ 		.chained = true,
+ 		.chain_id = ALC255_FIXUP_ACER_MIC_NO_PRESENCE,
+ 	},
++	[ALC256_FIXUP_ACER_HEADSET_MIC] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x19, 0x02a1113c }, /* use as headset mic, without its own jack detect */
++			{ 0x1a, 0x90a1092f }, /* use as internal mic */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
++	},
+ };
  
--		/*
--		 * Resume suppliers if necessary.
--		 *
--		 * The device's runtime PM status cannot change until this
--		 * routine returns, so it is safe to read the status outside of
--		 * the lock.
--		 */
--		if (use_links && dev->power.runtime_status == RPM_RESUMING) {
-+		/* Resume suppliers if necessary. */
-+		if (get) {
- 			idx = device_links_read_lock();
- 
- 			retval = rpm_get_suppliers(dev);
-@@ -355,24 +355,36 @@ static int __rpm_callback(int (*cb)(stru
- 
- 	if (dev->power.irq_safe) {
- 		spin_lock(&dev->power.lock);
--	} else {
--		/*
--		 * If the device is suspending and the callback has returned
--		 * success, drop the usage counters of the suppliers that have
--		 * been reference counted on its resume.
--		 *
--		 * Do that if resume fails too.
--		 */
--		if (use_links
--		    && ((dev->power.runtime_status == RPM_SUSPENDING && !retval)
--		    || (dev->power.runtime_status == RPM_RESUMING && retval))) {
--			idx = device_links_read_lock();
-+		return retval;
-+	}
- 
-- fail:
--			rpm_put_suppliers(dev);
-+	spin_lock_irq(&dev->power.lock);
- 
--			device_links_read_unlock(idx);
--		}
-+	if (!use_links)
-+		return retval;
-+
-+	/*
-+	 * If the device is suspending and the callback has returned success,
-+	 * drop the usage counters of the suppliers that have been reference
-+	 * counted on its resume.
-+	 *
-+	 * Do that if the resume fails too.
-+	 */
-+	put = dev->power.runtime_status == RPM_SUSPENDING && !retval;
-+	if (put)
-+		__update_runtime_status(dev, RPM_SUSPENDED);
-+	else
-+		put = get && retval;
-+
-+	if (put) {
-+		spin_unlock_irq(&dev->power.lock);
-+
-+		idx = device_links_read_lock();
-+
-+fail:
-+		rpm_put_suppliers(dev);
-+
-+		device_links_read_unlock(idx);
- 
- 		spin_lock_irq(&dev->power.lock);
- 	}
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -7890,9 +7901,11 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1025, 0x1246, "Acer Predator Helios 500", ALC299_FIXUP_PREDATOR_SPK),
+ 	SND_PCI_QUIRK(0x1025, 0x1247, "Acer vCopperbox", ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS),
+ 	SND_PCI_QUIRK(0x1025, 0x1248, "Acer Veriton N4660G", ALC269VC_FIXUP_ACER_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1025, 0x1269, "Acer SWIFT SF314-54", ALC256_FIXUP_ACER_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x128f, "Acer Veriton Z6860G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1025, 0x129c, "Acer SWIFT SF314-55", ALC256_FIXUP_ACER_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233_FIXUP_ACER_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_FIXUP_ACER_HEADSET_MIC),
 
 
