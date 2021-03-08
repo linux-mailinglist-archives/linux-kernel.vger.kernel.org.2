@@ -2,134 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231F633189A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2E433189D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229497AbhCHUa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:30:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229756AbhCHUaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:30:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABF3D65299;
-        Mon,  8 Mar 2021 20:30:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615235411;
-        bh=Z575lVGPBfuAgtfOeWzz+Rq41DmqJRD8p6ieml212ZA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=heqU6iuJLSb0g+w8KLlZ9xvGIF9oBxx+DcX4J0DzvHhPncWb2BQmQurE7aNISIwhs
-         N72WR5vUIpIGl3Nfy7B3qgXNqHYy1TLZPJHFm02b3LtJ+tc0Azy5Nsc/iZssBOqVnb
-         txc15IGC3J7LBZGXBRcvRc60E4QkBRZUfaLjQML5+o6mW9FcPKLVGHq27v2kf+JKsW
-         oxhEc1UcYvRSz8Kdkb7Kj2/mI0lEHAG7V4FuFOC6mMR3M6s6uyldZqn4Nnl5A9AXvg
-         JzYz7DYErCJ5u8H5qpVxmJgedM0FRJY3D+esnrOBt1m74k6bdfuU0+HlrTyTq45+B+
-         Hc3pc12kAFHCw==
-Received: by mail-ot1-f52.google.com with SMTP id f33so10513123otf.11;
-        Mon, 08 Mar 2021 12:30:11 -0800 (PST)
-X-Gm-Message-State: AOAM5306y9w49tG5o09xf6Q+vSzwGyM0kxusEAVTNUwsfE1vX8hQ7Bem
-        aoXAWCAi0fBh9Cz1UQjf9n5qB0Ah/H1B70vWc3w=
-X-Google-Smtp-Source: ABdhPJy6rWkrMOdlTTTDQyrPIoB4JKQiF6S833KGy3zJtRbzvfqY9DZfdUJofhvQHvdvpSg5Bctz65fFVfhKR+P6FmA=
-X-Received: by 2002:a05:6830:148c:: with SMTP id s12mr3633116otq.251.1615235410953;
- Mon, 08 Mar 2021 12:30:10 -0800 (PST)
+        id S230489AbhCHUa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:30:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229756AbhCHUao (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 15:30:44 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10503C06174A;
+        Mon,  8 Mar 2021 12:30:44 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id r17so22964621ejy.13;
+        Mon, 08 Mar 2021 12:30:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Bng89PIihxzY7Jr/zcM+BtxNNqk4o89SmQXzo/gPHmU=;
+        b=QbbEPERB65dedudzcs6DWkwg4Eeg+TXLOZVdLXE+Z11qwfm/V27fEwxC0aajud/bO8
+         OssuGoTO0ZOTHAt2lMpfldVhx4eW4eYr7X/vG+sqfTBb8SXsM9Cdi7vt78ste/laRmZ/
+         Sy6qUd5Mb1SMV2LwDYVFZk5NYrjSfOYVcV+Y0FoEzeckY/V2hgkLrqO79sbWUOUEWa7M
+         9S8VRymQaWCaZDY7QeDRkkLe2MXE6SvSNZX0ON8VWtW36GRXV20Gd/0WSMeLbHTyL6dO
+         eG3z0+WsVSQE1SNBtSXHesZAgflfqMon+fR1yIcDjHAAXcUSRTAe6xQB8QIrZ4jVjzbB
+         3yfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bng89PIihxzY7Jr/zcM+BtxNNqk4o89SmQXzo/gPHmU=;
+        b=OpEWKu0idawIWILRcYdJfvqMEsojB+FiqRYsCkBDeNV3ZiLQ1XiFrIkf6t0dqRA2Lt
+         MpF3QJ+lOAfUrksWO1KTLbG8e5KkKXuS02ywO8l5pr6CtCG9X1rKp5Bpfn2tTUKIus9A
+         d/25stq2ok1ap7+ZorTIJbc64PGBw4SbM4OnVTXapcSHmT8j4pF3WxTncy8+Uwbc0wZQ
+         IUxbU0s0Ur/Ax16Ax+qfjOS5OwNZreoecrwUeoUeKZQ5WDozmE6QPydzVp11doY6lXA4
+         /g5hZp5cu+fPOGCjv4k++1/AKtO5FENyLsCGqq/S2eIQsKCx8ClYyCHW87D1CbCvf7YB
+         DS6g==
+X-Gm-Message-State: AOAM531M2wsapkbOpnvFIEhs+VXamO7yxTitenyRuWTP6nQ4BQ6DNueb
+        eu35UcIHHkGI4S7lNrsCIgA2p83UI6r76QuOXhU=
+X-Google-Smtp-Source: ABdhPJzJlbz1w5x5vBQyV7pYVy8xLV2kFyoZQT9beTonyOQejIZGGntxjfdW0Lbwx5eSoklWTZgDc7Z05Hn65RuUIxw=
+X-Received: by 2002:a17:906:304a:: with SMTP id d10mr16667995ejd.507.1615235442779;
+ Mon, 08 Mar 2021 12:30:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20210304213902.83903-1-marcan@marcan.st> <20210304213902.83903-13-marcan@marcan.st>
- <CAL_JsqJF2Hz=4U7FR_GOSjCxqt3dpf-CAWFNfsSrDjDLpHqgCA@mail.gmail.com>
- <6e4880b3-1fb6-0cbf-c1a5-7a46fd9ccf62@marcan.st> <CAK8P3a0Hmwt-ywzS-2eEmqyQ0v2SxLsLxFwfTUoWwbzCrBNhsQ@mail.gmail.com>
- <CAL_JsqJHRM59GC3FjvaGLCELemy1uspnGvTEFH6q0OdyBPVSjA@mail.gmail.com>
-In-Reply-To: <CAL_JsqJHRM59GC3FjvaGLCELemy1uspnGvTEFH6q0OdyBPVSjA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 8 Mar 2021 21:29:54 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0_GBB-VYFO5NaySyBJDN2Ra-WMH4WfFrnzgOejmJVG8g@mail.gmail.com>
-Message-ID: <CAK8P3a0_GBB-VYFO5NaySyBJDN2Ra-WMH4WfFrnzgOejmJVG8g@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 12/27] of/address: Add infrastructure to declare
- MMIO as non-posted
-To:     Rob Herring <robh@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        DTML <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210217001322.2226796-1-shy828301@gmail.com> <20210217001322.2226796-10-shy828301@gmail.com>
+ <CALvZod6R=cEwK+AND+E3CG3LrWViNjWDd0dy-Brz1MhJWyJ+ZQ@mail.gmail.com>
+In-Reply-To: <CALvZod6R=cEwK+AND+E3CG3LrWViNjWDd0dy-Brz1MhJWyJ+ZQ@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 8 Mar 2021 12:30:31 -0800
+Message-ID: <CAHbLzkq6TG4pV2Ro5yMWZ0wKsSPH5bJf+8Kj7W1JpWMa_V68HA@mail.gmail.com>
+Subject: Re: [v8 PATCH 09/13] mm: vmscan: add per memcg shrinker nr_deferred
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 4:56 PM Rob Herring <robh@kernel.org> wrote:
-> On Fri, Mar 5, 2021 at 2:17 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > On Fri, Mar 5, 2021 at 7:18 PM Hector Martin <marcan@marcan.st> wrote:
+On Mon, Mar 8, 2021 at 11:12 AM Shakeel Butt <shakeelb@google.com> wrote:
 >
-> > > > What's the code path using these functions on the M1 where we need to
-> > > > return 'posted'? It's just downstream PCI mappings (PCI memory space),
-> > > > right? Those would never hit these paths because they don't have a DT
-> > > > node or if they do the memory space is not part of it. So can't the
-> > > > check just be:
-> > > >
-> > > > bool of_mmio_is_nonposted(struct device_node *np)
-> > > > {
-> > > >      return np && of_machine_is_compatible("apple,arm-platform");
-> > > > }
-> > >
-> > > Yes; the implementation was trying to be generic, but AIUI we don't need
-> > > this on M1 because the PCI mappings don't go through this codepath, and
-> > > nothing else needs posted mode. My first hack was something not too
-> > > unlike this, then I was going to get rid of apple,arm-platform and just
-> > > have this be a generic mechanism with the properties, but then we added
-> > > the optimization to not do the lookups on other platforms, and now we're
-> > > coming full circle... :-)
+> On Tue, Feb 16, 2021 at 4:13 PM Yang Shi <shy828301@gmail.com> wrote:
 > >
-> > I never liked the idea of having a list of platforms that need a
-> > special hack, please let's not go back to that.
+> > Currently the number of deferred objects are per shrinker, but some slabs, for example,
+> > vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
+> >
+> > The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
+> > excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
+> > may suffer from over shrink, excessive reclaim latency, etc.
+> >
+> > For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
+> > heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
+> > might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
+> >
+> > We observed this hit in our production environment which was running vfs heavy workload
+> > shown as the below tracing log:
+> >
+> > <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> > nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
+> > cache items 246404277 delta 31345 total_scan 123202138
+> > <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> > nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
+> > last shrinker return val 123186855
+> >
+> > The vfs cache and page cache ratio was 10:1 on this machine, and half of caches were dropped.
+> > This also resulted in significant amount of page caches were dropped due to inodes eviction.
+> >
+> > Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
+> > better isolation.
+> >
+> > When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
+> > would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  include/linux/memcontrol.h |  7 +++--
+> >  mm/vmscan.c                | 60 ++++++++++++++++++++++++++------------
+> >  2 files changed, 46 insertions(+), 21 deletions(-)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index 4c9253896e25..c457fc7bc631 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -93,12 +93,13 @@ struct lruvec_stat {
+> >  };
+> >
+> >  /*
+> > - * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
+> > - * which have elements charged to this memcg.
+> > + * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
+> > + * shrinkers, which have elements charged to this memcg.
+> >   */
+> >  struct shrinker_info {
+> >         struct rcu_head rcu;
+> > -       unsigned long map[];
+> > +       atomic_long_t *nr_deferred;
+> > +       unsigned long *map;
+> >  };
+> >
+> >  /*
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index a1047ea60ecf..fcb399e18fc3 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -187,11 +187,17 @@ static DECLARE_RWSEM(shrinker_rwsem);
+> >  #ifdef CONFIG_MEMCG
+> >  static int shrinker_nr_max;
+> >
+> > +/* The shrinker_info is expanded in a batch of BITS_PER_LONG */
+> >  static inline int shrinker_map_size(int nr_items)
+> >  {
+> >         return (DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long));
+> >  }
+> >
+> > +static inline int shrinker_defer_size(int nr_items)
+> > +{
+> > +       return (round_up(nr_items, BITS_PER_LONG) * sizeof(atomic_long_t));
+> > +}
+> > +
+> >  static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
+> >                                                      int nid)
+> >  {
+> > @@ -200,10 +206,12 @@ static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
+> >  }
+> >
+> >  static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+> > -                                   int size, int old_size)
+> > +                                   int map_size, int defer_size,
+> > +                                   int old_map_size, int old_defer_size)
+> >  {
+> >         struct shrinker_info *new, *old;
+> >         int nid;
+> > +       int size = map_size + defer_size;
+> >
+> >         for_each_node(nid) {
+> >                 old = shrinker_info_protected(memcg, nid);
+> > @@ -215,9 +223,16 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+> >                 if (!new)
+> >                         return -ENOMEM;
+> >
+> > -               /* Set all old bits, clear all new bits */
+> > -               memset(new->map, (int)0xff, old_size);
+> > -               memset((void *)new->map + old_size, 0, size - old_size);
+> > +               new->nr_deferred = (atomic_long_t *)(new + 1);
+> > +               new->map = (void *)new->nr_deferred + defer_size;
+> > +
+> > +               /* map: set all old bits, clear all new bits */
+> > +               memset(new->map, (int)0xff, old_map_size);
+> > +               memset((void *)new->map + old_map_size, 0, map_size - old_map_size);
+> > +               /* nr_deferred: copy old values, clear all new values */
+> > +               memcpy(new->nr_deferred, old->nr_deferred, old_defer_size);
+> > +               memset((void *)new->nr_deferred + old_defer_size, 0,
+> > +                      defer_size - old_defer_size);
+> >
+> >                 rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
+> >                 kvfree_rcu(old);
+> > @@ -232,9 +247,6 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+> >         struct shrinker_info *info;
+> >         int nid;
+> >
+> > -       if (mem_cgroup_is_root(memcg))
+> > -               return;
+> > -
+> >         for_each_node(nid) {
+> >                 pn = mem_cgroup_nodeinfo(memcg, nid);
+> >                 info = shrinker_info_protected(memcg, nid);
+> > @@ -247,12 +259,12 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+> >  {
+> >         struct shrinker_info *info;
+> >         int nid, size, ret = 0;
+> > -
+> > -       if (mem_cgroup_is_root(memcg))
+> > -               return 0;
 >
-> I'm a fan of generic solutions as much as anyone, but not when there's
-> a single user. Yes, there could be more, but we haven't seen any yet
-> and Apple seems to have a knack for doing special things. I'm pretty
-> sure posted vs. non-posted has been a possibility with AXI buses from
-> the start, so it's not like this is a new thing we're going to see
-> frequently on new platforms.
+> Can you please comment on the consequences on allowing to allocate
+> shrinker_info for root memcg? Why didn't we do that before but now it
+> is fine (or maybe required)? Please add the explanation in the commit
+> message.
 
-Ok, but if we make it a platform specific bit, I would prefer not
-to do the IORESOURCE_MEM_NONPOSTED flag either but
-instead keep the logic in the device drivers that call ioremap().
+Before the patchset shrinker_info just tracks shrinker_maps which is
+not required for root memcg. But the newly added nr_deferred is needed
+in root memcg otherwise the nr_deferred work would get lost once the
+memcgs are reparented to root.
 
-This is obviously more work for the drivers, but at least it keeps
-the common code free of the hack while also allowing drivers to
-use ioremap_np() intentionally on other platforms.
+How's about adding the below paragraph to the commit log:
 
-> The other situation I worry about here is another arch has implicitly
-> defaulted to non-posted instead of posted. It could just be non-posted
-> was what worked everywhere and Linux couldn't distinguish. Now someone
-> sees we have this new posted vs. non-posted handling and can optimize
-> some mappings on their platform and we have to have per arch defaults
-> (like 'dma-coherent' now).
+"To preserve nr_deferred when reparenting memcgs to root, root memcg
+needs shrinker_info allocated too."
 
-I think one of the dark secrets of MMIO is that a lot of drivers
-get the posted behavior wrong by assuming that a writel() before
-a spin_unlock() is protected by that unlock. This may in fact work
-on many architectures but is broken on PCI and on local devices
-for ARM.
-
-Having a properly working (on non-PCI) ioremap_np() interface
-would be nice here, as it could be used to document when drivers
-rely on non-posted behavior, and cause the ioremap to fail when
-running on architectures that don't support nonposted maps.
-
-       Arnd
+>
+> > +       int map_size, defer_size = 0;
+> >
+> >         down_write(&shrinker_rwsem);
+> > -       size = shrinker_map_size(shrinker_nr_max);
+> > +       map_size = shrinker_map_size(shrinker_nr_max);
+> > +       defer_size = shrinker_defer_size(shrinker_nr_max);
+> > +       size = map_size + defer_size;
+> >         for_each_node(nid) {
+> >                 info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
+> >                 if (!info) {
+> > @@ -260,6 +272,8 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+> >                         ret = -ENOMEM;
+> >                         break;
+> >                 }
+> > +               info->nr_deferred = (atomic_long_t *)(info + 1);
+> > +               info->map = (void *)info->nr_deferred + defer_size;
+> >                 rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, info);
+> >         }
+> >         up_write(&shrinker_rwsem);
+> > @@ -267,15 +281,21 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+> >         return ret;
+> >  }
+> >
+> > +static inline bool need_expand(int nr_max)
+> > +{
+> > +       return round_up(nr_max, BITS_PER_LONG) >
+> > +              round_up(shrinker_nr_max, BITS_PER_LONG);
+> > +}
+> > +
+> >  static int expand_shrinker_info(int new_id)
+> >  {
+> > -       int size, old_size, ret = 0;
+> > +       int ret = 0;
+> >         int new_nr_max = new_id + 1;
+> > +       int map_size, defer_size = 0;
+> > +       int old_map_size, old_defer_size = 0;
+> >         struct mem_cgroup *memcg;
+> >
+> > -       size = shrinker_map_size(new_nr_max);
+> > -       old_size = shrinker_map_size(shrinker_nr_max);
+> > -       if (size <= old_size)
+> > +       if (!need_expand(new_nr_max))
+> >                 goto out;
+> >
+> >         if (!root_mem_cgroup)
+> > @@ -283,11 +303,15 @@ static int expand_shrinker_info(int new_id)
+> >
+> >         lockdep_assert_held(&shrinker_rwsem);
+> >
+> > +       map_size = shrinker_map_size(new_nr_max);
+> > +       defer_size = shrinker_defer_size(new_nr_max);
+> > +       old_map_size = shrinker_map_size(shrinker_nr_max);
+> > +       old_defer_size = shrinker_defer_size(shrinker_nr_max);
+> > +
+> >         memcg = mem_cgroup_iter(NULL, NULL, NULL);
+> >         do {
+> > -               if (mem_cgroup_is_root(memcg))
+> > -                       continue;
+> > -               ret = expand_one_shrinker_info(memcg, size, old_size);
+> > +               ret = expand_one_shrinker_info(memcg, map_size, defer_size,
+> > +                                              old_map_size, old_defer_size);
+> >                 if (ret) {
+> >                         mem_cgroup_iter_break(NULL, memcg);
+> >                         goto out;
+> > --
+> > 2.26.2
+> >
