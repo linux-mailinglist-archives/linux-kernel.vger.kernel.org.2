@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4925330B9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8698330BA4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 11:46:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231890AbhCHKpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 05:45:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36312 "EHLO
+        id S231643AbhCHKqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 05:46:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231572AbhCHKpb (ORCPT
+        with ESMTP id S231638AbhCHKpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 05:45:31 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D64C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 02:45:31 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id n10so6152476pgl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 02:45:31 -0800 (PST)
+        Mon, 8 Mar 2021 05:45:35 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70F6C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 02:45:34 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id b15so2794816pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 02:45:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HWoZPWwwHGAL2k3xw9fvM4kJRs/zmeCKq0B2nkIcJR4=;
-        b=q/TfwnVqQwyjbfxlVdVfHlUXrzWfW2lNY/s2jHfjLVHJ/euWjjXDLwUxY+BJVN2pTD
-         vztb+d6nzw641l+21iH0othPuDkGMSuBDrsxS6w7JVC3/fsXgKgh+Y2yPKZptd+xeAP9
-         5oW9GFH/bsFfv73Q2wCtYxAifn1fC6uPSZLCmISZPC12uR8m4VPdQiqOHtZ1X6FAodN6
-         qJ/9xX6RDQFpzpR4H4McuZbQ716RjKpdugCfXZIIIa1mEXI25/4jD6OcPOvOq0PX+bfp
-         CAqsFiVqJO9r7PZw0MVZVyM8S6aNVc/JT0WIL4zlP/HC2WrE/+mx1VDap3NT/jix0mpx
-         +9PQ==
+        bh=K1QgQjNHtN761sdXJlMXANZwX7Jh8JMy1gwv4GNPG4g=;
+        b=LqDwByIeuwQYzR2bhJQ2URfoiZZf6kiHEGdH6iisqNOeBLthDw3rATLZ3IWNMdwjw+
+         mDMf2ot0HywnTy+ZFgDwSe0LNDlMgz60w+o1O7HrMZNN2G7FoCLfZg+pHBS960nxMZJy
+         uAVZssBZ6lhXevjFVP4dW4k0FfteIvSYnGRYFOcvUtb7Y8Pwc70ms6j5RWtegvnsTEtu
+         ybGIuiTjgh8oZ6BFLSVRitpg+oQNuE3Gy7pHg/9441jkcmepiin2sBYNIM7m1oEml+WP
+         E/TyBgOGBFhO5piDxzz5y9rjGmBlFt7Gpr5DAa/+tivZmoAR3FDDUgKOg9I0VXRs/SsE
+         HMjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HWoZPWwwHGAL2k3xw9fvM4kJRs/zmeCKq0B2nkIcJR4=;
-        b=GWcd8Fbynq6yK1t89p6yRJifxo8PSuvo8LvjL1PtsEPSlS9kDkZpWYUXvTD9om7AJN
-         gnEoxR7+vqtBTxnJdvLHddfOvKDy+LvzX1uqKy0fWLHnM65VbgI9i0gau93CZQsVYZFJ
-         eewOUemgfFQ/x+UxFxeqwg4eCnBVKwC7ez5C2pFBJeP5QL7OazWq/fJ0r7FD3Otz3amF
-         o0pJ6T5xc6fTRcefqH7UsCbtxggsgqXWByMqszKNWkuJ0alGimXWyOUwAzWWBrK//PKD
-         UOSZQ5z3HKrzBowW4odQ3KkgUhtmv5QCLkBqRVyNGOL+bcFvQimOqqKQVhoPVhIvjebC
-         oQAg==
-X-Gm-Message-State: AOAM531F8bxMDX0wsdF/yysQofrMJaDX7qqApd6PLA2sRRTm2SjRFJDT
-        WdZIuiqu9vCmWsaGWVlcIc+GvA==
-X-Google-Smtp-Source: ABdhPJzbC8WZY6YIgsUIlpGiXSDRHLdbv8F7nuaE2hwZFKBQ2q5gmTm/0w3ghBAtBSbn55wM1ZfozQ==
-X-Received: by 2002:aa7:8c49:0:b029:1ed:c1dc:4421 with SMTP id e9-20020aa78c490000b02901edc1dc4421mr21240668pfd.43.1615200331061;
-        Mon, 08 Mar 2021 02:45:31 -0800 (PST)
+        bh=K1QgQjNHtN761sdXJlMXANZwX7Jh8JMy1gwv4GNPG4g=;
+        b=GFORU/9bQU1bln2kwGUTkDtcVIU5cqAdVqioa9th/J9VTOnoDPRE59S8zLiShgyP5E
+         xr1+cy818R7/uYxnmLaEYnQdh9kJj+PVDFJTp3ycUOEB181l22ORkcz4Q1DSwHUawV0X
+         QX8/3nx8ZWJcHgYlM5OuJwWYu3VchR0YXMSMY5aMGNztvYWanZPmrKMEKKvYNp7anH5i
+         8BgyRvXRtCC3Y3obSfZmzHHJMaDCWpNaiYrrj7792RA2++5Yk7DdrBJ9Gve3kcrSP2M9
+         i06DIHhgyEUFkBS9nAZjgFmjka4ihk5+8AGQcaCTdXcsSTQs1fFtxChMKfGlngHgjO9e
+         54sg==
+X-Gm-Message-State: AOAM533P8sFim56yWT3WXfWn3DywMtkrfS8bKdbaGszClsxQ3VR7d01i
+        WQMDDJPNwq8GJsuDsFWrRRLAnQ==
+X-Google-Smtp-Source: ABdhPJz1crqSMNF+5kJLPLKuP68mXmE6MVedKm/BZ/DlWc5ugAbMIRuCYGemGA6xJFkolN6dQDgVCA==
+X-Received: by 2002:a17:90a:5510:: with SMTP id b16mr24325005pji.87.1615200334259;
+        Mon, 08 Mar 2021 02:45:34 -0800 (PST)
 Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id ge16sm10813755pjb.43.2021.03.08.02.45.30
+        by smtp.gmail.com with ESMTPSA id x190sm10045278pfx.60.2021.03.08.02.45.33
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Mar 2021 02:45:30 -0800 (PST)
+        Mon, 08 Mar 2021 02:45:33 -0800 (PST)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Masahiro Yamada <masahiroy@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -60,9 +60,9 @@ Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
         anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
         Michal Marek <michal.lkml@markovi.net>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH V10 4/5] of: unittest: Create overlay_common.dtsi and testcases_common.dtsi
-Date:   Mon,  8 Mar 2021 16:15:09 +0530
-Message-Id: <46c3ec10db6e7bab87fd1a98236a3fdba6a02ec9.1615199908.git.viresh.kumar@linaro.org>
+Subject: [PATCH V10 5/5] of: unittest: Statically apply overlays using fdtoverlay
+Date:   Mon,  8 Mar 2021 16:15:10 +0530
+Message-Id: <72cb0c45cb61e0fa739249dbc0aacb1c97d1a8e8.1615199908.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 In-Reply-To: <cover.1615199908.git.viresh.kumar@linaro.org>
 References: <cover.1615199908.git.viresh.kumar@linaro.org>
@@ -72,312 +72,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to build-test the same unit-test files using fdtoverlay tool,
-move the device nodes from the existing overlay_base.dts and
-testcases_common.dts files to .dtsi counterparts. The .dts files now
-include the new .dtsi files, resulting in exactly the same behavior as
-earlier.
+Now that fdtoverlay is part of the kernel build, start using it to test
+the unitest overlays we have by applying them statically. Create two new
+base files static_base_1.dts and static_base_2.dts which includes other
+.dtsi files.
 
-The .dtsi files can now be reused for compile time tests using
-fdtoverlay (will be done by a later commit).
-
-This is required because the base files passed to fdtoverlay tool
-shouldn't be overlays themselves (i.e. shouldn't have the /plugin/;
-tag).
-
-Note that this commit also moves "testcase-device2" node to
-testcases.dts from tests-interrupts.dtsi, as this node has a deliberate
-error in it and is only relevant for runtime testing done with
-unittest.c.
+Some unittest overlays deliberately contain errors that unittest checks
+for. These overlays will cause fdtoverlay to fail, and are thus not
+included for static builds.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
- drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
- drivers/of/unittest-data/testcases.dts        | 23 ++---
- .../of/unittest-data/testcases_common.dtsi    | 19 ++++
- .../of/unittest-data/tests-interrupts.dtsi    | 11 +--
- 5 files changed, 128 insertions(+), 106 deletions(-)
- create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
- create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
+ drivers/of/unittest-data/Makefile          | 48 ++++++++++++++++++++++
+ drivers/of/unittest-data/static_base_1.dts |  4 ++
+ drivers/of/unittest-data/static_base_2.dts |  4 ++
+ 3 files changed, 56 insertions(+)
+ create mode 100644 drivers/of/unittest-data/static_base_1.dts
+ create mode 100644 drivers/of/unittest-data/static_base_2.dts
 
-diff --git a/drivers/of/unittest-data/overlay_base.dts b/drivers/of/unittest-data/overlay_base.dts
-index 99ab9d12d00b..ab9014589c5d 100644
---- a/drivers/of/unittest-data/overlay_base.dts
-+++ b/drivers/of/unittest-data/overlay_base.dts
-@@ -2,92 +2,4 @@
- /dts-v1/;
- /plugin/;
+diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
+index 009f4045c8e4..a5d2d9254b2c 100644
+--- a/drivers/of/unittest-data/Makefile
++++ b/drivers/of/unittest-data/Makefile
+@@ -38,3 +38,51 @@ DTC_FLAGS_testcases += -@
  
--/*
-- * Base device tree that overlays will be applied against.
-- *
-- * Do not add any properties in node "/".
-- * Do not add any nodes other than "/testcase-data-2" in node "/".
-- * Do not add anything that would result in dtc creating node "/__fixups__".
-- * dtc will create nodes "/__symbols__" and "/__local_fixups__".
-- */
--
--/ {
--	testcase-data-2 {
--		#address-cells = <1>;
--		#size-cells = <1>;
--
--		electric_1: substation@100 {
--			compatible = "ot,big-volts-control";
--			reg = < 0x00000100 0x100 >;
--			status = "disabled";
--
--			hvac_1: hvac-medium-1 {
--				compatible = "ot,hvac-medium";
--				heat-range = < 50 75 >;
--				cool-range = < 60 80 >;
--			};
--
--			spin_ctrl_1: motor-1 {
--				compatible = "ot,ferris-wheel-motor";
--				spin = "clockwise";
--				rpm_avail = < 50 >;
--			};
--
--			spin_ctrl_2: motor-8 {
--				compatible = "ot,roller-coaster-motor";
--			};
--		};
--
--		rides_1: fairway-1 {
--			#address-cells = <1>;
--			#size-cells = <1>;
--			compatible = "ot,rides";
--			status = "disabled";
--			orientation = < 127 >;
--
--			ride@100 {
--				#address-cells = <1>;
--				#size-cells = <1>;
--				compatible = "ot,roller-coaster";
--				reg = < 0x00000100 0x100 >;
--				hvac-provider = < &hvac_1 >;
--				hvac-thermostat = < 29 > ;
--				hvac-zones = < 14 >;
--				hvac-zone-names = "operator";
--				spin-controller = < &spin_ctrl_2 5 &spin_ctrl_2 7 >;
--				spin-controller-names = "track_1", "track_2";
--				queues = < 2 >;
--
--				track@30 {
--					reg = < 0x00000030 0x10 >;
--				};
--
--				track@40 {
--					reg = < 0x00000040 0x10 >;
--				};
--
--			};
--		};
--
--		lights_1: lights@30000 {
--			compatible = "ot,work-lights";
--			reg = < 0x00030000 0x1000 >;
--			status = "disabled";
--		};
--
--		lights_2: lights@40000 {
--			compatible = "ot,show-lights";
--			reg = < 0x00040000 0x1000 >;
--			status = "disabled";
--			rate = < 13 138 >;
--		};
--
--		retail_1: vending@50000 {
--			reg = < 0x00050000 0x1000 >;
--			compatible = "ot,tickets";
--			status = "disabled";
--		};
--
--	};
--};
--
-+#include "overlay_common.dtsi"
-diff --git a/drivers/of/unittest-data/overlay_common.dtsi b/drivers/of/unittest-data/overlay_common.dtsi
+ # suppress warnings about intentional errors
+ DTC_FLAGS_testcases += -Wno-interrupts_property
++
++# Apply overlays statically with fdtoverlay.  This is a build time test that
++# the overlays can be applied successfully by fdtoverlay.  This does not
++# guarantee that the overlays can be applied successfully at run time by
++# unittest, but it provides a bit of build time test coverage for those
++# who do not execute unittest.
++#
++# The overlays are applied on top of static_base_1.dtb and static_base_2.dtb to
++# create static_test_1.dtb and static_test_2.dtb.  If fdtoverlay detects an
++# error than the kernel build will fail.  static_test_1.dtb and
++# static_test_2.dtb are not consumed by unittest.
++#
++# Some unittest overlays deliberately contain errors that unittest checks for.
++# These overlays will cause fdtoverlay to fail, and are thus not included
++# in the static test:
++#			  overlay_bad_add_dup_node.dtbo \
++#			  overlay_bad_add_dup_prop.dtbo \
++#			  overlay_bad_phandle.dtbo \
++#			  overlay_bad_symbol.dtbo \
++
++apply_static_overlay_1 := overlay_0.dtbo \
++			  overlay_1.dtbo \
++			  overlay_2.dtbo \
++			  overlay_3.dtbo \
++			  overlay_4.dtbo \
++			  overlay_5.dtbo \
++			  overlay_6.dtbo \
++			  overlay_7.dtbo \
++			  overlay_8.dtbo \
++			  overlay_9.dtbo \
++			  overlay_10.dtbo \
++			  overlay_11.dtbo \
++			  overlay_12.dtbo \
++			  overlay_13.dtbo \
++			  overlay_15.dtbo \
++			  overlay_gpio_01.dtbo \
++			  overlay_gpio_02a.dtbo \
++			  overlay_gpio_02b.dtbo \
++			  overlay_gpio_03.dtbo \
++			  overlay_gpio_04a.dtbo \
++			  overlay_gpio_04b.dtbo
++
++apply_static_overlay_2 := overlay.dtbo
++
++static_test_1-dtbs := static_base_1.dtb $(apply_static_overlay_1)
++static_test_2-dtbs := static_base_2.dtb $(apply_static_overlay_2)
++
++dtb-$(CONFIG_OF_OVERLAY) += static_test_1.dtb static_test_2.dtb
+diff --git a/drivers/of/unittest-data/static_base_1.dts b/drivers/of/unittest-data/static_base_1.dts
 new file mode 100644
-index 000000000000..08874a72556e
+index 000000000000..10556cb3f01f
 --- /dev/null
-+++ b/drivers/of/unittest-data/overlay_common.dtsi
-@@ -0,0 +1,91 @@
++++ b/drivers/of/unittest-data/static_base_1.dts
+@@ -0,0 +1,4 @@
 +// SPDX-License-Identifier: GPL-2.0
++/dts-v1/;
 +
-+/*
-+ * Base device tree that overlays will be applied against.
-+ *
-+ * Do not add any properties in node "/".
-+ * Do not add any nodes other than "/testcase-data-2" in node "/".
-+ * Do not add anything that would result in dtc creating node "/__fixups__".
-+ * dtc will create nodes "/__symbols__" and "/__local_fixups__".
-+ */
-+
-+/ {
-+	testcase-data-2 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		electric_1: substation@100 {
-+			compatible = "ot,big-volts-control";
-+			reg = < 0x00000100 0x100 >;
-+			status = "disabled";
-+
-+			hvac_1: hvac-medium-1 {
-+				compatible = "ot,hvac-medium";
-+				heat-range = < 50 75 >;
-+				cool-range = < 60 80 >;
-+			};
-+
-+			spin_ctrl_1: motor-1 {
-+				compatible = "ot,ferris-wheel-motor";
-+				spin = "clockwise";
-+				rpm_avail = < 50 >;
-+			};
-+
-+			spin_ctrl_2: motor-8 {
-+				compatible = "ot,roller-coaster-motor";
-+			};
-+		};
-+
-+		rides_1: fairway-1 {
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			compatible = "ot,rides";
-+			status = "disabled";
-+			orientation = < 127 >;
-+
-+			ride@100 {
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+				compatible = "ot,roller-coaster";
-+				reg = < 0x00000100 0x100 >;
-+				hvac-provider = < &hvac_1 >;
-+				hvac-thermostat = < 29 > ;
-+				hvac-zones = < 14 >;
-+				hvac-zone-names = "operator";
-+				spin-controller = < &spin_ctrl_2 5 &spin_ctrl_2 7 >;
-+				spin-controller-names = "track_1", "track_2";
-+				queues = < 2 >;
-+
-+				track@30 {
-+					reg = < 0x00000030 0x10 >;
-+				};
-+
-+				track@40 {
-+					reg = < 0x00000040 0x10 >;
-+				};
-+
-+			};
-+		};
-+
-+		lights_1: lights@30000 {
-+			compatible = "ot,work-lights";
-+			reg = < 0x00030000 0x1000 >;
-+			status = "disabled";
-+		};
-+
-+		lights_2: lights@40000 {
-+			compatible = "ot,show-lights";
-+			reg = < 0x00040000 0x1000 >;
-+			status = "disabled";
-+			rate = < 13 138 >;
-+		};
-+
-+		retail_1: vending@50000 {
-+			reg = < 0x00050000 0x1000 >;
-+			compatible = "ot,tickets";
-+			status = "disabled";
-+		};
-+
-+	};
-+};
-+
-diff --git a/drivers/of/unittest-data/testcases.dts b/drivers/of/unittest-data/testcases.dts
-index a85b5e1c381a..b80d6009ad7a 100644
---- a/drivers/of/unittest-data/testcases.dts
-+++ b/drivers/of/unittest-data/testcases.dts
-@@ -2,19 +2,20 @@
- /dts-v1/;
- /plugin/;
- 
 +#include "testcases_common.dtsi"
-+
- / {
-+        /*
-+	 * testcase data that intentionally results in an error is located here
-+	 * instead of in testcases_common.dtsi so that the static overlay apply
-+	 * tests will not include the error.
-+         */
- 	testcase-data {
--		changeset {
--			prop-update = "hello";
--			prop-remove = "world";
--			node-remove {
--			};
-+		testcase-device2 {
-+			compatible = "testcase-device";
-+			interrupt-parent = <&test_intc2>;
-+			interrupts = <1>; /* invalid specifier - too short */
- 		};
- 	};
-+
- };
--#include "tests-phandle.dtsi"
--#include "tests-interrupts.dtsi"
--#include "tests-match.dtsi"
--#include "tests-address.dtsi"
--#include "tests-platform.dtsi"
--#include "tests-overlay.dtsi"
-diff --git a/drivers/of/unittest-data/testcases_common.dtsi b/drivers/of/unittest-data/testcases_common.dtsi
+diff --git a/drivers/of/unittest-data/static_base_2.dts b/drivers/of/unittest-data/static_base_2.dts
 new file mode 100644
-index 000000000000..19292bbb4cbb
+index 000000000000..b0ea9504d6f3
 --- /dev/null
-+++ b/drivers/of/unittest-data/testcases_common.dtsi
-@@ -0,0 +1,19 @@
++++ b/drivers/of/unittest-data/static_base_2.dts
+@@ -0,0 +1,4 @@
 +// SPDX-License-Identifier: GPL-2.0
++/dts-v1/;
 +
-+/ {
-+	testcase-data {
-+		changeset {
-+			prop-update = "hello";
-+			prop-remove = "world";
-+			node-remove {
-+			};
-+		};
-+	};
-+};
-+
-+#include "tests-phandle.dtsi"
-+#include "tests-interrupts.dtsi"
-+#include "tests-match.dtsi"
-+#include "tests-address.dtsi"
-+#include "tests-platform.dtsi"
-+#include "tests-overlay.dtsi"
-diff --git a/drivers/of/unittest-data/tests-interrupts.dtsi b/drivers/of/unittest-data/tests-interrupts.dtsi
-index ec175e800725..6c58fd61585c 100644
---- a/drivers/of/unittest-data/tests-interrupts.dtsi
-+++ b/drivers/of/unittest-data/tests-interrupts.dtsi
-@@ -62,11 +62,10 @@ testcase-device1 {
- 			interrupts = <1>;
- 		};
- 
--		testcase-device2 {
--			compatible = "testcase-device";
--			interrupt-parent = <&test_intc2>;
--			interrupts = <1>; /* invalid specifier - too short */
--		};
-+		/*
-+		 * testcase data that intentionally results in an error is
-+		 * located in testcases.dts instead of in this file so that the
-+		 * static overlay apply tests will not include the error.
-+                 */
- 	};
--
- };
++#include "overlay_common.dtsi"
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
