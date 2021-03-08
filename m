@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B8A33163B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA37331640
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 19:38:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbhCHShC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 13:37:02 -0500
-Received: from mga17.intel.com ([192.55.52.151]:42699 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229972AbhCHSg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:36:29 -0500
-IronPort-SDR: muAB8SEFJwCTHjIjpvErdt2jnWo3LE286OdarEzIBpPyUTJJ/jh60aInEfOQ/6B8ANMurWRlfO
- YzcNJKfJ2ffw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="167996408"
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="167996408"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 10:36:28 -0800
-IronPort-SDR: 2aTtdn46OoZl2pQ9SbUHLlansm8jjvhnpQTN6xlmVYdUDcFsl6vcmgAniIQv7pax5i0/cGUIk4
- S2afTbWyj63w==
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="509015145"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 10:36:26 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lJKjv-00Asev-JV; Mon, 08 Mar 2021 20:36:23 +0200
-Date:   Mon, 8 Mar 2021 20:36:23 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Timur Tabi <timur@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH 2/2] lib/vsprintf: reduce space taken by no_hash_pointers
- warning
-Message-ID: <YEZupyBiJD1zoLTi@smile.fi.intel.com>
-References: <20210305194206.3165917-1-elver@google.com>
- <20210305194206.3165917-2-elver@google.com>
- <YEX5fyB16dF6N4Iu@alley>
- <CAMuHMdUDqcWfE67g2ah-JyL3H9-G_5nrtQLyq0A3OXTKPFXv6w@mail.gmail.com>
- <YEZdo0L8otuEJZNW@alley>
- <CANpmjNOS86kLPexXBZPwRB9=Ej6RHycJXCw_Z7cskMC+Jwb1Ag@mail.gmail.com>
+        id S229775AbhCHShg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 13:37:36 -0500
+Received: from mail-io1-f48.google.com ([209.85.166.48]:38028 "EHLO
+        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229972AbhCHShH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 13:37:07 -0500
+Received: by mail-io1-f48.google.com with SMTP id k2so11047439ioh.5;
+        Mon, 08 Mar 2021 10:37:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GZuaYRcTQYr29WcRo++hbhX56RPiFxHTN4yTc4AVz3w=;
+        b=ueNg0eXozQn4GeZW4yb/OAzU/nlETfHF/8IooElZdh57U4/kRZgSa+u5kwvBfoCP9i
+         +39/KKkK2/2IUNSkQr7tRZf4Oal2Ha34IQZC8Uv6Ok4+g9Sc2d3ytiG2akiCWpY1wT0F
+         qIAOCLrlLnWBunHj5svVdxrtX0J0Ijgx9FlISC66DqB/SO3z5q11uhyl+7LYJ93HH4ni
+         rMwLFSqNRpqKkqwfLoE4c1Rvc2+vDH+tw8MsDlOjuWXPNQM1/ukN0ggup6+M4cFP2AOp
+         GtBF1RDu2wLdwGlflRTQ8k3whWOM8S9HuMdhAfTU5wkYaxb54OWWokcqYLr7YYnuhQMH
+         a2NQ==
+X-Gm-Message-State: AOAM531QyGRMqdNbfXJGQXtHe0P+bBWGXtmPqxrxiWmuv99d2qdRSMh3
+        9E2xaoLtCdQD5QYQZ6UhW0lG+NutKg==
+X-Google-Smtp-Source: ABdhPJzJvIobBSjcBQqRLygEjVIi4wqh95GdW3xy8229pOCjpvroGq1otlgfjqRkUCIo0gL3y4TMig==
+X-Received: by 2002:a5d:80d5:: with SMTP id h21mr7273322ior.11.1615228626850;
+        Mon, 08 Mar 2021 10:37:06 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id h13sm6224496ioe.40.2021.03.08.10.37.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 10:37:05 -0800 (PST)
+Received: (nullmailer pid 2758433 invoked by uid 1000);
+        Mon, 08 Mar 2021 18:37:04 -0000
+Date:   Mon, 8 Mar 2021 11:37:04 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] gpio: omap: Honor "aliases" node
+Message-ID: <20210308183704.GA2747088@robh.at.kernel.org>
+References: <20210302011813.2331879-1-alexander.sverdlin@gmail.com>
+ <CACRpkdYErJH5RUjL+jPC5vnaqGiOqBwHsr0E42wOWrpBGrpS3w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANpmjNOS86kLPexXBZPwRB9=Ej6RHycJXCw_Z7cskMC+Jwb1Ag@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CACRpkdYErJH5RUjL+jPC5vnaqGiOqBwHsr0E42wOWrpBGrpS3w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 07:23:34PM +0100, Marco Elver wrote:
-> On Mon, 8 Mar 2021 at 18:23, Petr Mladek <pmladek@suse.com> wrote:
-
-> > -       pr_warn("**********************************************************\n");
-> > -       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> > -       pr_warn("**                                                      **\n");
-> > -       pr_warn("** This system shows unhashed kernel memory addresses   **\n");
-> > -       pr_warn("** via the console, logs, and other interfaces. This    **\n");
-> > -       pr_warn("** might reduce the security of your system.            **\n");
-> > -       pr_warn("**                                                      **\n");
-> > -       pr_warn("** If you see this message and you are not debugging    **\n");
-> > -       pr_warn("** the kernel, report this immediately to your system   **\n");
+On Tue, Mar 02, 2021 at 05:21:23PM +0100, Linus Walleij wrote:
+> On Tue, Mar 2, 2021 at 2:18 AM Alexander Sverdlin
+> <alexander.sverdlin@gmail.com> wrote:
 > 
-> While we're here: This paragraph can be shortened by saying what
-> kernel/trace/trace.c says ("..., report this immediately to your
-> vendor!") which avoids the "administrator! <lots of wasted spaces>".
+> > Currently the naming of the GPIO chips depends on their order in the DT,
+> > but also on the kernel version (I've noticed the change from v5.10.x to
+> > v5.11). Honor the persistent enumeration in the "aliases" node like other
+> > GPIO drivers do.
+> >
+> > Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+> > ---
+> > Yes, I noticed checkpatch "WARNING: DT binding docs and includes should be
+> > a separate patch."
+> > However, the parts below are tiny and barely make sense separately.
+> 
+> I've shut it down in the past because the instance ordering is a
+> linuxism and the needs are in the Linux userspace somehow.
+> It is different from a UART for example, which always need to
+> be at the same place on any operating system, hence it has an
+> alias.
+> 
+> For kernelspace the instance order should not matter, since
+> all resources are obtained from the device tree anyway
+> by phandle.
 
-Aren't we discussed that and the point was that kernel configuration option is
-in administrator's realm?
+Thank you!
 
-> > -       pr_warn("** administrator!                                       **\n");
-> > -       pr_warn("**                                                      **\n");
-> > -       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> > -       pr_warn("**********************************************************\n");
+Can we remove the ones we have already for GPIO? 
 
--- 
-With Best Regards,
-Andy Shevchenko
+BTW, It's been on my todo list for a while to start requiring 
+documentation of alias names so we can reject new ones and get rid of 
+some of the unused existing ones. Some platforms have numbered 
+everything...
 
-
+Rob
