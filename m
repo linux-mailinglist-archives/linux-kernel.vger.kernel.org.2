@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8415F33182F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29AAE331831
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 21:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbhCHUKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 15:10:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56614 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231877AbhCHUKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 15:10:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7AA4B65268;
-        Mon,  8 Mar 2021 20:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615234208;
-        bh=AV3+nIv0sMZvuZgFrXPxb8Y5CZAM7XZr/UwG2xegoac=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=kwKy0inigudlECCZYgf8kCMfUNkUpMfvhQKO+pCkPtspC/2aVLFAxPFXNroIi2Yq+
-         5JnBlEFk1sk/U7OahVsjoqYhB5DuTQWxkJ/MNxcKtmlbF3aUYEWJnCnezIPGo/Pv7m
-         751/ED/A53K8rJiiwGnxZ2jF9V3ENvRiXAugBp0prU0t5F36MSnLy8dEtRos27nn77
-         v18NkWYgNQ5csHZ58ZjyhAZmA3x+9RD6H/vp42HNzZ9OpVPEB32YZbDLfqUenx8dXn
-         DwaHtKL/OMwItnxCRmayM/wReF0yhsdCKI4Mk0+w4PHcQ+5mtQ3fdc5wpCdiIQuC9L
-         HXr74jPeQnB4w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6AA43609E6;
-        Mon,  8 Mar 2021 20:10:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231962AbhCHUKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 15:10:34 -0500
+Received: from mail-io1-f49.google.com ([209.85.166.49]:36397 "EHLO
+        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231730AbhCHUKS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 15:10:18 -0500
+Received: by mail-io1-f49.google.com with SMTP id n14so11386334iog.3;
+        Mon, 08 Mar 2021 12:10:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W3mjVIFWEpH5SFjcD5c/+mtJcjLBlX/O/nyh0NeCyfs=;
+        b=SZu81O1WPrEYb9iIoNZqrLS0GwWVLfh2lbK09TRgdxPR0KrRXL92S1jsdUKLV0AVDy
+         WIckq8O4kdiEQqDzQ0Lo72S8DfSnnvfLjLNgiLd4LHO6bnv6EE+DYtRyoWDhSkNBoaBa
+         Y7ijZWYKr8aIEzaS7LPYvwOM5AKQ1cw8Scsg6wZ9tGr/D9/1WbdOCgboO7VkqNNOtlHI
+         8YjspqX0Cb9v1jGQnTEcBIuthSlM/PiaI+ced0Fd7i1xS+wQeSN2UnvyqcnZn3OaI7vr
+         TC8akHg8JS/1YiOA2cPZuaD73RbpKqYMZPwWPPXhdkjPMfdhew/sIXWcD9erknTTWpu1
+         U/ow==
+X-Gm-Message-State: AOAM530FxRGPEbYL1jJ4cW2E5sQHppJBSzO9eimPQYOtcQRQnlAs/0C/
+        cFh7DN7ftr/YS+rPoEQPX98RBvEg7Q==
+X-Google-Smtp-Source: ABdhPJwhlcKy6MqNv0Xw0yC95WDFroIoz7Q6Q2h6oSct3VRfS3JShNjX0GjY4xiwwtsNyfsumtekZQ==
+X-Received: by 2002:a02:605d:: with SMTP id d29mr25002861jaf.81.1615234217755;
+        Mon, 08 Mar 2021 12:10:17 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id b20sm6424389iod.22.2021.03.08.12.10.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 12:10:17 -0800 (PST)
+Received: (nullmailer pid 2881882 invoked by uid 1000);
+        Mon, 08 Mar 2021 20:10:14 -0000
+Date:   Mon, 8 Mar 2021 13:10:14 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     swboyd@chromium.org, linux-kernel@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        bjorn.andersson@linaro.org, agross@kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v2 10/14] dt-bindings: watchdog: Add compatible for
+ SC7280 SoC
+Message-ID: <20210308201014.GA2881836@robh.at.kernel.org>
+References: <1614773878-8058-1-git-send-email-rnayak@codeaurora.org>
+ <1614773878-8058-11-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 1/3] net: davicom: Fix regulator not turned off on failed
- probe
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161523420843.27243.17192886779484123674.git-patchwork-notify@kernel.org>
-Date:   Mon, 08 Mar 2021 20:10:08 +0000
-References: <20210307131749.14960-1-paul@crapouillou.net>
-In-Reply-To: <20210307131749.14960-1-paul@crapouillou.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     davem@davemloft.net, kuba@kernel.org, od@zcrc.me,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614773878-8058-11-git-send-email-rnayak@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net.git (refs/heads/master):
-
-On Sun,  7 Mar 2021 13:17:47 +0000 you wrote:
-> When the probe fails or requests to be defered, we must disable the
-> regulator that was previously enabled.
+On Wed, 03 Mar 2021 17:47:54 +0530, Rajendra Nayak wrote:
+> From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 > 
-> Fixes: 7994fe55a4a2 ("dm9000: Add regulator and reset support to dm9000")
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Add compatible for watchdog timer on SC7280 SoC.
+> 
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 > ---
->  drivers/net/ethernet/davicom/dm9000.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
+>  Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Here is the summary with links:
-  - [1/3] net: davicom: Fix regulator not turned off on failed probe
-    https://git.kernel.org/netdev/net/c/ac88c531a5b3
-  - [2/3] net: davicom: Fix regulator not turned off on driver removal
-    https://git.kernel.org/netdev/net/c/cf9e60aa69ae
-  - [3/3] net: davicom: Use platform_get_irq_optional()
-    https://git.kernel.org/netdev/net/c/2e2696223676
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Acked-by: Rob Herring <robh@kernel.org>
