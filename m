@@ -2,112 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C2C330D68
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F28F7330D69
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 13:23:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbhCHMWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 07:22:31 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:45606 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbhCHMWO (ORCPT
+        id S230051AbhCHMXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 07:23:02 -0500
+Received: from mail-vs1-f43.google.com ([209.85.217.43]:38791 "EHLO
+        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232026AbhCHMWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 07:22:14 -0500
-Date:   Mon, 08 Mar 2021 12:22:12 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615206133;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WKExN4+xDpkQ0fEjU/DbH4nlWRc678J7RVNxh8wM+BM=;
-        b=bmtHm8NVr93Cgi+/4iAW/GSgvwLQiX6UI8v2ZptoOt/6ogqfotFxE6OwqI9e+tWbvF+40u
-        Bbl1f9xGDJe6EKnjgGzF8RVeGHDaH3CDjz6D40JkxJKiSzz4OE0v7hNH1xAobX4pSDasbz
-        ffq0QlVh5+fo4r7b6CWF3Q+eCLHis/74meXuu+kNvoFMt1uRtR1IwgSn8Ahe711CIyrbOJ
-        UxS2Ysq97WSVwUGz9SEF9Bzx92naD6O5Tvrk4/FrvXic3VHvEvhdhiB8ljQniEXsJMHkBv
-        YSAEpQw3e2h1FHIsBWoWpmH4h5q6ARxv7+oxq/FRCtc5oQn9rWkGGHNOCg5TTw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615206133;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WKExN4+xDpkQ0fEjU/DbH4nlWRc678J7RVNxh8wM+BM=;
-        b=gOHhAJL9YyZ0pUhAMb/Sym734ueCdLwQduqdhIyBUSpnedP5dbeAzvUL8+2yOK9ezUriyS
-        D/vl25P+PZwi7fBg==
-From:   "tip-bot2 for Tom Lendacky" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/seves] x86/virtio: Have SEV guests enforce restricted
- virtio memory access
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3Cb46e0211f77ca1831f11132f969d470a6ffc9267=2E16148?=
- =?utf-8?q?97610=2Egit=2Ethomas=2Elendacky=40amd=2Ecom=3E?=
-References: =?utf-8?q?=3Cb46e0211f77ca1831f11132f969d470a6ffc9267=2E161489?=
- =?utf-8?q?7610=2Egit=2Ethomas=2Elendacky=40amd=2Ecom=3E?=
+        Mon, 8 Mar 2021 07:22:52 -0500
+Received: by mail-vs1-f43.google.com with SMTP id e21so2709358vsh.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 04:22:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tLC/tgI64EEsWSU2GUD0WY3ILds+TQ6RTHmx4L/R/8s=;
+        b=NDPtbZvUqJ+0kZcEGgK1MJUiqw/emjlUOXHFmBMslVZaOygmJ+7vdkaokChd/+ADZZ
+         ad7q8v8L1wNQO8NP96Ble7tZy2oCXsU8AYdsJl/FNuvWfX9y757+WW90ueID5OGEqfrR
+         x45BKgAL0dGAQhqJ2eIedTO7VJVXeCDaYTlvGI//cxlHYElqUmQEcAv1MBa8YYQ5+2wH
+         aPkI8C24bSLH2tEh5iBeDrLhb/43p4wHXk2vr947ueJMGlrpQplAvm1Eldsfi6IKV7BB
+         n1YJLlh84cGe1818RhZ6TbKzc0xVM6gEMtcJ8E/MbwQEAJJ6jRBkkSYqPr1WuNUoxMES
+         qJbw==
+X-Gm-Message-State: AOAM531lllFnLNJ4rpAj0wHsKL9nP/8ZQpUtr12nqLRkvBRkPkY25z5Q
+        cPP9eJzWULQnnWeMbxxIf6zO0Q5nC7fxqOM6SF8=
+X-Google-Smtp-Source: ABdhPJxmNBbkgCiHQ4+r/cRZ/et+7Ff7jGGXBLH7sL1NfISu4mKEJu/dnBKW04brnl6oUESlUWmRHD9wPdlNS+5WATo=
+X-Received: by 2002:a67:fe90:: with SMTP id b16mr13045613vsr.40.1615206172118;
+ Mon, 08 Mar 2021 04:22:52 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <161520613223.398.14600279488331087689.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210305194206.3165917-1-elver@google.com> <20210305194206.3165917-2-elver@google.com>
+ <YEX5fyB16dF6N4Iu@alley>
+In-Reply-To: <YEX5fyB16dF6N4Iu@alley>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Mar 2021 13:22:40 +0100
+Message-ID: <CAMuHMdUDqcWfE67g2ah-JyL3H9-G_5nrtQLyq0A3OXTKPFXv6w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] lib/vsprintf: reduce space taken by no_hash_pointers warning
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Marco Elver <elver@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Timur Tabi <timur@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/seves branch of tip:
+Hi Petr,
 
-Commit-ID:     9da54be651f8a856d9e6c14183d0df948e222103
-Gitweb:        https://git.kernel.org/tip/9da54be651f8a856d9e6c14183d0df948e222103
-Author:        Tom Lendacky <thomas.lendacky@amd.com>
-AuthorDate:    Thu, 04 Mar 2021 16:40:11 -06:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 08 Mar 2021 12:54:43 +01:00
+On Mon, Mar 8, 2021 at 11:16 AM Petr Mladek <pmladek@suse.com> wrote:
+> On Fri 2021-03-05 20:42:06, Marco Elver wrote:
+> > Move the no_hash_pointers warning string into __initconst section, so
+> > that it is discarded after init. Remove common start/end characters.
+> > Also remove repeated lines from the array, since the compiler can't
+> > remove duplicate strings for us since the array must appear in
+> > __initconst as defined.
+> >
+> > Note, a similar message appears in kernel/trace/trace.c, but compiling
+> > the feature is guarded by CONFIG_TRACING. It is not immediately obvious
+> > if a space-concious kernel would prefer CONFIG_TRACING=n. Therefore, it
+> > makes sense to keep the message for no_hash_pointers as __initconst, and
+> > not move the NOTICE-printing to a common function.
+> >
+> > Link: https://lkml.kernel.org/r/CAMuHMdULKZCJevVJcp7TxzLdWLjsQPhE8hqxhnztNi9bjT_cEw@mail.gmail.com
+> > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > ---
+> >  lib/vsprintf.c | 30 +++++++++++++++++-------------
+> >  1 file changed, 17 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> > index 4a14889ccb35..1095689c9c97 100644
+> > --- a/lib/vsprintf.c
+> > +++ b/lib/vsprintf.c
+> > @@ -2094,26 +2094,30 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
+> >  bool no_hash_pointers __ro_after_init;
+> >  EXPORT_SYMBOL_GPL(no_hash_pointers);
+> >
+> > +static const char no_hash_pointers_warning[8][55] __initconst = {
+> > +     "******************************************************",
+> > +     "   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   ",
+> > +     " This system shows unhashed kernel memory addresses   ",
+> > +     " via the console, logs, and other interfaces. This    ",
+> > +     " might reduce the security of your system.            ",
+> > +     " If you see this message and you are not debugging    ",
+> > +     " the kernel, report this immediately to your system   ",
+> > +     " administrator!                                       ",
+> > +};
+> > +
+> >  static int __init no_hash_pointers_enable(char *str)
+> >  {
+> > +     /* Indices into no_hash_pointers_warning; -1 is an empty line. */
+> > +     const int lines[] = { 0, 1, -1, 2, 3, 4, -1, 5, 6, 7, -1, 1, 0 };
+> > +     int i;
+> > +
+> >       if (no_hash_pointers)
+> >               return 0;
+> >
+> >       no_hash_pointers = true;
+> >
+> > -     pr_warn("**********************************************************\n");
+> > -     pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> > -     pr_warn("**                                                      **\n");
+> > -     pr_warn("** This system shows unhashed kernel memory addresses   **\n");
+> > -     pr_warn("** via the console, logs, and other interfaces. This    **\n");
+> > -     pr_warn("** might reduce the security of your system.            **\n");
+> > -     pr_warn("**                                                      **\n");
+> > -     pr_warn("** If you see this message and you are not debugging    **\n");
+> > -     pr_warn("** the kernel, report this immediately to your system   **\n");
+> > -     pr_warn("** administrator!                                       **\n");
+> > -     pr_warn("**                                                      **\n");
+> > -     pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> > -     pr_warn("**********************************************************\n");
+> > +     for (i = 0; i < ARRAY_SIZE(lines); i++)
+> > +             pr_warn("**%54s**\n", i == -1 ? "" : no_hash_pointers_warning[lines[i]]);
+>
+> Is this worth it, please? Could anyone provide some numbers how
 
-x86/virtio: Have SEV guests enforce restricted virtio memory access
+Yeah, the code indeed starts to look a bit cumbersome...
 
-An SEV guest requires that virtio devices use the DMA API to allow the
-hypervisor to successfully access guest memory as needed.
+> the kernel size increases between releases?
 
-The VIRTIO_F_VERSION_1 and VIRTIO_F_ACCESS_PLATFORM features tell virtio
-to use the DMA API. Add arch_has_restricted_virtio_memory_access() for
-x86, to fail the device probe if these features have not been set for the
-device when running as an SEV guest.
+I'd say 20 KiB per release, on average.
 
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/b46e0211f77ca1831f11132f969d470a6ffc9267.1614897610.git.thomas.lendacky@amd.com
----
- arch/x86/Kconfig          | 1 +
- arch/x86/mm/mem_encrypt.c | 5 +++++
- 2 files changed, 6 insertions(+)
+> The number of code lines is basically just growing. The same is true
+> for the amount of printed messages.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 2792879..e80e726 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1518,6 +1518,7 @@ config AMD_MEM_ENCRYPT
- 	select ARCH_USE_MEMREMAP_PROT
- 	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
- 	select INSTRUCTION_DECODER
-+	select ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
- 	help
- 	  Say yes to enable support for the encryption of system memory.
- 	  This requires an AMD processor that supports Secure Memory
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index 4b01f7d..667283f 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -484,3 +484,8 @@ void __init mem_encrypt_init(void)
- 	print_mem_encrypt_feature_info();
- }
- 
-+int arch_has_restricted_virtio_memory_access(void)
-+{
-+	return sev_active();
-+}
-+EXPORT_SYMBOL_GPL(arch_has_restricted_virtio_memory_access);
+Yeah, we keep on adding more messages.
+But do we really need to print a message of 13 lines?
+If you consider this critical for security, perhaps it should use pr_crit(),
+or pr_alert()? But please don't print more than a single line.
+
+<sarcastic>
+Perhaps it should print a URL to a message instead, like the
+"software license" option in Android systems and apps?
+</sarcastic>
+
+> This patch is saving some lines of text that might be effectively
+> compressed. But it adds some code and array with indexes. Does it
+> make any significant imrovement in the compressed kernel image?
+>
+> Geert was primary concerned about the runtime memory consuption.
+> It will be solved by the  __initconst. The rest affects only
+> the size of the compressed image on disk.
+
+I'm actually concerned about both.  Platforms (and boot loaders) may
+have limitations for kernel image size, too.
+Static memory consumption is also more easily measured, so I tend
+to run bloat-o-meter, and dive into anything that adds more than 1 KiB.
+And yes, this message is a low-hanging fruit...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
