@@ -2,142 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8817E331A33
+	by mail.lfdr.de (Postfix) with ESMTP id F147E331A35
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 23:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231646AbhCHWbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 17:31:04 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2666 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbhCHWaj (ORCPT
+        id S231688AbhCHWbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 17:31:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231254AbhCHWau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 17:30:39 -0500
-Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DvXvb0ypyz67m9W;
-        Tue,  9 Mar 2021 06:24:43 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 8 Mar 2021 23:30:37 +0100
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- lhreml710-chm.china.huawei.com (10.201.108.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Mon, 8 Mar 2021 22:30:35 +0000
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.013;
- Tue, 9 Mar 2021 06:30:34 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        yangyicong <yangyicong@huawei.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "hpa@zytor.com" <hpa@zytor.com>
-Subject: RE: [Linuxarm]  Re: [RFC PATCH v4 3/3] scheduler: Add cluster
- scheduler level for x86
-Thread-Topic: [Linuxarm]  Re: [RFC PATCH v4 3/3] scheduler: Add cluster
- scheduler level for x86
-Thread-Index: AQHXDu+AE3PNeTodl0O2xkA7PHQps6pv+jeAgAIZXACACJ6u4A==
-Date:   Mon, 8 Mar 2021 22:30:33 +0000
-Message-ID: <6d8940e227324c2c88474d9d0769c001@hisilicon.com>
-References: <20210301225940.16728-1-song.bao.hua@hisilicon.com>
- <20210301225940.16728-4-song.bao.hua@hisilicon.com>
- <YD4T0qBBgR6fPbQb@hirez.programming.kicks-ass.net>
- <a8474bae-5d9a-8c0b-766a-7188ed71320b@linux.intel.com>
-In-Reply-To: <a8474bae-5d9a-8c0b-766a-7188ed71320b@linux.intel.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.203.229]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 8 Mar 2021 17:30:50 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18065C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 14:30:50 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id m22so23672244lfg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 14:30:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=iW5ng6iEejvRMljMHfkKvj6+YTTzMof7NCYEOCF/AsQ=;
+        b=Q2RMvGYZWGjX429xvgVCL9cuQIc+3cKcAD9TLhoHLcmuIXN2Let0Jbtk3LdbODPNTa
+         NxeK/8zzqLqmf1qVDoT9MN/ocENVPb1ekZ4Gj+Sw3vIB74lolRKGxVQ54yjAaiJN97tT
+         7iNprzA6v1+yu6EXzCkzSYB4qm+pSA+mKWfgKJ70nFYjgkPLry9BvZuujFXL8P7BXOzt
+         cNhhkw8fO4oXkvWQKt84Ssqe9TlQK7tde3SyruRlvdk9CV5gOI7Omf331lSkOFgdbwOk
+         ngCsz58cGJr76i8xxLSr1ilU95Kd0swhXX00QzpDXO50aqdBTBTP8H7zzyWl4XAGUfSI
+         DTVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=iW5ng6iEejvRMljMHfkKvj6+YTTzMof7NCYEOCF/AsQ=;
+        b=TwQ4+M3kBBU4+OMjMF4JGxJxXseOwAkmrgv/xRP/nRDGjEfp1f/MdJqjoERf5qZdj6
+         mMiO+KheLCJtdQ4LMCHYGDPimaYQiI7HTuRcZ2kWitOHz9KBkZW4SetHiyXtHsxcPqX4
+         stsU7Ub+mhsaEI/LDnofBg0zeVAw74fNVbDcQfE1e464r/1wgLtqCVv+6VIw5HNPABNT
+         3KTPMCrrjI+sa4rpq2TyopOSJWET5jv1y5Kgl2HrkViOrbr0YIKENROcxXxttucvp2Cv
+         BNmkgfIYW3QT1Rq348VgKMjUv4XK6TxJupJUCWGDk4AfXbjh9HBoHbh28CNj/w9QklPJ
+         elVg==
+X-Gm-Message-State: AOAM530A28BrneJaJGnMXvyKU/jFFh6bZd5wdf6QEoolqsoyQTpBNDni
+        QQOMbBRukuAKXNV5R2RSy9E=
+X-Google-Smtp-Source: ABdhPJxoslaDSSHtgXh6g/iImKFgMLC6pad8pEJWqxQDJorwJEiY3vd+1Oh2zSRB94JhMkf6WShACw==
+X-Received: by 2002:a05:6512:482:: with SMTP id v2mr15983387lfq.52.1615242648619;
+        Mon, 08 Mar 2021 14:30:48 -0800 (PST)
+Received: from localhost.localdomain ([94.103.235.167])
+        by smtp.gmail.com with ESMTPSA id x27sm1496976lfu.151.2021.03.08.14.30.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 14:30:48 -0800 (PST)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     perex@perex.cz, tiwai@suse.com, kai.heng.feng@canonical.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+719da9b149a931f5143f@syzkaller.appspotmail.com
+Subject: [PATCH next 1/2] sound: usb: fix NULL ptr dereference in usb_audio_probe
+Date:   Tue,  9 Mar 2021 01:30:36 +0300
+Message-Id: <f1ebad6e721412843bd1b12584444c0a63c6b2fb.1615242183.git.paskripkin@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1615242183.git.paskripkin@gmail.com>
+References: <cover.1615242183.git.paskripkin@gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVGltIENoZW4gW21haWx0
-bzp0aW0uYy5jaGVuQGxpbnV4LmludGVsLmNvbV0NCj4gU2VudDogVGh1cnNkYXksIE1hcmNoIDQs
-IDIwMjEgNzozNCBBTQ0KPiBUbzogUGV0ZXIgWmlqbHN0cmEgPHBldGVyekBpbmZyYWRlYWQub3Jn
-PjsgU29uZyBCYW8gSHVhIChCYXJyeSBTb25nKQ0KPiA8c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5j
-b20+DQo+IENjOiBjYXRhbGluLm1hcmluYXNAYXJtLmNvbTsgd2lsbEBrZXJuZWwub3JnOyByandA
-cmp3eXNvY2tpLm5ldDsNCj4gdmluY2VudC5ndWl0dG90QGxpbmFyby5vcmc7IGJwQGFsaWVuOC5k
-ZTsgdGdseEBsaW51dHJvbml4LmRlOw0KPiBtaW5nb0ByZWRoYXQuY29tOyBsZW5iQGtlcm5lbC5v
-cmc7IGRpZXRtYXIuZWdnZW1hbm5AYXJtLmNvbTsNCj4gcm9zdGVkdEBnb29kbWlzLm9yZzsgYnNl
-Z2FsbEBnb29nbGUuY29tOyBtZ29ybWFuQHN1c2UuZGU7DQo+IG1zeXMubWl6dW1hQGdtYWlsLmNv
-bTsgdmFsZW50aW4uc2NobmVpZGVyQGFybS5jb207DQo+IGdyZWdraEBsaW51eGZvdW5kYXRpb24u
-b3JnOyBKb25hdGhhbiBDYW1lcm9uIDxqb25hdGhhbi5jYW1lcm9uQGh1YXdlaS5jb20+Ow0KPiBq
-dXJpLmxlbGxpQHJlZGhhdC5jb207IG1hcmsucnV0bGFuZEBhcm0uY29tOyBzdWRlZXAuaG9sbGFA
-YXJtLmNvbTsNCj4gYXVicmV5LmxpQGxpbnV4LmludGVsLmNvbTsgbGludXgtYXJtLWtlcm5lbEBs
-aXN0cy5pbmZyYWRlYWQub3JnOw0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51
-eC1hY3BpQHZnZXIua2VybmVsLm9yZzsgeDg2QGtlcm5lbC5vcmc7DQo+IHh1d2VpIChPKSA8eHV3
-ZWk1QGh1YXdlaS5jb20+OyBaZW5ndGFvIChCKSA8cHJpbWUuemVuZ0BoaXNpbGljb24uY29tPjsN
-Cj4gZ3VvZG9uZy54dUBsaW5hcm8ub3JnOyB5YW5neWljb25nIDx5YW5neWljb25nQGh1YXdlaS5j
-b20+OyBMaWd1b3podSAoS2VubmV0aCkNCj4gPGxpZ3Vvemh1QGhpc2lsaWNvbi5jb20+OyBsaW51
-eGFybUBvcGVuZXVsZXIub3JnOyBocGFAenl0b3IuY29tDQo+IFN1YmplY3Q6IFtMaW51eGFybV0g
-UmU6IFtSRkMgUEFUQ0ggdjQgMy8zXSBzY2hlZHVsZXI6IEFkZCBjbHVzdGVyIHNjaGVkdWxlcg0K
-PiBsZXZlbCBmb3IgeDg2DQo+IA0KPiANCj4gDQo+IE9uIDMvMi8yMSAyOjMwIEFNLCBQZXRlciBa
-aWpsc3RyYSB3cm90ZToNCj4gPiBPbiBUdWUsIE1hciAwMiwgMjAyMSBhdCAxMTo1OTo0MEFNICsx
-MzAwLCBCYXJyeSBTb25nIHdyb3RlOg0KPiA+PiBGcm9tOiBUaW0gQ2hlbiA8dGltLmMuY2hlbkBs
-aW51eC5pbnRlbC5jb20+DQo+ID4+DQo+ID4+IFRoZXJlIGFyZSB4ODYgQ1BVIGFyY2hpdGVjdHVy
-ZXMgKGUuZy4gSmFjb2JzdmlsbGUpIHdoZXJlIEwyIGNhaGNlDQo+ID4+IGlzIHNoYXJlZCBhbW9u
-ZyBhIGNsdXN0ZXIgb2YgY29yZXMgaW5zdGVhZCBvZiBiZWluZyBleGNsdXNpdmUNCj4gPj4gdG8g
-b25lIHNpbmdsZSBjb3JlLg0KPiA+DQo+ID4gSXNuJ3QgdGhhdCBtb3N0IGF0b21zIG9uZSB3YXkg
-b3IgYW5vdGhlcj8gVHJlbW9udCBzZWVtcyB0byBoYXZlIGl0IHBlciA0DQo+ID4gY29yZXMsIGJ1
-dCBlYXJsaWVyIGl0IHdhcyBwZXIgMiBjb3Jlcy4NCj4gPg0KPiANCj4gWWVzLCBvbGRlciBBdG9t
-cyBoYXZlIDIgY29yZXMgc2hhcmluZyBMMi4gIEkgcHJvYmFibHkgc2hvdWxkDQo+IHJlcGhyYXNl
-IG15IGNvbW1lbnRzIHRvIG5vdCBsZWF2ZSB0aGUgaW1wcmVzc2lvbiB0aGF0IHNoYXJpbmcNCj4g
-TDIgYW1vbmcgY29yZXMgaXMgbmV3IGZvciBBdG9tcy4NCj4gDQo+IFRyZW1vbnQgYmFzZWQgQXRv
-bSBDUFVzIGluY3JlYXNlcyB0aGUgcG9zc2libGUgbG9hZCBpbWJhbGFuY2UgbW9yZQ0KPiB3aXRo
-IDQgY29yZXMgcGVyIEwyIGluc3RlYWQgb2YgMi4gIEFuZCBhbHNvIHdpdGggbW9yZSBvdmVyYWxs
-IGNvcmVzIG9uIGEgZGllLA0KPiB0aGUNCj4gY2hhbmNlIGluY3JlYXNlcyBmb3IgcGFja2luZyBy
-dW5uaW5nIHRhc2tzIG9uIGEgZmV3IGNsdXN0ZXJzIHdoaWxlIGxlYXZpbmcNCj4gb3RoZXJzIGVt
-cHR5IG9uIGxpZ2h0L21lZGl1bSBsb2FkZWQgc3lzdGVtcy4gIFdlIGRpZCBzZWUNCj4gdGhpcyBl
-ZmZlY3Qgb24gSmFjb2JzdmlsbGUuDQo+IA0KPiBTbyBsb2FkIGJhbGFuY2luZyBiZXR3ZWVuIHRo
-ZSBMMiBjbHVzdGVycyBpcyBtb3JlDQo+IHVzZWZ1bCBvbiBUcmVtb250IGJhc2VkIEF0b20gQ1BV
-cyBjb21wYXJlZCB0byB0aGUgb2xkZXIgQXRvbXMuDQoNCkl0IHNlZW1zIHNlbnNpYmxlIHRoZSBt
-b3JlIENQVSB3ZSBnZXQgaW4gdGhlIGNsdXN0ZXIsIHRoZSBtb3JlDQp3ZSBuZWVkIHRoZSBrZXJu
-ZWwgdG8gYmUgYXdhcmUgb2YgaXRzIGV4aXN0ZW5jZS4NCg0KVGltLCBpdCBpcyBwb3NzaWJsZSBm
-b3IgeW91IHRvIGJyaW5nIHVwIHRoZSBjcHVfY2x1c3Rlcl9tYXNrIGFuZA0KY2x1c3Rlcl9zaWJs
-aW5nIGZvciB4ODYgc28gdGhhdCB0aGUgdG9wb2xvZ3kgY2FuIGJlIHJlcHJlc2VudGVkDQppbiBz
-eXNmcyBhbmQgYmUgdXNlZCBieSBzY2hlZHVsZXI/IEl0IHNlZW1zIHlvdXIgcGF0Y2ggbGFja3Mg
-dGhpcw0KcGFydC4NCg0KQlRXLCBJIHdvbmRlciBpZiB4ODYgY2FuIGRvIHNvbWUgaW1wcm92ZW1l
-bnQgb24geW91ciBLTVBfQUZGSU5JVFkNCmJ5IGxldmVyYWdpbmcgdGhlIGNsdXN0ZXIgdG9wb2xv
-Z3kgbGV2ZWwuDQpodHRwczovL3NvZnR3YXJlLmludGVsLmNvbS9jb250ZW50L3d3dy91cy9lbi9k
-ZXZlbG9wL2RvY3VtZW50YXRpb24vY3BwLWNvbXBpbGVyLWRldmVsb3Blci1ndWlkZS1hbmQtcmVm
-ZXJlbmNlL3RvcC9vcHRpbWl6YXRpb24tYW5kLXByb2dyYW1taW5nLWd1aWRlL29wZW5tcC1zdXBw
-b3J0L29wZW5tcC1saWJyYXJ5LXN1cHBvcnQvdGhyZWFkLWFmZmluaXR5LWludGVyZmFjZS1saW51
-eC1hbmQtd2luZG93cy5odG1sDQoNCktNUF9BRkZJTklUWSBoYXMgdGhyZWFkIGFmZmluaXR5IG1v
-ZGVzIGxpa2UgY29tcGFjdCBhbmQgc2NhdHRlciwNCml0IHNlZW1zIHRoaXMgImNvbXBhY3QiIGFu
-ZCAic2NhdHRlciIgY2FuIGFsc28gdXNlIHRoZSBjbHVzdGVyDQppbmZvcm1hdGlvbiBhcyB5b3Ug
-c2VlIHdlIGFyZSBhbHNvIHN0cnVnZ2xpbmcgd2l0aCB0aGUgImNvbXBhY3QiDQphbmQgInNjYXR0
-ZXIiIGlzc3VlcyBoZXJlIGluIHRoaXMgcGF0Y2hzZXQgOi0pDQoNClRoYW5rcw0KQmFycnkNCg==
+syzbot reported null pointer dereference in usb_audio_probe.
+The problem was in case, when quirk == NULL. It's not an
+error condition, so quirk must be checked before dereferencing.
+
+Call Trace:
+ usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
+ really_probe+0x291/0xe60 drivers/base/dd.c:554
+ driver_probe_device+0x26b/0x3d0 drivers/base/dd.c:740
+ __device_attach_driver+0x1d1/0x290 drivers/base/dd.c:846
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:914
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
+ device_add+0xbdb/0x1db0 drivers/base/core.c:3242
+ usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
+ usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
+ really_probe+0x291/0xe60 drivers/base/dd.c:554
+ driver_probe_device+0x26b/0x3d0 drivers/base/dd.c:740
+ __device_attach_driver+0x1d1/0x290 drivers/base/dd.c:846
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:914
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
+ device_add+0xbdb/0x1db0 drivers/base/core.c:3242
+ usb_new_device.cold+0x721/0x1058 drivers/usb/core/hub.c:2555
+ hub_port_connect drivers/usb/core/hub.c:5223 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x2357/0x4320 drivers/usb/core/hub.c:5591
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Reported-by: syzbot+719da9b149a931f5143f@syzkaller.appspotmail.com
+Fixes: 9799110825db ("ALSA: usb-audio: Disable USB autosuspend properly in setup_disable_autosuspend()")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ sound/usb/card.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 08c794883299..3fd1743513b5 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -830,7 +830,8 @@ static int usb_audio_probe(struct usb_interface *intf,
+ 		snd_media_device_create(chip, intf);
+ 	}
+ 
+-	chip->quirk_type = quirk->type;
++	if (quirk)
++		chip->quirk_type = quirk->type;
+ 
+ 	usb_chip[chip->index] = chip;
+ 	chip->intf[chip->num_interfaces] = intf;
+-- 
+2.25.1
+
