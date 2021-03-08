@@ -2,270 +2,531 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79AF83306F0
+	by mail.lfdr.de (Postfix) with ESMTP id C54373306F1
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 05:40:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhCHEjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Mar 2021 23:39:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234242AbhCHEjR (ORCPT
+        id S234248AbhCHEjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Mar 2021 23:39:39 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59110 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234244AbhCHEja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Mar 2021 23:39:17 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB80C06175F
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Mar 2021 20:39:17 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id 81so8557490iou.11
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Mar 2021 20:39:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bsbT519mzZdb7mcw/7+TNYojkJACyFMHn6cRnUT7eX0=;
-        b=PTz+1nw9/NMgAcQ5v/H55nWKHg1I2Z8jcJgMvEMjg6HGSPnYvHylTDKy1hC89hNHro
-         yHtPIYhPZpDRWp+v/va46n/eRPReJ3+tK1rf0I6SgqKPy2z4SGIsyiOPQjkY1XAIWl5Y
-         X9RUDlJPPQYyU10FS6blP9+JMX9tyXUL98WPQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bsbT519mzZdb7mcw/7+TNYojkJACyFMHn6cRnUT7eX0=;
-        b=kMb0Tdx6x7Nwkaxo1Pd0CemckfIuDnDjeYqNMtTkdR8ye4vXWM9XWFfSGDdmaOeKc3
-         YHI0qR69N5L/a8/m0dsrKkwYDhFb1swr39/lJkqCpWpdI5dRwdP1ucH9H/wGuFHDFYc9
-         n3xcgLZbZyQDC61HmAc1c+LDRhbP5sk4tE6gl4ArXv6Badw1HLmJ2o+olBtYiBq2iGmL
-         kyJ3IwoGNMJYlFFDP3rvdPmbv7RW7VBHrKQn/7LN22n9Rn7k7YLzYryDct4kptfzwpgZ
-         Q+dHuEKyR1ip1Z6MqtXU5ZnkAq7HRHkayouB0L+8rAuORNX37cr8bWpyRbuvYjuyrVCp
-         yxxQ==
-X-Gm-Message-State: AOAM533JtsqOfuNsVA+Gh2dyHmnxr1mxXci5ea+wDJzNGcNiqSnmA1ko
-        QBLNrHv8B3yFyogNunBiGZqW6Ok8n1tybcFlNRXsEg==
-X-Google-Smtp-Source: ABdhPJwXbXBGNNcHdygZ3prUT42NljCsseOPVpwNtukWEbh01trlakkHXGLwXwTQWqw4QSgtc6p7Kc98nEGxgZ5S65w=
-X-Received: by 2002:a5e:d61a:: with SMTP id w26mr17530414iom.40.1615178356732;
- Sun, 07 Mar 2021 20:39:16 -0800 (PST)
+        Sun, 7 Mar 2021 23:39:30 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1284dMlv068234;
+        Sun, 7 Mar 2021 22:39:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615178362;
+        bh=+DOVb3QEYbfGK53Z6OnZ2FZ0lYC1hnKVuK5Q+xEkdYI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=dS2L+rrm9dLVGS5pfTliBQAxPSyz01cEvAISgXG5TX+KfYXonYzt7xGN+ZV5lnmGy
+         HhKKnRqzL+aKURa0inKOL9zvxWMV+eY1L/6nxxwoNh8d5XfwJkDkWgh7Nqc9zywaTs
+         7lRQGHtKgNe3/ZbNqIt9JmyGx6wFavLXgqJS6hyc=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1284dMZ5072389
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 7 Mar 2021 22:39:22 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 7 Mar
+ 2021 22:39:22 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sun, 7 Mar 2021 22:39:22 -0600
+Received: from [10.250.234.4] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1284dINe092987;
+        Sun, 7 Mar 2021 22:39:19 -0600
+Subject: Re: [PATCH v4 12/13] phy: cadence: phy-cadence-sierra: Model
+ PLL_CMNLC and PLL_CMNLC1 as clocks (mux clocks)
+To:     Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+References: <20210304044122.15166-1-kishon@ti.com>
+ <20210304044122.15166-13-kishon@ti.com>
+ <MN2PR07MB6160AC152A97773F1428ED62C5969@MN2PR07MB6160.namprd07.prod.outlook.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <1966cf85-13b1-adfa-6cfa-767ae884ed49@ti.com>
+Date:   Mon, 8 Mar 2021 10:09:17 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210305102004.191209-1-hsinyi@chromium.org>
-In-Reply-To: <20210305102004.191209-1-hsinyi@chromium.org>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Mon, 8 Mar 2021 12:38:50 +0800
-Message-ID: <CAJMQK-iDgkETDOnExG3Opuave98q0Nbq2ZK+NpyD_bmB0SrpDA@mail.gmail.com>
-Subject: Re: [PATCH] i2c: core: support bus regulator controlling in adapter
-To:     Wolfram Sang <wsa@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-i2c@vger.kernel.org
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <MN2PR07MB6160AC152A97773F1428ED62C5969@MN2PR07MB6160.namprd07.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 6:20 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
->
-> From: Bibby Hsieh <bibby.hsieh@mediatek.com>
->
-> Although in the most platforms, the bus power of i2c
-> are alway on, some platforms disable the i2c bus power
-> in order to meet low power request.
->
-> We get and enable bulk regulator in i2c adapter device.
->
-> Signed-off-by: Bibby Hsieh <bibby.hsieh@mediatek.com>
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
-> This patch is squashed from following patch and tested on mt8183 device
-> which has eeprom at24 client under i2c, so the fix in [2] is also
-> verified.
-> [1] https://patchwork.ozlabs.org/project/linux-i2c/cover/20200519072729.7268-1-bibby.hsieh@mediatek.com/
-> [2] https://patchwork.ozlabs.org/project/linux-i2c/patch/20200522101327.13456-1-m.szyprowski@samsung.com/
-> ---
+Hi Swapnil,
 
-Sent again with document rebased in v16 here:
-https://patchwork.ozlabs.org/project/linux-i2c/cover/20210308043607.957156-1-hsinyi@chromium.org/
+On 06/03/21 1:17 am, Swapnil Kashinath Jakhade wrote:
+> Hi Kishon,
+> 
+>> -----Original Message-----
+>> From: Kishon Vijay Abraham I <kishon@ti.com>
+>> Sent: Thursday, March 4, 2021 10:11 AM
+>> To: Kishon Vijay Abraham I <kishon@ti.com>; Vinod Koul
+>> <vkoul@kernel.org>; Rob Herring <robh+dt@kernel.org>; Philipp Zabel
+>> <p.zabel@pengutronix.de>; Swapnil Kashinath Jakhade
+>> <sjakhade@cadence.com>
+>> Cc: linux-kernel@vger.kernel.org; devicetree@vger.kernel.org; Lokesh Vutla
+>> <lokeshvutla@ti.com>
+>> Subject: [PATCH v4 12/13] phy: cadence: phy-cadence-sierra: Model
+>> PLL_CMNLC and PLL_CMNLC1 as clocks (mux clocks)
+>>
+>> EXTERNAL MAIL
+>>
+>>
+>> Sierra has two PLLs, PLL_CMNLC and PLL_CMNLC1 and each of these PLLs has
+>> two inputs, plllc_refclk (input from pll0_refclk) and refrcv (input from
+>> pll1_refclk). Model PLL_CMNLC and PLL_CMNLC1 as clocks so that it's
+>> possible to select one of these two inputs from device tree.
+>>
+>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> ---
+>>  drivers/phy/cadence/Kconfig              |   1 +
+>>  drivers/phy/cadence/phy-cadence-sierra.c | 267 ++++++++++++++++++++++-
+>>  2 files changed, 265 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/phy/cadence/Kconfig b/drivers/phy/cadence/Kconfig
+>> index 432832bdbd16..23d5382c34ed 100644
+>> --- a/drivers/phy/cadence/Kconfig
+>> +++ b/drivers/phy/cadence/Kconfig
+>> @@ -24,6 +24,7 @@ config PHY_CADENCE_DPHY
+>>  config PHY_CADENCE_SIERRA
+>>  	tristate "Cadence Sierra PHY Driver"
+>>  	depends on OF && HAS_IOMEM && RESET_CONTROLLER
+>> +	depends on COMMON_CLK
+>>  	select GENERIC_PHY
+>>  	help
+>>  	  Enable this to support the Cadence Sierra PHY driver
+>> diff --git a/drivers/phy/cadence/phy-cadence-sierra.c
+>> b/drivers/phy/cadence/phy-cadence-sierra.c
+>> index ac32b7b0289f..be2c91be4205 100644
+>> --- a/drivers/phy/cadence/phy-cadence-sierra.c
+>> +++ b/drivers/phy/cadence/phy-cadence-sierra.c
+>> @@ -7,6 +7,7 @@
+>>   *
+>>   */
+>>  #include <linux/clk.h>
+>> +#include <linux/clk-provider.h>
+>>  #include <linux/delay.h>
+>>  #include <linux/err.h>
+>>  #include <linux/io.h>
+>> @@ -20,10 +21,12 @@
+>>  #include <linux/of.h>
+>>  #include <linux/of_platform.h>
+>>  #include <dt-bindings/phy/phy.h>
+>> +#include <dt-bindings/phy/phy-cadence.h>
+>>
+>>  /* PHY register offsets */
+>>  #define SIERRA_COMMON_CDB_OFFSET			0x0
+>>  #define SIERRA_MACRO_ID_REG				0x0
+>> +#define SIERRA_CMN_PLLLC_GEN_PREG			0x42
+>>  #define SIERRA_CMN_PLLLC_MODE_PREG			0x48
+>>  #define SIERRA_CMN_PLLLC_LF_COEFF_MODE1_PREG		0x49
+>>  #define SIERRA_CMN_PLLLC_LF_COEFF_MODE0_PREG		0x4A
+>> @@ -31,6 +34,9 @@
+>>  #define SIERRA_CMN_PLLLC_BWCAL_MODE1_PREG		0x4F
+>>  #define SIERRA_CMN_PLLLC_BWCAL_MODE0_PREG		0x50
+>>  #define SIERRA_CMN_PLLLC_SS_TIME_STEPSIZE_MODE_PREG	0x62
+>> +#define SIERRA_CMN_REFRCV_PREG				0x98
+>> +#define SIERRA_CMN_REFRCV1_PREG				0xB8
+>> +#define SIERRA_CMN_PLLLC1_GEN_PREG			0xC2
+>>
+>>  #define SIERRA_LANE_CDB_OFFSET(ln, block_offset, reg_offset)	\
+>>  				((0x4000 << (block_offset)) + \
+>> @@ -144,13 +150,19 @@
+>>  #define SIERRA_MAX_LANES				16
+>>  #define PLL_LOCK_TIME					100000
+>>
+>> -#define CDNS_SIERRA_INPUT_CLOCKS			3
+>> +#define CDNS_SIERRA_OUTPUT_CLOCKS			2
+>> +#define CDNS_SIERRA_INPUT_CLOCKS			5
+>>  enum cdns_sierra_clock_input {
+>>  	PHY_CLK,
+>>  	CMN_REFCLK_DIG_DIV,
+>>  	CMN_REFCLK1_DIG_DIV,
+>> +	PLL0_REFCLK,
+>> +	PLL1_REFCLK,
+>>  };
+>>
+>> +#define SIERRA_NUM_CMN_PLLC				2
+>> +#define SIERRA_NUM_CMN_PLLC_PARENTS			2
+>> +
+>>  static const struct reg_field macro_id_type =
+>>  				REG_FIELD(SIERRA_MACRO_ID_REG, 0, 15);
+>>  static const struct reg_field phy_pll_cfg_1 =
+>> @@ -158,6 +170,53 @@ static const struct reg_field phy_pll_cfg_1 =
+>>  static const struct reg_field pllctrl_lock =
+>>  				REG_FIELD(SIERRA_PLLCTRL_STATUS_PREG, 0,
+>> 0);
+>>
+>> +static const char * const clk_names[] = {
+>> +	[CDNS_SIERRA_PLL_CMNLC] = "pll_cmnlc",
+>> +	[CDNS_SIERRA_PLL_CMNLC1] = "pll_cmnlc1",
+>> +};
+>> +
+>> +enum cdns_sierra_cmn_plllc {
+>> +	CMN_PLLLC,
+>> +	CMN_PLLLC1,
+>> +};
+>> +
+>> +struct cdns_sierra_pll_mux_reg_fields {
+>> +	struct reg_field	pfdclk_sel_preg;
+>> +	struct reg_field	plllc1en_field;
+>> +	struct reg_field	termen_field;
+>> +};
+>> +
+>> +static const struct cdns_sierra_pll_mux_reg_fields
+>> cmn_plllc_pfdclk1_sel_preg[] = {
+>> +	[CMN_PLLLC] = {
+>> +		.pfdclk_sel_preg =
+>> REG_FIELD(SIERRA_CMN_PLLLC_GEN_PREG, 1, 1),
+>> +		.plllc1en_field = REG_FIELD(SIERRA_CMN_REFRCV1_PREG, 8,
+>> 8),
+>> +		.termen_field = REG_FIELD(SIERRA_CMN_REFRCV1_PREG, 0,
+>> 0),
+>> +	},
+>> +	[CMN_PLLLC1] = {
+>> +		.pfdclk_sel_preg =
+>> REG_FIELD(SIERRA_CMN_PLLLC1_GEN_PREG, 1, 1),
+>> +		.plllc1en_field = REG_FIELD(SIERRA_CMN_REFRCV_PREG, 8,
+>> 8),
+>> +		.termen_field = REG_FIELD(SIERRA_CMN_REFRCV_PREG, 0, 0),
+>> +	},
+>> +};
+>> +
+>> +struct cdns_sierra_pll_mux {
+>> +	struct clk_hw		hw;
+>> +	struct regmap_field	*pfdclk_sel_preg;
+>> +	struct regmap_field	*plllc1en_field;
+>> +	struct regmap_field	*termen_field;
+>> +	struct clk_init_data	clk_data;
+>> +};
+>> +
+>> +#define to_cdns_sierra_pll_mux(_hw)	\
+>> +			container_of(_hw, struct cdns_sierra_pll_mux, hw)
+>> +
+>> +static const int pll_mux_parent_index[][SIERRA_NUM_CMN_PLLC_PARENTS]
+>> = {
+>> +	[CMN_PLLLC] = { PLL0_REFCLK, PLL1_REFCLK },
+>> +	[CMN_PLLLC1] = { PLL1_REFCLK, PLL0_REFCLK },
+>> +};
+>> +
+>> +static u32 cdns_sierra_pll_mux_table[] = { 0, 1 };
+>> +
+>>  struct cdns_sierra_inst {
+>>  	struct phy *phy;
+>>  	u32 phy_type;
+>> @@ -204,10 +263,15 @@ struct cdns_sierra_phy {
+>>  	struct regmap_field *macro_id_type;
+>>  	struct regmap_field *phy_pll_cfg_1;
+>>  	struct regmap_field *pllctrl_lock[SIERRA_MAX_LANES];
+>> +	struct regmap_field
+>> *cmn_refrcv_refclk_plllc1en_preg[SIERRA_NUM_CMN_PLLC];
+>> +	struct regmap_field
+>> *cmn_refrcv_refclk_termen_preg[SIERRA_NUM_CMN_PLLC];
+>> +	struct regmap_field
+>> *cmn_plllc_pfdclk1_sel_preg[SIERRA_NUM_CMN_PLLC];
+>>  	struct clk *input_clks[CDNS_SIERRA_INPUT_CLOCKS];
+>>  	int nsubnodes;
+>>  	u32 num_lanes;
+>>  	bool autoconf;
+>> +	struct clk_onecell_data clk_data;
+>> +	struct clk *output_clks[CDNS_SIERRA_OUTPUT_CLOCKS];
+>>  };
+>>
+>>  static int cdns_regmap_write(void *context, unsigned int reg, unsigned int
+>> val)
+>> @@ -369,6 +433,153 @@ static const struct phy_ops ops = {
+>>  	.owner		= THIS_MODULE,
+>>  };
+>>
+>> +static u8 cdns_sierra_pll_mux_get_parent(struct clk_hw *hw)
+>> +{
+>> +	struct cdns_sierra_pll_mux *mux = to_cdns_sierra_pll_mux(hw);
+>> +	struct regmap_field *field = mux->pfdclk_sel_preg;
+>> +	unsigned int val;
+>> +
+>> +	regmap_field_read(field, &val);
+>> +	return clk_mux_val_to_index(hw, cdns_sierra_pll_mux_table, 0, val);
+>> +}
+>> +
+>> +static int cdns_sierra_pll_mux_set_parent(struct clk_hw *hw, u8 index)
+>> +{
+>> +	struct cdns_sierra_pll_mux *mux = to_cdns_sierra_pll_mux(hw);
+>> +	struct regmap_field *plllc1en_field = mux->plllc1en_field;
+>> +	struct regmap_field *termen_field = mux->termen_field;
+>> +	struct regmap_field *field = mux->pfdclk_sel_preg;
+>> +	int val, ret;
+>> +
+>> +	ret = regmap_field_write(plllc1en_field, 0);
+>> +	ret |= regmap_field_write(termen_field, 0);
+>> +	if (index == 1) {
+>> +		ret |= regmap_field_write(plllc1en_field, 1);
+>> +		ret |= regmap_field_write(termen_field, 1);
+>> +	}
+>> +
+>> +	val = cdns_sierra_pll_mux_table[index];
+>> +	ret |= regmap_field_write(field, val);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static const struct clk_ops cdns_sierra_pll_mux_ops = {
+>> +	.set_parent = cdns_sierra_pll_mux_set_parent,
+>> +	.get_parent = cdns_sierra_pll_mux_get_parent,
+>> +};
+>> +
+>> +static int cdns_sierra_pll_mux_register(struct cdns_sierra_phy *sp,
+>> +					struct regmap_field
+>> *pfdclk1_sel_field,
+>> +					struct regmap_field *plllc1en_field,
+>> +					struct regmap_field *termen_field,
+>> +					int clk_index)
+>> +{
+>> +	struct cdns_sierra_pll_mux *mux;
+>> +	struct device *dev = sp->dev;
+>> +	struct clk_init_data *init;
+>> +	const char **parent_names;
+>> +	unsigned int num_parents;
+>> +	char clk_name[100];
+>> +	struct clk *clk;
+>> +	int i;
+>> +
+>> +	mux = devm_kzalloc(dev, sizeof(*mux), GFP_KERNEL);
+>> +	if (!mux)
+>> +		return -ENOMEM;
+>> +
+>> +	num_parents = SIERRA_NUM_CMN_PLLC_PARENTS;
+>> +	parent_names = devm_kzalloc(dev, (sizeof(char *) * num_parents),
+>> GFP_KERNEL);
+>> +	if (!parent_names)
+>> +		return -ENOMEM;
+>> +
+>> +	for (i = 0; i < num_parents; i++) {
+>> +		clk = sp->input_clks[pll_mux_parent_index[clk_index][i]];
+>> +		if (IS_ERR_OR_NULL(clk)) {
+>> +			dev_err(dev, "No parent clock for derived_refclk\n");
+>> +			return PTR_ERR(clk);
+>> +		}
+>> +		parent_names[i] = __clk_get_name(clk);
+>> +	}
+>> +
+>> +	snprintf(clk_name, sizeof(clk_name), "%s_%s", dev_name(dev),
+>> clk_names[clk_index]);
+>> +
+>> +	init = &mux->clk_data;
+>> +
+>> +	init->ops = &cdns_sierra_pll_mux_ops;
+>> +	init->flags = CLK_SET_RATE_NO_REPARENT;
+>> +	init->parent_names = parent_names;
+>> +	init->num_parents = num_parents;
+>> +	init->name = clk_name;
+>> +
+>> +	mux->pfdclk_sel_preg = pfdclk1_sel_field;
+>> +	mux->plllc1en_field = plllc1en_field;
+>> +	mux->termen_field = termen_field;
+>> +	mux->hw.init = init;
+>> +
+>> +	clk = devm_clk_register(dev, &mux->hw);
+>> +	if (IS_ERR(clk))
+>> +		return PTR_ERR(clk);
+>> +
+>> +	sp->output_clks[clk_index] = clk;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int cdns_sierra_phy_register_pll_mux(struct cdns_sierra_phy *sp)
+>> +{
+>> +	struct regmap_field *pfdclk1_sel_field;
+>> +	struct regmap_field *plllc1en_field;
+>> +	struct regmap_field *termen_field;
+>> +	struct device *dev = sp->dev;
+>> +	int ret = 0, i, clk_index;
+>> +
+>> +	clk_index = CDNS_SIERRA_PLL_CMNLC;
+>> +	for (i = 0; i < SIERRA_NUM_CMN_PLLC; i++, clk_index++) {
+>> +		pfdclk1_sel_field = sp->cmn_plllc_pfdclk1_sel_preg[i];
+>> +		plllc1en_field = sp->cmn_refrcv_refclk_plllc1en_preg[i];
+>> +		termen_field = sp->cmn_refrcv_refclk_termen_preg[i];
+>> +
+>> +		ret = cdns_sierra_pll_mux_register(sp, pfdclk1_sel_field,
+>> plllc1en_field,
+>> +						   termen_field, clk_index);
+>> +		if (ret) {
+>> +			dev_err(dev, "Fail to register cmn plllc mux\n");
+>> +			return ret;
+>> +		}
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void cdns_sierra_clk_unregister(struct cdns_sierra_phy *sp)
+>> +{
+>> +	struct device *dev = sp->dev;
+>> +	struct device_node *node = dev->of_node;
+>> +
+>> +	of_clk_del_provider(node);
+>> +}
+>> +
+>> +static int cdns_sierra_clk_register(struct cdns_sierra_phy *sp)
+>> +{
+>> +	struct device *dev = sp->dev;
+>> +	struct device_node *node = dev->of_node;
+>> +	int ret;
+>> +
+>> +	ret = cdns_sierra_phy_register_pll_mux(sp);
+>> +	if (ret) {
+>> +		dev_err(dev, "Failed to pll mux clocks\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	sp->clk_data.clks = sp->output_clks;
+>> +	sp->clk_data.clk_num = CDNS_SIERRA_OUTPUT_CLOCKS;
+>> +	ret = of_clk_add_provider(node, of_clk_src_onecell_get, &sp-
+>>> clk_data);
+>> +	if (ret)
+>> +		dev_err(dev, "Failed to add clock provider: %s\n", node-
+>>> name);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>>  static int cdns_sierra_get_optional(struct cdns_sierra_inst *inst,
+>>  				    struct device_node *child)
+>>  {
+>> @@ -407,6 +618,7 @@ static int cdns_regfield_init(struct cdns_sierra_phy
+>> *sp)
+>>  {
+>>  	struct device *dev = sp->dev;
+>>  	struct regmap_field *field;
+>> +	struct reg_field reg_field;
+>>  	struct regmap *regmap;
+>>  	int i;
+>>
+>> @@ -418,6 +630,32 @@ static int cdns_regfield_init(struct cdns_sierra_phy
+>> *sp)
+>>  	}
+>>  	sp->macro_id_type = field;
+>>
+>> +	for (i = 0; i < SIERRA_NUM_CMN_PLLC; i++) {
+>> +		reg_field = cmn_plllc_pfdclk1_sel_preg[i].pfdclk_sel_preg;
+>> +		field = devm_regmap_field_alloc(dev, regmap, reg_field);
+>> +		if (IS_ERR(field)) {
+>> +			dev_err(dev, "PLLLC%d_PFDCLK1_SEL failed\n", i);
+>> +			return PTR_ERR(field);
+>> +		}
+>> +		sp->cmn_plllc_pfdclk1_sel_preg[i] = field;
+>> +
+>> +		reg_field = cmn_plllc_pfdclk1_sel_preg[i].plllc1en_field;
+>> +		field = devm_regmap_field_alloc(dev, regmap, reg_field);
+>> +		if (IS_ERR(field)) {
+>> +			dev_err(dev, "REFRCV%d_REFCLK_PLLLC1EN failed\n",
+>> i);
+>> +			return PTR_ERR(field);
+>> +		}
+>> +		sp->cmn_refrcv_refclk_plllc1en_preg[i] = field;
+>> +
+>> +		reg_field = cmn_plllc_pfdclk1_sel_preg[i].termen_field;
+>> +		field = devm_regmap_field_alloc(dev, regmap, reg_field);
+>> +		if (IS_ERR(field)) {
+>> +			dev_err(dev, "REFRCV%d_REFCLK_TERMEN failed\n",
+>> i);
+>> +			return PTR_ERR(field);
+>> +		}
+>> +		sp->cmn_refrcv_refclk_termen_preg[i] = field;
+>> +	}
+>> +
+>>  	regmap = sp->regmap_phy_config_ctrl;
+>>  	field = devm_regmap_field_alloc(dev, regmap, phy_pll_cfg_1);
+>>  	if (IS_ERR(field)) {
+>> @@ -511,6 +749,22 @@ static int cdns_sierra_phy_get_clocks(struct
+>> cdns_sierra_phy *sp,
+>>  	}
+>>  	sp->input_clks[CMN_REFCLK1_DIG_DIV] = clk;
+>>
+>> +	clk = devm_clk_get_optional(dev, "pll0_refclk");
+>> +	if (IS_ERR(clk)) {
+>> +		dev_err(dev, "pll0_refclk clock not found\n");
+>> +		ret = PTR_ERR(clk);
+>> +		return ret;
+>> +	}
+>> +	sp->input_clks[PLL0_REFCLK] = clk;
+>> +
+>> +	clk = devm_clk_get_optional(dev, "pll1_refclk");
+>> +	if (IS_ERR(clk)) {
+>> +		dev_err(dev, "pll1_refclk clock not found\n");
+>> +		ret = PTR_ERR(clk);
+>> +		return ret;
+>> +	}
+>> +	sp->input_clks[PLL1_REFCLK] = clk;
+>> +
+>>  	return 0;
+>>  }
+>>
+>> @@ -586,13 +840,17 @@ static int cdns_sierra_phy_probe(struct
+>> platform_device *pdev)
+>>  	if (ret)
+>>  		return ret;
+>>
+>> -	ret = cdns_sierra_phy_get_resets(sp, dev);
+>> +	ret = cdns_sierra_clk_register(sp);
+>>  	if (ret)
+>>  		return ret;
+>>
+>> +	ret = cdns_sierra_phy_get_resets(sp, dev);
+>> +	if (ret)
+>> +		goto unregister_clk;
+>> +
+>>  	ret = clk_prepare_enable(sp->input_clks[PHY_CLK]);
+>>  	if (ret)
+>> -		return ret;
+>> +		goto unregister_clk;
+>>
+>>  	/* Enable APB */
+>>  	reset_control_deassert(sp->apb_rst);
+>> @@ -669,6 +927,8 @@ static int cdns_sierra_phy_probe(struct
+>> platform_device *pdev)
+>>  clk_disable:
+>>  	clk_disable_unprepare(sp->input_clks[PHY_CLK]);
+>>  	reset_control_assert(sp->apb_rst);
+>> +unregister_clk:
+>> +	cdns_sierra_clk_register(sp);
+> 
+> Should be cdns_sierra_clk_unregister(sp) ?
+> 
+>>  	return ret;
+>>  }
+>>
+>> @@ -691,6 +951,7 @@ static int cdns_sierra_phy_remove(struct
+>> platform_device *pdev)
+>>  	}
+>>
+>>  	clk_disable_unprepare(phy->input_clks[PHY_CLK]);
+>> +	cdns_sierra_clk_unregister(phy);
 
->  drivers/i2c/i2c-core-base.c | 93 +++++++++++++++++++++++++++++++++++++
->  include/linux/i2c.h         |  2 +
->  2 files changed, 95 insertions(+)
->
-> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-> index 63ebf722a424..667f4a4de7cc 100644
-> --- a/drivers/i2c/i2c-core-base.c
-> +++ b/drivers/i2c/i2c-core-base.c
-> @@ -439,12 +439,14 @@ static int i2c_smbus_host_notify_to_irq(const struct i2c_client *client)
->  static int i2c_device_probe(struct device *dev)
->  {
->         struct i2c_client       *client = i2c_verify_client(dev);
-> +       struct i2c_adapter      *adap;
->         struct i2c_driver       *driver;
->         int status;
->
->         if (!client)
->                 return 0;
->
-> +       adap = client->adapter;
->         client->irq = client->init_irq;
->
->         if (!client->irq) {
-> @@ -510,6 +512,12 @@ static int i2c_device_probe(struct device *dev)
->
->         dev_dbg(dev, "probe\n");
->
-> +       status = regulator_enable(adap->bus_regulator);
-> +       if (status < 0) {
-> +               dev_err(&adap->dev, "Failed to enable power regulator\n");
-> +               goto err_clear_wakeup_irq;
-> +       }
-> +
->         status = of_clk_set_defaults(dev->of_node, false);
->         if (status < 0)
->                 goto err_clear_wakeup_irq;
-> @@ -550,8 +558,10 @@ static int i2c_device_probe(struct device *dev)
->  static int i2c_device_remove(struct device *dev)
->  {
->         struct i2c_client       *client = to_i2c_client(dev);
-> +       struct i2c_adapter      *adap;
->         struct i2c_driver       *driver;
->
-> +       adap = client->adapter;
->         driver = to_i2c_driver(dev->driver);
->         if (driver->remove) {
->                 int status;
-> @@ -564,6 +574,8 @@ static int i2c_device_remove(struct device *dev)
->         }
->
->         dev_pm_domain_detach(&client->dev, true);
-> +       if (!pm_runtime_status_suspended(&client->dev))
-> +               regulator_disable(adap->bus_regulator);
->
->         dev_pm_clear_wake_irq(&client->dev);
->         device_init_wakeup(&client->dev, false);
-> @@ -576,6 +588,80 @@ static int i2c_device_remove(struct device *dev)
->         return 0;
->  }
->
-> +#ifdef CONFIG_PM_SLEEP
-> +static int i2c_resume_early(struct device *dev)
-> +{
-> +       struct i2c_client *client = i2c_verify_client(dev);
-> +       int err;
-> +
-> +       if (!client)
-> +               return 0;
-> +
-> +       if (!pm_runtime_status_suspended(&client->dev)) {
-> +               err = regulator_enable(client->adapter->bus_regulator);
-> +               if (err)
-> +                       return err;
-> +       }
-> +
-> +       return pm_generic_resume_early(&client->dev);
-> +}
-> +
-> +static int i2c_suspend_late(struct device *dev)
-> +{
-> +       struct i2c_client *client = i2c_verify_client(dev);
-> +       int err;
-> +
-> +       if (!client)
-> +               return 0;
-> +
-> +       err = pm_generic_suspend_late(&client->dev);
-> +       if (err)
-> +               return err;
-> +
-> +       if (!pm_runtime_status_suspended(&client->dev))
-> +               return regulator_disable(client->adapter->bus_regulator);
-> +
-> +       return 0;
-> +}
-> +#endif
-> +
-> +#ifdef CONFIG_PM
-> +static int i2c_runtime_resume(struct device *dev)
-> +{
-> +       struct i2c_client *client = i2c_verify_client(dev);
-> +       int err;
-> +
-> +       if (!client)
-> +               return 0;
-> +
-> +       err = regulator_enable(client->adapter->bus_regulator);
-> +       if (err)
-> +               return err;
-> +
-> +       return pm_generic_runtime_resume(&client->dev);
-> +}
-> +
-> +static int i2c_runtime_suspend(struct device *dev)
-> +{
-> +       struct i2c_client *client = i2c_verify_client(dev);
-> +       int err;
-> +
-> +       if (!client)
-> +               return 0;
-> +
-> +       err = pm_generic_runtime_suspend(&client->dev);
-> +       if (err)
-> +               return err;
-> +
-> +       return regulator_disable(client->adapter->bus_regulator);
-> +}
-> +#endif
-> +
-> +static const struct dev_pm_ops i2c_device_pm = {
-> +       SET_LATE_SYSTEM_SLEEP_PM_OPS(i2c_suspend_late, i2c_resume_early)
-> +       SET_RUNTIME_PM_OPS(i2c_runtime_suspend, i2c_runtime_resume, NULL)
-> +};
-> +
->  static void i2c_device_shutdown(struct device *dev)
->  {
->         struct i2c_client *client = i2c_verify_client(dev);
-> @@ -633,6 +719,7 @@ struct bus_type i2c_bus_type = {
->         .probe          = i2c_device_probe,
->         .remove         = i2c_device_remove,
->         .shutdown       = i2c_device_shutdown,
-> +       .pm             = &i2c_device_pm,
->  };
->  EXPORT_SYMBOL_GPL(i2c_bus_type);
->
-> @@ -1446,6 +1533,12 @@ static int i2c_register_adapter(struct i2c_adapter *adap)
->         if (res)
->                 goto out_reg;
->
-> +       adap->bus_regulator = devm_regulator_get(&adap->dev, "bus");
-> +       if (IS_ERR(adap->bus_regulator)) {
-> +               res = PTR_ERR(adap->bus_regulator);
-> +               goto out_reg;
-> +       }
-> +
->         pm_runtime_no_callbacks(&adap->dev);
->         pm_suspend_ignore_children(&adap->dev, true);
->         pm_runtime_enable(&adap->dev);
-> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-> index 56622658b215..ec87758d9f40 100644
-> --- a/include/linux/i2c.h
-> +++ b/include/linux/i2c.h
-> @@ -15,6 +15,7 @@
->  #include <linux/device.h>      /* for struct device */
->  #include <linux/sched.h>       /* for completion */
->  #include <linux/mutex.h>
-> +#include <linux/regulator/consumer.h>
->  #include <linux/rtmutex.h>
->  #include <linux/irqdomain.h>           /* for Host Notify IRQ */
->  #include <linux/of.h>          /* for struct device_node */
-> @@ -721,6 +722,7 @@ struct i2c_adapter {
->         const struct i2c_adapter_quirks *quirks;
->
->         struct irq_domain *host_notify_domain;
-> +       struct regulator *bus_regulator;
->  };
->  #define to_i2c_adapter(d) container_of(d, struct i2c_adapter, dev)
->
-> --
-> 2.30.1.766.gb4fecdf3b7-goog
->
+Thank you for reviewing and spotting this. Will both the patches and resend.
+
+Thanks
+Kishon
+
+>>
+>>  	return 0;
+>>  }
+>> --
+>> 2.17.1
+> 
+> Thanks & regards,
+> Swapnil
+> 
