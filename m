@@ -2,74 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551A133080C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 07:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EDD833081A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 07:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbhCHG0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 01:26:18 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:53500 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234855AbhCHG0R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 01:26:17 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1286Q9SR106009;
-        Mon, 8 Mar 2021 00:26:09 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615184769;
-        bh=lZ7Y2XiNHDB3FL0GES4LA9h6PYit7d/C34EZjsEKeu4=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=c3zkEl97P40E8Kb4CUCGDtAk1PfhP4aFIG1jheEPSV5E9DBqTOvbs24eKugyxHAFt
-         MGp68oiVWsto/BjO+B+McT0SMz+tOE6fEbsKemUNRpY6zvAgC/5NZ/Z1E07lzqM1+k
-         Psb59hyMU1kAvxryMcC53Vw/wsA7CcZHSzyVUlVg=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1286Q8uc031423
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 8 Mar 2021 00:26:09 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 8 Mar
- 2021 00:26:08 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 8 Mar 2021 00:26:08 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1286Q71D024277;
-        Mon, 8 Mar 2021 00:26:08 -0600
-Date:   Mon, 8 Mar 2021 11:56:07 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-CC:     <vigneshr@ti.com>, <michael@walle.cc>,
-        <linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/5] mtd: spi-nor: Get rid of duplicated argument in
- spi_nor_parse_sfdp()
-Message-ID: <20210308062605.tz5d22dyxrrd4hwe@ti.com>
-References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
- <20210306095002.22983-4-tudor.ambarus@microchip.com>
+        id S234884AbhCHG20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 01:28:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39922 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234855AbhCHG2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 01:28:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 999ABAC0C;
+        Mon,  8 Mar 2021 06:28:20 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     masahiroy@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH] kbuild: dummy-tools, support MPROFILE_KERNEL checks for ppc
+Date:   Mon,  8 Mar 2021 07:28:20 +0100
+Message-Id: <20210308062820.6166-1-jslaby@suse.cz>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210306095002.22983-4-tudor.ambarus@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/03/21 11:50AM, Tudor Ambarus wrote:
-> spi_nor_parse_sfdp(nor, nor->params);
-> passes for the second argument a member within the first argument.
-> Drop the second argument and obtain it directly from the first,
-> and do it across all the children functions. This is a follow up for
-> 'commit 69a8eed58cc0 ("mtd: spi-nor: Don't copy self-pointing struct around")'
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+ppc64le checks for -mprofile-kernel to define MPROFILE_KERNEL Kconfig.
+Kconfig calls arch/powerpc/tools/gcc-check-mprofile-kernel.sh for that
+purpose. This script performs two checks:
+1) build with -mprofile-kernel should contain "_mcount"
+2) build with -mprofile-kernel with a function marked as "notrace"
+   should not produce "_mcount"
 
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+So support this in dummy-tools' gcc, so that we have MPROFILE_KERNEL
+always true.
 
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+---
+ scripts/dummy-tools/gcc | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/scripts/dummy-tools/gcc b/scripts/dummy-tools/gcc
+index 0d0589cf8184..7b10332b23ba 100755
+--- a/scripts/dummy-tools/gcc
++++ b/scripts/dummy-tools/gcc
+@@ -73,6 +73,15 @@ if arg_contain -S "$@"; then
+ 		echo "%gs"
+ 		exit 0
+ 	fi
++
++	# For arch/powerpc/tools/gcc-check-mprofile-kernel.sh
++	if arg_contain -m64 "$@" && arg_contain -mlittle-endian "$@" &&
++		arg_contain -mprofile-kernel "$@"; then
++		if ! test -t 0 && ! grep -q notrace; then
++			echo "_mcount"
++		fi
++		exit 0
++	fi
+ fi
+ 
+ # To set GCC_PLUGINS
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.30.1
+
