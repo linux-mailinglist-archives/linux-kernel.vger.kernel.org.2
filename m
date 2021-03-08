@@ -2,96 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D124533153B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D5033153F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Mar 2021 18:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbhCHRu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 12:50:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbhCHRuY (ORCPT
+        id S230173AbhCHRwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 12:52:01 -0500
+Received: from mail-io1-f49.google.com ([209.85.166.49]:44755 "EHLO
+        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230426AbhCHRvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 12:50:24 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B649C06174A;
-        Mon,  8 Mar 2021 09:50:24 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id q2-20020a17090a2e02b02900bee668844dso3410447pjd.3;
-        Mon, 08 Mar 2021 09:50:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WMI+KHTQp19/r//M2Ueg/Jb2+3OgCqb3zGUj3z9PlHQ=;
-        b=C7RtR6GoK9SCsJc08yYZdf/JPieftDc3udKr4bZ3ETFzxsIOvPpoQcNOpqHxgshLwY
-         Of0TnBssOGdQT1cQEUKQddw9RazzbA+gEv3Jvr0bX/QVQGp8Re5f7vUKuUK+VTicM5fB
-         0g6WOt78njq0x3q7GvV0kS9o8GT1MoDIrW2JdgwingPdB6OxfkEMET+3TgUf2ZJ+bOta
-         U5hYWe/CMzd78jmAzVU9SsEmz+AE4v5sdSwb7JRkwH7nzRg5QMBe82h74+9GCz1ksOlD
-         iZhd+UpS7RQCmnRBuMgsHA9F6Z6Fqcr8WxuXl1e9uIIc6wrnH0OaGmKzWLZzOMRhtfi1
-         dQcA==
+        Mon, 8 Mar 2021 12:51:47 -0500
+Received: by mail-io1-f49.google.com with SMTP id 81so10842952iou.11;
+        Mon, 08 Mar 2021 09:51:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WMI+KHTQp19/r//M2Ueg/Jb2+3OgCqb3zGUj3z9PlHQ=;
-        b=aAyws7tLtFF2zd5tKMrtE+CIl1Yxg+BwcFoAR7qW8gr4p0wM9vIT9wXcimh9zRXlBN
-         37iIjmHdM/onGXIyolg4r54mRUSmikHuhgiM89xiUNwYTrtVkwWR359RPP0R+Lv5vIns
-         7lYmFzKJnlPc9cTLEiOR12r46Yd9nXim53pD0a+YC6+Gor2/MDiO438Xb66ol5GfeEsf
-         fpY7t7czvFtHAbQ2lyAfOCGV1rEC0TVXCetri2VnP/tfRuuin+wTkZvnT9M9KDbi9kh6
-         xIdg8GKViK3LNoCcCxykKGNOmDBLg+RQXxKfeRNHaA8mpl/o/Q9Qad4qvsWW6Pr7tQ9K
-         N2AQ==
-X-Gm-Message-State: AOAM532bvXfUx+Ppg8NgVtw62/c/icH52Rhpfa8baGIgHuNZBJDvq0Xq
-        rE1YDqPaPq09r8NJHAevPX1FTsgT1Z4=
-X-Google-Smtp-Source: ABdhPJzxSJEFevsbFynH+jVrY0IF9RxAR1wZB+DcqEB71BspnEsF9tNKomy6QGHctQ8AAqiFJa9JUQ==
-X-Received: by 2002:a17:90a:400f:: with SMTP id u15mr25609pjc.80.1615225823699;
-        Mon, 08 Mar 2021 09:50:23 -0800 (PST)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id u4sm10306702pgj.29.2021.03.08.09.50.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 09:50:23 -0800 (PST)
-Subject: Re: [PATCH 5.10 00/42] 5.10.22-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210308122718.120213856@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <de221206-ab2d-5375-8d50-b6b9b4063287@gmail.com>
-Date:   Mon, 8 Mar 2021 09:50:21 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1FOD5D9xxHDNgtK+29L+sX5QWs/XhQ0EtS1cLbdgvrI=;
+        b=Ti/4sybBaHp1Zz4KXIaPdZaiHuKNbD1fkcNe4oyt4RHhw4GquwnBIlU9m1EDebIDss
+         2RejP7vCnaZyLzHvJ9oqz2OJnmj+qpKQFe8vR8+xBTgXnodZboDcIImw2TzeUuO6fgzu
+         U/3q2SShw/902ts6u4MXX4+zP8yCsJzQqw63NsNSfTIyInpuhRXK6jidvniofEhjhzpe
+         7rznCsQKHJFz3rjb4YU6TAYMwygS+H4jNAQ5qP72AUCMGN1cPpwA2K2c/WYGoPqbqsrm
+         WY6rCs/dX7fm+G+7trVYNq/tdF3HYXVtcfIQV77roMXaeHEcgCWZ7GfuhgHtxgjk+eDW
+         8tug==
+X-Gm-Message-State: AOAM533lYDIwbvfIz98mISlXAR6jwxUUp+D/vXdJsg29T5HcKzvc8kwA
+        BteY1R076pz+eooylWwBXA==
+X-Google-Smtp-Source: ABdhPJwUJytuS0RCGx4Q+0ue0LiQ/tA6r+XTeDw7X5gZsXBu+RQ+dGxrAGpT7mhTjck9tKkYZNtgMg==
+X-Received: by 2002:a5d:9693:: with SMTP id m19mr18429388ion.46.1615225906920;
+        Mon, 08 Mar 2021 09:51:46 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id a5sm6523670ilh.23.2021.03.08.09.51.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 09:51:46 -0800 (PST)
+Received: (nullmailer pid 2698859 invoked by uid 1000);
+        Mon, 08 Mar 2021 17:51:43 -0000
+Date:   Mon, 8 Mar 2021 10:51:43 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Peter Rosin <peda@axentia.se>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v2 2/9] dt-bindings: phy: cadence-torrent: Add binding
+ for refclk driver
+Message-ID: <20210308175143.GA2698807@robh.at.kernel.org>
+References: <20210222112314.10772-1-kishon@ti.com>
+ <20210222112314.10772-3-kishon@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20210308122718.120213856@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210222112314.10772-3-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/8/21 4:30 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.22 release.
-> There are 42 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, 22 Feb 2021 16:53:07 +0530, Kishon Vijay Abraham I wrote:
+> Add binding for refclk driver used to route the refclk out of torrent
+> SERDES.
 > 
-> Responses should be made by Wed, 10 Mar 2021 12:27:05 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  .../bindings/phy/phy-cadence-torrent.yaml     | 20 ++++++++++++++++---
+>  include/dt-bindings/phy/phy-cadence-torrent.h |  2 ++
+>  2 files changed, 19 insertions(+), 3 deletions(-)
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.22-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
-
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Reviewed-by: Rob Herring <robh@kernel.org>
