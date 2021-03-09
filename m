@@ -2,120 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB9833297E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 321F8332983
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbhCIPBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:01:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
+        id S231773AbhCIPBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:01:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbhCIPAk (ORCPT
+        with ESMTP id S230504AbhCIPAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:00:40 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5761DC06174A;
-        Tue,  9 Mar 2021 07:00:40 -0800 (PST)
-Date:   Tue, 9 Mar 2021 16:00:36 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615302037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=haCuMwx8FBtsuLInyU0TMFS1G8sa0cBWrU6Q5la2tOA=;
-        b=vH0moShtrJeVtgZbD1r78tLDx6XyHNucm18W4J8xUPHPmOCt+SaGkcqKZylD1Qa5mH12bh
-        A2+mOteZI/nNJsKT9iKJgpJ+aVtKE4tBYkQh5vJpdwdOFoiUE+UJzLs7NJgbXGRKavYn/N
-        u2ss3f1E4gTQiTD7bk9wixljV0fV/2I1hOjh9r1OgCgT/hPzvnbP0fusQY4P7UJl9s1I8B
-        4YAGxejRc6417ftT5uJHJt6DLO6/1El7SxvgnKwfB3G7RlqGqqIwbuQTcKLw2R/GXvi5eL
-        i9WMaaRTrNt1brpUNBx6gw/ITgR/5P7H6v3aOt/pY6etzq1u4bfg6TnivVfjNA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615302037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=haCuMwx8FBtsuLInyU0TMFS1G8sa0cBWrU6Q5la2tOA=;
-        b=M+xMQLgZ+XsqwI3AcUt4aNUAkVhpNvp/fR0QYs1Y07eFdMeH0URMLccm8FWUT+O3EnE0N2
-        Yn88FQVAn7gnR4CQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Denis Kirjanov <kda@linux-powerpc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        ath9k-devel@qca.qualcomm.com, Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org, Chas Williams <3chas3@gmail.com>,
-        linux-atm-general@lists.sourceforge.net,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net
-Subject: Re: [patch 07/14] tasklets: Prevent tasklet_unlock_spin_wait()
- deadlock on RT
-Message-ID: <20210309150036.5rcecmmz2wbu4ypc@linutronix.de>
-References: <20210309084203.995862150@linutronix.de>
- <20210309084241.988908275@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210309084241.988908275@linutronix.de>
+        Tue, 9 Mar 2021 10:00:55 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AC9C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 07:00:55 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id n9so7979497pgi.7
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 07:00:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=UVX6yhkhZJaYTUj2gA+yCgge5D0I9vFDtLFEQfPvprw=;
+        b=EpfhMd+1+TAKUuxk9q5BVgmdp21lkwE833OTzKkFUW41fP551wb8w7Ys5KPeDqDjrt
+         tRMWpLmBd/u7HRX312J48xHBkRv4Q7wRO5eheWh+UKBL1oOsIzYTiPPTNBzHJZ332Mmq
+         sfgOpjWi31XPXuRyKckH/1eo0R367ckBEP1BRRQKL44ePNk9oMHo3bKst+wV98luibnj
+         zON6p40jSUT459A0YxxO2tvWpdKLgaj/GauQFRqN0w9JzPFGMYZIE3S0e7uuqWJVA6pd
+         KWVjQLuYIBLBXi9Zk71rvXaqOOGhKZHyFIGGJ4uF5dzNZ1Nkprg1+OmaPe4KpmAv22yv
+         aTaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=UVX6yhkhZJaYTUj2gA+yCgge5D0I9vFDtLFEQfPvprw=;
+        b=iYDFI+DgtRAHi7uo9n+kW+6DYpR1r+5NryJAnlry9C0mh3plTd9XvJfEjwnUJis7OD
+         oZaUFuPNY6fuUtiEJLmLLGh3KvVXbfHU3aabfrH4H3A/xG2Z2bIALYoKzUl5VFmGAZIq
+         i0mpOCze4kADgbaoBaobLAzNvcaxmUlWn2PKUCcQXkSFSFwYBmOqt1KVZMq1n9wm98Xz
+         89C5j7Jn/6phW5GsPsgESSHy25C2+AafYs+i7leD3HOBATsSVohrPVjLJx9KqKYb+yL/
+         nRwWmXl0rckF6vjKe04FYBR4l5x1WbXAH1Z1GFVxRBYCiTBEdFeWChYb+kApsI+2Gmw0
+         fvcA==
+X-Gm-Message-State: AOAM532Z+5NS6mn+DraVYsLUm01FqyGV2CuC2daj13Y5vojC2cX1ThfC
+        F4BxEsRcOS4YQjjfjUkS5Vc=
+X-Google-Smtp-Source: ABdhPJw+aeKbyDxj4LBUB98GD/ciTuULhhK2slQ5Pfd0hduriTNlCrnjwNVSfbrZphEcW3atgs+SQQ==
+X-Received: by 2002:a62:602:0:b029:1ed:d3fb:7edb with SMTP id 2-20020a6206020000b02901edd3fb7edbmr26242650pfg.22.1615302054756;
+        Tue, 09 Mar 2021 07:00:54 -0800 (PST)
+Received: from localhost.localdomain ([116.73.168.170])
+        by smtp.gmail.com with ESMTPSA id m21sm12774536pff.61.2021.03.09.07.00.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 07:00:54 -0800 (PST)
+From:   Selvakumar Elangovan <selvakumar16197@gmail.com>
+To:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        florian.c.schilhabel@googlemail.com
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] staging: rtl8712: fixed whitespace coding style issue
+Date:   Tue,  9 Mar 2021 20:30:37 +0530
+Message-Id: <20210309150037.17883-1-selvakumar16197@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-09 09:42:10 [+0100], Thomas Gleixner wrote:
-> tasklet_unlock_spin_wait() spin waits for the TASKLET_STATE_SCHED bit in
-> the tasklet state to be cleared. This works on !RT nicely because the
-=E2=80=A6
+Removed additional whitespaces in the rtl8712_xmit.h file.
 
-Could you please fold this:
+Signed-off-by: Selvakumar Elangovan <selvakumar16197@gmail.com>
+---
+Changes in v3:
+ - Done one logical changes instead of two different changes in the same
+   patch.
 
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 07c7329d21aa7..1c14ccd351091 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -663,15 +663,6 @@ static inline int tasklet_trylock(struct tasklet_struc=
-t *t)
- void tasklet_unlock(struct tasklet_struct *t);
- void tasklet_unlock_wait(struct tasklet_struct *t);
-=20
--/*
-- * Do not use in new code. Waiting for tasklets from atomic contexts is
-- * error prone and should be avoided.
-- */
--static inline void tasklet_unlock_spin_wait(struct tasklet_struct *t)
--{
--	while (test_bit(TASKLET_STATE_RUN, &t->state))
--		cpu_relax();
--}
- #else
- static inline int tasklet_trylock(struct tasklet_struct *t) { return 1; }
- static inline void tasklet_unlock(struct tasklet_struct *t) { }
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index f0074f1344402..c9adc5c462485 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -830,8 +830,8 @@ EXPORT_SYMBOL(tasklet_init);
-=20
- #if defined(CONFIG_SMP) || defined(CONFIG_PREEMPT_RT)
+ drivers/staging/rtl8712/rtl8712_xmit.h | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/staging/rtl8712/rtl8712_xmit.h b/drivers/staging/rtl8712/rtl8712_xmit.h
+index 0b56bd3ac4d0..e4c0a4bf8388 100644
+--- a/drivers/staging/rtl8712/rtl8712_xmit.h
++++ b/drivers/staging/rtl8712/rtl8712_xmit.h
+@@ -36,10 +36,8 @@
+ #define MAX_AMSDU_XMITBUF_SZ 8704
+ #define MAX_TXAGG_XMITBUF_SZ 16384 /*16k*/
+ 
+-
+ #define tx_cmd tx_desc
+ 
+-
  /*
-- * Do not use in new code. There is no real reason to invoke this from
-- * atomic contexts.
-+ * Do not use in new code. Waiting for tasklets from atomic contexts is
-+ * error prone and should be avoided.
+  *defined for TX DESC Operation
   */
- void tasklet_unlock_spin_wait(struct tasklet_struct *t)
- {
---=20
-2.30.1
+@@ -89,7 +87,6 @@ struct tx_desc {
+ 	__le32 txdw7;
+ };
+ 
+-
+ union txdesc {
+ 	struct tx_desc txdesc;
+ 	unsigned int value[TXDESC_SIZE>>2];
+-- 
+2.17.1
 
