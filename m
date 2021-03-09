@@ -2,135 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD293331F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 00:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 654C13331F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 00:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231904AbhCIXjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 18:39:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbhCIXjX (ORCPT
+        id S232183AbhCIXkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 18:40:36 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:54260 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232185AbhCIXka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 18:39:23 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECA9C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 15:39:23 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id k2so15929910ioh.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 15:39:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NaIHW2oIK0pVkcFX+WgzEga219yv3WvbZC+V/hdymdU=;
-        b=qjOxHI9jaX99CYH8Hnhj91miA4ntOyiYEjniIy7wIaWN0NDo02iAlWPSfzNWFjjRSK
-         axp6HHe8EyicXvK7K8BFyq3MyguoKqQFDP32+WTjy3ZJxsKrtS7FUTEqRtB9f6sNRxee
-         VOQKFJPK/7qvQsewzparTawy4QcyekkVGXriE7KEA0Q9So75o0t74zIJIQuqYZrR/C/9
-         LoE52ZtDXwjADbGAu6kd/c1SU9DgMrv84TK3b2xMQitNsPTzGi2CW1zaRchZGyxce89N
-         QFD1cgBy4Kw/URU0kE1fl0nJazMk+DSlNHCIPnzHRzGuKnRb2z5Rnwqb7Xg3amX9TKOx
-         egTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NaIHW2oIK0pVkcFX+WgzEga219yv3WvbZC+V/hdymdU=;
-        b=LiFtesrcr4IkB5JjoMaf8updkZhAxqdxKuhgZS7scogf6o6/JqA9Rq4r2NErOepS5Q
-         P1NcKz2UG41SyQeWjN/Ho8x30us9RiwlWKIYumE4Xl18m4bI2zcjKhAXiJ3GIQpEB0nj
-         +QWrMAirhF2b4lwz3xLz/K4e3gpFbs42zMgCvsvZqJiK2+cQKW7H8g0F7CJAMFt2XSSx
-         sSyzfUmHP5aRsvOTl8xVGeGGNiDPuZHQgJ0C++8wbE50YFFOTaHWFd/FiIjPXqz23R7b
-         KfhqIz1UBXgGpQIppXbx+73Yh+jdvFIZfQJmFZlogZLswQX6gCGDXitNLucgaXvag4cx
-         nWuw==
-X-Gm-Message-State: AOAM531Ag5lGCp22vwcbz1rUw38GrWEwFV/MIUE3WvkXk0fXKdZeCJy4
-        XGU9+FsUbYMiJ3K1vbiuTnX3yiK+Q7Ys0Q==
-X-Google-Smtp-Source: ABdhPJxZz6FXADhzp4Qm9Mq/rVhZIInWIo0Pi9yvEk4bHLQTeMuo+SC2E/X5AlbvTteZlf4BKHkTcQ==
-X-Received: by 2002:a5e:841a:: with SMTP id h26mr430732ioj.179.1615333162353;
-        Tue, 09 Mar 2021 15:39:22 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id r3sm8438815ilq.42.2021.03.09.15.39.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 15:39:21 -0800 (PST)
-Subject: Re: [PATCH net-next v3 0/6] net: qualcomm: rmnet: stop using C
- bit-fields
-From:   Alex Elder <elder@linaro.org>
-To:     subashab@codeaurora.org, stranche@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     sharathv@codeaurora.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        David.Laight@ACULAB.COM, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210309124848.238327-1-elder@linaro.org>
-Message-ID: <bb7608cc-4a83-0e1d-0124-656246ec4a1f@linaro.org>
-Date:   Tue, 9 Mar 2021 17:39:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 9 Mar 2021 18:40:30 -0500
+Received: from fsav303.sakura.ne.jp (fsav303.sakura.ne.jp [153.120.85.134])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 129NeNJT023059;
+        Wed, 10 Mar 2021 08:40:23 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav303.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav303.sakura.ne.jp);
+ Wed, 10 Mar 2021 08:40:23 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav303.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 129NeNEE023056
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 10 Mar 2021 08:40:23 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 4/6] usbip: fix stub_dev usbip_sockfd_store() races
+ leading to gpf
+To:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org,
+        valentina.manea.m@gmail.com, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1615171203.git.skhan@linuxfoundation.org>
+ <268a0668144d5ff36ec7d87fdfa90faf583b7ccc.1615171203.git.skhan@linuxfoundation.org>
+ <05aed75a-4a81-ef59-fc4f-6007f18e7839@i-love.sakura.ne.jp>
+ <5df3d221-9e78-4cbe-826b-81cbfc4d5888@i-love.sakura.ne.jp>
+ <3305d1a1-12e2-087b-30f5-10f4bf8eaf83@linuxfoundation.org>
+ <f8f5e763-da2d-b26f-c6a5-d345bbe55448@i-love.sakura.ne.jp>
+ <30a1afb2-d5a4-40b2-385d-24a2bf110e92@linuxfoundation.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <7b9465aa-213e-a513-d033-12c048df15d6@i-love.sakura.ne.jp>
+Date:   Wed, 10 Mar 2021 08:40:20 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210309124848.238327-1-elder@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <30a1afb2-d5a4-40b2-385d-24a2bf110e92@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 6:48 AM, Alex Elder wrote:
-> Version 3 of this series uses BIT() rather than GENMASK() to define
-> single-bit masks.  It then uses a simple AND (&) operation rather
-> than (e.g.) u8_get_bits() to access such flags.  This was suggested
-> by David Laight and really prefer the result.  With Bjorn's
-> permission I have preserved his Reviewed-by tags on the first five
-> patches.
-
-Nice as all this looks, it doesn't *work*.  I did some very basic
-testing before sending out version 3, but not enough.  (More on
-the problem, below).
-
-		--> I retract this series <--
-
-I will send out an update (version 4).  But I won't be doing it
-for a few more days.
-
-The problem is that the BIT() flags are defined in host byte
-order.  But the values they're compared against are not always
-(or perhaps, never) in host byte order.
-
-I regret the error, and will do a complete set of testing on
-version 4 before sending it out for review.
-
-					-Alex
-
-> Version 2 fixed bugs in the way the value written into the header
-> was computed.
+On 2021/03/10 4:50, Shuah Khan wrote:
+> On 3/9/21 4:04 AM, Tetsuo Handa wrote:
+>> On 2021/03/09 1:27, Shuah Khan wrote:
+>>> Yes. We might need synchronization between events, threads, and shutdown
+>>> in usbip_host side and in connection polling and threads in vhci.
+>>>
+>>> I am also looking at the shutdown sequences closely as well since the
+>>> local state is referenced without usbip_device lock in these paths.
+>>>
+>>> I am approaching these problems as peeling the onion an expression so
+>>> we can limit the changes and take a spot fix approach. We have the
+>>> goal to address these crashes and not introduce regressions.
+>>
+>> I think my [PATCH v4 01/12]-[PATCH v4 06/12] simplify your further changes
+>> without introducing regressions. While ud->lock is held when checking ud->status,
+>> current attach/detach code is racy about read/update of ud->status . I think we
+>> can close race in attach/detach code via a simple usbip_event_mutex serialization.
+>>
 > 
-> The series was first posted here:
->    https://lore.kernel.org/netdev/20210304223431.15045-1-elder@linaro.org/
-> Below is a summary of the original description.
-> 
-> This series converts data structures defined in <linux/if_rmnet.h>
-> so they use integral field values with bitfield masks rather than
-> relying on C bit-fields.
->    - The first three patches lay the ground work for the others.
->        - The first adds endianness notation to a structure.
->        - The second simplifies a bit of complicated code.
->        - The third open-codes some macros that needlessly
->          obscured some simple code.
->    - Each of the last three patches converts one of the structures
->      defined in <linux/if_rmnet.h> so it no longer uses C bit-fields.
-> 
->      					-Alex
-> 
-> Alex Elder (6):
->    net: qualcomm: rmnet: mark trailer field endianness
->    net: qualcomm: rmnet: simplify some byte order logic
->    net: qualcomm: rmnet: kill RMNET_MAP_GET_*() accessor macros
->    net: qualcomm: rmnet: use field masks instead of C bit-fields
->    net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum trailer
->    net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum header
-> 
->   .../ethernet/qualcomm/rmnet/rmnet_handlers.c  | 11 ++--
->   .../net/ethernet/qualcomm/rmnet/rmnet_map.h   | 12 ----
->   .../qualcomm/rmnet/rmnet_map_command.c        | 11 +++-
->   .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 60 ++++++++---------
->   include/linux/if_rmnet.h                      | 65 +++++++++----------
->   5 files changed, 70 insertions(+), 89 deletions(-)
-> 
+> Do you mean patches 1,2,3,3,4,5,6?
 
+Yes, my 1,2,3,4,5,6.
+
+Since you think that usbip_prepare_threads() does not worth introducing, I'm fine with
+replacing my 7,8,9,10,11,12 with your "[PATCH 0/6] usbip fixes to crashes found by syzbot".
