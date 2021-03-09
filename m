@@ -2,126 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89426332DFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3581332DFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhCISOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 13:14:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51238 "EHLO
+        id S232055AbhCISPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 13:15:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231783AbhCISOl (ORCPT
+        with ESMTP id S231783AbhCISO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 13:14:41 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C04C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 10:14:41 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id w11so17564081wrr.10
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 10:14:41 -0800 (PST)
+        Tue, 9 Mar 2021 13:14:57 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8C0C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 10:14:57 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id f3so15923999oiw.13
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 10:14:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=9qv4MCbyas1K94lwFyXxe0kQNVU1v80OT8W+RonhDAw=;
-        b=TjeKGhz+InFKDHxcuDqJmg7DdaHy6FbTCPuUWuBbK0FOEgdoGff3DxsKvwZwCpzUuI
-         0yOU+JLT7/9U/s1pfwH9OVO9dwAjEOckMVliBTQ11l65tilCAo9Y/v6qTEswRVT5Kqob
-         T+GSBl+lZusdglJtRlxrRFBcuEIeyuKUPh3yDwWjgby937BNP4h6C5jVDRIvL4xPDAvj
-         BoBdCwuP0Gdeq6Hdyjx4IZj1eNJ/FQXLrAiuV1rCPAfs220kEWuCj7/C5wkYrZ1hrp7L
-         NHFClmCLVL3GMucUJ2g7i1eHumIJRW5PMIY/YpGWlBgbugpqydzKz6Mi2gvVut+gH8ae
-         TGlg==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=KSsXNz3QYERscFqfJuTWMQZJwUXAy/j9f5RStY/7zVE=;
+        b=fxiCOtkU8r8WKqLeRnzCJhOB39q8CfRJG3wDOGNK8eeiHmgxcrD6bh3/t2nZea2C2c
+         TsL9i7iVY86K3MtZkkjt+yUUeV16f6BgWJ1NL2Pr8ndGYmxWo+UOF8ziJ44+/eEyR0kg
+         0+tns150PEncjcHGd1U7l++osG2d4SflxUljK2rNj5yD9jL20M1Kz/myl3sXHHJLphU4
+         diNs4wBX1h5qFu0qK09ZRxySaCjocfmhobC4mzWn/ZDTKPEiMWgbCcVS9O94iZHgJRiQ
+         tEcnCZgnkXYp+BCBOMgcLAFWAV/QIxzGEpm9koKOSIVlJ71M888jwBhGfcO3JoMMDqt4
+         mwOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9qv4MCbyas1K94lwFyXxe0kQNVU1v80OT8W+RonhDAw=;
-        b=do08jlP4mYhu4PBXslnXNxbH+SbYp+a4upoypGkcU6QxxUP+YS313dFua5ry3hIvt5
-         zwArHin2iIebJ879FK1AW2gEHpfnoFg+OJn9561X6t8QxKhMKaPAlGLxl/CBVnjrvCCE
-         jvRV2r/D6/Wt/2ROxJcAFOQPvlFd2dkCY0A9yX70X+Phlg+kXin0pynlvSMR4VkbIsvY
-         9uu7thG7diP1PjVo/XoXBAenNeU5kIzTrNKWnAvsMsKKlk8cQNpTbVXmT1Ou7L+kZfMZ
-         vxvxf1IaVKgqLGrc4NagDjSakkd6KOWC+Qs8FA0wbMD/J3bSUEjk4IknciA9tkad4WFB
-         qDwA==
-X-Gm-Message-State: AOAM532a9LRFCuSD9yWJVSyzZS2d9IR92t9ndGSlJxu3t4VBVrDUSL+3
-        GHOPqCjqfHb/NbmQwcqHYapHdISRE96bvg==
-X-Google-Smtp-Source: ABdhPJwYxA+bzo+/mhpMdiP2N3kVlEkKjcb1LKZu4H03FtYGEOd8UxoEP3X2WT5nMtZWYs1sgUyDLQ==
-X-Received: by 2002:a5d:42d2:: with SMTP id t18mr29560123wrr.258.1615313680037;
-        Tue, 09 Mar 2021 10:14:40 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id z1sm25343412wru.95.2021.03.09.10.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 10:14:39 -0800 (PST)
-Date:   Tue, 9 Mar 2021 18:14:37 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Zheng Yejian <zhengyejian1@huawei.com>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        cj.chengjian@huawei.com, judy.chenhui@huawei.com,
-        zhangjinhao2@huawei.com, nixiaoming@huawei.com
-Subject: Re: [PATCH 4.4 3/3] futex: fix dead code in attach_to_pi_owner()
-Message-ID: <20210309181437.GV4931@dell>
-References: <20210309030605.3295183-1-zhengyejian1@huawei.com>
- <20210309030605.3295183-4-zhengyejian1@huawei.com>
- <YEdQoy6j7eOne+8h@kroah.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=KSsXNz3QYERscFqfJuTWMQZJwUXAy/j9f5RStY/7zVE=;
+        b=EVFp+nvNn8x7hScLCM5za1BNVP/q0y44U627Ip4hqkubTFchDGi185R3SYJLCDWgbC
+         scm/WJEK4qsAV6Y/o+mSVW2XI/Ve+mN2F3ip9NKNopxjMXH4omuRilzP8ZJdAG9p37C/
+         qcTduZ1ENF1Rv8pKekzBDBFJvnQQh9u76FoqT7GuySNdWoJgd9dDZZB1pvxxIwOE6Esd
+         41pwrFCFpLbKr1MkJx086dv9cubQp0VhniMKkYwSR76rVGso5jyVt0jmKzl9/PLNRhr5
+         SNHCRNWecE0gd3ewVWXJaj0/BnLp0YL45SomElfV7h5sYUPCE3moVqZCp8VplDMo5tyX
+         e0MQ==
+X-Gm-Message-State: AOAM532+4ULL1bvpE9lGPfOa1C1xQWznAyjXFoK7WBFIInA3pz8vJn6D
+        LOcPZjlH9c5wepqz9gnuEPDaPvaBoRqMh9q5/xs=
+X-Google-Smtp-Source: ABdhPJwka7iznCj3TgY/D4+cOZQxqfvdTb0EZLGm5QXyeqd83W9IkwIUMFGfNG+e1VPiMTDiN4dMmm/HtQ0re8REG7o=
+X-Received: by 2002:a05:6808:987:: with SMTP id a7mr3752100oic.162.1615313696751;
+ Tue, 09 Mar 2021 10:14:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YEdQoy6j7eOne+8h@kroah.com>
+Received: by 2002:ac9:6449:0:0:0:0:0 with HTTP; Tue, 9 Mar 2021 10:14:56 -0800 (PST)
+Reply-To: drrhanannahenry@gmail.com
+From:   Dr Rhama Henry <drrahmahenry233@gmail.com>
+Date:   Tue, 9 Mar 2021 19:14:56 +0100
+Message-ID: <CAH8AabE=Tex47b+7so=J3SzHAvoepCMm+pe676eYKPLvzxu=Yg@mail.gmail.com>
+Subject: HELLO
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 09 Mar 2021, Greg KH wrote:
-
-> On Tue, Mar 09, 2021 at 11:06:05AM +0800, Zheng Yejian wrote:
-> > From: Thomas Gleixner <tglx@linutronix.de>
-> > 
-> > The handle_exit_race() function is defined in commit 9c3f39860367
-> >  ("futex: Cure exit race"), which never returns -EBUSY. This results
-> > in a small piece of dead code in the attach_to_pi_owner() function:
-> > 
-> > 	int ret = handle_exit_race(uaddr, uval, p); /* Never return -EBUSY */
-> > 	...
-> > 	if (ret == -EBUSY)
-> > 		*exiting = p; /* dead code */
-> > 
-> > The return value -EBUSY is added to handle_exit_race() in upsteam
-> > commit ac31c7ff8624409 ("futex: Provide distinct return value when
-> > owner is exiting"). This commit was incorporated into v4.9.255, before
-> > the function handle_exit_race() was introduced, whitout Modify
-> > handle_exit_race().
-> > 
-> > To fix dead code, extract the change of handle_exit_race() from
-> > commit ac31c7ff8624409 ("futex: Provide distinct return value when owner
-> >  is exiting"), re-incorporated.
-> > 
-> > Lee writes:
-> > 
-> > This commit takes the remaining functional snippet of:
-> > 
-> >  ac31c7ff8624409 ("futex: Provide distinct return value when owner is exiting")
-> > 
-> > ... and is the correct fix for this issue.
-> > 
-> > Fixes: 9c3f39860367 ("futex: Cure exit race")
-> > Cc: stable@vger.kernel.org # v4.9.258
-> > Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
-> > Reviewed-by: Lee Jones <lee.jones@linaro.org>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
-> > ---
-> >  kernel/futex.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> Same here, what is the upstream git id?
-
-It doesn't have one as such - it's a part-patch:
-
-> > This commit takes the remaining functional snippet of:
-> > 
-> >  ac31c7ff8624409 ("futex: Provide distinct return value when owner is exiting")
-
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Dear Friend.
+
+My names are Dr Rhama a banker in one of the bank in my country
+African. I Hoped that you will not expose or betray this trust and
+confident that i am about to repose on you for the mutual benefit of
+our both families. I need your urgent assistance in transferring the
+sum of $5.5 million U.S into your account. Please I would like you to
+keep this proposal as a top secret, I will give more details , my
+picture, family picture and working ID will send to you, For Expenses
+Am the one to take care of expenses, it is my responsibility for
+expenses. As soon as i hear from you i will give you more detail also
+the next thing to do.
+
+Please indicate your willingness by sending the below information for
+more clarification and easy communication.
+For more details, Contact me for more details.
+(1) Your Full Name...............................
+(2) Your Age And Sex............................
+(3) Your Contact Address..................
+(4) Your Private Phone N0..........
+(5) Your Country Of Origin..................
+(6) Your Occupation.........................
+
+Trusting to hear from you immediately.
+Thanks & Best Regards,
+Dr Rhama Henry
