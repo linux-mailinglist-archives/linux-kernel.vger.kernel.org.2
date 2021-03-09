@@ -2,93 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B471333235A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:50:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029C1332361
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhCIKuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 05:50:11 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:51490 "EHLO m42-2.mailgun.net"
+        id S230425AbhCIKvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 05:51:15 -0500
+Received: from mga01.intel.com ([192.55.52.88]:39112 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230285AbhCIKti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 05:49:38 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615286978; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=262kPBkfPskEU7H8i6yK0y3xXTvs+et/XQylcPjZ9UU=;
- b=pHp5jDaDqE4ZxeUTxHYS7Uc1bOvh4CEc47zLvU3mQh0Cis28uXM1WS2n+GC9ZDKkpuxy1mvD
- ben5kBB1eQqeNaGYW0HyT47CmPsBxCxr5OgOt8UHqlw0D/YV4+mIcLSRJ3V+eJUmujWMhnIa
- 3La8a1/+jrFPBecB/PFC/JSfYqk=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 604752bff842f723a9da3fac (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Mar 2021 10:49:35
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 155B5C433ED; Tue,  9 Mar 2021 10:49:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B3619C433CA;
-        Tue,  9 Mar 2021 10:49:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B3619C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S230183AbhCIKvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 05:51:11 -0500
+IronPort-SDR: 3A5rwzF/L3XB/vy8S8pAbkF5lZ8ym/UkvJUnSesKA8PS1KH21vNrUHZBcuCnGRMfIPI66Sxv4F
+ ZEAHpco9Uh8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="207982146"
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="207982146"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 02:51:10 -0800
+IronPort-SDR: J3H42NSM3SOMFkDg3V79kYgs0as9pXVpJ930PY/dLyco5pq0tOYfOuP6cxy1Rd2T+u28FWa41W
+ PwB0zSJbIqQg==
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="386186550"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 02:51:09 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lJZxC-00B2VY-O7; Tue, 09 Mar 2021 12:51:06 +0200
+Date:   Tue, 9 Mar 2021 12:51:06 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] software node: Two fixes
+Message-ID: <YEdTGsr6CjUirOsn@smile.fi.intel.com>
+References: <20210301143012.55118-1-heikki.krogerus@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v3] ath10k: skip the wait for completion to recovery in
- shutdown path
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210223142908.23374-1-youghand@codeaurora.org>
-References: <20210223142908.23374-1-youghand@codeaurora.org>
-To:     Youghandhar Chintala <youghand@codeaurora.org>
-Cc:     ath10k@lists.infradead.org,
-        ath10k-review.external@qti.qualcomm.com, davem@davemloft.net,
-        kuba@kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kuabhs@chromium.org, dianders@chromium.org,
-        briannorris@chromium.org,
-        Youghandhar Chintala <youghand@codeaurora.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210309104935.155B5C433ED@smtp.codeaurora.org>
-Date:   Tue,  9 Mar 2021 10:49:35 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210301143012.55118-1-heikki.krogerus@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Youghandhar Chintala <youghand@codeaurora.org> wrote:
-
-> Currently in the shutdown callback we wait for recovery to complete
-> before freeing up the resources. This results in additional two seconds
-> delay during the shutdown and thereby increase the shutdown time.
+On Mon, Mar 01, 2021 at 05:30:10PM +0300, Heikki Krogerus wrote:
+> Hi,
 > 
-> As an attempt to take less time during shutdown, remove the wait for
-> recovery completion in the shutdown callback and added an API to freeing
-> the reosurces in which they were common for shutdown and removing
-> the module.
-> 
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
-> 
-> Signed-off-by: Youghandhar Chintala <youghand@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> The second one only affects 5.12-rc1.
 
-Patch applied to ath-next branch of ath.git, thanks.
-
-018e3fa8e7ff ath10k: skip the wait for completion to recovery in shutdown path
+Rafael, Greg, can this be applied for v5.12-rcX?
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210223142908.23374-1-youghand@codeaurora.org/
+With Best Regards,
+Andy Shevchenko
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
