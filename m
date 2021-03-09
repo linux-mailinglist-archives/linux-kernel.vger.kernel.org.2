@@ -2,116 +2,524 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0C2332B70
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAF4332B77
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbhCIQGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:06:00 -0500
-Received: from foss.arm.com ([217.140.110.172]:55774 "EHLO foss.arm.com"
+        id S231950AbhCIQHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:07:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33322 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231326AbhCIQFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:05:35 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DFF21042;
-        Tue,  9 Mar 2021 08:05:35 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.49.159])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 032A13F71B;
-        Tue,  9 Mar 2021 08:05:32 -0800 (PST)
-Date:   Tue, 9 Mar 2021 16:05:23 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Marco Elver <elver@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, broonie@kernel.org,
-        Paul Mackerras <paulus@samba.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v1] powerpc: Include running function as first entry in
- save_stack_trace() and friends
-Message-ID: <20210309160505.GA4979@C02TD0UTHF1T.local>
-References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu>
- <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com>
- <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu>
- <YD+o5QkCZN97mH8/@elver.google.com>
- <20210304145730.GC54534@C02TD0UTHF1T.local>
- <20210304215448.GU29191@gate.crashing.org>
+        id S231853AbhCIQGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 11:06:32 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615305991; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bItPstEQLhxvk+MVBlxjVI1YB2J02jgbKDGYfqttiBY=;
+        b=o92FAkPYMlFd1PqVN9IkglmvGsLiQg8uSNViGVfUx5cTwU8MnwSeYp76NkuU8WdN1I2plM
+        3NCidYVI/mSz+xR9sqNUEjPesqeKk3Gjnj++OwaxRCDOuDa8zUJrI+44SmL7sq92nUq+CX
+        Tz+CNcFSfn+I+9u/a9AWX0rh2GcrxIk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3EF51AEC4;
+        Tue,  9 Mar 2021 16:06:31 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH v6 13/12] x86/alternative: merge include files
+Date:   Tue,  9 Mar 2021 17:06:20 +0100
+Message-Id: <20210309160621.29290-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210309134813.23912-1-jgross@suse.com>
+References: <20210309134813.23912-1-jgross@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304215448.GU29191@gate.crashing.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 03:54:48PM -0600, Segher Boessenkool wrote:
-> Hi!
+Merge arch/x86/include/asm/alternative-asm.h into
+arch/x86/include/asm/alternative.h in order to make it easier to use
+common definitions later.
 
-Hi Segher,
+Signed-off-by: Juergen Gross <jgross@suse.com>
+---
+ arch/x86/entry/entry_32.S                |   2 +-
+ arch/x86/entry/vdso/vdso32/system_call.S |   2 +-
+ arch/x86/include/asm/alternative-asm.h   | 121 -----------------------
+ arch/x86/include/asm/alternative.h       | 121 +++++++++++++++++++++--
+ arch/x86/include/asm/nospec-branch.h     |   1 -
+ arch/x86/include/asm/smap.h              |   5 +-
+ arch/x86/lib/atomic64_386_32.S           |   2 +-
+ arch/x86/lib/atomic64_cx8_32.S           |   2 +-
+ arch/x86/lib/copy_page_64.S              |   2 +-
+ arch/x86/lib/copy_user_64.S              |   2 +-
+ arch/x86/lib/memcpy_64.S                 |   2 +-
+ arch/x86/lib/memmove_64.S                |   2 +-
+ arch/x86/lib/memset_64.S                 |   2 +-
+ arch/x86/lib/retpoline.S                 |   2 +-
+ 14 files changed, 126 insertions(+), 142 deletions(-)
+ delete mode 100644 arch/x86/include/asm/alternative-asm.h
 
-> On Thu, Mar 04, 2021 at 02:57:30PM +0000, Mark Rutland wrote:
-> > It looks like GCC is happy to give us the function-entry-time FP if we use
-> > __builtin_frame_address(1),
-> 
-> From the GCC manual:
->      Calling this function with a nonzero argument can have
->      unpredictable effects, including crashing the calling program.  As
->      a result, calls that are considered unsafe are diagnosed when the
->      '-Wframe-address' option is in effect.  Such calls should only be
->      made in debugging situations.
-> 
-> It *does* warn (the warning is in -Wall btw), on both powerpc and
-> aarch64.  Furthermore, using this builtin causes lousy code (it forces
-> the use of a frame pointer, which we normally try very hard to optimise
-> away, for good reason).
-> 
-> And, that warning is not an idle warning.  Non-zero arguments to
-> __builtin_frame_address can crash the program.  It won't on simpler
-> functions, but there is no real definition of what a simpler function
-> *is*.  It is meant for debugging, not for production use (this is also
-> why no one has bothered to make it faster).
->
-> On Power it should work, but on pretty much any other arch it won't.
+diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
+index 765487e57d6e..96f084868ec7 100644
+--- a/arch/x86/entry/entry_32.S
++++ b/arch/x86/entry/entry_32.S
+@@ -40,7 +40,7 @@
+ #include <asm/processor-flags.h>
+ #include <asm/irq_vectors.h>
+ #include <asm/cpufeatures.h>
+-#include <asm/alternative-asm.h>
++#include <asm/alternative.h>
+ #include <asm/asm.h>
+ #include <asm/smap.h>
+ #include <asm/frame.h>
+diff --git a/arch/x86/entry/vdso/vdso32/system_call.S b/arch/x86/entry/vdso/vdso32/system_call.S
+index de1fff7188aa..d6a6080bade0 100644
+--- a/arch/x86/entry/vdso/vdso32/system_call.S
++++ b/arch/x86/entry/vdso/vdso32/system_call.S
+@@ -6,7 +6,7 @@
+ #include <linux/linkage.h>
+ #include <asm/dwarf2.h>
+ #include <asm/cpufeatures.h>
+-#include <asm/alternative-asm.h>
++#include <asm/alternative.h>
+ 
+ 	.text
+ 	.globl __kernel_vsyscall
+diff --git a/arch/x86/include/asm/alternative-asm.h b/arch/x86/include/asm/alternative-asm.h
+deleted file mode 100644
+index 80bc6b533358..000000000000
+--- a/arch/x86/include/asm/alternative-asm.h
++++ /dev/null
+@@ -1,121 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _ASM_X86_ALTERNATIVE_ASM_H
+-#define _ASM_X86_ALTERNATIVE_ASM_H
+-
+-#ifdef __ASSEMBLY__
+-
+-#include <asm/asm.h>
+-
+-#define ALTINSTR_FLAG_INV	(1 << 15)
+-#define ALT_NOT(feat)		((feat) | ALTINSTR_FLAG_INV)
+-
+-#ifdef CONFIG_SMP
+-	.macro LOCK_PREFIX
+-672:	lock
+-	.pushsection .smp_locks,"a"
+-	.balign 4
+-	.long 672b - .
+-	.popsection
+-	.endm
+-#else
+-	.macro LOCK_PREFIX
+-	.endm
+-#endif
+-
+-/*
+- * objtool annotation to ignore the alternatives and only consider the original
+- * instruction(s).
+- */
+-.macro ANNOTATE_IGNORE_ALTERNATIVE
+-	.Lannotate_\@:
+-	.pushsection .discard.ignore_alts
+-	.long .Lannotate_\@ - .
+-	.popsection
+-.endm
+-
+-/*
+- * Issue one struct alt_instr descriptor entry (need to put it into
+- * the section .altinstructions, see below). This entry contains
+- * enough information for the alternatives patching code to patch an
+- * instruction. See apply_alternatives().
+- */
+-.macro altinstruction_entry orig alt feature orig_len alt_len pad_len
+-	.long \orig - .
+-	.long \alt - .
+-	.word \feature
+-	.byte \orig_len
+-	.byte \alt_len
+-	.byte \pad_len
+-.endm
+-
+-/*
+- * Define an alternative between two instructions. If @feature is
+- * present, early code in apply_alternatives() replaces @oldinstr with
+- * @newinstr. ".skip" directive takes care of proper instruction padding
+- * in case @newinstr is longer than @oldinstr.
+- */
+-.macro ALTERNATIVE oldinstr, newinstr, feature
+-140:
+-	\oldinstr
+-141:
+-	.skip -(((144f-143f)-(141b-140b)) > 0) * ((144f-143f)-(141b-140b)),0x90
+-142:
+-
+-	.pushsection .altinstructions,"a"
+-	altinstruction_entry 140b,143f,\feature,142b-140b,144f-143f,142b-141b
+-	.popsection
+-
+-	.pushsection .altinstr_replacement,"ax"
+-143:
+-	\newinstr
+-144:
+-	.popsection
+-.endm
+-
+-#define old_len			141b-140b
+-#define new_len1		144f-143f
+-#define new_len2		145f-144f
+-
+-/*
+- * gas compatible max based on the idea from:
+- * http://graphics.stanford.edu/~seander/bithacks.html#IntegerMinOrMax
+- *
+- * The additional "-" is needed because gas uses a "true" value of -1.
+- */
+-#define alt_max_short(a, b)	((a) ^ (((a) ^ (b)) & -(-((a) < (b)))))
+-
+-
+-/*
+- * Same as ALTERNATIVE macro above but for two alternatives. If CPU
+- * has @feature1, it replaces @oldinstr with @newinstr1. If CPU has
+- * @feature2, it replaces @oldinstr with @feature2.
+- */
+-.macro ALTERNATIVE_2 oldinstr, newinstr1, feature1, newinstr2, feature2
+-140:
+-	\oldinstr
+-141:
+-	.skip -((alt_max_short(new_len1, new_len2) - (old_len)) > 0) * \
+-		(alt_max_short(new_len1, new_len2) - (old_len)),0x90
+-142:
+-
+-	.pushsection .altinstructions,"a"
+-	altinstruction_entry 140b,143f,\feature1,142b-140b,144f-143f,142b-141b
+-	altinstruction_entry 140b,144f,\feature2,142b-140b,145f-144f,142b-141b
+-	.popsection
+-
+-	.pushsection .altinstr_replacement,"ax"
+-143:
+-	\newinstr1
+-144:
+-	\newinstr2
+-145:
+-	.popsection
+-.endm
+-
+-#define ALTERNATIVE_TERNARY(oldinstr, feature, newinstr1, newinstr2)	\
+-	ALTERNATIVE_2 oldinstr, newinstr2, X86_FEATURE_ALWAYS,		\
+-	newinstr1, feature
+-
+-#endif  /*  __ASSEMBLY__  */
+-
+-#endif /* _ASM_X86_ALTERNATIVE_ASM_H */
+diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
+index 4fb844e29d26..03f428e6b897 100644
+--- a/arch/x86/include/asm/alternative.h
++++ b/arch/x86/include/asm/alternative.h
+@@ -2,13 +2,17 @@
+ #ifndef _ASM_X86_ALTERNATIVE_H
+ #define _ASM_X86_ALTERNATIVE_H
+ 
+-#ifndef __ASSEMBLY__
+-
+ #include <linux/types.h>
+-#include <linux/stddef.h>
+ #include <linux/stringify.h>
+ #include <asm/asm.h>
+ 
++#define ALTINSTR_FLAG_INV	(1 << 15)
++#define ALT_NOT(feat)		((feat) | ALTINSTR_FLAG_INV)
++
++#ifndef __ASSEMBLY__
++
++#include <linux/stddef.h>
++
+ /*
+  * Alternative inline assembly for SMP.
+  *
+@@ -59,14 +63,11 @@ struct alt_instr {
+ 	s32 instr_offset;	/* original instruction */
+ 	s32 repl_offset;	/* offset to replacement instruction */
+ 	u16 cpuid;		/* cpuid bit set for replacement */
+-#define ALTINSTR_FLAG_INV (1 << 15)
+ 	u8  instrlen;		/* length of original instruction */
+ 	u8  replacementlen;	/* length of new instruction */
+ 	u8  padlen;		/* length of build-time padding */
+ } __packed;
+ 
+-#define ALT_NOT(feat)	((feat) | ALTINSTR_FLAG_INV)
+-
+ /*
+  * Debug flag that can be tested to see whether alternative
+  * instructions were patched in already:
+@@ -280,6 +281,114 @@ static inline int alternatives_text_reserved(void *start, void *end)
+  */
+ #define ASM_NO_INPUT_CLOBBER(clbr...) "i" (0) : clbr
+ 
++#else /* __ASSEMBLY__ */
++
++#ifdef CONFIG_SMP
++	.macro LOCK_PREFIX
++672:	lock
++	.pushsection .smp_locks,"a"
++	.balign 4
++	.long 672b - .
++	.popsection
++	.endm
++#else
++	.macro LOCK_PREFIX
++	.endm
++#endif
++
++/*
++ * objtool annotation to ignore the alternatives and only consider the original
++ * instruction(s).
++ */
++.macro ANNOTATE_IGNORE_ALTERNATIVE
++	.Lannotate_\@:
++	.pushsection .discard.ignore_alts
++	.long .Lannotate_\@ - .
++	.popsection
++.endm
++
++/*
++ * Issue one struct alt_instr descriptor entry (need to put it into
++ * the section .altinstructions, see below). This entry contains
++ * enough information for the alternatives patching code to patch an
++ * instruction. See apply_alternatives().
++ */
++.macro altinstruction_entry orig alt feature orig_len alt_len pad_len
++	.long \orig - .
++	.long \alt - .
++	.word \feature
++	.byte \orig_len
++	.byte \alt_len
++	.byte \pad_len
++.endm
++
++/*
++ * Define an alternative between two instructions. If @feature is
++ * present, early code in apply_alternatives() replaces @oldinstr with
++ * @newinstr. ".skip" directive takes care of proper instruction padding
++ * in case @newinstr is longer than @oldinstr.
++ */
++.macro ALTERNATIVE oldinstr, newinstr, feature
++140:
++	\oldinstr
++141:
++	.skip -(((144f-143f)-(141b-140b)) > 0) * ((144f-143f)-(141b-140b)),0x90
++142:
++
++	.pushsection .altinstructions,"a"
++	altinstruction_entry 140b,143f,\feature,142b-140b,144f-143f,142b-141b
++	.popsection
++
++	.pushsection .altinstr_replacement,"ax"
++143:
++	\newinstr
++144:
++	.popsection
++.endm
++
++#define old_len			141b-140b
++#define new_len1		144f-143f
++#define new_len2		145f-144f
++
++/*
++ * gas compatible max based on the idea from:
++ * http://graphics.stanford.edu/~seander/bithacks.html#IntegerMinOrMax
++ *
++ * The additional "-" is needed because gas uses a "true" value of -1.
++ */
++#define alt_max_short(a, b)	((a) ^ (((a) ^ (b)) & -(-((a) < (b)))))
++
++/*
++ * Same as ALTERNATIVE macro above but for two alternatives. If CPU
++ * has @feature1, it replaces @oldinstr with @newinstr1. If CPU has
++ * @feature2, it replaces @oldinstr with @feature2.
++ */
++.macro ALTERNATIVE_2 oldinstr, newinstr1, feature1, newinstr2, feature2
++140:
++	\oldinstr
++141:
++	.skip -((alt_max_short(new_len1, new_len2) - (old_len)) > 0) * \
++	      (alt_max_short(new_len1, new_len2) - (old_len)),0x90
++142:
++
++	.pushsection .altinstructions,"a"
++	altinstruction_entry 140b,143f,\feature1,142b-140b,144f-143f,142b-141b
++	altinstruction_entry 140b,144f,\feature2,142b-140b,145f-144f,142b-141b
++	.popsection
++
++	.pushsection .altinstr_replacement,"ax"
++143:
++	\newinstr1
++144:
++	\newinstr2
++145:
++	.popsection
++.endm
++
++#define ALTERNATIVE_TERNARY(oldinstr, feature, newinstr1, newinstr2)	\
++	ALTERNATIVE_2 oldinstr, newinstr2, X86_FEATURE_ALWAYS,		\
++	newinstr1, feature
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* _ASM_X86_ALTERNATIVE_H */
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index cb9ad6b73973..529f8e9380d8 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -7,7 +7,6 @@
+ #include <linux/objtool.h>
+ 
+ #include <asm/alternative.h>
+-#include <asm/alternative-asm.h>
+ #include <asm/cpufeatures.h>
+ #include <asm/msr-index.h>
+ #include <asm/unwind_hints.h>
+diff --git a/arch/x86/include/asm/smap.h b/arch/x86/include/asm/smap.h
+index 8b58d6975d5d..ea1d8eb644cb 100644
+--- a/arch/x86/include/asm/smap.h
++++ b/arch/x86/include/asm/smap.h
+@@ -11,6 +11,7 @@
+ 
+ #include <asm/nops.h>
+ #include <asm/cpufeatures.h>
++#include <asm/alternative.h>
+ 
+ /* "Raw" instruction opcodes */
+ #define __ASM_CLAC	".byte 0x0f,0x01,0xca"
+@@ -18,8 +19,6 @@
+ 
+ #ifdef __ASSEMBLY__
+ 
+-#include <asm/alternative-asm.h>
+-
+ #ifdef CONFIG_X86_SMAP
+ 
+ #define ASM_CLAC \
+@@ -37,8 +36,6 @@
+ 
+ #else /* __ASSEMBLY__ */
+ 
+-#include <asm/alternative.h>
+-
+ #ifdef CONFIG_X86_SMAP
+ 
+ static __always_inline void clac(void)
+diff --git a/arch/x86/lib/atomic64_386_32.S b/arch/x86/lib/atomic64_386_32.S
+index 3b6544111ac9..16bc9130e7a5 100644
+--- a/arch/x86/lib/atomic64_386_32.S
++++ b/arch/x86/lib/atomic64_386_32.S
+@@ -6,7 +6,7 @@
+  */
+ 
+ #include <linux/linkage.h>
+-#include <asm/alternative-asm.h>
++#include <asm/alternative.h>
+ 
+ /* if you want SMP support, implement these with real spinlocks */
+ .macro LOCK reg
+diff --git a/arch/x86/lib/atomic64_cx8_32.S b/arch/x86/lib/atomic64_cx8_32.S
+index 1c5c81c16b06..ce6935690766 100644
+--- a/arch/x86/lib/atomic64_cx8_32.S
++++ b/arch/x86/lib/atomic64_cx8_32.S
+@@ -6,7 +6,7 @@
+  */
+ 
+ #include <linux/linkage.h>
+-#include <asm/alternative-asm.h>
++#include <asm/alternative.h>
+ 
+ .macro read64 reg
+ 	movl %ebx, %eax
+diff --git a/arch/x86/lib/copy_page_64.S b/arch/x86/lib/copy_page_64.S
+index 2402d4c489d2..db4b4f9197c7 100644
+--- a/arch/x86/lib/copy_page_64.S
++++ b/arch/x86/lib/copy_page_64.S
+@@ -3,7 +3,7 @@
+ 
+ #include <linux/linkage.h>
+ #include <asm/cpufeatures.h>
+-#include <asm/alternative-asm.h>
++#include <asm/alternative.h>
+ #include <asm/export.h>
+ 
+ /*
+diff --git a/arch/x86/lib/copy_user_64.S b/arch/x86/lib/copy_user_64.S
+index 77b9b2a3b5c8..57b79c577496 100644
+--- a/arch/x86/lib/copy_user_64.S
++++ b/arch/x86/lib/copy_user_64.S
+@@ -11,7 +11,7 @@
+ #include <asm/asm-offsets.h>
+ #include <asm/thread_info.h>
+ #include <asm/cpufeatures.h>
+-#include <asm/alternative-asm.h>
++#include <asm/alternative.h>
+ #include <asm/asm.h>
+ #include <asm/smap.h>
+ #include <asm/export.h>
+diff --git a/arch/x86/lib/memcpy_64.S b/arch/x86/lib/memcpy_64.S
+index 1e299ac73c86..1cc9da6e29c7 100644
+--- a/arch/x86/lib/memcpy_64.S
++++ b/arch/x86/lib/memcpy_64.S
+@@ -4,7 +4,7 @@
+ #include <linux/linkage.h>
+ #include <asm/errno.h>
+ #include <asm/cpufeatures.h>
+-#include <asm/alternative-asm.h>
++#include <asm/alternative.h>
+ #include <asm/export.h>
+ 
+ .pushsection .noinstr.text, "ax"
+diff --git a/arch/x86/lib/memmove_64.S b/arch/x86/lib/memmove_64.S
+index 41902fe8b859..64801010d312 100644
+--- a/arch/x86/lib/memmove_64.S
++++ b/arch/x86/lib/memmove_64.S
+@@ -8,7 +8,7 @@
+  */
+ #include <linux/linkage.h>
+ #include <asm/cpufeatures.h>
+-#include <asm/alternative-asm.h>
++#include <asm/alternative.h>
+ #include <asm/export.h>
+ 
+ #undef memmove
+diff --git a/arch/x86/lib/memset_64.S b/arch/x86/lib/memset_64.S
+index 0bfd26e4ca9e..9827ae267f96 100644
+--- a/arch/x86/lib/memset_64.S
++++ b/arch/x86/lib/memset_64.S
+@@ -3,7 +3,7 @@
+ 
+ #include <linux/linkage.h>
+ #include <asm/cpufeatures.h>
+-#include <asm/alternative-asm.h>
++#include <asm/alternative.h>
+ #include <asm/export.h>
+ 
+ /*
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index f6fb1d218dcc..6bb74b5c238c 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -4,7 +4,7 @@
+ #include <linux/linkage.h>
+ #include <asm/dwarf2.h>
+ #include <asm/cpufeatures.h>
+-#include <asm/alternative-asm.h>
++#include <asm/alternative.h>
+ #include <asm/export.h>
+ #include <asm/nospec-branch.h>
+ #include <asm/unwind_hints.h>
+-- 
+2.26.2
 
-I understand this is true generally, and cannot be relied upon in
-portable code. However as you hint here for Power, I believe that on
-arm64 __builtin_frame_address(1) shouldn't crash the program due to the
-way frame records work on arm64, but I'll go check with some local
-compiler folk. I agree that __builtin_frame_address(2) and beyond
-certainly can, e.g.  by NULL dereference and similar.
-
-For context, why do you think this would work on power specifically? I
-wonder if our rationale is similar.
-
-Are you aware of anything in particular that breaks using
-__builtin_frame_address(1) in non-portable code, or is this just a
-general sentiment of this not being a supported use-case?
-
-> > Unless we can get some strong guarantees from compiler folk such that we
-> > can guarantee a specific function acts boundary for unwinding (and
-> > doesn't itself get split, etc), the only reliable way I can think to
-> > solve this requires an assembly trampoline. Whatever we do is liable to
-> > need some invasive rework.
-> 
-> You cannot get such a guarantee, other than not letting the compiler
-> see into the routine at all, like with assembler code (not inline asm,
-> real assembler code).
-
-If we cannot reliably ensure this then I'm happy to go write an assembly
-trampoline to snapshot the state at a function call boundary (where our
-procedure call standard mandates the state of the LR, FP, and frame
-records pointed to by the FP). This'll require reworking a reasonable
-amount of code cross-architecture, so I'll need to get some more
-concrete justification (e.g. examples of things that can go wrong in
-practice).
-
-> The real way forward is to bite the bullet and to no longer pretend you
-> can do a full backtrace from just the stack contents.  You cannot.
-
-I think what you mean here is that there's no reliable way to handle the
-current/leaf function, right? If so I do agree.
-
-Beyond that I believe that arm64's frame records should be sufficient.
-
-Thanks,
-Mark.
