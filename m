@@ -2,145 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2105F332A61
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21112332A70
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231908AbhCIP00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:26:26 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:42498 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231959AbhCIP0D (ORCPT
+        id S231828AbhCIP3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:29:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231338AbhCIP3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:26:03 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 129FPqPo010686;
-        Tue, 9 Mar 2021 09:25:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615303552;
-        bh=NYLOclSzkzCtpSynCghJLlkHYe/TU1BtDuQ/hHQ4Pnc=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Eyc8IdFfzweyNb/A+4pAnZGv2shINl3JmcJANuUSYtCL1sXsLa5Ver6Cz+2NAEukp
-         sT4zEXPzYXciskFm8WhfIQ/MvTOo2+jvxgJ30VxS184bodoqZSvPXVtiECWhUZIiTZ
-         svv/0pFgUMbsm/j2ShnU8ziJv/geSyuCMF9QsVN4=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 129FPp1s012742
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 9 Mar 2021 09:25:51 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 9 Mar
- 2021 09:25:51 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 9 Mar 2021 09:25:51 -0600
-Received: from [10.250.232.169] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 129FPmLF114290;
-        Tue, 9 Mar 2021 09:25:48 -0600
-Subject: Re: [PATCH] arm64: dts: ti: k3-am642-evm: Add support for SPI EEPROM
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210301060518.19550-1-a-govindraju@ti.com>
- <c06a39c5-88eb-1e6d-4ae2-796981db1e71@ti.com>
- <20210309145426.tgt7ltlh22slygfm@santa>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <a256e792-1d1f-5df4-bca0-4add18ac83b4@ti.com>
-Date:   Tue, 9 Mar 2021 20:55:47 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 9 Mar 2021 10:29:12 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B190C06174A;
+        Tue,  9 Mar 2021 07:29:12 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id v2so14701108lft.9;
+        Tue, 09 Mar 2021 07:29:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w5ZVq6qO8e5SzhIkBtoDJ2wfF3ZTvqMngw/5OUOs0/o=;
+        b=uKG9tc9xKyNawNtTlpOYIX3VrofJ30zh28bvjP/iqDC+YVNFa5wt34q9Tq+MmvrJ+d
+         uv5YgnYN9u1YrUYlZMGqsR0ZJ4FK0/LU1S0GhKDzr19uoNHbIxjXFmWA37858/aDk6pj
+         7WVOmSOGuYcQXrsu1SpX30iVGq0RzpweSlcSQq46x9b9u5nkSNF0N3LIE0t76pV0BV7c
+         zIHPgN4TJvhm2miuKxZReId8dsmKdk1VBlKpgX667Y2etUS6byiVhXkbkRfImGfOe5Ga
+         lSBkz+Os/FRSorukrAHbNoBkk6JtNOXUWRbxni0lKwm5fi0ofWV1qJ6LDRJcKsu4/xGO
+         cDVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w5ZVq6qO8e5SzhIkBtoDJ2wfF3ZTvqMngw/5OUOs0/o=;
+        b=dFDZmOfsqNReBomoNY6WSVXoHKPDNhKlTkRwSMRb+ihiWpOFoYtxTSjxBfziIVs2Lu
+         JfOcFzSdsL83i9CRrY6VHaDX3zq+9xzgQJj6iPWCxkH2y1TylPKmTHU53vSXexLr+xBu
+         i3/2f6eWM+AKhA62o5ultKyO5fQz7X1yALaT1NNnhNnmIwEgYVqEFs0IGyRm3n8vhrqC
+         7DSXqiBJKZgfAm3JOjrjbQGUGrj3Qu+l0BfRzv8c2BCxctgXnDoteUI43esq9FidFUCF
+         N1McUKwlX2eW9PbT77TvDBBl+j4J1dq/P4iQ+f2Py4UcdWNiZmiEo2UwId2TWROw31Qh
+         8MfA==
+X-Gm-Message-State: AOAM532Y6Yd5tLXBI8K9NId/GqPJnbCrDXcOhJHlDVqMMuqNOPPVRjnS
+        9V4IZB9Kg1ns4GJqKRZsXkVnhjOGDGfFokerJLw=
+X-Google-Smtp-Source: ABdhPJxbJw6hyXnyYAaelc+qheOLwz/cFIz/Ax14rHl3XqVU9mBT4dBn3LS4jRehNX1Wjk3cWcAN76ebPlYgUZrCJEE=
+X-Received: by 2002:a19:85c5:: with SMTP id h188mr17775973lfd.273.1615303751036;
+ Tue, 09 Mar 2021 07:29:11 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210309145426.tgt7ltlh22slygfm@santa>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210217065427.122943-1-dong.menglong@zte.com.cn> <20210223123052.1b27aad1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210223123052.1b27aad1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Tue, 9 Mar 2021 23:28:59 +0800
+Message-ID: <CADxym3Zcxf05w2a0jis2ZyGewwmXpLzS4u54+GRwf_n2Ky7u0A@mail.gmail.com>
+Subject: Re: [PATCH v4 net-next] net: socket: use BIT() for MSG_*
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nishanth,
+Hello!
 
-On 09/03/21 8:24 pm, Nishanth Menon wrote:
-> On 20:18-20210309, Vignesh Raghavendra wrote:
->>
->>
->> On 3/1/21 11:35 AM, Aswath Govindraju wrote:
->>> Add pinmux details and device tree node for the EEPROM attached to SPI0
->>> module in main domain.
->>>
->>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
->>> ---
->>
->> Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
->>
->> Regards
->> Vignesh
->>
->>>
->>> This patch depends on,
->>> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210301055109.17626-3-a-govindraju@ti.com/
-> 
-> 
-> Can you drop this dependency and rebase on top of my -next branch or
-> linux-next ? I am not able to apply the patch directly and would like to
-> avoid hand modifying the patch.
-> 
+On Wed, Feb 24, 2021 at 4:30 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+...
+> Please repost when net-next reopens after 5.12-rc1 is cut.
+>
+> Look out for the announcement on the mailing list or check:
+> http://vger.kernel.org/~davem/net-next.html
+>
+> RFC patches sent for review only are obviously welcome at any time.
 
-ok, I'll post a respin after dropping this dependency and picking up the
-reviewed by.
+Is 'net-next' open? Can I resend this patch now? It seems that a long
+time has passed.
 
-Thanks,
-Aswath
-
->>>
->>>  arch/arm64/boot/dts/ti/k3-am642-evm.dts | 22 ++++++++++++++++++++++
->>>  1 file changed, 22 insertions(+)
->>>
->>> diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
->>> index bfd849a29655..bc5bd7f896ab 100644
->>> --- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
->>> +++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
->>> @@ -139,6 +139,15 @@
->>>  			AM64X_IOPAD(0x02a8, PIN_OUTPUT, 0) /* (E19) USB0_DRVVBUS */
->>>  		>;
->>>  	};
->>> +
->>> +	main_spi0_pins_default: main-spi0-pins-default {
->>> +		pinctrl-single,pins = <
->>> +			AM64X_IOPAD(0x0210, PIN_INPUT, 0) /* (D13) SPI0_CLK */
->>> +			AM64X_IOPAD(0x0208, PIN_OUTPUT, 0) /* (D12) SPI0_CS0 */
->>> +			AM64X_IOPAD(0x0214, PIN_OUTPUT, 0) /* (A13) SPI0_D0 */
->>> +			AM64X_IOPAD(0x0218, PIN_INPUT, 0) /* (A14) SPI0_D1 */
->>> +		>;
->>> +	};
->>>  };
->>>  
->>>  &main_uart0 {
->>> @@ -245,6 +254,19 @@
->>>  	pinctrl-0 = <&main_usb0_pins_default>;
->>>  };
->>>  
->>> +&main_spi0 {
->>> +	pinctrl-names = "default";
->>> +	pinctrl-0 = <&main_spi0_pins_default>;
->>> +	ti,pindir-d0-out-d1-in = <1>;
->>> +	eeprom@0 {
->>> +		compatible = "microchip,93lc46b";
->>> +		reg = <0>;
->>> +		spi-max-frequency = <1000000>;
->>> +		spi-cs-high;
->>> +		data-size = <16>;
->>> +	};
->>> +};
->>> +
->>>  &sdhci0 {
->>>  	/* emmc */
->>>  	bus-width = <8>;
->>>
-> 
-
+Thanks~
+Menglong Dong
