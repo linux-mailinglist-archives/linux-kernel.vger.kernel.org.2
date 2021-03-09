@@ -2,182 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2669331E1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:53:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2817C331E1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 06:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCIExZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 23:53:25 -0500
-Received: from mga06.intel.com ([134.134.136.31]:45216 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229948AbhCIExX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 23:53:23 -0500
-IronPort-SDR: y/EMhQ/HTllb4wak3xQT8WaWA5rE1Qt5lETYir8NjweQX4deOEsO1Xjde1ce9++cpMxYOjP+Bg
- MyhCWl+EeXag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="249537619"
-X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="249537619"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 20:53:22 -0800
-IronPort-SDR: N6upvVNfmDjOhq63Kq3qHs2gemMLeW79LGswa5aCfcezHnBcuAPAmQzH8fcRKERq9qxmysfop2
- orSkErORi5xg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="430624844"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by fmsmga004.fm.intel.com with ESMTP; 08 Mar 2021 20:53:22 -0800
-Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 8 Mar 2021 20:53:21 -0800
-Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
- ORSMSX607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 8 Mar 2021 20:53:21 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Mon, 8 Mar 2021 20:53:21 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.52) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Mon, 8 Mar 2021 20:53:20 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jkhENeZ0k7Ic6BRB1+FFC1zsEVIo2VZ9m2IxClOH41yRYvUBZG/a4mh8sNrlpvLelTUtAYs0PQzT+BsGFAO2aA9dO6n88H9IV4bFfePiRHypDFnO3yDYTvlXD5MUVSrnoRrPEl6SSRpW3Y6Cyxl+njkPd1tjiS50P7X9pNSyRW/t82p9nLTQOp+Uu3Mz1USodCNpbRSynVM1gwCsD6FWL4jOxBNe6RWbotDn7K3Xdea/p8Y9zXEYALeKbT4udiZbO2xZppJdnP6iLVrvrZ6+poX6ixakg4109vdrfKy0p6/fzptLinhalTZvrDmlsTUdsnQSMlCDppYJi0Dp/g0aVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AwLxOxty+9IgGtUjvkqtdFi6w/3frW9seLXHYHqE2Ls=;
- b=h1vUWyiJDJDoZNBOOV6h2yhs1nt5S/aoCZeVtxfqut2uqg6ADnXi2yspldvrf0AvqydTqhiyhmf0zzVLCgFkkIgKLRBDV6n4LJs9FWu4PdUqYAnFLkJJUxdKMQtGmL7SSWBeLcMNSksyohR+LaHlVCgKxuy96soyYK4aCx7DB0lpwvmhLlLKH/ZDzemlKtHLa4oxSTCMJeV5/5UnzHcEQNNY9xklgl6gY00sTf7gAJoKQ1Q79gUZPo3ONh9h/9kGpsqVyRcDe6ZcuNAUXgElfdjAGlusxTREgc+8PHA/TFLU5Pg4wUVXXG42eh8K5Yo8FEzH87y6h3nZ3wU8JVrfwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AwLxOxty+9IgGtUjvkqtdFi6w/3frW9seLXHYHqE2Ls=;
- b=FW5uHKoJRXGkk1JxpTPavBSSj94R7vgso4iGMz32Z+gK+4fJ1duVrmgikRY6jZv2mioKQrSEUnrzdog/qmZrZNLchNC2SLYvrfOHD2G4BCJc4Hj7vrXPgvBWCbfeRaxuI+/lG+PBDgjdzJDgSkxvnB8C6x4LfxYSjA74Y4xNtHs=
-Received: from BYAPR11MB3095.namprd11.prod.outlook.com (2603:10b6:a03:91::26)
- by BYAPR11MB2694.namprd11.prod.outlook.com (2603:10b6:a02:c7::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Tue, 9 Mar
- 2021 04:53:15 +0000
-Received: from BYAPR11MB3095.namprd11.prod.outlook.com
- ([fe80::e47d:c2cb:fe53:e0e6]) by BYAPR11MB3095.namprd11.prod.outlook.com
- ([fe80::e47d:c2cb:fe53:e0e6%4]) with mapi id 15.20.3890.035; Tue, 9 Mar 2021
- 04:53:15 +0000
-From:   "Chen, Mike Ximing" <mike.ximing.chen@intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "Williams, Dan J" <dan.j.williams@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "Laatz, Kevin" <kevin.laatz@intel.com>,
-        "maximmi@mellanox.com" <maximmi@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH v10 01/20] dlb: add skeleton for DLB driver
-Thread-Topic: [PATCH v10 01/20] dlb: add skeleton for DLB driver
-Thread-Index: AQHW9P+hri3YEhHn10KqfTIlfsDxHqpP5y6AgAAwW4CAKqelsIAABduAgABm3XA=
-Date:   Tue, 9 Mar 2021 04:53:15 +0000
-Message-ID: <BYAPR11MB3095534A3B62757F5AD63063D9929@BYAPR11MB3095.namprd11.prod.outlook.com>
-References: <20210127225641.1342-1-mike.ximing.chen@intel.com>
- <20210127225641.1342-2-mike.ximing.chen@intel.com>
- <YCKP5ZUL1/wMzmf4@kroah.com>
- <CAPcyv4hC2dJGAXbG2ogO=2THuDUHjgYekkNy4K_zwEmQcXLcjA@mail.gmail.com>
- <BYAPR11MB3095C54BA878D8A5502CA891D9939@BYAPR11MB3095.namprd11.prod.outlook.com>
- <YEaFbyUM0Fu763vm@kroah.com>
-In-Reply-To: <YEaFbyUM0Fu763vm@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-reaction: no-action
-dlp-product: dlpe-windows
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=intel.com;
-x-originating-ip: [69.141.163.46]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3ddf53b4-43e1-4dd3-77db-08d8e2b7402f
-x-ms-traffictypediagnostic: BYAPR11MB2694:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB2694C7D4CF8E574CB5BB1376D9929@BYAPR11MB2694.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JVTpSgeTEaAI90kFgnP/prcKNtZ2y/hjxOcCZnfUlaeUSsWg3TY+llKvdZB0+qr6UlvrHgKNg8ujmoRiYa0vBPEDmyyMiyuIU50cj7FwoJ3N5IVta6Fo+ly7w15JrGeQPEtlZubOC+IHd+FR3rIU7reAMAYuumET5/+oDb9gnC5Go6BHymdZP5M/eA6BEgndiPvw0wMBiA0twolPAysBGDek9gHPeeR3F0JYfCHLL5tZj5/vO1UhT2cE82HBbdoSwuuEULRQ/QEC8XckkbKlNfgosCgVjkIhnc7tHp342OM0i0AAaihLpEtvXy+dMu7QyvBZRWLaR3cjr46mR7ikLY6V0/SAEx3R0+/R2B7gPL+Uy5XNMAWd5F8N4hwTD79gUUocrqb0d0p8rgdpPq0UiMaMYzG5/qYPnPiHWrDtAyklVblvujA3WZ5LKcRMF0/lZjbHCFv3Ea0H1BgyKzTYycrYKUYAU0aFj/3WYn36Rbnv9IpKmEXBtu/Ou+REvFSR3pBAoinbz4hB6DAyrAlR/AcpfcdmFF8kTqD1xpmtNGeTZYevIqSgXlaQdininSWhNcvmFV06YDE/QGwou6ALINfWExSRs7/vB1kVw77RIxQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3095.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(39860400002)(396003)(136003)(346002)(66556008)(8936002)(52536014)(66476007)(71200400001)(186003)(8676002)(76116006)(966005)(66946007)(6916009)(86362001)(5660300002)(2906002)(66446008)(64756008)(4744005)(33656002)(316002)(7696005)(54906003)(4326008)(9686003)(6506007)(478600001)(55016002)(83380400001)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?y5V3ha5nYAdRarjtAX/qas6fpfeEsJ4O2IE7KUlJdEVHUbq5PDUPENKvwR++?=
- =?us-ascii?Q?EqbmmER+qt72yqBCp41BXUuqTWSr9V0RKSfkjZK1DAbwFhwgS0Rc9fzRd5xm?=
- =?us-ascii?Q?Oo451vWkIKiEEMCRAGSEV8YtM/U2D22DrcPfonjwwykRsA/S5KsRq+s6h6WG?=
- =?us-ascii?Q?z1N+snqZuYILDWTsHuQUpKyz4RPhnOBEOAo75I2swG5ZElqX1dtJ2LwCEreb?=
- =?us-ascii?Q?Xfw3knvq4UP5O2NEljIQ9Ve5ExUESSlb0SrrHlpxH0kZkarqaTDcRc2BODys?=
- =?us-ascii?Q?LZ2N9pj4HrRWshQR3rQHnHXpWxgt//p5lJT1Qegzu/rKVphVGNd5yWicPcnR?=
- =?us-ascii?Q?lnXsEqolsvvEKi3IcVamZGexW4Ryg06QrVV84cZGkx7DpewiSt/WZWnmKHYe?=
- =?us-ascii?Q?9RDCYtfEdzncffpKndJo4mpZuYEQpvXK+zjOfgDiMNcN2tG+FiPIKCPuJe1t?=
- =?us-ascii?Q?gIHIVmJOG5txVdhOYam/GZy5iR8N2WIkJMfn6DMpItsw0RUYflf7boDvHvPM?=
- =?us-ascii?Q?gowX3W3274BolBW2mlja3FcwsoE2TjM/VfRsbGMGQKTdRokd1iIopKmgWM4l?=
- =?us-ascii?Q?Jx1fL/+giX29gK0sH9uM5i2KFqkbsr280rSyBRgqSclFL2vL+GI2gjhwea25?=
- =?us-ascii?Q?IyH1lIaTm++UmpujEN+ArsCoadT4b7HMvWckwCAylxQY+wBq7yJjWBphL+5H?=
- =?us-ascii?Q?EP0/tryZM+66HhrwU43ppIVZVSvMf6L2u9BfAvBEtO/+olwY8dWJc2c5er/Q?=
- =?us-ascii?Q?iIQSF+bRUECWZMMjbwfo6iaYsXI6chsKmZkbUOVwRKce+L/yS8RyjD5Rm3fc?=
- =?us-ascii?Q?zFJ1h3JbGUudEdqrS7jukw6OeA1lnaA8/U0AH8nmg+P1P+Uypf3fYCg/5UfH?=
- =?us-ascii?Q?uE0MP0s6m/ltzVdOJCC4TkskNqHqrJLiqDgdQ8JtwDl3f0+o3Wy5tWGENqhw?=
- =?us-ascii?Q?0SRII3suC6udZUbA4NQ2GALMdRk+oWxt+hbQX5y5x3POWmW4g7zQwL1B4rbh?=
- =?us-ascii?Q?dwbR1SojIjkzWRqh818zWiiaBa76Fgpk9LNKFNw3IaGIdUTg4lCvSc40P/nB?=
- =?us-ascii?Q?9PaXubYTefMv0+OPhM+uK3kJ8n9MEBgj3MBicwfYowAVsYhYi744NN2XAcOK?=
- =?us-ascii?Q?xwv+Us2FEr6mFWEttsG7hukm7GdsV5kAHjPVR78qCeSXF2rO3uwSRCK3eQRO?=
- =?us-ascii?Q?10ewRAJQP4nNudRHDxephPyN797ZX2t9AS2vGFYL1bVBkvardDcSQi72ToZb?=
- =?us-ascii?Q?76sIEnAFx1wiCD907AeWrQMAeu+U8ju1GiLo+LWkOPhCR0tLcbc4UbWZEIXS?=
- =?us-ascii?Q?zzon8MqdXkRDJg+e9QzL1RXY?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S229750AbhCIE7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 23:59:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229520AbhCIE7R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 23:59:17 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F767C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 20:59:16 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id v13so18033442edw.9
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 20:59:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NNsn0ufTvi2ZhdmZLPZ/mCVUGoeVfVXO8bsMlOKraZQ=;
+        b=xcdYd9CWVObqkrOASccmMaIZ8RFtWwy5vhs2pCdLkc9ZH8p9QGMHu4IyKqEd2Gjvdu
+         dC8y8QqY7JIZpqfSd+D1XBsnbAgrNmsCnhRyz7JddNyNP0/mrBG1CA0Mo+SbdFLR9GIq
+         BLnUaeVWCguu6j5YnXLIJD4QRjQBP0OzCdu7K8icwXnz8RVeanZ1awFhl3o3xG1M/bzb
+         ou/H1DhoicV9MZXu8TjT0AFYz/6NCBqdntJJotT/4YxdcOaDqILcPbUZfPlFFNTVgfjV
+         JjqZeBHufAiJTuUPaSJng85nkxl7Ns+/XMwVf/z8ZNWvqPO4XmMsuRkXIQHSf2aqYpoR
+         vhUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NNsn0ufTvi2ZhdmZLPZ/mCVUGoeVfVXO8bsMlOKraZQ=;
+        b=dwHMlDbhOiCJtRNPRoOXDByB+qkU7zycU9QX5aChLUVO5F3ReXylq+qH6a1s7p6Ib4
+         2/YAYm7WNdtrn4VRDa+9uShqycgnb0Gy6taFTGtdJDcv2Aqh8iYXdF6Hpe2DWJGyvaTs
+         Qfpicga9UzyZDw+2mXOedX4wuNoPF7wuTGtJnZ4ZSJw5c5VE56uL701zB/CtPKjO8fGR
+         GIwTosINp3gdEYAz8qpI/tu4lySPkxmdRrYUKDnZclke6KdRJJ2omkBap69lZv8IFrEN
+         cTsD+uSFjVv/4rs0hosDif0Bctb/xP6ATsyuHVY8iHvJv31+y1gGlwX4dPJtMesohB16
+         DJTQ==
+X-Gm-Message-State: AOAM532mhWL7QhEeFlc8oOE5RarozYlnWUWZajxU0nblzRDXxC5QDEjl
+        i14tKB0b87eGTu40M3qBxwk06SMIR7x9g4kTxffMHw==
+X-Google-Smtp-Source: ABdhPJxWPym7XShOKgZ71XxnLgW+IYugTIrsXclVAT3z0F2KEkp3VlaPEtkKeRzo8Qtu2W+e1rb3CUQ9PRls/l+PSTo=
+X-Received: by 2002:aa7:d287:: with SMTP id w7mr1970518edq.23.1615265955213;
+ Mon, 08 Mar 2021 20:59:15 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3095.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ddf53b4-43e1-4dd3-77db-08d8e2b7402f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Mar 2021 04:53:15.4911
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QsFIx5+IvsTwSGadBr6DwKpExfwcj5GWWUf1MN21SHMUC8j2Kgp2Aluh8AUloFY+0vAfGMu57P52c04kJyDrZbPzon6/8/dZ00TNbngm2oM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2694
-X-OriginatorOrg: intel.com
+References: <20210308122714.391917404@linuxfoundation.org>
+In-Reply-To: <20210308122714.391917404@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 9 Mar 2021 10:29:03 +0530
+Message-ID: <CA+G9fYupNTEE_o-wwn6eHaZRAPqPsHwLDkpsQTHz=tXf2_VAvg@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/22] 5.4.104-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 8 Mar 2021 at 18:02, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.104 release.
+> There are 22 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 10 Mar 2021 12:27:05 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.104-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> -----Original Message-----
-> From: Greg KH <gregkh@linuxfoundation.org>
-> On Mon, Mar 08, 2021 at 08:00:00PM +0000, Chen, Mike Ximing wrote:
-> >
-> > Hi Greg,
-> >
-> > While waiting for the feedback from the networking maintainers, I am
-> > wondering if you have any other comments/suggestions that I  should add=
-ress
-> > in parallel.
->=20
-> It's in my "to-review" queue, which is huge at the moment.  But the
-> networking developers review will determine how this should go forward,
-> so I'll just wait for them to get to it.
->=20
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-I see the status of the submission (to netdev)  is now marked as "Not Appli=
-cable"=20
-at netdev's patchwork site
-https://patchwork.kernel.org/project/netdevbpf/list/?series=3D&submitter=3D=
-197673&state=3D*&q=3D&archive=3Dboth&delegate=3D
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Looks like that the patch set is considered as not being networking related=
-. (?)
+Summary
+------------------------------------------------------------------------
 
-Thanks
-Mike=20
+kernel: 5.4.104-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: 1d493929c06100abd14b955538afa461dc2c8b69
+git describe: v5.4.103-23-g1d493929c061
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.103-23-g1d493929c061
+
+No regressions (compared to build v5.4.103)
+
+No fixes (compared to build v5.4.103)
+
+
+Ran 53363 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-intel_pstate
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* fwts
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-tc-testing
+* kvm-unit-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-ipc-tests
+* network-basic-tests
+* kselftest-kexec
+* kselftest-vm
+* kselftest-x86
+* ltp-open-posix-tests
+* rcutorture
+* kselftest-
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
