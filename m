@@ -2,112 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601BB3322E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:24:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 851CF3322EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhCIKXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 05:23:41 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16242 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229691AbhCIKX0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 05:23:26 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 129A2Zd7030158;
-        Tue, 9 Mar 2021 05:23:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=Y2WYqbW5vkjG0KSIX+1BH32UqUNLKp0S+GdGNFjfW1A=;
- b=XYrn2b4dcNORFoL99o+Qbz1b3dq78V3Ao9bB+BdXZQFlU8G/s+IYLNTca9UR/n97dDzN
- UVhhIYw7wdeV3R61Rk8acVlmgj2IRaljbiY8AGPcTpiEF9iNvEni4IHUasmWDEER5Cyc
- 5uXqP7PAKH0pUM8VYdMAZvcTwjIlp8s3C6pNlZ7OHi1uobcAESqSHoXkyEBaN0UDzykI
- QgTLQlO0BXQPQboZNX2OEJWaDQOR0t31CWwmrF/IpGTsZvjm5Rv4Gq/wqOrw58CyiR4r
- q2aWs0c4H37Q07ocllO1T6rF96viRmeEOux1e+Eqe4k9Og4QNISmkhr+lXw9NqpH5aPr tw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 375wdd61up-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 05:23:21 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 129A4qBj038770;
-        Tue, 9 Mar 2021 05:23:20 -0500
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 375wdd61tu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 05:23:20 -0500
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1299rm5V009628;
-        Tue, 9 Mar 2021 10:23:19 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 3741c89chq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 10:23:18 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 129AN0N030867852
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 9 Mar 2021 10:23:00 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CE8B9A4051;
-        Tue,  9 Mar 2021 10:23:15 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 19FE4A404D;
-        Tue,  9 Mar 2021 10:23:15 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.42.128])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue,  9 Mar 2021 10:23:15 +0000 (GMT)
-Date:   Tue, 9 Mar 2021 11:23:13 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
-        pbonzini@redhat.com, alex.williamson@redhat.com,
-        pasic@linux.vnet.ibm.com
-Subject: Re: [PATCH v3 1/1] s390/vfio-ap: fix circular lockdep when
- setting/clearing crypto masks
-Message-ID: <20210309112313.4c6e3347.pasic@linux.ibm.com>
-In-Reply-To: <8f5ab6fa-8fd3-27d8-8561-d03ff457df16@linux.ibm.com>
-References: <20210302204322.24441-1-akrowiak@linux.ibm.com>
-        <20210302204322.24441-2-akrowiak@linux.ibm.com>
-        <20210303162332.4d227dbe.pasic@linux.ibm.com>
-        <14665bcf-2224-e313-43ff-357cadd177cf@linux.ibm.com>
-        <20210303204706.0538e84f.pasic@linux.ibm.com>
-        <8f5ab6fa-8fd3-27d8-8561-d03ff457df16@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S230431AbhCIKYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 05:24:15 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:29114 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229813AbhCIKXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 05:23:55 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615285434; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=TjLNpjOkpU3NJvxqk+olVOnd639fxr8nX2GxYnA2gbk=; b=VK3niHBFyAwz61SuKutrd5y0QIn6Ne6pmwzq7AwJHh7jtnknBj1DbrpUTSRP652KS/JVAjrJ
+ 2rMQ0gB11PJM/M2M0TaX9c1SxhddXK+/4Ygmji3ZcGq8t0fq4UYOoJAUllpAr7U/0PuDstc3
+ uaaC2ekIhcvD5XFRHMYPPjRH4xY=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60474c9be5eea4c43bd9e5f9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Mar 2021 10:23:23
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 57F1DC4346D; Tue,  9 Mar 2021 10:23:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B5E8CC433CA;
+        Tue,  9 Mar 2021 10:23:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B5E8CC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        ath9k-devel@qca.qualcomm.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Denis Kirjanov <kda@linux-powerpc.org>,
+        Chas Williams <3chas3@gmail.com>,
+        linux-atm-general@lists.sourceforge.net,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        linux1394-devel@lists.sourceforge.net
+Subject: Re: [patch 10/14] ath9k: Use tasklet_disable_in_atomic()
+References: <20210309084203.995862150@linutronix.de>
+        <20210309084242.313899703@linutronix.de>
+Date:   Tue, 09 Mar 2021 12:23:14 +0200
+In-Reply-To: <20210309084242.313899703@linutronix.de> (Thomas Gleixner's
+        message of "Tue, 09 Mar 2021 09:42:13 +0100")
+Message-ID: <871rco1v8t.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-09_09:2021-03-08,2021-03-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- malwarescore=0 clxscore=1015 phishscore=0 spamscore=0 lowpriorityscore=0
- priorityscore=1501 mlxscore=0 impostorscore=0 suspectscore=0
- mlxlogscore=861 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103090048
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 12:43:44 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+Thomas Gleixner <tglx@linutronix.de> writes:
 
-> On the other hand, if we don't have ->kvm because something broke,
-> then we may be out of luck anyway. There will certainly be no
-> way to unregister the GISC; however, it may still be possible
-> to unpin the pages if we still have q->saved_pfn.
-> 
-> The point is, if the queue is bound to vfio_ap, it can be reset. If we can't
-> clean up the IRQ resources because something is broken, then there
-> is nothing we can do about that.
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>
+> All callers of ath9k_beacon_ensure_primary_slot() are preemptible /
+> acquire a mutex except for this callchain:
+>
+>   spin_lock_bh(&sc->sc_pcu_lock);
+>   ath_complete_reset()
+>   -> ath9k_calculate_summary_state()
+>      -> ath9k_beacon_ensure_primary_slot()
+>
+> It's unclear how that can be distangled, so use tasklet_disable_in_atomic()
+> for now. This allows tasklet_disable() to become sleepable once the
+> remaining atomic users are cleaned up.
+>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: ath9k-devel@qca.qualcomm.com
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> ---
+>  drivers/net/wireless/ath/ath9k/beacon.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Especially since the recently added WARN_ONCE macros calling reset_queues
-unconditionally ain't that bad: we would at least see if there is a
-problem with cleaning up the IRQ resources.
+I assume this goes via some other tree:
 
-Let's make it unconditional again and observe. Can you send out a v4 with
-this and the other issue fixed. 
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
 
-Regards,
-Halil
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
