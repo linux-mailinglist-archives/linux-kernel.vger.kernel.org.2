@@ -2,82 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE46E332A7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A84332A8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231670AbhCIPcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:32:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43990 "EHLO
+        id S231263AbhCIPd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:33:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231673AbhCIPbw (ORCPT
+        with ESMTP id S231216AbhCIPdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:31:52 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27BA3C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 07:31:52 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id u4so27772571lfs.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 07:31:52 -0800 (PST)
+        Tue, 9 Mar 2021 10:33:16 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80BA3C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 07:33:16 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id e20so2109185ljn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 07:33:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ytPSd3A3o1b3+2MlI23BkWVwBk2Qohz+v6T0uxCz9RU=;
-        b=ZsDiIRRw+LQemQRHuo0zPr0x7lYYY1RnmWzkwLTDWTgoiy/WPSeXg/JaqaTrpgMG3q
-         ikEXZC1G7CHl5BS1bfjXkICij2hiQ6WpSSM+Metl62wF5PagNLwgLpOJJ0GyWXw+7Mq0
-         yZGh8DBCJF4pOgqHWr5Fwp+ga3e5eloGHFvzTJjeok0tMOwbfseR1tixEGwIuy/E2mEO
-         REWCX0BsJOOBHq5W1AlXu+5NKi0y/LPYDmdZ4KJZ4sYnjc9oO3tmpALL7C4AQpar3ng8
-         5dVI2dneZPzIGcGroTAYeGXc8nPkUdXN4CCe30O7y30/+9hokigEsxJTr7Vkhw7VftM8
-         RYSw==
+        bh=GueXWEXYhGgyYi6RS/iDIZfnWgS+3C26tBBCX7qsJZ4=;
+        b=z2Y+Gz1eD/yQaUstRQIfbWCXO4frrvNYGP64q9xoN7I+ftNHuKnfMiLaKKarVDldsr
+         ksiKhYOs+YQAIA+o7mJ4jo8GQ3ExfzIIg2l7auI14Eo1bTAYTdD8FGTDlse27T9hpgW3
+         r/uDAZb2mUztArRDC42qzZCFznzG2qD7HORJhDjB32RqT475lwOXdMqJAf6RQDx6slQh
+         jF2KVKvMvHjcCDxtchWOYHF6SPUQRp9HFC/x5N2COkqY82uIt8oSXChvNwZVL0LOR+hj
+         dt2Vh8cub/3nTsv9Oi29tgWHzrWg6vLoopEEaa/DlvzR6vGCJst059Ye6a8RFS9Zyn1i
+         /J5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ytPSd3A3o1b3+2MlI23BkWVwBk2Qohz+v6T0uxCz9RU=;
-        b=VaJJtLLKPkf0Apin5yLviYw+VH4IS/eykDuY1zsqLWVOEUMxemWZxE+B7QPOfotuGC
-         DjLApkphjrA03WSif7Uxe9J8VeIpY3WAD6SBXfM77pGDYcKHhy3OXmfEWkX6eGgi/ANa
-         AHLbeVz0KxTQ3rONsODjRd6lFJzYLJT10HZyxtdTkwfJGaAU8BKgAM6CJ1S6qMjMbVEm
-         jn/UfK3nKU9S/a8ZVKIxgpv+cYbrvDc/Xu6AcvRscwwCUBb+VR4zbKjcUgLKgcVFqzUG
-         Zv6xcbDGSCdoA76ur0+PkxDSFMi1XxFLM1BXO3wWHBGBbyf1Qtp0uM/CGptvJcK6W86x
-         uK/Q==
-X-Gm-Message-State: AOAM533VDdcFVennmbM6ffRS/eCvrTx/iKXrG1mwlJw6waQhImUD/tec
-        iUywWXpbUP8bKHFjqFzL6spltJa7zwORvyb9TPqYmA==
-X-Google-Smtp-Source: ABdhPJw06MbLp34uxhYaAr5Kj9oirKrQg5zi5+BhFUpssWilBUXjFuULwcGEpI0qogMy5JAEwzC+K56ofZWkxv+pUqE=
-X-Received: by 2002:a05:6512:10d1:: with SMTP id k17mr17314789lfg.649.1615303910617;
- Tue, 09 Mar 2021 07:31:50 -0800 (PST)
+        bh=GueXWEXYhGgyYi6RS/iDIZfnWgS+3C26tBBCX7qsJZ4=;
+        b=WzSFEky/HbEQVQwqiSVEyQtQ2fKIEW38RGjF9tzhxtyTPF0TSt1nB2w4mCcN/hES5s
+         I9TFRxjT2p91UW7/irf+rtPSDi1VMYeNECNSekHdK2/BA7ZNlOBbKwDnGHbfEt5cqnlt
+         Bnrd0emlBLK8V1kYw2hEQL3axEfpaV6SYHpJC7ZHjnc6py6pBU+BzzxOKHv8kBLzlUdm
+         LOI6NB9M8owJqYMmXtVO57OAeAJGWk1x8ZYk21hSIe7CZiS7kNmSpngDK6vrzT0jlVtR
+         hwE9h7+eJZDjrSYP4FgqyZ0ZPseZSV4l0bbAKTuvEJEqlLCbwq3E7QAlRPLScvGlhEPC
+         BiZw==
+X-Gm-Message-State: AOAM532tUcBt66iSwMgzlTwBJy84NC/q2/N73Y75cT8XtsBV3Tx5pWPk
+        FDBJzsWVLF42fAhwjoLdXBst4/SOfUlc/CtZ/pNtPw==
+X-Google-Smtp-Source: ABdhPJwdiYjJdqBFXdRtFhpC8nmjCUSyb8p3FKa6ytdypXh//VwloAzsouYK1AjcyrQSDABBs6/mkeh/pmupWOxegwo=
+X-Received: by 2002:a05:651c:124b:: with SMTP id h11mr17357819ljh.401.1615303994941;
+ Tue, 09 Mar 2021 07:33:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20210309093736.67925-1-andriy.shevchenko@linux.intel.com> <20210309093736.67925-7-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210309093736.67925-7-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Mar 2021 16:31:39 +0100
-Message-ID: <CACRpkdZaFv7c-mdxF+0T7ceU7ucjtE9-70nBune1iNj54moHXw@mail.gmail.com>
-Subject: Re: [PATCH v6 6/6] gpiolib: Fold conditionals into a simple ternary operator
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+References: <cover.1614580695.git.viresh.kumar@linaro.org> <f72383d451710fc4bc36e7e3015deba40fbe28f3.1614580695.git.viresh.kumar@linaro.org>
+ <20210309151017.GA25243@arm.com>
+In-Reply-To: <20210309151017.GA25243@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 9 Mar 2021 16:33:03 +0100
+Message-ID: <CAKfTPtBQ2Y249LMQOep5HdfmkOQknP0jom=6RpDOFv_TajZLWQ@mail.gmail.com>
+Subject: Re: [PATCH V5 2/2] cpufreq: CPPC: Add support for frequency invariance
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
         ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 10:37 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-
-> It's quite spread code to initialize IRQ domain options.
-> Let's fold it into a simple oneliner.
+On Tue, 9 Mar 2021 at 16:10, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
 >
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Hey,
+>
+> On Monday 01 Mar 2021 at 12:21:18 (+0530), Viresh Kumar wrote:
+> > The Frequency Invariance Engine (FIE) is providing a frequency scaling
+> > correction factor that helps achieve more accurate load-tracking.
+> >
+> > Normally, this scaling factor can be obtained directly with the help of
+> > the cpufreq drivers as they know the exact frequency the hardware is
+> > running at. But that isn't the case for CPPC cpufreq driver.
+> >
+> > Another way of obtaining that is using the arch specific counter
+> > support, which is already present in kernel, but that hardware is
+> > optional for platforms.
+> >
+> > This patch updates the CPPC driver to register itself with the topology
+> > core to provide its own implementation (cppc_scale_freq_tick()) of
+> > topology_scale_freq_tick() which gets called by the scheduler on every
+> > tick. Note that the arch specific counters have higher priority than
+> > CPPC counters, if available, though the CPPC driver doesn't need to have
+> > any special handling for that.
+> >
+> > On an invocation of cppc_scale_freq_tick(), we schedule an irq work
+> > (since we reach here from hard-irq context), which then schedules a
+> > normal work item and cppc_scale_freq_workfn() updates the per_cpu
+> > freq_scale variable based on the counter updates since the last tick.
+> >
+> > To allow platforms to disable frequency invariance support if they want,
+>                                ^
+>                                this CPPC counter-based frequency invariance
+>                                support..
+>
+> (disabling this config will not disable cpufreq or arch counter-based FIE)
+>
+> > this is all done under CONFIG_ACPI_CPPC_CPUFREQ_FIE, which is enabled by
+> > default.
+> >
+> > This also exports sched_setattr_nocheck() as the CPPC driver can be
+> > built as a module.
+> >
+> > Cc: Ionela Voinescu <ionela.voinescu@arm.com>
+> > Cc: linux-acpi@vger.kernel.org
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> >  drivers/cpufreq/Kconfig.arm    |   9 ++
+> >  drivers/cpufreq/cppc_cpufreq.c | 244 +++++++++++++++++++++++++++++++--
+> >  include/linux/arch_topology.h  |   1 +
+> >  kernel/sched/core.c            |   1 +
+> >  4 files changed, 243 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
+> > index e65e0a43be64..a3e2d6dfea70 100644
+> > --- a/drivers/cpufreq/Kconfig.arm
+> > +++ b/drivers/cpufreq/Kconfig.arm
+> > @@ -19,6 +19,15 @@ config ACPI_CPPC_CPUFREQ
+> >
+> >         If in doubt, say N.
+> >
+> > +config ACPI_CPPC_CPUFREQ_FIE
+> > +     bool "Frequency Invariance support for CPPC cpufreq driver"
+> > +     depends on ACPI_CPPC_CPUFREQ
+>
+> It also depends on GENERIC_ARCH_TOPOLOGY.
+>
+> > +     default y
+> > +     help
+> > +       This enables frequency invariance support for CPPC cpufreq driver.
+>                                                     ^^^^^^^^^^^^^^^^^^^^^^^^
+>                                                     s//based on CPPC counters.
+>
+> .. or more detailed: This extends frequency invariance support in the
+> CPPC cpufreq driver, by using CPPC delivered and reference performance
+> counters.
+>
+> > +
+> > +       If in doubt, say N.
+> > +
+> >  config ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM
+> >       tristate "Allwinner nvmem based SUN50I CPUFreq driver"
+> >       depends on ARCH_SUNXI
+> > diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+> > index 8a482c434ea6..c4580a37a1b1 100644
+> > --- a/drivers/cpufreq/cppc_cpufreq.c
+> > +++ b/drivers/cpufreq/cppc_cpufreq.c
+> [..]
+> > +static void cppc_freq_invariance_policy_init(struct cpufreq_policy *policy,
+> > +                                          struct cppc_cpudata *cpu_data)
+> > +{
+> > +     struct cppc_freq_invariance *cppc_fi;
+> > +     int i;
+> > +
+> > +     if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
+> > +             return;
+> > +
+> > +     for_each_cpu(i, policy->cpus) {
+> > +             cppc_fi = &per_cpu(cppc_freq_inv, i);
+> > +             cppc_fi->cpu = i;
+> > +             cppc_fi->cpu_data = cpu_data;
+> > +             kthread_init_work(&cppc_fi->work, cppc_scale_freq_workfn);
+> > +             init_irq_work(&cppc_fi->irq_work, cppc_irq_work);
+> > +     }
+> > +}
+> > +
+> > +static void cppc_freq_invariance_exit(void)
+> > +{
+> > +     struct cppc_freq_invariance *cppc_fi;
+> > +     int i;
+> > +
+> > +     if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
+> > +             return;
+> > +
+> > +     topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_CPPC, cpu_present_mask);
+> > +
+> > +     for_each_possible_cpu(i) {
+> > +             cppc_fi = &per_cpu(cppc_freq_inv, i);
+> > +             irq_work_sync(&cppc_fi->irq_work);
+> > +     }
+> > +
+> > +     kthread_destroy_worker(kworker_fie);
+> > +     kworker_fie = NULL;
+> > +}
+> > +
+> > +static void __init cppc_freq_invariance_init(void)
+> > +{
+> > +     struct cppc_perf_fb_ctrs fb_ctrs = {0};
+> > +     struct cppc_freq_invariance *cppc_fi;
+> > +     struct sched_attr attr = {
+> > +             .size           = sizeof(struct sched_attr),
+> > +             .sched_policy   = SCHED_DEADLINE,
+> > +             .sched_nice     = 0,
+> > +             .sched_priority = 0,
+> > +             /*
+> > +              * Fake (unused) bandwidth; workaround to "fix"
+> > +              * priority inheritance.
+> > +              */
+> > +             .sched_runtime  = 1000000,
+> > +             .sched_deadline = 10000000,
+> > +             .sched_period   = 10000000,
+> > +     };
+> > +     int i, ret;
+> > +
+> > +     if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
+> > +             return;
+> > +
+> > +     kworker_fie = kthread_create_worker(0, "cppc_fie");
+> > +     if (IS_ERR(kworker_fie))
+> > +             return;
+> > +
+> > +     ret = sched_setattr_nocheck(kworker_fie->task, &attr);
+> > +     if (ret) {
+> > +             pr_warn("%s: failed to set SCHED_DEADLINE: %d\n", __func__,
+> > +                     ret);
+> > +             kthread_destroy_worker(kworker_fie);
+> > +             return;
+> > +     }
+> > +
+>
+> Nit: to me it makes more sense to move the code below to
+> cppc_freq_invariance_policy_init(). It seems a bit strange to do part of
+> the initialization of the per-cpu information there, and part here. But
+> I do understand the reasons for it. Moving the code below would also
+> save some cycles going through the CPUs again and will mimic the
+> frequency invariance setup process in the arm64 topology, where we do
+> amu_fie_setup() at policy creation time.
+>
+> It's not a big deal so I'll leave it up to you.
+>
+> > +     for_each_possible_cpu(i) {
+> > +             cppc_fi = &per_cpu(cppc_freq_inv, i);
+> > +
+> > +             /* A policy failed to initialize, abort */
+> > +             if (unlikely(!cppc_fi->cpu_data))
+> > +                     return cppc_freq_invariance_exit();
+> > +
+> > +             ret = cppc_get_perf_ctrs(i, &fb_ctrs);
+> > +             if (ret) {
+> > +                     pr_warn("%s: failed to read perf counters: %d\n",
+> > +                             __func__, ret);
+> > +                     return cppc_freq_invariance_exit();
+> > +             }
+> > +
+> > +             cppc_fi->prev_perf_fb_ctrs = fb_ctrs;
+> > +     }
+> > +
+> > +     /* Register for freq-invariance */
+> > +     topology_set_scale_freq_source(&cppc_sftd, cpu_present_mask);
+> > +}
+>
+> After another very quick round of testing:
+>
+> Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> Tested-by: Ionela Voinescu <ionela.voinescu@arm.com>
+>
+> I did not get the chance to test on ThunderX2 yet, but if you are happy
+> with your testing on it, I won't delay this any further.
 
-Definitely due to my coding style. (Not so fond of the ternary operator.)
-Allright, it is so much more compact.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+I have just run some functional  tests on thx2 with rt-app: I have run
+a periodic task (6ms running / 30ms periods) at different frequencies
+(2.5Ghz, 2Ghz, 1.5Ghz, 1.333Ghz, 1Ghz) and the PELT signals stays the
+same for all frequencies.
 
-Yours,
-Linus Walleij
+Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
+
+
+>
+> Thanks,
+> Ionela.
