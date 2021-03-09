@@ -2,129 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C68A332EDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:18:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AB4332EE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbhCITSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 14:18:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231313AbhCITSB (ORCPT
+        id S231354AbhCITTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:19:18 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:17772 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231357AbhCITS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:18:01 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9409C06174A;
-        Tue,  9 Mar 2021 11:18:00 -0800 (PST)
-Date:   Tue, 09 Mar 2021 19:17:56 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615317477;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oEQRIx4Tp61Rw9DpX02YB5M4wS7iCoRRmKL6avj3b4Q=;
-        b=LCtdNgIjD2lHd2Qk0FES3WqwXLY1E3v+1w+egh3WS0Pt4XZlU/LhvcxgKKdT9ot0HZE+DI
-        xM1TqiGh5gXiD1q5RMtvzkjVyh3taZD2r/H3QX4GVmk4mudksBsjLYcAlaGsbd0+tiurUU
-        VXJwkrQG6GzyqNcMoBov3Qqj9HpsxfgSsduEWhzap64twi2i+L+kWLcK+7fF+kRi8Hy44F
-        LhQj80ri+ILUuBZTWWSSZWCr0Se252I7ke8U5iGoE4v2Hnnhvxtk5yVsqiQLvgOlEfktoq
-        51wwDIH/pcw4JHLFOcpZMczmXcbCHKKkyH/IFU4r3OnBAnd/6mGNHwquDszCYw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615317477;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oEQRIx4Tp61Rw9DpX02YB5M4wS7iCoRRmKL6avj3b4Q=;
-        b=U6gbdytwlWVkeCtqOXou3Oemsx5S1dlXdMGdNcMMgsbDgpZ2N1+/bzNFYef7hEn5iFm7jP
-        PBh2Dg5h7qmwKVDA==
-From:   "tip-bot2 for Juergen Gross" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/alternatives] x86/alternative: Drop unused feature
- parameter from ALTINSTR_REPLACEMENT()
-Cc:     Juergen Gross <jgross@suse.com>, Borislav Petkov <bp@suse.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210309134813.23912-4-jgross@suse.com>
-References: <20210309134813.23912-4-jgross@suse.com>
-MIME-Version: 1.0
-Message-ID: <161531747613.398.15873261570688926312.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Tue, 9 Mar 2021 14:18:59 -0500
+Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 09 Mar 2021 11:18:59 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 09 Mar 2021 11:18:56 -0800
+X-QCInternal: smtphost
+Received: from c-sbhanu-linux.qualcomm.com ([10.242.50.201])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 10 Mar 2021 00:48:03 +0530
+Received: by c-sbhanu-linux.qualcomm.com (Postfix, from userid 2344807)
+        id 6F78446DF; Wed, 10 Mar 2021 00:48:03 +0530 (IST)
+From:   Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, sartgarg@codeaurora.org
+Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
+        vbadigan@codeaurora.org, rampraka@codeaurora.org,
+        sayalil@codeaurora.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, sibis@codeaurora.org,
+        cang@codeaurora.org, pragalla@codeaurora.org,
+        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org,
+        Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+Subject: [PATCH V1] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD card
+Date:   Wed, 10 Mar 2021 00:48:03 +0530
+Message-Id: <1615317483-23780-1-git-send-email-sbhanu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/alternatives branch of tip:
+Add nodes for eMMC and SD card on sc7280.
 
-Commit-ID:     db16e07269c2b4346e4332e43f04e447ef14fd2f
-Gitweb:        https://git.kernel.org/tip/db16e07269c2b4346e4332e43f04e447ef14fd2f
-Author:        Juergen Gross <jgross@suse.com>
-AuthorDate:    Tue, 09 Mar 2021 14:48:04 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 09 Mar 2021 20:08:28 +01:00
+Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
 
-x86/alternative: Drop unused feature parameter from ALTINSTR_REPLACEMENT()
-
-The macro ALTINSTR_REPLACEMENT() doesn't make use of the feature
-parameter, so drop it.
-
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210309134813.23912-4-jgross@suse.com
 ---
- arch/x86/include/asm/alternative.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+This change is depends on the below patch series:
+https://lore.kernel.org/lkml/1613114930-1661-1-git-send-email-rnayak@codeaurora.org/
+https://lore.kernel.org/patchwork/project/lkml/list/?series=&submitter=28035&state=&q=&archive=&delegate=
+---
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts |  26 +++++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi    | 170 ++++++++++++++++++++++++++++++++
+ 2 files changed, 196 insertions(+)
 
-diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
-index 13adca3..5753fb2 100644
---- a/arch/x86/include/asm/alternative.h
-+++ b/arch/x86/include/asm/alternative.h
-@@ -150,7 +150,7 @@ static inline int alternatives_text_reserved(void *start, void *end)
- 	" .byte " alt_rlen(num) "\n"			/* replacement len */ \
- 	" .byte " alt_pad_len "\n"			/* pad len */
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+index ac79420..6abb2aa 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
++++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+@@ -8,6 +8,7 @@
+ /dts-v1/;
  
--#define ALTINSTR_REPLACEMENT(newinstr, feature, num)	/* replacement */	\
-+#define ALTINSTR_REPLACEMENT(newinstr, num)		/* replacement */	\
- 	"# ALT: replacement " #num "\n"						\
- 	b_replacement(num)":\n\t" newinstr "\n" e_replacement(num) ":\n"
+ #include "sc7280.dtsi"
++#include <dt-bindings/gpio/gpio.h>
  
-@@ -161,7 +161,7 @@ static inline int alternatives_text_reserved(void *start, void *end)
- 	ALTINSTR_ENTRY(feature, 1)					\
- 	".popsection\n"							\
- 	".pushsection .altinstr_replacement, \"ax\"\n"			\
--	ALTINSTR_REPLACEMENT(newinstr, feature, 1)			\
-+	ALTINSTR_REPLACEMENT(newinstr, 1)				\
- 	".popsection\n"
+ / {
+ 	model = "Qualcomm Technologies, Inc. SC7280 IDP platform";
+@@ -256,3 +257,28 @@
+ 		bias-pull-up;
+ 	};
+ };
++
++&sdhc_1 {
++	status = "okay";
++
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&sdc1_on>;
++	pinctrl-1 = <&sdc1_off>;
++
++	vmmc-supply = <&vreg_l7b_2p9>;
++	vqmmc-supply = <&vreg_l19b_1p8>;
++
++};
++
++&sdhc_2 {
++	status = "okay";
++
++	pinctrl-names = "default","sleep";
++	pinctrl-0 = <&sdc2_on>;
++	pinctrl-1 = <&sdc2_off>;
++
++	vmmc-supply = <&vreg_l9c_2p9>;
++	vqmmc-supply = <&vreg_l6c_2p9>;
++
++	cd-gpios = <&tlmm 91 GPIO_ACTIVE_LOW>;
++};
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 3b86052..91fb18a 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -18,6 +18,11 @@
  
- #define ALTERNATIVE_2(oldinstr, newinstr1, feature1, newinstr2, feature2)\
-@@ -171,8 +171,8 @@ static inline int alternatives_text_reserved(void *start, void *end)
- 	ALTINSTR_ENTRY(feature2, 2)					\
- 	".popsection\n"							\
- 	".pushsection .altinstr_replacement, \"ax\"\n"			\
--	ALTINSTR_REPLACEMENT(newinstr1, feature1, 1)			\
--	ALTINSTR_REPLACEMENT(newinstr2, feature2, 2)			\
-+	ALTINSTR_REPLACEMENT(newinstr1, 1)				\
-+	ALTINSTR_REPLACEMENT(newinstr2, 2)				\
- 	".popsection\n"
+ 	chosen { };
  
- #define ALTERNATIVE_3(oldinsn, newinsn1, feat1, newinsn2, feat2, newinsn3, feat3) \
-@@ -183,9 +183,9 @@ static inline int alternatives_text_reserved(void *start, void *end)
- 	ALTINSTR_ENTRY(feat3, 3)						\
- 	".popsection\n"								\
- 	".pushsection .altinstr_replacement, \"ax\"\n"				\
--	ALTINSTR_REPLACEMENT(newinsn1, feat1, 1)				\
--	ALTINSTR_REPLACEMENT(newinsn2, feat2, 2)				\
--	ALTINSTR_REPLACEMENT(newinsn3, feat3, 3)				\
-+	ALTINSTR_REPLACEMENT(newinsn1, 1)					\
-+	ALTINSTR_REPLACEMENT(newinsn2, 2)					\
-+	ALTINSTR_REPLACEMENT(newinsn3, 3)					\
- 	".popsection\n"
++	aliases {
++		mmc1 = &sdhc_1;
++		mmc2 = &sdhc_2;
++	};
++
+ 	clocks {
+ 		xo_board: xo-board {
+ 			compatible = "fixed-clock";
+@@ -315,6 +320,69 @@
+ 			#power-domain-cells = <1>;
+ 		};
  
- /*
++		sdhc_1: sdhci@7c4000 {
++			compatible = "qcom,sdhci-msm-v5";
++			reg = <0 0x7c4000 0 0x1000>,
++					<0 0x7c5000 0 0x1000>;
++			reg-names = "hc", "cqhci";
++
++			iommus = <&apps_smmu 0xC0 0x0>;
++			interrupts = <GIC_SPI 652 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 656 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "hc_irq", "pwr_irq";
++
++			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
++					<&gcc GCC_SDCC1_AHB_CLK>,
++					<&rpmhcc RPMH_CXO_CLK>;
++			clock-names = "core", "iface", "xo";
++
++			bus-width = <8>;
++			non-removable;
++			supports-cqe;
++			no-sd;
++			no-sdio;
++
++			max-frequency = <192000000>;
++
++			qcom,dll-config = <0x0007642c>;
++			qcom,ddr-config = <0x80040868>;
++
++			mmc-ddr-1_8v;
++			mmc-hs200-1_8v;
++			mmc-hs400-1_8v;
++			mmc-hs400-enhanced-strobe;
++
++			status = "disabled";
++
++		};
++
++		sdhc_2: sdhci@8804000 {
++			compatible = "qcom,sdhci-msm-v5";
++			reg = <0 0x08804000 0 0x1000>;
++
++			iommus = <&apps_smmu 0x100 0x0>;
++			interrupts = <GIC_SPI 207 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 223 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "hc_irq", "pwr_irq";
++
++			clocks = <&gcc GCC_SDCC2_APPS_CLK>,
++					<&gcc GCC_SDCC2_AHB_CLK>,
++					<&rpmhcc RPMH_CXO_CLK>;
++			clock-names = "core", "iface", "xo";
++
++			bus-width = <4>;
++
++			no-mmc;
++			no-sdio;
++
++			max-frequency = <202000000>;
++
++			qcom,dll-config = <0x0007642c>;
++
++			status = "disabled";
++
++		};
++
+ 		qupv3_id_0: geniqup@9c0000 {
+ 			compatible = "qcom,geni-se-qup";
+ 			reg = <0 0x009c0000 0 0x2000>;
+@@ -385,6 +453,108 @@
+ 				pins = "gpio46", "gpio47";
+ 				function = "qup13";
+ 			};
++
++			sdc1_on: sdc1-on {
++				pinconf-clk {
++					pins = "sdc1_clk";
++					bias-disable;
++					drive-strength = <16>;
++				};
++
++				pinconf-cmd {
++					pins = "sdc1_cmd";
++					bias-pull-up;
++					drive-strength = <10>;
++				};
++
++				pinconf-data {
++					pins = "sdc1_data";
++					bias-pull-up;
++					drive-strength = <10>;
++				};
++
++				pinconf-rclk {
++					pins = "sdc1_rclk";
++					bias-pull-down;
++				};
++			};
++
++			sdc1_off: sdc1-off {
++				pinconf-clk {
++					pins = "sdc1_clk";
++					bias-disable;
++					drive-strength = <2>;
++				};
++
++				pinconf-cmd {
++					pins = "sdc1_cmd";
++					bias-pull-up;
++					drive-strength = <2>;
++				};
++
++				pinconf-data {
++					pins = "sdc1_data";
++					bias-pull-up;
++					drive-strength = <2>;
++				};
++
++				pinconf-rclk {
++					pins = "sdc1_rclk";
++					bias-pull-down;
++				};
++			};
++
++			sdc2_on: sdc2-on {
++				pinconf-clk {
++					pins = "sdc2_clk";
++					bias-disable;
++					drive-strength = <16>;
++				};
++
++				pinconf-cmd {
++					pins = "sdc2_cmd";
++					bias-pull-up;
++					drive-strength = <10>;
++				};
++
++				pinconf-data {
++					pins = "sdc2_data";
++					bias-pull-up;
++					drive-strength = <10>;
++				};
++
++				pinconf-sd-cd {
++					pins = "gpio91";
++					bias-pull-up;
++					drive-strength = <2>;
++				};
++			};
++
++			sdc2_off: sdc2-off {
++				pinconf-clk {
++					pins = "sdc2_clk";
++					bias-disable;
++					drive-strength = <2>;
++				};
++
++				pinconf-cmd {
++					pins = "sdc2_cmd";
++					bias-pull-up;
++					drive-strength = <2>;
++				};
++
++				pinconf-data {
++					pins = "sdc2_data";
++					bias-pull-up;
++					drive-strength = <2>;
++				};
++
++				pinconf-sd-cd {
++					pins = "gpio91";
++					bias-disable;
++					drive-strength = <2>;
++				};
++			};
+ 		};
+ 
+ 		apps_smmu: iommu@15000000 {
+-- 
+2.7.4
+
