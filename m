@@ -2,80 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E947331BAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 527B0331BB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbhCIAcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 19:32:05 -0500
-Received: from mga01.intel.com ([192.55.52.88]:7664 "EHLO mga01.intel.com"
+        id S231911AbhCIAeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 19:34:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229821AbhCIAbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 19:31:41 -0500
-IronPort-SDR: s2PwdowNM8i6VMO1UysIDlFb0bwA8bgNCp8aNJhFXZeLSRZG09n1YwwVDsAIwMu84lK8pMCVEZ
- GJWIUC5npOpA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="207899666"
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="207899666"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 16:31:41 -0800
-IronPort-SDR: NBWbpV3r055cG6hH7Nh/HKGbLcmBRU+bu0Pw7kjoVTbY9BlE4m2c0W7hwe93VlyxkGq94cTq96
- +3bdLT1OBWQQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="437679955"
-Received: from lkp-server01.sh.intel.com (HELO 3e992a48ca98) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 08 Mar 2021 16:31:38 -0800
-Received: from kbuild by 3e992a48ca98 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lJQHi-0001FB-8z; Tue, 09 Mar 2021 00:31:38 +0000
-Date:   Tue, 9 Mar 2021 08:30:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     kbuild-all@01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Dias <joaodias@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: [RFC PATCH] mm: page_alloc: alloc_contig_ratelimit() can be static
-Message-ID: <20210309003046.GA34778@7449abb4ec10>
-References: <20210308202047.1903802-1-minchan@kernel.org>
+        id S229730AbhCIAdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 19:33:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59D576527A;
+        Tue,  9 Mar 2021 00:33:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615250025;
+        bh=1zIZ36SUoA3WcvIfkwns7M5pVMeogu0E9xYGKWlnvx0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dYeW7/38Iez7QGnuvaL5QcZ28f5m7s7Pdj4X26eeej27xN3NDszi0HDe1UajzJS9H
+         l4LUDUQuuVbbC4FoW7i6NRJ+795RlA3u1oeuxVM8klhKOCjZ4U61dryeIk3tTgaN4F
+         AS7gfzYUPGc/eUcuudufYbouyYclzCMKL0bccJv+WAqUu8kStBGaPf+a691CygLiD9
+         8epWx/ZscM3DbNmrdSYrt9/tIqc2M//aBj3dvvvAiNhY8W+h0QsryHC1isHowqZer9
+         dvy1Kecvlro7Ip39yVA3+8VOLtVlsGn2HH/6Gw41Pk3NBwP+Ks1KPJTM6ErfV23Qba
+         u61AqJe8rqfJA==
+Date:   Mon, 8 Mar 2021 16:33:44 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Loic Poulain <loic.poulain@linaro.org>
+Cc:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org,
+        gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
+        aleksander@aleksander.es, linux-kernel@vger.kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        bjorn.andersson@linaro.org
+Subject: Re: [PATCH v2] bus: mhi: Add Qcom WWAN control driver
+Message-ID: <20210308163344.3b69fae4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1615237167-19969-1-git-send-email-loic.poulain@linaro.org>
+References: <1615237167-19969-1-git-send-email-loic.poulain@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308202047.1903802-1-minchan@kernel.org>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon,  8 Mar 2021 21:59:27 +0100 Loic Poulain wrote:
+> ---
+>  v2: update copyright (2021)
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- page_alloc.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 43d3e1e4ab487..149a2b0e2b098 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8345,12 +8345,12 @@ static unsigned long pfn_max_align_up(unsigned long pfn)
- 	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
- static DEFINE_RATELIMIT_STATE(alloc_contig_ratelimit_state,
- 		DEFAULT_RATELIMIT_INTERVAL, DEFAULT_RATELIMIT_BURST);
--int alloc_contig_ratelimit(void)
-+static int alloc_contig_ratelimit(void)
- {
- 	return __ratelimit(&alloc_contig_ratelimit_state);
- }
- 
--void dump_migrate_failure_pages(struct list_head *page_list)
-+static void dump_migrate_failure_pages(struct list_head *page_list)
- {
- 	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor,
- 			"migrate failure");
+Please look again at my reply to your v1.
