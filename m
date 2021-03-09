@@ -2,127 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02F6332135
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D944C332102
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:46:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbhCIIqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 03:46:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhCIIp5 (ORCPT
+        id S230437AbhCIIpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 03:45:42 -0500
+Received: from mail-vs1-f43.google.com ([209.85.217.43]:34689 "EHLO
+        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230035AbhCIIpd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 03:45:57 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35059C06174A;
-        Tue,  9 Mar 2021 00:45:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=G2k3R4Tdi/Hx20QLdrIl7Gd0ODGJ454XbaXMZQmyqdc=; b=BfNvIj93IMzsXqG7n+fpKKD5HB
-        7SyO6rt2YhcfAVUh1zG7n5g49xapE5f/5xmQofHqlr0e0OE+Hc5FDLiopskI1Q7uORjt53Y44TxVf
-        tgJOEC4YBmW1sUP9+N1HIdM3Dr0F/DcHKxaqaCfdSS7G7GpVGjPYbiNVlcXNkPCG1tVo2Qm52sUjY
-        gd2gK0bjnap+drG4izl2l2BTF1lSpOY9iVnNFbeMs+jWxD66jaX4IsW8O1sk2L0j81n1pSS8eXJLF
-        JMmKnUb1XlFWgKkvyLVlb+5paovs1AWUbMaOmAbKvbwaR89l5BlE5Epd+QHPUSm/g2v1C3tbyWEti
-        zcFfqNrw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJXzN-000Fqx-W3; Tue, 09 Mar 2021 08:45:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5B4B5301A32;
-        Tue,  9 Mar 2021 09:45:12 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 45CCA2351CF0D; Tue,  9 Mar 2021 09:45:12 +0100 (CET)
-Date:   Tue, 9 Mar 2021 09:45:12 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     "Xu, Like" <like.xu@intel.com>, Dmitry Vyukov <dvyukov@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-        "Thomas Gleixner
-        (x86/pti/timer/core/smp/irq/perf/efi/locking/ras/objtool)
-        (x86@kernel.org)" <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH] x86/perf: Fix guest_get_msrs static call if there is no
- PMU
-Message-ID: <YEc1mFkaILfF37At@hirez.programming.kicks-ass.net>
-References: <20210305223331.4173565-1-seanjc@google.com>
- <053d0a22-394d-90d0-8d3b-3cd37ca3f378@intel.com>
- <YEXmILSHDNDuMk/N@hirez.programming.kicks-ass.net>
- <YEaLzKWd0wAmdqvs@google.com>
- <YEcn6bGYxdgrp0Ik@hirez.programming.kicks-ass.net>
+        Tue, 9 Mar 2021 03:45:33 -0500
+Received: by mail-vs1-f43.google.com with SMTP id m18so6403785vsa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 00:45:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1lmndnbPQCr8AXP1pY/aZuEbMdRzjbk8ym+KsHGcxBc=;
+        b=LsCUYpRCvrARTCeosyDHNRBxTS5dgJg0XibBdgLa5qpwx8EGGEiyhbv8KUFzV6EFeO
+         EG5aLlSqHC1Bw2FqakzduorMG9pTKQqj+nwhU+ovpZFFdDPYV/YNkopjTphHyjdsxFAH
+         b1mZCHu+0NNaMYwktjpaKDcNQs4u3GIHsnhzPZRF817w5OR7C8Rr47YJK5l8kxc5+6aK
+         YgSlY26hwkIFLHptL29qkzpTHc/GUXcc1f23lRZ1oKGxtoFcoJ6yVRykbD1DU3jeijYm
+         j5gZs0ccEUDfyNprXuPj7nAGx4nzOtChzBClewkMkGOu3Nn+NpB0VEV2wrmK81Eh4Cst
+         x+8A==
+X-Gm-Message-State: AOAM530itNOR8VfLAWfBPKFogi47BvWr9rfTLtVIzIGZcJX0Cy4COisM
+        fK6KUxT2IHXJRzZJp/DKoftRv1QMPnjJqguRc6I=
+X-Google-Smtp-Source: ABdhPJy4eZcopEWPCDQNfxdWr+R5xrYzx0ZKx+VvIgjy2lopCK6Zmh5Qq7qdK7rD5P4ilSTOPk+7P0s2HbgXZZnnOwE=
+X-Received: by 2002:a67:f7c6:: with SMTP id a6mr16056565vsp.42.1615279531653;
+ Tue, 09 Mar 2021 00:45:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEcn6bGYxdgrp0Ik@hirez.programming.kicks-ass.net>
+References: <8d7d285a027e9d21f5ff7f850fa71a2655b0c4af.1615279170.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <8d7d285a027e9d21f5ff7f850fa71a2655b0c4af.1615279170.git.christophe.leroy@csgroup.eu>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 9 Mar 2021 09:45:20 +0100
+Message-ID: <CAMuHMdW0Cn1So8ckvhsT+N+p2hiPiksmCS32jzM0xCUYU4UAdQ@mail.gmail.com>
+Subject: Re: [PATCH] powerpc: Fix missing declaration of [en/dis]able_kernel_vsx()
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexdeucher@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 08:46:49AM +0100, Peter Zijlstra wrote:
-> On Mon, Mar 08, 2021 at 12:40:44PM -0800, Sean Christopherson wrote:
-> > On Mon, Mar 08, 2021, Peter Zijlstra wrote:
-> 
-> > > Given the one user in atomic_switch_perf_msrs() that should work because
-> > > it doesn't seem to care about nr_msrs when !msrs.
-> > 
-> > Uh, that commit quite cleary says:
-> 
-> D0h! I got static_call_cond() and __static_call_return0 mixed up.
-> Anyway, let me see if I can make something work here.
+Hi Christophe,
 
-Does this work? I can never seem to start a VM, and if I do accidentally
-manage, then it never contains the things I need :/
+On Tue, Mar 9, 2021 at 9:39 AM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+> Add stub instances of enable_kernel_vsx() and disable_kernel_vsx()
+> when CONFIG_VSX is not set, to avoid following build failure.
+>
+>   CC [M]  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o
+> In file included from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services_types.h:29,
+>                  from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services.h:37,
+>                  from drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:27:
+> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: In function 'dcn_bw_apply_registry_override':
+> ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:64:3: error: implicit declaration of function 'enable_kernel_vsx'; did you mean 'enable_kernel_fp'? [-Werror=implicit-function-declaration]
+>    64 |   enable_kernel_vsx(); \
+>       |   ^~~~~~~~~~~~~~~~~
+> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:640:2: note: in expansion of macro 'DC_FP_START'
+>   640 |  DC_FP_START();
+>       |  ^~~~~~~~~~~
+> ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:75:3: error: implicit declaration of function 'disable_kernel_vsx'; did you mean 'disable_kernel_fp'? [-Werror=implicit-function-declaration]
+>    75 |   disable_kernel_vsx(); \
+>       |   ^~~~~~~~~~~~~~~~~~
+> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:676:2: note: in expansion of macro 'DC_FP_END'
+>   676 |  DC_FP_END();
+>       |  ^~~~~~~~~
+> cc1: some warnings being treated as errors
+> make[5]: *** [drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o] Error 1
+>
+> Fixes: 16a9dea110a6 ("amdgpu: Enable initial DCN support on POWER")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
----
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 6ddeed3cd2ac..fadcecd73e1a 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -81,7 +81,11 @@ DEFINE_STATIC_CALL_NULL(x86_pmu_swap_task_ctx, *x86_pmu.swap_task_ctx);
- DEFINE_STATIC_CALL_NULL(x86_pmu_drain_pebs,   *x86_pmu.drain_pebs);
- DEFINE_STATIC_CALL_NULL(x86_pmu_pebs_aliases, *x86_pmu.pebs_aliases);
- 
--DEFINE_STATIC_CALL_NULL(x86_pmu_guest_get_msrs,  *x86_pmu.guest_get_msrs);
-+/*
-+ * This one is magic, it will get called even when PMU init fails (because
-+ * there is no PMU), in which case it should simply return NULL.
-+ */
-+__DEFINE_STATIC_CALL(x86_pmu_guest_get_msrs, *x86_pmu.guest_get_msrs, __static_call_return0);
- 
- u64 __read_mostly hw_cache_event_ids
- 				[PERF_COUNT_HW_CACHE_MAX]
-@@ -1944,13 +1948,6 @@ static void _x86_pmu_read(struct perf_event *event)
- 	x86_perf_event_update(event);
- }
- 
--static inline struct perf_guest_switch_msr *
--perf_guest_get_msrs_nop(int *nr)
--{
--	*nr = 0;
--	return NULL;
--}
--
- static int __init init_hw_perf_events(void)
- {
- 	struct x86_pmu_quirk *quirk;
-@@ -2024,9 +2021,6 @@ static int __init init_hw_perf_events(void)
- 	if (!x86_pmu.read)
- 		x86_pmu.read = _x86_pmu_read;
- 
--	if (!x86_pmu.guest_get_msrs)
--		x86_pmu.guest_get_msrs = perf_guest_get_msrs_nop;
--
- 	x86_pmu_static_call_update();
- 
- 	/*
+Thanks for your patch!
+
+> --- a/arch/powerpc/include/asm/switch_to.h
+> +++ b/arch/powerpc/include/asm/switch_to.h
+> @@ -71,6 +71,16 @@ static inline void disable_kernel_vsx(void)
+>  {
+>         msr_check_and_clear(MSR_FP|MSR_VEC|MSR_VSX);
+>  }
+> +#else
+> +static inline void enable_kernel_vsx(void)
+> +{
+> +       BUILD_BUG();
+> +}
+> +
+> +static inline void disable_kernel_vsx(void)
+> +{
+> +       BUILD_BUG();
+> +}
+>  #endif
+
+I'm wondering how this is any better than the current situation: using
+BUILD_BUG() will still cause a build failure?
+
+What about adding "depends on !POWERPC || VSX" instead, to prevent
+the issue from happening in the first place?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
