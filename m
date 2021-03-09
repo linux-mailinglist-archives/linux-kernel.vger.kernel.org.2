@@ -2,84 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F97332F8B
+	by mail.lfdr.de (Postfix) with ESMTP id 87B9E332F8D
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:05:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231628AbhCIUF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:05:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46982 "EHLO
+        id S231688AbhCIUF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:05:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231653AbhCIUFS (ORCPT
+        with ESMTP id S231657AbhCIUFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:05:18 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD968C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 12:05:17 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id e20so3358766ljn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:05:17 -0800 (PST)
+        Tue, 9 Mar 2021 15:05:24 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB11C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 12:05:24 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id u187so3492753wmg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:05:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kohwRGgEQaCo3tkVZ/WeefWjMw7rUpI7M2Guk4ayfeY=;
-        b=S13/iT8hpP3g4wvVRrgM3z+9NAV7Zn2ysUe5VpbU2RnXwT1e/Sw+vKdkSklZmdAUHL
-         f/moaaV4N359aLcYjVPvLeF/igF3xPAQ1mpjjLQ2OabAW2f4RbnjdUEnrNVg3pua6/D7
-         W6MegJ3ZDJ/ebxGGMA69l8lCNgL8k8g3/dMV4=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=XGjP1IwYY9V5MTdu5gz2bGCMoHloL2HLzkBo8xqKCcU=;
+        b=xffYs7vzhK4DnRSpTaSp+Ec//mT5EfBuoIpR9TBygBXd4AVAxF82/Fgt0GRuFuiCkw
+         hCCxPhhv5u6IrdEV/DSl05apgw5Le+1xwYxkVYy7jMINaAo4S7lIKcnWmStllOApmD6n
+         IibsYpnUwstk3fEKwphtWzG5H+xHg/R+8cThq6k3biaiGf+/DKKIOLhlaTFsrVzKttzp
+         BNDdCaPRxzYad7e37L3WUDA3T12xWfzs61ENy2Xm2jbUP4xSUWMTGBkL98b5Wd8ZCLrH
+         tBKOowGx5stqetns4YSjuQ/reyAKDmaVxHe4Lg8qA+JWI3TUpGK5FTiKAfmqbc6rLhqS
+         JyAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kohwRGgEQaCo3tkVZ/WeefWjMw7rUpI7M2Guk4ayfeY=;
-        b=Y0LtQtcFgQyDZ20UzEC2cVHsbQRf19eihjVCeBEKhXgwhZZjeCsL4D+L/fo8XwJnJY
-         jDApGGG1wKuktDF29fQwcFtMk3FRTMJx+dNqBRYET7RORc+4faGx4ICrbp0APBY5nPjM
-         MornyGCsrP+GQeuRfhtWO+NhEbXbFFeL6MxXs714QUXh0h2/xpxKC7IobGsw6EuuuZHF
-         mLOpPUcF1sxixaPBxULMIerAIKl+hfTAS8p1QuOQpx1to33PmAd1gKeePOf9C73J6VtO
-         5L9q3inz4dU1rTOtWsgRTp32yAJ497CrmDc22AIz5Hu0k+qg0h2DjixzfWzSyxPN2J7H
-         rWbQ==
-X-Gm-Message-State: AOAM532BvOOmgB14zQQKV8OlVvioWQpWvTddOD30f9RnKJyOuohrY0wz
-        TLEJ1mtBYyRgvjbwJPqOGFarK/UoqOlAug==
-X-Google-Smtp-Source: ABdhPJyXFB8XTk1ocmu5HSLvIonz6dZ+7NC+te0FH/Vt3SgccaB9F37jm1Ro4Xuke/kWLcKPt1GXRg==
-X-Received: by 2002:a2e:8987:: with SMTP id c7mr18203141lji.185.1615320315898;
-        Tue, 09 Mar 2021 12:05:15 -0800 (PST)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id f25sm2094563lfh.226.2021.03.09.12.05.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 12:05:14 -0800 (PST)
-Received: by mail-lf1-f45.google.com with SMTP id q25so29308001lfc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:05:14 -0800 (PST)
-X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr17726280lfu.40.1615320314276;
- Tue, 09 Mar 2021 12:05:14 -0800 (PST)
-MIME-Version: 1.0
-References: <20210309153443.16647-1-brgl@bgdev.pl> <CAMRc=MfO7J1z8oGy+OiRR000dJAYg1LTynz33Kh6BMb1hUrg5g@mail.gmail.com>
-In-Reply-To: <CAMRc=MfO7J1z8oGy+OiRR000dJAYg1LTynz33Kh6BMb1hUrg5g@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 9 Mar 2021 12:04:58 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiiuSPZGh1ai_NuV8BHgXO36H_aQ28Bx1u82gE23S1u0g@mail.gmail.com>
-Message-ID: <CAHk-=wiiuSPZGh1ai_NuV8BHgXO36H_aQ28Bx1u82gE23S1u0g@mail.gmail.com>
-Subject: Re: [GIT PULL] gpio: fixes for v5.12-rc3
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XGjP1IwYY9V5MTdu5gz2bGCMoHloL2HLzkBo8xqKCcU=;
+        b=MMQXuqRVQ5su7wsTtlE/FQszZiCD0F6uZ8AKIF54wG3EfTIde2y8qM7J/52LXjBFxF
+         k4ZkL+ucjZAZl0mKeZPnTQuwaTlD6WojhUtRPgjY3vW36rQKbHW34TPDsbX1QTvooKx4
+         hsxOCd9o5LzeyeYppuOi71GTLuMzATUEdHyI6zYgimy3wmRhBnWq1rCYPRmmjWSBfWf/
+         NzBEcdIDJh5DPN/AyJr9iYckeykdEdDyjKAnee/Q4Fh8+Ks7f0+iFHNdNWUQtl2nMQv+
+         XPpczpO2BbMxMaR+Kz9QcYk8bM1TRlFPkHeuQHr333d5D6bljf5m0n/36e1nDMV1iDs3
+         hs+g==
+X-Gm-Message-State: AOAM5322LWD0giJtYRxgCPhucquZ0qt0tRHxu0QgfYkBO+7MvveX+8Xr
+        kvWHlnZasVU5hMJPaHvFKsDtsA==
+X-Google-Smtp-Source: ABdhPJxlGaFCDMWbfFV5Pr/WWx8z0K7o5uAIGkLbbZ+Fg98b+aBlnMrftxj9+78TWRIlh0DueAOXyg==
+X-Received: by 2002:a05:600c:190a:: with SMTP id j10mr5821993wmq.140.1615320323081;
+        Tue, 09 Mar 2021 12:05:23 -0800 (PST)
+Received: from dell ([91.110.221.204])
+        by smtp.gmail.com with ESMTPSA id p10sm26424631wrw.33.2021.03.09.12.05.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 12:05:22 -0800 (PST)
+Date:   Tue, 9 Mar 2021 20:05:20 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [GIT PULL] Immutable branch between MFD, PWM and RTC due for the
+ v5.13 merge window
+Message-ID: <20210309200520.GA4931@dell>
+References: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
+ <20210301102826.GK641347@dell>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210301102826.GK641347@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 7:43 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> I realized only after I sent out this PR that I had rebased the branch
-> on top of v5.12-rc2 (because of the v5.12-rc1 situation) without
-> --rebase-merges and this caused git to drop the merge commit for
-> Andy's pull-request. Please let me know if you can pull this as is or
-> if I should rebuild my branch and resend.
+On Mon, 01 Mar 2021, Lee Jones wrote:
 
-This is fine - it's small, it's a one-time pain, and there's that reason for it.
+> Enjoy!
+> 
+> The following changes since commit fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8:
+> 
+>   Linux 5.12-rc1 (2021-02-28 16:05:19 -0800)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-pwm-rtc-v5.13
+> 
+> for you to fetch changes up to 80629611215d1c5d52ed3cf723fd6d24a5872504:
+> 
+>   MAINTAINERS: Add entry for Netronix embedded controller (2021-03-01 10:26:17 +0000)
+> 
+> ----------------------------------------------------------------
+> Immutable branch between MFD, PWM and RTC due for the v5.13 merge window
+> 
+> ----------------------------------------------------------------
+> Jonathan Neuschäfer (6):
+>       dt-bindings: Add vendor prefix for Netronix, Inc.
+>       dt-bindings: mfd: Add binding for Netronix embedded controller
+>       mfd: Add base driver for Netronix embedded controller
+>       pwm: ntxec: Add driver for PWM function in Netronix EC
+>       rtc: New driver for RTC in Netronix embedded controller
+>       MAINTAINERS: Add entry for Netronix embedded controller
+> 
+>  .../devicetree/bindings/mfd/netronix,ntxec.yaml    |  76 +++++++
+>  .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+>  MAINTAINERS                                        |   9 +
+>  drivers/mfd/Kconfig                                |  11 +
+>  drivers/mfd/Makefile                               |   1 +
+>  drivers/mfd/ntxec.c                                | 221 +++++++++++++++++++++
+>  drivers/pwm/Kconfig                                |   8 +
+>  drivers/pwm/Makefile                               |   1 +
+>  drivers/pwm/pwm-ntxec.c                            | 184 +++++++++++++++++
+>  drivers/rtc/Kconfig                                |   8 +
+>  drivers/rtc/Makefile                               |   1 +
+>  drivers/rtc/rtc-ntxec.c                            | 145 ++++++++++++++
+>  include/linux/mfd/ntxec.h                          |  37 ++++
+>  13 files changed, 704 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+>  create mode 100644 drivers/mfd/ntxec.c
+>  create mode 100644 drivers/pwm/pwm-ntxec.c
+>  create mode 100644 drivers/rtc/rtc-ntxec.c
+>  create mode 100644 include/linux/mfd/ntxec.h
 
-So as long as Andy is aware of how his patches got rebased and don't
-match his branch any more, I think it's not a big deal, and I've
-pulled it as-is.
+FYI, if anyone has pulled this, they should probably rebase it onto
+v5.12-rc2 and delete the v5.12-rc1 tag from their tree:
 
-                    Linus
+  https://lwn.net/Articles/848431/
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
