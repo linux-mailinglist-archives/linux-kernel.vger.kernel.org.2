@@ -2,198 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85924332C92
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A21D332C9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbhCIQvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:51:20 -0500
-Received: from mail-eopbgr760084.outbound.protection.outlook.com ([40.107.76.84]:61670
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229775AbhCIQus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:50:48 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lBOIINa8eMiiClS/xo1wvms3qPGRJXvbaQszvcwN+5tvfZlgWpLueK+ZII1Yw9DwIUkDrqha1WlDQIPc9I2ryusHUfsOPyDdil7ZRvXD9SZjTEaDR3XAZtAKF4q6N1L+70ynx6VvRoAr6/MIh6qLcglhEbby5DjcxMuaTm4VC7U/L8O+WRifPrSOnO2rH1c1kkpNe5Vm90s6rTAEe+Qedd0b0+Az9GLV2bAo0e06QZTmaRepJSG3GBBiTMKZs89ox0tvzbfeB29x9Ub1xuFTJ5cQzrHZV1g4v2U8dyQPXBTA34bGLocuOz0vlmDzmCpbywjlxNuWtzyFyLp17Oi5uA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7SH1hprtVAekCCiy+NG2XyJ9KGAuMoXJVOV6KDuIRVk=;
- b=CpiAFF1ZaFXWRxwfau4LllWz41gHk1BV2ZedyunVMKfoXzJ3BJlOdIDRRngnVN7RkTJa331H8EE8DYFC7C/uGn5SMs1iOhc93gsMimxJWmhKS81rK9Vg9l9Y40Dlmkszlde5LMVRrXfU7nwvX21EdALe18FE7KPFBbHQJEoFl5X4SWI2H/Jen/P3IsQyiwSYuF77GzehWPIcXug9FWZfo8ut+fYlm0qobbbvjvyMqwPa9WaLUN51UOicHgpuSRrDAUn/7t4RqDxEw97DqYmpnCE8WIs2G77KAdnIhzBH0tQzrsUStcuf0cDuVPDQ+SW/A4XKaSg+oxIjgitVasqIzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7SH1hprtVAekCCiy+NG2XyJ9KGAuMoXJVOV6KDuIRVk=;
- b=1ahvGXuvDAmvaYRisil59TYcxleuOxtHprGqlBWOiueZ7Mg/0CbF98DJSu4cHtvMYeTdbhXXhT6TjdpFH/LSJ6N0aLDabS0XOMZ50nxqdpOCXE83kJ+nfpNEpOqQv7bkxHPvKhhpTD6Kxn8yNTVheBlnPI1AJPQOXUsUyIGmoXg=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BL0PR12MB4948.namprd12.prod.outlook.com (2603:10b6:208:1cc::20)
- by MN2PR12MB4224.namprd12.prod.outlook.com (2603:10b6:208:1dd::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.27; Tue, 9 Mar
- 2021 16:50:42 +0000
-Received: from BL0PR12MB4948.namprd12.prod.outlook.com
- ([fe80::ec8d:851e:525d:a6ab]) by BL0PR12MB4948.namprd12.prod.outlook.com
- ([fe80::ec8d:851e:525d:a6ab%9]) with mapi id 15.20.3784.031; Tue, 9 Mar 2021
- 16:50:42 +0000
-From:   Felix Kuehling <Felix.Kuehling@amd.com>
-To:     arnd@kernel.org, alexander.deucher@amd.com,
-        christian.koenig@amd.com
-Cc:     arnd@arndb.de, airlied@linux.ie, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v2 1/1] drm/amdkfd: fix build error with AMD_IOMMU_V2=m
-Date:   Tue,  9 Mar 2021 11:50:18 -0500
-Message-Id: <20210309165018.26213-1-Felix.Kuehling@amd.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <4c692eff-9d57-278e-8da4-36bc2c293506@amd.com>
-References: <4c692eff-9d57-278e-8da4-36bc2c293506@amd.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [165.204.55.251]
-X-ClientProxiedBy: YT1PR01CA0054.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2e::23) To BL0PR12MB4948.namprd12.prod.outlook.com
- (2603:10b6:208:1cc::20)
+        id S229916AbhCIQyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:54:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231248AbhCIQxd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 11:53:33 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE7AC061760
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 08:53:33 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id c16so6894737ply.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 08:53:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+ZOJ+q+9GrjSVjROsRMTtXkkkgpZZ6Smo3szpJto3wU=;
+        b=Io2xWfY9wnrkX9lmPqNI9hYZoExbsPaHOBplkGOOIwV6ptdPGsIOBmO/z2VhLrjOgM
+         yLC5Dw/z7nQSuQ0ZBDCxsTF96vjE139Z21tbFEX3yX5cgwdttt2NB3y6Oz3wjTO/ptDb
+         9bqd5TlfxsAM0U2TDhwQhPpmSEDZUduV/D5f4HbI88jqRE5oaeTVBW9BKg5FS0PV8zR/
+         lnq+SiwkfiXszS8Ly73G1dF+c302HTpan+8JD0S+3pL0kxEUCwzI+/ltLU75bAkmm9ez
+         CpXFMy7s/+X9bGg8TL68I31LAxpesjjF/P4hLkeu/h7Qc0BJmT3RMy5o244Qr77V6qcd
+         IFGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+ZOJ+q+9GrjSVjROsRMTtXkkkgpZZ6Smo3szpJto3wU=;
+        b=NKSJE1MDrGe0XkucV1l3MMmhfB0JWvg4MoG4qt/0uCQnjr1VzJ6TUqYN8HtI2cShkl
+         0Xy1y3B0u7W6FH5biy6ZeNRh6H8ctD/h5DrcnKdmz9K9CzLo+XZjkpbkpQa5EG16JIWB
+         f5PQF8m/Ti4w6cCWqKLgxqsP4lQEPZPyrKUVrK/zaW78uYomk8AWna0t3JEEa0jko9xP
+         u+mZ7n/6dvFdZyIPkFf4IXZZzq6Jo/bsT0bK9s6e2u9R+/8niyEchuzgptZ6IUMYG3gx
+         WPdVXBoavg7mdck1LacEOH+6qmUpuN9LNNw0uMAX4b3dFr0P/e62ik2iddvwtvT6F2aq
+         LoCQ==
+X-Gm-Message-State: AOAM533TCp1fn22MBPB8uQgW6OWcx3G1dAxIsIUkCIC7k6K/9x3n67ti
+        WOq72xnaUk/nwKYz1Lv1JNWryg==
+X-Google-Smtp-Source: ABdhPJyY4wZlJq47IGitXGbUEifHWMwGH2iiYWGwHxCQ5S3XqNMR3di6XBVmbidz1+Dv+vm8UOEbdA==
+X-Received: by 2002:a17:90a:8417:: with SMTP id j23mr5631532pjn.224.1615308812848;
+        Tue, 09 Mar 2021 08:53:32 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id s1sm13376084pfe.151.2021.03.09.08.53.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 08:53:32 -0800 (PST)
+Date:   Tue, 9 Mar 2021 09:53:30 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Ben Levinsky <ben.levinsky@xilinx.com>
+Cc:     devicetree@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        michal.simek@xilinx.com
+Subject: Re: [PATCH v26 5/5] remoteproc: Add initial zynqmp R5 remoteproc
+ driver
+Message-ID: <20210309165330.GA4013290@xps15>
+References: <20210223154447.13247-1-ben.levinsky@xilinx.com>
+ <20210223154447.13247-6-ben.levinsky@xilinx.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Harpoon.amd.com (165.204.55.251) by YT1PR01CA0054.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2e::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.26 via Frontend Transport; Tue, 9 Mar 2021 16:50:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9a219696-5ac1-4927-ac2b-08d8e31b79b7
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4224:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4224A8E2AD6A5225AAA6A81892929@MN2PR12MB4224.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: J2ZDMm8sdSXirKFjH8uPxn1fWRKgFwkbJYj0bDJgkE0g5wFUhhxCFjt34nh19XACNKAIHO6FohXlBRcn1mwaLuDUtDDQU1lm4QH5wzjByY/aP0t0XR1EAHglC74wYX3dmMnP9+XJsuLFck9DQ3n7JEcfKagqPk7By13dMgr0uAaS56Jc0c4Ie5QNoC7k9gqrTg0Qg4dQrtPE7W91kh6wB66JnsaFcQSWWh/SeujJv14Jtnv/ltGK91X869AwAMoXLjxMn1WYmAVilWCdLzVxoVyqa1LumM5HtK9DuHxkGWRxdGIoZJEwoQRiU9y5uPHSw0Z2mtsLi5IXuMa+KIS2RqpXaLgHpKG1iV4/Kj6m8m5taE+08Di7iVNGZSmrj1TJwDIlwc4vCnVL+X4cYppFBj8v0cPJLnuT8t4xIKgaN3wk9cHYcXUpyNwH0SIu9GWH7/qtflhNREFxFthPCpVJNVw4kgTj627s1uWH/aSD+uRSQAr0kripIHcc8omi6kFgkYOeOKivpScoslD267KpKw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB4948.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(366004)(39860400002)(346002)(83380400001)(26005)(4326008)(7696005)(5660300002)(16526019)(66946007)(66556008)(186003)(8676002)(52116002)(6666004)(956004)(1076003)(478600001)(2616005)(36756003)(2906002)(6636002)(86362001)(8936002)(6486002)(316002)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?U6nO768hT+BG1RFerGi72AAQhaxpGu9DCvGH+CApMY7rympNz8CgRvxqqVOV?=
- =?us-ascii?Q?m0ZPqUaI0XprOP6nAl/BV6blVauc1s0+NWWvq9MAtvQsDSLquBQhmvyqNRGG?=
- =?us-ascii?Q?ZbBtb+7jWtFL2bTHZPHUkvJvORnMPWim4qeKplBYTwRkF60aRPO41uuWS5Zg?=
- =?us-ascii?Q?/m+gQkCgS20LSrCgCNxC/8w2fw/FVpLTfcgHKItBkpePgQWO544DAwyHRhA0?=
- =?us-ascii?Q?JAWuzeJHiV/+a8vUZLvBHsF+yygVtbMXRGXnNUaVKzZoCnOlfCyY5v223UTM?=
- =?us-ascii?Q?0pbjnVLAUItou8EqGczRG+FzPnkCng5onnJEwkHq65xPRdmzA5WyGim1fFfM?=
- =?us-ascii?Q?3zQyCWYRJes0vOU/fwu+CxAWdMmrYMb5nDWwM8MY2v6qIJ3m1exfSsb9mMqZ?=
- =?us-ascii?Q?STzSWq9a/KoUEx+a9TV8tGAR/VgbobMfQLRwo0pJLfaxD/eg0u5Eqx1wBe+z?=
- =?us-ascii?Q?fxHMmfelRf+8KnkA6w22k81hpM1N8pqw6kCShLkTAJjLYb3JraRUIdE+x2by?=
- =?us-ascii?Q?/Ccq8E3KKIxEgZw0fInVgN4H0LUNFzkkqbyTNCIteZXKe6CP4qCEc7P38EhJ?=
- =?us-ascii?Q?lmclNgNYgIscB7PlThisESWsQpiLw4j2BHtrEum1ZGvXdWThsiFBuVAs36uf?=
- =?us-ascii?Q?qOkIPf0TajruFG+pqh3N4t6lDEaJ1eAK5eahjvyUXgHXMikFDSpMuhMr+EfF?=
- =?us-ascii?Q?d5KY9oeLjNx/dVJBU4rToDsR3K36LAt5c8ugbHc4EtE1lKstFEuO5954BzS0?=
- =?us-ascii?Q?pzUwAT8e1VIEWz2PBhzgv7LBQJ1d3Pox+G/yi1zlCj1Xrlg68z3gqHAdwMrq?=
- =?us-ascii?Q?PaJ5AuH1YYDYbrAsbPPyuCvdXlMclG482If7a9QwpnKkMuGgVeUBsVmcpMI4?=
- =?us-ascii?Q?cJPGqcSsx3sYveMIsXCjJXEntlK+/4toZBnPsPJm3EnIa/xJdJu3nzP5XV5F?=
- =?us-ascii?Q?Fx4jbLX/abyULV59v/C6CvdoXXHIsTpI4PM95Bez/QqzuvCZAAFNE8++4MwV?=
- =?us-ascii?Q?Zugk0cwvwUa53q1sFBtcfcwEH0enyW4RO7i3KP+kFkdMCpLyGS9dFpvyr8O0?=
- =?us-ascii?Q?XPQDfFfdi/uFpYU3Pio7lGIZgpjxXVJtFHYTKaonICzglLZiZYnADX7zi2Kq?=
- =?us-ascii?Q?tGolVMWKwv57sYRBdWbnA5ojbddQEDUY1D48TQRby1rIisvWioly1PkGybEp?=
- =?us-ascii?Q?rXPvc/JYV2jTwqvmjUhimzxExe9QCAgf+QXDE0vk/8QuqNoy4Uqarzi/6Du6?=
- =?us-ascii?Q?5THpxm5QYs7MaIaVKfMRs9BX4rZEmOgf2f1psJJp0AWT276id4mdvUEmOlPH?=
- =?us-ascii?Q?8AFo3PP76p74WxjOO/mrGR2U?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9a219696-5ac1-4927-ac2b-08d8e31b79b7
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB4948.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 16:50:42.0698
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wxS0bkn31NhLx87z4O68g/sfuF4EXyMWDmL8mpCpQ9CPxXe+F/Fr6yPLqSe1HY0S9zvtI54lw0IJgpzESqgNsw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4224
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223154447.13247-6-ben.levinsky@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using 'imply AMD_IOMMU_V2' does not guarantee that the driver can link
-against the exported functions. If the GPU driver is built-in but the
-IOMMU driver is a loadable module, the kfd_iommu.c file is indeed
-built but does not work:
+[...]
 
-x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_bind_process_to_device':
-kfd_iommu.c:(.text+0x516): undefined reference to `amd_iommu_bind_pasid'
-x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_unbind_process':
-kfd_iommu.c:(.text+0x691): undefined reference to `amd_iommu_unbind_pasid'
-x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_suspend':
-kfd_iommu.c:(.text+0x966): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
-x86_64-linux-ld: kfd_iommu.c:(.text+0x97f): undefined reference to `amd_iommu_set_invalid_ppr_cb'
-x86_64-linux-ld: kfd_iommu.c:(.text+0x9a4): undefined reference to `amd_iommu_free_device'
-x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_resume':
-kfd_iommu.c:(.text+0xa9a): undefined reference to `amd_iommu_init_device'
-x86_64-linux-ld: kfd_iommu.c:(.text+0xadc): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
-x86_64-linux-ld: kfd_iommu.c:(.text+0xaff): undefined reference to `amd_iommu_set_invalid_ppr_cb'
-x86_64-linux-ld: kfd_iommu.c:(.text+0xc72): undefined reference to `amd_iommu_bind_pasid'
-x86_64-linux-ld: kfd_iommu.c:(.text+0xe08): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
-x86_64-linux-ld: kfd_iommu.c:(.text+0xe26): undefined reference to `amd_iommu_set_invalid_ppr_cb'
-x86_64-linux-ld: kfd_iommu.c:(.text+0xe42): undefined reference to `amd_iommu_free_device'
+> +
+> +/**
+> + * zynqmp_r5_probe - Probes ZynqMP R5 processor device node
+> + *		       this is called for each individual R5 core to
+> + *		       set up mailbox, Xilinx platform manager unique ID,
+> + *		       add to rproc core
+> + *
+> + * @pdev: domain platform device for current R5 core
+> + * @node: pointer of the device node for current R5 core
+> + * @rpu_mode: mode to configure RPU, split or lockstep
+> + *
+> + * Return: 0 for success, negative value for failure.
+> + */
+> +static struct zynqmp_r5_rproc *zynqmp_r5_probe(struct platform_device *pdev,
+> +					       struct device_node *node,
+> +					       enum rpu_oper_mode rpu_mode)
+> +{
+> +	int ret, num_banks;
+> +	struct device *dev = &pdev->dev;
+> +	struct rproc *rproc_ptr;
+> +	struct zynqmp_r5_rproc *z_rproc;
+> +	struct device_node *r5_node;
+> +
+> +	/* Allocate remoteproc instance */
+> +	rproc_ptr = devm_rproc_alloc(dev, dev_name(dev), &zynqmp_r5_rproc_ops,
+> +				     NULL, sizeof(struct zynqmp_r5_rproc));
+> +	if (!rproc_ptr) {
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	rproc_ptr->auto_boot = false;
+> +	z_rproc = rproc_ptr->priv;
+> +	z_rproc->rproc = rproc_ptr;
+> +	r5_node = z_rproc->rproc->dev.parent->of_node;
+> +
+> +	/* Set up DMA mask */
+> +	ret = dma_set_coherent_mask(dev, DMA_BIT_MASK(32));
+> +	if (ret)
+> +		goto error;
+> +
+> +	/* Get R5 power domain node */
+> +	ret = of_property_read_u32(node, "power-domain", &z_rproc->pnode_id);
+> +	if (ret)
+> +		goto error;
+> +
+> +	ret = r5_set_mode(z_rproc, rpu_mode);
+> +	if (ret)
+> +		goto error;
+> +
+> +	if (of_property_read_bool(node, "mboxes")) {
+> +		ret = zynqmp_r5_setup_mbox(z_rproc, node);
+> +		if (ret)
+> +			goto error;
+> +	}
+> +
+> +	/* go through TCM banks for r5 node */
+> +	num_banks = of_count_phandle_with_args(r5_node, BANK_LIST_PROP, NULL);
+> +	if (num_banks <= 0) {
+> +		dev_err(dev, "need to specify TCM banks\n");
+> +		ret = -EINVAL;
+> +		goto error;
+> +	}
+> +
+> +	if (num_banks > NUM_SRAMS) {
+> +		dev_err(dev, "max number of srams is %d. given: %d \r\n",
+> +			NUM_SRAMS, num_banks);
+> +		ret = -EINVAL;
+> +		goto error;
+> +	}
+> +
+> +	/* construct collection of srams used by the current R5 core */
+> +	for (; num_banks; num_banks--) {
+> +		struct resource rsc;
+> +		struct device_node *dt_node;
+> +		resource_size_t size;
+> +		int i;
+> +
+> +		dt_node = of_parse_phandle(r5_node, BANK_LIST_PROP, i);
 
-Use IS_REACHABLE to only build IOMMU-V2 support if the amd_iommu symbols
-are reachable by the amdkfd driver. Output a warning if they are not,
-because that may not be what the user was expecting.
+Variable @i is not initialised but it is used as an index to retrieve a handle
+to the sram banks.  That code _should_ have failed frequently or at least have
+yielded abnormal results often enough to be noticed.  Why wasn't it the case?
 
-Fixes: 64d1c3a43a6f ("drm/amdkfd: Centralize IOMMUv2 code and make it conditional")
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
----
- drivers/gpu/drm/amd/amdkfd/kfd_iommu.c | 6 ++++++
- drivers/gpu/drm/amd/amdkfd/kfd_iommu.h | 9 +++++++--
- 2 files changed, 13 insertions(+), 2 deletions(-)
+I will stop here for the moment.
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c b/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c
-index 66bbca61e3ef..9318936aa805 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_iommu.c
-@@ -20,6 +20,10 @@
-  * OTHER DEALINGS IN THE SOFTWARE.
-  */
- 
-+#include <linux/kconfig.h>
-+
-+#if IS_REACHABLE(CONFIG_AMD_IOMMU_V2)
-+
- #include <linux/printk.h>
- #include <linux/device.h>
- #include <linux/slab.h>
-@@ -355,3 +359,5 @@ int kfd_iommu_add_perf_counters(struct kfd_topology_device *kdev)
- 
- 	return 0;
- }
-+
-+#endif
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_iommu.h b/drivers/gpu/drm/amd/amdkfd/kfd_iommu.h
-index dd23d9fdf6a8..afd420b01a0c 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_iommu.h
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_iommu.h
-@@ -23,7 +23,9 @@
- #ifndef __KFD_IOMMU_H__
- #define __KFD_IOMMU_H__
- 
--#if defined(CONFIG_AMD_IOMMU_V2_MODULE) || defined(CONFIG_AMD_IOMMU_V2)
-+#include <linux/kconfig.h>
-+
-+#if IS_REACHABLE(CONFIG_AMD_IOMMU_V2)
- 
- #define KFD_SUPPORT_IOMMU_V2
- 
-@@ -46,6 +48,9 @@ static inline int kfd_iommu_check_device(struct kfd_dev *kfd)
- }
- static inline int kfd_iommu_device_init(struct kfd_dev *kfd)
- {
-+#if IS_MODULE(CONFIG_AMD_IOMMU_V2)
-+	WARN_ONCE(1, "iommu_v2 module is not usable by built-in KFD");
-+#endif
- 	return 0;
- }
- 
-@@ -73,6 +78,6 @@ static inline int kfd_iommu_add_perf_counters(struct kfd_topology_device *kdev)
- 	return 0;
- }
- 
--#endif /* defined(CONFIG_AMD_IOMMU_V2) */
-+#endif /* IS_REACHABLE(CONFIG_AMD_IOMMU_V2) */
- 
- #endif /* __KFD_IOMMU_H__ */
--- 
-2.30.0
-
+> +		if (!dt_node) {
+> +			ret = -EINVAL;
+> +			goto error;
+> +		}
+> +
+> +		ret = of_address_to_resource(dt_node, 0, &rsc);
+> +		if (ret < 0) {
+> +			of_node_put(dt_node);
+> +			goto error;
+> +		}
+> +
+> +		of_node_put(dt_node);
+> +		size = resource_size(&rsc);
+> +
+> +		/*
+> +		 * Find corresponding Xilinx platform management ID.
+> +		 * The bank information is used in prepare/unprepare and
+> +		 * parse_fw.
+> +		 */
+> +		for (i = 0; i < NUM_SRAMS; i++) {
+> +			if (rsc.start == zynqmp_banks[i].addr) {
+> +				z_rproc->srams[i].addr = rsc.start;
+> +				z_rproc->srams[i].size = size;
+> +				z_rproc->srams[i].id = zynqmp_banks[i].id;
+> +				break;
+> +			}
+> +		}
+> +
+> +		if (i == NUM_SRAMS) {
+> +			dev_err(dev, "sram %llx is not valid.\n", rsc.start);
+> +			ret = -EINVAL;
+> +			goto error;
+> +		}
+> +	}
+> +
+> +	/* Add R5 remoteproc */
+> +	ret = devm_rproc_add(dev, rproc_ptr);
+> +	if (ret) {
+> +		zynqmp_r5_cleanup_mbox(z_rproc);
+> +		goto error;
+> +	}
+> +
+> +	return z_rproc;
+> +error:
+> +	return ERR_PTR(ret);
+> +}
+> +
+> +/*
+> + * zynqmp_r5_remoteproc_probe
+> + *
+> + * @pdev: domain platform device for R5 cluster
+> + *
+> + * called when driver is probed, for each R5 core specified in DT,
+> + * setup as needed to do remoteproc-related operations
+> + *
+> + * Return: 0 for success, negative value for failure.
+> + */
+> +static int zynqmp_r5_remoteproc_probe(struct platform_device *pdev)
+> +{
+> +	int ret, core_count;
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *nc;
+> +	enum rpu_oper_mode rpu_mode = PM_RPU_MODE_LOCKSTEP;
+> +	struct list_head *cluster; /* list to track each core's rproc */
+> +	struct zynqmp_r5_rproc *z_rproc;
+> +	struct platform_device *child_pdev;
+> +	struct list_head *pos;
+> +
+> +	ret = of_property_read_u32(dev->of_node, "xlnx,cluster-mode", &rpu_mode);
+> +	if (ret < 0 || (rpu_mode != PM_RPU_MODE_LOCKSTEP &&
+> +			rpu_mode != PM_RPU_MODE_SPLIT)) {
+> +		dev_err(dev, "invalid cluster mode: ret %d mode %x\n",
+> +			ret, rpu_mode);
+> +		return ret;
+> +	}
+> +
+> +	dev_dbg(dev, "RPU configuration: %s\n",
+> +		rpu_mode == PM_RPU_MODE_LOCKSTEP ? "lockstep" : "split");
+> +
+> +	/*
+> +	 * if 2 RPUs provided but one is lockstep, then we have an
+> +	 * invalid configuration.
+> +	 */
+> +
+> +	core_count = of_get_available_child_count(dev->of_node);
+> +	if ((rpu_mode == PM_RPU_MODE_LOCKSTEP && core_count != 1) ||
+> +	    core_count > MAX_RPROCS)
+> +		return -EINVAL;
+> +
+> +	cluster = devm_kzalloc(dev, sizeof(*cluster), GFP_KERNEL);
+> +	if (!cluster)
+> +		return -ENOMEM;
+> +	INIT_LIST_HEAD(cluster);
+> +
+> +	ret = devm_of_platform_populate(dev);
+> +	if (ret) {
+> +		dev_err(dev, "devm_of_platform_populate failed, ret = %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* probe each individual r5 core's remoteproc-related info */
+> +	for_each_available_child_of_node(dev->of_node, nc) {
+> +		child_pdev = of_find_device_by_node(nc);
+> +		if (!child_pdev) {
+> +			dev_err(dev, "could not get R5 core platform device\n");
+> +			ret = -ENODEV;
+> +			goto out;
+> +		}
+> +
+> +		z_rproc = zynqmp_r5_probe(child_pdev, nc, rpu_mode);
+> +		dev_dbg(dev, "%s to probe rpu %pOF\n",
+> +			ret ? "Failed" : "Able", nc);
+> +		if (IS_ERR(z_rproc)) {
+> +			ret = PTR_ERR(z_rproc);
+> +			goto out;
+> +		}
+> +		list_add_tail(&z_rproc->elem, cluster);
+> +	}
+> +	/* wire in so each core can be cleaned up at driver remove */
+> +	platform_set_drvdata(pdev, cluster);
+> +	return 0;
+> +out:
+> +	list_for_each(pos, cluster) {
+> +		z_rproc = list_entry(pos, struct zynqmp_r5_rproc, elem);
+> +		zynqmp_r5_cleanup_mbox(z_rproc);
+> +	}
+> +	return ret;
+> +}
+> +
+> +/*
+> + * zynqmp_r5_remoteproc_remove
+> + *
+> + * @pdev: domain platform device for R5 cluster
+> + *
+> + * When the driver is unloaded, clean up the mailboxes for each
+> + * remoteproc that was initially probed.
+> + */
+> +static int zynqmp_r5_remoteproc_remove(struct platform_device *pdev)
+> +{
+> +	struct list_head *pos, *temp, *cluster = (struct list_head *)
+> +						 platform_get_drvdata(pdev);
+> +	struct zynqmp_r5_rproc *z_rproc = NULL;
+> +
+> +	list_for_each_safe(pos, temp, cluster) {
+> +		z_rproc = list_entry(pos, struct zynqmp_r5_rproc, elem);
+> +		zynqmp_r5_cleanup_mbox(z_rproc);
+> +	}
+> +	return 0;
+> +}
+> +
+> +/* Match table for OF platform binding */
+> +static const struct of_device_id zynqmp_r5_remoteproc_match[] = {
+> +	{ .compatible = "xlnx,zynqmp-r5-remoteproc", },
+> +	{ /* end of list */ },
+> +};
+> +MODULE_DEVICE_TABLE(of, zynqmp_r5_remoteproc_match);
+> +
+> +static struct platform_driver zynqmp_r5_remoteproc_driver = {
+> +	.probe = zynqmp_r5_remoteproc_probe,
+> +	.remove = zynqmp_r5_remoteproc_remove,
+> +	.driver = {
+> +		.name = "zynqmp_r5_remoteproc",
+> +		.of_match_table = zynqmp_r5_remoteproc_match,
+> +	},
+> +};
+> +module_platform_driver(zynqmp_r5_remoteproc_driver);
+> +
+> +MODULE_AUTHOR("Ben Levinsky <ben.levinsky@xilinx.com>");
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.17.1
+> 
