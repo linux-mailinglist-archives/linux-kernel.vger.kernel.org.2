@@ -2,151 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CFC331C93
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 02:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B1B331CAA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 02:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhCIBmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 20:42:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37194 "EHLO mail.kernel.org"
+        id S229948AbhCIB7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 20:59:12 -0500
+Received: from ozlabs.org ([203.11.71.1]:34135 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229764AbhCIBmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 20:42:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A4F8652A8;
-        Tue,  9 Mar 2021 01:42:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615254143;
-        bh=u6Wt4ZYzeRBKFqq9tL6mnx/3bHT+JgCkJ7w4UKtIQbc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=fQKV9/XQvwke5T0B9uo45zNWuiZvdnj37A6jyyE6TU69Mvqp8B7EZnQD3kpNz1TeJ
-         O1RGlFzSuaL+ZV5Bq2kYVzBCXOg5QtYwobGNfL4o1AYAUnsJZI96/+FjfS81q5ehnM
-         5eWsLpw6IafAl+jrDuPZzKkzJufkGEYde/s0Qk1G025ZxRWqvV4J/bPdaLLlq4Po17
-         BX1vdfTsXSqLtsh2oF4b54Fq+3EO3dHKMp/nGdo2saRL52Kr0jbEk0WBu2UawW3zXg
-         mN/Omk4JoldCRBL4o67/I0wEKF2nRXrVldgfL2amrsJAEFdf3OEBZZC7gm3v0/jwSp
-         p8TEIdO3OVoHg==
-Date:   Mon, 8 Mar 2021 19:42:21 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com,
-        henning.schild@siemens.com
-Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
- support library
-Message-ID: <20210309014221.GA1831206@bjorn-Precision-5520>
+        id S229475AbhCIB6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 20:58:40 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DvdfQ0NHGz9sW5;
+        Tue,  9 Mar 2021 12:58:38 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1615255118;
+        bh=b02qCUSk+8Dtz++zYg6GWz8qUm89BxbuOTm1R/MeNz0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fbtw53knS34/xKwHub0u+ey45KybumnXK51FJrTQtFw13SGHb+ozPJQsEbinO2AzT
+         LCui8/yw2Q52VsYYGtG7Paj0k9AbZ/J3jfc+JXdhJp4FeyKGrzTHUvPaYwC8mGVcaD
+         +Ydyujy/J25xFntNPhcp2P3spjOOgqqjiNwb37eiv2+nZV15HCkwq4ydudXXdGDnde
+         TTsJHI9WHv5WP3JXh/nWDQTLO+7+e+e32XUyXgLHfM7pcfx85GjaLwaS6hLKOp9Zl2
+         6nMG6RPfZpuynMC6dUOcB78jQpGbIcCblo1GNCNigYDoFB/9ANdcha1UuwOAJdOQFa
+         CbvUN8R3qTP9w==
+Date:   Tue, 9 Mar 2021 12:58:33 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Michael S. Tsirkin" <mst@redhat.com>, Takashi Iwai <tiwai@suse.de>
+Cc:     Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the vhost tree with the sound tree
+Message-ID: <20210309125833.0355a754@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEZ4IitUa+I9HM5F@smile.fi.intel.com>
+Content-Type: multipart/signed; boundary="Sig_/XseBjs6DCsd10DardSdYt5T";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 09:16:50PM +0200, Andy Shevchenko wrote:
-> On Mon, Mar 08, 2021 at 12:52:12PM -0600, Bjorn Helgaas wrote:
-> > On Mon, Mar 08, 2021 at 02:20:16PM +0200, Andy Shevchenko wrote:
-> > > From: Jonathan Yong <jonathan.yong@intel.com>
-> > > 
-> > > There is already one and at least one more user is coming which
-> > > requires an access to Primary to Sideband bridge (P2SB) in order to
-> > > get IO or MMIO bar hidden by BIOS. Create a library to access P2SB
-> > > for x86 devices.
-> > 
-> > Can you include a spec reference?
-> 
-> I'm not sure I have a public link to the spec. It's the 100 Series PCH [1].
-> The document number to look for is 546955 [2] and there actually a bit of
-> information about this.
+--Sig_/XseBjs6DCsd10DardSdYt5T
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This link, found by googling for "p2sb bridge", looks like it might
-have relevant public links:
+Hi all,
 
-https://lab.whitequark.org/notes/2017-11-08/accessing-intel-ich-pch-gpios/
+Today's linux-next merge of the vhost tree got conflicts in:
 
-I'd prefer if you could dig out the relevant sections because I really
-don't know how to identify them.
+  sound/virtio/virtio_card.c
+  sound/virtio/virtio_card.h
+  sound/virtio/virtio_ctl_msg.c
+  sound/virtio/virtio_pcm.c
+  sound/virtio/virtio_pcm.h
+  sound/virtio/virtio_pcm_msg.c
+  sound/virtio/virtio_pcm_ops.c
 
-> > I'm trying to figure out why this
-> > belongs in drivers/pci/.  It looks very device-specific.
-> 
-> Because it's all about access to PCI configuration spaces of the (hidden)
-> devices.
+between commits:
 
-The PCI core generally doesn't deal with device-specific config
-registers.
+  de3a9980d8c3 ("ALSA: virtio: add virtio sound driver")
+  9d45e514da88 ("ALSA: virtio: handling control messages")
+  29b96bf50ba9 ("ALSA: virtio: build PCM devices and substream hardware des=
+criptors")
+  f40a28679e0b ("ALSA: virtio: handling control and I/O messages for the PC=
+M device")
+  da76e9f3e43a ("ALSA: virtio: PCM substream operators")
+  ca61a41f389c ("ALSA: virtio: introduce jack support")
+  19325fedf245 ("ALSA: virtio: introduce PCM channel map support")
+  575483e90a32 ("ALSA: virtio: introduce device suspend/resume support")
 
-> [1]: https://ark.intel.com/content/www/us/en/ark/products/series/98456/intel-100-series-desktop-chipsets.html
-> [2]: https://medium.com/@jacksonchen_43335/bios-gpio-p2sb-70e9b829b403
-> 
-> ...
-> 
-> > > +config PCI_P2SB
-> > > +	bool "Primary to Sideband (P2SB) bridge access support"
-> > > +	depends on PCI && X86
-> > > +	help
-> > > +	  The Primary to Sideband bridge is an interface to some PCI
-> > > +	  devices connected through it. In particular, SPI NOR
-> > > +	  controller in Intel Apollo Lake SoC is one of such devices.
-> > 
-> > This doesn't sound like a "bridge".  If it's a bridge, what's on the
-> > primary (upstream) side?  What's on the secondary side?  What
-> > resources are passed through the bridge, i.e., what transactions does
-> > it transfer from one side to the other?
-> 
-> It's a confusion terminology here. It's a Bridge according to the spec, but
-> it is *not* a PCI Bridge as you may had a first impression.
+from the sound tree and commits:
 
-The code suggests that a register on this device controls whether a
-different device is visible in config space.  I think it will be
-better if we can describe what's happening.
+  1e2fb08629e5 ("ALSA: virtio: add virtio sound driver")
+  3fb7ce161568 ("ALSA: virtio: handling control messages")
+  83ec5db56076 ("ALSA: virtio: build PCM devices and substream hardware des=
+criptors")
+  68742d8557b8 ("ALSA: virtio: handling control and I/O messages for the PC=
+M device")
+  def2208d373b ("ALSA: virtio: PCM substream operators")
+  613515055d34 ("ALSA: virtio: introduce jack support")
+  96db428c31f1 ("ALSA: virtio: introduce PCM channel map support")
+  1f77f124f2f2 ("ALSA: virtio: introduce device suspend/resume support")
 
-> ...
-> 
-> > > +	/* Unhide the P2SB device */
-> > > +	pci_bus_write_config_byte(bus, df, P2SBC_HIDE_BYTE, 0);
-> > > +
-> > > +	/* Read the first BAR of the device in question */
-> > > +	__pci_bus_read_base(bus, devfn, pci_bar_unknown, mem, PCI_BASE_ADDRESS_0, true);
-> > 
-> > I don't get this.  Apparently this normally hidden device is consuming
-> > PCI address space.  The PCI core needs to know about this.  If it
-> > doesn't, the PCI core may assign this space to another device.
-> 
-> Right, it returns all 1:s to any request so PCI core *thinks* it's
-> plugged off (like D3cold or so).
+from the vhost tree.
 
-I'm asking about the MMIO address space.  The BAR is a register in
-config space.  AFAICT, clearing P2SBC_HIDE_BYTE makes that BAR
-visible.  The BAR describes a region of PCI address space.  It looks
-like setting P2SBC_HIDE_BIT makes the BAR disappear from config space,
-but it sounds like the PCI address space *described* by the BAR is
-still claimed by the device.  If the device didn't respond to that
-MMIO space, you would have no reason to read the BAR at all.
+I fixed it up (the sound tree commits have newer author dates, so I just
+used them) and can carry the fix as necessary. This is now fixed as far as
+linux-next is concerned, but any non trivial conflicts should be mentioned
+to your upstream maintainer when your tree is submitted for merging.
+You may also want to consider cooperating with the maintainer of the
+conflicting tree to minimise any particularly complex conflicts.
 
-So what keeps the PCI core from assigning that MMIO space to another
-device?
+--=20
+Cheers,
+Stephen Rothwell
 
-This all sounds quite irregular from the point of view of the PCI
-core.  If a device responds to address space that is not described by
-a standard PCI BAR, or by an EA capability, or by one of the legacy
-VGA or IDE exceptions, we have a problem.  That space must be
-described *somehow* in a generic way, e.g., ACPI or similar.
+--Sig_/XseBjs6DCsd10DardSdYt5T
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-What happens if CONFIG_PCI_P2SB is unset?  The device doesn't know
-that, and if it is still consuming MMIO address space that we don't
-know about, that's a problem.
+-----BEGIN PGP SIGNATURE-----
 
-> > > +	/* Hide the P2SB device */
-> > > +	pci_bus_write_config_byte(bus, df, P2SBC_HIDE_BYTE, P2SBC_HIDE_BIT);
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBG1kkACgkQAVBC80lX
+0GzU4Qf+OfDU1QFNa0JIlHbEk4MehOIAOhXGYr1pkShbCB/V4QCw5ko3RkTb6Ymg
+q81F0jPvrxwsNdVdBpHfC4WUwj/LEsMIxfbf/tJcU4EWp6B+ZuPeCB1lYIm6Mmx6
+xkYxvsNaTu+3PtMf8iPytgs5ZCnl7UNhWaw4hbf7rbyEPB8nlompUwaBDK+EjTNQ
+UAMnzvIngIfA1z+2tB1kBvs4DRVdvDyF9DGMzPjWbo8iOmXrM+oswa+5I+Z2DfAq
+eh86CYK2NR9PayrZQl6pk86PQeLB76Ap3pGlriz0Mp8CMXOzkS/ANgYnY89CmSh1
+C398Fg2K+KeLpVs08kyejPL6FXTpzA==
+=flhv
+-----END PGP SIGNATURE-----
+
+--Sig_/XseBjs6DCsd10DardSdYt5T--
