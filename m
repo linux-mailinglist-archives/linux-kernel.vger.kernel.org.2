@@ -2,114 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B1B332527
+	by mail.lfdr.de (Postfix) with ESMTP id 626A0332528
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbhCIMPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 07:15:34 -0500
-Received: from foss.arm.com ([217.140.110.172]:52280 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230435AbhCIMPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 07:15:07 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C2C21042;
-        Tue,  9 Mar 2021 04:15:06 -0800 (PST)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A607D3F70D;
-        Tue,  9 Mar 2021 04:15:04 -0800 (PST)
-Date:   Tue, 9 Mar 2021 12:14:56 +0000
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org
-Subject: Re: [PATCH] opp: Invalidate current opp when draining the opp list
-Message-ID: <20210309121455.GA13095@e120325.cambridge.arm.com>
-References: <1614870454-18709-1-git-send-email-beata.michalska@arm.com>
- <20210305042401.gktrgach4dzxp7on@vireshk-i7>
- <418fc3cb-d5ec-9216-269a-e055e78718e5@arm.com>
- <20210308115053.ua2gfo6kfnfjslyd@vireshk-i7>
- <20210308181446.GA26783@e120325.cambridge.arm.com>
- <20210309043121.546mlvl4jmshogor@vireshk-i7>
+        id S230446AbhCIMPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 07:15:37 -0500
+Received: from mail-bn8nam12on2073.outbound.protection.outlook.com ([40.107.237.73]:20192
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230476AbhCIMPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 07:15:23 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IhMYBey5/ky4izxzXtHtPBhTONzcCKwO2eC4k/Ro8v6l6hgQ0nqfN3yvwxyD2a79myGErfSwjwjWa/6gaYqX/3c8S3ZRPcQbwXvgbns0esOD4E76Ht//XkU82/DlRdm5YMsI5+hSPaaCZVvu7QVdgJIGrWVMea2Xd1anx95CINMeL6L1kZopxTIHfjNGCJD9WVnTRUfEmNTboD1NMe/1aFNsD3ZH1uv7ob9pX12pHAS8LsPFF+Q9x/OM3TdxiVGWDuK/BCz4pczxpd+A50+MnqFiIoll124VRoLKZCckFEQ1n+E4e7u3EGnJY+xt7kWPQ2EkWgnwT/soWWz9nbSZeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J2TfRBq15SxonfNXBc3PUajKy0744eFcA8UhliCbisI=;
+ b=dABZMBlvtEL6dtHezfyCTycmbscTUyhtmLN6j6rM+bdeq3SJ1uxxlO3K0/L2ieT0KIvL+fBMQxr2N0UZC7C0I4fmPK03PSUO1rO57qy8UR/Zv01XfN3yFbuAql250Kw315uRafXsAmp9ZMXLde8ISy5WiE6M9wtULb3/EtclRb/jF1nmqBDFE+2ArtXWUIDhdlz7XQPYVFcwXVETKht38ucH+d44QRO2wbX2J3p0+2txLvg64xmM99o3JnRedwXW3ayROJic9Pdm2Y6YqLYvkOwXO2sy84IX2S3Ch5eWN/rFLkQhkMnnhGO37iyC9gWcszqCaZlqkWzdiVB8PTtI/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J2TfRBq15SxonfNXBc3PUajKy0744eFcA8UhliCbisI=;
+ b=EE7fi8sUzlcMbwWcsiy2L4lF1AYtpgUGoz514B7a/QOee4P2BENDS8x77s7VeaUXSplG611Gi28rCuwopazguMdv0pr0ohUC49Ly6N4agvz4ZfsoMB1bIGoSfktEe9ma+ujaUAmOWS+q+GsjeqdXxzTo39aNQDSPxJ2ID1jajhLxUv+QtKy/Kl/QzicYy9UjPmYcUnIoH2N7pLp178zHnudufXaSfviS/rwtkm+3WDtw5Owd9SpiaWSDtVccbBcpBj25JIuezaiX7eIWf6lgaK6jXOrXeMHBzTM9VJI23R58ytB7Qhutpod2zUAP3kyzys3aIah7XZKyRjjdvPGxqg==
+Received: from BN9PR03CA0542.namprd03.prod.outlook.com (2603:10b6:408:138::7)
+ by DM6PR12MB3131.namprd12.prod.outlook.com (2603:10b6:5:11d::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Tue, 9 Mar
+ 2021 12:15:21 +0000
+Received: from BN8NAM11FT043.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:138:cafe::bd) by BN9PR03CA0542.outlook.office365.com
+ (2603:10b6:408:138::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
+ Transport; Tue, 9 Mar 2021 12:15:21 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT043.mail.protection.outlook.com (10.13.177.218) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 12:15:20 +0000
+Received: from localhost (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Mar
+ 2021 12:15:19 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <bskeggs@redhat.com>, <akpm@linux-foundation.org>
+CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <jhubbard@nvidia.com>, <rcampbell@nvidia.com>,
+        <jglisse@redhat.com>, "Alistair Popple" <apopple@nvidia.com>
+Subject: [PATCH v5 0/8] Add support for SVM atomics in Nouveau
+Date:   Tue, 9 Mar 2021 23:14:57 +1100
+Message-ID: <20210309121505.23608-1-apopple@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309043121.546mlvl4jmshogor@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 211a8a28-ba0c-410f-4ec0-08d8e2f50285
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3131:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB31317B953ACD1C0F00E58C35DF929@DM6PR12MB3131.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: V9p8dqTltU9Q+/SDZ6qVBm0L6ta6too9UR1Rdd0aMR7xFrF060n3ZjUl1pECuXJq7DNBYNKF0ylJyj8lzBlX/h4dH1+qWIAjqjbz7oVEmwhBIfBkj+DLXDZpglI1d8lpJc4+Zxi3VHNrTUkNsO335gD0ogfDMzzrorzUhCV435bzSx/GiCfS09OLmP056JgklC8SrvVwFqxErLrgXUyy9nERJ8APLo1QX3KIgjvty3e3py5w2WcUzbOPjzcVvYsEbxgyCQNfPaWfabjpprDC/zQeQrN6lf9jn/czoeLPjo5m6zVPnPuk/LVtJYan0u/LnncPM4n5FBOzTkBViBwVg6bqIyRqjzDh+0MOJYhackkwSsBPCfZOpOMpjAGm/68yoIxPptDireouJJozO2WcgtuQiod7GMsaAuTFmCdLwt4bGjXuStmHulwP5uxLwuT9vGm5NbSu1Hu0rLDkR7glmCg9khY9EG8SOAJR7yBOOrz4CUiXSalMP7R9uvEc1i74OPv+AXjYjFzVQymrzQtAnDSqmTpGxeHk7QD+6nynZwt4qSQdqHKaemImw5xgosDupClrQsCmIOS0iC7mmB8ybYyr/a6xTDQunrLuoz0lrExaYlHC9KljCHFCuDqinJvz7ZNJmCgjfxnQmFH1EwhCZgQayfM3ZZEytuRXqnCESviYPAM2z0LzJWjz3XyEeRL2
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(346002)(376002)(46966006)(36840700001)(316002)(82740400003)(426003)(8936002)(54906003)(110136005)(36906005)(8676002)(478600001)(70586007)(86362001)(36756003)(6666004)(26005)(1076003)(36860700001)(7636003)(70206006)(2616005)(34020700004)(2906002)(82310400003)(83380400001)(16526019)(186003)(4326008)(336012)(47076005)(5660300002)(356005)(107886003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 12:15:20.8451
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 211a8a28-ba0c-410f-4ec0-08d8e2f50285
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT043.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 10:01:21AM +0530, Viresh Kumar wrote:
-> On 08-03-21, 18:14, Beata Michalska wrote:
-> > > -bool _opp_remove_all_static(struct opp_table *opp_table)
-> > > +/*
-> > > + * Can't remove the OPP from under the lock, debugfs removal needs to happen
-> > > + * lock less to avoid circular dependency issues. This must be called without
-> > > + * the opp_table->lock held.
-> > > + */
-> > > +static int _opp_drain_list(struct opp_table *opp_table, bool dynamic)
-> > >  {
-> > > -	struct dev_pm_opp *opp;
-> > > +	struct dev_pm_opp *opp, *current_opp = NULL;
-> > > +	int count = 0;
-> > > +
-> > > +	while ((opp = _opp_get_next(opp_table, dynamic))) {
-> > > +		if (opp_table->current_opp == opp) {
-> > > +			/*
-> > > +			 * Reached at current OPP twice, no other OPPs left. The
-> > > +			 * last reference to current_opp is dropped from
-> > > +			 * _opp_table_kref_release().
-> > > +			 */
-> > > +			if (current_opp)
-> > > +				break;
-> > > +
-> > > +			current_opp = opp;
-> > > +		}
-> > Having a quick look at the code ...
-> > Shouldn't the current_opp be moved at the end of the list ?
-> > Otherwise there is a risk of leaving unreferenced opps (and opp_table).
-> 
-> How exactly ? Note that it is expected that the OPP table isn't being
-> used by anyone anymore at this point and all the users went away.
->
-With the current version, once the _opp_get_next returns opp
-that is the current_opp, the while loop will break, leaving all
-the opps that are on the list after current_opp: _opp_get_next
-is not actually getting the *next* entry from the list. If it
-reaches the current_opp, the _next_ one will still be the same opp
-as it will not be removed from the list at this point
-( _opp_get_next is a simple for_each_entry and until the first entry
-gets removed from the list it will always return the same one).
-If the opp_table->current_opp gets pushed at the end of the list,
-it should be safe to assume that if it gets reached for the second time,
-it's the last one on the list).
+This is the fifth version of a series to add support to Nouveau for atomic
+memory operations on OpenCL shared virtual memory (SVM) regions.
 
-The dev_pm_opp_remove_all_dynamic depends on the number of dynamic
-opps removed from the list to drop the according number of references
-on the opp_table. If the count does not correspond to number of calls
-to dev_pm_opp_add, the final refcount on opp_table might not drop to
-the point when the table will actually get released. And if the while
-loop above drops earlier - this might be the case.
+The main changes since v4 are a rebase onto v5.12-rc2, the removal of
+check_device_exclusive_range() and the addition of MMU_NOTIFY_EXCLUSIVE
+which makes the extra check unnecessary. The driver can instead filter
+notifier updates called as part of make_device_exclusive_range().
 
-Also, I am not sure how probable is the case, but if the current_opp
-has more references that the initial one and one from current_opp,
-it might not get released properly either.
+Exclusive device access is implemented by adding a new swap entry type
+(SWAP_DEVICE_EXCLUSIVE) which is similar to a migration entry. The main
+difference is that on fault the original entry is immediately restored by
+the fault handler instead of waiting.
 
-Or am I missing smth ?
+Restoring the entry triggers calls to MMU notifers which allows a device
+driver to revoke the atomic access permission from the GPU prior to the CPU
+finalising the entry.
 
-> > Might be also worth adding warning (?)
-> > 
-> >     WARN_ONCE(!list_is_singular())
-> 
-> It is allowed for the list to contain both static and dynamic OPPs,
-> and so the list may have more OPPs here.
-> 
+Patches 1 & 2 refactor existing migration and device private entry
+functions.
 
-True, jumped to the idea too early and the _opp_table_kref_release
-already warns on list not being empty.
+Patches 3 & 4 rework try_to_unmap_one() by splitting out unrelated
+functionality into separate functions - try_to_migrate_one() and
+try_to_munlock_one(). These should not change any functionality, but any
+help testing would be much appreciated as I have not been able to test
+every usage of try_to_unmap_one().
 
----
-BR.
-B.
-> -- 
-> viresh
+Patch 5 contains the bulk of the implementation for device exclusive
+memory.
+
+Patch 6 contains some additions to the HMM selftests to ensure everything
+works as expected.
+
+Patch 7 is a cleanup for the Nouveau SVM implementation.
+
+Patch 8 contains the implementation of atomic access for the Nouveau
+driver.
+
+This has been tested using the latest upstream Mesa userspace with a simple
+OpenCL test program which checks the results of atomic GPU operations on a
+SVM buffer whilst also writing to the same buffer from the CPU.
+
+v5:
+* Rebased on v5.12-rc2.
+* Renamed range->migrate_pgmap_owner to range->owner.
+* Added MMU_NOTIFY_EXCLUSIVE to allow passing of a driver cookie which
+  allows notifiers called as a result of make_device_exclusive_range() to
+  be ignored.
+* Added a check to try_to_protect_one() to detect if the pages originally
+  returned from get_user_pages() have been unmapped or not.
+* Removed check_device_exclusive_range() as it is no longer required with
+  the other changes.
+* Documentation and comments.
+
+v4:
+* Added pfn_swap_entry_to_page() and reinstated the migration entry page
+  lock check.
+* Added check_device_exclusive_range() for use during mmu range notifier
+  read side critical section when programming device page tables.
+
+v3:
+* Refactored some existing functionality.
+* Switched to using get_user_pages_remote() instead of open-coding it.
+* Moved code out of hmm.
+
+v2:
+* Changed implementation to use special swap entries instead of device
+  private pages.
+
+Alistair Popple (8):
+  mm: Remove special swap entry functions
+  mm/swapops: Rework swap entry manipulation code
+  mm/rmap: Split try_to_munlock from try_to_unmap
+  mm/rmap: Split migration into its own function
+  mm: Device exclusive memory access
+  mm: Selftests for exclusive device memory
+  nouveau/svm: Refactor nouveau_range_fault
+  nouveau/svm: Implement atomic SVM access
+
+ Documentation/vm/hmm.rst                      |  19 +-
+ arch/s390/mm/pgtable.c                        |   2 +-
+ drivers/gpu/drm/nouveau/include/nvif/if000c.h |   1 +
+ drivers/gpu/drm/nouveau/nouveau_svm.c         | 130 +++-
+ drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h |   1 +
+ .../drm/nouveau/nvkm/subdev/mmu/vmmgp100.c    |   6 +
+ fs/proc/task_mmu.c                            |  23 +-
+ include/linux/mmu_notifier.h                  |  25 +-
+ include/linux/rmap.h                          |   9 +-
+ include/linux/swap.h                          |   8 +-
+ include/linux/swapops.h                       | 123 ++--
+ lib/test_hmm.c                                | 126 +++-
+ lib/test_hmm_uapi.h                           |   2 +
+ mm/debug_vm_pgtable.c                         |  12 +-
+ mm/hmm.c                                      |  12 +-
+ mm/huge_memory.c                              |  45 +-
+ mm/hugetlb.c                                  |  10 +-
+ mm/memcontrol.c                               |   2 +-
+ mm/memory.c                                   | 127 +++-
+ mm/migrate.c                                  |  41 +-
+ mm/mprotect.c                                 |  18 +-
+ mm/page_vma_mapped.c                          |  15 +-
+ mm/rmap.c                                     | 597 +++++++++++++++---
+ tools/testing/selftests/vm/hmm-tests.c        | 219 +++++++
+ 24 files changed, 1313 insertions(+), 260 deletions(-)
+
+-- 
+2.20.1
+
