@@ -2,109 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEB8332994
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:03:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C76F23329B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231854AbhCIPCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:02:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37520 "EHLO
+        id S231805AbhCIPHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:07:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbhCIPCY (ORCPT
+        with ESMTP id S231825AbhCIPGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:02:24 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FEEEC06174A;
-        Tue,  9 Mar 2021 07:02:24 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id t26so8936301pgv.3;
-        Tue, 09 Mar 2021 07:02:24 -0800 (PST)
+        Tue, 9 Mar 2021 10:06:37 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3C8C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 07:06:36 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id h26so6066246qtm.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 07:06:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qwojpGqH1mYXH3RBXLlIpKaJqGztkkGelysn19yz+W0=;
-        b=EpNlX9oomJ4yB0MFbGVhvXl1DA+S3t4PZXeIJQU8mlerXSvvcgzpHtwIbukjxa2UQx
-         dDO6bIWHpMTp2IpiiMY1PkskPhpXuy9mf4rL2l5uwMlEIqHio8xK2bl029hGFRAhUH6H
-         HVASmZ70p784VtF9/mKd2MYE1+SvRWAFRmKuEiiJKrNvpYFowJCef8eYAbuV1xeH9Ak9
-         bb2NRss/9NClkVMixLvBCjO9ZBu6HuCnN455Wr9vAIem4MlVN/xQFzAxL9a09IMkYzml
-         QLrOoBvUnWpPQtbFLhA7nvhhL3F41sAuhfSLJSQlL6CLZnWnpfJUnS4pRD9IDBYAk7ss
-         j4cA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RuVidFfGrxbRNJTTqDPajTcD/M7KgGy1YNO83vbVnDs=;
+        b=Qr3lJxgex1KJ3QxckWln+1PcDhSEloI7TFLYIVff6X7j+prr1QMYujmD8zeJGap196
+         XNYGryXGgFBCaMcqW6nSvIQd0IBROGQGOvtQFcPNCbU2dlhSm+LpVH9lhwEqgoqBwdAh
+         GTzO8lBXZ+TETz25IJMcJn99c02QqnOgEweqSVl/eK257qpjiWtZiPMKI+jPbwLnu3e7
+         adqgLUPgYHWGybWLqJIDb2cMDQ1Mj20upz/GW08E3UFFAGARCLYYDiqR/Lf/bEEfWyHR
+         AltG8DtnXaCYG65M/uRmkNYmGaUYBZeR6TX0Qz/6VsLz/YjQYB5B3mdJON8R33EUm7wk
+         661A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qwojpGqH1mYXH3RBXLlIpKaJqGztkkGelysn19yz+W0=;
-        b=RjJZoI4rn+agbWvyZPuSsL66lqwg6m8B1XE1hrDm1yPFUF2YLi96qt6DTxJI15jEEa
-         162l5xcSdH8SV34uwFQu6JCS4y9v/RVi4pkL1XpquRAKZxMumV1UeW+g9xCv3lNbZ4rs
-         ifQN5JMcszCbwoj1O9YvYYtHkiGHePLdpLPo0wbwrLfB4T3rhAJTS0XYArLPSNc4phY5
-         Z42kRtNU49l/wx/G4io3//VWShHxxjcWjmuTSwh66s1HOuTznWx96HlRhbtpuwIUBgAv
-         GOpAeVFafm97DUPKIXyc5IeTsWxvovjcsWOAb7xKwSwaXWrJk1WSegFj7nAE13Yjv550
-         RVhg==
-X-Gm-Message-State: AOAM532Tvl2hE0JtXf1Bl/CVODvfA9A2ZPtz4hTDtsiPh48rTnTc4kLz
-        qhL3mdG0d9t9h1ZUWi90mko=
-X-Google-Smtp-Source: ABdhPJwZal/julGImampUwynUA0bXzGBPfS1KJrWbKivC0UAyI4Pw9jUORQ0DdW1IT8xanUghezcnA==
-X-Received: by 2002:a63:b60b:: with SMTP id j11mr16786499pgf.19.1615302143537;
-        Tue, 09 Mar 2021 07:02:23 -0800 (PST)
-Received: from [172.30.1.19] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id g72sm6304139pfb.189.2021.03.09.07.02.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 07:02:22 -0800 (PST)
-Subject: Re: [PATCH 02/11] PM / devfreq: remove the invalid description for
- get_target_freq
-To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     dongas86@gmail.com, kernel@pengutronix.de, shawnguo@kernel.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, abel.vesa@nxp.com
-References: <1615294733-22761-1-git-send-email-aisheng.dong@nxp.com>
- <1615294733-22761-3-git-send-email-aisheng.dong@nxp.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <c5f27c46-f1a0-cd19-3bec-3dd8800b2cae@gmail.com>
-Date:   Wed, 10 Mar 2021 00:02:18 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RuVidFfGrxbRNJTTqDPajTcD/M7KgGy1YNO83vbVnDs=;
+        b=tlGGE+Ry1Z7UXaVpW9IoeVNQkMg7MY6Qnkd8Pm7+7WUrxEXELboseRuiV6x9dtP8Ax
+         yfobGomjL+Yqq/5YDDboDGF+x3EAoc08EmFet6Amkz/01gOWExfXhmFdy6TcZ952vb4G
+         nb+eZe1Z1fneUaA4jKTD8ommHOD1QG1YDQanRoTGrRQV1tZ6R38mevQmjZnDgCzUhnw5
+         ZJ7ig/CG10CCkWg3UEwjNAVQmajQfZkFzPNe5JOtK7jIYkEN/iqvdkHaTRAgZplGSLKf
+         gUAxvUlvIJtMtOFOUfTtrwlwopzSpLyGb70wjAIIbyyJBJvKBY8lRpIVR9DzAPd/JgP1
+         Q+Eg==
+X-Gm-Message-State: AOAM532Fj1lbWfQ3TKfw8WDrNsi6pZ8ufsOQ95nL30D1OhorbOUGqGgu
+        6zHgWyJ7T4LULRhXfZGecfx7xSnVeiCdWsdVfhBAoQ==
+X-Google-Smtp-Source: ABdhPJzOa1kpIzQxgbN4wZhxaMoGNj5+BJVMbMo8+ii2DodrJXa8DLvDDAS/BDZPDLnKby7R0TnYwKB0/1PodewBin4=
+X-Received: by 2002:ac8:5212:: with SMTP id r18mr2811524qtn.290.1615302395752;
+ Tue, 09 Mar 2021 07:06:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1615294733-22761-3-git-send-email-aisheng.dong@nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAGyP=7dpTbbj39uO37YrNMg9h4Nzmkszc3MoZg9n8ALir_A52g@mail.gmail.com>
+ <YEZcVKbPzfMVK2aK@zeniv-ca.linux.org.uk> <CAGyP=7fHhyrTP-u0tqCy5ZHzZN0v_0dAoj6dCHnFuBbqtfnBmQ@mail.gmail.com>
+ <YEeFYMcdPVNrKRJT@zeniv-ca.linux.org.uk>
+In-Reply-To: <YEeFYMcdPVNrKRJT@zeniv-ca.linux.org.uk>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 9 Mar 2021 16:06:22 +0100
+Message-ID: <CACT4Y+Z==NtH2K6pxN8w90cbczffF+wYbcTgTdbBczeBk5n1aw@mail.gmail.com>
+Subject: Re: kernel panic: Attempted to kill init!
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Palash Oswal <oswalpalash@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 3. 9. 오후 9:58, Dong Aisheng wrote:
-> First of all, no_central_polling was removed since
-> commit 7e6fdd4bad03 ("PM / devfreq: Core updates to support devices
-> which can idle")
-> Secondly, get_target_freq() is not only called only with update_devfreq()
-> notified by OPP now, but also min/max freq qos notifier.
-> 
-> So remove this invalid description now to avoid confusing.
-> 
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> ---
->   drivers/devfreq/governor.h | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/devfreq/governor.h b/drivers/devfreq/governor.h
-> index 70f44b3ca42e..5cee3f64fe2b 100644
-> --- a/drivers/devfreq/governor.h
-> +++ b/drivers/devfreq/governor.h
-> @@ -57,8 +57,6 @@
->    *			Basically, get_target_freq will run
->    *			devfreq_dev_profile.get_dev_status() to get the
->    *			status of the device (load = busy_time / total_time).
-> - *			If no_central_polling is set, this callback is called
-> - *			only with update_devfreq() notified by OPP.
->    * @event_handler:      Callback for devfreq core framework to notify events
->    *                      to governors. Events include per device governor
->    *                      init and exit, opp changes out of devfreq, suspend
-> 
+On Tue, Mar 9, 2021 at 3:31 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> > I observe the following result(notice the segfault in systemd):
+> > root@sandbox:~# ./repro
+> > [    9.457767] got to 221
+> > [    9.457791] got to 183
+> > [    9.459144] got to 201
+> > [    9.459471] got to 208
+> > [    9.459773] got to 210
+> > [    9.462602] got to 270
+> > [    9.488551] systemd[1]: segfault at 7ffe59fd7fb8 ip
+> > 000055be8f20b466 sp 00007ffe59fd7fc0 error 6 in
+> > systemd[55be8f15f000+ed000]
+> > [    9.490723] Code: 00 00 00 00 41 57 41 56 41 55 41 54 55 53 89 fd
+> > 48 81 ec 48 01 00 00 64 48 8b 04 25 28 00 00 00 48 89 84 24 38 01 00
+> > 00 31 c0 <e8> f5 bf f7 ff 83 f8 01 0f 84 b7 00 00 00 48 8d 9c 240
+> > [    9.492637] Kernel panic - not syncing: Attempted to kill init!
+> > exitcode=0x0000000b
+>
+> Lovely.  So something in that sequence of syscalls manages to trigger
+> segfault in unrelated process.  What happens if you put it to sleep
+> right after open_by_handle_at() (e.g. by read(2) from fd 0, etc.)?
 
-As I replied from patch1, I recommend that squash it with patch1.
+FWIW the code looks reasonable:
 
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+All code
+========
+   0: 00 00                add    %al,(%rax)
+   2: 00 00                add    %al,(%rax)
+   4: 41 57                push   %r15
+   6: 41 56                push   %r14
+   8: 41 55                push   %r13
+   a: 41 54                push   %r12
+   c: 55                    push   %rbp
+   d: 53                    push   %rbx
+   e: 89 fd                mov    %edi,%ebp
+  10: 48 81 ec 48 01 00 00 sub    $0x148,%rsp
+  17: 64 48 8b 04 25 28 00 mov    %fs:0x28,%rax
+  1e: 00 00
+  20: 48 89 84 24 38 01 00 mov    %rax,0x138(%rsp)
+  27: 00
+  28: 31 c0                xor    %eax,%eax
+  2a:* e8 f5 bf f7 ff        callq  0xfffffffffff7c024 <-- trapping instruction
+  2f: 83 f8 01              cmp    $0x1,%eax
+  32: 0f 84 b7 00 00 00    je     0xef
+  38: 48                    rex.W
+  39: 8d                    .byte 0x8d
+  3a: 9c                    pushfq
+  3b: 40                    rex
+
+This is a PC-relative call to a reasonable address, right?
+I wonder if it always traps on this instruction or not. Maybe the
+executable is corrupted and has a page missing in the image or
+something similar. But also if we suspect a badly corrupted image, is
+it worth pursuing it?...
