@@ -2,253 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5CD33291B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:51:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15078332921
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:52:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhCIOvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 09:51:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231527AbhCIOuh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 09:50:37 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA35C06174A;
-        Tue,  9 Mar 2021 06:50:37 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id q25so27461304lfc.8;
-        Tue, 09 Mar 2021 06:50:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VmMnUYx5z45TL06VTcr6sIhoWx0jVQSuon7KfZDYhWE=;
-        b=qZJJYWQXcAXWZdroWrwy+VhVKemOU4qPP5O4cfkfdulDXkn/fZNeP4LhnJa5CEX3J2
-         uH9t1FitLaANgbuFicwiaI5ORAbu6h6xQdSrqwo7fDCc5qrW2XIBnHeDlTV1jw4E4Gfj
-         vew7aB0ytwhS/VpueLtU32etAH9TlJfgabYDvX/dctHwvCuNR3UumOj9VhZanDoiIKTu
-         SXq6lowK3fD72fKQbhHJ4gJx0LgJJt+5if6xE/1WB8yM35Lg2MZ6hRgjRSqL8YsiDdtH
-         8DL8U+EKa2wwp4Vywn+Gx7IqkDRNWPRXd3s/81EJUQX7QVbXbj3ke9Tfzr3CdZX4xGFf
-         m7ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VmMnUYx5z45TL06VTcr6sIhoWx0jVQSuon7KfZDYhWE=;
-        b=uXUfszdF34n9PVYmY/46I1NTRUHzNfsGN09hj8L7wGL/pZYqJW3/cdMta5N4p8WDCh
-         HC2KCh4Mg/cATWMqfIjKV0CPKqvfMUEzsc19XtZ9Ji0dvoewBJvcGJ5REsrMQ8W2/o6v
-         MTQ5g0v2oIdqnNc2XKkkFwJDy23hbjRKvNkzYngN2bsB6FZ1nMu8ZEWCOUigI2LwTTQa
-         cql35sWz+duGh2JOu5qUQVrBbbWhe+slb5M52h+VlVeymLyIjxSmbNafHSR8YtRxOXMe
-         rPFDMb2Aptw3Q9aXpvzrzDYeDKtNj6WXHFe/oEGUsVip8FYT9m20+g7W19vaCCt7Rkl+
-         3+pA==
-X-Gm-Message-State: AOAM530/FnkJd1vuI0JhSxFusSPgbwAPrEVwLpTmmMmouobsgraqjAz7
-        Pr+KrdEcHZSDXJCyp+/r2VY=
-X-Google-Smtp-Source: ABdhPJxZyVfT32/lPr8zonaNLXVBOf8yMxpxMS8SGkDBqv6o0bPeLg4BQq8TzEu7W0RAmgDGug5LXQ==
-X-Received: by 2002:a05:6512:2206:: with SMTP id h6mr17723729lfu.239.1615301435821;
-        Tue, 09 Mar 2021 06:50:35 -0800 (PST)
-Received: from localhost.localdomain (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id f5sm2003134ljc.8.2021.03.09.06.50.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 06:50:35 -0800 (PST)
-Subject: Re: [PATCH 2/3] dt-bindings: phy: brcm,ns-usb2-phy: bind single CRU
- reg
-To:     Rob Herring <robh@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivek Unune <npcomplete13@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20210226114501.31086-1-zajec5@gmail.com>
- <20210226114501.31086-2-zajec5@gmail.com>
- <20210306215232.GA1238918@robh.at.kernel.org>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <a5064481-c1b4-4a12-b046-0d3472a6ec0c@gmail.com>
-Date:   Tue, 9 Mar 2021 15:50:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S231512AbhCIOve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 09:51:34 -0500
+Received: from mga11.intel.com ([192.55.52.93]:29766 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230504AbhCIOu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 09:50:59 -0500
+IronPort-SDR: jInqC+4xmOBAJwoV7psQ4Q5bxovKLOz0D07s/bpYJ3x8ViG8QSy5st2enn5L0pHcvvnoORYf0L
+ TyDC+Woi9cIA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9918"; a="184888579"
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="184888579"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 06:50:58 -0800
+IronPort-SDR: tUyOPFT9EJfd5QCMoeTi/avH8v75Gvgcsy3Xw/1gaez1DT178DO9r+Y8J2/HSM0pKz2K/h6boJ
+ pBBF05T31Suw==
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="447521308"
+Received: from jcchan4-mobl.amr.corp.intel.com (HELO [10.212.217.30]) ([10.212.217.30])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 06:50:57 -0800
+Subject: Re: [PATCH v4 3/3] x86/vmemmap: Handle unpopulated sub-pmd ranges
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210301083230.30924-1-osalvador@suse.de>
+ <20210301083230.30924-4-osalvador@suse.de>
+ <b1aff368-8321-0fa7-05ab-3d6c856c00f8@intel.com>
+ <20210308184330.GB25767@linux> <YEcw/wXCQPHnUdOS@localhost.localdomain>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <7b3fa9c6-2652-4933-bf03-cf4307f93458@intel.com>
+Date:   Tue, 9 Mar 2021 06:50:57 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210306215232.GA1238918@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <YEcw/wXCQPHnUdOS@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.03.2021 22:52, Rob Herring wrote:
-> On Fri, Feb 26, 2021 at 12:45:00PM +0100, Rafał Miłecki wrote:
->> From: Rafał Miłecki <rafal@milecki.pl>
->>
->> The old binding was using whole DMU space. It was an overkill. DMU is a
->> big block which contains e.g. CRU which contains e.g. PLLs, PHY, pinctrl
->> and thermal blocks.
->>
->> Rework the binding to directly use a single CRU register that controls
->> USB 2.0 PHY. It's still required to reference CRU generic clkset
->> register so add a syscon for that.
->>
->> For a full DMU & CRU description see arch/arm/boot/dts/bcm5301x.dtsi .
->>
->> The old binding is deprecated now.
->>
->> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->> ---
->> This has been verified using dt_binding_check
->>
->> I'd really like to get Rob's ack to make sure I don't do anything stupid
->>
->> It's a reworked version of my abonded 2019 patch:
->> [PATCH V2 1/2] dt-bindings: bcm-ns-usb2-phy: rework binding to use CRU syscon
->> https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20190108123907.19816-1-zajec5@gmail.com/
->> ---
->>   .../bindings/phy/brcm,ns-usb2-phy.yaml        | 46 +++++++++++++++----
->>   1 file changed, 36 insertions(+), 10 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/phy/brcm,ns-usb2-phy.yaml b/Documentation/devicetree/bindings/phy/brcm,ns-usb2-phy.yaml
->> index b8b683ce8fa9..8e056d4d205a 100644
->> --- a/Documentation/devicetree/bindings/phy/brcm,ns-usb2-phy.yaml
->> +++ b/Documentation/devicetree/bindings/phy/brcm,ns-usb2-phy.yaml
->> @@ -16,11 +16,20 @@ properties:
->>       const: brcm,ns-usb2-phy
->>   
->>     reg:
->> -    maxItems: 1
->> -    description: DMU (Device Management Unit) address range
->> +    anyOf:
->> +      - maxItems: 1
->> +        description: PHY control register
->> +      - maxItems: 1
->> +        description: DMU (Device Management Unit) address range
->> +        deprecated: true
->>   
->>     reg-names:
->>       const: dmu
->> +    deprecated: true
->> +
->> +  brcm,syscon-clkset:
->> +    description: phandle to syscon for clkset register
->> +    $ref: /schemas/types.yaml#/definitions/phandle
+On 3/9/21 12:25 AM, Oscar Salvador wrote:
 > 
-> Don't really need this as it's just a compatible node of the parent
-> node.
-
-Thanks
-
-
->>   
->>     clocks:
->>       maxItems: 1
->> @@ -34,22 +43,39 @@ properties:
->>   
->>   required:
->>     - reg
->> -  - reg-names
->>     - clocks
->>     - clock-names
->>     - "#phy-cells"
->>   
->> +oneOf:
->> +  - required:
->> +      - brcm,syscon-clkset
->> +  - required:
->> +      - reg-names
->> +
->>   additionalProperties: false
->>   
->>   examples:
->>     - |
->>       #include <dt-bindings/clock/bcm-nsp.h>
->>   
->> -    usb2-phy@1800c000 {
->> -        compatible = "brcm,ns-usb2-phy";
->> -        reg = <0x1800c000 0x1000>;
->> -        reg-names = "dmu";
->> -        clocks = <&genpll BCM_NSP_GENPLL_USB_PHY_REF_CLK>;
->> -        clock-names = "phy-ref-clk";
->> -        #phy-cells = <0>;
->> +    cru-bus@1800c100 {
->> +        compatible = "simple-bus";
+> I think the confusion comes from the name.
+> "vmemmap_pmd_is_unused" might be a better fit?
 > 
-> A specific compatible is needed for this block.
+> What do you think? Do you feel strong about moving the log in there
+> regardless of the name?
 
-I've just sent independently following patch:
-[PATCH robh next] dt-bindings: bus: add Broadcom CRU
-
-
->> +        ranges = <0 0x1800c100 0x1a4>;
->> +        #address-cells = <1>;
->> +        #size-cells = <1>;
->> +
->> +        usb2-phy@64 {
->> +            compatible = "brcm,ns-usb2-phy";
->> +            reg = <0x64 0x4>;
->> +            brcm,syscon-clkset = <&clkset>;
->> +            clocks = <&genpll BCM_NSP_GENPLL_USB_PHY_REF_CLK>;
->> +            clock-names = "phy-ref-clk";
->> +            #phy-cells = <0>;
->> +        };
->> +
->> +        clkset: syscon@80 {
->> +            compatible = "brcm,cru-clkset", "syscon";
->> +            reg = <0x80 0x4>;
->> +        };
-> 
-> Is this going to expand to 0x1a4/4 child nodes? The problem with one
-> node per register is I don't know when it ends and you have to
-> constantly update your DT.
-
-I'm sorry, I don't fully understand that expanding question.
-
-Most of CRU subblocks are standalone devices occupying multiple
-registers. The last one is thermal@1800c2c0. That "brcm,cru-clkset"
-seems to be an exception in the CRU space. clkset is a single
-register so it should never become reg = <0x80 0x8>;
-
-The finally documented CRU is expected to look like:
-
-cru-bus@1800c100 {
-	compatible = "brcm,cru", "simple-bus";
-	reg = <0x1800c100 0x1d0>;
-	ranges = <0 0x1800c100 0x1d0>;
-	#address-cells = <1>;
-	#size-cells = <1>;
-
-	lcpll0@0 {
-		compatible = "brcm,nsp-lcpll0";
-		reg = <0x0 0x14>;
-		(...)
-	};
-
-	genpll@40 {
-		compatible = "brcm,nsp-genpll";
-		reg = <0x40 0x24>;
-		(...)
-	};
-
-	usb2-phy@64 {
-		compatible = "brcm,ns-usb2-phy";
-		reg = <0x64 0x4>;
-		brcm,syscon-clkset = <&clkset>;
-		clocks = <&genpll BCM_NSP_GENPLL_USB_PHY_REF_CLK>;
-		clock-names = "phy-ref-clk";
-		#phy-cells = <0>;
-	};
-
-	clkset: syscon@80 {
-		compatible = "brcm,cru-clkset", "syscon";
-		reg = <0x80 0x4>;
-	};
-
-	pin-controller@c0 {
-		compatible = "brcm,bcm4708-pinmux";
-		reg = <0xc0 0x24>;
-		(...)
-	};
-
-	thermal@1c0 {
-		compatible = "brcm,ns-thermal";
-		reg = <0x1c0 0x10>;
-		(...)
-	};
-};
+No, not really.  The name is probably worth adjusting, but I think the
+code can probably stay put.
