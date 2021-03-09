@@ -2,157 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 469EA331F9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 08:01:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 727EF331F9E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 08:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbhCIHAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 02:00:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhCIHAQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 02:00:16 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA29C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 23:00:16 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id z6so4428118qts.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 23:00:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZltWVmqDv2bFHx9OP+l038/BK7ZEw3Qk3L1sSFQUDbI=;
-        b=aXFd3ldz1juPxpAEQPv/aSAIooPPPaXWdzzagLX623zV6yievF3QV6a8WOTadfLwID
-         +mUsukYE+ZlCn/FaU/WER2rBXH0tblfPVpC6KzUWvgnP+IzI4hbrnZqAnkkBiOLtai++
-         +Jrbgo5+ZKQXTV53XFHpPqMtajNfg8Ymg3oawgFuHkIgA7g//clpvXRqvYJxqajZTj82
-         IGrghzNxM00mzmLOo6XysakDglxVHcdNXgbOwPiMS0iTjlGKf+Y1s6z7dzTOxq4p2Cfx
-         H2f/XTw1WHf41mfN35z3QB8TzpBI/R5QLd0vBYCDhJQBwbAxK8VJyeMB82wTQOyHhsFa
-         audw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZltWVmqDv2bFHx9OP+l038/BK7ZEw3Qk3L1sSFQUDbI=;
-        b=jtFQFyIsaoT25F00cMKXItuQ2mp94akUsDh8o2m0clO1Rig1s6xPGwrtwey8ojDD6Z
-         EdgegYCjTh5susNYtZ/HGuNT1Qh3hJpfFCBbP7ZcifK63iGU4mYy0nqN0fHX5polLDYQ
-         Wg/sL5RI27IWvW+abiGgan+n04Io1pdXdMDXbU6eUY54nTEwDj468av2Vy+k+0zySIJK
-         MsX00mMROf2wORvX0Q/wjpTs7FkXlhxLusZUIBMpEkpzanJkig9gtoDrbIb2yPeOTkba
-         smFA+0Sv1k4D/hjw4aWtKMY7SL9Ly2VLtBJRvoMp9/PCr98VBttn7f8G/rGxBl1/zo5U
-         Npwg==
-X-Gm-Message-State: AOAM533bXUxFT4sPInLoVPHRSZES64S/AxSG4tDH087FjjeB53MrEAtB
-        Ie+06Fc8bASS4gygmV8UBPAJujrviBmBkV8BOhB68w==
-X-Google-Smtp-Source: ABdhPJx+e0fwiX/5o3C06D2NeJYKDbS+pfaP67TK7tEJsIeDUwVpUbppZ3fUPKhT6GtAUXKb7cvf3O1/sw0TIXnodSc=
-X-Received: by 2002:ac8:7318:: with SMTP id x24mr5501166qto.67.1615273215037;
- Mon, 08 Mar 2021 23:00:15 -0800 (PST)
+        id S230140AbhCIHBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 02:01:18 -0500
+Received: from mga11.intel.com ([192.55.52.93]:58147 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229607AbhCIHA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 02:00:57 -0500
+IronPort-SDR: YwnJyttLlPCuu8EAAo1kV/l+bfN6DCvOsYXnxqov33kY9O1E1O2pa2PaByNZN2qRxaHh/667WD
+ sm3YdD/XH7Sg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="184812561"
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="184812561"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 23:00:56 -0800
+IronPort-SDR: 8A55sAj3JBtycf3d/MHF0W2XM8yYdgqk4jT20rk4axuikLs0NvqUVsnL1VQD2SbF6mmvAnshxB
+ IGANCVHecstg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="447398685"
+Received: from lkp-server01.sh.intel.com (HELO 3e992a48ca98) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 08 Mar 2021 23:00:54 -0800
+Received: from kbuild by 3e992a48ca98 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lJWMQ-0001Rg-5w; Tue, 09 Mar 2021 07:00:54 +0000
+Date:   Tue, 09 Mar 2021 15:00:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 361316d29e5718c52c92ee4a4d8d6ccb9d5d60a9
+Message-ID: <60471cff.93Ij4giA25qy3b6y%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <000000000000ccbedd05bcd0504e@google.com> <CACT4Y+a54q=WzJU9UgzW1P6-xvJqrTJ9doXcqCgyu+MPBFFL=w@mail.gmail.com>
-In-Reply-To: <CACT4Y+a54q=WzJU9UgzW1P6-xvJqrTJ9doXcqCgyu+MPBFFL=w@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 9 Mar 2021 08:00:04 +0100
-Message-ID: <CACT4Y+ZwDjL6208P2w6VOm5D3Zwt1snHTBD29ki0VkzjrKaMpQ@mail.gmail.com>
-Subject: Re: [syzbot] upstream boot error: WARNING in kvm_wait
-To:     syzbot <syzbot+a4c8bc1d1dc7b620630d@syzkaller.appspotmail.com>
-Cc:     Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, wanpengli@tencent.com,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 6, 2021 at 12:37 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Fri, Mar 5, 2021 at 9:56 PM syzbot
-> <syzbot+a4c8bc1d1dc7b620630d@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    280d542f Merge tag 'drm-fixes-2021-03-05' of git://anongit..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=138c7a92d00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=dc4003509ab3fc78
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=a4c8bc1d1dc7b620630d
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+a4c8bc1d1dc7b620630d@syzkaller.appspotmail.com
->
-> +Mark, I've enabled CONFIG_DEBUG_IRQFLAGS on syzbot and it led to this breakage.
-> Is it a bug in kvm_wait or in the debugging code itself? If it's a
-> real bug, I would assume it's pretty bad as it happens all the time.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 361316d29e5718c52c92ee4a4d8d6ccb9d5d60a9  Merge branch 'efi/urgent'
 
-Wanpeng posted a fix for this:
+elapsed time: 720m
 
-https://lore.kernel.org/kvm/1614057902-23774-1-git-send-email-wanpengli@tencent.com/
+configs tested: 155
+configs skipped: 2
 
-#syz fix: x86/kvm: Fix broken irq restoration in kvm_wait
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                        workpad_defconfig
+nds32                               defconfig
+sh                           se7724_defconfig
+mips                         bigsur_defconfig
+mips                          ath25_defconfig
+m68k                           sun3_defconfig
+powerpc                 xes_mpc85xx_defconfig
+sh                               alldefconfig
+powerpc64                           defconfig
+sh                        edosk7760_defconfig
+mips                        jmr3927_defconfig
+arm                            hisi_defconfig
+sh                   sh7724_generic_defconfig
+sparc                            alldefconfig
+mips                           rs90_defconfig
+mips                      pistachio_defconfig
+sh                           sh2007_defconfig
+arm                          pxa3xx_defconfig
+m68k                             alldefconfig
+arm                          moxart_defconfig
+powerpc                  storcenter_defconfig
+arm                             ezx_defconfig
+mips                       lemote2f_defconfig
+h8300                            allyesconfig
+powerpc                     tqm8541_defconfig
+powerpc                     pq2fads_defconfig
+arm                           stm32_defconfig
+mips                 decstation_r4k_defconfig
+i386                             alldefconfig
+arc                                 defconfig
+powerpc                 mpc8272_ads_defconfig
+powerpc                   lite5200b_defconfig
+m68k                         amcore_defconfig
+arm                         socfpga_defconfig
+arm                          pcm027_defconfig
+powerpc                     pseries_defconfig
+arm                         s5pv210_defconfig
+mips                    maltaup_xpa_defconfig
+mips                        vocore2_defconfig
+powerpc                    amigaone_defconfig
+powerpc                    mvme5100_defconfig
+arc                            hsdk_defconfig
+arm                        multi_v5_defconfig
+sh                              ul2_defconfig
+powerpc                 mpc837x_mds_defconfig
+arm                          pxa168_defconfig
+arm                      jornada720_defconfig
+sh                          rsk7203_defconfig
+mips                        bcm47xx_defconfig
+microblaze                      mmu_defconfig
+powerpc                     skiroot_defconfig
+arm                            qcom_defconfig
+x86_64                           allyesconfig
+arm                        realview_defconfig
+arm                  colibri_pxa270_defconfig
+arc                     nsimosci_hs_defconfig
+arm                         nhk8815_defconfig
+arc                          axs101_defconfig
+powerpc                    ge_imp3a_defconfig
+arm                     eseries_pxa_defconfig
+mips                           jazz_defconfig
+ia64                        generic_defconfig
+mips                         tb0226_defconfig
+m68k                        mvme16x_defconfig
+arm                       aspeed_g5_defconfig
+arc                           tb10x_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210308
+x86_64               randconfig-a001-20210308
+x86_64               randconfig-a004-20210308
+x86_64               randconfig-a002-20210308
+x86_64               randconfig-a005-20210308
+x86_64               randconfig-a003-20210308
+i386                 randconfig-a005-20210309
+i386                 randconfig-a003-20210309
+i386                 randconfig-a002-20210309
+i386                 randconfig-a006-20210309
+i386                 randconfig-a004-20210309
+i386                 randconfig-a001-20210309
+i386                 randconfig-a005-20210308
+i386                 randconfig-a003-20210308
+i386                 randconfig-a002-20210308
+i386                 randconfig-a006-20210308
+i386                 randconfig-a004-20210308
+i386                 randconfig-a001-20210308
+x86_64               randconfig-a013-20210309
+x86_64               randconfig-a016-20210309
+x86_64               randconfig-a015-20210309
+x86_64               randconfig-a014-20210309
+x86_64               randconfig-a011-20210309
+x86_64               randconfig-a012-20210309
+i386                 randconfig-a016-20210309
+i386                 randconfig-a012-20210309
+i386                 randconfig-a014-20210309
+i386                 randconfig-a013-20210309
+i386                 randconfig-a011-20210309
+i386                 randconfig-a015-20210309
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-> > ------------[ cut here ]------------
-> > raw_local_irq_restore() called with IRQs enabled
-> > WARNING: CPU: 2 PID: 213 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-> > Modules linked in:
-> > CPU: 2 PID: 213 Comm: kworker/u17:4 Not tainted 5.12.0-rc1-syzkaller #0
-> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-> > Workqueue: events_unbound call_usermodehelper_exec_work
-> >
-> > RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-> > Code: be ff cc cc cc cc cc cc cc cc cc cc cc 80 3d e4 38 af 04 00 74 01 c3 48 c7 c7 a0 8f 6b 89 c6 05 d3 38 af 04 01 e8 e7 b9 be ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
-> > RSP: 0000:ffffc90000fe7770 EFLAGS: 00010286
-> >
-> > RAX: 0000000000000000 RBX: ffffffff8c0e9c68 RCX: 0000000000000000
-> > RDX: ffff8880116bc3c0 RSI: ffffffff815c0cf5 RDI: fffff520001fcee0
-> > RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000001
-> > R10: ffffffff815b9a5e R11: 0000000000000000 R12: 0000000000000003
-> > R13: fffffbfff181d38d R14: 0000000000000001 R15: ffff88802cc36000
-> > FS:  0000000000000000(0000) GS:ffff88802cc00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 0000000000000000 CR3: 000000000bc8e000 CR4: 0000000000150ee0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  kvm_wait arch/x86/kernel/kvm.c:860 [inline]
-> >  kvm_wait+0xc9/0xe0 arch/x86/kernel/kvm.c:837
-> >  pv_wait arch/x86/include/asm/paravirt.h:564 [inline]
-> >  pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
-> >  __pv_queued_spin_lock_slowpath+0x8b8/0xb40 kernel/locking/qspinlock.c:508
-> >  pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:554 [inline]
-> >  queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
-> >  queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
-> >  do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
-> >  spin_lock include/linux/spinlock.h:354 [inline]
-> >  copy_fs_struct+0x1c8/0x340 fs/fs_struct.c:123
-> >  copy_fs kernel/fork.c:1443 [inline]
-> >  copy_process+0x4dc2/0x6fd0 kernel/fork.c:2088
-> >  kernel_clone+0xe7/0xab0 kernel/fork.c:2462
-> >  kernel_thread+0xb5/0xf0 kernel/fork.c:2514
-> >  call_usermodehelper_exec_work kernel/umh.c:172 [inline]
-> >  call_usermodehelper_exec_work+0xcc/0x180 kernel/umh.c:158
-> >  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
-> >  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
-> >  kthread+0x3b1/0x4a0 kernel/kthread.c:292
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000ccbedd05bcd0504e%40google.com.
+clang tested configs:
+x86_64               randconfig-a013-20210308
+x86_64               randconfig-a016-20210308
+x86_64               randconfig-a015-20210308
+x86_64               randconfig-a014-20210308
+x86_64               randconfig-a011-20210308
+x86_64               randconfig-a012-20210308
+x86_64               randconfig-a006-20210309
+x86_64               randconfig-a001-20210309
+x86_64               randconfig-a004-20210309
+x86_64               randconfig-a002-20210309
+x86_64               randconfig-a005-20210309
+x86_64               randconfig-a003-20210309
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
