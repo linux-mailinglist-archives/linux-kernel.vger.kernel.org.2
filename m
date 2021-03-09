@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28A9332DDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FB3332DE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:11:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231890AbhCISJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 13:09:00 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:34048 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231175AbhCISIx (ORCPT
+        id S231909AbhCISKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 13:10:35 -0500
+Received: from outbound-smtp22.blacknight.com ([81.17.249.190]:42593 "EHLO
+        outbound-smtp22.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231852AbhCISKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 13:08:53 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 8919B1C0B7A; Tue,  9 Mar 2021 19:08:51 +0100 (CET)
-Date:   Tue, 9 Mar 2021 19:08:51 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Arnd Bergmann <arnd@kernel.org>, rafael.j.wysocki@intel.com
-Cc:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, Dan Murphy <dmurphy@ti.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Intel, please maintain your drivers was Re: [PATCH] leds: lgm: fix
- gpiolib dependency
-Message-ID: <20210309180851.GA4669@duo.ucw.cz>
-References: <20210308153052.2353885-1-arnd@kernel.org>
+        Tue, 9 Mar 2021 13:10:09 -0500
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp22.blacknight.com (Postfix) with ESMTPS id 1940CBABC7
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 18:10:08 +0000 (GMT)
+Received: (qmail 21638 invoked from network); 9 Mar 2021 18:10:07 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 9 Mar 2021 18:10:07 -0000
+Date:   Tue, 9 Mar 2021 18:10:06 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
+Message-ID: <20210309181006.GP3697@techsingularity.net>
+References: <20210301161200.18852-1-mgorman@techsingularity.net>
+ <20210301161200.18852-3-mgorman@techsingularity.net>
+ <20210309171230.GA198878@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20210308153052.2353885-1-arnd@kernel.org>
+In-Reply-To: <20210309171230.GA198878@infradead.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 09, 2021 at 05:12:30PM +0000, Christoph Hellwig wrote:
+> Would vmalloc be another good user of this API? 
+> 
+> > +	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
+> > +	if (!prepare_alloc_pages(gfp_mask, 0, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
+> 
+> This crazy long line is really hard to follow.
+> 
 
---pf9I7BMVVzbSWLtt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It's not crazier than what is already in alloc_pages_nodemask to share
+code.
 
-Hi!
+> > +		return 0;
+> > +	gfp_mask = alloc_mask;
+> > +
+> > +	/* Find an allowed local zone that meets the high watermark. */
+> > +	for_each_zone_zonelist_nodemask(zone, z, ac.zonelist, ac.highest_zoneidx, ac.nodemask) {
+> 
+> Same here.
+> 
 
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> Without gpiolib, the driver fails to build:
->=20
->     drivers/leds/blink/leds-lgm-sso.c:123:19: error: field has incomplete=
- type 'struct gpio_chip'
->             struct gpio_chip chip;
->                              ^
+Similar to what happens in get_page_from_freelist with the
+for_next_zone_zonelist_nodemask iterator.
 
-Thanks, applied.
+> > +		unsigned long mark;
+> > +
+> > +		if (cpusets_enabled() && (alloc_flags & ALLOC_CPUSET) &&
+> > +		    !__cpuset_zone_allowed(zone, gfp_mask)) {
+> > +			continue;
+> > +		}
+> 
+> No need for the curly braces.
+> 
 
-I'd like people from Intel to contact me. There's more to fix there,
-and AFAICT original author went away.
+Yes, but it's for coding style. MM has no hard coding style guidelines
+around this but for sched, it's generally preferred that if the "if"
+statement spans multiple lines then it should use {} even if the block
+is one line long for clarity.
 
-Best regards,
-							Pavel
---=20
-http://www.livejournal.com/~pavelmachek
+> >  	}
+> >  
+> > -	gfp_mask &= gfp_allowed_mask;
+> > -	alloc_mask = gfp_mask;
+> 
+> Is this change intentional?
 
---pf9I7BMVVzbSWLtt
-Content-Type: application/pgp-signature; name="signature.asc"
+Yes so that prepare_alloc_pages works for both the single page and bulk
+allocator. Slightly less code duplication.
 
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYEe5swAKCRAw5/Bqldv6
-8g/BAKChV/y8/zyZH3eUHuuZxTtxolrmFQCfXSS4rIX4JrvPLkCXXICRu0eWr0o=
-=hNjL
------END PGP SIGNATURE-----
-
---pf9I7BMVVzbSWLtt--
+-- 
+Mel Gorman
+SUSE Labs
