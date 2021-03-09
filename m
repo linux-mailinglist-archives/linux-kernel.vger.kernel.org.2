@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2676B33262E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC47332652
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbhCINKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 08:10:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhCINJd (ORCPT
+        id S231376AbhCINNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 08:13:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55939 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230075AbhCINMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 08:09:33 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AFFC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 05:09:32 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id y13so5990265pfr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 05:09:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sbY3FA8sDFV7e3j6jkZbThLGcOzdkl8VfF99h6lt0u4=;
-        b=l11KSv0zg+2YJuuDbZPziDASpY94KOCCb1Ju/OdwxwdDJOFNUrF3T2pJT9hadUG0Mm
-         TrDDsIuLmkJCtcA+Bl1yt7BYP21O6asGSIfID4JKBT9L/JVrJDuyeDoEXCKVlnRfBped
-         lFMFzepHhKeAYaKHYbogkMAM6ZUoVTpql6DdIPgTZNjN+mkjOWyN5kuP+i8fUt2mKEKv
-         sF733SdATvAd8DAl3pzDFVygPsnqjdsDrytz2hGN0CnBC//L5GBhnA56v/xvho1VOeSg
-         sWhjWN9DcW3Fg4dhW/7wFIH5dUSDbSNDoMWSSL7Wa90KeRJzVKDhxXurH+c37xGTv0K8
-         1qWQ==
+        Tue, 9 Mar 2021 08:12:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615295551;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ps2kLvFjhgXjurX+hYMjJ+zVbhy9iDfc123Xi053PeY=;
+        b=XIlby2QCNGplux0wOPKp49IQEdzWNFwp3b3HXhGKNVzwwAaHMmVnBDCzegnhhcCxQtAwHW
+        jFaatNebIgTi4TTeQHvTyU3gGH43z/nfXmm5uMfQZo1GGNhLw0uotCa1Py7gLWjI6+/DaC
+        egGPlKWDalkylvt+Vjtzobi2K21uUN4=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-129-sBVYQvw4MoS2qYqjZKNBDw-1; Tue, 09 Mar 2021 08:12:29 -0500
+X-MC-Unique: sBVYQvw4MoS2qYqjZKNBDw-1
+Received: by mail-ed1-f71.google.com with SMTP id h2so6678683edw.10
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 05:12:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sbY3FA8sDFV7e3j6jkZbThLGcOzdkl8VfF99h6lt0u4=;
-        b=sDBWRt1ZgMMTsyZgUX7N3WwKjGXnXtAJcnloX2c8j26/6uICa6ezOO2o//rnde0x35
-         VyKhzmpQQrFEPFaekSKMDKEWcIYmR3+QWZ8GYldIuyhNcVVW3CKD6dbKXTkvV+MjDOo9
-         ZFn3aKu7DXcudY6I9dHeYT6Go9YXWBCZ0wi0oCaz+/uqWwSyDYDkQGNR4ewvhtuiQWLF
-         WLUP0DQeuNZ8CpK2PGOi6x/P9h/1UeJQE6Av8hnuKOn0vsUeUzYIBSkOr1J/71x0LSc7
-         mSVZNYyWI2kp1bHlIz0PrQEvcg61eWdBryEmqsWFVkrnapgIg20kcRPgOs3XFs7iijaf
-         neUw==
-X-Gm-Message-State: AOAM532Z1pe/GTAsvjPC33PoOwur83Dm+aKbPJCAPB9Q3S3oYvJhYM+v
-        +q2I/YC6nzyy/a+HZ2gzYKltkcWB+6jf9dLAQxt71g==
-X-Google-Smtp-Source: ABdhPJygcj+LM4wMSd3XhfXC3Q2AAC770v3u6KN+vIc/41bqqdgwzMKkgzGsNy2LWb689JQTvYOzzXm62FKwGegdBzo=
-X-Received: by 2002:a63:455d:: with SMTP id u29mr24462220pgk.286.1615295372295;
- Tue, 09 Mar 2021 05:09:32 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ps2kLvFjhgXjurX+hYMjJ+zVbhy9iDfc123Xi053PeY=;
+        b=rPclf/b5TJnbhF76OnZXqYWaMWyrR6DCSkL2AjrhVAfYuBQeX3nxG2wRKbFYc/6jNg
+         kXR/4wCQjM5ktPVYBRLSd2XsF3E4YKktnvwZsH0BGjljvdzrxF7WoyK8w5TPgTadiL2X
+         NzS9mbZsaGAxsK/nwqANsamsYvKGFEiEESRNbsGWWUtzSAzjhoak1tW4Xu8yWiqRxzOu
+         WmIq/jlTag9ZpX/loInomNSue8sRSOgx+jmwSTz8IRce91b4ArDz+r4WE4P5y+mkUyfc
+         /LNJk3UUt9sP9moHefRFU0/bn3chUrSrVtUNvH6I8La+RSez86qqofwaVPqM/rlIY+oB
+         nhiQ==
+X-Gm-Message-State: AOAM533ZHbM/mY6ppJXfj8Sb5qpyLAmVBVyVSx9jD8JnIIEDZFKQ3ht5
+        DwjkB0hwj974TQUumTVsSlKCnG0HzV23ZLabFnKMpQDsBS2wkSGKAB7FZSOlRo6NlW8/AZ1rVn7
+        4L/fvlOUIQ+AQ+uk6T/jgbbYt
+X-Received: by 2002:a17:906:c005:: with SMTP id e5mr20257873ejz.270.1615295548205;
+        Tue, 09 Mar 2021 05:12:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJywu9MgyyJTri+Kb3HnKjUtQMNeGnxCefYjkKYtSfQ7PVSAD9cnCTNq3JCgvmmH9TEMSJYzVQ==
+X-Received: by 2002:a17:906:c005:: with SMTP id e5mr20257860ejz.270.1615295548067;
+        Tue, 09 Mar 2021 05:12:28 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id v9sm8261280ejc.37.2021.03.09.05.12.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 05:12:27 -0800 (PST)
+Subject: Re: [PATCH 2/2] KVM: x86/mmu: Exclude the MMU_PRESENT bit from MMIO
+ SPTE's generation
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <20210309021900.1001843-1-seanjc@google.com>
+ <20210309021900.1001843-3-seanjc@google.com>
+ <785c17c307e66b9d7b422cc577499d284cfb6e7b.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d72993d9-c11c-a5f4-0452-b2bed730938c@redhat.com>
+Date:   Tue, 9 Mar 2021 14:12:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <cover.1615218180.git.andreyknvl@google.com> <755161094eac5b0fc15273d609c78a459d4d07b9.1615218180.git.andreyknvl@google.com>
- <20210308165847.GF15644@arm.com>
-In-Reply-To: <20210308165847.GF15644@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 9 Mar 2021 14:09:21 +0100
-Message-ID: <CAAeHK+yaHufdycvawHAQ-Lt9GHKrGkzKkdJnTA3qN1MTtwiS5g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] arm64: kasan: allow to init memory when setting tags
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <785c17c307e66b9d7b422cc577499d284cfb6e7b.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 5:58 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Mon, Mar 08, 2021 at 04:55:14PM +0100, Andrey Konovalov wrote:
-> > @@ -68,10 +69,16 @@ static inline void mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
-> >                * 'asm volatile' is required to prevent the compiler to move
-> >                * the statement outside of the loop.
-> >                */
-> > -             asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
-> > -                          :
-> > -                          : "r" (curr)
-> > -                          : "memory");
-> > +             if (init)
-> > +                     asm volatile(__MTE_PREAMBLE "stzg %0, [%0]"
-> > +                                  :
-> > +                                  : "r" (curr)
-> > +                                  : "memory");
-> > +             else
-> > +                     asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
-> > +                                  :
-> > +                                  : "r" (curr)
-> > +                                  : "memory");
-> >
-> >               curr += MTE_GRANULE_SIZE;
-> >       } while (curr != end);
->
-> Is 'init' always a built-in constant here? If not, checking it once
-> outside the loop may be better (or check the code generation, maybe the
-> compiler is smart enough).
+On 09/03/21 11:09, Maxim Levitsky wrote:
+> What happens if mmio generation overflows (e.g if userspace keeps on updating the memslots)?
+> In theory if we have a SPTE with a stale generation, it can became valid, no?
+> 
+> I think that we should in the case of the overflow zap all mmio sptes.
+> What do you think?
 
-I think it's worth moving the init check outside the loop anyway. Will do in v3.
+Zapping all MMIO SPTEs is done by updating the generation count.  When 
+it overflows, all SPs are zapped:
 
-Thanks!
+         /*
+          * The very rare case: if the MMIO generation number has wrapped,
+          * zap all shadow pages.
+          */
+         if (unlikely(gen == 0)) {
+                 kvm_debug_ratelimited("kvm: zapping shadow pages for 
+mmio generation wraparound\n");
+                 kvm_mmu_zap_all_fast(kvm);
+         }
+
+So giving it more bits make this more rare, at the same time having to 
+remove one or two bits is not the end of the world.
+
+Paolo
+
