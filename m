@@ -2,174 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C73332D3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF59332D35
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:28:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbhCIR2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:28:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhCIR1z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:27:55 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D69C06174A;
-        Tue,  9 Mar 2021 09:27:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mzC64vV9C496DRhf6U+6CEfaYqC9bqDWwcf1nbhyMUU=; b=hKzg8+7iJYAmX02+ttvJHqs1J9
-        rDx35d9wpaaaTWpzoqo/CI2YnrziszEVFYX/1eGA8YiY9zQl7v4+pqQ/0sq7GdV3ChF5uf9gQVZOd
-        lkxyiZ2iepU79+nuIn+d8vbeM05p036Y8s3xLmEJBTERXx5AKP76PO4qZQGD4VqKLGeh37o7eNftZ
-        NfsL8XY4BLLhJhXK0hg1yCLhiikNid1W2+AZS4M7BjXOCtQJogdBHUFAu0G9C2jmus4zuZQIxAJQD
-        99cuFfYliK12YaONgu+T64/l18vmuCKcz7DKDorQS32SFxrPlZ5hoZ5BeNp8v66VUtsMEWhmcXAYw
-        IOwOPyNA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJg8b-000r8r-Jh; Tue, 09 Mar 2021 17:27:23 +0000
-Date:   Tue, 9 Mar 2021 17:27:17 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>
-Cc:     snitzer@redhat.com, agk@redhat.com, hare@suse.de, song@kernel.org,
-        axboe@kernel.dk, dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-api@vger.kernel.org, pavel.tide@veeam.com
-Subject: Re: [PATCH v6 2/4] block: add blk_interposer
-Message-ID: <20210309172717.GB201344@infradead.org>
-References: <1614774618-22410-1-git-send-email-sergei.shtepa@veeam.com>
- <1614774618-22410-3-git-send-email-sergei.shtepa@veeam.com>
+        id S231506AbhCIR1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:27:38 -0500
+Received: from mga05.intel.com ([192.55.52.43]:57323 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231601AbhCIR1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 12:27:18 -0500
+IronPort-SDR: CT+++CdrvdQc5bsZ/o+5WHxJ7S3lo4c0NzeYsa0aiONu1Ah8NgrCFMYQ3lXJEud01hiMOCNcQ4
+ QRfWe7rXxBjA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="273319097"
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="273319097"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 09:27:18 -0800
+IronPort-SDR: 244igZJq/cMFewNAXx2UFoh8r8rI621DhXK1wDO1K8l0gccXUtdHP4R2AswB2l36Hztd71XaHO
+ 4KFskcNA/Ljg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="408724507"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga007.jf.intel.com with ESMTP; 09 Mar 2021 09:27:18 -0800
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.57])
+        by linux.intel.com (Postfix) with ESMTP id 2319E58088F;
+        Tue,  9 Mar 2021 09:27:18 -0800 (PST)
+Message-ID: <d4e0883f6f71bbfc68804c97222b28acad77f969.camel@linux.intel.com>
+Subject: Re: [PATCH 2/2 V2] MFD: intel_pmt: Add support for DG1
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     hdegoede@redhat.com, mgross@linux.intel.com,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Date:   Tue, 09 Mar 2021 09:27:18 -0800
+In-Reply-To: <20210309164505.GS4931@dell>
+References: <20210128172846.99352-1-david.e.box@linux.intel.com>
+         <20210224201005.1034005-2-david.e.box@linux.intel.com>
+         <20210309164505.GS4931@dell>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614774618-22410-3-git-send-email-sergei.shtepa@veeam.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static blk_qc_t __submit_bio_interposed(struct bio *bio)
-> +{
-> +	struct bio_list bio_list[2] = { };
-> +	blk_qc_t ret = BLK_QC_T_NONE;
-> +
-> +	current->bio_list = bio_list;
-> +	if (likely(bio_queue_enter(bio) == 0)) {
-> +		struct block_device *bdev = bio->bi_bdev;
-> +
-> +		if (likely(bdev_has_interposer(bdev))) {
-> +			bio_set_flag(bio, BIO_INTERPOSED);
-> +			bdev->bd_interposer->ip_submit_bio(bio);
-> +		} else {
-> +			/* interposer was removed */
-> +			bio_list_add(&current->bio_list[0], bio);
-> +		}
-> +
-> +		blk_queue_exit(bdev->bd_disk->queue);
-> +	}
-> +	current->bio_list = NULL;
-> +
-> +	/* Resubmit remaining bios */
-> +	while ((bio = bio_list_pop(&bio_list[0])))
-> +		ret = submit_bio_noacct(bio);
-> +
-> +	return ret;
-> +}
-> +
->  /**
->   * submit_bio_noacct - re-submit a bio to the block device layer for I/O
->   * @bio:  The bio describing the location in memory and on the device.
-> @@ -1043,6 +1071,14 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
->  		return BLK_QC_T_NONE;
->  	}
->  
-> +	/*
-> +	 * Checking the BIO_INTERPOSED flag is necessary so that the bio
-> +	 * created by the bdev_interposer do not get to it for processing.
-> +	 */
-> +	if (bdev_has_interposer(bio->bi_bdev) &&
-> +	    !bio_flagged(bio, BIO_INTERPOSED))
-> +		return __submit_bio_interposed(bio);
-> +
->  	if (!bio->bi_bdev->bd_disk->fops->submit_bio)
->  		return __submit_bio_noacct_mq(bio);
->  	return __submit_bio_noacct(bio);
-> diff --git a/block/genhd.c b/block/genhd.c
-> index fcc530164b5a..1ae8516643c8 100644
-> --- a/block/genhd.c
-> +++ b/block/genhd.c
-> @@ -30,6 +30,11 @@
->  static struct kobject *block_depr;
->  
->  DECLARE_RWSEM(bdev_lookup_sem);
-> +/*
-> + * Prevents different block-layer interposers from attaching or detaching
-> + * to the block device at the same time.
-> + */
-> +DEFINE_MUTEX(bdev_interposer_attach_lock);
+On Tue, 2021-03-09 at 16:45 +0000, Lee Jones wrote:
+> On Wed, 24 Feb 2021, David E. Box wrote:
+> 
+> > Adds PMT Telemetry aggregator support for the DG1 graphics PCIe
+> > card. The
+> > device does not have the DVSEC region in its PCI config space so
+> > hard
+> > code the discovery table data in the driver. Also requires a fix
+> > for DG1
+> > in the Telemetry driver for how the ACCESS_TYPE field is used.
+> > 
+> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > ---
+> > Based on 5.11-rc1 review-hans branch:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+> > 
+> > Changes from V1:
+> > 
+> >         - New patch
+> > 
+> >  drivers/mfd/intel_pmt.c                    | 101 +++++++++++++++--
+> > ----
+> >  drivers/platform/x86/intel_pmt_class.c     |  46 ++++++++++
+> >  drivers/platform/x86/intel_pmt_class.h     |   1 +
+> >  drivers/platform/x86/intel_pmt_telemetry.c |  20 ----
+> >  4 files changed, 119 insertions(+), 49 deletions(-)
+> > 
+> > diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
+> > index 65da2b17a204..dd7eb614c28e 100644
+> > --- a/drivers/mfd/intel_pmt.c
+> > +++ b/drivers/mfd/intel_pmt.c
+> > @@ -49,10 +49,14 @@ enum pmt_quirks {
+> >  
+> >         /* Use shift instead of mask to read discovery table offset
+> > */
+> >         PMT_QUIRK_TABLE_SHIFT   = BIT(2),
+> > +
+> > +       /* DVSEC not present (provided in driver data) */
+> > +       PMT_QUIRK_NO_DVSEC      = BIT(3),
+> >  };
+> >  
+> >  struct pmt_platform_info {
+> >         unsigned long quirks;
+> > +       struct intel_dvsec_header **capabilities;
+> >  };
+> >  
+> >  static const struct pmt_platform_info tgl_info = {
+> > @@ -60,6 +64,26 @@ static const struct pmt_platform_info tgl_info =
+> > {
+> >                   PMT_QUIRK_TABLE_SHIFT,
+> >  };
+> >  
+> > +/* DG1 Platform with DVSEC quirk*/
+> > +static struct intel_dvsec_header dg1_telemetry = {
+> > +       .length = 0x10,
+> > +       .id = 2,
+> > +       .num_entries = 1,
+> > +       .entry_size = 3,
+> > +       .tbir = 0,
+> > +       .offset = 0x466000,
+> > +};
+> > +
+> > +static struct intel_dvsec_header *dg1_capabilities[] = {
+> > +       &dg1_telemetry,
+> > +       NULL
+> > +};
+> > +
+> > +static const struct pmt_platform_info dg1_info = {
+> > +       .quirks = PMT_QUIRK_NO_DVSEC,
+> > +       .capabilities = dg1_capabilities,
+> > +};
+> > +
+> >  static int pmt_add_dev(struct pci_dev *pdev, struct
+> > intel_dvsec_header *header,
+> >                        unsigned long quirks)
+> >  {
+> > @@ -147,37 +171,54 @@ static int pmt_pci_probe(struct pci_dev
+> > *pdev, const struct pci_device_id *id)
+> >         if (info)
+> >                 quirks = info->quirks;
+> >  
+> > -       do {
+> > -               struct intel_dvsec_header header;
+> > -               u32 table;
+> > -               u16 vid;
+> > +       if (info && (info->quirks & PMT_QUIRK_NO_DVSEC)) {
+> 
+> Nit: Why not use 'quirks' from a few lines above?
 
-This one can and should be marked static.
+Ack
 
-> +int bdev_interposer_attach(struct block_device *bdev, struct bdev_interposer *interposer,
+David
 
-Please avoid the overly long line.
+> 
 
-> +	int ret = 0;
-> +
-> +	if (WARN_ON(!interposer))
-
-WARN_ON_ONCE?
-
-> +		return -EINVAL;
-> +
-> +	if (!blk_mq_is_queue_frozen(bdev->bd_disk->queue))
-> +		return -EPERM;
-
-This probly should be a WARN_ON_ONCE() as well.
-
-> +
-> +	mutex_lock(&bdev_interposer_attach_lock);
-> +	if (bdev_has_interposer(bdev)) {
-> +		if (bdev->bd_interposer->ip_submit_bio == ip_submit_bio)
-> +			ret = -EALREADY;
-> +		else
-> +			ret = -EBUSY;
-> +		goto out;
-> +	}
-
-Do we really need the two different error codes here?
-
-> +
-> +	interposer->ip_submit_bio = ip_submit_bio;
-
-I'd rather let the caller initialize the field instead of passing the
-submit function separately.
-
-> +void bdev_interposer_detach(struct bdev_interposer *interposer,
-> +			  const ip_submit_bio_t ip_submit_bio)
-> +{
-
-> +	/* Check if it is really our interposer. */
-> +	if (WARN_ON(bdev->bd_interposer->ip_submit_bio != ip_submit_bio))
-> +		goto out;
-
-I don't really see any need to pass ip_submit_bio just for this check.
-
-> +	struct bdev_interposer * bd_interposer;
-
-The * goes just before the member name.
-
-> +/*
-> + * block layer interposers structure and functions
-> + */
-> +typedef void (*ip_submit_bio_t) (struct bio *bio);
-> +
-> +struct bdev_interposer {
-> +	ip_submit_bio_t ip_submit_bio;
-> +	struct block_device *bdev;
-
-Do we need the ip_ prefix here?  Also we probably don't really the
-the typedef for the function pointer.
-
-> +#define bdev_has_interposer(bd) ((bd)->bd_interposer != NULL)
-
-And inline function would be nice here.
