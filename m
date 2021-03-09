@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01558332748
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E147433274C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbhCINf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 08:35:57 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43834 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230084AbhCINf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 08:35:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0FA16AB8C;
-        Tue,  9 Mar 2021 13:35:25 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 14:35:23 +0100
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: make STACKPROTECTOR_PER_TASK configurable.
-Message-ID: <20210309133523.GX6564@kitsune.suse.cz>
-References: <20210309123544.14040-1-msuchanek@suse.de>
- <CAK7LNAT+8mGunqXSPLHxhF1FTXQEzbAoKPY=48pBgtLbhcB0jg@mail.gmail.com>
+        id S230425AbhCINhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 08:37:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231152AbhCINg6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 08:36:58 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAFF9C06174A;
+        Tue,  9 Mar 2021 05:36:58 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so5208858pjg.5;
+        Tue, 09 Mar 2021 05:36:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=pN5yQKRfRTbXA/8iCmu4wSQChv6isl6+ebWvSdzyiJk=;
+        b=B8KCBTrMK6yUjH7O0yBGsWSXJ4qIhuE96sFLL1IKDTRj/0qbne7tfglIO/M2PKwPXu
+         +oU+CbtA+xBtGOVOackja6NJYC0fFr8XTQqTU0x7/Zed9FRC66L+kgH1qWIsq0D/gxmC
+         DtW1IHJ9QG3YECxJ6tyPG8Hda+tL6I2jJy0RtUSwPKW+/Pl7QlyK95TC3yTamNw0DuFx
+         ZoV7Nr58W7DRFLYQp7WkdRKgNvEWsaBQPLVNaENBX/9nvrIQcXuJSMCu+NDvhzmWy7FC
+         wNsdyNWNPBOIQjHjA+g7cgnUI1UYB62H6/sv8mx7pPIdGDXxCFhgl3bikbcCN3L/A1hd
+         gI9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=pN5yQKRfRTbXA/8iCmu4wSQChv6isl6+ebWvSdzyiJk=;
+        b=skX8+lqNgPwhmTB+3h9XpX4Eigg7j2dJ2ddk4d+lAAhG8aN36pob7oj9zqieb2UxzM
+         BX/S6V8G7PJ0vFT7YzJVsRWqUfVcVhjd0gy/jnAvMgwFWjQW+VIiXL9JVi2JTuRN17LM
+         29EjDziS8PRLJp1ij2LMsPVOtxjRrgyJ1gxbSYIcHev/ZfOdLeKR8FGKMMQVpg9HlN8X
+         86F2SrkYx76f4VKMUW5Gg1SYQS1oU3EiZ3cSPE+XAI0Q0IS69ZLXRQY+JaXS4/RLjB1/
+         sevk05EQRC1pL2i588me2EfMmiB63n6Mg91sjwIiZO1NxDIbPj0a7laXQ9ObPb+a5mHV
+         l1Zw==
+X-Gm-Message-State: AOAM530dwrSB7I7d0gOT9vLs294BHA3AhOGPlgW3vv7fJ7FAFVv6KHzn
+        Y8FgvEZXiK95M8ihQ868asMSTkMCtutiIGM5
+X-Google-Smtp-Source: ABdhPJzij+H9Gt4O/r0DW79ziF+FSoYp5/MhL4jOu1RJoFap17YQrn1zJFZ04ozi1ZHVU/KxEUawHg==
+X-Received: by 2002:a17:903:31c6:b029:e5:d0a4:97cc with SMTP id v6-20020a17090331c6b02900e5d0a497ccmr25494251ple.52.1615297018004;
+        Tue, 09 Mar 2021 05:36:58 -0800 (PST)
+Received: from [10.160.0.34] ([45.135.186.124])
+        by smtp.gmail.com with ESMTPSA id 197sm13324536pfc.1.2021.03.09.05.36.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 05:36:57 -0800 (PST)
+Subject: Re: [PATCH] block: keyslot-manager: fix error return code of
+ blk_ksm_evict_key()
+To:     Satya Tangirala <satyat@google.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210309091812.26029-1-baijiaju1990@gmail.com>
+ <YEdf6utvWih7mToY@google.com>
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+Message-ID: <4285b8ed-585c-2290-044b-8b6a3c6c0640@gmail.com>
+Date:   Tue, 9 Mar 2021 21:36:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAT+8mGunqXSPLHxhF1FTXQEzbAoKPY=48pBgtLbhcB0jg@mail.gmail.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+In-Reply-To: <YEdf6utvWih7mToY@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 10:22:36PM +0900, Masahiro Yamada wrote:
-> On Tue, Mar 9, 2021 at 9:35 PM Michal Suchanek <msuchanek@suse.de> wrote:
-> >
-> > When using dummy-tools STACKPROTECTOR_PER_TASK is unconditionally
-> > selected. This defeats the purpose of the all-enabled tool.
-> >
-> > Description copied from arm
-> >
-> > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> 
-> 
-> Could you explain what problem
-> this patch is trying to solve?
 
-The option cannot be disabled when compiler has the required capability.
 
-Thanks
+On 2021/3/9 19:45, Satya Tangirala wrote:
+> On Tue, Mar 09, 2021 at 01:18:12AM -0800, Jia-Ju Bai wrote:
+>> When blk_ksm_find_keyslot() returns NULL to slot, no error return code
+>> of blk_ksm_evict_key() is assigned.
+>> To fix this bug, err is assigned with -ENOENT in this case.
+>>
+>> Fixes: 1b2628397058 ("block: Keyslot Manager for Inline Encryption")
+>> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+>> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+>> ---
+>>   block/keyslot-manager.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/block/keyslot-manager.c b/block/keyslot-manager.c
+>> index 2c4a55bea6ca..4dd5da0645bc 100644
+>> --- a/block/keyslot-manager.c
+>> +++ b/block/keyslot-manager.c
+>> @@ -375,8 +375,10 @@ int blk_ksm_evict_key(struct blk_keyslot_manager *ksm,
+>>   
+>>   	blk_ksm_hw_enter(ksm);
+>>   	slot = blk_ksm_find_keyslot(ksm, key);
+>> -	if (!slot)
+>> +	if (!slot) {
+>> +		err = -ENOENT;
+>>   		goto out_unlock;
+>> +	}
+>>   
+>>   	if (WARN_ON_ONCE(atomic_read(&slot->slot_refs) != 0)) {
+>>   		err = -EBUSY;
+>> -- 
+>> 2.17.1
+>>
+> This function was deliberately designed to return 0 on success *and also*
+> if there's no keyslot found with the specified key - i.e. it returns 0 if
+> the key is no longer programmed into the keyslot manager, which is what the
+> callers care about, so I don't think there's a bug here.
 
-Michal
-> 
-> 
-> > ---
-> >  arch/arm64/Kconfig | 13 ++++++++++++-
-> >  1 file changed, 12 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > index a8ff7cd5f096..f59d391e31a4 100644
-> > --- a/arch/arm64/Kconfig
-> > +++ b/arch/arm64/Kconfig
-> > @@ -1549,9 +1549,20 @@ config RANDOMIZE_MODULE_REGION_FULL
-> >  config CC_HAVE_STACKPROTECTOR_SYSREG
-> >         def_bool $(cc-option,-mstack-protector-guard=sysreg -mstack-protector-guard-reg=sp_el0 -mstack-protector-guard-offset=0)
-> >
-> > +
-> >  config STACKPROTECTOR_PER_TASK
-> > -       def_bool y
-> > +       bool "Use a unique stack canary value for each task"
-> >         depends on STACKPROTECTOR && CC_HAVE_STACKPROTECTOR_SYSREG
-> > +       default y
-> > +       help
-> > +         Due to the fact that GCC uses an ordinary symbol reference from
-> > +         which to load the value of the stack canary, this value can only
-> > +         change at reboot time on SMP systems, and all tasks running in the
-> > +         kernel's address space are forced to use the same canary value for
-> > +         the entire duration that the system is up.
-> > +
-> > +         Enable this option to switch to a different method that uses a
-> > +         different canary value for each task.
-> >
-> >  endmenu
-> >
-> > --
-> > 2.26.2
-> >
-> 
-> 
-> -- 
-> Best Regards
-> Masahiro Yamada
+Thanks for the reply and explanation!
+It seems like a false positive here, and I am sorry for this false report.
+
+
+Best wishes,
+Jia-Ju Bai
