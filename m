@@ -2,101 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0FB332FB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:15:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E67C8332FB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhCIUPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231515AbhCIUPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:15:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231387AbhCIUPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Mar 2021 15:15:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52060 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231138AbhCIUPB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:15:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615320900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IBVKerwrOvHWwAAtnVWuANWrpDLBOHST0pPeMNmxg/Y=;
-        b=gd011kY+kP6XeHDrXerpkeEYo7wJQQPeVWnqoAG6GlBb2FeqMbuLPsUPQnJ+1iOrFc/txR
-        zUEuLJFFSsb1aPL9b1QkQGTZ1Mx6VsBSj8ESKKdlZIcdEOpSm7ioCGEUBnHb54DdeHXxLX
-        HhWmE53AeDjxgF0wH7KYw0wMcAGSrHk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-177--oWRsANsMiSdti23yJdK0A-1; Tue, 09 Mar 2021 15:14:56 -0500
-X-MC-Unique: -oWRsANsMiSdti23yJdK0A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 794271005D45;
-        Tue,  9 Mar 2021 20:14:55 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3B15A5D9DB;
-        Tue,  9 Mar 2021 20:14:50 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 15:14:50 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     agk@redhat.com, dm-devel@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: dm: remove unneeded variable 'sz'
-Message-ID: <20210309201449.GB16277@redhat.com>
-References: <1615282320-28246-1-git-send-email-yang.lee@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615282320-28246-1-git-send-email-yang.lee@linux.alibaba.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2861464F64;
+        Tue,  9 Mar 2021 20:15:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615320910;
+        bh=bCQFVTvbowoHiQJO4CgyE4q1znbQhIwCk4PAWzsp4F0=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=KVEODTaHO4q/8v361GWcf8hHuUu9y9qUKbP8PTpAMzepm426fhAegvJtw/0+0/rze
+         nACveXtB8i5LmGsqMzLm7GIsBo3Y9HLi9OFqhfr2zwaf+45P3H/HQrxX2Jj32MK+A0
+         ZQ493f594aQo45EwLJTWTPWA4L51v2kcIwINnJaZJhpC45/huqaFgo3h2kAE3ET0pM
+         xt+QZstppJ7wpFa2gOG4D9rsZnH69+p1gl5lbCbnVrYahAN0qq5oFE4FR5k9sd7tkW
+         AcDWbG9sTocAOum+eQo+8jAG8D0000ZfXFONJ9RTkWOkYnkof12UjHGOJeEwaOGtTq
+         BQ3HP5nzuXJDw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1DD2860952;
+        Tue,  9 Mar 2021 20:15:10 +0000 (UTC)
+Subject: Re: [GIT PULL] gpio: fixes for v5.12-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210309153443.16647-1-brgl@bgdev.pl>
+References: <20210309153443.16647-1-brgl@bgdev.pl>
+X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210309153443.16647-1-brgl@bgdev.pl>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.12-rc3
+X-PR-Tracked-Commit-Id: b41ba2ec54a70908067034f139aa23d0dd2985ce
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4b3d9f9cf108ebf2c48fbbbf30a8d1346d9cc7d6
+Message-Id: <161532091006.26915.7204180747862496077.pr-tracker-bot@kernel.org>
+Date:   Tue, 09 Mar 2021 20:15:10 +0000
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09 2021 at  4:32am -0500,
-Yang Li <yang.lee@linux.alibaba.com> wrote:
+The pull request you sent on Tue,  9 Mar 2021 16:34:43 +0100:
 
-> Fix the following coccicheck warning:
-> ./drivers/md/dm-ps-service-time.c:85:10-12: Unneeded variable: "sz".
-> Return "0" on line 105
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.12-rc3
 
-This type of change gets proposed regaularly.  Would appreciate it if
-you could fix coccicheck to not get this wrong.  The local 'sz' variable
-is used by the DMEMIT macro (as the earlier reply to this email informed
-you).
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4b3d9f9cf108ebf2c48fbbbf30a8d1346d9cc7d6
 
-Also, had you tried to compile the code with your patch applied you'd
-have quickly realized your patch wasn't correct.
+Thank you!
 
-Mike
-
-
-> ---
->  drivers/md/dm-ps-service-time.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/md/dm-ps-service-time.c b/drivers/md/dm-ps-service-time.c
-> index 9cfda66..12dd5ce 100644
-> --- a/drivers/md/dm-ps-service-time.c
-> +++ b/drivers/md/dm-ps-service-time.c
-> @@ -82,7 +82,6 @@ static void st_destroy(struct path_selector *ps)
->  static int st_status(struct path_selector *ps, struct dm_path *path,
->  		     status_type_t type, char *result, unsigned maxlen)
->  {
-> -	unsigned sz = 0;
->  	struct path_info *pi;
->  
->  	if (!path)
-> @@ -102,7 +101,7 @@ static int st_status(struct path_selector *ps, struct dm_path *path,
->  		}
->  	}
->  
-> -	return sz;
-> +	return 0;
->  }
->  
->  static int st_add_path(struct path_selector *ps, struct dm_path *path,
-> -- 
-> 1.8.3.1
-> 
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
