@@ -2,82 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE66A332EA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 587B0332EAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhCITCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 14:02:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56720 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229916AbhCITBi (ORCPT
+        id S230488AbhCITEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:04:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230433AbhCITDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:01:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615316497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JIbVIf9JgfgLSsPGEjdt6SxaKG5D+REVg0Jf8YIfVe8=;
-        b=UJ3RUbIzk+V51YQAmJHoYEdI07ytzPDGxzwDj+c9YQy4SElGrT2W5scIzU+ppDwbivqq79
-        tVUgYNhsK3E8ckvI4QFDcV+QtE3sH6nniQvg9itflivjCnusXELuUim0j3/nXPbvLee9Y/
-        3+f8d9VOFmOe5efAWYOAgZrIn10u4vY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-488-S_x2j83NOwmjLJUpsZSR-A-1; Tue, 09 Mar 2021 14:01:34 -0500
-X-MC-Unique: S_x2j83NOwmjLJUpsZSR-A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6113A26869;
-        Tue,  9 Mar 2021 19:01:32 +0000 (UTC)
-Received: from [10.36.114.143] (ovpn-114-143.ams2.redhat.com [10.36.114.143])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AF04760C13;
-        Tue,  9 Mar 2021 19:01:30 +0000 (UTC)
-Subject: Re: [RFC PATCH 0/3] hugetlb: add demote/split page functionality
-To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>,
-        Zi Yan <ziy@nvidia.com>, David Rientjes <rientjes@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210309001855.142453-1-mike.kravetz@oracle.com>
- <29cb78c5-4fca-0f0a-c603-0c75f9f50d05@redhat.com>
- <ebb19eb5-ae9e-22f1-4e19-e5fce32c695c@oracle.com>
- <6c66c265-c9b9-ffe9-f860-f96f3485477e@redhat.com>
- <777d3771-7d2f-8e88-8496-56440e195a43@oracle.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <dfd59d83-7916-518d-23ce-a9a4e6781918@redhat.com>
-Date:   Tue, 9 Mar 2021 20:01:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 9 Mar 2021 14:03:54 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBC7C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 11:03:54 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so4676971wmj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 11:03:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w6PLkoXri99IRan82c3cqiiPesgYQohiG3dKjmiV44I=;
+        b=KzCny+hDVmg/sJtXmbDqw0LiIQOJ22FDtHjsnKTtHCuQ1x8EHf6gdzD6hlW3gzGjEE
+         NcMG9FMBT3OcFJBhAxmhqO9lHbEtc/ZXf98iVmFmjn2U4+vzfolAFb3QJDZPLXMTjemU
+         m67/559PYCY6h6+YGO1WID2w/k5fx2XyNiPaxqBYnfxladke8hvAdFjP7uzP2L3D7OHB
+         vrJO0Xf1MRqr4apIjFAcqeiQ67mvJPxRApBXPrEBbTCA8wl0HddIVWsWhsWwktI6ZpFy
+         YR0Fdg968vbr+WO57czHVQrOiz93fG7+8lOSZNjR/XdtdhylPZvpcTdgZFyLQZzlOlZu
+         Q6ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w6PLkoXri99IRan82c3cqiiPesgYQohiG3dKjmiV44I=;
+        b=JPW+HhHgcuhZBSQtBVb9GnzPK9WWur5zrwT4UXY0P8d5C3lZbD65tnNpPsmT3Mg6eV
+         aPIxW7eqUawueowKvjjY/7aCU6ih48rj2hTdzB6pOhzDnwtCKrWQuPux8lCct5J3hIGf
+         d4TUQ4dxpnswRwdP7N+0LZ/3TBmVUsy4IwHgPoM/1ypKGiX7IMN7BPuFOdYVAkADm7ly
+         zPpJgY3py2lWh8mF8VSGHVoIYV8JbITZkq0OsX2ovl2kRQHVvcHvc5UMtL4Q2qYvJZVz
+         2F9oU27LYuUnWV+BziQqSWgxCz+KLNOhJ6dRSNBnDIeN/Lb6Ql1G8FlgEcAoA7gxdC4i
+         hdZA==
+X-Gm-Message-State: AOAM530MI+rCHZ+sToUFF4CGQ05HFaf0XExDc4u7CTMfdDgYDcsfx/ZG
+        mqr3y3HvLDdC4HMCdhelQL6mfg==
+X-Google-Smtp-Source: ABdhPJyc80yz5lzcPs93cuhOSRY3a64F/jNQg9lEONS45cPOM2Q1yEPrUi6Jovd/BJxLzsWa95K3NQ==
+X-Received: by 2002:a1c:23d0:: with SMTP id j199mr5650442wmj.52.1615316632605;
+        Tue, 09 Mar 2021 11:03:52 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8499:4f69:106b:da0? ([2a01:e34:ed2f:f020:8499:4f69:106b:da0])
+        by smtp.googlemail.com with ESMTPSA id 18sm5593307wmj.21.2021.03.09.11.03.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 11:03:52 -0800 (PST)
+Subject: Re: [PATCH 5/5] powercap/drivers/dtpm: Scale the power with the load
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20210301212149.22877-1-daniel.lezcano@linaro.org>
+ <20210301212149.22877-5-daniel.lezcano@linaro.org>
+ <c30701f5-c1f8-cb5c-8791-f4068fb1bc14@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <e1dac038-2100-abdb-2ffe-d0d93952ca21@linaro.org>
+Date:   Tue, 9 Mar 2021 20:03:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <777d3771-7d2f-8e88-8496-56440e195a43@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <c30701f5-c1f8-cb5c-8791-f4068fb1bc14@arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I need to take a close look at Oscar's patches.  Too many thing to look
-> at/review :)
+
+Hi Lukasz,
+
+thanks for your comments, one question below.
+
+On 09/03/2021 11:01, Lukasz Luba wrote:
+
+[ ... ]
+
+>>   +static u64 scale_pd_power_uw(struct cpumask *cpus, u64 power)
 > 
-> This series does take into account gigantic pages allocated in CMA.
-> Such pages can be demoted, and we need to track that they need to go
-> back to CMA.  Nothing super special for this, mostly a new hugetlb
-> specific flag to track such pages.
+> renamed 'cpus' into 'pd_mask', see below
+> 
+>> +{
+>> +    unsigned long max, util;
+>> +    int cpu, load = 0;
+> 
+> IMHO 'int load' looks odd when used with 'util' and 'max'.
+> I would put in the line above to have them all the same type and
+> renamed to 'sum_util'.
+> 
+>> +
+>> +    for_each_cpu(cpu, cpus) {
+> 
+> I would avoid the temporary CPU mask in the get_pd_power_uw()
+> with this modified loop:
+> 
+> for_each_cpu_and(cpu, pd_mask, cpu_online_mask) {
+> 
+> 
+>> +        max = arch_scale_cpu_capacity(cpu);
+>> +        util = sched_cpu_util(cpu, max);
+>> +        load += ((util * 100) / max);
+> 
+> Below you can find 3 optimizations. Since we are not in the hot
+> path here, it's up to if you would like to use all/some of them
+> or just ignore.
+> 
+> 1st optimization.
+> If we use 'load += (util << 10) / max' in the loop, then
+> we could avoid div by 100 and use a right shift:
+> (power * load) >> 10
+> 
+> 2nd optimization.
+> Since we use EM CPU mask, which span all CPUs with the same
+> arch_scale_cpu_capacity(), you can avoid N divs inside the loop
+> and do it once, below the loop.
+> 
+> 3rd optimization.
+> If we just simply add all 'util' into 'sum_util' (no mul or div in
+> the loop), then we might just have simple macro
+> 
+> #define CALC_POWER_USAGE(power, sum_util, max) \
+>     (((power * (sum_util << 10)) / max) >> 10)
 
-Ah, just spotted it - patch #2 :)
+I don't understand the 'max' division, I was expecting here something
+like: ((sum_util << 10) / sum_max) >> 10)
 
-Took me a while to figure out that we end up calling 
-cma_declare_contiguous_nid() with order_per_bit=0 - would have thought 
-we would be using the actual smallest allocation order we end up using 
-for huge/gigantic pages via CMA. Well, this way it "simply works".
+no ?
+
+
+
 
 -- 
-Thanks,
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-David / dhildenb
-
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
