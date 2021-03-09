@@ -2,119 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BDF332BE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:24:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E9F332BF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:27:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhCIQX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:23:56 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:56484 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbhCIQX1 (ORCPT
+        id S230525AbhCIQ0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:26:36 -0500
+Received: from conuserg-09.nifty.com ([210.131.2.76]:47157 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230421AbhCIQ03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:23:27 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 129GNLvF088051;
-        Tue, 9 Mar 2021 10:23:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615307001;
-        bh=gq/gKxks/K1Z+HGE0yrIR+xQT1DOWcXca+Z+vr1I7ug=;
-        h=From:To:CC:Subject:Date;
-        b=EG5KUFMF51vmI+1ikUmutQSADJlrL97g41jcDX0QesTF1oNjROHVOOS+sJFjRFesq
-         LPHtSOdGKClqeaSp9qg4RAIlKp5EyIlE0ah8Uv/AyHCPkJ7g1UEWlhuAHUQIGKR6h/
-         V4iPacGq7BM8QzJ3DBUcCv7/TDMMOwLz/YacFpiw=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 129GNLn8091098
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 9 Mar 2021 10:23:21 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 9 Mar
- 2021 10:23:21 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 9 Mar 2021 10:23:21 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 129GNHr7076612;
-        Tue, 9 Mar 2021 10:23:18 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] arm64: dts: ti: k3-am642-evm: Add support for SPI EEPROM
-Date:   Tue, 9 Mar 2021 21:53:15 +0530
-Message-ID: <20210309162315.22743-1-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 9 Mar 2021 11:26:29 -0500
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 129GPmqj014156;
+        Wed, 10 Mar 2021 01:25:48 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 129GPmqj014156
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615307149;
+        bh=EhPEE3oHKhL3vmJHIpnrH/DrMpFTrrE0NYQj/7BwJD0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Eg1tKjTpG8j5yvqd2Yse5TOe8sMmOVB2em+wI0mYKUtpw0nmZiBW+p+DsVXzHmEb8
+         +KZeZw1m6kA7VI0OJJk1ZyGbOTJXIRpPfhijDUC90h+v7N92bsk/ZFtcHg7IwwC0dT
+         TsriLGsQDBdTrmVWDslGO3szJlix5p6jSMzTSOrX9Rtf+ckYoMMveWx/PmmBOqHwM/
+         vH0bBVfQ8Ul7AZnBBRmNZXmJ5AamEmSjlWVJf3bJ6gYASmL3MFGCJ1Ssw1MZbTnylz
+         wBdFFtqAestmTe3pMxhPXbPOFW1lBukyVg/jYss518qBK1B8xbNHbcOmahvdvWtmX0
+         JQsh86ZlhiK1Q==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Jiri Slaby <jslaby@suse.cz>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Philipp Rudo <prudo@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: dummy-tools: adjust to scripts/cc-version.sh
+Date:   Wed, 10 Mar 2021 01:25:45 +0900
+Message-Id: <20210309162545.637647-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pinmux details and device tree node for the EEPROM attached to SPI0
-module in main domain.
+Commit aec6c60a01d3 ("kbuild: check the minimum compiler version in
+Kconfig") changed how the script detects the compiler version.
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+Get 'make CROSS_COMPILE=scripts/dummy-tools/' back working again.
+
+Fixes: aec6c60a01d3 ("kbuild: check the minimum compiler version in Kconfig")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
-Link to test log,
-https://pastebin.ubuntu.com/p/jDgvyhF9BQ/
+Perhaps, Jiri may have already noticed this issue, and have a similar patch.
+I just checked ML, but I did not find a patch to fix this.
 
-Changes since v1:
-- Removed the dependency on USB support patches
-- Picked up reviewed-by
-- Added test logs for SPI EEPROM
 
- arch/arm64/boot/dts/ti/k3-am642-evm.dts | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ scripts/dummy-tools/gcc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-index 1f1787750fef..f5a8c5c4c8c3 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-@@ -127,6 +127,15 @@
- 		>;
- 	};
+diff --git a/scripts/dummy-tools/gcc b/scripts/dummy-tools/gcc
+index 7b10332b23ba..39e65fee59bd 100755
+--- a/scripts/dummy-tools/gcc
++++ b/scripts/dummy-tools/gcc
+@@ -57,9 +57,9 @@ if arg_contain --version "$@"; then
+ fi
  
-+	main_spi0_pins_default: main-spi0-pins-default {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0210, PIN_INPUT, 0) /* (D13) SPI0_CLK */
-+			AM64X_IOPAD(0x0208, PIN_OUTPUT, 0) /* (D12) SPI0_CS0 */
-+			AM64X_IOPAD(0x0214, PIN_OUTPUT, 0) /* (A13) SPI0_D0 */
-+			AM64X_IOPAD(0x0218, PIN_INPUT, 0) /* (A14) SPI0_D1 */
-+		>;
-+	};
-+
- 	main_i2c1_pins_default: main-i2c1-pins-default {
- 		pinctrl-single,pins = <
- 			AM64X_IOPAD(0x0268, PIN_INPUT_PULLUP, 0) /* (C18) I2C1_SCL */
-@@ -227,6 +236,19 @@
- 	status = "disabled";
- };
- 
-+&main_spi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_spi0_pins_default>;
-+	ti,pindir-d0-out-d1-in = <1>;
-+	eeprom@0 {
-+		compatible = "microchip,93lc46b";
-+		reg = <0>;
-+		spi-max-frequency = <1000000>;
-+		spi-cs-high;
-+		data-size = <16>;
-+	};
-+};
-+
- &sdhci0 {
- 	/* emmc */
- 	bus-width = <8>;
+ if arg_contain -E "$@"; then
+-	# For scripts/gcc-version.sh; This emulates GCC 20.0.0
++	# For scripts/cc-version.sh; This emulates GCC 20.0.0
+ 	if arg_contain - "$@"; then
+-		sed 's/^__GNUC__$/20/; s/^__GNUC_MINOR__$/0/; s/^__GNUC_PATCHLEVEL__$/0/'
++		sed -n '/^GCC/{s/__GNUC__/20/; s/__GNUC_MINOR__/0/; s/__GNUC_PATCHLEVEL__/0/; p;}'
+ 		exit 0
+ 	else
+ 		echo "no input files" >&2
 -- 
-2.17.1
+2.27.0
 
