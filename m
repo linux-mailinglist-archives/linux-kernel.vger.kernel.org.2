@@ -2,145 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF59332D35
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6BA332D3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhCIR1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:27:38 -0500
-Received: from mga05.intel.com ([192.55.52.43]:57323 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231601AbhCIR1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:27:18 -0500
-IronPort-SDR: CT+++CdrvdQc5bsZ/o+5WHxJ7S3lo4c0NzeYsa0aiONu1Ah8NgrCFMYQ3lXJEud01hiMOCNcQ4
- QRfWe7rXxBjA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="273319097"
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="273319097"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 09:27:18 -0800
-IronPort-SDR: 244igZJq/cMFewNAXx2UFoh8r8rI621DhXK1wDO1K8l0gccXUtdHP4R2AswB2l36Hztd71XaHO
- 4KFskcNA/Ljg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="408724507"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 09 Mar 2021 09:27:18 -0800
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.57])
-        by linux.intel.com (Postfix) with ESMTP id 2319E58088F;
-        Tue,  9 Mar 2021 09:27:18 -0800 (PST)
-Message-ID: <d4e0883f6f71bbfc68804c97222b28acad77f969.camel@linux.intel.com>
-Subject: Re: [PATCH 2/2 V2] MFD: intel_pmt: Add support for DG1
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     hdegoede@redhat.com, mgross@linux.intel.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Date:   Tue, 09 Mar 2021 09:27:18 -0800
-In-Reply-To: <20210309164505.GS4931@dell>
-References: <20210128172846.99352-1-david.e.box@linux.intel.com>
-         <20210224201005.1034005-2-david.e.box@linux.intel.com>
-         <20210309164505.GS4931@dell>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S231749AbhCIR2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:28:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231639AbhCIR1o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 12:27:44 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494DBC06174A;
+        Tue,  9 Mar 2021 09:27:44 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id k9so28337555lfo.12;
+        Tue, 09 Mar 2021 09:27:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=E0L24YzwE+RwXtp71i5Fz7XoP/XCEU0C3pgyRyLsjJE=;
+        b=tS2mj4X1C5n+8Mg4kcTRAsr1vZpnFfjT+mOLqUUPBoxeto0tLvrHSfqPlbjpe5YqOZ
+         Gk7Cnlfh3h3ueQA5pntdcDXHvHEU/6Y2M7zwanh7FB9fVoGnW2J6/IzoLJK33hTbgz9L
+         ZjCXvk/36ceJyirXGmduwixPo2uKV9hpSwNusiflQREJAgMxIcsDDqUYUUSyCbslFJ7m
+         d8zWFw3Y+qM5EmAJdKJRdqr2mqlUud1joRNMC3igRS3V2nlGDizKIzRyR3rWjVnCi1SX
+         Dcy3xrkOoGxrk1/4sd+NfF2GyNJHONZavEHDbaVcOBU3GP549qdVn/fPci1NQ7p7IwkG
+         KZTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=E0L24YzwE+RwXtp71i5Fz7XoP/XCEU0C3pgyRyLsjJE=;
+        b=ZXRsa9aNWKjnJ1iRsh98N7+Ifh1Juzf1IABcabItTIjq8unV9gkaGzoe5W7mIQl53D
+         i9jr3JWvH6J3JckCBfs1fqTgm0Ud21qQ6WdK9HbdupQequFQkw88xVS322lBr/VGKiPu
+         n+tUL60FxiKx9nn+PY9JexTANsG0++3RmImOrEgE030Ej9Rl88SH3B/uKymBos3uq2O7
+         L3or1+TetPpv2CAhEpRacva2aPUE4MAJzgC+rq43GDVgY/mkdQBLEgYjOdXLD3vfW3Py
+         G6unZIRoZ/C7WZAG0fFKnxATbW5BIkmgIkebxzV5h7PBuHWw5dJYrEyPOvXq9DZnrIRI
+         H0Ig==
+X-Gm-Message-State: AOAM533/4wP83i4OojGIkp6aHi1OkqSW33zoYjhffFb67Eu1z4LNYTft
+        n3PPaRYeIIyDZuCJ1KNHFMsXHqdgD0LmOg==
+X-Google-Smtp-Source: ABdhPJxFsbanWV4cxKzbfa0Zq/aoMWOTsEXWKIPVPKiBEoIBkz9EqJoATFcDUiu/K7QPILiAG4qebg==
+X-Received: by 2002:a05:6512:51c:: with SMTP id o28mr19019898lfb.237.1615310862860;
+        Tue, 09 Mar 2021 09:27:42 -0800 (PST)
+Received: from [192.168.16.194] (h-4-68-234.A785.priv.bahnhof.se. [155.4.68.234])
+        by smtp.googlemail.com with ESMTPSA id m6sm2026164lfb.150.2021.03.09.09.27.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 09:27:42 -0800 (PST)
+Subject: Re: [RESEND v12] can: usb: etas_es58X: add support for ETAS ES58X CAN
+ USB interfaces
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        linux-kernel@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can@vger.kernel.org
+References: <20210309120946.1640-1-mailhol.vincent@wanadoo.fr>
+ <20210309120946.1640-2-mailhol.vincent@wanadoo.fr>
+From:   Jimmy Assarsson <jimmyassarsson@gmail.com>
+Message-ID: <45c0b0cc-bfd6-5180-7ad9-51eebc9de3c9@gmail.com>
+Date:   Tue, 9 Mar 2021 18:27:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210309120946.1640-2-mailhol.vincent@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-09 at 16:45 +0000, Lee Jones wrote:
-> On Wed, 24 Feb 2021, David E. Box wrote:
-> 
-> > Adds PMT Telemetry aggregator support for the DG1 graphics PCIe
-> > card. The
-> > device does not have the DVSEC region in its PCI config space so
-> > hard
-> > code the discovery table data in the driver. Also requires a fix
-> > for DG1
-> > in the Telemetry driver for how the ACCESS_TYPE field is used.
-> > 
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > ---
-> > Based on 5.11-rc1 review-hans branch:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-> > 
-> > Changes from V1:
-> > 
-> >         - New patch
-> > 
-> >  drivers/mfd/intel_pmt.c                    | 101 +++++++++++++++--
-> > ----
-> >  drivers/platform/x86/intel_pmt_class.c     |  46 ++++++++++
-> >  drivers/platform/x86/intel_pmt_class.h     |   1 +
-> >  drivers/platform/x86/intel_pmt_telemetry.c |  20 ----
-> >  4 files changed, 119 insertions(+), 49 deletions(-)
-> > 
-> > diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
-> > index 65da2b17a204..dd7eb614c28e 100644
-> > --- a/drivers/mfd/intel_pmt.c
-> > +++ b/drivers/mfd/intel_pmt.c
-> > @@ -49,10 +49,14 @@ enum pmt_quirks {
-> >  
-> >         /* Use shift instead of mask to read discovery table offset
-> > */
-> >         PMT_QUIRK_TABLE_SHIFT   = BIT(2),
-> > +
-> > +       /* DVSEC not present (provided in driver data) */
-> > +       PMT_QUIRK_NO_DVSEC      = BIT(3),
-> >  };
-> >  
-> >  struct pmt_platform_info {
-> >         unsigned long quirks;
-> > +       struct intel_dvsec_header **capabilities;
-> >  };
-> >  
-> >  static const struct pmt_platform_info tgl_info = {
-> > @@ -60,6 +64,26 @@ static const struct pmt_platform_info tgl_info =
-> > {
-> >                   PMT_QUIRK_TABLE_SHIFT,
-> >  };
-> >  
-> > +/* DG1 Platform with DVSEC quirk*/
-> > +static struct intel_dvsec_header dg1_telemetry = {
-> > +       .length = 0x10,
-> > +       .id = 2,
-> > +       .num_entries = 1,
-> > +       .entry_size = 3,
-> > +       .tbir = 0,
-> > +       .offset = 0x466000,
-> > +};
-> > +
-> > +static struct intel_dvsec_header *dg1_capabilities[] = {
-> > +       &dg1_telemetry,
-> > +       NULL
-> > +};
-> > +
-> > +static const struct pmt_platform_info dg1_info = {
-> > +       .quirks = PMT_QUIRK_NO_DVSEC,
-> > +       .capabilities = dg1_capabilities,
-> > +};
-> > +
-> >  static int pmt_add_dev(struct pci_dev *pdev, struct
-> > intel_dvsec_header *header,
-> >                        unsigned long quirks)
-> >  {
-> > @@ -147,37 +171,54 @@ static int pmt_pci_probe(struct pci_dev
-> > *pdev, const struct pci_device_id *id)
-> >         if (info)
-> >                 quirks = info->quirks;
-> >  
-> > -       do {
-> > -               struct intel_dvsec_header header;
-> > -               u32 table;
-> > -               u16 vid;
-> > +       if (info && (info->quirks & PMT_QUIRK_NO_DVSEC)) {
-> 
-> Nit: Why not use 'quirks' from a few lines above?
+Hi Vincent,
 
-Ack
+On 2021-03-09 13:09, Vincent Mailhol wrote:
+> This driver supports the ES581.4, ES582.1 and ES584.1 interfaces from
+> ETAS GmbH (https://www.etas.com/en/products/es58x.php).
+...
+> diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
+> new file mode 100644
+> index 000000000000..31f907a7b75f
+> --- /dev/null
+> +++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
+...
+> +/**
+> + * es58x_add_skb_idx() - Increment an index of the loopback FIFO.
+> + * @priv: ES58X private parameters related to the network device.
+> + * @idx: address of the index to be incremented.
+> + * @a: the increment. Must be positive and less or equal to
+> + *	@priv->can.echo_skb_max.
+> + *
+> + * Do a modulus addition: set *@idx to (*@idx + @a) %
+> + * @priv->can.echo_skb_max.
+> + *
+> + * Rationale: the modulus operator % takes a decent amount of CPU
+> + * cycles (c.f. other division functions such as
+> + * include/linux/math64.h:iter_div_u64_rem()).
+> + */
+> +static __always_inline void es58x_add_skb_idx(struct es58x_priv *priv,
+> +					      u16 *idx, u16 a)
 
-David
+Never used?
 
-> 
+...
+> +/**
+> + * es58x_get_product_info() - Get the product information and print them.
+> + * @es58x_dev: ES58X device.
+> + *
+> + * Do a synchronous call to get the product information.
+> + *
+> + * Return: zero on success, errno when any error occurs.
+> + */
+> +static int es58x_get_product_info(struct es58x_device *es58x_dev)
+> +{
+> +	struct usb_device *udev = es58x_dev->udev;
+> +	const int es58x_prod_info_idx = 6;
+> +	/* Empirical tests show a prod_info length of maximum 83,
+> +	 * below should be more than enough.
+> +	 */
+> +	const size_t prod_info_len = 127;
+> +	char *prod_info;
+> +	int ret;
+> +
+> +	prod_info = kmalloc(prod_info_len, GFP_KERNEL);
+> +	if (!prod_info)
+> +		return -ENOMEM;
+> +
+> +	ret = usb_string(udev, es58x_prod_info_idx, prod_info, prod_info_len);
+> +	if (ret < 0) {
+> +		dev_err(es58x_dev->dev,
+> +			"%s: Could not read the product info: %pe\n",
+> +			__func__, ERR_PTR(ret));
 
+Missing free
+
+> +		return ret;
+> +	} else if (ret >= prod_info_len - 1) {
+> +		dev_warn(es58x_dev->dev,
+> +			 "%s: Buffer is too small, result might be truncated\n",
+> +			 __func__);
+> +	}
+> +	dev_info(es58x_dev->dev, "Product info: %s\n", prod_info);
+> +	kfree(prod_info);
+> +
+> +	return 0;
+> +}
+
+
+Regards,
+jimmy
