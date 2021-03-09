@@ -2,90 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B162332C34
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C60D9332C37
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhCIQfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:35:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhCIQfM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:35:12 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A3AC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 08:35:12 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id k12so21447942ljg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 08:35:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MPh3fYrpynT8qqoQI9nObnRXX03m69XX0kkoxFbQtug=;
-        b=GN41IGu42t9gXi3ED2C8ne+gWDPFIl3Cz+zhDgMErK/I8nl0dGuUEVs/SOVXHoc9Oe
-         ilKTLAhuugELeyAiW1l7FwDwfoafn8RPjAlAQhZ2l6o/ZwZsSBLL7iOi20PgRZRw16rn
-         zKT7aEBeaKpc5NwhEGaXJHg9+xQe2yJ3WMLdeKBKjNY0ecbISMGm4+UsVsBtN+9zbyAC
-         1GTmuw3QVL1jWa8r409pZCvBeVAeiPTmtIhmdtVk0hhFgyMIrpnQ824GfENt38eoogfl
-         QBtR1A3uCoHEQkvKOGVKhz3FGPwmdcvg0irrgkrAXnE7tQ0LRRfabW5cEhPNALjc1guq
-         RSAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MPh3fYrpynT8qqoQI9nObnRXX03m69XX0kkoxFbQtug=;
-        b=tPBSG9vjayHTWcCBFEo2gLgI2i4hpoUO9eY+RCEmbl4POATY6r1tNZ7hWslpgolYvn
-         wo544BeS7KPgpldYJS/gJ7y6ZdVSSJ0ujJpcwPTo6gmsajnBgp6X8fg1y2Fz4w2lLRmc
-         JDojbjkyOMYEz4UKsY1eTe4IKnfEkCSui7Vw63j4lBbyOvWMlivmLoTzkf9hXU526ERY
-         /smBXSCAmHc9XmWsyA0057ZAPNq3Llgno75p7PJVhuz6iLwe1Dt4WQZwGHDWuCIM38nf
-         y9JwbHufzPGzYM+bOWzot3SKFDRlg6Ohi8CsK+wV6+Zfu2VYxxt5FaXfxwNNOHptgEjl
-         TNcA==
-X-Gm-Message-State: AOAM531Xz0E9Yh7PThvSjxf9z+tztk3hu1eyAWPSEPEPVpDYKZxrD0Qp
-        cbgaM+CK1ZMWqkUm8e1s7Gppn0JUF3Y2szuknPrUgw==
-X-Google-Smtp-Source: ABdhPJwx+vgRcYzzK5JGSjQMsz6ywP+zUvsGmW7juH6Hhh85o5Hv3QjRB3wk0V6V/HIy9NeuR+ZZD90xGrXYfnhHYpA=
-X-Received: by 2002:a05:651c:103a:: with SMTP id w26mr14919558ljm.273.1615307710918;
- Tue, 09 Mar 2021 08:35:10 -0800 (PST)
+        id S231358AbhCIQfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:35:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230491AbhCIQfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 11:35:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D337C651BB;
+        Tue,  9 Mar 2021 16:35:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615307733;
+        bh=grr/P7NPP84yLHqtN3qxlbFVwjldJuBPEeFJE3cAnfk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M68JjTx3ETj0c7QF1rI/9FBAQCY3vTzxziVbGFb9SOfUTvfddVm1/E23rjASznp+f
+         bpg1fgQCNH4JLujFO6/FhAP7zGmrOrcachiMXI+gk7HCPo7NpYm4RJb+rMFD9t/Wnk
+         fkVcObMZ4GnRATSqv7//wEf3KiI8SfaNf+WBC4ws=
+Date:   Tue, 9 Mar 2021 17:35:30 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        open list <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hemant Kumar <hemantk@codeaurora.org>
+Subject: Re: [PATCH net-next v3] net: Add Qcom WWAN control driver
+Message-ID: <YEej0uAjjMqb0VVW@kroah.com>
+References: <1615279336-27227-1-git-send-email-loic.poulain@linaro.org>
+ <YEdBfHAYkTGI8sE4@kroah.com>
+ <CAMZdPi9dCzH9ufSoRK_szOaVnSsySk-kC5fu2Rb+wy-6snow0Q@mail.gmail.com>
+ <YEdO47NAWpO886DC@kroah.com>
+ <69126b2b-8138-60a3-1383-d06c30671499@codeaurora.org>
 MIME-Version: 1.0
-References: <20210308194535.66394-1-andriy.shevchenko@linux.intel.com> <20210308194535.66394-6-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210308194535.66394-6-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 9 Mar 2021 17:34:59 +0100
-Message-ID: <CACRpkdZmE2wCfhJsdCaVaaJbVDtvgReogVgx9_fpG=0YRS-U+Q@mail.gmail.com>
-Subject: Re: [PATCH v5 5/6] gpiolib: Reuse device's fwnode to create IRQ domain
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <69126b2b-8138-60a3-1383-d06c30671499@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 8:45 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Tue, Mar 09, 2021 at 09:01:11AM -0700, Jeffrey Hugo wrote:
+> On 3/9/2021 3:33 AM, Greg KH wrote:
+> > On Tue, Mar 09, 2021 at 11:28:49AM +0100, Loic Poulain wrote:
+> > > Hi Greg,
+> > > 
+> > > On Tue, 9 Mar 2021 at 10:35, Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > 
+> > > > On Tue, Mar 09, 2021 at 09:42:16AM +0100, Loic Poulain wrote:
+> > > > > The MHI WWWAN control driver allows MHI Qcom based modems to expose
+> > > > > different modem control protocols/ports to userspace, so that userspace
+> > > > > modem tools or daemon (e.g. ModemManager) can control WWAN config
+> > > > > and state (APN config, SMS, provider selection...). A Qcom based
+> > > > > modem can expose one or several of the following protocols:
+> > > > > - AT: Well known AT commands interactive protocol (microcom, minicom...)
+> > > > > - MBIM: Mobile Broadband Interface Model (libmbim, mbimcli)
+> > > > > - QMI: Qcom MSM/Modem Interface (libqmi, qmicli)
+> > > > > - QCDM: Qcom Modem diagnostic interface (libqcdm)
+> > > > > - FIREHOSE: XML-based protocol for Modem firmware management
+> > > > >          (qmi-firmware-update)
+> > > > > 
+> > > > > The different interfaces are exposed as character devices, in the same
+> > > > > way as for USB modem variants (known as modem 'ports').
+> > > > > 
+> > > > > Note that this patch is mostly a rework of the earlier MHI UCI
+> > > > > tentative that was a generic interface for accessing MHI bus from
+> > > > > userspace. As suggested, this new version is WWAN specific and is
+> > > > > dedicated to only expose channels used for controlling a modem, and
+> > > > > for which related opensource user support exist. Other MHI channels
+> > > > > not fitting the requirements will request either to be plugged to
+> > > > > the right Linux subsystem (when available) or to be discussed as a
+> > > > > new MHI driver (e.g AI accelerator, WiFi debug channels, etc...).
+> > > > > 
+> > > > > This change introduces a new drivers/net/wwan directory, aiming to
+> > > > > be the common place for WWAN drivers.
+> > > > > 
+> > > > > Co-developed-by: Hemant Kumar <hemantk@codeaurora.org>
+> > > > > Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+> > > > > Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+> > > > > ---
+> > > > >   v2: update copyright (2021)
+> > > > >   v3: Move driver to dedicated drivers/net/wwan directory
+> > > > > 
+> > > > >   drivers/net/Kconfig              |   2 +
+> > > > >   drivers/net/Makefile             |   1 +
+> > > > >   drivers/net/wwan/Kconfig         |  26 ++
+> > > > >   drivers/net/wwan/Makefile        |   6 +
+> > > > >   drivers/net/wwan/mhi_wwan_ctrl.c | 559 +++++++++++++++++++++++++++++++++++++++
+> > > > >   5 files changed, 594 insertions(+)
+> > > > >   create mode 100644 drivers/net/wwan/Kconfig
+> > > > >   create mode 100644 drivers/net/wwan/Makefile
+> > > > >   create mode 100644 drivers/net/wwan/mhi_wwan_ctrl.c
+> > > > > 
+> > > > > diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+> > > > > index 1ebb4b9..28b18f2 100644
+> > > > > --- a/drivers/net/Kconfig
+> > > > > +++ b/drivers/net/Kconfig
+> > > > > @@ -501,6 +501,8 @@ source "drivers/net/wan/Kconfig"
+> > > > > 
+> > > > >   source "drivers/net/ieee802154/Kconfig"
+> > > > > 
+> > > > > +source "drivers/net/wwan/Kconfig"
+> > > > > +
+> > > > >   config XEN_NETDEV_FRONTEND
+> > > > >        tristate "Xen network device frontend driver"
+> > > > >        depends on XEN
+> > > > > diff --git a/drivers/net/Makefile b/drivers/net/Makefile
+> > > > > index f4990ff..5da6424 100644
+> > > > > --- a/drivers/net/Makefile
+> > > > > +++ b/drivers/net/Makefile
+> > > > > @@ -68,6 +68,7 @@ obj-$(CONFIG_SUNGEM_PHY) += sungem_phy.o
+> > > > >   obj-$(CONFIG_WAN) += wan/
+> > > > >   obj-$(CONFIG_WLAN) += wireless/
+> > > > >   obj-$(CONFIG_IEEE802154) += ieee802154/
+> > > > > +obj-$(CONFIG_WWAN) += wwan/
+> > > > > 
+> > > > >   obj-$(CONFIG_VMXNET3) += vmxnet3/
+> > > > >   obj-$(CONFIG_XEN_NETDEV_FRONTEND) += xen-netfront.o
+> > > > > diff --git a/drivers/net/wwan/Kconfig b/drivers/net/wwan/Kconfig
+> > > > > new file mode 100644
+> > > > > index 0000000..643aa10
+> > > > > --- /dev/null
+> > > > > +++ b/drivers/net/wwan/Kconfig
+> > > > > @@ -0,0 +1,26 @@
+> > > > > +# SPDX-License-Identifier: GPL-2.0-only
+> > > > > +#
+> > > > > +# Wireless WAN device configuration
+> > > > > +#
+> > > > > +
+> > > > > +menuconfig WWAN
+> > > > > +       bool "Wireless WAN"
+> > > > > +       help
+> > > > > +         This section contains Wireless WAN driver configurations.
+> > > > > +
+> > > > > +if WWAN
+> > > > > +
+> > > > > +config MHI_WWAN_CTRL
+> > > > > +     tristate "MHI WWAN control driver for QCOM based PCIe modems"
+> > > > > +     depends on MHI_BUS
+> > > > > +     help
+> > > > > +       MHI WWAN CTRL allow QCOM based PCIe modems to expose different modem
+> > > > > +       control protocols/ports to userspace, including AT, MBIM, QMI, DIAG
+> > > > > +       and FIREHOSE. These protocols can be accessed directly from userspace
+> > > > > +       (e.g. AT commands) or via libraries/tools (e.g. libmbim, libqmi,
+> > > > > +       libqcdm...).
+> > > > > +
+> > > > > +       To compile this driver as a module, choose M here: the module will be
+> > > > > +       called mhi_wwan_ctrl.
+> > > > > +
+> > > > > +endif # WWAN
+> > > > > diff --git a/drivers/net/wwan/Makefile b/drivers/net/wwan/Makefile
+> > > > > new file mode 100644
+> > > > > index 0000000..994a80b
+> > > > > --- /dev/null
+> > > > > +++ b/drivers/net/wwan/Makefile
+> > > > > @@ -0,0 +1,6 @@
+> > > > > +# SPDX-License-Identifier: GPL-2.0
+> > > > > +#
+> > > > > +# Makefile for the Linux WWAN device drivers.
+> > > > > +#
+> > > > > +
+> > > > > +obj-$(CONFIG_MHI_WWAN_CTRL) += mhi_wwan_ctrl.o
+> > > > > diff --git a/drivers/net/wwan/mhi_wwan_ctrl.c b/drivers/net/wwan/mhi_wwan_ctrl.c
+> > > > > new file mode 100644
+> > > > > index 0000000..3904cd0
+> > > > > --- /dev/null
+> > > > > +++ b/drivers/net/wwan/mhi_wwan_ctrl.c
+> > > > > @@ -0,0 +1,559 @@
+> > > > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > > > +/* Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.*/
+> > > > > +
+> > > > > +#include <linux/kernel.h>
+> > > > > +#include <linux/mhi.h>
+> > > > > +#include <linux/mod_devicetable.h>
+> > > > > +#include <linux/module.h>
+> > > > > +#include <linux/poll.h>
+> > > > > +
+> > > > > +#define MHI_WWAN_CTRL_DRIVER_NAME "mhi_wwan_ctrl"
+> > > > 
+> > > > So a driver name is the same as the class that is being created?
+> > > > 
+> > > > That feels wrong, shouldn't the "class" be wwan?
+> > > 
+> > > The driver does not aim to be THE wwan implementation, given the
+> > > heterogeneity of WWAN interfaces, so 'wwan' is probably too generic
+> > > for this bus/vendor specific driver. But since we create a new wwan
+> > > subdir, maybe we should create a minimal wwan_sysfs.c, that would
+> > > initially just offer a common class for all WWAN devices (wwan or
+> > > wwan-ports), as a first step to if not standardize, at least group
+> > > such devices under the same hat. Otherwise, we can just use the misc
+> > > class... Any thoughts?
+> > 
+> > Why isn't this a good api for all wwan devices?  Do you think that this
+> > will not work for others?
+> > 
+> > A common class would be good, if they all work the same with regards to
+> > a user/kernel api, otherwise it's pointless and not needed :)
+> > 
+> > And if we are back to the "custom user/kernel api just for this one
+> > driver", then yes, the misc api is the easiest and simplest to use, but
+> > I would wish for better than that for the first wwan driver...
+> 
+> I'm thinking this doesn't fit with the misc api due to the number of device
+> minors that could be expected to be consumed.
 
-> When IRQ domain is created for an ACPI case, the name of it becomes unknown-%d
-> since for now it utilizes of_node member only and doesn't consider fwnode case.
-> Convert IRQ domain creation code to utilize fwnode instead.
->
-> Before/After the change on Intel Galileo Gen 2 with two GPIO (IRQ) controllers:
->
->   unknown-1     ==>     \_SB.PCI0.GIP0.GPO
->   unknown-2     ==>     \_SB.NIO3
->
-> Due to the nature of this change we may also deduplicate the WARN():s
-> because in either case (DT or ACPI) the fwnode will be set correctly
-> and %pfw is an equivalent to what the current code prints as a prefix.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+That's why I asked how many minors do you need :)
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Each device supported by this driver is going to create 2-5 chardevs. Having
+> two devices in a system is common for "endusers".  Development,
+> manufacturing, and test (including the community, not just talking Qualcomm
+> here) commonly have 12+ of these devices in a system.  12 * 5 = 60.  Thats a
+> lot of misc minor numbers to chew up just from one driver given that the
+> limit of dynamic minors is 128.  Looking at a random x86 server that I have
+> which could be used for such a usecase already has 30 misc minor numbers
+> used, and this particular server has a fresh distro install on it.  I would
+> expect that number to go up as it gets provisioned for use.
 
-Yours,
-Linus Walleij
+Look at a phone these days, I see way more misc devices used than just
+"30" :(
+
+> I guess, the question to you is, how many misc minor numbers is "too much"
+> for a single driver to expect to consume?
+
+If you expect more than 10, I would say to use a real major number.  But
+be explicit as to what you are expecting here, it was not obvious at
+all.
+
+thanks,
+
+greg k-h
