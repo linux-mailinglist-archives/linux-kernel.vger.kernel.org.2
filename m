@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE96332592
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BF7332599
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbhCIMh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 07:37:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36694 "EHLO mail.kernel.org"
+        id S230299AbhCIMkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 07:40:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230140AbhCIMhM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 07:37:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A627165272;
-        Tue,  9 Mar 2021 12:37:11 +0000 (UTC)
+        id S229544AbhCIMjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 07:39:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0F5165274
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 12:39:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615293432;
-        bh=mruvFKZBvCYrEJiGtVUC6A1pI2TNU9dGDRBfJmF933E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YA95Mav+ou0vbpC5EDZqdK4j8osZOAeEFLNJvirHsPEiblzGYGamJPf+AwUWyyPzt
-         vZfzspanjCKktSOAsyVpm0FYuJGSpLXZ0Pe0RqBPyb2lG1Vadn3okPwLMhynotcjau
-         WL5Gf8gF3Qk2SJ9qUTv+tEL1oc95BRoonZXgpxSz//bRdIXt/nyBplUW783pihE+tv
-         jEvy0xpolH0gBcLh3eel/zNThxH+ZnR3cdnO+R2au2i4d/VB1lGDfr1FyXasCZeIm4
-         DqvUqmzDr+vuw3SXHA4A+uwIQo+kTOxBttz8TlYrxOOFTnZHJ2QZI9GxPBanNDp2Q1
-         Oe8IoVLo/1FVg==
-Date:   Tue, 9 Mar 2021 12:36:01 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Kuldeep Singh <kuldeep.singh@nxp.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ashish Kumar <ashish.kumar@nxp.com>
-Subject: Re: [PATCH] dt-bindings: spi: Convert NXP flexspi to json schema
-Message-ID: <20210309123601.GA4878@sirena.org.uk>
-References: <20210309103528.3538910-1-kuldeep.singh@nxp.com>
- <DB6PR0402MB275834FAF7CEF44AB7F342B2E0929@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+        s=k20201202; t=1615293588;
+        bh=pwMguO9Q1vd5NbKDPpSQnYbWyabGZ1kPQE2NN5ezZGQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WeKxuO6yVrmWja4085fcv0wYsLWN6sDohVC3sZEvDxsNsbjH/taYp2JWxiRnaJRff
+         +/zEfm8J47P2WmJN6+YBo9fV4vQVGXS8xe6+aszk/m6v7nK7bKKCv5EdxQuBV2X1HO
+         GJfcz7SU8+uKNmj4lbGJwVZMLms4+YTjCeo+UyxKJX/2GQM9EmNxkTd31G9b1Dpi0W
+         gkSDvN6qLSmhD+oDHBbmVS1kxHvHNtWIb5N+MVVhKQlkAoWFQ8hXJap8/YkK3qfwBS
+         Zrfr6GJE1ESjVjGFtCYfxzLjIvmHrP28Xyu22Ar8SbCfxV3q2jbUVEsoiZFxgdrF/T
+         EW0mS8l+e/P5g==
+Received: by mail-oi1-f180.google.com with SMTP id z126so14743736oiz.6
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 04:39:47 -0800 (PST)
+X-Gm-Message-State: AOAM533Awqg10Qojy9cbODxvnPF4nihqxiQOjKhKsVUcM+mlN1xmEHg0
+        SPdM4o+GGXxvPrWdbevK3KxW4lInwzK17zUM/UM=
+X-Google-Smtp-Source: ABdhPJyMOElJotc+ybmUr9uW1bQxFpuMOrYGhV+eh1ttdw9hq91bQxmDGkKQsgSDU8aBdYCTfJZisbpilekU65evJAM=
+X-Received: by 2002:aca:538c:: with SMTP id h134mr2802823oib.174.1615293587253;
+ Tue, 09 Mar 2021 04:39:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="k1lZvvs/B4yU6o8G"
-Content-Disposition: inline
-In-Reply-To: <DB6PR0402MB275834FAF7CEF44AB7F342B2E0929@DB6PR0402MB2758.eurprd04.prod.outlook.com>
-X-Cookie: Immanuel doesn't pun, he Kant.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210309123544.14040-1-msuchanek@suse.de>
+In-Reply-To: <20210309123544.14040-1-msuchanek@suse.de>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 9 Mar 2021 13:39:36 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGkWj09Jm8VnEJKG3rWXZkJNZR5ROYqs87akKkdM14Hwg@mail.gmail.com>
+Message-ID: <CAMj1kXGkWj09Jm8VnEJKG3rWXZkJNZR5ROYqs87akKkdM14Hwg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: make STACKPROTECTOR_PER_TASK configurable.
+To:     Michal Suchanek <msuchanek@suse.de>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 9 Mar 2021 at 13:37, Michal Suchanek <msuchanek@suse.de> wrote:
+>
+> When using dummy-tools STACKPROTECTOR_PER_TASK is unconditionally
+> selected. This defeats the purpose of the all-enabled tool.
+>
 
---k1lZvvs/B4yU6o8G
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+What is dummy-tools and why should we care about it?
 
-On Tue, Mar 09, 2021 at 11:41:50AM +0000, Kuldeep Singh wrote:
-> + Mark (Forgot to add him previously)
-
-...
-
-> I was not sure with which tree this patch will go through.
-> Currently, I have rebased this on top of tree(git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git, branch: for-next)
-
-Binding patches generally go through the subsystem tree so please send
-the patch to me.
-
---k1lZvvs/B4yU6o8G
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBHa7AACgkQJNaLcl1U
-h9AmRQf+I75/5nY3XFdUzjldnH/ak4vuJJDxyK5n1OjfodnIYXZRnofrZrv+1WNC
-OWmuqB7SvWXFd6zus811PcggxS29YXXF0Xei0Yze8ST7tYegZ0t49klXg1gzSxmt
-IBjy0EBAJfOY2s5rH4FWoeW2x/ttRBNRfu4rZQKNr/QblPAe3N7CNdhZhPcXQ3c7
-vGWcgpmJUg5q0whA8tPOx85Wp5mAmJLTMQxtfN/7VAnmvzz7qFZXyZVx8PDsMGnt
-9w3psbRDKP7kEp8tAJcZAYWXUzbHarpquIAXyj644yJf41LPF2D52vQhga8joIv9
-C/SazhUd5xl+BnXII94ixbDq7WnnbQ==
-=8uCH
------END PGP SIGNATURE-----
-
---k1lZvvs/B4yU6o8G--
+> Description copied from arm
+>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> ---
+>  arch/arm64/Kconfig | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index a8ff7cd5f096..f59d391e31a4 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1549,9 +1549,20 @@ config RANDOMIZE_MODULE_REGION_FULL
+>  config CC_HAVE_STACKPROTECTOR_SYSREG
+>         def_bool $(cc-option,-mstack-protector-guard=sysreg -mstack-protector-guard-reg=sp_el0 -mstack-protector-guard-offset=0)
+>
+> +
+>  config STACKPROTECTOR_PER_TASK
+> -       def_bool y
+> +       bool "Use a unique stack canary value for each task"
+>         depends on STACKPROTECTOR && CC_HAVE_STACKPROTECTOR_SYSREG
+> +       default y
+> +       help
+> +         Due to the fact that GCC uses an ordinary symbol reference from
+> +         which to load the value of the stack canary, this value can only
+> +         change at reboot time on SMP systems, and all tasks running in the
+> +         kernel's address space are forced to use the same canary value for
+> +         the entire duration that the system is up.
+> +
+> +         Enable this option to switch to a different method that uses a
+> +         different canary value for each task.
+>
+>  endmenu
+>
+> --
+> 2.26.2
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
