@@ -2,223 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1B63327AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6613327B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231645AbhCINtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 08:49:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51662 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231326AbhCINsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 08:48:25 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615297703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zkq+Pzy70GsvGEvfqITxmF3937xAvmVyi93tqlDCI2s=;
-        b=klCZ34OIrpkLRyBfqKCyaxvmYIAuGlGLLQk0LkKLnyShJmGBJ2cKZQRw7+mJQNPTZk72bH
-        wUqvnlMNOBSfftv2TVeDamgtNbzmObjOR5Wn3MjRpP7F2xoPVJKWtdPJigtnrsTbxyD6cV
-        0BEej9Te5igIDCViLp4WmVhGybpFcpY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E24FEAE3C;
-        Tue,  9 Mar 2021 13:48:22 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v6 12/12] x86/paravirt: have only one paravirt patch function
-Date:   Tue,  9 Mar 2021 14:48:13 +0100
-Message-Id: <20210309134813.23912-13-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210309134813.23912-1-jgross@suse.com>
-References: <20210309134813.23912-1-jgross@suse.com>
+        id S231738AbhCINtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 08:49:11 -0500
+Received: from mxout70.expurgate.net ([91.198.224.70]:36373 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231375AbhCINsh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 08:48:37 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1lJciv-0008MS-2Z; Tue, 09 Mar 2021 14:48:33 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1lJciu-0008mO-8s; Tue, 09 Mar 2021 14:48:32 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 58158240041;
+        Tue,  9 Mar 2021 14:48:31 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id DABB3240040;
+        Tue,  9 Mar 2021 14:48:30 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 90F50200DE;
+        Tue,  9 Mar 2021 14:48:30 +0100 (CET)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 09 Mar 2021 14:48:30 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: lapbether: Remove netif_start_queue /
+ netif_stop_queue
+Organization: TDT AG
+In-Reply-To: <20210307113309.443631-1-xie.he.0141@gmail.com>
+References: <20210307113309.443631-1-xie.he.0141@gmail.com>
+Message-ID: <6f885ff41da24d41cb5d430d9abe42f7@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.16
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate: clean
+X-purgate-type: clean
+X-purgate-ID: 151534::1615297712-0000C46D-3FE81434/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need any longer to have different paravirt patch functions
-for native and Xen. Eliminate native_patch() and rename
-paravirt_patch_default() to paravirt_patch().
+On 2021-03-07 12:33, Xie He wrote:
+> For the devices in this driver, the default qdisc is "noqueue",
+> because their "tx_queue_len" is 0.
+> 
+> In function "__dev_queue_xmit" in "net/core/dev.c", devices with the
+> "noqueue" qdisc are specially handled. Packets are transmitted without
+> being queued after a "dev->flags & IFF_UP" check. However, it's 
+> possible
+> that even if this check succeeds, "ops->ndo_stop" may still have 
+> already
+> been called. This is because in "__dev_close_many", "ops->ndo_stop" is
+> called before clearing the "IFF_UP" flag.
+> 
+> If we call "netif_stop_queue" in "ops->ndo_stop", then it's possible in
+> "__dev_queue_xmit", it sees the "IFF_UP" flag is present, and then it
+> checks "netif_xmit_stopped" and finds that the queue is already 
+> stopped.
+> In this case, it will complain that:
+> "Virtual device ... asks to queue packet!"
+> 
+> To prevent "__dev_queue_xmit" from generating this complaint, we should
+> not call "netif_stop_queue" in "ops->ndo_stop".
+> 
+> We also don't need to call "netif_start_queue" in "ops->ndo_open",
+> because after a netdev is allocated and registered, the
+> "__QUEUE_STATE_DRV_XOFF" flag is initially not set, so there is no need
+> to call "netif_start_queue" to clear it.
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+> ---
+>  drivers/net/wan/lapbether.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
+> index 605fe555e157..c3372498f4f1 100644
+> --- a/drivers/net/wan/lapbether.c
+> +++ b/drivers/net/wan/lapbether.c
+> @@ -292,7 +292,6 @@ static int lapbeth_open(struct net_device *dev)
+>  		return -ENODEV;
+>  	}
+> 
+> -	netif_start_queue(dev);
+>  	return 0;
+>  }
+> 
+> @@ -300,8 +299,6 @@ static int lapbeth_close(struct net_device *dev)
+>  {
+>  	int err;
+> 
+> -	netif_stop_queue(dev);
+> -
+>  	if ((err = lapb_unregister(dev)) != LAPB_OK)
+>  		pr_err("lapb_unregister error: %d\n", err);
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
-V3:
-- remove paravirt_patch_insns() (kernel test robot)
----
- arch/x86/include/asm/paravirt_types.h | 19 +------------------
- arch/x86/kernel/Makefile              |  3 +--
- arch/x86/kernel/alternative.c         |  2 +-
- arch/x86/kernel/paravirt.c            | 20 ++------------------
- arch/x86/kernel/paravirt_patch.c      | 11 -----------
- arch/x86/xen/enlighten_pv.c           |  1 -
- 6 files changed, 5 insertions(+), 51 deletions(-)
- delete mode 100644 arch/x86/kernel/paravirt_patch.c
+Seems reasonable to me.
 
-diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-index 588ff14ce969..9d1ddb7b4350 100644
---- a/arch/x86/include/asm/paravirt_types.h
-+++ b/arch/x86/include/asm/paravirt_types.h
-@@ -68,19 +68,6 @@ struct pv_info {
- 	const char *name;
- };
- 
--struct pv_init_ops {
--	/*
--	 * Patch may replace one of the defined code sequences with
--	 * arbitrary code, subject to the same register constraints.
--	 * This generally means the code is not free to clobber any
--	 * registers other than EAX.  The patch function should return
--	 * the number of bytes of code generated, as we nop pad the
--	 * rest in generic code.
--	 */
--	unsigned (*patch)(u8 type, void *insn_buff,
--			  unsigned long addr, unsigned len);
--} __no_randomize_layout;
--
- #ifdef CONFIG_PARAVIRT_XXL
- struct pv_lazy_ops {
- 	/* Set deferred update mode, used for batching operations. */
-@@ -276,7 +263,6 @@ struct pv_lock_ops {
-  * number for each function using the offset which we use to indicate
-  * what to patch. */
- struct paravirt_patch_template {
--	struct pv_init_ops	init;
- 	struct pv_cpu_ops	cpu;
- 	struct pv_irq_ops	irq;
- 	struct pv_mmu_ops	mmu;
-@@ -317,10 +303,7 @@ extern void (*paravirt_iret)(void);
- /* Simple instruction patching code. */
- #define NATIVE_LABEL(a,x,b) "\n\t.globl " a #x "_" #b "\n" a #x "_" #b ":\n\t"
- 
--unsigned paravirt_patch_default(u8 type, void *insn_buff, unsigned long addr, unsigned len);
--unsigned paravirt_patch_insns(void *insn_buff, unsigned len, const char *start, const char *end);
--
--unsigned native_patch(u8 type, void *insn_buff, unsigned long addr, unsigned len);
-+unsigned int paravirt_patch(u8 type, void *insn_buff, unsigned long addr, unsigned int len);
- 
- int paravirt_disable_iospace(void);
- 
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 2ddf08351f0b..0704c2a94272 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -35,7 +35,6 @@ KASAN_SANITIZE_sev-es.o					:= n
- KCSAN_SANITIZE := n
- 
- OBJECT_FILES_NON_STANDARD_test_nx.o			:= y
--OBJECT_FILES_NON_STANDARD_paravirt_patch.o		:= y
- 
- ifdef CONFIG_FRAME_POINTER
- OBJECT_FILES_NON_STANDARD_ftrace_$(BITS).o		:= y
-@@ -121,7 +120,7 @@ obj-$(CONFIG_AMD_NB)		+= amd_nb.o
- obj-$(CONFIG_DEBUG_NMI_SELFTEST) += nmi_selftest.o
- 
- obj-$(CONFIG_KVM_GUEST)		+= kvm.o kvmclock.o
--obj-$(CONFIG_PARAVIRT)		+= paravirt.o paravirt_patch.o
-+obj-$(CONFIG_PARAVIRT)		+= paravirt.o
- obj-$(CONFIG_PARAVIRT_SPINLOCKS)+= paravirt-spinlocks.o
- obj-$(CONFIG_PARAVIRT_CLOCK)	+= pvclock.o
- obj-$(CONFIG_X86_PMEM_LEGACY_DEVICE) += pmem.o
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 1f12901e75f2..cb3eb8c2f50d 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -615,7 +615,7 @@ void __init_or_module apply_paravirt(struct paravirt_patch_site *start,
- 		BUG_ON(p->len > MAX_PATCH_LEN);
- 		/* prep the buffer with the original instructions */
- 		memcpy(insn_buff, p->instr, p->len);
--		used = pv_ops.init.patch(p->type, insn_buff, (unsigned long)p->instr, p->len);
-+		used = paravirt_patch(p->type, insn_buff, (unsigned long)p->instr, p->len);
- 
- 		BUG_ON(used > p->len);
- 
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index 082954930809..3d7b989ed6be 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -99,8 +99,8 @@ void __init native_pv_lock_init(void)
- 		static_branch_disable(&virt_spin_lock_key);
- }
- 
--unsigned paravirt_patch_default(u8 type, void *insn_buff,
--				unsigned long addr, unsigned len)
-+unsigned int paravirt_patch(u8 type, void *insn_buff, unsigned long addr,
-+			    unsigned int len)
- {
- 	/*
- 	 * Neat trick to map patch type back to the call within the
-@@ -121,19 +121,6 @@ unsigned paravirt_patch_default(u8 type, void *insn_buff,
- 	return ret;
- }
- 
--unsigned paravirt_patch_insns(void *insn_buff, unsigned len,
--			      const char *start, const char *end)
--{
--	unsigned insn_len = end - start;
--
--	/* Alternative instruction is too large for the patch site and we cannot continue: */
--	BUG_ON(insn_len > len || start == NULL);
--
--	memcpy(insn_buff, start, insn_len);
--
--	return insn_len;
--}
--
- struct static_key paravirt_steal_enabled;
- struct static_key paravirt_steal_rq_enabled;
- 
-@@ -255,9 +242,6 @@ struct pv_info pv_info = {
- #define PTE_IDENT	__PV_IS_CALLEE_SAVE(_paravirt_ident_64)
- 
- struct paravirt_patch_template pv_ops = {
--	/* Init ops. */
--	.init.patch		= native_patch,
--
- 	/* Cpu ops. */
- 	.cpu.io_delay		= native_io_delay,
- 
-diff --git a/arch/x86/kernel/paravirt_patch.c b/arch/x86/kernel/paravirt_patch.c
-deleted file mode 100644
-index 10543dcc8211..000000000000
---- a/arch/x86/kernel/paravirt_patch.c
-+++ /dev/null
-@@ -1,11 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <linux/stringify.h>
--
--#include <asm/paravirt.h>
--#include <asm/asm-offsets.h>
--
--unsigned int native_patch(u8 type, void *insn_buff, unsigned long addr,
--			  unsigned int len)
--{
--	return paravirt_patch_default(type, insn_buff, addr, len);
--}
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 08dca7bebb30..4f18cd9eacd8 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -1231,7 +1231,6 @@ asmlinkage __visible void __init xen_start_kernel(void)
- 
- 	/* Install Xen paravirt ops */
- 	pv_info = xen_info;
--	pv_ops.init.patch = paravirt_patch_default;
- 	pv_ops.cpu = xen_cpu_ops;
- 	paravirt_iret = xen_iret;
- 	xen_init_irq_ops();
--- 
-2.26.2
-
+Acked-by: Martin Schiller <ms@dev.tdt.de>
