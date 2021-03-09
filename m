@@ -2,131 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6534C3330EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B51A13330F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbhCIVaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 16:30:00 -0500
-Received: from rcdn-iport-2.cisco.com ([173.37.86.73]:55606 "EHLO
-        rcdn-iport-2.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231894AbhCIV3s (ORCPT
+        id S231997AbhCIVbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 16:31:04 -0500
+Received: from out03.mta.xmission.com ([166.70.13.233]:40198 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232043AbhCIVay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 16:29:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=2621; q=dns/txt; s=iport;
-  t=1615325388; x=1616534988;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=P29McQ6d/QFxrQq1EYKN884pwFzgqSORJbOcG1OnGCA=;
-  b=cXhxfCHtcP4ljwBOVNCPmiajlNLRlQkZyDAByml5gqHPiFeE19Otg9PO
-   YrIdp0w4hV9/0NZrwRG5Tw87Lvm6pQx2svPHKdU7cOKg4yVnj5mmF6DnX
-   7HkwB/f93cxuLquhTitX5vQMhuYmn2RbkbAdkfSS8COGC9dnTSnEF5Bor
-   8=;
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BqAAC/50dg/40NJK1aHAEBAQEBAQc?=
- =?us-ascii?q?BARIBAQQEAQFAgTsHAQELAQGBdDWBTAE5jRaJPI9zilaBfAsBAQENAQE0BAE?=
- =?us-ascii?q?BgRSDNAMCAoF+AiU0CQ4CAwEBCwEBBQEBAQIBBgRxhW5DAQwBCAGFawEFMgF?=
- =?us-ascii?q?GEAsYLjwbBoYLrGd0gTSJEYFFFA6BFwGNQiYcgUlChCw+ihAiBIJGgRBLPXx?=
- =?us-ascii?q?XkSqMcJpwgRSDCYEfmnsxEKNitx8CBAYFAhaBVDqBVzMaCBsVgyVPGQ2OKxa?=
- =?us-ascii?q?ORyADZwIGAQkBAQMJhiCEEIM4AQE?=
-X-IronPort-AV: E=Sophos;i="5.81,236,1610409600"; 
-   d="scan'208";a="874107942"
-Received: from alln-core-8.cisco.com ([173.36.13.141])
-  by rcdn-iport-2.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 09 Mar 2021 21:29:47 +0000
-Received: from zorba ([10.24.4.5])
-        by alln-core-8.cisco.com (8.15.2/8.15.2) with ESMTPS id 129LTj55006364
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 9 Mar 2021 21:29:46 GMT
-Date:   Tue, 9 Mar 2021 13:29:44 -0800
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/7] powerpc: convert config files to generic cmdline
-Message-ID: <20210309212944.GR109100@zorba>
-References: <20210309000247.2989531-4-danielwa@cisco.com>
- <5f865584-09c9-d21f-ffb7-23cf07cf058e@csgroup.eu>
+        Tue, 9 Mar 2021 16:30:54 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lJjwI-002YEr-EK; Tue, 09 Mar 2021 14:30:50 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lJjwH-00FGKw-E3; Tue, 09 Mar 2021 14:30:50 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Palash Oswal <oswalpalash@gmail.com>, akpm@linux-foundation.org,
+        dave@stgolabs.net, Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        peterz@infradead.org, rppt@linux.vnet.ibm.com, sds@tycho.nsa.gov,
+        syzkaller-bugs@googlegroups.com
+References: <CAGyP=7dpTbbj39uO37YrNMg9h4Nzmkszc3MoZg9n8ALir_A52g@mail.gmail.com>
+        <YEZcVKbPzfMVK2aK@zeniv-ca.linux.org.uk>
+        <CAGyP=7fHhyrTP-u0tqCy5ZHzZN0v_0dAoj6dCHnFuBbqtfnBmQ@mail.gmail.com>
+        <YEeFYMcdPVNrKRJT@zeniv-ca.linux.org.uk>
+Date:   Tue, 09 Mar 2021 15:30:52 -0600
+In-Reply-To: <YEeFYMcdPVNrKRJT@zeniv-ca.linux.org.uk> (Al Viro's message of
+        "Tue, 9 Mar 2021 14:25:36 +0000")
+Message-ID: <m1y2ewxbeb.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5f865584-09c9-d21f-ffb7-23cf07cf058e@csgroup.eu>
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.4.5, [10.24.4.5]
-X-Outbound-Node: alln-core-8.cisco.com
+Content-Type: text/plain
+X-XM-SPF: eid=1lJjwH-00FGKw-E3;;;mid=<m1y2ewxbeb.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+HjtweDKY1K86sC4DDB32cQP+KXJFBrcI=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_XMDrugObfuBody_08
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.2994]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
+X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Al Viro <viro@zeniv.linux.org.uk>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 500 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 10 (1.9%), b_tie_ro: 8 (1.7%), parse: 0.94 (0.2%),
+         extract_message_metadata: 10 (2.0%), get_uri_detail_list: 0.92 (0.2%),
+         tests_pri_-1000: 8 (1.6%), tests_pri_-950: 1.02 (0.2%),
+        tests_pri_-900: 0.82 (0.2%), tests_pri_-90: 110 (22.0%), check_bayes:
+        107 (21.5%), b_tokenize: 5 (1.0%), b_tok_get_all: 7 (1.3%),
+        b_comp_prob: 1.80 (0.4%), b_tok_touch_all: 90 (18.1%), b_finish: 0.98
+        (0.2%), tests_pri_0: 348 (69.5%), check_dkim_signature: 0.59 (0.1%),
+        check_dkim_adsp: 2.3 (0.5%), poll_dns_idle: 0.67 (0.1%), tests_pri_10:
+        2.2 (0.4%), tests_pri_500: 7 (1.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: kernel panic: Attempted to kill init!
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 08:47:09AM +0100, Christophe Leroy wrote:
-> 
-> 
-> Le 09/03/2021 à 01:02, Daniel Walker a écrit :
-> > This is a scripted mass convert of the config files to use
-> > the new generic cmdline. There is a bit of a trim effect here.
-> > It would seems that some of the config haven't been trimmed in
-> > a while.
-> 
-> If you do that in a separate patch, you loose bisectability.
-> 
-> I think it would have been better to do things in a different way, more or less like I did in my series:
-> 1/ Provide GENERIC cmdline at the same functionnality level as what is
-> spread in the different architectures
-> 2/ Convert architectures to the generic with least churn.
-> 3/ Add new features to the generic
+Al Viro <viro@zeniv.linux.org.uk> writes:
 
-You have to have the churn eventually, no matter how you do it. The only way you
-don't have churn is if you never upgrade the feature set.
+> On Tue, Mar 09, 2021 at 11:29:14AM +0530, Palash Oswal wrote:
+>
+>> I observe the following result(notice the segfault in systemd):
+>> root@sandbox:~# ./repro
+>> [    9.457767] got to 221
+>> [    9.457791] got to 183
+>> [    9.459144] got to 201
+>> [    9.459471] got to 208
+>> [    9.459773] got to 210
+>> [    9.462602] got to 270
+>> [    9.488551] systemd[1]: segfault at 7ffe59fd7fb8 ip
+>> 000055be8f20b466 sp 00007ffe59fd7fc0 error 6 in
+>> systemd[55be8f15f000+ed000]
+>> [    9.490723] Code: 00 00 00 00 41 57 41 56 41 55 41 54 55 53 89 fd
+>> 48 81 ec 48 01 00 00 64 48 8b 04 25 28 00 00 00 48 89 84 24 38 01 00
+>> 00 31 c0 <e8> f5 bf f7 ff 83 f8 01 0f 84 b7 00 00 00 48 8d 9c 240
+>> [    9.492637] Kernel panic - not syncing: Attempted to kill init!
+>> exitcode=0x0000000b
+>
+> Lovely.  So something in that sequence of syscalls manages to trigger
+> segfault in unrelated process.  What happens if you put it to sleep
+> right after open_by_handle_at() (e.g. by read(2) from fd 0, etc.)?
 
+There is the creation of at least one file.  I wonder if inotify or
+another notification mechanism is being triggered in systemd, and
+systemd handling the notification badly and falling over.
 
-> > 
-> > The bash script used to convert is as follows,
-> > 
-> > if [[ -z "$1" || -z "$2" ]]; then
-> >          echo "Two arguments are needed."
-> >          exit 1
-> > fi
-> > mkdir $1
-> > cp $2 $1/.config
-> > sed -i 's/CONFIG_CMDLINE=/CONFIG_CMDLINE_BOOL=y\nCONFIG_CMDLINE_PREPEND=/g' $1/.config
-> 
-> This is not correct.
-> 
-> By default, on powerpc the provided command line is used only if the bootloader doesn't provide one.
-> 
-> Otherwise:
-> - the builtin command line is appended to the one provided by the bootloader
-> if CONFIG_CMDLINE_EXTEND is selected
-> - the builtin command line replaces to the one provided by the bootloader if
-> CONFIG_CMDLINE_FORCE is selected
+Eric
 
-I think my changes maintain most of this due to the override of
-CONFIG_CMDLINE_PREPEND. This is an upgrade and the inflexibility in powerpc is
-an example of why these changes were created in the first place.
-
-For example , say the default command line is "root=/dev/issblk0" from iss476
-platform. And the bootloader adds "root=/dev/sda1"
-
-The result is <prepend><bootloader><append>.
-
-Then you have,
-
-root=/dev/issblk0 root=/dev/sda1
-
-and the bootloader has precedent over the default command line. So root= in the
-above cases is defined by the bootloader.
-
-The only issue would be if a person wants to override the default command line
-with an unrelated bootloader command line. I don't know how many people do this,
-but I doubt it's many. Can you think of any use cases like this?
-
-I would imagine there are many more people who have to entirely duplicate the
-default command line in the boot loader when they really just want to change a
-single part of it like the root= device or console device or speed.
-
-Daniel
