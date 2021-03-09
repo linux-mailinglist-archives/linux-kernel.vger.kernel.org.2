@@ -2,148 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255B6332B59
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AE2332B61
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232006AbhCIP7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:59:33 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:37944 "EHLO pegase1.c-s.fr"
+        id S231905AbhCIQCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:02:16 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:42110 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231985AbhCIP7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:59:19 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Dw0JM427nz9tyZL;
-        Tue,  9 Mar 2021 16:59:15 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id LbsjBpuTUjHU; Tue,  9 Mar 2021 16:59:15 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dw0JM2k5Gz9tyZK;
-        Tue,  9 Mar 2021 16:59:15 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 00EEB8B810;
-        Tue,  9 Mar 2021 16:59:16 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id E4E224d9ub0a; Tue,  9 Mar 2021 16:59:15 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5448B8B84C;
-        Tue,  9 Mar 2021 16:59:10 +0100 (CET)
-Subject: Re: [PATCH v3] powerpc/32: remove bogus ppc_select syscall
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <f08ef2b6f339ba19987cfef4307a4dd26b2faf97.1614933479.git.christophe.leroy@csgroup.eu>
- <CAK8P3a2b+u+8smkKWB-V2Non+nnZmNG4dNi6cGpM8weYuY5j6A@mail.gmail.com>
- <5811950d-ef14-d416-35e6-d694ef920a7d@csgroup.eu>
- <CAK8P3a34cnCk4=Xyxvib57JLN-ck4T0-FUZRAQT_L6MDKjE+-w@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <13737de5-0eb7-e881-9af0-163b0d29a1a0@csgroup.eu>
-Date:   Tue, 9 Mar 2021 16:59:04 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231935AbhCIQCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 11:02:05 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615305725; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=6nM4CiFYWoQ6ihBekMmL11g5A+bwckuWJnmYt27toeE=; b=AqK7UHnO55MrLbvbRG6ko1jSz324C50Fljarer9ZHEmjyzScCet4rFE1WG4lB/dd07A3T+HC
+ RYF30ZHFO9hyl8n56LvTZhyn5oUcCTo7kpR+auM+B6oL/j7MXyuxrue9qbRRgaGHjNNrhWX1
+ BcRc1rV61cJddokp/7l5K29dYVM=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60479bcab2591bd56802f8e3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Mar 2021 16:01:14
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 57A6FC433C6; Tue,  9 Mar 2021 16:01:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 91F94C433CA;
+        Tue,  9 Mar 2021 16:01:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 91F94C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH net-next v3] net: Add Qcom WWAN control driver
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Loic Poulain <loic.poulain@linaro.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        open list <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hemant Kumar <hemantk@codeaurora.org>
+References: <1615279336-27227-1-git-send-email-loic.poulain@linaro.org>
+ <YEdBfHAYkTGI8sE4@kroah.com>
+ <CAMZdPi9dCzH9ufSoRK_szOaVnSsySk-kC5fu2Rb+wy-6snow0Q@mail.gmail.com>
+ <YEdO47NAWpO886DC@kroah.com>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <69126b2b-8138-60a3-1383-d06c30671499@codeaurora.org>
+Date:   Tue, 9 Mar 2021 09:01:11 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a34cnCk4=Xyxvib57JLN-ck4T0-FUZRAQT_L6MDKjE+-w@mail.gmail.com>
+In-Reply-To: <YEdO47NAWpO886DC@kroah.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/9/2021 3:33 AM, Greg KH wrote:
+> On Tue, Mar 09, 2021 at 11:28:49AM +0100, Loic Poulain wrote:
+>> Hi Greg,
+>>
+>> On Tue, 9 Mar 2021 at 10:35, Greg KH <gregkh@linuxfoundation.org> wrote:
+>>>
+>>> On Tue, Mar 09, 2021 at 09:42:16AM +0100, Loic Poulain wrote:
+>>>> The MHI WWWAN control driver allows MHI Qcom based modems to expose
+>>>> different modem control protocols/ports to userspace, so that userspace
+>>>> modem tools or daemon (e.g. ModemManager) can control WWAN config
+>>>> and state (APN config, SMS, provider selection...). A Qcom based
+>>>> modem can expose one or several of the following protocols:
+>>>> - AT: Well known AT commands interactive protocol (microcom, minicom...)
+>>>> - MBIM: Mobile Broadband Interface Model (libmbim, mbimcli)
+>>>> - QMI: Qcom MSM/Modem Interface (libqmi, qmicli)
+>>>> - QCDM: Qcom Modem diagnostic interface (libqcdm)
+>>>> - FIREHOSE: XML-based protocol for Modem firmware management
+>>>>          (qmi-firmware-update)
+>>>>
+>>>> The different interfaces are exposed as character devices, in the same
+>>>> way as for USB modem variants (known as modem 'ports').
+>>>>
+>>>> Note that this patch is mostly a rework of the earlier MHI UCI
+>>>> tentative that was a generic interface for accessing MHI bus from
+>>>> userspace. As suggested, this new version is WWAN specific and is
+>>>> dedicated to only expose channels used for controlling a modem, and
+>>>> for which related opensource user support exist. Other MHI channels
+>>>> not fitting the requirements will request either to be plugged to
+>>>> the right Linux subsystem (when available) or to be discussed as a
+>>>> new MHI driver (e.g AI accelerator, WiFi debug channels, etc...).
+>>>>
+>>>> This change introduces a new drivers/net/wwan directory, aiming to
+>>>> be the common place for WWAN drivers.
+>>>>
+>>>> Co-developed-by: Hemant Kumar <hemantk@codeaurora.org>
+>>>> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+>>>> Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+>>>> ---
+>>>>   v2: update copyright (2021)
+>>>>   v3: Move driver to dedicated drivers/net/wwan directory
+>>>>
+>>>>   drivers/net/Kconfig              |   2 +
+>>>>   drivers/net/Makefile             |   1 +
+>>>>   drivers/net/wwan/Kconfig         |  26 ++
+>>>>   drivers/net/wwan/Makefile        |   6 +
+>>>>   drivers/net/wwan/mhi_wwan_ctrl.c | 559 +++++++++++++++++++++++++++++++++++++++
+>>>>   5 files changed, 594 insertions(+)
+>>>>   create mode 100644 drivers/net/wwan/Kconfig
+>>>>   create mode 100644 drivers/net/wwan/Makefile
+>>>>   create mode 100644 drivers/net/wwan/mhi_wwan_ctrl.c
+>>>>
+>>>> diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+>>>> index 1ebb4b9..28b18f2 100644
+>>>> --- a/drivers/net/Kconfig
+>>>> +++ b/drivers/net/Kconfig
+>>>> @@ -501,6 +501,8 @@ source "drivers/net/wan/Kconfig"
+>>>>
+>>>>   source "drivers/net/ieee802154/Kconfig"
+>>>>
+>>>> +source "drivers/net/wwan/Kconfig"
+>>>> +
+>>>>   config XEN_NETDEV_FRONTEND
+>>>>        tristate "Xen network device frontend driver"
+>>>>        depends on XEN
+>>>> diff --git a/drivers/net/Makefile b/drivers/net/Makefile
+>>>> index f4990ff..5da6424 100644
+>>>> --- a/drivers/net/Makefile
+>>>> +++ b/drivers/net/Makefile
+>>>> @@ -68,6 +68,7 @@ obj-$(CONFIG_SUNGEM_PHY) += sungem_phy.o
+>>>>   obj-$(CONFIG_WAN) += wan/
+>>>>   obj-$(CONFIG_WLAN) += wireless/
+>>>>   obj-$(CONFIG_IEEE802154) += ieee802154/
+>>>> +obj-$(CONFIG_WWAN) += wwan/
+>>>>
+>>>>   obj-$(CONFIG_VMXNET3) += vmxnet3/
+>>>>   obj-$(CONFIG_XEN_NETDEV_FRONTEND) += xen-netfront.o
+>>>> diff --git a/drivers/net/wwan/Kconfig b/drivers/net/wwan/Kconfig
+>>>> new file mode 100644
+>>>> index 0000000..643aa10
+>>>> --- /dev/null
+>>>> +++ b/drivers/net/wwan/Kconfig
+>>>> @@ -0,0 +1,26 @@
+>>>> +# SPDX-License-Identifier: GPL-2.0-only
+>>>> +#
+>>>> +# Wireless WAN device configuration
+>>>> +#
+>>>> +
+>>>> +menuconfig WWAN
+>>>> +       bool "Wireless WAN"
+>>>> +       help
+>>>> +         This section contains Wireless WAN driver configurations.
+>>>> +
+>>>> +if WWAN
+>>>> +
+>>>> +config MHI_WWAN_CTRL
+>>>> +     tristate "MHI WWAN control driver for QCOM based PCIe modems"
+>>>> +     depends on MHI_BUS
+>>>> +     help
+>>>> +       MHI WWAN CTRL allow QCOM based PCIe modems to expose different modem
+>>>> +       control protocols/ports to userspace, including AT, MBIM, QMI, DIAG
+>>>> +       and FIREHOSE. These protocols can be accessed directly from userspace
+>>>> +       (e.g. AT commands) or via libraries/tools (e.g. libmbim, libqmi,
+>>>> +       libqcdm...).
+>>>> +
+>>>> +       To compile this driver as a module, choose M here: the module will be
+>>>> +       called mhi_wwan_ctrl.
+>>>> +
+>>>> +endif # WWAN
+>>>> diff --git a/drivers/net/wwan/Makefile b/drivers/net/wwan/Makefile
+>>>> new file mode 100644
+>>>> index 0000000..994a80b
+>>>> --- /dev/null
+>>>> +++ b/drivers/net/wwan/Makefile
+>>>> @@ -0,0 +1,6 @@
+>>>> +# SPDX-License-Identifier: GPL-2.0
+>>>> +#
+>>>> +# Makefile for the Linux WWAN device drivers.
+>>>> +#
+>>>> +
+>>>> +obj-$(CONFIG_MHI_WWAN_CTRL) += mhi_wwan_ctrl.o
+>>>> diff --git a/drivers/net/wwan/mhi_wwan_ctrl.c b/drivers/net/wwan/mhi_wwan_ctrl.c
+>>>> new file mode 100644
+>>>> index 0000000..3904cd0
+>>>> --- /dev/null
+>>>> +++ b/drivers/net/wwan/mhi_wwan_ctrl.c
+>>>> @@ -0,0 +1,559 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0-only
+>>>> +/* Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.*/
+>>>> +
+>>>> +#include <linux/kernel.h>
+>>>> +#include <linux/mhi.h>
+>>>> +#include <linux/mod_devicetable.h>
+>>>> +#include <linux/module.h>
+>>>> +#include <linux/poll.h>
+>>>> +
+>>>> +#define MHI_WWAN_CTRL_DRIVER_NAME "mhi_wwan_ctrl"
+>>>
+>>> So a driver name is the same as the class that is being created?
+>>>
+>>> That feels wrong, shouldn't the "class" be wwan?
+>>
+>> The driver does not aim to be THE wwan implementation, given the
+>> heterogeneity of WWAN interfaces, so 'wwan' is probably too generic
+>> for this bus/vendor specific driver. But since we create a new wwan
+>> subdir, maybe we should create a minimal wwan_sysfs.c, that would
+>> initially just offer a common class for all WWAN devices (wwan or
+>> wwan-ports), as a first step to if not standardize, at least group
+>> such devices under the same hat. Otherwise, we can just use the misc
+>> class... Any thoughts?
+> 
+> Why isn't this a good api for all wwan devices?  Do you think that this
+> will not work for others?
+> 
+> A common class would be good, if they all work the same with regards to
+> a user/kernel api, otherwise it's pointless and not needed :)
+> 
+> And if we are back to the "custom user/kernel api just for this one
+> driver", then yes, the misc api is the easiest and simplest to use, but
+> I would wish for better than that for the first wwan driver...
 
+I'm thinking this doesn't fit with the misc api due to the number of 
+device minors that could be expected to be consumed.
 
-Le 05/03/2021 à 13:03, Arnd Bergmann a écrit :
-> On Fri, Mar 5, 2021 at 11:15 AM Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->> Le 05/03/2021 à 11:06, Arnd Bergmann a écrit :
->>> On Fri, Mar 5, 2021 at 9:40 AM Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
->>> - glibc support for ppc32 gets merged during the linux-2.5 days, supporting
->>>     only #142 with the new behavior.
-> 
-> It turns out to be older than I said. This was actually in glibc-1.94
-> from 1997, so during
-> the linux-2.1 days, not 2.5!
-> 
->> Whaou, nice archeology, thanks. Do you mind if I copy the history you established ?
-> 
-> That's fine, please copy it.
-> 
->> In your commit, you said 2.3.48. Here in the history you say 2.1.48. Which one is correct ?
-> 
-> 2.1.48 is correct.
-> 
->> Regardless of whethere binaries are broken or not for other reason, is that worth expecting an
->> almost 25 yr old binary to run on future kernels ? If one is able to put the necessary effort to
->> port you hardware to the latest kernel, can't he really port the binary as well ?
-> 
-> I think the questions of supporting old hardware with new software and
-> supporting old
-> binaries on modern kernels are largely orthogonal. The policy we have
-> is that we don't
-> break existing user setups, and it really seems unlikely that anyone
-> still uses pre-1997
-> executables for anything that requires a modern kernel!
-> 
-> I now checked the oldest mklinux I could find (DR2.1 from 1997), and
-> even has the
-> modern glibc and linux-2.0.28 kernel patched to provide the modern semantics at
-> syscall #142 for glibc, with the same (already unused) compatibility hack at #82
-> that we still have for ppc32 today. This made mklinux DR2.1 binaries
-> incompatible
-> with mainline linux-2.0 kernels, but they might still work with modern kernels,
-> regardless of whether we remove support for binaries that worked with mainline
-> linux-2.0.
+Each device supported by this driver is going to create 2-5 chardevs. 
+Having two devices in a system is common for "endusers".  Development, 
+manufacturing, and test (including the community, not just talking 
+Qualcomm here) commonly have 12+ of these devices in a system.  12 * 5 = 
+60.  Thats a lot of misc minor numbers to chew up just from one driver 
+given that the limit of dynamic minors is 128.  Looking at a random x86 
+server that I have which could be used for such a usecase already has 30 
+misc minor numbers used, and this particular server has a fresh distro 
+install on it.  I would expect that number to go up as it gets 
+provisioned for use.
 
+I guess, the question to you is, how many misc minor numbers is "too 
+much" for a single driver to expect to consume?
 
-I had another look. In fact x86, arm and m68k still have the #82 syscall, but they don't have the 
-hack we have on powerpc to "guess" that something is calling the old select with the arguments of 
-the new select.
-
-As part of my series of user accesses cleanup, I'll replace the open coded stuff by a call to 
-sys_old_select(), see below.
-
-Maybe at the end we should keep the #82 syscall, but do we need to keep the powerpc hack really ? 
-Maybe the best is to drop ppc_select() function but mention sys_old_select() instead of ni_syscall 
-for entry #82 in the syscall table ?
-
-Christophe
----
-diff --git a/arch/powerpc/include/asm/unistd.h b/arch/powerpc/include/asm/unistd.h
-index 700fcdac2e3c..b541c690a31c 100644
---- a/arch/powerpc/include/asm/unistd.h
-+++ b/arch/powerpc/include/asm/unistd.h
-@@ -40,6 +40,7 @@
-  #define __ARCH_WANT_SYS_SIGPROCMASK
-  #ifdef CONFIG_PPC32
-  #define __ARCH_WANT_OLD_STAT
-+#define __ARCH_WANT_SYS_OLD_SELECT
-  #endif
-  #ifdef CONFIG_PPC64
-  #define __ARCH_WANT_SYS_TIME
-diff --git a/arch/powerpc/kernel/syscalls.c b/arch/powerpc/kernel/syscalls.c
-index 078608ec2e92..a552c9e68d7e 100644
---- a/arch/powerpc/kernel/syscalls.c
-+++ b/arch/powerpc/kernel/syscalls.c
-@@ -82,16 +82,8 @@ int
-  ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp, struct 
-__kernel_old_timeval __user *tvp)
-  {
-  	if ( (unsigned long)n >= 4096 )
--	{
--		unsigned long __user *buffer = (unsigned long __user *)n;
--		if (!access_ok(buffer, 5*sizeof(unsigned long))
--		    || __get_user(n, buffer)
--		    || __get_user(inp, ((fd_set __user * __user *)(buffer+1)))
--		    || __get_user(outp, ((fd_set  __user * __user *)(buffer+2)))
--		    || __get_user(exp, ((fd_set  __user * __user *)(buffer+3)))
--		    || __get_user(tvp, ((struct __kernel_old_timeval  __user * __user *)(buffer+4))))
--			return -EFAULT;
--	}
-+		return sys_old_select((void __user *)n);
-+
-  	return sys_select(n, inp, outp, exp, tvp);
-  }
-  #endif
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
