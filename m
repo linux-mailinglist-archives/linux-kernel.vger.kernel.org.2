@@ -2,118 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A75D332E83
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 536AA332E86
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhCISr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 13:47:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37056 "EHLO
+        id S231202AbhCISuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 13:50:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48074 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230111AbhCISru (ORCPT
+        by vger.kernel.org with ESMTP id S230035AbhCIStv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 13:47:50 -0500
+        Tue, 9 Mar 2021 13:49:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615315664;
+        s=mimecast20190719; t=1615315791;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CasSRYvlyrDxSTrN8PaoTkzFKzX6/cN2TKA9gMzN2Gw=;
-        b=ajxzSM8uzJtin1b1Nk/maNkC7AQsLdspRWzEtUrdfs2m+l5rpljnzy7WTJGIFZzBM1yDwd
-        Rzpl9Z+tbElzOuT2QyEQI7qIypCIx+9AObrFZgsPQ8dwBjQZlKu/2LnDElFtSqtQKTVWTG
-        N7fa42cKX4DvZ7cToV82tdAY3FnpPd8=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-283-8qeaaSu_N26E5Dx-OQkojQ-1; Tue, 09 Mar 2021 13:47:43 -0500
-X-MC-Unique: 8qeaaSu_N26E5Dx-OQkojQ-1
-Received: by mail-qv1-f70.google.com with SMTP id e10so10850936qvr.17
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 10:47:43 -0800 (PST)
+        bh=m9Xym80t0AfeRZOHjiWsVqVWWv3spvSFZ9P4PZSjvAg=;
+        b=O7DG2O1ZuaFb7o/C3fA5F+cdG8pXgcpdyM20cg8jM/5vzjFbMKZ4mIMpKcjSjcp+7D7f2D
+        sT/lj9yub13ipCqOz8CtvcSlWMReib3SHy/lIWA68j6167EatjO/ZmW7WHqVLoJAFyed/x
+        BmG+0NpWz4nWd0GIDC/sZjS+N0phdU8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-26-Puy1zNhwNhukt9P_bDC-yA-1; Tue, 09 Mar 2021 13:49:49 -0500
+X-MC-Unique: Puy1zNhwNhukt9P_bDC-yA-1
+Received: by mail-wm1-f72.google.com with SMTP id z26so1541782wml.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 10:49:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CasSRYvlyrDxSTrN8PaoTkzFKzX6/cN2TKA9gMzN2Gw=;
-        b=abD4+XJi/CcmKD+WsgngxpYaT3u8+NTWaTB2dkqJtDZMiS5c2u0RkH7Z63D5ZSQbkL
-         vn7wLo7n2KDv/v8iA09Odl8I+cBdbZKWehkeHZbuQN0+73RyF0Dz9wCcKITvh/u3NLsK
-         esE+OfLSPdQkza5T/tRFpW51/C0EH7neVPHzWxFT/6pKAeizqkllaR8Oi9oikib5Oq79
-         uVwl1ZnhnpNZtSBwvtN9s7q/onN8oxzAq577RYixRW1f+5oRh/08/EBSftXa9GKhktrz
-         y3thic4aH3sEBbhuMCuaEwTJdfDGHoFXhYLfERPFPk77GD1LUwQwETLILh7dqc6VGZMH
-         D9OQ==
-X-Gm-Message-State: AOAM532adB8po9ZnGJNGXhPReMLvgLQgNIjs6mWL5SIrdOibTwCLPI7Z
-        ZmuXUVya0l58RsEnVS2mDxNS+lgDPz+MqA3oRJJI8uhU8YCNV1AhHeUx1sfMbF00kkdnqTqq0rD
-        zeLJqHnml2j1wP0kgIKsw9q5j
-X-Received: by 2002:a37:4f49:: with SMTP id d70mr26729202qkb.353.1615315662590;
-        Tue, 09 Mar 2021 10:47:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxnKE8AmumIMKaOWMZ/WiSbxCcrja5iHb60AVgSdkZ7BSupOSp3qdWeEdsOnKlMgsZBgb3fog==
-X-Received: by 2002:a37:4f49:: with SMTP id d70mr26729175qkb.353.1615315662323;
-        Tue, 09 Mar 2021 10:47:42 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-25-174-95-95-253.dsl.bell.ca. [174.95.95.253])
-        by smtp.gmail.com with ESMTPSA id c73sm11004840qkg.6.2021.03.09.10.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 10:47:41 -0800 (PST)
-Date:   Tue, 9 Mar 2021 13:47:39 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH] vfio/pci: make the vfio_pci_mmap_fault reentrant
-Message-ID: <20210309184739.GD763132@xz-x1>
-References: <1615201890-887-1-git-send-email-prime.zeng@hisilicon.com>
- <20210308132106.49da42e2@omen.home.shazbot.org>
- <20210308225626.GN397383@xz-x1>
- <6b98461600f74f2385b9096203fa3611@hisilicon.com>
- <20210309124609.GG2356281@nvidia.com>
- <20210309082951.75f0eb01@x1.home.shazbot.org>
- <20210309164004.GJ2356281@nvidia.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=m9Xym80t0AfeRZOHjiWsVqVWWv3spvSFZ9P4PZSjvAg=;
+        b=hhkI0boTG/xdzGxkI1yyNxtQy0XH3rz8JJORyzoZEUv8mtrs8hsXDEn7p0gAxbE4Ak
+         KcgfzMHjLY6ZcVnm4TJSfqmz/Ft6UhdB/InHVs8hk/aly6w8S+m1Y0rObAxNQhE3aZBP
+         eO1Vy3jGZM8QGgQLDhY4sywZg5gji67Xnqt3mCCk2bnUcxbG+2DAPUxT9Y4j1AUgJ3Hb
+         XDeO5jWH3PppIWtF7bH4zr1fBaDfU0OudQiGYq3jHtt/pePhsVPD4Jn3zfSSSkrpWycI
+         BpIgmfMRsbGgXuXSRbsQodkG7YjUCVjVVBmWXrBZ2NNcSde12ILPp3gIKcc49fHE3Q2r
+         ZcGQ==
+X-Gm-Message-State: AOAM5322gbDOZhhVTbz5ac+R/vT14aosQjY6iuoCHR23+/C8TfiFw/hu
+        GEB6lmd9CJQk34w1NgaEe0tHp2s94ABVfn2sJ3xGGW8ccgNXneDOuD10JKfEEDrYWRq/13Gt3TS
+        La+JccNv7jsar+jw9MDDKHMTo
+X-Received: by 2002:a05:6000:1a8c:: with SMTP id f12mr29860099wry.173.1615315788524;
+        Tue, 09 Mar 2021 10:49:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxLvc9I8lVKzz6AHteBnYBDwX8zS4xde1F0yjVbAXTx+neuz8trrr19wOyyEGbfiZBgdAWiUw==
+X-Received: by 2002:a05:6000:1a8c:: with SMTP id f12mr29860076wry.173.1615315788359;
+        Tue, 09 Mar 2021 10:49:48 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n66sm5211597wmn.25.2021.03.09.10.49.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 10:49:47 -0800 (PST)
+Subject: Re: [PATCH v2 00/25] KVM SGX virtualization support
+To:     Borislav Petkov <bp@alien8.de>, Kai Huang <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, jethro@fortanix.com, b.thiel@posteo.de,
+        jmattson@google.com, joro@8bytes.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, corbet@lwn.net
+References: <cover.1615250634.git.kai.huang@intel.com>
+ <20210309093037.GA699@zn.tnic>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <51ebf191-e83a-657a-1030-4ccdc32f0f33@redhat.com>
+Date:   Tue, 9 Mar 2021 19:49:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210309164004.GJ2356281@nvidia.com>
+In-Reply-To: <20210309093037.GA699@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 12:40:04PM -0400, Jason Gunthorpe wrote:
-> On Tue, Mar 09, 2021 at 08:29:51AM -0700, Alex Williamson wrote:
-> > On Tue, 9 Mar 2021 08:46:09 -0400
-> > Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > 
-> > > On Tue, Mar 09, 2021 at 03:49:09AM +0000, Zengtao (B) wrote:
-> > > > Hi guys:
-> > > > 
-> > > > Thanks for the helpful comments, after rethinking the issue, I have proposed
-> > > >  the following change: 
-> > > > 1. follow_pte instead of follow_pfn.  
-> > > 
-> > > Still no on follow_pfn, you don't need it once you use vmf_insert_pfn
-> > 
-> > vmf_insert_pfn() only solves the BUG_ON, follow_pte() is being used
-> > here to determine whether the translation is already present to avoid
-> > both duplicate work in inserting the translation and allocating a
-> > duplicate vma tracking structure.
->  
-> Oh.. Doing something stateful in fault is not nice at all
+On 09/03/21 10:30, Borislav Petkov wrote:
+> On Tue, Mar 09, 2021 at 02:38:49PM +1300, Kai Huang wrote:
+>> This series adds KVM SGX virtualization support. The first 14 patches starting
+>> with x86/sgx or x86/cpu.. are necessary changes to x86 and SGX core/driver to
+>> support KVM SGX virtualization, while the rest are patches to KVM subsystem.
 > 
-> I would rather see __vfio_pci_add_vma() search the vma_list for dups
-> than call follow_pfn/pte..
+> Ok, I guess I'll queue 1-14 once Sean doesn't find anything
+> objectionable then give Paolo an immutable commit to base the KVM stuff
+> ontop.
 
-It seems to me that searching vma list is still the simplest way to fix the
-problem for the current code base.  I see io_remap_pfn_range() is also used in
-the new series - maybe that'll need to be moved to where PCI_COMMAND_MEMORY got
-turned on/off in the new series (I just noticed remap_pfn_range modifies vma
-flags..), as you suggested in the other email.
+Sounds great.
 
-Thanks,
-
--- 
-Peter Xu
+Paolo
 
