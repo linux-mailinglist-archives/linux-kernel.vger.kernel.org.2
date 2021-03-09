@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF793330E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A8B3330E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:28:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhCIV1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 16:27:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43748 "EHLO mx2.suse.de"
+        id S232032AbhCIV2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 16:28:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45500 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231594AbhCIV07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 16:26:59 -0500
+        id S232005AbhCIV1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 16:27:54 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3E501AFF9;
-        Tue,  9 Mar 2021 21:26:58 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 22:26:55 +0100
+        by mx2.suse.de (Postfix) with ESMTP id 3F49BAFF9;
+        Tue,  9 Mar 2021 21:27:53 +0000 (UTC)
+Date:   Tue, 9 Mar 2021 22:27:50 +0100
 From:   Oscar Salvador <osalvador@suse.de>
-To:     Zi Yan <ziy@nvidia.com>
+To:     Dave Hansen <dave.hansen@intel.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         David Hildenbrand <david@redhat.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
@@ -28,31 +28,38 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
         Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] x86/vmemmap: Handle unpopulated sub-pmd ranges
-Message-ID: <YEfoH8US4YVxak7r@localhost.localdomain>
-References: <20210301083230.30924-1-osalvador@suse.de>
- <20210301083230.30924-4-osalvador@suse.de>
- <380379B8-5331-447F-84E7-FB55EABA1C51@nvidia.com>
+Subject: Re: [PATCH v5 2/4] x86/vmemmap: Drop handling of 1GB vmemmap ranges
+Message-ID: <YEfoVqVglWUbepvW@localhost.localdomain>
+References: <20210309174113.5597-1-osalvador@suse.de>
+ <20210309174113.5597-3-osalvador@suse.de>
+ <a701a162-d581-42e9-bae5-7c43741bbf7b@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <380379B8-5331-447F-84E7-FB55EABA1C51@nvidia.com>
+In-Reply-To: <a701a162-d581-42e9-bae5-7c43741bbf7b@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 02:39:02PM -0500, Zi Yan wrote:
-> Hi Oscar,
+On Tue, Mar 09, 2021 at 10:34:51AM -0800, Dave Hansen wrote:
+> On 3/9/21 9:41 AM, Oscar Salvador wrote:
+> > We never get to allocate 1GB pages when mapping the vmemmap range.
+> > Drop the dead code both for the aligned and unaligned cases and leave
+> > only the direct map handling.
 > 
-> vmemmap_use_new_sub_pmd and vmemmap_use_sub_pmd are not defined when CONFIG_SPARSEMEM_VMEMMAP
-> and !CONFIG_MEMORY_HOTPLUG. It leads to compilation errors.
+> I was hoping to seem some more meat in this changelog, possibly some of
+> what David Hildenbrand said in the v4 thread about this patch.
+> Basically, we don't have code to allocate 1G mappings because it isn't
+> clear that it would be worth the complexity, and it might also waste memory.
+> 
+> I'm fine with the code, but I would appreciate a beefed-up changelog:
+> 
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
 
-Meh, yeah, that's right.
+Since I had to do another pass to fix up some compilaton errors,
+I added a bit more of explanation in that regard.
 
-I fixed that up, I will send a v6.
-
-Thanks for noticing!
-
+Thanks!
 
 
 -- 
