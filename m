@@ -2,105 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A6733218B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D994332181
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhCIJDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:03:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhCIJCi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:02:38 -0500
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5295C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 01:02:37 -0800 (PST)
-Received: by mail-vs1-xe29.google.com with SMTP id q1so3449845vsq.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 01:02:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/mOjqeg59DhCO1NJGI6CFwmiKdDTe7R83FJmZUTJAeo=;
-        b=w5apAR8EPMmNag6YyvemjSWjfJ/hnuEzTl5B8SExhz9x6nxXaAWGmiD64JgsQWoumy
-         7JG3vyMhDaVAkSG4PBYKCkG6cO7GC9bc+BF6DHF6IFMom7Gkfaho+c5V6sOrSxw9nMTQ
-         n63L0ZeZvPLCW66Ey23loYenxIA9d36dFgeJ1IGVMUgzPbCIpk7DsjVJG+4RCtx/aLOj
-         YmYfjCIEm5SsqTClmZ2ScoSC1xXv3zpf+yfUHtelpqyQquK0cvB+gmpjfGxqi1YlwoPs
-         eSlypjinXfyskMIRp19oz+CDBPJLFhUgvt25l1cqNHHYEchSk3bWrCKOu17iljE4Kmkm
-         TO2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/mOjqeg59DhCO1NJGI6CFwmiKdDTe7R83FJmZUTJAeo=;
-        b=RKDNDWg+iIlJ1vNxPsxSUOQK3yxNR1BHAUaRofFhhvdd2LNyrbEkxDmskY9YmLTFUP
-         V0Zs9UDF9mLRuTZGZmy3DIyuBg4piI+HlEtfwjX12ntl33r/5Hhzri9hwP3IC+nZIejC
-         qupCo2O63UaAZZo0kel0QzMCR1/pr56nkMtlv2dj82+5d35eWv/wvln/JQeAUBxBkMQt
-         V326f9CV1GKIEOaxuQgBg98l9NImGWqbXCikjmQz/xDRzIkrjiniFFd020IdzWwG13LY
-         6Kjn8IVEkemC6vqOZuD3kdzuCQSL0IaTiixdzzbablOie64DPwLuoxMOVrUKB5/WlUOt
-         s53w==
-X-Gm-Message-State: AOAM530cuoAAeRCJZiLaQFm6reNpy1ZMxaf3R3/VLo8kQdM8yWdJnf4d
-        wGo8Wg6ElWIKrsiSa2rtA1Ia2sxD8GKLwUq1e+JZOg==
-X-Google-Smtp-Source: ABdhPJxGQF7CijfR+scQTuoiyx2kIjHkpuuT+rY7LqsLLG1Lih/s8D2YCemUQD/gJValy8R3oo67L2NoZH3QLfIAV3g=
-X-Received: by 2002:a67:6942:: with SMTP id e63mr3815959vsc.48.1615280557135;
- Tue, 09 Mar 2021 01:02:37 -0800 (PST)
-MIME-Version: 1.0
-References: <1615272478-52458-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1615272478-52458-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
+        id S229652AbhCIJCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:02:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50732 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229805AbhCIJCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 04:02:03 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615280522; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dce3cOdvnV2ClNKK9GPexH0rXQvpFnYmQS/x3knbop0=;
+        b=TjE27we03nbMZ65GkVHR9bTmOSVDkiJqFD/+aoLCoYaYymNsPnJCbJS/NdDhMOwMYY1nCk
+        iDQxQ7I4XMU+Q3EYPqWpmTb0z3Mqbk+G8OWHdvJukv/9ODODKAiwPqRXC5VAy8LyqV288E
+        9YF2IncWtI/zPuCdvoIR/NFHDELMzP8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CD201AC1F;
+        Tue,  9 Mar 2021 09:02:01 +0000 (UTC)
 Date:   Tue, 9 Mar 2021 10:02:00 +0100
-Message-ID: <CAPDyKFp67w=vT2VHmtsjc1++HtEfZNyKSo-N1gmdJtB-d62m6w@mail.gmail.com>
-Subject: Re: [PATCH] mmc: via-sdmmc: remove unneeded variable 'ret'
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     Bruce Chang <brucechang@via.com.tw>,
-        Harald Welte <HaraldWelte@viatech.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+From:   Michal Hocko <mhocko@suse.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Zhou Guanghui <zhouguanghui1@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, hannes@cmpxchg.org, hughd@google.com,
+        kirill.shutemov@linux.intel.com, npiggin@gmail.com, ziy@nvidia.com,
+        wangkefeng.wang@huawei.com, guohanjun@huawei.com,
+        dingtianhong@huawei.com, chenweilong@huawei.com,
+        rui.xiang@huawei.com
+Subject: Re: [PATCH v2 2/2] mm/memcg: set memcg when split page
+Message-ID: <YEc5iI+ZP7dWr2fC@dhcp22.suse.cz>
+References: <20210304074053.65527-1-zhouguanghui1@huawei.com>
+ <20210304074053.65527-3-zhouguanghui1@huawei.com>
+ <20210308210225.GF3479805@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210308210225.GF3479805@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Mar 2021 at 07:48, Yang Li <yang.lee@linux.alibaba.com> wrote:
->
-> Fix the following coccicheck warning:
-> ./drivers/mmc/host/via-sdmmc.c:1274:5-8: Unneeded variable: "ret".
-> Return "0" on line 1295
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-
-Applied for next, thanks!
-
-Kind regards
-Uffe
-
-
-> ---
->  drivers/mmc/host/via-sdmmc.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/host/via-sdmmc.c b/drivers/mmc/host/via-sdmmc.c
-> index 4f4c081..a1d0985 100644
-> --- a/drivers/mmc/host/via-sdmmc.c
-> +++ b/drivers/mmc/host/via-sdmmc.c
-> @@ -1271,7 +1271,6 @@ static int __maybe_unused via_sd_suspend(struct device *dev)
->  static int __maybe_unused via_sd_resume(struct device *dev)
+On Mon 08-03-21 21:02:25, Matthew Wilcox wrote:
+> On Thu, Mar 04, 2021 at 07:40:53AM +0000, Zhou Guanghui wrote:
+> > As described in the split_page function comment, for the non-compound
+> > high order page, the sub-pages must be freed individually. If the
+> > memcg of the fisrt page is valid, the tail pages cannot be uncharged
+> > when be freed.
+> > 
+> > For example, when alloc_pages_exact is used to allocate 1MB continuous
+> > physical memory, 2MB is charged(kmemcg is enabled and __GFP_ACCOUNT is
+> > set). When make_alloc_exact free the unused 1MB and free_pages_exact
+> > free the applied 1MB, actually, only 4KB(one page) is uncharged.
+> > 
+> > Therefore, the memcg of the tail page needs to be set when split page.
+> 
+> There's another place we need to do this to ...
+> 
+> +++ b/mm/page_alloc.c
+> @@ -5081,9 +5081,15 @@ void __free_pages(struct page *page, unsigned int order)
 >  {
->         struct via_crdr_mmc_host *sdhost;
-> -       int ret = 0;
->         u8 gatt;
->
->         sdhost = dev_get_drvdata(dev);
-> @@ -1292,7 +1291,7 @@ static int __maybe_unused via_sd_resume(struct device *dev)
->         via_restore_pcictrlreg(sdhost);
->         via_init_sdc_pm(sdhost);
->
-> -       return ret;
-> +       return 0;
+>         if (put_page_testzero(page))
+>                 free_the_page(page, order);
+> -       else if (!PageHead(page))
+> -               while (order-- > 0)
+> -                       free_the_page(page + (1 << order), order);
+> +       else if (!PageHead(page)) {
+> +               while (order-- > 0) {
+> +                       struct page *tail = page + (1 << order);
+> +#ifdef CONFIG_MEMCG
+> +                       tail->memcg_data = page->memcg_data;
+> +#endif
+> +                       free_the_page(tail, order);
+> +               }
+> +       }
 >  }
->
->  static SIMPLE_DEV_PM_OPS(via_sd_pm_ops, via_sd_suspend, via_sd_resume);
-> --
-> 1.8.3.1
->
+>  EXPORT_SYMBOL(__free_pages);
+
+Hmm, I was not aware of this code. This is really a tricky code.
+
+> I wonder if we shouldn't initialise memcg_data on all subsequent pages
+> of non-compound allocations instead?  Because I'm not sure this is the
+> only place that needs to be fixed.
+
+That would be safer for sure. Do you mean this as a replacement to the
+original patch?
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 913c2b9e5c72..d44dea2b8d22 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3135,8 +3135,21 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
+ 	if (memcg && !mem_cgroup_is_root(memcg)) {
+ 		ret = __memcg_kmem_charge(memcg, gfp, 1 << order);
+ 		if (!ret) {
++			int nr_pages = 1 << order;
+ 			page->memcg_data = (unsigned long)memcg |
+ 				MEMCG_DATA_KMEM;
++			
++			/*
++			 * Compound pages are normally split or freed
++			 * via their head pages so memcg_data in in the
++			 * head page should be sufficient but there
++			 * are exceptions to the rule (see __free_pages).
++			 * Non compound pages would need to copy memcg anyway.
++			 */
++			for (i = 1; i < nr_pages; i++) {
++				struct page * p = page + i;
++				p->memcg_data = page->memcg_data
++			}
+ 			return 0;
+ 		}
+ 		css_put(&memcg->css);
+-- 
+Michal Hocko
+SUSE Labs
