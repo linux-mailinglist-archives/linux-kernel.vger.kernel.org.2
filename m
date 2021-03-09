@@ -2,86 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E684A33305E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF5F2333073
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231852AbhCIU5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:57:02 -0500
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:54228 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbhCIU4d (ORCPT
+        id S231962AbhCIU7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:59:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231560AbhCIU7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:56:33 -0500
-Received: by mail-wm1-f46.google.com with SMTP id e23so3783789wmh.3;
-        Tue, 09 Mar 2021 12:56:33 -0800 (PST)
+        Tue, 9 Mar 2021 15:59:33 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B84EC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 12:59:32 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id r15-20020a05600c35cfb029010e639ca09eso8129873wmq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:59:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Gn8oZmKswy51LVCf8sN3lJck2uhZLKTyZKKw4qO3/6g=;
+        b=UDX3QS1DRCeplsh6gFmESwbt2pMEFuxWcr+FuoZnUdkUlWo9itEc73DFwzsEpLjfT+
+         E5wagj6hZNGuIT7+CeHPncNvW/Q/c5NPdtImBsjOuuBgipd5vJhfdg9TYwhUvFjN3G9/
+         n11tsttpiBPHADZBrB9veeuJiOuX+SGYpaYNouxLoCZ4QAuuw7Xs5WGA4qMSAVXwkVXm
+         /R9wXdHSreKTGEqmX/b9PseG8nzc4+56CWkKQGUcpkkH5MDW0SwtupQbDI2oUhq0v/wW
+         8lntFISeo/gvfEUOClLj8xoJI/JQDTGu9UTazS2MJGTaGT0mFHVK5JpphuNtkMwTZst+
+         yQQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=JFD+knxhbgjWL3eI/xavMNJfjLYJTwVKvjMVSZz9+6g=;
-        b=lXjGX0q+WzNZwVEAk7ffDocmRPp8IR+b+a0lOLVaIELQMLKRC7qdO8M65e5a5zwsQV
-         jYGhbzff0Ml4tfar8vESNHbi1s4m8DW9zAZqppKshaU2po6rtWg7xC9qIy8OzEM1hpQF
-         LklI/kjL6rx3YPpQd3M1/D4NNhpZxLYNiuP1yu1ZVBYjk0gR4l+ovmYNzzQ2OP2Fcuqm
-         2AqsBNeOkCEzO6L177Jv8Cj6S4G6x3xyByaAHfQoqPI3pna0ASf7DW5i+Sf05OBP/C06
-         sBbxMqFi8ybK1loLPTMi8Hh5RlEfNZ52KMhYdua/m/xJJ8OhrW0T8j5dkoFTqEWjLI7P
-         4gqw==
-X-Gm-Message-State: AOAM533Bn2cR3easIhL0c8PM42uiFvrnIUZrcT9wGWpaX3ITO7tDfYFp
-        d+x5BXGJZd8pJc0l2nuyLbQ=
-X-Google-Smtp-Source: ABdhPJxNHh2Fj3Pxn1keVzJYAksuucsgzc3xGcO6rLV4pNx2sU2Y3jMmK8jBHUSODlQMS+vapZb6Dg==
-X-Received: by 2002:a1c:9d51:: with SMTP id g78mr6226198wme.5.1615323392396;
-        Tue, 09 Mar 2021 12:56:32 -0800 (PST)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id s3sm25072658wrt.93.2021.03.09.12.56.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 12:56:31 -0800 (PST)
-Subject: Re: [PATCH] arm64: dts: imx8mq: remove SoC ID compatible
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>,
-        alice.guo@oss.nxp.com
-Cc:     devicetree@vger.kernel.org, festevam@gmail.com,
-        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org, robh@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org
-References: <20210104091544.13972-4-alice.guo@oss.nxp.com>
- <20210309134251.2583679-1-martin.kepplinger@puri.sm>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Message-ID: <d2030810-a307-0438-d4b0-be6aa092e551@kernel.org>
-Date:   Tue, 9 Mar 2021 21:56:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        bh=Gn8oZmKswy51LVCf8sN3lJck2uhZLKTyZKKw4qO3/6g=;
+        b=ssvF3rl65g9mJM7zlN802BT1ZQ8eRtaiAqK39lYQtNY2zZ7Gvh3mmxeR4jJ6n0KjQ/
+         WJx5sD/6JQfx7tsvMCcFVU0pdRI6/anTapl2+0LIXF8bLfjI07lurinWFrW3HLWBUY4v
+         KdhrxO/A+NYlkBOZmZoVv/RoM8LwVZotumZHtQAvZSHy9R7LLt8pz9fSLK7B6uxoEexN
+         bmZIWpYyVkbLdoK3IUZXv7P/jp0hDXzh9rqyB75VR9pQDEI/LfAiJxGXuziVpeiSCP4g
+         xdB4ys58a47TM5rUT4IDQIhKoW+YaLf+Qrx48T3QTGrrKk7+Z9Z/oU5R6/vQt1fWvpEk
+         rs8w==
+X-Gm-Message-State: AOAM533Bn6EXM1tzLbU0k+1ZaIZwSxBPI+WvW6kPfjyCgPhIGW0uWH40
+        Qg2Xx+asTD5b6W5WAmG8si/ULg==
+X-Google-Smtp-Source: ABdhPJxR57vUb5NGWH1qFkeLmR1TeuTxCN5KbEEihvFE3AvKrW3UYjY0/yXwFRPWv24Adu+XXpUFog==
+X-Received: by 2002:a05:600c:4a18:: with SMTP id c24mr5760941wmp.173.1615323571057;
+        Tue, 09 Mar 2021 12:59:31 -0800 (PST)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id j6sm5501305wmq.16.2021.03.09.12.59.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 12:59:30 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v3 00/11] gpio: implement the configfs testing module
+Date:   Tue,  9 Mar 2021 21:59:10 +0100
+Message-Id: <20210309205921.15992-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <20210309134251.2583679-1-martin.kepplinger@puri.sm>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/03/2021 14:42, Martin Kepplinger wrote:
-> this reverts commit ce58459d8c7f4174e7b8a8ea903dd949631334a3 for imx8mq.
-> 
-> this is most likely not the real fix but works around the problem I have
-> (with v5.12-rc2) I want to report:
-> 
-> [    0.766925] SoC revision 0x21
-> [    0.770286] imx8_soc_info soc@0: SoC revision via nvmem read failed: -517
-> 
-> This leads to the system not booting up.
-> 
-> This change makes use of the old way of reading soc_revision and thus
-> works around the problem.
-> 
-> What could be missing for the nvmem way to work here? Should it work
-> in any case? I assume so if you add the compatible to imx8mq.dtsi. But
-> if it would work, why keep the ocotp reads?
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Hi,
+This series adds a new GPIO testing module based on configfs committable items
+and sysfs. The goal is to provide a testing driver that will be configurable
+at runtime (won't need module reload) and easily extensible. The control over
+the attributes is also much more fine-grained than in gpio-mockup.
 
-Thanks for the report. 517 is deferred probe, so this could mean that
-efuse/ocotp did not come up yet. However soc_id driver should handle it
-and re-try after some try, shouldn't it? Unless there is a bug inside
-(your change basically disables soc_id driver).
+This series also contains a respin of the patches I sent separately to the
+configfs maintainers - these patches implement the concept of committable
+items that was well defined for a long time but never actually completed.
 
-Best regards,
-Krzysztof
+Apart from the new driver itself, its selftests and the configfs patches, this
+series contains some changes to the bitmap API - most importantly: it adds
+devres managed variants of bitmap_alloc() and bitmap_zalloc().
+
+v1 -> v2:
+- add selftests for gpio-sim
+- add helper programs for selftests
+- update the configfs rename callback to work with the new API introduced in
+  v5.11
+- fix a missing quote in the documentation
+- use !! whenever using bits operation that are required to return 0 or 1
+- use provided bitmap API instead of reimplementing copy or fill operations
+- fix a deadlock in gpio_sim_direction_output()
+- add new read-only configfs attributes for mapping of configfs items to GPIO
+  device names
+- and address other minor issues pointed out in reviews of v1
+
+v2 -> v3:
+- use devm_bitmap_alloc() instead of the zalloc variant if we're initializing
+  the bitmap with 1s
+- drop the patch exporting device_is_bound()
+- don't return -ENODEV from dev_nam and chip_name configfs attributes, return
+  a string indicating that the device is not available yet ('n/a')
+- fix indentation where it makes sense
+- don't protect IDA functions which use their own locking and where it's not
+  needed
+- use kmemdup() instead of kzalloc() + memcpy()
+- collected review tags
+- minor coding style fixes
+
+Bartosz Golaszewski (11):
+  configfs: increase the item name length
+  configfs: use (1UL << bit) for internal flags
+  configfs: implement committable items
+  samples: configfs: add a committable group
+  lib: bitmap: remove the 'extern' keyword from function declarations
+  lib: bitmap: order includes alphabetically
+  lib: bitmap: provide devm_bitmap_alloc() and devm_bitmap_zalloc()
+  gpio: sim: new testing module
+  selftests: gpio: provide a helper for reading chip info
+  selftests: gpio: add a helper for reading GPIO line names
+  selftests: gpio: add test cases for gpio-sim
+
+ Documentation/admin-guide/gpio/gpio-sim.rst   |  72 ++
+ Documentation/filesystems/configfs.rst        |   6 +-
+ drivers/gpio/Kconfig                          |   8 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-sim.c                       | 879 ++++++++++++++++++
+ fs/configfs/configfs_internal.h               |  22 +-
+ fs/configfs/dir.c                             | 245 ++++-
+ include/linux/bitmap.h                        | 127 +--
+ include/linux/configfs.h                      |   3 +-
+ lib/bitmap.c                                  |  42 +-
+ samples/configfs/configfs_sample.c            | 153 +++
+ tools/testing/selftests/gpio/.gitignore       |   2 +
+ tools/testing/selftests/gpio/Makefile         |   4 +-
+ tools/testing/selftests/gpio/config           |   1 +
+ tools/testing/selftests/gpio/gpio-chip-info.c |  57 ++
+ tools/testing/selftests/gpio/gpio-line-name.c |  55 ++
+ tools/testing/selftests/gpio/gpio-sim.sh      | 229 +++++
+ 17 files changed, 1820 insertions(+), 86 deletions(-)
+ create mode 100644 Documentation/admin-guide/gpio/gpio-sim.rst
+ create mode 100644 drivers/gpio/gpio-sim.c
+ create mode 100644 tools/testing/selftests/gpio/gpio-chip-info.c
+ create mode 100644 tools/testing/selftests/gpio/gpio-line-name.c
+ create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
+
+-- 
+2.30.1
+
