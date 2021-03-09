@@ -2,98 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE51332730
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F61332731
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbhCINbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 08:31:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58111 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229900AbhCINb2 (ORCPT
+        id S230492AbhCINbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 08:31:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230086AbhCINbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 08:31:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615296688;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EpvaiT9lNridqnyvnBIVcNFfk1XSrEn77fD74rsW3bg=;
-        b=GqhJTLtR7XC7p4NWBwZqyqK5m8nFQyrAcFujvruDJ2Zu9x40hCopqogVJSLPO/cDOVuXWo
-        1yyqbJBPnW/+J2rkEPfNclyQbVpMFAckeqluHJ1rws7m1P0JjJhMrZdVrAhgh9bj2fSbdn
-        BckPDEmpXZF2n9t0ZWR6tyLrJawy4/M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-76-yuDpp31vNJ2ZcgeLvMHd8A-1; Tue, 09 Mar 2021 08:31:26 -0500
-X-MC-Unique: yuDpp31vNJ2ZcgeLvMHd8A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 218F71005D4A;
-        Tue,  9 Mar 2021 13:31:25 +0000 (UTC)
-Received: from starship (unknown [10.35.206.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7600319D7C;
-        Tue,  9 Mar 2021 13:31:22 +0000 (UTC)
-Message-ID: <b0e0aaac1b1aae31a12a416a6df2c7f2ef768734.camel@redhat.com>
-Subject: Re: [PATCH 2/2] KVM: x86/mmu: Exclude the MMU_PRESENT bit from MMIO
- SPTE's generation
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Date:   Tue, 09 Mar 2021 15:31:21 +0200
-In-Reply-To: <d72993d9-c11c-a5f4-0452-b2bed730938c@redhat.com>
-References: <20210309021900.1001843-1-seanjc@google.com>
-         <20210309021900.1001843-3-seanjc@google.com>
-         <785c17c307e66b9d7b422cc577499d284cfb6e7b.camel@redhat.com>
-         <d72993d9-c11c-a5f4-0452-b2bed730938c@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Tue, 9 Mar 2021 08:31:38 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCB5C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 05:31:38 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id t9so893646pjl.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 05:31:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DSrjiES35aCdYNr3Gs/Gbw7KzGhsarU4hlR/BQl68jc=;
+        b=Gjr822rUysls+DO/IaKW0guLXvpy74s0lzlVkhQNR18w9KPTpY85bKItJ9I4/bMcq4
+         uWcwrf41u6MwUn3deE9zmPecx2EKrNiOnvwkCBJgs1nZG7/MdWiVWmauS0JV3Hx5jk2U
+         OdYFzPJnVsBx7msp8h7qBr8j1gpPzrSRM0z0M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DSrjiES35aCdYNr3Gs/Gbw7KzGhsarU4hlR/BQl68jc=;
+        b=aurCATKYN1EODsQMtavwSNyMbAct8yMh99tbFmbMLLh/afX3Ho4jUBTVEO24lrkdgW
+         +dnYIDTmCtDlRI6V9Fkr2YNXOnv/K1cuL0bHoJXGPYzHlBaLHZEyvM9s3CcP/7NKS09a
+         IIBwuGcRXqmBryI1yywqASsI8ldhT0kIGypFzFKeAE5SDupOPATeiZKxwy+cH2evH/Cr
+         iZVMpOFeG46Y298iFDJ5en7Rr8hulL6Zt8/MID6Nf8GLdod3axt8PRPThcVym2emkhij
+         OQJ/8RDZf+PUmoJUEXe9CxXoycMPzGKd7N35RaZNkstB/DiizEGa4nX6lCwppoYuuWrt
+         lcsg==
+X-Gm-Message-State: AOAM5326uvcrlp2Jeo2D+IfgH8VDdxpfn+ht6r8bED93eTuGGkWe5shW
+        xvYKcYic80ngE56tjR8o8GOIqQ==
+X-Google-Smtp-Source: ABdhPJydsoZxe/mN+r6ufQMJip/FV7qBbuON5iAZf1A8uLG6pDr1rGK9h+vu/34KGvTXj/wqlOjYAg==
+X-Received: by 2002:a17:90a:fa0b:: with SMTP id cm11mr4905696pjb.140.1615296697615;
+        Tue, 09 Mar 2021 05:31:37 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:f936:57e5:154d:e0d9])
+        by smtp.gmail.com with ESMTPSA id 138sm13678649pfv.192.2021.03.09.05.31.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 05:31:37 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-i2c@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [PATCH v17 0/3] add power control in i2c
+Date:   Tue,  9 Mar 2021 21:31:28 +0800
+Message-Id: <20210309133131.1585838-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-09 at 14:12 +0100, Paolo Bonzini wrote:
-> On 09/03/21 11:09, Maxim Levitsky wrote:
-> > What happens if mmio generation overflows (e.g if userspace keeps on updating the memslots)?
-> > In theory if we have a SPTE with a stale generation, it can became valid, no?
-> > 
-> > I think that we should in the case of the overflow zap all mmio sptes.
-> > What do you think?
-> 
-> Zapping all MMIO SPTEs is done by updating the generation count.  When 
-> it overflows, all SPs are zapped:
-> 
->          /*
->           * The very rare case: if the MMIO generation number has wrapped,
->           * zap all shadow pages.
->           */
->          if (unlikely(gen == 0)) {
->                  kvm_debug_ratelimited("kvm: zapping shadow pages for 
-> mmio generation wraparound\n");
->                  kvm_mmu_zap_all_fast(kvm);
->          }
-> 
-> So giving it more bits make this more rare, at the same time having to 
-> remove one or two bits is not the end of the world.
+Although in the most platforms, the power of eeprom
+and i2c are alway on, some platforms disable the
+eeprom and i2c power in order to meet low power request.
 
-This is exactly what I expected to happen, I just didn't find that code.
-Thanks for explanation, and it shows that I didn't study the mmio spte
-code much.
+This patch add the pm_runtime ops to control power to
+support all platforms.
 
-Best regards,
-	Maxim Levitsky
+Changes since v16:
+ - request regulator in device instead of in the core.
+ - control regulator only if it's provided.
 
-> 
-> Paolo
-> 
+Changes since v15:
+ - Squash the fix[1] for v15.
+[1] https://patchwork.ozlabs.org/project/linux-i2c/patch/20200522101327.13456-1-m.szyprowski@samsung.com/
 
+Changes since v14:
+ - change the return value in normal condition
+ - access the variable after NULL pointer checking
+ - add ack tag
+
+Changes since v13:
+ - fixup some logic error
+
+Changes since v12:
+ - rebase onto v5.7-rc1
+ - change the property description in binding
+
+Changes since v11:
+ - use suspend_late/resume_early instead of suspend/resume
+ - rebase onto v5.6-rc1
+
+Changes since v10:
+ - fixup some worng codes
+
+Changes since v9:
+ - fixup build error
+ - remove redundant code
+
+Changes since v8:
+ - fixup some wrong code
+ - remove redundant message
+
+        [... snip ...]
+
+
+Bibby Hsieh (1):
+  i2c: core: support bus regulator controlling in adapter
+
+Hsin-Yi Wang (2):
+  dt-binding: i2c: mt65xx: add vbus-supply property
+  i2c: mediatek: mt65xx: add optional vbus-supply
+
+ .../devicetree/bindings/i2c/i2c-mt65xx.txt    |  1 +
+ drivers/i2c/busses/i2c-mt65xx.c               |  7 ++
+ drivers/i2c/i2c-core-base.c                   | 88 +++++++++++++++++++
+ include/linux/i2c.h                           |  2 +
+ 4 files changed, 98 insertions(+)
+
+-- 
+2.30.1.766.gb4fecdf3b7-goog
 
