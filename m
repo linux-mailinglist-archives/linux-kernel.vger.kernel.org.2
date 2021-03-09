@@ -2,212 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD6B33288D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4DD332894
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhCIO01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 09:26:27 -0500
-Received: from mga09.intel.com ([134.134.136.24]:11437 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230451AbhCIO0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 09:26:14 -0500
-IronPort-SDR: tjDQhzUvzCeyzPcXOWQ4hNA0+J5X8AaJAe1qSH2y4S7E4j/q2EWl387NdbHCj6vIJktQRl4N11
- 43u8gYiCI8OQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="188347674"
-X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="188347674"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 06:26:14 -0800
-IronPort-SDR: s9X2yfW6Sqr2H8WznM/Jn/ghIeEeydpD1JuDB1qPWasgwAZedzvPlTr2n6FpJqbVcmYJ77EToE
- /rutnlWYNiMw==
-X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="386240577"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 06:26:12 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lJdJJ-00B540-SS; Tue, 09 Mar 2021 16:26:09 +0200
-Date:   Tue, 9 Mar 2021 16:26:09 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Sanket Goswami <Sanket.Goswami@amd.com>
-Cc:     jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-Subject: Re: [PATCH] i2c: add i2c bus driver for amd navi gpu
-Message-ID: <YEeFgZSIY5lb2ubP@smile.fi.intel.com>
-References: <20210309133147.1042775-1-Sanket.Goswami@amd.com>
+        id S230451AbhCIO11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 09:27:27 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61094 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229875AbhCIO1W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 09:27:22 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 129E30h1169765;
+        Tue, 9 Mar 2021 09:27:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=OgNUMatW/65nKbb9FFG35QRck11HRDtc9fjMst/eTYg=;
+ b=H8qsiqL+C/HPv9fWa8rpFPPbEBg1GCI89iXER5fmRLSrMwe5P7w7ndar7xzxaFDU7Vmu
+ jU73Sr49lVYEIheBezGMjiSn4KQsoDHkpUQgghKBhKmHF9tYIvEUxT+GpVggDawCWrJR
+ UEKdm1dAEa4tQhGD9Yooraob1fIpN3/XxfcAfeNcpLLm05MQVvuSmAtmQAz+7UsI1O7j
+ l3Cyapc+61blyR2mWs05uJxpYn3vNARqs/jpYMEviSWs8VmXMGO9xIQBaA0ACrW9ppZ4
+ FwR2cVg7Hf1pOVYtGUDZZsFBD+MM3COtpUFDtqDM5hITl2AoDuVAZlQD4UsTVuv34Ayb wg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 375whqw58g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Mar 2021 09:27:21 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 129E4Ggo183263;
+        Tue, 9 Mar 2021 09:27:21 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 375whqw582-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Mar 2021 09:27:21 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 129EMnPX002983;
+        Tue, 9 Mar 2021 14:27:20 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma03dal.us.ibm.com with ESMTP id 3768s1s2hp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Mar 2021 14:27:20 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 129ERJ0Q25493762
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 9 Mar 2021 14:27:19 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 42322AE06A;
+        Tue,  9 Mar 2021 14:27:19 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6C38CAE060;
+        Tue,  9 Mar 2021 14:27:18 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.150.254])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue,  9 Mar 2021 14:27:18 +0000 (GMT)
+Subject: Re: [PATCH v3 1/1] s390/vfio-ap: fix circular lockdep when
+ setting/clearing crypto masks
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, stable@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
+        pbonzini@redhat.com, alex.williamson@redhat.com,
+        pasic@linux.vnet.ibm.com
+References: <20210302204322.24441-1-akrowiak@linux.ibm.com>
+ <20210302204322.24441-2-akrowiak@linux.ibm.com>
+ <20210303162332.4d227dbe.pasic@linux.ibm.com>
+ <14665bcf-2224-e313-43ff-357cadd177cf@linux.ibm.com>
+ <20210303204706.0538e84f.pasic@linux.ibm.com>
+ <8f5ab6fa-8fd3-27d8-8561-d03ff457df16@linux.ibm.com>
+ <20210309112313.4c6e3347.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <64afa72c-2d6a-2ca1-e576-34e15fa579ed@linux.ibm.com>
+Date:   Tue, 9 Mar 2021 09:27:18 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210309133147.1042775-1-Sanket.Goswami@amd.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210309112313.4c6e3347.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-09_11:2021-03-08,2021-03-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 lowpriorityscore=0 bulkscore=0 adultscore=0
+ suspectscore=0 mlxlogscore=832 spamscore=0 impostorscore=0 malwarescore=0
+ mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103090071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 07:01:47PM +0530, Sanket Goswami wrote:
 
-i2c: -> i2c: designware:
-add i2c bus driver -> add a driver
-amd -> AMD
-gpu -> GPU
 
-in the subject
+On 3/9/21 5:23 AM, Halil Pasic wrote:
+> On Thu, 4 Mar 2021 12:43:44 -0500
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>> On the other hand, if we don't have ->kvm because something broke,
+>> then we may be out of luck anyway. There will certainly be no
+>> way to unregister the GISC; however, it may still be possible
+>> to unpin the pages if we still have q->saved_pfn.
+>>
+>> The point is, if the queue is bound to vfio_ap, it can be reset. If we can't
+>> clean up the IRQ resources because something is broken, then there
+>> is nothing we can do about that.
+> Especially since the recently added WARN_ONCE macros calling reset_queues
+> unconditionally ain't that bad: we would at least see if there is a
+> problem with cleaning up the IRQ resources.
+>
+> Let's make it unconditional again and observe. Can you send out a v4 with
+> this and the other issue fixed.
 
-> Latest AMDGPU NAVI cards have USB Type-C interface which can be accessed
-> over I2C.
+I agree and I can do that.
 
-I didn't get this. You mean that USB traffic over I²C? This sounds insane
-for a least. Maybe something else is there and description is not fully
-correct?
-
-> The Type-C controller has integrated designware i2c which is
-
-DesignWare
-
-> exposed as a PCI device to the AMD platform.
-> 
-> Also there exists couple of notable IP problems that are dealt as a
-> workaround:
-> - I2C transactions work on a polling mode as IP does not generate
-> interrupt.
-> 
-> - I2C reads commands are sent twice to address the IP issues.
-
-Please, read this article: https://chris.beams.io/posts/git-commit/
-
-...
-
-> +#define AMD_UCSI_INTR_EN	0xD
-
-Why it's capitalized?
-
-...
-
->  #include "i2c-designware-core.h"
-
-+ Blank line
-
-> +#define AMD_TIMEOUT_MSEC_MIN	10000
-> +#define AMD_TIMEOUT_MSEC_MAX	11000
-
-Use unit suffix in the definitions.
-
-...
-
-> +static void i2c_dw_configure_bus(struct dw_i2c_dev *i2cd)
-
-Why all this is customized? Why FIFO can't be autodetected?
-
-...
-
-> +/* Initiate and continue master read/write transaction with polling
-> + * based transfer routine and write messages into the tx buffer.
-> + */
-
-Wrong multi-line comment style.
-
-...
-
-> +static int amd_i2c_dw_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num_msgs)
-
-Why do you need a custom function for that? Can it be generic and not AMD
-specific?
-
-...
-
-> +	/* Enable ucsi interrupt */
-> +	if (dev->flags & AMD_NON_INTR_MODE)
-> +		regmap_write(dev->map, AMD_UCSI_INTR_REG, AMD_UCSI_INTR_EN);
-
-This is looks like a hack. Why is it here?
-
-...
-
-> +	if (dev->flags & AMD_NON_INTR_MODE)
-> +		return amd_i2c_dw_master_xfer(adap, msgs, num);
-
-Ditto.
-
-...
-
-> +int amd_i2c_adap_quirk(struct dw_i2c_dev *amdev)
-> +{
-> +	struct i2c_adapter *amdap = &amdev->adapter;
-
-> +	int ret;
-
-See below.
-
-> +	if (!(amdev->flags & AMD_NON_INTR_MODE))
-> +		return -ENODEV;
-
-> +	return i2c_add_numbered_adapter(amdap);
-> +
-> +	return ret;
-
-What the second one does?
-
-> +}
-
-...
-
-> +	ret = amd_i2c_adap_quirk(dev);
-> +	if (ret != -ENODEV)
-
-This is ugly. Can we run quirk if and only if we have an AMD chip?
-
-> +		return ret;
-
-...
-
->  #define DRIVER_NAME "i2c-designware-pci"
-> +#define AMD_CLK_RATE	100000
-
-Add units.
-
-...
-
-> +/* NAVI-AMD HCNT/LCNT/SDA hold time */
-> +static struct dw_scl_sda_cfg navi_amd_config = {
-> +	.ss_hcnt = 0x1ae,
-> +	.ss_lcnt = 0x23a,
-> +	.sda_hold = 0x9,
-> +};
-
-(1)
-
-...
-
-> +static int i2c_dw_populate_client(struct dw_i2c_dev *i2cd)
-> +{
-> +	struct i2c_board_info	*i2c_dw_ccgx_ucsi;
-> +	struct i2c_client	*ccgx_client;
-> +
-> +	i2c_dw_ccgx_ucsi = devm_kzalloc(i2cd->dev, sizeof(*i2c_dw_ccgx_ucsi), GFP_KERNEL);
-> +	if (!i2c_dw_ccgx_ucsi)
-> +		return -ENOMEM;
-> +
-> +	strscpy(i2c_dw_ccgx_ucsi->type, "ccgx-ucsi", sizeof(i2c_dw_ccgx_ucsi->type));
-> +	i2c_dw_ccgx_ucsi->addr = 0x08;
-> +	i2c_dw_ccgx_ucsi->irq = i2cd->irq;
-> +
-> +	ccgx_client = i2c_new_client_device(&i2cd->adapter, i2c_dw_ccgx_ucsi);
-> +	if (!ccgx_client)
-> +		return -ENODEV;
-> +
-> +	return 0;
-> +}
-
-This is the same as in nVidia GPU I²C driver. Can you do a preparatory changes
-to deduplicate this?
-
-Also why (1) and this can't be instantiated from ACPI / DT?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+>   
+>
+> Regards,
+> Halil
 
