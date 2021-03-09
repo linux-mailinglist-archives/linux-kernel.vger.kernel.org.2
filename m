@@ -2,120 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DDD3321D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A531D3321DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:23:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbhCIJWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:22:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43914 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229520AbhCIJV7 (ORCPT
+        id S229872AbhCIJWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:22:45 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:13890 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229520AbhCIJW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:21:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615281718;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JbGQhFsWORLegeM9HGujB/YiUTVMdc6Nb8R30vrP8qg=;
-        b=QANZGjB7q6airvkYHP7s24/3Y5T31h0I4MEXFYStBomr1I7e/F8+wGOwiOFDAI/hpfCgv3
-        GcM1YE5ZQnsM0hFr2wJmRhvM6NJYZsfz3zLwrSFABEInCoZ+/ar5/M7JioDVKrI91Ib20q
-        hnCupH9AHjs4vhtG/6/TDJVs2rpTbN8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-566-WXeLrfhUNES_-vEl3omWaQ-1; Tue, 09 Mar 2021 04:21:57 -0500
-X-MC-Unique: WXeLrfhUNES_-vEl3omWaQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92A4B193F560;
-        Tue,  9 Mar 2021 09:21:53 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A9F7059458;
-        Tue,  9 Mar 2021 09:21:46 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210308215535.GA63242@dread.disaster.area>
-References: <20210308215535.GA63242@dread.disaster.area> <CAOQ4uxhxwKHLT559f8v5aFTheKgPUndzGufg0E58rkEqa9oQ3Q@mail.gmail.com> <2653261.1614813611@warthog.procyon.org.uk> <517184.1615194835@warthog.procyon.org.uk>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     dhowells@redhat.com, Amir Goldstein <amir73il@gmail.com>,
-        linux-cachefs@redhat.com, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-afs@lists.infradead.org,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: fscache: Redesigning the on-disk cache
+        Tue, 9 Mar 2021 04:22:27 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DvqSp2rtgzkWPM;
+        Tue,  9 Mar 2021 17:20:58 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 9 Mar 2021
+ 17:22:19 +0800
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: add sysfs nodes to get accumulated
+ compression info
+To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
+CC:     Daeho Jeong <daehojeong@google.com>
+References: <20210305022402.2721974-1-daeho43@gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <2f2abc41-24d5-6795-44fe-b770ed8514df@huawei.com>
+Date:   Tue, 9 Mar 2021 17:22:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <152280.1615281705.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 09 Mar 2021 09:21:45 +0000
-Message-ID: <152281.1615281705@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210305022402.2721974-1-daeho43@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dave Chinner <david@fromorbit.com> wrote:
+On 2021/3/5 10:24, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> Added acc_compr_inodes to show accumulated compressed inode count and
+> acc_compr_blocks to show accumulated secured block count with
 
-> > > With ->fiemap() you can at least make the distinction between a non
-> > > existing and an UNWRITTEN extent.
-> > =
+I noticed that these stat numbers are recorded in extra reserved area in
+hot node curseg journal, the journal will be persisted only for umount
+or fastboot checkpoint, so the numbers are not so accurate... does this
+satisfy your requirement?
 
-> > I can't use that for XFS, Ext4 or btrfs, I suspect.  Christoph and Dav=
-e's
-> > assertion is that the cache can't rely on the backing filesystem's met=
-adata
-> > because these can arbitrarily insert or remove blocks of zeros to brid=
-ge or
-> > split extents.
-> =
+> compression in sysfs. These can be re-initialized to "0" by writing "0"
+> value in one of both.
 
-> Well, that's not the big problem. The issue that makes FIEMAP
-> unusable for determining if there is user data present in a file is
-> that on-disk extent maps aren't exactly coherent with in-memory user
-> data state.
-> =
+Why do we allow reset the stat numbers?
 
-> That is, we can have a hole on disk with delalloc user data in
-> memory.  There's user data in the file, just not on disk. Same goes
-> for unwritten extents - there can be dirty data in memory over an
-> unwritten extent, and it won't get converted to written until the
-> data is written back and the filesystem runs a conversion
-> transaction.
-> =
+Why not covering all code with macro CONFIG_F2FS_FS_COMPRESSION, since these
+numbers are only be updated when we enable compression.
 
-> So, yeah, if you use FIEMAP to determine where data lies in a file
-> that is being actively modified, you're going get corrupt data
-> sooner rather than later.  SEEK_HOLE/DATA are coherent with in
-> memory user data, so don't have this problem.
-
-I thought you and/or Christoph said it *was* a problem to use the backing
-filesystem's metadata to track presence of data in the cache because the
-filesystem (or its tools) can arbitrarily insert blocks of zeros to
-bridge/break up extents.
-
-If that is the case, then that is a big problem, and SEEK_HOLE/DATA won't
-suffice.
-
-If it's not a problem - maybe if I can set a mark on a file to tell the
-filesystem and tools not to do that - then that would obviate the need for=
- me
-to store my own maps.
-
-David
-
+Thanks,
