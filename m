@@ -2,95 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90FB3332DE0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:11:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A742A332DF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:13:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231909AbhCISKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 13:10:35 -0500
-Received: from outbound-smtp22.blacknight.com ([81.17.249.190]:42593 "EHLO
-        outbound-smtp22.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231852AbhCISKJ (ORCPT
+        id S231821AbhCISMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 13:12:48 -0500
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:20721 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231852AbhCISMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 13:10:09 -0500
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp22.blacknight.com (Postfix) with ESMTPS id 1940CBABC7
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 18:10:08 +0000 (GMT)
-Received: (qmail 21638 invoked from network); 9 Mar 2021 18:10:07 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 9 Mar 2021 18:10:07 -0000
-Date:   Tue, 9 Mar 2021 18:10:06 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 2/5] mm/page_alloc: Add a bulk page allocator
-Message-ID: <20210309181006.GP3697@techsingularity.net>
-References: <20210301161200.18852-1-mgorman@techsingularity.net>
- <20210301161200.18852-3-mgorman@techsingularity.net>
- <20210309171230.GA198878@infradead.org>
+        Tue, 9 Mar 2021 13:12:24 -0500
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 129IC3KQ006389;
+        Wed, 10 Mar 2021 03:12:03 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 129IC3KQ006389
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615313524;
+        bh=ZUPoUl+tC2lTFpMNgXSXMzOjClyf1MCW12Qo/lD0z2g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=zhbphs8TIo+Y6zeLOkkcrF42F0Ka9psfSrdVDAtX8MB4EYAhLH0fI2z9TGC2W7TC5
+         /sejuYgEdYYPVVUkChm/txlw5fbU0ekUO1J8pKVRDmZhZnGf557oJFI0xRHq5mslfa
+         xEu3aSeGvrsf2leHVAnE/1CuSlgsibisArAwUfYj/aA79e7O1faj/Zcv78INtrA0jF
+         TeuUkTI1tEBU7wswjaI5q7HMWVzTy4qKTNDbAWAzIpgMgub5v6KrL/bNS+RMT09KCp
+         6xaq0yW7iOfkmkzoTcYq1NKv2sAmzUNDGRAPXj5nGzw6un15O2cRuFYJDPeYOJDJsb
+         R/BTTOV/H8tJA==
+X-Nifty-SrcIP: [209.85.216.47]
+Received: by mail-pj1-f47.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so5646271pjb.0;
+        Tue, 09 Mar 2021 10:12:03 -0800 (PST)
+X-Gm-Message-State: AOAM530XzaBNtchBD5ScjfP1uvUVXUn2/tSnt5JZH9cEFbOjJgFOMIYb
+        BQIczoS1KFBXfrwM/f96GPoI1DuP9VlUWoATrwY=
+X-Google-Smtp-Source: ABdhPJzCqaUEZwPYSQuKendomz65iaWonVPdxwyZQKGk2EXnT24LZfVPw0mM6kLgmskLjuAk+pm7VsXBFbGtVXbYLHA=
+X-Received: by 2002:a17:90a:dc08:: with SMTP id i8mr5668771pjv.153.1615313522797;
+ Tue, 09 Mar 2021 10:12:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210309171230.GA198878@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210309151737.345722-1-masahiroy@kernel.org> <20210309151737.345722-4-masahiroy@kernel.org>
+ <354sr3np-67o8-oss9-813s-p2qoro06p4o@syhkavp.arg>
+In-Reply-To: <354sr3np-67o8-oss9-813s-p2qoro06p4o@syhkavp.arg>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 10 Mar 2021 03:11:24 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS97kTsOW_RSy1ZL2P5Q+5Hh05qvE4KwSVkvrhkzb3Shg@mail.gmail.com>
+Message-ID: <CAK7LNAS97kTsOW_RSy1ZL2P5Q+5Hh05qvE4KwSVkvrhkzb3Shg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] kbuild: re-implement CONFIG_TRIM_UNUSED_KSYMS to
+ make it work in one-pass
+To:     Nicolas Pitre <nico@fluxnic.net>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 05:12:30PM +0000, Christoph Hellwig wrote:
-> Would vmalloc be another good user of this API? 
-> 
-> > +	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
-> > +	if (!prepare_alloc_pages(gfp_mask, 0, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
-> 
-> This crazy long line is really hard to follow.
-> 
+On Wed, Mar 10, 2021 at 2:36 AM Nicolas Pitre <nico@fluxnic.net> wrote:
+>
+> On Wed, 10 Mar 2021, Masahiro Yamada wrote:
+>
+> > Commit a555bdd0c58c ("Kbuild: enable TRIM_UNUSED_KSYMS again, with some
+> > guarding") re-enabled this feature, but Linus is still unhappy about
+> > the build time.
+> >
+> > The reason of the slowness is the recursion - this basically works in
+> > two loops.
+> >
+> > In the first loop, Kbuild builds the entire tree based on the temporary
+> > autoksyms.h, which contains macro defines to control whether their
+> > corresponding EXPORT_SYMBOL() is enabled or not, and also gathers all
+> > symbols required by modules. After the tree traverse, Kbuild updates
+> > autoksyms.h and triggers the second loop to rebuild source files whose
+> > EXPORT_SYMBOL() needs flipping.
+> >
+> > This commit re-implements CONFIG_TRIM_UNUSED_KSYMS to make it work in
+> > one pass. In the new design, unneeded EXPORT_SYMBOL() instances are
+> > trimmed by the linker instead of the preprocessor.
+> >
+> > After the tree traverse, a linker script snippet <generated/keep-ksyms.h>
+> > is generated. It feeds the list of necessary sections to vmlinus.lds.S
+> > and modules.lds.S. The other sections fall into /DISCARD/.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+> I'm not sure I do understand every detail here, especially since it is
+> so far away from the version that I originally contributed. But the
+> concept looks good.
+>
+> I still think that there is no way around a recursive approach to get
+> the maximum effect with LTO, but given that true LTO still isn't applied
+> to mainline after all those years, the recursive approach brings
+> nothing. Maybe that could be revisited if true LTO ever makes it into
+> mainline, and the desire to reduce the binary size is still relevant
+> enough to justify it.
 
-It's not crazier than what is already in alloc_pages_nodemask to share
-code.
+Hmm, I am confused.
 
-> > +		return 0;
-> > +	gfp_mask = alloc_mask;
-> > +
-> > +	/* Find an allowed local zone that meets the high watermark. */
-> > +	for_each_zone_zonelist_nodemask(zone, z, ac.zonelist, ac.highest_zoneidx, ac.nodemask) {
-> 
-> Same here.
-> 
+Does this patch change the behavior in the
+combination with the "true LTO"?
 
-Similar to what happens in get_page_from_freelist with the
-for_next_zone_zonelist_nodemask iterator.
 
-> > +		unsigned long mark;
-> > +
-> > +		if (cpusets_enabled() && (alloc_flags & ALLOC_CPUSET) &&
-> > +		    !__cpuset_zone_allowed(zone, gfp_mask)) {
-> > +			continue;
-> > +		}
-> 
-> No need for the curly braces.
-> 
+Please let me borrow this sentence from your article:
+"But what LTO does is more like getting rid of branches that simply
+float in the air without being connected to anything or which have
+become loose due to optimization."
+(https://lwn.net/Articles/746780/)
 
-Yes, but it's for coding style. MM has no hard coding style guidelines
-around this but for sched, it's generally preferred that if the "if"
-statement spans multiple lines then it should use {} even if the block
-is one line long for clarity.
 
-> >  	}
-> >  
-> > -	gfp_mask &= gfp_allowed_mask;
-> > -	alloc_mask = gfp_mask;
-> 
-> Is this change intentional?
+This patch throws unneeded EXPORT_SYMBOL metadata
+into the /DISCARD/ section of the linker script.
 
-Yes so that prepare_alloc_pages works for both the single page and bulk
-allocator. Slightly less code duplication.
+The approach is different (preprocessor vs linker), but
+we will still get the same result; the unneeded
+EXPORT_SYMBOLs are disconnected from the main trunk.
+
+Then, the true LTO will remove branches floating in the air,
+right?
+
+So, what will be lost by this patch?
+
+
+
+>
+> Acked-by: Nicolas Pitre <nico@fluxnic.net>
+>
+>
+> Nicolas
+
+
 
 -- 
-Mel Gorman
-SUSE Labs
+Best Regards
+Masahiro Yamada
