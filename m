@@ -2,265 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BC93323CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC673323D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbhCILSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 06:18:25 -0500
-Received: from mail-dm6nam11on2075.outbound.protection.outlook.com ([40.107.223.75]:1947
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229481AbhCILR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 06:17:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OwQOl4xt4Ybip65s4Mkbp2imVR8vcdt5b1ewStwWT6ZhMfw953Ye43o7OWuUkyIxuw+wBdSzWoS+FdXa0w2kXfbSknb9rOWC/NZvlwGf+VIaWAoVCaaPnNVmI6CutVLQODDmZxGP5ilYlkfzRod/bGySgKxyHXkSdJVvy7hRs52Zy0e6WbHBmCH/rv4QUaY02DqtxPTracKeVncktii8S2lSGmKd4UKYIAxlM5cIRfGuXe9klUCBZzR3umlbir38KTVEImieEeMR/NHLd5YIPPXF7x8ySVBewKZCEez9eDO/seWEoZpvh7BF0Xv3IRkvxSqP2O0N9UWI9lXRg3yQUA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1PNGhMtAUalJLxybAODlEvFyHlK1/VrK0xGyrNmqgtU=;
- b=KWYMxd88hKrOzlAx+V7Sq379gPXWUcYo6QvmWV9jjztNFZfyYS9Y0WcPDgfd4+AjyX6fQ58bLPImu1nRMsLsDohY99FUpA9pS+Ngiqp3CZilBIwto/9RPryEFirVtjjxVgMIoCEeypUh8JoT1+tbuuTx9ERW02jjxSShzd4cJIrkc8Tn747F9icccmrdmtwk1ksU0WGbS2UmPjD2ANWsh6Vv+QKHnhYn3cTAd1c5YHjSRSYGGlLou4kWE+3mjBp3xTPLOuklLfhaOd8NkXoDkUztssHxmkAyIafnF3XiI7UwFM1X+ZRRh3Tfhqp11h2EG5ZZBezNNmKKWvlYq6K3MQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=ideasonboard.com smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1PNGhMtAUalJLxybAODlEvFyHlK1/VrK0xGyrNmqgtU=;
- b=Qd/yOMpzSyGraTWstxs2Bwak80RlGakAJk6UkghshgS/ZFmkww/n6oMAuSlx9H6O7Eicq2V1GxnwzmyR99zS4frR1klgOOKWGfPVrLK/UvbKztqzLP6UNl4QjheuP/yobrwJtEhwtCG8vQOD5Yi2F/2GTqDEIzENcO/JmffLrcg=
-Received: from DM5PR07CA0160.namprd07.prod.outlook.com (2603:10b6:3:ee::26) by
- MW2PR02MB3881.namprd02.prod.outlook.com (2603:10b6:907:11::31) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3912.17; Tue, 9 Mar 2021 11:17:56 +0000
-Received: from CY1NAM02FT052.eop-nam02.prod.protection.outlook.com
- (2603:10b6:3:ee:cafe::46) by DM5PR07CA0160.outlook.office365.com
- (2603:10b6:3:ee::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
- Transport; Tue, 9 Mar 2021 11:17:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; ideasonboard.com; dkim=none (message not signed)
- header.d=none;ideasonboard.com; dmarc=pass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- CY1NAM02FT052.mail.protection.outlook.com (10.152.74.123) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3912.25 via Frontend Transport; Tue, 9 Mar 2021 11:17:54 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 9 Mar 2021 03:17:53 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2106.2 via Frontend Transport; Tue, 9 Mar 2021 03:17:53 -0800
-Envelope-to: git@xilinx.com,
- laurent.pinchart@ideasonboard.com,
- vkoul@kernel.org,
- linux-arm-kernel@lists.infradead.org,
- kishon@ti.com,
- linux-kernel@vger.kernel.org
-Received: from [172.23.64.106] (port=43683 helo=xhdvnc125.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <manish.narani@xilinx.com>)
-        id 1lJaN5-0004f9-V3; Tue, 09 Mar 2021 03:17:52 -0800
-Received: by xhdvnc125.xilinx.com (Postfix, from userid 16987)
-        id 2DD991211EF; Tue,  9 Mar 2021 16:47:51 +0530 (IST)
-From:   Manish Narani <manish.narani@xilinx.com>
-To:     <laurent.pinchart@ideasonboard.com>, <kishon@ti.com>,
-        <vkoul@kernel.org>, <michal.simek@xilinx.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <git@xilinx.com>,
-        Manish Narani <manish.narani@xilinx.com>
-Subject: [PATCH v2] phy: zynqmp: Handle the clock enable/disable properly
-Date:   Tue, 9 Mar 2021 16:47:44 +0530
-Message-ID: <1615288664-45034-1-git-send-email-manish.narani@xilinx.com>
-X-Mailer: git-send-email 2.1.1
+        id S229599AbhCILWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 06:22:24 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64230 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229837AbhCILWM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 06:22:12 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 129B3hVr112130;
+        Tue, 9 Mar 2021 06:21:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=33MSJeKOJi4+jaAUNsH0vSXR7A3trD0q3srKz5Tj/ok=;
+ b=hEJzA/ph2QFwapCbBviSSkLZguu55d0WTFdUgAySnXKXXfFwO8NFJHwCI3ID1KQGvOIT
+ jMrNPBzK0pLP6BtO2JxGvTw0kLSUsDk2NhOywymq6ed7Ny3yjgCghLSymWUfb+jygdxv
+ Ncu9gQphkeaD73x2gdxvoapqAgCEOz4r8GQEFV0117LH3PkehLVpSXvuJ7STgjYve92F
+ dBlSZ8+9ELQ1qf+pO9Gg77tI0NEFWWIL0z/v7/ZGI3aZAqGneZas/JCUMUQmIr3/NxzG
+ zGcb8BTcoLaJQLcaXErWxBTI7s9qhDt/GvteYeOwBbcQgu42VWCRu4WT7R3WG7FXfH5M CQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 375wesyqhx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Mar 2021 06:21:24 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 129B3mjq112563;
+        Tue, 9 Mar 2021 06:21:24 -0500
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 375wesyqgm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Mar 2021 06:21:24 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 129AwPua010276;
+        Tue, 9 Mar 2021 11:21:21 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma01fra.de.ibm.com with ESMTP id 3741c81dc5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Mar 2021 11:21:21 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 129BLIGZ56099188
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 9 Mar 2021 11:21:18 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 815FBA4057;
+        Tue,  9 Mar 2021 11:21:18 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0BDC4A404D;
+        Tue,  9 Mar 2021 11:21:18 +0000 (GMT)
+Received: from localhost (unknown [9.85.103.166])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  9 Mar 2021 11:21:17 +0000 (GMT)
+Date:   Tue, 9 Mar 2021 16:51:15 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>, oleg@redhat.com,
+        rostedt@goodmis.org, paulus@samba.org, jniethe5@gmail.com,
+        naveen.n.rao@linux.ibm.com, sandipan@linux.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        christophe.leroy@csgroup.eu
+Subject: Re: [PATCH v4] powerpc/uprobes: Validation for prefixed instruction
+Message-ID: <20210309112115.GG145@DESKTOP-TDPLP67.localdomain>
+References: <20210305115433.140769-1-ravi.bangoria@linux.ibm.com>
+ <87ft14r6sa.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7155654d-79dd-48c7-8cac-08d8e2ecfc93
-X-MS-TrafficTypeDiagnostic: MW2PR02MB3881:
-X-Microsoft-Antispam-PRVS: <MW2PR02MB3881DA0FD3D43F8F3EBFAAFEC1929@MW2PR02MB3881.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:1002;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: R0dbSmdIViXLuFACTdQYBQcJ/GIgwouEjVmSNT34rZhvqjBsHpMV7CZBwE+qC+55UQhhnhj4tvS4616M2bUXG9peVUqV5/3DsN75091D5T+3sMeaVPIFdy0S22itz+NE9hloKU5PwZ91IfRQHjsog+6MsJG3iPUdPxhvpekgxbWyCJA1AMCc/LGP1LIXHD9ZS2bwUOr57GAe9CqKQZGokYB2bM99SPrOVLYDR94zvWleMiYtsU/Z/nE2gewmO9uWXk34C2WMtnfrElKflBg/7Q/6iszMJ4CpW24QLnSucfQTkT2kr8KIaKpXS0tiaBz3I6sgqmJDRSFv2RibmGGogkFrJXwsyu2JAtXtZhJteDvJ7ux5mt1LapU1ltIPlbzH2eXYuZBYDrElnu4duwa8v02Lnbt1F0VfQ9NW7Zi7rBuvlKn2lg+/MZO5XdYKWfuBkrkVYOgPM6mHtx7f3v3h+iSXyOOO1K+JdmhLOx7b11lrcyeQJPPS9zelFC/1aGQzmgAEnC77GN3b3gFXcZFnA/agiiAvKisU1hpjHa94YE0ib9zNwn6oTRQeSBwyfh+25pFnUyX8Ge2FEOp8CS0poCR/tIRWqKZNKBlKuPJzaM26i10OHwxp87hgT5jBx4yuhyevQVkzs5vMKr7Ym9MnS3TpkjBBtvmxt6tnSvXSrgEA790PGPhhp2nyOiMptvPU
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(396003)(376002)(46966006)(36840700001)(70586007)(107886003)(5660300002)(7636003)(2906002)(336012)(47076005)(36756003)(26005)(316002)(36906005)(110136005)(36860700001)(8936002)(6666004)(8676002)(54906003)(42186006)(186003)(82740400003)(83380400001)(44832011)(6266002)(4326008)(478600001)(82310400003)(2616005)(6636002)(70206006)(426003)(356005)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 11:17:54.9988
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7155654d-79dd-48c7-8cac-08d8e2ecfc93
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT052.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR02MB3881
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ft14r6sa.fsf@mpe.ellerman.id.au>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-09_09:2021-03-08,2021-03-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ spamscore=0 bulkscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
+ malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103090053
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current driver is not handling the clock enable/disable operations
-properly. The clocks need to be handled correctly by enabling or
-disabling at appropriate places. This patch adds code to handle the
-same.
+On 2021/03/09 08:54PM, Michael Ellerman wrote:
+> Ravi Bangoria <ravi.bangoria@linux.ibm.com> writes:
+> > As per ISA 3.1, prefixed instruction should not cross 64-byte
+> > boundary. So don't allow Uprobe on such prefixed instruction.
+> >
+> > There are two ways probed instruction is changed in mapped pages.
+> > First, when Uprobe is activated, it searches for all the relevant
+> > pages and replace instruction in them. In this case, if that probe
+> > is on the 64-byte unaligned prefixed instruction, error out
+> > directly. Second, when Uprobe is already active and user maps a
+> > relevant page via mmap(), instruction is replaced via mmap() code
+> > path. But because Uprobe is invalid, entire mmap() operation can
+> > not be stopped. In this case just print an error and continue.
+> >
+> > Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+> > Acked-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> 
+> Do we have a Fixes: tag for this?
 
-Signed-off-by: Manish Narani <manish.narani@xilinx.com>
----
- drivers/phy/xilinx/phy-zynqmp.c | 57 ++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 50 insertions(+), 7 deletions(-)
+Since this is an additional check we are adding, I don't think we should 
+add a Fixes: tag. Nothing is broken per-se -- we're just adding more 
+checks to catch simple mistakes. Also, like Oleg pointed out, there are 
+still many other ways for users to shoot themselves in the foot with 
+uprobes and prefixed instructions, if they so desire.
 
-diff --git a/drivers/phy/xilinx/phy-zynqmp.c b/drivers/phy/xilinx/phy-zynqmp.c
-index 2b65f84..37fcecf 100644
---- a/drivers/phy/xilinx/phy-zynqmp.c
-+++ b/drivers/phy/xilinx/phy-zynqmp.c
-@@ -219,6 +219,7 @@ struct xpsgtr_dev {
- 	struct mutex gtr_mutex; /* mutex for locking */
- 	struct xpsgtr_phy phys[NUM_LANES];
- 	const struct xpsgtr_ssc *refclk_sscs[NUM_LANES];
-+	struct clk *clk[NUM_LANES];
- 	bool tx_term_fix;
- 	unsigned int saved_icm_cfg0;
- 	unsigned int saved_icm_cfg1;
-@@ -818,11 +819,15 @@ static struct phy *xpsgtr_xlate(struct device *dev,
- static int __maybe_unused xpsgtr_suspend(struct device *dev)
- {
- 	struct xpsgtr_dev *gtr_dev = dev_get_drvdata(dev);
-+	unsigned int i;
- 
- 	/* Save the snapshot ICM_CFG registers. */
- 	gtr_dev->saved_icm_cfg0 = xpsgtr_read(gtr_dev, ICM_CFG0);
- 	gtr_dev->saved_icm_cfg1 = xpsgtr_read(gtr_dev, ICM_CFG1);
- 
-+	for (i = 0; i < ARRAY_SIZE(gtr_dev->clk); i++)
-+		clk_disable_unprepare(gtr_dev->clk[i]);
-+
- 	return 0;
- }
- 
-@@ -832,6 +837,13 @@ static int __maybe_unused xpsgtr_resume(struct device *dev)
- 	unsigned int icm_cfg0, icm_cfg1;
- 	unsigned int i;
- 	bool skip_phy_init;
-+	int err;
-+
-+	for (i = 0; i < ARRAY_SIZE(gtr_dev->clk); i++) {
-+		err = clk_prepare_enable(gtr_dev->clk[i]);
-+		if (err)
-+			goto err_clk_put;
-+	}
- 
- 	icm_cfg0 = xpsgtr_read(gtr_dev, ICM_CFG0);
- 	icm_cfg1 = xpsgtr_read(gtr_dev, ICM_CFG1);
-@@ -852,6 +864,12 @@ static int __maybe_unused xpsgtr_resume(struct device *dev)
- 		gtr_dev->phys[i].skip_phy_init = skip_phy_init;
- 
- 	return 0;
-+
-+err_clk_put:
-+	for (i = 0; i < ARRAY_SIZE(gtr_dev->clk); i++)
-+		clk_disable_unprepare(gtr_dev->clk[i]);
-+
-+	return err;
- }
- 
- static const struct dev_pm_ops xpsgtr_pm_ops = {
-@@ -865,6 +883,7 @@ static const struct dev_pm_ops xpsgtr_pm_ops = {
- static int xpsgtr_get_ref_clocks(struct xpsgtr_dev *gtr_dev)
- {
- 	unsigned int refclk;
-+	int ret;
- 
- 	for (refclk = 0; refclk < ARRAY_SIZE(gtr_dev->refclk_sscs); ++refclk) {
- 		unsigned long rate;
-@@ -874,14 +893,22 @@ static int xpsgtr_get_ref_clocks(struct xpsgtr_dev *gtr_dev)
- 
- 		snprintf(name, sizeof(name), "ref%u", refclk);
- 		clk = devm_clk_get_optional(gtr_dev->dev, name);
--		if (IS_ERR(clk))
--			return dev_err_probe(gtr_dev->dev, PTR_ERR(clk),
--					     "Failed to get reference clock %u\n",
--					     refclk);
-+		if (IS_ERR(clk)) {
-+			ret = dev_err_probe(gtr_dev->dev, PTR_ERR(clk),
-+					    "Failed to get reference clock %u\n",
-+					    refclk);
-+			goto err_clk_put;
-+		}
- 
- 		if (!clk)
- 			continue;
- 
-+		gtr_dev->clk[refclk] = clk;
-+
-+		ret = clk_prepare_enable(gtr_dev->clk[refclk]);
-+		if (ret)
-+			goto err_clk_put;
-+
- 		/*
- 		 * Get the spread spectrum (SSC) settings for the reference
- 		 * clock rate.
-@@ -899,11 +926,18 @@ static int xpsgtr_get_ref_clocks(struct xpsgtr_dev *gtr_dev)
- 			dev_err(gtr_dev->dev,
- 				"Invalid rate %lu for reference clock %u\n",
- 				rate, refclk);
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto err_clk_put;
- 		}
- 	}
- 
- 	return 0;
-+
-+err_clk_put:
-+	for (refclk = 0; refclk < ARRAY_SIZE(gtr_dev->clk); refclk++)
-+		clk_disable_unprepare(gtr_dev->clk[refclk]);
-+
-+	return ret;
- }
- 
- static int xpsgtr_probe(struct platform_device *pdev)
-@@ -912,6 +946,7 @@ static int xpsgtr_probe(struct platform_device *pdev)
- 	struct xpsgtr_dev *gtr_dev;
- 	struct phy_provider *provider;
- 	unsigned int port;
-+	unsigned int i;
- 	int ret;
- 
- 	gtr_dev = devm_kzalloc(&pdev->dev, sizeof(*gtr_dev), GFP_KERNEL);
-@@ -951,7 +986,8 @@ static int xpsgtr_probe(struct platform_device *pdev)
- 		phy = devm_phy_create(&pdev->dev, np, &xpsgtr_phyops);
- 		if (IS_ERR(phy)) {
- 			dev_err(&pdev->dev, "failed to create PHY\n");
--			return PTR_ERR(phy);
-+			ret = PTR_ERR(phy);
-+			goto err_clk_put;
- 		}
- 
- 		gtr_phy->phy = phy;
-@@ -962,9 +998,16 @@ static int xpsgtr_probe(struct platform_device *pdev)
- 	provider = devm_of_phy_provider_register(&pdev->dev, xpsgtr_xlate);
- 	if (IS_ERR(provider)) {
- 		dev_err(&pdev->dev, "registering provider failed\n");
--		return PTR_ERR(provider);
-+		ret = PTR_ERR(provider);
-+		goto err_clk_put;
- 	}
- 	return 0;
-+
-+err_clk_put:
-+	for (i = 0; i < ARRAY_SIZE(gtr_dev->clk); i++)
-+		clk_disable_unprepare(gtr_dev->clk[i]);
-+
-+	return ret;
- }
- 
- static const struct of_device_id xpsgtr_of_match[] = {
--- 
-2.1.1
+However, if you still think we should add a Fixes: tag, we can perhaps 
+use the below commit since I didn't see any specific commit adding 
+support for prefixed instructions for uprobes:
 
+Fixes: 650b55b707fdfa ("powerpc: Add prefixed instructions to 
+instruction data type")
+
+> 
+> > ---
+> > v3: https://lore.kernel.org/r/20210304050529.59391-1-ravi.bangoria@linux.ibm.com
+> > v3->v4:
+> >   - CONFIG_PPC64 check was not required, remove it.
+> >   - Use SZ_ macros instead of hardcoded numbers.
+> >
+> >  arch/powerpc/kernel/uprobes.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
+> > index e8a63713e655..4cbfff6e94a3 100644
+> > --- a/arch/powerpc/kernel/uprobes.c
+> > +++ b/arch/powerpc/kernel/uprobes.c
+> > @@ -41,6 +41,13 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe,
+> >  	if (addr & 0x03)
+> >  		return -EINVAL;
+> >  
+> > +	if (cpu_has_feature(CPU_FTR_ARCH_31) &&
+> > +	    ppc_inst_prefixed(auprobe->insn) &&
+> > +	    (addr & (SZ_64 - 4)) == SZ_64 - 4) {
+> > +		pr_info_ratelimited("Cannot register a uprobe on 64 byte unaligned prefixed instruction\n");
+> > +		return -EINVAL;
+> 
+> I realise we already did the 0x03 check above, but I still think this
+> would be clearer simply as:
+> 
+> 	    (addr & 0x3f == 60)
+
+Indeed, I like the use of `60' there -- hex is overrated ;)
+
+- Naveen
