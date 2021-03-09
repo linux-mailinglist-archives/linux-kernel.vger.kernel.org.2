@@ -2,101 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0814331DEC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2EC331E07
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhCIEhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 23:37:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43268 "EHLO
+        id S229714AbhCIEnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 23:43:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbhCIEgx (ORCPT
+        with ESMTP id S229730AbhCIEnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 23:36:53 -0500
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20CEC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 20:36:52 -0800 (PST)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 053C9891AE;
-        Tue,  9 Mar 2021 17:36:48 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1615264608;
-        bh=94GooBuqwjsN2PgXHFKVfo9ebg+N+xJNt2/7dlShRws=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=irpjd3IkktHH24EsvNqFEVrsY1yZOE4b1qCTwdTYeQ+BTR3SycnJTpytKc1FXyXjT
-         Lg/GHcPX7uc8BeN+8yxUuOh1KTJEdpIy0u3JXD6agKl4CsaX0WVZBNIYd93uoRNPkA
-         0FBUtUUJ3kLtQcuOVg7R2mwjCWLcctlpwjzXFvb0nSLavHJ9RptXqERBBCC9Hj97uZ
-         1jfGrCGsrIpIe87CmMEyRChOxoPrQFRZ+fsX/KgG9vp/EIEXzg5q/lCO3NeTKJcTEm
-         HjofLGn/k77WcCDmud82qzGYukn2gLqdhQQnRfZkk61K4stgGMOPZDd195Wu9BJkSO
-         2AEJJ9yrEjWag==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B6046fb5f0001>; Tue, 09 Mar 2021 17:36:47 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Mar 2021 17:36:47 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.012; Tue, 9 Mar 2021 17:36:47 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        "jdelvare@suse.com" <jdelvare@suse.com>
-CC:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: Errant readings on LM81 with T2080 SoC
-Thread-Topic: Errant readings on LM81 with T2080 SoC
-Thread-Index: AQHXE6SbssdAOSHgwE+zIRhtn11Sk6p4Y2sAgAAgcACAACSBgIAABe+AgAEgEgCAAGwMgA==
-Date:   Tue, 9 Mar 2021 04:36:47 +0000
-Message-ID: <d36a85c2-4ec5-6c28-9e2a-282de1eaf955@alliedtelesis.co.nz>
-References: <8e0a88ba-01e9-9bc1-c78b-20f26ce27d12@alliedtelesis.co.nz>
- <96d660bc-17ab-4e0e-9a94-bce1737a8da1@roeck-us.net>
- <4a1b1494-df96-2d8c-9323-beb2c2ba706b@alliedtelesis.co.nz>
- <a67ea323-634d-d34e-c63e-b1aaa4737b19@alliedtelesis.co.nz>
- <5709f180-04b5-09b2-e1c4-53eb5c9345d8@roeck-us.net>
- <61f68c59-593b-e393-5520-d9acc14fdf97@alliedtelesis.co.nz>
-In-Reply-To: <61f68c59-593b-e393-5520-d9acc14fdf97@alliedtelesis.co.nz>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <811CB1FD02E3674DAB25356F89E5D27F@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Mon, 8 Mar 2021 23:43:40 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059CCC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 20:43:40 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id mm21so24830191ejb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 20:43:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=h53NPiOJ9hX8bXjlAIC4CS9wGdO6ZbZbLlf/R8bwdUQ=;
+        b=mpjAYyq672Mj2enPjZz4Bifull4/DHrB1mKl2/6HoT/ucMqppn03Ax7M3/SLJKcj3O
+         fimFdOtQMAAi2miTFZIkUUwp0Vhhu3Y2bIAw8Lm4Bu/C/y3LYKlnG9g1zhWsJJqnK3D3
+         pvDmS8BPjDPBcXorNDkgFCZh1No+nuba01RmTN6E6yOdmdz+g0HLARISKkMAH1uvLoNI
+         0EHjHiF+ZclGB799gMLwnvgf7Q29krBwO+uue2OJKPtylfNqwZOOqT/QcYp7iwUnj1sP
+         6M3PvYuM0ReBGrGOddgiH7x9/9WQ//KDEtKacrrJDp1R0+dgesnvN7b65NAd5UB/PyJ6
+         bKUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=h53NPiOJ9hX8bXjlAIC4CS9wGdO6ZbZbLlf/R8bwdUQ=;
+        b=gCV2WEAcoyj2ey8x/G43GZ974jTGd8lIXQufCLqgKJcujBiN30PJ/CSoipyVXNZJy9
+         ZYCrOsf+55jz3WfuG8ZqfnK2Yyk8B+8eAxs1lH/vUV2OUh+3WpKxt2gukKhq97wxI94B
+         itMX5O/HQJqGTSnGy5SXF1MhT0v/U71mM1N8Mx/CwljdUw494Ry2O/8AEU3DsuccV6dr
+         NxwYN4AB2AHOQDI5vXj5E/CUGhFjmx8nqQ5i8fkk/0CTqoIvUZhi92Y0yuo3sSf3X5xs
+         3y0fzwxTeDlJle3RNUiCP3QVPNkYn6ow3G9gszmxampxnT5B36ulkPkQZasiM9ogoP1V
+         zV8g==
+X-Gm-Message-State: AOAM531q67qRo/l6B3Q5FmEfeABtgbJ85St2afG0PMRHYhL3/T0zM+q0
+        mVDdJnVDVR79AwU3HgaPWUfbh4GHsjG/3vcl7TKCRQ==
+X-Google-Smtp-Source: ABdhPJxNxMZh710hWWMykxmEJsNPt0JYbmezwJe6PTMGZFCsropOkMmXatY3KzrccSGjn8ONe01b1bdQ9rR1HQWchVM=
+X-Received: by 2002:a17:906:444d:: with SMTP id i13mr17789458ejp.170.1615265018691;
+ Mon, 08 Mar 2021 20:43:38 -0800 (PST)
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=brUy9DZNWyBmMtso1hQA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+References: <20210308122718.120213856@linuxfoundation.org>
+In-Reply-To: <20210308122718.120213856@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 9 Mar 2021 10:13:27 +0530
+Message-ID: <CA+G9fYu5L90w3f4p30uTRn-KT03ZVzg4a8cfJa-01JXGwtG8Sw@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/42] 5.10.22-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiA5LzAzLzIxIDExOjEwIGFtLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPg0KPiBPbiA4LzAz
-LzIxIDU6NTkgcG0sIEd1ZW50ZXIgUm9lY2sgd3JvdGU6DQo+PiBPbiAzLzcvMjEgODozNyBQTSwg
-Q2hyaXMgUGFja2hhbSB3cm90ZToNCj4+IFsgLi4uIF0NCj4+Pj4gVGhhdCdzIGZyb20gLUVOWElP
-IHdoaWNoIGlzIHVzZWQgaW4gb25seSBvbmUgcGxhY2UgaW4gaTJjLW1wYy5jLiBJJ2xsDQo+Pj4+
-IGVuYWJsZSBzb21lIGRlYnVnIGFuZCBzZWUgd2hhdCB3ZSBnZXQuDQo+Pj4gRm9yIHRoZSBlcnJh
-bnQgcmVhZGluZ3MgdGhlcmUgd2FzIG5vdGhpbmcgYWJub3JtYWwgcmVwb3J0ZWQgYnkgdGhlIA0K
-Pj4+IGRyaXZlci4NCj4+Pg0KPj4+IEZvciB0aGUgIk5vIHN1Y2ggZGV2aWNlIG9yIGFkZHJlc3Mi
-IEkgc2F3ICJtcGMtaTJjIGZmZTExOTAwMC5pMmM6IE5vDQo+Pj4gUlhBSyIgd2hpY2ggbWF0Y2hl
-cyB1cCB3aXRoIHRoZSAtRU5YSU8gcmV0dXJuLg0KPj4+DQo+PiBJZCBzdWdnZXN0IHRvIGNoZWNr
-IHRoZSB0aW1lIHVudGlsIG5vdCBidXN5IGFuZCBzdG9wIGluIG1wY194ZmVyKCkuDQo+PiBUaG9z
-ZSBob3QgbG9vcHMgYXJlIHVudXN1YWwsIGFuZCBtYXkgd2VsbCBtZXNzIHVwIHRoZSBjb2RlIGVz
-cGVjaWFsbHkNCj4+IGlmIHByZWVtcHQgaXMgZW5hYmxlZC4NCj4gUmV3b3JraW5nIHRob3NlIGxv
-b3BzIHNlZW1zIHRvIGhhdmUgaGFkIGEgcG9zaXRpdmUgcmVzdWx0LiBJJ2xsIGRvIGEgDQo+IGJp
-dCBtb3JlIHRlc3RpbmcgYW5kIGhvcGVmdWxseSBnZXQgYSBwYXRjaCBvdXQgbGF0ZXIgdG9kYXku
-DQpEJ29oIG15ICJmaXgiIHdhcyB0byByZXBsYWNlIHRoZSBjb25kX3Jlc2hlZCgpIHdpdGggbXNs
-ZWVwKDEwKSB3aGljaCBkaWQgDQoiZml4IiB0aGUgcHJvYmxlbSBidXQgbWFkZSBldmVyeSBpMmMg
-cmVhZCBzbG93LiBJIGRpZG4ndCBub3RpY2Ugd2hlbiANCnRlc3RpbmcganVzdCB0aGUgbG04MSBi
-dXQgYXMgc29vbiBhcyBJIGJvb3RlZCB0aGUgc3lzdGVtIHdpdGggbW9yZSBpMmMgDQpkZXZpY2Vz
-IEkgc2F3IHN0dXBpZGx5IHNsb3cgYm9vdCB0aW1lcy4NCj4+IMKgIEFsc28sIGFyZSB5b3UgdXNp
-bmcgaW50ZXJydXB0cyBvciBwb2xsaW5nIGluDQo+PiB5b3VyIHN5c3RlbSA/IFRoZSBpbnRlcnJ1
-cHQgaGFuZGxlciBsb29rcyBhIGJpdCBvZGQsIHdpdGggIlJlYWQgYWdhaW4NCj4+IHRvIGFsbG93
-IHJlZ2lzdGVyIHRvIHN0YWJpbGlzZSIuDQo+Pg0KPj4gRG8geW91IGhhdmUgZnNsLHRpbWVvdXQg
-c2V0IGluIHRoZSBkZXZpY2V0cmVlIHByb3BlcnRpZXMgYW5kLCBpZiBzbywNCj4+IGhhdmUgeW91
-IHBsYXllZCB3aXRoIGl0ID8NCj4+DQo+PiBPdGhlciB0aGFuIHRoYXQsIHRoZSBvbmx5IG90aGVy
-IHJlYWwgaWRlYSBJIGhhdmUgd291bGQgYmUgdG8gbW9uaXRvcg0KPj4gdGhlIGkyYyBidXMuDQo+
-Pg0KPj4gR3VlbnRlcg==
+On Mon, 8 Mar 2021 at 18:04, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.22 release.
+> There are 42 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 10 Mar 2021 12:27:05 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.22-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.10.22-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.10.y
+git commit: 9226165b6cc7667b147e1de52090d1b6a17af336
+git describe: v5.10.21-43-g9226165b6cc7
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
+.y/build/v5.10.21-43-g9226165b6cc7
+
+No regressions (compared to build v5.10.21)
+
+No fixes (compared to build v5.10.21)
+
+
+Ran 56945 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-i386-clang
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-livepatch
+* kselftest-ptrace
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-sched-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* fwts
+* kselftest-
+* kselftest-kvm
+* kselftest-lib
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* ltp-commands-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* kselftest-bpf
+* kselftest-kexec
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-tc-testing
+* kselftest-vm
+* kselftest-x86
+* ltp-controllers-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+* kunit
+* rcutorture
+* ssuite
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
