@@ -2,248 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2FF2333078
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A835D333090
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbhCIU7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:59:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231872AbhCIU7i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:59:38 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCFAC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 12:59:38 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id l11so15126618wrp.7
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:59:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YQC6wFy2J65Y28BJx46C1FfvB3e/Gw51qsSfNp1Q/wg=;
-        b=xoLoP4BeMQuKkWFZumu/Lh2RNI9KIpeQyI3D+PvbYaxfJOraYsUCaKI/406HQnOhLa
-         Qt1187t2Wlv4ogFCOGycl2Sf0HxhdlStBPWB7P7AbmtPBrD+RMl4OQxLlGCA317PeaSO
-         8DPZtUk9i4iU6RIw54/Rdw3RHihS84L1EGurSZVaOAOyFUvajNC40e+cmAaH3HE0PNoD
-         T5G8sxl0Sz9YHzaTNqS2LeLC96ipsn1L2BV306M1vsZ6KrLikbs+U6mcfJkZVhvTiTCl
-         GZbWrn24KiqRomdHqJBFjNv2/jYCa5qaMOSaOpRH/RdlT92wdBXjifJXx9XwVZZXJ2iO
-         de7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YQC6wFy2J65Y28BJx46C1FfvB3e/Gw51qsSfNp1Q/wg=;
-        b=txK8A9Rvf0hJh7DWW4GqQ0xHrl2zp3qyoi22NxzD0hHL73EqfC3oAvY043IMpZm61k
-         GgOwmMbkCiHQ/H6CVMmPtqcDhMbp8R7SbxL8xyLVMMbXOke0zuWloyhkLN002/JYP1Rd
-         R+tnFsmD+gDCKd2lugowsbMycgkrLRKnVQ8kAb+U0KL+FkuYZudH82jUrs4Y/s3PBLYo
-         8lrI0Se/Kr0J/79a060XH9WrHsTQBTSPRkfQAPXuvSZ0/O9+Ui1I3FmNR+p2dG8I/I38
-         Uxr7KP7ZcnH0eZxBPYFYDXmDIjzJq6Wrr4YjFzTK4GV6Lb962aKOWFUI408FUVK9Bac6
-         M0gw==
-X-Gm-Message-State: AOAM531eyIYiajpIPrBXyFtrXJNgepP3ENgsT7sp+oOAx1D3kO0442a2
-        r24qWIMJVPfgA5VpE0AafT0Jlw==
-X-Google-Smtp-Source: ABdhPJyMd/sC4q+DE5Xd9y6O4kfXWIadSNlWXxVvHk24yoUIVhc0wIRunEXyGYeAMG/qpbRlal1pZQ==
-X-Received: by 2002:adf:e5c8:: with SMTP id a8mr31046234wrn.352.1615323577270;
-        Tue, 09 Mar 2021 12:59:37 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id j6sm5501305wmq.16.2021.03.09.12.59.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 12:59:37 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v3 05/11] lib: bitmap: remove the 'extern' keyword from function declarations
-Date:   Tue,  9 Mar 2021 21:59:15 +0100
-Message-Id: <20210309205921.15992-6-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210309205921.15992-1-brgl@bgdev.pl>
-References: <20210309205921.15992-1-brgl@bgdev.pl>
+        id S232149AbhCIVA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 16:00:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231906AbhCIU74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 15:59:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A643365244;
+        Tue,  9 Mar 2021 20:59:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615323596;
+        bh=TYc2sxF9jlelu+yoQjVMheyf4gRhjMbLomqGl2trdgk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Lkve6UV0CSpybHVH2mF9r3f2goFOa59edwGzdalytdMeMwEt0HzOX601f4/jI/7nj
+         b1U+puVzO9Bv8VT3u3oJgFmuVyL2Xsi6JvATd4cacUhLFVlhoS+uxQsZMRV/uRUQke
+         gDBe8dEdUks5VEtVsW7RXowmas2i4SjFrfBLjC40BZ/BAk/F7O37iI73yiQK6gx1sL
+         MySbqwPpbzxu3bahYUI79VSr4/YC+BGUKYnWeSwP26QK7T8n3uf/uwoZ2gPZ16G9b6
+         Bi2OveewphjKRofUY6cmMG6+HisneW7GftmP0FML1Crp7EkoeOHnwGgj/61jZ+1KGV
+         oUkcSwUTDOxLw==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH v2 2/2] Makefile: Only specify '--prefix=' when building with clang + GNU as
+Date:   Tue,  9 Mar 2021 13:59:15 -0700
+Message-Id: <20210309205915.2340265-2-nathan@kernel.org>
+X-Mailer: git-send-email 2.31.0.rc1
+In-Reply-To: <20210309205915.2340265-1-nathan@kernel.org>
+References: <20210302210646.3044738-1-nathan@kernel.org>
+ <20210309205915.2340265-1-nathan@kernel.org>
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+When building with LLVM_IAS=1, there is no point to specifying
+'--prefix=' because that flag is only used to find GNU cross tools,
+which will not be used indirectly when using the integrated assembler.
+All of the tools are invoked directly from PATH or a full path specified
+via the command line, which does not depend on the value of '--prefix='.
 
-The 'extern' keyword doesn't have any benefits in header files. Remove it.
+Sharing commands to reproduce issues becomes a little bit easier without
+a '--prefix=' value because that '--prefix=' value is specific to a
+user's machine due to it being an absolute path.
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Some further notes from Fangrui Song:
+
+  clang can spawn GNU as (if -f?no-integrated-as is specified) and GNU
+  objcopy (-f?no-integrated-as and -gsplit-dwarf and -g[123]).
+  objcopy is only used for GNU as assembled object files.
+  With integrated assembler, the object file streamer creates .o and
+  .dwo simultaneously.
+  With GNU as, two objcopy commands are needed to extract .debug*.dwo to
+  .dwo files && another command to remove .debug*.dwo sections.
+
+A small consequence of this change (to keep things simple) is that
+'--prefix=' will always be specified now, even with a native build, when
+it was not before. This should not be an issue due to the way that the
+Makefile searches for the prefix (based on elfedit's location). This
+ends up improving the experience for host builds because PATH is better
+respected and matches GCC's behavior more closely. See the below thread
+for more details:
+
+https://lore.kernel.org/r/20210205213651.GA16907@Ryzen-5-4500U.localdomain/
+
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 ---
- include/linux/bitmap.h | 115 ++++++++++++++++++++---------------------
- 1 file changed, 57 insertions(+), 58 deletions(-)
 
-diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-index 70a932470b2d..6939a8983026 100644
---- a/include/linux/bitmap.h
-+++ b/include/linux/bitmap.h
-@@ -118,54 +118,53 @@
-  * Allocation and deallocation of bitmap.
-  * Provided in lib/bitmap.c to avoid circular dependency.
-  */
--extern unsigned long *bitmap_alloc(unsigned int nbits, gfp_t flags);
--extern unsigned long *bitmap_zalloc(unsigned int nbits, gfp_t flags);
--extern void bitmap_free(const unsigned long *bitmap);
-+unsigned long *bitmap_alloc(unsigned int nbits, gfp_t flags);
-+unsigned long *bitmap_zalloc(unsigned int nbits, gfp_t flags);
-+void bitmap_free(const unsigned long *bitmap);
- 
- /*
-  * lib/bitmap.c provides these functions:
-  */
- 
--extern int __bitmap_equal(const unsigned long *bitmap1,
--			  const unsigned long *bitmap2, unsigned int nbits);
--extern bool __pure __bitmap_or_equal(const unsigned long *src1,
--				     const unsigned long *src2,
--				     const unsigned long *src3,
--				     unsigned int nbits);
--extern void __bitmap_complement(unsigned long *dst, const unsigned long *src,
--			unsigned int nbits);
--extern void __bitmap_shift_right(unsigned long *dst, const unsigned long *src,
--				unsigned int shift, unsigned int nbits);
--extern void __bitmap_shift_left(unsigned long *dst, const unsigned long *src,
--				unsigned int shift, unsigned int nbits);
--extern void bitmap_cut(unsigned long *dst, const unsigned long *src,
--		       unsigned int first, unsigned int cut,
--		       unsigned int nbits);
--extern int __bitmap_and(unsigned long *dst, const unsigned long *bitmap1,
-+int __bitmap_equal(const unsigned long *bitmap1,
-+		   const unsigned long *bitmap2, unsigned int nbits);
-+bool __pure __bitmap_or_equal(const unsigned long *src1,
-+			      const unsigned long *src2,
-+			      const unsigned long *src3,
-+			      unsigned int nbits);
-+void __bitmap_complement(unsigned long *dst, const unsigned long *src,
-+			 unsigned int nbits);
-+void __bitmap_shift_right(unsigned long *dst, const unsigned long *src,
-+			  unsigned int shift, unsigned int nbits);
-+void __bitmap_shift_left(unsigned long *dst, const unsigned long *src,
-+			 unsigned int shift, unsigned int nbits);
-+void bitmap_cut(unsigned long *dst, const unsigned long *src,
-+		unsigned int first, unsigned int cut, unsigned int nbits);
-+int __bitmap_and(unsigned long *dst, const unsigned long *bitmap1,
-+		 const unsigned long *bitmap2, unsigned int nbits);
-+void __bitmap_or(unsigned long *dst, const unsigned long *bitmap1,
-+		 const unsigned long *bitmap2, unsigned int nbits);
-+void __bitmap_xor(unsigned long *dst, const unsigned long *bitmap1,
-+		  const unsigned long *bitmap2, unsigned int nbits);
-+int __bitmap_andnot(unsigned long *dst, const unsigned long *bitmap1,
-+		    const unsigned long *bitmap2, unsigned int nbits);
-+void __bitmap_replace(unsigned long *dst,
-+		      const unsigned long *old, const unsigned long *new,
-+		      const unsigned long *mask, unsigned int nbits);
-+int __bitmap_intersects(const unsigned long *bitmap1,
- 			const unsigned long *bitmap2, unsigned int nbits);
--extern void __bitmap_or(unsigned long *dst, const unsigned long *bitmap1,
--			const unsigned long *bitmap2, unsigned int nbits);
--extern void __bitmap_xor(unsigned long *dst, const unsigned long *bitmap1,
--			const unsigned long *bitmap2, unsigned int nbits);
--extern int __bitmap_andnot(unsigned long *dst, const unsigned long *bitmap1,
--			const unsigned long *bitmap2, unsigned int nbits);
--extern void __bitmap_replace(unsigned long *dst,
--			const unsigned long *old, const unsigned long *new,
--			const unsigned long *mask, unsigned int nbits);
--extern int __bitmap_intersects(const unsigned long *bitmap1,
--			const unsigned long *bitmap2, unsigned int nbits);
--extern int __bitmap_subset(const unsigned long *bitmap1,
--			const unsigned long *bitmap2, unsigned int nbits);
--extern int __bitmap_weight(const unsigned long *bitmap, unsigned int nbits);
--extern void __bitmap_set(unsigned long *map, unsigned int start, int len);
--extern void __bitmap_clear(unsigned long *map, unsigned int start, int len);
--
--extern unsigned long bitmap_find_next_zero_area_off(unsigned long *map,
--						    unsigned long size,
--						    unsigned long start,
--						    unsigned int nr,
--						    unsigned long align_mask,
--						    unsigned long align_offset);
-+int __bitmap_subset(const unsigned long *bitmap1,
-+		    const unsigned long *bitmap2, unsigned int nbits);
-+int __bitmap_weight(const unsigned long *bitmap, unsigned int nbits);
-+void __bitmap_set(unsigned long *map, unsigned int start, int len);
-+void __bitmap_clear(unsigned long *map, unsigned int start, int len);
-+
-+unsigned long bitmap_find_next_zero_area_off(unsigned long *map,
-+					     unsigned long size,
-+					     unsigned long start,
-+					     unsigned int nr,
-+					     unsigned long align_mask,
-+					     unsigned long align_offset);
- 
- /**
-  * bitmap_find_next_zero_area - find a contiguous aligned zero area
-@@ -190,33 +189,33 @@ bitmap_find_next_zero_area(unsigned long *map,
- 					      align_mask, 0);
- }
- 
--extern int bitmap_parse(const char *buf, unsigned int buflen,
-+int bitmap_parse(const char *buf, unsigned int buflen,
- 			unsigned long *dst, int nbits);
--extern int bitmap_parse_user(const char __user *ubuf, unsigned int ulen,
-+int bitmap_parse_user(const char __user *ubuf, unsigned int ulen,
- 			unsigned long *dst, int nbits);
--extern int bitmap_parselist(const char *buf, unsigned long *maskp,
-+int bitmap_parselist(const char *buf, unsigned long *maskp,
- 			int nmaskbits);
--extern int bitmap_parselist_user(const char __user *ubuf, unsigned int ulen,
-+int bitmap_parselist_user(const char __user *ubuf, unsigned int ulen,
- 			unsigned long *dst, int nbits);
--extern void bitmap_remap(unsigned long *dst, const unsigned long *src,
-+void bitmap_remap(unsigned long *dst, const unsigned long *src,
- 		const unsigned long *old, const unsigned long *new, unsigned int nbits);
--extern int bitmap_bitremap(int oldbit,
-+int bitmap_bitremap(int oldbit,
- 		const unsigned long *old, const unsigned long *new, int bits);
--extern void bitmap_onto(unsigned long *dst, const unsigned long *orig,
-+void bitmap_onto(unsigned long *dst, const unsigned long *orig,
- 		const unsigned long *relmap, unsigned int bits);
--extern void bitmap_fold(unsigned long *dst, const unsigned long *orig,
-+void bitmap_fold(unsigned long *dst, const unsigned long *orig,
- 		unsigned int sz, unsigned int nbits);
--extern int bitmap_find_free_region(unsigned long *bitmap, unsigned int bits, int order);
--extern void bitmap_release_region(unsigned long *bitmap, unsigned int pos, int order);
--extern int bitmap_allocate_region(unsigned long *bitmap, unsigned int pos, int order);
-+int bitmap_find_free_region(unsigned long *bitmap, unsigned int bits, int order);
-+void bitmap_release_region(unsigned long *bitmap, unsigned int pos, int order);
-+int bitmap_allocate_region(unsigned long *bitmap, unsigned int pos, int order);
- 
- #ifdef __BIG_ENDIAN
--extern void bitmap_copy_le(unsigned long *dst, const unsigned long *src, unsigned int nbits);
-+void bitmap_copy_le(unsigned long *dst, const unsigned long *src, unsigned int nbits);
- #else
- #define bitmap_copy_le bitmap_copy
- #endif
--extern unsigned int bitmap_ord_to_pos(const unsigned long *bitmap, unsigned int ord, unsigned int nbits);
--extern int bitmap_print_to_pagebuf(bool list, char *buf,
-+unsigned int bitmap_ord_to_pos(const unsigned long *bitmap, unsigned int ord, unsigned int nbits);
-+int bitmap_print_to_pagebuf(bool list, char *buf,
- 				   const unsigned long *maskp, int nmaskbits);
- 
- #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
-@@ -265,9 +264,9 @@ static inline void bitmap_copy_clear_tail(unsigned long *dst,
-  * therefore conversion is not needed when copying data from/to arrays of u32.
-  */
- #if BITS_PER_LONG == 64
--extern void bitmap_from_arr32(unsigned long *bitmap, const u32 *buf,
-+void bitmap_from_arr32(unsigned long *bitmap, const u32 *buf,
- 							unsigned int nbits);
--extern void bitmap_to_arr32(u32 *buf, const unsigned long *bitmap,
-+void bitmap_to_arr32(u32 *buf, const unsigned long *bitmap,
- 							unsigned int nbits);
- #else
- #define bitmap_from_arr32(bitmap, buf, nbits)			\
+v1 -> v2:
+
+* Fix position of -no-integrated-as flag to fix native build (thanks to
+  Masahiro for catching it and sorry for the breakage).
+
+* Add Fangrui's comments about what GNU binaries clang can spawn at
+  Masahiro's request.
+
+* Reword commit message.
+
+I did not carry tags forward so that people could re-review and test.
+
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 182e93d91198..15292a6d63f5 100644
+--- a/Makefile
++++ b/Makefile
+@@ -566,11 +566,11 @@ CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1 | sed 's/\#//g
+ ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+ ifneq ($(CROSS_COMPILE),)
+ CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
+-GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+-CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+ endif
+ ifneq ($(LLVM_IAS),1)
+ CLANG_FLAGS	+= -no-integrated-as
++GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
++CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+ endif
+ CLANG_FLAGS	+= -Werror=unknown-warning-option
+ KBUILD_CFLAGS	+= $(CLANG_FLAGS)
 -- 
-2.30.1
+2.31.0.rc1
 
