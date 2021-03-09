@@ -2,93 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FE033261C
+	by mail.lfdr.de (Postfix) with ESMTP id 068EB33261B
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhCINGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 08:06:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231236AbhCINGY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 08:06:24 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CC6C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 05:06:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=IiHCr9sIrtawE/V4O188HSaNWrVYYILoW20hEa4D1iM=; b=gBXyhL/t1Mt1hO7uPr7fovofJg
-        sOYuwlt2o5CDj3vmwwowKD1a4LPPIOZ1GahIAioB5hXWNUlEPE7mUDxrrI2dz1Ac6NfpcGphEIiMd
-        AGER0HmIuLlwi+jz0LdQdW/Y3QoufNaW4C6ZDgO3vzCuMjH/g3UwsIc9k1mENwatAlY6gj2a5wN1j
-        Lycxyx1GlonsH4zkD3juKA/qLCUCG+gVIx7yklReM7PoS0JA72VNh1To+B6wqJf2dy4HTtqH6NW8c
-        bCc2z7wZs9g5b6Ukm7EgJm5grs+hrJyfjvJruwiXStgKncvsFz2spgTmVux2F8/jRIg7tJ+wPs6dY
-        DVDkmV8A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJc3D-000bWx-VK; Tue, 09 Mar 2021 13:05:39 +0000
-Date:   Tue, 9 Mar 2021 13:05:27 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
-        zhengjun.xing@intel.com
-Subject: Re: [mm/filemap]  cbd59c48ae:
- fxmark.hdd_ext4_no_jnl_DRBM_9_bufferedio.works/sec -7.6% regression
-Message-ID: <20210309130527.GK3479805@casper.infradead.org>
-References: <20210309075706.GB12057@xsang-OptiPlex-9020>
+        id S231299AbhCINGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 08:06:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231229AbhCINGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 08:06:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CC0565272;
+        Tue,  9 Mar 2021 13:06:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615295182;
+        bh=8dDtZs1QrcLkc249LnwPHsr1SeDTjrZFb5dC6gqbGCE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D9gLV0nqj7NwFJEAyh0l4oS0Thk6zuQCdN4bYGVHd/YbI7ep6dELaeKvIZ1+FCfY+
+         fFyJ+KYIYBS6wYAKdKmNOYfJZQ6mGEhOqIQM+dFtozNmQCsb+GymmJv2bbiaqW1G5l
+         0m6NoDXgscczbFBThvnCaDXY448i5gRhnXu5YfB5DXhdCwFz0j906pOR1CtH6o8vWB
+         n7l7I5AfGAQfIIFOjN3M8vGmMudS+7qr+DYQa6sXHetodank7Hv3V7EPGv4ZMoDV0u
+         gXkC0n+fTkO2B49dRmI+yM3uk55tRimbkzjc8IJhu5/5vDUOhqMt0BPkVdOwEh77mr
+         V3KP2KOzqbATQ==
+Date:   Tue, 9 Mar 2021 14:06:20 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [patch V3 6/6] rcu: Prevent false positive softirq warning on RT
+Message-ID: <20210309130620.GB236340@lothringen>
+References: <20210309085552.815026890@linutronix.de>
+ <20210309085727.626304079@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210309075706.GB12057@xsang-OptiPlex-9020>
+In-Reply-To: <20210309085727.626304079@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 03:57:06PM +0800, kernel test robot wrote:
-> FYI, we noticed a -7.6% regression of fxmark.hdd_ext4_no_jnl_DRBM_9_bufferedio.works/sec due to commit:
+On Tue, Mar 09, 2021 at 09:55:58AM +0100, Thomas Gleixner wrote:
+> Soft interrupt disabled sections can legitimately be preempted or schedule
+> out when blocking on a lock on RT enabled kernels so the RCU preempt check
+> warning has to be disabled for RT kernels.
 > 
-> commit: cbd59c48ae2bcadc4a7599c29cf32fd3f9b78251 ("mm/filemap: use head pages in generic_file_buffered_read")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> in testcase: fxmark
-> on test machine: 288 threads Intel(R) Xeon Phi(TM) CPU 7295 @ 1.50GHz with 80G memory
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-Can you send me one of those to test on?  ;-)
-
->          %stddev     %change         %stddev
->              \          |                \  
->       0.05 ±  5%     -10.1%       0.05 ±  3%  fxmark.hdd_ext4_no_jnl_DRBM_18_bufferedio.softirq_util
->    4168491            -7.6%    3849925        fxmark.hdd_ext4_no_jnl_DRBM_9_bufferedio.works/sec
->     300.00            +2.1%     306.16        fxmark.time.system_time
->      87.53            -6.7%      81.69        fxmark.time.user_time
->     784.83 ±  5%     +23.6%     970.33 ±  7%  perf-sched.wait_and_delay.count.preempt_schedule_common.__cond_resched.copy_page_to_iter.generic_file_buffered_read.new_sync_read
-
-23% more delay while preempted copying to user?  That seems bad, but I
-don't see anything in this commit that would cause that.
-
->       7.59            -7.6        0.00        perf-profile.calltrace.cycles-pp.find_get_pages_contig.filemap_get_pages.generic_file_buffered_read.new_sync_read.vfs_read
-
-That makes sense; we don't call find_get_pages_contig() any more, instead
-we call ...
-
->       0.00           +11.9       11.90        perf-profile.calltrace.cycles-pp.filemap_get_read_batch.filemap_get_pages.generic_file_buffered_read.new_sync_read.vfs_read
-
-filemap_get_read_batch() ... which is more expensive ;-(
-
-                if (PageReadahead(head))
-                        break;
-+		if (!PageHead(head))
-+			continue;
-                xas.xa_index = head->index + thp_nr_pages(head) - 1;
-                xas.xa_offset = (xas.xa_index >> xas.xa_shift) & XA_CHUNK_MASK;
-
-might be worth a try, but I have a medical appointment to get to.
-I'll test it out later.
-
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
