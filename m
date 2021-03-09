@@ -2,132 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3A53325CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AEA63325DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:54:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbhCIMvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 07:51:39 -0500
-Received: from mail-lf1-f48.google.com ([209.85.167.48]:40622 "EHLO
-        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbhCIMvQ (ORCPT
+        id S230473AbhCIMxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 07:53:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230449AbhCIMxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 07:51:16 -0500
-Received: by mail-lf1-f48.google.com with SMTP id x4so20155580lfu.7;
-        Tue, 09 Mar 2021 04:51:15 -0800 (PST)
+        Tue, 9 Mar 2021 07:53:34 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9725AC06174A;
+        Tue,  9 Mar 2021 04:53:34 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so5147102pjv.1;
+        Tue, 09 Mar 2021 04:53:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=7ONx2FOzWIgS1h/Pt0rxIhJX/kU2VsrARJ7BsHy15OI=;
+        b=As/Wcc+Nm78iyZnkMMtOT6fGyXZyC3DHVFw89k3TlkYga5f+rKBaYOvVgAqJtypnYK
+         R21+jzQbgGr4Gd1sk5HPbHfBO5jEGBrjyWxGISauE3fLwWe/ffth+ifVrC4i7ksKR+5v
+         gn5t6weqhxEzl+U6Gyt/RwPp+k7CtH4e0FULDaOoZg+GX7ZgCSRSK0DfVz5QEv0MP41I
+         icWlvpX9wYZX/4dHRadJ1mLlg2MPdPJQHlub8+NC4EzEkgL5jNFl2p53+aQ6WEKEWRM+
+         PjPcnkH/fq7CMSEboVD9kRz0SkBTgeYQbj8pWhvYWki4mTbJND6p0x2aSUltlHSqfVF+
+         PkLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
-         :content-transfer-encoding;
-        bh=4zPrx2tQtH5tgiawG5odTs7tWqGcK7t2C/1aTX2Fyxo=;
-        b=JsBCDyrZMMDm/BCKYI8td1s9DADAIh1LDGzYUs3HOia6+1pbnAKx74cwXA8EAbpRJw
-         xeeFvcNO5UiuEdHseO906F4iTYo5u4eTnIEObSTRLbL3QpgQWHlmTuv6lLoMpMQbjHSy
-         8cj0EJutKofUqrM9x6frTcW2YPDEXAz2+CydzmCaVjvqeZnjvz/epirT7VJbsn+BZZ3R
-         rVTLwDUCpS3/xNFSnGyNzh85ECHLl1DhV1W34QgF5YsqFgxnxcSUhyWsp9qMe6aZ4YRd
-         iyhwfKQwpKxFrBT/uCO2+KwIj5B1ZJ1uLBq/czEDJaVkPKf8qLrEAKK7f/btniN3EkRe
-         kgkw==
-X-Gm-Message-State: AOAM531maqexZJXVCQNNvnmiUvz7vRJhzHKtCq9+KNoUHcS8YvNo1int
-        wDmTaD6AOIiy4pzaMRCZLX4=
-X-Google-Smtp-Source: ABdhPJz/4wjiqnuKB5OeDYokY4ebh24pt1Y2TMwXbkd9lcI3fmCkkXWqqy73R/FMZhzHf0Z1af0Cqg==
-X-Received: by 2002:ac2:51dc:: with SMTP id u28mr1698983lfm.322.1615294274819;
-        Tue, 09 Mar 2021 04:51:14 -0800 (PST)
-Received: from dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id k5sm1914222ljh.130.2021.03.09.04.51.13
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=7ONx2FOzWIgS1h/Pt0rxIhJX/kU2VsrARJ7BsHy15OI=;
+        b=KUveYVDDXX8pfB8axPDUimPJJ7aaOYPPiyHqRTu0rZrhWOajeBFP0VpBinpYLKnFfF
+         4W4IuPX9avw1H9R/ScZ4Ra1VFj/zsAgoIuGSsZ3cdSvYFfyH2P70E/h69iIIMv6j5WiK
+         4EpM7EWraUIZe7UTr7daWsLY/NSUClsqWRLM8S0Nk7vkqInlOkGKqFA25V9BkF8TIgL6
+         FNCtQxLNgU4au6wgqs5l9K7V+arOVxZZlG8p01LqlDWIM8dar+OTH+Ku7vfb9PYiycNX
+         TA5P+qJDB8E3GWiLvWWMfQN70gQTVmaqOpvt9FBOTp1cttjiPaE3afPyQ3fkqZnmed2c
+         gZUw==
+X-Gm-Message-State: AOAM532kiO2wkmYkhMjtBquBBERPBfvAR/gR6shy8gFfHSunz4yaBuIX
+        edD+TlQb2IeEhLrWzhdI91I=
+X-Google-Smtp-Source: ABdhPJyFTdNLtllnen9bXqUvuviYG1ht1aZEMb65CmDxsBfkktSxfZy7nikXYd1iICBRKl1W5xlItw==
+X-Received: by 2002:a17:90a:e298:: with SMTP id d24mr4542602pjz.171.1615294414128;
+        Tue, 09 Mar 2021 04:53:34 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:600d:a089:f1c9:5654:cd78:ceac])
+        by smtp.googlemail.com with ESMTPSA id 197sm9192499pgg.53.2021.03.09.04.53.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 04:51:14 -0800 (PST)
-Message-ID: <06c8e7339ebc3e1802aa1e9c213de9392671a8a5.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH v3 05/15] dt_bindings: mfd: Add ROHM BD71815 PMIC
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        devicetree@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>
-In-Reply-To: <20210308173938.GA2679675@robh.at.kernel.org>
-References: <cover.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
-         <790da5fe60eb3bcd190830770866147bbb5f8143.1615198094.git.matti.vaittinen@fi.rohmeurope.com>
-         <20210308173938.GA2679675@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-MIME-Version: 1.0
-Date:   Tue, 09 Mar 2021 14:51:07 +0200
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-Content-Transfer-Encoding: 7bit
+        Tue, 09 Mar 2021 04:53:33 -0800 (PST)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     corbet@lwn.net
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [RFC] scripts: kernel-doc: avoid warnings due to initial commented lines in file
+Date:   Tue,  9 Mar 2021 18:23:24 +0530
+Message-Id: <20210309125324.4456-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob,
+Starting commented lines in a file mostly contains comments describing
+license, copyright or general information about the file.
 
-On Mon, 2021-03-08 at 10:39 -0700, Rob Herring wrote:
-> On Mon, 08 Mar 2021 12:40:50 +0200, Matti Vaittinen wrote:
-> > Document DT bindings for ROHM BD71815.
-> > 
-> > BD71815 is a single-chip power management IC mainly for battery-
-> > powered
-> > portable devices. The IC integrates 5 bucks, 7 LDOs, a boost driver
-> > for
-> > LED, a battery charger with a Coulomb counter, a real-time clock, a
-> > 32kHz
-> > clock and two general-purpose outputs although only one is
-> > documented by
-> > the data-sheet.
-> > 
-> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  .../bindings/mfd/rohm,bd71815-pmic.yaml       | 201
-> > ++++++++++++++++++
-> >  1 file changed, 201 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/mfd/rohm,bd71815-pmic.yaml
-> > 
-> 
-> My bot found errors running 'make dt_binding_check' on your patch:
+E.g., in sound/pci/ctxfi/ctresource.c, initial comment lines describe
+its copyright and other related file informations.
 
-I am sorry to bother but I've spent a while trying to reproduce this.
-For some reason I can't trigger the error from
+But as kernel-doc reads these lines, it results in ineffective warnings by
+kernel-doc, related to these.
 
-'make dt_binding_check' or
-'make dt_binding_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/mfd/rohm,bd71815-
-pmic.yaml'
+Provide a simple fix by skipping first three lines in a file for checking
+kernel-doc comments.
 
-even after I ran
+Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+ scripts/kernel-doc | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-'pip3 install dtschema --upgrade --user'.
-
-I should also have yamllint installed.
-
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Unknown file referenced: [Errno 2] No such file or directory:
-> '/usr/local/lib/python3.8/dist-
-> packages/dtschema/schemas/regulator/rohm,bd71815-regulator.yaml'
-
-This bothers me slightly. The patch 04/15 should bring-in the
-rohm,bd71815-regulator.yaml. Does this error indicate that file is
-missing or is my $ref somehow invalid?
-
-*** opinion follows - not sure if it just me but... ***
-
-I know I should probably keep my mouth shut but... I am more and more
-thinking that the yaml bindings are yet another 'excessive unit-test'
-type solution. Tooling which should "force doing things correctly" is
-eventually hindering development and causing the end result being sub-
-optimal.
-
-I mean that creating binding docs takes way too much time from someone
-like me who is "yaml-illiterate". And when I eventually get yaml done -
-the end result is far less descriptive for human eyes than the "good
-old" free-text format would've been. I know one can add comments - but
-I don't see much of them in the binding docs...
-
-
-Best Regards
- -- Matti Vaittinen
-
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index e1e562b2e2e7..431add05248e 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -2375,6 +2375,7 @@ sub process_file($) {
+     my $file;
+     my $initial_section_counter = $section_counter;
+     my ($orig_file) = @_;
++    my $lineno = 0;	# to maintain the count of line number in a file
+ 
+     $file = map_filename($orig_file);
+ 
+@@ -2388,13 +2389,16 @@ sub process_file($) {
+ 
+     $section_counter = 0;
+     while (<IN_FILE>) {
++	$lineno++;
+ 	while (s/\\\s*$//) {
+ 	    $_ .= <IN_FILE>;
++	    $lineno++;
+ 	}
+ 	# Replace tabs by spaces
+         while ($_ =~ s/\t+/' ' x (length($&) * 8 - length($`) % 8)/e) {};
+ 	# Hand this line to the appropriate state handler
+-	if ($state == STATE_NORMAL) {
++	if ($state == STATE_NORMAL
++	    && $lineno > 3) {	# to avoid starting comment lines describing the file
+ 	    process_normal();
+ 	} elsif ($state == STATE_NAME) {
+ 	    process_name($file, $_);
+-- 
+2.17.1
 
