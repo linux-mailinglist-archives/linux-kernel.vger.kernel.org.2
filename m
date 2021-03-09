@@ -2,38 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19167331DAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 04:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BA9331DAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 04:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhCIDo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 22:44:27 -0500
-Received: from mail-m17635.qiye.163.com ([59.111.176.35]:46620 "EHLO
-        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhCIDoP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 22:44:15 -0500
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id ADEAE40018C;
-        Tue,  9 Mar 2021 11:44:13 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     wangqing@vivo.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v26,1/4] scsi: ufs: Introduce HPB feature
-Date:   Tue,  9 Mar 2021 11:44:09 +0800
-Message-Id: <1615261449-3940-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614567775-4478-1-git-send-email-wangqing@vivo.com>
-References: <1614567775-4478-1-git-send-email-wangqing@vivo.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGk4eHklPHhlMTEpMVkpNSk5JTUpPTkhDQ0NVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hNSlVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NyI6GDo6GT8RCw4IEAIISytK
-        EiwaCwtVSlVKTUpOSU1KT05PSkNDVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFCSEg3Bg++
-X-HM-Tid: 0a781515cdd2d991kuwsadeae40018c
+        id S230052AbhCIDpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 22:45:38 -0500
+Received: from mga04.intel.com ([192.55.52.120]:29506 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229611AbhCIDph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 22:45:37 -0500
+IronPort-SDR: WPAgq3cVmbs9CC5IfdUpTZgwg5W9i+rSOtuQhPj+7bMLMOfihRVTls3hCm4ZM00ZlucDj1u97P
+ cTYhLUj8RYnA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="185766829"
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="185766829"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 19:45:37 -0800
+IronPort-SDR: xAF1BZV6aIdcX20k5nC8IpvHiYys6X3Et9tEMjHpto2M/YBoqJSX2oqhqtzsJQOZ5ZTeo9T2mL
+ SBhf6BtnJMXA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="430608462"
+Received: from host.sh.intel.com (HELO host) ([10.239.154.115])
+  by fmsmga004.fm.intel.com with ESMTP; 08 Mar 2021 19:45:36 -0800
+Date:   Tue, 9 Mar 2021 11:47:42 +0800
+From:   "Ye, Xiang" <xiang.ye@intel.com>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jiri Kosina <jikos@kernel.org>
+Cc:     jic23@kernel.org, linux-input@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: intel_ish-hid: HBM: Use connected standby state bit
+ during suspend/resume
+Message-ID: <20210309034742.GA18299@host>
+References: <20210303062825.7724-1-xiang.ye@intel.com>
+ <nycvar.YFH.7.76.2103081125380.12405@cbobk.fhfr.pm>
+ <00ad0906b90a290e9737b7bf7d8c5ab9c6ed61e6.camel@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00ad0906b90a290e9737b7bf7d8c5ab9c6ed61e6.camel@linux.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to Samsung's iozone test result, HPB is going to boost random 
-performance of rom on mobile, we believe it will help our customers on 
-several occasions.
+Hi Srinivas, Jiri
+
+On Mon, Mar 08, 2021 at 08:00:41AM -0800, Srinivas Pandruvada wrote:
+> On Mon, 2021-03-08 at 11:26 +0100, Jiri Kosina wrote:
+> > On Wed, 3 Mar 2021, Ye Xiang wrote:
+> > 
+> > > ISH firmware uses connected standby state bit
+> > > (CONNECTED_STANDBY_STATE_BIT bit 1)
+> > > to notify current power state to sensors instead of suspend state
+> > > bit (bit 0).
+> > > So send both SUSPEND_STATE_BIT and CONNECTED_STANDBY_STATE_BIT to
+> > > firmware
+> > > to be compatible with the previous version.
+> > 
+> > Could you please make the changelog more verbose -- namely what 
+> > user-visible issue this is fixing?
+> Xiang,
+> 
+> I think this change is for related to Elkhart Lake for support of
+> connected standby (keep listening for sensor events during Linux
+> suspend for some sensors). In this way some sensor can wake up the
+> system.
+This change is for all ISH platform. Currently, ISH firmware use
+both SUSPEND_STATE_BIT and CONNECTED_STANDBY_STATE_BIT to identify
+system state. It is related to system wake up by ISH and it enable each
+sensor in ISH to be notified the current system state, when system state
+change.
+
+Thanks
+Ye Xiang
+> 
+> 
+> 
+> 
+> 
+> 
+> 
