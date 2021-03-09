@@ -2,175 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72472332F01
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 028E0332F08
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231350AbhCIT3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 14:29:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39088 "EHLO
+        id S230159AbhCITcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:32:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbhCIT2u (ORCPT
+        with ESMTP id S230320AbhCITb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:28:50 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4324C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 11:28:50 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id o9so15212777iow.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 11:28:50 -0800 (PST)
+        Tue, 9 Mar 2021 14:31:59 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E66C06174A;
+        Tue,  9 Mar 2021 11:31:58 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id x29so9481567pgk.6;
+        Tue, 09 Mar 2021 11:31:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nRYlUnr4w7NdPjwA3KubW4AmoT2UPgChOLUTL/VtfPk=;
-        b=mDWExY0WeRXBWotEc5uhp04JfsILSL83l5gzcO5ozwbdx+tNRC2Laxeiuq3wXWniPp
-         ZLay7OdgkMkNqiTs7pwLT4+NmtICkqcCnYGjjRFtZwyZvdMfhdYMGze2N3oGbYdt4qlN
-         TpJMQoyTTaMZpyleyudvwlHN0EcxA819hFLEI=
+        bh=HYJycecCKR8mJEVeAV0bVwc2FaxFgSqtKDz5fqSfG+Y=;
+        b=t/BAtgEgV5Af5sZNLuhwg2mdyygRwGzvxfza2L1PSTQ6joDvwFqZ8lbBB+By+CVx8/
+         dUqnPxqvWKnjVW+DAQdeYYddYwnXCiTXS+gRCOmwf50ydHtFaTTdJSkJD3cC8ydC+Gze
+         Ykg6oQQ7UEKaTY1Bm86L0+LFwWHnybFhTlmYqONyfIEtKyCV6u8kt68Mwh4PN6hryHfv
+         NyQsnZZCaGGMKf0/7tNfVmSnhHbiz2lRUO3BDw0/PhNNZxZAHj6hp/Aq6/Plhk3db8xN
+         RpYtQCQNgk7c14Z5nBq9fA0iRHVwjHJJxGrZ80Ymthrn9iohWPWdp4y+MEVbfYTNqJLN
+         U2JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nRYlUnr4w7NdPjwA3KubW4AmoT2UPgChOLUTL/VtfPk=;
-        b=FERRNMlzN6m02QUopS2dSOTMWJRlkG3UjnOJ3YpD2Kj1VhJ+Cm21XgGTdmUvvlGz3z
-         T1wT0z7l8M3VcR1FsIZY/twxAS8lXPP6N536Mts6tASVw0PmzIiwP+o+4yQI6VVw16F6
-         CwbfgLwm8AamIetMnqGU3U6aZv42qKs1My3NFqiGQ6V1AXrZEe30DeFp+9UxzN/rSGwK
-         QhYHA1CUUEJQJSlCD/shfyCsuyG2kinfc5EdpnhKBJZngSSaa2KQz3EjMqJjDBY0gtjs
-         KKnEhCE17teFieeXG5qp2rEuTtMhpjnYmRZWIuNyVBPuj5XC//VTtse5Fy35YNJ0AlDK
-         EGVQ==
-X-Gm-Message-State: AOAM5307VtY+he6C7kGtIip2qtSXLtPELxsxD0HWyFDpJJw4aQOMaazw
-        NsGu4FPE5KVuvNvMssFUzsUNnEDaKx3Tn6r3kTl1
-X-Google-Smtp-Source: ABdhPJwIBdQakNebnCSBhk098vcMEWn4jLnzAAmDr517Q+l5TiLHXWdQ/qgox1OAsDHx/ECJ9CC4xacN27xLm298AZQ=
-X-Received: by 2002:a6b:3c1a:: with SMTP id k26mr24050777iob.113.1615318130243;
- Tue, 09 Mar 2021 11:28:50 -0800 (PST)
+        bh=HYJycecCKR8mJEVeAV0bVwc2FaxFgSqtKDz5fqSfG+Y=;
+        b=qvZXzdIu79PJh9Xo1Qe4MBs0aGFYE+4+WBDTrQdi+AILoQ+Uz4dlTzOOsNVrQmSExa
+         BYH+wfVrLgSJVGeyyggHCoT1JUBU4XJ37xdRkfXhOJgxEJAzdim6ym9EFHRcUHNnmK15
+         piqHCZXHpceeVYI2a4Z249w7UWlJcgS8pZhwPeeSAlKAIp5Ql8oQtzQ+cef9vYx99MKl
+         xBBr91ZW34FzKv1sg2bM3dZTHrRvKCzpPyufBGhb8hxmQjJQSAzBY2rAbDHTJi+UAWxr
+         250s/NXiIWWJEIURO2zYPMZHbS8166z01O26tEpQzrxW2V1R5n3cYXNAWNJ3jKt/lQzB
+         4o0A==
+X-Gm-Message-State: AOAM533479CFV0bxqnTvFNAJhdQxny9/dM9T8zRXyK0jYQVNWyNAoRYp
+        CyvGndso2WhA5JFSi6AXyo8iKymQTJq78A7cb30NuNcz
+X-Google-Smtp-Source: ABdhPJzlxVuyzwg/hJK8di9C/jil7B+Ti5mXNWdgDFd2l3Eiy/MUpPBDNiI39hYbF+32J3EexKNxVsayZLBJIl66iA0=
+X-Received: by 2002:a63:fb4d:: with SMTP id w13mr26864300pgj.233.1615318318606;
+ Tue, 09 Mar 2021 11:31:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20210306054801.18263-1-xypron.glpk@gmx.de> <CAAhSdy08=ffPe+fYWX9ds4wNSMU3uzT8OENk0o93xpfZOKtYig@mail.gmail.com>
- <CAOnJCUKSf7tyz+56apVOqxNgnR_eYoidYw5=M2si753t4K71UQ@mail.gmail.com> <CAAhSdy0BK9-cG=rQNadbkzDWdXJgpiJ1QEywTgpBxr0NVa7cVQ@mail.gmail.com>
-In-Reply-To: <CAAhSdy0BK9-cG=rQNadbkzDWdXJgpiJ1QEywTgpBxr0NVa7cVQ@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Tue, 9 Mar 2021 11:28:39 -0800
-Message-ID: <CAOnJCULZFHPPXhL5ZyH9qNfb5BgUHos1PU2q6Khb7uT=N-7a3w@mail.gmail.com>
-Subject: Re: [PATCH 1/1] RISC-V: correct enum sbi_ext_rfence_fid
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Sean Anderson <seanga2@gmail.com>
+References: <20210305054312.254922-1-xie.he.0141@gmail.com> <4b30ca506b0d79ef5ba1a5e9ce9cf2cd@dev.tdt.de>
+In-Reply-To: <4b30ca506b0d79ef5ba1a5e9ce9cf2cd@dev.tdt.de>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Tue, 9 Mar 2021 11:31:47 -0800
+Message-ID: <CAJht_EM7Wtmtwi4=vEybSNbQrNmugC7HCLYcAjM07gEgeRtHMA@mail.gmail.com>
+Subject: Re: [PATCH net-next RFC] net: x25: Queue received packets in the
+ drivers instead of per-CPU queues
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Krzysztof Halasa <khc@pm.waw.pl>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 2:55 AM Anup Patel <anup@brainfault.org> wrote:
+On Tue, Mar 9, 2021 at 5:23 AM Martin Schiller <ms@dev.tdt.de> wrote:
 >
-> On Mon, Mar 8, 2021 at 1:19 PM Atish Patra <atishp@atishpatra.org> wrote:
-> >
-> > On Sat, Mar 6, 2021 at 4:12 AM Anup Patel <anup@brainfault.org> wrote:
-> > >
-> > > On Sat, Mar 6, 2021 at 11:19 AM Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
-> > > >
-> > > > The constants in enum sbi_ext_rfence_fid should match the SBI
-> > > > specification. See
-> > > > https://github.com/riscv/riscv-sbi-doc/blob/master/riscv-sbi.adoc#78-function-listing
-> > > >
-> > > > | Function Name               | FID | EID
-> > > > | sbi_remote_fence_i          |   0 | 0x52464E43
-> > > > | sbi_remote_sfence_vma       |   1 | 0x52464E43
-> > > > | sbi_remote_sfence_vma_asid  |   2 | 0x52464E43
-> > > > | sbi_remote_hfence_gvma_vmid |   3 | 0x52464E43
-> > > > | sbi_remote_hfence_gvma      |   4 | 0x52464E43
-> > > > | sbi_remote_hfence_vvma_asid |   5 | 0x52464E43
-> > > > | sbi_remote_hfence_vvma      |   6 | 0x52464E43
-> > > >
-> > > > Fixes: ecbacc2a3efd ("RISC-V: Add SBI v0.2 extension definitions")
-> > > > Reported-by: Sean Anderson <seanga2@gmail.com>
-> > > > Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-> > >
-
-Reviewed-by: Atish Patra <atish.patra@wdc.com>
-
-> > > Good catch.
-> > >
-> > > I guess we never saw any issues because these calls are only used by
-> > > KVM RISC-V which is not merged yet. Further for KVM RISC-V, the HFENCE
-> > > instruction is emulated as flush everything on FPGA, QEMU, and Spike so
-> > > we did not notice any issue with KVM RISC-V too.
-> > >
-> >
-> > OpenSBI & Xvisor also define the same order as Linux kernel. The
-> > existing order(in Linux kernel)
-> > makes more sense w.r.to Lexicographic order as well.
-> >
-> > Should we just fix the spec instead ?
+> I've tested the hdlc_x25 driver.
+> Looks good to me.
 >
-> I would not recommend that because RFENCE is part of the released SBI v0.2 spec.
->
+> Acked-by: Martin Schiller <ms@dev.tdt.de>
 
-Fair enough.
+Thank you!!
 
-> We have to be more careful in software to follow the spec correctly.
->
+I'll re-send this patch after net-next is re-opened and my other fixes
+get merged into net-next.
 
-Agreed. Apologies for the slip up.
-
-> Regards,
-> Anup
->
-> >
-> > > Looks good to me.
-> > >
-> > > Reviewed-by: Anup Patel <anup@brainfault.org>
-> > >
-> > > Regards,
-> > > Anup
-> > >
-> > > > ---
-> > > >  arch/riscv/include/asm/sbi.h | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> > > > index 99895d9c3bdd..d7027411dde8 100644
-> > > > --- a/arch/riscv/include/asm/sbi.h
-> > > > +++ b/arch/riscv/include/asm/sbi.h
-> > > > @@ -51,10 +51,10 @@ enum sbi_ext_rfence_fid {
-> > > >         SBI_EXT_RFENCE_REMOTE_FENCE_I = 0,
-> > > >         SBI_EXT_RFENCE_REMOTE_SFENCE_VMA,
-> > > >         SBI_EXT_RFENCE_REMOTE_SFENCE_VMA_ASID,
-> > > > -       SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA,
-> > > >         SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA_VMID,
-> > > > -       SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA,
-> > > > +       SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA,
-> > > >         SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA_ASID,
-> > > > +       SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA,
-> > > >  };
-> > > >
-> > > >  enum sbi_ext_hsm_fid {
-> > > > --
-> > > > 2.30.1
-> > > >
-> > > >
-> > > > _______________________________________________
-> > > > linux-riscv mailing list
-> > > > linux-riscv@lists.infradead.org
-> > > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> > >
-> > > _______________________________________________
-> > > linux-riscv mailing list
-> > > linux-riscv@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >
-> >
-> >
-> > --
-> > Regards,
-> > Atish
-
-
-
--- 
-Regards,
-Atish
+Thanks!
