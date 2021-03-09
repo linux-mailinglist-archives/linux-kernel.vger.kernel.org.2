@@ -2,328 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A21D332C9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE81D332CA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:55:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhCIQyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:54:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231248AbhCIQxd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:53:33 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE7AC061760
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 08:53:33 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id c16so6894737ply.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 08:53:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+ZOJ+q+9GrjSVjROsRMTtXkkkgpZZ6Smo3szpJto3wU=;
-        b=Io2xWfY9wnrkX9lmPqNI9hYZoExbsPaHOBplkGOOIwV6ptdPGsIOBmO/z2VhLrjOgM
-         yLC5Dw/z7nQSuQ0ZBDCxsTF96vjE139Z21tbFEX3yX5cgwdttt2NB3y6Oz3wjTO/ptDb
-         9bqd5TlfxsAM0U2TDhwQhPpmSEDZUduV/D5f4HbI88jqRE5oaeTVBW9BKg5FS0PV8zR/
-         lnq+SiwkfiXszS8Ly73G1dF+c302HTpan+8JD0S+3pL0kxEUCwzI+/ltLU75bAkmm9ez
-         CpXFMy7s/+X9bGg8TL68I31LAxpesjjF/P4hLkeu/h7Qc0BJmT3RMy5o244Qr77V6qcd
-         IFGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+ZOJ+q+9GrjSVjROsRMTtXkkkgpZZ6Smo3szpJto3wU=;
-        b=NKSJE1MDrGe0XkucV1l3MMmhfB0JWvg4MoG4qt/0uCQnjr1VzJ6TUqYN8HtI2cShkl
-         0Xy1y3B0u7W6FH5biy6ZeNRh6H8ctD/h5DrcnKdmz9K9CzLo+XZjkpbkpQa5EG16JIWB
-         f5PQF8m/Ti4w6cCWqKLgxqsP4lQEPZPyrKUVrK/zaW78uYomk8AWna0t3JEEa0jko9xP
-         u+mZ7n/6dvFdZyIPkFf4IXZZzq6Jo/bsT0bK9s6e2u9R+/8niyEchuzgptZ6IUMYG3gx
-         WPdVXBoavg7mdck1LacEOH+6qmUpuN9LNNw0uMAX4b3dFr0P/e62ik2iddvwtvT6F2aq
-         LoCQ==
-X-Gm-Message-State: AOAM533TCp1fn22MBPB8uQgW6OWcx3G1dAxIsIUkCIC7k6K/9x3n67ti
-        WOq72xnaUk/nwKYz1Lv1JNWryg==
-X-Google-Smtp-Source: ABdhPJyY4wZlJq47IGitXGbUEifHWMwGH2iiYWGwHxCQ5S3XqNMR3di6XBVmbidz1+Dv+vm8UOEbdA==
-X-Received: by 2002:a17:90a:8417:: with SMTP id j23mr5631532pjn.224.1615308812848;
-        Tue, 09 Mar 2021 08:53:32 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id s1sm13376084pfe.151.2021.03.09.08.53.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 08:53:32 -0800 (PST)
-Date:   Tue, 9 Mar 2021 09:53:30 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Ben Levinsky <ben.levinsky@xilinx.com>
-Cc:     devicetree@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        michal.simek@xilinx.com
-Subject: Re: [PATCH v26 5/5] remoteproc: Add initial zynqmp R5 remoteproc
- driver
-Message-ID: <20210309165330.GA4013290@xps15>
-References: <20210223154447.13247-1-ben.levinsky@xilinx.com>
- <20210223154447.13247-6-ben.levinsky@xilinx.com>
-MIME-Version: 1.0
+        id S231203AbhCIQzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:55:07 -0500
+Received: from mail-dm6nam10on2059.outbound.protection.outlook.com ([40.107.93.59]:9696
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231261AbhCIQy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 11:54:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=REvZNFj5NdqLRsUKrfO9REXJccQ3KwQJGQYG52qujvXt63qcAUxxe0cLXrE9CMXtfJNdLtTxOftN0pYC5rLiTss25jRr89+hFscC3/19GtqVNcHry06J8a2FMKQ7sf9TxIdybnJ58u3yRIJoraJloLzcqNPmTxyIXJvNiQKhCYS5hL9CAmrZ6aS9UrhMVeEf4FaBAMW83PV+xbyEgopr8iw3VOOJIUUQuteoU3v8llr0axyBApRJ1rVD5t58wxJJSY0/C0dbKEiY9sRA4l8I4jJlkZrMFW+RzmZTsTCjG8k8+712nACaH3aOmnZsNl8szdnmnkja3unm1kI+8MZuug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VKpvK/3/3Ub2XKJ/f47QIMrZJJ50utNXNchYEtfdulw=;
+ b=PFTb8zNeRDnzxIiAR+ZNjm+vvmucOuSzWb2cedwpZRDrXlRpdsHzauXmHd5cLqcKonmomFwgJEsoAnjVV5Bvk6J1upML5cbMADaNq/ps9103ZMWW46kUbK9wfFiJdCuXxIfyVtkI6V1BDEw3V12Q1hhJnhXRkL369hFxRb/uMMn5AWHGaeiLYTLbgWXY7QcOidfaZnqeiLm6iahFwnQJGvzas3dQbFlCcv4NzfiKM5fJt6EYHFZIsDttlBOZU8hRww4rl+YIIFj4hrwUGGluODj7VBYSCpPEtTHDlRFMeGTuN3sDfSU/75rNMWmOgX58UUeMJ0RWDEs/bGZ741bVng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VKpvK/3/3Ub2XKJ/f47QIMrZJJ50utNXNchYEtfdulw=;
+ b=PZIZu0aJ9VmzfjQ5BiGNC+DvF5fWQreDhyerJAF10qutSFy8ubSjKJUdF4q60iVzWaw/TF7nm6/JxnQTpXn49fkVdhpILkbIkbiR8gsKpNc6sKYyjBC8maT66uit9ClvvsYHJ9Bap1VNEG5QpXCPF2z4AmxbX3VfYVFk84/6rmxSCpXYJSePjTmcGTefGKwvrcnECnpf38dGagwr44oGxmst6PCfYeBWGS05Mw77u2hGPL2zNKiSNgLf68H85PyTpjUa3MhQnJh7JXSk4XrpeIcPY64/mvy/f4aRu8I79AbRr623u6beSz0oaqG05fDbg27FYCiJgzC4wH9rHyzZyQ==
+Authentication-Results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1548.namprd12.prod.outlook.com (2603:10b6:4:a::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3912.26; Tue, 9 Mar 2021 16:54:54 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3912.027; Tue, 9 Mar 2021
+ 16:54:54 +0000
+Date:   Tue, 9 Mar 2021 12:54:52 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>, Nadav Amit <namit@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: make alloc_anon_inode more useful
+Message-ID: <20210309165452.GL2356281@nvidia.com>
+References: <20210309155348.974875-1-hch@lst.de>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210223154447.13247-6-ben.levinsky@xilinx.com>
+In-Reply-To: <20210309155348.974875-1-hch@lst.de>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: MN2PR15CA0045.namprd15.prod.outlook.com
+ (2603:10b6:208:237::14) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR15CA0045.namprd15.prod.outlook.com (2603:10b6:208:237::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 16:54:54 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lJfdE-00A8qz-Vs; Tue, 09 Mar 2021 12:54:53 -0400
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6ef625fe-0a3d-42c7-3b0f-08d8e31c1017
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1548:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB15487F5E00577BA870A1831FC2929@DM5PR12MB1548.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7wb1mpIictjVgMwEJkt4sPVsmOj/7ohub1dlzy2ygvLFHZwntVd5AtW5q620Eux0M5fnWJ6+0+BboPkaVvIjj4opGGgr0f/7OV7OWujUIk2K36SA6e074ZoVv94eoUgvggPwQ1V+drjLwYZNC1heck4+Y0JNjdenRreeFVbcRq5IAI3P8SjVu8lLQFJETGnR2tb4WSw3VyoJUIrnyfMAKrDx9OJYmWZcsmI1SFLd24xz0q7l84vqcKGtFUygqxD47r2RRI8nwreo4lOGpEqGXGb9My8miQVBj0M+5x8dPyFDYjkNRZIznEwxeVAEieiNFrSgTYFuLY0/qxMenyXhnVdMtsS+5JMCFhxMQ/fjG9XZLbUsiy/+YpLrRl2oaukxBMyxvPIh8e0IBl++W+pitD1bQWmo2/HCRoyqv47o0F1g7rPgyPfLi9bs2YBevJuyjy8a8H3hPaM4OUOkzx1U3qPaEAFlWjharVe0V/oKmC1N/2d8nUpdQfozlf3ZW5Icnxr3Ks7kwkF2hQ1tHbuPoQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(376002)(396003)(346002)(54906003)(86362001)(5660300002)(9786002)(33656002)(36756003)(7416002)(1076003)(26005)(186003)(2906002)(4744005)(9746002)(8936002)(8676002)(426003)(4326008)(6916009)(66556008)(66946007)(2616005)(478600001)(83380400001)(66476007)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?jZFzFtuf5R6MqIg4O0DL4z6BTmkDWOHPy1QSqDbGA/CoOfqMTbT4dEvyov+9?=
+ =?us-ascii?Q?wqDQM77xS2pkngKlHOmlV4l5xvMAidbdYX/UdjjIeHPttTps/K7XFu1ERM8v?=
+ =?us-ascii?Q?xyLfkmvLaRzmV6D/ABpTRYJ+asQVGyoB1OsiwJN5pmwopkQom7Aw7xXwLFYY?=
+ =?us-ascii?Q?ZF1eWbaniNXIRPBIEU7EfyE4BwFDWiCGwLluRBPAPlVXg5hTwZiyAtUmtZec?=
+ =?us-ascii?Q?CcVfqa7/MT3ZqA2S3YAzo7NG+TZe1HIVGykPEBt9lHl/wEq2BjvxeQ6tgqoc?=
+ =?us-ascii?Q?2mXL9f44MWl6xK6gEgQj7eAxCj/lYNzsaH+DvqI0sf+SAbfzTXhfKhuVafp7?=
+ =?us-ascii?Q?BziwFtLWNOqKb20duo9JxdW3d2CfBAtsHVHdWvnn8KoeFwuDcA+2abOUorti?=
+ =?us-ascii?Q?q9JHjscBDqHrhFUnREJQFlJJ9UY8BTBDhHx2QfO5VR5uX2wUXof6WdFFUzLV?=
+ =?us-ascii?Q?b91+pO2LVqKGCdxxnFoUsnA5SFp7+3hhSz0ziIjqbmCL3vQD1F2dtKlexvCQ?=
+ =?us-ascii?Q?cdy5uZOmn7Hfy3Oe+T/Sk9ayvXKzHp/S8AtYGn+hOC/bDh+5xv/l6wyhSYsP?=
+ =?us-ascii?Q?sSrFkos6W2gAxoBricKXt7iUQOxyf7BE2AheT7taWo92fAf/pWwdglVSQLUL?=
+ =?us-ascii?Q?04FvfESpwSIns6V1O+/bDIocOKKZfWG8N7K0I3P/Li5bwiCP7QwMHHhQdB7/?=
+ =?us-ascii?Q?hcsTWQTGmsCk7tXycrg+PhhakES4/Mfc7exbZegewNLrn9DwYymp5D2RYR9E?=
+ =?us-ascii?Q?BhvhvA4PsSISnIChINmNVijRYFB+Tpf0SLYqeDxZyHqzVteIwSH7V/ng2nPa?=
+ =?us-ascii?Q?pNk4x4pQPpTJRYbDgxZVL9s2w61LzwKJ0M+Z0J0xfYSIM2SkK/NkfuHN18qf?=
+ =?us-ascii?Q?ip+4HZVH1g+H1vr7LN+cUHxGtUIhVKy+h7cLU1ErQI7ey/F2MgZzU0J63dYU?=
+ =?us-ascii?Q?i5AZCPSZorLJVaCF8l8qWUu6AN4RUHvxoLeW87vhQhG1FsocO2+7DZlWVouc?=
+ =?us-ascii?Q?0+CwaUMK2I+pBOi9pSrN8CX00OoUsnwV3SPxP1jnpsbTRzLrwrwd8cWDP9gr?=
+ =?us-ascii?Q?bLrVgdF1BcCUvnGP1q0iHHNfpdpAi93Nizn5z0BV6RwR9bkeSb/p1cGtUiPb?=
+ =?us-ascii?Q?Xji18HoMq0PdwgMYcvs2G6fXWoYOaVxfZFfFlTsw+sg+cRO/rEjSwe4gLA2C?=
+ =?us-ascii?Q?nrr65UdppWuAuQirJ7tenBlIbT2mK0Mk9eXsxMR6u7Zc91ZugAAWMy8i8ZfU?=
+ =?us-ascii?Q?uYxJE7Iw5gvhh5ExD4JQzc3qWmXa8jHpalXT8mngHJMLuyq2/8SSeOFxsRgQ?=
+ =?us-ascii?Q?+BWoUrd8PTJQ32W3UBeWTK43MyYPCmFGXzcVhuloaTuwjQ=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ef625fe-0a3d-42c7-3b0f-08d8e31c1017
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 16:54:54.3541
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yHLv7rz67JwaCrza7WpjYQGi1FXin+ClHRaejpP8M3GuoOUt1zb0btLDz04o8DaC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1548
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
-
-> +
-> +/**
-> + * zynqmp_r5_probe - Probes ZynqMP R5 processor device node
-> + *		       this is called for each individual R5 core to
-> + *		       set up mailbox, Xilinx platform manager unique ID,
-> + *		       add to rproc core
-> + *
-> + * @pdev: domain platform device for current R5 core
-> + * @node: pointer of the device node for current R5 core
-> + * @rpu_mode: mode to configure RPU, split or lockstep
-> + *
-> + * Return: 0 for success, negative value for failure.
-> + */
-> +static struct zynqmp_r5_rproc *zynqmp_r5_probe(struct platform_device *pdev,
-> +					       struct device_node *node,
-> +					       enum rpu_oper_mode rpu_mode)
-> +{
-> +	int ret, num_banks;
-> +	struct device *dev = &pdev->dev;
-> +	struct rproc *rproc_ptr;
-> +	struct zynqmp_r5_rproc *z_rproc;
-> +	struct device_node *r5_node;
-> +
-> +	/* Allocate remoteproc instance */
-> +	rproc_ptr = devm_rproc_alloc(dev, dev_name(dev), &zynqmp_r5_rproc_ops,
-> +				     NULL, sizeof(struct zynqmp_r5_rproc));
-> +	if (!rproc_ptr) {
-> +		ret = -ENOMEM;
-> +		goto error;
-> +	}
-> +
-> +	rproc_ptr->auto_boot = false;
-> +	z_rproc = rproc_ptr->priv;
-> +	z_rproc->rproc = rproc_ptr;
-> +	r5_node = z_rproc->rproc->dev.parent->of_node;
-> +
-> +	/* Set up DMA mask */
-> +	ret = dma_set_coherent_mask(dev, DMA_BIT_MASK(32));
-> +	if (ret)
-> +		goto error;
-> +
-> +	/* Get R5 power domain node */
-> +	ret = of_property_read_u32(node, "power-domain", &z_rproc->pnode_id);
-> +	if (ret)
-> +		goto error;
-> +
-> +	ret = r5_set_mode(z_rproc, rpu_mode);
-> +	if (ret)
-> +		goto error;
-> +
-> +	if (of_property_read_bool(node, "mboxes")) {
-> +		ret = zynqmp_r5_setup_mbox(z_rproc, node);
-> +		if (ret)
-> +			goto error;
-> +	}
-> +
-> +	/* go through TCM banks for r5 node */
-> +	num_banks = of_count_phandle_with_args(r5_node, BANK_LIST_PROP, NULL);
-> +	if (num_banks <= 0) {
-> +		dev_err(dev, "need to specify TCM banks\n");
-> +		ret = -EINVAL;
-> +		goto error;
-> +	}
-> +
-> +	if (num_banks > NUM_SRAMS) {
-> +		dev_err(dev, "max number of srams is %d. given: %d \r\n",
-> +			NUM_SRAMS, num_banks);
-> +		ret = -EINVAL;
-> +		goto error;
-> +	}
-> +
-> +	/* construct collection of srams used by the current R5 core */
-> +	for (; num_banks; num_banks--) {
-> +		struct resource rsc;
-> +		struct device_node *dt_node;
-> +		resource_size_t size;
-> +		int i;
-> +
-> +		dt_node = of_parse_phandle(r5_node, BANK_LIST_PROP, i);
-
-Variable @i is not initialised but it is used as an index to retrieve a handle
-to the sram banks.  That code _should_ have failed frequently or at least have
-yielded abnormal results often enough to be noticed.  Why wasn't it the case?
-
-I will stop here for the moment.
-
-> +		if (!dt_node) {
-> +			ret = -EINVAL;
-> +			goto error;
-> +		}
-> +
-> +		ret = of_address_to_resource(dt_node, 0, &rsc);
-> +		if (ret < 0) {
-> +			of_node_put(dt_node);
-> +			goto error;
-> +		}
-> +
-> +		of_node_put(dt_node);
-> +		size = resource_size(&rsc);
-> +
-> +		/*
-> +		 * Find corresponding Xilinx platform management ID.
-> +		 * The bank information is used in prepare/unprepare and
-> +		 * parse_fw.
-> +		 */
-> +		for (i = 0; i < NUM_SRAMS; i++) {
-> +			if (rsc.start == zynqmp_banks[i].addr) {
-> +				z_rproc->srams[i].addr = rsc.start;
-> +				z_rproc->srams[i].size = size;
-> +				z_rproc->srams[i].id = zynqmp_banks[i].id;
-> +				break;
-> +			}
-> +		}
-> +
-> +		if (i == NUM_SRAMS) {
-> +			dev_err(dev, "sram %llx is not valid.\n", rsc.start);
-> +			ret = -EINVAL;
-> +			goto error;
-> +		}
-> +	}
-> +
-> +	/* Add R5 remoteproc */
-> +	ret = devm_rproc_add(dev, rproc_ptr);
-> +	if (ret) {
-> +		zynqmp_r5_cleanup_mbox(z_rproc);
-> +		goto error;
-> +	}
-> +
-> +	return z_rproc;
-> +error:
-> +	return ERR_PTR(ret);
-> +}
-> +
-> +/*
-> + * zynqmp_r5_remoteproc_probe
-> + *
-> + * @pdev: domain platform device for R5 cluster
-> + *
-> + * called when driver is probed, for each R5 core specified in DT,
-> + * setup as needed to do remoteproc-related operations
-> + *
-> + * Return: 0 for success, negative value for failure.
-> + */
-> +static int zynqmp_r5_remoteproc_probe(struct platform_device *pdev)
-> +{
-> +	int ret, core_count;
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *nc;
-> +	enum rpu_oper_mode rpu_mode = PM_RPU_MODE_LOCKSTEP;
-> +	struct list_head *cluster; /* list to track each core's rproc */
-> +	struct zynqmp_r5_rproc *z_rproc;
-> +	struct platform_device *child_pdev;
-> +	struct list_head *pos;
-> +
-> +	ret = of_property_read_u32(dev->of_node, "xlnx,cluster-mode", &rpu_mode);
-> +	if (ret < 0 || (rpu_mode != PM_RPU_MODE_LOCKSTEP &&
-> +			rpu_mode != PM_RPU_MODE_SPLIT)) {
-> +		dev_err(dev, "invalid cluster mode: ret %d mode %x\n",
-> +			ret, rpu_mode);
-> +		return ret;
-> +	}
-> +
-> +	dev_dbg(dev, "RPU configuration: %s\n",
-> +		rpu_mode == PM_RPU_MODE_LOCKSTEP ? "lockstep" : "split");
-> +
-> +	/*
-> +	 * if 2 RPUs provided but one is lockstep, then we have an
-> +	 * invalid configuration.
-> +	 */
-> +
-> +	core_count = of_get_available_child_count(dev->of_node);
-> +	if ((rpu_mode == PM_RPU_MODE_LOCKSTEP && core_count != 1) ||
-> +	    core_count > MAX_RPROCS)
-> +		return -EINVAL;
-> +
-> +	cluster = devm_kzalloc(dev, sizeof(*cluster), GFP_KERNEL);
-> +	if (!cluster)
-> +		return -ENOMEM;
-> +	INIT_LIST_HEAD(cluster);
-> +
-> +	ret = devm_of_platform_populate(dev);
-> +	if (ret) {
-> +		dev_err(dev, "devm_of_platform_populate failed, ret = %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* probe each individual r5 core's remoteproc-related info */
-> +	for_each_available_child_of_node(dev->of_node, nc) {
-> +		child_pdev = of_find_device_by_node(nc);
-> +		if (!child_pdev) {
-> +			dev_err(dev, "could not get R5 core platform device\n");
-> +			ret = -ENODEV;
-> +			goto out;
-> +		}
-> +
-> +		z_rproc = zynqmp_r5_probe(child_pdev, nc, rpu_mode);
-> +		dev_dbg(dev, "%s to probe rpu %pOF\n",
-> +			ret ? "Failed" : "Able", nc);
-> +		if (IS_ERR(z_rproc)) {
-> +			ret = PTR_ERR(z_rproc);
-> +			goto out;
-> +		}
-> +		list_add_tail(&z_rproc->elem, cluster);
-> +	}
-> +	/* wire in so each core can be cleaned up at driver remove */
-> +	platform_set_drvdata(pdev, cluster);
-> +	return 0;
-> +out:
-> +	list_for_each(pos, cluster) {
-> +		z_rproc = list_entry(pos, struct zynqmp_r5_rproc, elem);
-> +		zynqmp_r5_cleanup_mbox(z_rproc);
-> +	}
-> +	return ret;
-> +}
-> +
-> +/*
-> + * zynqmp_r5_remoteproc_remove
-> + *
-> + * @pdev: domain platform device for R5 cluster
-> + *
-> + * When the driver is unloaded, clean up the mailboxes for each
-> + * remoteproc that was initially probed.
-> + */
-> +static int zynqmp_r5_remoteproc_remove(struct platform_device *pdev)
-> +{
-> +	struct list_head *pos, *temp, *cluster = (struct list_head *)
-> +						 platform_get_drvdata(pdev);
-> +	struct zynqmp_r5_rproc *z_rproc = NULL;
-> +
-> +	list_for_each_safe(pos, temp, cluster) {
-> +		z_rproc = list_entry(pos, struct zynqmp_r5_rproc, elem);
-> +		zynqmp_r5_cleanup_mbox(z_rproc);
-> +	}
-> +	return 0;
-> +}
-> +
-> +/* Match table for OF platform binding */
-> +static const struct of_device_id zynqmp_r5_remoteproc_match[] = {
-> +	{ .compatible = "xlnx,zynqmp-r5-remoteproc", },
-> +	{ /* end of list */ },
-> +};
-> +MODULE_DEVICE_TABLE(of, zynqmp_r5_remoteproc_match);
-> +
-> +static struct platform_driver zynqmp_r5_remoteproc_driver = {
-> +	.probe = zynqmp_r5_remoteproc_probe,
-> +	.remove = zynqmp_r5_remoteproc_remove,
-> +	.driver = {
-> +		.name = "zynqmp_r5_remoteproc",
-> +		.of_match_table = zynqmp_r5_remoteproc_match,
-> +	},
-> +};
-> +module_platform_driver(zynqmp_r5_remoteproc_driver);
-> +
-> +MODULE_AUTHOR("Ben Levinsky <ben.levinsky@xilinx.com>");
-> +MODULE_LICENSE("GPL v2");
-> -- 
-> 2.17.1
+On Tue, Mar 09, 2021 at 04:53:39PM +0100, Christoph Hellwig wrote:
+> Hi all,
 > 
+> this series first renames the existing alloc_anon_inode to
+> alloc_anon_inode_sb to clearly mark it as requiring a superblock.
+> 
+> It then adds a new alloc_anon_inode that works on the anon_inode
+> file system super block, thus removing tons of boilerplate code.
+> 
+> The few remainig callers of alloc_anon_inode_sb all use alloc_file_pseudo
+> later, but might also be ripe for some cleanup.
+
+I like it
+
+For a submission plan can we have this on a git branch please? I will
+need a copy for RDMA and Alex will need one for vfio..
+
+Thanks,
+Jason
