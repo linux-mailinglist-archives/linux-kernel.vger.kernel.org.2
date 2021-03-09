@@ -2,122 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C463321F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A39B3321FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:30:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCIJ3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:29:20 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:60440 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhCIJ3D (ORCPT
+        id S229916AbhCIJ3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:29:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229553AbhCIJ3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:29:03 -0500
-Received: from mail-wr1-f72.google.com ([209.85.221.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lJYfm-0005rL-DD
-        for linux-kernel@vger.kernel.org; Tue, 09 Mar 2021 09:29:02 +0000
-Received: by mail-wr1-f72.google.com with SMTP id i5so6157007wrp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 01:29:02 -0800 (PST)
+        Tue, 9 Mar 2021 04:29:36 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB5CC06174A;
+        Tue,  9 Mar 2021 01:29:36 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id w11so14412850wrr.10;
+        Tue, 09 Mar 2021 01:29:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sO+epgmRhJDMZTjy7AJEtlpTCWTyWl78HxLY6u7YYT4=;
+        b=K3v2aelY32sKpTuZ0I7x4JWtpKiNpmfBFly7VryV6+xxpJe4g7wPS7xh5S/doLXKcb
+         mo03VIkPcwsmyDMuTKEflW0IX9bQz3bdkpAB8lwn4gHX3Yk/24v3TkRJra1g9MVRDVfr
+         RshKTZw4JxQOHU32eMgwYbxaCNl0qhd5/P7GOvgGILcxFqzGPuyRG274SU6ZXMzZl3/2
+         h5I8RdgVlBNapJaRIhb10UL+wE0BH2uKm4DAHjEIGJbTANjZCF5F5JCUfD1METY6HZv3
+         XN9Gu51SLvvM/NoFw80hy0vNU50IQEDciM2LMZJcycbhpAt5YhLGv3J3l0j0GSzOtIoD
+         sbbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Y+DJYItk5T3eq0Zhm1ybWYn6qoUDmEqSxzTazQTJ2WI=;
-        b=eJ9EJ0S4QOcqBkAhYkLijvIi2Ss9R5g/YB4h+gSOdf80XDbr8ptsI+ZQF+V1nSdk0m
-         PLO6UO2Vsu2AwKRMlJe0+DWhhWOcA3NAdupffnANEjzpd0RjsoftTAmKF54kWZd0kK09
-         A2y9JcAa8g+N5RpIFfONOo2bUNZw0h0p3BTdUThWiyIvh2tlx4rjACb5Bt5mmBd7aLZU
-         GR3QvEHHUXyrmX/Uo3IVYn+3Al2nvSesFBdNC0Cl2VYtInMSdWJz/t1Z3Z597+985LQB
-         Ifn+3nq0aUUcwCmaC7kwAtUOcJRZVga9Z17e/H3LpEOpTEBEc5TobZ3e1a7pv5zWl4gN
-         0jeg==
-X-Gm-Message-State: AOAM5304U3XuxwoVqaL5LMAK00EmVpTo8u+Rp53x2+zWX+B5e4xj/eyw
-        8dFtsjYsUDcmjanC3VyWf27JIJ/v2/DYJGIsglQkqxNUgdSdr8rvo1k5qSwvLTS2PMRtR0J8oAJ
-        Mq9j+B/NjuwlfNY+xUTOduauDUxInKau25C0vVoYhtQ==
-X-Received: by 2002:a1c:f20f:: with SMTP id s15mr2883331wmc.35.1615282142195;
-        Tue, 09 Mar 2021 01:29:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxDwieLYn65IgohT+IWkBV46K/G4fBAkiPaWogqYazvknK77lVtKE1MtKYWFR3j0TqjOVKdbw==
-X-Received: by 2002:a1c:f20f:: with SMTP id s15mr2883318wmc.35.1615282142034;
-        Tue, 09 Mar 2021 01:29:02 -0800 (PST)
-Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.gmail.com with ESMTPSA id p14sm2967489wmc.30.2021.03.09.01.29.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 01:29:01 -0800 (PST)
-Subject: Re: [PATCH v2] arm64: defconfig: enable Intel's eASIC N5X SoCFPGA and
- Keem Bay SoC
-To:     Dinh Nguyen <dinguyen@kernel.org>,
-        "Paul J. Murphy" <paul.j.murphy@intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, arm@kernel.org, soc@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-References: <20210308174824.278372-1-krzysztof.kozlowski@canonical.com>
- <776e0c26-4f05-2a3c-1536-f730b9109b1b@kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <7462eeec-5c4e-b4d5-cf94-9945042fc1d1@canonical.com>
-Date:   Tue, 9 Mar 2021 10:29:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sO+epgmRhJDMZTjy7AJEtlpTCWTyWl78HxLY6u7YYT4=;
+        b=RDh6ow8oglMIstty/O9cAA5FC3ieQtnNFv/PYLgo/bBwgQdrDea/9OIreCCrIv6Jzd
+         5x/3ZPqoVdLHlT/4f+Qn3ys5KACxL7XtWPemIy46zaVP1Nrygdg3Nbiad5YVbXtQnWdE
+         gJKjxIctuFvzeoCWZfFKxpAFJzZtIvDtMu7IHwKaEP95SJ4scHmPR5sPliiZwrmXRexc
+         t2nQlQB8pY+n9BCU+Go2O0AE4vev3Or0g+ghU/liJUdVECS59EUS/dlhL3atthPCqf5U
+         dnrcBLoR3Fldtb+elRyv4xPfhTVUCgUnn8oRlsRUYvAaue4R7G1CZStVKmFIWaeeMbIj
+         5MQQ==
+X-Gm-Message-State: AOAM532X5Rvkkzx7VaRcSAuCOxUlOoJG+Gw+zGRkDaU/smjE//E2+oCG
+        vsL50yf13OR8gwQc1H0ZEEU=
+X-Google-Smtp-Source: ABdhPJxRf5rC6bFM/jX0jWPH/MjxZL5FZ/8xf3aU9Yy6CPERflbdpoh/R7KczYhwdnyHNlKIBhJKmg==
+X-Received: by 2002:adf:f841:: with SMTP id d1mr26884305wrq.36.1615282175248;
+        Tue, 09 Mar 2021 01:29:35 -0800 (PST)
+Received: from arch-thunder.localdomain (a109-49-46-234.cpe.netcabo.pt. [109.49.46.234])
+        by smtp.gmail.com with ESMTPSA id o9sm3154597wmc.8.2021.03.09.01.29.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 01:29:34 -0800 (PST)
+Date:   Tue, 9 Mar 2021 09:29:32 +0000
+From:   Rui Miguel Silva <rmfrfs@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
+        linux-tegra@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        broonie@kernel.org, gregkh@linuxfoundation.org, elder@kernel.org,
+        johan@kernel.org, vireshk@kernel.org, f.fainelli@gmail.com,
+        ldewangan@nvidia.com, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, linux@deviqon.com
+Subject: Re: [PATCH 06/10] staging: greybus: spilib: use 'spi_delay_to_ns'
+ for getting xfer delay
+Message-ID: <20210309092932.kliwq6ylqlnpqekk@arch-thunder.localdomain>
+References: <20210308145502.1075689-1-aardelean@deviqon.com>
+ <20210308145502.1075689-7-aardelean@deviqon.com>
+ <20210309042809.dgop5dli36z27sj2@vireshk-i7>
 MIME-Version: 1.0
-In-Reply-To: <776e0c26-4f05-2a3c-1536-f730b9109b1b@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210309042809.dgop5dli36z27sj2@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/03/2021 20:07, Dinh Nguyen wrote:
-> Hi Krzysztof,
+Hi,
+On Tue, Mar 09, 2021 at 09:58:09AM +0530, Viresh Kumar wrote:
+> On 08-03-21, 16:54, Alexandru Ardelean wrote:
+> > The intent is the removal of the 'delay_usecs' field from the
+> > spi_transfer struct, as there is a 'delay' field that does the same
+> > thing.
+> > 
+> > The spi_delay_to_ns() can be used to get the transfer delay. It works by
+> > using the 'delay_usecs' field first (if it is non-zero), and finally
+> > uses the 'delay' field.
+> > 
+> > Since the 'delay_usecs' field is going away, this change makes use of the
+> > spi_delay_to_ns() function. This also means dividing the return value of
+> > the function by 1000, to convert it to microseconds.
+> > To prevent any potential faults when converting to microseconds and since
+> > the result of spi_delay_to_ns() is int, the delay is being computed in 32
+> > bits and then clamped between 0 & U16_MAX.
+> > 
+> > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> > ---
+> >  drivers/staging/greybus/spilib.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/staging/greybus/spilib.c b/drivers/staging/greybus/spilib.c
+> > index 672d540d3365..30655153df6a 100644
+> > --- a/drivers/staging/greybus/spilib.c
+> > +++ b/drivers/staging/greybus/spilib.c
+> > @@ -245,6 +245,7 @@ static struct gb_operation *gb_spi_operation_create(struct gb_spilib *spi,
+> >  	/* Fill in the transfers array */
+> >  	xfer = spi->first_xfer;
+> >  	while (msg->state != GB_SPI_STATE_OP_DONE) {
+> > +		int xfer_delay;
+> >  		if (xfer == spi->last_xfer)
+> >  			xfer_len = spi->last_xfer_size;
+> >  		else
+> > @@ -259,7 +260,9 @@ static struct gb_operation *gb_spi_operation_create(struct gb_spilib *spi,
+> >  
+> >  		gb_xfer->speed_hz = cpu_to_le32(xfer->speed_hz);
+> >  		gb_xfer->len = cpu_to_le32(xfer_len);
+> > -		gb_xfer->delay_usecs = cpu_to_le16(xfer->delay_usecs);
+> > +		xfer_delay = spi_delay_to_ns(&xfer->delay, xfer) / 1000;
+> > +		xfer_delay = clamp_t(u16, xfer_delay, 0, U16_MAX);
+> > +		gb_xfer->delay_usecs = cpu_to_le16(xfer_delay);
+> >  		gb_xfer->cs_change = xfer->cs_change;
+> >  		gb_xfer->bits_per_word = xfer->bits_per_word;
 > 
-> On 3/8/21 11:48 AM, Krzysztof Kozlowski wrote:
->> From: Krzysztof Kozlowski <krzk@kernel.org>
->>
->> Enable in defconfig two Intel ARM64 architectures: the eASIC N5X SoCFPGA
->> and Keem Bay SoC.  This allows compile coverage when building default
->> config.
->>
->> For the N5X (and Agilex) enable also DesignWare SPI controller in MMIO.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->>
->> ---
->>
->> Hi Arnd,
->>
->> You asked me to check if all drivers are enabled for these platforms.
->> In general the answer is yes. In particular:
->> 1. Keem Bay is does not have much in upstream, but everything described
->>     in DTS is there,
->> 2. N5X shares a lot with Agilex SoCFPGA which already (mostly) is
->>     supported.
->>
->> Changes since v1:
->> 1. Enable also SPI_DW_MMIO
->> ---
->>   arch/arm64/configs/defconfig | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
->> index d612f633b771..9f9adcb8b0e9 100644
->> --- a/arch/arm64/configs/defconfig
->> +++ b/arch/arm64/configs/defconfig
->> @@ -29,6 +29,7 @@ CONFIG_KALLSYMS_ALL=y
->>   CONFIG_PROFILING=y
->>   CONFIG_ARCH_ACTIONS=y
->>   CONFIG_ARCH_AGILEX=y
->> +CONFIG_ARCH_N5X=y
-> 
-> I just submitted a patch for this as well. From the looks of the 
-> defconfig file, it looks like the platforms are in alphabetical order, 
-> but then I see that ARCH_SUNXI is not in it's correct spot if there is a 
-> rule for keeping things in alphabetical order.
-> 
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-The rule is that order comes from savedefconfig, not alphabetical. This
-way you avoid reshuffling of symbols on any future savedefconfig.
+Acked-by: Rui Miguel Silva <rmfrfs@gmail.com>
 
-Best regards,
-Krzysztof
+------
+Cheers,
+     Rui
