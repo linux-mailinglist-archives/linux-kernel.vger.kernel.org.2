@@ -2,74 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5EB332B97
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70CFC332B8F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbhCIQJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:09:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbhCIQIo (ORCPT
+        id S232117AbhCIQIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:08:46 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:53926 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232098AbhCIQIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:08:44 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94CBC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 08:08:44 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id d9so14541585ybq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 08:08:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=689xOchI/ah6zp0i6uvElTz+B+8kXLkkDTY5x4DUOZE=;
-        b=SH4yTk303DzsNnZIptNW0bKPJ3or2YuDgJklTtQgbPUiiHgk4+WG4+2+TMvSVk92la
-         3+X0Q84I2TjvB//SumHGxfU2pnDN2Z0APA3fRSe2wCDf3wy1WUhnbmre+sWMy418Kf7F
-         8knjX3Be0mbSqEu02TyHXW+3GtzMfEkVfQ/I2W4YOWoyKY0FQ3QlPnGVo7opA84UJojZ
-         PtwLe/yNlx+c2sFhSmFXN0eIdgnJAbhCixWjh9oRyL4ecf7Rg2jjiI2gIo7tMu0dgdLB
-         czCnwXr3a1VYo2ShtAdij/Nsr5xwjrKpggJMJPZ+AoWBQIXYrvb+GwGvQr9zFUIMKMxF
-         mWAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=689xOchI/ah6zp0i6uvElTz+B+8kXLkkDTY5x4DUOZE=;
-        b=XxufuoM8Si6/bUZO/GSlOn7N6IKjDq45nbE/oVjIpLUOEzzwLz4Ath3DacFJheHY6M
-         Mr+dDS62A3AlelrLtHN1rUGh+ScJ+lyjhQuHdF8UjIGZQQju4YD/WnJAwNa54LP5zqx+
-         vYzPnd9tV6sm0Ti7e8RagQM9TN/oon+49G6uNyXFHeRMXMNhwvg1n9ykhyds/ttO8rAP
-         flOzwh3nrPIeMpx20gx0J58g5eapxrOddNsu3xTLm8VHFiq/81XZPpe5TDPt6udHcTKq
-         x8yRWP7ozZyr+PyvacRpdG3OFDvTUcEx8osvMs8UXdqIJ7wo7v/HmJGPTU5ZEC0zCnQk
-         QLxg==
-X-Gm-Message-State: AOAM532Phr5kPVpyVt+MLfmH7oRu+kOyjqshrFfCAENTmdsm8bMOosz+
-        jPQtH0zPeXAqGCm1tJgCjDDRqFgKNX8e4QXWAJlwsQ==
-X-Google-Smtp-Source: ABdhPJxJoRn7pDzaCH0XVGwscn63NzmgI/9jKlzYT7ckXcNqN7dzcE6c3B3yWTXKPs6KuS9rxKcpmjzxCNmtEazJSV8=
-X-Received: by 2002:a25:b682:: with SMTP id s2mr41053851ybj.407.1615306123734;
- Tue, 09 Mar 2021 08:08:43 -0800 (PST)
+        Tue, 9 Mar 2021 11:08:13 -0500
+Date:   Tue, 09 Mar 2021 16:08:11 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1615306092;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ydP5OQo35wAYWz8Gi3ovOO+XhHXKCyB4t30sZUCfcWY=;
+        b=nsZ8Th5H5/zsO4YFl832ncOKMjnzzxio0VuJ6lBubI6i/9DUSr0PmT4kG7DD4WcfXOhLoa
+        ZBtVqz+9ygOrW37YaKJLMMQFKWAO+fdZymo9QItWZiC6Y0S3uGo97dp9jMZFnH7CdCUWgo
+        5MhMQYNtwNOJ3Z4wf+wLnIe9eGeoGUbKouZ3Ji1wijVkdSLy+ZHk1SaJ0I3kLILNOhBDg1
+        hDkolbGTIwW0j8f9bBWuP5YUsmJyrSG8jM7uajAvHCuJCY/pAC2uDGc3B9oJ7D9Zn82OAQ
+        VlLHVLqxSnGJ6e8r4NAB/bVciaPpJblssdN6lKth9GODMBA4+Yia53Qry1P/RQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1615306092;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ydP5OQo35wAYWz8Gi3ovOO+XhHXKCyB4t30sZUCfcWY=;
+        b=LAyffzNC8k6oFMCgFgcPG7DdJWE7W+sff6EeaPNVcS60FT81IS7NQsaFJCYxX3yb3AFcYf
+        1HcgYsprM2pqZ0CA==
+From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/sev-es: Correctly track IRQ states in runtime
+ #VC handler
+Cc:     Andy Lutomirski <luto@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        Borislav Petkov <bp@suse.de>, stable@vger.kernel.org,
+        #@tip-bot2.tec.linutronix.de, v5.10+@tip-bot2.tec.linutronix.de,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210303141716.29223-5-joro@8bytes.org>
+References: <20210303141716.29223-5-joro@8bytes.org>
 MIME-Version: 1.0
-References: <1399790.1602853614@warthog.procyon.org.uk> <000000000000b9732805b1c970f5@google.com>
-In-Reply-To: <000000000000b9732805b1c970f5@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 9 Mar 2021 17:08:06 +0100
-Message-ID: <CACT4Y+aH0MrQu2c3fQfm8CD1sXzA5DhHKXLAqbPCjGKQjEoVJQ@mail.gmail.com>
-Subject: Re: Re: general protection fault in strncasecmp
-To:     syzbot <syzbot+459a5dce0b4cb70fd076@syzkaller.appspotmail.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Hillf Danton <hdanton@sina.com>, linux-afs@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <161530609185.398.9748998065952345534.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 3:07 PM syzbot
-<syzbot+459a5dce0b4cb70fd076@syzkaller.appspotmail.com> wrote:
->
-> > #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git        f25a7033ecb675101f8bc060a7c5fbe0c9076fd3
->
-> "\tf25a7033ecb675101f8bc060a7c5fbe0c9076fd3" does not look like a valid git branch or commit.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Hi David,
+Commit-ID:     62441a1fb53263bda349b6e5997c3cc5c120d89e
+Gitweb:        https://git.kernel.org/tip/62441a1fb53263bda349b6e5997c3cc5c120d89e
+Author:        Joerg Roedel <jroedel@suse.de>
+AuthorDate:    Wed, 03 Mar 2021 15:17:15 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 09 Mar 2021 12:33:46 +01:00
 
-Not sure if you are still interesting in this or not, but fwiw tabs
-should be supported now:
-https://github.com/google/syzkaller/commit/26967e354e030f6a022b7a60a7c9899ec25923aa
+x86/sev-es: Correctly track IRQ states in runtime #VC handler
+
+Call irqentry_nmi_enter()/irqentry_nmi_exit() in the #VC handler to
+correctly track the IRQ state during its execution.
+
+Fixes: 0786138c78e79 ("x86/sev-es: Add a Runtime #VC Exception Handler")
+Reported-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: stable@vger.kernel.org # v5.10+
+Link: https://lkml.kernel.org/r/20210303141716.29223-5-joro@8bytes.org
+---
+ arch/x86/kernel/sev-es.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index 301f20f..c3fd8fa 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -1258,13 +1258,12 @@ static __always_inline bool on_vc_fallback_stack(struct pt_regs *regs)
+ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
+ {
+ 	struct sev_es_runtime_data *data = this_cpu_read(runtime_data);
++	irqentry_state_t irq_state;
+ 	struct ghcb_state state;
+ 	struct es_em_ctxt ctxt;
+ 	enum es_result result;
+ 	struct ghcb *ghcb;
+ 
+-	lockdep_assert_irqs_disabled();
+-
+ 	/*
+ 	 * Handle #DB before calling into !noinstr code to avoid recursive #DB.
+ 	 */
+@@ -1273,6 +1272,8 @@ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
+ 		return;
+ 	}
+ 
++	irq_state = irqentry_nmi_enter(regs);
++	lockdep_assert_irqs_disabled();
+ 	instrumentation_begin();
+ 
+ 	/*
+@@ -1335,6 +1336,7 @@ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
+ 
+ out:
+ 	instrumentation_end();
++	irqentry_nmi_exit(regs, irq_state);
+ 
+ 	return;
+ 
