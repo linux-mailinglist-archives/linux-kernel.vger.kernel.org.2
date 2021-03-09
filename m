@@ -2,62 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776BF332269
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:58:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 138B633226A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:59:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhCIJ55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:57:57 -0500
-Received: from muru.com ([72.249.23.125]:41370 "EHLO muru.com"
+        id S229916AbhCIJ6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:58:36 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:31735 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229480AbhCIJ5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:57:42 -0500
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 17CE9802C;
-        Tue,  9 Mar 2021 09:58:22 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 11:57:37 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>, soc@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] ARM: omap1: fix building with clang IAS
-Message-ID: <YEdGkZlCDdhKP6cw@atomide.com>
-References: <20210308153430.2530616-1-arnd@kernel.org>
+        id S229480AbhCIJ6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 04:58:02 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DvrHW3Jcrz9txfL;
+        Tue,  9 Mar 2021 10:57:59 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id J6axhznGM18g; Tue,  9 Mar 2021 10:57:59 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DvrHW1tYWz9txfN;
+        Tue,  9 Mar 2021 10:57:59 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6DDA68B7E7;
+        Tue,  9 Mar 2021 10:58:00 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ES4Klg5zpPJo; Tue,  9 Mar 2021 10:58:00 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C48CB8B7DC;
+        Tue,  9 Mar 2021 10:57:59 +0100 (CET)
+Subject: Re: [PATCH] powerpc: Fix missing declaration of
+ [en/dis]able_kernel_vsx()
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexdeucher@gmail.com>
+References: <8d7d285a027e9d21f5ff7f850fa71a2655b0c4af.1615279170.git.christophe.leroy@csgroup.eu>
+ <CAMuHMdW0Cn1So8ckvhsT+N+p2hiPiksmCS32jzM0xCUYU4UAdQ@mail.gmail.com>
+ <b12f9128-790b-7d8b-5f3c-e0912f5bec0a@csgroup.eu>
+ <CAMuHMdXM0qg23UN6VBqbb0Vm2bg3tRSM=OCD5r7U2K1brpnJAg@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <b64111a3-df3f-bf59-20ce-0af57715ad53@csgroup.eu>
+Date:   Tue, 9 Mar 2021 10:57:44 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308153430.2530616-1-arnd@kernel.org>
+In-Reply-To: <CAMuHMdXM0qg23UN6VBqbb0Vm2bg3tRSM=OCD5r7U2K1brpnJAg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Arnd Bergmann <arnd@kernel.org> [210308 15:35]:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The clang integrated assembler fails to build one file with
-> a complex asm instruction:
-> 
-> arch/arm/mach-omap1/ams-delta-fiq-handler.S:249:2: error: invalid instruction, any one of the following would fix this:
->  mov r10, #(1 << (((NR_IRQS_LEGACY + 12) - NR_IRQS_LEGACY) % 32)) @ set deferred_fiq bit
->  ^
-> arch/arm/mach-omap1/ams-delta-fiq-handler.S:249:2: note: instruction requires: armv6t2
->  mov r10, #(1 << (((NR_IRQS_LEGACY + 12) - NR_IRQS_LEGACY) % 32)) @ set deferred_fiq bit
->  ^
-> arch/arm/mach-omap1/ams-delta-fiq-handler.S:249:2: note: instruction requires: thumb2
->  mov r10, #(1 << (((NR_IRQS_LEGACY + 12) - NR_IRQS_LEGACY) % 32)) @ set deferred_fiq bit
->  ^
-> 
-> The problem is that 'NR_IRQS_LEGACY' is not defined here. Apparently
-> gas does not care because we first add and then subtract this number,
-> leading to the immediate value to be the same regardless of the
-> specific definition of NR_IRQS_LEGACY.
-> 
-> Neither the way that 'gas' just silently builds this file, nor the
-> way that clang IAS makes nonsensical suggestions for how to fix it
-> is great. Fortunately there is an easy fix, which is to #include
-> the header that contains the definition.
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+
+Le 09/03/2021 à 10:16, Geert Uytterhoeven a écrit :
+> Hi Christophe,
+> 
+> On Tue, Mar 9, 2021 at 9:52 AM Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>> Le 09/03/2021 à 09:45, Geert Uytterhoeven a écrit :
+>>> On Tue, Mar 9, 2021 at 9:39 AM Christophe Leroy
+>>> <christophe.leroy@csgroup.eu> wrote:
+>>>> Add stub instances of enable_kernel_vsx() and disable_kernel_vsx()
+>>>> when CONFIG_VSX is not set, to avoid following build failure.
+>>>>
+>>>>     CC [M]  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o
+>>>> In file included from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services_types.h:29,
+>>>>                    from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services.h:37,
+>>>>                    from drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:27:
+>>>> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: In function 'dcn_bw_apply_registry_override':
+>>>> ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:64:3: error: implicit declaration of function 'enable_kernel_vsx'; did you mean 'enable_kernel_fp'? [-Werror=implicit-function-declaration]
+>>>>      64 |   enable_kernel_vsx(); \
+>>>>         |   ^~~~~~~~~~~~~~~~~
+>>>> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:640:2: note: in expansion of macro 'DC_FP_START'
+>>>>     640 |  DC_FP_START();
+>>>>         |  ^~~~~~~~~~~
+>>>> ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:75:3: error: implicit declaration of function 'disable_kernel_vsx'; did you mean 'disable_kernel_fp'? [-Werror=implicit-function-declaration]
+>>>>      75 |   disable_kernel_vsx(); \
+>>>>         |   ^~~~~~~~~~~~~~~~~~
+>>>> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:676:2: note: in expansion of macro 'DC_FP_END'
+>>>>     676 |  DC_FP_END();
+>>>>         |  ^~~~~~~~~
+>>>> cc1: some warnings being treated as errors
+>>>> make[5]: *** [drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o] Error 1
+>>>>
+>>>> Fixes: 16a9dea110a6 ("amdgpu: Enable initial DCN support on POWER")
+>>>> Cc: stable@vger.kernel.org
+>>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>>
+>>> Thanks for your patch!
+>>>
+>>>> --- a/arch/powerpc/include/asm/switch_to.h
+>>>> +++ b/arch/powerpc/include/asm/switch_to.h
+>>>> @@ -71,6 +71,16 @@ static inline void disable_kernel_vsx(void)
+>>>>    {
+>>>>           msr_check_and_clear(MSR_FP|MSR_VEC|MSR_VSX);
+>>>>    }
+>>>> +#else
+>>>> +static inline void enable_kernel_vsx(void)
+>>>> +{
+>>>> +       BUILD_BUG();
+>>>> +}
+>>>> +
+>>>> +static inline void disable_kernel_vsx(void)
+>>>> +{
+>>>> +       BUILD_BUG();
+>>>> +}
+>>>>    #endif
+>>>
+>>> I'm wondering how this is any better than the current situation: using
+>>> BUILD_BUG() will still cause a build failure?
+>>
+>> No it won't cause a failure. In drivers/gpu/drm/amd/display/dc/os_types.h you have:
+>>
+>> #define DC_FP_START() { \
+>>          if (cpu_has_feature(CPU_FTR_VSX_COMP)) { \
+>>                  preempt_disable(); \
+>>                  enable_kernel_vsx(); \
+>>          } else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP)) { \
+>>                  preempt_disable(); \
+>>                  enable_kernel_altivec(); \
+>>          } else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE)) { \
+>>                  preempt_disable(); \
+>>                  enable_kernel_fp(); \
+>>          } \
+>>
+>> When CONFIG_VSX is not selected, cpu_has_feature(CPU_FTR_VSX_COMP) constant folds to 'false' so the
+>> call to enable_kernel_vsx() is discarded and the build succeeds.
+> 
+> IC. So you might as well have an empty (dummy) function instead?
+> 
+
+But with an empty function, you take the risk that one day, someone calls it without checking that 
+CONFIG_VSX is selected. Here if someone does that, build will fail.
+
+Another solution is to declare a non static prototype of it, like __put_user_bad() for instance. In 
+that case, the link will fail.
+
+I prefer the BUILD_BUG() approach as I find it cleaner and more explicit, and also because it breaks 
+the build at compile time, you don't have to wait link time to catch the error.
+
+Christophe
