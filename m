@@ -2,111 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC00B332D7B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD98E332D85
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:46:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231860AbhCIRmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:42:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229691AbhCIRmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:42:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A5946523A;
-        Tue,  9 Mar 2021 17:42:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615311767;
-        bh=9GvvHE/FUuaHjAoFl5s/o4xB1kKuNNQZsvQhUv5aVSw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AkerNW1oXISUkhOs9q8Jhfqw8K6nO2FO9SkqY0nCKXn7/vXfFHJHiy9iqoUMd+9ZE
-         BGSMCWNa0Q5DkCHvLrkodbWG6CKOYkcID70/4l9H7dqqR4cP7Yhw0qUuZNb5GRnayw
-         11CXrB8M4F71zldK3V7rY3jHLHeBwQ5NkpGPOBS9QWWR4xgdyMy/Cnke3AJekfYmEA
-         3eZ8bYp8B4xfZINvd8+H1iLJvxhETW3xhUEsOMUnZYHIzYgDwsSAQNOlPupri4u8Fq
-         xvjAXjHLerB5NP9kuqsm+fSXNW+PYc8XBl6PQeTRTEoQxP+MAQ3OTL/PR2qJS59tB2
-         6MSPRbACsQ37A==
-Received: by mail-ed1-f51.google.com with SMTP id b7so21940370edz.8;
-        Tue, 09 Mar 2021 09:42:47 -0800 (PST)
-X-Gm-Message-State: AOAM533P0lhS/Iqi5hiGLqQY+vSPBlkjyTgcBRrhyuWx/0yh8zY5Kpt5
-        l1OhLEVTkZVz8SPC9Tym8rveEsdRMxQLd+bqyg==
-X-Google-Smtp-Source: ABdhPJwA8ze9bW79kEZbbGheWQdv1hjU1cMbhf/mMIkz0VfVcK8mWozBwRu5cE7382PmePafSrdW35bQG7aPk/ZcNzA=
-X-Received: by 2002:a05:6402:c88:: with SMTP id cm8mr5497065edb.62.1615311765955;
- Tue, 09 Mar 2021 09:42:45 -0800 (PST)
+        id S231150AbhCIRpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:45:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230173AbhCIRpJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 12:45:09 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F573C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 09:45:09 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id t9so1255417pjl.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 09:45:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ddj7nKUPn1pV75cOckX3PbYPAps+K18BC++0gJune7Q=;
+        b=sDmP48uYySkZp9vu5Jw6w6ZIZGiKV/YFHodszvUxJCgglWE+SCQM6TAOyY/FYoIQ5N
+         igYMNFcHvfwXJklSRt95bQ9/wiNO+5ZdIxG3VdJt2wrhuEZp4ZxSFZwv1c/fPDwxBD1l
+         xGWyx8v+H3/+AEsACUN22qZVdBF9e4ByA2S8jm0SgM6/zCcMb4lZ5FhxQmLya7Lv3tXC
+         HcMefG/bbqj2JLYQY6mkrlt+6ncngDTojyHBy3cWAZz5HmPm/0SiJo1ifqGhXYVJYYC1
+         YGwRFx1Msn8MqWhEmrw2WuCHtnnUaCgEc46WWWEsSgfAqfGb0/mmgvPRhh8VGM8qCWkg
+         46BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ddj7nKUPn1pV75cOckX3PbYPAps+K18BC++0gJune7Q=;
+        b=hKIH9Ycjx8FtIi9pxtpwamB7+T6s5/qgT3eniyQf8mIFVQY95dVIEW7ZAefUYG3lgc
+         ppDdW2IRX3H9ioKO9gHtjTIWCDcprg2fqjLyga0FIFOqhrJ8Vbg8qCbNoHvgBSn3uTgE
+         OxHj4HHEvt7oubz1CNaaK890MEODe4n2EduamYRn6pIS0vQUBuNQC+1xYStYMO22QU5i
+         5t5Wr2KZUAh0HrMRljR9pcfXN5Iz1FiURzvKxp0G7vL+9LRQhdannxXbSCTT+xhZgrzb
+         rm32fGAtxXePppcHh6mKs58v3jV+bzKgCd/iue+4XEXC283ndhVTutFWmXWBmabtNoG4
+         LLEQ==
+X-Gm-Message-State: AOAM531qp9ZAKCCH1bU+MIkj7xPIdlv8MdNebsnIc8PS7HggeVVqtsxV
+        K8xreCyWdzjuvyiBgNKpp5OvXQ==
+X-Google-Smtp-Source: ABdhPJzVGq3iCKaEQHLBSlEDjud8CI9SNe6E5b0RoZcqe3V2TX4I2nl5Cfw+7cJ7JQ4vTLYzijOPJQ==
+X-Received: by 2002:a17:90a:7847:: with SMTP id y7mr5985611pjl.65.1615311908475;
+        Tue, 09 Mar 2021 09:45:08 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:8:847a:d8b5:e2cc])
+        by smtp.gmail.com with ESMTPSA id y16sm6083205pgl.58.2021.03.09.09.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 09:45:07 -0800 (PST)
+Date:   Tue, 9 Mar 2021 09:45:01 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Steve Rutherford <srutherford@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Nathan Tempelman <natet@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, X86 ML <x86@kernel.org>,
+        KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
+Message-ID: <YEe0HWlwXyNvu9ps@google.com>
+References: <20210224085915.28751-1-natet@google.com>
+ <CABayD+cZ1nRwuFWKHGh5a2sVXG5AEB_AyTGqZs_xVQLoWwmaSA@mail.gmail.com>
+ <9eb0b655-48ca-94d0-0588-2a4f3e5b3651@amd.com>
+ <CABayD+efSV0m95+a=WT+Lvq_zZhxw2Q3Xu4zErzuyuRxMNUHfw@mail.gmail.com>
+ <20210305223647.GA2289@ashkalra_ubuntu_server>
 MIME-Version: 1.0
-References: <20210309112148.2309116-1-geert+renesas@glider.be>
-In-Reply-To: <20210309112148.2309116-1-geert+renesas@glider.be>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 9 Mar 2021 10:42:34 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqJzfoSubkKQ+aGYGbuH2=vLG2Sf_nQShxJ8DLirALff5g@mail.gmail.com>
-Message-ID: <CAL_JsqJzfoSubkKQ+aGYGbuH2=vLG2Sf_nQShxJ8DLirALff5g@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] dt-bindings: Consider DT_SCHEMA_FILES when finding
- all json-schema
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305223647.GA2289@ashkalra_ubuntu_server>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 4:21 AM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
->
-> Setting DT_SCHEMA_FILES allows the user to restrict the
-> "dt_binding_check" make target to a specified set of DT binding files.
-> However, yamllint is still run on all available files, which can take
-> quite some time.
->
-> Fix this by changing "find_cmd" to only return the specified files.
-> Note that this also affects the "cmd_chk_bindings" and "cmd_mk_schema"
-> rules.
->
-> This reduces the execution time of
->
->     make dt_binding_check DT_SCHEMA_FILES=/path/to/json/schema/file
->
-> from ca. 22 to less than 2 seconds on an i7-8700K.
+On Fri, Mar 05, 2021, Ashish Kalra wrote:
+> On Thu, Feb 25, 2021 at 10:49:00AM -0800, Steve Rutherford wrote:
+> > On Thu, Feb 25, 2021 at 6:57 AM Tom Lendacky <thomas.lendacky@amd.com> wrote:
+> > > >> +int svm_vm_copy_asid_to(struct kvm *kvm, unsigned int mirror_kvm_fd)
+> > > >> +{
+> > > >> +       struct file *mirror_kvm_file;
+> > > >> +       struct kvm *mirror_kvm;
+> > > >> +       struct kvm_sev_info *mirror_kvm_sev;
+> > > >> +       unsigned int asid;
+> > > >> +       int ret;
+> > > >> +
+> > > >> +       if (!sev_guest(kvm))
+> > > >> +               return -ENOTTY;
+> > > >
+> > > > You definitely don't want this: this is the function that turns the vm
+> > > > into an SEV guest (marks SEV as active).
+> > >
+> > > The sev_guest() function does not set sev->active, it only checks it. The
+> > > sev_guest_init() function is where sev->active is set.
+> > Sorry, bad use of the english on my part: the "this" was referring to
+> > svm_vm_copy_asid_to. Right now, you could only pass this sev_guest
+> > check if you had already called sev_guest_init, which seems incorrect.
+> > >
+> > > >
+> > > > (Not an issue with this patch, but a broader issue) I believe
+> > > > sev_guest lacks the necessary acquire/release barriers on sev->active,
+> > >
+> > > The svm_mem_enc_op() takes the kvm lock and that is the only way into the
+> > > sev_guest_init() function where sev->active is set.
+> > There are a few places that check sev->active which don't have the kvm
+> > lock, which is not problematic if we add in a few compiler barriers
+> > (ala irqchip_split et al).
 
-We could use xargs sharding like 'chk_bindings' does. That goes from
-18s to 5s for me (i7-7700HQ). Good enough? Not sure why I didn't other
-than thinking 20sec was fast enough.
+Eh, I don't see the point in taking on the complexity of barriers.  Ignoring the
+vCPU behavior, the only existing call that isn't safe is svm_register_enc_region().
+Fixing that is trivial and easy to understand.
 
-Another option would be doing yamllint as part of cmd_extract_ex or we
-could have a command line variable to disable yamllint.
+As for the vCPU stuff, adding barriers will not make them safe.  E.g. a barrier
+won't magically make init_vmcb() go back in time and set SVM_NESTED_CTL_SEV_ENABLE
+if SEV is enabled after vCPUs are created.
 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> Should this be restricted to cmd_yamllint?
-> I'm not sure which users of find_cmd do and do not need all files.
-
-cmd_chk_bindings always does. cmd_mk_schema needs both. So I think
-this doesn't work for all cases.
-
-> ---
->  Documentation/devicetree/bindings/Makefile | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
-> index 780e5618ec0ae2fc..60ac03bade2da0ad 100644
-> --- a/Documentation/devicetree/bindings/Makefile
-> +++ b/Documentation/devicetree/bindings/Makefile
-> @@ -22,10 +22,18 @@ $(obj)/%.example.dts: $(src)/%.yaml check_dtschema_version FORCE
->  # Use full schemas when checking %.example.dts
->  DT_TMP_SCHEMA := $(obj)/processed-schema-examples.json
->
-> +ifeq ($(DT_SCHEMA_FILES),)
-> +
->  find_cmd = find $(srctree)/$(src) \( -name '*.yaml' ! \
->                 -name 'processed-schema*' ! \
->                 -name '*.example.dt.yaml' \)
->
-> +else
-> +
-> +find_cmd = echo $(addprefix $(srctree)/, $(DT_SCHEMA_FILES))
-> +
-> +endif
-> +
->  quiet_cmd_yamllint = LINT    $(src)
->        cmd_yamllint = ($(find_cmd) | \
->                       xargs $(DT_SCHEMA_LINT) -f parsable -c $(srctree)/$(src)/.yamllint) || true
-> --
-> 2.25.1
->
+> Probably, sev->active accesses can be made safe using READ_ONCE() &
+> WRITE_ONCE().
