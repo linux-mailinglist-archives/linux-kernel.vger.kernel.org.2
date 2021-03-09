@@ -2,69 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744C8331EA1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 06:25:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B752A331EA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 06:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhCIFZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 00:25:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53676 "EHLO
+        id S229620AbhCIF3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 00:29:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhCIFZC (ORCPT
+        with ESMTP id S229475AbhCIF2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 00:25:02 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABFFC06174A;
-        Mon,  8 Mar 2021 21:25:02 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id z126so13667913oiz.6;
-        Mon, 08 Mar 2021 21:25:02 -0800 (PST)
+        Tue, 9 Mar 2021 00:28:31 -0500
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB628C06174A;
+        Mon,  8 Mar 2021 21:28:31 -0800 (PST)
+Received: by mail-oo1-xc33.google.com with SMTP id l5so2768983ooj.7;
+        Mon, 08 Mar 2021 21:28:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:subject:to:cc:references:from:autocrypt:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=CEnEXEW5f4cRVmLUnX1/3KTWuNFdnKUSfxJrbm3iX/I=;
-        b=i7IPM+OGX+7PMxEx1G/mQK5NuSjGP8HtZQ0ZLhhChBkK6QvBkzRWkJ0RSTNm4SaKEx
-         frjtYCdt9TpYCkwRm8FQMxlj6HBPKQV+Ri6A3UPrjCRiu3R4QcMvlVS6S12riL9EyMsq
-         04IH9NMyf99WCOMq0w94XSkML3XbNscW7+YBd3KHkNW6eQSlztCkP2YSdzWHKUAUcssJ
-         o1XlYwvjr8FMVeDyMKFrdA4l+3Hqi/XEJ8rhxQ3RAN4OmvXBaXxH++TdJ2pT8JE9+lw3
-         jPDijGnz+MOjWGIc6Rpm8vQJ88HfpHHjUJ8Zpylh0sz6qM3AX3283naUiPzKaLz5FtvR
-         oWlg==
+        bh=OB87Z/fkFmKzuRifmqIHiIBkTD16UmoOu+JztA7Y7bc=;
+        b=XGWm0N4bK3IZsVMo2XV0Qu4IvswF5exGsn0AhoIlxugaNV8QtzDAWGNnbk2zBoE0wG
+         gwtpNfFfPGbW0siWX8CG4zduSMWD5e2ca5GvREsXHRJeAOKnnqUilGpHkS1ZtCRF5/IU
+         zCTOxCxAzoKXfHveu03F+tCG42x7wt3zaD+QjpAlTqnFWBh52R+eniXAhysg8O5lf/Tg
+         3if1Tjf0G+72F5NzkiRaSYeYqVzXcwsYz35O62pvAJU/PHZPGwTcRRknbkjmDBtvPWro
+         xiPik7NJ6hXHBf115v7rtGZvUpBcR8Id+IstYnStq1ZzwzRDCMxfBYaXoRlBnZdGk2la
+         nEXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=CEnEXEW5f4cRVmLUnX1/3KTWuNFdnKUSfxJrbm3iX/I=;
-        b=uZvFx/Q79Aw6St3jCVQYOrAfqjsGK6H0/KGutp9PvnVuYBPoGOHxdkG1SEEBYjeooJ
-         6B55tbVlK3VcIe6eY1YR1jRQWT4ojr7Mm7ro4C6gjuGErWfsua+8rDubVGvIhi2gza2M
-         O6czmQ8Ee0E41vFmIhJOjhTm7PiZbR1CUWtap4CaFoeigEVsR0aQ0PVZk/9VmnIJwTDG
-         bpCLtCLw7aq7u1HQH0R/Hxet25eFy+RfNChXUHrsbc0zUoe+8Wn8ZxZ+xDaNwVueTRKe
-         XIidWvBSt2RJ9LZRxJokNJh//XbL1Pt2MAN7gp3aWlcV0/t3gNVGLogU6IIimsuwy4gR
-         JlOg==
-X-Gm-Message-State: AOAM530LrAj8ZHUHegCuQIT7/ZI9mubz1DDzVDIC8bprAGaoyPYv39Ht
-        WDmATbm52i4AHbOe/QK0WnQmSvLxBIs=
-X-Google-Smtp-Source: ABdhPJw0IK2W48ZXsHY22vgcfpnSNZcKAb0zkInN0pWS5BwrgeDKjjPKYtIl99nMOkSXRE6stbDaMQ==
-X-Received: by 2002:aca:4896:: with SMTP id v144mr1747647oia.154.1615267501828;
-        Mon, 08 Mar 2021 21:25:01 -0800 (PST)
+        bh=OB87Z/fkFmKzuRifmqIHiIBkTD16UmoOu+JztA7Y7bc=;
+        b=JaOpDPjbLgkXbrgKjdNTNN6AB3cAPhOKM1C7iSmaRtoainr7vnfWpmPgET9votWwUT
+         CopAaBB/e7JF32Q8M1MDB5CJIDQbwoXjrMvjt3RPzErtHhpIiEd3r1YmdgEoMY/EORq/
+         rm7n4Nsh3fFY0DG/ldteCSSLI5R2YYObLe0kC6Bspap/RECaqdyTESIMk8hopXEXTtcj
+         80bAFgGhsFTpXqlqbuLLZbXBZ4I0TvWEXN+bPbh4clP19hrEKNLl+dwRMWZ+tgY7c11s
+         mxMHE51hPKa74rt0NdqWzvqxm8WiyFWSdBh0E95sk9nsRyB66DEKC1hbzqNDe/89GVmS
+         wijg==
+X-Gm-Message-State: AOAM533vMdsWHgYDTLY9P6q0xGwlRDKOFFdwKRKNIMcidPMpNN3yhYsT
+        A2457siRl/ukXoxRlJvSXc1sGml8T3w=
+X-Google-Smtp-Source: ABdhPJxOc9yChcryOuMC3Kf8kh25fJqb5ZBsiOZlKfZSl3HCRleGCLeC3WqoijdbWURl2KDq8kelRQ==
+X-Received: by 2002:a05:6820:3c8:: with SMTP id s8mr21117712ooj.49.1615267711057;
+        Mon, 08 Mar 2021 21:28:31 -0800 (PST)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k24sm760637oic.51.2021.03.08.21.24.59
+        by smtp.gmail.com with ESMTPSA id f19sm2894581oiw.38.2021.03.08.21.28.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 21:25:00 -0800 (PST)
+        Mon, 08 Mar 2021 21:28:30 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: Errant readings on LM81 with T2080 SoC
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
-        "jdelvare@suse.com" <jdelvare@suse.com>
-Cc:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-References: <8e0a88ba-01e9-9bc1-c78b-20f26ce27d12@alliedtelesis.co.nz>
- <96d660bc-17ab-4e0e-9a94-bce1737a8da1@roeck-us.net>
- <4a1b1494-df96-2d8c-9323-beb2c2ba706b@alliedtelesis.co.nz>
- <a67ea323-634d-d34e-c63e-b1aaa4737b19@alliedtelesis.co.nz>
- <5709f180-04b5-09b2-e1c4-53eb5c9345d8@roeck-us.net>
- <61f68c59-593b-e393-5520-d9acc14fdf97@alliedtelesis.co.nz>
- <d36a85c2-4ec5-6c28-9e2a-282de1eaf955@alliedtelesis.co.nz>
+Subject: Re: [PATCH v2 1/3] clk: add devm_clk_prepare_enable() helper
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-watchdog@vger.kernel.org
+References: <20210226141411.2517368-1-linux@rasmusvillemoes.dk>
+ <20210304221247.488173-1-linux@rasmusvillemoes.dk>
+ <20210304221247.488173-2-linux@rasmusvillemoes.dk>
 From:   Guenter Roeck <linux@roeck-us.net>
 Autocrypt: addr=linux@roeck-us.net; keydata=
  xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
@@ -109,12 +104,12 @@ Autocrypt: addr=linux@roeck-us.net; keydata=
  WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
  HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
  mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <6cb6b5f2-52a3-c7c3-9a10-7dd0f86414a8@roeck-us.net>
-Date:   Mon, 8 Mar 2021 21:24:59 -0800
+Message-ID: <4b560502-3885-91a0-3100-4b5506a17b32@roeck-us.net>
+Date:   Mon, 8 Mar 2021 21:28:29 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <d36a85c2-4ec5-6c28-9e2a-282de1eaf955@alliedtelesis.co.nz>
+In-Reply-To: <20210304221247.488173-2-linux@rasmusvillemoes.dk>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -122,33 +117,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/8/21 8:36 PM, Chris Packham wrote:
+On 3/4/21 2:12 PM, Rasmus Villemoes wrote:
+> Add a managed wrapper for clk_prepare_enable().
 > 
-> On 9/03/21 11:10 am, Chris Packham wrote:
->>
->> On 8/03/21 5:59 pm, Guenter Roeck wrote:
->>> On 3/7/21 8:37 PM, Chris Packham wrote:
->>> [ ... ]
->>>>> That's from -ENXIO which is used in only one place in i2c-mpc.c. I'll
->>>>> enable some debug and see what we get.
->>>> For the errant readings there was nothing abnormal reported by the 
->>>> driver.
->>>>
->>>> For the "No such device or address" I saw "mpc-i2c ffe119000.i2c: No
->>>> RXAK" which matches up with the -ENXIO return.
->>>>
->>> Id suggest to check the time until not busy and stop in mpc_xfer().
->>> Those hot loops are unusual, and may well mess up the code especially
->>> if preempt is enabled.
->> Reworking those loops seems to have had a positive result. I'll do a 
->> bit more testing and hopefully get a patch out later today.
-> D'oh my "fix" was to replace the cond_reshed() with msleep(10) which did 
-> "fix" the problem but made every i2c read slow. I didn't notice when 
-> testing just the lm81 but as soon as I booted the system with more i2c 
-> devices I saw stupidly slow boot times.
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 
-msleep() is indeed a bad idea. You'd want something like usleep_range()
-with increasing timeout. Like start with a few uS and double the sleep time
-with each iteration (eg 4-8 / 8-16 / 16-32 / 32-64 / ...).
+That has been tried several times, including by yours truly,
+and has always been rejected.
+
+Just use devm_add_action_or_reset() like many other watchdog
+drivers.
 
 Guenter
