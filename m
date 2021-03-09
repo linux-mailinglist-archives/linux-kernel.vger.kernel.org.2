@@ -2,70 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D2F33285B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:18:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3079332870
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:22:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhCIOSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 09:18:09 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:15594 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229805AbhCIOR5 (ORCPT
+        id S231335AbhCIOWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 09:22:04 -0500
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:51906 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230147AbhCIOVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 09:17:57 -0500
-X-IronPort-AV: E=Sophos;i="5.81,234,1610406000"; 
-   d="scan'208";a="496967091"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 15:17:27 +0100
-Date:   Tue, 9 Mar 2021 15:17:26 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Denis Efremov <efremov@linux.com>, kbuild-all@01.org
-Subject: [PATCH v2] tty: max310x: fix flexible_array.cocci warnings
-Message-ID: <alpine.DEB.2.22.394.2103091516020.2892@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Tue, 9 Mar 2021 09:21:49 -0500
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 129EL56Q010888;
+        Tue, 9 Mar 2021 08:21:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ references : in-reply-to : subject : date : message-id : mime-version :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=NcFKGJr3amGy52ceieCxLUEGF82G2C/NAccEBTQwE5Y=;
+ b=purC4JXmsp2wbIRqlPddGWvXKbhLC1qQAkUR/pVYHyAvcDDSR+nv+CC9yAiVpalzi/fe
+ Rucybd8i/oWbECiQZxo0mGi4RsH/s2jWu41Otr3ZlDMgofaOypxETaBDf2BOy6jHjH9Z
+ eTs9KCPAK6bZJYR/9Qs+VT+nHKL2xV3PqL4Eu36Fp3j1oFOki7a8JWROk7hehb4iApkD
+ 47g997WqlgaIx2f9YTCaE8eXIT3kzAkbFlstg+/cvHg7ouk+kXj5ttONqgvNV312VLb3
+ gY5yQqepGYs8lC6SYiLs6e1eeU8dkr7KX0RX8514rv5Mo6G9bYd/8Iv7a0PV5/5aOzuk 4A== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 374819bg7e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 09 Mar 2021 08:21:04 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 9 Mar 2021
+ 14:21:02 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Tue, 9 Mar 2021 14:21:02 +0000
+Received: from LONN2DGDQ73 (unknown [198.90.238.85])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7632211D7;
+        Tue,  9 Mar 2021 14:21:02 +0000 (UTC)
+From:   Gerrit <sbinding@opensource.cirrus.com>
+To:     'Pierre-Louis Bossart' <pierre-louis.bossart@linux.intel.com>,
+        'Vitaly Rodionov' <vitalyr@opensource.cirrus.com>,
+        'Jaroslav Kysela' <perex@perex.cz>,
+        'Takashi Iwai' <tiwai@suse.com>
+CC:     <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210306111934.4832-1-vitalyr@opensource.cirrus.com> <20210306111934.4832-5-vitalyr@opensource.cirrus.com> <d22424a1-f5c3-42ec-aa54-8c8081a119e2@linux.intel.com>
+In-Reply-To: <d22424a1-f5c3-42ec-aa54-8c8081a119e2@linux.intel.com>
+Subject: RE: [PATCH v3 4/4] ALSA: hda/cirrus: Add Headphone and Headset MIC Volume Control
+Date:   Tue, 9 Mar 2021 14:21:02 +0000
+Message-ID: <003c01d714ef$6f432690$4dc973b0$@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-gb
+Thread-Index: AQIPQI/HeQQInfQOo/hdd38vvxvEwgIbQDxAAqtoa+Cp5SblAA==
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501 impostorscore=0
+ mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103090073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+Hi Pierre-Louis,
 
-Zero-length and one-element arrays are deprecated, see
-Documentation/process/deprecated.rst
-Flexible-array members should be used instead.
+Thank you for your comments. It looks like this patch set has been =
+merged, so we will look to address your comments in a future patch.
 
-Generated by: scripts/coccinelle/misc/flexible_array.cocci
+-----Original Message-----
+From: Alsa-devel <alsa-devel-bounces@alsa-project.org> On Behalf Of =
+Pierre-Louis Bossart
+Sent: 08 March 2021 15:40
+To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>; Jaroslav Kysela =
+<perex@perex.cz>; Takashi Iwai <tiwai@suse.com>
+Cc: patches@opensource.cirrus.com; alsa-devel@alsa-project.org; =
+linux-kernel@vger.kernel.org; Stefan Binding =
+<sbinding@opensource.cirrus.com>
+Subject: Re: [PATCH v3 4/4] ALSA: hda/cirrus: Add Headphone and Headset =
+MIC Volume Control
 
-Fixes: 10d8b34a42171 ("serial: max310x: Driver rework")
-CC: Denis Efremov <efremov@linux.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
----
 
-v2: reference the correct commit for Fixes
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   144c79ef33536b4ecb4951e07dbc1f2b7fa99d32
-commit: 7b36c1398fb63f9c38cc83dc75f143d2e5995062 coccinelle: misc: add flexible_array.cocci script
-:::::: branch date: 6 hours ago
-:::::: commit date: 5 months ago
+On 3/6/21 5:19 AM, Vitaly Rodionov wrote:
+> From: Stefan Binding <sbinding@opensource.cirrus.com>
+>=20
+> CS8409 does not support Volume Control for NIDs 0x24 (the Headphones), =
 
- max310x.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> or 0x34 (The Headset Mic).
+> However, CS42L42 codec does support gain control for both.
 
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -273,7 +273,7 @@ struct max310x_port {
- #ifdef CONFIG_GPIOLIB
- 	struct gpio_chip	gpio;
- #endif
--	struct max310x_one	p[0];
-+	struct max310x_one	p[];
- };
+Volume Control for both
 
- static struct uart_driver max310x_uart = {
+> We can add support for Volume Controls, by writing the the CS42L42=20
+> regmap via i2c commands, using custom info, get and put volume=20
+> functions, saved in the control.
+>=20
+> Tested on DELL Inspiron-3500, DELL Inspiron-3501, DELL Inspiron-3500
+>=20
+> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> ---
+>=20
+> Changes in v3:
+> - Added restore volumes after resume
+> - Removed redundant debug logging after testing
+>=20
+>=20
+>   sound/pci/hda/patch_cirrus.c | 200 =
++++++++++++++++++++++++++++++++++++
+>   1 file changed, 200 insertions(+)
+>=20
+> diff --git a/sound/pci/hda/patch_cirrus.c=20
+> b/sound/pci/hda/patch_cirrus.c index 1d2f6a1224e6..6a9e5c803977 100644
+> --- a/sound/pci/hda/patch_cirrus.c
+> +++ b/sound/pci/hda/patch_cirrus.c
+> @@ -21,6 +21,9 @@
+>   /*
+>    */
+>  =20
+> +#define CS42L42_HP_CH     (2U)
+> +#define CS42L42_HS_MIC_CH (1U)
+> +
+>   struct cs_spec {
+>   	struct hda_gen_spec gen;
+>  =20
+> @@ -42,6 +45,9 @@ struct cs_spec {
+>  =20
+>   	unsigned int cs42l42_hp_jack_in:1;
+>   	unsigned int cs42l42_mic_jack_in:1;
+> +	unsigned int cs42l42_volume_init:1;
+
+can you describe what this field is? it looks like it's only tracking a =
+one-time initialization?
+Yes, this field is used to track one-time initialization.
+Since the CS42L42 codec needs to be reset on init, the volume values =
+need to be restored afterwards.
+This flag allows us to check whether we have previously cached the =
+volume values, so they can be restored.
+
+> +	char cs42l42_hp_volume[CS42L42_HP_CH];
+> +	char cs42l42_hs_mic_volume[CS42L42_HS_MIC_CH];
+>  =20
+>   	struct mutex cs8409_i2c_mux;
+>  =20
+> @@ -1260,6 +1266,14 @@ static int patch_cs4213(struct hda_codec =
+*codec)
+>   #define CIR_I2C_QWRITE	0x005D
+>   #define CIR_I2C_QREAD	0x005E
+>  =20
+> +#define CS8409_CS42L42_HP_VOL_REAL_MIN   (-63)
+> +#define CS8409_CS42L42_HP_VOL_REAL_MAX   (0)
+> +#define CS8409_CS42L42_AMIC_VOL_REAL_MIN (-97) #define=20
+> +CS8409_CS42L42_AMIC_VOL_REAL_MAX (12) #define=20
+> +CS8409_CS42L42_REG_HS_VOLUME_CHA (0x2301) #define=20
+> +CS8409_CS42L42_REG_HS_VOLUME_CHB (0x2303)
+> +#define CS8409_CS42L42_REG_AMIC_VOLUME   (0x1D03)
+> +
+>   struct cs8409_i2c_param {
+>   	unsigned int addr;
+>   	unsigned int reg;
+> @@ -1580,6 +1594,165 @@ static unsigned int cs8409_i2c_write(struct =
+hda_codec *codec,
+>   	return retval;
+>   }
+>  =20
+> +static int cs8409_cs42l42_volume_info(struct snd_kcontrol *kcontrol,
+> +				  struct snd_ctl_elem_info *uinfo) {
+> +	struct hda_codec *codec =3D snd_kcontrol_chip(kcontrol);
+> +	u16 nid =3D get_amp_nid(kcontrol);
+> +	u8 chs =3D get_amp_channels(kcontrol);
+> +
+> +	codec_dbg(codec, "%s() nid: %d\n", __func__, nid);
+> +	switch (nid) {
+> +	case CS8409_CS42L42_HP_PIN_NID:
+> +		uinfo->type =3D SNDRV_CTL_ELEM_TYPE_INTEGER;
+> +		uinfo->count =3D chs =3D=3D 3 ? 2 : 1;
+> +		uinfo->value.integer.min =3D CS8409_CS42L42_HP_VOL_REAL_MIN;
+> +		uinfo->value.integer.max =3D CS8409_CS42L42_HP_VOL_REAL_MAX;
+> +		break;
+> +	case CS8409_CS42L42_AMIC_PIN_NID:
+> +		uinfo->type =3D SNDRV_CTL_ELEM_TYPE_INTEGER;
+> +		uinfo->count =3D chs =3D=3D 3 ? 2 : 1;
+> +		uinfo->value.integer.min =3D CS8409_CS42L42_AMIC_VOL_REAL_MIN;
+> +		uinfo->value.integer.max =3D CS8409_CS42L42_AMIC_VOL_REAL_MAX;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static void cs8409_cs42l42_update_volume(struct hda_codec *codec) {
+> +	struct cs_spec *spec =3D codec->spec;
+> +
+> +	mutex_lock(&spec->cs8409_i2c_mux);
+> +	spec->cs42l42_hp_volume[0] =3D -(cs8409_i2c_read(codec, =
+CS42L42_I2C_ADDR,
+> +				CS8409_CS42L42_REG_HS_VOLUME_CHA, 1));
+> +	spec->cs42l42_hp_volume[1] =3D -(cs8409_i2c_read(codec, =
+CS42L42_I2C_ADDR,
+> +				CS8409_CS42L42_REG_HS_VOLUME_CHB, 1));
+> +	spec->cs42l42_hs_mic_volume[0] =3D -(cs8409_i2c_read(codec, =
+CS42L42_I2C_ADDR,
+> +				CS8409_CS42L42_REG_AMIC_VOLUME, 1));
+> +	mutex_unlock(&spec->cs8409_i2c_mux);
+> +	spec->cs42l42_volume_init =3D 1;
+> +}
+> +
+> +static int cs8409_cs42l42_volume_get(struct snd_kcontrol *kcontrol,
+> +				 struct snd_ctl_elem_value *ucontrol) {
+> +	struct hda_codec *codec =3D snd_kcontrol_chip(kcontrol);
+> +	struct cs_spec *spec =3D codec->spec;
+> +	hda_nid_t nid =3D get_amp_nid(kcontrol);
+> +	int chs =3D get_amp_channels(kcontrol);
+> +	long *valp =3D ucontrol->value.integer.value;
+> +
+> +	if (!spec->cs42l42_volume_init) {
+> +		snd_hda_power_up(codec);
+> +		cs8409_cs42l42_update_volume(codec);
+> +		snd_hda_power_down(codec);
+> +	}
+> +	switch (nid) {
+> +	case CS8409_CS42L42_HP_PIN_NID:
+> +		if (chs & 1)
+
+BIT(0)?
+Will fix that.
+
+> +			*valp++ =3D spec->cs42l42_hp_volume[0];
+> +		if (chs & 2)
+
+BIT(1)?
+Will fix that.
+
+> +			*valp++ =3D spec->cs42l42_hp_volume[1];
+> +		break;
+
