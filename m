@@ -2,80 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED61E331D2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A9D331D2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:56:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbhCICzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 21:55:40 -0500
-Received: from ozlabs.org ([203.11.71.1]:34723 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229379AbhCICzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 21:55:11 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dvfvb3g4Fz9sVv;
-        Tue,  9 Mar 2021 13:55:07 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1615258507;
-        bh=I2atnsURNCx0AQ0lKEMYIfhWnoXp+Om5a1Eh2ifNoa0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jMwv/L5LzH1VIG//vQlBl6pyeNz4lHOb6VmPlUgDBEmwW7rxTVT8uLaWhTyGQPxGP
-         SVw6NRDDur9jZTsr2nELWYS/TDeygk0KHAP9UwVFHmtEtyu1rdlpRIjE7ddFv6lU/y
-         rw9UHgunPAjfWFEqmJSdE/E6aZ7+us4g+CeXk6V9a/OF2O7vHsE0O1P/zY2R1UoSH2
-         dmEdDSs9UL1PfwpjY/qBv24A9/cO9G69OlJPQKrI0aT1G0gAhYq5+iG5tM5b8NXU+M
-         HKPFIxE6yZ0NUHjZ6cIxZiJwLsr20F6CrU+y9a6RDuM4Fm4jc6sOW0uGT1EBUHo9ji
-         S+DSQItcReGSw==
-Date:   Tue, 9 Mar 2021 13:55:06 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Wayne Lin <Wayne.Lin@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the amdgpu tree
-Message-ID: <20210309135506.3db99688@canb.auug.org.au>
+        id S230286AbhCICzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 21:55:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229520AbhCICzd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 21:55:33 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7D5C06174A;
+        Mon,  8 Mar 2021 18:55:33 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id jx13so91444pjb.1;
+        Mon, 08 Mar 2021 18:55:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=X1NdEaeznqDG0w3Bd/Nb0MooHdcqj7OMlg+M+dl0jEk=;
+        b=JcFCVCA1vhjhbzEHAoko4Jj6BjMumWdOa097H0rfulPeKTK9V4yxCqgLEu6FODS7/L
+         u6PRVZqB1Bptq58B104MQXpFRMMP+AEoIbDhve75xZtjXamMbW3cOII+4VqLU2YOVmeR
+         PNFCV3L1PlhY+fgeAESTV06Y+XNc+0RK4clhnQ7ugAtiwF9f7IwXgWhkvl4DuPDUCTcC
+         rMdJ5RBn/wB0r520hnbc40j9U1fSiOsyGpoog4MRYNUhnygsDRlKp3kp+cXq7/6od1Vg
+         SRnB0lvStkJBCesGQn09WRo4bQqtKIWWj7/O6EwYRL3BryizpEYSjJCSHIpy9glWnLs1
+         MvSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=X1NdEaeznqDG0w3Bd/Nb0MooHdcqj7OMlg+M+dl0jEk=;
+        b=Eu1ue0FKlOQpbkie+Un9Uj8UQoP1JKs9Y++ruLeR2e8aZGlWpQgGhUr4yhsDLCO8Hh
+         5Za4qEEcQU9qvnZw1utYuekkl1kmq7xpoLpRH2TAjBd0SLpe2GmOHzBJPQXTTDnY4HH7
+         ngiqKhTapNj8Zxj//P91zFSMtvz0n6D5Tt0zRY2yN+G4hF8BzZG4sramZBEpaujMIiKv
+         LJtEzG53cZAk0g9dhsygkkmA+gSs7UfxSTXMndISa9k3x8x2Uqw6hFcu4knmauw5k+a0
+         dsAaAc0aGvmXkUFV3eGP8EmEnfQD8zjhHW3B3anNYBlvZPnZBjT1UwrwWev+H07h/NZ8
+         eV6A==
+X-Gm-Message-State: AOAM531o/0RXUx4XalYMefmhTf8NaQRZQk8ySCEBLShWSWU3UJFIhJ31
+        tXVX6qpVT2rDAUSBl/IG6es=
+X-Google-Smtp-Source: ABdhPJwDGoOrBNsG7W6D7YEYRWeYZihu5tHW/dziBjZoDxtF8HP24+vk2/7pCBqBrodOpkFgHr+SiQ==
+X-Received: by 2002:a17:90a:7e94:: with SMTP id j20mr2343701pjl.8.1615258532930;
+        Mon, 08 Mar 2021 18:55:32 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:4ccc:acdd:25da:14d1])
+        by smtp.gmail.com with ESMTPSA id a19sm7825247pfc.65.2021.03.08.18.55.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Mar 2021 18:55:31 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 8 Mar 2021 18:55:30 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        axboe@kernel.dk, mbenes@suse.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <YEbjom8FIclEgRYv@google.com>
+References: <20210306022035.11266-1-mcgrof@kernel.org>
+ <20210306022035.11266-2-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ymHNEbazt37WVESKSZznpIj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210306022035.11266-2-mcgrof@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ymHNEbazt37WVESKSZznpIj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, Mar 06, 2021 at 02:20:34AM +0000, Luis Chamberlain wrote:
+> The zram driver makes use of cpu hotplug multistate support,
+> whereby it associates a zram compression stream per CPU. To
+> support CPU hotplug multistate a callback enabled to allow
+> the driver to do what it needs when a CPU hotplugs.
+> 
+> It is however currently possible to end up removing the
+> zram driver callback prior to removing the zram compression
+> streams per CPU. This would leave these compression streams
+> hanging.
+> 
+> We need to fix ordering for driver load / removal, zram
+> device additions, in light of the driver's use of cpu
+> hotplug multistate. Since the zram driver exposes many
+> sysfs attribute which can also muck with the comrpession
+> streams this also means we can hit page faults today easily.
 
-Hi all,
+Hi Luis,
 
-After merging the amdgpu tree, today's linux-next build (htmldocs)
-produced this warning:
+First of all, thanks for reporting the ancient bugs.
 
-drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:380: warning: Function pa=
-rameter or member 'crc_rd_wrk' not described in 'amdgpu_display_manager'
+Looks like you found several bugs and I am trying to digest them
+from your description to understand more clear. I need to ask
+stupid questions, first.
 
-Introduced by commit
+If I understand correctly, bugs you found were related to module
+unloading race while the zram are still working.
+If so, couldn't we fix the bug like this(it's not a perfect
+patch but just wanted to show close module unloading race)?
+(I might miss other pieces here. Let me know. Thanks!)
 
-  9a65df193108 ("drm/amd/display: Use PSP TA to read out crc")
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index a711a2e2a794..646ae9e0b710 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -1696,6 +1696,8 @@ static void zram_reset_device(struct zram *zram)
+                return;
+        }
 
---=20
-Cheers,
-Stephen Rothwell
++       module_put(THIS_MODULE);
++
+        comp = zram->comp;
+        disksize = zram->disksize;
+        zram->disksize = 0;
+@@ -1744,13 +1746,19 @@ static ssize_t disksize_store(struct device *dev,
+                goto out_free_meta;
+        }
 
---Sig_/ymHNEbazt37WVESKSZznpIj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
++       if (!try_module_get(THIS_MODULE))
++               goto out_free_zcomp;
++
+        zram->comp = comp;
+        zram->disksize = disksize;
++
+        set_capacity_and_notify(zram->disk, zram->disksize >> SECTOR_SHIFT);
+        up_write(&zram->init_lock);
 
------BEGIN PGP SIGNATURE-----
+        return len;
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBG44oACgkQAVBC80lX
-0Gyl7ggApNRopCChPuxc6NEAwUvAr25UwRsXljp8GXmbcvuLX+5YHQzjGm184zlh
-NQpPNnoKdjXfhvC4WKAoooynIkzpXWGkh2EdQ5QbcoWkTEi0kSZnpXMmlkL+KJ04
-TApaENdj8bxnyWJqoYPaITD0jKwZWj4LMIO8CU+GJRitpbrI3gOE92TjgEtG+Qxf
-QJ5g2ZDpjHz7ZvSHStiYzflHoKHDWK82z5eJkpa35gPOL74e/wXP4u5LH7T19WLH
-gbbYhTzbLwIFeO0eFy8110x3WJu8IEGv22F20PGktG6/I9c4b2To6S2bLyGjHwTS
-jid5bmLO/3k5n8vr9PRtCKpQDtcSxg==
-=PTNx
------END PGP SIGNATURE-----
-
---Sig_/ymHNEbazt37WVESKSZznpIj--
++out_free_zcomp:
++       zcomp_destroy(comp);
+ out_free_meta:
+        zram_meta_free(zram, disksize);
+ out_unlock:
