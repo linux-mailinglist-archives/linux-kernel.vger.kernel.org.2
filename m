@@ -2,123 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E6B33239B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 106A1332398
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:05:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhCILFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 06:05:50 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36204 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229875AbhCILFk (ORCPT
+        id S230047AbhCILFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 06:05:16 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:53126 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229656AbhCILFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 06:05:40 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 129B2ues063096;
-        Tue, 9 Mar 2021 06:05:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=pp1;
- bh=AW61LqGjnRgXZHHqyRhjGGxS+iHj6ivwsqhDbjECUaI=;
- b=e93mwpjhV2o+UK1k6MHChkC9tctjDm+cXyNi8rWZiB5W9jMY7bdTqs5YxrfBtL/3xBE/
- EVOhmh4tQe7EJtztvF/ueruVY7iN0e/iQ3gTsp0K4HVHTOZgtrcA0DViolraE2kbgMAg
- FWlVF3J4QG7BqOpGUK+bbXpsufE/4a6s6bNHpnV55S/F7akzQLd8uLrfyED1rzEUNiwC
- E+rCEt9hsTLAkRiTQ+KH8DFdsT0qq9QFSVVQDIVksMFqpomyXiICnh8Xj5ONdoVjqN6B
- n67Rl+2LVa4nqrBmhMV2UTkuKix2+J48uRqZ/ND+XY9MXUSlFR6tLE6zYjHi/Hpdak+y kg== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 375wfspu3f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 06:05:38 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 129Ax1WE004220;
-        Tue, 9 Mar 2021 11:05:36 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma05fra.de.ibm.com with ESMTP id 3741c89dd2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 11:05:36 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 129B5Xj048890204
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 9 Mar 2021 11:05:33 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 93F814C046;
-        Tue,  9 Mar 2021 11:05:33 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 49F224C04A;
-        Tue,  9 Mar 2021 11:05:33 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  9 Mar 2021 11:05:33 +0000 (GMT)
-From:   Thomas Richter <tmricht@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org
-Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        hca@linux.ibm.com, Thomas Richter <tmricht@linux.ibm.com>
-Subject: [PATCH] tool/perf: Perf build fails on 5.12.0rc2 on s390
-Date:   Tue,  9 Mar 2021 12:04:47 +0100
-Message-Id: <20210309110447.834292-1-tmricht@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 9 Mar 2021 06:05:00 -0500
+Received: from fsav103.sakura.ne.jp (fsav103.sakura.ne.jp [27.133.134.230])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 129B4r0C042703;
+        Tue, 9 Mar 2021 20:04:53 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav103.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp);
+ Tue, 09 Mar 2021 20:04:53 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 129B4r9G042700
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 9 Mar 2021 20:04:53 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 4/6] usbip: fix stub_dev usbip_sockfd_store() races
+ leading to gpf
+To:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org,
+        valentina.manea.m@gmail.com, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1615171203.git.skhan@linuxfoundation.org>
+ <268a0668144d5ff36ec7d87fdfa90faf583b7ccc.1615171203.git.skhan@linuxfoundation.org>
+ <05aed75a-4a81-ef59-fc4f-6007f18e7839@i-love.sakura.ne.jp>
+ <5df3d221-9e78-4cbe-826b-81cbfc4d5888@i-love.sakura.ne.jp>
+ <3305d1a1-12e2-087b-30f5-10f4bf8eaf83@linuxfoundation.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <f8f5e763-da2d-b26f-c6a5-d345bbe55448@i-love.sakura.ne.jp>
+Date:   Tue, 9 Mar 2021 20:04:52 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-09_09:2021-03-08,2021-03-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- spamscore=0 mlxscore=0 impostorscore=0 clxscore=1015 priorityscore=1501
- mlxlogscore=999 lowpriorityscore=0 bulkscore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103090053
+In-Reply-To: <3305d1a1-12e2-087b-30f5-10f4bf8eaf83@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-perf build fails on 5.12.0rc2 on s390 with this error message:
+On 2021/03/09 1:27, Shuah Khan wrote:
+> Yes. We might need synchronization between events, threads, and shutdown
+> in usbip_host side and in connection polling and threads in vhci.
+> 
+> I am also looking at the shutdown sequences closely as well since the
+> local state is referenced without usbip_device lock in these paths.
+> 
+> I am approaching these problems as peeling the onion an expression so
+> we can limit the changes and take a spot fix approach. We have the
+> goal to address these crashes and not introduce regressions.
 
-util/synthetic-events.c: In function
-				‘__event__synthesize_thread.part.0.isra’:
-util/synthetic-events.c:787:19: error: ‘kernel_thread’ may be
-    used uninitialized in this function [-Werror=maybe-uninitialized]
-    787 |   if (_pid == pid && !kernel_thread) {
-        |       ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
-
-The build succeeds using command 'make DEBUG=y'.
-
-The variable kernel_thread is set by this function sequence:
-
-__event__synthesize_thread()
-|    defines bool kernel_thread; as local variable and calls
-+--> perf_event__prepare_comm(..., &kernel_thread)
-     +--> perf_event__get_comm_ids(..., bool *kernel);
-          On return of this function variable kernel is always
-          set to true of false.
-
-To prevent this compile error, assign variable kernel_thread
-a value when it is defined.
-
-Output after:
-[root@m35lp76 perf]# make  util/synthetic-events.o
-....
- CC       util/synthetic-events.o
-[root@m35lp76 perf]#
-
-Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
----
- tools/perf/util/synthetic-events.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index b698046ec2db..5dd451695f33 100644
---- a/tools/perf/util/synthetic-events.c
-+++ b/tools/perf/util/synthetic-events.c
-@@ -758,7 +758,7 @@ static int __event__synthesize_thread(union perf_event *comm_event,
- 	for (i = 0; i < n; i++) {
- 		char *end;
- 		pid_t _pid;
--		bool kernel_thread;
-+		bool kernel_thread = false;
- 
- 		_pid = strtol(dirent[i]->d_name, &end, 10);
- 		if (*end)
--- 
-2.29.2
+I think my [PATCH v4 01/12]-[PATCH v4 06/12] simplify your further changes
+without introducing regressions. While ud->lock is held when checking ud->status,
+current attach/detach code is racy about read/update of ud->status . I think we
+can close race in attach/detach code via a simple usbip_event_mutex serialization.
 
