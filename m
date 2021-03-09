@@ -2,75 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADFC833261A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:07:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E841333266C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:18:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhCINGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 08:06:49 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13892 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbhCINGS (ORCPT
+        id S230075AbhCINRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 08:17:43 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:35270 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhCINRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 08:06:18 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DvwR56S7pzkWgK;
-        Tue,  9 Mar 2021 21:04:49 +0800 (CST)
-Received: from localhost.localdomain (10.175.102.38) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 9 Mar 2021 21:06:10 +0800
-From:   'Wei Yongjun <weiyongjun1@huawei.com>
-To:     <weiyongjun1@huawei.com>, Oder Chiou <oder_chiou@realtek.com>,
-        "Liam Girdwood" <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Jack Yu <jack.yu@realtek.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next] ASoC: rt715-sdca: Fix return value check in rt715_sdca_sdw_probe()
-Date:   Tue, 9 Mar 2021 13:14:58 +0000
-Message-ID: <20210309131458.1884899-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 9 Mar 2021 08:17:16 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 129DH4rK009351;
+        Tue, 9 Mar 2021 07:17:04 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615295824;
+        bh=AjPtZIF0wddKrmfcHbmIFLOGj6T5JDk3vhSc61d801k=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=VdkajMbZwEqXQEz3UfK/OMvr+cMKJdVVBYFgfzXONX6UH+X/x2HholTYWV1GKnJQZ
+         sNxQfYjCTogUc6wA2hmtEyQqolTmbbmBzkuNfgyIeWobDSrphI+jrUH4Chsrq/jvFe
+         39cSenMzhGqn3RAuOUunMDOgYT+xViDdUkeoUO+s=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 129DH47D019037
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 9 Mar 2021 07:17:04 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 9 Mar
+ 2021 07:17:03 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 9 Mar 2021 07:17:03 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 129DH3XI081818;
+        Tue, 9 Mar 2021 07:17:03 -0600
+Date:   Tue, 9 Mar 2021 18:47:02 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH 1/2] arm64: dts: ti: k3-am64-main: Add OSPI node
+Message-ID: <20210309131702.szl6kjiyn746xyf5@ti.com>
+References: <20210309130514.11740-1-vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.102.38]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210309130514.11740-1-vigneshr@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+On 09/03/21 06:35PM, Vignesh Raghavendra wrote:
+> AM64 SoC has a single Octal SPI (OSPI) instance under Flash SubSystem
+> (FSS).  Add DT entry for the same.
+> 
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 
-In case of error, the function devm_regmap_init_sdw_mbq() and
-devm_regmap_init_sdw() returns ERR_PTR() not NULL. The NULL test
-in the return value check should be replaced with IS_ERR().
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 
-Fixes: 393c52d2d109 ("ASoC: rt715-sdca: Add RT715 sdca vendor-specific driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- sound/soc/codecs/rt715-sdca-sdw.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> ---
+>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 25 ++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> index 5f85950daef7..bcec4fa444b5 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+> @@ -402,4 +402,29 @@ sdhci1: mmc@fa00000 {
+>  		ti,otap-del-sel-ddr50 = <0x9>;
+>  		ti,clkbuf-sel = <0x7>;
+>  	};
+> +
+> +	fss: bus@fc00000 {
+> +		compatible = "simple-bus";
+> +		reg = <0x00 0x0fc00000 0x00 0x70000>;
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		ospi0: spi@fc40000 {
+> +			compatible = "ti,am654-ospi", "cdns,qspi-nor";
+> +			reg = <0x00 0x0fc40000 0x00 0x100>,
+> +			      <0x05 0x00000000 0x01 0x00000000>;
+> +			interrupts = <GIC_SPI 139 IRQ_TYPE_LEVEL_HIGH>;
+> +			cdns,fifo-depth = <256>;
+> +			cdns,fifo-width = <4>;
+> +			cdns,trigger-address = <0x0>;
+> +			#address-cells = <0x1>;
+> +			#size-cells = <0x0>;
+> +			clocks = <&k3_clks 75 6>;
+> +			assigned-clocks = <&k3_clks 75 6>;
+> +			assigned-clock-parents = <&k3_clks 75 7>;
+> +			assigned-clock-rates = <166666666>;
+> +			power-domains = <&k3_pds 75 TI_SCI_PD_EXCLUSIVE>;
+> +		};
+> +	};
+>  };
+> -- 
+> 2.30.1
+> 
 
-diff --git a/sound/soc/codecs/rt715-sdca-sdw.c b/sound/soc/codecs/rt715-sdca-sdw.c
-index bcced85876b0..1350798406f0 100644
---- a/sound/soc/codecs/rt715-sdca-sdw.c
-+++ b/sound/soc/codecs/rt715-sdca-sdw.c
-@@ -184,12 +184,12 @@ static int rt715_sdca_sdw_probe(struct sdw_slave *slave,
- 
- 	/* Regmap Initialization */
- 	mbq_regmap = devm_regmap_init_sdw_mbq(slave, &rt715_sdca_mbq_regmap);
--	if (!mbq_regmap)
--		return -EINVAL;
-+	if (IS_ERR(mbq_regmap))
-+		return PTR_ERR(mbq_regmap);
- 
- 	regmap = devm_regmap_init_sdw(slave, &rt715_sdca_regmap);
--	if (!regmap)
--		return -EINVAL;
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
- 
- 	return rt715_sdca_init(&slave->dev, mbq_regmap, regmap, slave);
- }
-
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
