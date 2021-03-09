@@ -2,130 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A88332EFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4247332F00
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhCIT0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 14:26:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55914 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231197AbhCIT0O (ORCPT
+        id S231338AbhCIT2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:28:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230266AbhCIT2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:26:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615317973;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5ie/zBOys7oevTegcdriKKRKYfpe93c9I/vD8unRIik=;
-        b=bcoDTFvVTuMbQPlEra1JEo7LlYzA+w5W50FgrzRX4kbU3Uoh30ncmx1gNG7Bus/3cINFOq
-        AWdRSxjHnHX7CsXfn28OEQeQAk9m0fT4IjdODn0fdhL4JmmFvzA7rdxvt4KYt/ZBvgcbGg
-        fIK4e0yDGjq6ambFsIaISAHr/Xnh9lc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-437-1aCeoGM6P6udNG46NEfJuA-1; Tue, 09 Mar 2021 14:26:11 -0500
-X-MC-Unique: 1aCeoGM6P6udNG46NEfJuA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E64C4801817;
-        Tue,  9 Mar 2021 19:26:08 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A98F360C13;
-        Tue,  9 Mar 2021 19:26:07 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 12:26:07 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH] vfio/pci: make the vfio_pci_mmap_fault reentrant
-Message-ID: <20210309122607.0b68fb9b@omen.home.shazbot.org>
-In-Reply-To: <20210309184739.GD763132@xz-x1>
-References: <1615201890-887-1-git-send-email-prime.zeng@hisilicon.com>
-        <20210308132106.49da42e2@omen.home.shazbot.org>
-        <20210308225626.GN397383@xz-x1>
-        <6b98461600f74f2385b9096203fa3611@hisilicon.com>
-        <20210309124609.GG2356281@nvidia.com>
-        <20210309082951.75f0eb01@x1.home.shazbot.org>
-        <20210309164004.GJ2356281@nvidia.com>
-        <20210309184739.GD763132@xz-x1>
+        Tue, 9 Mar 2021 14:28:01 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DDBC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 11:28:00 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id q25so29065326lfc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 11:28:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+YSV6ncCEG+y5BT6rnDei0hUzTGyRtar1eyCHbKmYIA=;
+        b=BpWbaJ9DlLjy2lfPpHHbAiFzYeSNCksb4Sv0yGoyTicKvDXTpdNBSZ7heRe8GWAlkK
+         7jxNeEasX8wDIReyMSzEJ3IT0qEmKc+QxIc+KBE4tiKufvfrah/5FjjvwYe/10dRerGz
+         feWcjIGoH/8abiiwJ84KXJOLDap3HzPPhea9k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+YSV6ncCEG+y5BT6rnDei0hUzTGyRtar1eyCHbKmYIA=;
+        b=uU56WSuW7MvKapFUkCZC23pyFEqOzy4ih8F2o2IS+AQTuxJnffOsPIugph29y/4A9H
+         ZBTnzlR+b5s3qYF6EdoLWO/ro6iIABGEuQVQhBxAbS5K/g3W72uziaHkpZayliGPZMlB
+         5dkx/tWSoRbHURbbhwS5snYappUSMZYulp1afFezDfoN8mAL4Vksb2iMiAf9scvNeTDb
+         wNjOti7efjgCGp/u8aPmErzgKmBSiA0HbulVAAFUoKf0iynMhIb1uiaEfGRsqEBcidwB
+         KB72wMXsAPjruUOls+uzaOuGxXAAaA7OZbsiTgMqCGg5RxRY/Vdlr9KYDINyECOmXLxK
+         i3hA==
+X-Gm-Message-State: AOAM530jEcERtrnZOlt62emRLE4KKIX5SJiBUsvq3MdHlTL4E5BGAYAi
+        w0QJcEPd0rRkxgqBJemZ0BqBgfwpjt5wRw==
+X-Google-Smtp-Source: ABdhPJzzMJmiuU/laDXHz2vo0ZYZIVoXfE5YxJZwK7+peNrQ01k9lCLCjCzeeKC+nQg3C5ZdnNCh1Q==
+X-Received: by 2002:a19:7f95:: with SMTP id a143mr17893379lfd.419.1615318078654;
+        Tue, 09 Mar 2021 11:27:58 -0800 (PST)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id m16sm2111091lfu.220.2021.03.09.11.27.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 11:27:57 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id u4so29140065lfs.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 11:27:57 -0800 (PST)
+X-Received: by 2002:ac2:58fc:: with SMTP id v28mr17816354lfo.201.1615318077386;
+ Tue, 09 Mar 2021 11:27:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210308.154619.729170517586257571.davem@davemloft.net>
+ <37859f29-dc59-d6c2-6f92-abaae32ee4ab@physik.fu-berlin.de> <20210309.110812.234617387417457658.davem@davemloft.net>
+In-Reply-To: <20210309.110812.234617387417457658.davem@davemloft.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 9 Mar 2021 11:27:41 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whgiPiFy9Ye_t=fV9J8VdqgZW5XQcb-1z8PgpQbVBWqCQ@mail.gmail.com>
+Message-ID: <CAHk-=whgiPiFy9Ye_t=fV9J8VdqgZW5XQcb-1z8PgpQbVBWqCQ@mail.gmail.com>
+Subject: Re: [GIT] SPARC
+To:     David Miller <davem@davemloft.net>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Mar 2021 13:47:39 -0500
-Peter Xu <peterx@redhat.com> wrote:
+On Tue, Mar 9, 2021 at 11:08 AM David Miller <davem@davemloft.net> wrote:
+>
+> I'll make sure that gets into my next pull req, thanks.
 
-> On Tue, Mar 09, 2021 at 12:40:04PM -0400, Jason Gunthorpe wrote:
-> > On Tue, Mar 09, 2021 at 08:29:51AM -0700, Alex Williamson wrote:  
-> > > On Tue, 9 Mar 2021 08:46:09 -0400
-> > > Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > >   
-> > > > On Tue, Mar 09, 2021 at 03:49:09AM +0000, Zengtao (B) wrote:  
-> > > > > Hi guys:
-> > > > > 
-> > > > > Thanks for the helpful comments, after rethinking the issue, I have proposed
-> > > > >  the following change: 
-> > > > > 1. follow_pte instead of follow_pfn.    
-> > > > 
-> > > > Still no on follow_pfn, you don't need it once you use vmf_insert_pfn  
-> > > 
-> > > vmf_insert_pfn() only solves the BUG_ON, follow_pte() is being used
-> > > here to determine whether the translation is already present to avoid
-> > > both duplicate work in inserting the translation and allocating a
-> > > duplicate vma tracking structure.  
-> >  
-> > Oh.. Doing something stateful in fault is not nice at all
-> > 
-> > I would rather see __vfio_pci_add_vma() search the vma_list for dups
-> > than call follow_pfn/pte..  
-> 
-> It seems to me that searching vma list is still the simplest way to fix the
-> problem for the current code base.  I see io_remap_pfn_range() is also used in
-> the new series - maybe that'll need to be moved to where PCI_COMMAND_MEMORY got
-> turned on/off in the new series (I just noticed remap_pfn_range modifies vma
-> flags..), as you suggested in the other email.
+Note that it's obviously always easiest for me to just ignore
+something like sparc entirely, but on the other hand, particularly for
+low-volume trees it's also ok to just say "I don't have anything
+pending, here's the link to lore.kernel.org, can you apply that one
+patch directly".
 
+(And yes, I prefer lore.kernel.org over marc, although for single
+patches it doesn't make much of a difference. For patch series, I find
+'b4' so convenient that I definitely want the patch to show up on
+lore.kernel.org).
 
-In the new series, I think the fault handler becomes (untested):
+I'll await your pull request or 'I have nothing else, take it from
+xyz', this thread is otherwise archived for me as "done".
 
-static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
-{
-        struct vm_area_struct *vma = vmf->vma;
-        struct vfio_pci_device *vdev = vma->vm_private_data;
-        unsigned long base_pfn, pgoff;
-        vm_fault_t ret = VM_FAULT_SIGBUS;
-
-        if (vfio_pci_bar_vma_to_pfn(vma, &base_pfn))
-                return ret;
-
-        pgoff = (vmf->address - vma->vm_start) >> PAGE_SHIFT;
-
-        down_read(&vdev->memory_lock);
-
-        if (__vfio_pci_memory_enabled(vdev))
-                ret = vmf_insert_pfn(vma, vmf->address, pgoff + base_pfn);
-
-        up_read(&vdev->memory_lock);
-
-        return ret;
-}
-
-Thanks,
-Alex
-
+              Linus
