@@ -2,91 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6917332C75
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6778332C7A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhCIQoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:44:19 -0500
-Received: from mga17.intel.com ([192.55.52.151]:14008 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229775AbhCIQoH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:44:07 -0500
-IronPort-SDR: ITM4nVZfIi3kjUW/mTBMXIaKaOwoXlH+xHeZG9ftc82uV/JFiIKhDNo+0WwD7r1AQwqKdLaIUn
- Wa3kG88ir9Uw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="168189280"
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="168189280"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 08:44:06 -0800
-IronPort-SDR: tLqRxPfsQ4ayHmwBHR9QmVWRZcMJ+Gv44Fw9E8vQNISMoxrr47qKaTsANVlJd2yN/QFcziNzKt
- dASRy4EaMOKg==
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="409806959"
-Received: from yoojae-mobl.amr.corp.intel.com (HELO [10.251.3.100]) ([10.251.3.100])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 08:44:06 -0800
-Subject: Re: [PATCH 3/3] aspeed-video: add COMP_READY to VE_SPURIOUS_IRQS
-To:     Joel Stanley <joel@jms.id.au>, Zev Weiss <zev@bewilderbeest.net>,
-        Ryan Chen <ryan_chen@aspeedtech.com>
-Cc:     Eddie James <eajames@linux.ibm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>, linux-media@vger.kernel.org,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201215024542.18888-1-zev@bewilderbeest.net>
- <20201215024542.18888-4-zev@bewilderbeest.net>
- <CACPK8XdAfYaAPeyDL4nsG+04xgr-u3+CQKNNdpHAQb4vG7=54g@mail.gmail.com>
-From:   Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-Message-ID: <e2f23365-53c6-3526-4544-7d36300c2bea@linux.intel.com>
-Date:   Tue, 9 Mar 2021 08:43:58 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230491AbhCIQpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:45:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230473AbhCIQpJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 11:45:09 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD40C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 08:45:09 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id u16so16946918wrt.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 08:45:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=HQAapd2VYff0FVMH+At0UuE1zM/4LNj6vNP0aGstbj4=;
+        b=f7i6/zFL5uCo6uPBWoKGpNHNJRsNwgOhsJ8NP0zJqHE/fIYYt7SzSCqGlzOChkykzL
+         rEh+Vix2cdfJL5JqvUXCB91eeqObk4nSKwOhx7CpRliLDuE3hrr+g2mfkOtKpzdIJOZy
+         J6dycplUlG4YnjIigvDTQ0qWsrDAmDW0BNDPjrDicjkWDn25UODM7uW0iEQRUzxEl9tc
+         Xwddm4Q+wljabinj9dJyQIfQ0WDO4jdzGDk9hGl2oiOkSlFE8jgd1LL2CIEnxN9OYZEg
+         pWahPXl+XiV8ERvLl/qz+F3NFKC9+Q0RXVVCa2SmWG7gUaQnSgmVU/kgqlogCjqBBZP0
+         mN6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=HQAapd2VYff0FVMH+At0UuE1zM/4LNj6vNP0aGstbj4=;
+        b=QE0/Fx2HNKqv/OY3eWcwObS1c5GznrMXeW04OuJTx4FsyieM5tcpdTf5t39DmFsz64
+         sDa6zisVfZFlCUwxm1h5NVNr4vyRl4okkncnR1FZBQO1dV3h0JSRi/XDr7uE99sAW92G
+         HGNgTJpqrWO5ivBJ7/vOEwBy0k9QCjFLO/FtrbNeGdWRXuEnNzwIUhbcrJn/HN7PmRFC
+         JhG+HTZfHj82q95I/dWBkcIIOAwRIxN24ZnZjymw6KLB4EI3vKZ+7tH5PRcO2o5FKVz0
+         PrbZ2sfDMA2kfkhYGgIAjEnUSmXRRVB2oO6y30EUH5QGIlSAXxK0HWqlPHJJVKpGNgYR
+         I6cg==
+X-Gm-Message-State: AOAM530o4N4RT69NJetXUS9Xk275VxacQ1Q0FPCvJg77eesDSj1RNCti
+        PikiMhzkfbyUdonBp27o8Pa7S/f644etLQ==
+X-Google-Smtp-Source: ABdhPJwDMP0K8mu7QTzWcY95OMns2CzLD9V4ndIZmXoVoRCvUj1IsCW1jpwW4Fn0nQRg0y8YkoPfgQ==
+X-Received: by 2002:a05:6000:221:: with SMTP id l1mr29124435wrz.370.1615308308069;
+        Tue, 09 Mar 2021 08:45:08 -0800 (PST)
+Received: from dell ([91.110.221.192])
+        by smtp.gmail.com with ESMTPSA id u23sm4908290wmn.26.2021.03.09.08.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 08:45:07 -0800 (PST)
+Date:   Tue, 9 Mar 2021 16:45:05 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     hdegoede@redhat.com, mgross@linux.intel.com,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 2/2 V2] MFD: intel_pmt: Add support for DG1
+Message-ID: <20210309164505.GS4931@dell>
+References: <20210128172846.99352-1-david.e.box@linux.intel.com>
+ <20210224201005.1034005-2-david.e.box@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CACPK8XdAfYaAPeyDL4nsG+04xgr-u3+CQKNNdpHAQb4vG7=54g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210224201005.1034005-2-david.e.box@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/21/2020 8:49 PM, Joel Stanley wrote:
-> On Tue, 15 Dec 2020 at 02:46, Zev Weiss <zev@bewilderbeest.net> wrote:
->>
->> This joins CAPTURE_COMPLETE and FRAME_COMPLETE in the set of interrupts
->> that have been seen asserted by the hardware even when disabled, leading
->> to the interrupt eventually getting disabled as described in commit
->> 65d270acb2d662c3346793663ac3a759eb4491b8.
->>
->> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+On Wed, 24 Feb 2021, David E. Box wrote:
+
+> Adds PMT Telemetry aggregator support for the DG1 graphics PCIe card. The
+> device does not have the DVSEC region in its PCI config space so hard
+> code the discovery table data in the driver. Also requires a fix for DG1
+> in the Telemetry driver for how the ACCESS_TYPE field is used.
 > 
-> I have less experience with this part of the chip, so I defer to Jae
-> or Ryan for an ack.
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+> Based on 5.11-rc1 review-hans branch:
+> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+> 
+> Changes from V1:
+> 
+> 	- New patch
+> 
+>  drivers/mfd/intel_pmt.c                    | 101 +++++++++++++++------
+>  drivers/platform/x86/intel_pmt_class.c     |  46 ++++++++++
+>  drivers/platform/x86/intel_pmt_class.h     |   1 +
+>  drivers/platform/x86/intel_pmt_telemetry.c |  20 ----
+>  4 files changed, 119 insertions(+), 49 deletions(-)
+> 
+> diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
+> index 65da2b17a204..dd7eb614c28e 100644
+> --- a/drivers/mfd/intel_pmt.c
+> +++ b/drivers/mfd/intel_pmt.c
+> @@ -49,10 +49,14 @@ enum pmt_quirks {
+>  
+>  	/* Use shift instead of mask to read discovery table offset */
+>  	PMT_QUIRK_TABLE_SHIFT	= BIT(2),
+> +
+> +	/* DVSEC not present (provided in driver data) */
+> +	PMT_QUIRK_NO_DVSEC	= BIT(3),
+>  };
+>  
+>  struct pmt_platform_info {
+>  	unsigned long quirks;
+> +	struct intel_dvsec_header **capabilities;
+>  };
+>  
+>  static const struct pmt_platform_info tgl_info = {
+> @@ -60,6 +64,26 @@ static const struct pmt_platform_info tgl_info = {
+>  		  PMT_QUIRK_TABLE_SHIFT,
+>  };
+>  
+> +/* DG1 Platform with DVSEC quirk*/
+> +static struct intel_dvsec_header dg1_telemetry = {
+> +	.length = 0x10,
+> +	.id = 2,
+> +	.num_entries = 1,
+> +	.entry_size = 3,
+> +	.tbir = 0,
+> +	.offset = 0x466000,
+> +};
+> +
+> +static struct intel_dvsec_header *dg1_capabilities[] = {
+> +	&dg1_telemetry,
+> +	NULL
+> +};
+> +
+> +static const struct pmt_platform_info dg1_info = {
+> +	.quirks = PMT_QUIRK_NO_DVSEC,
+> +	.capabilities = dg1_capabilities,
+> +};
+> +
+>  static int pmt_add_dev(struct pci_dev *pdev, struct intel_dvsec_header *header,
+>  		       unsigned long quirks)
+>  {
+> @@ -147,37 +171,54 @@ static int pmt_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	if (info)
+>  		quirks = info->quirks;
+>  
+> -	do {
+> -		struct intel_dvsec_header header;
+> -		u32 table;
+> -		u16 vid;
+> +	if (info && (info->quirks & PMT_QUIRK_NO_DVSEC)) {
 
-I didn't see unexpected VE_INTERRUPT_COMP_READY events in my system but
-it seems a fix good to have.
+Nit: Why not use 'quirks' from a few lines above?
 
-Acked-by: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+> +		struct intel_dvsec_header **header;
 
->> ---
->>   drivers/media/platform/aspeed-video.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
->> index 218aae3be809..48c52bf91a1b 100644
->> --- a/drivers/media/platform/aspeed-video.c
->> +++ b/drivers/media/platform/aspeed-video.c
->> @@ -564,7 +564,8 @@ static void aspeed_video_irq_res_change(struct aspeed_video *video, ulong delay)
->>    * register.
->>    */
->>   #define VE_SPURIOUS_IRQS \
->> -       (VE_INTERRUPT_CAPTURE_COMPLETE | VE_INTERRUPT_FRAME_COMPLETE)
->> +       (VE_INTERRUPT_CAPTURE_COMPLETE | VE_INTERRUPT_FRAME_COMPLETE \
->> +        | VE_INTERRUPT_COMP_READY)
->>
->>   static irqreturn_t aspeed_video_irq(int irq, void *arg)
->>   {
->> --
->> 2.29.2
->>
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
