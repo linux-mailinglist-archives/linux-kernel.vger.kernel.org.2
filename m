@@ -2,144 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B8A331CE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:21:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB05331CEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhCICVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 21:21:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbhCICVH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 21:21:07 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27878C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 18:21:07 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id m6so8503047pfk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 18:21:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9bGq9kHaxz4ieImbA52oG7Wty2DH5Z2+L9jd9skILhQ=;
-        b=Y+4R14mZu6I94rC8QSoez7DJAMGBLNDKd678iRXgTDfVAox7b7CagA4IGLgGLqDsb1
-         kqKLVLzx0aqGWW14eIvbxXFjulOfwJybI/gWxaBTZToe5vZlfic8a5O4ePprOwoDZfQq
-         lUxQwzwKkE441eKniwRc9xc9csfFqDKn3n0gBeEM8AFM+zOkiIgXmW9DL1jbLuO2/Pbt
-         p3iS8aowU66jIht1PiKeIiSgkF0qwmwkKSyeFBDZyL6sosrDsegcHFBNZTstu+jm+MPF
-         MRgt82z1LLdwDzNfP8UHgTO9a6stAdIdd/JR8B1BS7dIcmxL+kUVq8EFV1gowt9C1GZQ
-         L1HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=9bGq9kHaxz4ieImbA52oG7Wty2DH5Z2+L9jd9skILhQ=;
-        b=bl7owu8QMOT3dMgdzBaEcHDwwHl3fPxb7xt+eZa/OKiGqq0/ZZDLKZXzBRq13oDyH8
-         qGzgqukL/wnCQ8Gf4Awr2ekjUnpX7tzjJs1hZvuFP0/d7tYmNIhTdU+mWEVauI+J/vMN
-         G4vQhRTxXKKHiTdhTWpg4HPUX0Lmd2TQZSbrgtmEP+o5zAOTcLW068pWr8Pi5f+2wi2d
-         8jPDgdADbjmYciNFYGDBO6c8qu+mCn0GWt3GWDuOLBZ8JFFd9Jyx583oPhAHLPrfDkcE
-         VvmHNXu4UIuNFLI9cEleQ0NAqj3P/4DplqtMciCxJRiagtgTZzKQmHaSjLqILnSTtwPl
-         a7gg==
-X-Gm-Message-State: AOAM530rnrGfTyz6vFl9jFQ+czlop+/VwQ3t66/wgMTwIJyni1LhMa7S
-        QiI3Qv2XTg+34kE0dO4vb0o=
-X-Google-Smtp-Source: ABdhPJzSADszP6X8rpqEUnfBA3fu76HLyan3RFIkVdZJ4XQ3bW8pfq4FCtjHk0zsWNVmfl4SmWY4bg==
-X-Received: by 2002:a63:5962:: with SMTP id j34mr22779391pgm.331.1615256466723;
-        Mon, 08 Mar 2021 18:21:06 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:4ccc:acdd:25da:14d1])
-        by smtp.gmail.com with ESMTPSA id q25sm3400915pfh.34.2021.03.08.18.21.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 18:21:05 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Mon, 8 Mar 2021 18:21:03 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Dias <joaodias@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Baron <jbaron@akamai.com>
-Subject: Re: [PATCH v2] mm: page_alloc: dump migrate-failed pages
-Message-ID: <YEbbj08NSSbd7364@google.com>
-References: <20210308202047.1903802-1-minchan@kernel.org>
- <20210308162128.9b4a7d4c1576a72fd4878bdb@linux-foundation.org>
+        id S230289AbhCICXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 21:23:30 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:43788 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229599AbhCICXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 21:23:00 -0500
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD_P620ZgwjQXAA--.30714S3;
+        Tue, 09 Mar 2021 10:22:50 +0800 (CST)
+Subject: Re: [PATCH] MIPS: Check __clang__ to avoid performance influence with
+ GCC in csum_tcpudp_nofold()
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1615207807-29972-1-git-send-email-yangtiezhu@loongson.cn>
+ <8d61574e815a4cf098d21eb4d749be0f@AcuMS.aculab.com>
+Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <0e07b9bf-03b7-64d4-1989-cba7abc5edeb@loongson.cn>
+Date:   Tue, 9 Mar 2021 10:22:49 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308162128.9b4a7d4c1576a72fd4878bdb@linux-foundation.org>
+In-Reply-To: <8d61574e815a4cf098d21eb4d749be0f@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxD_P620ZgwjQXAA--.30714S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxXrWkuw4fCr43WF1xKryUJrb_yoW5WF47pF
+        4jkas2q3yvqryUKF9Ivr4S9r98Kr4rGF92vrnIg3Wjva45Xr13Wr93Kw15Gry8JaykAa4S
+        9FWfWr1kCrs2vaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
+        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE
+        67vIY487MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa
+        73UjIFyTuYvjfU0GYLUUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 04:21:28PM -0800, Andrew Morton wrote:
-> On Mon,  8 Mar 2021 12:20:47 -0800 Minchan Kim <minchan@kernel.org> wrote:
-> 
-> > alloc_contig_range is usually used on cma area or movable zone.
-> > It's critical if the page migration fails on those areas so
-> > dump more debugging message.
-> > 
-> > page refcount, mapcount with page flags on dump_page are
-> > helpful information to deduce the culprit. Furthermore,
-> > dump_page_owner was super helpful to find long term pinner
-> > who initiated the page allocation.
-> > 
-> > Admin could enable the dump like this(by default, disabled)
-> > 
-> > 	echo "func dump_migrate_failure_pages +p" > control
-> > 
-> > Admin could disable it.
-> > 
-> > 	echo "func dump_migrate_failure_pages =_" > control
-> > 
-> > ...
-> >
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -8453,6 +8453,34 @@ static unsigned long pfn_max_align_up(unsigned long pfn)
-> >  				pageblock_nr_pages));
-> >  }
-> >  
-> > +#if defined(CONFIG_DYNAMIC_DEBUG) || \
-> > +	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-> > +static DEFINE_RATELIMIT_STATE(alloc_contig_ratelimit_state,
-> > +		DEFAULT_RATELIMIT_INTERVAL, DEFAULT_RATELIMIT_BURST);
-> > +int alloc_contig_ratelimit(void)
-> > +{
-> > +	return __ratelimit(&alloc_contig_ratelimit_state);
-> > +}
-> 
-> Wow, that's an eyesore.  We're missing helpers in the ratelimit code. 
-> Can we do something like
-> 
-> /* description goes here */
-> #define RATELIMIT2(interval, burst)
-> ({
-> 	static DEFINE_RATELIMIT_STATE(_rs, interval, burst);
-> 
-> 	__ratelimit(_rs);
-> })
-> 
-> #define RATELIMIT()
-> 	RATELIMIT2(DEFAULT_RATELIMIT_INTERVAL, DEFAULT_RATELIMIT_BURST)
-> 
-> > +void dump_migrate_failure_pages(struct list_head *page_list)
-> > +{
-> > +	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor,
-> > +			"migrate failure");
-> > +	if (DYNAMIC_DEBUG_BRANCH(descriptor) &&
-> > +			alloc_contig_ratelimit()) {
-> > +		struct page *page;
-> > +
-> > +		WARN(1, "failed callstack");
-> > +		list_for_each_entry(page, page_list, lru)
-> > +			dump_page(page, "migration failure");
-> > +	}
-> > +}
-> 
-> Then we can simply do
-> 
-> 	if (DYNAMIC_DEBUG_BRANCH(descriptor) && RATELIMIT())
+On 03/09/2021 12:52 AM, David Laight wrote:
+> From: Tiezhu Yang
+>> Sent: 08 March 2021 12:50
+>>
+>> The asm code in csum_tcpudp_nofold() is performance-critical, I am sorry
+>> for the poorly considered implementation about the performance influence
+>> with GCC in the commit 198688edbf77 ("MIPS: Fix inline asm input/output
+>> type mismatch in checksum.h used with Clang").
+>>
+>> With this patch, we can build successfully by both GCC and Clang,
+>> at the same time, we can avoid the potential performance influence
+>> with GCC.
+>>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>   arch/mips/include/asm/checksum.h | 10 ++++++++++
+>>   1 file changed, 10 insertions(+)
+>>
+>> diff --git a/arch/mips/include/asm/checksum.h b/arch/mips/include/asm/checksum.h
+>> index 1e6c135..64d353e 100644
+>> --- a/arch/mips/include/asm/checksum.h
+>> +++ b/arch/mips/include/asm/checksum.h
+>> @@ -130,7 +130,9 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+>>   					__u32 len, __u8 proto,
+>>   					__wsum sum)
+>>   {
+>> +#ifdef __clang__
+>>   	unsigned long tmp = (__force unsigned long)sum;
+>> +#endif
+> What happens if you make the above:
+> #ifdef __clang__
+> 	unsigned long tmp = (__force unsigned long)sum;
+> #else
+> 	__wsum tmp = sum;
+> #endif
+> 	
+> and then leave the rest of the function the same for both compilers.
+> Maybe do s/sum/sum_in/,s/tmp/sum/ to reduce the changes.
 
-Sounds good idea to me. There are many places to take the
-benefit. However, let me leave it until we could discuss
-this patch. We could clean them up as follow patch.
+Hi David,
 
-Thank you.
+Thank you very much.
+
+As you suggested, the following changes looks much better,
+I will test it and then send v2 later.
+
+diff --git a/arch/mips/include/asm/checksum.h 
+b/arch/mips/include/asm/checksum.h
+index 1e6c135..80eddd4 100644
+--- a/arch/mips/include/asm/checksum.h
++++ b/arch/mips/include/asm/checksum.h
+@@ -128,9 +128,13 @@ static inline __sum16 ip_fast_csum(const void *iph, 
+unsigned int ihl)
+
+  static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+                                         __u32 len, __u8 proto,
+-                                       __wsum sum)
++                                       __wsum sum_in)
+  {
+-       unsigned long tmp = (__force unsigned long)sum;
++#ifdef __clang__
++       unsigned long sum = (__force unsigned long)sum_in;
++#else
++       __wsum sum = sum_in;
++#endif
+
+         __asm__(
+         "       .set    push            # csum_tcpudp_nofold\n"
+@@ -159,7 +163,7 @@ static inline __wsum csum_tcpudp_nofold(__be32 
+saddr, __be32 daddr,
+         "       addu    %0, $1          \n"
+  #endif
+         "       .set    pop"
+-       : "=r" (tmp)
++       : "=r" (sum)
+         : "0" ((__force unsigned long)daddr),
+           "r" ((__force unsigned long)saddr),
+  #ifdef __MIPSEL__
+@@ -169,7 +173,7 @@ static inline __wsum csum_tcpudp_nofold(__be32 
+saddr, __be32 daddr,
+  #endif
+           "r" ((__force unsigned long)sum));
+
+-       return (__force __wsum)tmp;
++       return (__force __wsum)sum;
+  }
+  #define csum_tcpudp_nofold csum_tcpudp_nofold
+
+Thanks,
+Tiezhu
+
+>
+> 	David
+>
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+
