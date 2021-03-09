@@ -2,162 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB5C333102
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7800433311D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231935AbhCIVg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 16:36:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231858AbhCIVgl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 16:36:41 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1234::107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AF0C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 13:36:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=GQaav7q/hcpIkgbXD6dyks8sGrzhXivAUSZ+R3xxWzs=; b=Iz8HW/laqU9E2f/soy51xGtgnn
-        lBNIER11ZMvCYXKVp1TKZXg7alj+68Y9B0QXHK6ZJhyNIGaafslCKTozm51NElb+NXt7DjxpDlK8y
-        1Y30lwy/NOkcmOToTjUTXjWEjVpQZE89mP39FXFGylaCTZrw9vmfWIPChqSzXITtkAbze0+DwC8RR
-        stMSlk7AiGmxuSN41cUeM2tGUwCf91nsRNs4uw2KvigMM1i3aNjocbcAaIMqQ5rxbs6nrOElPoy4w
-        bpwfPGSGuqtx6Onj39XSOrD66rqfsByASvwWWd9sWersSFklgHh9EI2+630MzSHi2sQVxBY3bpNJK
-        /DBZHoQg==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by merlin.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lJk1n-000ifz-HK; Tue, 09 Mar 2021 21:36:34 +0000
-Subject: Re: [PATCH] stacktrace: Move documentation for
- arch_stack_walk_reliable() to header
-To:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        id S232103AbhCIVlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 16:41:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51192 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232123AbhCIVlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 16:41:12 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 83297AFF1;
+        Tue,  9 Mar 2021 21:41:11 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>, x86@kernel.org,
-        linux-s390@vger.kernel.org, live-patching@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Miroslav Benes <mbenes@suse.cz>
-References: <20210309194125.652-1-broonie@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <55c3a5a6-6f14-52f3-61c4-f4d8c8c0b64c@infradead.org>
-Date:   Tue, 9 Mar 2021 13:36:25 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Michal Hocko <mhocko@kernel.org>, Zi Yan <ziy@nvidia.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v6 0/4] Cleanup and fixups for vmemmap handling
+Date:   Tue,  9 Mar 2021 22:40:46 +0100
+Message-Id: <20210309214050.4674-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20210309194125.652-1-broonie@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 11:41 AM, Mark Brown wrote:
-> Currently arch_stack_wallk_reliable() is documented with an identical
-> comment in both x86 and S/390 implementations which is a bit redundant.
-> Move this to the header and convert to kerneldoc while we're at it.
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: Petr Mladek <pmladek@suse.com>
-> Cc: Joe Lawrence <joe.lawrence@redhat.com>
-> Cc: x86@kernel.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: live-patching@vger.kernel.org
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> Acked-by: Vasily Gorbik <gor@linux.ibm.com>
-> Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Hi,
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+this series contains cleanups to remove dead code that handles
+unaligned cases for 4K and 1GB pages (patch#1 and patch#2) when
+removing the vemmmap range, and a fix (patch#3) to handle the case
+when two vmemmap ranges intersect the same PMD.
 
-Looks good. Thanks.
+More details can be found in the respective changelogs.
+ 
+ v5 -> v6:
+ - Fix some compilation errors when !CONFIG_MEMORY_HOTPLUG
+   (Reported by Zi Yan)
+ - Collect Acked-by from Dave
 
-> ---
->  arch/s390/kernel/stacktrace.c |  6 ------
->  arch/x86/kernel/stacktrace.c  |  6 ------
->  include/linux/stacktrace.h    | 19 +++++++++++++++++++
->  3 files changed, 19 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/s390/kernel/stacktrace.c b/arch/s390/kernel/stacktrace.c
-> index 7f1266c24f6b..101477b3e263 100644
-> --- a/arch/s390/kernel/stacktrace.c
-> +++ b/arch/s390/kernel/stacktrace.c
-> @@ -24,12 +24,6 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
->  	}
->  }
->  
-> -/*
-> - * This function returns an error if it detects any unreliable features of the
-> - * stack.  Otherwise it guarantees that the stack trace is reliable.
-> - *
-> - * If the task is not 'current', the caller *must* ensure the task is inactive.
-> - */
->  int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry,
->  			     void *cookie, struct task_struct *task)
->  {
-> diff --git a/arch/x86/kernel/stacktrace.c b/arch/x86/kernel/stacktrace.c
-> index 8627fda8d993..15b058eefc4e 100644
-> --- a/arch/x86/kernel/stacktrace.c
-> +++ b/arch/x86/kernel/stacktrace.c
-> @@ -29,12 +29,6 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
->  	}
->  }
->  
-> -/*
-> - * This function returns an error if it detects any unreliable features of the
-> - * stack.  Otherwise it guarantees that the stack trace is reliable.
-> - *
-> - * If the task is not 'current', the caller *must* ensure the task is inactive.
-> - */
->  int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry,
->  			     void *cookie, struct task_struct *task)
->  {
-> diff --git a/include/linux/stacktrace.h b/include/linux/stacktrace.h
-> index 50e2df30b0aa..9edecb494e9e 100644
-> --- a/include/linux/stacktrace.h
-> +++ b/include/linux/stacktrace.h
-> @@ -52,8 +52,27 @@ typedef bool (*stack_trace_consume_fn)(void *cookie, unsigned long addr);
->   */
->  void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
->  		     struct task_struct *task, struct pt_regs *regs);
-> +
-> +/**
-> + * arch_stack_walk_reliable - Architecture specific function to walk the
-> + *			      stack reliably
-> + *
-> + * @consume_entry:	Callback which is invoked by the architecture code for
-> + *			each entry.
-> + * @cookie:		Caller supplied pointer which is handed back to
-> + *			@consume_entry
-> + * @task:		Pointer to a task struct, can be NULL
-> + *
-> + * This function returns an error if it detects any unreliable
-> + * features of the stack. Otherwise it guarantees that the stack
-> + * trace is reliable.
-> + *
-> + * If the task is not 'current', the caller *must* ensure the task is
-> + * inactive and its stack is pinned.
-> + */
->  int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry, void *cookie,
->  			     struct task_struct *task);
-> +
->  void arch_stack_walk_user(stack_trace_consume_fn consume_entry, void *cookie,
->  			  const struct pt_regs *regs);
->  
-> 
+ v4 -> v5:
+ - Rebase on top of 5.12-rc2
+ - Addessed feedback from Dave
+ - Split previous patch#3 into core-changes (current patch#3) and
+   the optimization (current patch#4)
+ - Document better what is unused_pmd_start and its optimization
+ - Added Acked-by for patch#1
 
+ v3 -> v4:
+ - Rebase on top of 5.12-rc1 as Andrew suggested
+ - Added last Reviewed-by for the last patch
+
+ v2 -> v3:
+ - Make sure we do not clear the PUD entry in case
+   we are not removing the whole range.
+ - Add Reviewed-by
+
+ v1 -> v2:
+ - Remove dead code in remove_pud_table as well
+ - Addessed feedback by David
+ - Place the vmemap functions that take care of unaligned PMDs
+   within CONFIG_SPARSEMEM_VMEMMAP
+
+
+Oscar Salvador (4):
+  x86/vmemmap: Drop handling of 4K unaligned vmemmap range
+  x86/vmemmap: Drop handling of 1GB vmemmap ranges
+  x86/vmemmap: Handle unpopulated sub-pmd ranges
+  x86/vmemmap: Optimize for consecutive sections in partial populated
+    PMDs
+
+ arch/x86/mm/init_64.c | 203 +++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 128 insertions(+), 75 deletions(-)
 
 -- 
-~Randy
+2.16.3
 
