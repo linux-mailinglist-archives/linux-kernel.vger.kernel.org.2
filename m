@@ -2,145 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F041D332F37
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E99B4332F31
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:42:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbhCITnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 14:43:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37266 "EHLO mail.kernel.org"
+        id S230462AbhCITmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:42:05 -0500
+Received: from mga18.intel.com ([134.134.136.126]:18675 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231243AbhCITmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:42:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE34265228;
-        Tue,  9 Mar 2021 19:42:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615318963;
-        bh=ZhUp65qT2Edv35cPfVcgVPA1Vr3DqEzB5OQkhdx4Dz0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ArJFusyN7UERXhJENyeMvV7NnlyWuWh8BovqPV29pBUzaU0ioiO103V0S7dVRRO6X
-         4mcpPaZabsPcORzLRWpfQK2dw7Pda562qM5Mx7DBbXPH4xI69Bnmzg0Uq7wm/R4EKL
-         nT0sPxNqrzh2ZwfwMQONp6Xo28t8ezPf+N7ifGWq62S5gGV/WIJtMNc7vRdvGmmtov
-         mqFXp0247nSaQnaLBzjzO4LiwIHykdpcN2+ur7yS2Ezy9rPqgIxluRdZK41a7Otibs
-         Fh5cNfGZ/nJdSPnV8qVZlfQpFTNfVHlk62TIes7fQ/fTS1GTBOs+mF/CxH164s9f02
-         B7ST17bZQTRWQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>, x86@kernel.org,
-        linux-s390@vger.kernel.org, live-patching@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Miroslav Benes <mbenes@suse.cz>
-Subject: [PATCH] stacktrace: Move documentation for arch_stack_walk_reliable() to header
-Date:   Tue,  9 Mar 2021 19:41:25 +0000
-Message-Id: <20210309194125.652-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S229948AbhCITlz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 14:41:55 -0500
+IronPort-SDR: Vl/66cGzAq6EXYauokt8kZoepgEOccFHCgUzPJQuuo9eQRP4qUslfPO++GRcBRbZdiaPXQSBDP
+ zSpbhpVV+QJw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="175911862"
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="175911862"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 11:41:48 -0800
+IronPort-SDR: CcuWziOV8r+3pfJrl+fnBlyvOCafqG+gqjr7zBk88xXNo6XphpN8KI+eY84qjypFt3sD7nuo+K
+ ZsZ6YHLywf4g==
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="437748702"
+Received: from ankitama-mobl1.amr.corp.intel.com (HELO [10.209.121.187]) ([10.209.121.187])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 11:41:47 -0800
+Subject: Re: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is
+ present
+To:     Jon Hunter <jonathanh@nvidia.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Bard liao <yung-chuan.liao@linux.intel.com>
+References: <20210303115526.419458-1-jonathanh@nvidia.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <91480f92-a3f5-e71f-acdc-ea74488ab0a1@linux.intel.com>
+Date:   Tue, 9 Mar 2021 13:41:45 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; i=Kh6NyXsqh0zq94gMuzBCs8afziAecd1XZurszyuxEhw=; m=/jKBVe0RfPWMav8OjafUnXErqEkBoTiYB/rI2TxCriw=; p=nPcWpKdBDbrmbYT1hqEf1yR8qtxRXTJfKeEoIt+tgd4=; g=f1dfd626035b5ec1394ca2d18e3f85690f794e7e
-X-Patch-Sig: m=pgp; i=broonie@kernel.org; s=0xC3F436CA30F5D8EB; b=iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBHz1sACgkQJNaLcl1Uh9Au4AgAghj XD7vbxyItKIAkn2Tx0Ks3t5LR/K2p5yRT3CgHpvU4Jshp/08F7etkVHNAZSRbuzatlr6xDMecPhB8 bHfClUAz9GqGQh6IYvJhflL+fSwscO2OJTeColxwFL25VVaRANnro+vqi++RiVCIBHP3zTtT94xRp XruEbwfVqOqfXbr1ZMn4kx3nM3IL2Ht//KrBEzG2c9oBRP5uK+e+GYZ7se4FYNtPTXpWnkFpXi4Pb Fv7qHPimm9tFXsRc0yo8YLKwtsT4afjkxr6E/HmbVXLct6VHTIRQo4CW8eA2/DeZACFQvh13449MS CKc38Y/DaR0fVU6imKby4FsdYt3Y+fQ==
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210303115526.419458-1-jonathanh@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently arch_stack_wallk_reliable() is documented with an identical
-comment in both x86 and S/390 implementations which is a bit redundant.
-Move this to the header and convert to kerneldoc while we're at it.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Jiri Kosina <jikos@kernel.org>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Joe Lawrence <joe.lawrence@redhat.com>
-Cc: x86@kernel.org
-Cc: linux-s390@vger.kernel.org
-Cc: live-patching@vger.kernel.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Acked-by: Vasily Gorbik <gor@linux.ibm.com>
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
----
- arch/s390/kernel/stacktrace.c |  6 ------
- arch/x86/kernel/stacktrace.c  |  6 ------
- include/linux/stacktrace.h    | 19 +++++++++++++++++++
- 3 files changed, 19 insertions(+), 12 deletions(-)
 
-diff --git a/arch/s390/kernel/stacktrace.c b/arch/s390/kernel/stacktrace.c
-index 7f1266c24f6b..101477b3e263 100644
---- a/arch/s390/kernel/stacktrace.c
-+++ b/arch/s390/kernel/stacktrace.c
-@@ -24,12 +24,6 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
- 	}
- }
- 
--/*
-- * This function returns an error if it detects any unreliable features of the
-- * stack.  Otherwise it guarantees that the stack trace is reliable.
-- *
-- * If the task is not 'current', the caller *must* ensure the task is inactive.
-- */
- int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry,
- 			     void *cookie, struct task_struct *task)
- {
-diff --git a/arch/x86/kernel/stacktrace.c b/arch/x86/kernel/stacktrace.c
-index 8627fda8d993..15b058eefc4e 100644
---- a/arch/x86/kernel/stacktrace.c
-+++ b/arch/x86/kernel/stacktrace.c
-@@ -29,12 +29,6 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
- 	}
- }
- 
--/*
-- * This function returns an error if it detects any unreliable features of the
-- * stack.  Otherwise it guarantees that the stack trace is reliable.
-- *
-- * If the task is not 'current', the caller *must* ensure the task is inactive.
-- */
- int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry,
- 			     void *cookie, struct task_struct *task)
- {
-diff --git a/include/linux/stacktrace.h b/include/linux/stacktrace.h
-index 50e2df30b0aa..9edecb494e9e 100644
---- a/include/linux/stacktrace.h
-+++ b/include/linux/stacktrace.h
-@@ -52,8 +52,27 @@ typedef bool (*stack_trace_consume_fn)(void *cookie, unsigned long addr);
-  */
- void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
- 		     struct task_struct *task, struct pt_regs *regs);
-+
-+/**
-+ * arch_stack_walk_reliable - Architecture specific function to walk the
-+ *			      stack reliably
-+ *
-+ * @consume_entry:	Callback which is invoked by the architecture code for
-+ *			each entry.
-+ * @cookie:		Caller supplied pointer which is handed back to
-+ *			@consume_entry
-+ * @task:		Pointer to a task struct, can be NULL
-+ *
-+ * This function returns an error if it detects any unreliable
-+ * features of the stack. Otherwise it guarantees that the stack
-+ * trace is reliable.
-+ *
-+ * If the task is not 'current', the caller *must* ensure the task is
-+ * inactive and its stack is pinned.
-+ */
- int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry, void *cookie,
- 			     struct task_struct *task);
-+
- void arch_stack_walk_user(stack_trace_consume_fn consume_entry, void *cookie,
- 			  const struct pt_regs *regs);
- 
--- 
-2.20.1
+On 3/3/21 5:55 AM, Jon Hunter wrote:
+> Many systems do not use ACPI and hence do not provide a DMI table. On
+> non-ACPI systems a warning, such as the following, is printed on boot.
+> 
+>   WARNING KERN tegra-audio-graph-card sound: ASoC: no DMI vendor name!
+> 
+> The variable 'dmi_available' is not exported and so currently cannot be
+> used by kernel modules without adding an accessor. However, it is
+> possible to use the function is_acpi_device_node() to determine if the
+> sound card is an ACPI device and hence indicate if we expect a DMI table
+> to be present. Therefore, call is_acpi_device_node() to see if we are
+> using ACPI and only parse the DMI table if we are booting with ACPI.
 
+That change introduces a regression on all our tests: the names are not 
+correctly set, which will prevent UCM from loading the relevant profiles 
+based on the long name.
+
+Before:
+  0 [sofhdadsp      ]: sof-hda-dsp - sof-hda-dsp
+                       AAEON-UP_WHL01-V1.0
+
+After:
+root@plb-UP-WHL01:/proc/asound# more cards
+  0 [sofhdadsp      ]: sof-hda-dsp - sof-hda-dsp
+                       sof-hda-dsp
+
+The problem is that the cards are platform devices created by the parent 
+(which itself may be a PCI or ACPI device) and have nothing to do with ACPI.
+
+Could we flip the logic and instead explicitly detect OF devices? That 
+restores functionality for us.
+
+Jon, would this work for you?
+
+Thanks!
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 16ba54eb8164..5c40b4548413 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1574,7 +1574,7 @@ int snd_soc_set_dmi_name(struct snd_soc_card 
+*card, const char *flavour)
+         if (card->long_name)
+                 return 0; /* long name already set by driver or from DMI */
+
+-       if (!is_acpi_device_node(card->dev->fwnode))
++       if (is_of_node(card->dev->fwnode))
+                 return 0;
+
+         /* make up dmi long name as: vendor-product-version-board */
+
+
+> 
+> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+> Changes since V1:
+> - Use is_acpi_device_node() to determine if we expect the DMI table to
+>    be present.
+> 
+>   sound/soc/soc-core.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index f6d4e99b590c..0cffc9527e28 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -31,6 +31,7 @@
+>   #include <linux/of.h>
+>   #include <linux/of_graph.h>
+>   #include <linux/dmi.h>
+> +#include <linux/acpi.h>
+>   #include <sound/core.h>
+>   #include <sound/pcm.h>
+>   #include <sound/pcm_params.h>
+> @@ -1573,6 +1574,9 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
+>   	if (card->long_name)
+>   		return 0; /* long name already set by driver or from DMI */
+>   
+> +	if (!is_acpi_device_node(card->dev->fwnode))
+> +		return 0;
+> +
+>   	/* make up dmi long name as: vendor-product-version-board */
+>   	vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
+>   	if (!vendor || !is_dmi_valid(vendor)) {
+> 
