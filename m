@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802D5332202
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8865C332204
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:33:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhCIJa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:30:57 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:46334 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229641AbhCIJan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:30:43 -0500
-Received: from zn.tnic (p200300ec2f0d1e00bc8d79f96d00cad4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1e00:bc8d:79f9:6d00:cad4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 81B131EC0441;
-        Tue,  9 Mar 2021 10:30:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1615282241;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=AwjBg1SGZ+DMhaVHgj+dKPlrpMWCDbhJuAdiSO9uB2o=;
-        b=V4yvW0XQdyBpMaS0H1USNwDOMpNctjWOinWuFkmxfNr0dttzOwFZQPn+j29vofVnzP2ibC
-        orIlApmAm4WJ/nXoHo/87uM10vC8XhdGcWf2U1poSOJK8oA4yQ5wufZTe3r2M8vWWfOman
-        BMXLW6Y+hqPOXZX5sMMKtbJtCy3BxsE=
-Date:   Tue, 9 Mar 2021 10:30:37 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
-        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, jethro@fortanix.com,
-        b.thiel@posteo.de, jmattson@google.com, joro@8bytes.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, corbet@lwn.net
-Subject: Re: [PATCH v2 00/25] KVM SGX virtualization support
-Message-ID: <20210309093037.GA699@zn.tnic>
-References: <cover.1615250634.git.kai.huang@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cover.1615250634.git.kai.huang@intel.com>
+        id S229689AbhCIJcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:32:32 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:39145 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229649AbhCIJcE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 04:32:04 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R321e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UR4aFol_1615282321;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UR4aFol_1615282321)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 09 Mar 2021 17:32:02 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     agk@redhat.com
+Cc:     snitzer@redhat.com, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] dm: remove unneeded variable 'sz'
+Date:   Tue,  9 Mar 2021 17:32:00 +0800
+Message-Id: <1615282320-28246-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 02:38:49PM +1300, Kai Huang wrote:
-> This series adds KVM SGX virtualization support. The first 14 patches starting
-> with x86/sgx or x86/cpu.. are necessary changes to x86 and SGX core/driver to
-> support KVM SGX virtualization, while the rest are patches to KVM subsystem.
+Fix the following coccicheck warning:
+./drivers/md/dm-ps-service-time.c:85:10-12: Unneeded variable: "sz".
+Return "0" on line 105
 
-Ok, I guess I'll queue 1-14 once Sean doesn't find anything
-objectionable then give Paolo an immutable commit to base the KVM stuff
-ontop.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/md/dm-ps-service-time.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Unless folks have better suggestions, ofc.
-
-Thx.
-
+diff --git a/drivers/md/dm-ps-service-time.c b/drivers/md/dm-ps-service-time.c
+index 9cfda66..12dd5ce 100644
+--- a/drivers/md/dm-ps-service-time.c
++++ b/drivers/md/dm-ps-service-time.c
+@@ -82,7 +82,6 @@ static void st_destroy(struct path_selector *ps)
+ static int st_status(struct path_selector *ps, struct dm_path *path,
+ 		     status_type_t type, char *result, unsigned maxlen)
+ {
+-	unsigned sz = 0;
+ 	struct path_info *pi;
+ 
+ 	if (!path)
+@@ -102,7 +101,7 @@ static int st_status(struct path_selector *ps, struct dm_path *path,
+ 		}
+ 	}
+ 
+-	return sz;
++	return 0;
+ }
+ 
+ static int st_add_path(struct path_selector *ps, struct dm_path *path,
 -- 
-Regards/Gruss,
-    Boris.
+1.8.3.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
