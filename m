@@ -2,115 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84ACF33293C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E43332946
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:55:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbhCIOyO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Mar 2021 09:54:14 -0500
-Received: from emcscan.emc.com.tw ([192.72.220.5]:51513 "EHLO
-        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231510AbhCIOxp (ORCPT
+        id S231786AbhCIOyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 09:54:50 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59596 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231623AbhCIOyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 09:53:45 -0500
-X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
-   d="scan'208";a="39719640"
-Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
-  by emcscan.emc.com.tw with ESMTP; 09 Mar 2021 22:53:35 +0800
-Received: from 192.168.10.23
-        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(9028:0:AUTH_RELAY)
-        (envelope-from <jingle.wu@emc.com.tw>); Tue, 09 Mar 2021 22:53:35 +0800 (CST)
-Received: By OpenMail Mailer;Tue, 09 Mar 2021 22:53:34 +0800 (CST)
-From:   "jingle.wu" <jingle.wu@emc.com.tw>
-Reply-To: "jingle.wu" <jingle.wu@emc.com.tw>
-Subject: RE: [PATCH] Input: elan_i2c - Reduce the resume time for new dev
-         ices
-Message-ID: <1615301614.16870.jingle.wu@emc.com.tw>
-In-Reply-To: <00ce01d714ef$2598f740$70cae5c0$@emc.com.tw>
-References: <20210226073537.4926-1-jingle.wu@emc.com.tw>
-        <YDx8M4Rhdi8hW4EO@google.com>
-        <1614647097.9201.jingle.wu@emc.com.tw>
-        <YEGBeWHRfL4gN9pX@google.com>
-        <004f01d7115e$3ba005e0$b2e011a0$@emc.com.tw>
-        <YEGJ7z479pqyBW1w@google.com>
-        <005401d71161$ef9b20e0$ced162a0$@emc.com.tw>
-        <YEWXcV62YpxbBp9P@google.com>
-        <005d01d713f8$e4b715a0$ae2540e0$@emc.com.tw>
-        <YEbRazfF0iTreYYz@google.com>
-        <00ce01d714ef$2598f740$70cae5c0$@emc.com.tw>
-To:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>
-Cc:     "'linux-kernel'" <linux-kernel@vger.kernel.org>,
-        "linux-input" <linux-input@vger.kernel.org>,
-        "'phoenix'" <phoenix@emc.com.tw>,
-        "dave.wang" <dave.wang@emc.com.tw>,
-        "'josh.chen'" <josh.chen@emc.com.tw>
-Date:   Tue, 09 Mar 2021 22:53:34 +0800 (CST)
+        Tue, 9 Mar 2021 09:54:33 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 129EsQLf049762;
+        Tue, 9 Mar 2021 08:54:26 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1615301666;
+        bh=kQ/eWyaryUE+S4nDbbrdLRvi9zvSrVP9ous5AGwvMCI=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=WbObOUGNe6IgfpIPtTqeCKRJhpKnlD3q9dGuK1+Zs5Nwc3poNZXAIF3UTn+YhwfN5
+         313wx66wdJV2G0bXRitf7mGEIemS4Tu/SAfmnJiLkbU5JcHb9klVzrSjiTppOvm14H
+         oPGaG+fwJMc6EWPm2mGLC13iHrRTKcczFWgh0ccs=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 129EsQ7a048039
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 9 Mar 2021 08:54:26 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 9 Mar
+ 2021 08:54:26 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 9 Mar 2021 08:54:26 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 129EsQ8V015039;
+        Tue, 9 Mar 2021 08:54:26 -0600
+Date:   Tue, 9 Mar 2021 08:54:26 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Aswath Govindraju <a-govindraju@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: ti: k3-am642-evm: Add support for SPI EEPROM
+Message-ID: <20210309145426.tgt7ltlh22slygfm@santa>
+References: <20210301060518.19550-1-a-govindraju@ti.com>
+ <c06a39c5-88eb-1e6d-4ae2-796981db1e71@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=big5
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <c06a39c5-88eb-1e6d-4ae2-796981db1e71@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry:
-
-Was this the only issue with the updated patch? Did it work for you
-otherwise?
--> Yes, the updated patch can work successfully after fix this issue.
-
-THANKS
-JINGLE
-
------Original Message-----
-From: 'Dmitry Torokhov' [mailto:dmitry.torokhov@gmail.com] 
-Sent: Tuesday, March 09, 2021 9:38 AM
-To: jingle
-Cc: 'linux-kernel'; 'linux-input'; 'phoenix'; 'dave.wang'; 'josh.chen'
-Subject: Re: [PATCH] Input: elan_i2c - Reduce the resume time for new dev
-ices
-
-Hi Jingle,
-
-On Mon, Mar 08, 2021 at 04:56:14PM +0800, jingle wrote:
-> Hi Dmitry:
+On 20:18-20210309, Vignesh Raghavendra wrote:
 > 
-> 1. missing "i<" 
-> +	u32 quirks = 0;
-> +	int i;
-> +
-> +	for (i = 0; ARRAY_SIZE(elan_i2c_quirks); i++) {
 > 
-> -> for (i = 0; i<ARRAY_SIZE(elan_i2c_quirks); i++) {
-
-Yes, you are right of course. Was this the only issue with the updated
-patch? Did it work for you otherwise?
-
+> On 3/1/21 11:35 AM, Aswath Govindraju wrote:
+> > Add pinmux details and device tree node for the EEPROM attached to SPI0
+> > module in main domain.
+> > 
+> > Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> > ---
 > 
-> 2. elan_resume () funtion are different with at Chromeos driver.
-> @@ -1384,7 +1422,7 @@ static int __maybe_unused elan_resume(struct 
-> device
-> *dev)
->  		goto err;
->  	}
->  
-> -	error = elan_initialize(data);
-> +	error = elan_initialize(data, data->quirks &
-> ETP_QUIRK_QUICK_WAKEUP);
->  	if (error)
->  		dev_err(dev, "initialize when resuming failed: %d\n",
-error);
+> Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
 > 
-> -> https://chromium.googlesource.com/chromiumos/third_party/kernel/+/r
-> -> ef
-> -> s/heads/chromeos-5.4/drivers/input/mouse/elan_i2c_core.c#1434
-> -> error = elan_initialize(data);  this code is in elan_reactivate()
-> function at Chromeos driver.
-> -> Will this change affect cherrypick from linux kernel to chromeos?
+> Regards
+> Vignesh
+> 
+> > 
+> > This patch depends on,
+> > https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210301055109.17626-3-a-govindraju@ti.com/
 
-Yes, we would need to adjust the patch for Chrome OS and have
-elan_reactivate() to call elan_initialize() with appropriate argument.
 
-Thanks.
+Can you drop this dependency and rebase on top of my -next branch or
+linux-next ? I am not able to apply the patch directly and would like to
+avoid hand modifying the patch.
 
---
-Dmitry
+> > 
+> >  arch/arm64/boot/dts/ti/k3-am642-evm.dts | 22 ++++++++++++++++++++++
+> >  1 file changed, 22 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> > index bfd849a29655..bc5bd7f896ab 100644
+> > --- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> > +++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+> > @@ -139,6 +139,15 @@
+> >  			AM64X_IOPAD(0x02a8, PIN_OUTPUT, 0) /* (E19) USB0_DRVVBUS */
+> >  		>;
+> >  	};
+> > +
+> > +	main_spi0_pins_default: main-spi0-pins-default {
+> > +		pinctrl-single,pins = <
+> > +			AM64X_IOPAD(0x0210, PIN_INPUT, 0) /* (D13) SPI0_CLK */
+> > +			AM64X_IOPAD(0x0208, PIN_OUTPUT, 0) /* (D12) SPI0_CS0 */
+> > +			AM64X_IOPAD(0x0214, PIN_OUTPUT, 0) /* (A13) SPI0_D0 */
+> > +			AM64X_IOPAD(0x0218, PIN_INPUT, 0) /* (A14) SPI0_D1 */
+> > +		>;
+> > +	};
+> >  };
+> >  
+> >  &main_uart0 {
+> > @@ -245,6 +254,19 @@
+> >  	pinctrl-0 = <&main_usb0_pins_default>;
+> >  };
+> >  
+> > +&main_spi0 {
+> > +	pinctrl-names = "default";
+> > +	pinctrl-0 = <&main_spi0_pins_default>;
+> > +	ti,pindir-d0-out-d1-in = <1>;
+> > +	eeprom@0 {
+> > +		compatible = "microchip,93lc46b";
+> > +		reg = <0>;
+> > +		spi-max-frequency = <1000000>;
+> > +		spi-cs-high;
+> > +		data-size = <16>;
+> > +	};
+> > +};
+> > +
+> >  &sdhci0 {
+> >  	/* emmc */
+> >  	bus-width = <8>;
+> > 
 
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
