@@ -2,67 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE2A332A95
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1C2332A94
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbhCIPef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:34:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51678 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231761AbhCIPeV (ORCPT
+        id S231653AbhCIPee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:34:34 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:34724 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231674AbhCIPeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:34:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615304060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+KPNW3v1CAc3wIUEUXEUEW/rLF0kxRNIq6zRhfWgqXE=;
-        b=InhODXkRCjwj2iK4QjlVOAWtG6p4DoWxbqEUzQVadjzkIcBGroO6miE9rekIugzZLLEgXb
-        37aZzpn36moIxI48Bk2+tOxE7SxnVJ2u3jz1ZxG+nosEvE6oy8UV8l6YvHVjqXc7jalDNv
-        xGhc5UCP7xgUzcQ6rnmrWMtyBgUDRgY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-369-9cvrboMHPfWV7fTjaCXVKQ-1; Tue, 09 Mar 2021 10:34:16 -0500
-X-MC-Unique: 9cvrboMHPfWV7fTjaCXVKQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 354DA108BD06;
-        Tue,  9 Mar 2021 15:34:15 +0000 (UTC)
-Received: from treble (ovpn-119-4.rdu2.redhat.com [10.10.119.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E01885C260;
-        Tue,  9 Mar 2021 15:34:13 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 09:34:11 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     peterz@infradead.org, nathan@kernel.org, ndesaulniers@google.com,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] objtool: Fix a memory leak bug
-Message-ID: <20210309153411.sptbrjems3odd75i@treble>
-References: <1615279576-100603-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        Tue, 9 Mar 2021 10:34:17 -0500
+Received: by mail-io1-f69.google.com with SMTP id r3so10533431iol.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 07:34:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=OIcb6Uf33gHiMvq3K9ajgQ2UxF2hlgBVbHwSRPUV0ds=;
+        b=H/6I8w1UBb6gPP7ftMBUG5JbdG4vAger4A0sL9K0BJoxtSZ7CDTQB+5ymM36ydHeOA
+         ECE7iksWLNyk6wbIf7nLyKWuNLXv0D8DWsjNCnOTorZcMKkW7XMCfy5GBO7xPmPsycCg
+         TCy/d6v0Lt9k0e1eNIRjvG5D9lCk3WCa2aoA3W2nR0nC91at3zPB0cBbs8oyc8nyonts
+         zTmEUBnWCAkfXF6x2jmaCQeNYlt2NTC7LArwauQtVixqezW1Z61sdwHLjWNUITVbB9lr
+         Bjd8ZT0lRRPmcBnjRkQlrlfcOPF9Ut59EkO7AwzjKPdh60dy0vh41iuTnVtrSs29pCmg
+         PzUw==
+X-Gm-Message-State: AOAM532cgm6+IpWaThwBQhJbC1A+rHUzfdTuOQxay4Cd2gjREyC7hhsA
+        +Gh7ntXBphFSR4fYnhtoY28G/BX8Lh2Cap9032amzM9t4R3N
+X-Google-Smtp-Source: ABdhPJxkd2ALCT1AuFECiT/s8ngbQXL00J4adYRT5jqAhI9bWfZ7p6+BsRxRfOpULcO1ipEB1nvUY+ZcvZOIghaTtKO26+0Z5S3E
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1615279576-100603-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Received: by 2002:a02:94a9:: with SMTP id x38mr28881497jah.50.1615304057014;
+ Tue, 09 Mar 2021 07:34:17 -0800 (PST)
+Date:   Tue, 09 Mar 2021 07:34:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000085d60f05bd1c481f@google.com>
+Subject: [syzbot] WARNING in __handle_mm_fault (2)
+From:   syzbot <syzbot+ce14a1f8667e17a759a5@syzkaller.appspotmail.com>
+To:     boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
+        longman@redhat.com, mingo@redhat.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 04:46:16PM +0800, Jiapeng Chong wrote:
-> Fix the following cppcheck warnings:
-> 
-> tools/objtool/check.c(1102): error: Memory leak: orig_alt_group.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Hello,
 
-Hi Jiapeng,
+syzbot found the following issue on:
 
-Objtool is a short-running process which exits immediately on error, so
-we don't worry about memory leaks.
+HEAD commit:    144c79ef Merge tag 'perf-tools-fixes-for-v5.12-2020-03-07'..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14747f1ed00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3c825a7b7b408394
+dashboard link: https://syzkaller.appspot.com/bug?extid=ce14a1f8667e17a759a5
 
--- 
-Josh
+Unfortunately, I don't have any reproducer for this issue yet.
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ce14a1f8667e17a759a5@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+raw_local_irq_restore() called with IRQs enabled
+WARNING: CPU: 0 PID: 8390 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
+Modules linked in:
+CPU: 0 PID: 8390 Comm: syz-fuzzer Not tainted 5.12.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
+Code: be ff cc cc cc cc cc cc cc cc cc cc cc 80 3d bd 36 af 04 00 74 01 c3 48 c7 c7 a0 8f 6b 89 c6 05 ac 36 af 04 01 e8 87 ba be ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
+RSP: 0000:ffffc90001b77ac8 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff8880320435a0 RCX: 0000000000000000
+RDX: ffff888025c20040 RSI: ffffffff815c0ef5 RDI: fffff5200036ef4b
+RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815b9c5e R11: 0000000000000000 R12: 0000000000000003
+R13: ffffed10064086b4 R14: 0000000000000001 R15: ffff8880b9c36000
+FS:  000000c00002e490(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000c0002d4020 CR3: 000000001927f000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+Call Trace:
+ __handle_mm_fault+0xeeb/0x4f70 mm/memory.c:4445
+ handle_mm_fault+0x1bc/0x7e0 mm/memory.c:4549
+RIP: 0033:0x46d4d4
+RAX: 0000000000000080 RBX: 0000000000011f60 RCX: 000000c0002e6000
+RDX: 0000000000827a04 RSI: 000000c0002d4020 RDI: 000000c0004aa020
+R10: 000000c00048c000 R11: 0000000000000020 R12: 00000000000000fa
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
