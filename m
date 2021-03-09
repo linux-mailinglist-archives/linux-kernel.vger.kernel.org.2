@@ -2,79 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028E0332F08
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:32:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 690B1332F0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhCITcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 14:32:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbhCITb7 (ORCPT
+        id S231301AbhCITe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:34:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34461 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231197AbhCITeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:31:59 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E66C06174A;
-        Tue,  9 Mar 2021 11:31:58 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id x29so9481567pgk.6;
-        Tue, 09 Mar 2021 11:31:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HYJycecCKR8mJEVeAV0bVwc2FaxFgSqtKDz5fqSfG+Y=;
-        b=t/BAtgEgV5Af5sZNLuhwg2mdyygRwGzvxfza2L1PSTQ6joDvwFqZ8lbBB+By+CVx8/
-         dUqnPxqvWKnjVW+DAQdeYYddYwnXCiTXS+gRCOmwf50ydHtFaTTdJSkJD3cC8ydC+Gze
-         Ykg6oQQ7UEKaTY1Bm86L0+LFwWHnybFhTlmYqONyfIEtKyCV6u8kt68Mwh4PN6hryHfv
-         NyQsnZZCaGGMKf0/7tNfVmSnhHbiz2lRUO3BDw0/PhNNZxZAHj6hp/Aq6/Plhk3db8xN
-         RpYtQCQNgk7c14Z5nBq9fA0iRHVwjHJJxGrZ80Ymthrn9iohWPWdp4y+MEVbfYTNqJLN
-         U2JQ==
+        Tue, 9 Mar 2021 14:34:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615318439;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=avJtp16vLH3ysAvGNZjvdMJS5OXrs5RoA1exdXYwigY=;
+        b=aJfP9A7qSpfZBJ+KzVjqad1r8IDRuW51uZ58bCQYtjO9xP85SMiex/Uaw9HDbxANowe2N7
+        TYtyRu/JUgQlEFWthsDlwxkRTzNWLTl4hvw3872BaOWI3iy7B05JoTnN+0eeV29BdSbyN3
+        RR7hTc+JecdrypoDd7rBB8RLv19IoF0=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-257-UbN9ayq4N4u7P8CQ4z5QqA-1; Tue, 09 Mar 2021 14:33:57 -0500
+X-MC-Unique: UbN9ayq4N4u7P8CQ4z5QqA-1
+Received: by mail-pg1-f200.google.com with SMTP id t11so8242516pgr.22
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 11:33:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HYJycecCKR8mJEVeAV0bVwc2FaxFgSqtKDz5fqSfG+Y=;
-        b=qvZXzdIu79PJh9Xo1Qe4MBs0aGFYE+4+WBDTrQdi+AILoQ+Uz4dlTzOOsNVrQmSExa
-         BYH+wfVrLgSJVGeyyggHCoT1JUBU4XJ37xdRkfXhOJgxEJAzdim6ym9EFHRcUHNnmK15
-         piqHCZXHpceeVYI2a4Z249w7UWlJcgS8pZhwPeeSAlKAIp5Ql8oQtzQ+cef9vYx99MKl
-         xBBr91ZW34FzKv1sg2bM3dZTHrRvKCzpPyufBGhb8hxmQjJQSAzBY2rAbDHTJi+UAWxr
-         250s/NXiIWWJEIURO2zYPMZHbS8166z01O26tEpQzrxW2V1R5n3cYXNAWNJ3jKt/lQzB
-         4o0A==
-X-Gm-Message-State: AOAM533479CFV0bxqnTvFNAJhdQxny9/dM9T8zRXyK0jYQVNWyNAoRYp
-        CyvGndso2WhA5JFSi6AXyo8iKymQTJq78A7cb30NuNcz
-X-Google-Smtp-Source: ABdhPJzlxVuyzwg/hJK8di9C/jil7B+Ti5mXNWdgDFd2l3Eiy/MUpPBDNiI39hYbF+32J3EexKNxVsayZLBJIl66iA0=
-X-Received: by 2002:a63:fb4d:: with SMTP id w13mr26864300pgj.233.1615318318606;
- Tue, 09 Mar 2021 11:31:58 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=avJtp16vLH3ysAvGNZjvdMJS5OXrs5RoA1exdXYwigY=;
+        b=NeDsSZOnNFUiSYJ6LJ+AsHnAbR5xQOtJkZ+xkFMXQ3BWh1IcGU98amEOHBrlSC678M
+         9Pw6pPboSNcUC5SiH6jZsPUkKyreJ1nVBKssRt/wXVT5KcmZhetlp4fBZxbKHLgZ79KQ
+         2L7H0zfAxu1YrzbmCzLvvr5elPWa4DtucBcFG6NF5DMJTM/qcXWA23CkiGvOeoIHbToS
+         PeNsZZomTL0qiYjevKRuXwqnSZ/u69C7sGczdSAeqWgIaPPBs4o3JOjp5IPjNELs1OHM
+         8UxJBkxk4bs/aOh75PzZ1ysUYXlEc7MG3Jaxx7aqjkQxjSWZc9pNTEDM7fBKDfF1ZXkY
+         FpWw==
+X-Gm-Message-State: AOAM533WeWbEDSwNLmuC5oUuGnQs1dME4EuxGRbxopmO902s1XwjarTI
+        WrB6N/pS7mxwyUTAkKkaP2vieNUYJYXbOrqnUFtvZ6ES23W5UXW3D97kr5m1ucWLdTx9OHQRqOJ
+        ZvvjkXT6W8sj1LtVuRg8NP92k
+X-Received: by 2002:a17:90a:d0c4:: with SMTP id y4mr6388464pjw.233.1615318436755;
+        Tue, 09 Mar 2021 11:33:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwRoheltWC3q/OlHwNvgRQikUup4a/cbSjffjIeSZP5QkLBGPEM1MUby0bF5Es4MSGuUmH/sg==
+X-Received: by 2002:a17:90a:d0c4:: with SMTP id y4mr6388446pjw.233.1615318436540;
+        Tue, 09 Mar 2021 11:33:56 -0800 (PST)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id z3sm13835115pff.40.2021.03.09.11.33.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 11:33:56 -0800 (PST)
+Date:   Wed, 10 Mar 2021 03:33:42 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>, Nadav Amit <namit@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/9] fs: rename alloc_anon_inode to alloc_anon_inode_sb
+Message-ID: <20210309193342.GA3958006@xiangao.remote.csb>
+References: <20210309155348.974875-1-hch@lst.de>
+ <20210309155348.974875-2-hch@lst.de>
 MIME-Version: 1.0
-References: <20210305054312.254922-1-xie.he.0141@gmail.com> <4b30ca506b0d79ef5ba1a5e9ce9cf2cd@dev.tdt.de>
-In-Reply-To: <4b30ca506b0d79ef5ba1a5e9ce9cf2cd@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Tue, 9 Mar 2021 11:31:47 -0800
-Message-ID: <CAJht_EM7Wtmtwi4=vEybSNbQrNmugC7HCLYcAjM07gEgeRtHMA@mail.gmail.com>
-Subject: Re: [PATCH net-next RFC] net: x25: Queue received packets in the
- drivers instead of per-CPU queues
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Krzysztof Halasa <khc@pm.waw.pl>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210309155348.974875-2-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 5:23 AM Martin Schiller <ms@dev.tdt.de> wrote:
->
-> I've tested the hdlc_x25 driver.
-> Looks good to me.
->
-> Acked-by: Martin Schiller <ms@dev.tdt.de>
+On Tue, Mar 09, 2021 at 04:53:40PM +0100, Christoph Hellwig wrote:
+> Rename alloc_inode to free the name for a new variant that does not
+> need boilerplate to create a super_block first.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
 
-Thank you!!
+That is a nice idea as well to avoid sb by introducing an unique
+fs...
 
-I'll re-send this patch after net-next is re-opened and my other fixes
-get merged into net-next.
+Reviewed-by: Gao Xiang <hsiangkao@redhat.com>
 
-Thanks!
+Thanks,
+Gao Xiang
+
