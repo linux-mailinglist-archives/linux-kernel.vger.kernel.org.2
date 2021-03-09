@@ -2,168 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514EF331D0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:42:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13EC2331D19
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhCICmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 21:42:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29127 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229793AbhCICmM (ORCPT
+        id S230301AbhCICpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 21:45:41 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:38713 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229599AbhCICpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 21:42:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615257731;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B3NcIctlEacedKnvWxLBPKXMEmj3VYiIJnpjJRUyQZE=;
-        b=Y440atiw9hsYBdv9mKWAvhDbMhPubhPja/G1LmlsYlpBUFBhvo/xZSRNRq4XhTuis9mLh6
-        hb8q1hcLB+bdiwZO2reXUfixirbpd0B8K78+JRS+ZP1b6qOMiZtfaXsw9iVouOTS93rKX9
-        X3A+q3vvM2TGENvUkz3R1UmOufXBWSc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-452-o4boJwIyOoqeBNKvt6YJ-g-1; Mon, 08 Mar 2021 21:42:10 -0500
-X-MC-Unique: o4boJwIyOoqeBNKvt6YJ-g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DB1B814313;
-        Tue,  9 Mar 2021 02:42:09 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-202.pek2.redhat.com [10.72.13.202])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B23C5D6D7;
-        Tue,  9 Mar 2021 02:42:03 +0000 (UTC)
-Subject: Re: [PATCH V2 2/4] vDPA/ifcvf: enable Intel C5000X-PL virtio-net for
- vDPA
-To:     "Zhu, Lingshan" <lingshan.zhu@intel.com>, mst@redhat.com,
-        lulu@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210308083525.382514-1-lingshan.zhu@intel.com>
- <20210308083525.382514-3-lingshan.zhu@intel.com>
- <d37ea3f4-1c18-087b-a444-0d4e1ebbe417@redhat.com>
- <93aabf0c-3ea0-72d7-e7d7-1d503fe6cc75@intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <91c08fdd-0a36-ddca-5b8c-ef2eef7cddc2@redhat.com>
-Date:   Tue, 9 Mar 2021 10:42:00 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <93aabf0c-3ea0-72d7-e7d7-1d503fe6cc75@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Mon, 8 Mar 2021 21:45:15 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id C9CE5580795;
+        Mon,  8 Mar 2021 21:45:14 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Mon, 08 Mar 2021 21:45:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=qRybQhRN/O0nr4FGzlsF5grYQeYZu8u
+        crJLcVTZ+qd0=; b=QOXTD5AO8JgTi78Gox3qd+o0cQCodeaVASzuajwdav5Y2hC
+        4avnt+mIqAteWzqQDJl9a+QBx+HWM83Gk8XIX3u3/8IoOxIpfAhVm0FteiFTDHU8
+        UwnYHebv1bSlVT/QLDChvmP7j9MwiX+8RFkMT4zCiclkKaUOimes4zpaPZa94zB7
+        BAu4JaRJB3JUe2FFr1s9ti6JN1lAbNCqTKBqSjZjKFnT5CkATt6/FEDBe1Fbe4gJ
+        D0U2yfwxYdj1M8DA7OVJ8w0HqvbaDOcrNGrDuwksoN/ZhLutauiUsz50QyJjeiYI
+        pceRzncgFai4/nRAJK/s+SQqGIgjF/NUaPhONoA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=qRybQh
+        RN/O0nr4FGzlsF5grYQeYZu8ucrJLcVTZ+qd0=; b=aDdpVZRzVu/fS0qCUO6nOt
+        oEgpCu/QYslFEzpsvzX7ndTe8eRiqTfW1+F4Fv5rSljjXczfv7nrbqAWr3zapAW0
+        OjefFWXSx9RK3x20MIrnZcNoti7tW/oJNtSA/IV7IGOQHDvleipPI09EiprnhU9o
+        kt5scxewJhaB6Qq51S97vCJklRMPZ9wqdCDkJp6r7hTpTZ25zNabBWCCaBJG9QKb
+        9u6RelhaplCmdQf+JB8koj+J5GNSUsr4cXpmXqevWGEjrvMfmV3DRpgqVTIImVfo
+        ECd+27HzMXYje4l4PuXUIUPvFoestcAbxKMjRp5oAEw7dxy3qsvV9LfT+/Sh16IA
+        ==
+X-ME-Sender: <xms:OeFGYDnuPNqO225nJFIOksYE4N-W8_TT57d--pKiJK5IItujip51ng>
+    <xme:OeFGYG3AevxgNkp6GBMoCi17lsCIk0UfPd4Zb0S2-1acVmFRKmVe3pjedveEy_gHz
+    CwHMO254a3PIWOkOA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudduhedggeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:OeFGYJo0AqsS8xJQPVQeyVcw51jBuDXitZCYSpimI6GuXdKxDCpt9g>
+    <xmx:OeFGYLktDhp7hqaYr6namfV8BupM_mzss-zlC4J7CcD3HGisilXfhg>
+    <xmx:OeFGYB1y7aWjmsX_j2hoYnrsWZ1vIeNG-hTGQDkdrPZnB18ZfhWOxQ>
+    <xmx:OuFGYLM4Nh9o6VssFPquDGq2opK0-qo-dL8LHWiAIMvmBVsXSXAgUg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 45659A00064; Mon,  8 Mar 2021 21:45:13 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-206-g078a48fda5-fm-20210226.001-g078a48fd
+Mime-Version: 1.0
+Message-Id: <331c242b-cf22-4d0e-a08c-b9dbb06f2f32@www.fastmail.com>
+In-Reply-To: <20210305230940.GA809870@robh.at.kernel.org>
+References: <20210219142523.3464540-1-andrew@aj.id.au>
+ <20210219142523.3464540-18-andrew@aj.id.au>
+ <20210305230940.GA809870@robh.at.kernel.org>
+Date:   Tue, 09 Mar 2021 13:14:52 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Rob Herring" <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        "Tomer Maimon" <tmaimon77@gmail.com>,
+        "Corey Minyard" <minyard@acm.org>, linux-gpio@vger.kernel.org,
+        "Avi Fishman" <avifishman70@gmail.com>,
+        "Patrick Venture" <venture@google.com>, openbmc@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, "Tali Perry" <tali.perry1@gmail.com>,
+        linux-aspeed@lists.ozlabs.org,
+        openipmi-developer@lists.sourceforge.net,
+        "Lee Jones" <lee.jones@linaro.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        "Benjamin Fair" <benjaminfair@google.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_17/19]_dt-bindings:_ipmi:_Add_optional_SerIRQ_prope?=
+ =?UTF-8?Q?rty_to_ASPEED_KCS_devices?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2021/3/9 10:28 上午, Zhu, Lingshan wrote:
->
->
-> On 3/9/2021 10:23 AM, Jason Wang wrote:
->>
->> On 2021/3/8 4:35 下午, Zhu Lingshan wrote:
->>> This commit enabled Intel FPGA SmartNIC C5000X-PL virtio-net
->>> for vDPA
->>>
->>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
->>> ---
->>>   drivers/vdpa/ifcvf/ifcvf_base.h | 5 +++++
->>>   drivers/vdpa/ifcvf/ifcvf_main.c | 5 +++++
->>>   2 files changed, 10 insertions(+)
->>>
->>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h 
->>> b/drivers/vdpa/ifcvf/ifcvf_base.h
->>> index 64696d63fe07..75d9a8052039 100644
->>> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
->>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
->>> @@ -23,6 +23,11 @@
->>>   #define IFCVF_SUBSYS_VENDOR_ID    0x8086
->>>   #define IFCVF_SUBSYS_DEVICE_ID    0x001A
->>>   +#define C5000X_PL_VENDOR_ID        0x1AF4
->>> +#define C5000X_PL_DEVICE_ID        0x1000
->>> +#define C5000X_PL_SUBSYS_VENDOR_ID    0x8086
->>> +#define C5000X_PL_SUBSYS_DEVICE_ID    0x0001
->>
->>
->> I just notice that the device is a transtitional one. Any reason for 
->> doing this?
->>
->> Note that IFCVF is a moden device anyhow (0x1041). Supporting legacy 
->> drive may bring many issues (e.g the definition is non-nomartive). 
->> One example is the support of VIRTIO_F_IOMMU_PLATFORM, legacy driver 
->> may assume the device can bypass IOMMU.
->>
->> Thanks
-> Hi Jason,
->
-> This device will support virtio1.0 by default, so has 
-> VIRTIO_F_IOMMU_PLATFORM by default.
 
+On Sat, 6 Mar 2021, at 09:39, Rob Herring wrote:
+> On Sat, Feb 20, 2021 at 12:55:21AM +1030, Andrew Jeffery wrote:
+> > Allocating IO and IRQ resources to LPC devices is in-theory an operation
+> > for the host, however ASPEED don't appear to expose this capability
+> > outside the BMC (e.g. SuperIO). Instead, we are left with BMC-internal
+> > registers for managing these resources, so introduce a devicetree
+> > property for KCS devices to describe SerIRQ properties.
+> > 
+> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> > ---
+> >  .../bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml      | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml b/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
+> > index 1c1cc4265948..808475a2c2ca 100644
+> > --- a/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
+> > +++ b/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
+> > @@ -47,6 +47,18 @@ properties:
+> >        channels the status address is derived from the data address, but the
+> >        status address may be optionally provided.
+> >  
+> > +  aspeed,lpc-interrupts:
+> > +    $ref: "/schemas/types.yaml#/definitions/uint32-matrix"
+> > +    minItems: 1
+> > +    maxItems: 1
+> > +    description: |
+> > +      A 2-cell property expressing the LPC SerIRQ number and the interrupt
+> > +      level/sense encoding (specified in the standard fashion).
+> 
+> That would be uint32-array with 'maxItems: 2'.
+> 
 
-If you device want to force VIRTIO_F_IOMMU_PLATFORM you probably need to 
-do what has been done by mlx5 (verify_min_features).
-
-According to the spec, if VIRTIO_F_IOMMU_PLATFORM is not mandatory, when 
-it's not negotiated, device needs to disable or bypass IOMMU:
-
-
-"
-
-If this feature bit is set to 0, then the device has same access to 
-memory addresses supplied to it as the driver has. In particular, the 
-device will always use physical addresses matching addresses used by the 
-driver (typically meaning physical addresses used by the CPU) and not 
-translated further, and can access any address supplied to it by the driver.
-
-"
-
-
-> Transitional device gives the software a chance to fall back to virtio 
-> 0.95.
-
-
-This only applies if you want to passthrough the card to guest directly 
-without the help of vDPA.
-
-If we go with vDPA, it doesn't hlep. For virtio-vdpa, we know it will 
-negotiated IOMMU_PLATFORM. For vhost-vdpa, Qemu can provide a legacy or 
-transitional device on top of a modern vDPA device.
-
-Thanks
-
-
-> ifcvf drives this device in virtio 1.0 mode, set features 
-> VIRTIO_F_IOMMU_PLATFORM successfully.
->
-> Thanks,
-> Zhu Lingshan
->>
->>
->>> +
->>>   #define IFCVF_SUPPORTED_FEATURES \
->>>           ((1ULL << VIRTIO_NET_F_MAC)            | \
->>>            (1ULL << VIRTIO_F_ANY_LAYOUT)            | \
->>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
->>> b/drivers/vdpa/ifcvf/ifcvf_main.c
->>> index e501ee07de17..26a2dab7ca66 100644
->>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->>> @@ -484,6 +484,11 @@ static struct pci_device_id ifcvf_pci_ids[] = {
->>>           IFCVF_DEVICE_ID,
->>>           IFCVF_SUBSYS_VENDOR_ID,
->>>           IFCVF_SUBSYS_DEVICE_ID) },
->>> +    { PCI_DEVICE_SUB(C5000X_PL_VENDOR_ID,
->>> +             C5000X_PL_DEVICE_ID,
->>> +             C5000X_PL_SUBSYS_VENDOR_ID,
->>> +             C5000X_PL_SUBSYS_DEVICE_ID) },
->>> +
->>>       { 0 },
->>>   };
->>>   MODULE_DEVICE_TABLE(pci, ifcvf_pci_ids);
->>
->
-
+Ah, thanks.
