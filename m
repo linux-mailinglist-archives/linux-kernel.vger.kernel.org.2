@@ -2,118 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90974331CFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A28B331D00
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 03:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhCIC1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 21:27:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbhCIC12 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 21:27:28 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A952C06174A;
-        Mon,  8 Mar 2021 18:27:28 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id ga23-20020a17090b0397b02900c0b81bbcd4so4145407pjb.0;
-        Mon, 08 Mar 2021 18:27:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rj6oQ4IFYTilxkF7OoIJ90szUzse8S46mCr6GX2/bfU=;
-        b=HcT2lUKj+yEHpiC+3lSZHbHqbUdhv0x8pp5lxuEsUJc2MWiJYwUL3ON9FFpxZFkb3q
-         JuwPjN59wA9uspSyC1M68oW6+L/T+edPpRWbaNmArOpFY1Z8DY4rk1e9yzWaqusenRYH
-         gre4ieYC1fw0zThy+sNGHviiJlPFN2F9+jKFnGsFEqI70thfJUF7o3i0LTM+TEyKmnX8
-         3OrBTz86Gq0N/S+sS4emunEAtH2H+9JQisP3AR6BAXO/nI4JdWCG8KUoQw9uherhQHDo
-         UyJYmJjLdW01b9EVTlDHi7qyouDFRZKAkwWQuyXqjMSDuSowdmE3f8OWvh2SzXQIQw3A
-         kMxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rj6oQ4IFYTilxkF7OoIJ90szUzse8S46mCr6GX2/bfU=;
-        b=ssZY0HFgWVDTSlM7DsVK6J0+ZcHBmJvmMn1WucVYZgl2KYwOhO2yphP2eR0975K4gf
-         FTYwKPaNIUa9bw4G20mstVVzdm2GCOYxYF9J0q45Hr7exb5q/ZG3vr8yjFd6uj1qdz9t
-         A+/rJr8Y1orjrZMATUUb37kLcp3NbgPFHBQ5oOQIPPhxbNqYmUHYbahpcgUj3fKzWVA4
-         Q1RZukcfQ49mqcg7gfZdQpuMGIZdry0kDtBuRWMQtCurP8S5zIcYQEa1QJhuobSEaow9
-         o0pc46W3IbDW4x45tYI1C4zOWPRWLAFmsw2+ubvmg0G7ru0V1xb8uAQL3Ni/sjZAD3W1
-         DdPw==
-X-Gm-Message-State: AOAM531pqpLbWqts65soFyRuAtxCV7oOQAB3QXiD7btgCIPqHdYlpEdj
-        Ww3iCRtFO0MEGjUG7LsHpBU=
-X-Google-Smtp-Source: ABdhPJz2WAPpZvlB94fcAgE87Wvh3NtfxKCFB52ElTrB1MEdzsSZ0b6iAwOMFu5vCQ96/CPHHiKYYQ==
-X-Received: by 2002:a17:90a:8811:: with SMTP id s17mr2085211pjn.74.1615256847962;
-        Mon, 08 Mar 2021 18:27:27 -0800 (PST)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id x4sm4311496pfn.134.2021.03.08.18.27.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 18:27:27 -0800 (PST)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        alim.akhtar@samsung.com, avri.altman@wdc.com,
-        stanley.chu@mediatek.com, cang@codeaurora.org, beanhuo@micron.com,
-        jaegeuk@kernel.org, asutoshd@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: [PATCH] scsi: ufs: Don't spew log for enabling WB in ufshcd_wb_config()
-Date:   Tue,  9 Mar 2021 10:27:03 +0800
-Message-Id: <20210309022703.422-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        id S230473AbhCIC2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 21:28:51 -0500
+Received: from mga18.intel.com ([134.134.136.126]:28627 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230147AbhCIC2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 21:28:47 -0500
+IronPort-SDR: B0Iz4WU4L9MKBxnLbdsXZH/PqKMvlFwFaedE09oOpdABxohe7dxtE55J2K4rXhFDbrqU5AP23o
+ VL3FfAn4vcew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="175754696"
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="175754696"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 18:28:46 -0800
+IronPort-SDR: 2Q7EtcDYrqYSYbzIQUxF9rRJHM2D2JRp5EqIjkeoZ3IlhPrR7KAZrj27DpKIfZlmlmD25ZaaII
+ uvXnzX2C8KpQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="386065267"
+Received: from lkp-server01.sh.intel.com (HELO 3e992a48ca98) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 08 Mar 2021 18:28:45 -0800
+Received: from kbuild by 3e992a48ca98 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lJS73-0001Jm-5G; Tue, 09 Mar 2021 02:28:45 +0000
+Date:   Tue, 09 Mar 2021 10:27:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/core] BUILD SUCCESS
+ d0962f2b24c99889a386f0658c71535f56358f77
+Message-ID: <6046dd29.uxmGdXsEHiYzdHel%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
+branch HEAD: d0962f2b24c99889a386f0658c71535f56358f77  x86/entry/32: Remove leftover macros after stackprotector cleanups
 
-Since ufshcd_wb_ctrl() will spew error/debug log firstly, no need to
-spew similar error/info log again in the caller ufshcd_wb_config().
+elapsed time: 726m
 
-Also, several log words in ufshcd_wb_ctrl() are not consistent with
-other sites, let's improve them. And remove unhelpful ret from debug
-log due to successful control.
+configs tested: 119
+configs skipped: 3
 
-Signed-off-by: Yue Hu <huyue2@yulong.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                         ap325rxa_defconfig
+m68k                       m5208evb_defconfig
+powerpc                       ppc64_defconfig
+riscv             nommu_k210_sdcard_defconfig
+mips                           ci20_defconfig
+sh                          rsk7201_defconfig
+m68k                       m5249evb_defconfig
+sh                        apsh4ad0a_defconfig
+mips                          ath79_defconfig
+powerpc                  mpc885_ads_defconfig
+nds32                            alldefconfig
+parisc                generic-32bit_defconfig
+sh                          lboxre2_defconfig
+sh                          rsk7203_defconfig
+powerpc                          g5_defconfig
+sh                           se7619_defconfig
+powerpc                        cell_defconfig
+arm                           corgi_defconfig
+arm                     eseries_pxa_defconfig
+sh                        edosk7760_defconfig
+arm                             rpc_defconfig
+arm                        mvebu_v7_defconfig
+powerpc                     stx_gp3_defconfig
+arm                            qcom_defconfig
+arm                        realview_defconfig
+arm                  colibri_pxa270_defconfig
+arc                     nsimosci_hs_defconfig
+arm                         nhk8815_defconfig
+h8300                       h8s-sim_defconfig
+powerpc                      mgcoge_defconfig
+sh                             sh03_defconfig
+mips                       capcella_defconfig
+xtensa                  audio_kc705_defconfig
+arm                       omap2plus_defconfig
+nds32                               defconfig
+arm                       mainstone_defconfig
+powerpc               mpc834x_itxgp_defconfig
+sh                         microdev_defconfig
+openrisc                 simple_smp_defconfig
+arm                       aspeed_g4_defconfig
+m68k                          hp300_defconfig
+sh                            titan_defconfig
+powerpc                       holly_defconfig
+mips                       bmips_be_defconfig
+xtensa                  nommu_kc705_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210308
+x86_64               randconfig-a001-20210308
+x86_64               randconfig-a004-20210308
+x86_64               randconfig-a002-20210308
+x86_64               randconfig-a005-20210308
+x86_64               randconfig-a003-20210308
+i386                 randconfig-a005-20210308
+i386                 randconfig-a003-20210308
+i386                 randconfig-a002-20210308
+i386                 randconfig-a006-20210308
+i386                 randconfig-a004-20210308
+i386                 randconfig-a001-20210308
+i386                 randconfig-a016-20210308
+i386                 randconfig-a012-20210308
+i386                 randconfig-a014-20210308
+i386                 randconfig-a013-20210308
+i386                 randconfig-a011-20210308
+i386                 randconfig-a015-20210308
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20210308
+x86_64               randconfig-a016-20210308
+x86_64               randconfig-a015-20210308
+x86_64               randconfig-a014-20210308
+x86_64               randconfig-a011-20210308
+x86_64               randconfig-a012-20210308
+
 ---
- drivers/scsi/ufs/ufshcd.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 7716175..991c880 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -280,11 +280,7 @@ static inline void ufshcd_wb_config(struct ufs_hba *hba)
- 	if (!ufshcd_is_wb_allowed(hba))
- 		return;
- 
--	ret = ufshcd_wb_ctrl(hba, true);
--	if (ret)
--		dev_err(hba->dev, "%s: Enable WB failed: %d\n", __func__, ret);
--	else
--		dev_info(hba->dev, "%s: Write Booster Configured\n", __func__);
-+	ufshcd_wb_ctrl(hba, true);
- 	ret = ufshcd_wb_toggle_flush_during_h8(hba, true);
- 	if (ret)
- 		dev_err(hba->dev, "%s: En WB flush during H8: failed: %d\n",
-@@ -5452,14 +5448,14 @@ int ufshcd_wb_ctrl(struct ufs_hba *hba, bool enable)
- 	ret = ufshcd_query_flag_retry(hba, opcode,
- 				      QUERY_FLAG_IDN_WB_EN, index, NULL);
- 	if (ret) {
--		dev_err(hba->dev, "%s write booster %s failed %d\n",
-+		dev_err(hba->dev, "%s Write Booster %s failed %d\n",
- 			__func__, enable ? "enable" : "disable", ret);
- 		return ret;
- 	}
- 
- 	hba->dev_info.wb_enabled = enable;
--	dev_dbg(hba->dev, "%s write booster %s %d\n",
--			__func__, enable ? "enable" : "disable", ret);
-+	dev_dbg(hba->dev, "%s Write Booster %s\n",
-+			__func__, enable ? "enabled" : "disabled");
- 
- 	return ret;
- }
--- 
-1.9.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
