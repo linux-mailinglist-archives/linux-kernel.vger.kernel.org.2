@@ -2,121 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317A5331EB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 06:33:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F487331EB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 06:32:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhCIFdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 00:33:24 -0500
-Received: from mail-out.m-online.net ([212.18.0.10]:51531 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhCIFdR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 00:33:17 -0500
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4DvkQ42JX9z1ryWv
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 06:33:16 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4DvkQ42B0yz1qqkj
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 06:33:16 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id dcyAlTc5EmGa for <linux-kernel@vger.kernel.org>;
-        Tue,  9 Mar 2021 06:33:15 +0100 (CET)
-X-Auth-Info: SAlF13EIOFopzbaTvANEsYr6Q0v8N85tyH+ySaXeS2w=
-Received: from mail-internal.denx.de (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 06:33:15 +0100 (CET)
-Received: from pollux.denx.de (pollux [192.168.1.1])
-        by mail-internal.denx.de (Postfix) with ESMTP id 269BF18510F;
-        Tue,  9 Mar 2021 06:31:22 +0100 (CET)
-Received: by pollux.denx.de (Postfix, from userid 515)
-        id 1B7351A0092; Tue,  9 Mar 2021 06:31:22 +0100 (CET)
-From:   Heiko Schocher <hs@denx.de>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Heiko Schocher <hs@denx.de>, Fabio Estevam <festevam@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Teresa Remmet <t.remmet@phytec.de>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] arm64: imx8mp: imx8mp-phycore-som enable spi nor
-Date:   Tue,  9 Mar 2021 06:31:16 +0100
-Message-Id: <20210309053116.1486347-5-hs@denx.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210309053116.1486347-1-hs@denx.de>
-References: <20210309053116.1486347-1-hs@denx.de>
+        id S229720AbhCIFcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 00:32:20 -0500
+Received: from mga07.intel.com ([134.134.136.100]:19796 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229577AbhCIFb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 00:31:59 -0500
+IronPort-SDR: 7pZJoSZ1F7aVM1opUOgR0xP4cRYS0OCfT5keBAlKx+JkJ4XA49FsCAh7kgfSWrpXWrnWa77PXq
+ RLGACKbbauzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="252188877"
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="252188877"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 21:31:58 -0800
+IronPort-SDR: uf4phKz1TYjzv4cjOC+7I5P++yGKncold3EPtLN7RuVyTA48MxO9FBa0NGlxr5VFuH0/Vp1ZRE
+ INovo7saS2qQ==
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="447377192"
+Received: from unknown (HELO [10.238.130.230]) ([10.238.130.230])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 21:31:54 -0800
+Subject: Re: [PATCH v2] KVM: x86: Revise guest_fpu xcomp_bv field
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     pbonzini@redhat.com, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210225104955.3553-1-jing2.liu@linux.intel.com>
+ <YD1//+O57mr2D2Ne@google.com>
+From:   "Liu, Jing2" <jing2.liu@linux.intel.com>
+Message-ID: <ffb71039-c77d-93d0-1e41-9f29d87d4532@linux.intel.com>
+Date:   Tue, 9 Mar 2021 13:31:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YD1//+O57mr2D2Ne@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-enable the mt25qu256aba spi nor on the imx8mp-phycore-som.
 
-Signed-off-by: Heiko Schocher <hs@denx.de>
 
----
+On 3/2/2021 7:59 AM, Sean Christopherson wrote:
+> On Thu, Feb 25, 2021, Jing Liu wrote:
+>> XCOMP_BV[63] field indicates that the save area is in the compacted
+>> format and XCOMP_BV[62:0] indicates the states that have space allocated
+>> in the save area, including both XCR0 and XSS bits enabled by the host
+>> kernel. Use xfeatures_mask_all for calculating xcomp_bv and reuse
+>> XCOMP_BV_COMPACTED_FORMAT defined by kernel.
+>>
+>> Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
+>> ---
+>>   arch/x86/kvm/x86.c | 8 ++------
+>>   1 file changed, 2 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 1b404e4d7dd8..f115493f577d 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -4435,8 +4435,6 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
+>>   	return 0;
+>>   }
+>>   
+>> -#define XSTATE_COMPACTION_ENABLED (1ULL << 63)
+>> -
+>>   static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
+>>   {
+>>   	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
+>> @@ -4494,7 +4492,8 @@ static void load_xsave(struct kvm_vcpu *vcpu, u8 *src)
+>>   	/* Set XSTATE_BV and possibly XCOMP_BV.  */
+>>   	xsave->header.xfeatures = xstate_bv;
+>>   	if (boot_cpu_has(X86_FEATURE_XSAVES))
+>> -		xsave->header.xcomp_bv = host_xcr0 | XSTATE_COMPACTION_ENABLED;
+>> +		xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT |
+>> +					 xfeatures_mask_all;
+> Doesn't fill_xsave also need to be updated?  Not with xfeatures_mask_all, but
+> to account for arch.ia32_xss?  I believe it's a nop with the current code, since
+> supported_xss is zero, but it should be fixed, no?
+Yes. For the arch.ia32_xss, I noticed CET 
+(https://lkml.org/lkml/2020/7/15/1412)
+has posted related change so I didn't touch xstate_bv for fill_xsave for 
+now.
+Finally, fill_xsave() need e.g. arch.guest_supported_xss for xstate_bv,
+for xcomp_bv, xfeatures_mask_all is ok.
+>
+>>   
+>>   	/*
+>>   	 * Copy each region from the non-compacted offset to the
+>> @@ -9912,9 +9911,6 @@ static void fx_init(struct kvm_vcpu *vcpu)
+>>   		return;
+>>   
+>>   	fpstate_init(&vcpu->arch.guest_fpu->state);
+>> -	if (boot_cpu_has(X86_FEATURE_XSAVES))
+>> -		vcpu->arch.guest_fpu->state.xsave.header.xcomp_bv =
+>> -			host_xcr0 | XSTATE_COMPACTION_ENABLED;
+> Ugh, this _really_ needs a comment in the changelog.  It took me a while to
+> realize fpstate_init() does exactly what the new fill_xave() is doing.
+How about introducing that "fx_init()->fpstate_init() initializes xcomp_bv
+of guest_fpu so no need to set again in later fill_xsave() and 
+load_xsave()"
+in commit message?
+>
+> And isn't the code in load_xsave() redundant and can be removed?
+Oh, yes. Keep fx_init() initializing xcomp_bv for guest_fpu is enough.
+Let me remove it in load_xsave later.
+And for fill_xsave(), I think no need to set xcomp_bv there.
 
-Changes in v2:
-- work in comments from Marco and Teresa
-  - rename node into "'som_flash: flash@0 { }"
-  - compatible is now first entry
-  - removed #size-cells and #address-cells
-    as no child node. If bootloader adds them bootloader
-    can add them too.
+> Any code that
+> uses get_xsave_addr() would be have a dependency on load_xsave() if it's not
+> redundant, and I can't see how that would work.
+Sorry I didn't quite understand why get_xsave_addr() has dependency on
+load_xsave(), do you mean the xstate_bv instead of xcomp_bv, that 
+load_xsave()
+uses it to get the addr?
 
- .../dts/freescale/imx8mp-phycore-som.dtsi     | 25 +++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-phycore-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-phycore-som.dtsi
-index 44a8c2337cee4..e648b1b6acdaa 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-phycore-som.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-phycore-som.dtsi
-@@ -65,6 +65,20 @@ ethphy1: ethernet-phy@0 {
- 	};
- };
- 
-+&flexspi {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexspi0>;
-+	status = "okay";
-+
-+	som_flash: flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <80000000>;
-+		spi-tx-bus-width = <4>;
-+		spi-rx-bus-width = <4>;
-+	};
-+};
-+
- &i2c1 {
- 	clock-frequency = <400000>;
- 	pinctrl-names = "default";
-@@ -217,6 +231,17 @@ MX8MP_IOMUXC_GPIO1_IO15__GPIO1_IO15		0x11
- 		>;
- 	};
- 
-+	pinctrl_flexspi0: flexspi0grp {
-+		fsl,pins = <
-+			MX8MP_IOMUXC_NAND_ALE__FLEXSPI_A_SCLK		0x1c2
-+			MX8MP_IOMUXC_NAND_CE0_B__FLEXSPI_A_SS0_B	0x82
-+			MX8MP_IOMUXC_NAND_DATA00__FLEXSPI_A_DATA00	0x82
-+			MX8MP_IOMUXC_NAND_DATA01__FLEXSPI_A_DATA01	0x82
-+			MX8MP_IOMUXC_NAND_DATA02__FLEXSPI_A_DATA02	0x82
-+			MX8MP_IOMUXC_NAND_DATA03__FLEXSPI_A_DATA03	0x82
-+		>;
-+	};
-+
- 	pinctrl_i2c1: i2c1grp {
- 		fsl,pins = <
- 			MX8MP_IOMUXC_I2C1_SCL__I2C1_SCL		0x400001c3
--- 
-2.29.2
+Thanks,
+Jing
+>
+>>   
+>>   	/*
+>>   	 * Ensure guest xcr0 is valid for loading
+>> -- 
+>> 2.18.4
+>>
 
