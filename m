@@ -2,53 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068EB33261B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 556D733261E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbhCINGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 08:06:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231229AbhCINGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 08:06:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CC0565272;
-        Tue,  9 Mar 2021 13:06:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615295182;
-        bh=8dDtZs1QrcLkc249LnwPHsr1SeDTjrZFb5dC6gqbGCE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D9gLV0nqj7NwFJEAyh0l4oS0Thk6zuQCdN4bYGVHd/YbI7ep6dELaeKvIZ1+FCfY+
-         fFyJ+KYIYBS6wYAKdKmNOYfJZQ6mGEhOqIQM+dFtozNmQCsb+GymmJv2bbiaqW1G5l
-         0m6NoDXgscczbFBThvnCaDXY448i5gRhnXu5YfB5DXhdCwFz0j906pOR1CtH6o8vWB
-         n7l7I5AfGAQfIIFOjN3M8vGmMudS+7qr+DYQa6sXHetodank7Hv3V7EPGv4ZMoDV0u
-         gXkC0n+fTkO2B49dRmI+yM3uk55tRimbkzjc8IJhu5/5vDUOhqMt0BPkVdOwEh77mr
-         V3KP2KOzqbATQ==
-Date:   Tue, 9 Mar 2021 14:06:20 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [patch V3 6/6] rcu: Prevent false positive softirq warning on RT
-Message-ID: <20210309130620.GB236340@lothringen>
-References: <20210309085552.815026890@linutronix.de>
- <20210309085727.626304079@linutronix.de>
+        id S231342AbhCINHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 08:07:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231314AbhCINGy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 08:06:54 -0500
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 747AEC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 05:06:54 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:cc57:dd66:c63b:c8e4])
+        by andre.telenet-ops.be with bizsmtp
+        id eD6r2400h1C546401D6rLT; Tue, 09 Mar 2021 14:06:52 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lJc4Z-006IN8-Hb; Tue, 09 Mar 2021 14:06:51 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lJc4Z-009j8c-35; Tue, 09 Mar 2021 14:06:51 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Rob Herring <robh+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] docs: dt: submitting-patches: Fix grammar in subsystem section
+Date:   Tue,  9 Mar 2021 14:06:50 +0100
+Message-Id: <20210309130650.2318419-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309085727.626304079@linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 09:55:58AM +0100, Thomas Gleixner wrote:
-> Soft interrupt disabled sections can legitimately be preempted or schedule
-> out when blocking on a lock on RT enabled kernels so the RCU preempt check
-> warning has to be disabled for RT kernels.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Reword the subsystem bindings section to make sense, from a grammatical
+point of view.
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ Documentation/devicetree/bindings/submitting-patches.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/submitting-patches.rst b/Documentation/devicetree/bindings/submitting-patches.rst
+index 68129ff09967d5d7..1d11c25249ff5465 100644
+--- a/Documentation/devicetree/bindings/submitting-patches.rst
++++ b/Documentation/devicetree/bindings/submitting-patches.rst
+@@ -75,8 +75,8 @@ II. For kernel maintainers
+      binding, and it hasn't received an Acked-by from the devicetree
+      maintainers after a few weeks, go ahead and take it.
+ 
+-     Subsystem bindings (anything affecting more than a single device)
+-     then getting a devicetree maintainer to review it is required.
++     For subsystem bindings (anything affecting more than a single device),
++     getting a devicetree maintainer to review it is required.
+ 
+   3) For a series going though multiple trees, the binding patch should be
+      kept with the driver using the binding.
+-- 
+2.25.1
+
