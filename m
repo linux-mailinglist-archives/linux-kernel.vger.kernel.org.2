@@ -2,111 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B0E331DE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0814331DEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:37:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhCIEbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 23:31:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42102 "EHLO
+        id S229898AbhCIEhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 23:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhCIEb0 (ORCPT
+        with ESMTP id S229772AbhCIEgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 23:31:26 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158B3C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 20:31:24 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id o10so7911360pgg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 20:31:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hBH1FhllMri9rF1DT2YCV1l2bm6F2LmMgOalJdMipVk=;
-        b=KxOCdGXTa4LyL7Ri2mhWnB7ZCFqadqIs1Z9R/blMomYa723ZnPP4j3Zdgzzuy0Fm4G
-         3K6c4g0mdmk8cOI0qPt9yu0GNZewSy5Cu3GXwgs8ZXaeNeItkPAbASYeGvxcqgM1v6hC
-         Qw0UYd8Okj05Ev3EdeFg+rk0mHd8NqVdU/Rb217s26xCQU13u5Vwayw5Qrkka2KanpCI
-         7RYOgHm5tKQZZWsLSOM/HbxyVn+WZ5kxTyLXKeddYMoKBtgNw+ZoeidFSHKpO/CerZGB
-         cgCWUW+xzYzTyJCNlCclO/IZ0SmKQbJ4nq89p1g/+T8yzkGJ5oxONrOE/bXOdpZpPpat
-         eHSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hBH1FhllMri9rF1DT2YCV1l2bm6F2LmMgOalJdMipVk=;
-        b=JaW5hg/MBOzSHLItF+M+R0ttRstxgxOvAZX+6DmCVKFHDhaBZmUKI64J1sHQMBSOGO
-         CppoEAimt370V6XDjIwsdktFaANNG2J/r2Qwciqu7JPfXV0Mh8UTZTsHPDpWonVKTq4T
-         IMF32B71LjCjk+aWXBWYuEvQUC2HzA2uhgXejHqlHQqdcgczbCsBgpmaDJCPCEQf9caA
-         wLzBv+M1LkSdwTY+omETARHZP5qEXiJGgw17p2enctR6clHjbtbwL8SqKmiX9FGHPlBE
-         fbbdznPQq4P9bzcUTBZREwUEXy2IbH2sUsHmMs/uSeNx/geiYdmFh5ntUB/XfdM8b4oG
-         6W7w==
-X-Gm-Message-State: AOAM531JT/7vZBaVZ+5Q1zq3tYqE6su723gHivn5HJzip0oROQOI00VI
-        mZEgxuyXkrP26HRI41M8fv4aiLbYBXsDFw==
-X-Google-Smtp-Source: ABdhPJwQmLKlgimkdb9kzioPgIPReBuxOw9qT+ShYO30OhonzCs43kZCaxEFopYaO45cJYeKeraRew==
-X-Received: by 2002:a62:76c5:0:b029:1f2:e6af:e2ab with SMTP id r188-20020a6276c50000b02901f2e6afe2abmr13112685pfc.10.1615264283568;
-        Mon, 08 Mar 2021 20:31:23 -0800 (PST)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id y20sm11533912pfo.210.2021.03.08.20.31.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Mar 2021 20:31:22 -0800 (PST)
-Date:   Tue, 9 Mar 2021 10:01:21 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Beata Michalska <beata.michalska@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org
-Subject: Re: [PATCH] opp: Invalidate current opp when draining the opp list
-Message-ID: <20210309043121.546mlvl4jmshogor@vireshk-i7>
-References: <1614870454-18709-1-git-send-email-beata.michalska@arm.com>
- <20210305042401.gktrgach4dzxp7on@vireshk-i7>
- <418fc3cb-d5ec-9216-269a-e055e78718e5@arm.com>
- <20210308115053.ua2gfo6kfnfjslyd@vireshk-i7>
- <20210308181446.GA26783@e120325.cambridge.arm.com>
+        Mon, 8 Mar 2021 23:36:53 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20CEC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 20:36:52 -0800 (PST)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 053C9891AE;
+        Tue,  9 Mar 2021 17:36:48 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1615264608;
+        bh=94GooBuqwjsN2PgXHFKVfo9ebg+N+xJNt2/7dlShRws=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=irpjd3IkktHH24EsvNqFEVrsY1yZOE4b1qCTwdTYeQ+BTR3SycnJTpytKc1FXyXjT
+         Lg/GHcPX7uc8BeN+8yxUuOh1KTJEdpIy0u3JXD6agKl4CsaX0WVZBNIYd93uoRNPkA
+         0FBUtUUJ3kLtQcuOVg7R2mwjCWLcctlpwjzXFvb0nSLavHJ9RptXqERBBCC9Hj97uZ
+         1jfGrCGsrIpIe87CmMEyRChOxoPrQFRZ+fsX/KgG9vp/EIEXzg5q/lCO3NeTKJcTEm
+         HjofLGn/k77WcCDmud82qzGYukn2gLqdhQQnRfZkk61K4stgGMOPZDd195Wu9BJkSO
+         2AEJJ9yrEjWag==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B6046fb5f0001>; Tue, 09 Mar 2021 17:36:47 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
+ by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
+ Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Mar 2021 17:36:47 +1300
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.012; Tue, 9 Mar 2021 17:36:47 +1300
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        "jdelvare@suse.com" <jdelvare@suse.com>
+CC:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: Errant readings on LM81 with T2080 SoC
+Thread-Topic: Errant readings on LM81 with T2080 SoC
+Thread-Index: AQHXE6SbssdAOSHgwE+zIRhtn11Sk6p4Y2sAgAAgcACAACSBgIAABe+AgAEgEgCAAGwMgA==
+Date:   Tue, 9 Mar 2021 04:36:47 +0000
+Message-ID: <d36a85c2-4ec5-6c28-9e2a-282de1eaf955@alliedtelesis.co.nz>
+References: <8e0a88ba-01e9-9bc1-c78b-20f26ce27d12@alliedtelesis.co.nz>
+ <96d660bc-17ab-4e0e-9a94-bce1737a8da1@roeck-us.net>
+ <4a1b1494-df96-2d8c-9323-beb2c2ba706b@alliedtelesis.co.nz>
+ <a67ea323-634d-d34e-c63e-b1aaa4737b19@alliedtelesis.co.nz>
+ <5709f180-04b5-09b2-e1c4-53eb5c9345d8@roeck-us.net>
+ <61f68c59-593b-e393-5520-d9acc14fdf97@alliedtelesis.co.nz>
+In-Reply-To: <61f68c59-593b-e393-5520-d9acc14fdf97@alliedtelesis.co.nz>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <811CB1FD02E3674DAB25356F89E5D27F@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308181446.GA26783@e120325.cambridge.arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=brUy9DZNWyBmMtso1hQA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-03-21, 18:14, Beata Michalska wrote:
-> > -bool _opp_remove_all_static(struct opp_table *opp_table)
-> > +/*
-> > + * Can't remove the OPP from under the lock, debugfs removal needs to happen
-> > + * lock less to avoid circular dependency issues. This must be called without
-> > + * the opp_table->lock held.
-> > + */
-> > +static int _opp_drain_list(struct opp_table *opp_table, bool dynamic)
-> >  {
-> > -	struct dev_pm_opp *opp;
-> > +	struct dev_pm_opp *opp, *current_opp = NULL;
-> > +	int count = 0;
-> > +
-> > +	while ((opp = _opp_get_next(opp_table, dynamic))) {
-> > +		if (opp_table->current_opp == opp) {
-> > +			/*
-> > +			 * Reached at current OPP twice, no other OPPs left. The
-> > +			 * last reference to current_opp is dropped from
-> > +			 * _opp_table_kref_release().
-> > +			 */
-> > +			if (current_opp)
-> > +				break;
-> > +
-> > +			current_opp = opp;
-> > +		}
-> Having a quick look at the code ...
-> Shouldn't the current_opp be moved at the end of the list ?
-> Otherwise there is a risk of leaving unreferenced opps (and opp_table).
-
-How exactly ? Note that it is expected that the OPP table isn't being
-used by anyone anymore at this point and all the users went away.
-
-> Might be also worth adding warning (?)
-> 
->     WARN_ONCE(!list_is_singular())
-
-It is allowed for the list to contain both static and dynamic OPPs,
-and so the list may have more OPPs here.
-
--- 
-viresh
+DQpPbiA5LzAzLzIxIDExOjEwIGFtLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPg0KPiBPbiA4LzAz
+LzIxIDU6NTkgcG0sIEd1ZW50ZXIgUm9lY2sgd3JvdGU6DQo+PiBPbiAzLzcvMjEgODozNyBQTSwg
+Q2hyaXMgUGFja2hhbSB3cm90ZToNCj4+IFsgLi4uIF0NCj4+Pj4gVGhhdCdzIGZyb20gLUVOWElP
+IHdoaWNoIGlzIHVzZWQgaW4gb25seSBvbmUgcGxhY2UgaW4gaTJjLW1wYy5jLiBJJ2xsDQo+Pj4+
+IGVuYWJsZSBzb21lIGRlYnVnIGFuZCBzZWUgd2hhdCB3ZSBnZXQuDQo+Pj4gRm9yIHRoZSBlcnJh
+bnQgcmVhZGluZ3MgdGhlcmUgd2FzIG5vdGhpbmcgYWJub3JtYWwgcmVwb3J0ZWQgYnkgdGhlIA0K
+Pj4+IGRyaXZlci4NCj4+Pg0KPj4+IEZvciB0aGUgIk5vIHN1Y2ggZGV2aWNlIG9yIGFkZHJlc3Mi
+IEkgc2F3ICJtcGMtaTJjIGZmZTExOTAwMC5pMmM6IE5vDQo+Pj4gUlhBSyIgd2hpY2ggbWF0Y2hl
+cyB1cCB3aXRoIHRoZSAtRU5YSU8gcmV0dXJuLg0KPj4+DQo+PiBJZCBzdWdnZXN0IHRvIGNoZWNr
+IHRoZSB0aW1lIHVudGlsIG5vdCBidXN5IGFuZCBzdG9wIGluIG1wY194ZmVyKCkuDQo+PiBUaG9z
+ZSBob3QgbG9vcHMgYXJlIHVudXN1YWwsIGFuZCBtYXkgd2VsbCBtZXNzIHVwIHRoZSBjb2RlIGVz
+cGVjaWFsbHkNCj4+IGlmIHByZWVtcHQgaXMgZW5hYmxlZC4NCj4gUmV3b3JraW5nIHRob3NlIGxv
+b3BzIHNlZW1zIHRvIGhhdmUgaGFkIGEgcG9zaXRpdmUgcmVzdWx0LiBJJ2xsIGRvIGEgDQo+IGJp
+dCBtb3JlIHRlc3RpbmcgYW5kIGhvcGVmdWxseSBnZXQgYSBwYXRjaCBvdXQgbGF0ZXIgdG9kYXku
+DQpEJ29oIG15ICJmaXgiIHdhcyB0byByZXBsYWNlIHRoZSBjb25kX3Jlc2hlZCgpIHdpdGggbXNs
+ZWVwKDEwKSB3aGljaCBkaWQgDQoiZml4IiB0aGUgcHJvYmxlbSBidXQgbWFkZSBldmVyeSBpMmMg
+cmVhZCBzbG93LiBJIGRpZG4ndCBub3RpY2Ugd2hlbiANCnRlc3RpbmcganVzdCB0aGUgbG04MSBi
+dXQgYXMgc29vbiBhcyBJIGJvb3RlZCB0aGUgc3lzdGVtIHdpdGggbW9yZSBpMmMgDQpkZXZpY2Vz
+IEkgc2F3IHN0dXBpZGx5IHNsb3cgYm9vdCB0aW1lcy4NCj4+IMKgIEFsc28sIGFyZSB5b3UgdXNp
+bmcgaW50ZXJydXB0cyBvciBwb2xsaW5nIGluDQo+PiB5b3VyIHN5c3RlbSA/IFRoZSBpbnRlcnJ1
+cHQgaGFuZGxlciBsb29rcyBhIGJpdCBvZGQsIHdpdGggIlJlYWQgYWdhaW4NCj4+IHRvIGFsbG93
+IHJlZ2lzdGVyIHRvIHN0YWJpbGlzZSIuDQo+Pg0KPj4gRG8geW91IGhhdmUgZnNsLHRpbWVvdXQg
+c2V0IGluIHRoZSBkZXZpY2V0cmVlIHByb3BlcnRpZXMgYW5kLCBpZiBzbywNCj4+IGhhdmUgeW91
+IHBsYXllZCB3aXRoIGl0ID8NCj4+DQo+PiBPdGhlciB0aGFuIHRoYXQsIHRoZSBvbmx5IG90aGVy
+IHJlYWwgaWRlYSBJIGhhdmUgd291bGQgYmUgdG8gbW9uaXRvcg0KPj4gdGhlIGkyYyBidXMuDQo+
+Pg0KPj4gR3VlbnRlcg==
