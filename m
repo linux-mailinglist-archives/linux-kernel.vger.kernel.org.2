@@ -2,74 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4D933320B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 00:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D71E833320F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 00:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbhCIXpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 18:45:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
+        id S232005AbhCIXuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 18:50:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbhCIXpH (ORCPT
+        with ESMTP id S231924AbhCIXtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 18:45:07 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E1DC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 15:45:06 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id l7so10812214pfd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 15:45:06 -0800 (PST)
+        Tue, 9 Mar 2021 18:49:53 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E83C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 15:49:52 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id q77so19259571ybq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 15:49:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=MIMPh+SXeRfQ61lkDNTW++4hYt6RRQoL+XmybnY7RLs=;
-        b=I+YpJYhj2EeUSjKGcgIJVq8/oUTSiAwvwpzZ6eKYyX100iHQrRlylnHdPqLCigRZ2b
-         0IrBclRUcKp55ul/SBpHyHl/X9j4NWK2EdbbcL/igCx8+i60ZywQsUXBlodPBHEAKRfT
-         8s9q0SDHKU7rAzlXFRYeIZCAP+8QryVFdLZjvMAENZjn57OeksCoUuHYvDDnEWKommIt
-         7x8qKCF+BGiWbuSVEbyAZwi9BIT+LuGY3S8rcWcUsU79kej9oVDsBkWlb7ZezIz8VaMN
-         Mf0s3X574Viwzi7/v4lNDF3icsJJlvLxVVApUMyfppG181yVsPqPCYn93UekMMirCGeY
-         d/9g==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=EXnnE/sfHoG61Zd+K0DaqEm2orRFlfcWgEjhMtg3MDQ=;
+        b=J/u/Hey6V4MgojpKJtZDgsIlKsuYUzkbru5dM7WF/+/nkVq6BlzIK8zXacjybsG2TU
+         ixGk+iruAb3fdUpmpBjGwFQG6rZ1aKFK0kt9ksRUUpcT8FCMPeG4MkbODbvJnLCQsFtg
+         o8ZdOrSDMEa/zfWJrC/Eb8P2/7usxuBj/7L2njiOhQe9N/JYHInJpQODzB5YrHHOUieG
+         oC1T+Wxqi7v7orOwWYiUvXIoOb4MN/ZFTbEK+LKFMT8XH2Ufst+3Ajc9Eqfy51Ac7d6p
+         SbejDPcD6xBKZnu+tIuQwuoz3sCjzXG0FMusFqT0Cq+sDLl7bsFaz+3Fuyas6emuGix7
+         QGYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MIMPh+SXeRfQ61lkDNTW++4hYt6RRQoL+XmybnY7RLs=;
-        b=K7VjjFU5f2tMKfmHsJvb+FPSl6LjnQAfhtlv3VDUGcgCOolk83u9MNuMl578UYH9m2
-         Fs6UUn+Fn5ilJ4m3ScbgLaF6f15QSGJDN/mlCLz9fz4wMfxpsAofu9BU+9upUhtok3ia
-         V6Ge1iMDwxg/RiNg7o4GCsaH0ItsfWJ/Kh4HfYO1dS8AIVdXuJq1Ra3TwK6gHaQzMQf+
-         SU9pVbq5HTZP337H8H4bEUA+20fCy6EPSZugFeOHh5nH76Y4t1o4/7eVCKMW310Hm6p6
-         rOXiiFrJxXu20V8Pmyr1LxI151U13dk5xgoN7dAZcPCsNPSdmAp6E/vlu0UjQekxQyO6
-         xKoQ==
-X-Gm-Message-State: AOAM531vfRzUQCkTtQbaEqJ8UccmtNPQoWJAryGd3gOvmk5Swd47VNmU
-        jkOnOePjvyGx/h5JAe6ub7occg==
-X-Google-Smtp-Source: ABdhPJy9cVefkbidAY/7W1zyfzpv/TtxvoNhA7a4MjDNqx1uxbugQv26rNzUtMCMHzXPxLggLpuolw==
-X-Received: by 2002:a62:1d06:0:b029:1fb:94fb:4940 with SMTP id d6-20020a621d060000b02901fb94fb4940mr564306pfd.6.1615333506387;
-        Tue, 09 Mar 2021 15:45:06 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id js16sm3880010pjb.21.2021.03.09.15.45.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 15:45:05 -0800 (PST)
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: Re: [syzbot] possible deadlock in io_sq_thread_finish
-To:     syzbot <syzbot+ac39856cb1b332dbbdda@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <00000000000023b36405bd221483@google.com>
-Message-ID: <7dff5f11-817d-228a-5623-1df17b05402b@kernel.dk>
-Date:   Tue, 9 Mar 2021 16:45:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <00000000000023b36405bd221483@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=EXnnE/sfHoG61Zd+K0DaqEm2orRFlfcWgEjhMtg3MDQ=;
+        b=U0FsETOgO0HGtEAh0jWyzlmwhPGpZC1fHIwcElVqejP+DHjNamUd/bJih3oqj5EENg
+         DSb4/QWsjwz7wrudeFLNhbEwy4DYf78VPZUBKMZKLbTlJ370fqscuF9NMhNYWOKH03KL
+         xQfeZ8DPxhM2v0TRWL3vaMyLeVeg4Xv04GKWDTnCC5SxHhd4yZ9nOmTeURfxR3IxmStf
+         76o5UJe6vCS/iGArj6aNMccJxnOW5bSo/QUWBKT9u1l/Piic0H3Em5kyXRf7wKSCcsD5
+         gPxwmag/9gJ+Jod5SAl0Pl9X7OCgSponjnvlXTwyXLU+ieNhUuixJFxfOFKxG5nJCqFi
+         2Zyw==
+X-Gm-Message-State: AOAM531fc/Eg+QsaVLv/Vu85RVM9PuT0XaQigN3TZHYwAvqVWnfvOYT8
+        djESrp+v3C9gSaRjspvSRruO/PfNCsA/
+X-Google-Smtp-Source: ABdhPJz5rFaYL7uweYIVPHJMkhaCbsgFCJakCg/5mUDpPfEoSBza1Z9m60vYMRWTdUJoakw90KE5pR+jnnmk
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:d4ed:310c:701:5d5a])
+ (user=irogers job=sendgmr) by 2002:a25:af05:: with SMTP id
+ a5mr489197ybh.86.1615333792198; Tue, 09 Mar 2021 15:49:52 -0800 (PST)
+Date:   Tue,  9 Mar 2021 15:49:45 -0800
+Message-Id: <20210309234945.419254-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH] perf synthetic events: Avoid write of uninitialized memory.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test: git://git.kernel.dk/linux-block io_uring-5.12
+Account for alignment bytes in the zero-ing memset.
 
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/synthetic-events.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
+index b698046ec2db..31bf3dd6a1e0 100644
+--- a/tools/perf/util/synthetic-events.c
++++ b/tools/perf/util/synthetic-events.c
+@@ -424,7 +424,7 @@ int perf_event__synthesize_mmap_events(struct perf_tool *tool,
+ 
+ 	while (!io.eof) {
+ 		static const char anonstr[] = "//anon";
+-		size_t size;
++		size_t size, aligned_size;
+ 
+ 		/* ensure null termination since stack will be reused. */
+ 		event->mmap2.filename[0] = '\0';
+@@ -484,11 +484,12 @@ int perf_event__synthesize_mmap_events(struct perf_tool *tool,
+ 		}
+ 
+ 		size = strlen(event->mmap2.filename) + 1;
+-		size = PERF_ALIGN(size, sizeof(u64));
++		aligned_size = PERF_ALIGN(size, sizeof(u64));
+ 		event->mmap2.len -= event->mmap.start;
+ 		event->mmap2.header.size = (sizeof(event->mmap2) -
+-					(sizeof(event->mmap2.filename) - size));
+-		memset(event->mmap2.filename + size, 0, machine->id_hdr_size);
++					(sizeof(event->mmap2.filename) - aligned_size));
++		memset(event->mmap2.filename + size, 0, machine->id_hdr_size +
++			(aligned_size - size));
+ 		event->mmap2.header.size += machine->id_hdr_size;
+ 		event->mmap2.pid = tgid;
+ 		event->mmap2.tid = pid;
 -- 
-Jens Axboe
+2.30.1.766.gb4fecdf3b7-goog
 
