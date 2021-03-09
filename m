@@ -2,133 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6CD333026
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF65333023
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:43:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbhCIUnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:43:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbhCIUmb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:42:31 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752BFC06174A;
-        Tue,  9 Mar 2021 12:42:31 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id p21so9607431pgl.12;
-        Tue, 09 Mar 2021 12:42:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F6H1eLaGJlqQ66tBpb5I9uNj9GMESOoJy7m0GH1JP58=;
-        b=HU3izlQAk8Mt6/FCeP8tXvAj4M+vWcnDiOFwwiJ6y6zFRu1CwFcqogAzDOLCwTjCEL
-         qAXZV+VH/9XjnGRjPstDE7SJn9Bq8zB98UNwP2rapNDbbwN3werptIlYRxYS3utLPE8m
-         GydBXNhKDLdtz2oF9t85xMM6gScMocSS7SFcC3w47DDRdAipUUNuTnRKyJxSvX8RPTmL
-         2yrrBMOHkzompBJ7NE1phX8f3qKmyHcV3i+PWHXyxa7ZkWbEy3x6WXZvp9h1QrzrSz2n
-         ky6yWI96REKN7irWvjsWjZAxaFNWSKb6+3cjWTDE1zWB/F0MuWfBhAOFTDNmquULAGpZ
-         1ApA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F6H1eLaGJlqQ66tBpb5I9uNj9GMESOoJy7m0GH1JP58=;
-        b=RVXMMOE4nguA09Rm79aR59oMBTbftYngUEtbzHNiHlTNd0hMDZ76Zl3d7OIu20zmPt
-         4DKKTwMxE5cU+DoQU3chk/Xay99haZl6xx5l0Lm37rDWn6XgU27yZGGst4vdowGHuK2K
-         5pBhuRfktn653oIQS/wQU6groUVxUuz1JI+wtwCKeBsrSftDXFd8Xk12r4Bqkdtj/X88
-         fVvDcbex2Al19w9n+kU2fgh83/AlPqkKrmOypYiHZ1NOxKXvVOSFGXY9rglqnn3VUJQF
-         D/msdRLLH4NQI4+Ll7knk/Eke9fuTblQ396EpZMBvDJwmv22kIg5mlZq130lvYQL7M83
-         7mow==
-X-Gm-Message-State: AOAM531Djxatntfgzvj30qZJ3ssLPnNt4V2NF0lVNrLU++vHK9riVzG5
-        JNmqDCLQ7BipsVOaWAapVtGg0q8dLouKMxX0
-X-Google-Smtp-Source: ABdhPJyVs9xS1EYgSQPTuVJ1Eflsd1/06bOMzFrw2XXmi2tQtDVl+TncNGcEp6MAi0oeoeb6qg954w==
-X-Received: by 2002:a65:4344:: with SMTP id k4mr3119724pgq.48.1615322551060;
-        Tue, 09 Mar 2021 12:42:31 -0800 (PST)
-Received: from panda-xps.hsd1.ca.comcast.net ([98.37.48.39])
-        by smtp.googlemail.com with ESMTPSA id j3sm13298098pgk.24.2021.03.09.12.42.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 12:42:30 -0800 (PST)
-From:   Daniel Phan <daniel.phan36@gmail.com>
-X-Google-Original-From: Daniel Phan
-Cc:     daniel.phan36@gmail.com, Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        id S231526AbhCIUmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:42:25 -0500
+Received: from mx1.riseup.net ([198.252.153.129]:43536 "EHLO mx1.riseup.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231864AbhCIUmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 15:42:03 -0500
+Received: from fews2.riseup.net (fews2-pn.riseup.net [10.0.1.84])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4Dw6Zg43B6zDxYR;
+        Tue,  9 Mar 2021 12:42:03 -0800 (PST)
+X-Riseup-User-ID: 6E80CF5FC8EBBAAF70C42356D782147E33F6E50F79F7ED969E5F47FC70B30D58
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews2.riseup.net (Postfix) with ESMTPSA id 4Dw6Zf6Zppz1y6Q;
+        Tue,  9 Mar 2021 12:42:02 -0800 (PST)
+Subject: Re: [PATCH v2] do_wait: make PIDTYPE_PID case O(1) instead of O(n)
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <christian@brauner.io>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] mac80211: Check crypto_aead_encrypt for errors
-Date:   Tue,  9 Mar 2021 12:41:36 -0800
-Message-Id: <20210309204137.823268-1-daniel.phan36@gmail.com>
-X-Mailer: git-send-email 2.30.1
+References: <20210309161548.18786-1-jnewsome@torproject.org>
+ <20210309171539.GA32475@redhat.com>
+From:   Jim Newsome <jnewsome@torproject.org>
+Organization: The Tor Project
+Message-ID: <7f5508ef-dbaa-fe5c-9826-cce0122eb2f8@torproject.org>
+Date:   Tue, 9 Mar 2021 14:42:00 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20210309171539.GA32475@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: panda <daniel.phan36@gmail.com>
+On 3/9/21 11:15, Oleg Nesterov wrote:
+> Jim,
+>
+> Thanks, the patch looks good to me. Yet I think you need to send V3 even
+> if I personally do not care ;) Please consider ./scripts/checkpatch.pl,
+> it reports all the coding-style problems I was going to mention.
 
-crypto_aead_encrypt returns <0 on error, so if these calls are not checked,
-execution may continue with failed encrypts.  It also seems that these two
-crypto_aead_encrypt calls are the only instances in the codebase that are
-not checked for errors.
+Thanks! I'd thought clang-format with the included configuration would
+be sufficient, but apparently not :)
 
-Signed-off-by: Daniel Phan <daniel.phan36@gmail.com>
----
- net/mac80211/aead_api.c | 5 +++--
- net/mac80211/aes_gmac.c | 5 +++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+> Both if's use "int retval", to me it would be better to declare this variable
+> at the start of do_wait_pid(). But again, I won't insist this is up to you.
+My usual inclination is to avoid uninitialized variables and prefer
+putting them in tighter scopes. I don't think it's really much of an
+issue in this relatively short function though; happy to go with the
+prevailing style.
+> I am wondering if something like
+>
+> 	static inline bool is_parent(struct task_struct *tsk, struct task_struct *p, int flags)
+> 	{
+> 		return	tsk == p || !(flags & __WNOTHREAD)) && same_thread_group(tsk, p);
+> 	}
+>
+> makes any sense to make do_wait_pid() more clear... probably not.
 
-diff --git a/net/mac80211/aead_api.c b/net/mac80211/aead_api.c
-index d7b3d905d535..b00d6f5b33f4 100644
---- a/net/mac80211/aead_api.c
-+++ b/net/mac80211/aead_api.c
-@@ -23,6 +23,7 @@ int aead_encrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad, size_t aad_len,
- 	struct aead_request *aead_req;
- 	int reqsize = sizeof(*aead_req) + crypto_aead_reqsize(tfm);
- 	u8 *__aad;
-+	int ret;
- 
- 	aead_req = kzalloc(reqsize + aad_len, GFP_ATOMIC);
- 	if (!aead_req)
-@@ -40,10 +41,10 @@ int aead_encrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad, size_t aad_len,
- 	aead_request_set_crypt(aead_req, sg, sg, data_len, b_0);
- 	aead_request_set_ad(aead_req, sg[0].length);
- 
--	crypto_aead_encrypt(aead_req);
-+	ret = crypto_aead_encrypt(aead_req);
- 	kfree_sensitive(aead_req);
- 
--	return 0;
-+	return ret;
- }
- 
- int aead_decrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad, size_t aad_len,
-diff --git a/net/mac80211/aes_gmac.c b/net/mac80211/aes_gmac.c
-index 6f3b3a0cc10a..512cab073f2e 100644
---- a/net/mac80211/aes_gmac.c
-+++ b/net/mac80211/aes_gmac.c
-@@ -22,6 +22,7 @@ int ieee80211_aes_gmac(struct crypto_aead *tfm, const u8 *aad, u8 *nonce,
- 	struct aead_request *aead_req;
- 	int reqsize = sizeof(*aead_req) + crypto_aead_reqsize(tfm);
- 	const __le16 *fc;
-+	int ret;
- 
- 	if (data_len < GMAC_MIC_LEN)
- 		return -EINVAL;
-@@ -59,10 +60,10 @@ int ieee80211_aes_gmac(struct crypto_aead *tfm, const u8 *aad, u8 *nonce,
- 	aead_request_set_crypt(aead_req, sg, sg, 0, iv);
- 	aead_request_set_ad(aead_req, GMAC_AAD_LEN + data_len);
- 
--	crypto_aead_encrypt(aead_req);
-+	ret = crypto_aead_encrypt(aead_req);
- 	kfree_sensitive(aead_req);
- 
--	return 0;
-+	return ret;
- }
- 
- struct crypto_aead *ieee80211_aes_gmac_key_setup(const u8 key[],
--- 
-2.30.1
+Yeah, I lean slightly towards the extra level of indirection not being
+worth the deduplication.
+
+I made a couple other small changes as well:
+
+* No need for do_wait_pid to take the parameter `tsk` since it's only
+ever called with `current`
+
+* With that change, the declaration of `tsk` in `do_wait` can be moved
+into a tighter scope of where it's used in the loop.
+
+v3: https://lkml.org/lkml/2021/3/9/1134
 
