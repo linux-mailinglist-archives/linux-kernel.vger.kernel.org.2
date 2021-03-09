@@ -2,136 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4E13325B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:47:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C58573325B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231135AbhCIMqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 07:46:46 -0500
-Received: from mail-eopbgr770041.outbound.protection.outlook.com ([40.107.77.41]:3390
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229544AbhCIMqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 07:46:15 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nzZ0PMx1lIXmNUkiKYymnyJoL8c48YAK0akPFHJQQdqROeK3bGQHtgyZpP3TVKjDzsZfoh5Eo2bRkmMKRkKkRotshDUpSdN+cVbrRoMoYTYGCafZ2vdOfwqal2GRjcxg/kDEDM/NhqWgKYDoQNPGEoZvqqcSt8tzCs6OmwalXf/KdHJ/+V84/SpA9V44LQsrdZqWzGSK3qtbGzvNgtu0UrNgkXqgPN1+yiwHUYUziGA7T7pNQhTIOIId06CcpZoiw0jKRUOovmioTQlvmRDjqsmSzXc53kDktgQBMPrsB0zoLUfxQq6dsLlvYChECfsfGeIiHFwC2MhqXkIsqraUTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sYpH1ne6ihC0NC7OJaGf1xZoRSJWxUnMgQ/tMmuIMks=;
- b=l8GDG2ybPy6uHYJ/UHxo+URfGfH65zEFUOj58LdgFUh3wYyphR5ez6Lx1UiONJ8lGtvRAauzBVl8FAoW4upU//UpwKD90MU9EdhRW4om9NzHJKqb/PYSgbnKfdTEaAmw2IEwqqgPLnkEmVVL2C9Jgfr0Jsfq/WHtgZ12aSmOTtzeip3HJ6QAofTd16uQyUTCjKjpvw/TAwov+A71ZGaS+mlkPDvhjSg5TXRPsx8c7kL3GKCGGH0s+MgAUS/0FN1xs884pcxoubB0cfLAc9RC6J8QwT2hEjkc6NFNLZuZdKWNrl1wbmcdEP6aCqPWBBnTEuHnX++D7z4BRBaAhfauxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sYpH1ne6ihC0NC7OJaGf1xZoRSJWxUnMgQ/tMmuIMks=;
- b=jxhMwG1GucZ6QY8vwkr5mndEqZVxBeElTUbsj1zgtrc4gZM9q1kUiUdonXuMhByWd2jgyym017uihM1osx42KjAPTONqW831xfdvrnhywsbv9GoQTuJVMX1DJjQSqH5lrXdbfQPwLtrMGx19FZGw+WO3OR5kRVlc6wCqGWrUNP42iknBGfZjdEjnw5FMhL4mGFFtREAgYkZBx9w8YaC9qO461ZXMJ/RqhGU9RAEbm3T/P0Xmp1zvrwAxzczFRj897bwh5kVyH2+havU0mDVKgKA/n1o0N82M0q/hHrOpMOUqEEUmfQmF0cprO+xUxal9ATZ73nFCyln1zveHu0baBg==
-Authentication-Results: hisilicon.com; dkim=none (message not signed)
- header.d=none;hisilicon.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4012.namprd12.prod.outlook.com (2603:10b6:5:1cc::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.28; Tue, 9 Mar
- 2021 12:46:11 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3912.027; Tue, 9 Mar 2021
- 12:46:11 +0000
-Date:   Tue, 9 Mar 2021 08:46:09 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Zengtao (B)" <prime.zeng@hisilicon.com>
-Cc:     Peter Xu <peterx@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: =?utf-8?B?562U5aSN?= =?utf-8?Q?=3A?= [PATCH] vfio/pci: make the
- vfio_pci_mmap_fault reentrant
-Message-ID: <20210309124609.GG2356281@nvidia.com>
-References: <1615201890-887-1-git-send-email-prime.zeng@hisilicon.com>
- <20210308132106.49da42e2@omen.home.shazbot.org>
- <20210308225626.GN397383@xz-x1>
- <6b98461600f74f2385b9096203fa3611@hisilicon.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6b98461600f74f2385b9096203fa3611@hisilicon.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL1PR13CA0234.namprd13.prod.outlook.com
- (2603:10b6:208:2bf::29) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S231216AbhCIMs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 07:48:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230303AbhCIMsx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 07:48:53 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CD5C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 04:48:52 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id d5so12057101iln.6
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 04:48:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EdqSV9iHXI9edaVKvYFhOZKxNewnVH7t0NjYc9U5DGQ=;
+        b=iQ9W693U/lDKf6xvxhitW2eA6CCVCbnJlzcbXtzJa+f/r1ONSm+difFu+xKJaHpLcX
+         6Eppb4vAdVFkBu7ge1ML5zkYq9/upaGROdgaGIBCGwRgKahkI1PoFMuLQU7bdSaRoK+E
+         Qajlj5YSwzOHZhAkeNyR2R3j0LZ2TL3NZ2/NCeClSh20sG488Ck8smoHF92J3tQQiWmJ
+         TESDoWmL5gcJVaral6oIx34tkwRQNauL3YoRrhumqtwoTp6d61Ap8kJiafHLeGuOtezV
+         SDCmJ6h7Ml838Cwm+Xq3myHVqXUQl7YKUi+ax9Nf9nG91lQ031E3zPgLZy/pOUC53dsI
+         khEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EdqSV9iHXI9edaVKvYFhOZKxNewnVH7t0NjYc9U5DGQ=;
+        b=PHmk5PgJDq6k4Vb8hK00IKDcohLrTVhpphKTI/wzhS7eeBp4lhxXHMJBGvoLy60Ey1
+         e+yEk1WQns1wbva+N7iE3DxeeOEfiKSXJU406naNB6NYsBDaB9OIU3SjRvpNgWfvgIQC
+         ZSuAAE/2mXU6humwQyMXFS/FwskUoXriT8vRv4MXnQPSuglxEoonbRmtRmh0uOydAjP3
+         BqesAmhUzfxBZ73gNpTan55NOIpslpGeRhlIi8jX4dnY7EOgk5zPcjn3U65MpZZ9cywd
+         bC6E6k0gmQM6qWslLBFFMhUYhH9T+LYYdW2SkAhVw30l6fA7FrVYa9FuWHwOdnIWAvWK
+         rHdg==
+X-Gm-Message-State: AOAM533i44wW21IBbCkhYbTKNgOv/DRhdVQASD0UdhBB6mFJ7lea5NzB
+        hXvLy6CcDnUiJWPdtOAOQ3pSZCiH/g2Y5A==
+X-Google-Smtp-Source: ABdhPJwoc0RMxKEKIwPTfQQi+XWpl1qVHDKks4afsLDx4m8/HcX4mmKIM4wjJFmcoEWZpSXU1h/DkQ==
+X-Received: by 2002:a05:6e02:1069:: with SMTP id q9mr24361776ilj.97.1615294131754;
+        Tue, 09 Mar 2021 04:48:51 -0800 (PST)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id o23sm7810009ioo.24.2021.03.09.04.48.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 04:48:51 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     subashab@codeaurora.org, stranche@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     sharathv@codeaurora.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        David.Laight@ACULAB.COM, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v3 0/6] net: qualcomm: rmnet: stop using C bit-fields
+Date:   Tue,  9 Mar 2021 06:48:42 -0600
+Message-Id: <20210309124848.238327-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0234.namprd13.prod.outlook.com (2603:10b6:208:2bf::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.23 via Frontend Transport; Tue, 9 Mar 2021 12:46:11 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lJbkX-00A439-8V; Tue, 09 Mar 2021 08:46:09 -0400
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ff539f98-eefb-4a30-7474-08d8e2f9515d
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4012:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4012913D4752E987F82F8C44C2929@DM6PR12MB4012.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QkrlaYEtEUR0dNVgdu3IjTv9IM40FrKrOX0HTYoLDUv1WqQ+T/XqUmMFql6eoJI+WEKegFGEnLB+CStg28JS/lBQrnI4oWMcBFEAeq4v8CSEwkA6I/JC4TDm/QrKZnyINlbsPiUibMNTWW7CEXs/n/npRNks+pqNZOrokYLYffyxsWA/NjQkr3YDO+VFktCPwbZy/JuiQ41aig7ezyvJ99kMzO56oX7aiKCJX7kDgUMNZvR+I82r76tD421Vrc6txky7y0Bbjx9YLD0qlidzMM3YO9o912PSqYkkKf54RrwWEIl9l9fEXT2axjIGQFvKYHOiPMPnbSRtEe+FOkEDimp9yRwj3mkuiETgGMSWw5965QMXUm/1ZAqsXIqYjcZnVIBUAqwTeUn5icrgjGK2dq//4J01L6eawMpzTuxXPkdlEekRqaANHO1+mNkQJ9nrffNZhnkzJk0clTnPi02WzL8NEIIUgnG+8a2MYnSPOH84ifYmtfBKpZhG5m6FMCOLyL1mUceik+T6MIsdv+47sQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(39860400002)(376002)(396003)(8936002)(26005)(5660300002)(2616005)(66476007)(66556008)(33656002)(426003)(316002)(4326008)(478600001)(66946007)(7416002)(2906002)(224303003)(9746002)(1076003)(54906003)(186003)(86362001)(4744005)(36756003)(83380400001)(6916009)(9786002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?sQnm/gIvDX/jykutQCwQlUSx0cFQEbov1erPh1QqBqY9MMVYBpl0XXxJs/tR?=
- =?us-ascii?Q?nJkDLAG9uYckSqNEQpmRO4yOsWN+lKRDAwL60GtTrE1wuByYVFQo1n4lroBz?=
- =?us-ascii?Q?9xzIoXfEEekm1EKEjILm/c8e/4KtOt+Ry6Bml8uxcxr1BN2I8fu83JPB8gPf?=
- =?us-ascii?Q?LWefPtGdpClIZSUxkpv+9y9rlezWqDUPf0AWNdwrbzazwV+Iw7NyMpgDTRMZ?=
- =?us-ascii?Q?AFi2bcWw4KbSyYL4SWVvU1JDaZK2PvI7syrVnyVVmmBfIjbmVAVj++6LDQ4W?=
- =?us-ascii?Q?oWUuN9WEqmlDv0R9VRxM9oj+UhDFjgn6pf00Mlfk7KlYZi2E2Ny1Hwvv94Qd?=
- =?us-ascii?Q?4x+XUA4d/jslyQm++AcS5/VSSaDpLV+zsD0sIx3WzmKztRddmEiQT0bU3nov?=
- =?us-ascii?Q?U2bl7wh43U9dNq2WJcyUgOB2ZxZSKsjcMLY7f3AjbYphSbpoMCy0gDmPYCJF?=
- =?us-ascii?Q?JVbRuc583xwe10XgYjVyTsz1sEwbpTMQjbDHOg+/T7I4ikgFcD/Aol6WvToX?=
- =?us-ascii?Q?wXe+t1/7FceHzA/KoHZG3HfW/169pmMBCH35NZg0HfUhrP1EB7kB6Yw6oQXF?=
- =?us-ascii?Q?GVfPL97yy3RC1VUXjTRQNnUrUCC5Nz+PgzpNlp95IoRjpRgBhAfNGPMgdsCd?=
- =?us-ascii?Q?1im0EKxyK80ZiWBqeMCh4PqmtSzVdI3YEDny3gEXFJeCrx5gBPwkdCx3Jvqh?=
- =?us-ascii?Q?RFLEpimm2YnC/YuSzlxsmK3sxHhPqNhpTwUsR0H0kYc7pLfSS0d4XA0lOgHm?=
- =?us-ascii?Q?/V7lGOcXSM0reGsp8W+s0t/9aTd0TDMyyuZVFFyOsSdR2w9IFeXBVc2Eprmy?=
- =?us-ascii?Q?tlxZ0OCZ36eBdfbI99ZMHgje16ke5H3BtaYedTp52MWsambHi/bzeZJbUNPU?=
- =?us-ascii?Q?JCALMwDWaLhp6gp32yJQ9yjnKx2x1BMCKwEwMHFw3T17qGZipjrDUZK6f2Jw?=
- =?us-ascii?Q?fntPTT4fr4yuPbrEbPW1fNPu0mqqr4BQb+BDoIzf1ixIMSSyoj/y7dtJ+PNR?=
- =?us-ascii?Q?DtSyMmMnOI9rHk4+FEHXdKN+5ybXRYVhSAcWP4UROxZwN5Et5YcJ8fxbnJ4s?=
- =?us-ascii?Q?eTsp6YJm5+SvUvZJPx5X7c8zGfh9zaiaD6fw9CM6BAW5CtCumqWNFlvStoEz?=
- =?us-ascii?Q?rd2uLQaFwgZCpwO9wIWoL6g7Kg8zfQNbl4EXx+m1JIppCtRTtU5UnX8RwJC+?=
- =?us-ascii?Q?ISl+Xz42k3lKtsOCy7UOfFvvMahpqnhVOGBcgXJ3eTnjLxblMraIoVEvKr+Y?=
- =?us-ascii?Q?5SKmEKRPNgZ6GuxsUjS14JzxF/FqfE6HwLn0qusYWtq/LVamlpGvy0RIMgy6?=
- =?us-ascii?Q?BNFhI0fLDDH8UknDltoWzUIX?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff539f98-eefb-4a30-7474-08d8e2f9515d
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 12:46:11.5866
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uofv1Ow3A7wx093EWS/nJWnzTguLqDnj6SiS3DFd8wxUwXIDhcmOitBBvrFtyUMf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4012
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 03:49:09AM +0000, Zengtao (B) wrote:
-> Hi guys:
-> 
-> Thanks for the helpful comments, after rethinking the issue, I have proposed
->  the following change: 
-> 1. follow_pte instead of follow_pfn.
+Version 3 of this series uses BIT() rather than GENMASK() to define
+single-bit masks.  It then uses a simple AND (&) operation rather
+than (e.g.) u8_get_bits() to access such flags.  This was suggested
+by David Laight and really prefer the result.  With Bjorn's
+permission I have preserved his Reviewed-by tags on the first five
+patches.
 
-Still no on follow_pfn, you don't need it once you use vmf_insert_pfn
+Version 2 fixed bugs in the way the value written into the header
+was computed.
 
-> 2. vmf_insert_pfn loops instead of io_remap_pfn_range
-> 3. proper undos when some call fails.
-> 4. keep the bigger lock range to avoid unessary pte install. 
+The series was first posted here:
+  https://lore.kernel.org/netdev/20210304223431.15045-1-elder@linaro.org/
+Below is a summary of the original description.
 
-Why do we need locks at all here?
+This series converts data structures defined in <linux/if_rmnet.h>
+so they use integral field values with bitfield masks rather than
+relying on C bit-fields.
+  - The first three patches lay the ground work for the others.
+      - The first adds endianness notation to a structure.
+      - The second simplifies a bit of complicated code.
+      - The third open-codes some macros that needlessly
+        obscured some simple code.
+  - Each of the last three patches converts one of the structures
+    defined in <linux/if_rmnet.h> so it no longer uses C bit-fields.
 
-Jason
+    					-Alex
+
+Alex Elder (6):
+  net: qualcomm: rmnet: mark trailer field endianness
+  net: qualcomm: rmnet: simplify some byte order logic
+  net: qualcomm: rmnet: kill RMNET_MAP_GET_*() accessor macros
+  net: qualcomm: rmnet: use field masks instead of C bit-fields
+  net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum trailer
+  net: qualcomm: rmnet: don't use C bit-fields in rmnet checksum header
+
+ .../ethernet/qualcomm/rmnet/rmnet_handlers.c  | 11 ++--
+ .../net/ethernet/qualcomm/rmnet/rmnet_map.h   | 12 ----
+ .../qualcomm/rmnet/rmnet_map_command.c        | 11 +++-
+ .../ethernet/qualcomm/rmnet/rmnet_map_data.c  | 60 ++++++++---------
+ include/linux/if_rmnet.h                      | 65 +++++++++----------
+ 5 files changed, 70 insertions(+), 89 deletions(-)
+
+-- 
+2.27.0
+
