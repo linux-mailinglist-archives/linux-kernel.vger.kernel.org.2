@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DEB332FAC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0FB332FB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbhCIUNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:13:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbhCIUMu (ORCPT
+        id S231368AbhCIUPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:15:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52060 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231138AbhCIUPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:12:50 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F408C06174A;
-        Tue,  9 Mar 2021 12:12:50 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id u14so18251672wri.3;
-        Tue, 09 Mar 2021 12:12:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CFqGt3jkXZWIpeSMgqBoUJV7sayMwNCm6SroBnyaLxw=;
-        b=KC4YlFaBaLPzN/5WQuWHRRyupm9jGoq2boh5da5Bo/+Q6E62iBwwLigjgH7T7ozJv6
-         HAgCkagZAmLOdKHu3QFwI2x6vtGqarMhR5vUQhgdTNAedGhhji1+55uB/lva4woRhezx
-         DIZNWGxACL3APb2O9Ry43i1j2vSjPp/s5JctsUSTYJi8eUxSQ3Nf1CFMF1ny8hjcZDxh
-         vfsz4wzZudpZGNZSO9DOtwQanEhFmN2KrETb04BbieCagkdtMN46e7uI/xJc13Wthe9Z
-         3pN2FVkab3bLJkT0TfDv8k1ujthc9HSj3V4vH/FY87nopZcsiuvUBHpQFdhOtCPArYSg
-         sBwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CFqGt3jkXZWIpeSMgqBoUJV7sayMwNCm6SroBnyaLxw=;
-        b=r0mSGM75lUG20w9WXcWaJCd5036dz9r9v5gNBDUd2bbEbcTwNo26capzZ7yxG9nHTP
-         KKJAxnBtqA25cI+ICdv79GDiiXw1TWn4Za+RCGA3l/fhyCMKk29fMWjNDCPIWRvvMMA+
-         tvSZ7WyPWEKAt79y2NFBlWaz4PutMywm8Y5HoCVFryZe0y5QrlQzkLs/UjDpCVyedTqv
-         Z4ahqJlthCkshjiXxV8jupndWjgYklHhRhIIRCripM7GPQhwfESDxVG12sGom/0ogFRK
-         hJS3F4tDLLAyGB9AYUFtRiASHL7sJco5/iOgKOGOcXUHY9ZUr5dMjQ60FlwaLEcGk8Im
-         WChw==
-X-Gm-Message-State: AOAM532YZ4oMMmKf8SCW5UACHrkxSMOTU6cnZtvRZJ4fK+jwJAcyicjD
-        A2lWctheAXLjv7tKUqeN2TpKkDTX+3s=
-X-Google-Smtp-Source: ABdhPJwRQmBDVKHfa1Nq1G6tPhDLrHlte8cEjBeWw5umdv4Hs3H35orOUrZ6A+GWBAUVarwcjvvyUQ==
-X-Received: by 2002:a5d:5744:: with SMTP id q4mr31082584wrw.390.1615320768518;
-        Tue, 09 Mar 2021 12:12:48 -0800 (PST)
-Received: from [192.168.1.101] ([37.165.49.26])
-        by smtp.gmail.com with ESMTPSA id r11sm26965907wrm.26.2021.03.09.12.12.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 12:12:47 -0800 (PST)
-Subject: Re: [PATCH] net: add net namespace inode for all net_dev events
-To:     Tony Lu <tonylu@linux.alibaba.com>, davem@davemloft.net,
-        rostedt@goodmis.org, mingo@redhat.com,
-        Lorenz Bauer <lmb@cloudflare.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210309044349.6605-1-tonylu@linux.alibaba.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <203c49a3-6dd8-105e-e12a-0e15da0d4df7@gmail.com>
-Date:   Tue, 9 Mar 2021 21:12:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 9 Mar 2021 15:15:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615320900;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IBVKerwrOvHWwAAtnVWuANWrpDLBOHST0pPeMNmxg/Y=;
+        b=gd011kY+kP6XeHDrXerpkeEYo7wJQQPeVWnqoAG6GlBb2FeqMbuLPsUPQnJ+1iOrFc/txR
+        zUEuLJFFSsb1aPL9b1QkQGTZ1Mx6VsBSj8ESKKdlZIcdEOpSm7ioCGEUBnHb54DdeHXxLX
+        HhWmE53AeDjxgF0wH7KYw0wMcAGSrHk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-177--oWRsANsMiSdti23yJdK0A-1; Tue, 09 Mar 2021 15:14:56 -0500
+X-MC-Unique: -oWRsANsMiSdti23yJdK0A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 794271005D45;
+        Tue,  9 Mar 2021 20:14:55 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3B15A5D9DB;
+        Tue,  9 Mar 2021 20:14:50 +0000 (UTC)
+Date:   Tue, 9 Mar 2021 15:14:50 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     agk@redhat.com, dm-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: dm: remove unneeded variable 'sz'
+Message-ID: <20210309201449.GB16277@redhat.com>
+References: <1615282320-28246-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20210309044349.6605-1-tonylu@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615282320-28246-1-git-send-email-yang.lee@linux.alibaba.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 09 2021 at  4:32am -0500,
+Yang Li <yang.lee@linux.alibaba.com> wrote:
+
+> Fix the following coccicheck warning:
+> ./drivers/md/dm-ps-service-time.c:85:10-12: Unneeded variable: "sz".
+> Return "0" on line 105
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+
+This type of change gets proposed regaularly.  Would appreciate it if
+you could fix coccicheck to not get this wrong.  The local 'sz' variable
+is used by the DMEMIT macro (as the earlier reply to this email informed
+you).
+
+Also, had you tried to compile the code with your patch applied you'd
+have quickly realized your patch wasn't correct.
+
+Mike
 
 
-On 3/9/21 5:43 AM, Tony Lu wrote:
-> There are lots of net namespaces on the host runs containers like k8s.
-> It is very common to see the same interface names among different net
-> namespaces, such as eth0. It is not possible to distinguish them without
-> net namespace inode.
-> 
-> This adds net namespace inode for all net_dev events, help us
-> distinguish between different net devices.
-> 
-> Output:
->   <idle>-0       [006] ..s.   133.306989: net_dev_xmit: net_inum=4026531992 dev=eth0 skbaddr=0000000011a87c68 len=54 rc=0
-> 
-> Signed-off-by: Tony Lu <tonylu@linux.alibaba.com>
 > ---
->
-
-There was a proposal from Lorenz to use netns cookies (SO_NETNS_COOKIE) instead.
-
-They have a guarantee of being not reused.
-
-After 3d368ab87cf6681f9 ("net: initialize net->net_cookie at netns setup")
-net->net_cookie is directly available.
-
+>  drivers/md/dm-ps-service-time.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/md/dm-ps-service-time.c b/drivers/md/dm-ps-service-time.c
+> index 9cfda66..12dd5ce 100644
+> --- a/drivers/md/dm-ps-service-time.c
+> +++ b/drivers/md/dm-ps-service-time.c
+> @@ -82,7 +82,6 @@ static void st_destroy(struct path_selector *ps)
+>  static int st_status(struct path_selector *ps, struct dm_path *path,
+>  		     status_type_t type, char *result, unsigned maxlen)
+>  {
+> -	unsigned sz = 0;
+>  	struct path_info *pi;
+>  
+>  	if (!path)
+> @@ -102,7 +101,7 @@ static int st_status(struct path_selector *ps, struct dm_path *path,
+>  		}
+>  	}
+>  
+> -	return sz;
+> +	return 0;
+>  }
+>  
+>  static int st_add_path(struct path_selector *ps, struct dm_path *path,
+> -- 
+> 1.8.3.1
+> 
 
