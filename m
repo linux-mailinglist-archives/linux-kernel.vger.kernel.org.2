@@ -2,90 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CAE3327E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EADF3327E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhCIN44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 08:56:56 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:61821 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231295AbhCIN4a (ORCPT
+        id S231366AbhCIN46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 08:56:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231268AbhCIN4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 08:56:30 -0500
-Received: from fsav103.sakura.ne.jp (fsav103.sakura.ne.jp [27.133.134.230])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 129DuNVN019727;
-        Tue, 9 Mar 2021 22:56:23 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav103.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp);
- Tue, 09 Mar 2021 22:56:23 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 129DuIrh019685
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 9 Mar 2021 22:56:23 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH 4/6] usbip: fix stub_dev usbip_sockfd_store() races
- leading to gpf
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-To:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org,
-        valentina.manea.m@gmail.com, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1615171203.git.skhan@linuxfoundation.org>
- <268a0668144d5ff36ec7d87fdfa90faf583b7ccc.1615171203.git.skhan@linuxfoundation.org>
- <05aed75a-4a81-ef59-fc4f-6007f18e7839@i-love.sakura.ne.jp>
- <5df3d221-9e78-4cbe-826b-81cbfc4d5888@i-love.sakura.ne.jp>
- <3305d1a1-12e2-087b-30f5-10f4bf8eaf83@linuxfoundation.org>
- <f8f5e763-da2d-b26f-c6a5-d345bbe55448@i-love.sakura.ne.jp>
-Message-ID: <22bc31d7-b599-dc6a-2ef0-0dfc551a4715@i-love.sakura.ne.jp>
-Date:   Tue, 9 Mar 2021 22:56:17 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 9 Mar 2021 08:56:35 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3D4C061760
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 05:56:34 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id q14so20745542ljp.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 05:56:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=o0i3jTGJa4u9CMcR9i+YO5JrVEW+lDjWwY+bLaJZEas=;
+        b=H8C+IHam0T1659elztELFUMBjKc2bjIAQS8Zbp12F/CkJblv7Qlkv7cSXAjxXdqPhj
+         8BQjQOeHlSsZoikX1ouP3PWTFDTL4YoKgUldDXbP74h4y7J8Aai/vNNVDnxlI59spK+0
+         VKrbcrcZlbd4R8XDSke6RI4/vnyoJnnk+doBBAtwxribDLV8zAvT9hK+NbU3VrtjZEak
+         njLu6nGKVPO6CQ7zvQFRLKIXY0SDv9Du2xr+hWXGKnScl30Hd9sc2ENUlx/Id7tCOYNb
+         cGR8z845WwN98WKEN+EZxQXQ4NQaaSbQWRUxlD6Hstl6GH0ZBuBXvbL6ECT70OI016hS
+         Svig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=o0i3jTGJa4u9CMcR9i+YO5JrVEW+lDjWwY+bLaJZEas=;
+        b=d/1GhgKAqSv5lic+MBku2PpwU3zM4S3HTdm0rr/F4v9eUs70f7S8O8DUbEm5b5zKpU
+         Joe+kINidiQvovOugR/4Eg3NDegzHCy36pRohkxOQ3JAJaog8rot2gwU6osXg8LRt1af
+         HZ0NV7Z+JrQOfXhVhtHO1AK+wDkKuNUrmhdQH29r6H7G6tyxqIArNnQUfhcyjdD4fMIB
+         iocEfkHRH1itKHUblEIkYFgSA92gtmvu61AqivVPtv8wCE2VVn/nDCNz3/yLr7r5JNiK
+         gEwJ4S6g3r4Z+z1Ib2RLQqAgeAe1ddES3LhKGvktWriZstt8wiyNSzGyIS0jGXxL1Rik
+         8Xpg==
+X-Gm-Message-State: AOAM531wV59eWf9hbPsST7HSvglpUp917nr/bT2cSP+0qT7XI8hKwmdF
+        ieO+kuwOxxLTcYarLwrFRvxFcA==
+X-Google-Smtp-Source: ABdhPJxoCLa1Jv0fwddILa+kxRzffL1fJIB4bmpoHIelxJCUPJLNX6Ch7DK7alBQ2J0MaBJFrOO0RQ==
+X-Received: by 2002:a2e:a58f:: with SMTP id m15mr16510137ljp.400.1615298193297;
+        Tue, 09 Mar 2021 05:56:33 -0800 (PST)
+Received: from [192.168.118.216] ([85.249.43.69])
+        by smtp.gmail.com with ESMTPSA id f10sm1808622lfm.194.2021.03.09.05.56.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 05:56:32 -0800 (PST)
+Subject: Re: [PATCH v6 08/22] media: camss: Add missing format identifiers
+To:     Robert Foss <robert.foss@linaro.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, todor.too@gmail.com,
+        mchehab@kernel.org, robh+dt@kernel.org,
+        angelogioacchino.delregno@somainline.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonathan Marek <jonathan@marek.ca>
+References: <20210304120326.153966-1-robert.foss@linaro.org>
+ <20210304120326.153966-9-robert.foss@linaro.org>
+From:   Andrey Konovalov <andrey.konovalov@linaro.org>
+Message-ID: <879d57a4-1187-a32c-7902-9ca7e9910c44@linaro.org>
+Date:   Tue, 9 Mar 2021 16:56:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <f8f5e763-da2d-b26f-c6a5-d345bbe55448@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210304120326.153966-9-robert.foss@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/03/09 20:04, Tetsuo Handa wrote:
-> On 2021/03/09 1:27, Shuah Khan wrote:
->> Yes. We might need synchronization between events, threads, and shutdown
->> in usbip_host side and in connection polling and threads in vhci.
->>
->> I am also looking at the shutdown sequences closely as well since the
->> local state is referenced without usbip_device lock in these paths.
->>
->> I am approaching these problems as peeling the onion an expression so
->> we can limit the changes and take a spot fix approach. We have the
->> goal to address these crashes and not introduce regressions.
+Hi Robert,
+
+Thank you for your patch!
+
+On 04.03.2021 15:03, Robert Foss wrote:
+> The CSI-2 spec defines format identifier for Data Type (DT),
+> and how the Decode Format (DF) & Encode Format (EF) are implemented.
+> The spec does however not define the DF, EF or Plain Format (PF)
+> identifiers, as those are vendor specific.
 > 
-> I think my [PATCH v4 01/12]-[PATCH v4 06/12] simplify your further changes
-> without introducing regressions. While ud->lock is held when checking ud->status,
-> current attach/detach code is racy about read/update of ud->status . I think we
-> can close race in attach/detach code via a simple usbip_event_mutex serialization.
+> Plain formats describe the size of the pixels written by the RDI
+> units to memory. PLAIN8 for example has the size 8 bits, and
+> PLAIN32 32 bits. The appropriate Plain Format is determined by
+> the Decode Format used. The smallest Plain Format that is able
+> to contain a pixel of the used Decode Format is the appropriate
+> one to use.
 > 
+> As the vendor specific identifiers differ between hardware
+> generations, split them out into separate headers.
+> 
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
 
-Commit 04679b3489e048cd ("Staging: USB/IP: add client driver") says
+Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
 
-  /*
-   * The important thing is that only one context begins cleanup.
-   * This is why error handling and cleanup become simple.
-   * We do not want to consider race condition as possible.
-   */
-  static void vhci_shutdown_connection(struct usbip_device *ud)
+Thanks,
+Andrey
 
-but why are we allowing multiple contexts to begin startup?
-That's where a subtle race window syzbot is reporting happened.
-This driver has never thought the possibility that multiple userspace
-processes can concurrently begin startup. Then, it is quite natural that
-we make startup simple and safe, by enforcing that only one context
-begins startup.
-
-Without serialization between startup/cleanup/event_handler(),
-"Fix the above problems:" in your changelog cannot become true.
-First step should be closing time-of-check to time-of-use bug
-via entire serialization as if "nonpreemptible UP kernel".
+> ---
+> 
+> Changes since v5
+>   - Andrey: Gen 1 & Gen2 devices have different decode/encode/plain
+>             format definitions, list in separate headers
+>   - Andrey: Make commit msg more clear about what is in MIPI spec or not
+> 
+> 
+>   .../platform/qcom/camss/camss-csid-gen1.h     | 27 +++++++++++++
+>   .../platform/qcom/camss/camss-csid-gen2.h     | 39 +++++++++++++++++++
+>   .../media/platform/qcom/camss/camss-csid.c    | 20 ++--------
+>   .../media/platform/qcom/camss/camss-csid.h    | 24 ++++++++++++
+>   4 files changed, 94 insertions(+), 16 deletions(-)
+>   create mode 100644 drivers/media/platform/qcom/camss/camss-csid-gen1.h
+>   create mode 100644 drivers/media/platform/qcom/camss/camss-csid-gen2.h
+> 
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid-gen1.h b/drivers/media/platform/qcom/camss/camss-csid-gen1.h
+> new file mode 100644
+> index 000000000000..80a2bc6efff6
+> --- /dev/null
+> +++ b/drivers/media/platform/qcom/camss/camss-csid-gen1.h
+> @@ -0,0 +1,27 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * camss-csid-gen1.h
+> + *
+> + * Qualcomm MSM Camera Subsystem - CSID (CSI Decoder) Module Generation 1
+> + *
+> + * Copyright (C) 2021 Linaro Ltd.
+> + */
+> +#ifndef QC_MSM_CAMSS_CSID_GEN1_H
+> +#define QC_MSM_CAMSS_CSID_GEN1_H
+> +
+> +#define DECODE_FORMAT_UNCOMPRESSED_6_BIT	0x0
+> +#define DECODE_FORMAT_UNCOMPRESSED_8_BIT	0x1
+> +#define DECODE_FORMAT_UNCOMPRESSED_10_BIT	0x2
+> +#define DECODE_FORMAT_UNCOMPRESSED_12_BIT	0x3
+> +#define DECODE_FORMAT_DPCM_10_6_10		0x4
+> +#define DECODE_FORMAT_DPCM_10_8_10		0x5
+> +#define DECODE_FORMAT_DPCM_12_6_12		0x6
+> +#define DECODE_FORMAT_DPCM_12_8_12		0x7
+> +#define DECODE_FORMAT_UNCOMPRESSED_14_BIT	0x8
+> +#define DECODE_FORMAT_DPCM_14_8_14		0x9
+> +#define DECODE_FORMAT_DPCM_14_10_14		0xa
+> +
+> +#define PLAIN_FORMAT_PLAIN8	0x0 /* supports DPCM, UNCOMPRESSED_6/8_BIT */
+> +#define PLAIN_FORMAT_PLAIN16	0x1 /* supports DPCM, UNCOMPRESSED_10/16_BIT */
+> +
+> +#endif /* QC_MSM_CAMSS_CSID_GEN1_H */
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid-gen2.h b/drivers/media/platform/qcom/camss/camss-csid-gen2.h
+> new file mode 100644
+> index 000000000000..3a8ad001b3e8
+> --- /dev/null
+> +++ b/drivers/media/platform/qcom/camss/camss-csid-gen2.h
+> @@ -0,0 +1,39 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * camss-csid-gen1.h
+> + *
+> + * Qualcomm MSM Camera Subsystem - CSID (CSI Decoder) Module Generation 1
+> + *
+> + * Copyright (C) 2021 Linaro Ltd.
+> + */
+> +#ifndef QC_MSM_CAMSS_CSID_GEN2_H
+> +#define QC_MSM_CAMSS_CSID_GEN2_H
+> +
+> +#define DECODE_FORMAT_UNCOMPRESSED_6_BIT	0x0
+> +#define DECODE_FORMAT_UNCOMPRESSED_8_BIT	0x1
+> +#define DECODE_FORMAT_UNCOMPRESSED_10_BIT	0x2
+> +#define DECODE_FORMAT_UNCOMPRESSED_12_BIT	0x3
+> +#define DECODE_FORMAT_UNCOMPRESSED_14_BIT	0x4
+> +#define DECODE_FORMAT_UNCOMPRESSED_16_BIT	0x5
+> +#define DECODE_FORMAT_UNCOMPRESSED_20_BIT	0x6
+> +#define DECODE_FORMAT_DPCM_10_6_10		0x7
+> +#define DECODE_FORMAT_DPCM_10_8_10		0x8
+> +#define DECODE_FORMAT_DPCM_12_6_12		0x9
+> +#define DECODE_FORMAT_DPCM_12_8_12		0xa
+> +#define DECODE_FORMAT_DPCM_14_8_14		0xb
+> +#define DECODE_FORMAT_DPCM_14_10_14		0xc
+> +#define DECODE_FORMAT_DPCM_12_10_12		0xd
+> +#define DECODE_FORMAT_USER_DEFINED		0xe
+> +#define DECODE_FORMAT_PAYLOAD_ONLY		0xf
+> +
+> +#define ENCODE_FORMAT_RAW_8_BIT		0x1
+> +#define ENCODE_FORMAT_RAW_10_BIT	0x2
+> +#define ENCODE_FORMAT_RAW_12_BIT	0x3
+> +#define ENCODE_FORMAT_RAW_14_BIT	0x4
+> +#define ENCODE_FORMAT_RAW_16_BIT	0x5
+> +
+> +#define PLAIN_FORMAT_PLAIN8	0x0 /* supports DPCM, UNCOMPRESSED_6/8_BIT */
+> +#define PLAIN_FORMAT_PLAIN16	0x1 /* supports DPCM, UNCOMPRESSED_10/16_BIT */
+> +#define PLAIN_FORMAT_PLAIN32	0x2 /* supports UNCOMPRESSED_20_BIT */
+> +
+> +#endif /* QC_MSM_CAMSS_CSID_GEN2_H */
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
+> index be3fe76f3dc3..697b51d6ad38 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csid.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csid.c
+> @@ -22,6 +22,7 @@
+>   #include <media/v4l2-subdev.h>
+>   
+>   #include "camss-csid.h"
+> +#include "camss-csid-gen1.h"
+>   #include "camss.h"
+>   
+>   #define MSM_CSID_NAME "msm_csid"
+> @@ -37,8 +38,8 @@
+>   #define CAMSS_CSID_CID_n_CFG_ISPIF_EN	BIT(0)
+>   #define CAMSS_CSID_CID_n_CFG_RDI_EN	BIT(1)
+>   #define CAMSS_CSID_CID_n_CFG_DECODE_FORMAT_SHIFT	4
+> -#define CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_8		(0 << 8)
+> -#define CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_16		(1 << 8)
+> +#define CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_8		(PLAIN_FORMAT_PLAIN8 << 8)
+> +#define CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_16		(PLAIN_FORMAT_PLAIN16 << 8)
+>   #define CAMSS_CSID_CID_n_CFG_PLAIN_ALIGNMENT_LSB	(0 << 9)
+>   #define CAMSS_CSID_CID_n_CFG_PLAIN_ALIGNMENT_MSB	(1 << 9)
+>   #define CAMSS_CSID_CID_n_CFG_RDI_MODE_RAW_DUMP		(0 << 10)
+> @@ -59,22 +60,9 @@
+>   #define CAMSS_CSID_TG_DT_n_CGG_2(v, n)	\
+>   			(((v) == CAMSS_8x16 ? 0x0b4 : 0x0bc) + 0xc * (n))
+>   
+> -#define DATA_TYPE_EMBEDDED_DATA_8BIT	0x12
+> -#define DATA_TYPE_YUV422_8BIT		0x1e
+> -#define DATA_TYPE_RAW_6BIT		0x28
+> -#define DATA_TYPE_RAW_8BIT		0x2a
+> -#define DATA_TYPE_RAW_10BIT		0x2b
+> -#define DATA_TYPE_RAW_12BIT		0x2c
+> -#define DATA_TYPE_RAW_14BIT		0x2d
+> -
+> -#define DECODE_FORMAT_UNCOMPRESSED_6_BIT	0x0
+> -#define DECODE_FORMAT_UNCOMPRESSED_8_BIT	0x1
+> -#define DECODE_FORMAT_UNCOMPRESSED_10_BIT	0x2
+> -#define DECODE_FORMAT_UNCOMPRESSED_12_BIT	0x3
+> -#define DECODE_FORMAT_UNCOMPRESSED_14_BIT	0x8
+> -
+>   #define CSID_RESET_TIMEOUT_MS 500
+>   
+> +
+>   struct csid_format {
+>   	u32 code;
+>   	u8 data_type;
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
+> index 1824b3745e10..318c19bb26c9 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csid.h
+> +++ b/drivers/media/platform/qcom/camss/camss-csid.h
+> @@ -21,6 +21,30 @@
+>   #define MSM_CSID_PAD_SRC 1
+>   #define MSM_CSID_PADS_NUM 2
+>   
+> +#define DATA_TYPE_EMBEDDED_DATA_8BIT	0x12
+> +#define DATA_TYPE_YUV420_8BIT		0x18
+> +#define DATA_TYPE_YUV420_10BIT		0x19
+> +#define DATA_TYPE_YUV420_8BIT_LEGACY	0x1a
+> +#define DATA_TYPE_YUV420_8BIT_SHIFTED	0x1c /* Chroma Shifted Pixel Sampling */
+> +#define DATA_TYPE_YUV420_10BIT_SHIFTED	0x1d /* Chroma Shifted Pixel Sampling */
+> +#define DATA_TYPE_YUV422_8BIT		0x1e
+> +#define DATA_TYPE_YUV422_10BIT		0x1f
+> +#define DATA_TYPE_RGB444		0x20
+> +#define DATA_TYPE_RGB555		0x21
+> +#define DATA_TYPE_RGB565		0x22
+> +#define DATA_TYPE_RGB666		0x23
+> +#define DATA_TYPE_RGB888		0x24
+> +#define DATA_TYPE_RAW_24BIT		0x27
+> +#define DATA_TYPE_RAW_6BIT		0x28
+> +#define DATA_TYPE_RAW_7BIT		0x29
+> +#define DATA_TYPE_RAW_8BIT		0x2a
+> +#define DATA_TYPE_RAW_10BIT		0x2b
+> +#define DATA_TYPE_RAW_12BIT		0x2c
+> +#define DATA_TYPE_RAW_14BIT		0x2d
+> +#define DATA_TYPE_RAW_16BIT		0x2e
+> +#define DATA_TYPE_RAW_20BIT		0x2f
+> +
+> +
+>   enum csid_payload_mode {
+>   	CSID_PAYLOAD_MODE_INCREMENTING = 0,
+>   	CSID_PAYLOAD_MODE_ALTERNATING_55_AA = 1,
+> 
