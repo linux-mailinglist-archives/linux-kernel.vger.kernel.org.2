@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F79E331DE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B0E331DE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhCIE2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 23:28:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
+        id S229917AbhCIEbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 23:31:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbhCIE2N (ORCPT
+        with ESMTP id S229775AbhCIEb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 23:28:13 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA355C061760
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 20:28:12 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id a188so8644080pfb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 20:28:12 -0800 (PST)
+        Mon, 8 Mar 2021 23:31:26 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158B3C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 20:31:24 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id o10so7911360pgg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 20:31:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=B+8YOxcfUeJ6df3e8CyV/VT9IvcELWSikbdkoM3b6Ug=;
-        b=WPQTHGnSeREz9wSvHz9r2PrjIKMMEsp2yhjGN3B/a/X0/KqBnUNKB/YUejoBWSnPph
-         ZAn8jlYWvfHr3LGNSSUXIspLawzHepuruNXmTdqcvG81J++aulzAoyHuQ5RY7PMClzQ9
-         RvKxmf9JhuAYeCtd2JLVA+B8+AykXOjYoCrkGEwcJRjd8y89IaTKuXG4Ieo7aZIhremy
-         nD0czU60gNDUv92hVYvqxb/8f0H8pg1Ccq43PVnWbeqF8oFoG/dXK1Ebk44IDS4coatb
-         Vc3b8v2jgU3hTIC4AztvqPODlan1X18N8QJZSz+Sp8xsussgSNIE0rO4obq/a6jd8Nat
-         KOWQ==
+        bh=hBH1FhllMri9rF1DT2YCV1l2bm6F2LmMgOalJdMipVk=;
+        b=KxOCdGXTa4LyL7Ri2mhWnB7ZCFqadqIs1Z9R/blMomYa723ZnPP4j3Zdgzzuy0Fm4G
+         3K6c4g0mdmk8cOI0qPt9yu0GNZewSy5Cu3GXwgs8ZXaeNeItkPAbASYeGvxcqgM1v6hC
+         Qw0UYd8Okj05Ev3EdeFg+rk0mHd8NqVdU/Rb217s26xCQU13u5Vwayw5Qrkka2KanpCI
+         7RYOgHm5tKQZZWsLSOM/HbxyVn+WZ5kxTyLXKeddYMoKBtgNw+ZoeidFSHKpO/CerZGB
+         cgCWUW+xzYzTyJCNlCclO/IZ0SmKQbJ4nq89p1g/+T8yzkGJ5oxONrOE/bXOdpZpPpat
+         eHSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=B+8YOxcfUeJ6df3e8CyV/VT9IvcELWSikbdkoM3b6Ug=;
-        b=CU9iQkqAqZ2Bd9ygcS1CLPiBKYr6Zcck0lvQ33Oswvld9IYzg7TKbKZV2TcDa5XwHZ
-         BmePpKzuaMgkS0krdqMDYU9v0cPaYjKCjsAjEI0XAFzuvFcOLc3buKi+rLOTyrK8CVHR
-         fsOvgqVOUSk0Ms3bvGassCO0zxXT8YWVra80vxmuQzKRi1ZyjHDTd2q9cTPcCcTBPxKh
-         dz8hhdJMq/FftxutV854/+sOjuch9pUR73uVSmzDBu5R6CJj6dXko7j6HPN9KQPNCUXa
-         wfLLiTV5ks/vM0fplsJM1uXVPgP5jWI9p9wKUIdb1zM3HDBW9Zp2yjawYE3Tahuwf/TG
-         F1pg==
-X-Gm-Message-State: AOAM530C72ZadeiwpOTIXeuQWyKMUOUpaMNSk9Ocf5KVwoSVLNWKxj8O
-        y5g+YI2sovaqHMB2G+hBVJe6Ow==
-X-Google-Smtp-Source: ABdhPJxLhPHdVshVOVKrFuQWBus/qDOL4qzrr0c6GqxPCA+N0GE32fx4ze30gezz4TNI4bi2Zd3iNg==
-X-Received: by 2002:a63:4d4e:: with SMTP id n14mr23409013pgl.37.1615264092034;
-        Mon, 08 Mar 2021 20:28:12 -0800 (PST)
+        bh=hBH1FhllMri9rF1DT2YCV1l2bm6F2LmMgOalJdMipVk=;
+        b=JaW5hg/MBOzSHLItF+M+R0ttRstxgxOvAZX+6DmCVKFHDhaBZmUKI64J1sHQMBSOGO
+         CppoEAimt370V6XDjIwsdktFaANNG2J/r2Qwciqu7JPfXV0Mh8UTZTsHPDpWonVKTq4T
+         IMF32B71LjCjk+aWXBWYuEvQUC2HzA2uhgXejHqlHQqdcgczbCsBgpmaDJCPCEQf9caA
+         wLzBv+M1LkSdwTY+omETARHZP5qEXiJGgw17p2enctR6clHjbtbwL8SqKmiX9FGHPlBE
+         fbbdznPQq4P9bzcUTBZREwUEXy2IbH2sUsHmMs/uSeNx/geiYdmFh5ntUB/XfdM8b4oG
+         6W7w==
+X-Gm-Message-State: AOAM531JT/7vZBaVZ+5Q1zq3tYqE6su723gHivn5HJzip0oROQOI00VI
+        mZEgxuyXkrP26HRI41M8fv4aiLbYBXsDFw==
+X-Google-Smtp-Source: ABdhPJwQmLKlgimkdb9kzioPgIPReBuxOw9qT+ShYO30OhonzCs43kZCaxEFopYaO45cJYeKeraRew==
+X-Received: by 2002:a62:76c5:0:b029:1f2:e6af:e2ab with SMTP id r188-20020a6276c50000b02901f2e6afe2abmr13112685pfc.10.1615264283568;
+        Mon, 08 Mar 2021 20:31:23 -0800 (PST)
 Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id g2sm11719102pfi.28.2021.03.08.20.28.10
+        by smtp.gmail.com with ESMTPSA id y20sm11533912pfo.210.2021.03.08.20.31.22
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Mar 2021 20:28:11 -0800 (PST)
-Date:   Tue, 9 Mar 2021 09:58:09 +0530
+        Mon, 08 Mar 2021 20:31:22 -0800 (PST)
+Date:   Tue, 9 Mar 2021 10:01:21 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
-        linux-tegra@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        broonie@kernel.org, gregkh@linuxfoundation.org, elder@kernel.org,
-        johan@kernel.org, vireshk@kernel.org, rmfrfs@gmail.com,
-        f.fainelli@gmail.com, ldewangan@nvidia.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, linux@deviqon.com
-Subject: Re: [PATCH 06/10] staging: greybus: spilib: use 'spi_delay_to_ns'
- for getting xfer delay
-Message-ID: <20210309042809.dgop5dli36z27sj2@vireshk-i7>
-References: <20210308145502.1075689-1-aardelean@deviqon.com>
- <20210308145502.1075689-7-aardelean@deviqon.com>
+To:     Beata Michalska <beata.michalska@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org
+Subject: Re: [PATCH] opp: Invalidate current opp when draining the opp list
+Message-ID: <20210309043121.546mlvl4jmshogor@vireshk-i7>
+References: <1614870454-18709-1-git-send-email-beata.michalska@arm.com>
+ <20210305042401.gktrgach4dzxp7on@vireshk-i7>
+ <418fc3cb-d5ec-9216-269a-e055e78718e5@arm.com>
+ <20210308115053.ua2gfo6kfnfjslyd@vireshk-i7>
+ <20210308181446.GA26783@e120325.cambridge.arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308145502.1075689-7-aardelean@deviqon.com>
+In-Reply-To: <20210308181446.GA26783@e120325.cambridge.arm.com>
 User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-03-21, 16:54, Alexandru Ardelean wrote:
-> The intent is the removal of the 'delay_usecs' field from the
-> spi_transfer struct, as there is a 'delay' field that does the same
-> thing.
-> 
-> The spi_delay_to_ns() can be used to get the transfer delay. It works by
-> using the 'delay_usecs' field first (if it is non-zero), and finally
-> uses the 'delay' field.
-> 
-> Since the 'delay_usecs' field is going away, this change makes use of the
-> spi_delay_to_ns() function. This also means dividing the return value of
-> the function by 1000, to convert it to microseconds.
-> To prevent any potential faults when converting to microseconds and since
-> the result of spi_delay_to_ns() is int, the delay is being computed in 32
-> bits and then clamped between 0 & U16_MAX.
-> 
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-> ---
->  drivers/staging/greybus/spilib.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/greybus/spilib.c b/drivers/staging/greybus/spilib.c
-> index 672d540d3365..30655153df6a 100644
-> --- a/drivers/staging/greybus/spilib.c
-> +++ b/drivers/staging/greybus/spilib.c
-> @@ -245,6 +245,7 @@ static struct gb_operation *gb_spi_operation_create(struct gb_spilib *spi,
->  	/* Fill in the transfers array */
->  	xfer = spi->first_xfer;
->  	while (msg->state != GB_SPI_STATE_OP_DONE) {
-> +		int xfer_delay;
->  		if (xfer == spi->last_xfer)
->  			xfer_len = spi->last_xfer_size;
->  		else
-> @@ -259,7 +260,9 @@ static struct gb_operation *gb_spi_operation_create(struct gb_spilib *spi,
->  
->  		gb_xfer->speed_hz = cpu_to_le32(xfer->speed_hz);
->  		gb_xfer->len = cpu_to_le32(xfer_len);
-> -		gb_xfer->delay_usecs = cpu_to_le16(xfer->delay_usecs);
-> +		xfer_delay = spi_delay_to_ns(&xfer->delay, xfer) / 1000;
-> +		xfer_delay = clamp_t(u16, xfer_delay, 0, U16_MAX);
-> +		gb_xfer->delay_usecs = cpu_to_le16(xfer_delay);
->  		gb_xfer->cs_change = xfer->cs_change;
->  		gb_xfer->bits_per_word = xfer->bits_per_word;
+On 08-03-21, 18:14, Beata Michalska wrote:
+> > -bool _opp_remove_all_static(struct opp_table *opp_table)
+> > +/*
+> > + * Can't remove the OPP from under the lock, debugfs removal needs to happen
+> > + * lock less to avoid circular dependency issues. This must be called without
+> > + * the opp_table->lock held.
+> > + */
+> > +static int _opp_drain_list(struct opp_table *opp_table, bool dynamic)
+> >  {
+> > -	struct dev_pm_opp *opp;
+> > +	struct dev_pm_opp *opp, *current_opp = NULL;
+> > +	int count = 0;
+> > +
+> > +	while ((opp = _opp_get_next(opp_table, dynamic))) {
+> > +		if (opp_table->current_opp == opp) {
+> > +			/*
+> > +			 * Reached at current OPP twice, no other OPPs left. The
+> > +			 * last reference to current_opp is dropped from
+> > +			 * _opp_table_kref_release().
+> > +			 */
+> > +			if (current_opp)
+> > +				break;
+> > +
+> > +			current_opp = opp;
+> > +		}
+> Having a quick look at the code ...
+> Shouldn't the current_opp be moved at the end of the list ?
+> Otherwise there is a risk of leaving unreferenced opps (and opp_table).
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+How exactly ? Note that it is expected that the OPP table isn't being
+used by anyone anymore at this point and all the users went away.
+
+> Might be also worth adding warning (?)
+> 
+>     WARN_ONCE(!list_is_singular())
+
+It is allowed for the list to contain both static and dynamic OPPs,
+and so the list may have more OPPs here.
 
 -- 
 viresh
