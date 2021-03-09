@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CC3332F50
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33459332F58
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhCITvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 14:51:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbhCITuy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:50:54 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037F8C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 11:50:43 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id f20so15248773ioo.10
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 11:50:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=s4S8/+/ShE6kjbQJvDKz3qw4bMkp0nOrlz4OJ6atpPo=;
-        b=brHTK+bpVwVqvkjz6Ihcl1pRXYVgX+aShYtWFnIis/UUQ6rJdQOCxVo4j/BUMf2wQc
-         QtNq4xgOXkxTZb7u8uK22Y+NSdA9+RpYaav0Yh9kvhtveD5HO/WWRg1sfc+m/za4qShF
-         hKEbY1YXlwaKoIYOTBUU9Tmr2mJ9X02DX2Lw4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=s4S8/+/ShE6kjbQJvDKz3qw4bMkp0nOrlz4OJ6atpPo=;
-        b=ciLP3G6tEs4fYfM/U8T3k2QIoFqJN7Sw2b1dCtQZwAOiM2rhmTOEqJhVB+gRqiqNh/
-         56tOvUY74r2GJi4u5hSo5JH3bGmJQhoqAFXITronL770dg16b5i7cNk3ovP6Yv15fcTh
-         MaMWvOeuKDmaHKHbA4ADNd7hbWmMW7pBqWVxwXg8UL2xN5zoIsaa5DSS+ZVxVgSgVHRz
-         vNvOx165MCU3zeZbK2XqRLrdu86QKRjKe0HpKm+4f4uBHCc4ZZQjma+a4yCl3msny2RP
-         azyZRjTGVhq0iBpPnkyQwPhR2zAzLAqcdzCD2pwqwY0etaIwGzPnCVPLhXNOsFrICUOX
-         dR6g==
-X-Gm-Message-State: AOAM530PeqtqLTIc7ITESwna5BEg9lZTyi/SDqFFrhgKBhbsWrKTf57N
-        1rmq54nCUcQWw2Xl8A0eQaVQxg==
-X-Google-Smtp-Source: ABdhPJy65Q596qcb6e0PepIhXZafRRXfsEfQveMLO0xDgBWnvZWM59tXqEJZfFh5v6iTU1c3qfyRjQ==
-X-Received: by 2002:a02:6654:: with SMTP id l20mr5506243jaf.55.1615319442445;
-        Tue, 09 Mar 2021 11:50:42 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id x16sm8170308ilp.44.2021.03.09.11.50.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 11:50:42 -0800 (PST)
-Subject: Re: [PATCH 4/6] usbip: fix stub_dev usbip_sockfd_store() races
- leading to gpf
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        shuah@kernel.org, valentina.manea.m@gmail.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1615171203.git.skhan@linuxfoundation.org>
- <268a0668144d5ff36ec7d87fdfa90faf583b7ccc.1615171203.git.skhan@linuxfoundation.org>
- <05aed75a-4a81-ef59-fc4f-6007f18e7839@i-love.sakura.ne.jp>
- <5df3d221-9e78-4cbe-826b-81cbfc4d5888@i-love.sakura.ne.jp>
- <3305d1a1-12e2-087b-30f5-10f4bf8eaf83@linuxfoundation.org>
- <f8f5e763-da2d-b26f-c6a5-d345bbe55448@i-love.sakura.ne.jp>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <30a1afb2-d5a4-40b2-385d-24a2bf110e92@linuxfoundation.org>
-Date:   Tue, 9 Mar 2021 12:50:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231508AbhCITxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:53:31 -0500
+Received: from mga04.intel.com ([192.55.52.120]:27908 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231226AbhCITxT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 14:53:19 -0500
+IronPort-SDR: O7fZc3WAGbR1aLmHX5Yd0VT4LoZESm+hqQ+DetHZqtt2T0L3VgzZQ/LGUSorKZIvVYLOToLVrH
+ VeqToUAkutqg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="185930765"
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="185930765"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 11:53:15 -0800
+IronPort-SDR: 99KnkdsPI3XGfCvZxQLKpQPf4ENJOvLLejFEbLjPQVr5NDnZyom0YTZ8WLbN6rPHP26dlmHEDs
+ UtHc903WTmAw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
+   d="scan'208";a="588560712"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga005.jf.intel.com with ESMTP; 09 Mar 2021 11:53:14 -0800
+Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
+        by linux.intel.com (Postfix) with ESMTP id 57E3858088F;
+        Tue,  9 Mar 2021 11:53:14 -0800 (PST)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     lee.jones@linaro.org, hdegoede@redhat.com, mgross@linux.intel.com
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: [PATCH V3 1/2] MFD: intel_pmt: Fix nuisance messages and handling of disabled capabilities
+Date:   Tue,  9 Mar 2021 11:52:33 -0800
+Message-Id: <20210309195234.2400678-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210309181309.GU4931@dell>
+References: <20210309181309.GU4931@dell>
 MIME-Version: 1.0
-In-Reply-To: <f8f5e763-da2d-b26f-c6a5-d345bbe55448@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 4:04 AM, Tetsuo Handa wrote:
-> On 2021/03/09 1:27, Shuah Khan wrote:
->> Yes. We might need synchronization between events, threads, and shutdown
->> in usbip_host side and in connection polling and threads in vhci.
->>
->> I am also looking at the shutdown sequences closely as well since the
->> local state is referenced without usbip_device lock in these paths.
->>
->> I am approaching these problems as peeling the onion an expression so
->> we can limit the changes and take a spot fix approach. We have the
->> goal to address these crashes and not introduce regressions.
-> 
-> I think my [PATCH v4 01/12]-[PATCH v4 06/12] simplify your further changes
-> without introducing regressions. While ud->lock is held when checking ud->status,
-> current attach/detach code is racy about read/update of ud->status . I think we
-> can close race in attach/detach code via a simple usbip_event_mutex serialization.
-> 
+Some products will be available that have PMT capabilities that are not
+supported. Remove the warnings in this instance to avoid nuisance messages
+and confusion.
 
-Do you mean patches 1,2,3,3,4,5,6?
+Also return an error code for capabilities that are disabled by quirk to
+prevent them from keeping the driver loaded if only disabled capabilities
+are found.
 
-thanks,
--- Shuah
+Fixes: 4f8217d5b0ca ("mfd: Intel Platform Monitoring Technology support")
+Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+---
+
+No change from V2
+
+ drivers/mfd/intel_pmt.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
+index 744b230cdcca..65da2b17a204 100644
+--- a/drivers/mfd/intel_pmt.c
++++ b/drivers/mfd/intel_pmt.c
+@@ -79,19 +79,18 @@ static int pmt_add_dev(struct pci_dev *pdev, struct intel_dvsec_header *header,
+ 	case DVSEC_INTEL_ID_WATCHER:
+ 		if (quirks & PMT_QUIRK_NO_WATCHER) {
+ 			dev_info(dev, "Watcher not supported\n");
+-			return 0;
++			return -EINVAL;
+ 		}
+ 		name = "pmt_watcher";
+ 		break;
+ 	case DVSEC_INTEL_ID_CRASHLOG:
+ 		if (quirks & PMT_QUIRK_NO_CRASHLOG) {
+ 			dev_info(dev, "Crashlog not supported\n");
+-			return 0;
++			return -EINVAL;
+ 		}
+ 		name = "pmt_crashlog";
+ 		break;
+ 	default:
+-		dev_err(dev, "Unrecognized PMT capability: %d\n", id);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -174,12 +173,8 @@ static int pmt_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		header.offset = INTEL_DVSEC_TABLE_OFFSET(table);
+ 
+ 		ret = pmt_add_dev(pdev, &header, quirks);
+-		if (ret) {
+-			dev_warn(&pdev->dev,
+-				 "Failed to add device for DVSEC id %d\n",
+-				 header.id);
++		if (ret)
+ 			continue;
+-		}
+ 
+ 		found_devices = true;
+ 	} while (true);
+
+base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
+-- 
+2.25.1
+
