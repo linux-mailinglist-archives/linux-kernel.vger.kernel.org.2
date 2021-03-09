@@ -2,123 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36CC332B0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A04BC332B0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbhCIPvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:51:23 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:48196 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbhCIPvD (ORCPT
+        id S231239AbhCIPyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:54:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230449AbhCIPxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:51:03 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 129FovTR075264;
-        Tue, 9 Mar 2021 09:50:57 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615305057;
-        bh=f6ZNtjDoKQyQddsQ9O3LGJGZKVZq4b7dQx6K3P+l204=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=pKpdBDpKWXkXBBD2GEc0sepgfNBNPOS9DO6GifIFCRKUA8pPBkans0eHDumwlCJhR
-         A68x3KkwaPA7Xo2jOE7rV0IBRvcGCFC1ci6Nc/Muty3eq1BIF9PHiKqpp9qMrVA0on
-         gVZiDr2Za+RjtUNfO4VftVwcrgM5ciX2kYDOvDOc=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 129FovbH031419
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 9 Mar 2021 09:50:57 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 9 Mar
- 2021 09:50:56 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 9 Mar 2021 09:50:56 -0600
-Received: from [10.250.232.169] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 129FoqJN005180;
-        Tue, 9 Mar 2021 09:50:53 -0600
-Subject: Re: [PATCH v2 0/2] AM64: Add support for GPIO
-To:     Nishanth Menon <nm@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210304112924.12470-1-a-govindraju@ti.com>
- <20210309144333.6ko6olztldslj3fo@paralegal>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <9ba5e86d-7a60-a35b-0fb4-ddc3052eecee@ti.com>
-Date:   Tue, 9 Mar 2021 21:20:51 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 9 Mar 2021 10:53:43 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CBBC06174A;
+        Tue,  9 Mar 2021 07:53:43 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso5427531pjb.3;
+        Tue, 09 Mar 2021 07:53:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XTQS0aC3ey6iJ5CioVwvjyd2BBYlfManBKXsa0QRx38=;
+        b=N2VU1bE2NI0JllfDLBDTjxn6GpHBmKr1208qsPb2633LxmyDpjKeFG87S8ZLoXw5W1
+         NeOErweovjja04p9BUE1j+U8LlD1JXTQdZn0EWbl72ZsyM2LLkjLNUw+vLn63kOupDbn
+         cH/HjFSRLdUJz8dALKkOjrZJVSiV6f2W7NNEABSEYeinPNDM9gC8kMLQ8YdFHCInNbBI
+         voIpfXkrPj/UNndN6u0ODW7XJzKvboiDwzJeC9bMtlseMOByOXif50B4cCVRLaksPSfB
+         MPQ29b9kC6vls/8UDDf4OVMl4TN6r6KQjmaIMXyso8vO6cBvr1uuS/UVgv7ugSHk+mUe
+         aA1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XTQS0aC3ey6iJ5CioVwvjyd2BBYlfManBKXsa0QRx38=;
+        b=Ma8enpBRHGTtOWpxuEWS6ITVS2LQEQVunYrQRXbFUTV5sabfjnqPtpvXsw0A4oLNl+
+         U78vu5hd23WgDmDUC621SsBiMwlELPGTIBxJPV7HussPi08OrGekZhR+2GDpBxNxNIKp
+         w5y2R+mHkUV+3sgNsO6hcZdZS+ahP2JTQlseBTkSf2NDmdnCgoH0GWeOjv4fGUmGNqLk
+         RmemWaO6CcRWFGnYkH4uUB4qcFVL7xILLfrL6jp0CsPv9u/L9Y/XYO5C5Tf6vTPg3ADU
+         JocZ2/hLtvwNmrJwajdD+lO1WQtvTfrzLXi4hPh3x8JAOMU5f9Q7kbB9xZmR0vnLBPBx
+         whcg==
+X-Gm-Message-State: AOAM533g6LGHfhaitaUcJ5Y17NNCIfkbFLoXVXFwS8MZRcPD54/HfuIF
+        XrW1jE39OIfsKMMqVBlGy1w=
+X-Google-Smtp-Source: ABdhPJwSX8n16QaBIIKFvWEyLq3CvrFuMfoFjsnbbRN31EnAPKwunPWxeewBvXTHkj6XyqkVrEdwIA==
+X-Received: by 2002:a17:90b:344c:: with SMTP id lj12mr5490610pjb.208.1615305222453;
+        Tue, 09 Mar 2021 07:53:42 -0800 (PST)
+Received: from [172.30.1.19] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id x9sm3313983pjp.29.2021.03.09.07.53.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 07:53:41 -0800 (PST)
+Subject: Re: [PATCH 05/11] PM / devfreq: use more accurate returned new_freq
+ as resume_freq
+To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     dongas86@gmail.com, kernel@pengutronix.de, shawnguo@kernel.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        cw00.choi@samsung.com, abel.vesa@nxp.com
+References: <1615294733-22761-1-git-send-email-aisheng.dong@nxp.com>
+ <1615294733-22761-6-git-send-email-aisheng.dong@nxp.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <83240e9d-383a-74a9-3222-68cf42d3d0e1@gmail.com>
+Date:   Wed, 10 Mar 2021 00:53:35 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210309144333.6ko6olztldslj3fo@paralegal>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <1615294733-22761-6-git-send-email-aisheng.dong@nxp.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nishanth,
-
-On 09/03/21 8:13 pm, Nishanth Menon wrote:
-> On 16:59-20210304, Aswath Govindraju wrote:
->> The following series of patches adds support for gpio on AM642 evm/sk.
->>
->> Changes since v1:
->> - Added DT for gpio subsystem present in MCU domain
->> - reserved the mcu gpio for firmware usage
->>
->> This series of patches depend on,
->> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=439039
->> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=439153
->>
->>
->> Aswath Govindraju (2):
->>   arm64: dts: ti: k3-am64: Add GPIO DT nodes
->>   arm64: dts: ti: k3-am642: reserve gpio in mcu domain for firmware
->>     usage
->>
->>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 45 ++++++++++++++++++++++++
->>  arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi  | 27 ++++++++++++++
->>  arch/arm64/boot/dts/ti/k3-am642-evm.dts  |  5 +++
->>  arch/arm64/boot/dts/ti/k3-am642-sk.dts   |  5 +++
->>  4 files changed, 82 insertions(+)
->>
->> -- 
->> 2.17.1
->>
+On 21. 3. 9. 오후 9:58, Dong Aisheng wrote:
+> Use the more accurate returned new_freq as resume_freq.
+> It's the same as how devfreq->previous_freq was updated.
 > 
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> ---
+>   drivers/devfreq/devfreq.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Based on your offline comment:
-> -----
-> 
-> On going through the bootlogs before posting for I found the following
-> errors,
-> 
-> [    1.091117] davinci_gpio 601000.gpio: IRQ index 2 not found
-> [    1.101522] davinci_gpio 601000.gpio: error -ENXIO: IRQ not populated
-> 
-> Some issues in allocating interrupts in case of main_gpio1. I
-> accumulated the gpio with interrupt numbers. I'll try to debug the
-> reason behind it and update you with its status. (bootlogs of ti-sdk,
-> also have this error).
-> 
-> -----
-> 
-> I am going to drop this off my queue, please update if the fixup is some
-> system configuration error or repost with fix.
+> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+> index 6e80bf70e7b3..ce569bd9adfa 100644
+> --- a/drivers/devfreq/devfreq.c
+> +++ b/drivers/devfreq/devfreq.c
+> @@ -390,7 +390,7 @@ static int devfreq_set_target(struct devfreq *devfreq, unsigned long new_freq,
+>   	devfreq->previous_freq = new_freq;
+>   
+>   	if (devfreq->suspend_freq)
+> -		devfreq->resume_freq = cur_freq;
+> +		devfreq->resume_freq = new_freq;
+>   
+>   	return err;
+>   }
 > 
 
-This is expected to be a fixup in the system configuration and not a bug
-in the patch series. So, can you please have these patches in your queue
-? I'll soon post the test results indicating the functioning of GPIOs.
+This patch fixes the previous patch[1]. So that you need to
+add 'Fixes' tag as following:
 
-Thanks,
-Aswath
+Fixes: 83f8ca45afbf0 ("PM / devfreq: add support for suspend/resume of a 
+devfreq device")
+
+commit 83f8ca45afbf041e312909f442128b99657d90b7
+Refs: v4.20-rc6-2-g83f8ca45afbf
+Author:     Lukasz Luba <lukasz.luba@arm.com>
+AuthorDate: Wed Dec 5 12:05:53 2018 +0100
+Commit:     MyungJoo Ham <myungjoo.ham@samsung.com>
+CommitDate: Tue Dec 11 11:09:47 2018 +0900
+
+     PM / devfreq: add support for suspend/resume of a devfreq device
+
+
+-- 
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
