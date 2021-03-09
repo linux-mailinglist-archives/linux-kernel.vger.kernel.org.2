@@ -2,159 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED113332D6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFD7332D71
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:42:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbhCIRkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:40:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44784 "EHLO mail.kernel.org"
+        id S231382AbhCIRln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:41:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50830 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230173AbhCIRkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:40:14 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5407A64FBD;
-        Tue,  9 Mar 2021 17:40:13 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 12:40:11 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tony Lu <tonylu@linux.alibaba.com>
-Cc:     davem@davemloft.net, mingo@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: add net namespace inode for all net_dev events
-Message-ID: <20210309124011.709c6cd3@gandalf.local.home>
-In-Reply-To: <20210309044349.6605-1-tonylu@linux.alibaba.com>
-References: <20210309044349.6605-1-tonylu@linux.alibaba.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231438AbhCIRlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 12:41:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E769DAC1F;
+        Tue,  9 Mar 2021 17:41:18 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v5 0/4] Cleanup and fixups for vmemmap handling
+Date:   Tue,  9 Mar 2021 18:41:09 +0100
+Message-Id: <20210309174113.5597-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.13.7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  9 Mar 2021 12:43:50 +0800
-Tony Lu <tonylu@linux.alibaba.com> wrote:
+Hi,
 
-> There are lots of net namespaces on the host runs containers like k8s.
-> It is very common to see the same interface names among different net
-> namespaces, such as eth0. It is not possible to distinguish them without
-> net namespace inode.
-> 
-> This adds net namespace inode for all net_dev events, help us
-> distinguish between different net devices.
-> 
-> Output:
->   <idle>-0       [006] ..s.   133.306989: net_dev_xmit: net_inum=4026531992 dev=eth0 skbaddr=0000000011a87c68 len=54 rc=0
-> 
-> Signed-off-by: Tony Lu <tonylu@linux.alibaba.com>
-> ---
->  include/trace/events/net.h | 35 +++++++++++++++++++++++++----------
->  1 file changed, 25 insertions(+), 10 deletions(-)
-> 
-> diff --git a/include/trace/events/net.h b/include/trace/events/net.h
-> index 2399073c3afc..a52f90d83411 100644
-> --- a/include/trace/events/net.h
-> +++ b/include/trace/events/net.h
-> @@ -35,6 +35,7 @@ TRACE_EVENT(net_dev_start_xmit,
->  		__field(	u16,			gso_size	)
->  		__field(	u16,			gso_segs	)
->  		__field(	u16,			gso_type	)
-> +		__field(	unsigned int,		net_inum	)
->  	),
+this series contains cleanups to remove dead code that handles
+unaligned cases for 4K and 1GB pages (patch#1 and patch#2) when
+removing the vemmmap range, and a fix (patch#3) to handle the case
+when two vmemmap ranges intersect the same PMD.
 
-This patch made me take a look at the net_dev_start_xmit trace event, and I
-see it's very "holy". That is, it has lots of holes in the structure.
+More details can be found in the respective changelogs.
 
-	TP_STRUCT__entry(
-		__string(	name,			dev->name	)
-		__field(	u16,			queue_mapping	)
-		__field(	const void *,		skbaddr		)
-		__field(	bool,			vlan_tagged	)
-		__field(	u16,			vlan_proto	)
-		__field(	u16,			vlan_tci	)
-		__field(	u16,			protocol	)
-		__field(	u8,			ip_summed	)
-		__field(	unsigned int,		len		)
-		__field(	unsigned int,		data_len	)
-		__field(	int,			network_offset	)
-		__field(	bool,			transport_offset_valid)
-		__field(	int,			transport_offset)
-		__field(	u8,			tx_flags	)
-		__field(	u16,			gso_size	)
-		__field(	u16,			gso_segs	)
-		__field(	u16,			gso_type	)
-		__field(	unsigned int,		net_inum	)
-	),
+ v4 -> v5:
+ - Rebase on top of 5.12-rc2
+ - Addessed feedback from Dave
+ - Split previous patch#3 into core-changes (current patch#3) and
+   the optimization (current patch#4)
+ - Document better what is unused_pmd_start and its optimization
+ - Added Acked-by for patch#1
 
-If you look at /sys/kernel/tracing/events/net/net_dev_start_xmit/format
+ v3 -> v4:
+ - Rebase on top of 5.12-rc1 as Andrew suggested
+ - Added last Reviewed-by for the last patch
 
-name: net_dev_start_xmit
-ID: 1581
-format:
-	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
-	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
-	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
-	field:int common_pid;	offset:4;	size:4;	signed:1;
+ v2 -> v3:
+ - Make sure we do not clear the PUD entry in case
+   we are not removing the whole range.
+ - Add Reviewed-by
 
-	field:__data_loc char[] name;	offset:8;	size:4;	signed:1;
-	field:u16 queue_mapping;	offset:12;	size:2;	signed:0;
-	field:const void * skbaddr;	offset:16;	size:8;	signed:0;
-
-Notice, queue_mapping is 2 bytes at offset 12 (ends at offset 14), but
-skbaddr starts at offset 16. That means there's two bytes wasted.
-
-	field:bool vlan_tagged;	offset:24;	size:1;	signed:0;
-	field:u16 vlan_proto;	offset:26;	size:2;	signed:0;
-
-Another byte missing above (24 + 1 != 26)
-
-	field:u16 vlan_tci;	offset:28;	size:2;	signed:0;
-	field:u16 protocol;	offset:30;	size:2;	signed:0;
-	field:u8 ip_summed;	offset:32;	size:1;	signed:0;
-	field:unsigned int len;	offset:36;	size:4;	signed:0;
-
-Again another three bytes missing (32 + 1 != 36)
-
-	field:unsigned int data_len;	offset:40;	size:4;	signed:0;
-	field:int network_offset;	offset:44;	size:4;	signed:1;
-	field:bool transport_offset_valid;	offset:48;	size:1;	signed:0;
-	field:int transport_offset;	offset:52;	size:4;	signed:1;
-
-Again, another 3 bytes missing (48 + 1 != 52)
-
-	field:u8 tx_flags;	offset:56;	size:1;	signed:0;
-	field:u16 gso_size;	offset:58;	size:2;	signed:0;
-
-Another byte missing (56 + 1 != 58)
-
-	field:u16 gso_segs;	offset:60;	size:2;	signed:0;	
-	field:u16 gso_type;	offset:62;	size:2;	signed:0;
-	field:unsigned int net_inum;	offset:64;	size:4;	signed:0;
-
-The above shows 10 bytes wasted for this event.
-
-The order of the fields is important. Don't worry about breaking API by
-fixing it. The parsing code uses this output to find where the binary data
-is.
-
-Hmm, I should write a script that reads all the format files and point out
-areas that have holes in it.
-
-I haven't looked at the other trace events, but they may all have the same
-issues.
-
--- Steve
+ v1 -> v2:
+ - Remove dead code in remove_pud_table as well
+ - Addessed feedback by David
+ - Place the vmemap functions that take care of unaligned PMDs
+   within CONFIG_SPARSEMEM_VMEMMAP
 
 
+Oscar Salvador (4):
+  x86/vmemmap: Drop handling of 4K unaligned vmemmap range
+  x86/vmemmap: Drop handling of 1GB vmemmap ranges
+  x86/vmemmap: Handle unpopulated sub-pmd ranges
+  x86/vmemmap: Optimize for consecutive sections in partial populated
+    PMDs
 
->  
->  	TP_fast_assign(
-> @@ -56,10 +57,12 @@ TRACE_EVENT(net_dev_start_xmit,
->  		__entry->gso_size = skb_shinfo(skb)->gso_size;
->  		__entry->gso_segs = skb_shinfo(skb)->gso_segs;
->  		__entry->gso_type = skb_shinfo(skb)->gso_type;
-> +		__entry->net_inum = dev_net(skb->dev)->ns.inum;
->  	),
->  
->
+ arch/x86/mm/init_64.c | 198 +++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 124 insertions(+), 74 deletions(-)
+
+-- 
+2.16.3
+
