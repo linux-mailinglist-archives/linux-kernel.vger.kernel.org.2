@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F343332347
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA6333233D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 11:41:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbhCIKnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 05:43:08 -0500
-Received: from elvis.franken.de ([193.175.24.41]:33972 "EHLO elvis.franken.de"
+        id S230122AbhCIKkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 05:40:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230346AbhCIKm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 05:42:56 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lJZpF-0007Wx-00; Tue, 09 Mar 2021 11:42:53 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id B54A9C1B01; Tue,  9 Mar 2021 11:40:15 +0100 (CET)
-Date:   Tue, 9 Mar 2021 11:40:15 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Mike Rapoport <rppt@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Kamal Dasu <kdasu.kdev@gmail.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Subject: Re: [PATCH v3] MIPS: kernel: Reserve exception base early to prevent
- corruption
-Message-ID: <20210309104015.GA6740@alpha.franken.de>
-References: <20210308092447.13073-1-tsbogend@alpha.franken.de>
+        id S229813AbhCIKkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 05:40:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EFF964F20;
+        Tue,  9 Mar 2021 10:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615286418;
+        bh=iOalXEzWHBjoGsz8t2YH106CrmE2CuAK5/gjfNHS+wM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WsH+NoaF4f8nOM0SyC8jrHu7lPRtwbLGJTmHMoccizBjeRsCsFL1yw6zXp682h+Ki
+         vr3MXWAwpY+//RzGPAYb6Nbk4FA+ppwUyLUzv2lCUHBf0iD3reuQk2JAG054aHWlue
+         ujOsg+5gtyKeYyd17QHaqDmG+OyhCcL+VU5WQBbc=
+Date:   Tue, 9 Mar 2021 11:40:16 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Zheng Yejian <zhengyejian1@huawei.com>
+Cc:     lee.jones@linaro.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        cj.chengjian@huawei.com, judy.chenhui@huawei.com,
+        zhangjinhao2@huawei.com, nixiaoming@huawei.com
+Subject: Re: [PATCH 4.4 1/3] futex: Change locking rules
+Message-ID: <YEdQkLfQR9HRobUA@kroah.com>
+References: <20210309030605.3295183-1-zhengyejian1@huawei.com>
+ <20210309030605.3295183-2-zhengyejian1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308092447.13073-1-tsbogend@alpha.franken.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210309030605.3295183-2-zhengyejian1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 10:24:47AM +0100, Thomas Bogendoerfer wrote:
-> BMIPS is one of the few platforms that do change the exception base.
-> After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
-> with kernel_end") we started seeing BMIPS boards fail to boot with the
-> built-in FDT being corrupted.
+On Tue, Mar 09, 2021 at 11:06:03AM +0800, Zheng Yejian wrote:
+> From: Peter Zijlstra <peterz@infradead.org>
 > 
-> Before the cited commit, early allocations would be in the [kernel_end,
-> RAM_END] range, but after commit they would be within [RAM_START +
-> PAGE_SIZE, RAM_END].
+> Currently futex-pi relies on hb->lock to serialize everything. But hb->lock
+> creates another set of problems, especially priority inversions on RT where
+> hb->lock becomes a rt_mutex itself.
 > 
-> The custom exception base handler that is installed by
-> bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
-> memory region allocated by unflatten_and_copy_device_tree() thus
-> corrupting the FDT used by the kernel.
+> The rt_mutex::wait_lock is the most obvious protection for keeping the
+> futex user space value and the kernel internal pi_state in sync.
 > 
-> To fix this, we need to perform an early reservation of the custom
-> exception space. Additional we reserve the first 4k (1k for R3k) for
-> either normal exception vector space (legacy CPUs) or special vectors
-> like cache exceptions.
+> Rework and document the locking so rt_mutex::wait_lock is held accross all
+> operations which modify the user space value and the pi state.
 > 
-> Huge thanks to Serge for analysing and proposing a solution to this
-> issue.
+> This allows to invoke rt_mutex_unlock() (including deboost) without holding
+> hb->lock as a next step.
 > 
-> Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
-> Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Nothing yet relies on the new locking rules.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Cc: juri.lelli@arm.com
+> Cc: bigeasy@linutronix.de
+> Cc: xlpang@redhat.com
+> Cc: rostedt@goodmis.org
+> Cc: mathieu.desnoyers@efficios.com
+> Cc: jdesfossez@efficios.com
+> Cc: dvhart@infradead.org
+> Cc: bristot@redhat.com
+> Link: http://lkml.kernel.org/r/20170322104151.751993333@infradead.org
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> [Lee: Back-ported in support of a previous futex back-port attempt]
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
 > ---
-> Changes in v3:
->  - always reserve the first 4k for all CPUs (1k for R3k)
-> 
-> Changes in v2:
->  - do only memblock reservation in reserve_exception_space()
->  - reserve 0..0x400 for all CPUs without ebase register and
->    to addtional reserve_exception_space for BMIPS CPUs
-> 
->  arch/mips/include/asm/traps.h    |  3 +++
->  arch/mips/kernel/cpu-probe.c     |  6 ++++++
->  arch/mips/kernel/cpu-r3k-probe.c |  3 +++
->  arch/mips/kernel/traps.c         | 10 +++++-----
->  4 files changed, 17 insertions(+), 5 deletions(-)
+>  kernel/futex.c | 138 +++++++++++++++++++++++++++++++++++++++----------
+>  1 file changed, 112 insertions(+), 26 deletions(-)
 
-applied to mips-fixes.
+What is the git commit id of this patch in Linus's tree?
 
-Thomas.
+thanks,
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+greg k-h
