@@ -2,157 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B0A332066
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:21:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D17F9332072
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhCIIVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 03:21:22 -0500
-Received: from mail-dm6nam11on2085.outbound.protection.outlook.com ([40.107.223.85]:55041
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        id S229911AbhCIIYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 03:24:06 -0500
+Received: from mail-eopbgr80082.outbound.protection.outlook.com ([40.107.8.82]:44037
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229544AbhCIIVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 03:21:07 -0500
+        id S229515AbhCIIXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 03:23:44 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jbo621tgMR1SIWKdV7ozAdGODRMRfp10ADTyagY2Q0Eb8vvEnM4hR8nMxvq6A3/U6QMB7hRd7uaTqHNWTjjeJZLvLE/t+rq38EqnhJquqZLxdHWOmwIBTou+pkXN38yW0J5+VJK1jEusjs06Ou9xwf3vpn8ViP3GvdDlHXUTxXO/LzZ4+mLNyUUWJcKloM3CLmVfmuROVI66IGsQJhN3qMjj7Bhojx5ojiY9zB/Wfxbqg/uzn0S3QdT8IPM3haTMogUh1HTwhr8msC5WJLbvnqsU89JdDiAmL1QfPi4DQ80lj/Itq3Rdb8/1E86nr0VFFV80vbPsyhEw15GdaLrELQ==
+ b=DnsyPskZWofbQn1ZoAO7lu5MhCsi/dvIkeA62AmCoNymv5wdLGk6dgxuvA0ULwdDhJ2k1M5h1Bq2GFj+XFs/Zd9as0b801hKX16GwIO5IBvEaV8fuPmMKKxPOm6awGdumxJ1PUmkNAcOiqUIy9vGqrTdA5nbX4i87pFn6YPZU8ucl7lyoopCaC2nSdONBmg1os20qNaDRBDFu2PB8PLqJbZNJx/ZCoemgVeAUkGX9mOb1yR9VWgSWcECC7bN4v859hVaAeAMbX4+eYwLylI8Gm//ctEHdyNrTA2UunNs/1SG46YcT2TBtVazgnjhDlzjJsOmKjZWEku9f58dLdPDHw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Iu/g/TLpL2VFhGhZDyVwvYQ6ja9wVsIG37xH2H24WAc=;
- b=h/nVtzbN8u6TSddc7UhObA+oixcZ5ZUcPX6o9GU37G+Djihpoqsc8Kxgabd0jY4N/7Kfg4cf55jYoxAwht+KJzbatZJGA+KusNJqATtm4j3idvAAvGcnlnCMauISGdixxVWFVI8rgeyF8P4V2ZOM4GZa3KOWdOBtRUSoZQnPDJKGl1GxHFIvbtl0pjdcc8BcHfarf+uM9hI6fYeFs0d+A/FVgwVuCL0tsjhRprr2DECQfwn8KEtkzO5gAFmp0cgkwQum23EfKXE9lWz7T4bu5ZFHifbczv7Qj0ko/a0ENi2xoWeu38YR1wqsMMy4LfDLGnvn4/YxFxhBwuDL9OuGZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=Oj1rGFQiV4KGCyb89rcUrHprM1OQD0L+rJgrOnlgv+c=;
+ b=Pl/6xKTAjXQX1QpFcqiUEs59b2lCv53BrIazW1ajAOJ5iFMyKoiLvNMii2oDXdFMoK7o+414Q7Qu8ndo03+QB3IWyQmIpPAr/saUmSe0VLbHVRObw9uhHvPS2JB6EBRntaeR0rQdnZp+fAQGccYNogA4caI1IUSiLThNZ2WFojZz/IUQoYrgEfuO3RLC1/18LqNmL+0ZOqD+DuxlcrvaIBQKvwKdhuvyV7y1iCckdgyP4F03WW9Z2QZV643hG5VwtZhywIVlMvLup0+9Vhuuhy33DowTYgnKCygvez2C3tPoPygmx45Opjs+EsoTBMSFC9WE43m3I6zq5x9Fpf2G5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Iu/g/TLpL2VFhGhZDyVwvYQ6ja9wVsIG37xH2H24WAc=;
- b=qwwbjOxAA2c3vEDF4pHNkoZ4QqvAj9RSW6j3MwYVaKFrJXK3WtayiDSXrE9qQ+Ye8FqqIYmdnqHMzMcsa7CrFYwksV7PRtCln+4Jt0FQtqWi0+yKOz2TptTq7ZLNsYnlc1f7gMpxDcJY/g21v5CvceepJa3Gm1WkQ1M/uYmE8JKWIr0ivzjdKRbRKGxVrOJd53kiqWqhxE0xgho9sehrFYBPpho6Kuq/j7dLluiBoAog8/lL4u3qcFfaFLhmd4g0mRd8SsWz5cOjurY8ocVI6cOJQPKTlO9TH1oRiHagmGRZLbr0X6K5/uIdfsvUYCXgLllSA+SaLnpfZ3NJVZzZPg==
-Received: from MW3PR06CA0026.namprd06.prod.outlook.com (2603:10b6:303:2a::31)
- by CY4PR1201MB2551.namprd12.prod.outlook.com (2603:10b6:903:d9::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.26; Tue, 9 Mar
- 2021 08:21:04 +0000
-Received: from CO1NAM11FT025.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:2a:cafe::9f) by MW3PR06CA0026.outlook.office365.com
- (2603:10b6:303:2a::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.26 via Frontend
- Transport; Tue, 9 Mar 2021 08:21:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT025.mail.protection.outlook.com (10.13.175.232) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 08:21:03 +0000
-Received: from [172.27.14.184] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Mar
- 2021 08:20:47 +0000
-Subject: Re: [PATCH] net: mellanox: mlx5: fix error return code of
- mlx5e_stats_flower()
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>, <saeedm@nvidia.com>,
-        <leon@kernel.org>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210306134718.17566-1-baijiaju1990@gmail.com>
-From:   Roi Dayan <roid@nvidia.com>
-Message-ID: <99807217-c2a3-928f-4c8c-2195f3500594@nvidia.com>
-Date:   Tue, 9 Mar 2021 10:20:45 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ bh=Oj1rGFQiV4KGCyb89rcUrHprM1OQD0L+rJgrOnlgv+c=;
+ b=NRmsYKZnMxcFGdV++fHRmvTZfnQrl+OasjT8jrjXUduw9/Lenmh4J5PoDreD/xSrf3AaNntERXqumj3nUyaNDkgPxHYQYKiaD9YjiD4jFK3BxFWcOHMx+SZXoEh2QSWAudSoDX2sJNu0ZaNLt6Fm0ElBIJdbt5pUDwzB6GZaVgo=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
+ (2603:10a6:800:2e::19) by VE1PR04MB7423.eurprd04.prod.outlook.com
+ (2603:10a6:800:1a0::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Tue, 9 Mar
+ 2021 08:23:42 +0000
+Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
+ ([fe80::a841:34f0:bc5c:3764]) by VI1PR0401MB2287.eurprd04.prod.outlook.com
+ ([fe80::a841:34f0:bc5c:3764%2]) with mapi id 15.20.3912.029; Tue, 9 Mar 2021
+ 08:23:41 +0000
+From:   Daniel Baluta <daniel.baluta@oss.nxp.com>
+To:     broonie@kernel.org, alsa-devel@alsa-project.org
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, shengjiu.wang@nxp.com,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Subject: [PATCH] ASoC: core: Don't set platform name when of_node is set
+Date:   Tue,  9 Mar 2021 10:23:28 +0200
+Message-Id: <20210309082328.38388-1-daniel.baluta@oss.nxp.com>
+X-Mailer: git-send-email 2.27.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [86.127.155.38]
+X-ClientProxiedBy: AM0PR04CA0003.eurprd04.prod.outlook.com
+ (2603:10a6:208:122::16) To VI1PR0401MB2287.eurprd04.prod.outlook.com
+ (2603:10a6:800:2e::19)
 MIME-Version: 1.0
-In-Reply-To: <20210306134718.17566-1-baijiaju1990@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (86.127.155.38) by AM0PR04CA0003.eurprd04.prod.outlook.com (2603:10a6:208:122::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 08:23:40 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ea093b9a-f8ab-4853-66af-08d8e2d44794
-X-MS-TrafficTypeDiagnostic: CY4PR1201MB2551:
-X-Microsoft-Antispam-PRVS: <CY4PR1201MB25512B51F6D47AB42F483DCFB8929@CY4PR1201MB2551.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 4f50c875-f527-4f74-ab76-08d8e2d4a5b6
+X-MS-TrafficTypeDiagnostic: VE1PR04MB7423:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB7423CD47373D0ED06042ED40B8929@VE1PR04MB7423.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2000;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8FVhSA62XpHxXW97nym36wdDS71fvKwFdUfyXYDe/M56XcSWto91MT+p/6DLLjmhYGgP5x1nzeTSFFrbShNBLjf+xzWHFJdRsFn0YeFShLcwqzlwWodBv1py3TFk0+PPJWWDa7W2bJCHCE3vQ1X7sn6OsnQens6Y/2DH2cLW+d1M2ufShEthctOTGG2EyGgdM8GhJR/B+fgipMkZBinhCWVCkhz3vkYnxLPe/UkY99mWAeQSv1L1ZoDk5wEhpkE4GXIZpIUsjY90WbtphkSKSs790jWy2nGzkJ7gAk+WZcYsqPIpaYsWPO56EGMO6m1qwePRjILpo5gUK1MlwzBz4Km6qd7BW+XddGPgmnLuoa+GnDfGKIFwZ59K5GQuEAfe9GE0irXMTwUitEG+A2ElLd3W2M6qHsuXUJKnRe09eb6QucaeTql/RfLaV3zic1uXRx5MBoPG44rNmWQcAClA4xYLEDzAe34ForItNxbWqHZCfSh1Jbnu6HIcjCvhDwgISIHx91jSAkA5aJdtA02u7oemKXtq8L5YkMcQ+bUzlT31CoacY5RxUuWrX61DabmJe2gxhUi0vRXmSX55u+BWT85zIINDzeofNMtgc5b3HvTmHXdmawoHDrtEwmdFql7zr/yZPFMnXmua/U3Nzhwr96f7Gzsm8STlcEj7UpyTMa2xj6G5g2wDzWHMqeI4N+DdWZUFwHW2pC0i5JXhAMvF6A==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(396003)(136003)(46966006)(36840700001)(70206006)(70586007)(82310400003)(426003)(2616005)(5660300002)(336012)(16526019)(8936002)(7636003)(47076005)(82740400003)(356005)(86362001)(36756003)(2906002)(186003)(8676002)(31696002)(316002)(478600001)(110136005)(54906003)(16576012)(36860700001)(53546011)(4326008)(31686004)(26005)(34020700004)(83380400001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 08:21:03.2868
+X-Microsoft-Antispam-Message-Info: Knu4qAWH+wubBJtC1/RiAysROB6w+fjQGwH/nmEjAnaPSMtWrfViMTMvftmWZkADOf575Fi7W4GxVB0LluXEOBPUzwtOjJ0OYxDnB5vaah1f1/TmO8cyQzHz/wRrRVV68oTK2CFhVFXpP7QNU3VHlCaGaeh49rkD4erXS946BB1kIViJ/0aJ7JYI9NRKk59dWC8A0kZ1Qfg8aF16AF5UGHjyYlJ3yPA7MPw82dsiUlETu2EzegvwjBih6EglgeStQIQoGbNV0hSUeMI+JfpJGwz7l1eRQtWOjf7pQw4m5zDqbOTEyePnc+WnH99jRBHBkLpdUAd97d+r1brMaZ8du1KIBNuRortbYHIpK9NooSjYMgeJIa9QnduNYeVF4iBlCaNH48UXPG9rjiqJlvtphdg9Bsy+HXjAAZtKaNKRLyyl5gEgIxCzcKMrkIsXNx3h2kB581VD1gnXFY6sWpjbV5hqohm9KfOzIGRdK5Y06RIZGkHejJVvgjF5XVS0Sx/o0bYKQWG7KGpI86g/BXImzCSt1vsm1fOxj0/cdLIMDcDqWDsVG36MXr63DckatgZR
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2287.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(376002)(346002)(366004)(44832011)(1076003)(2616005)(16526019)(186003)(4744005)(5660300002)(6512007)(2906002)(26005)(6666004)(956004)(478600001)(69590400012)(6486002)(66946007)(66476007)(66556008)(4326008)(8676002)(6506007)(8936002)(83380400001)(86362001)(52116002)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?SO8xF0OoCpPv1lNhTPlWlxOERax3BdKTaj1Qb6DRoMdYNgRQAnqf0bWnlstK?=
+ =?us-ascii?Q?gK0RPxX2svlI4xTiUmlHsvrkRqPNSEIWSwGzkNIcxTWp1mYeNT8Qnp6TMXfI?=
+ =?us-ascii?Q?WSC5sUaF1yr8TtQ9RkOOiQnqaCxQf+H5wV7JK5gx98Kq7TUb3/PFBDyg176N?=
+ =?us-ascii?Q?gwtaIO8i11amfvgfSsHyqz0/fhyXbwl1PQH+PphWsv/8FqRTfm8axTlj78mj?=
+ =?us-ascii?Q?zMtwUiRs7z/kIlWWCZTxfoi18bOpObAr6RsWDG2sQ3Vx23uukYHHT4zmTh0/?=
+ =?us-ascii?Q?YF/71UMs1N+aTTsc/0oHwoTiTeRZWfJSY0uoRF7Qi6wlSrmNpid2vb4YoJ2S?=
+ =?us-ascii?Q?VeYKmOqJUaY38tYvGDchclYdMa7LQPPlfLGBWLR+30l/wObJ6ypYZ9uR4Sl1?=
+ =?us-ascii?Q?knmcdus9CMc64KpvoME301ED3G4x88JLofMB55Dv0LVNJYtJZLPDcH6VjrcX?=
+ =?us-ascii?Q?lUpPuoNaqDdRL4Mc/oQM34irlb94iB3tqG9XXv4UwBribF3OAt3U/59d69M0?=
+ =?us-ascii?Q?GlLg36KM0Tqh5WiF0L96C/tAMeGahKfwkwf5hCdLeik8LaEWfHMNQJcp+w+G?=
+ =?us-ascii?Q?NvsxPfLgKoG5WXuTewcODmVu48grJjUGOV99VnH/6VdSYO+/EHWnTgYbZlDu?=
+ =?us-ascii?Q?UN5RtiVxd34OrRjEHvXHI5VH1Ko+UbxX+nUF3Dpr6AaC97/hQB9x+Wbn4LAL?=
+ =?us-ascii?Q?vC1rEg2o1PradEsxCVOsnsRDfm2hSJl5fruVo2QoJytdNKvZD8+c+9HFwqKl?=
+ =?us-ascii?Q?8DGAZu1ZYroOZ3qdhofEbVoFmfmjx3OZ5m3zj/g3ZxgFMUiOLZQR8Xn/YLB/?=
+ =?us-ascii?Q?3TT62EaqsXuzHKo3moYbu19AH1BHlD5p/oiKv8GwuVUI/p/ozPcFej5oiHwH?=
+ =?us-ascii?Q?/FCURhLf0yWgq3w0omiRGtn54JuAl/vCbi/92wZIQw5lsW7AdoEpLRuL9hiu?=
+ =?us-ascii?Q?U2dS1dENzqpCA+bonxQvyToXdeVrb9OBYPavSEoDeaIcld31H6RR3gX1lrT0?=
+ =?us-ascii?Q?g+yLVoJxQb7B0oZrqaDM+/qxAoNm3P+wm2N4vnRTrOYyUskC4qsGCi0eWtIQ?=
+ =?us-ascii?Q?WxK4IJSvS0bxOvJCRB0bSRM6nDtKBoRJ/UdnjR5kCx/37hbjX2YYgGES4UJc?=
+ =?us-ascii?Q?dRBjYVGnmmf704+u/5+20Kopr5EZBmV1MtJshsd8fRsz0l6ODxxRjU0mKZyv?=
+ =?us-ascii?Q?3VOyi5vzvbpdOt08moL6cbw9WPraPgvbKEefF3NOimZIqTLLnW5+g6crBmEn?=
+ =?us-ascii?Q?8sNm4vL7V4yfShxGjW10vj8zLIvWhPAOTURGBFGN5Jc0KZ4Rd+caSTPQ74Fj?=
+ =?us-ascii?Q?y7W4w00aGsXUxW7VLWCzi/8d?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f50c875-f527-4f74-ab76-08d8e2d4a5b6
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2287.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 08:23:41.6220
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea093b9a-f8ab-4853-66af-08d8e2d44794
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT025.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB2551
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YTWupmlAZZzwu0HbRGEQ97LaOstVYSG9XZkvIvEVuUznz5T/c5uB0xZQ2S/Rh3++dxdq7j150jb/nbn3jNsG5A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7423
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Daniel Baluta <daniel.baluta@nxp.com>
 
+Platform may be specified by either name or OF node but not
+both.
 
-On 2021-03-06 3:47 PM, Jia-Ju Bai wrote:
-> When mlx5e_tc_get_counter() returns NULL to counter or
-> mlx5_devcom_get_peer_data() returns NULL to peer_esw, no error return
-> code of mlx5e_stats_flower() is assigned.
-> To fix this bug, err is assigned with -EINVAL in these cases.
-> 
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 12 +++++++++---
->   1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> index 0da69b98f38f..1f2c9da7bd35 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> @@ -4380,8 +4380,10 @@ int mlx5e_stats_flower(struct net_device *dev, struct mlx5e_priv *priv,
->   
->   	if (mlx5e_is_offloaded_flow(flow) || flow_flag_test(flow, CT)) {
->   		counter = mlx5e_tc_get_counter(flow);
-> -		if (!counter)
-> +		if (!counter) {
-> +			err = -EINVAL;
->   			goto errout;
-> +		}
->   
->   		mlx5_fc_query_cached(counter, &bytes, &packets, &lastuse);
->   	}
-> @@ -4390,8 +4392,10 @@ int mlx5e_stats_flower(struct net_device *dev, struct mlx5e_priv *priv,
->   	 * un-offloaded while the other rule is offloaded.
->   	 */
->   	peer_esw = mlx5_devcom_get_peer_data(devcom, MLX5_DEVCOM_ESW_OFFLOADS);
-> -	if (!peer_esw)
-> +	if (!peer_esw) {
-> +		err = -EINVAL;
+For OF node platforms (e.g i.MX) we end up with both platform name
+and of_node set and sound card registration will fail with the error:
 
-note here it's not an error. it could be there is no peer esw
-so just continue with the stats update.
+  asoc-simple-card sof-sound-wm8960: ASoC: Neither/both
+  platform name/of_node are set for sai1-wm8960-hifi
 
->   		goto out;
-> +	}
->   
->   	if (flow_flag_test(flow, DUP) &&
->   	    flow_flag_test(flow->peer_flow, OFFLOADED)) {
-> @@ -4400,8 +4404,10 @@ int mlx5e_stats_flower(struct net_device *dev, struct mlx5e_priv *priv,
->   		u64 lastuse2;
->   
->   		counter = mlx5e_tc_get_counter(flow->peer_flow);
-> -		if (!counter)
-> +		if (!counter) {
-> +			err = -EINVAL;
->   			goto no_peer_counter;
-> +		}
->   		mlx5_fc_query_cached(counter, &bytes2, &packets2, &lastuse2);
->   
->   		bytes += bytes2;
-> 
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+---
+ sound/soc/soc-core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 16ba54eb8164..76ab42fa9461 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1660,7 +1660,9 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
+ 				dev_err(card->dev, "init platform error");
+ 				continue;
+ 			}
+-			dai_link->platforms->name = component->name;
++
++			if (!dai_link->platforms->of_node)
++				dai_link->platforms->name = component->name;
+ 
+ 			/* convert non BE into BE */
+ 			if (!dai_link->no_pcm) {
+-- 
+2.27.0
 
