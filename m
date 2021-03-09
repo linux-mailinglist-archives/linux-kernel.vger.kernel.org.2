@@ -2,119 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DD63321A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 032C93321A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhCIJKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:10:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhCIJKV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:10:21 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E74C061762
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 01:10:20 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id x4so19138811lfu.7
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 01:10:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wKD+yQjGrl7OUNRHRyxFsQZJDZyYo41ddQeYWHD+EP0=;
-        b=HTohe6xlqSsa9ysdqGaDx/LKiLgeY77hqdlLI5nZOMc7bJyltab5PD7dPzX7NKciVI
-         CiR0s2nUBmoC8xS7Fx4FxibTJ6bZfsYvhj45Fgg3+IADOfkL5vNu6q4PmCDEYnN4eGiW
-         MVh2GdGnAqFUnHDgWXCDI/GUauwAnCR8CqsK+Y5A1lu3sqYOd1P63aWs0Sw6kQRAlQ/J
-         sWj1qF4z5PALe45obJIuGKem1TrGlbvLr2Lvd6d2kEnUqnjaIjdQeR3PBK9qMETa/XGv
-         w1WiD1gwAN6H+FW6uZfkVLEnlnB+w9D61pMvCAVVj5ZrgusV7trTi5Pt3J0lrw8Igz5m
-         MzVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wKD+yQjGrl7OUNRHRyxFsQZJDZyYo41ddQeYWHD+EP0=;
-        b=TT60uHw+6mW+vMuEK2m4yYFbZ9kHOygquPX4aPYB3/DUgwjshDvS/7P4aR+01aNzOJ
-         lzfDp6dbeOvA9h258UHLFwElsxcgNZb7tLGFt0jHiEf+DKapj6EIiZwDiLev/KiIQmxA
-         BOK/NnADRhbBwxhFNbJ5lTmTMJuHY8LZ9D9YsInqPyGa6SYGS0WUzf0jf1i5XL/+TLFp
-         zlAIHj60/MEccw9t6Q6N1qMDQvWlyHwkjJlTcIntZl7KBFgb8owFkipzbPK7rS6jwpke
-         tsnLOOfUs26drO0zrTNGSD+QDBkvROIYaqNwTihx58tjTe6ny2QZAvPwT7Syvxzs2pVl
-         Mu7A==
-X-Gm-Message-State: AOAM530t6b1EgnDFDD9hS+axukSe2uQ/Q09Q8V4/D/h+cKEsWio5xL21
-        yQ0xLaqc1RGwW4q+ZDDOOTTC1F4RCDIMU/jw940CTA==
-X-Google-Smtp-Source: ABdhPJwsYPinGD4rPMc2OYJcBuXtSZFtl07YktW+xNb1utv1lOShAxTn8gj6iLPahmv3R1yl8oBj1yKfBXITAAXQeCU=
-X-Received: by 2002:ac2:46db:: with SMTP id p27mr16853964lfo.396.1615281018970;
- Tue, 09 Mar 2021 01:10:18 -0800 (PST)
-MIME-Version: 1.0
-References: <20210301131127.793707-1-sumit.garg@linaro.org>
- <CAFA6WYO4HHhtymaUzmkuaCZybTAWBQ=4K9Dez1pe1kqo3AJhuA@mail.gmail.com> <YEEANW+khw3nJtcQ@kernel.org>
-In-Reply-To: <YEEANW+khw3nJtcQ@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 9 Mar 2021 14:40:07 +0530
-Message-ID: <CAFA6WYOxsYin8wBB_yU=S-bnqM-g5TFnTU_KXxc3wSBfx_N_6A@mail.gmail.com>
-Subject: Re: [PATCH v9 0/4] Introduce TEE based Trusted Keys support
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Janne Karhunen <janne.karhunen@gmail.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Markus Wamser <Markus.Wamser@mixed-mode.de>,
-        Luke Hinds <lhinds@redhat.com>,
-        Elaine Palmer <erpalmer@us.ibm.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        op-tee@lists.trustedfirmware.org
-Content-Type: text/plain; charset="UTF-8"
+        id S229805AbhCIJKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:10:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229641AbhCIJK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 04:10:28 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FF0F6510B;
+        Tue,  9 Mar 2021 09:10:28 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lJYNm-000VLd-7H; Tue, 09 Mar 2021 09:10:26 +0000
+Date:   Tue, 09 Mar 2021 09:10:25 +0000
+Message-ID: <87wnugy9oe.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wangming01@loongson.cn
+Subject: Re: [PATCH v3 5/7] irqchip/loongson-liointc: irqchip add 2.0 version
+In-Reply-To: <20210306023633.9579-6-zhangqing@loongson.cn>
+References: <20210306023633.9579-1-zhangqing@loongson.cn>
+        <20210306023633.9579-6-zhangqing@loongson.cn>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: zhangqing@loongson.cn, chenhuacai@kernel.org, jiaxun.yang@flygoat.com, tsbogend@alpha.franken.de, tglx@linutronix.de, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, wangming01@loongson.cn
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Mar 2021 at 21:14, Jarkko Sakkinen <jarkko@kernel.org> wrote:
->
-> On Thu, Mar 04, 2021 at 03:30:18PM +0530, Sumit Garg wrote:
-> > Hi Jarkko,
-> >
-> > On Mon, 1 Mar 2021 at 18:41, Sumit Garg <sumit.garg@linaro.org> wrote:
-> > >
-> > > Add support for TEE based trusted keys where TEE provides the functionality
-> > > to seal and unseal trusted keys using hardware unique key. Also, this is
-> > > an alternative in case platform doesn't possess a TPM device.
-> > >
-> > > This patch-set has been tested with OP-TEE based early TA which is already
-> > > merged in upstream [1].
-> > >
-> > > [1] https://github.com/OP-TEE/optee_os/commit/f86ab8e7e0de869dfa25ca05a37ee070d7e5b86b
-> > >
-> > > Changes in v9:
-> > > 1. Rebased to latest tpmdd/master.
-> > > 2. Defined pr_fmt() and removed redundant tags.
-> > > 3. Patch #2: incorporated misc. comments.
-> > > 4. Patch #3: incorporated doc changes from Elaine and misc. comments
-> > >    from Randy.
-> > > 5. Patch #4: reverted to separate maintainer entry as per request from
-> > >    Jarkko.
-> > > 6. Added Jarkko's Tested-by: tag on patch #2.
-> >
-> > It looks like we don't have any further comments on this patch-set. So
-> > would you be able to pick up this patch-set?
->
-> I'm cool with that - I can pick this for 5.13.
->
+On Sat, 06 Mar 2021 02:36:31 +0000,
+Qing Zhang <zhangqing@loongson.cn> wrote:
+> 
+> Add IO interrupt controller support for Loongson 2k1000, different
+> from the 3a series is that 2K1000 has 64 interrupt sources, 0-31
+> correspond to the device tree liointc0 device node, and the other
+> correspond to liointc1 node.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> ---
+> 
+> v2-v3: No change
+> 
+>  drivers/irqchip/irq-loongson-liointc.c | 55 +++++++++++++++++++++-----
+>  1 file changed, 46 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
+> index 09b91b81851c..1c3c80f7f9f5 100644
+> --- a/drivers/irqchip/irq-loongson-liointc.c
+> +++ b/drivers/irqchip/irq-loongson-liointc.c
+> @@ -20,6 +20,7 @@
+>  
+>  #define LIOINTC_CHIP_IRQ	32
+>  #define LIOINTC_NUM_PARENT 4
+> +#define LIOINTC_NUM_CORES	4
+>  
+>  #define LIOINTC_INTC_CHIP_START	0x20
+>  
+> @@ -42,6 +43,7 @@ struct liointc_handler_data {
+>  struct liointc_priv {
+>  	struct irq_chip_generic		*gc;
+>  	struct liointc_handler_data	handler[LIOINTC_NUM_PARENT];
+> +	void __iomem			*core_isr[LIOINTC_NUM_CORES];
+>  	u8				map_cache[LIOINTC_CHIP_IRQ];
+>  	bool				has_lpc_irq_errata;
+>  };
+> @@ -51,11 +53,12 @@ static void liointc_chained_handle_irq(struct irq_desc *desc)
+>  	struct liointc_handler_data *handler = irq_desc_get_handler_data(desc);
+>  	struct irq_chip *chip = irq_desc_get_chip(desc);
+>  	struct irq_chip_generic *gc = handler->priv->gc;
+> +	int core = get_ebase_cpunum() % LIOINTC_NUM_CORES;
+>  	u32 pending;
+>  
+>  	chained_irq_enter(chip, desc);
+>  
+> -	pending = readl(gc->reg_base + LIOINTC_REG_INTC_STATUS);
+> +	pending = readl(handler->priv->core_isr[core]);
+>  
+>  	if (!pending) {
+>  		/* Always blame LPC IRQ if we have that bug */
+> @@ -141,6 +144,15 @@ static void liointc_resume(struct irq_chip_generic *gc)
+>  }
+>  
+>  static const char * const parent_names[] = {"int0", "int1", "int2", "int3"};
+> +static const char * const core_reg_names[] = {"isr0", "isr1", "isr2", "isr3"};
+> +
+> +static void __iomem *liointc_get_reg_byname(struct device_node *node,
+> +						const char *name)
+> +{
+> +	int index = of_property_match_string(node, "reg-names", name);
+> +
+> +	return of_iomap(node, index);
 
-Thanks.
+So if of_property_match_string() returns an error, you feed that error
+to of_iomap()? Somehow, I don't think that's a good idea.
 
--Sumit
+> +}
+>  
+>  static int __init liointc_of_init(struct device_node *node,
+>  				  struct device_node *parent)
+> @@ -159,10 +171,28 @@ static int __init liointc_of_init(struct device_node *node,
+>  	if (!priv)
+>  		return -ENOMEM;
+>  
+> -	base = of_iomap(node, 0);
+> -	if (!base) {
+> -		err = -ENODEV;
+> -		goto out_free_priv;
+> +	if (of_device_is_compatible(node, "loongson,liointc-2.0")) {
+> +		base = liointc_get_reg_byname(node, "main");
+> +		if (!base) {
+> +			err = -ENODEV;
+> +			goto out_free_priv;
+> +		}
+> +		for (i = 0; i < LIOINTC_NUM_CORES; i++) {
+> +			priv->core_isr[i] =
+> +				liointc_get_reg_byname(node, core_reg_names[i]);
 
-> /Jarkko
+Please write assignments on a single line.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
