@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0FDE332FF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37633332FF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhCIUbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:31:10 -0500
-Received: from marcansoft.com ([212.63.210.85]:50810 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231627AbhCIUap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:30:45 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        id S231802AbhCIUbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:31:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25515 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231804AbhCIUbV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 15:31:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615321880;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yJH37FcuPBgLxDtxXkuiJ03SpmFTOQU/XyNz2Bopfjs=;
+        b=e7xeA+hTyvf17b8CBE6Pw7g0XhWKg+D2miO3RVVA0wmSnNFvZAj2qWtCFK8LQeUrMTT1Wf
+        Bt2R//73o0MZcrYRTnYOEm2CicBrioeKAhwe1iACpwFwl87e6P/mKXSfx+oHS/7YY6jV4Q
+        j0U2m0tqXoQC4v3NARowfhOS/fPMdF8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-61-t2jrNTylPCWlsBIXUNUJ_Q-1; Tue, 09 Mar 2021 15:31:17 -0500
+X-MC-Unique: t2jrNTylPCWlsBIXUNUJ_Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 877E941A6E;
-        Tue,  9 Mar 2021 20:30:25 +0000 (UTC)
-Subject: Re: [RFT PATCH v3 17/27] arm64: Kconfig: Introduce CONFIG_ARCH_APPLE
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210304213902.83903-1-marcan@marcan.st>
- <20210304213902.83903-18-marcan@marcan.st> <871rcpzmiv.wl-maz@kernel.org>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <7bcc40fd-2105-9947-97f4-288e732758c7@marcan.st>
-Date:   Wed, 10 Mar 2021 05:30:23 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 439581842144;
+        Tue,  9 Mar 2021 20:31:15 +0000 (UTC)
+Received: from treble (ovpn-117-215.rdu2.redhat.com [10.10.117.215])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7FB8C10013C1;
+        Tue,  9 Mar 2021 20:31:12 +0000 (UTC)
+Date:   Tue, 9 Mar 2021 14:31:09 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Frank Eigler <fche@redhat.com>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Subject: Re: [PATCH] kbuild: rebuild GCC plugins when the compiler is upgraded
+Message-ID: <20210309203109.2fhyf5naazgjjnch@treble>
+References: <20210304113708.215121-1-masahiroy@kernel.org>
+ <202103041518.22EB819E@keescook>
+ <CAHk-=wj6t2i1BgmWP1Zb2WVF3zZzkHvsxsALJk7VpfKm6UgLcw@mail.gmail.com>
+ <20210305022500.cyi3cfwgt2t6mona@treble>
+ <20210306012815.nfmquoln65vq6yq7@treble>
+ <CAK7LNAR7E4Ud9MPy3q5VOab4EFMumr5GMHqyv=H970+gPTBrFg@mail.gmail.com>
+ <20210306025059.z6dn6mi7mxyufkr2@treble>
 MIME-Version: 1.0
-In-Reply-To: <871rcpzmiv.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210306025059.z6dn6mi7mxyufkr2@treble>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/03/2021 00.35, Marc Zyngier wrote:
-> On Thu, 04 Mar 2021 21:38:52 +0000,
-> Hector Martin <marcan@marcan.st> wrote:
->>
->> This adds a Kconfig option to toggle support for Apple ARM SoCs.
->> At this time this targets the M1 and later "Apple Silicon" Mac SoCs.
->>
->> Signed-off-by: Hector Martin <marcan@marcan.st>
->> ---
->>   arch/arm64/Kconfig.platforms | 8 ++++++++
->>   arch/arm64/configs/defconfig | 1 +
->>   2 files changed, 9 insertions(+)
->>
->> diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
->> index cdfd5fed457f..c2b5791e3d69 100644
->> --- a/arch/arm64/Kconfig.platforms
->> +++ b/arch/arm64/Kconfig.platforms
->> @@ -36,6 +36,14 @@ config ARCH_ALPINE
->>   	  This enables support for the Annapurna Labs Alpine
->>   	  Soc family.
->>   
->> +config ARCH_APPLE
->> +	bool "Apple Silicon SoC family"
->> +	select APPLE_AIC
->> +	select ARM64_FIQ_SUPPORT
-> 
-> Do we still need this FIQ symbol? I though it was now gone...
+On Fri, Mar 05, 2021 at 08:50:59PM -0600, Josh Poimboeuf wrote:
+> > Is this a bad coding contest?
+> > 
+> > I am not asking you to add ugly ifeq or whatever
+> > hacks to say "this worked for me".
+> > 
+> > Please feel free to do this in the fedora kernel,
+> > but do not send it to upstream.
+> > 
+> > Sorry, I really do not want to see hacks like this any more.
 
-Whoops! Thanks for the catch, this can go away.
+Masahiro,
+
+Ping.  Do you have a better approach for building GCC plugins in the
+external module directory?
 
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+Josh
+
