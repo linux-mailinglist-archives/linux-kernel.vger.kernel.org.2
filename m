@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35AEE33260E
+	by mail.lfdr.de (Postfix) with ESMTP id B049733260F
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhCINFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 08:05:45 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:33116 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbhCINFb (ORCPT
+        id S231207AbhCINFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 08:05:46 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34784 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231137AbhCINFc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 08:05:31 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 129D5MlX005805;
-        Tue, 9 Mar 2021 07:05:22 -0600
+        Tue, 9 Mar 2021 08:05:32 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 129D5PAI083779;
+        Tue, 9 Mar 2021 07:05:25 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615295122;
-        bh=sLreBZxnznNU+Oc1Psygdp8lJTN5HrrEsPiC4ihQsN4=;
-        h=From:To:CC:Subject:Date;
-        b=V3EnFEfHsqAH2DjqLU6Y7Wgjg4aWQ64WAT6TKy65Xsf/vqxSCp0VpfE5Wruk5J8Fs
-         TsvEfJ4x1efbQibVzm2ilYiUBw2EnvDUcLXi79gRArjLn/jxFBp9Jprv1kk1P0PE6O
-         QaN1w1nd4vb+iQs+NkU6f64XtUds6OIIg0PYIz+A=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 129D5MGB131044
+        s=ti-com-17Q1; t=1615295125;
+        bh=0l+zHYos4lzrG1+DYj78zQ0HfZRU4gyc8kUAOuiWgns=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=k+qmuLoyoK8M6leqybnn3+fZlX4SkAVLltIOU2SBP1Fm9Rewy854q38zofglYpeeU
+         zLpDAaMK31bQI4ZRwvuZ5gEKRUF7oQAY3frfUgglFsUxdpiAa0gf/c34vIgmoQ9tkM
+         m864L+7sXQdDDkhWgSpaXd6uczWaS93nNK7jjwzg=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 129D5PdP122499
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 9 Mar 2021 07:05:22 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Mar
- 2021 07:05:22 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 9 Mar 2021 07:05:22 -0600
+        Tue, 9 Mar 2021 07:05:25 -0600
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 9 Mar
+ 2021 07:05:25 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 9 Mar 2021 07:05:25 -0600
 Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 129D5I5w094746;
-        Tue, 9 Mar 2021 07:05:19 -0600
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 129D5I5x094746;
+        Tue, 9 Mar 2021 07:05:22 -0600
 From:   Vignesh Raghavendra <vigneshr@ti.com>
 To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>
 CC:     Rob Herring <robh+dt@kernel.org>,
@@ -45,10 +45,12 @@ CC:     Rob Herring <robh+dt@kernel.org>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Pratyush Yadav <p.yadav@ti.com>,
         Lokesh Vutla <lokeshvutla@ti.com>
-Subject: [PATCH 1/2] arm64: dts: ti: k3-am64-main: Add OSPI node
-Date:   Tue, 9 Mar 2021 18:35:13 +0530
-Message-ID: <20210309130514.11740-1-vigneshr@ti.com>
+Subject: [PATCH 2/2] arm64: dts: ti: k3-am64-evm/sk: Add OSPI flash DT node
+Date:   Tue, 9 Mar 2021 18:35:14 +0530
+Message-ID: <20210309130514.11740-2-vigneshr@ti.com>
 X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210309130514.11740-1-vigneshr@ti.com>
+References: <20210309130514.11740-1-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -57,48 +59,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AM64 SoC has a single Octal SPI (OSPI) instance under Flash SubSystem
-(FSS).  Add DT entry for the same.
+Both AM64 EVM and SK have a 512Mb S28HS512T Octal SPI NOR flash.
+Add DT node for the same.
 
 Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 25 ++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-index 5f85950daef7..bcec4fa444b5 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-@@ -402,4 +402,29 @@ sdhci1: mmc@fa00000 {
- 		ti,otap-del-sel-ddr50 = <0x9>;
- 		ti,clkbuf-sel = <0x7>;
+Bootlog:
+
+SK: https://pastebin.ubuntu.com/p/gvxg7cFrXH/
+EVM: https://pastebin.ubuntu.com/p/jb39GqkB78/
+
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts | 36 +++++++++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am642-sk.dts  | 36 +++++++++++++++++++++++++
+ 2 files changed, 72 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+index 1f1787750fef..7dd8e94b108d 100644
+--- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+@@ -133,6 +133,22 @@ AM64X_IOPAD(0x0268, PIN_INPUT_PULLUP, 0) /* (C18) I2C1_SCL */
+ 			AM64X_IOPAD(0x026c, PIN_INPUT_PULLUP, 0) /* (B19) I2C1_SDA */
+ 		>;
  	};
 +
-+	fss: bus@fc00000 {
-+		compatible = "simple-bus";
-+		reg = <0x00 0x0fc00000 0x00 0x70000>;
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		ospi0: spi@fc40000 {
-+			compatible = "ti,am654-ospi", "cdns,qspi-nor";
-+			reg = <0x00 0x0fc40000 0x00 0x100>,
-+			      <0x05 0x00000000 0x01 0x00000000>;
-+			interrupts = <GIC_SPI 139 IRQ_TYPE_LEVEL_HIGH>;
-+			cdns,fifo-depth = <256>;
-+			cdns,fifo-width = <4>;
-+			cdns,trigger-address = <0x0>;
-+			#address-cells = <0x1>;
-+			#size-cells = <0x0>;
-+			clocks = <&k3_clks 75 6>;
-+			assigned-clocks = <&k3_clks 75 6>;
-+			assigned-clock-parents = <&k3_clks 75 7>;
-+			assigned-clock-rates = <166666666>;
-+			power-domains = <&k3_pds 75 TI_SCI_PD_EXCLUSIVE>;
-+		};
++	ospi0_pins_default: ospi0-pins-default {
++		pinctrl-single,pins = <
++			AM64X_IOPAD(0x0000, PIN_OUTPUT, 0) /* (N20) OSPI0_CLK */
++			AM64X_IOPAD(0x002c, PIN_OUTPUT, 0) /* (L19) OSPI0_CSn0 */
++			AM64X_IOPAD(0x000c, PIN_INPUT, 0) /* (M19) OSPI0_D0 */
++			AM64X_IOPAD(0x0010, PIN_INPUT, 0) /* (M18) OSPI0_D1 */
++			AM64X_IOPAD(0x0014, PIN_INPUT, 0) /* (M20) OSPI0_D2 */
++			AM64X_IOPAD(0x0018, PIN_INPUT, 0) /* (M21) OSPI0_D3 */
++			AM64X_IOPAD(0x001c, PIN_INPUT, 0) /* (P21) OSPI0_D4 */
++			AM64X_IOPAD(0x0020, PIN_INPUT, 0) /* (P20) OSPI0_D5 */
++			AM64X_IOPAD(0x0024, PIN_INPUT, 0) /* (N18) OSPI0_D6 */
++			AM64X_IOPAD(0x0028, PIN_INPUT, 0) /* (M17) OSPI0_D7 */
++			AM64X_IOPAD(0x0008, PIN_INPUT, 0) /* (N19) OSPI0_DQS */
++		>;
 +	};
  };
+ 
+ &main_uart0 {
+@@ -244,3 +260,23 @@ &sdhci1 {
+ 	ti,driver-strength-ohm = <50>;
+ 	disable-wp;
+ };
++
++&ospi0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&ospi0_pins_default>;
++
++	flash@0{
++		compatible = "jedec,spi-nor";
++		reg = <0x0>;
++		spi-tx-bus-width = <8>;
++		spi-rx-bus-width = <8>;
++		spi-max-frequency = <25000000>;
++		cdns,tshsl-ns = <60>;
++		cdns,tsd2d-ns = <60>;
++		cdns,tchsh-ns = <60>;
++		cdns,tslch-ns = <60>;
++		cdns,read-delay = <4>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
+index aa6ca4c49153..fc27470fc083 100644
+--- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
+@@ -90,6 +90,22 @@ AM64X_IOPAD(0x0268, PIN_INPUT_PULLUP, 0) /* (C18) I2C1_SCL */
+ 			AM64X_IOPAD(0x026c, PIN_INPUT_PULLUP, 0) /* (B19) I2C1_SDA */
+ 		>;
+ 	};
++
++	ospi0_pins_default: ospi0-pins-default {
++		pinctrl-single,pins = <
++			AM64X_IOPAD(0x0000, PIN_OUTPUT, 0) /* (N20) OSPI0_CLK */
++			AM64X_IOPAD(0x002c, PIN_OUTPUT, 0) /* (L19) OSPI0_CSn0 */
++			AM64X_IOPAD(0x000c, PIN_INPUT, 0) /* (M19) OSPI0_D0 */
++			AM64X_IOPAD(0x0010, PIN_INPUT, 0) /* (M18) OSPI0_D1 */
++			AM64X_IOPAD(0x0014, PIN_INPUT, 0) /* (M20) OSPI0_D2 */
++			AM64X_IOPAD(0x0018, PIN_INPUT, 0) /* (M21) OSPI0_D3 */
++			AM64X_IOPAD(0x001c, PIN_INPUT, 0) /* (P21) OSPI0_D4 */
++			AM64X_IOPAD(0x0020, PIN_INPUT, 0) /* (P20) OSPI0_D5 */
++			AM64X_IOPAD(0x0024, PIN_INPUT, 0) /* (N18) OSPI0_D6 */
++			AM64X_IOPAD(0x0028, PIN_INPUT, 0) /* (M17) OSPI0_D7 */
++			AM64X_IOPAD(0x0008, PIN_INPUT, 0) /* (N19) OSPI0_DQS */
++		>;
++	};
+ };
+ 
+ &mcu_uart0 {
+@@ -171,3 +187,23 @@ &sdhci1 {
+ 	ti,driver-strength-ohm = <50>;
+ 	disable-wp;
+ };
++
++&ospi0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&ospi0_pins_default>;
++
++	flash@0{
++		compatible = "jedec,spi-nor";
++		reg = <0x0>;
++		spi-tx-bus-width = <8>;
++		spi-rx-bus-width = <8>;
++		spi-max-frequency = <25000000>;
++		cdns,tshsl-ns = <60>;
++		cdns,tsd2d-ns = <60>;
++		cdns,tchsh-ns = <60>;
++		cdns,tslch-ns = <60>;
++		cdns,read-delay = <4>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++	};
++};
 -- 
 2.30.1
 
