@@ -2,184 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11099332E66
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33543332E67
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhCISjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 13:39:17 -0500
-Received: from mga17.intel.com ([192.55.52.151]:24895 "EHLO mga17.intel.com"
+        id S230518AbhCISjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 13:39:51 -0500
+Received: from mga12.intel.com ([192.55.52.136]:5110 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229688AbhCISin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 13:38:43 -0500
-IronPort-SDR: f2QnpgNJXogkLQ/XfxgBMntHmDyVdRIC7vGVAulmBk5mFyRuUJCPWuY6Pk7iBYxzoT7JjMaXR6
- vPm7fau6bFnQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="168213802"
+        id S229688AbhCISjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 13:39:42 -0500
+IronPort-SDR: 7BRQAZaQEIdlBJNSxi7+BBWhdeiAEBVrblxM01bda6bNbSvQ8VrPjVzBP5LmoBDTx1TEP5jliF
+ bC+0KRp4fE7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="167572273"
 X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="168213802"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 10:38:38 -0800
-IronPort-SDR: 0sHUfvgeU/bdAsU2QKvaGBuF/qJHJYivgb5bC3gBkYsgW7vfJT0HWfGbAp3Dc+hRVBxBudcJ+K
- vlYQWpsce09g==
-X-ExtLoop1: 1
+   d="scan'208";a="167572273"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 10:39:38 -0800
+IronPort-SDR: 9AsMHnOTCTuOFm3Vzt6nd91h5IIieopA1xnA5Q3+vcTp2WAnAWEGVlfRvLjtC+wyLrt/WjXzaL
+ 8L/vyLK6HP+Q==
 X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="599446473"
-Received: from lkp-server01.sh.intel.com (HELO 3e992a48ca98) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 09 Mar 2021 10:38:37 -0800
-Received: from kbuild by 3e992a48ca98 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lJhFc-0001lW-D9; Tue, 09 Mar 2021 18:38:36 +0000
-Date:   Wed, 10 Mar 2021 02:38:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 7836d7be2d23267d6aa9b3bf1474146f6e9e28fd
-Message-ID: <6047c08a.BmWx+mrzxgS6ZJsO%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="447600820"
+Received: from jcchan4-mobl.amr.corp.intel.com (HELO [10.212.217.30]) ([10.212.217.30])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 10:39:36 -0800
+Subject: Re: [PATCH v5 3/4] x86/vmemmap: Handle unpopulated sub-pmd ranges
+To:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210309174113.5597-1-osalvador@suse.de>
+ <20210309174113.5597-4-osalvador@suse.de>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <edc634b2-bf73-8056-99d1-4afdf79ac932@intel.com>
+Date:   Tue, 9 Mar 2021 10:39:36 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210309174113.5597-4-osalvador@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 7836d7be2d23267d6aa9b3bf1474146f6e9e28fd  EXP net: phy: make mdio_bus_phy_suspend/resume as __maybe_unused
+On 3/9/21 9:41 AM, Oscar Salvador wrote:
+> When sizeof(struct page) is not a power of 2, sections do not span
+> a PMD anymore and so when populating them some parts of the PMD will
+> remain unused.
+> Because of this, PMDs will be left behind when depopulating sections
+> since remove_pmd_table() thinks that those unused parts are still in
+> use.
+> 
+> Fix this by marking the unused parts with PAGE_UNUSED, so memchr_inv()
+> will do the right thing and will let us free the PMD when the last user
+> of it is gone.
+> 
+> This patch is based on a similar patch by David Hildenbrand:
+> 
+> https://lore.kernel.org/linux-mm/20200722094558.9828-9-david@redhat.com/
 
-elapsed time: 726m
+Looks good now.  It's much easier to read without the optimization.
 
-configs tested: 122
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                        workpad_defconfig
-nds32                               defconfig
-sh                           se7724_defconfig
-mips                         bigsur_defconfig
-mips                          ath25_defconfig
-m68k                           sun3_defconfig
-powerpc                  mpc866_ads_defconfig
-mips                           gcw0_defconfig
-arm                            lart_defconfig
-sh                        edosk7705_defconfig
-arm                          pxa3xx_defconfig
-m68k                             alldefconfig
-arm                          moxart_defconfig
-powerpc                  storcenter_defconfig
-arm                             ezx_defconfig
-mips                       lemote2f_defconfig
-nios2                            alldefconfig
-powerpc                      mgcoge_defconfig
-sh                        apsh4ad0a_defconfig
-powerpc                     tqm8560_defconfig
-arm                        trizeps4_defconfig
-powerpc                 mpc837x_mds_defconfig
-arm                          pxa168_defconfig
-arm                      jornada720_defconfig
-mips                         db1xxx_defconfig
-ia64                          tiger_defconfig
-mips                        qi_lb60_defconfig
-arm                      pxa255-idp_defconfig
-mips                        jmr3927_defconfig
-arm                       netwinder_defconfig
-arm                            hisi_defconfig
-arm                           viper_defconfig
-nios2                            allyesconfig
-arm                             mxs_defconfig
-arm                        cerfcube_defconfig
-sh                           se7343_defconfig
-sh                        sh7785lcr_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210308
-x86_64               randconfig-a001-20210308
-x86_64               randconfig-a004-20210308
-x86_64               randconfig-a002-20210308
-x86_64               randconfig-a005-20210308
-x86_64               randconfig-a003-20210308
-i386                 randconfig-a005-20210308
-i386                 randconfig-a003-20210308
-i386                 randconfig-a002-20210308
-i386                 randconfig-a006-20210308
-i386                 randconfig-a004-20210308
-i386                 randconfig-a001-20210308
-i386                 randconfig-a005-20210309
-i386                 randconfig-a003-20210309
-i386                 randconfig-a002-20210309
-i386                 randconfig-a006-20210309
-i386                 randconfig-a004-20210309
-i386                 randconfig-a001-20210309
-x86_64               randconfig-a013-20210309
-x86_64               randconfig-a016-20210309
-x86_64               randconfig-a015-20210309
-x86_64               randconfig-a014-20210309
-x86_64               randconfig-a011-20210309
-x86_64               randconfig-a012-20210309
-i386                 randconfig-a016-20210309
-i386                 randconfig-a012-20210309
-i386                 randconfig-a014-20210309
-i386                 randconfig-a013-20210309
-i386                 randconfig-a011-20210309
-i386                 randconfig-a015-20210309
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20210309
-x86_64               randconfig-a001-20210309
-x86_64               randconfig-a004-20210309
-x86_64               randconfig-a002-20210309
-x86_64               randconfig-a005-20210309
-x86_64               randconfig-a003-20210309
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
