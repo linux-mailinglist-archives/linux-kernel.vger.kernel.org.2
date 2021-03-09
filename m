@@ -2,274 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD16331FCA
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF86331FC9
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 08:30:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbhCIH3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 02:29:35 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:22497 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhCIH3O (ORCPT
+        id S229805AbhCIH3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 02:29:33 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:6531 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229714AbhCIH26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 02:29:14 -0500
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 1297Sxeb026341;
-        Tue, 9 Mar 2021 16:28:59 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 1297Sxeb026341
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615274939;
-        bh=5RVgblDEnJ8sCOM9YnkG8SGXNv1I7gmzT6pa1Pe14aQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OPT7Q9CfYbcgiwWTDfWZsKS5tYvIbADIZjWAgHAqse9zJDbp3qSjiD4p4PsnWcKfe
-         0o4uGzfI/nNd8ghRRwBWPFMwCkzlf6lbWAyCNatK02Q5yBv92i+9jHh9l+BE9QUbTc
-         2Mid4TQlyKfAtqDVw2RXftNM2k5U8PgAuOsheNNE0c5e/cxQokaf3ebwrOMsEsFfZt
-         EqJPRxhQgnRXCAQzVNdblkTfF1BVakdONSf6EYcaa7qOoEPtAoaq7ozZhzv6fkejL3
-         SBA/e51aXMgQXH1fVTjKDgc/YgxL3m46Oylzl9zC6j+jlRgmCCy4zgLA8w3t/QHuC+
-         IYmjDnLxtrTEA==
-X-Nifty-SrcIP: [209.85.216.53]
-Received: by mail-pj1-f53.google.com with SMTP id jx13so420761pjb.1;
-        Mon, 08 Mar 2021 23:28:59 -0800 (PST)
-X-Gm-Message-State: AOAM531y0Xq7lq9b9KyaDpIElWdwPc7PcHwnUEoKORr4+K1x6to92vhL
-        rbCEH6fGPkOmUDqSaADcDhp2+IvfrQBNGbF8EWU=
-X-Google-Smtp-Source: ABdhPJzVFmI8CIQ5OCxBOcBO8d+CIVkQ4rorhUymhDAWnVJ4symEm4wfO8f95eeFjdPyiMofT3peeT2NueZjbmFY8s4=
-X-Received: by 2002:a17:90a:3b0e:: with SMTP id d14mr3357691pjc.198.1615274938565;
- Mon, 08 Mar 2021 23:28:58 -0800 (PST)
+        Tue, 9 Mar 2021 02:28:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1615274938; x=1646810938;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=2tbkoUGTro+MmnlxiEO7H0on7FrAska+0HBxrvtwJVk=;
+  b=Q6uuXwfMZPka+0xY3oo/uyygjMRWcwTPcDWOMj3GqWwdGMxb3z8fIjb6
+   rf0+8xgChE+lzkp83v4I+g+9hFaOzkyR6CzzZE/U75hvbOXz3YTjugO/H
+   /wBlCpZjCp3+EztlSMq2Fa9+pWENnhdQc20Vj8J1d4dwHV2RZs3OhM5xz
+   al+Yw0kSg5fHOb7WBj1INESh1HRCeiZsz7kavMjrM7wFZgq8hrwfV4BL2
+   c+YePl8Kr5osICOLaNCRcvR/uT33W0WJI9HPtPQwmyAmhYURHw7U6O3qn
+   vKXTj8arGlaNLaT1vUQrR69+ME+uUxSG6OHMK8AhNoNIWKrNlrFqVA/Zd
+   w==;
+IronPort-SDR: POsoBChKmwM8F4E90Sg8efJZ4JZBOuB0nC9/w2gswDhqHRMY4M837TDeub8Jtjk0umgLmLPygU
+ WCdBNlRCCkHeLw8E7IxpxjxCFEwCb8KTB4KzdQWibd1ehRWhtCo3JFRi239y4KxwhEDXYdV9UQ
+ J7FEQhdihVLNtR6M0VXIh/8rpWxPGY9t6urebb91fdnezbNggMDcdj40Qdhsly4YqXauqmBW7q
+ kZwHCqZcWYsf8ecL019SeRybbFxju36nlzzR2rKcE15QDRuOshDm1wjAdue3Ku4WuTtNoVrkyu
+ 7RM=
+X-IronPort-AV: E=Sophos;i="5.81,234,1610434800"; 
+   d="scan'208";a="109247937"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Mar 2021 00:28:55 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 9 Mar 2021 00:28:55 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2 via Frontend
+ Transport; Tue, 9 Mar 2021 00:28:55 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Et/ixpVcGaoVLpT17okJqNZglnjJoLrxAWrNiOg7BtVWs0OAfIIykYrQFPRjA+x1MmKGu+uMnxWEgSToiZymMrT8iwKbw9E0HRk2/nof4TrQbCA9Dd/ePJiFYMjHz2MTcpjTod/o0yyBLL5uWKhd8two/y2kirPE2yrP2hgERX6MPaW71LfdreM+JPOa8iIxIwCxvyt04marMvDVB5MWWGmlj5EM2y0vxmiy3MSAsQ7UGmKTDf0RomliEXhNIkvvS1sVJPpagR+BPMVPSrG0XAVrC++kbAYw9PmlAJzai64qMD5fHpDTVWz8jOYjVkTQ6gP0byIYdHUw3YMI3x/tFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2tbkoUGTro+MmnlxiEO7H0on7FrAska+0HBxrvtwJVk=;
+ b=C3iI6EgGdOV9egYhUeXb8/ZUL2rFqR9uPyoLteGwQ+H5h0QhgYykbB969EWchC+PXmOEgUECD2Qeb4E8aYH58KaFsVM2mYMd45rHSnpSfMIfP7z5HLTEtsTtkwUac3ndlEU4LmvDMIaLOm0fLltRX9wrBLcxiEH7FpM2E5KU0/6wcAHm+BnIun1UwJoj72fCh1LyRwxF82RYVjKSMZf390TOArbgtqwRaV10PbNXexS6WK4bjCuvwK8qZjRWni0bNeEiMMkeEmNWxxw9M23EFhTwbVU1tQQ5ioVnPLs3SfCzFVhkHlVozVoDujRrlVndR4nZtAP/VmMYq8jOD56VaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2tbkoUGTro+MmnlxiEO7H0on7FrAska+0HBxrvtwJVk=;
+ b=k+eZwLszFK/1lQ3NS6xOPl3GpPUV1Fa7adDd5qOt1DSizBxrmcD0RWyi9y9qUsyFB7p4w7BF9hyGXU7k5Fjn/KDCmxe77QuYDcyUE3L4xvrHSzlINoOyfKregjkgyXLFN3JmZ453VyuX3tVxWPTAG4Iu4pn8/rzy1guULR4NeK0=
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
+ by SN6PR11MB3103.namprd11.prod.outlook.com (2603:10b6:805:d7::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.26; Tue, 9 Mar
+ 2021 07:28:52 +0000
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::c9e8:9bf4:b08c:c30f]) by SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::c9e8:9bf4:b08c:c30f%7]) with mapi id 15.20.3912.027; Tue, 9 Mar 2021
+ 07:28:52 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <vigneshr@ti.com>, <p.yadav@ti.com>, <michael@walle.cc>
+CC:     <linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
+        <richard@nod.at>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/5] mtd: spi-nor: Move Software Write Protection logic
+ out of the core
+Thread-Topic: [PATCH v2 4/5] mtd: spi-nor: Move Software Write Protection
+ logic out of the core
+Thread-Index: AQHXFLXahW+TwdBlzkur1VDkcdYBtg==
+Date:   Tue, 9 Mar 2021 07:28:51 +0000
+Message-ID: <9889bae0-8eba-7cbc-d9bb-04e038bd28c8@microchip.com>
+References: <20210306095002.22983-1-tudor.ambarus@microchip.com>
+ <20210306095002.22983-5-tudor.ambarus@microchip.com>
+ <963232a4-9100-ebca-927c-7f5a1e947fbe@ti.com>
+In-Reply-To: <963232a4-9100-ebca-927c-7f5a1e947fbe@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [79.115.63.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a8a7b76a-47af-406c-36b1-08d8e2ccfd13
+x-ms-traffictypediagnostic: SN6PR11MB3103:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR11MB3103100CCAF3EBDFF6D59969F0929@SN6PR11MB3103.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:962;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1c7Z58N+Ur769EIFxq30uhgBHfOIn69RjRL06siYYhvF3BW7RSDndWa/1A3FWo3HfTIUlp5n2PYbGUba0puTD919om8/Svmt+NNsQYUoCU3eGodBCj4GkfnNrH7Z5ZLa7Z+8K/msKqlU3Xi72py6ARTbn/sdv/XSV46qH8xLo+3ttjV73SBT/ankMc1E2O93zPF9LB05YSQE6N2tfVTWN8FRC+JLNIEHpQSsFAVWT7L+/WifubKtOBrgSqai/e0wO5vbTA9mFKSw/DstNqYHMyc6ltDMgJoZzWOaaOuw1QFupgcspujiQZm+ghqNsG3u0/8mxEWLAG8FjyKEnp71JkeqPmAn2KExdzqU/HcQcF57B/FX+nf+fvdieqvi0BeERTgTUtlOYE/3yZUdmhDEzqiloveKSC08/cz0B+sOww667anOghq4m5KXDZlxojVBf5fsAf2I7LPJB7WKNCEpbVF2sRD64soaw6DDrZEOMOIlVS9whu4TZLf77whwHnG0EP93g1teaIa5yfCgKk7Xd3+xYiiGUraI/uEPveqOPWg08dszOE4yocSLWRljdOLLU48K1PHYKYvi1+KhprlbRvXitmg5e6enr/DZpYf2/WY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4874.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(136003)(376002)(346002)(396003)(36756003)(53546011)(71200400001)(2906002)(4326008)(66556008)(31696002)(76116006)(64756008)(86362001)(2616005)(31686004)(5660300002)(8676002)(316002)(83380400001)(6506007)(478600001)(54906003)(91956017)(8936002)(66476007)(66446008)(6486002)(66946007)(186003)(6512007)(110136005)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?WkxPMnJsQm5RZGMxNENZTTNzMjF6L3g4R1dMQlV2UkVNZ2hoZ0lkbUVhVVV1?=
+ =?utf-8?B?N0Q4aVpIQXo5blkyUEM3NExWbzJwUXVDK0YwQUY1NGRGR2E2V2pQQ0x6MHgz?=
+ =?utf-8?B?Z1gyWXFySy9BRmJLOENzcE84MXdzaUQ1c3M1Z3B6M0NWc2V3V0ZuaTdBYTd3?=
+ =?utf-8?B?ZEU1MlBSS25XWjNsQmFHcG9xbHFtZVZ1eDdWYkV5Ry9sbWlVeWd3WTNPdjgx?=
+ =?utf-8?B?eVVBbjNJZ2pCNEViSStmZzJPVGFyL3hpa1UrYXRSMll3V25xYU1wdm9QUHJ0?=
+ =?utf-8?B?R3diTnJ4QWRjaUhwNEdJb09BS0c3UGN0K0dBU3BDeVhUU2N4VUdNeGFBQWFi?=
+ =?utf-8?B?azFSZlRUT0N4VENqNWhEbUdKcFMyOEVMT1RvMmxyb2dNemVqOVZOK0paRFB4?=
+ =?utf-8?B?OGNlY3J4L3MzUUFKTVJHMzhka0hlRnRvMHJlM1pIMDdzOVhWOUZOejFlSncx?=
+ =?utf-8?B?NFdYYXpLWHZtZU1kM1AvRnY1MW11L1M0bTNaaHd2Nmk3RWtZOHNqRU5SanNI?=
+ =?utf-8?B?eHE2UkZGSXlPUi9acWJmeWlnMmFkUjNqNE1EQmpBUW44K01Ia205S1RsWGdx?=
+ =?utf-8?B?aGlLb2swRENKNWVjb1g4czV2SjlaQVhpNXpCN1NaKzJiSDJ3bUJHaFVPbExr?=
+ =?utf-8?B?TkRIZGJNcXdudDM5anR2Ykg3M2ZQQUpTeUV6d0xvSjNHdGkzY3IrNXhhaUZF?=
+ =?utf-8?B?d2dBZ3U2eDIwdUY4Um5kckFHdEs5NE45VEVkR2xKN2l2YzYyb1RYL041UDRk?=
+ =?utf-8?B?UGRRMjhtYzhGa3M0bncrazdicmJ4VDFvbmgybUR0THdzcUR3MHdaUzhIeitV?=
+ =?utf-8?B?T0ptYXVSNy9ZUUJmQkE2cnJzdXdnR3BrZkM3SE1PN2FDMzk0Nzg5aWxJdS9W?=
+ =?utf-8?B?dTFlRFJBUnhkY2pmaUw4R242a0JhMENjaktxamdzUGN4cmdDYzZnWjdGM1Iz?=
+ =?utf-8?B?RWpRbmlPcjc5NzNsSnRmTFU0RG95U2ZvTXRPUHBaMHJnN1d1U0VQNHFXcUxy?=
+ =?utf-8?B?RXhuMTk5M3RaMXdQRlV3a0ZEc1MwOFZ4eTVTajlhZy9penpiZGVZaVJQeitl?=
+ =?utf-8?B?ZkRFenUzbFNSSDBtZE5vdE9ZcWRHanRWZEtOSk1IZ3pRaXVEcTZ1cUw3SDY5?=
+ =?utf-8?B?QTNzVmFhZURrUVFrVUc0aFVzVDhxajFOYzQwOE1sZkFXUjVLcE9rSU53RlZ6?=
+ =?utf-8?B?Q2ZRQU83MDdNNU5RTW9ISjBzM1E2NitQY2ZPZkpBeHZUdE4yRDlTS2pjRGJZ?=
+ =?utf-8?B?My9UNlJLblZkSjVMc3lZUnJwbTJ3K1h4Ykt1RnZ5MlFwbWtuc09rbHZhNkFK?=
+ =?utf-8?B?Z0poZ1dXakxkUEtFS3FWYlU2QjNoTEtyZ013a3ZtUkR5SWcrTk9TbTR4YVk0?=
+ =?utf-8?B?N0p4MzFsUlRUd1lvYXQ3UXpKWjlzRjNmTGRrZ1dBOGkxVWREZlJNYTQwd3A0?=
+ =?utf-8?B?UnB3eklCMzBybWV3NlJmSGR4bnFaTDRxSVBjNDFKZG9zWEZIcVVsaGV5QkxD?=
+ =?utf-8?B?S2FlTjEyK0hZTkZLZUV3cFh4V3dsdnNJYXhhQzBmRVRFR0V5Vk5ndCsrVTlI?=
+ =?utf-8?B?Qk10Q0daT3N0eGdtYjB0NnVJemJzT3NRSjEyN1VlUlhsWkM2ZmRZNWlkRVN4?=
+ =?utf-8?B?Qk8vUFI4WTRsT1ZvdDkya0wrc24xYzloNW4rK1pwb3c2MHdLVjh5elBpenla?=
+ =?utf-8?B?elh6SmJtcWRyNXpBLzdDL2RHVytKY2Jpc1BPcE9vdnVTR2srZllxMjZpZnlK?=
+ =?utf-8?Q?5LZObjRxRpDK3H2T4g=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <ABE430FA12837040913059871DF54ECE@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210225160247.2959903-1-masahiroy@kernel.org>
- <r3584n3-sq21-qo49-9sp5-r3qp6o611s55@syhkavp.arg> <CAK7LNAQeL7jQt1RJjLbU7MUj7XGAwEAhtTvMocQw85uJj9NA9g@mail.gmail.com>
- <46506ns0-1477-n7nq-9qq4-9pn48634oq4@syhkavp.arg>
-In-Reply-To: <46506ns0-1477-n7nq-9qq4-9pn48634oq4@syhkavp.arg>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 9 Mar 2021 16:28:21 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATw9tLZ7sgPhK5TcsQnYW6_O25JOqxGA_wm4rN+Hi0SLg@mail.gmail.com>
-Message-ID: <CAK7LNATw9tLZ7sgPhK5TcsQnYW6_O25JOqxGA_wm4rN+Hi0SLg@mail.gmail.com>
-Subject: Re: [PATCH 0/4] kbuild: build speed improvment of CONFIG_TRIM_UNUSED_KSYMS
-To:     Nicolas Pitre <nico@fluxnic.net>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8a7b76a-47af-406c-36b1-08d8e2ccfd13
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Mar 2021 07:28:51.8552
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: beZxTPtuvlYiGjgdbwA6unRo5z/0ws8rx3uKBsJzqd9dWFDKqvQY3/ms7pzna7Wrk4/Hz9W+B7GAJHApdVDvRNJ6HOg1xUN/9OXZvdKIZZ8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 4:24 AM Nicolas Pitre <nico@fluxnic.net> wrote:
->
-> On Fri, 26 Feb 2021, Masahiro Yamada wrote:
->
-> > On Fri, Feb 26, 2021 at 2:20 AM Nicolas Pitre <nico@fluxnic.net> wrote:
-> > >
-> > > On Fri, 26 Feb 2021, Masahiro Yamada wrote:
-> > >
-> > > >
-> > > > Now CONFIG_TRIM_UNUSED_KSYMS is revived, but Linus is still unhappy
-> > > > about the build speed.
-> > > >
-> > > > I re-implemented this feature, and the build time cost is now
-> > > > almost unnoticeable level.
-> > > >
-> > > > I hope this makes Linus happy.
-> > >
-> > > :-)
-> > >
-> > > I'm surprised to see that Linus is using this feature. When disabled
-> > > (the default) this should have had no impact on the build time.
-> >
-> > Linus is not using this feature, but does build tests.
-> > After pulling the module subsystem pull request in this merge window,
-> > CONFIG_TRIM_UNUSED_KSYMS was enabled by allmodconfig.
->
-> If CONFIG_TRIM_UNUSED_KSYMS is enabled then build time willincrease.
-> That comes with the feature.
-
-
-This patch set intends to change this.
-TRIM_UNUSED_KSYMS will build without additional cost,
-like LD_DEAD_CODE_DATA_ELIMINATION.
-
-
-
->
-> > > This feature provides a nice security advantage by significantly
-> > > reducing the kernel input surface. And people are using that also to
-> > > better what third party vendor can and cannot do with a distro kernel,
-> > > etc. But that's not the reason why I implemented this feature in the
-> > > first place.
-> > >
-> > > My primary goal was to efficiently reduce the kernel binary size using
-> > > LTO even with kernel modules enabled.
-> >
-> >
-> > Clang LTO landed in this MW.
-> >
-> > Do you think it will reduce the kernel binary size?
-> > No, opposite.
->
-> LTO ought to reduce binary size. It is rather broken otherwise.
-> Having a global view before optimizing allows for the compiler to do
-> project wide constant propagation and dead code elimination.
->
-> > CONFIG_LTO_CLANG cannot trim any code even if it
-> > is obviously unused.
-> > Hence, it never reduces the kernel binary size.
-> > Rather, it produces a bigger kernel.
->
-> Then what's the point?
-
-
-Presumably, reducing the size is not
-the main interest for Googlers.
-
-
->
-> > The reason is Clang LTO was implemented against
-> > relocatable ELF (vmlinux.o) .
->
-> That's not true LTO then.
-
-
-This is the same as what I said in the review process.
-:-)
-
-https://lore.kernel.org/linux-kbuild/CAK7LNASQPOGohtUyzBM6n54pzpLN35kDXC7VbvWzX8QWUmqq9g@mail.gmail.com/
-
-
-
-
->
-> > I pointed out this flaw in the review process, but
-> > it was dismissed.
-> >
-> > This is the main reason why I did not give any Ack
-> > (but it was merged via Kees Cook's tree).
->
-> > So, the help text of this option should be revised:
-> >
-> >           This option allows for unused exported symbols to be dropped from
-> >           the build. In turn, this provides the compiler more opportunities
-> >           (especially when using LTO) for optimizing the code and reducing
-> >           binary size.  This might have some security advantages as well.
-> >
-> > Clang LTO is opposite to your expectation.
->
-> Then Clang LTO is a misnomer. That is the option to revise not this one.
->
-> > > Each EXPORT_SYMBOL() created a
-> > > symbol dependency that prevented LTO from optimizing out the related
-> > > code even though a tiny fraction of those exported symbols were needed.
-> > >
-> > > The idea behind the recursion was to catch those cases where disabling
-> > > an exported symbol within a module would optimize out references to more
-> > > exported symbols that, in turn, could be disabled and possibly trigger
-> > > yet more code elimination. There is no way that can be achieved without
-> > > extra compiler passes in a recursive manner.
-> >
-> > I do not understand.
-> >
-> > Modules are relocatable ELF.
-> > Clang LTO cannot eliminate any code.
-> > GCC LTO does not work with relocatable ELF
-> > in the first place.
->
-> I don't think I follow you here. What relocatable ELF has to do with LTO?
-
-
-
-What is important is,
-GCC LTO is the feature of gcc, not binutils.
-That is, LD_FINAL is $(CC).
-
-GCC LTO can be implemented for the final link stage
-by using $(CC) as the linker driver.
-Then, it can determine which code is unreachable.
-In other words, GCC LTO works only when building
-the final executable.
-
-
-On the other hand, a relocatable ELF is created
-by $(LD) -r by combining some objects together.
-The relocatable ELF can be fed to another $(LD) -r,
-or the final link stage.
-
-
-vmlinux is an executable ELF.
-modules (*.ko files) are relocatable ELFs.
-
-
-You can confirm it easily
-by using the 'file' command.
-
-masahiro@oscar:~/ref/linux$ file vmlinux
-vmlinux: ELF 64-bit LSB executable, x86-64, version 1 (SYSV),
-statically linked,
-BuildID[sha1]=ee0cef2ff3d9f490e0f5ee1d7e74b19aa167933b, not stripped
-masahiro@oscar:~/ref/linux$ file  net/ipv4/netfilter/iptable_nat.ko
-net/ipv4/netfilter/iptable_nat.ko: ELF 64-bit LSB relocatable, x86-64,
-version 1 (SYSV),
-BuildID[sha1]=4829e82f9b9e7fd65be3c19c1cf0e16a7ddf0967, not stripped
-
-
-
-Modules are not filled with addresses yet
-since we do not know which memory address
-the module will be loaded to.
-The addresses are resolved at modprobe time.
-
-As I said above, modules are created by $(LD) -r.
-It is not possible to implement GCC LTO for modules.
-
-
-
-In contrast, Clang LTO is the ability of $(LD).
-So, it can be implemented for not only for executable ELFs,
-but also for relocated ELFs.
-The problem is Clang LTO cannot determine which code is
-unreachable if it is implemented for a relocatable ELF,
-since it is not a final image.
-
-Did I answer your question?
-
-
-
-
-
-> I've successfully used gcc LTO on the kernel quite a while ago.
->
-> For a reference about binary size reduction with LTO and
-> CONFIG_TRIM_UNUSED_KSYMS please read this article:
->
-> https://lwn.net/Articles/746780/
-
-
-Thanks for the great articles.
-
-Just for curiosity, I think you used GCC LTO from
-Andy's GitHub.
-
-
-In the article, you took stm32_defconfig as an example,
-but ARM does not select ARCH_SUPPORTS_LTO.
-
-Did you add some local hacks to make LTO work
-for ARM?
-
-I tried the lto-5.8.1 branch, but
-I did not even succeed in building x86 + LTO.
-
-
-
-
-
-
->
-> Nicolas
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+T24gMy84LzIxIDc6MjggUE0sIFZpZ25lc2ggUmFnaGF2ZW5kcmEgd3JvdGU6DQo+IEVYVEVSTkFM
+IEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91
+IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gT24gMy82LzIxIDM6MjAgUE0sIFR1ZG9y
+IEFtYmFydXMgd3JvdGU6DQo+PiBJdCBtYWtlcyB0aGUgY29yZSBmaWxlIGEgYml0IHNtYWxsZXIg
+YW5kIHByb3ZpZGVzIGJldHRlciBzZXBhcmF0aW9uDQo+PiBiZXR3ZWVuIHRoZSBTb2Z0d2FyZSBX
+cml0ZSBQcm90ZWN0aW9uIGZlYXR1cmVzIGFuZCB0aGUgY29yZSBsb2dpYy4NCj4+IEFsbCB0aGUg
+bmV4dCBnZW5lcmljIHNvZnR3YXJlIHdyaXRlIHByb3RlY3Rpb24gZmVhdHVyZXMgKGUuZy4gSW5k
+aXZpZHVhbA0KPj4gQmxvY2sgUHJvdGVjdGlvbikgd2lsbCByZXNpZGUgaW4gc3dwLmMuDQo+Pg0K
+Pj4gU2lnbmVkLW9mZi1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAu
+Y29tPg0KPj4gLS0tDQo+PiAgZHJpdmVycy9tdGQvc3BpLW5vci9NYWtlZmlsZSB8ICAgMiArLQ0K
+Pj4gIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jICAgfCA0MDcgKy0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLQ0KPj4gIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5oICAgfCAgIDQg
+Kw0KPj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3dwLmMgICAgfCA0MTkgKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysNCj4gDQo+IEhtbW0sIG5hbWUgc3dwLmMgZG9lcyBub3Qgc2Vl
+bSBpbnR1aXRpdmUgdG8gbWUuIEhvdyBhYm91dCBleHBhbmRpbmcgaXQgYQ0KPiBiaXQ6DQo+IA0K
+PiBzb2Z0LXdyLXByb3RlY3QuYyBvciBzb2Z0d2FyZS13cml0ZS1wcm90ZWN0LmMgPw0KPiANCg0K
+SSB0aG91Z2h0IGFib3V0IHRoZSBTV1AgY29uZmlncyB0aGF0IHdlIGhhdmUuDQoNCkhvdyBhYm91
+dCBrZWVwaW5nIHN3cC5jIGFuZCByZW5hbWUgY29uZmlncyB0bzoNCnMvTVREX1NQSV9OT1JfU1dQ
+X0RJU0FCTEUvTVREX1NQSV9OT1JfRElTQUJMRV9CT09UX1NXUA0Kcy9NVERfU1BJX05PUl9TV1Bf
+RElTQUJMRV9PTl9WT0xBVElMRS9NVERfU1BJX0RJU0FCTEVfQk9PVF9TV1BfT05fVk9MQVRJTEUN
+CnMvTVREX1NQSV9OT1JfU1dQX0tFRVAvTVREX1NQSV9OT1JfS0VFUF9CT09UX1NXUA0KDQpUaGUg
+cmVuYW1lZCBjb25maWdzIHNob3VsZCBiZXR0ZXIgaW5kaWNhdGUgdGhhdCB0aGUgc29mdHdhcmUg
+d3JpdGUgcHJvdGVjdGlvbg0KaXMgZGlzYWJsZWQganVzdCBhdCBib290IHRpbWUsIHdoaWxlIHRo
+ZSBsb2NraW5nIHN1cHBvcnQgaXMgc3RpbGwgZW5hYmxlZC4NCk90aGVyd2lzZSBvbmUgbWF5IHRo
+aW5rIHRoYXQgd2l0aCBhIE1URF9TUElfTk9SX1NXUF9ESVNBQkxFLCBhbGwgdGhlDQpzb2Z0d2Fy
+ZSB3cml0ZSBwcm90ZWN0aW9uIGZlYXR1cmVzIGFyZSBzdHJpcHBlZC9ub3QgYXZhaWxhYmxlLg0K
+DQpDaGVlcnMsDQp0YQ0K
