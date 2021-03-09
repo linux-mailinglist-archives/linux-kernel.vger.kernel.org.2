@@ -2,29 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181B033314A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B6233314B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhCIVxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 16:53:10 -0500
-Received: from mga12.intel.com ([192.55.52.136]:21375 "EHLO mga12.intel.com"
+        id S232069AbhCIVxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 16:53:41 -0500
+Received: from mga09.intel.com ([134.134.136.24]:51531 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230320AbhCIVwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 16:52:46 -0500
-IronPort-SDR: fXmJDKWoSfJFpydNZoXAkNYyRXw1/SgWuWoC0oOWbc92Mc1+6UsYnPWIUzJfG31a77ijBNRbPb
- Zat1AXhxgx1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="167600816"
+        id S232039AbhCIVxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 16:53:16 -0500
+IronPort-SDR: c7gIXW5LOZixpTx6gBm1Fmq7aVkRiwDN24Wvi3MELzumowIQIbE7NkclqHD0u9nXxa5oWlz8fC
+ GAi+ZnJtkDCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="188430518"
 X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="167600816"
+   d="scan'208";a="188430518"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 13:52:43 -0800
-IronPort-SDR: kcGndPuQWZzmGvY6HbHKXTr0qRtNyCxm2423u8ZGTELTpcKsUhtmi7f4nLeZ2khQ8/WV8KiuWI
- 3Z0IJ8ZUGQBw==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 13:53:14 -0800
+IronPort-SDR: 5QP3bP898qdsOxObYFIXYrySeDVWGeF6d+dMI3ZX7/uXQQL1l9NOy28BEcD4T5LTCbVsNTwNmh
+ f5KKZe4KTs4w==
 X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="447658417"
+   d="scan'208";a="447658459"
 Received: from jcchan4-mobl.amr.corp.intel.com (HELO [10.212.217.30]) ([10.212.217.30])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 13:52:42 -0800
-Subject: Re: [PATCH 00/10] [v6] Migrate Pages in lieu of discard
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 13:53:13 -0800
+Subject: Re: [PATCH 10/10] mm/migrate: new zone_reclaim_mode to enable reclaim
+ migration
 To:     Yang Shi <shy828301@gmail.com>,
         Dave Hansen <dave.hansen@linux.intel.com>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
@@ -36,7 +37,8 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         David Hildenbrand <david@redhat.com>,
         Oscar Salvador <osalvador@suse.de>
 References: <20210304235949.7922C1C3@viggo.jf.intel.com>
- <CAHbLzkofXg0CnCBYdtWf3cE8Do=B35ZsupV01EmR1SX5=7BHjw@mail.gmail.com>
+ <20210305000009.EDF902E9@viggo.jf.intel.com>
+ <CAHbLzkqKSOSnyXfqkeW2HDdYk6m+zSZuk5AX1waFVfK-1Vg1=Q@mail.gmail.com>
 From:   Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -81,32 +83,29 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
  ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
  z5cecg==
-Message-ID: <da1e995f-0b96-7bd5-ea49-281aabe7f46f@intel.com>
-Date:   Tue, 9 Mar 2021 13:52:42 -0800
+Message-ID: <3cee267e-6a5b-a5a3-698b-4261bef13543@intel.com>
+Date:   Tue, 9 Mar 2021 13:53:13 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzkofXg0CnCBYdtWf3cE8Do=B35ZsupV01EmR1SX5=7BHjw@mail.gmail.com>
+In-Reply-To: <CAHbLzkqKSOSnyXfqkeW2HDdYk6m+zSZuk5AX1waFVfK-1Vg1=Q@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-...
->> == Open Issues ==
->>
->>  * For cpusets and memory policies that restrict allocations
->>    to PMEM, is it OK to demote to PMEM?  Do we need a cgroup-
->>    level API to opt-in or opt-out of these migrations?
+On 3/8/21 4:24 PM, Yang Shi wrote:
+>> Once this is enabled page demotion may move data to a NUMA node
+>> that does not fall into the cpuset of the allocating process.
+>> This could be construed to violate the guarantees of cpusets.
+>> However, since this is an opt-in mechanism, the assumption is
+>> that anyone enabling it is content to relax the guarantees.
+> I think we'd better have the cpuset violation paragraph along with new
+> zone reclaim mode text so that the users are aware of the potential
+> violation. I don't think commit log is the to-go place for any plain
+> users.
 > 
-> I'm wondering if such usecases, which don't want to have memory
-> allocate on pmem, will allow memory swapped out or reclaimed? If swap
-> is allowed then I failed to see why migrating to pmem should be
-> disallowed. If swap is not allowed, they should call mlock, then the
-> memory won't be migrated to pmem as well.
 
-Agreed.  I have a hard time imagining there are a lot of folks that can
-tolerate the massive overhead from swapping, but can't tolerate the much
-smaller overhead of going to pmem instead of DRAM.
+Agreed.  I'll add it to the Documentation/.
