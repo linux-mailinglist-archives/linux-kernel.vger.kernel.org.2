@@ -2,137 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E99B4332F31
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:42:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF98332F39
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:43:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhCITmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 14:42:05 -0500
-Received: from mga18.intel.com ([134.134.136.126]:18675 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229948AbhCITlz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:41:55 -0500
-IronPort-SDR: Vl/66cGzAq6EXYauokt8kZoepgEOccFHCgUzPJQuuo9eQRP4qUslfPO++GRcBRbZdiaPXQSBDP
- zSpbhpVV+QJw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="175911862"
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="175911862"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 11:41:48 -0800
-IronPort-SDR: CcuWziOV8r+3pfJrl+fnBlyvOCafqG+gqjr7zBk88xXNo6XphpN8KI+eY84qjypFt3sD7nuo+K
- ZsZ6YHLywf4g==
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="437748702"
-Received: from ankitama-mobl1.amr.corp.intel.com (HELO [10.209.121.187]) ([10.209.121.187])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 11:41:47 -0800
-Subject: Re: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is
- present
-To:     Jon Hunter <jonathanh@nvidia.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc:     linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Bard liao <yung-chuan.liao@linux.intel.com>
-References: <20210303115526.419458-1-jonathanh@nvidia.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <91480f92-a3f5-e71f-acdc-ea74488ab0a1@linux.intel.com>
-Date:   Tue, 9 Mar 2021 13:41:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231428AbhCITnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:43:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231161AbhCITnE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 14:43:04 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B986C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 11:43:04 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id o38so9497900pgm.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 11:43:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nrSjbcfbtpDu99fWTpmyTiTS4z7P8iLrCevZq+OwJDk=;
+        b=fxZkdSwllM3KcD1tprgJ8Qwwl3PI5A+cU8oORbvgRMWthQA0elQUWYTsTefxo87ZMH
+         csmfaAMMCvh7WBAPvVauUmDmZGZj1yKsoDGNatLLTaHDvpE93tQVrzeqnmrkE8dw+19g
+         H4NzNxqJTkhxUUKb6moJUDCHrSdkD3Mn2YC8vv8/ax319/eIZFWqVitKiicr3Q9vwnWL
+         C8iZA/cO52ZIoF+Y0a8FtA3ipQmjOmywD6Dl4b4oDoU8/FL4gYiEU9PEuhi7cG6ryrpP
+         LpmHctDWZMDMaQIz2OpaVQeOHmmf0/qTOSIh/dx5RZKdqq6dBJPmVN2QpiTqphqK9QNM
+         SSGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nrSjbcfbtpDu99fWTpmyTiTS4z7P8iLrCevZq+OwJDk=;
+        b=dfRynS+z8vjTX6RRUGNj5usy9SuVc8V7iMOyER/xo8vKUZ0SZ4zbD+PXdwF6L3B9+i
+         IEsrpRHkU2tlcc7//ExKqyXaY80az4I0AvDMpbSk94zXWP45nLtHTXaKBMS5tfLj4tbf
+         EuGIMytMqGJhHs0FDuJBf2Z7l//+hS+nyxZTJVBMcPUxgVZfeFoJbwi2InOqur2H4tNh
+         wy9TYyBkuFdphi9/QJ1edM+FMX2qUXVQxXhFnf+jWztmiP6OcFv4TfLQRH1bbjh+Japm
+         COM0zd5jtWqVgu+sO3rDbchqeUiSe1C00WxrZUBCvB1uxsvq5nvXvlYfhNKtnSbiXMAv
+         W2KA==
+X-Gm-Message-State: AOAM532PfHxibPmlFGDyPutPP6ZYPGb+ngLoR7gYz958p/vDjw+VC0JG
+        L9eqYaMecCtr2VhlCb5pB1EPIQ==
+X-Google-Smtp-Source: ABdhPJxG0mCqsNk6TCaFJMi2aql7w63MaxtH/VOu8x+69eBxPHe97w/5N8Km/Rme/8HzauKwfNe/gw==
+X-Received: by 2002:a62:3085:0:b029:1ec:a6b8:6dd2 with SMTP id w127-20020a6230850000b02901eca6b86dd2mr26760622pfw.7.1615318983949;
+        Tue, 09 Mar 2021 11:43:03 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:e4dd:6c31:9463:f8da])
+        by smtp.gmail.com with ESMTPSA id 25sm14296910pfh.199.2021.03.09.11.43.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 11:43:03 -0800 (PST)
+Date:   Tue, 9 Mar 2021 11:42:56 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Steve Rutherford <srutherford@google.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
+ ioctl
+Message-ID: <YEfPwD6/XiTp7v0y@google.com>
+References: <20210224175122.GA19661@ashkalra_ubuntu_server>
+ <YDaZacLqNQ4nK/Ex@google.com>
+ <20210225202008.GA5208@ashkalra_ubuntu_server>
+ <CABayD+cn5e3PR6NtSWLeM_qxs6hKWtjEx=aeKpy=WC2dzPdRLw@mail.gmail.com>
+ <20210226140432.GB5950@ashkalra_ubuntu_server>
+ <YDkzibkC7tAYbfFQ@google.com>
+ <20210308104014.GA5333@ashkalra_ubuntu_server>
+ <YEaAXXGZH0uSMA3v@google.com>
+ <bdf0767f-c2c4-5863-fd0d-352a3f68f7f9@amd.com>
+ <CABayD+ftv5DNdXj-Bs8MXGeFNKx7-aTt99fPuD2R6w1mJ2u8TQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210303115526.419458-1-jonathanh@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABayD+ftv5DNdXj-Bs8MXGeFNKx7-aTt99fPuD2R6w1mJ2u8TQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 08, 2021, Steve Rutherford wrote:
+> On Mon, Mar 8, 2021 at 1:11 PM Brijesh Singh <brijesh.singh@amd.com> wrote:
+> > On 3/8/21 1:51 PM, Sean Christopherson wrote:
+> > > If the guest does the hypercall after writing the page, then the guest is hosed
+> > > if it gets migrated while writing the page (scenario #1):
+> > >
+> > >   vCPU                 Userspace
+> > >   zero_bytes[0:N]
+> > >                        <transfers written bytes as private instead of shared>
+> > >                      <migrates vCPU>
+> > >   zero_bytes[N+1:4095]
+> > >   set_shared (dest)
+> > >   kaboom!
+> >
+> >
+> > Maybe I am missing something, this is not any different from a normal
+> > operation inside a guest. Making a page shared/private in the page table
+> > does not update the content of the page itself. In your above case, I
+> > assume zero_bytes[N+1:4095] are written by the destination VM. The
+> > memory region was private in the source VM page table, so, those writes
+> > will be performed encrypted. The destination VM later changed the memory
+> > to shared, but nobody wrote to the memory after it has been transitioned
+> > to the  shared, so a reader of the memory should get ciphertext and
+> > unless there was a write after the set_shared (dest).
 
+Sorry, that wasn't clear, there's an implied page table update to make the page
+shared before zero_bytes.
 
-On 3/3/21 5:55 AM, Jon Hunter wrote:
-> Many systems do not use ACPI and hence do not provide a DMI table. On
-> non-ACPI systems a warning, such as the following, is printed on boot.
-> 
->   WARNING KERN tegra-audio-graph-card sound: ASoC: no DMI vendor name!
-> 
-> The variable 'dmi_available' is not exported and so currently cannot be
-> used by kernel modules without adding an accessor. However, it is
-> possible to use the function is_acpi_device_node() to determine if the
-> sound card is an ACPI device and hence indicate if we expect a DMI table
-> to be present. Therefore, call is_acpi_device_node() to see if we are
-> using ACPI and only parse the DMI table if we are booting with ACPI.
+> > > If userspace does GET_DIRTY after GET_LIST, then the host would transfer bad
+> > > data by consuming a stale list (scenario #2):
+> > >
+> > >   vCPU               Userspace
+> > >                      get_list (from KVM or internally)
+> > >   set_shared (src)
+> > >   zero_page (src)
+> > >                      get_dirty
+> > >                      <transfers private data instead of shared>
+> > >                      <migrates vCPU>
+> > >   kaboom!
+> >
+> >
+> > I don't remember how things are done in recent Ashish Qemu/KVM patches
+> > but in previous series, the get_dirty() happens before the querying the
+> > encrypted state. There was some logic in VMM to resync the encrypted
+> > bitmap during the final migration stage and perform any additional data
+> > transfer since last sync.
 
-That change introduces a regression on all our tests: the names are not 
-correctly set, which will prevent UCM from loading the relevant profiles 
-based on the long name.
+It's likely that Ashish's patches did the correct thing, I just wanted to point
+out that both host and guest need to do everything in a very specific order.
 
-Before:
-  0 [sofhdadsp      ]: sof-hda-dsp - sof-hda-dsp
-                       AAEON-UP_WHL01-V1.0
+> > > If both guest and host order things to avoid #1 and #2, the host can still
+> > > migrate the wrong data (scenario #3):
+> > >
+> > >   vCPU               Userspace
+> > >   set_private
+> > >   zero_bytes[0:4096]
+> > >                      get_dirty
+> > >   set_shared (src)
+> > >                      get_list
+> > >                      <transfers as shared instead of private>
+> > >                    <migrates vCPU>
+> > >   set_private (dest)
+> > >   kaboom!
+> >
+> >
+> > Since there was no write to the memory after the set_shared (src), so
+> > the content of the page should not have changed. After the set_private
+> > (dest), the caller should be seeing the same content written by the
+> > zero_bytes[0:4096]
+>
+> I think Sean was going for the situation where the VM has moved to the
+> destination, which would have changed the VEK. That way the guest
+> would be decrypting the old ciphertext with the new (wrong) key.
 
-After:
-root@plb-UP-WHL01:/proc/asound# more cards
-  0 [sofhdadsp      ]: sof-hda-dsp - sof-hda-dsp
-                       sof-hda-dsp
+I think that's what I was saying?
 
-The problem is that the cards are platform devices created by the parent 
-(which itself may be a PCI or ACPI device) and have nothing to do with ACPI.
+I was pointing out that the userspace VMM would see the page as "shared" and so
+read the guest memory directly instead of routing it through the PSP.
 
-Could we flip the logic and instead explicitly detect OF devices? That 
-restores functionality for us.
+Anyways, my intent wasn't to point out a known issue anywhere.  I was working
+through how GET_LIST would interact with GET_DIRTY_LOG to convince myself that
+the various flows were bombproof.  I wanted to record those thoughts so that I
+can remind myself of the requirements when I inevitably forget them in the future.
 
-Jon, would this work for you?
-
-Thanks!
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 16ba54eb8164..5c40b4548413 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1574,7 +1574,7 @@ int snd_soc_set_dmi_name(struct snd_soc_card 
-*card, const char *flavour)
-         if (card->long_name)
-                 return 0; /* long name already set by driver or from DMI */
-
--       if (!is_acpi_device_node(card->dev->fwnode))
-+       if (is_of_node(card->dev->fwnode))
-                 return 0;
-
-         /* make up dmi long name as: vendor-product-version-board */
-
-
-> 
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
-> Changes since V1:
-> - Use is_acpi_device_node() to determine if we expect the DMI table to
->    be present.
-> 
->   sound/soc/soc-core.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index f6d4e99b590c..0cffc9527e28 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -31,6 +31,7 @@
->   #include <linux/of.h>
->   #include <linux/of_graph.h>
->   #include <linux/dmi.h>
-> +#include <linux/acpi.h>
->   #include <sound/core.h>
->   #include <sound/pcm.h>
->   #include <sound/pcm_params.h>
-> @@ -1573,6 +1574,9 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
->   	if (card->long_name)
->   		return 0; /* long name already set by driver or from DMI */
->   
-> +	if (!is_acpi_device_node(card->dev->fwnode))
-> +		return 0;
-> +
->   	/* make up dmi long name as: vendor-product-version-board */
->   	vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
->   	if (!vendor || !is_dmi_valid(vendor)) {
-> 
+> > > Scenario #3 is unlikely, but plausible, e.g. if the guest bails from its
+> > > conversion flow for whatever reason, after making the initial hypercall.  Maybe
+> > > it goes without saying, but to address #3, the guest must consider existing data
+> > > as lost the instant it tells the host the page has been converted to a different
+> > > type.
+> > >
+> > >> For the above reason if we do in-kernel hypercall handling for page
+> > >> encryption status (which we probably won't require for SEV-SNP &
+> > >> correspondingly there will be no hypercall exiting),
+> > > As above, that doesn't preclude KVM from exiting to userspace on conversion.
+> > >
+> > >> then we can implement a standard GET/SET ioctl interface to get/set the guest
+> > >> page encryption status for userspace, which will work across SEV, SEV-ES and
+> > >> SEV-SNP.
