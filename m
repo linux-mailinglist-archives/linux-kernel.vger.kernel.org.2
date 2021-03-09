@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363C13326F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0884E3326FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 14:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhCINYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 08:24:08 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:26885 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231234AbhCINXe (ORCPT
+        id S231522AbhCINYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 08:24:09 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:55579 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231246AbhCINXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 08:23:34 -0500
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 129DNEQS012165
-        for <linux-kernel@vger.kernel.org>; Tue, 9 Mar 2021 22:23:15 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 129DNEQS012165
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615296195;
-        bh=CbxFHgVB2SQpcb7VqdqRvEaqw6KWWQMVs3wq83fC9II=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=H7BjHJmkJdH7UxMG1b9+HPUXTaQjAMU9LdYogVB3/sm3ljM/fmYsCUXO5GEHwxOxb
-         yWuz3kTtoZanY2b8FqMmucj+fFuB1+NYTjVtg/7dknF0zHJ5EUuqVtvctndTc6G8A1
-         Buj2Mz5x/vthBsx1nhm/t/LLdCDB87gydxwe1NTRaIXFYtKXNIYn6Ikt2dAgDPqSV5
-         uZQ9HGpBO5Q35UfzHpBlf2jegJGokKodBA8YcWrD1xL+FEB2y65kyM98gJELlTLpay
-         /KrCg8YwPZkRes4mARE3+tZTPMpOTEJEn5Jxztnepozi+wGnmZvdf/3eo44Wmpx+ja
-         7JfvYtijWIIow==
-X-Nifty-SrcIP: [209.85.216.49]
-Received: by mail-pj1-f49.google.com with SMTP id lr10-20020a17090b4b8ab02900dd61b95c5eso2742703pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 05:23:15 -0800 (PST)
-X-Gm-Message-State: AOAM533t9mndTUZj8BThpyLm8md8qZBqfjgNPH0OobPoObdMpf16WymN
-        b60crvVn+kqSM26YRC1AIaV+bQonVBBqcRuQbI8=
-X-Google-Smtp-Source: ABdhPJzow4w2e+hJT29V+2d6CV+NG/d5KPhJP+FZyJVekp6Fwamd2svGL+/DBpfJCfSWpya7xsKKGbXzHrMWpHE2pGQ=
-X-Received: by 2002:a17:90a:5510:: with SMTP id b16mr4718167pji.87.1615296194334;
- Tue, 09 Mar 2021 05:23:14 -0800 (PST)
+        Tue, 9 Mar 2021 08:23:53 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1lJcKv-000AV7-QL; Tue, 09 Mar 2021 14:23:45 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1lJcKu-0006uV-H8; Tue, 09 Mar 2021 14:23:44 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 0C0D0240041;
+        Tue,  9 Mar 2021 14:23:44 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 6CB50240040;
+        Tue,  9 Mar 2021 14:23:43 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id DE993200DE;
+        Tue,  9 Mar 2021 14:23:41 +0100 (CET)
 MIME-Version: 1.0
-References: <20210309123544.14040-1-msuchanek@suse.de>
-In-Reply-To: <20210309123544.14040-1-msuchanek@suse.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 9 Mar 2021 22:22:36 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT+8mGunqXSPLHxhF1FTXQEzbAoKPY=48pBgtLbhcB0jg@mail.gmail.com>
-Message-ID: <CAK7LNAT+8mGunqXSPLHxhF1FTXQEzbAoKPY=48pBgtLbhcB0jg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: make STACKPROTECTOR_PER_TASK configurable.
-To:     Michal Suchanek <msuchanek@suse.de>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 09 Mar 2021 14:23:41 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Krzysztof Halasa <khc@pm.waw.pl>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next RFC] net: x25: Queue received packets in the
+ drivers instead of per-CPU queues
+Organization: TDT AG
+In-Reply-To: <20210305054312.254922-1-xie.he.0141@gmail.com>
+References: <20210305054312.254922-1-xie.he.0141@gmail.com>
+Message-ID: <4b30ca506b0d79ef5ba1a5e9ce9cf2cd@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.16
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate-type: clean
+X-purgate: clean
+X-purgate-ID: 151534::1615296225-0000B5A4-919C9C8D/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 9:35 PM Michal Suchanek <msuchanek@suse.de> wrote:
->
-> When using dummy-tools STACKPROTECTOR_PER_TASK is unconditionally
-> selected. This defeats the purpose of the all-enabled tool.
->
-> Description copied from arm
->
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+On 2021-03-05 06:43, Xie He wrote:
+> X.25 Layer 3 (the Packet Layer) expects layer 2 to provide a reliable
+> datalink service such that no packets are reordered or dropped. And
+> X.25 Layer 2 (the LAPB layer) is indeed designed to provide such 
+> service.
+> 
+> However, this reliability is not preserved when a driver calls 
+> "netif_rx"
+> to deliver the received packets to layer 3, because "netif_rx" will put
+> the packets into per-CPU queues before they are delivered to layer 3.
+> If there are multiple CPUs, the order of the packets may not be 
+> preserved.
+> The per-CPU queues may also drop packets if there are too many.
+> 
+> Therefore, we should not call "netif_rx" to let it queue the packets.
+> Instead, we should use our own queue that won't reorder or drop 
+> packets.
+> 
+> This patch changes all X.25 drivers to use their own queues instead of
+> calling "netif_rx". The patch also documents this requirement in the
+> "x25-iface" documentation.
 
+I've tested the hdlc_x25 driver.
+Looks good to me.
 
-Could you explain what problem
-this patch is trying to solve?
-
-
-> ---
->  arch/arm64/Kconfig | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index a8ff7cd5f096..f59d391e31a4 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1549,9 +1549,20 @@ config RANDOMIZE_MODULE_REGION_FULL
->  config CC_HAVE_STACKPROTECTOR_SYSREG
->         def_bool $(cc-option,-mstack-protector-guard=sysreg -mstack-protector-guard-reg=sp_el0 -mstack-protector-guard-offset=0)
->
-> +
->  config STACKPROTECTOR_PER_TASK
-> -       def_bool y
-> +       bool "Use a unique stack canary value for each task"
->         depends on STACKPROTECTOR && CC_HAVE_STACKPROTECTOR_SYSREG
-> +       default y
-> +       help
-> +         Due to the fact that GCC uses an ordinary symbol reference from
-> +         which to load the value of the stack canary, this value can only
-> +         change at reboot time on SMP systems, and all tasks running in the
-> +         kernel's address space are forced to use the same canary value for
-> +         the entire duration that the system is up.
-> +
-> +         Enable this option to switch to a different method that uses a
-> +         different canary value for each task.
->
->  endmenu
->
-> --
-> 2.26.2
->
-
-
--- 
-Best Regards
-Masahiro Yamada
+Acked-by: Martin Schiller <ms@dev.tdt.de>
