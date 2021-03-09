@@ -2,59 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBC1332FB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C52332FC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbhCIUPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:15:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55088 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231467AbhCIUPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:15:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7906965224;
-        Tue,  9 Mar 2021 20:15:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615320912;
-        bh=gpazf+/OMBHOGBv2YwI2xbzeqtEF2+G3yv5XbRfdzj8=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=iZZr4n27sr1S8GcaNCijYgJWXKfUe1RtUWG9iIla/HwGL7yiwR0wRRefjsMUzhW+w
-         feA10y7vsFFwUB+WQ2e4UXPhWnvQe8WhTrYrxdoimIO9nlllyvERZdhR1PpMJQjcLU
-         r446CAKcaChYUjLCyxE5dqMYQaRwlXHyB6BsrSlOQ8JoWrDyblO+v1QXq7mr/orzFs
-         MYDGRtmPLWbXNP7rHiGsSCSd75cPp+f/2glbH/87LVq0U58WhNTwMcVTwLaFnxPPKl
-         MAnYTGM1g/gipA3q3+zrhCG0qSnn8oVE+VaAWP2p8hZ43k/NuhzGDlnKLL1npR3g7I
-         7jiYf+ShRJ/Vw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 742A0609EA;
-        Tue,  9 Mar 2021 20:15:12 +0000 (UTC)
-Subject: Re: [GIT PULL] MIPS fixes for v5.12
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210309151722.GB12267@alpha.franken.de>
-References: <20210309151722.GB12267@alpha.franken.de>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210309151722.GB12267@alpha.franken.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_5.12_1
-X-PR-Tracked-Commit-Id: bd67b711bfaa02cf19e88aa2d9edae5c1c1d2739
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9c39198a65f182962e357fa1cd7a9bba50401f2f
-Message-Id: <161532091246.26915.2652841068002571837.pr-tracker-bot@kernel.org>
-Date:   Tue, 09 Mar 2021 20:15:12 +0000
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S231757AbhCIUUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:20:05 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10684 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231768AbhCIUTg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 15:19:36 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 129KEMmm145065;
+        Tue, 9 Mar 2021 15:19:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=aS1Aa9fTZPc17/c+7pqDOz2pDumYV23TjqmU+LSMAOo=;
+ b=l1HCX84DeDgONbHKAiKDvthvg1br726HpMhKQ26VclKhgoGaBj0/oaKCpB1EqLGYj9pA
+ 78JN6jUNR1Y1LDguDXOaaGVJmliy1GSC1S9r82I6eebftQOHXk8aREzEIsRFZNoHGSQu
+ 8UzWHPul9qyoITPDwxMoUBULvasv06r8dCVzSc6RvAR+lBAUA0PDKRGA8LOnsASugtKS
+ V0gqqW17aIQSMWweo6wSCJMpChsD1MZwTWp/c7Ag3frWCd9WjZTBOOmuoyT8EdsJB5zP
+ 57MdXVn48yNyHygw7zftAQ1gsbRfM6R/jCeXgBaau50ay0l+uKpWdwFiix29pJ2F6TAI MQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 376fvm83n5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Mar 2021 15:19:23 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 129KEYCU145985;
+        Tue, 9 Mar 2021 15:17:27 -0500
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 376fvm837k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Mar 2021 15:17:26 -0500
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 129K7vW6026055;
+        Tue, 9 Mar 2021 20:16:33 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06fra.de.ibm.com with ESMTP id 3768n606pm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Mar 2021 20:16:33 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 129KGVgu46268922
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 9 Mar 2021 20:16:31 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ED0AC11C04C;
+        Tue,  9 Mar 2021 20:16:30 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A1F1E11C052;
+        Tue,  9 Mar 2021 20:16:26 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.23.212])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  9 Mar 2021 20:16:26 +0000 (GMT)
+Date:   Tue, 9 Mar 2021 22:16:23 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     George Kennedy <george.kennedy@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH 1/1] ACPI: fix acpi table use after free
+Message-ID: <YEfXl38hFc0jSsXm@linux.ibm.com>
+References: <1614802160-29362-1-git-send-email-george.kennedy@oracle.com>
+ <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
+ <9c3bc1b2-bb8d-194d-6faf-e4d7d346dc9b@oracle.com>
+ <CAJZ5v0j8udd0R6A1wwpNvZL5Dr1pRcdiZr2if5y50o7OkHOMqg@mail.gmail.com>
+ <YESEymRQ2/F7xJGt@linux.ibm.com>
+ <YEe2SAESEaEak+HB@linux.ibm.com>
+ <CAJZ5v0hAQo7+3bthoC8K7n7qyhQFMuOd8U3BhZWSREjPmq0-7w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hAQo7+3bthoC8K7n7qyhQFMuOd8U3BhZWSREjPmq0-7w@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-09_15:2021-03-09,2021-03-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ bulkscore=0 mlxscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
+ priorityscore=1501 mlxlogscore=999 suspectscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103090096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 9 Mar 2021 16:17:22 +0100:
+On Tue, Mar 09, 2021 at 07:29:51PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Mar 9, 2021 at 6:54 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
+> >
+> > On Sun, Mar 07, 2021 at 09:46:22AM +0200, Mike Rapoport wrote:
+> > > Hello Rafael,
+> > >
+> > > On Fri, Mar 05, 2021 at 02:30:07PM +0100, Rafael J. Wysocki wrote:
+> > > > On Fri, Mar 5, 2021 at 12:14 AM George Kennedy <george.kennedy@oracle.com> wrote:
+> > > >
+> > > > > The ibft table, for example, is mapped in via acpi_map() and kmap(). The
+> > > > > page for the ibft table is not reserved, so it can end up on the freelist.
+> > > >
+> > > > You appear to be saying that it is not sufficient to kmap() a page in
+> > > > order to use it safely.  It is also necessary to reserve it upfront,
+> > > > for example with the help of memblock_reserve().  Is that correct?  If
+> > > > so, is there an alternative way to reserve a page frame?
+> > >
+> > > Like David said in the other reply, if a BIOS does not mark the memory that
+> > > contains an ACPI table as used (e.g. reserved or ACPI data), we need to
+> > > make sure the kernel knows that such memory is in use and an early call to
+> > > memblock_reserve() is exactly what we need here.
+> > > George had this issue with iBFT, but in general this could be any table
+> > > that a buggy BIOS forgot to mark as ACPI data.
+> >
+> > BTW, I wonder is there a fundamental reason to use ioremap() to access ACPI
+> > tables at all?
+> > In the end, they reside in RAM and, apparently, they live at the same DIMM
+> > as neighboring "normal memory" so why cannot we just map them normally as
+> > read-only not executable?
+> 
+> This may be NVS memory (depending on the configuration of the system)
+> which isn't "normal" RAM AFAICS.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_5.12_1
+Hmm, according to the description of "ACPI NVS" in ACPI 6.3
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9c39198a65f182962e357fa1cd7a9bba50401f2f
+	ACPI NVS Memory. This range of addresses is in use or reserved by
+			 the system and must not be used by the operating
+			 system. This range is required to be saved and
+ 			 restored across an NVS sleep.
 
-Thank you!
+it behaves more like "normal" RAM rather than actual non-volatile storage.
+
+There are other places in ACPI text that imply that "ACPI NVS" is actually
+RAM, it's just reserved by the firmware.
+
+And judging by the example below both "ACPI data" and "ACPI NVS" live in
+the very same DIMM as "usable" RAM.
+
+[    0.000000] BIOS-e820: [mem 0x0000000029931000-0x0000000029932fff] usable
+[    0.000000] BIOS-e820: [mem 0x0000000029933000-0x000000002993afff] ACPI data
+[    0.000000] BIOS-e820: [mem 0x000000002993b000-0x000000002993bfff] ACPI NVS
+[    0.000000] BIOS-e820: [mem 0x000000002993c000-0x0000000029940fff] ACPI data
+[    0.000000] BIOS-e820: [mem 0x0000000029941000-0x0000000029944fff] usable
+
+Unfortunately, both UEFI and ACPI standards are very vague about the
+meaning of "ACPI NVS" so there may be systems that use real non-volatile
+storage for it...
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Sincerely yours,
+Mike.
