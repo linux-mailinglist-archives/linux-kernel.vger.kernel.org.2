@@ -2,144 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F0A332166
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E11D332178
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbhCII45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 03:56:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42476 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229641AbhCII4t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 03:56:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615280208;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k4YCi9TzxfvotEI0KHVk0DBixUOa/vI9Lyywwsk2fSU=;
-        b=EigNbIaFFa+JrSQG3f0sR6c8fTgSR4BmzwIelh9Hsf9nj2WYDg9V2m8VOnwNxq4cMdiQIe
-        HkRY6ou0ijvVRsHGFl5wDBUxSDnA1Z3SgUv9okcan5nZO2dhsL3O844I8CYfNsJMzpP21l
-        Un/Zad7gg+tkazNyiyfN5ZKrB89Ckfg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-NQtAbCGcPM68MSVIDpfRAg-1; Tue, 09 Mar 2021 03:56:46 -0500
-X-MC-Unique: NQtAbCGcPM68MSVIDpfRAg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74CEB83DD22;
-        Tue,  9 Mar 2021 08:56:45 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.174])
-        by smtp.corp.redhat.com (Postfix) with SMTP id EC598196E3;
-        Tue,  9 Mar 2021 08:56:43 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue,  9 Mar 2021 09:56:45 +0100 (CET)
-Date:   Tue, 9 Mar 2021 09:56:42 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Jim Newsome <jnewsome@torproject.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-kernel@vger.kernel.org
-Subject: Re: patch: do_wait: make PIDTYPE_PID case O(1) instead of O(n)
-Message-ID: <20210309085641.GB25222@redhat.com>
-References: <b8591e67-1248-6c29-847e-d97e04b58210@torproject.org>
+        id S229872AbhCII7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 03:59:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229480AbhCII6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 03:58:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BBD764ED9
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 08:58:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615280334;
+        bh=bGrgYHxt1zWRljmNWdTWF89KwQPE/WC7bjxroFUZJHs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MDRPXWtVs3yMMI2osLWEdRXy9xiKGo9kAp4Cdr1VTzeHhbW/HPaPLJLaeX4AuzpZo
+         zAc5ZHRcWCHSVB1NPZOowwzzf2l7TZ7yILtMOO44xoq3OSCSiQGv5XBjtqEu7XOtpa
+         R11yFXYTUKGXauoGArGgeBKSPTEHU+mG0b1dyDTGqRRGjD12JLZW24sYpgULzT3x9X
+         yfxFvPRwtbz6TAd/snAQtmYm5WNPDougT6CuJYx9K++8A9Q+7tw6b6EL4GZBzKG9oq
+         i/7crnr+2//TOewdvwSDZxPApDyeCmEMil4R16x7Z7X0NUOVIO2BZMM7pp5neNQfBa
+         mgoSQmGX1TDAw==
+Received: by mail-oi1-f175.google.com with SMTP id x135so9670276oia.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 00:58:54 -0800 (PST)
+X-Gm-Message-State: AOAM533C6yW7e+7OVpt5DkJhlsnTF5hoWx93wde5QdcGJx7+PGv2/Qca
+        iR7RcH9fIv4fVpo6pA/8/gwCDGhl+PeDWPWW8g8=
+X-Google-Smtp-Source: ABdhPJy7KwmLHvhrNLftroGyUGQ/t+PND67LUPNySsQX0tVy70CsU1/qFEJEzMXrNv8DMLGhBPueB6t1Sz6S4o59CIs=
+X-Received: by 2002:aca:bf44:: with SMTP id p65mr1097765oif.11.1615280333519;
+ Tue, 09 Mar 2021 00:58:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b8591e67-1248-6c29-847e-d97e04b58210@torproject.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <4c692eff-9d57-278e-8da4-36bc2c293506@amd.com> <20210309032356.20800-1-Felix.Kuehling@amd.com>
+In-Reply-To: <20210309032356.20800-1-Felix.Kuehling@amd.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 9 Mar 2021 09:58:37 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1EeHimbufajcHzV+-bBarWtLHzzFSsa=qdUDsip=Wz_A@mail.gmail.com>
+Message-ID: <CAK8P3a1EeHimbufajcHzV+-bBarWtLHzzFSsa=qdUDsip=Wz_A@mail.gmail.com>
+Subject: Re: [PATCH 1/1] drm/amdkfd: fix build error with AMD_IOMMU_V2=m
+To:     Felix Kuehling <Felix.Kuehling@amd.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ah, and you forgot to CC lkml ;) let me resend my email.
-
-
-Hi Jim,
-
-Please do not use the attachments, just send the patch as plain text.
-See Documentation/process/submitting-patches.rst
-
-On 03/08, Jim Newsome wrote:
+On Tue, Mar 9, 2021 at 4:23 AM Felix Kuehling <Felix.Kuehling@amd.com> wrote:
 >
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -1462,8 +1462,61 @@ static long do_wait(struct wait_opts *wo)
->  		goto notask;
+> Using 'imply AMD_IOMMU_V2' does not guarantee that the driver can link
+> against the exported functions. If the GPU driver is built-in but the
+> IOMMU driver is a loadable module, the kfd_iommu.c file is indeed
+> built but does not work:
 >
->  	set_current_state(TASK_INTERRUPTIBLE);
-> +
->  	read_lock(&tasklist_lock);
->  	tsk = current;
-> +
-> +	if (wo->wo_type == PIDTYPE_PID) {
-> +		// Optimization for PIDTYPE_PID. No need to iterate through child and
-> +		// tracee lists to find the target task.
+> x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_bind_process_to_device':
+> kfd_iommu.c:(.text+0x516): undefined reference to `amd_iommu_bind_pasid'
+> x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_unbind_process':
+> kfd_iommu.c:(.text+0x691): undefined reference to `amd_iommu_unbind_pasid'
+> x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_suspend':
+> kfd_iommu.c:(.text+0x966): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0x97f): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0x9a4): undefined reference to `amd_iommu_free_device'
+> x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_resume':
+> kfd_iommu.c:(.text+0xa9a): undefined reference to `amd_iommu_init_device'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0xadc): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0xaff): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0xc72): undefined reference to `amd_iommu_bind_pasid'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0xe08): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0xe26): undefined reference to `amd_iommu_set_invalid_ppr_cb'
+> x86_64-linux-ld: kfd_iommu.c:(.text+0xe42): undefined reference to `amd_iommu_free_device'
+>
+> Use IS_REACHABLE to only build IOMMU-V2 support if the amd_iommu symbols
+> are reachable by the amdkfd driver. Output a warning if they are not,
+> because that may not be what the user was expecting.
 
-I'd suggest to put this PIDTYPE_PID code into the new function.
+This would fix the compile-time failure, but it still fails my CI
+because you introduce
+a compile-time warning. Can you change it into a runtime warning instead?
 
-> +
-> +		struct task_struct *real_parent = NULL;
-> +		struct task_struct *target = NULL;
-> +		bool do_regular_wait, do_ptrace_wait;
-> +
-> +		// XXX: Do we need this? Or is the tasklist_lock sufficient?
-> +		rcu_read_lock();
+Neither type of warning is likely to actually reach the person trying
+to debug the
+problem, so you still end up with machines that don't do what they should,
+but I can live with the runtime warning as long as the build doesn't break.
 
-No, you don't need rcu lock, tasklist_lock is sufficient
+I think the proper fix would be to not rely on custom hooks into a particular
+IOMMU driver, but to instead ensure that the amdgpu driver can do everything
+it needs through the regular linux/iommu.h interfaces. I realize this
+is more work,
+but I wonder if you've tried that, and why it didn't work out.
 
-> +		target = pid_task(wo->wo_pid, PIDTYPE_PID);
-> +		if (!target) {
-> +			rcu_read_unlock();
-> +			goto notask;
-
-This is wrong, you forgot to drop tasklist_lock.
-
-
-> +		real_parent = !target->real_parent ? target->parent :
-> +						     target->real_parent;
-
-Hmm, I don't understand the line above... perhaps it connects to the
-question below.
-
-> +		if (!real_parent) {
-> +			// XXX: Is it a kernel bug to get here? Or would this be
-> +			// true of the init process?
-
-Afaics, parent/real_parent can't be NULL if pid_task() succeeds.
-
-> +		do_regular_wait = tsk == real_parent ||
-> +				  (!(wo->wo_flags & __WNOTHREAD) &&
-> +				   same_thread_group(tsk, real_parent));
-> +		do_ptrace_wait = target->ptrace &&
-> +				 (tsk == target->parent ||
-> +				  (!(wo->wo_flags & __WNOTHREAD) &&
-> +				   same_thread_group(tsk, target->parent)));
-> +		rcu_read_unlock();
-> +
-> +		if (do_regular_wait) {
-> +			retval =
-> +				wait_consider_task(wo, /* ptrace= */ 0, target);
-> +			if (retval) {
-> +				goto end;
-> +			}
-> +		}
-> +		if (do_ptrace_wait) {
-> +			retval =
-> +				wait_consider_task(wo, /* ptrace= */ 1, target);
-> +			if (retval) {
-> +				goto end;
-> +			}
-> +		}
-> +		read_unlock(&tasklist_lock);
-> +		goto notask;
-
-This part looks correct at first glance...
-
-Please redo and send V2 ;)
-
-Oleg.
-
+       Arnd
