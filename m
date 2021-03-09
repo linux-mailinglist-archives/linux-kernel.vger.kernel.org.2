@@ -2,95 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE50332F3C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1987F332F3F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhCIToR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231512AbhCITov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:44:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231467AbhCIToR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Mar 2021 14:44:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43306 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231326AbhCIToH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 14:44:07 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EC710AC1F;
-        Tue,  9 Mar 2021 19:44:05 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 20:44:04 +0100
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: make STACKPROTECTOR_PER_TASK configurable.
-Message-ID: <20210309194404.GC6564@kitsune.suse.cz>
-References: <20210309123544.14040-1-msuchanek@suse.de>
- <CAK7LNAT+8mGunqXSPLHxhF1FTXQEzbAoKPY=48pBgtLbhcB0jg@mail.gmail.com>
- <20210309133523.GX6564@kitsune.suse.cz>
- <CAK7LNARVPYBWvaA+MCjVic+qLay1AR-+UZuyC+_FRGShL=gahg@mail.gmail.com>
- <20210309151046.GZ6564@kitsune.suse.cz>
- <CAK7LNAQ_oJJem6sdEwTjLucjHF_R70Pa=C_c__v7x3QMz-WBAw@mail.gmail.com>
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA04C06174A;
+        Tue,  9 Mar 2021 11:44:17 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id o11so15303775iob.1;
+        Tue, 09 Mar 2021 11:44:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h0LdCjjwzecnp1EYokdW4ebJBaUE+V7zj86mopJQUfk=;
+        b=kGKbT37spDgGsq64b2yUwd05ipI+8eRT+NKbHxXN/JRiGVRW/3lpfcSGRLEh0PgUxm
+         S+fzmf0yeP8Z2TqhFZtTHZzF+Ce7QrXg2RFRXFCEN/z847MuyOFOtPpI+llRKWc4Xa+7
+         zZHTxAxs5zjqeqBFu5rFXVNuA+Dtps1Msvwd8KLv+FTFZVSvlKUUedwXBl5IOP/ilJSt
+         8emDedCKrXwSrUjgPIyrRXnXQG71WdL3rnOIKvtEVJq5pnj5lR9cV44CN4fEFb9Es0Fe
+         qHu/mOJoiM9ieSNimMDWVhpOftTUFSGH9SbMMjzjWTeTL5XWKVctMVMvU1lmjiaGrjdR
+         08Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h0LdCjjwzecnp1EYokdW4ebJBaUE+V7zj86mopJQUfk=;
+        b=NUmqnbG5WIYw3m+bh29WQvNJqmcqlGHQHkrvuVD+6BLo6BiAhsruS7yyug8FK7GhpF
+         I9rNazlMmP5dgD3mqaMxxakizawUjqyL21KdDHUMlUj9N/u6+42zbfNh43n/TrGvAJhq
+         w20U+sfcI3MZoaDfYvWDI+13H79XuAb8gZ3ZjzA2jER0uE4k9B7xeOEvG4pCGHpYOVxs
+         AkTCmDKOchj1e8AaeLSyQHvsz9GttkMj+1VHDq8bi0AW5upRAilf2HqL5N7JZptlxAQ3
+         juQXkwPIoCtqiIjNhxTMjKRBEpe3DP+YnoFk58IZA7hDNn2dbqjrJsjA8Sd0TYlvEqYG
+         L1MA==
+X-Gm-Message-State: AOAM530tcRW7qVvH/i8hXy0CI2oImWWiyfEfEI/smjhAe5AaVFlp4sNr
+        Pek98leLoXOgy2777z3/OBcVygGr1PXomftfZUg=
+X-Google-Smtp-Source: ABdhPJyDizL1CBOqwFRy8H1vQEuwTFNUXxlaJPi2bSerzyJM/ggHe+xUxloch1cnoAX1BKQ4gBb5dmjCzMrHhMSb/PM=
+X-Received: by 2002:a5e:990a:: with SMTP id t10mr24345727ioj.161.1615319056963;
+ Tue, 09 Mar 2021 11:44:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNAQ_oJJem6sdEwTjLucjHF_R70Pa=C_c__v7x3QMz-WBAw@mail.gmail.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+References: <20210309152354.95309-1-mailhol.vincent@wanadoo.fr> <20210309152354.95309-2-mailhol.vincent@wanadoo.fr>
+In-Reply-To: <20210309152354.95309-2-mailhol.vincent@wanadoo.fr>
+From:   Dave Taht <dave.taht@gmail.com>
+Date:   Tue, 9 Mar 2021 11:44:05 -0800
+Message-ID: <CAA93jw5+wB=va5tqUpCiPu20N+pn8VcMxUdySSWoQE_zqH8Qtg@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/1] dql: add dql_set_min_limit()
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Tom Herbert <therbert@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 04:07:00AM +0900, Masahiro Yamada wrote:
-> On Wed, Mar 10, 2021 at 12:10 AM Michal Suchánek <msuchanek@suse.de> wrote:
-> >
-> > On Tue, Mar 09, 2021 at 11:53:21PM +0900, Masahiro Yamada wrote:
-> > > On Tue, Mar 9, 2021 at 10:35 PM Michal Suchánek <msuchanek@suse.de> wrote:
-> > > >
-> > > > On Tue, Mar 09, 2021 at 10:22:36PM +0900, Masahiro Yamada wrote:
-> > > > > On Tue, Mar 9, 2021 at 9:35 PM Michal Suchanek <msuchanek@suse.de> wrote:
-> > > > > >
-> > > > > > When using dummy-tools STACKPROTECTOR_PER_TASK is unconditionally
-> > > > > > selected. This defeats the purpose of the all-enabled tool.
-> > > > > >
-> > > > > > Description copied from arm
-> > > > > >
-> > > > > > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > > > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > > > >
-> > > > >
-> > > > > Could you explain what problem
-> > > > > this patch is trying to solve?
-> > > >
-> > > > The option cannot be disabled when compiler has the required capability.
-> > >
-> > >
-> > > Yes.
-> > > Currently, this symbol claims "def_bool y",
-> > > so there is no way to disable it.
-> > >
-> > > But, it comes from the nature of Kconfig in general.
-> > >
-> > > dummy-tools is completely unrelated here.
-> >
-> > dummy-tools makes all configuration options available in order to be
-> > able to author configuration files on system different from the one
-> > where the kernel is built. This prevents authoring a configuration file
-> > with this option disabled.
-> 
-> 
-> No.
-> dummy-tools enables as many $(cc-option, ...)
-> and $(shell, ...) as possible. That's it.
-> 
-> 
-> In my understanding, STACKPROTECTOR_PER_TASK
-> should not be user-configurable.
-> That is why 'def_bool y'.
+I note that "proof" is very much in the developer's opinion and
+limited testing base.
 
-How do you author a specific configuration with dummy-tools when options
-are allowed to unconditionally follow these options that dummy-tools
-enables?
+Actual operational experience, as in a real deployment, with other applications,
+heavy context switching, or virtualization, might yield better results.
 
-Thanks
+There's lots of defaults in the linux kernel that are just swags, the
+default NAPI and rx/tx ring buffer sizes being two where devs just
+copy/paste stuff, which either doesn't scale up, or doesn't scale
+down.
 
-Michal
+This does not mean I oppose your patch! However I have two points I'd
+like to make
+regarding bql and dql in general that I have long longed be explored.
+
+0) Me being an advocate of low latency in general, does mean that I
+have no problem
+and even prefer, starving the device rather than always keeping it busy.
+
+/me hides
+
+1) BQL is MIAD - multiplicative increase, additive decrease. While in
+practice so far this does not seem to matter much (and also measuring
+things down to "us" really hard), a stabler algorithm is AIMD. BQL
+often absorbs a large TSO burst - usually a minimum of 128k is
+observed on gbit, where a stabler state (without GSO) seemed to be
+around 40k on many of the chipsets I worked with, back when I was
+working in this area.
+
+(cake's gso-splitting also gets lower bql values in general, if you
+have enough cpu to run cake)
+
+2) BQL + hardware mq is increasingly an issue in my mind in that, say,
+you are hitting
+64 hw queues, each with 128k stored in there, is additive, where in
+order to service interrupts properly and keep the media busy might
+only require 128k total, spread across the active queues and flows. I
+have often thought that making BQL scale better to multiple hw queues
+by globally sharing the buffering state(s), would lead to lower
+latency, but
+also that probably sharing that state would be too high overhead.
+
+Having not worked out a solution to 2), and preferring to start with
+1), and not having a whole lot of support for item 0) in the world, I
+just thought I'd mention it, in the hope
+someone might give it a go.
