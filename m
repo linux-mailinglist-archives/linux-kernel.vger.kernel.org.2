@@ -2,209 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1CD331F4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 07:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E39B331F4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 07:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbhCIGd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 01:33:28 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:58329 "EHLO z11.mailgun.us"
+        id S229524AbhCIGfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 01:35:11 -0500
+Received: from mga04.intel.com ([192.55.52.120]:33424 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229607AbhCIGdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 01:33:21 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1615271601; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=afPnO9CK9L08xTR5B8jAfqmQQdcIctt7DT1nHJBd/7U=; b=I3JtECr6S6Qag6ZKTA3aueaa6m7cMWGotY1vhjjRpyeqVzfl+wEjCN8VGlmmlKjyD5LU9pUO
- uHGGYAFQc6T5X6uGDq9lIatQOrG9LP7Q07O4N9aiXvWAsmfdsV+d5x3b/OpESLrroHsClso+
- LUdLq8Q62D4uCKJkCA7Neo6p2xE=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 604716b0c862e1b9fdef180e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Mar 2021 06:33:20
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 74FCDC433ED; Tue,  9 Mar 2021 06:33:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.110.90.255] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 97E0BC433CA;
-        Tue,  9 Mar 2021 06:33:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 97E0BC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v3 1/2] usb: dwc3: Trigger a GCTL soft reset when
- switching modes in DRD
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, Yu Chen <chenyu56@huawei.com>,
-        Tejas Joglekar <Tejas.Joglekar@synopsys.com>,
-        Yang Fei <fei.yang@intel.com>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Jun Li <lijun.kernel@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Roger Quadros <rogerq@ti.com>
-References: <20210108015115.27920-1-john.stultz@linaro.org>
- <87bldzwr6x.fsf@kernel.org>
- <CALAqxLWdWj9=a-7NGDzJyrfyRABwKnJM7EQo3Zm+k9JqAhPz+g@mail.gmail.com>
- <d95d0971-624e-a0e6-ac72-6ee3b1fb1106@synopsys.com>
- <06a44245-4f2f-69ba-fe46-b88a19f585c2@codeaurora.org>
- <a33f7c33-f95d-60c3-70f2-4b37fcf8bac5@synopsys.com>
- <fa5cc67e-3873-e6d9-8727-d160740b027e@codeaurora.org>
- <3db531c4-7058-68ec-8d4b-ff122c307697@synopsys.com>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <8b5f7348-66d7-4902-eac8-593ab503db96@codeaurora.org>
-Date:   Mon, 8 Mar 2021 22:33:16 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229639AbhCIGep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 01:34:45 -0500
+IronPort-SDR: QCsQncgDzmKNB3QlLH0q7aWmz/HkWvOESNf02j7guQ9GomTRnEHPvfasNndOoF2S0HoOAAkO5g
+ kUqgaPHx/sdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="185786611"
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="185786611"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 22:34:21 -0800
+IronPort-SDR: Khmg2CBJtlh2yd/r9ZqbXhdKdmfQioUWS+VNX2SjUXYMB6aozVv1kjxRorHet0Q5e1R7yNj1wh
+ VV0d+UlH6qJg==
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="409604778"
+Received: from aemorris-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.166.56])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 22:34:21 -0800
+From:   sathyanarayanan.kuppuswamy@linux.intel.com
+To:     bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@intel.com, dan.j.williams@intel.com,
+        keith.busch@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+        knsathya@kernel.org
+Subject: [PATCH v1 1/1] PCI: pciehp: Skip DLLSC handling if DPC is triggered
+Date:   Mon,  8 Mar 2021 22:34:10 -0800
+Message-Id: <61a4f8aec9b7121bfef47bc5b941c2c94b0cfae1.1615271492.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <3db531c4-7058-68ec-8d4b-ff122c307697@synopsys.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
+When hotplug and DPC are both enabled on a Root port or
+Downstream Port, during DPC events that cause a DLLSC link
+down/up events, such events must be suppressed to let the DPC
+driver own the recovery path.
 
-On 3/8/2021 7:05 PM, Thinh Nguyen wrote:
-> Wesley Cheng wrote:
->>
->> On 3/6/2021 3:41 PM, Thinh Nguyen wrote:
->>> Wesley Cheng wrote:
->>>> On 1/8/2021 4:44 PM, Thinh Nguyen wrote:
->>>>> Hi,
->>>>>
->>>>> John Stultz wrote:
->>>>>> On Fri, Jan 8, 2021 at 4:26 AM Felipe Balbi <balbi@kernel.org> wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> John Stultz <john.stultz@linaro.org> writes:
->>>>>>>> From: Yu Chen <chenyu56@huawei.com>
->>>>>>>>
->>>>>>>> Just resending this, as discussion died out a bit and I'm not
->>>>>>>> sure how to make further progress. See here for debug data that
->>>>>>>> was requested last time around:
->>>>>>>>   https://urldefense.com/v3/__https://lore.kernel.org/lkml/CALAqxLXdnaUfJKx0aN9xWwtfWVjMWigPpy2aqsNj56yvnbU80g@mail.gmail.com/__;!!A4F2R9G_pg!LNzuprAeg-O80SgolYkIkW4-ne-M-yLWCDUY9MygAIrQC398Z6gRJ9wnsnlqd3w$ 
->>>>>>>>
->>>>>>>> With the current dwc3 code on the HiKey960 we often see the
->>>>>>>> COREIDLE flag get stuck off in __dwc3_gadget_start(), which
->>>>>>>> seems to prevent the reset irq and causes the USB gadget to
->>>>>>>> fail to initialize.
->>>>>>>>
->>>>>>>> We had seen occasional initialization failures with older
->>>>>>>> kernels but with recent 5.x era kernels it seemed to be becoming
->>>>>>>> much more common, so I dug back through some older trees and
->>>>>>>> realized I dropped this quirk from Yu Chen during upstreaming
->>>>>>>> as I couldn't provide a proper rational for it and it didn't
->>>>>>>> seem to be necessary. I now realize I was wrong.
->>>>>>>>
->>>>>>>> After resubmitting the quirk, Thinh Nguyen pointed out that it
->>>>>>>> shouldn't be a quirk at all and it is actually mentioned in the
->>>>>>>> programming guide that it should be done when switching modes
->>>>>>>> in DRD.
->>>>>>>>
->>>>>>>> So, to avoid these !COREIDLE lockups seen on HiKey960, this
->>>>>>>> patch issues GCTL soft reset when switching modes if the
->>>>>>>> controller is in DRD mode.
->>>>>>>>
->>>>>>>> Cc: Felipe Balbi <balbi@kernel.org>
->>>>>>>> Cc: Tejas Joglekar <tejas.joglekar@synopsys.com>
->>>>>>>> Cc: Yang Fei <fei.yang@intel.com>
->>>>>>>> Cc: YongQin Liu <yongqin.liu@linaro.org>
->>>>>>>> Cc: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
->>>>>>>> Cc: Thinh Nguyen <thinhn@synopsys.com>
->>>>>>>> Cc: Jun Li <lijun.kernel@gmail.com>
->>>>>>>> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->>>>>>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>>>>>>> Cc: linux-usb@vger.kernel.org
->>>>>>>> Signed-off-by: Yu Chen <chenyu56@huawei.com>
->>>>>>>> Signed-off-by: John Stultz <john.stultz@linaro.org>
->>>>>>>> ---
->>>>>>>> v2:
->>>>>>>> * Rework to always call the GCTL soft reset in DRD mode,
->>>>>>>>   rather then using a quirk as suggested by Thinh Nguyen
->>>>>>>>
->>>>>>>> v3:
->>>>>>>> * Move GCTL soft reset under the spinlock as suggested by
->>>>>>>>   Thinh Nguyen
->>>>>>> Because this is such an invasive change, I would prefer that we get
->>>>>>> Tested-By tags from a good fraction of the users before applying these
->>>>>>> two changes.
->>>>>> I'm happy to reach out to folks to try to get that. Though I'm
->>>>>> wondering if it would be better to put it behind a dts quirk flag, as
->>>>>> originally proposed?
->>>>>>    https://urldefense.com/v3/__https://lore.kernel.org/lkml/20201021181803.79650-1-john.stultz@linaro.org/__;!!A4F2R9G_pg!LNzuprAeg-O80SgolYkIkW4-ne-M-yLWCDUY9MygAIrQC398Z6gRJ9wnRWITZfc$ 
->>>>>>
->>>>>> That way folks can enable it for devices as they need?
->>>>>>
->>>>>> Again, I'm not trying to force this in as-is, just mostly sending it
->>>>>> out again for discussion to understand what other approach might work.
->>>>>>
->>>>>> thanks
->>>>>> -john
->>>>> A quirk would imply something is broken/diverged from the design right?
->>>>> But it's not the case here, and at least this is needed for HiKey960.
->>>>> Also, I think Rob will be ok with not adding 1 more quirk to the dwc3
->>>>> devicetree. :)
->>>>>
->>>>> BR,
->>>>> Thinh
->>>>>
->>>> Hi All,
->>>>
->>>> Sorry for jumping in, but I checked the SNPS v1.90a databook, and that
->>>> seemed to remove the requirement for the GCTL.softreset before writing
->>>> to PRTCAPDIR.  Should we consider adding a controller version/IP check?
->>>>
->>> Hi Wesley,
->>>
->>> From what I see in the v1.90a databook and others, the flow remains the
->>> same. I need to check internally, but I'm not aware of the change.
->>>
->> Hi Thinh,
->>
->> Hmmm, can you help check the register description for the PRTCAPDIR on
->> your v1.90a databook?  (Table 1-19 Fields for Register: GCTL (Continued)
->> Pg73)  When we compared the sequence in the description there to the
->> previous versions it removed the GCTL.softreset.  If it still shows up
->> on yours, then maybe my v1.90a isn't the final version?
->>
->> Thanks
->> Wesley Cheng
->>
-> 
-> Hi Wesley,
-> 
-> Actually your IP version type may use the newer flow. Can you print your
-> DWC3_VER_TYPE? I still need to verify internally to know which versions
-> need the update if any.
-> 
-> Thanks,
-> Thinh
-> 
-Hi Thinh,
+When DPC is present and enabled, hardware will put the port in
+containment state to allow SW to recover from the error condition
+in the seamless manner. But, during the DPC error recovery process,
+since the link is in disabled state, it will also raise the DLLSC
+event. In Linux kernel architecture, DPC events are handled by DPC
+driver and DLLSC events are handled by hotplug driver. If a hotplug
+driver is allowed to handle such DLLSC event (triggered by DPC
+containment), then we will have a race condition between error
+recovery handler (in DPC driver) and hotplug handler in recovering
+the contained port. Allowing such a race leads to a lot of stability
+issues while recovering the  device. So skip DLLSC handling in the
+hotplug driver when the PCIe port associated with the hotplug event is
+in DPC triggered state and let the DPC driver be responsible for the
+port recovery.
 
-Sure, my DWC3_VER_TYPE output = 0x67612A2A
+Following is the sample dmesg log which shows the contention
+between hotplug handler and error recovery handler. In this
+case, hotplug handler won the race and error recovery
+handler reported failure.
 
-Thanks
-Wesley Cheng
+[  724.974237] pcieport 0000:97:02.0: pciehp: Slot(4): Link Down
+[  724.974266] pcieport 0000:97:02.0: DPC: containment event, status:0x1f01 source:0x0000
+[  724.974269] pcieport 0000:97:02.0: DPC: unmasked uncorrectable error detected
+[  724.974275] pcieport 0000:97:02.0: PCIe Bus Error: severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Requester ID)
+[  724.974283] pcieport 0000:97:02.0:   device [8086:347a] error status/mask=00004000/00100020
+[  724.974288] pcieport 0000:97:02.0:    [14] CmpltTO                (First)
+[  724.999181] pci 0000:98:00.0: AER: can't recover (no error_detected callback)
+[  724.999227] pci 0000:98:00.0: Removing from iommu group 181
+[  726.063125] pcieport 0000:97:02.0: pciehp: Slot(4): Card present
+[  726.221117] pcieport 0000:97:02.0: DPC: Data Link Layer Link Active not set in 1000 msec
+[  726.221122] pcieport 0000:97:02.0: AER: subordinate device reset failed
+[  726.221162] pcieport 0000:97:02.0: AER: device recovery failed
+[  727.227176] pci 0000:98:00.0: [8086:0953] type 00 class 0x010802
+[  727.227202] pci 0000:98:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
+[  727.227234] pci 0000:98:00.0: reg 0x30: [mem 0x00000000-0x0000ffff pref]
+[  727.227246] pci 0000:98:00.0: Max Payload Size set to 256 (was 128, max 256)
+[  727.227251] pci 0000:98:00.0: enabling Extended Tags
+[  727.227736] pci 0000:98:00.0: Adding to iommu group 181
+[  727.231150] pci 0000:98:00.0: BAR 6: assigned [mem 0xd1000000-0xd100ffff pref]
+[  727.231156] pci 0000:98:00.0: BAR 0: assigned [mem 0xd1010000-0xd1013fff 64bit]
+[  727.231170] pcieport 0000:97:02.0: PCI bridge to [bus 98]
+[  727.231174] pcieport 0000:97:02.0:   bridge window [io  0xc000-0xcfff]
+[  727.231181] pcieport 0000:97:02.0:   bridge window [mem 0xd1000000-0xd10fffff]
+[  727.231186] pcieport 0000:97:02.0:   bridge window [mem 0x206000000000-0x2060001fffff 64bit pref]
+[  727.231555] nvme nvme1: pci function 0000:98:00.0
+[  727.231581] nvme 0000:98:00.0: enabling device (0140 -> 0142)
+[  737.141132] nvme nvme1: 31/0/0 default/read/poll queues
+[  737.146211]  nvme1n2: p1
 
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Reviewed-by: Raj Ashok <ashok.raj@intel.com>
+---
+ drivers/pci/hotplug/pciehp_hpc.c | 18 +++++++++++++++++
+ drivers/pci/pci.h                |  2 ++
+ drivers/pci/pcie/dpc.c           | 33 ++++++++++++++++++++++++++++++--
+ include/linux/pci.h              |  1 +
+ 4 files changed, 52 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
+index fb3840e222ad..8e7916abc60e 100644
+--- a/drivers/pci/hotplug/pciehp_hpc.c
++++ b/drivers/pci/hotplug/pciehp_hpc.c
+@@ -691,6 +691,24 @@ static irqreturn_t pciehp_ist(int irq, void *dev_id)
+ 		goto out;
+ 	}
+ 
++	/*
++	 * If the DLLSC link up/down event is generated due to DPC containment
++	 * in the PCIe port, skip the DLLSC event handling and let the DPC driver
++	 * own the port recovery. Allowing both hotplug DLLSC event handler and DPC
++	 * event trigger handler attempt recovery on the same port leads to stability
++	 * issues. if DPC recovery is successful, is_dpc_reset_active() will return
++	 * false and the hotplug handler will not suppress the DLLSC event. If DPC
++	 * recovery fails and the link is left in disabled state, once the user
++	 * changes the faulty card, the hotplug handler can still handle the PRESENCE
++	 * change event and bring the device back up.
++	 */
++	if ((events == PCI_EXP_SLTSTA_DLLSC) && is_dpc_reset_active(pdev)) {
++		ctrl_info(ctrl, "Slot(%s): DLLSC event(DPC), skipped\n",
++			  slot_name(ctrl));
++		ret = IRQ_HANDLED;
++		goto out;
++	}
++
+ 	/* Check Attention Button Pressed */
+ 	if (events & PCI_EXP_SLTSTA_ABP) {
+ 		ctrl_info(ctrl, "Slot(%s): Attention button pressed\n",
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index ef7c4661314f..cee7095483bd 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -446,10 +446,12 @@ void pci_restore_dpc_state(struct pci_dev *dev);
+ void pci_dpc_init(struct pci_dev *pdev);
+ void dpc_process_error(struct pci_dev *pdev);
+ pci_ers_result_t dpc_reset_link(struct pci_dev *pdev);
++bool is_dpc_reset_active(struct pci_dev *pdev);
+ #else
+ static inline void pci_save_dpc_state(struct pci_dev *dev) {}
+ static inline void pci_restore_dpc_state(struct pci_dev *dev) {}
+ static inline void pci_dpc_init(struct pci_dev *pdev) {}
++static inline bool is_dpc_reset_active(struct pci_dev *pdev) { return false; }
+ #endif
+ 
+ #ifdef CONFIG_PCIEPORTBUS
+diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+index e05aba86a317..ad51109921af 100644
+--- a/drivers/pci/pcie/dpc.c
++++ b/drivers/pci/pcie/dpc.c
+@@ -71,6 +71,30 @@ void pci_restore_dpc_state(struct pci_dev *dev)
+ 	pci_write_config_word(dev, dev->dpc_cap + PCI_EXP_DPC_CTL, *cap);
+ }
+ 
++bool is_dpc_reset_active(struct pci_dev *dev)
++{
++	struct pci_host_bridge *host = pci_find_host_bridge(dev->bus);
++	u16 status;
++
++	if (!dev->dpc_cap)
++		return false;
++
++	/*
++	 * If DPC is owned by firmware and EDR is not supported, there is
++	 * no race between hotplug and DPC recovery handler. So return
++	 * false.
++	 */
++	if (!host->native_dpc && !IS_ENABLED(CONFIG_PCIE_EDR))
++		return false;
++
++	if (atomic_read_acquire(&dev->dpc_reset_active))
++		return true;
++
++	pci_read_config_word(dev, dev->dpc_cap + PCI_EXP_DPC_STATUS, &status);
++
++	return !!(status & PCI_EXP_DPC_STATUS_TRIGGER);
++}
++
+ static int dpc_wait_rp_inactive(struct pci_dev *pdev)
+ {
+ 	unsigned long timeout = jiffies + HZ;
+@@ -91,6 +115,7 @@ static int dpc_wait_rp_inactive(struct pci_dev *pdev)
+ 
+ pci_ers_result_t dpc_reset_link(struct pci_dev *pdev)
+ {
++	pci_ers_result_t status = PCI_ERS_RESULT_RECOVERED;
+ 	u16 cap;
+ 
+ 	/*
+@@ -109,15 +134,19 @@ pci_ers_result_t dpc_reset_link(struct pci_dev *pdev)
+ 	if (pdev->dpc_rp_extensions && dpc_wait_rp_inactive(pdev))
+ 		return PCI_ERS_RESULT_DISCONNECT;
+ 
++	atomic_inc_return_acquire(&pdev->dpc_reset_active);
++
+ 	pci_write_config_word(pdev, cap + PCI_EXP_DPC_STATUS,
+ 			      PCI_EXP_DPC_STATUS_TRIGGER);
+ 
+ 	if (!pcie_wait_for_link(pdev, true)) {
+ 		pci_info(pdev, "Data Link Layer Link Active not set in 1000 msec\n");
+-		return PCI_ERS_RESULT_DISCONNECT;
++		status = PCI_ERS_RESULT_DISCONNECT;
+ 	}
+ 
+-	return PCI_ERS_RESULT_RECOVERED;
++	atomic_dec_return_release(&pdev->dpc_reset_active);
++
++	return status;
+ }
+ 
+ static void dpc_process_rp_pio_error(struct pci_dev *pdev)
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index 86c799c97b77..3314f616520d 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -479,6 +479,7 @@ struct pci_dev {
+ 	u16		dpc_cap;
+ 	unsigned int	dpc_rp_extensions:1;
+ 	u8		dpc_rp_log_size;
++	atomic_t	dpc_reset_active;	/* DPC trigger is active */
+ #endif
+ #ifdef CONFIG_PCI_ATS
+ 	union {
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.25.1
+
