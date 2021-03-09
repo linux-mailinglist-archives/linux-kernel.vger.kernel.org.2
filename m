@@ -2,180 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D47B331C90
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 02:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CFC331C93
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 02:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231964AbhCIBl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 20:41:57 -0500
-Received: from mga05.intel.com ([192.55.52.43]:12950 "EHLO mga05.intel.com"
+        id S230265AbhCIBmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 20:42:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232005AbhCIBlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 20:41:46 -0500
-IronPort-SDR: pF/KKOdx/ckGHA39+/OgzdhPJkfxmzBAKEhCqGVCDqKgVNNYcuwfWpNf0Nky3Ix9lY2xgyljCL
- m9syvWK5XA2w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="273166520"
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="273166520"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 17:41:46 -0800
-IronPort-SDR: pW+W9aOWOk8RO6MjVjRKL5xlhE73qh87puhZ9MG97wIx/6sXegQ2208enykfAhVdCv6Gu/HpR6
- Ln8U4ANNUcQA==
-X-IronPort-AV: E=Sophos;i="5.81,233,1610438400"; 
-   d="scan'208";a="447327823"
-Received: from kzliu-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.252.128.38])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2021 17:41:41 -0800
-From:   Kai Huang <kai.huang@intel.com>
-To:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
-        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        jmattson@google.com, joro@8bytes.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, corbet@lwn.net,
-        Andy Lutomirski <luto@amacapital.net>,
-        Kai Huang <kai.huang@intel.com>
-Subject: [PATCH v2 25/25] KVM: x86: Add capability to grant VM access to privileged SGX attribute
-Date:   Tue,  9 Mar 2021 14:41:36 +1300
-Message-Id: <2e6472d7944c7f51e0c5fb0261a3a180fe2e03cc.1615250634.git.kai.huang@intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1615250634.git.kai.huang@intel.com>
-References: <cover.1615250634.git.kai.huang@intel.com>
+        id S229764AbhCIBmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 20:42:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A4F8652A8;
+        Tue,  9 Mar 2021 01:42:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615254143;
+        bh=u6Wt4ZYzeRBKFqq9tL6mnx/3bHT+JgCkJ7w4UKtIQbc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=fQKV9/XQvwke5T0B9uo45zNWuiZvdnj37A6jyyE6TU69Mvqp8B7EZnQD3kpNz1TeJ
+         O1RGlFzSuaL+ZV5Bq2kYVzBCXOg5QtYwobGNfL4o1AYAUnsJZI96/+FjfS81q5ehnM
+         5eWsLpw6IafAl+jrDuPZzKkzJufkGEYde/s0Qk1G025ZxRWqvV4J/bPdaLLlq4Po17
+         BX1vdfTsXSqLtsh2oF4b54Fq+3EO3dHKMp/nGdo2saRL52Kr0jbEk0WBu2UawW3zXg
+         mN/Omk4JoldCRBL4o67/I0wEKF2nRXrVldgfL2amrsJAEFdf3OEBZZC7gm3v0/jwSp
+         p8TEIdO3OVoHg==
+Date:   Mon, 8 Mar 2021 19:42:21 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Tan Jui Nee <jui.nee.tan@intel.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan Yong <jonathan.yong@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com,
+        henning.schild@siemens.com
+Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
+ support library
+Message-ID: <20210309014221.GA1831206@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEZ4IitUa+I9HM5F@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+On Mon, Mar 08, 2021 at 09:16:50PM +0200, Andy Shevchenko wrote:
+> On Mon, Mar 08, 2021 at 12:52:12PM -0600, Bjorn Helgaas wrote:
+> > On Mon, Mar 08, 2021 at 02:20:16PM +0200, Andy Shevchenko wrote:
+> > > From: Jonathan Yong <jonathan.yong@intel.com>
+> > > 
+> > > There is already one and at least one more user is coming which
+> > > requires an access to Primary to Sideband bridge (P2SB) in order to
+> > > get IO or MMIO bar hidden by BIOS. Create a library to access P2SB
+> > > for x86 devices.
+> > 
+> > Can you include a spec reference?
+> 
+> I'm not sure I have a public link to the spec. It's the 100 Series PCH [1].
+> The document number to look for is 546955 [2] and there actually a bit of
+> information about this.
 
-Add a capability, KVM_CAP_SGX_ATTRIBUTE, that can be used by userspace
-to grant a VM access to a priveleged attribute, with args[0] holding a
-file handle to a valid SGX attribute file.
+This link, found by googling for "p2sb bridge", looks like it might
+have relevant public links:
 
-The SGX subsystem restricts access to a subset of enclave attributes to
-provide additional security for an uncompromised kernel, e.g. to prevent
-malware from using the PROVISIONKEY to ensure its nodes are running
-inside a geniune SGX enclave and/or to obtain a stable fingerprint.
+https://lab.whitequark.org/notes/2017-11-08/accessing-intel-ich-pch-gpios/
 
-To prevent userspace from circumventing such restrictions by running an
-enclave in a VM, KVM restricts guest access to privileged attributes by
-default.
+I'd prefer if you could dig out the relevant sections because I really
+don't know how to identify them.
 
-Cc: Andy Lutomirski <luto@amacapital.net>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Kai Huang <kai.huang@intel.com>
----
- Documentation/virt/kvm/api.rst | 23 +++++++++++++++++++++++
- arch/x86/kvm/cpuid.c           |  2 +-
- arch/x86/kvm/x86.c             | 21 +++++++++++++++++++++
- include/uapi/linux/kvm.h       |  1 +
- 4 files changed, 46 insertions(+), 1 deletion(-)
+> > I'm trying to figure out why this
+> > belongs in drivers/pci/.  It looks very device-specific.
+> 
+> Because it's all about access to PCI configuration spaces of the (hidden)
+> devices.
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 1a2b5210cdbf..614f150e6c15 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -6227,6 +6227,29 @@ KVM_RUN_BUS_LOCK flag is used to distinguish between them.
- This capability can be used to check / enable 2nd DAWR feature provided
- by POWER10 processor.
- 
-+7.24 KVM_CAP_SGX_ATTRIBUTE
-+----------------------
-+
-+:Architectures: x86
-+:Target: VM
-+:Parameters: args[0] is a file handle of a SGX attribute file in securityfs
-+:Returns: 0 on success, -EINVAL if the file handle is invalid or if a requested
-+          attribute is not supported by KVM.
-+
-+KVM_CAP_SGX_ATTRIBUTE enables a userspace VMM to grant a VM access to one or
-+more priveleged enclave attributes.  args[0] must hold a file handle to a valid
-+SGX attribute file corresponding to an attribute that is supported/restricted
-+by KVM (currently only PROVISIONKEY).
-+
-+The SGX subsystem restricts access to a subset of enclave attributes to provide
-+additional security for an uncompromised kernel, e.g. use of the PROVISIONKEY
-+is restricted to deter malware from using the PROVISIONKEY to obtain a stable
-+system fingerprint.  To prevent userspace from circumventing such restrictions
-+by running an enclave in a VM, KVM prevents access to privileged attributes by
-+default.
-+
-+See Documentation/x86/sgx/2.Kernel-internals.rst for more details.
-+
- 8. Other capabilities.
- ======================
- 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index a0d45607b702..6dc12d949f86 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -849,7 +849,7 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
- 		 * expected to derive it from supported XCR0.
- 		 */
- 		entry->eax &= SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT |
--			      /* PROVISIONKEY | */ SGX_ATTR_EINITTOKENKEY |
-+			      SGX_ATTR_PROVISIONKEY | SGX_ATTR_EINITTOKENKEY |
- 			      SGX_ATTR_KSS;
- 		entry->ebx &= 0;
- 		break;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 5233e3ad69ee..ec243ce7c27a 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -75,6 +75,7 @@
- #include <asm/tlbflush.h>
- #include <asm/intel_pt.h>
- #include <asm/emulate_prefix.h>
-+#include <asm/sgx.h>
- #include <clocksource/hyperv_timer.h>
- 
- #define CREATE_TRACE_POINTS
-@@ -3759,6 +3760,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 	case KVM_CAP_X86_USER_SPACE_MSR:
- 	case KVM_CAP_X86_MSR_FILTER:
- 	case KVM_CAP_ENFORCE_PV_FEATURE_CPUID:
-+#ifdef CONFIG_X86_SGX_KVM
-+	case KVM_CAP_SGX_ATTRIBUTE:
-+#endif
- 		r = 1;
- 		break;
- #ifdef CONFIG_KVM_XEN
-@@ -5345,6 +5349,23 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
- 			kvm->arch.bus_lock_detection_enabled = true;
- 		r = 0;
- 		break;
-+#ifdef CONFIG_X86_SGX_KVM
-+	case KVM_CAP_SGX_ATTRIBUTE: {
-+		unsigned long allowed_attributes = 0;
-+
-+		r = sgx_set_attribute(&allowed_attributes, cap->args[0]);
-+		if (r)
-+			break;
-+
-+		/* KVM only supports the PROVISIONKEY privileged attribute. */
-+		if ((allowed_attributes & SGX_ATTR_PROVISIONKEY) &&
-+		    !(allowed_attributes & ~SGX_ATTR_PROVISIONKEY))
-+			kvm->arch.sgx_provisioning_allowed = true;
-+		else
-+			r = -EINVAL;
-+		break;
-+	}
-+#endif
- 	default:
- 		r = -EINVAL;
- 		break;
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index f6afee209620..7d8927e474f8 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -1078,6 +1078,7 @@ struct kvm_ppc_resize_hpt {
- #define KVM_CAP_DIRTY_LOG_RING 192
- #define KVM_CAP_X86_BUS_LOCK_EXIT 193
- #define KVM_CAP_PPC_DAWR1 194
-+#define KVM_CAP_SGX_ATTRIBUTE 195
- 
- #ifdef KVM_CAP_IRQ_ROUTING
- 
--- 
-2.29.2
+The PCI core generally doesn't deal with device-specific config
+registers.
 
+> [1]: https://ark.intel.com/content/www/us/en/ark/products/series/98456/intel-100-series-desktop-chipsets.html
+> [2]: https://medium.com/@jacksonchen_43335/bios-gpio-p2sb-70e9b829b403
+> 
+> ...
+> 
+> > > +config PCI_P2SB
+> > > +	bool "Primary to Sideband (P2SB) bridge access support"
+> > > +	depends on PCI && X86
+> > > +	help
+> > > +	  The Primary to Sideband bridge is an interface to some PCI
+> > > +	  devices connected through it. In particular, SPI NOR
+> > > +	  controller in Intel Apollo Lake SoC is one of such devices.
+> > 
+> > This doesn't sound like a "bridge".  If it's a bridge, what's on the
+> > primary (upstream) side?  What's on the secondary side?  What
+> > resources are passed through the bridge, i.e., what transactions does
+> > it transfer from one side to the other?
+> 
+> It's a confusion terminology here. It's a Bridge according to the spec, but
+> it is *not* a PCI Bridge as you may had a first impression.
+
+The code suggests that a register on this device controls whether a
+different device is visible in config space.  I think it will be
+better if we can describe what's happening.
+
+> ...
+> 
+> > > +	/* Unhide the P2SB device */
+> > > +	pci_bus_write_config_byte(bus, df, P2SBC_HIDE_BYTE, 0);
+> > > +
+> > > +	/* Read the first BAR of the device in question */
+> > > +	__pci_bus_read_base(bus, devfn, pci_bar_unknown, mem, PCI_BASE_ADDRESS_0, true);
+> > 
+> > I don't get this.  Apparently this normally hidden device is consuming
+> > PCI address space.  The PCI core needs to know about this.  If it
+> > doesn't, the PCI core may assign this space to another device.
+> 
+> Right, it returns all 1:s to any request so PCI core *thinks* it's
+> plugged off (like D3cold or so).
+
+I'm asking about the MMIO address space.  The BAR is a register in
+config space.  AFAICT, clearing P2SBC_HIDE_BYTE makes that BAR
+visible.  The BAR describes a region of PCI address space.  It looks
+like setting P2SBC_HIDE_BIT makes the BAR disappear from config space,
+but it sounds like the PCI address space *described* by the BAR is
+still claimed by the device.  If the device didn't respond to that
+MMIO space, you would have no reason to read the BAR at all.
+
+So what keeps the PCI core from assigning that MMIO space to another
+device?
+
+This all sounds quite irregular from the point of view of the PCI
+core.  If a device responds to address space that is not described by
+a standard PCI BAR, or by an EA capability, or by one of the legacy
+VGA or IDE exceptions, we have a problem.  That space must be
+described *somehow* in a generic way, e.g., ACPI or similar.
+
+What happens if CONFIG_PCI_P2SB is unset?  The device doesn't know
+that, and if it is still consuming MMIO address space that we don't
+know about, that's a problem.
+
+> > > +	/* Hide the P2SB device */
+> > > +	pci_bus_write_config_byte(bus, df, P2SBC_HIDE_BYTE, P2SBC_HIDE_BIT);
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
