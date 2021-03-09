@@ -2,182 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F179332427
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7928033242C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:35:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbhCILet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 06:34:49 -0500
-Received: from mout.gmx.net ([212.227.17.22]:36015 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230063AbhCILeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 06:34:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1615289641;
-        bh=+Rq5elMREdzySNeTCnfCnoul/II8s+/1ZY8B9u2JwYI=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=WiW00Az+w4AG5yDwZVr/MDJDz3O5YwfjMt3xPEHzdUQ1vmRxj7Q4efPRWpzuzyf49
-         NA+L5NAWzh/o+Pz9QPyoD+IFOFkEvu49/AuOttkRO71QGZw6Dd2AO7zJ5MunOT1ock
-         bZYyKSX4kTWxLpOAxIMmy29bf1J2RxKoub8LJYXE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.123.70] ([62.143.246.89]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MZktj-1lDD7G1YnP-00WjMD; Tue, 09
- Mar 2021 12:34:01 +0100
-Subject: Re: [PATCH 1/1] RISC-V: correct enum sbi_ext_rfence_fid
-To:     Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Sean Anderson <seanga2@gmail.com>
-References: <20210306054801.18263-1-xypron.glpk@gmx.de>
- <CAAhSdy08=ffPe+fYWX9ds4wNSMU3uzT8OENk0o93xpfZOKtYig@mail.gmail.com>
- <CAOnJCUKSf7tyz+56apVOqxNgnR_eYoidYw5=M2si753t4K71UQ@mail.gmail.com>
- <CAAhSdy0BK9-cG=rQNadbkzDWdXJgpiJ1QEywTgpBxr0NVa7cVQ@mail.gmail.com>
-From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
-Message-ID: <c34fafa2-3cde-d74f-b448-3ef05baf63d5@gmx.de>
-Date:   Tue, 9 Mar 2021 12:33:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <CAAhSdy0BK9-cG=rQNadbkzDWdXJgpiJ1QEywTgpBxr0NVa7cVQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:d7g0B4xGteITVC3jRkv4xU3S5KuM7RCgqYAoHbAmAYWp8rpEZTy
- XWGNNpCTCsmvW92jYunC4mTokIdR56aKzRMUL2bGM4KZLxLPZCZNGvCNcR0nfCiKGEQT2KG
- a/SoDYFNc2fSsH1NKzv6azQGEM6gp30h5kML7/VUK6Lg+had5BobnibTb/K1KUmTecGzc2d
- Gh1ONlIAU+vMtTqYE1tBA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wwQao1SBv3U=:cX5VL1yrC6tDqdH99XRj0y
- K474jWwpBMKfebmhORnDHYs70GDB+G66uR7O/P+pIMBanIomarx4/LD79/z4LKnnsEn/CUq2c
- frnEY4zZiZ5BoOCx7ffQm5E+q4vjXPCLHDZsXIVzS9EyvA3/jY+uuy3OpG8gNviVOy/H/e5be
- XRH/rWJ5YaFTZsm0gCX3KqFWC/c3sKl4WBf4RGo0t0/PV+Vc19P4AHLEpA0tYeUTX7qz8DpNy
- 1mmD5uejaQOyV5qcv9pep2asCR0KBhUpt6t5WjDpxbcSZt0mcsJPZLD9q4mHrhpyoyijyDnlr
- 1sfmM0bjiQnwbybc2Qo5BsNlQ+lHIOeHuVCnj60SBZOdiUf8sIAU4+as1FvQ6mozQJiNv8KTb
- IvaW2D00lEnwFRAKMjPIPMNLtf7FsF9Wa5Qa2FsEtynWT6Hv8NE0t87K7VG1FrseqDWFpvjEr
- R1AtjKxK9tVzaka/R6SBiroiLYwX4jOfSO4S/tIqS8zM3R9UVBM4uyTfcDUEZa00a6VTKn9/m
- SO7sIKnDfm+uXuFcSWFsd0EBWRfF6OT4Qy/87jFVon6FQlbu6HrL93oPhjba1BHpI3CPS7aoF
- 7Br64wUcOhqYFua36GQUnjXdrHZgeU7n2+R0LLYbhWbtpwGqh0GHwvatZz/fj2eoJhN3CH5sr
- 9VPYXdI8kz1w9s0WG+O16Ko/1IlET1CnWl49frwSNw6kBO+FPYXr0RGMw8FmAGlOL+H6QebNo
- xkkz6nOCKC9ugVTXippbMc7FHLcS+w+6NPF5p7C2GXsMc6FX4Hsa5Q56v8lOgRId/TNxa1nFq
- ZdQ4cJqOiaXnnxDApSbkd74GaugJXa/K2LaGyfG+fxZDmGxH94iFrp6UrTx4PbpM4oqH7Qk0b
- t9qseokexfQe7tXfUkqg==
+        id S229815AbhCILfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 06:35:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230319AbhCILfB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 06:35:01 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5694FC06174A;
+        Tue,  9 Mar 2021 03:35:01 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso5770207wmi.0;
+        Tue, 09 Mar 2021 03:35:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=v7u+/xV3QKdov9B1WTObPx2BzVZdwCg4jskV5OYGlkA=;
+        b=V3WI0GPWQyIGcjgIYQCtrZRV27jeHk3iMSBwP1Cv17RuVNXd/NOQ8N4WCzIicAYSOb
+         dRqEj2GojMv4RHd3PE5cfT5Rps7cHljV7OebKreEV4g5yFG1KkdfjAQ/vZXS/Clr0IRP
+         AKu03Orwk2RliqOGWAu7rHnQ7BtdhOj8XC4q6x7dmxwF1u9oGY7PmhIW9wnhlASunaF0
+         1+TYGg7NG6x2qAKVk4fS/zmf8xmz+b54tVpftoY7oPZ8rhG50rVnBbhErmmNEGdE4+2A
+         bURc+S+aH9PQPLyQZN/f9pbE4Pev+fysf2dbUJkwtNNeQmla4Pt8lU+drkBR23MJseXt
+         KxIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=v7u+/xV3QKdov9B1WTObPx2BzVZdwCg4jskV5OYGlkA=;
+        b=Mjh4ks9DPIf0pfTNZp3pOor1CBhuhIfNKDvhbxlQG313WbiGQvxgqFXbuM4//7muxy
+         jErTkbwnCeMbAZHIo8D1EKU7alzYTrcve9/LmIZqKwiBzcfyXt+C1jHfRxR/Y2sae7Go
+         rBy2Uve7EYB39By9o4srKu8X6ZUn13iRu/AfUIkrZ05KOncfZQtu1kZC0QPRMRHNGmWU
+         97SeGrAq9wOMYimNZuq36YJ1UfJvo0lq6wQ82CAh4IZbNHYALVcPz1v1vIt1rGLe12MP
+         XFIELZOILWHA0SovIRRssNlHsSYPvaWlCR3gBG9ci+OFETxosn1FnD+Y5ov/vHYEBEOF
+         TCpA==
+X-Gm-Message-State: AOAM531OQ1NIyZ274E7cSImmVU/7fb+4Z98GQTal0yhRzxA9QTQtaWMm
+        Rb3pRDrrTpNow1TvopyGiTswgnTr+u2ngQ==
+X-Google-Smtp-Source: ABdhPJwnYdVZJ5jrOI4hEsR5AxDGFNsDTBe5tPOyb01A8o3AIB7nCJHhFd8acUwm7yFKdUv0kuFWHg==
+X-Received: by 2002:a1c:cc08:: with SMTP id h8mr3570871wmb.188.1615289700128;
+        Tue, 09 Mar 2021 03:35:00 -0800 (PST)
+Received: from ruhe.localdomain (93-173-65-134.bb.netvision.net.il. [93.173.65.134])
+        by smtp.gmail.com with ESMTPSA id z1sm23654327wru.95.2021.03.09.03.34.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 03:34:59 -0800 (PST)
+From:   eli.billauer@gmail.com
+To:     gregkh@linuxfoundation.org, arnd@arndb.de
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-usb@vger.kernel.org, Eli Billauer <eli.billauer@gmail.com>
+Subject: [PATCH v3 0/2] Submission of XillyUSB driver
+Date:   Tue,  9 Mar 2021 13:34:23 +0200
+Message-Id: <20210309113425.61296-1-eli.billauer@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.03.21 11:55, Anup Patel wrote:
-> On Mon, Mar 8, 2021 at 1:19 PM Atish Patra <atishp@atishpatra.org> wrote=
-:
->>
->> On Sat, Mar 6, 2021 at 4:12 AM Anup Patel <anup@brainfault.org> wrote:
->>>
->>> On Sat, Mar 6, 2021 at 11:19 AM Heinrich Schuchardt <xypron.glpk@gmx.d=
-e> wrote:
->>>>
->>>> The constants in enum sbi_ext_rfence_fid should match the SBI
->>>> specification. See
->>>> https://github.com/riscv/riscv-sbi-doc/blob/master/riscv-sbi.adoc#78-=
-function-listing
->>>>
->>>> | Function Name               | FID | EID
->>>> | sbi_remote_fence_i          |   0 | 0x52464E43
->>>> | sbi_remote_sfence_vma       |   1 | 0x52464E43
->>>> | sbi_remote_sfence_vma_asid  |   2 | 0x52464E43
->>>> | sbi_remote_hfence_gvma_vmid |   3 | 0x52464E43
->>>> | sbi_remote_hfence_gvma      |   4 | 0x52464E43
->>>> | sbi_remote_hfence_vvma_asid |   5 | 0x52464E43
->>>> | sbi_remote_hfence_vvma      |   6 | 0x52464E43
->>>>
->>>> Fixes: ecbacc2a3efd ("RISC-V: Add SBI v0.2 extension definitions")
->>>> Reported-by: Sean Anderson <seanga2@gmail.com>
->>>> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
->>>
->>> Good catch.
->>>
->>> I guess we never saw any issues because these calls are only used by
->>> KVM RISC-V which is not merged yet. Further for KVM RISC-V, the HFENCE
->>> instruction is emulated as flush everything on FPGA, QEMU, and Spike s=
-o
->>> we did not notice any issue with KVM RISC-V too.
->>>
->>
->> OpenSBI & Xvisor also define the same order as Linux kernel. The
->> existing order(in Linux kernel)
->> makes more sense w.r.to Lexicographic order as well.
+From: Eli Billauer <eli.billauer@gmail.com>
 
-Here is the OpenSBI correction:
+This is a resubmission of the XillyUSB driver, which is the USB
+variant of the existing Xillybus driver.
 
-[PATCH 1/1] include: sbi: SBI function IDs for RFENCE extension
-http://lists.infradead.org/pipermail/opensbi/2021-March/000703.html
+Because these driver share some API related functions, this submission
+consists of two patches:
 
-Best regards
+(1) A patch moving away Xillybus' class related functions to a
+    separate module file.
+(2) A patch adding the new XillyUSB driver, based upon this new
+    separate module.
 
-Heinrich
+As far as I can tell, the shared code between the Xillybus and XillyUSB
+drivers covers everything that makes sense to share. I submit XillyUSB as a
+staging driver, with the hope for a detailed review on this issue, as well
+as a general code audit.
 
->>
->> Should we just fix the spec instead ?
->
-> I would not recommend that because RFENCE is part of the released SBI v0=
-.2 spec.
->
-> We have to be more careful in software to follow the spec correctly.
->
-> Regards,
-> Anup
->
->>
->>> Looks good to me.
->>>
->>> Reviewed-by: Anup Patel <anup@brainfault.org>
->>>
->>> Regards,
->>> Anup
->>>
->>>> ---
->>>>  arch/riscv/include/asm/sbi.h | 4 ++--
->>>>  1 file changed, 2 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sb=
-i.h
->>>> index 99895d9c3bdd..d7027411dde8 100644
->>>> --- a/arch/riscv/include/asm/sbi.h
->>>> +++ b/arch/riscv/include/asm/sbi.h
->>>> @@ -51,10 +51,10 @@ enum sbi_ext_rfence_fid {
->>>>         SBI_EXT_RFENCE_REMOTE_FENCE_I =3D 0,
->>>>         SBI_EXT_RFENCE_REMOTE_SFENCE_VMA,
->>>>         SBI_EXT_RFENCE_REMOTE_SFENCE_VMA_ASID,
->>>> -       SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA,
->>>>         SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA_VMID,
->>>> -       SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA,
->>>> +       SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA,
->>>>         SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA_ASID,
->>>> +       SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA,
->>>>  };
->>>>
->>>>  enum sbi_ext_hsm_fid {
->>>> --
->>>> 2.30.1
->>>>
->>>>
->>>> _______________________________________________
->>>> linux-riscv mailing list
->>>> linux-riscv@lists.infradead.org
->>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>>
->>> _______________________________________________
->>> linux-riscv mailing list
->>> linux-riscv@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>
->>
->>
->> --
->> Regards,
->> Atish
+Thanks,
+   Eli
+
+Eli Billauer (2):
+  char: xillybus: Move class-related functions to new xillybus_class.c
+  staging: Add driver for XillyUSB (Xillybus variant for USB)
+
+ MAINTAINERS                            |    1 +
+ drivers/char/xillybus/Kconfig          |    4 +
+ drivers/char/xillybus/Makefile         |    1 +
+ drivers/char/xillybus/xillybus.h       |   10 +-
+ drivers/char/xillybus/xillybus_class.c |  263 +++
+ drivers/char/xillybus/xillybus_core.c  |  181 +-
+ drivers/staging/Kconfig                |    2 +
+ drivers/staging/Makefile               |    1 +
+ drivers/staging/xillyusb/Kconfig       |   20 +
+ drivers/staging/xillyusb/Makefile      |    6 +
+ drivers/staging/xillyusb/TODO          |   13 +
+ drivers/staging/xillyusb/xillyusb.c    | 2184 ++++++++++++++++++++++++
+ include/linux/xillybus_class.h         |   30 +
+ 13 files changed, 2549 insertions(+), 167 deletions(-)
+ create mode 100644 drivers/char/xillybus/xillybus_class.c
+ create mode 100644 drivers/staging/xillyusb/Kconfig
+ create mode 100644 drivers/staging/xillyusb/Makefile
+ create mode 100644 drivers/staging/xillyusb/TODO
+ create mode 100644 drivers/staging/xillyusb/xillyusb.c
+ create mode 100644 include/linux/xillybus_class.h
+
+-- 
+2.17.1
 
