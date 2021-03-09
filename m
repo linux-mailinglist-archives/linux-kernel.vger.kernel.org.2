@@ -2,101 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85029332BE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:24:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C07AA332BDE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 17:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhCIQX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 11:23:57 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:20316 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229799AbhCIQXl (ORCPT
+        id S230406AbhCIQXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 11:23:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27851 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230512AbhCIQXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:23:41 -0500
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 129GNJBx005049
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Mar 2021 01:23:20 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 129GNJBx005049
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1615307000;
-        bh=TIFH9xhkHj6kVADAbgz3gFzBFF7nUnImlAibwle3Rlw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sxoWG3sPUUzPXU5AWoWQkqazsyuG5RbdRcBckLvrjPmcYgDJPWuaqMg1e2zVVs14t
-         sCmZ2yGfg4+YHq+DXAjLeTSC4pfLGMo+FKy3HEDSfVyWyR9goYAcD3DXOlQZ+i00Xs
-         Q8oV6VhArhlAL81akg4gxXI7AlJhJCzb1ueJDG87kRzW748nWjtBr3t5C4XwNxLkWF
-         IQ6TeKnccOMqxDhwgWlRA7j+qcJqn8hTU6LRIg7ibrf62QrBAl5s+2dE+ZSVTOWVCJ
-         xEV3djw7Q3jNhUcxVKTisK+fHqOltNPvQgCEjaIf2Ka1TyVUDRuXdcXffD9A7Rzrwm
-         5z80PREm1dWHQ==
-X-Nifty-SrcIP: [209.85.216.43]
-Received: by mail-pj1-f43.google.com with SMTP id j14-20020a17090a588eb02900cefe2daa2cso1013523pji.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 08:23:20 -0800 (PST)
-X-Gm-Message-State: AOAM533ptgROdGdaxV2+Z3G/OuiZz52HeXR3abPAuNchJrA6Xn7fNEgn
-        /ZshOaL5R4p4XbY6n62fej4G5qVR2I6vEkLZDDY=
-X-Google-Smtp-Source: ABdhPJzWxQTmDwEHhiQi40DG9dzcIe0x2DGuxcT8g1h24Crz0e/hZbsD1YYGYVgKjCLtL1R0DWmcaPj0Lk9ksjH07Pc=
-X-Received: by 2002:a17:90a:dc08:: with SMTP id i8mr5248101pjv.153.1615306999242;
- Tue, 09 Mar 2021 08:23:19 -0800 (PST)
+        Tue, 9 Mar 2021 11:23:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615306981;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=19LP5gRKwmwH1jc81ul4akn1QbWUor1+lZY/TUhT8Cc=;
+        b=XJb4Obr+FQUpaJjZu4O5DER5+ZOj0BXYJfIQ0XsQ8Zx3j1LEFjTvIdLu1oxZBCWbmPVXyw
+        uQ+lxDUMC4QiqyRtgsVmGfIWTrRCb9no0hC2a8j98yWbOfXFrivsTIcebmZEEVqw/3QFx3
+        iNoJKChhqt6MsPd4W/Re6E0jK4FoU7Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-274-6dAmojhlMgOOkpbQO0364g-1; Tue, 09 Mar 2021 11:22:58 -0500
+X-MC-Unique: 6dAmojhlMgOOkpbQO0364g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 411A310199A6;
+        Tue,  9 Mar 2021 16:22:56 +0000 (UTC)
+Received: from [10.36.114.143] (ovpn-114-143.ams2.redhat.com [10.36.114.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ADE225C233;
+        Tue,  9 Mar 2021 16:22:46 +0000 (UTC)
+Subject: Re: [PATCH 2/9] fs: add an argument-less alloc_anon_inode
+To:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>, Nadav Amit <namit@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+References: <20210309155348.974875-1-hch@lst.de>
+ <20210309155348.974875-3-hch@lst.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <a0ca78b1-e663-8521-e69c-edae30b8082c@redhat.com>
+Date:   Tue, 9 Mar 2021 17:22:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210308062820.6166-1-jslaby@suse.cz>
-In-Reply-To: <20210308062820.6166-1-jslaby@suse.cz>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 10 Mar 2021 01:22:42 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATFvqyzbrVv6X7ooTLqb++35GFT=OtXivRXnQngpa8Wxw@mail.gmail.com>
-Message-ID: <CAK7LNATFvqyzbrVv6X7ooTLqb++35GFT=OtXivRXnQngpa8Wxw@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: dummy-tools, support MPROFILE_KERNEL checks for ppc
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210309155348.974875-3-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 3:28 PM Jiri Slaby <jslaby@suse.cz> wrote:
->
-> ppc64le checks for -mprofile-kernel to define MPROFILE_KERNEL Kconfig.
-> Kconfig calls arch/powerpc/tools/gcc-check-mprofile-kernel.sh for that
-> purpose. This script performs two checks:
-> 1) build with -mprofile-kernel should contain "_mcount"
-> 2) build with -mprofile-kernel with a function marked as "notrace"
->    should not produce "_mcount"
->
-> So support this in dummy-tools' gcc, so that we have MPROFILE_KERNEL
-> always true.
->
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-
-Applied to linux-kbuild/fixes. Thanks.
-
-
+On 09.03.21 16:53, Christoph Hellwig wrote:
+> Add a new alloc_anon_inode helper that allocates an inode on
+> the anon_inode file system.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  scripts/dummy-tools/gcc | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/scripts/dummy-tools/gcc b/scripts/dummy-tools/gcc
-> index 0d0589cf8184..7b10332b23ba 100755
-> --- a/scripts/dummy-tools/gcc
-> +++ b/scripts/dummy-tools/gcc
-> @@ -73,6 +73,15 @@ if arg_contain -S "$@"; then
->                 echo "%gs"
->                 exit 0
->         fi
+>   fs/anon_inodes.c            | 15 +++++++++++++--
+>   include/linux/anon_inodes.h |  1 +
+>   2 files changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/anon_inodes.c b/fs/anon_inodes.c
+> index 4745fc37014332..b6a8ea71920bc3 100644
+> --- a/fs/anon_inodes.c
+> +++ b/fs/anon_inodes.c
+> @@ -63,7 +63,7 @@ static struct inode *anon_inode_make_secure_inode(
+>   	const struct qstr qname = QSTR_INIT(name, strlen(name));
+>   	int error;
+>   
+> -	inode = alloc_anon_inode_sb(anon_inode_mnt->mnt_sb);
+> +	inode = alloc_anon_inode();
+>   	if (IS_ERR(inode))
+>   		return inode;
+>   	inode->i_flags &= ~S_PRIVATE;
+> @@ -225,13 +225,24 @@ int anon_inode_getfd_secure(const char *name, const struct file_operations *fops
+>   }
+>   EXPORT_SYMBOL_GPL(anon_inode_getfd_secure);
+>   
+> +/**
+> + * alloc_anon_inode - create a new anonymous inode
+> + *
+> + * Create an inode on the anon_inode file system and return it.
+> + */
+> +struct inode *alloc_anon_inode(void)
+> +{
+> +	return alloc_anon_inode_sb(anon_inode_mnt->mnt_sb);
+> +}
+> +EXPORT_SYMBOL_GPL(alloc_anon_inode);
 > +
-> +       # For arch/powerpc/tools/gcc-check-mprofile-kernel.sh
-> +       if arg_contain -m64 "$@" && arg_contain -mlittle-endian "$@" &&
-> +               arg_contain -mprofile-kernel "$@"; then
-> +               if ! test -t 0 && ! grep -q notrace; then
-> +                       echo "_mcount"
-> +               fi
-> +               exit 0
-> +       fi
->  fi
->
->  # To set GCC_PLUGINS
-> --
-> 2.30.1
->
+>   static int __init anon_inode_init(void)
+>   {
+>   	anon_inode_mnt = kern_mount(&anon_inode_fs_type);
+>   	if (IS_ERR(anon_inode_mnt))
+>   		panic("anon_inode_init() kernel mount failed (%ld)\n", PTR_ERR(anon_inode_mnt));
+>   
+> -	anon_inode_inode = alloc_anon_inode_sb(anon_inode_mnt->mnt_sb);
+> +	anon_inode_inode = alloc_anon_inode();
+>   	if (IS_ERR(anon_inode_inode))
+>   		panic("anon_inode_init() inode allocation failed (%ld)\n", PTR_ERR(anon_inode_inode));
+>   
+> diff --git a/include/linux/anon_inodes.h b/include/linux/anon_inodes.h
+> index 71881a2b6f7860..b5ae9a6eda9923 100644
+> --- a/include/linux/anon_inodes.h
+> +++ b/include/linux/anon_inodes.h
+> @@ -21,6 +21,7 @@ int anon_inode_getfd_secure(const char *name,
+>   			    const struct file_operations *fops,
+>   			    void *priv, int flags,
+>   			    const struct inode *context_inode);
+> +struct inode *alloc_anon_inode(void);
+>   
+>   #endif /* _LINUX_ANON_INODES_H */
+>   
+> 
 
-
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-Best Regards
-Masahiro Yamada
+Thanks,
+
+David / dhildenb
+
