@@ -2,101 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B221332CD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AF1332CE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231146AbhCIRHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:07:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231490AbhCIRH0 (ORCPT
+        id S231423AbhCIRKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:10:20 -0500
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:49364 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231256AbhCIRJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:07:26 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937F7C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 09:07:26 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id n26so1559664qtv.8
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 09:07:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=56FbvxYSyCO6wMKJdNcCg3DsZ58M3AgopzwpcrCwJ8M=;
-        b=p9MFtEixfJK+C3OPIvyxsnbCCdPeJyP3yuIayQyx4bcy51/7AwiQHD3E2kH2inD3Sl
-         dZDcwuFfelPyoPNTWto0FOXnVbZ4TquFs/P+y92UFfHoOXPVcFZcZFjDIoe77pTJT4OO
-         SEt6H9KErkFAg7BGl7kYWMyC63q1CeR4dWZ4lyGhmbyb5fbOWiS5m5BxZb2huYOL+KuE
-         FQjbUmGWAT1ypB8dukJilItUFmrV6gSu1Ryzz0clWm1Dpcqud3jCYwx0KM7HOpP9Ps3L
-         a/I7xOsBGQqH8E/TXf1gdaLWPw2obeK/IAEpRUYkcrokwD4iBCSC6A3jvQ2t83xq8EGD
-         MqMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=56FbvxYSyCO6wMKJdNcCg3DsZ58M3AgopzwpcrCwJ8M=;
-        b=OL7X2WjjGLZLwK5/qOY+dBZ5Ex39P6MBEWNujoObv5iqi4hBalGuTMMr288R1G5cWy
-         A64Bc/BxRI6iKTS1mhHXXyaYSbeYQ+b7BHw6t/z2w+4vkju0XRIDDQFVQnIzmu6Wqf6H
-         ZlHFQsv8Gw+GelfKqrEFaoMYVO4hSEh1iVPUJBDWOFvt1WeCD/MwKgWSNmrsh8LLxTLy
-         aOxmlCX/Ufq//HQK4hxj8AXstSqvGth7tJM30SxUXFeYDyaSKMAw9AzruDdps8RIKh5i
-         h7mgMPmpFz67EM56o0TjenYFTsCaWo1UXEf03a4jrfMmnThc2bYOwaoiEn50iBb8Jqeh
-         FweQ==
-X-Gm-Message-State: AOAM533/QW4I52tPg0Zjn1p+OnqGOXOT7inEqnNqDmvuazFGJhsxlWM9
-        GUWVPjoRahm1UlrcpLSUEJXf5kN5uxW4Z/3OiaUCxA==
-X-Google-Smtp-Source: ABdhPJxZX3UdvVqs1e2abPQvsIZT5YVWWWzFsq8aDd2lDWVh0cD2NXhUm8HucMz85rZmRKEA3T7/bWLQMWcO6Xm0t7Q=
-X-Received: by 2002:ac8:7318:: with SMTP id x24mr7500268qto.67.1615309645573;
- Tue, 09 Mar 2021 09:07:25 -0800 (PST)
+        Tue, 9 Mar 2021 12:09:54 -0500
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 129H9eLa012070;
+        Wed, 10 Mar 2021 02:09:41 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 129H9eLa012070
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1615309781;
+        bh=Pal5Drg605AgZU5o/jFyWQrW4YUqQKhMRpZPLbzgbH8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eStQOfowwsJ3aSBTdFDBhw5a5/g+pA2VDHHgmkA4WMvK/2424NLf7bBcTsdqlO/s6
+         Qc0+rrjTxeJhGQQEMMo01/2SfyvSx2+fz0taispD81S99Y6ME2CMIBhi6WyCoJ40Kw
+         PStIiLtmTK01PosbSAZXSJUMJdupij6e/XhZOnQD35woGC/j8tyYGS1qqqTBA0W8Yl
+         DTIXbH2QAzRqjTRVHhXQnZuK2QXZrJHWNTN0vKFTt6s7e7m43NhxSXMj+ha8S6L8jO
+         oinKzP/5y0E74nXJ1KZpGpgxVtEbj3jeyDsh8Gx/TumBVIwGZlOG3KRb96OXdhptdJ
+         QI0JSKp8PU+RQ==
+X-Nifty-SrcIP: [209.85.216.50]
+Received: by mail-pj1-f50.google.com with SMTP id lr10-20020a17090b4b8ab02900dd61b95c5eso3091500pjb.4;
+        Tue, 09 Mar 2021 09:09:41 -0800 (PST)
+X-Gm-Message-State: AOAM533Djc5tt5CAa1VcKTVolPlrydUGcHjt6f8yUNqizw5sjVYRIzQJ
+        sI8CjZn2wBfmgGIdL8UFwO8npahNLdI6UNf70nU=
+X-Google-Smtp-Source: ABdhPJya5m8ID1Wv2M6uXVNjKcbgsssZ00JY8fy/DIxUDOyVg8abjIAiSWkr3X6LItdWJgWRYbwgTV8iCpYajdgkbj4=
+X-Received: by 2002:a17:902:8ec9:b029:e6:c5e:cf18 with SMTP id
+ x9-20020a1709028ec9b02900e60c5ecf18mr14856219plo.47.1615309780374; Tue, 09
+ Mar 2021 09:09:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20210305223331.4173565-1-seanjc@google.com> <053d0a22-394d-90d0-8d3b-3cd37ca3f378@intel.com>
- <YEXmILSHDNDuMk/N@hirez.programming.kicks-ass.net> <YEaLzKWd0wAmdqvs@google.com>
- <YEcn6bGYxdgrp0Ik@hirez.programming.kicks-ass.net> <YEc1mFkaILfF37At@hirez.programming.kicks-ass.net>
- <YEeqvC4QmJcj+pkC@google.com>
-In-Reply-To: <YEeqvC4QmJcj+pkC@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 9 Mar 2021 18:07:14 +0100
-Message-ID: <CACT4Y+b6rDO0PiHrhYHMynXmW+f_s5AaJLDo39rGJX69ZWSaMQ@mail.gmail.com>
-Subject: Re: [PATCH] x86/perf: Fix guest_get_msrs static call if there is no PMU
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Xu, Like" <like.xu@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Like Xu <like.xu@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        KVM list <kvm@vger.kernel.org>,
-        "Thomas Gleixner
-        (x86/pti/timer/core/smp/irq/perf/efi/locking/ras/objtool)
-        (x86@kernel.org)" <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
+References: <20210302221211.1620858-1-bero@lindev.ch> <CAK7LNARA3uKsW_G+gnCX6dvSwgXWzqgZON7pc6gBWdw9gimq1A@mail.gmail.com>
+In-Reply-To: <CAK7LNARA3uKsW_G+gnCX6dvSwgXWzqgZON7pc6gBWdw9gimq1A@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 10 Mar 2021 02:09:02 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQb2pCtFgebADigYoRJUo4M3i_4iwS=88QYZx5H+736Hw@mail.gmail.com>
+Message-ID: <CAK7LNAQb2pCtFgebADigYoRJUo4M3i_4iwS=88QYZx5H+736Hw@mail.gmail.com>
+Subject: Re: [PATCH] Fix ld-version.sh script if LLD was built with LLD_VENDOR
+To:     =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@lindev.ch>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 6:05 PM Sean Christopherson <seanjc@google.com> wrote:
+On Thu, Mar 4, 2021 at 12:34 PM Masahiro Yamada <masahiroy@kernel.org> wrot=
+e:
 >
-> On Tue, Mar 09, 2021, Peter Zijlstra wrote:
-> > On Tue, Mar 09, 2021 at 08:46:49AM +0100, Peter Zijlstra wrote:
-> > > On Mon, Mar 08, 2021 at 12:40:44PM -0800, Sean Christopherson wrote:
-> > > > On Mon, Mar 08, 2021, Peter Zijlstra wrote:
-> > >
-> > > > > Given the one user in atomic_switch_perf_msrs() that should work because
-> > > > > it doesn't seem to care about nr_msrs when !msrs.
-> > > >
-> > > > Uh, that commit quite cleary says:
-> > >
-> > > D0h! I got static_call_cond() and __static_call_return0 mixed up.
-> > > Anyway, let me see if I can make something work here.
+> On Thu, Mar 4, 2021 at 9:18 AM Bernhard Rosenkr=C3=A4nzer <bero@lindev.ch=
+> wrote:
 > >
-> > Does this work? I can never seem to start a VM, and if I do accidentally
-> > manage, then it never contains the things I need :/
+> > If LLD was built with -DLLD_VENDOR=3D"xyz", ld.lld --version output
+> > will prefix LLD_VENDOR. Since LLD_VENDOR can contain spaces, the
+> > LLD identifier isn't guaranteed to be $2 either.
+> >
+> > Adjust the version checker to handle such versions of lld.
+> >
+> > Signed-off-by: Bernhard Rosenkr=C3=A4nzer <bero@lindev.ch>
+> > ---
 >
-> Yep, once I found the dependencies in tip/sched/core (thank tip-bot!).  I'll
-> send v2 your way.
+>
+> Bernhard,
+>
+> Could you senv v2
+> with the suggested code change?
+>
+> Please make sure to add
+> linux-kbuild@vger.kernel.org
+> in the To:
 
-If you are resending, please also add the syzbot Reported-by tag. Thanks.
+
+I did not get v2, but never mind.
+I locally modified the code and applied.
+
+I added Link: to your original patch
+just in case I make some mistake in the
+code refactoring.
+
+
+The final one looks as follows:
+
+
+
+
+
+commit 0b2813ba7b0f0a9ff273177e85cbc93d92e76212
+Author: Bernhard Rosenkr=C3=A4nzer <bero@lindev.ch>
+Date:   Tue Mar 2 23:12:11 2021 +0100
+
+    kbuild: Fix ld-version.sh script if LLD was built with LLD_VENDOR
+
+    If LLD was built with -DLLD_VENDOR=3D"xyz", ld.lld --version output
+    will prefix LLD_VENDOR. Since LLD_VENDOR can contain spaces, the
+    LLD identifier isn't guaranteed to be $2 either.
+
+    Adjust the version checker to handle such versions of lld.
+
+    Link: https://lore.kernel.org/lkml/20210302221211.1620858-1-bero@lindev=
+.ch/
+    Signed-off-by: Bernhard Rosenkr=C3=A4nzer <bero@lindev.ch>
+    [masahiro yamada: refactor the code]
+    Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+
+diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
+index a463273509b5..30debf78aa09 100755
+--- a/scripts/ld-version.sh
++++ b/scripts/ld-version.sh
+@@ -44,14 +44,20 @@ if [ "$1" =3D GNU -a "$2" =3D ld ]; then
+ elif [ "$1" =3D GNU -a "$2" =3D gold ]; then
+        echo "gold linker is not supported as it is not capable of
+linking the kernel proper." >&2
+        exit 1
+-elif [ "$1" =3D LLD ]; then
+-       version=3D$2
+-       min_version=3D$lld_min_version
+-       name=3DLLD
+-       disp_name=3DLLD
+ else
+-       echo "$orig_args: unknown linker" >&2
+-       exit 1
++       while [ $# -gt 1 -a "$1" !=3D "LLD" ]; do
++               shift
++       done
++
++       if [ "$1" =3D LLD ]; then
++               version=3D$2
++               min_version=3D$lld_min_version
++               name=3DLLD
++               disp_name=3DLLD
++       else
++               echo "$orig_args: unknown linker" >&2
++               exit 1
++       fi
+ fi
+
+ # Some distributions append a package release number, as in 2.34-4.fc32
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
