@@ -2,53 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9F33328D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB163328DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbhCIOoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 09:44:03 -0500
-Received: from first.geanix.com ([116.203.34.67]:48624 "EHLO first.geanix.com"
+        id S231517AbhCIOof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 09:44:35 -0500
+Received: from mga09.intel.com ([134.134.136.24]:12847 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231410AbhCIOnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 09:43:49 -0500
-Received: from [192.168.100.10] (unknown [185.233.254.173])
-        by first.geanix.com (Postfix) with ESMTPSA id CBF051042194;
-        Tue,  9 Mar 2021 14:43:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1615301026; bh=5RZieV+SAbNsuo0XB+MLPX7hw2a5w3czDqDtyR4HbV4=;
-        h=To:Cc:Reply-To:From:Subject:Date;
-        b=i/D/3Fn5XqDBXOeJCePzlYmpWfiIjNGjPrrDcG/fm7++wGPGKEBCEWBAGeihPfoow
-         MmoVgV2bFPiWq1lvGusQxk1zrsMwNSHWJTmXGJjQKsvWAUqWpZwsn602F7ASNF+uFk
-         3HAwr+coePfWI1n621pZgXmCfx5tJdK0MEARnkH0ow4Ya7BgwS4ghxlX1TS2pSgQTk
-         8VxICyOrIYW+08j5Os3PJxnGRnAXjHZ1zXSBaSkOwsVU2ap+ynO30ai9o0Xe4Du/ha
-         dXwfKy4YGIjfEx1U5iNh9WgyvnjquFKYvWsI/6Wa3q7ZygvCCHfFEIl+nJjo9E22Er
-         /f/AD/U9BoPVQ==
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Phillip Lougher <phillip@squashfs.org.uk>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Reply-To: 20210308213717.e319cbf5675a5e427efbdded@linux-foundation.org
-From:   Sean Nyekjaer <sean@geanix.com>
-Subject: Re: [PATCH] Squashfs: fix xattr id and id lookup sanity checks
-Message-ID: <9fae170a-db85-d871-4604-8fc313ff5131@geanix.com>
-Date:   Tue, 9 Mar 2021 15:43:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230035AbhCIOoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 09:44:25 -0500
+IronPort-SDR: c69J5CX+DkzLw9MjZE8t69ncLYSvbcrTyyRqVMnP1irVwZd/mlyl+4rN8o4QUa2ZuaIz8WVirh
+ vjymGfYHQcYA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9918"; a="188350784"
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="188350784"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 06:44:24 -0800
+IronPort-SDR: N00FXBDQ9afDM/JN8pm9XqrqOtHE5msPirwbQdR4+r16djEwDNZRd9UycDpjKTYd7W8DFp7uFz
+ 49Hw5FFfY0tw==
+X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
+   d="scan'208";a="447519100"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 06:44:24 -0800
+Date:   Tue, 9 Mar 2021 06:44:23 -0800
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     acme@kernel.org, al.grant@arm.com,
+        alexander.shishkin@linux.intel.com, coresight@lists.linaro.org,
+        denik@chromium.org, dianders@chromium.org, jolsa@redhat.com,
+        leo.yan@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, mingo@redhat.com, mnissler@chromium.org,
+        namhyung@kernel.org, peterz@infradead.org, suzuki.poulose@arm.com,
+        swboyd@chromium.org
+Subject: Re: [PATCHv2 0/4] perf/core: Add support to exclude kernel mode PMU
+ tracing
+Message-ID: <20210309144423.GD203350@tassilo.jf.intel.com>
+References: <87tupqu10c.fsf@linux.intel.com>
+ <20210309063828.26392-1-saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Spam-Status: No, score=-0.6 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FAKE_REPLY_A1,
-        URIBL_BLOCKED autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210309063828.26392-1-saiprakash.ranjan@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew
+> The disk encryption is just one example and there might be others which
+> we might not be aware of yet and we are not suspecting there is something
+> wrong with the crypto code that needs to be fixed.
 
-This patch depends on my patch ([PATCH] squashfs: fix inode lookup sanity checks)
-which add's the SQUASHFS_BLOCK_OFFSET :)
+Then you don't have any leaks relating to branch tracing.
 
-/Sean
+> restrict an external(in the sense that its not related to crypto or any
+> other security related component) entity such as hardware assisted tracing
+> like ARM coresight and so on. I don't see why or how the crypto code needs
+> to be fixed for something that is not related to it although it is affected.
 
+It's just a general property that if some code that is handling secrets
+is data dependent it already leaks.
+
+
+> The analogy would be like of the victims and a perpetrator. Lets take coresight
+> as an example for perpetrator and crypto as the victim here. Now we can try
+
+There's no victim with branch tracing, unless it is already leaky.
+
+> If we just know one victim (lets say crypto code here), what happens to the
+> others which we haven't identified yet? Do we just wait for someone to write
+> an exploit based on this and then scramble to fix it?
+
+For a useful security mitigation you need a threat model first I would say.
+
+So you need to have at least some idea how an attack with branch
+tracing would work.
+
+
+> Initial change was to restrict this only to HW assisted instruction tracing [1]
+
+I don't think it's needed for instruction tracing.
+
+-Andi
