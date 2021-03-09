@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2763331E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 00:35:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AADA3331EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Mar 2021 00:36:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbhCIXeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 18:34:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhCIXeg (ORCPT
+        id S232155AbhCIXfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 18:35:43 -0500
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:48874 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230122AbhCIXfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 18:34:36 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38ADC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 15:34:35 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id e6so10099267pgk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 15:34:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=MIMPh+SXeRfQ61lkDNTW++4hYt6RRQoL+XmybnY7RLs=;
-        b=jiSiFglQmxZEJ5Wo/V77lv2N41tEqlwbI7v3epkgItw5xYfXGxlauBpw9uzfeKRy9T
-         UgWtMw/oXm8AuRgak2BKRl5XhK5zcUO2837WG2rF2W8MM8EvE6UpNPAWncenkj0VYlKH
-         Wn+42kDb50QvRqsESQ2mom+sK8P9ZkVKhJUlfw17R8MaXfwzjUrcUKKhMatHk8l1n8z6
-         HORyhRzzkFREwaIywpdXqw9NNouEzJ8obgGp95ES0SB4Z7kZ2Uf5tkrCu65jYV/wXqtc
-         UCWEZCt7cJx4Cy1bJj+/BoOSmvIjqkxbeU85OG1e7JJ+tuq+pIzZNNEJVKCnsblb6lrn
-         0mOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MIMPh+SXeRfQ61lkDNTW++4hYt6RRQoL+XmybnY7RLs=;
-        b=JTlnE8v4siCk6dFMbXBBszG1//LOSEF2/Wr3NZRE0j13qeMJHtSTNS8UUZRJiAfRnZ
-         PzJd8bprdZ34/euGrXfy54oDF6w5QxCPLI81qdjPkYfu3PjbjQixI1ews1sXO5+h8IUL
-         b27ECs4jI5r4/isRrWe0Bb2SbSFOPKkcZaG5iVVPd77E0kXkxPglaW6Q122CIwyvtTzX
-         JavUUhH6xViGBU0cAyTaCM5piJbxLaVcVFG0UfYJjnyTjPpz0YcAWcnBrjkoqjVP8JUq
-         fGtxx5RHmxT7QunV4wmIi8Ai5Fp961MR9NdejVT6xrwWQ2JBtyhHrdbLRAjJEPE/qYks
-         yGKQ==
-X-Gm-Message-State: AOAM532VMGj6wMNAl591M+7q0PbzorgqrmsULXQNmr/MB8c9m10HQh+n
-        oWLFFrgtyjIsqzN5XTwMqRY80Q==
-X-Google-Smtp-Source: ABdhPJzfKS6kURnpgZPykAhAOJiKpUELYKYWDREb1RpAet6KiUSXO4LXfgtQd3YCjbxFWOuA+4TjfA==
-X-Received: by 2002:a63:1946:: with SMTP id 6mr175679pgz.359.1615332875151;
-        Tue, 09 Mar 2021 15:34:35 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id y68sm15546218pgy.5.2021.03.09.15.34.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 15:34:34 -0800 (PST)
-Subject: Re: [syzbot] possible deadlock in io_sq_thread_finish
-To:     syzbot <syzbot+ac39856cb1b332dbbdda@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <00000000000023b36405bd221483@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <179d05df-3c1f-1609-b941-a737f8fb13e0@kernel.dk>
-Date:   Tue, 9 Mar 2021 16:34:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <00000000000023b36405bd221483@google.com>
-Content-Type: text/plain; charset=utf-8
+        Tue, 9 Mar 2021 18:35:10 -0500
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 89F62891AE;
+        Wed, 10 Mar 2021 12:35:08 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1615332908;
+        bh=uI86jW6pWpZnO371tm5bCSjh+sq6Wm42ntNgWqBdKss=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=yMJLTWRQjO1i5IakXgJRV1w+B2b7uGCvOsMYX7q5MW9CA8B099sUEVoMdi2V6Yewh
+         HcpysLOY80YGexFt1+L2xiJt44TYB/gTLTKwiVx3Zypapim+RGSoIq6ev5YwA34yUp
+         2zPhkTjHqC0h5WVrSNkTlCMvtleg9BXMPGdqnFXdLrOhm/C6yJCNtw+NRRPlus7UW/
+         ubfsSfST4TC8FLlySwwPCmaeDYpum4zf62+FlVKeACAeks+4YiaFB+j5Dq+eRbYBI2
+         TMqGQRmW0LmRaSL4mjgQb50lgnceLXrkUtZAYasy+xdqTEwn0pjgvMMLc6FcJjF0Pv
+         IV5erfRh9ulLQ==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B6048062c0001>; Wed, 10 Mar 2021 12:35:08 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
+ by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
+ Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 10 Mar 2021 12:35:08 +1300
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.012; Wed, 10 Mar 2021 12:35:08 +1300
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        "jdelvare@suse.com" <jdelvare@suse.com>
+CC:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: Errant readings on LM81 with T2080 SoC
+Thread-Topic: Errant readings on LM81 with T2080 SoC
+Thread-Index: AQHXE6SbssdAOSHgwE+zIRhtn11Sk6p4Y2sAgAMVCoA=
+Date:   Tue, 9 Mar 2021 23:35:07 +0000
+Message-ID: <b1ba3f34-cbcc-4bbd-ea84-aad21f513682@alliedtelesis.co.nz>
+References: <8e0a88ba-01e9-9bc1-c78b-20f26ce27d12@alliedtelesis.co.nz>
+ <96d660bc-17ab-4e0e-9a94-bce1737a8da1@roeck-us.net>
+In-Reply-To: <96d660bc-17ab-4e0e-9a94-bce1737a8da1@roeck-us.net>
+Accept-Language: en-NZ, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8BCA4FDE94F0A245BE39485AC5CF9D8F@atlnz.lc>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=H79plryXfxChRathHHkA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test: git://git.kernel.dk/linux-block io_uring-5.12
-
--- 
-Jens Axboe
-
+DQpPbiA4LzAzLzIxIDE6MzEgcG0sIEd1ZW50ZXIgUm9lY2sgd3JvdGU6DQo+IE9uIDMvNy8yMSAy
+OjUyIFBNLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPj4gRnVuZGFtZW50YWxseSBJIHRoaW5rIHRo
+aXMgaXMgYSBwcm9ibGVtIHdpdGggdGhlIGZhY3QgdGhhdCB0aGUgTE04MSBpcw0KPj4gYW4gU01C
+dXMgZGV2aWNlIGJ1dCB0aGUgVDIwODAgKGFuZCBvdGhlciBGcmVlc2NhbGUgU29DcykgdXNlcyBp
+MmMgYW5kIHdlDQo+PiBlbXVsYXRlIFNNQnVzLiBJIHN1c3BlY3QgdGhlIGVycmFudCByZWFkaW5n
+cyBhcmUgd2hlbiB3ZSBkb24ndCBnZXQgcm91bmQNCj4+IHRvIGNvbXBsZXRpbmcgdGhlIHJlYWQg
+d2l0aGluIHRoZSB0aW1lb3V0IHNwZWNpZmllZCBieSB0aGUgU01CdXMNCj4+IHNwZWNpZmljYXRp
+b24uIERlcGVuZGluZyBvbiB3aGVuIHRoYXQgaGFwcGVucyB3ZSBlaXRoZXIgZmFpbCB0aGUNCj4+
+IHRyYW5zZmVyIG9yIGludGVycHJldCB0aGUgcmVzdWx0IGFzIGFsbC0xcy4NCj4gVGhhdCBpcyBx
+dWl0ZSB1bmxpa2VseS4gTWFueSBzZW5zb3IgY2hpcHMgYXJlIFNNQnVzIGNoaXBzIGNvbm5lY3Rl
+ZCB0bw0KPiBpMmMgYnVzc2VzLiBJdCBpcyBtdWNoIG1vcmUgbGlrZWx5IHRoYXQgdGhlcmUgaXMg
+YSBidWcgaW4gdGhlIFQyMDgwIGkyYyBkcml2ZXIsDQo+IHRoYXQgdGhlIGNoaXAgZG9lc24ndCBs
+aWtlIHRoZSBidWxrIHJlYWQgY29tbWFuZCBpc3N1ZWQgdGhyb3VnaCByZWdtYXAsIHRoYXQNCj4g
+dGhlIGNoaXAgaGFzIHByb2JsZW1zIHdpdGggdGhlIGkyYyBidXMgc3BlZWQsIG9yIHRoYXQgdGhl
+IGkyYyBidXMgaXMgbm9pc3kuDQpJIGhhdmUgbm90aWNlZCB0aGF0IHdpdGggdGhlIHN3aXRjaCB0
+byByZWdtYXAgd2UgZW5kIHVwIHVzaW5nIHBsYWluIGkyYyANCmluc3RlYWQgb2YgU01CVVMuIFRo
+ZXJlIGFwcGVhcnMgdG8gYmUgbm8gd2F5IG9mIHNheWluZyB1c2UgU01CVVMgDQpzZW1hbnRpY3Mg
+aWYgdGhlIGkyYyBhZGFwdGVyIHJlcG9ydHMgSTJDX0ZVTkNfSTJDLg==
