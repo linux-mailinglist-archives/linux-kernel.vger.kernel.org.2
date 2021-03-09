@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9EC3321C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:18:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3843321CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCIJSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:18:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhCIJSV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:18:21 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCB7C06174A;
-        Tue,  9 Mar 2021 01:18:21 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id ba1so6275051plb.1;
-        Tue, 09 Mar 2021 01:18:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=T7tvGncTtXaZiXPJeP/WnIyayFcG7/f+OFJGrJ7Xumk=;
-        b=uvQw0vLiqx48lmV6cVQH+HLh0Gwn/Hkca6R/O1ggPozFZzSQg8XmLXr4bw1wrv73Pt
-         CRU+kyi+NfV/I6wCYzqHW7uhDBjkEIkejy+lHznNfnlaaOFeA1YDx61N0F4FV1Y7yzc2
-         0DsmplHkf8x0+sQU4cWlHh42Lv0Q+7EStsofROh+4m3VEnoIC/o+uJ52a0XsBL/GyFu3
-         nBjC2Ok6TgojmjSUyLubqZYR+tHEqRtU4TiOJNlVyuA0W3t/IYoOh1Qq9O7j7zR4VDia
-         6Qn/aX8F0IL9XEzwfyh951lA7rCp6EEXNO26/JsLL8B3yl34JtnsJ1sGjn//S5KbsoAH
-         Q6kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=T7tvGncTtXaZiXPJeP/WnIyayFcG7/f+OFJGrJ7Xumk=;
-        b=GFbCjvG1zsahfaeji8G7ba+3jtbqhqu3kLOPfWhkg5XsD8F153fzAhqYUxxI/iHs5o
-         j7X9Cst9kgP0AJc9Xv1NZ+gd4J/IzB0cYUjocK+/gM22jwu5Sa+OX5nGr+mcKaRuaSPL
-         fSc+dvoD9yOrRDsxVgL63ccpbodJbNsf0cGCvmCm2IU3x3tiY5oFV0koVAwuIpxAjGCC
-         DM7pJ9wvz6ku4HOH7dk+V3KQApCZDeHhpBr7vRiT9RSrXspiyl7aAy8JIdPO2hzNwNQV
-         Q7w69PVM5GvsXUTYsZXQ6ecPvVExDJSPr/OOFERsoRfwCxvea96k1WsH03INMVBQ3hxR
-         5pCw==
-X-Gm-Message-State: AOAM531V/w8DMk0zY8gL3bz7LyjtK86G7koD8lOwxa4ZOWFJOSi70yHV
-        CE1NNg7A3PQhpGu8CrxP51EL99NrkYbO68/y
-X-Google-Smtp-Source: ABdhPJwwWbc/0MWYXaNzyQXeZRPQ1ffVUHWVEUgqElCZ+boMPYTtlTkdJtZZmhB8BR04J9mHvUSoew==
-X-Received: by 2002:a17:902:b589:b029:e6:2875:aa4c with SMTP id a9-20020a170902b589b02900e62875aa4cmr8512086pls.71.1615281500789;
-        Tue, 09 Mar 2021 01:18:20 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.97])
-        by smtp.gmail.com with ESMTPSA id z24sm11109341pge.71.2021.03.09.01.18.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 01:18:20 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] block: keyslot-manager: fix error return code of blk_ksm_evict_key()
-Date:   Tue,  9 Mar 2021 01:18:12 -0800
-Message-Id: <20210309091812.26029-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S229689AbhCIJT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:19:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50992 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229948AbhCIJTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 04:19:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24BBB6522E;
+        Tue,  9 Mar 2021 09:19:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615281546;
+        bh=iX5Ic4F1TQ9OsADSxd3DzW3ka+qK+zltIfosLa1xPnE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KWXvM8qnjXRUrFChgfgfN8wrAg2Zw7mugk8o9/AZ6IM+OHZ2oZcY/0M8HhvLIxGvq
+         KRB6N0igFA3GEUaU02gMZTAl6wApANR6GSU4d2B0k4/wq9iuYQiFYy6CNckjCp3vVB
+         7bSEI+S9y7vbZkBpkQqUVl5uMUpR2yaIyI3/jnIsm0yWGIMPw7HN4jMehiFIbI2qU5
+         df0vWg1qG89M36dTl33cX6hHZwRAT2g3pdUF1pqlDB3UNApreiu4RU2L8Yl4KiHWKT
+         eo+JcoxU9vwVMkpscPY67n9xt6Y+Lwju0e0DKayD0gZKJq9p1voN6UqafKPKv2HDJf
+         autnRGTGsHx5A==
+Date:   Tue, 9 Mar 2021 09:19:00 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V5 1/2] topology: Allow multiple entities to provide
+ sched_freq_tick() callback
+Message-ID: <20210309091900.GA27747@willie-the-truck>
+References: <cover.1614580695.git.viresh.kumar@linaro.org>
+ <a34f549bc75eecd4804aebb7b7794b45769eccf0.1614580695.git.viresh.kumar@linaro.org>
+ <20210308145209.GA26458@willie-the-truck>
+ <20210309041643.tcyv6rpto4k3sv5v@vireshk-i7>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210309041643.tcyv6rpto4k3sv5v@vireshk-i7>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When blk_ksm_find_keyslot() returns NULL to slot, no error return code
-of blk_ksm_evict_key() is assigned.
-To fix this bug, err is assigned with -ENOENT in this case.
+On Tue, Mar 09, 2021 at 09:46:43AM +0530, Viresh Kumar wrote:
+> On 08-03-21, 14:52, Will Deacon wrote:
+> > On Mon, Mar 01, 2021 at 12:21:17PM +0530, Viresh Kumar wrote:
+> > > +EXPORT_SYMBOL_GPL(topology_set_scale_freq_source);
+> > 
+> > I don't get why you need to export this in this patch. The arm64 topology
+> > code is never built as a module.
+> > 
+> > > +EXPORT_SYMBOL_GPL(topology_clear_scale_freq_source);
+> > 
+> > Same here.
+> > 
+> > > +EXPORT_SYMBOL_GPL(freq_scale);
+> > 
+> > And here.
+> 
+> After this patch, any part of the kernel can use these
+> helpers/variables to run their own implementation of tick-freq-scale
+> and so this patch looked to be the right place for that to me.
+> 
+> And the second patch in the series updates the CPPC cpufreq driver
+> (tristate) to use these exported symbols, so we have the first user
+> who needs the exported symbols as well.
 
-Fixes: 1b2628397058 ("block: Keyslot Manager for Inline Encryption")
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- block/keyslot-manager.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Ok, then how about putting the exports in their own patch that immediately
+precedes the patch which uses them? I think that would make it much clearer.
 
-diff --git a/block/keyslot-manager.c b/block/keyslot-manager.c
-index 2c4a55bea6ca..4dd5da0645bc 100644
---- a/block/keyslot-manager.c
-+++ b/block/keyslot-manager.c
-@@ -375,8 +375,10 @@ int blk_ksm_evict_key(struct blk_keyslot_manager *ksm,
- 
- 	blk_ksm_hw_enter(ksm);
- 	slot = blk_ksm_find_keyslot(ksm, key);
--	if (!slot)
-+	if (!slot) {
-+		err = -ENOENT;
- 		goto out_unlock;
-+	}
- 
- 	if (WARN_ON_ONCE(atomic_read(&slot->slot_refs) != 0)) {
- 		err = -EBUSY;
--- 
-2.17.1
+> > This one probably wants a less generic name as well if it's going
+> > to be exported.
+> 
+> x86 names it arch_freq_scale, perhaps we should stick to that instead.
 
+Sounds like a improvement, thanks.
+
+Will
