@@ -2,524 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D64533253B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:16:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D51332548
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhCIMQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 07:16:13 -0500
-Received: from mail-mw2nam10on2074.outbound.protection.outlook.com ([40.107.94.74]:44378
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230494AbhCIMPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 07:15:44 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RlxNGXA0CY2SH+Mx4qTU7ziO0gJNlUVq1o2zrd9W8R2aDZWL7XiqbBG7LK1csz6xAunbH/l2bJopZcCK1pyRX9jz5Ye5sWFiGtaOcLi5p1LXiaM8vvLes/J0fdM3qpXg51Hx+qCZAVFov5KQiPCrRek/A4BweaITnJk4Dz0NiO1VhC/1iz8PHcmYFR8SjmpRrUD+GWLA/tmJ3THH/1kphQmNE+ahHBymPjj7XAcRQumg+iL2gBR81GwMW1AKJlS2CCaFWR1wHTnBLCDQaG1LTyS760TyKIKcMJ+F7jQpIMAQStITmVsPuic3wtIAeo1zS143fztjWOHCHuub04VKWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X2Ye7ZOmoNbr4DRG4frF5xGSw/0sOPNl69k/TwAEMAE=;
- b=ffsRp5a4E0KYBxfTQ4vzfERhXbC5n8fnvrMOmDUeJynNP1DYmL1Ci8cIgaGuOiqzjKONi58WvMtJe7rJ/1ayEQ55dLf0JcpF/lj3TNV4VSfcWwiRK82dc6vLGa3NumEbVGDcg2/rEO2/NoymLJVa23fcILFFyXLQQid+80AqS6kFkDsYSQzUN/paKVwc7Wn+f2dD19ja5A8HW7G3LAy2QBu+3yVTF5jhoNBUULYGm7ZfLZ9b604od3G6sxzfsBHo+fhJuJZIzMIw4EQ/hACgEm5iLG6o81iIhbE32aSjHxxl+ASMSIqiRVdSQBiA7VVqp5QEMTPdKqDIPIU8ArW3Mg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X2Ye7ZOmoNbr4DRG4frF5xGSw/0sOPNl69k/TwAEMAE=;
- b=KlmETmEU3F6Xlouuw9IdtTYAaSCCvE+TeQ4sChnN3bm/e2eV4lnDIyxBoDFkd0uP3IRHM8hZvWr5hGY/03zHZEwsUxvCdtytGFSkPOpDMPfMijnrTVoN7rElpUrqYXCfD2CB0VuIQla265W14svV9qfs7o2UCOhrDjMlTTmC3aXimdYZFEAxbuFinK4eZqT/AkSsTzF2iTtOuqpLLMYLFd27/6T2Y4E3edpQew6lr0UONtHLl4C+vrErcQNEcT76wjN2L+7B5LhAIfZ36tfPZL1cpJxaruD72p16jFWSonPO6cj0+TAewQ7rhxOSrBrJyysFl2vOfqp5kbnRp9UVMQ==
-Received: from BN9PR03CA0910.namprd03.prod.outlook.com (2603:10b6:408:107::15)
- by SA0PR12MB4366.namprd12.prod.outlook.com (2603:10b6:806:72::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.23; Tue, 9 Mar
- 2021 12:15:43 +0000
-Received: from BN8NAM11FT028.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:107:cafe::ef) by BN9PR03CA0910.outlook.office365.com
- (2603:10b6:408:107::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
- Transport; Tue, 9 Mar 2021 12:15:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT028.mail.protection.outlook.com (10.13.176.225) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 12:15:43 +0000
-Received: from localhost (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Mar
- 2021 12:15:38 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <bskeggs@redhat.com>, <akpm@linux-foundation.org>
-CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <jhubbard@nvidia.com>, <rcampbell@nvidia.com>,
-        <jglisse@redhat.com>, "Alistair Popple" <apopple@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH v5 6/8] mm: Selftests for exclusive device memory
-Date:   Tue, 9 Mar 2021 23:15:03 +1100
-Message-ID: <20210309121505.23608-7-apopple@nvidia.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210309121505.23608-1-apopple@nvidia.com>
-References: <20210309121505.23608-1-apopple@nvidia.com>
+        id S230183AbhCIMSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 07:18:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230150AbhCIMSE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 07:18:04 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C47C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 04:18:04 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so5097765pjv.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 04:18:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YMe1Reipq+pUMVMRE0+FPXbOWOU/b1ED4qcuTqK1ghc=;
+        b=Y19ZHseAo6Hf+XdFmH7G5u/kWcQ4ebnMvUX6r09EJ9aqY9k/NwFkPobPVlUCn5qOvI
+         57C3uzWoJHrcbgUg9oWpAm25++WM7LFK9OZa1uubE8w7B+9YsoykbAHh2KYyMDds6n10
+         oToGKC1wwGZm5EWe30wo9Szge/KP/0hthWBcYV1OVpfIxNpnzp7uZezHLPudJjw7wenP
+         H5wdXe1ev44I3XyucVKdZwzIClnKqV5j300tqkUH3HDfot0I+tsov7UmBxp2sQg0B5QN
+         mE9meH3F5f7YWhVeQDVCg1IOr2e2xPoZQtennF7irnxKXbLOTggXndXQElv0T3PxFNKr
+         +1qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YMe1Reipq+pUMVMRE0+FPXbOWOU/b1ED4qcuTqK1ghc=;
+        b=r08xLP+q6w1ME/7L8R9x3QfarHEhxPqlKMpmq3bENe2x55amyl34q+kz8fhkm58cMD
+         1aKfKjdY8HH1wcA4yMFrVANl3ZSDF/V0pRW7fHg9ZIEmrr3teiAi+tCmu+pErpmPBM3x
+         C3e88TM/zXUV10WIORtfKmxve0Yz0b+aPUKoebQ2gfvIo6ns1FdtYR+S1hONiIVrJr4x
+         9gy3kqg9twvFM0zGedcv9/HLh7PBQGfTcKqBfyhnfUwaJLwQpPvlQ4m9rdeenLwk65IL
+         mF4c3UfgPYteKOjI16iGLLIVeSfdOWZTGbnVfG4iaS15BniHc95tq8RD3DbnzrwTBHjw
+         PdOw==
+X-Gm-Message-State: AOAM5339QXPME+f6WQK9GfomCMpd/62TR1d71YdBAk6z4rFMCTZJu8cw
+        0c2dbEEJMGTHiZFLWABTKymh8g==
+X-Google-Smtp-Source: ABdhPJyy5HCirQAKbPH84rJgbw/RcNuoEn37oDc5e3m8yWMb2Cy5JXXi3yOxfCIoRnM9B4hQacBZ3A==
+X-Received: by 2002:a17:90a:4381:: with SMTP id r1mr4769515pjg.20.1615292284114;
+        Tue, 09 Mar 2021 04:18:04 -0800 (PST)
+Received: from localhost.localdomain ([27.56.151.62])
+        by smtp.gmail.com with ESMTPSA id x190sm13338787pfx.166.2021.03.09.04.18.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 04:18:03 -0800 (PST)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     kgdb-bugreport@lists.sourceforge.net
+Cc:     daniel.thompson@linaro.org, jason.wessel@windriver.com,
+        dianders@chromium.org, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH] kdb: Refactor kdb_defcmd implementation
+Date:   Tue,  9 Mar 2021 17:47:47 +0530
+Message-Id: <20210309121747.859823-1-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dfca3be2-0b8c-42c0-ca8d-08d8e2f50fc4
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4366:
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4366B5A60703AFDB38DEB2B6DF929@SA0PR12MB4366.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DW4LiaW/XdCkE4pdAwVTNpbBSiBH4n0e4Jra/oBFie+9OSnGyS4l/I6ov8QPbtBxvIR+RA0mK0wnTNwQVMG5yaaM8t8r7Y+ikvdub82jpZzYBuIMW37mXvWMBkcUVaFmLEII+Iq+Scylwn8sjq4qBwkV0H5BvMijSbFzlgHgHV0EAUR+4VOTgJ9aVzUXy9b3DQMMb3Ng9rmM/d5fIKSi67sguX8vFPmoe3Gaw5atEOrwKcGufZfe0Yz3qN7V7VDRdJ0RDwgM6vAFkCOkaaAXD4Udu5FVuN05ASyx+PUKdnAJduDx2kuSsMJW9ckrKep/frIXJeOjO2lDQI47PybRGC1axJE4fAgYn/KXzG4KRNohdiw0gB5DpUa5/JJpeR3/Ala0g/vOSepG23nW1hS+ra6P1wzLaE9kqcx+IR3PPxIQyzylEaBQ0NN4i8E1B8D/NcimSTKx8bC8ulJYY6MVIVHmPqIUMtW/7P97+yVhhHzJeywmDGtD8bLZl84YGCgA1V44YtZJgMiP6haE3UJsOpDDhhBWUgBst89MOaD+Kx1k2twvdaYVj2jKrErS3MaE5hmczbmh4szS7Y+BZ2f1zDkTO/G4yym132A6QxZqESG36sz6buRhnPv0HRzs/D6ogxIa7kKccxUk/DcDeZA40OxYJrOV92FVcHO2hxs0UM7vYAfWDnTDCp54tpMmj0kw
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(376002)(346002)(36840700001)(46966006)(34020700004)(54906003)(7636003)(110136005)(82310400003)(8936002)(36756003)(356005)(426003)(8676002)(47076005)(82740400003)(316002)(36906005)(83380400001)(36860700001)(2906002)(336012)(70586007)(30864003)(6666004)(5660300002)(4326008)(1076003)(478600001)(186003)(26005)(107886003)(16526019)(86362001)(2616005)(70206006);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 12:15:43.0806
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: dfca3be2-0b8c-42c0-ca8d-08d8e2f50fc4
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT028.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4366
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds some selftests for exclusive device memory.
+Switch to use kdbtab_t instead of separate struct defcmd_set since
+now we have kdb_register_table() to register pre-allocated kdb commands.
 
-Signed-off-by: Alistair Popple <apopple@nvidia.com>
-Acked-by: Jason Gunthorpe <jgg@nvidia.com>
-Tested-by: Ralph Campbell <rcampbell@nvidia.com>
-Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
+Also, switch to use a linked list for sub-commands instead of dynamic
+array which makes traversing the sub-commands list simpler.
+
+Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 ---
- lib/test_hmm.c                         | 126 +++++++++++++-
- lib/test_hmm_uapi.h                    |   2 +
- tools/testing/selftests/vm/hmm-tests.c | 219 +++++++++++++++++++++++++
- 3 files changed, 346 insertions(+), 1 deletion(-)
+ kernel/debug/kdb/kdb_main.c    | 136 +++++++++++++++------------------
+ kernel/debug/kdb/kdb_private.h |   7 ++
+ 2 files changed, 70 insertions(+), 73 deletions(-)
 
-diff --git a/lib/test_hmm.c b/lib/test_hmm.c
-index 80a78877bd93..305a9d9e2b4c 100644
---- a/lib/test_hmm.c
-+++ b/lib/test_hmm.c
-@@ -25,6 +25,7 @@
- #include <linux/swapops.h>
- #include <linux/sched/mm.h>
- #include <linux/platform_device.h>
-+#include <linux/rmap.h>
+diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+index 9d69169582c6..2f54e81fd9f7 100644
+--- a/kernel/debug/kdb/kdb_main.c
++++ b/kernel/debug/kdb/kdb_main.c
+@@ -33,7 +33,6 @@
+ #include <linux/kallsyms.h>
+ #include <linux/kgdb.h>
+ #include <linux/kdb.h>
+-#include <linux/list.h>
+ #include <linux/notifier.h>
+ #include <linux/interrupt.h>
+ #include <linux/delay.h>
+@@ -678,16 +677,7 @@ static void kdb_cmderror(int diag)
+  * Returns:
+  *	zero for success, a kdb diagnostic if error
+  */
+-struct defcmd_set {
+-	int count;
+-	bool usable;
+-	char *name;
+-	char *usage;
+-	char *help;
+-	char **command;
+-};
+-static struct defcmd_set *defcmd_set;
+-static int defcmd_set_count;
++static kdbtab_t *defcmd_set;
+ static bool defcmd_in_progress;
  
- #include "test_hmm_uapi.h"
+ /* Forward references */
+@@ -695,53 +685,52 @@ static int kdb_exec_defcmd(int argc, const char **argv);
  
-@@ -46,6 +47,7 @@ struct dmirror_bounce {
- 	unsigned long		cpages;
- };
- 
-+#define DPT_XA_TAG_ATOMIC 1UL
- #define DPT_XA_TAG_WRITE 3UL
- 
- /*
-@@ -218,7 +220,7 @@ static bool dmirror_interval_invalidate(struct mmu_interval_notifier *mni,
- 	 * the invalidation is handled as part of the migration process.
- 	 */
- 	if (range->event == MMU_NOTIFY_MIGRATE &&
--	    range->migrate_pgmap_owner == dmirror->mdevice)
-+	    range->owner == dmirror->mdevice)
- 		return true;
- 
- 	if (mmu_notifier_range_blockable(range))
-@@ -619,6 +621,54 @@ static void dmirror_migrate_alloc_and_copy(struct migrate_vma *args,
- 	}
- }
- 
-+static int dmirror_check_atomic(struct dmirror *dmirror, unsigned long start,
-+			     unsigned long end)
-+{
-+	unsigned long pfn;
-+
-+	for (pfn = start >> PAGE_SHIFT; pfn < (end >> PAGE_SHIFT); pfn++) {
-+		void *entry;
-+		struct page *page;
-+
-+		entry = xa_load(&dmirror->pt, pfn);
-+		page = xa_untag_pointer(entry);
-+		if (xa_pointer_tag(entry) == DPT_XA_TAG_ATOMIC)
-+			return -EPERM;
-+	}
-+
-+	return 0;
-+}
-+
-+static int dmirror_atomic_map(unsigned long start, unsigned long end,
-+			      struct page **pages, struct dmirror *dmirror)
-+{
-+	unsigned long pfn, mapped = 0;
-+	int i;
-+
-+	/* Map the migrated pages into the device's page tables. */
-+	mutex_lock(&dmirror->mutex);
-+
-+	for (i = 0, pfn = start >> PAGE_SHIFT; pfn < (end >> PAGE_SHIFT); pfn++, i++) {
-+		void *entry;
-+
-+		if (!pages[i])
-+			continue;
-+
-+		entry = pages[i];
-+		entry = xa_tag_pointer(entry, DPT_XA_TAG_ATOMIC);
-+		entry = xa_store(&dmirror->pt, pfn, entry, GFP_ATOMIC);
-+		if (xa_is_err(entry)) {
-+			mutex_unlock(&dmirror->mutex);
-+			return xa_err(entry);
-+		}
-+
-+		mapped++;
-+	}
-+
-+	mutex_unlock(&dmirror->mutex);
-+	return mapped;
-+}
-+
- static int dmirror_migrate_finalize_and_map(struct migrate_vma *args,
- 					    struct dmirror *dmirror)
+ static int kdb_defcmd2(const char *cmdstr, const char *argv0)
  {
-@@ -661,6 +711,71 @@ static int dmirror_migrate_finalize_and_map(struct migrate_vma *args,
+-	struct defcmd_set *s = defcmd_set + defcmd_set_count - 1;
+-	char **save_command = s->command;
++	struct kdb_subcmd *ks;
++
++	if (!defcmd_set)
++		return KDB_NOTIMP;
++
+ 	if (strcmp(argv0, "endefcmd") == 0) {
+ 		defcmd_in_progress = false;
+-		if (!s->count)
+-			s->usable = false;
+-		if (s->usable)
+-			/* macros are always safe because when executed each
+-			 * internal command re-enters kdb_parse() and is
+-			 * safety checked individually.
+-			 */
+-			kdb_register_flags(s->name, kdb_exec_defcmd, s->usage,
+-					   s->help, 0,
+-					   KDB_ENABLE_ALWAYS_SAFE);
++		if (!list_empty(&defcmd_set->kdb_scmds_head))
++			kdb_register_table(defcmd_set, 1);
+ 		return 0;
+ 	}
+-	if (!s->usable)
+-		return KDB_NOTIMP;
+-	s->command = kcalloc(s->count + 1, sizeof(*(s->command)), GFP_KDB);
+-	if (!s->command) {
++
++	ks = kmalloc(sizeof(*ks), GFP_KDB);
++	if (!ks) {
+ 		kdb_printf("Could not allocate new kdb_defcmd table for %s\n",
+ 			   cmdstr);
+-		s->usable = false;
+ 		return KDB_NOTIMP;
+ 	}
+-	memcpy(s->command, save_command, s->count * sizeof(*(s->command)));
+-	s->command[s->count++] = kdb_strdup(cmdstr, GFP_KDB);
+-	kfree(save_command);
++
++	ks->scmd_name = kdb_strdup(cmdstr, GFP_KDB);
++	list_add_tail(&ks->list_node, &defcmd_set->kdb_scmds_head);
++
  	return 0;
  }
  
-+static int dmirror_exclusive(struct dmirror *dmirror,
-+			     struct hmm_dmirror_cmd *cmd)
-+{
-+	unsigned long start, end, addr;
-+	unsigned long size = cmd->npages << PAGE_SHIFT;
-+	struct mm_struct *mm = dmirror->notifier.mm;
-+	struct page *pages[64];
-+	struct dmirror_bounce bounce;
-+	unsigned long next;
-+	int ret;
-+
-+	start = cmd->addr;
-+	end = start + size;
-+	if (end < start)
-+		return -EINVAL;
-+
-+	/* Since the mm is for the mirrored process, get a reference first. */
-+	if (!mmget_not_zero(mm))
-+		return -EINVAL;
-+
-+	mmap_read_lock(mm);
-+	for (addr = start; addr < end; addr = next) {
-+		int i, mapped;
-+
-+		if (end < addr + (ARRAY_SIZE(pages) << PAGE_SHIFT))
-+			next = end;
-+		else
-+			next = addr + (ARRAY_SIZE(pages) << PAGE_SHIFT);
-+
-+		ret = make_device_exclusive_range(mm, addr, next, pages, NULL);
-+		mapped = dmirror_atomic_map(addr, next, pages, dmirror);
-+		for (i = 0; i < ret; i++) {
-+			if (pages[i]) {
-+				unlock_page(pages[i]);
-+				put_page(pages[i]);
-+			}
-+		}
-+
-+		if (addr + (mapped << PAGE_SHIFT) < next) {
-+			mmap_read_unlock(mm);
-+			mmput(mm);
-+			return -EBUSY;
-+		}
-+	}
-+	mmap_read_unlock(mm);
-+	mmput(mm);
-+
-+	/* Return the migrated data for verification. */
-+	ret = dmirror_bounce_init(&bounce, start, size);
-+	if (ret)
-+		return ret;
-+	mutex_lock(&dmirror->mutex);
-+	ret = dmirror_do_read(dmirror, start, end, &bounce);
-+	mutex_unlock(&dmirror->mutex);
-+	if (ret == 0) {
-+		if (copy_to_user(u64_to_user_ptr(cmd->ptr), bounce.ptr,
-+				 bounce.size))
-+			ret = -EFAULT;
-+	}
-+
-+	cmd->cpages = bounce.cpages;
-+	dmirror_bounce_fini(&bounce);
-+	return ret;
-+}
-+
- static int dmirror_migrate(struct dmirror *dmirror,
- 			   struct hmm_dmirror_cmd *cmd)
+ static int kdb_defcmd(int argc, const char **argv)
  {
-@@ -949,6 +1064,15 @@ static long dmirror_fops_unlocked_ioctl(struct file *filp,
- 		ret = dmirror_migrate(dmirror, &cmd);
- 		break;
- 
-+	case HMM_DMIRROR_EXCLUSIVE:
-+		ret = dmirror_exclusive(dmirror, &cmd);
-+		break;
+-	struct defcmd_set *save_defcmd_set = defcmd_set, *s;
+ 	if (defcmd_in_progress) {
+ 		kdb_printf("kdb: nested defcmd detected, assuming missing "
+ 			   "endefcmd\n");
+ 		kdb_defcmd2("endefcmd", "endefcmd");
+ 	}
+ 	if (argc == 0) {
+-		int i;
+-		for (s = defcmd_set; s < defcmd_set + defcmd_set_count; ++s) {
+-			kdb_printf("defcmd %s \"%s\" \"%s\"\n", s->name,
+-				   s->usage, s->help);
+-			for (i = 0; i < s->count; ++i)
+-				kdb_printf("%s", s->command[i]);
+-			kdb_printf("endefcmd\n");
++		kdbtab_t *kp;
++		struct kdb_subcmd *ks;
 +
-+	case HMM_DMIRROR_CHECK_EXCLUSIVE:
-+		ret = dmirror_check_atomic(dmirror, cmd.addr,
-+					cmd.addr + (cmd.npages << PAGE_SHIFT));
-+		break;
++		list_for_each_entry(kp, &kdb_cmds_head, list_node) {
++			if (kp->cmd_func == kdb_exec_defcmd) {
++				kdb_printf("defcmd %s \"%s\" \"%s\"\n",
++					   kp->cmd_name, kp->cmd_usage,
++					   kp->cmd_help);
++				list_for_each_entry(ks, &kp->kdb_scmds_head,
++						    list_node)
++					kdb_printf("%s", ks->scmd_name);
++				kdb_printf("endefcmd\n");
++			}
+ 		}
+ 		return 0;
+ 	}
+@@ -751,45 +740,42 @@ static int kdb_defcmd(int argc, const char **argv)
+ 		kdb_printf("Command only available during kdb_init()\n");
+ 		return KDB_NOTIMP;
+ 	}
+-	defcmd_set = kmalloc_array(defcmd_set_count + 1, sizeof(*defcmd_set),
+-				   GFP_KDB);
++	defcmd_set = kzalloc(sizeof(*defcmd_set), GFP_KDB);
+ 	if (!defcmd_set)
+ 		goto fail_defcmd;
+-	memcpy(defcmd_set, save_defcmd_set,
+-	       defcmd_set_count * sizeof(*defcmd_set));
+-	s = defcmd_set + defcmd_set_count;
+-	memset(s, 0, sizeof(*s));
+-	s->usable = true;
+-	s->name = kdb_strdup(argv[1], GFP_KDB);
+-	if (!s->name)
 +
- 	case HMM_DMIRROR_SNAPSHOT:
- 		ret = dmirror_snapshot(dmirror, &cmd);
- 		break;
-diff --git a/lib/test_hmm_uapi.h b/lib/test_hmm_uapi.h
-index 670b4ef2a5b6..f14dea5dcd06 100644
---- a/lib/test_hmm_uapi.h
-+++ b/lib/test_hmm_uapi.h
-@@ -33,6 +33,8 @@ struct hmm_dmirror_cmd {
- #define HMM_DMIRROR_WRITE		_IOWR('H', 0x01, struct hmm_dmirror_cmd)
- #define HMM_DMIRROR_MIGRATE		_IOWR('H', 0x02, struct hmm_dmirror_cmd)
- #define HMM_DMIRROR_SNAPSHOT		_IOWR('H', 0x03, struct hmm_dmirror_cmd)
-+#define HMM_DMIRROR_EXCLUSIVE		_IOWR('H', 0x04, struct hmm_dmirror_cmd)
-+#define HMM_DMIRROR_CHECK_EXCLUSIVE	_IOWR('H', 0x05, struct hmm_dmirror_cmd)
- 
- /*
-  * Values returned in hmm_dmirror_cmd.ptr for HMM_DMIRROR_SNAPSHOT.
-diff --git a/tools/testing/selftests/vm/hmm-tests.c b/tools/testing/selftests/vm/hmm-tests.c
-index 5d1ac691b9f4..5d3c5db9ed3a 100644
---- a/tools/testing/selftests/vm/hmm-tests.c
-+++ b/tools/testing/selftests/vm/hmm-tests.c
-@@ -1485,4 +1485,223 @@ TEST_F(hmm2, double_map)
- 	hmm_buffer_free(buffer);
++	defcmd_set->cmd_func = kdb_exec_defcmd;
++	defcmd_set->cmd_minlen = 0;
++	defcmd_set->cmd_flags = KDB_ENABLE_ALWAYS_SAFE;
++	defcmd_set->cmd_name = kdb_strdup(argv[1], GFP_KDB);
++	if (!defcmd_set->cmd_name)
+ 		goto fail_name;
+-	s->usage = kdb_strdup(argv[2], GFP_KDB);
+-	if (!s->usage)
++	defcmd_set->cmd_usage = kdb_strdup(argv[2], GFP_KDB);
++	if (!defcmd_set->cmd_usage)
+ 		goto fail_usage;
+-	s->help = kdb_strdup(argv[3], GFP_KDB);
+-	if (!s->help)
++	defcmd_set->cmd_help = kdb_strdup(argv[3], GFP_KDB);
++	if (!defcmd_set->cmd_help)
+ 		goto fail_help;
+-	if (s->usage[0] == '"') {
+-		strcpy(s->usage, argv[2]+1);
+-		s->usage[strlen(s->usage)-1] = '\0';
++	if (defcmd_set->cmd_usage[0] == '"') {
++		strcpy(defcmd_set->cmd_usage, argv[2]+1);
++		defcmd_set->cmd_usage[strlen(defcmd_set->cmd_usage)-1] = '\0';
+ 	}
+-	if (s->help[0] == '"') {
+-		strcpy(s->help, argv[3]+1);
+-		s->help[strlen(s->help)-1] = '\0';
++	if (defcmd_set->cmd_help[0] == '"') {
++		strcpy(defcmd_set->cmd_help, argv[3]+1);
++		defcmd_set->cmd_help[strlen(defcmd_set->cmd_help)-1] = '\0';
+ 	}
+-	++defcmd_set_count;
++
++	INIT_LIST_HEAD(&defcmd_set->kdb_scmds_head);
+ 	defcmd_in_progress = true;
+-	kfree(save_defcmd_set);
+ 	return 0;
+ fail_help:
+-	kfree(s->usage);
++	kfree(defcmd_set->cmd_usage);
+ fail_usage:
+-	kfree(s->name);
++	kfree(defcmd_set->cmd_name);
+ fail_name:
+ 	kfree(defcmd_set);
+ fail_defcmd:
+ 	kdb_printf("Could not allocate new defcmd_set entry for %s\n", argv[1]);
+-	defcmd_set = save_defcmd_set;
+ 	return KDB_NOTIMP;
  }
  
-+/*
-+ * Basic check of exclusive faulting.
-+ */
-+TEST_F(hmm, exclusive)
-+{
-+	struct hmm_buffer *buffer;
-+	unsigned long npages;
-+	unsigned long size;
-+	unsigned long i;
-+	int *ptr;
+@@ -804,25 +790,29 @@ static int kdb_defcmd(int argc, const char **argv)
+  */
+ static int kdb_exec_defcmd(int argc, const char **argv)
+ {
+-	int i, ret;
+-	struct defcmd_set *s;
 +	int ret;
++	kdbtab_t *kp;
++	struct kdb_subcmd *ks;
 +
-+	npages = ALIGN(HMM_BUFFER_SIZE, self->page_size) >> self->page_shift;
-+	ASSERT_NE(npages, 0);
-+	size = npages << self->page_shift;
+ 	if (argc != 0)
+ 		return KDB_ARGCOUNT;
+-	for (s = defcmd_set, i = 0; i < defcmd_set_count; ++i, ++s) {
+-		if (strcmp(s->name, argv[0]) == 0)
 +
-+	buffer = malloc(sizeof(*buffer));
-+	ASSERT_NE(buffer, NULL);
++	list_for_each_entry(kp, &kdb_cmds_head, list_node) {
++		if (strcmp(kp->cmd_name, argv[0]) == 0)
+ 			break;
+ 	}
+-	if (i == defcmd_set_count) {
++	if (list_entry_is_head(kp, &kdb_cmds_head, list_node)) {
+ 		kdb_printf("kdb_exec_defcmd: could not find commands for %s\n",
+ 			   argv[0]);
+ 		return KDB_NOTIMP;
+ 	}
+-	for (i = 0; i < s->count; ++i) {
+-		/* Recursive use of kdb_parse, do not use argv after
+-		 * this point */
++	list_for_each_entry(ks, &kp->kdb_scmds_head, list_node) {
++		/*
++		 * Recursive use of kdb_parse, do not use argv after this point.
++		 */
+ 		argv = NULL;
+-		kdb_printf("[%s]kdb> %s\n", s->name, s->command[i]);
+-		ret = kdb_parse(s->command[i]);
++		kdb_printf("[%s]kdb> %s\n", kp->cmd_name, ks->scmd_name);
++		ret = kdb_parse(ks->scmd_name);
+ 		if (ret)
+ 			return ret;
+ 	}
+diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
+index ec91d7e02334..a8bda278c9c1 100644
+--- a/kernel/debug/kdb/kdb_private.h
++++ b/kernel/debug/kdb/kdb_private.h
+@@ -13,6 +13,7 @@
+  */
+ 
+ #include <linux/kgdb.h>
++#include <linux/list.h>
+ #include "../debug_core.h"
+ 
+ /* Kernel Debugger Command codes.  Must not overlap with error codes. */
+@@ -164,6 +165,11 @@ typedef struct _kdb_bp {
+ #ifdef CONFIG_KGDB_KDB
+ extern kdb_bp_t kdb_breakpoints[/* KDB_MAXBPT */];
+ 
++struct kdb_subcmd {
++	char    *scmd_name;		/* Sub-command name */
++	struct  list_head list_node;	/* Sub-command node */
++};
 +
-+	buffer->fd = -1;
-+	buffer->size = size;
-+	buffer->mirror = malloc(size);
-+	ASSERT_NE(buffer->mirror, NULL);
-+
-+	buffer->ptr = mmap(NULL, size,
-+			   PROT_READ | PROT_WRITE,
-+			   MAP_PRIVATE | MAP_ANONYMOUS,
-+			   buffer->fd, 0);
-+	ASSERT_NE(buffer->ptr, MAP_FAILED);
-+
-+	/* Initialize buffer in system memory. */
-+	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ptr[i] = i;
-+
-+	/* Map memory exclusively for device access. */
-+	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_EXCLUSIVE, buffer, npages);
-+	ASSERT_EQ(ret, 0);
-+	ASSERT_EQ(buffer->cpages, npages);
-+
-+	/* Check what the device read. */
-+	for (i = 0, ptr = buffer->mirror; i < size / sizeof(*ptr); ++i)
-+		ASSERT_EQ(ptr[i], i);
-+
-+	/* Fault pages back to system memory and check them. */
-+	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ASSERT_EQ(ptr[i]++, i);
-+
-+	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ASSERT_EQ(ptr[i], i+1);
-+
-+	/* Check atomic access revoked */
-+	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_CHECK_EXCLUSIVE, buffer, npages);
-+	ASSERT_EQ(ret, 0);
-+
-+	hmm_buffer_free(buffer);
-+}
-+
-+TEST_F(hmm, exclusive_shared)
-+{
-+	struct hmm_buffer *buffer;
-+	unsigned long npages;
-+	unsigned long size;
-+	int *ptr;
-+	int ret, i;
-+
-+	npages = ALIGN(HMM_BUFFER_SIZE, self->page_size) >> self->page_shift;
-+	ASSERT_NE(npages, 0);
-+	size = npages << self->page_shift;
-+
-+	buffer = malloc(sizeof(*buffer));
-+	ASSERT_NE(buffer, NULL);
-+
-+	buffer->fd = -1;
-+	buffer->size = size;
-+	buffer->mirror = malloc(size);
-+	ASSERT_NE(buffer->mirror, NULL);
-+
-+	buffer->ptr = mmap(NULL, size,
-+			   PROT_READ | PROT_WRITE,
-+			   MAP_SHARED | MAP_ANONYMOUS,
-+			   buffer->fd, 0);
-+	ASSERT_NE(buffer->ptr, MAP_FAILED);
-+
-+	/* Initialize buffer in system memory. */
-+	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ptr[i] = i;
-+
-+	/* Map memory exclusively for device access. */
-+	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_EXCLUSIVE, buffer, npages);
-+	ASSERT_EQ(ret, 0);
-+	ASSERT_EQ(buffer->cpages, npages);
-+
-+	/* Check what the device read. */
-+	for (i = 0, ptr = buffer->mirror; i < size / sizeof(*ptr); ++i)
-+		ASSERT_EQ(ptr[i], i);
-+
-+	/* Fault pages back to system memory and check them. */
-+	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ASSERT_EQ(ptr[i]++, i);
-+
-+	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ASSERT_EQ(ptr[i], i+1);
-+
-+	/* Check atomic access revoked */
-+	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_CHECK_EXCLUSIVE, buffer, npages);
-+	ASSERT_FALSE(ret);
-+
-+	/* Map memory exclusively for device access again to check process tear down */
-+	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_EXCLUSIVE, buffer, npages);
-+	ASSERT_EQ(ret, 0);
-+	ASSERT_EQ(buffer->cpages, npages);
-+
-+	hmm_buffer_free(buffer);
-+}
-+
-+/*
-+ * Same as above but for shared anonymous memory.
-+ */
-+TEST_F(hmm, exclusive_mprotect)
-+{
-+	struct hmm_buffer *buffer;
-+	unsigned long npages;
-+	unsigned long size;
-+	unsigned long i;
-+	int *ptr;
-+	int ret;
-+
-+	npages = ALIGN(HMM_BUFFER_SIZE, self->page_size) >> self->page_shift;
-+	ASSERT_NE(npages, 0);
-+	size = npages << self->page_shift;
-+
-+	buffer = malloc(sizeof(*buffer));
-+	ASSERT_NE(buffer, NULL);
-+
-+	buffer->fd = -1;
-+	buffer->size = size;
-+	buffer->mirror = malloc(size);
-+	ASSERT_NE(buffer->mirror, NULL);
-+
-+	buffer->ptr = mmap(NULL, size,
-+			   PROT_READ | PROT_WRITE,
-+			   MAP_PRIVATE | MAP_ANONYMOUS,
-+			   buffer->fd, 0);
-+	ASSERT_NE(buffer->ptr, MAP_FAILED);
-+
-+	/* Initialize buffer in system memory. */
-+	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ptr[i] = i;
-+
-+	/* Map memory exclusively for device access. */
-+	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_EXCLUSIVE, buffer, npages);
-+	ASSERT_EQ(ret, 0);
-+	ASSERT_EQ(buffer->cpages, npages);
-+
-+	/* Check what the device read. */
-+	for (i = 0, ptr = buffer->mirror; i < size / sizeof(*ptr); ++i)
-+		ASSERT_EQ(ptr[i], i);
-+
-+	ret = mprotect(buffer->ptr, size, PROT_READ);
-+	ASSERT_EQ(ret, 0);
-+
-+	/* Simulate a device writing system memory. */
-+	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_WRITE, buffer, npages);
-+	ASSERT_EQ(ret, -EPERM);
-+
-+	hmm_buffer_free(buffer);
-+}
-+
-+/*
-+ * Check copy-on-write works.
-+ */
-+TEST_F(hmm, exclusive_cow)
-+{
-+	struct hmm_buffer *buffer;
-+	unsigned long npages;
-+	unsigned long size;
-+	unsigned long i;
-+	int *ptr;
-+	int ret;
-+
-+	npages = ALIGN(HMM_BUFFER_SIZE, self->page_size) >> self->page_shift;
-+	ASSERT_NE(npages, 0);
-+	size = npages << self->page_shift;
-+
-+	buffer = malloc(sizeof(*buffer));
-+	ASSERT_NE(buffer, NULL);
-+
-+	buffer->fd = -1;
-+	buffer->size = size;
-+	buffer->mirror = malloc(size);
-+	ASSERT_NE(buffer->mirror, NULL);
-+
-+	buffer->ptr = mmap(NULL, size,
-+			   PROT_READ | PROT_WRITE,
-+			   MAP_PRIVATE | MAP_ANONYMOUS,
-+			   buffer->fd, 0);
-+	ASSERT_NE(buffer->ptr, MAP_FAILED);
-+
-+	/* Initialize buffer in system memory. */
-+	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ptr[i] = i;
-+
-+	/* Map memory exclusively for device access. */
-+	ret = hmm_dmirror_cmd(self->fd, HMM_DMIRROR_EXCLUSIVE, buffer, npages);
-+	ASSERT_EQ(ret, 0);
-+	ASSERT_EQ(buffer->cpages, npages);
-+
-+	fork();
-+
-+	/* Fault pages back to system memory and check them. */
-+	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ASSERT_EQ(ptr[i]++, i);
-+
-+	for (i = 0, ptr = buffer->ptr; i < size / sizeof(*ptr); ++i)
-+		ASSERT_EQ(ptr[i], i+1);
-+
-+	hmm_buffer_free(buffer);
-+}
-+
- TEST_HARNESS_MAIN
+ /* The KDB shell command table */
+ typedef struct _kdbtab {
+ 	char    *cmd_name;		/* Command name */
+@@ -175,6 +181,7 @@ typedef struct _kdbtab {
+ 	kdb_cmdflags_t cmd_flags;	/* Command behaviour flags */
+ 	struct list_head list_node;	/* Command list */
+ 	bool    is_dynamic;		/* Command table allocation type */
++	struct list_head kdb_scmds_head; /* Sub-commands list */
+ } kdbtab_t;
+ 
+ extern void kdb_register_table(kdbtab_t *kp, size_t len);
 -- 
-2.20.1
+2.25.1
 
