@@ -2,150 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8448C331B3F
+	by mail.lfdr.de (Postfix) with ESMTP id 3584F331B3E
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 01:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231959AbhCIACK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 19:02:10 -0500
-Received: from mail-bn8nam12on2080.outbound.protection.outlook.com ([40.107.237.80]:23681
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231303AbhCIABz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 19:01:55 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NXlBeDO0y68M++VarL7paLgujm9sOVYJsC67IEU3jx5YvKTWbMhmBx74fyZqALWmklWj5wmCQ2AYHF6x+NtU+tML0EOo0/IU4OfMBrvpdW4sq0as1zbu9ZeTIa+cJ6L6SaNGX372wd85yVp4iYFGe9pMj1mVaeIQGWUmB8UFUGLQlBq2AUXCtaKYWfLO5nGs+y5hjXwpt6qitf7mPmHq/Hyd2ztfWOPJrS/U7UiI2ZJJWSFv287+G2HL3cGUFmASgWtN6bq4TwwNtNudcmQsNDs9kG+XLNx9todO6trbUNpMLP0I/VozTsQ4eovueafWUEXCAyEyHq0mcEnGE4PSsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G4VTeBUJ6JXNgsP0b1cW/28oiyqgIg3uexhYWJYtNZY=;
- b=MmFFp9wFyKKjFY0pRPZhfv5ucuchd2aBvwMbsjwqJH29jVNkIbSpvQ1ZBe9Fy7x0G6mQQFVmaTAqmeI8oz1yavFQlGrYAjknEPB8phTILlMJE89WsL+u8ZzRN0u4/Nmc7Jh+mPsbOETHCvSNCBRwiX4rnkDnFa0S0XbOsJiRpG03bXtlN9XjNC+TEJ0h443gQoPL/0Y5JBWLQhPgJaBx68rVSXnZPSEkPz2Hc3CwIosf3LO31eDecRNnm1MXlgGAhh0eLCuxdH5TJcDO3DnVI7jQg6AovDHcWCknyueMK1PVTBgwVyIQVd5xpIna8uHkhOqYAzizyPzKvCtfPN7Kiw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G4VTeBUJ6JXNgsP0b1cW/28oiyqgIg3uexhYWJYtNZY=;
- b=m214ZoryS5+TCNTf7Ft+1rnmcpTkfSzX0FfC+MiZrNR9dPUNHdmqgNv3psC+he8mwzEHOwQSz4UxvPbzkyJxceBq2aQ9qtJCbN7JR5iu2XHiEe5i3Z0Bry/LRhWNsJZb+nV1YafiH0+crigRGs1cUH+xlDk1SOtzsY2mRVd+lt8=
-Received: from MWHPR03CA0023.namprd03.prod.outlook.com (2603:10b6:300:117::33)
- by DM6PR12MB3866.namprd12.prod.outlook.com (2603:10b6:5:1c6::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.18; Tue, 9 Mar
- 2021 00:01:52 +0000
-Received: from CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:117:cafe::a0) by MWHPR03CA0023.outlook.office365.com
- (2603:10b6:300:117::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
- Transport; Tue, 9 Mar 2021 00:01:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT005.mail.protection.outlook.com (10.13.174.147) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 00:01:52 +0000
-Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Mar
- 2021 00:01:11 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <jhubbard@nvidia.com>, <jglisse@redhat.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v4 4/8] mm/rmap: Split migration into its own function
-Date:   Tue, 9 Mar 2021 11:01:08 +1100
-Message-ID: <3142506.6Va0CHJdLq@nvdebian>
-In-Reply-To: <9fa77684-149a-e6ed-296d-dc852aecea97@nvidia.com>
-References: <20210304061645.29747-1-apopple@nvidia.com> <20210304061645.29747-5-apopple@nvidia.com> <9fa77684-149a-e6ed-296d-dc852aecea97@nvidia.com>
+        id S231408AbhCIACJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 19:02:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230444AbhCIABr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 19:01:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B7C16527E;
+        Tue,  9 Mar 2021 00:01:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615248106;
+        bh=xeqxDdYK18R1n0feuHusfVZYz5TdTUy3aLCw7hpI/SU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OijRaZoB4HY4hVZ5/77kt8rRf822M9ZQxDr4dVHscKtagt8fBfPrPFGGvXJQKZ+0A
+         J3M+U5FlKM67MfX8dHKQ3bIbPM9wVPh5l0kikHcSDWEcyZhXH7Llh5B+vKurotCpHs
+         2QCYD5Tdi8B8mg9CLbfYjbcbk0mJBaqxgF2UWaqnSmMojKtt6ZXrSiCGq0KBwi8tsh
+         Xaie7EQcsCaQTvkfREgQD86GDQ0F3kjpYCuYVP0WHrv0HHJ0hv1pcMjYl2qnh3VNfp
+         40TXVV1fZVpjOherMMf/CE6T3wn6yOY5qqsopJxuySACLukJPybQF0t2QA7k2yb29O
+         no+jZBWRC8g2A==
+Date:   Mon, 8 Mar 2021 16:01:45 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v4] f2fs: compress: add compress_inode to
+ cache compressed blockst
+Message-ID: <YEa66ekikyuPWSyd@google.com>
+References: <20210202080056.51658-1-yuchao0@huawei.com>
+ <46e9924c-0086-cd2a-2e93-7149b92ba27e@huawei.com>
+ <YDsleDjeIcpuBXKA@google.com>
+ <YEFBAuP26t0RzVHZ@google.com>
+ <01a0ff76-6fa7-3196-8760-e7f6f163ef64@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c4a95d59-158e-4c06-1430-08d8e28e8b41
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3866:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3866B1528E3E2BF4148ABD65DF929@DM6PR12MB3866.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: X2RS0C18DgralhE+6G5wc7C0Ggk4x0h8wSildQWXU6PrdjEXwoHy+gttt6pX95JhWixZK2SaKFqSp5XLwKyEj4qXRtOnNMs4ZszSXLEsmTQc0b0pAHdHncN1c/TUcT8ZF9iTmbygYq7UWzJf7ZnIiCbH0kSFANVUEIzAE2UAsltVjNt3XJP75XjgaGOZjIce14l9hRyxVFbK7hDL6dK/bzuNG0Xif2qHkpcsUPxcot0AAyLFig/CxYvx/dghCFwkIPsvGQoho7ZixxNhkGuAA3747QzuWirCPf8AgxXKE+twpD1rnlVm5eBu1rHZWl2ZOE8tm/z1bMgWKEi5i635nycdXMWkHKNkkQlzYN68TG+med87sX3xQ31wwAbyCKDPfgzH8qTPRz3j6LGX1WoU5cVvTEwzAkNz65m0AmcDKJdNinhUyWonzvrGVBfoMEfb1WYvWBYF8CZj3i2gxYlJyOdI+lFzGFPMpR3VZO6D8Fuz4tXh0X+B9XLhBMbO4Wrce0Z6n1ykfXU8WD5wgxqLgGhZgdCInhktgYycYyc4+1Bf8/9tlNSjz+LkDIkTjEN/Q0i031Q22chljhXWFtYeyeQ78OlpRxmAwyJTPh8W3KTQlv1fYrj3hn9F9GP7f+8sn2c1SwJGBxTGM+N5ymPczc5EGbutS7aIr/zHkiKNvLZ3w+0ZVNIcyoSQfUgrBXUJZH2N5z4vrZ8Tsr1NP9FNw45a/tu07JyE3oYze2ABs5s=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(136003)(346002)(46966006)(36840700001)(82310400003)(86362001)(33716001)(336012)(8676002)(34020700004)(83380400001)(82740400003)(186003)(7636003)(16526019)(26005)(47076005)(2906002)(426003)(36860700001)(356005)(6636002)(70206006)(7416002)(54906003)(9686003)(4326008)(478600001)(70586007)(6666004)(53546011)(8936002)(36906005)(6862004)(316002)(5660300002)(9576002)(39026012)(21314003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 00:01:52.1427
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4a95d59-158e-4c06-1430-08d8e28e8b41
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3866
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01a0ff76-6fa7-3196-8760-e7f6f163ef64@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, 9 March 2021 5:58:12 AM AEDT Ralph Campbell wrote:
+On 03/05, Chao Yu wrote:
+> On 2021/3/5 4:20, Jaegeuk Kim wrote:
+> > On 02/27, Jaegeuk Kim wrote:
+> > > On 02/04, Chao Yu wrote:
+> > > > Jaegeuk,
+> > > > 
+> > > > On 2021/2/2 16:00, Chao Yu wrote:
+> > > > > -	for (i = 0; i < dic->nr_cpages; i++) {
+> > > > > +	for (i = 0; i < cc->nr_cpages; i++) {
+> > > > >    		struct page *page = dic->cpages[i];
+> > > > 
+> > > > por_fsstress still hang in this line?
+> > > 
+> > > I'm stuck on testing the patches, since the latest kernel is panicking somehow.
+> > > Let me update later, once I can test a bit. :(
+> > 
+> > It seems this works without error.
+> > https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=4e6e1364dccba80ed44925870b97fbcf989b96c9
 > 
-> On 3/3/21 10:16 PM, Alistair Popple wrote:
-> > Migration is currently implemented as a mode of operation for
-> > try_to_unmap_one() generally specified by passing the TTU_MIGRATION flag
-> > or in the case of splitting a huge anonymous page TTU_SPLIT_FREEZE.
-> > 
-> > However it does not have much in common with the rest of the unmap
-> > functionality of try_to_unmap_one() and thus splitting it into a
-> > separate function reduces the complexity of try_to_unmap_one() making it
-> > more readable.
-> > 
-> > Several simplifications can also be made in try_to_migrate_one() based
-> > on the following observations:
-> > 
-> >   - All users of TTU_MIGRATION also set TTU_IGNORE_MLOCK.
-> >   - No users of TTU_MIGRATION ever set TTU_IGNORE_HWPOISON.
-> >   - No users of TTU_MIGRATION ever set TTU_BATCH_FLUSH.
-> > 
-> > TTU_SPLIT_FREEZE is a special case of migration used when splitting an
-> > anonymous page. This is most easily dealt with by calling the correct
-> > function from unmap_page() in mm/huge_memory.c  - either
-> > try_to_migrate() for PageAnon or try_to_unmap().
-> > 
-> > Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Ah, good news.
 > 
-> Looks reasonable to me. I do worry a bit about code duplication.
+> Thanks for helping to test the patch. :)
 
-I was initially concerned about this when splitting try_to_unmap_one() up but  
-most of the code paths ended up being pretty orthogonal and I think the 
-clarity gained from separating them is worth a small amount of duplication.
+Hmm, I hit this again. Let me check w/o compress_cache back. :(
 
-> At some point in the future, it might be discovered that other combinations
-> of TTU_XXX flags are needed in which case a careful check of 
-try_to_migrate()
-> and try_to_unmap() will be needed.
+[159210.201131] ------------[ cut here ]------------
+[159210.204241] kernel BUG at fs/f2fs/compress.c:1082!
+[159210.207321] invalid opcode: 0000 [#1] SMP PTI
+[159210.209407] CPU: 4 PID: 2753477 Comm: kworker/u16:2 Tainted: G           OE     5.12.0-rc1-custom #1
+[159210.212737] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+[159210.224800] Workqueue: writeback wb_workfn (flush-252:16)
+[159210.226851] RIP: 0010:prepare_compress_overwrite+0x4c0/0x760 [f2fs]
+[159210.229506] Code: 8b bf 90 0a 00 00 be 40 0d 00 00 e8 4a 92 4f c4 49 89 44 24 18 48 85 c0 0f 84 85 02 00 00 41 8b 54 24 10 e9 c5 fb ff ff 0f 0b <0f> 0b 41 8b 44 24 20 85 c0 0f 84 2a ff ff ff 48 8
+[159210.236311] RSP: 0018:ffff9fa782177858 EFLAGS: 00010246
+[159210.238517] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+[159210.240734] RDX: 000000000000001c RSI: 0000000000000000 RDI: 0000000000000000
+[159210.242941] RBP: ffff9fa7821778f0 R08: ffff93b9c89cb232 R09: 0000000000000003
+[159210.245107] R10: ffffffff86873420 R11: 0000000000000001 R12: ffff9fa782177900
+[159210.247319] R13: ffff93b906dca578 R14: 000000000000031c R15: 0000000000000000
+[159210.249492] FS:  0000000000000000(0000) GS:ffff93b9fbd00000(0000) knlGS:0000000000000000
+[159210.254724] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[159210.258709] CR2: 00007f0367d33738 CR3: 000000012bc0c004 CR4: 0000000000370ee0
+[159210.261608] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[159210.264614] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[159210.267476] Call Trace:
+[159210.269075]  ? f2fs_compress_write_end+0xa2/0x100 [f2fs]
+[159210.271165]  f2fs_prepare_compress_overwrite+0x5f/0x80 [f2fs]
+[159210.273017]  f2fs_write_cache_pages+0x468/0x8a0 [f2fs]
+[159210.274848]  f2fs_write_data_pages+0x2a4/0x2f0 [f2fs]
+[159210.276612]  ? from_kgid+0x12/0x20
+[159210.277994]  ? f2fs_update_inode+0x3cb/0x510 [f2fs]
+[159210.279748]  do_writepages+0x38/0xc0
+[159210.281183]  ? f2fs_write_inode+0x11c/0x300 [f2fs]
+[159210.282877]  __writeback_single_inode+0x44/0x2a0
+[159210.284526]  writeback_sb_inodes+0x223/0x4d0
+[159210.286105]  __writeback_inodes_wb+0x56/0xf0
+[159210.287740]  wb_writeback+0x1dd/0x290
+[159210.289182]  wb_workfn+0x309/0x500
+[159210.290553]  process_one_work+0x220/0x3c0
+[159210.292048]  worker_thread+0x53/0x420
+[159210.293403]  kthread+0x12f/0x150
+[159210.294716]  ? process_one_work+0x3c0/0x3c0
+[159210.296204]  ? __kthread_bind_mask+0x70/0x70
+[159210.297702]  ret_from_fork+0x22/0x30
 
-I wanted to keep the code as simple as possible by removing all dead code 
-paths that that weren't in use today.
 
-I think this is likely to be more of an issue if new TTU_XXX flags are added 
-as there are already explicit (and hopefully exhaustive) checks in 
-try_to_migrate() and try_to_unmap() for unsupported combinations of existing 
-flags. To avoid ending up in the same situation again I would rather not have 
-more TTU_XXX flags added if at all possible though.
-
-> Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
-
-Thanks.
-
- - Alistair
-
-
-
+> 
+> Thanks,
+> 
+> > 
+> > > 
+> > > > 
+> > > > Thanks,
+> > > > 
+> > > > >    		block_t blkaddr;
+> > > > >    		struct bio_post_read_ctx *ctx;
+> > > > > @@ -2201,6 +2207,14 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+> > > > >    		blkaddr = data_blkaddr(dn.inode, dn.node_page,
+> > > > >    						dn.ofs_in_node + i + 1);
+> > > > > +		f2fs_wait_on_block_writeback(inode, blkaddr);
+> > > > > +
+> > > > > +		if (f2fs_load_compressed_page(sbi, page, blkaddr)) {
+> > > > > +			if (atomic_dec_and_test(&dic->remaining_pages))
+> > > > > +				f2fs_decompress_cluster(dic);
+> > > > > +			continue;
+> > > > > +		}
+> > > > > +
+> > > 
+> > > 
+> > > _______________________________________________
+> > > Linux-f2fs-devel mailing list
+> > > Linux-f2fs-devel@lists.sourceforge.net
+> > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> > .
+> > 
