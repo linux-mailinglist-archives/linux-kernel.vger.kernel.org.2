@@ -2,88 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EECCC333177
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1409333155
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:04:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbhCIWTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 17:19:21 -0500
-Received: from 6.mo3.mail-out.ovh.net ([188.165.43.173]:53261 "EHLO
-        6.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230431AbhCIWTE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 17:19:04 -0500
-X-Greylist: delayed 7802 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Mar 2021 17:19:04 EST
-Received: from player687.ha.ovh.net (unknown [10.110.208.124])
-        by mo3.mail-out.ovh.net (Postfix) with ESMTP id AB3B827DF66
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 20:53:31 +0100 (CET)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player687.ha.ovh.net (Postfix) with ESMTPSA id 09AC21BD457DF;
-        Tue,  9 Mar 2021 19:53:25 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-102R0046d5415d3-0d57-4864-8a30-2e000325c442,
-                    6C897E3FB1B5C819DA596C75FE68BD04123AC254) smtp.auth=steve@sk2.org
-X-OVh-ClientIp: 82.65.25.201
-Date:   Tue, 9 Mar 2021 20:53:09 +0100
-From:   Stephen Kitt <steve@sk2.org>
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     linux-man@vger.kernel.org,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6] close_range.2: new page documenting close_range(2)
-Message-ID: <20210309205309.7e2568c9@heffalump.sk2.org>
-In-Reply-To: <e761f00d-751f-f782-9af1-c5f868d52df0@gmail.com>
-References: <20210123161154.29332-1-steve@sk2.org>
-        <e761f00d-751f-f782-9af1-c5f868d52df0@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S232077AbhCIWEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 17:04:12 -0500
+Received: from smtp.acd.net ([207.179.106.7]:46830 "EHLO mail.acd.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231788AbhCIWDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 17:03:35 -0500
+Received: from mail00.acd.net (mail.acd.net [127.0.0.1])
+        by mail.acd.net (Postfix) with ESMTP id 4Dw8F02lglzBKYSY
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 16:56:52 -0500 (EST)
+Authentication-Results: mail00.acd.net (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=acd.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=acd.net; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :reply-to:subject:to:from:date:mime-version; s=dkim; t=
+        1615327011; x=1617919012; bh=MXE+sOaAlsMI0JUc8Pvr6ux+IEBHXI4mIR+
+        1STOp2I8=; b=ApofvXtx2HnVLSyHm5QNOrDIcu+BT9HRrNqfY7xBW75//TBSmLd
+        3u98/SEx1D4ybgUDmh76PDnnQ5XUMmlDiMbKWnV3obfWEPrINxBMFidoNBAJHnDF
+        npYluqo+OisajpkPMcB0hq0xp+Nf1fRMv75mtOi+oCwEhKJK8b5mWJchzEfhcDfH
+        VUgAkT1yFaRhjHUH1khlSzvtaUi1aoewgkLkT1CEOb97Xb5+OVhJZUCxK/Wl9H0l
+        OpXesREKIBNvvskRwt6VmKNt5n85Jf4akrBdP4yyIzFvmdx0FluFptzYkHQaASAS
+        xpsnkPmWyndOvKtXkSZamdFOlQ3fMOKe69w==
+X-Virus-Scanned: amavisd-new at mail00.acd.net
+X-Spam-Flag: NO
+X-Spam-Score: 1.754
+X-Spam-Level: *
+X-Spam-Status: No, score=1.754 tagged_above=-100 required=6
+        tests=[ALL_TRUSTED=-1, FREEMAIL_FORGED_REPLYTO=2.503,
+        FREEMAIL_REPLYTO_END_DIGIT=0.25, TVD_SPACE_RATIO=0.001]
+        autolearn=no autolearn_force=no
+Received: from mail.acd.net ([127.0.0.1])
+        by mail00.acd.net (mail00.acd.net [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id CO5hv5aklta8 for <linux-kernel@vger.kernel.org>;
+        Tue,  9 Mar 2021 16:56:51 -0500 (EST)
+Received: from localhost (mail.acd.net [127.0.0.1])
+        by mail.acd.net (Postfix) with ESMTPSA id 4Dw8DX4vyhzBKXjj;
+        Tue,  9 Mar 2021 16:56:28 -0500 (EST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/Vhdp.PoBByMUrbMRegE43SY"; protocol="application/pgp-signature"
-X-Ovh-Tracer-Id: 15148701775380172157
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudduiedgudeftdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgesghdtreerredtjeenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepveelvdeufedvieevffdtueegkeevteehffdtffetleehjeekjeejudffieduteeknecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheikeejrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+Date:   Tue, 09 Mar 2021 13:56:28 -0800
+From:   Patricia Gunnarsson <office@stefing.rs>
+To:     undisclosed-recipients:;
+Subject: =?UTF-8?Q?Frau_Patricia_Humanit=C3=A4re_Unterst=C3=BCtzung?=
+Reply-To: ppatricia422@yahoo.com
+User-Agent: Roundcube Webmail
+Message-ID: <a3a071d05798995916a4669df755e103@stefing.rs>
+X-Sender: office@stefing.rs
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Vhdp.PoBByMUrbMRegE43SY
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Hi Michael,
-
-On Thu, 28 Jan 2021 21:50:23 +0100, "Michael Kerrisk (man-pages)"
-<mtk.manpages@gmail.com> wrote:
-> Thanks for your patch revision. I've merged it, and have
-> done some light editing, but I still have a question:
-
-Does this need anything more? I don=E2=80=99t see it in the man-pages repo.
-
-Regards,
-
-Stephen
-
---Sig_/Vhdp.PoBByMUrbMRegE43SY
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAmBH0iYACgkQgNMC9Yht
-g5xPYA//dDSz5pyQs570R6DJfwFaPgoNZHfelKAfPKflbh8nIkTuHoM96hbtPKj6
-OP9ZQWvX/lsaZxWGMCLOn68iBhzESQo8uWYtEQXAOltfs3XxAioqPeAP9jttHfUG
-vK4QYMwVNMNcmnFQdYbsVBP+/jT28iH1ODLgx+ZqiN3FC8HMiFbCwGJJYJKYaBTv
-NuJzsPqJr0RlEaC1EKSvP1PJUBs6cuL+jMp96BqVbHnYHeuynF5FS4OrDzzQhlBA
-nwbgNvonh+V+TGKiTd5iVzlO8hWIAWMxoGWIJnh05V+WqO+IgXqSRHQ5lWqhzabc
-vfm/a5n91QL7mvQQHGo6rV0aQ+DPGrCF2UbSrFf57K0OwVcDMEDmYCqk+qmop9c6
-lNctNDOYP8CQ9e1HSn8mjQHAuza94Df/kNTC4nFHuGS459voRztChOx3yewQKFSh
-gSR4ag5sNqt6j9cJO3KMMQguRZCy0n9nfKkRkNOgAc27q7zL3qWiRoj2ML/slhly
-K0s5bf2uUEUsRML7w/qTGIYm+cXyCo4ACO1pKoEzZe9LK7C2HYfdy9u240eNLNbA
-ZwBQrN1jzZJr5ZkBF9DaWDSnLRsPxx5EYRpVuPT/lETlVAdIB7P71748IYBtu9z4
-1K9OvHasH5pUj+4ex9pugZF1xMZMssfihmkKIlFqupIoP1WuCDA=
-=ADyF
------END PGP SIGNATURE-----
-
---Sig_/Vhdp.PoBByMUrbMRegE43SY--
+v
