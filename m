@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B6233314B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 22:54:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EECCC333177
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbhCIVxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 16:53:41 -0500
-Received: from mga09.intel.com ([134.134.136.24]:51531 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232039AbhCIVxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 16:53:16 -0500
-IronPort-SDR: c7gIXW5LOZixpTx6gBm1Fmq7aVkRiwDN24Wvi3MELzumowIQIbE7NkclqHD0u9nXxa5oWlz8fC
- GAi+ZnJtkDCQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="188430518"
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="188430518"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 13:53:14 -0800
-IronPort-SDR: 5QP3bP898qdsOxObYFIXYrySeDVWGeF6d+dMI3ZX7/uXQQL1l9NOy28BEcD4T5LTCbVsNTwNmh
- f5KKZe4KTs4w==
-X-IronPort-AV: E=Sophos;i="5.81,236,1610438400"; 
-   d="scan'208";a="447658459"
-Received: from jcchan4-mobl.amr.corp.intel.com (HELO [10.212.217.30]) ([10.212.217.30])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 13:53:13 -0800
-Subject: Re: [PATCH 10/10] mm/migrate: new zone_reclaim_mode to enable reclaim
- migration
-To:     Yang Shi <shy828301@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>
-References: <20210304235949.7922C1C3@viggo.jf.intel.com>
- <20210305000009.EDF902E9@viggo.jf.intel.com>
- <CAHbLzkqKSOSnyXfqkeW2HDdYk6m+zSZuk5AX1waFVfK-1Vg1=Q@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <3cee267e-6a5b-a5a3-698b-4261bef13543@intel.com>
-Date:   Tue, 9 Mar 2021 13:53:13 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231910AbhCIWTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 17:19:21 -0500
+Received: from 6.mo3.mail-out.ovh.net ([188.165.43.173]:53261 "EHLO
+        6.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230431AbhCIWTE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 17:19:04 -0500
+X-Greylist: delayed 7802 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Mar 2021 17:19:04 EST
+Received: from player687.ha.ovh.net (unknown [10.110.208.124])
+        by mo3.mail-out.ovh.net (Postfix) with ESMTP id AB3B827DF66
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 20:53:31 +0100 (CET)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player687.ha.ovh.net (Postfix) with ESMTPSA id 09AC21BD457DF;
+        Tue,  9 Mar 2021 19:53:25 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-102R0046d5415d3-0d57-4864-8a30-2e000325c442,
+                    6C897E3FB1B5C819DA596C75FE68BD04123AC254) smtp.auth=steve@sk2.org
+X-OVh-ClientIp: 82.65.25.201
+Date:   Tue, 9 Mar 2021 20:53:09 +0100
+From:   Stephen Kitt <steve@sk2.org>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     linux-man@vger.kernel.org,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6] close_range.2: new page documenting close_range(2)
+Message-ID: <20210309205309.7e2568c9@heffalump.sk2.org>
+In-Reply-To: <e761f00d-751f-f782-9af1-c5f868d52df0@gmail.com>
+References: <20210123161154.29332-1-steve@sk2.org>
+        <e761f00d-751f-f782-9af1-c5f868d52df0@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzkqKSOSnyXfqkeW2HDdYk6m+zSZuk5AX1waFVfK-1Vg1=Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/Vhdp.PoBByMUrbMRegE43SY"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 15148701775380172157
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudduiedgudeftdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgesghdtreerredtjeenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepveelvdeufedvieevffdtueegkeevteehffdtffetleehjeekjeejudffieduteeknecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheikeejrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/8/21 4:24 PM, Yang Shi wrote:
->> Once this is enabled page demotion may move data to a NUMA node
->> that does not fall into the cpuset of the allocating process.
->> This could be construed to violate the guarantees of cpusets.
->> However, since this is an opt-in mechanism, the assumption is
->> that anyone enabling it is content to relax the guarantees.
-> I think we'd better have the cpuset violation paragraph along with new
-> zone reclaim mode text so that the users are aware of the potential
-> violation. I don't think commit log is the to-go place for any plain
-> users.
-> 
+--Sig_/Vhdp.PoBByMUrbMRegE43SY
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Agreed.  I'll add it to the Documentation/.
+Hi Michael,
+
+On Thu, 28 Jan 2021 21:50:23 +0100, "Michael Kerrisk (man-pages)"
+<mtk.manpages@gmail.com> wrote:
+> Thanks for your patch revision. I've merged it, and have
+> done some light editing, but I still have a question:
+
+Does this need anything more? I don=E2=80=99t see it in the man-pages repo.
+
+Regards,
+
+Stephen
+
+--Sig_/Vhdp.PoBByMUrbMRegE43SY
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAmBH0iYACgkQgNMC9Yht
+g5xPYA//dDSz5pyQs570R6DJfwFaPgoNZHfelKAfPKflbh8nIkTuHoM96hbtPKj6
+OP9ZQWvX/lsaZxWGMCLOn68iBhzESQo8uWYtEQXAOltfs3XxAioqPeAP9jttHfUG
+vK4QYMwVNMNcmnFQdYbsVBP+/jT28iH1ODLgx+ZqiN3FC8HMiFbCwGJJYJKYaBTv
+NuJzsPqJr0RlEaC1EKSvP1PJUBs6cuL+jMp96BqVbHnYHeuynF5FS4OrDzzQhlBA
+nwbgNvonh+V+TGKiTd5iVzlO8hWIAWMxoGWIJnh05V+WqO+IgXqSRHQ5lWqhzabc
+vfm/a5n91QL7mvQQHGo6rV0aQ+DPGrCF2UbSrFf57K0OwVcDMEDmYCqk+qmop9c6
+lNctNDOYP8CQ9e1HSn8mjQHAuza94Df/kNTC4nFHuGS459voRztChOx3yewQKFSh
+gSR4ag5sNqt6j9cJO3KMMQguRZCy0n9nfKkRkNOgAc27q7zL3qWiRoj2ML/slhly
+K0s5bf2uUEUsRML7w/qTGIYm+cXyCo4ACO1pKoEzZe9LK7C2HYfdy9u240eNLNbA
+ZwBQrN1jzZJr5ZkBF9DaWDSnLRsPxx5EYRpVuPT/lETlVAdIB7P71748IYBtu9z4
+1K9OvHasH5pUj+4ex9pugZF1xMZMssfihmkKIlFqupIoP1WuCDA=
+=ADyF
+-----END PGP SIGNATURE-----
+
+--Sig_/Vhdp.PoBByMUrbMRegE43SY--
