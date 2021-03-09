@@ -2,81 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D2C331D9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 04:33:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E54A331DA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 04:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbhCIDcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 22:32:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:46402 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229379AbhCIDc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 22:32:28 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D5F731B;
-        Mon,  8 Mar 2021 19:32:27 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 33EE63F71B;
-        Mon,  8 Mar 2021 19:32:22 -0800 (PST)
-Subject: Re: [PATCH 0/6] mm: some config cleanups
-To:     linux-mm@kvack.org
-Cc:     x86@kernel.org, linux-ia64@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1615185706-24342-1-git-send-email-anshuman.khandual@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <af8d16b3-aff7-6f17-a777-2ce4a264227d@arm.com>
-Date:   Tue, 9 Mar 2021 09:02:58 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1615185706-24342-1-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S229637AbhCIDjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 22:39:24 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:59714 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229901AbhCIDjX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 22:39:23 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UR.n5AG_1615261154;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UR.n5AG_1615261154)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 09 Mar 2021 11:39:21 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     oliver@neukum.org
+Cc:     aliakc@web.de, lenehan@twibble.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, dc395x@twibble.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] scsi: dc395x: Use bitwise instead of arithmetic operator for flags
+Date:   Tue,  9 Mar 2021 11:39:13 +0800
+Message-Id: <1615261153-32647-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/8/21 12:11 PM, Anshuman Khandual wrote:
-> This series contains config cleanup patches which reduces code duplication
-> across platforms and also improves maintainability. There is no functional
-> change intended with this series. This has been boot tested on arm64 but
-> only build tested on some other platforms.
-> 
-> This applies on 5.12-rc2
-> 
-> Cc: x86@kernel.org
-> Cc: linux-ia64@vger.kernel.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: linux-snps-arc@lists.infradead.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> 
-> Anshuman Khandual (6):
->   mm: Generalize ARCH_HAS_CACHE_LINE_SIZE
->   mm: Generalize SYS_SUPPORTS_HUGETLBFS (rename as ARCH_SUPPORTS_HUGETLBFS)
->   mm: Generalize ARCH_ENABLE_MEMORY_[HOTPLUG|HOTREMOVE]
->   mm: Drop redundant ARCH_ENABLE_[HUGEPAGE|THP]_MIGRATION
->   mm: Drop redundant ARCH_ENABLE_SPLIT_PMD_PTLOCK
->   mm: Drop redundant HAVE_ARCH_TRANSPARENT_HUGEPAGE
+Fix the following coccicheck warnings:
 
-Seems like there was a problem during the email because some patches
-might not have hit the mailing list. Although git send-email never
-really reported any problem. Not sure what happened here.
+./drivers/scsi/dc395x.c:2921:28-29: WARNING: sum of probable bitmasks,
+consider |.
 
-https://patchwork.kernel.org/project/linux-mm/list/?series=443619
-https://lore.kernel.org/linux-mm/1615185706-24342-1-git-send-email-anshuman.khandual@arm.com/
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/scsi/dc395x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Will probably resend the series.
+diff --git a/drivers/scsi/dc395x.c b/drivers/scsi/dc395x.c
+index 3ea345c1..91362e6 100644
+--- a/drivers/scsi/dc395x.c
++++ b/drivers/scsi/dc395x.c
+@@ -2918,7 +2918,7 @@ static void disconnect(struct AdapterCtlBlk *acb)
+ 	} else {
+ 		if ((srb->state & (SRB_START_ + SRB_MSGOUT))
+ 		    || !(srb->
+-			 state & (SRB_DISCONNECT + SRB_COMPLETED))) {
++			 state & (SRB_DISCONNECT | SRB_COMPLETED))) {
+ 			/*
+ 			 * Selection time out 
+ 			 * SRB_START_ || SRB_MSGOUT || (!SRB_DISCONNECT && !SRB_COMPLETED)
+-- 
+1.8.3.1
 
-- Anshuman
