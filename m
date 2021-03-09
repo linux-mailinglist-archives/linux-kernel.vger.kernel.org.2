@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B49CC331DD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 226C7331DD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 05:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbhCIERY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Mar 2021 23:17:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbhCIEQq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Mar 2021 23:16:46 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F5FC061760
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Mar 2021 20:16:46 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id q204so8508172pfq.10
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Mar 2021 20:16:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OOzXeoaDPDG4o7C6QAmsob4sFXF0PCvgXzZVS0klYx0=;
-        b=VkTs3X6JDzLp04bSLBCOaODP8wcxa6dTq9kp8PLjDNTn2k/wKlA8YDK7QIUb+gAxUw
-         eIQZuiHknEQKeUyy36vzovwOLSUIuGrCnwITT8IJ1t55doh6c6wgr5RUH8puDFSGVP8V
-         gy8tZ1hbaEhrExEsXy9cSK6yNBh+79lsX/Iexzilbh2cLtzfyVUi2NvCRRz1s034Tzct
-         Nr2IkssxTMW7qd9DCY/ANZkwFAPkQZrFeXNc0K5wLFPe6uN1h48RaCeQ+KieVcEq07U9
-         Khqqf5WZ/rxW8mNHilHP8Ojsom/4bvR/uJfHZZCN809av8gbgjGEk7vCTHomH27BT+zM
-         L/Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OOzXeoaDPDG4o7C6QAmsob4sFXF0PCvgXzZVS0klYx0=;
-        b=CKQp/J4TM3hn5wD7l+EdQOY2pJyeigkU3yex8t6AAq/nszSTDIm9oYOjyA/HhRdShR
-         jkAalJ/13EMaUB5PZNzPOyeXnvf5bqN3VrIjQdyt5V6x8e1pWz7v4+M7Prc8Wz74IsQP
-         SUmmQ1DLlbLVtdqW5mcU5gldOjvtpkrPDO4CmuTCWY4mprDEZa6+Wewrn1sM0LeGp2AW
-         qja0gMlwBCymvWeBQQUf8ZlorkVJ5DUbaMXq3zEFWreBS3xwZzyqEUpcS+QUBcczWY7k
-         gPAqu0NwXD+OjfjxmmBWGxZNQu5n8SQc+FJjzji6S+yB9wK0ZQMQRwe5zvZuFx614d/2
-         1GoA==
-X-Gm-Message-State: AOAM530pLO2pcB081WIfVXtqqS8O64cL/WwDRjxjOr6rCV2dorY/kFf7
-        ubTFNworNQ4iMa+BeW+TuZkPuw==
-X-Google-Smtp-Source: ABdhPJxlnCGX2ecU6fCM4SKglrm857xKd9/sHAb+MjRrm2nf7HrUVkpgeXZh0ZbsNdK2qBqheigI5A==
-X-Received: by 2002:a63:1813:: with SMTP id y19mr15956854pgl.317.1615263406257;
-        Mon, 08 Mar 2021 20:16:46 -0800 (PST)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id l19sm864473pjt.16.2021.03.08.20.16.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Mar 2021 20:16:45 -0800 (PST)
-Date:   Tue, 9 Mar 2021 09:46:43 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V5 1/2] topology: Allow multiple entities to provide
- sched_freq_tick() callback
-Message-ID: <20210309041643.tcyv6rpto4k3sv5v@vireshk-i7>
-References: <cover.1614580695.git.viresh.kumar@linaro.org>
- <a34f549bc75eecd4804aebb7b7794b45769eccf0.1614580695.git.viresh.kumar@linaro.org>
- <20210308145209.GA26458@willie-the-truck>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308145209.GA26458@willie-the-truck>
-User-Agent: NeoMutt/20180716-391-311a52
+        id S230070AbhCIESj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Mar 2021 23:18:39 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:41882 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229980AbhCIESS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Mar 2021 23:18:18 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxKdUG90ZgeDsXAA--.29488S2;
+        Tue, 09 Mar 2021 12:18:14 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        David Laight <David.Laight@ACULAB.COM>
+Subject: [PATCH v2] MIPS: Check __clang__ to avoid performance influence with GCC in csum_tcpudp_nofold()
+Date:   Tue,  9 Mar 2021 12:18:13 +0800
+Message-Id: <1615263493-10609-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxKdUG90ZgeDsXAA--.29488S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFWUCFWUJw4DXFWxWw4fGrg_yoW8AF1xpF
+        4jk3s2qrWvqryUKasxAr429r15Ww4rGr97ZrnIg3Wjvas8Xw15Wry3K3W3WF18J3ykAa4f
+        uFWfWrn5Grs2kaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkq14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gryl
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUUhF4JUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-03-21, 14:52, Will Deacon wrote:
-> On Mon, Mar 01, 2021 at 12:21:17PM +0530, Viresh Kumar wrote:
-> > +EXPORT_SYMBOL_GPL(topology_set_scale_freq_source);
-> 
-> I don't get why you need to export this in this patch. The arm64 topology
-> code is never built as a module.
-> 
-> > +EXPORT_SYMBOL_GPL(topology_clear_scale_freq_source);
-> 
-> Same here.
-> 
-> > +EXPORT_SYMBOL_GPL(freq_scale);
-> 
-> And here.
+The asm code in csum_tcpudp_nofold() is performance-critical, I am sorry
+for the poorly considered implementation about the performance influence
+with GCC in the commit 198688edbf77 ("MIPS: Fix inline asm input/output
+type mismatch in checksum.h used with Clang").
 
-After this patch, any part of the kernel can use these
-helpers/variables to run their own implementation of tick-freq-scale
-and so this patch looked to be the right place for that to me.
+With this patch, we can build successfully by both GCC and Clang,
+at the same time, we can avoid the potential performance influence
+with GCC.
 
-And the second patch in the series updates the CPPC cpufreq driver
-(tristate) to use these exported symbols, so we have the first user
-who needs the exported symbols as well.
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/include/asm/checksum.h | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-> This one probably wants a less generic name as well if it's going
-> to be exported.
-
-x86 names it arch_freq_scale, perhaps we should stick to that instead.
-
+diff --git a/arch/mips/include/asm/checksum.h b/arch/mips/include/asm/checksum.h
+index 1e6c135..80eddd4 100644
+--- a/arch/mips/include/asm/checksum.h
++++ b/arch/mips/include/asm/checksum.h
+@@ -128,9 +128,13 @@ static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
+ 
+ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+ 					__u32 len, __u8 proto,
+-					__wsum sum)
++					__wsum sum_in)
+ {
+-	unsigned long tmp = (__force unsigned long)sum;
++#ifdef __clang__
++	unsigned long sum = (__force unsigned long)sum_in;
++#else
++	__wsum sum = sum_in;
++#endif
+ 
+ 	__asm__(
+ 	"	.set	push		# csum_tcpudp_nofold\n"
+@@ -159,7 +163,7 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+ 	"	addu	%0, $1		\n"
+ #endif
+ 	"	.set	pop"
+-	: "=r" (tmp)
++	: "=r" (sum)
+ 	: "0" ((__force unsigned long)daddr),
+ 	  "r" ((__force unsigned long)saddr),
+ #ifdef __MIPSEL__
+@@ -169,7 +173,7 @@ static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+ #endif
+ 	  "r" ((__force unsigned long)sum));
+ 
+-	return (__force __wsum)tmp;
++	return (__force __wsum)sum;
+ }
+ #define csum_tcpudp_nofold csum_tcpudp_nofold
+ 
 -- 
-viresh
+2.1.0
+
