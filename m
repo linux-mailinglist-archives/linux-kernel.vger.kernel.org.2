@@ -2,84 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967B0332237
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:41:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4711B33223D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 10:42:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhCIJkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 04:40:43 -0500
-Received: from mga14.intel.com ([192.55.52.115]:45678 "EHLO mga14.intel.com"
+        id S229688AbhCIJls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 04:41:48 -0500
+Received: from mga03.intel.com ([134.134.136.65]:43335 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230086AbhCIJkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 04:40:13 -0500
-IronPort-SDR: 7KoT38ZETIFdBVMGA/JftHNzfIqZK3tHmPh/RGAPVehG5rfnbYvCRpxG6PAGvDJW3RoXiaxi62
- H/Xu0kwTDQRQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="187560158"
+        id S230089AbhCIJl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 04:41:27 -0500
+IronPort-SDR: YAXP2GH/e0kOetX0FCCuqEs15INVoUonjJNl8qBL0EQlQIly1hrDFtnX6wQCfR5XWedZVvAJ0F
+ R/+4+H8DJa1Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="188241596"
 X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="187560158"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 01:40:12 -0800
-IronPort-SDR: m4YDkeyC8C+m9+YqilzStlL5v2gkAVAYdUJrroqHVRncPx3oKA7kpZiKcRziIGOTj1S/ogDrxJ
- kwjIQb3aNpGg==
+   d="scan'208";a="188241596"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 01:41:26 -0800
+IronPort-SDR: BdkZpLfxzqmExKJN/qVCYqQXuxLHx/PHNnHpY5k/VZ15joBiqkNA1LCWCeYf5u64BzOg/ajAOv
+ +8B9cctpTMow==
 X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="509232945"
+   d="scan'208";a="437841215"
 Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 01:40:11 -0800
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 01:41:24 -0800
 Received: from andy by smile with local (Exim 4.94)
         (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lJYqW-00B1kz-VQ; Tue, 09 Mar 2021 11:40:08 +0200
-Date:   Tue, 9 Mar 2021 11:40:08 +0200
+        id 1lJYrh-00B1mG-3h; Tue, 09 Mar 2021 11:41:21 +0200
+Date:   Tue, 9 Mar 2021 11:41:21 +0200
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the
- gpio-brgl-fixes tree
-Message-ID: <YEdCeICFjpbgD4UT@smile.fi.intel.com>
-References: <20210309072620.656e8078@canb.auug.org.au>
- <20210309073211.392a838d@canb.auug.org.au>
- <CAHp75Ve2qGd5fFC9ztaEk9d+YBa-aTu-gMn_9dRUbpkWGY9YTw@mail.gmail.com>
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v3 0/5] gpiolib: switch to fwnode in the core
+Message-ID: <YEdCwfYRaQuKJFtA@smile.fi.intel.com>
+References: <20210304201253.14652-1-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0gR=gN2ROo9JSOGHokw5imscMBwDERni8X83p0eWt634w@mail.gmail.com>
+ <CAMpxmJUQ3r0YCeQvPq=SW57w-5BLtoTO1_bv=2uw6CX_1-EXcQ@mail.gmail.com>
+ <CAJZ5v0h7zUMU9DMofa3fhop9fYY6UJQ6Nm3xBOmG48bcmLCj3w@mail.gmail.com>
+ <CAMpxmJXa2Qxznss3c79Zf-PzsX=SY6WOJorAMvS-UxKoViKP_w@mail.gmail.com>
+ <YEZ81OraApPIu8d9@smile.fi.intel.com>
+ <YEaAY37PsqT6WQB9@smile.fi.intel.com>
+ <CAMpxmJUQ+Fhz8XTh14eHiqdQc3jBEwr8wuezw+NcgtU8XXFUQg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75Ve2qGd5fFC9ztaEk9d+YBa-aTu-gMn_9dRUbpkWGY9YTw@mail.gmail.com>
+In-Reply-To: <CAMpxmJUQ+Fhz8XTh14eHiqdQc3jBEwr8wuezw+NcgtU8XXFUQg@mail.gmail.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 11:01:44PM +0200, Andy Shevchenko wrote:
-> On Mon, Mar 8, 2021 at 10:34 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > On Tue, 9 Mar 2021 07:26:20 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > Commits
-> > >
-> > >   eb441337c714 ("gpio: pca953x: Set IRQ type when handle Intel Galileo Gen 2")
-> > >   809390219fb9 ("gpiolib: acpi: Allow to find GpioInt() resource by name and index")
-> > >   62d5247d239d ("gpiolib: acpi: Add ACPI_GPIO_QUIRK_ABSOLUTE_NUMBER quirk")
-> > >   6e5d5791730b ("gpiolib: acpi: Add missing IRQF_ONESHOT")
-> > >
-> > > are missing a Signed-off-by from their committers.
-> >
-> > This also applies to the gpio-intel-fixes tree (since it is now headed
-> > by the same commit as the gpio-brgl-fixes tree).
-> 
-> I rebased my branch according to Linus, but I have decided to take
-> directly Bart's tree.
-> So when original will be fixed I'll fix mine.
-> 
-> Thanks!
-> 
-> P.S. Bart, you may simply merge my tag even on top of v5.12-rc2. It
-> will save you time and keep the original SHA IDs.
+On Tue, Mar 09, 2021 at 09:19:19AM +0100, Bartosz Golaszewski wrote:
+> On Mon, Mar 8, 2021 at 8:52 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Mon, Mar 08, 2021 at 09:36:52PM +0200, Andy Shevchenko wrote:
 
-I think I have to elaborate.
-1/ you need to drop those commits from your tree (yeah, rebase :-(, nut you may
-   do it interactively and inject the merge in the same location in the
-   history)
-2/ instead of cherry-picking them run something like
-  git fetch git@gitolite.kernel.org:pub/scm/linux/kernel/git/andy/linux-gpio-intel.git intel-gpio-v5.12-2
-  git merge FETCH_HEAD
+...
+
+> > So, I will send v6 with those included.
+> 
+> Does this series depend on patches already in Rafael's tree? If so,
+> maybe Rafael can provide me with an immutable tag to merge in?
+
+Not anymore since v5.12-rc2 has a necessary fix.
+
+In any case I have sent a v6. It should be clean to apply on top of your for-next.
 
 -- 
 With Best Regards,
