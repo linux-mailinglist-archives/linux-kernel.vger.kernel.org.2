@@ -2,75 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23B833248D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 12:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 674EC332499
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 13:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbhCIL4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 06:56:00 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:40812 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhCILz2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 06:55:28 -0500
-Date:   Tue, 09 Mar 2021 11:55:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1615290926;
-        bh=brHsaCtOjl6MivQM5JJde4HEiWC8nBnkoSck0wfdshI=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=GcC1guE+S6HRGRa9GM8U1AY983YwbssMHCAIU4NjzLIB/jIVr7XM5zmGplEEwdtD7
-         ZT+bNJ0la6y+cSxkCTicp4wnZ6GNESntpTBOYPeNYjtYK56u5A1CRH6rIQyWp3d8rS
-         tp3BbZuzRRivLrUbe19GNyna6hitJiaBuPC3g1Fk=
-To:     caleb@connolly.tech, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     ejb@linux.ibm.com, stanley.chu@mediatek.com, cang@codeaurora.org,
-        beanhuo@micron.com, jaegeuk@kernel.org, asutoshd@codeaurora.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nitin Rawat <nitirawa@codeaurora.org>
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: [PATCH v2 3/3] scsi: ufshcd: remove version check
-Message-ID: <20210309115336.117206-4-caleb@connolly.tech>
-In-Reply-To: <20210309115336.117206-1-caleb@connolly.tech>
-References: <20210309115336.117206-1-caleb@connolly.tech>
+        id S230140AbhCIL7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 06:59:48 -0500
+Received: from foss.arm.com ([217.140.110.172]:52016 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230086AbhCIL7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 06:59:32 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB7711042;
+        Tue,  9 Mar 2021 03:59:31 -0800 (PST)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 65E183F70D;
+        Tue,  9 Mar 2021 03:59:30 -0800 (PST)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        cristian.marussi@arm.com, rjw@rjwysocki.net,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        vireshk@kernel.org, linux-pm@vger.kernel.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>, chris.redpath@arm.com,
+        morten.rasmussen@arm.com, ionela.voinescu@arm.com
+Subject: Re: [PATCH v8 0/3] CPUFreq: Add support for opp-sharing cpus
+Date:   Tue,  9 Mar 2021 11:59:18 +0000
+Message-Id: <161529100668.14386.8282141106561420272.b4-ty@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210218222326.15788-1-nicola.mazzucato@arm.com>
+References: <20210218222326.15788-1-nicola.mazzucato@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This check is redundant as all UFS versions are currently supported.
+On Thu, 18 Feb 2021 22:23:23 +0000, Nicola Mazzucato wrote:
+> In this V8 I have addressed your comments:
+> - correct the goto in patch 1/3
+> - improve comment in patch 2/3 for dev_pm_opp_get_opp_count()
+> 
+> Many thanks,
+> Nicola
+> 
+> [...]
 
-Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
-Signed-off-by: Caleb Connolly <caleb@connolly.tech>
----
- drivers/scsi/ufs/ufshcd.c | 4 ----
- 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index a458c248e5ef..a6f317f0dc9b 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -9291,10 +9291,6 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *m=
-mio_base, unsigned int irq)
- =09/* Get UFS version supported by the controller */
- =09hba->ufs_version =3D ufshcd_get_ufs_version(hba);
-=20
--=09if (hba->ufs_version < UFSHCI_VER(1, 0))
--=09=09dev_err(hba->dev, "invalid UFS version 0x%x\n",
--=09=09=09hba->ufs_version);
--
- =09/* Get Interrupt bit mask per version */
- =09hba->intr_mask =3D ufshcd_get_intr_mask(hba);
-=20
---=20
-2.29.2
+Applied the first 2 patches to sudeep.holla/linux (for-next/scmi), thanks!
 
+[1/3] scmi-cpufreq: Remove deferred probe
+      https://git.kernel.org/sudeep.holla/c/2a3390d53b
+[2/3] scmi-cpufreq: Get opp_shared_cpus from opp-v2 for EM
+      https://git.kernel.org/sudeep.holla/c/dac7a57d2a
+
+--
+
+Regards,
+Sudeep
 
