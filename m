@@ -2,92 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8C6332858
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D2F33285B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 15:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhCIORh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 09:17:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbhCIOR0 (ORCPT
+        id S230403AbhCIOSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 09:18:09 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:15594 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229805AbhCIOR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 09:17:26 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD259C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 06:17:26 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so5082191pjc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 06:17:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=PERnROPDS6majMQmO2xScJnwwJrNGak76ViyrQxoAAM=;
-        b=tnCoog0WRvk39rDmXkBLIhrawSpZJa1/qvua5bZc63EEr+wbHjhtc8oWBX/34GBrHo
-         51s0Pd0MKAoDr257fNUnK54oWy7TdBChFnETDujcINUvYMKUEEIJS7PJ1dC/C8YIPKcq
-         WLmD4bm1YqdsCDh0atqLGPGgbka248zwXrGcA1utqvCnMPeBrBK1lLtQMIumTegreVms
-         KEIWbdqfr5CRjxeISrg7iDA91l/14mGKLHA/+pN2NUdeuKhQuSvFNcKwVO42kO9cVyRq
-         Mr7oeAyuF3WHrCcaBh2MboBDUlL7Wjija7DxTzIm8nAXfSy9MEWW6HuFq43Veoiq8cDh
-         4nnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=PERnROPDS6majMQmO2xScJnwwJrNGak76ViyrQxoAAM=;
-        b=dq+iEduxKApZv15j8ldo9XpTuKrm4hDMAzegTWGlEd6eWGkJsL+9t5XoawNXvsTGWr
-         fPFRL/1WpCjz29TfTrSpOikwkDlF3gzv3nQ0isXhe8Z9ypm+Fyn5U3LkPLNR+5mbf/B+
-         TkNGRw34K9erUEvPWik8npZT4g9w8+y2qnUaiYJ6VRicT+DMZUe3v/RpoW4ryzyOMxDA
-         KN1gjQPtRdPvdYNNRWh9iKfbImEckwYifXn3pO/4a9oOaXtUjT4ahoLasR+ra116ka79
-         HY65xz/CGcXsKDYE4YM8KcMKlOtInl4o+JPF/2rGZcUa9iZ34B7wcpT89tlUK45xvh31
-         1yUQ==
-X-Gm-Message-State: AOAM530pb9Rok9XQm2Br6kEbC2Z6rGpogtLdxe/Se2qFdb4aRIDSMofp
-        OPT5dNK0s0oB8YO8fYDkGAye+/OTZgIbrz6Z
-X-Google-Smtp-Source: ABdhPJzpUdPG4UaEgdCj/cr+A4hLNmqtMU3NpjRUngfQzOxbCydMcp/T68de2Ho1p3nqMVy119i2hA==
-X-Received: by 2002:a17:902:ed88:b029:e3:6b9f:9ac3 with SMTP id e8-20020a170902ed88b02900e36b9f9ac3mr4154307plj.72.1615299446337;
-        Tue, 09 Mar 2021 06:17:26 -0800 (PST)
-Received: from localhost.localdomain ([116.73.168.170])
-        by smtp.gmail.com with ESMTPSA id o3sm13043490pgm.60.2021.03.09.06.17.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 06:17:26 -0800 (PST)
-From:   Selvakumar Elangovan <selvakumar16197@gmail.com>
-To:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        florian.c.schilhabel@googlemail.com
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] rtl8712: fixed whitespace coding style issue
-Date:   Tue,  9 Mar 2021 19:47:21 +0530
-Message-Id: <20210309141721.16772-1-selvakumar16197@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 9 Mar 2021 09:17:57 -0500
+X-IronPort-AV: E=Sophos;i="5.81,234,1610406000"; 
+   d="scan'208";a="496967091"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 15:17:27 +0100
+Date:   Tue, 9 Mar 2021 15:17:26 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Denis Efremov <efremov@linux.com>, kbuild-all@01.org
+Subject: [PATCH v2] tty: max310x: fix flexible_array.cocci warnings
+Message-ID: <alpine.DEB.2.22.394.2103091516020.2892@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed additional whitespaces in the rtl8712_xmit.h file.
+From: kernel test robot <lkp@intel.com>
 
-Signed-off-by: Selvakumar Elangovan <selvakumar16197@gmail.com>
+Zero-length and one-element arrays are deprecated, see
+Documentation/process/deprecated.rst
+Flexible-array members should be used instead.
+
+Generated by: scripts/coccinelle/misc/flexible_array.cocci
+
+Fixes: 10d8b34a42171 ("serial: max310x: Driver rework")
+CC: Denis Efremov <efremov@linux.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
 ---
- drivers/staging/rtl8712/rtl8712_xmit.h | 3 ---
- 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/staging/rtl8712/rtl8712_xmit.h b/drivers/staging/rtl8712/rtl8712_xmit.h
-index 0b56bd3ac4d0..e4c0a4bf8388 100644
---- a/drivers/staging/rtl8712/rtl8712_xmit.h
-+++ b/drivers/staging/rtl8712/rtl8712_xmit.h
-@@ -36,10 +36,8 @@
- #define MAX_AMSDU_XMITBUF_SZ 8704
- #define MAX_TXAGG_XMITBUF_SZ 16384 /*16k*/
- 
--
- #define tx_cmd tx_desc
- 
--
- /*
-  *defined for TX DESC Operation
-  */
-@@ -89,7 +87,6 @@ struct tx_desc {
- 	__le32 txdw7;
+v2: reference the correct commit for Fixes
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   144c79ef33536b4ecb4951e07dbc1f2b7fa99d32
+commit: 7b36c1398fb63f9c38cc83dc75f143d2e5995062 coccinelle: misc: add flexible_array.cocci script
+:::::: branch date: 6 hours ago
+:::::: commit date: 5 months ago
+
+ max310x.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -273,7 +273,7 @@ struct max310x_port {
+ #ifdef CONFIG_GPIOLIB
+ 	struct gpio_chip	gpio;
+ #endif
+-	struct max310x_one	p[0];
++	struct max310x_one	p[];
  };
- 
--
- union txdesc {
- 	struct tx_desc txdesc;
- 	unsigned int value[TXDESC_SIZE>>2];
--- 
-2.17.1
 
+ static struct uart_driver max310x_uart = {
