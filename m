@@ -2,95 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A251332159
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:52:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBBD833215C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhCIIwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 03:52:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhCIIvo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 03:51:44 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CB2C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 00:51:44 -0800 (PST)
-Date:   Tue, 09 Mar 2021 08:51:42 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1615279902;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=poR87By4NkkdpqwArIo+z41wrL0AD93KKo6AP+GsrCQ=;
-        b=p4TwTqpI9lYuGRO8mnOLvDSq0z1IZHE2AR5eG3RVbm4p2H4nVDmho1SUEfOhJHuSjd87Wg
-        Q+zifh1UFgYhH172/vPrPTC/7i+8LedUu9hMLzh88knKa0tOS5bRWFdoHh5m16rL8SVIwk
-        Qz+IMT2DtWpZOPouiBnLHA8YYGKRY+Brdye+CXvNi1m6Z1r6rsbug+0oMAChcA8yu5khAz
-        ORsP0chcFyRGom0BXUPYiUrLWMvWQasYWSyzUIzsQsc5U4wUW4WIiPVFtUvJilVbuNd2+Z
-        sXC5jATOtED0/wOy5LwsSHzKAveMR+gFcJ4xy5KJmiwF5dsaS7hW7L9Lix3EAQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1615279902;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=poR87By4NkkdpqwArIo+z41wrL0AD93KKo6AP+GsrCQ=;
-        b=D2ld29fxUr7jQ/8SuP4S4hMobxZvXWoI0b0jbUNxu351/J5eUNYyDVyFqZdhHZZ1Dz7Vw0
-        BDFxRuebya75CxCA==
-From:   "irqchip-bot for Paul Cercueil" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] dt-bindings/irq: Add compatible string
- for the JZ4760B
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        tglx@linutronix.de
-In-Reply-To: <20210307172014.73481-1-paul@crapouillou.net>
-References: <20210307172014.73481-1-paul@crapouillou.net>
+        id S230425AbhCIIwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 03:52:32 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:34275 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230417AbhCIIwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 03:52:19 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Dvpqh2X62z9txd1;
+        Tue,  9 Mar 2021 09:52:16 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id dU0TJnMUe1p4; Tue,  9 Mar 2021 09:52:16 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dvpqh1dGGz9txd0;
+        Tue,  9 Mar 2021 09:52:16 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2DA508B7DA;
+        Tue,  9 Mar 2021 09:52:17 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Lti_ytR-jCZn; Tue,  9 Mar 2021 09:52:17 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 636798B7DB;
+        Tue,  9 Mar 2021 09:52:16 +0100 (CET)
+Subject: Re: [PATCH] powerpc: Fix missing declaration of
+ [en/dis]able_kernel_vsx()
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexdeucher@gmail.com>
+References: <8d7d285a027e9d21f5ff7f850fa71a2655b0c4af.1615279170.git.christophe.leroy@csgroup.eu>
+ <CAMuHMdW0Cn1So8ckvhsT+N+p2hiPiksmCS32jzM0xCUYU4UAdQ@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <b12f9128-790b-7d8b-5f3c-e0912f5bec0a@csgroup.eu>
+Date:   Tue, 9 Mar 2021 09:52:11 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Message-ID: <161527990212.398.14965555681449757699.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAMuHMdW0Cn1So8ckvhsT+N+p2hiPiksmCS32jzM0xCUYU4UAdQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     673433e7c288927f7244658788f203c660d7a6f6
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/673433e7c288927f7244658788f203c660d7a6f6
-Author:        Paul Cercueil <paul@crapouillou.net>
-AuthorDate:    Sun, 07 Mar 2021 17:20:13 
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Tue, 09 Mar 2021 08:45:11 
 
-dt-bindings/irq: Add compatible string for the JZ4760B
+Le 09/03/2021 à 09:45, Geert Uytterhoeven a écrit :
+> Hi Christophe,
+> 
+> On Tue, Mar 9, 2021 at 9:39 AM Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>> Add stub instances of enable_kernel_vsx() and disable_kernel_vsx()
+>> when CONFIG_VSX is not set, to avoid following build failure.
+>>
+>>    CC [M]  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o
+>> In file included from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services_types.h:29,
+>>                   from ./drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services.h:37,
+>>                   from drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:27:
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: In function 'dcn_bw_apply_registry_override':
+>> ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:64:3: error: implicit declaration of function 'enable_kernel_vsx'; did you mean 'enable_kernel_fp'? [-Werror=implicit-function-declaration]
+>>     64 |   enable_kernel_vsx(); \
+>>        |   ^~~~~~~~~~~~~~~~~
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:640:2: note: in expansion of macro 'DC_FP_START'
+>>    640 |  DC_FP_START();
+>>        |  ^~~~~~~~~~~
+>> ./drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:75:3: error: implicit declaration of function 'disable_kernel_vsx'; did you mean 'disable_kernel_fp'? [-Werror=implicit-function-declaration]
+>>     75 |   disable_kernel_vsx(); \
+>>        |   ^~~~~~~~~~~~~~~~~~
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:676:2: note: in expansion of macro 'DC_FP_END'
+>>    676 |  DC_FP_END();
+>>        |  ^~~~~~~~~
+>> cc1: some warnings being treated as errors
+>> make[5]: *** [drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.o] Error 1
+>>
+>> Fixes: 16a9dea110a6 ("amdgpu: Enable initial DCN support on POWER")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> 
+> Thanks for your patch!
+> 
+>> --- a/arch/powerpc/include/asm/switch_to.h
+>> +++ b/arch/powerpc/include/asm/switch_to.h
+>> @@ -71,6 +71,16 @@ static inline void disable_kernel_vsx(void)
+>>   {
+>>          msr_check_and_clear(MSR_FP|MSR_VEC|MSR_VSX);
+>>   }
+>> +#else
+>> +static inline void enable_kernel_vsx(void)
+>> +{
+>> +       BUILD_BUG();
+>> +}
+>> +
+>> +static inline void disable_kernel_vsx(void)
+>> +{
+>> +       BUILD_BUG();
+>> +}
+>>   #endif
+> 
+> I'm wondering how this is any better than the current situation: using
+> BUILD_BUG() will still cause a build failure?
 
-Add the ingenic,jz4760b-intc compatible string with a fallback to the
-ingenic,jz4760-intc compatible string.
+No it won't cause a failure. In drivers/gpu/drm/amd/display/dc/os_types.h you have:
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210307172014.73481-1-paul@crapouillou.net
----
- Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.yaml | 1 +
- 1 file changed, 1 insertion(+)
+#define DC_FP_START() { \
+	if (cpu_has_feature(CPU_FTR_VSX_COMP)) { \
+		preempt_disable(); \
+		enable_kernel_vsx(); \
+	} else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP)) { \
+		preempt_disable(); \
+		enable_kernel_altivec(); \
+	} else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE)) { \
+		preempt_disable(); \
+		enable_kernel_fp(); \
+	} \
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.yaml b/Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.yaml
-index 0a046be..0358a77 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.yaml
-@@ -23,6 +23,7 @@ properties:
-           - enum:
-               - ingenic,jz4775-intc
-               - ingenic,jz4770-intc
-+              - ingenic,jz4760b-intc
-           - const: ingenic,jz4760-intc
-       - items:
-           - const: ingenic,x1000-intc
+When CONFIG_VSX is not selected, cpu_has_feature(CPU_FTR_VSX_COMP) constant folds to 'false' so the 
+call to enable_kernel_vsx() is discarded and the build succeeds.
+
+> 
+> What about adding "depends on !POWERPC || VSX" instead, to prevent
+> the issue from happening in the first place?
+
+CONFIG_VSX is not required as pointed by the DC_FP_START() macro above and the matching DC_FP_END() 
+macro.
+
+> 
+> Gr{oetje,eeting}s,
+> 
+>                          Geert
+> 
+
+
+Christophe
