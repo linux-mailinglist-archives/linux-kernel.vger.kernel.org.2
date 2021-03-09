@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A39332D4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B82332D4C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 18:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbhCIRaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 12:30:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46884 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230359AbhCIRa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 12:30:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A3684ACC6;
-        Tue,  9 Mar 2021 17:30:27 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 18:30:26 +0100
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     npiggin@gmail.com, Davidlohr Bueso <dbueso@suse.de>,
-        peterz@infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, paulus@samba.org,
-        longman@redhat.com, will@kernel.org
-Subject: Re: [PATCH 3/3] powerpc/qspinlock: Use generic smp_cond_load_relaxed
-Message-ID: <20210309173026.GB6564@kitsune.suse.cz>
-References: <20210309015950.27688-1-dave@stgolabs.net>
- <20210309015950.27688-4-dave@stgolabs.net>
- <20210309093912.GW6564@kitsune.suse.cz>
- <20210309154611.kbxzx65auzvmfqnt@offworld>
+        id S231590AbhCIRbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 12:31:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45599 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231601AbhCIRbU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 12:31:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615311080;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RfuvjK56r1jb/GXkEE1ziYzIM1eNfefBc1/KtDHMOcM=;
+        b=iRpd51tOTRAaJbar3w0S8UpV5GdlvrX+pnB3Jz8LvQY+vqVPAToiaL1rfEg7xySOoMAyM2
+        nWgKJxGy/E0855ItdR06KW4i9q+rFqjngVuonozvOKXFG6GQBiDxPxfDGZLpFt2kJHRnnQ
+        e8OM0TbTlyQNV7wnwLuNMnu6GlldEH4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-204-wUqIGL6NNPuOWGsmiEQOmA-1; Tue, 09 Mar 2021 12:31:17 -0500
+X-MC-Unique: wUqIGL6NNPuOWGsmiEQOmA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8EE6483DD20;
+        Tue,  9 Mar 2021 17:31:16 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-152.rdu2.redhat.com [10.10.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1EA9F60C17;
+        Tue,  9 Mar 2021 17:31:14 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CACT4Y+aH0MrQu2c3fQfm8CD1sXzA5DhHKXLAqbPCjGKQjEoVJQ@mail.gmail.com>
+References: <CACT4Y+aH0MrQu2c3fQfm8CD1sXzA5DhHKXLAqbPCjGKQjEoVJQ@mail.gmail.com> <1399790.1602853614@warthog.procyon.org.uk> <000000000000b9732805b1c970f5@google.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     dhowells@redhat.com,
+        syzbot <syzbot+459a5dce0b4cb70fd076@syzkaller.appspotmail.com>,
+        Hillf Danton <hdanton@sina.com>, linux-afs@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: general protection fault in strncasecmp
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210309154611.kbxzx65auzvmfqnt@offworld>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <180418.1615311074.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 09 Mar 2021 17:31:14 +0000
+Message-ID: <180419.1615311074@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 07:46:11AM -0800, Davidlohr Bueso wrote:
-> On Tue, 09 Mar 2021, Michal Such�nek wrote:
-> 
-> > On Mon, Mar 08, 2021 at 05:59:50PM -0800, Davidlohr Bueso wrote:
-> > > 49a7d46a06c3 (powerpc: Implement smp_cond_load_relaxed()) added
-> > > busy-waiting pausing with a preferred SMT priority pattern, lowering
-> > > the priority (reducing decode cycles) during the whole loop slowpath.
-> > > 
-> > > However, data shows that while this pattern works well with simple
-> >                                              ^^^^^^^^^^^^^^^^^^^^^^
-> > > spinlocks, queued spinlocks benefit more being kept in medium priority,
-> > > with a cpu_relax() instead, being a low+medium combo on powerpc.
-> > ...
-> > > 
-> > > diff --git a/arch/powerpc/include/asm/barrier.h b/arch/powerpc/include/asm/barrier.h
-> > > index aecfde829d5d..7ae29cfb06c0 100644
-> > > --- a/arch/powerpc/include/asm/barrier.h
-> > > +++ b/arch/powerpc/include/asm/barrier.h
-> > > @@ -80,22 +80,6 @@ do {									\
-> > > 	___p1;								\
-> > >  })
-> > > 
-> > > -#ifdef CONFIG_PPC64
-> > Maybe it should be kept for the simple spinlock case then?
-> 
-> It is kept, note that simple spinlocks don't use smp_cond_load_relaxed,
-> but instead deal with the priorities in arch_spin_lock(), so it will
-> spin in low priority until it sees a chance to take the lock, where
-> it switches back to medium.
+Dmitry Vyukov <dvyukov@google.com> wrote:
 
-Indeed, thanks for the clarification.
+> Not sure if you are still interesting in this or not, but fwiw tabs
+> should be supported now:
+> https://github.com/google/syzkaller/commit/26967e354e030f6a022b7a60a7c98=
+99ec25923aa
 
-Michal
+Not right this minute, but thanks for letting me know!
+
+David
+
