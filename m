@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AA93329DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9972A3329DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:11:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbhCIPLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:11:25 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38668 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231673AbhCIPLG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:11:06 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 129FAJ6S004410;
-        Tue, 9 Mar 2021 09:10:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1615302619;
-        bh=pARYfzVWJ+R5NmwtmFJMmgifXA+woU8wgY6HMNSiu7U=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=Y0SzlcILL+rYnwxpUCWryWtGDRjaZYnD2m4/3ghuBkKLOVrLc3tAOBGZM82v70+NG
-         Ws8UcU9bNFzu+WdAtMYNowYfb1fmiRzN2UTkTo/AMF6Q8xHsf6eQhyALhIg4oXP5Tt
-         3kIz4XIVjC0f6zkUCIZ9ruVrYBEXoeF0IBPokILs=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 129FAJuh078771
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 9 Mar 2021 09:10:19 -0600
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 9 Mar
- 2021 09:10:19 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 9 Mar 2021 09:10:19 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 129FAJKX002768;
-        Tue, 9 Mar 2021 09:10:19 -0600
-Date:   Tue, 9 Mar 2021 09:10:19 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        Bao Cheng Su <baocheng.su@siemens.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Le Jin <le.jin@siemens.com>
-Subject: Re: [PATCH v3 3/4] arm64: dts: ti: Add support for Siemens IOT2050
- boards
-Message-ID: <20210309151019.kbay4ragt6ctyhmx@remote>
-References: <cover.1613071976.git.jan.kiszka@siemens.com>
- <0c64b6ad43e7a691c1547524da4a9fd33e61c70c.1613071976.git.jan.kiszka@siemens.com>
- <95e4231c-6bee-ba64-412f-87d257df61c4@ti.com>
- <0561ad0d-7297-35ad-a3a9-49dc9a6bacd3@siemens.com>
- <aecad46d-bce6-5caf-254e-e6385ce8f44b@siemens.com>
+        id S231886AbhCIPK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:10:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39622 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231781AbhCIPKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 10:10:48 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AB08EAE15;
+        Tue,  9 Mar 2021 15:10:47 +0000 (UTC)
+Date:   Tue, 9 Mar 2021 16:10:46 +0100
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: make STACKPROTECTOR_PER_TASK configurable.
+Message-ID: <20210309151046.GZ6564@kitsune.suse.cz>
+References: <20210309123544.14040-1-msuchanek@suse.de>
+ <CAK7LNAT+8mGunqXSPLHxhF1FTXQEzbAoKPY=48pBgtLbhcB0jg@mail.gmail.com>
+ <20210309133523.GX6564@kitsune.suse.cz>
+ <CAK7LNARVPYBWvaA+MCjVic+qLay1AR-+UZuyC+_FRGShL=gahg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <aecad46d-bce6-5caf-254e-e6385ce8f44b@siemens.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNARVPYBWvaA+MCjVic+qLay1AR-+UZuyC+_FRGShL=gahg@mail.gmail.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09:38-20210309, Jan Kiszka wrote:
-> From: Jan Kiszka <jan.kiszka@siemens.com>
+On Tue, Mar 09, 2021 at 11:53:21PM +0900, Masahiro Yamada wrote:
+> On Tue, Mar 9, 2021 at 10:35 PM Michal Suchánek <msuchanek@suse.de> wrote:
+> >
+> > On Tue, Mar 09, 2021 at 10:22:36PM +0900, Masahiro Yamada wrote:
+> > > On Tue, Mar 9, 2021 at 9:35 PM Michal Suchanek <msuchanek@suse.de> wrote:
+> > > >
+> > > > When using dummy-tools STACKPROTECTOR_PER_TASK is unconditionally
+> > > > selected. This defeats the purpose of the all-enabled tool.
+> > > >
+> > > > Description copied from arm
+> > > >
+> > > > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > >
+> > >
+> > > Could you explain what problem
+> > > this patch is trying to solve?
+> >
+> > The option cannot be disabled when compiler has the required capability.
 > 
-> Add support for two Siemens SIMATIC IOT2050 variants, Basic and
-> Advanced. They are based on the TI AM6528 GP and AM6548 SOCs HS, thus
-> differ in their number of cores and availability of security features.
-> Furthermore the Advanced version comes with more RAM, an eMMC and a few
-> internal differences.
 > 
-> Based on original version by Le Jin.
+> Yes.
+> Currently, this symbol claims "def_bool y",
+> so there is no way to disable it.
 > 
-> Link: https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-> Link: https://github.com/siemens/meta-iot2050
-> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-> Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
-> ---
+> But, it comes from the nature of Kconfig in general.
+> 
+> dummy-tools is completely unrelated here.
 
-Jan,
+dummy-tools makes all configuration options available in order to be
+able to author configuration files on system different from the one
+where the kernel is built. This prevents authoring a configuration file
+with this option disabled.
 
-I am not sure if
-https://lore.kernel.org/linux-arm-kernel/20210304160712.8452-2-s-anna@ti.com/
-is going to impact your platform. I am planning on picking that series up today.
-might be good to test against tomorrow's next - running through my basic
-tests right now before committing to the ICSS-G nodes being picked up.
+Thanks
 
-If you could repost after testing against tomorrow's next, it will
-probably be better.
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Michal
