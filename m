@@ -2,145 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6084332AB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3D3332AB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 16:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbhCIPiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 10:38:18 -0500
-Received: from mail-dm6nam11on2051.outbound.protection.outlook.com ([40.107.223.51]:58848
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231246AbhCIPhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 10:37:55 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MwtjLs1cowUQQKKL4Zn4BK0/w69V2IXmy1jYIyDgWjSwDwdUwoLvRAidLXmScZfPBHHcH9zRFHxic5oRFo4c8C3CUK65RIefDXPssxyOfGXbdO5HEDGuqq7laOeG7mibW8tqojd1IfZ3Rf65P5OBesNE2ibLmSuR4WoOCGXXZzOuC9EGeTZqvETZXfFnwYrqqT7+JkSRpb8PhhBFBUdkrv5eelW4qdJVzow9uztJb/bdjXWEyvOGIKjJvMpBydXnNkk1t97n6t1ZOyeGWAZJ5gRm51ULhSNuPVpwDcviJe7tJN6l2AI/OBzP33gFpgOPdUpHPNkBWjn6sGRYBq910A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UHbXFM5CpsDubSwKEsY96p7Ir0qkV1h2KKNoD55Vqww=;
- b=UiztiOEkCyHCOBY8MTTdG3oDy413BjBrd/+WXY3DX5rGNj+P8i7m3pWTg5ZVUHDpbUFADvP49Efx5V3NHRwiM7zLxVaYmI8UlJSWvajb3d9aS1DcNrYqGO3rAuGku1qKbJNIcbHznYNI+xI5bH77TPNsMr77CwN4wDiKUeXWZ8c7O7yK3CqAydhElUfHodmxUez5PF/SBpV9VYtn+09GHTpJZMvNVxqo+OB2bUW+6ogwZudTw3aPR7GsDDXaNT46+aXQOBxJ4Py/PvuqiAsuSmBLZ7mlpwFpQREJEHynG1X++ZqiC/gmCm4Wm6iem9Jy04ygj16eHtzru1cILf785Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UHbXFM5CpsDubSwKEsY96p7Ir0qkV1h2KKNoD55Vqww=;
- b=0SuMUmedipoBNHqI1KhiiIzyFX3q2zdJ4xHiyFJN1fw/G+UKN8K16Bxd6SJC7aYtjU0E/YeyBExsKe4xshVFB2ijRjxarIRKSWk1m/+OZv8NGkGcn/9ZpY+LSgYpiPVFe3iBV+wXa/ykC9gcCwHq2EVnbcusMl/VE+jC+JibfQo=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=vmware.com;
-Received: from MN2PR05MB6624.namprd05.prod.outlook.com (2603:10b6:208:d8::18)
- by MN2PR05MB6669.namprd05.prod.outlook.com (2603:10b6:208:df::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.9; Tue, 9 Mar
- 2021 15:37:51 +0000
-Received: from MN2PR05MB6624.namprd05.prod.outlook.com
- ([fe80::88de:ad34:82d7:a02e]) by MN2PR05MB6624.namprd05.prod.outlook.com
- ([fe80::88de:ad34:82d7:a02e%6]) with mapi id 15.20.3912.027; Tue, 9 Mar 2021
- 15:37:51 +0000
-Subject: Re: [PATCH 1/2] locking/rwsem: Add down_write_interruptible
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>, dri-devel@lists.freedesktop.org
-References: <20210308205456.1317366-1-zackr@vmware.com>
- <20210308205456.1317366-2-zackr@vmware.com>
- <YEc2ry1h1qC3N2m9@hirez.programming.kicks-ass.net>
-From:   Zack Rusin <zackr@vmware.com>
-Message-ID: <cbaaf6b6-9981-997a-02ed-4d6055fd9833@vmware.com>
-Date:   Tue, 9 Mar 2021 10:37:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-In-Reply-To: <YEc2ry1h1qC3N2m9@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [71.175.59.246]
-X-ClientProxiedBy: MN2PR15CA0030.namprd15.prod.outlook.com
- (2603:10b6:208:1b4::43) To MN2PR05MB6624.namprd05.prod.outlook.com
- (2603:10b6:208:d8::18)
+        id S231759AbhCIPiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 10:38:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229790AbhCIPih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 10:38:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EF3265238;
+        Tue,  9 Mar 2021 15:38:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615304316;
+        bh=ywcMiRWM7hxvvEevLFLmRZPE513OmPXFK30CWeV/bnE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UoqUOhWstxhc6j+BT+/nG/8KmEbGuGHDfQDJtT8PSM7qlmONXExdIkKFVOWoj2H09
+         1g2RzuZpQ+02f6bqqZi8rlUz0CoRDN8AjCRK7HwdtX5U9LFzhZNcUbC4S+3KkddZPS
+         OjfH/8iv5zwaG7ItlWupbSOr9a6AeArpIRMpXk5y7TLvAsu6y4eseQYyjxSVK6K43q
+         nx21K4j/sVb/jpg5AnCpAg/cnPDDMTLRcv0MUa/E6u2iotAR4/RI6K6G+cuZ3/Awgm
+         6uVTnu8QnOBRFeEAOl7LT2rHDAbHFUFhut6vo/f53S6J1Er6TLV1Pj9iWof7H0lkF8
+         foE1sl5DjFgmw==
+From:   Will Deacon <will@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Will Deacon <will.deacon@arm.com>
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        linux-kernel@vger.kernel.org, Marco Elver <elver@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org,
+        linux-mm@kvack.org, kasan-dev@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Collingbourne <pcc@google.com>
+Subject: Re: [PATCH] arm64: kasan: fix page_alloc tagging with DEBUG_VIRTUAL
+Date:   Tue,  9 Mar 2021 15:38:29 +0000
+Message-Id: <161529596129.3814589.13038514678630962150.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <4b55b35202706223d3118230701c6a59749d9b72.1615219501.git.andreyknvl@google.com>
+References: <4b55b35202706223d3118230701c6a59749d9b72.1615219501.git.andreyknvl@google.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.193] (71.175.59.246) by MN2PR15CA0030.namprd15.prod.outlook.com (2603:10b6:208:1b4::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 15:37:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2cdf2d0e-b149-4882-172b-08d8e3114c5b
-X-MS-TrafficTypeDiagnostic: MN2PR05MB6669:
-X-Microsoft-Antispam-PRVS: <MN2PR05MB66697625068F3E7E181A9B41CE929@MN2PR05MB6669.namprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: z/bKsg8fa2qpn5W5799d+UdLBw4B4bNdAPHg0ko2om1xPbBaZhC7uLb9OtEINbZimCXVE4xfBf2he1CIgGhGBjGMD6B0qaaUd71/zAhKY2kmA3O9l8XYwKaUuRq4yglCDnqeG7oFsZ3IgDixpSDH7lk/pcgDZ2W94gUxjNKNQvNLBbKiDlieXh2xwWUbnIEB7jBiDCdiIvlme7Khn9qsEviTZ1AY7PVzunbGxKicXnBzBcK2nBUsph9zTyeLEH7IXvbwVaE3akYxlThvqSR8ZvFo0HWpkYzmhSTFitS1B23Xn4/SPe6J0FswqOIEJWApLYsCqVn0awARQ6KEXP9kvCMF23gIt1D+bYDlo5L9CCn/yOlpypUGxP/1dy/3kFr46LzcipEdToi5yJanTTn3LBGPhMAEl5g7EfyuWjm4jcAjvqpvSDHxMp53y9gckXtfeYQd7uwPdK2AfFihoQSkPPA3Eb9G2mV/jmS9I6e6mgO/FerND4O7xRRQ0a8bDUsA1LEIXoo3UgOjjEoRzS3D8mXggHibvrydW/SzNqExWr2TNaoDvYVuyycV0KRPv3im0pRxgCE2MPFGXYHU24rGVIY4MEkD8BNMr0QGfh8Vaan5rrCfokmKECXQIEIaViB41CqM7+WV6Ns6nSb/SSZBqG/GBr/QWfdF1oDwNmxQnHdA90xSNrMquEBjUE8PxuSX83d0P2Oscr91JmBAi0biKEFTefVjIhZzznkehOpz8gI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR05MB6624.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(186003)(36756003)(966005)(66556008)(66476007)(26005)(16526019)(5660300002)(31686004)(498600001)(31696002)(6916009)(16576012)(54906003)(83380400001)(4326008)(8676002)(53546011)(956004)(86362001)(8936002)(66946007)(2616005)(2906002)(4744005)(45980500001)(43740500002)(10198025002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?OUdNNnpoeUpTZGxRcERQSXhyRVYyWDk1NHVEM0N6TEh1TU9WcnNHZFFEQUlJ?=
- =?utf-8?B?RVFSaDd4U1FITjd2Vm5sc1EyOXIrMWkzYVl2a2dETjVOMkFNVmFIcnBPVk5H?=
- =?utf-8?B?by9WREUrZms2dmZSQXFwODArVTY2NGV5V0FNMUVPcExNa045Mmg4U1V3Qytj?=
- =?utf-8?B?TGh6SFB6MjVQR2FDUXZQR3BSNU5ZQUtPbFcxVTN4VllOZTJLWXpVdzNXNDVG?=
- =?utf-8?B?Z0VHanMvV2hPVmpiNFlPN0xFeTlLTStyOVBiZjA2L3JUMmRCSlNJR2t1dWhT?=
- =?utf-8?B?bWJiTGVBZzN2c1NNNzlkKzkzM2dFN1JBQW1CQTVUM3lzWnE1S1dreUtVZGhv?=
- =?utf-8?B?U1lIcTNDbE9IK2hPOTcwTjVLWHVWeVhqaGUwOWs4WU4vQWtQWjliczhNdFcv?=
- =?utf-8?B?MVpaM1BxczdXSU1adHJsN1lGYWk0dDBlaWx2SE1IS1dWZC9WdEdmMjRidFRQ?=
- =?utf-8?B?Z0JqVXBtOTNudE1ldzlBM3ljempsdk8zaGd5UmJ3eENOOXp0YWZleEdQMUVV?=
- =?utf-8?B?cFExUmE3VXJDNktCNTNyWm9tTFNrYVQyU3JRd2h3TUpyYXpBemlKWEthWC85?=
- =?utf-8?B?dURMUlVENVBGRjRvbnJqYmFVditHd0tOVDF0OEYwYmFVSlBSb3pkTGVVaUlu?=
- =?utf-8?B?ZUlUczc4am5xYTFDbVZwNFFwcXdzaGtIRlI5Z0dGdi9od05zRXllaXd5TXI3?=
- =?utf-8?B?MUxZb0xTK3pmQnlGNE43VlVQajNTa3crcnBtS3kxVkR1eFpaOStoWitpVjdS?=
- =?utf-8?B?bnZiMkE5amNMSEVUSERNSXdFcFdLUzllaTJrM0VVd1dYQmRSTWJHTHFZU1l4?=
- =?utf-8?B?SjFYeERSTE05aVgxRW1qQ253SzdKYXd3RWc5dTFOMUFuMm81eXk1dmpnMVdH?=
- =?utf-8?B?bDZycUsva3I0VEl2Tzlvcm42VEdiczJCcFpaVVlNTDFNQWsvdjJscTNRYmdh?=
- =?utf-8?B?WU5LTEZsVXRtMUZXNXJCeWk5UHJlRWNZbTlFUktMSnZ3OFpGSmdjUlJBM1FJ?=
- =?utf-8?B?Y21KOXB2bXUrZ2E5dFpQVHF6UW8yNVVpV0RIdG41UVpONEt1V1psR3NwUldq?=
- =?utf-8?B?ais2azJQL05Lc3lCNlJhUjZnb3UrdjhVbm54SEJBTFdCTk5wSWplRmg3Qk94?=
- =?utf-8?B?cnVQMmFiUFhiRC9wOEJQV0RsY2ZtTHlSeTNmWjM4L3k0dXdCYS9oRG1oVzFE?=
- =?utf-8?B?eldrZGlFUEpsZFMyQlFIZlhkS3h0YkFreFRXdmNMOUZNNUhGaDJtemh3UkZN?=
- =?utf-8?B?eFhPTlMxQ0tVUFIzaGNpbWZnMXgxbEExaHZBaWNGMzlmZlN3Z3dzQ2hESzJj?=
- =?utf-8?B?aVprL2Z1TUpVZm5jNDRyT25MK0NuR3pNT2FJOEJ6NnBTL2FIQlpJVjd1K29n?=
- =?utf-8?B?ZmRWczQ4S055eUh6T1R0dm1EK2N6aWp5R2xmRnFEYjUvNElOSWRFaWNHeFla?=
- =?utf-8?B?QUlpSEkwWUVpS2N2dUdtWjBtZS9CMHpDU2crWG56dlhvNGplRmFraVFxZkh6?=
- =?utf-8?B?ZEdUUzFYQS9UUkhNeGo4OTYveDZOZ0hYbEVnWVVHcW9ieE50V2NlRHFZRXRN?=
- =?utf-8?B?dVJQL1RrOWtTbW1LOEQ2dTFYMXdIZU44RDlQbHBWelhFNVNnQ2hMQ3k0Yjhz?=
- =?utf-8?B?S0tRQmd3Mjhzeit3WG9UVlNZV2FZcjBNbHJZZ3QvRllHRzB0TzJ3dk9QZ1l1?=
- =?utf-8?B?eGJMSitzVnZNUzY0K3NESklTM1lVVmFwSmd3d1NJWEdVRnVPTmxnZE44bWhp?=
- =?utf-8?Q?QqHl0aoUXGef/6XeQeUVBPAh5vPZI6toaY+PAYj?=
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2cdf2d0e-b149-4882-172b-08d8e3114c5b
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR05MB6624.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 15:37:51.0690
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NZmq/LVUweQpQfaA5T14E+iosVhZXgOEDg/DMQtYElYPPxFQGNgi4yD8YWFvTP9mtWVU2CrYYfOv4/N1mZVZbw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR05MB6669
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 3:49 AM, Peter Zijlstra wrote:
-> On Mon, Mar 08, 2021 at 03:54:55PM -0500, Zack Rusin wrote:
->> Add an interruptible version of down_write. It's the other
->> side of the already implemented down_read_interruptible.
->> It allows drivers which used custom locking code to
->> support interruptible rw semaphores to switch over
->> to rwsem.
->>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: linux-kernel@vger.kernel.org
->> Cc: dri-devel@lists.freedesktop.org
+On Mon, 8 Mar 2021 17:10:23 +0100, Andrey Konovalov wrote:
+> When CONFIG_DEBUG_VIRTUAL is enabled, the default page_to_virt() macro
+> implementation from include/linux/mm.h is used. That definition doesn't
+> account for KASAN tags, which leads to no tags on page_alloc allocations.
 > 
-> No SoB!
+> Provide an arm64-specific definition for page_to_virt() when
+> CONFIG_DEBUG_VIRTUAL is enabled that takes care of KASAN tags.
 
-Ah, sorry, fixed that locally.
+Applied to arm64 (for-next/fixes), thanks!
 
-> Assuning you actually wrote and and simply forgot to add it, the patch
-> does look ok, so:
-> 
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+[1/1] arm64: kasan: fix page_alloc tagging with DEBUG_VIRTUAL
+      https://git.kernel.org/arm64/c/86c83365ab76
 
-Thank you. I didn't want to bother you with the code in vmwgfx, so I 
-only sent it to the lists (it was missing SoB as well):
-https://lore.kernel.org/patchwork/patch/1391810/
+Cheers,
+-- 
+Will
 
-z
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
