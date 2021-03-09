@@ -2,151 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B9E332F8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:05:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A60332F94
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 21:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbhCIUF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 15:05:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
+        id S231423AbhCIUF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 15:05:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231657AbhCIUFY (ORCPT
+        with ESMTP id S231694AbhCIUFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 15:05:24 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB11C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 12:05:24 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id u187so3492753wmg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:05:24 -0800 (PST)
+        Tue, 9 Mar 2021 15:05:31 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F3EC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 12:05:31 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id j8so14107478otc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 12:05:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=XGjP1IwYY9V5MTdu5gz2bGCMoHloL2HLzkBo8xqKCcU=;
-        b=xffYs7vzhK4DnRSpTaSp+Ec//mT5EfBuoIpR9TBygBXd4AVAxF82/Fgt0GRuFuiCkw
-         hCCxPhhv5u6IrdEV/DSl05apgw5Le+1xwYxkVYy7jMINaAo4S7lIKcnWmStllOApmD6n
-         IibsYpnUwstk3fEKwphtWzG5H+xHg/R+8cThq6k3biaiGf+/DKKIOLhlaTFsrVzKttzp
-         BNDdCaPRxzYad7e37L3WUDA3T12xWfzs61ENy2Xm2jbUP4xSUWMTGBkL98b5Wd8ZCLrH
-         tBKOowGx5stqetns4YSjuQ/reyAKDmaVxHe4Lg8qA+JWI3TUpGK5FTiKAfmqbc6rLhqS
-         JyAQ==
+         :content-disposition:in-reply-to;
+        bh=Lpdt0zLAZe17/ZolXa2wLHIA6dgjRIlJmgcDz9hKEVI=;
+        b=eKWffYyiwh8TVySSuyodQeIj3xuj3BmnlSfi2whF4VR5SpxqzVqW/cSEgTndopWiUm
+         T4Yd5hktkb18NChbtjAFJpEu5QU8rSa2i9mf2bZMB8Dp8SaAs0eIj7dhY65OUyOSTbBp
+         n1LOrT6jTwpesV31Fd5r4D9G2HCnTDry0Dfredu1GnwpF91PsAvnS46H/FFPDxoPzzHF
+         inxRoKa03EX/mti10bKu0DgsZnzrHxEyina5GAYsqwNTBArZZCqM41Sy4c9sPd9ZJXaF
+         r9NtmN/Y1FXU0Ygh1PXtopGLdcWaY9SIsbW0IirGbIUp6ria1SpyZf33N/xwLVfxbXsX
+         sRog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=XGjP1IwYY9V5MTdu5gz2bGCMoHloL2HLzkBo8xqKCcU=;
-        b=MMQXuqRVQ5su7wsTtlE/FQszZiCD0F6uZ8AKIF54wG3EfTIde2y8qM7J/52LXjBFxF
-         k4ZkL+ucjZAZl0mKeZPnTQuwaTlD6WojhUtRPgjY3vW36rQKbHW34TPDsbX1QTvooKx4
-         hsxOCd9o5LzeyeYppuOi71GTLuMzATUEdHyI6zYgimy3wmRhBnWq1rCYPRmmjWSBfWf/
-         NzBEcdIDJh5DPN/AyJr9iYckeykdEdDyjKAnee/Q4Fh8+Ks7f0+iFHNdNWUQtl2nMQv+
-         XPpczpO2BbMxMaR+Kz9QcYk8bM1TRlFPkHeuQHr333d5D6bljf5m0n/36e1nDMV1iDs3
-         hs+g==
-X-Gm-Message-State: AOAM5322LWD0giJtYRxgCPhucquZ0qt0tRHxu0QgfYkBO+7MvveX+8Xr
-        kvWHlnZasVU5hMJPaHvFKsDtsA==
-X-Google-Smtp-Source: ABdhPJxlGaFCDMWbfFV5Pr/WWx8z0K7o5uAIGkLbbZ+Fg98b+aBlnMrftxj9+78TWRIlh0DueAOXyg==
-X-Received: by 2002:a05:600c:190a:: with SMTP id j10mr5821993wmq.140.1615320323081;
-        Tue, 09 Mar 2021 12:05:23 -0800 (PST)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id p10sm26424631wrw.33.2021.03.09.12.05.21
+         :mime-version:content-disposition:in-reply-to;
+        bh=Lpdt0zLAZe17/ZolXa2wLHIA6dgjRIlJmgcDz9hKEVI=;
+        b=nqawULKtV6uAyfx26szS63dqMhAZ03y2o1ebdvdF5qXcHsD4GXpG+J8FMb6LP7WmrQ
+         4DGjxbrSePC9nx3RNdpTSLtWSVOIbHnQatJ8sOm0ANSR4lYKnsfcCncvsFju5DKOC7T5
+         vpOE52yCV9cJOlPzj3V+ndj4Og5dm8c2qQwR/GHiRA/3cWRhInJLk/qyRNM45GYzZiEz
+         B5/smbV+3XyNOJ4uU2lTi3g1N4VGojvGlNch/HlMFF+gfbfedL/MDMDQvsjjwaejrvGt
+         OiMQE1FvF8PtFgv6DddI3bS5HbxFE2m6CUt8/owrbdB1snC+QsgGa/yR+d3InophKJgy
+         jnrg==
+X-Gm-Message-State: AOAM533bedo9DWqJnNjPtqwUMsn+6oThwEx/VGKQID6+exJ5YhRH2jZU
+        hVkrk73GSNb+KTXVLa6clEKPpg==
+X-Google-Smtp-Source: ABdhPJyKQfLCM6cWgrKmNtKybZb+cd/Gr+M7QJnsR1ybcJGJ7/xAk5Hp2j1XAMUkgG7t+6poeYtlKg==
+X-Received: by 2002:a9d:561:: with SMTP id 88mr2420310otw.150.1615320330732;
+        Tue, 09 Mar 2021 12:05:30 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id i3sm3172218oov.2.2021.03.09.12.05.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 12:05:22 -0800 (PST)
-Date:   Tue, 9 Mar 2021 20:05:20 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [GIT PULL] Immutable branch between MFD, PWM and RTC due for the
- v5.13 merge window
-Message-ID: <20210309200520.GA4931@dell>
-References: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
- <20210301102826.GK641347@dell>
+        Tue, 09 Mar 2021 12:05:30 -0800 (PST)
+Date:   Tue, 9 Mar 2021 14:05:28 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     agross@kernel.org, linus.walleij@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] pinctrl: qcom: sc7280: Fix SDC_QDSD_PINGROUP and
+ UFS_RESET offsets
+Message-ID: <YEfVCPvsAP2FpYsz@builder.lan>
+References: <1614662511-26519-1-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210301102826.GK641347@dell>
+In-Reply-To: <1614662511-26519-1-git-send-email-rnayak@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Mar 2021, Lee Jones wrote:
+On Mon 01 Mar 23:21 CST 2021, Rajendra Nayak wrote:
 
-> Enjoy!
+> The offsets for SDC_QDSD_PINGROUP and UFS_RESET were off by 0x100000
+> due to an issue in the scripts generating the data.
 > 
-> The following changes since commit fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8:
+> Fixes: ecb454594c43: ("pinctrl: qcom: Add sc7280 pinctrl driver")
 > 
->   Linux 5.12-rc1 (2021-02-28 16:05:19 -0800)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-pwm-rtc-v5.13
-> 
-> for you to fetch changes up to 80629611215d1c5d52ed3cf723fd6d24a5872504:
-> 
->   MAINTAINERS: Add entry for Netronix embedded controller (2021-03-01 10:26:17 +0000)
-> 
-> ----------------------------------------------------------------
-> Immutable branch between MFD, PWM and RTC due for the v5.13 merge window
-> 
-> ----------------------------------------------------------------
-> Jonathan Neuschäfer (6):
->       dt-bindings: Add vendor prefix for Netronix, Inc.
->       dt-bindings: mfd: Add binding for Netronix embedded controller
->       mfd: Add base driver for Netronix embedded controller
->       pwm: ntxec: Add driver for PWM function in Netronix EC
->       rtc: New driver for RTC in Netronix embedded controller
->       MAINTAINERS: Add entry for Netronix embedded controller
-> 
->  .../devicetree/bindings/mfd/netronix,ntxec.yaml    |  76 +++++++
->  .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
->  MAINTAINERS                                        |   9 +
->  drivers/mfd/Kconfig                                |  11 +
->  drivers/mfd/Makefile                               |   1 +
->  drivers/mfd/ntxec.c                                | 221 +++++++++++++++++++++
->  drivers/pwm/Kconfig                                |   8 +
->  drivers/pwm/Makefile                               |   1 +
->  drivers/pwm/pwm-ntxec.c                            | 184 +++++++++++++++++
->  drivers/rtc/Kconfig                                |   8 +
->  drivers/rtc/Makefile                               |   1 +
->  drivers/rtc/rtc-ntxec.c                            | 145 ++++++++++++++
->  include/linux/mfd/ntxec.h                          |  37 ++++
->  13 files changed, 704 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
->  create mode 100644 drivers/mfd/ntxec.c
->  create mode 100644 drivers/pwm/pwm-ntxec.c
->  create mode 100644 drivers/rtc/rtc-ntxec.c
->  create mode 100644 include/linux/mfd/ntxec.h
+> Reported-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 
-FYI, if anyone has pulled this, they should probably rebase it onto
-v5.12-rc2 and delete the v5.12-rc1 tag from their tree:
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-  https://lwn.net/Articles/848431/
+Regards,
+Bjorn
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> ---
+>  drivers/pinctrl/qcom/pinctrl-sc7280.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280.c b/drivers/pinctrl/qcom/pinctrl-sc7280.c
+> index 8daccd5..49c4347 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-sc7280.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-sc7280.c
+> @@ -1439,14 +1439,14 @@ static const struct msm_pingroup sc7280_groups[] = {
+>  	[172] = PINGROUP(172, qdss, _, _, _, _, _, _, _, _),
+>  	[173] = PINGROUP(173, qdss, _, _, _, _, _, _, _, _),
+>  	[174] = PINGROUP(174, qdss, _, _, _, _, _, _, _, _),
+> -	[175] = UFS_RESET(ufs_reset, 0x1be000),
+> -	[176] = SDC_QDSD_PINGROUP(sdc1_rclk, 0x1b3000, 15, 0),
+> -	[177] = SDC_QDSD_PINGROUP(sdc1_clk, 0x1b3000, 13, 6),
+> -	[178] = SDC_QDSD_PINGROUP(sdc1_cmd, 0x1b3000, 11, 3),
+> -	[179] = SDC_QDSD_PINGROUP(sdc1_data, 0x1b3000, 9, 0),
+> -	[180] = SDC_QDSD_PINGROUP(sdc2_clk, 0x1b4000, 14, 6),
+> -	[181] = SDC_QDSD_PINGROUP(sdc2_cmd, 0x1b4000, 11, 3),
+> -	[182] = SDC_QDSD_PINGROUP(sdc2_data, 0x1b4000, 9, 0),
+> +	[175] = UFS_RESET(ufs_reset, 0xbe000),
+> +	[176] = SDC_QDSD_PINGROUP(sdc1_rclk, 0xb3000, 15, 0),
+> +	[177] = SDC_QDSD_PINGROUP(sdc1_clk, 0xb3000, 13, 6),
+> +	[178] = SDC_QDSD_PINGROUP(sdc1_cmd, 0xb3000, 11, 3),
+> +	[179] = SDC_QDSD_PINGROUP(sdc1_data, 0xb3000, 9, 0),
+> +	[180] = SDC_QDSD_PINGROUP(sdc2_clk, 0xb4000, 14, 6),
+> +	[181] = SDC_QDSD_PINGROUP(sdc2_cmd, 0xb4000, 11, 3),
+> +	[182] = SDC_QDSD_PINGROUP(sdc2_data, 0xb4000, 9, 0),
+>  };
+>  
+>  static const struct msm_pinctrl_soc_data sc7280_pinctrl = {
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
