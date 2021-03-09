@@ -2,121 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9D8332EA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE66A332EA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 20:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhCIS7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 13:59:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49693 "EHLO
+        id S230035AbhCITCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 14:02:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56720 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231264AbhCIS7f (ORCPT
+        by vger.kernel.org with ESMTP id S229916AbhCITBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 13:59:35 -0500
+        Tue, 9 Mar 2021 14:01:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615316374;
+        s=mimecast20190719; t=1615316497;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kiTVUES8vuZVl3f+K0HPi56Y64nEHybIHmhWCkJ5UXQ=;
-        b=JIDnhnlY11m7CisK2+slb6IYc4vv4fzviyohPKMLx3HMdD33+Y3DSarpLQ42YFuDtz31W/
-        CTTLEtL0rgB6dCMrbkLwJguCQxYjqCfrARSBlNoOT1fKleOT9g6UE6mYBK+h9Cnfz5Z/fv
-        6aQJ2/ocXLCvAMJTSTxwgPhv/PEm0k4=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-pdi6c1sgO4aJXHhLbjoJdA-1; Tue, 09 Mar 2021 13:59:32 -0500
-X-MC-Unique: pdi6c1sgO4aJXHhLbjoJdA-1
-Received: by mail-ej1-f72.google.com with SMTP id a22so4350217ejx.10
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 10:59:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kiTVUES8vuZVl3f+K0HPi56Y64nEHybIHmhWCkJ5UXQ=;
-        b=hxZCQFqv1s26QtU7T7tve61b5TIg3hHmpxIGsbAnho6XUg9D/tf0NpWKIPR3LQH1A9
-         BVpwujuakt9zKohBT61nUVxlmbvpB6zEkuOfxs3ULEqi3vIiXza6IXi82bqBhu34AxKD
-         aF6U21yzj7tPh2Di+Y2HzwZZgORcrDKXKXpn+HD/KivzCvGtfG0AatD/k8H50tkGyBvh
-         GZh6IeIJgs91Ec2/bK++p55prOVPyCswv4sfGKnN9lYzKhJsscl7zS6MoC2hN/62qhop
-         OnLsuj+JIwM0d/ZzDAzeIcn8zACrdlcZEwLtvSBX3Wc/xiGUt+4jX8aE4PN2OtM3MWGT
-         +2dQ==
-X-Gm-Message-State: AOAM530ciMV9HE0H8QTmDUaBAMyqslvq/Jbvp/EpfRXLbemKss4stdbk
-        xZqyYbL7vMuB+I/M8aFj3Mzt7h8aju6IpnBh6U22lH/vCqNEjZX9zG/yzk7SDVM1arByHPRPqxC
-        nlEXoWElCESiQ1SsF03v/kcmh
-X-Received: by 2002:a17:907:d8a:: with SMTP id go10mr22145768ejc.46.1615316371306;
-        Tue, 09 Mar 2021 10:59:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxYfMQ890bIIJkVycr+ggzTu4KM8aNL2+u0yGwuNutOnRSUNapgRQXWRcxMv5fsU3B5qhS73w==
-X-Received: by 2002:a17:907:d8a:: with SMTP id go10mr22145743ejc.46.1615316371195;
-        Tue, 09 Mar 2021 10:59:31 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id k22sm9276950edv.33.2021.03.09.10.59.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Mar 2021 10:59:30 -0800 (PST)
-Subject: Re: [GIT PULL] Immutable branch between MFD and Platform/X86 due for
- the v5.13 merge window
-To:     Lee Jones <lee.jones@linaro.org>,
-        "David E. Box" <david.e.box@linux.intel.com>
-Cc:     mgross@linux.intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-References: <20210128172846.99352-1-david.e.box@linux.intel.com>
- <20210224201005.1034005-1-david.e.box@linux.intel.com>
- <20210309181206.GT4931@dell>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <4b282693-95c5-a738-e114-ae07f6e113fc@redhat.com>
-Date:   Tue, 9 Mar 2021 19:59:30 +0100
+        bh=JIbVIf9JgfgLSsPGEjdt6SxaKG5D+REVg0Jf8YIfVe8=;
+        b=UJ3RUbIzk+V51YQAmJHoYEdI07ytzPDGxzwDj+c9YQy4SElGrT2W5scIzU+ppDwbivqq79
+        tVUgYNhsK3E8ckvI4QFDcV+QtE3sH6nniQvg9itflivjCnusXELuUim0j3/nXPbvLee9Y/
+        3+f8d9VOFmOe5efAWYOAgZrIn10u4vY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-S_x2j83NOwmjLJUpsZSR-A-1; Tue, 09 Mar 2021 14:01:34 -0500
+X-MC-Unique: S_x2j83NOwmjLJUpsZSR-A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6113A26869;
+        Tue,  9 Mar 2021 19:01:32 +0000 (UTC)
+Received: from [10.36.114.143] (ovpn-114-143.ams2.redhat.com [10.36.114.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AF04760C13;
+        Tue,  9 Mar 2021 19:01:30 +0000 (UTC)
+Subject: Re: [RFC PATCH 0/3] hugetlb: add demote/split page functionality
+To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>,
+        Zi Yan <ziy@nvidia.com>, David Rientjes <rientjes@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210309001855.142453-1-mike.kravetz@oracle.com>
+ <29cb78c5-4fca-0f0a-c603-0c75f9f50d05@redhat.com>
+ <ebb19eb5-ae9e-22f1-4e19-e5fce32c695c@oracle.com>
+ <6c66c265-c9b9-ffe9-f860-f96f3485477e@redhat.com>
+ <777d3771-7d2f-8e88-8496-56440e195a43@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <dfd59d83-7916-518d-23ce-a9a4e6781918@redhat.com>
+Date:   Tue, 9 Mar 2021 20:01:29 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210309181206.GT4931@dell>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <777d3771-7d2f-8e88-8496-56440e195a43@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+> I need to take a close look at Oscar's patches.  Too many thing to look
+> at/review :)
+> 
+> This series does take into account gigantic pages allocated in CMA.
+> Such pages can be demoted, and we need to track that they need to go
+> back to CMA.  Nothing super special for this, mostly a new hugetlb
+> specific flag to track such pages.
 
-On 3/9/21 7:12 PM, Lee Jones wrote:
-> Enjoy!
-> 
-> The following changes since commit fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8:
-> 
->   Linux 5.12-rc1 (2021-02-28 16:05:19 -0800)
+Ah, just spotted it - patch #2 :)
 
-I thought we were supposed to avoid using 5.12-rc1 as a base to avoid people
-hitting the swapfile related disk-corruption when bisecting?
+Took me a while to figure out that we end up calling 
+cma_declare_contiguous_nid() with order_per_bit=0 - would have thought 
+we would be using the actual smallest allocation order we end up using 
+for huge/gigantic pages via CMA. Well, this way it "simply works".
 
-See: https://lwn.net/Articles/848431/
+-- 
+Thanks,
 
-So it might be better to redo this branch with 5.12-rc2 as a base ?
-
-Regards,
-
-Hans
-
-
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-platform-x86-v5.13
-> 
-> for you to fetch changes up to ccafe3126ad3f48ea1cd9ae460c69d1ba879fb65:
-> 
->   mfd: intel_pmt: Add support for DG1 (2021-03-09 17:05:25 +0000)
-> 
-> ----------------------------------------------------------------
-> Immutable branch between MFD and Platform/X86 due for the v5.13 merge window
-> 
-> ----------------------------------------------------------------
-> David E. Box (2):
->       mfd: intel_pmt: Fix nuisance messages and handling of disabled capabilities
->       mfd: intel_pmt: Add support for DG1
-> 
->  drivers/mfd/intel_pmt.c                    | 112 +++++++++++++++++++----------
->  drivers/platform/x86/intel_pmt_class.c     |  46 ++++++++++++
->  drivers/platform/x86/intel_pmt_class.h     |   1 +
->  drivers/platform/x86/intel_pmt_telemetry.c |  20 ------
->  4 files changed, 122 insertions(+), 57 deletions(-)
-> 
+David / dhildenb
 
