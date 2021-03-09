@@ -2,143 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17F9332072
+	by mail.lfdr.de (Postfix) with ESMTP id EA342332073
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 09:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhCIIYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 03:24:06 -0500
-Received: from mail-eopbgr80082.outbound.protection.outlook.com ([40.107.8.82]:44037
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229515AbhCIIXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 03:23:44 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DnsyPskZWofbQn1ZoAO7lu5MhCsi/dvIkeA62AmCoNymv5wdLGk6dgxuvA0ULwdDhJ2k1M5h1Bq2GFj+XFs/Zd9as0b801hKX16GwIO5IBvEaV8fuPmMKKxPOm6awGdumxJ1PUmkNAcOiqUIy9vGqrTdA5nbX4i87pFn6YPZU8ucl7lyoopCaC2nSdONBmg1os20qNaDRBDFu2PB8PLqJbZNJx/ZCoemgVeAUkGX9mOb1yR9VWgSWcECC7bN4v859hVaAeAMbX4+eYwLylI8Gm//ctEHdyNrTA2UunNs/1SG46YcT2TBtVazgnjhDlzjJsOmKjZWEku9f58dLdPDHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oj1rGFQiV4KGCyb89rcUrHprM1OQD0L+rJgrOnlgv+c=;
- b=Pl/6xKTAjXQX1QpFcqiUEs59b2lCv53BrIazW1ajAOJ5iFMyKoiLvNMii2oDXdFMoK7o+414Q7Qu8ndo03+QB3IWyQmIpPAr/saUmSe0VLbHVRObw9uhHvPS2JB6EBRntaeR0rQdnZp+fAQGccYNogA4caI1IUSiLThNZ2WFojZz/IUQoYrgEfuO3RLC1/18LqNmL+0ZOqD+DuxlcrvaIBQKvwKdhuvyV7y1iCckdgyP4F03WW9Z2QZV643hG5VwtZhywIVlMvLup0+9Vhuuhy33DowTYgnKCygvez2C3tPoPygmx45Opjs+EsoTBMSFC9WE43m3I6zq5x9Fpf2G5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oj1rGFQiV4KGCyb89rcUrHprM1OQD0L+rJgrOnlgv+c=;
- b=NRmsYKZnMxcFGdV++fHRmvTZfnQrl+OasjT8jrjXUduw9/Lenmh4J5PoDreD/xSrf3AaNntERXqumj3nUyaNDkgPxHYQYKiaD9YjiD4jFK3BxFWcOHMx+SZXoEh2QSWAudSoDX2sJNu0ZaNLt6Fm0ElBIJdbt5pUDwzB6GZaVgo=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
- (2603:10a6:800:2e::19) by VE1PR04MB7423.eurprd04.prod.outlook.com
- (2603:10a6:800:1a0::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Tue, 9 Mar
- 2021 08:23:42 +0000
-Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
- ([fe80::a841:34f0:bc5c:3764]) by VI1PR0401MB2287.eurprd04.prod.outlook.com
- ([fe80::a841:34f0:bc5c:3764%2]) with mapi id 15.20.3912.029; Tue, 9 Mar 2021
- 08:23:41 +0000
-From:   Daniel Baluta <daniel.baluta@oss.nxp.com>
-To:     broonie@kernel.org, alsa-devel@alsa-project.org
-Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, shengjiu.wang@nxp.com,
-        Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH] ASoC: core: Don't set platform name when of_node is set
-Date:   Tue,  9 Mar 2021 10:23:28 +0200
-Message-Id: <20210309082328.38388-1-daniel.baluta@oss.nxp.com>
-X-Mailer: git-send-email 2.27.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [86.127.155.38]
-X-ClientProxiedBy: AM0PR04CA0003.eurprd04.prod.outlook.com
- (2603:10a6:208:122::16) To VI1PR0401MB2287.eurprd04.prod.outlook.com
- (2603:10a6:800:2e::19)
+        id S230086AbhCIIYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 03:24:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230030AbhCIIX7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 03:23:59 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78823C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 00:23:59 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so5395066wmj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Mar 2021 00:23:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9cPnnSQlxmMCFI6VmQiQRtghj9ImqPX1eHI8dBxARVo=;
+        b=C6XZkxWjwllzIpsHsIoSLKUVVNoGjndT+Eu2oTFKcQWq5oi3bNKGr8yktY9W51iqr7
+         CtIdLaIewWyuSITI2VvzxP8WgMWbeL1RjMaM8ZbhK/gCvEX7pasWMB3/e4piDyjXjKvg
+         uI13OuIDq71Xb1FhVqaPtxyP9VRWGPf0f9CU6hav7j/XR0gX6vkvKTykTdc6/Oz+Jfbe
+         EEKqQoQMlhlRg58gdkfBbjcss7st3fBwgg1JvWTbYxyyDzUPCAyrkhgD2+zLxa7Hlphi
+         /d6oYHjgaHEK3eBhoT90nY89T6iTvjNYtI4JEqiKEkd5CRiCQn72SeZKOUG2YrIR5T3N
+         ZzSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=9cPnnSQlxmMCFI6VmQiQRtghj9ImqPX1eHI8dBxARVo=;
+        b=Uicrla0INyhhmiTNSE5zID8fDikw4534ipxymHPfTv9nh3fKPvDrDL7Kw8wo5u6QQd
+         wHJ5CapU/+2tPI8EO3wjbWqcbPw9e0cFefsoFygBJR/Pl/diiVtg6uL2K71f8/XmOPf8
+         4dfb4UnzE2gPaJKVIBonRH/HIms/V7m2h7CwSPGSpAf52c9BziKP/K0zXWQJOj57Ryaq
+         c8m0rOoW0aNr1R/gUpDLToiv/+984EtxyW9tiNWUUZHCFdDmIZVubCxTPEkh84YqOLIe
+         /DYYTsd9UDA6EvZbakvpPDXggbf8X6MwZFmAoCSCAj3vkIfIBYjQ+3ecRuYNxV+gGAix
+         9FoA==
+X-Gm-Message-State: AOAM532q7GTZAse5scZK4FqPtwuqKnd3uVYqWe7h8fNizg/90U31S2J6
+        2XIasXjKZmB9jWvj7Wp1yrRQRw==
+X-Google-Smtp-Source: ABdhPJz3gdTKpQLPV0KvRF23CVwUIfz7OfsoSeqIHl6gDmGT3TO7mpdLS0E7GAulrjD3CeI6zrai6A==
+X-Received: by 2002:a1c:c244:: with SMTP id s65mr2713032wmf.96.1615278238107;
+        Tue, 09 Mar 2021 00:23:58 -0800 (PST)
+Received: from ?IPv6:2a01:e0a:90c:e290:74c5:b3db:b181:e284? ([2a01:e0a:90c:e290:74c5:b3db:b181:e284])
+        by smtp.gmail.com with ESMTPSA id o9sm2882859wmc.8.2021.03.09.00.23.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Mar 2021 00:23:57 -0800 (PST)
+Subject: Re: [PATCH] drm: meson_drv add shutdown function
+To:     Artem Lapkin <email2tema@gmail.com>
+Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        christianshewitt@gmail.com, art@khadas.com, nick@khadas.com,
+        gouwa@khadas.com
+References: <20210302042202.3728113-1-art@khadas.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ ZaTUOEkgIor5losDrePdPgE=
+Organization: Baylibre
+Message-ID: <e033540e-3a4f-3dd7-a1b0-d5a0241e845a@baylibre.com>
+Date:   Tue, 9 Mar 2021 09:23:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (86.127.155.38) by AM0PR04CA0003.eurprd04.prod.outlook.com (2603:10a6:208:122::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 9 Mar 2021 08:23:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 4f50c875-f527-4f74-ab76-08d8e2d4a5b6
-X-MS-TrafficTypeDiagnostic: VE1PR04MB7423:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB7423CD47373D0ED06042ED40B8929@VE1PR04MB7423.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Knu4qAWH+wubBJtC1/RiAysROB6w+fjQGwH/nmEjAnaPSMtWrfViMTMvftmWZkADOf575Fi7W4GxVB0LluXEOBPUzwtOjJ0OYxDnB5vaah1f1/TmO8cyQzHz/wRrRVV68oTK2CFhVFXpP7QNU3VHlCaGaeh49rkD4erXS946BB1kIViJ/0aJ7JYI9NRKk59dWC8A0kZ1Qfg8aF16AF5UGHjyYlJ3yPA7MPw82dsiUlETu2EzegvwjBih6EglgeStQIQoGbNV0hSUeMI+JfpJGwz7l1eRQtWOjf7pQw4m5zDqbOTEyePnc+WnH99jRBHBkLpdUAd97d+r1brMaZ8du1KIBNuRortbYHIpK9NooSjYMgeJIa9QnduNYeVF4iBlCaNH48UXPG9rjiqJlvtphdg9Bsy+HXjAAZtKaNKRLyyl5gEgIxCzcKMrkIsXNx3h2kB581VD1gnXFY6sWpjbV5hqohm9KfOzIGRdK5Y06RIZGkHejJVvgjF5XVS0Sx/o0bYKQWG7KGpI86g/BXImzCSt1vsm1fOxj0/cdLIMDcDqWDsVG36MXr63DckatgZR
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2287.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(376002)(346002)(366004)(44832011)(1076003)(2616005)(16526019)(186003)(4744005)(5660300002)(6512007)(2906002)(26005)(6666004)(956004)(478600001)(69590400012)(6486002)(66946007)(66476007)(66556008)(4326008)(8676002)(6506007)(8936002)(83380400001)(86362001)(52116002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?SO8xF0OoCpPv1lNhTPlWlxOERax3BdKTaj1Qb6DRoMdYNgRQAnqf0bWnlstK?=
- =?us-ascii?Q?gK0RPxX2svlI4xTiUmlHsvrkRqPNSEIWSwGzkNIcxTWp1mYeNT8Qnp6TMXfI?=
- =?us-ascii?Q?WSC5sUaF1yr8TtQ9RkOOiQnqaCxQf+H5wV7JK5gx98Kq7TUb3/PFBDyg176N?=
- =?us-ascii?Q?gwtaIO8i11amfvgfSsHyqz0/fhyXbwl1PQH+PphWsv/8FqRTfm8axTlj78mj?=
- =?us-ascii?Q?zMtwUiRs7z/kIlWWCZTxfoi18bOpObAr6RsWDG2sQ3Vx23uukYHHT4zmTh0/?=
- =?us-ascii?Q?YF/71UMs1N+aTTsc/0oHwoTiTeRZWfJSY0uoRF7Qi6wlSrmNpid2vb4YoJ2S?=
- =?us-ascii?Q?VeYKmOqJUaY38tYvGDchclYdMa7LQPPlfLGBWLR+30l/wObJ6ypYZ9uR4Sl1?=
- =?us-ascii?Q?knmcdus9CMc64KpvoME301ED3G4x88JLofMB55Dv0LVNJYtJZLPDcH6VjrcX?=
- =?us-ascii?Q?lUpPuoNaqDdRL4Mc/oQM34irlb94iB3tqG9XXv4UwBribF3OAt3U/59d69M0?=
- =?us-ascii?Q?GlLg36KM0Tqh5WiF0L96C/tAMeGahKfwkwf5hCdLeik8LaEWfHMNQJcp+w+G?=
- =?us-ascii?Q?NvsxPfLgKoG5WXuTewcODmVu48grJjUGOV99VnH/6VdSYO+/EHWnTgYbZlDu?=
- =?us-ascii?Q?UN5RtiVxd34OrRjEHvXHI5VH1Ko+UbxX+nUF3Dpr6AaC97/hQB9x+Wbn4LAL?=
- =?us-ascii?Q?vC1rEg2o1PradEsxCVOsnsRDfm2hSJl5fruVo2QoJytdNKvZD8+c+9HFwqKl?=
- =?us-ascii?Q?8DGAZu1ZYroOZ3qdhofEbVoFmfmjx3OZ5m3zj/g3ZxgFMUiOLZQR8Xn/YLB/?=
- =?us-ascii?Q?3TT62EaqsXuzHKo3moYbu19AH1BHlD5p/oiKv8GwuVUI/p/ozPcFej5oiHwH?=
- =?us-ascii?Q?/FCURhLf0yWgq3w0omiRGtn54JuAl/vCbi/92wZIQw5lsW7AdoEpLRuL9hiu?=
- =?us-ascii?Q?U2dS1dENzqpCA+bonxQvyToXdeVrb9OBYPavSEoDeaIcld31H6RR3gX1lrT0?=
- =?us-ascii?Q?g+yLVoJxQb7B0oZrqaDM+/qxAoNm3P+wm2N4vnRTrOYyUskC4qsGCi0eWtIQ?=
- =?us-ascii?Q?WxK4IJSvS0bxOvJCRB0bSRM6nDtKBoRJ/UdnjR5kCx/37hbjX2YYgGES4UJc?=
- =?us-ascii?Q?dRBjYVGnmmf704+u/5+20Kopr5EZBmV1MtJshsd8fRsz0l6ODxxRjU0mKZyv?=
- =?us-ascii?Q?3VOyi5vzvbpdOt08moL6cbw9WPraPgvbKEefF3NOimZIqTLLnW5+g6crBmEn?=
- =?us-ascii?Q?8sNm4vL7V4yfShxGjW10vj8zLIvWhPAOTURGBFGN5Jc0KZ4Rd+caSTPQ74Fj?=
- =?us-ascii?Q?y7W4w00aGsXUxW7VLWCzi/8d?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f50c875-f527-4f74-ab76-08d8e2d4a5b6
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2287.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2021 08:23:41.6220
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YTWupmlAZZzwu0HbRGEQ97LaOstVYSG9XZkvIvEVuUznz5T/c5uB0xZQ2S/Rh3++dxdq7j150jb/nbn3jNsG5A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7423
+In-Reply-To: <20210302042202.3728113-1-art@khadas.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Baluta <daniel.baluta@nxp.com>
+On 02/03/2021 05:22, Artem Lapkin wrote:
+> Problem: random stucks on reboot stage about 1/20 stuck/reboots
+> // debug kernel log
+> [    4.496660] reboot: kernel restart prepare CMD:(null)
+> [    4.498114] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown begin
+> [    4.503949] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown domain 0:VPU...
+> ...STUCK...
+> 
+> Solution: add shutdown function to meson_drm driver 
+> // debug kernel log
+> [    5.231896] reboot: kernel restart prepare CMD:(null)
+> [    5.246135] [drm:meson_drv_shutdown]
+> ...
+> [    5.259271] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown begin
+> [    5.274688] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown domain 0:VPU...
+> [    5.338331] reboot: Restarting system
+> [    5.358293] psci: PSCI_0_2_FN_SYSTEM_RESET reboot_mode:0 cmd:(null)
+> bl31 reboot reason: 0xd
+> bl31 reboot reason: 0x0
+> system cmd  1.
+> ...REBOOT...
+> 
+> Tested: on VIM1 VIM2 VIM3 VIM3L khadas sbcs - 1000+ successful reboots
+> and Odroid boards, WeTek Play2 (GXBB)
+> 
+> Tested-by: Christian Hewitt <christianshewitt@gmail.com>
+> Signed-off-by: Artem Lapkin <art@khadas.com>
+> 
+> ---
+>  drivers/gpu/drm/meson/meson_drv.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
+> index 42c5d3246..693bb1293 100644
+> --- a/drivers/gpu/drm/meson/meson_drv.c
+> +++ b/drivers/gpu/drm/meson/meson_drv.c
+> @@ -482,6 +482,16 @@ static int meson_probe_remote(struct platform_device *pdev,
+>  	return count;
+>  }
+>  
+> +static void meson_drv_shutdown(struct platform_device *pdev)
+> +{
+> +	struct meson_drm *priv = dev_get_drvdata(&pdev->dev);
+> +	struct drm_device *drm = priv->drm;
+> +
+> +	DRM_DEBUG_DRIVER("\n");
+> +	drm_kms_helper_poll_fini(drm);
+> +	drm_atomic_helper_shutdown(drm);
+> +}
+> +
+>  static int meson_drv_probe(struct platform_device *pdev)
+>  {
+>  	struct component_match *match = NULL;
+> @@ -553,6 +563,7 @@ static const struct dev_pm_ops meson_drv_pm_ops = {
+>  
+>  static struct platform_driver meson_drm_platform_driver = {
+>  	.probe      = meson_drv_probe,
+> +	.shutdown   = meson_drv_shutdown,
+>  	.driver     = {
+>  		.name	= "meson-drm",
+>  		.of_match_table = dt_match,
+> 
 
-Platform may be specified by either name or OF node but not
-both.
+Applied to drm-misc-fixes,
 
-For OF node platforms (e.g i.MX) we end up with both platform name
-and of_node set and sound card registration will fail with the error:
-
-  asoc-simple-card sof-sound-wm8960: ASoC: Neither/both
-  platform name/of_node are set for sai1-wm8960-hifi
-
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
- sound/soc/soc-core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 16ba54eb8164..76ab42fa9461 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1660,7 +1660,9 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
- 				dev_err(card->dev, "init platform error");
- 				continue;
- 			}
--			dai_link->platforms->name = component->name;
-+
-+			if (!dai_link->platforms->of_node)
-+				dai_link->platforms->name = component->name;
- 
- 			/* convert non BE into BE */
- 			if (!dai_link->no_pcm) {
--- 
-2.27.0
-
+Thanks !
