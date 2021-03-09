@@ -2,101 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62CC33317F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CDA333165
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 23:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhCIW2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 17:28:49 -0500
-Received: from gateway30.websitewelcome.com ([192.185.192.34]:35600 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230086AbhCIW2g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 17:28:36 -0500
-X-Greylist: delayed 1476 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Mar 2021 17:28:36 EST
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id C27993EDE
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Mar 2021 16:03:57 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id JkSLlxYcq4HRaJkSLlw6v1; Tue, 09 Mar 2021 16:03:57 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=sFVC56Nr3h3444R3x8H8hPzvSqttuM8D3wbuXBin/jo=; b=PeJdk4VRD7mV8U9CDR6MEC2yi3
-        iFWD9tLrWs10yakUaZQJ/1bFEi1TcKKME+gZAKB78pwnXG8OY6UesQV4WNCBcQ9hROzZm59ZhyRiv
-        uUVO4J+WLc/zJD0pRWjaQD71iDzBQTkLB0YX+m6Q14ZnUXH/ey53Lyuhdm7dHvCi7WSdDacKCFDMF
-        +4anh9P8fTcBztYaeFTf5jdd3dR+e5RVy7Maw7LL7sSyRy++sv8IJVKxQ9aRgXq/sPeiGYBrkqTp7
-        tkyN1HWkB85f8CA9cNSWDpE+JqvJcsE1NqLHCJ2W+QDWB42SBtXVwOV8pZQ09zdh80eEEMLI+e2Bi
-        sd9K86pg==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:49312 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lJkSL-000zzy-E3; Tue, 09 Mar 2021 16:03:57 -0600
-Subject: Re: [PATCH][next] xfs: Replace one-element arrays with flexible-array
- members
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210302150558.GA198498@embeddedor>
- <20210309174212.GV3419940@magnolia>
- <8bf7e1d2-e2d4-c56f-cd04-0045dc4c7e2f@embeddedor.com>
- <20210309212643.GZ3419940@magnolia>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <6cd7c00a-a49c-41f9-06cb-e3123bb32d6c@embeddedor.com>
-Date:   Tue, 9 Mar 2021 16:03:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210309212643.GZ3419940@magnolia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lJkSL-000zzy-E3
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:49312
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 5
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+        id S231915AbhCIWNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 17:13:22 -0500
+Received: from gate.crashing.org ([63.228.1.57]:33438 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230431AbhCIWNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 17:13:13 -0500
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 129M5XDc030658;
+        Tue, 9 Mar 2021 16:05:34 -0600
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 129M5X7J030657;
+        Tue, 9 Mar 2021 16:05:33 -0600
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Tue, 9 Mar 2021 16:05:32 -0600
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Marco Elver <elver@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, broonie@kernel.org,
+        Paul Mackerras <paulus@samba.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1] powerpc: Include running function as first entry in save_stack_trace() and friends
+Message-ID: <20210309220532.GI29191@gate.crashing.org>
+References: <e2e8728c4c4553bbac75a64b148e402183699c0c.1614780567.git.christophe.leroy@csgroup.eu> <CANpmjNOvgbUCf0QBs1J-mO0yEPuzcTMm7aS1JpPB-17_LabNHw@mail.gmail.com> <1802be3e-dc1a-52e0-1754-a40f0ea39658@csgroup.eu> <YD+o5QkCZN97mH8/@elver.google.com> <20210304145730.GC54534@C02TD0UTHF1T.local> <20210304215448.GU29191@gate.crashing.org> <20210309160505.GA4979@C02TD0UTHF1T.local>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210309160505.GA4979@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi!
+
+On Tue, Mar 09, 2021 at 04:05:23PM +0000, Mark Rutland wrote:
+> On Thu, Mar 04, 2021 at 03:54:48PM -0600, Segher Boessenkool wrote:
+> > On Thu, Mar 04, 2021 at 02:57:30PM +0000, Mark Rutland wrote:
+> > > It looks like GCC is happy to give us the function-entry-time FP if we use
+> > > __builtin_frame_address(1),
+> > 
+> > From the GCC manual:
+> >      Calling this function with a nonzero argument can have
+> >      unpredictable effects, including crashing the calling program.  As
+> >      a result, calls that are considered unsafe are diagnosed when the
+> >      '-Wframe-address' option is in effect.  Such calls should only be
+> >      made in debugging situations.
+> > 
+> > It *does* warn (the warning is in -Wall btw), on both powerpc and
+> > aarch64.  Furthermore, using this builtin causes lousy code (it forces
+> > the use of a frame pointer, which we normally try very hard to optimise
+> > away, for good reason).
+> > 
+> > And, that warning is not an idle warning.  Non-zero arguments to
+> > __builtin_frame_address can crash the program.  It won't on simpler
+> > functions, but there is no real definition of what a simpler function
+> > *is*.  It is meant for debugging, not for production use (this is also
+> > why no one has bothered to make it faster).
+> >
+> > On Power it should work, but on pretty much any other arch it won't.
+> 
+> I understand this is true generally, and cannot be relied upon in
+> portable code. However as you hint here for Power, I believe that on
+> arm64 __builtin_frame_address(1) shouldn't crash the program due to the
+> way frame records work on arm64, but I'll go check with some local
+> compiler folk. I agree that __builtin_frame_address(2) and beyond
+> certainly can, e.g.  by NULL dereference and similar.
+
+I still do not know the aarch64 ABI well enough.  If only I had time!
+
+> For context, why do you think this would work on power specifically? I
+> wonder if our rationale is similar.
+
+On most 64-bit Power ABIs all stack frames are connected together as a
+linked list (which is updated atomically, importantly).  This makes it
+possible to always find all previous stack frames.
+
+> Are you aware of anything in particular that breaks using
+> __builtin_frame_address(1) in non-portable code, or is this just a
+> general sentiment of this not being a supported use-case?
+
+It is not supported, and trying to do it anyway can crash: it can use
+random stack contents as pointer!  Not really "random" of course, but
+where it thinks to find a pointer into the previous frame, which is not
+something it can rely on (unless the ABI guarantees it somehow).
+
+See gcc.gnu.org/PR60109 for example.
+
+> > > Unless we can get some strong guarantees from compiler folk such that we
+> > > can guarantee a specific function acts boundary for unwinding (and
+> > > doesn't itself get split, etc), the only reliable way I can think to
+> > > solve this requires an assembly trampoline. Whatever we do is liable to
+> > > need some invasive rework.
+> > 
+> > You cannot get such a guarantee, other than not letting the compiler
+> > see into the routine at all, like with assembler code (not inline asm,
+> > real assembler code).
+> 
+> If we cannot reliably ensure this then I'm happy to go write an assembly
+> trampoline to snapshot the state at a function call boundary (where our
+> procedure call standard mandates the state of the LR, FP, and frame
+> records pointed to by the FP).
+
+Is the frame pointer required?!
+
+> This'll require reworking a reasonable
+> amount of code cross-architecture, so I'll need to get some more
+> concrete justification (e.g. examples of things that can go wrong in
+> practice).
+
+Say you have a function that does dynamic stack allocation, then there
+is usually no way to find the previous stack frame (without function-
+specific knowledge).  So __builtin_frame_address cannot work (it knows
+nothing about frames further up).
+
+Dynamic stack allocation (alloca, or variable length automatic arrays)
+is just the most common and most convenient example; it is not the only
+case you have problems here.
+
+> > The real way forward is to bite the bullet and to no longer pretend you
+> > can do a full backtrace from just the stack contents.  You cannot.
+> 
+> I think what you mean here is that there's no reliable way to handle the
+> current/leaf function, right? If so I do agree.
+
+No, I meant what I said.
+
+There is the separate issue that you do not know where the return
+address (etc.) is stored in a function that has not yet done a call
+itself, sure.  You cannot assume anything the ABI does not tell you you
+can depend on.
+
+> Beyond that I believe that arm64's frame records should be sufficient.
+
+Do you have a simple linked list connecting all frames?  The aarch64 GCC
+port does not define anything special here (DYNAMIC_CHAIN_ADDRESS), so
+the default will be used: every frame pointer has to point to the
+previous one, no exceptions whatsoever.
 
 
-On 3/9/21 15:26, Darrick J. Wong wrote:
->>> It seems to work all right for casted NULL pointers, and then we get all
->>> the typechecking and multiplication overflow checking, e.g.:
->>>
->>> 	size_t len64 = struct_size((struct xfs_efi_log_format_32 *)NULL,
->>> 				efi_extents src_efi_fmt->efi_nextents);
->> Yeah; in that case, what do you think about casting 0, instead of NULL:
->>
->>        uint len32 = struct_size((xfs_efi_log_format_32_t *)0, efi_extents,
->>                                 src_efi_fmt->efi_nextents);
->>        uint len64 = struct_size((xfs_efi_log_format_64_t *)0, efi_extents,
->>                                 src_efi_fmt->efi_nextents);
-> I don't have a preference either way, either here or for the half-dozen
-> more of these scattered elsewhere in the file.
-
-OK. I'll send v2, shortly
-
-Thanks for the feedback!
---
-Gustavo
+Segher
