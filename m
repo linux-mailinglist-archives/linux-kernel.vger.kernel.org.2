@@ -2,214 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE63332E71
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:43:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C61332E79
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Mar 2021 19:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhCISnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Mar 2021 13:43:05 -0500
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:61840 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231138AbhCISmr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Mar 2021 13:42:47 -0500
-Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 129ISjRV026358;
-        Tue, 9 Mar 2021 18:42:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pps0720; bh=JJpSDPV9oIKR7DiEGS0O7fPdz8e7a8KQD6LUhquK4Og=;
- b=HhUENPXapsd6Qo8vB5eC/aNTLORyb4qracymKkPKkCWTQnnEFmbFQhANodFY+X4SSfUH
- MzeWPH7q3ralG0TUag7o0wGJhz/wh3G3m+N0XFXfCTZaVtiCtasmUskiFGymqbJknFOJ
- r96VwK7O71yUZgZ6F5h+MwbggFULySX9FCKgX0AOnQd6g6ClpveLj9XIWyAghsJVv0es
- L4pMI/HiXOAgcwJOHMACScj7m6X5NqgGIH9Y9/b/sk9Q0SScBxX3H1f02xQWg7VnbfaA
- 3h6cM5cAMt9ULql1RW/e8MHXafJSMUH25Y5RTuZ7XITOfvyWE/XJ58u7VzecjIbq1oCW tg== 
-Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
-        by mx0b-002e3701.pphosted.com with ESMTP id 3766ttmfcg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Mar 2021 18:42:18 +0000
-Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
-        by g9t5008.houston.hpe.com (Postfix) with ESMTP id B961156;
-        Tue,  9 Mar 2021 18:42:17 +0000 (UTC)
-Received: from anatevka.americas.hpqcorp.net (anatevka.americas.hpqcorp.net [10.33.237.3])
-        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id D571D45;
-        Tue,  9 Mar 2021 18:42:16 +0000 (UTC)
-Date:   Tue, 9 Mar 2021 11:42:16 -0700
-From:   Jerry Hoemann <jerry.hoemann@hpe.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Flavio Suligoi <f.suligoi@asem.it>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH v1 0/2] Watchdog Core Global Parameters
-Message-ID: <20210309184216.GN234518@anatevka.americas.hpqcorp.net>
-References: <20210308112151.716315-1-f.suligoi@asem.it>
- <d47fcc00-58fa-5850-7599-74644b34e39f@roeck-us.net>
- <984953abc23c4cd6a4a6a5b77ae72e66@asem.it>
- <1500d5fe-5228-1671-2008-4b7e30e856ea@roeck-us.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1500d5fe-5228-1671-2008-4b7e30e856ea@roeck-us.net>
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-09_14:2021-03-09,2021-03-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- mlxlogscore=999 clxscore=1011 mlxscore=0 impostorscore=0 bulkscore=0
- phishscore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103090088
+        id S230490AbhCISpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Mar 2021 13:45:15 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:17960 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230431AbhCISpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Mar 2021 13:45:08 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1615315508; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=UAKjo8zZG7M277bUe+2k6g6UgShDJnZ1RTTp42M0xWY=; b=qQ1CDFOwdYlJhRn+frs/X2bkapqYU98bqcNLt+RZrWKedJOp0q5jcj5Qclys/rvQyjRL51lP
+ eI/tmeVF8WgWiBirR1TyYQf2WBKsIghhJnxsf/XVCSVWmnc5QFofprHNT7m3RxOzNBbSLpda
+ IDAEyPIdcxAlimw4GGtqthOkBaA=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6047c22aa6850484a681f2a0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Mar 2021 18:44:58
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 31575C433CA; Tue,  9 Mar 2021 18:44:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 02BE0C433CA;
+        Tue,  9 Mar 2021 18:44:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 02BE0C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v3] bus: mhi: core: Add missing checks for MMIO register entries
+Date:   Tue,  9 Mar 2021 10:44:50 -0800
+Message-Id: <1615315490-36017-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 07:22:28AM -0800, Guenter Roeck wrote:
-> On 3/9/21 2:26 AM, Flavio Suligoi wrote:
-> > Hi Guenter,
-> > 
-> >>> Instead of adding this kind of module parameters independently to each
-> >>> driver, the best solution is declaring each feature only once, in the
-> >>> watchdog core.
-> >>>
-> >>
-> >> I agree to and like the idea, but I don't see the point of letting drivers opt in
-> >> or opt out. This adds a lot of complexity for little if any gain.
-> > 
-> > Do you mean that all the support for this "global parameters" should be done
-> > in the watchdog-core only, without write any code in each single
-> > "hardware" driver?
-> 
-> Correct. It should not be up to the driver author to decide if they
-> want to opt out from global parameters or not. It should be up to
-> users, and users can opt out by not providing the parameters.
+As per documentation, fields marked as (required) in an MHI
+controller structure need to be populated by the controller driver
+before calling mhi_register_controller(). Ensure all required
+pointers and non-zero fields are present in the controller before
+proceeding with the registration.
 
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+---
+ v3: removed fw_image as not all controllers require it
+ v2: removed iova_start and iova_stop as they can be zero
 
-Guenter,
+ drivers/bus/mhi/core/init.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-What about parameters like "pretimeout"  that only some WD drivers have
-hw to support?
-
-Might be nice to centralize these parameters as well, but leaving it up
-to users to decide might not make sense.
-
-Or do you see the recent work to allow for a software pretimeout
-mechanism covering this?
-
-thanks
-
-Jerry
-
-> 
-> Guenter
-> 
-> >>
-> >> Guenter
-> > 
-> > Regards,
-> > 
-> > Flavio
-> > 
-> >>
-> >>> Additionally, I added a implementation example of this "global"
-> >>> parameters using the module "wdat_wdt"
-> >>>
-> >>> In details:
-> >>>
-> >>> ===============================
-> >>> Watchdog Core Global Parameters
-> >>> ===============================
-> >>>
-> >>> Information for watchdog kernel modules developers.
-> >>>
-> >>> Introduction
-> >>> ============
-> >>>
-> >>> Different watchdog modules frequently require the same type of
-> >>> parameters (for example: *timeout*, *nowayout* feature,
-> >>> *start_enabled* to start the watchdog on module insertion, etc.).
-> >>> Instead of adding this kind of module parameters independently to each
-> >>> driver, the best solution is declaring each feature only once, in the
-> >>> watchdog core.
-> >>>
-> >>> In this way, each driver can read these "global" parameters and then,
-> >>> if needed, can implement them, according to the particular hw watchdog
-> >>> characteristic.
-> >>>
-> >>> Using this approach, it is possible reduce some duplicate code in the
-> >>> *new* watchdog drivers and simplify the code maintenance.  Moreover,
-> >>> the code will be clearer, since the same kind of parameters are often
-> >>> called with different names (see Documentation/watchdog/watchdog-
-> >> parameters.rst).
-> >>> Obviously, for compatibility reasons, we cannot remove the already
-> >>> existing parameters from the code of the various watchdog modules, but
-> >>> we can use this "global" approach for the new watchdog drivers.
-> >>>
-> >>>
-> >>> Global parameters declaration
-> >>> ==============================
-> >>>
-> >>> The global parameters data structure is declared in
-> >>> include/linux/watchdog.h, as::
-> >>>
-> >>> 	struct watchdog_global_parameters_struct {
-> >>> 		int timeout;
-> >>> 		int ioport;
-> >>> 		int irq;
-> >>> 		unsigned long features;
-> >>> 		/* Bit numbers for features flags */
-> >>> 		#define WDOG_GLOBAL_PARAM_VERBOSE	0
-> >>> 		#define WDOG_GLOBAL_PARAM_TEST_MODE	1
-> >>> 		#define WDOG_GLOBAL_PARAM_START_ENABLED	2
-> >>> 		#define WDOG_GLOBAL_PARAM_NOWAYOUT	3
-> >>> 	};
-> >>>
-> >>> The variable "feature" is a bitwise flags container, to store boolean
-> >>> features, such as:
-> >>>
-> >>> * nowayout
-> >>> * start_enable
-> >>> * etc...
-> >>>
-> >>> Other variables can be added, to store some numerical values and other
-> >>> data required.
-> >>>
-> >>> The global parameters are declared (as usual for the module
-> >>> parameters) in the first part of drivers/watchdog/watchdog_core.c file.
-> >>> The above global data structure is then managed by the function *void
-> >>> global_parameters_init()*, in the same file.
-> >>>
-> >>> Global parameters use
-> >>> =====================
-> >>>
-> >>> Each watchdog driver, to check if one of the global parameters is
-> >>> enabled, can use the corresponding in-line function declared in
-> >>> include/linux/watchdog.h.
-> >>> At the moment the following functions are ready to use:
-> >>>
-> >>> * watchdog_global_param_verbose_enabled()
-> >>> * watchdog_global_param_test_mode_enabled()
-> >>> * watchdog_global_param_start_enabled()
-> >>> * watchdog_global_param_nowayout_enabled()
-> >>>
-> >>>
-> >>>
-> >>> Flavio Suligoi (2):
-> >>>   watchdog: add global watchdog kernel module parameters structure
-> >>>   watchdog: wdat: add start_enable global parameter
-> >>>
-> >>>  Documentation/watchdog/index.rst              |  1 +
-> >>>  .../watchdog-core-global-parameters.rst       | 74 +++++++++++++++++++
-> >>>  drivers/watchdog/watchdog_core.c              | 74 +++++++++++++++++++
-> >>>  drivers/watchdog/wdat_wdt.c                   |  2 +
-> >>>  include/linux/watchdog.h                      | 42 +++++++++++
-> >>>  5 files changed, 193 insertions(+)
-> >>>  create mode 100644
-> >>> Documentation/watchdog/watchdog-core-global-parameters.rst
-> >>>
-> > 
-
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index 272f350..d8882b3 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -879,12 +879,10 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+ 	u32 soc_info;
+ 	int ret, i;
+ 
+-	if (!mhi_cntrl)
+-		return -EINVAL;
+-
+-	if (!mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
++	if (!mhi_cntrl || !mhi_cntrl->cntrl_dev || !mhi_cntrl->regs ||
++	    !mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
+ 	    !mhi_cntrl->status_cb || !mhi_cntrl->read_reg ||
+-	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs)
++	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs || !mhi_cntrl->irq)
+ 		return -EINVAL;
+ 
+ 	ret = parse_config(mhi_cntrl, config);
 -- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
------------------------------------------------------------------------------
-Jerry Hoemann                  Software Engineer   Hewlett Packard Enterprise
------------------------------------------------------------------------------
